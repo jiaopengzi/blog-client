@@ -3,9 +3,9 @@
  * @Date         : 2023-07-10 21:09:39
  * @LastEditors  : jiaopengzi
  * @LastEditTime : 2023-07-10 22:23:34
- * @FilePath     : \vuestudy\src\hooks\useScrollActions.ts
- * @Description  :
- * @blog: https://jiaopengzi.com
+ * @FilePath     : \blog-client\src\hooks\useScrollActions.ts
+ * @Description  : 滚动事件
+ * @blog         : https://jiaopengzi.com
  * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 import { ref } from 'vue'

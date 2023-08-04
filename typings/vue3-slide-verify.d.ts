@@ -1,13 +1,14 @@
 /**
  * @Author       : jiaopengzi
- * @Date         : 2023-07-12 11:21:48
+ * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-07-12 11:45:41
- * @FilePath     : \vuestudy\typings\vue3-slide-verify.d.ts
+ * @LastEditTime : 2023-08-04 20:59:19
+ * @FilePath     : \blog-client\typings\vue3-slide-verify.d.ts
  * @Description  : 手动编写的vue3-slide-verify.d.ts文件
- * @blog: https://jiaopengzi.com
- * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
+
 declare module 'vue3-slide-verify' {
   import { DefineComponent, ComponentPublicInstance } from 'vue'
 

@@ -1,23 +1,14 @@
 <!--
  * @Author       : jiaopengzi
- * @Date         : 2023-07-10 20:00:03
+ * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-07-11 19:43:43
- * @FilePath     : \vuestudy\src\components\common\mobile\ContentMobile.vue
- * @Description  : 
- * blog: https://jiaopengzi.com
+ * @LastEditTime : 2023-08-04 20:44:28
+ * @FilePath     : \blog-client\src\components\common\mobile\ContentMobile.vue
+ * @Description  : 内容页 移动端
+ * @blog         : https://jiaopengzi.com
  * Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
-<!--
- * @Author       : jiaopengzi
- * @Date         : 2023-07-10 19:58:32
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-07-10 19:59:36
- * @FilePath     : \vuestudy\src\components\common\pc\ContentPC.vue
- * @Description  : 
- * blog: https://jiaopengzi.com
- * Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
--->
+
 <template>
   <div>
     <div class="breadcrumb">

@@ -1,13 +1,15 @@
 <!--
  * @Author       : jiaopengzi
- * @Date         : 2023-07-04 18:07:32
+ * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-07-10 21:01:02
- * @FilePath     : \vuestudy\src\App.vue
- * @Description  : 
- * blog: https://jiaopengzi.com
- * Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+ * @LastEditTime : 2023-08-04 20:57:56
+ * @FilePath     : \blog-client\src\App.vue
+ * @Description  : 入口文件
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
+
+
 <template>
   <div class="app">
     <router-view />

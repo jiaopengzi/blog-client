@@ -1,13 +1,14 @@
 <!--
  * @Author       : jiaopengzi
- * @Date         : 2023-07-14 20:27:27
+ * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-07-16 19:45:38
- * @FilePath     : \vuestudy\src\components\common\AlertTip.vue
- * @Description  : alert 提示
- * blog: https://jiaopengzi.com
+ * @LastEditTime : 2023-08-04 20:41:25
+ * @FilePath     : \blog-client\src\components\common\AlertTip.vue
+ * @Description  : 弹窗提示
+ * @blog         : https://jiaopengzi.com
  * Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
+
 <template>
   <el-alert :title="MsgTitle[typeAlert]" :type="typeAlert" :description="descriptionAlert" show-icon />
 </template>

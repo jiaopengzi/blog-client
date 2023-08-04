@@ -1,21 +1,18 @@
 <!--
  * @Author       : jiaopengzi
- * @Date         : 2023-07-08 11:19:03
+ * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-07-11 17:48:38
- * @FilePath     : \vuestudy\src\components\common\mobile\HeaderMobile.vue
- * @Description  : 
- * blog: https://jiaopengzi.com
+ * @LastEditTime : 2023-08-04 20:45:13
+ * @FilePath     : \blog-client\src\components\common\mobile\HeaderMobile.vue
+ * @Description  : 头部 移动端
+ * @blog         : https://jiaopengzi.com
  * Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
 
+
 <template>
   <transition name="slide-header">
-    <header
-      class="header"
-      v-if="headerVisible"
-      :style="{ height: `@height-header-mobile`, width: '100vw' }"
-    >
+    <header class="header" v-if="headerVisible" :style="{ height: `@height-header-mobile`, width: '100vw' }">
       <ul class="header-main">
         <li>
           <button class="btn-menu" @click="toggleNav">
@@ -39,15 +36,11 @@
     </header>
   </transition>
   <div v-if="navVisible" class="nav-backdrop" @click="toggleNav"></div>
-  <div
-    class="side-nav"
-    id="sideNav"
-    :style="{
-      transform: navVisible ? 'translateX(0)' : 'translateX(-100%)',
-      height: `100vh`,
-      width: '61.8vw',
-    }"
-  >
+  <div class="side-nav" id="sideNav" :style="{
+    transform: navVisible ? 'translateX(0)' : 'translateX(-100%)',
+    height: `100vh`,
+    width: '61.8vw',
+  }">
     <!-- :style="{ transform: navVisible ? 'translateX(0)' : 'translateX(-100%)', height: `calc(100vh - ${headerHeight})`, width: '61.8vw' }"> -->
     <!-- 侧边栏导航栏 -->
     <HeaderMobileNav />
@@ -95,6 +88,7 @@ const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownA
 
 <style scoped lang="less">
 @media screen and (max-width: @width-page-main-pc) {
+
   /* 透明遮罩 */
   .nav-backdrop {
     width: 100vw;

@@ -1,13 +1,14 @@
 <!--
  * @Author       : jiaopengzi
- * @Date         : 2023-07-08 18:06:57
+ * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-02 14:09:58
- * @FilePath     : \vuestudy\src\components\common\RegisterPage.vue
+ * @LastEditTime : 2023-08-04 23:19:38
+ * @FilePath     : \blog-client\src\components\common\RegisterPage.vue
  * @Description  : 注册页面 移动端 和 PC 端
- * blog: https://jiaopengzi.com
- * Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
+
 
 <template>
   <!-- 添加滑动验证组件：SlideVerify -->
@@ -91,6 +92,8 @@ import { RegisterByJosn } from '@/api/user/Register.ts'
 import type { CaptchaSendRequest, CaptchaSendResponse } from '@/api/utils/CaptchaSend.ts'
 import { captchaSendByJosn } from '@/api/utils/CaptchaSend.ts'
 
+import { getPublicIp } from '@/utils/IP.ts'
+
 import type { CaptchaCheckRequest, CaptchaCheckResponse } from '@/api/utils/CaptchaCheck.ts'
 import { captchaCheckByJosn } from '@/api/utils/CaptchaCheck.ts'
 
@@ -162,26 +165,37 @@ function rePasswordValidator(
     })
 }
 
+/**
+ * @description: 验证码发送 异步函数
+ * @return Promise<void> 验证码错误返回 Promise.reject()，否则返回 Promise.resolve()
+ */
 async function sendCaptcha(): Promise<void> {
   try {
     // 创建请求对象 加密内容
     const req: CaptchaSendRequest = {
       email: registerForm.email,
+      ip: await getPublicIp(),
     }
-
+    console.log("==========>发送验证码")
     const requestData: string = encryptData(JSON.stringify(req)) // 将请求对象 req 转换为字符串 并加密内容
     const res: AxiosResponse = await captchaSendByJosn(requestData) // 发送请求，并返回Promise
     const resStr: string = JSON.stringify(res) // 将 res 转换字符串
     const resObj: CaptchaSendResponse = JSON.parse(resStr) // 将 resStr 转换为对象
 
-    if (resObj.code === 1001) {
-      throw new Error(resObj.msg)
+    if (resObj.code !== 8000) {
+      // 历遍 data 中的错误信息 并抛出第一个key错误信息 停止循环
+      for (const key in resObj.data) {
+        if (Object.prototype.hasOwnProperty.call(resObj.data, key)) {
+          throw new Error(resObj.data[key]) // 抛出错误信息
+        }
+      }
     }
   } catch (err: unknown) {
     console.log(err)
     throw err
   }
 }
+
 
 /**
  * @description: 用户名查重 异步函数
@@ -280,6 +294,43 @@ function checkEmailValidator(
     })
 }
 
+
+async function checkCaptcha(): Promise<void> {
+  try {
+    // 创建请求对象 加密内容
+    const req: CaptchaCheckRequest = {
+      email: registerForm.email,
+      captcha: registerForm.emailCode,
+    }
+    const requestData: string = encryptData(JSON.stringify(req)) // 将请求对象 req 转换为字符串 并加密内容
+    const res: AxiosResponse = await captchaCheckByJosn(requestData) // 发送请求，并返回Promise
+    const resStr: string = JSON.stringify(res) // 将 res 转换字符串
+    const resObj: CaptchaSendResponse = JSON.parse(resStr) // 将 resStr 转换为对象
+
+    if (resObj.code !== 8002) {
+      throw new Error(resObj.msg)
+    }
+  } catch (err: unknown) {
+    console.log(err)
+    throw err
+  }
+}
+
+function checkCaptchaValidator(
+  rule: any,
+  value: string,
+  callback: (error?: string | Error | undefined) => void
+): void {
+  // 在这里处理异步验证逻辑
+  checkCaptcha()
+    .then(() => {
+      callback() // 如果成功，没有错误，则调用回调函数
+    })
+    .catch((err: Error) => {
+      callback(err.message) // 如果失败（用户名已经存在），则传入错误提示字符串
+    })
+}
+
 /**
  * @description: 表单校验规则
  * @return  FormRules<RegisterForm> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
@@ -304,6 +355,8 @@ const rules = reactive<FormRules<RegisterForm>>({
   emailCode: [
     { required: true, message: '请输入验证码', trigger: 'blur' },
     { pattern: /^\d{6}$/, message: '验证码为6位的数字', trigger: 'blur' },
+    { validator: checkCaptchaValidator, trigger: 'blur' },
+
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
@@ -392,6 +445,15 @@ const sendEmailCode = () => {
   btnCaptchaState.disabled = true // 禁用按钮
 
   // 发送验证码
+  sendCaptcha()
+    .then(() => {
+      // 成功发送验证码
+      ShowMsgTip(MsgType.success, '验证码已发送到邮箱。', 6000)
+    })
+    .catch((err: Error) => {
+      // 错误提示
+      ShowMsgTip(MsgType.error, err.message, 0)
+    })
 
   // 按钮设置不能点击状态
   let timer = 60

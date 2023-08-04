@@ -2,10 +2,10 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-11 21:12:11
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-07-12 23:33:22
- * @FilePath     : \vuestudy\src\components\common\pc\SlideVerify.vue
- * @Description  : 
- * blog: https://jiaopengzi.com
+ * @LastEditTime : 2023-08-04 20:32:32
+ * @FilePath     : \blog-client\src\components\common\SlideVerify.vue
+ * @Description  : 滑块验证
+ * @blog         : https://jiaopengzi.com
  * Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
@@ -13,25 +13,11 @@
     <!-- @touchmove.prevent.stop 阻止触摸事件传播并阻止默认行为。确保滑动验证码不会导致页面滑动。 -->
     <div class="verify-main" @touchmove.prevent.stop>
       <h4>
-        <span class="title">拖动下方滑块完成拼图</span
-        ><button class="iconfont icon-close" @click="closeMe"></button>
+        <span class="title">拖动下方滑块完成拼图</span><button class="iconfont icon-close" @click="closeMe"></button>
       </h4>
 
-      <slide-verify
-        ref="block"
-        :l="42"
-        :r="10"
-        :w="280"
-        :h="186"
-        :slider-text="text"
-        :accuracy="accuracy"
-        :show="true"
-        :imgs="imgs"
-        @again="onAgain"
-        @success="onSuccess"
-        @fail="onFail"
-        @refresh="onRefresh"
-      ></slide-verify>
+      <slide-verify ref="block" :l="42" :r="10" :w="280" :h="186" :slider-text="text" :accuracy="accuracy" :show="true"
+        :imgs="imgs" @again="onAgain" @success="onSuccess" @fail="onFail" @refresh="onRefresh"></slide-verify>
       <div>{{ msg }}</div>
     </div>
     <div class="verify-backdrop"></div>

@@ -3,9 +3,9 @@
  * @Date         : 2023-07-14 18:00:13
  * @LastEditors  : jiaopengzi
  * @LastEditTime : 2023-07-14 18:18:49
- * @FilePath     : \vuestudy\src\api\user\CheckEmail.ts
+ * @FilePath     : \blog-client\src\api\user\CheckEmail.ts
  * @Description  : 邮箱查重
- * @blog: https://jiaopengzi.com
+ * @blog         : https://jiaopengzi.com
  * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 import request from '../request.ts'

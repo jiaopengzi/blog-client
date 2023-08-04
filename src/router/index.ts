@@ -2,10 +2,10 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-04 18:07:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-07-13 10:53:43
- * @FilePath     : \vuestudy\src\router\index.ts
- * @Description  :
- * @blog: https://jiaopengzi.com
+ * @LastEditTime : 2023-08-04 20:30:20
+ * @FilePath     : \blog-client\src\router\index.ts
+ * @Description  : 路由配置
+ * @blog         : https://jiaopengzi.com
  * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 import { createRouter, createWebHistory } from 'vue-router'

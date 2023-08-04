@@ -1,3 +1,14 @@
+<!--
+ * @Author       : jiaopengzi
+ * @Date         : 2023-08-04 10:54:19
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2023-08-04 20:46:51
+ * @FilePath     : \blog-client\src\components\common\pc\HeaderPCNav.vue
+ * @Description  : 头部导航 PC端
+ * @blog         : https://jiaopengzi.com
+ * Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+-->
+
 <template>
   <div class="nav">
     <ul>

@@ -2,10 +2,10 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-10 15:56:41
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-07-10 22:17:38
- * @FilePath     : \vuestudy\src\hooks\useScroll.ts
- * @Description  :
- * @blog: https://jiaopengzi.com
+ * @LastEditTime : 2023-08-04 20:48:33
+ * @FilePath     : \blog-client\src\hooks\useScroll.ts
+ * @Description  : 滚动条监听
+ * @blog         : https://jiaopengzi.com
  * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 

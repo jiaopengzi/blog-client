@@ -2,10 +2,10 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-10 16:21:21
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-07-10 21:17:10
- * @FilePath     : \vuestudy\src\hooks\useScroll.types.ts
- * @Description  :
- * @blog: https://jiaopengzi.com
+ * @LastEditTime : 2023-08-04 20:48:42
+ * @FilePath     : \blog-client\src\hooks\useScroll.types.ts
+ * @Description  : 滚动条监听 types
+ * @blog         : https://jiaopengzi.com
  * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 // useScroll.types.ts

@@ -3,9 +3,9 @@
  * @Date         : 2023-07-04 18:07:32
  * @LastEditors  : jiaopengzi
  * @LastEditTime : 2023-07-14 23:29:55
- * @FilePath     : \vuestudy\vite.config.ts
+ * @FilePath     : \blog-client\vite.config.ts
  * @Description  :
- * @blog: https://jiaopengzi.com
+ * @blog         : https://jiaopengzi.com
  * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 import { fileURLToPath, URL } from 'node:url'

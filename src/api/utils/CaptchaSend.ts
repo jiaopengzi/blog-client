@@ -3,8 +3,8 @@
  * @Date         : 2023-08-02 13:51:27
  * @LastEditors  : jiaopengzi
  * @LastEditTime : 2023-08-02 14:03:29
- * @FilePath     : \vuestudy\src\api\user\SendCaptcha.ts
- * @Description  :
+ * @FilePath     : \blog-client\src\api\user\SendCaptcha.ts
+ * @Description  : 验证码发送
  * @blog         : https://jiaopengzi.com
  * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
@@ -15,6 +15,7 @@ import type { AxiosPromise } from 'axios'
 
 export interface CaptchaSendRequest {
   email: string
+  ip: string
 }
 
 export interface CaptchaSendResponse {

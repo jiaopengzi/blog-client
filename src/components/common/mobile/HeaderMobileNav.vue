@@ -1,13 +1,14 @@
 <!--
  * @Author       : jiaopengzi
- * @Date         : 2023-07-08 15:49:07
+ * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-07-11 17:20:35
- * @FilePath     : \vuestudy\src\components\common\mobile\HeaderMobileNav.vue
- * @Description  : 
- * blog: https://jiaopengzi.com
+ * @LastEditTime : 2023-08-04 20:45:38
+ * @FilePath     : \blog-client\src\components\common\mobile\HeaderMobileNav.vue
+ * @Description  : 头部导航 移动端
+ * @blog         : https://jiaopengzi.com
  * Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
+
 <template>
   <div class="login">
     <router-link to="/login" class="link">

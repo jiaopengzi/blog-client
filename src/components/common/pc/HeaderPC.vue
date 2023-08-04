@@ -1,21 +1,18 @@
 <!--
  * @Author       : jiaopengzi
- * @Date         : 2023-07-04 22:31:44
+ * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-07-11 18:06:54
- * @FilePath     : \vuestudy\src\components\common\pc\HeaderPC.vue
- * @Description  : 
- * blog: https://jiaopengzi.com
+ * @LastEditTime : 2023-08-04 20:46:36
+ * @FilePath     : \blog-client\src\components\common\pc\HeaderPC.vue
+ * @Description  : 头部 PC端
+ * @blog         : https://jiaopengzi.com
  * Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
 
+
 <template>
   <transition name="slide-header">
-    <header
-      class="header"
-      v-if="headerVisible"
-      :style="{ height: `@height-header-pc`, width: '@width-header-pc' }"
-    >
+    <header class="header" v-if="headerVisible" :style="{ height: `@height-header-pc`, width: '@width-header-pc' }">
       <div class="header-mian">
         <div class="logo">
           <h1>

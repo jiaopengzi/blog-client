@@ -1,13 +1,14 @@
 /**
  * @Author       : jiaopengzi
- * @Date         : 2023-07-04 18:07:32
+ * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-07-16 20:20:20
- * @FilePath     : \vuestudy\src\main.ts
- * @Description  :
- * @blog: https://jiaopengzi.com
- * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @LastEditTime : 2023-08-04 20:58:30
+ * @FilePath     : \blog-client\src\main.ts
+ * @Description  : 入口文件
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
+
 import './assets/main.less'
 
 import { createApp } from 'vue'
@@ -15,7 +16,6 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
-
 
 const app = createApp(App)
 

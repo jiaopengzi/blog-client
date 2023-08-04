@@ -3,9 +3,9 @@
  * @Date         : 2023-08-02 13:38:31
  * @LastEditors  : jiaopengzi
  * @LastEditTime : 2023-08-02 14:05:34
- * @FilePath     : \vuestudy\src\api\user\CheckCaptcha.ts
- * @Description  :
- * @blog: https://jiaopengzi.com
+ * @FilePath     : \blog-client\src\api\user\CheckCaptcha.ts
+ * @Description  : 验证码校验
+ * @blog         : https://jiaopengzi.com
  * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
@@ -14,6 +14,7 @@ import { routerGroup } from '../routerGroup.ts'
 import type { AxiosPromise } from 'axios'
 
 export interface CaptchaCheckRequest {
+  email: string
   captcha: string
 }
 
