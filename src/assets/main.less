@@ -1,0 +1,62 @@
+/* @import './base.css'; */
+@import 'reset-css';
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  overflow: auto;
+  height: 100%;
+  background-color: @background-color;
+}
+
+#app {
+  max-width: @width-page-pc;
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+a {
+  text-decoration: none;
+  color: #333;
+  transition: 0.4s;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: @background-color-hover;
+    /* 字体变大5% */
+    font-size: 105%;
+  }
+}
+
+@media (min-width: @width-page-main-pc) {
+  body {
+    display: flex;
+    place-items: center;
+  }
+}
+
+/* =====================================全局设置层级 开始 */
+footer {
+  z-index: 990;
+}
+
+header {
+  z-index: 999;
+}
+
+/* 侧边栏透明遮罩 */
+.nav-backdrop {
+  z-index: 997;
+}
+
+/* 侧边导航栏*/
+.side-nav {
+  z-index: 998;
+}
+
+/* =====================================全局设置层级 结束 */

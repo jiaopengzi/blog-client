@@ -1,0 +1,233 @@
+{
+  "id": "4152487",
+  "name": "jiaopengi-vue",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "vue 重写项目",
+  "glyphs": [
+    {
+      "icon_id": "257406",
+      "name": "close",
+      "font_class": "close",
+      "unicode": "e6a7",
+      "unicode_decimal": 59047
+    },
+    {
+      "icon_id": "809681",
+      "name": "menu",
+      "font_class": "menu",
+      "unicode": "e67e",
+      "unicode_decimal": 59006
+    },
+    {
+      "icon_id": "12773683",
+      "name": "f-vip2",
+      "font_class": "vip-red",
+      "unicode": "e76b",
+      "unicode_decimal": 59243
+    },
+    {
+      "icon_id": "6151301",
+      "name": "search",
+      "font_class": "search",
+      "unicode": "e82e",
+      "unicode_decimal": 59438
+    },
+    {
+      "icon_id": "11125633",
+      "name": "文章",
+      "font_class": "article",
+      "unicode": "e625",
+      "unicode_decimal": 58917
+    },
+    {
+      "icon_id": "12939977",
+      "name": "源数据分析",
+      "font_class": "database",
+      "unicode": "e644",
+      "unicode_decimal": 58948
+    },
+    {
+      "icon_id": "9940266",
+      "name": "money",
+      "font_class": "money",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "847442",
+      "name": "模型",
+      "font_class": "model",
+      "unicode": "e6f0",
+      "unicode_decimal": 59120
+    },
+    {
+      "icon_id": "982596",
+      "name": "图表",
+      "font_class": "chart",
+      "unicode": "e670",
+      "unicode_decimal": 58992
+    },
+    {
+      "icon_id": "1766248",
+      "name": "图表-表格",
+      "font_class": "table",
+      "unicode": "e66d",
+      "unicode_decimal": 58989
+    },
+    {
+      "icon_id": "2530938",
+      "name": "bill",
+      "font_class": "bill",
+      "unicode": "e7e3",
+      "unicode_decimal": 59363
+    },
+    {
+      "icon_id": "2685383",
+      "name": "PC-Excel",
+      "font_class": "excel",
+      "unicode": "e665",
+      "unicode_decimal": 58981
+    },
+    {
+      "icon_id": "3878658",
+      "name": "数据",
+      "font_class": "data",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "10593820",
+      "name": "名片,角色,用户信息,岗位维护_jurassic",
+      "font_class": "user",
+      "unicode": "e6a1",
+      "unicode_decimal": 59041
+    },
+    {
+      "icon_id": "2741464",
+      "name": "成功案例",
+      "font_class": "demo",
+      "unicode": "e632",
+      "unicode_decimal": 58930
+    },
+    {
+      "icon_id": "8852773",
+      "name": "VIP",
+      "font_class": "vip",
+      "unicode": "e631",
+      "unicode_decimal": 58929
+    },
+    {
+      "icon_id": "356493",
+      "name": "注册",
+      "font_class": "register",
+      "unicode": "e63e",
+      "unicode_decimal": 58942
+    },
+    {
+      "icon_id": "7516882",
+      "name": "登录用户",
+      "font_class": "login",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "1115036",
+      "name": "福利",
+      "font_class": "welfare",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "1048880",
+      "name": "已关注",
+      "font_class": "follow",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "3216908",
+      "name": "随机练习",
+      "font_class": "random",
+      "unicode": "e67a",
+      "unicode_decimal": 59002
+    },
+    {
+      "icon_id": "16872876",
+      "name": "数据统计",
+      "font_class": "overview",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "23191183",
+      "name": "归档",
+      "font_class": "archive",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    },
+    {
+      "icon_id": "24916807",
+      "name": "标签1",
+      "font_class": "label",
+      "unicode": "e71f",
+      "unicode_decimal": 59167
+    },
+    {
+      "icon_id": "7685175",
+      "name": "office365",
+      "font_class": "office",
+      "unicode": "e712",
+      "unicode_decimal": 59154
+    },
+    {
+      "icon_id": "538875",
+      "name": "视频TAG",
+      "font_class": "video",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "11763740",
+      "name": "重点监管标签_fill",
+      "font_class": "favorite",
+      "unicode": "e732",
+      "unicode_decimal": 59186
+    },
+    {
+      "icon_id": "724352",
+      "name": "工具",
+      "font_class": "tool",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    },
+    {
+      "icon_id": "11372649",
+      "name": "测试",
+      "font_class": "test",
+      "unicode": "e8ad",
+      "unicode_decimal": 59565
+    },
+    {
+      "icon_id": "1013765",
+      "name": "doc文件",
+      "font_class": "doc",
+      "unicode": "e753",
+      "unicode_decimal": 59219
+    },
+    {
+      "icon_id": "2529630",
+      "name": "最新new",
+      "font_class": "new",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "11372790",
+      "name": "热门",
+      "font_class": "hot",
+      "unicode": "e8c9",
+      "unicode_decimal": 59593
+    }
+  ]
+}
