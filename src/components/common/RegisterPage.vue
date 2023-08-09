@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-04 23:19:38
+ * @LastEditTime : 2023-08-09 21:12:57
  * @FilePath     : \blog-client\src\components\common\RegisterPage.vue
  * @Description  : 注册页面 移动端 和 PC 端
  * @Blog         : https://jiaopengzi.com
@@ -182,13 +182,16 @@ async function sendCaptcha(): Promise<void> {
     const resStr: string = JSON.stringify(res) // 将 res 转换字符串
     const resObj: CaptchaSendResponse = JSON.parse(resStr) // 将 resStr 转换为对象
 
-    if (resObj.code !== 8000) {
+    if (resObj.code !== 8000 && resObj.data !== null) {
       // 历遍 data 中的错误信息 并抛出第一个key错误信息 停止循环
       for (const key in resObj.data) {
         if (Object.prototype.hasOwnProperty.call(resObj.data, key)) {
-          throw new Error(resObj.data[key]) // 抛出错误信息
+          throw new Error(resObj.data[key]) // 抛出错误信息 
         }
       }
+    }
+    if (resObj.code !== 8000 && resObj.data === null) {
+      throw new Error(resObj.msg) // 抛出错误信息 
     }
   } catch (err: unknown) {
     console.log(err)
@@ -456,7 +459,7 @@ const sendEmailCode = () => {
     })
 
   // 按钮设置不能点击状态
-  let timer = 60
+  let timer = 5
   captcha.value = `${timer}s后重新发送`
   const interval = setInterval(() => {
     timer--
