@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-13 14:52:34
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-07-14 22:23:55
+ * @LastEditTime : 2023-08-11 19:41:10
  * @FilePath     : \blog-client\src\components\common\index.ts
  * @Description  : 通用组件导出
  * @blog         : https://jiaopengzi.com
@@ -27,9 +27,7 @@ const footerComponent = isMobileDevice
   : defineAsyncComponent(() => import('@/components/common/pc/FooterPC.vue'))
 
 // 登录
-const loginComponent = isMobileDevice
-  ? defineAsyncComponent(() => import('@/components/common/mobile/LoginMobile.vue'))
-  : defineAsyncComponent(() => import('@/components/common/pc/LoginPC.vue'))
+const loginComponent = defineAsyncComponent(() => import('@/components/common/LoginPage.vue'))
 
 // 注册
 const registerComponent = defineAsyncComponent(() => import('@/components/common/RegisterPage.vue'))

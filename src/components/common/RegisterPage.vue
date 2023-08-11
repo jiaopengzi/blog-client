@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-09 21:12:57
+ * @LastEditTime : 2023-08-11 19:34:14
  * @FilePath     : \blog-client\src\components\common\RegisterPage.vue
  * @Description  : 注册页面 移动端 和 PC 端
  * @Blog         : https://jiaopengzi.com
@@ -94,10 +94,13 @@ import { captchaSendByJosn } from '@/api/utils/CaptchaSend.ts'
 
 import { getPublicIp } from '@/utils/IP.ts'
 
-import type { CaptchaCheckRequest, CaptchaCheckResponse } from '@/api/utils/CaptchaCheck.ts'
+import type { CaptchaCheckRequest } from '@/api/utils/CaptchaCheck.ts'
 import { captchaCheckByJosn } from '@/api/utils/CaptchaCheck.ts'
 
+import { ResponseCode } from '@/api/responseCode.ts'
+
 import { encryptData } from '@/utils/Encrypt.ts'
+import router from '@/router/index.ts'
 
 interface RegisterForm {
   userName: string
@@ -120,13 +123,20 @@ const registerFormRef = ref<FormInstance>()
 
 // 表单数据
 const registerForm = reactive<RegisterForm>({
-  userName: 'jiaopengzi',
-  email: 'jiaopengzi@qq.com',
-  captcha: '123456',
-  emailCode: '123456',
-  password: '123QWEasd',
-  rePassword: '123QWEasd',
+  userName: '',
+  email: '',
+  captcha: '',
+  emailCode: '',
+  password: '',
+  rePassword: '',
   acceptedTerms: [],
+  // userName: 'jiaopengzi',
+  // email: 'jiaopengzi@qq.com',
+  // captcha: '123456',
+  // emailCode: '123456',
+  // password: '123QWEasd',
+  // rePassword: '123QWEasd',
+  // acceptedTerms: [],
 })
 
 /**
@@ -182,7 +192,7 @@ async function sendCaptcha(): Promise<void> {
     const resStr: string = JSON.stringify(res) // 将 res 转换字符串
     const resObj: CaptchaSendResponse = JSON.parse(resStr) // 将 resStr 转换为对象
 
-    if (resObj.code !== 8000 && resObj.data !== null) {
+    if (resObj.code !== ResponseCode.CaptchaSendSuccess && resObj.data !== null) {
       // 历遍 data 中的错误信息 并抛出第一个key错误信息 停止循环
       for (const key in resObj.data) {
         if (Object.prototype.hasOwnProperty.call(resObj.data, key)) {
@@ -190,7 +200,7 @@ async function sendCaptcha(): Promise<void> {
         }
       }
     }
-    if (resObj.code !== 8000 && resObj.data === null) {
+    if (resObj.code !== ResponseCode.CaptchaSendSuccess && resObj.data === null) {
       throw new Error(resObj.msg) // 抛出错误信息 
     }
   } catch (err: unknown) {
@@ -216,7 +226,7 @@ async function checkUserName(): Promise<void> {
     const resStr: string = JSON.stringify(res) // 将 res 转换字符串
     const resObj: CheckUserNameResponse = JSON.parse(resStr) // 将 resStr 转换为对象
 
-    if (resObj.code === 1001) {
+    if (resObj.code === ResponseCode.UserNameExist) {
       throw new Error(resObj.msg)
     }
   } catch (err: unknown) {
@@ -267,7 +277,7 @@ async function checkEmail(): Promise<void> {
     // 将 resStr 转换为对象
     const resObj: CheckEmailResponse = JSON.parse(resStr)
 
-    if (resObj.code === 1002) {
+    if (resObj.code === ResponseCode.UserEmailExist) {
       throw new Error(resObj.msg)
     }
   } catch (err: unknown) {
@@ -310,7 +320,7 @@ async function checkCaptcha(): Promise<void> {
     const resStr: string = JSON.stringify(res) // 将 res 转换字符串
     const resObj: CaptchaSendResponse = JSON.parse(resStr) // 将 resStr 转换为对象
 
-    if (resObj.code !== 8002) {
+    if (resObj.code !== ResponseCode.CaptchaCheckSuccess) {
       throw new Error(resObj.msg)
     }
   } catch (err: unknown) {
@@ -385,7 +395,7 @@ const rules = reactive<FormRules<RegisterForm>>({
  */
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
-  await formEl.validate(async (valid, fields) => {
+  await formEl.validate(async (valid) => {
     if (valid) {
       // 创建请求对象 加密内容
       const req: RegisterRequest = {
@@ -394,23 +404,20 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         re_password: registerForm.rePassword,
         email: registerForm.email,
       }
-      // 将请求对象 req 转换为字符串 并加密内容
-      const requestData: string = encryptData(JSON.stringify(req))
 
-      // 发送请求，并返回Promise
-      const res: AxiosResponse<RegisterResponse> = await RegisterByJosn(requestData)
+      const requestData: string = encryptData(JSON.stringify(req))// 将请求对象 req 转换为字符串 并加密内容
+      const res: AxiosResponse<RegisterResponse> = await RegisterByJosn(requestData)// 发送请求，并返回Promise
+      const resStr: string = JSON.stringify(res)// 将 res 转换字符串
+      const resObj: RegisterResponse = JSON.parse(resStr)// 将 resStr 转换为对象
 
-      // 将 res 转换字符串
-      const resStr: string = JSON.stringify(res)
-
-      // 将 resStr 转换为对象
-      const resObj: RegisterResponse = JSON.parse(resStr)
-
-      if (resObj.code === 1000) {
+      if (resObj.code === ResponseCode.UserRegisterSuccess) {
         // 显示注册成功提示
         ShowMsgTip(MsgType.success, resObj.msg, 6000)
 
         // 跳转到登录页面
+        setTimeout(() => {
+          router.push({ name: 'login' })
+        }, 6000)
       } else {
         // 注册失败
         // console.log("注册失败");
@@ -430,48 +437,62 @@ const resetForm = (formEl: FormInstance | undefined) => {
 // 添加 showSlideVerify 响应式变量
 const showSlideVerify = ref(false)
 
-// 关闭滑块验证
+
+// 显示滑块验证
 const openSlideVerify = () => {
+
   // 显示滑块验证
   console.log('打开滑块验证')
   showSlideVerify.value = true
 }
 
+
 const captcha = ref('发送验证码')
 const btnCaptchaState = reactive({ disabled: false })
 
+
+
 // 发送邮箱验证码
-const sendEmailCode = () => {
-  console.log('发送邮箱验证码')
+
+const sendEmailCode = async () => {
   // 关闭滑块验证
   showSlideVerify.value = false
-  btnCaptchaState.disabled = true // 禁用按钮
 
-  // 发送验证码
-  sendCaptcha()
-    .then(() => {
-      // 成功发送验证码
-      ShowMsgTip(MsgType.success, '验证码已发送到邮箱。', 6000)
-    })
-    .catch((err: Error) => {
-      // 错误提示
-      ShowMsgTip(MsgType.error, err.message, 0)
-    })
+  // 手动触发 FormInstance 的校验，校验 userName 和 email 字段
+  const userName = await registerFormRef.value?.validateField('userName')
+  const email = await registerFormRef.value?.validateField('email')
 
-  // 按钮设置不能点击状态
-  let timer = 5
-  captcha.value = `${timer}s后重新发送`
-  const interval = setInterval(() => {
-    timer--
-    if (timer === 0) {
-      clearInterval(interval)
-      captcha.value = '发送验证码'
-      btnCaptchaState.disabled = false // 启用按钮
-    } else {
-      captcha.value = `${timer}s后重新发送`
-    }
-  }, 1000)
+  if (userName && email) {
+
+    btnCaptchaState.disabled = true // 按钮设置不能点击状态
+
+    // 发送验证码
+    sendCaptcha()
+      .then(() => {
+        // 成功发送验证码
+        ShowMsgTip(MsgType.success, '验证码已发送到邮箱。', 6000)
+      })
+      .catch((err: Error) => {
+        // 错误提示
+        ShowMsgTip(MsgType.error, err.message, 0)
+      })
+
+    // 按钮设置不能点击状态
+    let timer = 5
+    captcha.value = `${timer}s后重新发送`
+    const interval = setInterval(() => {
+      timer--
+      if (timer === 0) {
+        clearInterval(interval)
+        captcha.value = '发送验证码'
+        btnCaptchaState.disabled = false // 启用按钮
+      } else {
+        captcha.value = `${timer}s后重新发送`
+      }
+    }, 1000)
+  }
 }
+
 
 // 关闭滑块验证
 const closeSlideVerify = () => {

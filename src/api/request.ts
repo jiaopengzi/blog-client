@@ -1,13 +1,14 @@
 /**
  * @Author       : jiaopengzi
- * @Date         : 2023-07-13 15:46:47
+ * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-07-13 15:46:51
+ * @LastEditTime : 2023-08-11 16:53:24
  * @FilePath     : \blog-client\src\api\request.ts
  * @Description  : axios封装
- * @blog         : https://jiaopengzi.com
- * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
+
 import axios from 'axios'
 
 //1. 创建axios对象
