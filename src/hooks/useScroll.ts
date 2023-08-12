@@ -1,12 +1,12 @@
 /**
  * @Author       : jiaopengzi
- * @Date         : 2023-07-10 15:56:41
+ * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-04 20:48:33
+ * @LastEditTime : 2023-08-12 10:51:34
  * @FilePath     : \blog-client\src\hooks\useScroll.ts
  * @Description  : 滚动条监听
- * @blog         : https://jiaopengzi.com
- * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
 // useScroll.ts
@@ -37,7 +37,7 @@ export function useScroll(handler: ScrollHandler) {
   }
 
   onMounted(() => {
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
   })
 
   onUnmounted(() => {

@@ -1,13 +1,14 @@
 <!--
  * @Author       : jiaopengzi
- * @Date         : 2023-07-11 21:12:11
+ * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-04 20:32:32
+ * @LastEditTime : 2023-08-12 10:58:14
  * @FilePath     : \blog-client\src\components\common\SlideVerify.vue
  * @Description  : 滑块验证
- * @blog         : https://jiaopengzi.com
- * Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
+
 <template>
   <div calss="page">
     <!-- @touchmove.prevent.stop 阻止触摸事件传播并阻止默认行为。确保滑动验证码不会导致页面滑动。 -->
@@ -46,7 +47,7 @@ const emit = defineEmits<{
 
 // 重新验证
 const onAgain = () => {
-  msg.value = '检测到非人为操作的哦！ 请再试一次吧~'
+  msg.value = '请再试一次吧~'
   // 刷新
   block.value?.refresh()
 }

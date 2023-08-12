@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-04 20:45:54
+ * @LastEditTime : 2023-08-12 19:51:03
  * @FilePath     : \blog-client\src\components\common\pc\ContentPC.vue
  * @Description  : 内容页 PC端
  * @blog         : https://jiaopengzi.com
@@ -20,68 +20,101 @@
       </el-breadcrumb>
     </div>
     <div>内容页站位PC</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
+    <div>内容页站位PC</div>
     <div>内容页站位PC</div>
     <div>内容页站位手机</div>
     <div>内容页站位手机</div>
@@ -90,61 +123,7 @@
     <div>内容页站位手机</div>
     <div>内容页站位手机</div>
     <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
-    <div>内容页站位手机</div>
+
   </div>
 </template>
 <script setup lang="ts">

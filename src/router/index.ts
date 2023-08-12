@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-04 18:07:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-04 20:30:20
+ * @LastEditTime : 2023-08-12 18:03:51
  * @FilePath     : \blog-client\src\router\index.ts
  * @Description  : 路由配置
  * @blog         : https://jiaopengzi.com
@@ -10,7 +10,11 @@
  */
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
-import { loginComponent, registerComponent } from '@/components/common/index.ts'
+import {
+  resetPasswordComponent,
+  loginComponent,
+  registerComponent,
+} from '@/components/common/index.ts'
 
 // 创建路由实例
 const router = createRouter({
@@ -30,6 +34,11 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: registerComponent,
+    },
+    {
+      path: '/reset-password',
+      name: 'reset-password',
+      component: resetPasswordComponent,
     },
   ],
 })

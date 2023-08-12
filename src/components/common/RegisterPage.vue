@@ -2,26 +2,27 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-11 19:34:14
+ * @LastEditTime : 2023-08-12 18:33:07
  * @FilePath     : \blog-client\src\components\common\RegisterPage.vue
- * @Description  : 注册页面 移动端 和 PC 端
+ * @Description  : 注册
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
 
-
 <template>
   <!-- 添加滑动验证组件：SlideVerify -->
 
-  <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="sendEmailCode"></SlideVerify>
+  <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="sendcaptcha"></SlideVerify>
   <el-form :label-position="labelPosition" label-width="100px" ref="registerFormRef" :model="registerForm" :rules="rules"
     class="register-form" :size="formSize" status-icon>
     <div class="header-main">
-      <div class="logo">
-        <h2>
-          <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" alt="/" />
-        </h2>
-      </div>
+      <a href="/">
+        <div class="logo">
+          <h2>
+            <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" alt="/" />
+          </h2>
+        </div>
+      </a>
       <h2>账号注册</h2>
     </div>
     <el-form-item label="用户名" prop="userName">
@@ -32,8 +33,8 @@
       <el-input v-model="registerForm.email" />
     </el-form-item>
 
-    <el-form-item label="验证码" prop="emailCode">
-      <el-input class="email-code" v-model="registerForm.emailCode" />
+    <el-form-item label="验证码" prop="captcha">
+      <el-input class="email-code" v-model="registerForm.captcha" />
       <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="btnCaptchaState.disabled">
         {{ captcha }}
       </button>
@@ -60,11 +61,11 @@
     </div>
     <div class="go-home">
       <router-link to="/" class="link">
-        <SPan>首页</SPan>
+        <span>首页</span>
       </router-link>
-      <SPan> | </SPan>
+      <span> | </span>
       <router-link to="/login" class="link">
-        <SPan>登录</SPan>
+        <span>登录</span>
       </router-link>
     </div>
   </el-form>
@@ -80,8 +81,8 @@ import { MsgType } from '@/components/common/index.ts'
 
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 
-import type { CheckUserNameRequest, CheckUserNameResponse } from '@/api/user/CheckUserNme.ts'
-import { checkUserNameByJosn } from '@/api/user/CheckUserNme.ts'
+import type { CheckUserNameRequest, CheckUserNameResponse } from '@/api/user/CheckUserName.ts'
+import { checkUserNameByJosn } from '@/api/user/CheckUserName.ts'
 
 import type { CheckEmailRequest, CheckEmailResponse } from '@/api/user/CheckEmail.ts'
 import { CheckEmailByJosn } from '@/api/user/CheckEmail.ts'
@@ -106,7 +107,6 @@ interface RegisterForm {
   userName: string
   email: string
   captcha: string
-  emailCode: string
   password: string
   rePassword: string
   acceptedTerms: string[]
@@ -123,20 +123,18 @@ const registerFormRef = ref<FormInstance>()
 
 // 表单数据
 const registerForm = reactive<RegisterForm>({
-  userName: '',
-  email: '',
-  captcha: '',
-  emailCode: '',
-  password: '',
-  rePassword: '',
-  acceptedTerms: [],
-  // userName: 'jiaopengzi',
-  // email: 'jiaopengzi@qq.com',
-  // captcha: '123456',
-  // emailCode: '123456',
-  // password: '123QWEasd',
-  // rePassword: '123QWEasd',
+  // userName: '',
+  // email: '',
+  // captcha: '',
+  // password: '',
+  // rePassword: '',
   // acceptedTerms: [],
+  userName: 'jiaopengzi',
+  email: 'jiaopengzi@qq.com',
+  captcha: '123456',
+  password: '123QWEasd',
+  rePassword: '123QWEasd',
+  acceptedTerms: [],
 })
 
 /**
@@ -168,7 +166,7 @@ function rePasswordValidator(
   // 在这里处理异步验证逻辑
   checkRePassword()
     .then(() => {
-      callback() // 如果成功，没有错误，则调用回调函数
+      callback() // 校验成功
     })
     .catch((err: Error) => {
       callback(err.message)
@@ -179,7 +177,7 @@ function rePasswordValidator(
  * @description: 验证码发送 异步函数
  * @return Promise<void> 验证码错误返回 Promise.reject()，否则返回 Promise.resolve()
  */
-async function sendCaptcha(): Promise<void> {
+async function checkSendCaptcha(): Promise<void> {
   try {
     // 创建请求对象 加密内容
     const req: CaptchaSendRequest = {
@@ -249,7 +247,7 @@ function checkUserNameValidator(
   // 在这里处理异步验证逻辑
   checkUserName()
     .then(() => {
-      callback() // 如果成功，没有错误，则调用回调函数
+      callback() // 校验成功
     })
     .catch((err: Error) => {
       callback(err.message) // 如果失败（用户名已经存在），则传入错误提示字符串
@@ -300,7 +298,7 @@ function checkEmailValidator(
   // 在这里处理异步验证逻辑
   checkEmail()
     .then(() => {
-      callback() // 如果成功，没有错误，则调用回调函数
+      callback() // 校验成功
     })
     .catch((err: Error) => {
       callback(err.message) // 如果失败（邮箱已经存在），则传入错误提示字符串
@@ -313,7 +311,7 @@ async function checkCaptcha(): Promise<void> {
     // 创建请求对象 加密内容
     const req: CaptchaCheckRequest = {
       email: registerForm.email,
-      captcha: registerForm.emailCode,
+      captcha: registerForm.captcha,
     }
     const requestData: string = encryptData(JSON.stringify(req)) // 将请求对象 req 转换为字符串 并加密内容
     const res: AxiosResponse = await captchaCheckByJosn(requestData) // 发送请求，并返回Promise
@@ -337,7 +335,7 @@ function checkCaptchaValidator(
   // 在这里处理异步验证逻辑
   checkCaptcha()
     .then(() => {
-      callback() // 如果成功，没有错误，则调用回调函数
+      callback() // 校验成功
     })
     .catch((err: Error) => {
       callback(err.message) // 如果失败（用户名已经存在），则传入错误提示字符串
@@ -365,7 +363,7 @@ const rules = reactive<FormRules<RegisterForm>>({
     // 邮箱查重
     { validator: checkEmailValidator, trigger: 'blur' },
   ],
-  emailCode: [
+  captcha: [
     { required: true, message: '请输入验证码', trigger: 'blur' },
     { pattern: /^\d{6}$/, message: '验证码为6位的数字', trigger: 'blur' },
     { validator: checkCaptchaValidator, trigger: 'blur' },
@@ -416,8 +414,8 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
         // 跳转到登录页面
         setTimeout(() => {
-          router.push({ name: 'login' })
-        }, 6000)
+          router.push({ name: 'login' });
+        }, 3000);
       } else {
         // 注册失败
         // console.log("注册失败");
@@ -437,7 +435,6 @@ const resetForm = (formEl: FormInstance | undefined) => {
 // 添加 showSlideVerify 响应式变量
 const showSlideVerify = ref(false)
 
-
 // 显示滑块验证
 const openSlideVerify = () => {
 
@@ -446,28 +443,35 @@ const openSlideVerify = () => {
   showSlideVerify.value = true
 }
 
-
 const captcha = ref('发送验证码')
 const btnCaptchaState = reactive({ disabled: false })
 
-
-
 // 发送邮箱验证码
 
-const sendEmailCode = async () => {
+const sendcaptcha = async () => {
   // 关闭滑块验证
   showSlideVerify.value = false
 
   // 手动触发 FormInstance 的校验，校验 userName 和 email 字段
-  const userName = await registerFormRef.value?.validateField('userName')
-  const email = await registerFormRef.value?.validateField('email')
+  const userNameResult = await registerFormRef.value?.validateField('userName').catch(() => false)
+  if (!userNameResult) {
+    ShowMsgTip(MsgType.error, '请输入正确的用户名。', 0)
+    return
+  }
 
-  if (userName && email) {
+  const emailResult = await registerFormRef.value?.validateField('email').catch(() => false)
+  if (!emailResult) {
+    ShowMsgTip(MsgType.error, '请输入正确的邮箱地址。', 0)
+    console.log('请输入邮箱')
+    return
+  }
+
+  if (userNameResult && emailResult) {
 
     btnCaptchaState.disabled = true // 按钮设置不能点击状态
 
     // 发送验证码
-    sendCaptcha()
+    checkSendCaptcha()
       .then(() => {
         // 成功发送验证码
         ShowMsgTip(MsgType.success, '验证码已发送到邮箱。', 6000)
@@ -563,7 +567,11 @@ h2 {
 a {
   color: #409eff;
   /* 展示下划线 */
-  text-decoration: underline;
+  // text-decoration: underline;
+}
+
+.go-home span {
+  color: #aaa;
 }
 
 .btn-submit {
@@ -575,3 +583,4 @@ a {
 }
 </style>
 @/utils/Encrypt
+@/api/user/CheckUserName@/api/user/CheckUserName

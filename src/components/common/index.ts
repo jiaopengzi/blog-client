@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-13 14:52:34
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-11 19:41:10
+ * @LastEditTime : 2023-08-12 18:03:19
  * @FilePath     : \blog-client\src\components\common\index.ts
  * @Description  : 通用组件导出
  * @blog         : https://jiaopengzi.com
@@ -27,18 +27,28 @@ const footerComponent = isMobileDevice
   : defineAsyncComponent(() => import('@/components/common/pc/FooterPC.vue'))
 
 // 登录
-const loginComponent = defineAsyncComponent(() => import('@/components/common/LoginPage.vue'))
+const loginComponent = () => import('@/components/common/LoginPage.vue')
 
 // 注册
-const registerComponent = defineAsyncComponent(() => import('@/components/common/RegisterPage.vue'))
+const registerComponent = () => import('@/components/common/RegisterPage.vue')
+
+// 忘记密码
+const resetPasswordComponent = () => import('@/components/common/ResetPassword.vue')
 
 // 内容页
 const contentComponent = isMobileDevice
   ? defineAsyncComponent(() => import('@/components/common/mobile/ContentMobile.vue'))
   : defineAsyncComponent(() => import('@/components/common/pc/ContentPC.vue'))
 
-// 导出 loginComponent 和 registerComponent
-export { headerComponent, footerComponent, loginComponent, registerComponent, contentComponent }
+// 导出
+export {
+  headerComponent,
+  footerComponent,
+  loginComponent,
+  registerComponent,
+  resetPasswordComponent,
+  contentComponent,
+}
 
 // 枚举 alert 弹窗 element 组件类型
 export enum MsgType {

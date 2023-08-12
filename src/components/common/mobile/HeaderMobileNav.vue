@@ -49,7 +49,7 @@
       <li>
         <router-link to="/vip" class="link">
           <span class="iconfont icon-vip-red icon-red"></span>
-          <SPan class="titile">加入VIP</SPan>
+          <span class="titile">加入VIP</span>
         </router-link>
       </li>
     </ul>
