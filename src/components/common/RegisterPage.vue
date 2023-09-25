@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-12 18:33:07
+ * @LastEditTime : 2023-09-25 16:32:50
  * @FilePath     : \blog-client\src\components\common\RegisterPage.vue
  * @Description  : 注册
  * @Blog         : https://jiaopengzi.com
@@ -185,7 +185,8 @@ async function checkSendCaptcha(): Promise<void> {
       ip: await getPublicIp(),
     }
     console.log("==========>发送验证码")
-    const requestData: string = encryptData(JSON.stringify(req)) // 将请求对象 req 转换为字符串 并加密内容
+    // const requestData: string = encryptData(JSON.stringify(req)) // 将请求对象 req 转换为字符串 并加密内容
+    const requestData: string = JSON.stringify(req) // 将请求对象 req 转换为字符串
     const res: AxiosResponse = await captchaSendByJosn(requestData) // 发送请求，并返回Promise
     const resStr: string = JSON.stringify(res) // 将 res 转换字符串
     const resObj: CaptchaSendResponse = JSON.parse(resStr) // 将 resStr 转换为对象
@@ -219,7 +220,8 @@ async function checkUserName(): Promise<void> {
       user_name: registerForm.userName,
     }
 
-    const requestData: string = encryptData(JSON.stringify(req)) // 将请求对象 req 转换为字符串 并加密内容
+    // const requestData: string = encryptData(JSON.stringify(req)) // 将请求对象 req 转换为字符串 并加密内容
+    const requestData: string = JSON.stringify(req) // 将请求对象 req 转换为字符串
     const res: AxiosResponse = await checkUserNameByJosn(requestData) // 发送请求，并返回Promise
     const resStr: string = JSON.stringify(res) // 将 res 转换字符串
     const resObj: CheckUserNameResponse = JSON.parse(resStr) // 将 resStr 转换为对象
@@ -263,8 +265,9 @@ async function checkEmail(): Promise<void> {
   const req: CheckEmailRequest = {
     email: registerForm.email,
   }
-  // 将请求对象 req 转换为字符串 并加密内容
-  const requestData: string = encryptData(JSON.stringify(req))
+
+  // const requestData: string = encryptData(JSON.stringify(req))// 将请求对象 req 转换为字符串 并加密内容
+  const requestData: string = JSON.stringify(req)// 将请求对象 req 转换为字符串 
 
   try {
     // 发送请求，并返回Promise
@@ -313,7 +316,8 @@ async function checkCaptcha(): Promise<void> {
       email: registerForm.email,
       captcha: registerForm.captcha,
     }
-    const requestData: string = encryptData(JSON.stringify(req)) // 将请求对象 req 转换为字符串 并加密内容
+    // const requestData: string = encryptData(JSON.stringify(req)) // 将请求对象 req 转换为字符串 并加密内容
+    const requestData: string = JSON.stringify(req)// 将请求对象 req 转换为字符串
     const res: AxiosResponse = await captchaCheckByJosn(requestData) // 发送请求，并返回Promise
     const resStr: string = JSON.stringify(res) // 将 res 转换字符串
     const resObj: CaptchaSendResponse = JSON.parse(resStr) // 将 resStr 转换为对象
@@ -403,7 +407,8 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         email: registerForm.email,
       }
 
-      const requestData: string = encryptData(JSON.stringify(req))// 将请求对象 req 转换为字符串 并加密内容
+      // const requestData: string = encryptData(JSON.stringify(req))// 将请求对象 req 转换为字符串 并加密内容
+      const requestData: string = JSON.stringify(req)// 将请求对象 req 转换为字符串
       const res: AxiosResponse<RegisterResponse> = await RegisterByJosn(requestData)// 发送请求，并返回Promise
       const resStr: string = JSON.stringify(res)// 将 res 转换字符串
       const resObj: RegisterResponse = JSON.parse(resStr)// 将 resStr 转换为对象

@@ -35,7 +35,6 @@ declare module 'vue' {
     Messege: typeof import('./src/components/common/messege.vue')['default']
     Register: typeof import('./src/components/common/Register.vue')['default']
     RegisterPage: typeof import('./src/components/common/RegisterPage.vue')['default']
-    'RegisterPage copy': typeof import('./src/components/common/RegisterPage copy.vue')['default']
     ResetPassword: typeof import('./src/components/common/ResetPassword.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
