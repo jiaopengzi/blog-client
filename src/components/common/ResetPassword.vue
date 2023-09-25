@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-12 12:13:47
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-12 18:05:41
+ * @LastEditTime : 2023-09-25 22:08:37
  * @FilePath     : \blog-client\src\components\common\ResetPassword.vue
  * @Description  : 重置密码
  * @Blog         : https://jiaopengzi.com
@@ -112,8 +112,8 @@ const fogetPasswordFormRef = ref<FormInstance>()
 const fogetPasswordForm = reactive<ResetPasswordForm>({
   email: 'jiaopengzi@qq.com',
   captcha: '123456',
-  password: '123QWEasd',
-  rePassword: '123QWEasd',
+  password: '123QWEasd123',
+  rePassword: '123QWEasd123',
 })
 
 /**
