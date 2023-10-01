@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-12 12:38:12
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-12 18:02:42
+ * @LastEditTime : 2023-10-01 14:01:08
  * @FilePath     : \blog-client\src\api\user\ResetPassword.ts
  * @Description  : 忘记密码
  * @Blog         : https://jiaopengzi.com
@@ -14,6 +14,7 @@ import { routerGroup } from '../routerGroup.ts'
 import type { AxiosPromise } from 'axios'
 
 export interface ResetPasswordRequest {
+  captcha: string
   email: string
   password: string
   re_password: string

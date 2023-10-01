@@ -87,7 +87,7 @@ import { getPublicIp } from '@/utils/IP.ts'
 import type { CaptchaCheckRequest } from '@/api/utils/CaptchaCheck.ts'
 import { captchaCheckByJosn } from '@/api/utils/CaptchaCheck.ts'
 
-import { ResponseCode } from '@/api/responseCode.ts'
+import { ResponseCode, CaptchaPurpose } from '@/api/responseCode.ts'
 
 import { encryptData } from '@/utils/Encrypt.ts'
 import router from '@/router/index.ts'
@@ -162,6 +162,7 @@ async function checkSendCaptcha(): Promise<void> {
     const req: CaptchaSendRequest = {
       email: fogetPasswordForm.email,
       ip: await getPublicIp(),
+      purpose: CaptchaPurpose.ResetPassword,
     }
     console.log("==========>发送验证码")
     // const requestData: string = encryptData(JSON.stringify(req)) // 将请求对象 req 转换为字符串 并加密内容
@@ -246,6 +247,7 @@ async function checkCaptcha(): Promise<void> {
     const req: CaptchaCheckRequest = {
       email: fogetPasswordForm.email,
       captcha: fogetPasswordForm.captcha,
+      purpose: CaptchaPurpose.ResetPassword,
     }
     // const requestData: string = encryptData(JSON.stringify(req)) // 将请求对象 req 转换为字符串 并加密内容
     const requestData: string = JSON.stringify(req) // 将请求对象 req 转换为字符串
@@ -322,6 +324,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     if (valid) {
       // 创建请求对象 加密内容
       const req: ResetPasswordRequest = {
+        captcha: fogetPasswordForm.captcha,
         password: fogetPasswordForm.password,
         re_password: fogetPasswordForm.rePassword,
         email: fogetPasswordForm.email,

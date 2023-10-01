@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-09-25 16:32:50
+ * @LastEditTime : 2023-10-01 14:16:51
  * @FilePath     : \blog-client\src\components\common\RegisterPage.vue
  * @Description  : 注册
  * @Blog         : https://jiaopengzi.com
@@ -98,7 +98,7 @@ import { getPublicIp } from '@/utils/IP.ts'
 import type { CaptchaCheckRequest } from '@/api/utils/CaptchaCheck.ts'
 import { captchaCheckByJosn } from '@/api/utils/CaptchaCheck.ts'
 
-import { ResponseCode } from '@/api/responseCode.ts'
+import { ResponseCode, CaptchaPurpose } from '@/api/responseCode.ts'
 
 import { encryptData } from '@/utils/Encrypt.ts'
 import router from '@/router/index.ts'
@@ -181,8 +181,10 @@ async function checkSendCaptcha(): Promise<void> {
   try {
     // 创建请求对象 加密内容
     const req: CaptchaSendRequest = {
+
       email: registerForm.email,
       ip: await getPublicIp(),
+      purpose: CaptchaPurpose.Register,
     }
     console.log("==========>发送验证码")
     // const requestData: string = encryptData(JSON.stringify(req)) // 将请求对象 req 转换为字符串 并加密内容
@@ -315,6 +317,7 @@ async function checkCaptcha(): Promise<void> {
     const req: CaptchaCheckRequest = {
       email: registerForm.email,
       captcha: registerForm.captcha,
+      purpose: CaptchaPurpose.Register,
     }
     // const requestData: string = encryptData(JSON.stringify(req)) // 将请求对象 req 转换为字符串 并加密内容
     const requestData: string = JSON.stringify(req)// 将请求对象 req 转换为字符串
@@ -401,6 +404,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     if (valid) {
       // 创建请求对象 加密内容
       const req: RegisterRequest = {
+        captcha: registerForm.captcha,
         user_name: registerForm.userName,
         password: registerForm.password,
         re_password: registerForm.rePassword,

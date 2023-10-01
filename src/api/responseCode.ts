@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-09-25 22:05:03
+ * @LastEditTime : 2023-10-01 14:16:28
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -46,4 +46,8 @@ export enum ResponseCode {
 
   CaptchaSendSuccess = 8000, //验证码发送成功
   CaptchaCheckSuccess = 8002, //验证码发送成功
+}
+export enum CaptchaPurpose {
+  Register = 'Register', // 验证码用途：注册
+  ResetPassword = 'ResetPassword', // 验证码用途：重置密码
 }

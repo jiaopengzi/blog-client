@@ -16,6 +16,7 @@ import type { AxiosPromise } from 'axios'
 export interface CaptchaSendRequest {
   email: string
   ip: string
+  purpose: string // 验证码用途
 }
 
 export interface CaptchaSendResponse {

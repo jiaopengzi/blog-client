@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-02 13:38:31
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-02 14:05:34
- * @FilePath     : \blog-client\src\api\user\CheckCaptcha.ts
+ * @LastEditTime : 2023-10-01 14:05:14
+ * @FilePath     : \blog-client\src\api\utils\CaptchaCheck.ts
  * @Description  : 验证码校验
  * @blog         : https://jiaopengzi.com
  * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
@@ -16,6 +16,7 @@ import type { AxiosPromise } from 'axios'
 export interface CaptchaCheckRequest {
   email: string
   captcha: string
+  purpose: string // 验证码用途
 }
 
 export interface CaptchaCheckResponse {
