@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-01 14:16:28
+ * @LastEditTime : 2023-10-04 14:57:50
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -43,6 +43,7 @@ export enum ResponseCode {
   UserLoginNameExist = 1010, //用户登录名已存在
   UserResetPasswordFailed = 1022, //重置密码失败
   UserResetPasswordSuccess = 1023, //重置密码成功
+  UserGetInfoSuccess = 1024, //重置密码成功
 
   CaptchaSendSuccess = 8000, //验证码发送成功
   CaptchaCheckSuccess = 8002, //验证码发送成功

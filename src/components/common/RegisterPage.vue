@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-01 14:16:51
+ * @LastEditTime : 2023-10-04 23:02:39
  * @FilePath     : \blog-client\src\components\common\RegisterPage.vue
  * @Description  : 注册
  * @Blog         : https://jiaopengzi.com
@@ -100,7 +100,7 @@ import { captchaCheckByJosn } from '@/api/utils/CaptchaCheck.ts'
 
 import { ResponseCode, CaptchaPurpose } from '@/api/responseCode.ts'
 
-import { encryptData } from '@/utils/Encrypt.ts'
+
 import router from '@/router/index.ts'
 
 interface RegisterForm {
@@ -191,7 +191,7 @@ async function checkSendCaptcha(): Promise<void> {
     const requestData: string = JSON.stringify(req) // 将请求对象 req 转换为字符串
     const res: AxiosResponse = await captchaSendByJosn(requestData) // 发送请求，并返回Promise
     const resStr: string = JSON.stringify(res) // 将 res 转换字符串
-    const resObj: CaptchaSendResponse = JSON.parse(resStr) // 将 resStr 转换为对象
+    const resObj: CaptchaSendResponse = JSON.parse(resStr).data // 将 resStr 转换为对象
 
     if (resObj.code !== ResponseCode.CaptchaSendSuccess && resObj.data !== null) {
       // 历遍 data 中的错误信息 并抛出第一个key错误信息 停止循环
@@ -226,7 +226,7 @@ async function checkUserName(): Promise<void> {
     const requestData: string = JSON.stringify(req) // 将请求对象 req 转换为字符串
     const res: AxiosResponse = await checkUserNameByJosn(requestData) // 发送请求，并返回Promise
     const resStr: string = JSON.stringify(res) // 将 res 转换字符串
-    const resObj: CheckUserNameResponse = JSON.parse(resStr) // 将 resStr 转换为对象
+    const resObj: CheckUserNameResponse = JSON.parse(resStr).data // 将 resStr 转换为对象
 
     if (resObj.code === ResponseCode.UserNameExist) {
       throw new Error(resObj.msg)
@@ -278,7 +278,7 @@ async function checkEmail(): Promise<void> {
     // 将 res 转换字符串
     const resStr: string = JSON.stringify(res)
     // 将 resStr 转换为对象
-    const resObj: CheckEmailResponse = JSON.parse(resStr)
+    const resObj: CheckEmailResponse = JSON.parse(resStr).data
 
     if (resObj.code === ResponseCode.UserEmailExist) {
       throw new Error(resObj.msg)
@@ -323,7 +323,7 @@ async function checkCaptcha(): Promise<void> {
     const requestData: string = JSON.stringify(req)// 将请求对象 req 转换为字符串
     const res: AxiosResponse = await captchaCheckByJosn(requestData) // 发送请求，并返回Promise
     const resStr: string = JSON.stringify(res) // 将 res 转换字符串
-    const resObj: CaptchaSendResponse = JSON.parse(resStr) // 将 resStr 转换为对象
+    const resObj: CaptchaSendResponse = JSON.parse(resStr).data // 将 resStr 转换为对象
 
     if (resObj.code !== ResponseCode.CaptchaCheckSuccess) {
       throw new Error(resObj.msg)
@@ -415,7 +415,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
       const requestData: string = JSON.stringify(req)// 将请求对象 req 转换为字符串
       const res: AxiosResponse<RegisterResponse> = await RegisterByJosn(requestData)// 发送请求，并返回Promise
       const resStr: string = JSON.stringify(res)// 将 res 转换字符串
-      const resObj: RegisterResponse = JSON.parse(resStr)// 将 resStr 转换为对象
+      const resObj: RegisterResponse = JSON.parse(resStr).data// 将 resStr 转换为对象
 
       if (resObj.code === ResponseCode.UserRegisterSuccess) {
         // 显示注册成功提示

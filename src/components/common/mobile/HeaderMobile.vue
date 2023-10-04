@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-04 20:45:13
+ * @LastEditTime : 2023-10-04 15:36:51
  * @FilePath     : \blog-client\src\components\common\mobile\HeaderMobile.vue
  * @Description  : 头部 移动端
  * @blog         : https://jiaopengzi.com
@@ -56,6 +56,7 @@ import type { Ref } from 'vue'
 import type { ScrollData } from '@/hooks/useScroll.types'
 import { useScrollActions } from '@/hooks/useScrollActions'
 
+
 const navVisible = ref(false) // 侧边导航栏是否可见
 const headerVisible = ref(true) // 导航栏是否可见
 // const headerHeight = 'calc(64 / 667 * 100vh)'
@@ -84,6 +85,8 @@ const scrollDownAction = () => {
 
 const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownAction)
 // ======================================== 滚动条事件 ========================================
+
+
 </script>
 
 <style scoped lang="less">

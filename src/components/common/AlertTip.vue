@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-04 20:41:25
+ * @LastEditTime : 2023-10-04 15:50:35
  * @FilePath     : \blog-client\src\components\common\AlertTip.vue
  * @Description  : 弹窗提示
  * @blog         : https://jiaopengzi.com
@@ -16,10 +16,12 @@
 <script setup lang="ts">
 import { MsgType, MsgTitle } from '@/components/common/index.ts'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const props = defineProps<{
   typeAlert: MsgType
   descriptionAlert: string
 }>()
+
 </script>
 <style lang="less" scoped>
 .el-alert {

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-12 12:13:47
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-09-25 22:08:37
+ * @LastEditTime : 2023-10-04 23:03:48
  * @FilePath     : \blog-client\src\components\common\ResetPassword.vue
  * @Description  : 重置密码
  * @Blog         : https://jiaopengzi.com
@@ -89,7 +89,6 @@ import { captchaCheckByJosn } from '@/api/utils/CaptchaCheck.ts'
 
 import { ResponseCode, CaptchaPurpose } from '@/api/responseCode.ts'
 
-import { encryptData } from '@/utils/Encrypt.ts'
 import router from '@/router/index.ts'
 
 interface ResetPasswordForm {
@@ -169,7 +168,7 @@ async function checkSendCaptcha(): Promise<void> {
     const requestData: string = JSON.stringify(req) // 将请求对象 req 转换为字符串
     const res: AxiosResponse = await captchaSendByJosn(requestData) // 发送请求，并返回Promise
     const resStr: string = JSON.stringify(res) // 将 res 转换字符串
-    const resObj: CaptchaSendResponse = JSON.parse(resStr) // 将 resStr 转换为对象
+    const resObj: CaptchaSendResponse = JSON.parse(resStr).data // 将 resStr 转换为对象
 
     if (resObj.code !== ResponseCode.CaptchaSendSuccess && resObj.data !== null) {
       // 历遍 data 中的错误信息 并抛出第一个key错误信息 停止循环
@@ -208,7 +207,7 @@ async function checkEmail(): Promise<void> {
     // 将 res 转换字符串
     const resStr: string = JSON.stringify(res)
     // 将 resStr 转换为对象
-    const resObj: CheckEmailResponse = JSON.parse(resStr)
+    const resObj: CheckEmailResponse = JSON.parse(resStr).data
 
     if (resObj.code !== ResponseCode.UserEmailExist) {
       throw new Error(resObj.msg)
@@ -253,7 +252,7 @@ async function checkCaptcha(): Promise<void> {
     const requestData: string = JSON.stringify(req) // 将请求对象 req 转换为字符串
     const res: AxiosResponse = await captchaCheckByJosn(requestData) // 发送请求，并返回Promise
     const resStr: string = JSON.stringify(res) // 将 res 转换字符串
-    const resObj: CaptchaSendResponse = JSON.parse(resStr) // 将 resStr 转换为对象
+    const resObj: CaptchaSendResponse = JSON.parse(resStr).data // 将 resStr 转换为对象
 
     if (resObj.code !== ResponseCode.CaptchaCheckSuccess) {
       throw new Error(resObj.msg)
@@ -334,7 +333,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
       const requestData: string = JSON.stringify(req)// 将请求对象 req 转换为字符串
       const res: AxiosResponse<ResetPasswordResponse> = await resetPasswordByJosn(requestData)// 发送请求，并返回Promise
       const resStr: string = JSON.stringify(res)// 将 res 转换字符串
-      const resObj: ResetPasswordResponse = JSON.parse(resStr)// 将 resStr 转换为对象
+      const resObj: ResetPasswordResponse = JSON.parse(resStr).data// 将 resStr 转换为对象
 
       if (resObj.code === ResponseCode.UserResetPasswordSuccess) {
         // 显示注册成功提示

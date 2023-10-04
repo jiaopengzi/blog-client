@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-04 20:45:38
+ * @LastEditTime : 2023-10-04 23:05:59
  * @FilePath     : \blog-client\src\components\common\mobile\HeaderMobileNav.vue
  * @Description  : 头部导航 移动端
  * @blog         : https://jiaopengzi.com
@@ -10,9 +10,18 @@
 -->
 
 <template>
-  <div class="login">
+  <div class="login" v-if="!isLogin">
     <router-link to="/login" class="link">
       <span>登录</span>
+    </router-link>
+    <span>/</span>
+    <router-link to="/register" class="link">
+      <span>注册</span>
+    </router-link>
+  </div>
+  <div class="login" v-if="isLogin">
+    <router-link to="/info" class="link">
+      <span>用户中心</span>
     </router-link>
   </div>
   <div class="nav">
@@ -58,6 +67,38 @@
 <script setup lang="ts">
 // 引用图标
 import '@/components/icons/iconfont.css'
+import { ref, onBeforeMount } from 'vue'
+
+import type { GetUserInfoResponse } from '@/api/user/GetUserInfo'
+import { getUserInfoByJosn } from '@/api/user/GetUserInfo'
+import { ResponseCode } from '@/api/responseCode'
+import type { AxiosResponse } from 'axios'
+// 状态是否登录
+const isLogin = ref(false)
+// 获取用户信息
+async function getUserInfo(): Promise<void> {
+  try {
+    const res: AxiosResponse = await getUserInfoByJosn() // 发送请求，并返回Promise
+    const resStr: string = JSON.stringify(res) // 将 res 转换字符串
+    const resObj: GetUserInfoResponse = JSON.parse(resStr).data // 将 resStr 转换为对象
+
+    if (resObj.code === ResponseCode.UserGetInfoSuccess) {
+      // 获取信息说明登录成功
+      isLogin.value = true
+    }
+  } catch (err: unknown) {
+    console.log(err)
+    throw err
+  }
+
+
+}
+onBeforeMount(() => { // 组件挂载前
+  getUserInfo()
+})
+
+
+
 </script>
 <style scoped lang="less">
 .login {

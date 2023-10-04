@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-11 16:53:24
+ * @LastEditTime : 2023-10-04 19:28:54
  * @FilePath     : \blog-client\src\api\request.ts
  * @Description  : axios封装
  * @Blog         : https://jiaopengzi.com
@@ -17,6 +17,12 @@ const service = axios.create()
 //2. 请求拦截器
 service.interceptors.request.use(
   (config) => {
+    // 添加请求头 token
+    const access_token = localStorage.getItem('access_token')
+    if (access_token) {
+      config.headers.Authorization = `Bearer ${access_token}`
+    }
+
     return config
   },
   (error) => {
@@ -27,8 +33,16 @@ service.interceptors.request.use(
 //3. 响应拦截器
 service.interceptors.response.use(
   (response) => {
-    //判断code码
-    return response.data
+    // 检查响应头是否包含新的 Access Token
+    const newAccessToken = response.headers['authorization']
+    if (newAccessToken) {
+      // 提取 Access Token（去除 "Bearer" 前缀）
+      const token = newAccessToken.split(' ')[1]
+
+      // 更新本地存储的 Access Token（请根据您的项目实际情况进行修改）
+      localStorage.setItem('access_token', token)
+    }
+    return response
   },
   (error) => {
     return Promise.reject(error)

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 19:38:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-09-25 16:30:07
+ * @LastEditTime : 2023-10-04 23:00:34
  * @FilePath     : \blog-client\src\components\common\LoginPage.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -60,11 +60,9 @@ import SlideVerify from '@/components/common/SlideVerify.vue'
 import { ShowMsgTip } from '@/utils/Message.ts'
 import { MsgType } from '@/components/common/index.ts'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
-import type { loginRequest, loginResponse } from '@/api/user/Login.ts'
+import type { LoginRequest, LoginResponse } from '@/api/user/Login.ts'
 import { loginByJosn } from '@/api/user/Login.ts'
-import { getPublicIp } from '@/utils/IP.ts'
 import { ResponseCode } from '@/api/responseCode.ts'
-import { encryptData } from '@/utils/Encrypt.ts'
 import router from '@/router/index.ts'
 
 interface LoginForm {
@@ -83,8 +81,8 @@ const loginFormRef = ref<FormInstance>()
 
 // 表单数据
 const loginForm = reactive<LoginForm>({
-  loginName: '',
-  password: '',
+  loginName: 'jiaopengzi1@qq.com',
+  password: '123QWEasd',
 })
 
 
@@ -122,29 +120,29 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   await formEl.validate(async (valid) => {
     if (valid) {
       // 创建请求对象 加密内容
-      const req: loginRequest = {
+      const req: LoginRequest = {
         login_name: loginForm.loginName,
         password: loginForm.password,
       }
 
       // const requestData: string = encryptData(JSON.stringify(req))// 将请求对象 req 转换为字符串 并加密内容
       const requestData: string = JSON.stringify(req)// 将请求对象 req 转换为字符串 并加密内容
-      const res: AxiosResponse<loginResponse> = await loginByJosn(requestData)// 发送请求，并返回Promise
+      const res: AxiosResponse<LoginResponse> = await loginByJosn(requestData)// 发送请求，并返回Promise
       const resStr: string = JSON.stringify(res)// 将 res 转换字符串
-      const resObj: loginResponse = JSON.parse(resStr)// 将 resStr 转换为对象
+      const resObj: LoginResponse = JSON.parse(resStr).data// 将 resStr 转换为对象
 
       if (resObj.code === ResponseCode.UserLoginSuccess) {
         // 显示登录成功提示
-        ShowMsgTip(MsgType.success, resObj.msg, 6000)
+        ShowMsgTip(MsgType.success, resObj.msg, 3000)
 
         // 登录成功 存入token
         localStorage.setItem('access_token', resObj.data.access_token)
-        localStorage.setItem('refresh_token', resObj.data.refresh_token)
 
         // 登录成功 跳转到首页
         setTimeout(() => {
-          router.push({ path: '/' });
-        }, 3000);
+          router.push({ path: '/' }); // 跳转到首页
+          // router.go(-1); // 返回上一页
+        }, 1000);
       } else {
         // 登录失败
         // console.log("登录失败");
