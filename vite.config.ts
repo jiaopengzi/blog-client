@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-04 18:07:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-07-14 23:29:55
+ * @LastEditTime : 2023-10-06 00:19:50
  * @FilePath     : \blog-client\vite.config.ts
  * @Description  :
  * @blog         : https://jiaopengzi.com
@@ -25,7 +25,6 @@ export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
-
     // ------------------------------element-plus 自动导入 开始
     AutoImport({
       resolvers: [ElementPlusResolver()],

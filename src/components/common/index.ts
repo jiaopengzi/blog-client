@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-13 14:52:34
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-12 18:03:19
+ * @LastEditTime : 2023-10-05 17:02:49
  * @FilePath     : \blog-client\src\components\common\index.ts
  * @Description  : 通用组件导出
  * @blog         : https://jiaopengzi.com
@@ -40,6 +40,11 @@ const contentComponent = isMobileDevice
   ? defineAsyncComponent(() => import('@/components/common/mobile/ContentMobile.vue'))
   : defineAsyncComponent(() => import('@/components/common/pc/ContentPC.vue'))
 
+// 用户中心
+const userInfoComponent = isMobileDevice
+  ? defineAsyncComponent(() => import('@/components/common/mobile/UserInfoMobile.vue'))
+  : defineAsyncComponent(() => import('@/components/common/pc/UserInfoPC.vue'))
+
 // 导出
 export {
   headerComponent,
@@ -48,6 +53,7 @@ export {
   registerComponent,
   resetPasswordComponent,
   contentComponent,
+  userInfoComponent,
 }
 
 // 枚举 alert 弹窗 element 组件类型

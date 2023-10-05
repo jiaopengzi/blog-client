@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-04 18:07:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-12 18:03:51
+ * @LastEditTime : 2023-10-05 17:18:17
  * @FilePath     : \blog-client\src\router\index.ts
  * @Description  : 路由配置
  * @blog         : https://jiaopengzi.com
@@ -10,6 +10,7 @@
  */
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
+import UserInfoView from '@/views/UserInfoView.vue'
 import {
   resetPasswordComponent,
   loginComponent,
@@ -39,6 +40,11 @@ const router = createRouter({
       path: '/reset-password',
       name: 'reset-password',
       component: resetPasswordComponent,
+    },
+    {
+      path: '/user-info',
+      name: 'user-info',
+      component: UserInfoView,
     },
   ],
 })

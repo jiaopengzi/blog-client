@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-04 23:05:32
+ * @LastEditTime : 2023-10-05 17:03:59
  * @FilePath     : \blog-client\src\components\common\pc\HeaderPC.vue
  * @Description  : 头部 PC端
  * @blog         : https://jiaopengzi.com
@@ -36,9 +36,10 @@
           </router-link>
         </div>
         <div class="login" v-if="isLogin">
-          <router-link to="/info" class="link">
-            <span>用户中心</span>
+          <router-link to="/user-info" class="link">
+            <InitialAvatar :name="user.user_display_name" :avatar="user.user_avatar" />
           </router-link>
+
         </div>
       </div>
     </header>
@@ -59,10 +60,15 @@ import type { GetUserInfoResponse } from '@/api/user/GetUserInfo'
 import { getUserInfoByJosn } from '@/api/user/GetUserInfo'
 import { ResponseCode } from '@/api/responseCode'
 import type { AxiosResponse } from 'axios'
+import InitialAvatar from '@/components/common/InitialAvatar.vue';
 
 
 
 const headerVisible = ref(true) // 导航栏是否可见
+const user = ref({
+  user_display_name: '',
+  user_avatar: '',
+})
 
 // ======================================== 滚动条事件 ========================================
 
@@ -93,6 +99,8 @@ async function getUserInfo(): Promise<void> {
     if (resObj.code === ResponseCode.UserGetInfoSuccess) {
       // 获取信息说明登录成功
       isLogin.value = true
+      user.value = resObj.data.user
+
     }
   } catch (err: unknown) {
     console.log(err)

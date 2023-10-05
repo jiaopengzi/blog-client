@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-04 23:05:59
+ * @LastEditTime : 2023-10-05 16:28:30
  * @FilePath     : \blog-client\src\components\common\mobile\HeaderMobileNav.vue
  * @Description  : 头部导航 移动端
  * @blog         : https://jiaopengzi.com
@@ -21,7 +21,7 @@
   </div>
   <div class="login" v-if="isLogin">
     <router-link to="/info" class="link">
-      <span>用户中心</span>
+      <InitialAvatar :name="user.user_display_name" :avatar="user.user_avatar" />
     </router-link>
   </div>
   <div class="nav">
@@ -73,6 +73,13 @@ import type { GetUserInfoResponse } from '@/api/user/GetUserInfo'
 import { getUserInfoByJosn } from '@/api/user/GetUserInfo'
 import { ResponseCode } from '@/api/responseCode'
 import type { AxiosResponse } from 'axios'
+import InitialAvatar from '@/components/common/InitialAvatar.vue';
+
+
+const user = ref({
+  user_display_name: '',
+  user_avatar: '',
+})
 // 状态是否登录
 const isLogin = ref(false)
 // 获取用户信息
@@ -85,6 +92,7 @@ async function getUserInfo(): Promise<void> {
     if (resObj.code === ResponseCode.UserGetInfoSuccess) {
       // 获取信息说明登录成功
       isLogin.value = true
+      user.value = resObj.data.user
     }
   } catch (err: unknown) {
     console.log(err)
