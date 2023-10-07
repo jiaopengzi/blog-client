@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-05 17:03:59
+ * @LastEditTime : 2023-10-07 18:15:32
  * @FilePath     : \blog-client\src\components\common\pc\HeaderPC.vue
  * @Description  : 头部 PC端
  * @blog         : https://jiaopengzi.com
@@ -14,19 +14,19 @@
   <transition name="slide-header">
     <header class="header" v-if="headerVisible" :style="{ height: `@height-header-pc`, width: '@width-header-pc' }">
       <div class="header-mian">
-        <div class="logo">
+        <div class="logo header-item">
           <h1>
             <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" alt="/" />
           </h1>
         </div>
 
-        <HeaderPCNav />
-        <div class="search">
+        <HeaderPCNav class="header-item" />
+        <div class="search header-item">
           <input type="text" placeholder="搜索" />
           <span class="iconfont icon-search"></span>
         </div>
 
-        <div class="login" v-if="!isLogin">
+        <div class="login header-item" v-if="!isLogin">
           <router-link to="/login" class="link">
             <span>登录</span>
           </router-link>
@@ -35,11 +35,10 @@
             <span>注册</span>
           </router-link>
         </div>
-        <div class="login" v-if="isLogin">
+        <div class="avatar header-item" v-if="isLogin">
           <router-link to="/user-info" class="link">
             <InitialAvatar :name="user.user_display_name" :avatar="user.user_avatar" />
           </router-link>
-
         </div>
       </div>
     </header>
@@ -51,16 +50,13 @@
 import '@/components/icons/iconfont.css'
 
 import HeaderPCNav from './HeaderPCNav.vue'
-import { ref, onBeforeMount } from 'vue'
+import { ref, onMounted, onBeforeMount } from 'vue'
 
 import type { Ref } from 'vue'
 import type { ScrollData } from '@/hooks/useScroll.types'
 import { useScrollActions } from '@/hooks/useScrollActions'
-import type { GetUserInfoResponse } from '@/api/user/GetUserInfo'
-import { getUserInfoByJosn } from '@/api/user/GetUserInfo'
-import { ResponseCode } from '@/api/responseCode'
-import type { AxiosResponse } from 'axios'
 import InitialAvatar from '@/components/common/InitialAvatar.vue';
+import { checkLoginStatus, getUserInfoByLocalStorage } from '@/api/utils/CheckLoginStatus.ts'
 
 
 
@@ -92,23 +88,20 @@ const isLogin = ref(false)
 // 获取用户信息
 async function getUserInfo(): Promise<void> {
   try {
-    const res: AxiosResponse = await getUserInfoByJosn() // 发送请求，并返回Promise
-    const resStr: string = JSON.stringify(res) // 将 res 转换字符串
-    const resObj: GetUserInfoResponse = JSON.parse(resStr).data // 将 resStr 转换为对象
 
-    if (resObj.code === ResponseCode.UserGetInfoSuccess) {
-      // 获取信息说明登录成功
-      isLogin.value = true
-      user.value = resObj.data.user
+    user.value = await getUserInfoByLocalStorage().user
 
-    }
   } catch (err: unknown) {
     console.log(err)
     throw err
   }
 
-
 }
+
+onMounted(async () => {
+  isLogin.value = await checkLoginStatus() // 在 onMounted 钩子内更新 isLogin 值
+})
+
 onBeforeMount(() => { // 组件挂载前
   getUserInfo()
 })
@@ -136,12 +129,13 @@ header {
 
 .header-mian {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   width: @width-page-main-pc;
   height: @height-header-pc;
   margin: 0 auto;
 }
+
 
 .slide-header-enter-active {
   transition: all 0.6s ease-out;
@@ -183,9 +177,11 @@ header {
 }
 
 .login {
-  width: @width-header-login-pc;
-  height: @height-header-login-pc;
-  line-height: @height-header-login-pc;
+  display: flex;
+  align-items: center;
+  // width: @width-header-login-pc;
+  // height: @height-header-login-pc;
+  // line-height: @height-header-login-pc;
   text-align: center;
   font-size: 16px;
   color: #888;

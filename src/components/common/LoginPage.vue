@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 19:38:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-04 23:00:34
+ * @LastEditTime : 2023-10-07 16:55:03
  * @FilePath     : \blog-client\src\components\common\LoginPage.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -64,6 +64,7 @@ import type { LoginRequest, LoginResponse } from '@/api/user/Login.ts'
 import { loginByJosn } from '@/api/user/Login.ts'
 import { ResponseCode } from '@/api/responseCode.ts'
 import router from '@/router/index.ts'
+import { getUserInfoByToken } from '@/api/utils/CheckLoginStatus'
 
 interface LoginForm {
   loginName: string
@@ -137,6 +138,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
         // 登录成功 存入token
         localStorage.setItem('access_token', resObj.data.access_token)
+        getUserInfoByToken() // 获取用户信息
 
         // 登录成功 跳转到首页
         setTimeout(() => {

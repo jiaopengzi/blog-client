@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-05 16:28:30
+ * @LastEditTime : 2023-10-07 17:43:08
  * @FilePath     : \blog-client\src\components\common\mobile\HeaderMobileNav.vue
  * @Description  : 头部导航 移动端
  * @blog         : https://jiaopengzi.com
@@ -67,13 +67,10 @@
 <script setup lang="ts">
 // 引用图标
 import '@/components/icons/iconfont.css'
-import { ref, onBeforeMount } from 'vue'
+import { ref, onMounted, onBeforeMount } from 'vue'
 
-import type { GetUserInfoResponse } from '@/api/user/GetUserInfo'
-import { getUserInfoByJosn } from '@/api/user/GetUserInfo'
-import { ResponseCode } from '@/api/responseCode'
-import type { AxiosResponse } from 'axios'
 import InitialAvatar from '@/components/common/InitialAvatar.vue';
+import { checkLoginStatus, getUserInfoByLocalStorage } from '@/api/utils/CheckLoginStatus.ts'
 
 
 const user = ref({
@@ -85,22 +82,20 @@ const isLogin = ref(false)
 // 获取用户信息
 async function getUserInfo(): Promise<void> {
   try {
-    const res: AxiosResponse = await getUserInfoByJosn() // 发送请求，并返回Promise
-    const resStr: string = JSON.stringify(res) // 将 res 转换字符串
-    const resObj: GetUserInfoResponse = JSON.parse(resStr).data // 将 resStr 转换为对象
 
-    if (resObj.code === ResponseCode.UserGetInfoSuccess) {
-      // 获取信息说明登录成功
-      isLogin.value = true
-      user.value = resObj.data.user
-    }
+    user.value = await getUserInfoByLocalStorage().user
+
   } catch (err: unknown) {
     console.log(err)
     throw err
   }
 
-
 }
+
+onMounted(async () => {
+  isLogin.value = await checkLoginStatus() // 在 onMounted 钩子内更新 isLogin 值
+})
+
 onBeforeMount(() => { // 组件挂载前
   getUserInfo()
 })
