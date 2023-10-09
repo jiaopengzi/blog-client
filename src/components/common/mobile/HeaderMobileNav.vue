@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-07 17:43:08
+ * @LastEditTime : 2023-10-09 14:28:00
  * @FilePath     : \blog-client\src\components\common\mobile\HeaderMobileNav.vue
  * @Description  : 头部导航 移动端
  * @blog         : https://jiaopengzi.com
@@ -21,7 +21,7 @@
   </div>
   <div class="login" v-if="isLogin">
     <router-link to="/info" class="link">
-      <InitialAvatar :name="user.user_display_name" :avatar="user.user_avatar" />
+      <InitialAvatar :name="data.user.user_display_name" :avatar="data.user.user_avatar" />
     </router-link>
   </div>
   <div class="nav">
@@ -67,37 +67,21 @@
 <script setup lang="ts">
 // 引用图标
 import '@/components/icons/iconfont.css'
-import { ref, onMounted, onBeforeMount } from 'vue'
+import { onBeforeMount } from 'vue'
 
 import InitialAvatar from '@/components/common/InitialAvatar.vue';
-import { checkLoginStatus, getUserInfoByLocalStorage } from '@/api/utils/CheckLoginStatus.ts'
+import { useUserStore } from '@/stores/user.ts'
+import { storeToRefs } from 'pinia'
 
 
-const user = ref({
-  user_display_name: '',
-  user_avatar: '',
-})
 // 状态是否登录
-const isLogin = ref(false)
-// 获取用户信息
-async function getUserInfo(): Promise<void> {
-  try {
+const userStore = useUserStore()
+let { data, isLogin } = storeToRefs(userStore)
 
-    user.value = await getUserInfoByLocalStorage().user
-
-  } catch (err: unknown) {
-    console.log(err)
-    throw err
-  }
-
-}
-
-onMounted(async () => {
-  isLogin.value = await checkLoginStatus() // 在 onMounted 钩子内更新 isLogin 值
-})
 
 onBeforeMount(() => { // 组件挂载前
-  getUserInfo()
+  // 通过本地信息 获取用户信息
+  userStore.userInfoByLocalStorage()
 })
 
 
@@ -106,13 +90,14 @@ onBeforeMount(() => { // 组件挂载前
 <style scoped lang="less">
 .login {
   margin-top: 100px;
+  margin-bottom: 20px;
   display: flex;
   justify-content: center;
   /* Aligns content horizontally */
   align-items: center;
   /* Aligns content vertically */
-  height: 40px;
-  line-height: 40px;
+  // height: 40px;
+  // line-height: 40px;
   text-align: center;
   font-size: 16px;
   color: #888;

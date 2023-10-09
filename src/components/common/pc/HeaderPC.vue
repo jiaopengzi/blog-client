@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-07 18:15:32
+ * @LastEditTime : 2023-10-09 15:45:54
  * @FilePath     : \blog-client\src\components\common\pc\HeaderPC.vue
  * @Description  : 头部 PC端
  * @blog         : https://jiaopengzi.com
@@ -37,7 +37,7 @@
         </div>
         <div class="avatar header-item" v-if="isLogin">
           <router-link to="/user-info" class="link">
-            <InitialAvatar :name="user.user_display_name" :avatar="user.user_avatar" />
+            <InitialAvatar :name="data.user.user_display_name" :avatar="data.user.user_avatar" />
           </router-link>
         </div>
       </div>
@@ -48,23 +48,21 @@
 <script setup lang="ts">
 // 引用图标
 import '@/components/icons/iconfont.css'
-
+import '@/assets/styleVariables.less'
 import HeaderPCNav from './HeaderPCNav.vue'
-import { ref, onMounted, onBeforeMount } from 'vue'
+import { ref, onBeforeMount } from 'vue'
 
 import type { Ref } from 'vue'
 import type { ScrollData } from '@/hooks/useScroll.types'
 import { useScrollActions } from '@/hooks/useScrollActions'
 import InitialAvatar from '@/components/common/InitialAvatar.vue';
-import { checkLoginStatus, getUserInfoByLocalStorage } from '@/api/utils/CheckLoginStatus.ts'
+import { useUserStore } from '@/stores/user.ts'
+import { storeToRefs } from 'pinia'
 
 
 
 const headerVisible = ref(true) // 导航栏是否可见
-const user = ref({
-  user_display_name: '',
-  user_avatar: '',
-})
+
 
 // ======================================== 滚动条事件 ========================================
 
@@ -84,26 +82,14 @@ const scrollDownAction = () => {
 const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownAction)
 // ======================================== 滚动条事件 ========================================
 // 状态是否登录
-const isLogin = ref(false)
-// 获取用户信息
-async function getUserInfo(): Promise<void> {
-  try {
 
-    user.value = await getUserInfoByLocalStorage().user
-
-  } catch (err: unknown) {
-    console.log(err)
-    throw err
-  }
-
-}
-
-onMounted(async () => {
-  isLogin.value = await checkLoginStatus() // 在 onMounted 钩子内更新 isLogin 值
-})
+const userStore = useUserStore()
+let { data, isLogin } = storeToRefs(userStore)
 
 onBeforeMount(() => { // 组件挂载前
-  getUserInfo()
+  // 通过本地信息 获取用户信息
+  userStore.userInfoByLocalStorage()
+
 })
 
 </script>
