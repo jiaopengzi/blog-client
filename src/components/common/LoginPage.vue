@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 19:38:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-09 13:19:11
+ * @LastEditTime : 2023-10-10 17:10:43
  * @FilePath     : \blog-client\src\components\common\LoginPage.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -55,7 +55,6 @@
 
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
-import { storeToRefs } from 'pinia'
 import SlideVerify from '@/components/common/SlideVerify.vue'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import router from '@/router/index.ts'
@@ -77,7 +76,7 @@ const loginFormRef = ref<FormInstance>()
 
 // 表单数据
 const loginForm = reactive<LoginForm>({
-  loginName: 'jiaopengzi1@qq.com',
+  loginName: 'jiaopengzi@qq.com',
   password: '123QWEasd',
 })
 
@@ -113,14 +112,12 @@ const rules = reactive<FormRules<LoginForm>>({
  */
 const userStore = useUserStore()
 
-let { isLogin } = storeToRefs(userStore)
-
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate(async (valid) => {
     if (valid) {
-      userStore.login(loginForm.loginName, loginForm.password) // 登录
-      if (isLogin) {
+      await userStore.login(loginForm.loginName, loginForm.password) // 登录
+      if (userStore.getIsLogin) {
         // 登录成功 跳转到首页
         router.push({ path: '/' })
       }

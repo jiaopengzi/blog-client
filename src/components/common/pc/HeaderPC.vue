@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-09 15:45:54
+ * @LastEditTime : 2023-10-10 22:09:37
  * @FilePath     : \blog-client\src\components\common\pc\HeaderPC.vue
  * @Description  : 头部 PC端
  * @blog         : https://jiaopengzi.com
@@ -56,7 +56,7 @@ import type { Ref } from 'vue'
 import type { ScrollData } from '@/hooks/useScroll.types'
 import { useScrollActions } from '@/hooks/useScrollActions'
 import InitialAvatar from '@/components/common/InitialAvatar.vue';
-import { useUserStore } from '@/stores/user.ts'
+import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 
 
@@ -88,7 +88,7 @@ let { data, isLogin } = storeToRefs(userStore)
 
 onBeforeMount(() => { // 组件挂载前
   // 通过本地信息 获取用户信息
-  userStore.userInfoByLocalStorage()
+  userStore.getUserInfoByToken()
 
 })
 

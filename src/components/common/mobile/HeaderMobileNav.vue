@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-09 14:28:00
+ * @LastEditTime : 2023-10-10 20:45:20
  * @FilePath     : \blog-client\src\components\common\mobile\HeaderMobileNav.vue
  * @Description  : 头部导航 移动端
  * @blog         : https://jiaopengzi.com
@@ -81,7 +81,7 @@ let { data, isLogin } = storeToRefs(userStore)
 
 onBeforeMount(() => { // 组件挂载前
   // 通过本地信息 获取用户信息
-  userStore.userInfoByLocalStorage()
+  userStore.getUserInfoByToken()
 })
 
 

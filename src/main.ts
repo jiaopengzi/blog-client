@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-04 20:58:30
+ * @LastEditTime : 2023-10-10 22:11:57
  * @FilePath     : \blog-client\src\main.ts
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -17,10 +17,18 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
+import { useUserStore } from '@/stores/user.ts'
+
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
 // app.use(ElementPlus)
 
-app.mount('#app')
+// 路由准备就绪后挂载APP实例 先获取用户信息
+router.isReady().then(async () => {
+  const userStore = useUserStore()
+  await userStore.getUserInfoByToken()
+
+  app.mount('#app')
+})
