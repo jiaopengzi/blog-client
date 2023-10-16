@@ -68,28 +68,28 @@ import { reactive, ref } from 'vue'
 
 import type { AxiosResponse } from 'axios'
 import SlideVerify from '@/components/common/SlideVerify.vue'
-import { ShowMsgTip } from '@/utils/Message.ts'
-import { MsgType } from '@/components/common/index.ts'
+import { ShowMsgTip } from '@/utils/Message'
+import { MsgType } from '@/components/common/index'
 
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 
-import type { CheckEmailRequest, CheckEmailResponse } from '@/api/user/CheckEmail.ts'
-import { CheckEmailByJosn } from '@/api/user/CheckEmail.ts'
+import type { CheckEmailRequest, CheckEmailResponse } from '@/api/user/CheckEmail'
+import { CheckEmailByJosn } from '@/api/user/CheckEmail'
 
-import type { ResetPasswordRequest, ResetPasswordResponse } from '@/api/user/ResetPassword.ts'
-import { resetPasswordByJosn } from '@/api/user/ResetPassword.ts'
+import type { ResetPasswordRequest, ResetPasswordResponse } from '@/api/user/ResetPassword'
+import { resetPasswordByJosn } from '@/api/user/ResetPassword'
 
-import type { CaptchaSendRequest, CaptchaSendResponse } from '@/api/utils/CaptchaSend.ts'
-import { captchaSendByJosn } from '@/api/utils/CaptchaSend.ts'
+import type { CaptchaSendRequest, CaptchaSendResponse } from '@/api/utils/CaptchaSend'
+import { captchaSendByJosn } from '@/api/utils/CaptchaSend'
 
-import { getPublicIp } from '@/utils/IP.ts'
+import { getPublicIp } from '@/utils/IP'
 
-import type { CaptchaCheckRequest } from '@/api/utils/CaptchaCheck.ts'
-import { captchaCheckByJosn } from '@/api/utils/CaptchaCheck.ts'
+import type { CaptchaCheckRequest } from '@/api/utils/CaptchaCheck'
+import { captchaCheckByJosn } from '@/api/utils/CaptchaCheck'
 
-import { ResponseCode, CaptchaPurpose } from '@/api/responseCode.ts'
+import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
 
-import router from '@/router/index.ts'
+import router from '@/router/index'
 
 interface ResetPasswordForm {
   email: string

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-10 22:11:57
+ * @LastEditTime : 2023-10-14 14:49:14
  * @FilePath     : \blog-client\src\main.ts
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -17,7 +17,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
-import { useUserStore } from '@/stores/user.ts'
+import { useUserStore } from '@/stores/user'
 
 const app = createApp(App)
 

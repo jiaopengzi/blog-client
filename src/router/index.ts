@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-04 18:07:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-05 17:18:17
+ * @LastEditTime : 2023-10-14 14:48:37
  * @FilePath     : \blog-client\src\router\index.ts
  * @Description  : 路由配置
  * @blog         : https://jiaopengzi.com
@@ -15,7 +15,7 @@ import {
   resetPasswordComponent,
   loginComponent,
   registerComponent,
-} from '@/components/common/index.ts'
+} from '@/components/common/index'
 
 // 创建路由实例
 const router = createRouter({

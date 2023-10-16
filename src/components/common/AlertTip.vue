@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { MsgType, MsgTitle } from '@/components/common/index.ts'
+import { MsgType, MsgTitle } from '@/components/common/index'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const props = defineProps<{

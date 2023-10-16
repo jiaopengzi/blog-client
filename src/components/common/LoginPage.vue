@@ -57,8 +57,8 @@
 import { reactive, ref } from 'vue'
 import SlideVerify from '@/components/common/SlideVerify.vue'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
-import router from '@/router/index.ts'
-import { useUserStore } from '@/stores/user.ts'
+import router from '@/router/index'
+import { useUserStore } from '@/stores/user'
 
 interface LoginForm {
   loginName: string

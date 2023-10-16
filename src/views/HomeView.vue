@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-12 18:35:22
+ * @LastEditTime : 2023-10-14 14:49:03
  * @FilePath     : \blog-client\src\views\HomeView.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { headerComponent, footerComponent, contentComponent } from '@/components/common/index.ts'
+import { headerComponent, footerComponent, contentComponent } from '@/components/common/index'
 </script>
 
 <style scoped lang="less">

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-08 10:14:00
+ * @LastEditTime : 2023-10-14 14:50:42
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -55,5 +55,9 @@ export enum CaptchaPurpose {
 
 export enum LocalStorageKey {
   AccessToken = 'access_token', // 验证码用途：注册
-  User = 'user', // 验证码用途：重置密码
+}
+
+export enum UploadCode {
+  AvatarSuccess = 8100, // 上传头像成功
+  AvatarTooLarge = 8101, // 上传头像失败：文件过大
 }

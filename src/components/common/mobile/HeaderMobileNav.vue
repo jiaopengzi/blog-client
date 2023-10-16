@@ -70,7 +70,7 @@ import '@/components/icons/iconfont.css'
 import { onBeforeMount } from 'vue'
 
 import InitialAvatar from '@/components/common/InitialAvatar.vue';
-import { useUserStore } from '@/stores/user.ts'
+import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 
 

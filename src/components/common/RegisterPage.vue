@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-04 23:02:39
+ * @LastEditTime : 2023-10-14 14:42:21
  * @FilePath     : \blog-client\src\components\common\RegisterPage.vue
  * @Description  : 注册
  * @Blog         : https://jiaopengzi.com
@@ -76,32 +76,32 @@ import { reactive, ref } from 'vue'
 
 import type { AxiosResponse } from 'axios'
 import SlideVerify from '@/components/common/SlideVerify.vue'
-import { ShowMsgTip } from '@/utils/Message.ts'
-import { MsgType } from '@/components/common/index.ts'
+import { ShowMsgTip } from '@/utils/Message'
+import { MsgType } from '@/components/common/index'
 
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 
-import type { CheckUserNameRequest, CheckUserNameResponse } from '@/api/user/CheckUserName.ts'
-import { checkUserNameByJosn } from '@/api/user/CheckUserName.ts'
+import type { CheckUserNameRequest, CheckUserNameResponse } from '@/api/user/CheckUserName'
+import { checkUserNameByJosn } from '@/api/user/CheckUserName'
 
-import type { CheckEmailRequest, CheckEmailResponse } from '@/api/user/CheckEmail.ts'
-import { CheckEmailByJosn } from '@/api/user/CheckEmail.ts'
+import type { CheckEmailRequest, CheckEmailResponse } from '@/api/user/CheckEmail'
+import { CheckEmailByJosn } from '@/api/user/CheckEmail'
 
-import type { RegisterRequest, RegisterResponse } from '@/api/user/Register.ts'
-import { RegisterByJosn } from '@/api/user/Register.ts'
+import type { RegisterRequest, RegisterResponse } from '@/api/user/Register'
+import { RegisterByJosn } from '@/api/user/Register'
 
-import type { CaptchaSendRequest, CaptchaSendResponse } from '@/api/utils/CaptchaSend.ts'
-import { captchaSendByJosn } from '@/api/utils/CaptchaSend.ts'
+import type { CaptchaSendRequest, CaptchaSendResponse } from '@/api/utils/CaptchaSend'
+import { captchaSendByJosn } from '@/api/utils/CaptchaSend'
 
-import { getPublicIp } from '@/utils/IP.ts'
+import { getPublicIp } from '@/utils/IP'
 
-import type { CaptchaCheckRequest } from '@/api/utils/CaptchaCheck.ts'
-import { captchaCheckByJosn } from '@/api/utils/CaptchaCheck.ts'
+import type { CaptchaCheckRequest } from '@/api/utils/CaptchaCheck'
+import { captchaCheckByJosn } from '@/api/utils/CaptchaCheck'
 
-import { ResponseCode, CaptchaPurpose } from '@/api/responseCode.ts'
+import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
 
 
-import router from '@/router/index.ts'
+import router from '@/router/index'
 
 interface RegisterForm {
   userName: string
