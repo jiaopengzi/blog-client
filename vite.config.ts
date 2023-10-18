@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-04 18:07:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-06 00:19:50
+ * @LastEditTime : 2023-10-18 14:14:53
  * @FilePath     : \blog-client\vite.config.ts
  * @Description  :
  * @blog         : https://jiaopengzi.com
@@ -55,6 +55,8 @@ export default defineConfig({
   // ------------------------------ less全局变量生效 结束
   // ------------------------------ 设置代理 开始
   server: {
+    // host: 'http:test.jiaopengzi.com',
+    // port: 80,
     proxy: {
       // dev Server.proxy 可以是一个指向开发环境 API 服务器的字符串
       '/api': {

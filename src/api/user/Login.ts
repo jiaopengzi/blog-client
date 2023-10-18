@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 19:57:55
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-04 14:52:35
+ * @LastEditTime : 2023-10-18 16:21:52
  * @FilePath     : \blog-client\src\api\user\Login.ts
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -31,5 +31,22 @@ export function loginByJosn(requestData: string): AxiosPromise<LoginResponse> {
     url: urlStr,
     method: 'post',
     data: requestData,
+  })
+}
+
+export function loginByQQ(): AxiosPromise<LoginResponse> {
+  const urlStr = routerGroup + '/social/qq'
+  return request({
+    url: urlStr,
+    method: 'get',
+  })
+}
+
+export function loginByQQCallback(code: string): AxiosPromise<LoginResponse> {
+  // const urlStr = routerGroup + '/social/qq/callback?code=' + code
+  const urlStr = routerGroup + '/social/qq/callback?code=' + code
+  return request({
+    url: urlStr,
+    method: 'get',
   })
 }

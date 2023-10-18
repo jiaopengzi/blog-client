@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 19:38:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-10 17:10:43
+ * @LastEditTime : 2023-10-18 14:08:44
  * @FilePath     : \blog-client\src\components\common\LoginPage.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -37,6 +37,10 @@
         <el-button type="primary" @click="openSlideVerify">登录</el-button>
       </el-form-item>
     </div>
+    <div class="social">
+      <button class="social-btn" @click="loginByWechat"><span class="iconfont icon-wechat"></span></button>
+      <button class="social-btn" @click="loginByQQ"><span class="iconfont icon-qq"></span></button>
+    </div>
     <div class="go-home">
       <router-link to="/" class="link">
         <span>首页</span>
@@ -54,11 +58,11 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import SlideVerify from '@/components/common/SlideVerify.vue'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import router from '@/router/index'
-import { useUserStore } from '@/stores/user'
+import { useUserStore, apiLoginQQ } from '@/stores/user'
 
 interface LoginForm {
   loginName: string
@@ -149,6 +153,32 @@ const login = () => {
   console.log('登录')
 }
 
+const loginByWechat = (event: any) => {
+  event.preventDefault() // 阻止按钮的默认行为
+  console.log('微信登录')
+}
+
+const loginByQQ = async (event: any) => {
+  event.preventDefault() // 阻止按钮的默认行为
+  console.log('QQ重定向登录')
+  const loginByQQUrl = await apiLoginQQ()
+  if (loginByQQUrl === '') { return }
+  // 重定向到 QQ登录页面 loginByQQUrl
+  window.location.href = loginByQQUrl
+
+}
+
+const loginByQQCallback = async () => {
+  console.log('QQ回调登录')
+  const code = new URLSearchParams(window.location.search).get('code')
+  if (!code) { return }
+  console.log('code', code)
+  userStore.loginByQQ(code)
+}
+onMounted(() => {
+  // 在页面加载完成后，调用 QQ 登录回调函数
+  loginByQQCallback();
+});
 </script>
 
 <style lang="less" scoped>
@@ -204,5 +234,33 @@ a {
 
 .btn-submit .el-form-item {
   display: inline-block;
+}
+
+.social {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.social-btn {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  outline: none;
+  margin-right: 10px;
+}
+
+.iconfont {
+  font-size: 3em;
+  color: #222;
+}
+
+.icon-wechat {
+  color: #1aad19;
+}
+
+.icon-qq {
+  color: #1296DB;
 }
 </style>

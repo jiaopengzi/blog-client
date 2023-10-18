@@ -6,6 +6,20 @@
   "description": "vue 重写项目",
   "glyphs": [
     {
+      "icon_id": "1235507",
+      "name": "qq",
+      "font_class": "qq",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "13075010",
+      "name": "wechat",
+      "font_class": "wechat",
+      "unicode": "e623",
+      "unicode_decimal": 58915
+    },
+    {
       "icon_id": "257406",
       "name": "close",
       "font_class": "close",
