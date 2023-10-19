@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-04 18:07:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-18 14:06:17
+ * @LastEditTime : 2023-10-19 19:16:00
  * @FilePath     : \blog-client\src\router\index.ts
  * @Description  : 路由配置
  * @blog         : https://jiaopengzi.com
@@ -14,6 +14,7 @@ import UserInfoView from '@/views/UserInfoView.vue'
 import {
   resetPasswordComponent,
   loginComponent,
+  socialLoginCallbackComponent,
   registerComponent,
 } from '@/components/common/index'
 
@@ -34,7 +35,12 @@ const router = createRouter({
     {
       path: '/social/qq/callback',
       name: 'social-qq-callback',
-      component: loginComponent,
+      component: socialLoginCallbackComponent,
+    },
+    {
+      path: '/social/wechat/callback',
+      name: 'social-wechat-callback',
+      component: socialLoginCallbackComponent,
     },
     {
       path: '/register',

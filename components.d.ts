@@ -11,6 +11,7 @@ declare module 'vue' {
     AvatarUploader: typeof import('./src/components/common/AvatarUploader.vue')['default']
     ContentMobile: typeof import('./src/components/common/mobile/ContentMobile.vue')['default']
     ContentPC: typeof import('./src/components/common/pc/ContentPC.vue')['default']
+    copy: typeof import('./src/components/common/LoginPage copy.vue')['default']
     ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']
     ElBreadcrumbItem: typeof import('element-plus/es')['ElBreadcrumbItem']
     ElButton: typeof import('element-plus/es')['ElButton']
@@ -40,6 +41,9 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SlideVerify: typeof import('./src/components/common/SlideVerify.vue')['default']
+    SocialCallback: typeof import('./src/components/common/SocialCallback.vue')['default']
+    SocialLoginCallback: typeof import('./src/components/common/SocialLoginCallback.vue')['default']
+    UserDropdownPC: typeof import('./src/components/common/pc/UserDropdownPC.vue')['default']
     UserInfoMobile: typeof import('./src/components/common/mobile/UserInfoMobile.vue')['default']
     UserInfoPC: typeof import('./src/components/common/pc/UserInfoPC.vue')['default']
   }

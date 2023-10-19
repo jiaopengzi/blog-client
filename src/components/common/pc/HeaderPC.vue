@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-13 17:11:26
+ * @LastEditTime : 2023-10-19 19:38:03
  * @FilePath     : \blog-client\src\components\common\pc\HeaderPC.vue
  * @Description  : 头部 PC端
  * @blog         : https://jiaopengzi.com
@@ -36,9 +36,7 @@
           </router-link>
         </div>
         <div class="avatar header-item" v-if="isLogin">
-          <router-link to="/user-info" class="link">
-            <InitialAvatar :name="data.user.user_display_name" :avatar="data.user.user_avatar" />
-          </router-link>
+          <UserDropdown />
         </div>
       </div>
     </header>
@@ -55,7 +53,7 @@ import { ref, onBeforeMount } from 'vue'
 import type { Ref } from 'vue'
 import type { ScrollData } from '@/hooks/useScroll.types'
 import { useScrollActions } from '@/hooks/useScrollActions'
-import InitialAvatar from '@/components/common/InitialAvatar.vue';
+import UserDropdown from '@/components/common/pc/UserDropdownPC.vue'; // 导入 UserDropdown 组件
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 
@@ -84,7 +82,7 @@ const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownA
 // 状态是否登录
 
 const userStore = useUserStore()
-let { data, isLogin } = storeToRefs(userStore)
+let { isLogin } = storeToRefs(userStore)
 
 onBeforeMount(() => { // 组件挂载前
   // 通过本地信息 获取用户信息

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-17 18:58:54
+ * @LastEditTime : 2023-10-19 17:38:43
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -47,9 +47,14 @@ export enum ResponseCode {
 
   CaptchaSendSuccess = 8000, //验证码发送成功
   CaptchaCheckSuccess = 8002, //验证码发送成功
-  SocialLoginFoundQQSuccess = 8200, //重定向QQ登录成功
-  SocialLoginUnLogin = 8201, //QQ未登录
-  SocialLoginCallbackQQSuccess = 8202, //QQ回调成功
+
+  SocialLoginQQSuccess = 8200, //重定向QQ登录成功
+  SocialLoginQQUnLogin = 8201, //QQ未登录
+  SocialLoginQQCallbackSuccess = 8202, //QQ登录成功回调
+
+  SocialLoginWechatSuccess = 8203, //重定向微信登录成功
+  SocialLoginWechatUnLogin = 8204, //微信未登录
+  SocialLoginWechatCallbackSuccess = 8205, //微信登录成功回调
 }
 export enum CaptchaPurpose {
   Register = 'Register', // 验证码用途：注册

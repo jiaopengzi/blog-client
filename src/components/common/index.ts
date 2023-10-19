@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-13 14:52:34
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-09 14:06:52
+ * @LastEditTime : 2023-10-19 16:53:42
  * @FilePath     : \blog-client\src\components\common\index.ts
  * @Description  : 通用组件导出
  * @blog         : https://jiaopengzi.com
@@ -35,6 +35,8 @@ const registerComponent = () => import('@/components/common/RegisterPage.vue')
 // 忘记密码
 const resetPasswordComponent = () => import('@/components/common/ResetPassword.vue')
 
+const socialLoginCallbackComponent = () => import('@/components/common/SocialLoginCallback.vue')
+
 // 内容页
 const contentComponent = isMobileDevice
   ? defineAsyncComponent(() => import('@/components/common/mobile/ContentMobile.vue'))
@@ -52,6 +54,7 @@ export {
   loginComponent,
   registerComponent,
   resetPasswordComponent,
+  socialLoginCallbackComponent,
   contentComponent,
   userInfoComponent,
 }

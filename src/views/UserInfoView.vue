@@ -1,9 +1,9 @@
 <!--
  * @Author       : jiaopengzi
- * @Date         : 2023-08-04 10:54:19
+ * @Date         : 2023-10-05 17:09:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-19 14:04:05
- * @FilePath     : \blog-client\src\views\HomeView.vue
+ * @LastEditTime : 2023-10-05 17:10:37
+ * @FilePath     : \blog-client\src\views\UserInfoPCView.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -14,15 +14,13 @@
 <template>
   <div class="page">
     <headerComponent />
-    <contentComponent />
+    <userInfoComponent />
     <footerComponent />
   </div>
 </template>
 
 <script setup lang="ts">
-import { headerComponent, footerComponent, contentComponent } from '@/components/common/index'
-
-
+import { headerComponent, footerComponent, userInfoComponent } from '@/components/common/index'
 </script>
 
 <style scoped lang="less">

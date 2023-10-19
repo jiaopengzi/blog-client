@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 19:38:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-18 14:08:44
+ * @LastEditTime : 2023-10-19 17:27:48
  * @FilePath     : \blog-client\src\components\common\LoginPage.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -58,11 +58,12 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref } from 'vue'
 import SlideVerify from '@/components/common/SlideVerify.vue'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import router from '@/router/index'
-import { useUserStore, apiLoginQQ } from '@/stores/user'
+import { useUserStore } from '@/stores/user'
+import { storeToRefs } from 'pinia'
 
 interface LoginForm {
   loginName: string
@@ -122,8 +123,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     if (valid) {
       await userStore.login(loginForm.loginName, loginForm.password) // 登录
       if (userStore.getIsLogin) {
-        // 登录成功 跳转到首页
-        router.push({ path: '/' })
+        router.push({ path: '/' })// 登录成功 跳转到首页
       }
     }
   })
@@ -132,53 +132,29 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 // 添加 showSlideVerify 响应式变量
 const showSlideVerify = ref(false)
 
-// 显示滑块验证
 const openSlideVerify = () => {
-
-  // 显示滑块验证
-  console.log('打开滑块验证')
-  showSlideVerify.value = true
+  showSlideVerify.value = true // 显示滑块验证
 }
 
-
-// 关闭滑块验证
 const closeSlideVerify = () => {
-  showSlideVerify.value = false
+  showSlideVerify.value = false // 关闭滑块验证
 }
 
 const login = () => {
   // 关闭滑块验证
   showSlideVerify.value = false
   submitForm(loginFormRef.value)
-  console.log('登录')
+  // console.log('登录')
 }
 
-const loginByWechat = (event: any) => {
-  event.preventDefault() // 阻止按钮的默认行为
-  console.log('微信登录')
+const loginByWechat = () => {
+  userStore.loginByWechat()
 }
 
-const loginByQQ = async (event: any) => {
-  event.preventDefault() // 阻止按钮的默认行为
-  console.log('QQ重定向登录')
-  const loginByQQUrl = await apiLoginQQ()
-  if (loginByQQUrl === '') { return }
-  // 重定向到 QQ登录页面 loginByQQUrl
-  window.location.href = loginByQQUrl
-
+const loginByQQ = () => {
+  userStore.loginByQQ()
 }
 
-const loginByQQCallback = async () => {
-  console.log('QQ回调登录')
-  const code = new URLSearchParams(window.location.search).get('code')
-  if (!code) { return }
-  console.log('code', code)
-  userStore.loginByQQ(code)
-}
-onMounted(() => {
-  // 在页面加载完成后，调用 QQ 登录回调函数
-  loginByQQCallback();
-});
 </script>
 
 <style lang="less" scoped>

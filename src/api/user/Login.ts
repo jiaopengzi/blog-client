@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 19:57:55
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-18 16:21:52
+ * @LastEditTime : 2023-10-19 17:52:41
  * @FilePath     : \blog-client\src\api\user\Login.ts
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -24,17 +24,18 @@ export interface LoginResponse {
   data: any // 您可以根据实际返回的数据结构替换为更具体的类型
 }
 
-// 注册
-export function loginByJosn(requestData: string): AxiosPromise<LoginResponse> {
+// 默认账号登录
+export function loginByJosn(loginRequest: LoginRequest): AxiosPromise<LoginResponse> {
   const urlStr = routerGroup + '/user/login'
   return request({
     url: urlStr,
     method: 'post',
-    data: requestData,
+    data: loginRequest,
   })
 }
 
-export function loginByQQ(): AxiosPromise<LoginResponse> {
+// QQ登录
+export function loginByQQUrl(): AxiosPromise<LoginResponse> {
   const urlStr = routerGroup + '/social/qq'
   return request({
     url: urlStr,
@@ -42,9 +43,27 @@ export function loginByQQ(): AxiosPromise<LoginResponse> {
   })
 }
 
-export function loginByQQCallback(code: string): AxiosPromise<LoginResponse> {
-  // const urlStr = routerGroup + '/social/qq/callback?code=' + code
+// QQ登录回调
+export function loginByQQUrlCallback(code: string): AxiosPromise<LoginResponse> {
   const urlStr = routerGroup + '/social/qq/callback?code=' + code
+  return request({
+    url: urlStr,
+    method: 'get',
+  })
+}
+
+// 微信登录
+export function loginByWechatUrl(): AxiosPromise<LoginResponse> {
+  const urlStr = routerGroup + '/social/wechat'
+  return request({
+    url: urlStr,
+    method: 'get',
+  })
+}
+
+// 微信登录回调
+export function loginByWechatUrlCallback(code: string): AxiosPromise<LoginResponse> {
+  const urlStr = routerGroup + '/social/wechat/callback?code=' + code
   return request({
     url: urlStr,
     method: 'get',
