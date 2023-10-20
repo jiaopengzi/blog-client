@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-04 18:07:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-19 19:16:00
+ * @LastEditTime : 2023-10-20 22:49:22
  * @FilePath     : \blog-client\src\router\index.ts
  * @Description  : 路由配置
  * @blog         : https://jiaopengzi.com
@@ -35,6 +35,11 @@ const router = createRouter({
     {
       path: '/social/qq/callback',
       name: 'social-qq-callback',
+      component: socialLoginCallbackComponent,
+    },
+    {
+      path: '/social/qq/bind/callback',
+      name: 'social-qq-bind-callback',
       component: socialLoginCallbackComponent,
     },
     {

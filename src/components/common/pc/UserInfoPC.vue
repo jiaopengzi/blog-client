@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-05 16:45:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-19 14:08:43
+ * @LastEditTime : 2023-10-20 21:32:11
  * @FilePath     : \blog-client\src\components\common\pc\UserInfoPC.vue
  * @Description  : 用户中心 PC端
  * @Blog         : https://jiaopengzi.com
@@ -38,11 +38,23 @@
             </el-descriptions>
           </div>
 
-
           <div class="el-social-div">
             <el-descriptions title="社交信息" :column="3" size="large" border>
-              <el-descriptions-item label="QQ"><a href="#">点击绑定</a></el-descriptions-item>
-              <el-descriptions-item label="微信"><a href="#">点击绑定</a></el-descriptions-item>
+              <el-descriptions-item :label="social.QQDisplay">
+                <button class="btn-bind" v-if="!showQQ" @click="bindSocial(social.QQ)">绑定{{ social.QQDisplay }}</button>
+                <span class="social-nickname">{{ socialNickname('user_qq', 'nickname') }}</span>
+                <button class="btn-unbind" v-if="showQQ" @click="unBindSocial(social.QQ)">解绑{{ social.QQDisplay
+                }}</button>
+              </el-descriptions-item>
+
+              <el-descriptions-item :label="social.WeChatDisplay">
+                <button class="btn-bind" v-if="!showWechat" @click="bindSocial(social.WeChat)">绑定{{ social.WeChatDisplay
+                }}</button>
+                <span class="social-nickname">{{ socialNickname('user_wechat', 'nickName') }}</span>
+                <button class="btn-unbind" v-if="showWechat" @click="unBindSocial(social.WeChat)">解绑{{
+                  social.WeChatDisplay
+                }}</button>
+              </el-descriptions-item>
             </el-descriptions>
           </div>
 
@@ -142,6 +154,7 @@
   </div>
 </template>
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import '@/assets/styleVariables.less'
 import { View, Tickets, Goods, Document, ChatLineSquare, Star } from '@element-plus/icons-vue'
 import { ArrowRight } from '@element-plus/icons-vue'
@@ -152,6 +165,7 @@ import AvatarUpload from '@/components/common/AvatarUploader.vue';
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 import { convertToBeijingTime } from '@/utils/UtcToBeijingTime'
+import type { UserInfo } from '@/api/user/GetUserInfo'
 
 const tabPosition = ref('left') // tab位置
 
@@ -167,11 +181,6 @@ interface EditForm {
 // 获取用户信息
 const userStore = useUserStore()
 let { data, avatar } = storeToRefs(userStore)
-
-onBeforeMount(() => { // 组件挂载前
-  userStore.getUserInfoByToken()
-
-})
 
 // 表单label位置 top | left | right
 const labelPosition = ref('right')
@@ -195,29 +204,68 @@ const editForm = reactive<EditForm>({
 const submitForm = async (formEl: FormInstance | undefined) => { }
 
 
-interface Bindings {
-  QQ: boolean;
-  WeChat: boolean;
+const enum social {
+  QQ = 'qq',
+  QQDisplay = 'QQ',
+  WeChat = 'wechat',
+  WeChatDisplay = '微信',
 }
 
+const showQQ = ref(false);
+const showWechat = ref(false);
 
-type Platform = 'QQ' | 'WeChat';
-
-
-const isBound = ref<Bindings>({ QQ: false, WeChat: true });
-const nickname = ref<string>('');
-
-const toggleBinding = (platform: Platform) => {
-  isBound.value[platform] = true
-  if (platform === 'WeChat' && isBound.value[platform]) {
-    // 在这里添加获取微信昵称的逻辑
-    nickname.value = '微信昵称';
-  } else if (platform === 'WeChat') {
-    nickname.value = '';
-  }
-  console.log(`${isBound.value[platform] ? '绑定' : '解绑'} ${platform}`);
-  // 在这里添加处理逻辑，例如调用 API 进行实际绑定或解绑操作
+/**
+ * @description: 获取社交昵称
+ * @param platform 平台
+ * @param field 字段
+ * @return string 
+ */
+const socialNickname = (platform: keyof UserInfo, field: string) => {
+  const userData = data.value as UserInfo;
+  return userData[platform] ? (userData[platform] as any)[field] : '';
 };
+
+
+/**
+ * @description: 绑定社交账号
+ * @param platform 平台
+ * @return  void
+ */
+const bindSocial = (platform: social) => {
+  if (platform === social.QQ) {
+    userStore.bindQQ();
+  } else if (platform === social.WeChat) {
+    userStore.loginByWechat();
+  }
+  updateShowStatus(platform);
+};
+
+const unBindSocial = (platform: string) => {
+  console.log(`解绑${platform}`);
+};
+
+/**
+ * @description: 更新社交账号显示状态
+ * @param platform 平台
+ * @return  void
+ */
+const updateShowStatus = (platform: social) => {
+  if (platform === social.QQ && data.value.user_qq && data.value.user_qq.openid) {
+    showQQ.value = true;
+  } else if (platform === social.WeChat && data.value.user_wechat && data.value.user_wechat.unionid) {
+    showWechat.value = true;
+  }
+};
+
+onMounted(() => {
+  updateShowStatus(social.QQ);
+  updateShowStatus(social.WeChat);
+});
+
+onBeforeMount(() => { // 组件挂载前
+  userStore.getUserInfoByToken()
+
+})
 
 
 
@@ -297,5 +345,26 @@ const toggleBinding = (platform: Platform) => {
   justify-content: center;
   align-items: center;
   margin: 40px 40px 40px 0;
+}
+
+.social-nickname {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.btn-unbind {
+  color: #409eff;
+  border: 1px solid #409eff;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.btn-bind {
+  color: #409eff;
+  border: 1px solid #409eff;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
 }
 </style>

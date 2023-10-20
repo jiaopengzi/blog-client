@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-04 14:44:00
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-19 13:11:57
+ * @LastEditTime : 2023-10-20 23:29:34
  * @FilePath     : \blog-client\src\api\user\GetUserInfo.ts
  * @Description  : 获取用户信息
  * @Blog         : https://jiaopengzi.com
@@ -77,7 +77,7 @@ export interface UserInfo {
     userID: number
     openid: string
     unionid: string
-    nickName: string
+    nickname: string
     sex: string
     country: string
     province: string
@@ -87,59 +87,61 @@ export interface UserInfo {
 }
 
 // 默认的 UserInfo 空对象
-export const emptyUserInfo: UserInfo = {
-  user: {
-    created_at: '',
-    id: 0,
-    updated_at: '',
-    user_avatar: '',
-    user_display_name: '',
-    user_email: '',
-    user_name: '',
-    user_status: 0,
-  },
-  user_meta: [
-    {
+export function emptyUserInfo(): UserInfo {
+  return {
+    user: {
+      created_at: '',
+      id: 0,
+      updated_at: '',
+      user_avatar: '',
+      user_display_name: '',
+      user_email: '',
+      user_name: '',
+      user_status: 0,
+    },
+    user_meta: [
+      {
+        created_at: '',
+        id: 0,
+        updated_at: '',
+        user_id: 0,
+        meta_key: '',
+        meta_value: '',
+      },
+    ],
+    user_mobile: {
       created_at: '',
       id: 0,
       updated_at: '',
       user_id: 0,
-      meta_key: '',
-      meta_value: '',
+      mobile: '',
+      region: '',
     },
-  ],
-  user_mobile: {
-    created_at: '',
-    id: 0,
-    updated_at: '',
-    user_id: 0,
-    mobile: '',
-    region: '',
-  },
-  user_qq: {
-    created_at: '',
-    id: 0,
-    updated_at: '',
-    user_id: 0,
-    openid: '',
-    nickname: '',
-    sex: '',
-    province: '',
-    city: '',
-    avatar: '',
-  },
-  user_wechat: {
-    created_at: '',
-    id: 0,
-    updated_at: '',
-    userID: 0,
-    openid: '',
-    unionid: '',
-    nickName: '',
-    sex: '',
-    country: '',
-    province: '',
-    city: '',
-    avatar: '',
-  },
+    user_qq: {
+      created_at: '',
+      id: 0,
+      updated_at: '',
+      user_id: 0,
+      openid: '',
+      nickname: '',
+      sex: '',
+      province: '',
+      city: '',
+      avatar: '',
+    },
+    user_wechat: {
+      created_at: '',
+      id: 0,
+      updated_at: '',
+      userID: 0,
+      openid: '',
+      unionid: '',
+      nickname: '',
+      sex: '',
+      country: '',
+      province: '',
+      city: '',
+      avatar: '',
+    },
+  }
 }

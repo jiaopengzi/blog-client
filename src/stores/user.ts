@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 09:35:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-19 22:20:01
+ * @LastEditTime : 2023-10-20 23:30:39
  * @FilePath     : \blog-client\src\stores\user.ts
  * @Description  : 用户信息
  * @Blog         : https://jiaopengzi.com
@@ -21,7 +21,9 @@ import {
   loginByWechatUrl,
   loginByWechatUrlCallback,
   loginByQQUrl,
+  bindQQUrl,
   loginByQQUrlCallback,
+  bindQQUrlCallback,
 } from '@/api/user/Login'
 import type { GetUserInfoResponse, UserInfo } from '@/api/user/GetUserInfo'
 import { emptyUserInfo } from '@/api/user/GetUserInfo'
@@ -38,7 +40,7 @@ interface UserInfoStore {
 // 创建空值用户信息
 function createEmptyUserInfoStore(): UserInfoStore {
   return {
-    data: emptyUserInfo,
+    data: emptyUserInfo(),
     isLogin: false,
     avatar: '',
     isBindEmail: false,
@@ -72,8 +74,6 @@ export const useUserStore = defineStore({
     // 退出登录
     async logout() {
       localStorage.removeItem(LocalStorageKey.AccessToken)
-      console.log('空值')
-      console.log(createEmptyUserInfoStore())
       this.$patch(createEmptyUserInfoStore())
     },
 
@@ -104,6 +104,18 @@ export const useUserStore = defineStore({
     // QQ登录回调
     async loginByQQCallback(code: string) {
       const userInfoStore: UserInfoStore = await apiLoginQQCallback(code)
+      this.$patch(userInfoStore)
+    },
+
+    // 绑定QQ
+    async bindQQ() {
+      await apiBindQQ()
+      this.$patch(createEmptyUserInfoStore())
+    },
+
+    // QQ绑定回调
+    async bindQQCallback(code: string) {
+      const userInfoStore: UserInfoStore = await apiBindQQCallback(code)
       this.$patch(userInfoStore)
     },
 
@@ -164,6 +176,18 @@ async function apiLoginQQCallback(code: string): Promise<UserInfoStore> {
   const resObj: LoginResponse = await handleResponse<LoginResponse>(loginByQQUrlCallback(code)) // 使用辅助函数处理请求
 
   return await handleLoginResult(resObj, ResponseCode.SocialLoginQQCallbackSuccess)
+}
+
+// 绑定QQ
+async function apiBindQQ(): Promise<void> {
+  await redirectToSocialLogin(bindQQUrl(), ResponseCode.SocialLoginQQSuccess)
+}
+
+// 绑定QQ回调
+async function apiBindQQCallback(code: string): Promise<UserInfoStore> {
+  const resObj: LoginResponse = await handleResponse<LoginResponse>(bindQQUrlCallback(code)) // 使用辅助函数处理请求
+
+  return await handleBindResult(resObj, ResponseCode.SocialBindQQCallbackSuccess)
 }
 
 // 从token中获取用户信息
@@ -230,6 +254,7 @@ async function handleLoginResult(
   resObj: LoginResponse,
   successCode: ResponseCode
 ): Promise<UserInfoStore> {
+  console.log(resObj.code)
   if (resObj.code === successCode) {
     // 显示登录成功提示
     ShowMsgTip(MsgType.success, resObj.msg, 3000)
@@ -237,6 +262,23 @@ async function handleLoginResult(
     // 登录成功 存入token
     localStorage.setItem(LocalStorageKey.AccessToken, resObj.data.access_token)
 
+    return await apiGetUserInfoByToken() // 获取用户信息
+  }
+
+  // 显示登录失败提示
+  localStorage.removeItem(LocalStorageKey.AccessToken)
+  ShowMsgTip(MsgType.error, resObj.msg, 3000)
+  return createEmptyUserInfoStore() // 获取用户信息
+}
+
+async function handleBindResult(
+  resObj: LoginResponse,
+  successCode: ResponseCode
+): Promise<UserInfoStore> {
+  console.log(resObj.code)
+  if (resObj.code === successCode) {
+    // 显示登录成功提示
+    ShowMsgTip(MsgType.success, resObj.msg, 3000)
     return await apiGetUserInfoByToken() // 获取用户信息
   }
 

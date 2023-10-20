@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-19 14:12:55
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-19 20:46:09
+ * @LastEditTime : 2023-10-20 22:47:56
  * @FilePath     : \blog-client\src\components\common\SocialLoginCallback.vue
  * @Description  : 三方登录回调跳转页面
  * @Blog         : https://jiaopengzi.com
@@ -33,6 +33,12 @@ const loginByQQCallback = async () => {
   await userStore.loginByQQCallback(code)
 }
 
+const bindQQCallback = async () => {
+  const code = new URLSearchParams(window.location.search).get('code')
+  if (!code) { return }
+  await userStore.bindQQCallback(code)
+}
+
 const loginByWeChatCallback = async () => {
   const code = new URLSearchParams(window.location.search).get('code')
   if (!code) { return }
@@ -47,7 +53,11 @@ onMounted(async () => {
   if (route.path === '/social/qq/callback') {
     _platform.value = "QQ"
     await loginByQQCallback() // 等待 loginByQQCallback 执行完毕后，跳转到首页
-  } else if (route.path === '/social/wechat/callback') {
+  } else if (route.path === '/social/qq/bind/callback') {
+    _platform.value = "QQ"
+    await bindQQCallback() // 等待 bindQQCallback 执行完毕后，跳转到首页
+  }
+  else if (route.path === '/social/wechat/callback') {
     _platform.value = "微信"
     await loginByWeChatCallback()
   }
