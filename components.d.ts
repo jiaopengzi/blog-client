@@ -9,9 +9,12 @@ declare module 'vue' {
   export interface GlobalComponents {
     AlertTip: typeof import('./src/components/common/AlertTip.vue')['default']
     AvatarUploader: typeof import('./src/components/common/AvatarUploader.vue')['default']
+    BindEmail: typeof import('./src/components/common/BindEmail.vue')['default']
+    BindEmailDialog: typeof import('./src/components/common/BindEmailDialog.vue')['default']
     ContentMobile: typeof import('./src/components/common/mobile/ContentMobile.vue')['default']
     ContentPC: typeof import('./src/components/common/pc/ContentPC.vue')['default']
     copy: typeof import('./src/components/common/LoginPage copy.vue')['default']
+    ElAlert: typeof import('element-plus/es')['ElAlert']
     ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']
     ElBreadcrumbItem: typeof import('element-plus/es')['ElBreadcrumbItem']
     ElButton: typeof import('element-plus/es')['ElButton']

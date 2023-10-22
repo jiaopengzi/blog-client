@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-19 14:12:55
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-20 22:47:56
+ * @LastEditTime : 2023-10-21 18:47:57
  * @FilePath     : \blog-client\src\components\common\SocialLoginCallback.vue
  * @Description  : 三方登录回调跳转页面
  * @Blog         : https://jiaopengzi.com

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-05 16:45:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-20 21:32:11
+ * @LastEditTime : 2023-10-22 10:47:32
  * @FilePath     : \blog-client\src\components\common\pc\UserInfoPC.vue
  * @Description  : 用户中心 PC端
  * @Blog         : https://jiaopengzi.com
@@ -10,6 +10,10 @@
 -->
 
 <template>
+  <!-- 绑定邮箱对话框弹窗 -->
+  <BindemailDialog></BindemailDialog>
+
+  <!-- 内容页 -->
   <div class="content">
     <div class="breadcrumb">
       <el-breadcrumb :separator-icon="ArrowRight">
@@ -43,7 +47,8 @@
               <el-descriptions-item :label="social.QQDisplay">
                 <button class="btn-bind" v-if="!showQQ" @click="bindSocial(social.QQ)">绑定{{ social.QQDisplay }}</button>
                 <span class="social-nickname">{{ socialNickname('user_qq', 'nickname') }}</span>
-                <button class="btn-unbind" v-if="showQQ" @click="unBindSocial(social.QQ)">解绑{{ social.QQDisplay
+                <button class="btn-unbind" v-if="showQQ && isBindEmail" @click="unBindSocial(social.QQ)">解绑{{
+                  social.QQDisplay
                 }}</button>
               </el-descriptions-item>
 
@@ -51,7 +56,7 @@
                 <button class="btn-bind" v-if="!showWechat" @click="bindSocial(social.WeChat)">绑定{{ social.WeChatDisplay
                 }}</button>
                 <span class="social-nickname">{{ socialNickname('user_wechat', 'nickName') }}</span>
-                <button class="btn-unbind" v-if="showWechat" @click="unBindSocial(social.WeChat)">解绑{{
+                <button class="btn-unbind" v-if="showWechat && isBindEmail" @click="unBindSocial(social.WeChat)">解绑{{
                   social.WeChatDisplay
                 }}</button>
               </el-descriptions-item>
@@ -162,10 +167,12 @@ import { reactive, ref, onBeforeMount } from 'vue'
 import type { FormInstance } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import InitialAvatar from '@/components/common/InitialAvatar.vue';
 import AvatarUpload from '@/components/common/AvatarUploader.vue';
+import BindemailDialog from '@/components/common/BindEmailDialog.vue';
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 import { convertToBeijingTime } from '@/utils/UtcToBeijingTime'
 import type { UserInfo } from '@/api/user/GetUserInfo'
+
 
 const tabPosition = ref('left') // tab位置
 
@@ -180,7 +187,8 @@ interface EditForm {
 
 // 获取用户信息
 const userStore = useUserStore()
-let { data, avatar } = storeToRefs(userStore)
+
+let { data, avatar, isBindEmail } = storeToRefs(userStore)
 
 // 表单label位置 top | left | right
 const labelPosition = ref('right')
@@ -240,8 +248,14 @@ const bindSocial = (platform: social) => {
   updateShowStatus(platform);
 };
 
-const unBindSocial = (platform: string) => {
-  console.log(`解绑${platform}`);
+const unBindSocial = async (platform: social) => {
+  if (platform === social.QQ) {
+    await userStore.unBindQQ();
+    showQQ.value = false;
+  } else if (platform === social.WeChat) {
+    // userStore.loginByWechat();
+  }
+  updateShowStatus(platform);
 };
 
 /**

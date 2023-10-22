@@ -118,8 +118,6 @@ export default {
             }
         }
 
-
-
         return { fileInput, imageSrc, cropperVisible, cropperContainer, openCropper, onFileChange, uploadImage };
     },
 };

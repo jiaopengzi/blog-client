@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 19:57:55
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-20 21:43:53
+ * @LastEditTime : 2023-10-22 13:17:00
  * @FilePath     : \blog-client\src\api\user\Login.ts
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -64,6 +64,15 @@ export function bindQQUrl(): AxiosPromise<LoginResponse> {
 // QQ绑定回调
 export function bindQQUrlCallback(code: string): AxiosPromise<LoginResponse> {
   const urlStr = routerGroup + '/social/qq/bind/callback?code=' + code
+  return request({
+    url: urlStr,
+    method: 'get',
+  })
+}
+
+// QQ 解绑
+export function unBindQQ(): AxiosPromise<LoginResponse> {
+  const urlStr = routerGroup + '/social/qq/unbind'
   return request({
     url: urlStr,
     method: 'get',

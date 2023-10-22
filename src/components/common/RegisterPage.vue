@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-14 14:42:21
+ * @LastEditTime : 2023-10-22 12:30:29
  * @FilePath     : \blog-client\src\components\common\RegisterPage.vue
  * @Description  : 注册
  * @Blog         : https://jiaopengzi.com
@@ -310,7 +310,7 @@ function checkEmailValidator(
     })
 }
 
-
+// 验证码校验 异步函数
 async function checkCaptcha(): Promise<void> {
   try {
     // 创建请求对象 加密内容
@@ -334,6 +334,7 @@ async function checkCaptcha(): Promise<void> {
   }
 }
 
+// 校验验证码 Validator
 function checkCaptchaValidator(
   rule: any,
   value: string,
@@ -441,7 +442,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
   formEl.resetFields()
 }
 
-// 添加 showSlideVerify 响应式变量
+// 显示滑块验证 状态
 const showSlideVerify = ref(false)
 
 // 显示滑块验证

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 09:35:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-20 23:30:39
+ * @LastEditTime : 2023-10-22 11:32:22
  * @FilePath     : \blog-client\src\stores\user.ts
  * @Description  : 用户信息
  * @Blog         : https://jiaopengzi.com
@@ -22,6 +22,7 @@ import {
   loginByWechatUrlCallback,
   loginByQQUrl,
   bindQQUrl,
+  unBindQQ,
   loginByQQUrlCallback,
   bindQQUrlCallback,
 } from '@/api/user/Login'
@@ -35,6 +36,7 @@ interface UserInfoStore {
   isLogin: boolean // 是否登录
   avatar?: string // 头像 优先使用data.user.user_avatar 如果没有则使用 data.user_qq.avatar 或者 data.user_wechat.Avatar
   isBindEmail: boolean // 是否绑定邮箱
+  showDialogBindEmail?: boolean // 是否显示绑定邮箱弹窗
 }
 
 // 创建空值用户信息
@@ -44,6 +46,7 @@ function createEmptyUserInfoStore(): UserInfoStore {
     isLogin: false,
     avatar: '',
     isBindEmail: false,
+    showDialogBindEmail: false,
   }
 }
 
@@ -68,6 +71,10 @@ export const useUserStore = defineStore({
     getAvatar(): string {
       return this.avatar || ''
     },
+    // 获取是否显示绑定邮箱弹窗
+    getShowDialogBindEmail(): boolean {
+      return this.showDialogBindEmail || false
+    },
   },
 
   actions: {
@@ -75,6 +82,8 @@ export const useUserStore = defineStore({
     async logout() {
       localStorage.removeItem(LocalStorageKey.AccessToken)
       this.$patch(createEmptyUserInfoStore())
+      // 重定向到登录页
+      window.location.href = '/'
     },
 
     // 登录
@@ -119,6 +128,11 @@ export const useUserStore = defineStore({
       this.$patch(userInfoStore)
     },
 
+    async unBindQQ() {
+      const userInfoStore: UserInfoStore = await apiUnBindQQ()
+      this.$patch(userInfoStore)
+    },
+
     // 从token中获取用户信息
     /**
      * @description: 通过 token 获取用户信息
@@ -132,6 +146,10 @@ export const useUserStore = defineStore({
       const userInfoStore: UserInfoStore = await apiGetUserInfoByToken()
 
       this.$patch(userInfoStore)
+    },
+    // 修改是否显示绑定邮箱弹窗
+    async changeShowDialogBindEmail(status: boolean) {
+      this.showDialogBindEmail = status
     },
   },
 })
@@ -190,6 +208,12 @@ async function apiBindQQCallback(code: string): Promise<UserInfoStore> {
   return await handleBindResult(resObj, ResponseCode.SocialBindQQCallbackSuccess)
 }
 
+async function apiUnBindQQ(): Promise<UserInfoStore> {
+  const resObj: LoginResponse = await handleResponse<LoginResponse>(unBindQQ()) // 使用辅助函数处理请求
+
+  return await handleBindResult(resObj, ResponseCode.SocialUnBindQQSuccess)
+}
+
 // 从token中获取用户信息
 async function apiGetUserInfoByToken(): Promise<UserInfoStore> {
   try {
@@ -207,6 +231,7 @@ async function apiGetUserInfoByToken(): Promise<UserInfoStore> {
           resObj.data?.user_qq?.avatar ||
           '',
         isBindEmail: !!resObj.data?.user?.user_email, // 是否绑定邮箱
+        showDialogBindEmail: !resObj.data?.user?.user_email, // 是否显示绑定邮箱弹窗
       }
     }
   } catch (err: unknown) {
@@ -283,8 +308,8 @@ async function handleBindResult(
   }
 
   // 显示登录失败提示
-  localStorage.removeItem(LocalStorageKey.AccessToken)
   ShowMsgTip(MsgType.error, resObj.msg, 3000)
+  localStorage.removeItem(LocalStorageKey.AccessToken)
   return createEmptyUserInfoStore() // 获取用户信息
 }
 

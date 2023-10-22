@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-05 18:01:03
+ * @LastEditTime : 2023-10-21 19:47:49
  * @FilePath     : \blog-client\src\App.vue
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -14,9 +14,9 @@
   <div class="app">
     <!-- :key="$route.fullPath" 解决url变化而页面不刷新问题 -->
     <router-view :key="$route.fullPath" />
+    <alertTipComponent></alertTipComponent>
   </div>
 </template>
 <script setup lang="ts">
-
 
 </script>

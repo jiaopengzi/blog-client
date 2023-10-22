@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 19:38:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-19 17:27:48
+ * @LastEditTime : 2023-10-22 10:48:07
  * @FilePath     : \blog-client\src\components\common\LoginPage.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -63,7 +63,7 @@ import SlideVerify from '@/components/common/SlideVerify.vue'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import router from '@/router/index'
 import { useUserStore } from '@/stores/user'
-import { storeToRefs } from 'pinia'
+
 
 interface LoginForm {
   loginName: string

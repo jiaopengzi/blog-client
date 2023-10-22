@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-20 22:33:29
+ * @LastEditTime : 2023-10-22 11:21:00
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -44,6 +44,7 @@ export enum ResponseCode {
   UserResetPasswordFailed = 1022, //重置密码失败
   UserResetPasswordSuccess = 1023, //重置密码成功
   UserGetInfoSuccess = 1024, //重置密码成功
+  UserBindEmailSuccess = 1026, //绑定邮箱成功
 
   CaptchaSendSuccess = 8000, //验证码发送成功
   CaptchaCheckSuccess = 8002, //验证码发送成功
@@ -52,14 +53,16 @@ export enum ResponseCode {
   SocialLoginQQUnLogin = 8201, //QQ未登录
   SocialLoginQQCallbackSuccess = 8202, //QQ登录成功回调
   SocialBindQQCallbackSuccess = 8203, //QQ绑定成功回调
+  SocialUnBindQQSuccess = 8204, //QQ解绑成功
 
-  SocialLoginWechatSuccess = 8204, //重定向微信登录成功
-  SocialLoginWechatUnLogin = 8205, //微信未登录
-  SocialLoginWechatCallbackSuccess = 8206, //微信登录成功回调
+  SocialLoginWechatSuccess = 8205, //重定向微信登录成功
+  SocialLoginWechatUnLogin = 8206, //微信未登录
+  SocialLoginWechatCallbackSuccess = 8207, //微信登录成功回调
 }
 export enum CaptchaPurpose {
   Register = 'Register', // 验证码用途：注册
   ResetPassword = 'ResetPassword', // 验证码用途：重置密码
+  BindEmail = 'BindEmail', // 验证码用途：绑定邮箱
 }
 
 export enum LocalStorageKey {
