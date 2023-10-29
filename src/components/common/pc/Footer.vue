@@ -1,9 +1,10 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-12 19:57:30
- * @FilePath     : \blog-client\src\components\common\pc\FooterPC.vue
+ * @LastEditTime : 2023-10-29 20:29:41
+ * @FilePath     : \blog-client\src\components\common\pc\Footer.vue
  * @Description  : 底部 PC端
  * @blog         : https://jiaopengzi.com
  * Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -50,39 +51,38 @@
 </template>
 <script setup lang="ts">
 // 动态计算垂直方向的滚动条宽度
-import { onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue'
 
-const scrollbarWidth = ref(0);
+const scrollbarWidth = ref(0)
 
 /**
  * @description: 获取滚动条宽度
  * @return 返回滚动条宽度
  */
 const getScrollBarWidth = () => {
-  const outer = document.createElement('div'); // 外部容器
-  outer.style.visibility = 'hidden'; // 设置为隐藏
-  outer.style.overflow = 'scroll'; // 内容超出时显示滚动条
-  document.body.appendChild(outer); // 将容器添加到页面中
+  const outer = document.createElement('div') // 外部容器
+  outer.style.visibility = 'hidden' // 设置为隐藏
+  outer.style.overflow = 'scroll' // 内容超出时显示滚动条
+  document.body.appendChild(outer) // 将容器添加到页面中
 
-  const inner = document.createElement('div'); // 内部元素
-  outer.appendChild(inner); // 将内部元素添加到外部容器中
+  const inner = document.createElement('div') // 内部元素
+  outer.appendChild(inner) // 将内部元素添加到外部容器中
 
-  const scrollbarWidth = outer.offsetWidth - inner.offsetWidth; // 计算滚动条宽度
+  const scrollbarWidth = outer.offsetWidth - inner.offsetWidth // 计算滚动条宽度
 
-  outer.parentNode?.removeChild(outer); // 移除创建的元素
-  return scrollbarWidth;  // 返回滚动条宽度
-};
+  outer.parentNode?.removeChild(outer) // 移除创建的元素
+  return scrollbarWidth // 返回滚动条宽度
+}
 
 /**
  * @description: 在页面加载完成后，计算滚动条宽度并设置到根元素中
  * @return  void
  */
 onMounted(() => {
-  scrollbarWidth.value = getScrollBarWidth();
-  document.documentElement.style.setProperty('--scrollbar-y-width', `${scrollbarWidth.value}px`);
-});
+  scrollbarWidth.value = getScrollBarWidth()
+  document.documentElement.style.setProperty('--scrollbar-y-width', `${scrollbarWidth.value}px`)
+})
 </script>
-
 
 <style scoped lang="less">
 footer {

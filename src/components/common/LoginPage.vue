@@ -2,25 +2,39 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 19:38:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-22 10:48:07
+ * @LastEditTime : 2023-10-29 11:55:30
  * @FilePath     : \blog-client\src\components\common\LoginPage.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
 
-
 <template>
   <!-- 添加滑动验证组件：SlideVerify -->
 
-  <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="login"></SlideVerify>
-  <el-form :label-position="labelPosition" label-width="100px" ref="loginFormRef" :model="loginForm" :rules="rules"
-    class="login-form" :size="formSize" status-icon>
+  <SlideVerify
+    v-if="showSlideVerify"
+    @on-close="closeSlideVerify"
+    @on-success="login"
+  ></SlideVerify>
+  <el-form
+    :label-position="labelPosition"
+    label-width="100px"
+    ref="loginFormRef"
+    :model="loginForm"
+    :rules="rules"
+    class="login-form"
+    :size="formSize"
+    status-icon
+  >
     <div class="header-main">
-      <a href="/">
+      <a :href="routeObj.home.path">
         <div class="logo">
           <h2>
-            <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" alt="/" />
+            <img
+              src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
+              :alt="routeObj.home.path"
+            />
           </h2>
         </div>
       </a>
@@ -30,7 +44,11 @@
       <el-input v-model="loginForm.loginName" placeholder="请输入用户名或邮箱" />
     </el-form-item>
     <el-form-item label="密码" prop="password">
-      <el-input type="password" v-model="loginForm.password" placeholder="大小写字母 + 数字, 长度:6-64" />
+      <el-input
+        type="password"
+        v-model="loginForm.password"
+        placeholder="大小写字母 + 数字, 长度:6-64"
+      />
     </el-form-item>
     <div class="btn-submit">
       <el-form-item>
@@ -38,19 +56,21 @@
       </el-form-item>
     </div>
     <div class="social">
-      <button class="social-btn" @click="loginByWechat"><span class="iconfont icon-wechat"></span></button>
+      <button class="social-btn" @click="loginByWeChat">
+        <span class="iconfont icon-wechat"></span>
+      </button>
       <button class="social-btn" @click="loginByQQ"><span class="iconfont icon-qq"></span></button>
     </div>
     <div class="go-home">
-      <router-link to="/" class="link">
+      <router-link :to="routeObj.home.path" class="link">
         <span>首页</span>
       </router-link>
       <span> | </span>
-      <router-link to="/register" class="link">
+      <router-link :to="routeObj.register.path" class="link">
         <span>注册</span>
       </router-link>
       <span> | </span>
-      <router-link to="/reset-password" class="link">
+      <router-link :to="routeObj.resetPassword.path" class="link">
         <span>忘记密码</span>
       </router-link>
     </div>
@@ -62,8 +82,8 @@ import { reactive, ref } from 'vue'
 import SlideVerify from '@/components/common/SlideVerify.vue'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import router from '@/router/index'
+import { routeObj } from '@/router/routeAll'
 import { useUserStore } from '@/stores/user'
-
 
 interface LoginForm {
   loginName: string
@@ -85,7 +105,6 @@ const loginForm = reactive<LoginForm>({
   password: '123QWEasd',
 })
 
-
 /**
  * @description: 表单校验规则
  * @return  FormRules<loginForm> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
@@ -93,7 +112,11 @@ const loginForm = reactive<LoginForm>({
 const rules = reactive<FormRules<LoginForm>>({
   loginName: [
     { required: true, message: '请输入用户名！', trigger: 'blur' },
-    { pattern: /^[a-z0-9]{6,20}/, message: '用户名长度:6-20的小写字母或数字', trigger: 'change' },
+    {
+      pattern: /^([a-z0-9._%+-]+)@[a-z0-9.-]+\.[a-z]{2,}$|^[a-z0-9]{6,20}$/,
+      message: '6-20位小写字母或数字 | 邮箱',
+      trigger: 'change',
+    },
     // 用户查重
     // { validator: checkUserNameValidator, trigger: 'blur' },
   ],
@@ -107,7 +130,6 @@ const rules = reactive<FormRules<LoginForm>>({
       trigger: 'change',
     },
   ],
-
 })
 
 /**
@@ -123,7 +145,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     if (valid) {
       await userStore.login(loginForm.loginName, loginForm.password) // 登录
       if (userStore.getIsLogin) {
-        router.push({ path: '/' })// 登录成功 跳转到首页
+        router.push({ path: '/' }) // 登录成功 跳转到首页
       }
     }
   })
@@ -147,14 +169,13 @@ const login = () => {
   // console.log('登录')
 }
 
-const loginByWechat = () => {
-  userStore.loginByWechat()
+const loginByWeChat = () => {
+  userStore.loginByWeChat()
 }
 
 const loginByQQ = () => {
   userStore.loginByQQ()
 }
-
 </script>
 
 <style lang="less" scoped>
@@ -237,6 +258,6 @@ a {
 }
 
 .icon-qq {
-  color: #1296DB;
+  color: #1296db;
 }
 </style>

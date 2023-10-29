@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 09:35:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-22 11:32:22
+ * @LastEditTime : 2023-10-29 20:05:39
  * @FilePath     : \blog-client\src\stores\user.ts
  * @Description  : 用户信息
  * @Blog         : https://jiaopengzi.com
@@ -15,20 +15,24 @@ import { ResponseCode, LocalStorageKey } from '@/api/responseCode'
 import type { AxiosResponse } from 'axios'
 import { ShowMsgTip } from '@/utils/Message'
 import { MsgType } from '@/components/common/index'
-import type { LoginRequest, LoginResponse } from '@/api/user/Login'
+import type { LoginRequest, LoginResponse } from '@/api/user/login'
 import {
   loginByJosn,
-  loginByWechatUrl,
-  loginByWechatUrlCallback,
+  // QQ
   loginByQQUrl,
-  bindQQUrl,
-  unBindQQ,
   loginByQQUrlCallback,
+  bindQQUrl,
   bindQQUrlCallback,
-} from '@/api/user/Login'
-import type { GetUserInfoResponse, UserInfo } from '@/api/user/GetUserInfo'
-import { emptyUserInfo } from '@/api/user/GetUserInfo'
-import { getUserInfoByJosn } from '@/api/user/GetUserInfo'
+  unBindQQ,
+  // 微信
+  loginByWeChatUrl,
+  loginByWeChatUrlCallback,
+  bindWeChatUrl,
+  bindWeChatUrlCallback,
+  unBindWeChat,
+} from '@/api/user/login'
+import type { UserInfo } from '@/api/user/getUserInfo'
+import { emptyUserInfo, getUserInfoByJosn } from '@/api/user/getUserInfo'
 
 // 用户信息
 interface UserInfoStore {
@@ -91,19 +95,6 @@ export const useUserStore = defineStore({
       const userInfoStore: UserInfoStore = await apiLogin(loginName, password)
       this.$patch(userInfoStore)
     },
-
-    // 微信登录
-    async loginByWechat() {
-      await apiLoginWechat()
-      this.$patch(createEmptyUserInfoStore())
-    },
-
-    // 微信登录回调
-    async loginByWechatCallback(code: string) {
-      const userInfoStore: UserInfoStore = await apiLoginWechatCallback(code)
-      this.$patch(userInfoStore)
-    },
-
     // QQ登录
     async loginByQQ() {
       await apiLoginQQ()
@@ -127,9 +118,36 @@ export const useUserStore = defineStore({
       const userInfoStore: UserInfoStore = await apiBindQQCallback(code)
       this.$patch(userInfoStore)
     },
-
+    // 解绑QQ
     async unBindQQ() {
       const userInfoStore: UserInfoStore = await apiUnBindQQ()
+      this.$patch(userInfoStore)
+    },
+    // 微信登录
+    async loginByWeChat() {
+      await apiLoginWeChat()
+      this.$patch(createEmptyUserInfoStore())
+    },
+
+    // 微信登录回调
+    async loginByWeChatCallback(code: string) {
+      const userInfoStore: UserInfoStore = await apiLoginWeChatCallback(code)
+      this.$patch(userInfoStore)
+    },
+    // 绑定微信
+    async bindWeChat() {
+      await apiBindWeChat()
+      this.$patch(createEmptyUserInfoStore())
+    },
+
+    // 微信绑定回调
+    async bindWeChatCallback(code: string) {
+      const userInfoStore: UserInfoStore = await apiBindWeChatCallback(code)
+      this.$patch(userInfoStore)
+    },
+    // 解绑微信
+    async unBindWeChat() {
+      const userInfoStore: UserInfoStore = await apiUnBindWeChat()
       this.$patch(userInfoStore)
     },
 
@@ -166,22 +184,9 @@ async function apiLogin(loginName: string, password: string): Promise<UserInfoSt
     password: password,
   }
 
-  // const requestData: string = JSON.stringify(req) // 将请求对象 req 转换为字符串
-  const resObj: LoginResponse = await handleResponse<LoginResponse>(loginByJosn(req)) // 使用辅助函数处理请求
+  const resObj = await handleResponse<LoginResponse>(loginByJosn(req)) // 使用辅助函数处理请求
 
   return await handleLoginResult(resObj, ResponseCode.UserLoginSuccess)
-}
-
-// 微信登录
-async function apiLoginWechat(): Promise<void> {
-  await redirectToSocialLogin(loginByWechatUrl(), ResponseCode.SocialLoginWechatSuccess)
-}
-
-// 微信登录回调
-async function apiLoginWechatCallback(code: string): Promise<UserInfoStore> {
-  const resObj: LoginResponse = await handleResponse<LoginResponse>(loginByWechatUrlCallback(code)) // 使用辅助函数处理请求
-
-  return await handleLoginResult(resObj, ResponseCode.SocialLoginWechatCallbackSuccess)
 }
 
 // QQ登录
@@ -207,31 +212,61 @@ async function apiBindQQCallback(code: string): Promise<UserInfoStore> {
 
   return await handleBindResult(resObj, ResponseCode.SocialBindQQCallbackSuccess)
 }
-
+// 解绑QQ
 async function apiUnBindQQ(): Promise<UserInfoStore> {
   const resObj: LoginResponse = await handleResponse<LoginResponse>(unBindQQ()) // 使用辅助函数处理请求
 
   return await handleBindResult(resObj, ResponseCode.SocialUnBindQQSuccess)
 }
 
+// 微信登录
+async function apiLoginWeChat(): Promise<void> {
+  await redirectToSocialLogin(loginByWeChatUrl(), ResponseCode.SocialLoginWeChatSuccess)
+}
+
+// 微信登录回调
+async function apiLoginWeChatCallback(code: string): Promise<UserInfoStore> {
+  const resObj: LoginResponse = await handleResponse<LoginResponse>(loginByWeChatUrlCallback(code)) // 使用辅助函数处理请求
+
+  return await handleLoginResult(resObj, ResponseCode.SocialLoginWeChatCallbackSuccess)
+}
+
+// 绑定微信
+async function apiBindWeChat(): Promise<void> {
+  await redirectToSocialLogin(bindWeChatUrl(), ResponseCode.SocialLoginWeChatSuccess)
+}
+
+// 绑定微信回调
+async function apiBindWeChatCallback(code: string): Promise<UserInfoStore> {
+  const resObj: LoginResponse = await handleResponse<LoginResponse>(bindWeChatUrlCallback(code)) // 使用辅助函数处理请求
+
+  return await handleBindResult(resObj, ResponseCode.SocialBindWeChatCallbackSuccess)
+}
+// 解绑微信
+async function apiUnBindWeChat(): Promise<UserInfoStore> {
+  const resObj: LoginResponse = await handleResponse<LoginResponse>(unBindWeChat()) // 使用辅助函数处理请求
+
+  return await handleBindResult(resObj, ResponseCode.SocialUnBindWeChatSuccess)
+}
+
 // 从token中获取用户信息
 async function apiGetUserInfoByToken(): Promise<UserInfoStore> {
   try {
-    const res: AxiosResponse = await getUserInfoByJosn()
-    const resStr: string = JSON.stringify(res)
-    const resObj: GetUserInfoResponse = JSON.parse(resStr).data
+    const access_token = localStorage.getItem(LocalStorageKey.AccessToken)
+    if (!access_token) {
+      return createEmptyUserInfoStore()
+    }
 
-    if (resObj.code === ResponseCode.UserGetInfoSuccess) {
+    const res = await getUserInfoByJosn()
+    const { data } = res.data
+
+    if (res.data.code === ResponseCode.UserGetInfoSuccess) {
       return {
-        data: resObj.data,
+        data,
         isLogin: true,
-        avatar:
-          resObj.data?.user?.user_avatar ||
-          resObj.data?.user_wechat?.avatar ||
-          resObj.data?.user_qq?.avatar ||
-          '',
-        isBindEmail: !!resObj.data?.user?.user_email, // 是否绑定邮箱
-        showDialogBindEmail: !resObj.data?.user?.user_email, // 是否显示绑定邮箱弹窗
+        avatar: data?.user?.user_avatar || data?.user_wechat?.avatar || data?.user_qq?.avatar || '',
+        isBindEmail: !!data?.user?.user_email,
+        showDialogBindEmail: !data?.user?.user_email,
       }
     }
   } catch (err: unknown) {
@@ -247,9 +282,7 @@ async function apiGetUserInfoByToken(): Promise<UserInfoStore> {
  * @return  {T} 返回解析后的数据
  */
 async function handleResponse<T>(requestPromise: Promise<AxiosResponse<T>>): Promise<T> {
-  const response = await requestPromise
-  const responseString = JSON.stringify(response)
-  return JSON.parse(responseString).data
+  return (await requestPromise).data
 }
 
 /**
@@ -262,7 +295,7 @@ async function redirectToSocialLogin(
   requestPromise: Promise<AxiosResponse<LoginResponse>>,
   successCode: ResponseCode
 ): Promise<void> {
-  const resObj: LoginResponse = await handleResponse<LoginResponse>(requestPromise) // 使用辅助函数处理请求
+  const resObj = await handleResponse<LoginResponse>(requestPromise) // 使用辅助函数处理请求
 
   if (resObj.code === successCode) {
     window.location.href = resObj.data // 重定向到第三方登录页面

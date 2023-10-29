@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-12 13:03:36
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-12 13:07:50
- * @FilePath     : \blog-client\src\api\user\CheckLoginNme.ts
+ * @LastEditTime : 2023-10-27 15:00:46
+ * @FilePath     : \blog-client\src\api\user\checkLoginName.ts
  * @Description  : 检查登录名是否存在
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
@@ -24,7 +24,9 @@ export interface CheckLoginNameResponse {
 }
 
 // 检测用户名是否存在
-export function checkLoginNameByJosn(requestData: string): AxiosPromise<CheckLoginNameResponse> {
+export function checkLoginNameByJosn(
+  requestData: CheckLoginNameRequest
+): AxiosPromise<CheckLoginNameResponse> {
   const urlStr = routerGroup + '/user/check-loginname'
   return request({
     url: urlStr,

@@ -28,7 +28,7 @@ export interface RegisterResponse {
 }
 
 // 注册
-export function RegisterByJosn(requestData: string): AxiosPromise<RegisterResponse> {
+export function RegisterByJosn(requestData: RegisterRequest): AxiosPromise<RegisterResponse> {
   const urlStr = routerGroup + '/user/register'
   return request({
     url: urlStr,

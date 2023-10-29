@@ -14,11 +14,25 @@
     <!-- @touchmove.prevent.stop 阻止触摸事件传播并阻止默认行为。确保滑动验证码不会导致页面滑动。 -->
     <div class="verify-main" @touchmove.prevent.stop>
       <h4>
-        <span class="title">拖动下方滑块完成拼图</span><button class="iconfont icon-close" @click="closeMe"></button>
+        <span class="title">拖动下方滑块完成拼图</span
+        ><button class="iconfont icon-close" @click="closeMe"></button>
       </h4>
 
-      <slide-verify ref="block" :l="42" :r="10" :w="280" :h="186" :slider-text="text" :accuracy="accuracy" :show="true"
-        :imgs="imgs" @again="onAgain" @success="onSuccess" @fail="onFail" @refresh="onRefresh"></slide-verify>
+      <slide-verify
+        ref="block"
+        :l="42"
+        :r="10"
+        :w="280"
+        :h="186"
+        :slider-text="text"
+        :accuracy="accuracy"
+        :show="true"
+        :imgs="imgs"
+        @again="onAgain"
+        @success="onSuccess"
+        @fail="onFail"
+        @refresh="onRefresh"
+      ></slide-verify>
       <div>{{ msg }}</div>
     </div>
     <div class="verify-backdrop"></div>

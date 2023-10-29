@@ -1,18 +1,22 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-04 15:36:51
- * @FilePath     : \blog-client\src\components\common\mobile\HeaderMobile.vue
+ * @LastEditTime : 2023-10-23 15:10:49
+ * @FilePath     : \blog-client\src\components\common\mobile\Header.vue
  * @Description  : 头部 移动端
  * @blog         : https://jiaopengzi.com
  * Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
 
-
 <template>
   <transition name="slide-header">
-    <header class="header" v-if="headerVisible" :style="{ height: `@height-header-mobile`, width: '100vw' }">
+    <header
+      class="header"
+      v-if="headerVisible"
+      :style="{ height: `@height-header-mobile`, width: '100vw' }"
+    >
       <ul class="header-main">
         <li>
           <button class="btn-menu" @click="toggleNav">
@@ -22,7 +26,10 @@
         <li>
           <div class="logo">
             <h1>
-              <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" alt="/" />
+              <img
+                src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
+                :alt="routeObj.home.path"
+              />
             </h1>
           </div>
         </li>
@@ -36,11 +43,15 @@
     </header>
   </transition>
   <div v-if="navVisible" class="nav-backdrop" @click="toggleNav"></div>
-  <div class="side-nav" id="sideNav" :style="{
-    transform: navVisible ? 'translateX(0)' : 'translateX(-100%)',
-    height: `100vh`,
-    width: '61.8vw',
-  }">
+  <div
+    class="side-nav"
+    id="sideNav"
+    :style="{
+      transform: navVisible ? 'translateX(0)' : 'translateX(-100%)',
+      height: `100vh`,
+      width: '61.8vw',
+    }"
+  >
     <!-- :style="{ transform: navVisible ? 'translateX(0)' : 'translateX(-100%)', height: `calc(100vh - ${headerHeight})`, width: '61.8vw' }"> -->
     <!-- 侧边栏导航栏 -->
     <HeaderMobileNav />
@@ -49,13 +60,12 @@
 <script setup lang="ts">
 // 引用图标
 import '@/components/icons/iconfont.css'
-import HeaderMobileNav from './HeaderMobileNav.vue'
+import HeaderMobileNav from '@/components/common/mobile/HeaderNav.vue'
 import { ref } from 'vue'
-
+import { routeObj } from '@/router/routeAll'
 import type { Ref } from 'vue'
 import type { ScrollData } from '@/hooks/useScroll.types'
 import { useScrollActions } from '@/hooks/useScrollActions'
-
 
 const navVisible = ref(false) // 侧边导航栏是否可见
 const headerVisible = ref(true) // 导航栏是否可见
@@ -85,13 +95,10 @@ const scrollDownAction = () => {
 
 const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownAction)
 // ======================================== 滚动条事件 ========================================
-
-
 </script>
 
 <style scoped lang="less">
 @media screen and (max-width: @width-page-main-pc) {
-
   /* 透明遮罩 */
   .nav-backdrop {
     width: 100vw;
@@ -171,3 +178,4 @@ const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownA
   }
 }
 </style>
+@/router/routeAll

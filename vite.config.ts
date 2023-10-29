@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-04 18:07:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-19 21:48:25
+ * @LastEditTime : 2023-10-26 21:15:06
  * @FilePath     : \blog-client\vite.config.ts
  * @Description  :
  * @blog         : https://jiaopengzi.com
@@ -37,6 +37,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@router': fileURLToPath(new URL('./src/router', import.meta.url)),
     },
   },
 
@@ -56,7 +57,7 @@ export default defineConfig({
   // ------------------------------ 设置代理 开始
   server: {
     host: 'localhost',
-    port: 9090,
+    port: 8081,
     proxy: {
       // dev Server.proxy 可以是一个指向开发环境 API 服务器的字符串
       '/api': {

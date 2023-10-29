@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-13 14:52:34
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-21 21:10:41
+ * @LastEditTime : 2023-10-29 21:12:10
  * @FilePath     : \blog-client\src\components\common\index.ts
  * @Description  : 通用组件导出
  * @blog         : https://jiaopengzi.com
@@ -18,48 +18,26 @@ const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera
 
 // 头部
 const headerComponent = isMobileDevice
-  ? defineAsyncComponent(() => import('@/components/common/mobile/HeaderMobile.vue'))
-  : defineAsyncComponent(() => import('@/components/common/pc/HeaderPC.vue'))
+  ? defineAsyncComponent(() => import('@/components/common/mobile/Header.vue'))
+  : defineAsyncComponent(() => import('@/components/common/pc/Header.vue'))
 
 // 底部
 const footerComponent = isMobileDevice
-  ? defineAsyncComponent(() => import('@/components/common/mobile/FooterMobile.vue'))
-  : defineAsyncComponent(() => import('@/components/common/pc/FooterPC.vue'))
-
-// 登录
-const loginComponent = () => import('@/components/common/LoginPage.vue')
-
-// 注册
-const registerComponent = () => import('@/components/common/RegisterPage.vue')
-
-// 忘记密码
-const resetPasswordComponent = () => import('@/components/common/ResetPassword.vue')
-
-// 社交登录回调
-const socialLoginCallbackComponent = () => import('@/components/common/SocialLoginCallback.vue')
-
+  ? defineAsyncComponent(() => import('@/components/common/mobile/Footer.vue'))
+  : defineAsyncComponent(() => import('@/components/common/pc/Footer.vue'))
 
 // 内容页
 const contentComponent = isMobileDevice
-  ? defineAsyncComponent(() => import('@/components/common/mobile/ContentMobile.vue'))
-  : defineAsyncComponent(() => import('@/components/common/pc/ContentPC.vue'))
+  ? defineAsyncComponent(() => import('@/components/common/mobile/Content.vue'))
+  : defineAsyncComponent(() => import('@/components/common/pc/Content.vue'))
 
 // 用户中心
 const userInfoComponent = isMobileDevice
-  ? defineAsyncComponent(() => import('@/components/common/mobile/UserInfoMobile.vue'))
-  : defineAsyncComponent(() => import('@/components/common/pc/UserInfoPC.vue'))
+  ? defineAsyncComponent(() => import('@/components/common/mobile/UserInfo.vue'))
+  : defineAsyncComponent(() => import('@/components/common/pc/userInfo/Index.vue'))
 
 // 导出
-export {
-  headerComponent,
-  footerComponent,
-  loginComponent,
-  registerComponent,
-  resetPasswordComponent,
-  socialLoginCallbackComponent,
-  contentComponent,
-  userInfoComponent,
-}
+export { headerComponent, footerComponent, contentComponent, userInfoComponent }
 
 // 枚举 alert 弹窗 element 组件类型
 export enum MsgType {

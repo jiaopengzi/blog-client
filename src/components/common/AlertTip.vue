@@ -10,7 +10,12 @@
 -->
 
 <template>
-  <el-alert :title="MsgTitle[typeAlert]" :type="typeAlert" :description="descriptionAlert" show-icon />
+  <el-alert
+    :title="MsgTitle[typeAlert]"
+    :type="typeAlert"
+    :description="descriptionAlert"
+    show-icon
+  />
 </template>
 
 <script setup lang="ts">
@@ -21,7 +26,6 @@ const props = defineProps<{
   typeAlert: MsgType
   descriptionAlert: string
 }>()
-
 </script>
 <style lang="less" scoped>
 .el-alert {

@@ -1,9 +1,10 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
  * @LastEditTime : 2023-08-12 19:51:03
- * @FilePath     : \blog-client\src\components\common\pc\ContentPC.vue
+ * @FilePath     : \blog-client\src\components\common\pc\Content.vue
  * @Description  : 内容页 PC端
  * @blog         : https://jiaopengzi.com
  * Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -123,7 +124,6 @@
     <div>内容页站位手机</div>
     <div>内容页站位手机</div>
     <div>内容页站位手机</div>
-
   </div>
 </template>
 <script setup lang="ts">

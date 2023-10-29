@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-07 13:55:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-07 14:36:08
+ * @LastEditTime : 2023-10-29 20:01:35
  * @FilePath     : \blog-client\src\api\utils\UploadAvatar.ts
  * @Description  : 上传头像
  * @Blog         : https://jiaopengzi.com

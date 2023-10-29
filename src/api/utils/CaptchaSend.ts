@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-02 13:51:27
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-02 14:03:29
- * @FilePath     : \blog-client\src\api\user\SendCaptcha.ts
+ * @LastEditTime : 2023-10-29 20:01:18
+ * @FilePath     : \blog-client\src\api\utils\CaptchaSend.ts
  * @Description  : 验证码发送
  * @blog         : https://jiaopengzi.com
  * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
@@ -26,7 +26,9 @@ export interface CaptchaSendResponse {
 }
 
 // 检测验证码是否正确
-export function captchaSendByJosn(requestData: string): AxiosPromise<CaptchaSendResponse> {
+export function captchaSendByJosn(
+  requestData: CaptchaSendRequest
+): AxiosPromise<CaptchaSendResponse> {
   const urlStr = routerGroup + '/utils/captcha-send'
   return request({
     url: urlStr,

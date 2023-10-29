@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-04 14:44:00
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-20 23:29:34
- * @FilePath     : \blog-client\src\api\user\GetUserInfo.ts
+ * @LastEditTime : 2023-10-29 20:00:00
+ * @FilePath     : \blog-client\src\api\user\getUserInfo.ts
  * @Description  : 获取用户信息
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
@@ -19,20 +19,20 @@ export interface GetUserInfoResponse {
   data: UserInfo // 您可以根据实际返回的数据结构替换为更具体的类型
 }
 
-// 注册
+// 获取用户信息
 export function getUserInfoByJosn(): AxiosPromise<GetUserInfoResponse> {
   const urlStr = routerGroup + '/user/info'
   return request({
     url: urlStr,
-    method: 'post',
+    method: 'get',
   })
 }
 
 // 用户信息
 export interface UserInfo {
   user: {
-    created_at: string
     id: number
+    created_at: string
     updated_at: string
     user_avatar: string
     user_display_name: string
@@ -42,26 +42,29 @@ export interface UserInfo {
   }
   user_meta: [
     {
-      created_at: string
       id: number
+      created_at: string
       updated_at: string
+      deleted_at: string
       user_id: number
       meta_key: string
       meta_value: string
     }
   ]
   user_mobile: {
-    created_at: string
     id: number
+    created_at: string
     updated_at: string
+    deleted_at: string
     user_id: number
     mobile: string
     region: string
   }
   user_qq: {
-    created_at: string
     id: number
+    created_at: string
     updated_at: string
+    deleted_at: string
     user_id: number
     openid: string
     nickname: string
@@ -71,10 +74,11 @@ export interface UserInfo {
     avatar: string
   }
   user_wechat: {
-    created_at: string
     id: number
+    created_at: string
     updated_at: string
-    userID: number
+    deleted_at: string
+    user_id: number
     openid: string
     unionid: string
     nickname: string
@@ -90,8 +94,8 @@ export interface UserInfo {
 export function emptyUserInfo(): UserInfo {
   return {
     user: {
-      created_at: '',
       id: 0,
+      created_at: '',
       updated_at: '',
       user_avatar: '',
       user_display_name: '',
@@ -101,26 +105,29 @@ export function emptyUserInfo(): UserInfo {
     },
     user_meta: [
       {
-        created_at: '',
         id: 0,
+        created_at: '',
         updated_at: '',
+        deleted_at: '',
         user_id: 0,
         meta_key: '',
         meta_value: '',
       },
     ],
     user_mobile: {
-      created_at: '',
       id: 0,
+      created_at: '',
       updated_at: '',
+      deleted_at: '',
       user_id: 0,
       mobile: '',
       region: '',
     },
     user_qq: {
-      created_at: '',
       id: 0,
+      created_at: '',
       updated_at: '',
+      deleted_at: '',
       user_id: 0,
       openid: '',
       nickname: '',
@@ -130,10 +137,11 @@ export function emptyUserInfo(): UserInfo {
       avatar: '',
     },
     user_wechat: {
-      created_at: '',
       id: 0,
+      created_at: '',
       updated_at: '',
-      userID: 0,
+      deleted_at: '',
+      user_id: 0,
       openid: '',
       unionid: '',
       nickname: '',

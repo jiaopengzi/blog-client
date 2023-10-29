@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-19 14:12:55
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-21 18:47:57
+ * @LastEditTime : 2023-10-23 15:23:40
  * @FilePath     : \blog-client\src\components\common\SocialLoginCallback.vue
  * @Description  : 三方登录回调跳转页面
  * @Blog         : https://jiaopengzi.com
@@ -22,48 +22,64 @@ import { onMounted, ref } from 'vue'
 import type { Ref } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useRoute } from 'vue-router'
-
+import { routeObj } from '@/router/routeAll'
+import { social } from '@/api/responseCode'
 
 const userStore = useUserStore()
 const route = useRoute()
 
 const loginByQQCallback = async () => {
   const code = new URLSearchParams(window.location.search).get('code')
-  if (!code) { return }
+  if (!code) {
+    return
+  }
   await userStore.loginByQQCallback(code)
 }
 
 const bindQQCallback = async () => {
   const code = new URLSearchParams(window.location.search).get('code')
-  if (!code) { return }
+  if (!code) {
+    return
+  }
   await userStore.bindQQCallback(code)
 }
 
 const loginByWeChatCallback = async () => {
   const code = new URLSearchParams(window.location.search).get('code')
-  if (!code) { return }
-  // await userStore.loginByQQ(code)
+  if (!code) {
+    return
+  }
+  await userStore.loginByWeChatCallback(code)
+}
+
+const bindWeChatCallback = async () => {
+  const code = new URLSearchParams(window.location.search).get('code')
+  if (!code) {
+    return
+  }
+  await userStore.bindWeChatCallback(code)
 }
 
 // 三方平台
-const _platform: Ref<string> = ref("")
-
+const _platform: Ref<string> = ref('')
 
 onMounted(async () => {
-  if (route.path === '/social/qq/callback') {
-    _platform.value = "QQ"
+  console.log(route.path)
+  if (route.path === routeObj.socialQQLoginCallback.path) {
+    _platform.value = social.QQDisplay
     await loginByQQCallback() // 等待 loginByQQCallback 执行完毕后，跳转到首页
-  } else if (route.path === '/social/qq/bind/callback') {
-    _platform.value = "QQ"
+  } else if (route.path === routeObj.socialQQBindCallback.path) {
+    _platform.value = social.QQDisplay
     await bindQQCallback() // 等待 bindQQCallback 执行完毕后，跳转到首页
+  } else if (route.path === routeObj.sociaWeChatLoginCallback.path) {
+    _platform.value = social.WeChatDisplay
+    await loginByWeChatCallback() // 等待 loginByWeChatCallback 执行完毕后，跳转到首页
+  } else if (route.path === routeObj.socialWeChatBindCallback.path) {
+    _platform.value = social.WeChatDisplay
+    await bindWeChatCallback()
   }
-  else if (route.path === '/social/wechat/callback') {
-    _platform.value = "微信"
-    await loginByWeChatCallback()
-  }
-  window.location.href = '/'
-});
-
+  window.location.href = routeObj.home.path
+})
 </script>
 
 <style scoped lang="less">
@@ -104,4 +120,4 @@ onMounted(async () => {
 }
 </style>
 
-
+@/router/routeAll

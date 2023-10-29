@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-04 20:46:51
- * @FilePath     : \blog-client\src\components\common\pc\HeaderPCNav.vue
+ * @LastEditTime : 2023-10-23 15:33:28
+ * @FilePath     : \blog-client\src\components\common\pc\HeaderNav.vue
  * @Description  : 头部导航 PC端
  * @blog         : https://jiaopengzi.com
  * Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -13,37 +13,37 @@
   <div class="nav">
     <ul>
       <li>
-        <router-link to="/" class="link">
+        <router-link :to="routeObj.home.path" class="link">
           <span class="titile">首页</span>
         </router-link>
       </li>
       <li>
-        <router-link to="/blog" class="link">
+        <router-link :to="routeObj.post.path" class="link">
           <span class="iconfont icon-article"></span>
 
           <span>文章</span>
         </router-link>
       </li>
       <li>
-        <router-link to="/video" class="link">
+        <router-link :to="routeObj.video.path" class="link">
           <span class="iconfont icon-video"></span>
           <span>视频课</span>
         </router-link>
       </li>
       <li>
-        <router-link to="/doc" class="link">
+        <router-link :to="routeObj.doc.path" class="link">
           <span class="iconfont icon-doc"></span>
           <span>文档</span>
         </router-link>
       </li>
       <li>
-        <router-link to="/tool" class="link">
+        <router-link :to="routeObj.tool.path" class="link">
           <span class="iconfont icon-tool"></span>
           <span>工具下载</span>
         </router-link>
       </li>
       <li>
-        <router-link to="/vip" class="link">
+        <router-link :to="routeObj.vip.path" class="link">
           <span class="iconfont icon-vip-red icon-red"></span>
           <span>加入VIP</span>
         </router-link>
@@ -54,6 +54,7 @@
 <script setup lang="ts">
 // 引用图标
 import '@/components/icons/iconfont.css'
+import { routeObj } from '@/router/routeAll'
 </script>
 <style scoped>
 .nav ul {
@@ -103,3 +104,4 @@ span {
   color: rgb(222, 0, 0);
 }
 </style>
+@/router/routeAll

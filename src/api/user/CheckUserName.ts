@@ -3,7 +3,7 @@
  * @Date         : 2023-07-14 17:04:42
  * @LastEditors  : jiaopengzi
  * @LastEditTime : 2023-07-14 18:01:12
- * @FilePath     : \blog-client\src\api\user\CheckUserNme.ts
+ * @FilePath     : \blog-client\src\api\user\checkUserNme.ts
  * @Description  : 用户查重
  * @blog         : https://jiaopengzi.com
  * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
@@ -24,7 +24,9 @@ export interface CheckUserNameResponse {
 }
 
 // 检测用户名是否存在
-export function checkUserNameByJosn(requestData: string): AxiosPromise<CheckUserNameResponse> {
+export function checkUserNameByJosn(
+  requestData: CheckUserNameRequest
+): AxiosPromise<CheckUserNameResponse> {
   const urlStr = routerGroup + '/user/check-username'
   return request({
     url: urlStr,

@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-10 20:45:20
- * @FilePath     : \blog-client\src\components\common\mobile\HeaderMobileNav.vue
+ * @LastEditTime : 2023-10-29 20:32:36
+ * @FilePath     : \blog-client\src\components\common\mobile\HeaderNav.vue
  * @Description  : 头部导航 移动端
  * @blog         : https://jiaopengzi.com
  * Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -11,52 +11,52 @@
 
 <template>
   <div class="login" v-if="!isLogin">
-    <router-link to="/login" class="link">
+    <router-link :to="routeObj.login.path" class="link">
       <span>登录</span>
     </router-link>
     <span>/</span>
-    <router-link to="/register" class="link">
+    <router-link :to="routeObj.register.path" class="link">
       <span>注册</span>
     </router-link>
   </div>
   <div class="login" v-if="isLogin">
-    <router-link to="/info" class="link">
+    <router-link :to="routeObj.userInfo.path" class="link">
       <InitialAvatar :name="data.user.user_display_name" :avatar="data.user.user_avatar" />
     </router-link>
   </div>
   <div class="nav">
     <ul>
       <li>
-        <router-link to="/" class="link">
+        <router-link :to="routeObj.home.path" class="link">
           <span class="titile">首页</span>
         </router-link>
       </li>
       <li>
-        <router-link to="/blog" class="link">
+        <router-link :to="routeObj.post.path" class="link">
           <span class="iconfont icon-article"></span>
           <span class="titile">文章</span>
         </router-link>
       </li>
       <li>
-        <router-link to="/video" class="link">
+        <router-link :to="routeObj.video.path" class="link">
           <span class="iconfont icon-video"></span>
           <span class="titile">视频课</span>
         </router-link>
       </li>
       <li>
-        <router-link to="/doc" class="link">
+        <router-link :to="routeObj.doc.path" class="link">
           <span class="iconfont icon-doc"></span>
           <span class="titile">文档</span>
         </router-link>
       </li>
       <li>
-        <router-link to="/tool" class="link">
+        <router-link :to="routeObj.tool.path" class="link">
           <span class="iconfont icon-tool"></span>
           <span class="titile">工具下载</span>
         </router-link>
       </li>
       <li>
-        <router-link to="/vip" class="link">
+        <router-link :to="routeObj.vip.path" class="link">
           <span class="iconfont icon-vip-red icon-red"></span>
           <span class="titile">加入VIP</span>
         </router-link>
@@ -68,24 +68,20 @@
 // 引用图标
 import '@/components/icons/iconfont.css'
 import { onBeforeMount } from 'vue'
-
-import InitialAvatar from '@/components/common/InitialAvatar.vue';
+import { routeObj } from '@/router/routeAll'
+import InitialAvatar from '@/components/common/InitialAvatar.vue'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
-
 
 // 状态是否登录
 const userStore = useUserStore()
 let { data, isLogin } = storeToRefs(userStore)
 
-
-onBeforeMount(() => { // 组件挂载前
+onBeforeMount(() => {
+  // 组件挂载前
   // 通过本地信息 获取用户信息
   userStore.getUserInfoByToken()
 })
-
-
-
 </script>
 <style scoped lang="less">
 .login {
@@ -162,3 +158,4 @@ span {
   color: rgb(222, 0, 0);
 }
 </style>
+@/router/routeAll

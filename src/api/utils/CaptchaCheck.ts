@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-02 13:38:31
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-01 14:05:14
+ * @LastEditTime : 2023-10-29 20:01:10
  * @FilePath     : \blog-client\src\api\utils\CaptchaCheck.ts
  * @Description  : 验证码校验
  * @blog         : https://jiaopengzi.com
@@ -26,7 +26,9 @@ export interface CaptchaCheckResponse {
 }
 
 // 检测验证码是否正确
-export function captchaCheckByJosn(requestData: string): AxiosPromise<CaptchaCheckResponse> {
+export function captchaCheckByJosn(
+  requestData: CaptchaCheckRequest
+): AxiosPromise<CaptchaCheckResponse> {
   const urlStr = routerGroup + '/utils/captcha-check'
   return request({
     url: urlStr,

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-22 11:21:00
+ * @LastEditTime : 2023-10-26 10:00:55
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -35,7 +35,7 @@ export enum ResponseCode {
   NETWORK_AUTHENTICATION_REQUIRED = 511,
 
   // 自定义
-
+  // 用户相关
   UserRegisterSuccess = 1000, //用户注册成功
   UserNameExist = 1001, //用户名已存在
   UserEmailExist = 1002, //用户邮箱已存在
@@ -45,31 +45,48 @@ export enum ResponseCode {
   UserResetPasswordSuccess = 1023, //重置密码成功
   UserGetInfoSuccess = 1024, //重置密码成功
   UserBindEmailSuccess = 1026, //绑定邮箱成功
+  UserEditUserInfoSuccess = 1027, //修改用户信息成功
 
+  // 验证码相关
   CaptchaSendSuccess = 8000, //验证码发送成功
   CaptchaCheckSuccess = 8002, //验证码发送成功
 
+  // 社交登录相关
   SocialLoginQQSuccess = 8200, //重定向QQ登录成功
   SocialLoginQQUnLogin = 8201, //QQ未登录
   SocialLoginQQCallbackSuccess = 8202, //QQ登录成功回调
   SocialBindQQCallbackSuccess = 8203, //QQ绑定成功回调
   SocialUnBindQQSuccess = 8204, //QQ解绑成功
 
-  SocialLoginWechatSuccess = 8205, //重定向微信登录成功
-  SocialLoginWechatUnLogin = 8206, //微信未登录
-  SocialLoginWechatCallbackSuccess = 8207, //微信登录成功回调
+  SocialLoginWeChatSuccess = 8205, //重定向微信登录成功
+  SocialLoginWeChatUnLogin = 8206, //微信未登录
+  SocialLoginWeChatCallbackSuccess = 8207, //微信登录成功回调
+  SocialBindWeChatCallbackSuccess = 8208, //微信绑定成功回调
+  SocialUnBindWeChatSuccess = 8209, //微信解绑成功
 }
+
+// 验证码用途
 export enum CaptchaPurpose {
   Register = 'Register', // 验证码用途：注册
   ResetPassword = 'ResetPassword', // 验证码用途：重置密码
   BindEmail = 'BindEmail', // 验证码用途：绑定邮箱
 }
 
+// token名称
 export enum LocalStorageKey {
-  AccessToken = 'access_token', // 验证码用途：注册
+  AccessToken = 'access_token', // token名称：访问令牌
 }
 
+// 用户信息
 export enum UploadCode {
   AvatarSuccess = 8100, // 上传头像成功
   AvatarTooLarge = 8101, // 上传头像失败：文件过大
+}
+
+// 社交登录
+export enum social {
+  QQ = 'qq',
+  QQDisplay = 'QQ',
+  WeChat = 'wechat',
+  WeChatDisplay = '微信',
 }

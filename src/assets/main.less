@@ -26,10 +26,16 @@ a {
 }
 
 @media (hover: hover) {
+  a {
+    transition: 0.5s;
+  }
+
   a:hover {
     background-color: @background-color-hover;
-    /* 字体变大5% */
-    font-size: 105%;
+    // 下划线
+    // text-decoration: underline;
+    /* 字体变大20% */
+    // transform: scale(1.2); //使用 transform: scale(1.2) 代替 font-size: 120%; 效率更高。
   }
 }
 

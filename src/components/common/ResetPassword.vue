@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-12 12:13:47
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-04 23:03:48
+ * @LastEditTime : 2023-10-27 14:49:58
  * @FilePath     : \blog-client\src\components\common\ResetPassword.vue
  * @Description  : 重置密码
  * @Blog         : https://jiaopengzi.com
@@ -12,20 +12,34 @@
 <template>
   <!-- 添加滑动验证组件：SlideVerify -->
 
-  <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="sendcaptcha"></SlideVerify>
-  <el-form :label-position="labelPosition" label-width="100px" ref="fogetPasswordFormRef" :model="fogetPasswordForm"
-    :rules="rules" class="fogetPassword-form" :size="formSize" status-icon>
+  <SlideVerify
+    v-if="showSlideVerify"
+    @on-close="closeSlideVerify"
+    @on-success="sendcaptcha"
+  ></SlideVerify>
+  <el-form
+    :label-position="labelPosition"
+    label-width="100px"
+    ref="fogetPasswordFormRef"
+    :model="fogetPasswordForm"
+    :rules="rules"
+    class="fogetPassword-form"
+    :size="formSize"
+    status-icon
+  >
     <div class="header-main">
-      <a href="/">
+      <a :href="routeObj.home.path">
         <div class="logo">
           <h2>
-            <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" alt="/" />
+            <img
+              src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
+              :alt="routeObj.home.path"
+            />
           </h2>
         </div>
       </a>
       <h2>密码重置</h2>
     </div>
-
 
     <el-form-item label="邮箱" prop="email">
       <el-input v-model="fogetPasswordForm.email" />
@@ -33,7 +47,12 @@
 
     <el-form-item label="验证码" prop="captcha">
       <el-input class="email-code" v-model="fogetPasswordForm.captcha" />
-      <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="btnCaptchaState.disabled">
+      <button
+        class="btn-captcha"
+        type="button"
+        @click="openSlideVerify"
+        :disabled="btnCaptchaState.disabled"
+      >
         {{ captcha }}
       </button>
     </el-form-item>
@@ -52,11 +71,11 @@
       </el-form-item>
     </div>
     <div class="go-home">
-      <router-link to="/" class="link">
+      <router-link :to="routeObj.home.path" class="link">
         <span>首页</span>
       </router-link>
       <span> | </span>
-      <router-link to="/login" class="link">
+      <router-link :to="routeObj.login.path" class="link">
         <span>登录</span>
       </router-link>
     </div>
@@ -65,30 +84,21 @@
 
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
-
-import type { AxiosResponse } from 'axios'
 import SlideVerify from '@/components/common/SlideVerify.vue'
 import { ShowMsgTip } from '@/utils/Message'
 import { MsgType } from '@/components/common/index'
-
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
-
-import type { CheckEmailRequest, CheckEmailResponse } from '@/api/user/CheckEmail'
+import type { CheckEmailRequest } from '@/api/user/CheckEmail'
 import { CheckEmailByJosn } from '@/api/user/CheckEmail'
-
-import type { ResetPasswordRequest, ResetPasswordResponse } from '@/api/user/ResetPassword'
+import type { ResetPasswordRequest } from '@/api/user/ResetPassword'
 import { resetPasswordByJosn } from '@/api/user/ResetPassword'
-
-import type { CaptchaSendRequest, CaptchaSendResponse } from '@/api/utils/CaptchaSend'
+import type { CaptchaSendRequest } from '@/api/utils/CaptchaSend'
 import { captchaSendByJosn } from '@/api/utils/CaptchaSend'
-
 import { getPublicIp } from '@/utils/IP'
-
 import type { CaptchaCheckRequest } from '@/api/utils/CaptchaCheck'
 import { captchaCheckByJosn } from '@/api/utils/CaptchaCheck'
-
 import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
-
+import { routeObj } from '@/router/routeAll'
 import router from '@/router/index'
 
 interface ResetPasswordForm {
@@ -163,23 +173,19 @@ async function checkSendCaptcha(): Promise<void> {
       ip: await getPublicIp(),
       purpose: CaptchaPurpose.ResetPassword,
     }
-    console.log("==========>发送验证码")
-    // const requestData: string = encryptData(JSON.stringify(req)) // 将请求对象 req 转换为字符串 并加密内容
-    const requestData: string = JSON.stringify(req) // 将请求对象 req 转换为字符串
-    const res: AxiosResponse = await captchaSendByJosn(requestData) // 发送请求，并返回Promise
-    const resStr: string = JSON.stringify(res) // 将 res 转换字符串
-    const resObj: CaptchaSendResponse = JSON.parse(resStr).data // 将 resStr 转换为对象
+    console.log('==========>发送验证码')
+    const { data } = await captchaSendByJosn(req)
 
-    if (resObj.code !== ResponseCode.CaptchaSendSuccess && resObj.data !== null) {
+    if (data.code !== ResponseCode.CaptchaSendSuccess && data.data !== null) {
       // 历遍 data 中的错误信息 并抛出第一个key错误信息 停止循环
-      for (const key in resObj.data) {
-        if (Object.prototype.hasOwnProperty.call(resObj.data, key)) {
-          throw new Error(resObj.data[key]) // 抛出错误信息 
+      for (const key in data.data) {
+        if (Object.prototype.hasOwnProperty.call(data.data, key)) {
+          throw new Error(data.data[key]) // 抛出错误信息
         }
       }
     }
-    if (resObj.code !== ResponseCode.CaptchaSendSuccess && resObj.data === null) {
-      throw new Error(resObj.msg) // 抛出错误信息 
+    if (data.code !== ResponseCode.CaptchaSendSuccess && data.data === null) {
+      throw new Error(data.msg) // 抛出错误信息
     }
   } catch (err: unknown) {
     console.log(err)
@@ -197,20 +203,11 @@ async function checkEmail(): Promise<void> {
     email: fogetPasswordForm.email,
   }
 
-  // const requestData: string = encryptData(JSON.stringify(req))  // 将请求对象 req 转换为字符串 并加密内容
-  const requestData: string = JSON.stringify(req)  // 将请求对象 req 转换为字符串
-
   try {
-    // 发送请求，并返回Promise
-    const res: AxiosResponse = await CheckEmailByJosn(requestData)
+    const { data } = await CheckEmailByJosn(req)
 
-    // 将 res 转换字符串
-    const resStr: string = JSON.stringify(res)
-    // 将 resStr 转换为对象
-    const resObj: CheckEmailResponse = JSON.parse(resStr).data
-
-    if (resObj.code !== ResponseCode.UserEmailExist) {
-      throw new Error(resObj.msg)
+    if (data.code !== ResponseCode.UserEmailExist) {
+      throw new Error(data.msg)
     }
   } catch (err: unknown) {
     console.log(err)
@@ -239,7 +236,6 @@ function checkEmailValidator(
     })
 }
 
-
 async function checkCaptcha(): Promise<void> {
   try {
     // 创建请求对象 加密内容
@@ -248,14 +244,11 @@ async function checkCaptcha(): Promise<void> {
       captcha: fogetPasswordForm.captcha,
       purpose: CaptchaPurpose.ResetPassword,
     }
-    // const requestData: string = encryptData(JSON.stringify(req)) // 将请求对象 req 转换为字符串 并加密内容
-    const requestData: string = JSON.stringify(req) // 将请求对象 req 转换为字符串
-    const res: AxiosResponse = await captchaCheckByJosn(requestData) // 发送请求，并返回Promise
-    const resStr: string = JSON.stringify(res) // 将 res 转换字符串
-    const resObj: CaptchaSendResponse = JSON.parse(resStr).data // 将 resStr 转换为对象
 
-    if (resObj.code !== ResponseCode.CaptchaCheckSuccess) {
-      throw new Error(resObj.msg)
+    const { data } = await captchaCheckByJosn(req)
+
+    if (data.code !== ResponseCode.CaptchaCheckSuccess) {
+      throw new Error(data.msg)
     }
   } catch (err: unknown) {
     console.log(err)
@@ -297,7 +290,6 @@ const rules = reactive<FormRules<ResetPasswordForm>>({
     { required: true, message: '请输入验证码', trigger: 'blur' },
     { pattern: /^\d{6}$/, message: '验证码为6位的数字', trigger: 'blur' },
     { validator: checkCaptchaValidator, trigger: 'blur' },
-
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
@@ -329,37 +321,31 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         email: fogetPasswordForm.email,
       }
 
-      // const requestData: string = encryptData(JSON.stringify(req))// 将请求对象 req 转换为字符串 并加密内容
-      const requestData: string = JSON.stringify(req)// 将请求对象 req 转换为字符串
-      const res: AxiosResponse<ResetPasswordResponse> = await resetPasswordByJosn(requestData)// 发送请求，并返回Promise
-      const resStr: string = JSON.stringify(res)// 将 res 转换字符串
-      const resObj: ResetPasswordResponse = JSON.parse(resStr).data// 将 resStr 转换为对象
+      const { data } = await resetPasswordByJosn(req) // 将 resStr 转换为对象
 
-      if (resObj.code === ResponseCode.UserResetPasswordSuccess) {
+      if (data.code === ResponseCode.UserResetPasswordSuccess) {
         // 显示注册成功提示
-        ShowMsgTip(MsgType.success, resObj.msg, 6000)
+        ShowMsgTip(MsgType.success, data.msg, 6000)
 
         // 跳转到登录页面
         setTimeout(() => {
-          router.push({ name: 'login' });
-        }, 3000);
+          router.push({ name: 'login' })
+        }, 3000)
       } else {
         // 注册失败
         // console.log("注册失败");
-        ShowMsgTip(MsgType.error, resObj.msg, 0)
+        ShowMsgTip(MsgType.error, data.msg, 0)
       }
       console.log('submit!')
     }
   })
 }
 
-
 // 添加 showSlideVerify 响应式变量
 const showSlideVerify = ref(false)
 
 // 显示滑块验证
 const openSlideVerify = () => {
-
   // 显示滑块验证
   console.log('打开滑块验证')
   showSlideVerify.value = true
@@ -382,7 +368,6 @@ const sendcaptcha = async () => {
   }
 
   if (emailResult) {
-
     btnCaptchaState.disabled = true // 按钮设置不能点击状态
 
     // 发送验证码
@@ -411,7 +396,6 @@ const sendcaptcha = async () => {
     }, 1000)
   }
 }
-
 
 // 关闭滑块验证
 const closeSlideVerify = () => {
@@ -495,5 +479,5 @@ a {
   display: inline-block;
 }
 </style>
-@/utils/Encrypt
-@/api/user/CheckUserName@/api/user/CheckUserName
+@/utils/Encrypt @/api/user/CheckUserName@/api/user/CheckUserName
+@/api/user/checkEmail@/api/user/checkEmail@/api/user/resetPassword@/api/user/resetPassword@/api/utils/captchaCheck@/api/utils/captchaCheck@/api/utils/captchaSend@/api/utils/captchaSend

@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-14 18:00:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-07-14 18:18:49
- * @FilePath     : \blog-client\src\api\user\CheckEmail.ts
+ * @LastEditTime : 2023-10-29 19:58:55
+ * @FilePath     : \blog-client\src\api\user\checkEmail.ts
  * @Description  : 邮箱查重
  * @blog         : https://jiaopengzi.com
  * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
@@ -23,7 +23,7 @@ export interface CheckEmailResponse {
 }
 
 // 检测用户名是否存在
-export function CheckEmailByJosn(requestData: string): AxiosPromise<CheckEmailResponse> {
+export function CheckEmailByJosn(requestData: CheckEmailRequest): AxiosPromise<CheckEmailResponse> {
   const urlStr = routerGroup + '/user/check-email'
   return request({
     url: urlStr,

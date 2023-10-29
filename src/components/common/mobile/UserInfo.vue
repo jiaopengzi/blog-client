@@ -2,18 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-05 16:45:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-22 10:47:32
- * @FilePath     : \blog-client\src\components\common\pc\UserInfoPC.vue
+ * @LastEditTime : 2023-10-29 19:46:10
+ * @FilePath     : \blog-client\src\components\common\mobile\UserInfo.vue
  * @Description  : 用户中心 PC端
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
 
 <template>
-  <!-- 绑定邮箱对话框弹窗 -->
-  <BindemailDialog></BindemailDialog>
-
-  <!-- 内容页 -->
   <div class="content">
     <div class="breadcrumb">
       <el-breadcrumb :separator-icon="ArrowRight">
@@ -23,43 +19,29 @@
     </div>
 
     <div>
-
       <el-tabs type="border-card" :tab-position="tabPosition" class="tabs">
         <el-tab-pane>
           <template #label>
-            <span class="custom-tabs-label"><el-icon>
-                <View />
-              </el-icon><span>我的信息</span></span>
+            <span class="custom-tabs-label"
+              ><el-icon> <View /> </el-icon><span>我的信息</span></span
+            >
           </template>
 
           <div class="el-descriptions-div">
-
             <el-descriptions title="我的信息" :column="3" size="large" border>
               <el-descriptions-item label="文章">86</el-descriptions-item>
               <el-descriptions-item label="评论">53</el-descriptions-item>
-              <el-descriptions-item label="注册时间">{{ convertToBeijingTime(data.user.created_at) }}</el-descriptions-item>
+              <el-descriptions-item label="注册时间">{{
+                convertToBeijingTime(data.user.created_at)
+              }}</el-descriptions-item>
               <el-descriptions-item label="最后登录">53</el-descriptions-item>
             </el-descriptions>
           </div>
 
           <div class="el-social-div">
             <el-descriptions title="社交信息" :column="3" size="large" border>
-              <el-descriptions-item :label="social.QQDisplay">
-                <button class="btn-bind" v-if="!showQQ" @click="bindSocial(social.QQ)">绑定{{ social.QQDisplay }}</button>
-                <span class="social-nickname">{{ socialNickname('user_qq', 'nickname') }}</span>
-                <button class="btn-unbind" v-if="showQQ && isBindEmail" @click="unBindSocial(social.QQ)">解绑{{
-                  social.QQDisplay
-                }}</button>
-              </el-descriptions-item>
-
-              <el-descriptions-item :label="social.WeChatDisplay">
-                <button class="btn-bind" v-if="!showWechat" @click="bindSocial(social.WeChat)">绑定{{ social.WeChatDisplay
-                }}</button>
-                <span class="social-nickname">{{ socialNickname('user_wechat', 'nickName') }}</span>
-                <button class="btn-unbind" v-if="showWechat && isBindEmail" @click="unBindSocial(social.WeChat)">解绑{{
-                  social.WeChatDisplay
-                }}</button>
-              </el-descriptions-item>
+              <el-descriptions-item label="QQ"><a href="#">点击绑定</a></el-descriptions-item>
+              <el-descriptions-item label="微信"><a href="#">点击绑定</a></el-descriptions-item>
             </el-descriptions>
           </div>
 
@@ -72,11 +54,16 @@
             </div>
           </div>
 
-
-
           <div class="edit-div">
-            <el-form :label-position="labelPosition" label-width="100px" ref="editFormRef" :model="editForm"
-              class="edit-form" :size="formSize" status-icon>
+            <el-form
+              :label-position="labelPosition"
+              label-width="100px"
+              ref="editFormRef"
+              :model="editForm"
+              class="edit-form"
+              :size="formSize"
+              status-icon
+            >
               <el-form-item label="用户名" prop="userName">
                 <el-input v-model="editForm.userName" disabled />
               </el-form-item>
@@ -105,7 +92,6 @@
                 </el-form-item>
               </div>
             </el-form>
-
           </div>
         </el-tab-pane>
         <el-tab-pane>
@@ -116,7 +102,8 @@
               </el-icon>
               <span>我的订单</span>
             </span>
-          </template></el-tab-pane>
+          </template></el-tab-pane
+        >
         <el-tab-pane>
           <template #label>
             <span class="custom-tabs-label">
@@ -125,7 +112,8 @@
               </el-icon>
               <span>购买会员</span>
             </span>
-          </template></el-tab-pane>
+          </template></el-tab-pane
+        >
         <el-tab-pane>
           <template #label>
             <span class="custom-tabs-label">
@@ -134,7 +122,8 @@
               </el-icon>
               <span>我的文章</span>
             </span>
-          </template></el-tab-pane>
+          </template></el-tab-pane
+        >
         <el-tab-pane>
           <template #label>
             <span class="custom-tabs-label">
@@ -143,7 +132,8 @@
               </el-icon>
               <span>我的评论</span>
             </span>
-          </template></el-tab-pane>
+          </template></el-tab-pane
+        >
         <el-tab-pane>
           <template #label>
             <span class="custom-tabs-label">
@@ -152,30 +142,25 @@
               </el-icon>
               <span>我的收藏</span>
             </span>
-          </template></el-tab-pane>
+          </template></el-tab-pane
+        >
       </el-tabs>
     </div>
-
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted } from 'vue'
 import '@/assets/styleVariables.less'
 import { View, Tickets, Goods, Document, ChatLineSquare, Star } from '@element-plus/icons-vue'
 import { ArrowRight } from '@element-plus/icons-vue'
 import { reactive, ref, onBeforeMount } from 'vue'
 import type { FormInstance } from 'element-plus' // 需要全部安装 npm i element-plus -S
-import InitialAvatar from '@/components/common/InitialAvatar.vue';
-import AvatarUpload from '@/components/common/AvatarUploader.vue';
-import BindemailDialog from '@/components/common/BindEmailDialog.vue';
+import InitialAvatar from '@/components/common/InitialAvatar.vue'
+import AvatarUpload from '@/components/common/AvatarUploader.vue'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 import { convertToBeijingTime } from '@/utils/UtcToBeijingTime'
-import type { UserInfo } from '@/api/user/GetUserInfo'
-
 
 const tabPosition = ref('left') // tab位置
-
 
 interface EditForm {
   userName: string
@@ -187,8 +172,12 @@ interface EditForm {
 
 // 获取用户信息
 const userStore = useUserStore()
+let { data, avatar } = storeToRefs(userStore)
 
-let { data, avatar, isBindEmail } = storeToRefs(userStore)
+onBeforeMount(() => {
+  // 组件挂载前
+  userStore.getUserInfoByToken()
+})
 
 // 表单label位置 top | left | right
 const labelPosition = ref('right')
@@ -199,7 +188,6 @@ const formSize = ref('default')
 // 表单实例
 const editFormRef = ref<FormInstance>()
 
-
 // 表单数据
 const editForm = reactive<EditForm>({
   userName: ref(data.value.user.user_name).value,
@@ -209,80 +197,29 @@ const editForm = reactive<EditForm>({
   description: ref('jianjie').value,
 })
 
-const submitForm = async (formEl: FormInstance | undefined) => { }
+const submitForm = async (formEl: FormInstance | undefined) => {}
 
-
-const enum social {
-  QQ = 'qq',
-  QQDisplay = 'QQ',
-  WeChat = 'wechat',
-  WeChatDisplay = '微信',
+interface Bindings {
+  QQ: boolean
+  WeChat: boolean
 }
 
-const showQQ = ref(false);
-const showWechat = ref(false);
+type Platform = 'QQ' | 'WeChat'
 
-/**
- * @description: 获取社交昵称
- * @param platform 平台
- * @param field 字段
- * @return string 
- */
-const socialNickname = (platform: keyof UserInfo, field: string) => {
-  const userData = data.value as UserInfo;
-  return userData[platform] ? (userData[platform] as any)[field] : '';
-};
+const isBound = ref<Bindings>({ QQ: false, WeChat: true })
+const nickname = ref<string>('')
 
-
-/**
- * @description: 绑定社交账号
- * @param platform 平台
- * @return  void
- */
-const bindSocial = (platform: social) => {
-  if (platform === social.QQ) {
-    userStore.bindQQ();
-  } else if (platform === social.WeChat) {
-    userStore.loginByWechat();
+const toggleBinding = (platform: Platform) => {
+  isBound.value[platform] = true
+  if (platform === 'WeChat' && isBound.value[platform]) {
+    // 在这里添加获取微信昵称的逻辑
+    nickname.value = '微信昵称'
+  } else if (platform === 'WeChat') {
+    nickname.value = ''
   }
-  updateShowStatus(platform);
-};
-
-const unBindSocial = async (platform: social) => {
-  if (platform === social.QQ) {
-    await userStore.unBindQQ();
-    showQQ.value = false;
-  } else if (platform === social.WeChat) {
-    // userStore.loginByWechat();
-  }
-  updateShowStatus(platform);
-};
-
-/**
- * @description: 更新社交账号显示状态
- * @param platform 平台
- * @return  void
- */
-const updateShowStatus = (platform: social) => {
-  if (platform === social.QQ && data.value.user_qq && data.value.user_qq.openid) {
-    showQQ.value = true;
-  } else if (platform === social.WeChat && data.value.user_wechat && data.value.user_wechat.unionid) {
-    showWechat.value = true;
-  }
-};
-
-onMounted(() => {
-  updateShowStatus(social.QQ);
-  updateShowStatus(social.WeChat);
-});
-
-onBeforeMount(() => { // 组件挂载前
-  userStore.getUserInfoByToken()
-
-})
-
-
-
+  console.log(`${isBound.value[platform] ? '绑定' : '解绑'} ${platform}`)
+  // 在这里添加处理逻辑，例如调用 API 进行实际绑定或解绑操作
+}
 </script>
 <style scoped lang="less">
 .content {
@@ -310,7 +247,7 @@ onBeforeMount(() => { // 组件挂载前
   background-color: @background-color;
 }
 
-.tabs>.el-tabs__content {
+.tabs > .el-tabs__content {
   padding: 32px;
   color: #6b778c;
   font-size: 32px;
@@ -331,20 +268,17 @@ onBeforeMount(() => { // 组件挂载前
   margin-left: 4px;
 }
 
-
 .el-social-div {
   margin-top: 20px;
 }
 
 .edit-div {
-
   // 显示上边框
   border-top: 2px solid #ebebeb;
   // 内边距 40px
   padding-top: 40px;
   // 右内边距 200px
   padding-right: 50%;
-
 }
 
 .edit-avatar-div {
@@ -359,26 +293,5 @@ onBeforeMount(() => { // 组件挂载前
   justify-content: center;
   align-items: center;
   margin: 40px 40px 40px 0;
-}
-
-.social-nickname {
-  margin-left: 5px;
-  margin-right: 5px;
-}
-
-.btn-unbind {
-  color: #409eff;
-  border: 1px solid #409eff;
-  border-radius: 4px;
-  background-color: #fff;
-  cursor: pointer;
-}
-
-.btn-bind {
-  color: #409eff;
-  border: 1px solid #409eff;
-  border-radius: 4px;
-  background-color: #fff;
-  cursor: pointer;
 }
 </style>

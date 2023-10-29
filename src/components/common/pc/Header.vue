@@ -1,14 +1,14 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-19 19:38:03
- * @FilePath     : \blog-client\src\components\common\pc\HeaderPC.vue
+ * @LastEditTime : 2023-10-29 20:29:49
+ * @FilePath     : \blog-client\src\components\common\pc\Header.vue
  * @Description  : 头部 PC端
  * @blog         : https://jiaopengzi.com
  * Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
-
 
 <template>
   <transition name="slide-header">
@@ -16,7 +16,7 @@
       <div class="header-mian">
         <div class="logo header-item">
           <h1>
-            <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" alt="/" />
+            <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" :alt="routeObj.home.path" />
           </h1>
         </div>
 
@@ -27,11 +27,11 @@
         </div>
 
         <div class="login header-item" v-if="!isLogin">
-          <router-link to="/login" class="link">
+          <router-link :to="routeObj.login.path" class="link">
             <span>登录</span>
           </router-link>
           <span>/</span>
-          <router-link to="/register" class="link">
+          <router-link :to="routeObj.register.path" class="link">
             <span>注册</span>
           </router-link>
         </div>
@@ -47,20 +47,18 @@
 // 引用图标
 import '@/components/icons/iconfont.css'
 import '@/assets/styleVariables.less'
-import HeaderPCNav from './HeaderPCNav.vue'
+import HeaderPCNav from '@/components/common/pc/HeaderNav.vue'
 import { ref, onBeforeMount } from 'vue'
 
 import type { Ref } from 'vue'
 import type { ScrollData } from '@/hooks/useScroll.types'
 import { useScrollActions } from '@/hooks/useScrollActions'
-import UserDropdown from '@/components/common/pc/UserDropdownPC.vue'; // 导入 UserDropdown 组件
+import UserDropdown from '@/components/common/pc/UserDropdown.vue' // 导入 UserDropdown 组件
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
-
-
+import { routeObj } from '@/router/routeAll'
 
 const headerVisible = ref(true) // 导航栏是否可见
-
 
 // ======================================== 滚动条事件 ========================================
 
@@ -84,16 +82,12 @@ const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownA
 const userStore = useUserStore()
 let { isLogin } = storeToRefs(userStore)
 
-onBeforeMount(() => { // 组件挂载前
+onBeforeMount(() => {
+  // 组件挂载前
   // 通过本地信息 获取用户信息
   userStore.getUserInfoByToken()
-
 })
-
 </script>
-
-
-
 
 <style scoped lang="less">
 header {
@@ -119,7 +113,6 @@ header {
   height: @height-header-pc;
   margin: 0 auto;
 }
-
 
 .slide-header-enter-active {
   transition: all 0.6s ease-out;
@@ -171,3 +164,4 @@ header {
   color: #888;
 }
 </style>
+@/router/routeAll

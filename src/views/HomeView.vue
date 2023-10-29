@@ -9,8 +9,6 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
 
-
-
 <template>
   <div class="page">
     <headerComponent />
@@ -21,8 +19,6 @@
 
 <script setup lang="ts">
 import { headerComponent, footerComponent, contentComponent } from '@/components/common/index'
-
-
 </script>
 
 <style scoped lang="less">
