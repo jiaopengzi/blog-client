@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-29 20:29:49
+ * @LastEditTime : 2023-10-30 19:50:20
  * @FilePath     : \blog-client\src\components\common\pc\Header.vue
  * @Description  : 头部 PC端
  * @blog         : https://jiaopengzi.com
@@ -111,7 +111,8 @@ header {
   align-items: center;
   width: @width-page-main-pc;
   height: @height-header-pc;
-  margin: 0 auto;
+  margin-left: calc((@width-page-pc - @width-page-main-pc - @scrollbar-y-width) / 2); // 居中减去滚动条宽度
+  margin-right: calc((@width-page-pc - @width-page-main-pc - @scrollbar-y-width) / 2);
 }
 
 .slide-header-enter-active {

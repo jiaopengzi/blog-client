@@ -29,7 +29,7 @@ const footerComponent = isMobileDevice
 // 内容页
 const contentComponent = isMobileDevice
   ? defineAsyncComponent(() => import('@/components/common/mobile/Content.vue'))
-  : defineAsyncComponent(() => import('@/components/common/pc/Content.vue'))
+  : defineAsyncComponent(() => import('@/components/common/pc/content/Index.vue'))
 
 // 用户中心
 const userInfoComponent = isMobileDevice

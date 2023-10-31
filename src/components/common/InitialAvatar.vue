@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-05 15:37:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-19 12:00:27
+ * @LastEditTime : 2023-10-30 16:22:08
  * @FilePath     : \blog-client\src\components\common\InitialAvatar.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -27,13 +27,21 @@ const props = defineProps({
     type: String,
     required: false,
   },
+  size: {
+    type: Number,
+    required: false,
+  },
 })
 
 const initials = computed(() => (props.name ? props.name.charAt(0).toUpperCase() : '')) // 获取首字母
 
 const avatarBgStyle = computed(() => ({
+  width: props.size ? `${props.size}px` : '50px', // 宽度
+  height: props.size ? `${props.size}px` : '50px', // 高度
+  'border-radius': props.size ? `${props.size / 2}px` : '25px', // 圆角
+  'font-size': props.size ? `${props.size / 2 + 3}px` : '28px', // 字体大小
   backgroundImage: props.avatar ? `url(${props.avatar})` : '', // 设置背景图片
-  backgroundColor: !props.avatar ? '#888' : '', // 设置背景颜色
+  backgroundColor: !props.avatar ? '#bbb' : '', // 设置背景颜色
 }))
 </script>
 
@@ -42,15 +50,10 @@ const avatarBgStyle = computed(() => ({
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 50px;
-  height: 50px;
-  border-radius: 25px;
   background-color: #888;
   color: @primary-color;
-  font-size: 28px;
   font-weight: 700;
   background-size: cover;
-  /* 使用cover值，根据容器大小自适应 */
-  background-repeat: no-repeat;
+  background-repeat: no-repeat; // 使用cover值，根据容器大小自适应
 }
 </style>

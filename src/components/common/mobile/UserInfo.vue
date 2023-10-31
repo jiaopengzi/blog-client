@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-05 16:45:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-29 19:46:10
+ * @LastEditTime : 2023-10-30 11:59:21
  * @FilePath     : \blog-client\src\components\common\mobile\UserInfo.vue
  * @Description  : 用户中心 PC端
  * @Blog         : https://jiaopengzi.com
@@ -13,7 +13,7 @@
   <div class="content">
     <div class="breadcrumb">
       <el-breadcrumb :separator-icon="ArrowRight">
-        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+        <el-breadcrumb-item :to="routeObj.login.path">首页</el-breadcrumb-item>
         <el-breadcrumb-item>用户信息</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -22,9 +22,9 @@
       <el-tabs type="border-card" :tab-position="tabPosition" class="tabs">
         <el-tab-pane>
           <template #label>
-            <span class="custom-tabs-label"
-              ><el-icon> <View /> </el-icon><span>我的信息</span></span
-            >
+            <span class="custom-tabs-label"><el-icon>
+                <View />
+              </el-icon><span>我的信息</span></span>
           </template>
 
           <div class="el-descriptions-div">
@@ -55,15 +55,8 @@
           </div>
 
           <div class="edit-div">
-            <el-form
-              :label-position="labelPosition"
-              label-width="100px"
-              ref="editFormRef"
-              :model="editForm"
-              class="edit-form"
-              :size="formSize"
-              status-icon
-            >
+            <el-form :label-position="labelPosition" label-width="100px" ref="editFormRef" :model="editForm"
+              class="edit-form" :size="formSize" status-icon>
               <el-form-item label="用户名" prop="userName">
                 <el-input v-model="editForm.userName" disabled />
               </el-form-item>
@@ -102,8 +95,7 @@
               </el-icon>
               <span>我的订单</span>
             </span>
-          </template></el-tab-pane
-        >
+          </template></el-tab-pane>
         <el-tab-pane>
           <template #label>
             <span class="custom-tabs-label">
@@ -112,8 +104,7 @@
               </el-icon>
               <span>购买会员</span>
             </span>
-          </template></el-tab-pane
-        >
+          </template></el-tab-pane>
         <el-tab-pane>
           <template #label>
             <span class="custom-tabs-label">
@@ -122,8 +113,7 @@
               </el-icon>
               <span>我的文章</span>
             </span>
-          </template></el-tab-pane
-        >
+          </template></el-tab-pane>
         <el-tab-pane>
           <template #label>
             <span class="custom-tabs-label">
@@ -132,8 +122,7 @@
               </el-icon>
               <span>我的评论</span>
             </span>
-          </template></el-tab-pane
-        >
+          </template></el-tab-pane>
         <el-tab-pane>
           <template #label>
             <span class="custom-tabs-label">
@@ -142,8 +131,7 @@
               </el-icon>
               <span>我的收藏</span>
             </span>
-          </template></el-tab-pane
-        >
+          </template></el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -159,7 +147,7 @@ import AvatarUpload from '@/components/common/AvatarUploader.vue'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 import { convertToBeijingTime } from '@/utils/UtcToBeijingTime'
-
+import { routeObj } from '@/router/routeAll'
 const tabPosition = ref('left') // tab位置
 
 interface EditForm {
@@ -197,7 +185,7 @@ const editForm = reactive<EditForm>({
   description: ref('jianjie').value,
 })
 
-const submitForm = async (formEl: FormInstance | undefined) => {}
+const submitForm = async (formEl: FormInstance | undefined) => { }
 
 interface Bindings {
   QQ: boolean
@@ -247,7 +235,7 @@ const toggleBinding = (platform: Platform) => {
   background-color: @background-color;
 }
 
-.tabs > .el-tabs__content {
+.tabs>.el-tabs__content {
   padding: 32px;
   color: #6b778c;
   font-size: 32px;
