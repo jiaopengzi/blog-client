@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-05 16:45:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-29 19:49:25
+ * @LastEditTime : 2023-10-31 19:59:25
  * @FilePath     : \blog-client\src\components\common\pc\userInfo\UserInfo.vue
  * @Description  : 用户中心 PC端
  * @Blog         : https://jiaopengzi.com
@@ -27,9 +27,7 @@
         <el-tab-pane>
           <template #label>
             <span class="custom-tabs-label">
-              <el-icon>
-                <View /> </el-icon
-              ><span>我的信息</span></span
+              <el-icon> <View /> </el-icon><span>我的信息</span></span
             >
           </template>
 
@@ -185,7 +183,6 @@
   </div>
 </template>
 <script setup lang="ts">
-import '@/assets/styleVariables.less'
 import { onMounted, computed } from 'vue'
 import { View, Tickets, Goods, Document, ChatLineSquare, Star } from '@element-plus/icons-vue'
 import { ArrowRight } from '@element-plus/icons-vue'
@@ -196,16 +193,16 @@ import AvatarUpload from '@/components/common/AvatarUploader.vue'
 import BindemailDialog from '@/components/common/BindEmailDialog.vue'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
-import { convertToBeijingTime } from '@/utils/UtcToBeijingTime'
+import { convertToBeijingTime } from '@/utils/utcToBeijingTime'
 import type { UserInfo } from '@/api/user/getUserInfo'
 import { social } from '@/api/responseCode'
 import { routeObj } from '@/router/routeAll'
-import type { CheckUserNameRequest } from '@/api/user/CheckUserName'
-import { checkUserNameByJosn } from '@/api/user/CheckUserName'
+import type { CheckUserNameRequest } from '@/api/user/checkUserName'
+import { checkUserNameByJosn } from '@/api/user/checkUserName'
 import { ResponseCode } from '@/api/responseCode'
 import type { editUserInfoRequest } from '@/api/user/editUserInfo'
 import { editUserInfoByJosn } from '@/api/user/editUserInfo'
-import { ShowMsgTip } from '@/utils/Message'
+import { ShowMsgTip } from '@/utils/message'
 import { MsgType } from '@/components/common/index'
 
 const tabPosition = ref('left') // tab位置
@@ -423,20 +420,20 @@ onBeforeMount(() => {
   userStore.getUserInfoByToken()
 })
 </script>
-<style scoped lang="less">
+<style scoped lang="scss">
 .content {
-  width: @width-page-main-pc;
+  width: $width-page-main-pc;
   display: flex;
   flex-direction: column;
 }
 
 .breadcrumb {
-  width: @width-page-main-pc;
+  width: $width-page-main-pc;
   height: 56px;
   color: #333;
   border: 0;
   margin: 0;
-  margin-top: @height-header-pc;
+  margin-top: $height-header-pc;
   padding: 0;
   vertical-align: baseline;
   display: flex;
@@ -444,9 +441,9 @@ onBeforeMount(() => {
 }
 
 .tabs {
-  width: @width-page-main-pc;
-  min-height: calc(100vh - @height-footer-pc - @height-header-pc);
-  background-color: @background-color;
+  width: $width-page-main-pc;
+  min-height: calc(100vh - $height-footer-pc - $height-header-pc);
+  background-color: $background-color;
 }
 
 .tabs > .el-tabs__content {
@@ -518,3 +515,4 @@ onBeforeMount(() => {
   cursor: pointer;
 }
 </style>
+@/api/user/checkUserName@/api/user/checkUserName@/utils/message@/utils/utcToBeijingTime

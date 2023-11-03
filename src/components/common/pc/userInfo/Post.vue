@@ -12,7 +12,5 @@
 <template>
   <div>文章</div>
 </template>
-<script setup lang="ts">
-
-</script>
-<style scoped lang="less"></style>
+<script setup lang="ts"></script>
+<style scoped lang="scss"></style>

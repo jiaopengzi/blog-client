@@ -1,0 +1,37 @@
+/*
+ * @Author       : jiaopengzi
+ * @Date         : 2023-10-31 15:50:41
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2023-10-31 16:19:18
+ * @FilePath     : \blog-client\src\assets\scss\element.scss
+ * @Description  : element-plus 主题样式
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+ */
+
+// styles/element/index.scss
+// 重写 element-plus 主题样式
+@forward 'element-plus/theme-chalk/src/common/var.scss' with (
+  $colors: (
+    'white': #ffffff,
+    'black': #000000,
+    'primary': (
+      'base': #1e2858,
+    ),
+    'success': (
+      'base': #67c23a,
+    ),
+    'warning': (
+      'base': #e6a23c,
+    ),
+    'danger': (
+      'base': #f56c6c,
+    ),
+    'error': (
+      'base': #f56c6c,
+    ),
+    'info': (
+      'base': #909399,
+    ),
+  )
+);

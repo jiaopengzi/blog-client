@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-30 16:23:53
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-30 19:07:19
- * @FilePath     : \blog-client\src\components\common\pc\content\aside\PostItem.vue
+ * @LastEditTime : 2023-11-03 21:06:41
+ * @FilePath     : \blog-client\src\components\common\pc\base\PostItemAside.vue
  * @Description  : 单个文章元素
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -13,18 +13,19 @@
   <div class="post-item">
     <!-- 缩略图 -->
     <div class="thumbnail">
-      <a :href=props.postData.thumbnailHref>
-        <img class="thumbnail-img" :src=props.postData.thumbnailSrc alt="">
+      <a :href="props.postData.thumbnailHref">
+        <img class="thumbnail-img" :src="props.postData.thumbnailSrc" alt="" />
       </a>
     </div>
 
     <!-- 文章摘要内容 -->
     <div class="content">
-
       <!-- 标题 -->
-      <a :href=props.postData.titleHref>
-        <h2 class="title">{{ props.postData.title }}</h2>
-      </a>
+      <div class="title">
+        <a :href="props.postData.titleHref">
+          <h2>{{ props.postData.title }}</h2>
+        </a>
+      </div>
 
       <!-- 作者 日志 访问量 -->
       <div class="meta">
@@ -41,24 +42,22 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue'
-import type { PostItemAsideObj } from '@/components/common/pc/content/aside/postItem.d'
+import type { PostItemAsideObj } from '@/components/common/pc/base/postItemAside.d'
 import { computed } from 'vue'
 import { View } from '@element-plus/icons-vue'
 
 const props = defineProps<{
-  postData: PostItemAsideObj;
+  postData: PostItemAsideObj
 }>()
 
 const view = computed(() =>
   // 显示千分符 , 如果大于 1 万 就显示 ?w
-  props.postData.view > 10000 ? `${Math.floor(props.postData.view / 10000)}w` : props.postData.view.toLocaleString()
-
+  props.postData.view > 10000
+    ? `${Math.floor(props.postData.view / 10000)}w`
+    : props.postData.view.toLocaleString()
 )
-
-
 </script>
-<style scoped lang="less">
+<style scoped lang="scss">
 .post-item {
   position: relative;
   height: 75px;
@@ -70,7 +69,6 @@ const view = computed(() =>
     box-shadow: 0 0 5px #ccc, 0 0 10px #ccc;
   }
 }
-
 
 .thumbnail {
   float: left;
@@ -93,15 +91,17 @@ const view = computed(() =>
 
 .title {
   margin: 0;
-  // font-size: 16px;
-  // font-weight: 700;
   color: #333;
-  line-height: 180%;
   border: 0;
   padding: 0;
-  margin: 0 0 5px 0;
+  height: 4em;
+  line-height: 2em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; // 限制行数为2
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-
 
 .meta {
   display: flex;
@@ -111,7 +111,7 @@ const view = computed(() =>
 .meta-item {
   margin-right: 10px;
   color: #888;
-  font-size: 14px;
+  font-size: smaller;
   line-height: 150%;
   // 图标居中
   display: flex;
@@ -119,3 +119,4 @@ const view = computed(() =>
   justify-content: center;
 }
 </style>
+@/components/common/pc/content/aside/item/postItem

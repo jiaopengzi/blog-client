@@ -27,7 +27,7 @@ const props = defineProps<{
   descriptionAlert: string
 }>()
 </script>
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .el-alert {
   margin: 20px 0 0;
 }

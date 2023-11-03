@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-05 16:45:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-29 22:29:54
+ * @LastEditTime : 2023-10-31 16:22:26
  * @FilePath     : \blog-client\src\components\common\pc\userInfo\index.vue
  * @Description  : 用户中心 PC端
  * @Blog         : https://jiaopengzi.com
@@ -24,13 +24,18 @@
     </div>
 
     <div>
-      <el-tabs type="border-card" :tab-position="tabPosition" class="tabs" v-model="activeTab" @tab-change="tabChange">
+      <el-tabs
+        type="border-card"
+        :tab-position="tabPosition"
+        class="tabs"
+        v-model="activeTab"
+        @tab-change="tabChange"
+      >
         <el-tab-pane name="info">
           <template #label>
             <span class="custom-tabs-label">
-              <el-icon>
-                <View />
-              </el-icon><span>我的信息</span></span>
+              <el-icon> <View /> </el-icon><span>我的信息</span></span
+            >
           </template>
           <Info />
         </el-tab-pane>
@@ -94,7 +99,6 @@
   </div>
 </template>
 <script setup lang="ts">
-import '@/assets/styleVariables.less'
 import { View, Tickets, Goods, Document, ChatLineSquare, Star } from '@element-plus/icons-vue'
 import { ArrowRight } from '@element-plus/icons-vue'
 import { ref } from 'vue'
@@ -114,29 +118,28 @@ const router = useRouter()
 
 // 根据 hash 值来设置当前的 activeTab
 function tabChange(name: any) {
-  router.push({ hash: `#${name}` }); // 使用哈希路由更新 URL
+  router.push({ hash: `#${name}` }) // 使用哈希路由更新 URL
 }
 const hashValue = router.currentRoute.value.hash
 if (hashValue) {
   console.log(hashValue)
   activeTab.value = hashValue.replace('#', '')
 }
-
 </script>
-<style scoped lang="less">
+<style scoped lang="scss">
 .content {
-  width: @width-page-main-pc;
+  width: $width-page-main-pc;
   display: flex;
   flex-direction: column;
 }
 
 .breadcrumb {
-  width: @width-page-main-pc;
+  width: $width-page-main-pc;
   height: 56px;
   color: #333;
   border: 0;
   margin: 0;
-  margin-top: @height-header-pc;
+  margin-top: $height-header-pc;
   padding: 0;
   vertical-align: baseline;
   display: flex;
@@ -144,18 +147,17 @@ if (hashValue) {
 }
 
 .tabs {
-  width: @width-page-main-pc;
-  min-height: calc(100vh - @height-footer-pc - @height-header-pc);
-  background-color: @background-color;
+  width: $width-page-main-pc;
+  min-height: calc(100vh - $height-footer-pc - $height-header-pc);
+  background-color: $background-color;
 }
 
-.tabs>.el-tabs__content {
+.tabs > .el-tabs__content {
   padding: 32px;
   color: #6b778c;
   font-size: 32px;
   font-weight: 600;
 }
-
 
 .tabs .custom-tabs-label .el-icon {
   vertical-align: middle;

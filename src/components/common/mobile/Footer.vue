@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-04 20:45:03
+ * @LastEditTime : 2023-10-31 14:28:33
  * @FilePath     : \blog-client\src\components\common\mobile\Footer.vue
  * @Description  : 底部 移动端
  * @blog         : https://jiaopengzi.com
@@ -54,7 +54,7 @@
   </footer>
 </template>
 <script setup lang="ts"></script>
-<style scoped lang="less">
+<style scoped lang="scss">
 footer {
   width: 100vw;
   bottom: 0;
@@ -73,7 +73,7 @@ footer {
   /* 更改此处 */
   color: #eee;
   font-size: 15px;
-  background-color: @background-color-footer;
+  background-color: $background-color-footer;
   border-top: 2px solid #ebebeb;
 }
 

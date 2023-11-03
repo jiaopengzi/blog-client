@@ -21,7 +21,7 @@
 import { headerComponent, footerComponent, contentComponent } from '@/components/common/index'
 </script>
 
-<style scoped lang="less">
+<style scoped lang="scss">
 .page {
   display: flex;
   flex-direction: column;

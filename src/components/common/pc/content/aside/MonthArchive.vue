@@ -2,13 +2,12 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-30 21:46:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-31 13:14:28
+ * @LastEditTime : 2023-11-03 22:00:50
  * @FilePath     : \blog-client\src\components\common\pc\content\aside\MonthArchive.vue
  * @Description  : 月度归档
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
-
 
 <template>
   <div class="aside-item">
@@ -16,32 +15,34 @@
       <h2><span class="iconfont icon-archive"></span>文章归档</h2>
     </div>
     <div class="table">
-      <el-table :max-height='400' :data='tableData' :show-header='true' :row-class-name='tableRowClassName'
-        @row-click='handleRowClick'>
-        <el-table-column prop="date" label="月份" align='center' />
-        <el-table-column prop="num" label="文章数量" align='center' />
+      <el-table
+        :max-height="400"
+        :data="tableData"
+        :show-header="true"
+        :row-class-name="tableRowClassName"
+        @row-click="handleRowClick"
+      >
+        <el-table-column prop="date" label="月份" align="center" />
+        <el-table-column prop="num" label="文章数量" align="center" />
       </el-table>
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import router from '@/router/index'
-import { defineEmits, onMounted, nextTick } from 'vue';
+import { onMounted, nextTick } from 'vue'
 
-const emits = defineEmits(['ready']); // 用于通知父组件已经渲染完毕
+const emits = defineEmits(['ready']) // 用于通知父组件已经渲染完毕
 
 onMounted(async () => {
-  await nextTick(); // 等待渲染完毕
-  emits('ready'); // 通知父组件已经渲染完毕
-});
+  await nextTick() // 等待渲染完毕
+  emits('ready') // 通知父组件已经渲染完毕
+})
 
 // 参考官方文档 https://element-plus.org/zh-CN/component/table.html#table-%E4%BA%8B%E4%BB%B6
 function handleRowClick(row: any) {
   router.push({ path: row.path })
 }
-
-
 
 const tableData = [
   {
@@ -59,73 +60,71 @@ const tableData = [
     num: 1,
     path: '/post/1',
   },
-  {
-    date: '2016-05',
-    num: 2,
-    path: '/post/2',
-  },
-  {
-    date: '2016-05',
-    num: 1,
-    path: '/post/1',
-  },
-  {
-    date: '2016-05',
-    num: 2,
-    path: '/post/2',
-  },
-  {
-    date: '2016-05',
-    num: 1,
-    path: '/post/1',
-  },
-  {
-    date: '2016-05',
-    num: 2,
-    path: '/post/2',
-  },
-  {
-    date: '2016-05',
-    num: 1,
-    path: '/post/1',
-  },
-  {
-    date: '2016-05',
-    num: 2,
-    path: '/post/2',
-  },
-  {
-    date: '2016-05',
-    num: 2,
-    path: '/post/2',
-  },
-  {
-    date: '2016-05',
-    num: 1,
-    path: '/post/1',
-  },
-  {
-    date: '2016-05',
-    num: 2,
-    path: '/post/2',
-  },
-
+  // {
+  //   date: '2016-05',
+  //   num: 2,
+  //   path: '/post/2',
+  // },
+  // {
+  //   date: '2016-05',
+  //   num: 1,
+  //   path: '/post/1',
+  // },
+  // {
+  //   date: '2016-05',
+  //   num: 2,
+  //   path: '/post/2',
+  // },
+  // {
+  //   date: '2016-05',
+  //   num: 1,
+  //   path: '/post/1',
+  // },
+  // {
+  //   date: '2016-05',
+  //   num: 2,
+  //   path: '/post/2',
+  // },
+  // {
+  //   date: '2016-05',
+  //   num: 1,
+  //   path: '/post/1',
+  // },
+  // {
+  //   date: '2016-05',
+  //   num: 2,
+  //   path: '/post/2',
+  // },
+  // {
+  //   date: '2016-05',
+  //   num: 2,
+  //   path: '/post/2',
+  // },
+  // {
+  //   date: '2016-05',
+  //   num: 1,
+  //   path: '/post/1',
+  // },
+  // {
+  //   date: '2016-05',
+  //   num: 2,
+  //   path: '/post/2',
+  // },
 ]
 
 const tableRowClassName = () => {
   return 'month-archive-row-class' // 返回 class 名称 全局样式
 }
-
 </script>
-<style scoped lang="less">
+<style scoped lang="scss">
 .aside-item {
   border: 1px solid #eaeaea;
-  background-color: @background-color-content;
+  background-color: $background-color-content;
   border-radius: 5px;
 }
 
 .title {
-  background-color: @background-color;
+  background-color: $background-color;
   padding: 10px 5px;
 }
 
@@ -136,14 +135,13 @@ h2 {
   margin: 0;
 }
 
-
 .iconfont {
   font-size: 16px;
   margin-right: 10px;
-  color: #BB1818;
+  color: #bb1818;
 }
 
-/deep/.month-archive-row-class {
+:deep(.month-archive-row-class) {
   cursor: pointer;
 }
 </style>

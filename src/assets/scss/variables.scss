@@ -1,12 +1,12 @@
 /*
  * @Author       : jiaopengzi
- * @Date         : 2023-08-04 10:54:19
+ * @Date         : 2023-10-31 14:21:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-31 14:22:25
- * @FilePath     : \blog-client\src\assets\styleVariables.scss
- * @Description  : CSS 变量
+ * @LastEditTime : 2023-11-03 16:19:01
+ * @FilePath     : \blog-client\src\assets\scss\variables.scss
+ * @Description  : scss 变量
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
  */
 
 // 通用变量
@@ -16,7 +16,7 @@ $background-color: #f3f3f3;
 $background-color-content: #fefefe;
 $background-color-header: rgba(252, 252, 252, 0.92);
 $background-color-footer: rgba(30, 40, 88, 0.6);
-$background-color-hover: RGBA(200, 152, 40, 0.2);
+$background-color-hover: rgba(200, 152, 40, 0.2);
 
 // pc
 $width-page-pc: 100vw;

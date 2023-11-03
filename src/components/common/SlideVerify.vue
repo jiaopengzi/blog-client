@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-12 10:58:14
+ * @LastEditTime : 2023-10-31 15:22:04
  * @FilePath     : \blog-client\src\components\common\SlideVerify.vue
  * @Description  : 滑块验证
  * @Blog         : https://jiaopengzi.com
@@ -43,7 +43,6 @@
 // 引用图标
 import '@/components/icons/iconfont.css'
 import { ref } from 'vue'
-
 import SlideVerify from 'vue3-slide-verify'
 import type { SlideVerifyInstance } from 'vue3-slide-verify'
 import 'vue3-slide-verify/dist/style.css'
@@ -102,7 +101,7 @@ const closeMe = () => {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 h4 {
   height: 40px;
   padding: 0;
@@ -113,7 +112,7 @@ h4 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: @background-color-header;
+  background-color: $background-color-header;
 }
 
 .title {

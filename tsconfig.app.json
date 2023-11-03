@@ -2,14 +2,9 @@
   "extends": "@vue/tsconfig/tsconfig.dom.json",
   "include": [
     "env.d.ts",
-    "src/**/*",
-    "src/*/*",
-    "src/*/*.vue",
-    "src/*/*/*.vue",
-    "src/*/*.ts",
-    "src/api/*.ts",
-    "src/utils/*.ts",
-    "typings/**/*.d.ts",
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "typings/**/*.d.ts"
   ],
   "exclude": [
     "src/**/__tests__/*"
@@ -22,7 +17,6 @@
         "./src/*"
       ]
     },
-    "allowImportingTsExtensions": true,
     "noEmit": true
   }
 }

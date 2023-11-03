@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-14 17:04:42
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-07-14 18:01:12
- * @FilePath     : \blog-client\src\api\user\checkUserNme.ts
+ * @LastEditTime : 2023-10-31 16:59:17
+ * @FilePath     : \blog-client\src\api\user\CheckUserName.ts
  * @Description  : 用户查重
  * @blog         : https://jiaopengzi.com
  * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.

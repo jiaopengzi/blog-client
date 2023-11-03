@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-29 01:46:55
+ * @LastEditTime : 2023-10-31 19:59:41
  * @FilePath     : \blog-client\src\components\common\RegisterPage.vue
  * @Description  : 注册
  * @Blog         : https://jiaopengzi.com
@@ -95,20 +95,20 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import SlideVerify from '@/components/common/SlideVerify.vue'
-import { ShowMsgTip } from '@/utils/Message'
+import { ShowMsgTip } from '@/utils/message'
 import { MsgType } from '@/components/common/index'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
-import type { CheckUserNameRequest } from '@/api/user/CheckUserName'
-import { checkUserNameByJosn } from '@/api/user/CheckUserName'
-import type { CheckEmailRequest } from '@/api/user/CheckEmail'
-import { CheckEmailByJosn } from '@/api/user/CheckEmail'
-import type { RegisterRequest } from '@/api/user/Register'
-import { RegisterByJosn } from '@/api/user/Register'
-import type { CaptchaSendRequest } from '@/api/utils/CaptchaSend'
-import { captchaSendByJosn } from '@/api/utils/CaptchaSend'
-import { getPublicIp } from '@/utils/IP'
-import type { CaptchaCheckRequest } from '@/api/utils/CaptchaCheck'
-import { captchaCheckByJosn } from '@/api/utils/CaptchaCheck'
+import type { CheckUserNameRequest } from '@/api/user/checkUserName'
+import { checkUserNameByJosn } from '@/api/user/checkUserName'
+import type { CheckEmailRequest } from '@/api/user/checkEmail'
+import { CheckEmailByJosn } from '@/api/user/checkEmail'
+import type { RegisterRequest } from '@/api/user/register'
+import { RegisterByJosn } from '@/api/user/register'
+import type { CaptchaSendRequest } from '@/api/utils/captchaSend'
+import { captchaSendByJosn } from '@/api/utils/captchaSend'
+import { getPublicIp } from '@/utils/ip'
+import type { CaptchaCheckRequest } from '@/api/utils/captchaCheck'
+import { captchaCheckByJosn } from '@/api/utils/captchaCheck'
 import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
 import { routeObj } from '@/router/routeAll'
 import router from '@/router/index'
@@ -494,7 +494,7 @@ const closeSlideVerify = () => {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .register-form {
   width: 360px;
   border: 1px solid #ccc;
@@ -505,7 +505,7 @@ const closeSlideVerify = () => {
   background-color: #eee;
 }
 
-@media (max-width: @width-page-main-pc) {
+@media (max-width: $width-page-main-pc) {
   .register-form {
     /* 当屏幕宽度小于 1024px 时 */
     width: 90vw;
@@ -574,3 +574,4 @@ a {
 </style>
 @/utils/Encrypt @/api/user/CheckUserName@/api/user/CheckUserName
 @/api/user/checkEmail@/api/user/checkEmail@/api/user/register@/api/user/register@/api/utils/captchaCheck@/api/utils/captchaCheck@/api/utils/captchaSend@/api/utils/captchaSend
+@/utils/ip@/utils/message

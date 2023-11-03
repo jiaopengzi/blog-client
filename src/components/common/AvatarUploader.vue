@@ -23,7 +23,7 @@ import 'cropperjs/dist/cropper.min.css'
 import { ElButton, ElDialog } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import { uploadAvatar } from '@/api/utils/uploadAvatar'
-import { ShowMsgTip } from '@/utils/Message'
+import { ShowMsgTip } from '@/utils/message'
 import { MsgType } from '@/components/common/index'
 import { UploadCode } from '@/api/responseCode'
 
@@ -175,4 +175,4 @@ img {
   margin: 10px 0;
 }
 </style>
-@/api/utils/uploadAvatar
+@/api/utils/uploadAvatar @/utils/message

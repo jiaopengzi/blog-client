@@ -10,11 +10,8 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
 
-
 <template>
   <div>订单</div>
 </template>
-<script setup lang="ts">
-
-</script>
-<style scoped lang="less"></style>
+<script setup lang="ts"></script>
+<style scoped lang="scss"></style>

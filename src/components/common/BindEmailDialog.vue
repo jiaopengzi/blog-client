@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-21 23:47:03
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-29 14:13:05
+ * @LastEditTime : 2023-11-03 22:32:38
  * @FilePath     : \blog-client\src\components\common\BindEmailDialog.vue
  * @Description  : 绑定邮箱弹窗
  * @Blog         : https://jiaopengzi.com
@@ -11,30 +11,12 @@
 
 <template>
   <!-- 添加滑动验证组件：SlideVerify -->
-  <el-dialog
-    v-model="showDialogBindEmail"
-    :lock-scroll="false"
-    :show-close="false"
-    :close-on-click-modal="true"
-    :close-on-press-escape="false"
-    class="bindemail-dialog"
-  >
+  <el-dialog v-model="showDialogBindEmail" :lock-scroll="false" :show-close="false" :close-on-click-modal="true"
+    :close-on-press-escape="false" class="bindemail-dialog">
     <div class="bind-email-wrapper">
-      <SlideVerify
-        v-if="showSlideVerify"
-        @on-close="closeSlideVerify"
-        @on-success="sendcaptcha"
-      ></SlideVerify>
-      <el-form
-        :label-position="labelPosition"
-        label-width="100px"
-        ref="bindemailFormRef"
-        :model="bindemailForm"
-        :rules="rules"
-        class="bindemail-form"
-        :size="formSize"
-        status-icon
-      >
+      <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="sendcaptcha"></SlideVerify>
+      <el-form :label-position="labelPosition" label-width="100px" ref="bindemailFormRef" :model="bindemailForm"
+        :rules="rules" class="bindemail-form" :size="formSize" status-icon>
         <div class="header-main">
           <h2>绑定邮箱</h2>
           <p>请绑定邮箱后继续使用。</p>
@@ -46,12 +28,7 @@
 
         <el-form-item label="验证码" prop="captcha">
           <el-input class="email-code" v-model="bindemailForm.captcha" />
-          <button
-            class="btn-captcha"
-            type="button"
-            @click="openSlideVerify"
-            :disabled="btnCaptchaState.disabled"
-          >
+          <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="btnCaptchaState.disabled">
             {{ captcha }}
           </button>
         </el-form-item>
@@ -69,18 +46,18 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import SlideVerify from '@/components/common/SlideVerify.vue'
-import { ShowMsgTip } from '@/utils/Message'
+import { ShowMsgTip } from '@/utils/message'
 import { MsgType } from '@/components/common/index'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
-import type { CheckEmailRequest } from '@/api/user/CheckEmail'
-import { CheckEmailByJosn } from '@/api/user/CheckEmail'
-import type { BindEmailRequest } from '@/api/user/BindEmail'
-import { bindEmailByJosn } from '@/api/user/BindEmail'
-import type { CaptchaSendRequest } from '@/api/utils/CaptchaSend'
-import { captchaSendByJosn } from '@/api/utils/CaptchaSend'
-import { getPublicIp } from '@/utils/IP'
-import type { CaptchaCheckRequest } from '@/api/utils/CaptchaCheck'
-import { captchaCheckByJosn } from '@/api/utils/CaptchaCheck'
+import type { CheckEmailRequest } from '@/api/user/checkEmail'
+import { CheckEmailByJosn } from '@/api/user/checkEmail'
+import type { BindEmailRequest } from '@/api/user/bindEmail'
+import { bindEmailByJosn } from '@/api/user/bindEmail'
+import type { CaptchaSendRequest } from '@/api/utils/captchaSend'
+import { captchaSendByJosn } from '@/api/utils/captchaSend'
+import { getPublicIp } from '@/utils/ip'
+import type { CaptchaCheckRequest } from '@/api/utils/captchaCheck'
+import { captchaCheckByJosn } from '@/api/utils/captchaCheck'
 import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
 import { storeToRefs } from 'pinia'
 import { useUserStore } from '@/stores/user'
@@ -335,7 +312,7 @@ const closeSlideVerify = () => {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .bindemail-form {
   min-width: 360px;
   border: 1px solid #ccc;
@@ -346,7 +323,7 @@ const closeSlideVerify = () => {
   background-color: #eee;
 }
 
-@media (max-width: @width-page-main-pc) {
+@media (max-width: $width-page-main-pc) {
   .bindemail-form {
     /* 当屏幕宽度小于 1024px 时 */
     width: 90vw;
@@ -412,3 +389,4 @@ p {
 }
 </style>
 @/api/user/bindEmail@/api/user/bindEmail@/api/user/checkEmail@/api/user/checkEmail@/api/utils/captchaCheck@/api/utils/captchaCheck@/api/utils/captchaSend@/api/utils/captchaSend
+@/utils/ip@/utils/message

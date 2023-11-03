@@ -83,7 +83,7 @@ onBeforeMount(() => {
   userStore.getUserInfoByToken()
 })
 </script>
-<style scoped lang="less">
+<style scoped lang="scss">
 .login {
   margin-top: 100px;
   margin-bottom: 20px;

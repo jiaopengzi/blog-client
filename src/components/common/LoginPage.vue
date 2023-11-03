@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 19:38:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-31 13:09:37
+ * @LastEditTime : 2023-10-31 14:33:38
  * @FilePath     : \blog-client\src\components\common\LoginPage.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -12,14 +12,29 @@
 <template>
   <!-- 添加滑动验证组件：SlideVerify -->
 
-  <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="login"></SlideVerify>
-  <el-form :label-position="labelPosition" label-width="100px" ref="loginFormRef" :model="loginForm" :rules="rules"
-    class="login-form" :size="formSize" status-icon>
+  <SlideVerify
+    v-if="showSlideVerify"
+    @on-close="closeSlideVerify"
+    @on-success="login"
+  ></SlideVerify>
+  <el-form
+    :label-position="labelPosition"
+    label-width="100px"
+    ref="loginFormRef"
+    :model="loginForm"
+    :rules="rules"
+    class="login-form"
+    :size="formSize"
+    status-icon
+  >
     <div class="header-main">
       <a :href="routeObj.home.path">
         <div class="logo">
           <h2>
-            <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" :alt="routeObj.home.path" />
+            <img
+              src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
+              :alt="routeObj.home.path"
+            />
           </h2>
         </div>
       </a>
@@ -29,7 +44,11 @@
       <el-input v-model="loginForm.loginName" placeholder="请输入用户名或邮箱" />
     </el-form-item>
     <el-form-item label="密码" prop="password">
-      <el-input type="password" v-model="loginForm.password" placeholder="大小写字母 + 数字, 长度:6-64" />
+      <el-input
+        type="password"
+        v-model="loginForm.password"
+        placeholder="大小写字母 + 数字, 长度:6-64"
+      />
     </el-form-item>
     <div class="btn-submit">
       <el-form-item>
@@ -159,7 +178,7 @@ const loginByQQ = () => {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .login-form {
   width: 360px;
   border: 1px solid #ccc;
@@ -170,7 +189,7 @@ const loginByQQ = () => {
   background-color: #eee;
 }
 
-@media (max-width: @width-page-main-pc) {
+@media (max-width: $width-page-main-pc) {
   .login-form {
     /* 当屏幕宽度小于 1024px 时 */
     width: 90vw;

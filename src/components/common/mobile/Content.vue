@@ -149,14 +149,14 @@
 <script setup lang="ts">
 import { ArrowRight } from '@element-plus/icons-vue'
 </script>
-<style scoped lang="less">
+<style scoped lang="scss">
 .breadcrumb {
   width: 100vw;
   height: 56px;
   color: #333;
   border: 0;
   margin: 0;
-  margin-top: @height-header-pc;
+  margin-top: $height-header-pc;
   padding: 0;
   vertical-align: baseline;
   display: flex;

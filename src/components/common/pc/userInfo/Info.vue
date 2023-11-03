@@ -3,13 +3,12 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-29 19:49:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-29 20:42:16
- * @FilePath     : \blog-client\src\components\common\pc\userInfo\info.vue
+ * @LastEditTime : 2023-10-31 19:59:06
+ * @FilePath     : \blog-client\src\components\common\pc\userInfo\Info.vue
  * @Description  : 我的信息
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
-
 
 <template>
   <div class="el-descriptions-div">
@@ -40,7 +39,11 @@
           绑定{{ social.WeChatDisplay }}
         </button>
         <span class="social-nickname">{{ socialNickname('user_wechat', 'nickname') }}</span>
-        <button class="btn-unbind" v-if="showWeChat && isBindEmail" @click="unBindSocial(social.WeChat)">
+        <button
+          class="btn-unbind"
+          v-if="showWeChat && isBindEmail"
+          @click="unBindSocial(social.WeChat)"
+        >
           解绑{{ social.WeChatDisplay }}
         </button>
       </el-descriptions-item>
@@ -57,8 +60,16 @@
   </div>
 
   <div class="edit-div">
-    <el-form :label-position="labelPosition" label-width="100px" ref="editFormRef" :model="editForm" :rules="rules"
-      class="edit-form" :size="formSize" status-icon>
+    <el-form
+      :label-position="labelPosition"
+      label-width="100px"
+      ref="editFormRef"
+      :model="editForm"
+      :rules="rules"
+      class="edit-form"
+      :size="formSize"
+      status-icon
+    >
       <el-form-item label="用户名" prop="userName">
         <el-input v-model="editForm.userName" :disabled="userNameDisabled" />
       </el-form-item>
@@ -79,7 +90,11 @@
       </el-form-item>
 
       <el-form-item label="简介" prop="description">
-        <el-input v-model="editForm.description" type="textarea" placeholder="这个人很懒,什么也没有留下。" />
+        <el-input
+          v-model="editForm.description"
+          type="textarea"
+          placeholder="这个人很懒,什么也没有留下。"
+        />
       </el-form-item>
       <div class="btn-submit">
         <el-form-item>
@@ -90,7 +105,6 @@
   </div>
 </template>
 <script setup lang="ts">
-import '@/assets/styleVariables.less'
 import { onMounted, computed } from 'vue'
 import { reactive, ref, onBeforeMount } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
@@ -98,15 +112,15 @@ import InitialAvatar from '@/components/common/InitialAvatar.vue'
 import AvatarUpload from '@/components/common/AvatarUploader.vue'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
-import { convertToBeijingTime } from '@/utils/UtcToBeijingTime'
+import { convertToBeijingTime } from '@/utils/utcToBeijingTime'
 import type { UserInfo } from '@/api/user/getUserInfo'
 import { social } from '@/api/responseCode'
-import type { CheckUserNameRequest } from '@/api/user/CheckUserName'
-import { checkUserNameByJosn } from '@/api/user/CheckUserName'
+import type { CheckUserNameRequest } from '@/api/user/checkUserName'
+import { checkUserNameByJosn } from '@/api/user/checkUserName'
 import { ResponseCode } from '@/api/responseCode'
 import type { editUserInfoRequest } from '@/api/user/editUserInfo'
 import { editUserInfoByJosn } from '@/api/user/editUserInfo'
-import { ShowMsgTip } from '@/utils/Message'
+import { ShowMsgTip } from '@/utils/message'
 import { MsgType } from '@/components/common/index'
 
 interface EditForm {
@@ -322,7 +336,7 @@ onBeforeMount(() => {
   userStore.getUserInfoByToken()
 })
 </script>
-<style scoped lang="less">
+<style scoped lang="scss">
 .el-social-div {
   margin-top: 20px;
 }
@@ -371,3 +385,4 @@ onBeforeMount(() => {
   cursor: pointer;
 }
 </style>
+@/api/user/checkUserName@/api/user/checkUserName@/utils/message@/utils/utcToBeijingTime

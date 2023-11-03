@@ -2,14 +2,13 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-04 18:07:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-26 21:15:06
+ * @LastEditTime : 2023-10-31 16:49:35
  * @FilePath     : \blog-client\vite.config.ts
  * @Description  :
  * @blog         : https://jiaopengzi.com
  * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 import { fileURLToPath, URL } from 'node:url'
-
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
@@ -30,7 +29,7 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
     }),
     Components({
-      resolvers: [ElementPlusResolver()],
+      resolvers: [ElementPlusResolver({ importStyle: 'sass' })], //scss需要添加 { importStyle: 'sass' } 留空默认为css
     }),
     // ------------------------------element-plus 自动导入 结束
   ],
@@ -41,19 +40,19 @@ export default defineConfig({
     },
   },
 
-  // ------------------------------ less全局变量生效 开始
+  // ------------------------------ scss全局变量生效 开始
   css: {
     preprocessorOptions: {
-      less: {
-        // 添加 Less 文件，引用全局变量
-        modifyVars: {
-          hack: `true; @import "./src/assets/styleVariables.less";`,
-        },
-        javascriptEnabled: true,
+      scss: {
+        // 多个scss文件变量生效
+        additionalData: `
+        @use "@/assets/scss/variables.scss" as *;
+        @use "@/assets/scss/element.scss" as *;
+        `,
       },
     },
   },
-  // ------------------------------ less全局变量生效 结束
+  // ------------------------------ scss全局变量生效 结束
   // ------------------------------ 设置代理 开始
   server: {
     host: 'localhost',

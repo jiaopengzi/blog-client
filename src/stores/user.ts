@@ -13,7 +13,7 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { ResponseCode, LocalStorageKey } from '@/api/responseCode'
 import type { AxiosResponse } from 'axios'
-import { ShowMsgTip } from '@/utils/Message'
+import { ShowMsgTip } from '@/utils/message'
 import { MsgType } from '@/components/common/index'
 import type { LoginRequest, LoginResponse } from '@/api/user/login'
 import {

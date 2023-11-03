@@ -10,7 +10,7 @@
  */
 import { createRouter, createWebHistory } from 'vue-router'
 import { routeObj, routes } from '@/router/routeAll'
-import { ShowMsgTip } from '@/utils/Message'
+import { ShowMsgTip } from '@/utils/message'
 import { MsgType } from '@/components/common/index'
 import { useUserStore } from '@/stores/user'
 

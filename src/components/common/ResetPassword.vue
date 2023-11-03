@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-12 12:13:47
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-27 14:49:58
+ * @LastEditTime : 2023-11-03 22:32:07
  * @FilePath     : \blog-client\src\components\common\ResetPassword.vue
  * @Description  : 重置密码
  * @Blog         : https://jiaopengzi.com
@@ -12,29 +12,14 @@
 <template>
   <!-- 添加滑动验证组件：SlideVerify -->
 
-  <SlideVerify
-    v-if="showSlideVerify"
-    @on-close="closeSlideVerify"
-    @on-success="sendcaptcha"
-  ></SlideVerify>
-  <el-form
-    :label-position="labelPosition"
-    label-width="100px"
-    ref="fogetPasswordFormRef"
-    :model="fogetPasswordForm"
-    :rules="rules"
-    class="fogetPassword-form"
-    :size="formSize"
-    status-icon
-  >
+  <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="sendcaptcha"></SlideVerify>
+  <el-form :label-position="labelPosition" label-width="100px" ref="fogetPasswordFormRef" :model="fogetPasswordForm"
+    :rules="rules" class="fogetPassword-form" :size="formSize" status-icon>
     <div class="header-main">
       <a :href="routeObj.home.path">
         <div class="logo">
           <h2>
-            <img
-              src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
-              :alt="routeObj.home.path"
-            />
+            <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" :alt="routeObj.home.path" />
           </h2>
         </div>
       </a>
@@ -47,12 +32,7 @@
 
     <el-form-item label="验证码" prop="captcha">
       <el-input class="email-code" v-model="fogetPasswordForm.captcha" />
-      <button
-        class="btn-captcha"
-        type="button"
-        @click="openSlideVerify"
-        :disabled="btnCaptchaState.disabled"
-      >
+      <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="btnCaptchaState.disabled">
         {{ captcha }}
       </button>
     </el-form-item>
@@ -85,18 +65,18 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import SlideVerify from '@/components/common/SlideVerify.vue'
-import { ShowMsgTip } from '@/utils/Message'
+import { ShowMsgTip } from '@/utils/message'
 import { MsgType } from '@/components/common/index'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
-import type { CheckEmailRequest } from '@/api/user/CheckEmail'
-import { CheckEmailByJosn } from '@/api/user/CheckEmail'
-import type { ResetPasswordRequest } from '@/api/user/ResetPassword'
-import { resetPasswordByJosn } from '@/api/user/ResetPassword'
-import type { CaptchaSendRequest } from '@/api/utils/CaptchaSend'
-import { captchaSendByJosn } from '@/api/utils/CaptchaSend'
-import { getPublicIp } from '@/utils/IP'
-import type { CaptchaCheckRequest } from '@/api/utils/CaptchaCheck'
-import { captchaCheckByJosn } from '@/api/utils/CaptchaCheck'
+import type { CheckEmailRequest } from '@/api/user/checkEmail'
+import { CheckEmailByJosn } from '@/api/user/checkEmail'
+import type { ResetPasswordRequest } from '@/api/user/resetPassword'
+import { resetPasswordByJosn } from '@/api/user/resetPassword'
+import type { CaptchaSendRequest } from '@/api/utils/captchaSend'
+import { captchaSendByJosn } from '@/api/utils/captchaSend'
+import { getPublicIp } from '@/utils/ip'
+import type { CaptchaCheckRequest } from '@/api/utils/captchaCheck'
+import { captchaCheckByJosn } from '@/api/utils/captchaCheck'
 import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
 import { routeObj } from '@/router/routeAll'
 import router from '@/router/index'
@@ -403,7 +383,7 @@ const closeSlideVerify = () => {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .fogetPassword-form {
   width: 360px;
   border: 1px solid #ccc;
@@ -414,7 +394,7 @@ const closeSlideVerify = () => {
   background-color: #eee;
 }
 
-@media (max-width: @width-page-main-pc) {
+@media (max-width: $width-page-main-pc) {
   .fogetPassword-form {
     /* 当屏幕宽度小于 1024px 时 */
     width: 90vw;
@@ -481,3 +461,4 @@ a {
 </style>
 @/utils/Encrypt @/api/user/CheckUserName@/api/user/CheckUserName
 @/api/user/checkEmail@/api/user/checkEmail@/api/user/resetPassword@/api/user/resetPassword@/api/utils/captchaCheck@/api/utils/captchaCheck@/api/utils/captchaSend@/api/utils/captchaSend
+@/utils/ip@/utils/message

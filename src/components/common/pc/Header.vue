@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-30 19:50:20
+ * @LastEditTime : 2023-10-31 15:17:56
  * @FilePath     : \blog-client\src\components\common\pc\Header.vue
  * @Description  : 头部 PC端
  * @blog         : https://jiaopengzi.com
@@ -12,11 +12,18 @@
 
 <template>
   <transition name="slide-header">
-    <header class="header" v-if="headerVisible" :style="{ height: `@height-header-pc`, width: '@width-header-pc' }">
+    <header
+      class="header"
+      v-if="headerVisible"
+      :style="{ height: `@height-header-pc`, width: '@width-header-pc' }"
+    >
       <div class="header-mian">
         <div class="logo header-item">
           <h1>
-            <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" :alt="routeObj.home.path" />
+            <img
+              src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
+              :alt="routeObj.home.path"
+            />
           </h1>
         </div>
 
@@ -44,9 +51,7 @@
 </template>
 
 <script setup lang="ts">
-// 引用图标
-import '@/components/icons/iconfont.css'
-import '@/assets/styleVariables.less'
+import '@/components/icons/iconfont.css' // 引用图标
 import HeaderPCNav from '@/components/common/pc/HeaderNav.vue'
 import { ref, onBeforeMount } from 'vue'
 
@@ -89,10 +94,10 @@ onBeforeMount(() => {
 })
 </script>
 
-<style scoped lang="less">
+<style scoped lang="scss">
 header {
-  width: @width-header-pc;
-  height: @height-header-pc;
+  width: $width-header-pc;
+  height: $height-header-pc;
   /* 将头部固定在屏幕顶部 */
   position: fixed;
   /* 设置头部距离顶部的距离为0 */
@@ -101,7 +106,7 @@ header {
   left: 0;
   /* 可选：如果需要头部在其他元素上方显示，可以设置一个较高的 z-index 值 */
   z-index: 999;
-  background-color: @background-color-header;
+  background-color: $background-color-header;
   border-bottom: 2px solid #ebebeb;
 }
 
@@ -109,10 +114,12 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: @width-page-main-pc;
-  height: @height-header-pc;
-  margin-left: calc((@width-page-pc - @width-page-main-pc - @scrollbar-y-width) / 2); // 居中减去滚动条宽度
-  margin-right: calc((@width-page-pc - @width-page-main-pc - @scrollbar-y-width) / 2);
+  width: $width-page-main-pc;
+  height: $height-header-pc;
+  margin-left: calc(
+    ($width-page-pc - $width-page-main-pc - $scrollbar-y-width) / 2
+  ); // 居中减去滚动条宽度
+  margin-right: calc(($width-page-pc - $width-page-main-pc - $scrollbar-y-width) / 2);
 }
 
 .slide-header-enter-active {
@@ -127,8 +134,8 @@ header {
 }
 
 .logo {
-  width: @width-header-logo-pc;
-  height: @height-header-logo-pc;
+  width: $width-header-logo-pc;
+  height: $height-header-logo-pc;
 }
 
 .logo img {
@@ -140,8 +147,8 @@ header {
   display: flex;
   align-items: center;
   position: relative;
-  width: @width-header-search-pc;
-  height: @height-header-search-pc;
+  width: $width-header-search-pc;
+  height: $height-header-search-pc;
   background-color: #f5f5f5;
 }
 

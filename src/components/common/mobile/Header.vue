@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-23 15:10:49
+ * @LastEditTime : 2023-10-31 14:28:44
  * @FilePath     : \blog-client\src\components\common\mobile\Header.vue
  * @Description  : 头部 移动端
  * @blog         : https://jiaopengzi.com
@@ -97,8 +97,8 @@ const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownA
 // ======================================== 滚动条事件 ========================================
 </script>
 
-<style scoped lang="less">
-@media screen and (max-width: @width-page-main-pc) {
+<style scoped lang="scss">
+@media screen and (max-width: $width-page-main-pc) {
   /* 透明遮罩 */
   .nav-backdrop {
     width: 100vw;
@@ -125,7 +125,7 @@ const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownA
   header {
     width: 100%;
     /* 更改此处 */
-    height: @height-header-mobile;
+    height: $height-header-mobile;
     position: fixed;
     top: 0;
     left: 0;
@@ -152,13 +152,13 @@ const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownA
     /* 修改此处使logo居中 */
     align-items: center;
     width: 100vw;
-    height: @height-header-mobile;
+    height: $height-header-mobile;
   }
 
   .logo {
-    width: @width-header-logo-mobile;
+    width: $width-header-logo-mobile;
     /* 让logo居中 */
-    height: @height-header-logo-mobile;
+    height: $height-header-logo-mobile;
   }
 
   .logo img {

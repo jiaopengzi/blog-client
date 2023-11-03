@@ -3,13 +3,12 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-30 11:28:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-31 14:02:37
+ * @LastEditTime : 2023-11-03 21:55:53
  * @FilePath     : \blog-client\src\components\common\pc\content\Index.vue
  * @Description  : 入口
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
-
 
 <template>
   <div class="content">
@@ -38,13 +37,18 @@
           <PostList />
           <!-- 分页 -->
           <div class="pagination-block">
-            <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize" :background="true"
-              layout="prev, pager, next, jumper, total" :total="totalPages" @current-change="handleCurrentChange" />
+            <el-pagination
+              v-model:current-page="currentPage"
+              v-model:page-size="pageSize"
+              :background="true"
+              layout="prev, pager, next, jumper, total"
+              :total="totalPages"
+              @current-change="handleCurrentChange"
+            />
           </div>
         </el-main>
 
         <el-aside class="el-aside" ref="asideRef" id="aside">
-
           <!-- 推荐阅读 -->
           <RecommendedReads class="el-aside-item" />
           <!-- 热门文章 -->
@@ -52,7 +56,7 @@
           <!-- 月度归档 -->
           <!-- @ready="recalculateHeight" 通知子组件已经渲染完毕 执行 recalculateHeight-->
           <MonthArchive class="el-aside-item" @ready="recalculateHeight" />
-
+          <Tags class="el-aside-item" />
         </el-aside>
       </el-container>
     </div>
@@ -60,15 +64,16 @@
 </template>
 <script setup lang="ts">
 import { ArrowRight, Location } from '@element-plus/icons-vue'
-import Carousel from '@/components/common/pc/content/main/Carousel.vue';
-import PostList from '@/components/common/pc/content/main/PostList.vue';
-import RecommendedReads from '@/components/common/pc/content/aside/RecommendedReads.vue';
-import HotPosts from '@/components/common/pc/content/aside/HotPosts.vue';
-import MonthArchive from '@/components/common/pc/content/aside/MonthArchive.vue';
+import Carousel from '@/components/common/pc/content/main/Carousel.vue'
+import PostList from '@/components/common/pc/content/main/PostList.vue'
+import RecommendedReads from '@/components/common/pc/content/aside/RecommendedReads.vue'
+import HotPosts from '@/components/common/pc/content/aside/HotPosts.vue'
+import MonthArchive from '@/components/common/pc/content/aside/MonthArchive.vue'
+import Tags from '@/components/common/pc/content/aside/Tags.vue'
 import { routeObj } from '@/router/routeAll'
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted, nextTick } from 'vue'
 
-const asideRef = ref<HTMLElement | null>(null);
+const asideRef = ref<HTMLElement | null>(null)
 
 const totalPages = ref(1000)
 const currentPage = ref(5)
@@ -78,48 +83,50 @@ const handleCurrentChange = (val: number) => {
   console.log(`current page: ${val}`)
 }
 
-
 // 侧边栏高度计算
 const recalculateHeight = async () => {
-  await nextTick(); // 等待渲染完毕
+  await nextTick() // 等待渲染完毕
 
-  const aside = document.getElementById("aside"); // 获取侧边栏元素
+  const aside = document.getElementById('aside') // 获取侧边栏元素
   if (aside) {
     const height = Array.from(aside.children).reduce<number>((totalHeight, child: Element) => {
-      const htmlChild = child as HTMLElement;// 断言为 HTMLElement 类型
+      const htmlChild = child as HTMLElement // 断言为 HTMLElement 类型
       if (htmlChild.classList.contains('el-aside-item')) {
-        const style = getComputedStyle(htmlChild);
+        const style = getComputedStyle(htmlChild)
         // 高度 = 之前的高度 + 当前元素的高度 + 当前元素的 marginTop + 当前元素的 marginBottom
-        return totalHeight + htmlChild.offsetHeight + parseFloat(style.marginTop) + parseFloat(style.marginBottom);
+        return (
+          totalHeight +
+          htmlChild.offsetHeight +
+          parseFloat(style.marginTop) +
+          parseFloat(style.marginBottom)
+        )
       }
-      return totalHeight;
-    }, 0);
+      return totalHeight
+    }, 0)
 
-    aside.style.height = `${height}px`; // 设置侧边栏高度
-    aside.style.top = `-${height - window.innerHeight}px`; // 设置侧边栏距离顶部的距离 = 侧边栏高度 - 视口高度
+    aside.style.height = `${height}px` // 设置侧边栏高度
+    aside.style.top = `-${height - window.innerHeight}px` // 设置侧边栏距离顶部的距离 = 侧边栏高度 - 视口高度
   }
-};
-
+}
 
 onMounted(() => {
-  recalculateHeight();
-});
-
+  recalculateHeight()
+})
 </script>
-<style scoped lang="less">
+<style scoped lang="scss">
 .content {
-  width: @width-page-main-pc;
+  width: $width-page-main-pc;
   display: flex;
   flex-direction: column;
 }
 
 .breadcrumb {
-  width: @width-page-main-pc;
+  width: $width-page-main-pc;
   height: 40px;
   color: #333;
   border: 0;
   margin: 0;
-  margin-top: @height-header-pc;
+  margin-top: $height-header-pc;
   padding: 0;
   vertical-align: baseline;
   display: flex;
@@ -131,18 +138,18 @@ onMounted(() => {
 }
 
 .breadcrumb-logo {
-  color: @secondary-color;
+  color: $secondary-color;
 }
 
 .el-main {
-  background-color: @background-color;
+  background-color: $background-color;
   padding-left: 0px;
   padding-top: 0px;
 }
 
 .el-aside {
-  width: @width-aside-pc;
-  background-color: @background-color;
+  width: $width-aside-pc;
+  background-color: $background-color;
   position: sticky; // 粘性定位
   top: -400px; // 侧边栏距离顶部的距离
 }
@@ -150,7 +157,6 @@ onMounted(() => {
 .el-aside-item {
   margin-bottom: 10px;
 }
-
 
 .pagination-block {
   display: flex;

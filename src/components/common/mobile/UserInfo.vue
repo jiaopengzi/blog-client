@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-05 16:45:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-30 11:59:21
+ * @LastEditTime : 2023-11-03 22:35:33
  * @FilePath     : \blog-client\src\components\common\mobile\UserInfo.vue
  * @Description  : 用户中心 PC端
  * @Blog         : https://jiaopengzi.com
@@ -137,7 +137,6 @@
   </div>
 </template>
 <script setup lang="ts">
-import '@/assets/styleVariables.less'
 import { View, Tickets, Goods, Document, ChatLineSquare, Star } from '@element-plus/icons-vue'
 import { ArrowRight } from '@element-plus/icons-vue'
 import { reactive, ref, onBeforeMount } from 'vue'
@@ -146,7 +145,7 @@ import InitialAvatar from '@/components/common/InitialAvatar.vue'
 import AvatarUpload from '@/components/common/AvatarUploader.vue'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
-import { convertToBeijingTime } from '@/utils/UtcToBeijingTime'
+import { convertToBeijingTime } from '@/utils/utcToBeijingTime'
 import { routeObj } from '@/router/routeAll'
 const tabPosition = ref('left') // tab位置
 
@@ -209,20 +208,20 @@ const toggleBinding = (platform: Platform) => {
   // 在这里添加处理逻辑，例如调用 API 进行实际绑定或解绑操作
 }
 </script>
-<style scoped lang="less">
+<style scoped lang="scss">
 .content {
-  width: @width-page-main-pc;
+  width: $width-page-main-pc;
   display: flex;
   flex-direction: column;
 }
 
 .breadcrumb {
-  width: @width-page-main-pc;
+  width: $width-page-main-pc;
   height: 56px;
   color: #333;
   border: 0;
   margin: 0;
-  margin-top: @height-header-pc;
+  margin-top: $height-header-pc;
   padding: 0;
   vertical-align: baseline;
   display: flex;
@@ -230,9 +229,9 @@ const toggleBinding = (platform: Platform) => {
 }
 
 .tabs {
-  width: @width-page-main-pc;
-  min-height: calc(100vh - @height-footer-pc - @height-header-pc);
-  background-color: @background-color;
+  width: $width-page-main-pc;
+  min-height: calc(100vh - $height-footer-pc - $height-header-pc);
+  background-color: $background-color;
 }
 
 .tabs>.el-tabs__content {
@@ -283,3 +282,4 @@ const toggleBinding = (platform: Platform) => {
   margin: 40px 40px 40px 0;
 }
 </style>
+@/utils/utcToBeijingTime
