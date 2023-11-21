@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-12 12:13:47
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-03 22:32:07
+ * @LastEditTime : 2023-11-06 11:55:12
  * @FilePath     : \blog-client\src\components\common\ResetPassword.vue
  * @Description  : 重置密码
  * @Blog         : https://jiaopengzi.com
@@ -27,22 +27,22 @@
     </div>
 
     <el-form-item label="邮箱" prop="email">
-      <el-input v-model="fogetPasswordForm.email" />
+      <el-input v-model.trim="fogetPasswordForm.email" />
     </el-form-item>
 
     <el-form-item label="验证码" prop="captcha">
-      <el-input class="email-code" v-model="fogetPasswordForm.captcha" />
+      <el-input class="email-code" v-model.trim="fogetPasswordForm.captcha" />
       <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="btnCaptchaState.disabled">
         {{ captcha }}
       </button>
     </el-form-item>
 
     <el-form-item label="新密码" prop="password">
-      <el-input type="password" v-model="fogetPasswordForm.password" />
+      <el-input type="password" v-model.trim="fogetPasswordForm.password" />
     </el-form-item>
 
     <el-form-item label="确认密码" prop="rePassword">
-      <el-input type="password" v-model="fogetPasswordForm.rePassword" />
+      <el-input type="password" v-model.trim="fogetPasswordForm.rePassword" />
     </el-form-item>
 
     <div class="btn-submit">
@@ -394,7 +394,7 @@ const closeSlideVerify = () => {
   background-color: #eee;
 }
 
-@media (max-width: $width-page-main-pc) {
+@media (max-width: pc.$width-page-main) {
   .fogetPassword-form {
     /* 当屏幕宽度小于 1024px 时 */
     width: 90vw;

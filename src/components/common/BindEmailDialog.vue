@@ -323,7 +323,7 @@ const closeSlideVerify = () => {
   background-color: #eee;
 }
 
-@media (max-width: $width-page-main-pc) {
+@media (max-width: pc.$width-page-main) {
   .bindemail-form {
     /* 当屏幕宽度小于 1024px 时 */
     width: 90vw;

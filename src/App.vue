@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-31 21:47:48
+ * @LastEditTime : 2023-11-21 22:32:03
  * @FilePath     : \blog-client\src\App.vue
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -22,6 +22,7 @@
 <script setup lang="ts">
 import { useHead } from '@unhead/vue'
 import { Head } from '@unhead/vue/components'
+// import Icon from '@/components/icons/Icon.vue'
 
 useHead({
   title: 'My awesome site',
@@ -48,4 +49,6 @@ useHead({
 })
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+
+</style>

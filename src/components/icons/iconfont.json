@@ -6,18 +6,18 @@
   "description": "vue 重写项目",
   "glyphs": [
     {
+      "icon_id": "4937004",
+      "name": "qq",
+      "font_class": "qq",
+      "unicode": "e887",
+      "unicode_decimal": 59527
+    },
+    {
       "icon_id": "17412606",
       "name": "Recommended",
       "font_class": "Recommended",
       "unicode": "e6c7",
       "unicode_decimal": 59079
-    },
-    {
-      "icon_id": "1235507",
-      "name": "qq",
-      "font_class": "qq",
-      "unicode": "e600",
-      "unicode_decimal": 58880
     },
     {
       "icon_id": "13075010",

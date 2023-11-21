@@ -2,16 +2,16 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-07 13:55:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-29 20:01:35
- * @FilePath     : \blog-client\src\api\utils\UploadAvatar.ts
+ * @LastEditTime : 2023-11-20 15:54:37
+ * @FilePath     : \blog-client\src\api\utils\uploadAvatar.ts
  * @Description  : 上传头像
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 // src/api/user/UploadAvatar.ts
-import request from '../request'
+import request from '@/api/request'
 import type { AxiosPromise } from 'axios'
-import { routerGroup } from '../routerGroup'
+import { routerGroup } from '@/api/routerGroup'
 
 export interface UploadAvatarResponse {
   code: number

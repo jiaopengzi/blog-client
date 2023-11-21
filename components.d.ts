@@ -44,6 +44,7 @@ declare module 'vue' {
     Header: typeof import('./src/components/common/mobile/Header.vue')['default']
     HeaderNav: typeof import('./src/components/common/mobile/HeaderNav.vue')['default']
     HotPosts: typeof import('./src/components/common/pc/content/aside/HotPosts.vue')['default']
+    Icon: typeof import('./src/components/icons/Icon.vue')['default']
     Index: typeof import('./src/components/common/pc/content/Index.vue')['default']
     Info: typeof import('./src/components/common/pc/userInfo/Info.vue')['default']
     InitialAvatar: typeof import('./src/components/common/InitialAvatar.vue')['default']

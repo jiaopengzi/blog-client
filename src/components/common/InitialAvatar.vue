@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-05 15:37:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-31 15:10:46
+ * @LastEditTime : 2023-11-21 18:22:06
  * @FilePath     : \blog-client\src\components\common\InitialAvatar.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -51,7 +51,7 @@ const avatarBgStyle = computed(() => ({
   justify-content: center;
   align-items: center;
   background-color: #888;
-  color: $primary-color;
+  color: light.$primary-color;
   font-weight: 700;
   background-size: cover;
   background-repeat: no-repeat; // 使用cover值，根据容器大小自适应

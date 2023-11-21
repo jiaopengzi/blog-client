@@ -27,8 +27,9 @@
         <el-tab-pane>
           <template #label>
             <span class="custom-tabs-label">
-              <el-icon> <View /> </el-icon><span>我的信息</span></span
-            >
+              <el-icon>
+                <View />
+              </el-icon><span>我的信息</span></span>
           </template>
 
           <div class="el-descriptions-div">
@@ -49,11 +50,7 @@
                   绑定{{ social.QQDisplay }}
                 </button>
                 <span class="social-nickname">{{ socialNickname('user_qq', 'nickname') }}</span>
-                <button
-                  class="btn-unbind"
-                  v-if="showQQ && isBindEmail"
-                  @click="unBindSocial(social.QQ)"
-                >
+                <button class="btn-unbind" v-if="showQQ && isBindEmail" @click="unBindSocial(social.QQ)">
                   解绑{{ social.QQDisplay }}
                 </button>
               </el-descriptions-item>
@@ -63,11 +60,7 @@
                   绑定{{ social.WeChatDisplay }}
                 </button>
                 <span class="social-nickname">{{ socialNickname('user_wechat', 'nickname') }}</span>
-                <button
-                  class="btn-unbind"
-                  v-if="showWeChat && isBindEmail"
-                  @click="unBindSocial(social.WeChat)"
-                >
+                <button class="btn-unbind" v-if="showWeChat && isBindEmail" @click="unBindSocial(social.WeChat)">
                   解绑{{ social.WeChatDisplay }}
                 </button>
               </el-descriptions-item>
@@ -84,16 +77,8 @@
           </div>
 
           <div class="edit-div">
-            <el-form
-              :label-position="labelPosition"
-              label-width="100px"
-              ref="editFormRef"
-              :model="editForm"
-              :rules="rules"
-              class="edit-form"
-              :size="formSize"
-              status-icon
-            >
+            <el-form :label-position="labelPosition" label-width="100px" ref="editFormRef" :model="editForm"
+              :rules="rules" class="edit-form" :size="formSize" status-icon>
               <el-form-item label="用户名" prop="userName">
                 <el-input v-model="editForm.userName" :disabled="userNameDisabled" />
               </el-form-item>
@@ -114,11 +99,7 @@
               </el-form-item>
 
               <el-form-item label="简介" prop="description">
-                <el-input
-                  v-model="editForm.description"
-                  type="textarea"
-                  placeholder="这个人很懒,什么也没有留下。"
-                />
+                <el-input v-model="editForm.description" type="textarea" placeholder="这个人很懒,什么也没有留下。" />
               </el-form-item>
               <div class="btn-submit">
                 <el-form-item>
@@ -136,8 +117,7 @@
               </el-icon>
               <span>我的订单</span>
             </span>
-          </template></el-tab-pane
-        >
+          </template></el-tab-pane>
         <el-tab-pane>
           <template #label>
             <span class="custom-tabs-label">
@@ -146,8 +126,7 @@
               </el-icon>
               <span>购买会员</span>
             </span>
-          </template></el-tab-pane
-        >
+          </template></el-tab-pane>
         <el-tab-pane>
           <template #label>
             <span class="custom-tabs-label">
@@ -156,8 +135,7 @@
               </el-icon>
               <span>我的文章</span>
             </span>
-          </template></el-tab-pane
-        >
+          </template></el-tab-pane>
         <el-tab-pane>
           <template #label>
             <span class="custom-tabs-label">
@@ -166,8 +144,7 @@
               </el-icon>
               <span>我的评论</span>
             </span>
-          </template></el-tab-pane
-        >
+          </template></el-tab-pane>
         <el-tab-pane>
           <template #label>
             <span class="custom-tabs-label">
@@ -176,8 +153,7 @@
               </el-icon>
               <span>我的收藏</span>
             </span>
-          </template></el-tab-pane
-        >
+          </template></el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -422,18 +398,18 @@ onBeforeMount(() => {
 </script>
 <style scoped lang="scss">
 .content {
-  width: $width-page-main-pc;
+  width: pc.$width-page-main;
   display: flex;
   flex-direction: column;
 }
 
 .breadcrumb {
-  width: $width-page-main-pc;
+  width: pc.$width-page-main;
   height: 56px;
   color: #333;
   border: 0;
   margin: 0;
-  margin-top: $height-header-pc;
+  margin-top: pc.$height-header;
   padding: 0;
   vertical-align: baseline;
   display: flex;
@@ -441,12 +417,12 @@ onBeforeMount(() => {
 }
 
 .tabs {
-  width: $width-page-main-pc;
-  min-height: calc(100vh - $height-footer-pc - $height-header-pc);
-  background-color: $background-color;
+  width: pc.$width-page-main;
+  min-height: calc(100vh - pc.$height-footer - pc.$height-header);
+  background-color: light.$background-color-page;
 }
 
-.tabs > .el-tabs__content {
+.tabs>.el-tabs__content {
   padding: 32px;
   color: #6b778c;
   font-size: 32px;

@@ -24,18 +24,13 @@
     </div>
 
     <div>
-      <el-tabs
-        type="border-card"
-        :tab-position="tabPosition"
-        class="tabs"
-        v-model="activeTab"
-        @tab-change="tabChange"
-      >
+      <el-tabs type="border-card" :tab-position="tabPosition" class="tabs" v-model="activeTab" @tab-change="tabChange">
         <el-tab-pane name="info">
           <template #label>
             <span class="custom-tabs-label">
-              <el-icon> <View /> </el-icon><span>我的信息</span></span
-            >
+              <el-icon>
+                <View />
+              </el-icon><span>我的信息</span></span>
           </template>
           <Info />
         </el-tab-pane>
@@ -128,18 +123,18 @@ if (hashValue) {
 </script>
 <style scoped lang="scss">
 .content {
-  width: $width-page-main-pc;
+  width: pc.$width-page-main;
   display: flex;
   flex-direction: column;
 }
 
 .breadcrumb {
-  width: $width-page-main-pc;
+  width: pc.$width-page-main;
   height: 56px;
   color: #333;
   border: 0;
   margin: 0;
-  margin-top: $height-header-pc;
+  margin-top: pc.$height-header;
   padding: 0;
   vertical-align: baseline;
   display: flex;
@@ -147,12 +142,12 @@ if (hashValue) {
 }
 
 .tabs {
-  width: $width-page-main-pc;
-  min-height: calc(100vh - $height-footer-pc - $height-header-pc);
-  background-color: $background-color;
+  width: pc.$width-page-main;
+  min-height: calc(100vh - pc.$height-footer - pc.$height-header);
+  background-color: light.$background-color-page;
 }
 
-.tabs > .el-tabs__content {
+.tabs>.el-tabs__content {
   padding: 32px;
   color: #6b778c;
   font-size: 32px;

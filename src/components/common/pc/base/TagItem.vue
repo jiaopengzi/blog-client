@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-03 20:48:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-03 22:07:40
+ * @LastEditTime : 2023-11-04 19:09:36
  * @FilePath     : \blog-client\src\components\common\pc\base\TagItem.vue
  * @Description  : 标签元素
  * @Blog         : https://jiaopengzi.com
@@ -10,14 +10,8 @@
 -->
 
 <template>
-  <el-tag
-    :key="tag.data.lablel"
-    class="tag-item"
-    effect="dark"
-    :round="false"
-    @click="() => handleClick(tag)"
-    :style="[{ 'background-color': tag.color.bgColor }, { color: tag.color.color }]"
-  >
+  <el-tag :key="tag.data.lablel" class="tag-item" effect="dark" :round="false" @click="() => handleClick(tag)"
+    :style="[{ 'background-color': tag.color.bgColor }, { color: tag.color.color }]">
     {{ tag.data.lablel + '(' + tag.data.tagPostNum + ')' }}
   </el-tag>
 </template>
@@ -53,6 +47,7 @@ function generateItemColor(a: number = 0.8): TagColor {
 
   let bgColor = 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')' // 设置背景色变量
   let color = L > 50 ? '#222' : '#ddd' // 设置文字颜色变量
+  // let color = 'rgba(' + (255 - r) + ',' + (255 - g) + ',' + (255 - b) + ')'// 模仿 css mix-blend-mode: difference;
 
   return { color: color, bgColor: bgColor }
 }
@@ -65,7 +60,6 @@ function handleClick(clickedItem: Tag) {
 
 <style scoped lang="scss">
 .tag-item {
-  color: #ffffff;
   font-size: 13px;
   min-width: 50px;
   margin-top: 5px;

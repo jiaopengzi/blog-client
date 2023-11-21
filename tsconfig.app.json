@@ -3,6 +3,7 @@
   "include": [
     "env.d.ts",
     "src/**/*.ts",
+    "src/**/*.json",
     "src/**/*.vue",
     "typings/**/*.d.ts"
   ],
@@ -15,7 +16,7 @@
     "paths": {
       "@/*": [
         "./src/*"
-      ]
+      ],
     },
     "noEmit": true
   }

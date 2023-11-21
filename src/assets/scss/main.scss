@@ -1,17 +1,29 @@
 @import 'reset-css';
+
+// 主题样式
+
 body {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   margin: 0;
-  overflow: auto;
+  overflow-x: hidden;
   height: 100%;
-  background-color: $background-color;
+  // @include useTheme('light'){
+  //   background-color: light.$background-color-page;
+  // }
+  @include respond-to('pc') {
+    background-color: blue;
+  }
+  @include respond-to('phone') {
+    background-color: red;
+  }
 }
 
 #app {
-  max-width: $width-page-pc;
+  display: flex;
+  max-width: pc.$width-page;
   margin: 0;
   padding: 0;
   min-height: 100%;
@@ -29,7 +41,7 @@ a {
   }
 
   a:hover {
-    background-color: $background-color-hover;
+    background-color: light.$background-color-hover;
     // 下划线
     // text-decoration: underline;
     /* 字体变大20% */
@@ -37,7 +49,7 @@ a {
   }
 }
 
-@media (min-width: $width-page-main-pc) {
+@media (min-width: pc.$width-page-main) {
   body {
     display: flex;
     place-items: center;

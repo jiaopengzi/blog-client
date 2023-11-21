@@ -7,5 +7,12 @@
     {
       "path": "./tsconfig.app.json"
     }
-  ]
+  ],
+  "compilerOptions": {
+    // ...其他配置项
+    "typeRoots": [
+      "./node_modules/@types",
+      "./typings"
+    ]
+  },
 }

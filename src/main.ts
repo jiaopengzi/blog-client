@@ -1,8 +1,9 @@
+/* eslint-disable vue/multi-word-component-names */
 /**
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-31 21:20:40
+ * @LastEditTime : 2023-11-06 16:52:00
  * @FilePath     : \blog-client\src\main.ts
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -12,11 +13,11 @@
 import '@/assets/scss/main.scss'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import { createHead } from '@unhead/vue'
+import { createHead } from '@unhead/vue' //seo head
 import App from '@/App.vue'
 import router from '@/router'
-
 import { useUserStore } from '@/stores/user'
+import Icon from '@/components/icons/Icon.vue'
 
 const app = createApp(App)
 
@@ -30,6 +31,6 @@ app.use(createHead()) //参考官方文档:https://unhead.unjs.io/setup/vue/inst
 router.isReady().then(async () => {
   const userStore = useUserStore()
   await userStore.getUserInfoByToken()
-
+  app.component('Icon', Icon) // 使用 'Icon' 作为全局组件名
   app.mount('#app')
 })

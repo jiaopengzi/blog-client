@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-05 16:45:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-03 22:35:33
+ * @LastEditTime : 2023-11-21 20:42:10
  * @FilePath     : \blog-client\src\components\common\mobile\UserInfo.vue
  * @Description  : 用户中心 PC端
  * @Blog         : https://jiaopengzi.com
@@ -210,18 +210,18 @@ const toggleBinding = (platform: Platform) => {
 </script>
 <style scoped lang="scss">
 .content {
-  width: $width-page-main-pc;
+  width: pc.$width-page-main;
   display: flex;
   flex-direction: column;
 }
 
 .breadcrumb {
-  width: $width-page-main-pc;
+  width: pc.$width-page-main;
   height: 56px;
   color: #333;
   border: 0;
   margin: 0;
-  margin-top: $height-header-pc;
+  margin-top: pc.$height-header;
   padding: 0;
   vertical-align: baseline;
   display: flex;
@@ -229,9 +229,9 @@ const toggleBinding = (platform: Platform) => {
 }
 
 .tabs {
-  width: $width-page-main-pc;
-  min-height: calc(100vh - $height-footer-pc - $height-header-pc);
-  background-color: $background-color;
+  width: pc.$width-page-main;
+  min-height: calc(100vh - pc.$height-footer - pc.$height-header);
+  background-color: light.$background-color-page;
 }
 
 .tabs>.el-tabs__content {

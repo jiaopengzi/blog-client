@@ -9,8 +9,9 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import request from '../request'
-import { routerGroup } from '../routerGroup'
+// import request from '../request'
+import request from '@/api/request'
+import { routerGroup } from '@/api//routerGroup'
 import type { AxiosPromise } from 'axios'
 
 export interface BindEmailRequest {

@@ -1,0 +1,33 @@
+/*
+ * @Author       : jiaopengzi
+ * @Date         : 2023-11-20 19:35:40
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2023-11-21 22:10:10
+ * @FilePath     : \blog-client\src\assets\scss\platform\pc.scss
+ * @Description  : pc相关尺寸样式
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+ */
+
+$scrollbar-y-width: var(--scrollbar-y-width); // Y轴滚动条宽度
+$min-width: '1201px';
+$max-width:'1400px';
+
+$width-page: 100vw;
+$width-page-main: 1186px; // 1920*0.618
+
+$width-header: 100vw;
+$height-header: 88px;
+$height-footer: 200px;
+$width-aside: 320px;
+
+$height-header-logo: 52px;
+$width-header-logo: 200px;
+$height-header-search: 40px;
+$width-header-search: 200px;
+
+$height-header-login: 40px;
+$width-header-login: 100px;
+
+$font-size: 16px;
+$font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif;

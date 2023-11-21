@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-31 14:59:13
+ * @LastEditTime : 2023-11-21 22:15:21
  * @FilePath     : \blog-client\src\components\common\pc\Footer.vue
  * @Description  : 底部 PC端
  * @blog         : https://jiaopengzi.com
@@ -27,17 +27,11 @@
             <span>微信</span>
           </li>
           <li class="footer-m-li">
-            <img
-              src="https://jiaopengzi.com/wp-content/uploads/2021/11/weixingongzhonghao.png"
-              alt="公众号"
-            />
+            <img src="https://jiaopengzi.com/wp-content/uploads/2021/11/weixingongzhonghao.png" alt="公众号" />
             <span>公众号</span>
           </li>
           <li class="footer-m-li">
-            <img
-              src="https://jiaopengzi.com/wp-content/uploads/2021/12/qq1618582.png"
-              alt="QQ:1618582"
-            />
+            <img src="https://jiaopengzi.com/wp-content/uploads/2021/12/qq1618582.png" alt="QQ:1618582" />
             <span>QQ:1618582</span>
           </li>
         </ul>
@@ -92,19 +86,23 @@ onMounted(() => {
 
 <style scoped lang="scss">
 footer {
-  height: $height-footer-pc;
+  height: pc.$height-footer;
   /* 将底部固定在屏幕底部 */
   position: relative;
 
   /* 设置一个较高的 z-index 值以覆盖其他元素 */
   z-index: 990;
-  background-color: $background-color-footer;
-  width: calc($width-page-pc - $scrollbar-y-width);
+  background-color: light.$background-color-footer;
+  width: calc(pc.$width-page - pc.$scrollbar-y-width);
   box-sizing: border-box;
+
+  @include respond-to('phone') {
+    display: none;
+  }
 }
 
 .footer-mian {
-  width: $width-page-main-pc;
+  width: pc.$width-page-main;
   display: flex;
   justify-content: space-around;
   align-items: flex-start;

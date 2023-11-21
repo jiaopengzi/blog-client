@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-29 20:32:36
+ * @LastEditTime : 2023-11-05 16:28:35
  * @FilePath     : \blog-client\src\components\common\mobile\HeaderNav.vue
  * @Description  : 头部导航 移动端
  * @blog         : https://jiaopengzi.com
@@ -33,31 +33,31 @@
       </li>
       <li>
         <router-link :to="routeObj.post.path" class="link">
-          <span class="iconfont icon-article"></span>
+          <Icon name="article" customClass="my-icon" />
           <span class="titile">文章</span>
         </router-link>
       </li>
       <li>
         <router-link :to="routeObj.video.path" class="link">
-          <span class="iconfont icon-video"></span>
+          <Icon name="video" customClass="my-icon" />
           <span class="titile">视频课</span>
         </router-link>
       </li>
       <li>
         <router-link :to="routeObj.doc.path" class="link">
-          <span class="iconfont icon-doc"></span>
+          <Icon name="doc" customClass="my-icon" />
           <span class="titile">文档</span>
         </router-link>
       </li>
       <li>
         <router-link :to="routeObj.tool.path" class="link">
-          <span class="iconfont icon-tool"></span>
+          <Icon name="tool" customClass="my-icon" />
           <span class="titile">工具下载</span>
         </router-link>
       </li>
       <li>
         <router-link :to="routeObj.vip.path" class="link">
-          <span class="iconfont icon-vip-red icon-red"></span>
+          <Icon name="vip-red" customClass="my-icon my-icon-red" />
           <span class="titile">加入VIP</span>
         </router-link>
       </li>
@@ -65,8 +65,6 @@
   </div>
 </template>
 <script setup lang="ts">
-// 引用图标
-import '@/components/icons/iconfont.css'
 import { onBeforeMount } from 'vue'
 import { routeObj } from '@/router/routeAll'
 import InitialAvatar from '@/components/common/InitialAvatar.vue'
@@ -148,14 +146,14 @@ span {
   /* 垂直居中对齐 */
 }
 
-.iconfont {
-  font-size: 1em;
-  color: #222;
+.my-icon {
+  font-size: 20px;
+  fill: #333;
   margin-right: 4px;
 }
 
-.icon-red {
-  color: rgb(222, 0, 0);
+.my-icon-red {
+  fill: rgb(222, 0, 0);
 }
 </style>
 @/router/routeAll

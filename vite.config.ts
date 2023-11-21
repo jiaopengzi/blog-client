@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-04 18:07:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-31 16:49:35
+ * @LastEditTime : 2023-11-21 20:43:21
  * @FilePath     : \blog-client\vite.config.ts
  * @Description  :
  * @blog         : https://jiaopengzi.com
@@ -45,9 +45,16 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         // 多个scss文件变量生效
+        // additionalData: `
+        // @use "@/assets/scss/variables.scss" as *;
+        // @use "@/assets/scss/element.scss" as *;
+        // `,
         additionalData: `
-        @use "@/assets/scss/variables.scss" as *;
         @use "@/assets/scss/element.scss" as *;
+        @use '@/assets/scss/themes/light.scss' as light;
+        @use '@/assets/scss/platform/phone.scss' as phone;
+        @use '@/assets/scss/platform/pc.scss' as pc;
+        @use '@/assets/scss/mixin.scss' as *;
         `,
       },
     },

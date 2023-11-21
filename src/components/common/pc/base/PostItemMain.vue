@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-30 16:23:53
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-03 21:14:14
+ * @LastEditTime : 2023-11-21 20:23:39
  * @FilePath     : \blog-client\src\components\common\pc\base\PostItemMain.vue
  * @Description  : 单个文章元素
  * @Blog         : https://jiaopengzi.com
@@ -14,9 +14,7 @@
     <!-- 左上角提示符 -->
     <div class="tip"></div>
     <!-- 分类 -->
-    <a :href="props.postData.categoryHref"
-      ><span class="category">{{ props.postData.category }}</span></a
-    >
+    <a :href="props.postData.categoryHref"><span class="category">{{ props.postData.category }}</span></a>
     <!-- 缩略图 -->
     <div class="thumbnail">
       <a :href="props.postData.thumbnailHref">
@@ -79,7 +77,7 @@ const view = computed(() =>
   height: 150px;
   border-radius: 3px;
   padding: 20px;
-  background-color: $background-color-content;
+  background-color: light.$background-color-content;
   overflow: hidden;
 
   &:hover {
@@ -115,7 +113,7 @@ const view = computed(() =>
     top: 0;
     left: 0px; // 使得红色外边框在 .tip 的左侧
     height: 28px;
-    border-right: 6px solid $primary-color; // 绿色内边框
+    border-right: 6px solid light.$primary-color; // 绿色内边框
   }
 }
 
@@ -130,10 +128,10 @@ const view = computed(() =>
   padding-left: 10px;
   padding-right: 10px;
   z-index: 2;
-  background-color: $primary-color;
+  background-color: light.$primary-color;
   line-height: 200%;
   font-size: 14px;
-  color: $background-color;
+  color: light.$background-color-page;
   border-radius: 5%;
 }
 
@@ -226,8 +224,8 @@ const view = computed(() =>
   z-index: 2;
   padding: 5px 10px;
   border-radius: 5px;
-  background-color: $primary-color;
-  color: $background-color;
+  background-color: light.$primary-color;
+  color: light.$background-color-page;
   line-height: 150%;
   opacity: 0;
   transition: opacity 0.3s ease-in-out;

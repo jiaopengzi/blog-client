@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-31 15:22:04
+ * @LastEditTime : 2023-11-21 20:36:16
  * @FilePath     : \blog-client\src\components\common\SlideVerify.vue
  * @Description  : 滑块验证
  * @Blog         : https://jiaopengzi.com
@@ -14,25 +14,12 @@
     <!-- @touchmove.prevent.stop 阻止触摸事件传播并阻止默认行为。确保滑动验证码不会导致页面滑动。 -->
     <div class="verify-main" @touchmove.prevent.stop>
       <h4>
-        <span class="title">拖动下方滑块完成拼图</span
-        ><button class="iconfont icon-close" @click="closeMe"></button>
+        <span class="title">拖动下方滑块完成拼图</span>
+        <Icon name="close" /><button @click="closeMe"></button>
       </h4>
 
-      <slide-verify
-        ref="block"
-        :l="42"
-        :r="10"
-        :w="280"
-        :h="186"
-        :slider-text="text"
-        :accuracy="accuracy"
-        :show="true"
-        :imgs="imgs"
-        @again="onAgain"
-        @success="onSuccess"
-        @fail="onFail"
-        @refresh="onRefresh"
-      ></slide-verify>
+      <slide-verify ref="block" :l="42" :r="10" :w="280" :h="186" :slider-text="text" :accuracy="accuracy" :show="true"
+        :imgs="imgs" @again="onAgain" @success="onSuccess" @fail="onFail" @refresh="onRefresh"></slide-verify>
       <div>{{ msg }}</div>
     </div>
     <div class="verify-backdrop"></div>
@@ -41,7 +28,6 @@
 
 <script setup lang="ts">
 // 引用图标
-import '@/components/icons/iconfont.css'
 import { ref } from 'vue'
 import SlideVerify from 'vue3-slide-verify'
 import type { SlideVerifyInstance } from 'vue3-slide-verify'
@@ -112,7 +98,7 @@ h4 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: $background-color-header;
+  background-color: light.$background-color-header;
 }
 
 .title {

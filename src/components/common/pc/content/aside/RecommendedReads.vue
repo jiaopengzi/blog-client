@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-30 11:30:43
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-31 15:41:25
+ * @LastEditTime : 2023-11-05 16:16:34
  * @FilePath     : \blog-client\src\components\common\pc\content\aside\RecommendedReads.vue
  * @Description  : 推荐阅读
  * @Blog         : https://jiaopengzi.com
@@ -12,7 +12,9 @@
 <template>
   <div class="aside-item">
     <div class="title">
-      <h2><span class="iconfont icon-Recommended"></span>推荐阅读</h2>
+      <h2>
+        <Icon name="Recommended" customClass="aside-icon" />推荐阅读
+      </h2>
     </div>
     <div class="post-list">
       <PostItem v-for="(item, index) in postItems" :key="index" :postData="item" />
@@ -37,17 +39,19 @@ const postItems: PostItemAsideObj[] = Array(5).fill(postDataObj)
 <style scoped lang="scss">
 .aside-item {
   border: 1px solid #eaeaea;
-  background-color: $background-color-content;
+  background-color: light.$background-color-content;
   border-radius: 5px;
 
   .title {
-    background-color: $background-color;
+    background-color: light.$background-color-page;
     padding: 10px 5px;
   }
 
   h2 {
     font-size: 16px;
     font-weight: 600;
+    display: flex;
+    align-items: center;
   }
 }
 
@@ -65,10 +69,10 @@ const postItems: PostItemAsideObj[] = Array(5).fill(postDataObj)
   }
 }
 
-.iconfont {
-  font-size: 16px;
-  margin-right: 10px;
-  color: #bb1818;
+.aside-icon {
+  font-size: 20px;
+  margin-right: 5px;
+  fill: #bb1818;
 }
 </style>
 @/components/common/pc/content/aside/item/postItem

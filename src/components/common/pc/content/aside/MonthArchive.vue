@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-30 21:46:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-03 22:00:50
+ * @LastEditTime : 2023-11-05 16:16:14
  * @FilePath     : \blog-client\src\components\common\pc\content\aside\MonthArchive.vue
  * @Description  : 月度归档
  * @Blog         : https://jiaopengzi.com
@@ -12,16 +12,13 @@
 <template>
   <div class="aside-item">
     <div class="title">
-      <h2><span class="iconfont icon-archive"></span>文章归档</h2>
+      <h2>
+        <Icon name="archive" customClass="aside-icon" />文章归档
+      </h2>
     </div>
     <div class="table">
-      <el-table
-        :max-height="400"
-        :data="tableData"
-        :show-header="true"
-        :row-class-name="tableRowClassName"
-        @row-click="handleRowClick"
-      >
+      <el-table :max-height="400" :data="tableData" :show-header="true" :row-class-name="tableRowClassName"
+        @row-click="handleRowClick">
         <el-table-column prop="date" label="月份" align="center" />
         <el-table-column prop="num" label="文章数量" align="center" />
       </el-table>
@@ -119,26 +116,26 @@ const tableRowClassName = () => {
 <style scoped lang="scss">
 .aside-item {
   border: 1px solid #eaeaea;
-  background-color: $background-color-content;
+  background-color: light.$background-color-content;
   border-radius: 5px;
 }
 
 .title {
-  background-color: $background-color;
+  background-color: light.$background-color-page;
   padding: 10px 5px;
 }
 
 h2 {
   font-size: 16px;
   font-weight: 600;
-  display: inline-block;
-  margin: 0;
+  display: flex;
+  align-items: center;
 }
 
-.iconfont {
-  font-size: 16px;
-  margin-right: 10px;
-  color: #bb1818;
+.aside-icon {
+  font-size: 20px;
+  margin-right: 5px;
+  fill: #bb1818;
 }
 
 :deep(.month-archive-row-class) {

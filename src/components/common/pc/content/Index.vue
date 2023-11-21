@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-30 11:28:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-03 21:55:53
+ * @LastEditTime : 2023-11-21 22:13:50
  * @FilePath     : \blog-client\src\components\common\pc\content\Index.vue
  * @Description  : 入口
  * @Blog         : https://jiaopengzi.com
@@ -37,14 +37,8 @@
           <PostList />
           <!-- 分页 -->
           <div class="pagination-block">
-            <el-pagination
-              v-model:current-page="currentPage"
-              v-model:page-size="pageSize"
-              :background="true"
-              layout="prev, pager, next, jumper, total"
-              :total="totalPages"
-              @current-change="handleCurrentChange"
-            />
+            <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize" :background="true"
+              layout="prev, pager, next, jumper, total" :total="totalPages" @current-change="handleCurrentChange" />
           </div>
         </el-main>
 
@@ -115,18 +109,18 @@ onMounted(() => {
 </script>
 <style scoped lang="scss">
 .content {
-  width: $width-page-main-pc;
+  width: pc.$width-page-main;
   display: flex;
   flex-direction: column;
 }
 
 .breadcrumb {
-  width: $width-page-main-pc;
+  width: pc.$width-page-main;
   height: 40px;
   color: #333;
   border: 0;
   margin: 0;
-  margin-top: $height-header-pc;
+  margin-top: pc.$height-header;
   padding: 0;
   vertical-align: baseline;
   display: flex;
@@ -138,18 +132,18 @@ onMounted(() => {
 }
 
 .breadcrumb-logo {
-  color: $secondary-color;
+  color: light.$secondary-color;
 }
 
 .el-main {
-  background-color: $background-color;
+  background-color: light.$background-color-page;
   padding-left: 0px;
   padding-top: 0px;
 }
 
 .el-aside {
-  width: $width-aside-pc;
-  background-color: $background-color;
+  width: pc.$width-aside;
+  background-color: light.$background-color-page;
   position: sticky; // 粘性定位
   top: -400px; // 侧边栏距离顶部的距离
 }

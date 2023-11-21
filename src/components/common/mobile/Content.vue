@@ -156,7 +156,7 @@ import { ArrowRight } from '@element-plus/icons-vue'
   color: #333;
   border: 0;
   margin: 0;
-  margin-top: $height-header-pc;
+  margin-top: pc.$height-header;
   padding: 0;
   vertical-align: baseline;
   display: flex;
