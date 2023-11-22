@@ -1,13 +1,14 @@
 <!--
  * @Author       : jiaopengzi
- * @Date         : 2023-08-11 19:38:52
+ * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-21 20:59:11
- * @FilePath     : \blog-client\src\components\common\LoginPage.vue
+ * @LastEditTime : 2023-11-22 16:07:23
+ * @FilePath     : \blog-client\src\views\LoginView.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
+
 
 <template>
   <!-- 添加滑动验证组件：SlideVerify -->

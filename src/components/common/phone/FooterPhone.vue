@@ -1,22 +1,21 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-31 14:28:33
- * @FilePath     : \blog-client\src\components\common\mobile\Footer.vue
- * @Description  : 底部 移动端
- * @blog         : https://jiaopengzi.com
- * Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+ * @LastEditTime : 2023-11-22 20:35:38
+ * @FilePath     : \blog-client\src\components\common\phone\FooterPhone.vue
+ * @Description  :  底部 移动端
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
+
 
 <template>
   <footer>
     <div class="footer-mian">
       <div class="footer-l">
-        <h3>本站简介</h3>
-        我们主要玩：Power BI、Power Pivot、Power Query、Power BI Report
-        Server及DAX等相关数据分析的内容。
+        <h3 class="footer-l-h3">本站简介</h3>
+        <p class="footer-l-p">我们主要玩：Power BI、Power Pivot、Power Query、Power BI Report Server及DAX等相关数据分析的内容。</p>
       </div>
       <div class="footer-m">
         <ul>
@@ -64,7 +63,6 @@ footer {
   justify-content: center;
   align-items: flex-start;
   margin: 0;
-  /* 更改此处 */
   color: #eee;
   font-size: 15px;
   background-color: light.$background-color-footer;
@@ -73,13 +71,21 @@ footer {
 
 .footer-l {
   width: 100%;
-  text-align: left;
-  padding-left: 3%;
-  padding-right: 3%;
-  padding-top: 40px;
-  line-height: 1.5;
   /* 设置合适的行间距值 */
   margin-bottom: 5%;
+}
+
+.footer-l-h3 {
+  text-align: center;
+  line-height: 1.5;
+  padding-top: 5%;
+  margin: 0;
+}
+
+.footer-l-p {
+  text-align: left;
+  line-height: 1.5;
+  padding: 5%;
 }
 
 .footer-m {

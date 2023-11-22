@@ -1,18 +1,18 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-05 15:35:04
- * @FilePath     : \blog-client\src\components\common\mobile\Header.vue
- * @Description  : 头部 移动端
- * @blog         : https://jiaopengzi.com
- * Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+ * @LastEditTime : 2023-11-22 21:18:59
+ * @FilePath     : \blog-client\src\components\common\phone\HeaderPhone.vue
+ * @Description  : phone端头部
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
+
 
 <template>
   <transition name="slide-header">
-    <header class="header" v-if="headerVisible" :style="{ height: `@height-header-mobile`, width: '100vw' }">
+    <header v-if="headerVisible" :style="{ height: 'phone.$height-header', width: '100vw' }">
       <ul class="header-main">
         <li>
           <button class="btn-menu" @click="toggleNav">
@@ -43,11 +43,11 @@
   }">
     <!-- :style="{ transform: navVisible ? 'translateX(0)' : 'translateX(-100%)', height: `calc(100vh - ${headerHeight})`, width: '61.8vw' }"> -->
     <!-- 侧边栏导航栏 -->
-    <HeaderMobileNav />
+    <HeaderNavPhone />
   </div>
 </template>
 <script setup lang="ts">
-import HeaderMobileNav from '@/components/common/mobile/HeaderNav.vue'
+import HeaderNavPhone from '@/components/common/phone/HeaderNavPhone.vue'
 import { ref } from 'vue'
 import { routeObj } from '@/router/routeAll'
 import type { Ref } from 'vue'
@@ -62,7 +62,7 @@ const toggleNav = () => {
   navVisible.value = !navVisible.value
 }
 
-// ======================================== 滚动条事件 ========================================
+/* ======================================== 滚动条事件 ======================================== */
 
 const scrollUpAction = () => {
   navVisible.value = false // 隐藏侧边导航栏
@@ -81,89 +81,86 @@ const scrollDownAction = () => {
 }
 
 const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownAction)
-// ======================================== 滚动条事件 ========================================
+/* ======================================== 滚动条事件 ======================================== */
 </script>
 
 <style scoped lang="scss">
-@media screen and (max-width: pc.$width-page-main) {
+/* 透明遮罩 */
+.nav-backdrop {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 997;
+  background-color: rgba(0, 0, 0, 0.1);
+}
 
-  /* 透明遮罩 */
-  .nav-backdrop {
-    width: 100vw;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 997;
-    background-color: rgba(0, 0, 0, 0.1);
-  }
+/* 侧边导航栏*/
+.side-nav {
+  background: rgba(255, 255, 255, 0.97);
+  position: fixed;
+  top: 0;
+  border: #ddd 1px solid;
+  left: 0;
+  z-index: 998;
+  transition: transform 300ms ease-in-out;
+  box-shadow: 1px 0 5px rgba(0, 0, 0, 0.2);
+}
 
-  /* 侧边导航栏*/
-  .side-nav {
-    background: rgba(255, 255, 255, 0.97);
-    position: fixed;
-    top: 0;
-    border: #ddd 1px solid;
-    left: 0;
-    z-index: 998;
-    transition: transform 300ms ease-in-out;
-    box-shadow: 1px 0 5px rgba(0, 0, 0, 0.2);
-  }
+header {
+  width: 100%;
+  /* 更改此处 */
+  height: phone.$height-header;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+}
 
-  header {
-    width: 100%;
-    /* 更改此处 */
-    height: phone.$height-header;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 999;
-  }
+// VUE3.0 transition 动画
+.slide-header-enter-active {
+  transition: all 0.6s ease-out;
+}
 
-  // VUE3.0 transition 动画
-  .slide-header-enter-active {
-    transition: all 0.6s ease-out;
-  }
+.slide-header-enter-from,
+.slide-header-leave-to {
+  transform: translateY(-100%);
+  transition: all 0.6s ease-out;
+  opacity: 0;
+}
 
-  .slide-header-enter-from,
-  .slide-header-leave-to {
-    transform: translateY(-100%);
-    transition: all 0.6s ease-out;
-    opacity: 0;
-  }
+.header-main {
+  border-bottom: 2px solid #ebebeb;
+  background-color: #fefefe;
+  display: flex;
+  justify-content: space-between;
+  /* 修改此处使logo居中 */
+  align-items: center;
+  width: 100vw;
+  height: phone.$height-header;
+}
 
-  .header-main {
-    border-bottom: 2px solid #ebebeb;
-    background-color: #fefefe;
-    display: flex;
-    justify-content: space-between;
-    /* 修改此处使logo居中 */
-    align-items: center;
-    width: 100vw;
-    height: phone.$height-header;
-  }
+.logo {
+  width: phone.$width-header-logo;
+  /* 让logo居中 */
+  height: phone.$height-header-logo;
+}
 
-  .logo {
-    width: phone.$width-header-logo;
-    /* 让logo居中 */
-    height: phone.$height-header-logo;
-  }
+.logo img {
+  width: 100%;
+  height: 100%;
+}
 
-  .logo img {
-    width: 100%;
-    height: 100%;
-  }
+li {
+  list-style: none;
+  padding: 5%;
+}
 
-  li {
-    list-style: none;
-    padding: 5%;
-  }
-
-  .btn-menu {
-    background-color: transparent;
-    border: none;
-    outline: none;
-  }
+.btn-menu {
+  background-color: transparent;
+  border: none;
+  outline: none;
 }
 </style>
 @/router/routeAll

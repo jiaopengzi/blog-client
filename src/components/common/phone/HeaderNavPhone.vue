@@ -2,12 +2,13 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-05 16:28:35
- * @FilePath     : \blog-client\src\components\common\mobile\HeaderNav.vue
+ * @LastEditTime : 2023-11-22 17:57:20
+ * @FilePath     : \blog-client\src\components\common\phone\HeaderNavPhone.vue
  * @Description  : 头部导航 移动端
- * @blog         : https://jiaopengzi.com
- * Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
+
 
 <template>
   <div class="login" v-if="!isLogin">

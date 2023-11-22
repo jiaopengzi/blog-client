@@ -1,10 +1,9 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <!--
  * @Author       : jiaopengzi
- * @Date         : 2023-10-05 16:45:45
+ * @Date         : 2023-10-29 19:49:35
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-29 20:21:54
- * @FilePath     : \blog-client\src\components\common\pc\userInfo\Comment.vue
+ * @LastEditTime : 2023-11-22 17:59:58
+ * @FilePath     : \blog-client\src\components\common\pc\userInfo\CommentPC.vue
  * @Description  : 我的评论
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 

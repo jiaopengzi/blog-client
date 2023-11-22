@@ -23,8 +23,8 @@
 
 
 $platforms: (
-  'pc': (pc.$min-width, pc.$max-width),
-  'phone': (phone.$min-width, phone.$max-width)
+    'phone': (phone.$min-width, phone.$max-width),
+    'pc': pc.$min-width,
 );
 
 @mixin respond-to($platformName) {

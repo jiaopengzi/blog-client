@@ -1,13 +1,14 @@
 <!--
  * @Author       : jiaopengzi
- * @Date         : 2023-10-05 16:45:45
+ * @Date         : 2023-10-05 16:54:04
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-21 20:42:10
- * @FilePath     : \blog-client\src\components\common\mobile\UserInfo.vue
- * @Description  : 用户中心 PC端
+ * @LastEditTime : 2023-11-22 17:57:51
+ * @FilePath     : \blog-client\src\components\common\phone\UserInfoPhone.vue
+ * @Description  : 用户中心
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
+
 
 <template>
   <div class="content">

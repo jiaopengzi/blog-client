@@ -1,13 +1,15 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <!--
  * @Author       : jiaopengzi
- * @Date         : 2023-10-19 14:12:55
+ * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-23 15:23:40
- * @FilePath     : \blog-client\src\components\common\SocialLoginCallback.vue
+ * @LastEditTime : 2023-11-22 16:06:47
+ * @FilePath     : \blog-client\src\views\SocialLoginCallbackView.vue
  * @Description  : 三方登录回调跳转页面
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
+
 
 <template>
   <div class="container">

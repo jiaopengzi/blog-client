@@ -3,9 +3,9 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-30 11:28:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-21 22:13:50
+ * @LastEditTime : 2023-11-22 17:59:26
  * @FilePath     : \blog-client\src\components\common\pc\content\Index.vue
- * @Description  : 入口
+ * @Description  : 内容页入口
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->

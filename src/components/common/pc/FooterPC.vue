@@ -95,10 +95,6 @@ footer {
   background-color: light.$background-color-footer;
   width: calc(pc.$width-page - pc.$scrollbar-y-width);
   box-sizing: border-box;
-
-  @include respond-to('phone') {
-    display: none;
-  }
 }
 
 .footer-mian {

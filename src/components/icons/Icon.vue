@@ -3,9 +3,9 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-05 11:39:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-05 15:10:39
+ * @LastEditTime : 2023-11-22 21:55:51
  * @FilePath     : \blog-client\src\components\icons\Icon.vue
- * @Description  : 
+ * @Description  : 图标组件
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps, withDefaults, reactive } from 'vue'
+import { computed, withDefaults, reactive } from 'vue'
 import '@/components/icons/iconfont.js'
 import type { IconMap, IconProps, IconJson } from '@/components/icons/icon.d'
 import iconFontJSON from '@/components/icons/iconfont.json' // 导入 iconfont.json

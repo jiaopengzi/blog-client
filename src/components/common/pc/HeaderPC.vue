@@ -1,15 +1,13 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <!--
  * @Author       : jiaopengzi
- * @Date         : 2023-08-04 10:54:19
+ * @Date         : 2023-11-22 17:36:53
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-21 22:15:13
- * @FilePath     : \blog-client\src\components\common\pc\Header.vue
+ * @LastEditTime : 2023-11-22 17:53:59
+ * @FilePath     : \blog-client\src\components\common\pc\HeaderPC.vue
  * @Description  : 头部 PC端
- * @blog         : https://jiaopengzi.com
- * Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
-
 <template>
   <transition name="slide-header">
     <header class="header" v-if="headerVisible" :style="{ height: `@height-header-pc`, width: '@width-header-pc' }">
@@ -44,13 +42,13 @@
 </template>
 
 <script setup lang="ts">
-import HeaderPCNav from '@/components/common/pc/HeaderNav.vue'
+import HeaderPCNav from '@/components/common/pc/HeaderNavPC.vue'
 import { ref, onBeforeMount } from 'vue'
 
 import type { Ref } from 'vue'
 import type { ScrollData } from '@/hooks/useScroll.types'
 import { useScrollActions } from '@/hooks/useScrollActions'
-import UserDropdown from '@/components/common/pc/UserDropdown.vue' // 导入 UserDropdown 组件
+import UserDropdown from '@/components/common/pc/UserDropdownPC.vue' // 导入 UserDropdown 组件
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 import { routeObj } from '@/router/routeAll'
@@ -100,10 +98,6 @@ header {
   z-index: 999;
   background-color: light.$background-color-header;
   border-bottom: 2px solid #ebebeb;
-
-  @include respond-to('phone') {
-    display: none;
-  }
 }
 
 .header-mian {

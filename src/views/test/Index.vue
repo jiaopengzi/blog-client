@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2023-11-03 21:22:17

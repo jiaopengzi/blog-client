@@ -3,8 +3,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-05 16:45:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-31 16:22:26
- * @FilePath     : \blog-client\src\components\common\pc\userInfo\index.vue
+ * @LastEditTime : 2023-11-22 19:53:37
+ * @FilePath     : \blog-client\src\components\common\pc\userInfo\IndexUserInfoPC.vue
  * @Description  : 用户中心 PC端
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -32,7 +32,7 @@
                 <View />
               </el-icon><span>我的信息</span></span>
           </template>
-          <Info />
+          <InfoPC />
         </el-tab-pane>
         <el-tab-pane name="order">
           <template #label>
@@ -43,7 +43,7 @@
               <span>我的订单</span>
             </span>
           </template>
-          <Order />
+          <OrderPC />
         </el-tab-pane>
         <el-tab-pane name="vip">
           <template #label>
@@ -54,7 +54,7 @@
               <span>购买会员</span>
             </span>
           </template>
-          <Vip />
+          <VipPC />
         </el-tab-pane>
         <el-tab-pane name="post">
           <template #label>
@@ -65,7 +65,7 @@
               <span>我的文章</span>
             </span>
           </template>
-          <Post />
+          <PostPC />
         </el-tab-pane>
         <el-tab-pane name="comment">
           <template #label>
@@ -76,7 +76,7 @@
               <span>我的评论</span>
             </span>
           </template>
-          <Comment />
+          <CommentPC />
         </el-tab-pane>
         <el-tab-pane name="favorite">
           <template #label>
@@ -87,7 +87,7 @@
               <span>我的收藏</span>
             </span>
           </template>
-          <Favorite />
+          <FavoritePC />
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -99,12 +99,12 @@ import { ArrowRight } from '@element-plus/icons-vue'
 import { ref } from 'vue'
 import BindemailDialog from '@/components/common/BindEmailDialog.vue'
 import { routeObj } from '@/router/routeAll'
-import Info from '@/components/common/pc/userInfo/Info.vue'
-import Order from '@/components/common/pc/userInfo/Order.vue'
-import Vip from '@/components/common/pc/userInfo/Vip.vue'
-import Post from '@/components/common/pc/userInfo/Post.vue'
-import Comment from '@/components/common/pc/userInfo/Comment.vue'
-import Favorite from '@/components/common/pc/userInfo/Favorite.vue'
+import InfoPC from '@/components/common/pc/userInfo/InfoPC.vue'
+import OrderPC from '@/components/common/pc/userInfo/OrderPC.vue'
+import VipPC from '@/components/common/pc/userInfo/VipPC.vue'
+import PostPC from '@/components/common/pc/userInfo/PostPC.vue'
+import CommentPC from '@/components/common/pc/userInfo/CommentPC.vue'
+import FavoritePC from '@/components/common/pc/userInfo/FavoritePC.vue'
 import { useRouter } from 'vue-router'
 
 const tabPosition = ref('left') // tab位置

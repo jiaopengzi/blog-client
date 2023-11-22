@@ -1,13 +1,15 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <!--
  * @Author       : jiaopengzi
- * @Date         : 2023-08-04 10:54:19
+ * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-06 11:54:39
- * @FilePath     : \blog-client\src\components\common\RegisterPage.vue
+ * @LastEditTime : 2023-11-22 21:45:25
+ * @FilePath     : \blog-client\src\views\register\Index.vue
  * @Description  : 注册
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
+
 
 <template>
   <!-- 添加滑动验证组件：SlideVerify -->

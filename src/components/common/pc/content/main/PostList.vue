@@ -5,7 +5,7 @@
  * @LastEditors  : jiaopengzi
  * @LastEditTime : 2023-11-03 21:57:50
  * @FilePath     : \blog-client\src\components\common\pc\content\main\PostList.vue
- * @Description  : 内容页
+ * @Description  : 文章列表
  * @blog         : https://jiaopengzi.com
  * Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->

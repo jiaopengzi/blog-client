@@ -2,9 +2,9 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-05 15:37:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-21 18:22:06
+ * @LastEditTime : 2023-11-22 19:49:43
  * @FilePath     : \blog-client\src\components\common\InitialAvatar.vue
- * @Description  : 
+ * @Description  : 头像
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->

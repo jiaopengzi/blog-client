@@ -1,13 +1,15 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <!--
  * @Author       : jiaopengzi
- * @Date         : 2023-08-12 12:13:47
+ * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-06 11:55:12
- * @FilePath     : \blog-client\src\components\common\ResetPassword.vue
+ * @LastEditTime : 2023-11-22 16:07:03
+ * @FilePath     : \blog-client\src\views\ResetPasswordView.vue
  * @Description  : 重置密码
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
+
 
 <template>
   <!-- 添加滑动验证组件：SlideVerify -->

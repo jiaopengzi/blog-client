@@ -1,3 +1,14 @@
+<!--
+ * @Author       : jiaopengzi
+ * @Date         : 2023-10-05 23:22:55
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2023-11-22 19:49:59
+ * @FilePath     : \blog-client\src\components\common\AvatarUploader.vue
+ * @Description  : 头像上传
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+-->
+
 <template>
   <div class="avatar-upload">
     <el-button type="primary" @click="cropperVisible = true">选择并上传头像</el-button>

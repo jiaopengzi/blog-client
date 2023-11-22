@@ -10,15 +10,6 @@ body {
   margin: 0;
   overflow-x: hidden;
   height: 100%;
-  // @include useTheme('light'){
-  //   background-color: light.$background-color-page;
-  // }
-  @include respond-to('pc') {
-    background-color: blue;
-  }
-  @include respond-to('phone') {
-    background-color: red;
-  }
 }
 
 #app {
@@ -49,10 +40,32 @@ a {
   }
 }
 
-@media (min-width: pc.$width-page-main) {
-  body {
+.page {
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+@include respond-to('pc') {
+  .pc {
     display: flex;
-    place-items: center;
+  }
+
+  .phone {
+    display: none;
+  }
+}
+
+@include respond-to('phone') {
+
+  .pc {
+    display: none;
+  }
+
+  .phone {
+    display: flex;
+
   }
 }
 

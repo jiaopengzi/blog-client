@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-21 22:32:03
+ * @LastEditTime : 2023-11-22 16:12:33
  * @FilePath     : \blog-client\src\App.vue
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -49,6 +49,4 @@ useHead({
 })
 </script>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>
