@@ -3,39 +3,131 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-03 21:22:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-21 16:45:28
- * @FilePath     : \blog-client\src\views\Test.vue
+ * @LastEditTime : 2023-11-25 14:37:03
+ * @FilePath     : \blog-client\src\views\test\Index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-  <div class="test">
-    hasdf
-  </div>
+  <div class="common-layout">
 
-  <div class="editor">
-    <textarea class="input" :value="input" @input="update"></textarea>
-    <div class="output" v-html="output"></div>
+    <el-header>Header</el-header>
+    <el-main>Main
+      asdfasdfasdfas
+      sdafasd
+      sadfasdfasdfa
+      sadfasdfasdfaasdf
+      asdfasdfasdfas
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+      <p>asdf</p>
+    </el-main>
+    <el-footer>Footer</el-footer>
+
   </div>
 </template>
 
-<script lang="ts" setup>
-import '@/assets/drake-vue.css'
-import { ref, computed } from 'vue'
-import marked from '@/utils/marked/custom-marked'; // 引入重新封装的 marked
 
-const input = ref('# hello \n==world==\n\n==阿斯蒂芬==');
-const output = computed(() => marked.parse(input.value));
-
-const update = (e: Event) => {
-  input.value = (e.target as HTMLInputElement).value;
-}
+<script setup lang="ts">
 </script>
 
-<style>
-.editor {
-  height: 100vh;
-  display: flex;
+<style scoped lang="scss">
+.el-header {
+  background-color: red;
+}
+
+.el-main {
+  background-color: green;
+}
+
+.el-footer {
+  background-color: blue;
+  width: 100vw;
 }
 </style>

@@ -17,7 +17,7 @@ import { createHead } from '@unhead/vue' //seo head
 import App from '@/App.vue'
 import router from '@/router'
 import { useUserStore } from '@/stores/user'
-import Icon from '@/components/icons/Icon.vue'
+import Icon from '@/components/common/icons/Icon.vue'
 
 const app = createApp(App)
 

@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-05 17:09:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-22 21:45:03
+ * @LastEditTime : 2023-11-25 12:53:10
  * @FilePath     : \blog-client\src\views\userinfo\Index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -18,18 +18,18 @@
   </div>
   <div class="phone page">
     <HeaderPhone />
-    <IndexUserInfoPC />
+    <IndexUserInfoPhone />
     <FooterPhone />
   </div>
 </template>
 
 <script setup lang="ts">
-import HeaderPC from '@/components/common/pc/HeaderPC.vue';
-import IndexUserInfoPC from '@/components/common/pc/userinfo/IndexUserInfoPC.vue';
-import FooterPC from '@/components/common/pc/FooterPC.vue';
-import HeaderPhone from '@/components/common/phone/HeaderPhone.vue';
-import ContentPhone from '@/components/common/phone/ContentPhone.vue';
-import FooterPhone from '@/components/common/phone/FooterPhone.vue';
+import HeaderPC from '@/components/pc/HeaderPC.vue';
+import IndexUserInfoPC from '@/components/pc/userinfo/IndexUserInfoPC.vue';
+import FooterPC from '@/components/pc/FooterPC.vue';
+import HeaderPhone from '@/components/phone/HeaderPhone.vue';
+import IndexUserInfoPhone from '@/components/phone/userinfo/IndexUserInfoPhone.vue';
+import FooterPhone from '@/components/phone/FooterPhone.vue';
 </script>
 
 <style scoped lang="scss"></style>

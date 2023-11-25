@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-20 19:35:27
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-21 22:21:49
+ * @LastEditTime : 2023-11-25 13:26:28
  * @FilePath     : \blog-client\src\assets\scss\platform\phone.scss
  * @Description  : phone相关样式
  * @Blog         : https://jiaopengzi.com
@@ -10,17 +10,16 @@
  */
 
 
-
-
 $scrollbar-y-width: var(--scrollbar-y-width); // Y轴滚动条宽度
 $min-width:'320px';
-$max-width: '1185px';
+$max-width: '1219px';
 
+$width-page: 100vw;
 
-$height-header: calc(64 / 667 * 100vh);
-
-$height-header-logo: calc(31.2 / 667 * 100vh);
-$width-header-logo: calc(120 / 375 * 100vw);
+$height-header: 72px;
+$height-footer: 200px;
+$height-header-logo: 42.5px;
+$width-header-logo: 164px;
 
 $font-size: 16px;
 $font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif;
