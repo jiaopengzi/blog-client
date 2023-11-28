@@ -2,9 +2,9 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-06 23:28:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-07 01:53:42
+ * @LastEditTime : 2023-11-26 11:11:43
  * @FilePath     : \blog-client\src\utils\marked\mark-extension.ts
- * @Description  :
+ * @Description  :  扩展 marked 的解析器，支持 ==mark== 标记
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
@@ -21,7 +21,7 @@ export const markExtensionInline: TokenizerAndRendererExtension = {
   name: 'mark',
   level: 'inline',
   start(src: string): number | undefined {
-    return src.match(/^==/)?.index
+    return src.match(/==[^=\n]/)?.index
   },
   tokenizer(src: string): Token | undefined {
     const rule = /^==([^=]+)==/

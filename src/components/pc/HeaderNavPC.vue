@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-05 16:27:32
- * @FilePath     : \blog-client\src\components\common\pc\HeaderNav.vue
+ * @LastEditTime : 2023-11-28 09:51:07
+ * @FilePath     : \blog-client\src\components\pc\HeaderNavPC.vue
  * @Description  : 头部导航 PC端
  * @blog         : https://jiaopengzi.com
  * Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -81,6 +81,7 @@ import { routeObj } from '@/router/routeAll'
   /* 可选：去除链接的下划线 */
   padding-left: 8px;
   padding-right: 8px;
+  color: #333;
 }
 
 span {

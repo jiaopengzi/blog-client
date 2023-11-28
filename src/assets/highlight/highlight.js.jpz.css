@@ -1,0 +1,169 @@
+/**
+ * Skipped minification because the original files appears to be already minified.
+ * Original file: /npm/highlight.js@11.5.1/styles/vs2015.css
+ *
+ * Do NOT use SRI with dynamically generated files! More information: https://www.jsdelivr.com/using-sri-with-dynamic-files
+ */
+
+pre code.hljs {
+    display: block;
+    overflow-x: auto;
+    padding: 1em;
+}
+
+code.hljs {
+    padding: 3px 5px
+}
+
+.hljs {
+    background: #efefef;
+    color: #3f3f3f;
+}
+
+.hljs-keyword,
+.hljs-literal,
+.hljs-name,
+.hljs-symbol {
+    color: #0000FF
+}
+
+.hljs-link {
+    color: #569cd6;
+    /* text-decoration: underline; */
+    font-size: 12px;
+    font-style: italic;
+}
+
+.hljs-link-text {
+    /* color: #569cd6; */
+    /* text-decoration: underline; */
+    font-size: 14px;
+    /* font-weight: bold; */
+}
+
+.hljs-built_in,
+.hljs-type {
+    color: #3165BB
+}
+
+.hljs-class,
+.hljs-number {
+    color: #390000
+}
+
+.hljs-meta .hljs-string,
+.hljs-string {
+    color: #A31515
+}
+
+.hljs-regexp,
+.hljs-template-tag {
+    color: #9a5334
+}
+
+.hljs-formula,
+.hljs-function,
+.hljs-params,
+.hljs-subst,
+.hljs-title {
+    color: #3165BB
+}
+
+.hljs-comment,
+.hljs-quote {
+    color: #398E00;
+    /* font-style: italic */
+}
+
+.hljs-doctag {
+    color: #608b4e
+}
+
+.hljs-meta,
+.hljs-meta .hljs-keyword,
+.hljs-tag {
+    color: #3165BB
+}
+
+.hljs-template-variable,
+.hljs-variable {
+    color: #009999
+}
+
+.hljs-attr,
+.hljs-attribute {
+    color: #9cdcfe
+}
+
+.hljs-section {
+    color: gold
+}
+
+.hljs-emphasis {
+    font-style: italic
+}
+
+.hljs-strong {
+    font-weight: 700
+}
+
+.hljs-bullet,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-id,
+.hljs-selector-pseudo,
+.hljs-selector-tag {
+    color: #d7ba7d
+}
+
+.hljs-addition {
+    background-color: #144212;
+    display: inline-block;
+    width: 100%
+}
+
+.hljs-deletion {
+    background-color: #600;
+    display: inline-block;
+    width: 100%
+}
+
+
+/* 如下是微信公众号的样式 */
+
+.code-snippet__js {
+    font-size: 14px;
+    margin: 10px 0;
+    display: block;
+    overflow-x: auto;
+    padding: 1em 1em 1em 3em;
+    color: #3f3f3f;
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.03);
+    border: 1px solid #f0f0f0;
+    border-radius: 2px;
+    counter-reset: line;
+    line-height: 26px;
+    /* white-space: normal; */
+}
+
+.code-snippet__js code {
+    text-align: left;
+    font-size: 14px;
+    color: #3f3f3f;
+    display: block;
+    position: relative;
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace
+}
+
+.code-snippet__js code::before {
+    position: absolute;
+    min-width: 1.5em;
+    text-align: right;
+    left: -2.5em;
+    counter-increment: line;
+    content: counter(line);
+    display: inline;
+    margin-right: 12px;
+    color: #ccc;
+}

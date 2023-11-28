@@ -1,7 +1,9 @@
 @import 'reset-css';
+@import '@/assets/markdown/drake-vue.css';
+@import '@/assets/highlight/highlight.js.jpz.css';
+@import 'highlight.js/styles/default.css';
 
 // 主题样式
-
 body {
   display: flex;
   justify-content: center;

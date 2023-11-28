@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-22 17:57:20
- * @FilePath     : \blog-client\src\components\common\phone\HeaderNavPhone.vue
+ * @LastEditTime : 2023-11-28 09:51:54
+ * @FilePath     : \blog-client\src\components\phone\HeaderNavPhone.vue
  * @Description  : 头部导航 移动端
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -138,6 +138,7 @@ onBeforeMount(() => {
   /* 垂直居中对齐 */
   text-decoration: none;
   /* 可选：去除链接的下划线 */
+  color: #333;
 }
 
 span {

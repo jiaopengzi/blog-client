@@ -1,133 +1,44 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <!--
  * @Author       : jiaopengzi
- * @Date         : 2023-11-03 21:22:17
+ * @Date         : 2023-11-07 01:57:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-25 14:37:03
+ * @LastEditTime : 2023-11-28 19:00:20
  * @FilePath     : \blog-client\src\views\test\Index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-  <div class="common-layout">
-
-    <el-header>Header</el-header>
-    <el-main>Main
-      asdfasdfasdfas
-      sdafasd
-      sadfasdfasdfa
-      sadfasdfasdfaasdf
-      asdfasdfasdfas
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-      <p>asdf</p>
-    </el-main>
-    <el-footer>Footer</el-footer>
-
-  </div>
+    <div class="editor">
+        <textarea class="input" :value="input" @input="update"></textarea>
+        <div class="output" v-html="output"></div>
+    </div>
 </template>
 
+<script lang="ts" setup>
+import { ref, computed, onMounted } from 'vue'
+import marked from '@/pkg/marked/new-marked'; // 引入重新封装的 marked
+import { readFile } from '@/utils/readfile';
 
-<script setup lang="ts">
+const input = ref('');
+
+onMounted(async () => {
+    const example = await readFile('src/assets/example/markdown.md');
+    input.value = example;
+});
+
+const output = computed(() => marked.parse(input.value));
+
+const update = (e: Event) => {
+    input.value = (e.target as HTMLInputElement).value;
+}
 </script>
 
-<style scoped lang="scss">
-.el-header {
-  background-color: red;
-}
 
-.el-main {
-  background-color: green;
-}
-
-.el-footer {
-  background-color: blue;
-  width: 100vw;
+<style>
+.editor {
+    height: 100vh;
+    display: flex;
 }
 </style>
+@/utils/readfile@/pkg/marked/new-marked
