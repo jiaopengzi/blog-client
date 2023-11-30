@@ -1,8 +1,23 @@
 # 159\_模型\_Power BI 地理分析之形状地图
 
-**声明以下地图元素仅供学习交流所用，如需地图公开使用请提前做好报审工作。**
+**声明以下地图元==素仅供==学习交流所用，如需地图公开使用请提前做好报审工作。**
 
-## 一、背景
+## 一、背景 {#custom-id}
+
+## 下标
+H~2~O
+H~~2~~O
+
+## 上标
+X^2^
+
+- [x] Write the press release
+- [x] Update the website
+- [ ] Contact the media
+
+He said, -- "A 'simple' sentence. . ." --- unknown
+
+jiaopengzi@outlook.com
 
 当企业的体量达到一定体量的时候，保持稳定的增长是非常重要的事情。本案例展示如何用 Power BI 的形状地图来寻求业务的增长。
 

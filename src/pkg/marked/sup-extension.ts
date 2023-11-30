@@ -1,14 +1,14 @@
 /**
  * @Author       : jiaopengzi
- * @Date         : 2023-11-06 23:28:40
+ * @Date         : 2023-11-29 12:04:35
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-29 13:03:04
- * @FilePath     : \blog-client\src\pkg\marked\mark-extension.ts
- * @Description  :  扩展 marked 的解析器，支持 ==mark== 标记
+ * @LastEditTime : 2023-11-29 13:02:28
+ * @FilePath     : \blog-client\src\pkg\marked\sup-extension.ts
+ * @Description  : 上标配置
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
-// 抽象出 markExtension 到新的 '.ts' 文件，例如: `mark-extension.ts`
+
 type Token = {
   type: string
   raw: string
@@ -17,18 +17,18 @@ type Token = {
 }
 import type { TokenizerAndRendererExtension } from 'marked'
 
-export const markExtensionInline: TokenizerAndRendererExtension = {
-  name: 'mark',
+export const supExtensionInline: TokenizerAndRendererExtension = {
+  name: 'sup',
   level: 'inline',
   start(src: string): number | undefined {
-    return src.match(/==([^=]+)==/)?.index
+    return src.match(/\^([^\^\n]+)\^/)?.index
   },
   tokenizer(src: string): Token | undefined {
-    const rule = /^==([^=]+)==/
+    const rule = /^\^([^\^\n]+)\^/
     const match = rule.exec(src)
     if (match) {
       const token: Token = {
-        type: 'mark',
+        type: 'sup',
         raw: match[0],
         text: match[1],
         tokens: [],
@@ -39,6 +39,6 @@ export const markExtensionInline: TokenizerAndRendererExtension = {
   },
   renderer(token): string {
     const customToken = token as Token // 将 Generic 类型转换为自定义 Token 类型
-    return `<mark>${(this as any).parser.parseInline(customToken.tokens)}</mark>` // 使用 "as any" 来解决不存在属性 'parser'
+    return `<sup>${(this as any).parser.parseInline(customToken.tokens)}</sup>` // 使用 "as any" 来解决不存在属性 'parser'
   },
 }

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-07 01:57:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-26 13:19:28
+ * @LastEditTime : 2023-11-29 15:49:41
  * @FilePath     : \blog-client\src\views\test\TestMarked.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -17,7 +17,7 @@
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
-import marked from '@/utils/marked/custom-marked'; // 引入重新封装的 marked
+import marked from '@/utils/marked/new-marked'; // 引入重新封装的 marked
 
 const input = ref('# hello \n==world==\n\n==阿斯蒂芬==');
 const output = computed(() => marked.parse(input.value));

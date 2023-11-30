@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-28 11:19:47
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-28 11:35:01
+ * @LastEditTime : 2023-11-29 11:23:18
  * @FilePath     : \blog-client\typings\marked-extended-tables.d.ts
  * @Description  : 手动编写的marked-extended-tables.d.ts文件
  * @Blog         : https://jiaopengzi.com
