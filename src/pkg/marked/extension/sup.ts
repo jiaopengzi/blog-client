@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-29 12:04:35
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-29 13:02:28
- * @FilePath     : \blog-client\src\pkg\marked\sup-extension.ts
+ * @LastEditTime : 2023-12-01 21:50:20
+ * @FilePath     : \blog-client\src\pkg\marked\extension\sup-ext.ts
  * @Description  : 上标配置
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
