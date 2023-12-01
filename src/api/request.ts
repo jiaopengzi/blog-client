@@ -28,7 +28,7 @@ service.interceptors.request.use(
   },
   (error) => {
     Promise.reject(error)
-  }
+  },
 )
 
 //3. 响应拦截器
@@ -47,7 +47,7 @@ service.interceptors.response.use(
   },
   (error) => {
     return Promise.reject(error)
-  }
+  },
 )
 
 export default service

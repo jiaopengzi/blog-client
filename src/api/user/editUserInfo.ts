@@ -28,7 +28,7 @@ export interface editUserInfoResponse {
 
 // 注册
 export function editUserInfoByJosn(
-  requestData: editUserInfoRequest
+  requestData: editUserInfoRequest,
 ): AxiosPromise<editUserInfoResponse> {
   const urlStr = routerGroup + '/user/info-edit'
   return request({

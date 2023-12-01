@@ -27,7 +27,7 @@ export interface CaptchaSendResponse {
 
 // 检测验证码是否正确
 export function captchaSendByJosn(
-  requestData: CaptchaSendRequest
+  requestData: CaptchaSendRequest,
 ): AxiosPromise<CaptchaSendResponse> {
   const urlStr = routerGroup + '/utils/captcha-send'
   return request({

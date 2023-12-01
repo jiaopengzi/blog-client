@@ -25,7 +25,7 @@ export interface CheckLoginNameResponse {
 
 // 检测用户名是否存在
 export function checkLoginNameByJosn(
-  requestData: CheckLoginNameRequest
+  requestData: CheckLoginNameRequest,
 ): AxiosPromise<CheckLoginNameResponse> {
   const urlStr = routerGroup + '/user/check-loginname'
   return request({

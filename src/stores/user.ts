@@ -293,7 +293,7 @@ async function handleResponse<T>(requestPromise: Promise<AxiosResponse<T>>): Pro
  */
 async function redirectToSocialLogin(
   requestPromise: Promise<AxiosResponse<LoginResponse>>,
-  successCode: ResponseCode
+  successCode: ResponseCode,
 ): Promise<void> {
   const resObj = await handleResponse<LoginResponse>(requestPromise) // 使用辅助函数处理请求
 
@@ -310,7 +310,7 @@ async function redirectToSocialLogin(
  */
 async function handleLoginResult(
   resObj: LoginResponse,
-  successCode: ResponseCode
+  successCode: ResponseCode,
 ): Promise<UserInfoStore> {
   console.log(resObj.code)
   if (resObj.code === successCode) {
@@ -331,7 +331,7 @@ async function handleLoginResult(
 
 async function handleBindResult(
   resObj: LoginResponse,
-  successCode: ResponseCode
+  successCode: ResponseCode,
 ): Promise<UserInfoStore> {
   console.log(resObj.code)
   if (resObj.code === successCode) {

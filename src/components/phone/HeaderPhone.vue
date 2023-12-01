@@ -9,7 +9,6 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
 
-
 <template>
   <transition name="slide-header">
     <header v-if="headerVisible" :style="{ height: 'phone.$height-header', width: '100vw' }">
@@ -22,7 +21,10 @@
         <li>
           <div class="logo">
             <h1>
-              <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" :alt="routeObj.home.path" />
+              <img
+                src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
+                :alt="routeObj.home.path"
+              />
             </h1>
           </div>
         </li>
@@ -36,11 +38,15 @@
     </header>
   </transition>
   <div v-if="navVisible" class="nav-backdrop" @click="toggleNav"></div>
-  <div class="side-nav" id="sideNav" :style="{
-    transform: navVisible ? 'translateX(0)' : 'translateX(-100%)',
-    height: `100vh`,
-    width: '61.8vw',
-  }">
+  <div
+    class="side-nav"
+    id="sideNav"
+    :style="{
+      transform: navVisible ? 'translateX(0)' : 'translateX(-100%)',
+      height: `100vh`,
+      width: '61.8vw',
+    }"
+  >
     <!-- :style="{ transform: navVisible ? 'translateX(0)' : 'translateX(-100%)', height: `calc(100vh - ${headerHeight})`, width: '61.8vw' }"> -->
     <!-- 侧边栏导航栏 -->
     <HeaderNavPhone />

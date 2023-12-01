@@ -9,13 +9,14 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
 
-
 <template>
   <div class="post-item">
     <!-- 左上角提示符 -->
     <div class="tip"></div>
     <!-- 分类 -->
-    <a :href="props.postData.categoryHref"><span class="category">{{ props.postData.category }}</span></a>
+    <a :href="props.postData.categoryHref"
+      ><span class="category">{{ props.postData.category }}</span></a
+    >
     <!-- 缩略图 -->
     <div class="thumbnail">
       <a :href="props.postData.thumbnailHref">
@@ -69,7 +70,7 @@ const view = computed(() =>
   // 显示千分符 , 如果大于 1 万 就显示 ?w
   props.postData.view > 10000
     ? `${Math.floor(props.postData.view / 10000)}w`
-    : props.postData.view.toLocaleString()
+    : props.postData.view.toLocaleString(),
 )
 </script>
 <style scoped lang="scss">
@@ -84,7 +85,9 @@ const view = computed(() =>
 
     &:hover {
       // 鼠标移动到 .post-item 上时, .post-item 出现上下阴影
-      box-shadow: 0 0 5px #ccc, 0 0 10px #ccc;
+      box-shadow:
+        0 0 5px #ccc,
+        0 0 10px #ccc;
 
       .tip {
         opacity: 1;
@@ -232,11 +235,9 @@ const view = computed(() =>
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
   }
-
 }
 
 @include respond-to('phone') {
-
   .post-item {
     position: relative;
     height: 75px;
@@ -247,7 +248,9 @@ const view = computed(() =>
 
     &:hover {
       // 鼠标移动到 .post-item 上时, .post-item 出现上下阴影
-      box-shadow: 0 0 5px #ccc, 0 0 10px #ccc;
+      box-shadow:
+        0 0 5px #ccc,
+        0 0 10px #ccc;
 
       .read-more {
         opacity: 1;

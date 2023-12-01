@@ -11,7 +11,7 @@ export enum EventKey {
   Focus = 'focus',
   Blur = 'blur',
   Ready = 'ready',
-  ModelUpdate = 'update:modelValue'
+  ModelUpdate = 'update:modelValue',
 }
 
 export const editorEvents = {
@@ -22,16 +22,20 @@ export const editorEvents = {
   [EventKey.Focus]: (viewUpdate: ViewUpdate) => true,
   [EventKey.Blur]: (viewUpdate: ViewUpdate) => true,
   // when component mounted
-  [EventKey.Ready]: (payload: { view: EditorView; state: EditorState; container: HTMLDivElement }) => true
+  [EventKey.Ready]: (payload: {
+    view: EditorView
+    state: EditorState
+    container: HTMLDivElement
+  }) => true,
 }
 
 export const modelUpdateEvent = {
-  [EventKey.ModelUpdate]: editorEvents[EventKey.Change]
+  [EventKey.ModelUpdate]: editorEvents[EventKey.Change],
 }
 
 export const events = {
   ...editorEvents,
-  ...modelUpdateEvent
+  ...modelUpdateEvent,
 }
 
 export type EditorEvents = typeof editorEvents

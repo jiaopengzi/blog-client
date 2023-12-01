@@ -27,11 +27,17 @@
             <span>微信</span>
           </li>
           <li class="footer-m-li">
-            <img src="https://jiaopengzi.com/wp-content/uploads/2021/11/weixingongzhonghao.png" alt="公众号" />
+            <img
+              src="https://jiaopengzi.com/wp-content/uploads/2021/11/weixingongzhonghao.png"
+              alt="公众号"
+            />
             <span>公众号</span>
           </li>
           <li class="footer-m-li">
-            <img src="https://jiaopengzi.com/wp-content/uploads/2021/12/qq1618582.png" alt="QQ:1618582" />
+            <img
+              src="https://jiaopengzi.com/wp-content/uploads/2021/12/qq1618582.png"
+              alt="QQ:1618582"
+            />
             <span>QQ:1618582</span>
           </li>
         </ul>
@@ -92,7 +98,7 @@ footer {
   align-items: center;
   justify-content: center;
   z-index: 990;
-  width: calc(pc.$width-page - pc.$scrollbar-y-width)
+  width: calc(pc.$width-page - pc.$scrollbar-y-width);
 }
 
 .footer-mian {

@@ -23,14 +23,13 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
-import HeaderPC from '@/components/pc/HeaderPC.vue';
-import ContentPC from '@/components/pc/content/ContentPC.vue';
-import FooterPC from '@/components/pc/FooterPC.vue';
-import HeaderPhone from '@/components/phone/HeaderPhone.vue';
-import ContentPhone from '@/components/phone/content/ContentPhone.vue';
-import FooterPhone from '@/components/phone/FooterPhone.vue';
+import HeaderPC from '@/components/pc/HeaderPC.vue'
+import ContentPC from '@/components/pc/content/ContentPC.vue'
+import FooterPC from '@/components/pc/FooterPC.vue'
+import HeaderPhone from '@/components/phone/HeaderPhone.vue'
+import ContentPhone from '@/components/phone/content/ContentPhone.vue'
+import FooterPhone from '@/components/phone/FooterPhone.vue'
 </script>
 
 <style scoped lang="scss">

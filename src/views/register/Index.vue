@@ -10,18 +10,32 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
 
-
 <template>
   <!-- 添加滑动验证组件：SlideVerify -->
 
-  <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="sendcaptcha"></SlideVerify>
-  <el-form :label-position="labelPosition" label-width="100px" ref="registerFormRef" :model="registerForm" :rules="rules"
-    class="register-form" :size="formSize" status-icon>
+  <SlideVerify
+    v-if="showSlideVerify"
+    @on-close="closeSlideVerify"
+    @on-success="sendcaptcha"
+  ></SlideVerify>
+  <el-form
+    :label-position="labelPosition"
+    label-width="100px"
+    ref="registerFormRef"
+    :model="registerForm"
+    :rules="rules"
+    class="register-form"
+    :size="formSize"
+    status-icon
+  >
     <div class="header-main">
       <a :href="routeObj.home.path">
         <div class="logo">
           <h2>
-            <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" :alt="routeObj.home.path" />
+            <img
+              src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
+              :alt="routeObj.home.path"
+            />
           </h2>
         </div>
       </a>
@@ -37,7 +51,12 @@
 
     <el-form-item label="验证码" prop="captcha">
       <el-input class="email-code" v-model.trim="registerForm.captcha" />
-      <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="btnCaptchaState.disabled">
+      <button
+        class="btn-captcha"
+        type="button"
+        @click="openSlideVerify"
+        :disabled="btnCaptchaState.disabled"
+      >
         {{ captcha }}
       </button>
     </el-form-item>
@@ -52,7 +71,8 @@
 
     <el-form-item prop="acceptedTerms">
       <el-checkbox-group v-model="registerForm.acceptedTerms">
-        <el-checkbox label="我已同意并接受：" name="acceptedTerms" /> </el-checkbox-group><a href="/">《服务条款》</a>
+        <el-checkbox label="我已同意并接受：" name="acceptedTerms" /> </el-checkbox-group
+      ><a href="/">《服务条款》</a>
     </el-form-item>
 
     <div class="btn-submit">
@@ -152,7 +172,7 @@ async function checkRePassword(): Promise<void> {
 function rePasswordValidator(
   rule: any,
   value: string,
-  callback: (error?: string | Error | undefined) => void
+  callback: (error?: string | Error | undefined) => void,
 ): void {
   // 在这里处理异步验证逻辑
   checkRePassword()
@@ -228,7 +248,7 @@ async function checkUserName(): Promise<void> {
 function checkUserNameValidator(
   rule: any,
   value: string,
-  callback: (error?: string | Error | undefined) => void
+  callback: (error?: string | Error | undefined) => void,
 ): void {
   // 在这里处理异步验证逻辑
   checkUserName()
@@ -271,7 +291,7 @@ async function checkEmail(): Promise<void> {
 function checkEmailValidator(
   rule: any,
   value: string,
-  callback: (error?: string | Error | undefined) => void
+  callback: (error?: string | Error | undefined) => void,
 ): void {
   // 在这里处理异步验证逻辑
   checkEmail()
@@ -307,7 +327,7 @@ async function checkCaptcha(): Promise<void> {
 function checkCaptchaValidator(
   rule: any,
   value: string,
-  callback: (error?: string | Error | undefined) => void
+  callback: (error?: string | Error | undefined) => void,
 ): void {
   // 在这里处理异步验证逻辑
   checkCaptcha()

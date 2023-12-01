@@ -24,13 +24,20 @@
     </div>
 
     <div>
-      <el-tabs type="border-card" :tab-position="tabPosition" class="tabs" v-model="activeTab" @tab-change="tabChange">
+      <el-tabs
+        type="border-card"
+        :tab-position="tabPosition"
+        class="tabs"
+        v-model="activeTab"
+        @tab-change="tabChange"
+      >
         <el-tab-pane name="info">
           <template #label>
             <span class="custom-tabs-label">
               <el-icon>
-                <View />
-              </el-icon><span>我的信息</span></span>
+                <View /> </el-icon
+              ><span>我的信息</span></span
+            >
           </template>
           <InfoPC />
         </el-tab-pane>
@@ -128,15 +135,13 @@ if (hashValue) {
   flex-direction: column;
 }
 
-
-
 .tabs {
   width: pc.$width-page-main;
   min-height: calc(100vh - pc.$height-footer - pc.$height-header);
   background-color: light.$background-color-page;
 }
 
-.tabs>.el-tabs__content {
+.tabs > .el-tabs__content {
   padding: 32px;
   color: #6b778c;
   font-size: 32px;

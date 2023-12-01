@@ -34,7 +34,7 @@ export interface IconJson {
       font_class: string
       unicode: string
       unicode_decimal: number
-    }
+    },
   ]
 }
 
@@ -44,5 +44,3 @@ export interface IconJson {
 //   qq: '#icon-qq',
 //   vip: '#icon-vip-red',
 // }
-
-

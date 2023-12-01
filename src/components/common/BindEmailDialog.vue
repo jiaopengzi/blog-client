@@ -11,12 +11,30 @@
 
 <template>
   <!-- 添加滑动验证组件：SlideVerify -->
-  <el-dialog v-model="showDialogBindEmail" :lock-scroll="false" :show-close="false" :close-on-click-modal="true"
-    :close-on-press-escape="false" class="bindemail-dialog">
+  <el-dialog
+    v-model="showDialogBindEmail"
+    :lock-scroll="false"
+    :show-close="false"
+    :close-on-click-modal="true"
+    :close-on-press-escape="false"
+    class="bindemail-dialog"
+  >
     <div class="bind-email-wrapper">
-      <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="sendcaptcha"></SlideVerify>
-      <el-form :label-position="labelPosition" label-width="100px" ref="bindemailFormRef" :model="bindemailForm"
-        :rules="rules" class="bindemail-form" :size="formSize" status-icon>
+      <SlideVerify
+        v-if="showSlideVerify"
+        @on-close="closeSlideVerify"
+        @on-success="sendcaptcha"
+      ></SlideVerify>
+      <el-form
+        :label-position="labelPosition"
+        label-width="100px"
+        ref="bindemailFormRef"
+        :model="bindemailForm"
+        :rules="rules"
+        class="bindemail-form"
+        :size="formSize"
+        status-icon
+      >
         <div class="header-main">
           <h2>绑定邮箱</h2>
           <p>请绑定邮箱后继续使用。</p>
@@ -28,7 +46,12 @@
 
         <el-form-item label="验证码" prop="captcha">
           <el-input class="email-code" v-model="bindemailForm.captcha" />
-          <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="btnCaptchaState.disabled">
+          <button
+            class="btn-captcha"
+            type="button"
+            @click="openSlideVerify"
+            :disabled="btnCaptchaState.disabled"
+          >
             {{ captcha }}
           </button>
         </el-form-item>
@@ -148,7 +171,7 @@ async function checkEmail(): Promise<void> {
 function checkEmailValidator(
   rule: any,
   value: string,
-  callback: (error?: string | Error | undefined) => void
+  callback: (error?: string | Error | undefined) => void,
 ): void {
   // 在这里处理异步验证逻辑
   checkEmail()
@@ -183,7 +206,7 @@ async function checkCaptcha(): Promise<void> {
 function checkCaptchaValidator(
   rule: any,
   value: string,
-  callback: (error?: string | Error | undefined) => void
+  callback: (error?: string | Error | undefined) => void,
 ): void {
   // 在这里处理异步验证逻辑
   checkCaptcha()

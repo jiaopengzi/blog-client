@@ -24,12 +24,12 @@
 </template>
 
 <script setup lang="ts">
-import HeaderPC from '@/components/pc/HeaderPC.vue';
-import IndexUserInfoPC from '@/components/pc/userinfo/IndexUserInfoPC.vue';
-import FooterPC from '@/components/pc/FooterPC.vue';
-import HeaderPhone from '@/components/phone/HeaderPhone.vue';
-import IndexUserInfoPhone from '@/components/phone/userinfo/IndexUserInfoPhone.vue';
-import FooterPhone from '@/components/phone/FooterPhone.vue';
+import HeaderPC from '@/components/pc/HeaderPC.vue'
+import IndexUserInfoPC from '@/components/pc/userinfo/IndexUserInfoPC.vue'
+import FooterPC from '@/components/pc/FooterPC.vue'
+import HeaderPhone from '@/components/phone/HeaderPhone.vue'
+import IndexUserInfoPhone from '@/components/phone/userinfo/IndexUserInfoPhone.vue'
+import FooterPhone from '@/components/phone/FooterPhone.vue'
 </script>
 
 <style scoped lang="scss"></style>

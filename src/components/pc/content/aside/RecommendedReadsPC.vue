@@ -12,9 +12,7 @@
 <template>
   <div class="aside-item">
     <div class="title">
-      <h2>
-        <Icon name="Recommended" customClass="aside-icon" />推荐阅读
-      </h2>
+      <h2><Icon name="Recommended" customClass="aside-icon" />推荐阅读</h2>
     </div>
     <div class="post-list">
       <PostItem v-for="(item, index) in postItems" :key="index" :postData="item" />

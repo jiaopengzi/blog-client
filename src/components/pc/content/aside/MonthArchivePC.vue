@@ -12,13 +12,16 @@
 <template>
   <div class="aside-item">
     <div class="title">
-      <h2>
-        <Icon name="archive" customClass="aside-icon" />文章归档
-      </h2>
+      <h2><Icon name="archive" customClass="aside-icon" />文章归档</h2>
     </div>
     <div class="table">
-      <el-table :max-height="400" :data="tableData" :show-header="true" :row-class-name="tableRowClassName"
-        @row-click="handleRowClick">
+      <el-table
+        :max-height="400"
+        :data="tableData"
+        :show-header="true"
+        :row-class-name="tableRowClassName"
+        @row-click="handleRowClick"
+      >
         <el-table-column prop="date" label="月份" align="center" />
         <el-table-column prop="num" label="文章数量" align="center" />
       </el-table>

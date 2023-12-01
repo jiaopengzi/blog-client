@@ -49,7 +49,7 @@ export interface UserInfo {
       user_id: number
       meta_key: string
       meta_value: string
-    }
+    },
   ]
   user_mobile: {
     id: number

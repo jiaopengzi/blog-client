@@ -9,8 +9,6 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
  */
 
-
- 
 $primary-color: red;
 $secondary-color: #c89828;
 $background-color-page: #f3f3f3;
@@ -18,26 +16,25 @@ $background-color-content: #fefefe;
 $background-color-header: rgba(252, 252, 252, 0.92);
 $background-color-footer: rgba(30, 40, 88, 0.6);
 $background-color-hover: rgba(200, 152, 40, 0.2);
- $colors: (
-     'white': #ffffff,
-     'black': #000000,
-     'primary': (
-       'base': $primary-color,
-     ),
-     'success': (
-       'base': #67c23a,
-     ),
-     'warning': (
-       'base': #e6a23c,
-     ),
-     'danger': (
-       'base': #f56c6c,
-     ),
-     'error': (
-       'base': #f56c6c,
-     ),
-     'info': (
-       'base': #909399,
-     ),
-   )
-
+$colors: (
+  'white': #ffffff,
+  'black': #000000,
+  'primary': (
+    'base': $primary-color,
+  ),
+  'success': (
+    'base': #67c23a,
+  ),
+  'warning': (
+    'base': #e6a23c,
+  ),
+  'danger': (
+    'base': #f56c6c,
+  ),
+  'error': (
+    'base': #f56c6c,
+  ),
+  'info': (
+    'base': #909399,
+  ),
+);

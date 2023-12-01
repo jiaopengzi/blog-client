@@ -59,7 +59,6 @@ a {
   align-items: center;
 }
 
-
 @include respond-to('pc') {
   .pc {
     display: flex;
@@ -71,18 +70,15 @@ a {
   .breadcrumb {
     width: pc.$width-page-main;
   }
-
 }
 
 @include respond-to('phone') {
-
   .pc {
     display: none;
   }
 
   .phone {
     display: flex;
-
   }
 
   .breadcrumb {

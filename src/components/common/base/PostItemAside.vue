@@ -54,7 +54,7 @@ const view = computed(() =>
   // 显示千分符 , 如果大于 1 万 就显示 ?w
   props.postData.view > 10000
     ? `${Math.floor(props.postData.view / 10000)}w`
-    : props.postData.view.toLocaleString()
+    : props.postData.view.toLocaleString(),
 )
 </script>
 <style scoped lang="scss">
@@ -66,7 +66,9 @@ const view = computed(() =>
 
   &:hover {
     // 鼠标移动到 .post-item 上时, .post-item 出现上下阴影
-    box-shadow: 0 0 5px #ccc, 0 0 10px #ccc;
+    box-shadow:
+      0 0 5px #ccc,
+      0 0 10px #ccc;
   }
 }
 

@@ -21,7 +21,7 @@ import moment from 'moment-timezone'
 export function convertToBeijingTime(
   utcTimestamp: string,
   timeZone: string = 'Asia/Shanghai',
-  formatStr: string = 'YYYY-MM-DD HH:mm:ss'
+  formatStr: string = 'YYYY-MM-DD HH:mm:ss',
 ): string {
   // 将输入时间转换为UTC时间
   const utcTime = moment.utc(utcTimestamp)

@@ -9,13 +9,15 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
 
-
 <template>
   <footer>
     <div class="footer-mian">
       <div class="footer-l">
         <h3 class="footer-l-h3">本站简介</h3>
-        <p class="footer-l-p">我们主要玩：Power BI、Power Pivot、Power Query、Power BI Report Server及DAX等相关数据分析的内容。</p>
+        <p class="footer-l-p">
+          我们主要玩：Power BI、Power Pivot、Power Query、Power BI Report
+          Server及DAX等相关数据分析的内容。
+        </p>
       </div>
       <div class="footer-m">
         <ul>
@@ -24,11 +26,17 @@
             <span>微信</span>
           </li>
           <li class="footer-m-li">
-            <img src="https://jiaopengzi.com/wp-content/uploads/2021/11/weixingongzhonghao.png" alt="公众号" />
+            <img
+              src="https://jiaopengzi.com/wp-content/uploads/2021/11/weixingongzhonghao.png"
+              alt="公众号"
+            />
             <span>公众号</span>
           </li>
           <li class="footer-m-li">
-            <img src="https://jiaopengzi.com/wp-content/uploads/2021/12/qq1618582.png" alt="QQ:1618582" />
+            <img
+              src="https://jiaopengzi.com/wp-content/uploads/2021/12/qq1618582.png"
+              alt="QQ:1618582"
+            />
             <span>QQ:1618582</span>
           </li>
         </ul>
@@ -54,7 +62,7 @@ footer {
   align-items: center;
   justify-content: center;
   z-index: 990;
-  width: calc(phone.$width-page - phone.$scrollbar-y-width)
+  width: calc(phone.$width-page - phone.$scrollbar-y-width);
 }
 
 .footer-mian {

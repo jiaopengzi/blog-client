@@ -9,7 +9,6 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
 
-
 <template>
   <div class="login" v-if="!isLogin">
     <router-link :to="routeObj.login.path" class="link">

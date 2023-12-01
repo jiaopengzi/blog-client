@@ -39,7 +39,11 @@
           绑定{{ social.WeChatDisplay }}
         </button>
         <span class="social-nickname">{{ socialNickname('user_wechat', 'nickname') }}</span>
-        <button class="btn-unbind" v-if="showWeChat && isBindEmail" @click="unBindSocial(social.WeChat)">
+        <button
+          class="btn-unbind"
+          v-if="showWeChat && isBindEmail"
+          @click="unBindSocial(social.WeChat)"
+        >
           解绑{{ social.WeChatDisplay }}
         </button>
       </el-descriptions-item>
@@ -56,8 +60,16 @@
   </div>
 
   <div class="edit-div">
-    <el-form :label-position="labelPosition" label-width="100px" ref="editFormRef" :model="editForm" :rules="rules"
-      class="edit-form" :size="formSize" status-icon>
+    <el-form
+      :label-position="labelPosition"
+      label-width="100px"
+      ref="editFormRef"
+      :model="editForm"
+      :rules="rules"
+      class="edit-form"
+      :size="formSize"
+      status-icon
+    >
       <el-form-item label="用户名" prop="userName">
         <el-input v-model="editForm.userName" :disabled="userNameDisabled" />
       </el-form-item>
@@ -78,7 +90,11 @@
       </el-form-item>
 
       <el-form-item label="简介" prop="description">
-        <el-input v-model="editForm.description" type="textarea" placeholder="这个人很懒,什么也没有留下。" />
+        <el-input
+          v-model="editForm.description"
+          type="textarea"
+          placeholder="这个人很懒,什么也没有留下。"
+        />
       </el-form-item>
       <div class="btn-submit">
         <el-form-item>
@@ -177,7 +193,7 @@ const rules = reactive<FormRules<EditForm>>({
 function checkUserNameValidator(
   rule: any,
   value: string,
-  callback: (error?: string | Error | undefined) => void
+  callback: (error?: string | Error | undefined) => void,
 ): void {
   // 在这里处理异步验证逻辑
   checkUserName()
@@ -333,7 +349,6 @@ onBeforeMount(() => {
   padding-top: 40px;
   // 右内边距 200px
   // padding-right: 50%;
-  
 }
 
 .edit-avatar-div {

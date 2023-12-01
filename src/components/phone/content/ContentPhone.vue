@@ -9,7 +9,6 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
 
-
 <template>
   <div class="content">
     <!-- 面包屑 -->
@@ -37,11 +36,17 @@
           <PostListPhone />
           <!-- 分页 -->
           <div class="pagination-block phone">
-            <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize" :background="true"
-              :small="true" layout="prev, pager, next" :total="totalPages" @current-change="handleCurrentChange" />
+            <el-pagination
+              v-model:current-page="currentPage"
+              v-model:page-size="pageSize"
+              :background="true"
+              :small="true"
+              layout="prev, pager, next"
+              :total="totalPages"
+              @current-change="handleCurrentChange"
+            />
           </div>
         </el-main>
-
       </el-container>
     </div>
   </div>
@@ -60,7 +65,6 @@ const pageSize = ref(10)
 const handleCurrentChange = (val: number) => {
   console.log(`current page: ${val}`)
 }
-
 </script>
 <style scoped lang="scss">
 .content {

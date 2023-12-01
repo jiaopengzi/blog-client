@@ -12,9 +12,7 @@
 <template>
   <div class="aside-item">
     <div class="title">
-      <h2 class="icon-container">
-        <Icon name="hot" customClass="aside-icon" /> 热门文章
-      </h2>
+      <h2 class="icon-container"><Icon name="hot" customClass="aside-icon" /> 热门文章</h2>
     </div>
     <div class="post-list">
       <PostItem v-for="(item, index) in postItems" :key="index" :postData="item" />

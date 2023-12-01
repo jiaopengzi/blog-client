@@ -10,8 +10,14 @@
 -->
 
 <template>
-  <el-tag :key="tag.data.lablel" class="tag-item" effect="dark" :round="false" @click="() => handleClick(tag)"
-    :style="[{ 'background-color': tag.color.bgColor }, { color: tag.color.color }]">
+  <el-tag
+    :key="tag.data.lablel"
+    class="tag-item"
+    effect="dark"
+    :round="false"
+    @click="() => handleClick(tag)"
+    :style="[{ 'background-color': tag.color.bgColor }, { color: tag.color.color }]"
+  >
     {{ tag.data.lablel + '(' + tag.data.tagPostNum + ')' }}
   </el-tag>
 </template>

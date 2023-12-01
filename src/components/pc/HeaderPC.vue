@@ -10,11 +10,18 @@
 -->
 <template>
   <transition name="slide-header">
-    <header class="header" v-if="headerVisible" :style="{ height: `@height-header-pc`, width: '@width-header-pc' }">
+    <header
+      class="header"
+      v-if="headerVisible"
+      :style="{ height: `@height-header-pc`, width: '@width-header-pc' }"
+    >
       <div class="header-mian">
         <div class="logo header-item">
           <h1>
-            <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" :alt="routeObj.home.path" />
+            <img
+              src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
+              :alt="routeObj.home.path"
+            />
           </h1>
         </div>
 
@@ -106,7 +113,9 @@ header {
   align-items: center;
   width: pc.$width-page-main;
   height: pc.$height-header;
-  margin-left: calc((pc.$width-page - pc.$width-page-main - pc.$scrollbar-y-width) / 2); // 居中减去滚动条宽度
+  margin-left: calc(
+    (pc.$width-page - pc.$width-page-main - pc.$scrollbar-y-width) / 2
+  ); // 居中减去滚动条宽度
   margin-right: calc((pc.$width-page - pc.$width-page-main - pc.$scrollbar-y-width) / 2);
 }
 

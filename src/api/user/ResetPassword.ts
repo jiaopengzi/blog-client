@@ -28,7 +28,7 @@ export interface ResetPasswordResponse {
 
 // 注册
 export function resetPasswordByJosn(
-  requestData: ResetPasswordRequest
+  requestData: ResetPasswordRequest,
 ): AxiosPromise<ResetPasswordResponse> {
   const urlStr = routerGroup + '/user/reset-password'
   return request({

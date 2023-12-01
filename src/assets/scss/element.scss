@@ -12,4 +12,6 @@
 // styles/element/index.scss
 // 重写 element-plus 主题样式
 @use '@/assets/scss/themes/light.scss' as light;
-@forward 'element-plus/theme-chalk/src/common/var.scss' with ($colors: light.$colors);
+@forward 'element-plus/theme-chalk/src/common/var.scss' with (
+  $colors: light.$colors
+);

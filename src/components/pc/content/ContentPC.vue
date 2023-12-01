@@ -37,8 +37,14 @@
           <PostListPC />
           <!-- 分页 -->
           <div class="pagination-block">
-            <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize" :background="true"
-              layout="prev, pager, next, jumper, total" :total="totalPages" @current-change="handleCurrentChange" />
+            <el-pagination
+              v-model:current-page="currentPage"
+              v-model:page-size="pageSize"
+              :background="true"
+              layout="prev, pager, next, jumper, total"
+              :total="totalPages"
+              @current-change="handleCurrentChange"
+            />
           </div>
         </el-main>
 

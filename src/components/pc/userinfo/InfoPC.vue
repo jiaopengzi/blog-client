@@ -193,7 +193,7 @@ const rules = reactive<FormRules<EditForm>>({
 function checkUserNameValidator(
   rule: any,
   value: string,
-  callback: (error?: string | Error | undefined) => void
+  callback: (error?: string | Error | undefined) => void,
 ): void {
   // 在这里处理异步验证逻辑
   checkUserName()
