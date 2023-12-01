@@ -9,7 +9,7 @@ import type { EditorStateConfig } from '@codemirror/state'
 const UNDEFINED = void 0
 const NonDefaultBooleanType = {
   type: Boolean,
-  default: UNDEFINED,
+  default: UNDEFINED
 }
 
 export const configProps = {
@@ -24,19 +24,19 @@ export const configProps = {
   // codemirror options
   root: Object as PropType<ShadowRoot | Document>,
   extensions: Array as PropType<EditorStateConfig['extensions']>,
-  selection: Object as PropType<EditorStateConfig['selection']>,
+  selection: Object as PropType<EditorStateConfig['selection']>
 }
 
 export const modelValueProp = {
   modelValue: {
     type: String,
-    default: '',
-  },
+    default: ''
+  }
 }
 
 export const props = {
   ...configProps,
-  ...modelValueProp,
+  ...modelValueProp
 }
 
 export type ConfigProps = ExtractPropTypes<typeof configProps>

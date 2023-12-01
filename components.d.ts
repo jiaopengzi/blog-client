@@ -13,6 +13,7 @@ declare module 'vue' {
     Carousel: typeof import('./src/components/pc/content/main/Carousel.vue')['default']
     CarouselPC: typeof import('./src/components/pc/content/main/CarouselPC.vue')['default']
     CarouselPhone: typeof import('./src/components/phone/content/main/CarouselPhone.vue')['default']
+    Codemirror: typeof import('./src/components/common/editor/Codemirror.vue')['default']
     CommentPC: typeof import('./src/components/pc/userinfo/CommentPC.vue')['default']
     CommentPhone: typeof import('./src/components/phone/userinfo/CommentPhone.vue')['default']
     ContentPC: typeof import('./src/components/pc/content/ContentPC.vue')['default']

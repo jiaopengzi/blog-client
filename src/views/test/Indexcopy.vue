@@ -1,23 +1,16 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2023-11-29 16:56:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-29 16:56:17
- * @FilePath     : \blog-client\src\views\test\Index copy.vue
+ * @LastEditTime : 2023-12-01 19:24:51
+ * @FilePath     : \blog-client\src\views\test\Indexcopy.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
-<!--
- * @Author       : jiaopengzi
- * @Date         : 2023-11-07 01:57:10
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-29 16:44:50
- * @FilePath     : \blog-client\src\views\test\Index.vue
- * @Description  : 
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
--->
+
+
 <template>
     <!-- <div class="editor">
         <textarea class="input" :value="input" @input="update"></textarea>
