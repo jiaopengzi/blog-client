@@ -36,7 +36,6 @@
     "marked-katex-extension": "^4.0.5",
     "marked-mangle": "^1.1.6",
     "marked-xhtml": "^1.0.8",
-    "moment": "^2.29.4",
     "moment-timezone": "^0.5.43",
     "pinia": "^2.1.7",
     "reset-css": "^5.0.2",

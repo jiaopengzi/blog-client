@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 11:33:04
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-01 17:50:27
+ * @LastEditTime : 2023-12-01 23:47:29
  * @FilePath     : \blog-client\src\pkg\codemirror\setup.ts
  * @Description  : 重新封装 codemirror 参考: codemirror 包源码 https://www.npmjs.com/package/codemirror
  * @Blog         : https://jiaopengzi.com
@@ -74,7 +74,7 @@ const customSetup: Extension = (() => [
   ]),
   gutter({ class: 'gutter-custom' }), // 为 gutter 添加 class
   markdown(), // markdown 语法
-  bottomPanelExt, // 字数统计
+  bottomPanelExt, // 底部面板
 ])()
 
 export { EditorView } from '@codemirror/view'
