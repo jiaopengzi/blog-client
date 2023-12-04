@@ -12,7 +12,9 @@
 <template>
   <div class="aside-item">
     <div class="title">
-      <h2 class="icon-container"><Icon name="hot" customClass="aside-icon" /> 热门文章</h2>
+      <h2 class="icon-container">
+        <Icon name="hot" customClass="aside-icon" /> 热门文章
+      </h2>
     </div>
     <div class="post-list">
       <PostItem v-for="(item, index) in postItems" :key="index" :postData="item" />
@@ -37,11 +39,11 @@ const postItems: PostItemAsideObj[] = Array(5).fill(postDataObj)
 <style scoped lang="scss">
 .aside-item {
   border: 1px solid #eaeaea;
-  background-color: light.$background-color-content;
+  background-color: $background-color-content;
   border-radius: 5px;
 
   .title {
-    background-color: light.$background-color-page;
+    background-color: $background-color-page;
     padding: 10px 5px;
   }
 

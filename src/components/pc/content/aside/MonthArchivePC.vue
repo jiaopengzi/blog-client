@@ -12,16 +12,13 @@
 <template>
   <div class="aside-item">
     <div class="title">
-      <h2><Icon name="archive" customClass="aside-icon" />文章归档</h2>
+      <h2>
+        <Icon name="archive" customClass="aside-icon" />文章归档
+      </h2>
     </div>
     <div class="table">
-      <el-table
-        :max-height="400"
-        :data="tableData"
-        :show-header="true"
-        :row-class-name="tableRowClassName"
-        @row-click="handleRowClick"
-      >
+      <el-table :max-height="400" :data="tableData" :show-header="true" :row-class-name="tableRowClassName"
+        @row-click="handleRowClick">
         <el-table-column prop="date" label="月份" align="center" />
         <el-table-column prop="num" label="文章数量" align="center" />
       </el-table>
@@ -119,12 +116,12 @@ const tableRowClassName = () => {
 <style scoped lang="scss">
 .aside-item {
   border: 1px solid #eaeaea;
-  background-color: light.$background-color-content;
+  background-color: $background-color-content;
   border-radius: 5px;
 }
 
 .title {
-  background-color: light.$background-color-page;
+  background-color: $background-color-page;
   padding: 10px 5px;
 }
 

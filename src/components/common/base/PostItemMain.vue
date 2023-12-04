@@ -14,9 +14,7 @@
     <!-- 左上角提示符 -->
     <div class="tip"></div>
     <!-- 分类 -->
-    <a :href="props.postData.categoryHref"
-      ><span class="category">{{ props.postData.category }}</span></a
-    >
+    <a :href="props.postData.categoryHref"><span class="category">{{ props.postData.category }}</span></a>
     <!-- 缩略图 -->
     <div class="thumbnail">
       <a :href="props.postData.thumbnailHref">
@@ -80,7 +78,7 @@ const view = computed(() =>
     height: 150px;
     border-radius: 3px;
     padding: 20px;
-    background-color: light.$background-color-content;
+    background-color: $background-color-content;
     overflow: hidden;
 
     &:hover {
@@ -118,7 +116,7 @@ const view = computed(() =>
       top: 0;
       left: 0px; // 使得红色外边框在 .tip 的左侧
       height: 28px;
-      border-right: 6px solid light.$primary-color; // 绿色内边框
+      border-right: 6px solid $primary-color; // 绿色内边框
     }
   }
 
@@ -133,10 +131,10 @@ const view = computed(() =>
     padding-left: 10px;
     padding-right: 10px;
     z-index: 2;
-    background-color: light.$primary-color;
+    background-color: $primary-color;
     line-height: 200%;
     font-size: 14px;
-    color: light.$background-color-page;
+    color: $background-color-page;
     border-radius: 5%;
   }
 
@@ -229,8 +227,8 @@ const view = computed(() =>
     z-index: 2;
     padding: 5px 10px;
     border-radius: 5px;
-    background-color: light.$primary-color;
-    color: light.$background-color-page;
+    background-color: $primary-color;
+    color: $background-color-page;
     line-height: 150%;
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
@@ -243,7 +241,7 @@ const view = computed(() =>
     height: 75px;
     border-radius: 3px;
     padding: 15px;
-    background-color: light.$background-color-content;
+    background-color: $background-color-content;
     overflow: hidden;
 
     &:hover {

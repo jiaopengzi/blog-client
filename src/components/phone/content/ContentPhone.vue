@@ -36,15 +36,8 @@
           <PostListPhone />
           <!-- 分页 -->
           <div class="pagination-block phone">
-            <el-pagination
-              v-model:current-page="currentPage"
-              v-model:page-size="pageSize"
-              :background="true"
-              :small="true"
-              layout="prev, pager, next"
-              :total="totalPages"
-              @current-change="handleCurrentChange"
-            />
+            <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize" :background="true"
+              :small="true" layout="prev, pager, next" :total="totalPages" @current-change="handleCurrentChange" />
           </div>
         </el-main>
       </el-container>
@@ -79,7 +72,7 @@ const handleCurrentChange = (val: number) => {
 }
 
 .breadcrumb-logo {
-  color: light.$secondary-color;
+  color: $secondary-color;
 }
 
 .el-main {

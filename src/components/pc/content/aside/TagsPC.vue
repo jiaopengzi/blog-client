@@ -78,11 +78,11 @@ const items = ref<Array<TagDataObj>>([
 <style scoped lang="scss">
 .aside-item {
   border: 1px solid #eaeaea;
-  background-color: light.$background-color-content;
+  background-color: $background-color-content;
   border-radius: 5px;
 
   .title {
-    background-color: light.$background-color-page;
+    background-color: $background-color-page;
     padding: 10px 5px;
   }
 

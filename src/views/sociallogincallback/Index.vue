@@ -94,7 +94,7 @@ onMounted(async () => {
 
 .loader {
   border: 8px solid #f3f3f3;
-  border-top: 8px solid light.$secondary-color;
+  border-top: 8px solid $secondary-color;
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -104,7 +104,7 @@ onMounted(async () => {
 .text {
   font-size: 18px;
   margin-top: 20px;
-  color: light.$primary-color;
+  color: $primary-color;
   // 加粗
   font-weight: 700;
 }

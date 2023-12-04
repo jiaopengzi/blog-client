@@ -1,0 +1,24 @@
+@use "@/assets/scss/themes/light.scss"as *;
+@use "@/assets/scss/themes/dark.scss"as *;
+
+
+/* ============================================================颜色变量 开始*/
+/* 主要颜色 */
+$primary-color: var(--primary-color);
+/* 次要颜色 */
+$secondary-color: var(--secondary-color);
+/* 页面背景颜色 */
+$background-color-page: var(--background-color-page);
+/* 内容区域背景颜色 */
+$background-color-content: var(--background-color-content);
+/* 头部背景颜色 */
+$background-color-header: var(--background-color-header);
+/* 底部背景颜色 */
+$background-color-footer: var(--background-color-footer);
+/* 鼠标悬停背景颜色 */
+$background-color-hover: var(--background-color-hover);
+/* 鼠标点击背景颜色 */
+$background-color-active: var(--background-color-active);
+/* 禁用状态背景颜色 */
+$background-color-disabled: var(--background-color-disabled);
+/* ============================================================颜色变量 结束*/

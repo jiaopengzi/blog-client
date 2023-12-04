@@ -2,41 +2,32 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-20 19:48:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-21 20:49:23
+ * @LastEditTime : 2023-12-04 14:09:26
  * @FilePath     : \blog-client\src\assets\scss\mixin.scss
  * @Description  : 混合器
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
  */
-@use '@/assets/scss/platform/phone.scss' as phone;
-@use '@/assets/scss/platform/pc.scss' as pc;
+@use '@/assets/scss/platform/phone.scss'as phone;
+@use '@/assets/scss/platform/pc.scss'as pc;
 
-// 主题混合器
-@mixin useTheme($theme-name) {
-  %theme {
-    @content;
-  }
-  body[data-theme='#{$theme-name}'] {
-    @extend %theme;
-  }
-}
-
-$platforms: (
-  'phone': (
-    phone.$min-width,
+$platforms: ('phone': (phone.$min-width,
     phone.$max-width,
   ),
   'pc': pc.$min-width,
 );
 
+// respond-to 作用是根据平台的最小宽度和最大宽度来判断是否使用媒体查询
 @mixin respond-to($platformName) {
   $pf: map-get($platforms, $platformName); // 对应平台的最小宽度和最大宽度
+
   // 有最大值和最小值
-  @if type-of($pf) == 'list' {
-    @media (min-width: nth($pf,1)) and (max-width: nth($pf,2)) {
+  @if type-of($pf)=='list' {
+    @media (min-width: nth($pf, 1)) and (max-width: nth($pf, 2)) {
       @content;
     }
   }
+
   // 只有最小值
   @else {
     @media (min-width: $pf) {

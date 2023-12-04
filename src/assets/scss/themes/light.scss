@@ -1,40 +1,56 @@
 /*
  * @Author       : jiaopengzi
- * @Date         : 2023-11-20 19:10:50
+ * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-21 18:25:31
+ * @LastEditTime : 2023-12-04 15:47:50
  * @FilePath     : \blog-client\src\assets\scss\themes\light.scss
- * @Description  : light
+ * @Description  : 亮色主题
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
  */
 
-$primary-color: red;
-$secondary-color: #c89828;
-$background-color-page: #f3f3f3;
-$background-color-content: #fefefe;
-$background-color-header: rgba(252, 252, 252, 0.92);
-$background-color-footer: rgba(30, 40, 88, 0.6);
-$background-color-hover: rgba(200, 152, 40, 0.2);
-$colors: (
-  'white': #ffffff,
-  'black': #000000,
-  'primary': (
-    'base': $primary-color,
-  ),
-  'success': (
-    'base': #67c23a,
-  ),
-  'warning': (
-    'base': #e6a23c,
-  ),
-  'danger': (
-    'base': #f56c6c,
-  ),
-  'error': (
-    'base': #f56c6c,
-  ),
-  'info': (
-    'base': #909399,
-  ),
-);
+@use '@/assets/scss/element.scss'as el;
+// @use '../element.scss'as el;
+// 使用 插件 查看编译结果需要使用相对路径 不能使用 @
+
+$thpme-name: 'light';
+$--primary-color: #1E2858;
+
+html[data-theme=#{$thpme-name}] {
+  /* ============================================================ CSS 颜色变量 开始*/
+  /* 主要颜色 */
+  --primary-color: $--primary-color;
+  /* 次要颜色 */
+  --secondary-color: #c89828;
+  /* 页面背景颜色 */
+  --background-color-page: #f3f3f3;
+  /* 内容区域背景颜色 */
+  --background-color-content: #fefefe;
+  /* 头部背景颜色 */
+  --background-color-header: rgba(252, 252, 252, 0.92);
+  /* 底部背景颜色 */
+  --background-color-footer: rgba(30, 40, 88, 0.6);
+  /* 鼠标悬停背景颜色 */
+  --background-color-hover: rgba(200, 152, 40, 0.2);
+  /* 鼠标点击背景颜色 */
+  --background-color-active: rgba(200, 152, 40, 0.4);
+  /* 禁用状态背景颜色 */
+  --background-color-disabled: rgba(200, 152, 40, 0.1);
+  /* ============================================================ CSS 颜色变量 开始*/
+}
+
+/* ============================================================ element-plus 的颜色设置 开始*/
+/* 如下主要是 element-plus 的颜色设置 */
+$el-theme: ("theme-name":#{$thpme-name},
+  "colors":('primary':$--primary-color,
+    'success': #67c23a,
+    'warning': #e6a23c,
+    'danger': #f56c6c,
+    'error': #f56c6c,
+    'info': #909399,
+  ));
+
+// element 主题样式 ($el-theme,) 逗号不能省略
+// 生成 element 主题样式
+@include el.generateElementPlusTheme(($el-theme, ), el.$mode-light);
+/* ============================================================ element-plus 的颜色设置 结束*/

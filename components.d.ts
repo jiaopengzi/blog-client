@@ -16,6 +16,8 @@ declare module 'vue' {
     CommentPhone: typeof import('./src/components/phone/userinfo/CommentPhone.vue')['default']
     ContentPC: typeof import('./src/components/pc/content/ContentPC.vue')['default']
     ContentPhone: typeof import('./src/components/phone/content/ContentPhone.vue')['default']
+    Editor: typeof import('./src/components/common/editor/Editor.vue')['default']
+    'Editor copy': typeof import('./src/components/common/editor/Editor copy.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']
     ElBreadcrumbItem: typeof import('element-plus/es')['ElBreadcrumbItem']

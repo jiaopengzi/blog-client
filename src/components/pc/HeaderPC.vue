@@ -10,18 +10,11 @@
 -->
 <template>
   <transition name="slide-header">
-    <header
-      class="header"
-      v-if="headerVisible"
-      :style="{ height: `@height-header-pc`, width: '@width-header-pc' }"
-    >
+    <header class="header" v-if="headerVisible" :style="{ height: `@height-header-pc`, width: '@width-header-pc' }">
       <div class="header-mian">
         <div class="logo header-item">
           <h1>
-            <img
-              src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
-              :alt="routeObj.home.path"
-            />
+            <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" :alt="routeObj.home.path" />
           </h1>
         </div>
 
@@ -103,7 +96,7 @@ header {
   left: 0;
   /* 可选：如果需要头部在其他元素上方显示，可以设置一个较高的 z-index 值 */
   z-index: 999;
-  background-color: light.$background-color-header;
+  background-color: $background-color-header;
   border-bottom: 2px solid #ebebeb;
 }
 
@@ -113,9 +106,7 @@ header {
   align-items: center;
   width: pc.$width-page-main;
   height: pc.$height-header;
-  margin-left: calc(
-    (pc.$width-page - pc.$width-page-main - pc.$scrollbar-y-width) / 2
-  ); // 居中减去滚动条宽度
+  margin-left: calc((pc.$width-page - pc.$width-page-main - pc.$scrollbar-y-width) / 2); // 居中减去滚动条宽度
   margin-right: calc((pc.$width-page - pc.$width-page-main - pc.$scrollbar-y-width) / 2);
 }
 

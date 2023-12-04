@@ -1,44 +1,21 @@
+<!-- eslint-disable vue/multi-word-component-names -->
+<!--
+ * @Author       : jiaopengzi
+ * @Date         : 2023-12-01 22:04:48
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2023-12-02 22:48:35
+ * @FilePath     : \blog-client\src\views\test\Index.vue
+ * @Description  : 
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+-->
+<!-- App.vue -->
 <template>
-  <div ref="editor" class="editor" id="editor"></div>
-  <div class="output" v-html="output"></div>
+  <Editor />
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
-import { EditorView, EditorState, customSetup } from '@/pkg/codemirror/setup'
-import type { ViewUpdate } from '@codemirror/view'
-import marked from '@/pkg/marked/new-marked' // 引入重新封装的 marked
+import Editor from '@/components/common/editor/Editor.vue';
 
-const editor = ref<HTMLElement | null>(null)
-const output = ref('')
 
-onMounted(() => {
-  editor.value = document.getElementById('editor')
-  const state = EditorState.create({
-    doc: '# hello \n==world==\n\n==阿斯蒂芬==',
-    extensions: [customSetup, EditorView.updateListener.of(updateDocInfo)],
-  })
-
-  const view = new EditorView({
-    state,
-    parent: editor.value!,
-  })
-})
-
-function updateDocInfo(viewUpdate: ViewUpdate): void {
-  if (viewUpdate.selectionSet) {
-    // 如果光标位置发生变化
-    const { state } = viewUpdate.view // 获取当前编辑器状态
-    output.value = marked.parse(state.doc.toString()).toString() // 获取当前编辑器内容
-  }
-}
 </script>
-
-<style scoped>
-.editor {
-  height: 500px;
-  width: 300px;
-  border: 1px solid #000;
-  background-color: aquamarine;
-}
-</style>

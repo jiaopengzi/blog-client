@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-22 16:12:33
+ * @LastEditTime : 2023-12-04 15:47:10
  * @FilePath     : \blog-client\src\App.vue
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -47,6 +47,12 @@ useHead({
     { property: 'og:release_date', content: '2020-02-27 15:15:29' },
   ],
 })
+
+function setTheme(theme: string) {
+  document.documentElement.setAttribute("data-theme", theme);
+}
+
+setTheme("light");
 </script>
 
 <style scoped lang="scss"></style>

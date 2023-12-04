@@ -2,16 +2,92 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-31 15:50:41
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-21 20:46:23
+ * @LastEditTime : 2023-12-04 14:02:26
  * @FilePath     : \blog-client\src\assets\scss\element.scss
  * @Description  : element-plus 主题样式
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
  */
 
-// styles/element/index.scss
-// 重写 element-plus 主题样式
-@use '@/assets/scss/themes/light.scss' as light;
-@forward 'element-plus/theme-chalk/src/common/var.scss' with (
-  $colors: light.$colors
-);
+
+// 定义模式 light dark
+$mode-light: 'light';
+$mode-dark: 'dark';
+
+// set-color-mix-level 设置颜色混合比例
+@function set-color-mix-level($color, $number, $mode) {
+  // 定义白色和黑色
+  $color-white: #ffffff;
+  $color-black: #000000;
+
+  // light 模式
+  $mix-color: $color-white;
+  $mix-number: $number;
+
+  // 处理 light 模式 --el-color-primary-dark-2  
+  @if $mode==$mode-light {
+    @if $number==20 {
+      $mix-color: $color-black;
+    }
+  }
+
+  @else {
+    /*
+    * 暗色模式混合比例没有规律，需要手动设置
+    * 不同的 number 对应不同的 blackNumber
+    */
+    $blackNumbers: (20:20, 30:21, 50:35, 70:48, 80:55, 90:63);
+    $blackNumber: map-get($blackNumbers, $number);
+
+    $mix-color: $color-black;
+    $mix-number: $blackNumber;
+
+    // 处理 dark 模式 --el-color-primary-dark-2 
+    @if $blackNumber==20 {
+      $mix-color: $color-white;
+    }
+  }
+
+  // 返回颜色
+  // 将 $mix-number 转为百分比
+  @return mix($mix-color, $color, $mix-number * 1%);
+}
+
+
+/*
+ create-color-group 
+ 创建 element-plus 颜色组 生成 css 变量 例子：
+ 参考：https://github.com/element-plus/element-plus/blob/dev/packages/theme-chalk/src/common/var.scss
+ --el-color-primary: #409eff;
+ --el-color-primary-dark-2: #337ecc;
+ --el-color-primary-light-3: #79bbff;
+ --el-color-primary-light-5: #a0cfff;
+ --el-color-primary-light-7: #c6e2ff;
+ --el-color-primary-light-8: #d9ecff;
+ --el-color-primary-light-9: #ecf5ff;
+*/
+@mixin create-el-color-group($color-name, $base-color, $mode) {
+  --el-color-#{$color-name}: #{$base-color};
+
+  @each $i in (2, 3, 5, 7, 8, 9) {
+    $suffix: if($i==2, $mode-dark, $mode-light);
+    --el-color-#{$color-name}-#{$suffix}-#{$i}: #{set-color-mix-level($base-color, $i * 10, $mode)};
+  }
+}
+
+// 生成 element-plus 主题样式
+// 示例：generateElementPlusTheme($el-theme, $mode-light);
+@mixin generateElementPlusTheme($themes, $mode) {
+  @each $theme in $themes {
+    $themeName: map-get($theme, 'theme-name'); // 获取 theme-name 变量
+    $colors: map-get($theme, 'colors'); // 获取 colors 变量
+
+    html[bolg-theme=#{$themeName}] {
+
+      @each $key,
+      $value in $colors {
+        @include create-el-color-group($key, $value, $mode);
+      }
+    }
+  }
+}

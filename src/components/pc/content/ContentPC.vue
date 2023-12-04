@@ -37,14 +37,8 @@
           <PostListPC />
           <!-- 分页 -->
           <div class="pagination-block">
-            <el-pagination
-              v-model:current-page="currentPage"
-              v-model:page-size="pageSize"
-              :background="true"
-              layout="prev, pager, next, jumper, total"
-              :total="totalPages"
-              @current-change="handleCurrentChange"
-            />
+            <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize" :background="true"
+              layout="prev, pager, next, jumper, total" :total="totalPages" @current-change="handleCurrentChange" />
           </div>
         </el-main>
 
@@ -143,18 +137,18 @@ onBeforeUnmount(() => {
 }
 
 .breadcrumb-logo {
-  color: light.$secondary-color;
+  color: $secondary-color;
 }
 
 .el-main {
-  background-color: light.$background-color-page;
+  background-color: $background-color-page;
   padding-left: 0px;
   padding-top: 0px;
 }
 
 .el-aside {
   width: pc.$width-aside;
-  background-color: light.$background-color-page;
+  background-color: $background-color-page;
   position: sticky; // 粘性定位
   top: -400px; // 侧边栏距离顶部的距离
 }

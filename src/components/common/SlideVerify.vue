@@ -18,21 +18,8 @@
         <Icon name="close" /><button @click="closeMe"></button>
       </h4>
 
-      <slide-verify
-        ref="block"
-        :l="42"
-        :r="10"
-        :w="280"
-        :h="186"
-        :slider-text="text"
-        :accuracy="accuracy"
-        :show="true"
-        :imgs="imgs"
-        @again="onAgain"
-        @success="onSuccess"
-        @fail="onFail"
-        @refresh="onRefresh"
-      ></slide-verify>
+      <slide-verify ref="block" :l="42" :r="10" :w="280" :h="186" :slider-text="text" :accuracy="accuracy" :show="true"
+        :imgs="imgs" @again="onAgain" @success="onSuccess" @fail="onFail" @refresh="onRefresh"></slide-verify>
       <div>{{ msg }}</div>
     </div>
     <div class="verify-backdrop"></div>
@@ -111,7 +98,7 @@ h4 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: light.$background-color-header;
+  background-color: $background-color-header;
 }
 
 .title {

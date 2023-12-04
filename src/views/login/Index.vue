@@ -1,9 +1,10 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-22 16:07:23
- * @FilePath     : \blog-client\src\views\LoginView.vue
+ * @LastEditTime : 2023-12-02 15:22:16
+ * @FilePath     : \blog-client\src\views\login\Index.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -12,29 +13,14 @@
 <template>
   <!-- 添加滑动验证组件：SlideVerify -->
 
-  <SlideVerify
-    v-if="showSlideVerify"
-    @on-close="closeSlideVerify"
-    @on-success="login"
-  ></SlideVerify>
-  <el-form
-    :label-position="labelPosition"
-    label-width="100px"
-    ref="loginFormRef"
-    :model="loginForm"
-    :rules="rules"
-    class="login-form"
-    :size="formSize"
-    status-icon
-  >
+  <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="login"></SlideVerify>
+  <el-form :label-position="labelPosition" label-width="100px" ref="loginFormRef" :model="loginForm" :rules="rules"
+    class="login-form" :size="formSize" status-icon>
     <div class="header-main">
       <a :href="routeObj.home.path">
         <div class="logo">
           <h2>
-            <img
-              src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
-              :alt="routeObj.home.path"
-            />
+            <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" :alt="routeObj.home.path" />
           </h2>
         </div>
       </a>
@@ -44,11 +30,7 @@
       <el-input v-model.trim="loginForm.loginName" placeholder="请输入用户名或邮箱" />
     </el-form-item>
     <el-form-item label="密码" prop="password">
-      <el-input
-        type="password"
-        v-model.trim="loginForm.password"
-        placeholder="大小写字母 + 数字, 长度:6-64"
-      />
+      <el-input type="password" v-model.trim="loginForm.password" placeholder="大小写字母 + 数字, 长度:6-64" />
     </el-form-item>
     <div class="btn-submit">
       <el-form-item>
