@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-03 21:49:48
+ * @LastEditTime : 2023-12-04 19:22:38
  * @FilePath     : \blog-client\src\components\common\editor\Editor.vue
  * @Description  : 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -35,9 +35,22 @@ import marked from '@/pkg/marked/new-marked';
 import { insert } from '@/components/common/editor/command/insert'
 import { MardkdownEditorCommandsOrder } from '@/components/common/editor/command/constant'
 import type { MardkdownEditorCommandsOrderKeyType } from '@/components/common/editor/command/constant'
+import axios from 'axios';
+
 
 const editorHost = ref<HTMLElement | null>(null);
 const output = ref('');
+const input = ref('');
+
+
+// 读取 /assets/example/markdown.md 文件 赋值给 output
+const res = (async () => {
+    const res = await axios.get('src/assets/example/markdown.md');
+    input.value = res.data;
+    output.value = marked.parse(res.data).toString();
+    // console.log(res.data);
+})()
+
 // const props = defineProps({
 //     modelValue: String,
 // });
@@ -49,7 +62,7 @@ let view: EditorView
 onMounted(() => {
     editorHost.value = document.getElementById('editorHost');
     const state = EditorState.create({
-        doc: output.value || '',
+        doc: input.value || '',
         extensions: [customSetup, EditorView.updateListener.of(updateDocInfo)],
     });
 
@@ -80,6 +93,16 @@ const toolbarRef = ref<HTMLElement | null>(null); // 工具栏
 const toolbarHeight = ref(0); // 工具栏高度
 
 
+watch(input, () => {
+    view.dispatch({
+        changes: {
+            from: 0,
+            to: view.state.doc.length,
+            insert: input.value,
+        },
+    });
+});
+
 watch(toolbarRef, () => {
     updateToolbarHeight();
 }, { deep: true });
@@ -87,7 +110,7 @@ watch(toolbarRef, () => {
 function updateToolbarHeight() {
     if (toolbarRef.value) {
         toolbarHeight.value = toolbarRef.value.clientHeight;
-        console.log(toolbarHeight.value);
+        // console.log(toolbarHeight.value);
         // Set the value of the CSS variable for toolbar height
         document.documentElement.style.setProperty('--toolbar-height', `${toolbarHeight.value}px`);
     }
@@ -250,7 +273,6 @@ function updateToolbarHeight() {
     overflow: auto;
     padding-left: 5px;
     padding-right: 5px;
-    background-color: red;
 }
 </style>
   

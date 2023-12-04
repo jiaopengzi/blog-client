@@ -3,18 +3,10 @@
 @import '@/assets/highlight/highlight.js.jpz.css';
 @import 'highlight.js/styles/default.css';
 
-/* 在线链接服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
-@font-face {
-  font-family: "AlimamaDaoLiTi";
-  font-weight: 400;
-  src: url("@/assets/font/AlimamaDaoLiTi.woff2") format("woff2"),
-    url("@/assets/font/AlimamaDaoLiTi.woff") format("woff");
-  font-display: swap;
-}
 
 // 主题样式
 body {
-  font-family: "AlimamaDaoLiTi", sans-serif;
+  font-family: 'Noto Sans SC', 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -130,5 +122,191 @@ header {
 // .month-archive-row-class:hover {
 //   cursor: pointer;
 // }
+
+
+/* ===================================== 标题 开始*/
+h1 {
+  font-size: 2em;
+  display: table;
+  border-bottom: 2px solid $primary-color;
+}
+
+h2 {
+  font-size: 1.8em;
+}
+
+h3 {
+  font-size: 1.5em;
+}
+
+h4 {
+  font-size: 1.2em;
+}
+
+h5,
+h6 {
+  font-size: 1em;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: $primary-color;
+  font-weight: 700;
+  margin: 0.5em 1em 0.5em 0;
+  padding-bottom: 2px;
+}
+
+/* =====================================标题 结束*/
+
+// 加粗
+strong {
+  color: $primary-color;
+  font-weight: 700;
+}
+
+// 斜体
+em {
+  color: $primary-color;
+  font-style: italic;
+}
+
+// 删除线
+del {
+  // 删除线加粗 不是字体加粗
+  text-decoration: line-through;
+}
+
+// mark标记 默认的颜色是黄色
+
+// 有序列表
+ol {
+  list-style: decimal;
+  padding-left: 2em;
+}
+
+// 无序列表样式
+ul {
+  padding-left: 2em;
+
+  >li {
+    /* 一级实心圆 */
+    list-style-type: disc;
+
+    >ul>li {
+      /* 二级空心圆 */
+      list-style-type: circle;
+
+      >ul>li {
+        /* 三级实心方块 */
+        list-style-type: square;
+      }
+    }
+  }
+}
+
+// 引用
+blockquote {
+  border-left: 4px solid $blockquote-border-color;
+  background-color: $blockquote-bg-color;
+  padding: 0.5em 1em;
+  margin: 0.5em 0;
+  color: $blockquote-color;
+}
+
+// 链接 继承上述 a 样式
+// todo
+
+// 分割线
+hr {
+  border: none;
+  border-bottom: 1px solid $horizontal-divider-color;
+  margin: 1em 0;
+}
+
+// 上标
+sup {
+  vertical-align: super;
+  font-size: 0.8em;
+}
+
+// 下标
+sub {
+  vertical-align: sub;
+  font-size: 0.8em;
+}
+
+// task list
+.task-list-item {
+  list-style-type: none;
+}
+
+// 图片 img
+img {
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  vertical-align: baseline;
+  border-radius: 2px;
+}
+
+// 段落 p
+p {
+  margin: 0.5em 0;
+  line-height: 1.8em;
+}
+
+// 表格
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  margin: 1em 0;
+  border: 1px solid red;
+}
+
+// 表头
+th {
+  border: 1px solid $table-border-color;
+  background-color: $table-header-bg-color;
+  line-height: 2em; // 行高
+  font-weight: 700;
+  color: $primary-color;
+}
+
+// 表格单元格
+td {
+  border: 1px solid $table-border-color;
+}
+
+// 表格偶数行
+/* 为表格的偶数行设置背景颜色 */
+table tr:nth-child(2n) {
+  background-color: $table-n2-bg-color;
+}
+
+/* 为表格的奇数行设置背景颜色 */
+table tr:nth-child(2n+1) {
+  background-color: $background-color-content;
+}
+
+// 块级代码
+// TODO
+pre {
+  background-color: red;
+}
+
+code {
+  background-color: blue;
+}
+
+// 数学公式
+.katex {
+  color: $primary-color;
+  padding: 0 4px 0 4px;
+}
 
 /* =====================================全局设置层级 结束 */

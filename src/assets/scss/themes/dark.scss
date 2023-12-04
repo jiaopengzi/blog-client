@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-04 12:40:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-04 15:47:39
+ * @LastEditTime : 2023-12-04 18:59:41
  * @FilePath     : \blog-client\src\assets\scss\themes\dark.scss
  * @Description  : 暗色模式
  * @Blog         : https://jiaopengzi.com
@@ -14,12 +14,12 @@
 // 使用 插件 查看编译结果需要使用相对路径 不能使用 @
 
 $thpme-name: 'dark';
-$--primary-color: red;
+$primary-color-dark: red;
 
 html[data-theme=#{$thpme-name}] {
     /* ============================================================ CSS 颜色变量 开始*/
     /* 主要颜色 */
-    --primary-color: $--primary-color;
+    --primary-color:#{$primary-color-dark};
     /* 次要颜色 */
     --secondary-color: #c89828;
     /* 页面背景颜色 */
@@ -42,7 +42,7 @@ html[data-theme=#{$thpme-name}] {
 /* ============================================================ element-plus 的颜色设置 开始*/
 /* 如下主要是 element-plus 的颜色设置 */
 $el-theme: ("theme-name":#{$thpme-name},
-    "colors":('primary':$--primary-color,
+    "colors":('primary':$primary-color-dark,
         'success': #67c23a,
         'warning': #e6a23c,
         'danger': #f56c6c,
