@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-28 15:32:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-28 17:13:45
- * @FilePath     : \blog-client\src\pkg\marked\emoji.ts
+ * @LastEditTime : 2023-12-05 18:12:12
+ * @FilePath     : \blog-client\src\pkg\marked\extension\emoji.ts
  * @Description  : 扩展 marked 的解析器，支持 emoji 标记
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
@@ -860,11 +860,11 @@ const emojiObj: Record<string, string | EmojiObject> = {
   zzz: { char: '💤' },
 }
 
-const emojisOptions: MarkedEmojiOptions = {
+const optionEmojis: MarkedEmojiOptions = {
   emojis: emojiObj,
   unicode: true,
 }
 
-export default emojisOptions
+export default optionEmojis
 
 // marked.use(markedEmoji(options));

@@ -1,7 +1,6 @@
 @import 'reset-css';
 // @import '@/assets/markdown/drake-vue.css';
-@import '@/assets/highlight/highlight.js.jpz.css';
-@import 'highlight.js/styles/default.css';
+// @import 'highlight.js/styles/default.css';
 
 
 // 主题样式
@@ -192,6 +191,8 @@ ol {
 ul {
   padding-left: 2em;
 
+  position: relative; //子绝父相 让伪元素绝对定位
+
   >li {
     /* 一级实心圆 */
     list-style-type: disc;
@@ -244,6 +245,35 @@ sub {
   list-style-type: none;
 }
 
+.task-list-item-checkbox {
+  display: none; // 隐藏原生复选框
+}
+
+/* 使用伪元素 ::before 勾选状态*/
+.task-list-item-checked::before {
+  content: "";
+  background: var(--checkbox-checked) 0 0 no-repeat;
+  background-size: 100%;
+  display: inline-block;
+  position: absolute;
+  height: 1.6rem;
+  width: 1.6rem;
+  margin-left: -2em;
+}
+
+/* 使用伪元素 ::before 未勾选状态 */
+.task-list-item-unchecked::before {
+  content: "";
+  background: var(--checkbox-unchecked) 0 0 no-repeat;
+  background-size: 100%;
+  display: inline-block;
+  position: absolute;
+  height: 1.6rem;
+  width: 1.6rem;
+  margin-left: -2em;
+}
+
+
 // 图片 img
 img {
   max-width: 100%;
@@ -293,15 +323,101 @@ table tr:nth-child(2n+1) {
   background-color: $background-color-content;
 }
 
-// 块级代码
-// TODO
-pre {
-  background-color: red;
+// 块级代码 使用 highlight.js 代码高亮 查看对应的css样式
+// pre {
+//   display: block;
+//   overflow-x: auto;
+//   padding: 1em;
+//   background-color: $code-bg-color;
+//   border-radius: 2px;
+//   margin: 10px 0 10px 0;
+// }
+
+
+// pre {
+//   font-size: 14px;
+//   margin: 10px 0;
+//   display: block;
+//   overflow-x: auto;
+//   padding: 1em 1em 1em 3em;
+//   color: #3f3f3f;
+//   position: relative;
+//   background-color: rgba(0, 0, 0, 0.03);
+//   border: 1px solid #f0f0f0;
+//   border-radius: 2px;
+//   counter-reset: line;
+//   line-height: 26px;
+//   /* white-space: normal; */
+// }
+
+// pre code {
+//   text-align: left;
+//   font-size: 14px;
+//   color: #3f3f3f;
+//   display: block;
+//   position: relative;
+//   font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+// }
+
+// pre code::before {
+//   position: absolute;
+//   min-width: 1.5em;
+//   text-align: right;
+//   left: -2.5em;
+//   counter-increment: line;
+//   content: counter(line);
+//   display: inline;
+//   margin-right: 12px;
+//   color: #ccc;
+// }
+
+
+.code-snippet {
+  font-size: 14px;
+  margin: 10px 0;
+  display: block;
+  overflow-x: auto;
+  padding: 1em 1em 1em 3em;
+  color: #3f3f3f;
+  position: relative;
+  background-color: rgba(0, 0, 0, 0.03);
+  border: 1px solid #f0f0f0;
+  border-radius: 2px;
+  counter-reset: line;
+  line-height: 26px;
+  /* white-space: normal; */
 }
 
-code {
-  background-color: blue;
+.code-snippet code {
+  text-align: left;
+  font-size: 14px;
+  color: #3f3f3f;
+  display: block;
+  position: relative;
+  font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
 }
+
+.code-snippet code::before {
+  position: absolute;
+  min-width: 1.5em;
+  text-align: right;
+  left: -2.5em;
+  counter-increment: line;
+  content: counter(line);
+  display: inline;
+  margin-right: 12px;
+  color: #ccc;
+}
+
+
+// 行内代码
+code {
+  background-color: $code-bg-color;
+  border-radius: 4px;
+  color: $code-color;
+  padding: 0 4px 0 4px;
+}
+
 
 // 数学公式
 .katex {

@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-28 18:31:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-28 18:50:14
- * @FilePath     : \blog-client\src\pkg\marked\highlight.ts
+ * @LastEditTime : 2023-12-05 18:14:10
+ * @FilePath     : \blog-client\src\pkg\marked\extension\highlight.ts
  * @Description  : 代码高亮
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
@@ -12,7 +12,7 @@
 import type { SynchronousOptions } from 'marked-highlight' // 代码高亮选项
 import hljs from '@/pkg/highlight.js/highlight.js' // 自定义代码高亮 js
 
-const optionsHighlight: SynchronousOptions = {
+const optionHighlight: SynchronousOptions = {
   langPrefix: 'hljs language-',
   highlight(code, lang) {
     const language = hljs.getLanguage(lang) ? lang : 'plaintext'
@@ -20,4 +20,4 @@ const optionsHighlight: SynchronousOptions = {
   },
 }
 
-export default optionsHighlight
+export default optionHighlight

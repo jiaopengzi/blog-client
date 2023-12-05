@@ -2,15 +2,15 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-28 18:10:18
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-28 19:01:22
- * @FilePath     : \blog-client\src\pkg\marked\katex.ts
+ * @LastEditTime : 2023-12-05 18:14:46
+ * @FilePath     : \blog-client\src\pkg\marked\extension\katex.ts
  * @Description  : 数学公式扩展配置
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 import type { KatexOptions } from 'katex' // 数学公式
 
-const optionsKatex: KatexOptions = {
+const optionKatex: KatexOptions = {
   /**
    * If `true`, math will be rendered in display mode
    * (math in display style and center math on page)
@@ -130,4 +130,4 @@ const optionsKatex: KatexOptions = {
   globalGroup: false,
 }
 
-export default optionsKatex
+export default optionKatex

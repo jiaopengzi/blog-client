@@ -5,18 +5,61 @@
  * Do NOT use SRI with dynamically generated files! More information: https://www.jsdelivr.com/using-sri-with-dynamic-files
  */
 
-pre code.hljs {
-  display: block;
-  overflow-x: auto;
-  padding: 1em;
-}
 
 code.hljs {
   padding: 3px 5px;
+  background-color: #dddddd;
 }
 
 .hljs {
   background: #efefef;
+  color: #3f3f3f;
+}
+
+.hljs-code {
+  /* 占位 */
+  color: #3f3f3f;
+}
+
+.hljs-property {
+  /* 占位 */
+  color: #3f3f3f;
+}
+
+.hljs-title.class_ {
+  /* 占位 */
+  color: #3f3f3f;
+
+}
+
+.hljs-title.class_.inherited__ {
+  /* 占位 */
+  color: #3f3f3f;
+
+}
+
+.hljs-punctuation {
+  /* 占位 */
+  color: #3f3f3f;
+}
+
+.hljs-operator {
+  /* 占位 */
+  color: #3f3f3f;
+}
+
+.hljs-title.function_ {
+  /* 占位 */
+  color: #3f3f3f;
+}
+
+.hljs-char.escape_ {
+  /* 占位 */
+  color: #3f3f3f;
+}
+
+.hljs-variable.language_ {
+  /* 占位 */
   color: #3f3f3f;
 }
 
@@ -25,6 +68,7 @@ code.hljs {
 .hljs-name,
 .hljs-symbol {
   color: #0000ff;
+  font-weight: 500;
 }
 
 .hljs-link {
@@ -92,7 +136,8 @@ code.hljs {
 
 .hljs-attr,
 .hljs-attribute {
-  color: #9cdcfe;
+  /* color: #9cdcfe; */
+  color: #16706b;
 }
 
 .hljs-section {

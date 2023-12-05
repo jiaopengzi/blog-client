@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-04 19:22:38
+ * @LastEditTime : 2023-12-05 21:15:43
  * @FilePath     : \blog-client\src\components\common\editor\Editor.vue
  * @Description  : 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -42,12 +42,13 @@ const editorHost = ref<HTMLElement | null>(null);
 const output = ref('');
 const input = ref('');
 
-
 // 读取 /assets/example/markdown.md 文件 赋值给 output
 const res = (async () => {
     const res = await axios.get('src/assets/example/markdown.md');
     input.value = res.data;
-    output.value = marked.parse(res.data).toString();
+    output.value = marked.parse(res.data).toString()
+    const lines = output.value.split('\n');
+    // console.log(lines);
     // console.log(res.data);
 })()
 

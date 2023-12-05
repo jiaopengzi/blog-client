@@ -1,22 +1,94 @@
 # 159\_模型\_Power BI 地理分析之形状地图
 
+
+我是行内代码`code` `caculate`
+
+# 没有语言名称
+```
+body {
+  font-family: 'Noto Sans SC', 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: $background-color-page;
+}
+```
+
+## CSS
+```css
+body {
+  font-family: 'Noto Sans SC', 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: $background-color-page;
+}
+```
+```json
+{
+    "A":"B",
+    "C":1
+}
+```
+```dax
+0001_销售金额 =
+SUM ( 'T05_订单子表'[F_06_产品销售金额] ) / 10000
+```
+
+Ⅱ、市场占有结论语句度量值：Map_Area_Count ；L1-L3分别代表省份、地市、区县。
+
+```dax
+Map_Area_Count_L1 =
+VAR Table_ID =
+    VALUES ( 'D01_省份表'[F_02_省ID] )
+VAR Table_All =
+    ADDCOLUMNS ( Table_ID, "@value", [0001_销售金额] )
+VAR Table_Sale = FILTER( Table_All ,[@value] <> BLANK())
+VAR FZ =
+    COUNTROWS ( Table_Sale )
+VAR FM =
+    COUNTROWS ( 'D01_省份表' )
+VAR Format_1 =
+    FORMAT ( DIVIDE ( FZ, FM, BLANK () ), "#0,0.0%" )
+RETURN
+    "省级市场共计：" & FM & "个，已开拓：" & FZ & "个；占比：" & Format_1
+```
+
+Ⅲ、数据向下钻取后标题名称：Map_Area_Title ；L1-L2分别代表省份、地市。
+
+```dax
+Map_Area_Title_L1 = SELECTEDVALUE('D01_省份表'[F_05_省简称2])
+```
+
+## tasklist
+- [x] Write the press release
+- [x] Update the website
+- [ ] Contact the media
+
 **声明以下地图元==素仅供==学习交流所用，如需地图公开使用请提前做好报审工作。**
 
 ## 一、背景 {#custom-id}
 
 ## 下标
-
 H~2~O
-H~~2~~O
-
 ## 上标
-
 X^2^
+## 行内公式
+katex: $c = \sqrt{a^2 + b^2}$
+## 块级公式
+$$c = \sqrt{a^2 + b^2}$$
 
-- [x] Write the press release
-- [x] Update the website
-- [ ] Contact the media
+## 行内代码块
+我是行内代码 `我是行内代码` `SUM`
 
+## 引用
+> blockquote1
+> blockquote2
+> blockquote3
 He said, -- "A 'simple' sentence. . ." --- unknown
 
 jiaopengzi@outlook.com
