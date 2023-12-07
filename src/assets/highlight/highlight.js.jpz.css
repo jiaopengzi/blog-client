@@ -175,32 +175,35 @@ code.hljs {
 
 /* 如下是微信公众号的样式 */
 
-.code-snippet__js {
-  font-size: 14px;
+.code-snippet {
   margin: 10px 0;
-  display: block;
+  display: flex;
+  flex-direction: column;
   overflow-x: auto;
+  /* font-size: 14px; */
   padding: 1em 1em 1em 3em;
-  color: #3f3f3f;
+  color: #333;
   position: relative;
-  background-color: rgba(0, 0, 0, 0.03);
+  background-color: #fafafa;
   border: 1px solid #f0f0f0;
   border-radius: 2px;
   counter-reset: line;
-  line-height: 26px;
   /* white-space: normal; */
+  -webkit-overflow-scrolling: touch;
 }
 
-.code-snippet__js code {
+.code-snippet code {
+  color: #333;
+  background-color: transparent;
   text-align: left;
   font-size: 14px;
-  color: #3f3f3f;
   display: block;
+  /* white-space: pre-wrap; */
   position: relative;
-  font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
 }
 
-.code-snippet__js code::before {
+.code-snippet code::before {
   position: absolute;
   min-width: 1.5em;
   text-align: right;
@@ -209,5 +212,33 @@ code.hljs {
   content: counter(line);
   display: inline;
   margin-right: 12px;
-  color: #ccc;
+  color: #dddddd;
+  padding-right: 0.5em;
+  border-right: 1px solid #dddddd;
+}
+
+.pre-code {
+  position: relative;
+}
+
+.copy-button {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 4px;
+  padding: 2px 5px;
+  z-index: 999;
+  color: #888;
+  min-width: 4em;
+  text-align: center;
+  font-size: 12px;
+  outline: none;
+  height: 2em;
+}
+
+.copy-button:hover {
+  background-color: #e0e0e0;
 }

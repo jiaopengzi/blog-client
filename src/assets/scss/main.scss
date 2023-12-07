@@ -115,6 +115,22 @@ header {
   box-shadow: none !important;
 }
 
+// 滚动条
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #c1c1c1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #f5f5f5;
+  border-radius: 6px;
+}
 
 
 // 归档组件表格 行样式
@@ -128,23 +144,29 @@ h1 {
   font-size: 2em;
   display: table;
   border-bottom: 2px solid $primary-color;
+  text-align: center;
+  margin: 20px auto; // 居中
 }
 
 h2 {
   font-size: 1.8em;
+  margin: 0.5em 1em 0.5em 0;
 }
 
 h3 {
   font-size: 1.5em;
+  margin: 0.5em 1em 0.5em 0;
 }
 
 h4 {
   font-size: 1.2em;
+  margin: 0.5em 1em 0.5em 0;
 }
 
 h5,
 h6 {
   font-size: 1em;
+  margin: 0.5em 1em 0.5em 0;
 }
 
 h1,
@@ -155,9 +177,9 @@ h5,
 h6 {
   color: $primary-color;
   font-weight: 700;
-  margin: 0.5em 1em 0.5em 0;
   padding-bottom: 2px;
 }
+
 
 /* =====================================标题 结束*/
 
@@ -231,13 +253,13 @@ hr {
 // 上标
 sup {
   vertical-align: super;
-  font-size: 0.8em;
+  font-size: 0.75em;
 }
 
 // 下标
 sub {
   vertical-align: sub;
-  font-size: 0.8em;
+  font-size: 0.75em;
 }
 
 // task list
@@ -278,9 +300,9 @@ sub {
 img {
   max-width: 100%;
   height: auto;
-  margin: 0 auto;
-  vertical-align: baseline;
-  border-radius: 2px;
+  margin: 4px auto;
+  border-radius: 4px;
+  cursor: pointer; // 鼠标变成手指
 }
 
 // 段落 p
@@ -324,91 +346,6 @@ table tr:nth-child(2n+1) {
 }
 
 // 块级代码 使用 highlight.js 代码高亮 查看对应的css样式
-// pre {
-//   display: block;
-//   overflow-x: auto;
-//   padding: 1em;
-//   background-color: $code-bg-color;
-//   border-radius: 2px;
-//   margin: 10px 0 10px 0;
-// }
-
-
-// pre {
-//   font-size: 14px;
-//   margin: 10px 0;
-//   display: block;
-//   overflow-x: auto;
-//   padding: 1em 1em 1em 3em;
-//   color: #3f3f3f;
-//   position: relative;
-//   background-color: rgba(0, 0, 0, 0.03);
-//   border: 1px solid #f0f0f0;
-//   border-radius: 2px;
-//   counter-reset: line;
-//   line-height: 26px;
-//   /* white-space: normal; */
-// }
-
-// pre code {
-//   text-align: left;
-//   font-size: 14px;
-//   color: #3f3f3f;
-//   display: block;
-//   position: relative;
-//   font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-// }
-
-// pre code::before {
-//   position: absolute;
-//   min-width: 1.5em;
-//   text-align: right;
-//   left: -2.5em;
-//   counter-increment: line;
-//   content: counter(line);
-//   display: inline;
-//   margin-right: 12px;
-//   color: #ccc;
-// }
-
-
-.code-snippet {
-  font-size: 14px;
-  margin: 10px 0;
-  display: block;
-  overflow-x: auto;
-  padding: 1em 1em 1em 3em;
-  color: #3f3f3f;
-  position: relative;
-  background-color: rgba(0, 0, 0, 0.03);
-  border: 1px solid #f0f0f0;
-  border-radius: 2px;
-  counter-reset: line;
-  line-height: 26px;
-  /* white-space: normal; */
-}
-
-.code-snippet code {
-  text-align: left;
-  font-size: 14px;
-  color: #3f3f3f;
-  display: block;
-  position: relative;
-  font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-}
-
-.code-snippet code::before {
-  position: absolute;
-  min-width: 1.5em;
-  text-align: right;
-  left: -2.5em;
-  counter-increment: line;
-  content: counter(line);
-  display: inline;
-  margin-right: 12px;
-  color: #ccc;
-}
-
 
 // 行内代码
 code {
@@ -423,6 +360,24 @@ code {
 .katex {
   color: $primary-color;
   padding: 0 4px 0 4px;
+}
+
+// 脚注
+.sr-only {
+  color: $primary-color;
+  font-size: 1.5em;
+  margin: 0.5em 0 0.5em 0;
+  display: block;
+  border-top: 1px solid $horizontal-divider-color;
+  padding-top: 0.5em;
+}
+
+a[data-footnote-ref] {
+  color: $primary-color;
+  color: $footnote-sup-color;
+  // 下划线
+  text-decoration: underline;
+  text-underline-offset: 0.2rem
 }
 
 /* =====================================全局设置层级 结束 */

@@ -2,9 +2,9 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 21:36:44
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-01 21:52:00
+ * @LastEditTime : 2023-12-06 00:20:37
  * @FilePath     : \blog-client\src\pkg\marked\extension\table.js
- * @Description  : 直接复制官方的table-extension.js 解除 marked 版本依赖报错
+ * @Description  : 直接复制官方的 table-extension.js 解除 marked 版本依赖报错
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */

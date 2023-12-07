@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-16 20:01:16
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-31 17:02:38
- * @FilePath     : \blog-client\src\utils\Message.ts
+ * @LastEditTime : 2023-12-07 13:02:01
+ * @FilePath     : \blog-client\src\utils\message.ts
  * @Description  : 消息提示 工具类
  * @blog         : https://jiaopengzi.com
  * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
@@ -20,3 +20,5 @@ export const ShowMsgTip = (msgtype: MsgType, msgStr: string, duration: number = 
     duration: duration,
   })
 }
+// 将 MsgType 作为 ShowMsgTip 的静态属性添加
+ShowMsgTip.MsgType = MsgType

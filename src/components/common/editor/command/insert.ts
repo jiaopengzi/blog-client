@@ -2,13 +2,12 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 11:30:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-02 22:59:35
+ * @LastEditTime : 2023-12-07 20:00:58
  * @FilePath     : \blog-client\src\components\common\editor\command\insert.ts
  * @Description  : markdown 插入命令
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
-
 import { EditorView } from '@/pkg/codemirror/setup'
 import type { MardkdownEditorCommandItemType } from '@/components/common/editor/command/constant'
 
@@ -18,33 +17,58 @@ import type { MardkdownEditorCommandItemType } from '@/components/common/editor/
  * @param item 命令对象
  * @return
  */
-export function insert(view: EditorView, command: MardkdownEditorCommandItemType) {
-  let insertContent = ''
-  let cursorPosMove = 0
-  if (command.prefix) {
-    insertContent += command.prefix
-    cursorPosMove += command.prefix.length
+export function editorInsertFormatContent(
+  view: EditorView,
+  command: MardkdownEditorCommandItemType,
+) {
+  // 从当前光标位置开始插入内容
+  const insert = (position: number, content: string) => {
+    view.dispatch(
+      view.state.update({
+        changes: { from: position, to: position, insert: content },
+      }),
+    )
   }
-  if (command.content) {
-    insertContent += command.content
-    cursorPosMove += command.content.length
+
+  let cursorPosMove = 0 // 光标移动位置
+  const range = view.state.selection.ranges[0] // 获取选中的内容
+  // 判断命令对象是否有前缀、内容、后缀 任意一个
+  if (
+    command.prefix !== undefined ||
+    command.suffix !== undefined ||
+    command.content !== undefined
+  ) {
+    const { prefix = '', content = '', suffix = '' } = command // 解构获取命令对象的前缀、内容、后缀
+
+    if (range) {
+      const from = range.from // 获取选中内容的开始位置
+      const to = range.to // 获取选中内容的结束位置
+      const hasSelectedContent = from < to // 是否有选中内容
+
+      if (hasSelectedContent) {
+        insert(from, prefix) // 插入前缀
+        insert(to + prefix.length, suffix) // 插入后缀
+        cursorPosMove = to + prefix.length // 光标移动到选中内容的后面
+      } else {
+        const combinedContent = prefix + content + suffix // 拼接前缀、内容、后缀
+        insert(from, combinedContent) // 插入拼接后的内容
+        cursorPosMove = from + prefix.length + content.length // 光标移动到内容的后面
+      }
+    }
+
+    // 将光标移动指定位置 cursorPosMove
+    view.dispatch(
+      view.state.update({
+        selection: {
+          anchor: cursorPosMove,
+          head: cursorPosMove,
+        },
+      }),
+    )
+
+    view.focus() // 使编辑器获取焦点
   }
-  if (command.suffix) {
-    insertContent += command.suffix
+  if (command.func) {
+    command.func(view)
   }
-  const cursorPos = view.state.selection.main.head // 获取光标位置
-  const transaction = view.state.update({
-    changes: { from: cursorPos, to: cursorPos, insert: insertContent }, // 插入内容
-  })
-  view.dispatch(transaction) // 更新编辑器内容
-  // 将光标移动指定位置
-  view.dispatch(
-    view.state.update({
-      selection: {
-        anchor: cursorPos + cursorPosMove,
-        head: cursorPos + cursorPosMove,
-      },
-    }),
-  )
-  view.focus() // 使编辑器获取焦点
 }

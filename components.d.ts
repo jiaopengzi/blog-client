@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    2: typeof import('./src/components/common/editor/Editor copy 2.vue')['default']
     AlertTip: typeof import('./src/components/common/AlertTip.vue')['default']
     AvatarUploader: typeof import('./src/components/common/AvatarUploader.vue')['default']
     BindEmailDialog: typeof import('./src/components/common/BindEmailDialog.vue')['default']
@@ -16,6 +17,7 @@ declare module 'vue' {
     CommentPhone: typeof import('./src/components/phone/userinfo/CommentPhone.vue')['default']
     ContentPC: typeof import('./src/components/pc/content/ContentPC.vue')['default']
     ContentPhone: typeof import('./src/components/phone/content/ContentPhone.vue')['default']
+    copy: typeof import('./src/components/common/editor/Editor copy.vue')['default']
     Editor: typeof import('./src/components/common/editor/Editor.vue')['default']
     'Editor copy': typeof import('./src/components/common/editor/Editor copy.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
@@ -33,6 +35,7 @@ declare module 'vue' {
     ElForm: typeof import('element-plus/es')['ElForm']
     ElFormItem: typeof import('element-plus/es')['ElFormItem']
     ElIcon: typeof import('element-plus/es')['ElIcon']
+    ElImageViewer: typeof import('element-plus/es')['ElImageViewer']
     ElInput: typeof import('element-plus/es')['ElInput']
     ElMain: typeof import('element-plus/es')['ElMain']
     ElPagination: typeof import('element-plus/es')['ElPagination']

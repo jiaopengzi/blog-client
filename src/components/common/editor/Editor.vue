@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-05 21:15:43
+ * @LastEditTime : 2023-12-07 21:05:06
  * @FilePath     : \blog-client\src\components\common\editor\Editor.vue
  * @Description  : 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -13,8 +13,8 @@
     <div class="layout">
         <div class="toolbar" ref="toolbarRef">
             <button class="editor-btn" v-for="(constant, index) in constantKeys" :key="index"
-                @click="() => insert(view, MardkdownEditorCommandsOrder[constant])"
-                :title="MardkdownEditorCommandsOrder[constant].tip">
+                @click="() => editorInsertFormatContent(view, MardkdownEditorCommandsOrder[constant])"
+                :title="MardkdownEditorCommandsOrder[constant].tip + ' <' + MardkdownEditorCommandsOrder[constant].hotKey + '>'">
                 <Icon :name="constant" customClass="iconfont" />
             </button>
         </div>
@@ -22,49 +22,45 @@
             <div class="editor-in in-out-item">
                 <div ref="editorHost" id="editorHost"></div>
             </div>
-            <div class="editor-out in-out-item" v-html="output"></div>
+            <div class="editor-out in-out-item" v-html="output" @click="handleDelegateClick"></div>
         </div>
     </div>
+    <!-- 参考:https://github.com/element-plus/element-plus/blob/dev/packages/components/image/src/image.vue -->
+    <el-image-viewer v-if="isShowElImageViewer" @close="closeElImageViewer" :url-list="urlList" />
 </template>
   
 <script lang="ts" setup>
 import { ref, onMounted, watch } from 'vue';
-import { EditorView, EditorState, customSetup } from '@/pkg/codemirror/setup';
+import type { Extension } from '@codemirror/state'
 import type { ViewUpdate } from '@codemirror/view';
+import { EditorView, EditorState, customSetup } from '@/pkg/codemirror/setup';
 import marked from '@/pkg/marked/new-marked';
-import { insert } from '@/components/common/editor/command/insert'
+import { editorInsertFormatContent } from '@/components/common/editor/command/insert'
 import { MardkdownEditorCommandsOrder } from '@/components/common/editor/command/constant'
 import type { MardkdownEditorCommandsOrderKeyType } from '@/components/common/editor/command/constant'
-import axios from 'axios';
+import axios from 'axios'
+import { initializeClipboard } from '@/components/common/editor/editor'
+import { extractImageUrlsFromHtml, shiftArray } from '@/utils/img';
+import { useMagicKeys } from '@vueuse/core'
 
 
 const editorHost = ref<HTMLElement | null>(null);
-const output = ref('');
 const input = ref('');
-
-// 读取 /assets/example/markdown.md 文件 赋值给 output
-const res = (async () => {
-    const res = await axios.get('src/assets/example/markdown.md');
-    input.value = res.data;
-    output.value = marked.parse(res.data).toString()
-    const lines = output.value.split('\n');
-    // console.log(lines);
-    // console.log(res.data);
-})()
-
-// const props = defineProps({
-//     modelValue: String,
-// });
-
-// const emit = defineEmits(['update:modelValue']);
+const output = ref('');
+const urlList = ref<string[]>([]);
+const isShowElImageViewer = ref<boolean>(false);
+// 判断所有 key，只要 MardkdownEditorCommandsOrder 对应的 key 的 isShow 为 false，就从 keys 中删除 否则就保留
+const constantKeys: MardkdownEditorCommandsOrderKeyType[] = Object.keys(MardkdownEditorCommandsOrder).filter(key => MardkdownEditorCommandsOrder[key].isShow)
+const toolbarRef = ref<HTMLElement | null>(null); // 工具栏
+const toolbarHeight = ref(0); // 工具栏高度
 
 let view: EditorView
 
-onMounted(() => {
+const initializeCodeMirror = () => {
     editorHost.value = document.getElementById('editorHost');
     const state = EditorState.create({
         doc: input.value || '',
-        extensions: [customSetup, EditorView.updateListener.of(updateDocInfo)],
+        extensions: [customSetup, updateDocInfo],
     });
 
     view = new EditorView({
@@ -72,26 +68,53 @@ onMounted(() => {
         parent: editorHost.value!,
     });
 
-    updateToolbarHeight(); // 初始化工具栏高度
-});
-
-function updateDocInfo(viewUpdate: ViewUpdate): void {
-    if (viewUpdate.selectionSet) {
-        const { state } = viewUpdate.view;
-        const newValue = marked.parse(state.doc.toString()).toString();
-        if (newValue !== output.value) {
-            output.value = newValue;
-            // emit('update:modelValue', newValue);
-        }
-    }
 }
 
-// 判断所有 key，只要 MardkdownEditorCommandsOrder 对应的 key 的 isShow 为 false，就从 keys 中删除 否则就保留
-const constantKeys: MardkdownEditorCommandsOrderKeyType[] = Object.keys(MardkdownEditorCommandsOrder).filter(key => MardkdownEditorCommandsOrder[key].isShow)
+// const selectionChanged: Extension = EditorView.updateListener.of(
+//     (update: ViewUpdate) => {
+//         // 获取当前选择状态
+//         const ranges = update.state.selection.ranges;
+
+//         // 检查是否有内容被选中
+//         if (ranges.length > 0) {
+
+//             const from = ranges[0].from
+//             const to = ranges[0].to
+//             const doc = update.state.doc
+//             // 有内容被选中
+//             if (from < to) {
+//                 // 有内容被选中
+//                 console.log("内容被选中:", ranges);
+//             } else {
+//                 // 没有内容被选中
+//                 console.log("没有选中内容");
+//             }
+//             console.log("内容被选中:", ranges);
+//         }
+//     }
+// );
+
+// 更新编辑器内容
+const updateDocInfo: Extension = EditorView.updateListener.of(
+    (viewUpdate: ViewUpdate) => {
+        if (viewUpdate.selectionSet) {
+            const { state } = viewUpdate.view;
+            const newValue = marked.parse(state.doc.toString()).toString();
+            if (newValue !== output.value) {
+                output.value = newValue;
+                // emit('update:modelValue', newValue);
+            }
+        }
+    }
+);
 
 
-const toolbarRef = ref<HTMLElement | null>(null); // 工具栏
-const toolbarHeight = ref(0); // 工具栏高度
+const initializeOutput = async () => {
+    const res = await axios.get('src/assets/example/markdown.md');
+    input.value = res.data;
+    output.value = marked.parse(res.data).toString()
+    urlList.value = extractImageUrlsFromHtml(output.value)
+}
 
 
 watch(input, () => {
@@ -116,6 +139,63 @@ function updateToolbarHeight() {
         document.documentElement.style.setProperty('--toolbar-height', `${toolbarHeight.value}px`);
     }
 }
+
+// 处理pre元素的点击事件
+const handlePreClick = (preElement: HTMLElement) => {
+    if (preElement) {
+        preElement.click();
+    }
+};
+
+// 更新图片查看器状态
+const updateImageViewer = (imgElement: HTMLImageElement) => {
+    urlList.value = shiftArray(urlList.value, imgElement.src);
+    isShowElImageViewer.value = true;
+};
+
+// 使用事件委托处理点击事件
+const handleDelegateClick = (event: MouseEvent) => {
+    const target = event.target as HTMLElement;
+
+    // 根据目标元素类型触发对应的处理函数
+    if (target.tagName.toLowerCase() === 'button') {
+        const preElement = target.nextElementSibling as HTMLElement;
+        handlePreClick(preElement);
+    } else if (target.tagName.toLowerCase() === 'img' && 'src' in target) {
+        const imgElement = target as HTMLImageElement;
+        updateImageViewer(imgElement);
+    }
+};
+
+const closeElImageViewer = () => {
+    isShowElImageViewer.value = false;
+};
+
+
+
+const keys = useMagicKeys() // 使用 useMagicKeys() 之后，就可以通过 keys 来获取键盘按键的状态了
+
+const registerHotKeys = () => {
+    Object.entries(MardkdownEditorCommandsOrder).forEach((item) => {
+        const hotKey = item[1]?.hotKey
+        if (hotKey) {
+            watch(keys[hotKey], (v) => {
+                if (v)
+                    editorInsertFormatContent(view, MardkdownEditorCommandsOrder[item[0]])
+            })
+        }
+    })
+}
+
+
+onMounted(() => {
+    initializeCodeMirror() // 初始化 CodeMirror
+    initializeOutput() // 初始化 output
+    updateToolbarHeight(); // 初始化工具栏高度
+    initializeClipboard() // 初始化 ClipboardJS
+    registerHotKeys() // 注册快捷键
+});
+
 
 </script>
   
@@ -272,8 +352,9 @@ function updateToolbarHeight() {
     word-break: break-all;
     // 元素内显示滚动条
     overflow: auto;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: $background-color-content;
 }
 </style>
   

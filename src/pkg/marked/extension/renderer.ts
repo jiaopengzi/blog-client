@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-05 11:12:27
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-06 00:08:49
+ * @LastEditTime : 2023-12-06 15:17:08
  * @FilePath     : \blog-client\src\pkg\marked\extension\renderer.ts
  * @Description  : 自定义 renderer 主要是为了加类名
  * @Blog         : https://jiaopengzi.com
@@ -33,14 +33,14 @@ export const renderer = {
     const lang = (infostring || '').match(/^\S*/)?.[0]
     code = code.replace(/\n$/, '') + '\n'
     if (!lang) {
-      const result = '<pre><code>' + (escaped ? code : escape$1(code, true)) + '</code></pre>\n' // marked 源码默认代码块
+      const result = '<pre><code>' + (escaped ? code : escape(code, true)) + '</code></pre>\n' // marked 源码默认代码块
       return constructWeChatPreCode(result.split('\n')) // 自定义代码块
     }
     const result =
       '<pre><code class="language-' +
-      escape$1(lang, true) +
+      escape(lang, true) +
       '">' +
-      (escaped ? code : escape$1(code, true)) +
+      (escaped ? code : escape(code, true)) +
       '</code></pre>\n' // marked 源码默认代码块
     return constructWeChatPreCode(result.split('\n')) // 自定义代码块
   },
@@ -76,36 +76,48 @@ function constructWeChatPreCode(lines: string[]): string {
           return // 保证最后一行不是多余的空行
         }
       }
-      item = '<code>' + item + '</code>' // 拼接 code 标签
+      item = '<code>' + item + '</code>\n' // 拼接 code 标签
       wechtPreCode = wechtPreCode + item
     }
   })
 
   // 微信代码块行号类名 code-snippet code-snippet_nowrap code-snippet__js
+  const divStart = '<div class="pre-code">'
+  const divEnd = '</div>'
+  const copyBtnStart = '<button class="copy-button">'
+  const copyBtnEnd = '</button>'
+  let copyBtn = ''
   if (wechtPreCodeLang) {
     wechtPreCodeLang = ' ' + wechtPreCodeLang
-  } // 微信代码块语言类名
+    const btnLangText = wechtPreCodeLang.replace('language-', '').toUpperCase()
+    copyBtn = copyBtnStart + btnLangText + copyBtnEnd
+  } else {
+    copyBtn = copyBtnStart + 'TEXT' + copyBtnEnd
+  }
   const wechtPreCodeStart =
     '<pre class="code-snippet code-snippet_nowrap code-snippet__js' + wechtPreCodeLang + '">' // 微信 pre 代码块开始标签添 加类名和语言
-  return wechtPreCodeStart + wechtPreCode + '</pre>' // 拼接微信代码块
-  // return wechtPreCode // 拼接微信代码块
+  const wechtPreCodeEnd = '</pre>'
+  return divStart + copyBtn + wechtPreCodeStart + wechtPreCode + wechtPreCodeEnd + divEnd // 拼接微信代码块
 }
 
 // =============================================== marked 源码中内容 copy 开始
+/**
+ * Helpers
+ */
 const escapeTest = /[&<>"']/
 const escapeReplace = new RegExp(escapeTest.source, 'g')
 const escapeTestNoEncode = /[<>"']|&(?!(#\d{1,7}|#[Xx][a-fA-F0-9]{1,6}|\w+);)/
 const escapeReplaceNoEncode = new RegExp(escapeTestNoEncode.source, 'g')
-const escapeReplacements: { [key: string]: string } = {
+const escapeReplacements: { [index: string]: string } = {
   '&': '&amp;',
   '<': '&lt;',
   '>': '&gt;',
   '"': '&quot;',
   "'": '&#39;',
 }
-
 const getEscapeReplacement = (ch: string) => escapeReplacements[ch]
-function escape$1(html: string, encode: boolean) {
+
+export function escape(html: string, encode?: boolean) {
   if (encode) {
     if (escapeTest.test(html)) {
       return html.replace(escapeReplace, getEscapeReplacement)
@@ -115,6 +127,7 @@ function escape$1(html: string, encode: boolean) {
       return html.replace(escapeReplaceNoEncode, getEscapeReplacement)
     }
   }
+
   return html
 }
 // =============================================== marked 源码中内容 copy 结束

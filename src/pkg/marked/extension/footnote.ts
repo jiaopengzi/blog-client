@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-28 18:53:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-28 18:58:11
- * @FilePath     : \blog-client\src\pkg\marked\footnote.ts
+ * @LastEditTime : 2023-12-07 21:27:20
+ * @FilePath     : \blog-client\src\pkg\marked\extension\footnote.ts
  * @Description  : 脚注配置
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
