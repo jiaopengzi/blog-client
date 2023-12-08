@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 11:33:04
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-07 15:43:35
+ * @LastEditTime : 2023-12-08 23:23:17
  * @FilePath     : \blog-client\src\pkg\codemirror\setup.ts
  * @Description  : 重新封装 codemirror 参考: codemirror 包源码 https://www.npmjs.com/package/codemirror
  * @Blog         : https://jiaopengzi.com
@@ -43,6 +43,7 @@ import { lintKeymap } from '@codemirror/lint'
 import { markdown } from '@codemirror/lang-markdown'
 import { bottomPanelExt } from '@/pkg/codemirror/extension/bottomPanel'
 import { customKeymap } from '@/pkg/codemirror/extension/hotkey'
+import { handlePasteImage, handleDropImage } from '@/pkg/codemirror/extension/imgupload'
 
 const customSetup: Extension = (() => [
   EditorView.lineWrapping, // 自动换行
@@ -77,6 +78,8 @@ const customSetup: Extension = (() => [
   markdown(), // markdown 语法
   bottomPanelExt, // 底部面板
   customKeymap, // 自定义快捷键
+  handlePasteImage, // 自定义键盘事件
+  handleDropImage, // 自定义拖拽事件
 ])()
 
 export { EditorView } from '@codemirror/view'

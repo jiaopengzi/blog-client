@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 11:30:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-07 20:00:58
+ * @LastEditTime : 2023-12-08 22:45:34
  * @FilePath     : \blog-client\src\components\common\editor\command\insert.ts
  * @Description  : markdown 插入命令
  * @Blog         : https://jiaopengzi.com
@@ -23,11 +23,9 @@ export function editorInsertFormatContent(
 ) {
   // 从当前光标位置开始插入内容
   const insert = (position: number, content: string) => {
-    view.dispatch(
-      view.state.update({
-        changes: { from: position, to: position, insert: content },
-      }),
-    )
+    view.dispatch({
+      changes: { from: position, to: position, insert: content },
+    })
   }
 
   let cursorPosMove = 0 // 光标移动位置
@@ -56,15 +54,13 @@ export function editorInsertFormatContent(
       }
     }
 
-    // 将光标移动指定位置 cursorPosMove
-    view.dispatch(
-      view.state.update({
-        selection: {
-          anchor: cursorPosMove,
-          head: cursorPosMove,
-        },
-      }),
-    )
+    // 将光标移动指定位置 cursorPosMove 处 更新状态
+    view.dispatch({
+      selection: {
+        anchor: cursorPosMove,
+        head: cursorPosMove,
+      },
+    })
 
     view.focus() // 使编辑器获取焦点
   }

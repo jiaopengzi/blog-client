@@ -197,7 +197,7 @@ export const MardkdownEditorCommandsOrder: MardkdownEditorCommandsOrderType = {
   // 表格
   table: {
     tip: '表格',
-    content: '|column1|column2|column3|\n|-|-|-|\n|content1|content2|content3|',
+    content: '|column1|column2|column3|\n|:---:|:---:|:---:|\n|content1|content2|content3|',
     hotKey: 'Ctrl+Shift+T',
     isShow: true,
   },

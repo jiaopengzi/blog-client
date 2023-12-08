@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-07 21:05:06
+ * @LastEditTime : 2023-12-08 22:56:47
  * @FilePath     : \blog-client\src\components\common\editor\Editor.vue
  * @Description  : 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -70,38 +70,17 @@ const initializeCodeMirror = () => {
 
 }
 
-// const selectionChanged: Extension = EditorView.updateListener.of(
-//     (update: ViewUpdate) => {
-//         // 获取当前选择状态
-//         const ranges = update.state.selection.ranges;
-
-//         // 检查是否有内容被选中
-//         if (ranges.length > 0) {
-
-//             const from = ranges[0].from
-//             const to = ranges[0].to
-//             const doc = update.state.doc
-//             // 有内容被选中
-//             if (from < to) {
-//                 // 有内容被选中
-//                 console.log("内容被选中:", ranges);
-//             } else {
-//                 // 没有内容被选中
-//                 console.log("没有选中内容");
-//             }
-//             console.log("内容被选中:", ranges);
-//         }
-//     }
-// );
-
 // 更新编辑器内容
 const updateDocInfo: Extension = EditorView.updateListener.of(
     (viewUpdate: ViewUpdate) => {
-        if (viewUpdate.selectionSet) {
+        if (viewUpdate.docChanged) {
+            console.log('触发更新', new Date().toISOString())
             const { state } = viewUpdate.view;
             const newValue = marked.parse(state.doc.toString()).toString();
             if (newValue !== output.value) {
+                console.log('更新 view', new Date().toISOString())
                 output.value = newValue;
+                urlList.value = extractImageUrlsFromHtml(output.value)
                 // emit('update:modelValue', newValue);
             }
         }
@@ -110,14 +89,16 @@ const updateDocInfo: Extension = EditorView.updateListener.of(
 
 
 const initializeOutput = async () => {
+    console.log('读取文件开始', new Date().toISOString())
     const res = await axios.get('src/assets/example/markdown.md');
     input.value = res.data;
     output.value = marked.parse(res.data).toString()
+    console.log('读取文件结束', new Date().toISOString())
     urlList.value = extractImageUrlsFromHtml(output.value)
 }
 
-
 watch(input, () => {
+    console.log('wathc input', new Date().toISOString())
     view.dispatch({
         changes: {
             from: 0,
@@ -150,6 +131,7 @@ const handlePreClick = (preElement: HTMLElement) => {
 // 更新图片查看器状态
 const updateImageViewer = (imgElement: HTMLImageElement) => {
     urlList.value = shiftArray(urlList.value, imgElement.src);
+    console.log(urlList.value);
     isShowElImageViewer.value = true;
 };
 

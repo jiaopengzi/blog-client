@@ -85,7 +85,7 @@ export default defineConfig({
   // ------------------------------ 设置代理 结束
   // ------------------------------ 设置打包分块 开始
   build: {
-    minify: false, //不进行压缩查看编译后的结果。
+    minify: true, //是否压缩编译后结果。
     chunkSizeWarningLimit: 500, // 打包警告阈值 单位 KB
     rollupOptions: {
       output: {
