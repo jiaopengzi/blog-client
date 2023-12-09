@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-08 22:56:47
+ * @LastEditTime : 2023-12-09 23:43:50
  * @FilePath     : \blog-client\src\components\common\editor\Editor.vue
  * @Description  : 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -13,20 +13,23 @@
     <div class="layout">
         <div class="toolbar" ref="toolbarRef">
             <button class="editor-btn" v-for="(constant, index) in constantKeys" :key="index"
-                @click="() => editorInsertFormatContent(view, MardkdownEditorCommandsOrder[constant])"
+                @click="handleEditorButtonClick(constant)"
                 :title="MardkdownEditorCommandsOrder[constant].tip + ' <' + MardkdownEditorCommandsOrder[constant].hotKey + '>'">
                 <Icon :name="constant" customClass="iconfont" />
             </button>
         </div>
         <div class="in-out">
-            <div class="editor-in in-out-item">
+            <div v-show="tocContentShow" class="toc in-out-item" v-html="tocContent"></div>
+            <div v-show="editorContentShow" class="editor-in in-out-item">
                 <div ref="editorHost" id="editorHost"></div>
             </div>
-            <div class="editor-out in-out-item" v-html="output" @click="handleDelegateClick"></div>
+            <div v-show="previewContentShow" class="editor-out in-out-item" v-html="previewContent"
+                @click="handleDelegateClick">
+            </div>
         </div>
     </div>
     <!-- 参考:https://github.com/element-plus/element-plus/blob/dev/packages/components/image/src/image.vue -->
-    <el-image-viewer v-if="isShowElImageViewer" @close="closeElImageViewer" :url-list="urlList" />
+    <el-image-viewer v-if="isShowElImageViewer" @close="closeElImageViewer" :url-list="imgUrls" />
 </template>
   
 <script lang="ts" setup>
@@ -34,21 +37,40 @@ import { ref, onMounted, watch } from 'vue';
 import type { Extension } from '@codemirror/state'
 import type { ViewUpdate } from '@codemirror/view';
 import { EditorView, EditorState, customSetup } from '@/pkg/codemirror/setup';
-import marked from '@/pkg/marked/new-marked';
 import { editorInsertFormatContent } from '@/components/common/editor/command/insert'
 import { MardkdownEditorCommandsOrder } from '@/components/common/editor/command/constant'
 import type { MardkdownEditorCommandsOrderKeyType } from '@/components/common/editor/command/constant'
 import axios from 'axios'
 import { initializeClipboard } from '@/components/common/editor/editor'
-import { extractImageUrlsFromHtml, shiftArray } from '@/utils/img';
+import { shiftArray } from '@/utils/img';
 import { useMagicKeys } from '@vueuse/core'
+import { useEditorStore } from '@/stores/editor'
+import { storeToRefs } from 'pinia'
 
+// 获取用户信息
+const editorStore = useEditorStore()
+
+let { tocContent, tocContentShow, tocScrollTop, editorContent, editorContentShow, editorScrollTop, eidtorFullScreen, previewContent, previewContentShow, previewScrollTop, previewFullScreen, imgUrls, isShowElImageViewer } = storeToRefs(editorStore)
+
+console.log("editorStore初始化", editorStore)
+const handleEditorButtonClick = (constant: MardkdownEditorCommandsOrderKeyType) => {
+    if (constant === "preview") {
+        editorContentShow.value = !editorContentShow.value
+        return
+    }
+    if (constant === 'desktop') {
+        previewContentShow.value = !previewContentShow.value
+        return
+    }
+    if (constant === 'toc') {
+        tocContentShow.value = !tocContentShow.value
+        return
+    }
+    editorInsertFormatContent(view, MardkdownEditorCommandsOrder[constant]);
+}
 
 const editorHost = ref<HTMLElement | null>(null);
-const input = ref('');
-const output = ref('');
-const urlList = ref<string[]>([]);
-const isShowElImageViewer = ref<boolean>(false);
+
 // 判断所有 key，只要 MardkdownEditorCommandsOrder 对应的 key 的 isShow 为 false，就从 keys 中删除 否则就保留
 const constantKeys: MardkdownEditorCommandsOrderKeyType[] = Object.keys(MardkdownEditorCommandsOrder).filter(key => MardkdownEditorCommandsOrder[key].isShow)
 const toolbarRef = ref<HTMLElement | null>(null); // 工具栏
@@ -59,7 +81,7 @@ let view: EditorView
 const initializeCodeMirror = () => {
     editorHost.value = document.getElementById('editorHost');
     const state = EditorState.create({
-        doc: input.value || '',
+        doc: editorContent.value || '',
         extensions: [customSetup, updateDocInfo],
     });
 
@@ -74,14 +96,10 @@ const initializeCodeMirror = () => {
 const updateDocInfo: Extension = EditorView.updateListener.of(
     (viewUpdate: ViewUpdate) => {
         if (viewUpdate.docChanged) {
-            console.log('触发更新', new Date().toISOString())
             const { state } = viewUpdate.view;
-            const newValue = marked.parse(state.doc.toString()).toString();
-            if (newValue !== output.value) {
-                console.log('更新 view', new Date().toISOString())
-                output.value = newValue;
-                urlList.value = extractImageUrlsFromHtml(output.value)
-                // emit('update:modelValue', newValue);
+            const newDoc = state.doc.toString()
+            if (newDoc !== editorContent.value) {
+                editorStore.updateEditorStore(newDoc)
             }
         }
     }
@@ -89,21 +107,17 @@ const updateDocInfo: Extension = EditorView.updateListener.of(
 
 
 const initializeOutput = async () => {
-    console.log('读取文件开始', new Date().toISOString())
     const res = await axios.get('src/assets/example/markdown.md');
-    input.value = res.data;
-    output.value = marked.parse(res.data).toString()
-    console.log('读取文件结束', new Date().toISOString())
-    urlList.value = extractImageUrlsFromHtml(output.value)
+    editorStore.updateEditorStore(res.data)
 }
 
-watch(input, () => {
+watch(editorContent, () => {
     console.log('wathc input', new Date().toISOString())
     view.dispatch({
         changes: {
             from: 0,
             to: view.state.doc.length,
-            insert: input.value,
+            insert: editorContent.value,
         },
     });
 });
@@ -130,9 +144,8 @@ const handlePreClick = (preElement: HTMLElement) => {
 
 // 更新图片查看器状态
 const updateImageViewer = (imgElement: HTMLImageElement) => {
-    urlList.value = shiftArray(urlList.value, imgElement.src);
-    console.log(urlList.value);
-    isShowElImageViewer.value = true;
+    editorStore.setImgUrls(shiftArray(imgUrls.value, imgElement.src))
+    editorStore.setIsShowElImageViewer(true)
 };
 
 // 使用事件委托处理点击事件
@@ -150,7 +163,7 @@ const handleDelegateClick = (event: MouseEvent) => {
 };
 
 const closeElImageViewer = () => {
-    isShowElImageViewer.value = false;
+    editorStore.setIsShowElImageViewer(false)
 };
 
 
@@ -189,7 +202,7 @@ onMounted(() => {
 
     .toolbar {
         width: pc.$width-page-main;
-        height: pc.$editor-toolbar-height;
+        min-height: pc.$editor-toolbar-height;
     }
 
     .iconfont {

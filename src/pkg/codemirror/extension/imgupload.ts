@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-08 20:13:30
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-08 23:29:07
+ * @LastEditTime : 2023-12-09 18:35:28
  * @FilePath     : \blog-client\src\pkg\codemirror\extension\imgupload.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -21,6 +21,7 @@ const handlePasteImage: Extension = EditorView.domEventHandlers({
   paste: (event, view) => {
     if (!event.clipboardData || !event.clipboardData.items) return
     // 获取剪切板中的图片文件
+    console.log('剪贴板', event.clipboardData.files)
     let file = null
     for (const item of event.clipboardData.items) {
       if (item.type.indexOf('image') === 0) {

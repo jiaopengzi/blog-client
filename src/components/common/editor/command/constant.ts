@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:51:36
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-07 20:59:12
+ * @LastEditTime : 2023-12-09 20:16:53
  * @FilePath     : \blog-client\src\components\common\editor\command\constant.ts
  * @Description  : markdown 标记常量
  * @Blog         : https://jiaopengzi.com
@@ -256,7 +256,6 @@ export const MardkdownEditorCommandsOrder: MardkdownEditorCommandsOrderType = {
     hotKey: 'Ctrl+Shift+D',
     isShow: true,
   },
-
   // 付费内容
   payContent: {
     tip: '付费内容',
@@ -270,6 +269,33 @@ export const MardkdownEditorCommandsOrder: MardkdownEditorCommandsOrderType = {
     hotKey: 'Ctrl+S',
     isShow: true,
   },
+  // 发布
+  publish: {
+    tip: '发布',
+    hotKey: 'Ctrl+P',
+    isShow: true,
+  },
+  // 预览
+  preview: {
+    tip: '预览',
+    hotKey: 'Ctrl+Shift+V',
+    func: () => {
+      isShowInput.value = false
+    },
+    isShow: true,
+  },
+  // 目录
+  toc: {
+    tip: '目录',
+    hotKey: 'Ctrl+T',
+    isShow: true,
+  },
+  // 同步滚动条
+  scroll: {
+    tip: '同步滚动条',
+    hotKey: 'Ctrl+Shift+S',
+    isShow: true,
+  },
   // 全屏
   fullscreen: {
     tip: '全屏',
@@ -280,6 +306,48 @@ export const MardkdownEditorCommandsOrder: MardkdownEditorCommandsOrderType = {
   exitFullscreen: {
     tip: '退出全屏',
     hotKey: 'Esc',
+    isShow: true,
+  },
+  // 桌面端
+  desktop: {
+    tip: 'Desktop',
+    hotKey: 'Ctrl+Shift+D',
+    isShow: true,
+  },
+  // 移动端
+  mobile: {
+    tip: 'Mobile',
+    hotKey: 'Ctrl+Shift+M',
+    isShow: true,
+  },
+  // 导出 markdown
+  markdown: {
+    tip: '导出 markdown',
+    hotKey: 'Ctrl+Alt+M',
+    isShow: true,
+  },
+  // 导出 html
+  html: {
+    tip: '导出 html',
+    hotKey: 'Ctrl+Alt+H',
+    isShow: true,
+  },
+  // 导出 pdf
+  pdf: {
+    tip: '导出 PDF',
+    hotKey: 'Ctrl+Alt+P',
+    isShow: true,
+  },
+  // 帮助
+  help: {
+    tip: '帮助',
+    hotKey: 'Ctrl+Shift+P',
+    isShow: true,
+  },
+  // 关于
+  info: {
+    tip: '关于',
+    hotKey: 'Ctrl+Shift+I',
     isShow: true,
   },
 }

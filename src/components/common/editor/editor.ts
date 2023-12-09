@@ -1,3 +1,14 @@
+/*
+ * @Author       : jiaopengzi
+ * @Date         : 2023-12-07 11:52:09
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2023-12-09 20:50:36
+ * @FilePath     : \blog-client\src\components\common\editor\editor.TS
+ * @Description  : markdown 编辑器
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ */
+
 import ClipboardJS from 'clipboard' //代码块复制
 import type { ClipboardEvent } from 'clipboard'
 import { ShowMsgTip } from '@/utils/message'

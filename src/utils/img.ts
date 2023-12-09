@@ -37,7 +37,10 @@ function(srcList,item)
 当 x=C 返回 ["C","D","A","B"]
 当 x=D 返回 ["D","A","B","C"]     
  */
-export function shiftArray(srcList: string[], item: string): string[] {
+export function shiftArray(srcList: string[] | undefined, item: string): string[] {
+  if (!srcList) {
+    return []
+  }
   const index = srcList.indexOf(item)
 
   if (index === -1) {

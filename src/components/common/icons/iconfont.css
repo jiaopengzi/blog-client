@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4152487 */
-  src: url('iconfont.woff2?t=1701496640379') format('woff2'),
-       url('iconfont.woff?t=1701496640379') format('woff'),
-       url('iconfont.ttf?t=1701496640379') format('truetype');
+  src: url('iconfont.woff2?t=1702123464608') format('woff2'),
+       url('iconfont.woff?t=1702123464608') format('woff'),
+       url('iconfont.ttf?t=1702123464608') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,58 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-divider:before {
+  content: "\e66a";
+}
+
+.icon-pdf:before {
+  content: "\e740";
+}
+
+.icon-desktop:before {
+  content: "\e668";
+}
+
+.icon-help:before {
+  content: "\e617";
+}
+
+.icon-publish:before {
+  content: "\e624";
+}
+
+.icon-html:before {
+  content: "\e61a";
+}
+
+.icon-preview:before {
+  content: "\ec86";
+}
+
+.icon-copy:before {
+  content: "\e620";
+}
+
+.icon-info:before {
+  content: "\e610";
+}
+
+.icon-scroll:before {
+  content: "\e82d";
+}
+
+.icon-mobile:before {
+  content: "\e626";
+}
+
+.icon-markdown:before {
+  content: "\e688";
+}
+
+.icon-toc:before {
+  content: "\e613";
 }
 
 .icon-save:before {

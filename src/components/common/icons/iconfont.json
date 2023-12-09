@@ -6,6 +6,97 @@
   "description": "vue 重写项目",
   "glyphs": [
     {
+      "icon_id": "17412184",
+      "name": "divider",
+      "font_class": "divider",
+      "unicode": "e66a",
+      "unicode_decimal": 58986
+    },
+    {
+      "icon_id": "622431",
+      "name": "pdf",
+      "font_class": "pdf",
+      "unicode": "e740",
+      "unicode_decimal": 59200
+    },
+    {
+      "icon_id": "1261548",
+      "name": "desktop",
+      "font_class": "desktop",
+      "unicode": "e668",
+      "unicode_decimal": 58984
+    },
+    {
+      "icon_id": "1446384",
+      "name": "help",
+      "font_class": "help",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "4138818",
+      "name": "publish",
+      "font_class": "publish",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "5916406",
+      "name": "html",
+      "font_class": "html",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    },
+    {
+      "icon_id": "6337474",
+      "name": "preview",
+      "font_class": "preview",
+      "unicode": "ec86",
+      "unicode_decimal": 60550
+    },
+    {
+      "icon_id": "7274101",
+      "name": "copy",
+      "font_class": "copy",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "8144788",
+      "name": "info",
+      "font_class": "info",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "8953151",
+      "name": "scroll",
+      "font_class": "scroll",
+      "unicode": "e82d",
+      "unicode_decimal": 59437
+    },
+    {
+      "icon_id": "10304514",
+      "name": "mobile",
+      "font_class": "mobile",
+      "unicode": "e626",
+      "unicode_decimal": 58918
+    },
+    {
+      "icon_id": "13743957",
+      "name": "markdown",
+      "font_class": "markdown",
+      "unicode": "e688",
+      "unicode_decimal": 59016
+    },
+    {
+      "icon_id": "27585565",
+      "name": "toc",
+      "font_class": "toc",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
       "icon_id": "28122456",
       "name": "save",
       "font_class": "save",
