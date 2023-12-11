@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-09 21:36:04
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-09 23:53:11
+ * @LastEditTime : 2023-12-11 16:04:51
  * @FilePath     : \blog-client\src\stores\editor.ts
  * @Description  : 编辑器 store
  * @Blog         : https://jiaopengzi.com
@@ -11,41 +11,51 @@
 
 // @ts-check
 import { defineStore } from 'pinia'
-import { extractImageUrlsFromHtml, shiftArray } from '@/utils/img'
+import { extractImageUrlsFromHtml } from '@/utils/img'
 import marked from '@/pkg/marked/new-marked'
-// 编辑器 store 类型
+import { getMarkdownHeadingLines } from '@/utils/lineNumbers'
+import type { MarkdownHeadingLineType } from '@/utils/lineNumbers'
+
 interface editorStore {
-  tocContent: string // 目录内容
-  tocContentShow: boolean // 是否显示目录
+  tocMarkdown: MarkdownHeadingLineType[] // markdown 目录内容
+  tocHtml: string // html 目录内容
+  tocShow: boolean // 是否显示目录
   tocScrollTop: number // 目录滚动条位置
-  editorContent: string // 编辑器内容
-  editorContentShow: boolean // 是否显示编辑器
+  editor: string // 编辑器内容
+  editorShow: boolean // 是否显示编辑器
   editorScrollTop: number // 编辑器滚动条位置
   eidtorFullScreen: boolean // 编辑器是否全屏
-  previewContent: string // 预览内容
-  previewContentShow: boolean // 是否显示预览
+  preview: string // 预览内容
+  previewShow: boolean // 是否显示预览
   previewScrollTop: number // 编辑器滚动条位置
   previewFullScreen: boolean // 预览是否全屏
   imgUrls: string[] // 图片链接数组
   isShowElImageViewer: boolean // 是否显示图片预览组件
+  scrollHideViewStr: string // 滚动条隐藏的编辑器 view 字符串
+  scrollHideHtmlStr: string // 滚动条隐藏的 html 字符串
+  editorDocumentTop: number // 编辑器框距离顶部的距离
 }
 
 // 创建空值编辑器信息
 function createEmptyEditorStore(): editorStore {
   return {
-    tocContent: '', // 目录内容
-    tocContentShow: false, // 是否显示目录
+    tocMarkdown: [], // markdown 目录内容
+    tocHtml: '', // html 目录内容
+    tocShow: false, // 是否显示目录
     tocScrollTop: 0, // 目录滚动条位置
-    editorContent: '', // 编辑器内容
-    editorContentShow: true, // 是否显示编辑器
+    editor: '', // 编辑器内容
+    editorShow: true, // 是否显示编辑器
     editorScrollTop: 0, // 编辑器滚动条位置
     eidtorFullScreen: false, // 编辑器是否全屏
-    previewContent: '', // 预览内容
-    previewContentShow: true, // 是否显示预览
+    preview: '', // 预览内容
+    previewShow: true, // 是否显示预览
     previewScrollTop: 0, // 编辑器滚动条位置
     previewFullScreen: false, // 预览是否全屏
     imgUrls: [], // 图片链接数组
     isShowElImageViewer: false, // 是否显示图片预览组件
+    scrollHideViewStr: '', // 滚动条隐藏的编辑器 markdown 字符串
+    scrollHideHtmlStr: '', // 滚动条隐藏的 html 字符串
+    editorDocumentTop: 0, // 编辑器框距离顶部的距离
   }
 }
 
@@ -54,25 +64,29 @@ export const useEditorStore = defineStore({
   state: () => createEmptyEditorStore(),
 
   getters: {
-    // 获取目录内容
-    getTocContent(): string {
-      return this.tocContent
+    // 获取markdown目录内容
+    getTocMarkdown(): MarkdownHeadingLineType[] {
+      return this.tocMarkdown
+    },
+    // 获取html目录内容
+    getTocHtml(): string {
+      return this.tocHtml
     },
     // 获取是否显示目录
-    getTocContentShow(): boolean {
-      return this.tocContentShow
+    getTocShow(): boolean {
+      return this.tocShow
     },
     // 获取目录滚动条位置
     getTocScrollTop(): number {
       return this.tocScrollTop
     },
     // 获取编辑器内容
-    getEditorContent(): string {
-      return this.editorContent
+    getEditor(): string {
+      return this.editor
     },
     // 获取是否显示编辑器
-    getEditorContentShow(): boolean {
-      return this.editorContentShow
+    getEditorShow(): boolean {
+      return this.editorShow
     },
     // 获取编辑器滚动条位置
     getEditorScrollTop(): number {
@@ -83,12 +97,12 @@ export const useEditorStore = defineStore({
       return this.eidtorFullScreen
     },
     // 获取预览内容
-    getPreviewContent(): string {
-      return this.previewContent
+    getPreview(): string {
+      return this.preview
     },
     // 获取是否显示预览
-    getPreviewContentShow(): boolean {
-      return this.previewContentShow
+    getPreviewShow(): boolean {
+      return this.previewShow
     },
     // 获取预览滚动条位置
     getPreviewScrollTop(): number {
@@ -106,28 +120,44 @@ export const useEditorStore = defineStore({
     getIsShowElImageViewer(): boolean {
       return this.isShowElImageViewer
     },
+    // 获取滚动条隐藏的编辑器view 字符串
+    getScrollHideViewStr(): string {
+      return this.scrollHideViewStr
+    },
+    // 获取滚动条隐藏的 html 字符串
+    getScrollHideHtmlStr(): string {
+      return this.scrollHideHtmlStr
+    },
+    // 获取编辑器框距离顶部的距离
+    getEditorDocumentTop(): number {
+      return this.editorDocumentTop
+    },
   },
 
   actions: {
-    // 设置目录内容
-    setTocContent(tocContent: string): void {
-      this.tocContent = tocContent
+    // 设置 markdown 目录内容
+    setTocMarkdown(tocMarkdown: MarkdownHeadingLineType[]): void {
+      this.tocMarkdown = tocMarkdown
+    },
+    // 设置 html 目录内容
+    setTocHtml(tocHtml: string): void {
+      this.tocHtml = tocHtml
     },
     // 设置是否显示目录
-    setTocContentShow(tocContentShow: boolean): void {
-      this.tocContentShow = tocContentShow
+    setTocShow(tocShow: boolean): void {
+      this.tocShow = tocShow
     },
     // 设置目录滚动条位置
     setTocScrollTop(tocScrollTop: number): void {
       this.tocScrollTop = tocScrollTop
     },
     // 设置编辑器内容
-    setEditorContent(editorContent: string): void {
-      this.editorContent = editorContent
+    setEditor(editor: string): void {
+      this.editor = editor
     },
     // 设置是否显示编辑器
-    setEditorContentShow(editorContentShow: boolean): void {
-      this.editorContentShow = editorContentShow
+    setEditorShow(editorShow: boolean): void {
+      this.editorShow = editorShow
     },
     // 设置编辑器滚动条位置
     setEditorScrollTop(editorScrollTop: number): void {
@@ -138,12 +168,12 @@ export const useEditorStore = defineStore({
       this.eidtorFullScreen = eidtorFullScreen
     },
     // 设置预览内容
-    setPreviewContent(previewContent: string): void {
-      this.previewContent = previewContent
+    setPreview(preview: string): void {
+      this.preview = preview
     },
     // 设置是否显示预览
-    setPreviewContentShow(previewContentShow: boolean): void {
-      this.previewContentShow = previewContentShow
+    setPreviewShow(previewShow: boolean): void {
+      this.previewShow = previewShow
     },
     // 设置预览滚动条位置
     setPreviewScrollTop(previewScrollTop: number): void {
@@ -161,22 +191,40 @@ export const useEditorStore = defineStore({
     setIsShowElImageViewer(isShowElImageViewer: boolean): void {
       this.isShowElImageViewer = isShowElImageViewer
     },
-
+    // 设置滚动条隐藏的编辑器view 字符串
+    setScrollHideViewStr(scrollHideViewStr: string): void {
+      this.scrollHideViewStr = scrollHideViewStr
+    },
+    // 设置滚动条隐藏的 html 字符串
+    setScrollHideHtmlStr(scrollHideHtmlStr: string): void {
+      this.scrollHideHtmlStr = scrollHideHtmlStr
+    },
+    // 设置编辑器框距离顶部的距离
+    setEditorDocumentTop(editorDocumentTop: number): void {
+      this.editorDocumentTop = editorDocumentTop
+    },
     // 更新编辑器 store
     updateEditorStore(markdownSrcCode: string): void {
-      this.setEditorContent(markdownSrcCode)
-      this.setPreviewContent(marked.parse(this.editorContent).toString())
-      this.setImgUrls(extractImageUrlsFromHtml(this.previewContent))
-      this.setTocContent(matchAllH(this.previewContent).join(''))
+      this.setEditor(markdownSrcCode)
+      this.setTocMarkdown(getMarkdownHeadingLines(markdownSrcCode))
+      this.setPreview(marked.parse(this.editor).toString())
+      this.setImgUrls(extractImageUrlsFromHtml(this.preview))
+      this.setTocHtml(matchAllH(this.preview).join(''))
+    },
+    // 更新滚动条隐藏的编辑器view 字符串
+    updateScrollHide(): void {
+      this.setScrollHideHtmlStr(marked.parse(this.scrollHideViewStr).toString())
     },
   },
 })
 
-// 通过正则表达式匹配 html 中所有的 h 标签
+/**
+ * @description : 通过正则表达式匹配 html 中所有的 h 标签
+ * @param html  : html 字符串
+ * @return      : 匹配到的 h 标签数组
+ */
 function matchAllH(html: string): RegExpMatchArray {
   const regex = /<h\d.*?>.*?<\/h\d>/g
   const matches = html.match(regex) || []
   return matches as RegExpMatchArray
 }
-
-// 获取 html 中所有的 h 标签的内容

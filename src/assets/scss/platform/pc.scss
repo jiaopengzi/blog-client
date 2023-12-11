@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-20 19:35:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-02 21:45:20
+ * @LastEditTime : 2023-12-11 09:41:43
  * @FilePath     : \blog-client\src\assets\scss\platform\pc.scss
  * @Description  : pc相关尺寸样式
  * @Blog         : https://jiaopengzi.com
@@ -29,7 +29,15 @@ $height-header-login: 40px;
 $width-header-login: 100px;
 
 $font-size: 16px;
-$font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+$font-family: 'Microsoft YaHei',
+'PingFang SC',
+'Helvetica Neue',
+Helvetica,
+Arial,
+sans-serif;
 
 $editor-toolbar-height: 40px; // 编辑器工具栏高度
+$editor-toolbar-margin-top: 20px; // 编辑器顶部面板margin-top
+$editor-toolbar-margin-bottom: 20px; // 编辑器底部面板margin-bottom
 $editor-bottom-panel-height: 20px; // 编辑器底部面板高度
+$editor-md-container-height: 600px; // 编辑器底部面板高度

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:51:36
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-09 20:16:53
+ * @LastEditTime : 2023-12-10 11:11:15
  * @FilePath     : \blog-client\src\components\common\editor\command\constant.ts
  * @Description  : markdown 标记常量
  * @Blog         : https://jiaopengzi.com
@@ -17,7 +17,7 @@ export interface MardkdownEditorCommandItemType {
   content?: string // 内容
   suffix?: string // 后缀
   hotKey?: string // 快捷键
-  func?: Function // 执行函数
+  action?: Function // 执行函数
   isShow: boolean // 是否显示
 }
 
@@ -31,7 +31,7 @@ export const MardkdownEditorCommandsOrder: MardkdownEditorCommandsOrderType = {
   undo: {
     tip: '撤销',
     hotKey: 'Ctrl+Z',
-    func: (view: EditorView) => {
+    action: (view: EditorView) => {
       undo(view)
     },
     isShow: true,
@@ -40,7 +40,7 @@ export const MardkdownEditorCommandsOrder: MardkdownEditorCommandsOrderType = {
   redo: {
     tip: '重做',
     hotKey: 'Ctrl+Y',
-    func: (view: EditorView) => {
+    action: (view: EditorView) => {
       redo(view)
     },
     isShow: true,
@@ -49,7 +49,7 @@ export const MardkdownEditorCommandsOrder: MardkdownEditorCommandsOrderType = {
   clear: {
     tip: '清空',
     hotKey: 'Ctrl+Shift+K',
-    func: (view: EditorView) => {
+    action: (view: EditorView) => {
       view.dispatch({
         changes: { from: 0, to: view.state.doc.length, insert: '' },
         selection: { anchor: 0, head: 0 }, // 将光标移至文档起始位置
@@ -279,9 +279,6 @@ export const MardkdownEditorCommandsOrder: MardkdownEditorCommandsOrderType = {
   preview: {
     tip: '预览',
     hotKey: 'Ctrl+Shift+V',
-    func: () => {
-      isShowInput.value = false
-    },
     isShow: true,
   },
   // 目录

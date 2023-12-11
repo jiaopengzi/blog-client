@@ -1,9 +1,19 @@
+<!--
+ * @Author       : jiaopengzi
+ * @Date         : 2023-12-11 09:35:04
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2023-12-11 13:35:11
+ * @FilePath     : \blog-client\src\components\common\editor\Editor copy.vue
+ * @Description  : 
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+-->
 <!-- eslint-disable vue/multi-word-component-names -->
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-11 16:03:37
+ * @LastEditTime : 2023-12-11 13:33:31
  * @FilePath     : \blog-client\src\components\common\editor\Editor.vue
  * @Description  : 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -19,12 +29,13 @@
             </button>
         </div>
         <div class="md-container">
-            <div v-show="tocShow" class="md-toc md-container-item" v-html="tocHtml" @click="handleDelegateClick">
+            <div v-show="tocContentShow" class="md-toc md-container-item" v-html="tocContent" @click="handleDelegateClick">
             </div>
-            <div v-show="editorShow" class="md-editor md-container-item">
+            <div v-show="editorContentShow" class="md-editor md-container-item">
                 <div ref="editorHost" id="editorHost"></div>
             </div>
-            <div v-show="previewShow" class="md-preview md-container-item" v-html="preview" @click="handleDelegateClick">
+            <div v-show="previewContentShow" class="md-preview md-container-item" v-html="previewContent"
+                @click="handleDelegateClick">
             </div>
         </div>
     </div>
@@ -46,28 +57,25 @@ import { shiftArray } from '@/utils/img';
 import { useMagicKeys } from '@vueuse/core'
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
-import { scrollToElementSmoothly } from '@/utils/scroll'
+import { findHeadingLines } from '@/utils/lineNumbers'
 
 
 // 获取用户信息
 const editorStore = useEditorStore()
 
-let { tocMarkdown, tocHtml, tocShow, tocScrollTop,
-    editor, editorShow, editorScrollTop, eidtorFullScreen,
-    preview, previewShow, previewScrollTop, previewFullScreen,
-    imgUrls, isShowElImageViewer, scrollHideViewStr, scrollHideHtmlStr, editorDocumentTop } = storeToRefs(editorStore)
+let { tocContent, tocContentShow, tocScrollTop, editorContent, editorContentShow, editorScrollTop, eidtorFullScreen, previewContent, previewContentShow, previewScrollTop, previewFullScreen, imgUrls, isShowElImageViewer, scrollViewStr, scrollHtmlStr, editorDocumentTop } = storeToRefs(editorStore)
 
 const handleEditorButtonClick = (constant: MardkdownEditorCommandsOrderKeyType) => {
     if (constant === "preview") {
-        editorShow.value = !editorShow.value
+        editorContentShow.value = !editorContentShow.value
         return
     }
     if (constant === 'desktop') {
-        previewShow.value = !previewShow.value
+        previewContentShow.value = !previewContentShow.value
         return
     }
     if (constant === 'toc') {
-        tocShow.value = !tocShow.value
+        tocContentShow.value = !tocContentShow.value
         return
     }
     editorInsertFormatContent(cmView, MardkdownEditorCommandsOrder[constant]);
@@ -85,7 +93,7 @@ let cmView: EditorView
 const initializeCodeMirror = () => {
     editorHost.value = document.getElementById('editorHost') as HTMLElement // 获取编辑器宿主容器
     const state = EditorState.create({
-        doc: editor.value || '',
+        doc: editorContent.value || '',
         extensions: [customSetup, updateDocInfo],
     });
 
@@ -105,142 +113,218 @@ const updateDocInfo: Extension = EditorView.updateListener.of(
         if (viewUpdate.docChanged) {
             const { state } = viewUpdate.view;
             const newDoc = state.doc.toString()
-            if (newDoc !== editor.value) {
+            if (newDoc !== editorContent.value) {
                 editorStore.updateEditorStore(newDoc)
-                cmView.focus()
             }
         }
     }
 )
 
 
-/**
- * @description: 初始化 output
- */
-const initializeEditor = async () => {
+const initializeOutput = async () => {
     const res = await axios.get('src/assets/example/markdown.md');
     editorStore.updateEditorStore(res.data)
 }
 
-// 监听编辑器内容变化
-watch(editor, () => {
-    // console.log('wathc input', new Date().toISOString())
+watch(editorContent, () => {
+    console.log('wathc input', new Date().toISOString())
     cmView.dispatch({
         changes: {
             from: 0,
             to: cmView.state.doc.length,
-            insert: editor.value,
+            insert: editorContent.value,
         },
-    })
-})
+    });
+});
 
-
-// 监听工具栏高度变化
 watch(toolbarRef, () => {
     updateToolbarHeight();
 }, { deep: true });
 
-
-/**
- * @description: 更新工具栏高度 
- */
 function updateToolbarHeight() {
     if (toolbarRef.value) {
         toolbarHeight.value = toolbarRef.value.clientHeight;
+        // console.log(toolbarHeight.value);
+        // Set the value of the CSS variable for toolbar height
         document.documentElement.style.setProperty('--toolbar-height', `${toolbarHeight.value}px`);
     }
 }
 
-
-/**
- * @description: 处理预览容器中的按钮点击事件
- * @param preElement 预览容器中的按钮元素
- */
+// 处理pre元素的点击事件
 const handlePreClick = (preElement: HTMLElement) => {
     if (preElement) {
         preElement.click();
     }
-}
+};
 
-/**
- * @description: 更新图片查看器的图片
- * @param imgElement 图片元素
- */
+// 更新图片查看器状态
 const updateImageViewer = (imgElement: HTMLImageElement) => {
     editorStore.setImgUrls(shiftArray(imgUrls.value, imgElement.src))
     editorStore.setIsShowElImageViewer(true)
 };
 
 
-/**
- * @description: 处理委托点击事件 
- * @param event  点击事件   
- */
-const handleDelegateClick = (event: MouseEvent) => {
-    const target = event.target as HTMLElement; // 获取点击的目标元素
-    const previewContainer = document.querySelector('.md-preview') as HTMLElement // 获取预览容器
-    const tocContainer = document.querySelector('.md-toc') as HTMLElement // 获取目录容器
+const getParentWithClass = (element: HTMLElement, className: string) => {
+    let currentElement = element;
+    while (currentElement) {
+        if (currentElement.classList.contains(className)) {
+            return currentElement;
+        }
+        currentElement = currentElement.parentElement as HTMLElement;
+    }
+    return null;
+};
 
-    // 处理 preview 容器中的点击事件
-    if (previewContainer) {
+
+// 使用事件委托处理点击事件
+const handleDelegateClick = (event: MouseEvent) => {
+    const target = event.target as HTMLElement;
+
+    const tocParent = getParentWithClass(target, 'md-toc');
+    const editorParent = getParentWithClass(target, 'md-editor');
+    const previewParent = getParentWithClass(target, 'md-preview');
+
+    if (previewParent) {
+        // 根据目标元素类型触发对应的处理函数
         if (target.tagName.toLowerCase() === 'button') {
-            // 处理预览容器中的按钮点击事件
             const preElement = target.nextElementSibling as HTMLElement;
             handlePreClick(preElement);
         } else if (target.tagName.toLowerCase() === 'img' && 'src' in target) {
-            // 处理预览容器中的图片点击事件
             const imgElement = target as HTMLImageElement;
             updateImageViewer(imgElement);
         }
 
     }
+    if (tocParent) {
+        // if (target.tagName.toLowerCase().match(/^h[1-6]$/)) {// 正则匹配 h1 ~ h6
+        //     const headingElement = target as HTMLHeadingElement; // 类型断言
+        //     // 判断 headingElement 在 md-toc 中的索引 需要注意内容中可能有多个相同的 heading
+        //     const index = Array.from(tocParent.children).indexOf(headingElement)
 
-    // 处理 toc 容器中的点击事件
-    if (tocContainer) {
-        const headingElement = target as HTMLHeadingElement; // 类型断言为标题元素
-        if (!headingElement) return // 如果不是标题元素就直接返回
+        //     let indexList: number[] = []
+        //     Array.from(tocParent.children).filter((item, index) => {
+        //         const itemElement = item as HTMLHeadingElement
+        //         if (itemElement.innerText === headingElement.innerText) {
+        //             indexList.push(index)
+        //         }
+        //     })
+        //     indexList.indexOf(index)
 
-        const index = Array.from(tocContainer.children).indexOf(headingElement) // 获取当前元素在父元素中的索引
+        //     const lines = findHeadingLines(view.state.doc.toString(), headingElement.innerText)
+        //     console.log('lineNumber', lines[indexList.indexOf(index)])
+        //     const firstLine = view.state.doc.line(lines[indexList.indexOf(index)]);
+        //     console.log('from', firstLine.from)
+        //     view.dispatch({
+        //         selection: {
+        //             anchor: firstLine.from,
+        //             head: firstLine.from,
+        //         },
+        //     })
 
-        // 1、处理 editor 的滚动
-        const line = cmView.state.doc.line(tocMarkdown.value[index].markdownLineNumber) // 获取当前元素在编辑器中的行数
+        //     // 获取元素坐标
+        //     // const rect = view.coordsAtPos(firstLine.from);
+        //     const rect = view.coordsAtPos(firstLine.from);
+        //     if (rect) {
+        //         const docTop = view.dom.getBoundingClientRect().top;
+        //         const scrollOffset = view.scrollDOM.scrollTop;
 
-        // 跳转选中目标行
-        cmView.dispatch({
-            selection: {
-                anchor: line.from,
-                head: line.from,
-            },
-            effects: EditorView.scrollIntoView( // 滚动到当前行
-                line.from,
-                {
-                    y: "start",
-                    yMargin: 0
+        //         const scrollTopRelativeToDocument = rect.top - docTop + scrollOffset;
+        //         console.log('scrollTopRelativeToDocument', scrollTopRelativeToDocument);
+
+        //         view.scrollDOM.scrollTo({ top: scrollTopRelativeToDocument, behavior: 'auto' }) // auto | smooth | instant
+        //     }
+
+        //     // 寻找 heading 元素 在 md-preview 中的位置
+        //     const previewElement = document.querySelector('.preview') as HTMLElement
+        //     previewElement?.querySelectorAll('h1,h2,h3,h4,h5,h6').forEach((item, index) => {
+        //         const itemElement = item as HTMLHeadingElement
+        //         if (itemElement.innerHTML === headingElement.innerHTML) {
+        //             // 获取 itemElement 在 md-preview 中的位置 并滚动到对应位置
+        //             previewElement.scrollTop = itemElement.offsetTop - previewElement.offsetTop
+        //         }
+        //     })
+
+        // }
+        if (target.tagName.toLowerCase().match(/^h[1-6]$/)) {
+            const headingElement = target as HTMLHeadingElement; // 类型断言
+            const index = Array.from(tocParent.children).indexOf(headingElement)
+
+            let indexList: number[] = []
+            Array.from(tocParent.children).filter((item, index) => {
+                const itemElement = item as HTMLHeadingElement
+                if (itemElement.innerText === headingElement.innerText) {
+                    indexList.push(index)
                 }
-            )
-        })
+            })
+            indexList.indexOf(index)
 
-        // 2、处理 preview 的滚动
-        const headings = Array.from(previewContainer.querySelectorAll('h1,h2,h3,h4,h5,h6')) // 获取预览容器中的所有标题元素
-        const targetHeading = headings[index] as HTMLElement // 获取目标heading元素
-        scrollToElementSmoothly(targetHeading, previewContainer) // 平滑滚动到目标元素
+            const lines = findHeadingLines(cmView.state.doc.toString(), headingElement.innerText)
+            console.log('lineNumber', lines[indexList.indexOf(index)])
+            const firstLine = cmView.state.doc.line(lines[indexList.indexOf(index)]);
+            console.log('from', firstLine.from)
+            cmView.dispatch({
+                selection: {
+                    anchor: firstLine.from,
+                    head: firstLine.from,
+                },
+            })
 
+            // 获取元素坐标
+            // const rect = view.coordsAtPos(firstLine.from);
+            const rect = cmView.coordsAtPos(firstLine.from);
+            if (rect) {
+                const docTop = cmView.dom.getBoundingClientRect().top;
+                const scrollOffset = cmView.scrollDOM.scrollTop;
+
+                const scrollTopRelativeToDocument = rect.top - docTop + scrollOffset;
+                console.log('scrollTopRelativeToDocument', scrollTopRelativeToDocument);
+
+                cmView.scrollDOM.scrollTo({ top: scrollTopRelativeToDocument, behavior: 'smooth' }) // auto | smooth | instant
+                // view.scrollDOM.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+            }
+
+            // Find the corresponding heading in '.preview'
+            const previewElement = document.querySelector('.md-preview') as HTMLElement;
+            const headings = Array.from(previewElement.querySelectorAll('h1,h2,h3,h4,h5,h6'));
+            const targetHeadingIndex = headings.findIndex((item) =>
+                (item as HTMLHeadingElement).innerHTML === headingElement.innerHTML
+            );
+            if (targetHeadingIndex !== -1) {
+                const targetHeading = headings[targetHeadingIndex] as HTMLElement;
+                scrollToElementSmoothly(targetHeading, previewElement);
+            }
+        }
     }
 }
 
+const scrollToElementSmoothly = (element: HTMLElement, container: HTMLElement) => {
+    let targetScrollTop = element.offsetTop - container.offsetTop;
+    const observer = new IntersectionObserver(
+        (entries) => {
+            // 检查目标元素是否与视口相交
+            if (entries[0].isIntersecting) {
+                container.scrollTop = targetScrollTop;
+                observer.disconnect() // 停止观察
+            } else {
+                container.scrollTop += (targetScrollTop - container.scrollTop) * 0.1 // 滚动到目标元素
+                requestAnimationFrame(() => {
+                    scrollToElementSmoothly(element, container) // 继续观察
+                })
+            }
+        },
+        { root: container } // 观察 container
+    );
 
-/**
- * @description: 关闭图片查看器
- */
+    observer.observe(element) // 开始观察
+};
+
 const closeElImageViewer = () => {
     editorStore.setIsShowElImageViewer(false)
-}
+};
 
 
-/**
- * @description: 注册快捷键
- */
 const keys = useMagicKeys() // 使用 useMagicKeys() 之后，就可以通过 keys 来获取键盘按键的状态了
+
 const registerHotKeys = () => {
     Object.entries(MardkdownEditorCommandsOrder).forEach((item) => {
         const hotKey = item[1]?.hotKey
@@ -253,9 +337,6 @@ const registerHotKeys = () => {
     })
 }
 
-/**
- * @description: 处理编辑器滚动事件 
- */
 const handleEditorScroll = () => {
 
     const previewElement = document.querySelector(".md-preview") as HTMLElement// 获取预览容器
@@ -270,9 +351,9 @@ const handleEditorScroll = () => {
     const hideTopBlockInfo = cmView.lineBlockAtHeight(editorScrollTop.value) // 获取不可见部分的信息
     const hideMarkdown = cmView.state.sliceDoc(0, hideTopBlockInfo.from) // 不可见部分的 markdown
 
-    editorStore.setScrollHideViewStr(hideMarkdown) // store 存储不可见部分的 markdown
-    editorStore.updateScrollHide() // 更新 store 中的 scroll 得到最新的 html
-    const hideDom = new DOMParser().parseFromString(scrollHideHtmlStr.value, 'text/html') // 隐藏的markdown解析出来的html转换为dom
+    editorStore.setScrollViewStr(hideMarkdown) // store 存储不可见部分的 markdown
+    editorStore.updateScroll() // 更新 store 中的 scroll 得到最新的 html
+    const hideDom = new DOMParser().parseFromString(scrollHtmlStr.value, 'text/html') // 隐藏的markdown解析出来的html转换为dom
     const editorDoms = hideDom.body.querySelectorAll('*') // 获取隐藏的markdown解析出来的html转换为dom中的所有元素 注意要在 body 中寻找
 
     const previewDoms = previewElement.querySelectorAll('*') // 获取预览容器中的所有元素
@@ -282,11 +363,12 @@ const handleEditorScroll = () => {
     if (tagetElement) {
         tagetElement.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" }) // 滚动到对应的元素
     }
-}
+
+};
 
 onMounted(() => {
     initializeCodeMirror() // 初始化 CodeMirror
-    initializeEditor() // 初始化 output
+    initializeOutput() // 初始化 output
     updateToolbarHeight(); // 初始化工具栏高度
     initializeClipboard() // 初始化 ClipboardJS
     registerHotKeys() // 注册快捷键

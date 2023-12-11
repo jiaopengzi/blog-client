@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 11:30:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-08 22:45:34
+ * @LastEditTime : 2023-12-11 14:57:32
  * @FilePath     : \blog-client\src\components\common\editor\command\insert.ts
  * @Description  : markdown 插入命令
  * @Blog         : https://jiaopengzi.com
@@ -64,7 +64,7 @@ export function editorInsertFormatContent(
 
     view.focus() // 使编辑器获取焦点
   }
-  if (command.func) {
-    command.func(view)
+  if (command.action) {
+    command.action(view)
   }
 }

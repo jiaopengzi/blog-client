@@ -181,7 +181,9 @@ h6 {
 }
 
 // 目录显示
-.toc {
+.md-toc {
+
+  background-color: $background-color-content;
 
   h1,
   h2,
@@ -189,11 +191,18 @@ h6 {
   h4,
   h5,
   h6 {
+    font-weight: 400;
     font-size: 1em;
     border: none;
     display: flex;
     align-items: center;
     margin: 0.5em 0;
+    cursor: pointer;
+
+    &:hover {
+      // 显示下划线
+      text-decoration: underline;
+    }
   }
 
   h2 {
@@ -201,19 +210,19 @@ h6 {
   }
 
   h3 {
-    margin-left: 1.5em;
-  }
-
-  h4 {
     margin-left: 2em;
   }
 
+  h4 {
+    margin-left: 3em;
+  }
+
   h5 {
-    margin-left: 2.5em;
+    margin-left: 4em;
   }
 
   h6 {
-    margin-left: 3em;
+    margin-left: 5em;
   }
 }
 
