@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-07 22:26:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-07 22:33:53
+ * @LastEditTime : 2023-12-11 19:12:20
  * @FilePath     : \blog-client\src\pkg\codemirror\extension\hotkey.ts
  * @Description  : codemirror 自定义快捷键
  * @Blog         : https://jiaopengzi.com
@@ -16,7 +16,7 @@ import { copyLineDown } from '@codemirror/commands'
 const customKeymap: Extension = keymap.of([
   {
     key: 'Ctrl-d',
-    run: copyLineDown, // 详细复制当前行
+    run: copyLineDown, // 复制当前行
   },
 ])
 

@@ -2,13 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-06 23:36:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-07 21:11:26
+ * @LastEditTime : 2023-12-11 21:40:52
  * @FilePath     : \blog-client\src\pkg\marked\new-marked.ts
  * @Description  : 重新封装 marked
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 import { Marked } from 'marked'
+// import marked from 'marked'
 import { markedHighlight } from 'marked-highlight' // 代码高亮
 import optionHighlight from '@/pkg/marked/extension/highlight' // 代码高亮配置
 import markedKatex from 'marked-katex-extension' // 数学公式
@@ -27,22 +28,28 @@ import { subExtensionInline } from '@/pkg/marked/extension/sub' // 自定义sub 
 import { supExtensionInline } from '@/pkg/marked/extension/sup' // 自定义sup 上标
 import { renderer } from '@/pkg/marked/extension/renderer' // 自定义renderer
 
-const marked = new Marked()
+// 创建一个工厂函数来生成新的 Marked 实例
+const createMarked = () => {
+  const marked = new Marked()
 
-marked.use(
-  markedHighlight(optionHighlight),
-  markedKatex(optionKatex),
-  tableExtension(),
-  markedFootnote(optionFootnote),
-  markedEmoji(optionEmojis),
-  customHeadingId(),
-  mangle(),
-  markedXhtml(),
-  {
-    renderer: renderer,
-    breaks: true, // 允许换行
-    extensions: [markExtensionInline, subExtensionInline, supExtensionInline],
-  },
-)
+  marked.use(
+    markedHighlight(optionHighlight),
+    markedKatex(optionKatex),
+    tableExtension(),
+    markedFootnote(optionFootnote),
+    markedEmoji(optionEmojis),
+    customHeadingId(),
+    mangle(),
+    markedXhtml(),
+    {
+      renderer: renderer,
+      breaks: true, // 允许换行
+      extensions: [markExtensionInline, subExtensionInline, supExtensionInline],
+    },
+  )
 
-export default marked
+  return marked
+}
+
+// 将工厂函数作为默认导出
+export default createMarked

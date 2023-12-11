@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-11 17:39:51
+ * @LastEditTime : 2023-12-11 23:59:26
  * @FilePath     : \blog-client\src\components\common\editor\Editor.vue
  * @Description  : 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -36,17 +36,18 @@
 import { ref, onMounted, watch } from 'vue';
 import type { Extension } from '@codemirror/state'
 import type { ViewUpdate } from '@codemirror/view';
-import { EditorView, EditorState, customSetup } from '@/pkg/codemirror/setup';
+import { EditorView, EditorState, createCustomSetup } from '@/pkg/codemirror/setup';
 import { editorInsertFormatContent } from '@/components/common/editor/command/insert'
 import { MardkdownEditorCommandsOrder } from '@/components/common/editor/command/constant'
 import type { MardkdownEditorCommandsOrderKeyType } from '@/components/common/editor/command/constant'
 import axios from 'axios'
-import { initializeClipboard } from '@/components/common/editor/editor'
+import { initializeClipboard, getParentWithClass } from '@/components/common/editor/editor'
 import { shiftArray } from '@/utils/img';
 import { useMagicKeys } from '@vueuse/core'
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
 import { scrollToElementSmoothly } from '@/utils/scroll'
+import { ShowMsgTip } from '@/utils/message';
 
 
 // 获取用户信息
@@ -56,7 +57,8 @@ const editorStore = useEditorStore()
 const { tocMarkdown, tocHtml, tocShow, tocScrollTop,
     editor, editorShow, editorScrollTop, eidtorFullScreen,
     preview, previewShow, previewScrollTop, previewFullScreen,
-    imgUrls, isShowElImageViewer, scrollHideViewStr, scrollHideHtmlStr, editorDocumentTop } = storeToRefs(editorStore)
+    imgUrls, isShowElImageViewer, scrollHideViewStr,
+    scrollHideHtmlStr, editorDocumentTop, isAsyncScroll } = storeToRefs(editorStore)
 
 const editorHost = ref<HTMLElement | null>(null);
 
@@ -68,12 +70,35 @@ const toolbarHeight = ref(0); // 工具栏高度
 /**
  * @description: 初始化 output
  */
-const initializeEditor = async () => {
-    const res = await axios.get('src/assets/example/markdown.md');
-    console.log('res1', 1)
-    editorStore.updateEditorStore(res.data)
+const initializeEditorState = async () => {
+    const res = await axios.get('src/assets/example/markdown.md').then(res => {
+        editorStore.updateEditorStore(res.data.replace(/\r\n/g, '\n')) // 更新 store 中的 editor
+    })
+
+    // const markdownStr = await new Promise<string>((resolve, reject) => { // 创建 Promise 对象
+    //     const reader = new FileReader() // 创建 FileReader 对象
+    //     reader.onload = (event: ProgressEvent<FileReader>) => { // 读取成功回调
+    //         if (event.target?.result) {
+    //             resolve(event.target.result as string) // 读取成功
+    //         } else {
+    //             reject(new Error("FileReader result is null or undefined")) // 读取失败
+    //         }
+    //     }
+    //     reader.onerror = (error: ProgressEvent<FileReader>) => reject(error) // 读取失败
+    //     reader.readAsText(response.data, 'utf-8') // 以文本格式读取 blob 数据 编码为 utf-8
+    // })
+
+    // const normalizedMarkdownStr = markdownStr.replace(/\r\n|\r/g, '\n') // 清除换行符
+
+    // editorStore.updateEditorStore(res.data) // 更新 store 中的 editor
 }
 
+
+
+/**
+ * @description: 处理工具栏按钮点击事件     
+ * @param constant 工具栏按钮对应的常量
+ */
 const handleEditorButtonClick = (constant: MardkdownEditorCommandsOrderKeyType) => {
     if (constant === "preview") {
         editorShow.value = !editorShow.value
@@ -87,19 +112,22 @@ const handleEditorButtonClick = (constant: MardkdownEditorCommandsOrderKeyType) 
         tocShow.value = !tocShow.value
         return
     }
+    if (constant === 'scroll') {
+        isAsyncScroll.value = !isAsyncScroll.value
+        ShowMsgTip(ShowMsgTip.MsgType.success, isAsyncScroll.value ? '异步滚动' : '同步滚动')
+        return
+    }
     editorInsertFormatContent(cmView, MardkdownEditorCommandsOrder[constant]);
 }
-
-
 
 let cmView: EditorView
 
 const initializeCodeMirror = () => {
     editorHost.value = document.getElementById('editorHost') as HTMLElement // 获取编辑器宿主容器
-    console.log('editorStore.getEditor2', editorStore.getEditor)
+    console.log('initializeCodeMirror')
     const state = EditorState.create({
         doc: editor.value || '',
-        extensions: [customSetup, updateDocInfo],
+        extensions: [createCustomSetup(), updateDocInfo],
     });
 
     cmView = new EditorView({
@@ -124,19 +152,6 @@ const updateDocInfo: Extension = EditorView.updateListener.of(
         }
     }
 )
-
-
-// 监听编辑器内容变化
-// watch(editor, () => {
-//     // console.log('wathc input', new Date().toISOString())
-//     cmView.dispatch({
-//         changes: {
-//             from: 0,
-//             to: cmView.state.doc.length,
-//             insert: editor.value,
-//         },
-//     })
-// })
 
 
 // 监听工具栏高度变化
@@ -182,8 +197,9 @@ const updateImageViewer = (imgElement: HTMLImageElement) => {
  */
 const handleDelegateClick = (event: MouseEvent) => {
     const target = event.target as HTMLElement; // 获取点击的目标元素
-    const previewContainer = document.querySelector('.md-preview') as HTMLElement // 获取预览容器
-    const tocContainer = document.querySelector('.md-toc') as HTMLElement // 获取目录容器
+
+    const tocContainer = getParentWithClass(target, 'md-toc')// 获取目录容器
+    const previewContainer = getParentWithClass(target, 'md-preview')// 获取目录容器
 
     // 处理 preview 容器中的点击事件
     if (previewContainer) {
@@ -207,6 +223,8 @@ const handleDelegateClick = (event: MouseEvent) => {
         const index = Array.from(tocContainer.children).indexOf(headingElement) // 获取当前元素在父元素中的索引
 
         // 1、处理 editor 的滚动
+        console.log('tocMarkdown', tocMarkdown.value)
+
         const line = cmView.state.doc.line(tocMarkdown.value[index].markdownLineNumber) // 获取当前元素在编辑器中的行数
 
         // 跳转选中目标行
@@ -225,6 +243,7 @@ const handleDelegateClick = (event: MouseEvent) => {
         })
 
         // 2、处理 preview 的滚动
+        if (!previewContainer) return // 如果没有预览容器就直接返回
         const headings = Array.from(previewContainer.querySelectorAll('h1,h2,h3,h4,h5,h6')) // 获取预览容器中的所有标题元素
         const targetHeading = headings[index] as HTMLElement // 获取目标heading元素
         scrollToElementSmoothly(targetHeading, previewContainer) // 平滑滚动到目标元素
@@ -288,13 +307,13 @@ const handleEditorScroll = () => {
     }
 }
 
-onMounted(() => {
-    initializeEditor() // 初始化 output
+onMounted(async () => {
+    await initializeEditorState(); // 初始化编辑器内容
     initializeCodeMirror() // 初始化 CodeMirror
-    updateToolbarHeight(); // 初始化工具栏高度
+    updateToolbarHeight()// 初始化工具栏高度
     initializeClipboard() // 初始化 ClipboardJS
     registerHotKeys() // 注册快捷键
-});
+})
 
 
 </script>

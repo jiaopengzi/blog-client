@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-09 21:36:04
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-11 16:04:51
+ * @LastEditTime : 2023-12-11 22:24:59
  * @FilePath     : \blog-client\src\stores\editor.ts
  * @Description  : 编辑器 store
  * @Blog         : https://jiaopengzi.com
@@ -12,7 +12,7 @@
 // @ts-check
 import { defineStore } from 'pinia'
 import { extractImageUrlsFromHtml } from '@/utils/img'
-import marked from '@/pkg/marked/new-marked'
+import createMarked from '@/pkg/marked/new-marked'
 import { getMarkdownHeadingLines } from '@/utils/lineNumbers'
 import type { MarkdownHeadingLineType } from '@/utils/lineNumbers'
 
@@ -34,6 +34,7 @@ interface editorStore {
   scrollHideViewStr: string // 滚动条隐藏的编辑器 view 字符串
   scrollHideHtmlStr: string // 滚动条隐藏的 html 字符串
   editorDocumentTop: number // 编辑器框距离顶部的距离
+  isAsyncScroll: boolean // 是否异步滚动
 }
 
 // 创建空值编辑器信息
@@ -56,6 +57,7 @@ function createEmptyEditorStore(): editorStore {
     scrollHideViewStr: '', // 滚动条隐藏的编辑器 markdown 字符串
     scrollHideHtmlStr: '', // 滚动条隐藏的 html 字符串
     editorDocumentTop: 0, // 编辑器框距离顶部的距离
+    isAsyncScroll: true, // 是否异步滚动
   }
 }
 
@@ -132,6 +134,10 @@ export const useEditorStore = defineStore({
     getEditorDocumentTop(): number {
       return this.editorDocumentTop
     },
+    // 获取是否异步滚动
+    getIsAsyncScroll(): boolean {
+      return this.isAsyncScroll
+    },
   },
 
   actions: {
@@ -203,17 +209,22 @@ export const useEditorStore = defineStore({
     setEditorDocumentTop(editorDocumentTop: number): void {
       this.editorDocumentTop = editorDocumentTop
     },
+    // 设置是否异步滚动
+    setIsAsyncScroll(isAsyncScroll: boolean): void {
+      this.isAsyncScroll = isAsyncScroll
+    },
     // 更新编辑器 store
-    updateEditorStore(markdownSrcCode: string): void {
-      this.setEditor(markdownSrcCode)
-      this.setTocMarkdown(getMarkdownHeadingLines(markdownSrcCode))
-      this.setPreview(marked.parse(this.editor).toString())
-      this.setImgUrls(extractImageUrlsFromHtml(this.preview))
+    updateEditorStore(markdownSrc: string): void {
+      // console.log('更新编辑器 store', markdownSrc)
+      this.setEditor(markdownSrc)
+      this.setPreview(createMarked().parse(this.editor).toString())
+      this.setTocMarkdown(getMarkdownHeadingLines(this.editor))
       this.setTocHtml(matchAllH(this.preview).join(''))
+      this.setImgUrls(extractImageUrlsFromHtml(this.preview))
     },
     // 更新滚动条隐藏的编辑器view 字符串
     updateScrollHide(): void {
-      this.setScrollHideHtmlStr(marked.parse(this.scrollHideViewStr).toString())
+      this.setScrollHideHtmlStr(createMarked().parse(this.scrollHideViewStr).toString())
     },
   },
 })

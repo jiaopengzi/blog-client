@@ -2,13 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-10 17:55:55
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-11 15:32:28
+ * @LastEditTime : 2023-12-11 23:17:37
  * @FilePath     : \blog-client\src\utils\lineNumbers.ts
  * @Description  : 行号工具类
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
-import { marked } from 'marked'
+import createMarked from '@/pkg/marked/new-marked'
+
 /**
  * @description: 从源字符串中查找标题字符串所在的行号
  * @param targetStr  目标字符串
@@ -21,7 +22,7 @@ export function findHeadingLines(srcStr: string, headingStr: string): number[] {
 
   for (let i = 0; i < lines.length; i++) {
     const mathcArray = lines[i].match(/^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)/)
-    const htmlStr = marked.parse(lines[i]).toString()
+    const htmlStr = createMarked().parse(lines[i]).toString()
     if (mathcArray) {
       if (htmlStr.includes(headingStr)) {
         lineNumbers.push(i + 1)
@@ -44,11 +45,13 @@ export interface MarkdownHeadingLineType {
  * @return       标题,行号数组
  */
 export function getMarkdownHeadingLines(markdownStr: string): MarkdownHeadingLineType[] {
-  const targetLines = []
+  console.log('markdownStr====>length', markdownStr.length)
   const lines = markdownStr.split('\n')
+  const targetLines = []
 
   for (let i = 0; i < lines.length; i++) {
-    const mathcArray = lines[i].match(/^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)/)
+    // const mathcArray = lines[i].match(/^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)/)
+    const mathcArray = lines[i].match(/^ {0,3}(#{1,6})\s+(.*)(?:\n+|$)/)
     if (mathcArray) {
       targetLines.push({
         markdownheading: lines[i],
@@ -56,7 +59,5 @@ export function getMarkdownHeadingLines(markdownStr: string): MarkdownHeadingLin
       })
     }
   }
-
   return targetLines
 }
-

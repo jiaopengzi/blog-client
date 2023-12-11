@@ -10,13 +10,13 @@
  */
 
 import type { SynchronousOptions } from 'marked-highlight' // 代码高亮选项
-import hljs from '@/pkg/highlight.js/highlight.js' // 自定义代码高亮 js
+import createHighlighter from '@/pkg/highlight.js/highlight.js' // 自定义代码高亮 js
 
 const optionHighlight: SynchronousOptions = {
   langPrefix: 'hljs language-',
   highlight(code, lang) {
-    const language = hljs.getLanguage(lang) ? lang : 'plaintext'
-    return hljs.highlight(code, { language }).value
+    const language = createHighlighter().getLanguage(lang) ? lang : 'plaintext'
+    return createHighlighter().highlight(code, { language }).value
   },
 }
 
