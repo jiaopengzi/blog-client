@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-11 16:03:37
+ * @LastEditTime : 2023-12-11 17:39:51
  * @FilePath     : \blog-client\src\components\common\editor\Editor.vue
  * @Description  : 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -52,10 +52,27 @@ import { scrollToElementSmoothly } from '@/utils/scroll'
 // 获取用户信息
 const editorStore = useEditorStore()
 
-let { tocMarkdown, tocHtml, tocShow, tocScrollTop,
+
+const { tocMarkdown, tocHtml, tocShow, tocScrollTop,
     editor, editorShow, editorScrollTop, eidtorFullScreen,
     preview, previewShow, previewScrollTop, previewFullScreen,
     imgUrls, isShowElImageViewer, scrollHideViewStr, scrollHideHtmlStr, editorDocumentTop } = storeToRefs(editorStore)
+
+const editorHost = ref<HTMLElement | null>(null);
+
+// 判断所有 key，只要 MardkdownEditorCommandsOrder 对应的 key 的 isShow 为 false，就从 keys 中删除 否则就保留
+const constantKeys: MardkdownEditorCommandsOrderKeyType[] = Object.keys(MardkdownEditorCommandsOrder).filter(key => MardkdownEditorCommandsOrder[key].isShow)
+const toolbarRef = ref<HTMLElement | null>(null); // 工具栏
+const toolbarHeight = ref(0); // 工具栏高度
+
+/**
+ * @description: 初始化 output
+ */
+const initializeEditor = async () => {
+    const res = await axios.get('src/assets/example/markdown.md');
+    console.log('res1', 1)
+    editorStore.updateEditorStore(res.data)
+}
 
 const handleEditorButtonClick = (constant: MardkdownEditorCommandsOrderKeyType) => {
     if (constant === "preview") {
@@ -73,17 +90,13 @@ const handleEditorButtonClick = (constant: MardkdownEditorCommandsOrderKeyType) 
     editorInsertFormatContent(cmView, MardkdownEditorCommandsOrder[constant]);
 }
 
-const editorHost = ref<HTMLElement | null>(null);
 
-// 判断所有 key，只要 MardkdownEditorCommandsOrder 对应的 key 的 isShow 为 false，就从 keys 中删除 否则就保留
-const constantKeys: MardkdownEditorCommandsOrderKeyType[] = Object.keys(MardkdownEditorCommandsOrder).filter(key => MardkdownEditorCommandsOrder[key].isShow)
-const toolbarRef = ref<HTMLElement | null>(null); // 工具栏
-const toolbarHeight = ref(0); // 工具栏高度
 
 let cmView: EditorView
 
 const initializeCodeMirror = () => {
     editorHost.value = document.getElementById('editorHost') as HTMLElement // 获取编辑器宿主容器
+    console.log('editorStore.getEditor2', editorStore.getEditor)
     const state = EditorState.create({
         doc: editor.value || '',
         extensions: [customSetup, updateDocInfo],
@@ -107,32 +120,23 @@ const updateDocInfo: Extension = EditorView.updateListener.of(
             const newDoc = state.doc.toString()
             if (newDoc !== editor.value) {
                 editorStore.updateEditorStore(newDoc)
-                cmView.focus()
             }
         }
     }
 )
 
 
-/**
- * @description: 初始化 output
- */
-const initializeEditor = async () => {
-    const res = await axios.get('src/assets/example/markdown.md');
-    editorStore.updateEditorStore(res.data)
-}
-
 // 监听编辑器内容变化
-watch(editor, () => {
-    // console.log('wathc input', new Date().toISOString())
-    cmView.dispatch({
-        changes: {
-            from: 0,
-            to: cmView.state.doc.length,
-            insert: editor.value,
-        },
-    })
-})
+// watch(editor, () => {
+//     // console.log('wathc input', new Date().toISOString())
+//     cmView.dispatch({
+//         changes: {
+//             from: 0,
+//             to: cmView.state.doc.length,
+//             insert: editor.value,
+//         },
+//     })
+// })
 
 
 // 监听工具栏高度变化
@@ -285,8 +289,8 @@ const handleEditorScroll = () => {
 }
 
 onMounted(() => {
-    initializeCodeMirror() // 初始化 CodeMirror
     initializeEditor() // 初始化 output
+    initializeCodeMirror() // 初始化 CodeMirror
     updateToolbarHeight(); // 初始化工具栏高度
     initializeClipboard() // 初始化 ClipboardJS
     registerHotKeys() // 注册快捷键
