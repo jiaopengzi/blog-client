@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-28 18:53:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-07 21:27:20
+ * @LastEditTime : 2023-12-12 23:44:29
  * @FilePath     : \blog-client\src\pkg\marked\extension\footnote.ts
  * @Description  : 脚注配置
  * @Blog         : https://jiaopengzi.com
@@ -30,7 +30,7 @@ const optionFootnote: Options = {
    *
    * @default false
    */
-  refMarkers: true, // 脚注标记;
+  refMarkers: false, // 脚注标记;
 }
 
 export default optionFootnote

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-26 13:27:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-27 16:07:51
+ * @LastEditTime : 2023-12-12 22:44:15
  * @FilePath     : \blog-client\src\pkg\highlight.js\language\dax.ts
  * @Description  : DAX 语法高亮
  * @Blog         : https://jiaopengzi.com
@@ -548,9 +548,7 @@ const STRING: Mode = {
   className: 'string',
   variants: [
     {
-      begin: /"/,
-      end: /"/,
-      contains: [{ begin: /""/ }],
+      match: /"[\s\S]*?"/,
     },
   ],
 }
@@ -617,7 +615,7 @@ const ALONE_NUMBER: Mode = {
 const DAX: LanguageFn = () => ({
   name: 'DAX',
   case_insensitive: true, // 不区分大小写
-  illegal: '', // 不允许出现的字符
+  // illegal: '', // 不允许出现的字符
   contains: [
     hljs.C_BLOCK_COMMENT_MODE, // 块注释
     COMMENT, // 行注释

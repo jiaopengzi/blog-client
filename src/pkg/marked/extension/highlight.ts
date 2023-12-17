@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-28 18:31:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-05 18:14:10
+ * @LastEditTime : 2023-12-13 10:21:59
  * @FilePath     : \blog-client\src\pkg\marked\extension\highlight.ts
  * @Description  : 代码高亮
  * @Blog         : https://jiaopengzi.com
@@ -18,6 +18,7 @@ const optionHighlight: SynchronousOptions = {
     const language = createHighlighter().getLanguage(lang) ? lang : 'plaintext'
     return createHighlighter().highlight(code, { language }).value
   },
+  async: false,
 }
 
 export default optionHighlight

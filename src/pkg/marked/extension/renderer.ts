@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-05 11:12:27
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-06 15:17:08
+ * @LastEditTime : 2023-12-13 13:30:28
  * @FilePath     : \blog-client\src\pkg\marked\extension\renderer.ts
  * @Description  : 自定义 renderer 主要是为了加类名
  * @Blog         : https://jiaopengzi.com
@@ -34,7 +34,8 @@ export const renderer = {
     code = code.replace(/\n$/, '') + '\n'
     if (!lang) {
       const result = '<pre><code>' + (escaped ? code : escape(code, true)) + '</code></pre>\n' // marked 源码默认代码块
-      return constructWeChatPreCode(result.split('\n')) // 自定义代码块
+
+      return constructWeChatPreCode(replaceAllHljsStringSpanTag(result)) // 自定义代码块
     }
     const result =
       '<pre><code class="language-' +
@@ -42,7 +43,7 @@ export const renderer = {
       '">' +
       (escaped ? code : escape(code, true)) +
       '</code></pre>\n' // marked 源码默认代码块
-    return constructWeChatPreCode(result.split('\n')) // 自定义代码块
+    return constructWeChatPreCode(replaceAllHljsStringSpanTag(result)) // 自定义代码块
   },
 }
 
@@ -51,13 +52,15 @@ export const renderer = {
  * @param lines: string[] 按照换行符分割的字符串数组
  * @return string 符合微信代码块的字符串
  */
-function constructWeChatPreCode(lines: string[]): string {
+function constructWeChatPreCode(htmlStr: string): string {
+  const lines = htmlStr.split('\n') || []
   let wechtPreCode = '' // 微信 pre 代码块内容
   let wechtPreCodeLang = '' // 微信 pre 代码块语言
   const regexLang = /language-(\w+)/ // 正则匹配 pre 代码块语言
   // 正则匹配出 `<pre><code class="language-???">` 或 `<pre><code>` 问号是占位符
   const regexStart = /<pre><code(?: class="language-(\w+)")?>/
   const regexEnd = /<\/code><\/pre>/ // 正则匹配 pre 结束标签
+
   lines.forEach((item) => {
     if (item) {
       const matchStart = item.match(regexStart)
@@ -97,7 +100,54 @@ function constructWeChatPreCode(lines: string[]): string {
   const wechtPreCodeStart =
     '<pre class="code-snippet code-snippet_nowrap code-snippet__js' + wechtPreCodeLang + '">' // 微信 pre 代码块开始标签添 加类名和语言
   const wechtPreCodeEnd = '</pre>'
-  return divStart + copyBtn + wechtPreCodeStart + wechtPreCode + wechtPreCodeEnd + divEnd // 拼接微信代码块
+  const preBlock = divStart + copyBtn + wechtPreCodeStart + wechtPreCode + wechtPreCodeEnd + divEnd // 拼接微信代码块
+  return preBlock // 拼接微信代码块
+}
+
+/**
+ * @description: 处理 hljs-string span 标签 多行情况
+ * @param hljsStringSpanTagStr hljs-string span 标签内容 源
+ * @return hljs-string span 标签内容 目标处理多一行
+ */
+function handleHljsStringSpanTag(hljsStringSpanTagStr: string): string {
+  const lines = hljsStringSpanTagStr.split('\n') || []
+
+  let hljsStringSpanTagTargetStr = '' // 目标 hljs-string span 标签内容
+  const hljsStringSpanTagStart = '<span class="hljs-string">' // hljs-string span 开始标签
+  let hljsStringSpanTagEnd = '</span>\n' // hljs-string span 结束标签 默认是换行符
+  const regexStart = /<span class="hljs-string">/ // hljs-string span 开始标签
+  const regexEnd = /<\/span>/ // hljs-string span 结束标签
+
+  lines.forEach((item) => {
+    if (item) {
+      const matchStart = item.match(regexStart)
+      const matchEnd = item.match(regexEnd)
+      if (matchStart) {
+        item = item.replace(matchStart[0], '') // 删除 sapn 开始标签
+      }
+
+      if (matchEnd) {
+        item = item.replace(matchEnd[0], '') // 删除 sapn 结束标签
+        hljsStringSpanTagEnd = '</span>' // 注意：[末尾是没有匹配换行符]
+      }
+      item = hljsStringSpanTagStart + item + hljsStringSpanTagEnd // 拼接 sapn 标签
+
+      hljsStringSpanTagTargetStr += item
+    }
+  })
+  return hljsStringSpanTagTargetStr // 拼接结果
+}
+
+/**
+ * @description: 处理 hljs-string span 标签 多行情况
+ * @param html  marked 渲染后的 html 字符串
+ * @return      处理后的 html 字符串
+ */
+function replaceAllHljsStringSpanTag(html: string): string {
+  const regex = /<span class="hljs-string">([\s\S]*?)<\/span>/g
+  return html.replace(regex, (match) => {
+    return handleHljsStringSpanTag(match) // 处理 hljs-string span 标签
+  })
 }
 
 // =============================================== marked 源码中内容 copy 开始

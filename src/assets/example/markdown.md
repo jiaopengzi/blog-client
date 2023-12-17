@@ -1,7 +1,12 @@
+```json
+{"A":"B",}
+```
+
 # 159\_模型\_Power BI 地理分析之形状地图
 
-
-我是行内代码`code` `caculate`
+`code` 
+`code` `caculate` `sum` `sumx` 
+我是行内代码`code` `caculate` `sum` `sumx` 
 
 # 没有语言名称
 ```
@@ -135,19 +140,19 @@ GeoJSON 转换为 TopoJSON 我们使用开源的工具 mapshaper (https://github
 
 如果无法打开网站还可以在本地搭建服务，依赖 Node.js ，命令行安装即可。
 
-```
+```powershell
 npm install -g mapshaper
 ```
 
 安装好以后，通过命令启动服务；在本地运行 mapshaper Web 界面
 
-```
+```bash
 mapshaper-gui
 ```
 
 也可以通过命令行的方式来进行 GeoJSON 转换为 TopoJSON ; -i 是输入 GeoJSON 路径； -o 是输出 TopoJSON 路径。
 
-```
+```bash
 mapshaper -i D:\Desktop\map\map_data\geo\country\L0_L1_country.json -o D:\Desktop\map\map_data\topo\country\L0_L1_country.json format=topojson
 ```
 
@@ -171,7 +176,30 @@ topo中有三个文件 country、province、city 文件夹中的内容命令规�
 | 4   |         | √       | √       |         | province | L1_L2_province_adcode |
 | 5   |         | √       | √       | √       | province | L1_L3_province_adcode |
 | 6   |         |         | √       | √       | city     | L2_L3_city_adcode     |
-
+| 1   | √       | √       |         |         | country  | L0_L1_country         |
+| 2   | √       | √       | √       |         | country  | L0_L2_country         |
+| 3   | √       | √       | √       | √       | country  | L0_L3_country         |
+| 4   |         | √       | √       |         | province | L1_L2_province_adcode |
+| 5   |         | √       | √       | √       | province | L1_L3_province_adcode |
+| 6   |         |         | √       | √       | city     | L2_L3_city_adcode     |
+| 1   | √       | √       |         |         | country  | L0_L1_country         |
+| 2   | √       | √       | √       |         | country  | L0_L2_country         |
+| 3   | √       | √       | √       | √       | country  | L0_L3_country         |
+| 4   |         | √       | √       |         | province | L1_L2_province_adcode |
+| 5   |         | √       | √       | √       | province | L1_L3_province_adcode |
+| 6   |         |         | √       | √       | city     | L2_L3_city_adcode     |
+| 1   | √       | √       |         |         | country  | L0_L1_country         |
+| 2   | √       | √       | √       |         | country  | L0_L2_country         |
+| 3   | √       | √       | √       | √       | country  | L0_L3_country         |
+| 4   |         | √       | √       |         | province | L1_L2_province_adcode |
+| 5   |         | √       | √       | √       | province | L1_L3_province_adcode |
+| 6   |         |         | √       | √       | city     | L2_L3_city_adcode     |
+| 1   | √       | √       |         |         | country  | L0_L1_country         |
+| 2   | √       | √       | √       |         | country  | L0_L2_country         |
+| 3   | √       | √       | √       | √       | country  | L0_L3_country         |
+| 4   |         | √       | √       |         | province | L1_L2_province_adcode |
+| 5   |         | √       | √       | √       | province | L1_L3_province_adcode |
+| 6   |         |         | √       | √       | city     | L2_L3_city_adcode     |
 ### 2、区域维度数据
 
 如下图，从大区>省份>城市>区县 四个维度的数据分别都整理好了，同时兼容了直辖市、特区、县级市以及湾湾的层级数据。
@@ -378,11 +406,15 @@ RETURN
 ## 视频课
 
 **https://jiaopengzi.com/all-course**
+```json
+{"A":"B",}
+```
 
 # 159\_模型\_Power BI 地理分析之形状地图
 
-
-我是行内代码`code` `caculate`
+`code` 
+`code` `caculate` `sum` `sumx` 
+我是行内代码`code` `caculate` `sum` `sumx` 
 
 # 没有语言名称
 ```
@@ -516,19 +548,19 @@ GeoJSON 转换为 TopoJSON 我们使用开源的工具 mapshaper (https://github
 
 如果无法打开网站还可以在本地搭建服务，依赖 Node.js ，命令行安装即可。
 
-```
+```powershell
 npm install -g mapshaper
 ```
 
 安装好以后，通过命令启动服务；在本地运行 mapshaper Web 界面
 
-```
+```bash
 mapshaper-gui
 ```
 
 也可以通过命令行的方式来进行 GeoJSON 转换为 TopoJSON ; -i 是输入 GeoJSON 路径； -o 是输出 TopoJSON 路径。
 
-```
+```bash
 mapshaper -i D:\Desktop\map\map_data\geo\country\L0_L1_country.json -o D:\Desktop\map\map_data\topo\country\L0_L1_country.json format=topojson
 ```
 
@@ -552,7 +584,30 @@ topo中有三个文件 country、province、city 文件夹中的内容命令规�
 | 4   |         | √       | √       |         | province | L1_L2_province_adcode |
 | 5   |         | √       | √       | √       | province | L1_L3_province_adcode |
 | 6   |         |         | √       | √       | city     | L2_L3_city_adcode     |
-
+| 1   | √       | √       |         |         | country  | L0_L1_country         |
+| 2   | √       | √       | √       |         | country  | L0_L2_country         |
+| 3   | √       | √       | √       | √       | country  | L0_L3_country         |
+| 4   |         | √       | √       |         | province | L1_L2_province_adcode |
+| 5   |         | √       | √       | √       | province | L1_L3_province_adcode |
+| 6   |         |         | √       | √       | city     | L2_L3_city_adcode     |
+| 1   | √       | √       |         |         | country  | L0_L1_country         |
+| 2   | √       | √       | √       |         | country  | L0_L2_country         |
+| 3   | √       | √       | √       | √       | country  | L0_L3_country         |
+| 4   |         | √       | √       |         | province | L1_L2_province_adcode |
+| 5   |         | √       | √       | √       | province | L1_L3_province_adcode |
+| 6   |         |         | √       | √       | city     | L2_L3_city_adcode     |
+| 1   | √       | √       |         |         | country  | L0_L1_country         |
+| 2   | √       | √       | √       |         | country  | L0_L2_country         |
+| 3   | √       | √       | √       | √       | country  | L0_L3_country         |
+| 4   |         | √       | √       |         | province | L1_L2_province_adcode |
+| 5   |         | √       | √       | √       | province | L1_L3_province_adcode |
+| 6   |         |         | √       | √       | city     | L2_L3_city_adcode     |
+| 1   | √       | √       |         |         | country  | L0_L1_country         |
+| 2   | √       | √       | √       |         | country  | L0_L2_country         |
+| 3   | √       | √       | √       | √       | country  | L0_L3_country         |
+| 4   |         | √       | √       |         | province | L1_L2_province_adcode |
+| 5   |         | √       | √       | √       | province | L1_L3_province_adcode |
+| 6   |         |         | √       | √       | city     | L2_L3_city_adcode     |
 ### 2、区域维度数据
 
 如下图，从大区>省份>城市>区县 四个维度的数据分别都整理好了，同时兼容了直辖市、特区、县级市以及湾湾的层级数据。

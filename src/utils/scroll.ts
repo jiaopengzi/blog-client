@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-11 15:32:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-11 15:45:14
+ * @LastEditTime : 2023-12-18 00:22:33
  * @FilePath     : \blog-client\src\utils\scroll.ts
  * @Description  : 滚动条工具类
  * @Blog         : https://jiaopengzi.com
@@ -15,7 +15,7 @@
  * @param container 容器元素
  */
 export function scrollToElementSmoothly(element: HTMLElement, container: HTMLElement): void {
-  const targetScrollTop = element.offsetTop - container.offsetTop
+  const targetScrollTop = element.offsetTop - container.offsetTop // 目标元素距离容器顶部的距离
   const observer = new IntersectionObserver(
     (entries) => {
       // 检查目标元素是否与视口相交
@@ -29,9 +29,12 @@ export function scrollToElementSmoothly(element: HTMLElement, container: HTMLEle
         })
       }
     },
-    { root: container }, // 观察 container
+    {
+      root: container, // 观察 container 视口交叉的话默认为 null
+      rootMargin: '0px', // 相交区域的边界
+      threshold: 1, // 相交区域的比例 0.1 表示 10% 的相交区域
+    },
   )
 
   observer.observe(element) // 开始观察
 }
-

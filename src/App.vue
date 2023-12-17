@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-04 15:47:10
+ * @LastEditTime : 2023-12-13 19:55:47
  * @FilePath     : \blog-client\src\App.vue
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -14,10 +14,9 @@
     <title>My awesome site</title>
     <meta name="description" content="My awesome site description" />
   </Head>
-  <div class="app">
-    <!-- :key="$route.fullPath" 解决url变化而页面不刷新问题 -->
-    <router-view :key="$route.fullPath" />
-  </div>
+
+  <!-- :key="$route.fullPath" 解决url变化而页面不刷新问题 -->
+  <router-view :key="$route.fullPath" />
 </template>
 <script setup lang="ts">
 import { useHead } from '@unhead/vue'

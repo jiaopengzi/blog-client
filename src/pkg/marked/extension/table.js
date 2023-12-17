@@ -104,7 +104,8 @@ export default function () {
         },
         renderer(token) {
           let i, j, row, cell, col, text
-          let output = '<table>'
+          // let output = '<table>' // 源码
+          let output = '<div class="table-container"><table>' // 自定义 容器
           output += '<thead>'
           for (i = 0; i < token.header.length; i++) {
             row = token.header[i]
@@ -135,7 +136,8 @@ export default function () {
             }
             output += '</tbody>'
           }
-          output += '</table>'
+          output += '</table>' // 源码
+          output += '</table></div>' // 自定义 容器
           return output
         },
       },

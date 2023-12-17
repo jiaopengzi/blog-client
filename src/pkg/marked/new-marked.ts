@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-06 23:36:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-11 21:40:52
+ * @LastEditTime : 2023-12-14 21:34:54
  * @FilePath     : \blog-client\src\pkg\marked\new-marked.ts
  * @Description  : 重新封装 marked
  * @Blog         : https://jiaopengzi.com
@@ -36,15 +36,15 @@ const createMarked = () => {
     markedHighlight(optionHighlight),
     markedKatex(optionKatex),
     tableExtension(),
-    markedFootnote(optionFootnote),
+    // markedFootnote(optionFootnote),
     markedEmoji(optionEmojis),
     customHeadingId(),
     mangle(),
     markedXhtml(),
     {
-      renderer: renderer,
       breaks: true, // 允许换行
       extensions: [markExtensionInline, subExtensionInline, supExtensionInline],
+      renderer: renderer,
     },
   )
 

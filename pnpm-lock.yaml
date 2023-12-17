@@ -69,8 +69,8 @@ dependencies:
     specifier: ^1.3.1
     version: 1.3.1(marked@11.0.1)
   marked-footnote:
-    specifier: ^1.2.0
-    version: 1.2.0(marked@11.0.1)
+    specifier: ^1.2.1
+    version: 1.2.1(marked@11.0.1)
   marked-highlight:
     specifier: ^2.0.9
     version: 2.0.9(marked@11.0.1)
@@ -3195,8 +3195,8 @@ packages:
       marked: 11.0.1
     dev: false
 
-  /marked-footnote@1.2.0(marked@11.0.1):
-    resolution: {integrity: sha512-hDlQLGRzfTGTrOL1t4S0Vzn3agukkYI0oslebqW6YgIawYqL2r5i1hOsDJGnpYTCW9S/36Vy2Ha21siQavlanw==}
+  /marked-footnote@1.2.1(marked@11.0.1):
+    resolution: {integrity: sha512-N264NokIyJ3p18lN4vL0HQJr2GkXPyd6INHkuNG2cogdbvkEQHKbSHCm1GdQQAKivRAPPoyjIcgRYyQL2TjTZA==}
     peerDependencies:
       marked: '>=7.0.0'
     dependencies:

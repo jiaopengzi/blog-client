@@ -1,0 +1,257 @@
+#preview {
+  /* ===================================== 标题 开始*/
+
+  h1 {
+    font-size: 2em;
+    display: table;
+    border-bottom: 2px solid $primary-color;
+    text-align: center;
+    margin: 20px auto; // 居中
+  }
+
+  h2 {
+    font-size: 1.8em;
+    margin: 0.5em 1em 0.5em 0;
+  }
+
+  h3 {
+    font-size: 1.5em;
+    margin: 0.5em 1em 0.5em 0;
+  }
+
+  h4 {
+    font-size: 1.2em;
+    margin: 0.5em 1em 0.5em 0;
+  }
+
+  h5,
+  h6 {
+    font-size: 1em;
+    margin: 0.5em 1em 0.5em 0;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: $primary-color;
+    font-weight: 700;
+    padding-bottom: 2px;
+  }
+
+  /* =====================================标题 结束*/
+
+  // 加粗
+  strong {
+    color: $primary-color;
+    font-weight: 700;
+  }
+
+  // 斜体
+  em {
+    color: $primary-color;
+    font-style: italic;
+  }
+
+  // 删除线
+  del {
+    // 删除线加粗 不是字体加粗
+    text-decoration: line-through;
+  }
+
+  // mark标记 默认的颜色是黄色
+
+  // 有序列表
+  ol {
+    list-style: decimal;
+    padding-left: 2em;
+  }
+
+  // 无序列表样式
+  ul {
+    padding-left: 2em;
+
+    position: relative; //子绝父相 让伪元素绝对定位
+
+    >li {
+      /* 一级实心圆 */
+      list-style-type: disc;
+
+      >ul>li {
+        /* 二级空心圆 */
+        list-style-type: circle;
+
+        >ul>li {
+          /* 三级实心方块 */
+          list-style-type: square;
+        }
+      }
+    }
+  }
+
+  // 引用
+  blockquote {
+    border-left: 4px solid $blockquote-border-color;
+    background-color: $blockquote-bg-color;
+    padding: 0.5em 1em;
+    margin: 0.5em 0;
+    color: $blockquote-color;
+  }
+
+  // 链接 继承上述 a 样式
+  a {
+    color: $primary-color;
+    text-decoration: none;
+    cursor: pointer;
+    // 下划线
+    text-decoration: underline;
+    text-underline-offset: 0.2rem; // 自动换行
+    word-break: break-all;
+  }
+
+  // 分割线
+  hr {
+    border: none;
+    border-bottom: 1px solid $horizontal-divider-color;
+    margin: 1em 0;
+  }
+
+  // 上标
+  sup {
+    vertical-align: super;
+    font-size: 0.75em;
+  }
+
+  // 下标
+  sub {
+    vertical-align: sub;
+    font-size: 0.75em;
+  }
+
+  // task list
+  .task-list-item {
+    list-style-type: none;
+  }
+
+  // 原生 checkbox 隐藏
+  .task-list-item input[type="checkbox"] {
+    display: none;
+  }
+
+  // 使用伪元素 ::before 勾选状态
+  .task-list-item-checked::before {
+    content: "";
+    background: var(--checkbox-checked) 0 0 no-repeat;
+    background-size: 100%;
+    display: inline-block;
+    position: absolute;
+    height: 1.6rem;
+    width: 1.6rem;
+    margin-left: -2em;
+  }
+
+  // 使用伪元素 ::before 未勾选状态
+  .task-list-item-unchecked::before {
+    content: "";
+    background: var(--checkbox-unchecked) 0 0 no-repeat;
+    background-size: 100%;
+    display: inline-block;
+    position: absolute;
+    height: 1.6rem;
+    width: 1.6rem;
+    margin-left: -2em;
+  }
+
+
+  // 图片 img
+  img {
+    display: block;
+    max-width: 888px;
+    width: 100%;
+    height: auto;
+    margin: 4px auto;
+    border-radius: 4px;
+    cursor: pointer;
+    // box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);     // 阴影
+  }
+
+  // 段落 p
+  p {
+    margin: 0.5em 0;
+    line-height: 1.8em;
+  }
+
+  // 表格容器
+  .table-container {
+
+    /* 设置容器的宽度和高度 */
+    width: 100%;
+    max-height: 300px;
+
+    /* 添加横向和纵向滚动条 */
+    overflow-x: auto;
+    overflow-y: auto;
+
+    // 表格
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      margin: 1em auto;
+    }
+
+    // 表头
+    th {
+      border: 1px solid $table-border-color;
+      background-color: $table-header-bg-color;
+      line-height: 2em; // 行高
+      font-weight: 700;
+      color: $primary-color;
+    }
+
+    // 表格单元格
+    td {
+      border: 1px solid $table-border-color;
+    }
+
+    // 表格偶数行
+    /* 为表格的偶数行设置背景颜色 */
+    table tr:nth-child(2n) {
+      background-color: $table-n2-bg-color;
+    }
+
+    /* 为表格的奇数行设置背景颜色 */
+    table tr:nth-child(2n+1) {
+      background-color: $background-color-content;
+    }
+
+  }
+
+  // 行内代码 块级代码 使用 highlight.js 代码高亮 查看对应的css样式
+
+  // 数学公式
+  .katex {
+    color: $primary-color;
+    padding: 0 4px 0 4px;
+  }
+
+  // 脚注
+  .sr-only {
+    color: $primary-color;
+    font-size: 1.5em;
+    margin: 0.5em 0 0.5em 0;
+    display: block;
+    border-top: 1px solid $horizontal-divider-color;
+    padding-top: 0.5em;
+  }
+
+  a[data-footnote-ref] {
+    color: $primary-color;
+    color: $footnote-sup-color;
+    // 下划线
+    text-decoration: underline;
+    text-underline-offset: 0.2rem
+  }
+
+}

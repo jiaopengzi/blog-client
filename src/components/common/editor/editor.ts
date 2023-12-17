@@ -1,14 +1,25 @@
+/**
+ * @Author       : jiaopengzi
+ * @Date         : 2023-12-07 11:52:09
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2023-12-16 00:11:11
+ * @FilePath     : \blog-client\src\components\common\editor\editor.ts
+ * @Description  : 
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+ */
 /*
  * @Author       : jiaopengzi
  * @Date         : 2023-12-07 11:52:09
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-11 20:50:43
+ * @LastEditTime : 2023-12-12 13:08:21
  * @FilePath     : \blog-client\src\components\common\editor\editor.TS
  * @Description  : markdown 编辑器
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
+import { ref } from 'vue'
 import ClipboardJS from 'clipboard' //代码块复制
 import type { ClipboardEvent } from 'clipboard'
 import { ShowMsgTip } from '@/utils/message'
@@ -65,4 +76,26 @@ export function getParentWithClass(element: HTMLElement, className: string): HTM
     currentElement = currentElement.parentElement as HTMLElement // 获取父元素
   }
   return null // 如果不存在则返回null
+}
+
+/**
+ * @description: 设置是否全屏的类名
+ * @param baseClass 基础类名
+ * @param fullScreenClass 全屏类名
+ * @param isContainerItem 是否是容器子项
+ * @param isFullScreen 是否全屏
+ * @return {Object} 类名对象
+ */
+export function setIsFullScreenClassName(
+  baseClass: string,
+  fullScreenClass: string,
+  isContainerItem: boolean,
+  isFullScreen: boolean,
+): object {
+  return {
+    [baseClass]: !isFullScreen,
+    [fullScreenClass]: isFullScreen,
+    'md-container-item': isContainerItem && !isFullScreen,
+    'md-container-item-fs': isContainerItem && isFullScreen,
+  }
 }

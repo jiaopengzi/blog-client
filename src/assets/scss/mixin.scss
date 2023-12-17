@@ -11,9 +11,7 @@
 @use '@/assets/scss/platform/phone.scss'as phone;
 @use '@/assets/scss/platform/pc.scss'as pc;
 
-$platforms: ('phone': (phone.$min-width,
-    phone.$max-width,
-  ),
+$platforms: ('phone': (phone.$min-width, phone.$max-width),
   'pc': pc.$min-width,
 );
 

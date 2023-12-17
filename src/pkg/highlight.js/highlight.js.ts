@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-26 13:53:14
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-11 21:50:31
+ * @LastEditTime : 2023-12-12 23:35:44
  * @FilePath     : \blog-client\src\pkg\highlight.js\highlight.js.ts
  * @Description  : 封装 highlight.js
  * @Blog         : https://jiaopengzi.com
@@ -15,7 +15,7 @@ import DAX from '@/pkg/highlight.js/language/dax'
 // import 'highlight.js/styles/atom-one-light.min.css'
 // import 'highlight.js/styles/github-dark.min.css'
 // import 'highlight.js/styles/dark.min.css'
-import '@/assets/highlight/highlight.js.jpz.css'
+// import '@/assets/highlight/highlight.js.jpz.css'
 
 // 创建一个工厂函数来生成新的 hljs 实例
 const createHighlighter = () => {
