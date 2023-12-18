@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:51:36
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-10 11:11:15
+ * @LastEditTime : 2023-12-18 13:30:13
  * @FilePath     : \blog-client\src\components\common\editor\command\constant.ts
  * @Description  : markdown 标记常量
  * @Blog         : https://jiaopengzi.com
@@ -351,3 +351,8 @@ export const MardkdownEditorCommandsOrder: MardkdownEditorCommandsOrderType = {
 
 // mardkdown 编辑器 所有 排序 命令 集合对象 key 的类型
 export type MardkdownEditorCommandsOrderKeyType = keyof typeof MardkdownEditorCommandsOrder
+
+// 需要滚动的元素标签
+export const ScrollElementTag: string = '*'
+// 需要跳转的元素标题标签
+export const ScrollElementTagHeading: string = 'h1, h2, h3, h4, h5, h6'

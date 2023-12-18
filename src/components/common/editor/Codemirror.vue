@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-17 23:56:24
+ * @LastEditTime : 2023-12-18 15:43:55
  * @FilePath     : \blog-client\src\components\common\editor\Codemirror.vue
  * @Description  : codemirror 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -45,7 +45,7 @@ const isFirstTimeLoadEditorDoc = ref(false) // 是否第一次加载编辑器内
 // 定义 emits 子组件 传参
 const emit = defineEmits<{
     (event: 'update-editor-doc', editorDoc: string): void
-    (event: 'handle-scroll', scrollTop: number, hideDoc: string): void
+    (event: 'handle-scroll', scrollHeight: number, clientHeight: number, scrollTop: number, hideDoc: string): void
 }>()
 
 const initializeCssVariable = () => {
@@ -143,8 +143,8 @@ const scrollIntoViewLine = (lineNumber: number): void => {
         effects: EditorView.scrollIntoView( // 滚动到当前行
             line.from,
             {
-                y: "start",
-                yMargin: 0
+                y: "start", // 滚动到顶部
+                yMargin: 0 // 不留边距
             }
         )
     })
@@ -156,8 +156,8 @@ const scrollIntoViewLine = (lineNumber: number): void => {
  */
 const handleScroll = () => {
     const hideTopBlockInfo = cmView.lineBlockAtHeight(cmView.scrollDOM.scrollTop) // 获取不可见部分的 block 信息
-    const hideTopMarkdown = cmView.state.sliceDoc(0, hideTopBlockInfo.to) // 不可见部分的 markdown
-    emit("handle-scroll", cmView.scrollDOM.scrollTop, hideTopMarkdown) // 提交给父组件
+    const hideTopMarkdown = cmView.state.sliceDoc(0, hideTopBlockInfo.from) // 不可见部分的 markdown
+    emit("handle-scroll", cmView.scrollDOM.scrollHeight, cmView.scrollDOM.clientHeight, cmView.scrollDOM.scrollTop, hideTopMarkdown) // 提交给父组件
 }
 
 // 监听 props.codemirrorDoc 变化 更新编辑器内容 只有第一次加载的时候才更新
@@ -173,8 +173,6 @@ watchEffect(() => {
         })
     }
 })
-
-
 
 
 // 初始化
@@ -211,6 +209,12 @@ defineExpose({
 
     :deep(.cm-panels-bottom) {
         height: pc.$editor-panels-bottom-height;
+        // 文字垂直居中
+        display: flex;
+        align-items: center;
+        padding: 4px 4px;
+        font-size: 0.8em;
+        color: #6c6c6c;
     }
 }
 

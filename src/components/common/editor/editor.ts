@@ -1,13 +1,3 @@
-/**
- * @Author       : jiaopengzi
- * @Date         : 2023-12-07 11:52:09
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-16 00:11:11
- * @FilePath     : \blog-client\src\components\common\editor\editor.ts
- * @Description  : 
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
- */
 /*
  * @Author       : jiaopengzi
  * @Date         : 2023-12-07 11:52:09
@@ -19,7 +9,6 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import { ref } from 'vue'
 import ClipboardJS from 'clipboard' //代码块复制
 import type { ClipboardEvent } from 'clipboard'
 import { ShowMsgTip } from '@/utils/message'

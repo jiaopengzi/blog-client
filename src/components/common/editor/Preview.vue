@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:01:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-17 23:02:08
+ * @LastEditTime : 2023-12-18 15:21:09
  * @FilePath     : \blog-client\src\components\common\editor\Preview.vue
  * @Description  : 预览组件
  * @Blog         : https://jiaopengzi.com
@@ -19,7 +19,8 @@
 import { ref, onMounted, computed, watchEffect } from 'vue'
 import { initializeClipboard } from '@/components/common/editor/editor'
 import { shiftArray } from '@/utils/img'
-import { scrollToElementSmoothly } from '@/utils/scroll'
+import { ScrollElementTag, ScrollElementTagHeading } from '@/components/common/editor/command/constant'
+import { scrollToElement, scrollToFirstChildrenElement } from '@/utils/scroll'
 import '@/assets/scss/preview.scss'
 import '@/assets/highlight/highlight.js.jpz.scss'
 
@@ -109,67 +110,55 @@ const closeElImageViewer = () => {
     document.body.style.overflow = 'auto'
 }
 
-const previewRefOffsetTop = computed(() => {
-    return previewRef.value?.offsetTop
-})
-
 /**
  * @description: 暴露给父组件的方法，用于点击目录时候跳转到对应的标题
- * @param previewContainer 预览区域容器 
  * @param index 目录索引
  * @return 
  */
 const navigateToHeading = (index: number): void => {
-    if (!previewRef.value) return;
-
-    const allHeadings = previewRef.value.querySelectorAll('h1, h2, h3, h4, h5, h6');
-    const targetHeading = allHeadings[index];
-
-    if (targetHeading && previewRefOffsetTop.value) {
-        const th = targetHeading as HTMLElement;
-        const top = th.offsetTop;
-
-        // Use smooth scrolling
-        previewRef.value.scrollTo({
-            top: top - previewRefOffsetTop.value,
-            behavior: 'smooth',
-        });
-    }
+    scrollToElement(previewRef.value, index, ScrollElementTagHeading)
 }
 
-
-// const navigateToElement = (index: number): void => {
-//     if (!previewRef.value) return
-//     const elements = previewRef.value.querySelectorAll('*') // 获取所有标题
-
-//     const targetElement = elements[index] as HTMLElement //拿到最后一个 element 
-
-//     if (targetElement && previewRef.value) {
-
-//         console.log(index)
-
-//         scrollToElementSmoothly(targetElement, previewRef.value) // 平滑滚动到目标元素
-//     }
-// }
-
-
+/**
+ * @description: 暴露给父组件的方法,跳转到对应的元素
+ * @param index 目录索引
+ * @return 
+ */
 const navigateToElement = (index: number): void => {
-    if (!previewRef.value) return
-    const elements = previewRef.value.querySelectorAll('*') // 获取所有标题
-
-    const targetElement = elements[index] as HTMLElement //拿到最后一个 element 
-
-    if (targetElement && previewRefOffsetTop.value) {
-
-        console.log(index)
-        const top = targetElement.offsetTop
-        previewRef.value.scrollTop = top - previewRefOffsetTop.value
-    }
+    scrollToElement(previewRef.value, index, ScrollElementTag)
 }
+
+/**
+ * @description: 暴露给父组件的方法,跳转到顶部
+ * @param behavior 滚动行为
+ * @return 
+ */
+const navigateGoHome = (behavior: ScrollBehavior = 'smooth'): void => {
+    previewRef.value?.scrollTo({
+        top: 0,
+        behavior: behavior,
+    })
+}
+
+/**
+ * @description: 暴露给父组件的方法,跳转到底部
+ * @param behavior 滚动行为
+ * @return 
+ */
+const navigateGoEnd = (behavior: ScrollBehavior = 'smooth'): void => {
+    previewRef.value?.scrollTo({
+        top: previewRef.value.scrollHeight - previewRef.value.clientHeight,
+        behavior: behavior,
+    })
+}
+
+
 
 defineExpose({
     navigateToHeading,
     navigateToElement,
+    navigateGoHome,
+    navigateGoEnd,
 })
 
 // 初始化

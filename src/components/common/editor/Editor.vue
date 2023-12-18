@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-18 00:15:36
+ * @LastEditTime : 2023-12-18 15:25:34
  * @FilePath     : \blog-client\src\components\common\editor\Editor.vue
  * @Description  : 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -25,8 +25,8 @@
 
             <div ref="cmContainerRef" :class="editorClass" v-show="editorShow">
                 <!-- 编辑器 -->
-                <Codemirror ref="codemirrorRef" :codemirrorDoc="editor" :height="cmHeight" @handle-scroll="handleScroll"
-                    @update-editor-doc="updateEditorDoc" />
+                <Codemirror ref="codemirrorRef" :codemirrorDoc="editor" :height="cmHeight"
+                    @handle-scroll="debouncedHandleScroll" @update-editor-doc="updateEditorDoc" />
             </div>
             <div :class="previewClass" v-show="previewShow">
                 <!-- 预览 -->
@@ -38,8 +38,8 @@
 </template>
   
 <script lang="ts" setup>
-import { ref, reactive, onBeforeMount, watchEffect, computed, onMounted, nextTick } from 'vue';
-import { MardkdownEditorCommandsOrder } from '@/components/common/editor/command/constant'
+import { ref, reactive, onBeforeMount, watchEffect, computed, onMounted } from 'vue';
+import { ScrollElementTag, MardkdownEditorCommandsOrder } from '@/components/common/editor/command/constant'
 import type { MardkdownEditorCommandsOrderKeyType } from '@/components/common/editor/command/constant'
 import { ShowMsgTip } from '@/utils/message';
 import Toolbar from '@/components/common/editor/Toolbar.vue'
@@ -50,6 +50,8 @@ import { setIsFullScreenClassName } from '@/components/common/editor/editor'
 
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
+import { debounce } from '@/utils/debounce'
+
 
 // 获取用户信息
 const editorStore = useEditorStore()
@@ -62,6 +64,8 @@ interface CodemirrorRef extends HTMLElement {
 interface PreviewRef extends HTMLElement {
     navigateToHeading: (index: number) => void,
     navigateToElement: (index: number) => void,
+    navigateGoHome: (behavior: ScrollBehavior) => void,
+    navigateGoEnd: (behavior: ScrollBehavior) => void,
 }
 
 const cmContainerRef = ref<HTMLElement | null>(null) //编辑器容器
@@ -95,7 +99,6 @@ const toobarBtns = () => {
  * @param name 工具栏按钮对应的常量
  */
 const toolbarBtnClicked = (name: string) => {
-    console.log(name)
     if (name === "preview") {
         editorShow.value = !editorShow.value
         if (!editorShow.value) {
@@ -139,7 +142,7 @@ const toolbarBtnClicked = (name: string) => {
  * @param index 点击的目录索引
  */
 const tocHeadingClicked = (index: number) => {
-    isAsyncScroll.value = false // 点击目录时候关闭异步滚动
+    // isAsyncScroll.value = false // 点击目录时候关闭异步滚动
     codemirrorRef.value?.scrollIntoViewLine(tocMarkdown.value[index].markdownLineNumber) // 跳转编辑器选中目标行
     previewRef.value?.navigateToHeading(index) // 跳转预览选中目标行
 }
@@ -154,28 +157,31 @@ const initializeCmHeight = (): void => {
     }
 }
 
-let curHideDoc = "" // store 存储不可见部分的 markdown
 
-const handleScroll = (scrollTop: number, hideDoc: string) => {
+const handleScroll = (scrollHeight: number, clientHeight: number, scrollTop: number, hideDoc: string) => {
     if (!isAsyncScroll.value) return // 如果不是异步滚动就直接返回
 
     // 滚动条在顶部时附近时
-    // if (scrollTop <= 4 && previewRef.value) {
-    //     previewRef.value.scrollTop = 0
-    //     return
-    // }
+    if (scrollTop <= 4 && previewRef.value) {
+        previewRef.value?.navigateGoHome("smooth") // 跳转预览顶部
+        return
+    }
 
-
-    // const newHideDoc = hideDoc // store 存储不可见部分的 markdown
-    // if (newHideDoc.length > 0 && newHideDoc !== curHideDoc) {
-    //     curHideDoc = newHideDoc
-    //     console.log('handleScroll-父组件内', scrollTop, hideDoc.length)
-    //     editorStore.setScrollHideViewStr(curHideDoc) // store 存储不可见部分的 markdown
-    //     const hideDom = new DOMParser().parseFromString(editorStore.getScrollHideHtmlStr, 'text/html') // 隐藏的markdown解析出来的html转换为dom
-    //     const els = hideDom.body.querySelectorAll('*') // 获取隐藏的markdown解析出来的html转换为dom中的所有元素 注意要在 body 中寻找
-    //     previewRef.value?.navigateToElement(els.length) // 跳转预览选中目标行
-    // }
+    // 滚动条在底部时附近时
+    if (scrollHeight - clientHeight - scrollTop <= 4 && previewRef.value) {
+        previewRef.value?.navigateGoEnd("smooth") // 跳转预览底部
+        return
+    }
+    // isAsyncScroll.value = true // 异步滚动
+    // TODO 当滚动的内容如 表格 br元素 等不太精确 后续优化
+    editorStore.setScrollHideViewStr(hideDoc) // store 存储不可见部分的 markdown
+    const hideDom = new DOMParser().parseFromString(editorStore.getScrollHideHtmlStr, 'text/html') // 隐藏的markdown解析出来的html转换为dom
+    const els = hideDom.body.querySelectorAll(ScrollElementTag) // 获取隐藏的markdown解析出来的html转换为dom中的所有元素 注意要在 body 中寻找
+    previewRef.value?.navigateToElement(els.length) // 跳转预览选中目标行
 }
+
+const debouncedHandleScroll = debounce(handleScroll, 200) // 防抖
+
 
 const updateEditorDoc = (editorDoc: string) => {
     editorStore.updateEditorStore(editorDoc) // 更新 store 中的 editor

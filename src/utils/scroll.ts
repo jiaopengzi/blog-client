@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-11 15:32:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-18 00:22:33
+ * @LastEditTime : 2023-12-18 15:08:02
  * @FilePath     : \blog-client\src\utils\scroll.ts
  * @Description  : 滚动条工具类
  * @Blog         : https://jiaopengzi.com
@@ -10,31 +10,59 @@
  */
 
 /**
- * @description: 平滑滚动到指定元素
- * @param element 目标元素
- * @param container 容器元素
+ * @description: 滚动到指定元素
+ * @param container 滚动容器
+ * @param index 目标元素索引
+ * @param selectors 元素选择器，默认为所有元素
+ * @param behavior 滚动行为，默认为平滑滚动
  */
-export function scrollToElementSmoothly(element: HTMLElement, container: HTMLElement): void {
-  const targetScrollTop = element.offsetTop - container.offsetTop // 目标元素距离容器顶部的距离
-  const observer = new IntersectionObserver(
-    (entries) => {
-      // 检查目标元素是否与视口相交
-      if (entries[0].isIntersecting) {
-        container.scrollTop = targetScrollTop
-        observer.disconnect() // 停止观察
-      } else {
-        container.scrollTop += (targetScrollTop - container.scrollTop) * 0.1 // 滚动到目标元素
-        requestAnimationFrame(() => {
-          scrollToElementSmoothly(element, container) // 继续观察
-        })
-      }
-    },
-    {
-      root: container, // 观察 container 视口交叉的话默认为 null
-      rootMargin: '0px', // 相交区域的边界
-      threshold: 1, // 相交区域的比例 0.1 表示 10% 的相交区域
-    },
-  )
+export function scrollToElement(
+  container: HTMLElement | null,
+  index: number,
+  selectors: string = '*',
+  behavior: ScrollBehavior = 'smooth',
+): void {
+  // 如果容器为null，则不执行滚动操作。
+  if (!container) return
 
-  observer.observe(element) // 开始观察
+  // 使用选择器查询滚动容器内的所有元素。
+  const elements = container.querySelectorAll(selectors)
+
+  // 获取目标元素，索引可能超出元素集合的范围。
+  const targetElement = elements[index] as HTMLElement
+
+  // 如果是 br 标签，则不执行滚动操作。
+  if (targetElement.tagName === 'BR') return
+
+  // 目标元素距离容器顶部的偏移量
+  const targetElementOffsetTop = getElementOffsetTop(container, targetElement)
+
+  // 目标元素存在且容器有偏移量
+  if (container.offsetTop && targetElementOffsetTop) {
+    // 计算滚动目标的偏移量，并通过容器的偏移量调整。
+    container.scrollTo({
+      top: targetElementOffsetTop - container.offsetTop,
+      behavior: behavior,
+    })
+  }
+}
+
+/**
+ * @description: 获取元素相对于容器顶部的偏移量
+ * @param container 容器元素
+ * @param element 目标元素
+ * @returns 元素相对于容器顶部的偏移量
+ */
+function getElementOffsetTop(container: HTMLElement, element: HTMLElement): number | null {
+  if (!container.contains(element)) return null // 如果容器不包含目标元素，则返回null
+
+  let offsetTop = 0 // 初始化目标元素相对于容器顶部的偏移量
+
+  // while 循环计算目标元素相对于容器顶部的偏移量
+  while (element && element !== container) {
+    offsetTop += element.offsetTop
+    element = element.offsetParent as HTMLElement
+  }
+
+  return offsetTop
 }

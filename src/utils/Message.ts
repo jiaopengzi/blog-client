@@ -15,7 +15,8 @@ import 'element-plus/theme-chalk/el-message.css'
 export const ShowMsgTip = (msgtype: MsgType, msgStr: string, duration: number = 3000): void => {
   ElMessage({
     showClose: true,
-    message: MsgTitle[msgtype] + ':' + msgStr,
+    // message: MsgTitle[msgtype] + ':' + msgStr,
+    message: msgStr,
     type: msgtype,
     duration: duration,
   })
