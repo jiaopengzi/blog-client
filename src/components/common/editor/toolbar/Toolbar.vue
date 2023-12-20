@@ -3,8 +3,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:02:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-16 02:35:05
- * @FilePath     : \blog-client\src\components\common\editor\Toolbar.vue
+ * @LastEditTime : 2023-12-19 19:21:40
+ * @FilePath     : \blog-client\src\components\common\editor\toolbar\Toolbar.vue
  * @Description  : 工具栏组件
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -12,8 +12,8 @@
 
 <template>
     <div ref="toolbarRef" id="toolbar">
-        <button class="toolbar-btn" v-for="(btn, index) in toobarBtns" :key="index" @click="emitToolbarBtnClicked(btn.name)"
-            :title="btn.display">
+        <button class="toolbar-btn" v-for="(btn, index) in props.toobarBtns" :key="index"
+            @click="emitToolbarBtnClicked(btn.name)" :title="btn.display">
             <Icon :name="btn.icon" customClass="iconfont" />
         </button>
     </div>
@@ -21,20 +21,12 @@
   
 <script lang="ts" setup>
 import { ref, onMounted, watch } from 'vue';
+import type { ToolbarProps } from '@/components/common/editor/toolbar'
+// 定义 props 
+const props = defineProps<ToolbarProps>();
 
-
-// 定义 props 调用时候传递为 headings="headings"
-const props = defineProps({
-    toobarBtns: {
-        type: Array as () => Array<{ name: string, display: string, icon: string }>,
-        required: true,
-    },
-    iconNumberPerLine: {
-        type: Number,
-        default: 20,
-        required: false,
-    },
-});
+// 设置 iconNumberPerLine 默认值为 20
+const iconNumberPerLine = ref<number>(props.iconNumberPerLine || 20);
 
 // 子组件 传参
 const emit = defineEmits<{
@@ -73,7 +65,7 @@ function updateToolbarHeight() {
 const setToolbarIconNumberPerLine = () => {
     // 初始化编辑器宽度和高度
     if (toolbarRef.value) {
-        toolbarRef.value.style.setProperty('--icon-number-per-line', `${props.iconNumberPerLine}`);
+        toolbarRef.value.style.setProperty('--icon-number-per-line', `${iconNumberPerLine.value}`);
     }
 }
 onMounted(async () => {// 初始化 CodeMirror

@@ -3,8 +3,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:02:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-16 19:42:55
- * @FilePath     : \blog-client\src\components\common\editor\Toc.vue
+ * @LastEditTime : 2023-12-19 17:49:49
+ * @FilePath     : \blog-client\src\components\common\editor\toc\Toc.vue
  * @Description  : 目录组件
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -15,7 +15,7 @@
         <ul>
             <!-- 使用 v-for 的 index 作为 key 和唯一标识符 -->
             <!-- 根据 heading.level 动态设置 li 的 class -->
-            <li v-for="(heading, index) in headings" :key="index" :class="'h-level-' + heading.level"
+            <li v-for="(heading, index) in props.headings" :key="index" :class="'h-level-' + heading.level"
                 @click="emitHeadingClicked(index)">
                 {{ heading.text }}
             </li>
@@ -24,21 +24,15 @@
 </template>
   
 <script lang="ts" setup>
-import { defineProps, defineEmits } from 'vue';
-import type { HeadingType } from '@/stores/editor'
+import type { TocProps } from '@/components/common/editor/toc'
+
+// 定义 props 调用时候传递为 headings="headings"
+const props = defineProps<TocProps>();
 
 // 子组件 传参
 const emit = defineEmits<{
     (e: 'heading-clicked', index: number): void
 }>()
-
-// 定义 props 调用时候传递为 headings="headings"
-defineProps({
-    headings: {
-        type: Array as () => Array<HeadingType>, // 标题级别 标题内容
-        required: true,
-    },
-});
 
 function emitHeadingClicked(index: number) {
     // 触发自定义事件 "heading-clicked"，将 index 和 heading 传递给父组件

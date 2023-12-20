@@ -2,21 +2,11 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-03 00:20:51
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-04 14:24:06
- * @FilePath     : \blog-client\vite.config.mts
- * @Description  :
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
- */
-/**
- * @Author       : jiaopengzi
- * @Date         : 2023-07-04 18:07:32
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-03 00:09:08
+ * @LastEditTime : 2023-12-19 14:36:09
  * @FilePath     : \blog-client\vite.config.mts
  * @Description  : vite 配置文件
- * @blog         : https://jiaopengzi.com
- * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
@@ -46,7 +36,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@': fileURLToPath(new URL('./src', import.meta.url)), // src 为根目录
     },
   },
 

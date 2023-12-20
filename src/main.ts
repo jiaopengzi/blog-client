@@ -21,7 +21,7 @@ import Icon from '@/components/common/icons/Icon.vue'
 
 const app = createApp(App)
 
-app.use(createPinia())
+app.use(createPinia()) //在APP创建之后，使用Pinia
 app.use(router)
 
 app.use(createHead()) //参考官方文档:https://unhead.unjs.io/setup/vue/installation

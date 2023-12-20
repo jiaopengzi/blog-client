@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-06 23:36:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-14 21:34:54
+ * @LastEditTime : 2023-12-19 11:06:48
  * @FilePath     : \blog-client\src\pkg\marked\new-marked.ts
  * @Description  : 重新封装 marked
  * @Blog         : https://jiaopengzi.com
@@ -36,7 +36,7 @@ const createMarked = () => {
     markedHighlight(optionHighlight),
     markedKatex(optionKatex),
     tableExtension(),
-    // markedFootnote(optionFootnote),
+    markedFootnote(optionFootnote),
     markedEmoji(optionEmojis),
     customHeadingId(),
     mangle(),

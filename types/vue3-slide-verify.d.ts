@@ -1,9 +1,9 @@
 /**
  * @Author       : jiaopengzi
- * @Date         : 2023-08-04 10:54:19
+ * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-04 20:59:19
- * @FilePath     : \blog-client\typings\vue3-slide-verify.d.ts
+ * @LastEditTime : 2023-12-19 11:19:50
+ * @FilePath     : \blog-client\types\pkg\vue3-slide-verify.d.ts
  * @Description  : 手动编写的vue3-slide-verify.d.ts文件
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.

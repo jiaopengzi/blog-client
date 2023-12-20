@@ -2,14 +2,12 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-06 15:39:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-06 15:43:51
- * @FilePath     : \blog-client\typings\clipboard.d.ts
- * @Description  :
+ * @LastEditTime : 2023-12-19 11:18:43
+ * @FilePath     : \blog-client\types\pkg\clipboard.d.ts
+ * @Description  : 粘贴板类型定义
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
-
-// clipboard.d.ts
 
 declare module 'clipboard' {
   export interface ClipboardOptions {
@@ -34,5 +32,5 @@ declare module 'clipboard' {
 
   const Clipboard: ClipboardStatic
 
-  export = Clipboard
+  export default Clipboard
 }

@@ -128,7 +128,7 @@ devDependencies:
     specifier: ^0.16.7
     version: 0.16.7
   '@types/node':
-    specifier: ^18.19.0
+    specifier: ^18.19.1
     version: 18.19.1
   '@types/tinycolor2':
     specifier: ^1.4.6

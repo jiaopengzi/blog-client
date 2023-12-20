@@ -12,7 +12,7 @@
     // ...其他配置项
     "typeRoots": [
       "./node_modules/@types",
-      "./typings"
+      "./src/types"
     ]
   },
 }

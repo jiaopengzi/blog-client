@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-09 21:36:04
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-17 12:54:30
+ * @LastEditTime : 2023-12-19 15:14:47
  * @FilePath     : \blog-client\src\stores\editor.ts
  * @Description  : 编辑器 store
  * @Blog         : https://jiaopengzi.com
@@ -17,7 +17,7 @@ import { getMarkdownHeadingLines } from '@/utils/lineNumbers'
 import type { MarkdownHeadingLineType } from '@/utils/lineNumbers'
 import axios from 'axios'
 
-interface editorStore {
+export interface editorStore {
   tocMarkdown: MarkdownHeadingLineType[] // markdown 目录内容
   tocHtml: HeadingType[] // html 目录内容
   tocShow: boolean // 是否显示目录
@@ -30,6 +30,13 @@ interface editorStore {
   scrollHideViewStr: string // 滚动条隐藏的编辑器 view 字符串
   isAsyncScroll: boolean // 是否异步滚动
   isFullScreen: boolean // 是否全屏
+}
+
+// h 标签类型
+export interface HeadingType {
+  level: number
+  text: string
+  anchor?: string
 }
 
 // 创建空值编辑器信息
@@ -82,13 +89,6 @@ export const useEditorStore = defineStore({
     },
   },
 })
-
-// h 标签类型
-export interface HeadingType {
-  level: number
-  text: string
-  anchor?: string
-}
 
 /**
  * @description : 通过正则表达式匹配 html 中所有的 h 标签 并转换为 HeadingType 数组

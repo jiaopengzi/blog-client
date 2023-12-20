@@ -3,8 +3,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:01:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-18 15:21:09
- * @FilePath     : \blog-client\src\components\common\editor\Preview.vue
+ * @LastEditTime : 2023-12-19 17:49:37
+ * @FilePath     : \blog-client\src\components\common\editor\preview\Preview.vue
  * @Description  : 预览组件
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -17,31 +17,16 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, computed, watchEffect } from 'vue'
-import { initializeClipboard } from '@/components/common/editor/editor'
+import { initializeClipboard } from '@/components/common/editor/preview'
 import { shiftArray } from '@/utils/img'
 import { ScrollElementTag, ScrollElementTagHeading } from '@/components/common/editor/command/constant'
-import { scrollToElement, scrollToFirstChildrenElement } from '@/utils/scroll'
+import { scrollToElement } from '@/utils/scroll'
+import type { PriviewProps } from '@/components/common/editor/preview'
 import '@/assets/scss/preview.scss'
 import '@/assets/highlight/highlight.js.jpz.scss'
 
-const previewRef = ref<HTMLElement | null>(null) // 预览容器
-
 // 定义 props 
-const props = defineProps({
-    preview: {
-        type: Object as () => { html: string, imgUrls: string[], isShowElImageViewer: boolean },
-        required: true,
-    },
-    // 添加默认的宽度和高度
-    width: {
-        type: String,
-        required: false,
-    },
-    height: {
-        type: String,
-        required: false,
-    },
-});
+const props = defineProps<PriviewProps>();
 
 // 定义 emits 子组件 传参
 const emit = defineEmits<{
@@ -49,6 +34,7 @@ const emit = defineEmits<{
     (event: 'close-image-viewer', isShowElImageViewer: boolean): void
 }>()
 
+const previewRef = ref<HTMLElement | null>(null) // 预览容器
 // html 内容 清洗
 const html = computed(() => {
     return props.preview.html.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n') // 去除 BOM 头 和 windows 换行符
@@ -152,8 +138,7 @@ const navigateGoEnd = (behavior: ScrollBehavior = 'smooth'): void => {
     })
 }
 
-
-
+// 导出方法
 defineExpose({
     navigateToHeading,
     navigateToElement,
@@ -193,3 +178,4 @@ onMounted(() => {
     }
 }
 </style>
+@/components/common/editor/index/editor@/components/common/editor/index/editor

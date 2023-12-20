@@ -5,19 +5,21 @@
     "src/**/*.ts",
     "src/**/*.json",
     "src/**/*.vue",
-    "typings/**/*.d.ts"
+    "types/**/*.d.ts"
   ],
   "exclude": [
     "src/**/__tests__/*"
   ],
   "compilerOptions": {
     "composite": true,
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
       "@/*": [
-        "./src/*"
+        "src/*"
       ],
     },
-    "noEmit": true
+    "noEmit": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
   }
 }

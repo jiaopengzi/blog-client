@@ -3,8 +3,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-18 15:25:34
- * @FilePath     : \blog-client\src\components\common\editor\Editor.vue
+ * @LastEditTime : 2023-12-20 15:50:01
+ * @FilePath     : \blog-client\src\components\common\editor\Editor.vue.backup
  * @Description  : 编辑器
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -16,20 +16,21 @@
             <Toolbar :toobar-btns="toobarBtns()" :icon-number-per-line="20" @toolbar-btn-clicked="toolbarBtnClicked" />
         </div>
 
+        <!-- 编辑器容器 -->
         <div :class="mdContainerClass">
-
+            <!-- 导航栏 -->
             <div :class="tocClass" v-show="tocShow">
-                <!-- 导航栏 -->
                 <Toc :headings="tocHtml" @heading-clicked="tocHeadingClicked" />
             </div>
 
+            <!-- 编辑器 -->
             <div ref="cmContainerRef" :class="editorClass" v-show="editorShow">
-                <!-- 编辑器 -->
                 <Codemirror ref="codemirrorRef" :codemirrorDoc="editor" :height="cmHeight"
                     @handle-scroll="debouncedHandleScroll" @update-editor-doc="updateEditorDoc" />
             </div>
+
+            <!-- 预览 -->
             <div :class="previewClass" v-show="previewShow">
-                <!-- 预览 -->
                 <Preview ref="previewRef" :preview="previewData" :height="cmHeight" @show-image-viewer="showImageViewer"
                     @close-image-viewer="closeImageViewer" />
             </div>
@@ -39,25 +40,31 @@
   
 <script lang="ts" setup>
 import { ref, reactive, onBeforeMount, watchEffect, computed, onMounted } from 'vue';
-import { ScrollElementTag, MardkdownEditorCommandsOrder } from '@/components/common/editor/command/constant'
-import type { MardkdownEditorCommandsOrderKeyType } from '@/components/common/editor/command/constant'
+import { ScrollElementTag, MardkdownEditorCommands } from '@/components/common/editor/command/constant'
+import type { MardkdownEditorCommandsKeyType } from '@/components/common/editor/command/constant'
 import { ShowMsgTip } from '@/utils/message';
-import Toolbar from '@/components/common/editor/Toolbar.vue'
-import Toc from '@/components/common/editor/Toc.vue'
-import Codemirror from '@/components/common/editor/Codemirror.vue'
-import Preview from '@/components/common/editor/Preview.vue'
+import Toolbar from '@/components/common/editor/toolbar/Toolbar.vue'
+import Toc from '@/components/common/editor/toc/Toc.vue'
+import Codemirror from '@/components/common/editor/codemirror/Codemirror.vue'
+import Preview from '@/components/common/editor/preview/Preview.vue'
 import { setIsFullScreenClassName } from '@/components/common/editor/editor'
 
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
 import { debounce } from '@/utils/debounce'
 
-
 // 获取用户信息
 const editorStore = useEditorStore()
 
+const { tocMarkdown, tocHtml, tocShow,
+    editor, editorShow,
+    preview, previewShow,
+    imgUrls: imgUrlsStore, isShowElImageViewer: isShowElImageViewerStore,
+    isAsyncScroll, isFullScreen } = storeToRefs(editorStore)
+
+
 interface CodemirrorRef extends HTMLElement {
-    runCommand: (commandName: MardkdownEditorCommandsOrderKeyType) => void,
+    runCommand: (commandName: MardkdownEditorCommandsKeyType) => void,
     scrollIntoViewLine: (line: number) => void,
 }
 
@@ -72,22 +79,15 @@ const cmContainerRef = ref<HTMLElement | null>(null) //编辑器容器
 const codemirrorRef = ref<CodemirrorRef | null>(null) //编辑器
 const previewRef = ref<PreviewRef | null>(null) // 预览容器
 
-const { tocMarkdown, tocHtml, tocShow,
-    editor, editorShow,
-    preview, previewShow,
-    imgUrls: imgUrlsStore, isShowElImageViewer: isShowElImageViewerStore,
-    isAsyncScroll, isFullScreen } = storeToRefs(editorStore)
-
-// 判断所有 key，只要 MardkdownEditorCommandsOrder 对应的 key 的 isShow 为 false，就从 keys 中删除 否则就保留
-const constantKeys: MardkdownEditorCommandsOrderKeyType[] = Object.keys(MardkdownEditorCommandsOrder).filter(key => MardkdownEditorCommandsOrder[key].isShow)
-
+// 目标 key 常量 数组 
+const constantKeys: MardkdownEditorCommandsKeyType[] = Object.keys(MardkdownEditorCommands)
 
 // 工具栏按钮
 const toobarBtns = () => {
     return constantKeys.map(key => {
         return {
             name: key as string,
-            display: MardkdownEditorCommandsOrder[key].tip + " <" + MardkdownEditorCommandsOrder[key].hotKey + ">" as string,
+            display: MardkdownEditorCommands[key].tip + " <" + MardkdownEditorCommands[key].hotKey + ">" as string,
             icon: key as string
         }
     })

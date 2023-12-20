@@ -1,9 +1,9 @@
-/*
+/**
  * @Author       : jiaopengzi
  * @Date         : 2023-12-07 11:52:09
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-12 13:08:21
- * @FilePath     : \blog-client\src\components\common\editor\editor.TS
+ * @LastEditTime : 2023-12-20 22:59:34
+ * @FilePath     : \blog-client\src\components\common\editor\index\index.ts
  * @Description  : markdown 编辑器
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
