@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-02 23:01:15
+ * @LastEditTime : 2023-12-21 15:09:26
  * @FilePath     : \blog-client\src\main.ts
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -17,7 +17,7 @@ import { createHead } from '@unhead/vue' //seo head
 import App from '@/App.vue'
 import router from '@/router'
 import { useUserStore } from '@/stores/user'
-import Icon from '@/components/common/icons/Icon.vue'
+import Icon from '@/components/common/icons'
 
 const app = createApp(App)
 

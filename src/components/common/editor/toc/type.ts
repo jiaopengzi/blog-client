@@ -9,5 +9,7 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-export { type TocProps } from './type'
-export { default } from './index.vue'
+import type { HeadingType } from '@/stores/editor'
+export interface TocProps {
+  headings: Array<HeadingType> // 预览内容
+}

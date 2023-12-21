@@ -27,8 +27,8 @@
 </template>
 
 <script setup lang="ts">
-import type { TagDataObj } from '@/components/common/base/tagItem.d'
-import TagItem from '@/components/common/base/TagItem.vue'
+import type { TagDataObj } from '@/components/common/base/tag-item'
+import TagItem from '@/components/common/base/tag-item'
 import { ref } from 'vue'
 
 const items = ref<Array<TagDataObj>>([
@@ -108,3 +108,4 @@ const items = ref<Array<TagDataObj>>([
   fill: #bb1818;
 }
 </style>
+@/components/common/base/tag-item/tagItem

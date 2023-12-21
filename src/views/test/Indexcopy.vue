@@ -18,7 +18,7 @@
 <script lang="ts" setup>
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
-import Editor from '@/components/common/editor/Editor.vue';
+import Editor from '@/components/common/editor/core';
 
 const editorStore = useEditorStore()
 const { isFullScreen: editorIsFullScreen } = storeToRefs(editorStore)

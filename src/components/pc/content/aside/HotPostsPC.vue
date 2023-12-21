@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-30 21:12:58
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-25 12:32:11
- * @FilePath     : \blog-client\src\components\pc\content\aside\HotPosts.vue
+ * @LastEditTime : 2023-12-21 14:49:08
+ * @FilePath     : \blog-client\src\components\pc\content\aside\HotPostsPC.vue
  * @Description  : 热门文章
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -23,8 +23,8 @@
 </template>
 
 <script setup lang="ts">
-import PostItem from '@/components/common/base/PostItemAside.vue'
-import type { PostItemAsideObj } from '@/components/common/base/postItemAside.d'
+import PostItem from '@/components/common/base/post-item-aside'
+import type { PostItemAsideObj } from '@/components/common/base/post-item-aside'
 const postDataObj: PostItemAsideObj = {
   thumbnailSrc: 'https://image.jiaopengzi.com/blog/202309181034415-w280h210.png',
   thumbnailHref: 'http://192.168.2.222:8081/post',
@@ -76,3 +76,4 @@ const postItems: PostItemAsideObj[] = Array(5).fill(postDataObj)
 }
 </style>
 @/components/pc/content/aside/item/postItem
+@/components/common/base/post-item-aside/postItemAside

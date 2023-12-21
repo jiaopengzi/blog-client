@@ -2,14 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 11:30:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-11 14:57:32
+ * @LastEditTime : 2023-12-21 14:28:55
  * @FilePath     : \blog-client\src\components\common\editor\command\insert.ts
  * @Description  : markdown 插入命令
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 import { EditorView } from '@/pkg/codemirror/setup'
-import type { MardkdownEditorCommandItemType } from '@/components/common/editor/command/constant'
+import type { MardkdownEditorCommandItemType } from '@/components/common/editor/command'
 
 /**
  * @description: 插入格式化内容

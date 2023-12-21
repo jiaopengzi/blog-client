@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-19 17:21:44
+ * @LastEditTime : 2023-12-21 15:22:48
  * @FilePath     : \blog-client\src\views\test\Index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -12,14 +12,14 @@
 <!-- App.vue -->
 <template>
   <div class="other" v-show="!editorIsFullScreen">其他内容</div>
-  <Editor />
+  <EditorCore />
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
-import Editor from '@/components/common/editor/index/IndexEditor.vue';
+import EditorCore from '@/components/common/editor/core'
 const test = ref(1)
 test.value = 2
 const editorStore = useEditorStore()
