@@ -22,6 +22,7 @@ import { markedEmoji } from 'marked-emoji' // 表情
 import optionEmojis from '@/pkg/marked/extension/emoji' // 自定义表情
 import customHeadingId from 'marked-custom-heading-id' // 自定义标题id
 import { mangle } from 'marked-mangle' // 将邮件链接用HTML字符引用混淆
+import markedAlert from 'marked-alert' // 引用不同主题的警报
 import { markedXhtml } from 'marked-xhtml' // 将HTML标签转换为XHTML Add closing slash to tags like: hr, br, img, and input
 import { markExtensionInline } from '@/pkg/marked/extension/mark' // 自定义mark 扩展
 import { subExtensionInline } from '@/pkg/marked/extension/sub' // 自定义sub 下标
@@ -41,6 +42,7 @@ const createMarked = () => {
     customHeadingId(),
     mangle(),
     markedXhtml(),
+    markedAlert(),
     {
       breaks: true, // 允许换行
       extensions: [markExtensionInline, subExtensionInline, supExtensionInline],

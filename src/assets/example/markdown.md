@@ -4,6 +4,22 @@
 
 # 159\_模型\_Power BI 地理分析之形状地图
 
+
+> [!NOTE]
+> Highlights information that users should take into account, even when skimming.
+
+> [!TIP]
+> Optional information to help a user be more successful.
+
+> [!IMPORTANT]
+> Crucial information necessary for users to succeed.
+
+> [!WARNING]
+> Critical content demanding immediate user attention due to potential risks.
+
+> [!CAUTION]
+> Negative potential consequences of an action.
+
 `code` 
 `code` `caculate` `sum` `sumx` 
 我是行内代码`code` `caculate` `sum` `sumx` 

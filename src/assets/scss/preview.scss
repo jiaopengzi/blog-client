@@ -98,6 +98,7 @@
     padding: 0.5em 1em;
     margin: 0.5em 0;
     color: $blockquote-color;
+    border-radius: 4px;
   }
 
   // 链接 继承上述 a 样式
@@ -252,6 +253,103 @@
     // 下划线
     text-decoration: underline;
     text-underline-offset: 0.2rem
+  }
+
+  // alert警报提示
+  .markdown-alert {
+    padding: 0.5rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.5rem;
+    margin: 0.5rem 0;
+  }
+
+  // 警告标题
+  .markdown-alert-title {
+    display: flex;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    // 垂直居中
+    align-items: center;
+
+    svg {
+      margin-right: 0.5rem;
+    }
+  }
+
+  // note
+  .markdown-alert-note {
+    color: $markdown-alert-note-color;
+    border: 1px solid $markdown-alert-note-border-color;
+    background-color: $markdown-alert-note-bg-color;
+
+    .markdown-alert-title {
+      color: $markdown-alert-note-title-color;
+
+      svg {
+        fill: $markdown-alert-note-svg-fill-color
+      }
+    }
+
+  }
+
+  // tip
+  .markdown-alert-tip {
+    color: $markdown-alert-tip-color;
+    border: 1px solid $markdown-alert-tip-border-color;
+    background-color: $markdown-alert-tip-bg-color;
+
+    .markdown-alert-title {
+      color: $markdown-alert-tip-title-color;
+
+      svg {
+        fill: $markdown-alert-tip-svg-fill-color
+      }
+    }
+  }
+
+  // important
+  .markdown-alert-important {
+    color: $markdown-alert-important-color;
+    border: 1px solid $markdown-alert-important-border-color;
+    background-color: $markdown-alert-important-bg-color;
+
+    .markdown-alert-title {
+      color: $markdown-alert-important-title-color;
+
+      svg {
+        fill: $markdown-alert-important-svg-fill-color
+      }
+    }
+  }
+
+  // warning
+  .markdown-alert-warning {
+    color: $markdown-alert-warning-color;
+    border: 1px solid $markdown-alert-warning-border-color;
+    background-color: $markdown-alert-warning-bg-color;
+
+    .markdown-alert-title {
+      color: $markdown-alert-warning-title-color;
+
+      svg {
+        fill: $markdown-alert-warning-svg-fill-color
+      }
+    }
+  }
+
+  // caution
+  .markdown-alert-caution {
+    color: $markdown-alert-caution-color;
+    border: 1px solid $markdown-alert-caution-border-color;
+    background-color: $markdown-alert-caution-bg-color;
+
+    .markdown-alert-title {
+      color: $markdown-alert-caution-title-color;
+
+      svg {
+        fill: $markdown-alert-caution-svg-fill-color
+      }
+    }
   }
 
 }
