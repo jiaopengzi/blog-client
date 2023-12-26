@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:02:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-21 17:03:18
+ * @LastEditTime : 2023-12-26 23:13:31
  * @FilePath     : \blog-client\src\components\common\editor\toolbar\index.vue
  * @Description  : 工具栏组件
  * @Blog         : https://jiaopengzi.com
@@ -12,10 +12,12 @@
 
 <template>
     <div ref="toolbarRef" id="toolbar">
-        <button class="toolbar-btn" v-for="(btn, index) in props.toobarBtns" :key="index"
-            @click="emitToolbarBtnClicked(btn.name)" :title="btn.display">
-            <Icon :name="btn.icon" customClass="iconfont" />
-        </button>
+        <el-tooltip v-for="(btn, index) in props.toobarBtns" :key="index" effect="dark" :content="btn.display"
+            :hide-after="0">
+            <button class="toolbar-btn" :key="index" @click="emitToolbarBtnClicked(btn.name)">
+                <Icon :name="btn.icon" customClass="iconfont" />
+            </button>
+        </el-tooltip>
     </div>
 </template>
   
@@ -31,7 +33,7 @@ defineOptions({ name: "Toolbar" })
 const props = defineProps<ToolbarProps>();
 
 // 设置 iconNumberPerLine 默认值为 20
-const iconNumberPerLine = ref<number>(props.iconNumberPerLine || 20);
+// const iconNumberPerLine = ref<number>(props.iconNumberPerLine || 20);
 
 // 子组件 传参
 const emit = defineEmits<{
@@ -67,17 +69,17 @@ function updateToolbarHeight() {
 // const toolbarBtnClass = computed(() => getClassName('toolbar-btn', 'toolbar-btn-fs', false));
 
 
-const setToolbarIconNumberPerLine = () => {
-    // 初始化编辑器宽度和高度
-    if (toolbarRef.value) {
-        toolbarRef.value.style.setProperty('--icon-number-per-line', `${iconNumberPerLine.value}`);
-    }
-}
+// const setToolbarIconNumberPerLine = () => {
+//     // 初始化编辑器宽度和高度
+//     if (toolbarRef.value) {
+//         toolbarRef.value.style.setProperty('--icon-number-per-line', `${iconNumberPerLine.value}`);
+//     }
+// }
+
 onMounted(async () => {// 初始化 CodeMirror
-    setToolbarIconNumberPerLine() // 初始化工具栏每行显示的按钮个数
+    // setToolbarIconNumberPerLine() // 初始化工具栏每行显示的按钮个数
     updateToolbarHeight()// 初始化工具栏高度
 })
-
 
 </script>
   
@@ -103,7 +105,6 @@ onMounted(async () => {// 初始化 CodeMirror
         padding: 0;
     }
 }
-
 
 .iconfont {
     font-size: 24px;

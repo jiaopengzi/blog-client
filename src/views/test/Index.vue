@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-21 15:22:48
+ * @LastEditTime : 2023-12-27 00:02:45
  * @FilePath     : \blog-client\src\views\test\Index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -11,18 +11,24 @@
 -->
 <!-- App.vue -->
 <template>
-  <div class="other" v-show="!editorIsFullScreen">其他内容</div>
-  <EditorCore />
+  <div class="other" v-show="!isFullScreen">其他内容</div>
+  <div class="other" v-show="!isFullScreen">其他内容</div>
+  <div class="other" v-show="!isFullScreen">其他内容</div>
+
+
+  <EditorComment />
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
-import EditorCore from '@/components/common/editor/core'
+import { EditorComment } from '@/components/common/editor/core'
+
+
 const test = ref(1)
 test.value = 2
 const editorStore = useEditorStore()
-const { isFullScreen: editorIsFullScreen } = storeToRefs(editorStore)
+const { isFullScreen } = storeToRefs(editorStore)
 
 </script>

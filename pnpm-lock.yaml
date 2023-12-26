@@ -59,6 +59,9 @@ dependencies:
   element-plus:
     specifier: ^2.4.3
     version: 2.4.3(vue@3.3.11)
+  emoji.json:
+    specifier: ^15.1.0
+    version: 15.1.0
   highlight.js:
     specifier: ^11.9.0
     version: 11.9.0
@@ -116,6 +119,9 @@ dependencies:
   vue-cropperjs:
     specifier: ^5.0.0
     version: 5.0.0(vue@3.3.11)
+  vue3-emoji-picker:
+    specifier: ^1.1.8
+    version: 1.1.8(typescript@5.3.2)
   vue3-slide-verify:
     specifier: ^1.1.4
     version: 1.1.4(typescript@5.3.2)
@@ -1049,6 +1055,10 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@popperjs/core@2.11.8:
+    resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
+    dev: false
 
   /@rollup/plugin-terser@0.4.4:
     resolution: {integrity: sha512-XHeJC5Bgvs8LfukDwWZp7yeqin6ns8RTl2B9avbejt6tZqsqvVoWI7ZTQrcNsfKEDWBTnTxM8nMDkO2IFFbd0A==}
@@ -2206,6 +2216,10 @@ packages:
     resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
     dev: true
 
+  /emoji.json@15.1.0:
+    resolution: {integrity: sha512-GqE6SCE8rSc5Gyd+oh6s/pkoNSW/pULdgJTB6jd/sM87FWA/a1nmvFMdWBjvSA5vdomzDvZgy584KNgzdYJwDA==}
+    dev: false
+
   /entities@4.5.0:
     resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
     engines: {node: '>=0.12'}
@@ -2814,6 +2828,10 @@ packages:
     resolution: {integrity: sha512-ztqyC3kLto0e9WbNp0aeP+M3kTt+nbaIveGmUxAtZa+8iFgKLUOD4YKM5j+f3QD89bra7UeumolZHKuOXnTmeQ==}
     engines: {node: '>=8'}
     dev: true
+
+  /idb@7.1.1:
+    resolution: {integrity: sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==}
+    dev: false
 
   /ignore@5.3.0:
     resolution: {integrity: sha512-g7dmpshy+gD7mh88OC9NwSGTKoc3kyLAZQRU1mt53Aw/vnvfXnbC+F/7F7QoYVKbV+KNvJx8wArewKy1vXMtlg==}
@@ -4449,6 +4467,17 @@ packages:
       semver: 7.5.4
       typescript: 5.3.2
     dev: true
+
+  /vue3-emoji-picker@1.1.8(typescript@5.3.2):
+    resolution: {integrity: sha512-k9tVHeQEBVLzVCLYAkFaI1nib3FJFQwdPhWD5khJkhks3ktg3g12z5wPGOSDpIuSLNtelRGvq1qdmZuJu5khfA==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      '@popperjs/core': 2.11.8
+      idb: 7.1.1
+      vue: 3.3.11(typescript@5.3.2)
+    transitivePeerDependencies:
+      - typescript
+    dev: false
 
   /vue3-slide-verify@1.1.4(typescript@5.3.2):
     resolution: {integrity: sha512-er2d9TSPsF5CcmoxBfP6eSkc4IHROwXu6Ytghkwf52apXpXy2ZtW3tOgHnmFWb3GHESKxZ9bsFXqSX+fJ6hjrg==}

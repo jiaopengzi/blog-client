@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-11 15:32:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-18 15:08:02
+ * @LastEditTime : 2023-12-27 00:29:17
  * @FilePath     : \blog-client\src\utils\scroll.ts
  * @Description  : 滚动条工具类
  * @Blog         : https://jiaopengzi.com
@@ -36,7 +36,6 @@ export function scrollToElement(
 
   // 目标元素距离容器顶部的偏移量
   const targetElementOffsetTop = getElementOffsetTop(container, targetElement)
-
   // 目标元素存在且容器有偏移量
   if (container.offsetTop && targetElementOffsetTop) {
     // 计算滚动目标的偏移量，并通过容器的偏移量调整。

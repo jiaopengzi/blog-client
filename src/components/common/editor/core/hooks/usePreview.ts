@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-20 22:41:35
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-20 22:43:57
- * @FilePath     : \blog-client\src\components\common\editor\index\usePreview.ts
+ * @LastEditTime : 2023-12-26 14:30:09
+ * @FilePath     : \blog-client\src\components\common\editor\core\hooks\usePreview.ts
  * @Description  : preview hook
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
@@ -30,8 +30,8 @@ export function usePreview() {
   })
 
   const showImageViewer = (imgUrls: string[], isShowElImageViewer: boolean) => {
-    console.log(imgUrls)
-    console.log(isShowElImageViewer)
+    // console.log(imgUrls)
+    // console.log(isShowElImageViewer)
     imgUrlsStore.value = imgUrls
     isShowElImageViewerStore.value = isShowElImageViewer
   }

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 11:33:04
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-21 23:35:53
+ * @LastEditTime : 2023-12-25 22:06:38
  * @FilePath     : \blog-client\src\pkg\codemirror\setup.ts
  * @Description  : 重新封装 codemirror 参考: codemirror 包源码 https://www.npmjs.com/package/codemirror
  * @Blog         : https://jiaopengzi.com
@@ -44,6 +44,7 @@ import { markdown } from '@codemirror/lang-markdown'
 import { bottomPanelExt } from '@/pkg/codemirror/extension/bottomPanel'
 import { customKeymap } from '@/pkg/codemirror/extension/hotkey'
 import { handlePasteImage, handleDropImage } from '@/pkg/codemirror/extension/imgupload'
+import { emojiCompletions } from '@/pkg/codemirror/extension/emoji'
 
 // 自定义 codemirror setup 工厂函数
 const createCustomSetup = () => {
@@ -61,7 +62,7 @@ const createCustomSetup = () => {
     syntaxHighlighting(defaultHighlightStyle, { fallback: true }), // 语法高亮
     bracketMatching(), // 匹配
     closeBrackets(), // 关闭括号
-    autocompletion(), // 自动完成
+    autocompletion({ override: [emojiCompletions] }), // 自动完成
     rectangularSelection(), // 矩形选择
     crosshairCursor(), // 十字光标
     highlightActiveLine(), // 高亮当前行

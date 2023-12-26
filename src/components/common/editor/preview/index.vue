@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:01:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-21 14:35:51
+ * @LastEditTime : 2023-12-26 23:32:37
  * @FilePath     : \blog-client\src\components\common\editor\preview\index.vue
  * @Description  : 预览组件
  * @Blog         : https://jiaopengzi.com
@@ -116,6 +116,7 @@ const navigateToHeading = (index: number): void => {
  * @return 
  */
 const navigateToElement = (index: number): void => {
+    console.log('navigateToElement=====>>>>', index)
     scrollToElement(previewRef.value, index, ScrollElementTag)
 }
 
@@ -202,13 +203,13 @@ onMounted(() => {
     line-height: 1.5;
     color: $primary-color;
     background-color: $background-color-content;
+    height: var(--my-codemirror-height, 100%);
 }
 
 @include respond-to('pc') {
     #preview {
         max-width: pc.$width-page-main;
         width: 100%;
-        height: var(--my-codemirror-height, 100%);
     }
 }
 
@@ -218,4 +219,3 @@ onMounted(() => {
     }
 }
 </style>
-@/components/common/editor/index/editor@/components/common/editor/index/editor

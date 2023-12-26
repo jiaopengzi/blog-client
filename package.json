@@ -32,6 +32,7 @@
     "codemirror": "^6.0.1",
     "cropperjs": "^1.6.1",
     "element-plus": "^2.4.3",
+    "emoji.json": "^15.1.0",
     "highlight.js": "^11.9.0",
     "marked": "^11.0.1",
     "marked-alert": "^2.0.1",
@@ -51,6 +52,7 @@
     "vue-codemirror": "^6.1.1",
     "vue-cropper": "^1.1.1",
     "vue-cropperjs": "^5.0.0",
+    "vue3-emoji-picker": "^1.1.8",
     "vue3-slide-verify": "^1.1.4"
   },
   "devDependencies": {

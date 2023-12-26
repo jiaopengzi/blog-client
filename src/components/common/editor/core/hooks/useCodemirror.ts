@@ -2,39 +2,62 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-20 22:22:25
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-21 15:36:29
+ * @LastEditTime : 2023-12-27 00:29:39
  * @FilePath     : \blog-client\src\components\common\editor\core\hooks\useCodemirror.ts
  * @Description  : codemirror hook
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import { ref } from 'vue'
+import { nextTick, ref, watch } from 'vue'
 import type { Ref } from 'vue'
-import type { CmContainerRef, PreviewRef } from '@/components/common/editor/core'
+import type { MdContainerRef, CmContainerRef, PreviewRef } from '@/components/common/editor/core'
 import { ScrollElementTag } from '@/components/common/editor/command'
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
 import { debounce } from '@/utils/debounce'
 
 export function useCodemirror(
+  mdContainerRef: Ref<MdContainerRef | null>,
   cmContainerRef: Ref<CmContainerRef | null>,
   previewRef: Ref<PreviewRef | null>,
 ) {
   // store
   const editorStore = useEditorStore()
-  const { isAsyncScroll } = storeToRefs(editorStore)
+  const { isFullScreen, isAsyncScroll } = storeToRefs(editorStore)
 
   // codemirror 高度
   const cmHeight = ref<string | undefined>(void 0)
 
-  // 初始化 cmView 编辑器实例高度
-  const initializeCmHeight = (): void => {
-    if (cmContainerRef.value) {
-      // 读取 codemirror 容器中的 css 变量 --md-editor-height 的值
-      cmHeight.value = getComputedStyle(cmContainerRef.value).getPropertyValue('--md-editor-height')
+  // 更新 cmView 编辑器实例高度 全屏时
+  const updateCmHeightIsFullScreen = (): void => {
+    if (mdContainerRef.value && isFullScreen.value) {
+      // 读取 mdContainerRef 容器中的 css 变量 --md-editor-container-height 的值
+      cmHeight.value = getComputedStyle(mdContainerRef.value).getPropertyValue(
+        '--md-editor-container-height',
+      )
+      // console.log('cmHeight.value====>全屏', isFullScreen.value, cmHeight.value)
     }
   }
+
+  // 更新 cmView 编辑器实例高度 非全屏时
+  const updateCmHeightNotIsFullScreen = (): void => {
+    if (cmContainerRef.value && !isFullScreen.value) {
+      // 读取 codemirror 容器中的 css 变量 --md-editor-height 的值
+      cmHeight.value = getComputedStyle(cmContainerRef.value).getPropertyValue('--md-editor-height')
+      // console.log('cmHeight.value====>非全屏', isFullScreen.value, cmHeight.value)
+    }
+  }
+
+  watch(isFullScreen, () => {
+    if (isFullScreen.value) {
+      updateCmHeightIsFullScreen()
+    } else {
+      nextTick(() => {
+        updateCmHeightNotIsFullScreen()
+      })
+    }
+  })
 
   const handleScroll = (
     scrollHeight: number,
@@ -71,7 +94,7 @@ export function useCodemirror(
 
   return {
     cmHeight,
-    initializeCmHeight,
+    updateCmHeightNotIsFullScreen,
     debouncedHandleScroll,
     updateEditorDoc,
   }

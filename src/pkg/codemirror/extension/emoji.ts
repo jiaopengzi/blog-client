@@ -2,36 +2,28 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-21 23:01:55
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-21 23:34:22
+ * @LastEditTime : 2023-12-25 22:17:40
  * @FilePath     : \blog-client\src\pkg\codemirror\extension\emoji.ts
- * @Description  :
+ * @Description  : emoji 补全
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import { EditorState, Compartment } from '@codemirror/state'
-import { htmlLanguage, html } from '@codemirror/lang-html'
-import { language } from '@codemirror/language'
-import { javascript } from '@codemirror/lang-javascript'
-type Emoji = {
-  label: string
-  detail: string
-}
+import { CompletionContext } from '@codemirror/autocomplete'
+import type { CompletionResult } from '@codemirror/autocomplete'
+import emojiCompletionList from '@/utils/emoji'
 
-const emojiList: Emoji[] = [
-  { label: '😀', detail: ':grinning:' },
-  { label: '😃', detail: ':smiley:' },
-  // ... 省略其他表情
-]
-
-export const languageConf = new Compartment()
-
-export const autoLanguage = EditorState.transactionExtender.of((tr) => {
-  if (!tr.docChanged) return null
-  const docIsHTML = /^\s*</.test(tr.newDoc.sliceString(0, 100))
-  const stateIsHTML = tr.startState.facet(language) == htmlLanguage
-  if (docIsHTML == stateIsHTML) return null
+/**
+ * @description: emoji 补全
+ * @param context 上下文
+ * @return {CompletionResult | null} 补全结果
+ */
+export function emojiCompletions(context: CompletionContext): CompletionResult | null {
+  const keywords = context.matchBefore(/:[-_0-9a-zA-Z\s]+/) // 正字匹配 :开始的内容包括空格 - _ 数字 字母
+  if (!keywords) return null // 如果没有匹配到则不补全
+  if (keywords.from === keywords.to && !context.explicit) return null // 如果没有输入内容则不补全
   return {
-    effects: languageConf.reconfigure(docIsHTML ? html() : javascript()),
+    from: keywords.from,
+    options: emojiCompletionList,
   }
-})
+}

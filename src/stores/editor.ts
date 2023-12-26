@@ -1,8 +1,9 @@
+import { install } from './../pkg/codemirror - 副本/index'
 /**
  * @Author       : jiaopengzi
  * @Date         : 2023-12-09 21:36:04
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-21 15:27:27
+ * @LastEditTime : 2023-12-25 11:31:04
  * @FilePath     : \blog-client\src\stores\editor.ts
  * @Description  : 编辑器 store
  * @Blog         : https://jiaopengzi.com
@@ -30,6 +31,7 @@ export interface editorStore {
   scrollHideViewStr: string // 滚动条隐藏的编辑器 view 字符串
   isAsyncScroll: boolean // 是否异步滚动
   isFullScreen: boolean // 是否全屏
+  inShowEmojiPicker: boolean // 是否显示 emoji picker
 }
 
 // h 标签类型
@@ -54,6 +56,7 @@ function createEmptyEditorStore(): editorStore {
     scrollHideViewStr: '', // 滚动条隐藏的编辑器 markdown 字符串
     isAsyncScroll: true, // 是否异步滚动
     isFullScreen: false, // 是否全屏
+    inShowEmojiPicker: false, // 是否显示 emoji picker
   }
 }
 

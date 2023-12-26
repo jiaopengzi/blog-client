@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-21 16:59:44
+ * @LastEditTime : 2023-12-25 12:29:41
  * @FilePath     : \blog-client\src\components\common\editor\codemirror\index.vue
  * @Description  : codemirror 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -17,9 +17,8 @@ import { ref, onMounted, watch, watchEffect, onUnmounted } from 'vue';
 import type { Extension } from '@codemirror/state'
 import type { ViewUpdate } from '@codemirror/view';
 import { EditorView, EditorState, createCustomSetup } from '@/pkg/codemirror/setup';
-import { editorInsertFormatContent } from '@/components/common/editor/command/insert'
-import { MardkdownEditorCommands } from '@/components/common/editor/command/constant'
-import { CommandsKey } from '@/components/common/editor/command'
+import { CommandsKey, MardkdownEditorCommands, editorInsertFormatContent } from '@/components/common/editor/command'
+import type { MardkdownEditorCommandItemType } from '@/components/common/editor/command'
 import { useMagicKeys } from '@vueuse/core'
 import type { CodeEditorProps } from '@/components/common/editor/codemirror'
 
@@ -104,8 +103,14 @@ const registerHotKeys = () => {
 }
 
 // 执行按钮命令
-const runCommand = (commandName: CommandsKey): void => {
+const runCommand = (commandName: CommandsKey, customContent: MardkdownEditorCommandItemType = {}): void => {
     if (commandName) {
+        if (customContent) {
+            // 合并自定义内容
+            editorInsertFormatContent(cmView, { ...MardkdownEditorCommands[commandName], ...customContent })
+            return
+        }
+        // 执行命令
         editorInsertFormatContent(cmView, MardkdownEditorCommands[commandName])
     }
 }
