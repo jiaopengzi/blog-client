@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4152487 */
-  src: url('iconfont.woff2?t=1703142139200') format('woff2'),
-       url('iconfont.woff?t=1703142139200') format('woff'),
-       url('iconfont.ttf?t=1703142139200') format('truetype');
+  src: url('iconfont.woff2?t=1703731231657') format('woff2'),
+       url('iconfont.woff?t=1703731231657') format('woff'),
+       url('iconfont.ttf?t=1703731231657') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,18 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-edit:before {
+  content: "\e7a0";
+}
+
+.icon-editor:before {
+  content: "\e6f5";
+}
+
+.icon-WeChatOfficialAccount:before {
+  content: "\eb79";
 }
 
 .icon-mathInline:before {

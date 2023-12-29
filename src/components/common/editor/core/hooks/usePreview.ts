@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-20 22:41:35
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-26 14:30:09
+ * @LastEditTime : 2023-12-27 16:51:04
  * @FilePath     : \blog-client\src\components\common\editor\core\hooks\usePreview.ts
  * @Description  : preview hook
  * @Blog         : https://jiaopengzi.com
@@ -21,6 +21,7 @@ export function usePreview() {
     preview,
     imgUrls: imgUrlsStore,
     isShowElImageViewer: isShowElImageViewerStore,
+    isShowPreviewWechat,
   } = storeToRefs(editorStore)
 
   const previewData = reactive({
@@ -48,6 +49,7 @@ export function usePreview() {
 
   return {
     previewData,
+    isShowPreviewWechat,
     showImageViewer,
     closeImageViewer,
   }

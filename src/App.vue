@@ -19,6 +19,7 @@
   <router-view :key="$route.fullPath" />
 </template>
 <script setup lang="ts">
+import { setTheme } from '@/utils/style'
 import { useHead } from '@unhead/vue'
 import { Head } from '@unhead/vue/components'
 // import Icon from '@/components/icons/Icon.vue'
@@ -47,10 +48,7 @@ useHead({
   ],
 })
 
-function setTheme(theme: string) {
-  document.documentElement.setAttribute("data-theme", theme);
-}
-
+// 设置主题
 setTheme("light");
 </script>
 

@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:01:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-26 23:32:37
+ * @LastEditTime : 2023-12-28 13:36:18
  * @FilePath     : \blog-client\src\components\common\editor\preview\index.vue
  * @Description  : 预览组件
  * @Blog         : https://jiaopengzi.com
@@ -21,6 +21,7 @@ import ClipboardJS from 'clipboard' //代码块复制
 import type { ClipboardEvent } from 'clipboard'
 import { ShowMsgTip } from '@/utils/message'
 import { shiftArray } from '@/utils/img'
+import { htmlHandleUtf8, htmlHandleCopyBtns } from '@/utils/preview'
 import { ScrollElementTag, ScrollElementTagHeading } from '@/components/common/editor/command'
 import { scrollToElement } from '@/utils/scroll'
 import type { PriviewProps } from '@/components/common/editor/preview'
@@ -42,8 +43,17 @@ const emit = defineEmits<{
 const previewRef = ref<HTMLElement | null>(null) // 预览容器
 // html 内容 清洗
 const html = computed(() => {
-    return props.preview.html.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n') // 去除 BOM 头 和 windows 换行符
-});
+    const html = htmlHandleUtf8(props.preview.html)
+
+    if (props.isShowPreviewWechat) {
+        // 微信公众号预览
+        return htmlHandleCopyBtns(html)
+    } else {
+        // 普通预览
+        return html
+    }
+})
+
 
 const initializeCssVariable = () => {
     // 初始化编辑器宽度和高度
@@ -54,6 +64,15 @@ const initializeCssVariable = () => {
         previewRef.value.style.setProperty('--my-preview-height', `${props.height}`);
     }
 }
+
+// 监听 props isShowPreviewWechat 变化 添加自定义属性
+watchEffect(() => {
+    if (previewRef.value && props.isShowPreviewWechat) {
+        previewRef.value.setAttribute('data-preview', 'wechat')
+    } else {
+        previewRef.value?.removeAttribute('data-preview')
+    }
+})
 
 // 监听 props 宽高 变化
 watchEffect(() => {
@@ -179,6 +198,10 @@ const initializeClipboard = () => {
     })
 }
 
+
+
+
+
 // 导出方法
 defineExpose({
     navigateToHeading,
@@ -194,7 +217,7 @@ onMounted(() => {
 })
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 #preview {
     overflow: auto;
     padding: 0 20px;
@@ -206,16 +229,26 @@ onMounted(() => {
     height: var(--my-codemirror-height, 100%);
 }
 
+
 @include respond-to('pc') {
     #preview {
         max-width: pc.$width-page-main;
         width: 100%;
+    }
+
+    #preview[data-preview="wechat"] {
+        width: 390px;
     }
 }
 
 @include respond-to('phone') {
     #preview {
         max-width: 100%;
+    }
+
+    #preview[data-preview="wechat"] {
+        max-width: 390px;
+        width: 100%;
     }
 }
 </style>

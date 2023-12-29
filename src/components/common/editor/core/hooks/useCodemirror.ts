@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-20 22:22:25
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-27 00:29:39
+ * @LastEditTime : 2023-12-27 17:08:19
  * @FilePath     : \blog-client\src\components\common\editor\core\hooks\useCodemirror.ts
  * @Description  : codemirror hook
  * @Blog         : https://jiaopengzi.com
@@ -16,6 +16,8 @@ import { ScrollElementTag } from '@/components/common/editor/command'
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
 import { debounce } from '@/utils/debounce'
+import { getCSSVariableValue } from '@/utils/style'
+import { htmlHandleCopyBtns } from '@/utils/preview'
 
 export function useCodemirror(
   mdContainerRef: Ref<MdContainerRef | null>,
@@ -24,7 +26,7 @@ export function useCodemirror(
 ) {
   // store
   const editorStore = useEditorStore()
-  const { isFullScreen, isAsyncScroll } = storeToRefs(editorStore)
+  const { isFullScreen, isAsyncScroll, isShowPreviewWechat } = storeToRefs(editorStore)
 
   // codemirror 高度
   const cmHeight = ref<string | undefined>(void 0)
@@ -33,10 +35,21 @@ export function useCodemirror(
   const updateCmHeightIsFullScreen = (): void => {
     if (mdContainerRef.value && isFullScreen.value) {
       // 读取 mdContainerRef 容器中的 css 变量 --md-editor-container-height 的值
-      cmHeight.value = getComputedStyle(mdContainerRef.value).getPropertyValue(
+      const mdContainerHeight = getCSSVariableValue(
+        mdContainerRef.value,
         '--md-editor-container-height',
       )
-      // console.log('cmHeight.value====>全屏', isFullScreen.value, cmHeight.value)
+      if (mdContainerHeight) {
+        cmHeight.value = mdContainerHeight
+      }
+      // 读取 mdContainerRef 容器中的 css 变量 --el-tabs-header-height 的值
+      const elTabsHeaderHeight = getCSSVariableValue(
+        mdContainerRef.value,
+        '--el-tabs-header-height',
+      )
+      if (elTabsHeaderHeight) {
+        cmHeight.value = `calc(${cmHeight.value} - ${elTabsHeaderHeight})`
+      }
     }
   }
 
@@ -44,7 +57,7 @@ export function useCodemirror(
   const updateCmHeightNotIsFullScreen = (): void => {
     if (cmContainerRef.value && !isFullScreen.value) {
       // 读取 codemirror 容器中的 css 变量 --md-editor-height 的值
-      cmHeight.value = getComputedStyle(cmContainerRef.value).getPropertyValue('--md-editor-height')
+      cmHeight.value = getCSSVariableValue(cmContainerRef.value, '--md-editor-height')
       // console.log('cmHeight.value====>非全屏', isFullScreen.value, cmHeight.value)
     }
   }
@@ -81,7 +94,15 @@ export function useCodemirror(
     // isAsyncScroll.value = true // 异步滚动
     // TODO 当滚动的内容如 表格 br元素 等不太精确 后续优化
     editorStore.setScrollHideViewStr(hideDoc) // store 存储不可见部分的 markdown
-    const hideDom = new DOMParser().parseFromString(editorStore.getScrollHideHtmlStr, 'text/html') // 隐藏的markdown解析出来的html转换为dom
+
+    let html = editorStore.getScrollHideHtmlStr // 获取不可见部分的 markdown 解析出来的 html
+
+    // 如果是微信预览模式就去掉复制按钮
+    if (isShowPreviewWechat.value) {
+      html = htmlHandleCopyBtns(html)
+    }
+
+    const hideDom = new DOMParser().parseFromString(html, 'text/html') // 隐藏的markdown解析出来的html转换为dom
     const els = hideDom.body.querySelectorAll(ScrollElementTag) // 获取隐藏的markdown解析出来的html转换为dom中的所有元素 注意要在 body 中寻找
     previewRef.value?.navigateToElement(els.length) // 跳转预览选中目标行
   }

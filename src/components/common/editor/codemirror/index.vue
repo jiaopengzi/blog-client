@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-25 12:29:41
+ * @LastEditTime : 2023-12-27 12:08:28
  * @FilePath     : \blog-client\src\components\common\editor\codemirror\index.vue
  * @Description  : codemirror 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -189,14 +189,14 @@ defineExpose({
 <style scoped lang="scss">
 #my-codemirror {
     :deep(.cm-editor) {
-        width: 100%;
+        // width: 100%;
         height: var(--my-codemirror-height, 100%);
     }
 
-    :deep(.cm-content) {
-        width: 100%;
-        height: calc(var(--my-codemirror-height, 100%) - pc.$editor-panels-bottom-height - editor-panels-bottom-border);
-    }
+    // :deep(.cm-content) {
+    //     // width: 100%;
+    //     // height: calc(var(--my-codemirror-height, 100%) - pc.$editor-panels-bottom-height - pc.$editor-panels-bottom-border);
+    // }
 
     :deep(.cm-panels-bottom) {
         height: pc.$editor-panels-bottom-height;
@@ -210,8 +210,8 @@ defineExpose({
 }
 
 
-@include respond-to('pc') {}
+// @include respond-to('pc') {}
 
-@include respond-to('phone') {}
+// @include respond-to('phone') {}
 </style>
   

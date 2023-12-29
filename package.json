@@ -34,6 +34,7 @@
     "element-plus": "^2.4.3",
     "emoji.json": "^15.1.0",
     "highlight.js": "^11.9.0",
+    "juice": "^10.0.0",
     "marked": "^11.0.1",
     "marked-alert": "^2.0.1",
     "marked-code-format": "^1.1.2",

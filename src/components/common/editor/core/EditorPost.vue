@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-26 23:20:42
+ * @LastEditTime : 2023-12-28 13:35:21
  * @FilePath     : \blog-client\src\components\common\editor\core\EditorPost.vue
  * @Description  : 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -15,7 +15,7 @@
             <Toolbar ref="toolbarRef" :toobar-btns="toobarBtns()" :icon-number-per-line="iconNumberPerLine()"
                 @toolbar-btn-clicked="toolbarBtnClicked" />
             <!-- emoji 选择组件 -->
-            <div class="emoji-picker-wrapper" v-if="inShowEmojiPicker">
+            <div class="emoji-picker-wrapper" v-if="isShowEmojiPicker">
                 <EmojiPicker :native="true" @select="onSelectEmoji" />
             </div>
         </div>
@@ -35,8 +35,8 @@
 
             <!-- 预览 -->
             <div :class="previewClass" v-show="previewShow">
-                <Preview ref="previewRef" :preview="previewData" :height="cmHeight" @show-image-viewer="showImageViewer"
-                    @close-image-viewer="closeImageViewer" />
+                <Preview ref="previewRef" :preview="previewData" :is-show-preview-wechat="isShowPreviewWechat"
+                    :height="cmHeight" @show-image-viewer="showImageViewer" @close-image-viewer="closeImageViewer" />
             </div>
         </div>
     </div>
@@ -63,7 +63,7 @@ defineOptions({ name: "EditorCore" })
 
 // store
 const editorStore = useEditorStore()
-const { tocHtml, tocShow, editor, editorShow, previewShow, isFullScreen, inShowEmojiPicker } = storeToRefs(editorStore)
+const { tocHtml, tocShow, editor, editorShow, previewShow, isFullScreen, isShowEmojiPicker } = storeToRefs(editorStore)
 
 // ref
 const mdContainerRef = ref<MdContainerRef | null>(null) //编辑器容器
@@ -82,31 +82,31 @@ const ModePost = reactive([
     CommandsKey.h3,
     CommandsKey.bold,
     CommandsKey.italic,
-    CommandsKey.strikethrough,
-    CommandsKey.mark,
-    CommandsKey.emoji,
-    CommandsKey.ol,
-    CommandsKey.ul,
     CommandsKey.quote,
     CommandsKey.codeBlock,
     CommandsKey.link,
+    CommandsKey.ol,
+    CommandsKey.ul,
+    CommandsKey.taskList,
+    CommandsKey.mark,
+    CommandsKey.emoji,
+    CommandsKey.strikethrough,
     CommandsKey.image,
     CommandsKey.table,
     CommandsKey.hr,
-    CommandsKey.taskList,
     CommandsKey.mathBlock,
     CommandsKey.footnote,
     CommandsKey.superscript,
     CommandsKey.subscript,
     CommandsKey.payContent,
+    CommandsKey.toc,
+    CommandsKey.edit,
+    CommandsKey.scroll,
+    CommandsKey.preview,
+    CommandsKey.WeChatOfficialAccount,
+    CommandsKey.fullscreen,
     CommandsKey.save,
     CommandsKey.publish,
-    CommandsKey.toc,
-    CommandsKey.preview,
-    CommandsKey.scroll,
-    CommandsKey.fullscreen,
-    CommandsKey.desktop,
-    CommandsKey.mobile,
     CommandsKey.markdown,
     CommandsKey.html,
     CommandsKey.pdf,
@@ -124,12 +124,12 @@ const editorClass = computed(() => setIsFullScreenClassName('md-editor', 'md-edi
 const previewClass = computed(() => setIsFullScreenClassName('md-preview', 'md-preview-fs', true, isFullScreen.value));
 
 // 工具栏点击事件
-const { toobarBtns, toolbarBtnClicked, iconNumberPerLine } = useToolbar(mdContainerRef, toolbarRef, codemirrorRef, ModePost)
+const { toobarBtns, toolbarBtnClicked, iconNumberPerLine } = useToolbar(mdContainerRef, toolbarRef, codemirrorRef, previewRef, ModePost)
 
 // event callback
 function onSelectEmoji(emoji: any) {
     codemirrorRef.value?.runCommand(CommandsKey.emoji, { prefix: "", content: emoji.i, suffix: "" })
-    inShowEmojiPicker.value = false
+    isShowEmojiPicker.value = false
 }
 
 // 目录点击事件
@@ -139,7 +139,7 @@ const { tocHeadingClicked } = useToc(codemirrorRef, previewRef)
 const { cmHeight, updateCmHeightNotIsFullScreen, debouncedHandleScroll, updateEditorDoc } = useCodemirror(mdContainerRef, cmContainerRef, previewRef)
 
 // preview
-const { previewData, showImageViewer, closeImageViewer } = usePreview()
+const { previewData, isShowPreviewWechat, showImageViewer, closeImageViewer } = usePreview()
 
 // 初始化
 onMounted(() => {
@@ -198,6 +198,11 @@ onBeforeMount(async () => {
                 overflow: hidden;
                 flex: 2 1 0; // 2 1 0 代表 flex-grow: 2; flex-shrink: 1; flex-basis: 0; 五分之二
                 height: pc.$editor-md-container-height;
+                // 子元素居中
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-left: 1px solid #ccc;
             }
         }
 
@@ -240,6 +245,11 @@ onBeforeMount(async () => {
                 overflow: hidden;
                 flex: 2 1 0; // 2 1 0 代表 flex-grow: 2; flex-shrink: 1; flex-basis: 0; 五分之二
                 height: var(--md-editor-container-height);
+                // 子元素居中
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-left: 1px solid #ccc;
             }
         }
 
@@ -263,7 +273,7 @@ onBeforeMount(async () => {
         .md-container {
             display: flex;
             width: 100vw;
-            height: 60vh;
+            height: phone.$editor-md-container-height;
 
             .md-container-item {
                 border-radius: 3px;
@@ -278,13 +288,18 @@ onBeforeMount(async () => {
             .md-editor {
                 overflow: hidden;
                 flex: 2 1 0; // 2 1 0 代表 flex-grow: 2; flex-shrink: 1; flex-basis: 0; 五分之二
-                --md-editor-height: 60vh; // 设置 css 变量 引用scss变量 使用#{}包裹 插值语法将 SASS 变量插入到自定义属性中
+                --md-editor-height: #{phone.$editor-md-container-height}; // 设置 css 变量 引用scss变量 使用#{}包裹 插值语法将 SASS 变量插入到自定义属性中
             }
 
             .md-preview {
                 overflow: hidden;
                 flex: 2 1 0; // 2 1 0 代表 flex-grow: 2; flex-shrink: 1; flex-basis: 0; 五分之二
-                height: 60vh;
+                height: phone.$editor-md-container-height;
+                // 子元素居中
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-left: 1px solid #ccc;
             }
         }
 
@@ -324,6 +339,11 @@ onBeforeMount(async () => {
                 overflow: hidden;
                 flex: 2 1 0; // 2 1 0 代表 flex-grow: 2; flex-shrink: 1; flex-basis: 0; 五分之二
                 height: var(--md-editor-container-height);
+                // 子元素居中
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-left: 1px solid #ccc;
             }
         }
 

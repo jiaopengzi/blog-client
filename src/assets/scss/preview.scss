@@ -167,11 +167,11 @@
 
 
   // 图片 img
+  // 图片 img
   img {
     display: block;
-    max-width: 888px;
-    width: 100%;
-    height: auto;
+    max-width: 100%; // 确保图片不超过父元素宽度
+    width: auto; // 根据图片的实际尺寸进行缩放
     margin: 4px auto;
     border-radius: 4px;
     cursor: pointer;

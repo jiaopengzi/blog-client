@@ -31,7 +31,8 @@ export interface editorStore {
   scrollHideViewStr: string // 滚动条隐藏的编辑器 view 字符串
   isAsyncScroll: boolean // 是否异步滚动
   isFullScreen: boolean // 是否全屏
-  inShowEmojiPicker: boolean // 是否显示 emoji picker
+  isShowEmojiPicker: boolean // 是否显示 emoji picker
+  isShowPreviewWechat: boolean // 是否显示微信预览
 }
 
 // h 标签类型
@@ -56,7 +57,8 @@ function createEmptyEditorStore(): editorStore {
     scrollHideViewStr: '', // 滚动条隐藏的编辑器 markdown 字符串
     isAsyncScroll: true, // 是否异步滚动
     isFullScreen: false, // 是否全屏
-    inShowEmojiPicker: false, // 是否显示 emoji picker
+    isShowEmojiPicker: false, // 是否显示 emoji picker
+    isShowPreviewWechat: false, // 是否显示微信预览
   }
 }
 

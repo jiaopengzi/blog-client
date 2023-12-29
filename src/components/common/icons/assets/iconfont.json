@@ -6,6 +6,27 @@
   "description": "vue 重写项目",
   "glyphs": [
     {
+      "icon_id": "6151070",
+      "name": "edit",
+      "font_class": "edit",
+      "unicode": "e7a0",
+      "unicode_decimal": 59296
+    },
+    {
+      "icon_id": "7008924",
+      "name": "editor",
+      "font_class": "editor",
+      "unicode": "e6f5",
+      "unicode_decimal": 59125
+    },
+    {
+      "icon_id": "37856340",
+      "name": "WeChatOfficialAccount",
+      "font_class": "WeChatOfficialAccount",
+      "unicode": "eb79",
+      "unicode_decimal": 60281
+    },
+    {
       "icon_id": "7959689",
       "name": "mathInline",
       "font_class": "mathInline",

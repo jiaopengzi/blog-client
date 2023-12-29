@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-20 19:35:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-17 14:27:01
+ * @LastEditTime : 2023-12-27 11:22:27
  * @FilePath     : \blog-client\src\assets\scss\platform\pc.scss
  * @Description  : pc相关尺寸样式
  * @Blog         : https://jiaopengzi.com
@@ -36,10 +36,14 @@ Helvetica,
 Arial,
 sans-serif;
 
-// 编辑器
+// 文章编辑器
 $editor-toolbar-height: 40px; // 编辑器工具栏高度
 $editor-toolbar-margin-top: 5px; // 编辑器顶部面板margin-top
 $editor-toolbar-margin-bottom: 5px; // 编辑器底部面板margin-bottom
 $editor-md-container-height: 600px; // 编辑器md容器高度
 $editor-panels-bottom-height: 24px; // 编辑器底部面板高度
 $editor-panels-bottom-border: 1px; // 编辑器底部面板边框
+
+// 评论编辑器
+$el-tabs-header-height:40px; // el-tabs header 高度
+$editor-md-container-height-comment: 200px; // 评论编辑器md容器高度

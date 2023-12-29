@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-26 17:26:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-27 00:42:43
+ * @LastEditTime : 2023-12-28 12:19:24
  * @FilePath     : \blog-client\src\components\common\editor\core\EditorComment.vue
  * @Description  : 评论编辑器
  * @Blog         : https://jiaopengzi.com
@@ -16,7 +16,7 @@
             <Toolbar ref="toolbarRef" :toobar-btns="toobarBtns()" :icon-number-per-line="iconNumberPerLine()"
                 @toolbar-btn-clicked="toolbarBtnClicked" />
             <!-- emoji 选择组件 -->
-            <div class="emoji-picker-wrapper" v-if="inShowEmojiPicker">
+            <div class="emoji-picker-wrapper" v-if="isShowEmojiPicker">
                 <EmojiPicker :native="true" @select="onSelectEmoji" />
             </div>
         </div>
@@ -63,7 +63,7 @@ defineOptions({ name: "EditorComment" })
 
 // store
 const editorStore = useEditorStore()
-const { editor, isFullScreen, inShowEmojiPicker } = storeToRefs(editorStore)
+const { editor, isFullScreen, isShowEmojiPicker } = storeToRefs(editorStore)
 
 // ref
 const mdContainerRef = ref<MdContainerRef | null>(null) //编辑器容器
@@ -101,12 +101,12 @@ const editorClass = computed(() => setIsFullScreenClassName('md-editor', 'md-edi
 const previewClass = computed(() => setIsFullScreenClassName('md-preview', 'md-preview-fs', false, isFullScreen.value));
 
 // 工具栏点击事件
-const { toobarBtns, toolbarBtnClicked, iconNumberPerLine } = useToolbar(mdContainerRef, toolbarRef, codemirrorRef, ModeComment)
+const { toobarBtns, toolbarBtnClicked, iconNumberPerLine } = useToolbar(mdContainerRef, toolbarRef, codemirrorRef, previewRef, ModeComment)
 
 // event callback
 function onSelectEmoji(emoji: any) {
     codemirrorRef.value?.runCommand(CommandsKey.emoji, { prefix: "", content: emoji.i, suffix: "" })
-    inShowEmojiPicker.value = false
+    isShowEmojiPicker.value = false
 }
 
 // codemirror
@@ -127,11 +127,6 @@ onBeforeMount(async () => {
 </script>
   
 <style scoped lang="scss">
-.el-tabs {
-    --el-tabs-header-height: 40px;
-    border: none;
-}
-
 .emoji-picker-wrapper {
     position: absolute;
     z-index: 1000; // 使用足够高的 z-index 以确保 EmojiPicker 显示在其他元素上方
@@ -140,6 +135,8 @@ onBeforeMount(async () => {
 }
 
 @include respond-to('pc') {
+
+
     .md-layout {
         border: 1px solid #ccc;
         border-radius: 3px;
@@ -151,28 +148,34 @@ onBeforeMount(async () => {
             --icon-number-per-line: 20;
         }
 
+        .el-tabs__header {
+            --el-tabs-header-height: #{pc.$el-tabs-header-height}; // 设置 css 变量 引用scss变量 使用#{}包裹 插值语法将 SASS 变量插入到自定义属性中
+            border: none;
+        }
+
         .md-container {
 
             width: pc.$width-page-main;
 
             :deep(.el-tabs__content) {
                 padding: 0 0;
-                height: 200px;
+                height: pc.$editor-md-container-height-comment;
             }
 
             .md-editor {
                 overflow: hidden;
-                --md-editor-height: 200px
+                --md-editor-height: #{pc.$editor-md-container-height-comment}; // 设置 css 变量 引用scss变量 使用#{}包裹 插值语法将 SASS 变量插入到自定义属性中
             }
 
             .md-preview {
                 overflow: hidden;
-                height: 200px;
+                height: pc.$editor-md-container-height-comment;
             }
         }
     }
 
     .md-layout-fs {
+        // overflow: hidden;
         border-radius: 3px;
         width: pc.$width-page-main;
 
@@ -182,7 +185,7 @@ onBeforeMount(async () => {
         }
 
         .md-container-fs {
-
+            // overflow: hidden;
             width: pc.$width-page-main;
 
             :deep(.el-tabs__content) {
@@ -191,9 +194,9 @@ onBeforeMount(async () => {
                 height: calc(var(--md-editor-container-height) - var(--el-tabs-header-height));
             }
 
-            .md-editor-fs {
-                --md-editor-height: calc(var(--md-editor-container-height) - var(--el-tabs-header-height));
-            }
+            // .md-editor-fs {
+            //     --md-editor-height: calc(var(--md-editor-container-height) - var(--el-tabs-header-height));
+            // }
 
             .md-preview-fs {
                 height: calc(var(--md-editor-container-height) - var(--el-tabs-header-height));
@@ -204,33 +207,39 @@ onBeforeMount(async () => {
 
 @include respond-to('phone') {
 
+
     .md-layout {
         // border: 1px solid #ccc;
         border-radius: 3px;
         // margin: 5px 0px;
-        width: 100vw;
+        width: phone.$width-page;
 
         .md-toolbar {
             position: relative;
             --icon-number-per-line: 10;
         }
 
+        .el-tabs__header {
+            --el-tabs-header-height:#{phone.$el-tabs-header-height};
+            border: none;
+        }
+
         .md-container {
 
-            width: 100vw;
+            width: phone.$width-page;
 
 
             :deep(.el-tabs__content) {
                 padding: 0 0;
-                height: 50vh;
+                height: phone.$editor-md-container-height-comment;
             }
 
             .md-editor {
-                --md-editor-height: 50vh;
+                --md-editor-height: #{phone.$editor-md-container-height-comment};
             }
 
             .md-preview {
-                height: 50vh;
+                height: phone.$editor-md-container-height-comment;
             }
         }
     }
@@ -255,9 +264,9 @@ onBeforeMount(async () => {
                 height: calc(var(--md-editor-container-height) - var(--el-tabs-header-height));
             }
 
-            .md-editor-fs {
-                --md-editor-height: calc(var(--md-editor-container-height) - var(--el-tabs-header-height));
-            }
+            // .md-editor-fs {
+            //     --md-editor-height: calc(var(--md-editor-container-height) - var(--el-tabs-header-height));
+            // }
 
             .md-preview-fs {
                 height: calc(var(--md-editor-container-height) - var(--el-tabs-header-height));

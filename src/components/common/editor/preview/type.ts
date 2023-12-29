@@ -17,4 +17,5 @@ export interface PriviewProps {
   } // 预览内容
   width?: string // 宽度
   height?: string // 高度
+  isShowPreviewWechat?: boolean // 是否显示微信预览
 }
