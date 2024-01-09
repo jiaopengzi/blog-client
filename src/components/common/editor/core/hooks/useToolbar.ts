@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-20 22:10:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-28 20:35:33
+ * @LastEditTime : 2024-01-09 11:44:08
  * @FilePath     : \blog-client\src\components\common\editor\core\hooks\useToolbar.ts
  * @Description  : 工具栏 hook
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,7 @@
  */
 
 import type { Ref } from 'vue'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import type {
   MdContainerRef,
   ToolbarRef,
@@ -95,14 +95,15 @@ export function useToolbar(
     }
     if (name === CommandsKey.WeChatOfficialAccount) {
       isShowPreviewWechat.value = !isShowPreviewWechat.value
-      if (isShowPreviewWechat.value) return
-      const contentElement = document.getElementById('preview')
-      // const cssHtml = cssToInline(contentElement?.innerHTML || '')
-      // console.log('cssHtml', cssHtml)
-      if (contentElement) {
-        // copyToClipboard(contentElement)
-        copyWithCustomStyle(contentElement)
-      }
+      // 渲染完毕后再执行
+      nextTick(() => {
+        if (isShowPreviewWechat.value) {
+          const contentElement = document.getElementById('preview')
+          if (contentElement) {
+            copyWithCustomStyle(contentElement)
+          }
+        }
+      })
     }
     // if (name === CommandsKey.save) {
     //   isShowPreviewWechat.value = !isShowPreviewWechat.value

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-28 13:35:21
+ * @LastEditTime : 2024-01-02 15:37:18
  * @FilePath     : \blog-client\src\components\common\editor\core\EditorPost.vue
  * @Description  : 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -144,6 +144,7 @@ const { previewData, isShowPreviewWechat, showImageViewer, closeImageViewer } = 
 // 初始化
 onMounted(() => {
     updateCmHeightNotIsFullScreen() // 初始化编辑器实例高度
+    console.log('editorCore onMounted', previewRef.value?.$el)
 })
 
 onBeforeMount(async () => {

@@ -1,9 +1,8 @@
-/* eslint-disable vue/multi-word-component-names */
 /**
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-21 15:09:26
+ * @LastEditTime : 2024-01-05 13:28:32
  * @FilePath     : \blog-client\src\main.ts
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -18,6 +17,7 @@ import App from '@/App.vue'
 import router from '@/router'
 import { useUserStore } from '@/stores/user'
 import Icon from '@/components/common/icons'
+import { consoleInfoFormat } from '@/version'
 
 const app = createApp(App)
 
@@ -31,6 +31,9 @@ app.use(createHead()) //参考官方文档:https://unhead.unjs.io/setup/vue/inst
 router.isReady().then(async () => {
   const userStore = useUserStore()
   await userStore.getUserInfoByToken()
+  /* eslint-disable vue/multi-word-component-names */
   app.component('Icon', Icon) // 使用 'Icon' 作为全局组件名
   app.mount('#app')
 })
+
+consoleInfoFormat() // 控制台输出项目信息

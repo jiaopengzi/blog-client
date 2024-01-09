@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:01:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-28 13:36:18
+ * @LastEditTime : 2024-01-09 11:22:54
  * @FilePath     : \blog-client\src\components\common\editor\preview\index.vue
  * @Description  : 预览组件
  * @Blog         : https://jiaopengzi.com
@@ -21,12 +21,13 @@ import ClipboardJS from 'clipboard' //代码块复制
 import type { ClipboardEvent } from 'clipboard'
 import { ShowMsgTip } from '@/utils/message'
 import { shiftArray } from '@/utils/img'
-import { htmlHandleUtf8, htmlHandleCopyBtns } from '@/utils/preview'
+import { htmlHandleUtf8, htmlHandleWeChat } from '@/utils/preview'
 import { ScrollElementTag, ScrollElementTagHeading } from '@/components/common/editor/command'
 import { scrollToElement } from '@/utils/scroll'
 import type { PriviewProps } from '@/components/common/editor/preview'
 import '@/assets/scss/preview.scss'
 import '@/assets/highlight/highlight.js.jpz.scss'
+import 'katex/dist/katex.min.css' // katex 样式
 
 // eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: "Preview" })
@@ -47,7 +48,7 @@ const html = computed(() => {
 
     if (props.isShowPreviewWechat) {
         // 微信公众号预览
-        return htmlHandleCopyBtns(html)
+        return htmlHandleWeChat(html)
     } else {
         // 普通预览
         return html
@@ -135,7 +136,7 @@ const navigateToHeading = (index: number): void => {
  * @return 
  */
 const navigateToElement = (index: number): void => {
-    console.log('navigateToElement=====>>>>', index)
+    // console.log('navigateToElement=====>>>>', index)
     scrollToElement(previewRef.value, index, ScrollElementTag)
 }
 
@@ -197,9 +198,6 @@ const initializeClipboard = () => {
         // console.error('Trigger:', e.trigger)
     })
 }
-
-
-
 
 
 // 导出方法

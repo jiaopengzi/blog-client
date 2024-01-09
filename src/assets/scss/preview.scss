@@ -279,8 +279,9 @@
   // note
   .markdown-alert-note {
     color: $markdown-alert-note-color;
-    border: 1px solid $markdown-alert-note-border-color;
+    // border: 1px solid $markdown-alert-note-border-color;
     background-color: $markdown-alert-note-bg-color;
+    border: none;
 
     .markdown-alert-title {
       color: $markdown-alert-note-title-color;

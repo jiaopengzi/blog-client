@@ -2,14 +2,15 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-27 16:55:44
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-28 23:53:42
+ * @LastEditTime : 2024-01-09 20:34:47
  * @FilePath     : \blog-client\src\utils\preview.ts
  * @Description  : 处理预览html
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
+import html2canvas from 'html2canvas'
 import { ShowMsgTip } from '@/utils/message'
-// import { cssToInline } from '@/utils/style'
+import { HasParentByClass } from '@/utils/getParentByClass'
 /**
  * @description:  处理 utf-8 编码问题
  * @param htmlSrc html 源码
@@ -32,165 +33,186 @@ export function htmlHandleCopyBtns(htmlSrc: string) {
   return htmlSrc.replace(reg, '')
 }
 
-// function applyComputedStyle(srcElement: HTMLElement, targetElement: HTMLElement) {
-//   const styleSheets = Array.from(document.styleSheets)
+/**
+ * @description: 将 div 替换为 section
+ * @param htmlSrc html 源码
+ * @return  替换后的 html 源码
+ */
+export function htmlHandleDivToSection(htmlSrc: string) {
+  const reg = /div/g
+  // 将所有按钮替换为空
+  return htmlSrc.replace(reg, 'section')
+}
 
-//   // 遍历文档中的所有样式表
-//   styleSheets.forEach((sheet) => {
-//     const cssRules = sheet.cssRules ? Array.from(sheet.cssRules) : []
+/**
+ * @description: 将 katex 公式转成图片 为了微信预览
+ * @param container 预览容器
+ * @param calssName katex 公式的类名
+ */
+export async function katexToImage(container: HTMLElement, className: string = 'katex-html') {
+  // 获取所有 katex 公式
+  const katexsArray = Array.from(container.getElementsByClassName(className))
+  if (katexsArray) {
+    // 遍历所有 katex 公式
+    for (let i = 0; i < katexsArray.length; i++) {
+      const katex = katexsArray[i] as HTMLElement // 当前 katex 公式
+      // 判断 katex 是否有父元素 的类名为 katex-display
+      const isKatexDisplay = HasParentByClass(katex, 'katex-display')
 
-//     // 遍历每个样式表中的规则
-//     cssRules.forEach((rule) => {
-//       if (rule instanceof CSSStyleRule) {
-//         const selector = rule.selectorText
+      // 获取 katex 滚动宽度
+      const katexScrollWidth = katex.scrollWidth // katex 滚动宽度
+      const katexOffsetWidth = katex.offsetWidth * 1 // katex 宽度
+      const katexOffsetHeight = katex.offsetHeight * 1.05 // katex 高度
 
-//         // 检查规则是否适用于 srcElement
-//         if (srcElement.matches(selector)) {
-//           for (let i = 0; i < rule.style.length; i++) {
-//             const property = rule.style[i] as string
-//             targetElement.style[property] = getComputedStyle(srcElement).getPropertyValue(property)
-//           }
-//         }
-//       }
-//     })
-//   })
-// }
+      // 获取 canvas 宽度 如果是行内公式则使用 katex 的宽度 如果是行间公式则使用 katex 的滚动宽度
+      const getCanvasWidth = () => (isKatexDisplay ? katexScrollWidth : katexOffsetWidth)
 
-// // 克隆给定元素，并将计算后的样式应用为内联样式
-// /**
-//  * @description: 克隆给定元素，并将计算后的样式应用为内联样式
-//  * @param srcElement 要克隆的元素
-//  * @return        克隆的元素
-//  */
-// function cloneWithInlineStyles(srcElement: HTMLElement): HTMLElement {
-//   const clonedElement = srcElement.cloneNode(true) as HTMLElement // 深度克隆
-//   applyComputedStyle(srcElement, clonedElement) // 将计算后的样式从源元素复制到克隆元素
+      // 使用 canvas 将 katex 转成图片 scale 为 3 是为了提高图片清晰度
+      const canvas = await html2canvas(katex, {
+        scale: 3,
+        backgroundColor: '#ffffff80',
+        logging: false,
+        width: getCanvasWidth(),
+        height: katexOffsetHeight,
+      })
+      const imageDataURL = canvas.toDataURL('image/png') // 转成图片的 base64
+      const img = document.createElement('img') // 创建 img 元素
+      img.src = imageDataURL // 设置图片的 src
 
-//   // 遍历子元素并复制其样式
-//   const children = srcElement.querySelectorAll('*') // 获取所有子元素
-//   const clonedChildren = clonedElement.querySelectorAll('*') // 获取所有子元素
+      // 根据是否行内公式设置 img 元素的属性
+      if (isKatexDisplay) {
+        img.style.width = `100%` // 设置图片的宽度
+      } else {
+        // 需要单独一个添加 不能用 setAttribute 会被覆盖
+        img.style.width = `${getCanvasWidth()}px` // 设置图片的宽度
+        img.style.display = 'inline-block' // 设置 img 元素的 display 为 inline-block 行内显示
+        img.style.verticalAlign = 'text-top' // 设置 img 元素的 vertical-align 为 text-top 使其与文字对齐
+      }
 
-//   children.forEach((child, index) => {
-//     applyComputedStyle(child as HTMLElement, clonedChildren[index] as HTMLElement) // 将计算后的样式从源元素复制到克隆元素
-//   })
-
-//   return clonedElement // 返回克隆的元素
-// }
-
-// /**
-//  * @description: 复制带样式的html
-//  * @param element 要复制的元素
-//  * @return promise void
-//  */
-// export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
-//   // 使用计算后的样式克隆元素，将其应用为内联样式
-//   // const clonedElement = cloneWithInlineStyles(element)
-
-//   // 获取纯文本和 HTML 字符串
-//   const text = element.innerText
-//   const html = element.innerHTML
-
-//   try {
-//     // 创建一个包含要复制 HTML 的 blob
-//     const blob = new Blob([html], { type: 'text/html' })
-
-//     // 使用 clipboardItem 设置格式和数据
-//     const clipboardItemInput = new ClipboardItem({
-//       'text/plain': new Blob([text], { type: 'text/plain' }),
-//       'text/html': blob,
-//     })
-
-//     // 写入剪贴板
-//     await navigator.clipboard.write([clipboardItemInput])
-
-//     ShowMsgTip(ShowMsgTip.MsgType.success, '内容已复制到剪贴板')
-//   } catch (err) {
-//     console.error('无法复制内容', err)
-//     ShowMsgTip(ShowMsgTip.MsgType.error, '无法复制内容')
-//   }
-// }
-
-function applyInlineStyles(element: HTMLElement): void {
-  const computedStyles = getComputedStyle(element)
-  const defaultElement = document.createElement(element.tagName)
-
-  // 将默认元素添加到 DOM 中以计算其样式
-  element.parentElement.appendChild(defaultElement)
-  const defaultStyles = getComputedStyle(defaultElement)
-
-  // 比较计算样式与默认元素的计算样式
-  for (let i = 0; i < computedStyles.length; i++) {
-    const property = computedStyles[i]
-    const elementStyleValue = computedStyles.getPropertyValue(property)
-    const defaultStyleValue = defaultStyles.getPropertyValue(property)
-
-    if (elementStyleValue !== defaultStyleValue) {
-      // console.log(property, elementStyleValue, defaultStyleValue);
-      element.style.setProperty(property, elementStyleValue)
+      katex.parentNode?.replaceChild(img, katex) // 替换 katex 公式
     }
   }
+}
 
-  // 从 DOM 中移除默认元素
-  element.parentElement.removeChild(defaultElement)
+/**
+ * @description: html 处理微信预览
+ * @param htmlSrc html 源码
+ * @return  替换后的 html 源码
+ */
+export function htmlHandleWeChat(htmlSrc: string) {
+  htmlSrc = htmlHandleCopyBtns(htmlSrc)
+  htmlSrc = htmlHandleDivToSection(htmlSrc)
+  return htmlSrc
+}
 
-  Array.from(element.children).forEach((child: Element) => {
-    if (child instanceof HTMLElement) {
-      applyInlineStyles(child)
+/**
+ * @description: 获取所有外部样式表并按照它们在 document.styleSheets 中的位置进行排序
+ * @return 已排序的外部样式表列表和索引
+ */
+function getSortedStyleSheets(): [CSSStyleSheet, number][] {
+  const styleSheets = Array.from(document.styleSheets).map((styleSheet, index) => [
+    styleSheet as CSSStyleSheet,
+    index,
+  ]) as [CSSStyleSheet, number][]
+
+  // 对样式表按照它们在 document.styleSheets 中的位置进行排序
+  return styleSheets.sort((a, b) => a[1] - b[1])
+}
+
+/**
+ * @description: 指定类名的 sapn 元素是否应该保留其行内样式
+ * @param sapnElement sapn元素
+ * @param className 类名
+ * @return boolean 是否应该保留其行内样式
+ */
+export function shouldPreserveInlineStyles(
+  element: HTMLElement | SVGElement,
+  className: string,
+): boolean {
+  let currentElement: Element | null = element
+  while (currentElement) {
+    if (currentElement instanceof HTMLSpanElement && currentElement.classList.contains(className)) {
+      return true
+    }
+    currentElement = currentElement.parentElement
+  }
+  return false
+}
+
+/**
+ * @description: 递归处理元素将外部样式应用为内联样式
+ * @param el 根元素
+ */
+function applyInlineStyles(el: HTMLElement | SVGElement) {
+  const cssStyleSheets = getSortedStyleSheets() // 样式表列表
+  const isKatex = shouldPreserveInlineStyles(el, 'katex') // 是否为 katex 的 span 元素
+  if (!isKatex) {
+    cssStyleSheets.forEach(([styleSheet]) => {
+      try {
+        Array.from(styleSheet.cssRules).forEach((rule: CSSRule) => {
+          if (rule instanceof CSSStyleRule) {
+            // 检查选择器是否匹配当前元素
+            if (el.matches(rule.selectorText)) {
+              for (let i = 0; i < rule.style.length; i++) {
+                const property = rule.style[i] // 属性名
+
+                const cssStyplevalue = rule.style.getPropertyValue(property) // 样式表的属性值
+
+                // 如果属性值不为空且不为默认值 或者 不是 katex 的 span 元素
+                if (cssStyplevalue.startsWith('var(--')) {
+                  // 如果值为 CSS 变量，获取计算后的具体值
+                  el.style.setProperty(property, getComputedStyle(el).getPropertyValue(property))
+                } else {
+                  el.style.setProperty(property, cssStyplevalue)
+                }
+              }
+            }
+          }
+        })
+      } catch (error) {
+        console.warn('Error accessing rules in stylesheet:', styleSheet, error)
+      }
+    })
+  }
+
+  // 递归处理子元素
+  Array.from(el.children).forEach((child) => {
+    if (child instanceof HTMLElement || child instanceof SVGElement) {
+      applyInlineStyles(child as HTMLElement | SVGElement)
     }
   })
 }
 
-// export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
-//   try {
-//     // 将外部样式应用为内联样式
-//     // const clonedElement = element.cloneNode(true) as HTMLElement // 深度克隆
-//     applyInlineStyles(element)
-
-//     // 获取带有内联样式的 HTML 字符串
-//     const html = element.outerHTML
-
-//     // 创建一个包含要复制 HTML 的 blob
-//     const blob = new Blob([html], { type: 'text/html' })
-
-//     // 使用 clipboardItem 设置格式和数据
-//     const clipboardItemInput = new ClipboardItem({
-//       'text/plain': new Blob([html], { type: 'text/plain' }),
-//       'text/html': blob,
-//     })
-
-//     // 写入剪贴板
-//     await navigator.clipboard.write([clipboardItemInput])
-
-//     ShowMsgTip(ShowMsgTip.MsgType.success, '内容已复制到剪贴板')
-//   } catch (err) {
-//     console.error('无法复制内容', err)
-//     ShowMsgTip(ShowMsgTip.MsgType.error, '无法复制内容')
-//   }
-// }
-
 export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
-  // 创建一个点击事件监听器
-  // const handleClick = async () => {
-  //   const htmlContent = element.innerHTML
+  try {
+    // 将 katex 公式转成图片
+    await katexToImage(element)
+    // 将外部样式应用为内联样式
+    applyInlineStyles(element)
 
-  //   try {
-  //     // 创建一个包含HTML内容的Blob对象
-  //     const blob = new Blob([htmlContent], { type: 'text/html' })
+    // 获取带有内联样式的 HTML 字符串
+    const html = element.innerHTML
+    // console.log('html', html)
 
-  //     // 使用Blob对象创建ClipboardItem并写入剪贴板
-  //     const clipboardItem = new ClipboardItem({ 'text/html': blob })
-  //     await navigator.clipboard.write([clipboardItem])
+    if (typeof ClipboardItem !== 'undefined') {
+      // 创建一个包含要复制 HTML 的 blob
+      const contentNoStyle = new Blob([html], { type: 'text/plain' })
+      const contentWithStyle = new Blob([html], { type: 'text/html' })
 
-  //     alert('已复制好，可贴粘。')
-  //   } catch (err) {
-  //     console.warn('复制失败', err)
-  //   }
-  // }
+      // 使用 clipboardItem 设置格式和数据
+      const clipboardItemInput = new ClipboardItem({
+        'text/plain': contentNoStyle,
+        'text/html': contentWithStyle,
+      })
 
-  // document.addEventListener('click', handleClick)
-
-  // 在组件销毁时移除事件监听器（假设组件支持生命周期）
-  // onUnmounted(() => {
-  //     document.removeEventListener('click', handleClick);
-  // });
+      // 写入剪贴板
+      await navigator.clipboard.write([clipboardItemInput])
+      ShowMsgTip(ShowMsgTip.MsgType.success, '内容已复制到剪贴板')
+    } else {
+      ShowMsgTip(ShowMsgTip.MsgType.warning, '请升级你的浏览器以获得更好的复制功能支持')
+    }
+  } catch (err) {
+    console.error('无法复制内容', err)
+    ShowMsgTip(ShowMsgTip.MsgType.error, '无法复制内容')
+  }
 }

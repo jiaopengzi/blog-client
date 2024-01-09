@@ -17,7 +17,6 @@ declare module 'vue' {
     CommentPhone: typeof import('./src/components/phone/userinfo/CommentPhone.vue')['default']
     ContentPC: typeof import('./src/components/pc/content/ContentPC.vue')['default']
     ContentPhone: typeof import('./src/components/phone/content/ContentPhone.vue')['default']
-    copy: typeof import('./src/components/common/editor/preview/index copy.vue')['default']
     EditorComment: typeof import('./src/components/common/editor/core/EditorComment.vue')['default']
     EditorPost: typeof import('./src/components/common/editor/core/EditorPost.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
@@ -84,6 +83,5 @@ declare module 'vue' {
     UserDropdownPC: typeof import('./src/components/pc/UserDropdownPC.vue')['default']
     VipPC: typeof import('./src/components/pc/userinfo/VipPC.vue')['default']
     VipPhone: typeof import('./src/components/phone/userinfo/VipPhone.vue')['default']
-    Wechat: typeof import('./src/components/common/editor/preview/wechat.vue')['default']
   }
 }

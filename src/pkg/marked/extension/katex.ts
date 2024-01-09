@@ -2,13 +2,13 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-28 18:10:18
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-05 18:14:46
+ * @LastEditTime : 2024-01-08 09:53:56
  * @FilePath     : \blog-client\src\pkg\marked\extension\katex.ts
- * @Description  : 数学公式扩展配置
+ * @Description  : 公式扩展配置 https://katex.org/docs/options
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
-import type { KatexOptions } from 'katex' // 数学公式
+import type { KatexOptions } from 'katex' // 公式
 
 const optionKatex: KatexOptions = {
   /**
@@ -28,7 +28,7 @@ const optionKatex: KatexOptions = {
    *
    * @default 'htmlAndMathml'
    */
-  output: 'mathml',
+  output: 'html',
   /**
    * If `true`, display math has \tags rendered on the left
    * instead of the right, like \usepackage[leqno]{amsmath} in LaTeX.
@@ -63,7 +63,7 @@ const optionKatex: KatexOptions = {
    *
    * See `src/macros.js` for its usage
    */
-  // macros: any,
+  // macros: { '\\ce': '' },
 
   /**
    * Specifies a minimum thickness, in ems, for fraction lines,
@@ -71,7 +71,7 @@ const optionKatex: KatexOptions = {
    * \underline, \overline, and the borders of \fbox, \boxed, and
    * \fcolorbox.
    */
-  minRuleThickness: 1,
+  minRuleThickness: 0.04,
 
   /**
    * If `true`, `\color` will work like LaTeX's `\textcolor`

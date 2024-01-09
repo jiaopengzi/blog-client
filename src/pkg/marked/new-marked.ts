@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-06 23:36:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-25 10:45:28
+ * @LastEditTime : 2024-01-03 13:12:24
  * @FilePath     : \blog-client\src\pkg\marked\new-marked.ts
  * @Description  : 重新封装 marked
  * @Blog         : https://jiaopengzi.com
@@ -12,8 +12,9 @@ import { Marked } from 'marked'
 // import marked from 'marked'
 import { markedHighlight } from 'marked-highlight' // 代码高亮
 import optionHighlight from '@/pkg/marked/extension/highlight' // 代码高亮配置
-import markedKatex from 'marked-katex-extension' // 数学公式
-import optionKatex from '@/pkg/marked/extension/katex' // 数学公式配置
+import markedKatex from 'marked-katex-extension' // 公式
+import optionKatex from '@/pkg/marked/extension/katex' // 公式配置
+import 'katex/dist/contrib/mhchem.mjs'
 // import markedExtendedTables from 'marked-extended-tables' // 表格扩展
 import tableExtension from '@/pkg/marked/extension/table' // 解除 marked 版本依赖 表格扩展
 import markedFootnote from 'marked-footnote' // 脚注
@@ -34,8 +35,8 @@ const createMarked = () => {
   const marked = new Marked()
 
   marked.use(
-    markedHighlight(optionHighlight),
     markedKatex(optionKatex),
+    markedHighlight(optionHighlight),
     tableExtension(),
     markedFootnote(optionFootnote),
     markedEmoji(optionEmojis),
