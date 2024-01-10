@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:01:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-09 11:22:54
+ * @LastEditTime : 2024-01-10 15:46:07
  * @FilePath     : \blog-client\src\components\common\editor\preview\index.vue
  * @Description  : 预览组件
  * @Blog         : https://jiaopengzi.com
@@ -202,6 +202,7 @@ const initializeClipboard = () => {
 
 // 导出方法
 defineExpose({
+    root:previewRef,
     navigateToHeading,
     navigateToElement,
     navigateGoHome,

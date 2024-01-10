@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-26 17:26:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-28 12:19:24
+ * @LastEditTime : 2024-01-10 15:49:02
  * @FilePath     : \blog-client\src\components\common\editor\core\EditorComment.vue
  * @Description  : 评论编辑器
  * @Blog         : https://jiaopengzi.com
@@ -26,7 +26,7 @@
             <el-tabs type="border-card" :class="mdContainerClass">
                 <el-tab-pane label="编辑">
                     <!-- 编辑器 -->
-                    <div ref="cmContainerRef" :class="editorClass">
+                    <div :class="editorClass">
                         <Codemirror ref="codemirrorRef" :codemirrorDoc="editor" :height="cmHeight"
                             @update-editor-doc="updateEditorDoc" />
                     </div>
@@ -52,7 +52,7 @@ import Preview from '@/components/common/editor/preview'
 import { useToolbar, useCodemirror, usePreview } from '@/components/common/editor/core/hooks'
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
-import type { MdContainerRef, ToolbarRef, CmContainerRef, CodemirrorRef, PreviewRef } from '@/components/common/editor/core'
+import type { ToolbarRef, CodemirrorRef, PreviewRef } from '@/components/common/editor/core'
 import { setIsFullScreenClassName } from '@/components/common/editor/core'
 import { CommandsKey } from '@/components/common/editor/command'
 import EmojiPicker from 'vue3-emoji-picker' // import picker compopnent
@@ -66,9 +66,8 @@ const editorStore = useEditorStore()
 const { editor, isFullScreen, isShowEmojiPicker } = storeToRefs(editorStore)
 
 // ref
-const mdContainerRef = ref<MdContainerRef | null>(null) //编辑器容器
+const mdContainerRef = ref<HTMLElement | null>(null) //编辑器容器
 const toolbarRef = ref<ToolbarRef | null>(null) //编辑器容器
-const cmContainerRef = ref<CmContainerRef | null>(null) //编辑器容器
 const codemirrorRef = ref<CodemirrorRef | null>(null) //编辑器
 const previewRef = ref<PreviewRef | null>(null) // 预览容器
 // 将 CommandsKey 解构
@@ -110,7 +109,7 @@ function onSelectEmoji(emoji: any) {
 }
 
 // codemirror
-const { cmHeight, updateCmHeightNotIsFullScreen, updateEditorDoc } = useCodemirror(mdContainerRef, cmContainerRef, previewRef)
+const { cmHeight, updateCmHeightNotIsFullScreen, updateEditorDoc } = useCodemirror(mdContainerRef, codemirrorRef, previewRef)
 
 // preview
 const { previewData, showImageViewer, closeImageViewer } = usePreview()

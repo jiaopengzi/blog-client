@@ -81,6 +81,10 @@ onMounted(async () => {// 初始化 CodeMirror
     updateToolbarHeight()// 初始化工具栏高度
 })
 
+defineExpose({
+    root: toolbarRef
+})
+
 </script>
   
 <style scoped lang="scss">

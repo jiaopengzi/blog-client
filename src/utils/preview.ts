@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-27 16:55:44
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-09 20:34:47
+ * @LastEditTime : 2024-01-10 17:12:29
  * @FilePath     : \blog-client\src\utils\preview.ts
  * @Description  : 处理预览html
  * @Blog         : https://jiaopengzi.com
@@ -141,7 +141,7 @@ export function shouldPreserveInlineStyles(
 
 /**
  * @description: 递归处理元素将外部样式应用为内联样式
- * @param el 根元素
+ * @param el 元素
  */
 function applyInlineStyles(el: HTMLElement | SVGElement) {
   const cssStyleSheets = getSortedStyleSheets() // 样式表列表
@@ -183,6 +183,10 @@ function applyInlineStyles(el: HTMLElement | SVGElement) {
   })
 }
 
+/**
+ * @description: 复制带有自定义样式的内容
+ * @param element 要复制的元素
+ */
 export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
   try {
     // 将 katex 公式转成图片

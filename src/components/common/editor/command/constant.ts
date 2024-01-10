@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:51:36
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-28 12:54:45
+ * @LastEditTime : 2024-01-10 16:07:26
  * @FilePath     : \blog-client\src\components\common\editor\command\constant.ts
  * @Description  : markdown 标记常量
  * @Blog         : https://jiaopengzi.com
@@ -44,6 +44,7 @@ export enum CommandsKey {
   superscript = 'superscript',
   subscript = 'subscript',
   payContent = 'payContent',
+  copy = 'copy',
   save = 'save',
   publish = 'publish',
   preview = 'preview',
@@ -299,6 +300,13 @@ export const MardkdownEditorCommands: MardkdownEditorCommandsType = {
     hotKey: 'Ctrl+Alt+M',
     icon: IconKeys.payContent,
   },
+  // 复制
+  [CommandsKey.copy]: {
+    tip: '复制',
+    hotKey: 'Alt+C',
+    icon: IconKeys.copy,
+  },
+
   // 保存
   [CommandsKey.save]: {
     tip: '保存',

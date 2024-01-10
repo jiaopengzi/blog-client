@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-02 15:37:18
+ * @LastEditTime : 2024-01-10 15:48:06
  * @FilePath     : \blog-client\src\components\common\editor\core\EditorPost.vue
  * @Description  : 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -28,7 +28,7 @@
             </div>
 
             <!-- 编辑器 -->
-            <div ref="cmContainerRef" :class="editorClass" v-show="editorShow">
+            <div :class="editorClass" v-show="editorShow">
                 <Codemirror ref="codemirrorRef" :codemirrorDoc="editor" :height="cmHeight"
                     @handle-scroll="debouncedHandleScroll" @update-editor-doc="updateEditorDoc" />
             </div>
@@ -51,7 +51,7 @@ import Preview from '@/components/common/editor/preview'
 import { useToolbar, useToc, useCodemirror, usePreview } from '@/components/common/editor/core/hooks'
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
-import type { MdContainerRef, ToolbarRef, CmContainerRef, CodemirrorRef, PreviewRef } from '@/components/common/editor/core'
+import type { ToolbarRef, CodemirrorRef, PreviewRef } from '@/components/common/editor/core'
 import { setIsFullScreenClassName } from '@/components/common/editor/core'
 import { CommandsKey } from '@/components/common/editor/command'
 import EmojiPicker from 'vue3-emoji-picker' // import picker compopnent
@@ -59,16 +59,15 @@ import 'vue3-emoji-picker/css'// import css
 
 
 // 文章编辑器命名
-defineOptions({ name: "EditorCore" })
+defineOptions({ name: "EditorPost" })
 
 // store
 const editorStore = useEditorStore()
 const { tocHtml, tocShow, editor, editorShow, previewShow, isFullScreen, isShowEmojiPicker } = storeToRefs(editorStore)
 
 // ref
-const mdContainerRef = ref<MdContainerRef | null>(null) //编辑器容器
+const mdContainerRef = ref<HTMLElement | null>(null) //编辑器容器
 const toolbarRef = ref<ToolbarRef | null>(null) //编辑器容器
-const cmContainerRef = ref<CmContainerRef | null>(null) //编辑器容器
 const codemirrorRef = ref<CodemirrorRef | null>(null) //编辑器
 const previewRef = ref<PreviewRef | null>(null) // 预览容器
 // 将 CommandsKey 解构
@@ -106,6 +105,7 @@ const ModePost = reactive([
     CommandsKey.WeChatOfficialAccount,
     CommandsKey.fullscreen,
     CommandsKey.save,
+    CommandsKey.copy,
     CommandsKey.publish,
     CommandsKey.markdown,
     CommandsKey.html,
@@ -136,7 +136,7 @@ function onSelectEmoji(emoji: any) {
 const { tocHeadingClicked } = useToc(codemirrorRef, previewRef)
 
 // codemirror
-const { cmHeight, updateCmHeightNotIsFullScreen, debouncedHandleScroll, updateEditorDoc } = useCodemirror(mdContainerRef, cmContainerRef, previewRef)
+const { cmHeight, updateCmHeightNotIsFullScreen, debouncedHandleScroll, updateEditorDoc } = useCodemirror(mdContainerRef, codemirrorRef, previewRef)
 
 // preview
 const { previewData, isShowPreviewWechat, showImageViewer, closeImageViewer } = usePreview()
@@ -144,7 +144,7 @@ const { previewData, isShowPreviewWechat, showImageViewer, closeImageViewer } = 
 // 初始化
 onMounted(() => {
     updateCmHeightNotIsFullScreen() // 初始化编辑器实例高度
-    console.log('editorCore onMounted', previewRef.value?.$el)
+    // console.log('editorCore onMounted', previewRef.value?.$el)
 })
 
 onBeforeMount(async () => {

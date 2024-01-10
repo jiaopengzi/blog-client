@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-27 12:08:28
+ * @LastEditTime : 2024-01-10 15:46:17
  * @FilePath     : \blog-client\src\components\common\editor\codemirror\index.vue
  * @Description  : codemirror 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -13,13 +13,12 @@
 </template>
   
 <script lang="ts" setup>
-import { ref, onMounted, watch, watchEffect, onUnmounted } from 'vue';
+import { ref, onMounted, watchEffect, onUnmounted } from 'vue';
 import type { Extension } from '@codemirror/state'
 import type { ViewUpdate } from '@codemirror/view';
 import { EditorView, EditorState, createCustomSetup } from '@/pkg/codemirror/setup';
 import { CommandsKey, MardkdownEditorCommands, editorInsertFormatContent } from '@/components/common/editor/command'
 import type { MardkdownEditorCommandItemType } from '@/components/common/editor/command'
-import { useMagicKeys } from '@vueuse/core'
 import type { CodeEditorProps } from '@/components/common/editor/codemirror'
 
 // eslint-disable-next-line vue/multi-word-component-names
@@ -85,22 +84,6 @@ const updateDocInfo: Extension = EditorView.updateListener.of(
         }
     }
 )
-
-/**
- * @description: 注册快捷键
- */
-const keys = useMagicKeys() // 使用 useMagicKeys() 之后，就可以通过 keys 来获取键盘按键的状态了
-const registerHotKeys = () => {
-    Object.entries(MardkdownEditorCommands).forEach((item) => {
-        const hotKey = item[1]?.hotKey
-        if (hotKey) {
-            watch(keys[hotKey], (v) => {
-                if (v)
-                    editorInsertFormatContent(cmView, MardkdownEditorCommands[item[0] as CommandsKey])
-            })
-        }
-    })
-}
 
 // 执行按钮命令
 const runCommand = (commandName: CommandsKey, customContent: MardkdownEditorCommandItemType = {}): void => {
@@ -170,7 +153,6 @@ const watchStop = watchEffect(() => {
 onMounted(() => {
     initializeCssVariable() // 初始化 css 变量
     initializeCodeMirror(); // 初始化 CodeMirror
-    registerHotKeys() // 注册快捷键
 })
 
 onUnmounted(() => {
@@ -180,6 +162,7 @@ onUnmounted(() => {
 
 // 导出函数
 defineExpose({
+    root: codemirrorRef,
     runCommand,
     scrollIntoViewLine,
 })
@@ -194,8 +177,8 @@ defineExpose({
     }
 
     // :deep(.cm-content) {
-    //     // width: 100%;
-    //     // height: calc(var(--my-codemirror-height, 100%) - pc.$editor-panels-bottom-height - pc.$editor-panels-bottom-border);
+    //     width: 100%;
+    //     height: calc(var(--my-codemirror-height, 100%) - pc.$editor-panels-bottom-height - pc.$editor-panels-bottom-border);
     // }
 
     :deep(.cm-panels-bottom) {

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-20 22:22:25
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-27 17:08:19
+ * @LastEditTime : 2024-01-10 15:47:13
  * @FilePath     : \blog-client\src\components\common\editor\core\hooks\useCodemirror.ts
  * @Description  : codemirror hook
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,7 @@
 
 import { nextTick, ref, watch } from 'vue'
 import type { Ref } from 'vue'
-import type { MdContainerRef, CmContainerRef, PreviewRef } from '@/components/common/editor/core'
+import type { CodemirrorRef, PreviewRef } from '@/components/common/editor/core'
 import { ScrollElementTag } from '@/components/common/editor/command'
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
@@ -20,8 +20,8 @@ import { getCSSVariableValue } from '@/utils/style'
 import { htmlHandleCopyBtns } from '@/utils/preview'
 
 export function useCodemirror(
-  mdContainerRef: Ref<MdContainerRef | null>,
-  cmContainerRef: Ref<CmContainerRef | null>,
+  mdContainerRef: Ref<HTMLElement | null>,
+  codemirrorRef: Ref<CodemirrorRef | null>,
   previewRef: Ref<PreviewRef | null>,
 ) {
   // store
@@ -55,9 +55,9 @@ export function useCodemirror(
 
   // 更新 cmView 编辑器实例高度 非全屏时
   const updateCmHeightNotIsFullScreen = (): void => {
-    if (cmContainerRef.value && !isFullScreen.value) {
+    if (codemirrorRef.value && !isFullScreen.value) {
       // 读取 codemirror 容器中的 css 变量 --md-editor-height 的值
-      cmHeight.value = getCSSVariableValue(cmContainerRef.value, '--md-editor-height')
+      cmHeight.value = getCSSVariableValue(codemirrorRef.value.root, '--md-editor-height')
       // console.log('cmHeight.value====>非全屏', isFullScreen.value, cmHeight.value)
     }
   }

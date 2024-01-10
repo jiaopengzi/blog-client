@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-20 22:10:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-09 11:44:08
+ * @LastEditTime : 2024-01-10 16:43:31
  * @FilePath     : \blog-client\src\components\common\editor\core\hooks\useToolbar.ts
  * @Description  : 工具栏 hook
  * @Blog         : https://jiaopengzi.com
@@ -10,13 +10,8 @@
  */
 
 import type { Ref } from 'vue'
-import { ref, onMounted, nextTick } from 'vue'
-import type {
-  MdContainerRef,
-  ToolbarRef,
-  CodemirrorRef,
-  PreviewRef,
-} from '@/components/common/editor/core'
+import { ref, onMounted, nextTick, watch } from 'vue'
+import type { ToolbarRef, CodemirrorRef, PreviewRef } from '@/components/common/editor/core'
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
 import { MardkdownEditorCommands } from '@/components/common/editor/command'
@@ -25,9 +20,11 @@ import type { IconKeys } from '@/components/common/icons'
 import { ShowMsgTip } from '@/utils/message'
 import { getComputedStyleValue, setCSSVariable, getCSSVariableValue } from '@/utils/style'
 import { copyWithCustomStyle } from '@/utils/preview'
+import { debounce } from '@/utils/debounce'
+import { useMagicKeys } from '@vueuse/core'
 
 export function useToolbar(
-  mdContainerRef: Ref<MdContainerRef | null>,
+  mdContainerRef: Ref<HTMLElement | null>,
   toolbarRef: Ref<ToolbarRef | null>,
   codemirrorRef: Ref<CodemirrorRef | null>,
   previewRef: Ref<PreviewRef | null>,
@@ -56,6 +53,8 @@ export function useToolbar(
       }
     })
   }
+
+  const debounceCopyWithCustomStyle = debounce(copyWithCustomStyle, 500) // 防抖
 
   /**
    * @description: 处理工具栏按钮点击事件
@@ -95,14 +94,11 @@ export function useToolbar(
     }
     if (name === CommandsKey.WeChatOfficialAccount) {
       isShowPreviewWechat.value = !isShowPreviewWechat.value
-      // 渲染完毕后再执行
+    }
+    if (name === CommandsKey.copy) {
       nextTick(() => {
-        if (isShowPreviewWechat.value) {
-          const contentElement = document.getElementById('preview')
-          if (contentElement) {
-            copyWithCustomStyle(contentElement)
-          }
-        }
+        if (!previewRef.value) return
+        debounceCopyWithCustomStyle(previewRef.value.root)
       })
     }
     // if (name === CommandsKey.save) {
@@ -118,13 +114,31 @@ export function useToolbar(
     codemirrorRef.value?.runCommand(name)
   }
 
+  /**
+   * @description: 注册快捷键
+   */
+  const keys = useMagicKeys() // 使用 useMagicKeys() 之后，就可以通过 keys 来获取键盘按键的状态了
+  const registerHotKeys = () => {
+    Object.values(CommandsKey).forEach((item) => {
+      const hotKey = MardkdownEditorCommands[item].hotKey
+      if (hotKey) {
+        watch(keys[hotKey], (v) => {
+          // v 为 true 时表示按下了快捷键 v 为 false 时释放了快捷键
+          // console.log('hotKey', hotKey, v)
+          // console.log('item[0]', item)
+          if (v) toolbarBtnClicked(item)
+        })
+      }
+    })
+  }
+
   const toolBarHight = ref(0)
 
   // 计算工具栏高度
   const updateToolBarHeight = (): void => {
     if (!toolbarRef.value) return
 
-    const toolbarEl = toolbarRef.value.$el
+    const toolbarEl = toolbarRef.value.root
     const height = toolbarEl.offsetHeight
     const marginTop = getComputedStyleValue(toolbarEl, 'margin-top')
     const marginBottom = getComputedStyleValue(toolbarEl, 'margin-bottom')
@@ -161,13 +175,14 @@ export function useToolbar(
   // 每行 icon 个数
   const iconNumberPerLine = () => {
     if (!toolbarRef.value) return
-    const icons = getCSSVariableValue(toolbarRef.value.$el, '--icon-number-per-line')
+    const icons = getCSSVariableValue(toolbarRef.value.root, '--icon-number-per-line')
     if (!icons) return 10
     return parseInt(icons)
   }
 
   onMounted(() => {
-    caclToolBarHight()
+    registerHotKeys() // 注册快捷键
+    caclToolBarHight() // 计算工具栏高度
   })
 
   return {
