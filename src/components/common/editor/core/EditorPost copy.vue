@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-11 12:23:25
+ * @LastEditTime : 2024-01-11 12:21:15
  * @FilePath     : \blog-client\src\components\common\editor\core\EditorPost.vue
  * @Description  : 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -43,7 +43,7 @@
 </template>
   
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted } from 'vue';
+import { ref, reactive, onBeforeMount, computed, onMounted } from 'vue';
 import Toolbar from '@/components/common/editor/toolbar'
 import Toc from '@/components/common/editor/toc'
 import Codemirror from '@/components/common/editor/codemirror'

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-20 21:40:36
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-10 15:51:25
+ * @LastEditTime : 2024-01-11 11:43:54
  * @FilePath     : \blog-client\src\components\common\editor\core\type.ts
  * @Description  : 类型定义
  * @Blog         : https://jiaopengzi.com

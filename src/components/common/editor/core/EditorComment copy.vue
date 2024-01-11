@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-26 17:26:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-11 12:29:34
+ * @LastEditTime : 2024-01-10 15:49:02
  * @FilePath     : \blog-client\src\components\common\editor\core\EditorComment.vue
  * @Description  : 评论编辑器
  * @Blog         : https://jiaopengzi.com
@@ -45,7 +45,7 @@
 </template>
   
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted } from 'vue';
+import { ref, reactive, onBeforeMount, computed, onMounted } from 'vue';
 import Toolbar from '@/components/common/editor/toolbar'
 import Codemirror from '@/components/common/editor/codemirror'
 import Preview from '@/components/common/editor/preview'
@@ -119,9 +119,9 @@ onMounted(() => {
     updateCmHeightNotIsFullScreen() // 初始化编辑器实例高度
 })
 
-// onBeforeMount(async () => {
-//     await editorStore.getEditorDocFromApi("src/assets/example/markdown.md")
-// })
+onBeforeMount(async () => {
+    await editorStore.getEditorDocFromApi("src/assets/example/markdown.md")
+})
 
 </script>
   
