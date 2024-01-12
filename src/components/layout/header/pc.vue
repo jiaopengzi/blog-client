@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 22:31:47
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 11:46:28
+ * @LastEditTime : 2024-01-12 19:33:11
  * @FilePath     : \blog-client\src\components\layout\header\pc.vue
  * @Description  : pc 头部
  * @Blog         : https://jiaopengzi.com
@@ -47,8 +47,8 @@ import HeaderNav from '@/components/layout/header-nav'
 import { ref, onBeforeMount } from 'vue'
 
 import type { Ref } from 'vue'
-import type { ScrollData } from '@/hooks/useScroll.types'
-import { useScrollActions } from '@/hooks/useScrollActions'
+import type { ScrollData } from '@/components/hooks/useScroll'
+import { useScrollActions } from '@/components/hooks/useScroll'
 import UserInfoDropdown from '@/components/common/user-info-dropdown' // 导入 UserDropdown 组件
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'

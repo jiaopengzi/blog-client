@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 16:07:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-09 21:06:40
+ * @LastEditTime : 2024-01-12 20:49:00
  * @FilePath     : \blog-client\src\utils\utcToBeijingTime.ts
  * @Description  : UTC 转 北京时间
  * @Blog         : https://jiaopengzi.com
@@ -62,9 +62,9 @@ export function convertToBeijingTime(
     /(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})/,
     (_, p1, p2, p3, p4, p5, p6) =>
       formatStr
+        .replace('DD', p1)
+        .replace('MM', p2)
         .replace('YYYY', p3)
-        .replace('MM', p1)
-        .replace('DD', p2)
         .replace('HH', p4)
         .replace('mm', p5)
         .replace('ss', p6),

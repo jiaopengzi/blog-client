@@ -2,19 +2,19 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 20:51:41
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-11 22:46:30
+ * @LastEditTime : 2024-01-12 21:42:23
  * @FilePath     : \blog-client\src\components\layout\header-nav\index.vue
  * @Description  : 导航栏
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-    <section class="pc">
+    <div class="pc">
         <HeaderNavPC :navData="navData" />
-    </section>
-    <section class="phone">
+    </div>
+    <div class="phone">
         <HeaderNavPhone :navData="navData" />
-    </section>
+    </div>
 </template>
 <script setup lang="ts">
 import { IconKeys } from '@/components/common/icons'

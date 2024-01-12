@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 18:55:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-11 18:55:56
- * @FilePath     : \blog-client\src\components\common\base\slide-verify\index.vue
+ * @LastEditTime : 2024-01-12 19:17:24
+ * @FilePath     : \blog-client\src\components\common\slide-verify\index.vue
  * @Description  : 滑块验证
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
@@ -15,7 +15,9 @@
         <div class="verify-main" @touchmove.prevent.stop>
             <h4>
                 <span class="title">拖动下方滑块完成拼图</span>
-                <Icon name="close" /><button @click="closeMe"></button>
+                <button class="close-btn" @click="closeMe">
+                    <Icon name="close" customClass="icon-close" />
+                </button>
             </h4>
 
             <slide-verify ref="block" :l="42" :r="10" :w="280" :h="186" :slider-text="text" :accuracy="accuracy"
@@ -91,35 +93,45 @@ const closeMe = () => {
 </script>
   
 <style lang="scss" scoped>
-h4 {
-    height: 40px;
-    padding: 0;
-    font-size: 16px;
-    font-weight: 600;
-    color: #333;
-    text-align: center;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: $background-color-header;
-}
+.verify-main {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 899;
 
-.title {
-    text-align: center;
-    flex-grow: 1;
-}
+    h4 {
+        height: 40px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        text-align: center;
+        display: flex;
+        // justify-content: space-between;
+        align-items: center;
+        background-color: $background-color-header;
 
-h4 button {
-    outline: 0;
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
-    font-size: 18px;
-    color: #333;
-}
+        .title {
+            text-align: center;
+            flex-grow: 1;
+        }
 
-.page {
-    display: flex;
+        .close-btn {
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            .icon-close {
+                font-size: 32px;
+                fill: #666;
+            }
+        }
+
+    }
 }
 
 .verify-backdrop {
@@ -131,33 +143,5 @@ h4 button {
     z-index: 897;
     background-color: rgba(0, 0, 0, 0.6);
 }
-
-.verify-main {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 899;
-}
-
-.btn {
-    margin-top: 20px;
-    outline: 0;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    color: #fff;
-    background-color: #1890ff;
-    cursor: pointer;
-}
-
-.btn:active {
-    box-shadow: 1px 5px 0 rgba(0, 0, 0, 0.1) inset;
-}
-
-// .slide-verify-slider-mask-item {
-//     width: 80px;
-//     height: 80px;
-// }
 </style>
   

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 10:16:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 11:26:09
+ * @LastEditTime : 2024-01-12 21:42:05
  * @FilePath     : \blog-client\src\components\layout\footer\index.vue
  * @Description  : 底部
  * @Blog         : https://jiaopengzi.com
@@ -10,12 +10,12 @@
 -->
 
 <template>
-    <section class="pc">
+    <div class="pc">
         <FooterPC :footer-data="footerData()" />
-    </section>
-    <section class="phone">
+    </div>
+    <div class="phone">
         <FooterPhone :footer-data="footerData()" />
-    </section>
+    </div>
 </template>
 <script setup lang="ts">
 import FooterPC from './pc.vue'

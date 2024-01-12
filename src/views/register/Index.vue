@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-22 21:45:25
+ * @LastEditTime : 2024-01-12 18:53:11
  * @FilePath     : \blog-client\src\views\register\Index.vue
  * @Description  : 注册
  * @Blog         : https://jiaopengzi.com
@@ -11,65 +11,66 @@
 -->
 
 <template>
-  <!-- 添加滑动验证组件：SlideVerify -->
-
-  <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="sendcaptcha"></SlideVerify>
-  <el-form :label-position="labelPosition" label-width="100px" ref="registerFormRef" :model="registerForm" :rules="rules"
-    class="register-form" :size="formSize" status-icon>
-    <div class="header-main">
-      <a :href="routeObj.home.path">
-        <div class="logo">
-          <h2>
-            <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" :alt="routeObj.home.path" />
-          </h2>
-        </div>
-      </a>
-      <h2>账号注册</h2>
-    </div>
-    <el-form-item label="用户名" prop="userName">
-      <el-input v-model.trim="registerForm.userName" />
-    </el-form-item>
-
-    <el-form-item label="邮箱" prop="email">
-      <el-input v-model.trim="registerForm.email" />
-    </el-form-item>
-
-    <el-form-item label="验证码" prop="captcha">
-      <el-input class="email-code" v-model.trim="registerForm.captcha" />
-      <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="btnCaptchaState.disabled">
-        {{ captcha }}
-      </button>
-    </el-form-item>
-
-    <el-form-item label="密码" prop="password">
-      <el-input type="password" v-model.trim="registerForm.password" />
-    </el-form-item>
-
-    <el-form-item label="确认密码" prop="rePassword">
-      <el-input type="password" v-model.trim="registerForm.rePassword" />
-    </el-form-item>
-
-    <el-form-item prop="acceptedTerms">
-      <el-checkbox-group v-model="registerForm.acceptedTerms">
-        <el-checkbox label="我已同意并接受：" name="acceptedTerms" /> </el-checkbox-group><a href="/">《服务条款》</a>
-    </el-form-item>
-
-    <div class="btn-submit">
-      <el-form-item>
-        <el-button type="primary" @click="submitForm(registerFormRef)">注册</el-button>
-        <el-button @click="resetForm(registerFormRef)">重置</el-button>
+  <div class="register-page">
+    <!-- 添加滑动验证组件：SlideVerify -->
+    <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="sendcaptcha"></SlideVerify>
+    <el-form :label-position="labelPosition" label-width="100px" ref="registerFormRef" :model="registerForm"
+      :rules="rules" class="register-form" :size="formSize" status-icon>
+      <div class="header-main">
+        <a :href="routeObj.home.path">
+          <div class="logo">
+            <h2>
+              <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" :alt="routeObj.home.path" />
+            </h2>
+          </div>
+        </a>
+        <h2>账号注册</h2>
+      </div>
+      <el-form-item label="用户名" prop="userName">
+        <el-input v-model.trim="registerForm.userName" />
       </el-form-item>
-    </div>
-    <div class="go-home">
-      <router-link :to="routeObj.home.path" class="link">
-        <span>首页</span>
-      </router-link>
-      <span> | </span>
-      <router-link :to="routeObj.login.path" class="link">
-        <span>登录</span>
-      </router-link>
-    </div>
-  </el-form>
+
+      <el-form-item label="邮箱" prop="email">
+        <el-input v-model.trim="registerForm.email" />
+      </el-form-item>
+
+      <el-form-item label="验证码" prop="captcha">
+        <el-input class="email-code" v-model.trim="registerForm.captcha" />
+        <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="btnCaptchaState.disabled">
+          {{ captcha }}
+        </button>
+      </el-form-item>
+
+      <el-form-item label="密码" prop="password">
+        <el-input type="password" v-model.trim="registerForm.password" />
+      </el-form-item>
+
+      <el-form-item label="确认密码" prop="rePassword">
+        <el-input type="password" v-model.trim="registerForm.rePassword" />
+      </el-form-item>
+
+      <el-form-item prop="acceptedTerms">
+        <el-checkbox-group v-model="registerForm.acceptedTerms">
+          <el-checkbox label="我已同意并接受：" name="acceptedTerms" /> </el-checkbox-group><a href="/">《服务条款》</a>
+      </el-form-item>
+
+      <div class="btn-submit">
+        <el-form-item>
+          <el-button type="primary" @click="submitForm(registerFormRef)">注册</el-button>
+          <el-button @click="resetForm(registerFormRef)">重置</el-button>
+        </el-form-item>
+      </div>
+      <div class="go-home">
+        <router-link :to="routeObj.home.path" class="link">
+          <span>首页</span>
+        </router-link>
+        <span> | </span>
+        <router-link :to="routeObj.login.path" class="link">
+          <span>登录</span>
+        </router-link>
+      </div>
+    </el-form>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -92,15 +93,11 @@ import { captchaCheckByJosn } from '@/api/utils/captchaCheck'
 import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
 import { routeObj } from '@/router/routeAll'
 import router from '@/router/index'
+import type { RegisterForm } from '@/views/register'
 
-interface RegisterForm {
-  userName: string
-  email: string
-  captcha: string
-  password: string
-  rePassword: string
-  acceptedTerms: string[]
-}
+
+// eslint-disable-next-line vue/multi-word-component-names
+defineOptions({ name: 'Register' })
 
 // 表单label位置 top | left | right
 const labelPosition = ref('top')
@@ -419,7 +416,6 @@ const captcha = ref('发送验证码')
 const btnCaptchaState = reactive({ disabled: false })
 
 // 发送邮箱验证码
-
 const sendcaptcha = async () => {
   // 关闭滑块验证
   showSlideVerify.value = false
@@ -475,17 +471,26 @@ const closeSlideVerify = () => {
 </script>
 
 <style lang="scss" scoped>
-.register-form {
-  width: 360px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-  /* 添加阴影效果 */
-  background-color: #eee;
+.register-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-@media (max-width: pc.$width-page-main) {
+@include respond-to('pc') {
+  .register-form {
+    width: 360px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    /* 添加阴影效果 */
+    background-color: #eee;
+  }
+}
+
+@include respond-to('phone') {
   .register-form {
     /* 当屏幕宽度小于 1024px 时 */
     width: 90vw;
@@ -494,6 +499,8 @@ const closeSlideVerify = () => {
     background-color: transparent;
   }
 }
+
+
 
 h2 {
   text-align: center;

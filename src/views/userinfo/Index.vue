@@ -1,9 +1,8 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2023-10-05 17:09:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-11 17:12:44
+ * @LastEditTime : 2024-01-12 22:21:47
  * @FilePath     : \blog-client\src\views\userinfo\Index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -11,25 +10,19 @@
 -->
 
 <template>
-  <div class="pc page">
-    <HeaderPC />
-    <IndexUserInfoPC />
-    <FooterPC />
-  </div>
-  <div class="phone page">
-    <HeaderPhone />
-    <IndexUserInfoPhone />
-    <FooterPhone />
+  <div class="page">
+    <LayoutHeader />
+    <UserInfo />
+    <LayoutFooter />
   </div>
 </template>
 
 <script setup lang="ts">
-import HeaderPC from '@/components/pc/HeaderPC.vue'
-import IndexUserInfoPC from '@/components/pc/userinfo/IndexUserInfoPC.vue'
-import FooterPC from '@/components/pc/FooterPC.vue'
-import HeaderPhone from '@/components/phone/HeaderPhone.vue'
-import IndexUserInfoPhone from '@/components/phone/userinfo/IndexUserInfoPhone.vue'
-import FooterPhone from '@/components/phone/FooterPhone.vue'
+import LayoutHeader from '@/components/layout/header'
+import UserInfo from '@/components/layout/content/userinfo'
+import LayoutFooter from '@/components/layout/footer'
+
+defineOptions({ name: 'PageUserInfo' })
 </script>
 
 <style scoped lang="scss"></style>

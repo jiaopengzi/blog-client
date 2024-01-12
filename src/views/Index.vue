@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 10:46:35
+ * @LastEditTime : 2024-01-12 22:16:23
  * @FilePath     : \blog-client\src\views\Index.vue
  * @Description  : 首页
  * @Blog         : https://jiaopengzi.com
@@ -13,17 +13,17 @@
 <template>
   <div class="page">
     <LayoutHeader />
-    <ContentPC />
+    <LayoutHome />
     <LayoutFooter />
   </div>
 </template>
 
 <script setup lang="ts">
 import LayoutHeader from '@/components/layout/header'
-import ContentPC from '@/components/pc/content/ContentPC.vue'
+import LayoutHome from '@/components/layout/content/home'
 import LayoutFooter from '@/components/layout/footer'
+
+defineOptions({ name: 'PageHome' })
 </script>
 
-<style scoped lang="scss">
-// 在这里添加响应式样式
-</style>
+<style scoped lang="scss"></style>

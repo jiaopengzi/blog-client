@@ -1,9 +1,8 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-11 19:01:49
+ * @LastEditTime : 2024-01-12 18:44:25
  * @FilePath     : \blog-client\src\views\login\Index.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -11,54 +10,55 @@
 -->
 
 <template>
-  <!-- 添加滑动验证组件：SlideVerify -->
-
-  <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="login"></SlideVerify>
-  <el-form :label-position="labelPosition" label-width="100px" ref="loginFormRef" :model="loginForm" :rules="rules"
-    class="login-form" :size="formSize" status-icon>
-    <div class="header-main">
-      <a :href="routeObj.home.path">
-        <div class="logo">
-          <h2>
-            <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" :alt="routeObj.home.path" />
-          </h2>
-        </div>
-      </a>
-      <h2>账号登录</h2>
-    </div>
-    <el-form-item label="用户名" prop="loginName">
-      <el-input v-model.trim="loginForm.loginName" placeholder="请输入用户名或邮箱" />
-    </el-form-item>
-    <el-form-item label="密码" prop="password">
-      <el-input type="password" v-model.trim="loginForm.password" placeholder="大小写字母 + 数字, 长度:6-64" />
-    </el-form-item>
-    <div class="btn-submit">
-      <el-form-item>
-        <el-button type="primary" @click="openSlideVerify">登录</el-button>
+  <div class="login-page">
+    <!-- 添加滑动验证组件：SlideVerify -->
+    <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="login"></SlideVerify>
+    <el-form :label-position="labelPosition" label-width="100px" ref="loginFormRef" :model="loginForm" :rules="rules"
+      class="login-form" :size="formSize" status-icon>
+      <div class="header-main">
+        <a :href="routeObj.home.path">
+          <div class="logo">
+            <h2>
+              <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" :alt="routeObj.home.path" />
+            </h2>
+          </div>
+        </a>
+        <h2>账号登录</h2>
+      </div>
+      <el-form-item label="用户名" prop="loginName">
+        <el-input v-model.trim="loginForm.loginName" placeholder="请输入用户名或邮箱" />
       </el-form-item>
-    </div>
-    <div class="social">
-      <button class="social-btn" @click="loginByWeChat">
-        <Icon name="wechat" customClass="iconfont icon-wechat" />
-      </button>
-      <button class="social-btn" @click="loginByQQ">
-        <Icon name="qq" customClass="iconfont icon-qq" />
-      </button>
-    </div>
-    <div class="go-home">
-      <router-link :to="routeObj.home.path" class="link">
-        <span>首页</span>
-      </router-link>
-      <span> | </span>
-      <router-link :to="routeObj.register.path" class="link">
-        <span>注册</span>
-      </router-link>
-      <span> | </span>
-      <router-link :to="routeObj.resetPassword.path" class="link">
-        <span>忘记密码</span>
-      </router-link>
-    </div>
-  </el-form>
+      <el-form-item label="密码" prop="password">
+        <el-input type="password" v-model.trim="loginForm.password" placeholder="大小写字母 + 数字, 长度:6-64" />
+      </el-form-item>
+      <div class="btn-submit">
+        <el-form-item>
+          <el-button type="primary" @click="openSlideVerify">登录</el-button>
+        </el-form-item>
+      </div>
+      <div class="social">
+        <button class="social-btn" @click="loginByWeChat">
+          <Icon name="wechat" customClass="iconfont icon-wechat" />
+        </button>
+        <button class="social-btn" @click="loginByQQ">
+          <Icon name="qq" customClass="iconfont icon-qq" />
+        </button>
+      </div>
+      <div class="go-home">
+        <router-link :to="routeObj.home.path" class="link">
+          <span>首页</span>
+        </router-link>
+        <span> | </span>
+        <router-link :to="routeObj.register.path" class="link">
+          <span>注册</span>
+        </router-link>
+        <span> | </span>
+        <router-link :to="routeObj.resetPassword.path" class="link">
+          <span>忘记密码</span>
+        </router-link>
+      </div>
+    </el-form>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -68,11 +68,10 @@ import type { FormInstance, FormRules } from 'element-plus' // 需要全部安�
 import router from '@/router/index'
 import { routeObj } from '@/router/routeAll'
 import { useUserStore } from '@/stores/user'
+import type { LoginForm } from "@/views/login"
 
-interface LoginForm {
-  loginName: string
-  password: string
-}
+// eslint-disable-next-line vue/multi-word-component-names
+defineOptions({ name: 'Login' })
 
 // 表单label位置 top | left | right
 const labelPosition = ref('top')
@@ -163,17 +162,26 @@ const loginByQQ = () => {
 </script>
 
 <style lang="scss" scoped>
-.login-form {
-  width: 360px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-  /* 添加阴影效果 */
-  background-color: #eee;
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-@media (max-width: pc.$width-page-main) {
+@include respond-to('pc') {
+  .login-form {
+    width: 360px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    /* 添加阴影效果 */
+    background-color: #eee;
+  }
+}
+
+@include respond-to('phone') {
   .login-form {
     /* 当屏幕宽度小于 1024px 时 */
     width: 90vw;
@@ -182,6 +190,7 @@ const loginByQQ = () => {
     background-color: transparent;
   }
 }
+
 
 h2 {
   text-align: center;

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 22:31:43
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 11:51:59
+ * @LastEditTime : 2024-01-12 19:33:35
  * @FilePath     : \blog-client\src\components\layout\header\phone.vue
  * @Description  : phone 头部
  * @Blog         : https://jiaopengzi.com
@@ -39,7 +39,6 @@
     <div class="side-nav" id="sideNav" :style="{
         transform: navVisible ? 'translateX(0)' : 'translateX(-100%)'
     }">
-        <!-- :style="{ transform: navVisible ? 'translateX(0)' : 'translateX(-100%)', height: `calc(100vh - ${headerHeight})`, width: '61.8vw' }"> -->
         <!-- 侧边栏导航栏 -->
         <HeaderNav />
     </div>
@@ -49,8 +48,8 @@ import HeaderNav from '@/components/layout/header-nav'
 import { ref } from 'vue'
 import { routeObj } from '@/router/routeAll'
 import type { Ref } from 'vue'
-import type { ScrollData } from '@/hooks/useScroll.types'
-import { useScrollActions } from '@/hooks/useScrollActions'
+import type { ScrollData } from '@/components/hooks/useScroll'
+import { useScrollActions } from '@/components/hooks/useScroll'
 
 defineOptions({ name: 'HeaderPhone' })
 
@@ -71,21 +70,18 @@ const scrollUpAction = () => {
         // 速度大于100px/s 或者 滚动条位置小于200px
         headerVisible.value = true // 显示导航栏
     }
-
     // console.log(`===>Up, 位置：${scrollData.value.position.toFixed(2)}, 速度：${scrollData.value.speed.toFixed(2)} px/s`);
 }
 
 const scrollDownAction = () => {
-    console.log("执行 scrollDownAction")
-
     navVisible.value = false // 隐藏侧边导航栏
     headerVisible.value = false // 隐藏导航栏
-    console.log(`===>Down, 位置：${scrollData.value.position.toFixed(2)}, 速度：${scrollData.value.speed.toFixed(2)} px/s`)
-
+    // console.log(`===>Down, 位置：${scrollData.value.position.toFixed(2)}, 速度：${scrollData.value.speed.toFixed(2)} px/s`)
 }
 
 const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownAction)
 /* ======================================== 滚动条事件 ======================================== */
+
 </script>
   
 <style scoped lang="scss">
