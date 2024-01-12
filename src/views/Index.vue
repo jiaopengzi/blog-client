@@ -1,9 +1,8 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 22:16:23
+ * @LastEditTime : 2024-01-12 23:40:13
  * @FilePath     : \blog-client\src\views\Index.vue
  * @Description  : 首页
  * @Blog         : https://jiaopengzi.com

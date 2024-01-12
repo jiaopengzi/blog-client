@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-03 00:20:51
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-19 14:36:09
+ * @LastEditTime : 2024-01-12 23:32:42
  * @FilePath     : \blog-client\vite.config.mts
  * @Description  : vite 配置文件
  * @Blog         : https://jiaopengzi.com
@@ -31,6 +31,8 @@ export default defineConfig({
     }),
     Components({
       resolvers: [ElementPlusResolver({ importStyle: 'sass' })], //scss需要添加 { importStyle: 'sass' } 留空默认为css
+
+      directoryAsNamespace: true, // 解决组件名称重复问题 `component xxx has naming conflicts with other components, ignored.`
     }),
     // ------------------------------element-plus 自动导入 结束
   ],
