@@ -73,7 +73,7 @@
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
     "@rushstack/eslint-patch": "^1.6.1",
-    "@tsconfig/node18": "^2.0.1",
+    "@tsconfig/node20": "^20.1.2",
     "@types/crypto-js": "^4.2.1",
     "@types/html2canvas": "^1.0.0",
     "@types/katex": "^0.16.7",
