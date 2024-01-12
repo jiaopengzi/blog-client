@@ -23,8 +23,8 @@
 </template>
 
 <script setup lang="ts">
-import PostItem from '@/components/common/base/post-item-aside'
-import type { PostItemAsideObj } from '@/components/common/base/post-item-aside'
+import PostItem from '@/components/common/post-item-aside'
+import type { PostItemAsideObj } from '@/components/common/post-item-aside'
 const postDataObj: PostItemAsideObj = {
   thumbnailSrc: 'https://image.jiaopengzi.com/blog/202309181034415-w280h210.png',
   thumbnailHref: 'http://192.168.2.222:8081/post',
@@ -76,4 +76,4 @@ const postItems: PostItemAsideObj[] = Array(5).fill(postDataObj)
 }
 </style>
 @/components/pc/content/aside/item/postItem
-@/components/common/base/post-item-aside/postItemAside
+@/components/common/post-item-aside/postItemAside

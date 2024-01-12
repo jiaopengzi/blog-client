@@ -3,8 +3,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-29 19:49:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-31 19:59:06
- * @FilePath     : \blog-client\src\components\common\pc\userInfo\Info.vue
+ * @LastEditTime : 2024-01-11 18:50:27
+ * @FilePath     : \blog-client\src\components\pc\userinfo\InfoPC.vue
  * @Description  : 我的信息
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -39,11 +39,7 @@
           绑定{{ social.WeChatDisplay }}
         </button>
         <span class="social-nickname">{{ socialNickname('user_wechat', 'nickname') }}</span>
-        <button
-          class="btn-unbind"
-          v-if="showWeChat && isBindEmail"
-          @click="unBindSocial(social.WeChat)"
-        >
+        <button class="btn-unbind" v-if="showWeChat && isBindEmail" @click="unBindSocial(social.WeChat)">
           解绑{{ social.WeChatDisplay }}
         </button>
       </el-descriptions-item>
@@ -52,24 +48,16 @@
 
   <div class="edit-avatar-div">
     <div class="edit-avatar">
-      <InitialAvatar :name="userData.user.user_display_name" :avatar="avatar" />
+      <AvatarInitials :name="userData.user.user_display_name" :avatar="avatar" />
     </div>
     <div class="edit-avatar-btn">
-      <avatar-upload></avatar-upload>
+      <AvatarUpload />
     </div>
   </div>
 
   <div class="edit-div">
-    <el-form
-      :label-position="labelPosition"
-      label-width="100px"
-      ref="editFormRef"
-      :model="editForm"
-      :rules="rules"
-      class="edit-form"
-      :size="formSize"
-      status-icon
-    >
+    <el-form :label-position="labelPosition" label-width="100px" ref="editFormRef" :model="editForm" :rules="rules"
+      class="edit-form" :size="formSize" status-icon>
       <el-form-item label="用户名" prop="userName">
         <el-input v-model="editForm.userName" :disabled="userNameDisabled" />
       </el-form-item>
@@ -90,11 +78,7 @@
       </el-form-item>
 
       <el-form-item label="简介" prop="description">
-        <el-input
-          v-model="editForm.description"
-          type="textarea"
-          placeholder="这个人很懒,什么也没有留下。"
-        />
+        <el-input v-model="editForm.description" type="textarea" placeholder="这个人很懒,什么也没有留下。" />
       </el-form-item>
       <div class="btn-submit">
         <el-form-item>
@@ -108,8 +92,9 @@
 import { onMounted, computed } from 'vue'
 import { reactive, ref, onBeforeMount } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
-import InitialAvatar from '@/components/common/InitialAvatar.vue'
-import AvatarUpload from '@/components/common/AvatarUploader.vue'
+// import AvatarInitials from '@/components/common/avatar-initials'
+import AvatarInitials from '@/components/common/avatar-initials'
+import AvatarUpload from '@/components/common/avatar-upload'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 import { convertToBeijingTime } from '@/utils/utcToBeijingTime'
@@ -121,7 +106,7 @@ import { ResponseCode } from '@/api/responseCode'
 import type { editUserInfoRequest } from '@/api/user/editUserInfo'
 import { editUserInfoByJosn } from '@/api/user/editUserInfo'
 import { ShowMsgTip } from '@/utils/message'
-import { MsgType } from '@/components/common/index'
+import { MsgType } from '@/components/common/alert-tip'
 
 interface EditForm {
   userName: string

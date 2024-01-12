@@ -3,8 +3,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-27 11:23:50
- * @FilePath     : \blog-client\src\views\test\Index.vue
+ * @LastEditTime : 2024-01-11 21:27:34
+ * @FilePath     : \blog-client\src\views\test\Indexcopy.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -24,8 +24,8 @@
 import { ref } from 'vue'
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
-import { EditorPost } from '@/components/common/editor/core'
-import { EditorComment } from '@/components/common/editor/core'
+import { EditorPost } from '@/components/editor/core'
+import { EditorComment } from '@/components/editor/core'
 
 
 const test = ref(1)

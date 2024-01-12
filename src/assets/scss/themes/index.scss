@@ -2,6 +2,9 @@
 @use "@/assets/scss/themes/dark.scss"as *;
 
 
+
+$scrollbar-y-width:var(--scrollbar-y-width); // Y轴滚动条宽度
+$scrollbar-x-height:var(--scrollbar-x-height); // Y轴滚动条宽度
 /* ============================================================颜色变量 开始*/
 /* 主要颜色 */
 $primary-color: var(--primary-color);

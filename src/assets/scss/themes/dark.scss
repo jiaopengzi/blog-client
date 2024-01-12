@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-04 12:40:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-04 18:59:41
+ * @LastEditTime : 2024-01-12 10:40:13
  * @FilePath     : \blog-client\src\assets\scss\themes\dark.scss
  * @Description  : 暗色模式
  * @Blog         : https://jiaopengzi.com
@@ -17,6 +17,9 @@ $thpme-name: 'dark';
 $primary-color-dark: red;
 
 html[data-theme=#{$thpme-name}] {
+
+    --scrollbar-y-width: 6px; // Y轴滚动条宽度
+    --scrollbar-x-height: 6px; // x轴滚动条高度
     /* ============================================================ CSS 颜色变量 开始*/
     /* 主要颜色 */
     --primary-color:#{$primary-color-dark};

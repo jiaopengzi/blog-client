@@ -17,8 +17,8 @@
 </template>
 
 <script setup lang="ts">
-import PostItem from '@/components/common/base/post-item-main'
-import type { PostItemMainObj } from '@/components/common/base/post-item-main'
+import PostItem from '@/components/common/post-item-main'
+import type { PostItemMainObj } from '@/components/common/post-item-main'
 const postDataObj: PostItemMainObj = {
   category: 'PowerBI',
   categoryHref: 'http://192.168.2.222:8081/video',
@@ -55,4 +55,4 @@ const postItems: PostItemMainObj[] = Array(30).fill(postDataObj)
 }
 </style>
 @/components/pc/content/main/postItemMain
-@/components/common/base/post-item-main/postItemMain
+@/components/common/post-item-main/postItemMain

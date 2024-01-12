@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import { EditorPost } from '@/components/common/editor/core'
+import { EditorPost } from '@/components/editor/core'
 import { onBeforeMount } from 'vue';
 import { useEditorStore } from '@/stores/editor'
 

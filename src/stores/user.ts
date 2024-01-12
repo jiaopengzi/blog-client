@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 09:35:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-29 20:05:39
+ * @LastEditTime : 2024-01-11 21:31:47
  * @FilePath     : \blog-client\src\stores\user.ts
  * @Description  : 用户信息
  * @Blog         : https://jiaopengzi.com
@@ -14,7 +14,7 @@ import { defineStore, acceptHMRUpdate } from 'pinia'
 import { ResponseCode, LocalStorageKey } from '@/api/responseCode'
 import type { AxiosResponse } from 'axios'
 import { ShowMsgTip } from '@/utils/message'
-import { MsgType } from '@/components/common/index'
+import { MsgType } from '@/components/common/alert-tip'
 import type { LoginRequest, LoginResponse } from '@/api/user/login'
 import {
   loginByJosn,

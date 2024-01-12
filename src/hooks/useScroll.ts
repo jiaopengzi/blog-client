@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-08-12 10:51:34
+ * @LastEditTime : 2024-01-12 11:58:45
  * @FilePath     : \blog-client\src\hooks\useScroll.ts
  * @Description  : 滚动条监听
  * @Blog         : https://jiaopengzi.com
@@ -38,9 +38,11 @@ export function useScroll(handler: ScrollHandler) {
 
   onMounted(() => {
     window.addEventListener('scroll', handleScroll, { passive: true })
+    window.addEventListener('touchmove', handleScroll, { passive: true }) // 添加 touchmove 事件监听器
   })
 
   onUnmounted(() => {
     window.removeEventListener('scroll', handleScroll)
+    window.removeEventListener('touchmove', handleScroll) // 移除 touchmove 事件监听器
   })
 }

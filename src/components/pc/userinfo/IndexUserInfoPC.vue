@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-05 16:45:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-25 15:04:10
+ * @LastEditTime : 2024-01-11 19:04:31
  * @FilePath     : \blog-client\src\components\pc\userinfo\IndexUserInfoPC.vue
  * @Description  : 用户中心 PC端
  * @Blog         : https://jiaopengzi.com
@@ -12,7 +12,7 @@
 
 <template>
   <!-- 绑定邮箱对话框弹窗 -->
-  <BindemailDialog></BindemailDialog>
+  <BindEmailDialog></BindEmailDialog>
 
   <!-- 内容页 -->
   <div class="content">
@@ -97,7 +97,7 @@
 import { View, Tickets, Goods, Document, ChatLineSquare, Star } from '@element-plus/icons-vue'
 import { ArrowRight } from '@element-plus/icons-vue'
 import { ref } from 'vue'
-import BindemailDialog from '@/components/common/BindEmailDialog.vue'
+import BindEmailDialog from '@/components/common/bind-email-dialog'
 import { routeObj } from '@/router/routeAll'
 import InfoPC from '@/components/pc/userinfo/InfoPC.vue'
 import OrderPC from '@/components/pc/userinfo/OrderPC.vue'

@@ -3,33 +3,25 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-22 21:45:36
- * @FilePath     : \blog-client\src\views\IndexHome.vue
+ * @LastEditTime : 2024-01-12 10:46:35
+ * @FilePath     : \blog-client\src\views\Index.vue
  * @Description  : 首页
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
 
 <template>
-  <div class="pc page">
-    <HeaderPC />
+  <div class="page">
+    <LayoutHeader />
     <ContentPC />
-    <FooterPC />
-  </div>
-  <div class="phone page">
-    <HeaderPhone />
-    <ContentPhone />
-    <FooterPhone />
+    <LayoutFooter />
   </div>
 </template>
 
 <script setup lang="ts">
-import HeaderPC from '@/components/pc/HeaderPC.vue'
+import LayoutHeader from '@/components/layout/header'
 import ContentPC from '@/components/pc/content/ContentPC.vue'
-import FooterPC from '@/components/pc/FooterPC.vue'
-import HeaderPhone from '@/components/phone/HeaderPhone.vue'
-import ContentPhone from '@/components/phone/content/ContentPhone.vue'
-import FooterPhone from '@/components/phone/FooterPhone.vue'
+import LayoutFooter from '@/components/layout/footer'
 </script>
 
 <style scoped lang="scss">

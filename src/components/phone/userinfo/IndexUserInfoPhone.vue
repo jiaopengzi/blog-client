@@ -12,7 +12,7 @@
 
 <template>
   <!-- 绑定邮箱对话框弹窗 -->
-  <BindemailDialog></BindemailDialog>
+  <BindEmailDialog></BindEmailDialog>
 
   <!-- 内容页 -->
   <div class="content">
@@ -97,7 +97,7 @@
 import { View, Tickets, Goods, Document, ChatLineSquare, Star } from '@element-plus/icons-vue'
 import { ArrowRight } from '@element-plus/icons-vue'
 import { ref } from 'vue'
-import BindemailDialog from '@/components/common/BindEmailDialog.vue'
+import BindEmailDialog from '@/components/common/bind-email-dialog'
 import { routeObj } from '@/router/routeAll'
 import InfoPhone from '@/components/phone/userinfo/InfoPhone.vue'
 import OrderPhone from '@/components/phone/userinfo/OrderPhone.vue'

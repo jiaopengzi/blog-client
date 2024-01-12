@@ -10,9 +10,43 @@
  */
 
 export { default } from './index.vue'
-import type { IconMap, IconProps, IconJson } from './type'
-export type { IconMap, IconProps, IconJson }
 import iconFontJSON from '@/components/common/icons/assets/iconfont.json' // 导入 iconfont.json 数据
+
+// 图标字典
+export interface IconMap {
+  [key: string]: string
+}
+
+// 图标属性
+export interface IconProps {
+  name: string
+  customClass?: string
+}
+
+// 图标 json 数据 格式
+export interface IconJson {
+  id: string
+  name: string
+  font_family: string
+  css_prefix_text: string
+  description: string
+  glyphs: [
+    {
+      icon_id: string
+      name: string
+      font_class: string
+      unicode: string
+      unicode_decimal: number
+    },
+  ]
+}
+
+// 举例
+// const iconMap: IconMap = {
+//   wechat: '#icon-wechat',
+//   qq: '#icon-qq',
+//   vip: '#icon-vip-red',
+// }
 
 // 图标 json 数据 类型守卫函数
 export function isIconJson(obj: any): IconJson {

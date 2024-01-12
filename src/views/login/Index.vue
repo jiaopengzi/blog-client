@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-02 15:22:16
+ * @LastEditTime : 2024-01-11 19:01:49
  * @FilePath     : \blog-client\src\views\login\Index.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -63,7 +63,7 @@
 
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
-import SlideVerify from '@/components/common/SlideVerify.vue'
+import SlideVerify from '@/components/common/slide-verify'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import router from '@/router/index'
 import { routeObj } from '@/router/routeAll'

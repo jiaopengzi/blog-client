@@ -9,7 +9,7 @@
  * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 import { ElMessage } from 'element-plus'
-import { MsgType, MsgTitle } from '@/components/common/index'
+import { MsgType, MsgTitle } from '@/components/common/alert-tip'
 // 按需引入 element-plus 消息提示组件样式
 import 'element-plus/theme-chalk/el-message.css'
 export const ShowMsgTip = (msgtype: MsgType, msgStr: string, duration: number = 3000): void => {

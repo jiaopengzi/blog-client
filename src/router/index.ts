@@ -11,7 +11,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { routeObj, routes } from '@/router/routeAll'
 import { ShowMsgTip } from '@/utils/message'
-import { MsgType } from '@/components/common/index'
+import { MsgType } from '@/components/common/alert-tip'
 import { useUserStore } from '@/stores/user'
 
 // 创建路由实例
