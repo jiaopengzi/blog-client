@@ -18,6 +18,7 @@ declare module 'vue' {
     CommonSlideVerify: typeof import('./src/components/common/slide-verify/index.vue')['default']
     CommonTagItem: typeof import('./src/components/common/tag-item/index.vue')['default']
     CommonUserInfoDropdown: typeof import('./src/components/common/user-info-dropdown/index.vue')['default']
+    copy: typeof import('./src/components/editor/core/EditorPost copy.vue')['default']
     EditorCodemirror: typeof import('./src/components/editor/codemirror/index.vue')['default']
     EditorCoreEditorComment: typeof import('./src/components/editor/core/EditorComment.vue')['default']
     'EditorCoreEditorComment copy': typeof import('./src/components/editor/core/EditorComment copy.vue')['default']

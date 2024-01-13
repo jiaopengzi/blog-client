@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 09:35:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-11 21:31:47
+ * @LastEditTime : 2024-01-13 11:15:37
  * @FilePath     : \blog-client\src\stores\user.ts
  * @Description  : 用户信息
  * @Blog         : https://jiaopengzi.com
@@ -35,7 +35,7 @@ import type { UserInfo } from '@/api/user/getUserInfo'
 import { emptyUserInfo, getUserInfoByJosn } from '@/api/user/getUserInfo'
 
 // 用户信息
-interface UserInfoStore {
+export interface UserInfoStore {
   data: UserInfo
   isLogin: boolean // 是否登录
   avatar?: string // 头像 优先使用data.user.user_avatar 如果没有则使用 data.user_qq.avatar 或者 data.user_wechat.Avatar
