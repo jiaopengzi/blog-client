@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:26:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 22:07:11
- * @FilePath     : \blog-client\src\components\layout\content\home\pc.vue
+ * @LastEditTime : 2024-01-13 13:01:03
+ * @FilePath     : \blog-client\src\views\home\component\pc.vue
  * @Description  : pc 内容页
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
@@ -58,12 +58,12 @@
 </template>
 <script setup lang="ts">
 import { ArrowRight, Location } from '@element-plus/icons-vue'
-import Carousel from '@/components/layout/content/home/main/carousel'
-import PostList from '@/components/layout/content/home/main/post-list'
-import RecommendedRead from '@/components/layout/content/aside/recommended-read'
-import HotPost from '@/components/layout/content/aside/hot-post'
-import MonthArchive from '@/components/layout/content/aside/month-archive'
-import PostTag from '@/components/layout/content/aside/post-tag'
+import Carousel from '@/views/home/component/carousel'
+import PostList from '@/views/home/component/post-list'
+import RecommendedRead from '@/components/layout/aside/recommended-read'
+import HotPost from '@/components/layout/aside/hot-post'
+import MonthArchive from '@/components/layout/aside/month-archive'
+import PostTag from '@/components/layout/aside/post-tag'
 import { routeObj } from '@/router/routeAll'
 import { ref, onMounted, nextTick, onBeforeUnmount } from 'vue'
 

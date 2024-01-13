@@ -47,8 +47,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { ArrowRight, Location } from '@element-plus/icons-vue'
-import Carousel from '@/components/layout/content/home/main/carousel'
-import PostList from '@/components/layout/content/home/main/post-list'
+import Carousel from '@/views/home/component/carousel'
+import PostList from '@/views/home/component/post-list'
 import { routeObj } from '@/router/routeAll'
 
 

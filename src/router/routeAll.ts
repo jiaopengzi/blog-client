@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-23 11:45:46
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 23:47:42
+ * @LastEditTime : 2024-01-13 12:37:28
  * @FilePath     : \blog-client\src\router\routeAll.ts
  * @Description  : 所有路由配置
  * @Blog         : https://jiaopengzi.com
@@ -49,7 +49,7 @@ export const routeObj: any = {
   home: {
     path: '/',
     name: 'home',
-    component: () => import('@/views/index.vue'),
+    component: () => import('@/views/home'),
     meta: {
       requiresAuth: false,
     },

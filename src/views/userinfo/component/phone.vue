@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 21:20:51
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 21:37:00
- * @FilePath     : \blog-client\src\components\layout\content\userinfo\phone.vue
+ * @LastEditTime : 2024-01-13 12:47:39
+ * @FilePath     : \blog-client\src\views\userinfo\component\phone.vue
  * @Description  : 用户中心 phone
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
@@ -99,12 +99,12 @@ import { ArrowRight } from '@element-plus/icons-vue'
 import { ref } from 'vue'
 import BindEmailDialog from '@/components/common/bind-email-dialog'
 import { routeObj } from '@/router/routeAll'
-import UserInfoInfo from '@/components/layout/content/userinfo/info'
-import UserInfoOrder from '@/components/layout/content/userinfo/order'
-import UserInfoVip from '@/components/layout/content/userinfo/vip'
-import UserInfoPost from '@/components/layout/content/userinfo/post'
-import UserInfoComment from '@/components/layout/content/userinfo/comment'
-import UserInfoFavorite from '@/components/layout/content/userinfo/favorite'
+import UserInfoInfo from '@/views/userinfo/component/info'
+import UserInfoOrder from '@/views/userinfo/component/order'
+import UserInfoVip from '@/views/userinfo/component/vip'
+import UserInfoPost from '@/views/userinfo/component/post'
+import UserInfoComment from '@/views/userinfo/component/comment'
+import UserInfoFavorite from '@/views/userinfo/component/favorite'
 import { useRouter } from 'vue-router'
 
 defineOptions({ name: 'UserInfoPhone' })

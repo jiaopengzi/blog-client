@@ -23,7 +23,7 @@ import type { editUserInfoRequest } from '@/api/user/editUserInfo'
 import { editUserInfoByJosn } from '@/api/user/editUserInfo'
 import { ShowMsgTip } from '@/utils/message'
 import { MsgType } from '@/components/common/alert-tip'
-import type { EditForm } from '@/components/layout/content/userinfo/info'
+import type { EditForm } from '@/views/userinfo/component/info'
 import { convertToBeijingTime } from '@/utils/utcToBeijingTime'
 
 export interface UseInfoReturnType {

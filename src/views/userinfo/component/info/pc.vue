@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-29 19:49:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-13 11:31:47
- * @FilePath     : \blog-client\src\components\layout\content\userinfo\info\pc.vue
+ * @LastEditTime : 2024-01-13 12:45:02
+ * @FilePath     : \blog-client\src\views\userinfo\component\info\pc.vue
  * @Description  : 我的信息
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -91,7 +91,7 @@
 import AvatarInitials from '@/components/common/avatar-initials'
 import AvatarUpload from '@/components/common/avatar-upload'
 import { social } from '@/api/responseCode'
-import { useInfo } from '@/components/layout/content/userinfo/info/hooks'
+import { useInfo } from '@/views/userinfo/component/info/hooks'
 
 defineOptions({ name: 'UserInfoInfoPC' })
 
