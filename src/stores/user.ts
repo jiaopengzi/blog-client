@@ -346,6 +346,7 @@ async function handleBindResult(
   return createEmptyUserInfoStore() // 获取用户信息
 }
 
+// 允许开发环境下进行热更新 HMR(Hot Module Replacement)
 if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useUserStore, import.meta.hot))
 }

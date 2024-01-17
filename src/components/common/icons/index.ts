@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-21 15:05:09
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-28 13:08:06
+ * @LastEditTime : 2024-01-17 16:26:02
  * @FilePath     : \blog-client\src\components\common\icons\index.ts
  * @Description  : 图标组件
  * @Blog         : https://jiaopengzi.com
@@ -192,6 +192,18 @@ export enum IconKeys {
   'vip-red' = 'vip-red',
   wechat = 'wechat',
   welfare = 'welfare',
+  page = 'page',
+  backup = 'backup',
+  media = 'media',
+  post = 'post',
+  comment = 'comment',
+  config = 'config',
+  collapse = 'collapse',
+  shop = 'shop',
+  dashboard = 'dashboard',
+  notification = 'notification',
+  'short-link' = 'short-link',
+  announcement = 'announcement',
 }
 
 // 历遍 iconMap 对象中的 key 校验是否符合 IconKeys 类型约束

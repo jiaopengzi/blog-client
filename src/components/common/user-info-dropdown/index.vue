@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 10:19:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 10:22:52
+ * @LastEditTime : 2024-01-13 20:12:02
  * @FilePath     : \blog-client\src\components\common\user-info-dropdown\index.vue
  * @Description  : 显示用户信息下拉菜单
  * @Blog         : https://jiaopengzi.com
@@ -10,27 +10,28 @@
 -->
 
 <template>
-    <div class="wrapper">
-        <div class="avatar" @mouseenter="() => toggleDropdown(true)" @mouseleave="() => toggleDropdown(false)">
+    <el-dropdown>
+        <span>
             <AvatarInitials :name="data.user.user_display_name" :avatar="avatar" />
-        </div>
-        <div id="dropdown" v-if="showDropdown" class="dropdown" @mouseenter="() => toggleDropdown(true)"
-            @mouseleave="() => toggleDropdown(false)">
-            <div class="item">
-                <p class="username">{{ data.user.user_display_name }}</p>
-            </div>
-            <div class="item user-center-btn">
-                <button @click="userCenterBtn">用户中心</button>
-            </div>
-            <div class="item logout-btn">
-                <button @click="logout">退出</button>
-            </div>
-        </div>
-    </div>
+        </span>
+
+        <template #dropdown>
+            <el-dropdown-menu class="menu">
+                <el-dropdown-item>
+                    <h3 class="nickname">{{ data.user.user_display_name }}</h3>
+                </el-dropdown-item>
+                <el-dropdown-item>
+                    <button @click="userCenterBtn">用户中心</button>
+                </el-dropdown-item>
+                <el-dropdown-item>
+                    <button @click="logout">退出</button>
+                </el-dropdown-item>
+            </el-dropdown-menu>
+        </template>
+    </el-dropdown>
 </template>
   
 <script lang="ts" setup>
-import { ref } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 import AvatarInitials from '@/components/common/avatar-initials' // 导入 AvatarInitials 组件
@@ -41,22 +42,6 @@ defineOptions({ name: 'UserInfoDropdown' })
 
 const userStore = useUserStore()
 let { data, avatar } = storeToRefs(userStore)
-let timer: ReturnType<typeof setTimeout> // 定时器
-
-const showDropdown = ref(false) // 是否显示下拉菜单
-
-// 切换下拉菜单的显示状态
-const toggleDropdown = (show: boolean) => {
-    clearTimeout(timer) // 清除定时器
-
-    if (show) {
-        showDropdown.value = true
-    } else {
-        timer = setTimeout(() => {
-            showDropdown.value = false
-        }, 80)
-    }
-}
 
 // 跳转到用户中心
 const userCenterBtn = () => {
@@ -67,59 +52,52 @@ const userCenterBtn = () => {
 const logout = async () => {
     await userStore.logout()
 }
+
 </script>
   
-<style scoped>
-.wrapper {
-    position: relative;
-    display: inline-block;
+<style scoped lang="scss">
+span {
+    outline: none;
 }
 
-.dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    padding: 5px;
-    margin-top: 10px;
-    /* margin-top: 0px 下拉菜单和头像之间的间隙 紧挨着才能在鼠标移动的时候不会突然消失*/
-    background-color: #fdfdfd;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    display: flex;
-    flex-direction: column;
+.menu {
+    /* 菜单宽度 */
+    width: 120px;
+    /* 菜单背景色 */
+    background-color: #fff;
+    /* 菜单边框 */
+    border: 1px solid #eee;
+    /* 菜单圆角 */
     border-radius: 8px;
-    z-index: 999;
+    /* 菜单阴影 */
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
-.item {
-    /* 元素居左 */
+.nickname {
+    display: inline-block;
+    // 超出部分隐藏显示省略号
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
     text-align: center;
-    /* 上下外边距都为 5px */
-    margin: 5px 5px;
+    font-size: 16px;
+    width: 120px;
 }
+
 
 button {
     width: 100%;
     border: none;
     text-align: center;
     text-decoration: none;
-    display: inline-block;
-    font-size: 15px;
-    padding: 5px 10px;
-    margin-bottom: 5px;
+    font-size: 14px;
+    padding: 5px 0;
     cursor: pointer;
-}
 
-button:hover {
-    background-color: #ddd;
-}
-
-.username {
-    /* 文字超出的时候显示省略号 */
-    overflow: hidden;
-    font-size: 15px;
-    color: #555;
-    margin-bottom: 10px;
-    min-width: 100px;
+    :hover {
+        background-color: #ddd;
+    }
 }
 </style>
   

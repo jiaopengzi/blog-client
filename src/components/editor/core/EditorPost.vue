@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-11 12:23:25
- * @FilePath     : \blog-client\src\components\common\editor\core\EditorPost.vue
+ * @LastEditTime : 2024-01-17 21:50:50
+ * @FilePath     : \blog-client\src\components\editor\core\EditorPost.vue
  * @Description  : 编辑器
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -166,7 +166,7 @@ onMounted(() => {
     .md-layout {
         border: 1px solid #ccc;
         border-radius: 3px;
-        margin: 5px 0px;
+        margin: 4px 0px;
         width: pc.$width-page-main;
 
         .md-toolbar {

@@ -6,6 +6,90 @@
   "description": "vue 重写项目",
   "glyphs": [
     {
+      "icon_id": "319252",
+      "name": "page",
+      "font_class": "page",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    },
+    {
+      "icon_id": "141507",
+      "name": "backup",
+      "font_class": "backup",
+      "unicode": "e6a5",
+      "unicode_decimal": 59045
+    },
+    {
+      "icon_id": "490445",
+      "name": "media",
+      "font_class": "media",
+      "unicode": "ec85",
+      "unicode_decimal": 60549
+    },
+    {
+      "icon_id": "1160206",
+      "name": "post",
+      "font_class": "post",
+      "unicode": "e68b",
+      "unicode_decimal": 59019
+    },
+    {
+      "icon_id": "1512527",
+      "name": "comment",
+      "font_class": "comment",
+      "unicode": "e7e2",
+      "unicode_decimal": 59362
+    },
+    {
+      "icon_id": "10759798",
+      "name": "config",
+      "font_class": "config",
+      "unicode": "e65a",
+      "unicode_decimal": 58970
+    },
+    {
+      "icon_id": "12048871",
+      "name": "collapse",
+      "font_class": "collapse",
+      "unicode": "e6ac",
+      "unicode_decimal": 59052
+    },
+    {
+      "icon_id": "16619451",
+      "name": "shop",
+      "font_class": "shop",
+      "unicode": "e6d9",
+      "unicode_decimal": 59097
+    },
+    {
+      "icon_id": "19100227",
+      "name": "dashboard",
+      "font_class": "dashboard",
+      "unicode": "e643",
+      "unicode_decimal": 58947
+    },
+    {
+      "icon_id": "34453204",
+      "name": "notification",
+      "font_class": "notification",
+      "unicode": "e856",
+      "unicode_decimal": 59478
+    },
+    {
+      "icon_id": "34819734",
+      "name": "short-link",
+      "font_class": "short-link",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
+      "icon_id": "37127555",
+      "name": "announcement",
+      "font_class": "announcement",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    },
+    {
       "icon_id": "6151070",
       "name": "edit",
       "font_class": "edit",

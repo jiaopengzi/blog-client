@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-05 11:39:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-28 11:26:21
+ * @LastEditTime : 2024-01-17 21:20:50
  * @FilePath     : \blog-client\src\components\common\icons\index.vue
  * @Description  : 图标组件
  * @Blog         : https://jiaopengzi.com
@@ -10,9 +10,11 @@
 -->
 
 <template>
-  <svg class="icon" aria-hidden="true" :class="iconClass">
-    <use :xlink:href="iconMap[props.name]" />
-  </svg>
+  <div class="container" :class="iconClass">
+    <svg class="icon" aria-hidden="true">
+      <use :xlink:href="iconMap[props.name]" />
+    </svg>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -38,6 +40,12 @@ const iconClass = computed(() => {
 </script>
 
 <style scoped lang="scss">
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .icon {
   width: 1em;
   height: 1em;

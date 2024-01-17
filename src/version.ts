@@ -2,12 +2,13 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-03 12:48:46
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-05 14:05:14
+ * @LastEditTime : 2024-01-13 14:21:04
  * @FilePath     : \blog-client\src\version.ts
  * @Description  : 版本信息
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
+
 import pkg from '../package.json'
 
 // 项目信息

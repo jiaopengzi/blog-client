@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-03 00:20:51
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 23:32:42
- * @FilePath     : \blog-client\vite.config.mts
+ * @LastEditTime : 2024-01-13 14:20:32
+ * @FilePath     : \blog-client\vite.config.ts
  * @Description  : vite 配置文件
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
@@ -13,7 +13,6 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import terser from '@rollup/plugin-terser'
-
 // ------------------------------element-plus 按需自动导入 开始
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'

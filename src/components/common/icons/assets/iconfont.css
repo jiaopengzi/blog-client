@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4152487 */
-  src: url('iconfont.woff2?t=1703731231657') format('woff2'),
-       url('iconfont.woff?t=1703731231657') format('woff'),
-       url('iconfont.ttf?t=1703731231657') format('truetype');
+  src: url('iconfont.woff2?t=1705479874424') format('woff2'),
+       url('iconfont.woff?t=1705479874424') format('woff'),
+       url('iconfont.ttf?t=1705479874424') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,54 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-page:before {
+  content: "\e61e";
+}
+
+.icon-backup:before {
+  content: "\e6a5";
+}
+
+.icon-media:before {
+  content: "\ec85";
+}
+
+.icon-post:before {
+  content: "\e68b";
+}
+
+.icon-comment:before {
+  content: "\e7e2";
+}
+
+.icon-config:before {
+  content: "\e65a";
+}
+
+.icon-collapse:before {
+  content: "\e6ac";
+}
+
+.icon-shop:before {
+  content: "\e6d9";
+}
+
+.icon-dashboard:before {
+  content: "\e643";
+}
+
+.icon-notification:before {
+  content: "\e856";
+}
+
+.icon-short-link:before {
+  content: "\e614";
+}
+
+.icon-announcement:before {
+  content: "\e61b";
 }
 
 .icon-edit:before {

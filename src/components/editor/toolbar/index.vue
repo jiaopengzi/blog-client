@@ -3,8 +3,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:02:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-26 23:13:31
- * @FilePath     : \blog-client\src\components\common\editor\toolbar\index.vue
+ * @LastEditTime : 2024-01-17 21:23:54
+ * @FilePath     : \blog-client\src\components\editor\toolbar\index.vue
  * @Description  : 工具栏组件
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -111,7 +111,7 @@ defineExpose({
 }
 
 .iconfont {
-    font-size: 24px;
+    font-size: 20px;
     fill: #333;
 }
 </style>
