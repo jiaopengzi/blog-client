@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 10:40:39
+ * @LastEditTime : 2024-01-18 16:21:38
  * @FilePath     : \blog-client\src\assets\scss\themes\light.scss
  * @Description  : 亮色主题
  * @Blog         : https://jiaopengzi.com
@@ -19,7 +19,7 @@ $primary-color-light: #1E2858;
 html[data-theme=#{$thpme-name}] {
 
   --scrollbar-y-width: 6px; // Y轴滚动条宽度
-  --scrollbar-x-height: 6px; // x轴滚动条高度
+  --scrollbar-x-height: 12px; // x轴滚动条高度
   /* ============================================================ CSS 颜色变量 开始*/
   /* 主要颜色 scss 变量在 css 变量中使用插值引用*/
   --primary-color: #{$primary-color-light};
@@ -42,8 +42,10 @@ html[data-theme=#{$thpme-name}] {
 
   --title-font: font-family: 'Noto Sans SC', 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
+
   /* 字体颜色 */
-  --text-color: var(--primary-color);
+  // --text-color: var(--primary-color);
+  --text-color: #f8f8f8;
   --code-block-bg-color: #f8f8f8;
   --code-block-color: #525252;
   --title-color: var(--primary-color);

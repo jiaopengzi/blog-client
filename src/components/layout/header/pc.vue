@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 22:31:47
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 19:33:11
+ * @LastEditTime : 2024-01-26 15:01:44
  * @FilePath     : \blog-client\src\components\layout\header\pc.vue
  * @Description  : pc 头部
  * @Blog         : https://jiaopengzi.com
@@ -13,19 +13,19 @@
     <transition name="slide-header">
         <header class="header" v-if="headerVisible" :style="{ height: `$height-header-pc`, width: '$width-header-pc' }">
             <div class="header-mian">
-                <div class="logo header-item">
+                <div class="logo">
                     <h1>
                         <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" :alt="routeObj.home.path" />
                     </h1>
                 </div>
 
-                <HeaderNav class="header-item" />
-                <div class="search header-item">
+                <HeaderNav />
+                <div class="search">
                     <input type="text" placeholder="搜索" />
-                    <Icon name="search" customClass="search-icon" />
+                    <Icon :name="IconKeys.Search" customClass="search-icon" />
                 </div>
 
-                <div class="login header-item" v-if="!isLogin">
+                <div class="login" v-if="!isLogin">
                     <router-link :to="routeObj.login.path" class="link">
                         <span>登录</span>
                     </router-link>
@@ -34,7 +34,7 @@
                         <span>注册</span>
                     </router-link>
                 </div>
-                <div class="avatar header-item" v-if="isLogin">
+                <div class="avatar" v-if="isLogin">
                     <UserInfoDropdown />
                 </div>
             </div>
@@ -45,7 +45,7 @@
 <script setup lang="ts">
 import HeaderNav from '@/components/layout/header-nav'
 import { ref, onBeforeMount } from 'vue'
-
+import { IconKeys } from '@/components/common/icons'
 import type { Ref } from 'vue'
 import type { ScrollData } from '@/components/hooks/useScroll'
 import { useScrollActions } from '@/components/hooks/useScroll'

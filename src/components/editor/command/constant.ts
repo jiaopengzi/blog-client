@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:51:36
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-10 16:07:26
- * @FilePath     : \blog-client\src\components\common\editor\command\constant.ts
+ * @LastEditTime : 2024-01-26 15:23:16
+ * @FilePath     : \blog-client\src\components\editor\command\constant.ts
  * @Description  : markdown 标记常量
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
@@ -14,76 +14,76 @@ import type { MardkdownEditorCommandsType } from '@/components/editor/command'
 import { IconKeys } from '@/components/common/icons'
 
 export enum CommandsKey {
-  undo = 'undo',
-  redo = 'redo',
-  clear = 'clear',
-  bold = 'bold',
-  italic = 'italic',
-  strikethrough = 'strikethrough',
-  mark = 'mark',
-  emoji = 'emoji',
-  h1 = 'h1',
-  h2 = 'h2',
-  h3 = 'h3',
-  h4 = 'h4',
-  h5 = 'h5',
-  h6 = 'h6',
-  ol = 'ol',
-  ul = 'ul',
-  quote = 'quote',
-  codeBlock = 'codeBlock',
-  codeInline = 'codeInline',
-  link = 'link',
-  image = 'image',
-  table = 'table',
-  hr = 'hr',
-  taskList = 'taskList',
-  mathBlock = 'mathBlock',
-  mathInline = 'mathInline',
-  footnote = 'footnote',
-  superscript = 'superscript',
-  subscript = 'subscript',
-  payContent = 'payContent',
-  copy = 'copy',
-  save = 'save',
-  publish = 'publish',
-  preview = 'preview',
-  toc = 'toc',
-  scroll = 'scroll',
-  fullscreen = 'fullscreen',
-  exitFullscreen = 'exitFullscreen',
-  edit = 'edit',
-  WeChatOfficialAccount = 'WeChatOfficialAccount',
-  markdown = 'markdown',
-  html = 'html',
-  pdf = 'pdf',
-  help = 'help',
-  info = 'info',
+  Undo = 'undo',
+  Redo = 'redo',
+  Clear = 'clear',
+  Bold = 'bold',
+  Italic = 'italic',
+  Strikethrough = 'strikethrough',
+  Mark = 'mark',
+  Emoji = 'emoji',
+  H1 = 'h1',
+  H2 = 'h2',
+  H3 = 'h3',
+  H4 = 'h4',
+  H5 = 'h5',
+  H6 = 'h6',
+  Ol = 'ol',
+  Ul = 'ul',
+  Quote = 'quote',
+  CodeBlock = 'codeBlock',
+  CodeInline = 'codeInline',
+  Link = 'link',
+  Image = 'image',
+  Table = 'table',
+  Hr = 'hr',
+  TaskList = 'taskList',
+  MathBlock = 'mathBlock',
+  MathInline = 'mathInline',
+  Footnote = 'footnote',
+  Superscript = 'superscript',
+  Subscript = 'subscript',
+  PayContent = 'payContent',
+  Copy = 'copy',
+  Save = 'save',
+  Publish = 'publish',
+  Preview = 'preview',
+  Toc = 'toc',
+  Scroll = 'scroll',
+  Fullscreen = 'fullscreen',
+  ExitFullscreen = 'exitFullscreen',
+  Edit = 'edit',
+  WechatOfficialAccount = 'WechatOfficialAccount',
+  Markdown = 'markdown',
+  Html = 'html',
+  Pdf = 'pdf',
+  Help = 'help',
+  Info = 'info',
 }
 
 // mardkdown 编辑器 所有 排序 命令 集合对象
 export const MardkdownEditorCommands: MardkdownEditorCommandsType = {
   // 撤销重做
-  [CommandsKey.undo]: {
+  [CommandsKey.Undo]: {
     tip: '撤销',
     hotKey: 'Ctrl+Z',
     action: (view: EditorView) => {
       undo(view)
     },
     // icon: 'undo',
-    icon: IconKeys.undo,
+    icon: IconKeys.Undo,
   },
   // 重做
-  [CommandsKey.redo]: {
+  [CommandsKey.Redo]: {
     tip: '重做',
     hotKey: 'Ctrl+Y',
     action: (view: EditorView) => {
       redo(view)
     },
-    icon: IconKeys.redo,
+    icon: IconKeys.Redo,
   },
   // 清空
-  [CommandsKey.clear]: {
+  [CommandsKey.Clear]: {
     tip: '清空',
     hotKey: 'Ctrl+Shift+K',
     action: (view: EditorView) => {
@@ -92,304 +92,304 @@ export const MardkdownEditorCommands: MardkdownEditorCommandsType = {
         selection: { anchor: 0, head: 0 }, // 将光标移至文档起始位置
       })
     },
-    icon: IconKeys.clear,
+    icon: IconKeys.Clear,
   },
   // 粗体
-  [CommandsKey.bold]: {
+  [CommandsKey.Bold]: {
     tip: '粗体',
     prefix: '**',
     suffix: '**',
     hotKey: 'Ctrl+B',
-    icon: IconKeys.bold,
+    icon: IconKeys.Bold,
   },
   // 斜体
-  [CommandsKey.italic]: {
+  [CommandsKey.Italic]: {
     tip: '斜体',
     prefix: '*',
     suffix: '*',
     hotKey: 'Ctrl+I',
-    icon: IconKeys.italic,
+    icon: IconKeys.Italic,
   },
   // 删除线
-  [CommandsKey.strikethrough]: {
+  [CommandsKey.Strikethrough]: {
     tip: '删除线',
     prefix: '~~',
     suffix: '~~',
     hotKey: 'Ctrl+Shift+S',
-    icon: IconKeys.strikethrough,
+    icon: IconKeys.Strikethrough,
   },
   // mark标记
-  [CommandsKey.mark]: {
+  [CommandsKey.Mark]: {
     tip: 'mark标记',
     prefix: '==',
     suffix: '==',
     hotKey: 'Ctrl+Shift+M',
-    icon: IconKeys.mark,
+    icon: IconKeys.Mark,
   },
   //   emoji
-  [CommandsKey.emoji]: {
+  [CommandsKey.Emoji]: {
     tip: 'emoji表情',
     prefix: ':',
     content: 'smile',
     suffix: ':',
     hotKey: 'Ctrl+Shift+E',
-    icon: IconKeys.emoji,
+    icon: IconKeys.Emoji,
   },
   // 标题1
-  [CommandsKey.h1]: {
+  [CommandsKey.H1]: {
     tip: '标题1',
     prefix: '# ',
     hotKey: 'Ctrl+1',
-    icon: IconKeys.h1,
+    icon: IconKeys.H1,
   },
   // 标题2
-  [CommandsKey.h2]: {
+  [CommandsKey.H2]: {
     tip: '标题2',
     prefix: '## ',
     hotKey: 'Ctrl+2',
-    icon: IconKeys.h2,
+    icon: IconKeys.H2,
   },
   // 标题3
-  [CommandsKey.h3]: {
+  [CommandsKey.H3]: {
     tip: '标题3',
     prefix: '### ',
     hotKey: 'Ctrl+3',
-    icon: IconKeys.h3,
+    icon: IconKeys.H3,
   },
   // 标题4
-  [CommandsKey.h4]: {
+  [CommandsKey.H4]: {
     tip: '标题4',
     prefix: '#### ',
     hotKey: 'Ctrl+4',
-    icon: IconKeys.h4,
+    icon: IconKeys.H4,
   },
   // 标题5
-  [CommandsKey.h5]: {
+  [CommandsKey.H5]: {
     tip: '标题5',
     prefix: '##### ',
     hotKey: 'Ctrl+5',
-    icon: IconKeys.h5,
+    icon: IconKeys.H5,
   },
   // 标题6
-  [CommandsKey.h6]: {
+  [CommandsKey.H6]: {
     tip: '标题6',
     prefix: '###### ',
     hotKey: 'Ctrl+6',
-    icon: IconKeys.h6,
+    icon: IconKeys.H6,
   },
   // 有序列表
-  [CommandsKey.ol]: {
+  [CommandsKey.Ol]: {
     tip: '有序列表',
     prefix: '1. ',
     hotKey: 'Ctrl+Shift+O',
-    icon: IconKeys.ol,
+    icon: IconKeys.Ol,
   },
   // 无序列表
-  [CommandsKey.ul]: {
+  [CommandsKey.Ul]: {
     tip: '无序列表',
     prefix: '- ',
     hotKey: 'Ctrl+Shift+U',
-    icon: IconKeys.ul,
+    icon: IconKeys.Ul,
   },
   // 引用
-  [CommandsKey.quote]: {
+  [CommandsKey.Quote]: {
     tip: '引用',
     prefix: '> ',
     hotKey: 'Ctrl+Shift+Q',
-    icon: IconKeys.quote,
+    icon: IconKeys.Quote,
   },
   // 代码块
-  [CommandsKey.codeBlock]: {
+  [CommandsKey.CodeBlock]: {
     tip: '代码块',
     prefix: '``` language\n',
     content: '\n',
     suffix: '```',
     hotKey: 'Ctrl+Shift+C',
-    icon: IconKeys.codeBlock,
+    icon: IconKeys.CodeBlock,
   },
   // 行内代码
-  [CommandsKey.codeInline]: {
+  [CommandsKey.CodeInline]: {
     tip: '行内代码',
     prefix: '`',
     suffix: '`',
     hotKey: 'Ctrl+Shift+I',
-    icon: IconKeys.codeInline,
+    icon: IconKeys.CodeInline,
   },
   // 链接
-  [CommandsKey.link]: {
+  [CommandsKey.Link]: {
     tip: '链接',
     prefix: '[',
     suffix: '](url)',
     hotKey: 'Ctrl+Shift+L',
-    icon: IconKeys.link,
+    icon: IconKeys.Link,
   },
   // 图片
-  [CommandsKey.image]: {
+  [CommandsKey.Image]: {
     tip: '图片',
     prefix: '![alt](',
     suffix: ')',
     hotKey: 'Ctrl+Shift+P',
-    icon: IconKeys.image,
+    icon: IconKeys.Image,
   },
   // 表格
-  [CommandsKey.table]: {
+  [CommandsKey.Table]: {
     tip: '表格',
     content: '|column1|column2|column3|\n|:---:|:---:|:---:|\n|content1|content2|content3|',
     hotKey: 'Ctrl+Shift+T',
-    icon: IconKeys.table,
+    icon: IconKeys.Table,
   },
   // 分割线
-  [CommandsKey.hr]: {
+  [CommandsKey.Hr]: {
     tip: '分割线',
     content: '---',
     hotKey: 'Ctrl+Shift+H',
-    icon: IconKeys.hr,
+    icon: IconKeys.Hr,
   },
   // 任务列表
-  [CommandsKey.taskList]: {
+  [CommandsKey.TaskList]: {
     tip: '任务列表',
     prefix: '- [ ] ',
     hotKey: 'Ctrl+Shift+X',
-    icon: IconKeys.taskList,
+    icon: IconKeys.TaskList,
   },
   // 块级数学公式
-  [CommandsKey.mathBlock]: {
+  [CommandsKey.MathBlock]: {
     tip: '块级数学公式',
     prefix: '$$\n',
     content: '\n',
     suffix: '$$',
     hotKey: 'Ctrl+Shift+M',
-    icon: IconKeys.mathBlock,
+    icon: IconKeys.MathBlock,
   },
   // 行内数学公式
-  [CommandsKey.mathInline]: {
+  [CommandsKey.MathInline]: {
     tip: '行内数学公式',
     prefix: '$',
     suffix: '$',
     hotKey: 'Ctrl+Shift+N',
-    icon: IconKeys.mathInline,
+    icon: IconKeys.MathInline,
   },
   // 脚注
-  [CommandsKey.footnote]: {
+  [CommandsKey.Footnote]: {
     tip: '脚注',
     prefix: '[^1]',
     suffix: '\n\n[^1]:脚注内容',
     hotKey: 'Ctrl+Shift+F',
-    icon: IconKeys.footnote,
+    icon: IconKeys.Footnote,
   },
   // 上标
-  [CommandsKey.superscript]: {
+  [CommandsKey.Superscript]: {
     tip: '上标',
     prefix: '^',
     suffix: '^',
     hotKey: 'Ctrl+Shift+U',
-    icon: IconKeys.superscript,
+    icon: IconKeys.Superscript,
   },
   // 下标
-  [CommandsKey.subscript]: {
+  [CommandsKey.Subscript]: {
     tip: '下标',
     prefix: '~',
     suffix: '~',
     hotKey: 'Ctrl+Shift+D',
-    icon: IconKeys.subscript,
+    icon: IconKeys.Subscript,
   },
   // 付费内容
-  [CommandsKey.payContent]: {
+  [CommandsKey.PayContent]: {
     tip: '付费内容',
     prefix: '<!--more-->',
     hotKey: 'Ctrl+Alt+M',
-    icon: IconKeys.payContent,
+    icon: IconKeys.PayContent,
   },
   // 复制
-  [CommandsKey.copy]: {
+  [CommandsKey.Copy]: {
     tip: '复制',
     hotKey: 'Alt+C',
-    icon: IconKeys.copy,
+    icon: IconKeys.Copy,
   },
 
   // 保存
-  [CommandsKey.save]: {
+  [CommandsKey.Save]: {
     tip: '保存',
     hotKey: 'Ctrl+S',
-    icon: IconKeys.save,
+    icon: IconKeys.Save,
   },
   // 发布
-  [CommandsKey.publish]: {
+  [CommandsKey.Publish]: {
     tip: '发布',
     hotKey: 'Ctrl+P',
-    icon: IconKeys.publish,
+    icon: IconKeys.Publish,
   },
   // 预览
-  [CommandsKey.preview]: {
+  [CommandsKey.Preview]: {
     tip: '预览',
     hotKey: 'Ctrl+Shift+V',
-    icon: IconKeys.preview,
+    icon: IconKeys.Preview,
   },
   // 目录
-  [CommandsKey.toc]: {
+  [CommandsKey.Toc]: {
     tip: '目录',
     hotKey: 'Ctrl+T',
-    icon: IconKeys.toc,
+    icon: IconKeys.Toc,
   },
   // 同步滚动条
-  [CommandsKey.scroll]: {
+  [CommandsKey.Scroll]: {
     tip: '同步滚动条',
     hotKey: 'Ctrl+Shift+S',
-    icon: IconKeys.scroll,
+    icon: IconKeys.Scroll,
   },
   // 全屏
-  [CommandsKey.fullscreen]: {
+  [CommandsKey.Fullscreen]: {
     tip: '全屏',
     hotKey: 'Ctrl+Alt+F',
-    icon: IconKeys.fullscreen,
+    icon: IconKeys.Fullscreen,
   },
   // 退出全屏
-  [CommandsKey.exitFullscreen]: {
+  [CommandsKey.ExitFullscreen]: {
     tip: '退出全屏',
     hotKey: 'Esc',
-    icon: IconKeys.exitFullscreen,
+    icon: IconKeys.ExitFullscreen,
   },
   // 桌面端
-  [CommandsKey.edit]: {
+  [CommandsKey.Edit]: {
     tip: '编辑模式',
     hotKey: 'Ctrl+Shift+D',
-    icon: IconKeys.edit,
+    icon: IconKeys.Edit,
   },
   // 移动端
-  [CommandsKey.WeChatOfficialAccount]: {
+  [CommandsKey.WechatOfficialAccount]: {
     tip: '微信公众号',
     hotKey: 'Ctrl+Shift+M',
-    icon: IconKeys.WeChatOfficialAccount,
+    icon: IconKeys.WechatOfficialAccount,
   },
   // 导出 markdown
-  [CommandsKey.markdown]: {
+  [CommandsKey.Markdown]: {
     tip: '导出 markdown',
     hotKey: 'Ctrl+Alt+M',
-    icon: IconKeys.markdown,
+    icon: IconKeys.Markdown,
   },
   // 导出 html
-  [CommandsKey.html]: {
+  [CommandsKey.Html]: {
     tip: '导出 html',
     hotKey: 'Ctrl+Alt+H',
-    icon: IconKeys.html,
+    icon: IconKeys.Html,
   },
   // 导出 pdf
-  [CommandsKey.pdf]: {
+  [CommandsKey.Pdf]: {
     tip: '导出 PDF',
     hotKey: 'Ctrl+Alt+P',
-    icon: IconKeys.pdf,
+    icon: IconKeys.Pdf,
   },
   // 帮助
-  [CommandsKey.help]: {
+  [CommandsKey.Help]: {
     tip: '帮助',
     hotKey: 'Ctrl+Shift+P',
-    icon: IconKeys.help,
+    icon: IconKeys.Help,
   },
   // 关于
-  [CommandsKey.info]: {
+  [CommandsKey.Info]: {
     tip: '关于',
     hotKey: 'Ctrl+Shift+I',
-    icon: IconKeys.info,
+    icon: IconKeys.Info,
   },
 }
 

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 22:31:43
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 19:33:35
+ * @LastEditTime : 2024-01-26 15:02:07
  * @FilePath     : \blog-client\src\components\layout\header\phone.vue
  * @Description  : phone 头部
  * @Blog         : https://jiaopengzi.com
@@ -16,7 +16,7 @@
             <ul class="header-main">
                 <li>
                     <button class="btn-menu" @click="toggleNav">
-                        <Icon name="menu" />
+                        <Icon :name="IconKeys.Menu" />
                     </button>
                 </li>
                 <li>
@@ -29,7 +29,7 @@
 
                 <li>
                     <div class="search">
-                        <Icon name="search" />
+                        <Icon :name="IconKeys.Search" />
                     </div>
                 </li>
             </ul>
@@ -50,6 +50,7 @@ import { routeObj } from '@/router/routeAll'
 import type { Ref } from 'vue'
 import type { ScrollData } from '@/components/hooks/useScroll'
 import { useScrollActions } from '@/components/hooks/useScroll'
+import { IconKeys } from '@/components/common/icons'
 
 defineOptions({ name: 'HeaderPhone' })
 

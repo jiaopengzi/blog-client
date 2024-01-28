@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-14 20:46:44
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-17 17:13:22
+ * @LastEditTime : 2024-01-26 15:28:36
  * @FilePath     : \blog-client\src\views\test\menu.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -15,11 +15,11 @@
 
       <el-sub-menu index="1">
         <template #title>
-          <Icon name="save" custom-class="icon-menu" /> <span> Navigator One</span>
+          <Icon :name="IconKeys.Save" custom-class="icon-menu" /> <span> Navigator One</span>
         </template>
 
         <el-menu-item index="1-1">
-          <Icon name="save" custom-class="icon-menu" /> <span> Option 1</span>
+          <Icon :name="IconKeys.Save" custom-class="icon-menu" /> <span> Option 1</span>
         </el-menu-item>
 
         <el-menu-item index="1-2">Option 2</el-menu-item>
@@ -69,7 +69,7 @@ const menuData: Menu = reactive({
   "1": {
     index: '1',
     display: 'Navigator One',
-    iconName: IconKeys.save,
+    iconName: IconKeys.Save,
   },
   '1-1': {
     index: '1-1',
@@ -89,7 +89,7 @@ const menuData: Menu = reactive({
   '1-4': {
     index: '1-4',
     display: 'Option 4',
-    iconName: IconKeys.save,
+    iconName: IconKeys.Save,
     parentIndex: 'XX',
   },
   '1-4-1': {
@@ -115,12 +115,12 @@ const menuData: Menu = reactive({
   '2': {
     index: '2',
     display: 'Navigator Two',
-    iconName: IconKeys.save,
+    iconName: IconKeys.Save,
   },
   '3': {
     index: '3',
     display: 'Navigator Three',
-    iconName: IconKeys.save,
+    iconName: IconKeys.Save,
   },
   '3-1': {
     index: '3-1',

@@ -2,32 +2,37 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-03 20:48:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-21 14:44:33
- * @FilePath     : \blog-client\src\components\common\base\tag-item\TagItem.vue
+ * @LastEditTime : 2024-01-18 15:06:21
+ * @FilePath     : \blog-client\src\components\common\tag-item\index.vue
  * @Description  : 标签元素
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
 
 <template>
-  <el-tag :key="tag.data.lablel" class="tag-item" effect="dark" :round="false" @click="() => handleClick(tag)"
+  <el-tag :key="tag.data.label" class="tag-item" effect="dark" :round="false" @click="handleClick(tag)"
     :style="[{ 'background-color': tag.color.bgColor }, { color: tag.color.color }]">
-    {{ tag.data.lablel + '(' + tag.data.tagPostNum + ')' }}
+    {{ tag.data.label + '(' + tag.data.tagPostNum + ')' }}
   </el-tag>
 </template>
 
 <script lang="ts" setup>
 import type { TagDataObj, Tag, TagColor } from '@/components/common/tag-item'
-import router from '@/router/index'
 
 defineOptions({ name: "TagItem" })
 
-const $props = defineProps<{
+const props = defineProps<{
   tagData: TagDataObj
 }>()
 
+const emit = defineEmits<{
+  (event: 'click', tagItemData: TagDataObj): void
+}>()
+
+
+
 const tag: Tag = {
-  data: $props.tagData,
+  data: props.tagData,
   color: generateItemColor(),
 }
 
@@ -51,9 +56,11 @@ function generateItemColor(a: number = 0.8): TagColor {
 }
 
 // 点击标签跳转到标签页面
-function handleClick(clickedItem: Tag) {
-  router.push({ path: '/tag' + clickedItem.data.path })
+const handleClick = (clickedItem: Tag) => {
+  emit('click', clickedItem.data)
+  // console.log(clickedItem.data)
 }
+
 </script>
 
 <style scoped lang="scss">
@@ -70,4 +77,3 @@ function handleClick(clickedItem: Tag) {
   }
 }
 </style>
-@/components/common/tag-item/tagItem

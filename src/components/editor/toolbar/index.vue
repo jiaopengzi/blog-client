@@ -1,9 +1,8 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:02:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-17 21:23:54
+ * @LastEditTime : 2024-01-26 15:27:27
  * @FilePath     : \blog-client\src\components\editor\toolbar\index.vue
  * @Description  : 工具栏组件
  * @Blog         : https://jiaopengzi.com
@@ -12,12 +11,23 @@
 
 <template>
     <div ref="toolbarRef" id="toolbar">
-        <el-tooltip v-for="(btn, index) in props.toobarBtns" :key="index" effect="dark" :content="btn.display"
-            :hide-after="0">
-            <button class="toolbar-btn" :key="index" @click="emitToolbarBtnClicked(btn.name)">
+        <button v-for="(btn, index) in props.toobarBtns" :key="index" class="toolbar-btn"
+            @click="emitToolbarBtnClicked(btn.name)">
+            <el-popover v-if="btn.name === CommandsKey.Emoji" placement="bottom" width="310" trigger="hover"
+                popper-class="popper-class" popper-style="background-color: transparent; border: none; box-shadow: none;"
+                :show-arrow="false" :offset="0">
+
+                <template #reference>
+                    <Icon :name="btn.icon" customClass="iconfont" />
+                </template>
+
+                <EmojiPicker :native="true" @select="onSelectEmoji" />
+            </el-popover>
+
+            <el-tooltip v-else effect="dark" :content="btn.display" :hide-after="0">
                 <Icon :name="btn.icon" customClass="iconfont" />
-            </button>
-        </el-tooltip>
+            </el-tooltip>
+        </button>
     </div>
 </template>
   
@@ -25,6 +35,7 @@
 import { ref, onMounted, watch } from 'vue';
 import { CommandsKey } from '@/components/editor/command'
 import type { ToolbarProps } from '@/components/editor/toolbar'
+import EmojiPicker from 'vue3-emoji-picker' // import picker compopnent
 
 // eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: "Toolbar" })
@@ -38,6 +49,7 @@ const props = defineProps<ToolbarProps>();
 // 子组件 传参
 const emit = defineEmits<{
     (e: 'toolbar-btn-clicked', name: CommandsKey): void
+    (e: 'emoji-picker-selected', emoji: any): void
 }>()
 
 const toolbarRef = ref<HTMLElement | null>(null); // 工具栏
@@ -76,6 +88,13 @@ function updateToolbarHeight() {
 //     }
 // }
 
+
+// emoji 选择
+function onSelectEmoji(emoji: any) {
+    emit('emoji-picker-selected', emoji)
+    // console.log(emoji)
+}
+
 onMounted(async () => {// 初始化 CodeMirror
     // setToolbarIconNumberPerLine() // 初始化工具栏每行显示的按钮个数
     updateToolbarHeight()// 初始化工具栏高度
@@ -113,6 +132,13 @@ defineExpose({
 .iconfont {
     font-size: 20px;
     fill: #333;
+}
+
+.popper-class {
+    background: transparent;
+    border: none;
+    // 无阴影
+    box-shadow: none;
 }
 </style>
   

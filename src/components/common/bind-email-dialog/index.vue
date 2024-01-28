@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 18:53:25
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-11 21:33:09
+ * @LastEditTime : 2024-01-23 20:38:49
  * @FilePath     : \blog-client\src\components\common\bind-email-dialog\index.vue
  * @Description  : 绑定邮箱弹窗
  * @Blog         : https://jiaopengzi.com
@@ -46,7 +46,7 @@
 import { reactive, ref } from 'vue'
 import SlideVerify from '@/components/common/slide-verify' // 引用滑块验证组件
 import { ShowMsgTip } from '@/utils/message'
-import { MsgType } from '@/components/common/alert-tip'
+import { MsgType } from '@/components/common'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import type { CheckEmailRequest } from '@/api/user/checkEmail'
 import { CheckEmailByJosn } from '@/api/user/checkEmail'

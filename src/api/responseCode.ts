@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-26 10:00:55
+ * @LastEditTime : 2024-01-27 15:46:07
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -79,8 +79,8 @@ export enum LocalStorageKey {
 
 // 用户信息
 export enum UploadCode {
-  AvatarSuccess = 8100, // 上传头像成功
-  AvatarTooLarge = 8101, // 上传头像失败：文件过大
+  Success = 8100, // 上传头像成功
+  NotAllow = 8101, // 上传不被允许
 }
 
 // 社交登录

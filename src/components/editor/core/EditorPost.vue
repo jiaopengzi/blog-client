@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-17 21:50:50
+ * @LastEditTime : 2024-01-26 15:25:01
  * @FilePath     : \blog-client\src\components\editor\core\EditorPost.vue
  * @Description  : 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -13,11 +13,7 @@
         <!-- 工具栏 -->
         <div :class="toolbarClass">
             <Toolbar ref="toolbarRef" :toobar-btns="toobarBtns()" :icon-number-per-line="iconNumberPerLine()"
-                @toolbar-btn-clicked="toolbarBtnClicked" />
-            <!-- emoji 选择组件 -->
-            <div class="emoji-picker-wrapper" v-if="isShowEmojiPicker">
-                <EmojiPicker :native="true" @select="onSelectEmoji" />
-            </div>
+                @toolbar-btn-clicked="toolbarBtnClicked" @emoji-picker-selected="onSelectEmoji" />
         </div>
 
         <!-- 编辑器容器 -->
@@ -54,7 +50,6 @@ import { storeToRefs } from 'pinia'
 import type { ToolbarRef, CodemirrorRef, PreviewRef } from '@/components/editor/core'
 import { setIsFullScreenClassName } from '@/components/editor/core'
 import { CommandsKey } from '@/components/editor/command'
-import EmojiPicker from 'vue3-emoji-picker' // import picker compopnent
 import 'vue3-emoji-picker/css'// import css
 
 
@@ -70,48 +65,47 @@ const mdContainerRef = ref<HTMLElement | null>(null) //编辑器容器
 const toolbarRef = ref<ToolbarRef | null>(null) //编辑器容器
 const codemirrorRef = ref<CodemirrorRef | null>(null) //编辑器
 const previewRef = ref<PreviewRef | null>(null) // 预览容器
-// 将 CommandsKey 解构
 
 const ModePost = reactive([
-    CommandsKey.undo,
-    CommandsKey.redo,
-    CommandsKey.clear,
-    CommandsKey.h1,
-    CommandsKey.h2,
-    CommandsKey.h3,
-    CommandsKey.bold,
-    CommandsKey.italic,
-    CommandsKey.quote,
-    CommandsKey.codeBlock,
-    CommandsKey.link,
-    CommandsKey.ol,
-    CommandsKey.ul,
-    CommandsKey.taskList,
-    CommandsKey.mark,
-    CommandsKey.emoji,
-    CommandsKey.strikethrough,
-    CommandsKey.image,
-    CommandsKey.table,
-    CommandsKey.hr,
-    CommandsKey.mathBlock,
-    CommandsKey.footnote,
-    CommandsKey.superscript,
-    CommandsKey.subscript,
-    CommandsKey.payContent,
-    CommandsKey.toc,
-    CommandsKey.edit,
-    CommandsKey.scroll,
-    CommandsKey.preview,
-    CommandsKey.WeChatOfficialAccount,
-    CommandsKey.fullscreen,
-    CommandsKey.save,
-    CommandsKey.copy,
-    CommandsKey.publish,
-    CommandsKey.markdown,
-    CommandsKey.html,
-    CommandsKey.pdf,
-    CommandsKey.help,
-    CommandsKey.info,
+    CommandsKey.Undo,
+    CommandsKey.Redo,
+    CommandsKey.Clear,
+    CommandsKey.H1,
+    CommandsKey.H2,
+    CommandsKey.H3,
+    CommandsKey.Bold,
+    CommandsKey.Italic,
+    CommandsKey.Quote,
+    CommandsKey.CodeBlock,
+    CommandsKey.Link,
+    CommandsKey.Ol,
+    CommandsKey.Ul,
+    CommandsKey.TaskList,
+    CommandsKey.Mark,
+    CommandsKey.Emoji,
+    CommandsKey.Strikethrough,
+    CommandsKey.Image,
+    CommandsKey.Table,
+    CommandsKey.Hr,
+    CommandsKey.MathBlock,
+    CommandsKey.Footnote,
+    CommandsKey.Superscript,
+    CommandsKey.Subscript,
+    CommandsKey.PayContent,
+    CommandsKey.Toc,
+    CommandsKey.Edit,
+    CommandsKey.Scroll,
+    CommandsKey.Preview,
+    CommandsKey.WechatOfficialAccount,
+    CommandsKey.Fullscreen,
+    CommandsKey.Save,
+    CommandsKey.Copy,
+    CommandsKey.Publish,
+    CommandsKey.Markdown,
+    CommandsKey.Html,
+    CommandsKey.Pdf,
+    CommandsKey.Help,
+    CommandsKey.Info,
 ])
 
 
@@ -128,7 +122,7 @@ const { toobarBtns, toolbarBtnClicked, iconNumberPerLine } = useToolbar(mdContai
 
 // event callback
 function onSelectEmoji(emoji: any) {
-    codemirrorRef.value?.runCommand(CommandsKey.emoji, { prefix: "", content: emoji.i, suffix: "" })
+    codemirrorRef.value?.runCommand(CommandsKey.Emoji, { prefix: "", content: emoji.i, suffix: "" })
     isShowEmojiPicker.value = false
 }
 
@@ -167,7 +161,7 @@ onMounted(() => {
         border: 1px solid #ccc;
         border-radius: 3px;
         margin: 4px 0px;
-        width: pc.$width-page-main;
+        // width: pc.$width-page-main;
 
         .md-toolbar {
             position: relative;
@@ -176,7 +170,7 @@ onMounted(() => {
 
         .md-container {
             display: flex;
-            width: pc.$width-page-main;
+            // width: pc.$width-page-main;
             height: pc.$editor-md-container-height;
 
             .md-container-item {

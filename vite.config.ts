@@ -12,7 +12,7 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
-import terser from '@rollup/plugin-terser'
+import terser from '@rollup/plugin-terser' // 会报错 没有调用签名。 但是不影响使用
 // ------------------------------element-plus 按需自动导入 开始
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
@@ -88,6 +88,19 @@ export default defineConfig({
             return `vendor/${name}`
           }
         },
+        // ------------------------------ 将打包文件按照类型目录分类 开始
+
+        // 静态资源需要文件名 调试模式下
+        chunkFileNames: 'static/js/[name]-[hash].js',
+        entryFileNames: 'static/js/[name]-[hash].js',
+        assetFileNames: 'static/[ext]/[name]-[hash].[ext]',
+
+        // 静态资源不需要文件名 更加简洁 生成模式下
+        // chunkFileNames: 'static/js/[hash].js',
+        // entryFileNames: 'static/js/[hash].js',
+        // assetFileNames: 'static/[ext]/[hash].[ext]',
+
+        // ------------------------------ 将打包文件按照类型目录分类 结束
       },
       plugins: [
         terser({

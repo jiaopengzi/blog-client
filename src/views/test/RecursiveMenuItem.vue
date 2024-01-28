@@ -27,8 +27,6 @@
   
 <script lang="ts" setup>
 
-import { defineProps } from 'vue'
-import Icon from '@/components/common/icons'
 import { IconKeys } from '@/components/common/icons'
 
 

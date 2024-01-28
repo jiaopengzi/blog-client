@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-26 17:26:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 12:01:20
+ * @LastEditTime : 2024-01-25 16:19:14
  * @FilePath     : \blog-client\src\components\editor\core\EditorComment.vue
  * @Description  : 评论编辑器
  * @Blog         : https://jiaopengzi.com
@@ -14,11 +14,7 @@
         <!-- 工具栏 -->
         <div :class="toolbarClass">
             <Toolbar ref="toolbarRef" :toobar-btns="toobarBtns()" :icon-number-per-line="iconNumberPerLine()"
-                @toolbar-btn-clicked="toolbarBtnClicked" />
-            <!-- emoji 选择组件 -->
-            <div class="emoji-picker-wrapper" v-if="isShowEmojiPicker">
-                <EmojiPicker :native="true" @select="onSelectEmoji" />
-            </div>
+                @toolbar-btn-clicked="toolbarBtnClicked" @emoji-picker-selected="onSelectEmoji" />
         </div>
 
         <!-- 编辑器容器 -->
@@ -54,8 +50,7 @@ import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
 import type { ToolbarRef, CodemirrorRef, PreviewRef } from '@/components/editor/core'
 import { setIsFullScreenClassName } from '@/components/editor/core'
-import { CommandsKey } from '@/components/editor/command'
-import EmojiPicker from 'vue3-emoji-picker' // import picker compopnent
+import { CommandsKey } from '@/components/editor/command'// import picker compopnent
 import 'vue3-emoji-picker/css'// import css
 
 // 评论编辑器命名
@@ -63,7 +58,7 @@ defineOptions({ name: "EditorComment" })
 
 // store
 const editorStore = useEditorStore()
-const { editor, isFullScreen, isShowEmojiPicker } = storeToRefs(editorStore)
+const { editor, isFullScreen } = storeToRefs(editorStore)
 
 // ref
 const mdContainerRef = ref<HTMLElement | null>(null) //编辑器容器
@@ -72,24 +67,24 @@ const codemirrorRef = ref<CodemirrorRef | null>(null) //编辑器
 const previewRef = ref<PreviewRef | null>(null) // 预览容器
 // 将 CommandsKey 解构
 const ModeComment = reactive([
-    CommandsKey.undo,
-    CommandsKey.redo,
-    CommandsKey.clear,
-    CommandsKey.h1,
-    CommandsKey.bold,
-    CommandsKey.italic,
-    CommandsKey.quote,
-    CommandsKey.codeBlock,
-    CommandsKey.link,
-    CommandsKey.ol,
-    CommandsKey.ul,
-    CommandsKey.taskList,
-    CommandsKey.mark,
-    CommandsKey.emoji,
-    CommandsKey.fullscreen,
-    CommandsKey.publish,
-    CommandsKey.help,
-    CommandsKey.info,
+    CommandsKey.Undo,
+    CommandsKey.Redo,
+    CommandsKey.Clear,
+    CommandsKey.H1,
+    CommandsKey.Bold,
+    CommandsKey.Italic,
+    CommandsKey.Quote,
+    CommandsKey.CodeBlock,
+    CommandsKey.Link,
+    CommandsKey.Ol,
+    CommandsKey.Ul,
+    CommandsKey.TaskList,
+    CommandsKey.Mark,
+    CommandsKey.Emoji,
+    CommandsKey.Fullscreen,
+    CommandsKey.Publish,
+    CommandsKey.Help,
+    CommandsKey.Info,
 ])
 
 // 动态生成类名
@@ -102,10 +97,9 @@ const previewClass = computed(() => setIsFullScreenClassName('md-preview', 'md-p
 // 工具栏点击事件
 const { toobarBtns, toolbarBtnClicked, iconNumberPerLine } = useToolbar(mdContainerRef, toolbarRef, codemirrorRef, previewRef, ModeComment)
 
-// event callback
+// emoji 选择
 function onSelectEmoji(emoji: any) {
-    codemirrorRef.value?.runCommand(CommandsKey.emoji, { prefix: "", content: emoji.i, suffix: "" })
-    isShowEmojiPicker.value = false
+    codemirrorRef.value?.runCommand(CommandsKey.Emoji, { prefix: "", content: emoji.i, suffix: "" })
 }
 
 // codemirror

@@ -1,3 +1,13 @@
+/*
+ * @Author       : jiaopengzi
+ * @Date         : 2023-12-01 22:04:48
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2024-01-27 18:52:57
+ * @FilePath     : \blog-client\tsconfig.node.json
+ * @Description  : 
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ */
 {
   "extends": "@tsconfig/node20/tsconfig.json",
   "include": [
@@ -14,6 +24,7 @@
       "node"
     ],
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "target": "ESNext"
   }
 }

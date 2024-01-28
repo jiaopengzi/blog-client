@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-17 23:19:54
+ * @LastEditTime : 2024-01-26 10:32:27
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -12,13 +12,15 @@
 <template>
     <div class="admin-layout">
         <el-container class="container">
-            <el-header class="header" v-show="!isFullScreen">Header</el-header>
+            <el-header class="header" v-show="!isFullScreen">
+                <AdminHeader />
+            </el-header>
             <el-container ref="containerRef" class="content">
 
-                <AdminAside class="aside" v-show="!isFullScreen" />
+                <AdminAside class="aside" v-show="!isFullScreen" @select="handleSelect" />
 
                 <el-main class="main">
-                    <EditorPost />
+                    <component :is="currentComponent" />
                 </el-main>
 
             </el-container>
@@ -26,11 +28,16 @@
     </div>
 </template>
 <script lang="ts" setup>
+import { ref, watch, onMounted, shallowRef, onBeforeMount } from 'vue'
+import router from '@/router/index'
+import AdminHeader from '@/views/admin/component/header'
 import AdminAside from '@/views/admin/component/aside'
-import { EditorPost } from '@/components/editor/core'
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
-import { ref, watch, onMounted } from 'vue';
+import { components } from '@/views/admin'
+import Dashboard from '@/views/admin/component/main/dashboard'
+import { adminMenuItemMapWithIndex, AadminSideMenu } from '@/views/admin/component/aside'
+
 
 interface HTMLElementRef extends HTMLElement {
     $el: HTMLElement;
@@ -38,6 +45,7 @@ interface HTMLElementRef extends HTMLElement {
 
 defineOptions({ name: 'AdminLayout' })
 
+const currentComponent = shallowRef(Dashboard) // 组件的响应式引用 使用 shallowRef 代替 ref，避免组件重复渲染
 const editorStore = useEditorStore()
 const { isFullScreen } = storeToRefs(editorStore)
 
@@ -51,6 +59,39 @@ const stopWatch = watch(isFullScreen, (newValue) => {
             containerRef.value.$el.style.height = 'calc(100vh - 80px)'
         }
     }
+})
+
+
+const updateCurrentComponent = () => {
+    // 从 url 中获取 path 更新当前组件 
+    const path = router.currentRoute.value.path as string | undefined
+    if (path === "/admin" || path === undefined) return
+
+    if (path) {
+        updateCurrentComponentByPath(path)
+        console.log("2", path)
+    }
+}
+
+
+const handleSelect = (index: string) => {
+    updateCurrentComponentByPath(index)
+    console.log("1", index)
+}
+
+// 通过 path 更新当前组件
+function updateCurrentComponentByPath(path: string): void {
+    //通过 筛选 adminMenuItemMapWithIndex 中对象的 index 与 传入 index 相等的对象，获取对应的 key 值
+    const key = Object.keys(adminMenuItemMapWithIndex).filter((key) => adminMenuItemMapWithIndex[key as AadminSideMenu].index === path)[0]
+    if (!key) return
+    currentComponent.value = components[key as keyof typeof components]
+    // console.log("currentComponent", currentComponent)
+    // console.log("currentComponent", currentComponent.value === components[key as keyof typeof components])
+}
+
+
+onBeforeMount(() => {
+    updateCurrentComponent()
 })
 
 onMounted(() => {
@@ -83,7 +124,7 @@ onMounted(() => {
             }
 
             .main {
-                background-color: red;
+                // background-color: red;
                 color: #333;
                 padding: 0;
                 margin: 0;

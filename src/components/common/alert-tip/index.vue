@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 17:20:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-11 17:27:38
- * @FilePath     : \blog-client\src\components\common\base\alert-tip\index.vue
+ * @LastEditTime : 2024-01-23 20:34:02
+ * @FilePath     : \blog-client\src\components\common\alert-tip\index.vue
  * @Description  : 弹窗提示
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
@@ -15,7 +15,7 @@
 </template>
   
 <script setup lang="ts">
-import { MsgType, MsgTitle } from '@/components/common/alert-tip'
+import { MsgType, MsgTitle } from '@/components/common'
 
 defineOptions({ name: 'AlertTip' })
 

@@ -26,7 +26,7 @@ const menuData: MenuItemMap = reactive({
     "index": "dashboard",
     "display": "仪表板sadfa撒旦法师打发水电费撒旦法撒旦法师打发的算法是打发三大发啥打法上",
     icon: {
-      name: IconKeys.dashboard,
+      name: IconKeys.Dashboard,
       class: "icon-menu"
     }
   },
@@ -34,7 +34,7 @@ const menuData: MenuItemMap = reactive({
     "index": "post",
     "display": "文章",
     icon: {
-      name: IconKeys.post,
+      name: IconKeys.Post,
       class: "icon-menu"
     }
   },
@@ -62,7 +62,7 @@ const menuData: MenuItemMap = reactive({
     "index": "media",
     "display": "媒体",
     icon: {
-      name: IconKeys.media,
+      name: IconKeys.Media,
       class: "icon-menu"
     }
   },
@@ -80,7 +80,7 @@ const menuData: MenuItemMap = reactive({
     "index": "link",
     "display": "链接",
     icon: {
-      name: IconKeys.link,
+      name: IconKeys.Link,
       class: "icon-menu"
     }
   },
@@ -103,7 +103,7 @@ const menuData: MenuItemMap = reactive({
     "index": "page",
     "display": "页面",
     icon: {
-      name: IconKeys.page,
+      name: IconKeys.Page,
       class: "icon-menu"
     }
   },
@@ -121,7 +121,7 @@ const menuData: MenuItemMap = reactive({
     "index": "comment",
     "display": "评论",
     icon: {
-      name: IconKeys.comment,
+      name: IconKeys.Comment,
       class: "icon-menu"
     }
   },
@@ -129,7 +129,7 @@ const menuData: MenuItemMap = reactive({
     "index": "announcement",
     "display": "公告",
     icon: {
-      name: IconKeys.announcement,
+      name: IconKeys.Announcement,
       class: "icon-menu"
     }
   },
@@ -152,7 +152,7 @@ const menuData: MenuItemMap = reactive({
     "index": "video",
     "display": "视频",
     icon: {
-      name: IconKeys.video,
+      name: IconKeys.Video,
       class: "icon-menu"
     },
   },
@@ -175,7 +175,7 @@ const menuData: MenuItemMap = reactive({
     "index": "shop",
     "display": "商城",
     icon: {
-      name: IconKeys.shop,
+      name: IconKeys.Shop,
       class: "icon-menu"
     }
   },
@@ -198,7 +198,7 @@ const menuData: MenuItemMap = reactive({
     "index": "short-link",
     "display": "短连接",
     icon: {
-      name: IconKeys['short-link'],
+      name: IconKeys.ShortLink,
       class: "icon-menu"
     }
   },
@@ -216,7 +216,7 @@ const menuData: MenuItemMap = reactive({
     "index": "user",
     "display": "用户",
     icon: {
-      name: IconKeys.user,
+      name: IconKeys.User,
       class: "icon-menu"
     }
   },
@@ -239,7 +239,7 @@ const menuData: MenuItemMap = reactive({
     "index": "config",
     "display": "网站配置",
     icon: {
-      name: IconKeys.config,
+      name: IconKeys.Config,
       class: "icon-menu"
     }
   },
@@ -247,7 +247,7 @@ const menuData: MenuItemMap = reactive({
     "index": "notification",
     "display": "通知",
     icon: {
-      name: IconKeys.notification,
+      name: IconKeys.Notification,
       class: "icon-menu"
     }
   },
@@ -255,7 +255,7 @@ const menuData: MenuItemMap = reactive({
     "index": "backup",
     "display": "备份",
     icon: {
-      name: IconKeys.backup,
+      name: IconKeys.Backup,
       class: "icon-menu"
     }
   },
@@ -263,7 +263,7 @@ const menuData: MenuItemMap = reactive({
     "index": "collapse-menu",
     "display": "收起菜单",
     icon: {
-      name: IconKeys.collapse,
+      name: IconKeys.Collapse,
       class: "icon-menu"
     }
   },

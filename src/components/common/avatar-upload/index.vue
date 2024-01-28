@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 17:31:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-11 18:30:25
- * @FilePath     : \blog-client\src\components\common\base\avatar-upload\index.vue
+ * @LastEditTime : 2024-01-27 16:30:42
+ * @FilePath     : \blog-client\src\components\common\avatar-upload\index.vue
  * @Description  : 头像上传
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
@@ -35,7 +35,7 @@ import { ElButton, ElDialog } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import { uploadAvatar } from '@/api/utils/uploadAvatar'
 import { ShowMsgTip } from '@/utils/message'
-import { MsgType } from '@/components/common/alert-tip'
+import { MsgType } from '@/components/common'
 import { UploadCode } from '@/api/responseCode'
 
 defineOptions({ name: 'AvatarUpload' })
@@ -102,18 +102,18 @@ function uploadImage() {
             }
 
             const formData = new FormData()
-            formData.append('avatar', blob, 'avatar.png')
+            formData.append('file', blob, 'avatar.png')
             // 调用 uploadAvatar 函数
             uploadAvatar(formData)
                 .then((response) => {
-                    if (response.data.code === UploadCode.AvatarSuccess) {
+                    if (response.data.code === UploadCode.Success) {
                         cropperVisible.value = false
                         // 处理返回数据，并更新头像等信息
                         userStore.getUserInfoByToken(true) // 强制更新用户信息
                         ShowMsgTip(MsgType.success, response.data.msg, 2000)
                         return
                     } else {
-                        ShowMsgTip(MsgType.error, response.data.msg)
+                        ShowMsgTip(MsgType.error, response.data.msg + '：' + response.data.data)
                         return
                     }
                 })

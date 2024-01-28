@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 20:51:41
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 21:42:23
+ * @LastEditTime : 2024-01-26 15:12:20
  * @FilePath     : \blog-client\src\components\layout\header-nav\index.vue
  * @Description  : 导航栏
  * @Blog         : https://jiaopengzi.com
@@ -33,27 +33,27 @@ const navData: HeaderNavPropsItem[] = [
     {
         title: '文章',
         path: routeObj.post.path,
-        iconKey: IconKeys.article,
+        iconKey: IconKeys.Article,
     },
     {
         title: '视频课',
         path: routeObj.video.path,
-        iconKey: IconKeys.video,
+        iconKey: IconKeys.Video,
     },
     {
         title: '文档',
         path: routeObj.doc.path,
-        iconKey: IconKeys.doc,
+        iconKey: IconKeys.Doc,
     },
     {
         title: '工具下载',
         path: routeObj.tool.path,
-        iconKey: IconKeys.tool,
+        iconKey: IconKeys.Tool,
     },
     {
         title: '加入VIP',
         path: routeObj.vip.path,
-        iconKey: IconKeys['vip-red'],
+        iconKey: IconKeys.VipRed,
         customClass: 'my-icon-red'
     }
 ]

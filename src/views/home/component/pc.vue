@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:26:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-13 13:01:03
+ * @LastEditTime : 2024-01-18 15:01:47
  * @FilePath     : \blog-client\src\views\home\component\pc.vue
  * @Description  : pc 内容页
  * @Blog         : https://jiaopengzi.com
@@ -50,13 +50,15 @@
                     <!-- 月度归档 -->
                     <!-- @ready="recalculateHeight" 通知子组件已经渲染完毕 执行 recalculateHeight-->
                     <MonthArchive class="el-aside-item" @ready="reCalculateHeight" />
-                    <PostTag class="el-aside-item" />
+                    <PostTag class="el-aside-item" @click="handleClick" />
                 </el-aside>
             </el-container>
         </div>
     </div>
 </template>
 <script setup lang="ts">
+import { ref, onMounted, nextTick, onBeforeUnmount } from 'vue'
+import router from '@/router'
 import { ArrowRight, Location } from '@element-plus/icons-vue'
 import Carousel from '@/views/home/component/carousel'
 import PostList from '@/views/home/component/post-list'
@@ -65,7 +67,7 @@ import HotPost from '@/components/layout/aside/hot-post'
 import MonthArchive from '@/components/layout/aside/month-archive'
 import PostTag from '@/components/layout/aside/post-tag'
 import { routeObj } from '@/router/routeAll'
-import { ref, onMounted, nextTick, onBeforeUnmount } from 'vue'
+import type { TagDataObj } from '@/components/common/tag-item'
 
 defineOptions({ name: 'HomePC' })
 
@@ -103,6 +105,11 @@ const reCalculateHeight = async () => {
         aside.style.height = `${height}px` // 设置侧边栏高度
         aside.style.top = `-${height - window.innerHeight}px` // 设置侧边栏距离顶部的距离 = 侧边栏高度 - 视口高度
     }
+}
+
+// 点击标签
+function handleClick(tagItemData: TagDataObj) {
+    router.push({ path: '/tag' + tagItemData.path })
 }
 
 onMounted(() => {

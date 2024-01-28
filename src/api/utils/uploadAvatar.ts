@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-07 13:55:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-20 15:54:37
+ * @LastEditTime : 2024-01-27 16:29:36
  * @FilePath     : \blog-client\src\api\utils\uploadAvatar.ts
  * @Description  : 上传头像
  * @Blog         : https://jiaopengzi.com
@@ -23,9 +23,6 @@ export function uploadAvatar(formData: FormData): AxiosPromise<UploadAvatarRespo
   return request({
     url: routerGroup + '/utils/upload-avatar',
     method: 'post',
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
     data: formData,
   })
 }

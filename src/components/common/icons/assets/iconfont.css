@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4152487 */
-  src: url('iconfont.woff2?t=1705479874424') format('woff2'),
-       url('iconfont.woff?t=1705479874424') format('woff'),
-       url('iconfont.ttf?t=1705479874424') format('truetype');
+  src: url('iconfont.woff2?t=1706251373565') format('woff2'),
+       url('iconfont.woff?t=1706251373565') format('woff'),
+       url('iconfont.ttf?t=1706251373565') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,10 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-upload-filled:before {
+  content: "\e685";
 }
 
 .icon-page:before {
@@ -69,11 +73,11 @@
   content: "\e6f5";
 }
 
-.icon-WeChatOfficialAccount:before {
+.icon-wechat-official-account:before {
   content: "\eb79";
 }
 
-.icon-mathInline:before {
+.icon-math-inline:before {
   content: "\e750";
 }
 
@@ -133,7 +137,7 @@
   content: "\e628";
 }
 
-.icon-exitFullscreen:before {
+.icon-exit-fullscreen:before {
   content: "\eb10";
 }
 
@@ -173,7 +177,7 @@
   content: "\e91f";
 }
 
-.icon-mathBlock:before {
+.icon-math-block:before {
   content: "\e8a9";
 }
 
@@ -189,7 +193,7 @@
   content: "\e7b4";
 }
 
-.icon-payContent:before {
+.icon-pay-content:before {
   content: "\e663";
 }
 
@@ -209,7 +213,7 @@
   content: "\e713";
 }
 
-.icon-codeBlock:before {
+.icon-code-block:before {
   content: "\e83d";
 }
 
@@ -217,7 +221,7 @@
   content: "\e6d8";
 }
 
-.icon-codeInline:before {
+.icon-code-inline:before {
   content: "\e600";
 }
 
@@ -261,7 +265,7 @@
   content: "\e887";
 }
 
-.icon-Recommended:before {
+.icon-recommended:before {
   content: "\e6c7";
 }
 
@@ -289,7 +293,7 @@
   content: "\e625";
 }
 
-.icon-database:before {
+.icon-data-analysis:before {
   content: "\e644";
 }
 
@@ -359,10 +363,6 @@
 
 .icon-label:before {
   content: "\e71f";
-}
-
-.icon-office:before {
-  content: "\e712";
 }
 
 .icon-video:before {

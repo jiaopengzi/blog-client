@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:14:11
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 13:39:21
- * @FilePath     : \blog-client\src\components\layout\content\aside\hot-post\index.vue
+ * @LastEditTime : 2024-01-26 15:00:00
+ * @FilePath     : \blog-client\src\components\layout\aside\hot-post\index.vue
  * @Description  : 热门文章
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
@@ -12,7 +12,7 @@
     <div class="aside-item">
         <div class="title">
             <h2 class="icon-container">
-                <Icon name="hot" customClass="aside-icon" /> 热门文章
+                <Icon :name="IconKeys.Hot" customClass="aside-icon" /> 热门文章
             </h2>
         </div>
         <div class="post-list">
@@ -24,6 +24,7 @@
 <script setup lang="ts">
 import PostItem from '@/components/common/post-item-aside'
 import type { PostItemAsideObj } from '@/components/common/post-item-aside'
+import { IconKeys } from '@/components/common/icons'
 
 defineOptions({ name: 'HostPost' })
 

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-10 17:55:55
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-16 16:30:49
+ * @LastEditTime : 2024-01-22 15:38:59
  * @FilePath     : \blog-client\src\utils\lineNumbers.ts
  * @Description  : 行号工具类
  * @Blog         : https://jiaopengzi.com
@@ -21,7 +21,7 @@ export interface MarkdownHeadingLineType {
  * @return       标题,行号数组
  */
 export function getMarkdownHeadingLines(markdownStr: string): MarkdownHeadingLineType[] {
-  console.log('markdownStr====>length', markdownStr.length)
+  // console.log('markdownStr====>length', markdownStr.length)
   const lines = markdownStr.split('\n')
   const targetLines = []
 

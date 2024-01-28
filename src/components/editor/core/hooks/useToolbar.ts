@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-20 22:10:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-10 16:43:31
- * @FilePath     : \blog-client\src\components\common\editor\core\hooks\useToolbar.ts
+ * @LastEditTime : 2024-01-25 16:20:26
+ * @FilePath     : \blog-client\src\components\editor\core\hooks\useToolbar.ts
  * @Description  : 工具栏 hook
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
@@ -30,15 +30,8 @@ export function useToolbar(
   previewRef: Ref<PreviewRef | null>,
   constantKeys: CommandsKey[],
 ) {
-  const {
-    editorShow,
-    previewShow,
-    tocShow,
-    isAsyncScroll,
-    isFullScreen,
-    isShowEmojiPicker,
-    isShowPreviewWechat,
-  } = storeToRefs(useEditorStore())
+  const { editorShow, previewShow, tocShow, isAsyncScroll, isFullScreen, isShowPreviewWechat } =
+    storeToRefs(useEditorStore())
 
   // 工具栏按钮
   const toobarBtns = () => {
@@ -61,41 +54,40 @@ export function useToolbar(
    * @param name 工具栏按钮对应的常量
    */
   const toolbarBtnClicked = (name: CommandsKey) => {
-    if (name === CommandsKey.preview) {
+    if (name === CommandsKey.Preview) {
       editorShow.value = !editorShow.value
       if (!editorShow.value) {
         previewShow.value = true
       }
       return
     }
-    if (name === CommandsKey.edit) {
+    if (name === CommandsKey.Edit) {
       previewShow.value = !previewShow.value
       if (!previewShow.value) {
         editorShow.value = true
       }
       return
     }
-    if (name === CommandsKey.toc) {
+    if (name === CommandsKey.Toc) {
       tocShow.value = !tocShow.value
       return
     }
-    if (name === CommandsKey.scroll) {
+    if (name === CommandsKey.Scroll) {
       isAsyncScroll.value = !isAsyncScroll.value
       ShowMsgTip(ShowMsgTip.MsgType.success, isAsyncScroll.value ? '同步滚动' : '异步滚动')
       return
     }
-    if (name === CommandsKey.fullscreen) {
+    if (name === CommandsKey.Fullscreen) {
       isFullScreen.value = !isFullScreen.value
       return
     }
-    if (name === CommandsKey.emoji) {
-      isShowEmojiPicker.value = !isShowEmojiPicker.value
+    if (name === CommandsKey.Emoji) {
       return
     }
-    if (name === CommandsKey.WeChatOfficialAccount) {
+    if (name === CommandsKey.WechatOfficialAccount) {
       isShowPreviewWechat.value = !isShowPreviewWechat.value
     }
-    if (name === CommandsKey.copy) {
+    if (name === CommandsKey.Copy) {
       nextTick(() => {
         if (!previewRef.value) return
         debounceCopyWithCustomStyle(previewRef.value.root)

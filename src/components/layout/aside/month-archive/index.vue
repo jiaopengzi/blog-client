@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:14:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 13:16:59
- * @FilePath     : \blog-client\src\components\layout\content\aside\month-archive\index.vue
+ * @LastEditTime : 2024-01-26 15:00:27
+ * @FilePath     : \blog-client\src\components\layout\aside\month-archive\index.vue
  * @Description  : 阅读存档
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
@@ -12,7 +12,7 @@
     <div class="aside-item">
         <div class="title">
             <h2>
-                <Icon name="archive" customClass="aside-icon" />文章归档
+                <Icon :name="IconKeys.Archive" customClass="aside-icon" />文章归档
             </h2>
         </div>
         <div class="table">
@@ -27,6 +27,7 @@
 <script setup lang="ts">
 import router from '@/router/index'
 import { onMounted, nextTick } from 'vue'
+import { IconKeys } from '@/components/common/icons'
 
 defineOptions({ name: 'MonthArchive' })
 

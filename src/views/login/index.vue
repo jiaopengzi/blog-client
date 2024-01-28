@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 18:44:25
- * @FilePath     : \blog-client\src\views\login\Index.vue
+ * @LastEditTime : 2024-01-26 15:04:07
+ * @FilePath     : \blog-client\src\views\login\index.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -38,10 +38,10 @@
       </div>
       <div class="social">
         <button class="social-btn" @click="loginByWeChat">
-          <Icon name="wechat" customClass="iconfont icon-wechat" />
+          <Icon :name="IconKeys.Wechat" customClass="iconfont icon-wechat" />
         </button>
         <button class="social-btn" @click="loginByQQ">
-          <Icon name="qq" customClass="iconfont icon-qq" />
+          <Icon :name="IconKeys.Qq" customClass="iconfont icon-qq" />
         </button>
       </div>
       <div class="go-home">
@@ -69,6 +69,7 @@ import router from '@/router/index'
 import { routeObj } from '@/router/routeAll'
 import { useUserStore } from '@/stores/user'
 import type { LoginForm } from "@/views/login"
+import { IconKeys } from '@/components/common/icons'
 
 // eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: 'Login' })
@@ -128,7 +129,13 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     if (valid) {
       await userStore.login(loginForm.loginName, loginForm.password) // 登录
       if (userStore.getIsLogin) {
-        router.push({ path: routeObj.home.path }) // 登录成功 跳转到首页
+        // 从 url 中获取 redirect 参数，如果没有就默认跳转到首页  
+        const redirectPath = router.currentRoute.value.query.redirect as string | undefined
+        if (redirectPath) {
+          router.push({ path: redirectPath })
+        } else {
+          router.push({ path: routeObj.home.path })
+        }
       }
     }
   })

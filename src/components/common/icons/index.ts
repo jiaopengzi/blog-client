@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-21 15:05:09
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-17 16:26:02
+ * @LastEditTime : 2024-01-26 14:56:20
  * @FilePath     : \blog-client\src\components\common\icons\index.ts
  * @Description  : 图标组件
  * @Blog         : https://jiaopengzi.com
@@ -10,6 +10,8 @@
  */
 
 export { default } from './index.vue'
+
+import { kebabToPascalCase } from '@/utils/naming-conversion'
 import iconFontJSON from '@/components/common/icons/assets/iconfont.json' // 导入 iconfont.json 数据
 
 // 图标字典
@@ -102,6 +104,15 @@ export function getIconMap(iconFontJSON: any): IconMap {
     // 打印堆栈信息
     console.error('iconFontJSON 不符合 IconJson 类型')
   }
+  // 将 iconMap key 升序排序
+
+  // Object.keys(iconMap)
+  //   .sort()
+  //   .forEach((key) => {
+  //     const value = iconMap[key]
+  //     delete iconMap[key]
+  //     iconMap[key] = value
+  //   })
   return iconMap
 }
 
@@ -109,109 +120,111 @@ export function getIconMap(iconFontJSON: any): IconMap {
 export const iconMap: IconMap = getIconMap(iconFontJSON)
 
 export enum IconKeys {
-  Recommended = 'Recommended',
-  WeChatOfficialAccount = 'WeChatOfficialAccount',
-  archive = 'archive',
-  article = 'article',
-  bill = 'bill',
-  bold = 'bold',
-  chart = 'chart',
-  clear = 'clear',
-  close = 'close',
-  codeBlock = 'codeBlock',
-  codeInline = 'codeInline',
-  copy = 'copy',
-  data = 'data',
-  database = 'database',
-  demo = 'demo',
-  desktop = 'desktop',
-  divider = 'divider',
-  doc = 'doc',
-  edit = 'edit',
-  editor = 'editor',
-  emoji = 'emoji',
-  excel = 'excel',
-  exitFullscreen = 'exitFullscreen',
-  favorite = 'favorite',
-  follow = 'follow',
-  footnote = 'footnote',
-  fullscreen = 'fullscreen',
-  h1 = 'h1',
-  h2 = 'h2',
-  h3 = 'h3',
-  h4 = 'h4',
-  h5 = 'h5',
-  h6 = 'h6',
-  help = 'help',
-  hot = 'hot',
-  hr = 'hr',
-  html = 'html',
-  image = 'image',
-  info = 'info',
-  italic = 'italic',
-  label = 'label',
-  link = 'link',
-  login = 'login',
-  mark = 'mark',
-  markdown = 'markdown',
-  mathBlock = 'mathBlock',
-  mathInline = 'mathInline',
-  menu = 'menu',
-  mobile = 'mobile',
-  model = 'model',
-  money = 'money',
-  new = 'new',
-  office = 'office',
-  ol = 'ol',
-  overview = 'overview',
-  payContent = 'payContent',
-  pdf = 'pdf',
-  preview = 'preview',
-  publish = 'publish',
-  qq = 'qq',
-  quote = 'quote',
-  random = 'random',
-  redo = 'redo',
-  register = 'register',
-  save = 'save',
-  scroll = 'scroll',
-  search = 'search',
-  strikethrough = 'strikethrough',
-  subscript = 'subscript',
-  superscript = 'superscript',
-  table = 'table',
-  taskList = 'taskList',
-  test = 'test',
-  toc = 'toc',
-  tool = 'tool',
-  ul = 'ul',
-  undo = 'undo',
-  user = 'user',
-  video = 'video',
-  vip = 'vip',
-  'vip-red' = 'vip-red',
-  wechat = 'wechat',
-  welfare = 'welfare',
-  page = 'page',
-  backup = 'backup',
-  media = 'media',
-  post = 'post',
-  comment = 'comment',
-  config = 'config',
-  collapse = 'collapse',
-  shop = 'shop',
-  dashboard = 'dashboard',
-  notification = 'notification',
-  'short-link' = 'short-link',
-  announcement = 'announcement',
+  Announcement = 'announcement',
+  Archive = 'archive',
+  Article = 'article',
+  Backup = 'backup',
+  Bill = 'bill',
+  Bold = 'bold',
+  Chart = 'chart',
+  Clear = 'clear',
+  Close = 'close',
+  CodeBlock = 'code-block',
+  CodeInline = 'code-inline',
+  Collapse = 'collapse',
+  Comment = 'comment',
+  Config = 'config',
+  Copy = 'copy',
+  Dashboard = 'dashboard',
+  Data = 'data',
+  DataAnalysis = 'data-analysis',
+  Demo = 'demo',
+  Desktop = 'desktop',
+  Divider = 'divider',
+  Doc = 'doc',
+  Edit = 'edit',
+  Editor = 'editor',
+  Emoji = 'emoji',
+  Excel = 'excel',
+  ExitFullscreen = 'exit-fullscreen',
+  Favorite = 'favorite',
+  Follow = 'follow',
+  Footnote = 'footnote',
+  Fullscreen = 'fullscreen',
+  H1 = 'h1',
+  H2 = 'h2',
+  H3 = 'h3',
+  H4 = 'h4',
+  H5 = 'h5',
+  H6 = 'h6',
+  Help = 'help',
+  Hot = 'hot',
+  Hr = 'hr',
+  Html = 'html',
+  Image = 'image',
+  Info = 'info',
+  Italic = 'italic',
+  Label = 'label',
+  Link = 'link',
+  Login = 'login',
+  Mark = 'mark',
+  Markdown = 'markdown',
+  MathBlock = 'math-block',
+  MathInline = 'math-inline',
+  Media = 'media',
+  Menu = 'menu',
+  Mobile = 'mobile',
+  Model = 'model',
+  Money = 'money',
+  New = 'new',
+  Notification = 'notification',
+  Ol = 'ol',
+  Overview = 'overview',
+  Page = 'page',
+  PayContent = 'pay-content',
+  Pdf = 'pdf',
+  Post = 'post',
+  Preview = 'preview',
+  Publish = 'publish',
+  Qq = 'qq',
+  Quote = 'quote',
+  Random = 'random',
+  Recommended = 'recommended',
+  Redo = 'redo',
+  Register = 'register',
+  Save = 'save',
+  Scroll = 'scroll',
+  Search = 'search',
+  Shop = 'shop',
+  ShortLink = 'short-link',
+  Strikethrough = 'strikethrough',
+  Subscript = 'subscript',
+  Superscript = 'superscript',
+  Table = 'table',
+  TaskList = 'taskList',
+  Test = 'test',
+  Toc = 'toc',
+  Tool = 'tool',
+  Ul = 'ul',
+  Undo = 'undo',
+  UploadFilled = 'upload-filled',
+  User = 'user',
+  Video = 'video',
+  Vip = 'vip',
+  VipRed = 'vip-red',
+  Wechat = 'wechat',
+  WechatOfficialAccount = 'wechat-official-account',
+  Welfare = 'welfare',
 }
 
 // 历遍 iconMap 对象中的 key 校验是否符合 IconKeys 类型约束
 const checkIconKeys = (iconMap: IconMap): void => {
   let newIconKeys = ''
   Object.keys(iconMap).forEach((key) => {
-    if (!(key in IconKeys)) {
-      const _enum = key + " = '" + key + "',"
+    const keyPascalCase = kebabToPascalCase(key)
+    if (!(keyPascalCase in IconKeys)) {
+      // 如果 key 中包含 - 则添加
+      const _enum = `${keyPascalCase} = '${key}',`
       newIconKeys += _enum + '\n'
     }
   })

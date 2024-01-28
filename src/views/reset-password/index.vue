@@ -68,7 +68,7 @@
 import { reactive, ref } from 'vue'
 import SlideVerify from '@/components/common/slide-verify'
 import { ShowMsgTip } from '@/utils/message'
-import { MsgType } from '@/components/common/alert-tip'
+import { MsgType } from '@/components/common'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import type { CheckEmailRequest } from '@/api/user/checkEmail'
 import { CheckEmailByJosn } from '@/api/user/checkEmail'

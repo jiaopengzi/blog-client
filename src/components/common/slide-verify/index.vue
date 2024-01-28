@@ -16,7 +16,7 @@
             <h4>
                 <span class="title">拖动下方滑块完成拼图</span>
                 <button class="close-btn" @click="closeMe">
-                    <Icon name="close" customClass="icon-close" />
+                    <Icon :name="IconKeys.Close" customClass="icon-close" />
                 </button>
             </h4>
 
@@ -35,6 +35,7 @@ import { ref } from 'vue'
 import SlideVerify from 'vue3-slide-verify'
 import type { SlideVerifyInstance } from 'vue3-slide-verify'
 import 'vue3-slide-verify/dist/style.css'
+import { IconKeys } from '@/components/common/icons'
 
 defineOptions({ name: 'SlideVerify' })
 

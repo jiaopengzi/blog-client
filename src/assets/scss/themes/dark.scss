@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-04 12:40:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 10:40:13
+ * @LastEditTime : 2024-01-18 11:24:38
  * @FilePath     : \blog-client\src\assets\scss\themes\dark.scss
  * @Description  : 暗色模式
  * @Blog         : https://jiaopengzi.com
@@ -19,7 +19,7 @@ $primary-color-dark: red;
 html[data-theme=#{$thpme-name}] {
 
     --scrollbar-y-width: 6px; // Y轴滚动条宽度
-    --scrollbar-x-height: 6px; // x轴滚动条高度
+    --scrollbar-x-height: 12px; // x轴滚动条高度
     /* ============================================================ CSS 颜色变量 开始*/
     /* 主要颜色 */
     --primary-color:#{$primary-color-dark};
@@ -39,6 +39,7 @@ html[data-theme=#{$thpme-name}] {
     --background-color-active: rgba(200, 152, 40, 0.4);
     /* 禁用状态背景颜色 */
     --background-color-disabled: rgba(200, 152, 40, 0.1);
+    /* 字体颜色 */
     /* ============================================================ CSS 颜色变量 开始*/
 }
 

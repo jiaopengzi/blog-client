@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-08 20:13:30
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-09 18:35:28
+ * @LastEditTime : 2024-01-27 16:30:50
  * @FilePath     : \blog-client\src\pkg\codemirror\extension\imgupload.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -43,12 +43,12 @@ const handlePasteImage: Extension = EditorView.domEventHandlers({
 
 async function uploadImage(file: any, view: EditorView) {
   const formData = new FormData()
-  formData.append('avatar', file, 'avatar.png')
+  formData.append('file', file, 'avatar.png')
   const userStore = useUserStore()
   // 调用 uploadAvatar 函数
   uploadAvatar(formData)
     .then((response) => {
-      if (response.data.code === UploadCode.AvatarSuccess) {
+      if (response.data.code === UploadCode.Success) {
         // 处理返回数据，并更新头像等信息
         console.log('图片上传成功', new Date().toISOString())
         const imageUrl = response.data.data
@@ -62,7 +62,7 @@ async function uploadImage(file: any, view: EditorView) {
         console.log('更新完毕state', new Date().toISOString())
         ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
       } else {
-        ShowMsgTip(ShowMsgTip.MsgType.error, response.data.msg)
+        ShowMsgTip(ShowMsgTip.MsgType.error, response.data.msg + '：' + response.data.code)
       }
     })
     .catch(() => {

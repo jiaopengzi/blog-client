@@ -21,6 +21,7 @@ type DebouncedFn = (...args: any[]) => void
  * @param fn 需要防抖处理的函数
  * @param wait 防抖延迟时间，默认值为 100ms
  * @returns 返回经过防抖处理的新函数
+ * @example const debouncedFn = debounce(fn, 100)
  */
 export function debounce(fn: DebounceFn, wait: number = 100): DebouncedFn {
   // 用于存储 setTimeout 的返回值

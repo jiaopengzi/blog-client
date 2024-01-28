@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-04 18:07:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-27 10:20:28
+ * @LastEditTime : 2024-01-25 11:54:48
  * @FilePath     : \blog-client\src\router\index.ts
  * @Description  : 路由配置
  * @blog         : https://jiaopengzi.com
@@ -11,7 +11,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { routeObj, routes } from '@/router/routeAll'
 import { ShowMsgTip } from '@/utils/message'
-import { MsgType } from '@/components/common/alert-tip'
+import { MsgType } from '@/components/common'
 import { useUserStore } from '@/stores/user'
 
 // 创建路由实例
@@ -23,10 +23,11 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
   await userStore.getUserInfoByToken()
-
   // 如果用户没有登录，且访问的页面需要登录，则跳转到登录页
   if (to.meta.requiresAuth && !userStore.isLogin) {
-    next(routeObj.login.path)
+    next({ path: routeObj.login.path, query: { redirect: to.path } }) // 重定向到登录页带上当前页面路径参数
+    // sessionStorage.setItem('redirectRoute', JSON.stringify(to)) // 保存重定向路由
+    // next(routeObj.login.path)
   }
   // 如果已经登录，未绑定邮箱，且访问的页面不是用户信息页面，则跳转到用户信息页面
   else if (userStore.isLogin && !userStore.isBindEmail && to.path !== routeObj.userInfo.path) {
@@ -36,7 +37,8 @@ router.beforeEach(async (to, from, next) => {
   }
   // 如果已经登录，且访问的页面是登录页，则跳转到首页
   else if (to.path === routeObj.login.path && userStore.isLogin) {
-    next(routeObj.home.path) // 重定向到首页
+    const redirectPath = to.query.redirect as string | undefined
+    next(redirectPath ? redirectPath : routeObj.home.path)
   } else {
     next()
   }

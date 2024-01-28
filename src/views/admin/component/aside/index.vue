@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:33:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-17 21:32:39
+ * @LastEditTime : 2024-01-25 16:29:38
  * @FilePath     : \blog-client\src\views\admin\component\aside\index.vue
  * @Description  : 左边菜单栏
  * @Blog         : https://jiaopengzi.com
@@ -11,9 +11,10 @@
 
 <template>
     <el-scrollbar>
+        <SwitchGroup :switch-item="isCollapseItem" @update-status="updateStatus" />
         <el-menu :default-openeds="['post']" :collapse="isCollapse" @select="handleSelect" @open="handleOpen"
-            @close="handleClose" class="el-menu-vertical">
-            <recursive-menu-item v-for="(item, key) in topLevelMenuItems" :key="key" :menu-item-map="menuData"
+            @close="handleClose" class="el-menu-vertical" :router="true">
+            <recursive-menu-item v-for="(item, key) in topLevelMenuItems" :key="key" :menu-item-map="menuItemMap"
                 :menu-item="item" />
         </el-menu>
     </el-scrollbar>
@@ -22,277 +23,69 @@
   
 <script lang="ts" setup>
 import { ref, reactive, computed } from 'vue'
-import { IconKeys } from '@/components/common/icons'
+import SwitchGroup from '@/components/common/switch-group'
+import type { SwitchItem, SwitchItemLabel, SwitchItemColor } from '@/components/common/switch-group'
+
 import RecursiveMenuItem from '@/components/common/recursive-menu-item' // 引入递归菜单组件
-import type { MenuItemMap } from '@/components/common/recursive-menu-item' // 引入递归菜单组件
+import { adminMenuItemMapWithIndex } from '@/views/admin/component/aside'
+
 
 defineOptions({ name: 'AdminAside' })
 
-const isCollapse = ref(false)
+const emit = defineEmits<{
+    (event: 'select', index: string, keyPath: string[]): void
+}>()
 
+// switch 开关 标签
+const label: SwitchItemLabel = {
+    labelTrue: "收起",
+    labelFalse: "展开",
+}
 
-const menuData: MenuItemMap = reactive({
-    "dashboard": {
-        "index": "dashboard",
-        "display": "仪表板",
-        icon: {
-            name: IconKeys.dashboard,
-            class: "icon-menu"
-        }
-    },
-    "post": {
-        "index": "post",
-        "display": "文章",
-        icon: {
-            name: IconKeys.post,
-            class: "icon-menu"
-        }
-    },
-    "all-post": {
-        "index": "all-post",
-        "display": "所有文章",
-        "parentIndex": "post"
-    },
-    "write-post": {
-        "index": "write-post",
-        "display": "写文章",
-        "parentIndex": "post"
-    },
-    "tag-post": {
-        "index": "tag-post",
-        "display": "标签",
-        "parentIndex": "post"
-    },
-    "category-post": {
-        "index": "category-post",
-        "display": "分类",
-        "parentIndex": "post"
-    },
-    "media": {
-        "index": "media",
-        "display": "媒体",
-        icon: {
-            name: IconKeys.media,
-            class: "icon-menu"
-        }
-    },
-    "all-media": {
-        "index": "all-media",
-        "display": "所有媒体",
-        "parentIndex": "media"
-    },
-    "add-media": {
-        "index": "add-media",
-        "display": "新增文件",
-        "parentIndex": "media"
-    },
-    "link": {
-        "index": "link",
-        "display": "链接",
-        icon: {
-            name: IconKeys.link,
-            class: "icon-menu"
-        }
-    },
-    "all-link": {
-        "index": "all-link",
-        "display": "所有链接",
-        "parentIndex": "link"
-    },
-    "add-link": {
-        "index": "add-link",
-        "display": "新增链接",
-        "parentIndex": "link"
-    },
-    "link-category": {
-        "index": "link-category",
-        "display": "链接分类",
-        "parentIndex": "link"
-    },
-    "page": {
-        "index": "page",
-        "display": "页面",
-        icon: {
-            name: IconKeys.page,
-            class: "icon-menu"
-        }
-    },
-    "所有页面": {
-        "index": "all-pages",
-        "display": "所有页面",
-        "parentIndex": "page"
-    },
-    "add-page": {
-        "index": "add-page",
-        "display": "新增页面",
-        "parentIndex": "page"
-    },
-    "comment": {
-        "index": "comment",
-        "display": "评论",
-        icon: {
-            name: IconKeys.comment,
-            class: "icon-menu"
-        }
-    },
-    "announcement": {
-        "index": "announcement",
-        "display": "公告",
-        icon: {
-            name: IconKeys.announcement,
-            class: "icon-menu"
-        }
-    },
-    "all-announcement": {
-        "index": "all-announcement",
-        "display": "所有公告",
-        "parentIndex": "announcement"
-    },
-    "publish-announcement": {
-        "index": "publish-announcement",
-        "display": "发布公告",
-        "parentIndex": "announcement"
-    },
-    "announcement-category": {
-        "index": "announcement-category",
-        "display": "公告分类",
-        "parentIndex": "announcement"
-    },
-    "video": {
-        "index": "video",
-        "display": "视频",
-        icon: {
-            name: IconKeys.video,
-            class: "icon-menu"
-        },
-    },
-    "all-video": {
-        "index": "all-video",
-        "display": "所有视频",
-        "parentIndex": "video"
-    },
-    "publish-video": {
-        "index": "publish-video",
-        "display": "发布视频",
-        "parentIndex": "video"
-    },
-    "video-category": {
-        "index": "video-category",
-        "display": "视频分类",
-        "parentIndex": "video"
-    },
-    "shop": {
-        "index": "shop",
-        "display": "商城",
-        icon: {
-            name: IconKeys.shop,
-            class: "icon-menu"
-        }
-    },
-    "product": {
-        "index": "product",
-        "display": "产品",
-        "parentIndex": "shop"
-    },
-    "order": {
-        "index": "order",
-        "display": "订单",
-        "parentIndex": "shop"
-    },
-    "member-management": {
-        "index": "member-management",
-        "display": "会员管理",
-        "parentIndex": "shop"
-    },
-    "short-link": {
-        "index": "short-link",
-        "display": "短连接",
-        icon: {
-            name: IconKeys['short-link'],
-            class: "icon-menu"
-        }
-    },
-    "所有短连接": {
-        "index": "all-short-links",
-        "display": "所有短连接",
-        "parentIndex": "short-links"
-    },
-    "add-short-link": {
-        "index": "add-short-link",
-        "display": "新增短连接",
-        "parentIndex": "short-link"
-    },
-    "user": {
-        "index": "user",
-        "display": "用户",
-        icon: {
-            name: IconKeys.user,
-            class: "icon-menu"
-        }
-    },
-    "all-user": {
-        "index": "all-user",
-        "display": "所有用户",
-        "parentIndex": "user"
-    },
-    "add-user": {
-        "index": "add-user",
-        "display": "新增用户",
-        "parentIndex": "user"
-    },
-    "login-log": {
-        "index": "login-log",
-        "display": "登录日志",
-        "parentIndex": "user"
-    },
-    "config": {
-        "index": "config",
-        "display": "网站配置",
-        icon: {
-            name: IconKeys.config,
-            class: "icon-menu"
-        }
-    },
-    "notification": {
-        "index": "notification",
-        "display": "通知",
-        icon: {
-            name: IconKeys.notification,
-            class: "icon-menu"
-        }
-    },
-    "backup": {
-        "index": "backup",
-        "display": "备份",
-        icon: {
-            name: IconKeys.backup,
-            class: "icon-menu"
-        }
-    },
-    "collapse-menu": {
-        "index": "collapse-menu",
-        "display": "收起菜单",
-        icon: {
-            name: IconKeys.collapse,
-            class: "icon-menu"
-        }
-    },
-})
+// switch 开关 颜色
+const color: SwitchItemColor = {
+    colorTrue: "#ffffff10",
+    colorFalse: "#ffffff10",
+}
+
+// 菜单是否折叠
+const savedIsCollapse = localStorage.getItem('isCollapse')
+const isCollapse = ref(savedIsCollapse !== null ? savedIsCollapse === 'true' : false)
+
+// switch 开关
+const isCollapseItem: SwitchItem = {
+    status: isCollapse.value,
+    label: label,
+    color: color,
+}
+
+// 更新菜单折叠状态
+const updateStatus = (value: SwitchItem) => {
+    // 首选读取本地存储的状态 如果没有则使用默认状态
+    localStorage.setItem('isCollapse', value.status.toString())
+    isCollapse.value = value.status
+}
+
+// 生成菜单项索引
+const menuItemMap = reactive(adminMenuItemMapWithIndex);
 
 
 // 计算顶级菜单项
-const topLevelMenuItems = computed(() => Object.values(menuData).filter((item) => !item.parentIndex))
+const topLevelMenuItems = computed(() => Object.values(menuItemMap).filter((item) => !item.parentIndex))
 
+
+// 处理菜单项选中事件
 const handleSelect = (index: string, keyPath: string[]) => {
-    console.log(index, keyPath)
-    if (index === 'collapse-menu') {
-        isCollapse.value = !isCollapse.value
-    }
+    emit('select', index, keyPath)
+    // console.log(index, keyPath)
 }
 
+// 处理菜单项展开事件
 const handleOpen = (index: string, keyPath: string[]) => {
     console.log(index, keyPath)
 }
+
+// 处理菜单项折叠事件
 const handleClose = (index: string, keyPath: string[]) => {
     console.log(index, keyPath)
 }
@@ -301,11 +94,16 @@ const handleClose = (index: string, keyPath: string[]) => {
   
 <style scoped lang="scss">
 .el-menu-vertical {
-    width: 100%;
-    height: 100%;
     overflow-x: hidden;
     // 背景色透明
     background-color: transparent;
+    border-right: none;
+}
+
+// 参考官方文档：https://element-plus.org/zh-CN/component/menu.html#collapse-%E6%8A%98%E5%8F%A0%E9%9D%A2%E6%9D%BF
+.el-menu-vertical:not(.el-menu--collapse) {
+    width: 300px;
+    height: 100%;
 }
 
 :deep(.icon-menu) {

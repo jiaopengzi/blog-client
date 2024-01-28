@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-23 11:45:46
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-13 15:36:48
+ * @LastEditTime : 2024-01-24 19:59:41
  * @FilePath     : \blog-client\src\router\routeAll.ts
  * @Description  : 所有路由配置
  * @Blog         : https://jiaopengzi.com
@@ -10,6 +10,7 @@
  */
 import type { RouteRecordRaw } from 'vue-router'
 import { userRoutes } from '@/router/routeUser'
+import { adminRoutes } from '@/router/routeAdmin'
 import { navigationRoutes } from '@/router/routeNavigation'
 
 // 添加前缀
@@ -65,7 +66,7 @@ export const routeObj: any = {
   test: {
     path: '/test',
     name: 'test',
-    component: () => import('@/views/test/index.vue'),
+    component: () => import('@/views/test'),
     meta: {
       requiresAuth: false,
     },
@@ -74,6 +75,8 @@ export const routeObj: any = {
   ...userRoutes,
   // 导航相关路由
   ...navigationRoutes,
+  // 管理员相关路由
+  ...adminRoutes(),
 }
 
 export const routes = Object.values(routeObj) as RouteRecordRaw[]

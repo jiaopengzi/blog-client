@@ -12,7 +12,7 @@
     <div class="aside-item">
         <div class="title">
             <h2>
-                <Icon name="Recommended" customClass="aside-icon" />推荐阅读
+                <Icon :name="IconKeys.Recommended" customClass="aside-icon" />推荐阅读
             </h2>
         </div>
         <div class="post-list">
@@ -24,6 +24,7 @@
 <script setup lang="ts">
 import PostItem from '@/components/common/post-item-aside'
 import type { PostItemAsideObj } from '@/components/common/post-item-aside'
+import { IconKeys } from '@/components/common/icons'
 
 defineOptions({ name: 'RecommendedRead' })
 

@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:15:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 13:21:28
- * @FilePath     : \blog-client\src\components\layout\content\aside\post-tag\index.vue
+ * @LastEditTime : 2024-01-26 15:00:47
+ * @FilePath     : \blog-client\src\components\layout\aside\post-tag\index.vue
  * @Description  : 文章标签
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
@@ -13,68 +13,80 @@
     <div class="aside-item">
         <div class="title">
             <h2>
-                <Icon name="label" customClass="my-icon" />
+                <Icon :name="IconKeys.Label" customClass="my-icon" />
                 文章标签
             </h2>
         </div>
         <div class="tag-box">
             <el-scrollbar max-height="300px">
-                <TagItem v-for="(item, index) in items" :tagData="item" :key="index" />
+                <TagItem v-for="(item, index) in items" :tagData="item" :key="index" @click="handleClick(item)" />
             </el-scrollbar>
         </div>
     </div>
 </template>
   
 <script setup lang="ts">
+import { ref } from 'vue'
 import type { TagDataObj } from '@/components/common/tag-item'
 import TagItem from '@/components/common/tag-item'
-import { ref } from 'vue'
+import { IconKeys } from '@/components/common/icons'
+
 
 defineOptions({ name: 'PostTag' })
 
+const emit = defineEmits<{
+    (event: 'click', tagItemData: TagDataObj): void
+}>()
+
+
 const items = ref<Array<TagDataObj>>([
-    { path: '/1', tagPostNum: 1, lablel: 'Power BI' },
-    { path: '/1', tagPostNum: 2, lablel: 'Power Query' },
-    { path: '/1', tagPostNum: 3, lablel: 'DAX' },
-    { path: '/1', tagPostNum: 3, lablel: 'PQ' },
-    { path: '/1', tagPostNum: 5, lablel: '数据分析' },
-    { path: '/1', tagPostNum: 6, lablel: 'go' },
-    { path: '/1', tagPostNum: 7, lablel: 'vue3' },
-    { path: '/1', tagPostNum: 8, lablel: 'svg' },
-    { path: '/1', tagPostNum: 8, lablel: 'Excel' },
-    { path: '/1', tagPostNum: 9, lablel: '安全库存' },
-    { path: '/1', tagPostNum: 10, lablel: '日期表' },
-    { path: '/1', tagPostNum: 11, lablel: 'ODBC' },
-    { path: '/1', tagPostNum: 12, lablel: '模型' },
-    { path: '/1', tagPostNum: 13, lablel: 'DAX Studio' },
-    { path: '/1', tagPostNum: 14, lablel: '热力图' },
-    { path: '/1', tagPostNum: 15, lablel: 'pbirs' },
-    { path: '/1', tagPostNum: 16, lablel: '帕累托' },
-    { path: '/1', tagPostNum: 17, lablel: '排名' },
-    { path: '/1', tagPostNum: 18, lablel: 'Rank' },
-    { path: '/1', tagPostNum: 18, lablel: '技巧' },
-    { path: '/1', tagPostNum: 20, lablel: '排名' },
-    { path: '/1', tagPostNum: 21, lablel: 'access' },
-    { path: '/1', tagPostNum: 22, lablel: 'Power BI Report Server' },
-    { path: '/1', tagPostNum: 23, lablel: '先进先出' },
-    { path: '/1', tagPostNum: 24, lablel: 'M语言' },
-    { path: '/1', tagPostNum: 25, lablel: '模型' },
-    { path: '/1', tagPostNum: 26, lablel: 'HR' },
-    { path: '/1', tagPostNum: 13, lablel: 'DAX Studio' },
-    { path: '/1', tagPostNum: 14, lablel: '热力图' },
-    { path: '/1', tagPostNum: 15, lablel: 'pbirs' },
-    { path: '/1', tagPostNum: 16, lablel: '帕累托' },
-    { path: '/1', tagPostNum: 17, lablel: '排名' },
-    { path: '/1', tagPostNum: 18, lablel: 'Rank' },
-    { path: '/1', tagPostNum: 18, lablel: '技巧' },
-    { path: '/1', tagPostNum: 20, lablel: '排名' },
-    { path: '/1', tagPostNum: 21, lablel: 'access' },
-    { path: '/1', tagPostNum: 22, lablel: 'Power BI Report Server' },
-    { path: '/1', tagPostNum: 23, lablel: '先进先出' },
-    { path: '/1', tagPostNum: 24, lablel: 'M语言' },
-    { path: '/1', tagPostNum: 25, lablel: '模型' },
-    { path: '/1', tagPostNum: 26, lablel: 'HR' },
+    { path: '/1', tagPostNum: 1, label: 'Power BI' },
+    { path: '/1', tagPostNum: 2, label: 'Power Query' },
+    { path: '/1', tagPostNum: 3, label: 'DAX' },
+    { path: '/1', tagPostNum: 3, label: 'PQ' },
+    { path: '/1', tagPostNum: 5, label: '数据分析' },
+    { path: '/1', tagPostNum: 6, label: 'go' },
+    { path: '/1', tagPostNum: 7, label: 'vue3' },
+    { path: '/1', tagPostNum: 8, label: 'svg' },
+    { path: '/1', tagPostNum: 8, label: 'Excel' },
+    { path: '/1', tagPostNum: 9, label: '安全库存' },
+    { path: '/1', tagPostNum: 10, label: '日期表' },
+    { path: '/1', tagPostNum: 11, label: 'ODBC' },
+    { path: '/1', tagPostNum: 12, label: '模型' },
+    { path: '/1', tagPostNum: 13, label: 'DAX Studio' },
+    { path: '/1', tagPostNum: 14, label: '热力图' },
+    { path: '/1', tagPostNum: 15, label: 'pbirs' },
+    { path: '/1', tagPostNum: 16, label: '帕累托' },
+    { path: '/1', tagPostNum: 17, label: '排名' },
+    { path: '/1', tagPostNum: 18, label: 'Rank' },
+    { path: '/1', tagPostNum: 18, label: '技巧' },
+    { path: '/1', tagPostNum: 20, label: '排名' },
+    { path: '/1', tagPostNum: 21, label: 'access' },
+    { path: '/1', tagPostNum: 22, label: 'Power BI Report Server' },
+    { path: '/1', tagPostNum: 23, label: '先进先出' },
+    { path: '/1', tagPostNum: 24, label: 'M语言' },
+    { path: '/1', tagPostNum: 25, label: '模型' },
+    { path: '/1', tagPostNum: 26, label: 'HR' },
+    { path: '/1', tagPostNum: 13, label: 'DAX Studio' },
+    { path: '/1', tagPostNum: 14, label: '热力图' },
+    { path: '/1', tagPostNum: 15, label: 'pbirs' },
+    { path: '/1', tagPostNum: 16, label: '帕累托' },
+    { path: '/1', tagPostNum: 17, label: '排名' },
+    { path: '/1', tagPostNum: 18, label: 'Rank' },
+    { path: '/1', tagPostNum: 18, label: '技巧' },
+    { path: '/1', tagPostNum: 20, label: '排名' },
+    { path: '/1', tagPostNum: 21, label: 'access' },
+    { path: '/1', tagPostNum: 22, label: 'Power BI Report Server' },
+    { path: '/1', tagPostNum: 23, label: '先进先出' },
+    { path: '/1', tagPostNum: 24, label: 'M语言' },
+    { path: '/1', tagPostNum: 25, label: '模型' },
+    { path: '/1', tagPostNum: 26, label: 'HR' },
 ])
+
+const handleClick = (tagItemData: TagDataObj) => {
+    emit('click', tagItemData)
+}
+
 </script>
 <style scoped lang="scss">
 .aside-item {
