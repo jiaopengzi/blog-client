@@ -8,7 +8,6 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
-// src/api/user/UploadAvatar.ts
 import request from '@/api/request'
 import type { AxiosPromise } from 'axios'
 import { routerGroup } from '@/api/routerGroup'

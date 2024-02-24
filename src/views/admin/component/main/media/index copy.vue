@@ -1,28 +1,26 @@
 <!--
- * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
+ * @FilePath     : \blog-client\src\views\admin\component\main\media\index copy.vue
 -->
 
 <template>
     <BaseTable :data="filterTableData" :pagination="pagination" :table-column="cols"
         @update-current-page="updateCurrentPage" @update-page-sizes="updatePageSizes" @edit-row="editRow"
-        @delete-row="deleteRow" @delete-rows="deleteRows" @update-search="updateSearch" @update-selection="updateSelection"
-        @update-dialog-visible="updateDialogVisible">
+        @delete-row="deleteRow" @delete-rows="deleteRows" @update-search="updateSearch" @update-selection="updateSelection">
 
-        <template #add-item-title>
-            <span class="dialog-title">新增媒体文件</span>
+        <template #header>
+            <span>新增媒体文件</span>
         </template>
 
         <template #add-item>
-            <el-upload ref="uploadRef" class="upload" drag multiple action="http://localhost:8081/api/v1/utils/upload-file"
+            <el-upload class="upload" drag multiple action="http://localhost:8081/api/v1/utils/upload-file"
                 :http-request="httpRequest">
                 <Icon :name="IconKeys.UploadFilled" custom-class="icon-upload-filled" />
                 <div class="el-upload__text">
-                    将文件拖放到此处 或 <em>点击上传</em>
+                    将文件拖放到此处或<em>点击上传</em>
                 </div>
                 <template #tip>
                     <div class="el-upload__tip">
-                        <div class="el-upload__tip_title">支持上传格式及最大限制</div>
-                        <div class="el-upload__tip_info">{{ allowedInfo }}</div>
+                        文件大小小于 500kb 的 jpg/png 文件。
                     </div>
                 </template>
             </el-upload>
@@ -31,7 +29,8 @@
 </template>
   
 <script lang="ts" setup>
-import { ref, computed, reactive, onMounted } from 'vue'
+// :http-request="httpRequest" multiple
+import { ref, computed, reactive } from 'vue'
 import BaseTable from '@/components/common/base-table'
 import type { Pagination } from '@/components/common'
 import type { Media, TableData, TableColumn } from '@/components/common/base-table'
@@ -39,17 +38,14 @@ import { debounce } from '@/utils/debounce'
 import { AadminSideMenu } from '@/views/admin/component/aside'
 import { IconKeys } from '@/components/common/icons'
 import { uploadFile } from '@/api/utils/uploadFile'
-import { getAllowedUploadFileInfo } from '@/api/utils/getAllowedUploadFileInfo'
 import { ShowMsgTip } from '@/utils/message'
+import { isArray } from '@/utils/typeOf'
 import { MsgType } from '@/components/common'
 import { UploadCode } from '@/api/responseCode'
-import type { UploadRequestOptions, ElUpload } from 'element-plus'
-
+import type { UploadProps, UploadUserFile, UploadRequestOptions, UploadProgressEvent } from 'element-plus'
 
 // eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: AadminSideMenu.Media })
-
-const uploadRef = ref<typeof ElUpload>()
 
 const cols: TableColumn[] = reactive([
 
@@ -114,28 +110,6 @@ const pagination: Pagination = reactive({
 
 const search = ref('')
 
-const allowedInfo = ref("")
-
-const getAllowedInfo = () => {
-    const strList: string[] = []
-    getAllowedUploadFileInfo().then((response) => {
-        if (response.data.code === UploadCode.GetAllowedUploadFileInfoSuccess) {
-            const allowedInfoList = response.data.data
-            // for 循环遍历 allowedInfoList 数组 i 最大值为 allowedInfoList.length - 1
-            for (let i = 0; i < allowedInfoList.length; i++) {
-                // item的 Type按照'/'分割，取最后一个 例如：image/png => png
-                const _type = allowedInfoList[i].Type.split("/")[1].toUpperCase()
-                // item的 MaxSize 是以字节为单位，转换为mb
-                const maxSize = allowedInfoList[i].MaxSize / 1024 / 1024
-                // 如果 maxSize 小于 1MB，保留两位小数 否则取整
-                maxSize < 1 ? strList.push(`${_type}:${maxSize.toFixed(2)}MB`) : strList.push(`${_type}:${Math.floor(maxSize)}MB`)
-            }
-        }
-        allowedInfo.value = strList.join("、") + '。'
-    })
-}
-
-
 const httpRequest = (options: UploadRequestOptions) => {
     console.log("0", options)
     const formData = new FormData()
@@ -157,8 +131,9 @@ const httpRequest = (options: UploadRequestOptions) => {
 
     // 调用 uploadAvatar 函数
     uploadFile(formData, (progressEvent) => {
+
         if (progressEvent.progress && progressEvent.total && progressEvent.loaded) {
-            const evt: any = {
+            const evt: UploadProgressEvent = {
                 loaded: progressEvent.loaded,
                 total: progressEvent.total,
                 percent: progressEvent.progress * 100 > 1 ? progressEvent.progress * 100 - 1 : 0,
@@ -172,23 +147,17 @@ const httpRequest = (options: UploadRequestOptions) => {
                 options.onSuccess(UploadCode.Success)
                 return
             } else {
-                ShowMsgTip(MsgType.error, response.data.msg + response.data.data, 2000)
-                const error: any = new Error(response.data.msg)
-                options.onError(error)
+                ShowMsgTip(MsgType.error, response.data.msg + '：' + response.data.data)
                 return
             }
         })
         .catch(() => {
             ShowMsgTip(MsgType.error, '上传失败，请重试')
-            const error: any = new Error('上传失败，请重试')
-            options.onError(error)
         })
 }
 
 
-// const onRemove = (file: UploadUserFile, fileList: UploadUserFile[]) => {
-//     ShowMsgTip(MsgType.warning, `请关闭当前上传页面，在明细页面删除：${file.name}`, 2000)
-// }
+
 
 const updateCurrentPage = (val: number) => {
     pagination.currentPage = val
@@ -221,12 +190,7 @@ const updateSelection = (rows: TableData[]) => {
     console.log("7", rows)
 }
 
-// 关闭上传对话框时清空上传文件列表
-const updateDialogVisible = (val: boolean) => {
-    if (!val) {
-        uploadRef.value?.clearFiles()
-    }
-}
+
 
 const medias: Media[] = reactive([
     {
@@ -274,10 +238,6 @@ const filterTableData = computed(() =>
     )
 )
 
-onMounted(() => {
-    getAllowedInfo()
-})
-
 </script>
 <style scoped lang="scss">
 .icon-upload-filled {
@@ -285,26 +245,14 @@ onMounted(() => {
     fill: $primary-color;
 }
 
+
+
 :deep(.el-upload-list) {
     li {
         // 上下边距
         margin: 30px 0;
         padding: 0;
     }
-}
-
-.dialog-title {
-    font-size: 20px;
-    font-weight: 700;
-}
-
-.el-upload__text {
-    // font-size: 16px;
-    font-weight: 500;
-}
-
-.el-upload__tip_title {
-    margin: 10px 0;
 }
 </style>
   

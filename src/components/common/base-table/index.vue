@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-27 16:53:27
+ * @LastEditTime : 2024-02-24 16:38:05
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格
  * @Blog         : https://jiaopengzi.com
@@ -59,7 +59,7 @@
         <template #header>
             <slot name="add-item-title"></slot>
         </template>
-        <slot name="add-item"></slot>
+        <slot name="add-item" :dialogVisible="dialogVisible"></slot>
     </el-dialog>
 </template>
   
@@ -86,6 +86,7 @@ const emit = defineEmits<{
     (event: 'delete-rows', rows: TableData[]): void
     (event: 'update-search', value: string): void
     (event: 'update-selection', rows: TableData[]): void
+    (event: 'update-dialog-visible', value: boolean): void
 
 }>()
 
@@ -180,6 +181,11 @@ watchEffect(() => {
     emit('update-search', search.value)
 })
 
+
+// 监听对话框状态变化
+watchEffect(() => {
+    emit('update-dialog-visible', dialogVisible.value)
+})
 
 // 处理选择变化
 const handleSelectionChange = (rows: TableData[]) => {

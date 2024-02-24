@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-27 15:46:07
+ * @LastEditTime : 2024-02-24 11:16:38
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -81,6 +81,7 @@ export enum LocalStorageKey {
 export enum UploadCode {
   Success = 8100, // 上传头像成功
   NotAllow = 8101, // 上传不被允许
+  GetAllowedUploadFileInfoSuccess = 8102, // 获取允许上传的文件信息成功
 }
 
 // 社交登录

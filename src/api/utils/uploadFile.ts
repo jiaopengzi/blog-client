@@ -2,15 +2,15 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-27 16:23:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-27 16:29:29
+ * @LastEditTime : 2024-02-24 11:11:51
  * @FilePath     : \blog-client\src\api\utils\uploadFile.ts
- * @Description  :
+ * @Description  : 上传文件
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
 import request from '@/api/request'
-import type { AxiosPromise } from 'axios'
+import type { AxiosPromise, AxiosProgressEvent } from 'axios'
 import { routerGroup } from '@/api/routerGroup'
 
 export interface UploadFileResponse {
@@ -19,10 +19,19 @@ export interface UploadFileResponse {
   data: any
 }
 
-export function uploadFile(formData: FormData): AxiosPromise<UploadFileResponse> {
+export function uploadFile(
+  formData: FormData,
+  progressCallback: (progressEvent: AxiosProgressEvent) => void,
+): AxiosPromise<UploadFileResponse> {
   return request({
     url: routerGroup + '/utils/upload-file',
     method: 'post',
     data: formData,
+    onUploadProgress: (progressEvent) => {
+      // 检查 total 和 loaded 是否已定义
+      if (progressCallback && progressEvent.progress !== undefined) {
+        progressCallback(progressEvent)
+      }
+    },
   })
 }
