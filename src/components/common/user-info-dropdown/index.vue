@@ -94,6 +94,7 @@ button {
     font-size: 14px;
     padding: 5px 0;
     cursor: pointer;
+    background-color: transparent;
 
     :hover {
         background-color: #ddd;

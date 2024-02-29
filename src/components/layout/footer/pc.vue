@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 10:16:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 11:42:46
+ * @LastEditTime : 2024-02-28 12:38:42
  * @FilePath     : \blog-client\src\components\layout\footer\pc.vue
  * @Description  : 底部 PC端
  * @Blog         : https://jiaopengzi.com
@@ -25,8 +25,10 @@
                 </ul>
             </div>
             <div class="footer-r">
-                <h3>{{ footerData.right?.title }}</h3>
-                <p>{{ footerData.right?.content }}</p>
+                <div>
+                    <h3>{{ footerData.right?.title }}</h3>
+                    <p>{{ footerData.right?.content }}</p>
+                </div>
 
                 <div>
                     <a href="https://beian.mps.gov.cn/">{{ footerData.right?.beianMPS }}</a>
