@@ -1,4 +1,4 @@
-# Dockerfile
+# blog-client Dockerfile
 # 使用官方 Node.js 镜像作为构建环境
 FROM node:20.11.0 as builder
 
@@ -28,6 +28,9 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 
 # 复制自定义 Nginx 配置文件到当前镜像的 Nginx 配置文件目录
 COPY nginx.conf /etc/nginx/nginx.conf
+
+# 挂载 Nginx 配置文件
+VOLUME ["/etc/nginx"]
 
 # 暴露 Nginx 服务的默认端口
 EXPOSE 80
