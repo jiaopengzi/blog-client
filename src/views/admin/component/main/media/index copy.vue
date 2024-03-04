@@ -133,7 +133,7 @@ const httpRequest = (options: UploadRequestOptions) => {
     uploadFile(formData, (progressEvent) => {
 
         if (progressEvent.progress && progressEvent.total && progressEvent.loaded) {
-            const evt: UploadProgressEvent = {
+            const evt: any = {
                 loaded: progressEvent.loaded,
                 total: progressEvent.total,
                 percent: progressEvent.progress * 100 > 1 ? progressEvent.progress * 100 - 1 : 0,
