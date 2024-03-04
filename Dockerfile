@@ -8,6 +8,9 @@ WORKDIR /app
 # 复制 package.json 和 pnpm-lock.yaml 到容器中
 COPY package.json pnpm-lock.yaml ./
 
+# 安装 pnpm
+RUN npm install -g pnpm@latest
+
 # 安装依赖项
 RUN pnpm install --frozen-lockfile
 
