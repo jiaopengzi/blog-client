@@ -67,7 +67,7 @@ export default defineConfig({
     proxy: {
       // dev Server.proxy 可以是一个指向开发环境 API 服务器的字符串
       '/api': {
-        target: 'http://10.10.2.187:8080',
+        target: 'http://10.10.2.222:8080',
         changeOrigin: true,
         // rewrite: (path) => path.replace(/^\/api/, 'myadmin'),
       },
