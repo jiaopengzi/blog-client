@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-05 13:28:32
+ * @LastEditTime : 2024-03-07 11:57:36
  * @FilePath     : \blog-client\src\main.ts
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -38,7 +38,7 @@ router.isReady().then(async () => {
 })
 
 consoleInfoFormat() // 控制台输出项目信息
-
+devRun() // 开发环境运行的函数
 // 如果环境变量为production，则移除console.log
 if (import.meta.env.MODE === 'development') {
   devRun() // 开发环境运行的函数
