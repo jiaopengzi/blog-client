@@ -43,3 +43,8 @@ consoleInfoFormat() // 控制台输出项目信息
 if (import.meta.env.MODE === 'development') {
   devRun() // 开发环境运行的函数
 }
+
+// 生产模式下移除console.log
+if (import.meta.env.MODE === 'production') {
+  console.log = () => {}
+}
