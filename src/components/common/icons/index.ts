@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-21 15:05:09
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-07 11:22:01
+ * @LastEditTime : 2024-03-07 11:34:22
  * @FilePath     : \blog-client\src\components\common\icons\index.ts
  * @Description  : 图标组件
  * @Blog         : https://jiaopengzi.com
@@ -120,7 +120,7 @@ export function getIconMap(iconFontJSON: any): IconMap {
 export const iconMap: IconMap = getIconMap(iconFontJSON)
 
 export enum IconKeys {
-  Announcement1 = 'announcement1',
+  Announcement = 'announcement',
   Archive = 'archive',
   Article = 'article',
   Backup = 'backup',
