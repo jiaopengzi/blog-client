@@ -5,16 +5,16 @@
 <template>
     <BaseTable :data="filterTableData" :pagination="pagination" :table-column="cols"
         @update-current-page="updateCurrentPage" @update-page-sizes="updatePageSizes" @edit-row="editRow"
-        @delete-row="deleteRow" @delete-rows="deleteRows" @update-search="updateSearch" @update-selection="updateSelection"
-        @update-dialog-visible="updateDialogVisible">
+        @delete-row="deleteRow" @delete-rows="deleteRows" @update-search="updateSearch"
+        @update-selection="updateSelection" @update-dialog-visible="updateDialogVisible">
 
         <template #add-item-title>
             <span class="dialog-title">新增媒体文件</span>
         </template>
 
         <template #add-item>
-            <el-upload ref="uploadRef" class="upload" drag multiple action="http://localhost:8081/api/v1/utils/upload-file"
-                :http-request="httpRequest">
+            <el-upload ref="uploadRef" class="upload" drag multiple
+                action="http://localhost:8081/api/v1/utils/upload-file" :http-request="httpRequest">
                 <Icon :name="IconKeys.UploadFilled" custom-class="icon-upload-filled" />
                 <div class="el-upload__text">
                     将文件拖放到此处 或 <em>点击上传</em>
@@ -29,7 +29,7 @@
         </template>
     </BaseTable>
 </template>
-  
+
 <script lang="ts" setup>
 import { ref, computed, reactive, onMounted } from 'vue'
 import BaseTable from '@/components/common/base-table'
@@ -38,8 +38,8 @@ import type { Media, TableData, TableColumn } from '@/components/common/base-tab
 import { debounce } from '@/utils/debounce'
 import { AadminSideMenu } from '@/views/admin/component/aside'
 import { IconKeys } from '@/components/common/icons'
-import { uploadFile } from '@/api/utils/uploadFile'
-import { getAllowedUploadFileInfo } from '@/api/utils/getAllowedUploadFileInfo'
+import { uploadFile } from '@/api/upload/file'
+import { getAllowedUploadFileInfo } from '@/api/upload/getAllowedFileInfo'
 import { ShowMsgTip } from '@/utils/message'
 import { MsgType } from '@/components/common'
 import { UploadCode } from '@/api/responseCode'
@@ -279,6 +279,7 @@ onMounted(() => {
 })
 
 </script>
+
 <style scoped lang="scss">
 .icon-upload-filled {
     font-size: 6em;
@@ -307,7 +308,3 @@ onMounted(() => {
     margin: 10px 0;
 }
 </style>
-  
-  
-  
-  

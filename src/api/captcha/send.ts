@@ -1,12 +1,12 @@
 /**
  * @Author       : jiaopengzi
- * @Date         : 2023-08-02 13:51:27
+ * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-29 20:01:18
- * @FilePath     : \blog-client\src\api\utils\CaptchaSend.ts
+ * @LastEditTime : 2024-03-07 09:56:47
+ * @FilePath     : \blog-client\src\api\captcha\captchaSend.ts
  * @Description  : 验证码发送
- * @blog         : https://jiaopengzi.com
- * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
 import request from '@/api/request'
@@ -29,7 +29,7 @@ export interface CaptchaSendResponse {
 export function captchaSendByJosn(
   requestData: CaptchaSendRequest,
 ): AxiosPromise<CaptchaSendResponse> {
-  const urlStr = routerGroup + '/utils/captcha-send'
+  const urlStr = routerGroup + '/captcha/send'
   return request({
     url: urlStr,
     method: 'post',

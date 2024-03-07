@@ -1,12 +1,12 @@
 /**
  * @Author       : jiaopengzi
- * @Date         : 2023-08-02 13:38:31
+ * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-29 20:01:10
- * @FilePath     : \blog-client\src\api\utils\CaptchaCheck.ts
+ * @LastEditTime : 2024-03-07 09:58:39
+ * @FilePath     : \blog-client\src\api\captcha\captchaCheck.ts
  * @Description  : 验证码校验
- * @blog         : https://jiaopengzi.com
- * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
 import request from '@/api/request'
@@ -29,7 +29,7 @@ export interface CaptchaCheckResponse {
 export function captchaCheckByJosn(
   requestData: CaptchaCheckRequest,
 ): AxiosPromise<CaptchaCheckResponse> {
-  const urlStr = routerGroup + '/utils/captcha-check'
+  const urlStr = routerGroup + '/captcha/check'
   return request({
     url: urlStr,
     method: 'post',

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-08 20:13:30
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-27 16:30:50
+ * @LastEditTime : 2024-03-07 10:02:45
  * @FilePath     : \blog-client\src\pkg\codemirror\extension\imgupload.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,7 @@
 
 import { EditorView } from '@codemirror/view'
 import type { Extension } from '@codemirror/state'
-import { uploadAvatar } from '@/api/utils/uploadAvatar'
+import { uploadAvatar } from '@/api/upload/avatar'
 import { ShowMsgTip } from '@/utils/message'
 import { useUserStore } from '@/stores/user'
 import { UploadCode } from '@/api/responseCode'

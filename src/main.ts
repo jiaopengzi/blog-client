@@ -18,6 +18,7 @@ import router from '@/router'
 import { useUserStore } from '@/stores/user'
 import Icon from '@/components/common/icons'
 import { consoleInfoFormat } from '@/version'
+import { devRun } from '@/dev'
 
 const app = createApp(App)
 
@@ -37,3 +38,8 @@ router.isReady().then(async () => {
 })
 
 consoleInfoFormat() // 控制台输出项目信息
+
+// 如果环境变量为production，则移除console.log
+if (import.meta.env.MODE === 'development') {
+  devRun() // 开发环境运行的函数
+}

@@ -74,11 +74,11 @@ import type { CheckEmailRequest } from '@/api/user/checkEmail'
 import { CheckEmailByJosn } from '@/api/user/checkEmail'
 import type { ResetPasswordRequest } from '@/api/user/resetPassword'
 import { resetPasswordByJosn } from '@/api/user/resetPassword'
-import type { CaptchaSendRequest } from '@/api/utils/captchaSend'
-import { captchaSendByJosn } from '@/api/utils/captchaSend'
+import type { CaptchaSendRequest } from '@/api/captcha/send'
+import { captchaSendByJosn } from '@/api/captcha/send'
 import { getPublicIp } from '@/utils/ip'
-import type { CaptchaCheckRequest } from '@/api/utils/captchaCheck'
-import { captchaCheckByJosn } from '@/api/utils/captchaCheck'
+import type { CaptchaCheckRequest } from '@/api/captcha/check'
+import { captchaCheckByJosn } from '@/api/captcha/check'
 import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
 import { routeObj } from '@/router/routeAll'
 import router from '@/router/index'
@@ -468,4 +468,3 @@ a {
   display: inline-block;
 }
 </style>
-

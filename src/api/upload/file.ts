@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-27 16:23:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-02-24 11:11:51
- * @FilePath     : \blog-client\src\api\utils\uploadFile.ts
+ * @LastEditTime : 2024-03-07 09:57:55
+ * @FilePath     : \blog-client\src\api\upload\uploadFile.ts
  * @Description  : 上传文件
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
@@ -24,7 +24,7 @@ export function uploadFile(
   progressCallback: (progressEvent: AxiosProgressEvent) => void,
 ): AxiosPromise<UploadFileResponse> {
   return request({
-    url: routerGroup + '/utils/upload-file',
+    url: routerGroup + '/upload/file',
     method: 'post',
     data: formData,
     onUploadProgress: (progressEvent) => {

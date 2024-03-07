@@ -37,7 +37,7 @@ import type { Media, TableData, TableColumn } from '@/components/common/base-tab
 import { debounce } from '@/utils/debounce'
 import { AadminSideMenu } from '@/views/admin/component/aside'
 import { IconKeys } from '@/components/common/icons'
-import { uploadFile } from '@/api/utils/uploadFile'
+import { uploadFile } from '@/api/upload/file'
 import { ShowMsgTip } from '@/utils/message'
 import { isArray } from '@/utils/typeOf'
 import { MsgType } from '@/components/common'

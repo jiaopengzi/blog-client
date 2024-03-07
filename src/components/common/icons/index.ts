@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-21 15:05:09
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-26 14:56:20
+ * @LastEditTime : 2024-03-07 11:22:01
  * @FilePath     : \blog-client\src\components\common\icons\index.ts
  * @Description  : 图标组件
  * @Blog         : https://jiaopengzi.com
@@ -120,7 +120,7 @@ export function getIconMap(iconFontJSON: any): IconMap {
 export const iconMap: IconMap = getIconMap(iconFontJSON)
 
 export enum IconKeys {
-  Announcement = 'announcement',
+  Announcement1 = 'announcement1',
   Archive = 'archive',
   Article = 'article',
   Backup = 'backup',
@@ -217,8 +217,8 @@ export enum IconKeys {
   Welfare = 'welfare',
 }
 
-// 历遍 iconMap 对象中的 key 校验是否符合 IconKeys 类型约束
-const checkIconKeys = (iconMap: IconMap): void => {
+// 开发模式下运行 历遍 iconMap 对象中的 key 校验是否符合 IconKeys 类型约束
+export const devCheckIconKeys = (iconMap: IconMap): void => {
   let newIconKeys = ''
   Object.keys(iconMap).forEach((key) => {
     const keyPascalCase = kebabToPascalCase(key)
@@ -235,6 +235,3 @@ const checkIconKeys = (iconMap: IconMap): void => {
     )
   }
 }
-
-// 校验 iconMap
-checkIconKeys(iconMap)

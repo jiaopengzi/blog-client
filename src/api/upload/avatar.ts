@@ -1,13 +1,14 @@
 /**
  * @Author       : jiaopengzi
- * @Date         : 2023-10-07 13:55:26
+ * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-27 16:29:36
- * @FilePath     : \blog-client\src\api\utils\uploadAvatar.ts
+ * @LastEditTime : 2024-03-07 09:57:34
+ * @FilePath     : \blog-client\src\api\upload\uploadAvatar.ts
  * @Description  : 上传头像
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
+
 import request from '@/api/request'
 import type { AxiosPromise } from 'axios'
 import { routerGroup } from '@/api/routerGroup'
@@ -20,7 +21,7 @@ export interface UploadAvatarResponse {
 
 export function uploadAvatar(formData: FormData): AxiosPromise<UploadAvatarResponse> {
   return request({
-    url: routerGroup + '/utils/upload-avatar',
+    url: routerGroup + '/upload/avatar',
     method: 'post',
     data: formData,
   })

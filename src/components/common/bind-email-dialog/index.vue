@@ -8,6 +8,7 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
+
 <template>
     <!-- 添加滑动验证组件：SlideVerify -->
     <el-dialog v-model="showDialogBindEmail" :lock-scroll="false" :show-close="false" :close-on-click-modal="true"
@@ -27,7 +28,8 @@
 
                 <el-form-item label="验证码" prop="captcha">
                     <el-input class="email-code" v-model="bindemailForm.captcha" />
-                    <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="btnCaptchaState.disabled">
+                    <button class="btn-captcha" type="button" @click="openSlideVerify"
+                        :disabled="btnCaptchaState.disabled">
                         {{ captcha }}
                     </button>
                 </el-form-item>
@@ -41,7 +43,7 @@
         </div>
     </el-dialog>
 </template>
-  
+
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import SlideVerify from '@/components/common/slide-verify' // 引用滑块验证组件
@@ -52,11 +54,11 @@ import type { CheckEmailRequest } from '@/api/user/checkEmail'
 import { CheckEmailByJosn } from '@/api/user/checkEmail'
 import type { BindEmailRequest } from '@/api/user/bindEmail'
 import { bindEmailByJosn } from '@/api/user/bindEmail'
-import type { CaptchaSendRequest } from '@/api/utils/captchaSend'
-import { captchaSendByJosn } from '@/api/utils/captchaSend'
+import type { CaptchaSendRequest } from '@/api/captcha/send'
+import { captchaSendByJosn } from '@/api/captcha/send'
 import { getPublicIp } from '@/utils/ip'
-import type { CaptchaCheckRequest } from '@/api/utils/captchaCheck'
-import { captchaCheckByJosn } from '@/api/utils/captchaCheck'
+import type { CaptchaCheckRequest } from '@/api/captcha/check'
+import { captchaCheckByJosn } from '@/api/captcha/check'
 import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
 import { storeToRefs } from 'pinia'
 import { useUserStore } from '@/stores/user'
@@ -312,7 +314,7 @@ const closeSlideVerify = () => {
     showSlideVerify.value = false
 }
 </script>
-  
+
 <style lang="scss" scoped>
 .bindemail-form {
     min-width: 360px;
