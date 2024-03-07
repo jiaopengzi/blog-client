@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-02-24 11:16:38
+ * @LastEditTime : 2024-03-07 20:42:57
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -63,6 +63,9 @@ export enum ResponseCode {
   SocialLoginWeChatCallbackSuccess = 8207, //微信登录成功回调
   SocialBindWeChatCallbackSuccess = 8208, //微信绑定成功回调
   SocialUnBindWeChatSuccess = 8209, //微信解绑成功
+
+  GetPermissionSuccess = 8300, //获取权限列表成功
+  GetRoleSuccess = 8400, //获取角色列表成功
 }
 
 // 验证码用途

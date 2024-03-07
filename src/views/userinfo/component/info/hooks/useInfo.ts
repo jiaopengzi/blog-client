@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 10:17:33
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-23 20:39:37
+ * @LastEditTime : 2024-03-07 22:46:55
  * @FilePath     : \blog-client\src\views\userinfo\component\info\hooks\useInfo.ts
  * @Description  : 用户信息页面 hooks
  * @Blog         : https://jiaopengzi.com
@@ -25,6 +25,7 @@ import { ShowMsgTip } from '@/utils/message'
 import { MsgType } from '@/components/common'
 import type { EditForm } from '@/views/userinfo/component/info'
 import { convertToBeijingTime } from '@/utils/utcToBeijingTime'
+import { PermissionNames, getRolesList } from '@/utils/rolePermission'
 
 export interface UseInfoReturnType {
   editFormRef: Ref<FormInstance | undefined>
@@ -44,6 +45,8 @@ export interface UseInfoReturnType {
   unBindSocial: (platform: social) => Promise<void>
   userNameDisabled: Ref<boolean>
   email: ComputedRef<string>
+  getUserMetaValue: (key: string) => string | undefined
+  hasPermission: (permission: PermissionNames) => Promise<boolean>
 }
 
 export function useInfo(): UseInfoReturnType {
@@ -73,6 +76,22 @@ export function useInfo(): UseInfoReturnType {
   const getUserMetaValue = (key: string): string | undefined => {
     const meta = userData.value.user_meta.find((item) => item.meta_key === key)
     return meta ? meta.meta_value : undefined
+  }
+
+  // 判断是否有权限
+  const hasPermission = async (permission: PermissionNames): Promise<boolean> => {
+    const role = getUserMetaValue('role_name')
+    if (!role) return false
+    // 获取角色列表
+    const roles = await getRolesList()
+    // 判断是否有权限
+    if (!roles) return false
+    for (let i = 0; i < roles.length; i++) {
+      if (roles[i].role_name === role) {
+        return roles[i].permission_names.includes(permission)
+      }
+    }
+    return false
   }
 
   // 表单数据
@@ -274,5 +293,7 @@ export function useInfo(): UseInfoReturnType {
     unBindSocial,
     userNameDisabled,
     email,
+    getUserMetaValue,
+    hasPermission,
   }
 }

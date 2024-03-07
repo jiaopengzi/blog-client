@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-13 19:55:47
+ * @LastEditTime : 2024-03-07 22:21:06
  * @FilePath     : \blog-client\src\App.vue
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -10,6 +10,7 @@
 -->
 
 <template>
+
   <Head>
     <title>My awesome site</title>
     <meta name="description" content="My awesome site description" />
@@ -50,6 +51,7 @@ useHead({
 
 // 设置主题
 setTheme("light");
+
 </script>
 
 <style scoped lang="scss"></style>
