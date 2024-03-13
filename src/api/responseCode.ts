@@ -65,6 +65,7 @@ export enum ResponseCode {
   SocialUnBindWeChatSuccess = 8209, //微信解绑成功
 
   GetPermissionSuccess = 8300, //获取权限列表成功
+  HasPermission = 8305, //判断是否有权限成功
   GetRoleSuccess = 8400, //获取角色列表成功
 }
 

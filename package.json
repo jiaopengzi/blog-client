@@ -4,7 +4,7 @@
   "description": "一个博客系统前端项目",
   "author": "焦棚子 <jiaopengzi@outlook.com>",
   "license": "MIT",
-  "homepage": "https://jiaopegnzi.com",
+  "homepage": "https://jiaopengzi.com",
   "repository": {
     "type": "git",
     "url": "https://gitee.com/jiaopengzi/blog-client"

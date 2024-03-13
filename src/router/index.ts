@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-04 18:07:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-25 11:54:48
+ * @LastEditTime : 2024-03-13 16:17:02
  * @FilePath     : \blog-client\src\router\index.ts
  * @Description  : 路由配置
  * @blog         : https://jiaopengzi.com
@@ -13,6 +13,12 @@ import { routeObj, routes } from '@/router/routeAll'
 import { ShowMsgTip } from '@/utils/message'
 import { MsgType } from '@/components/common'
 import { useUserStore } from '@/stores/user'
+
+// 定义路由元信息
+// export interface RouteMeta {
+//   requiresAuth: boolean // 是否需要登录
+//   permissionRequired?: PermissionNames // 将 permissionRequired 设置为可选
+// }
 
 // 创建路由实例
 const router = createRouter({

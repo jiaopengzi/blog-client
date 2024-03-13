@@ -10,7 +10,7 @@
  */
 
 import { devCheckIconKeys, iconMap } from '@/components/common/icons'
-import { devPermissionNames } from '@/utils/rolePermission'
+import { devPermissionNames } from '@/utils/permissionRole'
 
 /**
  * @description: 开发环境运行的函数，主要在控制台输出一些信息便于开发调试

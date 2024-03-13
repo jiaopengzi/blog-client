@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-26 10:32:27
+ * @LastEditTime : 2024-03-13 17:27:55
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,7 @@
 -->
 
 <template>
-    <div class="admin-layout">
+    <div v-if="hasPermissionLoginAdmin" class="admin-layout">
         <el-container class="container">
             <el-header class="header" v-show="!isFullScreen">
                 <AdminHeader />
@@ -26,6 +26,9 @@
             </el-container>
         </el-container>
     </div>
+    <div v-else>
+        <Page404 />
+    </div>
 </template>
 <script lang="ts" setup>
 import { ref, watch, onMounted, shallowRef, onBeforeMount } from 'vue'
@@ -37,6 +40,8 @@ import { storeToRefs } from 'pinia'
 import { components } from '@/views/admin'
 import Dashboard from '@/views/admin/component/main/dashboard'
 import { adminMenuItemMapWithIndex, AadminSideMenu } from '@/views/admin/component/aside'
+import { hasPermission, PermissionNames } from '@/utils/permissionRole'
+import Page404 from '@/views/404'
 
 
 interface HTMLElementRef extends HTMLElement {
@@ -44,7 +49,16 @@ interface HTMLElementRef extends HTMLElement {
 }
 
 defineOptions({ name: 'AdminLayout' })
+const hasPermissionLoginAdmin = ref(false)
 
+
+const updatePermissionLoginAdmin = async () => {
+    await hasPermission(PermissionNames.LoginAdmin).then((res) => {
+        hasPermissionLoginAdmin.value = res
+    })
+}
+
+console.log("hasPermissionLoginAdmin", hasPermissionLoginAdmin)
 const currentComponent = shallowRef(Dashboard) // 组件的响应式引用 使用 shallowRef 代替 ref，避免组件重复渲染
 const editorStore = useEditorStore()
 const { isFullScreen } = storeToRefs(editorStore)
@@ -85,13 +99,12 @@ function updateCurrentComponentByPath(path: string): void {
     const key = Object.keys(adminMenuItemMapWithIndex).filter((key) => adminMenuItemMapWithIndex[key as AadminSideMenu].index === path)[0]
     if (!key) return
     currentComponent.value = components[key as keyof typeof components]
-    // console.log("currentComponent", currentComponent)
-    // console.log("currentComponent", currentComponent.value === components[key as keyof typeof components])
 }
 
 
 onBeforeMount(() => {
     updateCurrentComponent()
+    updatePermissionLoginAdmin()
 })
 
 onMounted(() => {

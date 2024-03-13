@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 09:35:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-13 11:15:37
+ * @LastEditTime : 2024-03-13 14:55:22
  * @FilePath     : \blog-client\src\stores\user.ts
  * @Description  : 用户信息
  * @Blog         : https://jiaopengzi.com
@@ -329,6 +329,9 @@ async function handleLoginResult(
   return createEmptyUserInfoStore() // 获取用户信息
 }
 
+/**
+ * @description: 辅助函数：处理绑定结果
+ */
 async function handleBindResult(
   resObj: LoginResponse,
   successCode: ResponseCode,

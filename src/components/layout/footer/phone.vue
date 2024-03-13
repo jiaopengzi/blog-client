@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 10:17:04
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-02-28 12:39:15
+ * @LastEditTime : 2024-03-13 19:19:25
  * @FilePath     : \blog-client\src\components\layout\footer\phone.vue
  * @Description  : 底部 移动端
  * @Blog         : https://jiaopengzi.com
@@ -50,9 +50,10 @@ const props = defineProps<{ footerData: FooterProps }>()
 const { footerData } = toRefs(props)
 
 </script>
-  
+
 <style scoped lang="scss">
 footer {
+    height: phone.$height-footer;
     background-color: $background-color-footer;
     display: relative;
     align-items: center;
@@ -162,4 +163,3 @@ footer {
     }
 }
 </style>
-  
