@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:28:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-24 18:50:37
+ * @LastEditTime : 2024-03-14 16:48:11
  * @FilePath     : \blog-client\src\components\common\recursive-menu-item\index.vue
  * @Description  : 递归创建层级菜单
  * @Blog         : https://jiaopengzi.com
@@ -31,7 +31,7 @@
             :menu-item="item" />
     </el-sub-menu>
 </template>
-  
+
 <script lang="ts" setup>
 
 import Icon from '@/components/common/icons'
@@ -50,7 +50,7 @@ function getChildren(parentIndex: string) {
     return Object.values(props.menuItemMap).filter((item) => item.parentIndex === parentIndex)
 }
 </script>
-  
+
 <style scoped lang="scss">
 .title {
     margin-left: 10px;

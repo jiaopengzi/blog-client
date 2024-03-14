@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:33:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-25 16:29:38
+ * @LastEditTime : 2024-03-14 16:41:10
  * @FilePath     : \blog-client\src\views\admin\component\aside\index.vue
  * @Description  : 左边菜单栏
  * @Blog         : https://jiaopengzi.com
@@ -19,13 +19,12 @@
         </el-menu>
     </el-scrollbar>
 </template>
-  
-  
+
+
 <script lang="ts" setup>
 import { ref, reactive, computed } from 'vue'
 import SwitchGroup from '@/components/common/switch-group'
 import type { SwitchItem, SwitchItemLabel, SwitchItemColor } from '@/components/common/switch-group'
-
 import RecursiveMenuItem from '@/components/common/recursive-menu-item' // 引入递归菜单组件
 import { adminMenuItemMapWithIndex } from '@/views/admin/component/aside'
 
@@ -91,7 +90,7 @@ const handleClose = (index: string, keyPath: string[]) => {
 }
 
 </script>
-  
+
 <style scoped lang="scss">
 .el-menu-vertical {
     overflow-x: hidden;
@@ -111,4 +110,3 @@ const handleClose = (index: string, keyPath: string[]) => {
     font-size: 1.2em;
 }
 </style>
-  

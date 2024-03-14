@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-07 22:20:56
+ * @LastEditTime : 2024-03-14 11:13:37
  * @FilePath     : \blog-client\src\main.ts
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -17,11 +17,14 @@ import App from '@/App.vue'
 import router from '@/router'
 import { useUserStore } from '@/stores/user'
 import Icon from '@/components/common/icons'
+import permissionDirective from '@/utils/permissionRole'
+
 import { consoleInfoFormat } from '@/version'
 import { devRun } from '@/dev'
 
 const app = createApp(App)
 
+app.directive('permission', permissionDirective) // 注册全局权限指令
 app.use(createPinia()) //在APP创建之后，使用Pinia
 app.use(router)
 
@@ -48,4 +51,3 @@ if (import.meta.env.MODE === 'development') {
 // if (import.meta.env.MODE === 'production') {
 //
 // }
-

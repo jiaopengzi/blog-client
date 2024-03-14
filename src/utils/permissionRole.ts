@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-07 14:24:11
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-13 16:21:37
+ * @LastEditTime : 2024-03-14 11:20:27
  * @FilePath     : \blog-client\src\utils\permissionRole.ts
  * @Description  : 权限工具类
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,7 @@
  */
 
 // 从 API 获取权限列表
-
+import type { Directive, DirectiveBinding } from 'vue'
 import { getPermissions } from '@/api/permissionRole/getPermissions'
 import { getRoles } from '@/api/permissionRole/role'
 import { ResponseCode } from '@/api/responseCode'
@@ -28,6 +28,7 @@ export enum PermissionNames {
   DeletePost = 'DeletePost',
   ViewPost = 'ViewPost',
   LoginAdmin = 'LoginAdmin',
+  Backup = 'Backup',
 }
 
 /**
@@ -43,38 +44,23 @@ export async function getRolesList() {
 }
 
 // 判断是否有权限
-export async function hasPermission(permission: PermissionNames) {
+export async function hasPermission(permission: PermissionNames): Promise<boolean> {
   const res = await hasPermissionByJosn({ permission_name: permission })
   return res.data.code === ResponseCode.HasPermission
 }
 
-/**
- * @description: 根据用户权限动态加载组件
- * @param {PermissionNames} permission - 需要的权限
- * @param {string} componentPath - 用户有权限时加载的组件路径
- * @param {string} fallbackComponentPath - 用户无权限时加载的组件路径
- * @return {Promise<any>}
- */
-export async function loadComponentByPermission(
-  permission: PermissionNames,
-  componentPath: string,
-  fallbackComponentPath: string,
-) {
-  if (await hasPermission(permission)) {
-    switch (componentPath) {
-      case 'admin':
-        return import('@/views/admin')
-      // 其他可能的组件路径
-      // case 'otherComponent':
-      //   return import('@/views/otherComponent.vue');
+// 权限指令,如果没有权限则移除元素.
+export const permissionDirective: Directive = {
+  async mounted(el: HTMLElement, binding: DirectiveBinding<PermissionNames>) {
+    const permission = binding.value
+    const hasPerm = await hasPermission(permission)
+    if (!hasPerm) {
+      el.parentNode?.removeChild(el)
     }
-  } else {
-    switch (fallbackComponentPath) {
-      case '404':
-        return import('@/views/404')
-    }
-  }
+  },
 }
+
+export default permissionDirective
 
 // 开发环境下检查权限枚举是否有遗漏
 export async function devPermissionNames() {

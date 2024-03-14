@@ -10,15 +10,17 @@
  */
 
 import { IconKeys } from '@/components/common/icons'
+import { PermissionNames } from '@/utils/permissionRole'
 
 // 菜单项接口定义无需 index 属性
 export interface MenuItem {
-  display: string
+  display: string // 显示名称
   icon?: {
-    name: IconKeys
-    class?: string
+    name: IconKeys // 图标名称
+    class?: string // 图标样式
   }
-  parentIndex?: string
+  parentIndex?: string // 父级菜单索引
+  permissionName?: PermissionNames // 权限名称
 }
 
 // 菜单项接口定义需要 index 属性

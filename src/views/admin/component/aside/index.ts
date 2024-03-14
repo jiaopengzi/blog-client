@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:33:58
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-26 15:15:01
+ * @LastEditTime : 2024-03-14 17:42:57
  * @FilePath     : \blog-client\src\views\admin\component\aside\index.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,7 @@
  */
 import { IconKeys } from '@/components/common/icons' // 图标名称枚举
 import { toKebabCase } from '@/utils/naming-conversion'
-
+import { PermissionNames } from '@/utils/permissionRole' // 权限名称枚举
 import type { MenuItemMap, MenuItemMapWithIndex } from '@/components/common/recursive-menu-item'
 
 // 管理后台菜单项枚举 注意使用大驼峰命名
@@ -54,7 +54,9 @@ export enum AadminSideMenu {
   'Backup' = 'Backup',
 }
 
+// admin管理后台菜单项映射表
 export type AdminMenuItemMap = MenuItemMap<AadminSideMenu>
+// admin管理后台菜单项映射表 包含 index 属性
 export type AdminMenuItemMapWithIndex = MenuItemMapWithIndex<AadminSideMenu>
 
 const adminMenuItemMap: AdminMenuItemMap = {
@@ -247,6 +249,7 @@ const adminMenuItemMap: AdminMenuItemMap = {
       name: IconKeys.Backup,
       class: 'icon-menu',
     },
+    permissionName: PermissionNames.Backup,
   },
 }
 

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-13 17:27:55
+ * @LastEditTime : 2024-03-14 20:29:35
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -39,6 +39,7 @@ import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
 import { components } from '@/views/admin'
 import Dashboard from '@/views/admin/component/main/dashboard'
+import NoPermission from '@/views/admin/component/main/no-permission'
 import { adminMenuItemMapWithIndex, AadminSideMenu } from '@/views/admin/component/aside'
 import { hasPermission, PermissionNames } from '@/utils/permissionRole'
 import Page404 from '@/views/404'

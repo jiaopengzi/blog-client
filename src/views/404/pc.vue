@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-13 18:50:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-13 19:36:44
+ * @LastEditTime : 2024-03-14 09:55:14
  * @FilePath     : \blog-client\src\views\404\pc.vue
  * @Description  : 404 页面 pc
  * @Blog         : https://jiaopengzi.com
@@ -21,7 +21,7 @@
       </span>
       <span class="breadcrumb-item">
         <el-breadcrumb :separator-icon="ArrowRight">
-          <el-breadcrumb-item :to="routeObj.login.path">首页</el-breadcrumb-item>
+          <el-breadcrumb-item :to="routeObj.home.path">首页</el-breadcrumb-item>
           <el-breadcrumb-item>404</el-breadcrumb-item>
         </el-breadcrumb>
       </span>
@@ -32,7 +32,7 @@
       <div class="not-found">
         <h1>404</h1>
         <p>抱歉，您访问的页面不存在。</p>
-        <p>将在 {{ props.countdown }} 秒后，返回首页。</p>
+        <p>将在 <span class="countdown">{{ props.countdown }}</span> 秒后，返回首页。</p>
       </div>
     </div>
   </div>
@@ -91,6 +91,12 @@ const props = defineProps({
 
   p {
     margin: 40px 0;
+
+    .countdown {
+      color: red;
+      font-size: 24px;
+      font-weight: 700;
+    }
   }
 }
 </style>

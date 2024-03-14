@@ -14,12 +14,6 @@ import { ShowMsgTip } from '@/utils/message'
 import { MsgType } from '@/components/common'
 import { useUserStore } from '@/stores/user'
 
-// 定义路由元信息
-// export interface RouteMeta {
-//   requiresAuth: boolean // 是否需要登录
-//   permissionRequired?: PermissionNames // 将 permissionRequired 设置为可选
-// }
-
 // 创建路由实例
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,8 +26,6 @@ router.beforeEach(async (to, from, next) => {
   // 如果用户没有登录，且访问的页面需要登录，则跳转到登录页
   if (to.meta.requiresAuth && !userStore.isLogin) {
     next({ path: routeObj.login.path, query: { redirect: to.path } }) // 重定向到登录页带上当前页面路径参数
-    // sessionStorage.setItem('redirectRoute', JSON.stringify(to)) // 保存重定向路由
-    // next(routeObj.login.path)
   }
   // 如果已经登录，未绑定邮箱，且访问的页面不是用户信息页面，则跳转到用户信息页面
   else if (userStore.isLogin && !userStore.isBindEmail && to.path !== routeObj.userInfo.path) {

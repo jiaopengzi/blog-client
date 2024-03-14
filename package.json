@@ -48,7 +48,6 @@
     "cropperjs": "^1.6.1",
     "element-plus": "^2.5.1",
     "emoji.json": "^15.1.0",
-    "fake-progress": "^1.0.4",
     "highlight.js": "^11.9.0",
     "html2canvas": "^1.4.1",
     "katex": "^0.16.9",
