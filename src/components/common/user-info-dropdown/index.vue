@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 10:19:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-13 20:12:02
+ * @LastEditTime : 2024-03-15 19:54:24
  * @FilePath     : \blog-client\src\components\common\user-info-dropdown\index.vue
  * @Description  : 显示用户信息下拉菜单
  * @Blog         : https://jiaopengzi.com
@@ -23,6 +23,9 @@
                 <el-dropdown-item>
                     <button @click="userCenterBtn">用户中心</button>
                 </el-dropdown-item>
+                <el-dropdown-item v-if="hasPermissionLoginAdmin">
+                    <button @click="userAdminBtn">后台管理</button>
+                </el-dropdown-item>
                 <el-dropdown-item>
                     <button @click="logout">退出</button>
                 </el-dropdown-item>
@@ -30,13 +33,15 @@
         </template>
     </el-dropdown>
 </template>
-  
+
 <script lang="ts" setup>
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 import AvatarInitials from '@/components/common/avatar-initials' // 导入 AvatarInitials 组件
 import router from '@/router/index'
 import { routeObj } from '@/router/routeAll'
+import { PermissionNames } from '@/utils/permissionRole'
+import { onMounted, ref } from 'vue'
 
 defineOptions({ name: 'UserInfoDropdown' })
 
@@ -48,13 +53,30 @@ const userCenterBtn = () => {
     router.push(routeObj.userInfo.path)
 }
 
+// 跳转到后台管理
+const userAdminBtn = () => {
+    router.push(routeObj.admin.path)
+}
+
+// 是否有后台管理权限
+const hasPermissionLoginAdmin = ref(false)
+
+// 是否有后台管理权限
+const updateHasPermissionLoginAdmin = () => {
+    hasPermissionLoginAdmin.value = userStore.hasPermission(PermissionNames.LoginAdmin)
+}
+
 // 退出登录
 const logout = async () => {
     await userStore.logout()
 }
 
+onMounted(() => {
+    updateHasPermissionLoginAdmin()
+})
+
 </script>
-  
+
 <style scoped lang="scss">
 span {
     outline: none;
@@ -101,4 +123,3 @@ button {
     }
 }
 </style>
-  

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-15 17:31:15
+ * @LastEditTime : 2024-03-15 17:53:50
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -59,17 +59,17 @@ interface HTMLElementRef extends HTMLElement {
 // 添加 isLoading 变量
 const isLoading = ref(true)
 
-
-const updatePermissionLoginAdmin = async () => {
+// 更新 PermissionLoginAdmin 
+const updatePermissionLoginAdmin = () => {
     isLoading.value = true
     const userStore = useUserStore()
     if (userStore.hasPermission(PermissionNames.LoginAdmin)) {
         hasPermissionLoginAdmin.value = true
-        isLoading.value = false
     }
+    isLoading.value = false
 }
 
-console.log("hasPermissionLoginAdmin", hasPermissionLoginAdmin)
+
 const currentComponent = shallowRef(Dashborad) // 组件的响应式引用 使用 shallowRef 代替 ref，避免组件重复渲染
 const editorStore = useEditorStore()
 const { isFullScreen } = storeToRefs(editorStore)

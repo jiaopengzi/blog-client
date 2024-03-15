@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-23 11:45:46
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-15 11:06:07
+ * @LastEditTime : 2024-03-15 20:26:42
  * @FilePath     : \blog-client\src\router\routeAll.ts
  * @Description  : 所有路由配置
  * @Blog         : https://jiaopengzi.com
@@ -13,7 +13,12 @@ import { userRoutes } from '@/router/routeUser'
 import { adminRoutes } from '@/router/routeAdmin'
 import { navigationRoutes } from '@/router/routeNavigation'
 
-export const routeObj = {
+// 路由对象类型
+interface RouteObjectType {
+  [key: string]: RouteRecordRaw
+}
+
+export const routeObj: RouteObjectType = {
   home: {
     path: '/',
     name: 'home',
@@ -31,6 +36,7 @@ export const routeObj = {
       requiresAuth: false,
     },
   },
+
   // 用户相关路由
   ...userRoutes,
   // 导航相关路由
@@ -47,5 +53,7 @@ export const routeObj = {
     },
   },
 }
+
+console.log('routeObj', routeObj)
 
 export const routes = Object.values(routeObj) as RouteRecordRaw[]

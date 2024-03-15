@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-07 14:24:11
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-15 17:25:29
+ * @LastEditTime : 2024-03-15 19:50:38
  * @FilePath     : \blog-client\src\utils\permissionRole.ts
  * @Description  : 权限工具类
  * @Blog         : https://jiaopengzi.com
@@ -53,7 +53,7 @@ export async function hasPermissionByServer(permission: PermissionNames): Promis
 
 // 权限指令,如果没有权限则移除元素.
 export const permissionDirective: Directive = {
-  async mounted(el: HTMLElement, binding: DirectiveBinding<PermissionNames>) {
+  mounted(el: HTMLElement, binding: DirectiveBinding<PermissionNames>) {
     // 获取用户信息
     const userStore = useUserStore()
     const permission = binding.value
