@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 09:35:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-13 14:55:22
+ * @LastEditTime : 2024-03-15 17:19:21
  * @FilePath     : \blog-client\src\stores\user.ts
  * @Description  : 用户信息
  * @Blog         : https://jiaopengzi.com
@@ -16,6 +16,7 @@ import type { AxiosResponse } from 'axios'
 import { ShowMsgTip } from '@/utils/message'
 import { MsgType } from '@/components/common'
 import type { LoginRequest, LoginResponse } from '@/api/user/login'
+
 import {
   loginByJosn,
   // QQ
@@ -33,6 +34,8 @@ import {
 } from '@/api/user/login'
 import type { UserInfo } from '@/api/user/getUserInfo'
 import { emptyUserInfo, getUserInfoByJosn } from '@/api/user/getUserInfo'
+import { PermissionNames } from '@/utils/permissionRole'
+import { getRolesByJson } from '@/api/permissionRole/role'
 
 // 用户信息
 export interface UserInfoStore {
@@ -41,6 +44,7 @@ export interface UserInfoStore {
   avatar?: string // 头像 优先使用data.user.user_avatar 如果没有则使用 data.user_qq.avatar 或者 data.user_wechat.Avatar
   isBindEmail: boolean // 是否绑定邮箱
   showDialogBindEmail?: boolean // 是否显示绑定邮箱弹窗
+  permissions?: PermissionNames[] // 权限列表
 }
 
 // 创建空值用户信息
@@ -51,6 +55,7 @@ function createEmptyUserInfoStore(): UserInfoStore {
     avatar: '',
     isBindEmail: false,
     showDialogBindEmail: false,
+    permissions: [],
   }
 }
 
@@ -78,6 +83,10 @@ export const useUserStore = defineStore({
     // 获取是否显示绑定邮箱弹窗
     getShowDialogBindEmail(): boolean {
       return this.showDialogBindEmail || false
+    },
+    // 获取权限列表
+    getPermissions(): PermissionNames[] {
+      return this.permissions || []
     },
   },
 
@@ -169,6 +178,11 @@ export const useUserStore = defineStore({
     async changeShowDialogBindEmail(status: boolean) {
       this.showDialogBindEmail = status
     },
+
+    // 是否具有权限
+    hasPermission(permission: PermissionNames): boolean {
+      return this.permissions?.includes(permission) || false
+    },
   },
 })
 
@@ -253,20 +267,49 @@ async function apiUnBindWeChat(): Promise<UserInfoStore> {
 async function apiGetUserInfoByToken(): Promise<UserInfoStore> {
   try {
     const access_token = localStorage.getItem(LocalStorageKey.AccessToken)
+    // 如果没有token 则返回空值用户信息
     if (!access_token) {
       return createEmptyUserInfoStore()
     }
 
-    const res = await getUserInfoByJosn()
-    const { data } = res.data
+    // 通过token获取用户信息
+    const resUser = await getUserInfoByJosn()
+    const { data: dataUser } = resUser.data
 
-    if (res.data.code === ResponseCode.UserGetInfoSuccess) {
+    // 获取角色列表
+    const resRole = await getRolesByJson()
+    const { data: dataRole } = resRole.data
+
+    // 判断是否获取成功
+    if (
+      resUser.data.code === ResponseCode.UserGetInfoSuccess &&
+      resRole.data.code === ResponseCode.GetRoleSuccess
+    ) {
+      const meta = dataUser.user_meta.find((item) => item.meta_key === 'role_name')
+      const roleName = meta ? meta.meta_value : undefined
+
+      // 循环 dataRole 获取权限列表
+      const permissions: PermissionNames[] = []
+      for (const role of dataRole) {
+        if (role.role_name === roleName) {
+          for (const permission of role.permission_names) {
+            permissions.push(permission)
+          }
+          break
+        }
+      }
+
       return {
-        data,
+        data: dataUser,
         isLogin: true,
-        avatar: data?.user?.user_avatar || data?.user_wechat?.avatar || data?.user_qq?.avatar || '',
-        isBindEmail: !!data?.user?.user_email,
-        showDialogBindEmail: !data?.user?.user_email,
+        avatar:
+          dataUser?.user?.user_avatar ||
+          dataUser?.user_wechat?.avatar ||
+          dataUser?.user_qq?.avatar ||
+          '',
+        isBindEmail: !!dataUser?.user?.user_email,
+        showDialogBindEmail: !dataUser?.user?.user_email,
+        permissions,
       }
     }
   } catch (err: unknown) {

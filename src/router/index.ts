@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-04 18:07:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-13 16:17:02
+ * @LastEditTime : 2024-03-15 11:50:39
  * @FilePath     : \blog-client\src\router\index.ts
  * @Description  : 路由配置
  * @blog         : https://jiaopengzi.com
@@ -16,10 +16,11 @@ import { useUserStore } from '@/stores/user'
 
 // 创建路由实例
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes,
+  history: createWebHistory(import.meta.env.BASE_URL), // 使用history路由模式
+  routes, // 路由配置
 })
 
+// 路由守卫
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
   await userStore.getUserInfoByToken()

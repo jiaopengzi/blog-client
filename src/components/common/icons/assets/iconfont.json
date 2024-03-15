@@ -6,6 +6,13 @@
   "description": "vue 重写项目",
   "glyphs": [
     {
+      "icon_id": "8172721",
+      "name": "permission",
+      "font_class": "permission",
+      "unicode": "e935",
+      "unicode_decimal": 59701
+    },
+    {
       "icon_id": "8530729",
       "name": "upload-filled",
       "font_class": "upload-filled",
@@ -70,8 +77,8 @@
     },
     {
       "icon_id": "19100227",
-      "name": "dashboard",
-      "font_class": "dashboard",
+      "name": "dashborad",
+      "font_class": "dashborad",
       "unicode": "e643",
       "unicode_decimal": 58947
     },

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-14 11:13:37
+ * @LastEditTime : 2024-03-15 14:53:45
  * @FilePath     : \blog-client\src\main.ts
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -17,7 +17,7 @@ import App from '@/App.vue'
 import router from '@/router'
 import { useUserStore } from '@/stores/user'
 import Icon from '@/components/common/icons'
-import permissionDirective from '@/utils/permissionRole'
+import { permissionDirective } from '@/utils/permissionRole'
 
 import { consoleInfoFormat } from '@/version'
 import { devRun } from '@/dev'

@@ -19,7 +19,7 @@ export interface RolesResponse {
   data: any
 }
 
-export function getRoles(): AxiosPromise<RolesResponse> {
+export function getRolesByJson(): AxiosPromise<RolesResponse> {
   return request({
     url: routerGroup + '/role/get-roles',
     method: 'get',

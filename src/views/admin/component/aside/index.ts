@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:33:58
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-14 17:42:57
+ * @LastEditTime : 2024-03-15 15:07:23
  * @FilePath     : \blog-client\src\views\admin\component\aside\index.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -15,7 +15,7 @@ import type { MenuItemMap, MenuItemMapWithIndex } from '@/components/common/recu
 
 // 管理后台菜单项枚举 注意使用大驼峰命名
 export enum AadminSideMenu {
-  'Dashboard' = 'Dashboard',
+  'Dashborad' = 'Dashborad',
   'Post' = 'Post',
   'PostAll' = 'PostAll',
   'PostWrite' = 'PostWrite',
@@ -49,6 +49,7 @@ export enum AadminSideMenu {
   'UserAll' = 'UserAll',
   'UserAdd' = 'UserAdd',
   'LoginLog' = 'LoginLog',
+  'PermissionRole' = 'PermissionRole',
   'Config' = 'Config',
   'Notification' = 'Notification',
   'Backup' = 'Backup',
@@ -60,10 +61,10 @@ export type AdminMenuItemMap = MenuItemMap<AadminSideMenu>
 export type AdminMenuItemMapWithIndex = MenuItemMapWithIndex<AadminSideMenu>
 
 const adminMenuItemMap: AdminMenuItemMap = {
-  [AadminSideMenu.Dashboard]: {
+  [AadminSideMenu.Dashborad]: {
     display: '仪表板',
     icon: {
-      name: IconKeys.Dashboard,
+      name: IconKeys.Dashborad,
       class: 'icon-menu',
     },
   },
@@ -228,6 +229,11 @@ const adminMenuItemMap: AdminMenuItemMap = {
   [AadminSideMenu.LoginLog]: {
     display: '登录日志',
     parentIndex: AadminSideMenu.User,
+  },
+  [AadminSideMenu.PermissionRole]: {
+    display: '权限角色',
+    parentIndex: AadminSideMenu.User,
+    permissionName: PermissionNames.PermissionRole,
   },
   [AadminSideMenu.Config]: {
     display: '网站配置',

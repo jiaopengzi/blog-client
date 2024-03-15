@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 12:37:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-13 17:12:31
+ * @LastEditTime : 2024-03-15 15:18:06
  * @FilePath     : \blog-client\src\views\admin\index.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -10,15 +10,16 @@
  */
 
 export { default } from './index.vue'
-import Dashboard from '@/views/admin/component/main/dashboard'
+import Dashborad from '@/views/admin/component/main/dashborad'
 import PostWrite from '@/views/admin/component/main/post-write'
 // import PostCategory from '@/views/admin/component/main/post-category'
 import Media from '@/views/admin/component/main/media'
-
+import PermissionRole from '@/views/admin/component/main/permission-role'
 
 // 将组件存放在一个对象内
 export const components = {
-  Dashboard,
+  Dashborad,
   PostWrite,
   Media,
+  PermissionRole,
 }

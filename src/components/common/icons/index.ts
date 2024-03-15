@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-21 15:05:09
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-07 11:34:22
+ * @LastEditTime : 2024-03-15 14:47:43
  * @FilePath     : \blog-client\src\components\common\icons\index.ts
  * @Description  : 图标组件
  * @Blog         : https://jiaopengzi.com
@@ -135,7 +135,7 @@ export enum IconKeys {
   Comment = 'comment',
   Config = 'config',
   Copy = 'copy',
-  Dashboard = 'dashboard',
+  Dashborad = 'dashborad',
   Data = 'data',
   DataAnalysis = 'data-analysis',
   Demo = 'demo',
@@ -183,6 +183,7 @@ export enum IconKeys {
   Page = 'page',
   PayContent = 'pay-content',
   Pdf = 'pdf',
+  Permission = 'permission',
   Post = 'post',
   Preview = 'preview',
   Publish = 'publish',

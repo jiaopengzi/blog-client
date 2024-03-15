@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-14 20:29:35
+ * @LastEditTime : 2024-03-15 17:31:15
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,9 @@
 -->
 
 <template>
-    <div v-if="hasPermissionLoginAdmin" class="admin-layout">
+    <!-- 加载中 防止页面失去响应提高用户体验 -->
+    <div v-if="isLoading" v-loading="isLoading" element-loading-text="加载中..." class="loading"></div>
+    <div v-else-if="hasPermissionLoginAdmin" class="admin-layout">
         <el-container class="container">
             <el-header class="header" v-show="!isFullScreen">
                 <AdminHeader />
@@ -38,29 +40,37 @@ import AdminAside from '@/views/admin/component/aside'
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
 import { components } from '@/views/admin'
-import Dashboard from '@/views/admin/component/main/dashboard'
+import Dashborad from '@/views/admin/component/main/dashborad'
 import NoPermission from '@/views/admin/component/main/no-permission'
 import { adminMenuItemMapWithIndex, AadminSideMenu } from '@/views/admin/component/aside'
-import { hasPermission, PermissionNames } from '@/utils/permissionRole'
+import { PermissionNames } from '@/utils/permissionRole'
 import Page404 from '@/views/404'
+import { useUserStore } from '@/stores/user'
 
-
-interface HTMLElementRef extends HTMLElement {
-    $el: HTMLElement;
-}
 
 defineOptions({ name: 'AdminLayout' })
 const hasPermissionLoginAdmin = ref(false)
 
+// 定义 HTMLElementRef 类型 
+interface HTMLElementRef extends HTMLElement {
+    $el: HTMLElement;
+}
+
+// 添加 isLoading 变量
+const isLoading = ref(true)
+
 
 const updatePermissionLoginAdmin = async () => {
-    await hasPermission(PermissionNames.LoginAdmin).then((res) => {
-        hasPermissionLoginAdmin.value = res
-    })
+    isLoading.value = true
+    const userStore = useUserStore()
+    if (userStore.hasPermission(PermissionNames.LoginAdmin)) {
+        hasPermissionLoginAdmin.value = true
+        isLoading.value = false
+    }
 }
 
 console.log("hasPermissionLoginAdmin", hasPermissionLoginAdmin)
-const currentComponent = shallowRef(Dashboard) // 组件的响应式引用 使用 shallowRef 代替 ref，避免组件重复渲染
+const currentComponent = shallowRef(Dashborad) // 组件的响应式引用 使用 shallowRef 代替 ref，避免组件重复渲染
 const editorStore = useEditorStore()
 const { isFullScreen } = storeToRefs(editorStore)
 
@@ -99,6 +109,12 @@ function updateCurrentComponentByPath(path: string): void {
     //通过 筛选 adminMenuItemMapWithIndex 中对象的 index 与 传入 index 相等的对象，获取对应的 key 值
     const key = Object.keys(adminMenuItemMapWithIndex).filter((key) => adminMenuItemMapWithIndex[key as AadminSideMenu].index === path)[0]
     if (!key) return
+    const userStore = useUserStore()
+    const permission = adminMenuItemMapWithIndex[key as AadminSideMenu]?.permissionName
+    if (permission && !userStore.hasPermission(permission)) {
+        currentComponent.value = NoPermission
+        return
+    }
     currentComponent.value = components[key as keyof typeof components]
 }
 
@@ -115,12 +131,16 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+.loading {
+    height: 100vh;
+    width: 100vw;
+}
+
 .admin-layout {
     width: 100vw;
     height: 100vh;
 
     .container {
-
 
         .header {
             background-color: #409eff;
