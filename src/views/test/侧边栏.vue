@@ -1,4 +1,3 @@
-
 <template>
   <el-scrollbar>
     <el-menu :default-openeds="['2', '3']" :collapse="isCollapse" @select="handleSelect" @open="handleOpen"
@@ -26,7 +25,7 @@ const menuData: MenuItemMap = reactive({
     "index": "dashboard",
     "display": "仪表板sadfa撒旦法师打发水电费撒旦法撒旦法师打发的算法是打发三大发啥打法上",
     icon: {
-      name: IconKeys.Dashboard,
+      name: IconKeys.Dashborad,
       class: "icon-menu"
     }
   },
