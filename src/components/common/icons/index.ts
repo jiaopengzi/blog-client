@@ -11,7 +11,7 @@
 
 export { default } from './index.vue'
 
-import { kebabToPascalCase } from '@/utils/naming-conversion'
+import { kebabToPascalCase } from '@/utils/namingConversion'
 import iconFontJSON from '@/components/common/icons/assets/iconfont.json' // 导入 iconfont.json 数据
 
 // 图标字典

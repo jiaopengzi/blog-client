@@ -11,6 +11,7 @@
 import type { RouteRecordRaw } from 'vue-router'
 import { adminMenuItemMapWithIndex, AadminSideMenu } from '@/views/admin/component/aside'
 
+// 生成管理后台路由
 function generateAdminRoutes() {
   const routes: { [key: string]: RouteRecordRaw } = {
     admin: {
@@ -22,7 +23,7 @@ function generateAdminRoutes() {
       },
     },
   }
-  console.log('adminMenuItemMapWithIndex', adminMenuItemMapWithIndex)
+  // 生成管理后台路由
   Object.keys(adminMenuItemMapWithIndex).forEach((key) => {
     const menuItem = adminMenuItemMapWithIndex[key as AadminSideMenu]
     const route = {

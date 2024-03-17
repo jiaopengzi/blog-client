@@ -19,7 +19,7 @@ export interface GetPermissionsResponse {
   data: any
 }
 
-export function getPermissions(): AxiosPromise<GetPermissionsResponse> {
+export function getPermissionsByJson(): AxiosPromise<GetPermissionsResponse> {
   return request({
     url: routerGroup + '/permission/get-permissions',
     method: 'get',

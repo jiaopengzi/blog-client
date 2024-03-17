@@ -18,6 +18,7 @@ interface RouteObjectType {
   [key: string]: RouteRecordRaw
 }
 
+// 路由对象
 export const routeObj: RouteObjectType = {
   home: {
     path: '/',
@@ -53,7 +54,5 @@ export const routeObj: RouteObjectType = {
     },
   },
 }
-
-console.log('routeObj', routeObj)
 
 export const routes = Object.values(routeObj) as RouteRecordRaw[]

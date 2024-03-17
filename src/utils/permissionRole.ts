@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-07 14:24:11
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-15 19:50:38
+ * @LastEditTime : 2024-03-17 15:38:50
  * @FilePath     : \blog-client\src\utils\permissionRole.ts
  * @Description  : 权限工具类
  * @Blog         : https://jiaopengzi.com
@@ -11,10 +11,10 @@
 
 // 从 API 获取权限列表
 import type { Directive, DirectiveBinding } from 'vue'
-import { getPermissions } from '@/api/permissionRole/getPermissions'
+import { getPermissionsByJson } from '@/api/permissionRole/getPermissions'
 import { getRolesByJson } from '@/api/permissionRole/role'
 import { ResponseCode } from '@/api/responseCode'
-import { kebabToPascalCase } from '@/utils/naming-conversion'
+import { kebabToPascalCase } from '@/utils/namingConversion'
 import { hasPermissionByJosn } from '@/api/permissionRole/hasPermission'
 import { useUserStore } from '@/stores/user'
 
@@ -37,9 +37,21 @@ export enum PermissionNames {
  * @description: 获取角色列表
  * @return {Promise<any>}
  */
-export async function getRolesList() {
+export async function getRolesList(): Promise<any> {
   const res = await getRolesByJson()
   if (res.data.code === ResponseCode.GetRoleSuccess) {
+    return res.data.data
+  }
+  return []
+}
+
+/**
+ * @description: 获取权限列表
+ * @return {Promise<any>}
+ */
+export async function getPermissionList(): Promise<any> {
+  const res = await getPermissionsByJson()
+  if (res.data.code === ResponseCode.GetPermissionSuccess) {
     return res.data.data
   }
   return []
@@ -67,7 +79,7 @@ export const permissionDirective: Directive = {
 // 开发环境下检查权限枚举是否有遗漏
 export async function devPermissionNames() {
   let newPermissionNames = ''
-  const res = await getPermissions()
+  const res = await getPermissionsByJson()
   if (res.data.code === ResponseCode.GetPermissionSuccess) {
     const permissions = res.data.data
     for (let i = 0; i < permissions.length; i++) {
