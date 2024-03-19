@@ -41,7 +41,6 @@ import { IconKeys } from '@/components/common/icons'
 import { uploadFile } from '@/api/upload/file'
 import { getAllowedUploadFileInfo } from '@/api/upload/getAllowedFileInfo'
 import { ShowMsgTip } from '@/utils/message'
-import { MsgType } from '@/components/common'
 import { UploadCode } from '@/api/responseCode'
 import type { UploadRequestOptions, ElUpload } from 'element-plus'
 
@@ -168,18 +167,18 @@ const httpRequest = (options: UploadRequestOptions) => {
     })
         .then((response) => {
             if (response.data.code === UploadCode.Success) {
-                ShowMsgTip(MsgType.success, response.data.msg, 2000)
+                ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
                 options.onSuccess(UploadCode.Success)
                 return
             } else {
-                ShowMsgTip(MsgType.error, response.data.msg + response.data.data, 2000)
+                ShowMsgTip(ShowMsgTip.MsgType.error, response.data.msg + response.data.data, 2000)
                 const error: any = new Error(response.data.msg)
                 options.onError(error)
                 return
             }
         })
         .catch(() => {
-            ShowMsgTip(MsgType.error, '上传失败，请重试')
+            ShowMsgTip(ShowMsgTip.MsgType.error, '上传失败，请重试')
             const error: any = new Error('上传失败，请重试')
             options.onError(error)
         })
@@ -187,7 +186,7 @@ const httpRequest = (options: UploadRequestOptions) => {
 
 
 // const onRemove = (file: UploadUserFile, fileList: UploadUserFile[]) => {
-//     ShowMsgTip(MsgType.warning, `请关闭当前上传页面，在明细页面删除：${file.name}`, 2000)
+//     ShowMsgTip(ShowMsgTip.MsgType.warning, `请关闭当前上传页面，在明细页面删除：${file.name}`, 2000)
 // }
 
 const updateCurrentPage = (val: number) => {

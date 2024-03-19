@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:33:58
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-15 15:07:23
+ * @LastEditTime : 2024-03-19 10:42:15
  * @FilePath     : \blog-client\src\views\admin\component\aside\index.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -280,7 +280,8 @@ export function generateAdminMenuItemMapWithIndex(
   function createIndex(itemKey: AadminSideMenu, parentIndex?: string) {
     const currentItem = menuItemMap[itemKey] // 当前菜单项
     const kebabItemKey = toKebabCase(itemKey) // 菜单项转换为小写短横线连接形式
-    const newIndex = `${parentIndex ? parentIndex : parentPath}/${kebabItemKey}` // 新索引值
+    // const newIndex = `${parentIndex ? parentIndex : parentPath}/${kebabItemKey}` // 包含上级菜单项索引的当前菜单项索引
+    const newIndex = `${parentPath}/${kebabItemKey}` // 不包含上级菜单项索引的当前菜单项索引
     const newParentIndex = parentIndex || parentPath // 父菜单项索引
 
     // 将新增的 / 更新的属性添加到当前结果对象中 保证点击菜单项时路由跳转正确 不会重复叠加路由

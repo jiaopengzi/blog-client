@@ -68,7 +68,6 @@
 import { reactive, ref } from 'vue'
 import SlideVerify from '@/components/common/slide-verify'
 import { ShowMsgTip } from '@/utils/message'
-import { MsgType } from '@/components/common'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import type { CheckEmailRequest } from '@/api/user/checkEmail'
 import { CheckEmailByJosn } from '@/api/user/checkEmail'
@@ -304,7 +303,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
       if (data.code === ResponseCode.UserResetPasswordSuccess) {
         // 显示注册成功提示
-        ShowMsgTip(MsgType.success, data.msg, 6000)
+        ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
 
         // 跳转到登录页面
         setTimeout(() => {
@@ -313,7 +312,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
       } else {
         // 注册失败
         // console.log("注册失败");
-        ShowMsgTip(MsgType.error, data.msg, 0)
+        ShowMsgTip(ShowMsgTip.MsgType.error, data.msg, 0)
       }
       console.log('submit!')
     }
@@ -341,7 +340,7 @@ const sendcaptcha = async () => {
 
   const emailResult = await fogetPasswordFormRef.value?.validateField('email').catch(() => false)
   if (!emailResult) {
-    ShowMsgTip(MsgType.error, '请输入正确的邮箱地址。', 0)
+    ShowMsgTip(ShowMsgTip.MsgType.error, '请输入正确的邮箱地址。', 0)
     console.log('请输入邮箱')
     return
   }
@@ -353,11 +352,11 @@ const sendcaptcha = async () => {
     checkSendCaptcha()
       .then(() => {
         // 成功发送验证码
-        ShowMsgTip(MsgType.success, '验证码已发送到邮箱。', 6000)
+        ShowMsgTip(ShowMsgTip.MsgType.success, '验证码已发送到邮箱。', 6000)
       })
       .catch((err: Error) => {
         // 错误提示
-        ShowMsgTip(MsgType.error, err.message, 0)
+        ShowMsgTip(ShowMsgTip.MsgType.error, err.message, 0)
       })
 
     // 按钮设置不能点击状态

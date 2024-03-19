@@ -67,6 +67,7 @@ export enum ResponseCode {
   GetPermissionSuccess = 8300, //获取权限列表成功
   HasPermission = 8305, //判断是否有权限成功
   GetRoleSuccess = 8400, //获取角色列表成功
+  UpdateRoleSuccess = 8403, //更新角色成功
 }
 
 // 验证码用途

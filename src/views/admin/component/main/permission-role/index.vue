@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-15 15:09:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-17 18:01:54
+ * @LastEditTime : 2024-03-19 21:57:25
  * @FilePath     : \blog-client\src\views\admin\component\main\permission-role\index.vue
  * @Description  : 权限角色页面
  * @Blog         : https://jiaopengzi.com
@@ -11,12 +11,10 @@
 <template>
     <div class="container">
         <div class="btns">
-            <el-button type="primary" @click="updatePermission">
+            <el-button v-permission="PermissionNames.PermissionRole" type="primary" @click="updatePermission">
                 更新权限
             </el-button>
         </div>
-
-
         <el-table :data="permissionsData" class="permission-table">
             <!-- 交叉表第一列 权限名称 -->
             <el-table-column prop="permissionDescription" label="权限" width="180"></el-table-column>
@@ -46,9 +44,14 @@ import { ref, onBeforeMount, type Ref } from 'vue'
 import { getRolesList, getPermissionList, PermissionNames } from '@/utils/permissionRole'
 import type { Permission, Role, PermissionRow } from '@/views/admin/component/main/permission-role'
 import { AadminSideMenu } from '@/views/admin/component/aside'
+import { updateRolesByJosn, type UpdateRolesRequest, type UpdateRoleRequest } from '@/api/permissionRole/updateRoles'
+import { ResponseCode } from '@/api/responseCode'
+import { ShowMsgTip } from '@/utils/message'
+import { useUserStore } from '@/stores/user'
 
 
 defineOptions({ name: AadminSideMenu.PermissionRole })
+
 
 // 定义权限列表 包含权限名和权限描述
 const permissionsList: Ref<Permission[]> = ref([])
@@ -85,7 +88,7 @@ const initPermissionTable = async () => {
 
     // 初始化权限数据
     for (const permission in PermissionNames) {
-        const rowData: PermissionRow = { permissionDescription: getPermissionDescription(permission as PermissionNames) } as PermissionRow // 初始化每行权限数据
+        const rowData: PermissionRow = { permissionName: permission as PermissionNames, permissionDescription: getPermissionDescription(permission as PermissionNames) } as PermissionRow // 初始化每行权限数据
         rolesList.value.forEach((role: Role) => {
             // 根据角色的权限名数组判断是否拥有该权限
             rowData[role.role_name] = role.permission_names.includes(permission as PermissionNames)
@@ -103,19 +106,42 @@ function selectAll(roleName: string) {
             row[roleName] = role.allSelected ?? false
         })
     }
-    console.log('permissionsData:', permissionsData.value)
 }
 
 // 更新权限
 const updatePermission = () => {
-    console.log('更新权限')
+    // 用 permissionsData 拼接 UpdateRolesRequest 请求参数
+    const updateRolesRequest: UpdateRolesRequest = {
+        roles: rolesList.value.map((role: Role) => {
+            const updateRoleRequest: UpdateRoleRequest = {
+                role_name: role.role_name,
+                permission_names: permissionsData.value.filter((row: PermissionRow) => row[role.role_name]).map((row: PermissionRow) => row.permissionName as PermissionNames)
+            }
+            return updateRoleRequest
+        })
+    }
+
+    // 更新角色权限api
+    updateRolesByJosn(updateRolesRequest).then((res) => {
+        res.data.code === ResponseCode.UpdateRoleSuccess
+        // 更新用户信息
+        const userStore = useUserStore()
+        userStore.getUserInfoByToken()
+        ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 2000)
+        // 强制刷新页面 两秒后刷新
+        setTimeout(() => {
+            location.reload()
+        }, 2000)
+
+    }).catch((err) => {
+        ShowMsgTip(ShowMsgTip.MsgType.error, err, 2000)
+    })
 }
 
 // 组件挂载后获取权限列表和初始化权限表格
 onBeforeMount(async () => {
     await getPermissions()
     await initPermissionTable()
-    console.log('PermissionNames:', permissionsData.value)
 })
 
 </script>

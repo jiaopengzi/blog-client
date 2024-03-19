@@ -2,9 +2,9 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:33:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-14 16:41:10
+ * @LastEditTime : 2024-03-19 10:20:09
  * @FilePath     : \blog-client\src\views\admin\component\aside\index.vue
- * @Description  : 左边菜单栏
+ * @Description  : 左边菜单栏 
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
@@ -13,7 +13,7 @@
     <el-scrollbar>
         <SwitchGroup :switch-item="isCollapseItem" @update-status="updateStatus" />
         <el-menu :default-openeds="['post']" :collapse="isCollapse" @select="handleSelect" @open="handleOpen"
-            @close="handleClose" class="el-menu-vertical" :router="true">
+            @close="handleClose" class="el-menu-vertical" :default-active="props.defaultActive" :router="true">
             <recursive-menu-item v-for="(item, key) in topLevelMenuItems" :key="key" :menu-item-map="menuItemMap"
                 :menu-item="item" />
         </el-menu>
@@ -28,9 +28,15 @@ import type { SwitchItem, SwitchItemLabel, SwitchItemColor } from '@/components/
 import RecursiveMenuItem from '@/components/common/recursive-menu-item' // 引入递归菜单组件
 import { adminMenuItemMapWithIndex } from '@/views/admin/component/aside'
 
-
+// 定义组件名称
 defineOptions({ name: 'AdminAside' })
 
+// 定义组件 props
+const props = defineProps<{
+    defaultActive: string | undefined // 默认选中的菜单项
+}>()
+
+// 定义组件事件
 const emit = defineEmits<{
     (event: 'select', index: string, keyPath: string[]): void
 }>()
@@ -76,7 +82,6 @@ const topLevelMenuItems = computed(() => Object.values(menuItemMap).filter((item
 // 处理菜单项选中事件
 const handleSelect = (index: string, keyPath: string[]) => {
     emit('select', index, keyPath)
-    // console.log(index, keyPath)
 }
 
 // 处理菜单项展开事件

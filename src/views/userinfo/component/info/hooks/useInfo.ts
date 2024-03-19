@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 10:17:33
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-07 22:46:55
+ * @LastEditTime : 2024-03-19 21:43:40
  * @FilePath     : \blog-client\src\views\userinfo\component\info\hooks\useInfo.ts
  * @Description  : 用户信息页面 hooks
  * @Blog         : https://jiaopengzi.com
@@ -22,7 +22,6 @@ import { ResponseCode } from '@/api/responseCode'
 import type { editUserInfoRequest } from '@/api/user/editUserInfo'
 import { editUserInfoByJosn } from '@/api/user/editUserInfo'
 import { ShowMsgTip } from '@/utils/message'
-import { MsgType } from '@/components/common'
 import type { EditForm } from '@/views/userinfo/component/info'
 import { convertToBeijingTime } from '@/utils/utcToBeijingTime'
 
@@ -175,11 +174,11 @@ export function useInfo(): UseInfoReturnType {
           await userStore.getUserInfoByToken(true)
           changeUserNameDisabled()
           // 显示成功提示
-          ShowMsgTip(MsgType.success, data.msg, 6000)
+          ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
         } else {
           // 注册失败
           // console.log("注册失败");
-          ShowMsgTip(MsgType.error, data.msg, 0)
+          ShowMsgTip(ShowMsgTip.MsgType.error, data.msg, 0)
         }
       }
     })

@@ -14,7 +14,6 @@ import { defineStore, acceptHMRUpdate } from 'pinia'
 import { ResponseCode, LocalStorageKey } from '@/api/responseCode'
 import type { AxiosResponse } from 'axios'
 import { ShowMsgTip } from '@/utils/message'
-import { MsgType } from '@/components/common'
 import type { LoginRequest, LoginResponse } from '@/api/user/login'
 
 import {
@@ -358,7 +357,7 @@ async function handleLoginResult(
   console.log(resObj.code)
   if (resObj.code === successCode) {
     // 显示登录成功提示
-    ShowMsgTip(MsgType.success, resObj.msg, 3000)
+    ShowMsgTip(ShowMsgTip.MsgType.success, resObj.msg, 3000)
 
     // 登录成功 存入token
     localStorage.setItem(LocalStorageKey.AccessToken, resObj.data.access_token)
@@ -368,7 +367,7 @@ async function handleLoginResult(
 
   // 显示登录失败提示
   localStorage.removeItem(LocalStorageKey.AccessToken)
-  ShowMsgTip(MsgType.error, resObj.msg, 3000)
+  ShowMsgTip(ShowMsgTip.MsgType.error, resObj.msg, 3000)
   return createEmptyUserInfoStore() // 获取用户信息
 }
 
@@ -382,12 +381,12 @@ async function handleBindResult(
   console.log(resObj.code)
   if (resObj.code === successCode) {
     // 显示登录成功提示
-    ShowMsgTip(MsgType.success, resObj.msg, 3000)
+    ShowMsgTip(ShowMsgTip.MsgType.success, resObj.msg, 3000)
     return await apiGetUserInfoByToken() // 获取用户信息
   }
 
   // 显示登录失败提示
-  ShowMsgTip(MsgType.error, resObj.msg, 3000)
+  ShowMsgTip(ShowMsgTip.MsgType.error, resObj.msg, 3000)
   localStorage.removeItem(LocalStorageKey.AccessToken)
   return createEmptyUserInfoStore() // 获取用户信息
 }

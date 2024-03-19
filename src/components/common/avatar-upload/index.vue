@@ -26,7 +26,7 @@
         </el-dialog>
     </div>
 </template>
-  
+
 <script lang="ts" setup>
 import { ref, onUnmounted } from 'vue'
 import Cropper from 'cropperjs'
@@ -35,7 +35,6 @@ import { ElButton, ElDialog } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import { uploadAvatar } from '@/api/upload/avatar'
 import { ShowMsgTip } from '@/utils/message'
-import { MsgType } from '@/components/common'
 import { UploadCode } from '@/api/responseCode'
 
 defineOptions({ name: 'AvatarUpload' })
@@ -59,7 +58,7 @@ function onFileChange(e: Event) {
     // 检查文件大小
     const maxFileSize = 10 * 1024 * 1024 // 10MB
     if (file.size > maxFileSize) {
-        ShowMsgTip(MsgType.warning, '请选择小于 10MB 的图片')
+        ShowMsgTip(ShowMsgTip.MsgType.warning, '请选择小于 10MB 的图片')
         return
     }
 
@@ -97,7 +96,7 @@ function uploadImage() {
     if (cropperInstance) {
         cropperInstance.getCroppedCanvas().toBlob((blob: Blob | null) => {
             if (!blob) {
-                ShowMsgTip(MsgType.error, '无法获取裁剪后的图像')
+                ShowMsgTip(ShowMsgTip.MsgType.error, '无法获取裁剪后的图像')
                 return
             }
 
@@ -110,19 +109,19 @@ function uploadImage() {
                         cropperVisible.value = false
                         // 处理返回数据，并更新头像等信息
                         userStore.getUserInfoByToken(true) // 强制更新用户信息
-                        ShowMsgTip(MsgType.success, response.data.msg, 2000)
+                        ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
                         return
                     } else {
-                        ShowMsgTip(MsgType.error, response.data.msg + '：' + response.data.data)
+                        ShowMsgTip(ShowMsgTip.MsgType.error, response.data.msg + '：' + response.data.data)
                         return
                     }
                 })
                 .catch(() => {
-                    ShowMsgTip(MsgType.error, '上传失败，请重试')
+                    ShowMsgTip(ShowMsgTip.MsgType.error, '上传失败，请重试')
                 })
         })
     } else {
-        ShowMsgTip(MsgType.warning, '请先选择并裁剪图片')
+        ShowMsgTip(ShowMsgTip.MsgType.warning, '请先选择并裁剪图片')
     }
 }
 
@@ -141,7 +140,7 @@ defineExpose({
 })
 
 </script>
-  
+
 <style scoped lang="scss">
 .avatar-upload {
     display: flex;
@@ -179,5 +178,3 @@ img {
     margin: 10px 0;
 }
 </style>
-
-  

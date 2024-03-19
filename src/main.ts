@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-15 14:53:45
+ * @LastEditTime : 2024-03-19 13:51:36
  * @FilePath     : \blog-client\src\main.ts
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -25,6 +25,7 @@ import { devRun } from '@/dev'
 const app = createApp(App)
 
 app.directive('permission', permissionDirective) // 注册全局权限指令
+
 app.use(createPinia()) //在APP创建之后，使用Pinia
 app.use(router)
 

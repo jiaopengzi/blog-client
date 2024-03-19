@@ -5,7 +5,8 @@
 <template>
     <BaseTable :data="filterTableData" :pagination="pagination" :table-column="cols"
         @update-current-page="updateCurrentPage" @update-page-sizes="updatePageSizes" @edit-row="editRow"
-        @delete-row="deleteRow" @delete-rows="deleteRows" @update-search="updateSearch" @update-selection="updateSelection">
+        @delete-row="deleteRow" @delete-rows="deleteRows" @update-search="updateSearch"
+        @update-selection="updateSelection">
 
         <template #header>
             <span>新增媒体文件</span>
@@ -27,7 +28,7 @@
         </template>
     </BaseTable>
 </template>
-  
+
 <script lang="ts" setup>
 // :http-request="httpRequest" multiple
 import { ref, computed, reactive } from 'vue'
@@ -40,7 +41,6 @@ import { IconKeys } from '@/components/common/icons'
 import { uploadFile } from '@/api/upload/file'
 import { ShowMsgTip } from '@/utils/message'
 import { isArray } from '@/utils/typeOf'
-import { MsgType } from '@/components/common'
 import { UploadCode } from '@/api/responseCode'
 import type { UploadProps, UploadUserFile, UploadRequestOptions, UploadProgressEvent } from 'element-plus'
 
@@ -143,16 +143,16 @@ const httpRequest = (options: UploadRequestOptions) => {
     })
         .then((response) => {
             if (response.data.code === UploadCode.Success) {
-                ShowMsgTip(MsgType.success, response.data.msg, 2000)
+                ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
                 options.onSuccess(UploadCode.Success)
                 return
             } else {
-                ShowMsgTip(MsgType.error, response.data.msg + '：' + response.data.data)
+                ShowMsgTip(ShowMsgTip.MsgType.error, response.data.msg + '：' + response.data.data)
                 return
             }
         })
         .catch(() => {
-            ShowMsgTip(MsgType.error, '上传失败，请重试')
+            ShowMsgTip(ShowMsgTip.MsgType.error, '上传失败，请重试')
         })
 }
 
@@ -255,7 +255,3 @@ const filterTableData = computed(() =>
     }
 }
 </style>
-  
-  
-  
-  

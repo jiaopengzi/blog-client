@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-04 18:07:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-15 11:50:39
+ * @LastEditTime : 2024-03-19 21:41:01
  * @FilePath     : \blog-client\src\router\index.ts
  * @Description  : 路由配置
  * @blog         : https://jiaopengzi.com
@@ -11,7 +11,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { routeObj, routes } from '@/router/routeAll'
 import { ShowMsgTip } from '@/utils/message'
-import { MsgType } from '@/components/common'
 import { useUserStore } from '@/stores/user'
 
 // 创建路由实例
@@ -31,7 +30,7 @@ router.beforeEach(async (to, from, next) => {
   // 如果已经登录，未绑定邮箱，且访问的页面不是用户信息页面，则跳转到用户信息页面
   else if (userStore.isLogin && !userStore.isBindEmail && to.path !== routeObj.userInfo.path) {
     await userStore.changeShowDialogBindEmail(true)
-    ShowMsgTip(MsgType.warning, '请绑定邮箱！', 3000)
+    ShowMsgTip(ShowMsgTip.MsgType.warning, '请绑定邮箱！', 3000)
     next(routeObj.userInfo.path)
   }
   // 如果已经登录，且访问的页面是登录页，则跳转到首页

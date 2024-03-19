@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-15 17:53:50
+ * @LastEditTime : 2024-03-19 10:17:31
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -19,7 +19,8 @@
             </el-header>
             <el-container ref="containerRef" class="content">
 
-                <AdminAside class="aside" v-show="!isFullScreen" @select="handleSelect" />
+                <AdminAside :defaultActive="defaultActive" class="aside" v-show="!isFullScreen"
+                    @select="handleSelect" />
 
                 <el-main class="main">
                     <component :is="currentComponent" />
@@ -31,6 +32,7 @@
     <div v-else>
         <Page404 />
     </div>
+
 </template>
 <script lang="ts" setup>
 import { ref, watch, onMounted, shallowRef, onBeforeMount } from 'vue'
@@ -58,6 +60,9 @@ interface HTMLElementRef extends HTMLElement {
 
 // 添加 isLoading 变量
 const isLoading = ref(true)
+
+// 添加默认激活的菜单项
+const defaultActive = ref("")
 
 // 更新 PermissionLoginAdmin 
 const updatePermissionLoginAdmin = () => {
@@ -99,6 +104,8 @@ const updateCurrentComponent = () => {
 }
 
 
+
+
 const handleSelect = (index: string) => {
     updateCurrentComponentByPath(index)
     console.log("1", index)
@@ -109,6 +116,7 @@ function updateCurrentComponentByPath(path: string): void {
     //通过 筛选 adminMenuItemMapWithIndex 中对象的 index 与 传入 index 相等的对象，获取对应的 key 值
     const key = Object.keys(adminMenuItemMapWithIndex).filter((key) => adminMenuItemMapWithIndex[key as AadminSideMenu].index === path)[0]
     if (!key) return
+    defaultActive.value = path
     const userStore = useUserStore()
     const permission = adminMenuItemMapWithIndex[key as AadminSideMenu]?.permissionName
     if (permission && !userStore.hasPermission(permission)) {
