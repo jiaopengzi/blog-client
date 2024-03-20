@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-02-24 16:38:05
+ * @LastEditTime : 2024-03-20 16:11:00
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格
  * @Blog         : https://jiaopengzi.com
@@ -12,10 +12,8 @@
 <template>
     <div class="container">
         <div class="btns">
-            <el-button type="primary" @click="dialogVisible = true">
-                新增
-            </el-button>
-            <el-button type="danger" @click="handleBatchDelete">
+            <slot name="btns"></slot>
+            <el-button v-if="props.isShowDeleteAll" type="danger" @click="handleBatchDelete">
                 批量删除
             </el-button>
         </div>
@@ -55,28 +53,36 @@
                 :page-sizes="pageSizes" @current-change="handleCurrentChange" @size-change="handleSizeChange" />
         </div>
     </div>
-    <el-dialog v-model="dialogVisible">
+
+    <!-- 弹窗 -->
+    <el-dialog v-model="dialogVisibleStatus">
         <template #header>
             <slot name="add-item-title"></slot>
         </template>
-        <slot name="add-item" :dialogVisible="dialogVisible"></slot>
+        <slot name="add-item"></slot>
     </el-dialog>
 </template>
-  
+
 <script lang="ts" setup>
 import { ref, watchEffect } from 'vue'
 import type { ElTable } from 'element-plus'
 import type { Pagination } from '@/components/common'
-import { MsgTitle, MsgType } from '@/components/common'
+import { MsgType } from '@/components/common'
 import type { TableData, TableColumn } from '@/components/common/base-table'
+import { handleConfirmCommon } from '@/utils/confirm'
 
 defineOptions({ name: 'BaseTable' })
 
-const props = defineProps<{
-    data: TableData[]
-    pagination: Pagination
-    tableColumn: TableColumn[]
-}>()
+const props = withDefaults(defineProps<{
+    data: TableData[] // 表格数据
+    pagination: Pagination // 分页配置
+    tableColumn: TableColumn[] // 表格列配置
+    dialogVisible: boolean // 对话框是否显示
+    isShowDeleteAll: boolean // 是否显示批量删除按钮
+}>(), {
+    dialogVisible: false, // 默认对话框不显示
+    isShowDeleteAll: false // 默认不显示批量删除按钮
+})
 
 const emit = defineEmits<{
     (event: 'update-current-page', value: number): void
@@ -97,7 +103,11 @@ const pageSize = ref(props.pagination.pageSize) // 每页条数
 const totalPages = ref(props.pagination.totalPages) // 总页数
 const pageSizes = ref(props.pagination.pageSizes) // 每页条数
 
-const dialogVisible = ref(false)
+const dialogVisibleStatus = ref(false) // 对话框状态
+// 监听 props.dialogVisible 的变化
+watchEffect(() => {
+    dialogVisibleStatus.value = props.dialogVisible
+})
 
 // 处理分页变化
 const handleCurrentChange = (val: number) => {
@@ -114,61 +124,20 @@ const handleEdit = (index: number, row: TableData) => {
     emit('edit-row', index, row)
 }
 
-// 处理删除
+// 处理单个删除
 const handleDelete = (index: number, row: TableData) => {
-    ElMessageBox.confirm(
-        '是否需要删除?',
-        MsgTitle[MsgType.warning],
-        {
-            confirmButtonText: '确认',
-            cancelButtonText: '取消',
-            type: MsgType.warning,
-        }
-    )
-        .then(() => {
-            emit('delete-row', index, row)
-            ElMessage({
-                type: MsgType.success,
-                message: '删除完成',
-            })
-
-        })
-        .catch(() => {
-            ElMessage({
-                type: MsgType.info,
-                message: '取消删除',
-            })
-        })
+    handleConfirmCommon(() => {
+        emit('delete-row', index, row)
+    })
 }
-
 
 // 处理批量删除
 const handleBatchDelete = () => {
     const selection = tableRef.value?.getSelectionRows()
     if (selection?.length) {
-        ElMessageBox.confirm(
-            '是否需要删除?',
-            MsgTitle[MsgType.warning],
-            {
-                confirmButtonText: '确认',
-                cancelButtonText: '取消',
-                type: MsgType.warning,
-            }
-        )
-            .then(() => {
-
-                emit('delete-rows', selection)
-                ElMessage({
-                    type: MsgType.success,
-                    message: '删除完成',
-                })
-            })
-            .catch(() => {
-                ElMessage({
-                    type: MsgType.info,
-                    message: '取消删除',
-                })
-            })
+        handleConfirmCommon(() => {
+            emit('delete-rows', selection)
+        })
     } else {
         ElMessage({
             type: MsgType.info,
@@ -176,6 +145,7 @@ const handleBatchDelete = () => {
         })
     }
 }
+
 // 监听搜索关键字变化
 watchEffect(() => {
     emit('update-search', search.value)
@@ -184,7 +154,7 @@ watchEffect(() => {
 
 // 监听对话框状态变化
 watchEffect(() => {
-    emit('update-dialog-visible', dialogVisible.value)
+    emit('update-dialog-visible', dialogVisibleStatus.value)
 })
 
 // 处理选择变化
@@ -203,7 +173,7 @@ function imgStyle(tableData: TableData): Record<string, string> {
 }
 
 </script>
-  
+
 <style scoped lang="scss">
 .container {
     margin: 10px;
@@ -223,5 +193,3 @@ function imgStyle(tableData: TableData): Record<string, string> {
     }
 }
 </style>
-  
-  

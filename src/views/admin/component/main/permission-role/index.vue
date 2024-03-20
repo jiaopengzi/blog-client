@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-15 15:09:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-19 21:57:25
+ * @LastEditTime : 2024-03-20 11:10:21
  * @FilePath     : \blog-client\src\views\admin\component\main\permission-role\index.vue
  * @Description  : 权限角色页面
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,7 @@
 <template>
     <div class="container">
         <div class="btns">
-            <el-button v-permission="PermissionNames.PermissionRole" type="primary" @click="updatePermission">
+            <el-button v-permission="PermissionNames.PermissionRole" type="primary" @click="debouncedUpdatePermission">
                 更新权限
             </el-button>
         </div>
@@ -48,6 +48,7 @@ import { updateRolesByJosn, type UpdateRolesRequest, type UpdateRoleRequest } fr
 import { ResponseCode } from '@/api/responseCode'
 import { ShowMsgTip } from '@/utils/message'
 import { useUserStore } from '@/stores/user'
+import { debounce } from "@/utils/debounce"
 
 
 defineOptions({ name: AadminSideMenu.PermissionRole })
@@ -123,20 +124,27 @@ const updatePermission = () => {
 
     // 更新角色权限api
     updateRolesByJosn(updateRolesRequest).then((res) => {
-        res.data.code === ResponseCode.UpdateRoleSuccess
-        // 更新用户信息
-        const userStore = useUserStore()
-        userStore.getUserInfoByToken()
-        ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 2000)
-        // 强制刷新页面 两秒后刷新
-        setTimeout(() => {
-            location.reload()
-        }, 2000)
+
+        if (res.data.code === ResponseCode.UpdateRoleSuccess) {
+            // 更新用户信息
+            const userStore = useUserStore()
+            userStore.getUserInfoByToken()
+            ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 2000)
+            // 强制刷新页面 两秒后刷新
+            // setTimeout(() => {
+            //     location.reload()
+            // }, 2000)
+        } else {
+            ShowMsgTip(ShowMsgTip.MsgType.warning, res.data.msg, 2000)
+        }
 
     }).catch((err) => {
         ShowMsgTip(ShowMsgTip.MsgType.error, err, 2000)
     })
 }
+
+// 防抖更新权限 1秒内多次点击只执行一次
+const debouncedUpdatePermission = debounce(updatePermission, 1000)
 
 // 组件挂载后获取权限列表和初始化权限表格
 onBeforeMount(async () => {

@@ -119,6 +119,7 @@ export function getIconMap(iconFontJSON: any): IconMap {
 // 通过 iconMap 对象 得到 对应的 key 作为 icon 类型约束
 export const iconMap: IconMap = getIconMap(iconFontJSON)
 
+// 枚举值使用小横线命名法 例如: 'wechat-official-account'
 export enum IconKeys {
   Announcement = 'announcement',
   Archive = 'archive',
@@ -202,7 +203,7 @@ export enum IconKeys {
   Subscript = 'subscript',
   Superscript = 'superscript',
   Table = 'table',
-  TaskList = 'taskList',
+  TaskList = 'task-list',
   Test = 'test',
   Toc = 'toc',
   Tool = 'tool',

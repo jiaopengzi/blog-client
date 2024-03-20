@@ -3,11 +3,16 @@
 -->
 
 <template>
-    <BaseTable :data="filterTableData" :pagination="pagination" :table-column="cols"
-        @update-current-page="updateCurrentPage" @update-page-sizes="updatePageSizes" @edit-row="editRow"
-        @delete-row="deleteRow" @delete-rows="deleteRows" @update-search="updateSearch"
+    <BaseTable :data="filterTableData" :pagination="pagination" :table-column="cols" :dialog-visible="dialogVisible"
+        :is-show-delete-all="true" @update-current-page="updateCurrentPage" @update-page-sizes="updatePageSizes"
+        @edit-row="editRow" @delete-row="deleteRow" @delete-rows="deleteRows" @update-search="updateSearch"
         @update-selection="updateSelection" @update-dialog-visible="updateDialogVisible">
 
+        <template #btns>
+            <el-button type="primary" @click="handleAdd">
+                新增
+            </el-button>
+        </template>
         <template #add-item-title>
             <span class="dialog-title">新增媒体文件</span>
         </template>
@@ -185,6 +190,12 @@ const httpRequest = (options: UploadRequestOptions) => {
 }
 
 
+const dialogVisible = ref(false)
+
+const handleAdd = () => {
+    dialogVisible.value = !dialogVisible.value
+}
+
 // const onRemove = (file: UploadUserFile, fileList: UploadUserFile[]) => {
 //     ShowMsgTip(ShowMsgTip.MsgType.warning, `请关闭当前上传页面，在明细页面删除：${file.name}`, 2000)
 // }
@@ -223,6 +234,7 @@ const updateSelection = (rows: TableData[]) => {
 // 关闭上传对话框时清空上传文件列表
 const updateDialogVisible = (val: boolean) => {
     if (!val) {
+        dialogVisible.value = val
         uploadRef.value?.clearFiles()
     }
 }
