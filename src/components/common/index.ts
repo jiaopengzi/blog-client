@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:38:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-20 16:59:15
+ * @LastEditTime : 2024-03-21 16:31:46
  * @FilePath     : \blog-client\src\components\common\index.ts
  * @Description  : 公用信息
  * @Blog         : https://jiaopengzi.com
@@ -11,27 +11,29 @@
 
 // 图片填充方式
 export enum ImgFit {
-  cover = 'cover',
-  contain = 'contain',
-  fill = 'fill',
-  none = 'none',
-  'scale-down' = 'scale-down',
+  cover = 'cover', // 默认值
+  contain = 'contain', // 保持宽高比缩放图片，使图片的长边能完全显示出来
+  fill = 'fill', // 拉伸图片，使图片填满元素
+  none = 'none', // 保持原图尺寸
+  'scale-down' = 'scale-down', // 保持原图尺寸，但是不超过元素的尺寸
 }
 
 // 分页
-export interface Pagination {
-  total_pages: number // 总页数
+export interface Pagination<T> {
+  total: number // 总记录数量
   current_page: number // 当前页
   page_size: number // 每页显示条数
+  page_count: number // 总页数
   page_sizes: number[] // 每页显示个数选择器的选项设置
+  records: T[] // 数据
 }
 
 // 表格图片配置
 export interface TableImg {
   url: string // 图片地址
-  width?: number // 图片宽度
-  height?: number // 图片高度
-  'object-fit'?: ImgFit // 图片填充方式 cover | contain | fill | none | scale-down
+  width?: number // 图片宽度 px
+  height?: number // 图片高度 px
+  imgFit?: ImgFit // 图片填充方式 cover | contain | fill | none | scale-down
 }
 
 // 具有 img 属性的数据类型

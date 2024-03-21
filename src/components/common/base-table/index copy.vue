@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-21 17:45:17
+ * @LastEditTime : 2024-03-21 17:20:00
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格
  * @Blog         : https://jiaopengzi.com
@@ -52,9 +52,8 @@
             <el-pagination v-model:current-page="paginationData.current_page"
                 v-model:page-size="paginationData.page_size" :page-sizes="paginationData.page_sizes"
                 :page-count="paginationData.page_count" :total="paginationData.total" :background="true"
-                layout="total, prev, pager, next, jumper, sizes"
-                @update:current-page="(val: number) => emit('update-current-page', val)"
-                @update:page-size="(val: number) => emit('update-page-size', val)" />
+                layout="total, prev, pager, next, jumper, sizes" @size-change="handleSizeChange"
+                @current-change="handleCurrentChange" />
         </div>
     </div>
 
@@ -88,14 +87,15 @@ const props = withDefaults(defineProps<{
 })
 
 const emit = defineEmits<{
-    (event: 'update-current-page', value: number): void // 更新当前页
-    (event: 'update-page-size', value: number): void // 更新每页显示条数
-    (event: 'edit-row', index: number, row: TableData): void // 编辑行
-    (event: 'delete-row', index: number, row: TableData): void // 删除行
-    (event: 'delete-rows', rows: TableData[]): void // 删除多行
-    (event: 'update-search', value: string): void // 更新搜索关键字
-    (event: 'update-selection', rows: TableData[]): void // 更新选择
-    (event: 'update-dialog-visible', value: boolean): void // 更新对话框状态
+    (event: 'update-current-page', value: number): void
+    (event: 'update-page-sizes', value: number): void
+    (event: 'edit-row', index: number, row: TableData): void
+    (event: 'delete-row', index: number, row: TableData): void
+    (event: 'delete-rows', rows: TableData[]): void
+    (event: 'update-search', value: string): void
+    (event: 'update-selection', rows: TableData[]): void
+    (event: 'update-dialog-visible', value: boolean): void
+
 }>()
 
 const tableRef = ref<InstanceType<typeof ElTable>>() //表格实例 
@@ -119,6 +119,16 @@ watchEffect(() => {
     emit('update-search', search.value)
 })
 
+
+// 处理分页变化
+const handleCurrentChange = (val: number) => {
+    emit('update-current-page', val)
+}
+
+// 处理每页条数变化
+const handleSizeChange = (val: number) => {
+    emit('update-page-sizes', val)
+}
 
 // 处理编辑
 const handleEdit = (index: number, row: TableData) => {

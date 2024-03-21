@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-07 14:24:11
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-17 15:38:50
+ * @LastEditTime : 2024-03-21 12:05:39
  * @FilePath     : \blog-client\src\utils\permissionRole.ts
  * @Description  : 权限工具类
  * @Blog         : https://jiaopengzi.com
@@ -31,6 +31,7 @@ export enum PermissionNames {
   LoginAdmin = 'LoginAdmin',
   Backup = 'Backup',
   PermissionRole = 'PermissionRole',
+  UserAll = 'UserAll',
 }
 
 /**

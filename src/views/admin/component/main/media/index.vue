@@ -109,11 +109,46 @@ const cols: TableColumn[] = reactive([
 
 ])
 
-const pagination: Pagination = reactive({
-    totalPages: 10,
-    currentPage: 1,
-    pageSize: 5,
-    pageSizes: [5, 10, 20, 30],
+const pagination: Pagination<Media> = reactive({
+    total: 10,
+    current_page: 1,
+    page_size: 5,
+    page_count: 2,
+    page_sizes: [5, 10, 20, 30],
+    records: [{
+        id: 1,
+        fileName: 'Power BI',
+        author: 'Power BI',
+        uploadDate: '2021-12-12',
+        description: 'Power BI',
+        slug: 'power-bi',
+        img: {
+            url: 'https://jiaopengzi.com/wp-content/uploads/2022/01/%E7%84%A6%E6%A3%9A%E5%AD%90_avatar-64x64.png',
+        }
+    },
+    {
+        id: 1,
+        fileName: 'Power BI',
+        author: 'Power BI',
+        uploadDate: '2021-12-12',
+        description: 'Power BI',
+        slug: 'power-bi',
+        img: {
+            url: 'https://jiaopengzi.com/wp-content/uploads/2022/01/%E7%84%A6%E6%A3%9A%E5%AD%90_avatar-64x64.png',
+        }
+    },
+
+    {
+        id: 1,
+        fileName: 'Power BI',
+        author: 'Power BI',
+        uploadDate: '2021-12-12',
+        description: 'Power BI',
+        slug: 'power-bi',
+        img: {
+            url: 'https://jiaopengzi.com/wp-content/uploads/2022/01/%E7%84%A6%E6%A3%9A%E5%AD%90_avatar-64x64.png',
+        }
+    },],
 })
 
 const search = ref('')
@@ -201,12 +236,12 @@ const handleAdd = () => {
 // }
 
 const updateCurrentPage = (val: number) => {
-    pagination.currentPage = val
+    pagination.current_page = val
     console.log("1", val)
 }
 
 const updatePageSizes = (val: number) => {
-    pagination.pageSize = val
+    pagination.page_size = val
     console.log("2", val)
 }
 
@@ -239,46 +274,10 @@ const updateDialogVisible = (val: boolean) => {
     }
 }
 
-const medias: Media[] = reactive([
-    {
-        id: 1,
-        fileName: 'Power BI',
-        author: 'Power BI',
-        uploadDate: '2021-12-12',
-        description: 'Power BI',
-        slug: 'power-bi',
-        img: {
-            url: 'https://jiaopengzi.com/wp-content/uploads/2022/01/%E7%84%A6%E6%A3%9A%E5%AD%90_avatar-64x64.png',
-        }
-    },
-    {
-        id: 1,
-        fileName: 'Power BI',
-        author: 'Power BI',
-        uploadDate: '2021-12-12',
-        description: 'Power BI',
-        slug: 'power-bi',
-        img: {
-            url: 'https://jiaopengzi.com/wp-content/uploads/2022/01/%E7%84%A6%E6%A3%9A%E5%AD%90_avatar-64x64.png',
-        }
-    },
 
-    {
-        id: 1,
-        fileName: 'Power BI',
-        author: 'Power BI',
-        uploadDate: '2021-12-12',
-        description: 'Power BI',
-        slug: 'power-bi',
-        img: {
-            url: 'https://jiaopengzi.com/wp-content/uploads/2022/01/%E7%84%A6%E6%A3%9A%E5%AD%90_avatar-64x64.png',
-        }
-    },
-
-])
 
 const filterTableData = computed(() =>
-    medias.filter(
+    pagination.records.filter(
         (data) =>
             !search.value ||
             data.fileName.toLowerCase().includes(search.value.toLowerCase())

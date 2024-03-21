@@ -46,6 +46,7 @@ export enum ResponseCode {
   UserGetInfoSuccess = 1024, //重置密码成功
   UserBindEmailSuccess = 1026, //绑定邮箱成功
   UserEditUserInfoSuccess = 1027, //修改用户信息成功
+  UserGetAllSuccess = 1029, //查询所有用户成功
 
   // 验证码相关
   CaptchaSendSuccess = 8000, //验证码发送成功

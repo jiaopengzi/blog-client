@@ -23,7 +23,7 @@ import type { editUserInfoRequest } from '@/api/user/editUserInfo'
 import { editUserInfoByJosn } from '@/api/user/editUserInfo'
 import { ShowMsgTip } from '@/utils/message'
 import type { EditForm } from '@/views/userinfo/component/info'
-import { convertToBeijingTime } from '@/utils/utcToBeijingTime'
+import { convertToBeijingTime } from '@/utils/dateTime'
 
 export interface UseInfoReturnType {
   editFormRef: Ref<FormInstance | undefined>

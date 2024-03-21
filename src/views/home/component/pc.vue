@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:26:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-18 15:01:47
+ * @LastEditTime : 2024-03-21 16:45:24
  * @FilePath     : \blog-client\src\views\home\component\pc.vue
  * @Description  : pc 内容页
  * @Blog         : https://jiaopengzi.com
@@ -36,9 +36,9 @@
                     <PostList />
                     <!-- 分页 -->
                     <div class="pagination-block">
-                        <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize" :background="true"
-                            layout="prev, pager, next, jumper, total" :total="totalPages"
-                            @current-change="handleCurrentChange" />
+                        <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize"
+                            :page-sizes="pageSizes" :background="true" layout="prev, pager, next, jumper, total"
+                            :total="total" @current-change="handleCurrentChange" />
                     </div>
                 </el-main>
 
@@ -73,9 +73,10 @@ defineOptions({ name: 'HomePC' })
 
 const asideRef = ref<HTMLElement | null>(null)
 
-const totalPages = ref(1000)
+const total = ref(1000)
 const currentPage = ref(5)
 const pageSize = ref(10)
+const pageSizes = ref([10, 20, 50, 100])
 
 const handleCurrentChange = (val: number) => {
     console.log(`current page: ${val}`)

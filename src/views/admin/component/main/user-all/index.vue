@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-20 16:28:08
+ * @LastEditTime : 2024-03-21 17:55:01
  * @FilePath     : \blog-client\src\views\admin\component\main\user-all\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -10,9 +10,9 @@
 -->
 
 <template>
-    <BaseTable :data="filterTableData" :pagination="pagination" :table-column="cols" :dialog-visible="dialogVisible"
-        :is-show-delete-all="false" @update-current-page="updateCurrentPage" @update-page-sizes="updatePageSizes"
-        @edit-row="editRow" @delete-row="deleteRow" @delete-rows="deleteRows" @update-search="updateSearch"
+    <BaseTable :pagination="pagination" :table-column="cols" :dialog-visible="dialogVisible" :is-show-delete-all="false"
+        @update-current-page="updateCurrentPage" @update-page-sizes="updatePageSizes" @edit-row="editRow"
+        @delete-row="deleteRow" @delete-rows="deleteRows" @update-search="updateSearch"
         @update-selection="updateSelection" @update-dialog-visible="updateDialogVisible">
 
         <template #btns>
@@ -32,14 +32,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, reactive, onMounted } from 'vue'
+import { ref, reactive, onBeforeMount } from 'vue'
 import BaseTable from '@/components/common/base-table'
 import type { Pagination } from '@/components/common'
-import type { User, TableData, TableColumn } from '@/components/common/base-table'
+import type { TableData, TableColumn } from '@/components/common/base-table'
 import { debounce } from '@/utils/debounce'
 import { AadminSideMenu } from '@/views/admin/component/aside'
-import { IconKeys } from '@/components/common/icons'
-import { ShowMsgTip } from '@/utils/message'
+import { type User } from '@/api/user/getUsers'
+import { getUsersByJosn } from '@/api/user/getUsers'
+import { ResponseCode } from '@/api/responseCode'
 
 
 
@@ -53,13 +54,13 @@ const cols: TableColumn[] = reactive([
         prop: 'id',
         label: 'ID',
         sortable: true,
-        width: 100,
+        width: 180,
         align: 'center',
     },
     {
         prop: 'img',
         label: '头像',
-        width: 150,
+        width: 100,
         align: 'center',
         isImg: true,
     },
@@ -71,17 +72,17 @@ const cols: TableColumn[] = reactive([
         align: 'center',
     },
     {
-        prop: 'nickname',
+        prop: 'user_display_name',
         label: '昵称',
         sortable: true,
-        width: 150,
+        width: 200,
         align: 'center',
     },
     {
-        prop: 'email',
+        prop: 'user_email',
         label: '邮箱',
         sortable: true,
-        width: 150,
+        width: 200,
         align: 'center',
     },
     {
@@ -92,55 +93,53 @@ const cols: TableColumn[] = reactive([
         align: 'center',
     },
     {
-        prop: 'status',
+        prop: 'user_status',
         label: '状态',
         sortable: true,
-        width: 150,
+        width: 100,
         align: 'center',
     },
     {
         prop: 'post',
-        label: '文章数量',
+        label: '文章',
         sortable: true,
-        width: 150,
+        width: 100,
         align: 'center',
     },
     {
-        prop: 'createdAt',
+        prop: 'created_at',
         label: '注册时间',
         sortable: true,
-        width: 150,
+        width: 200,
         align: 'center',
     },
 
 ])
 
-const pagination: Pagination = reactive({
-    totalPages: 10,
-    currentPage: 1,
-    pageSize: 5,
-    pageSizes: [5, 10, 20, 30],
+const pagination = ref<Pagination<User>>({
+    total: 0,
+    current_page: 1,
+    page_size: 10,
+    page_count: 1,
+    page_sizes: [10, 20, 50, 100],
+    records: [],
 })
 
 const search = ref('')
-
 
 const dialogVisible = ref(false)
 
 const handleAdd = () => {
     dialogVisible.value = !dialogVisible.value
-    console.log("99999999999999999999")
 }
 
-
-
 const updateCurrentPage = (val: number) => {
-    pagination.currentPage = val
+    pagination.value.current_page = val
     console.log("1", val)
 }
 
 const updatePageSizes = (val: number) => {
-    pagination.pageSize = val
+    pagination.value.page_size = val
     console.log("2", val)
 }
 
@@ -172,55 +171,16 @@ const updateDialogVisible = (val: boolean) => {
     }
 }
 
-const user: User[] = reactive([
-    {
-        id: 1,
-        fileName: 'Power BI',
-        author: 'Power BI',
-        uploadDate: '2021-12-12',
-        description: 'Power BI',
-        slug: 'power-bi',
-        img: {
-            url: 'https://jiaopengzi.com/wp-content/uploads/2022/01/%E7%84%A6%E6%A3%9A%E5%AD%90_avatar-64x64.png',
+
+onBeforeMount(async () => {
+    await getUsersByJosn().then((res) => {
+        if (res.data.code === ResponseCode.UserGetAllSuccess) {
+            pagination.value = res.data.data
+            console.log('Pagination0:', pagination.value)
         }
-    },
-    {
-        id: 1,
-        fileName: 'Power BI',
-        author: 'Power BI',
-        uploadDate: '2021-12-12',
-        description: 'Power BI',
-        slug: 'power-bi',
-        img: {
-            url: 'https://jiaopengzi.com/wp-content/uploads/2022/01/%E7%84%A6%E6%A3%9A%E5%AD%90_avatar-64x64.png',
-        }
-    },
-
-    {
-        id: 1,
-        fileName: 'Power BI',
-        author: 'Power BI',
-        uploadDate: '2021-12-12',
-        description: 'Power BI',
-        slug: 'power-bi',
-        img: {
-            url: 'https://jiaopengzi.com/wp-content/uploads/2022/01/%E7%84%A6%E6%A3%9A%E5%AD%90_avatar-64x64.png',
-        }
-    },
-
-])
-
-const filterTableData = computed(() =>
-user.filter(
-        (data) =>
-            !search.value ||
-            data.user_name.toLowerCase().includes(search.value.toLowerCase())
-    )
-)
-
-onMounted(() => {
-
+    })
 })
+
 
 </script>
 
