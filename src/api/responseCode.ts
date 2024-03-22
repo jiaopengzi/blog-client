@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-07 20:42:57
+ * @LastEditTime : 2024-03-22 16:51:29
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -47,6 +47,7 @@ export enum ResponseCode {
   UserBindEmailSuccess = 1026, //绑定邮箱成功
   UserEditUserInfoSuccess = 1027, //修改用户信息成功
   UserGetAllSuccess = 1029, //查询所有用户成功
+  NoUsersFound = 1030, //查询所有用户成功
 
   // 验证码相关
   CaptchaSendSuccess = 8000, //验证码发送成功

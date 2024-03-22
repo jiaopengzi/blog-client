@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 16:30:57
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-21 17:56:22
+ * @LastEditTime : 2024-03-22 17:07:17
  * @FilePath     : \blog-client\src\api\user\getUsers.ts
  * @Description  : 获取用户信息
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,7 @@
 
 import request from '@/api/request'
 import { routerGroup } from '@/api/routerGroup'
-import type { AxiosPromise, AxiosResponse } from 'axios'
+import type { AxiosPromise } from 'axios'
 import type { DataWithImg, Pagination } from '@/components/common'
 import { ResponseCode } from '@/api/responseCode'
 import { ImgFit } from '@/components/common/index'
@@ -20,6 +20,7 @@ import { convertToBeijingTime } from '@/utils/dateTime'
 export interface GetUsersRequest {
   current_page: number // 当前页
   page_size: number // 每页显示条数
+  key_word?: string // 关键字
 }
 
 // 获取用户信息响应类型
@@ -32,8 +33,8 @@ export interface GetUsersResponse {
 // 获取用户信息 api 函数
 export function getUsersByJosn(
   requestData: GetUsersRequest = { current_page: 1, page_size: 10 }, // 设置默认值,
-  width: number = 50, // 默认值 50px
-  height: number = 50, // 默认值 50px
+  width: number = 30, // 默认值 50px
+  height: number = 30, // 默认值 50px
   imgFit: ImgFit = ImgFit.cover,
 ): AxiosPromise<GetUsersResponse> {
   const urlStr = routerGroup + '/user/all'
@@ -48,20 +49,10 @@ export function getUsersByJosn(
         formatUser(user, width, height, imgFit),
       )
       return response
+    } else {
+      response.data.data = emptyUsers()
+      return response
     }
-    // 创建一个新的 AxiosResponse 对象
-    const emptyResponse: AxiosResponse<GetUsersResponse> = {
-      data: {
-        code: ResponseCode.UserGetAllSuccess,
-        msg: 'No users found',
-        data: emptyUsers(),
-      },
-      status: 200,
-      statusText: 'OK',
-      headers: response.headers,
-      config: response.config,
-    }
-    return emptyResponse
   })
 }
 
@@ -116,7 +107,7 @@ export function emptyUsers(): Pagination<User> {
     current_page: 1,
     page_size: 10,
     page_count: 1,
-    page_sizes: [10, 20, 50, 100],
+    page_sizes: [10],
     records: [],
   }
 }

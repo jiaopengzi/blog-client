@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-21 17:45:17
+ * @LastEditTime : 2024-03-22 16:34:29
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格
  * @Blog         : https://jiaopengzi.com
@@ -54,7 +54,8 @@
                 :page-count="paginationData.page_count" :total="paginationData.total" :background="true"
                 layout="total, prev, pager, next, jumper, sizes"
                 @update:current-page="(val: number) => emit('update-current-page', val)"
-                @update:page-size="(val: number) => emit('update-page-size', val)" />
+                @update:page-size="(val: number) => emit('update-page-size', val)"
+                @update:page-sizes="(val: any) => emit('update-page-sizes', val)" />
         </div>
     </div>
 
@@ -68,7 +69,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watchEffect } from 'vue'
+import { ref, watchEffect, watch } from 'vue'
 import type { ElTable } from 'element-plus'
 import type { ImgFit, Pagination } from '@/components/common'
 import { MsgType } from '@/components/common'
@@ -90,6 +91,7 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
     (event: 'update-current-page', value: number): void // 更新当前页
     (event: 'update-page-size', value: number): void // 更新每页显示条数
+    (event: 'update-page-sizes', value: number): void // 更新每页显示条数
     (event: 'edit-row', index: number, row: TableData): void // 编辑行
     (event: 'delete-row', index: number, row: TableData): void // 删除行
     (event: 'delete-rows', rows: TableData[]): void // 删除多行
@@ -114,10 +116,11 @@ watchEffect(() => {
     emit('update-dialog-visible', dialogVisibleStatus.value)
 })
 
+
 // 监听搜索关键字变化
-watchEffect(() => {
-    emit('update-search', search.value)
-})
+watch(search, (newVal) => {
+    emit('update-search', newVal)
+}, { immediate: false }) // 不立即执行
 
 
 // 处理编辑

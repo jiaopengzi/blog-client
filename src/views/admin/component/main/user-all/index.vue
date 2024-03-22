@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-21 17:55:01
+ * @LastEditTime : 2024-03-22 16:24:46
  * @FilePath     : \blog-client\src\views\admin\component\main\user-all\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -11,8 +11,8 @@
 
 <template>
     <BaseTable :pagination="pagination" :table-column="cols" :dialog-visible="dialogVisible" :is-show-delete-all="false"
-        @update-current-page="updateCurrentPage" @update-page-sizes="updatePageSizes" @edit-row="editRow"
-        @delete-row="deleteRow" @delete-rows="deleteRows" @update-search="updateSearch"
+        @update-current-page="updateCurrentPage" @update-page-size="updatePageSize" @update-page-sizes="updatePageSizes"
+        @edit-row="editRow" @delete-row="deleteRow" @delete-rows="deleteRows" @update-search="updateSearch"
         @update-selection="updateSelection" @update-dialog-visible="updateDialogVisible">
 
         <template #btns>
@@ -39,10 +39,8 @@ import type { TableData, TableColumn } from '@/components/common/base-table'
 import { debounce } from '@/utils/debounce'
 import { AadminSideMenu } from '@/views/admin/component/aside'
 import { type User } from '@/api/user/getUsers'
-import { getUsersByJosn } from '@/api/user/getUsers'
+import { getUsersByJosn, emptyUsers, type GetUsersRequest } from '@/api/user/getUsers'
 import { ResponseCode } from '@/api/responseCode'
-
-
 
 // eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: AadminSideMenu.UserAll })
@@ -133,15 +131,24 @@ const handleAdd = () => {
     dialogVisible.value = !dialogVisible.value
 }
 
-const updateCurrentPage = (val: number) => {
+const updateCurrentPage = async (val: number) => {
     pagination.value.current_page = val
+    await getList({ current_page: val, page_size: pagination.value.page_size })
     console.log("1", val)
 }
 
-const updatePageSizes = (val: number) => {
+const updatePageSize = async (val: number) => {
     pagination.value.page_size = val
+    await getList({ current_page: pagination.value.current_page, page_size: val })
     console.log("2", val)
+    console.log("23", pagination.value)
 }
+
+const updatePageSizes = (val: any) => {
+    // pagination.value.page_size = val
+    console.log("22", val)
+}
+
 
 const editRow = (index: number, row: TableData) => {
     console.log("3", index, row)
@@ -155,10 +162,11 @@ const deleteRows = (rows: TableData[]) => {
     console.log("5", rows)
 }
 
-const updateSearch = debounce((val: string) => {
+const updateSearch = debounce(async (val: string) => {
     search.value = val
+    await getList({ current_page: pagination.value.current_page, page_size: pagination.value.page_size, key_word: val })
     console.log("6", val)
-}, 300)
+}, 500)
 
 const updateSelection = (rows: TableData[]) => {
     console.log("7", rows)
@@ -171,14 +179,21 @@ const updateDialogVisible = (val: boolean) => {
     }
 }
 
-
-onBeforeMount(async () => {
-    await getUsersByJosn().then((res) => {
+// 获取用户列表
+async function getList(getUsersRequest: GetUsersRequest = { current_page: 1, page_size: 10 }) {
+    await getUsersByJosn(getUsersRequest).then((res) => {
+        console.log("res.data.code==========>", res.data.code)
         if (res.data.code === ResponseCode.UserGetAllSuccess) {
             pagination.value = res.data.data
-            console.log('Pagination0:', pagination.value)
+        } else {
+            pagination.value = emptyUsers()
         }
     })
+}
+
+
+onBeforeMount(async () => {
+    await getList() // 获取默认用户列表
 })
 
 
