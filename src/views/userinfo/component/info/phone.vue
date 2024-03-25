@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 20:58:30
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-13 12:45:18
+ * @LastEditTime : 2024-03-25 18:49:43
  * @FilePath     : \blog-client\src\views\userinfo\component\info\phone.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -53,8 +53,8 @@
         </div>
 
         <div class="edit-div">
-            <el-form :label-position="labelPosition" label-width="100px" ref="editFormRef" :model="editForm" :rules="rules"
-                class="edit-form" :size="formSize" status-icon>
+            <el-form :label-position="labelPosition" label-width="100px" ref="editFormRef" :model="editForm"
+                :rules="rules" class="edit-form" :size="formSize" status-icon>
                 <el-form-item label="用户名" prop="userName">
                     <el-input v-model="editForm.userName" :disabled="userNameDisabled" />
                 </el-form-item>
@@ -69,8 +69,8 @@
 
                 <el-form-item label="性别" prop="sex">
                     <el-radio-group v-model="editForm.sex">
-                        <el-radio label="男" />
-                        <el-radio label="女" />
+                        <el-radio value="男" />
+                        <el-radio value="女" />
                     </el-radio-group>
                 </el-form-item>
 
