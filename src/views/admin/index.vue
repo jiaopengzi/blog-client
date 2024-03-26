@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-19 10:17:31
+ * @LastEditTime : 2024-03-26 20:04:17
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -99,7 +99,7 @@ const updateCurrentComponent = () => {
 
     if (path) {
         updateCurrentComponentByPath(path)
-        console.log("2", path)
+        // console.log("2", path)
     }
 }
 

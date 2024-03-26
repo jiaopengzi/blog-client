@@ -12,11 +12,12 @@
 import request from '@/api/request'
 import type { AxiosPromise } from 'axios'
 import { routerGroup } from '@/api/routerGroup'
+import { PermissionNames } from '@/utils/permissionRole'
 
 export interface RolesResponse {
   code: number
   msg: string
-  data: any
+  data: Role[]
 }
 
 export function getRolesByJson(): AxiosPromise<RolesResponse> {
@@ -24,4 +25,10 @@ export function getRolesByJson(): AxiosPromise<RolesResponse> {
     url: routerGroup + '/role/get-roles',
     method: 'get',
   })
+}
+
+export interface Role {
+  role_name: string
+  permission_names: PermissionNames[]
+  description: string
 }

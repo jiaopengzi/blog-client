@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:28:44
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-24 17:24:18
+ * @LastEditTime : 2024-03-26 17:16:49
  * @FilePath     : \blog-client\src\components\common\recursive-menu-item\index.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -21,6 +21,10 @@ export interface MenuItem {
   }
   parentIndex?: string // 父级菜单索引
   permissionName?: PermissionNames // 权限名称
+  // 参数
+  params?: {
+    [key: string]: any
+  }
 }
 
 // 菜单项接口定义需要 index 属性

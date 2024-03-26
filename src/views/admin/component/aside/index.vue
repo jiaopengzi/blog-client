@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:33:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-19 10:20:09
+ * @LastEditTime : 2024-03-26 21:56:06
  * @FilePath     : \blog-client\src\views\admin\component\aside\index.vue
  * @Description  : 左边菜单栏 
  * @Blog         : https://jiaopengzi.com
@@ -86,12 +86,12 @@ const handleSelect = (index: string, keyPath: string[]) => {
 
 // 处理菜单项展开事件
 const handleOpen = (index: string, keyPath: string[]) => {
-    console.log(index, keyPath)
+    // console.log(index, keyPath)
 }
 
 // 处理菜单项折叠事件
 const handleClose = (index: string, keyPath: string[]) => {
-    console.log(index, keyPath)
+    // console.log(index, keyPath)
 }
 
 </script>

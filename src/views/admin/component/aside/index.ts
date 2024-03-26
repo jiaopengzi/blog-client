@@ -2,9 +2,9 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:33:58
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-19 10:42:15
+ * @LastEditTime : 2024-03-26 19:05:53
  * @FilePath     : \blog-client\src\views\admin\component\aside\index.ts
- * @Description  :
+ * @Description  : 侧边栏菜单项
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
@@ -221,6 +221,13 @@ const adminMenuItemMap: AdminMenuItemMap = {
   [AadminSideMenu.UserAll]: {
     display: '所有用户',
     parentIndex: AadminSideMenu.User,
+    permissionName: PermissionNames.UserAll,
+    params: {
+      roleName: 'role-name',
+      search: 'search',
+      pageSize: 'page-size',
+      currentPage: 'current-page',
+    },
   },
   [AadminSideMenu.UserAdd]: {
     display: '新增用户',
@@ -281,6 +288,13 @@ export function generateAdminMenuItemMapWithIndex(
     const currentItem = menuItemMap[itemKey] // 当前菜单项
     const kebabItemKey = toKebabCase(itemKey) // 菜单项转换为小写短横线连接形式
     // const newIndex = `${parentIndex ? parentIndex : parentPath}/${kebabItemKey}` // 包含上级菜单项索引的当前菜单项索引
+    // // 如果 currentItem 中包含 params 属性，则添加到索引中
+    // if (currentItem.params) {
+    //   const params = Object.values(currentItem.params)
+    //     .map((param) => `:${param}?`)
+    //     .join('/')
+    //   kebabItemKey += `/${params}`
+    // }
     const newIndex = `${parentPath}/${kebabItemKey}` // 不包含上级菜单项索引的当前菜单项索引
     const newParentIndex = parentIndex || parentPath // 父菜单项索引
 

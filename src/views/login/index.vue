@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-26 15:04:07
+ * @LastEditTime : 2024-03-26 21:53:48
  * @FilePath     : \blog-client\src\views\login\index.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -70,6 +70,7 @@ import { routeObj } from '@/router/routeAll'
 import { useUserStore } from '@/stores/user'
 import type { LoginForm } from "@/views/login"
 import { IconKeys } from '@/components/common/icons'
+import type { RouteLocationRaw } from 'vue-router'
 
 // eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: 'Login' })
@@ -132,7 +133,18 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         // 从 url 中获取 redirect 参数，如果没有就默认跳转到首页  
         const redirectPath = router.currentRoute.value.query.redirect as string | undefined
         if (redirectPath) {
-          router.push({ path: redirectPath })
+          // 使用 URL 对象来分离路径和查询参数
+          const url = new URL(redirectPath, window.location.origin) // 传入完整的 url
+          const path = url.pathname // 路径
+          const queryParams = Object.fromEntries(url.searchParams.entries()) // 查询参数
+
+          // 创建路由对象
+          const routeLocation: RouteLocationRaw = {
+            path: path,
+            query: queryParams
+          }
+
+          router.push(routeLocation) // 跳转到指定页面
         } else {
           router.push({ path: routeObj.home.path })
         }

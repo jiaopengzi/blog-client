@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-22 16:34:29
+ * @LastEditTime : 2024-03-26 20:44:42
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格
  * @Blog         : https://jiaopengzi.com
@@ -83,9 +83,11 @@ const props = withDefaults(defineProps<{
     tableColumn: TableColumn[] // 表格列配置
     dialogVisible: boolean // 对话框是否显示
     isShowDeleteAll: boolean // 是否显示批量删除按钮
+    searchStr: string // 搜索关键字
 }>(), {
     dialogVisible: false, // 默认对话框不显示
-    isShowDeleteAll: false // 默认不显示批量删除按钮
+    isShowDeleteAll: false, // 默认不显示批量删除按钮
+    searchStr: '' // 默认搜索关键字为空
 })
 
 const emit = defineEmits<{
@@ -101,7 +103,7 @@ const emit = defineEmits<{
 }>()
 
 const tableRef = ref<InstanceType<typeof ElTable>>() //表格实例 
-const search = ref('') // 搜索关键字
+const search = ref(props.searchStr) // 搜索关键字
 const paginationData = ref(props.pagination) // 分页配置
 const dialogVisibleStatus = ref(false) // 对话框状态
 
@@ -120,7 +122,8 @@ watchEffect(() => {
 // 监听搜索关键字变化
 watch(search, (newVal) => {
     emit('update-search', newVal)
-}, { immediate: false }) // 不立即执行
+    console.log('search====子组件:', newVal)
+}, { immediate: false }) // 不立即执行 
 
 
 // 处理编辑

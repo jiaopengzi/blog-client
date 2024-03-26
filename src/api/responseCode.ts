@@ -48,6 +48,7 @@ export enum ResponseCode {
   UserEditUserInfoSuccess = 1027, //修改用户信息成功
   UserGetAllSuccess = 1029, //查询所有用户成功
   NoUsersFound = 1030, //查询所有用户成功
+  GetUserCountGroupByRolesSuccess = 1031, //查询用户统计成功
 
   // 验证码相关
   CaptchaSendSuccess = 8000, //验证码发送成功

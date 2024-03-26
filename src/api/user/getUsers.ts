@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 16:30:57
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-22 17:07:17
+ * @LastEditTime : 2024-03-26 16:08:33
  * @FilePath     : \blog-client\src\api\user\getUsers.ts
  * @Description  : 获取用户信息
  * @Blog         : https://jiaopengzi.com
@@ -21,6 +21,7 @@ export interface GetUsersRequest {
   current_page: number // 当前页
   page_size: number // 每页显示条数
   key_word?: string // 关键字
+  role_name?: string // 角色
 }
 
 // 获取用户信息响应类型
