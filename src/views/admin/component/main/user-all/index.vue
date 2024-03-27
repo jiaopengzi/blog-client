@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-26 21:35:56
+ * @LastEditTime : 2024-03-27 09:36:26
  * @FilePath     : \blog-client\src\views\admin\component\main\user-all\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -228,39 +228,28 @@ const userCountGroupByRole = ref<UserCountGroupByRole[]>([])
 const Roles = ref<Role[]>([])
 
 async function getRoles() {
-    let rolesData = sessionStorage.getItem('roles') // 从 sessionStorage 中获取角色列表 减少请求次数
-    if (rolesData) {
-        Roles.value = JSON.parse(rolesData) // 将字符串转换为对象
-    } else {
-        await getRolesByJson().then((res) => {
-            if (res.data.code === ResponseCode.GetRoleSuccess) {
-                Roles.value = res.data.data
-                Roles.value.unshift({ role_name: AllRoleName, permission_names: [], description: '全部' })  // 向 roles 数组中添加一个全部角色 
-                sessionStorage.setItem('roles', JSON.stringify(Roles.value)) // 将角色列表存入 sessionStorage
-            }
-        })
-    }
+    await getRolesByJson().then((res) => {
+        if (res.data.code === ResponseCode.GetRoleSuccess) {
+            const newRole = { role_name: AllRoleName, permission_names: [], description: '全部' }
+            Roles.value = [newRole, ...res.data.data]
+
+        }
+    })
 }
+
 
 // 获取用户列表
 async function getUserCountGroupByRole() {
-    let userCountGroupByRoleData = sessionStorage.getItem('userCountGroupByRole') // 从 sessionStorage 中获取用户角色列表 减少请求次数
-    if (userCountGroupByRoleData) {
-        userCountGroupByRole.value = JSON.parse(userCountGroupByRoleData) // 将字符串转换为对象
-    } else {
-        await getUserCountGroupByRoleByJosn().then((res) => {
-            if (res.data.code === ResponseCode.GetUserCountGroupByRolesSuccess) {
-                const roles = res.data.data
-                // 循环计数生成 总计数
-                const total = roles.reduce((prev, cur) => {
-                    return prev + cur.user_count
-                }, 0)
-                roles.unshift({ role_name: AllRoleName, user_count: total }) // 向 roles 数组中添加一个全部角色
-                userCountGroupByRole.value = roles
-                sessionStorage.setItem('userCountGroupByRole', JSON.stringify(userCountGroupByRole.value))
-            }
-        })
-    }
+    await getUserCountGroupByRoleByJosn().then((res) => {
+        if (res.data.code === ResponseCode.GetUserCountGroupByRolesSuccess) {
+            const roles = res.data.data
+            const total = roles.reduce((prev, cur) => {
+                return prev + cur.user_count
+            }, 0)
+            const newRole = { role_name: AllRoleName, user_count: total }
+            userCountGroupByRole.value = [newRole, ...roles]
+        }
+    })
 }
 
 
