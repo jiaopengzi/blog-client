@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-27 16:55:44
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-10 17:12:29
+ * @LastEditTime : 2024-04-01 19:21:06
  * @FilePath     : \blog-client\src\utils\preview.ts
  * @Description  : 处理预览html
  * @Blog         : https://jiaopengzi.com
@@ -187,6 +187,40 @@ function applyInlineStyles(el: HTMLElement | SVGElement) {
  * @description: 复制带有自定义样式的内容
  * @param element 要复制的元素
  */
+// export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
+//   try {
+//     // 将 katex 公式转成图片
+//     await katexToImage(element)
+//     // 将外部样式应用为内联样式
+//     applyInlineStyles(element)
+
+//     // 获取带有内联样式的 HTML 字符串
+//     const html = element.innerHTML
+//     // console.log('html', html)
+
+//     if (typeof ClipboardItem !== 'undefined') {
+//       // 创建一个包含要复制 HTML 的 blob
+//       const contentNoStyle = new Blob([html], { type: 'text/plain' })
+//       const contentWithStyle = new Blob([html], { type: 'text/html' })
+
+//       // 使用 clipboardItem 设置格式和数据
+//       const clipboardItemInput = new ClipboardItem({
+//         'text/plain': contentNoStyle,
+//         'text/html': contentWithStyle,
+//       })
+
+//       // 写入剪贴板
+//       await navigator.clipboard.write([clipboardItemInput])
+//       ShowMsgTip(ShowMsgTip.MsgType.success, '内容已复制到剪贴板')
+//     } else {
+//       ShowMsgTip(ShowMsgTip.MsgType.warning, '请升级你的浏览器以获得更好的复制功能支持')
+//     }
+//   } catch (err) {
+//     console.error('无法复制内容', err)
+//     ShowMsgTip(ShowMsgTip.MsgType.error, '无法复制内容')
+//   }
+// }
+
 export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
   try {
     // 将 katex 公式转成图片
@@ -196,10 +230,11 @@ export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
 
     // 获取带有内联样式的 HTML 字符串
     const html = element.innerHTML
-    // console.log('html', html)
 
+    // if (window.location.protocol === 'https:' && typeof ClipboardItem !== 'undefined') {
     if (typeof ClipboardItem !== 'undefined') {
       // 创建一个包含要复制 HTML 的 blob
+      console.log('新复制api')
       const contentNoStyle = new Blob([html], { type: 'text/plain' })
       const contentWithStyle = new Blob([html], { type: 'text/html' })
 
@@ -213,7 +248,25 @@ export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
       await navigator.clipboard.write([clipboardItemInput])
       ShowMsgTip(ShowMsgTip.MsgType.success, '内容已复制到剪贴板')
     } else {
-      ShowMsgTip(ShowMsgTip.MsgType.warning, '请升级你的浏览器以获得更好的复制功能支持')
+      console.log('老复制api')
+      const textArea = document.createElement('textarea')
+      textArea.style.position = 'fixed'
+      textArea.style.top = '0'
+      textArea.style.left = '0'
+      textArea.value = html
+      document.body.appendChild(textArea)
+      textArea.focus()
+      textArea.select()
+      try {
+        const successful = document.execCommand('copy')
+        const msg = successful ? '内容已复制到剪贴板' : '无法复制内容'
+        ShowMsgTip(successful ? ShowMsgTip.MsgType.success : ShowMsgTip.MsgType.error, msg)
+      } catch (err) {
+        console.error('无法复制内容', err)
+        ShowMsgTip(ShowMsgTip.MsgType.error, '无法复制内容')
+      } finally {
+        document.body.removeChild(textArea)
+      }
     }
   } catch (err) {
     console.error('无法复制内容', err)
