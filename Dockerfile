@@ -31,7 +31,6 @@ COPY nginx.conf /etc/nginx/nginx.conf
 
 # 挂载 Nginx 配置文件
 VOLUME ["/etc/nginx"]
-VOLUME ["/etc/nginx/ssl"]
 
 # 暴露 Nginx 服务的默认端口
 EXPOSE 80
