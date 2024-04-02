@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 20:58:30
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-25 18:49:43
+ * @LastEditTime : 2024-04-02 22:24:14
  * @FilePath     : \blog-client\src\views\userinfo\component\info\phone.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -69,8 +69,8 @@
 
                 <el-form-item label="性别" prop="sex">
                     <el-radio-group v-model="editForm.sex">
-                        <el-radio value="男" />
-                        <el-radio value="女" />
+                        <el-radio value="男">男</el-radio>
+                        <el-radio value="女">女</el-radio>
                     </el-radio-group>
                 </el-form-item>
 
@@ -157,8 +157,8 @@ const {
 }
 
 .btn-unbind {
-    color: #409eff;
-    border: 1px solid #409eff;
+    color: #f56c6c;
+    border: 1px solid #f56c6c;
     border-radius: 4px;
     background-color: #fff;
     cursor: pointer;
