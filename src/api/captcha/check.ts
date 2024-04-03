@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-07 09:58:39
- * @FilePath     : \blog-client\src\api\captcha\captchaCheck.ts
+ * @LastEditTime : 2024-04-03 14:18:04
+ * @FilePath     : \blog-client\src\api\captcha\check.ts
  * @Description  : 验证码校验
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
@@ -14,6 +14,7 @@ import { routerGroup } from '@/api/routerGroup'
 import type { AxiosPromise } from 'axios'
 
 export interface CaptchaCheckRequest {
+  ip: string
   email: string
   captcha: string
   purpose: string // 验证码用途

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 18:53:25
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-23 20:38:49
+ * @LastEditTime : 2024-04-03 14:20:09
  * @FilePath     : \blog-client\src\components\common\bind-email-dialog\index.vue
  * @Description  : 绑定邮箱弹窗
  * @Blog         : https://jiaopengzi.com
@@ -166,6 +166,7 @@ async function checkCaptcha(): Promise<void> {
     try {
         // 创建请求对象 加密内容
         const req: CaptchaCheckRequest = {
+            ip: await getPublicIp(),
             email: bindemailForm.email,
             captcha: bindemailForm.captcha,
             purpose: CaptchaPurpose.BindEmail,

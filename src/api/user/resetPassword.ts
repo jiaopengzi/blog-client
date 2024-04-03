@@ -18,6 +18,7 @@ export interface ResetPasswordRequest {
   email: string
   password: string
   re_password: string
+  ip: string
 }
 
 export interface ResetPasswordResponse {

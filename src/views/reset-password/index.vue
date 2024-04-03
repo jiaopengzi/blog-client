@@ -3,8 +3,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 19:21:25
- * @FilePath     : \blog-client\src\views\reset-password\Index.vue
+ * @LastEditTime : 2024-04-03 14:20:50
+ * @FilePath     : \blog-client\src\views\reset-password\index.vue
  * @Description  : 重置密码
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -218,6 +218,7 @@ async function checkCaptcha(): Promise<void> {
   try {
     // 创建请求对象 加密内容
     const req: CaptchaCheckRequest = {
+      ip: await getPublicIp(),
       email: fogetPasswordForm.email,
       captcha: fogetPasswordForm.captcha,
       purpose: CaptchaPurpose.ResetPassword,
@@ -297,6 +298,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         password: fogetPasswordForm.password,
         re_password: fogetPasswordForm.rePassword,
         email: fogetPasswordForm.email,
+        ip: await getPublicIp(),
       }
 
       const { data } = await resetPasswordByJosn(req) // 将 resStr 转换为对象

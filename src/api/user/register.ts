@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-13 15:34:55
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-01 14:00:17
- * @FilePath     : \blog-client\src\api\user\Register.ts
+ * @LastEditTime : 2024-04-03 18:41:09
+ * @FilePath     : \blog-client\src\api\user\register.ts
  * @Description  : 注册
  * @blog         : https://jiaopengzi.com
  * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
@@ -14,6 +14,7 @@ import { routerGroup } from '@/api/routerGroup'
 import type { AxiosPromise } from 'axios'
 
 export interface RegisterRequest {
+  ip: string
   captcha: string
   user_name: string
   password: string

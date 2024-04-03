@@ -3,8 +3,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 18:53:11
- * @FilePath     : \blog-client\src\views\register\Index.vue
+ * @LastEditTime : 2024-04-03 14:20:44
+ * @FilePath     : \blog-client\src\views\register\index.vue
  * @Description  : 注册
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -283,6 +283,7 @@ async function checkCaptcha(): Promise<void> {
   try {
     // 创建请求对象 加密内容
     const req: CaptchaCheckRequest = {
+      ip: await getPublicIp(),
       email: registerForm.email,
       captcha: registerForm.captcha,
       purpose: CaptchaPurpose.Register,
@@ -368,6 +369,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     if (valid) {
       // 创建请求对象 加密内容
       const req: RegisterRequest = {
+        ip: await getPublicIp(),
         captcha: registerForm.captcha,
         user_name: registerForm.userName,
         password: registerForm.password,
