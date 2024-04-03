@@ -15,6 +15,7 @@ import { routerGroup } from '@/api//routerGroup'
 import type { AxiosPromise } from 'axios'
 
 export interface BindEmailRequest {
+  ip: string
   email: string
   captcha: string
 }

@@ -231,6 +231,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     await formEl.validate(async (valid) => {
         if (valid) {
             const req: BindEmailRequest = {
+                ip: await getPublicIp(),
                 email: bindemailForm.email,
                 captcha: bindemailForm.captcha,
             }
