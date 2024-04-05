@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 18:31:22
+ * @LastEditTime : 2024-04-06 00:11:49
  * @FilePath     : \blog-client\src\views\social-login-callback\index.vue
  * @Description  : 三方登录回调页面
  * @Blog         : https://jiaopengzi.com
@@ -25,6 +25,7 @@ import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { routeObj } from '@/router/routeAll'
 import { social } from '@/api/responseCode'
+import router from '@/router'
 
 defineOptions({ name: 'SocialLoginCallback' })
 
@@ -81,7 +82,10 @@ onMounted(async () => {
     _platform.value = social.WeChatDisplay
     await bindWeChatCallback()
   }
-  window.location.href = routeObj.home.path
+
+  router.push({ path: routeObj.home.path })
+
+  // window.location.href = routeObj.home.path
 })
 </script>
 
@@ -123,4 +127,3 @@ onMounted(async () => {
   }
 }
 </style>
-

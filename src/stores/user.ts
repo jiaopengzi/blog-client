@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 09:35:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-15 17:19:21
+ * @LastEditTime : 2024-04-06 00:34:59
  * @FilePath     : \blog-client\src\stores\user.ts
  * @Description  : 用户信息
  * @Blog         : https://jiaopengzi.com
@@ -240,7 +240,6 @@ async function apiLoginWeChat(): Promise<void> {
 // 微信登录回调
 async function apiLoginWeChatCallback(code: string): Promise<UserInfoStore> {
   const resObj: LoginResponse = await handleResponse<LoginResponse>(loginByWeChatUrlCallback(code)) // 使用辅助函数处理请求
-
   return await handleLoginResult(resObj, ResponseCode.SocialLoginWeChatCallbackSuccess)
 }
 
@@ -354,7 +353,8 @@ async function handleLoginResult(
   resObj: LoginResponse,
   successCode: ResponseCode,
 ): Promise<UserInfoStore> {
-  console.log(resObj.code)
+  console.log('================================>resObj.code', resObj.code)
+  console.log('================================>successCode', successCode)
   if (resObj.code === successCode) {
     // 显示登录成功提示
     ShowMsgTip(ShowMsgTip.MsgType.success, resObj.msg, 3000)
