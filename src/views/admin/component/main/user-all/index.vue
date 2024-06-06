@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-27 09:36:26
+ * @LastEditTime : 2024-06-06 17:48:22
  * @FilePath     : \blog-client\src\views\admin\component\main\user-all\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -143,6 +143,8 @@ const activeRole = ref(AllRoleName)
 
 const handleAdd = () => {
     dialogVisible.value = !dialogVisible.value
+    // dialogVisible.value = true
+    console.log("00============", dialogVisible.value)
 }
 
 const updateCurrentPage = async (val: number) => {
@@ -194,9 +196,10 @@ const updateSelection = (rows: TableData[]) => {
 // 关闭上传对话框时清空上传文件列表
 const updateDialogVisible = (val: boolean) => {
     console.log("09============", val)
-    if (!val) {
-        dialogVisible.value = val
-    }
+    dialogVisible.value = val
+    // if (!val) {
+    //     dialogVisible.value = val
+    // }
 }
 
 // 获取分页用户

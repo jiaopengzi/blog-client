@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-26 20:44:42
+ * @LastEditTime : 2024-06-06 18:06:06
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格
  * @Blog         : https://jiaopengzi.com
@@ -60,7 +60,7 @@
     </div>
 
     <!-- 弹窗 -->
-    <el-dialog v-model="dialogVisibleStatus">
+    <el-dialog v-model="dialogVisibleStatus" @close="handleDialogClose">
         <template #header>
             <slot name="add-item-title"></slot>
         </template>
@@ -115,9 +115,12 @@ watchEffect(() => {
 // 更新对话框状态
 watchEffect(() => {
     dialogVisibleStatus.value = props.dialogVisible
-    emit('update-dialog-visible', dialogVisibleStatus.value)
 })
 
+// 关闭对话框
+const handleDialogClose = () => {
+    emit('update-dialog-visible', false)
+}
 
 // 监听搜索关键字变化
 watch(search, (newVal) => {
