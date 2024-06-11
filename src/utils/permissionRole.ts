@@ -34,7 +34,7 @@ export enum PermissionNames {
   UserAdd = 'UserAdd',
   UserDelete = 'UserDelete',
   UserEdit = 'UserEdit',
-  UserViewAll = 'UserViewAll',
+  UserView = 'UserView',
 }
 
 /**

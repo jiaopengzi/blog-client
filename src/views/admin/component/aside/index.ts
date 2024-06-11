@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:33:58
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-11 20:06:57
+ * @LastEditTime : 2024-06-11 20:16:39
  * @FilePath     : \blog-client\src\views\admin\component\aside\index.ts
  * @Description  : 侧边栏菜单项
  * @Blog         : https://jiaopengzi.com
@@ -46,7 +46,7 @@ export enum AadminSideMenu {
   'ShortLinkAll' = 'ShortLinkAll',
   'ShortLinkAdd' = 'ShortLinkAdd',
   'User' = 'User',
-  'UserViewAll' = 'UserViewAll',
+  'UserView' = 'UserView',
   'UserAdd' = 'UserAdd',
   'LoginLog' = 'LoginLog',
   'PermissionRole' = 'PermissionRole',
@@ -218,10 +218,10 @@ const adminMenuItemMap: AdminMenuItemMap = {
       class: 'icon-menu',
     },
   },
-  [AadminSideMenu.UserViewAll]: {
+  [AadminSideMenu.UserView]: {
     display: '所有用户',
     parentIndex: AadminSideMenu.User,
-    permissionName: PermissionNames.UserViewAll,
+    permissionName: PermissionNames.UserView,
     params: {
       roleName: 'role-name',
       search: 'search',
