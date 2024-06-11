@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 16:30:57
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-26 16:08:33
+ * @LastEditTime : 2024-06-11 20:32:46
  * @FilePath     : \blog-client\src\api\user\getUsers.ts
  * @Description  : 获取用户信息
  * @Blog         : https://jiaopengzi.com
@@ -38,7 +38,7 @@ export function getUsersByJosn(
   height: number = 30, // 默认值 50px
   imgFit: ImgFit = ImgFit.cover,
 ): AxiosPromise<GetUsersResponse> {
-  const urlStr = routerGroup + '/user/view-all'
+  const urlStr = routerGroup + '/user/view'
   return request({
     url: urlStr,
     method: 'post',
