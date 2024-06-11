@@ -38,7 +38,7 @@ export function getUsersByJosn(
   height: number = 30, // 默认值 50px
   imgFit: ImgFit = ImgFit.cover,
 ): AxiosPromise<GetUsersResponse> {
-  const urlStr = routerGroup + '/user/all'
+  const urlStr = routerGroup + '/user/view-all'
   return request({
     url: urlStr,
     method: 'post',

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-21 20:26:33
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-21 20:27:56
+ * @LastEditTime : 2024-06-11 17:34:33
  * @FilePath     : \blog-client\src\api\user\bindEmail.ts
  * @Description  : 绑定邮箱
  * @Blog         : https://jiaopengzi.com
@@ -28,7 +28,7 @@ export interface BindEmailResponse {
 
 // 注册
 export function bindEmailByJosn(requestData: BindEmailRequest): AxiosPromise<BindEmailResponse> {
-  const urlStr = routerGroup + '/user/bind/email'
+  const urlStr = routerGroup + '/user/bind-email'
   return request({
     url: urlStr,
     method: 'post',
