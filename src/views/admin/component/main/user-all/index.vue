@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-06 17:48:22
+ * @LastEditTime : 2024-06-11 20:05:41
  * @FilePath     : \blog-client\src\views\admin\component\main\user-all\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -55,7 +55,7 @@ import router from '@/router/index'
 
 
 // eslint-disable-next-line vue/multi-word-component-names
-defineOptions({ name: AadminSideMenu.UserAll })
+defineOptions({ name: AadminSideMenu.UserViewAll })
 
 
 const cols: TableColumn[] = reactive([
@@ -276,7 +276,7 @@ function routerPush(pageSize: number, currentPage: number, roleName: string, sea
     // 当搜索关键字为空时，roleName 为 AllRoleName 则跳转到全部用户页面
     if (!searchStr && roleName === AllRoleName) {
         router.push({
-            name: AadminSideMenu.UserAll,
+            name: AadminSideMenu.UserViewAll,
             query: {
                 'page-size': pageSize,
                 'current-page': currentPage,
@@ -288,7 +288,7 @@ function routerPush(pageSize: number, currentPage: number, roleName: string, sea
     // 当搜索关键字为空时，roleName 不为 AllRoleName 则跳转到指定角色页面
     if (!searchStr) {
         router.push({
-            name: AadminSideMenu.UserAll,
+            name: AadminSideMenu.UserViewAll,
             query: {
                 'page-size': pageSize,
                 'current-page': currentPage,
@@ -301,7 +301,7 @@ function routerPush(pageSize: number, currentPage: number, roleName: string, sea
     // 当搜索关键字不为空时，roleName 为 AllRoleName 则跳转到全部用户页面关键字搜索
     if (roleName === AllRoleName) {
         router.push({
-            name: AadminSideMenu.UserAll,
+            name: AadminSideMenu.UserViewAll,
             query: {
                 'page-size': pageSize,
                 'current-page': currentPage,
@@ -313,7 +313,7 @@ function routerPush(pageSize: number, currentPage: number, roleName: string, sea
 
     // 当搜索关键字不为空时，roleName 不为 AllRoleName 则跳转到指定角色页面关键字搜索
     router.push({
-        name: AadminSideMenu.UserAll,
+        name: AadminSideMenu.UserViewAll,
         query: {
             'page-size': pageSize,
             'current-page': currentPage,
