@@ -17,5 +17,5 @@ export interface RegisterForm {
   captcha: string
   password: string
   rePassword: string
-  acceptedTerms: string[]
+  acceptedTerms: boolean
 }

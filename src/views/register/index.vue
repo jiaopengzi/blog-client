@@ -1,9 +1,8 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-04-03 14:20:44
+ * @LastEditTime : 2024-06-12 10:23:20
  * @FilePath     : \blog-client\src\views\register\index.vue
  * @Description  : 注册
  * @Blog         : https://jiaopengzi.com
@@ -50,8 +49,8 @@
       </el-form-item>
 
       <el-form-item prop="acceptedTerms">
-        <el-checkbox-group v-model="registerForm.acceptedTerms">
-          <el-checkbox label="我已同意并接受：" name="acceptedTerms" /> </el-checkbox-group><a href="/">《服务条款》</a>
+        <el-checkbox v-model="registerForm.acceptedTerms" value="同意条款" name="acceptedTerms" />我已同意并接受：<a
+          href="/">《服务条款》</a>
       </el-form-item>
 
       <div class="btn-submit">
@@ -120,7 +119,7 @@ const registerForm = reactive<RegisterForm>({
   captcha: '123456',
   password: '123QWEasd',
   rePassword: '123QWEasd',
-  acceptedTerms: [],
+  acceptedTerms: false,
 })
 
 /**
@@ -151,6 +150,41 @@ function rePasswordValidator(
 ): void {
   // 在这里处理异步验证逻辑
   checkRePassword()
+    .then(() => {
+      callback() // 校验成功
+    })
+    .catch((err: Error) => {
+      callback(err.message)
+    })
+}
+
+
+
+
+/**
+ * @description: 检查是否同意服务条款 
+ */
+async function checkAcceptedTerms(): Promise<void> {
+  try {
+    if (registerForm.acceptedTerms === false) {
+      throw new Error('请勾选同意服务条款')
+    }
+  } catch (err: unknown) {
+    console.log(err)
+    throw err
+  }
+}
+
+/**
+ * @description: 是否同意 Validator
+ * @return  void
+ */
+function acceptedTermsValidator(
+  rule: any,
+  value: string,
+  callback: (error?: string | Error | undefined) => void,
+): void {
+  checkAcceptedTerms()
     .then(() => {
       callback() // 校验成功
     })
@@ -353,7 +387,7 @@ const rules = reactive<FormRules<RegisterForm>>({
   rePassword: [{ required: true, validator: rePasswordValidator, trigger: 'blur' }],
 
   acceptedTerms: [
-    { type: 'array', required: true, message: '请勾选同意服务条款', trigger: 'change' },
+    { type: 'boolean', required: true, validator: acceptedTermsValidator, trigger: 'change' },
   ],
 })
 
