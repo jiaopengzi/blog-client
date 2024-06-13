@@ -29,7 +29,7 @@ export const handleConfirmCommon = (callback: () => void) => {
       callback()
       ElMessage({
         type: MsgType.success,
-        message: '删除完成',
+        message: '开始删除',
       })
     })
     .catch(() => {

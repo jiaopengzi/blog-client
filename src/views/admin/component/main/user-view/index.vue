@@ -2,18 +2,18 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-11 20:05:41
- * @FilePath     : \blog-client\src\views\admin\component\main\user-all\index.vue
+ * @LastEditTime : 2024-06-13 19:56:45
+ * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 
 <template>
-    <BaseTable :pagination="pagination" :table-column="cols" :dialog-visible="dialogVisible" :is-show-delete-all="false"
+    <BaseTable :pagination="pagination" :table-column="cols" :dialog-visible="dialogVisible" :is-show-delete-all="true"
         :search-str="search" @update-current-page="updateCurrentPage" @update-page-size="updatePageSize"
-        @update-page-sizes="updatePageSizes" @edit-row="editRow" @delete-row="deleteRow" @delete-rows="deleteRows"
-        @update-search="updateSearch" @update-selection="updateSelection" @update-dialog-visible="updateDialogVisible">
+        @update-page-sizes="updatePageSizes" @edit-row="editRow" @delete-rows="deleteRows" @update-search="updateSearch"
+        @update-selection="updateSelection" @update-dialog-visible="updateDialogVisible">
 
         <template #btns>
             <el-button type="primary" @click="handleAdd">
@@ -26,7 +26,6 @@
                     {{ roleDisplay(item.role_name) }} ({{ item.user_count }})
                 </el-button>
             </div>
-
         </template>
 
         <template #add-item-title>
@@ -52,6 +51,8 @@ import { getUserCountGroupByRoleByJosn, type UserCountGroupByRole } from '@/api/
 import { getRolesByJson, type Role } from '@/api/permissionRole/role'
 import { ResponseCode } from '@/api/responseCode'
 import router from '@/router/index'
+import { DeleteUserByJosn, type DeleteUserRequest } from '@/api/user/deleteUser'
+import { ShowMsgTip } from '@/utils/message'
 
 
 // eslint-disable-next-line vue/multi-word-component-names
@@ -170,12 +171,27 @@ const editRow = (index: number, row: TableData) => {
     console.log("04============", index, row)
 }
 
-const deleteRow = (index: number, row: TableData) => {
-    console.log("05============", index, row)
-}
 
-const deleteRows = (rows: TableData[]) => {
-    console.log("06============", rows)
+const deleteRows = async (rows: TableData[]) => {
+
+    // 将 rows 中的id 组成新的 list
+    const ids = rows.map((item) => item.id.toString())
+    // 将 ids 转换为 DeleteUserRequest
+    const deleteUserRequest: DeleteUserRequest = { user_id_list: ids }
+
+    // 删除用户
+    await DeleteUserByJosn(deleteUserRequest).then((res) => {
+        if (res.data.code === ResponseCode.DeleteUserSuccess) {
+            // 删除成功后重新获取用户列表
+            getUserPaginate({ role_name: activeRole.value, current_page: pagination.value.current_page, page_size: pagination.value.page_size, key_word: search.value })
+            // 重新获取用户数量
+            getUserCountGroupByRole()
+            ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 3000)
+        } else {
+            // 显示错误信息
+            ShowMsgTip(ShowMsgTip.MsgType.error, res.data.msg, 3000)
+        }
+    })
 }
 
 const updateSearch = debounce(async (val: string) => {

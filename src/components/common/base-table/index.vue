@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-06 18:06:06
+ * @LastEditTime : 2024-06-13 17:01:17
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格
  * @Blog         : https://jiaopengzi.com
@@ -12,10 +12,10 @@
 <template>
     <div class="container">
         <div class="btns">
-            <slot name="btns"></slot>
             <el-button v-if="props.isShowDeleteAll" type="danger" @click="handleBatchDelete">
-                批量删除
+                删除
             </el-button>
+            <slot name="btns"></slot>
         </div>
 
         <el-table ref="tableRef" :data="paginationData.records" stripe max-height="700px"
@@ -43,7 +43,7 @@
                 </template>
                 <template #default="scope">
                     <el-button size="small" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                    <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                    <!-- <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button> -->
                 </template>
             </el-table-column>
         </el-table>
@@ -134,12 +134,12 @@ const handleEdit = (index: number, row: TableData) => {
     emit('edit-row', index, row)
 }
 
-// 处理单个删除
-const handleDelete = (index: number, row: TableData) => {
-    handleConfirmCommon(() => {
-        emit('delete-row', index, row)
-    })
-}
+// // 处理单个删除
+// const handleDelete = (index: number, row: TableData) => {
+//     handleConfirmCommon(() => {
+//         emit('delete-row', index, row)
+//     })
+// }
 
 // 处理批量删除
 const handleBatchDelete = () => {
