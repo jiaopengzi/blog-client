@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-16 16:34:15
+ * @LastEditTime : 2024-06-16 22:01:05
  * @FilePath     : \blog-client\src\views\register\index.vue
  * @Description  : 注册
  * @Blog         : https://jiaopengzi.com
@@ -73,7 +73,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, toRef } from 'vue'
 import SlideVerify from '@/components/common/slide-verify'
 import { ShowMsgTip } from '@/utils/message'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
@@ -115,6 +115,13 @@ const registerForm = reactive<RegisterForm>({
   acceptedTerms: false,
 })
 
+
+const userNameRef = toRef(registerForm, 'userName')
+const emailRef = toRef(registerForm, 'email')
+const passwordRef = toRef(registerForm, 'password')
+const rePasswordRef = toRef(registerForm, 'rePassword')
+const acceptedTermsRef = toRef(registerForm, 'acceptedTerms')
+
 // hook 函数
 const {
   checkSendCaptcha,
@@ -123,11 +130,11 @@ const {
   checkCaptchaValidator,
   rePasswordValidator,
   acceptedTermsValidator } = useFormValidation({
-    FormUserName: registerForm.userName,
-    FormEmail: registerForm.email,
-    FormPassword: registerForm.password,
-    FormRePassword: registerForm.rePassword,
-    FormAcceptedTerms: registerForm.acceptedTerms
+    FormUserName: userNameRef,
+    FormEmail: emailRef,
+    FormPassword: passwordRef,
+    FormRePassword: rePasswordRef,
+    FormAcceptedTerms: acceptedTermsRef
   })
 
 /**

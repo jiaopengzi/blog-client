@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 15:12:20
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-16 15:12:34
+ * @LastEditTime : 2024-06-16 21:33:26
  * @FilePath     : \blog-client\src\api\user\addUser.ts
  * @Description  : 添加用户
  * @Blog         : https://jiaopengzi.com
@@ -14,10 +14,11 @@ import { routerGroup } from '@/api/routerGroup'
 import type { AxiosPromise } from 'axios'
 
 export interface AddUserRequest {
-  admin_user_id: string
-  user_name: string
-  email: string
-  password: string
+  user_name: string // 用户名
+  email: string // 邮箱
+  password: string // 密码
+  role_name: string // 角色
+  is_send_email: boolean // 是否发送邮件
 }
 
 export interface AddUserResponse {

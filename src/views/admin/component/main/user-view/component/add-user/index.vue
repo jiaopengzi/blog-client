@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 14:48:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-16 18:01:01
+ * @LastEditTime : 2024-06-16 21:51:01
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\add-user\index.vue
  * @Description  : 添加用户
  * @Blog         : https://jiaopengzi.com
@@ -27,14 +27,20 @@
                     生成密码
                 </button>
             </el-form-item>
-            <el-form-item prop="acceptedTerms">
-                <el-checkbox value="发送邮件" name="acceptedTerms">是否发送邮件到用户邮箱</el-checkbox>
+
+            <el-form-item label="角色" prop="roleName">
+                <el-select v-model="role_name" placeholder="选择用户角色">
+                    <el-option v-for="item in props.roles" :key="item.role_name" :label="item.description"
+                        :value="item.role_name" />
+                </el-select>
+            </el-form-item>
+            <el-form-item prop="isSendEmail">
+                <el-checkbox value="发送邮件" name="send_email">是否发送邮件到用户邮箱</el-checkbox>
             </el-form-item>
 
             <div class="btn-submit">
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm(addUserFormRef)">注册</el-button>
-                    <el-button @click="resetForm(addUserFormRef)">重置</el-button>
+                    <el-button type="primary" @click="submitForm(addUserFormRef)">新增用户</el-button>
                 </el-form-item>
             </div>
         </el-form>
@@ -42,7 +48,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, toRef } from 'vue'
 import { ShowMsgTip } from '@/utils/message'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import type { AddUserRequest } from '@/api/user/addUser'
@@ -51,9 +57,15 @@ import { ResponseCode } from '@/api/responseCode'
 import type { AddUserForm } from '@/views/admin/component/main/user-view/component/add-user'
 import { useFormValidation } from '@/components/hooks/useFormValidation'
 import { generatePassword } from '@/utils/password'
-
+import { type Role } from '@/api/permissionRole/role'
 
 defineOptions({ name: 'AddUser' })
+
+// props
+const props = defineProps<{
+    roles: Role[] // 角色列表
+}>()
+
 
 // 表单label位置 top | left | right
 const labelPosition = ref('left')
@@ -68,16 +80,22 @@ const addUserFormRef = ref<FormInstance>()
 const addUserForm = reactive<AddUserForm>({
     userName: 'jiaopengzi',
     email: 'jiaopengzi@qq.com',
-    password: '123QWEasd',
+    password: generatePassword(),
+    roleName: 'Subscriber',
+    isSendEmail: false
 })
 
-// hook 函数
+const userNameRef = toRef(addUserForm, 'userName')
+const emailRef = toRef(addUserForm, 'email')
+const passwordRef = toRef(addUserForm, 'password')
+
+// hooks
 const {
     checkUserNameValidator,
     checkEmailValidator } = useFormValidation({
-        FormUserName: addUserForm.userName,
-        FormEmail: addUserForm.email,
-        FormPassword: addUserForm.password
+        FormUserName: userNameRef,
+        FormEmail: emailRef,
+        FormPassword: passwordRef
     })
 
 const generatePasswordHandle = () => {
@@ -117,6 +135,7 @@ const rules = reactive<FormRules<AddUserForm>>({
     ],
 })
 
+const role_name = ref('Subscriber')
 
 /**
  * @description: 提交表单
@@ -130,32 +149,26 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         if (valid) {
             // 创建请求对象 加密内容
             const req: AddUserRequest = {
-                admin_user_id: "1",
                 user_name: addUserForm.userName,
                 password: addUserForm.password,
                 email: addUserForm.email,
+                role_name: role_name.value,
+                is_send_email: addUserForm.isSendEmail
             }
 
             const { data } = await AddUserByJosn(req)
 
             if (data.code === ResponseCode.UserAddUserSuccess) {
-                // 显示注册成功提示
+                // 添加成功提示
                 ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
 
             } else {
-                // 注册失败
-                // console.log("注册失败");
+                // 添加失败提示
                 ShowMsgTip(ShowMsgTip.MsgType.error, data.msg, 0)
             }
             console.log('submit!')
         }
     })
-}
-
-// 重置表单
-const resetForm = (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    formEl.resetFields()
 }
 
 </script>

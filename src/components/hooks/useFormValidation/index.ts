@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 15:53:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-16 16:13:37
+ * @LastEditTime : 2024-06-16 21:58:49
  * @FilePath     : \blog-client\src\components\hooks\useFormValidation\index.ts
  * @Description  : 用户表单校验
  * @Blog         : https://jiaopengzi.com
@@ -10,6 +10,7 @@
  */
 
 // useFormValidation.ts
+import { type Ref } from 'vue'
 import type { CheckUserNameRequest } from '@/api/user/checkUserName'
 import { checkUserNameByJosn } from '@/api/user/checkUserName'
 import type { CheckEmailRequest } from '@/api/user/checkEmail'
@@ -22,12 +23,12 @@ import { captchaCheckByJosn } from '@/api/captcha/check'
 import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
 
 interface FormValidationOptions {
-  FormUserName?: string
-  FormEmail?: string
-  FormCaptcha?: string
-  FormPassword?: string
-  FormRePassword?: string
-  FormAcceptedTerms?: boolean
+  FormUserName?: Ref<string>
+  FormEmail?: Ref<string>
+  FormCaptcha?: Ref<string>
+  FormPassword?: Ref<string>
+  FormRePassword?: Ref<string>
+  FormAcceptedTerms?: Ref<boolean>
 }
 
 export function useFormValidation(options: FormValidationOptions = {}) {
@@ -69,6 +70,10 @@ export function useFormValidation(options: FormValidationOptions = {}) {
     callback: (error?: string | Error | undefined) => void,
   ): void {
     // 在这里处理异步验证逻辑
+
+    const formPassword = options.FormPassword?.value || ''
+    const formRePassword = options.FormRePassword?.value || ''
+
     if (FormPassword === undefined) {
       callback('请输入密码')
       return
@@ -77,7 +82,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
       callback('请输入确认密码')
       return
     }
-    checkRePassword(FormPassword, FormRePassword)
+    checkRePassword(formPassword, formRePassword)
       .then(() => {
         callback() // 校验成功
       })
@@ -113,7 +118,8 @@ export function useFormValidation(options: FormValidationOptions = {}) {
       callback('请勾选同意服务条款')
       return
     }
-    checkAcceptedTerms(FormAcceptedTerms)
+    const formAcceptedTerms = options.FormAcceptedTerms?.value || false
+    checkAcceptedTerms(formAcceptedTerms)
       .then(() => {
         callback() // 校验成功
       })
@@ -193,8 +199,8 @@ export function useFormValidation(options: FormValidationOptions = {}) {
       callback('请输入用户名')
       return
     }
-
-    checkUserName(FormUserName)
+    const formUserName = options.FormUserName?.value || ''
+    checkUserName(formUserName)
       .then(() => {
         callback() // 校验成功
       })
@@ -241,8 +247,8 @@ export function useFormValidation(options: FormValidationOptions = {}) {
       callback('请输入邮箱')
       return
     }
-
-    checkEmail(FormEmail)
+    const formEmail = options.FormEmail?.value || ''
+    checkEmail(formEmail)
       .then(() => {
         callback() // 校验成功
       })
@@ -288,7 +294,9 @@ export function useFormValidation(options: FormValidationOptions = {}) {
       return
     }
 
-    checkCaptcha(FormEmail, FormCaptcha)
+    const formEmail = options.FormEmail?.value || ''
+    const formCaptcha = options.FormCaptcha?.value || ''
+    checkCaptcha(formEmail, formCaptcha)
       .then(() => {
         callback() // 校验成功
       })

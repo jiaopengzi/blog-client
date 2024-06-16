@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-16 15:24:50
+ * @LastEditTime : 2024-06-16 21:21:59
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -33,7 +33,7 @@
         </template>
 
         <template #add-item>
-            <AddUser :dialog-visible="dialogVisible" @update-dialog-visible="updateDialogVisible" />
+            <AddUser :roles="roles" @update-dialog-visible="updateDialogVisible" />
         </template>
     </BaseTable>
 </template>
@@ -56,7 +56,6 @@ import { DeleteUserByJosn, type DeleteUserRequest } from '@/api/user/deleteUser'
 import { ShowMsgTip } from '@/utils/message'
 
 
-// eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: AadminSideMenu.UserView })
 
 
@@ -245,14 +244,15 @@ const userCountGroupByRole = ref<UserCountGroupByRole[]>([])
 
 
 // 获取角色列表
-const Roles = ref<Role[]>([])
+const roles = ref<Role[]>([])  // 不包含全部角色
+const rolesALL = ref<Role[]>([])   // 包含全部角色
 
 async function getRoles() {
     await getRolesByJson().then((res) => {
         if (res.data.code === ResponseCode.GetRoleSuccess) {
             const newRole = { role_name: AllRoleName, permission_names: [], description: '全部' }
-            Roles.value = [newRole, ...res.data.data]
-
+            roles.value = res.data.data
+            rolesALL.value = [newRole, ...res.data.data]
         }
     })
 }
@@ -262,12 +262,12 @@ async function getRoles() {
 async function getUserCountGroupByRole() {
     await getUserCountGroupByRoleByJosn().then((res) => {
         if (res.data.code === ResponseCode.GetUserCountGroupByRolesSuccess) {
-            const roles = res.data.data
-            const total = roles.reduce((prev, cur) => {
+            const rolesALL = res.data.data
+            const total = rolesALL.reduce((prev, cur) => {
                 return prev + cur.user_count
             }, 0)
             const newRole = { role_name: AllRoleName, user_count: total }
-            userCountGroupByRole.value = [newRole, ...roles]
+            userCountGroupByRole.value = [newRole, ...rolesALL]
         }
     })
 }
@@ -275,7 +275,7 @@ async function getUserCountGroupByRole() {
 
 //  根据角色名称获取角色描述
 function roleDisplay(role: string) {
-    const roleObj = Roles.value.find((item) => item.role_name === role)
+    const roleObj = rolesALL.value.find((item) => item.role_name === role)
     return roleObj ? roleObj.description : role
 }
 

@@ -2,14 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 10:17:33
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-16 16:43:42
+ * @LastEditTime : 2024-06-16 22:03:40
  * @FilePath     : \blog-client\src\views\userinfo\component\info\hooks\useInfo.ts
  * @Description  : 用户信息页面 hooks
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { reactive, ref, onBeforeMount, onMounted, computed } from 'vue'
+import { reactive, ref, onBeforeMount, onMounted, computed, toRef } from 'vue'
 import type { Ref, ComputedRef } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import { useUserStore } from '@/stores/user'
@@ -89,7 +89,8 @@ export function useInfo(): UseInfoReturnType {
   })
 
   // hook 函数
-  const { checkUserNameValidator } = useFormValidation({ FormUserName: editForm.userName })
+  const userNameRef = toRef(editForm, 'userName')
+  const { checkUserNameValidator } = useFormValidation({ FormUserName: userNameRef })
 
   // 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
   const rules = reactive<FormRules<EditForm>>({
