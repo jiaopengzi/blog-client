@@ -50,6 +50,7 @@ export enum ResponseCode {
   NoUsersFound = 1030, //查询所有用户成功
   GetUserCountGroupByRolesSuccess = 1031, //查询用户统计成功
   DeleteUserSuccess = 1032, //删除用户成功
+  UserAddUserSuccess = 1033, //添加用户成功
 
   // 验证码相关
   CaptchaSendSuccess = 8000, //验证码发送成功

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-13 19:56:45
+ * @LastEditTime : 2024-06-16 15:24:50
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -33,7 +33,7 @@
         </template>
 
         <template #add-item>
-            <div>编辑人员</div>
+            <AddUser :dialog-visible="dialogVisible" @update-dialog-visible="updateDialogVisible" />
         </template>
     </BaseTable>
 </template>
@@ -41,6 +41,7 @@
 <script lang="ts" setup>
 import { ref, reactive, onBeforeMount, watch } from 'vue'
 import BaseTable from '@/components/common/base-table'
+import AddUser from '@/views/admin/component/main/user-view/component/add-user'
 import type { Pagination } from '@/components/common'
 import type { TableData, TableColumn } from '@/components/common/base-table'
 import { debounce } from '@/utils/debounce'

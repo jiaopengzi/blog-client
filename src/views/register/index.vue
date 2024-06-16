@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-12 10:23:20
+ * @LastEditTime : 2024-06-16 16:34:15
  * @FilePath     : \blog-client\src\views\register\index.vue
  * @Description  : 注册
  * @Blog         : https://jiaopengzi.com
@@ -77,21 +77,14 @@ import { reactive, ref } from 'vue'
 import SlideVerify from '@/components/common/slide-verify'
 import { ShowMsgTip } from '@/utils/message'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
-import type { CheckUserNameRequest } from '@/api/user/checkUserName'
-import { checkUserNameByJosn } from '@/api/user/checkUserName'
-import type { CheckEmailRequest } from '@/api/user/checkEmail'
-import { CheckEmailByJosn } from '@/api/user/checkEmail'
 import type { RegisterRequest } from '@/api/user/register'
 import { RegisterByJosn } from '@/api/user/register'
-import type { CaptchaSendRequest } from '@/api/captcha/send'
-import { captchaSendByJosn } from '@/api/captcha/send'
 import { getPublicIp } from '@/utils/ip'
-import type { CaptchaCheckRequest } from '@/api/captcha/check'
-import { captchaCheckByJosn } from '@/api/captcha/check'
-import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
+import { ResponseCode } from '@/api/responseCode'
 import { routeObj } from '@/router/routeAll'
 import router from '@/router/index'
 import type { RegisterForm } from '@/views/register'
+import { useFormValidation } from '@/components/hooks/useFormValidation'
 
 
 // eslint-disable-next-line vue/multi-word-component-names
@@ -122,232 +115,20 @@ const registerForm = reactive<RegisterForm>({
   acceptedTerms: false,
 })
 
-/**
- * @description: 确认密码 异步函数
- * @return  Promise<void> 两次输入的密码不一致返回 Promise.reject()，否则返回 Promise.resolve()
- */
-async function checkRePassword(): Promise<void> {
-  try {
-    if (registerForm.rePassword === '') {
-      throw new Error('请再次输入密码')
-    } else if (registerForm.rePassword !== registerForm.password) {
-      throw new Error('两次输入的密码不一致')
-    }
-  } catch (err: unknown) {
-    console.log(err)
-    throw err
-  }
-}
-
-/**
- * @description: 确认密码 Validator
- * @return  void
- */
-function rePasswordValidator(
-  rule: any,
-  value: string,
-  callback: (error?: string | Error | undefined) => void,
-): void {
-  // 在这里处理异步验证逻辑
-  checkRePassword()
-    .then(() => {
-      callback() // 校验成功
-    })
-    .catch((err: Error) => {
-      callback(err.message)
-    })
-}
-
-
-
-
-/**
- * @description: 检查是否同意服务条款 
- */
-async function checkAcceptedTerms(): Promise<void> {
-  try {
-    if (registerForm.acceptedTerms === false) {
-      throw new Error('请勾选同意服务条款')
-    }
-  } catch (err: unknown) {
-    console.log(err)
-    throw err
-  }
-}
-
-/**
- * @description: 是否同意 Validator
- * @return  void
- */
-function acceptedTermsValidator(
-  rule: any,
-  value: string,
-  callback: (error?: string | Error | undefined) => void,
-): void {
-  checkAcceptedTerms()
-    .then(() => {
-      callback() // 校验成功
-    })
-    .catch((err: Error) => {
-      callback(err.message)
-    })
-}
-
-/**
- * @description: 验证码发送 异步函数
- * @return Promise<void> 验证码错误返回 Promise.reject()，否则返回 Promise.resolve()
- */
-async function checkSendCaptcha(): Promise<void> {
-  try {
-    // 创建请求对象 加密内容
-    const req: CaptchaSendRequest = {
-      email: registerForm.email,
-      ip: await getPublicIp(),
-      purpose: CaptchaPurpose.Register,
-    }
-    console.log('==========>发送验证码')
-
-    const { data } = await captchaSendByJosn(req) // 将 resStr 转换为对象
-
-    if (data.code !== ResponseCode.CaptchaSendSuccess && data.data !== null) {
-      // 历遍 data 中的错误信息 并抛出第一个key错误信息 停止循环
-      for (const key in data.data) {
-        if (Object.prototype.hasOwnProperty.call(data.data, key)) {
-          throw new Error(data.data[key]) // 抛出错误信息
-        }
-      }
-    }
-    if (data.code !== ResponseCode.CaptchaSendSuccess && data.data === null) {
-      throw new Error(data.msg) // 抛出错误信息
-    }
-  } catch (err: unknown) {
-    console.log(err)
-    throw err
-  }
-}
-
-/**
- * @description: 用户名查重 异步函数
- * @return  Promise<void> 用户名存在返回 Promise.reject()，否则返回 Promise.resolve()
- */
-async function checkUserName(): Promise<void> {
-  try {
-    // 创建请求对象 加密内容
-    const req: CheckUserNameRequest = {
-      user_name: registerForm.userName,
-    }
-
-    const { data } = await checkUserNameByJosn(req)
-
-    if (data.code === ResponseCode.UserNameExist) {
-      throw new Error(data.msg)
-    }
-  } catch (err: unknown) {
-    console.log(err)
-    throw err
-  }
-}
-
-/**
- * @description: 用户名查重 Validator
- * @param rule 无用参数
- * @param value 无用参数
- * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
- */
-function checkUserNameValidator(
-  rule: any,
-  value: string,
-  callback: (error?: string | Error | undefined) => void,
-): void {
-  // 在这里处理异步验证逻辑
-  checkUserName()
-    .then(() => {
-      callback() // 校验成功
-    })
-    .catch((err: Error) => {
-      callback(err.message) // 如果失败（用户名已经存在），则传入错误提示字符串
-    })
-}
-
-/**
- * @description: 邮箱查重 异步函数
- * @return
- */
-async function checkEmail(): Promise<void> {
-  // 创建请求对象 加密内容
-  const req: CheckEmailRequest = {
-    email: registerForm.email,
-  }
-
-  try {
-    const { data } = await CheckEmailByJosn(req)
-
-    if (data.code === ResponseCode.UserEmailExist) {
-      throw new Error(data.msg)
-    }
-  } catch (err: unknown) {
-    console.log(err)
-    throw err
-  }
-}
-
-/**
- * @description: 用户名查重 Validator
- * @param rule 无用参数
- * @param value 无用参数
- * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
- */
-function checkEmailValidator(
-  rule: any,
-  value: string,
-  callback: (error?: string | Error | undefined) => void,
-): void {
-  // 在这里处理异步验证逻辑
-  checkEmail()
-    .then(() => {
-      callback() // 校验成功
-    })
-    .catch((err: Error) => {
-      callback(err.message) // 如果失败（邮箱已经存在），则传入错误提示字符串
-    })
-}
-
-// 验证码校验 异步函数
-async function checkCaptcha(): Promise<void> {
-  try {
-    // 创建请求对象 加密内容
-    const req: CaptchaCheckRequest = {
-      ip: await getPublicIp(),
-      email: registerForm.email,
-      captcha: registerForm.captcha,
-      purpose: CaptchaPurpose.Register,
-    }
-    const { data } = await captchaCheckByJosn(req)
-
-    if (data.code !== ResponseCode.CaptchaCheckSuccess) {
-      throw new Error(data.msg)
-    }
-  } catch (err: unknown) {
-    console.log(err)
-    throw err
-  }
-}
-
-// 校验验证码 Validator
-function checkCaptchaValidator(
-  rule: any,
-  value: string,
-  callback: (error?: string | Error | undefined) => void,
-): void {
-  // 在这里处理异步验证逻辑
-  checkCaptcha()
-    .then(() => {
-      callback() // 校验成功
-    })
-    .catch((err: Error) => {
-      callback(err.message) // 如果失败（用户名已经存在），则传入错误提示字符串
-    })
-}
+// hook 函数
+const {
+  checkSendCaptcha,
+  checkUserNameValidator,
+  checkEmailValidator,
+  checkCaptchaValidator,
+  rePasswordValidator,
+  acceptedTermsValidator } = useFormValidation({
+    FormUserName: registerForm.userName,
+    FormEmail: registerForm.email,
+    FormPassword: registerForm.password,
+    FormRePassword: registerForm.rePassword,
+    FormAcceptedTerms: registerForm.acceptedTerms
+  })
 
 /**
  * @description: 表单校验规则
@@ -473,7 +254,7 @@ const sendcaptcha = async () => {
     btnCaptchaState.disabled = true // 按钮设置不能点击状态
 
     // 发送验证码
-    checkSendCaptcha()
+    checkSendCaptcha(registerForm.email)
       .then(() => {
         // 成功发送验证码
         ShowMsgTip(ShowMsgTip.MsgType.success, '验证码已发送到邮箱。', 6000)
