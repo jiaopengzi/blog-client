@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 15:53:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-16 21:58:49
+ * @LastEditTime : 2024-06-16 22:17:06
  * @FilePath     : \blog-client\src\components\hooks\useFormValidation\index.ts
  * @Description  : 用户表单校验
  * @Blog         : https://jiaopengzi.com
@@ -11,8 +11,7 @@
 
 // useFormValidation.ts
 import { type Ref } from 'vue'
-import type { CheckUserNameRequest } from '@/api/user/checkUserName'
-import { checkUserNameByJosn } from '@/api/user/checkUserName'
+import { type CheckUserNameRequest, checkUserNameByJosn } from '@/api/user/checkUserName'
 import type { CheckEmailRequest } from '@/api/user/checkEmail'
 import { CheckEmailByJosn } from '@/api/user/checkEmail'
 import type { CaptchaSendRequest } from '@/api/captcha/send'

@@ -120,6 +120,7 @@ const userNameRef = toRef(registerForm, 'userName')
 const emailRef = toRef(registerForm, 'email')
 const passwordRef = toRef(registerForm, 'password')
 const rePasswordRef = toRef(registerForm, 'rePassword')
+const captchaRef = toRef(registerForm, 'captcha')
 const acceptedTermsRef = toRef(registerForm, 'acceptedTerms')
 
 // hook 函数
@@ -134,6 +135,7 @@ const {
     FormEmail: emailRef,
     FormPassword: passwordRef,
     FormRePassword: rePasswordRef,
+    FormCaptcha: captchaRef,
     FormAcceptedTerms: acceptedTermsRef
   })
 
@@ -199,6 +201,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         email: registerForm.email,
       }
 
+      console.log('req:', req)
       const { data } = await RegisterByJosn(req)
 
       if (data.code === ResponseCode.UserRegisterSuccess) {

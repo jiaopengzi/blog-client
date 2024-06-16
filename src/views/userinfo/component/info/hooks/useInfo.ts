@@ -2,14 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 10:17:33
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-16 22:03:40
+ * @LastEditTime : 2024-06-16 22:15:25
  * @FilePath     : \blog-client\src\views\userinfo\component\info\hooks\useInfo.ts
  * @Description  : 用户信息页面 hooks
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { reactive, ref, onBeforeMount, onMounted, computed, toRef } from 'vue'
+import { reactive, ref, onBeforeMount, onMounted, computed } from 'vue'
 import type { Ref, ComputedRef } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import { useUserStore } from '@/stores/user'
@@ -22,7 +22,7 @@ import { editUserInfoByJosn } from '@/api/user/editUserInfo'
 import { ShowMsgTip } from '@/utils/message'
 import type { EditForm } from '@/views/userinfo/component/info'
 import { convertToBeijingTime } from '@/utils/dateTime'
-import { useFormValidation } from '@/components/hooks/useFormValidation'
+import { type CheckUserNameRequest, checkUserNameByJosn } from '@/api/user/checkUserName'
 
 export interface UseInfoReturnType {
   editFormRef: Ref<FormInstance | undefined>
@@ -88,9 +88,51 @@ export function useInfo(): UseInfoReturnType {
       : userData.value.user.user_email
   })
 
-  // hook 函数
-  const userNameRef = toRef(editForm, 'userName')
-  const { checkUserNameValidator } = useFormValidation({ FormUserName: userNameRef })
+  /**
+   * @description: 用户名查重 Validator
+   * @param rule 无用参数
+   * @param value 无用参数
+   * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
+   */
+  function checkUserNameValidator(
+    rule: any,
+    value: string,
+    callback: (error?: string | Error | undefined) => void,
+  ): void {
+    // 在这里处理异步验证逻辑
+    checkUserName()
+      .then(() => {
+        callback() // 校验成功
+      })
+      .catch((err: Error) => {
+        callback(err.message) // 如果失败（用户名已经存在），则传入错误提示字符串
+      })
+  }
+
+  /**
+   * @description: 用户名查重 异步函数
+   * @return  Promise<void> 用户名存在返回 Promise.reject()，否则返回 Promise.resolve()
+   */
+  async function checkUserName(): Promise<void> {
+    try {
+      // 创建请求对象 加密内容
+      const req: CheckUserNameRequest = {
+        user_name: editForm.userName,
+      }
+      // console.log(req)
+      const { data } = await checkUserNameByJosn(req)
+
+      if (
+        data.code === ResponseCode.UserNameExist &&
+        userData.value.user.user_name !== editForm.userName
+      ) {
+        throw new Error(data.msg)
+      }
+    } catch (err: unknown) {
+      console.log(err)
+      throw err
+    }
+  }
 
   // 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
   const rules = reactive<FormRules<EditForm>>({

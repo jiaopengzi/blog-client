@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 14:48:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-16 21:51:01
+ * @LastEditTime : 2024-06-16 22:30:38
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\add-user\index.vue
  * @Description  : 添加用户
  * @Blog         : https://jiaopengzi.com
@@ -75,13 +75,14 @@ const formSize = ref('large')
 
 // 表单实例
 const addUserFormRef = ref<FormInstance>()
+const role_name = ref('Subscriber')
 
 // 表单数据
 const addUserForm = reactive<AddUserForm>({
     userName: 'jiaopengzi',
     email: 'jiaopengzi@qq.com',
     password: generatePassword(),
-    roleName: 'Subscriber',
+    roleName: role_name.value,
     isSendEmail: false
 })
 
@@ -135,7 +136,7 @@ const rules = reactive<FormRules<AddUserForm>>({
     ],
 })
 
-const role_name = ref('Subscriber')
+
 
 /**
  * @description: 提交表单
@@ -145,30 +146,35 @@ const role_name = ref('Subscriber')
  */
 const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    await formEl.validate(async (valid) => {
-        if (valid) {
-            // 创建请求对象 加密内容
-            const req: AddUserRequest = {
-                user_name: addUserForm.userName,
-                password: addUserForm.password,
-                email: addUserForm.email,
-                role_name: role_name.value,
-                is_send_email: addUserForm.isSendEmail
+    try {
+        await formEl.validate(async (valid) => {
+            if (valid) {
+                // 创建请求对象 加密内容
+                const req: AddUserRequest = {
+                    user_name: addUserForm.userName,
+                    password: addUserForm.password,
+                    email: addUserForm.email,
+                    role_name: role_name.value,
+                    is_send_email: addUserForm.isSendEmail
+                }
+                console.log('req:', req)
+                const { data } = await AddUserByJosn(req)
+
+                if (data.code === ResponseCode.UserAddUserSuccess) {
+                    // 添加成功提示
+                    ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
+
+                } else {
+                    // 添加失败提示
+                    ShowMsgTip(ShowMsgTip.MsgType.error, data.msg, 0)
+                }
+                console.log('submit!')
             }
+        })
+    } catch (error) {
+        return
+    }
 
-            const { data } = await AddUserByJosn(req)
-
-            if (data.code === ResponseCode.UserAddUserSuccess) {
-                // 添加成功提示
-                ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
-
-            } else {
-                // 添加失败提示
-                ShowMsgTip(ShowMsgTip.MsgType.error, data.msg, 0)
-            }
-            console.log('submit!')
-        }
-    })
 }
 
 </script>
