@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 14:48:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-16 22:30:38
+ * @LastEditTime : 2024-06-17 21:41:46
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\add-user\index.vue
  * @Description  : 添加用户
  * @Blog         : https://jiaopengzi.com
@@ -35,7 +35,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item prop="isSendEmail">
-                <el-checkbox value="发送邮件" name="send_email">是否发送邮件到用户邮箱</el-checkbox>
+                <el-checkbox v-model="addUserForm.isSendEmail" value="发送邮件" name="send_email">是否发送邮件到用户邮箱。</el-checkbox>
             </el-form-item>
 
             <div class="btn-submit">
@@ -60,6 +60,10 @@ import { generatePassword } from '@/utils/password'
 import { type Role } from '@/api/permissionRole/role'
 
 defineOptions({ name: 'AddUser' })
+
+const emit = defineEmits<{
+    (event: 'add-user-status', value: boolean): void // 添加用户状态
+}>()
 
 // props
 const props = defineProps<{
@@ -162,6 +166,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
                 if (data.code === ResponseCode.UserAddUserSuccess) {
                     // 添加成功提示
+                    emit('add-user-status', true)
                     ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
 
                 } else {

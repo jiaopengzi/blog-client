@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-16 21:21:59
+ * @LastEditTime : 2024-06-17 21:46:57
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -33,7 +33,7 @@
         </template>
 
         <template #add-item>
-            <AddUser :roles="roles" @update-dialog-visible="updateDialogVisible" />
+            <AddUser :roles="roles" @add-user-status="addUserStatus" />
         </template>
     </BaseTable>
 </template>
@@ -351,7 +351,15 @@ function getValueFromQuery() {
     console.log("12============", search.value)
 }
 
-
+const addUserStatus = async (status: boolean) => {
+    // 如果 status 为 true 就更新
+    if (status) {
+        getValueFromQuery()
+        await getRoles() // 获取角色列表
+        await getUserCountGroupByRole() // 按照角色获取用户数量
+        await getUserPaginate({ role_name: activeRole.value, current_page: pagination.value.current_page, page_size: pagination.value.page_size, key_word: search.value })
+    }
+}
 
 onBeforeMount(async () => {
     console.log("13============")

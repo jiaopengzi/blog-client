@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-22 16:51:29
+ * @LastEditTime : 2024-06-17 10:08:43
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -50,7 +50,7 @@ export enum ResponseCode {
   NoUsersFound = 1030, //查询所有用户成功
   GetUserCountGroupByRolesSuccess = 1031, //查询用户统计成功
   DeleteUserSuccess = 1032, //删除用户成功
-  UserAddUserSuccess = 1033, //添加用户成功
+  UserAddUserSuccess = 1034, //添加用户成功
 
   // 验证码相关
   CaptchaSendSuccess = 8000, //验证码发送成功
