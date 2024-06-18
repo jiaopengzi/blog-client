@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 14:48:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-17 21:41:46
+ * @LastEditTime : 2024-06-18 08:43:48
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\add-user\index.vue
  * @Description  : 添加用户
  * @Blog         : https://jiaopengzi.com
@@ -29,7 +29,7 @@
             </el-form-item>
 
             <el-form-item label="角色" prop="roleName">
-                <el-select v-model="role_name" placeholder="选择用户角色">
+                <el-select v-model="addUserForm.roleName" placeholder="选择用户角色">
                     <el-option v-for="item in props.roles" :key="item.role_name" :label="item.description"
                         :value="item.role_name" />
                 </el-select>
@@ -79,14 +79,14 @@ const formSize = ref('large')
 
 // 表单实例
 const addUserFormRef = ref<FormInstance>()
-const role_name = ref('Subscriber')
+// const role_name = ref('Subscriber')
 
 // 表单数据
 const addUserForm = reactive<AddUserForm>({
     userName: 'jiaopengzi',
     email: 'jiaopengzi@qq.com',
     password: generatePassword(),
-    roleName: role_name.value,
+    roleName: 'Subscriber',
     isSendEmail: false
 })
 
@@ -158,7 +158,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                     user_name: addUserForm.userName,
                     password: addUserForm.password,
                     email: addUserForm.email,
-                    role_name: role_name.value,
+                    role_name: addUserForm.roleName,
                     is_send_email: addUserForm.isSendEmail
                 }
                 console.log('req:', req)

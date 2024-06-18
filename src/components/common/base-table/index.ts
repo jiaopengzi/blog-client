@@ -10,7 +10,7 @@
  */
 
 import { type DataWithImg } from '@/components/common' // 图片填充方式
-import type { User } from '@/api/user/getUsers'
+import  { type User } from '@/api/user/getUsers'
 
 export { default } from './index.vue'
 

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 17:31:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-27 16:30:42
+ * @LastEditTime : 2024-06-18 22:52:02
  * @FilePath     : \blog-client\src\components\common\avatar-upload\index.vue
  * @Description  : 头像上传
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,7 @@
 
 <template>
     <div class="avatar-upload">
-        <el-button type="primary" @click="cropperVisible = true">选择并上传头像</el-button>
+        <el-button type="primary" @click="cropperVisible = true">编辑头像</el-button>
 
         <el-dialog v-model="cropperVisible" width="500px" content-class="dialog-content">
             <input type="file" ref="fileInput" accept="image/*" @change="onFileChange" />
@@ -39,6 +39,10 @@ import { UploadCode } from '@/api/responseCode'
 
 defineOptions({ name: 'AvatarUpload' })
 
+const emit = defineEmits<{
+    (event: 'avatar-upload-status', value: boolean): void // 头像上传状态
+}>()
+
 const userStore = useUserStore()
 const fileInput = ref<HTMLInputElement | null>(null)
 const cropperVisible = ref(false)
@@ -46,10 +50,17 @@ const cropperContainer = ref<HTMLDivElement | null>(null)
 let cropperInstance: Cropper | null = null
 
 
+/**
+ * @description: 打开裁剪器 
+ */
 function openCropper() {
     fileInput.value?.click()
 }
 
+/**
+ * @description: 选择文件后触发 
+ * @param e: Event 事件 
+ */
 function onFileChange(e: Event) {
     const target = e.target as HTMLInputElement
     const file = target.files?.[0]
@@ -66,32 +77,39 @@ function onFileChange(e: Event) {
     initCropper(url)
 }
 
+
+// 初始化裁剪器
 function initCropper(url: string) {
     if (cropperInstance) {
-        cropperInstance.destroy()
+        cropperInstance.destroy() // 销毁之前的裁剪器
     }
 
-    const imageWrapper = document.createElement('div')
-    const image = new Image()
+    const imageWrapper = document.createElement('div') // 创建一个 div 用于包裹图片
+    const image = new Image() // 创建一个图片元素
+
+    // 图片加载完成后初始化裁剪器
     image.addEventListener('load', () => {
         cropperInstance = new Cropper(image, {
-            aspectRatio: 1,
-            viewMode: 3,
-            autoCropArea: 1,
-            background: false,
+            aspectRatio: 1, // 裁剪框比例
+            viewMode: 3, // 显示模式
+            autoCropArea: 1, // 自动裁剪区域
+            background: false, // 背景
         })
     })
-    image.src = url
-    imageWrapper.appendChild(image)
 
+    image.src = url // 设置图片地址
+    imageWrapper.appendChild(image) // 将图片添加到包裹元素中
+
+    // 将包裹元素添加到裁剪器容器中
     if (cropperContainer.value) {
         cropperContainer.value.innerHTML = ''
         cropperContainer.value.appendChild(imageWrapper)
     }
 
-    cropperVisible.value = true
+    cropperVisible.value = true // 显示裁剪器
 }
 
+// 上传图片
 function uploadImage() {
     if (cropperInstance) {
         cropperInstance.getCroppedCanvas().toBlob((blob: Blob | null) => {
@@ -109,6 +127,7 @@ function uploadImage() {
                         cropperVisible.value = false
                         // 处理返回数据，并更新头像等信息
                         userStore.getUserInfoByToken(true) // 强制更新用户信息
+                        emit('avatar-upload-status', true)
                         ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
                         return
                     } else {
@@ -125,13 +144,14 @@ function uploadImage() {
     }
 }
 
+// 组件销毁时销毁裁剪器实例
 onUnmounted(() => {
     if (cropperInstance) {
         cropperInstance.destroy()
     }
 })
 
-
+// 导出方法
 defineExpose({
     openCropper,
     onFileChange,

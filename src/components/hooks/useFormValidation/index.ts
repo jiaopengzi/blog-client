@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 15:53:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-16 22:17:06
+ * @LastEditTime : 2024-06-18 14:15:14
  * @FilePath     : \blog-client\src\components\hooks\useFormValidation\index.ts
  * @Description  : 用户表单校验
  * @Blog         : https://jiaopengzi.com
@@ -12,14 +12,19 @@
 // useFormValidation.ts
 import { type Ref } from 'vue'
 import { type CheckUserNameRequest, checkUserNameByJosn } from '@/api/user/checkUserName'
-import type { CheckEmailRequest } from '@/api/user/checkEmail'
-import { CheckEmailByJosn } from '@/api/user/checkEmail'
-import type { CaptchaSendRequest } from '@/api/captcha/send'
-import { captchaSendByJosn } from '@/api/captcha/send'
-import { getPublicIp } from '@/utils/ip'
-import type { CaptchaCheckRequest } from '@/api/captcha/check'
-import { captchaCheckByJosn } from '@/api/captcha/check'
+import {
+  type CheckUserNameExcludingUserIDRequest,
+  checkUserNameExcludingUserIDByJosn,
+} from '@/api/user/checkUserNameExcludingUserID'
+import { type CheckEmailRequest, CheckEmailByJosn } from '@/api/user/checkEmail'
+import {
+  type CheckEmailExcludingUserIDRequest,
+  checkEmailExcludingUserIDByJosn,
+} from '@/api/user/checkEmailExcludingUserID'
+import { type CaptchaSendRequest, captchaSendByJosn } from '@/api/captcha/send'
+import { type CaptchaCheckRequest, captchaCheckByJosn } from '@/api/captcha/check'
 import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
+import { getPublicIp } from '@/utils/ip'
 
 interface FormValidationOptions {
   FormUserName?: Ref<string>
@@ -28,6 +33,7 @@ interface FormValidationOptions {
   FormPassword?: Ref<string>
   FormRePassword?: Ref<string>
   FormAcceptedTerms?: Ref<boolean>
+  FormExcludingUserID?: Ref<string>
 }
 
 export function useFormValidation(options: FormValidationOptions = {}) {
@@ -38,6 +44,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
     FormPassword = '',
     FormRePassword = '',
     FormAcceptedTerms = false,
+    FormExcludingUserID = '',
   } = options
 
   /**
@@ -209,6 +216,66 @@ export function useFormValidation(options: FormValidationOptions = {}) {
   }
 
   /**
+   * @description: 用户名查重 异步函数，排除指定用户ID
+   * @return  Promise<void> 用户名存在返回 Promise.reject()，否则返回 Promise.resolve()
+   */
+  async function checkUserNameExcludingUserID(
+    excludingUserID: string,
+    userName: string,
+  ): Promise<void> {
+    try {
+      // 创建请求对象 加密内容
+      const req: CheckUserNameExcludingUserIDRequest = {
+        excluding_user_id: excludingUserID,
+        user_name: userName,
+      }
+
+      const { data } = await checkUserNameExcludingUserIDByJosn(req)
+
+      if (data.code === ResponseCode.UserNameExistExcludingUserID) {
+        throw new Error(data.msg)
+      }
+    } catch (err: unknown) {
+      console.log(err)
+      throw err
+    }
+  }
+
+  /**
+   * @description: 用户名查重 Validator 排除指定用户ID
+   * @param rule 无用参数
+   * @param value 无用参数
+   * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
+   */
+  function checkUserNameExcludingUserIDValidator(
+    rule: any,
+    value: string,
+    callback: (error?: string | Error | undefined) => void,
+  ): void {
+    if (FormExcludingUserID === undefined) {
+      callback('请输入用户ID')
+      return
+    }
+
+    // 在这里处理异步验证逻辑
+    if (FormUserName === undefined) {
+      callback('请输入用户名')
+      return
+    }
+
+    const formExcludingUserID = options.FormExcludingUserID?.value || ''
+    const formUserName = options.FormUserName?.value || ''
+
+    checkUserNameExcludingUserID(formExcludingUserID, formUserName)
+      .then(() => {
+        callback() // 校验成功
+      })
+      .catch((err: Error) => {
+        callback(err.message) // 如果失败（用户名已经存在），则传入错误提示字符串
+      })
+  }
+
+  /**
    * @description: 邮箱查重 异步函数
    * @return
    */
@@ -241,6 +308,11 @@ export function useFormValidation(options: FormValidationOptions = {}) {
     value: string,
     callback: (error?: string | Error | undefined) => void,
   ): void {
+    if (FormExcludingUserID === undefined) {
+      callback('请输入用户ID')
+      return
+    }
+
     // 在这里处理异步验证逻辑
     if (FormEmail === undefined) {
       callback('请输入邮箱')
@@ -248,6 +320,56 @@ export function useFormValidation(options: FormValidationOptions = {}) {
     }
     const formEmail = options.FormEmail?.value || ''
     checkEmail(formEmail)
+      .then(() => {
+        callback() // 校验成功
+      })
+      .catch((err: Error) => {
+        callback(err.message) // 如果失败（邮箱已经存在），则传入错误提示字符串
+      })
+  }
+
+  /**
+   * @description: 邮箱查重 异步函数 排除指定用户ID
+   * @return
+   */
+  async function checkEmailExcludingUserID(excludingUserID: string, eamil: string): Promise<void> {
+    // 创建请求对象 加密内容
+    const req: CheckEmailExcludingUserIDRequest = {
+      excluding_user_id: excludingUserID,
+      email: eamil,
+    }
+
+    try {
+      const { data } = await checkEmailExcludingUserIDByJosn(req)
+
+      if (data.code === ResponseCode.EmailExistExcludingUserID) {
+        throw new Error(data.msg)
+      }
+    } catch (err: unknown) {
+      console.log(err)
+      throw err
+    }
+  }
+
+  /**
+   * @description: 用户名查重 Validator 排除指定用户ID
+   * @param rule 无用参数
+   * @param value 无用参数
+   * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
+   */
+  function checkEmailExcludingUserIDValidator(
+    rule: any,
+    value: string,
+    callback: (error?: string | Error | undefined) => void,
+  ): void {
+    // 在这里处理异步验证逻辑
+    if (FormEmail === undefined) {
+      callback('请输入邮箱')
+      return
+    }
+    const formExcludingUserID = options.FormExcludingUserID?.value || ''
+    const formEmail = options.FormEmail?.value || ''
+    checkEmailExcludingUserID(formExcludingUserID, formEmail)
       .then(() => {
         callback() // 校验成功
       })
@@ -306,9 +428,13 @@ export function useFormValidation(options: FormValidationOptions = {}) {
 
   return {
     checkUserName,
+    checkUserNameExcludingUserID,
     checkUserNameValidator,
+    checkUserNameExcludingUserIDValidator,
     checkEmail,
     checkEmailValidator,
+    checkEmailExcludingUserID,
+    checkEmailExcludingUserIDValidator,
     checkCaptcha,
     checkCaptchaValidator,
     checkSendCaptcha,

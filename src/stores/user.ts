@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 09:35:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-04-06 00:34:59
+ * @LastEditTime : 2024-06-18 18:18:09
  * @FilePath     : \blog-client\src\stores\user.ts
  * @Description  : 用户信息
  * @Blog         : https://jiaopengzi.com
@@ -15,6 +15,7 @@ import { ResponseCode, LocalStorageKey } from '@/api/responseCode'
 import type { AxiosResponse } from 'axios'
 import { ShowMsgTip } from '@/utils/message'
 import type { LoginRequest, LoginResponse } from '@/api/user/login'
+import { getAvatarUrl } from '@/utils/avatar'
 
 import {
   loginByJosn,
@@ -40,7 +41,7 @@ import { getRolesByJson } from '@/api/permissionRole/role'
 export interface UserInfoStore {
   data: UserInfo
   isLogin: boolean // 是否登录
-  avatar?: string // 头像 优先使用data.user.user_avatar 如果没有则使用 data.user_qq.avatar 或者 data.user_wechat.Avatar
+  avatar?: string // 头像
   isBindEmail: boolean // 是否绑定邮箱
   showDialogBindEmail?: boolean // 是否显示绑定邮箱弹窗
   permissions?: PermissionNames[] // 权限列表
@@ -300,11 +301,7 @@ async function apiGetUserInfoByToken(): Promise<UserInfoStore> {
       return {
         data: dataUser,
         isLogin: true,
-        avatar:
-          dataUser?.user?.user_avatar ||
-          dataUser?.user_wechat?.avatar ||
-          dataUser?.user_qq?.avatar ||
-          '',
+        avatar: getAvatarUrl(dataUser),
         isBindEmail: !!dataUser?.user?.user_email,
         showDialogBindEmail: !dataUser?.user?.user_email,
         permissions,

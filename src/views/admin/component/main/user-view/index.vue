@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-17 21:46:57
+ * @LastEditTime : 2024-06-18 22:47:06
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -10,15 +10,19 @@
 -->
 
 <template>
-    <BaseTable :pagination="pagination" :table-column="cols" :dialog-visible="dialogVisible" :is-show-delete-all="true"
-        :search-str="search" @update-current-page="updateCurrentPage" @update-page-size="updatePageSize"
-        @update-page-sizes="updatePageSizes" @edit-row="editRow" @delete-rows="deleteRows" @update-search="updateSearch"
-        @update-selection="updateSelection" @update-dialog-visible="updateDialogVisible">
+    <BaseTable :pagination="pagination" :table-column="cols" :add-item-dialog-visible="addItemDialogVisible"
+        :edit-item-dialog-visible="editItemDialogVisible" :is-show-delete-all="true" :search-str="search"
+        @update-current-page="updateCurrentPage" @update-page-size="updatePageSize" @update-page-sizes="updatePageSizes"
+        @edit-row="editRow" @delete-rows="deleteRows" @update-search="updateSearch" @update-selection="updateSelection"
+        @add-item-update-dialog-visible="addItemUpdateDialogVisible"
+        @edit-item-update-dialog-visible="editItemUpdateDialogVisible">
 
         <template #btns>
             <el-button type="primary" @click="handleAdd">
                 新增
             </el-button>
+        </template>
+        <template #category>
             <!-- v-for 循环 userCountGroupByRole生成 按钮 -->
             <div class="user-count-by-role">
                 <el-button v-for="item in userCountGroupByRole" :key="item.role_name"
@@ -28,12 +32,27 @@
             </div>
         </template>
 
+        <!-- 新增弹窗 -->
         <template #add-item-title>
             <span class="dialog-title">新增用户</span>
         </template>
 
         <template #add-item>
-            <AddUser :roles="roles" @add-user-status="addUserStatus" />
+            <div class="dialog-add">
+                <AddUser :roles="roles" @add-user-status="addUserStatus" />
+            </div>
+        </template>
+
+        <!-- 编辑弹窗 -->
+        <template #edit-item-title>
+            <span class="dialog-title">编辑用户</span>
+        </template>
+
+        <template #edit-item>
+            <div class="dialog-edit">
+                <EditUser :roles="roles" :edit-user-data="editUserByAdminForm" @edit-user-status="editUserStatus" />
+            </div>
+
         </template>
     </BaseTable>
 </template>
@@ -42,6 +61,7 @@
 import { ref, reactive, onBeforeMount, watch } from 'vue'
 import BaseTable from '@/components/common/base-table'
 import AddUser from '@/views/admin/component/main/user-view/component/add-user'
+import EditUser from '@/views/admin/component/main/user-view/component/edit-user'
 import type { Pagination } from '@/components/common'
 import type { TableData, TableColumn } from '@/components/common/base-table'
 import { debounce } from '@/utils/debounce'
@@ -54,10 +74,10 @@ import { ResponseCode } from '@/api/responseCode'
 import router from '@/router/index'
 import { DeleteUserByJosn, type DeleteUserRequest } from '@/api/user/deleteUser'
 import { ShowMsgTip } from '@/utils/message'
+import { type EditUserByAdminForm } from '@/views/admin/component/main/user-view/component/edit-user'
 
 
 defineOptions({ name: AadminSideMenu.UserView })
-
 
 const cols: TableColumn[] = reactive([
 
@@ -138,14 +158,15 @@ const pagination = ref<Pagination<User>>({
 
 const search = ref('')
 
-const dialogVisible = ref(false)
+const addItemDialogVisible = ref(false)
+const editItemDialogVisible = ref(false)
 const AllRoleName = 'AllRole'
 const activeRole = ref(AllRoleName)
 
 const handleAdd = () => {
-    dialogVisible.value = !dialogVisible.value
+    addItemDialogVisible.value = !addItemDialogVisible.value
     // dialogVisible.value = true
-    console.log("00============", dialogVisible.value)
+    console.log("00============", addItemDialogVisible.value)
 }
 
 const updateCurrentPage = async (val: number) => {
@@ -167,8 +188,32 @@ const updatePageSizes = (val: any) => {
 }
 
 
+// 需要编辑的用户ID
+const editUserByAdminForm = reactive<EditUserByAdminForm>({
+    excludingUserID: '',
+    userName: '',
+    email: '',
+    status: '0',
+    password: '',
+    roleName: '',
+    nickName: '',
+    sex: '男',
+    description: '',
+})
+
+
 const editRow = (index: number, row: TableData) => {
     console.log("04============", index, row)
+    // 断言 row 中有 user_name ts 不会报错
+    if ('user_name' in row) {
+        editUserByAdminForm.excludingUserID = row.id.toString()
+        editUserByAdminForm.userName = row.user_name
+        editUserByAdminForm.email = row.user_email
+        editUserByAdminForm.status = row.user_status.toString()
+        editUserByAdminForm.password = ''
+        editUserByAdminForm.nickName = row.user_display_name
+        editUserByAdminForm.roleName = row.role
+    }
 }
 
 
@@ -210,9 +255,18 @@ const updateSelection = (rows: TableData[]) => {
 }
 
 // 关闭上传对话框时清空上传文件列表
-const updateDialogVisible = (val: boolean) => {
+const addItemUpdateDialogVisible = (val: boolean) => {
     console.log("09============", val)
-    dialogVisible.value = val
+    addItemDialogVisible.value = val
+    // if (!val) {
+    //     dialogVisible.value = val
+    // }
+}
+
+// 关闭上传对话框时清空上传文件列表
+const editItemUpdateDialogVisible = (val: boolean) => {
+    console.log("09============", val)
+    editItemDialogVisible.value = val
     // if (!val) {
     //     dialogVisible.value = val
     // }
@@ -361,6 +415,16 @@ const addUserStatus = async (status: boolean) => {
     }
 }
 
+const editUserStatus = async (status: boolean) => {
+    // 如果 status 为 true 就更新
+    if (status) {
+        getValueFromQuery()
+        await getRoles() // 获取角色列表
+        await getUserCountGroupByRole() // 按照角色获取用户数量
+        await getUserPaginate({ role_name: activeRole.value, current_page: pagination.value.current_page, page_size: pagination.value.page_size, key_word: search.value })
+    }
+}
+
 onBeforeMount(async () => {
     console.log("13============")
     getValueFromQuery()
@@ -433,5 +497,13 @@ onBeforeMount(async () => {
             display: none;
         }
     }
+}
+
+.dialog-add,
+.dialog-edit {
+    width: 100%;
+    // 浮动 水平居中
+    display: flex;
+    justify-content: center;
 }
 </style>

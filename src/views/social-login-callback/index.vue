@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-04-06 00:11:49
+ * @LastEditTime : 2024-06-18 22:59:01
  * @FilePath     : \blog-client\src\views\social-login-callback\index.vue
  * @Description  : 三方登录回调页面
  * @Blog         : https://jiaopengzi.com
@@ -24,7 +24,7 @@ import type { Ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { routeObj } from '@/router/routeAll'
-import { social } from '@/api/responseCode'
+import { Social } from '@/api/responseCode'
 import router from '@/router'
 
 defineOptions({ name: 'SocialLoginCallback' })
@@ -70,16 +70,16 @@ const _platform: Ref<string> = ref('')
 onMounted(async () => {
   console.log(route.path)
   if (route.path === routeObj.socialQQLoginCallback.path) {
-    _platform.value = social.QQDisplay
+    _platform.value = Social.QQDisplay
     await loginByQQCallback() // 等待 loginByQQCallback 执行完毕后，跳转到首页
   } else if (route.path === routeObj.socialQQBindCallback.path) {
-    _platform.value = social.QQDisplay
+    _platform.value = Social.QQDisplay
     await bindQQCallback() // 等待 bindQQCallback 执行完毕后，跳转到首页
   } else if (route.path === routeObj.sociaWeChatLoginCallback.path) {
-    _platform.value = social.WeChatDisplay
+    _platform.value = Social.WeChatDisplay
     await loginByWeChatCallback() // 等待 loginByWeChatCallback 执行完毕后，跳转到首页
   } else if (route.path === routeObj.socialWeChatBindCallback.path) {
-    _platform.value = social.WeChatDisplay
+    _platform.value = Social.WeChatDisplay
     await bindWeChatCallback()
   }
 

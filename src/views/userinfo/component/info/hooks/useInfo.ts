@@ -2,27 +2,28 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 10:17:33
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-16 22:15:25
+ * @LastEditTime : 2024-06-18 22:58:09
  * @FilePath     : \blog-client\src\views\userinfo\component\info\hooks\useInfo.ts
  * @Description  : 用户信息页面 hooks
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { reactive, ref, onBeforeMount, onMounted, computed } from 'vue'
+import { reactive, ref, onBeforeMount, onMounted, computed, toRef } from 'vue'
 import type { Ref, ComputedRef } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 import type { UserInfo } from '@/api/user/getUserInfo'
-import { social } from '@/api/responseCode'
+import { Social } from '@/api/responseCode'
 import { ResponseCode } from '@/api/responseCode'
 import type { editUserInfoRequest } from '@/api/user/editUserInfo'
 import { editUserInfoByJosn } from '@/api/user/editUserInfo'
 import { ShowMsgTip } from '@/utils/message'
 import type { EditForm } from '@/views/userinfo/component/info'
 import { convertToBeijingTime } from '@/utils/dateTime'
-import { type CheckUserNameRequest, checkUserNameByJosn } from '@/api/user/checkUserName'
+import { useFormValidation } from '@/components/hooks/useFormValidation'
+import { getUserMetaValue } from '@/utils/metaInfo'
 
 export interface UseInfoReturnType {
   editFormRef: Ref<FormInstance | undefined>
@@ -38,11 +39,10 @@ export interface UseInfoReturnType {
   showQQ: Ref<boolean>
   showWeChat: Ref<boolean>
   socialNickname: (platform: keyof UserInfo, field: string) => string
-  bindSocial: (platform: social) => Promise<void>
-  unBindSocial: (platform: social) => Promise<void>
+  bindSocial: (platform: Social) => Promise<void>
+  unBindSocial: (platform: Social) => Promise<void>
   userNameDisabled: Ref<boolean>
   email: ComputedRef<string>
-  getUserMetaValue: (key: string) => string | undefined
 }
 
 export function useInfo(): UseInfoReturnType {
@@ -68,18 +68,12 @@ export function useInfo(): UseInfoReturnType {
 
   const formatRegisterTime = convertToBeijingTime(userData.value.user.created_at)
 
-  // 获取用户元数据列表中信息
-  const getUserMetaValue = (key: string): string | undefined => {
-    const meta = userData.value.user_meta.find((item) => item.meta_key === key)
-    return meta ? meta.meta_value : undefined
-  }
-
   // 表单数据
   const editForm = reactive<EditForm>({
     userName: userData.value.user.user_name,
     nickName: userData.value.user.user_display_name,
-    sex: getUserMetaValue('sex') || '男',
-    description: getUserMetaValue('description') || '',
+    sex: getUserMetaValue('sex', userData.value) || '男',
+    description: getUserMetaValue('description', userData.value) || '',
   })
 
   const email = computed(() => {
@@ -88,51 +82,14 @@ export function useInfo(): UseInfoReturnType {
       : userData.value.user.user_email
   })
 
-  /**
-   * @description: 用户名查重 Validator
-   * @param rule 无用参数
-   * @param value 无用参数
-   * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
-   */
-  function checkUserNameValidator(
-    rule: any,
-    value: string,
-    callback: (error?: string | Error | undefined) => void,
-  ): void {
-    // 在这里处理异步验证逻辑
-    checkUserName()
-      .then(() => {
-        callback() // 校验成功
-      })
-      .catch((err: Error) => {
-        callback(err.message) // 如果失败（用户名已经存在），则传入错误提示字符串
-      })
-  }
+  const userNameRef = toRef(editForm, 'userName')
+  const excludingUserIDRef = toRef(userData.value.user.id.toString())
 
-  /**
-   * @description: 用户名查重 异步函数
-   * @return  Promise<void> 用户名存在返回 Promise.reject()，否则返回 Promise.resolve()
-   */
-  async function checkUserName(): Promise<void> {
-    try {
-      // 创建请求对象 加密内容
-      const req: CheckUserNameRequest = {
-        user_name: editForm.userName,
-      }
-      // console.log(req)
-      const { data } = await checkUserNameByJosn(req)
-
-      if (
-        data.code === ResponseCode.UserNameExist &&
-        userData.value.user.user_name !== editForm.userName
-      ) {
-        throw new Error(data.msg)
-      }
-    } catch (err: unknown) {
-      console.log(err)
-      throw err
-    }
-  }
+  // hooks
+  const { checkUserNameExcludingUserIDValidator } = useFormValidation({
+    FormUserName: userNameRef,
+    FormExcludingUserID: excludingUserIDRef,
+  })
 
   // 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
   const rules = reactive<FormRules<EditForm>>({
@@ -140,7 +97,7 @@ export function useInfo(): UseInfoReturnType {
       { required: true, message: '请输入用户名！', trigger: 'blur' },
       { pattern: /^[a-z0-9]{6,20}/, message: '用户名长度:6-20的小写字母或数字', trigger: 'change' },
       // 用户查重
-      { validator: checkUserNameValidator, trigger: 'blur' },
+      { validator: checkUserNameExcludingUserIDValidator, trigger: 'blur' },
     ],
 
     nickName: [
@@ -202,25 +159,25 @@ export function useInfo(): UseInfoReturnType {
    * @param platform 平台
    * @return  void
    */
-  const bindSocial = async (platform: social) => {
+  const bindSocial = async (platform: Social) => {
     if (!userStore.isBindEmail) {
       await userStore.changeShowDialogBindEmail(true)
       return
     }
 
-    if (platform === social.QQ) {
+    if (platform === Social.QQ) {
       await userStore.bindQQ()
-    } else if (platform === social.WeChat) {
+    } else if (platform === Social.WeChat) {
       await userStore.bindWeChat()
     }
     updateShowStatus(platform)
   }
 
-  const unBindSocial = async (platform: social) => {
-    if (platform === social.QQ) {
+  const unBindSocial = async (platform: Social) => {
+    if (platform === Social.QQ) {
       await userStore.unBindQQ()
       showQQ.value = false
-    } else if (platform === social.WeChat) {
+    } else if (platform === Social.WeChat) {
       await userStore.unBindWeChat()
       showWeChat.value = false
     }
@@ -232,11 +189,11 @@ export function useInfo(): UseInfoReturnType {
    * @param platform 平台
    * @return  void
    */
-  const updateShowStatus = (platform: social) => {
-    if (platform === social.QQ && userData.value.user_qq && userData.value.user_qq.openid) {
+  const updateShowStatus = (platform: Social) => {
+    if (platform === Social.QQ && userData.value.user_qq && userData.value.user_qq.openid) {
       showQQ.value = true
     } else if (
-      platform === social.WeChat &&
+      platform === Social.WeChat &&
       userData.value.user_wechat &&
       userData.value.user_wechat.unionid
     ) {
@@ -245,8 +202,8 @@ export function useInfo(): UseInfoReturnType {
   }
 
   onMounted(() => {
-    updateShowStatus(social.QQ)
-    updateShowStatus(social.WeChat)
+    updateShowStatus(Social.QQ)
+    updateShowStatus(Social.WeChat)
     changeUserNameDisabled()
   })
 
@@ -273,6 +230,5 @@ export function useInfo(): UseInfoReturnType {
     unBindSocial,
     userNameDisabled,
     email,
-    getUserMetaValue,
   }
 }

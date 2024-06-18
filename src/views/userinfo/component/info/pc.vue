@@ -22,23 +22,23 @@
 
     <div class="el-social-div">
       <el-descriptions title="社交信息" :column="3" size="large" border>
-        <el-descriptions-item :label="social.QQDisplay">
-          <button class="btn-bind" v-if="!showQQ" @click="bindSocial(social.QQ)">
-            绑定{{ social.QQDisplay }}
+        <el-descriptions-item :label="Social.QQDisplay">
+          <button class="btn-bind" v-if="!showQQ" @click="bindSocial(Social.QQ)">
+            绑定{{ Social.QQDisplay }}
           </button>
           <span class="social-nickname">{{ socialNickname('user_qq', 'nickname') }}</span>
-          <button class="btn-unbind" v-if="showQQ && isBindEmail" @click="unBindSocial(social.QQ)">
-            解绑{{ social.QQDisplay }}
+          <button class="btn-unbind" v-if="showQQ && isBindEmail" @click="unBindSocial(Social.QQ)">
+            解绑{{ Social.QQDisplay }}
           </button>
         </el-descriptions-item>
 
-        <el-descriptions-item :label="social.WeChatDisplay">
-          <button class="btn-bind" v-if="!showWeChat" @click="bindSocial(social.WeChat)">
-            绑定{{ social.WeChatDisplay }}
+        <el-descriptions-item :label="Social.WeChatDisplay">
+          <button class="btn-bind" v-if="!showWeChat" @click="bindSocial(Social.WeChat)">
+            绑定{{ Social.WeChatDisplay }}
           </button>
           <span class="social-nickname">{{ socialNickname('user_wechat', 'nickname') }}</span>
-          <button class="btn-unbind" v-if="showWeChat && isBindEmail" @click="unBindSocial(social.WeChat)">
-            解绑{{ social.WeChatDisplay }}
+          <button class="btn-unbind" v-if="showWeChat && isBindEmail" @click="unBindSocial(Social.WeChat)">
+            解绑{{ Social.WeChatDisplay }}
           </button>
         </el-descriptions-item>
       </el-descriptions>
@@ -90,7 +90,7 @@
 <script setup lang="ts">
 import AvatarInitials from '@/components/common/avatar-initials'
 import AvatarUpload from '@/components/common/avatar-upload'
-import { social } from '@/api/responseCode'
+import { Social } from '@/api/responseCode'
 import { useInfo } from '@/views/userinfo/component/info/hooks'
 
 defineOptions({ name: 'UserInfoInfoPC' })

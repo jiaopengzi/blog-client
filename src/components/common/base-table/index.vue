@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-13 17:01:17
+ * @LastEditTime : 2024-06-18 10:06:19
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格
  * @Blog         : https://jiaopengzi.com
@@ -12,10 +12,13 @@
 <template>
     <div class="container">
         <div class="btns">
+            <!-- 按钮 -->
+            <slot name="btns"></slot>
             <el-button v-if="props.isShowDeleteAll" type="danger" @click="handleBatchDelete">
                 删除
             </el-button>
-            <slot name="btns"></slot>
+            <!-- 分类 -->
+            <slot name="category"></slot>
         </div>
 
         <el-table ref="tableRef" :data="paginationData.records" stripe max-height="700px"
@@ -60,11 +63,18 @@
     </div>
 
     <!-- 弹窗 -->
-    <el-dialog v-model="dialogVisibleStatus" @close="handleDialogClose">
+    <el-dialog v-model="addItemDialogVisibleStatus" @close="addItemHandleDialogClose">
         <template #header>
             <slot name="add-item-title"></slot>
         </template>
         <slot name="add-item"></slot>
+    </el-dialog>
+    <!-- 弹窗 -->
+    <el-dialog v-model="editItemDialogVisibleStatus" @close="editItemHandleDialogClose">
+        <template #header>
+            <slot name="edit-item-title"></slot>
+        </template>
+        <slot name="edit-item"></slot>
     </el-dialog>
 </template>
 
@@ -81,11 +91,13 @@ defineOptions({ name: 'BaseTable' })
 const props = withDefaults(defineProps<{
     pagination: Pagination<TableData> // 分页配置
     tableColumn: TableColumn[] // 表格列配置
-    dialogVisible: boolean // 对话框是否显示
+    addItemDialogVisible: boolean // 对话框是否显示
+    editItemDialogVisible: boolean // 对话框是否显示
     isShowDeleteAll: boolean // 是否显示批量删除按钮
     searchStr: string // 搜索关键字
 }>(), {
-    dialogVisible: false, // 默认对话框不显示
+    addItemDialogVisible: false, // 默认添加对话框不显示
+    editItemDialogVisible: false, // 默认编辑对话框不显示
     isShowDeleteAll: false, // 默认不显示批量删除按钮
     searchStr: '' // 默认搜索关键字为空
 })
@@ -99,13 +111,15 @@ const emit = defineEmits<{
     (event: 'delete-rows', rows: TableData[]): void // 删除多行
     (event: 'update-search', value: string): void // 更新搜索关键字
     (event: 'update-selection', rows: TableData[]): void // 更新选择
-    (event: 'update-dialog-visible', value: boolean): void // 更新对话框状态
+    (event: 'add-item-update-dialog-visible', value: boolean): void // 更新添加元素对话框状态
+    (event: 'edit-item-update-dialog-visible', value: boolean): void // 更新编辑元素对话框状态
 }>()
 
 const tableRef = ref<InstanceType<typeof ElTable>>() //表格实例 
 const search = ref(props.searchStr) // 搜索关键字
 const paginationData = ref(props.pagination) // 分页配置
-const dialogVisibleStatus = ref(false) // 对话框状态
+const addItemDialogVisibleStatus = ref(false) // 对话框状态
+const editItemDialogVisibleStatus = ref(false) // 对话框状态
 
 // 更新分页配置
 watchEffect(() => {
@@ -114,12 +128,18 @@ watchEffect(() => {
 
 // 更新对话框状态
 watchEffect(() => {
-    dialogVisibleStatus.value = props.dialogVisible
+    addItemDialogVisibleStatus.value = props.addItemDialogVisible
+    editItemDialogVisibleStatus.value = props.editItemDialogVisible
 })
 
 // 关闭对话框
-const handleDialogClose = () => {
-    emit('update-dialog-visible', false)
+const addItemHandleDialogClose = () => {
+    emit('add-item-update-dialog-visible', false)
+}
+
+// 关闭对话框
+const editItemHandleDialogClose = () => {
+    emit('edit-item-update-dialog-visible', false)
 }
 
 // 监听搜索关键字变化
@@ -132,6 +152,7 @@ watch(search, (newVal) => {
 // 处理编辑
 const handleEdit = (index: number, row: TableData) => {
     emit('edit-row', index, row)
+    emit('edit-item-update-dialog-visible', true)
 }
 
 // // 处理单个删除

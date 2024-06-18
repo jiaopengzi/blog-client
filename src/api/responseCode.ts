@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-17 10:08:43
+ * @LastEditTime : 2024-06-18 16:10:52
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -43,7 +43,7 @@ export enum ResponseCode {
   UserLoginNameExist = 1010, //用户登录名已存在
   UserResetPasswordFailed = 1022, //重置密码失败
   UserResetPasswordSuccess = 1023, //重置密码成功
-  UserGetInfoSuccess = 1024, //重置密码成功
+  UserGetInfoSuccess = 1024, //获取用户信息成功
   UserBindEmailSuccess = 1026, //绑定邮箱成功
   UserEditUserInfoSuccess = 1027, //修改用户信息成功
   UserGetAllSuccess = 1029, //查询所有用户成功
@@ -51,6 +51,9 @@ export enum ResponseCode {
   GetUserCountGroupByRolesSuccess = 1031, //查询用户统计成功
   DeleteUserSuccess = 1032, //删除用户成功
   UserAddUserSuccess = 1034, //添加用户成功
+  UserEditUserSuccess = 1035, //编辑用户成功
+  UserNameExistExcludingUserID = 1035, //用户名已存在，排除指定用户ID
+  EmailExistExcludingUserID = 1037, //用户邮箱已存在，排除指定用户ID
 
   // 验证码相关
   CaptchaSendSuccess = 8000, //验证码发送成功
@@ -95,7 +98,7 @@ export enum UploadCode {
 }
 
 // 社交登录
-export enum social {
+export enum Social {
   QQ = 'qq',
   QQDisplay = 'QQ',
   WeChat = 'wechat',
