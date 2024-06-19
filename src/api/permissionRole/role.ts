@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-07 21:01:15
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-13 14:52:25
- * @FilePath     : \blog-client\src\api\permission\role.ts
+ * @LastEditTime : 2024-06-19 10:47:03
+ * @FilePath     : \blog-client\src\api\permissionRole\role.ts
  * @Description  : 角色相关
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.

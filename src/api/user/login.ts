@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 19:57:55
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-26 11:08:51
- * @FilePath     : \blog-client\src\api\user\Login.ts
+ * @LastEditTime : 2024-06-19 10:50:53
+ * @FilePath     : \blog-client\src\api\user\login.ts
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
@@ -12,20 +12,15 @@
 import request from '@/api/request'
 import { routerGroup } from '@/api/routerGroup'
 import type { AxiosPromise } from 'axios'
+import { type Res } from '@/api/responseCode'
 
 export interface LoginRequest {
   login_name: string
   password: string
 }
 
-export interface LoginResponse {
-  code: number
-  msg: string
-  data: any // 您可以根据实际返回的数据结构替换为更具体的类型
-}
-
 // 默认账号登录
-export function loginByJosn(loginRequest: LoginRequest): AxiosPromise<LoginResponse> {
+export function loginAPI(loginRequest: LoginRequest): AxiosPromise<Res> {
   const urlStr = routerGroup + '/user/login'
   return request({
     url: urlStr,
@@ -35,7 +30,7 @@ export function loginByJosn(loginRequest: LoginRequest): AxiosPromise<LoginRespo
 }
 
 // QQ登录
-export function loginByQQUrl(): AxiosPromise<LoginResponse> {
+export function loginByQQUrl(): AxiosPromise<Res> {
   const urlStr = routerGroup + '/social/qq/login'
   return request({
     url: urlStr,
@@ -44,7 +39,7 @@ export function loginByQQUrl(): AxiosPromise<LoginResponse> {
 }
 
 // QQ登录回调
-export function loginByQQUrlCallback(code: string): AxiosPromise<LoginResponse> {
+export function loginByQQUrlCallback(code: string): AxiosPromise<Res> {
   const urlStr = routerGroup + '/social/qq/login/callback?code=' + code
   return request({
     url: urlStr,
@@ -53,7 +48,7 @@ export function loginByQQUrlCallback(code: string): AxiosPromise<LoginResponse> 
 }
 
 // QQ绑定
-export function bindQQUrl(): AxiosPromise<LoginResponse> {
+export function bindQQUrl(): AxiosPromise<Res> {
   const urlStr = routerGroup + '/social/qq/bind'
   return request({
     url: urlStr,
@@ -62,7 +57,7 @@ export function bindQQUrl(): AxiosPromise<LoginResponse> {
 }
 
 // QQ绑定回调
-export function bindQQUrlCallback(code: string): AxiosPromise<LoginResponse> {
+export function bindQQUrlCallback(code: string): AxiosPromise<Res> {
   const urlStr = routerGroup + '/social/qq/bind/callback?code=' + code
   return request({
     url: urlStr,
@@ -71,7 +66,7 @@ export function bindQQUrlCallback(code: string): AxiosPromise<LoginResponse> {
 }
 
 // QQ 解绑
-export function unBindQQ(): AxiosPromise<LoginResponse> {
+export function unBindQQ(): AxiosPromise<Res> {
   const urlStr = routerGroup + '/social/qq/unbind'
   return request({
     url: urlStr,
@@ -80,7 +75,7 @@ export function unBindQQ(): AxiosPromise<LoginResponse> {
 }
 
 // 微信登录
-export function loginByWeChatUrl(): AxiosPromise<LoginResponse> {
+export function loginByWeChatUrl(): AxiosPromise<Res> {
   const urlStr = routerGroup + '/social/wechat/login'
   return request({
     url: urlStr,
@@ -89,7 +84,7 @@ export function loginByWeChatUrl(): AxiosPromise<LoginResponse> {
 }
 
 // 微信登录回调
-export function loginByWeChatUrlCallback(code: string): AxiosPromise<LoginResponse> {
+export function loginByWeChatUrlCallback(code: string): AxiosPromise<Res> {
   const urlStr = routerGroup + '/social/wechat/login/callback?code=' + code
   return request({
     url: urlStr,
@@ -98,7 +93,7 @@ export function loginByWeChatUrlCallback(code: string): AxiosPromise<LoginRespon
 }
 
 // 微信绑定
-export function bindWeChatUrl(): AxiosPromise<LoginResponse> {
+export function bindWeChatUrl(): AxiosPromise<Res> {
   const urlStr = routerGroup + '/social/wechat/bind'
   return request({
     url: urlStr,
@@ -107,7 +102,7 @@ export function bindWeChatUrl(): AxiosPromise<LoginResponse> {
 }
 
 // 微信绑定回调
-export function bindWeChatUrlCallback(code: string): AxiosPromise<LoginResponse> {
+export function bindWeChatUrlCallback(code: string): AxiosPromise<Res> {
   const urlStr = routerGroup + '/social/wechat/bind/callback?code=' + code
   return request({
     url: urlStr,
@@ -116,7 +111,7 @@ export function bindWeChatUrlCallback(code: string): AxiosPromise<LoginResponse>
 }
 
 // 微信解绑
-export function unBindWeChat(): AxiosPromise<LoginResponse> {
+export function unBindWeChat(): AxiosPromise<Res> {
   const urlStr = routerGroup + '/social/wechat/unbind'
   return request({
     url: urlStr,

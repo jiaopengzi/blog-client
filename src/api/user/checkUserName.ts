@@ -12,21 +12,14 @@
 import request from '@/api/request'
 import { routerGroup } from '@/api/routerGroup'
 import type { AxiosPromise } from 'axios'
+import { type Res } from '@/api/responseCode'
 
 export interface CheckUserNameRequest {
   user_name: string
 }
 
-export interface CheckUserNameResponse {
-  code: number
-  msg: string
-  data: any // 您可以根据实际返回的数据结构替换为更具体的类型
-}
-
 // 检测用户名是否存在
-export function checkUserNameByJosn(
-  requestData: CheckUserNameRequest,
-): AxiosPromise<CheckUserNameResponse> {
+export function checkUserNameAPI(requestData: CheckUserNameRequest): AxiosPromise<Res> {
   const urlStr = routerGroup + '/user/check-username'
   return request({
     url: urlStr,

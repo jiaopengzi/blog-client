@@ -50,14 +50,14 @@ import SlideVerify from '@/components/common/slide-verify' // 引用滑块验证
 import { ShowMsgTip } from '@/utils/message'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import type { CheckEmailRequest } from '@/api/user/checkEmail'
-import { CheckEmailByJosn } from '@/api/user/checkEmail'
+import { CheckEmailAPI } from '@/api/user/checkEmail'
 import type { BindEmailRequest } from '@/api/user/bindEmail'
-import { bindEmailByJosn } from '@/api/user/bindEmail'
+import { bindEmailAPI } from '@/api/user/bindEmail'
 import type { CaptchaSendRequest } from '@/api/captcha/send'
-import { captchaSendByJosn } from '@/api/captcha/send'
+import { captchaSendAPI } from '@/api/captcha/send'
 import { getPublicIp } from '@/utils/ip'
 import type { CaptchaCheckRequest } from '@/api/captcha/check'
-import { captchaCheckByJosn } from '@/api/captcha/check'
+import { captchaCheckAPI } from '@/api/captcha/check'
 import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
 import { storeToRefs } from 'pinia'
 import { useUserStore } from '@/stores/user'
@@ -100,7 +100,7 @@ async function checkSendCaptcha(): Promise<void> {
             ip: await getPublicIp(),
             purpose: CaptchaPurpose.BindEmail,
         }
-        const { data } = await captchaSendByJosn(req) // 将 resStr 转换为对象
+        const { data } = await captchaSendAPI(req) // 将 resStr 转换为对象
 
         if (data.code !== ResponseCode.CaptchaSendSuccess && data.data !== null) {
             // 历遍 data 中的错误信息 并抛出第一个key错误信息 停止循环
@@ -130,7 +130,7 @@ async function checkEmail(): Promise<void> {
     }
 
     try {
-        const { data } = await CheckEmailByJosn(req)
+        const { data } = await CheckEmailAPI(req)
 
         if (data.code === ResponseCode.UserEmailExist) {
             throw new Error(data.msg)
@@ -172,7 +172,7 @@ async function checkCaptcha(): Promise<void> {
             purpose: CaptchaPurpose.BindEmail,
         }
 
-        const { data } = await captchaCheckByJosn(req)
+        const { data } = await captchaCheckAPI(req)
 
         if (data.code !== ResponseCode.CaptchaCheckSuccess) {
             throw new Error(data.msg)
@@ -236,7 +236,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                 captcha: bindemailForm.captcha,
             }
 
-            const { data } = await bindEmailByJosn(req)
+            const { data } = await bindEmailAPI(req)
 
             if (data.code === ResponseCode.UserBindEmailSuccess) {
                 // 显示注册成功提示

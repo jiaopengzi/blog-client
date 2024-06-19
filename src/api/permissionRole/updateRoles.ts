@@ -13,6 +13,7 @@ import request from '@/api/request'
 import { routerGroup } from '@/api/routerGroup'
 import type { AxiosPromise } from 'axios'
 import { PermissionNames } from '@/utils/permissionRole'
+import { type Res } from '@/api/responseCode'
 
 // 更新列表角色权限 请求参数
 export interface UpdateRolesRequest {
@@ -25,17 +26,8 @@ export interface UpdateRoleRequest {
   permission_names: PermissionNames[]
 }
 
-// 判断是否具有权限 返回参数
-export interface UpdateRolesResponse {
-  code: number
-  msg: string
-  data: null
-}
-
 // 更新列表角色权限
-export function updateRolesByJosn(
-  requestData: UpdateRolesRequest,
-): AxiosPromise<UpdateRolesResponse> {
+export function updateRolesAPI(requestData: UpdateRolesRequest): AxiosPromise<Res> {
   const urlStr = routerGroup + '/role/update-roles'
   return request({
     url: urlStr,

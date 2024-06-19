@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-26 21:53:48
+ * @LastEditTime : 2024-06-19 22:49:04
  * @FilePath     : \blog-client\src\views\login\index.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -71,6 +71,7 @@ import { useUserStore } from '@/stores/user'
 import type { LoginForm } from "@/views/login"
 import { IconKeys } from '@/components/common/icons'
 import type { RouteLocationRaw } from 'vue-router'
+import { RegexPatterns } from '@/utils/regexPatterns'
 
 // eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: 'Login' })
@@ -98,7 +99,7 @@ const rules = reactive<FormRules<LoginForm>>({
   loginName: [
     { required: true, message: '请输入用户名！', trigger: 'blur' },
     {
-      pattern: /^([a-z0-9._%+-]+)@[a-z0-9.-]+\.[a-z]{2,}$|^[a-z0-9]{6,20}$/,
+      pattern: new RegExp(RegexPatterns.LoginName),
       message: '6-20位小写字母或数字 | 邮箱',
       trigger: 'change',
     },
@@ -110,7 +111,7 @@ const rules = reactive<FormRules<LoginForm>>({
     { required: true, message: '请输入密码', trigger: 'blur' },
     // 必须包含：大小写字母+数字,长度:6-64 特殊字符可有可无
     {
-      pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*(),.?;:|[\]\\{}<>`~_+=-]{6,64}$/,
+      pattern: new RegExp(RegexPatterns.Password),
       message: '必须包含：大小写字母+数字,长度:6-64',
       trigger: 'change',
     },

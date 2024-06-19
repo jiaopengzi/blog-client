@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-08 20:13:30
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-07 10:02:45
+ * @LastEditTime : 2024-06-19 22:56:46
  * @FilePath     : \blog-client\src\pkg\codemirror\extension\imgupload.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,7 @@
 
 import { EditorView } from '@codemirror/view'
 import type { Extension } from '@codemirror/state'
-import { uploadAvatar } from '@/api/upload/avatar'
+import { uploadAvatarAPI } from '@/api/upload/avatar'
 import { ShowMsgTip } from '@/utils/message'
 import { useUserStore } from '@/stores/user'
 import { UploadCode } from '@/api/responseCode'
@@ -46,7 +46,7 @@ async function uploadImage(file: any, view: EditorView) {
   formData.append('file', file, 'avatar.png')
   const userStore = useUserStore()
   // 调用 uploadAvatar 函数
-  uploadAvatar(formData)
+  uploadAvatarAPI(formData)
     .then((response) => {
       if (response.data.code === UploadCode.Success) {
         // 处理返回数据，并更新头像等信息

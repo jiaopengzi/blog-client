@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-26 15:02:29
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-26 15:12:47
+ * @LastEditTime : 2024-06-19 10:50:13
  * @FilePath     : \blog-client\src\api\user\getUserCountGroupByRole.ts
  * @Description  : 用户统计
  * @Blog         : https://jiaopengzi.com
@@ -27,7 +27,7 @@ export interface GetUserCountGroupByRoleResponse {
 }
 
 // 获取用户信息 api 函数
-export function getUserCountGroupByRoleByJosn(): AxiosPromise<GetUserCountGroupByRoleResponse> {
+export function getUserCountGroupByRoleAPI(): AxiosPromise<GetUserCountGroupByRoleResponse> {
   const urlStr = routerGroup + '/user/count-group-by-role'
   return request({
     url: urlStr,

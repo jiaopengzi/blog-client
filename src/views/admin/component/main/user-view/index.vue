@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-18 22:47:06
+ * @LastEditTime : 2024-06-19 19:35:37
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -67,12 +67,12 @@ import type { TableData, TableColumn } from '@/components/common/base-table'
 import { debounce } from '@/utils/debounce'
 import { AadminSideMenu } from '@/views/admin/component/aside'
 import { type User } from '@/api/user/getUsers'
-import { getUsersByJosn, emptyUsers, type GetUsersRequest, } from '@/api/user/getUsers'
-import { getUserCountGroupByRoleByJosn, type UserCountGroupByRole } from '@/api/user/getUserCountGroupByRole'
+import { getUsersAPI, emptyUsers, type GetUsersRequest, } from '@/api/user/getUsers'
+import { getUserCountGroupByRoleAPI, type UserCountGroupByRole } from '@/api/user/getUserCountGroupByRole'
 import { getRolesByJson, type Role } from '@/api/permissionRole/role'
 import { ResponseCode } from '@/api/responseCode'
 import router from '@/router/index'
-import { DeleteUserByJosn, type DeleteUserRequest } from '@/api/user/deleteUser'
+import { DeleteUserAPI, type DeleteUserRequest } from '@/api/user/deleteUser'
 import { ShowMsgTip } from '@/utils/message'
 import { type EditUserByAdminForm } from '@/views/admin/component/main/user-view/component/edit-user'
 
@@ -190,7 +190,7 @@ const updatePageSizes = (val: any) => {
 
 // 需要编辑的用户ID
 const editUserByAdminForm = reactive<EditUserByAdminForm>({
-    excludingUserID: '',
+    editUserID: '',
     userName: '',
     email: '',
     status: '0',
@@ -206,7 +206,7 @@ const editRow = (index: number, row: TableData) => {
     console.log("04============", index, row)
     // 断言 row 中有 user_name ts 不会报错
     if ('user_name' in row) {
-        editUserByAdminForm.excludingUserID = row.id.toString()
+        editUserByAdminForm.editUserID = row.id.toString()
         editUserByAdminForm.userName = row.user_name
         editUserByAdminForm.email = row.user_email
         editUserByAdminForm.status = row.user_status.toString()
@@ -225,7 +225,7 @@ const deleteRows = async (rows: TableData[]) => {
     const deleteUserRequest: DeleteUserRequest = { user_id_list: ids }
 
     // 删除用户
-    await DeleteUserByJosn(deleteUserRequest).then((res) => {
+    await DeleteUserAPI(deleteUserRequest).then((res) => {
         if (res.data.code === ResponseCode.DeleteUserSuccess) {
             // 删除成功后重新获取用户列表
             getUserPaginate({ role_name: activeRole.value, current_page: pagination.value.current_page, page_size: pagination.value.page_size, key_word: search.value })
@@ -284,7 +284,7 @@ async function getUserPaginate(getUsersRequest: GetUsersRequest) {
     }
 
     // 获取用户列表
-    await getUsersByJosn(getUsersRequest).then((res) => {
+    await getUsersAPI(getUsersRequest).then((res) => {
         if (res.data.code === ResponseCode.UserGetAllSuccess) {
             pagination.value = res.data.data
         } else {
@@ -314,7 +314,7 @@ async function getRoles() {
 
 // 获取用户列表
 async function getUserCountGroupByRole() {
-    await getUserCountGroupByRoleByJosn().then((res) => {
+    await getUserCountGroupByRoleAPI().then((res) => {
         if (res.data.code === ResponseCode.GetUserCountGroupByRolesSuccess) {
             const rolesALL = res.data.data
             const total = rolesALL.reduce((prev, cur) => {

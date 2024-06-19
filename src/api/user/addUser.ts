@@ -12,6 +12,7 @@
 import request from '@/api/request'
 import { routerGroup } from '@/api/routerGroup'
 import type { AxiosPromise } from 'axios'
+import { type Res } from '@/api/responseCode'
 
 export interface AddUserRequest {
   user_name: string // 用户名
@@ -21,14 +22,8 @@ export interface AddUserRequest {
   is_send_email: boolean // 是否发送邮件
 }
 
-export interface AddUserResponse {
-  code: number
-  msg: string
-  data: any // 您可以根据实际返回的数据结构替换为更具体的类型
-}
-
 // 注册
-export function AddUserByJosn(requestData: AddUserRequest): AxiosPromise<AddUserResponse> {
+export function AddUserAPI(requestData: AddUserRequest): AxiosPromise<Res> {
   const urlStr = routerGroup + '/user/add'
   return request({
     url: urlStr,

@@ -15,7 +15,7 @@ import { getPermissionsByJson } from '@/api/permissionRole/getPermissions'
 import { getRolesByJson } from '@/api/permissionRole/role'
 import { ResponseCode } from '@/api/responseCode'
 import { kebabToPascalCase } from '@/utils/namingConversion'
-import { hasPermissionByJosn } from '@/api/permissionRole/hasPermission'
+import { hasPermissionAPI } from '@/api/permissionRole/hasPermission'
 import { useUserStore } from '@/stores/user'
 
 // 权限枚举
@@ -63,7 +63,7 @@ export async function getPermissionList(): Promise<any> {
 
 // 判断是否有权限
 export async function hasPermissionByServer(permission: PermissionNames): Promise<boolean> {
-  const res = await hasPermissionByJosn({ permission_name: permission })
+  const res = await hasPermissionAPI({ permission_name: permission })
   return res.data.code === ResponseCode.HasPermission
 }
 

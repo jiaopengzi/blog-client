@@ -43,8 +43,8 @@ import type { Media, TableData, TableColumn } from '@/components/common/base-tab
 import { debounce } from '@/utils/debounce'
 import { AadminSideMenu } from '@/views/admin/component/aside'
 import { IconKeys } from '@/components/common/icons'
-import { uploadFile } from '@/api/upload/file'
-import { getAllowedUploadFileInfo } from '@/api/upload/getAllowedFileInfo'
+import { uploadFileAPI } from '@/api/upload/file'
+import { getAllowedUploadFileInfoAPI } from '@/api/upload/getAllowedFileInfo'
 import { ShowMsgTip } from '@/utils/message'
 import { UploadCode } from '@/api/responseCode'
 import type { UploadRequestOptions, ElUpload } from 'element-plus'
@@ -157,7 +157,7 @@ const allowedInfo = ref("")
 
 const getAllowedInfo = () => {
     const strList: string[] = []
-    getAllowedUploadFileInfo().then((response) => {
+    getAllowedUploadFileInfoAPI().then((response) => {
         if (response.data.code === UploadCode.GetAllowedUploadFileInfoSuccess) {
             const allowedInfoList = response.data.data
             // for 循环遍历 allowedInfoList 数组 i 最大值为 allowedInfoList.length - 1
@@ -195,7 +195,7 @@ const httpRequest = (options: UploadRequestOptions) => {
     formData.append(options.filename, options.file, options.file.name)
 
     // 调用 uploadAvatar 函数
-    uploadFile(formData, (progressEvent) => {
+    uploadFileAPI(formData, (progressEvent) => {
         if (progressEvent.progress && progressEvent.total && progressEvent.loaded) {
             const evt: any = {
                 loaded: progressEvent.loaded,

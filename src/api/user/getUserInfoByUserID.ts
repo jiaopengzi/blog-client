@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-18 15:40:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-18 15:59:33
+ * @LastEditTime : 2024-06-19 10:50:35
  * @FilePath     : \blog-client\src\api\user\getUserInfoByUserID.ts
  * @Description  : 通过用户ID 获取用户信息
  * @Blog         : https://jiaopengzi.com
@@ -19,7 +19,7 @@ export interface GetUserInfoByUserIDRequest {
 }
 
 // 获取用户信息
-export function getUserInfoByUserIDByJosn(
+export function getUserInfoByUserIDAPI(
   requestData: GetUserInfoByUserIDRequest,
 ): AxiosPromise<GetUserInfoResponse> {
   const urlStr = routerGroup + '/user/info-by-user-id'

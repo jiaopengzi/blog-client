@@ -11,18 +11,18 @@
 
 // useFormValidation.ts
 import { type Ref } from 'vue'
-import { type CheckUserNameRequest, checkUserNameByJosn } from '@/api/user/checkUserName'
+import { type CheckUserNameRequest, checkUserNameAPI } from '@/api/user/checkUserName'
 import {
   type CheckUserNameExcludingUserIDRequest,
-  checkUserNameExcludingUserIDByJosn,
+  checkUserNameExcludingUserIDAPI,
 } from '@/api/user/checkUserNameExcludingUserID'
-import { type CheckEmailRequest, CheckEmailByJosn } from '@/api/user/checkEmail'
+import { type CheckEmailRequest, CheckEmailAPI } from '@/api/user/checkEmail'
 import {
   type CheckEmailExcludingUserIDRequest,
-  checkEmailExcludingUserIDByJosn,
+  checkEmailExcludingUserIDAPI,
 } from '@/api/user/checkEmailExcludingUserID'
-import { type CaptchaSendRequest, captchaSendByJosn } from '@/api/captcha/send'
-import { type CaptchaCheckRequest, captchaCheckByJosn } from '@/api/captcha/check'
+import { type CaptchaSendRequest, captchaSendAPI } from '@/api/captcha/send'
+import { type CaptchaCheckRequest, captchaCheckAPI } from '@/api/captcha/check'
 import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
 import { getPublicIp } from '@/utils/ip'
 
@@ -148,7 +148,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
       }
       console.log('==========>发送验证码')
 
-      const { data } = await captchaSendByJosn(req) // 将 resStr 转换为对象
+      const { data } = await captchaSendAPI(req) // 将 resStr 转换为对象
 
       if (data.code !== ResponseCode.CaptchaSendSuccess && data.data !== null) {
         // 历遍 data 中的错误信息 并抛出第一个key错误信息 停止循环
@@ -178,7 +178,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
         user_name: userName,
       }
 
-      const { data } = await checkUserNameByJosn(req)
+      const { data } = await checkUserNameAPI(req)
 
       if (data.code === ResponseCode.UserNameExist) {
         throw new Error(data.msg)
@@ -230,7 +230,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
         user_name: userName,
       }
 
-      const { data } = await checkUserNameExcludingUserIDByJosn(req)
+      const { data } = await checkUserNameExcludingUserIDAPI(req)
 
       if (data.code === ResponseCode.UserNameExistExcludingUserID) {
         throw new Error(data.msg)
@@ -286,7 +286,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
     }
 
     try {
-      const { data } = await CheckEmailByJosn(req)
+      const { data } = await CheckEmailAPI(req)
 
       if (data.code === ResponseCode.UserEmailExist) {
         throw new Error(data.msg)
@@ -340,7 +340,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
     }
 
     try {
-      const { data } = await checkEmailExcludingUserIDByJosn(req)
+      const { data } = await checkEmailExcludingUserIDAPI(req)
 
       if (data.code === ResponseCode.EmailExistExcludingUserID) {
         throw new Error(data.msg)
@@ -388,7 +388,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
         captcha: captcha,
         purpose: CaptchaPurpose.Register,
       }
-      const { data } = await captchaCheckByJosn(req)
+      const { data } = await captchaCheckAPI(req)
 
       if (data.code !== ResponseCode.CaptchaCheckSuccess) {
         throw new Error(data.msg)

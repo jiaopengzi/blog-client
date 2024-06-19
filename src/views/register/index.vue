@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-16 22:01:05
+ * @LastEditTime : 2024-06-19 22:45:07
  * @FilePath     : \blog-client\src\views\register\index.vue
  * @Description  : 注册
  * @Blog         : https://jiaopengzi.com
@@ -78,13 +78,14 @@ import SlideVerify from '@/components/common/slide-verify'
 import { ShowMsgTip } from '@/utils/message'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import type { RegisterRequest } from '@/api/user/register'
-import { RegisterByJosn } from '@/api/user/register'
+import { RegisterAPI } from '@/api/user/register'
 import { getPublicIp } from '@/utils/ip'
 import { ResponseCode } from '@/api/responseCode'
 import { routeObj } from '@/router/routeAll'
 import router from '@/router/index'
 import type { RegisterForm } from '@/views/register'
 import { useFormValidation } from '@/components/hooks/useFormValidation'
+import { RegexPatterns } from '@/utils/regexPatterns'
 
 
 // eslint-disable-next-line vue/multi-word-component-names
@@ -146,14 +147,15 @@ const {
 const rules = reactive<FormRules<RegisterForm>>({
   userName: [
     { required: true, message: '请输入用户名！', trigger: 'blur' },
-    { pattern: /^[a-z0-9]{6,20}$/, message: '用户名长度:6-20的小写字母或数字', trigger: 'change' },
+    // { pattern: /^[a-z0-9]{6,20}$/, message: '用户名长度:6-20的小写字母或数字', trigger: 'change' },
+    { pattern: new RegExp(RegexPatterns.UserName), message: '用户名长度:6-20的小写字母或数字', trigger: 'change' },
     // 用户查重
     { validator: checkUserNameValidator, trigger: 'blur' },
   ],
   email: [
     { required: true, message: '请输入小写的邮箱地址', trigger: 'blur' },
     {
-      pattern: /^([a-z0-9._%+-]+)@[a-z0-9.-]+\.[a-z]{2,}$/,
+      pattern: new RegExp(RegexPatterns.Email),
       message: '请输入有效的邮箱',
       trigger: 'blur',
     },
@@ -162,14 +164,14 @@ const rules = reactive<FormRules<RegisterForm>>({
   ],
   captcha: [
     { required: true, message: '请输入验证码', trigger: 'blur' },
-    { pattern: /^\d{6}$/, message: '验证码为6位的数字', trigger: 'blur' },
+    { pattern: new RegExp(RegexPatterns.Captcha), message: '验证码为6位的数字', trigger: 'blur' },
     { validator: checkCaptchaValidator, trigger: 'blur' },
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
     // 必须包含：大小写字母+数字,长度:6-64 特殊字符可有可无
     {
-      pattern: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,64}$/,
+      pattern: new RegExp(RegexPatterns.Password),
       message: '必须包含：大小写字母+数字,长度:6-64',
       trigger: 'change',
     },
@@ -202,7 +204,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
       }
 
       console.log('req:', req)
-      const { data } = await RegisterByJosn(req)
+      const { data } = await RegisterAPI(req)
 
       if (data.code === ResponseCode.UserRegisterSuccess) {
         // 显示注册成功提示

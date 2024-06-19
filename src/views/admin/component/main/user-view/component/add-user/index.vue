@@ -52,12 +52,13 @@ import { reactive, ref, toRef } from 'vue'
 import { ShowMsgTip } from '@/utils/message'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import type { AddUserRequest } from '@/api/user/addUser'
-import { AddUserByJosn } from '@/api/user/addUser'
+import { AddUserAPI } from '@/api/user/addUser'
 import { ResponseCode } from '@/api/responseCode'
 import type { AddUserForm } from '@/views/admin/component/main/user-view/component/add-user'
 import { useFormValidation } from '@/components/hooks/useFormValidation'
 import { generatePassword } from '@/utils/password'
 import { type Role } from '@/api/permissionRole/role'
+import { RegexPatterns } from '@/utils/regexPatterns'
 
 defineOptions({ name: 'AddUser' })
 
@@ -115,14 +116,14 @@ const generatePasswordHandle = () => {
 const rules = reactive<FormRules<AddUserForm>>({
     userName: [
         { required: true, message: '请输入用户名！', trigger: 'blur' },
-        { pattern: /^[a-z0-9]{6,20}$/, message: '用户名长度:6-20的小写字母或数字', trigger: 'change' },
+        { pattern: new RegExp(RegexPatterns.UserName), message: '用户名长度:6-20的小写字母或数字', trigger: 'change' },
         // 用户查重
         { validator: checkUserNameValidator, trigger: 'blur' },
     ],
     email: [
         { required: true, message: '请输入小写的邮箱地址', trigger: 'blur' },
         {
-            pattern: /^([a-z0-9._%+-]+)@[a-z0-9.-]+\.[a-z]{2,}$/,
+            pattern: new RegExp(RegexPatterns.Email),
             message: '请输入有效的邮箱',
             trigger: 'blur',
         },
@@ -133,7 +134,7 @@ const rules = reactive<FormRules<AddUserForm>>({
         { required: true, message: '请输入密码', trigger: 'change' },
         // 必须包含：大小写字母+数字,长度:6-64 特殊字符可有可无
         {
-            pattern: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,64}$/,
+            pattern: new RegExp(RegexPatterns.Password),
             message: '必须包含：大小写字母+数字,长度:6-64',
             trigger: 'blur',
         },
@@ -162,7 +163,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                     is_send_email: addUserForm.isSendEmail
                 }
                 console.log('req:', req)
-                const { data } = await AddUserByJosn(req)
+                const { data } = await AddUserAPI(req)
 
                 if (data.code === ResponseCode.UserAddUserSuccess) {
                     // 添加成功提示

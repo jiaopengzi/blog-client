@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-18 08:46:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-18 13:55:56
+ * @LastEditTime : 2024-06-19 20:56:22
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\edit-user\index.ts
  * @Description  : 编辑用户
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,7 @@
 export { default } from './index.vue'
 
 export interface EditUserByAdminForm {
-  excludingUserID: string
+  editUserID: string
   userName: string
   email: string
   status: string

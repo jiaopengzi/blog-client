@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-13 14:40:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-13 14:44:42
- * @FilePath     : \blog-client\src\api\permission\hasPermission.ts
+ * @LastEditTime : 2024-06-19 10:44:28
+ * @FilePath     : \blog-client\src\api\permissionRole\hasPermission.ts
  * @Description  : 判断是否具有权限
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
@@ -27,7 +27,7 @@ export interface HasPermissionResponse {
 }
 
 // 注册
-export function hasPermissionByJosn(
+export function hasPermissionAPI(
   requestData: HasPermissionRequest,
 ): AxiosPromise<HasPermissionResponse> {
   const urlStr = routerGroup + '/permission/has-permission'

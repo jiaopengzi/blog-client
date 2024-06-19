@@ -2,12 +2,19 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-18 16:10:52
+ * @LastEditTime : 2024-06-19 19:31:49
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
+
+// 统一响应结构
+export interface Res {
+  code: number
+  msg: string
+  data: any // 可以根据实际返回的数据结构替换为更具体的类型
+}
 
 export enum ResponseCode {
   SUCCESS = 200,
@@ -54,6 +61,7 @@ export enum ResponseCode {
   UserEditUserSuccess = 1035, //编辑用户成功
   UserNameExistExcludingUserID = 1035, //用户名已存在，排除指定用户ID
   EmailExistExcludingUserID = 1037, //用户邮箱已存在，排除指定用户ID
+  EditUserInfoByAdminSuccess = 1039, //管理员编辑用户成功
 
   // 验证码相关
   CaptchaSendSuccess = 8000, //验证码发送成功

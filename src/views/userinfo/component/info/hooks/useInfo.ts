@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 10:17:33
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-18 22:58:09
+ * @LastEditTime : 2024-06-19 22:53:36
  * @FilePath     : \blog-client\src\views\userinfo\component\info\hooks\useInfo.ts
  * @Description  : 用户信息页面 hooks
  * @Blog         : https://jiaopengzi.com
@@ -17,13 +17,14 @@ import { storeToRefs } from 'pinia'
 import type { UserInfo } from '@/api/user/getUserInfo'
 import { Social } from '@/api/responseCode'
 import { ResponseCode } from '@/api/responseCode'
-import type { editUserInfoRequest } from '@/api/user/editUserInfo'
-import { editUserInfoByJosn } from '@/api/user/editUserInfo'
+import type { EditUserInfoRequest } from '@/api/user/editUserInfo'
+import { editUserInfoAPI } from '@/api/user/editUserInfo'
 import { ShowMsgTip } from '@/utils/message'
 import type { EditForm } from '@/views/userinfo/component/info'
 import { convertToBeijingTime } from '@/utils/dateTime'
 import { useFormValidation } from '@/components/hooks/useFormValidation'
 import { getUserMetaValue } from '@/utils/metaInfo'
+import { RegexPatterns } from '@/utils/regexPatterns'
 
 export interface UseInfoReturnType {
   editFormRef: Ref<FormInstance | undefined>
@@ -43,6 +44,7 @@ export interface UseInfoReturnType {
   unBindSocial: (platform: Social) => Promise<void>
   userNameDisabled: Ref<boolean>
   email: ComputedRef<string>
+  avatarUploadStatus(status: boolean): void
 }
 
 export function useInfo(): UseInfoReturnType {
@@ -95,14 +97,22 @@ export function useInfo(): UseInfoReturnType {
   const rules = reactive<FormRules<EditForm>>({
     userName: [
       { required: true, message: '请输入用户名！', trigger: 'blur' },
-      { pattern: /^[a-z0-9]{6,20}/, message: '用户名长度:6-20的小写字母或数字', trigger: 'change' },
+      {
+        pattern: new RegExp(RegexPatterns.UserName),
+        message: '用户名长度:6-20的小写字母或数字',
+        trigger: 'change',
+      },
       // 用户查重
       { validator: checkUserNameExcludingUserIDValidator, trigger: 'blur' },
     ],
 
     nickName: [
       { required: true, message: '请输入昵称！', trigger: 'blur' },
-      { pattern: /^.{1,20}$/, message: '昵称长度1-20字符', trigger: 'change' },
+      {
+        pattern: new RegExp(RegexPatterns.NickName),
+        message: '昵称长度1-20字符',
+        trigger: 'change',
+      },
     ],
   })
 
@@ -117,14 +127,14 @@ export function useInfo(): UseInfoReturnType {
     await formEl.validate(async (valid) => {
       if (valid) {
         // 创建请求对象 加密内容
-        const req: editUserInfoRequest = {
+        const req: EditUserInfoRequest = {
           user_name: editForm.userName,
-          nickname: editForm.nickName,
+          nick_name: editForm.nickName,
           sex: editForm.sex,
           description: editForm.description,
         }
 
-        const { data } = await editUserInfoByJosn(req)
+        const { data } = await editUserInfoAPI(req)
 
         if (data.code === ResponseCode.UserEditUserInfoSuccess) {
           await userStore.getUserInfoByToken(true)
@@ -207,6 +217,12 @@ export function useInfo(): UseInfoReturnType {
     changeUserNameDisabled()
   })
 
+  const avatarUploadStatus = (status: boolean) => {
+    if (status) {
+      userStore.getUserInfoByToken(true)
+    }
+  }
+
   onBeforeMount(() => {
     // 组件挂载前
     userStore.getUserInfoByToken()
@@ -230,5 +246,6 @@ export function useInfo(): UseInfoReturnType {
     unBindSocial,
     userNameDisabled,
     email,
+    avatarUploadStatus,
   }
 }

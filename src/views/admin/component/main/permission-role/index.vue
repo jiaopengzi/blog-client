@@ -44,7 +44,7 @@ import { ref, onBeforeMount, type Ref } from 'vue'
 import { getRolesList, getPermissionList, PermissionNames } from '@/utils/permissionRole'
 import type { Permission, Role, PermissionRow } from '@/views/admin/component/main/permission-role'
 import { AadminSideMenu } from '@/views/admin/component/aside'
-import { updateRolesByJosn, type UpdateRolesRequest, type UpdateRoleRequest } from '@/api/permissionRole/updateRoles'
+import { updateRolesAPI, type UpdateRolesRequest, type UpdateRoleRequest } from '@/api/permissionRole/updateRoles'
 import { ResponseCode } from '@/api/responseCode'
 import { ShowMsgTip } from '@/utils/message'
 import { useUserStore } from '@/stores/user'
@@ -123,7 +123,7 @@ const updatePermission = () => {
     }
 
     // 更新角色权限api
-    updateRolesByJosn(updateRolesRequest).then((res) => {
+    updateRolesAPI(updateRolesRequest).then((res) => {
 
         if (res.data.code === ResponseCode.UpdateRoleSuccess) {
             // 更新用户信息

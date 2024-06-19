@@ -13,6 +13,7 @@
 import request from '@/api/request'
 import { routerGroup } from '@/api//routerGroup'
 import type { AxiosPromise } from 'axios'
+import { type Res } from '@/api/responseCode'
 
 export interface BindEmailRequest {
   ip: string
@@ -20,14 +21,8 @@ export interface BindEmailRequest {
   captcha: string
 }
 
-export interface BindEmailResponse {
-  code: number
-  msg: string
-  data: any // 您可以根据实际返回的数据结构替换为更具体的类型
-}
-
 // 注册
-export function bindEmailByJosn(requestData: BindEmailRequest): AxiosPromise<BindEmailResponse> {
+export function bindEmailAPI(requestData: BindEmailRequest): AxiosPromise<Res> {
   const urlStr = routerGroup + '/user/bind-email'
   return request({
     url: urlStr,

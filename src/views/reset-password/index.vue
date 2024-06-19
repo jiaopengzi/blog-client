@@ -70,14 +70,14 @@ import SlideVerify from '@/components/common/slide-verify'
 import { ShowMsgTip } from '@/utils/message'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import type { CheckEmailRequest } from '@/api/user/checkEmail'
-import { CheckEmailByJosn } from '@/api/user/checkEmail'
+import { CheckEmailAPI } from '@/api/user/checkEmail'
 import type { ResetPasswordRequest } from '@/api/user/resetPassword'
-import { resetPasswordByJosn } from '@/api/user/resetPassword'
+import { resetPasswordAPI } from '@/api/user/resetPassword'
 import type { CaptchaSendRequest } from '@/api/captcha/send'
-import { captchaSendByJosn } from '@/api/captcha/send'
+import { captchaSendAPI } from '@/api/captcha/send'
 import { getPublicIp } from '@/utils/ip'
 import type { CaptchaCheckRequest } from '@/api/captcha/check'
-import { captchaCheckByJosn } from '@/api/captcha/check'
+import { captchaCheckAPI } from '@/api/captcha/check'
 import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
 import { routeObj } from '@/router/routeAll'
 import router from '@/router/index'
@@ -152,7 +152,7 @@ async function checkSendCaptcha(): Promise<void> {
       purpose: CaptchaPurpose.ResetPassword,
     }
     console.log('==========>发送验证码')
-    const { data } = await captchaSendByJosn(req)
+    const { data } = await captchaSendAPI(req)
 
     if (data.code !== ResponseCode.CaptchaSendSuccess && data.data !== null) {
       // 历遍 data 中的错误信息 并抛出第一个key错误信息 停止循环
@@ -182,7 +182,7 @@ async function checkEmail(): Promise<void> {
   }
 
   try {
-    const { data } = await CheckEmailByJosn(req)
+    const { data } = await CheckEmailAPI(req)
 
     if (data.code !== ResponseCode.UserEmailExist) {
       throw new Error(data.msg)
@@ -224,7 +224,7 @@ async function checkCaptcha(): Promise<void> {
       purpose: CaptchaPurpose.ResetPassword,
     }
 
-    const { data } = await captchaCheckByJosn(req)
+    const { data } = await captchaCheckAPI(req)
 
     if (data.code !== ResponseCode.CaptchaCheckSuccess) {
       throw new Error(data.msg)
@@ -301,7 +301,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         ip: await getPublicIp(),
       }
 
-      const { data } = await resetPasswordByJosn(req) // 将 resStr 转换为对象
+      const { data } = await resetPasswordAPI(req) // 将 resStr 转换为对象
 
       if (data.code === ResponseCode.UserResetPasswordSuccess) {
         // 显示注册成功提示

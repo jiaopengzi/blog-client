@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-18 08:47:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-18 22:55:13
+ * @LastEditTime : 2024-06-19 22:49:49
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\edit-user\index.vue
  * @Description  : 编辑用户
  * @Blog         : https://jiaopengzi.com
@@ -15,19 +15,20 @@
         <el-form :label-position="labelPosition" label-width="100px" ref="editUserFormRef" :model="editUserForm"
             :rules="rules" class="edit-user-form" :size="formSize" status-icon>
 
-            <el-form-item prop="userID">
+            <el-form-item>
                 <div class="edit-avatar-div">
                     <div class="edit-avatar">
                         <AvatarInitials :name="editUserForm.userName" :avatar="avatar" />
                     </div>
                     <div class="edit-avatar-btn">
-                        <AvatarUpload @avatar-upload-status="avatarUploadStatus" />
+                        <AvatarUpload :avatar_user_id="editUserForm.editUserID"
+                            @avatar-upload-status="avatarUploadStatus" />
                     </div>
                 </div>
             </el-form-item>
 
-            <el-form-item label="用户ID" prop="userID">
-                <el-input v-model.trim="editUserForm.excludingUserID" disabled />
+            <el-form-item label="用户ID" prop="editUserID">
+                <el-input v-model.trim="editUserForm.editUserID" disabled />
             </el-form-item>
 
             <el-form-item label="用户名" prop="userName">
@@ -39,6 +40,7 @@
             </el-form-item>
 
             <el-form-item label="状态" prop="status">
+
                 <el-radio-group v-model="editUserForm.status">
                     <el-radio value="0">正常</el-radio>
                     <el-radio value="1">禁用</el-radio>
@@ -53,6 +55,7 @@
             </el-form-item>
 
             <el-form-item label="角色" prop="roleName">
+
                 <el-select v-model="editUserForm.roleName" placeholder="选择用户角色">
                     <el-option v-for="item in props.roles" :key="item.role_name" :label="item.description"
                         :value="item.role_name" />
@@ -91,19 +94,19 @@
 import { reactive, ref, toRef, onBeforeMount, watch } from 'vue'
 import { ShowMsgTip } from '@/utils/message'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
-import type { EditUserRequest } from '@/api/user/editUser'
-import { EditUserByJosn } from '@/api/user/editUser'
+import { type EditUserInfoByAdminRequest, EditUserInfoByAdminAPI } from '@/api/user/editUserInfoByAdmin'
 import { ResponseCode } from '@/api/responseCode'
 import { type EditUserByAdminForm } from '@/views/admin/component/main/user-view/component/edit-user'
 import { useFormValidation } from '@/components/hooks/useFormValidation'
 import { generatePassword } from '@/utils/password'
 import { type Role } from '@/api/permissionRole/role'
 import { type UserInfo } from '@/api/user/getUserInfo'
-import { type GetUserInfoByUserIDRequest, getUserInfoByUserIDByJosn } from '@/api/user/getUserInfoByUserID'
+import { type GetUserInfoByUserIDRequest, getUserInfoByUserIDAPI } from '@/api/user/getUserInfoByUserID'
 import { getUserMetaValue } from '@/utils/metaInfo'
 import AvatarInitials from '@/components/common/avatar-initials'
 import AvatarUpload from '@/components/common/avatar-upload'
 import { getAvatarUrl } from '@/utils/avatar'
+import { RegexPatterns } from '@/utils/regexPatterns'
 
 defineOptions({ name: 'EditUser' })
 
@@ -130,7 +133,7 @@ const editUserFormRef = ref<FormInstance>()
 
 // 表单数据
 const editUserForm = reactive<EditUserByAdminForm>({
-    excludingUserID: props.editUserData.excludingUserID,
+    editUserID: props.editUserData.editUserID,
     userName: props.editUserData.userName,
     email: props.editUserData.email,
     status: props.editUserData.status,
@@ -141,10 +144,11 @@ const editUserForm = reactive<EditUserByAdminForm>({
     description: '',
 })
 
+// 头像 url
 const avatar = ref('')
 
 const updateEditUserForm = (data: EditUserByAdminForm) => {
-    editUserForm.excludingUserID = data.excludingUserID
+    editUserForm.editUserID = data.editUserID
     editUserForm.userName = data.userName
     editUserForm.email = data.email
     editUserForm.status = data.status
@@ -157,10 +161,10 @@ const updateEditUserForm = (data: EditUserByAdminForm) => {
 //  获取用户信息
 const getUserInfo = async () => {
     const req: GetUserInfoByUserIDRequest = {
-        user_id: props.editUserData.excludingUserID
+        user_id: props.editUserData.editUserID
     }
 
-    const { data } = await getUserInfoByUserIDByJosn(req)
+    const { data } = await getUserInfoByUserIDAPI(req)
     if (data.code === ResponseCode.UserGetInfoSuccess) {
         const userInfo: UserInfo = data.data
         editUserForm.sex = getUserMetaValue('sex', userInfo) || '男'
@@ -174,7 +178,7 @@ const getUserInfo = async () => {
 const userNameRef = toRef(editUserForm, 'userName')
 const emailRef = toRef(editUserForm, 'email')
 const passwordRef = toRef(editUserForm, 'password')
-const excludingUserIDRef = toRef(editUserForm, 'excludingUserID')
+const excludingUserIDRef = toRef(editUserForm, 'editUserID')
 
 // hooks
 const {
@@ -198,14 +202,14 @@ const generatePasswordHandle = () => {
 const rules = reactive<FormRules<EditUserByAdminForm>>({
     userName: [
         { required: true, message: '请输入用户名！', trigger: 'blur' },
-        { pattern: /^[a-z0-9]{6,20}$/, message: '用户名长度:6-20的小写字母或数字', trigger: 'change' },
+        { pattern: new RegExp(RegexPatterns.UserName), message: '用户名长度:6-20的小写字母或数字', trigger: 'change' },
         // 用户查重
         { validator: checkUserNameExcludingUserIDValidator, trigger: 'blur' },
     ],
     email: [
         { required: true, message: '请输入小写的邮箱地址', trigger: 'blur' },
         {
-            pattern: /^([a-z0-9._%+-]+)@[a-z0-9.-]+\.[a-z]{2,}$/,
+            pattern: new RegExp(RegexPatterns.Email),
             message: '请输入有效的邮箱',
             trigger: 'blur',
         },
@@ -216,7 +220,7 @@ const rules = reactive<FormRules<EditUserByAdminForm>>({
         { message: '请输入密码', trigger: 'change' },
         // 必须包含：大小写字母+数字,长度:6-64 特殊字符可有可无
         {
-            pattern: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,64}$/,
+            pattern: new RegExp(RegexPatterns.Password),
             message: '必须包含：大小写字母+数字,长度:6-64',
             trigger: 'blur',
         },
@@ -236,11 +240,11 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         await formEl.validate(async (valid) => {
             if (valid) {
                 // 创建请求对象 加密内容
-                const req: EditUserRequest = {
-                    excluding_user_id: editUserForm.excludingUserID,
+                const req: EditUserInfoByAdminRequest = {
+                    edit_user_id: editUserForm.editUserID,
                     user_name: editUserForm.userName,
                     email: editUserForm.email,
-                    status: editUserForm.status,
+                    status: parseInt(editUserForm.status),
                     password: editUserForm.password,
                     role_name: editUserForm.roleName,
                     nick_name: editUserForm.nickName,
@@ -248,9 +252,11 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                     description: editUserForm.description,
                 }
                 console.log('req:', req)
-                const { data } = await EditUserByJosn(req)
+                console.log('req.status type:', typeof req.status)
+                console.log('editUserForm.status type', typeof editUserForm.status)
+                const { data } = await EditUserInfoByAdminAPI(req)
 
-                if (data.code === ResponseCode.UserEditUserSuccess) {
+                if (data.code === ResponseCode.EditUserInfoByAdminSuccess) {
                     // 添加成功提示
                     emit('edit-user-status', true)
                     ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)

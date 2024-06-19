@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 16:30:57
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-11 20:32:46
+ * @LastEditTime : 2024-06-19 10:50:44
  * @FilePath     : \blog-client\src\api\user\getUsers.ts
  * @Description  : 获取用户信息
  * @Blog         : https://jiaopengzi.com
@@ -32,7 +32,7 @@ export interface GetUsersResponse {
 }
 
 // 获取用户信息 api 函数
-export function getUsersByJosn(
+export function getUsersAPI(
   requestData: GetUsersRequest = { current_page: 1, page_size: 10 }, // 设置默认值,
   width: number = 30, // 默认值 50px
   height: number = 30, // 默认值 50px

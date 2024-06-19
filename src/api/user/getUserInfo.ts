@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-04 14:44:00
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-25 18:23:37
+ * @LastEditTime : 2024-06-19 10:50:22
  * @FilePath     : \blog-client\src\api\user\getUserInfo.ts
  * @Description  : 获取用户信息
  * @Blog         : https://jiaopengzi.com
@@ -20,7 +20,7 @@ export interface GetUserInfoResponse {
 }
 
 // 获取用户信息
-export function getUserInfoByJosn(): AxiosPromise<GetUserInfoResponse> {
+export function getUserInfoAPI(): AxiosPromise<GetUserInfoResponse> {
   const urlStr = routerGroup + '/user/info'
   return request({
     url: urlStr,

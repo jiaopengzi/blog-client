@@ -12,6 +12,7 @@
 import request from '@/api/request'
 import { routerGroup } from '@/api/routerGroup'
 import type { AxiosPromise } from 'axios'
+import { type Res } from '@/api/responseCode'
 
 export interface RegisterRequest {
   ip: string
@@ -22,14 +23,8 @@ export interface RegisterRequest {
   email: string
 }
 
-export interface RegisterResponse {
-  code: number
-  msg: string
-  data: any // 您可以根据实际返回的数据结构替换为更具体的类型
-}
-
 // 注册
-export function RegisterByJosn(requestData: RegisterRequest): AxiosPromise<RegisterResponse> {
+export function RegisterAPI(requestData: RegisterRequest): AxiosPromise<Res> {
   const urlStr = routerGroup + '/user/register'
   return request({
     url: urlStr,

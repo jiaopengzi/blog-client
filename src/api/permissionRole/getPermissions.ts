@@ -12,14 +12,9 @@
 import request from '@/api/request'
 import type { AxiosPromise } from 'axios'
 import { routerGroup } from '@/api/routerGroup'
+import { type Res } from '@/api/responseCode'
 
-export interface GetPermissionsResponse {
-  code: number
-  msg: string
-  data: any
-}
-
-export function getPermissionsByJson(): AxiosPromise<GetPermissionsResponse> {
+export function getPermissionsByJson(): AxiosPromise<Res> {
   return request({
     url: routerGroup + '/permission/get-permissions',
     method: 'get',

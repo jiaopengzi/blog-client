@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 17:31:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-18 22:52:02
+ * @LastEditTime : 2024-06-19 16:00:48
  * @FilePath     : \blog-client\src\components\common\avatar-upload\index.vue
  * @Description  : 头像上传
  * @Blog         : https://jiaopengzi.com
@@ -14,7 +14,14 @@
         <el-button type="primary" @click="cropperVisible = true">编辑头像</el-button>
 
         <el-dialog v-model="cropperVisible" width="500px" content-class="dialog-content">
+
+            <template #header>
+                <h3>编辑头像</h3>
+            </template>
+
+            <!-- 图片选择 -->
             <input type="file" ref="fileInput" accept="image/*" @change="onFileChange" />
+            <!-- 选择后预览容器 -->
             <div ref="cropperContainer" class="cropper-container"></div>
 
             <template #footer>
@@ -32,18 +39,27 @@ import { ref, onUnmounted } from 'vue'
 import Cropper from 'cropperjs'
 import 'cropperjs/dist/cropper.min.css'
 import { ElButton, ElDialog } from 'element-plus'
-import { useUserStore } from '@/stores/user'
-import { uploadAvatar } from '@/api/upload/avatar'
+import { uploadAvatarAPI } from '@/api/upload/avatar'
 import { ShowMsgTip } from '@/utils/message'
 import { UploadCode } from '@/api/responseCode'
 
+
 defineOptions({ name: 'AvatarUpload' })
+
+// 数据
+const props = defineProps({
+    avatar_user_id: {
+        type: String,
+        default: undefined // 如果不传递，则默认为 undefined
+    }
+})
+
 
 const emit = defineEmits<{
     (event: 'avatar-upload-status', value: boolean): void // 头像上传状态
 }>()
 
-const userStore = useUserStore()
+
 const fileInput = ref<HTMLInputElement | null>(null)
 const cropperVisible = ref(false)
 const cropperContainer = ref<HTMLDivElement | null>(null)
@@ -119,14 +135,16 @@ function uploadImage() {
             }
 
             const formData = new FormData()
-            formData.append('file', blob, 'avatar.png')
+            formData.append('avatar_file', blob, 'avatar.png')
+            if (props.avatar_user_id) {
+                formData.append('avatar_user_id', props.avatar_user_id)
+            }
             // 调用 uploadAvatar 函数
-            uploadAvatar(formData)
+            uploadAvatarAPI(formData)
                 .then((response) => {
                     if (response.data.code === UploadCode.Success) {
                         cropperVisible.value = false
                         // 处理返回数据，并更新头像等信息
-                        userStore.getUserInfoByToken(true) // 强制更新用户信息
                         emit('avatar-upload-status', true)
                         ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
                         return

@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-12 12:38:12
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-10-29 20:01:02
- * @FilePath     : \blog-client\src\api\user\ResetPassword.ts
+ * @LastEditTime : 2024-06-19 10:51:58
+ * @FilePath     : \blog-client\src\api\user\resetPassword.ts
  * @Description  : 忘记密码
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
@@ -12,6 +12,7 @@
 import request from '@/api/request'
 import { routerGroup } from '@/api/routerGroup'
 import type { AxiosPromise } from 'axios'
+import { type Res } from '@/api/responseCode'
 
 export interface ResetPasswordRequest {
   captcha: string
@@ -21,16 +22,8 @@ export interface ResetPasswordRequest {
   ip: string
 }
 
-export interface ResetPasswordResponse {
-  code: number
-  msg: string
-  data: any // 您可以根据实际返回的数据结构替换为更具体的类型
-}
-
 // 注册
-export function resetPasswordByJosn(
-  requestData: ResetPasswordRequest,
-): AxiosPromise<ResetPasswordResponse> {
+export function resetPasswordAPI(requestData: ResetPasswordRequest): AxiosPromise<Res> {
   const urlStr = routerGroup + '/user/reset-password'
   return request({
     url: urlStr,
