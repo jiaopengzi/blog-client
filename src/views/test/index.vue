@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-19 09:58:07
+ * @LastEditTime : 2024-06-20 17:38:03
  * @FilePath     : \blog-client\src\views\test\index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -10,33 +10,47 @@
 -->
 
 <template>
-  <el-menu class="el-menu-vertical-demo" :collapse="false" @open="handleOpen" @close="handleClose"
-    default-active="1-4-1">
-    <el-sub-menu index="1">
-      <template #title>
-        <span>Navigator One</span>
-      </template>
-      <el-menu-item index="1-1">item one</el-menu-item>
-      <el-menu-item index="1-2">item two</el-menu-item>
-      <el-menu-item index="1-3">item three</el-menu-item>
-      <el-sub-menu index="1-4">
-        <template #title><span>item four</span></template>
-        <el-menu-item index="1-4-1">item one</el-menu-item>
-      </el-sub-menu>
-    </el-sub-menu>
-    <el-menu-item index="2">
-      <el-icon><icon-menu /></el-icon>
-      <template #title>Navigator Two</template>
-    </el-menu-item>
-  </el-menu>
+  <span>
+    <template v-if="days > 0">{{ days }}d {{ hours }}h {{ minutes }}m {{ seconds }}s</template>
+    <template v-else-if="hours > 0">{{ hours }}h {{ minutes }}m {{ seconds }}s</template>
+    <template v-else-if="minutes > 0">{{ minutes }}m {{ seconds }}s</template>
+    <template v-else>{{ seconds }}s</template>
+  </span>
 </template>
 
 <script lang="ts" setup>
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 
-const handleOpen = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
-const handleClose = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
+const props = defineProps({
+  countdown: {
+    type: Number,
+    default: 100
+  }
+})
+
+const totalSeconds = ref(props.countdown) // 初始化倒计时时间，单位为秒
+
+let timer: number | undefined = undefined
+
+const days = computed(() => Math.floor(totalSeconds.value / 60 / 60 / 24)) // 计算天数
+const hours = computed(() => Math.floor(totalSeconds.value / 60 / 60 % 24)) // 计算小时数
+const minutes = computed(() => Math.floor(totalSeconds.value / 60 % 60)) // 计算分钟数
+const seconds = computed(() => Math.floor(totalSeconds.value % 60)) // 计算秒数
+
+// 组件挂载时启动定时器
+onMounted(() => {
+  timer = setInterval(() => {
+    if (totalSeconds.value > 0) {
+      totalSeconds.value--
+    } else {
+      clearInterval(timer)
+    }
+  }, 1000)
+})
+
+onUnmounted(() => {
+  if (timer) {
+    clearInterval(timer)
+  }
+})
 </script>

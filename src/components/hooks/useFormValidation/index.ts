@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 15:53:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-18 14:15:14
+ * @LastEditTime : 2024-06-20 20:08:34
  * @FilePath     : \blog-client\src\components\hooks\useFormValidation\index.ts
  * @Description  : 用户表单校验
  * @Blog         : https://jiaopengzi.com
@@ -34,6 +34,7 @@ interface FormValidationOptions {
   FormRePassword?: Ref<string>
   FormAcceptedTerms?: Ref<boolean>
   FormExcludingUserID?: Ref<string>
+  FormDisableSeconds?: Ref<string>
 }
 
 export function useFormValidation(options: FormValidationOptions = {}) {
@@ -45,6 +46,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
     FormRePassword = '',
     FormAcceptedTerms = false,
     FormExcludingUserID = '',
+    FormDisableSeconds = '',
   } = options
 
   /**
@@ -426,6 +428,51 @@ export function useFormValidation(options: FormValidationOptions = {}) {
       })
   }
 
+  /**
+   * @description:校验确认密码是否与密码一致
+   * @param password 密码
+   * @param rePassword 确认密码
+   * @return  void
+   */
+  async function checkDisableSeconds(disableSeconds: string): Promise<void> {
+    try {
+      if (disableSeconds !== '') {
+        // 将字符串转换为数字
+        const seconds = Number(disableSeconds)
+
+        // 不大于 30*24*60*60 秒
+        if (seconds > 30 * 24 * 60 * 60) {
+          throw new Error('禁用时间不能大于30天')
+        }
+      }
+    } catch (err: unknown) {
+      console.log(err)
+      throw err
+    }
+  }
+
+  /**
+   * @description: 确认密码 Validator
+   * @return  void
+   */
+  function disableSecondsValidator(
+    rule: any,
+    value: string,
+    callback: (error?: string | Error | undefined) => void,
+  ): void {
+    // 在这里处理异步验证逻辑
+
+    const disableSeconds = options.FormDisableSeconds?.value || ''
+
+    checkDisableSeconds(disableSeconds)
+      .then(() => {
+        callback() // 校验成功
+      })
+      .catch((err: Error) => {
+        callback(err.message)
+      })
+  }
+
   return {
     checkUserName,
     checkUserNameExcludingUserID,
@@ -442,5 +489,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
     rePasswordValidator,
     checkAcceptedTerms,
     acceptedTermsValidator,
+    checkDisableSeconds,
+    disableSecondsValidator,
   }
 }

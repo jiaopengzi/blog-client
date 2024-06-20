@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-19 19:31:49
+ * @LastEditTime : 2024-06-20 11:46:08
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -62,6 +62,7 @@ export enum ResponseCode {
   UserNameExistExcludingUserID = 1035, //用户名已存在，排除指定用户ID
   EmailExistExcludingUserID = 1037, //用户邮箱已存在，排除指定用户ID
   EditUserInfoByAdminSuccess = 1039, //管理员编辑用户成功
+  UserLogoutByAdminSuccess = 1040, //管理员登出用户成功
 
   // 验证码相关
   CaptchaSendSuccess = 8000, //验证码发送成功

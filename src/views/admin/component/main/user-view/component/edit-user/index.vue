@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-18 08:47:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-19 22:49:49
+ * @LastEditTime : 2024-06-20 21:25:19
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\edit-user\index.vue
  * @Description  : 编辑用户
  * @Blog         : https://jiaopengzi.com
@@ -42,9 +42,18 @@
             <el-form-item label="状态" prop="status">
 
                 <el-radio-group v-model="editUserForm.status">
-                    <el-radio value="0">正常</el-radio>
-                    <el-radio value="1">禁用</el-radio>
+                    <el-radio value="1">正常</el-radio>
+                    <el-radio value="2">禁用</el-radio>
                 </el-radio-group>
+            </el-form-item>
+
+            <el-form-item v-if="editUserForm.status === '2'" label="禁用时间(s)" prop="disableSeconds">
+                <el-input class="disableSeconds" type="text" v-model.trim="editUserForm.disableSeconds"
+                    placeholder="留空则为永久禁用" />
+                <span v-if="props.editUserData.disableSeconds" class="countdown">倒计时：
+                    <Countdown :countdown="parseInt(props.editUserData.disableSeconds)"
+                        @countdown-over="countdownOver" />
+                </span>
             </el-form-item>
 
             <el-form-item label="密码" prop="password">
@@ -83,7 +92,7 @@
                     <el-button type="primary" @click="submitForm(editUserFormRef)">更新</el-button>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="danger" @click="logoutSession">登出</el-button>
+                    <el-button type="danger" @click="logoutByAdmin">登出</el-button>
                 </el-form-item>
             </div>
         </el-form>
@@ -107,6 +116,8 @@ import AvatarInitials from '@/components/common/avatar-initials'
 import AvatarUpload from '@/components/common/avatar-upload'
 import { getAvatarUrl } from '@/utils/avatar'
 import { RegexPatterns } from '@/utils/regexPatterns'
+import { type LogoutByAdminRequest, logoutByAdminAPI } from '@/api/user/logoutByAdmin'
+import Countdown from '@/components/common/countdown'
 
 defineOptions({ name: 'EditUser' })
 
@@ -142,6 +153,7 @@ const editUserForm = reactive<EditUserByAdminForm>({
     nickName: props.editUserData.nickName,
     sex: '男',
     description: '',
+    disableSeconds: props.editUserData.disableSeconds
 })
 
 // 头像 url
@@ -179,16 +191,20 @@ const userNameRef = toRef(editUserForm, 'userName')
 const emailRef = toRef(editUserForm, 'email')
 const passwordRef = toRef(editUserForm, 'password')
 const excludingUserIDRef = toRef(editUserForm, 'editUserID')
+const disableSecondsRef = toRef(editUserForm, 'disableSeconds')
 
 // hooks
 const {
     checkUserNameExcludingUserIDValidator,
-    checkEmailExcludingUserIDValidator } = useFormValidation({
-        FormUserName: userNameRef,
-        FormEmail: emailRef,
-        FormPassword: passwordRef,
-        FormExcludingUserID: excludingUserIDRef
-    })
+    checkEmailExcludingUserIDValidator,
+    disableSecondsValidator,
+} = useFormValidation({
+    FormUserName: userNameRef,
+    FormEmail: emailRef,
+    FormPassword: passwordRef,
+    FormExcludingUserID: excludingUserIDRef,
+    FormDisableSeconds: disableSecondsRef,
+})
 
 const generatePasswordHandle = () => {
     editUserForm.password = generatePassword()
@@ -225,6 +241,16 @@ const rules = reactive<FormRules<EditUserByAdminForm>>({
             trigger: 'blur',
         },
     ],
+    disableSeconds: [
+        { message: '请输入密码', trigger: 'change' },
+        // 必须包含：大小写字母+数字,长度:6-64 特殊字符可有可无
+        {
+            pattern: new RegExp(RegexPatterns.DisableSeconds),
+            message: '请输入正整数(秒)',
+            trigger: 'blur',
+        },
+        { validator: disableSecondsValidator, trigger: 'blur' },
+    ],
 })
 
 
@@ -250,6 +276,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                     nick_name: editUserForm.nickName,
                     sex: editUserForm.sex,
                     description: editUserForm.description,
+                    disable_seconds: parseInt(editUserForm.disableSeconds)
                 }
                 console.log('req:', req)
                 console.log('req.status type:', typeof req.status)
@@ -274,6 +301,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
 }
 
+// 头像更新状态
 const avatarUploadStatus = (status: boolean) => {
     if (status) {
         getUserInfo()
@@ -281,9 +309,31 @@ const avatarUploadStatus = (status: boolean) => {
     }
 }
 
+// 计时器结束
+const countdownOver = (status: boolean) => {
+    if (status) {
+        editUserForm.disableSeconds = ''
+        getUserInfo()
+    }
+}
+
 // 注销会话
-const logoutSession = () => {
-    console.log('注销会话')
+const logoutByAdmin = async () => {
+    const req: LogoutByAdminRequest = {
+        logout_user_id: editUserForm.editUserID
+    }
+
+    const { data } = await logoutByAdminAPI(req)
+
+    if (data.code === ResponseCode.UserLogoutByAdminSuccess) {
+        // 添加成功提示
+        emit('edit-user-status', true)
+        ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
+
+    } else {
+        // 添加失败提示
+        ShowMsgTip(ShowMsgTip.MsgType.error, data.msg, 0)
+    }
 }
 
 // 监控 props.editUserData 变化 更新页面数据

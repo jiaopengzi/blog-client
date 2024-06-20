@@ -24,6 +24,7 @@ export interface EditUserInfoByAdminRequest {
   nick_name: string // 昵称
   sex: string // 性别
   description: string // 描述
+  disable_seconds: number // 禁用时间 秒
 }
 
 export function EditUserInfoByAdminAPI(requestData: EditUserInfoByAdminRequest): AxiosPromise<Res> {
