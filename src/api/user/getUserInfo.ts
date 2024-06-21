@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-04 14:44:00
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-19 10:50:22
+ * @LastEditTime : 2024-06-21 11:23:44
  * @FilePath     : \blog-client\src\api\user\getUserInfo.ts
  * @Description  : 获取用户信息
  * @Blog         : https://jiaopengzi.com
@@ -38,7 +38,7 @@ export interface UserInfo {
     user_display_name: string
     user_email: string
     user_name: string
-    user_status: number
+    disable_expires_at: string
     post: number
     role: string
   }
@@ -103,7 +103,7 @@ export function emptyUserInfo(): UserInfo {
       user_display_name: '',
       user_email: '',
       user_name: '',
-      user_status: 0,
+      disable_expires_at: '',
       post: 0,
       role: '',
     },

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-18 10:06:19
+ * @LastEditTime : 2024-06-21 21:45:09
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格
  * @Blog         : https://jiaopengzi.com
@@ -35,7 +35,15 @@
                             :style="imgStyle(scope.row.img.width, scope.row.img.height, scope.row.img.imgFit)" />
                     </template>
                 </el-table-column>
-
+                <el-table-column v-else-if="col.formatter" :key="`formatter-${index}`" :label="col.label"
+                    :sortable="col.sortable" :width="col.width" :align="col.align">
+                    <template #header>
+                        <span>{{ col.label }}</span>
+                    </template>
+                    <template #default="scope">
+                        <span>{{ col.formatter(scope.row) }}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column v-else :key="index" :prop="col.prop" :label="col.label" :sortable="col.sortable"
                     :width="col.width" :align="col.align" />
             </template>

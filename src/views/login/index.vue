@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-19 22:49:04
+ * @LastEditTime : 2024-06-21 18:02:21
  * @FilePath     : \blog-client\src\views\login\index.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, toRef } from 'vue'
 import SlideVerify from '@/components/common/slide-verify'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import router from '@/router/index'
@@ -72,6 +72,7 @@ import type { LoginForm } from "@/views/login"
 import { IconKeys } from '@/components/common/icons'
 import type { RouteLocationRaw } from 'vue-router'
 import { RegexPatterns } from '@/utils/regexPatterns'
+import { useFormValidation } from '@/components/hooks/useFormValidation'
 
 // eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: 'Login' })
@@ -91,6 +92,13 @@ const loginForm = reactive<LoginForm>({
   password: '123QWEasd',
 })
 
+
+// 表单数据动态绑定
+const loginNameRef = toRef(loginForm, 'loginName')
+
+// hook 函数
+const { checkLoginNameValidator } = useFormValidation({ FormUserName: loginNameRef, })
+
 /**
  * @description: 表单校验规则
  * @return  FormRules<loginForm> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
@@ -103,8 +111,8 @@ const rules = reactive<FormRules<LoginForm>>({
       message: '6-20位小写字母或数字 | 邮箱',
       trigger: 'change',
     },
-    // 用户查重
-    // { validator: checkUserNameValidator, trigger: 'blur' },
+    // 用户状态校验
+    { validator: checkLoginNameValidator, trigger: 'blur' },
   ],
 
   password: [

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 09:35:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-19 10:54:11
+ * @LastEditTime : 2024-06-21 18:17:45
  * @FilePath     : \blog-client\src\stores\user.ts
  * @Description  : 用户信息
  * @Blog         : https://jiaopengzi.com
@@ -362,7 +362,8 @@ async function handleLoginResult(resObj: Res, successCode: ResponseCode): Promis
 
   // 显示登录失败提示
   localStorage.removeItem(LocalStorageKey.AccessToken)
-  ShowMsgTip(ShowMsgTip.MsgType.error, resObj.msg, 3000)
+  ShowMsgTip(ShowMsgTip.MsgType.error, resObj.msg, 10000)
+
   return createEmptyUserInfoStore() // 获取用户信息
 }
 

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 16:07:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-13 14:51:13
+ * @LastEditTime : 2024-06-21 14:32:34
  * @FilePath     : \blog-client\src\utils\dateTime.ts
  * @Description  : UTC 转 北京时间
  * @Blog         : https://jiaopengzi.com
@@ -20,7 +20,7 @@ export function convertToBeijingTime(
   Timestamp: string,
   timeZone: string = 'Asia/Shanghai',
   formatStr: string = 'YYYY-MM-DD HH:mm:ss',
-  addHours = -8, // 默认减去8小时, 东八区 数据库存储的北京时间
+  addHours = 0, // 默认不增加小时
 ): string {
   // 将时间戳转换为 Date 对象,默认会转换为本地时间
   const dateTime = new Date(Timestamp)
@@ -55,4 +55,31 @@ export function convertToBeijingTime(
         .replace('mm', p5)
         .replace('ss', p6),
   )
+}
+
+// /**
+//  * @description: 格式化时间
+//  * @param duration 时间间隔 秒数
+//  */
+export function formatDurationTime(duration: number): string {
+  const days = Math.floor(duration / 60 / 60 / 24) // 计算天数
+  const hours = Math.floor((duration / 60 / 60) % 24) // 计算小时数
+  const minutes = Math.floor((duration / 60) % 60) // 计算分钟数
+  const seconds = duration % 60 // 计算秒数
+
+  // 将小时、分钟和秒数补全为两位
+  const hoursStr = hours.toString().padStart(2, '0')
+  const minutesStr = minutes.toString().padStart(2, '0')
+  const secondsStr = seconds.toString().padStart(2, '0')
+
+  // 根据不同的时间段返回不同的时间格式
+  if (days > 0) {
+    return `${days}天 ${hoursStr}:${minutesStr}:${secondsStr}`
+  } else if (hours > 0) {
+    return `${hoursStr}:${minutesStr}:${secondsStr}`
+  } else if (minutes > 0) {
+    return `${minutesStr}:${secondsStr}`
+  } else {
+    return `${secondsStr}`
+  }
 }

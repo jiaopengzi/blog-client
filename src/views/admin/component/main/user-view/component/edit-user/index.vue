@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-18 08:47:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-20 21:25:19
+ * @LastEditTime : 2024-06-21 23:35:53
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\edit-user\index.vue
  * @Description  : 编辑用户
  * @Blog         : https://jiaopengzi.com
@@ -39,21 +39,8 @@
                 <el-input v-model.trim="editUserForm.email" />
             </el-form-item>
 
-            <el-form-item label="状态" prop="status">
-
-                <el-radio-group v-model="editUserForm.status">
-                    <el-radio value="1">正常</el-radio>
-                    <el-radio value="2">禁用</el-radio>
-                </el-radio-group>
-            </el-form-item>
-
-            <el-form-item v-if="editUserForm.status === '2'" label="禁用时间(s)" prop="disableSeconds">
-                <el-input class="disableSeconds" type="text" v-model.trim="editUserForm.disableSeconds"
-                    placeholder="留空则为永久禁用" />
-                <span v-if="props.editUserData.disableSeconds" class="countdown">倒计时：
-                    <Countdown :countdown="parseInt(props.editUserData.disableSeconds)"
-                        @countdown-over="countdownOver" />
-                </span>
+            <el-form-item label="禁用到期时间" prop="disableExpiresAt">
+                <el-date-picker v-model="editUserForm.disableExpiresAt.Time" type="datetime" placeholder="留空则为未禁用" />
             </el-form-item>
 
             <el-form-item label="密码" prop="password">
@@ -117,7 +104,6 @@ import AvatarUpload from '@/components/common/avatar-upload'
 import { getAvatarUrl } from '@/utils/avatar'
 import { RegexPatterns } from '@/utils/regexPatterns'
 import { type LogoutByAdminRequest, logoutByAdminAPI } from '@/api/user/logoutByAdmin'
-import Countdown from '@/components/common/countdown'
 
 defineOptions({ name: 'EditUser' })
 
@@ -147,13 +133,12 @@ const editUserForm = reactive<EditUserByAdminForm>({
     editUserID: props.editUserData.editUserID,
     userName: props.editUserData.userName,
     email: props.editUserData.email,
-    status: props.editUserData.status,
+    disableExpiresAt: props.editUserData.disableExpiresAt, // 转换为 Date 类型,
     password: '',
     roleName: props.editUserData.roleName,
     nickName: props.editUserData.nickName,
     sex: '男',
     description: '',
-    disableSeconds: props.editUserData.disableSeconds
 })
 
 // 头像 url
@@ -163,7 +148,7 @@ const updateEditUserForm = (data: EditUserByAdminForm) => {
     editUserForm.editUserID = data.editUserID
     editUserForm.userName = data.userName
     editUserForm.email = data.email
-    editUserForm.status = data.status
+    editUserForm.disableExpiresAt = data.disableExpiresAt
     editUserForm.password = ''
     editUserForm.roleName = data.roleName
     editUserForm.nickName = data.nickName
@@ -191,19 +176,16 @@ const userNameRef = toRef(editUserForm, 'userName')
 const emailRef = toRef(editUserForm, 'email')
 const passwordRef = toRef(editUserForm, 'password')
 const excludingUserIDRef = toRef(editUserForm, 'editUserID')
-const disableSecondsRef = toRef(editUserForm, 'disableSeconds')
 
 // hooks
 const {
     checkUserNameExcludingUserIDValidator,
     checkEmailExcludingUserIDValidator,
-    disableSecondsValidator,
 } = useFormValidation({
     FormUserName: userNameRef,
     FormEmail: emailRef,
     FormPassword: passwordRef,
     FormExcludingUserID: excludingUserIDRef,
-    FormDisableSeconds: disableSecondsRef,
 })
 
 const generatePasswordHandle = () => {
@@ -241,16 +223,6 @@ const rules = reactive<FormRules<EditUserByAdminForm>>({
             trigger: 'blur',
         },
     ],
-    disableSeconds: [
-        { message: '请输入密码', trigger: 'change' },
-        // 必须包含：大小写字母+数字,长度:6-64 特殊字符可有可无
-        {
-            pattern: new RegExp(RegexPatterns.DisableSeconds),
-            message: '请输入正整数(秒)',
-            trigger: 'blur',
-        },
-        { validator: disableSecondsValidator, trigger: 'blur' },
-    ],
 })
 
 
@@ -270,17 +242,16 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                     edit_user_id: editUserForm.editUserID,
                     user_name: editUserForm.userName,
                     email: editUserForm.email,
-                    status: parseInt(editUserForm.status),
+                    disable_expires_at: editUserForm.disableExpiresAt,
                     password: editUserForm.password,
                     role_name: editUserForm.roleName,
                     nick_name: editUserForm.nickName,
                     sex: editUserForm.sex,
                     description: editUserForm.description,
-                    disable_seconds: parseInt(editUserForm.disableSeconds)
                 }
                 console.log('req:', req)
-                console.log('req.status type:', typeof req.status)
-                console.log('editUserForm.status type', typeof editUserForm.status)
+                console.log('req.disable_expires_at type:', typeof req.disable_expires_at)
+                console.log('editUserForm.disableExpiresAt type', typeof editUserForm.disableExpiresAt)
                 const { data } = await EditUserInfoByAdminAPI(req)
 
                 if (data.code === ResponseCode.EditUserInfoByAdminSuccess) {
@@ -306,14 +277,6 @@ const avatarUploadStatus = (status: boolean) => {
     if (status) {
         getUserInfo()
         emit('edit-user-status', true)
-    }
-}
-
-// 计时器结束
-const countdownOver = (status: boolean) => {
-    if (status) {
-        editUserForm.disableSeconds = ''
-        getUserInfo()
     }
 }
 

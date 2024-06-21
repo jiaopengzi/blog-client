@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 14:48:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-18 08:43:48
+ * @LastEditTime : 2024-06-21 21:52:02
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\add-user\index.vue
  * @Description  : 添加用户
  * @Blog         : https://jiaopengzi.com
@@ -140,7 +140,6 @@ const rules = reactive<FormRules<AddUserForm>>({
         },
     ],
 })
-
 
 
 /**

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:25:00
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-20 16:44:30
+ * @LastEditTime : 2024-06-21 21:06:29
  * @FilePath     : \blog-client\src\components\common\base-table\index.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,7 @@
  */
 
 import { type DataWithImg } from '@/components/common' // 图片填充方式
-import  { type User } from '@/api/user/getUsers'
+import { type User } from '@/api/user/getUsers'
 
 export { default } from './index.vue'
 
@@ -22,6 +22,8 @@ export interface TableColumn {
   width?: number | string // 列宽
   align?: string // 对齐方式
   isImg?: boolean // 是否为图片
+  formatter?: (row: TableData) => any // 格式化函数
+  isTest?: boolean // 是否为图片
 }
 
 // 文章分类

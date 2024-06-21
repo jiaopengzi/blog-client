@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-19 19:35:37
+ * @LastEditTime : 2024-06-21 23:46:21
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -75,6 +75,7 @@ import router from '@/router/index'
 import { DeleteUserAPI, type DeleteUserRequest } from '@/api/user/deleteUser'
 import { ShowMsgTip } from '@/utils/message'
 import { type EditUserByAdminForm } from '@/views/admin/component/main/user-view/component/edit-user'
+import { convertToBeijingTime } from '@/utils/dateTime'
 
 
 defineOptions({ name: AadminSideMenu.UserView })
@@ -106,42 +107,44 @@ const cols: TableColumn[] = reactive([
         prop: 'user_display_name',
         label: '昵称',
         sortable: true,
-        width: 200,
+        width: 180,
         align: 'center',
     },
     {
         prop: 'user_email',
         label: '邮箱',
         sortable: true,
-        width: 200,
+        width: 180,
         align: 'center',
     },
     {
         prop: 'role',
         label: '角色',
         sortable: true,
-        width: 150,
+        width: 140,
         align: 'center',
     },
     {
-        prop: 'user_status',
-        label: '状态',
+        prop: 'disable_expires_at',
+        label: '禁用过期时间',
         sortable: true,
-        width: 100,
+        width: 180,
         align: 'center',
+        isTest: true,
+        formatter: (row: TableData) => getDisableExpiresTime(row),
     },
     {
         prop: 'post',
         label: '文章',
         sortable: true,
-        width: 100,
+        width: 80,
         align: 'center',
     },
     {
         prop: 'created_at',
         label: '注册时间',
         sortable: true,
-        width: 200,
+        width: 180,
         align: 'center',
     },
 
@@ -162,6 +165,32 @@ const addItemDialogVisible = ref(false)
 const editItemDialogVisible = ref(false)
 const AllRoleName = 'AllRole'
 const activeRole = ref(AllRoleName)
+
+const getDisableExpiresTime = (row: TableData) => {
+    if ('disable_expires_at' in row) {
+        // 如果 disable_expires_at 为 null 则返回 '永久'
+        if (row.disable_expires_at === null) {
+            return '未禁用'
+        }
+
+        // 如果 disable_expires_at 为 Valid 为 false 则返回 ''
+        if ('Valid' in row.disable_expires_at && row.disable_expires_at.Valid === false) {
+            return '未禁用'
+        }
+
+        if ('Time' in row.disable_expires_at) {
+            // 获取当前时间
+            const now = new Date().getTime()
+            // 获取禁用过期时间
+            const disableExpiresAt = new Date(row.disable_expires_at.Time as string).getTime()
+            // 如果禁用过期时间小于当前时间则返回 '已过期'
+            if (disableExpiresAt < now) {
+                return '未禁用'
+            }
+            return convertToBeijingTime(row.disable_expires_at.Time as string)
+        }
+    }
+}
 
 const handleAdd = () => {
     addItemDialogVisible.value = !addItemDialogVisible.value
@@ -193,7 +222,10 @@ const editUserByAdminForm = reactive<EditUserByAdminForm>({
     editUserID: '',
     userName: '',
     email: '',
-    status: '0',
+    disableExpiresAt: {
+        Time: null, // 禁用到期时间
+        Valid: false, // 是否有效
+    },
     password: '',
     roleName: '',
     nickName: '',
@@ -209,7 +241,7 @@ const editRow = (index: number, row: TableData) => {
         editUserByAdminForm.editUserID = row.id.toString()
         editUserByAdminForm.userName = row.user_name
         editUserByAdminForm.email = row.user_email
-        editUserByAdminForm.status = row.user_status.toString()
+        editUserByAdminForm.disableExpiresAt = row.disable_expires_at
         editUserByAdminForm.password = ''
         editUserByAdminForm.nickName = row.user_display_name
         editUserByAdminForm.roleName = row.role
@@ -287,6 +319,7 @@ async function getUserPaginate(getUsersRequest: GetUsersRequest) {
     await getUsersAPI(getUsersRequest).then((res) => {
         if (res.data.code === ResponseCode.UserGetAllSuccess) {
             pagination.value = res.data.data
+            console.log("11============", pagination.value)
         } else {
             pagination.value = emptyUsers()
         }

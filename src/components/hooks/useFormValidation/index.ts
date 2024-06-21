@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 15:53:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-20 20:08:34
+ * @LastEditTime : 2024-06-21 18:23:07
  * @FilePath     : \blog-client\src\components\hooks\useFormValidation\index.ts
  * @Description  : 用户表单校验
  * @Blog         : https://jiaopengzi.com
@@ -23,8 +23,13 @@ import {
 } from '@/api/user/checkEmailExcludingUserID'
 import { type CaptchaSendRequest, captchaSendAPI } from '@/api/captcha/send'
 import { type CaptchaCheckRequest, captchaCheckAPI } from '@/api/captcha/check'
+import {
+  type GetDisableExpiresAtSecondsRequest,
+  getDisableExpiresAtSecondsAPI,
+} from '@/api/user/getDisableExpiresAtSeconds'
 import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
 import { getPublicIp } from '@/utils/ip'
+import { formatDurationTime } from '@/utils/dateTime'
 
 interface FormValidationOptions {
   FormUserName?: Ref<string>
@@ -34,7 +39,6 @@ interface FormValidationOptions {
   FormRePassword?: Ref<string>
   FormAcceptedTerms?: Ref<boolean>
   FormExcludingUserID?: Ref<string>
-  FormDisableSeconds?: Ref<string>
 }
 
 export function useFormValidation(options: FormValidationOptions = {}) {
@@ -46,7 +50,6 @@ export function useFormValidation(options: FormValidationOptions = {}) {
     FormRePassword = '',
     FormAcceptedTerms = false,
     FormExcludingUserID = '',
-    FormDisableSeconds = '',
   } = options
 
   /**
@@ -429,21 +432,26 @@ export function useFormValidation(options: FormValidationOptions = {}) {
   }
 
   /**
-   * @description:校验确认密码是否与密码一致
-   * @param password 密码
-   * @param rePassword 确认密码
-   * @return  void
+   * @description: 用户名查重 异步函数
+   * @return  Promise<void> 用户名存在返回 Promise.reject()，否则返回 Promise.resolve()
    */
-  async function checkDisableSeconds(disableSeconds: string): Promise<void> {
+  async function checkLoginName(loginName: string): Promise<void> {
     try {
-      if (disableSeconds !== '') {
-        // 将字符串转换为数字
-        const seconds = Number(disableSeconds)
+      // 创建请求对象 加密内容
+      const req: GetDisableExpiresAtSecondsRequest = {
+        login_name: loginName,
+      }
 
-        // 不大于 30*24*60*60 秒
-        if (seconds > 30 * 24 * 60 * 60) {
-          throw new Error('禁用时间不能大于30天')
+      const { data } = await getDisableExpiresAtSecondsAPI(req)
+      let msg = ''
+      const countdown = formatDurationTime(data.data)
+      if (data.code === ResponseCode.UserForbidden) {
+        if (data.data && data.data <= 60 * 60 * 24 * 7) {
+          msg = `${data.msg}, ${countdown} 后解禁!` // 占位符替换
+        } else {
+          msg = data.msg
         }
+        throw new Error(msg)
       }
     } catch (err: unknown) {
       console.log(err)
@@ -452,24 +460,28 @@ export function useFormValidation(options: FormValidationOptions = {}) {
   }
 
   /**
-   * @description: 确认密码 Validator
-   * @return  void
+   * @description: 用户名查重 Validator
+   * @param rule 无用参数
+   * @param value 无用参数
+   * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
    */
-  function disableSecondsValidator(
+  function checkLoginNameValidator(
     rule: any,
     value: string,
     callback: (error?: string | Error | undefined) => void,
   ): void {
     // 在这里处理异步验证逻辑
-
-    const disableSeconds = options.FormDisableSeconds?.value || ''
-
-    checkDisableSeconds(disableSeconds)
+    if (FormUserName === undefined) {
+      callback('请输入用户名')
+      return
+    }
+    const formUserName = options.FormUserName?.value || ''
+    checkLoginName(formUserName)
       .then(() => {
         callback() // 校验成功
       })
       .catch((err: Error) => {
-        callback(err.message)
+        callback(err.message) // 如果失败（用户名已经存在），则传入错误提示字符串
       })
   }
 
@@ -489,7 +501,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
     rePasswordValidator,
     checkAcceptedTerms,
     acceptedTermsValidator,
-    checkDisableSeconds,
-    disableSecondsValidator,
+    checkLoginName,
+    checkLoginNameValidator,
   }
 }
