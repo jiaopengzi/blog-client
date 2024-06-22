@@ -187,7 +187,7 @@ const getDisableExpiresTime = (row: TableData) => {
             if (disableExpiresAt < now) {
                 return '未禁用'
             }
-            return convertToBeijingTime(row.disable_expires_at.Time)
+            return convertToBeijingTime(row.disable_expires_at.Time.toString())
         }
     }
 }
