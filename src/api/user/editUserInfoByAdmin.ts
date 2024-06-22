@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-18 08:52:22
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-21 23:38:51
+ * @LastEditTime : 2024-06-22 10:52:02
  * @FilePath     : \blog-client\src\api\user\editUserInfoByAdmin.ts
  * @Description  : 编辑用户
  * @Blog         : https://jiaopengzi.com
@@ -19,8 +19,8 @@ export interface EditUserInfoByAdminRequest {
   user_name: string // 用户名
   email: string // 邮箱
   disable_expires_at: {
-    Time: Date | null // 禁用到期时间
-    Valid: boolean
+    time: Date | null // 禁用到期时间
+    valid: boolean
   }
   password: string // 密码
   role_name: string // 角色

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-18 08:47:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-21 23:35:53
+ * @LastEditTime : 2024-06-22 12:46:42
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\edit-user\index.vue
  * @Description  : 编辑用户
  * @Blog         : https://jiaopengzi.com
@@ -40,7 +40,8 @@
             </el-form-item>
 
             <el-form-item label="禁用到期时间" prop="disableExpiresAt">
-                <el-date-picker v-model="editUserForm.disableExpiresAt.Time" type="datetime" placeholder="留空则为未禁用" />
+                <el-date-picker v-model="editUserForm.disableExpiresAt.time" type="datetime" placeholder="留空则为未禁用"
+                    :shortcuts="shortcuts" :default-time="defaultTime" />
             </el-form-item>
 
             <el-form-item label="密码" prop="password">
@@ -92,7 +93,7 @@ import { ShowMsgTip } from '@/utils/message'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import { type EditUserInfoByAdminRequest, EditUserInfoByAdminAPI } from '@/api/user/editUserInfoByAdmin'
 import { ResponseCode } from '@/api/responseCode'
-import { type EditUserByAdminForm } from '@/views/admin/component/main/user-view/component/edit-user'
+import type { EditUserByAdminForm, DisableExpiresAt } from '@/views/admin/component/main/user-view/component/edit-user'
 import { useFormValidation } from '@/components/hooks/useFormValidation'
 import { generatePassword } from '@/utils/password'
 import { type Role } from '@/api/permissionRole/role'
@@ -104,6 +105,7 @@ import AvatarUpload from '@/components/common/avatar-upload'
 import { getAvatarUrl } from '@/utils/avatar'
 import { RegexPatterns } from '@/utils/regexPatterns'
 import { type LogoutByAdminRequest, logoutByAdminAPI } from '@/api/user/logoutByAdmin'
+
 
 defineOptions({ name: 'EditUser' })
 
@@ -124,19 +126,84 @@ const labelPosition = ref('left')
 // 表单大小 '' | 'large' | 'default' | 'small'
 const formSize = ref('large')
 
+// 默认时间为当前日期
+const defaultTime = new Date()
+// 时间快捷选项
+const shortcuts = [
+    {
+        text: '禁用5分钟',
+        value: () => {
+            const date = new Date()
+            date.setMinutes(date.getMinutes() + 5)
+            return date
+        },
+    },
+    {
+        text: '禁用1小时',
+        value: () => {
+            const date = new Date()
+            date.setHours(date.getHours() + 1)
+            return date
+        },
+    },
+    {
+        text: '禁用1天',
+        value: () => {
+            const date = new Date()
+            date.setDate(date.getDate() + 1)
+            return date
+        },
+    }, {
+        text: '禁用7天',
+        value: () => {
+            const date = new Date()
+            date.setDate(date.getDate() + 7)
+            return date
+        },
+    },
+]
+
 // 表单实例
 const editUserFormRef = ref<FormInstance>()
 // const role_name = ref('Subscriber')
 
+
+
+// 按需获取禁用时间
+const getDisableExpiresAt = (disableExpiresAt: DisableExpiresAt) => {
+    if (!disableExpiresAt.time) {
+        return {
+            time: null,
+            valid: false
+        }
+    }
+    const now = new Date().getTime() // 获取当前时间的时间戳
+    const disableExpiresAtTime = new Date(disableExpiresAt.time).getTime() // 获取 disableExpiresAt.time 的时间戳
+    // 比较两个时间戳，如果 disableExpiresAtTime 小于当前时间 now，则 valid 为 false，否则为 true
+    if (disableExpiresAtTime > now) {
+        return {
+            time: disableExpiresAt.time,
+            valid: true
+        }
+    }
+    return {
+        time: null,
+        valid: false
+    }
+}
+
 // 表单数据
 const editUserForm = reactive<EditUserByAdminForm>({
-    editUserID: props.editUserData.editUserID,
-    userName: props.editUserData.userName,
-    email: props.editUserData.email,
-    disableExpiresAt: props.editUserData.disableExpiresAt, // 转换为 Date 类型,
+    editUserID: '',
+    userName: '',
+    email: '',
+    disableExpiresAt: {
+        time: null,
+        valid: false
+    },
     password: '',
-    roleName: props.editUserData.roleName,
-    nickName: props.editUserData.nickName,
+    roleName: '',
+    nickName: '',
     sex: '男',
     description: '',
 })
@@ -148,7 +215,7 @@ const updateEditUserForm = (data: EditUserByAdminForm) => {
     editUserForm.editUserID = data.editUserID
     editUserForm.userName = data.userName
     editUserForm.email = data.email
-    editUserForm.disableExpiresAt = data.disableExpiresAt
+    editUserForm.disableExpiresAt = getDisableExpiresAt(data.disableExpiresAt)
     editUserForm.password = ''
     editUserForm.roleName = data.roleName
     editUserForm.nickName = data.nickName
@@ -237,7 +304,27 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     try {
         await formEl.validate(async (valid) => {
             if (valid) {
-                // 创建请求对象 加密内容
+
+                console.log('editUserForm.disableExpiresAt.time1:', editUserForm.disableExpiresAt.time)
+
+
+                // 当前时间 
+                const now = new Date()
+                // 当前时间小于禁用时间 valid = true
+                if (editUserForm.disableExpiresAt.time && now >= editUserForm.disableExpiresAt.time) {
+                    ShowMsgTip(ShowMsgTip.MsgType.error, '禁用时间不能小于当前时间', 6000)
+                    return
+                }
+                if (editUserForm.disableExpiresAt.time && now < editUserForm.disableExpiresAt.time) {
+                    editUserForm.disableExpiresAt.valid = true
+                }
+                if (!editUserForm.disableExpiresAt.time) {
+                    editUserForm.disableExpiresAt.valid = false
+                }
+
+                console.log('editUserForm.disableExpiresAt.time2:', editUserForm.disableExpiresAt.time)
+                console.log('editUserForm:', editUserForm)
+
                 const req: EditUserInfoByAdminRequest = {
                     edit_user_id: editUserForm.editUserID,
                     user_name: editUserForm.userName,
@@ -249,9 +336,6 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                     sex: editUserForm.sex,
                     description: editUserForm.description,
                 }
-                console.log('req:', req)
-                console.log('req.disable_expires_at type:', typeof req.disable_expires_at)
-                console.log('editUserForm.disableExpiresAt type', typeof editUserForm.disableExpiresAt)
                 const { data } = await EditUserInfoByAdminAPI(req)
 
                 if (data.code === ResponseCode.EditUserInfoByAdminSuccess) {
@@ -311,6 +395,7 @@ watch(
 
 onBeforeMount(() => {
     getUserInfo()
+    updateEditUserForm(props.editUserData)
 })
 
 </script>

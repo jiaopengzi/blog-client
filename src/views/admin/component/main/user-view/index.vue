@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-21 23:46:21
+ * @LastEditTime : 2024-06-22 13:30:08
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -126,7 +126,7 @@ const cols: TableColumn[] = reactive([
     },
     {
         prop: 'disable_expires_at',
-        label: '禁用过期时间',
+        label: '禁用到期时间',
         sortable: true,
         width: 180,
         align: 'center',
@@ -178,16 +178,16 @@ const getDisableExpiresTime = (row: TableData) => {
             return '未禁用'
         }
 
-        if ('Time' in row.disable_expires_at) {
+        if ('Time' in row.disable_expires_at && row.disable_expires_at.Time !== null) {
             // 获取当前时间
-            const now = new Date().getTime()
+            const now = new Date()
             // 获取禁用过期时间
-            const disableExpiresAt = new Date(row.disable_expires_at.Time as string).getTime()
+            const disableExpiresAt = new Date(row.disable_expires_at.Time)
             // 如果禁用过期时间小于当前时间则返回 '已过期'
             if (disableExpiresAt < now) {
                 return '未禁用'
             }
-            return convertToBeijingTime(row.disable_expires_at.Time as string)
+            return convertToBeijingTime(row.disable_expires_at.Time)
         }
     }
 }
@@ -223,8 +223,8 @@ const editUserByAdminForm = reactive<EditUserByAdminForm>({
     userName: '',
     email: '',
     disableExpiresAt: {
-        Time: null, // 禁用到期时间
-        Valid: false, // 是否有效
+        time: null,
+        valid: false,
     },
     password: '',
     roleName: '',
@@ -238,13 +238,49 @@ const editRow = (index: number, row: TableData) => {
     console.log("04============", index, row)
     // 断言 row 中有 user_name ts 不会报错
     if ('user_name' in row) {
-        editUserByAdminForm.editUserID = row.id.toString()
-        editUserByAdminForm.userName = row.user_name
-        editUserByAdminForm.email = row.user_email
-        editUserByAdminForm.disableExpiresAt = row.disable_expires_at
-        editUserByAdminForm.password = ''
-        editUserByAdminForm.nickName = row.user_display_name
-        editUserByAdminForm.roleName = row.role
+        // 如果 disable_expires_at 为 null 则返回 '永久'
+        if (row.disable_expires_at === null) {
+            editUserByAdminForm.disableExpiresAt = {
+                time: null,
+                valid: false,
+            }
+
+            editUserByAdminForm.editUserID = row.id.toString()
+            editUserByAdminForm.userName = row.user_name
+            editUserByAdminForm.email = row.user_email
+            editUserByAdminForm.password = ''
+            editUserByAdminForm.nickName = row.user_display_name
+            editUserByAdminForm.roleName = row.role
+            return
+        }
+
+        // 如果 disable_expires_at 为 Valid 为 false 则返回 ''
+        if ('Valid' in row.disable_expires_at && row.disable_expires_at.Valid === false) {
+            editUserByAdminForm.disableExpiresAt = {
+                time: null,
+                valid: false,
+            }
+            editUserByAdminForm.editUserID = row.id.toString()
+            editUserByAdminForm.userName = row.user_name
+            editUserByAdminForm.email = row.user_email
+            editUserByAdminForm.password = ''
+            editUserByAdminForm.nickName = row.user_display_name
+            editUserByAdminForm.roleName = row.role
+            return
+        }
+
+        if ('Time' in row.disable_expires_at && 'Valid' in row.disable_expires_at && row.disable_expires_at.Valid === true) {
+            editUserByAdminForm.disableExpiresAt = {
+                time: row.disable_expires_at.Time,
+                valid: row.disable_expires_at.Valid,
+            }
+            editUserByAdminForm.editUserID = row.id.toString()
+            editUserByAdminForm.userName = row.user_name
+            editUserByAdminForm.email = row.user_email
+            editUserByAdminForm.password = ''
+            editUserByAdminForm.nickName = row.user_display_name
+            editUserByAdminForm.roleName = row.role
+        }
     }
 }
 
