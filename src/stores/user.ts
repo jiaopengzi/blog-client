@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 09:35:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-21 18:17:45
+ * @LastEditTime : 2024-06-22 14:37:43
  * @FilePath     : \blog-client\src\stores\user.ts
  * @Description  : 用户信息
  * @Blog         : https://jiaopengzi.com
@@ -17,6 +17,7 @@ import { ShowMsgTip } from '@/utils/message'
 import { type LoginRequest } from '@/api/user/login'
 import { getAvatarUrl } from '@/utils/avatar'
 import { type Res } from '@/api/responseCode'
+import { getUserForbiddenMsg } from '@/utils/msg'
 
 import {
   loginAPI,
@@ -348,8 +349,6 @@ async function redirectToSocialLogin(
  * @return {UserInfoStore} 用户信息
  */
 async function handleLoginResult(resObj: Res, successCode: ResponseCode): Promise<UserInfoStore> {
-  console.log('================================>resObj.code', resObj.code)
-  console.log('================================>successCode', successCode)
   if (resObj.code === successCode) {
     // 显示登录成功提示
     ShowMsgTip(ShowMsgTip.MsgType.success, resObj.msg, 3000)
@@ -362,7 +361,10 @@ async function handleLoginResult(resObj: Res, successCode: ResponseCode): Promis
 
   // 显示登录失败提示
   localStorage.removeItem(LocalStorageKey.AccessToken)
-  ShowMsgTip(ShowMsgTip.MsgType.error, resObj.msg, 10000)
+
+  const msg = getUserForbiddenMsg(resObj)
+
+  ShowMsgTip(ShowMsgTip.MsgType.error, msg, 10000)
 
   return createEmptyUserInfoStore() // 获取用户信息
 }

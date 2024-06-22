@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 15:53:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-21 18:23:07
+ * @LastEditTime : 2024-06-22 14:52:55
  * @FilePath     : \blog-client\src\components\hooks\useFormValidation\index.ts
  * @Description  : 用户表单校验
  * @Blog         : https://jiaopengzi.com
@@ -30,6 +30,7 @@ import {
 import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
 import { getPublicIp } from '@/utils/ip'
 import { formatDurationTime } from '@/utils/dateTime'
+import { getUserForbiddenMsg } from '@/utils/msg'
 
 interface FormValidationOptions {
   FormUserName?: Ref<string>
@@ -443,14 +444,9 @@ export function useFormValidation(options: FormValidationOptions = {}) {
       }
 
       const { data } = await getDisableExpiresAtSecondsAPI(req)
-      let msg = ''
-      const countdown = formatDurationTime(data.data)
+
+      const msg = getUserForbiddenMsg(data)
       if (data.code === ResponseCode.UserForbidden) {
-        if (data.data && data.data <= 60 * 60 * 24 * 7) {
-          msg = `${data.msg}, ${countdown} 后解禁!` // 占位符替换
-        } else {
-          msg = data.msg
-        }
         throw new Error(msg)
       }
     } catch (err: unknown) {
