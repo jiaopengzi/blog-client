@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 18:53:25
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-04-03 14:20:09
+ * @LastEditTime : 2024-06-23 16:14:52
  * @FilePath     : \blog-client\src\components\common\bind-email-dialog\index.vue
  * @Description  : 绑定邮箱弹窗
  * @Blog         : https://jiaopengzi.com
@@ -55,7 +55,6 @@ import type { BindEmailRequest } from '@/api/user/bindEmail'
 import { bindEmailAPI } from '@/api/user/bindEmail'
 import type { CaptchaSendRequest } from '@/api/captcha/send'
 import { captchaSendAPI } from '@/api/captcha/send'
-import { getPublicIp } from '@/utils/ip'
 import type { CaptchaCheckRequest } from '@/api/captcha/check'
 import { captchaCheckAPI } from '@/api/captcha/check'
 import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
@@ -97,7 +96,6 @@ async function checkSendCaptcha(): Promise<void> {
         // 创建请求对象 加密内容
         const req: CaptchaSendRequest = {
             email: bindemailForm.email,
-            ip: await getPublicIp(),
             purpose: CaptchaPurpose.BindEmail,
         }
         const { data } = await captchaSendAPI(req) // 将 resStr 转换为对象
@@ -166,7 +164,6 @@ async function checkCaptcha(): Promise<void> {
     try {
         // 创建请求对象 加密内容
         const req: CaptchaCheckRequest = {
-            ip: await getPublicIp(),
             email: bindemailForm.email,
             captcha: bindemailForm.captcha,
             purpose: CaptchaPurpose.BindEmail,
@@ -231,7 +228,6 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     await formEl.validate(async (valid) => {
         if (valid) {
             const req: BindEmailRequest = {
-                ip: await getPublicIp(),
                 email: bindemailForm.email,
                 captcha: bindemailForm.captcha,
             }

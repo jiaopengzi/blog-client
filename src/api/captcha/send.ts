@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-19 10:43:53
+ * @LastEditTime : 2024-06-23 16:14:12
  * @FilePath     : \blog-client\src\api\captcha\send.ts
  * @Description  : 验证码发送
  * @Blog         : https://jiaopengzi.com
@@ -16,7 +16,6 @@ import { type Res } from '@/api/responseCode'
 
 export interface CaptchaSendRequest {
   email: string
-  ip: string
   purpose: string // 验证码用途
 }
 

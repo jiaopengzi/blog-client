@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-22 14:41:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-22 14:50:36
+ * @LastEditTime : 2024-06-24 00:48:58
  * @FilePath     : \blog-client\src\utils\msg.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -14,14 +14,19 @@ import { ResponseCode } from '@/api/responseCode'
 
 // 获取用户禁用信息
 export function getUserForbiddenMsg(res: Res) {
-  let msg = ''
-  const countdown = formatDurationTime(res.data)
-  if (res.code === ResponseCode.UserForbidden) {
-    if (res.data && res.data <= 60 * 60 * 24 * 7) {
-      msg = `${res.msg}, ${countdown} 后解禁!` // 占位符替换
-    } else {
-      msg = res.msg
-    }
+  // 小于等于7天的禁用时间，显示倒计时, 大于7天的禁用时间，显示禁用信息
+  if (res.code === ResponseCode.UserForbidden && res.data && res.data <= 60 * 60 * 24 * 7) {
+    const countdown = formatDurationTime(res.data)
+    return `${res.msg}, ${countdown} 后解禁!` // 占位符替换
   }
-  return msg
+
+  // 客户端IP请求频繁 和 客户端ID请求频繁
+  if (
+    (res.code === ResponseCode.ClientIPTooManyRequests ||
+      res.code === ResponseCode.ClientIDTooManyRequests) &&
+    res.data
+  ) {
+    return `${res.msg}:${res.data}` // 占位符替换
+  }
+  return res.msg
 }

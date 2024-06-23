@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-21 20:26:33
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-11 17:34:33
+ * @LastEditTime : 2024-06-23 16:16:50
  * @FilePath     : \blog-client\src\api\user\bindEmail.ts
  * @Description  : 绑定邮箱
  * @Blog         : https://jiaopengzi.com
@@ -16,7 +16,6 @@ import type { AxiosPromise } from 'axios'
 import { type Res } from '@/api/responseCode'
 
 export interface BindEmailRequest {
-  ip: string
   email: string
   captcha: string
 }

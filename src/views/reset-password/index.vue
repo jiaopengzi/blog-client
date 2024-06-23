@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-04-03 14:20:50
+ * @LastEditTime : 2024-06-23 16:17:37
  * @FilePath     : \blog-client\src\views\reset-password\index.vue
  * @Description  : 重置密码
  * @Blog         : https://jiaopengzi.com
@@ -75,7 +75,7 @@ import type { ResetPasswordRequest } from '@/api/user/resetPassword'
 import { resetPasswordAPI } from '@/api/user/resetPassword'
 import type { CaptchaSendRequest } from '@/api/captcha/send'
 import { captchaSendAPI } from '@/api/captcha/send'
-import { getPublicIp } from '@/utils/ip'
+
 import type { CaptchaCheckRequest } from '@/api/captcha/check'
 import { captchaCheckAPI } from '@/api/captcha/check'
 import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
@@ -148,7 +148,6 @@ async function checkSendCaptcha(): Promise<void> {
     // 创建请求对象 加密内容
     const req: CaptchaSendRequest = {
       email: fogetPasswordForm.email,
-      ip: await getPublicIp(),
       purpose: CaptchaPurpose.ResetPassword,
     }
     console.log('==========>发送验证码')
@@ -218,7 +217,6 @@ async function checkCaptcha(): Promise<void> {
   try {
     // 创建请求对象 加密内容
     const req: CaptchaCheckRequest = {
-      ip: await getPublicIp(),
       email: fogetPasswordForm.email,
       captcha: fogetPasswordForm.captcha,
       purpose: CaptchaPurpose.ResetPassword,
@@ -298,7 +296,6 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         password: fogetPasswordForm.password,
         re_password: fogetPasswordForm.rePassword,
         email: fogetPasswordForm.email,
-        ip: await getPublicIp(),
       }
 
       const { data } = await resetPasswordAPI(req) // 将 resStr 转换为对象

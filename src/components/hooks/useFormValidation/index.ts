@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 15:53:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-22 14:52:55
+ * @LastEditTime : 2024-06-23 16:15:42
  * @FilePath     : \blog-client\src\components\hooks\useFormValidation\index.ts
  * @Description  : 用户表单校验
  * @Blog         : https://jiaopengzi.com
@@ -29,7 +29,6 @@ import {
 } from '@/api/user/getDisableExpiresAtSeconds'
 import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
 import { getPublicIp } from '@/utils/ip'
-import { formatDurationTime } from '@/utils/dateTime'
 import { getUserForbiddenMsg } from '@/utils/msg'
 
 interface FormValidationOptions {
@@ -149,7 +148,6 @@ export function useFormValidation(options: FormValidationOptions = {}) {
       // 创建请求对象 加密内容
       const req: CaptchaSendRequest = {
         email: email,
-        ip: await getPublicIp(),
         purpose: CaptchaPurpose.Register,
       }
       console.log('==========>发送验证码')
@@ -389,7 +387,6 @@ export function useFormValidation(options: FormValidationOptions = {}) {
     try {
       // 创建请求对象 加密内容
       const req: CaptchaCheckRequest = {
-        ip: await getPublicIp(),
         email: eamil,
         captcha: captcha,
         purpose: CaptchaPurpose.Register,

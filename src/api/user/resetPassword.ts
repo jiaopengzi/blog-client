@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-12 12:38:12
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-19 10:51:58
+ * @LastEditTime : 2024-06-23 16:18:38
  * @FilePath     : \blog-client\src\api\user\resetPassword.ts
  * @Description  : 忘记密码
  * @Blog         : https://jiaopengzi.com
@@ -19,7 +19,6 @@ export interface ResetPasswordRequest {
   email: string
   password: string
   re_password: string
-  ip: string
 }
 
 // 注册

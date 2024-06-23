@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-19 10:43:02
+ * @LastEditTime : 2024-06-23 16:14:05
  * @FilePath     : \blog-client\src\api\captcha\check.ts
  * @Description  : 验证码校验
  * @Blog         : https://jiaopengzi.com
@@ -15,7 +15,6 @@ import { type Res } from '@/api/responseCode'
 import type { AxiosPromise } from 'axios'
 
 export interface CaptchaCheckRequest {
-  ip: string
   email: string
   captcha: string
   purpose: string // 验证码用途

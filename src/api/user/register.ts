@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-13 15:34:55
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-04-03 18:41:09
+ * @LastEditTime : 2024-06-23 16:18:55
  * @FilePath     : \blog-client\src\api\user\register.ts
  * @Description  : 注册
  * @blog         : https://jiaopengzi.com
@@ -15,7 +15,6 @@ import type { AxiosPromise } from 'axios'
 import { type Res } from '@/api/responseCode'
 
 export interface RegisterRequest {
-  ip: string
   captcha: string
   user_name: string
   password: string

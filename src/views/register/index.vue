@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-19 22:45:07
+ * @LastEditTime : 2024-06-23 22:13:00
  * @FilePath     : \blog-client\src\views\register\index.vue
  * @Description  : 注册
  * @Blog         : https://jiaopengzi.com
@@ -79,7 +79,7 @@ import { ShowMsgTip } from '@/utils/message'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import type { RegisterRequest } from '@/api/user/register'
 import { RegisterAPI } from '@/api/user/register'
-import { getPublicIp } from '@/utils/ip'
+
 import { ResponseCode } from '@/api/responseCode'
 import { routeObj } from '@/router/routeAll'
 import router from '@/router/index'
@@ -195,7 +195,6 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     if (valid) {
       // 创建请求对象 加密内容
       const req: RegisterRequest = {
-        ip: await getPublicIp(),
         captcha: registerForm.captcha,
         user_name: registerForm.userName,
         password: registerForm.password,

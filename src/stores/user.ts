@@ -362,7 +362,10 @@ async function handleLoginResult(resObj: Res, successCode: ResponseCode): Promis
   // 显示登录失败提示
   localStorage.removeItem(LocalStorageKey.AccessToken)
 
+  console.log('======================>>>>', resObj)
+
   const msg = getUserForbiddenMsg(resObj)
+  console.log('======================>>>>msg', msg)
 
   ShowMsgTip(ShowMsgTip.MsgType.error, msg, 10000)
 
