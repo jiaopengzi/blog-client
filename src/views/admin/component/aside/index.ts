@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:33:58
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-11 20:16:39
+ * @LastEditTime : 2024-06-28 12:15:19
  * @FilePath     : \blog-client\src\views\admin\component\aside\index.ts
  * @Description  : 侧边栏菜单项
  * @Blog         : https://jiaopengzi.com
@@ -47,7 +47,6 @@ export enum AadminSideMenu {
   'ShortLinkAdd' = 'ShortLinkAdd',
   'User' = 'User',
   'UserView' = 'UserView',
-  'UserAdd' = 'UserAdd',
   'LoginLog' = 'LoginLog',
   'PermissionRole' = 'PermissionRole',
   'Config' = 'Config',
@@ -228,10 +227,6 @@ const adminMenuItemMap: AdminMenuItemMap = {
       pageSize: 'page-size',
       currentPage: 'current-page',
     },
-  },
-  [AadminSideMenu.UserAdd]: {
-    display: '新增用户',
-    parentIndex: AadminSideMenu.User,
   },
   [AadminSideMenu.LoginLog]: {
     display: '登录日志',

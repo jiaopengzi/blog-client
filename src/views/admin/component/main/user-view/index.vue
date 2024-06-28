@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-22 13:30:08
+ * @LastEditTime : 2024-06-28 18:44:30
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -11,9 +11,10 @@
 
 <template>
     <BaseTable :pagination="pagination" :table-column="cols" :add-item-dialog-visible="addItemDialogVisible"
-        :edit-item-dialog-visible="editItemDialogVisible" :is-show-delete-all="true" :search-str="search"
-        @update-current-page="updateCurrentPage" @update-page-size="updatePageSize" @update-page-sizes="updatePageSizes"
-        @edit-row="editRow" @delete-rows="deleteRows" @update-search="updateSearch" @update-selection="updateSelection"
+        :edit-item-dialog-visible="editItemDialogVisible" :is-show-delete-all="true" :is-show-search="true"
+        :search-str="search" :is-show-edit="true" @update-current-page="updateCurrentPage"
+        @update-page-size="updatePageSize" @update-page-sizes="updatePageSizes" @edit-row="editRow"
+        @delete-rows="deleteRows" @update-search="updateSearch" @update-selection="updateSelection"
         @add-item-update-dialog-visible="addItemUpdateDialogVisible"
         @edit-item-update-dialog-visible="editItemUpdateDialogVisible">
 
@@ -237,7 +238,7 @@ const editUserByAdminForm = reactive<EditUserByAdminForm>({
 const editRow = (index: number, row: TableData) => {
     console.log("04============", index, row)
     // 断言 row 中有 user_name ts 不会报错
-    if ('user_name' in row) {
+    if ('disable_expires_at' in row) {
         // 如果 disable_expires_at 为 null 则返回 '永久'
         if (row.disable_expires_at === null) {
             editUserByAdminForm.disableExpiresAt = {
@@ -288,7 +289,9 @@ const editRow = (index: number, row: TableData) => {
 const deleteRows = async (rows: TableData[]) => {
 
     // 将 rows 中的id 组成新的 list
-    const ids = rows.map((item) => item.id.toString())
+    const ids = rows.flatMap((item) =>
+        ('id' in item) ? item.id.toString() : []
+    )
     // 将 ids 转换为 DeleteUserRequest
     const deleteUserRequest: DeleteUserRequest = { user_id_list: ids }
 

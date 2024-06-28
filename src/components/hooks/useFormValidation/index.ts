@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 15:53:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-23 16:15:42
+ * @LastEditTime : 2024-06-28 17:32:01
  * @FilePath     : \blog-client\src\components\hooks\useFormValidation\index.ts
  * @Description  : 用户表单校验
  * @Blog         : https://jiaopengzi.com
@@ -28,7 +28,6 @@ import {
   getDisableExpiresAtSecondsAPI,
 } from '@/api/user/getDisableExpiresAtSeconds'
 import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
-import { getPublicIp } from '@/utils/ip'
 import { getUserForbiddenMsg } from '@/utils/msg'
 
 interface FormValidationOptions {

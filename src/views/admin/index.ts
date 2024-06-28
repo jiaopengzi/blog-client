@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 12:37:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-11 20:19:28
+ * @LastEditTime : 2024-06-28 17:19:11
  * @FilePath     : \blog-client\src\views\admin\index.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -16,6 +16,7 @@ import PostWrite from '@/views/admin/component/main/post-write'
 import Media from '@/views/admin/component/main/media'
 import PermissionRole from '@/views/admin/component/main/permission-role'
 import UserView from '@/views/admin/component/main/user-view'
+import LoginLog from '@/views/admin/component/main/login-log'
 
 // 将组件存放在一个对象内
 export const components = {
@@ -24,4 +25,5 @@ export const components = {
   Media,
   PermissionRole,
   UserView,
+  LoginLog,
 }

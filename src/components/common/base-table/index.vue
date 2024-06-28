@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-21 21:45:09
+ * @LastEditTime : 2024-06-28 21:34:23
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格
  * @Blog         : https://jiaopengzi.com
@@ -20,6 +20,8 @@
             <!-- 分类 -->
             <slot name="category"></slot>
         </div>
+        <!-- 搜索 -->
+        <el-input v-if="props.isShowSearch" class="search" v-model="search" size="default" placeholder="关键字搜索" />
 
         <el-table ref="tableRef" :data="paginationData.records" stripe max-height="700px"
             @selection-change="handleSelectionChange" style="width: 100%">
@@ -48,9 +50,9 @@
                     :width="col.width" :align="col.align" />
             </template>
 
-            <el-table-column width="160" align="center">
+            <el-table-column v-if="props.isShowEdit" width="160" align="center">
                 <template #header>
-                    <el-input v-model="search" size="small" placeholder="关键字搜索" />
+                    <span>操作</span>
                 </template>
                 <template #default="scope">
                     <el-button size="small" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -99,14 +101,18 @@ defineOptions({ name: 'BaseTable' })
 const props = withDefaults(defineProps<{
     pagination: Pagination<TableData> // 分页配置
     tableColumn: TableColumn[] // 表格列配置
-    addItemDialogVisible: boolean // 对话框是否显示
-    editItemDialogVisible: boolean // 对话框是否显示
-    isShowDeleteAll: boolean // 是否显示批量删除按钮
-    searchStr: string // 搜索关键字
+    addItemDialogVisible?: boolean // 对话框是否显示
+    editItemDialogVisible?: boolean // 对话框是否显示
+    isShowDeleteAll?: boolean // 是否显示批量删除按钮
+    isShowEdit?: boolean // 是否显示每行编辑按钮
+    isShowSearch?: boolean // 是否显示每行编辑按钮
+    searchStr?: string // 搜索关键字
 }>(), {
     addItemDialogVisible: false, // 默认添加对话框不显示
     editItemDialogVisible: false, // 默认编辑对话框不显示
     isShowDeleteAll: false, // 默认不显示批量删除按钮
+    isShowEdit: false, // 默认不显示批量删除按钮
+    isShowSearch: false, // 默认不显示批量删除按钮
     searchStr: '' // 默认搜索关键字为空
 })
 
@@ -208,6 +214,12 @@ function imgStyle(width: number, height: number, imgFit: ImgFit): Record<string,
 
     .btns {
         margin: 10px 0;
+    }
+
+    .search {
+        margin: 0 0 10px 0;
+        width: 250px;
+
     }
 
     .pagination-block {

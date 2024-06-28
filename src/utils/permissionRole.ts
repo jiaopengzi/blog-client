@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-07 14:24:11
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-11 17:06:56
+ * @LastEditTime : 2024-06-28 21:31:05
  * @FilePath     : \blog-client\src\utils\permissionRole.ts
  * @Description  : 权限工具类
  * @Blog         : https://jiaopengzi.com
@@ -35,6 +35,8 @@ export enum PermissionNames {
   UserDelete = 'UserDelete',
   UserEdit = 'UserEdit',
   UserView = 'UserView',
+  LoginLogView = 'LoginLogView',
+  LoginLogDelete = 'LoginLogDelete',
 }
 
 /**

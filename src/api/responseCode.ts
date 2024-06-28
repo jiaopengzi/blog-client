@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-21 17:55:05
+ * @LastEditTime : 2024-06-28 20:55:56
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -86,6 +86,10 @@ export enum ResponseCode {
   HasPermission = 8305, //判断是否有权限成功
   GetRoleSuccess = 8400, //获取角色列表成功
   UpdateRoleSuccess = 8403, //更新角色成功
+
+  GetLoginLogsSuccess = 8500, //获取登录日志成功
+  LoginLogDeleteByIDsSuccess = 8502, //通过ID删除登录日志成功
+  LoginLogDeleteByDaySuccess = 8503, //通过天数删除登录日志成功
 
   ClientIPTooManyRequests = 9006, //客户端IP请求次数过多
   ClientIDTooManyRequests = 9007, //客户端ID请求次数过多

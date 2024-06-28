@@ -11,6 +11,7 @@
 
 import { type DataWithImg } from '@/components/common' // 图片填充方式
 import { type User } from '@/api/user/getUsers'
+import { type LoginLog } from '@/api/loginLog/getLoginLogs'
 
 export { default } from './index.vue'
 
@@ -61,4 +62,4 @@ export interface Media extends DataWithImg {
   slug?: string // 别名
 }
 
-export type TableData = PostCategory | Post | Media | User
+export type TableData = PostCategory | Post | Media | User | LoginLog
