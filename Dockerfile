@@ -21,7 +21,7 @@ COPY . .
 RUN pnpm build
 
 # 使用一个较小的基础镜像以减小构建产物的体积
-FROM nginx:1.24.0-alpine
+FROM nginx:1.26.1-alpine
 
 # 将构建产物从 builder 镜像中复制到当前镜像中的 Nginx 的静态文件目录
 COPY --from=builder /app/dist /usr/share/nginx/html
