@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-27 18:52:57
+ * @LastEditTime : 2024-07-18 11:41:11
  * @FilePath     : \blog-client\tsconfig.node.json
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -18,13 +18,14 @@
     "playwright.config.*"
   ],
   "compilerOptions": {
-    "composite": true,
-    "module": "node16",
-    "types": [
-      "node"
+    "lib": [
+      "es2023"
     ],
+    "module": "node16",
+    "target": "es2022",
+    "strict": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "ESNext"
+    "skipLibCheck": true,
+    "moduleResolution": "node16"
   }
 }

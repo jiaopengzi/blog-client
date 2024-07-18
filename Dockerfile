@@ -1,6 +1,6 @@
 # blog-client Dockerfile
 # 使用官方 Node.js 镜像作为构建环境
-FROM node:20.11.0 AS builder
+FROM node:20.15.1 AS builder
 
 # 设置工作目录
 WORKDIR /app
