@@ -63,7 +63,6 @@
     "marked-xhtml": "^1.0.10",
     "pinia": "^2.1.7",
     "reset-css": "^5.0.2",
-    "typescript": "^5.5.3",
     "vue": "^3.4.32",
     "vue-cropper": "^1.1.4",
     "vue-cropperjs": "^5.0.0",
@@ -94,10 +93,11 @@
     "unplugin-auto-import": "^0.17.8",
     "unplugin-vue-components": "^0.26.0",
     "url-regex": "^5.0.0",
+    "typescript": "^5.5.3",
     "vite": "^5.3.4",
     "vite-plugin-css": "^1.0.4",
     "vite-plugin-style-import": "^2.0.0",
     "vue-router": "^4.4.0",
-    "vue-tsc": "^1.8.27"
+    "vue-tsc": "^2.0.26"
   }
 }
