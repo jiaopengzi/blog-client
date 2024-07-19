@@ -1,12 +1,21 @@
 <!--
+ * @Author       : jiaopengzi
+ * @Date         : 2024-01-24 14:30:38
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2024-07-19 16:59:15
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
+ * @Description  : 媒体文件管理
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 
+
 <template>
-    <BaseTable :data="filterTableData" :pagination="pagination" :table-column="cols" :dialog-visible="dialogVisible"
-        :is-show-delete-all="true" @update-current-page="updateCurrentPage" @update-page-sizes="updatePageSizes"
-        @edit-row="editRow" @delete-row="deleteRow" @delete-rows="deleteRows" @update-search="updateSearch"
-        @update-selection="updateSelection" @update-dialog-visible="updateDialogVisible">
+    <BaseTable :pagination="pagination" :table-column="cols" :is-show-delete-all="true"
+        :add-item-dialog-visible="addItemDialogVisible" :is-show-search="true" :search-str="search"
+        @update-current-page="updateCurrentPage" @update-page-sizes="updatePageSizes" @edit-row="editRow"
+        @delete-row="deleteRow" @delete-rows="deleteRows" @update-search="updateSearch"
+        @update-selection="updateSelection" @add-item-update-dialog-visible="addItemUpdateDialogVisible">
 
         <template #btns>
             <el-button type="primary" @click="handleAdd">
@@ -50,7 +59,6 @@ import { UploadCode } from '@/api/responseCode'
 import type { UploadRequestOptions, ElUpload } from 'element-plus'
 
 
-// eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: AadminSideMenu.Media })
 
 const uploadRef = ref<typeof ElUpload>()
@@ -192,6 +200,7 @@ const httpRequest = (options: UploadRequestOptions) => {
             }
         }
     }
+
     formData.append(options.filename, options.file, options.file.name)
 
     // 调用 uploadAvatar 函数
@@ -224,11 +233,10 @@ const httpRequest = (options: UploadRequestOptions) => {
         })
 }
 
-
-const dialogVisible = ref(false)
+const addItemDialogVisible = ref(false)
 
 const handleAdd = () => {
-    dialogVisible.value = !dialogVisible.value
+    addItemDialogVisible.value = !addItemDialogVisible.value
 }
 
 // const onRemove = (file: UploadUserFile, fileList: UploadUserFile[]) => {
@@ -266,16 +274,16 @@ const updateSelection = (rows: TableData[]) => {
     console.log("7", rows)
 }
 
-// 关闭上传对话框时清空上传文件列表
-const updateDialogVisible = (val: boolean) => {
+// 关闭上传对话框时清空上传文件列表 @update-dialog-visible="updateDialogVisible"
+const addItemUpdateDialogVisible = (val: boolean) => {
     if (!val) {
-        dialogVisible.value = val
+        addItemDialogVisible.value = val
         uploadRef.value?.clearFiles()
     }
 }
 
 
-
+// :data="filterTableData" 
 const filterTableData = computed(() =>
     pagination.records.filter(
         (data) =>

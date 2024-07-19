@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-06 23:36:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-03 13:12:24
+ * @LastEditTime : 2024-07-19 15:57:02
  * @FilePath     : \blog-client\src\pkg\marked\new-marked.ts
  * @Description  : 重新封装 marked
  * @Blog         : https://jiaopengzi.com
@@ -46,6 +46,8 @@ const createMarked = () => {
     markedAlert(),
     {
       breaks: true, // 允许换行
+      // useNewRenderer 将在 14 版本中默认使用,参考 https://github.com/markedjs/marked/issues/3374
+      useNewRenderer: true,
       extensions: [markExtensionInline, subExtensionInline, supExtensionInline],
       renderer: renderer,
     },

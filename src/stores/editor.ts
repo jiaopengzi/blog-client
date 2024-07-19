@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-09 21:36:04
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-02 16:27:01
+ * @LastEditTime : 2024-07-19 15:28:36
  * @FilePath     : \blog-client\src\stores\editor.ts
  * @Description  : 编辑器 store
  * @Blog         : https://jiaopengzi.com
@@ -81,15 +81,16 @@ export const useEditorStore = defineStore({
       this.tocHtml = matchAllHeadingToList(this.preview)
       this.imgUrls = extractImageUrlsFromHtml(this.preview)
     },
+
     // 设置滚动条隐藏的编辑器view 字符串
     setScrollHideViewStr(scrollHideViewStr: string): void {
       this.scrollHideViewStr = scrollHideViewStr
     },
 
-    async getEditorDocFromApi(url: string) {
+    // 通过 url 获取编辑器内容
+    async getEditorContentFromUrl(url: string) {
       const res = await axios.get(url)
-      const { data } = res
-      this.updateEditorStore(data)
+      this.updateEditorStore(res.data)
     },
   },
 })

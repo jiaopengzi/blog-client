@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-18 16:21:38
+ * @LastEditTime : 2024-07-19 15:49:33
  * @FilePath     : \blog-client\src\assets\scss\themes\light.scss
  * @Description  : 亮色主题
  * @Blog         : https://jiaopengzi.com
@@ -45,7 +45,7 @@ html[data-theme=#{$thpme-name}] {
 
   /* 字体颜色 */
   // --text-color: var(--primary-color);
-  --text-color: #f8f8f8;
+  --text-color: #1E2858;
   --code-block-bg-color: #f8f8f8;
   --code-block-color: #525252;
   --title-color: var(--primary-color);

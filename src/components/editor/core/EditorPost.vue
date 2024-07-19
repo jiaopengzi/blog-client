@@ -37,7 +37,7 @@
         </div>
     </div>
 </template>
-  
+
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted } from 'vue';
 import Toolbar from '@/components/editor/toolbar'
@@ -142,11 +142,11 @@ onMounted(() => {
 })
 
 // onBeforeMount(async () => {
-//     await editorStore.getEditorDocFromApi("src/assets/example/markdown.md")
+//     await editorStore.getEditorContentFromUrl("src/assets/example/markdown.md")
 // })
 
 </script>
-  
+
 <style scoped lang="scss">
 .emoji-picker-wrapper {
     position: absolute;

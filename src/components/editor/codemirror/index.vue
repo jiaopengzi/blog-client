@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 12:02:21
+ * @LastEditTime : 2024-07-19 15:44:00
  * @FilePath     : \blog-client\src\components\editor\codemirror\index.vue
  * @Description  : codemirror 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,7 @@
 <template>
     <div ref="codemirrorRef" id="my-codemirror"></div>
 </template>
-  
+
 <script lang="ts" setup>
 import { ref, onMounted, watchEffect, onUnmounted } from 'vue';
 import type { Extension } from '@codemirror/state'
@@ -135,7 +135,7 @@ const handleScroll = () => {
 
 // 监听 props.codemirrorDoc 变化 更新编辑器内容 只有第一次加载的时候才更新
 const watchStop = watchEffect(() => {
-    if (props.codemirrorDoc) {
+    if (props.codemirrorDoc && cmView) {
         cmView.dispatch({
             changes: {
                 from: 0,
@@ -168,7 +168,7 @@ defineExpose({
 })
 
 </script>
-  
+
 <style scoped lang="scss">
 #my-codemirror {
     :deep(.cm-editor) {
@@ -195,6 +195,4 @@ defineExpose({
 
 // @include respond-to('pc') {}
 
-// @include respond-to('phone') {}
-</style>
-  
+// @include respond-to('phone') {}</style>

@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:43:31
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 22:07:21
- * @FilePath     : \blog-client\src\components\layout\content\home\phone.vue
+ * @LastEditTime : 2024-07-19 09:35:19
+ * @FilePath     : \blog-client\src\views\home\component\phone.vue
  * @Description  : pohone 内容页
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
@@ -35,8 +35,8 @@
                     <PostList />
                     <!-- 分页 -->
                     <div class="pagination-block phone">
-                        <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize" :background="true"
-                            :small="true" layout="prev, pager, next" :total="totalPages"
+                        <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize"
+                            :background="true" :size="size" layout="prev, pager, next" :total="totalPages"
                             @current-change="handleCurrentChange" />
                     </div>
                 </el-main>
@@ -53,7 +53,7 @@ import { routeObj } from '@/router/routeAll'
 
 
 defineOptions({ name: 'HomePhone' })
-
+const size = ref("small")
 const totalPages = ref(1000)
 const currentPage = ref(5)
 const pageSize = ref(10)
@@ -90,4 +90,3 @@ const handleCurrentChange = (val: number) => {
     margin-top: 20px;
 }
 </style>
-  

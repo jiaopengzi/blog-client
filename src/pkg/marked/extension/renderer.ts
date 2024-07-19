@@ -2,16 +2,18 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-05 11:12:27
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-13 13:30:28
+ * @LastEditTime : 2024-07-19 15:56:54
  * @FilePath     : \blog-client\src\pkg\marked\extension\renderer.ts
  * @Description  : 自定义 renderer 主要是为了加类名
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
+import type { Tokens } from 'marked'
+
 export const renderer = {
   // listitem 函数重写
-  listitem(text: string, task: boolean, checked: boolean) {
+  listitem({ text, task, checked }: Tokens.ListItem) {
     if (task) {
       if (checked) {
         return `<li class="task-list-item task-list-item-checked">${text}</li>\n` // 选中状态
@@ -20,26 +22,28 @@ export const renderer = {
     }
     return `<li>${text}</li>\n`
   },
+
   // checkbox 函数重写
-  checkbox(checked: boolean) {
+  checkbox({ checked }: Tokens.Checkbox) {
     return (
       "<input class='task-list-item-checkbox' " + // 添加类名
       (checked ? 'checked="" ' : '') +
       'disabled="" type="checkbox">'
     )
   },
+
   // code 函数重写
-  code(code: string, infostring: string | undefined, escaped: boolean) {
-    const lang = (infostring || '').match(/^\S*/)?.[0]
-    code = code.replace(/\n$/, '') + '\n'
-    if (!lang) {
+  code({ text, lang, escaped }: Tokens.Code) {
+    const langString = (lang || '').match(/^\S*/)?.[0]
+    const code = text.replace(/\n$/, '') + '\n'
+    if (!langString) {
       const result = '<pre><code>' + (escaped ? code : escape(code, true)) + '</code></pre>\n' // marked 源码默认代码块
 
       return constructWeChatPreCode(replaceAllHljsStringSpanTag(result)) // 自定义代码块
     }
     const result =
       '<pre><code class="language-' +
-      escape(lang, true) +
+      escape(langString, true) +
       '">' +
       (escaped ? code : escape(code, true)) +
       '</code></pre>\n' // marked 源码默认代码块
@@ -151,6 +155,7 @@ function replaceAllHljsStringSpanTag(html: string): string {
 }
 
 // =============================================== marked 源码中内容 copy 开始
+
 /**
  * Helpers
  */
