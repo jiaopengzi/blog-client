@@ -24,5 +24,5 @@ const editorStore = useEditorStore()
 onBeforeMount(async () => {
   await editorStore.getEditorContentFromUrl("src/assets/example/markdown.md")
 })
-
+//commit 乱码
 </script>
