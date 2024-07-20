@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-07-20 11:59:53
+ * @LastEditTime : 2024-07-20 12:59:08
  * @FilePath     : \blog-client\src\views\test\index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -24,5 +24,4 @@ const editorStore = useEditorStore()
 onBeforeMount(async () => {
   await editorStore.getEditorContentFromUrl("src/assets/example/markdown.md")
 })
-//commit 乱码
 </script>
