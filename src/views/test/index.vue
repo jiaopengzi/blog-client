@@ -25,4 +25,5 @@ onBeforeMount(async () => {
   await editorStore.getEditorContentFromUrl("src/assets/example/markdown.md")
 })
 
+// 测试commit 乱码
 </script>
