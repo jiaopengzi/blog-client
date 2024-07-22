@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-07-19 16:59:15
+ * @LastEditTime : 2024-07-22 20:26:02
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -57,6 +57,7 @@ import { getAllowedUploadFileInfoAPI } from '@/api/upload/getAllowedFileInfo'
 import { ShowMsgTip } from '@/utils/message'
 import { UploadCode } from '@/api/responseCode'
 import type { UploadRequestOptions, ElUpload } from 'element-plus'
+import crypto from 'crypto-js'
 
 
 defineOptions({ name: AadminSideMenu.Media })
@@ -183,25 +184,122 @@ const getAllowedInfo = () => {
 }
 
 
-const httpRequest = (options: UploadRequestOptions) => {
-    console.log("0", options)
-    const formData = new FormData()
-    if (options.data) {
-        for (const [key, value] of Object.entries(options.data)) {
-            if (Array.isArray(value) && value.length) {
-                if (typeof value[0] === "string" || value[0] instanceof Blob) {
-                    formData.append(key, value[0]);
-                }
-                if (typeof value[1] === "string") {
-                    formData.append(key, value[1]);
-                }
-            } else {
-                formData.append(key, value);
-            }
-        }
+// const httpRequest = (options: UploadRequestOptions) => {
+//     console.log("0", options)
+//     console.log("1", options.file)
+//     console.log("2", options.file.slice(0, 10 * 1024 * 1024))
+
+//     const formData = new FormData()
+//     // if (options.data) {
+//     //     for (const [key, value] of Object.entries(options.data)) {
+//     //         if (Array.isArray(value) && value.length) {
+//     //             if (typeof value[0] === "string" || value[0] instanceof Blob) {
+//     //                 formData.append(key, value[0]);
+//     //             }
+//     //             if (typeof value[1] === "string") {
+//     //                 formData.append(key, value[1]);
+//     //             }
+//     //         } else {
+//     //             formData.append(key, value);
+//     //         }
+//     //     }
+//     // }
+
+//     formData.append(options.filename, options.file.slice(0, 10 * 1024 * 1024), options.file.name)
+
+//     // 调用 uploadAvatar 函数
+//     uploadFileAPI(formData, (progressEvent) => {
+//         if (progressEvent.progress && progressEvent.total && progressEvent.loaded) {
+//             const evt: any = {
+//                 loaded: progressEvent.loaded,
+//                 total: progressEvent.total,
+//                 percent: progressEvent.progress * 100 > 1 ? progressEvent.progress * 100 - 1 : 0,
+//             }
+//             options.onProgress?.(evt)
+//         }
+//     })
+//         .then((response) => {
+//             if (response.data.code === UploadCode.Success) {
+//                 ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
+//                 options.onSuccess(UploadCode.Success)
+//                 return
+//             } else {
+//                 ShowMsgTip(ShowMsgTip.MsgType.error, response.data.msg + response.data.data, 2000)
+//                 const error: any = new Error(response.data.msg)
+//                 options.onError(error)
+//                 return
+//             }
+//         })
+//         .catch(() => {
+//             ShowMsgTip(ShowMsgTip.MsgType.error, '上传失败，请重试')
+//             const error: any = new Error('上传失败，请重试')
+//             options.onError(error)
+//         })
+// }
+
+
+
+interface FileHashResult {
+    overallHash: string;
+    chunkHashes: string[];
+}
+
+async function calculateFileHash(file: File): Promise<FileHashResult> {
+    const chunkSize = 12 * 1024 * 1024
+    const chunks = Math.ceil(file.size / chunkSize)
+
+    let overallHash = crypto.algo.SHA256.create()
+    let chunkHashes: string[] = []
+
+    for (let i = 0; i < chunks; i++) {
+        const chunk = file.slice(chunkSize * i, chunkSize * (i + 1))
+        const arrayBuffer = await readFileAsArrayBuffer(chunk)
+        const wordArray = crypto.lib.WordArray.create(arrayBuffer)
+
+        const chunkHash = crypto.SHA256(wordArray)
+        chunkHashes.push(chunkHash.toString())
+
+        overallHash = overallHash.update(wordArray)
     }
 
+    return {
+        overallHash: overallHash.finalize().toString(),
+        chunkHashes: chunkHashes
+    };
+}
+
+
+function readFileAsArrayBuffer(blob: Blob): Promise<ArrayBuffer> {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            if (event.target) {
+                resolve(event.target.result as ArrayBuffer);
+            } else {
+                reject(new Error("No target found in event"));
+            }
+        };
+        reader.onerror = (error) => {
+            reject(error);
+        };
+        reader.readAsArrayBuffer(blob);
+    });
+}
+
+
+const httpRequest = async (options: UploadRequestOptions) => {
+    console.log("0", options)
+    console.log("1", options.file)
+    // console.log("2", options.file.slice(0, 10 * 1024 * 1024))
+
+    const formData = new FormData()
+
     formData.append(options.filename, options.file, options.file.name)
+
+    // const { overallHash, chunkHashes } = await calculateFileHash(options.file)
+    // console.log('Overall hash:', overallHash)
+    // console.log('Chunk hashes:', chunkHashes)
+
 
     // 调用 uploadAvatar 函数
     uploadFileAPI(formData, (progressEvent) => {
@@ -209,8 +307,10 @@ const httpRequest = (options: UploadRequestOptions) => {
             const evt: any = {
                 loaded: progressEvent.loaded,
                 total: progressEvent.total,
-                percent: progressEvent.progress * 100 > 1 ? progressEvent.progress * 100 - 1 : 0,
+                // percent: progressEvent.progress * 100 > 1 ? progressEvent.progress * 100 - 1 : 0,
+                percent: progressEvent.progress * 100,
             }
+            console.log("3", evt)
             options.onProgress?.(evt)
         }
     })
