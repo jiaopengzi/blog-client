@@ -1,0 +1,251 @@
+/**
+ * @Author       : jiaopengzi
+ * @Date         : 2024-07-23 14:19:22
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2024-07-23 14:19:25
+ * @FilePath     : \blog-client\src\utils\chunk_hash copy 2.ts
+ * @Description  : 
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ */
+/**
+ * @Author       : jiaopengzi
+ * @Date         : 2024-07-23 11:37:56
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2024-07-23 14:09:04
+ * @FilePath     : \blog-client\src\utils\chunk_hash.ts
+ * @Description  : 分片文件哈希计算
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ */
+
+// 引入crypto-js库
+import crypto from 'crypto-js'
+
+// 定义一个事件触发器类
+export class EventEmitter<T extends string> {
+  // 声明一个 Map，键是事件名称，值是一组监听函数
+  private events: Map<T, Set<Function>>
+
+  constructor() {
+    // 在构造函数中初始化 events Map
+    this.events = new Map()
+  }
+
+  // 'on' 方法用于订阅一个事件
+  on(event: T, listener: Function) {
+    // 如果 events Map 中还没有这个事件，就添加一个新的 Set 对象
+    if (!this.events.has(event)) {
+      this.events.set(event, new Set())
+    }
+    // 将监听器添加到事件的 Set 中
+    this.events.get(event)!.add(listener)
+  }
+
+  // 'off' 方法用于取消订阅一个事件
+  off(event: T, listener: Function) {
+    // 如果 events Map 中有这个事件，就从事件的 Set 中删除监听器
+    if (this.events.has(event)) {
+      this.events.get(event)!.delete(listener)
+    }
+  }
+
+  // 'once' 方法用于订阅一个只触发一次的事件
+  once(event: T, listener: Function) {
+    // 定义一个只执行一次的监听器
+    const onceListener = (...args: any[]) => {
+      // 执行监听器的处理函数
+      listener(...args)
+      // 执行后立即取消订阅
+      this.off(event, onceListener)
+    }
+    // 使用 'on' 方法订阅这个只执行一次的监听器
+    this.on(event, onceListener)
+  }
+
+  // 'emit' 方法用于发射一个事件
+  emit(event: T, ...args: any[]) {
+    // 如果 events Map 中有这个事件
+    if (this.events.has(event)) {
+      // 对事件的 Set 中的每一个监听器执行处理函数，传入的参数为 'args'
+      this.events.get(event)!.forEach((listener) => {
+        listener(...args)
+      })
+    }
+  }
+}
+
+
+// 任务构造器
+export class Task {
+  fn: Function; // 任务关联的执行函数
+  payload?: any; // 任务关联的其他信息
+  constructor(fn: Function, payload?: any) {
+    this.fn = fn;
+    this.payload = payload;
+  }
+
+  // 执行任务
+  run() {
+    return this.fn(this.payload);
+  }
+}
+
+// 可并发执行的任务队列
+export class TaskQueue extends EventEmitter<'start' | 'pause' | 'drain'> {
+  // 待执行的任务
+  private tasks: Set<Task> = new Set();
+  // 当前正在执行的任务数
+  private currentCount = 0;
+  // 任务状态
+  private status: 'paused' | 'running' = 'paused';
+  // 最大并发数
+  private concurrency: number = 4;
+
+  constructor(concurrency: number = 4) {
+    super();
+    this.concurrency = concurrency;
+  }
+
+  // 添加任务
+  add(...tasks: Task[]) {
+    for (const t of tasks) {
+      this.tasks.add(t);
+    }
+  }
+
+  // 添加任务并启动执行
+  addAndStart(...tasks: Task[]) {
+    this.add(...tasks);
+    this.start();
+  }
+
+  // 启动任务
+  start() {
+    if (this.status === 'running') {
+      return; // 任务正在进行中，结束
+    }
+    if (this.tasks.size === 0) {
+      // 当前已无任务，触发drain事件
+      this.emit('drain');
+      return;
+    }
+    // 设置任务状态为running
+    this.status = 'running';
+    this.emit('start'); // 触发start事件
+    this.runNext(); // 开始执行下一个任务
+  }
+
+  // 取出第一个任务
+  private takeHeadTask() {
+    const task = this.tasks.values().next().value;
+    if (task) {
+      this.tasks.delete(task);
+    }
+    return task;
+  }
+
+  // 执行下一个任务
+  private runNext() {
+    if (this.status !== 'running') {
+      return; // 如果整体的任务状态不是running，结束
+    }
+    if (this.currentCount >= this.concurrency) {
+      // 并发数已满，结束
+      return;
+    }
+    // 取出第一个任务
+    const task = this.takeHeadTask();
+    if (!task) {
+      // 没有任务了
+      this.status = 'paused'; // 暂停执行
+      this.emit('drain'); // 触发drain事件
+      return;
+    }
+    this.currentCount++; // 当前任务数+1
+    // 执行任务
+    Promise.resolve(task.run()).finally(() => {
+      // 任务执行完成后，当前任务数-1，继续执行下一个任务
+      this.currentCount--;
+      this.runNext();
+    });
+  }
+
+  // 暂停任务
+  pause() {
+    this.status = 'paused';
+    this.emit('pause');
+  }
+}
+
+// 定义分片哈希结果的接口
+interface ChunkHashResult {
+  chunk: Blob // 分片的哈希值
+  chunkHash: string // 分片的哈希值
+  fileHash: string // 到当前分片为止的文件的哈希值
+}
+
+// 文件哈希计算器类
+export class FileHashCalculator {
+  private hashFunction: any // 哈希函数
+
+  // 构造函数，默认哈希算法为'SHA-256'
+  constructor(hashAlgorithm: 'SHA-256' | 'SHA-384' | 'SHA-512' = 'SHA-256') {
+    this.setHashAlgorithm(hashAlgorithm) // 设置哈希算法
+  }
+
+  // 设置哈希算法的方法
+  setHashAlgorithm(hashAlgorithm: 'SHA-256' | 'SHA-384' | 'SHA-512'): void {
+    switch (hashAlgorithm) {
+      case 'SHA-256':
+        this.hashFunction = crypto.algo.SHA256.create() // 创建SHA-256哈希函数
+        break
+      case 'SHA-384':
+        this.hashFunction = crypto.algo.SHA384.create() // 创建SHA-384哈希函数
+        break
+      case 'SHA-512':
+        this.hashFunction = crypto.algo.SHA512.create() // 创建SHA-512哈希函数
+        break
+      default:
+        throw new Error(`Unsupported hash algorithm: ${hashAlgorithm}`) // 抛出错误，不支持的哈希算法
+    }
+  }
+
+  // 计算文件哈希的生成器函数
+  async *calculateFileHash(
+    file: File,
+    chunkSize: number,
+  ): AsyncGenerator<ChunkHashResult, void, void> {
+    const chunks = Math.ceil(file.size / chunkSize) // 计算文件需要分割的块数
+
+    let fileHash = this.hashFunction // 初始化总体哈希值
+
+    // 遍历每个块
+    for (let i = 0; i < chunks; i++) {
+      const chunk: Blob = file.slice(chunkSize * i, chunkSize * (i + 1)) // 切割文件块
+      const arrayBuffer = await this.readFileAsArrayBuffer(chunk) // 将文件块读取为ArrayBuffer
+      const wordArray = crypto.lib.WordArray.create(arrayBuffer) // 创建WordArray
+
+      const chunkHash = crypto.SHA256(wordArray) // 计算块的哈希值
+
+      fileHash = fileHash.update(wordArray) // 更新总体哈希值
+
+      // 返回当前块的哈希值和到当前块为止的文件的哈希值
+      yield {
+        chunk,
+        chunkHash: chunkHash.toString(),
+        fileHash: fileHash.finalize().toString(),
+      }
+    }
+  }
+
+  // 将Blob读取为ArrayBuffer的私有方法
+  private readFileAsArrayBuffer(blob: Blob): Promise<ArrayBuffer> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader() // 创建文件读取器
+      reader.onload = () => resolve(reader.result as ArrayBuffer) // 读取成功，返回结果
+      reader.onerror = reject // 读取失败，抛出错误
+      reader.readAsArrayBuffer(blob) // 读取Blob为ArrayBuffer
+    })
+  }
+}

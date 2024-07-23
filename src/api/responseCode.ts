@@ -111,7 +111,7 @@ export enum LocalStorageKey {
 export enum UploadCode {
   Success = 8100, // 上传头像成功
   NotAllow = 8101, // 上传不被允许
-  GetAllowedUploadFileInfoSuccess = 8102, // 获取允许上传的文件信息成功
+  GetUploadFileRequirementsSuccess = 8102, // 获取允许上传的文件信息成功
 }
 
 // 社交登录

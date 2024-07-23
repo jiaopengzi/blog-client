@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-07-22 20:26:02
+ * @LastEditTime : 2024-07-23 19:52:28
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -53,11 +53,11 @@ import { debounce } from '@/utils/debounce'
 import { AadminSideMenu } from '@/views/admin/component/aside'
 import { IconKeys } from '@/components/common/icons'
 import { uploadFileAPI } from '@/api/upload/file'
-import { getAllowedUploadFileInfoAPI } from '@/api/upload/getAllowedFileInfo'
+import { getUploadFileRequirementsAPI } from '@/api/upload/getUploadFileRequirements'
 import { ShowMsgTip } from '@/utils/message'
 import { UploadCode } from '@/api/responseCode'
 import type { UploadRequestOptions, ElUpload } from 'element-plus'
-import crypto from 'crypto-js'
+import { type RequestStrategy, type Chunk, UploadController, MultiThreadSplitor } from '@/utils/chunkUpload'
 
 
 defineOptions({ name: AadminSideMenu.Media })
@@ -166,9 +166,9 @@ const allowedInfo = ref("")
 
 const getAllowedInfo = () => {
     const strList: string[] = []
-    getAllowedUploadFileInfoAPI().then((response) => {
-        if (response.data.code === UploadCode.GetAllowedUploadFileInfoSuccess) {
-            const allowedInfoList = response.data.data
+    getUploadFileRequirementsAPI().then((response) => {
+        if (response.data.code === UploadCode.GetUploadFileRequirementsSuccess) {
+            const allowedInfoList = response.data.data.file_allowed
             // for 循环遍历 allowedInfoList 数组 i 最大值为 allowedInfoList.length - 1
             for (let i = 0; i < allowedInfoList.length; i++) {
                 // item的 Type按照'/'分割，取最后一个 例如：image/png => png
@@ -184,122 +184,28 @@ const getAllowedInfo = () => {
 }
 
 
-// const httpRequest = (options: UploadRequestOptions) => {
-//     console.log("0", options)
-//     console.log("1", options.file)
-//     console.log("2", options.file.slice(0, 10 * 1024 * 1024))
-
-//     const formData = new FormData()
-//     // if (options.data) {
-//     //     for (const [key, value] of Object.entries(options.data)) {
-//     //         if (Array.isArray(value) && value.length) {
-//     //             if (typeof value[0] === "string" || value[0] instanceof Blob) {
-//     //                 formData.append(key, value[0]);
-//     //             }
-//     //             if (typeof value[1] === "string") {
-//     //                 formData.append(key, value[1]);
-//     //             }
-//     //         } else {
-//     //             formData.append(key, value);
-//     //         }
-//     //     }
-//     // }
-
-//     formData.append(options.filename, options.file.slice(0, 10 * 1024 * 1024), options.file.name)
-
-//     // 调用 uploadAvatar 函数
-//     uploadFileAPI(formData, (progressEvent) => {
-//         if (progressEvent.progress && progressEvent.total && progressEvent.loaded) {
-//             const evt: any = {
-//                 loaded: progressEvent.loaded,
-//                 total: progressEvent.total,
-//                 percent: progressEvent.progress * 100 > 1 ? progressEvent.progress * 100 - 1 : 0,
-//             }
-//             options.onProgress?.(evt)
-//         }
-//     })
-//         .then((response) => {
-//             if (response.data.code === UploadCode.Success) {
-//                 ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
-//                 options.onSuccess(UploadCode.Success)
-//                 return
-//             } else {
-//                 ShowMsgTip(ShowMsgTip.MsgType.error, response.data.msg + response.data.data, 2000)
-//                 const error: any = new Error(response.data.msg)
-//                 options.onError(error)
-//                 return
-//             }
-//         })
-//         .catch(() => {
-//             ShowMsgTip(ShowMsgTip.MsgType.error, '上传失败，请重试')
-//             const error: any = new Error('上传失败，请重试')
-//             options.onError(error)
-//         })
-// }
-
-
-
-interface FileHashResult {
-    overallHash: string;
-    chunkHashes: string[];
-}
-
-async function calculateFileHash(file: File): Promise<FileHashResult> {
-    const chunkSize = 12 * 1024 * 1024
-    const chunks = Math.ceil(file.size / chunkSize)
-
-    let overallHash = crypto.algo.SHA256.create()
-    let chunkHashes: string[] = []
-
-    for (let i = 0; i < chunks; i++) {
-        const chunk = file.slice(chunkSize * i, chunkSize * (i + 1))
-        const arrayBuffer = await readFileAsArrayBuffer(chunk)
-        const wordArray = crypto.lib.WordArray.create(arrayBuffer)
-
-        const chunkHash = crypto.SHA256(wordArray)
-        chunkHashes.push(chunkHash.toString())
-
-        overallHash = overallHash.update(wordArray)
-    }
-
-    return {
-        overallHash: overallHash.finalize().toString(),
-        chunkHashes: chunkHashes
-    };
-}
-
-
-function readFileAsArrayBuffer(blob: Blob): Promise<ArrayBuffer> {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            if (event.target) {
-                resolve(event.target.result as ArrayBuffer);
-            } else {
-                reject(new Error("No target found in event"));
-            }
-        };
-        reader.onerror = (error) => {
-            reject(error);
-        };
-        reader.readAsArrayBuffer(blob);
-    });
-}
-
-
-const httpRequest = async (options: UploadRequestOptions) => {
+const httpRequest0 = (options: UploadRequestOptions) => {
     console.log("0", options)
     console.log("1", options.file)
-    // console.log("2", options.file.slice(0, 10 * 1024 * 1024))
+    console.log("2", options.file.slice(0, 10 * 1024 * 1024))
 
     const formData = new FormData()
+    // if (options.data) {
+    //     for (const [key, value] of Object.entries(options.data)) {
+    //         if (Array.isArray(value) && value.length) {
+    //             if (typeof value[0] === "string" || value[0] instanceof Blob) {
+    //                 formData.append(key, value[0]);
+    //             }
+    //             if (typeof value[1] === "string") {
+    //                 formData.append(key, value[1]);
+    //             }
+    //         } else {
+    //             formData.append(key, value);
+    //         }
+    //     }
+    // }
 
-    formData.append(options.filename, options.file, options.file.name)
-
-    // const { overallHash, chunkHashes } = await calculateFileHash(options.file)
-    // console.log('Overall hash:', overallHash)
-    // console.log('Chunk hashes:', chunkHashes)
-
+    formData.append(options.filename, options.file.slice(0, 10 * 1024 * 1024), options.file.name)
 
     // 调用 uploadAvatar 函数
     uploadFileAPI(formData, (progressEvent) => {
@@ -307,10 +213,8 @@ const httpRequest = async (options: UploadRequestOptions) => {
             const evt: any = {
                 loaded: progressEvent.loaded,
                 total: progressEvent.total,
-                // percent: progressEvent.progress * 100 > 1 ? progressEvent.progress * 100 - 1 : 0,
-                percent: progressEvent.progress * 100,
+                percent: progressEvent.progress * 100 > 1 ? progressEvent.progress * 100 - 1 : 0,
             }
-            console.log("3", evt)
             options.onProgress?.(evt)
         }
     })
@@ -331,6 +235,93 @@ const httpRequest = async (options: UploadRequestOptions) => {
             const error: any = new Error('上传失败，请重试')
             options.onError(error)
         })
+}
+
+
+
+
+const httpRequest = async (options: UploadRequestOptions) => {
+
+    // 定义一个请求策略
+    class MyRequestStrategy implements RequestStrategy {
+        async createFile(file: File): Promise<string> {
+            // 返回token
+            return 'token'
+        }
+
+        async uploadChunk(chunk: Chunk): Promise<void> {
+            const formData = new FormData()
+            formData.append(options.filename, chunk.blob, options.file.name)
+
+            // 调用 uploadAvatar 函数
+            uploadFileAPI(formData, (progressEvent) => {
+                if (progressEvent.progress && progressEvent.total && progressEvent.loaded) {
+                    const evt: any = {
+                        loaded: progressEvent.loaded,
+                        total: progressEvent.total,
+                        percent: progressEvent.progress * 100 > 1 ? progressEvent.progress * 100 - 1 : 0,
+                    }
+                    options.onProgress?.(evt)
+                }
+            })
+                .then((response) => {
+                    if (response.data.code === UploadCode.Success) {
+                        ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
+                        options.onSuccess(UploadCode.Success)
+                        return
+                    } else {
+                        ShowMsgTip(ShowMsgTip.MsgType.error, response.data.msg + response.data.data, 2000)
+                        const error: any = new Error(response.data.msg)
+                        options.onError(error)
+                        return
+                    }
+                })
+                .catch(() => {
+                    ShowMsgTip(ShowMsgTip.MsgType.error, '上传失败，请重试')
+                    const error: any = new Error('上传失败，请重试')
+                    options.onError(error)
+                })
+        }
+
+        async mergeFile(token: string): Promise<string> {
+            // 合并文件并返回URL
+            return 'url'
+        }
+
+        async patchHash<T extends 'file' | 'chunk'>(
+            token: string,
+            hash: string,
+            type: T,
+        ): Promise<
+            T extends 'file' ? { hasFile: boolean } : { hasFile: boolean; rest: number[]; url: string }
+        > {
+            if (type === 'file') {
+                return { hasFile: false } as unknown as T extends 'file' ? { hasFile: boolean } : { hasFile: boolean; rest: number[]; url: string }
+            } else {
+                return { hasFile: false, rest: [], url: '' } as unknown as T extends 'file' ? { hasFile: boolean } : { hasFile: boolean; rest: number[]; url: string }
+            }
+        }
+
+
+    }
+
+    // 获取一个文件对象，这通常是用户通过<input type="file"/>选择的文件
+    let file: File = options.file
+
+    // 创建一个分片策略对象
+    let splitStrategy = new MultiThreadSplitor(file, 1024 * 1024 * 5, 'SHA-384')
+
+    // 创建一个请求策略对象
+    let requestStrategy = new MyRequestStrategy()
+
+    // 创建一个UploadController对象
+    let uploadController = new UploadController(file, requestStrategy, splitStrategy)
+
+    // 初始化UploadController
+    uploadController.init().catch(error => {
+        // handle error
+        console.error(error)
+    })
 }
 
 const addItemDialogVisible = ref(false)
