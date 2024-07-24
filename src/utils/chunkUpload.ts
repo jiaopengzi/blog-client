@@ -5,6 +5,8 @@
 import crypto from 'crypto-js'
 import { EventEmitter } from '@/utils/eventEmitter'
 import { Task, TaskQueue } from '@/utils/task'
+import { HashAlgorithm } from '@/utils/splitWorker'
+import { type ConfirmBeforeUploadRequest } from '@/api/upload/confirmBeforeUpload'
 
 export interface Chunk {
   blob: Blob // 分片的二进制数据
@@ -43,16 +45,17 @@ export abstract class ChunkSplitor extends EventEmitter<ChunkSplitorEvents> {
   private hashFunction: any // hash函数
   private handleChunkCount = 0 // 已计算hash的分片数量
   private hasSplited = false // 是否已经分片
-  protected algorithm: 'SHA-256' | 'SHA-384' | 'SHA-512' // 存储哈希算法的名称
+  protected algorithm: HashAlgorithm // 存储哈希算法的名称
   constructor(
     file: File,
-    chunkSize: number = 1024 * 1024 * 5,
-    algorithm: 'SHA-256' | 'SHA-384' | 'SHA-512' = 'SHA-256',
+    chunkSize: number = 1024 * 1024 * 10, // 默认分片大小为10MB
+    algorithm: HashAlgorithm = HashAlgorithm.SHA256, // 默认哈希算法为SHA-256
   ) {
     super()
     this.file = file
     this.chunkSize = chunkSize
     this.algorithm = algorithm
+
     // 获取分片数组
     const chunkCount = Math.ceil(this.file.size / this.chunkSize)
     this.chunks = new Array(chunkCount)
@@ -64,28 +67,28 @@ export abstract class ChunkSplitor extends EventEmitter<ChunkSplitorEvents> {
   // 创建一个hash函数 用于计算整个文件的hash
   private createHashFunction() {
     switch (this.algorithm) {
-      case 'SHA-256':
-        console.log('algorithm1', this.algorithm)
+      case HashAlgorithm.SHA256:
         return crypto.algo.SHA256.create()
-      case 'SHA-384':
-        console.log('algorithm2', this.algorithm)
+      case HashAlgorithm.SHA384:
         return crypto.algo.SHA384.create()
-
-      case 'SHA-512':
-        console.log('algorithm3', this.algorithm)
+      case HashAlgorithm.SHA512:
         return crypto.algo.SHA512.create()
       default:
-        console.log('algorithm4', this.algorithm)
-        throw new Error(`Unsupported hash algorithm: ${this.algorithm}`)
+        throw new Error(
+          `Unsupported hash algorithm: ${this.algorithm},shuold be SHA-256,SHA-384,SHA-512`,
+        )
     }
   }
 
+  // 分片文件
   split() {
     if (this.hasSplited) {
       return
     }
     this.hasSplited = true
-    const emitter = new EventEmitter<'chunks'>()
+    const emitter = new EventEmitter<'chunks'>() // 用于分片计算hash的事件触发器
+
+    // 监听chunks事件，计算每一个分片的hash
     const chunksHanlder = (chunks: Chunk[]) => {
       this.emit('chunks', chunks)
       chunks.forEach((chunk) => {
@@ -94,13 +97,14 @@ export abstract class ChunkSplitor extends EventEmitter<ChunkSplitorEvents> {
       this.handleChunkCount += chunks.length
       if (this.handleChunkCount === this.chunks.length) {
         // 计算完成
-        emitter.off('chunks', chunksHanlder)
-        this.emit('wholeHash', this.hashFunction.finalize().toString())
-        this.emit('drain')
+        emitter.off('chunks', chunksHanlder) // 移除监听
+        this.emit('wholeHash', this.hashFunction.finalize().toString()) // 整个文件的hash
+        this.emit('drain') // 所有分片处理完成
       }
     }
-    emitter.on('chunks', chunksHanlder)
-    this.calcHash(this.chunks, emitter)
+
+    emitter.on('chunks', chunksHanlder) // 监听chunks事件
+    this.calcHash(this.chunks, emitter) // 计算每一个分片的hash
   }
 
   // 计算每一个分片的hash
@@ -110,10 +114,11 @@ export abstract class ChunkSplitor extends EventEmitter<ChunkSplitorEvents> {
   abstract dispose(): void
 }
 
+// 多线程分片
 export class MultiThreadSplitor extends ChunkSplitor {
   private workers: Worker[] = new Array(navigator.hardwareConcurrency || 4).fill(0).map(
     () =>
-      new Worker(new URL('./SplitWorker.ts', import.meta.url), {
+      new Worker(new URL('@/utils/splitWorker', import.meta.url), {
         type: 'module',
       }),
   )
@@ -144,6 +149,7 @@ export class MultiThreadSplitor extends ChunkSplitor {
 
       promises.push(promise)
     }
+
     await Promise.all(promises)
   }
 
@@ -152,22 +158,36 @@ export class MultiThreadSplitor extends ChunkSplitor {
   }
 }
 
+// UploadFileInfo
+// 上传文件信息
+export interface UploadFileInfo {
+  id: string //文件ID 响应给前端为字符串
+  hash_key: string //哈希值
+  first_chunk_hash_key: string //第一个分片 hash 值
+  hash_algorithm: string //哈希算法
+  file_name: string //文件名称
+  file_size: number //文件大小
+  file_type: string //文件类型
+  file_chunk_size: number //分片大小
+  part_numbers: number //分片数量
+  path: string //文件路径
+  uploaded_part_number_list: number[] //已上传的分片序号
+}
+
+// HashExists
+// hash是否存在
+export interface HashExists {
+  exists: boolean //是否存在
+  file_id?: string //文件ID
+}
 // 请求策略
 export interface RequestStrategy {
-  // 文件创建请求，返回token
-  createFile(file: File): Promise<string>
+  // 创建文件请求，返回文件token
+  confirmBeforeUpload(req: ConfirmBeforeUploadRequest): Promise<UploadFileInfo>
   // 分片上传请求
   uploadChunk(chunk: Chunk): Promise<void>
-  // 文件合并请求，返回文件url
-  mergeFile(token: string): Promise<string>
   // hash校验请求
-  patchHash<T extends 'file' | 'chunk'>(
-    token: string,
-    hash: string,
-    type: T,
-  ): Promise<
-    T extends 'file' ? { hasFile: boolean } : { hasFile: boolean; rest: number[]; url: string }
-  >
+  hashExists<T extends 'file' | 'chunk'>(hash: string, upload_content_type: T): Promise<HashExists>
 }
 
 export class UploadController extends EventEmitter<'start' | 'progress' | 'end' | 'error'> {
@@ -175,7 +195,7 @@ export class UploadController extends EventEmitter<'start' | 'progress' | 'end' 
   private chunkSplitor: ChunkSplitor // 分片策略，没有传递则默认多线程分片
   private taskQueue: TaskQueue // 任务队列
   private file: File // 需要上传的文件
-  private token: string | undefined // 文件token
+  private uploadFileInfo: UploadFileInfo | undefined // 文件token
 
   constructor(file: File, requestStrategy: RequestStrategy, chunkSplitor: ChunkSplitor) {
     super()
@@ -187,11 +207,18 @@ export class UploadController extends EventEmitter<'start' | 'progress' | 'end' 
 
   // 初始化
   async init() {
-    // 获取文件token
-    this.token = await this.requestStrategy.createFile(this.file)
-    if (!this.token) {
-      throw new Error('Failed to get token.')
+    // 上传前确认
+    const req: ConfirmBeforeUploadRequest = {
+      file_size: this.file.size,
+      file_type: this.file.type,
+      first_chunk_hash_key: '',
     }
+
+    this.uploadFileInfo = await this.requestStrategy.confirmBeforeUpload(req)
+    if (!this.uploadFileInfo) {
+      throw new Error('Failed to get uploadFileInfo.')
+    }
+
     // 分片事件监听
     this.chunkSplitor.on('chunks', this.handleChunks.bind(this))
     this.chunkSplitor.on('wholeHash', this.handleWholeHash.bind(this))
@@ -210,12 +237,13 @@ export class UploadController extends EventEmitter<'start' | 'progress' | 'end' 
 
   async uploadChunk(chunk: Chunk) {
     // hash校验
-    const resp = await this.requestStrategy.patchHash(this.token!, chunk.hash, 'chunk')
-    if (resp.hasFile) {
+    const resp = await this.requestStrategy.hashExists(chunk.hash, 'chunk')
+    if (resp.exists) {
       // 文件已存在
-      this.emit('end', resp.url)
+      this.emit('end')
       return
     }
+
     // 分片上传
     await this.requestStrategy.uploadChunk(chunk)
     this.emit('progress', chunk.end / this.file.size)
@@ -225,19 +253,11 @@ export class UploadController extends EventEmitter<'start' | 'progress' | 'end' 
   private async handleWholeHash(hash: string) {
     // hash校验
     console.log('hash==============>', hash)
-    const resp = await this.requestStrategy.patchHash(this.token!, hash, 'file')
-    if (resp.hasFile) {
+    const resp = await this.requestStrategy.hashExists(hash, 'file')
+    if (resp.exists && resp.file_id) {
       // 文件已存在
-      if ('url' in resp) {
-        this.emit('end', resp.url)
-      } else {
-        // TODO: Handle the case where url is not defined
-        console.error('URL is not defined')
-      }
+      this.emit('end', resp.file_id)
       return
     }
-    // 文件合并
-    const url = await this.requestStrategy.mergeFile(this.token!)
-    this.emit('end', url)
   }
 }

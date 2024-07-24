@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-07-23 19:52:28
+ * @LastEditTime : 2024-07-24 22:04:45
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -57,8 +57,10 @@ import { getUploadFileRequirementsAPI } from '@/api/upload/getUploadFileRequirem
 import { ShowMsgTip } from '@/utils/message'
 import { UploadCode } from '@/api/responseCode'
 import type { UploadRequestOptions, ElUpload } from 'element-plus'
-import { type RequestStrategy, type Chunk, UploadController, MultiThreadSplitor } from '@/utils/chunkUpload'
-
+import type { RequestStrategy, Chunk, UploadFileInfo, HashExists } from '@/utils/chunkUpload'
+import { type ConfirmBeforeUploadRequest, confirmBeforeUploadAPI } from '@/api/upload/confirmBeforeUpload'
+import { UploadController, MultiThreadSplitor } from '@/utils/chunkUpload'
+import { HashAlgorithm } from '@/utils/splitWorker'
 
 defineOptions({ name: AadminSideMenu.Media })
 
@@ -238,15 +240,31 @@ const httpRequest0 = (options: UploadRequestOptions) => {
 }
 
 
-
-
 const httpRequest = async (options: UploadRequestOptions) => {
 
     // 定义一个请求策略
     class MyRequestStrategy implements RequestStrategy {
-        async createFile(file: File): Promise<string> {
+
+
+        async confirmBeforeUpload(req: ConfirmBeforeUploadRequest): Promise<UploadFileInfo> {
             // 返回token
-            return 'token'
+            return confirmBeforeUploadAPI(req).then((response) => {
+                if (response.data.code === UploadCode.Success) {
+                    ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
+                    return response.data.data
+                } else {
+                    ShowMsgTip(ShowMsgTip.MsgType.error, response.data.msg + response.data.data, 2000)
+                    const error: any = new Error(response.data.msg)
+                    options.onError(error)
+                    return
+                }
+            })
+                .catch(() => {
+                    ShowMsgTip(ShowMsgTip.MsgType.error, '上传失败，请重试')
+                    const error: any = new Error('上传失败，请重试')
+                    options.onError(error)
+                })
+
         }
 
         async uploadChunk(chunk: Chunk): Promise<void> {
@@ -283,22 +301,15 @@ const httpRequest = async (options: UploadRequestOptions) => {
                 })
         }
 
-        async mergeFile(token: string): Promise<string> {
-            // 合并文件并返回URL
-            return 'url'
-        }
 
-        async patchHash<T extends 'file' | 'chunk'>(
-            token: string,
+        async hashExists<T extends 'file' | 'chunk'>(
             hash: string,
-            type: T,
-        ): Promise<
-            T extends 'file' ? { hasFile: boolean } : { hasFile: boolean; rest: number[]; url: string }
-        > {
-            if (type === 'file') {
-                return { hasFile: false } as unknown as T extends 'file' ? { hasFile: boolean } : { hasFile: boolean; rest: number[]; url: string }
-            } else {
-                return { hasFile: false, rest: [], url: '' } as unknown as T extends 'file' ? { hasFile: boolean } : { hasFile: boolean; rest: number[]; url: string }
+            upload_content_type: T,
+        ): Promise<HashExists> {
+            // 判断文件或者分片是否存在
+            return {
+                exists: false,
+                file_id: 'file',
             }
         }
 
@@ -309,7 +320,7 @@ const httpRequest = async (options: UploadRequestOptions) => {
     let file: File = options.file
 
     // 创建一个分片策略对象
-    let splitStrategy = new MultiThreadSplitor(file, 1024 * 1024 * 5, 'SHA-384')
+    let splitStrategy = new MultiThreadSplitor(file, 1024 * 1024 * 5, HashAlgorithm.SHA256)
 
     // 创建一个请求策略对象
     let requestStrategy = new MyRequestStrategy()
@@ -416,4 +427,4 @@ onMounted(() => {
 .el-upload__tip_title {
     margin: 10px 0;
 }
-</style>
+</style>@/utils/splitWorker

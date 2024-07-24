@@ -10,6 +10,13 @@
  */
 import crypto from 'crypto-js'
 
+// 算法枚举
+export enum HashAlgorithm {
+  SHA256 = 'SHA-256',
+  SHA384 = 'SHA-384',
+  SHA512 = 'SHA-512',
+}
+
 /**
  * @description: 将data读取为ArrayBuffer
  * @param data Blob或File对象
@@ -32,19 +39,19 @@ export function readFileAsArrayBuffer(data: Blob | File): Promise<ArrayBuffer> {
  */
 export async function calcHash(
   data: Blob | File,
-  algorithm: 'SHA-256' | 'SHA-384' | 'SHA-512' = 'SHA-256',
+  algorithm: HashAlgorithm = HashAlgorithm.SHA256,
 ): Promise<string> {
   const arrayBuffer = await readFileAsArrayBuffer(data) // 将文件块读取为ArrayBuffer
   const wordArray = crypto.lib.WordArray.create(arrayBuffer) // 创建WordArray
   let chunkHash
   switch (algorithm) {
-    case 'SHA-256':
+    case HashAlgorithm.SHA256:
       chunkHash = crypto.SHA256(wordArray)
       break
-    case 'SHA-384':
+    case HashAlgorithm.SHA384:
       chunkHash = crypto.SHA384(wordArray)
       break
-    case 'SHA-512':
+    case HashAlgorithm.SHA512:
       chunkHash = crypto.SHA512(wordArray)
       break
     default:
