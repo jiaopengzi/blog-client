@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-07-24 22:04:45
+ * @LastEditTime : 2024-07-24 22:22:41
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -295,7 +295,7 @@ const httpRequest = async (options: UploadRequestOptions) => {
                     }
                 })
                 .catch(() => {
-                    ShowMsgTip(ShowMsgTip.MsgType.error, '上传失败，请重试')
+                    ShowMsgTip(ShowMsgTip.MsgType.error, '上传失败，请重试。。。')
                     const error: any = new Error('上传失败，请重试')
                     options.onError(error)
                 })
