@@ -112,6 +112,7 @@ export enum UploadCode {
   Success = 8100, // 上传头像成功
   NotAllow = 8101, // 上传不被允许
   GetUploadFileRequirementsSuccess = 8102, // 获取允许上传的文件信息成功
+  ConfirmBeforeUploadSuccess = 8104, // 确认上传前成功
 }
 
 // 社交登录

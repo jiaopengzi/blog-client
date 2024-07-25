@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-07-23 15:28:35
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-07-23 19:09:03
+ * @LastEditTime : 2024-07-25 16:01:33
  * @FilePath     : \blog-client\src\utils\SplitWorker.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -58,6 +58,22 @@ export async function calcHash(
       throw new Error(`Unsupported hash algorithm: ${algorithm}`)
   }
   return chunkHash.toString()
+}
+
+/**
+ * @description: 计算文件的第一个块的哈希值
+ * @param file 文件对象
+ * @param algorithm 哈希算法
+ * @param chunkSize 块大小
+ * @return 第一个分片的哈希值
+ */
+export async function getFirstChunkHash(
+  file: File,
+  algorithm: HashAlgorithm,
+  chunkSize: number,
+): Promise<string> {
+  const blob = file.slice(0, chunkSize)
+  return calcHash(blob, algorithm)
 }
 
 // 监听主线程发送的消息

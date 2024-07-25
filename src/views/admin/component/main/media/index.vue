@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-07-24 22:22:41
+ * @LastEditTime : 2024-07-25 11:34:42
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -59,6 +59,7 @@ import { UploadCode } from '@/api/responseCode'
 import type { UploadRequestOptions, ElUpload } from 'element-plus'
 import type { RequestStrategy, Chunk, UploadFileInfo, HashExists } from '@/utils/chunkUpload'
 import { type ConfirmBeforeUploadRequest, confirmBeforeUploadAPI } from '@/api/upload/confirmBeforeUpload'
+import { type ChunkMetadata, uploadChunkAPI } from '@/api/upload/chunk'
 import { UploadController, MultiThreadSplitor } from '@/utils/chunkUpload'
 import { HashAlgorithm } from '@/utils/splitWorker'
 
@@ -244,24 +245,25 @@ const httpRequest = async (options: UploadRequestOptions) => {
 
     // 定义一个请求策略
     class MyRequestStrategy implements RequestStrategy {
-
+        // 添加 fileId 属性
+        fileId: string | null = null;
 
         async confirmBeforeUpload(req: ConfirmBeforeUploadRequest): Promise<UploadFileInfo> {
             // 返回token
             return confirmBeforeUploadAPI(req).then((response) => {
-                if (response.data.code === UploadCode.Success) {
+                if (response.data.code === UploadCode.ConfirmBeforeUploadSuccess) {
                     ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
                     return response.data.data
                 } else {
-                    ShowMsgTip(ShowMsgTip.MsgType.error, response.data.msg + response.data.data, 2000)
+                    ShowMsgTip(ShowMsgTip.MsgType.error, response.data.msg, 2000)
                     const error: any = new Error(response.data.msg)
                     options.onError(error)
                     return
                 }
             })
                 .catch(() => {
-                    ShowMsgTip(ShowMsgTip.MsgType.error, '上传失败，请重试')
-                    const error: any = new Error('上传失败，请重试')
+                    ShowMsgTip(ShowMsgTip.MsgType.error, '上传前确认失败，请重试')
+                    const error: any = new Error('上传前确认失败，请重试')
                     options.onError(error)
                 })
 
@@ -270,18 +272,18 @@ const httpRequest = async (options: UploadRequestOptions) => {
         async uploadChunk(chunk: Chunk): Promise<void> {
             const formData = new FormData()
             formData.append(options.filename, chunk.blob, options.file.name)
+            const meta: ChunkMetadata = {
+                File_id: this.fileId!,
+                hash_key: chunk.hash_key,
+                hash_algorithm: chunk.hash_algorithm,
+                part_numbers: chunk.part_numbers,
+                part_index: chunk.part_index,
+                start: chunk.start,
+                end: chunk.end,
+            }
 
             // 调用 uploadAvatar 函数
-            uploadFileAPI(formData, (progressEvent) => {
-                if (progressEvent.progress && progressEvent.total && progressEvent.loaded) {
-                    const evt: any = {
-                        loaded: progressEvent.loaded,
-                        total: progressEvent.total,
-                        percent: progressEvent.progress * 100 > 1 ? progressEvent.progress * 100 - 1 : 0,
-                    }
-                    options.onProgress?.(evt)
-                }
-            })
+            uploadChunkAPI(formData, meta)
                 .then((response) => {
                     if (response.data.code === UploadCode.Success) {
                         ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
@@ -295,7 +297,7 @@ const httpRequest = async (options: UploadRequestOptions) => {
                     }
                 })
                 .catch(() => {
-                    ShowMsgTip(ShowMsgTip.MsgType.error, '上传失败，请重试。。。')
+                    ShowMsgTip(ShowMsgTip.MsgType.error, '上传失败，请重试')
                     const error: any = new Error('上传失败，请重试')
                     options.onError(error)
                 })
@@ -320,7 +322,7 @@ const httpRequest = async (options: UploadRequestOptions) => {
     let file: File = options.file
 
     // 创建一个分片策略对象
-    let splitStrategy = new MultiThreadSplitor(file, 1024 * 1024 * 5, HashAlgorithm.SHA256)
+    let splitStrategy = new MultiThreadSplitor(file, 1024 * 1024 * 10, HashAlgorithm.SHA256)
 
     // 创建一个请求策略对象
     let requestStrategy = new MyRequestStrategy()

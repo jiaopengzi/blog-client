@@ -5,15 +5,12 @@
 import crypto from 'crypto-js'
 import { EventEmitter } from '@/utils/eventEmitter'
 import { Task, TaskQueue } from '@/utils/task'
-import { HashAlgorithm } from '@/utils/splitWorker'
+import { HashAlgorithm, getFirstChunkHash } from '@/utils/splitWorker'
 import { type ConfirmBeforeUploadRequest } from '@/api/upload/confirmBeforeUpload'
+import { type ChunkMetadataWithoutFileId } from '@/api/upload/chunk'
 
-export interface Chunk {
+export interface Chunk extends ChunkMetadataWithoutFileId {
   blob: Blob // 分片的二进制数据
-  start: number // 分片的起始位置
-  end: number // 分片的结束位置
-  hash: string // 分片的hash值
-  index: number // 分片在文件中的索引
 }
 
 // 分片的相关事件
@@ -31,21 +28,23 @@ function createChunkWithoutHash(file: File, index: number, chunkSize: number): C
     blob,
     start,
     end,
-    hash: '',
-    index,
+    hash_key: '',
+    part_index: index,
+    hash_algorithm: '',
+    part_numbers: Math.ceil(file.size / chunkSize),
   }
 }
 
 // 分片文件哈希计算类
 export abstract class ChunkSplitor extends EventEmitter<ChunkSplitorEvents> {
-  protected chunkSize: number // 分片大小（单位字节）
+  public chunkSize: number // 分片大小（单位字节）
   protected file: File // 待分片的文件
   protected fileHash?: string // 整个文件的hash
   protected chunks: Chunk[] // 分片列表
   private hashFunction: any // hash函数
   private handleChunkCount = 0 // 已计算hash的分片数量
   private hasSplited = false // 是否已经分片
-  protected algorithm: HashAlgorithm // 存储哈希算法的名称
+  public algorithm: HashAlgorithm // 存储哈希算法的名称
   constructor(
     file: File,
     chunkSize: number = 1024 * 1024 * 10, // 默认分片大小为10MB
@@ -92,7 +91,7 @@ export abstract class ChunkSplitor extends EventEmitter<ChunkSplitorEvents> {
     const chunksHanlder = (chunks: Chunk[]) => {
       this.emit('chunks', chunks)
       chunks.forEach((chunk) => {
-        this.hashFunction.update(chunk.hash)
+        this.hashFunction.update(chunk.hash_key)
       })
       this.handleChunkCount += chunks.length
       if (this.handleChunkCount === this.chunks.length) {
@@ -211,7 +210,11 @@ export class UploadController extends EventEmitter<'start' | 'progress' | 'end' 
     const req: ConfirmBeforeUploadRequest = {
       file_size: this.file.size,
       file_type: this.file.type,
-      first_chunk_hash_key: '',
+      first_chunk_hash_key: await getFirstChunkHash(
+        this.file,
+        this.chunkSplitor.algorithm,
+        this.chunkSplitor.chunkSize,
+      ),
     }
 
     this.uploadFileInfo = await this.requestStrategy.confirmBeforeUpload(req)
@@ -237,7 +240,7 @@ export class UploadController extends EventEmitter<'start' | 'progress' | 'end' 
 
   async uploadChunk(chunk: Chunk) {
     // hash校验
-    const resp = await this.requestStrategy.hashExists(chunk.hash, 'chunk')
+    const resp = await this.requestStrategy.hashExists(chunk.hash_key, 'chunk')
     if (resp.exists) {
       // 文件已存在
       this.emit('end')
