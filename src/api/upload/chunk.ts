@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-07-25 09:41:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-07-25 11:20:42
+ * @LastEditTime : 2024-07-26 22:52:44
  * @FilePath     : \blog-client\src\api\upload\chunk.ts
  * @Description  : 分片上传
  * @Blog         : https://jiaopengzi.com
@@ -25,7 +25,7 @@ export interface ChunkMetadataWithoutFileId {
 
 export interface ChunkMetadata extends ChunkMetadataWithoutFileId {
   File_id: string //文件ID 后端生成
-  path: string //文件路径 后端生成
+  sub_dir: string //文件路径 后端生成
 }
 
 export function uploadChunkAPI(
