@@ -8,6 +8,7 @@ import { Task, TaskQueue } from '@/utils/task'
 import { HashAlgorithm, getFirstChunkHash } from '@/utils/splitWorker'
 import { type ConfirmBeforeUploadRequest } from '@/api/upload/confirmBeforeUpload'
 import { type ChunkMetadataWithoutFileId } from '@/api/upload/chunk'
+import { readFileAsArrayBuffer } from '@/utils/splitWorker'
 
 export interface Chunk extends ChunkMetadataWithoutFileId {
   blob: Blob // 分片的二进制数据
@@ -21,6 +22,13 @@ export type ChunkSplitorEvents = 'chunks' | 'wholeHash' | 'drain'
 
 // 创建一个不带hash的分片
 function createChunkWithoutHash(file: File, index: number, chunkSize: number): Chunk {
+  // 计算分片数量
+  const partNumbers = Math.ceil(file.size / chunkSize)
+  // 判断 index 是否超出分片数量
+  if (index >= partNumbers) {
+    throw new Error(`Index ${index} is out of range. Part numbers is ${partNumbers}.`)
+  }
+
   const start = index * chunkSize
   const end = Math.min((index + 1) * chunkSize, file.size)
   const blob = file.slice(start, end)
@@ -31,20 +39,22 @@ function createChunkWithoutHash(file: File, index: number, chunkSize: number): C
     hash_key: '',
     part_index: index,
     hash_algorithm: '',
-    part_numbers: Math.ceil(file.size / chunkSize),
+    part_numbers: partNumbers,
   }
 }
 
 // 分片文件哈希计算类
 export abstract class ChunkSplitor extends EventEmitter<ChunkSplitorEvents> {
   public chunkSize: number // 分片大小（单位字节）
+  public algorithm: HashAlgorithm // 存储哈希算法的名称
+  public partNumbers: number // 分片数量
   protected file: File // 待分片的文件
   protected fileHash?: string // 整个文件的hash
   protected chunks: Chunk[] // 分片列表
   private hashFunction: any // hash函数
   private handleChunkCount = 0 // 已计算hash的分片数量
   private hasSplited = false // 是否已经分片
-  public algorithm: HashAlgorithm // 存储哈希算法的名称
+
   constructor(
     file: File,
     chunkSize: number = 1024 * 1024 * 10, // 默认分片大小为10MB
@@ -54,6 +64,7 @@ export abstract class ChunkSplitor extends EventEmitter<ChunkSplitorEvents> {
     this.file = file
     this.chunkSize = chunkSize
     this.algorithm = algorithm
+    this.partNumbers = Math.ceil(file.size / chunkSize)
 
     // 获取分片数组
     const chunkCount = Math.ceil(this.file.size / this.chunkSize)
@@ -79,6 +90,12 @@ export abstract class ChunkSplitor extends EventEmitter<ChunkSplitorEvents> {
     }
   }
 
+  protected async updateIncrementalHash(chunk: Chunk) {
+    const arrayBuffer = await readFileAsArrayBuffer(chunk.blob) // 将文件块读取为ArrayBuffer
+    const wordArray = crypto.lib.WordArray.create(arrayBuffer) // 创建WordArray
+    this.hashFunction.update(wordArray) // 更新hash
+  }
+
   // 分片文件
   split() {
     if (this.hasSplited) {
@@ -88,16 +105,22 @@ export abstract class ChunkSplitor extends EventEmitter<ChunkSplitorEvents> {
     const emitter = new EventEmitter<'chunks'>() // 用于分片计算hash的事件触发器
 
     // 监听chunks事件，计算每一个分片的hash
-    const chunksHanlder = (chunks: Chunk[]) => {
+    const chunksHanlder = async (chunks: Chunk[]) => {
       this.emit('chunks', chunks)
-      chunks.forEach((chunk) => {
-        this.hashFunction.update(chunk.hash_key)
-      })
+
       this.handleChunkCount += chunks.length
+
       if (this.handleChunkCount === this.chunks.length) {
         // 计算完成
         emitter.off('chunks', chunksHanlder) // 移除监听
-        this.emit('wholeHash', this.hashFunction.finalize().toString()) // 整个文件的hash
+
+        // // 按顺序更新哈希函数
+        // for (const chunk of this.chunks) {
+        //   await this.updateIncrementalHash(chunk)
+        // }
+
+        this.fileHash = this.hashFunction.finalize().toString() // 保存计算结果
+        this.emit('wholeHash', this.fileHash) // 整个文件的hash
         this.emit('drain') // 所有分片处理完成
       }
     }
@@ -169,7 +192,7 @@ export interface UploadFileInfo {
   file_type: string //文件类型
   file_chunk_size: number //分片大小
   part_numbers: number //分片数量
-  path: string //文件路径
+  sub_dir: string //存放子目录
   uploaded_part_number_list: number[] //已上传的分片序号
 }
 
@@ -208,17 +231,21 @@ export class UploadController extends EventEmitter<'start' | 'progress' | 'end' 
   async init() {
     // 上传前确认
     const req: ConfirmBeforeUploadRequest = {
+      file_name: this.file.name,
       file_size: this.file.size,
       file_type: this.file.type,
+      file_chunk_size: this.chunkSplitor.chunkSize,
+      hash_algorithm: this.chunkSplitor.algorithm,
       first_chunk_hash_key: await getFirstChunkHash(
         this.file,
         this.chunkSplitor.algorithm,
         this.chunkSplitor.chunkSize,
       ),
+      part_numbers: this.chunkSplitor.partNumbers,
     }
 
     this.uploadFileInfo = await this.requestStrategy.confirmBeforeUpload(req)
-    if (!this.uploadFileInfo) {
+    if (!this.uploadFileInfo.id) {
       throw new Error('Failed to get uploadFileInfo.')
     }
 
@@ -255,7 +282,6 @@ export class UploadController extends EventEmitter<'start' | 'progress' | 'end' 
   // 整体hash事件处理
   private async handleWholeHash(hash: string) {
     // hash校验
-    console.log('hash==============>', hash)
     const resp = await this.requestStrategy.hashExists(hash, 'file')
     if (resp.exists && resp.file_id) {
       // 文件已存在

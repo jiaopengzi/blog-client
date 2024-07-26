@@ -25,6 +25,7 @@ export interface ChunkMetadataWithoutFileId {
 
 export interface ChunkMetadata extends ChunkMetadataWithoutFileId {
   File_id: string //文件ID 后端生成
+  path: string //文件路径 后端生成
 }
 
 export function uploadChunkAPI(

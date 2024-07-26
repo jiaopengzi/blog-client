@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-07-23 15:28:35
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-07-25 16:01:33
+ * @LastEditTime : 2024-07-26 16:56:21
  * @FilePath     : \blog-client\src\utils\SplitWorker.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -55,10 +55,13 @@ export async function calcHash(
       chunkHash = crypto.SHA512(wordArray)
       break
     default:
-      throw new Error(`Unsupported hash algorithm: ${algorithm}`)
+      throw new Error(`Unsupported hash algorithm: ${algorithm},shuold be SHA-256,SHA-384,SHA-512`)
   }
+
   return chunkHash.toString()
 }
+
+
 
 /**
  * @description: 计算文件的第一个块的哈希值
@@ -81,7 +84,8 @@ onmessage = function (e) {
   const { chunks, algorithm } = e.data
   for (const chunk of chunks) {
     calcHash(chunk.blob, algorithm).then((hash) => {
-      chunk.hash = hash
+      chunk.hash_key = hash
+      chunk.hash_algorithm = algorithm
       postMessage([chunk])
     })
   }

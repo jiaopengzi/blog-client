@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-07-24 21:48:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-07-24 21:55:52
+ * @LastEditTime : 2024-07-26 21:17:30
  * @FilePath     : \blog-client\src\api\upload\confirmBeforeUpload.ts
  * @Description  : 上传文件前确认
  * @Blog         : https://jiaopengzi.com
@@ -17,9 +17,13 @@ import { type Res } from '@/api/responseCode'
 // ConfirmBeforeUploadRequest
 // 上传前确认请求
 export interface ConfirmBeforeUploadRequest {
+  file_name: string // 文件名称
   file_size: number // 文件大小
   file_type: string // 文件类型
+  file_chunk_size: number // 分片大小
+  hash_algorithm: string // 哈希算法
   first_chunk_hash_key: string // 第一个分片的hash值
+  part_numbers: number // 分片数量
 }
 
 export function confirmBeforeUploadAPI(requestData: ConfirmBeforeUploadRequest): AxiosPromise<Res> {

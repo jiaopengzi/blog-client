@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-07-25 11:34:42
+ * @LastEditTime : 2024-07-26 10:26:11
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -166,12 +166,16 @@ const pagination: Pagination<Media> = reactive({
 const search = ref('')
 
 const allowedInfo = ref("")
+const chunkSizeServer = ref(1024 * 1024 * 10)
+let hashAlgorithmServer: HashAlgorithm = HashAlgorithm.SHA256
 
 const getAllowedInfo = () => {
     const strList: string[] = []
     getUploadFileRequirementsAPI().then((response) => {
         if (response.data.code === UploadCode.GetUploadFileRequirementsSuccess) {
             const allowedInfoList = response.data.data.file_allowed
+            chunkSizeServer.value = response.data.data.chunk_size
+            hashAlgorithmServer = response.data.data.hash_algorithm
             // for 循环遍历 allowedInfoList 数组 i 最大值为 allowedInfoList.length - 1
             for (let i = 0; i < allowedInfoList.length; i++) {
                 // item的 Type按照'/'分割，取最后一个 例如：image/png => png
@@ -247,12 +251,16 @@ const httpRequest = async (options: UploadRequestOptions) => {
     class MyRequestStrategy implements RequestStrategy {
         // 添加 fileId 属性
         fileId: string | null = null;
+        subDir: string | null = null;
 
         async confirmBeforeUpload(req: ConfirmBeforeUploadRequest): Promise<UploadFileInfo> {
             // 返回token
             return confirmBeforeUploadAPI(req).then((response) => {
                 if (response.data.code === UploadCode.ConfirmBeforeUploadSuccess) {
                     ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
+
+                    this.fileId = response.data.data.id // 设置 fileId
+                    this.subDir = response.data.data.sub_dir // 设置 subDir
                     return response.data.data
                 } else {
                     ShowMsgTip(ShowMsgTip.MsgType.error, response.data.msg, 2000)
@@ -271,9 +279,10 @@ const httpRequest = async (options: UploadRequestOptions) => {
 
         async uploadChunk(chunk: Chunk): Promise<void> {
             const formData = new FormData()
-            formData.append(options.filename, chunk.blob, options.file.name)
+            formData.append(options.filename, chunk.blob, chunk.part_index + options.file.name)
             const meta: ChunkMetadata = {
                 File_id: this.fileId!,
+                sub_dir: this.subDir!,
                 hash_key: chunk.hash_key,
                 hash_algorithm: chunk.hash_algorithm,
                 part_numbers: chunk.part_numbers,
@@ -321,11 +330,11 @@ const httpRequest = async (options: UploadRequestOptions) => {
     // 获取一个文件对象，这通常是用户通过<input type="file"/>选择的文件
     let file: File = options.file
 
-    // 创建一个分片策略对象
-    let splitStrategy = new MultiThreadSplitor(file, 1024 * 1024 * 10, HashAlgorithm.SHA256)
-
     // 创建一个请求策略对象
     let requestStrategy = new MyRequestStrategy()
+
+    // 创建一个分片策略对象
+    let splitStrategy = new MultiThreadSplitor(file, chunkSizeServer.value, hashAlgorithmServer)
 
     // 创建一个UploadController对象
     let uploadController = new UploadController(file, requestStrategy, splitStrategy)
