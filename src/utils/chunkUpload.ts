@@ -114,10 +114,10 @@ export abstract class ChunkSplitor extends EventEmitter<ChunkSplitorEvents> {
         // 计算完成
         emitter.off('chunks', chunksHanlder) // 移除监听
 
-        // // 按顺序更新哈希函数
-        // for (const chunk of this.chunks) {
-        //   await this.updateIncrementalHash(chunk)
-        // }
+        // 按顺序增量更新哈希函数
+        for (const chunk of this.chunks) {
+          await this.updateIncrementalHash(chunk)
+        }
 
         this.fileHash = this.hashFunction.finalize().toString() // 保存计算结果
         this.emit('wholeHash', this.fileHash) // 整个文件的hash
