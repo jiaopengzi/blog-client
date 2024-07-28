@@ -202,6 +202,7 @@ export interface HashExists {
   exists: boolean //是否存在
   file_id?: string //文件ID
 }
+
 // 请求策略
 export interface RequestStrategy {
   // 创建文件请求，返回文件token
