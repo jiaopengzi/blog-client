@@ -26,12 +26,6 @@ FROM nginx:1.26.1-alpine
 # 将构建产物从 builder 镜像中复制到当前镜像中的 Nginx 的静态文件目录
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# 创建新用户
-RUN adduser -D -u 1001 -g 'www' www
-
-# 更改 Nginx 的运行用户
-RUN sed -i 's/user nginx;/user www;/' /etc/nginx/nginx.conf
-
 # 复制自定义 Nginx 配置文件到当前镜像的 Nginx 配置文件目录
 COPY nginx.conf /etc/nginx/nginx.conf
 
@@ -39,7 +33,7 @@ COPY nginx.conf /etc/nginx/nginx.conf
 VOLUME ["/etc/nginx"]
 
 # 暴露 Nginx 服务的默认端口
-EXPOSE 8080
+EXPOSE 80
 
 # 设置启动命令
 CMD ["nginx", "-g", "daemon off;"]
