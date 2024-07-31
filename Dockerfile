@@ -26,6 +26,9 @@ FROM nginx:1.26.1-alpine
 # 更改 Nginx 缓存目录的所有权（修复问题使用非 root 用户来启动容器）
 RUN chown -R nginx:nginx /var/cache/nginx
 
+# 创建新的 pid 文件目录并更改所有权
+RUN mkdir -p /tmp/nginx && chown -R nginx:nginx /tmp/nginx
+
 # 将构建产物从 builder 镜像中复制到当前镜像中的 Nginx 的静态文件目录
 COPY --from=builder /app/dist /usr/share/nginx/html
 
