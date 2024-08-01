@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-07-26 10:26:11
+ * @LastEditTime : 2024-08-01 11:43:38
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -249,18 +249,15 @@ const httpRequest = async (options: UploadRequestOptions) => {
 
     // 定义一个请求策略
     class MyRequestStrategy implements RequestStrategy {
-        // 添加 fileId 属性
-        fileId: string | null = null;
-        subDir: string | null = null;
+
+        uploadFileInfo: UploadFileInfo | null = null
 
         async confirmBeforeUpload(req: ConfirmBeforeUploadRequest): Promise<UploadFileInfo> {
             // 返回token
             return confirmBeforeUploadAPI(req).then((response) => {
                 if (response.data.code === UploadCode.ConfirmBeforeUploadSuccess) {
-                    ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
-
-                    this.fileId = response.data.data.id // 设置 fileId
-                    this.subDir = response.data.data.sub_dir // 设置 subDir
+                    // ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
+                    this.uploadFileInfo = response.data.data
                     return response.data.data
                 } else {
                     ShowMsgTip(ShowMsgTip.MsgType.error, response.data.msg, 2000)
@@ -281,8 +278,8 @@ const httpRequest = async (options: UploadRequestOptions) => {
             const formData = new FormData()
             formData.append(options.filename, chunk.blob, chunk.part_index + options.file.name)
             const meta: ChunkMetadata = {
-                File_id: this.fileId!,
-                sub_dir: this.subDir!,
+                File_id: this.uploadFileInfo?.id!,
+                sub_dir: this.uploadFileInfo?.sub_dir!,
                 hash_key: chunk.hash_key,
                 hash_algorithm: chunk.hash_algorithm,
                 part_numbers: chunk.part_numbers,
@@ -295,11 +292,11 @@ const httpRequest = async (options: UploadRequestOptions) => {
             uploadChunkAPI(formData, meta)
                 .then((response) => {
                     if (response.data.code === UploadCode.Success) {
-                        ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
+                        // ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
                         options.onSuccess(UploadCode.Success)
                         return
                     } else {
-                        ShowMsgTip(ShowMsgTip.MsgType.error, response.data.msg + response.data.data, 2000)
+                        // ShowMsgTip(ShowMsgTip.MsgType.error, response.data.msg + response.data.data, 2000)
                         const error: any = new Error(response.data.msg)
                         options.onError(error)
                         return
@@ -338,6 +335,29 @@ const httpRequest = async (options: UploadRequestOptions) => {
 
     // 创建一个UploadController对象
     let uploadController = new UploadController(file, requestStrategy, splitStrategy)
+
+
+    // 监听 progress 事件
+    uploadController.on('progress', (progress: number) => {
+
+        const evt: any = {
+            percent: progress * 100,
+        }
+        options.onProgress?.(evt)
+
+
+        console.log(`Upload progress: ${progress * 100}%`)
+        if (progress === 1) {
+            options.onSuccess(UploadCode.Success)
+            console.log('Upload end')
+        }
+    })
+
+    uploadController.on('end', (fileID: string) => {
+        console.log(`Upload end: ${fileID}`)
+        options.onSuccess(UploadCode.Success)
+    })
+
 
     // 初始化UploadController
     uploadController.init().catch(error => {

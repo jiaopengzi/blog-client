@@ -48,10 +48,10 @@ export abstract class ChunkSplitor extends EventEmitter<ChunkSplitorEvents> {
   public chunkSize: number // 分片大小（单位字节）
   public algorithm: HashAlgorithm // 存储哈希算法的名称
   public partNumbers: number // 分片数量
+  public chunks: Chunk[] // 分片列表
   protected file: File // 待分片的文件
-  protected fileHash?: string // 整个文件的hash
-  protected chunks: Chunk[] // 分片列表
-  private hashFunction: any // hash函数
+  public fileHash?: string // 整个文件的hash
+  public hashFunction: any // hash函数
   private handleChunkCount = 0 // 已计算hash的分片数量
   private hasSplited = false // 是否已经分片
 
@@ -90,7 +90,7 @@ export abstract class ChunkSplitor extends EventEmitter<ChunkSplitorEvents> {
     }
   }
 
-  protected async updateIncrementalHash(chunk: Chunk) {
+  public async updateIncrementalHash(chunk: Chunk) {
     const arrayBuffer = await readFileAsArrayBuffer(chunk.blob) // 将文件块读取为ArrayBuffer
     const wordArray = crypto.lib.WordArray.create(arrayBuffer) // 创建WordArray
     this.hashFunction.update(wordArray) // 更新hash
@@ -218,7 +218,8 @@ export class UploadController extends EventEmitter<'start' | 'progress' | 'end' 
   private chunkSplitor: ChunkSplitor // 分片策略，没有传递则默认多线程分片
   private taskQueue: TaskQueue // 任务队列
   private file: File // 需要上传的文件
-  private uploadFileInfo: UploadFileInfo | undefined // 文件token
+  private uploadFileInfo: UploadFileInfo | undefined // 文件 token
+  private progressTrackers: Map<number, number> = new Map() // 添加一个 Map 来跟踪每个分片的上传进度
 
   constructor(file: File, requestStrategy: RequestStrategy, chunkSplitor: ChunkSplitor) {
     super()
@@ -246,8 +247,28 @@ export class UploadController extends EventEmitter<'start' | 'progress' | 'end' 
     }
 
     this.uploadFileInfo = await this.requestStrategy.confirmBeforeUpload(req)
+
     if (!this.uploadFileInfo.id) {
       throw new Error('Failed to get uploadFileInfo.')
+    }
+
+    // 如果文件已经存在，则直接返回文件ID
+    if (this.uploadFileInfo.hash_key) {
+      // 按顺序增量更新哈希函数
+      for (const chunk of this.chunkSplitor.chunks) {
+        await this.chunkSplitor.updateIncrementalHash(chunk)
+      }
+
+      this.chunkSplitor.fileHash = this.chunkSplitor.hashFunction.finalize().toString() // 保存计算结果
+
+      // 判断当前文件的hash是否和服务器的hash一致
+      if (this.uploadFileInfo.hash_key === this.chunkSplitor.fileHash) {
+        console.log('File already exists.')
+        console.log('File ID:', this.uploadFileInfo.id)
+        console.log('this.chunkSplitor.fileHash:', this.chunkSplitor.fileHash)
+        this.emit('end', this.uploadFileInfo.id)
+        return
+      }
     }
 
     // 分片事件监听
@@ -277,7 +298,15 @@ export class UploadController extends EventEmitter<'start' | 'progress' | 'end' 
 
     // 分片上传
     await this.requestStrategy.uploadChunk(chunk)
-    this.emit('progress', chunk.end / this.file.size)
+
+    // 当一个分片上传完成后，更新该分片在 Map 中的进度。分片的结束位置减去开始位置得到分片的大小。
+    this.progressTrackers.set(chunk.part_index, chunk.end - chunk.start)
+
+    // 累加计算已经上传的内容大小
+    const uploadedSize = Array.from(this.progressTrackers.values()).reduce((a, b) => a + b, 0)
+
+    // 计算总的上传进度
+    this.emit('progress', uploadedSize / this.file.size)
   }
 
   // 整体hash事件处理
