@@ -113,6 +113,8 @@ export enum UploadCode {
   NotAllow = 8101, // 上传不被允许
   GetUploadFileRequirementsSuccess = 8102, // 获取允许上传的文件信息成功
   ConfirmBeforeUploadSuccess = 8104, // 确认上传前成功
+  UploadFileSuccess = 8105, // 上传文件成功
+  Fail = 8106, // 上传失败
 }
 
 // 社交登录

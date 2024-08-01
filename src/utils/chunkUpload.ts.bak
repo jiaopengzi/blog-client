@@ -1,4 +1,14 @@
 /**
+ * @Author       : jiaopengzi
+ * @Date         : 2024-08-01 21:50:18
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2024-08-01 21:50:22
+ * @FilePath     : \blog-client\src\utils\chunkUpload copy.ts
+ * @Description  :
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ */
+/**
  * @FilePath     : \blog-client\src\utils\chunkUpload.ts
  */
 
@@ -141,7 +151,7 @@ export abstract class ChunkSplitor extends EventEmitter<ChunkSplitorEvents> {
   abstract dispose(): void
 }
 
-// 多线程分片 navigator.hardwareConcurrency || 4
+// 多线程分片
 export class MultiThreadSplitor extends ChunkSplitor {
   private workers: Worker[] = new Array(navigator.hardwareConcurrency || 4).fill(0).map(
     () =>
@@ -201,6 +211,13 @@ export interface UploadFileInfo {
   uploaded_part_number_list: number[] //已上传的分片序号
 }
 
+// HashExists
+// hash是否存在
+export interface HashExists {
+  exists: boolean //是否存在
+  file_id?: string //文件ID
+}
+
 // 请求策略
 export interface RequestStrategy {
   // 创建文件请求，返回文件token
@@ -208,7 +225,7 @@ export interface RequestStrategy {
   // 分片上传请求
   uploadChunk(chunk: Chunk): Promise<Res>
   // hash校验请求
-  wholeFileExists(file_id: string): Promise<boolean>
+  hashExists<T extends 'file' | 'chunk'>(hash: string, upload_content_type: T): Promise<HashExists>
 }
 
 export class UploadController extends EventEmitter<'start' | 'progress' | 'end' | 'error'> {
@@ -250,7 +267,7 @@ export class UploadController extends EventEmitter<'start' | 'progress' | 'end' 
       throw new Error('Failed to get uploadFileInfo.')
     }
 
-    // 如果整个文件Hash存在，说明文件存在,暂时不上传，等待验证整个Hash
+    // 如果文件已经存在，则直接返回文件ID
     if (this.uploadFileInfo.hash_key) {
       // 按顺序增量更新哈希函数
       for (const chunk of this.chunkSplitor.chunks) {
@@ -268,6 +285,7 @@ export class UploadController extends EventEmitter<'start' | 'progress' | 'end' 
 
     // 分片事件监听
     this.chunkSplitor.on('chunks', this.handleChunks.bind(this))
+    this.chunkSplitor.on('wholeHash', this.handleWholeHash.bind(this))
     // 开始分片
     this.chunkSplitor.split()
     this.emit('start')
@@ -282,38 +300,38 @@ export class UploadController extends EventEmitter<'start' | 'progress' | 'end' 
   }
 
   async uploadChunk(chunk: Chunk) {
-    // 不在 uploaded_part_number_list 中的分片才需要上传, 即已经上传的分片不再上传.
+    // hash校验
+    const resp = await this.requestStrategy.hashExists(chunk.hash_key, 'chunk')
+    if (resp.exists) {
+      // 文件已存在
+      this.emit('end')
+      return
+    }
+
+    // 不在 uploaded_part_number_list 中的分片才需要上传,即已经上传的分片不再上传
     if (!this.uploadFileInfo?.uploaded_part_number_list?.includes(chunk.part_index)) {
-      await this.requestStrategy.uploadChunk(chunk)
-      // const res = await this.requestStrategy.uploadChunk(chunk)
-      // if (res.code === UploadCode.Success) {
-      //   // 当一个分片上传完成后，更新该分片在 Map 中的进度。分片的结束位置减去开始位置得到分片的大小。
-      //   this.progressTrackers.set(chunk.part_index, chunk.end - chunk.start)
+      const res = await this.requestStrategy.uploadChunk(chunk)
+      if (res.code === UploadCode.Success) {
+        // 当一个分片上传完成后，更新该分片在 Map 中的进度。分片的结束位置减去开始位置得到分片的大小。
+        this.progressTrackers.set(chunk.part_index, chunk.end - chunk.start)
 
-      //   // 累加计算已经上传的内容大小
-      //   const uploadedSize = Array.from(this.progressTrackers.values()).reduce((a, b) => a + b, 0)
+        // 累加计算已经上传的内容大小
+        const uploadedSize = Array.from(this.progressTrackers.values()).reduce((a, b) => a + b, 0)
 
-      //   const progress = uploadedSize / this.file.size
+        // 计算总的上传进度
+        this.emit('progress', uploadedSize / this.file.size)
+      }
+    }
+  }
 
-      //   // 计算总的上传进度
-      //   this.emit('progress', progress)
-
-      //   // // 如果上传进度为1，说明上传完成
-      //   // if (progress === 1 && this.uploadFileInfo) {
-      //   //   const isExists = await this.requestStrategy.wholeFileExists(this.uploadFileInfo.id)
-      //   //   if (isExists) {
-      //   //     // 上传完成
-      //   //     this.emit('end', this.uploadFileInfo?.id)
-      //   //     return
-      //   //   }
-      //   // }
-
-      //   if (progress === 1) {
-      //     // 上传完成
-      //     this.emit('end', this.uploadFileInfo?.id)
-      //     return
-      //   }
-      // }
+  // 整体hash事件处理
+  private async handleWholeHash(hash: string) {
+    // hash校验
+    const resp = await this.requestStrategy.hashExists(hash, 'file')
+    if (resp.exists && resp.file_id) {
+      // 文件已存在
+      this.emit('end', resp.file_id)
+      return
     }
   }
 }

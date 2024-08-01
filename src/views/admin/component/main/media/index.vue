@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-01 11:43:38
+ * @LastEditTime : 2024-08-01 23:40:08
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -57,11 +57,13 @@ import { getUploadFileRequirementsAPI } from '@/api/upload/getUploadFileRequirem
 import { ShowMsgTip } from '@/utils/message'
 import { UploadCode } from '@/api/responseCode'
 import type { UploadRequestOptions, ElUpload } from 'element-plus'
-import type { RequestStrategy, Chunk, UploadFileInfo, HashExists } from '@/utils/chunkUpload'
+import type { RequestStrategy, Chunk, UploadFileInfo } from '@/utils/chunkUpload'
 import { type ConfirmBeforeUploadRequest, confirmBeforeUploadAPI } from '@/api/upload/confirmBeforeUpload'
 import { type ChunkMetadata, uploadChunkAPI } from '@/api/upload/chunk'
 import { UploadController, MultiThreadSplitor } from '@/utils/chunkUpload'
 import { HashAlgorithm } from '@/utils/splitWorker'
+import type { Res } from '@/api/responseCode'
+
 
 defineOptions({ name: AadminSideMenu.Media })
 
@@ -254,10 +256,11 @@ const httpRequest = async (options: UploadRequestOptions) => {
 
         async confirmBeforeUpload(req: ConfirmBeforeUploadRequest): Promise<UploadFileInfo> {
             // 返回token
-            return confirmBeforeUploadAPI(req).then((response) => {
+            return await confirmBeforeUploadAPI(req).then((response) => {
                 if (response.data.code === UploadCode.ConfirmBeforeUploadSuccess) {
                     // ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
                     this.uploadFileInfo = response.data.data
+                    console.log("uploadFileInfo=======>", this.uploadFileInfo)
                     return response.data.data
                 } else {
                     ShowMsgTip(ShowMsgTip.MsgType.error, response.data.msg, 2000)
@@ -274,7 +277,7 @@ const httpRequest = async (options: UploadRequestOptions) => {
 
         }
 
-        async uploadChunk(chunk: Chunk): Promise<void> {
+        async uploadChunk(chunk: Chunk): Promise<Res> {
             const formData = new FormData()
             formData.append(options.filename, chunk.blob, chunk.part_index + options.file.name)
             const meta: ChunkMetadata = {
@@ -289,38 +292,34 @@ const httpRequest = async (options: UploadRequestOptions) => {
             }
 
             // 调用 uploadAvatar 函数
-            uploadChunkAPI(formData, meta)
-                .then((response) => {
-                    if (response.data.code === UploadCode.Success) {
-                        // ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
-                        options.onSuccess(UploadCode.Success)
-                        return
-                    } else {
-                        // ShowMsgTip(ShowMsgTip.MsgType.error, response.data.msg + response.data.data, 2000)
-                        const error: any = new Error(response.data.msg)
-                        options.onError(error)
-                        return
-                    }
-                })
-                .catch(() => {
-                    ShowMsgTip(ShowMsgTip.MsgType.error, '上传失败，请重试')
-                    const error: any = new Error('上传失败，请重试')
-                    options.onError(error)
-                })
+            // return await uploadChunkAPI(formData, meta)
+            //     .then((response) => {
+            //         if (response.data.code === UploadCode.Success) {
+            //             return response.data
+            //         } else {
+            //             ShowMsgTip(ShowMsgTip.MsgType.error, response.data.msg, 2000)
+            //             const error: any = new Error(response.data.msg)
+            //             options.onError(error)
+            //         }
+            //     })
+            //     .catch(() => {
+            //         ShowMsgTip(ShowMsgTip.MsgType.error, '上传失败，请重试')
+            //         const error: any = new Error('上传失败，请重试')
+            //         options.onError(error)
+            //         return
+            //     })
+
+            return (await uploadChunkAPI(formData, meta)).data
+
         }
 
 
-        async hashExists<T extends 'file' | 'chunk'>(
-            hash: string,
-            upload_content_type: T,
-        ): Promise<HashExists> {
+        async wholeFileExists(
+            file_id: string
+        ): Promise<boolean> {
             // 判断文件或者分片是否存在
-            return {
-                exists: false,
-                file_id: 'file',
-            }
+            return false
         }
-
 
     }
 
@@ -343,19 +342,12 @@ const httpRequest = async (options: UploadRequestOptions) => {
         const evt: any = {
             percent: progress * 100,
         }
+
         options.onProgress?.(evt)
-
-
-        console.log(`Upload progress: ${progress * 100}%`)
-        if (progress === 1) {
-            options.onSuccess(UploadCode.Success)
-            console.log('Upload end')
-        }
     })
 
     uploadController.on('end', (fileID: string) => {
-        console.log(`Upload end: ${fileID}`)
-        options.onSuccess(UploadCode.Success)
+        options.onSuccess(fileID)
     })
 
 
