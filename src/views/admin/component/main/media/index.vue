@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-01 23:40:08
+ * @LastEditTime : 2024-08-02 17:09:21
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -57,11 +57,11 @@ import { getUploadFileRequirementsAPI } from '@/api/upload/getUploadFileRequirem
 import { ShowMsgTip } from '@/utils/message'
 import { UploadCode } from '@/api/responseCode'
 import type { UploadRequestOptions, ElUpload } from 'element-plus'
-import type { RequestStrategy, Chunk, UploadFileInfo } from '@/utils/chunkUpload'
+import type { RequestStrategy, Chunk } from '@/utils/chunkUpload'
 import { type ConfirmBeforeUploadRequest, confirmBeforeUploadAPI } from '@/api/upload/confirmBeforeUpload'
 import { type ChunkMetadata, uploadChunkAPI } from '@/api/upload/chunk'
-import { UploadController, MultiThreadSplitor } from '@/utils/chunkUpload'
-import { HashAlgorithm } from '@/utils/splitWorker'
+import { type UploadFileInfo, UploadController, MultiThreadSplitor } from '@/utils/chunkUpload'
+import { HashAlgorithm } from '@/utils/hash'
 import type { Res } from '@/api/responseCode'
 
 
@@ -193,60 +193,6 @@ const getAllowedInfo = () => {
 }
 
 
-const httpRequest0 = (options: UploadRequestOptions) => {
-    console.log("0", options)
-    console.log("1", options.file)
-    console.log("2", options.file.slice(0, 10 * 1024 * 1024))
-
-    const formData = new FormData()
-    // if (options.data) {
-    //     for (const [key, value] of Object.entries(options.data)) {
-    //         if (Array.isArray(value) && value.length) {
-    //             if (typeof value[0] === "string" || value[0] instanceof Blob) {
-    //                 formData.append(key, value[0]);
-    //             }
-    //             if (typeof value[1] === "string") {
-    //                 formData.append(key, value[1]);
-    //             }
-    //         } else {
-    //             formData.append(key, value);
-    //         }
-    //     }
-    // }
-
-    formData.append(options.filename, options.file.slice(0, 10 * 1024 * 1024), options.file.name)
-
-    // 调用 uploadAvatar 函数
-    uploadFileAPI(formData, (progressEvent) => {
-        if (progressEvent.progress && progressEvent.total && progressEvent.loaded) {
-            const evt: any = {
-                loaded: progressEvent.loaded,
-                total: progressEvent.total,
-                percent: progressEvent.progress * 100 > 1 ? progressEvent.progress * 100 - 1 : 0,
-            }
-            options.onProgress?.(evt)
-        }
-    })
-        .then((response) => {
-            if (response.data.code === UploadCode.Success) {
-                ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
-                options.onSuccess(UploadCode.Success)
-                return
-            } else {
-                ShowMsgTip(ShowMsgTip.MsgType.error, response.data.msg + response.data.data, 2000)
-                const error: any = new Error(response.data.msg)
-                options.onError(error)
-                return
-            }
-        })
-        .catch(() => {
-            ShowMsgTip(ShowMsgTip.MsgType.error, '上传失败，请重试')
-            const error: any = new Error('上传失败，请重试')
-            options.onError(error)
-        })
-}
-
-
 const httpRequest = async (options: UploadRequestOptions) => {
 
     // 定义一个请求策略
@@ -260,7 +206,6 @@ const httpRequest = async (options: UploadRequestOptions) => {
                 if (response.data.code === UploadCode.ConfirmBeforeUploadSuccess) {
                     // ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
                     this.uploadFileInfo = response.data.data
-                    console.log("uploadFileInfo=======>", this.uploadFileInfo)
                     return response.data.data
                 } else {
                     ShowMsgTip(ShowMsgTip.MsgType.error, response.data.msg, 2000)
@@ -268,12 +213,11 @@ const httpRequest = async (options: UploadRequestOptions) => {
                     options.onError(error)
                     return
                 }
+            }).catch(() => {
+                ShowMsgTip(ShowMsgTip.MsgType.error, '上传前确认失败，请重试')
+                const error: any = new Error('上传前确认失败，请重试')
+                options.onError(error)
             })
-                .catch(() => {
-                    ShowMsgTip(ShowMsgTip.MsgType.error, '上传前确认失败，请重试')
-                    const error: any = new Error('上传前确认失败，请重试')
-                    options.onError(error)
-                })
 
         }
 
@@ -291,34 +235,8 @@ const httpRequest = async (options: UploadRequestOptions) => {
                 end: chunk.end,
             }
 
-            // 调用 uploadAvatar 函数
-            // return await uploadChunkAPI(formData, meta)
-            //     .then((response) => {
-            //         if (response.data.code === UploadCode.Success) {
-            //             return response.data
-            //         } else {
-            //             ShowMsgTip(ShowMsgTip.MsgType.error, response.data.msg, 2000)
-            //             const error: any = new Error(response.data.msg)
-            //             options.onError(error)
-            //         }
-            //     })
-            //     .catch(() => {
-            //         ShowMsgTip(ShowMsgTip.MsgType.error, '上传失败，请重试')
-            //         const error: any = new Error('上传失败，请重试')
-            //         options.onError(error)
-            //         return
-            //     })
-
             return (await uploadChunkAPI(formData, meta)).data
 
-        }
-
-
-        async wholeFileExists(
-            file_id: string
-        ): Promise<boolean> {
-            // 判断文件或者分片是否存在
-            return false
         }
 
     }
@@ -346,8 +264,10 @@ const httpRequest = async (options: UploadRequestOptions) => {
         options.onProgress?.(evt)
     })
 
-    uploadController.on('end', (fileID: string) => {
-        options.onSuccess(fileID)
+    uploadController.on('end', (fileName: string) => {
+        options.onSuccess(fileName)
+        const msg = `上传成功：${fileName}`
+        ShowMsgTip(ShowMsgTip.MsgType.success, msg, 5000)
     })
 
 
@@ -355,6 +275,7 @@ const httpRequest = async (options: UploadRequestOptions) => {
     uploadController.init().catch(error => {
         // handle error
         console.error(error)
+        options.onError(error)
     })
 }
 

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-28 20:55:56
+ * @LastEditTime : 2024-08-02 15:55:31
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -114,7 +114,6 @@ export enum UploadCode {
   GetUploadFileRequirementsSuccess = 8102, // 获取允许上传的文件信息成功
   ConfirmBeforeUploadSuccess = 8104, // 确认上传前成功
   UploadFileSuccess = 8105, // 上传文件成功
-  Fail = 8106, // 上传失败
 }
 
 // 社交登录

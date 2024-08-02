@@ -1,22 +1,37 @@
 /**
- * @FilePath     : \blog-client\src\utils\Task.ts
+ * @FilePath     : \blog-client\src\utils\task.ts
  * @Description  : 任务队列 参考袁老师 https://fe.duyiedu.com/p/t_pc/goods_pc_detail/goods_detail/course_2hzyLq1i84ydVnT200svNMYPFVH
  */
 
 import { EventEmitter } from '@/utils/eventEmitter'
 
-// 任务构造器
+// 任务类
 export class Task {
-  fn: Function // 任务关联的执行函数
-  payload?: any // 任务关联的其他信息
-  constructor(fn: Function, payload?: any) {
-    this.fn = fn
-    this.payload = payload
+  private retryCount: number = 0 // 重试次数
+  public maxRetryCount: number = 3 // 最大重试次数
+  private taskFunc: () => Promise<any> // 任务函数
+
+  constructor(taskFunc: () => Promise<any>) {
+    this.taskFunc = taskFunc
   }
 
-  // 执行任务
-  run() {
-    return this.fn(this.payload)
+  async run() {
+    try {
+      await this.taskFunc()
+    } catch (error) {
+      // 任务执行失败，重试
+      if (this.retryCount < this.maxRetryCount) {
+        this.retryCount++
+        throw error
+      } else {
+        console.error('Task failed after maximum retry count', error)
+      }
+    }
+  }
+
+  // 获取重试次数
+  getRetryCount() {
+    return this.retryCount
   }
 }
 
@@ -26,7 +41,7 @@ export class TaskQueue extends EventEmitter<'start' | 'pause' | 'drain'> {
   private tasks: Set<Task> = new Set()
   // 当前正在执行的任务数
   private currentCount = 0
-  // 任务状态 
+  // 任务状态
   private status: 'paused' | 'running' = 'paused'
   // 最大并发数
   private concurrency: number = 4
@@ -74,30 +89,27 @@ export class TaskQueue extends EventEmitter<'start' | 'pause' | 'drain'> {
     return task
   }
 
-  // 执行下一个任务
   private runNext() {
     if (this.status !== 'running') {
       return // 如果整体的任务状态不是running，结束
     }
-    if (this.currentCount >= this.concurrency) {
-      // 并发数已满，结束
-      return
+    while (this.currentCount < this.concurrency) {
+      // 如果并发数未满，继续执行任务
+      const task = this.takeHeadTask()
+      if (!task) {
+        this.status = 'paused' // 没有任务了，暂停执行
+        this.emit('drain') // 触发drain事件
+        return
+      }
+      this.currentCount++ // 当前任务数+1
+
+      // 执行任务
+      Promise.resolve(task.run()).finally(() => {
+        // 任务执行完成后，当前任务数-1，继续执行下一个任务
+        this.currentCount--
+        this.runNext()
+      })
     }
-    // 取出第一个任务
-    const task = this.takeHeadTask()
-    if (!task) {
-      // 没有任务了
-      this.status = 'paused' // 暂停执行
-      this.emit('drain') // 触发drain事件
-      return
-    }
-    this.currentCount++ // 当前任务数+1
-    // 执行任务
-    Promise.resolve(task.run()).finally(() => {
-      // 任务执行完成后，当前任务数-1，继续执行下一个任务
-      this.currentCount--
-      this.runNext()
-    })
   }
 
   // 暂停任务

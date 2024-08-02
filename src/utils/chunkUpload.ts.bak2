@@ -1,12 +1,24 @@
 /**
+ * @Author       : jiaopengzi
+ * @Date         : 2024-08-02 13:53:56
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2024-08-02 13:53:59
+ * @FilePath     : \blog-client\src\utils\chunkUpload copy.ts
+ * @Description  :
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ */
+/**
  * @FilePath     : \blog-client\src\utils\chunkUpload.ts
  */
 
+import crypto from 'crypto-js'
 import { EventEmitter } from '@/utils/eventEmitter'
 import { Task, TaskQueue } from '@/utils/task'
+import { HashAlgorithm, getFirstChunkHash } from '@/utils/splitWorker'
 import { type ConfirmBeforeUploadRequest } from '@/api/upload/confirmBeforeUpload'
 import { type ChunkMetadataWithoutFileId } from '@/api/upload/chunk'
-import { HashCalculator, HashAlgorithm } from '@/utils/hash'
+import { readFileAsArrayBuffer } from '@/utils/splitWorker'
 import { UploadCode } from '@/api/responseCode'
 import type { Res } from '@/api/responseCode'
 
@@ -20,65 +32,87 @@ export interface Chunk extends ChunkMetadataWithoutFileId {
 // drain: 所有分片处理完成
 export type ChunkSplitorEvents = 'chunks' | 'wholeHash' | 'drain'
 
-// 分片文件类
+// 创建一个不带hash的分片
+function createChunkWithoutHash(file: File, index: number, chunkSize: number): Chunk {
+  // 计算分片数量
+  const partNumbers = Math.ceil(file.size / chunkSize)
+  // 判断 index 是否超出分片数量
+  if (index >= partNumbers) {
+    throw new Error(`Index ${index} is out of range. Part numbers is ${partNumbers}.`)
+  }
+
+  const start = index * chunkSize
+  const end = Math.min((index + 1) * chunkSize, file.size)
+  const blob = file.slice(start, end)
+  return {
+    blob,
+    start,
+    end,
+    hash_key: '',
+    part_index: index,
+    hash_algorithm: '',
+    part_numbers: partNumbers,
+  }
+}
+
+// 分片文件哈希计算类
 export abstract class ChunkSplitor extends EventEmitter<ChunkSplitorEvents> {
-  chunkSize: number // 分片大小（单位字节）
-  partNumbers: number // 分片数量
-  chunks: Chunk[] // 分片列表
-  uploadedpartIndexList: number[] // 已上传的分片序号列表
-  wholeFileHash?: string // 整个文件的hash
-  hashCalculator: HashCalculator // 哈希计算器
+  public chunkSize: number // 分片大小（单位字节）
+  public algorithm: HashAlgorithm // 存储哈希算法的名称
+  public partNumbers: number // 分片数量
+  public chunks: Chunk[] // 分片列表
+  public partIndexList: number[] // 已上传的分片序号列表
   protected file: File // 待分片的文件
-  private processedChunkCount = 0 // 已计算 hash 的分片数量
+  public fileHash?: string // 整个文件的hash
+  public hashFunction: any // hash函数
+  private handleChunkCount = 0 // 已计算 hash 的分片数量
   private hasSplited = false // 是否已经分片
 
   constructor(
     file: File,
     chunkSize: number = 1024 * 1024 * 10, // 默认分片大小为10MB
     algorithm: HashAlgorithm = HashAlgorithm.SHA256, // 默认哈希算法为SHA-256
-    uploadedpartIndexList = [], // 已上传的分片序号列表
+    partIndexList = [],
   ) {
     super()
-    this.file = file // 文件
-    this.chunkSize = chunkSize // 分片大小
-    this.partNumbers = Math.ceil(file.size / chunkSize) // 计算分片数量
-    this.hashCalculator = new HashCalculator(algorithm, chunkSize) // 创建哈希计算器
+    this.file = file
+    this.chunkSize = chunkSize
+    this.algorithm = algorithm
+    this.partNumbers = Math.ceil(file.size / chunkSize)
 
     // 获取分片数组
     const chunkCount = Math.ceil(this.file.size / this.chunkSize)
-
-    // 创建分片不包含hash,能迅速的获取到分片的大小
     this.chunks = new Array(chunkCount)
       .fill(0)
-      .map((_, index) => this.createChunkWithoutHash(index))
-    this.uploadedpartIndexList = uploadedpartIndexList
+      .map((_, index) => createChunkWithoutHash(this.file, index, this.chunkSize))
+    this.hashFunction = this.createHashFunction()
+    this.partIndexList = partIndexList
   }
 
-  // 创建一个不带hash的分片
-  private createChunkWithoutHash = (index: number): Chunk => {
-    // 计算分片数量
-    const partNumbers = Math.ceil(this.file.size / this.chunkSize)
-    // 判断 index 是否超出分片数量
-    if (index >= partNumbers) {
-      throw new Error(`Index ${index} is out of range. Part numbers is ${partNumbers}.`)
+  // 创建一个hash函数 用于计算整个文件的hash
+  private createHashFunction() {
+    switch (this.algorithm) {
+      case HashAlgorithm.SHA256:
+        return crypto.algo.SHA256.create()
+      case HashAlgorithm.SHA384:
+        return crypto.algo.SHA384.create()
+      case HashAlgorithm.SHA512:
+        return crypto.algo.SHA512.create()
+      default:
+        throw new Error(
+          `Unsupported hash algorithm: ${this.algorithm},shuold be SHA-256,SHA-384,SHA-512`,
+        )
     }
+  }
 
-    const start = index * this.chunkSize
-    const end = Math.min((index + 1) * this.chunkSize, this.file.size)
-    const blob = this.file.slice(start, end)
-    return {
-      blob,
-      start,
-      end,
-      hash_key: '',
-      part_index: index,
-      hash_algorithm: '',
-      part_numbers: partNumbers,
-    }
+  public async updateIncrementalHash(chunk: Chunk) {
+    const arrayBuffer = await readFileAsArrayBuffer(chunk.blob) // 将文件块读取为ArrayBuffer
+    const wordArray = crypto.lib.WordArray.create(arrayBuffer) // 创建WordArray
+    this.hashFunction.update(wordArray) // 更新hash
   }
 
   // 分片文件
-  split = () => {
+  split() {
     if (this.hasSplited) {
       return
     }
@@ -87,21 +121,21 @@ export abstract class ChunkSplitor extends EventEmitter<ChunkSplitorEvents> {
 
     // 监听chunks事件，计算每一个分片的hash
     const chunksHanlder = async (chunks: Chunk[]) => {
-      this.emit('chunks', chunks) // 触发chunks事件
+      this.emit('chunks', chunks)
 
-      this.processedChunkCount += chunks.length // 计算已处理的分片数量
+      this.handleChunkCount += chunks.length
 
-      if (this.processedChunkCount === this.chunks.length) {
+      if (this.handleChunkCount === this.chunks.length) {
         // 计算完成
         emitter.off('chunks', chunksHanlder) // 移除监听
 
-        // // 按顺序增量更新哈希函数,本来可以在worker中计算hash的顺序是不固定的，所以需要在按照顺序读取文件块，计算hash
-        // for (const chunk of this.chunks) {
-        //   await this.hashCalculator.updateIncrementalHash(chunk.blob)
-        // }
-        // this.wholeFileHash = this.hashCalculator.getWholeFileHash() // 保存计算结果
-        // this.emit('wholeHash', this.wholeFileHash) // 整个文件的hash
+        // 按顺序增量更新哈希函数
+        for (const chunk of this.chunks) {
+          await this.updateIncrementalHash(chunk)
+        }
 
+        this.fileHash = this.hashFunction.finalize().toString() // 保存计算结果
+        this.emit('wholeHash', this.fileHash) // 整个文件的hash
         this.emit('drain') // 所有分片处理完成
       }
     }
@@ -119,7 +153,6 @@ export abstract class ChunkSplitor extends EventEmitter<ChunkSplitorEvents> {
 
 // 多线程分片 navigator.hardwareConcurrency || 4
 export class MultiThreadSplitor extends ChunkSplitor {
-  // 多线程Worker
   private workers: Worker[] = new Array(navigator.hardwareConcurrency || 4).fill(0).map(
     () =>
       new Worker(new URL('@/utils/splitWorker', import.meta.url), {
@@ -127,23 +160,20 @@ export class MultiThreadSplitor extends ChunkSplitor {
       }),
   )
 
-  // 计算每一个分片的hash
-  calcHash = async (chunks: Chunk[], emitter: EventEmitter<'chunks'>): Promise<void> => {
-    const workerSize = Math.ceil(chunks.length / this.workers.length) // 计算每个 Worker 处理的分片数量
-    const promises: Promise<void>[] = [] // 用于保存每个 Worker 的 Promise
+  async calcHash(chunks: Chunk[], emitter: EventEmitter<'chunks'>): Promise<void> {
+    const workerSize = Math.ceil(chunks.length / this.workers.length)
+    const promises: Promise<void>[] = []
     for (let i = 0; i < this.workers.length; i++) {
-      const worker = this.workers[i] // 获取 Worker
-      const start = i * workerSize // 计算开始位置
-      const end = Math.min((i + 1) * workerSize, chunks.length) // 计算结束位置
-      const workerChunks = chunks.slice(start, end) // 获取当前 Worker 需要处理的分片
+      const worker = this.workers[i]
+      const start = i * workerSize
+      const end = Math.min((i + 1) * workerSize, chunks.length)
+      const workerChunks = chunks.slice(start, end)
 
-      // 向 Worker 发送消息
       worker.postMessage({
         chunks: workerChunks,
-        algorithm: this.hashCalculator.getAlgorithm(), // 将算法名称传递给 Worker
+        algorithm: this.algorithm, // 将算法名称传递给 Worker
       })
 
-      // promise 用于保存 Worker 的处理结果
       const promise = new Promise<void>((resolve, reject) => {
         worker.onmessage = (e) => {
           emitter.emit('chunks', e.data)
@@ -154,16 +184,13 @@ export class MultiThreadSplitor extends ChunkSplitor {
         }
       })
 
-      // 将 promise 添加到 promises 数组中
       promises.push(promise)
     }
 
-    // 等待所有 Worker 处理完成
     await Promise.all(promises)
   }
 
-  // 分片完成后一些需要销毁的工作
-  dispose = (): void => {
+  dispose(): void {
     this.workers.forEach((worker) => worker.terminate())
   }
 }
@@ -190,15 +217,16 @@ export interface RequestStrategy {
   confirmBeforeUpload(req: ConfirmBeforeUploadRequest): Promise<UploadFileInfo>
   // 分片上传请求
   uploadChunk(chunk: Chunk): Promise<Res>
+  // hash校验请求
+  wholeFileExists(file_id: string): Promise<boolean>
 }
 
-// 上传控制器
 export class UploadController extends EventEmitter<'start' | 'progress' | 'end' | 'error'> {
   private requestStrategy: RequestStrategy // 请求策略，没有传递则使用默认策略
   private chunkSplitor: ChunkSplitor // 分片策略，没有传递则默认多线程分片
   private taskQueue: TaskQueue // 任务队列
   private file: File // 需要上传的文件
-  private uploadFileInfo: UploadFileInfo | undefined // 询问上传前确认的返回信息
+  private uploadFileInfo: UploadFileInfo | undefined // 文件 token
   private progressTrackers: Map<number, number> = new Map() // 添加一个 Map 来跟踪每个分片的上传进度
 
   constructor(file: File, requestStrategy: RequestStrategy, chunkSplitor: ChunkSplitor) {
@@ -209,51 +237,50 @@ export class UploadController extends EventEmitter<'start' | 'progress' | 'end' 
     this.taskQueue = new TaskQueue()
   }
 
-  // 初始化
-  init = async () => {
+  async init() {
     // 上传前确认
     const req: ConfirmBeforeUploadRequest = {
       file_name: this.file.name,
       file_size: this.file.size,
       file_type: this.file.type,
       file_chunk_size: this.chunkSplitor.chunkSize,
-      hash_algorithm: this.chunkSplitor.hashCalculator.getAlgorithm(),
-      first_chunk_hash_key: await this.chunkSplitor.hashCalculator.getFirstChunkHash(this.file),
+      hash_algorithm: this.chunkSplitor.algorithm,
+      first_chunk_hash_key: await getFirstChunkHash(
+        this.file,
+        this.chunkSplitor.algorithm,
+        this.chunkSplitor.chunkSize,
+      ),
       part_numbers: this.chunkSplitor.partNumbers,
     }
 
     this.uploadFileInfo = await this.requestStrategy.confirmBeforeUpload(req)
 
-    // 如果没有获取到文件ID，抛出错误
     if (!this.uploadFileInfo.id) {
       throw new Error('Failed to get uploadFileInfo.')
     }
 
     // 如果整个文件Hash存在，说明文件存在,暂时不上传，等待验证整个Hash
     if (this.uploadFileInfo.hash_key) {
-      // 按顺序增量更新哈希函数,本来可以在 worker 中计算 hash 的顺序是不固定的，所以需要在按照顺序读取文件块，计算hash
-      this.emit('progress', 0) // 上传进度为0
+      // 按顺序增量更新哈希函数
       for (const chunk of this.chunkSplitor.chunks) {
-        await this.chunkSplitor.hashCalculator.updateIncrementalHash(chunk.blob)
+        await this.chunkSplitor.updateIncrementalHash(chunk)
       }
 
-      // 得到整个文件的hash
-      this.chunkSplitor.wholeFileHash = this.chunkSplitor.hashCalculator.getWholeFileHash()
+      this.chunkSplitor.fileHash = this.chunkSplitor.hashFunction.finalize().toString() // 保存计算结果
 
       // 判断当前文件的hash是否和服务器的hash一致
-      if (this.uploadFileInfo.hash_key === this.chunkSplitor.wholeFileHash) {
-        this.emit('end', this.uploadFileInfo.file_name)
+      if (this.uploadFileInfo.hash_key === this.chunkSplitor.fileHash) {
+        this.emit('end', this.uploadFileInfo.id)
         return
       }
     }
 
-    // 初始化 progressTrackers Map 对象
-    // 如果 uploaded_part_number_list 不为空，说明有部分分片已经上传，需要将这些分片的进度添加到 Map 中 否则跳过
+    // 初始化 progressTrackers
     if (this.uploadFileInfo.uploaded_part_number_list) {
       this.uploadFileInfo.uploaded_part_number_list.forEach((partIndex) => {
         const chunk = this.chunkSplitor.chunks[partIndex]
         if (chunk) {
-          this.progressTrackers.set(chunk.part_index, chunk.end - chunk.start) // 添加分片的大小
+          this.progressTrackers.set(chunk.part_index, chunk.end - chunk.start)
         }
       })
     }
@@ -265,8 +292,7 @@ export class UploadController extends EventEmitter<'start' | 'progress' | 'end' 
     this.emit('start')
   }
 
-  // 处理分片
-  private handleChunks = (chunks: Chunk[]) => {
+  private handleChunks(chunks: Chunk[]) {
     // 添加所有任务
     chunks.forEach((chunk) => {
       this.taskQueue.add(new Task(() => this.uploadChunk(chunk)))
@@ -277,23 +303,23 @@ export class UploadController extends EventEmitter<'start' | 'progress' | 'end' 
   }
 
   // 上传分片
-  uploadChunk = async (chunk: Chunk) => {
+  async uploadChunk(chunk: Chunk) {
     // 不在 uploaded_part_number_list 中的分片才需要上传, 即已经上传的分片不再上传.
     if (!this.uploadFileInfo?.uploaded_part_number_list?.includes(chunk.part_index)) {
       try {
         const res = await this.requestStrategy.uploadChunk(chunk)
         if (res.code === UploadCode.Success) {
           // 当一个分片上传完成后，更新该分片在 Map 中的进度。分片的结束位置减去开始位置得到分片的大小。
-          this.progressTrackers.set(chunk.part_index, chunk.blob.size)
+          this.progressTrackers.set(chunk.part_index, chunk.end - chunk.start)
 
           // 计算总的上传进度
           const progress = this.calculateProgress()
+          this.progressTrackers.set(chunk.part_index, chunk.blob.size)
           this.emit('progress', progress)
 
-          // 如果上传完成，触发 end 事件
           if (progress === 1) {
             // 上传完成
-            this.emit('end', this.uploadFileInfo?.file_name)
+            this.emit('end', this.uploadFileInfo?.id)
             return
           }
         }
@@ -304,7 +330,7 @@ export class UploadController extends EventEmitter<'start' | 'progress' | 'end' 
   }
 
   // 计算上传进度
-  private calculateProgress = () => {
+  private calculateProgress() {
     const uploadedSize = Array.from(this.progressTrackers.values()).reduce(
       (acc, size) => acc + size,
       0,

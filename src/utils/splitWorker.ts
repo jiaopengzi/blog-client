@@ -2,88 +2,21 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-07-23 15:28:35
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-07-26 16:56:21
- * @FilePath     : \blog-client\src\utils\SplitWorker.ts
- * @Description  :
+ * @LastEditTime : 2024-08-02 14:25:47
+ * @FilePath     : \blog-client\src\utils\splitWorker.ts
+ * @Description  : 文件分片计算hash的web worker
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
-import crypto from 'crypto-js'
 
-// 算法枚举
-export enum HashAlgorithm {
-  SHA256 = 'SHA-256',
-  SHA384 = 'SHA-384',
-  SHA512 = 'SHA-512',
-}
-
-/**
- * @description: 将data读取为ArrayBuffer
- * @param data Blob或File对象
- * @return ArrayBuffer
- */
-export function readFileAsArrayBuffer(data: Blob | File): Promise<ArrayBuffer> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader() // 创建文件读取器
-    reader.onload = () => resolve(reader.result as ArrayBuffer) // 读取成功，返回结果
-    reader.onerror = reject // 读取失败，抛出错误
-    reader.readAsArrayBuffer(data) // 读取data为ArrayBuffer
-  })
-}
-
-/**
- * @description: 计算文件块的哈希值
- * @param data 文件块 Blob 或 File 对象
- * @param algorithm 哈希算法，可以是 'SHA-256', 'SHA-384', 'SHA-512'，默认是 'SHA-256'
- * @return 哈希值
- */
-export async function calcHash(
-  data: Blob | File,
-  algorithm: HashAlgorithm = HashAlgorithm.SHA256,
-): Promise<string> {
-  const arrayBuffer = await readFileAsArrayBuffer(data) // 将文件块读取为ArrayBuffer
-  const wordArray = crypto.lib.WordArray.create(arrayBuffer) // 创建WordArray
-  let chunkHash
-  switch (algorithm) {
-    case HashAlgorithm.SHA256:
-      chunkHash = crypto.SHA256(wordArray)
-      break
-    case HashAlgorithm.SHA384:
-      chunkHash = crypto.SHA384(wordArray)
-      break
-    case HashAlgorithm.SHA512:
-      chunkHash = crypto.SHA512(wordArray)
-      break
-    default:
-      throw new Error(`Unsupported hash algorithm: ${algorithm},shuold be SHA-256,SHA-384,SHA-512`)
-  }
-
-  return chunkHash.toString()
-}
-
-
-
-/**
- * @description: 计算文件的第一个块的哈希值
- * @param file 文件对象
- * @param algorithm 哈希算法
- * @param chunkSize 块大小
- * @return 第一个分片的哈希值
- */
-export async function getFirstChunkHash(
-  file: File,
-  algorithm: HashAlgorithm,
-  chunkSize: number,
-): Promise<string> {
-  const blob = file.slice(0, chunkSize)
-  return calcHash(blob, algorithm)
-}
+import { HashCalculator } from '@/utils/hash'
 
 // 监听主线程发送的消息
 onmessage = function (e) {
   const { chunks, algorithm } = e.data
   for (const chunk of chunks) {
-    calcHash(chunk.blob, algorithm).then((hash) => {
+    const { calcHash } = new HashCalculator(algorithm)
+    calcHash(chunk.blob).then((hash) => {
       chunk.hash_key = hash
       chunk.hash_algorithm = algorithm
       postMessage([chunk])
