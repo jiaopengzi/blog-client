@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-07-19 09:58:39
+ * @LastEditTime : 2024-08-04 11:42:37
  * @FilePath     : \blog-client\src\main.ts
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -45,10 +45,11 @@ consoleInfoFormat() // 控制台输出项目信息
 
 if (import.meta.env.MODE === 'development') {
   devRun() // 开发环境运行的函数
+  console.log('当前环境：', import.meta.env.VITE_MAX_NAVIGATOR_HARDWARE_CONCURRENCY)
 }
 
 // 生产模式下
 // 如果环境变量为production，则移除console.log
-// if (import.meta.env.MODE === 'production') {
-//
-// }
+if (import.meta.env.MODE === 'production') {
+  console.log('生产环境：', import.meta.env.VITE_MAX_NAVIGATOR_HARDWARE_CONCURRENCY)
+}

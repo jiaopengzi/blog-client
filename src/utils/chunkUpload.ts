@@ -119,8 +119,15 @@ export abstract class ChunkSplitor extends EventEmitter<ChunkSplitorEvents> {
 
 // 多线程分片 navigator.hardwareConcurrency || 4
 export class MultiThreadSplitor extends ChunkSplitor {
+  // 计算机CPU核心数 - 2 作为并发数 不能小于1 保证至少有一个线程 不能大于4 保证不会占用太多资源
+  // 获取环境变量 MaxNavigatorHardwareConcurrency
+
+  concurrency = Math.min(
+    Math.max(navigator.hardwareConcurrency - 2, 1),
+    import.meta.env.MaxNavigatorHardwareConcurrency,
+  )
   // 多线程Worker
-  private workers: Worker[] = new Array(navigator.hardwareConcurrency || 4).fill(0).map(
+  private workers: Worker[] = new Array(this.concurrency).fill(0).map(
     () =>
       new Worker(new URL('@/utils/splitWorker', import.meta.url), {
         type: 'module',
@@ -195,18 +202,18 @@ export interface RequestStrategy {
 // 上传控制器
 export class UploadController extends EventEmitter<'start' | 'progress' | 'end' | 'error'> {
   private requestStrategy: RequestStrategy // 请求策略，没有传递则使用默认策略
-  private chunkSplitor: ChunkSplitor // 分片策略，没有传递则默认多线程分片
+  private chunkSplitor: MultiThreadSplitor // 分片策略，没有传递则默认多线程分片
   private taskQueue: TaskQueue // 任务队列
   private file: File // 需要上传的文件
   private uploadFileInfo: UploadFileInfo | undefined // 询问上传前确认的返回信息
   private progressTrackers: Map<number, number> = new Map() // 添加一个 Map 来跟踪每个分片的上传进度
 
-  constructor(file: File, requestStrategy: RequestStrategy, chunkSplitor: ChunkSplitor) {
+  constructor(file: File, requestStrategy: RequestStrategy, chunkSplitor: MultiThreadSplitor) {
     super()
     this.file = file
     this.requestStrategy = requestStrategy
     this.chunkSplitor = chunkSplitor
-    this.taskQueue = new TaskQueue()
+    this.taskQueue = new TaskQueue(this.chunkSplitor.concurrency)
   }
 
   // 初始化
@@ -281,6 +288,7 @@ export class UploadController extends EventEmitter<'start' | 'progress' | 'end' 
     // 不在 uploaded_part_number_list 中的分片才需要上传, 即已经上传的分片不再上传.
     if (!this.uploadFileInfo?.uploaded_part_number_list?.includes(chunk.part_index)) {
       try {
+        // this.requestStrategy.uploadChunk(chunk)
         const res = await this.requestStrategy.uploadChunk(chunk)
         if (res.code === UploadCode.Success) {
           // 当一个分片上传完成后，更新该分片在 Map 中的进度。分片的结束位置减去开始位置得到分片的大小。

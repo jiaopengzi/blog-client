@@ -89,6 +89,7 @@ export class TaskQueue extends EventEmitter<'start' | 'pause' | 'drain'> {
     return task
   }
 
+  // 执行任务
   private runNext() {
     if (this.status !== 'running') {
       return // 如果整体的任务状态不是running，结束
@@ -101,6 +102,7 @@ export class TaskQueue extends EventEmitter<'start' | 'pause' | 'drain'> {
         this.emit('drain') // 触发drain事件
         return
       }
+
       this.currentCount++ // 当前任务数+1
 
       // 执行任务
@@ -109,6 +111,7 @@ export class TaskQueue extends EventEmitter<'start' | 'pause' | 'drain'> {
         this.currentCount--
         this.runNext()
       })
+      
     }
   }
 
