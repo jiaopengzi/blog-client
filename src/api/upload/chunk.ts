@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-07-25 09:41:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-07-26 22:52:44
+ * @LastEditTime : 2024-08-04 14:57:55
  * @FilePath     : \blog-client\src\api\upload\chunk.ts
  * @Description  : 分片上传
  * @Blog         : https://jiaopengzi.com
@@ -42,5 +42,8 @@ export function uploadChunkAPI(
     url: routerGroup + '/upload/chunk',
     method: 'post',
     data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data', // 上传文件时指定类型
+    },
   })
 }

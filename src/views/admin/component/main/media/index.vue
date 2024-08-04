@@ -201,7 +201,7 @@ const httpRequest = async (options: UploadRequestOptions) => {
         uploadFileInfo: UploadFileInfo | null = null
 
         async confirmBeforeUpload(req: ConfirmBeforeUploadRequest): Promise<UploadFileInfo> {
-            // 返回token
+            // 返回 uploadFileInfo
             return await confirmBeforeUploadAPI(req).then((response) => {
                 if (response.data.code === UploadCode.ConfirmBeforeUploadSuccess) {
                     // ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
@@ -236,7 +236,6 @@ const httpRequest = async (options: UploadRequestOptions) => {
             }
 
             return (await uploadChunkAPI(formData, meta)).data
-
         }
 
     }
