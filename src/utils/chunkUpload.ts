@@ -120,11 +120,11 @@ export abstract class ChunkSplitor extends EventEmitter<ChunkSplitorEvents> {
 // 多线程分片 navigator.hardwareConcurrency || 4
 export class MultiThreadSplitor extends ChunkSplitor {
   // 计算机CPU核心数 - 2 作为并发数 不能小于1 保证至少有一个线程 不能大于4 保证不会占用太多资源
-  // 获取环境变量 MaxNavigatorHardwareConcurrency
+  // 获取环境变量 import.meta.env.VITE_MAX_NAVIGATOR_HARDWARE_CONCURRENCY
 
   concurrency = Math.min(
     Math.max(navigator.hardwareConcurrency - 2, 1),
-    import.meta.env.MaxNavigatorHardwareConcurrency,
+    import.meta.env.VITE_MAX_NAVIGATOR_HARDWARE_CONCURRENCY,
   )
   // 多线程Worker
   private workers: Worker[] = new Array(this.concurrency).fill(0).map(
