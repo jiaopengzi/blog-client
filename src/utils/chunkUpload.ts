@@ -10,15 +10,31 @@ import { HashCalculator, HashAlgorithm } from '@/utils/hash'
 import { UploadCode } from '@/api/responseCode'
 import type { Res } from '@/api/responseCode'
 
+// 分片元数据,包含文件二进制数据
 export interface Chunk extends ChunkMetadataWithoutFileId {
   blob: Blob // 分片的二进制数据
 }
 
-// 分片的相关事件
-// chunks: 一部分分片产生了
-// wholeHash: 整个文件的hash计算完成
-// drain: 所有分片处理完成
-export type ChunkSplitorEvents = 'chunks' | 'wholeHash' | 'drain'
+// 分片文件类的相关事件
+enum ChunkSplitorEvents {
+  CHUNKS = 'chunks', // 一部分分片产生了
+  WHOLE_HASH = 'wholeHash', // 整个文件的hash计算完成
+  DRAIN = 'drain', // 所有分片处理完成
+}
+
+// 文件上传的相关事件
+enum FileUploadEvents {
+  CHUNKS = 'chunks', // 一部分分片产生了
+}
+
+// 上传控制器的相关事件
+export enum UploadControllerEvents {
+  START = 'start', // 上传开始
+  CHECK_WHOLE_HASH = 'checkWholeHash', // 检查整个文件的hash,主要用在文件已经存在的情况,文件秒传。
+  PROGRESS = 'progress', // 上传进度
+  END = 'end', // 上传结束
+  ERROR = 'error', // 上传错误
+}
 
 // 分片文件类
 export abstract class ChunkSplitor extends EventEmitter<ChunkSplitorEvents> {
@@ -83,35 +99,35 @@ export abstract class ChunkSplitor extends EventEmitter<ChunkSplitorEvents> {
       return
     }
     this.hasSplited = true
-    const emitter = new EventEmitter<'chunks'>() // 用于分片计算hash的事件触发器
+    const emitter = new EventEmitter<FileUploadEvents>() // 用于分片计算 hash 的事件触发器
 
     // 监听chunks事件，计算每一个分片的hash
     const chunksHanlder = async (chunks: Chunk[]) => {
-      this.emit('chunks', chunks) // 触发chunks事件
+      this.emit(ChunkSplitorEvents.CHUNKS, chunks) // 触发chunks事件
 
       this.processedChunkCount += chunks.length // 计算已处理的分片数量
 
       if (this.processedChunkCount === this.chunks.length) {
         // 计算完成
-        emitter.off('chunks', chunksHanlder) // 移除监听
+        emitter.off(FileUploadEvents.CHUNKS, chunksHanlder) // 移除监听
 
         // // 按顺序增量更新哈希函数,本来可以在worker中计算hash的顺序是不固定的，所以需要在按照顺序读取文件块，计算hash
         // for (const chunk of this.chunks) {
         //   await this.hashCalculator.updateIncrementalHash(chunk.blob)
         // }
         // this.wholeFileHash = this.hashCalculator.getWholeFileHash() // 保存计算结果
-        // this.emit('wholeHash', this.wholeFileHash) // 整个文件的hash
+        // this.emit(ChunkSplitorEvents.WHOLE_HASH, this.wholeFileHash) // 整个文件的hash
 
-        this.emit('drain') // 所有分片处理完成
+        this.emit(ChunkSplitorEvents.DRAIN) // 所有分片处理完成
       }
     }
 
-    emitter.on('chunks', chunksHanlder) // 监听chunks事件
+    emitter.on(FileUploadEvents.CHUNKS, chunksHanlder) // 监听chunks事件
     this.calcHash(this.chunks, emitter) // 计算每一个分片的hash
   }
 
   // 计算每一个分片的hash
-  abstract calcHash(chunks: Chunk[], emitter: EventEmitter<'chunks'>): void
+  abstract calcHash(chunks: Chunk[], emitter: EventEmitter<FileUploadEvents>): void
 
   // 分片完成后一些需要销毁的工作
   abstract dispose(): void
@@ -135,7 +151,7 @@ export class MultiThreadSplitor extends ChunkSplitor {
   )
 
   // 计算每一个分片的hash
-  calcHash = async (chunks: Chunk[], emitter: EventEmitter<'chunks'>): Promise<void> => {
+  calcHash = async (chunks: Chunk[], emitter: EventEmitter<FileUploadEvents>): Promise<void> => {
     const workerSize = Math.ceil(chunks.length / this.workers.length) // 计算每个 Worker 处理的分片数量
     const promises: Promise<void>[] = [] // 用于保存每个 Worker 的 Promise
     for (let i = 0; i < this.workers.length; i++) {
@@ -153,7 +169,7 @@ export class MultiThreadSplitor extends ChunkSplitor {
       // promise 用于保存 Worker 的处理结果
       const promise = new Promise<void>((resolve, reject) => {
         worker.onmessage = (e) => {
-          emitter.emit('chunks', e.data)
+          emitter.emit(FileUploadEvents.CHUNKS, e.data)
           resolve()
         }
         worker.onerror = (e) => {
@@ -200,7 +216,7 @@ export interface RequestStrategy {
 }
 
 // 上传控制器
-export class UploadController extends EventEmitter<'start' | 'progress' | 'end' | 'error'> {
+export class UploadController extends EventEmitter<UploadControllerEvents> {
   private requestStrategy: RequestStrategy // 请求策略，没有传递则使用默认策略
   private chunkSplitor: MultiThreadSplitor // 分片策略，没有传递则默认多线程分片
   private taskQueue: TaskQueue // 任务队列
@@ -239,7 +255,8 @@ export class UploadController extends EventEmitter<'start' | 'progress' | 'end' 
     // 如果整个文件Hash存在，说明文件存在,暂时不上传，等待验证整个Hash
     if (this.uploadFileInfo.hash_key) {
       // 按顺序增量更新哈希函数,本来可以在 worker 中计算 hash 的顺序是不固定的，所以需要在按照顺序读取文件块，计算hash
-      this.emit('progress', 0) // 上传进度为0
+      this.emit(UploadControllerEvents.CHECK_WHOLE_HASH, this.uploadFileInfo.file_name) // 检查整个文件的hash
+      this.emit(UploadControllerEvents.PROGRESS, 0) // 检查整个文件的hash
       for (const chunk of this.chunkSplitor.chunks) {
         await this.chunkSplitor.hashCalculator.updateIncrementalHash(chunk.blob)
       }
@@ -249,7 +266,7 @@ export class UploadController extends EventEmitter<'start' | 'progress' | 'end' 
 
       // 判断当前文件的hash是否和服务器的hash一致
       if (this.uploadFileInfo.hash_key === this.chunkSplitor.wholeFileHash) {
-        this.emit('end', this.uploadFileInfo.file_name)
+        this.emit(UploadControllerEvents.END, this.uploadFileInfo.file_name)
         return
       }
     }
@@ -266,10 +283,10 @@ export class UploadController extends EventEmitter<'start' | 'progress' | 'end' 
     }
 
     // 分片事件监听
-    this.chunkSplitor.on('chunks', this.handleChunks.bind(this))
+    this.chunkSplitor.on(ChunkSplitorEvents.CHUNKS, this.handleChunks.bind(this))
     // 开始分片
     this.chunkSplitor.split()
-    this.emit('start')
+    this.emit(UploadControllerEvents.START)
   }
 
   // 处理分片
@@ -296,23 +313,24 @@ export class UploadController extends EventEmitter<'start' | 'progress' | 'end' 
 
           // 计算总的上传进度
           const progress = this.calculateProgress()
-          this.emit('progress', progress)
+          this.emit(UploadControllerEvents.PROGRESS, progress)
 
           // 如果上传完成，触发 end 事件
           if (progress === 1) {
             // 上传完成
-            this.emit('end', this.uploadFileInfo?.file_name)
+            this.emit(UploadControllerEvents.END, this.uploadFileInfo?.file_name)
             return
           }
         }
       } catch (error) {
-        this.emit('error', error)
+        this.emit(UploadControllerEvents.ERROR, error)
       }
     }
   }
 
   // 计算上传进度
   private calculateProgress = () => {
+    // 累加计算已上传的大小
     const uploadedSize = Array.from(this.progressTrackers.values()).reduce(
       (acc, size) => acc + size,
       0,

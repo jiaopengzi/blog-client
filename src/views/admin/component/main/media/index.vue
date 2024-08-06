@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-02 17:09:21
+ * @LastEditTime : 2024-08-06 09:46:25
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -52,7 +52,6 @@ import type { Media, TableData, TableColumn } from '@/components/common/base-tab
 import { debounce } from '@/utils/debounce'
 import { AadminSideMenu } from '@/views/admin/component/aside'
 import { IconKeys } from '@/components/common/icons'
-import { uploadFileAPI } from '@/api/upload/file'
 import { getUploadFileRequirementsAPI } from '@/api/upload/getUploadFileRequirements'
 import { ShowMsgTip } from '@/utils/message'
 import { UploadCode } from '@/api/responseCode'
@@ -60,7 +59,7 @@ import type { UploadRequestOptions, ElUpload } from 'element-plus'
 import type { RequestStrategy, Chunk } from '@/utils/chunkUpload'
 import { type ConfirmBeforeUploadRequest, confirmBeforeUploadAPI } from '@/api/upload/confirmBeforeUpload'
 import { type ChunkMetadata, uploadChunkAPI } from '@/api/upload/chunk'
-import { type UploadFileInfo, UploadController, MultiThreadSplitor } from '@/utils/chunkUpload'
+import { type UploadFileInfo, UploadControllerEvents, UploadController, MultiThreadSplitor } from '@/utils/chunkUpload'
 import { HashAlgorithm } from '@/utils/hash'
 import type { Res } from '@/api/responseCode'
 
@@ -204,7 +203,6 @@ const httpRequest = async (options: UploadRequestOptions) => {
             // 返回 uploadFileInfo
             return await confirmBeforeUploadAPI(req).then((response) => {
                 if (response.data.code === UploadCode.ConfirmBeforeUploadSuccess) {
-                    // ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
                     this.uploadFileInfo = response.data.data
                     return response.data.data
                 } else {
@@ -254,25 +252,30 @@ const httpRequest = async (options: UploadRequestOptions) => {
 
 
     // 监听 progress 事件
-    uploadController.on('progress', (progress: number) => {
-
+    uploadController.on(UploadControllerEvents.PROGRESS, (progress: number) => {
+        // 上传进度
         const evt: any = {
             percent: progress * 100,
         }
-
+        // 调用 options.onProgress 方法
         options.onProgress?.(evt)
     })
 
-    uploadController.on('end', (fileName: string) => {
+    // 监听 checkWholeHash 事件
+    uploadController.on(UploadControllerEvents.CHECK_WHOLE_HASH, (fileName: string) => {
+        ShowMsgTip(ShowMsgTip.MsgType.info, `正在校验:${fileName},请稍后...`, 10000)
+    })
+
+    // 监听 end 事件
+    uploadController.on(UploadControllerEvents.END, (fileName: string) => {
         options.onSuccess(fileName)
         const msg = `上传成功：${fileName}`
         ShowMsgTip(ShowMsgTip.MsgType.success, msg, 5000)
     })
 
-
     // 初始化UploadController
     uploadController.init().catch(error => {
-        // handle error
+        // 处理错误
         console.error(error)
         options.onError(error)
     })

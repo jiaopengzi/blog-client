@@ -35,14 +35,26 @@ export class Task {
   }
 }
 
+// 任务队列事件
+enum TaskQueueEvents {
+  START = 'start', // 任务开始
+  PAUSE = 'pause', // 任务暂停
+  DRAIN = 'drain', // 任务队列清空
+}
+
+// 任务状态
+enum TaskStatus {
+  PAUSED = 'paused', // 暂停
+  RUNING = 'running', // 运行中
+}
 // 可并发执行的任务队列
-export class TaskQueue extends EventEmitter<'start' | 'pause' | 'drain'> {
+export class TaskQueue extends EventEmitter<TaskQueueEvents> {
   // 待执行的任务
   private tasks: Set<Task> = new Set()
   // 当前正在执行的任务数
   private currentCount = 0
   // 任务状态
-  private status: 'paused' | 'running' = 'paused'
+  private status: TaskStatus = TaskStatus.PAUSED
   // 最大并发数
   private concurrency: number = 4
 
@@ -66,17 +78,17 @@ export class TaskQueue extends EventEmitter<'start' | 'pause' | 'drain'> {
 
   // 启动任务
   start() {
-    if (this.status === 'running') {
+    if (this.status === TaskStatus.RUNING) {
       return // 任务正在进行中，结束
     }
     if (this.tasks.size === 0) {
       // 当前已无任务，触发drain事件
-      this.emit('drain')
+      this.emit(TaskQueueEvents.DRAIN)
       return
     }
     // 设置任务状态为running
-    this.status = 'running'
-    this.emit('start') // 触发start事件
+    this.status = TaskStatus.RUNING
+    this.emit(TaskQueueEvents.START) // 触发start事件
     this.runNext() // 开始执行下一个任务
   }
 
@@ -91,15 +103,15 @@ export class TaskQueue extends EventEmitter<'start' | 'pause' | 'drain'> {
 
   // 执行任务
   private runNext() {
-    if (this.status !== 'running') {
+    if (this.status !== TaskStatus.RUNING) {
       return // 如果整体的任务状态不是running，结束
     }
     while (this.currentCount < this.concurrency) {
       // 如果并发数未满，继续执行任务
       const task = this.takeHeadTask()
       if (!task) {
-        this.status = 'paused' // 没有任务了，暂停执行
-        this.emit('drain') // 触发drain事件
+        this.status = TaskStatus.PAUSED // 没有任务了，暂停执行
+        this.emit(TaskQueueEvents.DRAIN) // 触发drain事件
         return
       }
 
@@ -111,13 +123,12 @@ export class TaskQueue extends EventEmitter<'start' | 'pause' | 'drain'> {
         this.currentCount--
         this.runNext()
       })
-      
     }
   }
 
   // 暂停任务
   pause() {
-    this.status = 'paused'
-    this.emit('pause')
+    this.status = TaskStatus.PAUSED
+    this.emit(TaskQueueEvents.PAUSE)
   }
 }

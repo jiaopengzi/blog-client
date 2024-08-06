@@ -14,6 +14,7 @@ import type { AxiosPromise } from 'axios'
 import { routerGroup } from '@/api/routerGroup'
 import { type Res } from '@/api/responseCode'
 
+// 定义分片元信息对象,不包含文件ID
 export interface ChunkMetadataWithoutFileId {
   hash_key: string //哈希值
   hash_algorithm: string //哈希算法
@@ -23,6 +24,7 @@ export interface ChunkMetadataWithoutFileId {
   end: number //分片结束位置
 }
 
+// 定义分片元信息对象 包含文件ID 和 文件子目录
 export interface ChunkMetadata extends ChunkMetadataWithoutFileId {
   File_id: string //文件ID 后端生成
   sub_dir: string //文件路径 后端生成
