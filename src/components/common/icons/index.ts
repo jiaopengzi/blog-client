@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-21 15:05:09
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-15 14:47:43
+ * @LastEditTime : 2024-08-06 10:12:58
  * @FilePath     : \blog-client\src\components\common\icons\index.ts
  * @Description  : 图标组件
  * @Blog         : https://jiaopengzi.com
@@ -217,6 +217,7 @@ export enum IconKeys {
   Wechat = 'wechat',
   WechatOfficialAccount = 'wechat-official-account',
   Welfare = 'welfare',
+  Zip = 'zip',
 }
 
 // 开发模式下运行 历遍 iconMap 对象中的 key 校验是否符合 IconKeys 类型约束
