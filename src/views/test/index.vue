@@ -1,72 +1,45 @@
 <template>
   <div>
     <input type="file" @change="onFileChange" />
-    <p>{{ hash }}</p>
+    <button @click="uploadFile">Upload</button>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
+import axios from 'axios'
 
-import crypto from 'crypto-js'
+const file = ref(null)
 
-// 算法枚举
-enum HashAlgorithm {
-  SHA256 = 'SHA-256',
-  SHA384 = 'SHA-384',
-  SHA512 = 'SHA-512',
+const onFileChange = (e: any) => {
+  file.value = e.target.files[0]
 }
 
-/**
- * @description: 将data读取为ArrayBuffer
- * @param data Blob或File对象
- * @return ArrayBuffer
- */
-function readFileAsArrayBuffer(data: Blob | File): Promise<ArrayBuffer> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader() // 创建文件读取器
-    reader.onload = () => resolve(reader.result as ArrayBuffer) // 读取成功，返回结果
-    reader.onerror = reject // 读取失败，抛出错误
-    reader.readAsArrayBuffer(data) // 读取data为ArrayBuffer
-  })
-}
-
-
-
-const hash = ref('');
-
-const onFileChange = async (event: any) => {
-  const file = event.target.files[0];
-  if (file) {
-    // 将文件切片 5M 一片 增量计算哈希值
-
-    // 计算分片数量
-    const chunkSize = 5 * 1024 * 1024; // 5M
-    const chunkCount = Math.ceil(file.size / chunkSize);
-
-    // 使用 for 循环计算每个分片的哈希值
-    const fileHash = crypto.algo.SHA256.create()
-
-
-
-    for (let i = 0; i < chunkCount; i++) {
-      const start = i * chunkSize;
-      const end = Math.min((i + 1) * chunkSize, file.size);
-      const chunk = file.slice(start, end);
-
-      const arrayBuffer = await readFileAsArrayBuffer(chunk) // 将文件块读取为ArrayBuffer
-      const wordArray = crypto.lib.WordArray.create(arrayBuffer) // 创建WordArray
-
-      fileHash.update(wordArray)
-
-
-
-    }
-
-
-
-    hash.value = fileHash.finalize().toString()
-
+const uploadFile = () => {
+  if (!file.value) {
+    console.error('No file selected')
+    return
   }
-};
+
+  const signedUrl = 'https://jiaopengzi-image.oss-cn-chengdu.aliyuncs.com/blog/uploads/6.png?x-oss-credential=LTAI5tERcFBucGpvadG8jktr%2F20240807%2Fcn-chengdu%2Foss%2Faliyun_v4_request&x-oss-date=20240807T123915Z&x-oss-expires=6000&x-oss-signature=e53f214ce97aca2e6a0c21bf9f38676f51c4058e4d9d45b39ad5a81475137bfe&x-oss-signature-version=OSS4-HMAC-SHA256' // 签名URL
+
+  const reader = new FileReader()
+  reader.readAsArrayBuffer(file.value)
+  reader.onload = function (event) {
+    const arrayBuffer = reader.result
+
+    axios.put(signedUrl, arrayBuffer, {
+      headers: {
+        'Content-Type': 'image/png',
+        'x-oss-meta-user': 'jack',
+      },
+    })
+      .then((response) => console.log(response.data))
+      .catch((error) => console.error(error))
+  }
+}
 </script>
+
+<style scoped lang="scss">
+/* Add your styles here */
+</style>
