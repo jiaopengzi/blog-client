@@ -194,8 +194,8 @@ export class MultiThreadSplitor extends ChunkSplitor {
 // UploadFileInfo
 // 上传文件信息
 export interface UploadFileInfo {
-  id: string //文件ID 响应给前端为字符串
-  hash_key: string //哈希值
+  id?: string //文件ID 响应给前端为字符串
+  hash_key?: string //哈希值
   first_chunk_hash_key: string //第一个分片 hash 值
   hash_algorithm: string //哈希算法
   file_name: string //文件名称
@@ -205,12 +205,24 @@ export interface UploadFileInfo {
   part_numbers: number //分片数量
   sub_dir: string //存放子目录
   uploaded_part_number_list: number[] //已上传的分片序号
+  upload_strategy: {
+    signed_url?: string // 如果签名 URL 存在，直接使用签名URL上传，不使用分片上传
+    signed_headers?: Record<string, string> // 请求头
+  }
 }
 
 // 请求策略
 export interface RequestStrategy {
   // 创建文件请求，返回文件token
   confirmBeforeUpload(req: ConfirmBeforeUploadRequest): Promise<UploadFileInfo>
+
+  // 使用签名URL上传,不走分片上传
+  uploadFileBySignedUrl(
+    file: File,
+    signedUrl: string,
+    headers: Record<string, string>,
+    onProgress: (percent: number) => void,
+  ): Promise<any>
   // 分片上传请求
   uploadChunk(chunk: Chunk): Promise<Res>
 }
@@ -269,6 +281,26 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
         this.emit(UploadControllerEvents.END, this.uploadFileInfo.file_name)
         return
       }
+    }
+
+    // 如果签名URL存在，直接使用签名URL上传，不使用分片上传
+    if (this.uploadFileInfo.upload_strategy.signed_url) {
+      this.requestStrategy
+        .uploadFileBySignedUrl(
+          this.file,
+          this.uploadFileInfo.upload_strategy.signed_url,
+          this.uploadFileInfo.upload_strategy.signed_headers || {},
+          (percent) => {
+            this.emit(UploadControllerEvents.PROGRESS, percent / 100) // 上传进度
+            if (percent === 100) {
+              this.emit(UploadControllerEvents.END, this.uploadFileInfo?.file_name) // 上传完成
+            }
+          },
+        )
+        .catch((error) => {
+          this.emit(UploadControllerEvents.ERROR, error) // 上传错误
+        })
+      return
     }
 
     // 初始化 progressTrackers Map 对象

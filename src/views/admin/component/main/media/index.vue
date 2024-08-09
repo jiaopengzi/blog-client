@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-06 09:46:25
+ * @LastEditTime : 2024-08-09 09:57:11
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -62,6 +62,7 @@ import { type ChunkMetadata, uploadChunkAPI } from '@/api/upload/chunk'
 import { type UploadFileInfo, UploadControllerEvents, UploadController, MultiThreadSplitor } from '@/utils/chunkUpload'
 import { HashAlgorithm } from '@/utils/hash'
 import type { Res } from '@/api/responseCode'
+import { uploadFileBySignedUrlAPI } from '@/api/upload/uploadFileBySignedUrl'
 
 
 defineOptions({ name: AadminSideMenu.Media })
@@ -216,6 +217,18 @@ const httpRequest = async (options: UploadRequestOptions) => {
                 const error: any = new Error('上传前确认失败，请重试')
                 options.onError(error)
             })
+
+        }
+
+        async uploadFileBySignedUrl(
+            file: File,
+            signedUrl: string,
+            headers: Record<string, string>,
+            onProgress: (percent: number) => void,
+        ): Promise<any> {
+            if (this.uploadFileInfo?.upload_strategy.signed_url) {
+                await uploadFileBySignedUrlAPI(file, signedUrl, headers, onProgress)
+            }
 
         }
 
