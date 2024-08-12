@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-09 09:57:11
+ * @LastEditTime : 2024-08-12 17:36:49
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -63,6 +63,7 @@ import { type UploadFileInfo, UploadControllerEvents, UploadController, MultiThr
 import { HashAlgorithm } from '@/utils/hash'
 import type { Res } from '@/api/responseCode'
 import { uploadFileBySignedUrlAPI } from '@/api/upload/uploadFileBySignedUrl'
+import { type ConfirmAfterUploadBySignedUrlRequest, confirmAfterUploadBySignedUrlAPI } from '@/api/upload/confirmAfterUploadBySignedUrl'
 
 
 defineOptions({ name: AadminSideMenu.Media })
@@ -230,6 +231,10 @@ const httpRequest = async (options: UploadRequestOptions) => {
                 await uploadFileBySignedUrlAPI(file, signedUrl, headers, onProgress)
             }
 
+        }
+
+        async confirmAfterUploadBySignedUrl(req: ConfirmAfterUploadBySignedUrlRequest): Promise<Res> {
+            return (await confirmAfterUploadBySignedUrlAPI(req)).data
         }
 
         async uploadChunk(chunk: Chunk): Promise<Res> {

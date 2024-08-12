@@ -223,6 +223,8 @@ export interface RequestStrategy {
     headers: Record<string, string>,
     onProgress: (percent: number) => void,
   ): Promise<any>
+
+  confirmAfterUploadBySignedUrl(req: { file_id: string }): Promise<Res>
   // 分片上传请求
   uploadChunk(chunk: Chunk): Promise<Res>
 }
@@ -293,7 +295,15 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
           (percent) => {
             this.emit(UploadControllerEvents.PROGRESS, percent / 100) // 上传进度
             if (percent === 100) {
-              this.emit(UploadControllerEvents.END, this.uploadFileInfo?.file_name) // 上传完成
+              this.requestStrategy
+                .confirmAfterUploadBySignedUrl({
+                  file_id: this.uploadFileInfo?.id?.toString() || '',
+                })
+                .then((res) => {
+                  if (res.code === UploadCode.ConfirmAfterUploadBySignedUrlSuccess) {
+                    this.emit(UploadControllerEvents.END, this.uploadFileInfo?.file_name) // 上传完成
+                  }
+                })
             }
           },
         )

@@ -114,6 +114,7 @@ export enum UploadCode {
   GetUploadFileRequirementsSuccess = 8102, // 获取允许上传的文件信息成功
   ConfirmBeforeUploadSuccess = 8104, // 确认上传前成功
   UploadFileSuccess = 8105, // 上传文件成功
+  ConfirmAfterUploadBySignedUrlSuccess = 8107, // 使用签名URL上传文件后确认成功
 }
 
 // 社交登录
