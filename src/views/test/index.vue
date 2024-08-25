@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-19 16:34:36
+ * @LastEditTime : 2024-08-21 16:11:19
  * @FilePath     : \blog-client\src\views\test\index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -21,8 +21,15 @@ import Hls from 'hls.js';
 const video = ref(null);
 
 onMounted(() => {
-  const hls = new Hls();
-  const videoSrc = 'http://10.10.2.222:8081/api/v1/uploads/test-hls/output.m3u8'; // 替换为你的 HLS 流地址
+  const hls = new Hls(
+    {
+      // HLS.js 配置选项
+      maxBufferLength: 5, // 设置最大缓冲长度为30秒
+      // maxBufferSize: 60 * 1000 * 1000, // 设置最大缓冲大小为60MB
+      maxBufferHole: 0.5, // 设置最大缓冲空洞为0.5秒
+    }
+  );
+  const videoSrc = 'http://10.10.2.222:8081/api/v1/uploads/2024/08/18/main.m3u8'; // 替换为你的 HLS 流地址
 
   if (Hls.isSupported()) {
     hls.loadSource(videoSrc);

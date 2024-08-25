@@ -204,6 +204,7 @@ export interface UploadFileInfo {
   file_chunk_size: number //分片大小
   part_numbers: number //分片数量
   sub_dir: string //存放子目录
+  is_encrypt: boolean // 是否加密
   uploaded_part_number_list: number[] //已上传的分片序号
   upload_strategy: {
     signed_url?: string // 如果签名 URL 存在，直接使用签名URL上传，不使用分片上传
@@ -247,7 +248,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
   }
 
   // 初始化
-  init = async () => {
+  init = async (isEncrypt: boolean) => {
     // 上传前确认
     const req: ConfirmBeforeUploadRequest = {
       file_name: this.file.name,
@@ -257,6 +258,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
       hash_algorithm: this.chunkSplitor.hashCalculator.getAlgorithm(),
       first_chunk_hash_key: await this.chunkSplitor.hashCalculator.getFirstChunkHash(this.file),
       part_numbers: this.chunkSplitor.partNumbers,
+      is_encrypt: isEncrypt,
     }
 
     this.uploadFileInfo = await this.requestStrategy.confirmBeforeUpload(req)

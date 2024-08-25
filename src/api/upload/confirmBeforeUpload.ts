@@ -24,6 +24,7 @@ export interface ConfirmBeforeUploadRequest {
   hash_algorithm: string // 哈希算法
   first_chunk_hash_key: string // 第一个分片的hash值
   part_numbers: number // 分片数量
+  is_encrypt: boolean // 是否加密
 }
 
 export function confirmBeforeUploadAPI(requestData: ConfirmBeforeUploadRequest): AxiosPromise<Res> {

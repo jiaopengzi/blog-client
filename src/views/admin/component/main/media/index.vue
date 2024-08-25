@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-12 17:36:49
+ * @LastEditTime : 2024-08-25 14:57:27
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -27,6 +27,7 @@
         </template>
 
         <template #add-item>
+            <el-checkbox v-model="isEncrypt" class="is-encrypt">是否加密视频</el-checkbox>
             <el-upload ref="uploadRef" class="upload" drag multiple
                 action="http://localhost:8081/api/v1/utils/upload-file" :http-request="httpRequest">
                 <Icon :name="IconKeys.UploadFilled" custom-class="icon-upload-filled" />
@@ -193,6 +194,8 @@ const getAllowedInfo = () => {
     })
 }
 
+// 上传视频是否加密
+const isEncrypt = ref(true)
 
 const httpRequest = async (options: UploadRequestOptions) => {
 
@@ -292,7 +295,7 @@ const httpRequest = async (options: UploadRequestOptions) => {
     })
 
     // 初始化UploadController
-    uploadController.init().catch(error => {
+    uploadController.init(isEncrypt.value).catch(error => {
         // 处理错误
         console.error(error)
         options.onError(error)
@@ -358,6 +361,7 @@ const filterTableData = computed(() =>
     )
 )
 
+
 onMounted(() => {
     getAllowedInfo()
 })
@@ -390,5 +394,9 @@ onMounted(() => {
 
 .el-upload__tip_title {
     margin: 10px 0;
+}
+
+.is-encrypt {
+    margin-right: 10px;
 }
 </style>@/utils/splitWorker
