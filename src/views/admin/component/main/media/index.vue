@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-25 14:57:27
+ * @LastEditTime : 2024-08-27 13:58:36
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -211,7 +211,7 @@ const httpRequest = async (options: UploadRequestOptions) => {
                     this.uploadFileInfo = response.data.data
                     return response.data.data
                 } else {
-                    ShowMsgTip(ShowMsgTip.MsgType.error, response.data.msg, 2000)
+                    ShowMsgTip(ShowMsgTip.MsgType.error, `${response.data.msg}:${options.file.name}`, 2000)
                     const error: any = new Error(response.data.msg)
                     options.onError(error)
                     return
