@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-27 13:58:36
+ * @LastEditTime : 2024-08-28 17:45:46
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -49,7 +49,9 @@
 import { ref, computed, reactive, onMounted } from 'vue'
 import BaseTable from '@/components/common/base-table'
 import type { Pagination } from '@/components/common'
-import type { Media, TableData, TableColumn } from '@/components/common/base-table'
+import type { TableData, TableColumn } from '@/components/common/base-table'
+import type { MediaFile, GetMediaFilesRequest } from '@/api/upload/getFiles'
+import { getMediaFilesAPI, emptyMediaFiles } from '@/api/upload/getFiles'
 import { debounce } from '@/utils/debounce'
 import { AadminSideMenu } from '@/views/admin/component/aside'
 import { IconKeys } from '@/components/common/icons'
@@ -72,7 +74,6 @@ defineOptions({ name: AadminSideMenu.Media })
 const uploadRef = ref<typeof ElUpload>()
 
 const cols: TableColumn[] = reactive([
-
     {
         prop: 'id',
         label: 'ID',
@@ -81,14 +82,14 @@ const cols: TableColumn[] = reactive([
         align: 'center',
     },
     {
-        prop: 'img',
+        prop: 'thumbnail',
         label: '图片',
         width: 150,
         align: 'center',
         isImg: true,
     },
     {
-        prop: 'fileName',
+        prop: 'file_name_display',
         label: '文件名',
         sortable: true,
         width: 150,
@@ -116,55 +117,45 @@ const cols: TableColumn[] = reactive([
         align: 'center',
     },
     {
-        prop: 'uploadDate',
+        prop: 'created_at',
         label: '上传时间',
         sortable: true,
         width: 150,
         align: 'center',
     },
-
+    {
+        prop: 'is_free',
+        label: '免费',
+        sortable: true,
+        width: 150,
+        align: 'center',
+        formatter: (row: TableData) => { if ("is_free" in row) { if (row.is_free) { return "是" } return "否" } }
+    },
+    {
+        prop: 'is_delete_original',
+        label: '删除原始文件',
+        sortable: true,
+        width: 150,
+        align: 'center',
+        formatter: (row: TableData) => { if ("is_delete_original" in row) { if (row.is_delete_original) { return "是" } return "否" } }
+    },
+    {
+        prop: 'video_quality_name',
+        label: '视频分辨率',
+        sortable: true,
+        width: 150,
+        align: 'center',
+    },
 ])
 
-const pagination: Pagination<Media> = reactive({
+
+const pagination = ref<Pagination<MediaFile>>({
     total: 10,
     current_page: 1,
     page_size: 5,
     page_count: 2,
     page_sizes: [5, 10, 20, 30],
-    records: [{
-        id: 1,
-        fileName: 'Power BI',
-        author: 'Power BI',
-        uploadDate: '2021-12-12',
-        description: 'Power BI',
-        slug: 'power-bi',
-        img: {
-            url: 'https://jiaopengzi.com/wp-content/uploads/2022/01/%E7%84%A6%E6%A3%9A%E5%AD%90_avatar-64x64.png',
-        }
-    },
-    {
-        id: 1,
-        fileName: 'Power BI',
-        author: 'Power BI',
-        uploadDate: '2021-12-12',
-        description: 'Power BI',
-        slug: 'power-bi',
-        img: {
-            url: 'https://jiaopengzi.com/wp-content/uploads/2022/01/%E7%84%A6%E6%A3%9A%E5%AD%90_avatar-64x64.png',
-        }
-    },
-
-    {
-        id: 1,
-        fileName: 'Power BI',
-        author: 'Power BI',
-        uploadDate: '2021-12-12',
-        description: 'Power BI',
-        slug: 'power-bi',
-        img: {
-            url: 'https://jiaopengzi.com/wp-content/uploads/2022/01/%E7%84%A6%E6%A3%9A%E5%AD%90_avatar-64x64.png',
-        }
-    },],
+    records: [],
 })
 
 const search = ref('')
@@ -313,12 +304,12 @@ const handleAdd = () => {
 // }
 
 const updateCurrentPage = (val: number) => {
-    pagination.current_page = val
+    pagination.value.current_page = val
     console.log("1", val)
 }
 
 const updatePageSizes = (val: number) => {
-    pagination.page_size = val
+    pagination.value.page_size = val
     console.log("2", val)
 }
 
@@ -352,18 +343,32 @@ const addItemUpdateDialogVisible = (val: boolean) => {
 }
 
 
-// :data="filterTableData" 
-const filterTableData = computed(() =>
-    pagination.records.filter(
-        (data) =>
-            !search.value ||
-            data.fileName.toLowerCase().includes(search.value.toLowerCase())
-    )
-)
+// 获取分页用户
+async function getMediaFilePaginate(req: GetMediaFilesRequest) {
+    // 如果 key_word 为空 则不传 key_word
+    if (!req.key_word) {
+        delete req.key_word
+    }
+
+    // 获取用户列表
+    await getMediaFilesAPI(req).then((res) => {
+        if (res.data.code === UploadCode.GetAllSuccess) {
+            pagination.value = res.data.data
+            console.log("11============", pagination.value)
+        } else {
+            pagination.value = emptyMediaFiles()
+        }
+    })
+}
 
 
 onMounted(() => {
     getAllowedInfo()
+    getMediaFilePaginate({
+        current_page: pagination.value.current_page,
+        page_size: pagination.value.page_size,
+        key_word: search.value,
+    })
 })
 
 </script>

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 16:30:57
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-22 10:56:27
+ * @LastEditTime : 2024-08-27 17:06:40
  * @FilePath     : \blog-client\src\api\user\getUsers.ts
  * @Description  : 获取用户信息
  * @Blog         : https://jiaopengzi.com
@@ -70,6 +70,7 @@ export interface User extends DataWithImg {
   }
   post: number // 文章数量
   created_at: string // 注册时间
+  user_avatar: string // 用户头像
 }
 
 /**

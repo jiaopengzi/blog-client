@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:25:00
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-21 21:06:29
+ * @LastEditTime : 2024-08-28 17:02:33
  * @FilePath     : \blog-client\src\components\common\base-table\index.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -11,6 +11,7 @@
 
 import { type DataWithImg } from '@/components/common' // 图片填充方式
 import { type User } from '@/api/user/getUsers'
+import { type MediaFile } from '@/api/upload/getFiles'
 import { type LoginLog } from '@/api/loginLog/getLoginLogs'
 
 export { default } from './index.vue'
@@ -24,7 +25,7 @@ export interface TableColumn {
   align?: string // 对齐方式
   isImg?: boolean // 是否为图片
   formatter?: (row: TableData) => any // 格式化函数
-  isTest?: boolean // 是否为图片
+  isTest?: boolean // 是否为测试列
 }
 
 // 文章分类
@@ -52,14 +53,4 @@ export interface Post extends DataWithImg {
   slug?: string // 文章别名
 }
 
-// 媒体
-export interface Media extends DataWithImg {
-  id: number // 媒体 ID
-  fileName: string // 文件名
-  author: string // 作者
-  uploadDate: string // 上传时间
-  description?: string // 描述
-  slug?: string // 别名
-}
-
-export type TableData = PostCategory | Post | Media | User | LoginLog
+export type TableData = PostCategory | Post | MediaFile | User | LoginLog
