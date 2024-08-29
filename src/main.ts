@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-04 14:49:31
+ * @LastEditTime : 2024-08-29 14:30:42
  * @FilePath     : \blog-client\src\main.ts
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -16,7 +16,7 @@ import { createHead } from '@unhead/vue' //seo head
 import App from '@/App.vue'
 import router from '@/router'
 import { useUserStore } from '@/stores/user'
-import Icon from '@/components/common/icons'
+import Icon from '@/components/common/icons' // 引用自定义的全局图标
 import { permissionDirective } from '@/utils/permissionRole'
 
 import { consoleInfoFormat } from '@/version'

@@ -2,17 +2,16 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-28 17:45:46
+ * @LastEditTime : 2024-08-29 17:47:10
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 
-
 <template>
     <BaseTable :pagination="pagination" :table-column="cols" :is-show-delete-all="true"
-        :add-item-dialog-visible="addItemDialogVisible" :is-show-search="true" :search-str="search"
+        :add-item-dialog-visible="addItemDialogVisible" :is-show-edit="true" :is-show-search="true" :search-str="search"
         @update-current-page="updateCurrentPage" @update-page-sizes="updatePageSizes" @edit-row="editRow"
         @delete-row="deleteRow" @delete-rows="deleteRows" @update-search="updateSearch"
         @update-selection="updateSelection" @add-item-update-dialog-visible="addItemUpdateDialogVisible">
@@ -22,6 +21,17 @@
                 新增
             </el-button>
         </template>
+        <template #category>
+            <!-- v-for 循环 userCountGroupByRole生成 按钮 -->
+            <div class="category">
+                <el-button v-for="item in fileCountGroupByFiletype" :key="item.file_type"
+                    :class="{ active: item.file_type === activeFileType }"
+                    @click="handleFileCountByFiletype(item.file_type)">
+                    {{ item.file_extension }} ({{ item.file_count }})
+                </el-button>
+            </div>
+        </template>
+
         <template #add-item-title>
             <span class="dialog-title">新增媒体文件</span>
         </template>
@@ -46,7 +56,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, reactive, onMounted } from 'vue'
+import { ref, reactive, onBeforeMount } from 'vue'
 import BaseTable from '@/components/common/base-table'
 import type { Pagination } from '@/components/common'
 import type { TableData, TableColumn } from '@/components/common/base-table'
@@ -58,7 +68,7 @@ import { IconKeys } from '@/components/common/icons'
 import { getUploadFileRequirementsAPI } from '@/api/upload/getUploadFileRequirements'
 import { ShowMsgTip } from '@/utils/message'
 import { UploadCode } from '@/api/responseCode'
-import type { UploadRequestOptions, ElUpload } from 'element-plus'
+import { type UploadRequestOptions, type ElUpload } from 'element-plus'
 import type { RequestStrategy, Chunk } from '@/utils/chunkUpload'
 import { type ConfirmBeforeUploadRequest, confirmBeforeUploadAPI } from '@/api/upload/confirmBeforeUpload'
 import { type ChunkMetadata, uploadChunkAPI } from '@/api/upload/chunk'
@@ -67,7 +77,10 @@ import { HashAlgorithm } from '@/utils/hash'
 import type { Res } from '@/api/responseCode'
 import { uploadFileBySignedUrlAPI } from '@/api/upload/uploadFileBySignedUrl'
 import { type ConfirmAfterUploadBySignedUrlRequest, confirmAfterUploadBySignedUrlAPI } from '@/api/upload/confirmAfterUploadBySignedUrl'
-
+import { ImgFit } from '@/components/common'
+import router from '@/router'
+import { paginationRouterPush, PaginationQueryKey } from '@/router/utils'
+import { getFileCountGroupByFiletypeAPI, type FileCountGroupByFiletype } from '@/api/upload/getFileCountGroupByFiletype'
 
 defineOptions({ name: AadminSideMenu.Media })
 
@@ -127,7 +140,7 @@ const cols: TableColumn[] = reactive([
         prop: 'is_free',
         label: '免费',
         sortable: true,
-        width: 150,
+        width: 100,
         align: 'center',
         formatter: (row: TableData) => { if ("is_free" in row) { if (row.is_free) { return "是" } return "否" } }
     },
@@ -135,7 +148,7 @@ const cols: TableColumn[] = reactive([
         prop: 'is_delete_original',
         label: '删除原始文件',
         sortable: true,
-        width: 150,
+        width: 140,
         align: 'center',
         formatter: (row: TableData) => { if ("is_delete_original" in row) { if (row.is_delete_original) { return "是" } return "否" } }
     },
@@ -143,8 +156,9 @@ const cols: TableColumn[] = reactive([
         prop: 'video_quality_name',
         label: '视频分辨率',
         sortable: true,
-        width: 150,
+        width: 120,
         align: 'center',
+        formatter: (row: TableData) => formatterVideoQuality(row)
     },
 ])
 
@@ -163,6 +177,14 @@ const search = ref('')
 const allowedInfo = ref("")
 const chunkSizeServer = ref(1024 * 1024 * 10)
 let hashAlgorithmServer: HashAlgorithm = HashAlgorithm.SHA256
+const AllFileType = 'AllFileType'
+const activeFileType = ref(AllFileType)
+
+// url query key
+enum queryKey {
+    FileType = 'file-type',
+    Search = 'search',
+}
 
 const getAllowedInfo = () => {
     const strList: string[] = []
@@ -305,11 +327,13 @@ const handleAdd = () => {
 
 const updateCurrentPage = (val: number) => {
     pagination.value.current_page = val
+    paginationRouterPush(AadminSideMenu.Media, pagination.value.page_size, val, { [queryKey.FileType]: activeFileType.value, [queryKey.Search]: search.value })
     console.log("1", val)
 }
 
 const updatePageSizes = (val: number) => {
     pagination.value.page_size = val
+    paginationRouterPush(AadminSideMenu.Media, val, pagination.value.current_page, { [queryKey.FileType]: activeFileType.value, [queryKey.Search]: search.value })
     console.log("2", val)
 }
 
@@ -327,6 +351,7 @@ const deleteRows = (rows: TableData[]) => {
 
 const updateSearch = debounce((val: string) => {
     search.value = val
+    paginationRouterPush(AadminSideMenu.Media, pagination.value.page_size, pagination.value.current_page, { [queryKey.FileType]: activeFileType.value, [queryKey.Search]: val })
     console.log("6", val)
 }, 300)
 
@@ -350,8 +375,13 @@ async function getMediaFilePaginate(req: GetMediaFilesRequest) {
         delete req.key_word
     }
 
-    // 获取用户列表
-    await getMediaFilesAPI(req).then((res) => {
+    // 如果 file_type 为 AllFileType 则不传 file_type
+    if (req.file_type === AllFileType) {
+        delete req.file_type
+    }
+
+    // 获取用户列表 // 宽高 50px 50px
+    await getMediaFilesAPI(req, 100, 100, ImgFit.Cover, 60).then((res) => {
         if (res.data.code === UploadCode.GetAllSuccess) {
             pagination.value = res.data.data
             console.log("11============", pagination.value)
@@ -362,11 +392,66 @@ async function getMediaFilePaginate(req: GetMediaFilesRequest) {
 }
 
 
-onMounted(() => {
+// 从路由中query中获取值
+function getValueFromQuery() {
+    pagination.value.page_size = Number(router.currentRoute.value.query[PaginationQueryKey.PageSize]) || 10
+    pagination.value.current_page = Number(router.currentRoute.value.query[PaginationQueryKey.CurrentPage]) || 1
+    activeFileType.value = router.currentRoute.value.query[queryKey.FileType] as string || AllFileType
+    search.value = router.currentRoute.value.query[queryKey.Search] as string || ''
+    console.log("12============", search.value)
+}
+
+
+const formatterVideoQuality = (row: TableData) => {
+    if ("video_quality_name" in row && "is_server_process" in row) {
+        if (row.is_server_process && row.video_quality_name == "") {
+            return "服务器处理中..."
+        }
+        if (!row.is_server_process) {
+            return "-"
+        }
+        return row.video_quality_name
+    }
+}
+
+// 文件统计
+const fileCountGroupByFiletype = ref<FileCountGroupByFiletype[]>([])
+
+// 获取文件统计
+async function getFileCountGroupByFiletype() {
+    await getFileCountGroupByFiletypeAPI().then((res) => {
+        if (res.data.code === UploadCode.GetFileCountGroupByTypeSuccess) {
+            const filetypeALL = res.data.data
+            const total = filetypeALL.reduce((prev, cur) => {
+                return prev + cur.file_count
+            }, 0)
+            const newFiletypeALL: FileCountGroupByFiletype = {
+                file_type: AllFileType,
+                file_extension: "全部",
+                file_count: total
+            }
+            fileCountGroupByFiletype.value = [newFiletypeALL, ...filetypeALL]
+        }
+    })
+}
+
+const handleFileCountByFiletype = async (fileType: string) => {
+    activeFileType.value = fileType
+    // 添加路由跳转
+    console.log("10============")
+    console.log(activeFileType.value)
+    paginationRouterPush(AadminSideMenu.Media, pagination.value.page_size, pagination.value.current_page, { [queryKey.FileType]: fileType, [queryKey.Search]: search.value })
+}
+
+
+onBeforeMount(async () => {
     getAllowedInfo()
-    getMediaFilePaginate({
+    getValueFromQuery()
+    await getFileCountGroupByFiletype()
+    await getMediaFilePaginate({
         current_page: pagination.value.current_page,
         page_size: pagination.value.page_size,
+        file_type: activeFileType.value,
         key_word: search.value,
     })
 })
@@ -404,4 +489,39 @@ onMounted(() => {
 .is-encrypt {
     margin-right: 10px;
 }
-</style>@/utils/splitWorker
+
+.category {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+
+    .el-button {
+
+
+        position: relative;
+        // 背景透明
+        background-color: transparent;
+        // 无边框
+        border: none;
+
+        &.active {
+            font-weight: bold;
+            color: $primary-color;
+        }
+
+        &::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 61.8%;
+            border-right: 1px solid $primary-color;
+        }
+
+        &:last-child::after {
+            display: none;
+        }
+    }
+}
+</style>

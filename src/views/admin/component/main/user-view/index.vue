@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-07-19 16:36:51
+ * @LastEditTime : 2024-08-29 17:31:45
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -25,7 +25,7 @@
         </template>
         <template #category>
             <!-- v-for 循环 userCountGroupByRole生成 按钮 -->
-            <div class="user-count-by-role">
+            <div class="category">
                 <el-button v-for="item in userCountGroupByRole" :key="item.role_name"
                     :class="{ active: item.role_name === activeRole }" @click="handleUserCountByRole(item.role_name)">
                     {{ roleDisplay(item.role_name) }} ({{ item.user_count }})
@@ -72,7 +72,8 @@ import { getUsersAPI, emptyUsers, type GetUsersRequest, } from '@/api/user/getUs
 import { getUserCountGroupByRoleAPI, type UserCountGroupByRole } from '@/api/user/getUserCountGroupByRole'
 import { getRolesByJson, type Role } from '@/api/permissionRole/role'
 import { ResponseCode } from '@/api/responseCode'
-import router from '@/router/index'
+import router from '@/router'
+import { paginationRouterPush, PaginationQueryKey } from '@/router/utils'
 import { DeleteUserAPI, type DeleteUserRequest } from '@/api/user/deleteUser'
 import { ShowMsgTip } from '@/utils/message'
 import { type EditUserByAdminForm } from '@/views/admin/component/main/user-view/component/edit-user'
@@ -167,6 +168,13 @@ const editItemDialogVisible = ref(false)
 const AllRoleName = 'AllRole'
 const activeRole = ref(AllRoleName)
 
+// url query key
+enum queryKey {
+    RoleName = 'role-name',
+    Search = 'search',
+}
+
+
 const getDisableExpiresTime = (row: TableData) => {
     if ('disable_expires_at' in row) {
         // 如果 disable_expires_at 为 null 则返回 '永久'
@@ -201,13 +209,13 @@ const handleAdd = () => {
 
 const updateCurrentPage = async (val: number) => {
     pagination.value.current_page = val
-    routerPush(pagination.value.page_size, val, activeRole.value, search.value)
+    paginationRouterPush(AadminSideMenu.UserView, pagination.value.page_size, val, { [queryKey.RoleName]: activeRole.value, [queryKey.Search]: search.value })
     console.log("01============", val)
 }
 
 const updatePageSize = async (val: number) => {
     pagination.value.page_size = val
-    routerPush(val, pagination.value.current_page, activeRole.value, search.value)
+    paginationRouterPush(AadminSideMenu.UserView, val, pagination.value.current_page, { [queryKey.RoleName]: activeRole.value, [queryKey.Search]: search.value })
     console.log("02============", val)
 
 }
@@ -312,7 +320,7 @@ const deleteRows = async (rows: TableData[]) => {
 
 const updateSearch = debounce(async (val: string) => {
     search.value = val
-    routerPush(pagination.value.page_size, pagination.value.current_page, activeRole.value, val)
+    paginationRouterPush(AadminSideMenu.UserView, pagination.value.page_size, pagination.value.current_page, { [queryKey.RoleName]: activeRole.value, [queryKey.Search]: val })
     console.log("07============", val)
 
 }, 500)
@@ -409,71 +417,16 @@ const handleUserCountByRole = async (role: string) => {
     activeRole.value = role
     // 添加路由跳转
     console.log("10============")
-    routerPush(pagination.value.page_size, pagination.value.current_page, role, search.value)
-}
-
-
-// 路由跳转
-function routerPush(pageSize: number, currentPage: number, roleName: string, searchStr: string) {
-
-    // 当搜索关键字为空时，roleName 为 AllRoleName 则跳转到全部用户页面
-    if (!searchStr && roleName === AllRoleName) {
-        router.push({
-            name: AadminSideMenu.UserView,
-            query: {
-                'page-size': pageSize,
-                'current-page': currentPage,
-            }
-        })
-        return
-    }
-
-    // 当搜索关键字为空时，roleName 不为 AllRoleName 则跳转到指定角色页面
-    if (!searchStr) {
-        router.push({
-            name: AadminSideMenu.UserView,
-            query: {
-                'page-size': pageSize,
-                'current-page': currentPage,
-                'role-name': roleName,
-            }
-        })
-        return
-    }
-
-    // 当搜索关键字不为空时，roleName 为 AllRoleName 则跳转到全部用户页面关键字搜索
-    if (roleName === AllRoleName) {
-        router.push({
-            name: AadminSideMenu.UserView,
-            query: {
-                'page-size': pageSize,
-                'current-page': currentPage,
-                'search': searchStr,
-            }
-        })
-        return
-    }
-
-    // 当搜索关键字不为空时，roleName 不为 AllRoleName 则跳转到指定角色页面关键字搜索
-    router.push({
-        name: AadminSideMenu.UserView,
-        query: {
-            'page-size': pageSize,
-            'current-page': currentPage,
-            'role-name': roleName,
-            'search': searchStr,
-        }
-    })
-
+    paginationRouterPush(AadminSideMenu.UserView, pagination.value.page_size, pagination.value.current_page, { [queryKey.RoleName]: role, [queryKey.Search]: search.value })
 }
 
 
 // 从路由中query中获取值
 function getValueFromQuery() {
-    pagination.value.page_size = Number(router.currentRoute.value.query['page-size']) || 10
-    pagination.value.current_page = Number(router.currentRoute.value.query['current-page']) || 1
-    activeRole.value = router.currentRoute.value.query['role-name'] as string || AllRoleName
-    search.value = router.currentRoute.value.query['search'] as string || ''
+    pagination.value.page_size = Number(router.currentRoute.value.query[PaginationQueryKey.PageSize]) || 10
+    pagination.value.current_page = Number(router.currentRoute.value.query[PaginationQueryKey.CurrentPage]) || 1
+    activeRole.value = router.currentRoute.value.query[queryKey.RoleName] as string || AllRoleName
+    search.value = router.currentRoute.value.query[queryKey.Search] as string || ''
     console.log("12============", search.value)
 }
 
@@ -536,7 +489,7 @@ onBeforeMount(async () => {
     margin: 10px 0;
 }
 
-.user-count-by-role {
+.category {
     margin-top: 10px;
     display: flex;
     align-items: center;

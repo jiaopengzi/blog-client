@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-28 21:34:23
+ * @LastEditTime : 2024-08-29 15:52:59
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格
  * @Blog         : https://jiaopengzi.com
@@ -33,8 +33,12 @@
                         <span>{{ col.label }}</span>
                     </template>
                     <template #default="scope">
-                        <img v-if="scope.row.img" :src="scope.row.img.url"
-                            :style="imgStyle(scope.row.img.width, scope.row.img.height, scope.row.img.imgFit)" />
+                        <div class="thumbnail">
+                            <img class="thumbnail-img" v-if="scope.row.img?.url" :src="scope.row.img.url"
+                                :style="imgStyle(scope.row.img?.width, scope.row.img?.height, scope.row.img?.imgFit)" />
+                            <Icon v-else-if="scope.row.img?.iconKeyName" :name="scope.row.img?.iconKeyName"
+                                :style="IconStyle(scope.row.img?.fontSize)" />
+                        </div>
                     </template>
                 </el-table-column>
                 <el-table-column v-else-if="col.formatter" :key="`formatter-${index}`" :label="col.label"
@@ -72,14 +76,14 @@
         </div>
     </div>
 
-    <!-- 弹窗 -->
+    <!-- 弹窗 add -->
     <el-dialog v-model="addItemDialogVisibleStatus" @close="addItemHandleDialogClose">
         <template #header>
             <slot name="add-item-title"></slot>
         </template>
         <slot name="add-item"></slot>
     </el-dialog>
-    <!-- 弹窗 -->
+    <!-- 弹窗 edit -->
     <el-dialog v-model="editItemDialogVisibleStatus" @close="editItemHandleDialogClose">
         <template #header>
             <slot name="edit-item-title"></slot>
@@ -113,7 +117,7 @@ const props = withDefaults(defineProps<{
     isShowDeleteAll: false, // 默认不显示批量删除按钮
     isShowEdit: false, // 默认不显示批量删除按钮
     isShowSearch: false, // 默认不显示批量删除按钮
-    searchStr: '' // 默认搜索关键字为空
+    searchStr: '', // 默认搜索关键字为空
 })
 
 const emit = defineEmits<{
@@ -206,6 +210,13 @@ function imgStyle(width: number, height: number, imgFit: ImgFit): Record<string,
     }
 }
 
+// 图片样式
+function IconStyle(fontSize: number): Record<string, string> {
+    return {
+        'font-size': fontSize ? `${fontSize}px` : '40px', // 字体大小
+    }
+}
+
 </script>
 
 <style scoped lang="scss">
@@ -232,5 +243,26 @@ function imgStyle(width: number, height: number, imgFit: ImgFit): Record<string,
     .dialog-footer button:first-child {
         margin-right: 10px;
     }
+
+    .thumbnail {
+        float: left;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    .thumbnail-img {
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .thumbnail:hover .thumbnail-img {
+        transform: scale(1.2);
+    }
+
+
 }
 </style>

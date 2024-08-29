@@ -2,20 +2,22 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:38:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-21 16:31:46
+ * @LastEditTime : 2024-08-29 15:28:27
  * @FilePath     : \blog-client\src\components\common\index.ts
  * @Description  : 公用信息
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
+import type { IconKeys } from '@/components/common/icons'
+
 // 图片填充方式
 export enum ImgFit {
-  cover = 'cover', // 默认值
-  contain = 'contain', // 保持宽高比缩放图片，使图片的长边能完全显示出来
-  fill = 'fill', // 拉伸图片，使图片填满元素
-  none = 'none', // 保持原图尺寸
-  'scale-down' = 'scale-down', // 保持原图尺寸，但是不超过元素的尺寸
+  Cover = 'cover', // 默认值
+  Contain = 'contain', // 保持宽高比缩放图片，使图片的长边能完全显示出来
+  Fill = 'fill', // 拉伸图片，使图片填满元素
+  None = 'none', // 保持原图尺寸
+  ScaleDown = 'scale-down', // 保持原图尺寸，但是不超过元素的尺寸
 }
 
 // 分页
@@ -34,6 +36,8 @@ export interface TableImg {
   width?: number // 图片宽度 px
   height?: number // 图片高度 px
   imgFit?: ImgFit // 图片填充方式 cover | contain | fill | none | scale-down
+  iconKeyName?: IconKeys // 图标键名
+  fontSize?: number // 图标字体大小
 }
 
 // 具有 img 属性的数据类型

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:25:00
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-28 17:02:33
+ * @LastEditTime : 2024-08-29 15:00:13
  * @FilePath     : \blog-client\src\components\common\base-table\index.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
