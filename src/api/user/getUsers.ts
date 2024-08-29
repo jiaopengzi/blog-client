@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 16:30:57
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-27 17:06:40
+ * @LastEditTime : 2024-08-29 18:30:52
  * @FilePath     : \blog-client\src\api\user\getUsers.ts
  * @Description  : 获取用户信息
  * @Blog         : https://jiaopengzi.com
@@ -36,7 +36,7 @@ export function getUsersAPI(
   requestData: GetUsersRequest = { current_page: 1, page_size: 10 }, // 设置默认值,
   width: number = 30, // 默认值 50px
   height: number = 30, // 默认值 50px
-  imgFit: ImgFit = ImgFit.cover,
+  imgFit: ImgFit = ImgFit.Cover,
 ): AxiosPromise<GetUsersResponse> {
   const urlStr = routerGroup + '/user/view'
   return request({
