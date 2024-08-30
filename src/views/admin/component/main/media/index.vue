@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-29 17:47:10
+ * @LastEditTime : 2024-08-30 17:29:36
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -12,7 +12,7 @@
 <template>
     <BaseTable :pagination="pagination" :table-column="cols" :is-show-delete-all="true"
         :add-item-dialog-visible="addItemDialogVisible" :is-show-edit="true" :is-show-search="true" :search-str="search"
-        @update-current-page="updateCurrentPage" @update-page-sizes="updatePageSizes" @edit-row="editRow"
+        @update-current-page="updateCurrentPage" @update-page-size="updatePageSize" @edit-row="editRow"
         @delete-row="deleteRow" @delete-rows="deleteRows" @update-search="updateSearch"
         @update-selection="updateSelection" @add-item-update-dialog-visible="addItemUpdateDialogVisible">
 
@@ -81,6 +81,7 @@ import { ImgFit } from '@/components/common'
 import router from '@/router'
 import { paginationRouterPush, PaginationQueryKey } from '@/router/utils'
 import { getFileCountGroupByFiletypeAPI, type FileCountGroupByFiletype } from '@/api/upload/getFileCountGroupByFiletype'
+import { DeleteFileAPI, type DeleteFileRequest } from '@/api/upload/deleteFile'
 
 defineOptions({ name: AadminSideMenu.Media })
 
@@ -164,10 +165,10 @@ const cols: TableColumn[] = reactive([
 
 
 const pagination = ref<Pagination<MediaFile>>({
-    total: 10,
+    total: 5,
     current_page: 1,
     page_size: 5,
-    page_count: 2,
+    page_count: 1,
     page_sizes: [5, 10, 20, 30],
     records: [],
 })
@@ -331,11 +332,13 @@ const updateCurrentPage = (val: number) => {
     console.log("1", val)
 }
 
-const updatePageSizes = (val: number) => {
+const updatePageSize = (val: number) => {
     pagination.value.page_size = val
     paginationRouterPush(AadminSideMenu.Media, val, pagination.value.current_page, { [queryKey.FileType]: activeFileType.value, [queryKey.Search]: search.value })
     console.log("2", val)
 }
+
+
 
 const editRow = (index: number, row: TableData) => {
     console.log("3", index, row)
@@ -345,8 +348,34 @@ const deleteRow = (index: number, row: TableData) => {
     console.log("4", index, row)
 }
 
-const deleteRows = (rows: TableData[]) => {
+const deleteRows = async (rows: TableData[]) => {
     console.log("5", rows)
+    // 将 rows 中的id 组成新的 list
+    const ids = rows.flatMap((item) =>
+        ('id' in item) ? item.id.toString() : []
+    )
+
+    // 将 ids 转换为 DeleteFileRequest
+    const req: DeleteFileRequest = { file_id_list: ids }
+
+    // 删除文件
+    await DeleteFileAPI(req).then((res) => {
+        if (res.data.code === UploadCode.FileDeleteSuccess) {
+            // 重新获取文件统计
+            getFileCountGroupByFiletype()
+            // 重新获取分页文件
+            getMediaFilePaginate({
+                current_page: pagination.value.current_page,
+                page_size: pagination.value.page_size,
+                file_type: activeFileType.value,
+                key_word: search.value,
+            })
+            ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 3000)
+        } else {
+            // 显示错误信息
+            ShowMsgTip(ShowMsgTip.MsgType.error, res.data.msg, 3000)
+        }
+    })
 }
 
 const updateSearch = debounce((val: string) => {

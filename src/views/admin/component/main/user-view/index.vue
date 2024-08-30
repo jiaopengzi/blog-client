@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-29 17:31:45
+ * @LastEditTime : 2024-08-30 10:08:58
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -13,9 +13,8 @@
     <BaseTable :pagination="pagination" :table-column="cols" :add-item-dialog-visible="addItemDialogVisible"
         :edit-item-dialog-visible="editItemDialogVisible" :is-show-delete-all="true" :is-show-search="true"
         :search-str="search" :is-show-edit="true" @update-current-page="updateCurrentPage"
-        @update-page-size="updatePageSize" @update-page-sizes="updatePageSizes" @edit-row="editRow"
-        @delete-rows="deleteRows" @update-search="updateSearch" @update-selection="updateSelection"
-        @add-item-update-dialog-visible="addItemUpdateDialogVisible"
+        @update-page-size="updatePageSize" @edit-row="editRow" @delete-rows="deleteRows" @update-search="updateSearch"
+        @update-selection="updateSelection" @add-item-update-dialog-visible="addItemUpdateDialogVisible"
         @edit-item-update-dialog-visible="editItemUpdateDialogVisible">
 
         <template #btns>
@@ -218,11 +217,6 @@ const updatePageSize = async (val: number) => {
     paginationRouterPush(AadminSideMenu.UserView, val, pagination.value.current_page, { [queryKey.RoleName]: activeRole.value, [queryKey.Search]: search.value })
     console.log("02============", val)
 
-}
-
-const updatePageSizes = (val: any) => {
-    // pagination.value.page_size = val
-    console.log("03============", val)
 }
 
 

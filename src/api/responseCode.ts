@@ -117,6 +117,7 @@ export enum UploadCode {
   ConfirmAfterUploadBySignedUrlSuccess = 8107, // 使用签名URL上传文件后确认成功
   GetFileCountGroupByTypeSuccess = 8108, // 获取文件统计成功
   GetAllSuccess = 8110, // 获取媒体信息成功
+  FileDeleteSuccess = 8111, // 删除文件成功
 }
 
 // 社交登录
