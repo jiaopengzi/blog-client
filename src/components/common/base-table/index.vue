@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-30 10:07:44
+ * @LastEditTime : 2024-08-31 13:01:56
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格
  * @Blog         : https://jiaopengzi.com
@@ -10,6 +10,8 @@
 -->
 
 <template>
+    <!-- 参考:https://github.com/element-plus/element-plus/blob/dev/packages/components/image/src/image.vue -->
+    <el-image-viewer v-if="isShowElImageViewer" @close="closeElImageViewer" :url-list="imgUrls" />
     <div class="container">
         <div class="btns">
             <!-- 按钮 -->
@@ -33,7 +35,7 @@
                         <span>{{ col.label }}</span>
                     </template>
                     <template #default="scope">
-                        <div class="thumbnail">
+                        <div class="thumbnail" @click="handleDelegateClick">
                             <img class="thumbnail-img" v-if="scope.row.img?.url" :src="scope.row.img.url"
                                 :style="imgStyle(scope.row.img?.width, scope.row.img?.height, scope.row.img?.imgFit)" />
                             <Icon v-else-if="scope.row.img?.iconKeyName" :name="scope.row.img?.iconKeyName"
@@ -89,6 +91,7 @@
         </template>
         <slot name="edit-item"></slot>
     </el-dialog>
+
 </template>
 
 <script lang="ts" setup>
@@ -136,6 +139,28 @@ const search = ref(props.searchStr) // 搜索关键字
 const paginationData = ref(props.pagination) // 分页配置
 const addItemDialogVisibleStatus = ref(false) // 对话框状态
 const editItemDialogVisibleStatus = ref(false) // 对话框状态
+
+const isShowElImageViewer = ref(false)
+const imgUrls = ref<string[]>([])
+
+
+// 点击事件委托,图片预览.
+const handleDelegateClick = (event: MouseEvent) => {
+    const target = event.target as HTMLElement;
+    if (target.tagName.toLowerCase() === 'img' && 'src' in target) {
+        // img 图片
+        const imgElement = target as HTMLImageElement // 断言 img 元素
+        isShowElImageViewer.value = true // 显示图片预览
+        imgUrls.value = [imgElement.src] // 图片地址
+        document.body.style.overflow = 'hidden' // 隐藏滚动条
+    }
+}
+
+// 关闭图片预览
+const closeElImageViewer = () => {
+    isShowElImageViewer.value = false
+    document.body.style.overflow = 'auto'
+}
 
 // 更新分页配置
 watchEffect(() => {
@@ -208,7 +233,7 @@ function imgStyle(width: number, height: number, imgFit: ImgFit): Record<string,
     }
 }
 
-// 图片样式
+// icon 样式
 function IconStyle(fontSize: number): Record<string, string> {
     return {
         'font-size': fontSize ? `${fontSize}px` : '40px', // 字体大小
@@ -262,5 +287,16 @@ function IconStyle(fontSize: number): Record<string, string> {
     }
 
 
+}
+
+// 图片 img
+img {
+    display: block;
+    max-width: 100%; // 确保图片不超过父元素宽度
+    width: auto; // 根据图片的实际尺寸进行缩放
+    margin: 4px auto;
+    border-radius: 4px;
+    cursor: pointer;
+    // box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);     // 阴影
 }
 </style>

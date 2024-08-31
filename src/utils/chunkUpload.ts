@@ -210,6 +210,7 @@ export interface UploadFileInfo {
     signed_url?: string // 如果签名 URL 存在，直接使用签名URL上传，不使用分片上传
     signed_headers?: Record<string, string> // 请求头
   }
+  error_msg?: string //错误信息
 }
 
 // 请求策略
