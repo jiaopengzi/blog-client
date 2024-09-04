@@ -81,6 +81,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
+          // 打包策略
           if (id.includes('node_modules')) {
             // 将 'node_modules' 分割为名为 'vendor' 的代码块
             const dirs = id.split('/')
@@ -101,6 +102,7 @@ export default defineConfig({
         // assetFileNames: 'static/[ext]/[hash].[ext]',
 
         // ------------------------------ 将打包文件按照类型目录分类 结束
+        inlineDynamicImports: false, // 将动态导入的模块内联到生成的代码中
       },
       plugins: [
         terser({
