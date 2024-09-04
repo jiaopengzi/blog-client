@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-08-31 13:10:47
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-31 17:37:25
+ * @LastEditTime : 2024-09-04 14:57:41
  * @FilePath     : \blog-client\src\views\admin\component\main\media\component\add-media\index.vue
  * @Description  : 添加媒体
  * @Blog         : https://jiaopengzi.com
@@ -12,7 +12,8 @@
 
 <template>
     <div>
-        <el-checkbox v-model="isEncrypt" class="is-encrypt">是否加密视频</el-checkbox>
+        <el-checkbox v-model="isEncrypt" class="is-checkbox is-encrypt">视频加密</el-checkbox>
+        <el-checkbox v-model="isFree" class="is-checkbox is-free">视频加密</el-checkbox>
         <div class="row2">建议:收费视频加密,免费视频不加密.</div>
         <el-upload ref="uploadRef" class="upload" drag multiple action="http://localhost:8081/api/v1/utils/upload-file"
             :http-request="httpRequest">
@@ -89,7 +90,8 @@ const getAllowedInfo = async () => {
 }
 
 // 上传视频是否加密
-const isEncrypt = ref(true)
+const isEncrypt = ref(false)
+const isFree = ref(false)
 
 const httpRequest = async (options: UploadRequestOptions) => {
 
@@ -193,7 +195,7 @@ const httpRequest = async (options: UploadRequestOptions) => {
     })
 
     // 初始化UploadController
-    uploadController.init(isEncrypt.value).catch(error => {
+    uploadController.init(isEncrypt.value, isFree.value).catch(error => {
         // 处理错误
         console.error(error)
         options.onError(error)
@@ -211,8 +213,8 @@ onBeforeMount(async () => {
 </script>
 
 <style lang="scss" scoped>
-.is-encrypt {
-    margin-right: 10px;
+.is-checkbox {
+    margin-right: 40px;
 }
 
 .row2 {

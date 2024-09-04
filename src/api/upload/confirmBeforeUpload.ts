@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-07-24 21:48:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-02 15:38:59
+ * @LastEditTime : 2024-09-04 14:32:13
  * @FilePath     : \blog-client\src\api\upload\confirmBeforeUpload.ts
  * @Description  : 上传文件前确认
  * @Blog         : https://jiaopengzi.com
@@ -25,6 +25,7 @@ export interface ConfirmBeforeUploadRequest {
   first_chunk_hash_key: string // 第一个分片的hash值
   part_numbers: number // 分片数量
   is_encrypt: boolean // 是否加密
+  is_Free: boolean // 是否免费
 }
 
 export function confirmBeforeUploadAPI(requestData: ConfirmBeforeUploadRequest): AxiosPromise<Res> {

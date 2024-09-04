@@ -249,7 +249,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
   }
 
   // 初始化
-  init = async (isEncrypt: boolean) => {
+  init = async (isEncrypt: boolean, isFree: boolean) => {
     // 上传前确认
     const req: ConfirmBeforeUploadRequest = {
       file_name: this.file.name,
@@ -260,6 +260,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
       first_chunk_hash_key: await this.chunkSplitor.hashCalculator.getFirstChunkHash(this.file),
       part_numbers: this.chunkSplitor.partNumbers,
       is_encrypt: isEncrypt,
+      is_Free: isFree,
     }
 
     this.uploadFileInfo = await this.requestStrategy.confirmBeforeUpload(req)
