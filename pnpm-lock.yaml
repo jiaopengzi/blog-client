@@ -120,7 +120,7 @@ importers:
         specifier: ^5.0.2
         version: 5.0.2
       vue:
-        specifier: ^3.5.0
+        specifier: ^3.5.1
         version: 3.5.1(typescript@5.5.4)
       vue-cropper:
         specifier: ^1.1.4
@@ -153,9 +153,6 @@ importers:
       '@types/node':
         specifier: ^20.16.4
         version: 20.16.4
-      '@types/rollup':
-        specifier: ^0.54.0
-        version: 0.54.0
       '@types/tinycolor2':
         specifier: ^1.4.6
         version: 1.4.6
@@ -790,10 +787,6 @@ packages:
 
   '@types/node@20.16.4':
     resolution: {integrity: sha512-ioyQ1zK9aGEomJ45zz8S8IdzElyxhvP1RVWnPrXDf6wFaUb+kk1tEcVVJkF7RPGM0VWI7cp5U57oCPIn5iN1qg==}
-
-  '@types/rollup@0.54.0':
-    resolution: {integrity: sha512-oeYztLHhQ98jnr+u2cs1c3tHOGtpzrm9DJlIdEjznwoXWidUbrI+X6ib7zCkPIbB7eJ7VbbKNQ5n/bPnSg6Naw==}
-    deprecated: This is a stub types definition for rollup (https://github.com/rollup/rollup). rollup provides its own type definitions, so you don't need @types/rollup installed!
 
   '@types/semver@7.5.8':
     resolution: {integrity: sha512-I8EUhyrgfLrcTkzV3TSsGyl1tSuPrEDzr0yd5m90UgNxQkyDXULk3b6MlQqTCpZpNtWe1K0hzclnZkTcLBe2UQ==}
@@ -3238,10 +3231,6 @@ snapshots:
   '@types/node@20.16.4':
     dependencies:
       undici-types: 6.19.8
-
-  '@types/rollup@0.54.0':
-    dependencies:
-      rollup: 4.21.2
 
   '@types/semver@7.5.8': {}
 
