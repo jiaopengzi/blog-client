@@ -17,8 +17,14 @@
     </div>
 </template>
 <script setup lang="ts">
-import HeaderPC from './pc.vue'
-import HeaderPhone from './phone.vue'
+import { defineAsyncComponent } from 'vue'
+
+// import HeaderPC from './pc.vue'
+// import HeaderPhone from './phone.vue'
+const HeaderPC = defineAsyncComponent(() => import('./pc.vue'))
+const HeaderPhone = defineAsyncComponent(() => import('./phone.vue'))
+
+
 
 defineOptions({ name: 'LayoutHeader' })
 

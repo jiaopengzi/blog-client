@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:14:11
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-26 15:00:00
+ * @LastEditTime : 2024-09-04 21:48:36
  * @FilePath     : \blog-client\src\components\layout\aside\hot-post\index.vue
  * @Description  : 热门文章
  * @Blog         : https://jiaopengzi.com
@@ -20,11 +20,14 @@
         </div>
     </div>
 </template>
-  
+
 <script setup lang="ts">
-import PostItem from '@/components/common/post-item-aside'
+import { defineAsyncComponent } from 'vue'
 import type { PostItemAsideObj } from '@/components/common/post-item-aside'
 import { IconKeys } from '@/components/common/icons'
+
+// import PostItem from '@/components/common/post-item-aside'
+const PostItem = defineAsyncComponent(() => import('@/components/common/post-item-aside'))
 
 defineOptions({ name: 'HostPost' })
 

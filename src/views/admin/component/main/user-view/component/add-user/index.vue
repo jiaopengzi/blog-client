@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 14:48:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-21 21:52:02
+ * @LastEditTime : 2024-09-04 21:34:55
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\add-user\index.vue
  * @Description  : 添加用户
  * @Blog         : https://jiaopengzi.com
@@ -40,7 +40,7 @@
 
             <div class="btn-submit">
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm(addUserFormRef)">新增用户</el-button>
+                    <el-button type="primary" @click="submitForm(addUserFormRef as FormInstance)">新增用户</el-button>
                 </el-form-item>
             </div>
         </el-form>
@@ -48,7 +48,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, toRef } from 'vue'
+import { reactive, ref, toRef, useTemplateRef } from 'vue'
 import { ShowMsgTip } from '@/utils/message'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import type { AddUserRequest } from '@/api/user/addUser'
@@ -59,6 +59,7 @@ import { useFormValidation } from '@/components/hooks/useFormValidation'
 import { generatePassword } from '@/utils/password'
 import { type Role } from '@/api/permissionRole/role'
 import { RegexPatterns } from '@/utils/regexPatterns'
+
 
 defineOptions({ name: 'AddUser' })
 
@@ -79,8 +80,7 @@ const labelPosition = ref('left')
 const formSize = ref('large')
 
 // 表单实例
-const addUserFormRef = ref<FormInstance>()
-// const role_name = ref('Subscriber')
+const addUserFormRef = useTemplateRef<FormInstance>("addUserFormRef")
 
 // 表单数据
 const addUserForm = reactive<AddUserForm>({

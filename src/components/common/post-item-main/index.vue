@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-25 15:50:05
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-11 19:07:02
- * @FilePath     : \blog-client\src\components\common\base\post-item-main\index.vue
+ * @LastEditTime : 2024-09-04 21:59:00
+ * @FilePath     : \blog-client\src\components\common\post-item-main\index.vue
  * @Description  : 单个文章元素
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -55,10 +55,13 @@
 </template>
 
 <script setup lang="ts">
-import AvatarInitials from '@/components/common/avatar-initials'
+
 import type { PostItemMainObj } from '@/components/common/post-item-main'
-import { computed } from 'vue'
+import { computed, defineAsyncComponent } from 'vue'
 import { View } from '@element-plus/icons-vue'
+
+// import AvatarInitials from '@/components/common/avatar-initials'
+const AvatarInitials = defineAsyncComponent(() => import('@/components/common/avatar-initials'))
 
 defineOptions({ name: "PostItemMain" })
 

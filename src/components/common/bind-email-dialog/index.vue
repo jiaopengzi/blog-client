@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 18:53:25
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-23 16:14:52
+ * @LastEditTime : 2024-09-04 20:10:20
  * @FilePath     : \blog-client\src\components\common\bind-email-dialog\index.vue
  * @Description  : 绑定邮箱弹窗
  * @Blog         : https://jiaopengzi.com
@@ -36,7 +36,7 @@
 
                 <div class="btn-submit">
                     <el-form-item>
-                        <el-button type="primary" @click="submitForm(bindemailFormRef)">绑定邮箱</el-button>
+                        <el-button type="primary" @click="submitForm(bindemailFormRef as FormInstance)">绑定邮箱</el-button>
                     </el-form-item>
                 </div>
             </el-form>
@@ -45,8 +45,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
-import SlideVerify from '@/components/common/slide-verify' // 引用滑块验证组件
+import { reactive, ref, useTemplateRef, defineAsyncComponent } from 'vue'
 import { ShowMsgTip } from '@/utils/message'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import type { CheckEmailRequest } from '@/api/user/checkEmail'
@@ -60,6 +59,9 @@ import { captchaCheckAPI } from '@/api/captcha/check'
 import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
 import { storeToRefs } from 'pinia'
 import { useUserStore } from '@/stores/user'
+
+// import SlideVerify from '@/components/common/slide-verify' // 引用滑块验证组件
+const SlideVerify = defineAsyncComponent(() => import('@/components/common/slide-verify'))
 
 defineOptions({ name: 'BindEmailDialog' })
 
@@ -79,7 +81,7 @@ const labelPosition = ref('top')
 const formSize = ref('default')
 
 // 表单实例
-const bindemailFormRef = ref<FormInstance>()
+const bindemailFormRef = useTemplateRef<FormInstance>("bindemailFormRef")
 
 // 表单数据
 const bindemailForm = reactive<BindEmailForm>({

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 10:16:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 21:42:05
+ * @LastEditTime : 2024-09-04 21:46:21
  * @FilePath     : \blog-client\src\components\layout\footer\index.vue
  * @Description  : 底部
  * @Blog         : https://jiaopengzi.com
@@ -18,9 +18,14 @@
     </div>
 </template>
 <script setup lang="ts">
-import FooterPC from './pc.vue'
-import FooterPhone from './phone.vue'
+import { defineAsyncComponent } from 'vue'
 import type { FooterProps } from "@/components/layout/footer";
+
+// import FooterPC from './pc.vue'
+// import FooterPhone from './phone.vue'
+const FooterPC = defineAsyncComponent(() => import('./pc.vue'))
+const FooterPhone = defineAsyncComponent(() => import('./phone.vue'))
+
 defineOptions({ name: 'LayoutFooter' })
 // 箭头函数返回 约束 FooterProps
 const footerData = (): FooterProps => {

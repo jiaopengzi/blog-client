@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-07-19 15:44:00
+ * @LastEditTime : 2024-09-04 19:37:09
  * @FilePath     : \blog-client\src\components\editor\codemirror\index.vue
  * @Description  : codemirror 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, watchEffect, onUnmounted } from 'vue';
+import { onMounted, watchEffect, onUnmounted, useTemplateRef } from 'vue';
 import type { Extension } from '@codemirror/state'
 import type { ViewUpdate } from '@codemirror/view';
 import { EditorView, EditorState, createCustomSetup } from '@/pkg/codemirror/setup';
@@ -25,7 +25,7 @@ import type { CodeEditorProps } from '@/components/editor/codemirror'
 defineOptions({ name: "Codemirror" })
 
 const props = defineProps<CodeEditorProps>() // 定义 props
-const codemirrorRef = ref<HTMLElement | null>(null) // 编辑器 dom 节点
+const codemirrorRef = useTemplateRef<HTMLElement | null>("codemirrorRef") // 编辑器 dom 节点
 
 // 定义 emits 子组件 传参
 const emit = defineEmits<{

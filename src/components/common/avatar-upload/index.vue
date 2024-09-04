@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 17:31:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-19 16:00:48
+ * @LastEditTime : 2024-09-04 19:33:02
  * @FilePath     : \blog-client\src\components\common\avatar-upload\index.vue
  * @Description  : 头像上传
  * @Blog         : https://jiaopengzi.com
@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onUnmounted } from 'vue'
+import { ref, onUnmounted, useTemplateRef } from 'vue'
 import Cropper from 'cropperjs'
 import 'cropperjs/dist/cropper.min.css'
 import { ElButton, ElDialog } from 'element-plus'
@@ -60,9 +60,9 @@ const emit = defineEmits<{
 }>()
 
 
-const fileInput = ref<HTMLInputElement | null>(null)
+const fileInput = useTemplateRef<HTMLInputElement | null>("fileInput")
 const cropperVisible = ref(false)
-const cropperContainer = ref<HTMLDivElement | null>(null)
+const cropperContainer = useTemplateRef<HTMLDivElement | null>("cropperContainer")
 let cropperInstance: Cropper | null = null
 
 

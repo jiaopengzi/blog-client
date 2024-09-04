@@ -1,22 +1,12 @@
 /**
  * @Author       : jiaopengzi
- * @Date         : 2024-01-12 19:26:52
+ * @Date         : 2024-01-12 22:59:22
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 19:31:08
+ * @LastEditTime : 2024-09-04 21:49:30
  * @FilePath     : \blog-client\src\components\hooks\useScroll\useScroll.ts
- * @Description  :
+ * @Description  : 滚动事件监听
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
- */
-/**
- * @Author       : jiaopengzi
- * @Date         : 2023-08-04 10:54:19
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 19:26:51
- * @FilePath     : \blog-client\src\components\hooks\useScroll.ts
- * @Description  : 滚动条监听
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
 import { onMounted, onUnmounted } from 'vue'

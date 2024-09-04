@@ -41,18 +41,20 @@
         </header>
     </transition>
 </template>
-  
+
 <script setup lang="ts">
-import HeaderNav from '@/components/layout/header-nav'
-import { ref, onBeforeMount } from 'vue'
+
+import { ref, onBeforeMount, defineAsyncComponent, type Ref } from 'vue'
 import { IconKeys } from '@/components/common/icons'
-import type { Ref } from 'vue'
 import type { ScrollData } from '@/components/hooks/useScroll'
 import { useScrollActions } from '@/components/hooks/useScroll'
 import UserInfoDropdown from '@/components/common/user-info-dropdown' // 导入 UserDropdown 组件
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 import { routeObj } from '@/router/routeAll'
+
+// import HeaderNav from '@/components/layout/header-nav'
+const HeaderNav = defineAsyncComponent(() => import('@/components/layout/header-nav'))
 
 defineOptions({ name: 'HeaderPC' })
 
@@ -87,7 +89,7 @@ onBeforeMount(() => {
     userStore.getUserInfoByToken()
 })
 </script>
-  
+
 <style scoped lang="scss">
 header {
     width: pc.$width-header;
@@ -173,5 +175,3 @@ header {
     color: #888;
 }
 </style>
-
-  

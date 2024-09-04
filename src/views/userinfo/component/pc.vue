@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-05 16:45:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-13 12:46:00
+ * @LastEditTime : 2024-09-04 21:15:00
  * @FilePath     : \blog-client\src\views\userinfo\component\pc.vue
  * @Description  : 用户中心
  * @Blog         : https://jiaopengzi.com
@@ -95,16 +95,24 @@
 <script setup lang="ts">
 import { View, Tickets, Goods, Document, ChatLineSquare, Star } from '@element-plus/icons-vue'
 import { ArrowRight } from '@element-plus/icons-vue'
-import { ref } from 'vue'
-import BindEmailDialog from '@/components/common/bind-email-dialog'
+import { ref, defineAsyncComponent } from 'vue'
 import { routeObj } from '@/router/routeAll'
-import UserInfoInfo from '@/views/userinfo/component/info'
-import UserInfoOrder from '@/views/userinfo/component/order'
-import UserInfoVip from '@/views/userinfo/component/vip'
-import UserInfoPost from '@/views/userinfo/component/post'
-import UserInfoComment from '@/views/userinfo/component/comment'
-import UserInfoFavorite from '@/views/userinfo/component/favorite'
 import { useRouter } from 'vue-router'
+// import BindEmailDialog from '@/components/common/bind-email-dialog'
+// import UserInfoInfo from '@/views/userinfo/component/info'
+// import UserInfoOrder from '@/views/userinfo/component/order'
+// import UserInfoVip from '@/views/userinfo/component/vip'
+// import UserInfoPost from '@/views/userinfo/component/post'
+// import UserInfoComment from '@/views/userinfo/component/comment'
+// import UserInfoFavorite from '@/views/userinfo/component/favorite'
+
+const BindEmailDialog = defineAsyncComponent(() => import('@/components/common/bind-email-dialog'))
+const UserInfoInfo = defineAsyncComponent(() => import('@/views/userinfo/component/info'))
+const UserInfoOrder = defineAsyncComponent(() => import('@/views/userinfo/component/order'))
+const UserInfoVip = defineAsyncComponent(() => import('@/views/userinfo/component/vip'))
+const UserInfoPost = defineAsyncComponent(() => import('@/views/userinfo/component/post'))
+const UserInfoComment = defineAsyncComponent(() => import('@/views/userinfo/component/comment'))
+const UserInfoFavorite = defineAsyncComponent(() => import('@/views/userinfo/component/favorite'))
 
 defineOptions({ name: 'UserInfoPC' })
 

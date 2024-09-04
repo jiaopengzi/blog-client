@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:26:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-21 16:45:24
+ * @LastEditTime : 2024-09-04 21:28:53
  * @FilePath     : \blog-client\src\views\home\component\pc.vue
  * @Description  : pc 内容页
  * @Blog         : https://jiaopengzi.com
@@ -57,21 +57,28 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ref, onMounted, nextTick, onBeforeUnmount } from 'vue'
+import { ref, onMounted, nextTick, onBeforeUnmount, useTemplateRef, defineAsyncComponent } from 'vue'
 import router from '@/router'
 import { ArrowRight, Location } from '@element-plus/icons-vue'
-import Carousel from '@/views/home/component/carousel'
-import PostList from '@/views/home/component/post-list'
-import RecommendedRead from '@/components/layout/aside/recommended-read'
-import HotPost from '@/components/layout/aside/hot-post'
-import MonthArchive from '@/components/layout/aside/month-archive'
-import PostTag from '@/components/layout/aside/post-tag'
 import { routeObj } from '@/router/routeAll'
 import type { TagDataObj } from '@/components/common/tag-item'
 
+// import Carousel from '@/views/home/component/carousel'
+// import PostList from '@/views/home/component/post-list'
+// import RecommendedRead from '@/components/layout/aside/recommended-read'
+// import HotPost from '@/components/layout/aside/hot-post'
+// import MonthArchive from '@/components/layout/aside/month-archive'
+// import PostTag from '@/components/layout/aside/post-tag'
+const Carousel = defineAsyncComponent(() => import('@/views/home/component/carousel'))
+const PostList = defineAsyncComponent(() => import('@/views/home/component/post-list'))
+const RecommendedRead = defineAsyncComponent(() => import('@/components/layout/aside/recommended-read'))
+const HotPost = defineAsyncComponent(() => import('@/components/layout/aside/hot-post'))
+const MonthArchive = defineAsyncComponent(() => import('@/components/layout/aside/month-archive'))
+const PostTag = defineAsyncComponent(() => import('@/components/layout/aside/post-tag'))
+
 defineOptions({ name: 'HomePC' })
 
-const asideRef = ref<HTMLElement | null>(null)
+const asideRef = useTemplateRef<HTMLElement | null>("asideRef")
 
 const total = ref(1000)
 const currentPage = ref(5)

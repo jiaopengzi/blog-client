@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 18:55:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 19:17:24
+ * @LastEditTime : 2024-09-04 19:36:05
  * @FilePath     : \blog-client\src\components\common\slide-verify\index.vue
  * @Description  : 滑块验证
  * @Blog         : https://jiaopengzi.com
@@ -28,18 +28,20 @@
         <div class="verify-backdrop"></div>
     </div>
 </template>
-  
+
 <script setup lang="ts">
 // 引用图标
-import { ref } from 'vue'
-import SlideVerify from 'vue3-slide-verify'
+import { ref, useTemplateRef, defineAsyncComponent } from 'vue'
 import type { SlideVerifyInstance } from 'vue3-slide-verify'
 import 'vue3-slide-verify/dist/style.css'
 import { IconKeys } from '@/components/common/icons'
 
+// import SlideVerify from 'vue3-slide-verify'
+const SlideVerify = defineAsyncComponent(() => import('vue3-slide-verify'))
+
 defineOptions({ name: 'SlideVerify' })
 
-const block = ref<SlideVerifyInstance>() // 滑块实例
+const block = useTemplateRef<SlideVerifyInstance>("block") // 滑块实例
 const msg = ref('') // 提示信息
 const text = '请向右滑动->' // 滑块提示文字
 const accuracy = 1 // 误差值
@@ -92,7 +94,7 @@ const closeMe = () => {
     emit('on-close', false)
 }
 </script>
-  
+
 <style lang="scss" scoped>
 .verify-main {
     position: fixed;
@@ -145,4 +147,3 @@ const closeMe = () => {
     background-color: rgba(0, 0, 0, 0.6);
 }
 </style>
-  

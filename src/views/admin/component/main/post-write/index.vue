@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-25 10:38:12
- * @FilePath     : \blog-client\src\views\admin\component\main\write-post\index.vue
+ * @LastEditTime : 2024-09-04 21:35:52
+ * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
@@ -54,20 +54,23 @@
     </el-container>
 </template>
 <script lang="ts" setup>
-import { reactive } from 'vue';
+import { reactive, defineAsyncComponent } from 'vue';
 import { EditorPost } from '@/components/editor/core'
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
 import { IconKeys } from '@/components/common/icons'
-import AddTag from '@/components/common/add-tag'
-import SwitchGroup from '@/components/common/switch-group'
 import type { SwitchItem, SwitchItemLabel } from '@/components/common/switch-group'
 import { AadminSideMenu } from '@/views/admin/component/aside'
+
+// import AddTag from '@/components/common/add-tag'
+// import SwitchGroup from '@/components/common/switch-group'
+const AddTag = defineAsyncComponent(() => import('@/components/common/add-tag'))
+const SwitchGroup = defineAsyncComponent(() => import('@/components/common/switch-group'))
 
 
 defineOptions({ name: AadminSideMenu.PostWrite })
 
-// const addTagRef = ref<InstanceType<typeof AddTag>>()
+// const addTagRef = useTemplateRef <InstanceType<typeof AddTag>>("addTagRef")
 const editorStore = useEditorStore()
 const { isFullScreen } = storeToRefs(editorStore)
 

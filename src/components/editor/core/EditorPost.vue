@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-26 15:25:01
+ * @LastEditTime : 2024-09-04 21:54:24
  * @FilePath     : \blog-client\src\components\editor\core\EditorPost.vue
  * @Description  : 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -39,11 +39,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted } from 'vue';
-import Toolbar from '@/components/editor/toolbar'
-import Toc from '@/components/editor/toc'
-import Codemirror from '@/components/editor/codemirror'
-import Preview from '@/components/editor/preview'
+import { useTemplateRef, reactive, computed, onMounted, defineAsyncComponent } from 'vue';
 import { useToolbar, useToc, useCodemirror, usePreview } from '@/components/editor/core/hooks'
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
@@ -52,6 +48,14 @@ import { setIsFullScreenClassName } from '@/components/editor/core'
 import { CommandsKey } from '@/components/editor/command'
 import 'vue3-emoji-picker/css'// import css
 
+// import Toolbar from '@/components/editor/toolbar'
+// import Toc from '@/components/editor/toc'
+// import Codemirror from '@/components/editor/codemirror'
+// import Preview from '@/components/editor/preview'
+const Toolbar = defineAsyncComponent(() => import('@/components/editor/toolbar'))
+const Toc = defineAsyncComponent(() => import('@/components/editor/toc'))
+const Codemirror = defineAsyncComponent(() => import('@/components/editor/codemirror'))
+const Preview = defineAsyncComponent(() => import('@/components/editor/preview'))
 
 // 文章编辑器命名
 defineOptions({ name: "EditorPost" })
@@ -61,10 +65,10 @@ const editorStore = useEditorStore()
 const { tocHtml, tocShow, editor, editorShow, previewShow, isFullScreen, isShowEmojiPicker } = storeToRefs(editorStore)
 
 // ref
-const mdContainerRef = ref<HTMLElement | null>(null) //编辑器容器
-const toolbarRef = ref<ToolbarRef | null>(null) //编辑器容器
-const codemirrorRef = ref<CodemirrorRef | null>(null) //编辑器
-const previewRef = ref<PreviewRef | null>(null) // 预览容器
+const mdContainerRef = useTemplateRef<HTMLElement | null>("mdContainerRef") //编辑器容器
+const toolbarRef = useTemplateRef<ToolbarRef | null>("toolbarRef") //编辑器容器
+const codemirrorRef = useTemplateRef<CodemirrorRef | null>("codemirrorRef") //编辑器
+const previewRef = useTemplateRef<PreviewRef | null>("previewRef") // 预览容器
 
 const ModePost = reactive([
     CommandsKey.Undo,

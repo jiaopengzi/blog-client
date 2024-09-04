@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:14:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 13:17:29
- * @FilePath     : \blog-client\src\components\layout\content\aside\recommended-read\index.vue
+ * @LastEditTime : 2024-09-04 21:47:05
+ * @FilePath     : \blog-client\src\components\layout\aside\recommended-read\index.vue
  * @Description  : 推荐阅读
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
@@ -20,11 +20,14 @@
         </div>
     </div>
 </template>
-  
+
 <script setup lang="ts">
-import PostItem from '@/components/common/post-item-aside'
+import { defineAsyncComponent } from 'vue'
 import type { PostItemAsideObj } from '@/components/common/post-item-aside'
 import { IconKeys } from '@/components/common/icons'
+
+// import PostItem from '@/components/common/post-item-aside'
+const PostItem = defineAsyncComponent(() => import('@/components/common/post-item-aside'))
 
 defineOptions({ name: 'RecommendedRead' })
 

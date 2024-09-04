@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-21 18:02:21
+ * @LastEditTime : 2024-09-04 21:25:25
  * @FilePath     : \blog-client\src\views\login\index.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -62,8 +62,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, toRef } from 'vue'
-import SlideVerify from '@/components/common/slide-verify'
+import { reactive, ref, toRef, useTemplateRef, defineAsyncComponent } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import router from '@/router/index'
 import { routeObj } from '@/router/routeAll'
@@ -73,6 +72,9 @@ import { IconKeys } from '@/components/common/icons'
 import type { RouteLocationRaw } from 'vue-router'
 import { RegexPatterns } from '@/utils/regexPatterns'
 import { useFormValidation } from '@/components/hooks/useFormValidation'
+
+// import SlideVerify from '@/components/common/slide-verify'
+const SlideVerify = defineAsyncComponent(() => import('@/components/common/slide-verify'))
 
 // eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: 'Login' })
@@ -84,7 +86,7 @@ const labelPosition = ref('top')
 const formSize = ref('default')
 
 // 表单实例
-const loginFormRef = ref<FormInstance>()
+const loginFormRef = useTemplateRef<FormInstance>("loginFormRef")
 
 // 表单数据
 const loginForm = reactive<LoginForm>({
@@ -176,7 +178,7 @@ const closeSlideVerify = () => {
 const login = () => {
   // 关闭滑块验证
   showSlideVerify.value = false
-  submitForm(loginFormRef.value)
+  submitForm(loginFormRef.value as FormInstance)
   // console.log('登录')
 }
 

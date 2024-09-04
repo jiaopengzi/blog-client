@@ -3,8 +3,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:01:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-10 15:46:07
- * @FilePath     : \blog-client\src\components\common\editor\preview\index.vue
+ * @LastEditTime : 2024-09-04 19:29:42
+ * @FilePath     : \blog-client\src\components\editor\preview\index.vue
  * @Description  : 预览组件
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, computed, watchEffect } from 'vue'
+import { onMounted, computed, watchEffect, useTemplateRef } from 'vue'
 import ClipboardJS from 'clipboard' //代码块复制
 import type { ClipboardEvent } from 'clipboard'
 import { ShowMsgTip } from '@/utils/message'
@@ -41,7 +41,9 @@ const emit = defineEmits<{
     (event: 'close-image-viewer', isShowElImageViewer: boolean): void
 }>()
 
-const previewRef = ref<HTMLElement | null>(null) // 预览容器
+// const previewRef = ref<HTMLElement | null>(null) // 预览容器
+const previewRef = useTemplateRef<HTMLElement | null>("previewRef")
+
 // html 内容 清洗
 const html = computed(() => {
     const html = htmlHandleUtf8(props.preview.html)
@@ -202,7 +204,7 @@ const initializeClipboard = () => {
 
 // 导出方法
 defineExpose({
-    root:previewRef,
+    root: previewRef,
     navigateToHeading,
     navigateToElement,
     navigateGoHome,

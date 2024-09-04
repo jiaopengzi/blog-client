@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:02:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-26 15:27:27
+ * @LastEditTime : 2024-09-04 21:52:51
  * @FilePath     : \blog-client\src\components\editor\toolbar\index.vue
  * @Description  : 工具栏组件
  * @Blog         : https://jiaopengzi.com
@@ -14,8 +14,9 @@
         <button v-for="(btn, index) in props.toobarBtns" :key="index" class="toolbar-btn"
             @click="emitToolbarBtnClicked(btn.name)">
             <el-popover v-if="btn.name === CommandsKey.Emoji" placement="bottom" width="310" trigger="hover"
-                popper-class="popper-class" popper-style="background-color: transparent; border: none; box-shadow: none;"
-                :show-arrow="false" :offset="0">
+                popper-class="popper-class"
+                popper-style="background-color: transparent; border: none; box-shadow: none;" :show-arrow="false"
+                :offset="0">
 
                 <template #reference>
                     <Icon :name="btn.icon" customClass="iconfont" />
@@ -30,12 +31,14 @@
         </button>
     </div>
 </template>
-  
+
 <script lang="ts" setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, useTemplateRef, defineAsyncComponent } from 'vue';
 import { CommandsKey } from '@/components/editor/command'
 import type { ToolbarProps } from '@/components/editor/toolbar'
-import EmojiPicker from 'vue3-emoji-picker' // import picker compopnent
+
+// import EmojiPicker from 'vue3-emoji-picker' // import picker compopnent
+const EmojiPicker = defineAsyncComponent(() => import('vue3-emoji-picker'))
 
 // eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: "Toolbar" })
@@ -52,7 +55,7 @@ const emit = defineEmits<{
     (e: 'emoji-picker-selected', emoji: any): void
 }>()
 
-const toolbarRef = ref<HTMLElement | null>(null); // 工具栏
+const toolbarRef = useTemplateRef<HTMLElement | null>("toolbarRef"); // 工具栏
 const toolbarHeight = ref(0); // 工具栏高度
 
 
@@ -105,7 +108,7 @@ defineExpose({
 })
 
 </script>
-  
+
 <style scoped lang="scss">
 #toolbar {
     display: flex;
@@ -141,4 +144,3 @@ defineExpose({
     box-shadow: none;
 }
 </style>
-  

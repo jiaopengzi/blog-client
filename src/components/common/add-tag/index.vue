@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 15:40:22
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-21 14:54:38
+ * @LastEditTime : 2024-09-04 22:01:36
  * @FilePath     : \blog-client\src\components\common\add-tag\index.vue
  * @Description  : 添加标签组件
  * @Blog         : https://jiaopengzi.com
@@ -10,8 +10,8 @@
 -->
 <template>
     <div class="tag-group">
-        <el-tag v-for="tag in dynamicTags" :key="tag" class="tag-item" size="large" closable :disable-transitions="false"
-            @close="handleClose(tag)">
+        <el-tag v-for="tag in dynamicTags" :key="tag" class="tag-item" size="large" closable
+            :disable-transitions="false" @close="handleClose(tag)">
             {{ tag }}
         </el-tag>
         <el-input class="tag-input" v-if="inputVisible" ref="InputRef" v-model="inputValue"
@@ -21,12 +21,15 @@
     <el-button type="primary" class="show-all-tag" @click="changeIsShowAllTag">从常用标签中选择</el-button>
     <PostTag v-if="isShowAllTag" class="el-aside-item" @click="handleTagClick" />
 </template>
-  
+
 <script lang="ts" setup>
-import { nextTick, ref, computed } from 'vue'
+import { nextTick, ref, computed, useTemplateRef, defineAsyncComponent } from 'vue'
 import type { ElInput } from 'element-plus'
-import PostTag from '@/components/layout/aside/post-tag'
+
 import type { TagDataObj } from '@/components/common/tag-item'
+
+// import PostTag from '@/components/layout/aside/post-tag'
+const PostTag = defineAsyncComponent(() => import('@/components/layout/aside/post-tag'))
 
 defineOptions({ name: 'AddTag' })
 
@@ -42,7 +45,7 @@ const emit = defineEmits<{
 const inputValue = ref('')
 const dynamicTags = computed(() => [...props.tagListIn])
 const inputVisible = ref(false)
-const InputRef = ref<InstanceType<typeof ElInput>>()
+const InputRef = useTemplateRef<InstanceType<typeof ElInput>>("InputRef")
 const isShowAllTag = ref(false)
 
 const handleClose = (tag: string) => {
@@ -95,7 +98,7 @@ const changeIsShowAllTag = () => {
 }
 
 </script>
-  
+
 <style scoped lang="scss">
 .tag-group {
 
@@ -115,4 +118,3 @@ const changeIsShowAllTag = () => {
     margin-top: 4px;
 }
 </style>
-  

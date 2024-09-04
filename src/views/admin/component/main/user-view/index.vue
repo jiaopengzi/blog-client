@@ -58,10 +58,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onBeforeMount, watch } from 'vue'
-import BaseTable from '@/components/common/base-table'
-import AddUser from '@/views/admin/component/main/user-view/component/add-user'
-import EditUser from '@/views/admin/component/main/user-view/component/edit-user'
+import { ref, reactive, onBeforeMount, watch, defineAsyncComponent } from 'vue'
 import type { Pagination } from '@/components/common'
 import type { TableData, TableColumn } from '@/components/common/base-table'
 import { debounce } from '@/utils/debounce'
@@ -78,6 +75,12 @@ import { ShowMsgTip } from '@/utils/message'
 import { type EditUserByAdminForm } from '@/views/admin/component/main/user-view/component/edit-user'
 import { convertToBeijingTime } from '@/utils/dateTime'
 
+// import BaseTable from '@/components/common/base-table'
+// import AddUser from '@/views/admin/component/main/user-view/component/add-user'
+// import EditUser from '@/views/admin/component/main/user-view/component/edit-user'
+const BaseTable = defineAsyncComponent(() => import('@/components/common/base-table'))
+const AddUser = defineAsyncComponent(() => import('@/views/admin/component/main/user-view/component/add-user'))
+const EditUser = defineAsyncComponent(() => import('@/views/admin/component/main/user-view/component/edit-user'))
 
 defineOptions({ name: AadminSideMenu.UserView })
 

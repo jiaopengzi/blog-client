@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:44:33
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 22:10:30
- * @FilePath     : \blog-client\src\components\layout\content\home\index.vue
+ * @LastEditTime : 2024-09-04 21:29:40
+ * @FilePath     : \blog-client\src\views\home\component\index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
@@ -17,8 +17,12 @@
     </div>
 </template>
 <script setup lang="ts">
-import HomePC from './pc.vue'
-import HomePhone from './phone.vue'
+import { defineAsyncComponent } from 'vue'
+
+// import HomePC from './pc.vue'
+// import HomePhone from './phone.vue'
+const HomePC = defineAsyncComponent(() => import('./pc.vue'))
+const HomePhone = defineAsyncComponent(() => import('./phone.vue'))
 
 defineOptions({ name: 'LayoutHome' })
 

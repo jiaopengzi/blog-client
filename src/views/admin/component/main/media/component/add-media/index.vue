@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-08-31 13:10:47
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 14:57:41
+ * @LastEditTime : 2024-09-04 19:44:46
  * @FilePath     : \blog-client\src\views\admin\component\main\media\component\add-media\index.vue
  * @Description  : 添加媒体
  * @Blog         : https://jiaopengzi.com
@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watchEffect, onBeforeMount } from 'vue'
+import { ref, watchEffect, onBeforeMount, useTemplateRef } from 'vue'
 import { IconKeys } from '@/components/common/icons'
 import { getUploadFileRequirementsAPI } from '@/api/upload/getUploadFileRequirements'
 import { ShowMsgTip } from '@/utils/message'
@@ -55,7 +55,7 @@ const props = withDefaults(defineProps<{
     isVisible: false, // 默认不显示
 })
 
-const uploadRef = ref<typeof ElUpload>()
+const uploadRef = useTemplateRef<typeof ElUpload>("uploadRef")
 
 // 监控 IsVisible 变化,如果为 false 则清空上传文件
 watchEffect(() => {

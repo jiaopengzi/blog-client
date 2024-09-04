@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 10:17:04
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-13 19:19:25
+ * @LastEditTime : 2024-09-04 20:19:24
  * @FilePath     : \blog-client\src\components\layout\footer\phone.vue
  * @Description  : 底部 移动端
  * @Blog         : https://jiaopengzi.com
@@ -41,13 +41,14 @@
 </template>
 <script setup lang="ts">
 
-import { toRefs } from 'vue'
+// import { toRefs } from 'vue'
 import type { FooterProps } from "@/components/layout/footer";
 
 defineOptions({ name: 'FooterPhone' })
 
 const props = defineProps<{ footerData: FooterProps }>()
-const { footerData } = toRefs(props)
+// const { footerData } = toRefs(props)
+const { footerData } = props
 
 </script>
 

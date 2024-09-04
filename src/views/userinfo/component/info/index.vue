@@ -17,8 +17,12 @@
     </div>
 </template>
 <script setup lang="ts">
-import UserInfoInfoPC from './pc.vue'
-import UserInfoInfoPhone from './phone.vue'
+import { defineAsyncComponent } from 'vue'
+
+// import UserInfoInfoPC from './pc.vue'
+// import UserInfoInfoPhone from './phone.vue'
+const UserInfoInfoPC = defineAsyncComponent(() => import('./pc.vue'))
+const UserInfoInfoPhone = defineAsyncComponent(() => import('./phone.vue'))
 
 defineOptions({ name: 'UserInfoInfo' })
 

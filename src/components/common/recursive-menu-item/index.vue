@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:28:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-14 16:48:11
+ * @LastEditTime : 2024-09-04 21:58:37
  * @FilePath     : \blog-client\src\components\common\recursive-menu-item\index.vue
  * @Description  : 递归创建层级菜单
  * @Blog         : https://jiaopengzi.com
@@ -34,7 +34,7 @@
 
 <script lang="ts" setup>
 
-import Icon from '@/components/common/icons'
+// import Icon from '@/components/common/icons'
 import type { MenuItemMapWithIndex, MenuItemWithIndex } from '@/components/common/recursive-menu-item'
 
 defineOptions({ name: 'RecursiveMenuItem' })

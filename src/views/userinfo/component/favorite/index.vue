@@ -17,8 +17,12 @@
     </div>
 </template>
 <script setup lang="ts">
-import UserInfoFavoritePC from './pc.vue'
-import UserInfoFavoritePhone from './phone.vue'
+import { defineAsyncComponent } from 'vue'
+
+// import UserInfoFavoritePC from './pc.vue'
+// import UserInfoFavoritePhone from './phone.vue'
+const UserInfoFavoritePC = defineAsyncComponent(() => import('./pc.vue'))
+const UserInfoFavoritePhone = defineAsyncComponent(() => import('./pc.vue'))
 
 defineOptions({ name: 'UserInfoFavorite' })
 

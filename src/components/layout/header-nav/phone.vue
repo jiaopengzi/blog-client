@@ -38,13 +38,14 @@
     </div>
 </template>
 <script setup lang="ts">
-import { onBeforeMount } from 'vue'
+import { onBeforeMount, defineAsyncComponent } from 'vue'
 import { routeObj } from '@/router/routeAll'
-import AvatarInitials from '@/components/common/avatar-initials'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
-
 import type { HeaderNavPropsItem } from '@/components/layout/header-nav'
+
+// import AvatarInitials from '@/components/common/avatar-initials'
+const AvatarInitials = defineAsyncComponent(() => import('@/components/common/avatar-initials'))
 
 defineOptions({ name: 'HeaderNavPhone' })
 

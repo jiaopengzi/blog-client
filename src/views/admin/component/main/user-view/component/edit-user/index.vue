@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-18 08:47:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-22 12:46:42
+ * @LastEditTime : 2024-09-04 21:34:46
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\edit-user\index.vue
  * @Description  : 编辑用户
  * @Blog         : https://jiaopengzi.com
@@ -77,7 +77,7 @@
 
             <div class="btn-submit">
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm(editUserFormRef)">更新</el-button>
+                    <el-button type="primary" @click="submitForm(editUserFormRef as FormInstance)">更新</el-button>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="danger" @click="logoutByAdmin">登出</el-button>
@@ -88,7 +88,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, toRef, onBeforeMount, watch } from 'vue'
+import { reactive, ref, toRef, onBeforeMount, watch, useTemplateRef, defineAsyncComponent } from 'vue'
 import { ShowMsgTip } from '@/utils/message'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import { type EditUserInfoByAdminRequest, EditUserInfoByAdminAPI } from '@/api/user/editUserInfoByAdmin'
@@ -100,12 +100,14 @@ import { type Role } from '@/api/permissionRole/role'
 import { type UserInfo } from '@/api/user/getUserInfo'
 import { type GetUserInfoByUserIDRequest, getUserInfoByUserIDAPI } from '@/api/user/getUserInfoByUserID'
 import { getUserMetaValue } from '@/utils/metaInfo'
-import AvatarInitials from '@/components/common/avatar-initials'
-import AvatarUpload from '@/components/common/avatar-upload'
 import { getAvatarUrl } from '@/utils/avatar'
 import { RegexPatterns } from '@/utils/regexPatterns'
 import { type LogoutByAdminRequest, logoutByAdminAPI } from '@/api/user/logoutByAdmin'
 
+// import AvatarInitials from '@/components/common/avatar-initials'
+// import AvatarUpload from '@/components/common/avatar-upload'
+const AvatarInitials = defineAsyncComponent(() => import('@/components/common/avatar-initials'))
+const AvatarUpload = defineAsyncComponent(() => import('@/components/common/avatar-upload'))
 
 defineOptions({ name: 'EditUser' })
 
@@ -164,9 +166,7 @@ const shortcuts = [
 ]
 
 // 表单实例
-const editUserFormRef = ref<FormInstance>()
-// const role_name = ref('Subscriber')
-
+const editUserFormRef = useTemplateRef<FormInstance>("editUserFormRef")
 
 
 // 按需获取禁用时间

@@ -40,16 +40,17 @@
     </footer>
 </template>
 <script setup lang="ts">
-import { toRefs } from 'vue'
+// import { toRefs } from 'vue'
 import type { FooterProps } from "@/components/layout/footer";
 
 defineOptions({ name: 'FooterPC' })
 
 const props = defineProps<{ footerData: FooterProps }>()
-const { footerData } = toRefs(props)
+// const { footerData } = toRefs(props)
+const { footerData } = props
 
 </script>
-  
+
 <style scoped lang="scss">
 footer {
     height: pc.$height-footer;
@@ -149,4 +150,3 @@ h3 {
     }
 }
 </style>
-  

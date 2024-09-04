@@ -24,13 +24,14 @@
         </div>
     </div>
 </template>
-  
+
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, defineAsyncComponent } from 'vue'
 import type { TagDataObj } from '@/components/common/tag-item'
-import TagItem from '@/components/common/tag-item'
 import { IconKeys } from '@/components/common/icons'
 
+// import TagItem from '@/components/common/tag-item'
+const TagItem = defineAsyncComponent(() => import('@/components/common/tag-item'))
 
 defineOptions({ name: 'PostTag' })
 

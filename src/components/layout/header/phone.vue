@@ -44,13 +44,15 @@
     </div>
 </template>
 <script setup lang="ts">
-import HeaderNav from '@/components/layout/header-nav'
-import { ref } from 'vue'
+import { defineAsyncComponent, ref } from 'vue'
 import { routeObj } from '@/router/routeAll'
 import type { Ref } from 'vue'
 import type { ScrollData } from '@/components/hooks/useScroll'
 import { useScrollActions } from '@/components/hooks/useScroll'
 import { IconKeys } from '@/components/common/icons'
+
+// import HeaderNav from '@/components/layout/header-nav'
+const HeaderNav = defineAsyncComponent(() => import('@/components/layout/header-nav'))
 
 defineOptions({ name: 'HeaderPhone' })
 
@@ -84,7 +86,7 @@ const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownA
 /* ======================================== 滚动条事件 ======================================== */
 
 </script>
-  
+
 <style scoped lang="scss">
 /* 透明遮罩 */
 .nav-backdrop {
@@ -166,4 +168,3 @@ li {
     outline: none;
 }
 </style>
-  

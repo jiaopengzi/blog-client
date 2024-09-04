@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-31 17:39:07
+ * @LastEditTime : 2024-09-04 21:37:23
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -45,10 +45,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onBeforeMount } from 'vue'
-import BaseTable from '@/components/common/base-table'
-import AddMedia from '@/views/admin/component/main/media/component/add-media'
-// import EditUser from '@/views/admin/component/main/user-view/component/edit-user'
+import { ref, reactive, onBeforeMount, defineAsyncComponent } from 'vue'
 import type { Pagination } from '@/components/common'
 import type { TableData, TableColumn } from '@/components/common/base-table'
 import type { MediaFile, GetMediaFilesRequest } from '@/api/upload/getFiles'
@@ -62,6 +59,12 @@ import router from '@/router'
 import { paginationRouterPush, PaginationQueryKey } from '@/router/utils'
 import { getFileCountGroupByFiletypeAPI, type FileCountGroupByFiletype } from '@/api/upload/getFileCountGroupByFiletype'
 import { DeleteFileAPI, type DeleteFileRequest } from '@/api/upload/deleteFile'
+
+// import BaseTable from '@/components/common/base-table'
+// import AddMedia from '@/views/admin/component/main/media/component/add-media'
+// import EditUser from '@/views/admin/component/main/user-view/component/edit-user'
+const BaseTable = defineAsyncComponent(() => import('@/components/common/base-table'))
+const AddMedia = defineAsyncComponent(() => import('@/views/admin/component/main/media/component/add-media'))
 
 defineOptions({ name: AadminSideMenu.Media })
 

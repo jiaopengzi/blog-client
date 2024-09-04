@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-31 13:01:56
+ * @LastEditTime : 2024-09-04 19:33:53
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格
  * @Blog         : https://jiaopengzi.com
@@ -95,7 +95,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watchEffect, watch } from 'vue'
+import { ref, watchEffect, watch, useTemplateRef } from 'vue'
 import type { ElTable } from 'element-plus'
 import type { ImgFit, Pagination } from '@/components/common'
 import { MsgType } from '@/components/common'
@@ -134,7 +134,7 @@ const emit = defineEmits<{
     (event: 'edit-item-update-dialog-visible', value: boolean): void // 更新编辑元素对话框状态
 }>()
 
-const tableRef = ref<InstanceType<typeof ElTable>>() //表格实例 
+const tableRef = useTemplateRef<InstanceType<typeof ElTable>>("tableRef") //表格实例 
 const search = ref(props.searchStr) // 搜索关键字
 const paginationData = ref(props.pagination) // 分页配置
 const addItemDialogVisibleStatus = ref(false) // 对话框状态

@@ -26,8 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onBeforeMount, watch } from 'vue'
-import BaseTable from '@/components/common/base-table'
+import { ref, reactive, onBeforeMount, watch, defineAsyncComponent } from 'vue'
 import type { Pagination } from '@/components/common'
 import type { TableData, TableColumn } from '@/components/common/base-table'
 import { debounce } from '@/utils/debounce'
@@ -39,6 +38,9 @@ import { DeleteLoginLogByDayAPI, type DeleteLoginLogByDayRequest } from '@/api/l
 import { DeleteLoginLogByIDsAPI, type DeleteLoginLogByIDsRequest } from '@/api/loginLog/deleteLoginLogByIds'
 import { ShowMsgTip } from '@/utils/message'
 import { handleConfirmCommon } from '@/utils/confirm'
+
+// import BaseTable from '@/components/common/base-table'
+const BaseTable = defineAsyncComponent(() => import('@/components/common/base-table'))
 
 defineOptions({ name: AadminSideMenu.LoginLog })
 

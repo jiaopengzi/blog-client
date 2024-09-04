@@ -45,12 +45,14 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, defineAsyncComponent } from 'vue'
 import { ArrowRight, Location } from '@element-plus/icons-vue'
-import Carousel from '@/views/home/component/carousel'
-import PostList from '@/views/home/component/post-list'
 import { routeObj } from '@/router/routeAll'
 
+// import Carousel from '@/views/home/component/carousel'
+// import PostList from '@/views/home/component/post-list'
+const Carousel = defineAsyncComponent(() => import('@/views/home/component/carousel'))
+const PostList = defineAsyncComponent(() => import('@/views/home/component/post-list'))
 
 defineOptions({ name: 'HomePhone' })
 const size = ref("small")

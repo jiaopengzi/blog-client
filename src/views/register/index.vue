@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-23 22:13:00
+ * @LastEditTime : 2024-09-04 21:24:39
  * @FilePath     : \blog-client\src\views\register\index.vue
  * @Description  : 注册
  * @Blog         : https://jiaopengzi.com
@@ -55,8 +55,8 @@
 
       <div class="btn-submit">
         <el-form-item>
-          <el-button type="primary" @click="submitForm(registerFormRef)">注册</el-button>
-          <el-button @click="resetForm(registerFormRef)">重置</el-button>
+          <el-button type="primary" @click="submitForm(registerFormRef as FormInstance)">注册</el-button>
+          <el-button @click="resetForm(registerFormRef as FormInstance)">重置</el-button>
         </el-form-item>
       </div>
       <div class="go-home">
@@ -73,13 +73,11 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, toRef } from 'vue'
-import SlideVerify from '@/components/common/slide-verify'
+import { reactive, ref, toRef, useTemplateRef, defineAsyncComponent } from 'vue'
 import { ShowMsgTip } from '@/utils/message'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import type { RegisterRequest } from '@/api/user/register'
 import { RegisterAPI } from '@/api/user/register'
-
 import { ResponseCode } from '@/api/responseCode'
 import { routeObj } from '@/router/routeAll'
 import router from '@/router/index'
@@ -87,6 +85,8 @@ import type { RegisterForm } from '@/views/register'
 import { useFormValidation } from '@/components/hooks/useFormValidation'
 import { RegexPatterns } from '@/utils/regexPatterns'
 
+// import SlideVerify from '@/components/common/slide-verify'
+const SlideVerify = defineAsyncComponent(() => import('@/components/common/slide-verify'))
 
 // eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: 'Register' })
@@ -98,7 +98,7 @@ const labelPosition = ref('top')
 const formSize = ref('default')
 
 // 表单实例
-const registerFormRef = ref<FormInstance>()
+const registerFormRef = useTemplateRef<FormInstance>("registerFormRef")
 
 // 表单数据
 const registerForm = reactive<RegisterForm>({

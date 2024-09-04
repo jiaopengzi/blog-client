@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-26 20:04:17
+ * @LastEditTime : 2024-09-04 21:32:04
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -35,20 +35,25 @@
 
 </template>
 <script lang="ts" setup>
-import { ref, watch, onMounted, shallowRef, onBeforeMount } from 'vue'
+import { ref, watch, onMounted, shallowRef, onBeforeMount, useTemplateRef, defineAsyncComponent } from 'vue'
 import router from '@/router/index'
-import AdminHeader from '@/views/admin/component/header'
-import AdminAside from '@/views/admin/component/aside'
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
 import { components } from '@/views/admin'
-import Dashborad from '@/views/admin/component/main/dashborad'
-import NoPermission from '@/views/admin/component/main/no-permission'
 import { adminMenuItemMapWithIndex, AadminSideMenu } from '@/views/admin/component/aside'
 import { PermissionNames } from '@/utils/permissionRole'
-import Page404 from '@/views/404'
 import { useUserStore } from '@/stores/user'
 
+// import AdminHeader from '@/views/admin/component/header'
+// import AdminAside from '@/views/admin/component/aside'
+// import Dashborad from '@/views/admin/component/main/dashborad'
+// import NoPermission from '@/views/admin/component/main/no-permission'
+// import Page404 from '@/views/404'
+const AdminHeader = defineAsyncComponent(() => import('@/views/admin/component/header'))
+const AdminAside = defineAsyncComponent(() => import('@/views/admin/component/aside'))
+const Dashborad = defineAsyncComponent(() => import('@/views/admin/component/main/dashborad'))
+const NoPermission = defineAsyncComponent(() => import('@/views/admin/component/main/no-permission'))
+const Page404 = defineAsyncComponent(() => import('@/views/404'))
 
 defineOptions({ name: 'AdminLayout' })
 const hasPermissionLoginAdmin = ref(false)
@@ -79,7 +84,7 @@ const currentComponent = shallowRef(Dashborad) // 组件的响应式引用 使�
 const editorStore = useEditorStore()
 const { isFullScreen } = storeToRefs(editorStore)
 
-const containerRef = ref<HTMLElementRef | null>(null);
+const containerRef = useTemplateRef<HTMLElementRef | null>("containerRef");
 
 const stopWatch = watch(isFullScreen, (newValue) => {
     if (containerRef.value) {

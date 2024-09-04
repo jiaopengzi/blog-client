@@ -41,10 +41,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted } from 'vue';
-import Toolbar from '@/components/editor/toolbar'
-import Codemirror from '@/components/editor/codemirror'
-import Preview from '@/components/editor/preview'
+import { useTemplateRef, reactive, computed, onMounted, defineAsyncComponent } from 'vue';
 import { useToolbar, useCodemirror, usePreview } from '@/components/editor/core/hooks'
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
@@ -52,6 +49,13 @@ import type { ToolbarRef, CodemirrorRef, PreviewRef } from '@/components/editor/
 import { setIsFullScreenClassName } from '@/components/editor/core'
 import { CommandsKey } from '@/components/editor/command'// import picker compopnent
 import 'vue3-emoji-picker/css'// import css
+
+// import Toolbar from '@/components/editor/toolbar'
+// import Codemirror from '@/components/editor/codemirror'
+// import Preview from '@/components/editor/preview'
+const Toolbar = defineAsyncComponent(() => import('@/components/editor/toolbar'))
+const Codemirror = defineAsyncComponent(() => import('@/components/editor/codemirror'))
+const Preview = defineAsyncComponent(() => import('@/components/editor/preview'))
 
 // 评论编辑器命名
 defineOptions({ name: "EditorComment" })
@@ -61,10 +65,10 @@ const editorStore = useEditorStore()
 const { editor, isFullScreen } = storeToRefs(editorStore)
 
 // ref
-const mdContainerRef = ref<HTMLElement | null>(null) //编辑器容器
-const toolbarRef = ref<ToolbarRef | null>(null) //编辑器容器
-const codemirrorRef = ref<CodemirrorRef | null>(null) //编辑器
-const previewRef = ref<PreviewRef | null>(null) // 预览容器
+const mdContainerRef = useTemplateRef<HTMLElement | null>("mdContainerRef") //编辑器容器
+const toolbarRef = useTemplateRef<ToolbarRef | null>("toolbarRef") //编辑器容器
+const codemirrorRef = useTemplateRef<CodemirrorRef | null>("codemirrorRef") //编辑器
+const previewRef = useTemplateRef<PreviewRef | null>("previewRef") // 预览容器
 // 将 CommandsKey 解构
 const ModeComment = reactive([
     CommandsKey.Undo,
