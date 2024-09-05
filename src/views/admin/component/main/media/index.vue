@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 21:37:23
+ * @LastEditTime : 2024-09-05 18:26:01
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -127,12 +127,12 @@ const cols: TableColumn[] = reactive([
         formatter: (row: TableData) => { if ("is_free" in row) { if (row.is_free) { return "是" } return "否" } }
     },
     {
-        prop: 'is_delete_original',
-        label: '删除原始文件',
+        prop: 'is_encrypt',
+        label: '视频加密',
         sortable: true,
         width: 140,
         align: 'center',
-        formatter: (row: TableData) => { if ("is_delete_original" in row) { if (row.is_delete_original) { return "是" } return "否" } }
+        formatter: (row: TableData) => { if ("is_encrypt" in row) { if (row.is_encrypt) { return "是" } return "否" } }
     },
     {
         prop: 'video_quality_name',

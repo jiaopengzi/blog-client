@@ -70,6 +70,7 @@ export interface MediaFile extends DataWithImg {
   slug: string // 别名
   thumbnail: string // 缩略图
   is_free: boolean // 是否免费
+  is_encrypt: boolean // 是否加密
   is_delete_original: boolean // 是否删除原文件
   video_quality_name: string // 视频质量
 }
