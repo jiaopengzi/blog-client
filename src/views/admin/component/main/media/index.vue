@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-05 18:26:01
+ * @LastEditTime : 2024-09-06 16:26:18
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -121,7 +121,6 @@ const cols: TableColumn[] = reactive([
     {
         prop: 'is_free',
         label: '免费',
-        sortable: true,
         width: 100,
         align: 'center',
         formatter: (row: TableData) => { if ("is_free" in row) { if (row.is_free) { return "是" } return "否" } }
@@ -129,7 +128,6 @@ const cols: TableColumn[] = reactive([
     {
         prop: 'is_encrypt',
         label: '视频加密',
-        sortable: true,
         width: 140,
         align: 'center',
         formatter: (row: TableData) => { if ("is_encrypt" in row) { if (row.is_encrypt) { return "是" } return "否" } }
@@ -137,7 +135,6 @@ const cols: TableColumn[] = reactive([
     {
         prop: 'video_quality_name',
         label: '视频分辨率',
-        sortable: true,
         width: 120,
         align: 'center',
         formatter: (row: TableData) => formatterVideoQuality(row)
