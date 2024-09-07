@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-08-27 16:38:22
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-29 16:05:09
+ * @LastEditTime : 2024-09-07 11:31:06
  * @FilePath     : \blog-client\src\api\upload\getFiles.ts
  * @Description  : 获取文件列表
  * @Blog         : https://jiaopengzi.com
@@ -65,6 +65,7 @@ export interface MediaFile extends DataWithImg {
   file_name_display: string // 文件名
   file_type: string // 文件类型
   is_server_process: boolean // 是否服务器处理
+  is_ffmpeg_process: boolean // 是否ffmpeg处理
   author: string // 作者
   description: string // 描述
   slug: string // 别名

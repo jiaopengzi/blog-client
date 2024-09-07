@@ -2,9 +2,9 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 21:54:24
+ * @LastEditTime : 2024-09-07 17:40:02
  * @FilePath     : \blog-client\src\components\editor\core\EditorPost.vue
- * @Description  : 编辑器
+ * @Description  : 文章编辑器
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
