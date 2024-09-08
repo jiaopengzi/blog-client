@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:51:36
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-26 15:23:16
+ * @LastEditTime : 2024-09-08 13:18:10
  * @FilePath     : \blog-client\src\components\editor\command\constant.ts
  * @Description  : markdown 标记常量
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,6 @@
  */
 import { undo, redo } from '@codemirror/commands'
 import { EditorView } from '@/pkg/codemirror/setup'
-import type { MardkdownEditorCommandsType } from '@/components/editor/command'
 import { IconKeys } from '@/components/common/icons'
 
 export enum CommandsKey {
@@ -59,6 +58,22 @@ export enum CommandsKey {
   Pdf = 'pdf',
   Help = 'help',
   Info = 'info',
+}
+
+// mardkdown 编辑器 单个命令对象 的类型
+export interface MardkdownEditorCommandItemType {
+  tip?: string // 前端提示
+  prefix?: string // 前缀
+  content?: string // 内容
+  suffix?: string // 后缀
+  hotKey?: string // 快捷键
+  action?: Function // 执行函数
+  icon?: IconKeys // 图标名称
+}
+
+// 使用映射类型定义 MardkdownEditorCommandsType
+export type MardkdownEditorCommandsType = {
+  [key in CommandsKey]: MardkdownEditorCommandItemType
 }
 
 // mardkdown 编辑器 所有 排序 命令 集合对象

@@ -57,6 +57,7 @@ export default defineConfig({
         @use '@/assets/scss/mixin.scss' as *;
         `,
       },
+      devSourceMap: true, // 开发环境下是否生成 sourceMap
     },
   },
   // ------------------------------ scss全局变量生效 结束
