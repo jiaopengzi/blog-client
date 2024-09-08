@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-20 22:10:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 20:17:29
+ * @LastEditTime : 2024-09-08 13:59:45
  * @FilePath     : \blog-client\src\components\editor\core\hooks\useToolbar.ts
  * @Description  : 工具栏 hook
  * @Blog         : https://jiaopengzi.com
@@ -20,7 +20,7 @@ import type { IconKeys } from '@/components/common/icons'
 import { ShowMsgTip } from '@/utils/message'
 import { getComputedStyleValue, setCSSVariable, getCSSVariableValue } from '@/utils/style'
 import { copyWithCustomStyle } from '@/utils/preview'
-import { debounce } from '@/utils/debounce'
+import { debounce } from 'throttle-debounce'
 import { useMagicKeys } from '@vueuse/core'
 
 export function useToolbar(
@@ -47,7 +47,7 @@ export function useToolbar(
     })
   }
 
-  const debounceCopyWithCustomStyle = debounce(copyWithCustomStyle, 500) // 防抖
+  const debounceCopyWithCustomStyle = debounce(500, copyWithCustomStyle) // 防抖
 
   /**
    * @description: 处理工具栏按钮点击事件

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-15 15:09:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-20 11:10:21
+ * @LastEditTime : 2024-09-08 14:03:54
  * @FilePath     : \blog-client\src\views\admin\component\main\permission-role\index.vue
  * @Description  : 权限角色页面
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,7 @@
 <template>
     <div class="container">
         <div class="btns">
-            <el-button v-permission="PermissionNames.PermissionRole" type="primary" @click="debouncedUpdatePermission">
+            <el-button v-permission="PermissionNames.PermissionRole" type="primary" @click="updatePermission">
                 更新权限
             </el-button>
         </div>
@@ -48,7 +48,7 @@ import { updateRolesAPI, type UpdateRolesRequest, type UpdateRoleRequest } from 
 import { ResponseCode } from '@/api/responseCode'
 import { ShowMsgTip } from '@/utils/message'
 import { useUserStore } from '@/stores/user'
-import { debounce } from "@/utils/debounce"
+import { debounce } from 'throttle-debounce'
 
 
 defineOptions({ name: AadminSideMenu.PermissionRole })
@@ -109,8 +109,8 @@ function selectAll(roleName: string) {
     }
 }
 
-// 更新权限
-const updatePermission = () => {
+// 更新权限  防抖更新权限 1秒内多次点击只执行一次
+const updatePermission = debounce(1000, () => {
     // 用 permissionsData 拼接 UpdateRolesRequest 请求参数
     const updateRolesRequest: UpdateRolesRequest = {
         roles: rolesList.value.map((role: Role) => {
@@ -141,10 +141,9 @@ const updatePermission = () => {
     }).catch((err) => {
         ShowMsgTip(ShowMsgTip.MsgType.error, err, 2000)
     })
-}
+})
 
-// 防抖更新权限 1秒内多次点击只执行一次
-const debouncedUpdatePermission = debounce(updatePermission, 1000)
+
 
 // 组件挂载后获取权限列表和初始化权限表格
 onBeforeMount(async () => {

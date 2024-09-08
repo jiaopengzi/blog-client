@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-18 10:42:12
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-18 10:45:39
+ * @LastEditTime : 2024-09-08 14:05:19
  * @FilePath     : \blog-client\src\utils\debounce.ts
  * @Description  : 防抖函数
  * @Blog         : https://jiaopengzi.com
@@ -18,12 +18,12 @@ type DebouncedFn = (...args: any[]) => void
 /**
  * 防抖函数
  *
- * @param fn 需要防抖处理的函数
  * @param wait 防抖延迟时间，默认值为 100ms
+ * @param fn 需要防抖处理的函数
  * @returns 返回经过防抖处理的新函数
  * @example const debouncedFn = debounce(fn, 100)
  */
-export function debounce(fn: DebounceFn, wait: number = 100): DebouncedFn {
+export function debounce(wait: number = 100, fn: DebounceFn): DebouncedFn {
   // 用于存储 setTimeout 的返回值
   let timeoutId: ReturnType<typeof setTimeout> | null = null
 

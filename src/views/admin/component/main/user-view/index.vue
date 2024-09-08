@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-30 10:08:58
+ * @LastEditTime : 2024-09-08 14:04:35
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -61,7 +61,7 @@
 import { ref, reactive, onBeforeMount, watch, defineAsyncComponent } from 'vue'
 import type { Pagination } from '@/components/common'
 import type { TableData, TableColumn } from '@/components/common/base-table'
-import { debounce } from '@/utils/debounce'
+import { debounce } from 'throttle-debounce'
 import { AadminSideMenu } from '@/views/admin/component/aside'
 import { type User } from '@/api/user/getUsers'
 import { getUsersAPI, emptyUsers, type GetUsersRequest, } from '@/api/user/getUsers'
@@ -315,12 +315,12 @@ const deleteRows = async (rows: TableData[]) => {
     })
 }
 
-const updateSearch = debounce(async (val: string) => {
+const updateSearch = debounce(500, async (val: string) => {
     search.value = val
     paginationRouterPush(AadminSideMenu.UserView, pagination.value.page_size, pagination.value.current_page, { [queryKey.RoleName]: activeRole.value, [queryKey.Search]: val })
     console.log("07============", val)
 
-}, 500)
+})
 
 watch(search, (newVal) => {
     console.log("08============", newVal)

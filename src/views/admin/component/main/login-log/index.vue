@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-28 16:56:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-28 21:56:44
+ * @LastEditTime : 2024-09-08 14:01:27
  * @FilePath     : \blog-client\src\views\admin\component\main\login-log\index.vue
  * @Description  : 登录日志
  * @Blog         : https://jiaopengzi.com
@@ -29,7 +29,7 @@
 import { ref, reactive, onBeforeMount, watch, defineAsyncComponent } from 'vue'
 import type { Pagination } from '@/components/common'
 import type { TableData, TableColumn } from '@/components/common/base-table'
-import { debounce } from '@/utils/debounce'
+import { debounce } from 'throttle-debounce'
 import { AadminSideMenu } from '@/views/admin/component/aside'
 import { getLoginLogsAPI, emptyLoginLogs, type GetLoginLogsRequest, type LoginLog } from '@/api/loginLog/getLoginLogs'
 import { ResponseCode } from '@/api/responseCode'
@@ -192,12 +192,12 @@ const deleteRows = async (rows: TableData[]) => {
 
 }
 
-const updateSearch = debounce(async (val: string) => {
+const updateSearch = debounce(500, async (val: string) => {
     search.value = val
     routerPush(pagination.value.page_size, pagination.value.current_page, val)
     console.log("07============", val)
 
-}, 500)
+})
 
 watch(search, (newVal) => {
     console.log("08============", newVal)

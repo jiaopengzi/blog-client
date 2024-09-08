@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-20 22:22:25
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 12:02:04
+ * @LastEditTime : 2024-09-08 13:52:19
  * @FilePath     : \blog-client\src\components\editor\core\hooks\useCodemirror.ts
  * @Description  : codemirror hook
  * @Blog         : https://jiaopengzi.com
@@ -15,7 +15,7 @@ import type { CodemirrorRef, PreviewRef } from '@/components/editor/core'
 import { ScrollElementTag } from '@/components/editor/command'
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
-import { debounce } from '@/utils/debounce'
+import { debounce } from 'throttle-debounce'
 import { getCSSVariableValue } from '@/utils/style'
 import { htmlHandleCopyBtns } from '@/utils/preview'
 
@@ -72,42 +72,38 @@ export function useCodemirror(
     }
   })
 
-  const handleScroll = (
-    scrollHeight: number,
-    clientHeight: number,
-    scrollTop: number,
-    hideDoc: string,
-  ) => {
-    if (!isAsyncScroll.value) return // 如果不是异步滚动就直接返回
+  const handleScroll = debounce(
+    200,
+    (scrollHeight: number, clientHeight: number, scrollTop: number, hideDoc: string) => {
+      if (!isAsyncScroll.value) return // 如果不是异步滚动就直接返回
 
-    // 滚动条在顶部时附近时
-    if (scrollTop <= 4 && previewRef.value) {
-      previewRef.value?.navigateGoHome('smooth') // 跳转预览顶部
-      return
-    }
+      // 滚动条在顶部时附近时
+      if (scrollTop <= 4 && previewRef.value) {
+        previewRef.value?.navigateGoHome('smooth') // 跳转预览顶部
+        return
+      }
 
-    // 滚动条在底部时附近时
-    if (scrollHeight - clientHeight - scrollTop <= 4 && previewRef.value) {
-      previewRef.value?.navigateGoEnd('smooth') // 跳转预览底部
-      return
-    }
-    // isAsyncScroll.value = true // 异步滚动
-    // TODO 当滚动的内容如 表格 br元素 等不太精确 后续优化
-    editorStore.setScrollHideViewStr(hideDoc) // store 存储不可见部分的 markdown
+      // 滚动条在底部时附近时
+      if (scrollHeight - clientHeight - scrollTop <= 4 && previewRef.value) {
+        previewRef.value?.navigateGoEnd('smooth') // 跳转预览底部
+        return
+      }
+      // isAsyncScroll.value = true // 异步滚动
+      // TODO 当滚动的内容如 表格 br元素 等不太精确 后续优化
+      editorStore.setScrollHideViewStr(hideDoc) // store 存储不可见部分的 markdown
 
-    let html = editorStore.getScrollHideHtmlStr // 获取不可见部分的 markdown 解析出来的 html
+      let html = editorStore.getScrollHideHtmlStr // 获取不可见部分的 markdown 解析出来的 html
 
-    // 如果是微信预览模式就去掉复制按钮
-    if (isShowPreviewWechat.value) {
-      html = htmlHandleCopyBtns(html)
-    }
+      // 如果是微信预览模式就去掉复制按钮
+      if (isShowPreviewWechat.value) {
+        html = htmlHandleCopyBtns(html)
+      }
 
-    const hideDom = new DOMParser().parseFromString(html, 'text/html') // 隐藏的markdown解析出来的html转换为dom
-    const els = hideDom.body.querySelectorAll(ScrollElementTag) // 获取隐藏的markdown解析出来的html转换为dom中的所有元素 注意要在 body 中寻找
-    previewRef.value?.navigateToElement(els.length) // 跳转预览选中目标行
-  }
-
-  const debouncedHandleScroll = debounce(handleScroll, 200) // 防抖
+      const hideDom = new DOMParser().parseFromString(html, 'text/html') // 隐藏的markdown解析出来的html转换为dom
+      const els = hideDom.body.querySelectorAll(ScrollElementTag) // 获取隐藏的markdown解析出来的html转换为dom中的所有元素 注意要在 body 中寻找
+      previewRef.value?.navigateToElement(els.length) // 跳转预览选中目标行
+    },
+  )
 
   const updateEditorDoc = (editorDoc: string) => {
     editorStore.updateEditorStore(editorDoc) // 更新 store 中的 editor
@@ -116,7 +112,7 @@ export function useCodemirror(
   return {
     cmHeight,
     updateCmHeightNotIsFullScreen,
-    debouncedHandleScroll,
+    handleScroll,
     updateEditorDoc,
   }
 }

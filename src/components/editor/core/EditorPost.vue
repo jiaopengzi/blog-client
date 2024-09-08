@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-07 17:40:02
+ * @LastEditTime : 2024-09-08 13:58:58
  * @FilePath     : \blog-client\src\components\editor\core\EditorPost.vue
  * @Description  : 文章编辑器
  * @Blog         : https://jiaopengzi.com
@@ -25,8 +25,8 @@
 
             <!-- 编辑器 -->
             <div :class="editorClass" v-show="editorShow">
-                <Codemirror ref="codemirrorRef" :codemirrorDoc="editor" :height="cmHeight"
-                    @handle-scroll="debouncedHandleScroll" @update-editor-doc="updateEditorDoc" />
+                <Codemirror ref="codemirrorRef" :codemirrorDoc="editor" :height="cmHeight" @handle-scroll="handleScroll"
+                    @update-editor-doc="updateEditorDoc" />
             </div>
 
             <!-- 预览 -->
@@ -134,7 +134,7 @@ function onSelectEmoji(emoji: any) {
 const { tocHeadingClicked } = useToc(codemirrorRef, previewRef)
 
 // codemirror
-const { cmHeight, updateCmHeightNotIsFullScreen, debouncedHandleScroll, updateEditorDoc } = useCodemirror(mdContainerRef, codemirrorRef, previewRef)
+const { cmHeight, updateCmHeightNotIsFullScreen, handleScroll, updateEditorDoc } = useCodemirror(mdContainerRef, codemirrorRef, previewRef)
 
 // preview
 const { previewData, isShowPreviewWechat, showImageViewer, closeImageViewer } = usePreview()

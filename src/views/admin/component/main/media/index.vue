@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-06 16:26:18
+ * @LastEditTime : 2024-09-08 14:02:10
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -50,7 +50,7 @@ import type { Pagination } from '@/components/common'
 import type { TableData, TableColumn } from '@/components/common/base-table'
 import type { MediaFile, GetMediaFilesRequest } from '@/api/upload/getFiles'
 import { getMediaFilesAPI, emptyMediaFiles } from '@/api/upload/getFiles'
-import { debounce } from '@/utils/debounce'
+import { debounce } from 'throttle-debounce'
 import { AadminSideMenu } from '@/views/admin/component/aside'
 import { ShowMsgTip } from '@/utils/message'
 import { UploadCode } from '@/api/responseCode'
@@ -219,11 +219,11 @@ const deleteRows = async (rows: TableData[]) => {
     })
 }
 
-const updateSearch = debounce((val: string) => {
+const updateSearch = debounce(300, (val: string) => {
     search.value = val
     paginationRouterPush(AadminSideMenu.Media, pagination.value.page_size, pagination.value.current_page, { [queryKey.FileType]: activeFileType.value, [queryKey.Search]: val })
     console.log("6", val)
-}, 300)
+})
 
 const updateSelection = (rows: TableData[]) => {
     console.log("7", rows)
