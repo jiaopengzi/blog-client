@@ -69,6 +69,7 @@ declare module 'vue' {
     ElTag: typeof import('element-plus/es')['ElTag']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ElUpload: typeof import('element-plus/es')['ElUpload']
+    ElWatermark: typeof import('element-plus/es')['ElWatermark']
     LayoutAsideHotPost: typeof import('./src/components/layout/aside/hot-post/index.vue')['default']
     LayoutAsideMonthArchive: typeof import('./src/components/layout/aside/month-archive/index.vue')['default']
     LayoutAsidePostTag: typeof import('./src/components/layout/aside/post-tag/index.vue')['default']

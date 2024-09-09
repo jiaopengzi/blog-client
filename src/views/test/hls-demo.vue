@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-08 17:48:50
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-09 18:13:07
- * @FilePath     : \blog-client\src\views\test\index.vue
+ * @LastEditTime : 2024-09-08 17:48:53
+ * @FilePath     : \blog-client\src\views\test\index copy.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
@@ -28,7 +28,6 @@
 defineOptions({ name: 'TestVue' })
 import { ref, onMounted } from 'vue';
 import Hls from 'hls.js';
-import { playKeyDecryptAES2Bin } from '@/utils/encrypt';
 
 const video = ref<HTMLVideoElement | null>(null);
 
@@ -57,48 +56,8 @@ const seekVideo = () => {
   }
 };
 
-class CustomKeyLoader extends Hls.DefaultConfig.loader {
-  constructor(config) {
-    super(config);
-  }
-
-  load(context, config, callbacks) {
-
-    if (context.keyInfo) {
-      // console.log('Context:', context);
-      fetch(context.keyInfo.decryptdata.uri)
-        .then(response => response.json())
-        .then(data => {
-
-          if (data.code === 8603) {
-            console.log('data.data:', data.data);
-            const decryptedKey = this.decryptKey(data.data);
-            console.log('DecryptedKey:', decryptedKey);
-
-            context.keyInfo.decryptdata.key = decryptedKey;
-            callbacks.onSuccess({ data: decryptedKey }, context, null); // 传递 ArrayBuffer
-          } else {
-            callbacks.onError({ code: data.code, text: data.msg }, context, null);
-          }
-        })
-        .catch(error => {
-          callbacks.onError({ code: 500, text: error.message }, context, null);
-        });
-    } else {
-      // 对于未加密的视频，直接调用父类的 load 方法
-      super.load(context, config, callbacks);
-    }
-  }
-
-  decryptKey(encryptedKey) {
-    const KeyBin = playKeyDecryptAES2Bin(encryptedKey);
-    console.log('KeyBin:', KeyBin);
-    return KeyBin;
-  }
-}
-
 onMounted(async () => {
-  const videoSrcEndpoint = 'http://10.10.2.222:8081/api/v1/video/21-8de13d3c/2k';
+  const videoSrcEndpoint = 'http://10.10.2.222:8081/api/v1/video/20-8e72860c/480p';
 
   try {
     const response = await fetch(videoSrcEndpoint);
@@ -112,11 +71,7 @@ onMounted(async () => {
       const blobUrl = URL.createObjectURL(blob);
 
       if (Hls.isSupported()) {
-        // const hls = new Hls();
-        const hls = new Hls({
-          loader: CustomKeyLoader
-        });
-
+        const hls = new Hls();
         hls.loadSource(blobUrl);
         hls.attachMedia(video.value!);
         hls.on(Hls.Events.MANIFEST_PARSED, function () {
