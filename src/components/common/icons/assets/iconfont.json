@@ -6,11 +6,53 @@
   "description": "vue 重写项目",
   "glyphs": [
     {
-      "icon_id": "19348996",
+      "icon_id": "7577330",
+      "name": "setting",
+      "font_class": "setting",
+      "unicode": "e9c1",
+      "unicode_decimal": 59841
+    },
+    {
+      "icon_id": "7594152",
+      "name": "pause",
+      "font_class": "pause",
+      "unicode": "ea81",
+      "unicode_decimal": 60033
+    },
+    {
+      "icon_id": "7594155",
+      "name": "play",
+      "font_class": "play",
+      "unicode": "ea82",
+      "unicode_decimal": 60034
+    },
+    {
+      "icon_id": "7592575",
+      "name": "mute",
+      "font_class": "mute",
+      "unicode": "ea0f",
+      "unicode_decimal": 59919
+    },
+    {
+      "icon_id": "7592583",
+      "name": "unmute",
+      "font_class": "unmute",
+      "unicode": "ea11",
+      "unicode_decimal": 59921
+    },
+    {
+      "icon_id": "7594136",
+      "name": "fullscreen",
+      "font_class": "fullscreen",
+      "unicode": "ea7d",
+      "unicode_decimal": 60029
+    },
+    {
+      "icon_id": "7594137",
       "name": "web-fullscreen",
       "font_class": "web-fullscreen",
-      "unicode": "e61f",
-      "unicode_decimal": 58911
+      "unicode": "ea7e",
+      "unicode_decimal": 60030
     },
     {
       "icon_id": "39249508",
@@ -20,39 +62,11 @@
       "unicode_decimal": 60328
     },
     {
-      "icon_id": "212328",
-      "name": "play",
-      "font_class": "play",
-      "unicode": "e74f",
-      "unicode_decimal": 59215
-    },
-    {
-      "icon_id": "34453013",
-      "name": "mute",
-      "font_class": "mute",
-      "unicode": "e83e",
-      "unicode_decimal": 59454
-    },
-    {
       "icon_id": "34453017",
       "name": "loading",
       "font_class": "loading",
       "unicode": "e83f",
       "unicode_decimal": 59455
-    },
-    {
-      "icon_id": "34453079",
-      "name": "unmute",
-      "font_class": "unmute",
-      "unicode": "e847",
-      "unicode_decimal": 59463
-    },
-    {
-      "icon_id": "1251256",
-      "name": "pause",
-      "font_class": "pause",
-      "unicode": "e66c",
-      "unicode_decimal": 58988
     },
     {
       "icon_id": "622432",
@@ -109,13 +123,6 @@
       "font_class": "comment",
       "unicode": "e7e2",
       "unicode_decimal": 59362
-    },
-    {
-      "icon_id": "10759798",
-      "name": "setting",
-      "font_class": "setting",
-      "unicode": "e65a",
-      "unicode_decimal": 58970
     },
     {
       "icon_id": "12048871",
@@ -284,20 +291,6 @@
       "font_class": "save",
       "unicode": "e628",
       "unicode_decimal": 58920
-    },
-    {
-      "icon_id": "5387604",
-      "name": "exit-fullscreen",
-      "font_class": "exit-fullscreen",
-      "unicode": "eb10",
-      "unicode_decimal": 60176
-    },
-    {
-      "icon_id": "5387606",
-      "name": "fullscreen",
-      "font_class": "fullscreen",
-      "unicode": "eb11",
-      "unicode_decimal": 60177
     },
     {
       "icon_id": "6135295",

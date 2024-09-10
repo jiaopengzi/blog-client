@@ -83,6 +83,8 @@ declare module 'vue' {
     LayoutHeaderNavPhone: typeof import('./src/components/layout/header-nav/phone.vue')['default']
     LayoutHeaderPc: typeof import('./src/components/layout/header/pc.vue')['default']
     LayoutHeaderPhone: typeof import('./src/components/layout/header/phone.vue')['default']
+    PlayerControls: typeof import('./src/components/player/controls/index.vue')['default']
+    PlayerControlsControls: typeof import('./src/components/player/controls/controls.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

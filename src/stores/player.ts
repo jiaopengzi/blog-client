@@ -137,6 +137,8 @@ export interface PlayerStore {
   subtitles?: SubtitleStatus
   // 画中画
   isPictureInPicture: boolean
+  // 是否为移动端
+  isMobile: boolean
   // 水印
   watermark?: Watermark
   // logo
@@ -160,6 +162,7 @@ export const usePlayerStore = defineStore({
     subtitles: { hasSubtitles: false },
     isPictureInPicture: false,
     size: { width: 640, height: 360 },
+    isMobile: false,
   }),
   getters: {
     // 获取当前播放状态是否为播放中
@@ -252,6 +255,12 @@ export const usePlayerStore = defineStore({
     togglePictureInPicture() {
       this.isPictureInPicture = !this.isPictureInPicture
     },
+
+    // 设置是否是移动端状态
+    setIsMobile(isMobile: boolean) {
+      this.isMobile = isMobile
+    },
+
     // 设置水印
     setWatermark(watermark: Watermark) {
       this.watermark = watermark

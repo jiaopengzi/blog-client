@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4152487 */
-  src: url('iconfont.woff2?t=1725962927255') format('woff2'),
-       url('iconfont.woff?t=1725962927255') format('woff'),
-       url('iconfont.ttf?t=1725962927255') format('truetype');
+  src: url('iconfont.woff2?t=1725975428278') format('woff2'),
+       url('iconfont.woff?t=1725975428278') format('woff'),
+       url('iconfont.ttf?t=1725975428278') format('truetype');
 }
 
 .iconfont {
@@ -13,32 +13,40 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-setting:before {
+  content: "\e9c1";
+}
+
+.icon-pause:before {
+  content: "\ea81";
+}
+
+.icon-play:before {
+  content: "\ea82";
+}
+
+.icon-mute:before {
+  content: "\ea0f";
+}
+
+.icon-unmute:before {
+  content: "\ea11";
+}
+
+.icon-fullscreen:before {
+  content: "\ea7d";
+}
+
 .icon-web-fullscreen:before {
-  content: "\e61f";
+  content: "\ea7e";
 }
 
 .icon-picture-in-picture:before {
   content: "\eba8";
 }
 
-.icon-play:before {
-  content: "\e74f";
-}
-
-.icon-mute:before {
-  content: "\e83e";
-}
-
 .icon-loading:before {
   content: "\e83f";
-}
-
-.icon-unmute:before {
-  content: "\e847";
-}
-
-.icon-pause:before {
-  content: "\e66c";
 }
 
 .icon-zip:before {
@@ -71,10 +79,6 @@
 
 .icon-comment:before {
   content: "\e7e2";
-}
-
-.icon-setting:before {
-  content: "\e65a";
 }
 
 .icon-collapse:before {
@@ -171,14 +175,6 @@
 
 .icon-save:before {
   content: "\e628";
-}
-
-.icon-exit-fullscreen:before {
-  content: "\eb10";
-}
-
-.icon-fullscreen:before {
-  content: "\eb11";
 }
 
 .icon-redo:before {
