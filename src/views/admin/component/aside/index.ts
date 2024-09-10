@@ -49,7 +49,7 @@ export enum AadminSideMenu {
   'UserView' = 'UserView',
   'LoginLog' = 'LoginLog',
   'PermissionRole' = 'PermissionRole',
-  'Config' = 'Config',
+  'Setting' = 'Setting',
   'Notification' = 'Notification',
   'Backup' = 'Backup',
 }
@@ -237,10 +237,10 @@ const adminMenuItemMap: AdminMenuItemMap = {
     parentIndex: AadminSideMenu.User,
     permissionName: PermissionNames.PermissionRole,
   },
-  [AadminSideMenu.Config]: {
+  [AadminSideMenu.Setting]: {
     display: '网站配置',
     icon: {
-      name: IconKeys.Config,
+      name: IconKeys.Setting,
       class: 'icon-menu',
     },
   },

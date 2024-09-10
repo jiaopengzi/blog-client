@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-21 15:05:09
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-06 10:12:58
+ * @LastEditTime : 2024-09-10 18:11:00
  * @FilePath     : \blog-client\src\components\common\icons\index.ts
  * @Description  : 图标组件
  * @Blog         : https://jiaopengzi.com
@@ -134,7 +134,6 @@ export enum IconKeys {
   CodeInline = 'code-inline',
   Collapse = 'collapse',
   Comment = 'comment',
-  Config = 'config',
   Copy = 'copy',
   Dashborad = 'dashborad',
   Data = 'data',
@@ -218,6 +217,14 @@ export enum IconKeys {
   WechatOfficialAccount = 'wechat-official-account',
   Welfare = 'welfare',
   Zip = 'zip',
+  WebFullscreen = 'web-fullscreen',
+  PictureInPicture = 'picture-in-picture',
+  Play = 'play',
+  Mute = 'mute',
+  Loading = 'loading',
+  Unmute = 'unmute',
+  Pause = 'pause',
+  Setting = 'setting',
 }
 
 // 开发模式下运行 历遍 iconMap 对象中的 key 校验是否符合 IconKeys 类型约束

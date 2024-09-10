@@ -1,0 +1,124 @@
+/**
+ * @Author       : jiaopengzi
+ * @Date         : 2024-09-10 15:17:56
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2024-09-10 15:29:03
+ * @FilePath     : \blog-client\src\pkg\hls\index.ts
+ * @Description  :
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ */
+import Hls from 'hls.js'
+import type {
+  HlsConfig,
+  LoaderConfiguration,
+  LoaderCallbacks,
+  LoaderContext,
+  LoaderStats,
+} from 'hls.js'
+import type { KeyLoaderContext } from 'custom-hls'
+import { reverseString, decryptData } from '@/utils/encrypt'
+import { ResponseCode } from '@/api/responseCode'
+
+// 自定义 KeyLoader 类
+export class CustomKeyLoader extends Hls.DefaultConfig.loader {
+  constructor(config: HlsConfig) {
+    super(config)
+  }
+
+  // load 方法重写
+  load(
+    context: KeyLoaderContext,
+    config: LoaderConfiguration,
+    callbacks: LoaderCallbacks<LoaderContext>,
+  ): void {
+    // 初始化 loaderStats
+    const loaderStats: LoaderStats = {
+      aborted: false,
+      loaded: 0,
+      retry: 0,
+      total: 0,
+      chunkCount: 0,
+      bwEstimate: 0,
+      loading: {
+        start: window.performance.now(), // 记录开始时间
+        first: 0,
+        end: 0,
+      },
+      parsing: {
+        start: 0,
+        end: 0,
+      },
+      buffering: {
+        start: 0,
+        first: 0,
+        end: 0,
+      },
+    }
+
+    // 判断是否有 keyInfo
+    if (context.keyInfo) {
+      // 获取解密密钥
+      fetch(context.keyInfo.decryptdata.uri)
+        .then((response) => {
+          loaderStats.loading.first = window.performance.now() // 记录首次请求时间
+          return response.json()
+        })
+        .then((data) => {
+          loaderStats.loading.end = window.performance.now() // 记录结束时间
+
+          // 密钥获取成功
+          if (data.code === ResponseCode.GetVdideoKeySuccess) {
+            const decryptedKey = this.decryptKey(data.data) // 解密播放密钥
+            context.keyInfo.decryptdata.key = decryptedKey // 将解密后的密钥赋值给 keyInfo
+            callbacks.onSuccess(
+              { url: context.keyInfo.decryptdata.uri, data: decryptedKey.buffer },
+              loaderStats,
+              context,
+              null,
+            )
+          } else {
+            callbacks.onError({ code: data.code, text: data.msg }, context, null, loaderStats)
+          }
+        })
+        .catch((error) => {
+          loaderStats.loading.end = window.performance.now()
+          callbacks.onError({ code: 500, text: error.message }, context, null, loaderStats)
+        })
+    } else {
+      // 对于未加密的视频，直接调用父类的 load 方法
+      super.load(context, config, callbacks)
+    }
+  }
+
+  // 解密播放密钥
+  decryptKey(encryptedKey: string): Uint8Array {
+    return playKeyDecryptAES2Bin(encryptedKey)
+  }
+}
+
+// 播放密钥自定义解密函数
+function playKeyDecryptAES2Bin(playKeyEncrypt: string): Uint8Array {
+  // 获取 playKeyEncrypt 字符长度
+  const playKeyEncryptLen = playKeyEncrypt.length
+
+  // 获取 playKeyKey 从 playKeyEncryptAES2Base64 中从左至右截取 32 长度的字符串并逆序排列
+  const playKeyKey = reverseString(playKeyEncrypt.substr(0, 32))
+
+  // 获取 iv 从 playKeyEncryptAES2Base64 中从右至左截取 16 长度的字符串,并逆序排列
+  const iv = reverseString(playKeyEncrypt.substr(playKeyEncryptLen - 16, 16))
+
+  // 获取 encryptedPlayKeyBase64 从 playKeyEncrypt 中从 32 开始到 l-16 的字符串
+  const encryptedPlayKeyBase64 = playKeyEncrypt.substr(32, playKeyEncryptLen - 32 - 16)
+
+  // 使用 AES 解密算法用 encryptKey 解密 playKey 生成解密后的密钥 encryptPlayKey 16进制字符串
+  const encryptPlayKey = decryptData(encryptedPlayKeyBase64, playKeyKey, iv)
+
+  // 将 encryptPlayKey 转换为 Uint8Array 类型
+  const playKeyDecryptBin = new Uint8Array(
+    encryptPlayKey.match(/[\da-f]{2}/gi)!.map(function (h) {
+      return parseInt(h, 16)
+    }),
+  )
+  return playKeyDecryptBin
+}

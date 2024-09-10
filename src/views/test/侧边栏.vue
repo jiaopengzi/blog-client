@@ -234,11 +234,11 @@ const menuData: MenuItemMap = reactive({
     "display": "登录日志",
     "parentIndex": "user"
   },
-  "config": {
-    "index": "config",
+  "setting": {
+    "index": "setting",
     "display": "网站配置",
     icon: {
-      name: IconKeys.Config,
+      name: IconKeys.Setting,
       class: "icon-menu"
     }
   },

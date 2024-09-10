@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-27 17:45:44
+ * @LastEditTime : 2024-09-10 15:36:20
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -90,6 +90,8 @@ export enum ResponseCode {
   GetLoginLogsSuccess = 8500, //获取登录日志成功
   LoginLogDeleteByIDsSuccess = 8502, //通过ID删除登录日志成功
   LoginLogDeleteByDaySuccess = 8503, //通过天数删除登录日志成功
+  GetVideoM3u8Success = 8602, // 获取视频M3u8成功
+  GetVdideoKeySuccess = 8603, // 获取视频解密密钥成功
 
   ClientIPTooManyRequests = 9006, //客户端IP请求次数过多
   ClientIDTooManyRequests = 9007, //客户端ID请求次数过多

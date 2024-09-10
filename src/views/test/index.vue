@@ -1,20 +1,6 @@
-<!--
- * @Author       : jiaopengzi
- * @Date         : 2024-09-08 17:48:50
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-09 18:13:07
- * @FilePath     : \blog-client\src\views\test\index.vue
- * @Description  : 
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
--->
-<!--
- * @FilePath     : \blog-client\src\views\test\index.vue
--->
 <template>
   <div class="video-container">
     <video ref="video" class="custom-video" controls>
-
       <track src="http://10.10.2.222:8081/api/v1/uploads/zimu.vtt" kind="subtitles" srclang="cn" label="中文" default />
     </video>
     <div class="controls">
@@ -28,7 +14,8 @@
 defineOptions({ name: 'TestVue' })
 import { ref, onMounted } from 'vue';
 import Hls from 'hls.js';
-import { playKeyDecryptAES2Bin } from '@/utils/encrypt';
+import { CustomKeyLoader } from '@/pkg/hls';
+import { ResponseCode } from '@/api/responseCode';
 
 const video = ref<HTMLVideoElement | null>(null);
 
@@ -53,58 +40,19 @@ const seekVideo = () => {
     video.value.controls = true;
     video.value.loop = true;
     video.value.play();
-    video.value?.requestFullscreen()
+    video.value?.requestFullscreen();
   }
 };
 
-class CustomKeyLoader extends Hls.DefaultConfig.loader {
-  constructor(config) {
-    super(config);
-  }
-
-  load(context, config, callbacks) {
-
-    if (context.keyInfo) {
-      // console.log('Context:', context);
-      fetch(context.keyInfo.decryptdata.uri)
-        .then(response => response.json())
-        .then(data => {
-
-          if (data.code === 8603) {
-            console.log('data.data:', data.data);
-            const decryptedKey = this.decryptKey(data.data);
-            console.log('DecryptedKey:', decryptedKey);
-
-            context.keyInfo.decryptdata.key = decryptedKey;
-            callbacks.onSuccess({ data: decryptedKey }, context, null); // 传递 ArrayBuffer
-          } else {
-            callbacks.onError({ code: data.code, text: data.msg }, context, null);
-          }
-        })
-        .catch(error => {
-          callbacks.onError({ code: 500, text: error.message }, context, null);
-        });
-    } else {
-      // 对于未加密的视频，直接调用父类的 load 方法
-      super.load(context, config, callbacks);
-    }
-  }
-
-  decryptKey(encryptedKey) {
-    const KeyBin = playKeyDecryptAES2Bin(encryptedKey);
-    console.log('KeyBin:', KeyBin);
-    return KeyBin;
-  }
-}
 
 onMounted(async () => {
-  const videoSrcEndpoint = 'http://10.10.2.222:8081/api/v1/video/21-8de13d3c/2k';
+  const videoSrcEndpoint = 'http://10.10.2.222:8081/api/v1/video/2-91bc0928/1080p';
 
   try {
     const response = await fetch(videoSrcEndpoint);
     const result = await response.json();
 
-    if (result.code === 8602) {
+    if (result.code === ResponseCode.GetVideoM3u8Success) {
       const { base_url, m3u8 } = result.data;
       const videoSrc = m3u8.replace(/_url_/g, base_url + "/");
 
@@ -112,7 +60,6 @@ onMounted(async () => {
       const blobUrl = URL.createObjectURL(blob);
 
       if (Hls.isSupported()) {
-        // const hls = new Hls();
         const hls = new Hls({
           loader: CustomKeyLoader
         });
@@ -142,6 +89,9 @@ onMounted(async () => {
   }
 });
 </script>
+
+
+
 
 <style scoped lang="scss">
 .video-container {
