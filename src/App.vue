@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-07 22:21:06
+ * @LastEditTime : 2024-09-11 18:03:30
  * @FilePath     : \blog-client\src\App.vue
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -50,7 +50,7 @@ useHead({
 })
 
 // 设置主题
-setTheme("light");
+setTheme("light")
 
 </script>
 

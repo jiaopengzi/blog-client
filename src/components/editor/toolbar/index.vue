@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:02:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 21:52:51
+ * @LastEditTime : 2024-09-11 11:40:33
  * @FilePath     : \blog-client\src\components\editor\toolbar\index.vue
  * @Description  : 工具栏组件
  * @Blog         : https://jiaopengzi.com
@@ -135,6 +135,14 @@ defineExpose({
 .iconfont {
     font-size: 20px;
     fill: #333;
+    transition: fill 0.3s ease;
+    /* 添加平滑过渡效果 */
+}
+
+
+.iconfont:hover {
+    fill: #666;
+    /* 悬停时的颜色变化 */
 }
 
 .popper-class {

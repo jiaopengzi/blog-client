@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-09 15:56:31
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-09 15:56:35
- * @FilePath     : \blog-client\src\views\test\index copy.vue
+ * @LastEditTime : 2024-09-11 18:08:38
+ * @FilePath     : \blog-client\src\views\test\shuiying.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import WatermarkVideo from './WatermarkVideo.vue';
+import WatermarkVideo from './watermark.vue';
 </script>
 
 <style scoped>

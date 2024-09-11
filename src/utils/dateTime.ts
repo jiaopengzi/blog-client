@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 16:07:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-21 14:32:34
+ * @LastEditTime : 2024-09-11 11:16:18
  * @FilePath     : \blog-client\src\utils\dateTime.ts
  * @Description  : UTC 转 北京时间
  * @Blog         : https://jiaopengzi.com
@@ -65,7 +65,7 @@ export function formatDurationTime(duration: number): string {
   const days = Math.floor(duration / 60 / 60 / 24) // 计算天数
   const hours = Math.floor((duration / 60 / 60) % 24) // 计算小时数
   const minutes = Math.floor((duration / 60) % 60) // 计算分钟数
-  const seconds = duration % 60 // 计算秒数
+  const seconds = Math.floor(duration % 60) // 计算秒数，并向下取整
 
   // 将小时、分钟和秒数补全为两位
   const hoursStr = hours.toString().padStart(2, '0')
@@ -80,6 +80,6 @@ export function formatDurationTime(duration: number): string {
   } else if (minutes > 0) {
     return `${minutesStr}:${secondsStr}`
   } else {
-    return `${secondsStr}`
+    return `${minutesStr}:${secondsStr}`
   }
 }
