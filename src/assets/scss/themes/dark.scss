@@ -2,59 +2,60 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-04 12:40:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-13 12:33:25
+ * @LastEditTime : 2024-09-13 16:12:23
  * @FilePath     : \blog-client\src\assets\scss\themes\dark.scss
  * @Description  : 暗色模式
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
  */
 
-@use '@/assets/scss/element.scss' as el;
-// @use '../element.scss'as el;
-// 使用 插件 查看编译结果需要使用相对路径 不能使用 @
+@use '../element.scss' as el;
 
 $thpme-name: 'dark';
 $primary-color-dark: red;
 
-html[data-theme=#{$thpme-name}] {
-
-    --scrollbar-y-width: 6px; // Y轴滚动条宽度
-    --scrollbar-x-height: 12px; // x轴滚动条高度
-    /* ============================================================ CSS 颜色变量 开始*/
-    /* 主要颜色 */
-    --primary-color:#{$primary-color-dark};
-    /* 次要颜色 */
-    --secondary-color: #c89828;
-    /* 页面背景颜色 */
-    --background-color-page: #f3f3f3;
-    /* 内容区域背景颜色 */
-    --background-color-content: #fefefe;
-    /* 头部背景颜色 */
-    --background-color-header: rgba(252, 252, 252, 0.92);
-    /* 底部背景颜色 */
-    --background-color-footer: rgba(30, 40, 88, 0.6);
-    /* 鼠标悬停背景颜色 */
-    --background-color-hover: rgba(200, 152, 40, 0.2);
-    /* 鼠标点击背景颜色 */
-    --background-color-active: rgba(200, 152, 40, 0.4);
-    /* 禁用状态背景颜色 */
-    --background-color-disabled: rgba(200, 152, 40, 0.1);
-    /* 字体颜色 */
-    /* ============================================================ CSS 颜色变量 开始*/
+html[data-theme='#{$thpme-name}'] {
+  --scrollbar-y-width: 6px; // Y轴滚动条宽度
+  --scrollbar-x-height: 12px; // x轴滚动条高度
+  /* ============================================================ CSS 颜色变量 开始*/
+  /* 主要颜色 */
+  --primary-color: #{$primary-color-dark};
+  /* 次要颜色 */
+  --secondary-color: #c89828;
+  /* 页面背景颜色 */
+  --background-color-page: #f3f3f3;
+  /* 内容区域背景颜色 */
+  --background-color-content: #fefefe;
+  /* 头部背景颜色 */
+  --background-color-header: rgba(252, 252, 252, 0.92);
+  /* 底部背景颜色 */
+  --background-color-footer: rgba(30, 40, 88, 0.6);
+  /* 鼠标悬停背景颜色 */
+  --background-color-hover: rgba(200, 152, 40, 0.2);
+  /* 鼠标点击背景颜色 */
+  --background-color-active: rgba(200, 152, 40, 0.4);
+  /* 禁用状态背景颜色 */
+  --background-color-disabled: rgba(200, 152, 40, 0.1);
+  /* 字体颜色 */
+  /* ============================================================ CSS 颜色变量 开始*/
 }
 
 /* ============================================================ element-plus 的颜色设置 开始*/
 /* 如下主要是 element-plus 的颜色设置 */
-$el-theme: ("theme-name":#{$thpme-name},
-    "colors":('primary':$primary-color-dark,
-        'success': #67c23a,
-        'warning': #e6a23c,
-        'danger': #f56c6c,
-        'error': #f56c6c,
-        'info': #909399,
-    ));
+$el-theme: (
+  'theme-name': #{$thpme-name},
+  'colors': (
+    'primary': $primary-color-dark,
+    'success': #67c23a,
+    'warning': #e6a23c,
+    'danger': #f56c6c,
+    'error': #f56c6c,
+    'info': #909399,
+  ),
+);
 
 // element 主题样式 ($el-theme,) 逗号不能省略
 // 生成 element 主题样式
-@include el.generateElementPlusTheme(($el-theme, ), el.$mode-dark);
+// @include el.generateElementPlusTheme(($el-theme), el.$mode-dark);
+@include el.generateElementPlusTheme($el-theme, el.$mode-dark);
 /* ============================================================ element-plus 的颜色设置 结束*/

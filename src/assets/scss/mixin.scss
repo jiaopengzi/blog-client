@@ -2,14 +2,15 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-20 19:48:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-13 08:56:54
+ * @LastEditTime : 2024-09-13 15:56:02
  * @FilePath     : \blog-client\src\assets\scss\mixin.scss
  * @Description  : 混合器
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
  */
-@use '@/assets/scss/platform/phone.scss' as phone;
-@use '@/assets/scss/platform/pc.scss' as pc;
+
+@use './platform/phone.scss' as phone;
+@use './platform/pc.scss' as pc;
 
 $platforms: (
   'phone': (

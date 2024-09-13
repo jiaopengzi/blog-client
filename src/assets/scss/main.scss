@@ -1,11 +1,18 @@
-@import 'reset-css';
-// @import '@/assets/markdown/drake-vue.css';
-// @import 'highlight.js/styles/default.css';
+@use 'reset-css' as *; // live sass compiler 插件使用时注释掉
 
+// ========================================== live sass compiler 插件使用 开始 ==========================================
+// 当使用 live sass compiler 插件时查看编译结果需要使用相对路径,不能使用别名 scss 目录下的注释都要检查一遍.
+// 如下注释解开即可(编译时,需要注释掉，避免命名空间重复 There's already a module with namespace "XXXX")
+// @use './platform/phone.scss' as phone;
+// @use './platform/pc.scss' as pc;
+// @use './mixin.scss' as *;
+// @use './themes/index.scss' as *;
+// ========================================== live sass compiler 插件使用 结束 ==========================================
 
 // 主题样式
 body {
-  font-family: 'Noto Sans SC', 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Noto Sans SC', 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Helvetica, Arial,
+    sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -91,8 +98,6 @@ a {
   }
 }
 
-
-
 /* =====================================全局设置层级 开始 */
 footer {
   z-index: 990;
@@ -135,18 +140,15 @@ header {
   border-radius: 6px;
 }
 
-
 // 归档组件表格 行样式
 // .month-archive-row-class:hover {
 //   cursor: pointer;
 // }
 
-
 /* =====================================全局设置层级 结束 */
 
 // 目录显示
 .md-toc {
-
   background-color: $background-color-content;
 
   h1,
@@ -191,7 +193,6 @@ header {
 }
 
 .md-toc-fs {
-
   background-color: $background-color-content;
 
   h1,

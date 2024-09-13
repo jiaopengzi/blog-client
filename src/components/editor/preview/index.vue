@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:01:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 19:29:42
+ * @LastEditTime : 2024-09-13 14:32:56
  * @FilePath     : \blog-client\src\components\editor\preview\index.vue
  * @Description  : 预览组件
  * @Blog         : https://jiaopengzi.com
@@ -26,7 +26,7 @@ import { ScrollElementTag, ScrollElementTagHeading } from '@/components/editor/c
 import { scrollToElement } from '@/utils/scroll'
 import type { PriviewProps } from '@/components/editor/preview'
 import '@/assets/scss/preview.scss'
-import '@/assets/highlight/highlight.js.jpz.scss'
+import '@/assets/scss/highlight.js.jpz.scss'
 import 'katex/dist/katex.min.css' // katex 样式
 
 // eslint-disable-next-line vue/multi-word-component-names

@@ -1,3 +1,9 @@
+// ========================================== live sass compiler 插件使用 开始 ==========================================
+// 当使用 live sass compiler 插件时查看编译结果需要使用相对路径,不能使用别名 scss目录下的注释都要检查一遍.
+// 如下注释解开即可
+// @use './themes/index.scss' as *;
+// ========================================== live sass compiler 插件使用 结束 ==========================================
+
 code.hljs {
   padding: 3px 5px;
   background-color: #dddddd;
@@ -21,13 +27,11 @@ code.hljs {
 .hljs-title.class_ {
   /* 占位 */
   color: #3f3f3f;
-
 }
 
 .hljs-title.class_.inherited__ {
   /* 占位 */
   color: #3f3f3f;
-
 }
 
 .hljs-punctuation {
@@ -172,7 +176,7 @@ code.hljs {
   display: flex;
   flex-direction: column;
   overflow-x: auto;
-  // font-size: 14px; 
+  // font-size: 14px;
   // max-height: 500px;
   padding: 1em 1em 1em 3em;
   color: #333;
@@ -194,7 +198,7 @@ code.hljs {
   display: block;
   /* white-space: pre-wrap; */
   position: relative;
-  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
 }
 
 .code-snippet code::before {
@@ -246,6 +250,6 @@ code {
   padding: 0 5px 0 5px;
 }
 
-code+code {
+code + code {
   margin-left: -0.2em;
 }

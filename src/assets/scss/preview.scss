@@ -1,3 +1,20 @@
+/*
+ * @Author       : jiaopengzi
+ * @Date         : 2024-09-13 12:31:08
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2024-09-13 16:05:31
+ * @FilePath     : \blog-client\src\assets\scss\preview.scss
+ * @Description  : preview样式
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ */
+
+// ========================================== live sass compiler 插件使用 开始 ==========================================
+// 当使用 live sass compiler 插件时查看编译结果需要使用相对路径,不能使用别名 scss目录下的注释都要检查一遍.
+// 如下注释解开即可
+// @use './themes/index.scss' as *;
+// ========================================== live sass compiler 插件使用 结束 ==========================================
+
 #preview {
   /* ===================================== 标题 开始*/
 
@@ -75,15 +92,15 @@
 
     position: relative; //子绝父相 让伪元素绝对定位
 
-    >li {
+    > li {
       /* 一级实心圆 */
       list-style-type: disc;
 
-      >ul>li {
+      > ul > li {
         /* 二级空心圆 */
         list-style-type: circle;
 
-        >ul>li {
+        > ul > li {
           /* 三级实心方块 */
           list-style-type: square;
         }
@@ -137,13 +154,13 @@
   }
 
   // 原生 checkbox 隐藏
-  .task-list-item input[type="checkbox"] {
+  .task-list-item input[type='checkbox'] {
     display: none;
   }
 
   // 使用伪元素 ::before 勾选状态
   .task-list-item-checked::before {
-    content: "";
+    content: '';
     background: var(--checkbox-checked) 0 0 no-repeat;
     background-size: 100%;
     display: inline-block;
@@ -155,7 +172,7 @@
 
   // 使用伪元素 ::before 未勾选状态
   .task-list-item-unchecked::before {
-    content: "";
+    content: '';
     background: var(--checkbox-unchecked) 0 0 no-repeat;
     background-size: 100%;
     display: inline-block;
@@ -164,7 +181,6 @@
     width: 1.6rem;
     margin-left: -2em;
   }
-
 
   // 图片 img
   img {
@@ -185,7 +201,6 @@
 
   // 表格容器
   .table-container {
-
     /* 设置容器的宽度和高度 */
     width: 100%;
     max-height: 300px;
@@ -222,10 +237,9 @@
     }
 
     /* 为表格的奇数行设置背景颜色 */
-    table tr:nth-child(2n+1) {
+    table tr:nth-child(2n + 1) {
       background-color: $background-color-content;
     }
-
   }
 
   // 行内代码 块级代码 使用 highlight.js 代码高亮 查看对应的css样式
@@ -251,7 +265,7 @@
     color: $footnote-sup-color;
     // 下划线
     text-decoration: underline;
-    text-underline-offset: 0.2rem
+    text-underline-offset: 0.2rem;
   }
 
   // alert警报提示
@@ -286,10 +300,9 @@
       color: $markdown-alert-note-title-color;
 
       svg {
-        fill: $markdown-alert-note-svg-fill-color
+        fill: $markdown-alert-note-svg-fill-color;
       }
     }
-
   }
 
   // tip
@@ -302,7 +315,7 @@
       color: $markdown-alert-tip-title-color;
 
       svg {
-        fill: $markdown-alert-tip-svg-fill-color
+        fill: $markdown-alert-tip-svg-fill-color;
       }
     }
   }
@@ -317,7 +330,7 @@
       color: $markdown-alert-important-title-color;
 
       svg {
-        fill: $markdown-alert-important-svg-fill-color
+        fill: $markdown-alert-important-svg-fill-color;
       }
     }
   }
@@ -332,7 +345,7 @@
       color: $markdown-alert-warning-title-color;
 
       svg {
-        fill: $markdown-alert-warning-svg-fill-color
+        fill: $markdown-alert-warning-svg-fill-color;
       }
     }
   }
@@ -347,9 +360,8 @@
       color: $markdown-alert-caution-title-color;
 
       svg {
-        fill: $markdown-alert-caution-svg-fill-color
+        fill: $markdown-alert-caution-svg-fill-color;
       }
     }
   }
-
 }
