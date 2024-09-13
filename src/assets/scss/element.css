@@ -1,0 +1,23 @@
+@charset "UTF-8";
+/*
+ * @Author       : jiaopengzi
+ * @Date         : 2023-10-31 15:50:41
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2024-09-13 09:07:36
+ * @FilePath     : \blog-client\src\assets\scss\element.scss
+ * @Description  : element-plus 主题样式
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+ */
+/*
+ create-color-group 
+ 创建 element-plus 颜色组 生成 css 变量 例子：
+ 参考：https://github.com/element-plus/element-plus/blob/dev/packages/theme-chalk/src/common/var.scss
+ --el-color-primary: #409eff;
+ --el-color-primary-light-2: #337ecc;
+ --el-color-primary-light-3: #79bbff;
+ --el-color-primary-light-5: #a0cfff;
+ --el-color-primary-light-7: #c6e2ff;
+ --el-color-primary-light-8: #d9ecff;
+ --el-color-primary-light-9: #ecf5ff;
+*//*# sourceMappingURL=element.css.map */

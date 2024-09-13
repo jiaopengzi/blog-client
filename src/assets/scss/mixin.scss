@@ -8,10 +8,14 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
  */
-@use '@/assets/scss/platform/phone.scss'as phone;
-@use '@/assets/scss/platform/pc.scss'as pc;
+@use '@/assets/scss/platform/phone.scss' as phone;
+@use '@/assets/scss/platform/pc.scss' as pc;
 
-$platforms: ('phone': (phone.$min-width, phone.$max-width),
+$platforms: (
+  'phone': (
+    phone.$min-width,
+    phone.$max-width,
+  ),
   'pc': pc.$min-width,
 );
 
@@ -20,7 +24,7 @@ $platforms: ('phone': (phone.$min-width, phone.$max-width),
   $pf: map-get($platforms, $platformName); // 对应平台的最小宽度和最大宽度
 
   // 有最大值和最小值
-  @if type-of($pf)=='list' {
+  @if type-of($pf) == 'list' {
     @media (min-width: nth($pf, 1)) and (max-width: nth($pf, 2)) {
       @content;
     }
