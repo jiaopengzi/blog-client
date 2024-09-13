@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-31 15:50:41
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-04 14:02:26
+ * @LastEditTime : 2024-09-13 09:07:36
  * @FilePath     : \blog-client\src\assets\scss\element.scss
  * @Description  : element-plus 主题样式
  * @Blog         : https://jiaopengzi.com
@@ -59,7 +59,7 @@ $mode-dark: 'dark';
  创建 element-plus 颜色组 生成 css 变量 例子：
  参考：https://github.com/element-plus/element-plus/blob/dev/packages/theme-chalk/src/common/var.scss
  --el-color-primary: #409eff;
- --el-color-primary-dark-2: #337ecc;
+ --el-color-primary-light-2: #337ecc;
  --el-color-primary-light-3: #79bbff;
  --el-color-primary-light-5: #a0cfff;
  --el-color-primary-light-7: #c6e2ff;
