@@ -155,7 +155,7 @@ export const usePlayerStore = defineStore({
   id: 'player',
   state: (): PlayerStore => ({
     playStatus: PlayStatus.STOPPED,
-    playProgress: { currentTime: 0, duration: 1000, buffered: 700 },
+    playProgress: { currentTime: 0, duration: 10000, buffered: 700 },
     isWebFullScreen: false,
     isFullScreen: false,
     playLevel: PlayLevel.FULL_HD,

@@ -91,6 +91,7 @@ const IconNamePlayPause = ref(IconKeys.Pause)
 const IconNameMute = ref(IconKeys.Unmute)
 
 const seekVideo = (currentTime: number) => {
+    console.log('seekVideo', currentTime)
     playProgress.value.currentTime = currentTime
 }
 
