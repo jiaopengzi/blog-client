@@ -2,54 +2,71 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 19:53:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-11 17:32:06
+ * @LastEditTime : 2024-09-14 18:38:24
  * @FilePath     : \blog-client\src\components\player\components\controls\index.vue
  * @Description  : 视频控制器
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-
     <!-- 视频控制器 -->
     <div ref="controls" class="controls">
-
-        <!-- 播放暂停按钮 -->
-        <button ref="playPause" class="controls-btn play-pause" @click="togglePlayPause">
-            <Icon :name="IconNamePlayPause" customClass="iconfont" />
-        </button>
-
         <!-- 视频进度条 -->
-        <ProgressBar ref="progressBar" :playProgress="playProgress" @seek="seekVideo" />
+        <ProgressBar class="row1" ref="progressBar" :playProgress="playProgress" @seek="seekVideo" />
 
-        <!-- 时间显示 -->
-        <div ref="timeDisplay" class="timeDisplay">{{ timeDisplay }}</div>
+        <!-- 第二行 -->
+        <div class="row2">
 
-        <!-- 静音按钮 -->
-        <button ref="mute" class="controls-btn" @click="toggleMute">
-            <Icon :name="IconNameMute" customClass="iconfont" />
-        </button>
+            <!-- 第二行左侧 -->
+            <div class="left-controls">
+                <!-- 播放暂停按钮 -->
+                <button ref="playPause" class="controls-btn play-pause" @click="togglePlayPause">
+                    <Icon :name="IconNamePlayPause" customClass="iconfont" />
+                </button>
 
-        <!-- 音量控制 -->
-        <el-slider ref="volume" class="volume" v-model="volume.volume" size="small" @input="seekVolume" />
+                <!-- 时间显示 -->
+                <div ref="timeDisplay" class="timeDisplay">{{ timeDisplay }}</div>
+            </div>
 
-        <!-- 设置 播放速度 清晰度 字幕 -->
-        <button ref="setting" class="controls-btn" @click="showSetting">
-            <Icon :name="IconKeys.Setting" customClass="iconfont" />
-        </button>
+            <!-- 第二行右侧 -->
+            <div class="right-controls">
+                <!-- 静音按钮 -->
+                <button ref="mute" class="controls-btn" @click="toggleMute">
+                    <Icon :name="IconNameMute" customClass="iconfont" />
+                </button>
 
-        <button ref="pip" class="controls-btn" @click="togglePIP">
-            <Icon :name="IconKeys.PictureInPicture" customClass="iconfont" />
-        </button>
+                <!-- 音量控制 -->
+                <el-slider ref="volume" class="volume" v-model="volume.volume" size="small" @input="seekVolume" />
 
-        <!-- 网页全屏 -->
-        <button ref="webFullscreen" class="controls-btn" @click="toggleWebFullscreen">
-            <Icon :name="IconKeys.WebFullscreen" customClass="iconfont" />
-        </button>
+                <!-- 设置 播放速度 清晰度 字幕 -->
+                <el-popover placement="top">
+                    <template #reference>
+                        <button ref="setting" class="controls-btn">
+                            <Icon :name="IconKeys.Setting" customClass="iconfont" />
+                        </button>
+                    </template>
+                    <VideoSetting :subtitle-status="subtitles" :play-level="playLevel" :play-speed="playSpeed"
+                        :is-loop="isLoop" @selected-subtitle-language="handleSelectedSubtitleLanguage"
+                        @get-is-loop="handelIsLoop" @get-play-level="handelPlayLevel"
+                        @get-play-speed="handelPlaySpeed" />
+                </el-popover>
 
-        <!-- 全屏 -->
-        <button ref="fullscreen" class="controls-btn" @click="toggleFullscreen">
-            <Icon :name="IconKeys.Fullscreen" customClass="iconfont" />
-        </button>
+
+                <button ref=" pip" class="controls-btn" @click="togglePIP">
+                    <Icon :name="IconKeys.PictureInPicture" customClass="iconfont" />
+                </button>
+
+                <!-- 网页全屏 -->
+                <button ref="webFullscreen" class="controls-btn" @click="toggleWebFullscreen">
+                    <Icon :name="IconKeys.WebFullscreen" customClass="iconfont" />
+                </button>
+
+                <!-- 全屏 -->
+                <button ref="fullscreen" class="controls-btn" @click="toggleFullscreen">
+                    <Icon :name="IconKeys.Fullscreen" customClass="iconfont" />
+                </button>
+            </div>
+        </div>
     </div>
 
 </template>
@@ -60,9 +77,12 @@ import { storeToRefs } from 'pinia'
 import { IconKeys } from '@/components/common/icons'
 import { formatDurationTime } from '@/utils/dateTime'
 import ProgressBar from '@/components/player/components/progress-bar'
+import VideoSetting from '@/components/player/components/setting'
 
-import { usePlayerStore, PlayStatus, PlayLevel, PlaySpeed, WatermarkType } from '@/stores/player'
+
+import { usePlayerStore, PlayStatus, PlayLevelItem, PlaySpeed, WatermarkType } from '@/stores/player'
 import type { PlayProgress, Subtitle, SubtitleStatus, Position, Logo, TextWatermark, Watermark, PlayerSize } from '@/stores/player'
+import { handleConfirmCommon } from '@/utils/confirm'
 
 
 defineOptions({ name: 'VideoControls' })
@@ -71,7 +91,7 @@ defineOptions({ name: 'VideoControls' })
 const palyerStore = usePlayerStore()
 const { playStatus, playProgress, isWebFullScreen, isFullScreen,
     playLevel, playSpeed, volume, showControlBar,
-    useVideoControls, subtitles, isPictureInPicture, size, isMobile } = storeToRefs(palyerStore)
+    useVideoControls, subtitles, isPictureInPicture, size, isMobile, isLoop } = storeToRefs(palyerStore)
 
 
 // 定义所有的元素的 ref
@@ -121,17 +141,31 @@ const toggleMute = () => {
     }
 }
 
-
+// 视频时间显示
 const timeDisplay = computed(() => {
     const currentFormatted = formatDurationTime(playProgress.value.currentTime)
     const durationFormatted = formatDurationTime(playProgress.value.duration)
     return `${currentFormatted} / ${durationFormatted}`
 })
 
+// 处理选择字幕语言
+const handleSelectedSubtitleLanguage = (language: string) => {
+    palyerStore.setSelectedSubtitleLanguage(language)
+}
 
-// 显示设置
-const showSetting = () => {
-    console.log('showSetting')
+// 处理播放清晰度
+const handelPlayLevel = (level: PlayLevelItem) => {
+    palyerStore.setSelectedPlayLevel(level)
+}
+
+// 处理播放速度
+const handelPlaySpeed = (speed: PlaySpeed) => {
+    palyerStore.setPlaySpeed(speed)
+}
+
+// 处理是否循环播放
+const handelIsLoop = () => {
+    palyerStore.toggleLoop()
 }
 
 // 切换画中画
@@ -151,51 +185,77 @@ const toggleFullscreen = () => {
 
 </script>
 
-
-
 <style scoped lang="scss">
 .controls {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    right: 10px;
+    width: 100%;
+    height: 60px;
+    background: red;
+
+    // 垂直居中
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    // 控制器背景透明
-    background: rgba(0, 0, 0, 0);
-    padding: 10px;
-    border-radius: 5px;
-}
+    flex-direction: column;
+    justify-content: center;
 
-.timeDisplay {
-    // 保持在一行
-    white-space: nowrap;
-    margin: 0 10px;
-}
 
-.volume {
-    width: 150px;
-    margin: 0 8px;
-}
+    .row2 {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 10px;
 
-.controls-btn {
-    background: transparent;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin: 0 2px;
-}
+        .iconfont {
+            font-size: 20px;
+            fill: rgba(255, 255, 255, 0.9);
+            transition: fill 0.3s ease;
+        }
 
-.iconfont {
-    font-size: 24px;
-    fill: rgba(255, 255, 255, 0.9);
-    transition: fill 0.3s ease;
-    /* 添加平滑过渡效果 */
-}
+        .iconfont:hover {
+            fill: rgba(255, 255, 255, 1.0);
+        }
 
-.iconfont:hover {
-    fill: rgba(255, 255, 255, 1.0);
-    /* 悬停时的颜色变化 */
+        .left-controls {
+            display: flex;
+            align-items: center;
+
+            .timeDisplay {
+                white-space: nowrap;
+                margin: 0 10px;
+            }
+        }
+
+        .right-controls {
+            display: flex;
+            align-items: center;
+
+            .volume {
+                width: 100px;
+                margin: 0 8px;
+            }
+        }
+
+        .controls-btn {
+            background: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0 2px;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+
+            &:hover {
+                transform: scale(1.2);
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+
+            &:active {
+                transform: scale(1.1);
+                background-color: rgba(255, 255, 255, 0.2);
+            }
+
+            &:focus {
+                outline: none;
+                background-color: rgba(255, 255, 255, 0.3);
+            }
+        }
+    }
 }
 </style>

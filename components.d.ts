@@ -35,6 +35,8 @@ declare module 'vue' {
     ElCarousel: typeof import('element-plus/es')['ElCarousel']
     ElCarouselItem: typeof import('element-plus/es')['ElCarouselItem']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
+    ElCollapse: typeof import('element-plus/es')['ElCollapse']
+    ElCollapseItem: typeof import('element-plus/es')['ElCollapseItem']
     ElContainer: typeof import('element-plus/es')['ElContainer']
     ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
     ElDescriptions: typeof import('element-plus/es')['ElDescriptions']
@@ -85,6 +87,7 @@ declare module 'vue' {
     LayoutHeaderPhone: typeof import('./src/components/layout/header/phone.vue')['default']
     PlayerComponentsControls: typeof import('./src/components/player/components/controls/index.vue')['default']
     PlayerComponentsProgressBar: typeof import('./src/components/player/components/progress-bar/index.vue')['default']
+    PlayerComponentsSetting: typeof import('./src/components/player/components/setting/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 15:42:11
  * @LastPlayers  : jiaopengzi
- * @LastEditTime : 2024-09-11 15:24:08
+ * @LastEditTime : 2024-09-14 18:36:03
  * @FilePath     : \blog-client\src\stores\player.ts
  * @Description  : 播放器 store
  * @Blog         : https://jiaopengzi.com
@@ -23,7 +23,7 @@ export enum PlayStatus {
 }
 
 // 播放质量
-export enum PlayLevel {
+export enum PlayLevelItem {
   EIGHT_K = '8k',
   FOUR_K = '4k',
   TWO_K = '2k',
@@ -34,13 +34,18 @@ export enum PlayLevel {
 
 // 播放速度
 export enum PlaySpeed {
-  VERY_SLOW = 0.25,
-  SLOW = 0.5,
-  MEDIUM_SLOW = 0.75,
-  NORMAL = 1,
-  FAST = 1.5,
-  FASTER = 2,
-  VERY_FAST = 4,
+  VERY_SLOW = '0.25',
+  SLOW = '0.5',
+  MEDIUM_SLOW = '0.75',
+  NORMAL = '1',
+  FAST = '1.5',
+  FASTER = '2',
+  VERY_FAST = '4',
+}
+
+export interface PlayLevel {
+  level: PlayLevelItem // 播放质量
+  allLevels: PlayLevelItem[] // 所有可用的播放质量
 }
 
 export interface Volume {
@@ -58,16 +63,14 @@ export interface PlayProgress {
 
 // 字幕
 export interface Subtitle {
-  language: string // 字幕语言，例如 'en', 'zh', 'es' 等
   label: string // 字幕标签，例如 'English', '中文', 'Español' 等
   url: string // 字幕文件的URL
 }
 
 // 字幕状态
 export interface SubtitleStatus {
-  hasSubtitles: boolean // 是否有字幕
-  availableSubtitles?: Subtitle[] // 可用字幕列表
-  selectedSubtitle?: Subtitle // 当前选择的字幕（如果有）
+  availableSubtitles?: { [language: string]: Subtitle } // 可用字幕列表,字幕语言，例如 'en', 'zh', 'es' 等
+  selectedSubtitleLanguage?: string // 当前选择的字幕
 }
 
 // 位置
@@ -148,6 +151,8 @@ export interface PlayerStore {
   watermark?: Watermark
   // logo
   logo?: Logo
+  // 是否循环播放
+  isLoop: boolean
 }
 
 // 定义 store
@@ -155,10 +160,13 @@ export const usePlayerStore = defineStore({
   id: 'player',
   state: (): PlayerStore => ({
     playStatus: PlayStatus.STOPPED,
-    playProgress: { currentTime: 0, duration: 10000, buffered: 700 },
+    playProgress: { currentTime: 0, duration: 1000, buffered: 700 },
     isWebFullScreen: false,
     isFullScreen: false,
-    playLevel: PlayLevel.FULL_HD,
+    playLevel: {
+      level: PlayLevelItem.FULL_HD,
+      allLevels: [PlayLevelItem.TWO_K, PlayLevelItem.FULL_HD, PlayLevelItem.HD, PlayLevelItem.SD],
+    },
     playSpeed: PlaySpeed.NORMAL,
     volume: {
       volume: 50, // 默认音量
@@ -167,10 +175,18 @@ export const usePlayerStore = defineStore({
     }, // 默认音量
     showControlBar: true,
     useVideoControls: false,
-    subtitles: { hasSubtitles: false },
+    subtitles: {
+      availableSubtitles: {
+        en: { label: 'English', url: 'https://example.com/en.vtt' },
+        zh: { label: '中文', url: 'https://example.com/zh.vtt' },
+        es: { label: 'Español', url: 'https://example.com/es.vtt' },
+      },
+      selectedSubtitleLanguage: '',
+    },
     isPictureInPicture: false,
     size: { width: 640, height: 360 },
     isMobile: false,
+    isLoop: false,
   }),
   getters: {
     // 获取当前播放状态是否为播放中
@@ -256,6 +272,11 @@ export const usePlayerStore = defineStore({
         this.isFullScreen = false
       }
     },
+
+    // 设置播放质量
+    setSelectedPlayLevel(level: PlayLevelItem) {
+      this.playLevel.level = level
+    },
     // 设置播放质量
     setPlayLevel(level: PlayLevel) {
       this.playLevel = level
@@ -264,7 +285,6 @@ export const usePlayerStore = defineStore({
     setPlaySpeed(speed: PlaySpeed) {
       this.playSpeed = speed
     },
-
     // 设置是否显示控制栏
     toggleControlBar() {
       this.showControlBar = !this.showControlBar
@@ -277,6 +297,19 @@ export const usePlayerStore = defineStore({
     setPlayerSize(width: number, height: number) {
       this.size = { width, height }
     },
+
+    // 设置字幕
+    setSelectedSubtitleLanguage(language: string) {
+      // 如果字幕可用且选择的字幕语言存在
+      if (
+        this.subtitles &&
+        this.subtitles.availableSubtitles &&
+        this.subtitles.availableSubtitles[language]
+      ) {
+        this.subtitles.selectedSubtitleLanguage = language
+      }
+    },
+
     // 设置字幕
     setSubtitles(subtitles: SubtitleStatus) {
       this.subtitles = subtitles
@@ -298,6 +331,11 @@ export const usePlayerStore = defineStore({
     // 设置 logo
     setLogo(logo: Logo) {
       this.logo = logo
+    },
+
+    // 设置是否循环播放
+    toggleLoop() {
+      this.isLoop = !this.isLoop
     },
   },
 })

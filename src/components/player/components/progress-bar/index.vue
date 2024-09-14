@@ -2,15 +2,11 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-11 16:17:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-13 19:16:46
+ * @LastEditTime : 2024-09-14 12:05:16
  * @FilePath     : \blog-client\src\components\player\components\progress-bar\index.vue
  * @Description  : 视频进度条
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
--->
-<!--
- * @FilePath     : \blog-client\src\components\player\components\progress-bar\index.vue
- * @Description  : 视频进度条
 -->
 <template>
     <!-- 视频进度条 -->
@@ -126,6 +122,26 @@ const onProgressBarClick = (e: MouseEvent | TouchEvent) => {
     }
 }
 
+// 显示时间提示
+const showTooltip = (offsetX: number, currentTime: number, rect: DOMRect) => {
+    // 如果 tooltip 存在且 currentTime 在合理范围内，则显示 tooltip
+    if (tooltipRef.value && currentTime >= 0 && currentTime <= props.playProgress.duration) {
+        tooltipRef.value.textContent = formatDurationTime(currentTime)
+        tooltipRef.value.style.left = `${offsetX}px`
+        tooltipRef.value.style.display = 'block'
+
+        // 确保 tooltip 不会溢出屏幕边界
+        const tooltipRect = tooltipRef.value.getBoundingClientRect()
+        if (tooltipRect.right >= rect.right) {
+            console.log("rect.left", rect)
+            console.log(rect.left)
+            tooltipRef.value.style.left = `${rect.right - rect.left - tooltipRect.width}px`
+        } else if (tooltipRect.left < 0) {
+            tooltipRef.value.style.left = `0px`
+        }
+    }
+}
+
 // 鼠标移动到进度条上 显示时间提示
 const onProgressBarMousemove = (e: MouseEvent) => {
     if (progressBarRef.value) {
@@ -134,17 +150,14 @@ const onProgressBarMousemove = (e: MouseEvent) => {
         const totalWidth = rect.width
         const { currentTime } = getCurrentTimeAndOffsetX(offsetX, totalWidth)
 
-        if (tooltipRef.value) {
-            tooltipRef.value.textContent = formatDurationTime(currentTime)
-            tooltipRef.value.style.left = `${offsetX}px`
-            tooltipRef.value.style.display = 'block'
-        }
+        // 显示时间提示
+        showTooltip(offsetX, currentTime, rect)
     }
 }
 
 // 鼠标移出进度条 隐藏时间提示
 const onProgressBarMouseleave = () => {
-    if (!isDragging && tooltipRef.value) { // 修改部分
+    if (!isDragging && tooltipRef.value) {
         tooltipRef.value.style.display = 'none'
     }
 }
@@ -206,11 +219,7 @@ const onSliderPointerMove = (event: MouseEvent | TouchEvent) => {
         updateSliderAndPlayed(offsetX, totalWidth)
 
         // 显示时间提示
-        if (tooltipRef.value) { // 修改部分
-            tooltipRef.value.textContent = formatDurationTime(currentTime)
-            tooltipRef.value.style.left = `${offsetX}px`
-            tooltipRef.value.style.display = 'block'
-        }
+        showTooltip(offsetX, currentTime, rect)
     }
 }
 
@@ -250,22 +259,22 @@ onBeforeUnmount(() => {
 })
 </script>
 
-
 <style scoped lang="scss">
+$bar-height: 6px; // 进度条高度
+
 .progress-bar {
     position: relative;
     width: 100%;
-    height: 6px;
+    height: $bar-height;
     background: #ccc;
     cursor: pointer;
-    margin: 0 10px;
     border-radius: 3px;
 
     .buffered {
         position: absolute;
         top: 0;
         left: 0;
-        height: 100%;
+        height: $bar-height;
         background: #aaa;
         border-radius: 3px;
         z-index: 1;
@@ -275,7 +284,7 @@ onBeforeUnmount(() => {
         position: absolute;
         top: 0;
         left: 0;
-        height: 100%;
+        height: $bar-height;
         background: $primary-color;
         border-radius: 3px;
         z-index: 2;
@@ -303,6 +312,9 @@ onBeforeUnmount(() => {
         transform: translate(-50%, -50%);
         z-index: 3;
         cursor: pointer;
+        border: 2px solid $primary-color; // 添加外边框
+
+        transition: transform 0.2s ease; // 添加变大动画效果
 
         // 增大滑块的选中范围
         &::before {
@@ -314,6 +326,16 @@ onBeforeUnmount(() => {
             height: 40px; // 增大选中范围
             transform: translate(-50%, -50%);
             background: transparent;
+        }
+
+        &:hover {
+            transform: translate(-50%, -50%) scale(1.2); // 鼠标放上去时变大
+            cursor: grab; // 鼠标放上去时显示手掌形状
+        }
+
+        &:active {
+            cursor: grabbing; // 鼠标按下时显示拳头形状
+            transform: translate(-50%, -50%) scale(1.0); // 鼠标按下时恢复原来形状
         }
     }
 
@@ -327,5 +349,6 @@ onBeforeUnmount(() => {
         background: transparent;
         z-index: 0; // 确保点击区域在滑块和进度条下方
     }
+
 }
 </style>

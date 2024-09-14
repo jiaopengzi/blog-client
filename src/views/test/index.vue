@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-13 19:11:32
+ * @LastEditTime : 2024-09-14 17:40:58
  * @FilePath     : \blog-client\src\views\test\index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -15,9 +15,29 @@
 </template>
 
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue'
+
+import { ref, defineAsyncComponent } from 'vue'
+import type { PlayLevel, SubtitleStatus } from '@/stores/player'
+import { PlaySpeed, PlayLevelItem } from '@/stores/player'
 defineOptions({ name: 'TestVue' })
 const VideoControls = defineAsyncComponent(() => import('@/components/player/components/controls'))
-</script>
+// const VideoSetting = defineAsyncComponent(() => import('@/components/player/components/setting'))
 
-<style scoped lang="scss"></style>
+const subtitles = ref<SubtitleStatus>({
+  availableSubtitles: {
+    en: { label: 'English', url: 'https://example.com/en.vtt' },
+    zh: { label: '中文', url: 'https://example.com/zh.vtt' },
+    es: { label: 'Español', url: 'https://example.com/es.vtt' },
+  },
+  selectedSubtitle: '',
+})
+
+const playLevel = {
+  level: PlayLevelItem.FULL_HD,
+  // allLevels: [PlayLevelItem.TWO_K],
+  allLevels: [PlayLevelItem.TWO_K, PlayLevelItem.FULL_HD, PlayLevelItem.HD, PlayLevelItem.SD],
+}
+
+const playSpeed = ref<PlaySpeed>(PlaySpeed.NORMAL)
+
+</script>
