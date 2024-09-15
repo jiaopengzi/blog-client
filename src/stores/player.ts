@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 15:42:11
  * @LastPlayers  : jiaopengzi
- * @LastEditTime : 2024-09-14 18:36:03
+ * @LastEditTime : 2024-09-15 15:43:44
  * @FilePath     : \blog-client\src\stores\player.ts
  * @Description  : 播放器 store
  * @Blog         : https://jiaopengzi.com
@@ -82,23 +82,23 @@ export interface Position {
 // logo
 export interface Logo {
   isShow: boolean // 是否显示 logo
-  url: string // logo 的 URL 地址
+  imgUrl: string // logo 的 URL 地址
   width: number // logo 的宽度（像素）
   height: number // logo 的高度（像素）
   position: Position // logo 的位置
 }
 
 // 水印类型
-export enum WatermarkType {
+export enum WatermarkEnum {
   TEXT = 'text',
   LOGO = 'logo',
 }
 
 // 文字水印
 export interface TextWatermark {
-  type: WatermarkType.TEXT // 类型为 'text'
+  type: WatermarkEnum.TEXT // 类型为 'text'
   content: string // 水印内容，例如 'Sample Watermark'
-  position: Position // 水印的位置
+  position?: Position // 水印的位置
   opacity: number // 水印透明度，范围从 0 (完全透明) 到 1 (完全不透明)
   fontSize: string // 水印字体大小，例如 '14px', '1em' 等
   color: string // 水印颜色，例如 '#FFFFFF'
@@ -106,12 +106,22 @@ export interface TextWatermark {
 
 // logo 水印
 export interface LogoWatermark {
-  type: WatermarkType.LOGO // 类型为 'logo'
+  type: WatermarkEnum.LOGO // 类型为 'logo'
   logo: Logo // logo 属性
 }
 
 // 水印
 export type Watermark = TextWatermark | LogoWatermark
+
+// 判断是否为文字水印
+export function isTextWatermark(watermark: Watermark): watermark is TextWatermark {
+  return watermark.type === WatermarkEnum.TEXT
+}
+
+// 判断是否为 logo 水印
+export function isLogoWatermark(watermark: Watermark): watermark is LogoWatermark {
+  return watermark.type === WatermarkEnum.LOGO
+}
 
 // 播放器尺寸
 export interface PlayerSize {
@@ -201,16 +211,18 @@ export const usePlayerStore = defineStore({
   actions: {
     // 设置音量
     setVolume(newVolume: number) {
+      // console.log('newVolume', newVolume)
       this.volume.lastVolume = this.volume.volume
       if (newVolume <= 0) {
+        console.log('newVolume', newVolume)
         this.volume.volume = 0
-        this.volume.muted = false
+        this.volume.muted = true
       } else if (newVolume > 100) {
         this.volume.lastVolume = 100
-        this.volume.muted = true
+        this.volume.muted = false
       } else {
         this.volume.volume = newVolume
-        this.volume.muted = true
+        this.volume.muted = false
       }
     },
     // 设置静音状态
@@ -258,8 +270,30 @@ export const usePlayerStore = defineStore({
     setPlayProgress(currentTime: number, duration: number) {
       this.playProgress = { currentTime, duration }
     },
+
+    // 快进
+    fastForward() {
+      // 判断当前播放时间是否大于总时长
+      if (this.playProgress.currentTime + 10 >= this.playProgress.duration) {
+        this.playProgress.currentTime = this.playProgress.duration
+        return
+      }
+      this.playProgress.currentTime += 10
+    },
+
+    // 快退
+    rewind() {
+      // 判断当前播放时间是否小于 0
+      if (this.playProgress.currentTime - 10 <= 0) {
+        this.playProgress.currentTime = 0
+        return
+      }
+      this.playProgress.currentTime -= 10
+    },
+
     // 切换全屏状态
     toggleFullScreen() {
+      console.log('toggleFullScreen')
       this.isFullScreen = !this.isFullScreen
       if (this.isFullScreen) {
         this.isWebFullScreen = false
@@ -271,6 +305,13 @@ export const usePlayerStore = defineStore({
       if (this.isWebFullScreen) {
         this.isFullScreen = false
       }
+    },
+
+    // 退出全屏
+    exitFullScreen() {
+      console.log('exitFullScreen')
+      this.isFullScreen = false
+      this.isWebFullScreen = false
     },
 
     // 设置播放质量

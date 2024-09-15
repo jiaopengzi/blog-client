@@ -2,42 +2,45 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-14 17:40:58
+ * @LastEditTime : 2024-09-15 16:16:33
  * @FilePath     : \blog-client\src\views\test\index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
+  <div ref=container class="container">
+    <VideoWatermark :watermark="textContent" :container="container" />
+  </div>
 
-  <VideoControls />
 
 </template>
 
 <script setup lang="ts">
 
-import { ref, defineAsyncComponent } from 'vue'
-import type { PlayLevel, SubtitleStatus } from '@/stores/player'
-import { PlaySpeed, PlayLevelItem } from '@/stores/player'
+import { defineAsyncComponent, useTemplateRef } from 'vue'
 defineOptions({ name: 'TestVue' })
-const VideoControls = defineAsyncComponent(() => import('@/components/player/components/controls'))
-// const VideoSetting = defineAsyncComponent(() => import('@/components/player/components/setting'))
+import type { Watermark, TextWatermark, LogoWatermark, Logo } from '@/stores/player'
+import { WatermarkEnum } from '@/stores/player'
+import VideoWatermark from '@/components/player/components/watermark'
+// const VideoWatermark = defineAsyncComponent(() => import('@/components/player/components/watermark'))
 
-const subtitles = ref<SubtitleStatus>({
-  availableSubtitles: {
-    en: { label: 'English', url: 'https://example.com/en.vtt' },
-    zh: { label: '中文', url: 'https://example.com/zh.vtt' },
-    es: { label: 'Español', url: 'https://example.com/es.vtt' },
-  },
-  selectedSubtitle: '',
-})
+const container = useTemplateRef<HTMLElement | null>("container")
 
-const playLevel = {
-  level: PlayLevelItem.FULL_HD,
-  // allLevels: [PlayLevelItem.TWO_K],
-  allLevels: [PlayLevelItem.TWO_K, PlayLevelItem.FULL_HD, PlayLevelItem.HD, PlayLevelItem.SD],
+const textContent: TextWatermark = {
+  type: WatermarkEnum.TEXT,
+  content: '哈哈哈',
+  fontSize: "14px",
+  color: 'red',
+  opacity: 0.5,
 }
 
-const playSpeed = ref<PlaySpeed>(PlaySpeed.NORMAL)
-
 </script>
+
+<style scoped lang="scss">
+.container {
+  width: 500px;
+  height: 500px;
+  background-color: green
+}
+</style>

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-14 10:53:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-14 18:40:47
+ * @LastEditTime : 2024-09-15 13:55:27
  * @FilePath     : \blog-client\src\components\player\components\setting\index.vue
  * @Description  : 视频设置 - 播放速度、清晰度、字幕
  * @Blog         : https://jiaopengzi.com
@@ -132,7 +132,7 @@ const handlePlaySpeedChange = (speed: PlaySpeed) => {
 }
 
 // 处理播放清晰度变化
-const handlePlayLevelChange = (level: string) => {
+const handlePlayLevelChange = (level: PlayLevelItem) => {
     selectedPlayLevel.value = level as PlayLevelItem
     emit('get-play-level', level)
 }

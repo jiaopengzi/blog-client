@@ -22,6 +22,7 @@ declare module 'vue' {
     CommonSwitchGroup: typeof import('./src/components/common/switch-group/index.vue')['default']
     CommonTagItem: typeof import('./src/components/common/tag-item/index.vue')['default']
     CommonUserInfoDropdown: typeof import('./src/components/common/user-info-dropdown/index.vue')['default']
+    copy: typeof import('./src/components/player/components/controls/index copy.vue')['default']
     EditorCodemirror: typeof import('./src/components/editor/codemirror/index.vue')['default']
     EditorCoreEditorComment: typeof import('./src/components/editor/core/EditorComment.vue')['default']
     EditorCoreEditorPost: typeof import('./src/components/editor/core/EditorPost.vue')['default']
@@ -88,6 +89,8 @@ declare module 'vue' {
     PlayerComponentsControls: typeof import('./src/components/player/components/controls/index.vue')['default']
     PlayerComponentsProgressBar: typeof import('./src/components/player/components/progress-bar/index.vue')['default']
     PlayerComponentsSetting: typeof import('./src/components/player/components/setting/index.vue')['default']
+    PlayerComponentsVideo: typeof import('./src/components/player/components/video/index.vue')['default']
+    PlayerComponentsWatermark: typeof import('./src/components/player/components/watermark/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

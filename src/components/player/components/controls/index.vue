@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 19:53:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-14 18:38:24
+ * @LastEditTime : 2024-09-15 14:13:21
  * @FilePath     : \blog-client\src\components\player\components\controls\index.vue
  * @Description  : 视频控制器
  * @Blog         : https://jiaopengzi.com
@@ -72,12 +72,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, useTemplateRef, computed } from 'vue'
+import { ref, useTemplateRef, computed, watch, onMounted, watchEffect } from 'vue'
 import { storeToRefs } from 'pinia'
 import { IconKeys } from '@/components/common/icons'
 import { formatDurationTime } from '@/utils/dateTime'
 import ProgressBar from '@/components/player/components/progress-bar'
 import VideoSetting from '@/components/player/components/setting'
+import { debounce } from 'throttle-debounce'
+import { useMagicKeys } from '@vueuse/core'
+import { PlayerCommandsKey, PlayerCommands } from '@/components/player/command'
 
 
 import { usePlayerStore, PlayStatus, PlayLevelItem, PlaySpeed, WatermarkType } from '@/stores/player'
@@ -106,39 +109,67 @@ const webFullscreenRef = useTemplateRef<HTMLButtonElement | null>("webFullscreen
 const fullscreenRef = useTemplateRef<HTMLButtonElement | null>("fullscreen")
 const sliderRef = useTemplateRef<HTMLDivElement | null>("slider") // 新增滑块的 ref
 
-
+// 定义图标名称
 const IconNamePlayPause = ref(IconKeys.Pause)
 const IconNameMute = ref(IconKeys.Unmute)
 
+// 设置视频进度值
 const seekVideo = (currentTime: number) => {
-    console.log('seekVideo', currentTime)
     playProgress.value.currentTime = currentTime
 }
 
+// 设置音量
 const seekVolume = () => {
     palyerStore.setVolume(volume.value.volume)
+}
+
+// 注册快捷键
+const keys = useMagicKeys() // 使用 useMagicKeys() 之后，就可以通过 keys 来获取键盘按键的状态了
+const registerHotKeys = () => {
+    Object.values(PlayerCommandsKey).forEach((item) => {
+        const hotKey = PlayerCommands[item].hotKey
+        if (hotKey) {
+
+            let intervalId: number | null = null // 用于存储长按的定时器 id
+
+            watch(keys[hotKey], (v) => {
+                // v 为 true 时表示按下了快捷键 v 为 false 时释放了快捷键
+                // console.log('hotKey', hotKey, v)
+                // console.log('item[0]', item)
+                if (v) {
+                    // 执行普通按键逻辑
+                    if (PlayerCommands[item].action) PlayerCommands[item].action()
+
+                    // 按下快捷键
+                    if (PlayerCommands[item].longPressAction) {
+                        // 开始检测长按
+                        intervalId = window.setInterval(() => {
+                            if (PlayerCommands[item].longPressAction) PlayerCommands[item].longPressAction()
+                        }, 200) // 200ms 作为长按的阈值
+                    }
+
+                } else {
+                    // 清除长按定时器
+                    if (intervalId) {
+                        clearInterval(intervalId);
+                        intervalId = null;
+                    }
+                }
+            })
+        }
+    })
 }
 
 
 // 切换播放暂停
 const togglePlayPause = () => {
     palyerStore.togglePlayPause()
-    if (playStatus.value === PlayStatus.PLAYING) {
-        IconNamePlayPause.value = IconKeys.Play
-    } else {
-        IconNamePlayPause.value = IconKeys.Pause
-    }
 }
 
 
 // 切换静音
 const toggleMute = () => {
     palyerStore.toggleMute()
-    if (volume.value.muted) {
-        IconNameMute.value = IconKeys.Mute
-    } else {
-        IconNameMute.value = IconKeys.Unmute
-    }
 }
 
 // 视频时间显示
@@ -183,13 +214,38 @@ const toggleFullscreen = () => {
     palyerStore.toggleFullScreen()
 }
 
+
+// 监控是否静音, 切换静音图标
+watchEffect(() => {
+    if (volume.value.muted) {
+        IconNameMute.value = IconKeys.Mute
+    } else {
+        IconNameMute.value = IconKeys.Unmute
+    }
+})
+
+
+// 监控播放状态, 切换播放暂停图标
+watchEffect(() => {
+    if (playStatus.value === PlayStatus.PLAYING) {
+        IconNamePlayPause.value = IconKeys.Play
+    } else {
+        IconNamePlayPause.value = IconKeys.Pause
+    }
+})
+
+
+onMounted(() => {
+    registerHotKeys() // 注册快捷键
+})
+
 </script>
 
 <style scoped lang="scss">
 .controls {
     width: 100%;
     height: 60px;
-    background: red;
+    background-color: rgba(0, 0, 0, 0.2);
 
     // 垂直居中
     display: flex;
@@ -249,11 +305,6 @@ const toggleFullscreen = () => {
             &:active {
                 transform: scale(1.1);
                 background-color: rgba(255, 255, 255, 0.2);
-            }
-
-            &:focus {
-                outline: none;
-                background-color: rgba(255, 255, 255, 0.3);
             }
         }
     }

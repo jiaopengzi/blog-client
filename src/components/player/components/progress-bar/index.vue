@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-11 16:17:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-14 12:05:16
+ * @LastEditTime : 2024-09-15 13:53:24
  * @FilePath     : \blog-client\src\components\player\components\progress-bar\index.vue
  * @Description  : 视频进度条
  * @Blog         : https://jiaopengzi.com
@@ -133,8 +133,8 @@ const showTooltip = (offsetX: number, currentTime: number, rect: DOMRect) => {
         // 确保 tooltip 不会溢出屏幕边界
         const tooltipRect = tooltipRef.value.getBoundingClientRect()
         if (tooltipRect.right >= rect.right) {
-            console.log("rect.left", rect)
-            console.log(rect.left)
+            // console.log("rect.left", rect)
+            // console.log(rect.left)
             tooltipRef.value.style.left = `${rect.right - rect.left - tooltipRect.width}px`
         } else if (tooltipRect.left < 0) {
             tooltipRef.value.style.left = `0px`
