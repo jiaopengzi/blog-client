@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 15:42:11
  * @LastPlayers  : jiaopengzi
- * @LastEditTime : 2024-09-15 15:43:44
+ * @LastEditTime : 2024-09-16 15:46:43
  * @FilePath     : \blog-client\src\stores\player.ts
  * @Description  : 播放器 store
  * @Blog         : https://jiaopengzi.com
@@ -79,48 +79,16 @@ export interface Position {
   y: number | string // 垂直位置，可以是像素值（例如 100）或百分比字符串（例如 '50%'）
 }
 
-// logo
-export interface Logo {
-  isShow: boolean // 是否显示 logo
-  imgUrl: string // logo 的 URL 地址
-  width: number // logo 的宽度（像素）
-  height: number // logo 的高度（像素）
-  position: Position // logo 的位置
-}
-
-// 水印类型
-export enum WatermarkEnum {
-  TEXT = 'text',
-  LOGO = 'logo',
-}
-
 // 文字水印
 export interface TextWatermark {
-  type: WatermarkEnum.TEXT // 类型为 'text'
   content: string // 水印内容，例如 'Sample Watermark'
-  position?: Position // 水印的位置
-  opacity: number // 水印透明度，范围从 0 (完全透明) 到 1 (完全不透明)
-  fontSize: string // 水印字体大小，例如 '14px', '1em' 等
-  color: string // 水印颜色，例如 '#FFFFFF'
+  style?: Partial<CSSStyleDeclaration> // 水印样式
 }
 
 // logo 水印
 export interface LogoWatermark {
-  type: WatermarkEnum.LOGO // 类型为 'logo'
-  logo: Logo // logo 属性
-}
-
-// 水印
-export type Watermark = TextWatermark | LogoWatermark
-
-// 判断是否为文字水印
-export function isTextWatermark(watermark: Watermark): watermark is TextWatermark {
-  return watermark.type === WatermarkEnum.TEXT
-}
-
-// 判断是否为 logo 水印
-export function isLogoWatermark(watermark: Watermark): watermark is LogoWatermark {
-  return watermark.type === WatermarkEnum.LOGO
+  imgUrl: string // logo 的 URL 地址
+  style?: Partial<CSSStyleDeclaration> // logo 的样式
 }
 
 // 播放器尺寸
@@ -158,9 +126,8 @@ export interface PlayerStore {
   // 是否为移动端
   isMobile: boolean
   // 水印
-  watermark?: Watermark
-  // logo
-  logo?: Logo
+  textWatermark?: TextWatermark
+  logoWatermark?: LogoWatermark
   // 是否循环播放
   isLoop: boolean
 }
@@ -208,13 +175,12 @@ export const usePlayerStore = defineStore({
     // 获取当前播放状态是否为缓冲中
     isBuffering: (state) => state.playStatus === PlayStatus.BUFFERING,
   },
+
   actions: {
     // 设置音量
     setVolume(newVolume: number) {
-      // console.log('newVolume', newVolume)
       this.volume.lastVolume = this.volume.volume
       if (newVolume <= 0) {
-        console.log('newVolume', newVolume)
         this.volume.volume = 0
         this.volume.muted = true
       } else if (newVolume > 100) {
@@ -225,6 +191,7 @@ export const usePlayerStore = defineStore({
         this.volume.muted = false
       }
     },
+
     // 设置静音状态
     toggleMute() {
       this.volume.muted = !this.volume.muted
@@ -240,18 +207,22 @@ export const usePlayerStore = defineStore({
     play() {
       this.playStatus = PlayStatus.PLAYING
     },
+
     // 暂停
     pause() {
       this.playStatus = PlayStatus.PAUSED
     },
+
     // 停止
     stop() {
       this.playStatus = PlayStatus.STOPPED
     },
+
     // 缓冲
     buffering() {
       this.playStatus = PlayStatus.BUFFERING
     },
+
     // 播放结束
     end() {
       this.playStatus = PlayStatus.ENDED
@@ -318,22 +289,27 @@ export const usePlayerStore = defineStore({
     setSelectedPlayLevel(level: PlayLevelItem) {
       this.playLevel.level = level
     },
+
     // 设置播放质量
     setPlayLevel(level: PlayLevel) {
       this.playLevel = level
     },
+
     // 设置播放速度
     setPlaySpeed(speed: PlaySpeed) {
       this.playSpeed = speed
     },
+
     // 设置是否显示控制栏
     toggleControlBar() {
       this.showControlBar = !this.showControlBar
     },
+
     // 设置使用 video 默认 controls
     toggleVideoControls() {
       this.useVideoControls = !this.useVideoControls
     },
+
     // 设置播放器尺寸
     setPlayerSize(width: number, height: number) {
       this.size = { width, height }
@@ -355,6 +331,7 @@ export const usePlayerStore = defineStore({
     setSubtitles(subtitles: SubtitleStatus) {
       this.subtitles = subtitles
     },
+
     // 设置画中画状态
     togglePictureInPicture() {
       this.isPictureInPicture = !this.isPictureInPicture
@@ -365,13 +342,14 @@ export const usePlayerStore = defineStore({
       this.isMobile = isMobile
     },
 
-    // 设置水印
-    setWatermark(watermark: Watermark) {
-      this.watermark = watermark
+    // 设置文字水印
+    setTextWatermark(textWatermark: TextWatermark) {
+      this.textWatermark = textWatermark
     },
-    // 设置 logo
-    setLogo(logo: Logo) {
-      this.logo = logo
+
+    // 设置 logo 水印
+    setLogoWatermark(logoWatermark: LogoWatermark) {
+      this.logoWatermark = logoWatermark
     },
 
     // 设置是否循环播放
