@@ -2,26 +2,21 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-15 15:11:14
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-16 17:56:41
+ * @LastEditTime : 2024-09-17 00:52:20
  * @FilePath     : \blog-client\src\components\player\components\watermark\index.vue
  * @Description  : 水印
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-    <div>
-        <template v-if="isShowTextWatermark">
-            <i ref="textWatermarkRef" class="watermark text-watermark">{{ textWatermarkContent }}</i>
-        </template>
-        <template v-if="isShowLogoWatermark">
-            <img ref="logoWatermarkRef" class="watermark logo-watermark" :src="logoWatermarkLogoSrc" />
-        </template>
+    <div class="container" ref="containerRef">
+        <slot />
     </div>
 </template>
 
 <script setup lang="ts">
-
-import { useTemplateRef, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { useMutationObserver } from '@vueuse/core'
+import { ref, useTemplateRef, computed, onMounted, shallowRef, onBeforeUnmount } from 'vue'
 import type { TextWatermark, LogoWatermark } from '@/stores/player'
 import { parsePosition, type Position } from '@/utils/parser'
 
@@ -29,14 +24,23 @@ defineOptions({ name: 'VideoWatermark' })
 
 // 定义props
 const props = defineProps<{
-    container: HTMLElement | null
     textWatermark?: TextWatermark // 文字水印 可选
     logoWatermark?: LogoWatermark // logo 水印 可选
 }>()
 
 // 水印的 ref
-const textWatermarkRef = useTemplateRef<HTMLElement | null>("textWatermarkRef")
-const logoWatermarkRef = useTemplateRef<HTMLElement | null>("logoWatermarkRef")
+const containerRef = useTemplateRef<HTMLElement | null>("containerRef")
+const textWatermarkRef = shallowRef<HTMLSpanElement>()
+const logoWatermarkRef = shallowRef<HTMLImageElement>()
+
+//  定时器
+let intervalId: number
+
+// 停止观察
+const stopObservation = ref(false)
+
+// 是否自动刷新水印
+const isWatermarkAutoRefresh = ref(false)
 
 // 检查是否是文字水印
 const isShowTextWatermark = computed(() => props.textWatermark?.content)
@@ -44,29 +48,32 @@ const isShowTextWatermark = computed(() => props.textWatermark?.content)
 // 检查是否是 logo 水印
 const isShowLogoWatermark = computed(() => props.logoWatermark?.imgUrl)
 
-
 // 获取文字水印内容
 const textWatermarkContent = computed(() => props.textWatermark?.content || '')
 
 // 获取 logo 水印 logo
 const logoWatermarkLogoSrc = computed(() => props.logoWatermark?.imgUrl || '')
 
+// 获取文字水印的 z-index
+const textWatermarkZindex = computed(() => props.textWatermark?.style?.zIndex || "9998")
+
+// 获取 logo 水印的 z-index
+const logoWatermarkZindex = computed(() => props.logoWatermark?.style?.zIndex || "9999")
 
 
 /**
  * @description: 设置水印的样式
  * @param watermark 水印元素
  * @param style 水印样式
- * @param isRandomPosition 是否随机生成水印位置,默认为 false
+ * @param isRandomPosition 是否随机生成水印位置
  */
-const setWatermarkStyle = (watermark: HTMLElement | null, style: Partial<CSSStyleDeclaration>, isRandomPosition: boolean) => {
-    const container = props.container
+const setWatermarkStyle = (watermark: HTMLElement | undefined, style: Partial<CSSStyleDeclaration>, isRandomPosition: boolean) => {
+    const container = containerRef.value
 
     if (container && watermark) {
 
         // 首先设置基础样式
         Object.assign(watermark.style, style)
-
 
         // 获取容器的宽高
         const { clientWidth: containerWidth, clientHeight: containerHeight } = container
@@ -74,18 +81,15 @@ const setWatermarkStyle = (watermark: HTMLElement | null, style: Partial<CSSStyl
         // 获取水印的宽高
         const { clientWidth: watermarkWidth, clientHeight: watermarkHeight } = watermark
 
-        // 获取容器的 Left 和 Top
-        const { left: containerLeft, top: containerTop } = container.getBoundingClientRect()
-
+        // width 和 height 为水印的可移动范围,即容器的宽高减去水印的宽高,保证水印不会超出容器
         const width = containerWidth - watermarkWidth
         const height = containerHeight - watermarkHeight
 
         // 如果 isRandomPosition 为 true,则随机生成水印的位置
         if (isRandomPosition) {
-            style.left = `${containerLeft + Math.random() * width}px`
-            style.top = `${containerTop + Math.random() * height}px`
+            style.left = `${Math.random() * width}px`
+            style.top = `${Math.random() * height}px`
         } else {
-
             // 获取水印的 left 和 top
             const { left, top } = style
 
@@ -94,11 +98,10 @@ const setWatermarkStyle = (watermark: HTMLElement | null, style: Partial<CSSStyl
             const parseTop: Position = parsePosition(top)
 
             // 根据传入的位置类型设置 left 和 top
-            if (parseLeft.type === 'percent') style.left = `${containerLeft + parseLeft.value * width}px`
-            if (parseLeft.type === 'pixel') style.left = `${containerLeft + parseLeft.value}px`
-            if (parseTop.type === 'percent') style.top = `${containerTop + parseTop.value * height}px`
-            if (parseTop.type === 'pixel') style.top = `${containerTop + parseTop.value}px`
-
+            if (parseLeft.type === 'percent') style.left = `${parseLeft.value * width}px`
+            if (parseLeft.type === 'pixel') style.left = `${parseLeft.value}px`
+            if (parseTop.type === 'percent') style.top = `${parseTop.value * height}px`
+            if (parseTop.type === 'pixel') style.top = `${parseTop.value}px`
         }
 
         // 再次设置样式主要是为了设置 left 和 top
@@ -107,54 +110,141 @@ const setWatermarkStyle = (watermark: HTMLElement | null, style: Partial<CSSStyl
 
 }
 
-//  定时器
-let intervalId: number
 
-// 随机生成水印
-const runRandomRextWatermark = () => {
-    if (textWatermarkRef.value && props.textWatermark?.style) {
-        setWatermarkStyle(textWatermarkRef.value, props.textWatermark.style, true)
-        intervalId = setInterval(() => {
-            if (textWatermarkRef.value && props.textWatermark?.style) {
-                setWatermarkStyle(textWatermarkRef.value, props.textWatermark.style, true)
-            }
-        }, 5000)
+// 销毁水印
+const destroyWatermark = (watermark: HTMLElement | undefined) => {
+    if (watermark) {
+        watermark.remove()
+        watermark = undefined
     }
 }
 
+// 增加文字水印
+const appendTextWatermark = () => {
+    if (isShowTextWatermark.value) {
+        stopObservation.value = true // 停止观察
+        const textWatermark = document.createElement('span') // 创建 span 元素
+        textWatermark.style.position = 'absolute' // 设置绝对定位
+        textWatermark.style.zIndex = textWatermarkZindex.value // 设置 z-index
+        textWatermark.innerText = textWatermarkContent.value // 设置水印内容
+        containerRef.value?.appendChild(textWatermark) // 添加到容器中
+        textWatermarkRef.value = textWatermark // 设置水印 ref
 
-// logo水印
-const runLogoWatermark = () => {
-    if (logoWatermarkRef.value && props.logoWatermark?.style) {
-        setWatermarkStyle(logoWatermarkRef.value, props.logoWatermark.style, false)
+        // 设置水印样式
+        if (props.textWatermark?.style) {
+            setWatermarkStyle(textWatermarkRef.value, props.textWatermark.style, true)
+            intervalId = setInterval(() => {
+                if (textWatermarkRef.value && props.textWatermark?.style) {
+
+                    // 设置自动刷新水印为 true
+                    isWatermarkAutoRefresh.value = true
+
+                    // 刷新水印
+                    setWatermarkStyle(textWatermarkRef.value, props.textWatermark.style, true)
+
+                    // 异步设置自动刷新水印为 false
+                    setTimeout(() => {
+                        isWatermarkAutoRefresh.value = false
+                    }, 0)
+                }
+            }, 5000)
+        }
+
+        // 异步设置停止观察为 false
+        setTimeout(() => {
+            stopObservation.value = false
+        }, 0)
     }
 }
 
+// 增加 logo 水印
+const appendLogoWatermark = () => {
+    if (isShowLogoWatermark.value) {
+        stopObservation.value = true // 停止观察
+        const logoWatermark = document.createElement('img') // 创建 img 元素
+        logoWatermark.style.position = 'absolute' // 设置绝对定位
+        logoWatermark.style.zIndex = logoWatermarkZindex.value // 设置 z-index 
+        logoWatermark.src = logoWatermarkLogoSrc.value // 设置图片地址
+        containerRef.value?.appendChild(logoWatermark) // 添加到容器中
+        logoWatermarkRef.value = logoWatermark // 设置水印 ref
 
-onMounted(() => {
-    // 等待下一次 DOM 更新后执行
-    nextTick(() => {
-        runRandomRextWatermark()
-        runLogoWatermark()
+        // 设置水印样式
+        if (props.logoWatermark?.style) {
+            setWatermarkStyle(logoWatermarkRef.value, props.logoWatermark.style, false)
+        }
+
+        // 异步设置停止观察为 false
+        setTimeout(() => {
+            stopObservation.value = false
+        }, 0)
+    }
+}
+
+// 是否重新渲染
+const isReRendering = (
+    mutation: MutationRecord,
+    watermarkElement?: HTMLElement,
+) => {
+    let flag = false
+
+    // 当水印被移除时，重新渲染水印
+    if (mutation.removedNodes.length && watermarkElement) {
+        flag = Array.from(mutation.removedNodes).includes(watermarkElement)
+    }
+
+    // 当 style 变化时，重新渲染水印, 排除自动刷新水印.
+    if (mutation.type === 'attributes' && mutation.target === watermarkElement && !isWatermarkAutoRefresh.value) {
+        flag = true
+    }
+
+    return flag
+}
+
+// 当 DOM 变化时重新渲染水印
+// 参考 https://developer.mozilla.org/zh-CN/docs/Web/API/MutationObserver
+// https://github.com/element-plus/element-plus/blob/dev/packages/components/watermark/src/watermark.vue
+const mutationCallback = (mutations: MutationRecord[]) => {
+    if (stopObservation.value) {
+        return
+    }
+    mutations.forEach((mutation) => {
+        if (isReRendering(mutation, textWatermarkRef.value)) {
+            destroyWatermark(textWatermarkRef.value)
+            appendTextWatermark()
+        }
+        if (isReRendering(mutation, logoWatermarkRef.value)) {
+            destroyWatermark(logoWatermarkRef.value)
+            appendLogoWatermark()
+        }
     })
+}
+
+// 监听 DOM 变化
+useMutationObserver(containerRef, mutationCallback, {
+    attributes: true, // 监听属性变化 
+    subtree: true, // 监听后代节点
+    childList: true, // 监听子节点的增加或删除
 })
 
-onUnmounted(() => {
-    // 清除定时器
+
+// 挂载时执行渲染水印
+onMounted(() => {
+    appendTextWatermark()
+    appendLogoWatermark()
+})
+
+// 在组件卸载之前销毁水印 和 清除定时器
+onBeforeUnmount(() => {
+    destroyWatermark(textWatermarkRef.value)
+    destroyWatermark(logoWatermarkRef.value)
     clearInterval(intervalId)
 })
+
+
 </script>
 
 <style scoped lang="scss">
-.watermark {
-    position: absolute;
-}
-
-.text-watermark {
-    z-index: 9999;
-}
-
-.logo-watermark {
-    z-index: 9998;
+.container {
+    position: relative;
 }
 </style>
