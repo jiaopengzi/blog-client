@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-14 10:53:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-15 13:55:27
+ * @LastEditTime : 2024-09-17 17:27:36
  * @FilePath     : \blog-client\src\components\player\components\setting\index.vue
  * @Description  : 视频设置 - 播放速度、清晰度、字幕
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,7 @@
 -->
 
 <template>
-    <el-collapse class="video-settings" v-model="activeNames">
+    <el-collapse class="video-settings" v-model="localActiveNames" @change="handleChange">
 
         <!-- 字幕选择 -->
         <el-collapse-item v-if="isShowSubtitleSelect" name="1">
@@ -65,13 +65,10 @@
                 @change="handleIsLoopChange" />
         </el-collapse-item>
     </el-collapse>
-
-
-
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import type { SubtitleStatus, Subtitle, PlayLevel } from '@/stores/player'
 import { PlaySpeed, PlayLevelItem } from '@/stores/player'
 
@@ -79,6 +76,7 @@ defineOptions({ name: 'VideoSetting' })
 
 // 定义props
 const props = defineProps<{
+    isShow: boolean
     subtitleStatus: SubtitleStatus | undefined
     playLevel: PlayLevel
     playSpeed: PlaySpeed
@@ -94,8 +92,7 @@ const emit = defineEmits<{
 }>()
 
 // 默认不展开
-const activeNames = ref([''])
-
+const localActiveNames = ref<string[]>([])
 
 // 是否显示字幕选择组件
 const isShowSubtitleSelect = computed(() => !!props.subtitleStatus?.availableSubtitles)
@@ -109,9 +106,7 @@ const availableSubtitles = computed<{ [key: string]: Subtitle }>(() => {
 })
 
 // 只有一个清晰度选项时不显示
-const isShowPlayLevel = computed(() => {
-    return props.playLevel.allLevels.length > 1
-})
+const isShowPlayLevel = computed(() => props.playLevel.allLevels.length > 1)
 
 // 本地状态
 const selectedSubtitle = ref(props.subtitleStatus?.selectedSubtitleLanguage)
@@ -143,17 +138,26 @@ const handleIsLoopChange = (value: boolean) => {
     emit('get-is-loop', value)
 }
 
+// 保持只展开一个
+const handleChange = (activeNames: string[]) => localActiveNames.value = activeNames.length > 0 ? [activeNames[activeNames.length - 1]] : []
+
+// 监控 isShow 的变化,如果 isShow 为 false,则清空选中状态
+watch(() => props.isShow, (newVal) => {
+    if (!newVal) {
+        localActiveNames.value = []
+    }
+})
+
 </script>
 
 <style scoped lang="scss">
 .video-settings {
-    width: 120px;
-    // 背景透明
-    background-color: transparent;
+    width: 100px;
 }
 
+
 .title-content {
-    padding: 10px;
+    padding-left: 8px;
     color: #333;
 }
 
@@ -163,11 +167,30 @@ const handleIsLoopChange = (value: boolean) => {
 }
 
 .el-radio {
-    width: 50%;
-    padding-left: 10px;
+    width: 60px;
+    padding-left: 5px;
 }
 
 .switch {
-    padding-left: 10px;
+    width: 60px;
+    padding-left: 5px;
+}
+
+// 视频设置折叠面板样式
+:deep(.el-collapse) {
+    background-color: #eee
+}
+
+:deep(.el-collapse,
+    .el-collapse-item__wrap) {
+    background-color: #eee;
+}
+
+:deep(.el-collapse-item__header) {
+    background-color: #eee;
+}
+
+:deep(.el-collapse-item__content) {
+    background-color: #fff;
 }
 </style>

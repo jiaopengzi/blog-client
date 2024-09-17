@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-07 17:53:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-15 14:12:57
+ * @LastEditTime : 2024-09-17 12:31:11
  * @FilePath     : \blog-client\src\components\player\command\constant.ts
  * @Description  : 播放器命令常量
  * @Blog         : https://jiaopengzi.com
@@ -11,23 +11,7 @@
 
 import { IconKeys } from '@/components/common/icons'
 import { storeToRefs } from 'pinia'
-import {
-  usePlayerStore,
-  PlayStatus,
-  PlayLevelItem,
-  PlaySpeed,
-  WatermarkType,
-} from '@/stores/player'
-import type {
-  PlayProgress,
-  Subtitle,
-  SubtitleStatus,
-  Position,
-  Logo,
-  TextWatermark,
-  Watermark,
-  PlayerSize,
-} from '@/stores/player'
+import { usePlayerStore } from '@/stores/player'
 
 export enum PlayerCommandsKey {
   // 播放暂停

@@ -235,3 +235,11 @@ header {
     margin-left: 5em;
   }
 }
+
+// 全局设置视频设置弹出框
+.el-popover.el-popper.video-el-popover {
+  min-width: 0; //默认是150，影响设置宽度，设置成0，然后在 el-popover 组件中设置宽度
+  padding: 0;
+  border: none;
+  background-color: transparent;
+}

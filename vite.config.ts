@@ -47,7 +47,7 @@ export default defineConfig({
       scss: {
         // 多个scss文件变量生效
         additionalData: `
-        @use "./src/assets/scss/themes/index.scss"as *;
+        @use "./src/assets/scss/themes/index.scss" as *;
         @use './src/assets/scss/platform/phone.scss' as phone;
         @use './src/assets/scss/platform/pc.scss' as pc;
         @use './src/assets/scss/mixin.scss' as *;

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-15 15:11:14
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-17 00:52:20
+ * @LastEditTime : 2024-09-17 15:48:50
  * @FilePath     : \blog-client\src\components\player\components\watermark\index.vue
  * @Description  : 水印
  * @Blog         : https://jiaopengzi.com
@@ -18,7 +18,6 @@
 import { useMutationObserver } from '@vueuse/core'
 import { ref, useTemplateRef, computed, onMounted, shallowRef, onBeforeUnmount } from 'vue'
 import type { TextWatermark, LogoWatermark } from '@/stores/player'
-import { parsePosition, type Position } from '@/utils/parser'
 
 defineOptions({ name: 'VideoWatermark' })
 
@@ -55,10 +54,10 @@ const textWatermarkContent = computed(() => props.textWatermark?.content || '')
 const logoWatermarkLogoSrc = computed(() => props.logoWatermark?.imgUrl || '')
 
 // 获取文字水印的 z-index
-const textWatermarkZindex = computed(() => props.textWatermark?.style?.zIndex || "9998")
+const textWatermarkZindex = computed(() => props.textWatermark?.style?.zIndex || "1998")
 
 // 获取 logo 水印的 z-index
-const logoWatermarkZindex = computed(() => props.logoWatermark?.style?.zIndex || "9999")
+const logoWatermarkZindex = computed(() => props.logoWatermark?.style?.zIndex || "1999")
 
 
 /**
@@ -89,23 +88,10 @@ const setWatermarkStyle = (watermark: HTMLElement | undefined, style: Partial<CS
         if (isRandomPosition) {
             style.left = `${Math.random() * width}px`
             style.top = `${Math.random() * height}px`
-        } else {
-            // 获取水印的 left 和 top
-            const { left, top } = style
-
-            // 解析位置
-            const parseLeft: Position = parsePosition(left)
-            const parseTop: Position = parsePosition(top)
-
-            // 根据传入的位置类型设置 left 和 top
-            if (parseLeft.type === 'percent') style.left = `${parseLeft.value * width}px`
-            if (parseLeft.type === 'pixel') style.left = `${parseLeft.value}px`
-            if (parseTop.type === 'percent') style.top = `${parseTop.value * height}px`
-            if (parseTop.type === 'pixel') style.top = `${parseTop.value}px`
+            // 再次设置样式主要是为了设置 left 和 top
+            Object.assign(watermark.style, style)
         }
 
-        // 再次设置样式主要是为了设置 left 和 top
-        Object.assign(watermark.style, style)
     }
 
 }
@@ -200,6 +186,22 @@ const isReRendering = (
     return flag
 }
 
+// 重新渲染文字水印
+const reRenderRextWatermark = () => {
+    if (textWatermarkRef.value) {
+        destroyWatermark(textWatermarkRef.value)
+        appendTextWatermark()
+    }
+}
+
+// 重新渲染 logo 水印
+const reRenderLogoWatermark = () => {
+    if (logoWatermarkRef.value) {
+        destroyWatermark(logoWatermarkRef.value)
+        appendLogoWatermark()
+    }
+}
+
 // 当 DOM 变化时重新渲染水印
 // 参考 https://developer.mozilla.org/zh-CN/docs/Web/API/MutationObserver
 // https://github.com/element-plus/element-plus/blob/dev/packages/components/watermark/src/watermark.vue
@@ -208,14 +210,9 @@ const mutationCallback = (mutations: MutationRecord[]) => {
         return
     }
     mutations.forEach((mutation) => {
-        if (isReRendering(mutation, textWatermarkRef.value)) {
-            destroyWatermark(textWatermarkRef.value)
-            appendTextWatermark()
-        }
-        if (isReRendering(mutation, logoWatermarkRef.value)) {
-            destroyWatermark(logoWatermarkRef.value)
-            appendLogoWatermark()
-        }
+        // 判断是否需要重新渲染水印
+        if (isReRendering(mutation, textWatermarkRef.value)) reRenderRextWatermark()
+        if (isReRendering(mutation, logoWatermarkRef.value)) reRenderLogoWatermark()
     })
 }
 
@@ -239,7 +236,6 @@ onBeforeUnmount(() => {
     destroyWatermark(logoWatermarkRef.value)
     clearInterval(intervalId)
 })
-
 
 </script>
 

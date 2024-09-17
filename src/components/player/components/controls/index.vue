@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 19:53:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-15 14:13:21
+ * @LastEditTime : 2024-09-17 19:09:31
  * @FilePath     : \blog-client\src\components\player\components\controls\index.vue
  * @Description  : 视频控制器
  * @Blog         : https://jiaopengzi.com
@@ -10,9 +10,9 @@
 -->
 <template>
     <!-- 视频控制器 -->
-    <div ref="controls" class="controls">
+    <div class="controls">
         <!-- 视频进度条 -->
-        <ProgressBar class="row1" ref="progressBar" :playProgress="playProgress" @seek="seekVideo" />
+        <ProgressBar class="row1" :playProgress="playProgress" @seek="seekVideo" />
 
         <!-- 第二行 -->
         <div class="row2">
@@ -20,49 +20,50 @@
             <!-- 第二行左侧 -->
             <div class="left-controls">
                 <!-- 播放暂停按钮 -->
-                <button ref="playPause" class="controls-btn play-pause" @click="togglePlayPause">
+                <button class="controls-btn play-pause" @click="togglePlayPause">
                     <Icon :name="IconNamePlayPause" customClass="iconfont" />
                 </button>
 
                 <!-- 时间显示 -->
-                <div ref="timeDisplay" class="timeDisplay">{{ timeDisplay }}</div>
+                <div class="timeDisplay">{{ formattedTimeDisplay }}</div>
             </div>
 
             <!-- 第二行右侧 -->
             <div class="right-controls">
                 <!-- 静音按钮 -->
-                <button ref="mute" class="controls-btn" @click="toggleMute">
+                <button class="controls-btn" @click="toggleMute">
                     <Icon :name="IconNameMute" customClass="iconfont" />
                 </button>
 
                 <!-- 音量控制 -->
-                <el-slider ref="volume" class="volume" v-model="volume.volume" size="small" @input="seekVolume" />
+                <el-slider class="volume" v-model="localVolume" size="small" @input="seekVolume" />
 
                 <!-- 设置 播放速度 清晰度 字幕 -->
-                <el-popover placement="top">
+                <el-popover :width="100" placement="top" :append-to="props.elPopoverAppendToElement" :teleported="true"
+                    popper-class="video-el-popover" trigger="click" @hide="handleHideSetting" @show="handleShowSetting">
                     <template #reference>
-                        <button ref="setting" class="controls-btn">
+                        <button class="controls-btn">
                             <Icon :name="IconKeys.Setting" customClass="iconfont" />
                         </button>
                     </template>
-                    <VideoSetting :subtitle-status="subtitles" :play-level="playLevel" :play-speed="playSpeed"
-                        :is-loop="isLoop" @selected-subtitle-language="handleSelectedSubtitleLanguage"
-                        @get-is-loop="handelIsLoop" @get-play-level="handelPlayLevel"
-                        @get-play-speed="handelPlaySpeed" />
+                    <VideoSetting class="setting" :is-show="isShowVideoSetting" :subtitle-status="subtitles"
+                        :play-level="playLevel" :play-speed="playSpeed" :is-loop="isLoop"
+                        @selected-subtitle-language="handleSelectedSubtitleLanguage" @get-is-loop="handelIsLoop"
+                        @get-play-level="handelPlayLevel" @get-play-speed="handelPlaySpeed" />
                 </el-popover>
 
-
-                <button ref=" pip" class="controls-btn" @click="togglePIP">
+                <!-- 画中画 -->
+                <button class="controls-btn" @click="togglePIP">
                     <Icon :name="IconKeys.PictureInPicture" customClass="iconfont" />
                 </button>
 
                 <!-- 网页全屏 -->
-                <button ref="webFullscreen" class="controls-btn" @click="toggleWebFullscreen">
+                <button class="controls-btn" @click="toggleWebFullscreen">
                     <Icon :name="IconKeys.WebFullscreen" customClass="iconfont" />
                 </button>
 
                 <!-- 全屏 -->
-                <button ref="fullscreen" class="controls-btn" @click="toggleFullscreen">
+                <button class="controls-btn" @click="toggleFullscreen">
                     <Icon :name="IconKeys.Fullscreen" customClass="iconfont" />
                 </button>
             </div>
@@ -72,55 +73,45 @@
 </template>
 
 <script setup lang="ts">
-import { ref, useTemplateRef, computed, watch, onMounted, watchEffect } from 'vue'
+import { ref, computed, watch, onMounted, watchEffect } from 'vue'
 import { storeToRefs } from 'pinia'
 import { IconKeys } from '@/components/common/icons'
 import { formatDurationTime } from '@/utils/dateTime'
 import ProgressBar from '@/components/player/components/progress-bar'
 import VideoSetting from '@/components/player/components/setting'
-import { debounce } from 'throttle-debounce'
 import { useMagicKeys } from '@vueuse/core'
 import { PlayerCommandsKey, PlayerCommands } from '@/components/player/command'
-
-
-import { usePlayerStore, PlayStatus, PlayLevelItem, PlaySpeed, WatermarkType } from '@/stores/player'
-import type { PlayProgress, Subtitle, SubtitleStatus, Position, Logo, TextWatermark, Watermark, PlayerSize } from '@/stores/player'
-import { handleConfirmCommon } from '@/utils/confirm'
+import { usePlayerStore, PlayStatus, PlayLevelItem, PlaySpeed, } from '@/stores/player'
 
 
 defineOptions({ name: 'VideoControls' })
 
+
+// 定义 porps
+const props = defineProps<{
+    elPopoverAppendToElement: HTMLElement | null,
+}>()
+
+
 // 从 store 中获取数据
 const palyerStore = usePlayerStore()
-const { playStatus, playProgress, isWebFullScreen, isFullScreen,
-    playLevel, playSpeed, volume, showControlBar,
-    useVideoControls, subtitles, isPictureInPicture, size, isMobile, isLoop } = storeToRefs(palyerStore)
-
-
-// 定义所有的元素的 ref
-const controlsRef = useTemplateRef<HTMLElement | null>("controls")
-const playPauseRef = useTemplateRef<HTMLButtonElement | null>("playPause")
-const progressBarRef = useTemplateRef<HTMLDivElement | null>("progressBar")
-const timeDisplayRef = useTemplateRef<HTMLSpanElement | null>("timeDisplay")
-const volumeRef = useTemplateRef<HTMLInputElement | null>("volume")
-const settingRef = useTemplateRef<HTMLButtonElement | null>("setting")
-const pipRef = useTemplateRef<HTMLButtonElement | null>("pip")
-const webFullscreenRef = useTemplateRef<HTMLButtonElement | null>("webFullscreen")
-const fullscreenRef = useTemplateRef<HTMLButtonElement | null>("fullscreen")
-const sliderRef = useTemplateRef<HTMLDivElement | null>("slider") // 新增滑块的 ref
+const { playStatus, playProgress, playLevel, playSpeed, volume, subtitles, isLoop } = storeToRefs(palyerStore)
 
 // 定义图标名称
 const IconNamePlayPause = ref(IconKeys.Pause)
 const IconNameMute = ref(IconKeys.Unmute)
 
+// 本地状态
+const localVolume = ref(volume.value.volume)
+
 // 设置视频进度值
 const seekVideo = (currentTime: number) => {
-    playProgress.value.currentTime = currentTime
+    palyerStore.setVideoProgress(currentTime)
 }
 
 // 设置音量
 const seekVolume = () => {
-    palyerStore.setVolume(volume.value.volume)
+    palyerStore.setVolume(localVolume.value)
 }
 
 // 注册快捷键
@@ -173,11 +164,13 @@ const toggleMute = () => {
 }
 
 // 视频时间显示
-const timeDisplay = computed(() => {
+const formattedTimeDisplay = computed(() => {
     const currentFormatted = formatDurationTime(playProgress.value.currentTime)
     const durationFormatted = formatDurationTime(playProgress.value.duration)
     return `${currentFormatted} / ${durationFormatted}`
 })
+
+
 
 // 处理选择字幕语言
 const handleSelectedSubtitleLanguage = (language: string) => {
@@ -204,6 +197,19 @@ const togglePIP = () => {
     palyerStore.togglePictureInPicture()
 }
 
+
+const isShowVideoSetting = ref(false)
+
+const handleHideSetting = () => {
+    console.log('hide setting')
+    isShowVideoSetting.value = false
+}
+
+const handleShowSetting = () => {
+    console.log('show setting')
+    isShowVideoSetting.value = true
+}
+
 // 切换网页全屏
 const toggleWebFullscreen = () => {
     palyerStore.toggleWebFullScreen()
@@ -219,8 +225,10 @@ const toggleFullscreen = () => {
 watchEffect(() => {
     if (volume.value.muted) {
         IconNameMute.value = IconKeys.Mute
+        localVolume.value = 0
     } else {
         IconNameMute.value = IconKeys.Unmute
+        localVolume.value = volume.value.volume
     }
 })
 
@@ -241,11 +249,12 @@ onMounted(() => {
 
 </script>
 
+
 <style scoped lang="scss">
 .controls {
     width: 100%;
     height: 60px;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.1);
 
     // 垂直居中
     display: flex;

@@ -26,10 +26,10 @@ const app = createApp(App)
 
 app.directive('permission', permissionDirective) // 注册全局权限指令
 
-app.use(createPinia()) //在APP创建之后，使用Pinia
+app.use(createPinia()) // 在APP创建之后，使用Pinia
 app.use(router)
 
-app.use(createHead()) //参考官方文档:https://unhead.unjs.io/setup/vue/installation
+app.use(createHead()) // 参考官方文档:https://unhead.unjs.io/setup/vue/installation
 // app.use(ElementPlus)
 
 // 路由准备就绪后挂载APP实例 先获取用户信息

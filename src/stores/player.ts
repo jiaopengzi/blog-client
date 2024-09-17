@@ -242,6 +242,11 @@ export const usePlayerStore = defineStore({
       this.playProgress = { currentTime, duration }
     },
 
+    // 设置当前播放时间
+    setVideoProgress(currentTime: number) {
+      this.playProgress.currentTime = currentTime
+    },
+
     // 快进
     fastForward() {
       // 判断当前播放时间是否大于总时长
