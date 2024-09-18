@@ -1,7 +1,7 @@
 <template>
   <div class="video-container">
     <video ref="video" class="custom-video" controls>
-      <track src="http://10.10.2.222:8081/api/v1/uploads/zimu.vtt" kind="subtitles" srclang="cn" label="中文" default />
+      <track src="http://10.10.2.222:8081/api/v1/uploads/cn.vtt" kind="subtitles" srclang="cn" label="中文" default />
     </video>
     <div class="controls">
       <button @click="togglePlayPause">{{ isPlaying ? 'Pause' : 'Play' }}</button>

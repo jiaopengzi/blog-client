@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-11 16:17:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-15 13:53:24
+ * @LastEditTime : 2024-09-18 14:34:53
  * @FilePath     : \blog-client\src\components\player\components\progress-bar\index.vue
  * @Description  : 视频进度条
  * @Blog         : https://jiaopengzi.com
@@ -42,9 +42,11 @@ const props = defineProps<{
     playProgress: PlayProgress
 }>()
 
+
 // 定义 emit
 const emit = defineEmits<{
     (e: 'seek', time: number): void
+    (e: 'is-dragging', status: boolean): void
 }>()
 
 // 定义所有的元素的 ref
@@ -90,6 +92,7 @@ const removeDocumentEventListeners = () => {
 // 点击进度条
 const onProgressBarClick = (e: MouseEvent | TouchEvent) => {
     // 如果正在拖拽，则不处理点击事件
+    emit('is-dragging', isDragging)
     if (isDragging) return
 
     if (progressBarRef.value && sliderRef.value && playedRef.value) {
@@ -158,6 +161,7 @@ const onProgressBarMousemove = (e: MouseEvent) => {
 // 鼠标移出进度条 隐藏时间提示
 const onProgressBarMouseleave = () => {
     if (!isDragging && tooltipRef.value) {
+        emit('is-dragging', isDragging)
         tooltipRef.value.style.display = 'none'
     }
 }
@@ -183,6 +187,7 @@ watch(() => props.playProgress, (newPlayProgress) => {
 // 处理滑块的指针事件（鼠标和触摸）
 const onSliderDown = (event: MouseEvent | TouchEvent) => {
     isDragging = true
+    emit('is-dragging', isDragging)
     addDocumentEventListeners()
 }
 
@@ -226,6 +231,7 @@ const onSliderPointerMove = (event: MouseEvent | TouchEvent) => {
 // 滑块指针抬起事件
 const onSliderPointerUp = () => {
     isDragging = false
+    emit('is-dragging', isDragging)
     removeDocumentEventListeners()
 
     if (progressBarRef.value && sliderRef.value && playedRef.value) {

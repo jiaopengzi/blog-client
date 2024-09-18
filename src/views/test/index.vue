@@ -1,14 +1,4 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-09-17 17:43:01
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-17 18:03:38
- * @FilePath     : \blog-client\src\views\test\index.vue
- * @Description  : 
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
--->
-<!--
  * @FilePath     : \blog-client\src\views\test\index.vue
  * @Description  : 
 -->
@@ -17,11 +7,41 @@
     <VideoPlayer />
   </div>
 
-
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import VideoPlayer from '@/components/player'
+import { usePlayerStore, type SubtitlesItem } from '@/stores/player'
+defineOptions({ name: 'VideoPlayerTest' })
+
+// 从 store 中获取数据
+const palyerStore = usePlayerStore()
+// 设置视频地址
+palyerStore.setSrc("http://10.10.2.222:8081/api/v1/uploads/test.mp4")
+
+const subtitles = ref<{ [language: string]: SubtitlesItem }>({
+  "cn": {
+    label: "中文",
+    src: "http://10.10.2.222:8081/api/v1/uploads/cn.vtt"
+  },
+  "en": {
+    label: "English",
+    src: "http://10.10.2.222:8081/api/v1/uploads/en.vtt"
+  }
+})
+
+const textWatermark = {
+  content: 'jiaopengzi.com1111',
+  style: {
+    color: 'red',
+    fontSize: '14px',
+  },
+}
+palyerStore.setTextWatermark(textWatermark)
+palyerStore.setAvailableSubtitles(subtitles.value)
+
+console.log('subtitles父组件:', palyerStore.subtitles)
 
 </script>
 

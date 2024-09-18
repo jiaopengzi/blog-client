@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-14 10:53:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-17 17:27:36
+ * @LastEditTime : 2024-09-18 22:09:37
  * @FilePath     : \blog-client\src\components\player\components\setting\index.vue
  * @Description  : 视频设置 - 播放速度、清晰度、字幕
  * @Blog         : https://jiaopengzi.com
@@ -13,15 +13,15 @@
     <el-collapse class="video-settings" v-model="localActiveNames" @change="handleChange">
 
         <!-- 字幕选择 -->
-        <el-collapse-item v-if="isShowSubtitleSelect" name="1">
+        <el-collapse-item v-if="isShowSubtitlesSelect" name="1">
             <template #title>
                 <div class="title-content">
                     字幕
                 </div>
             </template>
-            <el-radio-group class="radio-group" v-model="selectedSubtitle" @change="handleSubtitleChange">
-                <el-radio class="radio-item" v-for="(subtitle, key) in availableSubtitles" :key="key" :value="key">
-                    {{ availableSubtitles[key]?.label }}
+            <el-radio-group class="radio-group" v-model="selectedSubtitlesLanguage" @change="handleSubtitlesChange">
+                <el-radio class="radio-item" v-for="(item, key) in availableSubtitles" :key="key" :value="key">
+                    {{ item.label }}
                 </el-radio>
             </el-radio-group>
         </el-collapse-item>
@@ -47,8 +47,10 @@
                     播放速度
                 </div>
             </template>
-            <el-radio-group class="radio-group" v-model="selectedPlaySpeed" @change="handlePlaySpeedChange">
-                <el-radio class="radio-item" v-for="speed in Object.values(PlaySpeed)" :key="speed" :value="speed">
+            <el-radio-group class="radio-group" v-model="selectedPlaybackRate" @change="handlePlaySpeedChange">
+                <el-radio class="radio-item"
+                    v-for="speed in Object.values(PlaybackRate).filter(value => typeof value === 'number')" :key="speed"
+                    :value="speed">
                     {{ speed }}
                 </el-radio>
             </el-radio-group>
@@ -69,25 +71,25 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import type { SubtitleStatus, Subtitle, PlayLevel } from '@/stores/player'
-import { PlaySpeed, PlayLevelItem } from '@/stores/player'
+import type { Subtitles, SubtitlesItem, PlayLevel } from '@/stores/player'
+import { PlaybackRate, PlayLevelItem, DisabledSubtitles } from '@/stores/player'
 
 defineOptions({ name: 'VideoSetting' })
 
 // 定义props
 const props = defineProps<{
     isShow: boolean
-    subtitleStatus: SubtitleStatus | undefined
+    subtitles: Subtitles | undefined
     playLevel: PlayLevel
-    playSpeed: PlaySpeed
+    playbackRate: PlaybackRate
     isLoop: boolean
 }>()
 
 // 定义 emit
 const emit = defineEmits<{
-    (e: 'selected-subtitle-language', language: string): void // 选择字幕
+    (e: 'selected-subtitles-language', language: string): void // 选择字幕
     (e: 'get-play-level', level: PlayLevelItem): void // 播放清晰度
-    (e: 'get-play-speed', speed: PlaySpeed): void // 播放速度
+    (e: 'get-playback-rate', playbackRate: PlaybackRate): void // 播放速度
     (e: 'get-is-loop', value: boolean): void // 是否循环播放
 }>()
 
@@ -95,35 +97,40 @@ const emit = defineEmits<{
 const localActiveNames = ref<string[]>([])
 
 // 是否显示字幕选择组件
-const isShowSubtitleSelect = computed(() => !!props.subtitleStatus?.availableSubtitles)
-const availableSubtitles = computed<{ [key: string]: Subtitle }>(() => {
+const isShowSubtitlesSelect = computed(() => !!props.subtitles?.availableSubtitles)
+
+// 可用字幕
+const availableSubtitles = computed<{ [key: string]: SubtitlesItem }>(() => {
     // 增加一个禁用的选项 ,key：disabled，label：disabled
-    if (!props.subtitleStatus) return {}
+    if (!props.subtitles) return {}
     return {
-        disabled: { label: 'disabled', url: '' },
-        ...props.subtitleStatus.availableSubtitles,
+        // 展开再合并
+        ...DisabledSubtitles,
+        ...props.subtitles.availableSubtitles,
     }
+
 })
+
 
 // 只有一个清晰度选项时不显示
 const isShowPlayLevel = computed(() => props.playLevel.allLevels.length > 1)
 
 // 本地状态
-const selectedSubtitle = ref(props.subtitleStatus?.selectedSubtitleLanguage)
+const selectedSubtitlesLanguage = ref(props.subtitles?.selectedSubtitlesLanguage)
 const selectedPlayLevel = ref(props.playLevel.level)
-const selectedPlaySpeed = ref(props.playSpeed)
+const selectedPlaybackRate = ref(props.playbackRate)
 const isLoop = ref(props.isLoop)
 
 // 处理字幕选择变化
-const handleSubtitleChange = (language: string) => {
-    selectedSubtitle.value = language
-    emit('selected-subtitle-language', language)
+const handleSubtitlesChange = (language: string) => {
+    selectedSubtitlesLanguage.value = language
+    emit('selected-subtitles-language', language)
 }
 
 // 处理播放速度变化
-const handlePlaySpeedChange = (speed: PlaySpeed) => {
-    selectedPlaySpeed.value = speed
-    emit('get-play-speed', speed)
+const handlePlaySpeedChange = (playbackRate: PlaybackRate) => {
+    selectedPlaybackRate.value = playbackRate
+    emit('get-playback-rate', playbackRate)
 }
 
 // 处理播放清晰度变化

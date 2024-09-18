@@ -1,48 +1,56 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-09-17 17:50:42
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-17 18:00:12
- * @FilePath     : \blog-client\src\views\test\index copy.vue
+ * @FilePath     : \blog-client\src\views\test\index.vue
  * @Description  : 
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-  <div>
-    <button @click="toggleFullScreen">Toggle Full Screen</button>
-    <el-popover v-model:visible="popoverVisible" placement="top" width="200" trigger="click" :append-to-body="false">
-      <p>This is a popover content</p>
-      <template #reference>
-        <button @click="togglePopover">Click me</button>
-      </template>
-    </el-popover>
+  <div class="container">
+    <VideoPlayer />
   </div>
+
 </template>
 
-<script lang="ts" setup>
-import { ref } from 'vue';
+<script setup lang="ts">
+import { ref } from 'vue'
+import VideoPlayer from '@/components/player'
+import { usePlayerStore, type SubtitlesItem } from '@/stores/player'
+defineOptions({ name: 'VideoPlayerTest' })
 
-// :teleported="true"
+// 从 store 中获取数据
+const palyerStore = usePlayerStore()
+// 设置视频地址
+palyerStore.setSrc("http://10.10.2.222:8081/api/v1/uploads/test.mp4")
 
-
-const popoverVisible = ref(false);
-
-const togglePopover = () => {
-  // popoverVisible.value = !popoverVisible.value;
-};
-
-const toggleFullScreen = () => {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen();
-  } else if (document.exitFullscreen) {
-    document.exitFullscreen();
+const subtitles = ref<{ [language: string]: SubtitlesItem }>({
+  "cn": {
+    label: "中文",
+    src: "http://10.10.2.222:8081/api/v1/uploads/cn.vtt"
+  },
+  "en": {
+    label: "English",
+    src: "http://10.10.2.222:8081/api/v1/uploads/en.vtt"
   }
-};
+})
+
+const textWatermark = {
+  content: 'jiaopengzi.com1111',
+  style: {
+    color: 'red',
+    fontSize: '14px',
+  },
+}
+palyerStore.setTextWatermark(textWatermark)
+palyerStore.setAvailableSubtitles(subtitles.value)
+
+console.log('subtitles父组件:', palyerStore.subtitles)
+
 </script>
 
 <style scoped lang="scss">
-button {
-  margin: 10px;
+// 让视频播放器水平垂直居中
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 </style>

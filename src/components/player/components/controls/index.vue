@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 19:53:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-17 19:09:31
+ * @LastEditTime : 2024-09-18 21:53:23
  * @FilePath     : \blog-client\src\components\player\components\controls\index.vue
  * @Description  : 视频控制器
  * @Blog         : https://jiaopengzi.com
@@ -12,7 +12,7 @@
     <!-- 视频控制器 -->
     <div class="controls">
         <!-- 视频进度条 -->
-        <ProgressBar class="row1" :playProgress="playProgress" @seek="seekVideo" />
+        <ProgressBar class="row1" :playProgress="playProgress" @seek="seekVideo" @is-dragging="handleIsDragging" />
 
         <!-- 第二行 -->
         <div class="row2">
@@ -39,17 +39,19 @@
                 <el-slider class="volume" v-model="localVolume" size="small" @input="seekVolume" />
 
                 <!-- 设置 播放速度 清晰度 字幕 -->
+                <!-- 使用 append-to 到对应元素才能保证全屏显示 -->
+                <!-- 参考文档：https://element-plus.org/zh-CN/component/tooltip.html -->
                 <el-popover :width="100" placement="top" :append-to="props.elPopoverAppendToElement" :teleported="true"
-                    popper-class="video-el-popover" trigger="click" @hide="handleHideSetting" @show="handleShowSetting">
+                    popper-class="video-el-popover" @hide="handleHideSetting" @show="handleShowSetting">
                     <template #reference>
                         <button class="controls-btn">
                             <Icon :name="IconKeys.Setting" customClass="iconfont" />
                         </button>
                     </template>
-                    <VideoSetting class="setting" :is-show="isShowVideoSetting" :subtitle-status="subtitles"
-                        :play-level="playLevel" :play-speed="playSpeed" :is-loop="isLoop"
-                        @selected-subtitle-language="handleSelectedSubtitleLanguage" @get-is-loop="handelIsLoop"
-                        @get-play-level="handelPlayLevel" @get-play-speed="handelPlaySpeed" />
+                    <VideoSetting class="setting" :is-show="isShowVideoSetting" :subtitles="subtitles"
+                        :play-level="playLevel" :playback-rate="playbackRate" :is-loop="isLoop"
+                        @selected-subtitles-language="handleSelectedSubtitleLanguage" @get-is-loop="handelIsLoop"
+                        @get-play-level="handelPlayLevel" @get-playback-rate="handelPlaybackRate" />
                 </el-popover>
 
                 <!-- 画中画 -->
@@ -81,21 +83,19 @@ import ProgressBar from '@/components/player/components/progress-bar'
 import VideoSetting from '@/components/player/components/setting'
 import { useMagicKeys } from '@vueuse/core'
 import { PlayerCommandsKey, PlayerCommands } from '@/components/player/command'
-import { usePlayerStore, PlayStatus, PlayLevelItem, PlaySpeed, } from '@/stores/player'
+import { usePlayerStore, PlayStatus, PlayLevelItem, PlaybackRate, } from '@/stores/player'
 
-
+// 名称
 defineOptions({ name: 'VideoControls' })
-
 
 // 定义 porps
 const props = defineProps<{
-    elPopoverAppendToElement: HTMLElement | null,
+    elPopoverAppendToElement: HTMLElement | null, // el-popover 的 append-to 属性
 }>()
 
-
 // 从 store 中获取数据
-const palyerStore = usePlayerStore()
-const { playStatus, playProgress, playLevel, playSpeed, volume, subtitles, isLoop } = storeToRefs(palyerStore)
+const playerStore = usePlayerStore()
+const { playStatus, playProgress, playLevel, playbackRate, volume, subtitles, isLoop } = storeToRefs(playerStore)
 
 // 定义图标名称
 const IconNamePlayPause = ref(IconKeys.Pause)
@@ -106,13 +106,16 @@ const localVolume = ref(volume.value.volume)
 
 // 设置视频进度值
 const seekVideo = (currentTime: number) => {
-    palyerStore.setVideoProgress(currentTime)
+    playerStore.setUserInput(true)
+    // 设置当前时间
+    playerStore.setCurrentTime(currentTime)
 }
 
+// 是否正在拖拽进度条
+const handleIsDragging = (isDragging: boolean) => playerStore.setIsDragging(isDragging)
+
 // 设置音量
-const seekVolume = () => {
-    palyerStore.setVolume(localVolume.value)
-}
+const seekVolume = () => playerStore.setVolume(localVolume.value)
 
 // 注册快捷键
 const keys = useMagicKeys() // 使用 useMagicKeys() 之后，就可以通过 keys 来获取键盘按键的状态了
@@ -153,15 +156,10 @@ const registerHotKeys = () => {
 
 
 // 切换播放暂停
-const togglePlayPause = () => {
-    palyerStore.togglePlayPause()
-}
-
+const togglePlayPause = () => playerStore.togglePlayPause()
 
 // 切换静音
-const toggleMute = () => {
-    palyerStore.toggleMute()
-}
+const toggleMute = () => playerStore.toggleMute()
 
 // 视频时间显示
 const formattedTimeDisplay = computed(() => {
@@ -170,55 +168,37 @@ const formattedTimeDisplay = computed(() => {
     return `${currentFormatted} / ${durationFormatted}`
 })
 
-
-
 // 处理选择字幕语言
 const handleSelectedSubtitleLanguage = (language: string) => {
-    palyerStore.setSelectedSubtitleLanguage(language)
+    playerStore.setSelectedSubtitlesLanguage(language)
 }
 
 // 处理播放清晰度
-const handelPlayLevel = (level: PlayLevelItem) => {
-    palyerStore.setSelectedPlayLevel(level)
-}
+const handelPlayLevel = (level: PlayLevelItem) => playerStore.setSelectedPlayLevel(level)
 
 // 处理播放速度
-const handelPlaySpeed = (speed: PlaySpeed) => {
-    palyerStore.setPlaySpeed(speed)
-}
+const handelPlaybackRate = (playbackRate: PlaybackRate) => playerStore.setPlaybackRate(playbackRate)
 
 // 处理是否循环播放
-const handelIsLoop = () => {
-    palyerStore.toggleLoop()
-}
+const handelIsLoop = () => playerStore.toggleLoop()
 
 // 切换画中画
-const togglePIP = () => {
-    palyerStore.togglePictureInPicture()
-}
+const togglePIP = () => playerStore.togglePictureInPicture()
 
-
+// 是否显示设置菜单
 const isShowVideoSetting = ref(false)
 
-const handleHideSetting = () => {
-    console.log('hide setting')
-    isShowVideoSetting.value = false
-}
+// 隐藏设置菜单
+const handleHideSetting = () => isShowVideoSetting.value = false
 
-const handleShowSetting = () => {
-    console.log('show setting')
-    isShowVideoSetting.value = true
-}
+// 显示设置菜单
+const handleShowSetting = () => isShowVideoSetting.value = true
 
 // 切换网页全屏
-const toggleWebFullscreen = () => {
-    palyerStore.toggleWebFullScreen()
-}
+const toggleWebFullscreen = () => playerStore.toggleWebFullScreen()
 
 // 切换全屏
-const toggleFullscreen = () => {
-    palyerStore.toggleFullScreen()
-}
+const toggleFullscreen = () => playerStore.toggleFullScreen()
 
 
 // 监控是否静音, 切换静音图标
@@ -236,9 +216,11 @@ watchEffect(() => {
 // 监控播放状态, 切换播放暂停图标
 watchEffect(() => {
     if (playStatus.value === PlayStatus.PLAYING) {
-        IconNamePlayPause.value = IconKeys.Play
-    } else {
+        // 当播放状态为播放时，显示暂停图标
         IconNamePlayPause.value = IconKeys.Pause
+    } else {
+        // 当播放状态为暂停时，显示播放图标
+        IconNamePlayPause.value = IconKeys.Play
     }
 })
 

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 15:42:11
  * @LastPlayers  : jiaopengzi
- * @LastEditTime : 2024-09-16 15:46:43
+ * @LastEditTime : 2024-09-18 22:03:26
  * @FilePath     : \blog-client\src\stores\player.ts
  * @Description  : 播放器 store
  * @Blog         : https://jiaopengzi.com
@@ -33,14 +33,14 @@ export enum PlayLevelItem {
 }
 
 // 播放速度
-export enum PlaySpeed {
-  VERY_SLOW = '0.25',
-  SLOW = '0.5',
-  MEDIUM_SLOW = '0.75',
-  NORMAL = '1',
-  FAST = '1.5',
-  FASTER = '2',
-  VERY_FAST = '4',
+export enum PlaybackRate {
+  VERY_SLOW = 0.25,
+  SLOW = 0.5,
+  MEDIUM_SLOW = 0.75,
+  NORMAL = 1,
+  FAST = 1.5,
+  FASTER = 2,
+  VERY_FAST = 4,
 }
 
 export interface PlayLevel {
@@ -59,18 +59,27 @@ export interface PlayProgress {
   currentTime: number // 当前播放时间（以秒为单位）
   duration: number // 总时长（以秒为单位）
   buffered?: number // 缓冲进度（以秒为单位）
+  isDragging: boolean // 是否正在拖拽进度条
 }
 
 // 字幕
-export interface Subtitle {
+export interface SubtitlesItem {
   label: string // 字幕标签，例如 'English', '中文', 'Español' 等
-  url: string // 字幕文件的URL
+  src: string // 字幕文件的URL
+}
+
+// 定义 disabled 字幕
+export const DisabledSubtitles: { [language: string]: SubtitlesItem } = {
+  disabled: {
+    label: '禁用',
+    src: '',
+  },
 }
 
 // 字幕状态
-export interface SubtitleStatus {
-  availableSubtitles?: { [language: string]: Subtitle } // 可用字幕列表,字幕语言，例如 'en', 'zh', 'es' 等
-  selectedSubtitleLanguage?: string // 当前选择的字幕
+export interface Subtitles {
+  availableSubtitles?: { [language: string]: SubtitlesItem } // 可用字幕列表,字幕语言，例如 'en', 'zh', 'es' 等
+  selectedSubtitlesLanguage?: string // 当前选择的字幕的语言 key 默认值 disabled
 }
 
 // 位置
@@ -99,6 +108,10 @@ export interface PlayerSize {
 
 // 播放器 store
 export interface PlayerStore {
+  // 视频地址
+  src: string
+  // 海报
+  poster?: string
   // 播放状态
   playStatus: PlayStatus
   // 播放进度
@@ -110,7 +123,7 @@ export interface PlayerStore {
   // 播放质量
   playLevel: PlayLevel
   // 播放速度
-  playSpeed: PlaySpeed
+  playbackRate: PlaybackRate
   // 音量
   volume: Volume
   // 是否显示控制栏
@@ -120,7 +133,7 @@ export interface PlayerStore {
   // 播放器尺寸
   size: PlayerSize
   // 字幕
-  subtitles?: SubtitleStatus
+  subtitles: Subtitles
   // 画中画
   isPictureInPicture: boolean
   // 是否为移动端
@@ -130,40 +143,59 @@ export interface PlayerStore {
   logoWatermark?: LogoWatermark
   // 是否循环播放
   isLoop: boolean
+  // 是否自动播放
+  autoPlay: boolean
+  // 是否用户输入
+  isUserInput: boolean
 }
 
 // 定义 store
 export const usePlayerStore = defineStore({
   id: 'player',
   state: (): PlayerStore => ({
+    src: '',
     playStatus: PlayStatus.STOPPED,
-    playProgress: { currentTime: 0, duration: 1000, buffered: 700 },
+    playProgress: { currentTime: 0, duration: 2004, isDragging: false },
     isWebFullScreen: false,
     isFullScreen: false,
     playLevel: {
       level: PlayLevelItem.FULL_HD,
       allLevels: [PlayLevelItem.TWO_K, PlayLevelItem.FULL_HD, PlayLevelItem.HD, PlayLevelItem.SD],
     },
-    playSpeed: PlaySpeed.NORMAL,
+    playbackRate: PlaybackRate.NORMAL,
     volume: {
-      volume: 50, // 默认音量
+      volume: 20, // 默认音量
       muted: false, // 是否静音
       lastVolume: 50, // 静
     }, // 默认音量
     showControlBar: true,
     useVideoControls: false,
-    subtitles: {
-      availableSubtitles: {
-        en: { label: 'English', url: 'https://example.com/en.vtt' },
-        zh: { label: '中文', url: 'https://example.com/zh.vtt' },
-        es: { label: 'Español', url: 'https://example.com/es.vtt' },
-      },
-      selectedSubtitleLanguage: '',
-    },
     isPictureInPicture: false,
-    size: { width: 640, height: 360 },
+    size: { width: 720, height: 405 },
     isMobile: false,
     isLoop: false,
+    textWatermark: {
+      content: 'jiaopengzi.com',
+      style: {
+        color: 'red',
+        fontSize: '14px',
+      },
+    },
+    logoWatermark: {
+      imgUrl: 'https://jiaopengzi.com/wp-content/uploads/2021/10/220-50-1-YJ.png',
+      style: {
+        width: '131px',
+        height: '30px',
+        right: '0',
+        top: '20px',
+        opacity: '1',
+      },
+    },
+    autoPlay: false,
+    isUserInput: false,
+    subtitles: {
+      selectedSubtitlesLanguage: 'disabled',
+    },
   }),
   getters: {
     // 获取当前播放状态是否为播放中
@@ -177,6 +209,16 @@ export const usePlayerStore = defineStore({
   },
 
   actions: {
+    // 初始化播放器 store 数据
+    init(playerStore: PlayerStore) {
+      Object.assign(this, playerStore)
+    },
+
+    // 设置视频地址
+    setSrc(src: string) {
+      this.src = src
+    },
+
     // 设置音量
     setVolume(newVolume: number) {
       this.volume.lastVolume = this.volume.volume
@@ -238,13 +280,28 @@ export const usePlayerStore = defineStore({
     },
 
     // 设置播放进度
-    setPlayProgress(currentTime: number, duration: number) {
-      this.playProgress = { currentTime, duration }
+    setPlayProgress(playProgress: PlayProgress) {
+      this.playProgress = playProgress
     },
 
     // 设置当前播放时间
-    setVideoProgress(currentTime: number) {
+    setCurrentTime(currentTime: number) {
       this.playProgress.currentTime = currentTime
+    },
+
+    // 设置总时长
+    setDuration(duration: number) {
+      this.playProgress.duration = duration
+    },
+
+    // 设置缓冲进度
+    setBuffered(buffered: number) {
+      this.playProgress.buffered = buffered
+    },
+
+    // 设置总时长
+    setIsDragging(isDragging: boolean) {
+      this.playProgress.isDragging = isDragging
     },
 
     // 快进
@@ -291,18 +348,18 @@ export const usePlayerStore = defineStore({
     },
 
     // 设置播放质量
-    setSelectedPlayLevel(level: PlayLevelItem) {
-      this.playLevel.level = level
+    setSelectedPlayLevel(levelItem: PlayLevelItem) {
+      this.playLevel.level = levelItem
     },
 
     // 设置播放质量
-    setPlayLevel(level: PlayLevel) {
-      this.playLevel = level
+    setPlayLevel(playLevel: PlayLevel) {
+      this.playLevel = playLevel
     },
 
     // 设置播放速度
-    setPlaySpeed(speed: PlaySpeed) {
-      this.playSpeed = speed
+    setPlaybackRate(playbackRate: PlaybackRate) {
+      this.playbackRate = playbackRate
     },
 
     // 设置是否显示控制栏
@@ -321,20 +378,14 @@ export const usePlayerStore = defineStore({
     },
 
     // 设置字幕
-    setSelectedSubtitleLanguage(language: string) {
+    setSelectedSubtitlesLanguage(language: string) {
       // 如果字幕可用且选择的字幕语言存在
-      if (
-        this.subtitles &&
-        this.subtitles.availableSubtitles &&
-        this.subtitles.availableSubtitles[language]
-      ) {
-        this.subtitles.selectedSubtitleLanguage = language
-      }
+      this.subtitles.selectedSubtitlesLanguage = language
     },
 
-    // 设置字幕
-    setSubtitles(subtitles: SubtitleStatus) {
-      this.subtitles = subtitles
+    // 设置可选字幕
+    setAvailableSubtitles(availableSubtitles: { [language: string]: SubtitlesItem }) {
+      this.subtitles.availableSubtitles = availableSubtitles
     },
 
     // 设置画中画状态
@@ -360,6 +411,16 @@ export const usePlayerStore = defineStore({
     // 设置是否循环播放
     toggleLoop() {
       this.isLoop = !this.isLoop
+    },
+
+    // 设置是否自动播放
+    toggleAutoPlay() {
+      this.autoPlay = !this.autoPlay
+    },
+
+    // 设置是否用户输入
+    setUserInput(flag: boolean) {
+      this.isUserInput = flag
     },
   },
 })

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-07 17:53:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-17 12:31:11
+ * @LastEditTime : 2024-09-18 16:13:51
  * @FilePath     : \blog-client\src\components\player\command\constant.ts
  * @Description  : 播放器命令常量
  * @Blog         : https://jiaopengzi.com
@@ -66,68 +66,80 @@ export type PlayerCommandsType = {
 }
 
 // 从 store 中获取数据
-const palyerStore = usePlayerStore()
-const { volume } = storeToRefs(palyerStore)
+const playerStore = usePlayerStore()
+const { volume } = storeToRefs(playerStore)
 
 // 播放器器 所有 排序 命令 集合对象
 export const PlayerCommands: PlayerCommandsType = {
   [PlayerCommandsKey.PalyPause]: {
     tip: '播放/暂停',
     hotKey: 'Space',
-    action: () => palyerStore.togglePlayPause(),
+    action: () => playerStore.togglePlayPause(),
   },
   [PlayerCommandsKey.Fullscreen]: {
     tip: '全屏',
     hotKey: 'F',
     action: () => {
-      palyerStore.toggleFullScreen()
+      playerStore.toggleFullScreen()
     },
   },
   [PlayerCommandsKey.WebFullscreen]: {
     tip: '网页全屏',
     hotKey: 'W',
-    action: () => palyerStore.toggleWebFullScreen(),
+    action: () => playerStore.toggleWebFullScreen(),
   },
 
   [PlayerCommandsKey.PictureInPicture]: {
     tip: '画中画',
     hotKey: 'P',
-    action: () => palyerStore.togglePictureInPicture(),
+    action: () => playerStore.togglePictureInPicture(),
   },
 
   [PlayerCommandsKey.Mute]: {
     tip: '静音',
     hotKey: 'M',
-    action: () => palyerStore.toggleMute(),
+    action: () => playerStore.toggleMute(),
   },
   [PlayerCommandsKey.VolumeUp]: {
     tip: '音量增加',
     hotKey: 'ArrowUp',
-    action: () => palyerStore.setVolume(volume.value.volume + 10),
-    longPressAction: () => palyerStore.setVolume(volume.value.volume + 20),
+    action: () => playerStore.setVolume(volume.value.volume + 10),
+    longPressAction: () => playerStore.setVolume(volume.value.volume + 20),
   },
   [PlayerCommandsKey.VolumeDown]: {
     tip: '音量减小',
     hotKey: 'ArrowDown',
-    action: () => palyerStore.setVolume(volume.value.volume - 10),
-    longPressAction: () => palyerStore.setVolume(volume.value.volume - 20),
+    action: () => playerStore.setVolume(volume.value.volume - 10),
+    longPressAction: () => playerStore.setVolume(volume.value.volume - 20),
   },
   [PlayerCommandsKey.FastForward]: {
     tip: '快进',
     hotKey: 'ArrowRight',
-    action: () => palyerStore.fastForward(),
-    longPressAction: () => palyerStore.fastForward(),
+    action: () => {
+      playerStore.setUserInput(true)
+      playerStore.fastForward()
+    },
+    longPressAction: () => {
+      playerStore.setUserInput(true)
+      playerStore.fastForward()
+    },
   },
   [PlayerCommandsKey.Rewind]: {
     tip: '快退',
     hotKey: 'ArrowLeft',
-    action: () => palyerStore.rewind(),
-    longPressAction: () => palyerStore.rewind(),
+    action: () => {
+      playerStore.setUserInput(true)
+      playerStore.rewind()
+    },
+    longPressAction: () => {
+      playerStore.setUserInput(true)
+      playerStore.rewind()
+    },
   },
   [PlayerCommandsKey.ExitFullscreen]: {
     tip: '退出全屏',
     hotKey: 'Escape',
-    // action: () => palyerStore.exitFullScreen(),
+    // action: () => playerStore.exitFullScreen(),
   },
 
   // [PlayerCommandsKey.Previous]: {

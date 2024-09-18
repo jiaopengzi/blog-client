@@ -2,14 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-15 15:11:14
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-17 15:48:50
+ * @LastEditTime : 2024-09-18 20:04:09
  * @FilePath     : \blog-client\src\components\player\components\watermark\index.vue
  * @Description  : 水印
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-    <div class="container" ref="containerRef">
+    <div class="watermark-container" ref="containerRef">
         <slot />
     </div>
 </template>
@@ -112,6 +112,7 @@ const appendTextWatermark = () => {
         const textWatermark = document.createElement('span') // 创建 span 元素
         textWatermark.style.position = 'absolute' // 设置绝对定位
         textWatermark.style.zIndex = textWatermarkZindex.value // 设置 z-index
+        textWatermark.style.userSelect = 'none' // 禁止选中
         textWatermark.innerText = textWatermarkContent.value // 设置水印内容
         containerRef.value?.appendChild(textWatermark) // 添加到容器中
         textWatermarkRef.value = textWatermark // 设置水印 ref
@@ -150,6 +151,7 @@ const appendLogoWatermark = () => {
         const logoWatermark = document.createElement('img') // 创建 img 元素
         logoWatermark.style.position = 'absolute' // 设置绝对定位
         logoWatermark.style.zIndex = logoWatermarkZindex.value // 设置 z-index 
+        logoWatermark.style.userSelect = 'none' // 禁止选中
         logoWatermark.src = logoWatermarkLogoSrc.value // 设置图片地址
         containerRef.value?.appendChild(logoWatermark) // 添加到容器中
         logoWatermarkRef.value = logoWatermark // 设置水印 ref
@@ -240,7 +242,10 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="scss">
-.container {
+.watermark-container {
     position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 </style>
