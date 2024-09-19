@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 19:53:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-18 21:53:23
+ * @LastEditTime : 2024-09-19 14:44:10
  * @FilePath     : \blog-client\src\components\player\components\controls\index.vue
  * @Description  : 视频控制器
  * @Blog         : https://jiaopengzi.com
@@ -31,7 +31,7 @@
             <!-- 第二行右侧 -->
             <div class="right-controls">
                 <!-- 静音按钮 -->
-                <button class="controls-btn" @click="toggleMute">
+                <button class="controls-btn volume-mute" @click="toggleMute">
                     <Icon :name="IconNameMute" customClass="iconfont" />
                 </button>
 
@@ -55,17 +55,17 @@
                 </el-popover>
 
                 <!-- 画中画 -->
-                <button class="controls-btn" @click="togglePIP">
+                <button class="controls-btn pip" @click="togglePIP">
                     <Icon :name="IconKeys.PictureInPicture" customClass="iconfont" />
                 </button>
 
                 <!-- 网页全屏 -->
-                <button class="controls-btn" @click="toggleWebFullscreen">
+                <button class="controls-btn web-fullscreen" @click="toggleWebFullscreen">
                     <Icon :name="IconKeys.WebFullscreen" customClass="iconfont" />
                 </button>
 
                 <!-- 全屏 -->
-                <button class="controls-btn" @click="toggleFullscreen">
+                <button class="controls-btn fullscreen" @click="toggleFullscreen">
                     <Icon :name="IconKeys.Fullscreen" customClass="iconfont" />
                 </button>
             </div>
@@ -299,5 +299,17 @@ onMounted(() => {
             }
         }
     }
+}
+
+@include respond-to('phone') {
+
+    // 手机端隐藏如下按钮
+    .volume-mute,
+    .volume,
+    .pip,
+    .web-fullscreen {
+        display: none;
+    }
+
 }
 </style>

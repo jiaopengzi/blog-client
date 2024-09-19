@@ -41,8 +41,6 @@ const textWatermark = {
 palyerStore.setTextWatermark(textWatermark)
 palyerStore.setAvailableSubtitles(subtitles.value)
 
-console.log('subtitles父组件:', palyerStore.subtitles)
-
 </script>
 
 <style scoped lang="scss">

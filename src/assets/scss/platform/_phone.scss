@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-20 19:35:27
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-13 19:21:22
- * @FilePath     : \blog-client\src\assets\scss\platform\phone.scss
+ * @LastEditTime : 2024-09-19 14:36:49
+ * @FilePath     : \blog-client\src\assets\scss\platform\_phone.scss
  * @Description  : phone相关样式
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -21,12 +21,7 @@ $height-header-logo: 42.5px;
 $width-header-logo: 164px;
 
 $font-size: 16px;
-$font-family: 'Microsoft YaHei',
-'PingFang SC',
-'Helvetica Neue',
-Helvetica,
-Arial,
-sans-serif;
+$font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
 // 文章编辑器
 $editor-toolbar-height: 40px; // 编辑器工具栏高度
@@ -37,5 +32,9 @@ $editor-panels-bottom-height: 24px; // 编辑器底部面板高度
 $editor-panels-bottom-border: 1px; // 编辑器底部面板边框
 
 // 评论编辑器
-$el-tabs-header-height:30px; // el-tabs header 高度
+$el-tabs-header-height: 30px; // el-tabs header 高度
 $editor-md-container-height-comment: 60vh; // 评论编辑器md容器高度
+
+// 播放器
+$width-video-main: 94vw; // 视频播放器宽度
+$height-video-main: 52.8vw; // 视频播放器高度

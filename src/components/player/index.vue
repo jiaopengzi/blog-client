@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-17 10:03:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-18 22:45:54
+ * @LastEditTime : 2024-09-19 18:21:09
  * @FilePath     : \blog-client\src\components\player\index.vue
  * @Description  : 视频播放器
  * @Blog         : https://jiaopengzi.com
@@ -27,17 +27,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watchEffect } from 'vue'
+import { ref, computed, onMounted, watchEffect, onUnmounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { usePlayerStore, PlayStatus, DisabledSubtitles } from '@/stores/player'
 import Controls from '@/components/player/components/controls'
 import VideoWatermark from '@/components/player/components/watermark'
+import { MsgType } from '@/components/common'
 
 defineOptions({ name: 'VideoPlayer' })
 
 // 从 store 中获取数据
 const playerStore = usePlayerStore()
-const { src, isWebFullScreen, isFullScreen, isPictureInPicture, size, textWatermark, logoWatermark, playStatus, playProgress, playLevel, playbackRate, volume, subtitles, isLoop, isUserInput } = storeToRefs(playerStore)
+const { src, isWebFullScreen, isFullScreen, isPictureInPicture, size, textWatermark, logoWatermark, playStatus, playProgress, playLevel, playbackRate, volume, subtitles, isLoop, isUserInput, isMobile } = storeToRefs(playerStore)
+
+// 根据当前环境更新 isMobile 
+playerStore.setIsMobile(/mobile|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
+
 
 const videoContainerRef = ref<HTMLElement | null>(null)
 const videoRef = ref<HTMLVideoElement | null>(null)
@@ -49,7 +54,7 @@ const isShowSubtitles = computed(() => subtitles.value && Object.keys(subtitles.
 const subtitlesSrc = computed(() => {
     if (subtitles.value && subtitles.value.availableSubtitles && subtitles.value.selectedSubtitlesLanguage) {
         const availableSubtitles = {
-            ...DisabledSubtitles,
+            ...DisabledSubtitles, // 确保不会出现 undefined
             ...subtitles.value.availableSubtitles
         }
         return availableSubtitles[subtitles.value.selectedSubtitlesLanguage].src
@@ -100,34 +105,95 @@ const handleMouseleave = () => {
     controlsHidden.value = true
 }
 
-
-// 监控是否全屏
-watchEffect(() => {
-    if (isFullScreen.value) {
-        if (videoContainerRef.value) videoContainerRef.value.requestFullscreen()
-    } else {
-        if (document.fullscreenElement) document.exitFullscreen()
+// 处理全屏变化
+const handleFullscreenChange = () => {
+    const fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.msFullscreenElement
+    if (!fullscreenElement) {
+        playerStore.exitFullScreen()
     }
+}
+
+// 处理退出全屏
+const handleexitFullscreen = () => {
+    if (videoContainerRef.value && videoRef.value) {
+        videoRef.value.style.width = '100%'
+        videoRef.value.style.height = '100%'
+        videoContainerRef.value.style.width = size.value.width + 'px'
+        videoContainerRef.value.style.height = size.value.height + 'px'
+
+
+    }
+
+}
+
+// 处理屏幕方向变化
+const handleOrientationChange = (e: MediaQueryListEvent) => {
+    if (e.matches) {
+        // 横屏
+        if (videoContainerRef.value && videoRef.value) videoContainerRef.value.requestFullscreen()
+
+    } else {
+        // 竖屏
+        const fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.msFullscreenElement
+        if (fullscreenElement) document.exitFullscreen()
+    }
+}
+
+
+// 监控是否全屏状态
+watchEffect(() => {
+
+    // 获取屏幕方向对象，断言为 any 类型
+    const orientation = screen.orientation as any
+
+    if (isFullScreen.value) {
+        if (videoContainerRef.value && videoRef.value) {
+            videoContainerRef.value.requestFullscreen()
+
+            // 移动端时 锁定屏幕方向为横屏
+            if (isMobile.value && isMobile && typeof orientation.lock === 'function') {
+                orientation.lock('landscape').catch((err: any) => {
+                    console.error('屏幕方向锁定失败:', err)
+                    // 弹窗提示用户手动调整屏幕方向
+                    ElMessage({
+                        type: MsgType.warning,
+                        message: '请手动调整屏幕方向为横屏',
+                    })
+                })
+            }
+
+            // 检测竖屏全屏状态并调整 video 元素的 object-fit 属性
+            // window.innerHeight > window.innerWidth ? videoRef.value.style.objectFit = 'contain' : videoRef.value.style.objectFit = 'cover'
+        }
+    } else {
+        // 退出全屏
+        const fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.msFullscreenElement
+        if (fullscreenElement) {
+            document.exitFullscreen()
+            handleexitFullscreen()
+        }
+
+        // 解锁屏幕方向
+        if (orientation && typeof orientation.unlock === 'function') orientation.unlock()
+    }
+
 })
 
-// 监控网页全屏状态,video 没有全屏
+
+// 监控网页全屏状态
 watchEffect(() => {
     if (isWebFullScreen.value) {
         if (videoContainerRef.value && videoRef.value) {
-            videoContainerRef.value.style.width = '100vw'
-            videoContainerRef.value.style.height = '100vh'
             videoRef.value.style.width = '100vw'
             videoRef.value.style.height = '100vh'
+            videoContainerRef.value.style.width = '100vw'
+            videoContainerRef.value.style.height = '100vh'
         }
     } else {
-        if (videoContainerRef.value && videoRef.value) {
-            videoRef.value.style.width = '100%'
-            videoRef.value.style.height = '100%'
-            videoContainerRef.value.style.width = size.value.width + 'px'
-            videoContainerRef.value.style.height = size.value.height + 'px'
-        }
+        handleexitFullscreen()
     }
 })
+
 
 // 监控画中画状态
 watchEffect(() => {
@@ -207,22 +273,46 @@ const updateStore = () => {
 onMounted(() => {
     if (videoRef.value) {
         handleLoadedmetadata()
+
+        // 监听屏幕方向变化
+        const mediaQueryList = window.matchMedia("(orientation: landscape)")
+        mediaQueryList.addEventListener('change', handleOrientationChange)
+        document.addEventListener('fullscreenchange', handleFullscreenChange)
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange) // Safari
+        document.addEventListener('mozfullscreenchange', handleFullscreenChange) // Firefox
+        document.addEventListener('MSFullscreenChange', handleFullscreenChange) // IE/Edge
     }
 })
 
-const handleFullscreenChange = () => {
-    if (!document.fullscreenElement) {
-        playerStore.exitFullScreen()
-    }
-}
+onUnmounted(() => {
+    // 移除屏幕方向变化监听
+    const mediaQueryList = window.matchMedia("(orientation: landscape)")
+    mediaQueryList.removeEventListener('change', handleOrientationChange)
+    document.removeEventListener('fullscreenchange', handleFullscreenChange)
+    document.removeEventListener('webkitfullscreenchange', handleFullscreenChange) // Safari
+    document.removeEventListener('mozfullscreenchange', handleFullscreenChange) // Firefox
+    document.removeEventListener('MSFullscreenChange', handleFullscreenChange) // IE/Edge
+})
+
 </script>
 
 <style scoped lang="scss">
+// 禁用 video 默认控制器
+video::-webkit-media-controls {
+    display: none !important;
+}
+
+video::-webkit-media-controls-enclosure {
+    display: none !important;
+}
+
+
 .video-container {
     position: relative;
+    background-color: red;
 
     video {
-        object-fit: cover;
+        object-fit: contain;
         width: 100%;
         height: 100%;
     }
@@ -252,6 +342,29 @@ const handleFullscreenChange = () => {
         left: 10px;
         width: calc(100% - 20px);
         background-color: rgba(0, 0, 0, 0);
+    }
+}
+
+@include respond-to('pc') {
+    .video-container {
+        width: pc.$width-video-main;
+    }
+
+    .video-container[data-preview="wechat"] {
+        width: 390px;
+    }
+}
+
+@include respond-to('phone') {
+    .video-container {
+        max-width: phone.$width-video-main;
+        max-height: phone.$height-video-main;
+    }
+
+    .video-container[data-preview="wechat"] {
+        max-width: phone.$width-video-main;
+        max-height: phone.$height-video-main;
+        width: 100%;
     }
 }
 </style>
