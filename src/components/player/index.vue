@@ -2,13 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-17 10:03:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-19 18:21:09
+ * @LastEditTime : 2024-09-19 18:27:30
  * @FilePath     : \blog-client\src\components\player\index.vue
  * @Description  : 视频播放器
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
+    <div>{{ testF }}</div>
     <div ref="videoContainerRef" class="video-container" @fullscreenchange="handleFullscreenChange"
         @mousemove="handleMousemove" @mouseenter="handleMouseenter" @mouseleave="handleMouseleave">
         <VideoWatermark :text-watermark="textWatermark" :logo-watermark="logoWatermark">
@@ -140,6 +141,9 @@ const handleOrientationChange = (e: MediaQueryListEvent) => {
 }
 
 
+
+const testF = ref('test')
+
 // 监控是否全屏状态
 watchEffect(() => {
 
@@ -176,7 +180,8 @@ watchEffect(() => {
         // 解锁屏幕方向
         if (orientation && typeof orientation.unlock === 'function') orientation.unlock()
     }
-
+    testF.value = `videoContainerRef: ${videoContainerRef.value?.clientWidth} x ${videoContainerRef.value?.clientHeight},
+        videoRef: ${videoRef.value?.clientWidth} x ${videoRef.value?.clientHeight}`
 })
 
 
