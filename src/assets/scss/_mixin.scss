@@ -10,12 +10,17 @@
  */
 
 @use './platform/phone.scss' as phone;
+@use './platform/pad.scss' as pad;
 @use './platform/pc.scss' as pc;
 
 $platforms: (
   'phone': (
     phone.$min-width,
     phone.$max-width,
+  ),
+  'pad': (
+    pad.$min-width,
+    pad.$max-width,
   ),
   'pc': pc.$min-width,
 );

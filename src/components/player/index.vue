@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-17 10:03:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-20 16:27:26
+ * @LastEditTime : 2024-09-20 18:13:16
  * @FilePath     : \blog-client\src\components\player\index.vue
  * @Description  : 视频播放器
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,9 @@
 <template>
     <div ref="videoContainerRef" class="video-container" @fullscreenchange="handleFullscreenChange"
         @mousemove="handleMousemove" @mouseenter="handleMouseenter" @mouseleave="handleMouseleave">
+
         <VideoWatermark :text-watermark="textWatermark" :logo-watermark="logoWatermark">
+
             <!-- video元素不使用默认的 controls-->
             <video ref="videoRef" :src="src" @timeupdate="handleTimeupdate" @loadedmetadata="handleLoadedmetadata"
                 playsinline webkit-playsinline x5-video-player-type="h5" x5-video-player-fullscreen="true">
@@ -23,7 +25,12 @@
             <div class="controls-Container" :class="{ hidden: controlsHidden }">
                 <Controls class="controls" :el-popover-append-to-element="videoContainerRef" />
             </div>
+
+            <!-- 播放按钮 -->
         </VideoWatermark>
+        <button v-if="showPlayButton" class="play-button" @click="togglePlayPause">
+            <Icon :name="IconKeys.Play" customClass="iconfont" />
+        </button>
     </div>
 </template>
 
@@ -35,6 +42,7 @@ import { usePlayerStore, PlayStatus, DisabledSubtitles } from '@/stores/player'
 import Controls from '@/components/player/components/controls'
 import VideoWatermark from '@/components/player/components/watermark'
 import { MsgType } from '@/components/common'
+import { IconKeys } from '@/components/common/icons'
 
 defineOptions({ name: 'VideoPlayer' })
 
@@ -45,9 +53,15 @@ const { src, isWebFullScreen, isFullScreen, isPictureInPicture, size, textWaterm
 // 根据当前环境更新 isMobile 
 playerStore.setIsMobile(/mobile|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
 
-// 
+
 const videoContainerRef = useTemplateRef<HTMLElement | null>("videoContainerRef")
 const videoRef = useTemplateRef<HTMLVideoElement | null>("videoRef")
+
+const showPlayButton = computed(() => playStatus.value !== PlayStatus.PLAYING)
+
+const togglePlayPause = () => {
+    togglePlayPause()
+}
 
 // 是否显示字幕选择
 const isShowSubtitles = computed(() => subtitles.value && Object.keys(subtitles.value).length > 0)
@@ -193,8 +207,6 @@ watchEffect(() => {
                 })
             }
 
-            // 检测竖屏全屏状态并调整 video 元素的 object-fit 属性
-            // window.innerHeight > window.innerWidth ? videoRef.value.style.objectFit = 'contain' : videoRef.value.style.objectFit = 'cover'
         }
     } else {
         // 退出全屏
@@ -338,7 +350,7 @@ video::-webkit-media-controls-enclosure {
 
 .video-container {
     position: relative;
-    background-color: black;
+    // background-color: black;
 
 
     video {
@@ -373,15 +385,23 @@ video::-webkit-media-controls-enclosure {
         width: calc(100% - 20px);
         background-color: rgba(0, 0, 0, 0);
     }
-}
 
-@include respond-to('pc') {
-    .video-container {
-        width: pc.$width-video-main;
-    }
+    .play-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100px;
+        height: 100px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
 
-    .video-container[data-preview="wechat"] {
-        width: 390px;
+        .iconfont {
+            font-size: 100px;
+            fill: rgba(0, 0, 0, 0.5);
+            transition: fill 0.3s ease;
+        }
     }
 }
 
@@ -391,10 +411,38 @@ video::-webkit-media-controls-enclosure {
         max-height: phone.$height-video-main;
     }
 
+    video {
+        max-width: phone.$width-video-main;
+        max-height: phone.$height-video-main;
+    }
+
     .video-container[data-preview="wechat"] {
         max-width: phone.$width-video-main;
         max-height: phone.$height-video-main;
         width: 100%;
+    }
+}
+
+@include respond-to('pad') {
+    .video-container {
+        max-width: phone.$width-video-main;
+        max-height: phone.$height-video-main;
+    }
+
+    .video-container[data-preview="wechat"] {
+        max-width: phone.$width-video-main;
+        max-height: phone.$height-video-main;
+        width: 100%;
+    }
+}
+
+@include respond-to('pc') {
+    .video-container {
+        width: pc.$width-video-main;
+    }
+
+    .video-container[data-preview="wechat"] {
+        width: 390px;
     }
 }
 </style>

@@ -2,16 +2,16 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-20 19:35:27
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-20 17:42:20
- * @FilePath     : \blog-client\src\assets\scss\platform\_phone.scss
- * @Description  : phone相关样式
+ * @LastEditTime : 2024-09-20 17:43:47
+ * @FilePath     : \blog-client\src\assets\scss\platform\_pad.scss
+ * @Description  : pad相关样式
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
  */
 
 $scrollbar-y-width: var(--scrollbar-y-width); // Y轴滚动条宽度
-$min-width: '320px';
-$max-width: '767px';
+$min-width: '768px';
+$max-width: '1219px';
 
 $width-page: 100vw;
 
