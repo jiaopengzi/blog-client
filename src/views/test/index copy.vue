@@ -1,5 +1,5 @@
 <!--
- * @FilePath     : \blog-client\src\views\test\index.vue
+ * @FilePath     : \blog-client\src\views\test\index copy.vue
  * @Description  : 
 -->
 <template>
@@ -40,8 +40,6 @@ const textWatermark = {
 }
 palyerStore.setTextWatermark(textWatermark)
 palyerStore.setAvailableSubtitles(subtitles.value)
-
-console.log('subtitles父组件:', palyerStore.subtitles)
 
 </script>
 

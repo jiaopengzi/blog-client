@@ -332,12 +332,23 @@ export const usePlayerStore = defineStore({
         this.isWebFullScreen = false
       }
     },
+
+    // 设置全屏状态
+    setIsFullScreen(isFullScreen: boolean) {
+      this.isFullScreen = isFullScreen
+    },
+
     // 切换网页全屏状态
     toggleWebFullScreen() {
       this.isWebFullScreen = !this.isWebFullScreen
       if (this.isWebFullScreen) {
         this.isFullScreen = false
       }
+    },
+
+    // 设置网页全屏状态
+    setIsWebFullScreen(isWebFullScreen: boolean) {
+      this.isWebFullScreen = isWebFullScreen
     },
 
     // 退出全屏

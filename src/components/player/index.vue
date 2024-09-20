@@ -2,19 +2,19 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-17 10:03:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-19 18:27:30
+ * @LastEditTime : 2024-09-20 16:27:26
  * @FilePath     : \blog-client\src\components\player\index.vue
  * @Description  : 视频播放器
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-    <div>{{ testF }}</div>
     <div ref="videoContainerRef" class="video-container" @fullscreenchange="handleFullscreenChange"
         @mousemove="handleMousemove" @mouseenter="handleMouseenter" @mouseleave="handleMouseleave">
         <VideoWatermark :text-watermark="textWatermark" :logo-watermark="logoWatermark">
             <!-- video元素不使用默认的 controls-->
-            <video ref="videoRef" :src="src" @timeupdate="handleTimeupdate" @loadedmetadata="handleLoadedmetadata">
+            <video ref="videoRef" :src="src" @timeupdate="handleTimeupdate" @loadedmetadata="handleLoadedmetadata"
+                playsinline webkit-playsinline x5-video-player-type="h5" x5-video-player-fullscreen="true">
                 <!-- <track v-if="isShowSubtitles" src="http://10.10.2.222:8081/api/v1/uploads/cn.vtt" kind="subtitles" srclang="cn" label="中文" default /> -->
                 <track v-if="isShowSubtitles" :src="subtitlesSrc" kind="subtitles" :srclang="srclang"
                     :label="subtitlesLabel" default />
@@ -28,8 +28,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watchEffect, onUnmounted } from 'vue'
+import { ref, computed, onMounted, watchEffect, onBeforeUnmount, useTemplateRef } from 'vue'
 import { storeToRefs } from 'pinia'
+import screenfull from "screenfull"
 import { usePlayerStore, PlayStatus, DisabledSubtitles } from '@/stores/player'
 import Controls from '@/components/player/components/controls'
 import VideoWatermark from '@/components/player/components/watermark'
@@ -44,9 +45,9 @@ const { src, isWebFullScreen, isFullScreen, isPictureInPicture, size, textWaterm
 // 根据当前环境更新 isMobile 
 playerStore.setIsMobile(/mobile|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
 
-
-const videoContainerRef = ref<HTMLElement | null>(null)
-const videoRef = ref<HTMLVideoElement | null>(null)
+// 
+const videoContainerRef = useTemplateRef<HTMLElement | null>("videoContainerRef")
+const videoRef = useTemplateRef<HTMLVideoElement | null>("videoRef")
 
 // 是否显示字幕选择
 const isShowSubtitles = computed(() => subtitles.value && Object.keys(subtitles.value).length > 0)
@@ -106,43 +107,66 @@ const handleMouseleave = () => {
     controlsHidden.value = true
 }
 
+
+// 根据 size 设置 video 容器的宽高
+watchEffect(() => {
+    if (videoContainerRef.value) {
+        videoContainerRef.value.style.width = size.value.width + 'px'
+        videoContainerRef.value.style.height = size.value.height + 'px'
+    }
+})
+
+
+// 进入全屏 调整 video 元素的宽高
+const adjustSizeFullscreen = () => {
+    if (videoRef.value) {
+        videoRef.value.style.width = '100%'
+        videoRef.value.style.height = '100%'
+    }
+}
+
+// 进入网页全屏 调整 video 元素的宽高
+const adjustSizeWebFullscreen = () => {
+    if (videoContainerRef.value && videoRef.value) {
+        videoRef.value.style.width = '100vw'
+        videoRef.value.style.height = '100vh'
+        videoContainerRef.value.style.width = '100vw'
+        videoContainerRef.value.style.height = '100vh'
+    }
+}
+
+// 通用退出全屏 调整 video 元素的宽高
+const adjustSizeExitFullscreen = () => {
+    if (videoContainerRef.value && videoRef.value) {
+        videoRef.value.style.width = size.value.width + 'px'
+        videoRef.value.style.height = size.value.height + 'px'
+        videoContainerRef.value.style.width = size.value.width + 'px'
+        videoContainerRef.value.style.height = size.value.height + 'px'
+    }
+}
+
+
 // 处理全屏变化
 const handleFullscreenChange = () => {
-    const fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.msFullscreenElement
-    if (!fullscreenElement) {
-        playerStore.exitFullScreen()
+    if (screenfull.isEnabled) {
+        // 更新 store 中的全屏状态
+        playerStore.setIsFullScreen(screenfull.isFullscreen)
+
+        // 根据全屏状态调整 video 元素的宽高
+        if (screenfull.isFullscreen) {
+            adjustSizeFullscreen()
+        } else {
+            adjustSizeExitFullscreen()
+        }
     }
 }
 
 // 处理退出全屏
-const handleexitFullscreen = () => {
-    if (videoContainerRef.value && videoRef.value) {
-        videoRef.value.style.width = '100%'
-        videoRef.value.style.height = '100%'
-        videoContainerRef.value.style.width = size.value.width + 'px'
-        videoContainerRef.value.style.height = size.value.height + 'px'
-
-
-    }
-
-}
-
-// 处理屏幕方向变化
-const handleOrientationChange = (e: MediaQueryListEvent) => {
-    if (e.matches) {
-        // 横屏
-        if (videoContainerRef.value && videoRef.value) videoContainerRef.value.requestFullscreen()
-
-    } else {
-        // 竖屏
-        const fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.msFullscreenElement
-        if (fullscreenElement) document.exitFullscreen()
+const handleExitFullscreen = async () => {
+    if (screenfull.isEnabled && screenfull.isFullscreen) {
+        await screenfull.exit()
     }
 }
-
-
-
-const testF = ref('test')
 
 // 监控是否全屏状态
 watchEffect(() => {
@@ -152,17 +176,20 @@ watchEffect(() => {
 
     if (isFullScreen.value) {
         if (videoContainerRef.value && videoRef.value) {
-            videoContainerRef.value.requestFullscreen()
+            if (screenfull.isEnabled) {
+                adjustSizeFullscreen()
+                screenfull.request(videoContainerRef.value);
+            }
 
             // 移动端时 锁定屏幕方向为横屏
             if (isMobile.value && isMobile && typeof orientation.lock === 'function') {
                 orientation.lock('landscape').catch((err: any) => {
                     console.error('屏幕方向锁定失败:', err)
                     // 弹窗提示用户手动调整屏幕方向
-                    ElMessage({
-                        type: MsgType.warning,
-                        message: '请手动调整屏幕方向为横屏',
-                    })
+                    // ElMessage({
+                    //     type: MsgType.warning,
+                    //     message: '请手动调整屏幕方向为横屏',
+                    // })
                 })
             }
 
@@ -171,34 +198,40 @@ watchEffect(() => {
         }
     } else {
         // 退出全屏
-        const fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.msFullscreenElement
-        if (fullscreenElement) {
-            document.exitFullscreen()
-            handleexitFullscreen()
-        }
+        handleExitFullscreen()
 
         // 解锁屏幕方向
         if (orientation && typeof orientation.unlock === 'function') orientation.unlock()
     }
-    testF.value = `videoContainerRef: ${videoContainerRef.value?.clientWidth} x ${videoContainerRef.value?.clientHeight},
-        videoRef: ${videoRef.value?.clientWidth} x ${videoRef.value?.clientHeight}`
+
 })
+
+// 处理屏幕方向变化
+const handleOrientationChange = (e: MediaQueryListEvent) => {
+    if (e.matches) {
+        // 横屏
+        if (videoContainerRef.value && videoRef.value) {
+            if (screenfull.isEnabled) {
+                screenfull.request(videoContainerRef.value);
+            }
+        }
+
+    } else {
+        // 竖屏
+        handleExitFullscreen()
+    }
+}
+
 
 
 // 监控网页全屏状态
 watchEffect(() => {
     if (isWebFullScreen.value) {
-        if (videoContainerRef.value && videoRef.value) {
-            videoRef.value.style.width = '100vw'
-            videoRef.value.style.height = '100vh'
-            videoContainerRef.value.style.width = '100vw'
-            videoContainerRef.value.style.height = '100vh'
-        }
+        adjustSizeWebFullscreen()
     } else {
-        handleexitFullscreen()
+        adjustSizeExitFullscreen()
     }
 })
-
 
 // 监控画中画状态
 watchEffect(() => {
@@ -210,13 +243,7 @@ watchEffect(() => {
     }
 })
 
-// 根据 size 设置 video 容器的宽高
-watchEffect(() => {
-    if (videoContainerRef.value) {
-        videoContainerRef.value.style.width = size.value.width + 'px'
-        videoContainerRef.value.style.height = size.value.height + 'px'
-    }
-})
+
 
 // 根据 playStatus 控制 video 播放暂停
 watchEffect(() => {
@@ -275,6 +302,7 @@ const updateStore = () => {
     }
 }
 
+
 onMounted(() => {
     if (videoRef.value) {
         handleLoadedmetadata()
@@ -282,22 +310,18 @@ onMounted(() => {
         // 监听屏幕方向变化
         const mediaQueryList = window.matchMedia("(orientation: landscape)")
         mediaQueryList.addEventListener('change', handleOrientationChange)
-        document.addEventListener('fullscreenchange', handleFullscreenChange)
-        document.addEventListener('webkitfullscreenchange', handleFullscreenChange) // Safari
-        document.addEventListener('mozfullscreenchange', handleFullscreenChange) // Firefox
-        document.addEventListener('MSFullscreenChange', handleFullscreenChange) // IE/Edge
     }
+
 })
 
-onUnmounted(() => {
+
+onBeforeUnmount(() => {
     // 移除屏幕方向变化监听
     const mediaQueryList = window.matchMedia("(orientation: landscape)")
     mediaQueryList.removeEventListener('change', handleOrientationChange)
-    document.removeEventListener('fullscreenchange', handleFullscreenChange)
-    document.removeEventListener('webkitfullscreenchange', handleFullscreenChange) // Safari
-    document.removeEventListener('mozfullscreenchange', handleFullscreenChange) // Firefox
-    document.removeEventListener('MSFullscreenChange', handleFullscreenChange) // IE/Edge
+
 })
+
 
 </script>
 
@@ -314,7 +338,8 @@ video::-webkit-media-controls-enclosure {
 
 .video-container {
     position: relative;
-    background-color: red;
+    background-color: black;
+
 
     video {
         object-fit: contain;
