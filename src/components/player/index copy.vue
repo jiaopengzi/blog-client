@@ -1,8 +1,18 @@
 <!--
  * @Author       : jiaopengzi
+ * @Date         : 2024-09-21 12:29:39
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2024-09-21 12:29:39
+ * @FilePath     : \blog-client\src\components\player\index copy.vue
+ * @Description  : 
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+-->
+<!--
+ * @Author       : jiaopengzi
  * @Date         : 2024-09-17 10:03:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-21 15:51:04
+ * @LastEditTime : 2024-09-21 11:08:02
  * @FilePath     : \blog-client\src\components\player\index.vue
  * @Description  : 视频播放器
  * @Blog         : https://jiaopengzi.com
@@ -47,12 +57,6 @@ import Controls from '@/components/player/components/controls'
 import VideoWatermark from '@/components/player/components/watermark'
 import { MsgType } from '@/components/common'
 import { IconKeys } from '@/components/common/icons'
-import Hls from 'hls.js'
-import { CustomKeyLoader } from '@/pkg/hls'
-import { ResponseCode } from '@/api/responseCode'
-import { getMainM3u8API } from "@/api/video/getMainM3u8"
-import { getM3u8API } from "@/api/video/getM3u8"
-import { getKeyAPI } from "@/api/video/getKey"
 
 defineOptions({ name: 'VideoPlayer' })
 
@@ -398,44 +402,13 @@ const updateStore = () => {
 }
 
 
-onMounted(async () => {
+onMounted(() => {
     if (videoRef.value) {
         handleLoadedmetadata()
 
         // 监听屏幕方向变化
         const mediaQueryList = window.matchMedia("(orientation: landscape)")
         mediaQueryList.addEventListener('change', handleOrientationChange)
-    }
-
-    // HLS
-    const videoSrcEndpoint = 'http://10.10.2.222:8081/api/v1/video/4-7f9d0d9c'
-
-    const response = await fetch(videoSrcEndpoint)
-    const result = await response.json()
-
-    if (result.code === ResponseCode.GetVideoM3u8Success) {
-        const { base_url, m3u8 } = result.data
-        const videoSrc = m3u8.replace(/_url_/g, base_url + "/")
-
-        const blob = new Blob([videoSrc], { type: 'application/vnd.apple.mpegurl' })
-        const blobUrl = URL.createObjectURL(blob)
-
-        if (Hls.isSupported()) {
-            const hls = new Hls({
-                loader: CustomKeyLoader
-            });
-
-            hls.loadSource(blobUrl)
-            hls.attachMedia(videoRef.value!)
-            hls.on(Hls.Events.MANIFEST_PARSED, function () {
-                videoRef.value!.play();
-                playerStore.setDuration(videoRef.value!.duration)
-            });
-        } else if (videoRef.value!.canPlayType('application/vnd.apple.mpegurl')) {
-            videoRef.value!.src = blobUrl;
-        }
-    } else {
-        console.error(`Error fetching video source: ${result.msg}`);
     }
 
 })

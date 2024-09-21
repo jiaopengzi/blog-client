@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-11 16:17:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-18 14:34:53
+ * @LastEditTime : 2024-09-21 11:51:54
  * @FilePath     : \blog-client\src\components\player\components\progress-bar\index.vue
  * @Description  : 视频进度条
  * @Blog         : https://jiaopengzi.com
@@ -16,7 +16,7 @@
         <!-- 缓冲 -->
         <div ref="buffered" class="buffered"></div>
 
-        <!-- 已经播放 -->
+        <!-- 已经播放进度 -->
         <div ref="played" class="played"></div>
 
         <!-- 鼠标滑动提示 -->
@@ -26,7 +26,7 @@
         <div ref="slider" class="slider" @mousedown="onSliderDown" @touchstart.passive="onSliderDown"></div>
 
         <!-- 透明的点击区域 -->
-        <div class="click-area"></div>
+        <div ref="clickAreaRef" class="click-area"></div>
     </div>
 </template>
 
@@ -42,12 +42,12 @@ const props = defineProps<{
     playProgress: PlayProgress
 }>()
 
-
 // 定义 emit
 const emit = defineEmits<{
     (e: 'seek', time: number): void
     (e: 'is-dragging', status: boolean): void
 }>()
+
 
 // 定义所有的元素的 ref
 const progressBarRef = useTemplateRef<HTMLDivElement | null>("progressBar")
@@ -55,6 +55,7 @@ const bufferedRef = useTemplateRef<HTMLDivElement | null>("buffered")
 const playedRef = useTemplateRef<HTMLDivElement | null>("played")
 const tooltipRef = useTemplateRef<HTMLDivElement | null>("tooltip")
 const sliderRef = useTemplateRef<HTMLDivElement | null>("slider")
+const clickAreaRef = useTemplateRef<HTMLDivElement | null>("clickAreaRef")
 
 // 计算1秒步长像素长度
 const getStepPixelLength = (totalWidth: number, duration: number) => {

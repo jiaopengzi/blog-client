@@ -1,5 +1,5 @@
 <!--
- * @FilePath     : \blog-client\src\views\test\index copy.vue
+ * @FilePath     : \blog-client\src\views\test\index.vue
  * @Description  : 
 -->
 <template>

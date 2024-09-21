@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 15:42:11
  * @LastPlayers  : jiaopengzi
- * @LastEditTime : 2024-09-18 22:03:26
+ * @LastEditTime : 2024-09-21 12:36:43
  * @FilePath     : \blog-client\src\stores\player.ts
  * @Description  : 播放器 store
  * @Blog         : https://jiaopengzi.com
@@ -11,6 +11,17 @@
 
 import { defineStore } from 'pinia'
 import axios from 'axios'
+
+// 播放状态
+export enum MediaTypes {
+  HLS = 'hls',
+  MP4 = 'mp4',
+  // DASH = 'dash',
+  // WEBM = 'webm',
+  // OGG = 'ogg',
+  // YOUTUBE = 'youtube',
+  // BILIBILI = 'bilibili',
+}
 
 // 播放状态
 export enum PlayStatus {
@@ -108,6 +119,8 @@ export interface PlayerSize {
 
 // 播放器 store
 export interface PlayerStore {
+  // 媒体类型
+  mediaType: MediaTypes
   // 视频地址
   src: string
   // 海报
@@ -153,6 +166,7 @@ export interface PlayerStore {
 export const usePlayerStore = defineStore({
   id: 'player',
   state: (): PlayerStore => ({
+    mediaType: MediaTypes.MP4,
     src: '',
     playStatus: PlayStatus.STOPPED,
     playProgress: { currentTime: 0, duration: 2004, isDragging: false },

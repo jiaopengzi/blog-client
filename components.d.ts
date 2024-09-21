@@ -91,6 +91,7 @@ declare module 'vue' {
     PlayerComponentsProgressBar: typeof import('./src/components/player/components/progress-bar/index.vue')['default']
     PlayerComponentsSetting: typeof import('./src/components/player/components/setting/index.vue')['default']
     PlayerComponentsWatermark: typeof import('./src/components/player/components/watermark/index.vue')['default']
+    'PlayerIndex copy': typeof import('./src/components/player/index copy.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

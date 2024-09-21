@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 19:53:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-19 14:44:10
+ * @LastEditTime : 2024-09-21 10:05:01
  * @FilePath     : \blog-client\src\components\player\components\controls\index.vue
  * @Description  : 视频控制器
  * @Blog         : https://jiaopengzi.com
@@ -20,7 +20,7 @@
             <!-- 第二行左侧 -->
             <div class="left-controls">
                 <!-- 播放暂停按钮 -->
-                <button class="controls-btn play-pause" @click="togglePlayPause">
+                <button class="controls-btn play-pause" @click="handleButtonClick(togglePlayPause)">
                     <Icon :name="IconNamePlayPause" customClass="iconfont" />
                 </button>
 
@@ -31,7 +31,7 @@
             <!-- 第二行右侧 -->
             <div class="right-controls">
                 <!-- 静音按钮 -->
-                <button class="controls-btn volume-mute" @click="toggleMute">
+                <button class="controls-btn volume-mute" @click="handleButtonClick(toggleMute)">
                     <Icon :name="IconNameMute" customClass="iconfont" />
                 </button>
 
@@ -55,17 +55,17 @@
                 </el-popover>
 
                 <!-- 画中画 -->
-                <button class="controls-btn pip" @click="togglePIP">
+                <button class="controls-btn pip" @click="handleButtonClick(togglePIP)">
                     <Icon :name="IconKeys.PictureInPicture" customClass="iconfont" />
                 </button>
 
                 <!-- 网页全屏 -->
-                <button class="controls-btn web-fullscreen" @click="toggleWebFullscreen">
+                <button class="controls-btn web-fullscreen" @click="handleButtonClick(toggleWebFullscreen)">
                     <Icon :name="IconKeys.WebFullscreen" customClass="iconfont" />
                 </button>
 
                 <!-- 全屏 -->
-                <button class="controls-btn fullscreen" @click="toggleFullscreen">
+                <button class="controls-btn fullscreen" @click="handleButtonClick(toggleFullscreen)">
                     <Icon :name="IconKeys.Fullscreen" customClass="iconfont" />
                 </button>
             </div>
@@ -200,6 +200,12 @@ const toggleWebFullscreen = () => playerStore.toggleWebFullScreen()
 // 切换全屏
 const toggleFullscreen = () => playerStore.toggleFullScreen()
 
+// 处理按钮点击事件,点击完成后失去焦点, 防止键盘事件冲突,主要是快捷键.
+const handleButtonClick = (action: () => void) => {
+    action()
+    const activeElement = document.activeElement as HTMLElement | null
+    activeElement?.blur()
+}
 
 // 监控是否静音, 切换静音图标
 watchEffect(() => {
@@ -212,7 +218,6 @@ watchEffect(() => {
     }
 })
 
-
 // 监控播放状态, 切换播放暂停图标
 watchEffect(() => {
     if (playStatus.value === PlayStatus.PLAYING) {
@@ -223,7 +228,6 @@ watchEffect(() => {
         IconNamePlayPause.value = IconKeys.Play
     }
 })
-
 
 onMounted(() => {
     registerHotKeys() // 注册快捷键
