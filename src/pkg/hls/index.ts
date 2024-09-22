@@ -2,9 +2,9 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 15:17:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-21 15:31:40
+ * @LastEditTime : 2024-09-22 12:27:47
  * @FilePath     : \blog-client\src\pkg\hls\index.ts
- * @Description  :
+ * @Description  : hls 自定义 loader
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
@@ -15,24 +15,32 @@ import type {
   LoaderCallbacks,
   LoaderContext,
   LoaderStats,
+  PlaylistLoaderContext,
 } from 'hls.js'
+
 import type { KeyLoaderContext } from 'custom-hls'
 import { reverseString, decryptData } from '@/utils/encrypt'
 import { ResponseCode } from '@/api/responseCode'
 import { getM3u8API } from '@/api/video/getM3u8'
+import { getMainM3u8API } from '@/api/video/getMainM3u8'
+import { getKeyAPI } from '@/api/video/getKey'
 
 // 自定义 KeyLoader 类
-export class CustomKeyLoader extends Hls.DefaultConfig.loader {
+export class CustomLoader extends Hls.DefaultConfig.loader {
+  // 私有属性 videoId
+  private videoId: string
+
   constructor(config: HlsConfig) {
     super(config)
+    this.videoId = ''
   }
 
   // load 方法重写
-  load(
-    context: KeyLoaderContext,
+  async load(
+    context: KeyLoaderContext & PlaylistLoaderContext,
     config: LoaderConfiguration,
     callbacks: LoaderCallbacks<LoaderContext>,
-  ): void {
+  ): Promise<void> {
     // 初始化 loaderStats
     const loaderStats: LoaderStats = {
       aborted: false,
@@ -56,14 +64,20 @@ export class CustomKeyLoader extends Hls.DefaultConfig.loader {
         end: 0,
       },
     }
-
     // 判断是否有 keyInfo
     if (context.keyInfo) {
       // 获取解密密钥
-      fetch(context.keyInfo.decryptdata.uri)
+      console.log('this.videoId2:', context.keyInfo.decryptdata.uri)
+
+      // 获取 context.keyInfo.decryptdata.uri 的 path 最后一个 / 后的字符串作为 videoId
+      this.videoId = context.keyInfo.decryptdata.uri.substring(
+        context.keyInfo.decryptdata.uri.lastIndexOf('/') + 1,
+      )
+
+      await getKeyAPI(this.videoId)
         .then((response) => {
           loaderStats.loading.first = window.performance.now() // 记录首次请求时间
-          return response.json()
+          return response.data
         })
         .then((data) => {
           loaderStats.loading.end = window.performance.now() // 记录结束时间
@@ -72,6 +86,7 @@ export class CustomKeyLoader extends Hls.DefaultConfig.loader {
           if (data.code === ResponseCode.GetVdideoKeySuccess) {
             const decryptedKey = this.decryptKey(data.data) // 解密播放密钥
             context.keyInfo.decryptdata.key = decryptedKey // 将解密后的密钥赋值给 keyInfo
+
             callbacks.onSuccess(
               { url: context.keyInfo.decryptdata.uri, data: decryptedKey.buffer },
               loaderStats,
@@ -80,6 +95,65 @@ export class CustomKeyLoader extends Hls.DefaultConfig.loader {
             )
           } else {
             callbacks.onError({ code: data.code, text: data.msg }, context, null, loaderStats)
+          }
+        })
+        .catch((error) => {
+          loaderStats.loading.end = window.performance.now()
+          callbacks.onError({ code: 500, text: error.message }, context, null, loaderStats)
+        })
+    }
+
+    // 主 m3u8
+    else if (context.type === 'manifest') {
+      // console.log('manifest', context, config, callbacks)
+      // 获取 main m3u8
+      await getMainM3u8API(context.url)
+        .then((response) => {
+          loaderStats.loading.end = window.performance.now()
+
+          if (response.data.code === ResponseCode.GetVideoMainM3u8Success) {
+            this.videoId = context.url // 记录 videoId
+            callbacks.onSuccess(
+              { url: context.url, data: response.data.data },
+              loaderStats,
+              context,
+              null,
+            )
+          } else {
+            callbacks.onError(
+              { code: response.data.code, text: response.data.msg },
+              context,
+              null,
+              loaderStats,
+            )
+          }
+        })
+        .catch((error) => {
+          loaderStats.loading.end = window.performance.now()
+          callbacks.onError({ code: 500, text: error.message }, context, null, loaderStats)
+        })
+    }
+
+    // 子 m3u8
+    else if (context.type === 'level') {
+      // 获取 m3u8
+      await getM3u8API(context.url)
+        .then((response) => {
+          loaderStats.loading.end = window.performance.now()
+
+          if (response.data.code === ResponseCode.GetVideoM3u8Success) {
+            // 获取 m3u8 成功
+            const { base_url, m3u8 } = response.data.data
+            const levelM3u8 = m3u8.replace(/_url_/g, base_url + '/')
+
+            callbacks.onSuccess({ url: base_url, data: levelM3u8 }, loaderStats, context, null)
+          } else {
+            callbacks.onError(
+              { code: response.data.code, text: response.data.msg },
+              context,
+              null,
+              loaderStats,
+            )
           }
         })
         .catch((error) => {

@@ -1,88 +1,62 @@
 <!--
  * @FilePath     : \blog-client\src\views\test\index.vue
+ * @Description  : 
 -->
 <template>
-  <div class="video-container">
-    <video ref="video" class="custom-video" controls muted>
-    </video>
-
+  <div class="container">
+    <VideoPlayer />
   </div>
+
 </template>
 
 <script setup lang="ts">
-defineOptions({ name: 'TestVue' })
-import { ref, onMounted, reactive } from 'vue';
-import Hls from 'hls.js';
-import { CustomKeyLoader } from '@/pkg/hls';
+import { ref } from 'vue'
+import VideoPlayer from '@/components/player'
+import { usePlayerStore, type SubtitlesItem, MediaTypes } from '@/stores/player'
+import player from '@/components/player';
+defineOptions({ name: 'VideoPlayerTest' })
 
-const video = ref<HTMLVideoElement | null>(null);
+// 从 store 中获取数据
+const palyerStore = usePlayerStore()
 
-const levels = reactive<{ height: number, label: string }[]>([]);
+// 设置视频地址
+// palyerStore.setMediaType(MediaTypes.MP4) // 静音
+// palyerStore.setSrc("http://10.10.2.222:8081/api/v1/uploads/test.mp4")
 
-const qualityLabels: Record<number, string> = {
-  2160: '4K',
-  1440: '2K',
-  1080: '1080p',
-  720: '720p',
-  480: '480p',
-  360: '360p',
-  240: '240p'
-};
+palyerStore.setMediaType(MediaTypes.HLS) // 静音
+palyerStore.setSrc("6-c19424aa") // 多清晰度 免费 不加密
+// palyerStore.setSrc("8-8e72860c") // 多清晰度 付费 加密
+// palyerStore.setSrc("9-31df6df9") // 单清晰度 免费 不加密
 
-const getClosestQualityLabel = (height: number): string => {
-  const heights = Object.keys(qualityLabels).map(Number).sort((a, b) => a - b);
-  let closest = heights[0];
-  for (const h of heights) {
-    if (Math.abs(h - height) < Math.abs(closest - height)) {
-      closest = h;
-    }
+const subtitles = ref<{ [language: string]: SubtitlesItem }>({
+  "cn": {
+    label: "中文",
+    src: "http://10.10.2.222:8081/api/v1/uploads/cn.vtt"
+  },
+  "en": {
+    label: "English",
+    src: "http://10.10.2.222:8081/api/v1/uploads/en.vtt"
   }
-  return qualityLabels[closest] || `${height}p`;
-};
+})
 
+const textWatermark = {
+  content: 'jiaopengzi.com1111',
+  style: {
+    color: 'red',
+    fontSize: '14px',
+  },
+}
+palyerStore.setTextWatermark(textWatermark)
+palyerStore.setAvailableSubtitles(subtitles.value)
 
-
-onMounted(async () => {
-  try {
-    if (Hls.isSupported()) {
-      const hls = new Hls({
-        loader: CustomKeyLoader
-      });
-
-      hls.loadSource("http://10.10.2.222:8081/api/v1/video/1-8e72860c");
-      hls.attachMedia(video.value!);
-      hls.on(Hls.Events.MANIFEST_PARSED, function () {
-        console.log('MANIFEST_PARSED', hls!.levels);
-        levels.splice(0, levels.length, ...hls!.levels.map(level => ({
-          height: level.height,
-          label: getClosestQualityLabel(level.height)
-        })));
-        video.value!.play();
-      });
-    } else if (video.value!.canPlayType('application/vnd.apple.mpegurl')) {
-      video.value!.addEventListener('loadedmetadata', function () {
-        video.value!.play();
-      });
-    }
-
-
-  } catch (error) {
-    console.error('Error fetching video source:', error);
-  }
-});
 </script>
 
-
-
-
 <style scoped lang="scss">
-.video-container {
-  position: relative;
-  width: 100%;
-}
-
-.custom-video {
-  width: 720px;
-  height: auto;
+// 让视频播放器水平垂直居中
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 </style>

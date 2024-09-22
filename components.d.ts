@@ -87,11 +87,11 @@ declare module 'vue' {
     LayoutHeaderPc: typeof import('./src/components/layout/header/pc.vue')['default']
     LayoutHeaderPhone: typeof import('./src/components/layout/header/phone.vue')['default']
     Player: typeof import('./src/components/player/index.vue')['default']
+    Player_test: typeof import('./src/components/player/_test.vue')['default']
     PlayerComponentsControls: typeof import('./src/components/player/components/controls/index.vue')['default']
     PlayerComponentsProgressBar: typeof import('./src/components/player/components/progress-bar/index.vue')['default']
     PlayerComponentsSetting: typeof import('./src/components/player/components/setting/index.vue')['default']
     PlayerComponentsWatermark: typeof import('./src/components/player/components/watermark/index.vue')['default']
-    'PlayerIndex copy': typeof import('./src/components/player/index copy.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

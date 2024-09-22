@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-14 10:53:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-18 22:09:37
+ * @LastEditTime : 2024-09-22 15:53:14
  * @FilePath     : \blog-client\src\components\player\components\setting\index.vue
  * @Description  : 视频设置 - 播放速度、清晰度、字幕
  * @Blog         : https://jiaopengzi.com
@@ -34,7 +34,8 @@
                 </div>
             </template>
             <el-radio-group class="radio-group" v-model="selectedPlayLevel" @change="handlePlayLevelChange">
-                <el-radio class="radio-item" v-for="level in props.playLevel.allLevels" :key="level" :value="level">
+                <el-radio class="radio-item" v-for="level in Object.keys(props.playLevel.allLevels)" :key="level"
+                    :value="level">
                     {{ level }}
                 </el-radio>
             </el-radio-group>
@@ -72,7 +73,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import type { Subtitles, SubtitlesItem, PlayLevel } from '@/stores/player'
-import { PlaybackRate, PlayLevelItem, DisabledSubtitles } from '@/stores/player'
+import { PlaybackRate, PlayLevelLabel, DisabledSubtitles } from '@/stores/player'
 
 defineOptions({ name: 'VideoSetting' })
 
@@ -88,7 +89,7 @@ const props = defineProps<{
 // 定义 emit
 const emit = defineEmits<{
     (e: 'selected-subtitles-language', language: string): void // 选择字幕
-    (e: 'get-play-level', level: PlayLevelItem): void // 播放清晰度
+    (e: 'get-play-level', level: PlayLevelLabel): void // 播放清晰度
     (e: 'get-playback-rate', playbackRate: PlaybackRate): void // 播放速度
     (e: 'get-is-loop', value: boolean): void // 是否循环播放
 }>()
@@ -112,8 +113,8 @@ const availableSubtitles = computed<{ [key: string]: SubtitlesItem }>(() => {
 })
 
 
-// 只有一个清晰度选项时不显示
-const isShowPlayLevel = computed(() => props.playLevel.allLevels.length > 1)
+// 只有一个清晰度选项时不显示 props.playLevel.allLevels 是 Record<string, number> 类型
+const isShowPlayLevel = computed(() => Object.keys(props.playLevel.allLevels).length > 1)
 
 // 本地状态
 const selectedSubtitlesLanguage = ref(props.subtitles?.selectedSubtitlesLanguage)
@@ -134,8 +135,8 @@ const handlePlaySpeedChange = (playbackRate: PlaybackRate) => {
 }
 
 // 处理播放清晰度变化
-const handlePlayLevelChange = (level: PlayLevelItem) => {
-    selectedPlayLevel.value = level as PlayLevelItem
+const handlePlayLevelChange = (level: PlayLevelLabel) => {
+    selectedPlayLevel.value = level as PlayLevelLabel
     emit('get-play-level', level)
 }
 

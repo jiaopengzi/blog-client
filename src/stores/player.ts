@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 15:42:11
  * @LastPlayers  : jiaopengzi
- * @LastEditTime : 2024-09-21 12:36:43
+ * @LastEditTime : 2024-09-22 16:14:27
  * @FilePath     : \blog-client\src\stores\player.ts
  * @Description  : 播放器 store
  * @Blog         : https://jiaopengzi.com
@@ -34,13 +34,48 @@ export enum PlayStatus {
 }
 
 // 播放质量
-export enum PlayLevelItem {
-  EIGHT_K = '8k',
-  FOUR_K = '4k',
-  TWO_K = '2k',
-  FULL_HD = '1080p',
-  HD = '720p',
-  SD = '480p',
+export enum PlayLevelLabel {
+  ULTRA_HD_8K = '8k', // 8K 超高清
+  ULTRA_HD_4K = '4k', // 4K 超高清
+  QHD_2K = '2k', // 2K QHD
+  FULL_HD_1080P = '1080p', // 1080p 全高清
+  HD_720P = '720p', // 720p 高清
+  SD_480P = '480p', // 480p 标清
+  LD_360P = '360p', // 360p 低清
+  LOW_240P = '240p', // 240p 超低清
+}
+
+/**
+ * @description: 根据视频高度获取视频质量标签
+ * @param height 视频高度
+ * @return  返回视频质量标签
+ */
+export const getVideoQualityLabel = (height: number): string => {
+  // 视频质量标签
+  const VideoQualityLabels: Record<number, string> = {
+    4320: PlayLevelLabel.ULTRA_HD_8K,
+    2160: PlayLevelLabel.ULTRA_HD_4K,
+    1440: PlayLevelLabel.QHD_2K,
+    1080: PlayLevelLabel.FULL_HD_1080P,
+    720: PlayLevelLabel.HD_720P,
+    480: PlayLevelLabel.SD_480P,
+    360: PlayLevelLabel.LD_360P,
+    240: PlayLevelLabel.LOW_240P,
+  }
+  // 降序排列
+  const heights = Object.keys(VideoQualityLabels)
+    .map(Number)
+    .sort((a, b) => a - b)
+  // 高度小于最小值时，返回最小值，大于最大值时，返回最大值，否则返回小于等于当前高度的最大值
+  let closest = heights[0]
+
+  for (const h of heights) {
+    if (h - height >= 0) {
+      closest = h
+      return VideoQualityLabels[closest]
+    }
+  }
+  return VideoQualityLabels[closest]
 }
 
 // 播放速度
@@ -55,8 +90,8 @@ export enum PlaybackRate {
 }
 
 export interface PlayLevel {
-  level: PlayLevelItem // 播放质量
-  allLevels: PlayLevelItem[] // 所有可用的播放质量
+  level: PlayLevelLabel // 播放质量
+  allLevels: Record<string, number> // 所有可用的播放质量
 }
 
 export interface Volume {
@@ -173,8 +208,13 @@ export const usePlayerStore = defineStore({
     isWebFullScreen: false,
     isFullScreen: false,
     playLevel: {
-      level: PlayLevelItem.FULL_HD,
-      allLevels: [PlayLevelItem.TWO_K, PlayLevelItem.FULL_HD, PlayLevelItem.HD, PlayLevelItem.SD],
+      level: PlayLevelLabel.FULL_HD_1080P,
+      allLevels: {
+        [PlayLevelLabel.QHD_2K]: 1440,
+        [PlayLevelLabel.FULL_HD_1080P]: 1080,
+        [PlayLevelLabel.HD_720P]: 720,
+        [PlayLevelLabel.SD_480P]: 480,
+      },
     },
     playbackRate: PlaybackRate.NORMAL,
     volume: {
@@ -226,6 +266,11 @@ export const usePlayerStore = defineStore({
     // 初始化播放器 store 数据
     init(playerStore: PlayerStore) {
       Object.assign(this, playerStore)
+    },
+
+    // 设置媒体类型
+    setMediaType(mediaType: MediaTypes) {
+      this.mediaType = mediaType
     },
 
     // 设置视频地址
@@ -372,14 +417,14 @@ export const usePlayerStore = defineStore({
       this.isWebFullScreen = false
     },
 
-    // 设置播放质量
-    setSelectedPlayLevel(levelItem: PlayLevelItem) {
-      this.playLevel.level = levelItem
+    // 选择播放质量
+    setSelectedPlayLevel(level: PlayLevelLabel) {
+      this.playLevel.level = level
     },
 
-    // 设置播放质量
-    setPlayLevel(playLevel: PlayLevel) {
-      this.playLevel = playLevel
+    // 设置所有可用的播放质量
+    setPlayLevelAllLevels(allLevels: Record<string, number>) {
+      this.playLevel.allLevels = allLevels
     },
 
     // 设置播放速度

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-17 10:03:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-21 15:51:04
+ * @LastEditTime : 2024-09-22 16:32:42
  * @FilePath     : \blog-client\src\components\player\index.vue
  * @Description  : 视频播放器
  * @Blog         : https://jiaopengzi.com
@@ -42,23 +42,19 @@
 import { ref, computed, onMounted, watchEffect, onBeforeUnmount, useTemplateRef } from 'vue'
 import { storeToRefs } from 'pinia'
 import screenfull from "screenfull"
-import { usePlayerStore, PlayStatus, DisabledSubtitles } from '@/stores/player'
+import { MediaTypes, usePlayerStore, PlayStatus, DisabledSubtitles, getVideoQualityLabel, type PlayLevelLabel } from '@/stores/player'
 import Controls from '@/components/player/components/controls'
 import VideoWatermark from '@/components/player/components/watermark'
 import { MsgType } from '@/components/common'
 import { IconKeys } from '@/components/common/icons'
-import Hls from 'hls.js'
-import { CustomKeyLoader } from '@/pkg/hls'
-import { ResponseCode } from '@/api/responseCode'
-import { getMainM3u8API } from "@/api/video/getMainM3u8"
-import { getM3u8API } from "@/api/video/getM3u8"
-import { getKeyAPI } from "@/api/video/getKey"
+import Hls from 'hls.js';
+import { CustomLoader } from '@/pkg/hls';
 
 defineOptions({ name: 'VideoPlayer' })
 
 // 从 store 中获取数据
 const playerStore = usePlayerStore()
-const { src, isWebFullScreen, isFullScreen, isPictureInPicture,
+const { mediaType, src, isWebFullScreen, isFullScreen, isPictureInPicture,
     size, textWatermark, logoWatermark, playStatus, playProgress,
     playLevel, playbackRate, volume, subtitles, isLoop, isUserInput, isMobile } = storeToRefs(playerStore)
 
@@ -398,44 +394,75 @@ const updateStore = () => {
 }
 
 
+
+// load hls
+const loadHls = () => {
+    if (Hls.isSupported()) {
+
+        // 创建 hls 实例及配置
+        const hls = new Hls({
+            loader: CustomLoader,
+            maxMaxBufferLength: 10, // 最大缓冲时间（秒）
+            maxBufferLength: 10,    // 缓冲时间（秒）
+            maxBufferSize: 2 * 1024 * 1024, // 缓冲大小（字节），假设每个分片大小约为1MB
+            maxBufferHole: 0.5,     // 最大缓冲空洞（秒）
+        })
+
+
+        // 加载视频源
+        hls.loadSource(src.value)
+
+        // 绑定 video 元素
+        hls.attachMedia(videoRef.value!)
+
+        // 当清单解析完成时
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+
+            // 历遍 hls.levels 获取清晰度信息, 保存到 store 中
+            const localLevels: Record<string, number> = {}
+            hls.levels.forEach((level) => {
+                localLevels[getVideoQualityLabel(level.height)] = level.height
+            })
+
+            // 更新 store 中的清晰度信息
+            playerStore.setPlayLevelAllLevels(localLevels)
+        })
+
+        // 获取当前播放清晰度
+        hls.on(Hls.Events.LEVEL_SWITCHED, function (event, data) {
+            var currentLevel = hls.levels[data.level];
+            const selectedLevel = getVideoQualityLabel(currentLevel.height)
+            playerStore.setSelectedPlayLevel(selectedLevel as PlayLevelLabel)
+            // TODO 切换清晰度时, 显示提示信息
+        })
+
+        // 监听用户选择清晰度的变化
+        watchEffect(() => {
+            const levels = hls.levels
+            if (levels) {
+                const levelIndex = levels.findIndex(level => getVideoQualityLabel(level.height) === playLevel.value.level)
+                if (levelIndex !== -1) {
+                    hls.currentLevel = levelIndex
+                }
+            }
+        })
+
+    } else {
+        console.error('Hls is not supported')
+    }
+}
+
+
 onMounted(async () => {
+
+    // 判断是否使用 HLS
+    if (mediaType.value === MediaTypes.HLS) { loadHls() }
+
     if (videoRef.value) {
         handleLoadedmetadata()
-
         // 监听屏幕方向变化
         const mediaQueryList = window.matchMedia("(orientation: landscape)")
         mediaQueryList.addEventListener('change', handleOrientationChange)
-    }
-
-    // HLS
-    const videoSrcEndpoint = 'http://10.10.2.222:8081/api/v1/video/4-7f9d0d9c'
-
-    const response = await fetch(videoSrcEndpoint)
-    const result = await response.json()
-
-    if (result.code === ResponseCode.GetVideoM3u8Success) {
-        const { base_url, m3u8 } = result.data
-        const videoSrc = m3u8.replace(/_url_/g, base_url + "/")
-
-        const blob = new Blob([videoSrc], { type: 'application/vnd.apple.mpegurl' })
-        const blobUrl = URL.createObjectURL(blob)
-
-        if (Hls.isSupported()) {
-            const hls = new Hls({
-                loader: CustomKeyLoader
-            });
-
-            hls.loadSource(blobUrl)
-            hls.attachMedia(videoRef.value!)
-            hls.on(Hls.Events.MANIFEST_PARSED, function () {
-                videoRef.value!.play();
-                playerStore.setDuration(videoRef.value!.duration)
-            });
-        } else if (videoRef.value!.canPlayType('application/vnd.apple.mpegurl')) {
-            videoRef.value!.src = blobUrl;
-        }
-    } else {
-        console.error(`Error fetching video source: ${result.msg}`);
     }
 
 })
@@ -463,7 +490,7 @@ video::-webkit-media-controls-enclosure {
 
 .video-container {
     position: relative;
-    // background-color: black;
+    background-color: red;
 
     video {
         object-fit: contain;

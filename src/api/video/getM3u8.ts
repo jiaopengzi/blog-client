@@ -22,9 +22,9 @@ export interface M3u8Response extends Res {
   }
 }
 
-export function getM3u8API(videoId: string, level: PlayLevelItem): AxiosPromise<M3u8Response> {
+export function getM3u8API(videoIdLevel: string): AxiosPromise<M3u8Response> {
   return request({
-    url: `${routerGroup}/video/${videoId}/${level}`,
+    url: `${routerGroup}/video/${videoIdLevel}`,
     method: 'get',
   })
 }

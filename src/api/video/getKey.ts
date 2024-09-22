@@ -16,7 +16,7 @@ import { type Res } from '@/api/responseCode'
 
 export function getKeyAPI(videoId: string): AxiosPromise<Res> {
   return request({
-    url: `${routerGroup}/key/${videoId}`,
+    url: `${routerGroup}/video/key/${videoId}`,
     method: 'get',
   })
 }
