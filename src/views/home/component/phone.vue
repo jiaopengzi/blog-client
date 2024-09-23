@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:43:31
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-07-19 09:35:19
+ * @LastEditTime : 2024-09-23 19:49:01
  * @FilePath     : \blog-client\src\views\home\component\phone.vue
  * @Description  : pohone 内容页
  * @Blog         : https://jiaopengzi.com
@@ -45,14 +45,12 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ref, defineAsyncComponent } from 'vue'
+import { ref} from 'vue'
 import { ArrowRight, Location } from '@element-plus/icons-vue'
 import { routeObj } from '@/router/routeAll'
 
-// import Carousel from '@/views/home/component/carousel'
-// import PostList from '@/views/home/component/post-list'
-const Carousel = defineAsyncComponent(() => import('@/views/home/component/carousel'))
-const PostList = defineAsyncComponent(() => import('@/views/home/component/post-list'))
+import Carousel from '@/views/home/component/carousel'
+import PostList from '@/views/home/component/post-list'
 
 defineOptions({ name: 'HomePhone' })
 const size = ref("small")

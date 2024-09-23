@@ -18,12 +18,8 @@
     </div>
 </template>
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue'
-// import UserInfoOrderPC from './pc.vue'
-// import UserInfoOrderPhone from './phone.vue'
-const UserInfoOrderPC = defineAsyncComponent(() => import('./pc.vue'))
-const UserInfoOrderPhone = defineAsyncComponent(() => import('./pc.vue'))
-
+import UserInfoOrderPC from './pc.vue'
+import UserInfoOrderPhone from './phone.vue'
 defineOptions({ name: 'UserInfoOrder' })
 
 </script>

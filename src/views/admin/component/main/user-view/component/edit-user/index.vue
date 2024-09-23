@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-18 08:47:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 21:34:46
+ * @LastEditTime : 2024-09-23 19:48:50
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\edit-user\index.vue
  * @Description  : 编辑用户
  * @Blog         : https://jiaopengzi.com
@@ -88,7 +88,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, toRef, onBeforeMount, watch, useTemplateRef, defineAsyncComponent } from 'vue'
+import { reactive, ref, toRef, onBeforeMount, watch, useTemplateRef } from 'vue'
 import { ShowMsgTip } from '@/utils/message'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import { type EditUserInfoByAdminRequest, EditUserInfoByAdminAPI } from '@/api/user/editUserInfoByAdmin'
@@ -104,10 +104,8 @@ import { getAvatarUrl } from '@/utils/avatar'
 import { RegexPatterns } from '@/utils/regexPatterns'
 import { type LogoutByAdminRequest, logoutByAdminAPI } from '@/api/user/logoutByAdmin'
 
-// import AvatarInitials from '@/components/common/avatar-initials'
-// import AvatarUpload from '@/components/common/avatar-upload'
-const AvatarInitials = defineAsyncComponent(() => import('@/components/common/avatar-initials'))
-const AvatarUpload = defineAsyncComponent(() => import('@/components/common/avatar-upload'))
+import AvatarInitials from '@/components/common/avatar-initials'
+import AvatarUpload from '@/components/common/avatar-upload'
 
 defineOptions({ name: 'EditUser' })
 

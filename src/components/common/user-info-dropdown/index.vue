@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 10:19:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 21:57:09
+ * @LastEditTime : 2024-09-23 19:40:41
  * @FilePath     : \blog-client\src\components\common\user-info-dropdown\index.vue
  * @Description  : 显示用户信息下拉菜单
  * @Blog         : https://jiaopengzi.com
@@ -40,10 +40,10 @@ import { storeToRefs } from 'pinia'
 import router from '@/router/index'
 import { routeObj } from '@/router/routeAll'
 import { PermissionNames } from '@/utils/permissionRole'
-import { onMounted, ref, defineAsyncComponent } from 'vue'
+import { onMounted, ref } from 'vue'
 
-// import AvatarInitials from '@/components/common/avatar-initials' // 导入 AvatarInitials 组件
-const AvatarInitials = defineAsyncComponent(() => import('@/components/common/avatar-initials'))
+import AvatarInitials from '@/components/common/avatar-initials' // 导入 AvatarInitials 组件
+
 
 defineOptions({ name: 'UserInfoDropdown' })
 

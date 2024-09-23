@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-29 19:49:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 21:20:51
+ * @LastEditTime : 2024-09-23 19:47:56
  * @FilePath     : \blog-client\src\views\userinfo\component\info\pc.vue
  * @Description  : 我的信息
  * @Blog         : https://jiaopengzi.com
@@ -88,14 +88,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue'
 import { Social } from '@/api/responseCode'
 import { useInfo } from '@/views/userinfo/component/info/hooks'
 
-// import AvatarInitials from '@/components/common/avatar-initials'
-// import AvatarUpload from '@/components/common/avatar-upload'
-const AvatarInitials = defineAsyncComponent(() => import('@/components/common/avatar-initials'))
-const AvatarUpload = defineAsyncComponent(() => import('@/components/common/avatar-upload'))
+import AvatarInitials from '@/components/common/avatar-initials'
+import AvatarUpload from '@/components/common/avatar-upload'
 
 defineOptions({ name: 'UserInfoInfoPC' })
 

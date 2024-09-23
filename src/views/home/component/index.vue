@@ -17,12 +17,8 @@
     </div>
 </template>
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue'
-
-// import HomePC from './pc.vue'
-// import HomePhone from './phone.vue'
-const HomePC = defineAsyncComponent(() => import('./pc.vue'))
-const HomePhone = defineAsyncComponent(() => import('./phone.vue'))
+import HomePC from './pc.vue'
+import HomePhone from './phone.vue'
 
 defineOptions({ name: 'LayoutHome' })
 

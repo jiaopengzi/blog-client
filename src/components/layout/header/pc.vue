@@ -44,7 +44,7 @@
 
 <script setup lang="ts">
 
-import { ref, onBeforeMount, defineAsyncComponent, type Ref } from 'vue'
+import { ref, onBeforeMount, type Ref } from 'vue'
 import { IconKeys } from '@/components/common/icons'
 import type { ScrollData } from '@/components/hooks/useScroll'
 import { useScrollActions } from '@/components/hooks/useScroll'
@@ -53,8 +53,7 @@ import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 import { routeObj } from '@/router/routeAll'
 
-// import HeaderNav from '@/components/layout/header-nav'
-const HeaderNav = defineAsyncComponent(() => import('@/components/layout/header-nav'))
+import HeaderNav from '@/components/layout/header-nav'
 
 defineOptions({ name: 'HeaderPC' })
 

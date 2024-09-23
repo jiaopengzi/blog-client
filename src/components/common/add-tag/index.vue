@@ -23,13 +23,13 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, ref, computed, useTemplateRef, defineAsyncComponent } from 'vue'
+import { nextTick, ref, computed, useTemplateRef } from 'vue'
 import type { ElInput } from 'element-plus'
 
 import type { TagDataObj } from '@/components/common/tag-item'
 
-// import PostTag from '@/components/layout/aside/post-tag'
-const PostTag = defineAsyncComponent(() => import('@/components/layout/aside/post-tag'))
+import PostTag from '@/components/layout/aside/post-tag'
+
 
 defineOptions({ name: 'AddTag' })
 

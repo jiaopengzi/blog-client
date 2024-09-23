@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onBeforeMount, defineAsyncComponent } from 'vue'
+import { ref, reactive, onBeforeMount } from 'vue'
 import type { Pagination } from '@/components/common'
 import type { TableData, TableColumn } from '@/components/common/base-table'
 import type { MediaFile, GetMediaFilesRequest } from '@/api/upload/getFiles'
@@ -60,11 +60,10 @@ import { paginationRouterPush, PaginationQueryKey } from '@/router/utils'
 import { getFileCountGroupByFiletypeAPI, type FileCountGroupByFiletype } from '@/api/upload/getFileCountGroupByFiletype'
 import { DeleteFileAPI, type DeleteFileRequest } from '@/api/upload/deleteFile'
 
-// import BaseTable from '@/components/common/base-table'
-// import AddMedia from '@/views/admin/component/main/media/component/add-media'
+import BaseTable from '@/components/common/base-table'
+import AddMedia from '@/views/admin/component/main/media/component/add-media'
 // import EditUser from '@/views/admin/component/main/user-view/component/edit-user'
-const BaseTable = defineAsyncComponent(() => import('@/components/common/base-table'))
-const AddMedia = defineAsyncComponent(() => import('@/views/admin/component/main/media/component/add-media'))
+
 
 defineOptions({ name: AadminSideMenu.Media })
 

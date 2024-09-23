@@ -54,7 +54,7 @@
     </el-container>
 </template>
 <script lang="ts" setup>
-import { reactive, defineAsyncComponent } from 'vue';
+import { reactive } from 'vue';
 import { EditorPost } from '@/components/editor/core'
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
@@ -62,10 +62,8 @@ import { IconKeys } from '@/components/common/icons'
 import type { SwitchItem, SwitchItemLabel } from '@/components/common/switch-group'
 import { AadminSideMenu } from '@/views/admin/component/aside'
 
-// import AddTag from '@/components/common/add-tag'
-// import SwitchGroup from '@/components/common/switch-group'
-const AddTag = defineAsyncComponent(() => import('@/components/common/add-tag'))
-const SwitchGroup = defineAsyncComponent(() => import('@/components/common/switch-group'))
+import AddTag from '@/components/common/add-tag'
+import SwitchGroup from '@/components/common/switch-group'
 
 
 defineOptions({ name: AadminSideMenu.PostWrite })

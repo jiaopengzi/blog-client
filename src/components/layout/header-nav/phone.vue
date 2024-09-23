@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 20:57:06
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 10:05:54
+ * @LastEditTime : 2024-09-23 19:43:02
  * @FilePath     : \blog-client\src\components\layout\header-nav\phone.vue
  * @Description  : 导航栏 手机端
  * @Blog         : https://jiaopengzi.com
@@ -38,14 +38,13 @@
     </div>
 </template>
 <script setup lang="ts">
-import { onBeforeMount, defineAsyncComponent } from 'vue'
+import { onBeforeMount } from 'vue'
 import { routeObj } from '@/router/routeAll'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 import type { HeaderNavPropsItem } from '@/components/layout/header-nav'
 
-// import AvatarInitials from '@/components/common/avatar-initials'
-const AvatarInitials = defineAsyncComponent(() => import('@/components/common/avatar-initials'))
+import AvatarInitials from '@/components/common/avatar-initials'
 
 defineOptions({ name: 'HeaderNavPhone' })
 

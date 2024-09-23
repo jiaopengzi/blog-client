@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, useTemplateRef, defineAsyncComponent } from 'vue'
+import { reactive, ref, useTemplateRef } from 'vue'
 import { ShowMsgTip } from '@/utils/message'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import type { CheckEmailRequest } from '@/api/user/checkEmail'
@@ -60,8 +60,8 @@ import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
 import { storeToRefs } from 'pinia'
 import { useUserStore } from '@/stores/user'
 
-// import SlideVerify from '@/components/common/slide-verify' // 引用滑块验证组件
-const SlideVerify = defineAsyncComponent(() => import('@/components/common/slide-verify'))
+import SlideVerify from '@/components/common/slide-verify' // 引用滑块验证组件
+
 
 defineOptions({ name: 'BindEmailDialog' })
 

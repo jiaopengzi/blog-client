@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:15:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-26 15:00:47
+ * @LastEditTime : 2024-09-23 19:41:45
  * @FilePath     : \blog-client\src\components\layout\aside\post-tag\index.vue
  * @Description  : 文章标签
  * @Blog         : https://jiaopengzi.com
@@ -26,12 +26,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineAsyncComponent } from 'vue'
+import { ref } from 'vue'
 import type { TagDataObj } from '@/components/common/tag-item'
 import { IconKeys } from '@/components/common/icons'
 
-// import TagItem from '@/components/common/tag-item'
-const TagItem = defineAsyncComponent(() => import('@/components/common/tag-item'))
+import TagItem from '@/components/common/tag-item'
+
 
 defineOptions({ name: 'PostTag' })
 

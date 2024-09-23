@@ -22,14 +22,12 @@
 
 
 <script lang="ts" setup>
-import { ref, reactive, computed, defineAsyncComponent } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import type { SwitchItem, SwitchItemLabel, SwitchItemColor } from '@/components/common/switch-group'
 import { adminMenuItemMapWithIndex } from '@/views/admin/component/aside'
 
-// import SwitchGroup from '@/components/common/switch-group'
-// import RecursiveMenuItem from '@/components/common/recursive-menu-item' // 引入递归菜单组件
-const SwitchGroup = defineAsyncComponent(() => import('@/components/common/switch-group'))
-const RecursiveMenuItem = defineAsyncComponent(() => import('@/components/common/recursive-menu-item'))
+import SwitchGroup from '@/components/common/switch-group'
+import RecursiveMenuItem from '@/components/common/recursive-menu-item' // 引入递归菜单组件
 
 
 // 定义组件名称

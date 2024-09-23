@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-28 16:56:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-08 14:01:27
+ * @LastEditTime : 2024-09-23 19:44:09
  * @FilePath     : \blog-client\src\views\admin\component\main\login-log\index.vue
  * @Description  : 登录日志
  * @Blog         : https://jiaopengzi.com
@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onBeforeMount, watch, defineAsyncComponent } from 'vue'
+import { ref, reactive, onBeforeMount, watch } from 'vue'
 import type { Pagination } from '@/components/common'
 import type { TableData, TableColumn } from '@/components/common/base-table'
 import { debounce } from 'throttle-debounce'
@@ -39,8 +39,7 @@ import { DeleteLoginLogByIDsAPI, type DeleteLoginLogByIDsRequest } from '@/api/l
 import { ShowMsgTip } from '@/utils/message'
 import { handleConfirmCommon } from '@/utils/confirm'
 
-// import BaseTable from '@/components/common/base-table'
-const BaseTable = defineAsyncComponent(() => import('@/components/common/base-table'))
+import BaseTable from '@/components/common/base-table'
 
 defineOptions({ name: AadminSideMenu.LoginLog })
 

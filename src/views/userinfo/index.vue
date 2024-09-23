@@ -18,13 +18,10 @@
 </template>
 
 <script setup lang="ts">
-// import LayoutHeader from '@/components/layout/header'
-// import UserInfo from '@/views/userinfo/component'
-// import LayoutFooter from '@/components/layout/footer'
-import { defineAsyncComponent } from 'vue'
-const LayoutHeader = defineAsyncComponent(() => import('@/components/layout/header'))
-const UserInfo = defineAsyncComponent(() => import('@/views/userinfo/component'))
-const LayoutFooter = defineAsyncComponent(() => import('@/components/layout/footer'))
+import LayoutHeader from '@/components/layout/header'
+import UserInfo from '@/views/userinfo/component'
+import LayoutFooter from '@/components/layout/footer'
+
 
 defineOptions({ name: 'PageUserInfo' })
 </script>

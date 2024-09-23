@@ -57,11 +57,11 @@
 <script setup lang="ts">
 
 import type { PostItemMainObj } from '@/components/common/post-item-main'
-import { computed, defineAsyncComponent } from 'vue'
+import { computed } from 'vue'
 import { View } from '@element-plus/icons-vue'
 
-// import AvatarInitials from '@/components/common/avatar-initials'
-const AvatarInitials = defineAsyncComponent(() => import('@/components/common/avatar-initials'))
+import AvatarInitials from '@/components/common/avatar-initials'
+
 
 defineOptions({ name: "PostItemMain" })
 

@@ -27,7 +27,6 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent } from 'vue'
 
 import SlideVerify from '@/components/common/slide-verify'
 

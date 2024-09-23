@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 21:29:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 21:32:33
- * @FilePath     : \blog-client\src\components\layout\content\userinfo\post\index.vue
+ * @LastEditTime : 2024-09-23 19:48:30
+ * @FilePath     : \blog-client\src\views\userinfo\component\post\index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
@@ -18,11 +18,8 @@
     </div>
 </template>
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue'
-// import UserInfoPostPC from './pc.vue'
-// import UserInfoPostPhone from './phone.vue'
-const UserInfoPostPC = defineAsyncComponent(() => import('./pc.vue'))
-const UserInfoPostPhone = defineAsyncComponent(() => import('./pc.vue'))
+import UserInfoPostPC from './pc.vue'
+import UserInfoPostPhone from './phone.vue'
 
 defineOptions({ name: 'UserInfoPost' })
 

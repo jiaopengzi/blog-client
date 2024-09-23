@@ -24,17 +24,13 @@
 
 </template>
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, defineAsyncComponent } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 
-// import HomePC from './pc.vue'
-// import HomePhone from './phone.vue'
-// import LayoutHeader from '@/components/layout/header'
-// import LayoutFooter from '@/components/layout/footer'
-const HomePC = defineAsyncComponent(() => import('./pc.vue'))
-const HomePhone = defineAsyncComponent(() => import('./phone.vue'))
-const LayoutHeader = defineAsyncComponent(() => import('@/components/layout/header'))
-const LayoutFooter = defineAsyncComponent(() => import('@/components/layout/footer'))
+import HomePC from './pc.vue'
+import HomePhone from './phone.vue'
+import LayoutHeader from '@/components/layout/header'
+import LayoutFooter from '@/components/layout/footer'
 
 defineOptions({ name: 'NotFound404' })
 

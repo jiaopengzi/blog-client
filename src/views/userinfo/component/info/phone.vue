@@ -87,14 +87,11 @@
     </div>
 </template>
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue'
 import { Social } from '@/api/responseCode'
 import { useInfo } from '@/views/userinfo/component/info/hooks'
 
-// import AvatarInitials from '@/components/common/avatar-initials'
-// import AvatarUpload from '@/components/common/avatar-upload'
-const AvatarInitials = defineAsyncComponent(() => import('@/components/common/avatar-initials'))
-const AvatarUpload = defineAsyncComponent(() => import('@/components/common/avatar-upload'))
+import AvatarInitials from '@/components/common/avatar-initials'
+import AvatarUpload from '@/components/common/avatar-upload'
 
 defineOptions({ name: 'UserInfoInfoPhone' })
 

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 21:25:25
+ * @LastEditTime : 2024-09-23 19:46:05
  * @FilePath     : \blog-client\src\views\login\index.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, toRef, useTemplateRef, defineAsyncComponent } from 'vue'
+import { reactive, ref, toRef, useTemplateRef } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import router from '@/router/index'
 import { routeObj } from '@/router/routeAll'
@@ -73,8 +73,7 @@ import type { RouteLocationRaw } from 'vue-router'
 import { RegexPatterns } from '@/utils/regexPatterns'
 import { useFormValidation } from '@/components/hooks/useFormValidation'
 
-// import SlideVerify from '@/components/common/slide-verify'
-const SlideVerify = defineAsyncComponent(() => import('@/components/common/slide-verify'))
+import SlideVerify from '@/components/common/slide-verify'
 
 // eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: 'Login' })

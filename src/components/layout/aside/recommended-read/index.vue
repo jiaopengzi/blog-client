@@ -22,12 +22,10 @@
 </template>
 
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue'
 import type { PostItemAsideObj } from '@/components/common/post-item-aside'
 import { IconKeys } from '@/components/common/icons'
 
-// import PostItem from '@/components/common/post-item-aside'
-const PostItem = defineAsyncComponent(() => import('@/components/common/post-item-aside'))
+import PostItem from '@/components/common/post-item-aside'
 
 defineOptions({ name: 'RecommendedRead' })
 

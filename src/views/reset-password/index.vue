@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 21:23:34
+ * @LastEditTime : 2024-09-23 19:46:26
  * @FilePath     : \blog-client\src\views\reset-password\index.vue
  * @Description  : 重置密码
  * @Blog         : https://jiaopengzi.com
@@ -65,7 +65,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, useTemplateRef, defineAsyncComponent } from 'vue'
+import { reactive, ref, useTemplateRef } from 'vue'
 import { ShowMsgTip } from '@/utils/message'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import type { CheckEmailRequest } from '@/api/user/checkEmail'
@@ -82,8 +82,7 @@ import { routeObj } from '@/router/routeAll'
 import router from '@/router/index'
 import type { ResetPasswordForm } from '@/views/reset-password'
 
-// import SlideVerify from '@/components/common/slide-verify'
-const SlideVerify = defineAsyncComponent(() => import('@/components/common/slide-verify'))
+import SlideVerify from '@/components/common/slide-verify'
 
 // 定义组件名称
 defineOptions({ name: 'ResetPassword' })

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-08 14:04:35
+ * @LastEditTime : 2024-09-23 19:44:58
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -58,7 +58,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onBeforeMount, watch, defineAsyncComponent } from 'vue'
+import { ref, reactive, onBeforeMount, watch } from 'vue'
 import type { Pagination } from '@/components/common'
 import type { TableData, TableColumn } from '@/components/common/base-table'
 import { debounce } from 'throttle-debounce'
@@ -75,12 +75,10 @@ import { ShowMsgTip } from '@/utils/message'
 import { type EditUserByAdminForm } from '@/views/admin/component/main/user-view/component/edit-user'
 import { convertToBeijingTime } from '@/utils/dateTime'
 
-// import BaseTable from '@/components/common/base-table'
-// import AddUser from '@/views/admin/component/main/user-view/component/add-user'
-// import EditUser from '@/views/admin/component/main/user-view/component/edit-user'
-const BaseTable = defineAsyncComponent(() => import('@/components/common/base-table'))
-const AddUser = defineAsyncComponent(() => import('@/views/admin/component/main/user-view/component/add-user'))
-const EditUser = defineAsyncComponent(() => import('@/views/admin/component/main/user-view/component/edit-user'))
+import BaseTable from '@/components/common/base-table'
+import AddUser from '@/views/admin/component/main/user-view/component/add-user'
+import EditUser from '@/views/admin/component/main/user-view/component/edit-user'
+
 
 defineOptions({ name: AadminSideMenu.UserView })
 

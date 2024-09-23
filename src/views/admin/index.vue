@@ -35,7 +35,7 @@
 
 </template>
 <script lang="ts" setup>
-import { ref, watch, onMounted, shallowRef, onBeforeMount, useTemplateRef, defineAsyncComponent } from 'vue'
+import { ref, watch, onMounted, shallowRef, onBeforeMount, useTemplateRef } from 'vue'
 import router from '@/router/index'
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
@@ -44,16 +44,12 @@ import { adminMenuItemMapWithIndex, AadminSideMenu } from '@/views/admin/compone
 import { PermissionNames } from '@/utils/permissionRole'
 import { useUserStore } from '@/stores/user'
 
-// import AdminHeader from '@/views/admin/component/header'
-// import AdminAside from '@/views/admin/component/aside'
-// import Dashborad from '@/views/admin/component/main/dashborad'
-// import NoPermission from '@/views/admin/component/main/no-permission'
-// import Page404 from '@/views/404'
-const AdminHeader = defineAsyncComponent(() => import('@/views/admin/component/header'))
-const AdminAside = defineAsyncComponent(() => import('@/views/admin/component/aside'))
-const Dashborad = defineAsyncComponent(() => import('@/views/admin/component/main/dashborad'))
-const NoPermission = defineAsyncComponent(() => import('@/views/admin/component/main/no-permission'))
-const Page404 = defineAsyncComponent(() => import('@/views/404'))
+import AdminHeader from '@/views/admin/component/header'
+import AdminAside from '@/views/admin/component/aside'
+import Dashborad from '@/views/admin/component/main/dashborad'
+import NoPermission from '@/views/admin/component/main/no-permission'
+import Page404 from '@/views/404'
+
 
 defineOptions({ name: 'AdminLayout' })
 const hasPermissionLoginAdmin = ref(false)

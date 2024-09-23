@@ -57,24 +57,19 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ref, onMounted, nextTick, onBeforeUnmount, useTemplateRef, defineAsyncComponent } from 'vue'
+import { ref, onMounted, nextTick, onBeforeUnmount, useTemplateRef } from 'vue'
 import router from '@/router'
 import { ArrowRight, Location } from '@element-plus/icons-vue'
 import { routeObj } from '@/router/routeAll'
 import type { TagDataObj } from '@/components/common/tag-item'
 
-// import Carousel from '@/views/home/component/carousel'
-// import PostList from '@/views/home/component/post-list'
-// import RecommendedRead from '@/components/layout/aside/recommended-read'
-// import HotPost from '@/components/layout/aside/hot-post'
-// import MonthArchive from '@/components/layout/aside/month-archive'
-// import PostTag from '@/components/layout/aside/post-tag'
-const Carousel = defineAsyncComponent(() => import('@/views/home/component/carousel'))
-const PostList = defineAsyncComponent(() => import('@/views/home/component/post-list'))
-const RecommendedRead = defineAsyncComponent(() => import('@/components/layout/aside/recommended-read'))
-const HotPost = defineAsyncComponent(() => import('@/components/layout/aside/hot-post'))
-const MonthArchive = defineAsyncComponent(() => import('@/components/layout/aside/month-archive'))
-const PostTag = defineAsyncComponent(() => import('@/components/layout/aside/post-tag'))
+import Carousel from '@/views/home/component/carousel'
+import PostList from '@/views/home/component/post-list'
+import RecommendedRead from '@/components/layout/aside/recommended-read'
+import HotPost from '@/components/layout/aside/hot-post'
+import MonthArchive from '@/components/layout/aside/month-archive'
+import PostTag from '@/components/layout/aside/post-tag'
+
 
 defineOptions({ name: 'HomePC' })
 

@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useTemplateRef, reactive, computed, onMounted, defineAsyncComponent } from 'vue';
+import { useTemplateRef, reactive, computed, onMounted } from 'vue';
 import { useToolbar, useCodemirror, usePreview } from '@/components/editor/core/hooks'
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
@@ -50,12 +50,10 @@ import { setIsFullScreenClassName } from '@/components/editor/core'
 import { CommandsKey } from '@/components/editor/command'// import picker compopnent
 import 'vue3-emoji-picker/css'// import css
 
-// import Toolbar from '@/components/editor/toolbar'
-// import Codemirror from '@/components/editor/codemirror'
-// import Preview from '@/components/editor/preview'
-const Toolbar = defineAsyncComponent(() => import('@/components/editor/toolbar'))
-const Codemirror = defineAsyncComponent(() => import('@/components/editor/codemirror'))
-const Preview = defineAsyncComponent(() => import('@/components/editor/preview'))
+import Toolbar from '@/components/editor/toolbar'
+import Codemirror from '@/components/editor/codemirror'
+import Preview from '@/components/editor/preview'
+
 
 // 评论编辑器命名
 defineOptions({ name: "EditorComment" })

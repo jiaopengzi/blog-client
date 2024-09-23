@@ -33,12 +33,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, watch, useTemplateRef, defineAsyncComponent } from 'vue';
+import { ref, onMounted, watch, useTemplateRef } from 'vue';
 import { CommandsKey } from '@/components/editor/command'
 import type { ToolbarProps } from '@/components/editor/toolbar'
 
-// import EmojiPicker from 'vue3-emoji-picker' // import picker compopnent
-const EmojiPicker = defineAsyncComponent(() => import('vue3-emoji-picker'))
+import EmojiPicker from 'vue3-emoji-picker' // import picker compopnent
+
 
 // eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: "Toolbar" })

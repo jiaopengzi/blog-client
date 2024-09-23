@@ -31,13 +31,13 @@
 
 <script setup lang="ts">
 // 引用图标
-import { ref, useTemplateRef, defineAsyncComponent } from 'vue'
+import { ref, useTemplateRef } from 'vue'
 import type { SlideVerifyInstance } from 'vue3-slide-verify'
 import 'vue3-slide-verify/dist/style.css'
 import { IconKeys } from '@/components/common/icons'
 
-// import SlideVerify from 'vue3-slide-verify'
-const SlideVerify = defineAsyncComponent(() => import('vue3-slide-verify'))
+import SlideVerify from 'vue3-slide-verify'
+
 
 defineOptions({ name: 'SlideVerify' })
 

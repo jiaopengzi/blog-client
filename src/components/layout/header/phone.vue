@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 22:31:43
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-26 15:02:07
+ * @LastEditTime : 2024-09-23 19:42:42
  * @FilePath     : \blog-client\src\components\layout\header\phone.vue
  * @Description  : phone 头部
  * @Blog         : https://jiaopengzi.com
@@ -44,15 +44,14 @@
     </div>
 </template>
 <script setup lang="ts">
-import { defineAsyncComponent, ref } from 'vue'
+import { ref } from 'vue'
 import { routeObj } from '@/router/routeAll'
 import type { Ref } from 'vue'
 import type { ScrollData } from '@/components/hooks/useScroll'
 import { useScrollActions } from '@/components/hooks/useScroll'
 import { IconKeys } from '@/components/common/icons'
 
-// import HeaderNav from '@/components/layout/header-nav'
-const HeaderNav = defineAsyncComponent(() => import('@/components/layout/header-nav'))
+import HeaderNav from '@/components/layout/header-nav'
 
 defineOptions({ name: 'HeaderPhone' })
 
