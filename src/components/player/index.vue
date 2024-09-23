@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-17 10:03:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-22 16:32:42
+ * @LastEditTime : 2024-09-23 18:10:26
  * @FilePath     : \blog-client\src\components\player\index.vue
  * @Description  : 视频播放器
  * @Blog         : https://jiaopengzi.com
@@ -14,13 +14,14 @@
 
         <VideoWatermark :text-watermark="textWatermark" :logo-watermark="logoWatermark">
 
-            <!-- video元素不使用默认的 controls-->
-            <video ref="videoRef" :src="src" @timeupdate="handleTimeupdate" @loadedmetadata="handleLoadedmetadata"
-                @progress="handleProgress" playsinline webkit-playsinline x5-video-player-type="h5"
-                x5-video-player-fullscreen="true">
+            <!-- video元素不使用默认的  controls-->
+            <video ref="videoRef" :src="src" :poster="poster" @timeupdate="handleTimeupdate"
+                @loadedmetadata="handleLoadedmetadata" @progress="handleProgress" playsinline webkit-playsinline
+                x5-video-player-type="h5" x5-video-player-fullscreen="true">
                 <!-- <track v-if="isShowSubtitles" src="http://10.10.2.222:8081/api/v1/uploads/cn.vtt" kind="subtitles" srclang="cn" label="中文" default /> -->
                 <track v-if="isShowSubtitles" :src="subtitlesSrc" kind="subtitles" :srclang="srclang"
                     :label="subtitlesLabel" default />
+                您的浏览器不支持 video 标签。请使用最新版本的 Chrome 浏览器观看视频。
             </video>
             <!-- 视频控制器 -->
             <div ref="controlsContainerRef" class="controls-Container" :class="{ hidden: controlsHidden }"
@@ -45,21 +46,26 @@ import screenfull from "screenfull"
 import { MediaTypes, usePlayerStore, PlayStatus, DisabledSubtitles, getVideoQualityLabel, type PlayLevelLabel } from '@/stores/player'
 import Controls from '@/components/player/components/controls'
 import VideoWatermark from '@/components/player/components/watermark'
+import { ShowMsgTip } from '@/utils/message'
 import { MsgType } from '@/components/common'
 import { IconKeys } from '@/components/common/icons'
-import Hls from 'hls.js';
-import { CustomLoader } from '@/pkg/hls';
+import Hls from 'hls.js'
+import { CustomLoader } from '@/pkg/hls'
+import { ResponseCode } from '@/api/responseCode'
 
 defineOptions({ name: 'VideoPlayer' })
 
 // 从 store 中获取数据
 const playerStore = usePlayerStore()
-const { mediaType, src, isWebFullScreen, isFullScreen, isPictureInPicture,
+const { mediaType, src, poster, isWebFullScreen, isFullScreen, isPictureInPicture,
     size, textWatermark, logoWatermark, playStatus, playProgress,
-    playLevel, playbackRate, volume, subtitles, isLoop, isUserInput, isMobile } = storeToRefs(playerStore)
+    playLevel, playbackRate, volume, subtitles, isLoop, isUserInput, isMobile, isIphone } = storeToRefs(playerStore)
 
 // 根据当前环境更新 isMobile 
 playerStore.setIsMobile(/mobile|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
+
+// 判断是否是 Iphone
+playerStore.setIsIphone(/iPhone/i.test(navigator.userAgent))
 
 // 定义 video 元素的 ref
 const videoContainerRef = useTemplateRef<HTMLElement | null>("videoContainerRef")
@@ -104,16 +110,19 @@ const handleProgressbuffered = () => {
         const buffered = videoRef.value.buffered;
         if (buffered.length > 0) {
             const bufferedEnd = buffered.end(buffered.length - 1)
-            console.log('buffered:', bufferedEnd)
             playerStore.setBuffered(bufferedEnd)
         }
     }
 }
 
-
-
 // 是否显示字幕选择
-const isShowSubtitles = computed(() => subtitles.value && Object.keys(subtitles.value).length > 0)
+const isShowSubtitles = computed(() => {
+    // 判断 subtitles.value.selectedSubtitlesLanguage 是否在 DisabledSubtitles keys 中
+    if (subtitles.value && subtitles.value.selectedSubtitlesLanguage) {
+        return !Object.keys(DisabledSubtitles).includes(subtitles.value.selectedSubtitlesLanguage)
+    }
+    return false
+})
 
 // 字幕 src
 const subtitlesSrc = computed(() => {
@@ -164,10 +173,10 @@ const handleMousemove = (event: MouseEvent) => {
     controlsHidden.value = false
     if (hideControlsTimeout) clearTimeout(hideControlsTimeout)
 
-    // 不移动 2s 后隐藏控制器
+    // 不移动 3s 后隐藏控制器
     hideControlsTimeout = setTimeout(() => {
         controlsHidden.value = true
-    }, 2000)
+    }, 3000)
 }
 
 // 鼠标进入事件
@@ -194,7 +203,6 @@ const handleMouseleave = (event: MouseEvent) => {
     controlsHidden.value = true
 }
 
-
 // 根据 size 设置 video 容器的宽高
 watchEffect(() => {
     if (videoContainerRef.value) {
@@ -202,7 +210,6 @@ watchEffect(() => {
         videoContainerRef.value.style.height = size.value.height + 'px'
     }
 })
-
 
 // 进入全屏 调整 video 元素的宽高
 const adjustSizeFullscreen = () => {
@@ -231,7 +238,6 @@ const adjustSizeExitFullscreen = () => {
         videoContainerRef.value.style.height = size.value.height + 'px'
     }
 }
-
 
 // 处理全屏变化
 const handleFullscreenChange = () => {
@@ -265,13 +271,30 @@ watchEffect(() => {
         if (videoContainerRef.value && videoRef.value) {
             if (screenfull.isEnabled) {
                 adjustSizeFullscreen()
-                screenfull.request(videoContainerRef.value);
+                screenfull.request(videoContainerRef.value)
+            }
+
+            if (isIphone.value) {
+                // 主要是 iOS 手机，不支持全屏时，提示用户手动调整屏幕方向
+                // ElMessage({
+                //     type: MsgType.warning,
+                //     message: 'iOS 不支持全屏, 请手动调整屏幕方向为横屏.',
+                // })
+
+                // Safari for iOS
+                const videoElement = videoRef.value as HTMLVideoElement & {
+                    webkitEnterFullscreen?: () => void
+                }
+                if (videoElement.webkitEnterFullscreen) {
+                    videoElement.webkitEnterFullscreen()
+                    playerStore.setIsFullScreen(false) // 只要进入全屏，就设置为 false,退出后也是false
+                }
             }
 
             // 移动端时 锁定屏幕方向为横屏
-            if (isMobile.value && isMobile && typeof orientation.lock === 'function') {
+            if (isMobile.value && typeof orientation.lock === 'function') {
                 orientation.lock('landscape').catch((err: any) => {
-                    console.error('屏幕方向锁定失败:', err)
+                    // console.error('屏幕方向锁定失败:', err)
                     // 弹窗提示用户手动调整屏幕方向
                     // ElMessage({
                     //     type: MsgType.warning,
@@ -288,7 +311,6 @@ watchEffect(() => {
         // 解锁屏幕方向
         if (orientation && typeof orientation.unlock === 'function') orientation.unlock()
     }
-
 })
 
 // 处理屏幕方向变化
@@ -306,7 +328,6 @@ const handleOrientationChange = (e: MediaQueryListEvent) => {
         handleExitFullscreen()
     }
 }
-
 
 // 监控网页全屏状态
 watchEffect(() => {
@@ -361,10 +382,7 @@ watchEffect(() => {
         }
         playerStore.setUserInput(false)
     }
-
-
 })
-
 
 // 监控音量变化
 watchEffect(() => {
@@ -392,8 +410,6 @@ const updateStore = () => {
         videoRef.value.volume = volume.value.volume / 100
     }
 }
-
-
 
 // load hls
 const loadHls = () => {
@@ -447,26 +463,67 @@ const loadHls = () => {
             }
         })
 
+        // 处理 HLS 错误
+        hls.on(Hls.Events.ERROR, function (event, data) {
+            if (data.fatal) {
+                switch (data.type) {
+                    case Hls.ErrorTypes.NETWORK_ERROR:
+                        // 尝试恢复网络错误
+                        console.error('fatal network error encountered, try to recover')
+                        hls.startLoad()
+                        break
+                    case Hls.ErrorTypes.MEDIA_ERROR:
+                        console.error('fatal media error encountered, try to recover')
+                        hls.recoverMediaError()
+                        break
+                    default:
+                        // 无法恢复的错误
+                        console.error('fatal error encountered, destroy hls instance')
+                        hls.destroy()
+                        ShowMsgTip(MsgType.error, `播放错误: ${data.details}`, 0)
+                        break
+                }
+            } else {
+                console.warn('non-fatal error encountered:', data);
+            }
+
+            // 处理自定义 loader 中的错误
+            if (data.type === Hls.ErrorTypes.NETWORK_ERROR && data.response && data.response.code) {
+                // 成功的 code
+                const successCodes = [ResponseCode.GetVideoM3u8Success, ResponseCode.GetVideoMainM3u8Success, ResponseCode.GetVdideoKeySuccess]
+                // 將 data.response.code 转换为 number 类型
+                const resCode = parseInt(data.response.code.toString())
+                // 如果 code 不在 successCodes 中, 则提示错误信息
+                if (!successCodes.includes(resCode)) {
+                    ShowMsgTip(MsgType.error, `请登录后播放,错误代码: ${data.response.code}`, 0)
+                }
+            }
+        })
     } else {
-        console.error('Hls is not supported')
+        ShowMsgTip(MsgType.error, 'HLS 不支持当前浏览器, 请使用最新版本的 Chrome 浏览器观看视频', 0)
     }
 }
 
 
+// 监听是否为 Iphone,如果是 Iphone 则将poster设置为空
+watchEffect(() => {
+    if (isIphone.value) {
+        playerStore.setPoster('')
+    }
+})
+
+
 onMounted(async () => {
-
-    // 判断是否使用 HLS
+    // 判断视频类型
     if (mediaType.value === MediaTypes.HLS) { loadHls() }
+    if (mediaType.value === MediaTypes.MP4) { handleLoadedmetadata() }
 
+    // 监听屏幕方向变化
     if (videoRef.value) {
-        handleLoadedmetadata()
-        // 监听屏幕方向变化
         const mediaQueryList = window.matchMedia("(orientation: landscape)")
         mediaQueryList.addEventListener('change', handleOrientationChange)
     }
-
 })
-
 
 onBeforeUnmount(() => {
     // 移除屏幕方向变化监听
@@ -487,15 +544,16 @@ video::-webkit-media-controls-enclosure {
     display: none !important;
 }
 
-
 .video-container {
     position: relative;
-    background-color: red;
+    background-color: transparent;
 
     video {
         object-fit: contain;
         width: 100%;
         height: 100%;
+
+
     }
 
     .controls-Container {
@@ -563,7 +621,21 @@ video::-webkit-media-controls-enclosure {
     }
 }
 
+// 字幕样式
+::cue {
+    color: rgba(230, 230, 230);
+    background: rgba(0, 0, 0, 0.4);
+    font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    line-height: 2em;
+}
+
+
 @include respond-to('phone') {
+
+    ::cue {
+        font-size: 16px;
+    }
+
     .video-container {
         max-width: phone.$width-video-main;
         max-height: phone.$height-video-main;
@@ -582,6 +654,11 @@ video::-webkit-media-controls-enclosure {
 }
 
 @include respond-to('pad') {
+
+    ::cue {
+        font-size: 24px;
+    }
+
     .video-container {
         max-width: phone.$width-video-main;
         max-height: phone.$height-video-main;
@@ -595,6 +672,11 @@ video::-webkit-media-controls-enclosure {
 }
 
 @include respond-to('pc') {
+
+    ::cue {
+        font-size: 32px;
+    }
+
     .video-container {
         width: pc.$width-video-main;
     }

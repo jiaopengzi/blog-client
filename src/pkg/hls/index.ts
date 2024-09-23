@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 15:17:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-22 12:27:47
+ * @LastEditTime : 2024-09-23 14:50:22
  * @FilePath     : \blog-client\src\pkg\hls\index.ts
  * @Description  : hls 自定义 loader
  * @Blog         : https://jiaopengzi.com
@@ -37,7 +37,7 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
 
   // load 方法重写
   async load(
-    context: KeyLoaderContext & PlaylistLoaderContext,
+    context: KeyLoaderContext | PlaylistLoaderContext,
     config: LoaderConfiguration,
     callbacks: LoaderCallbacks<LoaderContext>,
   ): Promise<void> {
@@ -64,48 +64,9 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
         end: 0,
       },
     }
-    // 判断是否有 keyInfo
-    if (context.keyInfo) {
-      // 获取解密密钥
-      console.log('this.videoId2:', context.keyInfo.decryptdata.uri)
-
-      // 获取 context.keyInfo.decryptdata.uri 的 path 最后一个 / 后的字符串作为 videoId
-      this.videoId = context.keyInfo.decryptdata.uri.substring(
-        context.keyInfo.decryptdata.uri.lastIndexOf('/') + 1,
-      )
-
-      await getKeyAPI(this.videoId)
-        .then((response) => {
-          loaderStats.loading.first = window.performance.now() // 记录首次请求时间
-          return response.data
-        })
-        .then((data) => {
-          loaderStats.loading.end = window.performance.now() // 记录结束时间
-
-          // 密钥获取成功
-          if (data.code === ResponseCode.GetVdideoKeySuccess) {
-            const decryptedKey = this.decryptKey(data.data) // 解密播放密钥
-            context.keyInfo.decryptdata.key = decryptedKey // 将解密后的密钥赋值给 keyInfo
-
-            callbacks.onSuccess(
-              { url: context.keyInfo.decryptdata.uri, data: decryptedKey.buffer },
-              loaderStats,
-              context,
-              null,
-            )
-          } else {
-            callbacks.onError({ code: data.code, text: data.msg }, context, null, loaderStats)
-          }
-        })
-        .catch((error) => {
-          loaderStats.loading.end = window.performance.now()
-          callbacks.onError({ code: 500, text: error.message }, context, null, loaderStats)
-        })
-    }
 
     // 主 m3u8
-    else if (context.type === 'manifest') {
-      // console.log('manifest', context, config, callbacks)
+    if ('type' in context && context.type === 'manifest') {
       // 获取 main m3u8
       await getMainM3u8API(context.url)
         .then((response) => {
@@ -135,7 +96,7 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
     }
 
     // 子 m3u8
-    else if (context.type === 'level') {
+    else if ('type' in context && context.type === 'level') {
       // 获取 m3u8
       await getM3u8API(context.url)
         .then((response) => {
@@ -154,6 +115,42 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
               null,
               loaderStats,
             )
+          }
+        })
+        .catch((error) => {
+          loaderStats.loading.end = window.performance.now()
+          callbacks.onError({ code: 500, text: error.message }, context, null, loaderStats)
+        })
+    }
+    // 判断是否有 keyInfo
+    else if ('keyInfo' in context && context.keyInfo) {
+      // 获取解密密钥
+      // 获取 context.keyInfo.decryptdata.uri 的 path 最后一个 / 后的字符串作为 videoId
+      this.videoId = context.keyInfo.decryptdata.uri.substring(
+        context.keyInfo.decryptdata.uri.lastIndexOf('/') + 1,
+      )
+
+      await getKeyAPI(this.videoId)
+        .then((response) => {
+          loaderStats.loading.first = window.performance.now() // 记录首次请求时间
+          return response.data
+        })
+        .then((data) => {
+          loaderStats.loading.end = window.performance.now() // 记录结束时间
+
+          // 密钥获取成功
+          if (data.code === ResponseCode.GetVdideoKeySuccess) {
+            const decryptedKey = this.decryptKey(data.data) // 解密播放密钥
+            context.keyInfo.decryptdata.key = decryptedKey // 将解密后的密钥赋值给 keyInfo
+
+            callbacks.onSuccess(
+              { url: context.keyInfo.decryptdata.uri, data: decryptedKey.buffer },
+              loaderStats,
+              context,
+              null,
+            )
+          } else {
+            callbacks.onError({ code: data.code, text: data.msg }, context, null, loaderStats)
           }
         })
         .catch((error) => {

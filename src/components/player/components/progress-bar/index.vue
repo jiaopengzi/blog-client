@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-11 16:17:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-21 11:51:54
+ * @LastEditTime : 2024-09-23 14:48:00
  * @FilePath     : \blog-client\src\components\player\components\progress-bar\index.vue
  * @Description  : 视频进度条
  * @Blog         : https://jiaopengzi.com
@@ -48,7 +48,6 @@ const emit = defineEmits<{
     (e: 'is-dragging', status: boolean): void
 }>()
 
-
 // 定义所有的元素的 ref
 const progressBarRef = useTemplateRef<HTMLDivElement | null>("progressBar")
 const bufferedRef = useTemplateRef<HTMLDivElement | null>("buffered")
@@ -57,15 +56,10 @@ const tooltipRef = useTemplateRef<HTMLDivElement | null>("tooltip")
 const sliderRef = useTemplateRef<HTMLDivElement | null>("slider")
 const clickAreaRef = useTemplateRef<HTMLDivElement | null>("clickAreaRef")
 
-// 计算1秒步长像素长度
-const getStepPixelLength = (totalWidth: number, duration: number) => {
-    return totalWidth / duration
-}
-
 // 计算当前视频时间和调整后的 offsetX
 const getCurrentTimeAndOffsetX = (offsetX: number, totalWidth: number) => {
     const duration = props.playProgress.duration
-    const stepPixelLength = getStepPixelLength(totalWidth, duration)
+    const stepPixelLength = totalWidth / duration // 每秒对应的像素长度
     const currentTime = Math.round(offsetX / stepPixelLength) // round 四舍五入为整数秒
     const adjustedOffsetX = currentTime * stepPixelLength // 调整后的 offsetX
     return { currentTime, adjustedOffsetX }
@@ -90,27 +84,41 @@ const removeDocumentEventListeners = () => {
     document.removeEventListener('touchend', onSliderPointerUp)
 }
 
-// 点击进度条
-const onProgressBarClick = (e: MouseEvent | TouchEvent) => {
-    // 如果正在拖拽，则不处理点击事件
-    emit('is-dragging', isDragging)
-    if (isDragging) return
-
+// 公共逻辑:获取进度条的相关数据
+const getProgressBarData = (event: MouseEvent | TouchEvent) => {
     if (progressBarRef.value && sliderRef.value && playedRef.value) {
         const rect = progressBarRef.value.getBoundingClientRect()
-        let offsetX = getClientX(e) - rect.left
+        let offsetX = getClientX(event) - rect.left
         const totalWidth = rect.width
 
         // 限制 offsetX 在 0 和 totalWidth 之间
         offsetX = Math.max(0, Math.min(offsetX, totalWidth))
-
         const { currentTime, adjustedOffsetX } = getCurrentTimeAndOffsetX(offsetX, totalWidth)
 
-        // 即时响应滑块和已播放进度条位置变化
+        return { rect, offsetX, totalWidth, currentTime, adjustedOffsetX }
+    }
+    return null
+}
+
+
+// 点击进度条
+const onProgressBarClick = (event: MouseEvent | TouchEvent) => {
+    // 如果正在拖拽，则不处理点击事件
+    emit('is-dragging', isDragging)
+    if (isDragging) return
+
+    const data = getProgressBarData(event)
+    if (data) {
+        const { offsetX, totalWidth, currentTime, adjustedOffsetX } = data
+
+        // 响应滑块和已播放进度条位置变化
         updateSliderAndPlayed(offsetX, totalWidth)
 
         // 添加鼠标抬起事件监听器
         const onMouseUp = () => {
+            // 移除事件监听器
+            removeDocumentEventListeners()
+
             // 调整滑块和已播放进度条位置到最近的步长位置
             updateSliderAndPlayed(adjustedOffsetX, totalWidth)
 
@@ -118,11 +126,19 @@ const onProgressBarClick = (e: MouseEvent | TouchEvent) => {
             if (currentTime !== props.playProgress.currentTime) {
                 emit('seek', currentTime)
             }
-            removeDocumentEventListeners()
+
+            // 隐藏时间提示
+            if (tooltipRef.value) {
+                tooltipRef.value.style.display = 'none'
+            }
+
+            // 添加原来的鼠标抬起和触摸结束事件监听器
+            addDocumentEventListeners()
         }
 
-        addDocumentEventListeners()
+        // 监听鼠标抬起和触摸结束事件, 只执行一次
         document.addEventListener('mouseup', onMouseUp, { once: true })
+        document.addEventListener('touchend', onMouseUp, { once: true })
     }
 }
 
@@ -137,8 +153,6 @@ const showTooltip = (offsetX: number, currentTime: number, rect: DOMRect) => {
         // 确保 tooltip 不会溢出屏幕边界
         const tooltipRect = tooltipRef.value.getBoundingClientRect()
         if (tooltipRect.right >= rect.right) {
-            // console.log("rect.left", rect)
-            // console.log(rect.left)
             tooltipRef.value.style.left = `${rect.right - rect.left - tooltipRect.width}px`
         } else if (tooltipRect.left < 0) {
             tooltipRef.value.style.left = `0px`
@@ -147,12 +161,10 @@ const showTooltip = (offsetX: number, currentTime: number, rect: DOMRect) => {
 }
 
 // 鼠标移动到进度条上 显示时间提示
-const onProgressBarMousemove = (e: MouseEvent) => {
-    if (progressBarRef.value) {
-        const rect = progressBarRef.value.getBoundingClientRect()
-        const offsetX = e.clientX - rect.left
-        const totalWidth = rect.width
-        const { currentTime } = getCurrentTimeAndOffsetX(offsetX, totalWidth)
+const onProgressBarMousemove = (event: MouseEvent) => {
+    const data = getProgressBarData(event)
+    if (data) {
+        const { rect, offsetX, currentTime } = data
 
         // 显示时间提示
         showTooltip(offsetX, currentTime, rect)
@@ -211,15 +223,9 @@ const updateSliderAndPlayed = (offsetX: number, totalWidth: number) => {
 
 // 滑块指针移动事件
 const onSliderPointerMove = (event: MouseEvent | TouchEvent) => {
-    if (isDragging && progressBarRef.value && sliderRef.value && playedRef.value) {
-        const rect = progressBarRef.value.getBoundingClientRect()
-        let offsetX = getClientX(event) - rect.left
-        const totalWidth = rect.width
-
-        // 修改部分：限制 offsetX 在 0 和 totalWidth 之间
-        offsetX = Math.max(0, Math.min(offsetX, totalWidth))
-
-        const { currentTime } = getCurrentTimeAndOffsetX(offsetX, totalWidth)
+    const data = getProgressBarData(event)
+    if (isDragging && data) {
+        const { rect, offsetX, totalWidth, currentTime } = data
 
         // 即时响应滑块和已播放进度条位置变化
         updateSliderAndPlayed(offsetX, totalWidth)
@@ -230,7 +236,7 @@ const onSliderPointerMove = (event: MouseEvent | TouchEvent) => {
 }
 
 // 滑块指针抬起事件
-const onSliderPointerUp = () => {
+const onSliderPointerUp = (event: MouseEvent | TouchEvent) => {
     isDragging = false
     emit('is-dragging', isDragging)
     removeDocumentEventListeners()
@@ -238,7 +244,9 @@ const onSliderPointerUp = () => {
     if (progressBarRef.value && sliderRef.value && playedRef.value) {
         const rect = progressBarRef.value.getBoundingClientRect()
         const totalWidth = rect.width
-        let offsetX = sliderRef.value.getBoundingClientRect().left - rect.left
+        // 计算滑块中心点的 offsetX
+        const { left: sliderRefLeft, width: sliderRefWidth } = sliderRef.value.getBoundingClientRect()
+        let offsetX = sliderRefLeft + sliderRefWidth / 2 - rect.left
 
         // 限制 offsetX 在 0 和 totalWidth 之间
         offsetX = Math.max(0, Math.min(offsetX, totalWidth))

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 15:42:11
  * @LastPlayers  : jiaopengzi
- * @LastEditTime : 2024-09-22 16:14:27
+ * @LastEditTime : 2024-09-23 16:30:21
  * @FilePath     : \blog-client\src\stores\player.ts
  * @Description  : 播放器 store
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,6 @@
  */
 
 import { defineStore } from 'pinia'
-import axios from 'axios'
 
 // 播放状态
 export enum MediaTypes {
@@ -159,7 +158,7 @@ export interface PlayerStore {
   // 视频地址
   src: string
   // 海报
-  poster?: string
+  poster: string
   // 播放状态
   playStatus: PlayStatus
   // 播放进度
@@ -187,14 +186,16 @@ export interface PlayerStore {
   // 是否为移动端
   isMobile: boolean
   // 水印
-  textWatermark?: TextWatermark
-  logoWatermark?: LogoWatermark
+  textWatermark: TextWatermark
+  logoWatermark: LogoWatermark
   // 是否循环播放
   isLoop: boolean
   // 是否自动播放
   autoPlay: boolean
   // 是否用户输入
   isUserInput: boolean
+  // 是否为 iphone
+  isIphone: boolean
 }
 
 // 定义 store
@@ -203,6 +204,7 @@ export const usePlayerStore = defineStore({
   state: (): PlayerStore => ({
     mediaType: MediaTypes.MP4,
     src: '',
+    poster: '',
     playStatus: PlayStatus.STOPPED,
     playProgress: { currentTime: 0, duration: 2004, isDragging: false },
     isWebFullScreen: false,
@@ -250,6 +252,7 @@ export const usePlayerStore = defineStore({
     subtitles: {
       selectedSubtitlesLanguage: 'disabled',
     },
+    isIphone: false,
   }),
   getters: {
     // 获取当前播放状态是否为播放中
@@ -276,6 +279,11 @@ export const usePlayerStore = defineStore({
     // 设置视频地址
     setSrc(src: string) {
       this.src = src
+    },
+
+    // 设置海报
+    setPoster(poster: string) {
+      this.poster = poster
     },
 
     // 设置音量
@@ -491,6 +499,11 @@ export const usePlayerStore = defineStore({
     // 设置是否用户输入
     setUserInput(flag: boolean) {
       this.isUserInput = flag
+    },
+
+    // 设置是否为 Iphone
+    setIsIphone(isIphone: boolean) {
+      this.isIphone = isIphone
     },
   },
 })
