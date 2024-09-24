@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-20 17:43:05
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-20 20:26:53
+ * @LastEditTime : 2024-09-24 12:30:51
  * @FilePath     : \blog-client\src\components\common\countdown\index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -37,7 +37,7 @@ const props = defineProps({
 
 const totalSeconds = ref(props.countdown) // 初始化倒计时时间，单位为秒
 
-let timer: number | undefined = undefined // 定时器
+let timer: ReturnType<typeof setInterval> | undefined = undefined // 定时器
 
 const days = computed(() => Math.floor(totalSeconds.value / 60 / 60 / 24)) // 计算天数
 const hours = computed(() => Math.floor(totalSeconds.value / 60 / 60 % 24)) // 计算小时数

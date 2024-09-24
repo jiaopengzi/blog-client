@@ -1,13 +1,8 @@
 /*
- * @Author       : jiaopengzi
- * @Date         : 2023-12-03 00:20:51
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-13 14:20:32
  * @FilePath     : \blog-client\vite.config.ts
  * @Description  : vite 配置文件
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
+
 import path from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
@@ -35,6 +30,7 @@ export default defineConfig({
     }),
     // ------------------------------element-plus 自动导入 结束
   ],
+  
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),

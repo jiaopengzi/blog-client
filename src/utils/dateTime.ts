@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 16:07:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-11 11:16:18
+ * @LastEditTime : 2024-09-24 10:03:11
  * @FilePath     : \blog-client\src\utils\dateTime.ts
  * @Description  : UTC 转 北京时间
  * @Blog         : https://jiaopengzi.com
@@ -82,4 +82,36 @@ export function formatDurationTime(duration: number): string {
   } else {
     return `${minutesStr}:${secondsStr}`
   }
+}
+
+/**
+ * @description: 将时间字符串转换为秒数
+ * @param time 时间字符串 格式为 hh:mm:ss.sss
+ * @return  {number} 秒数(三位小数,即毫秒)
+ */
+export function parseTime(time: string): number {
+  const [hours, minutes, seconds] = time.split(':')
+  return parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseFloat(seconds)
+}
+
+/**
+ * @description: 将时间分段转换为秒数
+ * @param hours 小时
+ * @param minutes 分钟
+ * @param seconds 秒
+ * @param milliseconds 毫秒
+ * @return  {number} 秒数(三位小数,即毫秒)
+ */
+export function parseTimeSegments(
+  hours: string,
+  minutes: string,
+  seconds: string,
+  milliseconds: string,
+): number {
+  return (
+    parseInt(hours) * 3600 +
+    parseInt(minutes) * 60 +
+    parseInt(seconds) +
+    parseInt(milliseconds) / 1000
+  )
 }

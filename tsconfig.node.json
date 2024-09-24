@@ -1,13 +1,3 @@
-/*
- * @Author       : jiaopengzi
- * @Date         : 2023-12-01 22:04:48
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-07-18 11:41:11
- * @FilePath     : \blog-client\tsconfig.node.json
- * @Description  : 
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
- */
 {
   "extends": "@tsconfig/node20/tsconfig.json",
   "include": [

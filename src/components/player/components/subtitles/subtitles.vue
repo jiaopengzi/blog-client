@@ -4,11 +4,10 @@
  * @LastEditors  : jiaopengzi
  * @LastEditTime : 2024-09-23 20:50:32
  * @FilePath     : \blog-client\src\views\test\CustomSubtitles.vue
- * @Description  : 
+ * @Description  : 自定义字幕组件-待完善
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
-<!-- components/CustomSubtitles.vue -->
 <template>
     <div class="subtitles" v-if="currentCue">
         {{ currentCue.text }}

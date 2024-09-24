@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 19:53:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-21 10:05:01
+ * @LastEditTime : 2024-09-24 12:33:02
  * @FilePath     : \blog-client\src\components\player\components\controls\index.vue
  * @Description  : 视频控制器
  * @Blog         : https://jiaopengzi.com
@@ -83,7 +83,7 @@ import ProgressBar from '@/components/player/components/progress-bar'
 import VideoSetting from '@/components/player/components/setting'
 import { useMagicKeys } from '@vueuse/core'
 import { PlayerCommandsKey, PlayerCommands } from '@/components/player/command'
-import { usePlayerStore, PlayStatus, PlayLevelItem, PlaybackRate, } from '@/stores/player'
+import { usePlayerStore, PlayStatus, PlaybackRate, PlayLevelLabel } from '@/stores/player'
 
 // 名称
 defineOptions({ name: 'VideoControls' })
@@ -174,7 +174,7 @@ const handleSelectedSubtitleLanguage = (language: string) => {
 }
 
 // 处理播放清晰度
-const handelPlayLevel = (level: PlayLevelItem) => playerStore.setSelectedPlayLevel(level)
+const handelPlayLevel = (level: PlayLevelLabel) => playerStore.setSelectedPlayLevel(level)
 
 // 处理播放速度
 const handelPlaybackRate = (playbackRate: PlaybackRate) => playerStore.setPlaybackRate(playbackRate)

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-15 15:11:14
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-18 20:04:09
+ * @LastEditTime : 2024-09-24 12:31:25
  * @FilePath     : \blog-client\src\components\player\components\watermark\index.vue
  * @Description  : 水印
  * @Blog         : https://jiaopengzi.com
@@ -33,7 +33,7 @@ const textWatermarkRef = shallowRef<HTMLSpanElement>()
 const logoWatermarkRef = shallowRef<HTMLImageElement>()
 
 //  定时器
-let intervalId: number
+let intervalId: ReturnType<typeof setInterval>
 
 // 停止观察
 const stopObservation = ref(false)
