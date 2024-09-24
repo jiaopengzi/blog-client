@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-17 10:03:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-23 18:10:26
+ * @LastEditTime : 2024-09-24 15:52:44
  * @FilePath     : \blog-client\src\components\player\index.vue
  * @Description  : 视频播放器
  * @Blog         : https://jiaopengzi.com
@@ -494,6 +494,11 @@ const loadHls = () => {
                 // 將 data.response.code 转换为 number 类型
                 const resCode = parseInt(data.response.code.toString())
                 // 如果 code 不在 successCodes 中, 则提示错误信息
+                if (resCode === ResponseCode.VideoNotFound) {
+                    ShowMsgTip(MsgType.error, '视频不存在', 0)
+                    return
+                }
+
                 if (!successCodes.includes(resCode)) {
                     ShowMsgTip(MsgType.error, `请登录后播放,错误代码: ${data.response.code}`, 0)
                 }
@@ -552,8 +557,6 @@ video::-webkit-media-controls-enclosure {
         object-fit: contain;
         width: 100%;
         height: 100%;
-
-
     }
 
     .controls-Container {
@@ -630,26 +633,18 @@ video::-webkit-media-controls-enclosure {
 }
 
 
-@include respond-to('phone') {
+@include respond-to('pc') {
 
     ::cue {
-        font-size: 16px;
+        font-size: 32px;
     }
 
     .video-container {
-        max-width: phone.$width-video-main;
-        max-height: phone.$height-video-main;
-    }
-
-    video {
-        max-width: phone.$width-video-main;
-        max-height: phone.$height-video-main;
+        width: pc.$width-video-main;
     }
 
     .video-container[data-preview="wechat"] {
-        max-width: phone.$width-video-main;
-        max-height: phone.$height-video-main;
-        width: 100%;
+        width: 390px;
     }
 }
 
@@ -671,18 +666,26 @@ video::-webkit-media-controls-enclosure {
     }
 }
 
-@include respond-to('pc') {
+@include respond-to('phone') {
 
     ::cue {
-        font-size: 32px;
+        font-size: 16px;
     }
 
     .video-container {
-        width: pc.$width-video-main;
+        max-width: phone.$width-video-main;
+        max-height: phone.$height-video-main;
+    }
+
+    video {
+        max-width: phone.$width-video-main;
+        max-height: phone.$height-video-main;
     }
 
     .video-container[data-preview="wechat"] {
-        width: 390px;
+        max-width: phone.$width-video-main;
+        max-height: phone.$height-video-main;
+        width: 100%;
     }
 }
 </style>

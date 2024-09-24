@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:01:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-13 14:32:56
+ * @LastEditTime : 2024-09-24 15:51:27
  * @FilePath     : \blog-client\src\components\editor\preview\index.vue
  * @Description  : 预览组件
  * @Blog         : https://jiaopengzi.com
@@ -239,6 +239,17 @@ onMounted(() => {
 
     #preview[data-preview="wechat"] {
         width: 390px;
+    }
+}
+
+@include respond-to('pad') {
+    #preview {
+        max-width: 100%;
+    }
+
+    #preview[data-preview="wechat"] {
+        max-width: 390px;
+        width: 100%;
     }
 }
 

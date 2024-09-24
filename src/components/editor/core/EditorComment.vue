@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-26 17:26:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-25 16:19:14
+ * @LastEditTime : 2024-09-24 16:03:00
  * @FilePath     : \blog-client\src\components\editor\core\EditorComment.vue
  * @Description  : 评论编辑器
  * @Blog         : https://jiaopengzi.com
@@ -131,7 +131,6 @@ onMounted(() => {
 
 @include respond-to('pc') {
 
-
     .md-layout {
         border: 1px solid #ccc;
         border-radius: 3px;
@@ -200,8 +199,77 @@ onMounted(() => {
     }
 }
 
-@include respond-to('phone') {
+@include respond-to('pad') {
 
+    .md-layout {
+        // border: 1px solid #ccc;
+        border-radius: 3px;
+        // margin: 5px 0px;
+        width: phone.$width-page;
+
+        .md-toolbar {
+            position: relative;
+            --icon-number-per-line: 10;
+        }
+
+        .el-tabs__header {
+            --el-tabs-header-height:#{phone.$el-tabs-header-height};
+            border: none;
+        }
+
+        .md-container {
+
+            width: phone.$width-page;
+
+
+            :deep(.el-tabs__content) {
+                padding: 0 0;
+                height: phone.$editor-md-container-height-comment;
+            }
+
+            .md-editor {
+                --md-editor-height: #{phone.$editor-md-container-height-comment};
+            }
+
+            .md-preview {
+                height: phone.$editor-md-container-height-comment;
+            }
+        }
+    }
+
+    .md-layout-fs {
+        // border: 1px solid #ccc;
+        border-radius: 3px;
+        // margin: 5px 0px;
+        width: 100vw;
+
+        .md-toolbar-fs {
+            position: relative;
+            --icon-number-per-line: 10;
+        }
+
+        .md-container-fs {
+
+            width: 100vw;
+
+            :deep(.el-tabs__content) {
+                padding: 0 0;
+                height: calc(var(--md-editor-container-height) - var(--el-tabs-header-height));
+            }
+
+            // .md-editor-fs {
+            //     --md-editor-height: calc(var(--md-editor-container-height) - var(--el-tabs-header-height));
+            // }
+
+            .md-preview-fs {
+                height: calc(var(--md-editor-container-height) - var(--el-tabs-header-height));
+            }
+        }
+    }
+
+}
+
+@include respond-to('phone') {
 
     .md-layout {
         // border: 1px solid #ccc;

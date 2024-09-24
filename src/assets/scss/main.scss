@@ -84,6 +84,20 @@ a {
   }
 }
 
+@include respond-to('pad') {
+  .pc {
+    display: none;
+  }
+
+  .phone {
+    display: flex;
+  }
+
+  .breadcrumb {
+    width: 100%;
+  }
+}
+
 @include respond-to('phone') {
   .pc {
     display: none;

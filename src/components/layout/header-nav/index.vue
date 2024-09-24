@@ -61,10 +61,6 @@ const navData: HeaderNavPropsItem[] = [
 ]
 </script>
 <style scoped lang="scss">
-:deep(.my-icon-red) {
-    fill: rgb(222, 0, 0);
-}
-
 // @include respond-to('pc') {
 //     .pc {
 //         display: flex;
@@ -76,6 +72,16 @@ const navData: HeaderNavPropsItem[] = [
 
 // }
 
+// @include respond-to('pad') {
+//     .pc {
+//         display: none;
+//     }
+
+//     .phone {
+//         display: flex;
+//     }
+// }
+
 // @include respond-to('phone') {
 //     .pc {
 //         display: none;
@@ -84,4 +90,8 @@ const navData: HeaderNavPropsItem[] = [
 //     .phone {
 //         display: flex;
 //     }
-// }</style>
+// }
+:deep(.my-icon-red) {
+    fill: rgb(222, 0, 0);
+}
+</style>

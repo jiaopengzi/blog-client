@@ -210,6 +210,19 @@ const loginByQQ = () => {
   }
 }
 
+@include respond-to('pad') {
+  .login-form {
+    width: 360px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    /* 添加阴影效果 */
+    background-color: #eee;
+  }
+}
+
+
 @include respond-to('phone') {
   .login-form {
     /* 当屏幕宽度小于 1024px 时 */

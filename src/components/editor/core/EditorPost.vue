@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-23 19:41:10
+ * @LastEditTime : 2024-09-24 15:51:08
  * @FilePath     : \blog-client\src\components\editor\core\EditorPost.vue
  * @Description  : 文章编辑器
  * @Blog         : https://jiaopengzi.com
@@ -156,193 +156,171 @@ onMounted(() => {
     left: 0; // 根据需要调整，这将使 EmojiPicker 从左边开始
 }
 
+// 公共样式
+.md-layout,
+.md-layout-fs {
+    border-radius: 3px;
 
+    .md-toolbar,
+    .md-toolbar-fs {
+        position: relative;
+    }
+
+    .md-container,
+    .md-container-fs {
+        display: flex;
+        width: 100vw;
+
+        .md-container-item,
+        .md-container-item-fs {
+            border-radius: 3px;
+        }
+
+        .md-toc,
+        .md-toc-fs {
+            overflow: auto;
+            flex: 1 1 0; // 1 1 0 代表 flex-grow: 1; flex-shrink: 1; flex-basis: 0; 五分之一
+        }
+
+        .md-editor,
+        .md-editor-fs {
+            overflow: hidden;
+            flex: 2 1 0; // 2 1 0 代表 flex-grow: 2; flex-shrink: 1; flex-basis: 0; 五分之二
+        }
+
+        .md-preview,
+        .md-preview-fs {
+            overflow: hidden;
+            flex: 2 1 0; // 2 1 0 代表 flex-grow: 2; flex-shrink: 1; flex-basis: 0; 五分之二
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-left: 1px solid #ccc; // 子元素居中
+        }
+    }
+}
+
+// 媒介查询
 @include respond-to('pc') {
     .md-layout {
         border: 1px solid #ccc;
-        border-radius: 3px;
         margin: 4px 0px;
-        // width: pc.$width-page-main;
 
         .md-toolbar {
-            position: relative;
             --icon-number-per-line: 20;
         }
 
         .md-container {
-            display: flex;
-            // width: pc.$width-page-main;
             height: pc.$editor-md-container-height;
 
-            .md-container-item {
-                border-radius: 3px;
-                // box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-            }
-
-            .md-toc {
-                overflow: auto;
-                flex: 1 1 0; // 1 1 0 代表 flex-grow: 1; flex-shrink: 1; flex-basis: 0; 五分之一
-            }
-
             .md-editor {
-                overflow: hidden;
-                flex: 2 1 0; // 2 1 0 代表 flex-grow: 2; flex-shrink: 1; flex-basis: 0; 五分之二
                 --md-editor-height: #{pc.$editor-md-container-height}; // 设置 css 变量 引用scss变量 使用#{}包裹 插值语法将 SASS 变量插入到自定义属性中
             }
 
             .md-preview {
-                overflow: hidden;
-                flex: 2 1 0; // 2 1 0 代表 flex-grow: 2; flex-shrink: 1; flex-basis: 0; 五分之二
                 height: pc.$editor-md-container-height;
-                // 子元素居中
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                border-left: 1px solid #ccc;
             }
         }
-
     }
 
     .md-layout-fs {
-        // border: 1px solid #ccc;
-        border-radius: 3px;
-        // margin: 5px 0px;
         width: 100vw;
 
         .md-toolbar-fs {
-            position: relative;
             --icon-number-per-line: 30;
         }
 
         .md-container-fs {
-            display: flex;
-            width: 100vw;
             height: var(--md-editor-container-height);
 
-            .md-container-item-fs {
-                border-radius: 3px;
-                // box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-            }
-
-            .md-toc-fs {
-                overflow: auto;
-                flex: 1 1 0; // 1 1 0 代表 flex-grow: 1; flex-shrink: 1; flex-basis: 0; 五分之一
-                height: var(--md-editor-container-height);
-            }
-
-            .md-editor-fs {
-                overflow: hidden;
-                flex: 2 1 0; // 2 1 0 代表 flex-grow: 2; flex-shrink: 1; flex-basis: 0; 五分之二
-                --md-editor-height: var(--md-editor-container-height);
-            }
-
+            .md-toc-fs,
+            .md-editor-fs,
             .md-preview-fs {
-                overflow: hidden;
-                flex: 2 1 0; // 2 1 0 代表 flex-grow: 2; flex-shrink: 1; flex-basis: 0; 五分之二
                 height: var(--md-editor-container-height);
-                // 子元素居中
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                border-left: 1px solid #ccc;
             }
         }
-
     }
-
 }
 
-@include respond-to('phone') {
-
+@include respond-to('pad') {
     .md-layout {
         border: 1px solid #ccc;
-        border-radius: 3px;
         margin: 5px 0px;
-        width: 100vw;
 
         .md-toolbar {
-            position: relative;
             --icon-number-per-line: 10;
         }
 
         .md-container {
-            display: flex;
-            width: 100vw;
             height: phone.$editor-md-container-height;
 
-            .md-container-item {
-                border-radius: 3px;
-                // box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-            }
-
-            .md-toc {
-                overflow: auto;
-                flex: 1 1 0; // 1 1 0 代表 flex-grow: 1; flex-shrink: 1; flex-basis: 0; 五分之一
-            }
-
             .md-editor {
-                overflow: hidden;
-                flex: 2 1 0; // 2 1 0 代表 flex-grow: 2; flex-shrink: 1; flex-basis: 0; 五分之二
                 --md-editor-height: #{phone.$editor-md-container-height}; // 设置 css 变量 引用scss变量 使用#{}包裹 插值语法将 SASS 变量插入到自定义属性中
             }
 
             .md-preview {
-                overflow: hidden;
-                flex: 2 1 0; // 2 1 0 代表 flex-grow: 2; flex-shrink: 1; flex-basis: 0; 五分之二
                 height: phone.$editor-md-container-height;
-                // 子元素居中
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                border-left: 1px solid #ccc;
             }
         }
-
     }
 
     .md-layout-fs {
-        border-radius: 3px;
         width: 100vw;
 
         .md-toolbar-fs {
-            position: relative;
             --icon-number-per-line: 10;
         }
 
         .md-container-fs {
-            display: flex;
-            width: 100vw;
             height: var(--md-editor-container-height);
 
-            .md-container-item-fs {
-                border-radius: 3px;
-            }
-
-            .md-toc-fs {
-                overflow: auto;
-                flex: 1 1 0; // 1 1 0 代表 flex-grow: 1; flex-shrink: 1; flex-basis: 0; 五分之一
-                height: var(--md-editor-container-height);
-            }
-
-            .md-editor-fs {
-                overflow: hidden;
-                flex: 2 1 0; // 2 1 0 代表 flex-grow: 2; flex-shrink: 1; flex-basis: 0; 五分之二
-                --md-editor-height: var(--md-editor-container-height);
-            }
-
+            .md-toc-fs,
+            .md-editor-fs,
             .md-preview-fs {
-                overflow: hidden;
-                flex: 2 1 0; // 2 1 0 代表 flex-grow: 2; flex-shrink: 1; flex-basis: 0; 五分之二
                 height: var(--md-editor-container-height);
-                // 子元素居中
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                border-left: 1px solid #ccc;
             }
         }
+    }
+}
 
+@include respond-to('phone') {
+    .md-layout {
+        border: 1px solid #ccc;
+        margin: 5px 0px;
+
+        .md-toolbar {
+            --icon-number-per-line: 10;
+        }
+
+        .md-container {
+            height: phone.$editor-md-container-height;
+
+            .md-editor {
+                --md-editor-height: #{phone.$editor-md-container-height}; // 设置 css 变量 引用scss变量 使用#{}包裹 插值语法将 SASS 变量插入到自定义属性中
+            }
+
+            .md-preview {
+                height: phone.$editor-md-container-height;
+            }
+        }
+    }
+
+    .md-layout-fs {
+        width: 100vw;
+
+        .md-toolbar-fs {
+            --icon-number-per-line: 10;
+        }
+
+        .md-container-fs {
+            height: var(--md-editor-container-height);
+
+            .md-toc-fs,
+            .md-editor-fs,
+            .md-preview-fs {
+                height: var(--md-editor-container-height);
+            }
+        }
     }
 }
 </style>

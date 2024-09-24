@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-10 15:36:20
+ * @LastEditTime : 2024-09-24 15:32:28
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -90,6 +90,7 @@ export enum ResponseCode {
   GetLoginLogsSuccess = 8500, //获取登录日志成功
   LoginLogDeleteByIDsSuccess = 8502, //通过ID删除登录日志成功
   LoginLogDeleteByDaySuccess = 8503, //通过天数删除登录日志成功
+  VideoNotFound = 8600, // 视频不存在
   GetVideoMainM3u8Success = 8601, // 获取视频主M3u8成功
   GetVideoM3u8Success = 8602, // 获取视频M3u8成功
   GetVdideoKeySuccess = 8603, // 获取视频解密密钥成功

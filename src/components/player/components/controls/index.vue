@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 19:53:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-24 12:33:02
+ * @LastEditTime : 2024-09-24 15:53:19
  * @FilePath     : \blog-client\src\components\player\components\controls\index.vue
  * @Description  : 视频控制器
  * @Blog         : https://jiaopengzi.com
@@ -305,6 +305,17 @@ onMounted(() => {
     }
 }
 
+@include respond-to('pad') {
+
+    // pad端隐藏如下按钮
+    .volume-mute,
+    .volume,
+    .pip,
+    .web-fullscreen {
+        display: none;
+    }
+}
+
 @include respond-to('phone') {
 
     // 手机端隐藏如下按钮
@@ -314,6 +325,5 @@ onMounted(() => {
     .web-fullscreen {
         display: none;
     }
-
 }
 </style>

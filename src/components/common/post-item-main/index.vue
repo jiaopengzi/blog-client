@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-25 15:50:05
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 21:59:00
+ * @LastEditTime : 2024-09-24 15:44:57
  * @FilePath     : \blog-client\src\components\common\post-item-main\index.vue
  * @Description  : 单个文章元素
  * @Blog         : https://jiaopengzi.com
@@ -77,79 +77,72 @@ const view = computed(() =>
 )
 </script>
 <style scoped lang="scss">
-@include respond-to('pc') {
-  .post-item {
-    position: relative;
-    height: 150px;
-    border-radius: 3px;
-    padding: 20px;
-    background-color: $background-color-content;
-    overflow: hidden;
+// 公共样式
+.post-item {
+  position: relative;
+  border-radius: 3px;
+  padding: 15px;
+  background-color: $background-color-content;
+  overflow: hidden;
 
-    &:hover {
-      // 鼠标移动到 .post-item 上时, .post-item 出现上下阴影
-      box-shadow:
-        0 0 5px #ccc,
-        0 0 10px #ccc;
+  &:hover {
+    // 鼠标移动到 .post-item 上时, .post-item 出现上下阴影
+    box-shadow:
+      0 0 5px #ccc,
+      0 0 10px #ccc;
 
-      .tip {
-        opacity: 1;
-      }
-
-      .read-more {
-        opacity: 1;
-      }
+    .read-more {
+      opacity: 1;
     }
   }
+}
 
-  .tip {
+.tip {
+  position: absolute;
+  top: 10px;
+  left: 0px;
+  z-index: 1;
+  line-height: 200%;
+  font-size: 14px;
+  background-color: transparent;
+  border-radius: 5%;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+
+  // 使用 ::before 伪元素添加红色外边框和绿色内边框
+  &::before {
+    content: '';
     position: absolute;
-    top: 10px;
-    left: 0px;
-    z-index: 1;
-    line-height: 200%;
-    font-size: 14px;
-    background-color: transparent;
-    border-radius: 5%;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-
-    // 使用 ::before 伪元素添加红色外边框和绿色内边框
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0px; // 使得红色外边框在 .tip 的左侧
-      height: 28px;
-      border-right: 6px solid $primary-color; // 绿色内边框
-    }
+    top: 0;
+    left: 0px; // 使得红色外边框在 .tip 的左侧
+    height: 28px;
+    border-right: 6px solid $primary-color; // 绿色内边框
   }
+}
 
-  .post-box:hover .tip {
-    opacity: 1;
-  }
+.post-box:hover .tip {
+  opacity: 1;
+}
 
-  .category {
-    position: absolute;
-    top: 10px;
-    left: 20px;
-    padding-left: 10px;
-    padding-right: 10px;
-    z-index: 2;
-    background-color: $primary-color;
-    line-height: 200%;
-    font-size: 14px;
-    color: $background-color-page;
-    border-radius: 5%;
-  }
+.category {
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+  z-index: 2;
+  background-color: $primary-color;
+  line-height: 200%;
+  font-size: 14px;
+  color: $background-color-page;
+  border-radius: 5%;
+}
 
-  .thumbnail {
-    float: left;
-    width: 200px;
-    height: 100%;
-    box-sizing: border-box;
-    overflow: hidden;
-  }
+.thumbnail {
+  float: left;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 
   .thumbnail-img {
     width: 100%;
@@ -158,191 +151,175 @@ const view = computed(() =>
     transition: transform 0.3s ease;
   }
 
-  .thumbnail:hover .thumbnail-img {
+  &:hover .thumbnail-img {
     transform: scale(1.2);
+  }
+}
+
+.content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  border: 0;
+  padding: 0;
+  line-height: 2em;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summary {
+  margin-top: 5px;
+  flex-grow: 1;
+  color: #777;
+  line-height: 1.5em;
+  font-size: 14px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+}
+
+.meta-item {
+  margin-right: 10px;
+  color: #888;
+  font-size: 14px;
+  line-height: 150%;
+
+  // 图标居中
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: gray;
+  margin-right: 5px;
+}
+
+.read-more {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 2;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: $primary-color;
+  color: $background-color-page;
+  line-height: 150%;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+// 媒体查询
+@include respond-to('pc') {
+  .post-item {
+    height: 150px;
+    padding: 20px;
+
+    .tip,
+    .read-more {
+      opacity: 0;
+    }
+  }
+
+  .thumbnail {
+    width: 200px;
   }
 
   .content {
     margin-left: 210px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
   }
 
   .title {
-    margin: 0;
     font-size: 16px;
     font-weight: 700;
-    color: #333;
-    border: 0;
-    padding: 0;
     height: 2em;
-    line-height: 2em;
-    display: -webkit-box;
     -webkit-line-clamp: 1; // 限制行数为1
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   .summary {
-    margin-top: 5px;
-    flex-grow: 1;
-    color: #777;
-    line-height: 1.5em;
-    font-size: 14px;
     height: 2em;
-    display: -webkit-box;
     -webkit-line-clamp: 4; // 限制行数为4
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .meta {
-    display: flex;
-    align-items: center;
-  }
-
-  .meta-item {
-    margin-right: 10px;
-    color: #888;
-    font-size: 14px;
-    line-height: 150%;
-
-    // 图标居中
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .avatar {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background-color: gray;
-    margin-right: 5px;
-  }
-
-  .read-more {
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-    z-index: 2;
-    padding: 5px 10px;
-    border-radius: 5px;
-    background-color: $primary-color;
-    color: $background-color-page;
-    line-height: 150%;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
   }
 }
 
-@include respond-to('phone') {
+@include respond-to('pad') {
   .post-item {
-    position: relative;
     height: 75px;
-    border-radius: 3px;
-    padding: 15px;
-    background-color: $background-color-content;
-    overflow: hidden;
 
-    &:hover {
-      // 鼠标移动到 .post-item 上时, .post-item 出现上下阴影
-      box-shadow:
-        0 0 5px #ccc,
-        0 0 10px #ccc;
-
-      .read-more {
-        opacity: 1;
-      }
+    .tip,
+    .category,
+    .summary,
+    .read-more {
+      display: none;
     }
   }
 
-  .tip {
-    display: none;
-  }
-
-  .category {
-    display: none;
-  }
-
   .thumbnail {
-    float: left;
     width: 100px;
-    height: 100%;
-    box-sizing: border-box;
-    overflow: hidden;
-  }
-
-  .thumbnail-img {
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    transition: transform 0.3s ease;
-  }
-
-  .thumbnail:hover .thumbnail-img {
-    transform: scale(1.2);
   }
 
   .content {
     margin-left: 110px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
   }
 
   .title {
-    margin: 0;
-    font-size: 14px;
-    font-weight: 500;
-    color: #333;
-    border: 0;
-    padding: 0;
     height: 4em;
-    line-height: 2em;
-    display: -webkit-box;
     -webkit-line-clamp: 2; // 限制行数为2
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .summary {
-    display: none;
-  }
-
-  .meta {
-    display: flex;
-    align-items: center;
-  }
-
-  .meta-item {
-    margin-right: 10px;
-    color: #888;
-    font-size: 14px;
-    line-height: 150%;
-
-    // 图标居中
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   .avatar {
     // width: 10px;
     // height: 10px;
-    border-radius: 50%;
-    background-color: gray;
-    margin-right: 5px;
+  }
+}
+
+@include respond-to('phone') {
+  .post-item {
+    height: 75px;
+
+    .tip,
+    .category,
+    .summary,
+    .read-more {
+      display: none;
+    }
   }
 
-  .read-more {
-    display: none;
+  .thumbnail {
+    width: 100px;
+  }
+
+  .content {
+    margin-left: 110px;
+  }
+
+  .title {
+    height: 4em;
+    -webkit-line-clamp: 2; // 限制行数为2
+  }
+
+  .avatar {
+    // width: 10px;
+    // height: 10px;
   }
 }
 </style>

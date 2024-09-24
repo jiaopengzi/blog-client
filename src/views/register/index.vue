@@ -316,6 +316,18 @@ const closeSlideVerify = () => {
   }
 }
 
+@include respond-to('pad') {
+  .register-form {
+    width: 360px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    /* 添加阴影效果 */
+    background-color: #eee;
+  }
+}
+
 @include respond-to('phone') {
   .register-form {
     /* 当屏幕宽度小于 1024px 时 */

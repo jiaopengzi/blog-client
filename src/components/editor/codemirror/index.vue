@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 19:37:09
+ * @LastEditTime : 2024-09-24 16:04:33
  * @FilePath     : \blog-client\src\components\editor\codemirror\index.vue
  * @Description  : codemirror 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -191,8 +191,4 @@ defineExpose({
         color: #6c6c6c;
     }
 }
-
-
-// @include respond-to('pc') {}
-
-// @include respond-to('phone') {}</style>
+</style>
