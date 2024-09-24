@@ -15,8 +15,8 @@ import { defineStore } from 'pinia'
 export enum MediaTypes {
   HLS = 'hls',
   MP4 = 'mp4',
+  WEBM = 'webm',
   // DASH = 'dash',
-  // WEBM = 'webm',
   // OGG = 'ogg',
   // YOUTUBE = 'youtube',
   // BILIBILI = 'bilibili',
@@ -45,7 +45,7 @@ export enum PlayLevelLabel {
 }
 
 /**
- * @description: 根据视频高度获取视频质量标签
+ * @description: 根据视频高度获取视频质量标签,高度小于最小值时，返回最小值，大于最大值时，返回最大值，否则返回小于等于当前高度的最大值.
  * @param height 视频高度
  * @return  返回视频质量标签
  */

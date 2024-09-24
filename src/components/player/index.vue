@@ -521,7 +521,7 @@ watchEffect(() => {
 onMounted(async () => {
     // 判断视频类型
     if (mediaType.value === MediaTypes.HLS) { loadHls() }
-    if (mediaType.value === MediaTypes.MP4) { handleLoadedmetadata() }
+    if (mediaType.value in [MediaTypes.MP4, MediaTypes.WEBM]) { handleLoadedmetadata() }
 
     // 监听屏幕方向变化
     if (videoRef.value) {

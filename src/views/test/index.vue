@@ -1,29 +1,65 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-09-18 09:51:29
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-24 15:58:34
  * @FilePath     : \blog-client\src\views\test\index.vue
  * @Description  : 
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
-<!-- App.vue -->
 <template>
-  <!-- <EditorPost /> -->
-  <EditorComment />
+  <div class="container">
+    <VideoPlayer />
+  </div>
+
 </template>
 
-<script lang="ts" setup>
-import { EditorPost } from '@/components/editor/core'
-import { EditorComment } from '@/components/editor/core'
-import { onBeforeMount } from 'vue';
-import { useEditorStore } from '@/stores/editor'
-defineOptions({ name: 'EditorAll' })
-// store
-const editorStore = useEditorStore()
-onBeforeMount(async () => {
-  await editorStore.getEditorContentFromUrl("src/assets/example/markdown.md")
+<script setup lang="ts">
+import { ref } from 'vue'
+import VideoPlayer from '@/components/player'
+import { usePlayerStore, type SubtitlesItem, MediaTypes } from '@/stores/player'
+defineOptions({ name: 'VideoPlayerTest' })
+
+// 从 store 中获取数据
+const palyerStore = usePlayerStore()
+
+// 设置视频地址
+// palyerStore.setMediaType(MediaTypes.MP4)
+// palyerStore.setSrc("http://10.10.2.222:8081/api/v1/uploads/test.mp4")
+
+// palyerStore.setMediaType(MediaTypes.WEBM) // 静音
+// palyerStore.setSrc("http://10.10.2.222:8081/api/v1/uploads/test.webm")
+// palyerStore.setPoster("http://10.10.2.222:8081/api/v1/uploads/poster.png")
+
+palyerStore.setMediaType(MediaTypes.HLS) // 静音
+palyerStore.setSrc("3-8e72860c") // 多清晰度 免费 不加密
+// palyerStore.setSrc("8-8e72860c") // 多清晰度 付费 加密
+// palyerStore.setSrc("9-31df6df9") // 单清晰度 免费 不加密
+
+const subtitles = ref<{ [language: string]: SubtitlesItem }>({
+  "cn": {
+    label: "中文",
+    src: "http://10.10.2.222:8081/api/v1/uploads/cn.vtt"
+  },
+  "en": {
+    label: "English",
+    src: "http://10.10.2.222:8081/api/v1/uploads/en.vtt"
+  }
 })
 
+const textWatermark = {
+  content: 'jiaopengzi.com1111',
+  style: {
+    color: 'red',
+    fontSize: '14px',
+  },
+}
+palyerStore.setTextWatermark(textWatermark)
+palyerStore.setAvailableSubtitles(subtitles.value)
+
 </script>
+
+<style scoped lang="scss">
+// 让视频播放器水平垂直居中
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+</style>
