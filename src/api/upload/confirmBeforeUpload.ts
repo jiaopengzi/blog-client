@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-07-24 21:48:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 14:32:13
+ * @LastEditTime : 2024-09-25 18:52:28
  * @FilePath     : \blog-client\src\api\upload\confirmBeforeUpload.ts
  * @Description  : 上传文件前确认
  * @Blog         : https://jiaopengzi.com
@@ -28,9 +28,21 @@ export interface ConfirmBeforeUploadRequest {
   is_Free: boolean // 是否免费
 }
 
+// 普通文件上传前确认
 export function confirmBeforeUploadAPI(requestData: ConfirmBeforeUploadRequest): AxiosPromise<Res> {
   return request({
     url: routerGroup + '/upload/confirm-before-upload',
+    method: 'post',
+    data: requestData,
+  })
+}
+
+// 头像上传前确认
+export function confirmBeforeUploadAvatarAPI(
+  requestData: ConfirmBeforeUploadRequest,
+): AxiosPromise<Res> {
+  return request({
+    url: routerGroup + '/upload/avatar/confirm-before-upload',
     method: 'post',
     data: requestData,
   })

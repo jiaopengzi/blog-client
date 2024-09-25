@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-07-25 09:41:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-04 14:57:55
+ * @LastEditTime : 2024-09-25 18:55:01
  * @FilePath     : \blog-client\src\api\upload\chunk.ts
  * @Description  : 分片上传
  * @Blog         : https://jiaopengzi.com
@@ -30,6 +30,7 @@ export interface ChunkMetadata extends ChunkMetadataWithoutFileId {
   sub_dir: string //文件路径 后端生成
 }
 
+// 普通文件上传分片
 export function uploadChunkAPI(
   formData: FormData, // FormData 对象
   chunkMetadata: ChunkMetadata, // 元信息对象
@@ -42,6 +43,27 @@ export function uploadChunkAPI(
 
   return request({
     url: routerGroup + '/upload/chunk',
+    method: 'post',
+    data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data', // 上传文件时指定类型
+    },
+  })
+}
+
+// 头像上传分片
+export function uploadChunkAvatarAPI(
+  formData: FormData, // FormData 对象
+  chunkMetadata: ChunkMetadata, // 元信息对象
+): AxiosPromise<Res> {
+  // 将元信息对象转换为 JSON 字符串
+  const metadataJson = JSON.stringify(chunkMetadata)
+
+  // 添加元信息
+  formData.append('metadata', metadataJson)
+
+  return request({
+    url: routerGroup + '/upload/avatar/chunk',
     method: 'post',
     data: formData,
     headers: {

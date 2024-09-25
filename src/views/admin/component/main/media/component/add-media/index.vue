@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-08-31 13:10:47
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-25 16:54:07
+ * @LastEditTime : 2024-09-25 18:56:56
  * @FilePath     : \blog-client\src\views\admin\component\main\media\component\add-media\index.vue
  * @Description  : 添加媒体
  * @Blog         : https://jiaopengzi.com
@@ -20,8 +20,8 @@
                 style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949" />
         </div>
 
-        <div class="row2">建议:收费视频加密,免费视频不加密.</div>
-        <el-upload ref="uploadRef" class="upload" drag multiple :action="UPLOAD_FILE_URL" :http-request="httpRequest">
+        <div class="row2">建议:收费视频加密,免费视频不加密. :action="UPLOAD_FILE_URL"</div>
+        <el-upload ref="uploadRef" class="upload" drag multiple :http-request="httpRequest">
             <Icon :name="IconKeys.UploadFilled" custom-class="icon-upload-filled" />
             <div class="el-upload__text">
                 将文件拖放到此处 或 <em>点击上传</em>
@@ -40,11 +40,10 @@
 import { ref, watchEffect, onBeforeMount, useTemplateRef } from 'vue'
 import { IconKeys } from '@/components/common/icons'
 import { getUploadFileRequirementsAPI } from '@/api/upload/getUploadFileRequirements'
-import { UPLOAD_FILE_URL } from '@/api/upload/uploadURL'
 import { UploadCode } from '@/api/responseCode'
 import { type UploadRequestOptions, type ElUpload } from 'element-plus'
 import { HashAlgorithm } from '@/utils/hash'
-import { uploadFile } from '@/utils/uploadService'
+import { uploadFile } from '@/utils/uploadGeneral'
 
 defineOptions({ name: "add-media" })
 

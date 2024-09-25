@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 17:31:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-25 17:33:27
+ * @LastEditTime : 2024-09-25 20:55:19
  * @FilePath     : \blog-client\src\components\common\avatar-upload\index.vue
  * @Description  : 头像上传
  * @Blog         : https://jiaopengzi.com
@@ -27,8 +27,7 @@
 
             <template #footer>
                 <div class="button-group">
-                    <el-upload ref="uploadRef" class="upload" :auto-upload="false" :action="UPLOAD_FILE_URL"
-                        :http-request="httpRequest" />
+                    <el-upload ref="uploadRef" class="my-el-upload" :auto-upload="false" :http-request="httpRequest" />
                     <el-button type="primary" @click="uploadImage">应用</el-button>
                     <el-button type="primary" @click="toggleCropperVisible">取消</el-button>
                 </div>
@@ -38,16 +37,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onUnmounted, useTemplateRef } from 'vue'
+import { ref, onUnmounted, useTemplateRef, watchEffect } from 'vue'
 import Cropper from 'cropperjs'
 import 'cropperjs/dist/cropper.min.css'
 import { ElButton, ElDialog } from 'element-plus'
 import { uploadAvatarAPI } from '@/api/upload/avatar'
 import { ShowMsgTip } from '@/utils/message'
 import { UploadCode } from '@/api/responseCode'
-import { UPLOAD_FILE_URL } from '@/api/upload/uploadURL'
 import type { UploadRequestOptions, ElUpload, UploadRawFile } from 'element-plus'
-import { uploadFile } from '@/utils/uploadService'
+import { uploadFile } from '@/utils/uploadAvatar'
 import type { UploadInstance } from 'element-plus'
 
 
@@ -80,8 +78,16 @@ const toggleCropperVisible = () => {
 
 // 打开文件选择器
 const openFileDialog = () => {
-    fileInput.value?.click();
-};
+    fileInput.value?.click()
+}
+
+
+// 监控 cropperVisible 变化,如果为 false 则清空上传文件
+watchEffect(() => {
+    if (!cropperVisible.value) {
+        uploadRef.value?.clearFiles()
+    }
+})
 
 /**
  * @description: 打开裁剪器 
@@ -224,5 +230,9 @@ img {
     justify-content: center;
     width: 100%;
     margin: 10px 0;
+}
+
+.my-el-upload {
+    display: none;
 }
 </style>
