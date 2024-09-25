@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 19:33:53
+ * @LastEditTime : 2024-09-25 12:19:32
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格
  * @Blog         : https://jiaopengzi.com
@@ -39,7 +39,7 @@
                             <img class="thumbnail-img" v-if="scope.row.img?.url" :src="scope.row.img.url"
                                 :style="imgStyle(scope.row.img?.width, scope.row.img?.height, scope.row.img?.imgFit)" />
                             <Icon v-else-if="scope.row.img?.iconKeyName" :name="scope.row.img?.iconKeyName"
-                                :style="IconStyle(scope.row.img?.fontSize)" />
+                                :style="iconStyle(scope.row.img?.fontSize)" />
                         </div>
                     </template>
                 </el-table-column>
@@ -97,10 +97,11 @@
 <script lang="ts" setup>
 import { ref, watchEffect, watch, useTemplateRef } from 'vue'
 import type { ElTable } from 'element-plus'
-import type { ImgFit, Pagination } from '@/components/common'
+import type { Pagination } from '@/components/common'
 import { MsgType } from '@/components/common'
 import type { TableData, TableColumn } from '@/components/common/base-table'
 import { handleConfirmCommon } from '@/utils/confirm'
+import { imgStyle, iconStyle } from '@/utils/style'
 
 defineOptions({ name: 'BaseTable' })
 
@@ -222,22 +223,6 @@ const handleBatchDelete = () => {
 const handleSelectionChange = (rows: TableData[]) => {
     // 选择的行
     emit('update-selection', rows)
-}
-
-// 图片样式
-function imgStyle(width: number, height: number, imgFit: ImgFit): Record<string, string> {
-    return {
-        width: width ? `${width}px` : '50px', // 宽度
-        height: height ? `${height}px` : '50px', // 高度
-        'object-fit': imgFit ? imgFit : 'cover' // 图片填充方式
-    }
-}
-
-// icon 样式
-function IconStyle(fontSize: number): Record<string, string> {
-    return {
-        'font-size': fontSize ? `${fontSize}px` : '40px', // 字体大小
-    }
 }
 
 </script>

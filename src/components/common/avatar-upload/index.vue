@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 17:31:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 19:33:02
+ * @LastEditTime : 2024-09-25 17:33:27
  * @FilePath     : \blog-client\src\components\common\avatar-upload\index.vue
  * @Description  : 头像上传
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,7 @@
 
 <template>
     <div class="avatar-upload">
-        <el-button type="primary" @click="cropperVisible = true">编辑头像</el-button>
+        <el-button type="primary" @click="toggleCropperVisible">编辑头像</el-button>
 
         <el-dialog v-model="cropperVisible" width="500px" content-class="dialog-content">
 
@@ -20,14 +20,17 @@
             </template>
 
             <!-- 图片选择 -->
-            <input type="file" ref="fileInput" accept="image/*" @change="onFileChange" />
+            <el-button type="primary" @click="openFileDialog">选择文件</el-button>
+            <input type="file" ref="fileInput" accept="image/*" @change="onFileChange" style="display: none;" />
             <!-- 选择后预览容器 -->
             <div ref="cropperContainer" class="cropper-container"></div>
 
             <template #footer>
                 <div class="button-group">
+                    <el-upload ref="uploadRef" class="upload" :auto-upload="false" :action="UPLOAD_FILE_URL"
+                        :http-request="httpRequest" />
                     <el-button type="primary" @click="uploadImage">应用</el-button>
-                    <el-button type="primary" @click="cropperVisible = false">取消</el-button>
+                    <el-button type="primary" @click="toggleCropperVisible">取消</el-button>
                 </div>
             </template>
         </el-dialog>
@@ -42,6 +45,10 @@ import { ElButton, ElDialog } from 'element-plus'
 import { uploadAvatarAPI } from '@/api/upload/avatar'
 import { ShowMsgTip } from '@/utils/message'
 import { UploadCode } from '@/api/responseCode'
+import { UPLOAD_FILE_URL } from '@/api/upload/uploadURL'
+import type { UploadRequestOptions, ElUpload, UploadRawFile } from 'element-plus'
+import { uploadFile } from '@/utils/uploadService'
+import type { UploadInstance } from 'element-plus'
 
 
 defineOptions({ name: 'AvatarUpload' })
@@ -54,17 +61,27 @@ const props = defineProps({
     }
 })
 
-
 const emit = defineEmits<{
     (event: 'avatar-upload-status', value: boolean): void // 头像上传状态
 }>()
 
+const cropperVisible = ref(false)
 
 const fileInput = useTemplateRef<HTMLInputElement | null>("fileInput")
-const cropperVisible = ref(false)
+const uploadRef = useTemplateRef<UploadInstance | null>("uploadRef")
 const cropperContainer = useTemplateRef<HTMLDivElement | null>("cropperContainer")
+
 let cropperInstance: Cropper | null = null
 
+// 切换 cropperVisible 状态
+const toggleCropperVisible = () => {
+    cropperVisible.value = !cropperVisible.value
+}
+
+// 打开文件选择器
+const openFileDialog = () => {
+    fileInput.value?.click();
+};
 
 /**
  * @description: 打开裁剪器 
@@ -72,6 +89,7 @@ let cropperInstance: Cropper | null = null
 function openCropper() {
     fileInput.value?.click()
 }
+
 
 /**
  * @description: 选择文件后触发 
@@ -125,6 +143,9 @@ function initCropper(url: string) {
     cropperVisible.value = true // 显示裁剪器
 }
 
+// 上传请求
+const httpRequest = async (options: UploadRequestOptions) => uploadFile(options)
+
 // 上传图片
 function uploadImage() {
     if (cropperInstance) {
@@ -134,33 +155,22 @@ function uploadImage() {
                 return
             }
 
-            const formData = new FormData()
-            formData.append('avatar_file', blob, 'avatar.png')
-            if (props.avatar_user_id) {
-                formData.append('avatar_user_id', props.avatar_user_id)
+            const file = new File([blob], 'avatar.png', { type: blob.type }) as UploadRawFile
+            file.uid = Number(props.avatar_user_id) // 添加唯一标识符
+
+            // 调用 uploadRef 的 handleStart 方法上传文件
+            if (uploadRef.value) {
+                uploadRef.value.handleStart(file)
+                uploadRef.value.submit()
+                cropperVisible.value = false
+                emit('avatar-upload-status', true)
             }
-            // 调用 uploadAvatar 函数
-            uploadAvatarAPI(formData)
-                .then((response) => {
-                    if (response.data.code === UploadCode.Success) {
-                        cropperVisible.value = false
-                        // 处理返回数据，并更新头像等信息
-                        emit('avatar-upload-status', true)
-                        ShowMsgTip(ShowMsgTip.MsgType.success, response.data.msg, 2000)
-                        return
-                    } else {
-                        ShowMsgTip(ShowMsgTip.MsgType.error, response.data.msg + '：' + response.data.data)
-                        return
-                    }
-                })
-                .catch(() => {
-                    ShowMsgTip(ShowMsgTip.MsgType.error, '上传失败，请重试')
-                })
         })
     } else {
         ShowMsgTip(ShowMsgTip.MsgType.warning, '请先选择并裁剪图片')
     }
 }
+
 
 // 组件销毁时销毁裁剪器实例
 onUnmounted(() => {

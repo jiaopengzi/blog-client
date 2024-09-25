@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-08 14:02:10
+ * @LastEditTime : 2024-09-25 12:08:20
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -11,10 +11,12 @@
 
 <template>
     <BaseTable :pagination="pagination" :table-column="cols" :is-show-delete-all="true"
-        :add-item-dialog-visible="addItemDialogVisible" :is-show-edit="true" :is-show-search="true" :search-str="search"
-        @update-current-page="updateCurrentPage" @update-page-size="updatePageSize" @edit-row="editRow"
-        @delete-row="deleteRow" @delete-rows="deleteRows" @update-search="updateSearch"
-        @update-selection="updateSelection" @add-item-update-dialog-visible="addItemUpdateDialogVisible">
+        :add-item-dialog-visible="addItemDialogVisible" :edit-item-dialog-visible="editItemDialogVisible"
+        :is-show-edit="true" :is-show-search="true" :search-str="search" @update-current-page="updateCurrentPage"
+        @update-page-size="updatePageSize" @edit-row="editRow" @delete-row="deleteRow" @delete-rows="deleteRows"
+        @update-search="updateSearch" @update-selection="updateSelection"
+        @add-item-update-dialog-visible="addItemUpdateDialogVisible"
+        @edit-item-update-dialog-visible="editItemUpdateDialogVisible">
 
         <template #btns>
             <el-button type="primary" @click="handleAdd">
@@ -32,6 +34,7 @@
             </div>
         </template>
 
+        <!-- 新增弹窗 -->
         <template #add-item-title>
             <span class="dialog-title">新增媒体文件</span>
         </template>
@@ -41,6 +44,18 @@
                 <AddMedia :is-visible="addItemDialogVisible" />
             </div>
         </template>
+
+        <!-- 编辑弹窗 -->
+        <template #edit-item-title>
+            <span class="dialog-title">编辑媒体文件</span>
+        </template>
+
+        <template #edit-item>
+            <div class="dialog-edit">
+                <EditMedia :edit-media-data="editMediaData" />
+            </div>
+        </template>
+
     </BaseTable>
 </template>
 
@@ -59,10 +74,11 @@ import router from '@/router'
 import { paginationRouterPush, PaginationQueryKey } from '@/router/utils'
 import { getFileCountGroupByFiletypeAPI, type FileCountGroupByFiletype } from '@/api/upload/getFileCountGroupByFiletype'
 import { DeleteFileAPI, type DeleteFileRequest } from '@/api/upload/deleteFile'
+import type { EditMediaProps } from '@/views/admin/component/main/media/component/edit-media'
 
 import BaseTable from '@/components/common/base-table'
 import AddMedia from '@/views/admin/component/main/media/component/add-media'
-// import EditUser from '@/views/admin/component/main/user-view/component/edit-user'
+import EditMedia from '@/views/admin/component/main/media/component/edit-media'
 
 
 defineOptions({ name: AadminSideMenu.Media })
@@ -119,17 +135,17 @@ const cols: TableColumn[] = reactive([
     },
     {
         prop: 'is_free',
-        label: '免费',
+        label: '视频收费',
         width: 100,
         align: 'center',
-        formatter: (row: TableData) => { if ("is_free" in row) { if (row.is_free) { return "是" } return "否" } }
+        formatter: (row: TableData) => { if ("is_free" in row) { if (row.is_free) { return "免费" } return "收费" } }
     },
     {
         prop: 'is_encrypt',
         label: '视频加密',
         width: 140,
         align: 'center',
-        formatter: (row: TableData) => { if ("is_encrypt" in row) { if (row.is_encrypt) { return "是" } return "否" } }
+        formatter: (row: TableData) => { if ("is_encrypt" in row) { if (row.is_encrypt) { return "加密" } return "无密" } }
     },
     {
         prop: 'video_quality_name',
@@ -164,6 +180,18 @@ enum queryKey {
 const addItemDialogVisible = ref(false)
 const editItemDialogVisible = ref(false)
 
+
+const editMediaData: EditMediaProps = reactive({
+    file_ID: "", // 文件ID
+    file_type: "", // 文件类型
+    thumbnail: "", // 缩略图
+    file_name_display: "", // 显示名称
+    description: "", // 描述
+    slug: "", // 文件别名
+    is_free: false, // 是否免费
+    subtitles: "", // 字幕
+})
+
 const handleAdd = () => {
     addItemDialogVisible.value = !addItemDialogVisible.value
 }
@@ -181,6 +209,17 @@ const updatePageSize = (val: number) => {
 }
 
 const editRow = (index: number, row: TableData) => {
+    console.log("04============", index, row)
+    // 断言 row 中有 file_name_display ts 不会报错
+    if ("file_name_display" in row) {
+        editMediaData.file_ID = row.id.toString()
+        editMediaData.file_name_display = row.file_name_display
+        editMediaData.description = row.description
+        editMediaData.slug = row.slug
+        editMediaData.is_free = row.is_free
+        // editMediaData.subtitles = row.subtitles as string
+        editMediaData.img = row.img
+    }
     console.log("3", index, row)
 }
 
@@ -240,6 +279,15 @@ const addItemUpdateDialogVisible = (val: boolean) => {
             key_word: search.value,
         })
     }
+}
+
+// 编辑对话框
+const editItemUpdateDialogVisible = (val: boolean) => {
+    console.log("09============", val)
+    editItemDialogVisible.value = val
+    // if (!val) {
+    //     dialogVisible.value = val
+    // }
 }
 
 

@@ -2,12 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-27 14:36:50
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-02 14:03:12
+ * @LastEditTime : 2024-09-25 12:16:30
  * @FilePath     : \blog-client\src\utils\style.ts
  * @Description  : 样式工具类
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
+
+import { type ImgFit } from '@/components/common'
 
 /**
  * @description: 设置主题
@@ -45,4 +47,34 @@ export function setCSSVariable(element: HTMLElement, variableName: string, value
  */
 export function getCSSVariableValue(element: HTMLElement, variableName: string): any {
   return getComputedStyle(element).getPropertyValue(variableName)
+}
+
+/**
+ * @description: 图片样式
+ * @param width 宽度 默认50px
+ * @param height 高度 默认50px
+ * @param imgFit 图片填充方式 默认cover
+ * @return    图片样式
+ */
+export function imgStyle(
+  width: number | undefined,
+  height: number | undefined,
+  imgFit: ImgFit | undefined,
+): Record<string, string> {
+  return {
+    width: width ? `${width}px` : '50px', // 宽度
+    height: height ? `${height}px` : '50px', // 高度
+    'object-fit': imgFit ? imgFit : 'cover', // 图片填充方式
+  }
+}
+
+/**
+ * @description: 图标样式
+ * @param fontSize 字体大小 默认40px
+ * @return 图标样式
+ */
+export function iconStyle(fontSize: number | undefined): Record<string, string> {
+  return {
+    'font-size': fontSize ? `${fontSize}px` : '40px', // 字体大小
+  }
 }

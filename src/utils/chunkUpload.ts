@@ -27,6 +27,9 @@ enum FileUploadEvents {
   CHUNKS = 'chunks', // 一部分分片产生了
 }
 
+// 上传进度 100
+const UPLOAD_PROGRESS_100 = 100
+
 // 上传控制器的相关事件
 export enum UploadControllerEvents {
   START = 'start', // 上传开始
@@ -142,6 +145,7 @@ export class MultiThreadSplitor extends ChunkSplitor {
     Math.max(navigator.hardwareConcurrency - 2, 1),
     import.meta.env.VITE_MAX_NAVIGATOR_HARDWARE_CONCURRENCY,
   )
+
   // 多线程Worker
   private workers: Worker[] = new Array(this.concurrency).fill(0).map(
     () =>
@@ -297,8 +301,8 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
           this.uploadFileInfo.upload_strategy.signed_url,
           this.uploadFileInfo.upload_strategy.signed_headers || {},
           (percent) => {
-            this.emit(UploadControllerEvents.PROGRESS, percent / 100) // 上传进度
-            if (percent === 100) {
+            this.emit(UploadControllerEvents.PROGRESS, percent / UPLOAD_PROGRESS_100) // 上传进度
+            if (percent === UPLOAD_PROGRESS_100) {
               this.requestStrategy
                 .confirmAfterUploadBySignedUrl({
                   file_id: this.uploadFileInfo?.id?.toString() || '',
