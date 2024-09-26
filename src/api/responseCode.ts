@@ -86,6 +86,9 @@ export enum ResponseCode {
   HasPermission = 8305, //判断是否有权限成功
   GetRoleSuccess = 8400, //获取角色列表成功
   UpdateRoleSuccess = 8403, //更新角色成功
+  UpsertPermissionRoleSuccess = 8405, //更新角色权限成功
+  DeletePermissionRoleSuccess = 8407, //删除角色权限成功
+  GetPermissionRoleSuccess = 8410, //获取角色权限成功
 
   GetLoginLogsSuccess = 8500, //获取登录日志成功
   LoginLogDeleteByIDsSuccess = 8502, //通过ID删除登录日志成功

@@ -4,7 +4,7 @@
  * @LastEditors  : jiaopengzi
  * @LastEditTime : 2024-06-19 22:56:46
  * @FilePath     : \blog-client\src\pkg\codemirror\extension\imgupload.ts
- * @Description  :
+ * @Description  : 图片上传
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */

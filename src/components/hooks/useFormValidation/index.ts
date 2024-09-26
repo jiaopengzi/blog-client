@@ -194,8 +194,8 @@ export function useFormValidation(options: FormValidationOptions = {}) {
 
   /**
    * @description: 用户名查重 Validator
-   * @param rule 无用参数
-   * @param value 无用参数
+   * @param rule 校验规则
+   * @param value 对应输入框的值
    * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
    */
   function checkUserNameValidator(
@@ -246,8 +246,8 @@ export function useFormValidation(options: FormValidationOptions = {}) {
 
   /**
    * @description: 用户名查重 Validator 排除指定用户ID
-   * @param rule 无用参数
-   * @param value 无用参数
+   * @param rule 校验规则
+   * @param value 对应输入框的值
    * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
    */
   function checkUserNameExcludingUserIDValidator(
@@ -302,8 +302,8 @@ export function useFormValidation(options: FormValidationOptions = {}) {
 
   /**
    * @description: 用户名查重 Validator
-   * @param rule 无用参数
-   * @param value 无用参数
+   * @param rule 校验规则
+   * @param value 对应输入框的值
    * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
    */
   function checkEmailValidator(
@@ -356,8 +356,8 @@ export function useFormValidation(options: FormValidationOptions = {}) {
 
   /**
    * @description: 用户名查重 Validator 排除指定用户ID
-   * @param rule 无用参数
-   * @param value 无用参数
+   * @param rule 校验规则
+   * @param value 对应输入框的值
    * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
    */
   function checkEmailExcludingUserIDValidator(
@@ -453,8 +453,8 @@ export function useFormValidation(options: FormValidationOptions = {}) {
 
   /**
    * @description: 用户名查重 Validator
-   * @param rule 无用参数
-   * @param value 无用参数
+   * @param rule 校验规则
+   * @param value 对应输入框的值
    * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
    */
   function checkLoginNameValidator(

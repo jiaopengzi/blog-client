@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 17:31:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-25 20:55:19
+ * @LastEditTime : 2024-09-26 09:34:30
  * @FilePath     : \blog-client\src\components\common\avatar-upload\index.vue
  * @Description  : 头像上传
  * @Blog         : https://jiaopengzi.com
@@ -80,7 +80,6 @@ const toggleCropperVisible = () => {
 const openFileDialog = () => {
     fileInput.value?.click()
 }
-
 
 // 监控 cropperVisible 变化,如果为 false 则清空上传文件
 watchEffect(() => {
