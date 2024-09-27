@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-15 15:09:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-26 20:15:46
+ * @LastEditTime : 2024-09-27 10:50:43
  * @FilePath     : \blog-client\src\views\admin\component\main\permission-role\index.vue
  * @Description  : 权限角色页面
  * @Blog         : https://jiaopengzi.com
@@ -40,7 +40,7 @@
         </el-table>
     </div>
     <!-- 弹窗 edit -->
-    <el-dialog v-model="editItemDialogVisibleStatus" @close="editItemHandleDialogClose" width="30%">
+    <el-dialog v-model="editItemDialogVisibleStatus" @close="editItemHandleDialogClose" width="35%">
         <template #header>
             <h3>编辑</h3>
         </template>
@@ -55,16 +55,17 @@
                     <el-input v-model.trim="permissionRoleForm.role_name" disabled />
                 </el-form-item>
                 <el-form-item label="限制次数说明">
-                    <h4>-1表示不限制，0表示不开放，大于0表示限制对应限制次数.</h4>
+                    <h4>0：不限制(不受时长限制)，大于0：对应限制次数。</h4>
                 </el-form-item>
                 <el-form-item label="限制次数" prop="limit_count">
                     <el-input type="number" v-model="permissionRoleForm.limit_count" />
                 </el-form-item>
                 <el-form-item label="限制次数选项">
                     <div class="multi-btn">
-                        <el-button class="multi-btn-item" size="default" v-for="count in limitCountList" :key="count"
-                            type="primary" @click="handleInsertLimitCount(count)">{{
-                                count
+                        <el-button class="multi-btn-item" size="small" v-for="item in getSortedEnumKeys(LimitCount)"
+                            :key="item" type="primary"
+                            @click="handleInsertLimitCount(item as keyof typeof LimitCount)">{{
+                                item
                             }}</el-button>
                     </div>
 
@@ -74,11 +75,9 @@
                     <el-input type="number" v-model="permissionRoleForm.limit_period" />
                 </el-form-item>
 
-
                 <el-form-item label="限制时长选项">
                     <div class="multi-btn">
-                        <el-button class="multi-btn-item" size="default" width="100px"
-                            v-for="item in Object.values(LimitPeriod).filter(value => typeof value !== 'number')"
+                        <el-button class="multi-btn-item" size="small" v-for="item in getSortedEnumKeys(LimitPeriod)"
                             :key="item" type="primary"
                             @click="handleInsertLimitPeriod(item as keyof typeof LimitPeriod)">{{
                                 item
@@ -108,9 +107,10 @@ import { AadminSideMenu } from '@/views/admin/component/aside'
 import { updateRolesAPI, type UpdateRolesRequest, type UpdateRoleRequest } from '@/api/permissionRole/updateRoles'
 import { ResponseCode } from '@/api/responseCode'
 import { ShowMsgTip } from '@/utils/message'
+import { getSortedEnumKeys } from '@/utils/enum'
 import { useUserStore } from '@/stores/user'
 import { debounce } from 'throttle-debounce'
-import { type PermissionRole, LimitPeriod } from '@/views/admin/component/main/permission-role'
+import { type PermissionRole, LimitPeriod, LimitCount } from '@/views/admin/component/main/permission-role'
 import { upsertPermissionRoleAPI, type UpsertPermissionRoleRequest } from '@/api/permissionRole/upsertPermissionRole'
 import { deletePermissionRoleAPI, type DeletePermissionRoleRequest } from '@/api/permissionRole/deletePermissionRole'
 import { getPermissionRoleAPI, type GetPermissionRoleRequest } from '@/api/permissionRole/getPermissionRole'
@@ -146,7 +146,7 @@ const handleCellEditClick = async (permissionName: string, roleName: string) => 
     permissionRoleForm.role_name = roleName
     // 设置 limt_count 和 limit_period 默认值
     permissionRoleForm.limit_count = 0
-    permissionRoleForm.limit_period = 600
+    permissionRoleForm.limit_period = 0
 
     // 更新权限角色信息
     await updatePermissionRole(permissionName, roleName)
@@ -181,27 +181,35 @@ const permissionRoleFormRef = useTemplateRef<FormInstance>("permissionRoleFormRe
 
 // 表单数据
 const permissionRoleForm = reactive<PermissionRole>({
-    permission_name: PermissionNames.AddMedia, //权限名称
+    permission_name: PermissionNames.AddMedia, // 权限名称
     role_name: "",// 角色名称
-    limit_count: 0,// 限制次数 -1表示不限制，0表示不开放, >0表示次数
-    limit_period: 600,// 限制时间段 例如 1h, 1d, 1w, 1m, 1y
+    limit_count: 0,// 限制次数 0表示不限制， >0表示次数
+    limit_period: 0,// 限制时间段 0表示不限制， >0表示秒数
 })
 
 const handleInsertLimitPeriod = (key: keyof typeof LimitPeriod) => {
     permissionRoleForm.limit_period = LimitPeriod[key]
+
+    // 触发校验
+    permissionRoleFormRef.value?.validateField('limit_period')
 }
 
-// 限制次数选项
-const limitCountList = [10, 20, 50, 100, 200, 500, 1000]
-
 // 插入限制次数
-const handleInsertLimitCount = (count: number) => {
-    permissionRoleForm.limit_count = count
+const handleInsertLimitCount = (key: keyof typeof LimitCount) => {
+    permissionRoleForm.limit_count = LimitCount[key]
+
+    // 当 limit_count 为 0 时，limit_period 设置为 0
+    if (permissionRoleForm.limit_count === 0) {
+        permissionRoleForm.limit_period = 0
+    }
+
+    // 触发校验
+    permissionRoleFormRef.value?.validateField('limit_count')
 }
 
 
 /**
-   * @description: 大约等于 -1 的整数 Validator (el-form-item 需要绑定对应的prop才能触发校验)
+   * @description: 大于等于 -1 的整数 Validator (el-form-item 需要绑定对应的prop才能触发校验)
    * @param rule 校验规则
    * @param value 对应输入框的值
    * @param callback 回调函数
@@ -211,9 +219,9 @@ function validateIntegerAroundMinusOne(
     value: string,
     callback: (error?: string | Error | undefined) => void,
 ): void {
-    // 正整数或者-1
-    if (!/^-1$|^[0-9]\d*$/.test(value)) {
-        callback(new Error('请输入大约等于 -1 整数'))
+    // 大于等于0的整数
+    if (!/^[0-9]\d*$/.test(value)) {
+        callback(new Error('请输入大于等于 0 的整数'))
     } else {
         callback()
     }
@@ -243,14 +251,14 @@ function validatePositiveInteger(
  */
 const rules = reactive<FormRules<PermissionRole>>({
     limit_count: [
-        { required: true, message: '限制次数为正整数', trigger: 'blur' },
+        { required: true, message: '请输入大于等于 0 的整数', trigger: 'blur' },
         // 用户查重
         { validator: validateIntegerAroundMinusOne, trigger: 'blur' },
     ],
     limit_period: [
-        { required: true, message: '限制周期为正整数(秒数)', trigger: 'blur' },
+        { required: true, message: '请输入大于等于 0 的整数', trigger: 'blur' },
         // 邮箱查重
-        { validator: validatePositiveInteger, trigger: 'blur' },
+        { validator: validateIntegerAroundMinusOne, trigger: 'blur' },
     ],
 })
 
@@ -265,6 +273,18 @@ const submitUpsertForm = async (formEl: FormInstance | undefined) => {
                     role_name: permissionRoleForm.role_name,
                     limit_count: Number(permissionRoleForm.limit_count),
                     limit_period: Number(permissionRoleForm.limit_period)
+                }
+
+                // 当 limit_count 为 0 时，limit_period 不等于 0 时，警告提示
+                if (req.limit_count === 0 && req.limit_period !== 0) {
+                    ShowMsgTip(ShowMsgTip.MsgType.warning, '限制次数为 0 时，限制时长必须为 0', 0)
+                    return
+                }
+
+                // 当 limit_count 和 limit_period 都为 0 时，提示默认权限配置就是不限制，不用提交
+                if (req.limit_count === 0 && req.limit_period === 0) {
+                    ShowMsgTip(ShowMsgTip.MsgType.warning, '权限默认不限制，无需操作。', 0)
+                    return
                 }
 
                 const { data } = await upsertPermissionRoleAPI(req)
@@ -307,12 +327,19 @@ const submitDeleteForm = async (formEl: FormInstance | undefined) => {
                     role_name: permissionRoleForm.role_name,
                 }
 
+                // 当 limit_count 和 limit_period 都为 0 时，提示默认权限配置就是不限制，不用提交
+                if (permissionRoleForm.limit_count === 0 && permissionRoleForm.limit_period === 0) {
+                    ShowMsgTip(ShowMsgTip.MsgType.warning, '权限默认不限制，无需操作。', 0)
+                    return
+                }
+
                 const { data } = await deletePermissionRoleAPI(req)
 
                 if (data.code === ResponseCode.DeletePermissionRoleSuccess) {
                     // 将 limt_count 和 limit_period 设置为 0
                     permissionRoleForm.limit_count = 0
-                    permissionRoleForm.limit_period = 600
+                    permissionRoleForm.limit_period = 0
+
                     // 添加成功提示
                     ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
 
@@ -454,6 +481,7 @@ h4 {
             }
 
             .cell-edit {
+                display: none;
                 margin-left: 5px;
                 font-size: 12px;
                 padding: 0 5px;
@@ -467,6 +495,7 @@ h4 {
             // 鼠标悬浮时 且 复选框选中时 显示编辑按钮
             &.show-edit:hover .cell-edit {
                 opacity: 1;
+                display: block;
             }
         }
     }

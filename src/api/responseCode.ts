@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-24 15:32:28
+ * @LastEditTime : 2024-09-27 11:18:56
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -86,9 +86,9 @@ export enum ResponseCode {
   HasPermission = 8305, //判断是否有权限成功
   GetRoleSuccess = 8400, //获取角色列表成功
   UpdateRoleSuccess = 8403, //更新角色成功
-  UpsertPermissionRoleSuccess = 8405, //更新角色权限成功
-  DeletePermissionRoleSuccess = 8407, //删除角色权限成功
-  GetPermissionRoleSuccess = 8410, //获取角色权限成功
+  UpsertPermissionRoleSuccess = 8404, //更新角色权限成功
+  DeletePermissionRoleSuccess = 8405, //删除角色权限成功
+  GetPermissionRoleSuccess = 8407, //获取角色权限成功
 
   GetLoginLogsSuccess = 8500, //获取登录日志成功
   LoginLogDeleteByIDsSuccess = 8502, //通过ID删除登录日志成功

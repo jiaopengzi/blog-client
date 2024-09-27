@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-07 14:24:11
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-28 21:31:05
+ * @LastEditTime : 2024-09-27 11:35:12
  * @FilePath     : \blog-client\src\utils\permissionRole.ts
  * @Description  : 权限工具类
  * @Blog         : https://jiaopengzi.com
@@ -20,6 +20,8 @@ import { useUserStore } from '@/stores/user'
 
 // 权限枚举
 export enum PermissionNames {
+  AddMediaByPost = 'AddMediaByPost',
+  AddAvatar = 'AddAvatar',
   AddMedia = 'AddMedia',
   EditMedia = 'EditMedia',
   DeleteMedia = 'DeleteMedia',
