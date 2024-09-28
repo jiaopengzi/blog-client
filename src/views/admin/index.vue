@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 21:32:04
+ * @LastEditTime : 2024-09-28 17:03:50
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -92,7 +92,7 @@ const stopWatch = watch(isFullScreen, (newValue) => {
     }
 })
 
-
+// 更新当前组件
 const updateCurrentComponent = () => {
     // 从 url 中获取 path 更新当前组件 
     const path = router.currentRoute.value.path as string | undefined
@@ -100,13 +100,12 @@ const updateCurrentComponent = () => {
 
     if (path) {
         updateCurrentComponentByPath(path)
-        // console.log("2", path)
+        console.log("2", path)
     }
 }
 
 
-
-
+// 选择菜单项
 const handleSelect = (index: string) => {
     updateCurrentComponentByPath(index)
     console.log("1", index)

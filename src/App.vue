@@ -17,7 +17,8 @@
   </Head>
 
   <!-- :key="$route.fullPath" 解决url变化而页面不刷新问题 -->
-  <router-view :key="$route.fullPath" />
+  <!-- <router-view :key="$route.fullPath" /> -->
+  <router-view />
 </template>
 <script setup lang="ts">
 import { setTheme } from '@/utils/style'
