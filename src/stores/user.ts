@@ -291,7 +291,7 @@ async function apiGetUserInfoByToken(): Promise<UserInfoStore> {
 
       // 循环 dataRole 获取权限列表
       const permissions: PermissionNames[] = []
-      for (const role of dataRole) {
+      for (const role of dataRole.roles) {
         if (role.role_name === roleName) {
           for (const permission of role.permission_names) {
             permissions.push(permission)

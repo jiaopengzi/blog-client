@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-15 15:09:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-27 10:22:18
+ * @LastEditTime : 2024-09-28 14:23:54
  * @FilePath     : \blog-client\src\views\admin\component\main\permission-role\index.ts
  * @Description  : 权限角色管理
  * @Blog         : https://jiaopengzi.com
@@ -18,12 +18,6 @@ export interface Role {
   permission_names: PermissionNames[] // 权限名称数组
   description: string // 角色描述
   allSelected?: boolean // 是否全选，可选属性
-}
-
-// 定义权限接口
-export interface Permission {
-  permission_name: PermissionNames // 权限名称
-  description: string // 权限描述
 }
 
 // 定义权限行接口，权限名+角色名对应的权限状态
@@ -69,7 +63,4 @@ export const getSortedLimitPeriodKeys = (() => {
 })()
 
 // 定义权限角色接口
-export interface PermissionRole extends UpsertPermissionRoleRequest {
-  // start_time: Date | null // 开始时间
-  // end_time: Date | null // 结束时间
-}
+export interface PermissionRole extends UpsertPermissionRoleRequest {}

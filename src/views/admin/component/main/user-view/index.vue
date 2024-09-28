@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-25 10:34:16
+ * @LastEditTime : 2024-09-28 15:39:49
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -65,7 +65,8 @@ import { AadminSideMenu } from '@/views/admin/component/aside'
 import { type User } from '@/api/user/getUsers'
 import { getUsersAPI, emptyUsers, type GetUsersRequest, } from '@/api/user/getUsers'
 import { getUserCountGroupByRoleAPI, type UserCountGroupByRole } from '@/api/user/getUserCountGroupByRole'
-import { getRolesByJson, type Role } from '@/api/permissionRole/role'
+import { getRolesList } from '@/utils/permissionRole'
+import { type Role } from '@/api/permissionRole/role'
 import { ResponseCode } from '@/api/responseCode'
 import router from '@/router'
 import { paginationRouterPush, PaginationQueryKey } from '@/router/utils'
@@ -216,7 +217,6 @@ const updatePageSize = async (val: number) => {
     pagination.value.page_size = val
     paginationRouterPush(AadminSideMenu.UserView, val, pagination.value.current_page, { [queryKey.RoleName]: activeRole.value, [queryKey.Search]: search.value })
     console.log("02============", val)
-
 }
 
 
@@ -376,18 +376,17 @@ const roles = ref<Role[]>([])  // 不包含全部角色
 const rolesALL = ref<Role[]>([])   // 包含全部角色
 
 async function getRoles() {
-    await getRolesByJson().then((res) => {
-        if (res.data.code === ResponseCode.GetRoleSuccess) {
-            const newRole = { role_name: AllRoleName, permission_names: [], description: '全部' }
-            roles.value = res.data.data
-            rolesALL.value = [newRole, ...res.data.data]
-        }
+    await getRolesList().then((res) => {
+        const newRole = { role_name: AllRoleName, permission_names: [], description: '全部' }
+        roles.value = res.roles
+        rolesALL.value = [newRole, ...res.roles]
     })
 }
 
 
 // 获取用户列表
 async function getUserCountGroupByRole() {
+    console.log("getUserCountGroupByRole")
     await getUserCountGroupByRoleAPI().then((res) => {
         if (res.data.code === ResponseCode.GetUserCountGroupByRolesSuccess) {
             const rolesALL = res.data.data
@@ -451,7 +450,6 @@ onBeforeMount(async () => {
     await getUserCountGroupByRole() // 按照角色获取用户数量
     await getUserPaginate({ role_name: activeRole.value, current_page: pagination.value.current_page, page_size: pagination.value.page_size, key_word: search.value })
 })
-
 
 </script>
 

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-03 12:48:46
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-13 14:21:04
+ * @LastEditTime : 2024-09-28 15:39:22
  * @FilePath     : \blog-client\src\version.ts
  * @Description  : 版本信息
  * @Blog         : https://jiaopengzi.com
@@ -54,5 +54,5 @@ export function consoleInfoFormat() {
     return `${acc}%c${key.padEnd(longestKeyLength)}: ${value}\n`
   }, '')
 
-  console.log(logContent, ...stypleList)
+  console.info(logContent, ...stypleList)
 }

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-15 15:09:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-27 10:50:43
+ * @LastEditTime : 2024-09-28 15:20:18
  * @FilePath     : \blog-client\src\views\admin\component\main\permission-role\index.vue
  * @Description  : 权限角色页面
  * @Blog         : https://jiaopengzi.com
@@ -29,11 +29,20 @@
                     </div>
                 </template>
                 <template #default="{ row }">
-                    <div class="cell" :class="{ 'show-edit': row[role.role_name] }">
-                        <el-checkbox class="cell-checkbox" v-model="row[role.role_name]"
-                            :disabled="disabledRoleNames.includes(role.role_name)"></el-checkbox>
-                        <el-button type="primary" class="cell-edit" v-if="!disabledRoleNames.includes(role.role_name)"
-                            @click="handleCellEditClick(row.permissionName, role.role_name)">编辑</el-button>
+                    <div class="cell">
+                        <div class="cell-top" :class="{ 'show-edit': row[role.role_name] }">
+                            <el-checkbox class="cell-checkbox" v-model="row[role.role_name]"
+                                :disabled="disabledRoleNames.includes(role.role_name)"></el-checkbox>
+                            <el-button type="primary" class="cell-edit"
+                                v-if="!disabledRoleNames.includes(role.role_name)"
+                                @click="handleCellEditClick(row.permissionName, role.role_name)">编辑</el-button>
+
+                        </div>
+                        <span class="cell-down" v-if="!disabledRoleNames.includes(role.role_name)"> {{
+                            getSafeProperty(permissionRole, row.permissionName + role.role_name)?.limit_count ?
+                                `限制次数:${getSafeProperty(permissionRole, row.permissionName +
+                                    role.role_name)?.limit_count}`
+                                : "" }}</span>
                     </div>
                 </template>
             </el-table-column>
@@ -100,9 +109,9 @@
 
 <script lang="ts" setup>
 import { ref, onBeforeMount, reactive, useTemplateRef, type Ref } from 'vue'
-import { getRolesList, getPermissionList, PermissionNames } from '@/utils/permissionRole'
+import { getRolesList, getPermissionList, PermissionNames, type Permission } from '@/utils/permissionRole'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
-import type { Permission, Role, PermissionRow } from '@/views/admin/component/main/permission-role'
+import type { Role, PermissionRow } from '@/views/admin/component/main/permission-role'
 import { AadminSideMenu } from '@/views/admin/component/aside'
 import { updateRolesAPI, type UpdateRolesRequest, type UpdateRoleRequest } from '@/api/permissionRole/updateRoles'
 import { ResponseCode } from '@/api/responseCode'
@@ -115,7 +124,6 @@ import { upsertPermissionRoleAPI, type UpsertPermissionRoleRequest } from '@/api
 import { deletePermissionRoleAPI, type DeletePermissionRoleRequest } from '@/api/permissionRole/deletePermissionRole'
 import { getPermissionRoleAPI, type GetPermissionRoleRequest } from '@/api/permissionRole/getPermissionRole'
 
-
 defineOptions({ name: AadminSideMenu.PermissionRole })
 
 
@@ -127,9 +135,19 @@ const disabledRoleNames = ['Administrator']
 
 // 定义角色列表和权限数据，使用 ref 使其为响应式数据
 const rolesList: Ref<Role[]> = ref([])
+const permissionRole: Ref<Record<string, PermissionRole>> = ref({})
+
+const getSafeProperty = (obj: Record<string, PermissionRole> | null, key: string, defaultValue: any = null): any => {
+    if (!obj) return defaultValue
+    return obj[key] !== undefined && obj[key] !== null ? obj[key] : defaultValue;
+}
+
+
 
 // 定义权限数据
 const permissionsData: Ref<PermissionRow[]> = ref([])
+
+
 
 const editItemDialogVisibleStatus = ref(false) // 对话框状态
 
@@ -186,6 +204,9 @@ const permissionRoleForm = reactive<PermissionRole>({
     limit_count: 0,// 限制次数 0表示不限制， >0表示次数
     limit_period: 0,// 限制时间段 0表示不限制， >0表示秒数
 })
+
+
+
 
 const handleInsertLimitPeriod = (key: keyof typeof LimitPeriod) => {
     permissionRoleForm.limit_period = LimitPeriod[key]
@@ -263,7 +284,7 @@ const rules = reactive<FormRules<PermissionRole>>({
 })
 
 // 提交更新表单
-const submitUpsertForm = async (formEl: FormInstance | undefined) => {
+const submitUpsertForm = debounce(100, async (formEl: FormInstance | undefined) => {
     if (!formEl) return
     try {
         await formEl.validate(async (valid) => {
@@ -290,6 +311,7 @@ const submitUpsertForm = async (formEl: FormInstance | undefined) => {
                 const { data } = await upsertPermissionRoleAPI(req)
 
                 if (data.code === ResponseCode.UpsertPermissionRoleSuccess) {
+                    updatePermission()
                     // 添加成功提示
                     ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
 
@@ -313,10 +335,10 @@ const submitUpsertForm = async (formEl: FormInstance | undefined) => {
     } catch (error) {
         return
     }
-}
+})
 
 // 提交删除表单
-const submitDeleteForm = async (formEl: FormInstance | undefined) => {
+const submitDeleteForm = debounce(100, async (formEl: FormInstance | undefined) => {
     if (!formEl) return
     try {
         await formEl.validate(async (valid) => {
@@ -341,6 +363,8 @@ const submitDeleteForm = async (formEl: FormInstance | undefined) => {
                     permissionRoleForm.limit_period = 0
 
                     // 添加成功提示
+                    updatePermission()
+                    await initPermissionTable(false)
                     ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
 
                 } else {
@@ -352,7 +376,7 @@ const submitDeleteForm = async (formEl: FormInstance | undefined) => {
     } catch (error) {
         return
     }
-}
+})
 
 // 获取权限列表
 const getPermissions = async () => {
@@ -367,12 +391,16 @@ function getPermissionDescription(permissionName: PermissionNames) {
 
 
 // 初始化权限表格
-const initPermissionTable = async () => {
-    const roles = await getRolesList()
+const initPermissionTable = async (useCache: boolean = true) => {
+    const { roles, permission_role } = await getRolesList({ useCache: useCache })
+    permissionRole.value = permission_role
     rolesList.value = roles.map((role: Role) => ({
         ...role,
         allSelected: false, // 初始化全选状态为 false
     }))
+
+    // 初始化权限数据,不然会出现权限数据重复
+    permissionsData.value = []
 
     // 初始化权限数据
     for (const permission in PermissionNames) {
@@ -396,8 +424,8 @@ function selectAll(roleName: string) {
     }
 }
 
-// 更新权限  防抖更新权限 1秒内多次点击只执行一次
-const updatePermission = debounce(1000, () => {
+// 更新权限  防抖更新权限 100毫秒内多次点击只执行一次
+const updatePermission = debounce(100, async () => {
     // 用 permissionsData 拼接 UpdateRolesRequest 请求参数
     const updateRolesRequest: UpdateRolesRequest = {
         roles: rolesList.value.map((role: Role) => {
@@ -410,12 +438,13 @@ const updatePermission = debounce(1000, () => {
     }
 
     // 更新角色权限api
-    updateRolesAPI(updateRolesRequest).then((res) => {
+    await updateRolesAPI(updateRolesRequest).then((res) => {
 
         if (res.data.code === ResponseCode.UpdateRoleSuccess) {
             // 更新用户信息
             const userStore = useUserStore()
             userStore.getUserInfoByToken()
+            initPermissionTable(false)
             ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 2000)
             // 强制刷新页面 两秒后刷新
             // setTimeout(() => {
@@ -468,36 +497,49 @@ h4 {
             align-items: center;
         }
 
-        // 单元格样式
         .cell {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
 
-            .cell-checkbox {
+            // 单元格样式
+            .cell-top {
+                display: flex;
+                justify-content: center;
+                align-items: center;
                 position: relative;
-                z-index: 1;
+
+                .cell-checkbox {
+                    position: relative;
+                    z-index: 1;
+                }
+
+                .cell-edit {
+                    display: none;
+                    margin-left: 5px;
+                    font-size: 12px;
+                    padding: 0 5px;
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                    position: absolute;
+                    left: 100px;
+                    white-space: nowrap;
+                }
+
+                // 鼠标悬浮时 且 复选框选中时 显示编辑按钮
+                &.show-edit:hover .cell-edit {
+                    opacity: 1;
+                    display: block;
+                }
             }
 
-            .cell-edit {
-                display: none;
-                margin-left: 5px;
-                font-size: 12px;
-                padding: 0 5px;
-                opacity: 0;
-                transition: opacity 0.3s ease;
-                position: absolute;
-                left: 100px;
-                white-space: nowrap;
-            }
 
-            // 鼠标悬浮时 且 复选框选中时 显示编辑按钮
-            &.show-edit:hover .cell-edit {
-                opacity: 1;
-                display: block;
-            }
         }
+
+        .cell-down {
+            display: block;
+            font-size: 12px;
+            text-align: center;
+            margin-top: 5px;
+        }
+
     }
 }
 

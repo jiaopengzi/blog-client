@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-07 14:24:11
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-27 11:35:12
+ * @LastEditTime : 2024-09-28 14:45:23
  * @FilePath     : \blog-client\src\utils\permissionRole.ts
  * @Description  : 权限工具类
  * @Blog         : https://jiaopengzi.com
@@ -12,7 +12,7 @@
 // 从 API 获取权限列表
 import type { Directive, DirectiveBinding } from 'vue'
 import { getPermissionsByJson } from '@/api/permissionRole/getPermissions'
-import { getRolesByJson } from '@/api/permissionRole/role'
+import { getRolesByJson, type RoleWithLimt } from '@/api/permissionRole/role'
 import { ResponseCode } from '@/api/responseCode'
 import { kebabToPascalCase } from '@/utils/namingConversion'
 import { hasPermissionAPI } from '@/api/permissionRole/hasPermission'
@@ -41,27 +41,75 @@ export enum PermissionNames {
   LoginLogDelete = 'LoginLogDelete',
 }
 
+// 定义权限接口
+export interface Permission {
+  permission_name: PermissionNames // 权限名称
+  description: string // 权限描述
+}
+
+// 请求参数
+interface GetRolesListParams {
+  useCache?: boolean
+}
+
+// import { getRolesList, getPermissionList, PermissionNames, type Permission } from '@/utils/permissionRole'
+
 /**
  * @description: 获取角色列表
- * @return {Promise<any>}
+ * @param {GetRolesListParams} params - 参数
+ * @return {Promise<RoleWithLimt>}
  */
-export async function getRolesList(): Promise<any> {
+export async function getRolesList(params: GetRolesListParams = {}): Promise<RoleWithLimt> {
+  const { useCache = true } = params // 默认使用缓存
+  const cacheKey = 'rolesList'
+
+  if (useCache) {
+    const cachedData = localStorage.getItem(cacheKey)
+    if (cachedData) {
+      return JSON.parse(cachedData)
+    }
+  }
+
   const res = await getRolesByJson()
   if (res.data.code === ResponseCode.GetRoleSuccess) {
-    return res.data.data
+    const data = res.data.data
+    localStorage.setItem(cacheKey, JSON.stringify(data))
+    return data
   }
-  return []
+
+  return { roles: [], permission_role: {} }
+}
+
+// 请求参数
+interface GetPermissionListParams {
+  useCache?: boolean
 }
 
 /**
  * @description: 获取权限列表
- * @return {Promise<any>}
+ * @param {GetPermissionListParams} params - 参数
+ * @return {Promise<Permission[]>}
  */
-export async function getPermissionList(): Promise<any> {
+export async function getPermissionList(
+  params: GetPermissionListParams = {},
+): Promise<Permission[]> {
+  const { useCache = true } = params // 默认使用缓存
+  const cacheKey = 'permissionList'
+
+  if (useCache) {
+    const cachedData = localStorage.getItem(cacheKey)
+    if (cachedData) {
+      return JSON.parse(cachedData)
+    }
+  }
+
   const res = await getPermissionsByJson()
   if (res.data.code === ResponseCode.GetPermissionSuccess) {
-    return res.data.data
+    const data = res.data.data
+    localStorage.setItem(cacheKey, JSON.stringify(data))
+    return data
   }
+
   return []
 }
 
