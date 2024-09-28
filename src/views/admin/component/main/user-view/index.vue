@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-28 15:39:49
+ * @LastEditTime : 2024-09-28 18:49:15
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -57,7 +57,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onBeforeMount, watch } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import type { Pagination } from '@/components/common'
 import type { TableData, TableColumn } from '@/components/common/base-table'
 import { debounce } from 'throttle-debounce'
@@ -74,6 +74,7 @@ import { DeleteUserAPI, type DeleteUserRequest } from '@/api/user/deleteUser'
 import { ShowMsgTip } from '@/utils/message'
 import { type EditUserByAdminForm } from '@/views/admin/component/main/user-view/component/edit-user'
 import { convertToBeijingTime } from '@/utils/dateTime'
+import { useGetData } from '@/components/hooks/useGetData'
 
 import BaseTable from '@/components/common/base-table'
 import AddUser from '@/views/admin/component/main/user-view/component/add-user'
@@ -323,6 +324,8 @@ watch(search, (newVal) => {
     console.log("08============", newVal)
 })
 
+
+
 const updateSelection = (rows: TableData[]) => {
     console.log("18============", rows)
 }
@@ -386,7 +389,6 @@ async function getRoles() {
 
 // 获取用户列表
 async function getUserCountGroupByRole() {
-    console.log("getUserCountGroupByRole")
     await getUserCountGroupByRoleAPI().then((res) => {
         if (res.data.code === ResponseCode.GetUserCountGroupByRolesSuccess) {
             const rolesALL = res.data.data
@@ -443,13 +445,20 @@ const editUserStatus = async (status: boolean) => {
     }
 }
 
-onBeforeMount(async () => {
-    console.log("13============")
+// 初始化数据
+const getDataOnBeforeMount = async () => {
     getValueFromQuery()
-    await getRoles() // 获取角色列表
-    await getUserCountGroupByRole() // 按照角色获取用户数量
+    await getRoles()
+    await getUserCountGroupByRole()
     await getUserPaginate({ role_name: activeRole.value, current_page: pagination.value.current_page, page_size: pagination.value.page_size, key_word: search.value })
-})
+}
+
+// 路由变化时获取数据
+const getDataOnRouteChange = async () => {
+    await getUserPaginate({ role_name: activeRole.value, current_page: pagination.value.current_page, page_size: pagination.value.page_size, key_word: search.value })
+}
+
+useGetData(getDataOnBeforeMount, getDataOnRouteChange)
 
 </script>
 

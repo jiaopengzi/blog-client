@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-11 18:03:30
+ * @LastEditTime : 2024-09-28 17:42:05
  * @FilePath     : \blog-client\src\App.vue
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -18,7 +18,12 @@
 
   <!-- :key="$route.fullPath" 解决url变化而页面不刷新问题 -->
   <!-- <router-view :key="$route.fullPath" /> -->
+
+
   <router-view />
+  <!-- <keep-alive></keep-alive> -->
+
+
 </template>
 <script setup lang="ts">
 import { setTheme } from '@/utils/style'

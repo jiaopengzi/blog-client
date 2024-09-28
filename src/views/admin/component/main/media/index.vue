@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-25 12:08:20
+ * @LastEditTime : 2024-09-28 19:03:14
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onBeforeMount } from 'vue'
+import { ref, reactive } from 'vue'
 import type { Pagination } from '@/components/common'
 import type { TableData, TableColumn } from '@/components/common/base-table'
 import type { MediaFile, GetMediaFilesRequest } from '@/api/upload/getFiles'
@@ -75,6 +75,7 @@ import { paginationRouterPush, PaginationQueryKey } from '@/router/utils'
 import { getFileCountGroupByFiletypeAPI, type FileCountGroupByFiletype } from '@/api/upload/getFileCountGroupByFiletype'
 import { DeleteFileAPI, type DeleteFileRequest } from '@/api/upload/deleteFile'
 import type { EditMediaProps } from '@/views/admin/component/main/media/component/edit-media'
+import { useGetData } from '@/components/hooks/useGetData'
 
 import BaseTable from '@/components/common/base-table'
 import AddMedia from '@/views/admin/component/main/media/component/add-media'
@@ -367,8 +368,8 @@ const handleFileCountByFiletype = async (fileType: string) => {
 }
 
 
-
-onBeforeMount(async () => {
+// 初始化数据
+const getDataOnBeforeMount = async () => {
     getValueFromQuery()
     await getFileCountGroupByFiletype()
     await getMediaFilePaginate({
@@ -377,7 +378,20 @@ onBeforeMount(async () => {
         file_type: activeFileType.value,
         key_word: search.value,
     })
-})
+}
+
+// 路由变化时获取数据
+const getDataOnRouteChange = async () => {
+    await getMediaFilePaginate({
+        current_page: pagination.value.current_page,
+        page_size: pagination.value.page_size,
+        file_type: activeFileType.value,
+        key_word: search.value,
+    })
+}
+
+useGetData(getDataOnBeforeMount, getDataOnRouteChange)
+
 
 </script>
 
