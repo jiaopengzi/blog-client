@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-29 19:49:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-23 19:47:56
+ * @LastEditTime : 2024-09-29 17:22:08
  * @FilePath     : \blog-client\src\views\userinfo\component\info\pc.vue
  * @Description  : 我的信息
  * @Blog         : https://jiaopengzi.com
@@ -49,7 +49,7 @@
         <AvatarInitials :name="userData.user.user_display_name" :avatar="avatar" />
       </div>
       <div class="edit-avatar-btn">
-        <AvatarUpload @avatar-upload-status="avatarUploadStatus" />
+        <AvatarUpload @avatar-upload-url="updateAvatarToDB" />
       </div>
     </div>
 
@@ -114,7 +114,7 @@ const {
   unBindSocial,
   userNameDisabled,
   email,
-  avatarUploadStatus,
+  updateAvatarToDB,
 } = useInfo()
 
 

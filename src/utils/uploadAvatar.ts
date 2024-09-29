@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 19:55:27
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-25 20:18:01
+ * @LastEditTime : 2024-09-29 11:26:37
  * @FilePath     : \blog-client\src\utils\uploadAvatar.ts
  * @Description  : 上传头像
  * @Blog         : https://jiaopengzi.com
@@ -21,8 +21,8 @@ export const uploadFile = async (
   isNoFree: boolean = true,
   chunkSizeServer = 1024 * 1024 * 10,
   hashAlgorithmServer: HashAlgorithm = HashAlgorithm.SHA256,
-) => {
-  await uploadCommon(
+): Promise<string | undefined> => {
+  return await uploadCommon(
     options,
     isEncrypt,
     isNoFree,

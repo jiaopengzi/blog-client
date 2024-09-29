@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-07-25 09:41:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-25 18:55:01
+ * @LastEditTime : 2024-09-29 11:05:23
  * @FilePath     : \blog-client\src\api\upload\chunk.ts
  * @Description  : 分片上传
  * @Blog         : https://jiaopengzi.com
@@ -34,7 +34,7 @@ export interface ChunkMetadata extends ChunkMetadataWithoutFileId {
 export function uploadChunkAPI(
   formData: FormData, // FormData 对象
   chunkMetadata: ChunkMetadata, // 元信息对象
-): AxiosPromise<Res> {
+): Promise<Res> {
   // 将元信息对象转换为 JSON 字符串
   const metadataJson = JSON.stringify(chunkMetadata)
 
@@ -55,7 +55,7 @@ export function uploadChunkAPI(
 export function uploadChunkAvatarAPI(
   formData: FormData, // FormData 对象
   chunkMetadata: ChunkMetadata, // 元信息对象
-): AxiosPromise<Res> {
+): Promise<Res> {
   // 将元信息对象转换为 JSON 字符串
   const metadataJson = JSON.stringify(chunkMetadata)
 

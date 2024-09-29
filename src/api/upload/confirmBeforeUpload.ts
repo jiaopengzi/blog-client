@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-07-24 21:48:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-25 18:52:28
+ * @LastEditTime : 2024-09-29 11:04:53
  * @FilePath     : \blog-client\src\api\upload\confirmBeforeUpload.ts
  * @Description  : 上传文件前确认
  * @Blog         : https://jiaopengzi.com
@@ -29,7 +29,7 @@ export interface ConfirmBeforeUploadRequest {
 }
 
 // 普通文件上传前确认
-export function confirmBeforeUploadAPI(requestData: ConfirmBeforeUploadRequest): AxiosPromise<Res> {
+export function confirmBeforeUploadAPI(requestData: ConfirmBeforeUploadRequest): Promise<Res> {
   return request({
     url: routerGroup + '/upload/confirm-before-upload',
     method: 'post',
@@ -40,7 +40,7 @@ export function confirmBeforeUploadAPI(requestData: ConfirmBeforeUploadRequest):
 // 头像上传前确认
 export function confirmBeforeUploadAvatarAPI(
   requestData: ConfirmBeforeUploadRequest,
-): AxiosPromise<Res> {
+): Promise<Res> {
   return request({
     url: routerGroup + '/upload/avatar/confirm-before-upload',
     method: 'post',

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 17:31:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-26 09:34:30
+ * @LastEditTime : 2024-09-29 17:50:49
  * @FilePath     : \blog-client\src\components\common\avatar-upload\index.vue
  * @Description  : 头像上传
  * @Blog         : https://jiaopengzi.com
@@ -41,13 +41,10 @@ import { ref, onUnmounted, useTemplateRef, watchEffect } from 'vue'
 import Cropper from 'cropperjs'
 import 'cropperjs/dist/cropper.min.css'
 import { ElButton, ElDialog } from 'element-plus'
-import { uploadAvatarAPI } from '@/api/upload/avatar'
 import { ShowMsgTip } from '@/utils/message'
-import { UploadCode } from '@/api/responseCode'
 import type { UploadRequestOptions, ElUpload, UploadRawFile } from 'element-plus'
 import { uploadFile } from '@/utils/uploadAvatar'
 import type { UploadInstance } from 'element-plus'
-
 
 defineOptions({ name: 'AvatarUpload' })
 
@@ -60,7 +57,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-    (event: 'avatar-upload-status', value: boolean): void // 头像上传状态
+    (event: 'avatar-upload-url', value: string): void // 头像上传地址
 }>()
 
 const cropperVisible = ref(false)
@@ -149,7 +146,17 @@ function initCropper(url: string) {
 }
 
 // 上传请求
-const httpRequest = async (options: UploadRequestOptions) => uploadFile(options)
+const httpRequest = async (options: UploadRequestOptions) => {
+    await uploadFile(options).then((result) => {
+        emit('avatar-upload-url', result)
+        ShowMsgTip(ShowMsgTip.MsgType.success, '上传成功')
+
+    }).catch((err) => {
+        ShowMsgTip(ShowMsgTip.MsgType.error, '上传失败')
+        console.error(err)
+    })
+}
+
 
 // 上传图片
 function uploadImage() {
@@ -168,7 +175,6 @@ function uploadImage() {
                 uploadRef.value.handleStart(file)
                 uploadRef.value.submit()
                 cropperVisible.value = false
-                emit('avatar-upload-status', true)
             }
         })
     } else {

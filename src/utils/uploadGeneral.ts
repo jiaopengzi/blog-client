@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 20:18:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-25 20:19:40
+ * @LastEditTime : 2024-09-29 11:26:25
  * @FilePath     : \blog-client\src\utils\uploadGeneral.ts
  * @Description  : 通用文件上传
  * @Blog         : https://jiaopengzi.com
@@ -20,8 +20,9 @@ export const uploadFile = async (
   isNoFree: boolean = true,
   chunkSizeServer = 1024 * 1024 * 10,
   hashAlgorithmServer: HashAlgorithm = HashAlgorithm.SHA256,
-) => {
-  await uploadCommon(
+): Promise<string | undefined> => {
+  // 调用 uploadCommon 方法并返回上传成功后的 URL
+  return await uploadCommon(
     options,
     isEncrypt,
     isNoFree,

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-18 08:47:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-23 19:48:50
+ * @LastEditTime : 2024-09-29 17:44:51
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\edit-user\index.vue
  * @Description  : 编辑用户
  * @Blog         : https://jiaopengzi.com
@@ -21,8 +21,7 @@
                         <AvatarInitials :name="editUserForm.userName" :avatar="avatar" />
                     </div>
                     <div class="edit-avatar-btn">
-                        <AvatarUpload :avatar_user_id="editUserForm.editUserID"
-                            @avatar-upload-status="avatarUploadStatus" />
+                        <AvatarUpload :avatar_user_id="editUserForm.editUserID" @avatar-upload-url="updateAvatarToDB" />
                     </div>
                 </div>
             </el-form-item>
@@ -103,6 +102,7 @@ import { getUserMetaValue } from '@/utils/metaInfo'
 import { getAvatarUrl } from '@/utils/avatar'
 import { RegexPatterns } from '@/utils/regexPatterns'
 import { type LogoutByAdminRequest, logoutByAdminAPI } from '@/api/user/logoutByAdmin'
+import { setAvatarAPI, type SetAvatarRequest } from '@/api/upload/setAvatar'
 
 import AvatarInitials from '@/components/common/avatar-initials'
 import AvatarUpload from '@/components/common/avatar-upload'
@@ -355,12 +355,21 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 }
 
 // 头像更新状态
-const avatarUploadStatus = (status: boolean) => {
-    if (status) {
-        getUserInfo()
-        emit('edit-user-status', true)
+const updateAvatarToDB = async (avatarUrl: string) => {
+    const req: SetAvatarRequest = {
+        user_id: editUserForm.editUserID,
+        avatar_url: avatarUrl,
     }
+    // 更新头像
+    await setAvatarAPI(req).then((res) => {
+        if (res.code === UploadCode.SetAvatarSuccess) {
+            // 更新用户信息
+            getUserInfo()
+            emit('edit-user-status', true)
+        }
+    })
 }
+
 
 // 注销会话
 const logoutByAdmin = async () => {

@@ -125,6 +125,8 @@ export enum UploadCode {
   GetFileCountGroupByTypeSuccess = 8108, // 获取文件统计成功
   GetAllSuccess = 8110, // 获取媒体信息成功
   FileDeleteSuccess = 8111, // 删除文件成功
+  GetUploadFileUrlSuccess = 8113, // 获取上传文件URL成功
+  SetAvatarSuccess = 8114, // 设置头像成功
 }
 
 // 社交登录

@@ -14,10 +14,12 @@ import { confirmBeforeUploadAPI } from '@/api/upload/confirmBeforeUpload'
 import { uploadFileBySignedUrlAPI } from '@/api/upload/uploadFileBySignedUrl'
 import { confirmAfterUploadBySignedUrlAPI } from '@/api/upload/confirmAfterUploadBySignedUrl'
 import { uploadChunkAPI } from '@/api/upload/chunk'
+import { getUploadFileUrlAPI } from '@/api/upload/getUploadFileUrl'
 
 export class RequestStrategyGeneral extends RequestStrategyBase {
   confirmBeforeUploadAPI = confirmBeforeUploadAPI
   uploadFileBySignedUrlAPI = uploadFileBySignedUrlAPI
   confirmAfterUploadBySignedUrlAPI = confirmAfterUploadBySignedUrlAPI
   uploadChunkAPI = uploadChunkAPI
+  getUploadFileUrlAPI = getUploadFileUrlAPI
 }

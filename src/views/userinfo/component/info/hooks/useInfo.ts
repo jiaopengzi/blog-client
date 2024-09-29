@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 10:17:33
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-19 22:53:36
+ * @LastEditTime : 2024-09-29 17:44:11
  * @FilePath     : \blog-client\src\views\userinfo\component\info\hooks\useInfo.ts
  * @Description  : 用户信息页面 hooks
  * @Blog         : https://jiaopengzi.com
@@ -16,7 +16,7 @@ import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 import type { UserInfo } from '@/api/user/getUserInfo'
 import { Social } from '@/api/responseCode'
-import { ResponseCode } from '@/api/responseCode'
+import { ResponseCode, UploadCode } from '@/api/responseCode'
 import type { EditUserInfoRequest } from '@/api/user/editUserInfo'
 import { editUserInfoAPI } from '@/api/user/editUserInfo'
 import { ShowMsgTip } from '@/utils/message'
@@ -25,6 +25,7 @@ import { convertToBeijingTime } from '@/utils/dateTime'
 import { useFormValidation } from '@/components/hooks/useFormValidation'
 import { getUserMetaValue } from '@/utils/metaInfo'
 import { RegexPatterns } from '@/utils/regexPatterns'
+import { setAvatarAPI, type SetAvatarRequest } from '@/api/upload/setAvatar'
 
 export interface UseInfoReturnType {
   editFormRef: Ref<FormInstance | undefined>
@@ -44,7 +45,7 @@ export interface UseInfoReturnType {
   unBindSocial: (platform: Social) => Promise<void>
   userNameDisabled: Ref<boolean>
   email: ComputedRef<string>
-  avatarUploadStatus(status: boolean): void
+  updateAvatarToDB(avatarUrl: string): void
 }
 
 export function useInfo(): UseInfoReturnType {
@@ -217,10 +218,19 @@ export function useInfo(): UseInfoReturnType {
     changeUserNameDisabled()
   })
 
-  const avatarUploadStatus = (status: boolean) => {
-    if (status) {
-      userStore.getUserInfoByToken(true)
+  const updateAvatarToDB = async (avatarUrl: string) => {
+    const req: SetAvatarRequest = {
+      user_id: userData.value.user.id.toString(),
+      avatar_url: avatarUrl,
     }
+    // 更新头像
+    await setAvatarAPI(req).then((res) => {
+      if (res.code === UploadCode.SetAvatarSuccess) {
+        // 更新用户信息
+        userStore.setAvatar(req.avatar_url)
+        // userStore.getUserInfoByToken(true)
+      }
+    })
   }
 
   onBeforeMount(() => {
@@ -246,6 +256,6 @@ export function useInfo(): UseInfoReturnType {
     unBindSocial,
     userNameDisabled,
     email,
-    avatarUploadStatus,
+    updateAvatarToDB,
   }
 }

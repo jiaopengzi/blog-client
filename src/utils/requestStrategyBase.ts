@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 20:06:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-25 20:43:57
+ * @LastEditTime : 2024-09-29 19:54:47
  * @FilePath     : \blog-client\src\utils\requestStrategyBase.ts
  * @Description  : 上传请求策略基类
  * @Blog         : https://jiaopengzi.com
@@ -14,28 +14,39 @@ import { UploadCode } from '@/api/responseCode'
 import { type UploadRequestOptions } from 'element-plus'
 import type { RequestStrategy, Chunk } from '@/utils/chunkUpload'
 import { type ConfirmBeforeUploadRequest } from '@/api/upload/confirmBeforeUpload'
+import { type GetUploadFileUrlRequest } from '@/api/upload/getUploadFileUrl'
 import { type ChunkMetadata } from '@/api/upload/chunk'
 import { type UploadFileInfo } from '@/utils/chunkUpload'
 import type { Res } from '@/api/responseCode'
 import { type ConfirmAfterUploadBySignedUrlRequest } from '@/api/upload/confirmAfterUploadBySignedUrl'
 
+export const MultipartFormFileKey = 'file'
+
 export abstract class RequestStrategyBase implements RequestStrategy {
-  options: UploadRequestOptions
+  elUploadRequestOptions: UploadRequestOptions | null = null
+  file: File | null = null
+  fileName: string
   uploadFileInfo: UploadFileInfo | null = null
 
-  constructor(options: UploadRequestOptions) {
-    this.options = options
+  constructor(input: UploadRequestOptions | File) {
+    if (input instanceof File) {
+      this.file = input
+      this.fileName = input.name
+    } else {
+      this.elUploadRequestOptions = input
+      this.fileName = this.elUploadRequestOptions.file.name
+    }
   }
-
-  abstract confirmBeforeUploadAPI(req: ConfirmBeforeUploadRequest): Promise<any>
+  abstract confirmBeforeUploadAPI(req: ConfirmBeforeUploadRequest): Promise<Res>
   abstract uploadFileBySignedUrlAPI(
     file: File,
     signedUrl: string,
     headers: Record<string, string>,
     onProgress: (percent: number) => void,
-  ): Promise<any>
-  abstract confirmAfterUploadBySignedUrlAPI(req: ConfirmAfterUploadBySignedUrlRequest): Promise<any>
-  abstract uploadChunkAPI(formData: FormData, meta: ChunkMetadata): Promise<any>
+  ): Promise<Res>
+  abstract confirmAfterUploadBySignedUrlAPI(req: ConfirmAfterUploadBySignedUrlRequest): Promise<Res>
+  abstract uploadChunkAPI(formData: FormData, meta: ChunkMetadata): Promise<Res>
+  abstract getUploadFileUrlAPI(req: GetUploadFileUrlRequest): Promise<Res>
 
   async confirmBeforeUpload(req: ConfirmBeforeUploadRequest): Promise<UploadFileInfo> {
     return await this.confirmBeforeUploadAPI(req)
@@ -48,18 +59,16 @@ export abstract class RequestStrategyBase implements RequestStrategy {
           if (typeof data === 'object' && 'error_msg' in data && data.error_msg) {
             ShowMsgTip(
               ShowMsgTip.MsgType.error,
-              `${response.data.msg}:${this.options.file.name},${data.error_msg} `,
+              `${response.data.msg}:${this.fileName},${data.error_msg} `,
               6000,
             )
           } else {
-            ShowMsgTip(
-              ShowMsgTip.MsgType.error,
-              `${response.data.msg}:${this.options.file.name}`,
-              6000,
-            )
+            ShowMsgTip(ShowMsgTip.MsgType.error, `${response.data.msg}:${this.fileName}`, 6000)
           }
           const error: any = new Error(response.data.msg)
-          this.options.onError(error)
+          if (this.elUploadRequestOptions) {
+            this.elUploadRequestOptions.onError(error)
+          }
           return
         }
       })
@@ -67,7 +76,9 @@ export abstract class RequestStrategyBase implements RequestStrategy {
         const errorMessage = '上传前确认失败，请重试'
         ShowMsgTip(ShowMsgTip.MsgType.error, errorMessage, 6000)
         const error: any = new Error(errorMessage)
-        this.options.onError(error)
+        if (this.elUploadRequestOptions) {
+          this.elUploadRequestOptions.onError(error)
+        }
       })
   }
 
@@ -88,7 +99,7 @@ export abstract class RequestStrategyBase implements RequestStrategy {
 
   async uploadChunk(chunk: Chunk): Promise<Res> {
     const formData = new FormData()
-    formData.append(this.options.filename, chunk.blob, chunk.part_index + this.options.file.name)
+    formData.append(MultipartFormFileKey, chunk.blob, chunk.part_index + this.fileName)
     const meta: ChunkMetadata = {
       File_id: this.uploadFileInfo?.id!,
       sub_dir: this.uploadFileInfo?.sub_dir!,
@@ -100,5 +111,9 @@ export abstract class RequestStrategyBase implements RequestStrategy {
       end: chunk.end,
     }
     return (await this.uploadChunkAPI(formData, meta)).data
+  }
+
+  async getUploadFileUrl(file_id: string): Promise<Res> {
+    return (await this.getUploadFileUrlAPI({ file_id })).data
   }
 }

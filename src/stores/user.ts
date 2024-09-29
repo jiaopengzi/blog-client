@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 09:35:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-22 14:37:43
+ * @LastEditTime : 2024-09-29 15:50:58
  * @FilePath     : \blog-client\src\stores\user.ts
  * @Description  : 用户信息
  * @Blog         : https://jiaopengzi.com
@@ -93,6 +93,11 @@ export const useUserStore = defineStore({
   },
 
   actions: {
+    // 设置头像
+    setAvatar(avatar: string) {
+      this.avatar = avatar
+    },
+
     // 退出登录
     async logout() {
       localStorage.removeItem(LocalStorageKey.AccessToken)
@@ -373,7 +378,6 @@ async function handleLoginResult(resObj: Res, successCode: ResponseCode): Promis
  * @description: 辅助函数：处理绑定结果
  */
 async function handleBindResult(resObj: Res, successCode: ResponseCode): Promise<UserInfoStore> {
-  console.log(resObj.code)
   if (resObj.code === successCode) {
     // 显示登录成功提示
     ShowMsgTip(ShowMsgTip.MsgType.success, resObj.msg, 3000)

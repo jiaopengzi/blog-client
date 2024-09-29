@@ -195,6 +195,11 @@ export class MultiThreadSplitor extends ChunkSplitor {
   }
 }
 
+export interface UploadFileSuccessInfo {
+  fileName: string // 文件名称
+  fileUrl: string // 文件URL
+}
+
 // UploadFileInfo
 // 上传文件信息
 export interface UploadFileInfo {
@@ -233,6 +238,9 @@ export interface RequestStrategy {
   confirmAfterUploadBySignedUrl(req: { file_id: string }): Promise<Res>
   // 分片上传请求
   uploadChunk(chunk: Chunk): Promise<Res>
+
+  // 获取上传文件URL
+  getUploadFileUrl(file_id: string): Promise<Res>
 }
 
 // 上传控制器
@@ -307,9 +315,23 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
                 .confirmAfterUploadBySignedUrl({
                   file_id: this.uploadFileInfo?.id?.toString() || '',
                 })
-                .then((res) => {
+                .then(async (res) => {
                   if (res.code === UploadCode.ConfirmAfterUploadBySignedUrlSuccess) {
-                    this.emit(UploadControllerEvents.END, this.uploadFileInfo?.file_name) // 上传完成
+                    // 上传完成
+                    const info: UploadFileSuccessInfo = {
+                      fileName: this.uploadFileInfo?.file_name || '',
+                      fileUrl: '',
+                    }
+
+                    const res = await this.requestStrategy.getUploadFileUrl(
+                      this.uploadFileInfo?.id || '',
+                    )
+                    if (res.code === UploadCode.GetUploadFileUrlSuccess) {
+                      info.fileUrl = res.data
+                      this.emit(UploadControllerEvents.END, info)
+                    }
+
+                    this.emit(UploadControllerEvents.END, info)
                   }
                 })
             }
@@ -368,7 +390,18 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
           // 如果上传完成，触发 end 事件
           if (progress === 1) {
             // 上传完成
-            this.emit(UploadControllerEvents.END, this.uploadFileInfo?.file_name)
+            const info: UploadFileSuccessInfo = {
+              fileName: this.uploadFileInfo?.file_name || '',
+              fileUrl: '',
+            }
+
+            const res = await this.requestStrategy.getUploadFileUrl(this.uploadFileInfo?.id || '')
+            if (res.code === UploadCode.GetUploadFileUrlSuccess) {
+              info.fileUrl = res.data
+              this.emit(UploadControllerEvents.END, info)
+            }
+
+            this.emit(UploadControllerEvents.END, info)
             return
           }
         }
