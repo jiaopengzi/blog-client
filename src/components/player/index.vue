@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-17 10:03:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-24 15:52:44
+ * @LastEditTime : 2024-09-30 16:43:35
  * @FilePath     : \blog-client\src\components\player\index.vue
  * @Description  : 视频播放器
  * @Blog         : https://jiaopengzi.com
@@ -50,6 +50,7 @@ import { ShowMsgTip } from '@/utils/message'
 import { MsgType } from '@/components/common'
 import { IconKeys } from '@/components/common/icons'
 import Hls from 'hls.js'
+import type { HlsConfig } from 'hls.js'
 import { CustomLoader } from '@/pkg/hls'
 import { ResponseCode } from '@/api/responseCode'
 

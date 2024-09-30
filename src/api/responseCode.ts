@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-27 11:18:56
+ * @LastEditTime : 2024-09-30 16:00:05
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -109,9 +109,12 @@ export enum CaptchaPurpose {
   BindEmail = 'BindEmail', // 验证码用途：绑定邮箱
 }
 
-// token名称
+// 本地存储键
 export enum LocalStorageKey {
   AccessToken = 'access_token', // token名称：访问令牌
+  RolesList = 'roles_list', // 角色列表
+  PermissionList = 'permission_list', // 权限列表
+  IsCollapse = 'is_collapse', // 侧边栏是否折叠
 }
 
 // 用户信息

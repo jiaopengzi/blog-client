@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-29 19:49:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-29 17:22:08
+ * @LastEditTime : 2024-09-30 11:48:25
  * @FilePath     : \blog-client\src\views\userinfo\component\info\pc.vue
  * @Description  : 我的信息
  * @Blog         : https://jiaopengzi.com
@@ -94,6 +94,7 @@ import { useInfo } from '@/views/userinfo/component/info/hooks'
 import AvatarInitials from '@/components/common/avatar-initials'
 import AvatarUpload from '@/components/common/avatar-upload'
 
+
 defineOptions({ name: 'UserInfoInfoPC' })
 
 const {
@@ -116,7 +117,6 @@ const {
   email,
   updateAvatarToDB,
 } = useInfo()
-
 
 </script>
 <style scoped lang="scss">

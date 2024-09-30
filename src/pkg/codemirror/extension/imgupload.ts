@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-08 20:13:30
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-29 20:00:30
+ * @LastEditTime : 2024-09-30 15:27:12
  * @FilePath     : \blog-client\src\pkg\codemirror\extension\imgupload.ts
  * @Description  : 图片上传
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,7 @@
 
 import { EditorView } from '@codemirror/view'
 import type { Extension } from '@codemirror/state'
-import { uploadEditor } from '@/utils/uploadEditor'
+import { uploadEditor } from '@/pkg/codemirror/extension/uploadEditor'
 import { ShowMsgTip } from '@/utils/message'
 
 // 自定义键盘事件
@@ -41,21 +41,17 @@ const handlePasteImage: Extension = EditorView.domEventHandlers({
 // 上传图片
 async function uploadImage(file: File, view: EditorView) {
   // 调用 uploadEditor 函数
-  try {
-    const imageUrl = await uploadEditor(file)
-    if (imageUrl) {
-      // 处理返回数据，并更新头像等信息
-      const imageMarkdown = `![description](${imageUrl})\n`
-      view.dispatch({
-        changes: { from: view.state.selection.main.from, insert: imageMarkdown },
-      })
+  const imageUrl = await uploadEditor(file)
+  if (imageUrl) {
+    // 处理返回数据，并更新头像等信息
+    const imageMarkdown = `![description](${imageUrl})\n`
+    view.dispatch({
+      changes: { from: view.state.selection.main.from, insert: imageMarkdown },
+    })
 
-      // 将光标移动指定位置 cursorPosMove 处 更新状态
-      ShowMsgTip(ShowMsgTip.MsgType.success, '图片上传成功', 2000)
-    } else {
-      ShowMsgTip(ShowMsgTip.MsgType.error, '上传失败，请重试')
-    }
-  } catch (error) {
+    // 将光标移动指定位置 cursorPosMove 处 更新状态
+    ShowMsgTip(ShowMsgTip.MsgType.success, '图片上传成功', 2000)
+  } else {
     ShowMsgTip(ShowMsgTip.MsgType.error, '上传失败，请重试')
   }
 }

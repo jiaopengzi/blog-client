@@ -282,7 +282,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
       throw new Error('Failed to get uploadFileInfo.')
     }
 
-    // 如果整个文件Hash存在，说明文件存在,暂时不上传，等待验证整个Hash
+    // 如果整个文件 hash 存在，说明文件存在,暂时不上传，等待验证整个 hash
     if (this.uploadFileInfo.hash_key) {
       // 按顺序增量更新哈希函数,本来可以在 worker 中计算 hash 的顺序是不固定的，所以需要在按照顺序读取文件块，计算hash
       this.emit(UploadControllerEvents.CHECK_WHOLE_HASH, this.uploadFileInfo.file_name) // 检查整个文件的hash
@@ -296,7 +296,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
 
       // 判断当前文件的hash是否和服务器的hash一致
       if (this.uploadFileInfo.hash_key === this.chunkSplitor.wholeFileHash) {
-        this.emit(UploadControllerEvents.END, this.uploadFileInfo.file_name)
+        await this.handleUploadCompletion()
         return
       }
     }
@@ -318,20 +318,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
                 .then(async (res) => {
                   if (res.code === UploadCode.ConfirmAfterUploadBySignedUrlSuccess) {
                     // 上传完成
-                    const info: UploadFileSuccessInfo = {
-                      fileName: this.uploadFileInfo?.file_name || '',
-                      fileUrl: '',
-                    }
-
-                    const res = await this.requestStrategy.getUploadFileUrl(
-                      this.uploadFileInfo?.id || '',
-                    )
-                    if (res.code === UploadCode.GetUploadFileUrlSuccess) {
-                      info.fileUrl = res.data
-                      this.emit(UploadControllerEvents.END, info)
-                    }
-
-                    this.emit(UploadControllerEvents.END, info)
+                    await this.handleUploadCompletion()
                   }
                 })
             }
@@ -390,18 +377,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
           // 如果上传完成，触发 end 事件
           if (progress === 1) {
             // 上传完成
-            const info: UploadFileSuccessInfo = {
-              fileName: this.uploadFileInfo?.file_name || '',
-              fileUrl: '',
-            }
-
-            const res = await this.requestStrategy.getUploadFileUrl(this.uploadFileInfo?.id || '')
-            if (res.code === UploadCode.GetUploadFileUrlSuccess) {
-              info.fileUrl = res.data
-              this.emit(UploadControllerEvents.END, info)
-            }
-
-            this.emit(UploadControllerEvents.END, info)
+            await this.handleUploadCompletion()
             return
           }
         }
@@ -419,5 +395,20 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
       0,
     )
     return uploadedSize / this.file.size
+  }
+
+  // 处理上传完成
+  private async handleUploadCompletion() {
+    const info: UploadFileSuccessInfo = {
+      fileName: this.uploadFileInfo?.file_name || '',
+      fileUrl: '',
+    }
+
+    const res = await this.requestStrategy.getUploadFileUrl(this.uploadFileInfo?.id || '')
+    if (res.code === UploadCode.GetUploadFileUrlSuccess) {
+      info.fileUrl = res.data
+    }
+
+    this.emit(UploadControllerEvents.END, info)
   }
 }

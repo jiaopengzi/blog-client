@@ -2,15 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 20:13:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-29 11:23:16
- * @FilePath     : \blog-client\src\utils\uploadCommon.ts
- * @Description  : 上传公共方法
+ * @LastEditTime : 2024-09-30 11:05:16
+ * @FilePath     : \blog-client\src\utils\uploadFileCommon.ts
+ * @Description  : 上传文件公共方法
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
 import { ShowMsgTip } from '@/utils/message'
-import { type UploadRequestOptions } from 'element-plus'
 import {
   UploadControllerEvents,
   UploadController,
@@ -19,43 +18,34 @@ import {
 } from '@/utils/chunkUpload'
 import { HashAlgorithm } from '@/utils/hash'
 
-export const uploadCommon = async (
-  options: UploadRequestOptions,
+export const uploadFileCommon = async (
+  file: File,
   isEncrypt: boolean,
   isNoFree: boolean,
   chunkSizeServer: number,
   hashAlgorithmServer: HashAlgorithm,
-  RequestStrategyClass: new (options: UploadRequestOptions) => any,
+  RequestStrategyClass: new (file: File) => any,
 ): Promise<string | undefined> => {
-  const file: File = options.file
-  const requestStrategy = new RequestStrategyClass(options)
+  const requestStrategy = new RequestStrategyClass(file)
   const splitStrategy = new MultiThreadSplitor(file, chunkSizeServer, hashAlgorithmServer)
   const uploadController = new UploadController(file, requestStrategy, splitStrategy)
 
   return new Promise((resolve, reject) => {
-    uploadController.on(UploadControllerEvents.PROGRESS, (progress: number) => {
-      const evt: any = {
-        percent: progress * 100,
-      }
-      options.onProgress?.(evt)
-    })
-
     uploadController.on(UploadControllerEvents.CHECK_WHOLE_HASH, (fileName: string) => {
       ShowMsgTip(ShowMsgTip.MsgType.info, `正在校验:${fileName},请稍后...`, 3000)
     })
 
     uploadController.on(UploadControllerEvents.END, (info: UploadFileSuccessInfo) => {
-      options.onSuccess(info.fileName)
-      const msg = `上传成功：${info.fileName}`
-      ShowMsgTip(ShowMsgTip.MsgType.success, msg, 5000)
+      // const msg = `上传成功：${info.fileName}`
+      // const msg = `上传成功1`
+      // ShowMsgTip(ShowMsgTip.MsgType.success, msg, 5000)
       resolve(info.fileUrl)
     })
 
     // 初始化UploadController
     uploadController.init(isEncrypt, !isNoFree).catch((error) => {
       // 处理错误
-      console.error(error)
-      options.onError(error)
+      // console.error(error)
       reject(error)
     })
   })

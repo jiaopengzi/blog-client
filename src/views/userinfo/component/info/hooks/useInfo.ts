@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 10:17:33
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-29 17:44:11
+ * @LastEditTime : 2024-09-30 11:34:51
  * @FilePath     : \blog-client\src\views\userinfo\component\info\hooks\useInfo.ts
  * @Description  : 用户信息页面 hooks
  * @Blog         : https://jiaopengzi.com
@@ -225,7 +225,7 @@ export function useInfo(): UseInfoReturnType {
     }
     // 更新头像
     await setAvatarAPI(req).then((res) => {
-      if (res.code === UploadCode.SetAvatarSuccess) {
+      if (res.data.code === UploadCode.SetAvatarSuccess) {
         // 更新用户信息
         userStore.setAvatar(req.avatar_url)
         // userStore.getUserInfoByToken(true)

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 09:35:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-29 15:50:58
+ * @LastEditTime : 2024-09-30 16:07:36
  * @FilePath     : \blog-client\src\stores\user.ts
  * @Description  : 用户信息
  * @Blog         : https://jiaopengzi.com
@@ -100,7 +100,8 @@ export const useUserStore = defineStore({
 
     // 退出登录
     async logout() {
-      localStorage.removeItem(LocalStorageKey.AccessToken)
+      // localStorage.removeItem(LocalStorageKey.AccessToken)
+      localStorage.clear()
       this.$patch(createEmptyUserInfoStore())
       // 重定向到登录页
       window.location.href = '/'
@@ -365,7 +366,8 @@ async function handleLoginResult(resObj: Res, successCode: ResponseCode): Promis
   }
 
   // 显示登录失败提示
-  localStorage.removeItem(LocalStorageKey.AccessToken)
+  // localStorage.removeItem(LocalStorageKey.AccessToken)
+  localStorage.clear()
 
   const msg = getUserForbiddenMsg(resObj)
 
@@ -386,7 +388,8 @@ async function handleBindResult(resObj: Res, successCode: ResponseCode): Promise
 
   // 显示登录失败提示
   ShowMsgTip(ShowMsgTip.MsgType.error, resObj.msg, 3000)
-  localStorage.removeItem(LocalStorageKey.AccessToken)
+  // localStorage.removeItem(LocalStorageKey.AccessToken)
+  localStorage.clear()
   return createEmptyUserInfoStore() // 获取用户信息
 }
 

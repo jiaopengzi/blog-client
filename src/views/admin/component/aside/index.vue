@@ -25,6 +25,7 @@
 import { ref, reactive, computed } from 'vue'
 import type { SwitchItem, SwitchItemLabel, SwitchItemColor } from '@/components/common/switch-group'
 import { adminMenuItemMapWithIndex } from '@/views/admin/component/aside'
+import { LocalStorageKey } from '@/api/responseCode'
 
 import SwitchGroup from '@/components/common/switch-group'
 import RecursiveMenuItem from '@/components/common/recursive-menu-item' // 引入递归菜单组件
@@ -56,7 +57,7 @@ const color: SwitchItemColor = {
 }
 
 // 菜单是否折叠
-const savedIsCollapse = localStorage.getItem('isCollapse')
+const savedIsCollapse = localStorage.getItem(LocalStorageKey.IsCollapse)
 const isCollapse = ref(savedIsCollapse !== null ? savedIsCollapse === 'true' : false)
 
 // switch 开关
@@ -69,7 +70,7 @@ const isCollapseItem: SwitchItem = {
 // 更新菜单折叠状态
 const updateStatus = (value: SwitchItem) => {
     // 首选读取本地存储的状态 如果没有则使用默认状态
-    localStorage.setItem('isCollapse', value.status.toString())
+    localStorage.setItem(LocalStorageKey.IsCollapse, value.status.toString())
     isCollapse.value = value.status
 }
 

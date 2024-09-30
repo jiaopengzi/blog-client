@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 17:31:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-29 17:50:49
+ * @LastEditTime : 2024-09-30 10:57:40
  * @FilePath     : \blog-client\src\components\common\avatar-upload\index.vue
  * @Description  : 头像上传
  * @Blog         : https://jiaopengzi.com
@@ -27,7 +27,6 @@
 
             <template #footer>
                 <div class="button-group">
-                    <el-upload ref="uploadRef" class="my-el-upload" :auto-upload="false" :http-request="httpRequest" />
                     <el-button type="primary" @click="uploadImage">应用</el-button>
                     <el-button type="primary" @click="toggleCropperVisible">取消</el-button>
                 </div>
@@ -37,14 +36,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onUnmounted, useTemplateRef, watchEffect } from 'vue'
+import { ref, onUnmounted, useTemplateRef } from 'vue'
 import Cropper from 'cropperjs'
 import 'cropperjs/dist/cropper.min.css'
 import { ElButton, ElDialog } from 'element-plus'
 import { ShowMsgTip } from '@/utils/message'
-import type { UploadRequestOptions, ElUpload, UploadRawFile } from 'element-plus'
-import { uploadFile } from '@/utils/uploadAvatar'
-import type { UploadInstance } from 'element-plus'
+import { uploadAvatar } from '@/components/common/avatar-upload'
+
 
 defineOptions({ name: 'AvatarUpload' })
 
@@ -63,7 +61,6 @@ const emit = defineEmits<{
 const cropperVisible = ref(false)
 
 const fileInput = useTemplateRef<HTMLInputElement | null>("fileInput")
-const uploadRef = useTemplateRef<UploadInstance | null>("uploadRef")
 const cropperContainer = useTemplateRef<HTMLDivElement | null>("cropperContainer")
 
 let cropperInstance: Cropper | null = null
@@ -77,13 +74,6 @@ const toggleCropperVisible = () => {
 const openFileDialog = () => {
     fileInput.value?.click()
 }
-
-// 监控 cropperVisible 变化,如果为 false 则清空上传文件
-watchEffect(() => {
-    if (!cropperVisible.value) {
-        uploadRef.value?.clearFiles()
-    }
-})
 
 /**
  * @description: 打开裁剪器 
@@ -145,36 +135,23 @@ function initCropper(url: string) {
     cropperVisible.value = true // 显示裁剪器
 }
 
-// 上传请求
-const httpRequest = async (options: UploadRequestOptions) => {
-    await uploadFile(options).then((result) => {
-        emit('avatar-upload-url', result)
-        ShowMsgTip(ShowMsgTip.MsgType.success, '上传成功')
-
-    }).catch((err) => {
-        ShowMsgTip(ShowMsgTip.MsgType.error, '上传失败')
-        console.error(err)
-    })
-}
-
-
 // 上传图片
 function uploadImage() {
     if (cropperInstance) {
-        cropperInstance.getCroppedCanvas().toBlob((blob: Blob | null) => {
+        cropperInstance.getCroppedCanvas().toBlob(async (blob: Blob | null) => {
             if (!blob) {
                 ShowMsgTip(ShowMsgTip.MsgType.error, '无法获取裁剪后的图像')
                 return
             }
 
-            const file = new File([blob], 'avatar.png', { type: blob.type }) as UploadRawFile
-            file.uid = Number(props.avatar_user_id) // 添加唯一标识符
+            const file = new File([blob], 'avatar.png', { type: blob.type })
+            const imageUrl = await uploadAvatar(file)
 
-            // 调用 uploadRef 的 handleStart 方法上传文件
-            if (uploadRef.value) {
-                uploadRef.value.handleStart(file)
-                uploadRef.value.submit()
+            // 上传成功后触发事件
+            if (imageUrl) {
+                emit('avatar-upload-url', imageUrl)
                 cropperVisible.value = false
+                ShowMsgTip(ShowMsgTip.MsgType.success, '上传成功')
             }
         })
     } else {

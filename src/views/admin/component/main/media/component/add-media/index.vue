@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-08-31 13:10:47
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-25 18:56:56
+ * @LastEditTime : 2024-09-30 10:51:01
  * @FilePath     : \blog-client\src\views\admin\component\main\media\component\add-media\index.vue
  * @Description  : 添加媒体
  * @Blog         : https://jiaopengzi.com
@@ -43,7 +43,7 @@ import { getUploadFileRequirementsAPI } from '@/api/upload/getUploadFileRequirem
 import { UploadCode } from '@/api/responseCode'
 import { type UploadRequestOptions, type ElUpload } from 'element-plus'
 import { HashAlgorithm } from '@/utils/hash'
-import { uploadFile } from '@/utils/uploadGeneral'
+import { uploadEl } from '@/views/admin/component/main/media/component/add-media'
 
 defineOptions({ name: "add-media" })
 
@@ -91,7 +91,7 @@ const getAllowedInfo = async () => {
 const isEncrypt = ref(true)
 const isNoFree = ref(true)
 
-const httpRequest = async (options: UploadRequestOptions) => uploadFile(options, isEncrypt.value, isNoFree.value, chunkSizeServer.value, hashAlgorithmServer)
+const httpRequest = async (options: UploadRequestOptions) => uploadEl(options, isEncrypt.value, isNoFree.value, chunkSizeServer.value, hashAlgorithmServer)
 
 onBeforeMount(async () => {
     await getAllowedInfo()

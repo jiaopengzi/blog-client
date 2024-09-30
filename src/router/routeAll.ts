@@ -37,6 +37,14 @@ export const routeObj: RouteObjectType = {
       requiresAuth: false,
     },
   },
+  test1: {
+    path: '/test1',
+    name: 'test1',
+    component: () => import('@/views/test/index1.vue'),
+    meta: {
+      requiresAuth: false,
+    },
+  },
 
   // 用户相关路由
   ...userRoutes,

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 15:17:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-23 14:50:22
+ * @LastEditTime : 2024-09-30 17:07:07
  * @FilePath     : \blog-client\src\pkg\hls\index.ts
  * @Description  : hls 自定义 loader
  * @Blog         : https://jiaopengzi.com
@@ -27,12 +27,15 @@ import { getKeyAPI } from '@/api/video/getKey'
 
 // 自定义 KeyLoader 类
 export class CustomLoader extends Hls.DefaultConfig.loader {
-  // 私有属性 videoId
-  private videoId: string
+  private static globalState: { videoId: string } = { videoId: '' } // 定义全局状态
 
   constructor(config: HlsConfig) {
     super(config)
-    this.videoId = ''
+  }
+
+  // 设置 videoId
+  static setVideoId(videoId: string) {
+    CustomLoader.globalState.videoId = videoId
   }
 
   // load 方法重写
@@ -73,7 +76,7 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
           loaderStats.loading.end = window.performance.now()
 
           if (response.data.code === ResponseCode.GetVideoMainM3u8Success) {
-            this.videoId = context.url // 记录 videoId
+            CustomLoader.setVideoId(context.url) // 成功拿到 主m3u8 后,设置 videoId, 便于后续使用
             callbacks.onSuccess(
               { url: context.url, data: response.data.data },
               loaderStats,
@@ -105,6 +108,8 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
           if (response.data.code === ResponseCode.GetVideoM3u8Success) {
             // 获取 m3u8 成功
             const { base_url, m3u8 } = response.data.data
+
+            // 将 m3u8 中的 _url_ 替换为 base_url
             const levelM3u8 = m3u8.replace(/_url_/g, base_url + '/')
 
             callbacks.onSuccess({ url: base_url, data: levelM3u8 }, loaderStats, context, null)
@@ -122,15 +127,16 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
           callbacks.onError({ code: 500, text: error.message }, context, null, loaderStats)
         })
     }
+
     // 判断是否有 keyInfo
     else if ('keyInfo' in context && context.keyInfo) {
-      // 获取解密密钥
-      // 获取 context.keyInfo.decryptdata.uri 的 path 最后一个 / 后的字符串作为 videoId
-      this.videoId = context.keyInfo.decryptdata.uri.substring(
-        context.keyInfo.decryptdata.uri.lastIndexOf('/') + 1,
-      )
+      // 不使用全局 videoId, 使用 context.keyInfo.decryptdata.uri 获取 videoId
+      // const videoId = context.keyInfo.decryptdata.uri.substring(
+      //   context.keyInfo.decryptdata.uri.lastIndexOf('/') + 1,
+      // )
 
-      await getKeyAPI(this.videoId)
+      // 获取解密密钥
+      await getKeyAPI(CustomLoader.globalState.videoId)
         .then((response) => {
           loaderStats.loading.first = window.performance.now() // 记录首次请求时间
           return response.data

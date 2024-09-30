@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-07 14:24:11
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-28 14:45:23
+ * @LastEditTime : 2024-09-30 16:02:07
  * @FilePath     : \blog-client\src\utils\permissionRole.ts
  * @Description  : 权限工具类
  * @Blog         : https://jiaopengzi.com
@@ -13,7 +13,7 @@
 import type { Directive, DirectiveBinding } from 'vue'
 import { getPermissionsByJson } from '@/api/permissionRole/getPermissions'
 import { getRolesByJson, type RoleWithLimt } from '@/api/permissionRole/role'
-import { ResponseCode } from '@/api/responseCode'
+import { ResponseCode, LocalStorageKey } from '@/api/responseCode'
 import { kebabToPascalCase } from '@/utils/namingConversion'
 import { hasPermissionAPI } from '@/api/permissionRole/hasPermission'
 import { useUserStore } from '@/stores/user'
@@ -61,10 +61,9 @@ interface GetRolesListParams {
  */
 export async function getRolesList(params: GetRolesListParams = {}): Promise<RoleWithLimt> {
   const { useCache = true } = params // 默认使用缓存
-  const cacheKey = 'rolesList'
 
   if (useCache) {
-    const cachedData = localStorage.getItem(cacheKey)
+    const cachedData = localStorage.getItem(LocalStorageKey.RolesList)
     if (cachedData) {
       return JSON.parse(cachedData)
     }
@@ -73,7 +72,7 @@ export async function getRolesList(params: GetRolesListParams = {}): Promise<Rol
   const res = await getRolesByJson()
   if (res.data.code === ResponseCode.GetRoleSuccess) {
     const data = res.data.data
-    localStorage.setItem(cacheKey, JSON.stringify(data))
+    localStorage.setItem(LocalStorageKey.RolesList, JSON.stringify(data))
     return data
   }
 
@@ -94,10 +93,9 @@ export async function getPermissionList(
   params: GetPermissionListParams = {},
 ): Promise<Permission[]> {
   const { useCache = true } = params // 默认使用缓存
-  const cacheKey = 'permissionList'
-
+ 
   if (useCache) {
-    const cachedData = localStorage.getItem(cacheKey)
+    const cachedData = localStorage.getItem(LocalStorageKey.PermissionList)
     if (cachedData) {
       return JSON.parse(cachedData)
     }
@@ -106,7 +104,7 @@ export async function getPermissionList(
   const res = await getPermissionsByJson()
   if (res.data.code === ResponseCode.GetPermissionSuccess) {
     const data = res.data.data
-    localStorage.setItem(cacheKey, JSON.stringify(data))
+    localStorage.setItem(LocalStorageKey.PermissionList, JSON.stringify(data))
     return data
   }
 

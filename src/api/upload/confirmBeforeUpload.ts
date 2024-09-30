@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-07-24 21:48:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-29 11:04:53
+ * @LastEditTime : 2024-09-30 12:13:57
  * @FilePath     : \blog-client\src\api\upload\confirmBeforeUpload.ts
  * @Description  : 上传文件前确认
  * @Blog         : https://jiaopengzi.com
@@ -43,6 +43,17 @@ export function confirmBeforeUploadAvatarAPI(
 ): Promise<Res> {
   return request({
     url: routerGroup + '/upload/avatar/confirm-before-upload',
+    method: 'post',
+    data: requestData,
+  })
+}
+
+// 编辑器文件上传前确认
+export function confirmBeforeUploadEditorAPI(
+  requestData: ConfirmBeforeUploadRequest,
+): Promise<Res> {
+  return request({
+    url: routerGroup + '/upload/editor/confirm-before-upload',
     method: 'post',
     data: requestData,
   })

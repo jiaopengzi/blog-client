@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-07-25 09:41:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-29 11:05:23
+ * @LastEditTime : 2024-09-30 15:25:49
  * @FilePath     : \blog-client\src\api\upload\chunk.ts
  * @Description  : 分片上传
  * @Blog         : https://jiaopengzi.com
@@ -64,6 +64,27 @@ export function uploadChunkAvatarAPI(
 
   return request({
     url: routerGroup + '/upload/avatar/chunk',
+    method: 'post',
+    data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data', // 上传文件时指定类型
+    },
+  })
+}
+
+// 编辑器文件上传分片
+export function uploadChunkEditorAPI(
+  formData: FormData, // FormData 对象
+  chunkMetadata: ChunkMetadata, // 元信息对象
+): Promise<Res> {
+  // 将元信息对象转换为 JSON 字符串
+  const metadataJson = JSON.stringify(chunkMetadata)
+
+  // 添加元信息
+  formData.append('metadata', metadataJson)
+
+  return request({
+    url: routerGroup + '/upload/editor/chunk',
     method: 'post',
     data: formData,
     headers: {

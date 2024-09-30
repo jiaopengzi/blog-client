@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 20:06:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-29 19:54:47
+ * @LastEditTime : 2024-09-30 15:51:25
  * @FilePath     : \blog-client\src\utils\requestStrategyBase.ts
  * @Description  : 上传请求策略基类
  * @Blog         : https://jiaopengzi.com
@@ -18,6 +18,7 @@ import { type GetUploadFileUrlRequest } from '@/api/upload/getUploadFileUrl'
 import { type ChunkMetadata } from '@/api/upload/chunk'
 import { type UploadFileInfo } from '@/utils/chunkUpload'
 import type { Res } from '@/api/responseCode'
+import { uploadFileBySignedUrlAPI } from '@/api/upload/uploadFileBySignedUrl'
 import { type ConfirmAfterUploadBySignedUrlRequest } from '@/api/upload/confirmAfterUploadBySignedUrl'
 
 export const MultipartFormFileKey = 'file'
@@ -38,13 +39,14 @@ export abstract class RequestStrategyBase implements RequestStrategy {
     }
   }
   abstract confirmBeforeUploadAPI(req: ConfirmBeforeUploadRequest): Promise<Res>
-  abstract uploadFileBySignedUrlAPI(
-    file: File,
-    signedUrl: string,
-    headers: Record<string, string>,
-    onProgress: (percent: number) => void,
-  ): Promise<Res>
+  // abstract uploadFileBySignedUrlAPI(
+  //   file: File,
+  //   signedUrl: string,
+  //   headers: Record<string, string>,
+  //   onProgress: (percent: number) => void,
+  // ): Promise<Res>
   abstract confirmAfterUploadBySignedUrlAPI(req: ConfirmAfterUploadBySignedUrlRequest): Promise<Res>
+  abstract handleconfirmBeforeUploadError(errorMessage: string): void
   abstract uploadChunkAPI(formData: FormData, meta: ChunkMetadata): Promise<Res>
   abstract getUploadFileUrlAPI(req: GetUploadFileUrlRequest): Promise<Res>
 
@@ -56,15 +58,21 @@ export abstract class RequestStrategyBase implements RequestStrategy {
           this.uploadFileInfo = data
           return data
         } else {
+          let errorMessage = response.data.msg
           if (typeof data === 'object' && 'error_msg' in data && data.error_msg) {
-            ShowMsgTip(
-              ShowMsgTip.MsgType.error,
-              `${response.data.msg}:${this.fileName},${data.error_msg} `,
-              6000,
-            )
+            // ShowMsgTip(
+            //   ShowMsgTip.MsgType.error,
+            //   `${response.data.msg}:${this.fileName},${data.error_msg} `,
+            //   6000,
+            // )
+            errorMessage = `${response.data.msg},${data.error_msg}`
           } else {
-            ShowMsgTip(ShowMsgTip.MsgType.error, `${response.data.msg}:${this.fileName}`, 6000)
+            // ShowMsgTip(ShowMsgTip.MsgType.error, `${response.data.msg}:${this.fileName}`, 6000)
+            errorMessage = `${response.data.msg}`
           }
+
+          this.handleconfirmBeforeUploadError(errorMessage)
+
           const error: any = new Error(response.data.msg)
           if (this.elUploadRequestOptions) {
             this.elUploadRequestOptions.onError(error)
@@ -89,7 +97,8 @@ export abstract class RequestStrategyBase implements RequestStrategy {
     onProgress: (percent: number) => void,
   ): Promise<any> {
     if (this.uploadFileInfo?.upload_strategy.signed_url) {
-      await this.uploadFileBySignedUrlAPI(file, signedUrl, headers, onProgress)
+      // await this.uploadFileBySignedUrlAPI(file, signedUrl, headers, onProgress)
+      await uploadFileBySignedUrlAPI(file, signedUrl, headers, onProgress)
     }
   }
 
