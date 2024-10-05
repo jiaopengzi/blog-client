@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 10:24:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-25 12:17:14
+ * @LastEditTime : 2024-10-05 17:16:36
  * @FilePath     : \blog-client\src\views\admin\component\main\media\component\edit-media\index.vue
  * @Description  : 编辑媒体
  * @Blog         : https://jiaopengzi.com
@@ -27,7 +27,7 @@
             </el-form-item>
 
             <el-form-item label="文件名" prop="file_name_display">
-                <el-input v-model.trim="editMediaForm.file_name_display" />
+                <el-input v-model.trim="editMediaForm.file_name_display" disabled />
             </el-form-item>
 
             <el-form-item label="视频免费" prop="is_free">
@@ -44,8 +44,15 @@
                 <el-input v-model="editMediaForm.description" type="textarea" placeholder="文件说明" />
             </el-form-item>
 
+
             <el-form-item label="视频字幕" prop="subtitles">
+                <el-button type="primary" size="small"
+                    @click="submitForm(editMediaFormRef as FormInstance)">保存</el-button>
+                <el-button type="" size="small" @click="submitForm(editMediaFormRef as FormInstance)">删除</el-button>
+                <el-input v-model="editMediaForm.subtitles" :placeholder="subtitlesLanguage" />
+                <el-input v-model="editMediaForm.subtitles" :placeholder="subtitlesLabel" />
                 <el-input v-model="editMediaForm.subtitles" type="textarea" :placeholder="subtitlesPlaceholder" />
+
             </el-form-item>
 
             <div class="btn-submit">
@@ -116,6 +123,9 @@ const updateEditMediaForm = (data: EditMediaProps) => {
     editMediaForm.subtitles = data.subtitles
 }
 
+
+const subtitlesLanguage = ref("字幕语言，示例：zh-CN，en-US")
+const subtitlesLabel = ref("字幕显示名称，示例：中文，英文")
 
 const subtitlesPlaceholder = ref(`支持的字幕格式：.webvtt
 示例：

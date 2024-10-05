@@ -278,7 +278,8 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
     this.uploadFileInfo = await this.requestStrategy.confirmBeforeUpload(req)
 
     // 如果没有获取到文件ID，抛出错误
-    if (!this.uploadFileInfo.id) {
+    if (!this.uploadFileInfo?.id) {
+      // this.emit(UploadControllerEvents.ERROR, new Error('Failed to get file ID.'))
       throw new Error('Failed to get uploadFileInfo.')
     }
 
@@ -319,6 +320,9 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
                   if (res.code === UploadCode.ConfirmAfterUploadBySignedUrlSuccess) {
                     // 上传完成
                     await this.handleUploadCompletion()
+                  } else {
+                    const errorMsg = res.msg || 'Failed to confirm after upload by signed url.'
+                    this.emit(UploadControllerEvents.ERROR, new Error(errorMsg))
                   }
                 })
             }
@@ -380,6 +384,9 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
             await this.handleUploadCompletion()
             return
           }
+        } else {
+          const errorMsg = res.msg || 'Failed to upload chunk.'
+          this.emit(UploadControllerEvents.ERROR, new Error(errorMsg))
         }
       } catch (error) {
         this.emit(UploadControllerEvents.ERROR, error)
@@ -407,8 +414,10 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
     const res = await this.requestStrategy.getUploadFileUrl(this.uploadFileInfo?.id || '')
     if (res.code === UploadCode.GetUploadFileUrlSuccess) {
       info.fileUrl = res.data
+      this.emit(UploadControllerEvents.END, info)
+    } else {
+      const errorMsg = res.msg || 'Failed to get upload file url.'
+      this.emit(UploadControllerEvents.ERROR, new Error(errorMsg))
     }
-
-    this.emit(UploadControllerEvents.END, info)
   }
 }

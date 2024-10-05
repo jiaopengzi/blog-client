@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 20:13:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-30 11:05:16
+ * @LastEditTime : 2024-10-05 12:09:28
  * @FilePath     : \blog-client\src\utils\uploadFileCommon.ts
  * @Description  : 上传文件公共方法
  * @Blog         : https://jiaopengzi.com
@@ -40,6 +40,13 @@ export const uploadFileCommon = async (
       // const msg = `上传成功1`
       // ShowMsgTip(ShowMsgTip.MsgType.success, msg, 5000)
       resolve(info.fileUrl)
+    })
+
+    uploadController.on(UploadControllerEvents.ERROR, (error: Error) => {
+      // 处理错误
+      // console.error(error)
+      ShowMsgTip(ShowMsgTip.MsgType.error, error.message, 6000)
+      reject(error)
     })
 
     // 初始化UploadController

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 20:06:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-30 15:51:25
+ * @LastEditTime : 2024-10-05 11:51:13
  * @FilePath     : \blog-client\src\utils\requestStrategyBase.ts
  * @Description  : 上传请求策略基类
  * @Blog         : https://jiaopengzi.com
@@ -50,7 +50,7 @@ export abstract class RequestStrategyBase implements RequestStrategy {
   abstract uploadChunkAPI(formData: FormData, meta: ChunkMetadata): Promise<Res>
   abstract getUploadFileUrlAPI(req: GetUploadFileUrlRequest): Promise<Res>
 
-  async confirmBeforeUpload(req: ConfirmBeforeUploadRequest): Promise<UploadFileInfo> {
+  async confirmBeforeUpload(req: ConfirmBeforeUploadRequest): Promise<Res> {
     return await this.confirmBeforeUploadAPI(req)
       .then((response) => {
         const data = response.data.data

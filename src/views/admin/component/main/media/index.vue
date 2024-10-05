@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-28 19:03:14
+ * @LastEditTime : 2024-10-05 16:34:44
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -390,6 +390,8 @@ const getDataOnRouteChange = async () => {
     })
 }
 
+
+// hook
 useGetData(getDataOnBeforeMount, getDataOnRouteChange)
 
 

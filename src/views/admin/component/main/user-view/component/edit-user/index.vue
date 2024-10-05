@@ -366,6 +366,8 @@ const updateAvatarToDB = async (avatarUrl: string) => {
             // 更新用户信息
             getUserInfo()
             emit('edit-user-status', true)
+        } else {
+            ShowMsgTip(ShowMsgTip.MsgType.error, res.data.msg, 0)
         }
     })
 }

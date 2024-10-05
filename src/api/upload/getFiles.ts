@@ -74,6 +74,7 @@ export interface MediaFile extends DataWithImg {
   is_encrypt: boolean // 是否加密
   is_delete_original: boolean // 是否删除原文件
   video_quality_name: string // 视频质量
+  subtitles_language_list: string[] // 字幕语言列表
 }
 
 /**
