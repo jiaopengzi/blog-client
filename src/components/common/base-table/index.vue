@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-25 12:19:32
+ * @LastEditTime : 2024-10-06 16:34:11
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格
  * @Blog         : https://jiaopengzi.com
@@ -16,14 +16,14 @@
         <div class="btns">
             <!-- 按钮 -->
             <slot name="btns"></slot>
-            <el-button v-if="props.isShowDeleteAll" type="danger" @click="handleBatchDelete">
+            <el-button v-if="isShowDeleteAll" type="danger" @click="handleBatchDelete">
                 删除
             </el-button>
             <!-- 分类 -->
             <slot name="category"></slot>
         </div>
         <!-- 搜索 -->
-        <el-input v-if="props.isShowSearch" class="search" v-model="search" size="default" placeholder="关键字搜索" />
+        <el-input v-if="isShowSearch" class="search" v-model="search" size="default" placeholder="关键字搜索" />
 
         <el-table ref="tableRef" :data="paginationData.records" stripe max-height="700px"
             @selection-change="handleSelectionChange" style="width: 100%">
@@ -56,7 +56,7 @@
                     :width="col.width" :align="col.align" />
             </template>
 
-            <el-table-column v-if="props.isShowEdit" width="160" align="center">
+            <el-table-column v-if="isShowEdit" width="160" align="center">
                 <template #header>
                     <span>操作</span>
                 </template>
@@ -78,14 +78,16 @@
     </div>
 
     <!-- 弹窗 add -->
-    <el-dialog v-model="addItemDialogVisibleStatus" @close="addItemHandleDialogClose">
+    <el-dialog v-model="addItemDialogVisibleStatus" @close="addItemHandleDialogClose"
+        v-bind="{ width: addWidth, top: addTop }">
         <template #header>
             <slot name="add-item-title"></slot>
         </template>
         <slot name="add-item"></slot>
     </el-dialog>
     <!-- 弹窗 edit -->
-    <el-dialog v-model="editItemDialogVisibleStatus" @close="editItemHandleDialogClose">
+    <el-dialog v-model="editItemDialogVisibleStatus" @close="editItemHandleDialogClose"
+        v-bind="{ width: editWidth, top: editTop }">
         <template #header>
             <slot name="edit-item-title"></slot>
         </template>
@@ -105,7 +107,17 @@ import { imgStyle, iconStyle } from '@/utils/style'
 
 defineOptions({ name: 'BaseTable' })
 
-const props = withDefaults(defineProps<{
+// 数据
+const {
+    pagination,
+    tableColumn,
+    addItemDialogVisible = false, // 默认添加对话框不显示
+    editItemDialogVisible = false, // 默认编辑对话框不显示
+    isShowDeleteAll = false, // 默认不显示批量删除按钮
+    isShowEdit = false, // 默认不显示批量删除按钮
+    isShowSearch = false, // 默认不显示批量删除按钮
+    searchStr = '', // 默认搜索关键字为空
+} = defineProps<{
     pagination: Pagination<TableData> // 分页配置
     tableColumn: TableColumn[] // 表格列配置
     addItemDialogVisible?: boolean // 对话框是否显示
@@ -114,15 +126,14 @@ const props = withDefaults(defineProps<{
     isShowEdit?: boolean // 是否显示每行编辑按钮
     isShowSearch?: boolean // 是否显示每行编辑按钮
     searchStr?: string // 搜索关键字
-}>(), {
-    addItemDialogVisible: false, // 默认添加对话框不显示
-    editItemDialogVisible: false, // 默认编辑对话框不显示
-    isShowDeleteAll: false, // 默认不显示批量删除按钮
-    isShowEdit: false, // 默认不显示批量删除按钮
-    isShowSearch: false, // 默认不显示批量删除按钮
-    searchStr: '', // 默认搜索关键字为空
-})
+    addWidth?: string // 添加对话框宽度
+    addTop?: string // 添加对话框距离顶部距离
+    editWidth?: string // 编辑对话框宽度
+    editTop?: string // 编辑对话框距离顶部距离
+}>()
 
+
+// 事件
 const emit = defineEmits<{
     (event: 'update-current-page', value: number): void // 更新当前页
     (event: 'update-page-size', value: number): void // 更新每页显示条数
@@ -136,8 +147,8 @@ const emit = defineEmits<{
 }>()
 
 const tableRef = useTemplateRef<InstanceType<typeof ElTable>>("tableRef") //表格实例 
-const search = ref(props.searchStr) // 搜索关键字
-const paginationData = ref(props.pagination) // 分页配置
+const search = ref(searchStr) // 搜索关键字
+const paginationData = ref(pagination) // 分页配置
 const addItemDialogVisibleStatus = ref(false) // 对话框状态
 const editItemDialogVisibleStatus = ref(false) // 对话框状态
 
@@ -165,13 +176,13 @@ const closeElImageViewer = () => {
 
 // 更新分页配置
 watchEffect(() => {
-    paginationData.value = props.pagination
+    paginationData.value = pagination
 })
 
 // 更新对话框状态
 watchEffect(() => {
-    addItemDialogVisibleStatus.value = props.addItemDialogVisible
-    editItemDialogVisibleStatus.value = props.editItemDialogVisible
+    addItemDialogVisibleStatus.value = addItemDialogVisible
+    editItemDialogVisibleStatus.value = editItemDialogVisible
 })
 
 // 关闭对话框

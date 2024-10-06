@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-30 16:00:05
+ * @LastEditTime : 2024-10-06 09:46:29
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -97,6 +97,9 @@ export enum ResponseCode {
   GetVideoMainM3u8Success = 8601, // 获取视频主M3u8成功
   GetVideoM3u8Success = 8602, // 获取视频M3u8成功
   GetVdideoKeySuccess = 8603, // 获取视频解密密钥成功
+  GetVideoSubtitlesSuccess = 8605, // 获取视频字幕成功
+  SubtitlesUpsertSuccess = 8607, // 更新字幕成功
+  SubtitlesDeleteSuccess = 8608, // 删除字幕成功
 
   ClientIPTooManyRequests = 9006, //客户端IP请求次数过多
   ClientIDTooManyRequests = 9007, //客户端ID请求次数过多

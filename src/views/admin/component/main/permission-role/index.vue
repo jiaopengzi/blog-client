@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-15 15:09:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-28 15:20:18
+ * @LastEditTime : 2024-10-06 17:45:38
  * @FilePath     : \blog-client\src\views\admin\component\main\permission-role\index.vue
  * @Description  : 权限角色页面
  * @Blog         : https://jiaopengzi.com
@@ -204,8 +204,6 @@ const permissionRoleForm = reactive<PermissionRole>({
     limit_count: 0,// 限制次数 0表示不限制， >0表示次数
     limit_period: 0,// 限制时间段 0表示不限制， >0表示秒数
 })
-
-
 
 
 const handleInsertLimitPeriod = (key: keyof typeof LimitPeriod) => {

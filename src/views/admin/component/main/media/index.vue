@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-05 16:34:44
+ * @LastEditTime : 2024-10-06 17:33:51
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -12,10 +12,10 @@
 <template>
     <BaseTable :pagination="pagination" :table-column="cols" :is-show-delete-all="true"
         :add-item-dialog-visible="addItemDialogVisible" :edit-item-dialog-visible="editItemDialogVisible"
-        :is-show-edit="true" :is-show-search="true" :search-str="search" @update-current-page="updateCurrentPage"
-        @update-page-size="updatePageSize" @edit-row="editRow" @delete-row="deleteRow" @delete-rows="deleteRows"
-        @update-search="updateSearch" @update-selection="updateSelection"
-        @add-item-update-dialog-visible="addItemUpdateDialogVisible"
+        :is-show-edit="true" :is-show-search="true" :search-str="search" edit-width="90%" edit-top="3vh"
+        @update-current-page="updateCurrentPage" @update-page-size="updatePageSize" @edit-row="editRow"
+        @delete-row="deleteRow" @delete-rows="deleteRows" @update-search="updateSearch"
+        @update-selection="updateSelection" @add-item-update-dialog-visible="addItemUpdateDialogVisible"
         @edit-item-update-dialog-visible="editItemUpdateDialogVisible">
 
         <template #btns>
@@ -51,9 +51,8 @@
         </template>
 
         <template #edit-item>
-            <div class="dialog-edit">
-                <EditMedia :edit-media-data="editMediaData" />
-            </div>
+            <EditMedia :edit-media-data="editMediaData" @update-subtitles="updateSubtitles"
+                @delete-subtitles="deleteSubtitles" />
         </template>
 
     </BaseTable>
@@ -183,14 +182,15 @@ const editItemDialogVisible = ref(false)
 
 
 const editMediaData: EditMediaProps = reactive({
-    file_ID: "", // 文件ID
+    file_id: "", // 文件ID
+    file_name: "", // 文件名
     file_type: "", // 文件类型
     thumbnail: "", // 缩略图
     file_name_display: "", // 显示名称
     description: "", // 描述
     slug: "", // 文件别名
     is_free: false, // 是否免费
-    subtitles: "", // 字幕
+    subtitles_language_list: [], // 字幕
 })
 
 const handleAdd = () => {
@@ -213,12 +213,13 @@ const editRow = (index: number, row: TableData) => {
     console.log("04============", index, row)
     // 断言 row 中有 file_name_display ts 不会报错
     if ("file_name_display" in row) {
-        editMediaData.file_ID = row.id.toString()
+        editMediaData.file_id = row.id.toString()
+        editMediaData.file_name = row.file_name
         editMediaData.file_name_display = row.file_name_display
         editMediaData.description = row.description
         editMediaData.slug = row.slug
         editMediaData.is_free = row.is_free
-        // editMediaData.subtitles = row.subtitles as string
+        editMediaData.subtitles_language_list = row.subtitles_language_list || []
         editMediaData.img = row.img
     }
     console.log("3", index, row)
@@ -368,6 +369,7 @@ const handleFileCountByFiletype = async (fileType: string) => {
 }
 
 
+
 // 初始化数据
 const getDataOnBeforeMount = async () => {
     getValueFromQuery()
@@ -390,6 +392,17 @@ const getDataOnRouteChange = async () => {
     })
 }
 
+// 更新字幕
+const updateSubtitles = async (language: string) => {
+    editMediaData.subtitles_language_list.push(language)
+    await getDataOnRouteChange()
+}
+
+// 删除字幕
+const deleteSubtitles = async (language: string) => {
+    editMediaData.subtitles_language_list = editMediaData.subtitles_language_list.filter((item) => item !== language)
+    await getDataOnRouteChange()
+}
 
 // hook
 useGetData(getDataOnBeforeMount, getDataOnRouteChange)
@@ -436,12 +449,5 @@ useGetData(getDataOnBeforeMount, getDataOnRouteChange)
 .dialog-title {
     font-size: 20px;
     font-weight: 700;
-}
-
-.dialog-edit {
-    width: 100%;
-    // 浮动 水平居中
-    display: flex;
-    justify-content: center;
 }
 </style>

@@ -62,7 +62,8 @@ export async function getMediaFilesAPI(
 export interface MediaFile extends DataWithImg {
   id: number // 用户 ID
   created_at: string // 注册时间
-  file_name_display: string // 文件名
+  file_name: string // 文件名 id 和 hash组成
+  file_name_display: string // 文件显示名
   file_type: string // 文件类型
   is_server_process: boolean // 是否服务器处理
   is_ffmpeg_process: boolean // 是否ffmpeg处理
