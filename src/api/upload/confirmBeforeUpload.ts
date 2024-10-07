@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-07-24 21:48:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-30 12:13:57
+ * @LastEditTime : 2024-10-07 09:27:36
  * @FilePath     : \blog-client\src\api\upload\confirmBeforeUpload.ts
  * @Description  : 上传文件前确认
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,6 @@
  */
 
 import request from '@/api/request'
-import type { AxiosPromise } from 'axios'
 import { routerGroup } from '@/api/routerGroup'
 import { type Res } from '@/api/responseCode'
 

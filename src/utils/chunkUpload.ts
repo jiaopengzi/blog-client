@@ -7,7 +7,7 @@ import { Task, TaskQueue } from '@/utils/task'
 import { type ConfirmBeforeUploadRequest } from '@/api/upload/confirmBeforeUpload'
 import { type ChunkMetadataWithoutFileId } from '@/api/upload/chunk'
 import { HashCalculator, HashAlgorithm } from '@/utils/hash'
-import { UploadCode } from '@/api/responseCode'
+import { ResponseCode } from '@/api/responseCode'
 import type { Res } from '@/api/responseCode'
 
 // 分片元数据,包含文件二进制数据
@@ -317,7 +317,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
                   file_id: this.uploadFileInfo?.id?.toString() || '',
                 })
                 .then(async (res) => {
-                  if (res.code === UploadCode.ConfirmAfterUploadBySignedUrlSuccess) {
+                  if (res.code === ResponseCode.ConfirmAfterUploadBySignedUrlSuccess) {
                     // 上传完成
                     await this.handleUploadCompletion()
                   } else {
@@ -370,7 +370,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
       try {
         // this.requestStrategy.uploadChunk(chunk)
         const res = await this.requestStrategy.uploadChunk(chunk)
-        if (res.code === UploadCode.Success) {
+        if (res.code === ResponseCode.UploadFileSuccess) {
           // 当一个分片上传完成后，更新该分片在 Map 中的进度。分片的结束位置减去开始位置得到分片的大小。
           this.progressTrackers.set(chunk.part_index, chunk.blob.size)
 
@@ -412,7 +412,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
     }
 
     const res = await this.requestStrategy.getUploadFileUrl(this.uploadFileInfo?.id || '')
-    if (res.code === UploadCode.GetUploadFileUrlSuccess) {
+    if (res.code === ResponseCode.GetUploadFileUrlSuccess) {
       info.fileUrl = res.data
       this.emit(UploadControllerEvents.END, info)
     } else {

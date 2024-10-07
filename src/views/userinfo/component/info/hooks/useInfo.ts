@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 10:17:33
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-05 12:18:22
+ * @LastEditTime : 2024-10-07 09:45:05
  * @FilePath     : \blog-client\src\views\userinfo\component\info\hooks\useInfo.ts
  * @Description  : 用户信息页面 hooks
  * @Blog         : https://jiaopengzi.com
@@ -16,7 +16,7 @@ import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 import type { UserInfo } from '@/api/user/getUserInfo'
 import { Social } from '@/api/responseCode'
-import { ResponseCode, UploadCode } from '@/api/responseCode'
+import { ResponseCode } from '@/api/responseCode'
 import type { EditUserInfoRequest } from '@/api/user/editUserInfo'
 import { editUserInfoAPI } from '@/api/user/editUserInfo'
 import { ShowMsgTip } from '@/utils/message'
@@ -225,7 +225,7 @@ export function useInfo(): UseInfoReturnType {
     }
     // 更新头像
     await setAvatarAPI(req).then((res) => {
-      if (res.data.code === UploadCode.SetAvatarSuccess) {
+      if (res.data.code === ResponseCode.SetAvatarSuccess) {
         // 更新用户信息
         userStore.setAvatar(req.avatar_url)
         // userStore.getUserInfoByToken(true)

@@ -9,7 +9,7 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { RequestStrategyAvatar } from '@/components/common/avatar-upload/requestStrategyAvatar'
+import { RequestStrategyAvatar } from './requestStrategyAvatar'
 import { uploadFileCommon } from '@/utils/uploadFileCommon'
 import { HashAlgorithm } from '@/utils/hash'
 

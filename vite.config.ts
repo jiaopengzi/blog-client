@@ -84,12 +84,12 @@ export default defineConfig({
         },
         // ------------------------------ 将打包文件按照类型目录分类 开始
 
-        // 静态资源需要文件名 调试模式下
+        // 静态资源需要文件名 开发模式下
         chunkFileNames: 'static/js/[name]-[hash].js',
         entryFileNames: 'static/js/[name]-[hash].js',
         assetFileNames: 'static/[ext]/[name]-[hash].[ext]',
 
-        // 静态资源不需要文件名 更加简洁 生成模式下
+        // 静态资源不需要文件名 更加简洁 生产模式下
         // chunkFileNames: 'static/js/[hash].js',
         // entryFileNames: 'static/js/[hash].js',
         // assetFileNames: 'static/[ext]/[hash].[ext]',

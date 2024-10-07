@@ -10,7 +10,6 @@
  */
 
 import request from '@/api/request'
-import type { AxiosPromise } from 'axios'
 import { routerGroup } from '@/api/routerGroup'
 import { type Res } from '@/api/responseCode'
 

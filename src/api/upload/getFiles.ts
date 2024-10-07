@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-08-27 16:38:22
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-07 11:31:06
+ * @LastEditTime : 2024-10-07 09:40:54
  * @FilePath     : \blog-client\src\api\upload\getFiles.ts
  * @Description  : 获取文件列表
  * @Blog         : https://jiaopengzi.com
@@ -13,7 +13,7 @@ import request from '@/api/request'
 import { routerGroup } from '@/api/routerGroup'
 import type { AxiosPromise } from 'axios'
 import type { DataWithImg, Pagination } from '@/components/common'
-import { UploadCode } from '@/api/responseCode'
+import { ResponseCode } from '@/api/responseCode'
 import { ImgFit } from '@/components/common'
 import { convertToBeijingTime } from '@/utils/dateTime'
 import { IconKeys } from '@/components/common/icons'
@@ -47,7 +47,7 @@ export async function getMediaFilesAPI(
     data: requestData,
   })
   // 在这里使用 map 函数来转换每个用户对象
-  if (response.data.code === UploadCode.GetAllSuccess) {
+  if (response.data.code === ResponseCode.GetFilesSuccess) {
     response.data.data.records = response.data.data.records.map((file: any) =>
       formatMediaFile(file, width, height, imgFit, fontSize),
     )

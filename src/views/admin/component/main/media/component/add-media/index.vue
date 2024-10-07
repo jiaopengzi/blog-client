@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-08-31 13:10:47
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-06 15:36:38
+ * @LastEditTime : 2024-10-07 09:44:31
  * @FilePath     : \blog-client\src\views\admin\component\main\media\component\add-media\index.vue
  * @Description  : 添加媒体
  * @Blog         : https://jiaopengzi.com
@@ -40,7 +40,7 @@
 import { ref, watchEffect, onBeforeMount, useTemplateRef } from 'vue'
 import { IconKeys } from '@/components/common/icons'
 import { getUploadFileRequirementsAPI } from '@/api/upload/getUploadFileRequirements'
-import { UploadCode } from '@/api/responseCode'
+import { ResponseCode } from '@/api/responseCode'
 import { type UploadRequestOptions, type ElUpload } from 'element-plus'
 import { HashAlgorithm } from '@/utils/hash'
 import { uploadEl } from '@/views/admin/component/main/media/component/add-media'
@@ -69,7 +69,7 @@ let hashAlgorithmServer: HashAlgorithm = HashAlgorithm.SHA256
 const getAllowedInfo = async () => {
     const strList: string[] = []
     await getUploadFileRequirementsAPI().then((response) => {
-        if (response.data.code === UploadCode.GetUploadFileRequirementsSuccess) {
+        if (response.data.code === ResponseCode.GetUploadFileRequirementsSuccess) {
             const allowedInfoList = response.data.data.file_allowed
             chunkSizeServer.value = response.data.data.chunk_size
             hashAlgorithmServer = response.data.data.hash_algorithm

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-08-12 17:20:29
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-30 12:13:03
+ * @LastEditTime : 2024-10-07 09:27:31
  * @FilePath     : \blog-client\src\api\upload\confirmAfterUploadBySignedUrl.ts
  * @Description  : 使用 签名URL 上传文件 后确认
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,6 @@
  */
 
 import request from '@/api/request'
-import type { AxiosPromise } from 'axios'
 import { routerGroup } from '@/api/routerGroup'
 import { type Res } from '@/api/responseCode'
 

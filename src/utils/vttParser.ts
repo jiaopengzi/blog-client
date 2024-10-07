@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-23 20:10:42
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-06 14:39:43
+ * @LastEditTime : 2024-10-07 12:32:12
  * @FilePath     : \blog-client\src\utils\vttParser.ts
  * @Description  : 字幕解析器
  * @Blog         : https://jiaopengzi.com
@@ -59,11 +59,11 @@ export const parseVTT = (function () {
  */
 export const isWebvtt = (function () {
   // 匹配 NOTE 和 STYLE 块
-  const reNoteStyle = /(NOTE[\s\S]*?(\r?\n){2}|STYLE[\s\S]*?(\r?\n){2})/
+  const reNoteStyle = /(NOTE[\s\S]*?(\r?\n){2}|STYLE[\s\S]*?(\r?\n){2})/g
 
   // 匹配时间表达式,中间符号 --> 在后续判断 支持的时间格式包括 hh:mm:ss.mmm, mm:ss.mmm, ss.mmm
   const reTimeExpression =
-    /\b(?:\d{2}:)?(?:\d{2}:)?\d{2}\.\d{3}.*(?:\d{2}:)?(?:\d{2}:)?\d{2}\.\d{3}\b/
+    /\b(?:\d{2}:)?(?:\d{2}:)?\d{2}\.\d{3}.*(?:\d{2}:)?(?:\d{2}:)?\d{2}\.\d{3}\b|.*-->.*/g
 
   // 匹配时间格式 hh:mm:ss.mmm, mm:ss.mmm, ss.mmm
   const reTimeFormat = /^(?:\d{2}:)?(?:\d{2}:)?\d{2}\.\d{3}$/
@@ -71,7 +71,7 @@ export const isWebvtt = (function () {
   return function isWebvtt(content: string): [boolean, string] {
     // 判断是否为空
     if (content === '') {
-      return [false, 'content is empty']
+      return [false, '字幕内容不能为空']
     }
 
     // 如果只有一行，则判断是否为 WEBVTT 开头
@@ -79,12 +79,12 @@ export const isWebvtt = (function () {
       if (content.startsWith('WEBVTT')) {
         return [true, '']
       }
-      return [false, 'should have prefix WEBVTT']
+      return [false, '字幕需要以 WEBVTT 开头']
     }
 
     // 判断第一行是否为 WEBVTT 开头
     if (!content.startsWith('WEBVTT')) {
-      return [false, 'should have prefix WEBVTT']
+      return [false, '字幕需要以 WEBVTT 开头']
     }
 
     // 去掉 NOTE 和 STYLE 块
@@ -93,21 +93,21 @@ export const isWebvtt = (function () {
     // 判断是否有时间表达式
     const matches = content.match(reTimeExpression)
     if (!matches) {
-      return [false, 'should have time expression']
+      return [false, '需要包含时间表达式 hh:mm:ss.mmm, mm:ss.mmm, ss.mmm']
     }
 
     // 判断时间表达式是否正确(是否包含 -->)
     for (const match of matches) {
       const time = match.split(' --> ')
       if (time.length !== 2) {
-        return [false, 'should have -->']
+        return [false, '时间表达式中需要 --> 分隔符']
       }
       const startTime = time[0].trim()
       const endTime = time[1].trim()
 
       // 判断时间是否符合 hh:mm:ss.mmm, mm:ss.mmm, ss.mmm
       if (!reTimeFormat.test(startTime) || !reTimeFormat.test(endTime)) {
-        return [false, 'should have correct time format hh:mm:ss.mmm, mm:ss.mmm, ss.mmm']
+        return [false, '时间格式错误，支持 hh:mm:ss.mmm, mm:ss.mmm, ss.mmm']
       }
     }
 
@@ -118,7 +118,7 @@ export const isWebvtt = (function () {
       if (reTimeExpression.test(line)) {
         // 检查时间表达式后是否有字幕内容
         if (i + 1 < lines.length && lines[i + 1].trim() === '') {
-          return [false, 'subtitle content should not be empty']
+          return [false, '时间表达式后需要有字幕内容,不能为空']
         }
       }
     }

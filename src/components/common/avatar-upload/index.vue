@@ -41,7 +41,7 @@ import Cropper from 'cropperjs'
 import 'cropperjs/dist/cropper.min.css'
 import { ElButton, ElDialog } from 'element-plus'
 import { ShowMsgTip } from '@/utils/message'
-import { uploadAvatar } from '@/components/common/avatar-upload'
+import { uploadAvatar } from './uploadAvatar'
 
 
 defineOptions({ name: 'AvatarUpload' })

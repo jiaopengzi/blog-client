@@ -91,7 +91,7 @@ import { reactive, ref, toRef, onBeforeMount, watch, useTemplateRef } from 'vue'
 import { ShowMsgTip } from '@/utils/message'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import { type EditUserInfoByAdminRequest, EditUserInfoByAdminAPI } from '@/api/user/editUserInfoByAdmin'
-import { ResponseCode, UploadCode } from '@/api/responseCode'
+import { ResponseCode } from '@/api/responseCode'
 import type { EditUserByAdminForm, DisableExpiresAt } from '@/views/admin/component/main/user-view/component/edit-user'
 import { useFormValidation } from '@/components/hooks/useFormValidation'
 import { generatePassword } from '@/utils/password'
@@ -362,7 +362,7 @@ const updateAvatarToDB = async (avatarUrl: string) => {
     }
     // 更新头像
     await setAvatarAPI(req).then((res) => {
-        if (res.data.code === UploadCode.SetAvatarSuccess) {
+        if (res.data.code === ResponseCode.SetAvatarSuccess) {
             // 更新用户信息
             getUserInfo()
             emit('edit-user-status', true)

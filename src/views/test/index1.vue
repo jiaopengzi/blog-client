@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-30 16:55:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-30 16:55:48
+ * @LastEditTime : 2024-10-07 17:26:44
  * @FilePath     : \blog-client\src\views\test\index1.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -26,17 +26,17 @@ import { usePlayerStore, type SubtitlesItem, MediaTypes } from '@/stores/player'
 defineOptions({ name: 'VideoPlayerTest' })
 
 // 从 store 中获取数据
-const palyerStore = usePlayerStore()
+const playerStore = usePlayerStore()
 
 // 设置视频地址
-// palyerStore.setMediaType(MediaTypes.MP4) // 静音
-// palyerStore.setSrc("http://10.10.2.222:8081/api/v1/uploads/test.mp4")
-palyerStore.setPoster("http://10.10.2.222:8081/api/v1/uploads/poster.png")
+// playerStore.setMediaType(MediaTypes.MP4) // 静音
+// playerStore.setSrc("http://10.10.2.222:8081/api/v1/uploads/test.mp4")
+playerStore.setPoster("http://10.10.2.222:8081/api/v1/uploads/poster.png")
 
-palyerStore.setMediaType(MediaTypes.HLS) // 静音
-// palyerStore.setSrc("6-c19424aa") // 多清晰度 免费 不加密
-palyerStore.setSrc("1-c19424aa") // 多清晰度 付费 加密
-// palyerStore.setSrc("9-31df6df9") // 单清晰度 免费 不加密
+playerStore.setMediaType(MediaTypes.HLS) // 静音
+// playerStore.setSrc("6-c19424aa") // 多清晰度 免费 不加密
+playerStore.setSrc("1-c19424aa") // 多清晰度 付费 加密
+// playerStore.setSrc("9-31df6df9") // 单清晰度 免费 不加密
 
 const subtitles = ref<{ [language: string]: SubtitlesItem }>({
   "cn": {
@@ -48,6 +48,7 @@ const subtitles = ref<{ [language: string]: SubtitlesItem }>({
     src: "http://10.10.2.222:8081/api/v1/uploads/en.vtt"
   }
 })
+playerStore.setAvailableSubtitles(subtitles.value)
 
 const textWatermark = {
   content: 'jiaopengzi.com1111',
@@ -56,8 +57,8 @@ const textWatermark = {
     fontSize: '14px',
   },
 }
-palyerStore.setTextWatermark(textWatermark)
-palyerStore.setAvailableSubtitles(subtitles.value)
+playerStore.setTextWatermark(textWatermark)
+
 
 </script>
 

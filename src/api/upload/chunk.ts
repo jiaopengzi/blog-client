@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-07-25 09:41:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-30 15:25:49
+ * @LastEditTime : 2024-10-07 09:27:23
  * @FilePath     : \blog-client\src\api\upload\chunk.ts
  * @Description  : 分片上传
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,6 @@
  */
 
 import request from '@/api/request'
-import type { AxiosPromise } from 'axios'
 import { routerGroup } from '@/api/routerGroup'
 import { type Res } from '@/api/responseCode'
 

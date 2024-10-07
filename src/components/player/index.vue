@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-17 10:03:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-30 16:43:35
+ * @LastEditTime : 2024-10-07 17:24:55
  * @FilePath     : \blog-client\src\components\player\index.vue
  * @Description  : 视频播放器
  * @Blog         : https://jiaopengzi.com
@@ -21,6 +21,7 @@
                 <!-- <track v-if="isShowSubtitles" src="http://10.10.2.222:8081/api/v1/uploads/cn.vtt" kind="subtitles" srclang="cn" label="中文" default /> -->
                 <track v-if="isShowSubtitles" :src="subtitlesSrc" kind="subtitles" :srclang="srclang"
                     :label="subtitlesLabel" default />
+
                 您的浏览器不支持 video 标签。请使用最新版本的 Chrome 浏览器观看视频。
             </video>
             <!-- 视频控制器 -->

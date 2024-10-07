@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-06 09:46:29
+ * @LastEditTime : 2024-10-07 10:34:00
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -69,6 +69,21 @@ export enum ResponseCode {
   CaptchaSendSuccess = 8000, //验证码发送成功
   CaptchaCheckSuccess = 8002, //验证码发送成功
 
+  // 上传相关
+  UploadFileSuccess = 8100, // 上传文件成功
+  UploadFileNotAllow = 8101, // 上传不被允许
+  GetUploadFileRequirementsSuccess = 8102, // 获取允许上传的文件信息成功
+  ConfirmBeforeUploadSuccess = 8104, // 确认上传前成功
+  FileHashError = 8105, // 上传文件成功
+  ConfirmAfterUploadBySignedUrlSuccess = 8107, // 使用签名URL上传文件后确认成功
+  GetFileCountGroupByTypeSuccess = 8108, // 获取文件统计成功
+  GetFilesSuccess = 8110, // 获取媒体信息成功
+  FileDeleteSuccess = 8111, // 删除文件成功
+  GetUploadFileUrlSuccess = 8113, // 获取上传文件URL成功
+  SetAvatarSuccess = 8114, // 设置头像成功
+  CheckSlugAvailable = 8115, // 检查别名是否可用
+  UpdateFileSuccess = 8117, // 更新文件成功
+
   // 社交登录相关
   SocialLoginQQSuccess = 8200, //重定向QQ登录成功
   SocialLoginQQUnLogin = 8201, //QQ未登录
@@ -118,21 +133,6 @@ export enum LocalStorageKey {
   RolesList = 'roles_list', // 角色列表
   PermissionList = 'permission_list', // 权限列表
   IsCollapse = 'is_collapse', // 侧边栏是否折叠
-}
-
-// 用户信息
-export enum UploadCode {
-  Success = 8100, // 上传头像成功
-  NotAllow = 8101, // 上传不被允许
-  GetUploadFileRequirementsSuccess = 8102, // 获取允许上传的文件信息成功
-  ConfirmBeforeUploadSuccess = 8104, // 确认上传前成功
-  UploadFileSuccess = 8105, // 上传文件成功
-  ConfirmAfterUploadBySignedUrlSuccess = 8107, // 使用签名URL上传文件后确认成功
-  GetFileCountGroupByTypeSuccess = 8108, // 获取文件统计成功
-  GetAllSuccess = 8110, // 获取媒体信息成功
-  FileDeleteSuccess = 8111, // 删除文件成功
-  GetUploadFileUrlSuccess = 8113, // 获取上传文件URL成功
-  SetAvatarSuccess = 8114, // 设置头像成功
 }
 
 // 社交登录

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-06 17:33:51
+ * @LastEditTime : 2024-10-07 16:50:44
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -12,7 +12,7 @@
 <template>
     <BaseTable :pagination="pagination" :table-column="cols" :is-show-delete-all="true"
         :add-item-dialog-visible="addItemDialogVisible" :edit-item-dialog-visible="editItemDialogVisible"
-        :is-show-edit="true" :is-show-search="true" :search-str="search" edit-width="90%" edit-top="3vh"
+        :is-show-edit="true" :is-show-search="true" :search-str="search" :edit-width="editWidth" :edit-top="editTop"
         @update-current-page="updateCurrentPage" @update-page-size="updatePageSize" @edit-row="editRow"
         @delete-row="deleteRow" @delete-rows="deleteRows" @update-search="updateSearch"
         @update-selection="updateSelection" @add-item-update-dialog-visible="addItemUpdateDialogVisible"
@@ -51,8 +51,8 @@
         </template>
 
         <template #edit-item>
-            <EditMedia :edit-media-data="editMediaData" @update-subtitles="updateSubtitles"
-                @delete-subtitles="deleteSubtitles" />
+            <EditMedia v-if="editItemDialogVisible" :edit-media-data="editMediaData" @edit-media-status="updateMedia"
+                @update-subtitles="updateSubtitles" @delete-subtitles="deleteSubtitles" />
         </template>
 
     </BaseTable>
@@ -67,7 +67,7 @@ import { getMediaFilesAPI, emptyMediaFiles } from '@/api/upload/getFiles'
 import { debounce } from 'throttle-debounce'
 import { AadminSideMenu } from '@/views/admin/component/aside'
 import { ShowMsgTip } from '@/utils/message'
-import { UploadCode } from '@/api/responseCode'
+import { ResponseCode } from '@/api/responseCode'
 import { ImgFit } from '@/components/common'
 import router from '@/router'
 import { paginationRouterPush, PaginationQueryKey } from '@/router/utils'
@@ -75,6 +75,7 @@ import { getFileCountGroupByFiletypeAPI, type FileCountGroupByFiletype } from '@
 import { DeleteFileAPI, type DeleteFileRequest } from '@/api/upload/deleteFile'
 import type { EditMediaProps } from '@/views/admin/component/main/media/component/edit-media'
 import { useGetData } from '@/components/hooks/useGetData'
+import { isVideo } from '@/utils/isVideo'
 
 import BaseTable from '@/components/common/base-table'
 import AddMedia from '@/views/admin/component/main/media/component/add-media'
@@ -138,14 +139,14 @@ const cols: TableColumn[] = reactive([
         label: '视频收费',
         width: 100,
         align: 'center',
-        formatter: (row: TableData) => { if ("is_free" in row) { if (row.is_free) { return "免费" } return "收费" } }
+        formatter: (row: TableData) => formatterVideoIsFree(row)
     },
     {
         prop: 'is_encrypt',
         label: '视频加密',
         width: 140,
         align: 'center',
-        formatter: (row: TableData) => { if ("is_encrypt" in row) { if (row.is_encrypt) { return "加密" } return "无密" } }
+        formatter: (row: TableData) => formatterVideoIsEncrypt(row)
     },
     {
         prop: 'video_quality_name',
@@ -209,11 +210,16 @@ const updatePageSize = (val: number) => {
     console.log("2", val)
 }
 
+
+const editWidth = ref("90%")
+const editTop = ref("3vh")
+
 const editRow = (index: number, row: TableData) => {
     console.log("04============", index, row)
     // 断言 row 中有 file_name_display ts 不会报错
     if ("file_name_display" in row) {
         editMediaData.file_id = row.id.toString()
+        editMediaData.file_type = row.file_type
         editMediaData.file_name = row.file_name
         editMediaData.file_name_display = row.file_name_display
         editMediaData.description = row.description
@@ -221,7 +227,18 @@ const editRow = (index: number, row: TableData) => {
         editMediaData.is_free = row.is_free
         editMediaData.subtitles_language_list = row.subtitles_language_list || []
         editMediaData.img = row.img
+
+        // 如果是视频则设置宽高
+        if (isVideo(row.file_type)) {
+            editWidth.value = "90%"
+            editTop.value = "3vh"
+        } else {
+            editWidth.value = ""
+            editTop.value = ""
+        }
+
     }
+
     console.log("3", index, row)
 }
 
@@ -241,7 +258,7 @@ const deleteRows = async (rows: TableData[]) => {
 
     // 删除文件
     await DeleteFileAPI(req).then((res) => {
-        if (res.data.code === UploadCode.FileDeleteSuccess) {
+        if (res.data.code === ResponseCode.FileDeleteSuccess) {
             // 重新获取文件统计
             getFileCountGroupByFiletype()
             // 重新获取分页文件
@@ -287,9 +304,9 @@ const addItemUpdateDialogVisible = (val: boolean) => {
 const editItemUpdateDialogVisible = (val: boolean) => {
     console.log("09============", val)
     editItemDialogVisible.value = val
-    // if (!val) {
-    //     dialogVisible.value = val
-    // }
+    if (!val) {
+        // 销毁对话框组件 ???
+    }
 }
 
 
@@ -307,7 +324,7 @@ async function getMediaFilePaginate(req: GetMediaFilesRequest) {
 
     // 获取用户列表 // 宽高 50px 50px
     await getMediaFilesAPI(req, 100, 100, ImgFit.Cover, 60).then((res) => {
-        if (res.data.code === UploadCode.GetAllSuccess) {
+        if (res.data.code === ResponseCode.GetFilesSuccess) {
             pagination.value = res.data.data
             console.log("11============", pagination.value)
         } else {
@@ -324,6 +341,24 @@ function getValueFromQuery() {
     activeFileType.value = router.currentRoute.value.query[queryKey.FileType] as string || AllFileType
     search.value = router.currentRoute.value.query[queryKey.Search] as string || ''
     console.log("12============", search.value)
+}
+
+
+const formatterVideoIsFree = (row: TableData) => {
+    if ("is_free" in row && isVideo(row.file_type)) {
+        if (row.is_free) { return "免费" }
+        return "收费"
+    } else {
+        return "-"
+    }
+}
+const formatterVideoIsEncrypt = (row: TableData) => {
+    if ("is_encrypt" in row && isVideo(row.file_type)) {
+        if (row.is_encrypt) { return "加密" }
+        return "无密"
+    } else {
+        return "-"
+    }
 }
 
 
@@ -345,7 +380,7 @@ const fileCountGroupByFiletype = ref<FileCountGroupByFiletype[]>([])
 // 获取文件统计
 async function getFileCountGroupByFiletype() {
     await getFileCountGroupByFiletypeAPI().then((res) => {
-        if (res.data.code === UploadCode.GetFileCountGroupByTypeSuccess) {
+        if (res.data.code === ResponseCode.GetFileCountGroupByTypeSuccess) {
             const filetypeALL = res.data.data
             const total = filetypeALL.reduce((prev, cur) => {
                 return prev + cur.file_count
@@ -392,9 +427,20 @@ const getDataOnRouteChange = async () => {
     })
 }
 
+
+const updateMedia = async (status: boolean) => {
+    if (status) {
+        await getDataOnRouteChange()
+    }
+}
+
+
 // 更新字幕
 const updateSubtitles = async (language: string) => {
-    editMediaData.subtitles_language_list.push(language)
+    // 如果已经存在则不添加,否则添加
+    if (!editMediaData.subtitles_language_list.includes(language)) {
+        editMediaData.subtitles_language_list.push(language)
+    }
     await getDataOnRouteChange()
 }
 

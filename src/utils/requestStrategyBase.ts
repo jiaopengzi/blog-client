@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 20:06:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-07 09:02:37
+ * @LastEditTime : 2024-10-07 09:42:12
  * @FilePath     : \blog-client\src\utils\requestStrategyBase.ts
  * @Description  : 上传请求策略基类
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,7 @@
  */
 
 import { ShowMsgTip } from '@/utils/message'
-import { UploadCode } from '@/api/responseCode'
+import { ResponseCode } from '@/api/responseCode'
 import { type UploadRequestOptions } from 'element-plus'
 import type { RequestStrategy, Chunk, UploadFileInfo } from '@/utils/chunkUpload'
 import { type ConfirmBeforeUploadRequest } from '@/api/upload/confirmBeforeUpload'
@@ -53,7 +53,7 @@ export abstract class RequestStrategyBase implements RequestStrategy {
     return await this.confirmBeforeUploadAPI(req)
       .then((response) => {
         const data = response.data.data
-        if (response.data.code === UploadCode.ConfirmBeforeUploadSuccess) {
+        if (response.data.code === ResponseCode.ConfirmBeforeUploadSuccess) {
           this.uploadFileInfo = data
           return data
         } else {
