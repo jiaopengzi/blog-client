@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 20:06:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-05 11:51:13
+ * @LastEditTime : 2024-10-07 09:02:37
  * @FilePath     : \blog-client\src\utils\requestStrategyBase.ts
  * @Description  : 上传请求策略基类
  * @Blog         : https://jiaopengzi.com
@@ -12,11 +12,10 @@
 import { ShowMsgTip } from '@/utils/message'
 import { UploadCode } from '@/api/responseCode'
 import { type UploadRequestOptions } from 'element-plus'
-import type { RequestStrategy, Chunk } from '@/utils/chunkUpload'
+import type { RequestStrategy, Chunk, UploadFileInfo } from '@/utils/chunkUpload'
 import { type ConfirmBeforeUploadRequest } from '@/api/upload/confirmBeforeUpload'
 import { type GetUploadFileUrlRequest } from '@/api/upload/getUploadFileUrl'
 import { type ChunkMetadata } from '@/api/upload/chunk'
-import { type UploadFileInfo } from '@/utils/chunkUpload'
 import type { Res } from '@/api/responseCode'
 import { uploadFileBySignedUrlAPI } from '@/api/upload/uploadFileBySignedUrl'
 import { type ConfirmAfterUploadBySignedUrlRequest } from '@/api/upload/confirmAfterUploadBySignedUrl'
@@ -50,7 +49,7 @@ export abstract class RequestStrategyBase implements RequestStrategy {
   abstract uploadChunkAPI(formData: FormData, meta: ChunkMetadata): Promise<Res>
   abstract getUploadFileUrlAPI(req: GetUploadFileUrlRequest): Promise<Res>
 
-  async confirmBeforeUpload(req: ConfirmBeforeUploadRequest): Promise<Res> {
+  async confirmBeforeUpload(req: ConfirmBeforeUploadRequest): Promise<UploadFileInfo> {
     return await this.confirmBeforeUploadAPI(req)
       .then((response) => {
         const data = response.data.data
