@@ -30,7 +30,7 @@ export default defineConfig({
     }),
     // ------------------------------element-plus 自动导入 结束
   ],
-  
+
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
@@ -100,6 +100,10 @@ export default defineConfig({
       plugins: [
         terser({
           maxWorkers: 2, // 开启多进程压缩
+          compress: {
+            drop_console: true, // 去除console
+            drop_debugger: true, // 去除debugger
+          },
         }),
       ],
     },
