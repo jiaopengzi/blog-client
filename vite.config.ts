@@ -101,7 +101,8 @@ export default defineConfig({
         terser({
           maxWorkers: 2, // 开启多进程压缩
           compress: {
-            drop_console: true, // 去除console
+            // drop_console: true, // 去除全部console
+            pure_funcs: ['console.log'], // 去除console.log,保留其他console
             drop_debugger: true, // 去除debugger
           },
         }),
