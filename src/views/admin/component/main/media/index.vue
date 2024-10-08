@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-07 16:50:44
+ * @LastEditTime : 2024-10-08 09:55:48
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -45,13 +45,13 @@
             </div>
         </template>
 
-        <!-- 编辑弹窗 -->
+        <!-- 编辑弹窗  -->
         <template #edit-item-title>
             <span class="dialog-title">编辑媒体文件</span>
         </template>
 
         <template #edit-item>
-            <EditMedia v-if="editItemDialogVisible" :edit-media-data="editMediaData" @edit-media-status="updateMedia"
+            <EditMedia :edit-media-data="editMediaData" @edit-media-status="updateMedia"
                 @update-subtitles="updateSubtitles" @delete-subtitles="deleteSubtitles" />
         </template>
 
@@ -192,6 +192,7 @@ const editMediaData: EditMediaProps = reactive({
     slug: "", // 文件别名
     is_free: false, // 是否免费
     subtitles_language_list: [], // 字幕
+    editDialogVisible: false, // 编辑对话框是否显示
 })
 
 const handleAdd = () => {
@@ -227,6 +228,7 @@ const editRow = (index: number, row: TableData) => {
         editMediaData.is_free = row.is_free
         editMediaData.subtitles_language_list = row.subtitles_language_list || []
         editMediaData.img = row.img
+        editMediaData.editDialogVisible = true
 
         // 如果是视频则设置宽高
         if (isVideo(row.file_type)) {
@@ -304,9 +306,7 @@ const addItemUpdateDialogVisible = (val: boolean) => {
 const editItemUpdateDialogVisible = (val: boolean) => {
     console.log("09============", val)
     editItemDialogVisible.value = val
-    if (!val) {
-        // 销毁对话框组件 ???
-    }
+    editMediaData.editDialogVisible = val
 }
 
 

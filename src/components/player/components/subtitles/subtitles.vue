@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-23 20:11:15
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-23 20:50:32
- * @FilePath     : \blog-client\src\views\test\CustomSubtitles.vue
+ * @LastEditTime : 2024-10-08 18:11:02
+ * @FilePath     : \blog-client\src\components\player\components\subtitles\subtitles.vue
  * @Description  : 自定义字幕组件-待完善
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
@@ -18,29 +18,33 @@
 import { ref, watch, watchEffect, onBeforeMount } from 'vue';
 import { parseVTT } from '@/utils/vttParser';
 
+defineOptions({ name: 'VideoSubtitles' })
+
 const props = defineProps<{ currentTime: number, vttUrl: string }>();
 
 const cues = ref<Array<{ start: number, end: number, text: string }>>([]);
 const currentCue = ref<{ start: number, end: number, text: string } | null>(null);
 
+// 解析字幕文件
 onBeforeMount(async () => {
     if (props.vttUrl) {
-        cues.value = await parseVTT(props.vttUrl);
+        cues.value = await parseVTT(props.vttUrl)
     }
 })
 
 watchEffect(() => {
     if (cues.value) {
-        console.log("cues2", cues.value);
+        console.log("cues2", cues.value)
     }
-});
+})
 
 
 watch(() => props.currentTime, (newTime) => {
     if (newTime !== undefined) {
-        currentCue.value = cues.value.find(cue => newTime >= cue.start && newTime <= cue.end) || null;
+        currentCue.value = cues.value.find(cue => newTime >= cue.start && newTime <= cue.end) || null
     }
-});
+})
+
 </script>
 
 <style scoped lang="scss">

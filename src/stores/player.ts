@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 15:42:11
  * @LastPlayers  : jiaopengzi
- * @LastEditTime : 2024-09-23 16:30:21
+ * @LastEditTime : 2024-10-08 17:53:50
  * @FilePath     : \blog-client\src\stores\player.ts
  * @Description  : 播放器 store
  * @Blog         : https://jiaopengzi.com
@@ -107,6 +107,39 @@ export interface PlayProgress {
   isDragging: boolean // 是否正在拖拽进度条
 }
 
+// 常用的语言及显示名称 eumn
+export enum Language {
+  'zh-CN' = '简体中文',
+  'zh-TW' = '繁體中文',
+  'en-US' = 'English(US)',
+  'en-GB' = 'English(UK)',
+  'fr-FR' = 'Français',
+  'de-DE' = 'Deutsch',
+  'es-ES' = 'Español',
+  'it-IT' = 'Italiano',
+  'ja-JP' = '日本語',
+  'ko-KR' = '한국어',
+  'ru-RU' = 'Русский',
+  'pt-PT' = 'Português',
+  'pt-BR' = 'Português(BR)',
+  'nl-NL' = 'Nederlands',
+  'sv-SE' = 'Svenska',
+  'da-DK' = 'Dansk',
+  'fi-FI' = 'Suomi',
+  'no-NO' = 'Norsk',
+  'pl-PL' = 'Polski',
+  'tr-TR' = 'Türkçe',
+  'cs-CZ' = 'Čeština',
+  'hu-HU' = 'Magyar',
+  'el-GR' = 'Ελληνικά',
+  'he-IL' = 'עברית',
+  'ar-SA' = 'العربية',
+  'th-TH' = 'ไทย',
+  'vi-VN' = 'Tiếng Việt',
+  'id-ID' = 'Bahasa Indonesia',
+  'disabled' = '禁用',
+}
+
 // 字幕
 export interface SubtitlesItem {
   label: string // 字幕标签，例如 'English', '中文', 'Español' 等
@@ -114,16 +147,17 @@ export interface SubtitlesItem {
 }
 
 // 定义 disabled 字幕
-export const DisabledSubtitles: { [language: string]: SubtitlesItem } = {
-  disabled: {
-    label: '禁用',
+// export const DisabledSubtitles: { [language: string]: SubtitlesItem } = {
+export const DisabledSubtitles: Partial<Record<keyof typeof Language, SubtitlesItem>> = {
+  [Language.disabled as unknown as keyof typeof Language]: {
+    label: Language['disabled'],
     src: '',
   },
 }
 
 // 字幕状态
 export interface Subtitles {
-  availableSubtitles?: { [language: string]: SubtitlesItem } // 可用字幕列表,字幕语言，例如 'en', 'zh', 'es' 等
+  availableSubtitles?: Partial<Record<keyof typeof Language, SubtitlesItem>> // 可用字幕列表,字幕语言，例如 'en', 'zh', 'es' 等
   selectedSubtitlesLanguage?: string // 当前选择的字幕的语言 key 默认值 disabled
 }
 
@@ -196,64 +230,70 @@ export interface PlayerStore {
   isUserInput: boolean
   // 是否为 iphone
   isIphone: boolean
+  // 是否开启快捷键
+  isShortcutKey: boolean
 }
+
+// 默认播放器 store 数据
+const defaultPlayerStore = (): PlayerStore => ({
+  mediaType: MediaTypes.MP4,
+  src: '',
+  poster: '',
+  playStatus: PlayStatus.STOPPED,
+  playProgress: { currentTime: 0, duration: 2004, isDragging: false },
+  isWebFullScreen: false,
+  isFullScreen: false,
+  playLevel: {
+    level: PlayLevelLabel.FULL_HD_1080P,
+    allLevels: {
+      [PlayLevelLabel.QHD_2K]: 1440,
+      [PlayLevelLabel.FULL_HD_1080P]: 1080,
+      [PlayLevelLabel.HD_720P]: 720,
+      [PlayLevelLabel.SD_480P]: 480,
+    },
+  },
+  playbackRate: PlaybackRate.NORMAL,
+  volume: {
+    volume: 20, // 默认音量
+    muted: false, // 是否静音
+    lastVolume: 50, // 静
+  }, // 默认音量
+  showControlBar: true,
+  useVideoControls: false,
+  isPictureInPicture: false,
+  size: { width: 720, height: 405 },
+  isMobile: false,
+  isLoop: false,
+  textWatermark: {
+    content: '',
+    style: {
+      color: 'red',
+      fontSize: '14px',
+    },
+  },
+  logoWatermark: {
+    imgUrl: '',
+    style: {
+      width: '131px',
+      height: '30px',
+      right: '0',
+      top: '20px',
+      opacity: '1',
+    },
+  },
+  autoPlay: false,
+  isUserInput: false,
+  subtitles: {
+    selectedSubtitlesLanguage: 'disabled',
+  },
+  isIphone: false,
+  isShortcutKey: true,
+})
 
 // 定义 store
 export const usePlayerStore = defineStore({
   id: 'player',
-  state: (): PlayerStore => ({
-    mediaType: MediaTypes.MP4,
-    src: '',
-    poster: '',
-    playStatus: PlayStatus.STOPPED,
-    playProgress: { currentTime: 0, duration: 2004, isDragging: false },
-    isWebFullScreen: false,
-    isFullScreen: false,
-    playLevel: {
-      level: PlayLevelLabel.FULL_HD_1080P,
-      allLevels: {
-        [PlayLevelLabel.QHD_2K]: 1440,
-        [PlayLevelLabel.FULL_HD_1080P]: 1080,
-        [PlayLevelLabel.HD_720P]: 720,
-        [PlayLevelLabel.SD_480P]: 480,
-      },
-    },
-    playbackRate: PlaybackRate.NORMAL,
-    volume: {
-      volume: 20, // 默认音量
-      muted: false, // 是否静音
-      lastVolume: 50, // 静
-    }, // 默认音量
-    showControlBar: true,
-    useVideoControls: false,
-    isPictureInPicture: false,
-    size: { width: 720, height: 405 },
-    isMobile: false,
-    isLoop: false,
-    textWatermark: {
-      content: 'jiaopengzi.com',
-      style: {
-        color: 'red',
-        fontSize: '14px',
-      },
-    },
-    logoWatermark: {
-      imgUrl: 'https://jiaopengzi.com/wp-content/uploads/2021/10/220-50-1-YJ.png',
-      style: {
-        width: '131px',
-        height: '30px',
-        right: '0',
-        top: '20px',
-        opacity: '1',
-      },
-    },
-    autoPlay: false,
-    isUserInput: false,
-    subtitles: {
-      selectedSubtitlesLanguage: 'disabled',
-    },
-    isIphone: false,
-  }),
+  state: (): PlayerStore => defaultPlayerStore(),
   getters: {
     // 获取当前播放状态是否为播放中
     isPlaying: (state) => state.playStatus === PlayStatus.PLAYING,
@@ -266,8 +306,11 @@ export const usePlayerStore = defineStore({
   },
 
   actions: {
-    // 初始化播放器 store 数据
-    init(playerStore: PlayerStore) {
+    /**
+     * @description: 初始化播放器 store
+     * @param playerStore 播放器 store 数据,默认值为 defaultPlayerStore()
+     */
+    init(playerStore: PlayerStore = defaultPlayerStore()) {
       Object.assign(this, playerStore)
     },
 
@@ -393,7 +436,6 @@ export const usePlayerStore = defineStore({
 
     // 切换全屏状态
     toggleFullScreen() {
-      console.log('toggleFullScreen')
       this.isFullScreen = !this.isFullScreen
       if (this.isFullScreen) {
         this.isWebFullScreen = false
@@ -420,7 +462,6 @@ export const usePlayerStore = defineStore({
 
     // 退出全屏
     exitFullScreen() {
-      console.log('exitFullScreen')
       this.isFullScreen = false
       this.isWebFullScreen = false
     },
@@ -466,6 +507,11 @@ export const usePlayerStore = defineStore({
       this.subtitles.availableSubtitles = availableSubtitles
     },
 
+    // 设置字幕
+    setSubtitles(subtitles: Subtitles) {
+      this.subtitles = subtitles
+    },
+
     // 设置画中画状态
     togglePictureInPicture() {
       this.isPictureInPicture = !this.isPictureInPicture
@@ -504,6 +550,16 @@ export const usePlayerStore = defineStore({
     // 设置是否为 Iphone
     setIsIphone(isIphone: boolean) {
       this.isIphone = isIphone
+    },
+
+    // 切换快捷键状态
+    toggleShortcutKey() {
+      this.isShortcutKey = !this.isShortcutKey
+    },
+
+    // 设置快捷键状态
+    setShortcutKey(isShortcutKey: boolean) {
+      this.isShortcutKey = isShortcutKey
     },
   },
 })

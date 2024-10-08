@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-23 20:10:42
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-07 12:32:12
+ * @LastEditTime : 2024-10-08 18:10:05
  * @FilePath     : \blog-client\src\utils\vttParser.ts
  * @Description  : 字幕解析器
  * @Blog         : https://jiaopengzi.com
@@ -10,6 +10,8 @@
  */
 
 import { parseTimeSegments } from '@/utils/dateTime'
+import { getSubtitlesURL } from '@/api/video/getSubtitles'
+import { Language, type Subtitles, type SubtitlesItem } from '@/stores/player'
 
 /**
  * @description: 解析vtt文件 得到字幕数组
@@ -127,34 +129,40 @@ export const isWebvtt = (function () {
   }
 })()
 
-// 常用的语言及显示名称 eumn
-export enum Language {
-  'zh-CN' = '简体中文',
-  'zh-TW' = '繁體中文',
-  'en-US' = 'English(US)',
-  'en-GB' = 'English(UK)',
-  'fr-FR' = 'Français',
-  'de-DE' = 'Deutsch',
-  'es-ES' = 'Español',
-  'it-IT' = 'Italiano',
-  'ja-JP' = '日本語',
-  'ko-KR' = '한국어',
-  'ru-RU' = 'Русский',
-  'pt-PT' = 'Português',
-  'pt-BR' = 'Português(BR)',
-  'nl-NL' = 'Nederlands',
-  'sv-SE' = 'Svenska',
-  'da-DK' = 'Dansk',
-  'fi-FI' = 'Suomi',
-  'no-NO' = 'Norsk',
-  'pl-PL' = 'Polski',
-  'tr-TR' = 'Türkçe',
-  'cs-CZ' = 'Čeština',
-  'hu-HU' = 'Magyar',
-  'el-GR' = 'Ελληνικά',
-  'he-IL' = 'עברית',
-  'ar-SA' = 'العربية',
-  'th-TH' = 'ไทย',
-  'vi-VN' = 'Tiếng Việt',
-  'id-ID' = 'Bahasa Indonesia',
+/**
+ * 根据视频的哈希 ID 创建字幕对象。
+ *
+ * @param {string} videoHashId - 视频的哈希 ID。
+ * @param {string[]} languages - 字幕语言列表。
+ * @returns {Subtitles} - 返回字幕对象。
+ */
+export const createSubtitlesByVideoHashId = (
+  videoHashId: string,
+  languages: string[] | null,
+): Subtitles => {
+  // 如果没有指定字幕语言列表，则返回空字幕对象
+  if (!languages || languages.length === 0) {
+    return {}
+  }
+
+  // 初始化 availableSubtitles
+  const subtitles: Subtitles = {
+    availableSubtitles: {},
+    selectedSubtitlesLanguage: Language.disabled,
+  }
+
+  for (const subtitlesLanguage of languages) {
+    // 获取字幕 URL
+    const subtitlesURL = getSubtitlesURL(videoHashId, subtitlesLanguage)
+
+    const item: SubtitlesItem = {
+      label: Language[subtitlesLanguage as keyof typeof Language], // 字幕标签，例如 'English', '中文', 'Español' 等
+      src: subtitlesURL, // 字幕文件的URL
+    }
+
+    // 将字幕项添加到 availableSubtitles 中
+    subtitles.availableSubtitles![subtitlesLanguage as keyof typeof Language] = item
+  }
+
+  return subtitles
 }

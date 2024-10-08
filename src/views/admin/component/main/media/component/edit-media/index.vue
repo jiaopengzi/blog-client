@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 10:24:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-07 17:26:07
+ * @LastEditTime : 2024-10-08 17:10:01
  * @FilePath     : \blog-client\src\views\admin\component\main\media\component\edit-media\index.vue
  * @Description  : 编辑媒体
  * @Blog         : https://jiaopengzi.com
@@ -11,16 +11,14 @@
 
 <template>
     <div :class="layoutClass">
-
         <div class="left" ref="leftRef">
             <img class="view-img" v-if="editMediaData.img?.url && !isVideoFile" :src="editMediaData.img.url" />
             <Icon customClass="view-icon" v-else-if="editMediaData.img?.iconKeyName && !isVideoFile"
                 :name="editMediaData.img?.iconKeyName" />
-            <VideoPlayer v-if="isVideoFile" />
+            <VideoPlayer v-if="isVideoFile && editMediaData.editDialogVisible" />
         </div>
 
         <div class="middle">
-
             <el-form :label-position="labelPosition" label-width="100px" ref="editMediaFormRef" :model="editMediaForm"
                 class="edit-media-form" :size="formSize" status-icon :rules="rulesEditMedia">
 
@@ -37,7 +35,6 @@
                         inactive-text="收费" style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949" />
                 </el-form-item>
 
-
                 <el-form-item label="文件别名" prop="slug">
                     <el-input v-model="editMediaForm.slug" />
                 </el-form-item>
@@ -50,7 +47,6 @@
                     <el-button type="primary" @click="submitForm(editMediaFormRef as FormInstance)">更新</el-button>
                 </div>
             </el-form>
-
         </div>
 
         <div class="right" v-if="isVideoFile">
@@ -101,10 +97,10 @@ import { type UpsertSubtitlesRequest, upsertSubtitlesAPI } from '@/api/video/ups
 import { type DeleteSubtitlesRequest, deleteSubtitlesAPI } from '@/api/video/deleteSubtitles'
 import { checkSlugAPI, type CheckSlugRequest } from '@/api/upload/checkSlug'
 import { updateFileAPI, type UpdateFileRequest } from '@/api/upload/updateFile'
-import { isWebvtt, Language } from '@/utils/vttParser'
+import { isWebvtt, createSubtitlesByVideoHashId } from '@/utils/vttParser'
 import { isVideo } from '@/utils/isVideo'
 import VideoPlayer from '@/components/player'
-import { usePlayerStore, type SubtitlesItem, MediaTypes } from '@/stores/player'
+import { usePlayerStore, Language, type SubtitlesItem, MediaTypes } from '@/stores/player'
 
 
 // 定义组件名称
@@ -210,7 +206,7 @@ function isWebvttValidator(
 
 /**
  * @description: 表单校验规则
- * @return  FormRules<PermissionRole> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
+ * @return  FormRules<SubtitlesForm> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
  */
 const rulesSubtitlesForm = reactive<FormRules<SubtitlesForm>>({
     language: [
@@ -283,8 +279,6 @@ const delSubtitles = async () => {
     })
 }
 
-
-
 // 获取字幕
 const getSubtitles = async (language: string) => {
 
@@ -303,7 +297,6 @@ const getSubtitles = async (language: string) => {
     })
 
 }
-
 
 // 检查别名是否可用
 function checkSlugValidator(
@@ -351,10 +344,9 @@ function checkSlugValidator(
         })
 }
 
-
 /**
  * @description: 表单校验规则
- * @return  FormRules<PermissionRole> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
+ * @return  FormRules<EditMediaForm> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
  */
 const rulesEditMedia = reactive<FormRules<EditMediaForm>>({
     file_name_display: [
@@ -365,7 +357,6 @@ const rulesEditMedia = reactive<FormRules<EditMediaForm>>({
         { validator: checkSlugValidator, trigger: 'blur' },
     ],
 })
-
 
 // 提交表单
 const submitForm = async (formEl: FormInstance | undefined) => {
@@ -421,18 +412,12 @@ watch(
             // 当查看不同文件时，重置表单，不会触发校验
             subtitlesFormRef.value?.resetFields()
         }
-    },
-    {
-        // 立即执行
-        immediate: true,
-        deep: true
     }
 )
 
 
 // 视频宽度
 const videoWidth = ref(400)
-
 
 // 设置播放器
 watchEffect(() => {
@@ -450,18 +435,13 @@ watchEffect(() => {
             width: videoWidth.value,
             height: videoWidth.value * 9 / 16 // 视频比例为 16:9
         }
-        playerStore.setSrc(hashID.value)
-        const subtitles = ref<{ [language: string]: SubtitlesItem }>({
-            "cn": {
-                label: "中文",
-                src: "http://10.10.2.222:8081/api/v1/uploads/cn.vtt"
-            },
-            "en": {
-                label: "English",
-                src: "http://10.10.2.222:8081/api/v1/uploads/en.vtt"
-            }
-        })
-        playerStore.setAvailableSubtitles(subtitles.value)
+        playerStore.setSrc(hashID.value) // 设置视频hashID
+        playerStore.setShortcutKey(false) // 禁用快捷键
+
+        // 构造字幕数据
+        const subtitles = createSubtitlesByVideoHashId(hashID.value, editMediaData.subtitles_language_list)
+
+        playerStore.setSubtitles(subtitles) // 设置字幕
     }
 })
 

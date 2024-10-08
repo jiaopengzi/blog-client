@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 15:17:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-30 17:07:07
+ * @LastEditTime : 2024-10-08 09:40:26
  * @FilePath     : \blog-client\src\pkg\hls\index.ts
  * @Description  : hls 自定义 loader
  * @Blog         : https://jiaopengzi.com
@@ -134,6 +134,7 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
       // const videoId = context.keyInfo.decryptdata.uri.substring(
       //   context.keyInfo.decryptdata.uri.lastIndexOf('/') + 1,
       // )
+      // await getKeyAPI(videoId)
 
       // 获取解密密钥
       await getKeyAPI(CustomLoader.globalState.videoId)

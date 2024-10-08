@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 19:53:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-24 15:53:19
+ * @LastEditTime : 2024-10-08 18:04:50
  * @FilePath     : \blog-client\src\components\player\components\controls\index.vue
  * @Description  : 视频控制器
  * @Blog         : https://jiaopengzi.com
@@ -75,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, watchEffect } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted, watchEffect } from 'vue'
 import { storeToRefs } from 'pinia'
 import { IconKeys } from '@/components/common/icons'
 import { formatDurationTime } from '@/utils/dateTime'
@@ -95,7 +95,7 @@ const props = defineProps<{
 
 // 从 store 中获取数据
 const playerStore = usePlayerStore()
-const { playStatus, playProgress, playLevel, playbackRate, volume, subtitles, isLoop } = storeToRefs(playerStore)
+const { playStatus, playProgress, playLevel, playbackRate, volume, subtitles, isLoop, isShortcutKey } = storeToRefs(playerStore)
 
 // 定义图标名称
 const IconNamePlayPause = ref(IconKeys.Pause)
@@ -117,9 +117,23 @@ const handleIsDragging = (isDragging: boolean) => playerStore.setIsDragging(isDr
 // 设置音量
 const seekVolume = () => playerStore.setVolume(localVolume.value)
 
-// 注册快捷键
-const keys = useMagicKeys() // 使用 useMagicKeys() 之后，就可以通过 keys 来获取键盘按键的状态了
+// 注册快捷键 使用 useMagicKeys() 之后，就可以通过 keys 来获取键盘按键的状态了
+const keys = useMagicKeys()
+
+// 注册的监听器
+let registeredWatchers: (() => void)[] = []
+
+// 注销快捷键
+const unRegisterHotKeys = () => {
+    registeredWatchers.forEach(stop => stop())
+    registeredWatchers = []
+}
+
 const registerHotKeys = () => {
+
+    // 注册前先注销所有已注册的监听器
+    unRegisterHotKeys()
+
     Object.values(PlayerCommandsKey).forEach((item) => {
         const hotKey = PlayerCommands[item].hotKey
         if (hotKey) {
@@ -150,6 +164,9 @@ const registerHotKeys = () => {
                     }
                 }
             })
+
+            // 注册监听器
+            registeredWatchers.push(stop)
         }
     })
 }
@@ -229,8 +246,21 @@ watchEffect(() => {
     }
 })
 
-onMounted(() => {
-    registerHotKeys() // 注册快捷键
+// 监控快捷键开关
+watch(isShortcutKey, (newVal) => {
+    if (newVal) {
+        registerHotKeys()
+    } else {
+        unRegisterHotKeys()
+    }
+}, { immediate: true })
+
+// onMounted(() => {
+//     registerHotKeys() // 注册快捷键
+// })
+
+onUnmounted(() => {
+    unRegisterHotKeys() // 注销快捷键
 })
 
 </script>

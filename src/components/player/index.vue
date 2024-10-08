@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-17 10:03:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-07 17:24:55
+ * @LastEditTime : 2024-10-08 17:14:21
  * @FilePath     : \blog-client\src\components\player\index.vue
  * @Description  : 视频播放器
  * @Blog         : https://jiaopengzi.com
@@ -16,7 +16,8 @@
 
             <!-- video元素不使用默认的  controls-->
             <video ref="videoRef" :src="src" :poster="poster" @timeupdate="handleTimeupdate"
-                @loadedmetadata="handleLoadedmetadata" @progress="handleProgress" playsinline webkit-playsinline
+                @loadedmetadata="handleLoadedmetadata" @progress="handleProgress" @ended="handleEnded"
+                @waiting="handleWaiting" @canplay="handleCanplay" playsinline webkit-playsinline
                 x5-video-player-type="h5" x5-video-player-fullscreen="true">
                 <!-- <track v-if="isShowSubtitles" src="http://10.10.2.222:8081/api/v1/uploads/cn.vtt" kind="subtitles" srclang="cn" label="中文" default /> -->
                 <track v-if="isShowSubtitles" :src="subtitlesSrc" kind="subtitles" :srclang="srclang"
@@ -33,10 +34,13 @@
             <!-- 播放按钮 -->
         </VideoWatermark>
         <div v-if="showPlayButton" class="play-button-page" @click="togglePlayPause" @dblclick="handleDblclick">
-            <Icon :name="IconKeys.Play" customClass="iconfont" />
+            <Icon v-show="!showLoader" :name="IconKeys.Play" customClass="iconfont" />
+            <div v-show="showLoader" class="loader"></div>
         </div>
-        <div v-if="!showPlayButton" class="play-to-paused-page" @click="togglePlayPause" @dblclick="handleDblclick">
+        <div v-if="!showPlayButton" class="play-to-paused-page" :class="{ hidden: controlsHidden }"
+            @click="togglePlayPause" @dblclick="handleDblclick">
         </div>
+
     </div>
 </template>
 
@@ -44,16 +48,16 @@
 import { ref, computed, onMounted, watchEffect, onBeforeUnmount, useTemplateRef } from 'vue'
 import { storeToRefs } from 'pinia'
 import screenfull from "screenfull"
-import { MediaTypes, usePlayerStore, PlayStatus, DisabledSubtitles, getVideoQualityLabel, type PlayLevelLabel } from '@/stores/player'
+import { MediaTypes, usePlayerStore, PlayStatus, DisabledSubtitles, getVideoQualityLabel, Language, type PlayLevelLabel } from '@/stores/player'
 import Controls from '@/components/player/components/controls'
 import VideoWatermark from '@/components/player/components/watermark'
 import { ShowMsgTip } from '@/utils/message'
 import { MsgType } from '@/components/common'
 import { IconKeys } from '@/components/common/icons'
 import Hls from 'hls.js'
-import type { HlsConfig } from 'hls.js'
 import { CustomLoader } from '@/pkg/hls'
 import { ResponseCode } from '@/api/responseCode'
+
 
 defineOptions({ name: 'VideoPlayer' })
 
@@ -74,8 +78,9 @@ const videoContainerRef = useTemplateRef<HTMLElement | null>("videoContainerRef"
 const videoRef = useTemplateRef<HTMLVideoElement | null>("videoRef")
 const controlsContainerRef = useTemplateRef<HTMLElement | null>("controlsContainerRef")
 
-// 是否显示播放按钮
+// 状态
 const showPlayButton = computed(() => playStatus.value !== PlayStatus.PLAYING)
+const showLoader = computed(() => playStatus.value === PlayStatus.BUFFERING)
 
 // 切换播放暂停
 const togglePlayPause = () => {
@@ -103,6 +108,23 @@ const handleDblclick = () => {
 // 处理视频进度
 const handleProgress = () => {
     handleProgressbuffered()
+}
+
+// 视频播放结束
+const handleEnded = () => {
+    playerStore.end()
+}
+
+// 视频缓冲事件
+const handleWaiting = () => {
+    // 如果是播放状态, 则缓冲,否则保持原状态
+    if (playStatus.value === PlayStatus.PLAYING) playerStore.buffering()
+}
+
+// 处理可以播放事件
+const handleCanplay = () => {
+    // 如果是缓冲状态, 则播放,否则保持原状态
+    if (playStatus.value === PlayStatus.BUFFERING) playerStore.play()
 }
 
 // 处理缓存进度
@@ -133,7 +155,8 @@ const subtitlesSrc = computed(() => {
             ...DisabledSubtitles, // 确保不会出现 undefined
             ...subtitles.value.availableSubtitles
         }
-        return availableSubtitles[subtitles.value.selectedSubtitlesLanguage].src
+        const selectedSubtitle = availableSubtitles[subtitles.value.selectedSubtitlesLanguage as keyof typeof Language]
+        return selectedSubtitle ? selectedSubtitle.src : ''
     }
     return ''
 })
@@ -153,7 +176,8 @@ const subtitlesLabel = computed(() => {
             ...DisabledSubtitles,
             ...subtitles.value.availableSubtitles
         }
-        return availableSubtitles[subtitles.value.selectedSubtitlesLanguage].label
+        const selectedSubtitle = availableSubtitles[subtitles.value.selectedSubtitlesLanguage as keyof typeof Language]
+        return selectedSubtitle ? selectedSubtitle.label : ''
     }
     return ''
 })
@@ -413,19 +437,22 @@ const updateStore = () => {
     }
 }
 
+
+// 将 hls 实例提到外部, 以便销毁
+let hls: Hls | null = null
+
 // load hls
 const loadHls = () => {
     if (Hls.isSupported()) {
 
         // 创建 hls 实例及配置
-        const hls = new Hls({
+        hls = new Hls({
             loader: CustomLoader,
             maxMaxBufferLength: 10, // 最大缓冲时间（秒）
             maxBufferLength: 10,    // 缓冲时间（秒）
             maxBufferSize: 2 * 1024 * 1024, // 缓冲大小（字节），假设每个分片大小约为1MB
             maxBufferHole: 0.5,     // 最大缓冲空洞（秒）
         })
-
 
         // 加载视频源
         hls.loadSource(src.value)
@@ -438,7 +465,7 @@ const loadHls = () => {
 
             // 历遍 hls.levels 获取清晰度信息, 保存到 store 中
             const localLevels: Record<string, number> = {}
-            hls.levels.forEach((level) => {
+            hls?.levels.forEach((level) => {
                 localLevels[getVideoQualityLabel(level.height)] = level.height
             })
 
@@ -448,18 +475,18 @@ const loadHls = () => {
 
         // 获取当前播放清晰度
         hls.on(Hls.Events.LEVEL_SWITCHED, function (event, data) {
-            var currentLevel = hls.levels[data.level];
-            const selectedLevel = getVideoQualityLabel(currentLevel.height)
+            var currentLevel = hls?.levels[data.level];
+            const selectedLevel = getVideoQualityLabel(currentLevel?.height || 0)
             playerStore.setSelectedPlayLevel(selectedLevel as PlayLevelLabel)
             // TODO 切换清晰度时, 显示提示信息
         })
 
         // 监听用户选择清晰度的变化
         watchEffect(() => {
-            const levels = hls.levels
+            const levels = hls?.levels
             if (levels) {
                 const levelIndex = levels.findIndex(level => getVideoQualityLabel(level.height) === playLevel.value.level)
-                if (levelIndex !== -1) {
+                if (levelIndex !== -1 && hls) {
                     hls.currentLevel = levelIndex
                 }
             }
@@ -471,17 +498,17 @@ const loadHls = () => {
                 switch (data.type) {
                     case Hls.ErrorTypes.NETWORK_ERROR:
                         // 尝试恢复网络错误
-                        console.error('fatal network error encountered, try to recover')
-                        hls.startLoad()
+                        console.warn('fatal network error encountered, try to recover')
+                        hls?.startLoad()
                         break
                     case Hls.ErrorTypes.MEDIA_ERROR:
-                        console.error('fatal media error encountered, try to recover')
-                        hls.recoverMediaError()
+                        console.warn('fatal media error encountered, try to recover')
+                        hls?.recoverMediaError()
                         break
                     default:
                         // 无法恢复的错误
-                        console.error('fatal error encountered, destroy hls instance')
-                        hls.destroy()
+                        console.warn('fatal error encountered, destroy hls instance')
+                        hls?.destroy()
                         ShowMsgTip(MsgType.error, `播放错误: ${data.details}`, 0)
                         break
                 }
@@ -502,7 +529,7 @@ const loadHls = () => {
                 }
 
                 if (!successCodes.includes(resCode)) {
-                    ShowMsgTip(MsgType.error, `请登录后播放,错误代码: ${data.response.code}`, 0)
+                    ShowMsgTip(MsgType.error, `错误代码: ${data.response.code},${data.response.text}`, 0)
                 }
             }
         })
@@ -519,10 +546,18 @@ watchEffect(() => {
     }
 })
 
-
-onMounted(async () => {
+// 更新视频
+const updateVideo = () => {
     // 判断视频类型
-    if (mediaType.value === MediaTypes.HLS) { loadHls() }
+    if (mediaType.value === MediaTypes.HLS) {
+        // 先销毁 hls 实例再加载
+        // if (hls) {
+        //     console.log('存在 销毁 destroy hls instance')
+        //     hls.destroy()
+        // }
+
+        loadHls()
+    }
     if (mediaType.value in [MediaTypes.MP4, MediaTypes.WEBM]) { handleLoadedmetadata() }
 
     // 监听屏幕方向变化
@@ -530,13 +565,25 @@ onMounted(async () => {
         const mediaQueryList = window.matchMedia("(orientation: landscape)")
         mediaQueryList.addEventListener('change', handleOrientationChange)
     }
+}
+
+// 监听 src 变化
+watchEffect(() => {
+    if (src.value) {
+        updateVideo()
+    }
+})
+
+
+onMounted(async () => {
+    updateVideo()
 })
 
 onBeforeUnmount(() => {
     // 移除屏幕方向变化监听
     const mediaQueryList = window.matchMedia("(orientation: landscape)")
     mediaQueryList.removeEventListener('change', handleOrientationChange)
-
+    playerStore.init()
 })
 
 </script>
@@ -624,6 +671,11 @@ video::-webkit-media-controls-enclosure {
         background-color: rgba(0, 0, 0, 0);
         z-index: 2;
     }
+
+    // 播放状态下隐藏鼠标
+    .play-to-paused-page.hidden {
+        cursor: none;
+    }
 }
 
 // 字幕样式
@@ -634,6 +686,25 @@ video::-webkit-media-controls-enclosure {
     line-height: 2em;
 }
 
+
+/* 
+HTML: <div class="loader"></div> 
+https://css-loaders.com/infinity/ 
+*/
+.loader {
+    width: calc(80px / cos(45deg));
+    height: 14px;
+    background: repeating-linear-gradient(-45deg, $primary-color 0 15px, #0000 0 20px) left/200% 100%;
+    animation: l3 2s infinite linear;
+    border-radius: 7px;
+    z-index: 2;
+}
+
+@keyframes l3 {
+    100% {
+        background-position: right
+    }
+}
 
 @include respond-to('pc') {
 
