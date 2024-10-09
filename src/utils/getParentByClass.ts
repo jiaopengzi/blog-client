@@ -28,11 +28,11 @@ export function getParentByClass(element: HTMLElement, className: string): HTMLE
   return null // 如果不存在则返回null
 }
 
-/** 
+/**
  * @description: 检查元素是否具有指定类名的父元素
  * @param element 目标元素
  * @param className 指定类名
- * @return 如果存在则返回true，否则返回false 
+ * @return 如果存在则返回true，否则返回false
  */
 export function HasParentByClass(element: HTMLElement | null, className: string): boolean {
   while (element) {

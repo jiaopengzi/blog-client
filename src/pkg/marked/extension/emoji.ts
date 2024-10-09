@@ -21,7 +21,7 @@ emojiJson.forEach((item) => {
 
 const optionEmojis: MarkedEmojiOptions = {
   emojis: emojiObj,
-  unicode: true,
+  unicode: true
 }
 
 export default optionEmojis

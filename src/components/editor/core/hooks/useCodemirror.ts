@@ -22,7 +22,7 @@ import { htmlHandleCopyBtns } from '@/utils/preview'
 export function useCodemirror(
   mdContainerRef: Ref<HTMLElement | null>,
   codemirrorRef: Ref<CodemirrorRef | null>,
-  previewRef: Ref<PreviewRef | null>,
+  previewRef: Ref<PreviewRef | null>
 ) {
   // store
   const editorStore = useEditorStore()
@@ -37,7 +37,7 @@ export function useCodemirror(
       // 读取 mdContainerRef 容器中的 css 变量 --md-editor-container-height 的值
       const mdContainerHeight = getCSSVariableValue(
         mdContainerRef.value,
-        '--md-editor-container-height',
+        '--md-editor-container-height'
       )
       if (mdContainerHeight) {
         cmHeight.value = mdContainerHeight
@@ -45,7 +45,7 @@ export function useCodemirror(
       // 读取 mdContainerRef 容器中的 css 变量 --el-tabs-header-height 的值
       const elTabsHeaderHeight = getCSSVariableValue(
         mdContainerRef.value,
-        '--el-tabs-header-height',
+        '--el-tabs-header-height'
       )
       if (elTabsHeaderHeight) {
         cmHeight.value = `calc(${cmHeight.value} - ${elTabsHeaderHeight})`
@@ -102,7 +102,7 @@ export function useCodemirror(
       const hideDom = new DOMParser().parseFromString(html, 'text/html') // 隐藏的markdown解析出来的html转换为dom
       const els = hideDom.body.querySelectorAll(ScrollElementTag) // 获取隐藏的markdown解析出来的html转换为dom中的所有元素 注意要在 body 中寻找
       previewRef.value?.navigateToElement(els.length) // 跳转预览选中目标行
-    },
+    }
   )
 
   const updateEditorDoc = (editorDoc: string) => {
@@ -113,6 +113,6 @@ export function useCodemirror(
     cmHeight,
     updateCmHeightNotIsFullScreen,
     handleScroll,
-    updateEditorDoc,
+    updateEditorDoc
   }
 }

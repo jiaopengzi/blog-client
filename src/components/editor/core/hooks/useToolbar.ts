@@ -27,7 +27,7 @@ export function useToolbar(
   toolbarRef: Ref<ToolbarRef | null>,
   codemirrorRef: Ref<CodemirrorRef | null>,
   previewRef: Ref<PreviewRef | null>,
-  constantKeys: CommandsKey[],
+  constantKeys: CommandsKey[]
 ) {
   const { editorShow, previewShow, tocShow, isAsyncScroll, isFullScreen, isShowPreviewWechat } =
     storeToRefs(useEditorStore())
@@ -41,7 +41,7 @@ export function useToolbar(
           ' <' +
           MardkdownEditorCommands[key].hotKey +
           '>') as string,
-        icon: MardkdownEditorCommands[key].icon as IconKeys,
+        icon: MardkdownEditorCommands[key].icon as IconKeys
       }
     })
   }
@@ -145,7 +145,7 @@ export function useToolbar(
     setCSSVariable(
       mdContainerRef.value,
       '--md-editor-container-height',
-      `calc(100vh - ${toolBarHight.value}px)`,
+      `calc(100vh - ${toolBarHight.value}px)`
     )
 
     // 将内层的变量 --el-tabs-header-height 设置到 cmContainerRef 中 css 变量 --el-tabs-header-height
@@ -181,6 +181,6 @@ export function useToolbar(
     toolbarBtnClicked,
     caclToolBarHight,
     toolBarHight,
-    iconNumberPerLine,
+    iconNumberPerLine
   }
 }

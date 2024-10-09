@@ -24,6 +24,6 @@ export function emojiCompletions(context: CompletionContext): CompletionResult |
   if (keywords.from === keywords.to && !context.explicit) return null // 如果没有输入内容则不补全
   return {
     from: keywords.from,
-    options: emojiCompletionList,
+    options: emojiCompletionList
   }
 }

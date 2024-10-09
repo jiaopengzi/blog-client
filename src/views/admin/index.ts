@@ -26,5 +26,5 @@ export const components = {
   Media,
   PermissionRole,
   UserView,
-  LoginLog,
+  LoginLog
 }

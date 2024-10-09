@@ -13,7 +13,7 @@ import router from '@/router'
 // 分页查询参数键
 export enum PaginationQueryKey {
   PageSize = 'page-size',
-  CurrentPage = 'current-page',
+  CurrentPage = 'current-page'
 }
 
 /**
@@ -28,11 +28,11 @@ export function paginationRouterPush(
   routeName: string,
   pageSize: number,
   currentPage: number,
-  additionalParams: Record<string, string | number>,
+  additionalParams: Record<string, string | number>
 ) {
   const query: Record<string, string | number> = {
     [PaginationQueryKey.PageSize]: pageSize,
-    [PaginationQueryKey.CurrentPage]: currentPage,
+    [PaginationQueryKey.CurrentPage]: currentPage
   }
 
   // 过滤掉值为空字符串的参数
@@ -45,6 +45,6 @@ export function paginationRouterPush(
 
   router.push({
     name: routeName,
-    query: query,
+    query: query
   })
 }

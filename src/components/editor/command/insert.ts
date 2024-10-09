@@ -19,12 +19,12 @@ import type { MardkdownEditorCommandItemType } from '@/components/editor/command
  */
 export function editorInsertFormatContent(
   view: EditorView,
-  command: MardkdownEditorCommandItemType,
+  command: MardkdownEditorCommandItemType
 ) {
   // 从当前光标位置开始插入内容
   const insert = (position: number, content: string) => {
     view.dispatch({
-      changes: { from: position, to: position, insert: content },
+      changes: { from: position, to: position, insert: content }
     })
   }
 
@@ -58,8 +58,8 @@ export function editorInsertFormatContent(
     view.dispatch({
       selection: {
         anchor: cursorPosMove,
-        head: cursorPosMove,
-      },
+        head: cursorPosMove
+      }
     })
 
     view.focus() // 使编辑器获取焦点

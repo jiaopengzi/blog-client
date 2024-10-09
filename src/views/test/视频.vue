@@ -16,13 +16,10 @@
   <div class="container">
     <VideoPlayer />
   </div>
-
-
 </template>
 
 <script setup lang="ts">
 import VideoPlayer from '@/components/player'
-
 </script>
 
 <style scoped lang="scss">

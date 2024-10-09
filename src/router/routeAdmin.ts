@@ -19,9 +19,9 @@ function generateAdminRoutes() {
       name: 'admin',
       component: () => import('@/views/admin'),
       meta: {
-        requiresAuth: true,
-      },
-    },
+        requiresAuth: true
+      }
+    }
   }
   // 生成管理后台路由
   Object.keys(adminMenuItemMapWithIndex).forEach((key) => {
@@ -31,8 +31,8 @@ function generateAdminRoutes() {
       name: key,
       component: () => import('@/views/admin'),
       meta: {
-        requiresAuth: true,
-      },
+        requiresAuth: true
+      }
     }
     routes[key] = route
   })

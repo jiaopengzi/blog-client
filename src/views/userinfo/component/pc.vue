@@ -23,13 +23,20 @@
     </div>
 
     <div>
-      <el-tabs type="border-card" :tab-position="tabPosition" class="tabs" v-model="activeTab" @tab-change="tabChange">
+      <el-tabs
+        type="border-card"
+        :tab-position="tabPosition"
+        class="tabs"
+        v-model="activeTab"
+        @tab-change="tabChange"
+      >
         <el-tab-pane name="info">
           <template #label>
             <span class="custom-tabs-label">
               <el-icon>
-                <View />
-              </el-icon><span>我的信息</span></span>
+                <View /> </el-icon
+              ><span>我的信息</span></span
+            >
           </template>
           <UserInfoInfo />
         </el-tab-pane>
@@ -106,7 +113,6 @@ import UserInfoPost from '@/views/userinfo/component/post'
 import UserInfoComment from '@/views/userinfo/component/comment'
 import UserInfoFavorite from '@/views/userinfo/component/favorite'
 
-
 defineOptions({ name: 'UserInfoPC' })
 
 const tabPosition = ref('left') // tab位置
@@ -136,7 +142,7 @@ if (hashValue) {
   background-color: $background-color-page;
 }
 
-.tabs>.el-tabs__content {
+.tabs > .el-tabs__content {
   padding: 32px;
   color: #6b778c;
   font-size: 32px;

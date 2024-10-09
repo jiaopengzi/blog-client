@@ -16,4 +16,3 @@
 defineOptions({ name: 'UserInfoFavoritePC' })
 </script>
 <style scoped lang="scss"></style>
-

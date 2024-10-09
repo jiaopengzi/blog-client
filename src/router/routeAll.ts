@@ -25,8 +25,8 @@ export const routeObj: RouteObjectType = {
     name: 'home',
     component: () => import('@/views/home'),
     meta: {
-      requiresAuth: false,
-    },
+      requiresAuth: false
+    }
   },
 
   test: {
@@ -34,16 +34,16 @@ export const routeObj: RouteObjectType = {
     name: 'test',
     component: () => import('@/views/test'),
     meta: {
-      requiresAuth: false,
-    },
+      requiresAuth: false
+    }
   },
   test1: {
     path: '/test1',
     name: 'test1',
     component: () => import('@/views/test/index1.vue'),
     meta: {
-      requiresAuth: false,
-    },
+      requiresAuth: false
+    }
   },
 
   // 用户相关路由
@@ -58,9 +58,9 @@ export const routeObj: RouteObjectType = {
     name: '404',
     component: () => import('@/views/404'),
     meta: {
-      requiresAuth: false,
-    },
-  },
+      requiresAuth: false
+    }
+  }
 }
 
 export const routes = Object.values(routeObj) as RouteRecordRaw[]

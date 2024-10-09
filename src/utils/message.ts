@@ -18,7 +18,7 @@ export const ShowMsgTip = (msgtype: MsgType, msgStr: string, duration: number = 
     // message: MsgTitle[msgtype] + ':' + msgStr,
     message: msgStr,
     type: msgtype,
-    duration: duration,
+    duration: duration
   })
 }
 // 将 MsgType 作为 ShowMsgTip 的静态属性添加

@@ -16,5 +16,3 @@
 defineOptions({ name: 'UserInfoVipPC' })
 </script>
 <style scoped lang="scss"></style>
-
-

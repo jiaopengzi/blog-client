@@ -20,7 +20,7 @@ export function scrollToElement(
   container: HTMLElement | null,
   index: number,
   selectors: string = '*',
-  behavior: ScrollBehavior = 'smooth',
+  behavior: ScrollBehavior = 'smooth'
 ): void {
   // 如果容器为null，则不执行滚动操作。
   if (!container) return
@@ -41,7 +41,7 @@ export function scrollToElement(
     // 计算滚动目标的偏移量，并通过容器的偏移量调整。
     container.scrollTo({
       top: targetElementOffsetTop - container.offsetTop,
-      behavior: behavior,
+      behavior: behavior
     })
   }
 }

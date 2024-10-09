@@ -15,7 +15,7 @@ declare module 'custom-hls' {
     LevelKey,
     Loader,
     MediaKeySessionContext,
-    KeyLoadedData,
+    KeyLoadedData
   } from 'hls.js'
 
   export interface KeyLoaderContext extends LoaderContext {

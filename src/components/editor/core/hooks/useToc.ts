@@ -15,7 +15,7 @@ import { storeToRefs } from 'pinia'
 
 export function useToc(
   codemirrorRef: Ref<CodemirrorRef | null>,
-  previewRef: Ref<PreviewRef | null>,
+  previewRef: Ref<PreviewRef | null>
 ) {
   const editorStore = useEditorStore()
   const { tocMarkdown } = storeToRefs(editorStore)
@@ -31,6 +31,6 @@ export function useToc(
   }
 
   return {
-    tocHeadingClicked,
+    tocHeadingClicked
   }
 }

@@ -12,14 +12,29 @@
 <template>
   <div class="login-page">
     <!-- 添加滑动验证组件：SlideVerify -->
-    <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="login"></SlideVerify>
-    <el-form :label-position="labelPosition" label-width="100px" ref="loginFormRef" :model="loginForm" :rules="rules"
-      class="login-form" :size="formSize" status-icon>
+    <SlideVerify
+      v-if="showSlideVerify"
+      @on-close="closeSlideVerify"
+      @on-success="login"
+    ></SlideVerify>
+    <el-form
+      :label-position="labelPosition"
+      label-width="100px"
+      ref="loginFormRef"
+      :model="loginForm"
+      :rules="rules"
+      class="login-form"
+      :size="formSize"
+      status-icon
+    >
       <div class="header-main">
         <a :href="routeObj.home.path">
           <div class="logo">
             <h2>
-              <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" :alt="routeObj.home.path" />
+              <img
+                src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
+                :alt="routeObj.home.path"
+              />
             </h2>
           </div>
         </a>
@@ -29,7 +44,11 @@
         <el-input v-model.trim="loginForm.loginName" placeholder="请输入用户名或邮箱" />
       </el-form-item>
       <el-form-item label="密码" prop="password">
-        <el-input type="password" v-model.trim="loginForm.password" placeholder="大小写字母 + 数字, 长度:6-64" />
+        <el-input
+          type="password"
+          v-model.trim="loginForm.password"
+          placeholder="大小写字母 + 数字, 长度:6-64"
+        />
       </el-form-item>
       <div class="btn-submit">
         <el-form-item>
@@ -67,7 +86,7 @@ import type { FormInstance, FormRules } from 'element-plus' // 需要全部安�
 import router from '@/router/index'
 import { routeObj } from '@/router/routeAll'
 import { useUserStore } from '@/stores/user'
-import type { LoginForm } from "@/views/login"
+import type { LoginForm } from '@/views/login'
 import { IconKeys } from '@/components/common/icons'
 import type { RouteLocationRaw } from 'vue-router'
 import { RegexPatterns } from '@/utils/regexPatterns'
@@ -85,20 +104,19 @@ const labelPosition = ref('top')
 const formSize = ref('default')
 
 // 表单实例
-const loginFormRef = useTemplateRef<FormInstance>("loginFormRef")
+const loginFormRef = useTemplateRef<FormInstance>('loginFormRef')
 
 // 表单数据
 const loginForm = reactive<LoginForm>({
   loginName: 'jiaopengzi@qq.com',
-  password: '123QWEasd',
+  password: '123QWEasd'
 })
-
 
 // 表单数据动态绑定
 const loginNameRef = toRef(loginForm, 'loginName')
 
 // hook 函数
-const { checkLoginNameValidator } = useFormValidation({ FormUserName: loginNameRef, })
+const { checkLoginNameValidator } = useFormValidation({ FormUserName: loginNameRef })
 
 /**
  * @description: 表单校验规则
@@ -110,10 +128,10 @@ const rules = reactive<FormRules<LoginForm>>({
     {
       pattern: new RegExp(RegexPatterns.LoginName),
       message: '6-20位小写字母或数字 | 邮箱',
-      trigger: 'change',
+      trigger: 'change'
     },
     // 用户状态校验
-    { validator: checkLoginNameValidator, trigger: 'blur' },
+    { validator: checkLoginNameValidator, trigger: 'blur' }
   ],
 
   password: [
@@ -122,9 +140,9 @@ const rules = reactive<FormRules<LoginForm>>({
     {
       pattern: new RegExp(RegexPatterns.Password),
       message: '必须包含：大小写字母+数字,长度:6-64',
-      trigger: 'change',
-    },
-  ],
+      trigger: 'change'
+    }
+  ]
 })
 
 /**
@@ -140,7 +158,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     if (valid) {
       await userStore.login(loginForm.loginName, loginForm.password) // 登录
       if (userStore.getIsLogin) {
-        // 从 url 中获取 redirect 参数，如果没有就默认跳转到首页  
+        // 从 url 中获取 redirect 参数，如果没有就默认跳转到首页
         const redirectPath = router.currentRoute.value.query.redirect as string | undefined
         if (redirectPath) {
           // 使用 URL 对象来分离路径和查询参数
@@ -222,7 +240,6 @@ const loginByQQ = () => {
   }
 }
 
-
 @include respond-to('phone') {
   .login-form {
     /* 当屏幕宽度小于 1024px 时 */
@@ -232,7 +249,6 @@ const loginByQQ = () => {
     background-color: transparent;
   }
 }
-
 
 h2 {
   text-align: center;

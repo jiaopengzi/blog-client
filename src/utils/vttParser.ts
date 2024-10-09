@@ -24,7 +24,7 @@ export const parseVTT = (function () {
     /(\d{2}):(\d{2}):(\d{2})\.(\d{3}) --> (\d{2}):(\d{2}):(\d{2})\.(\d{3})\s+([\s\S]*?)(?=\r?\n\r?\n|\r?\n*$)/g
 
   return async function parseVTT(
-    url: string,
+    url: string
   ): Promise<Array<{ start: number; end: number; text: string }>> {
     const response = await fetch(url)
     const vttText = await response.text()
@@ -35,7 +35,7 @@ export const parseVTT = (function () {
       cues.push({
         start: parseTimeSegments(match[1], match[2], match[3], match[4]),
         end: parseTimeSegments(match[5], match[6], match[7], match[8]),
-        text: match[9].trim(),
+        text: match[9].trim()
       })
     }
 
@@ -138,7 +138,7 @@ export const isWebvtt = (function () {
  */
 export const createSubtitlesByVideoHashId = (
   videoHashId: string,
-  languages: string[] | null,
+  languages: string[] | null
 ): Subtitles => {
   // 如果没有指定字幕语言列表，则返回空字幕对象
   if (!languages || languages.length === 0) {
@@ -148,7 +148,7 @@ export const createSubtitlesByVideoHashId = (
   // 初始化 availableSubtitles
   const subtitles: Subtitles = {
     availableSubtitles: {},
-    selectedSubtitlesLanguage: Language.disabled,
+    selectedSubtitlesLanguage: Language.disabled
   }
 
   for (const subtitlesLanguage of languages) {
@@ -157,7 +157,7 @@ export const createSubtitlesByVideoHashId = (
 
     const item: SubtitlesItem = {
       label: Language[subtitlesLanguage as keyof typeof Language], // 字幕标签，例如 'English', '中文', 'Español' 等
-      src: subtitlesURL, // 字幕文件的URL
+      src: subtitlesURL // 字幕文件的URL
     }
 
     // 将字幕项添加到 availableSubtitles 中

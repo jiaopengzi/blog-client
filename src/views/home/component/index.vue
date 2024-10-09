@@ -9,18 +9,17 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-    <div class="pc">
-        <HomePC />
-    </div>
-    <div class="phone">
-        <HomePhone />
-    </div>
+  <div class="pc">
+    <HomePC />
+  </div>
+  <div class="phone">
+    <HomePhone />
+  </div>
 </template>
 <script setup lang="ts">
 import HomePC from './pc.vue'
 import HomePhone from './phone.vue'
 
 defineOptions({ name: 'LayoutHome' })
-
 </script>
 <style scoped lang="scss"></style>

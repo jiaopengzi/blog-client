@@ -9,31 +9,40 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 
-
 <template>
-    <div>
-        <div class="switchs">
-            <span class="switch">视频文件选项:</span>
-            <el-switch class="switch" v-model="isEncrypt" inline-prompt active-text="加密" inactive-text="无密"
-                style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949" />
-            <el-switch class="switch" v-model="isNoFree" inline-prompt active-text="收费" inactive-text="免费"
-                style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949" />
-        </div>
-
-        <div class="row2">建议:收费视频加密,免费视频不加密."</div>
-        <el-upload ref="uploadRef" class="upload" drag multiple :http-request="httpRequest">
-            <Icon :name="IconKeys.UploadFilled" custom-class="icon-upload-filled" />
-            <div class="el-upload__text">
-                将文件拖放到此处 或 <em>点击上传</em>
-            </div>
-            <template #tip>
-                <div class="el-upload__tip">
-                    <div class="el-upload__tip_title">支持上传格式及最大限制:</div>
-                    <div class="el-upload__tip_info">{{ allowedInfo }}</div>
-                </div>
-            </template>
-        </el-upload>
+  <div>
+    <div class="switchs">
+      <span class="switch">视频文件选项:</span>
+      <el-switch
+        class="switch"
+        v-model="isEncrypt"
+        inline-prompt
+        active-text="加密"
+        inactive-text="无密"
+        style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
+      />
+      <el-switch
+        class="switch"
+        v-model="isNoFree"
+        inline-prompt
+        active-text="收费"
+        inactive-text="免费"
+        style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
+      />
     </div>
+
+    <div class="row2">建议:收费视频加密,免费视频不加密."</div>
+    <el-upload ref="uploadRef" class="upload" drag multiple :http-request="httpRequest">
+      <Icon :name="IconKeys.UploadFilled" custom-class="icon-upload-filled" />
+      <div class="el-upload__text">将文件拖放到此处 或 <em>点击上传</em></div>
+      <template #tip>
+        <div class="el-upload__tip">
+          <div class="el-upload__tip_title">支持上传格式及最大限制:</div>
+          <div class="el-upload__tip_info">{{ allowedInfo }}</div>
+        </div>
+      </template>
+    </el-upload>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -45,106 +54,107 @@ import { type UploadRequestOptions, type ElUpload } from 'element-plus'
 import { HashAlgorithm } from '@/utils/hash'
 import { uploadEl } from '@/views/admin/component/main/media/component/add-media'
 
-defineOptions({ name: "add-media" })
+defineOptions({ name: 'add-media' })
 
-// 定义是否显示 
+// 定义是否显示
 const { isVisible = false } = defineProps<{
-    isVisible: boolean // 是否显示
+  isVisible: boolean // 是否显示
 }>()
 
-
-const uploadRef = useTemplateRef<typeof ElUpload>("uploadRef")
+const uploadRef = useTemplateRef<typeof ElUpload>('uploadRef')
 
 // 监控 IsVisible 变化,如果为 false 则清空上传文件
 watchEffect(() => {
-    if (!isVisible) {
-        uploadRef.value?.clearFiles()
-    }
+  if (!isVisible) {
+    uploadRef.value?.clearFiles()
+  }
 })
 
-const allowedInfo = ref("")
+const allowedInfo = ref('')
 const chunkSizeServer = ref(1024 * 1024 * 10)
 let hashAlgorithmServer: HashAlgorithm = HashAlgorithm.SHA256
 
 const getAllowedInfo = async () => {
-    const strList: string[] = []
-    await getUploadFileRequirementsAPI().then((response) => {
-        if (response.data.code === ResponseCode.GetUploadFileRequirementsSuccess) {
-            const allowedInfoList = response.data.data.file_allowed
-            chunkSizeServer.value = response.data.data.chunk_size
-            hashAlgorithmServer = response.data.data.hash_algorithm
-            // for 循环遍历 allowedInfoList 数组 i 最大值为 allowedInfoList.length - 1
-            for (let i = 0; i < allowedInfoList.length; i++) {
-                // item的 Type按照'/'分割，取最后一个 例如：image/png => png
-                const _type = allowedInfoList[i].extension.toUpperCase()
-                // item的 MaxSize 是以字节为单位，转换为mb
-                const maxSize = allowedInfoList[i].max_size / 1024 / 1024
-                // 如果 maxSize 小于 1MB，保留两位小数 否则取整
-                maxSize < 1 ? strList.push(`${_type}:${maxSize.toFixed(2)}MB`) : strList.push(`${_type}:${Math.floor(maxSize)}MB`)
-            }
-        }
-        allowedInfo.value = strList.join("、") + '。'
-    })
+  const strList: string[] = []
+  await getUploadFileRequirementsAPI().then((response) => {
+    if (response.data.code === ResponseCode.GetUploadFileRequirementsSuccess) {
+      const allowedInfoList = response.data.data.file_allowed
+      chunkSizeServer.value = response.data.data.chunk_size
+      hashAlgorithmServer = response.data.data.hash_algorithm
+      // for 循环遍历 allowedInfoList 数组 i 最大值为 allowedInfoList.length - 1
+      for (let i = 0; i < allowedInfoList.length; i++) {
+        // item的 Type按照'/'分割，取最后一个 例如：image/png => png
+        const _type = allowedInfoList[i].extension.toUpperCase()
+        // item的 MaxSize 是以字节为单位，转换为mb
+        const maxSize = allowedInfoList[i].max_size / 1024 / 1024
+        // 如果 maxSize 小于 1MB，保留两位小数 否则取整
+        maxSize < 1
+          ? strList.push(`${_type}:${maxSize.toFixed(2)}MB`)
+          : strList.push(`${_type}:${Math.floor(maxSize)}MB`)
+      }
+    }
+    allowedInfo.value = strList.join('、') + '。'
+  })
 }
 
 // 上传视频是否加密
 const isEncrypt = ref(true)
 const isNoFree = ref(true)
 
-const httpRequest = async (options: UploadRequestOptions) => uploadEl(options, isEncrypt.value, isNoFree.value, chunkSizeServer.value, hashAlgorithmServer)
+const httpRequest = async (options: UploadRequestOptions) =>
+  uploadEl(options, isEncrypt.value, isNoFree.value, chunkSizeServer.value, hashAlgorithmServer)
 
 onBeforeMount(async () => {
-    await getAllowedInfo()
+  await getAllowedInfo()
 })
-
 </script>
 
 <style lang="scss" scoped>
 .switchs {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .switch {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .row2 {
-    margin: 10px 0;
-    font-size: 14px;
-    font-weight: 500;
+  margin: 10px 0;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .icon-upload-filled {
-    font-size: 6em;
-    fill: $primary-color;
+  font-size: 6em;
+  fill: $primary-color;
 }
 
 :deep(.el-upload-list) {
-    li {
-        // 上下边距
-        margin: 30px 0;
-        padding: 0;
-    }
+  li {
+    // 上下边距
+    margin: 30px 0;
+    padding: 0;
+  }
 }
 
 .dialog-title {
-    font-size: 20px;
-    font-weight: 700;
+  font-size: 20px;
+  font-weight: 700;
 }
 
 .el-upload__text {
-    // font-size: 16px;
-    font-weight: 500;
+  // font-size: 16px;
+  font-weight: 500;
 }
 
 .el-upload__tip_title {
-    margin: 10px 0;
-    color: red;
+  margin: 10px 0;
+  color: red;
 }
 
 .el-upload__tip_info {
-    margin: 10px 0;
-    color: red;
+  margin: 10px 0;
+  color: red;
 }
 </style>

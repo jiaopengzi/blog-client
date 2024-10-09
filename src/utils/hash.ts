@@ -15,7 +15,7 @@ import crypto from 'crypto-js'
 export enum HashAlgorithm {
   SHA256 = 'SHA-256',
   SHA384 = 'SHA-384',
-  SHA512 = 'SHA-512',
+  SHA512 = 'SHA-512'
 }
 
 //  哈希计算器类
@@ -41,7 +41,7 @@ export class HashCalculator {
         return crypto.algo.SHA512.create()
       default:
         throw new Error(
-          `Unsupported hash algorithm: ${this.algorithm},shuold be SHA-256,SHA-384,SHA-512`,
+          `Unsupported hash algorithm: ${this.algorithm},shuold be SHA-256,SHA-384,SHA-512`
         )
     }
   }
@@ -107,7 +107,7 @@ export class HashCalculator {
         break
       default:
         throw new Error(
-          `Unsupported hash algorithm: ${this.algorithm},shuold be SHA-256,SHA-384,SHA-512`,
+          `Unsupported hash algorithm: ${this.algorithm},shuold be SHA-256,SHA-384,SHA-512`
         )
     }
 

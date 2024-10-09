@@ -27,7 +27,7 @@ const RESERVED_WORDS = [
   'DATETIME',
   'DOUBLE',
   'INTEGER',
-  'STRING',
+  'STRING'
 ]
 // ].sort((a, b) => b.localeCompare(a)) // 降序排列 使得长的函数名优先匹配
 
@@ -541,44 +541,44 @@ const RESERVED_FUNCTIONS = [
   'OFFSET',
   'ORDERBY',
   'PARTITIONBY',
-  'WINDOW',
+  'WINDOW'
 ]
 
 const STRING: Mode = {
   className: 'string',
   variants: [
     {
-      match: /"[\s\S]*?"/,
-    },
-  ],
+      match: /"[\s\S]*?"/
+    }
+  ]
 }
 
 const TABLE_NAME: Mode = {
   className: 'table-name',
   begin: /'/,
-  end: /'/,
+  end: /'/
 }
 
 const COLUMN_NAME: Mode = {
   className: 'column-name',
   begin: /\[/,
-  end: /\]/,
+  end: /\]/
 }
 
 const FUNCTIONS: Mode = {
   className: 'function',
-  begin: regex.concat(/\b/, regex.either(...RESERVED_FUNCTIONS), /\b/), // \b 代表单词边界
+  begin: regex.concat(/\b/, regex.either(...RESERVED_FUNCTIONS), /\b/) // \b 代表单词边界
 }
 
 const KEYWORDS: Mode = {
   className: 'keyword',
-  begin: regex.concat(/\b/, regex.either(...RESERVED_WORDS), /\b/), // \b 代表单词边界
+  begin: regex.concat(/\b/, regex.either(...RESERVED_WORDS), /\b/) // \b 代表单词边界
 }
 
 // 度量值名称或者表名
 const DAX_NAME: Mode = {
   className: 'dax-name',
-  begin: /\b^(.+?)(?=\s*=)/, // 以任意非空白字符开头，最后跟等号
+  begin: /\b^(.+?)(?=\s*=)/ // 以任意非空白字符开头，最后跟等号
 }
 
 const VARIABLE: Mode = {
@@ -589,7 +589,7 @@ const VARIABLE: Mode = {
    * 2、左侧为空格和行首
    * 3、右侧为空格或者行尾或者符号
    */
-  begin: /(?<!\S)[A-Za-z_][A-Za-z0-9_]*(?=\s|$|[\W])/g,
+  begin: /(?<!\S)[A-Za-z_][A-Za-z0-9_]*(?=\s|$|[\W])/g
 }
 
 const COMMENT: Mode = hljs.COMMENT('//', '$') // 行注释
@@ -597,19 +597,19 @@ const COMMENT: Mode = hljs.COMMENT('//', '$') // 行注释
 const OPERATOR: Mode = {
   className: 'operator',
   begin: /[-+*/=%^~]|&&?|\|\|?|!=?|<(?:=>?|<|>)?|>[>=]?/,
-  relevance: 0,
+  relevance: 0
 }
 // 大括号 中括号 小括号
 const BRACKET: Mode = {
   className: 'bracket',
   begin: /[(){}[\]]/,
-  relevance: 0,
+  relevance: 0
 }
 
 // 单独的数字
 const ALONE_NUMBER: Mode = {
   className: 'number',
-  begin: /\b\d+\b/,
+  begin: /\b\d+\b/
 }
 
 const DAX: LanguageFn = () => ({
@@ -628,8 +628,8 @@ const DAX: LanguageFn = () => ({
     BRACKET, // 括号
     ALONE_NUMBER, // 数字
     DAX_NAME, // 度量值名称或者表名
-    VARIABLE, // 变量
-  ],
+    VARIABLE // 变量
+  ]
 })
 
 export default DAX

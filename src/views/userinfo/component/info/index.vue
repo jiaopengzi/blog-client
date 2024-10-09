@@ -9,18 +9,17 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-    <div class="pc">
-        <UserInfoInfoPC />
-    </div>
-    <div class="phone">
-        <UserInfoInfoPhone />
-    </div>
+  <div class="pc">
+    <UserInfoInfoPC />
+  </div>
+  <div class="phone">
+    <UserInfoInfoPhone />
+  </div>
 </template>
 <script setup lang="ts">
 import UserInfoInfoPC from './pc.vue'
 import UserInfoInfoPhone from './phone.vue'
 
 defineOptions({ name: 'UserInfoInfo' })
-
 </script>
 <style scoped lang="scss"></style>

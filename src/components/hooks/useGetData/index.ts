@@ -19,7 +19,7 @@ import { useRoute } from 'vue-router'
  */
 export function useGetData(
   getDataOnBeforeMount: () => Promise<void>, // 初始化时获取数据
-  getDataOnRouteChange: () => Promise<void>, // 路由变化时获取数据
+  getDataOnRouteChange: () => Promise<void> // 路由变化时获取数据
 ) {
   const route = useRoute()
   const isInitialLoad = ref(true) // 每次调用时创建新的标志变量实例
@@ -37,6 +37,6 @@ export function useGetData(
         return
       }
       await getDataOnRouteChange()
-    },
+    }
   )
 }

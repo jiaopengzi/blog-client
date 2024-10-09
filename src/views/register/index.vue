@@ -12,14 +12,29 @@
 <template>
   <div class="register-page">
     <!-- 添加滑动验证组件：SlideVerify -->
-    <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="sendcaptcha"></SlideVerify>
-    <el-form :label-position="labelPosition" label-width="100px" ref="registerFormRef" :model="registerForm"
-      :rules="rules" class="register-form" :size="formSize" status-icon>
+    <SlideVerify
+      v-if="showSlideVerify"
+      @on-close="closeSlideVerify"
+      @on-success="sendcaptcha"
+    ></SlideVerify>
+    <el-form
+      :label-position="labelPosition"
+      label-width="100px"
+      ref="registerFormRef"
+      :model="registerForm"
+      :rules="rules"
+      class="register-form"
+      :size="formSize"
+      status-icon
+    >
       <div class="header-main">
         <a :href="routeObj.home.path">
           <div class="logo">
             <h2>
-              <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" :alt="routeObj.home.path" />
+              <img
+                src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
+                :alt="routeObj.home.path"
+              />
             </h2>
           </div>
         </a>
@@ -35,7 +50,12 @@
 
       <el-form-item label="验证码" prop="captcha">
         <el-input class="email-code" v-model.trim="registerForm.captcha" />
-        <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="btnCaptchaState.disabled">
+        <button
+          class="btn-captcha"
+          type="button"
+          @click="openSlideVerify"
+          :disabled="btnCaptchaState.disabled"
+        >
           {{ captcha }}
         </button>
       </el-form-item>
@@ -49,13 +69,18 @@
       </el-form-item>
 
       <el-form-item prop="acceptedTerms">
-        <el-checkbox v-model="registerForm.acceptedTerms" value="同意条款" name="acceptedTerms" />我已同意并接受：<a
-          href="/">《服务条款》</a>
+        <el-checkbox
+          v-model="registerForm.acceptedTerms"
+          value="同意条款"
+          name="acceptedTerms"
+        />我已同意并接受：<a href="/">《服务条款》</a>
       </el-form-item>
 
       <div class="btn-submit">
         <el-form-item>
-          <el-button type="primary" @click="submitForm(registerFormRef as FormInstance)">注册</el-button>
+          <el-button type="primary" @click="submitForm(registerFormRef as FormInstance)"
+            >注册</el-button
+          >
           <el-button @click="resetForm(registerFormRef as FormInstance)">重置</el-button>
         </el-form-item>
       </div>
@@ -97,7 +122,7 @@ const labelPosition = ref('top')
 const formSize = ref('default')
 
 // 表单实例
-const registerFormRef = useTemplateRef<FormInstance>("registerFormRef")
+const registerFormRef = useTemplateRef<FormInstance>('registerFormRef')
 
 // 表单数据
 const registerForm = reactive<RegisterForm>({
@@ -112,9 +137,8 @@ const registerForm = reactive<RegisterForm>({
   captcha: '123456',
   password: '123QWEasd',
   rePassword: '123QWEasd',
-  acceptedTerms: false,
+  acceptedTerms: false
 })
-
 
 const userNameRef = toRef(registerForm, 'userName')
 const emailRef = toRef(registerForm, 'email')
@@ -130,14 +154,15 @@ const {
   checkEmailValidator,
   checkCaptchaValidator,
   rePasswordValidator,
-  acceptedTermsValidator } = useFormValidation({
-    FormUserName: userNameRef,
-    FormEmail: emailRef,
-    FormPassword: passwordRef,
-    FormRePassword: rePasswordRef,
-    FormCaptcha: captchaRef,
-    FormAcceptedTerms: acceptedTermsRef
-  })
+  acceptedTermsValidator
+} = useFormValidation({
+  FormUserName: userNameRef,
+  FormEmail: emailRef,
+  FormPassword: passwordRef,
+  FormRePassword: rePasswordRef,
+  FormCaptcha: captchaRef,
+  FormAcceptedTerms: acceptedTermsRef
+})
 
 /**
  * @description: 表单校验规则
@@ -147,24 +172,28 @@ const rules = reactive<FormRules<RegisterForm>>({
   userName: [
     { required: true, message: '请输入用户名！', trigger: 'blur' },
     // { pattern: /^[a-z0-9]{6,20}$/, message: '用户名长度:6-20的小写字母或数字', trigger: 'change' },
-    { pattern: new RegExp(RegexPatterns.UserName), message: '用户名长度:6-20的小写字母或数字', trigger: 'change' },
+    {
+      pattern: new RegExp(RegexPatterns.UserName),
+      message: '用户名长度:6-20的小写字母或数字',
+      trigger: 'change'
+    },
     // 用户查重
-    { validator: checkUserNameValidator, trigger: 'blur' },
+    { validator: checkUserNameValidator, trigger: 'blur' }
   ],
   email: [
     { required: true, message: '请输入小写的邮箱地址', trigger: 'blur' },
     {
       pattern: new RegExp(RegexPatterns.Email),
       message: '请输入有效的邮箱',
-      trigger: 'blur',
+      trigger: 'blur'
     },
     // 邮箱查重
-    { validator: checkEmailValidator, trigger: 'blur' },
+    { validator: checkEmailValidator, trigger: 'blur' }
   ],
   captcha: [
     { required: true, message: '请输入验证码', trigger: 'blur' },
     { pattern: new RegExp(RegexPatterns.Captcha), message: '验证码为6位的数字', trigger: 'blur' },
-    { validator: checkCaptchaValidator, trigger: 'blur' },
+    { validator: checkCaptchaValidator, trigger: 'blur' }
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
@@ -172,14 +201,14 @@ const rules = reactive<FormRules<RegisterForm>>({
     {
       pattern: new RegExp(RegexPatterns.Password),
       message: '必须包含：大小写字母+数字,长度:6-64',
-      trigger: 'change',
-    },
+      trigger: 'change'
+    }
   ],
   rePassword: [{ required: true, validator: rePasswordValidator, trigger: 'blur' }],
 
   acceptedTerms: [
-    { type: 'boolean', required: true, validator: acceptedTermsValidator, trigger: 'change' },
-  ],
+    { type: 'boolean', required: true, validator: acceptedTermsValidator, trigger: 'change' }
+  ]
 })
 
 /**
@@ -198,7 +227,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         user_name: registerForm.userName,
         password: registerForm.password,
         re_password: registerForm.rePassword,
-        email: registerForm.email,
+        email: registerForm.email
       }
 
       console.log('req:', req)
@@ -337,8 +366,6 @@ const closeSlideVerify = () => {
     background-color: transparent;
   }
 }
-
-
 
 h2 {
   text-align: center;

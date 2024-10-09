@@ -17,5 +17,5 @@ export enum RegexPatterns {
   Captcha = '^\\d{6}$', //验证码为6位的数字
   Password = '^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,64}$', //大小写字母+数字,长度:6-64
   LoginName = '^([a-z0-9._%+-]+)@[a-z0-9.-]+\\.[a-z]{2,}$|^[a-z0-9]{6,20}$', // 用户名或邮箱
-  DisableSeconds = '^[1-9]\\d*$', // 正整数 禁用时间 秒
+  DisableSeconds = '^[1-9]\\d*$' // 正整数 禁用时间 秒
 }

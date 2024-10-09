@@ -57,7 +57,7 @@ function createEmptyEditorStore(): editorStore {
     isAsyncScroll: true, // 是否异步滚动
     isFullScreen: false, // 是否全屏
     isShowEmojiPicker: false, // 是否显示 emoji picker
-    isShowPreviewWechat: false, // 是否显示微信预览
+    isShowPreviewWechat: false // 是否显示微信预览
   }
 }
 
@@ -69,7 +69,7 @@ export const useEditorStore = defineStore({
     // 获取滚动条隐藏的 html 字符串
     getScrollHideHtmlStr(): string {
       return createMarked().parse(this.scrollHideViewStr).toString()
-    },
+    }
   },
 
   actions: {
@@ -91,8 +91,8 @@ export const useEditorStore = defineStore({
     async getEditorContentFromUrl(url: string) {
       const res = await axios.get(url)
       this.updateEditorStore(res.data)
-    },
-  },
+    }
+  }
 })
 
 /**
@@ -112,7 +112,7 @@ function matchAllHeadingToList(html: string): HeadingType[] {
     headingList.push({
       level,
       text,
-      anchor,
+      anchor
     })
   })
   return headingList

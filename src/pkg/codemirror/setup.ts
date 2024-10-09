@@ -19,7 +19,7 @@ import {
   highlightActiveLine,
   keymap,
   gutter,
-  EditorView,
+  EditorView
 } from '@codemirror/view'
 import { EditorState } from '@codemirror/state'
 import type { Extension } from '@codemirror/state'
@@ -29,7 +29,7 @@ import {
   syntaxHighlighting,
   defaultHighlightStyle,
   bracketMatching,
-  foldKeymap,
+  foldKeymap
 } from '@codemirror/language'
 import { history, defaultKeymap, historyKeymap, indentWithTab } from '@codemirror/commands'
 import { highlightSelectionMatches, searchKeymap } from '@codemirror/search'
@@ -37,7 +37,7 @@ import {
   closeBrackets,
   autocompletion,
   closeBracketsKeymap,
-  completionKeymap,
+  completionKeymap
 } from '@codemirror/autocomplete'
 import { lintKeymap } from '@codemirror/lint'
 import { markdown } from '@codemirror/lang-markdown'
@@ -75,14 +75,14 @@ const createCustomSetup = () => {
       indentWithTab, // tab 缩进
       ...foldKeymap, // 折叠
       ...completionKeymap, // 自动完成
-      ...lintKeymap, // 代码检查
+      ...lintKeymap // 代码检查
     ]),
     gutter({ class: 'gutter-custom' }), // 为 gutter 添加 class
     markdown(), // markdown 语法
     bottomPanelExt, // 底部面板
     customKeymap, // 自定义快捷键
     handlePasteImage, // 自定义键盘事件
-    handleDropImage, // 自定义拖拽事件
+    handleDropImage // 自定义拖拽事件
   ])()
   return customSetup
 }

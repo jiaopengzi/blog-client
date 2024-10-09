@@ -25,7 +25,7 @@ export const markExtensionInline: TokenizerAndRendererExtension = {
         type: 'mark',
         raw: match[0],
         text: match[1],
-        tokens: [],
+        tokens: []
       }
       this.lexer.inline(token.text, token.tokens)
       return token
@@ -33,5 +33,5 @@ export const markExtensionInline: TokenizerAndRendererExtension = {
   },
   renderer(token): string {
     return `<mark>${this.parser.parseInline(token.tokens || [])}</mark>`
-  },
+  }
 }

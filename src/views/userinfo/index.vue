@@ -22,7 +22,6 @@ import LayoutHeader from '@/components/layout/header'
 import UserInfo from '@/views/userinfo/component'
 import LayoutFooter from '@/components/layout/footer'
 
-
 defineOptions({ name: 'PageUserInfo' })
 </script>
 

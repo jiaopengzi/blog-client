@@ -28,7 +28,7 @@ export function useScroll(handler: ScrollHandler) {
     handler({
       position: currentPosition,
       direction,
-      speed,
+      speed
     })
 
     lastPosition = currentPosition

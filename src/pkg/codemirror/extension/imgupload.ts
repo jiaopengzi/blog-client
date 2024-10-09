@@ -35,7 +35,7 @@ const handlePasteImage: Extension = EditorView.domEventHandlers({
     // 上传图片并插入编辑器
 
     return true
-  },
+  }
 })
 
 // 上传图片
@@ -46,7 +46,7 @@ async function uploadImage(file: File, view: EditorView) {
     // 处理返回数据，并更新头像等信息
     const imageMarkdown = `![description](${imageUrl})\n`
     view.dispatch({
-      changes: { from: view.state.selection.main.from, insert: imageMarkdown },
+      changes: { from: view.state.selection.main.from, insert: imageMarkdown }
     })
 
     // 将光标移动指定位置 cursorPosMove 处 更新状态
@@ -79,7 +79,7 @@ const handleDropImage: Extension = EditorView.domEventHandlers({
     uploadImage(file, view)
 
     return true
-  },
+  }
 })
 
 export { handlePasteImage, handleDropImage }

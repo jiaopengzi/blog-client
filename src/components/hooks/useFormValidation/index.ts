@@ -14,18 +14,18 @@ import { type Ref } from 'vue'
 import { type CheckUserNameRequest, checkUserNameAPI } from '@/api/user/checkUserName'
 import {
   type CheckUserNameExcludingUserIDRequest,
-  checkUserNameExcludingUserIDAPI,
+  checkUserNameExcludingUserIDAPI
 } from '@/api/user/checkUserNameExcludingUserID'
 import { type CheckEmailRequest, CheckEmailAPI } from '@/api/user/checkEmail'
 import {
   type CheckEmailExcludingUserIDRequest,
-  checkEmailExcludingUserIDAPI,
+  checkEmailExcludingUserIDAPI
 } from '@/api/user/checkEmailExcludingUserID'
 import { type CaptchaSendRequest, captchaSendAPI } from '@/api/captcha/send'
 import { type CaptchaCheckRequest, captchaCheckAPI } from '@/api/captcha/check'
 import {
   type GetDisableExpiresAtSecondsRequest,
-  getDisableExpiresAtSecondsAPI,
+  getDisableExpiresAtSecondsAPI
 } from '@/api/user/getDisableExpiresAtSeconds'
 import { ResponseCode, CaptchaPurpose } from '@/api/responseCode'
 import { getUserForbiddenMsg } from '@/utils/msg'
@@ -48,7 +48,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
     FormPassword = '',
     FormRePassword = '',
     FormAcceptedTerms = false,
-    FormExcludingUserID = '',
+    FormExcludingUserID = ''
   } = options
 
   /**
@@ -77,7 +77,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
   function rePasswordValidator(
     rule: any,
     value: string,
-    callback: (error?: string | Error | undefined) => void,
+    callback: (error?: string | Error | undefined) => void
   ): void {
     // 在这里处理异步验证逻辑
 
@@ -122,7 +122,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
   function acceptedTermsValidator(
     rule: any,
     value: string,
-    callback: (error?: string | Error | undefined) => void,
+    callback: (error?: string | Error | undefined) => void
   ): void {
     if (FormAcceptedTerms === undefined) {
       callback('请勾选同意服务条款')
@@ -147,7 +147,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
       // 创建请求对象 加密内容
       const req: CaptchaSendRequest = {
         email: email,
-        purpose: CaptchaPurpose.Register,
+        purpose: CaptchaPurpose.Register
       }
       console.log('==========>发送验证码')
 
@@ -178,7 +178,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
     try {
       // 创建请求对象 加密内容
       const req: CheckUserNameRequest = {
-        user_name: userName,
+        user_name: userName
       }
 
       const { data } = await checkUserNameAPI(req)
@@ -201,7 +201,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
   function checkUserNameValidator(
     rule: any,
     value: string,
-    callback: (error?: string | Error | undefined) => void,
+    callback: (error?: string | Error | undefined) => void
   ): void {
     // 在这里处理异步验证逻辑
     if (FormUserName === undefined) {
@@ -224,13 +224,13 @@ export function useFormValidation(options: FormValidationOptions = {}) {
    */
   async function checkUserNameExcludingUserID(
     excludingUserID: string,
-    userName: string,
+    userName: string
   ): Promise<void> {
     try {
       // 创建请求对象 加密内容
       const req: CheckUserNameExcludingUserIDRequest = {
         excluding_user_id: excludingUserID,
-        user_name: userName,
+        user_name: userName
       }
 
       const { data } = await checkUserNameExcludingUserIDAPI(req)
@@ -253,7 +253,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
   function checkUserNameExcludingUserIDValidator(
     rule: any,
     value: string,
-    callback: (error?: string | Error | undefined) => void,
+    callback: (error?: string | Error | undefined) => void
   ): void {
     if (FormExcludingUserID === undefined) {
       callback('请输入用户ID')
@@ -285,7 +285,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
   async function checkEmail(eamil: string): Promise<void> {
     // 创建请求对象 加密内容
     const req: CheckEmailRequest = {
-      email: eamil,
+      email: eamil
     }
 
     try {
@@ -309,7 +309,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
   function checkEmailValidator(
     rule: any,
     value: string,
-    callback: (error?: string | Error | undefined) => void,
+    callback: (error?: string | Error | undefined) => void
   ): void {
     if (FormExcludingUserID === undefined) {
       callback('请输入用户ID')
@@ -339,7 +339,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
     // 创建请求对象 加密内容
     const req: CheckEmailExcludingUserIDRequest = {
       excluding_user_id: excludingUserID,
-      email: eamil,
+      email: eamil
     }
 
     try {
@@ -363,7 +363,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
   function checkEmailExcludingUserIDValidator(
     rule: any,
     value: string,
-    callback: (error?: string | Error | undefined) => void,
+    callback: (error?: string | Error | undefined) => void
   ): void {
     // 在这里处理异步验证逻辑
     if (FormEmail === undefined) {
@@ -388,7 +388,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
       const req: CaptchaCheckRequest = {
         email: eamil,
         captcha: captcha,
-        purpose: CaptchaPurpose.Register,
+        purpose: CaptchaPurpose.Register
       }
       const { data } = await captchaCheckAPI(req)
 
@@ -405,7 +405,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
   function checkCaptchaValidator(
     rule: any,
     value: string,
-    callback: (error?: string | Error | undefined) => void,
+    callback: (error?: string | Error | undefined) => void
   ): void {
     // 在这里处理异步验证逻辑
     if (FormEmail === undefined) {
@@ -436,7 +436,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
     try {
       // 创建请求对象 加密内容
       const req: GetDisableExpiresAtSecondsRequest = {
-        login_name: loginName,
+        login_name: loginName
       }
 
       const { data } = await getDisableExpiresAtSecondsAPI(req)
@@ -460,7 +460,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
   function checkLoginNameValidator(
     rule: any,
     value: string,
-    callback: (error?: string | Error | undefined) => void,
+    callback: (error?: string | Error | undefined) => void
   ): void {
     // 在这里处理异步验证逻辑
     if (FormUserName === undefined) {
@@ -494,6 +494,6 @@ export function useFormValidation(options: FormValidationOptions = {}) {
     checkAcceptedTerms,
     acceptedTermsValidator,
     checkLoginName,
-    checkLoginNameValidator,
+    checkLoginNameValidator
   }
 }

@@ -73,7 +73,7 @@ export async function katexToImage(container: HTMLElement, className: string = '
         backgroundColor: '#ffffff80',
         logging: false,
         width: getCanvasWidth(),
-        height: katexOffsetHeight,
+        height: katexOffsetHeight
       })
       const imageDataURL = canvas.toDataURL('image/png') // 转成图片的 base64
       const img = document.createElement('img') // 创建 img 元素
@@ -112,7 +112,7 @@ export function htmlHandleWeChat(htmlSrc: string) {
 function getSortedStyleSheets(): [CSSStyleSheet, number][] {
   const styleSheets = Array.from(document.styleSheets).map((styleSheet, index) => [
     styleSheet as CSSStyleSheet,
-    index,
+    index
   ]) as [CSSStyleSheet, number][]
 
   // 对样式表按照它们在 document.styleSheets 中的位置进行排序
@@ -127,7 +127,7 @@ function getSortedStyleSheets(): [CSSStyleSheet, number][] {
  */
 export function shouldPreserveInlineStyles(
   element: HTMLElement | SVGElement,
-  className: string,
+  className: string
 ): boolean {
   let currentElement: Element | null = element
   while (currentElement) {
@@ -241,7 +241,7 @@ export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
       // 使用 clipboardItem 设置格式和数据
       const clipboardItemInput = new ClipboardItem({
         'text/plain': contentNoStyle,
-        'text/html': contentWithStyle,
+        'text/html': contentWithStyle
       })
 
       // 写入剪贴板

@@ -26,6 +26,6 @@ export function captchaCheckAPI(requestData: CaptchaCheckRequest): AxiosPromise<
   return request({
     url: urlStr,
     method: 'post',
-    data: requestData,
+    data: requestData
   })
 }

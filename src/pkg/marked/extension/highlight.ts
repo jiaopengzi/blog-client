@@ -18,7 +18,7 @@ const optionHighlight: SynchronousOptions = {
     const language = createHighlighter().getLanguage(lang) ? lang : 'plaintext'
     return createHighlighter().highlight(code, { language }).value
   },
-  async: false,
+  async: false
 }
 
 export default optionHighlight

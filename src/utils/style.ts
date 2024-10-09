@@ -59,12 +59,12 @@ export function getCSSVariableValue(element: HTMLElement, variableName: string):
 export function imgStyle(
   width: number | undefined,
   height: number | undefined,
-  imgFit: ImgFit | undefined,
+  imgFit: ImgFit | undefined
 ): Record<string, string> {
   return {
     width: width ? `${width}px` : '50px', // 宽度
     height: height ? `${height}px` : '50px', // 高度
-    'object-fit': imgFit ? imgFit : 'cover', // 图片填充方式
+    'object-fit': imgFit ? imgFit : 'cover' // 图片填充方式
   }
 }
 
@@ -75,6 +75,6 @@ export function imgStyle(
  */
 export function iconStyle(fontSize: number | undefined): Record<string, string> {
   return {
-    'font-size': fontSize ? `${fontSize}px` : '40px', // 字体大小
+    'font-size': fontSize ? `${fontSize}px` : '40px' // 字体大小
   }
 }

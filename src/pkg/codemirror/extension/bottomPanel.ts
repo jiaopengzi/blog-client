@@ -63,13 +63,13 @@ function bottomPanel(view: EditorView): Panel {
         const textContent = wordCount + '| ' + rowCol // 拼接底部面板内容
         dom.textContent = textContent
       }
-    },
+    }
   }
 }
 
 const bottomPanelExt: Extension = [
   showPanel.of(bottomPanel),
-  EditorView.updateListener.of(updateCursorInfo),
+  EditorView.updateListener.of(updateCursorInfo)
 ]
 
 export { bottomPanelExt }

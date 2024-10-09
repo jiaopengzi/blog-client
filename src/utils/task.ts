@@ -39,13 +39,13 @@ export class Task {
 enum TaskQueueEvents {
   START = 'start', // 任务开始
   PAUSE = 'pause', // 任务暂停
-  DRAIN = 'drain', // 任务队列清空
+  DRAIN = 'drain' // 任务队列清空
 }
 
 // 任务状态
 enum TaskStatus {
   PAUSED = 'paused', // 暂停
-  RUNING = 'running', // 运行中
+  RUNING = 'running' // 运行中
 }
 // 可并发执行的任务队列
 export class TaskQueue extends EventEmitter<TaskQueueEvents> {

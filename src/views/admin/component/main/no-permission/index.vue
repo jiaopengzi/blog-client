@@ -10,17 +10,13 @@
 -->
 
 <template>
-
   <div class="no-permission">
     <h1>无权限</h1>
     <p>如需访问,请联系管理员。</p>
   </div>
-
 </template>
 <script setup lang="ts">
-
 defineOptions({ name: 'NoPermission' })
-
 </script>
 <style scoped lang="scss">
 .no-permission {

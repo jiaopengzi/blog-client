@@ -15,7 +15,7 @@ import { defineStore } from 'pinia'
 export enum MediaTypes {
   HLS = 'hls',
   MP4 = 'mp4',
-  WEBM = 'webm',
+  WEBM = 'webm'
   // DASH = 'dash',
   // OGG = 'ogg',
   // YOUTUBE = 'youtube',
@@ -29,7 +29,7 @@ export enum PlayStatus {
   STOPPED = 'stopped', // 停止
   BUFFERING = 'buffering', // 缓冲中
   ENDED = 'ended', // 播放结束
-  ERROR = 'error', // 播放错误
+  ERROR = 'error' // 播放错误
 }
 
 // 播放质量
@@ -41,7 +41,7 @@ export enum PlayLevelLabel {
   HD_720P = '720p', // 720p 高清
   SD_480P = '480p', // 480p 标清
   LD_360P = '360p', // 360p 低清
-  LOW_240P = '240p', // 240p 超低清
+  LOW_240P = '240p' // 240p 超低清
 }
 
 /**
@@ -59,7 +59,7 @@ export const getVideoQualityLabel = (height: number): string => {
     720: PlayLevelLabel.HD_720P,
     480: PlayLevelLabel.SD_480P,
     360: PlayLevelLabel.LD_360P,
-    240: PlayLevelLabel.LOW_240P,
+    240: PlayLevelLabel.LOW_240P
   }
   // 降序排列
   const heights = Object.keys(VideoQualityLabels)
@@ -85,7 +85,7 @@ export enum PlaybackRate {
   NORMAL = 1,
   FAST = 1.5,
   FASTER = 2,
-  VERY_FAST = 4,
+  VERY_FAST = 4
 }
 
 export interface PlayLevel {
@@ -137,7 +137,7 @@ export enum Language {
   'th-TH' = 'ไทย',
   'vi-VN' = 'Tiếng Việt',
   'id-ID' = 'Bahasa Indonesia',
-  'disabled' = '禁用',
+  'disabled' = '禁用'
 }
 
 // 字幕
@@ -151,8 +151,8 @@ export interface SubtitlesItem {
 export const DisabledSubtitles: Partial<Record<keyof typeof Language, SubtitlesItem>> = {
   [Language.disabled as unknown as keyof typeof Language]: {
     label: Language['disabled'],
-    src: '',
-  },
+    src: ''
+  }
 }
 
 // 字幕状态
@@ -249,14 +249,14 @@ const defaultPlayerStore = (): PlayerStore => ({
       [PlayLevelLabel.QHD_2K]: 1440,
       [PlayLevelLabel.FULL_HD_1080P]: 1080,
       [PlayLevelLabel.HD_720P]: 720,
-      [PlayLevelLabel.SD_480P]: 480,
-    },
+      [PlayLevelLabel.SD_480P]: 480
+    }
   },
   playbackRate: PlaybackRate.NORMAL,
   volume: {
     volume: 20, // 默认音量
     muted: false, // 是否静音
-    lastVolume: 50, // 静
+    lastVolume: 50 // 静
   }, // 默认音量
   showControlBar: true,
   useVideoControls: false,
@@ -268,8 +268,8 @@ const defaultPlayerStore = (): PlayerStore => ({
     content: '',
     style: {
       color: 'red',
-      fontSize: '14px',
-    },
+      fontSize: '14px'
+    }
   },
   logoWatermark: {
     imgUrl: '',
@@ -278,16 +278,16 @@ const defaultPlayerStore = (): PlayerStore => ({
       height: '30px',
       right: '0',
       top: '20px',
-      opacity: '1',
-    },
+      opacity: '1'
+    }
   },
   autoPlay: false,
   isUserInput: false,
   subtitles: {
-    selectedSubtitlesLanguage: 'disabled',
+    selectedSubtitlesLanguage: 'disabled'
   },
   isIphone: false,
-  isShortcutKey: true,
+  isShortcutKey: true
 })
 
 // 定义 store
@@ -302,7 +302,7 @@ export const usePlayerStore = defineStore({
     // 获取当前播放状态是否为停止
     isStopped: (state) => state.playStatus === PlayStatus.STOPPED,
     // 获取当前播放状态是否为缓冲中
-    isBuffering: (state) => state.playStatus === PlayStatus.BUFFERING,
+    isBuffering: (state) => state.playStatus === PlayStatus.BUFFERING
   },
 
   actions: {
@@ -560,6 +560,6 @@ export const usePlayerStore = defineStore({
     // 设置快捷键状态
     setShortcutKey(isShortcutKey: boolean) {
       this.isShortcutKey = isShortcutKey
-    },
-  },
+    }
+  }
 })

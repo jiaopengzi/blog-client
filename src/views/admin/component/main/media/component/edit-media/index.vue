@@ -10,85 +10,139 @@
 -->
 
 <template>
-    <div :class="layoutClass">
-        <div class="left" ref="leftRef">
-            <img class="view-img" v-if="editMediaData.img?.url && !isVideoFile" :src="editMediaData.img.url" />
-            <Icon customClass="view-icon" v-else-if="editMediaData.img?.iconKeyName && !isVideoFile"
-                :name="editMediaData.img?.iconKeyName" />
-            <VideoPlayer v-if="isVideoFile && editMediaData.editDialogVisible" />
-        </div>
-
-        <div class="middle">
-            <el-form :label-position="labelPosition" label-width="100px" ref="editMediaFormRef" :model="editMediaForm"
-                class="edit-media-form" :size="formSize" status-icon :rules="rulesEditMedia">
-
-                <el-form-item label="文件ID" prop="file_ID">
-                    <el-input v-model.trim="editMediaForm.file_id" disabled />
-                </el-form-item>
-
-                <el-form-item label="文件名" prop="file_name_display">
-                    <el-input v-model.trim="editMediaForm.file_name_display" :rows="5" type="textarea" />
-                </el-form-item>
-
-                <el-form-item v-if="isVideoFile" label="视频免费" prop="is_free">
-                    <el-switch class="switch" v-model="editMediaForm.is_free" inline-prompt active-text="免费"
-                        inactive-text="收费" style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949" />
-                </el-form-item>
-
-                <el-form-item label="文件别名" prop="slug">
-                    <el-input v-model="editMediaForm.slug" />
-                </el-form-item>
-
-                <el-form-item label="说明" prop="description">
-                    <el-input v-model="editMediaForm.description" type="textarea" :rows="10" placeholder="文件说明" />
-                </el-form-item>
-
-                <div class="btn-submit">
-                    <el-button type="primary" @click="submitForm(editMediaFormRef as FormInstance)">更新</el-button>
-                </div>
-            </el-form>
-        </div>
-
-        <div class="right" v-if="isVideoFile">
-            <el-form :label-position="labelPosition" label-width="100px" ref="subtitlesFormRef" :model="subtitlesForm"
-                class="edit-media-form" :size="formSize" status-icon :rules="rulesSubtitlesForm">
-
-                <el-form-item v-if="editMediaData.subtitles_language_list.length" label="已有字幕">
-                    <div class="multi-btn">
-                        <el-button class="multi-btn-item" size="small"
-                            v-for="item in editMediaData.subtitles_language_list" :key="item"
-                            @click="getSubtitles(item)">{{
-                                Language[item as keyof typeof Language] }}</el-button>
-                    </div>
-                </el-form-item>
-
-                <el-form-item label="字幕语言" prop="language">
-                    <el-select v-model="subtitlesForm.language" placeholder="选择语言">
-                        <el-option v-for="item in languageKeys" :key="item"
-                            :label="Language[item as keyof typeof Language]" :value="item" />
-                    </el-select>
-                </el-form-item>
-
-                <el-form-item label="字幕内容" prop="subtitles">
-                    <el-input v-model="subtitlesForm.subtitles" type="textarea" :rows="28"
-                        :placeholder="subtitlesPlaceholder" />
-                </el-form-item>
-
-                <div class="btn-submit">
-                    <el-form-item>
-                        <el-button type="primary" size="default"
-                            @click="saveSubtitles(subtitlesFormRef as FormInstance)">保存</el-button>
-                        <el-button type="danger" size="default" @click="delSubtitles">删除</el-button>
-                    </el-form-item>
-                </div>
-            </el-form>
-        </div>
+  <div :class="layoutClass">
+    <div class="left" ref="leftRef">
+      <img
+        class="view-img"
+        v-if="editMediaData.img?.url && !isVideoFile"
+        :src="editMediaData.img.url"
+      />
+      <Icon
+        customClass="view-icon"
+        v-else-if="editMediaData.img?.iconKeyName && !isVideoFile"
+        :name="editMediaData.img?.iconKeyName"
+      />
+      <VideoPlayer v-if="isVideoFile && editMediaData.editDialogVisible" />
     </div>
+
+    <div class="middle">
+      <el-form
+        :label-position="labelPosition"
+        label-width="100px"
+        ref="editMediaFormRef"
+        :model="editMediaForm"
+        class="edit-media-form"
+        :size="formSize"
+        status-icon
+        :rules="rulesEditMedia"
+      >
+        <el-form-item label="文件ID" prop="file_ID">
+          <el-input v-model.trim="editMediaForm.file_id" disabled />
+        </el-form-item>
+
+        <el-form-item label="文件名" prop="file_name_display">
+          <el-input v-model.trim="editMediaForm.file_name_display" :rows="5" type="textarea" />
+        </el-form-item>
+
+        <el-form-item v-if="isVideoFile" label="视频免费" prop="is_free">
+          <el-switch
+            class="switch"
+            v-model="editMediaForm.is_free"
+            inline-prompt
+            active-text="免费"
+            inactive-text="收费"
+            style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
+          />
+        </el-form-item>
+
+        <el-form-item label="文件别名" prop="slug">
+          <el-input v-model="editMediaForm.slug" />
+        </el-form-item>
+
+        <el-form-item label="说明" prop="description">
+          <el-input
+            v-model="editMediaForm.description"
+            type="textarea"
+            :rows="10"
+            placeholder="文件说明"
+          />
+        </el-form-item>
+
+        <div class="btn-submit">
+          <el-button type="primary" @click="submitForm(editMediaFormRef as FormInstance)"
+            >更新</el-button
+          >
+        </div>
+      </el-form>
+    </div>
+
+    <div class="right" v-if="isVideoFile">
+      <el-form
+        :label-position="labelPosition"
+        label-width="100px"
+        ref="subtitlesFormRef"
+        :model="subtitlesForm"
+        class="edit-media-form"
+        :size="formSize"
+        status-icon
+        :rules="rulesSubtitlesForm"
+      >
+        <el-form-item v-if="editMediaData.subtitles_language_list.length" label="已有字幕">
+          <div class="multi-btn">
+            <el-button
+              class="multi-btn-item"
+              size="small"
+              v-for="item in editMediaData.subtitles_language_list"
+              :key="item"
+              @click="getSubtitles(item)"
+              >{{ Language[item as keyof typeof Language] }}</el-button
+            >
+          </div>
+        </el-form-item>
+
+        <el-form-item label="字幕语言" prop="language">
+          <el-select v-model="subtitlesForm.language" placeholder="选择语言">
+            <el-option
+              v-for="item in languageKeys"
+              :key="item"
+              :label="Language[item as keyof typeof Language]"
+              :value="item"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="字幕内容" prop="subtitles">
+          <el-input
+            v-model="subtitlesForm.subtitles"
+            type="textarea"
+            :rows="28"
+            :placeholder="subtitlesPlaceholder"
+          />
+        </el-form-item>
+
+        <div class="btn-submit">
+          <el-form-item>
+            <el-button
+              type="primary"
+              size="default"
+              @click="saveSubtitles(subtitlesFormRef as FormInstance)"
+              >保存</el-button
+            >
+            <el-button type="danger" size="default" @click="delSubtitles">删除</el-button>
+          </el-form-item>
+        </div>
+      </el-form>
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { reactive, ref, watch, useTemplateRef, computed, watchEffect, nextTick } from 'vue'
-import type { EditMediaProps, EditMediaForm, SubtitlesForm } from '@/views/admin/component/main/media/component/edit-media'
+import type {
+  EditMediaProps,
+  EditMediaForm,
+  SubtitlesForm
+} from '@/views/admin/component/main/media/component/edit-media'
 import { ShowMsgTip } from '@/utils/message'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import { ResponseCode } from '@/api/responseCode'
@@ -102,20 +156,19 @@ import { isVideo } from '@/utils/isVideo'
 import VideoPlayer from '@/components/player'
 import { usePlayerStore, Language, type SubtitlesItem, MediaTypes } from '@/stores/player'
 
-
 // 定义组件名称
 defineOptions({ name: 'EditMedia' })
 
 // props
 const { editMediaData } = defineProps<{
-    editMediaData: EditMediaProps // 编辑媒体数据
+  editMediaData: EditMediaProps // 编辑媒体数据
 }>()
 
 // emits
 const emit = defineEmits<{
-    (event: 'edit-media-status', value: boolean): void // 编辑Media状态
-    (event: 'update-subtitles', language: string): void // 更新字幕
-    (event: 'delete-subtitles', language: string): void // 删除字幕
+  (event: 'edit-media-status', value: boolean): void // 编辑Media状态
+  (event: 'update-subtitles', language: string): void // 更新字幕
+  (event: 'delete-subtitles', language: string): void // 删除字幕
 }>()
 
 // 表单label位置 top | left | right
@@ -125,44 +178,44 @@ const labelPosition = ref('left')
 const formSize = ref('default')
 
 // ref
-const editMediaFormRef = useTemplateRef<FormInstance>("editMediaFormRef")
-const subtitlesFormRef = useTemplateRef<FormInstance>("subtitlesFormRef")
-const leftRef = useTemplateRef<HTMLDivElement>("leftRef")
+const editMediaFormRef = useTemplateRef<FormInstance>('editMediaFormRef')
+const subtitlesFormRef = useTemplateRef<FormInstance>('subtitlesFormRef')
+const leftRef = useTemplateRef<HTMLDivElement>('leftRef')
 
 // 语言keys
 const languageKeys = Object.keys(Language)
 
-const hashID = ref("")
+const hashID = ref('')
 
 // 表单数据
 const editMediaForm = reactive<EditMediaForm>({
-    file_id: "", // 文件ID
-    file_name_display: "", // 显示名称
-    description: "", // 描述
-    slug: "", // 文件别名
-    is_free: false, // 是否免费
+  file_id: '', // 文件ID
+  file_name_display: '', // 显示名称
+  description: '', // 描述
+  slug: '', // 文件别名
+  is_free: false // 是否免费
 })
 
 // 表单数据
 const subtitlesForm = reactive<SubtitlesForm>({
-    file_id: "", // 文件ID
-    language: "", // 语言
-    label: "", // 显示名称
-    subtitles: "", // 字幕
+  file_id: '', // 文件ID
+  language: '', // 语言
+  label: '', // 显示名称
+  subtitles: '' // 字幕
 })
 
 // 更新表单数据
 const updateForm = (data: EditMediaProps) => {
-    editMediaForm.file_id = data.file_id
-    editMediaForm.file_name_display = data.file_name_display
-    editMediaForm.description = data.description
-    editMediaForm.slug = data.slug
-    editMediaForm.is_free = data.is_free
+  editMediaForm.file_id = data.file_id
+  editMediaForm.file_name_display = data.file_name_display
+  editMediaForm.description = data.description
+  editMediaForm.slug = data.slug
+  editMediaForm.is_free = data.is_free
 
-    subtitlesForm.file_id = data.file_id
+  subtitlesForm.file_id = data.file_id
 
-    isVideoFile.value = isVideo(data.file_type)
-    hashID.value = editMediaData.file_name.split(".")[0]
+  isVideoFile.value = isVideo(data.file_type)
+  hashID.value = editMediaData.file_name.split('.')[0]
 }
 
 // 是否是视频文件
@@ -170,7 +223,7 @@ const isVideoFile = ref(isVideo(editMediaData.file_type))
 
 // 计算属性：根据 isVideoFile 的值设置布局样式
 const layoutClass = computed(() => {
-    return isVideoFile.value ? 'edit-media-page video-layout' : 'edit-media-page no-video-layout'
+  return isVideoFile.value ? 'edit-media-page video-layout' : 'edit-media-page no-video-layout'
 })
 
 const subtitlesPlaceholder = ref(`支持的字幕格式：.webvtt
@@ -189,159 +242,149 @@ This is a WebVTT file.
 
 // 检查别名是否可用
 function isWebvttValidator(
-    rule: any,
-    value: string,
-    callback: (error?: string | Error | undefined) => void,
+  rule: any,
+  value: string,
+  callback: (error?: string | Error | undefined) => void
 ): void {
-    // 判断是否是 webvtt 格式
-    const checkResult = isWebvtt(subtitlesForm.subtitles)
-    if (checkResult[0]) {
-        callback()
-        return
-    } else {
-        callback(new Error(checkResult[1]))
-    }
+  // 判断是否是 webvtt 格式
+  const checkResult = isWebvtt(subtitlesForm.subtitles)
+  if (checkResult[0]) {
+    callback()
+    return
+  } else {
+    callback(new Error(checkResult[1]))
+  }
 }
-
 
 /**
  * @description: 表单校验规则
  * @return  FormRules<SubtitlesForm> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
  */
 const rulesSubtitlesForm = reactive<FormRules<SubtitlesForm>>({
-    language: [
-        { required: true, message: '请选择语言', trigger: 'change' },
-    ],
-    subtitles: [
-        { required: true, message: '请输入webvtt字幕内容', trigger: 'blur' },
-        { validator: isWebvttValidator, trigger: 'blur' },
-    ],
+  language: [{ required: true, message: '请选择语言', trigger: 'change' }],
+  subtitles: [
+    { required: true, message: '请输入webvtt字幕内容', trigger: 'blur' },
+    { validator: isWebvttValidator, trigger: 'blur' }
+  ]
 })
 
 // 保存字幕
 const saveSubtitles = async (formEl: FormInstance | undefined) => {
-    if (!formEl) return
+  if (!formEl) return
 
-    // 如果校验不通过直接返回
-    if (!await formEl.validate()) return
+  // 如果校验不通过直接返回
+  if (!(await formEl.validate())) return
 
-    // 请求参数
-    const params: UpsertSubtitlesRequest = {
-        file_id: editMediaData.file_id,
-        language: subtitlesForm.language,
-        label: Language[subtitlesForm.language as keyof typeof Language],
-        subtitles: subtitlesForm.subtitles || "WebVTT "
+  // 请求参数
+  const params: UpsertSubtitlesRequest = {
+    file_id: editMediaData.file_id,
+    language: subtitlesForm.language,
+    label: Language[subtitlesForm.language as keyof typeof Language],
+    subtitles: subtitlesForm.subtitles || 'WebVTT '
+  }
+
+  const res = await upsertSubtitlesAPI(params)
+  if (res.data.code === ResponseCode.SubtitlesUpsertSuccess) {
+    emit('update-subtitles', subtitlesForm.language)
+    ShowMsgTip(ShowMsgTip.MsgType.success, '保存成功', 3000)
+  } else {
+    let errMsg = res.data.msg || '保存失败'
+    if (res.data.data) {
+      errMsg = res.data.msg + '：' + res.data.data
     }
-
-    const res = await upsertSubtitlesAPI(params)
-    if (res.data.code === ResponseCode.SubtitlesUpsertSuccess) {
-        emit('update-subtitles', subtitlesForm.language)
-        ShowMsgTip(ShowMsgTip.MsgType.success, "保存成功", 3000)
-
-    } else {
-        let errMsg = res.data.msg || "保存失败"
-        if (res.data.data) {
-            errMsg = res.data.msg + "：" + res.data.data
-        }
-        ShowMsgTip(ShowMsgTip.MsgType.error, errMsg)
-    }
-
+    ShowMsgTip(ShowMsgTip.MsgType.error, errMsg)
+  }
 }
 
 // 删除字幕
 const delSubtitles = async () => {
+  // 判断是否选择了语言
+  if (!subtitlesForm.language) {
+    ShowMsgTip(ShowMsgTip.MsgType.warning, '请选择要删除的语言')
+    return
+  }
 
-    // 判断是否选择了语言
-    if (!subtitlesForm.language) {
-        ShowMsgTip(ShowMsgTip.MsgType.warning, "请选择要删除的语言")
-        return
+  // 请求参数
+  const params: DeleteSubtitlesRequest = {
+    file_id: editMediaData.file_id,
+    language: subtitlesForm.language
+  }
+
+  await deleteSubtitlesAPI(params).then((res) => {
+    if (res.data.code === ResponseCode.SubtitlesDeleteSuccess) {
+      emit('delete-subtitles', subtitlesForm.language)
+      // 重置表单，不会触发校验
+      subtitlesFormRef.value?.resetFields()
+      ShowMsgTip(ShowMsgTip.MsgType.success, '删除成功', 3000)
+    } else {
+      let errMsg = res.data.msg || '删除失败'
+      if (res.data.data) {
+        errMsg = res.data.msg + '：' + res.data.data
+      }
+      ShowMsgTip(ShowMsgTip.MsgType.error, errMsg)
     }
-
-    // 请求参数
-    const params: DeleteSubtitlesRequest = {
-        file_id: editMediaData.file_id,
-        language: subtitlesForm.language
-    }
-
-    await deleteSubtitlesAPI(params).then((res) => {
-        if (res.data.code === ResponseCode.SubtitlesDeleteSuccess) {
-            emit('delete-subtitles', subtitlesForm.language)
-            // 重置表单，不会触发校验
-            subtitlesFormRef.value?.resetFields()
-            ShowMsgTip(ShowMsgTip.MsgType.success, "删除成功", 3000)
-        } else {
-            let errMsg = res.data.msg || "删除失败"
-            if (res.data.data) {
-                errMsg = res.data.msg + "：" + res.data.data
-            }
-            ShowMsgTip(ShowMsgTip.MsgType.error, errMsg)
-        }
-    })
+  })
 }
 
 // 获取字幕
 const getSubtitles = async (language: string) => {
-
-    await getSubtitlesAPI(hashID.value, language).then((res) => {
-        if (res.data.code === ResponseCode.GetVideoSubtitlesSuccess) {
-            subtitlesForm.language = language
-            subtitlesForm.subtitles = res.data.data.subtitles
-            subtitlesForm.label = res.data.data.label
-        } else {
-            let errMsg = res.data.msg || "获取字幕失败"
-            if (res.data.data) {
-                errMsg = res.data.msg + "：" + res.data.data
-            }
-            ShowMsgTip(ShowMsgTip.MsgType.error, errMsg)
-        }
-    })
-
+  await getSubtitlesAPI(hashID.value, language).then((res) => {
+    if (res.data.code === ResponseCode.GetVideoSubtitlesSuccess) {
+      subtitlesForm.language = language
+      subtitlesForm.subtitles = res.data.data.subtitles
+      subtitlesForm.label = res.data.data.label
+    } else {
+      let errMsg = res.data.msg || '获取字幕失败'
+      if (res.data.data) {
+        errMsg = res.data.msg + '：' + res.data.data
+      }
+      ShowMsgTip(ShowMsgTip.MsgType.error, errMsg)
+    }
+  })
 }
 
 // 检查别名是否可用
 function checkSlugValidator(
-    rule: any,
-    value: string,
-    callback: (error?: string | Error | undefined) => void,
+  rule: any,
+  value: string,
+  callback: (error?: string | Error | undefined) => void
 ): void {
+  // 不能包含空格
+  if (value.includes(' ')) {
+    callback(new Error('别名不能包含空格'))
+    return
+  }
 
-    // 不能包含空格
-    if (value.includes(" ")) {
-        callback(new Error("别名不能包含空格"))
-        return
+  // 不能包含特殊字符
+  if (value.match(/[^a-zA-Z0-9-]/)) {
+    callback(new Error('别名不能包含特殊字符，只能包含字母、数字、中划线'))
+    return
+  }
+
+  // 去除前后空格
+  if (!editMediaForm.file_id.trim() || !editMediaForm.slug.trim()) {
+    callback('请输入别名')
+    return
+  }
+
+  // 请求参数
+  const req: CheckSlugRequest = {
+    file_id: editMediaForm.file_id,
+    slug: editMediaForm.slug
+  }
+
+  // 调用后端接口
+  checkSlugAPI(req).then((res) => {
+    if (res.data.code === ResponseCode.CheckSlugAvailable) {
+      callback()
+    } else {
+      let errMsg = res.data.msg || '别名不可用'
+      if (res.data.data !== '') {
+        errMsg = res.data.msg + '：' + res.data.data
+      }
+      callback(new Error(errMsg))
     }
-
-    // 不能包含特殊字符
-    if (value.match(/[^a-zA-Z0-9-]/)) {
-        callback(new Error("别名不能包含特殊字符，只能包含字母、数字、中划线"))
-        return
-    }
-
-    // 去除前后空格
-    if (!editMediaForm.file_id.trim() || !editMediaForm.slug.trim()) {
-        callback('请输入别名')
-        return
-    }
-
-    // 请求参数
-    const req: CheckSlugRequest = {
-        file_id: editMediaForm.file_id,
-        slug: editMediaForm.slug
-    }
-
-    // 调用后端接口
-    checkSlugAPI(req)
-        .then((res) => {
-            if (res.data.code === ResponseCode.CheckSlugAvailable) {
-                callback()
-            } else {
-                let errMsg = res.data.msg || "别名不可用"
-                if (res.data.data !== "") {
-                    errMsg = res.data.msg + "：" + res.data.data
-                }
-                callback(new Error(errMsg))
-            }
-        })
+  })
 }
 
 /**
@@ -349,186 +392,184 @@ function checkSlugValidator(
  * @return  FormRules<EditMediaForm> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
  */
 const rulesEditMedia = reactive<FormRules<EditMediaForm>>({
-    file_name_display: [
-        { required: true, message: '请输入文件名', trigger: 'blur' },
-    ],
-    slug: [
-        { message: '请输入别名', trigger: 'blur' },
-        { validator: checkSlugValidator, trigger: 'blur' },
-    ],
+  file_name_display: [{ required: true, message: '请输入文件名', trigger: 'blur' }],
+  slug: [
+    { message: '请输入别名', trigger: 'blur' },
+    { validator: checkSlugValidator, trigger: 'blur' }
+  ]
 })
 
 // 提交表单
 const submitForm = async (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    // 如果校验不通过直接返回
-    if (!await formEl.validate()) return
+  if (!formEl) return
+  // 如果校验不通过直接返回
+  if (!(await formEl.validate())) return
 
-    // 请求参数
-    const params: UpdateFileRequest = {
-        file_id: editMediaData.file_id,
-        file_name_display: editMediaForm.file_name_display,
-        description: editMediaForm.description,
-        slug: editMediaForm.slug,
-        is_free: editMediaForm.is_free,
-        is_video: isVideoFile.value
+  // 请求参数
+  const params: UpdateFileRequest = {
+    file_id: editMediaData.file_id,
+    file_name_display: editMediaForm.file_name_display,
+    description: editMediaForm.description,
+    slug: editMediaForm.slug,
+    is_free: editMediaForm.is_free,
+    is_video: isVideoFile.value
+  }
+
+  // 调用后端接口
+  await updateFileAPI(params).then((res) => {
+    if (res.data.code === ResponseCode.UpdateFileSuccess) {
+      emit('edit-media-status', true)
+      ShowMsgTip(ShowMsgTip.MsgType.success, '更新成功', 3000)
+    } else {
+      let errMsg = res.data.msg || '更新失败'
+      if (res.data.data) {
+        errMsg = res.data.msg + '：' + res.data.data
+      }
+      ShowMsgTip(ShowMsgTip.MsgType.error, errMsg)
     }
-
-    // 调用后端接口
-    await updateFileAPI(params)
-        .then((res) => {
-            if (res.data.code === ResponseCode.UpdateFileSuccess) {
-                emit('edit-media-status', true)
-                ShowMsgTip(ShowMsgTip.MsgType.success, "更新成功", 3000)
-            } else {
-                let errMsg = res.data.msg || "更新失败"
-                if (res.data.data) {
-                    errMsg = res.data.msg + "：" + res.data.data
-                }
-                ShowMsgTip(ShowMsgTip.MsgType.error, errMsg)
-            }
-        })
+  })
 }
 
 // 监控 props.editUserData 变化 更新页面数据
 watch(
-    () => editMediaData,
-    (newVal) => {
-        updateForm(newVal) // 更新表单数据
-    },
-    {
-        // 立即执行
-        immediate: true,
-        deep: true
-    }
+  () => editMediaData,
+  (newVal) => {
+    updateForm(newVal) // 更新表单数据
+  },
+  {
+    // 立即执行
+    immediate: true,
+    deep: true
+  }
 )
 
 // 监控 file_id 变化
 watch(
-    () => editMediaData.file_id,
-    (newVal, oldVal) => {
-        if (!oldVal) return
-        if (oldVal !== newVal) {
-            // 当查看不同文件时，重置表单，不会触发校验
-            subtitlesFormRef.value?.resetFields()
-        }
+  () => editMediaData.file_id,
+  (newVal, oldVal) => {
+    if (!oldVal) return
+    if (oldVal !== newVal) {
+      // 当查看不同文件时，重置表单，不会触发校验
+      subtitlesFormRef.value?.resetFields()
     }
+  }
 )
-
 
 // 视频宽度
 const videoWidth = ref(400)
 
 // 设置播放器
 watchEffect(() => {
-    if (isVideoFile.value) {
-        // 加载时设置视频宽度
-        nextTick(() => {
-            if (leftRef.value) {
-                videoWidth.value = leftRef.value.clientWidth
-            }
-        })
+  if (isVideoFile.value) {
+    // 加载时设置视频宽度
+    nextTick(() => {
+      if (leftRef.value) {
+        videoWidth.value = leftRef.value.clientWidth
+      }
+    })
 
-        const playerStore = usePlayerStore()
-        playerStore.setMediaType(MediaTypes.HLS)
-        playerStore.size = {
-            width: videoWidth.value,
-            height: videoWidth.value * 9 / 16 // 视频比例为 16:9
-        }
-        playerStore.setSrc(hashID.value) // 设置视频hashID
-        playerStore.setShortcutKey(false) // 禁用快捷键
-
-        // 构造字幕数据
-        const subtitles = createSubtitlesByVideoHashId(hashID.value, editMediaData.subtitles_language_list)
-
-        playerStore.setSubtitles(subtitles) // 设置字幕
+    const playerStore = usePlayerStore()
+    playerStore.setMediaType(MediaTypes.HLS)
+    playerStore.size = {
+      width: videoWidth.value,
+      height: (videoWidth.value * 9) / 16 // 视频比例为 16:9
     }
-})
+    playerStore.setSrc(hashID.value) // 设置视频hashID
+    playerStore.setShortcutKey(false) // 禁用快捷键
 
+    // 构造字幕数据
+    const subtitles = createSubtitlesByVideoHashId(
+      hashID.value,
+      editMediaData.subtitles_language_list
+    )
+
+    playerStore.setSubtitles(subtitles) // 设置字幕
+  }
+})
 </script>
 
 <style lang="scss" scoped>
 .edit-media-page {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+
+  .left {
+    width: 30%;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
+    justify-content: center;
+    align-items: flex-start;
 
-    .left {
-        width: 30%;
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-
-        .view-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .view-icon {
-            font-size: 15em;
-            fill: $primary-color;
-        }
+    .view-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
-    .middle {
-        width: 25%;
-        position: relative;
-        margin: 0 30px;
+    .view-icon {
+      font-size: 15em;
+      fill: $primary-color;
+    }
+  }
 
-        &::before,
-        &::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            width: 1px;
-            height: 100%;
-            background-color: #ccc;
-        }
+  .middle {
+    width: 25%;
+    position: relative;
+    margin: 0 30px;
 
-        &::before {
-            left: -15px;
-        }
-
-        &::after {
-            right: -15px;
-        }
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 1px;
+      height: 100%;
+      background-color: #ccc;
     }
 
-    .right {
-        width: 45%;
-
-        .multi-btn {
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        .multi-btn-item {
-            margin: 5px;
-            width: 80px;
-        }
+    &::before {
+      left: -15px;
     }
 
-    .btn-submit {
-        display: flex;
-        justify-content: center;
+    &::after {
+      right: -15px;
     }
+  }
+
+  .right {
+    width: 45%;
+
+    .multi-btn {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .multi-btn-item {
+      margin: 5px;
+      width: 80px;
+    }
+  }
+
+  .btn-submit {
+    display: flex;
+    justify-content: center;
+  }
 }
 
 // 当没有视频文件时的布局样式
 .no-video-layout {
-    .left {
-        width: 40%;
-    }
+  .left {
+    width: 40%;
+  }
 
-    .middle {
-        width: 60%;
-        margin: 0, 20px;
+  .middle {
+    width: 60%;
+    margin: 0, 20px;
 
-        &::after {
-            display: none;
-        }
+    &::after {
+      display: none;
     }
+  }
 }
 </style>

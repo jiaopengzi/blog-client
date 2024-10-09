@@ -48,7 +48,7 @@ export const renderer = {
       (escaped ? code : escape(code, true)) +
       '</code></pre>\n' // marked 源码默认代码块
     return constructWeChatPreCode(replaceAllHljsStringSpanTag(result)) // 自定义代码块
-  },
+  }
 }
 
 /**
@@ -168,7 +168,7 @@ const escapeReplacements: { [index: string]: string } = {
   '<': '&lt;',
   '>': '&gt;',
   '"': '&quot;',
-  "'": '&#39;',
+  "'": '&#39;'
 }
 const getEscapeReplacement = (ch: string) => escapeReplacements[ch]
 

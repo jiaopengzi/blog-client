@@ -27,7 +27,7 @@ const ivStrBase = import.meta.env.VITE_APP_SECRET_IV
 export function encryptData(
   plainText: string,
   keyStr: string = keyStrBase,
-  ivStr: string = ivStrBase,
+  ivStr: string = ivStrBase
 ): string {
   const key = CryptoJS.enc.Utf8.parse(keyStr)
   const iv = CryptoJS.enc.Utf8.parse(ivStr)
@@ -35,7 +35,7 @@ export function encryptData(
   const encryptedData = CryptoJS.AES.encrypt(plainText, key, {
     iv: iv,
     mode: CryptoJS.mode.CBC,
-    padding: CryptoJS.pad.Pkcs7,
+    padding: CryptoJS.pad.Pkcs7
   })
 
   return CryptoJS.enc.Base64.stringify(encryptedData.ciphertext)
@@ -51,20 +51,20 @@ export function encryptData(
 export function decryptData(
   encryptedData: string,
   keyStr: string = keyStrBase,
-  ivStr: string = ivStrBase,
+  ivStr: string = ivStrBase
 ): string {
   const key = CryptoJS.enc.Utf8.parse(keyStr)
   const iv = CryptoJS.enc.Utf8.parse(ivStr)
 
   const ciphertext = CryptoJS.enc.Base64.parse(encryptedData)
   const cipherParams = CryptoJS.lib.CipherParams.create({
-    ciphertext: ciphertext,
+    ciphertext: ciphertext
   })
 
   const decryptedData = CryptoJS.AES.decrypt(cipherParams, key, {
     iv: iv,
     mode: CryptoJS.mode.CBC,
-    padding: CryptoJS.pad.Pkcs7,
+    padding: CryptoJS.pad.Pkcs7
   })
 
   return decryptedData.toString(CryptoJS.enc.Utf8)
@@ -78,4 +78,3 @@ export function decryptData(
 export function reverseString(str: string): string {
   return str.split('').reverse().join('')
 }
-

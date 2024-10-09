@@ -49,8 +49,8 @@ const createMarked = () => {
       // useNewRenderer 将在 14 版本中默认使用,参考 https://github.com/markedjs/marked/issues/3374
       useNewRenderer: true,
       extensions: [markExtensionInline, subExtensionInline, supExtensionInline],
-      renderer: renderer,
-    },
+      renderer: renderer
+    }
   )
 
   return marked

@@ -51,7 +51,7 @@ export enum AadminSideMenu {
   'PermissionRole' = 'PermissionRole',
   'Setting' = 'Setting',
   'Notification' = 'Notification',
-  'Backup' = 'Backup',
+  'Backup' = 'Backup'
 }
 
 // admin管理后台菜单项映射表
@@ -64,158 +64,158 @@ const adminMenuItemMap: AdminMenuItemMap = {
     display: '仪表板',
     icon: {
       name: IconKeys.Dashborad,
-      class: 'icon-menu',
-    },
+      class: 'icon-menu'
+    }
   },
   [AadminSideMenu.Post]: {
     display: '文章',
     icon: {
       name: IconKeys.Post,
-      class: 'icon-menu',
-    },
+      class: 'icon-menu'
+    }
   },
   [AadminSideMenu.PostAll]: {
     display: '所有文章',
-    parentIndex: AadminSideMenu.Post,
+    parentIndex: AadminSideMenu.Post
   },
   [AadminSideMenu.PostWrite]: {
     display: '写文章',
-    parentIndex: AadminSideMenu.Post,
+    parentIndex: AadminSideMenu.Post
   },
   [AadminSideMenu.PostTag]: {
     display: '标签',
-    parentIndex: AadminSideMenu.Post,
+    parentIndex: AadminSideMenu.Post
   },
   [AadminSideMenu.PostCategory]: {
     display: '分类',
-    parentIndex: AadminSideMenu.Post,
+    parentIndex: AadminSideMenu.Post
   },
   [AadminSideMenu.Media]: {
     display: '媒体',
     icon: {
       name: IconKeys.Media,
-      class: 'icon-menu',
-    },
+      class: 'icon-menu'
+    }
   },
   [AadminSideMenu.Link]: {
     display: '链接',
     icon: {
       name: IconKeys.Link,
-      class: 'icon-menu',
-    },
+      class: 'icon-menu'
+    }
   },
   [AadminSideMenu.LinkAll]: {
     display: '所有链接',
-    parentIndex: AadminSideMenu.Link,
+    parentIndex: AadminSideMenu.Link
   },
   [AadminSideMenu.LinkAdd]: {
     display: '新增链接',
-    parentIndex: AadminSideMenu.Link,
+    parentIndex: AadminSideMenu.Link
   },
   [AadminSideMenu.LinkCategory]: {
     display: '链接分类',
-    parentIndex: AadminSideMenu.Link,
+    parentIndex: AadminSideMenu.Link
   },
   [AadminSideMenu.Page]: {
     display: '页面',
     icon: {
       name: IconKeys.Page,
-      class: 'icon-menu',
-    },
+      class: 'icon-menu'
+    }
   },
   [AadminSideMenu.PageAll]: {
     display: '所有页面',
-    parentIndex: AadminSideMenu.Page,
+    parentIndex: AadminSideMenu.Page
   },
   [AadminSideMenu.PageAdd]: {
     display: '新增页面',
-    parentIndex: AadminSideMenu.Page,
+    parentIndex: AadminSideMenu.Page
   },
   [AadminSideMenu.Comment]: {
     display: '评论',
     icon: {
       name: IconKeys.Comment,
-      class: 'icon-menu',
-    },
+      class: 'icon-menu'
+    }
   },
   [AadminSideMenu.Announcement]: {
     display: '公告',
     icon: {
       name: IconKeys.Announcement,
-      class: 'icon-menu',
-    },
+      class: 'icon-menu'
+    }
   },
   [AadminSideMenu.AnnouncementAll]: {
     display: '所有公告',
-    parentIndex: AadminSideMenu.Announcement,
+    parentIndex: AadminSideMenu.Announcement
   },
   [AadminSideMenu.AnnouncementPublish]: {
     display: '发布公告',
-    parentIndex: AadminSideMenu.Announcement,
+    parentIndex: AadminSideMenu.Announcement
   },
   [AadminSideMenu.AnnouncementCategory]: {
     display: '公告分类',
-    parentIndex: AadminSideMenu.Announcement,
+    parentIndex: AadminSideMenu.Announcement
   },
   [AadminSideMenu.Video]: {
     display: '视频',
     icon: {
       name: IconKeys.Video,
-      class: 'icon-menu',
-    },
+      class: 'icon-menu'
+    }
   },
   [AadminSideMenu.VideoAll]: {
     display: '所有视频',
-    parentIndex: AadminSideMenu.Video,
+    parentIndex: AadminSideMenu.Video
   },
   [AadminSideMenu.VideoPublish]: {
     display: '发布视频',
-    parentIndex: AadminSideMenu.Video,
+    parentIndex: AadminSideMenu.Video
   },
   [AadminSideMenu.VideoCategory]: {
     display: '视频分类',
-    parentIndex: AadminSideMenu.Video,
+    parentIndex: AadminSideMenu.Video
   },
   [AadminSideMenu.Shop]: {
     display: '商城',
     icon: {
       name: IconKeys.Shop,
-      class: 'icon-menu',
-    },
+      class: 'icon-menu'
+    }
   },
   [AadminSideMenu.Product]: {
     display: '产品',
-    parentIndex: AadminSideMenu.Shop,
+    parentIndex: AadminSideMenu.Shop
   },
   [AadminSideMenu.Order]: {
     display: '订单',
-    parentIndex: AadminSideMenu.Shop,
+    parentIndex: AadminSideMenu.Shop
   },
   [AadminSideMenu.MemberManagement]: {
     display: '会员管理',
-    parentIndex: AadminSideMenu.Shop,
+    parentIndex: AadminSideMenu.Shop
   },
   [AadminSideMenu.ShortLink]: {
     display: '短连接',
     icon: {
       name: IconKeys.ShortLink,
-      class: 'icon-menu',
-    },
+      class: 'icon-menu'
+    }
   },
   [AadminSideMenu.ShortLinkAll]: {
     display: '所有短连接',
-    parentIndex: AadminSideMenu.ShortLink,
+    parentIndex: AadminSideMenu.ShortLink
   },
   [AadminSideMenu.ShortLinkAdd]: {
     display: '新增短连接',
-    parentIndex: AadminSideMenu.ShortLink,
+    parentIndex: AadminSideMenu.ShortLink
   },
   [AadminSideMenu.User]: {
     display: '用户',
     icon: {
       name: IconKeys.User,
-      class: 'icon-menu',
-    },
+      class: 'icon-menu'
+    }
   },
   [AadminSideMenu.UserView]: {
     display: '所有用户',
@@ -225,40 +225,40 @@ const adminMenuItemMap: AdminMenuItemMap = {
       roleName: 'role-name',
       search: 'search',
       pageSize: 'page-size',
-      currentPage: 'current-page',
-    },
+      currentPage: 'current-page'
+    }
   },
   [AadminSideMenu.LoginLog]: {
     display: '登录日志',
-    parentIndex: AadminSideMenu.User,
+    parentIndex: AadminSideMenu.User
   },
   [AadminSideMenu.PermissionRole]: {
     display: '权限角色',
     parentIndex: AadminSideMenu.User,
-    permissionName: PermissionNames.PermissionRole,
+    permissionName: PermissionNames.PermissionRole
   },
   [AadminSideMenu.Setting]: {
     display: '网站配置',
     icon: {
       name: IconKeys.Setting,
-      class: 'icon-menu',
-    },
+      class: 'icon-menu'
+    }
   },
   [AadminSideMenu.Notification]: {
     display: '通知',
     icon: {
       name: IconKeys.Notification,
-      class: 'icon-menu',
-    },
+      class: 'icon-menu'
+    }
   },
   [AadminSideMenu.Backup]: {
     display: '备份',
     icon: {
       name: IconKeys.Backup,
-      class: 'icon-menu',
+      class: 'icon-menu'
     },
-    permissionName: PermissionNames.Backup,
-  },
+    permissionName: PermissionNames.Backup
+  }
 }
 
 // 获取菜单数据
@@ -274,7 +274,7 @@ export function getAdminMenuItemMap() {
  */
 export function generateAdminMenuItemMapWithIndex(
   menuItemMap: AdminMenuItemMap,
-  parentPath: string,
+  parentPath: string
 ): AdminMenuItemMapWithIndex {
   const result: Partial<AdminMenuItemMapWithIndex> = {} // 生成的菜单项映射表
 
@@ -297,7 +297,7 @@ export function generateAdminMenuItemMapWithIndex(
     result[itemKey] = {
       ...currentItem,
       index: `/${newIndex}`, // 添加 / 前缀，确保正确的路由跳转
-      ...(currentItem.parentIndex !== undefined && { parentIndex: `/${newParentIndex}` }), // 如果存在父级索引，则添加到属性中并添加 / 前缀
+      ...(currentItem.parentIndex !== undefined && { parentIndex: `/${newParentIndex}` }) // 如果存在父级索引，则添加到属性中并添加 / 前缀
     }
 
     // 遍历子菜单项并进行递归调用
@@ -320,7 +320,7 @@ export function generateAdminMenuItemMapWithIndex(
 
 export const adminMenuItemMapWithIndex = generateAdminMenuItemMapWithIndex(
   adminMenuItemMap,
-  'admin',
+  'admin'
 )
 
 export { default } from './index.vue'

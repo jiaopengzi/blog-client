@@ -14,7 +14,9 @@
     <!-- 左上角提示符 -->
     <div class="tip"></div>
     <!-- 分类 -->
-    <a :href="props.postData.categoryHref"><span class="category">{{ props.postData.category }}</span></a>
+    <a :href="props.postData.categoryHref"
+      ><span class="category">{{ props.postData.category }}</span></a
+    >
     <!-- 缩略图 -->
     <div class="thumbnail">
       <a :href="props.postData.thumbnailHref">
@@ -55,15 +57,13 @@
 </template>
 
 <script setup lang="ts">
-
 import type { PostItemMainObj } from '@/components/common/post-item-main'
 import { computed } from 'vue'
 import { View } from '@element-plus/icons-vue'
 
 import AvatarInitials from '@/components/common/avatar-initials'
 
-
-defineOptions({ name: "PostItemMain" })
+defineOptions({ name: 'PostItemMain' })
 
 const props = defineProps<{
   postData: PostItemMainObj
@@ -73,7 +73,7 @@ const view = computed(() =>
   // 显示千分符 , 如果大于 1 万 就显示 ?w
   props.postData.view > 10000
     ? `${Math.floor(props.postData.view / 10000)}w`
-    : props.postData.view.toLocaleString(),
+    : props.postData.view.toLocaleString()
 )
 </script>
 <style scoped lang="scss">

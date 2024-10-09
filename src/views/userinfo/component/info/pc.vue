@@ -37,7 +37,11 @@
             绑定{{ Social.WeChatDisplay }}
           </button>
           <span class="social-nickname">{{ socialNickname('user_wechat', 'nickname') }}</span>
-          <button class="btn-unbind" v-if="showWeChat && isBindEmail" @click="unBindSocial(Social.WeChat)">
+          <button
+            class="btn-unbind"
+            v-if="showWeChat && isBindEmail"
+            @click="unBindSocial(Social.WeChat)"
+          >
             解绑{{ Social.WeChatDisplay }}
           </button>
         </el-descriptions-item>
@@ -54,8 +58,16 @@
     </div>
 
     <div class="edit-div">
-      <el-form :label-position="labelPosition" label-width="100px" ref="editFormRef" :model="editForm" :rules="rules"
-        class="edit-form" :size="formSize" status-icon>
+      <el-form
+        :label-position="labelPosition"
+        label-width="100px"
+        ref="editFormRef"
+        :model="editForm"
+        :rules="rules"
+        class="edit-form"
+        :size="formSize"
+        status-icon
+      >
         <el-form-item label="用户名" prop="userName">
           <el-input v-model="editForm.userName" :disabled="userNameDisabled" />
         </el-form-item>
@@ -76,7 +88,11 @@
         </el-form-item>
 
         <el-form-item label="简介" prop="description">
-          <el-input v-model="editForm.description" type="textarea" placeholder="这个人很懒,什么也没有留下。" />
+          <el-input
+            v-model="editForm.description"
+            type="textarea"
+            placeholder="这个人很懒,什么也没有留下。"
+          />
         </el-form-item>
         <div class="btn-submit">
           <el-form-item>
@@ -93,7 +109,6 @@ import { useInfo } from '@/views/userinfo/component/info/hooks'
 
 import AvatarInitials from '@/components/common/avatar-initials'
 import AvatarUpload from '@/components/common/avatar-upload'
-
 
 defineOptions({ name: 'UserInfoInfoPC' })
 
@@ -115,9 +130,8 @@ const {
   unBindSocial,
   userNameDisabled,
   email,
-  updateAvatarToDB,
+  updateAvatarToDB
 } = useInfo()
-
 </script>
 <style scoped lang="scss">
 .container {

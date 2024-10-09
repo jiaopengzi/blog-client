@@ -9,18 +9,17 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-    <div class="pc">
-        <UserInfoFavoritePC />
-    </div>
-    <div class="phone">
-        <UserInfoFavoritePhone />
-    </div>
+  <div class="pc">
+    <UserInfoFavoritePC />
+  </div>
+  <div class="phone">
+    <UserInfoFavoritePhone />
+  </div>
 </template>
 <script setup lang="ts">
 import UserInfoFavoritePC from './pc.vue'
 import UserInfoFavoritePhone from './phone.vue'
 
 defineOptions({ name: 'UserInfoFavorite' })
-
 </script>
 <style scoped lang="scss"></style>

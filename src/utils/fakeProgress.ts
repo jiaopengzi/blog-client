@@ -28,7 +28,7 @@ interface IUseFakeProgress {
 export function useFakeProgress(timeConstant?: number, autoStart?: boolean): IUseFakeProgress {
   const fake = new FakeProgress({
     timeConstant: timeConstant || 5000,
-    autoStart,
+    autoStart
   })
   const progress = ref(fake.progress)
   const percentage = computed(() => parseInt(progress.value * 100 + ''))
@@ -69,6 +69,6 @@ export function useFakeProgress(timeConstant?: number, autoStart?: boolean): IUs
     progress,
     percentage,
     start,
-    end,
+    end
   }
 }

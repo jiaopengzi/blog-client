@@ -16,7 +16,7 @@ import {
   UploadControllerEvents,
   UploadController,
   MultiThreadSplitor,
-  type UploadFileSuccessInfo,
+  type UploadFileSuccessInfo
 } from '@/utils/chunkUpload'
 import { HashAlgorithm } from '@/utils/hash'
 
@@ -25,7 +25,7 @@ export const uploadEl = async (
   isEncrypt: boolean = true,
   isNoFree: boolean = true,
   chunkSizeServer = 1024 * 1024 * 10,
-  hashAlgorithmServer: HashAlgorithm = HashAlgorithm.SHA256,
+  hashAlgorithmServer: HashAlgorithm = HashAlgorithm.SHA256
 ): Promise<string | undefined> => {
   const file: File = options.file
   const requestStrategy = new RequestStrategyEl(options)
@@ -35,7 +35,7 @@ export const uploadEl = async (
   return new Promise((resolve, reject) => {
     uploadController.on(UploadControllerEvents.PROGRESS, (progress: number) => {
       const evt: any = {
-        percent: progress * 100,
+        percent: progress * 100
       }
       options.onProgress?.(evt)
     })

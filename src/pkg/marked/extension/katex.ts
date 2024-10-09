@@ -127,7 +127,7 @@ const optionKatex: KatexOptions = {
    *
    * @default false
    */
-  globalGroup: false,
+  globalGroup: false
 }
 
 export default optionKatex

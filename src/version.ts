@@ -19,7 +19,7 @@ const INFO = {
   author: pkg.author,
   license: pkg.license,
   homepage: pkg.homepage,
-  repository: pkg.repository.url,
+  repository: pkg.repository.url
 }
 
 // 获取项目信息
@@ -31,7 +31,7 @@ export function getInfo() {
 export function consoleInfoFormat() {
   const info = getInfo() // 获取项目信息
   const stypleName = [
-    'color: #1E2858; background-color:#c89828; font-size: 24px; font-weight: bold; border-radius: 4px;',
+    'color: #1E2858; background-color:#c89828; font-size: 24px; font-weight: bold; border-radius: 4px;'
   ] // name 样式
   const stypleOther = Array(6).fill('font-size: 14px;') // 其他字段样式
   const stypleList = [...stypleName, ...stypleOther] // 样式列表

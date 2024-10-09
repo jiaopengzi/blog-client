@@ -16,7 +16,7 @@ import { useUserStore } from '@/stores/user'
 // 创建路由实例
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL), // 使用history路由模式
-  routes, // 路由配置
+  routes // 路由配置
 })
 
 // 路由守卫

@@ -24,7 +24,7 @@ export function useScrollActions(actionUp: () => void, actionDown: () => void): 
   const scrollData = ref<ScrollData>({
     position: 0,
     direction: 'up',
-    speed: 0,
+    speed: 0
   })
 
   const handleScroll = (data: ScrollData) => {

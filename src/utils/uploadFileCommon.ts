@@ -14,7 +14,7 @@ import {
   UploadControllerEvents,
   UploadController,
   MultiThreadSplitor,
-  type UploadFileSuccessInfo,
+  type UploadFileSuccessInfo
 } from '@/utils/chunkUpload'
 import { HashAlgorithm } from '@/utils/hash'
 
@@ -24,7 +24,7 @@ export const uploadFileCommon = async (
   isNoFree: boolean,
   chunkSizeServer: number,
   hashAlgorithmServer: HashAlgorithm,
-  RequestStrategyClass: new (file: File) => any,
+  RequestStrategyClass: new (file: File) => any
 ): Promise<string | undefined> => {
   const requestStrategy = new RequestStrategyClass(file)
   const splitStrategy = new MultiThreadSplitor(file, chunkSizeServer, hashAlgorithmServer)

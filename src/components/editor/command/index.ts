@@ -14,7 +14,7 @@ export {
   CommandsKey,
   MardkdownEditorCommands,
   ScrollElementTag,
-  ScrollElementTagHeading,
+  ScrollElementTagHeading
 } from './constant'
 
 export type { MardkdownEditorCommandItemType, MardkdownEditorCommandsType } from './constant'

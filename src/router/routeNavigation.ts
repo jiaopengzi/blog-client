@@ -9,7 +9,6 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-
 // 路由配置
 export const navigationRoutes = {
   post: {
@@ -17,39 +16,39 @@ export const navigationRoutes = {
     name: 'post',
     component: () => import('@/views/test'),
     meta: {
-      requiresAuth: false,
-    },
+      requiresAuth: false
+    }
   },
   video: {
     path: '/video',
     name: 'video',
     component: () => import('@/views/test'),
     meta: {
-      requiresAuth: false,
-    },
+      requiresAuth: false
+    }
   },
   doc: {
     path: '/doc',
     name: 'doc',
     component: () => import('@/views/test'),
     meta: {
-      requiresAuth: false,
-    },
+      requiresAuth: false
+    }
   },
   tool: {
     path: '/tool',
     name: 'tool',
     component: () => import('@/views/test'),
     meta: {
-      requiresAuth: false,
-    },
+      requiresAuth: false
+    }
   },
   vip: {
     path: '/vip',
     name: 'vip',
     component: () => import('@/views/test'),
     meta: {
-      requiresAuth: false,
-    },
-  },
+      requiresAuth: false
+    }
+  }
 }

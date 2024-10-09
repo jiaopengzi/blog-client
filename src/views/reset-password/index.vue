@@ -13,14 +13,29 @@
 <template>
   <div class="reset-password-page">
     <!-- 添加滑动验证组件：SlideVerify -->
-    <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="sendcaptcha"></SlideVerify>
-    <el-form :label-position="labelPosition" label-width="100px" ref="fogetPasswordFormRef" :model="fogetPasswordForm"
-      :rules="rules" class="fogetPassword-form" :size="formSize" status-icon>
+    <SlideVerify
+      v-if="showSlideVerify"
+      @on-close="closeSlideVerify"
+      @on-success="sendcaptcha"
+    ></SlideVerify>
+    <el-form
+      :label-position="labelPosition"
+      label-width="100px"
+      ref="fogetPasswordFormRef"
+      :model="fogetPasswordForm"
+      :rules="rules"
+      class="fogetPassword-form"
+      :size="formSize"
+      status-icon
+    >
       <div class="header-main">
         <a :href="routeObj.home.path">
           <div class="logo">
             <h2>
-              <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" :alt="routeObj.home.path" />
+              <img
+                src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
+                :alt="routeObj.home.path"
+              />
             </h2>
           </div>
         </a>
@@ -33,7 +48,12 @@
 
       <el-form-item label="验证码" prop="captcha">
         <el-input class="email-code" v-model.trim="fogetPasswordForm.captcha" />
-        <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="btnCaptchaState.disabled">
+        <button
+          class="btn-captcha"
+          type="button"
+          @click="openSlideVerify"
+          :disabled="btnCaptchaState.disabled"
+        >
           {{ captcha }}
         </button>
       </el-form-item>
@@ -48,7 +68,9 @@
 
       <div class="btn-submit">
         <el-form-item>
-          <el-button type="primary" @click="submitForm(fogetPasswordFormRef as FormInstance)">重置密码</el-button>
+          <el-button type="primary" @click="submitForm(fogetPasswordFormRef as FormInstance)"
+            >重置密码</el-button
+          >
         </el-form-item>
       </div>
       <div class="go-home">
@@ -94,14 +116,14 @@ const labelPosition = ref('top')
 const formSize = ref('default')
 
 // 表单实例
-const fogetPasswordFormRef = useTemplateRef<FormInstance>("fogetPasswordFormRef")
+const fogetPasswordFormRef = useTemplateRef<FormInstance>('fogetPasswordFormRef')
 
 // 表单数据
 const fogetPasswordForm = reactive<ResetPasswordForm>({
   email: 'jiaopengzi@qq.com',
   captcha: '123456',
   password: '123QWEasd123',
-  rePassword: '123QWEasd123',
+  rePassword: '123QWEasd123'
 })
 
 /**
@@ -128,7 +150,7 @@ async function checkRePassword(): Promise<void> {
 function rePasswordValidator(
   rule: any,
   value: string,
-  callback: (error?: string | Error | undefined) => void,
+  callback: (error?: string | Error | undefined) => void
 ): void {
   // 在这里处理异步验证逻辑
   checkRePassword()
@@ -149,7 +171,7 @@ async function checkSendCaptcha(): Promise<void> {
     // 创建请求对象 加密内容
     const req: CaptchaSendRequest = {
       email: fogetPasswordForm.email,
-      purpose: CaptchaPurpose.ResetPassword,
+      purpose: CaptchaPurpose.ResetPassword
     }
     console.log('==========>发送验证码')
     const { data } = await captchaSendAPI(req)
@@ -178,7 +200,7 @@ async function checkSendCaptcha(): Promise<void> {
 async function checkEmail(): Promise<void> {
   // 创建请求对象 加密内容
   const req: CheckEmailRequest = {
-    email: fogetPasswordForm.email,
+    email: fogetPasswordForm.email
   }
 
   try {
@@ -202,7 +224,7 @@ async function checkEmail(): Promise<void> {
 function checkEmailValidator(
   rule: any,
   value: string,
-  callback: (error?: string | Error | undefined) => void,
+  callback: (error?: string | Error | undefined) => void
 ): void {
   // 在这里处理异步验证逻辑
   checkEmail()
@@ -220,7 +242,7 @@ async function checkCaptcha(): Promise<void> {
     const req: CaptchaCheckRequest = {
       email: fogetPasswordForm.email,
       captcha: fogetPasswordForm.captcha,
-      purpose: CaptchaPurpose.ResetPassword,
+      purpose: CaptchaPurpose.ResetPassword
     }
 
     const { data } = await captchaCheckAPI(req)
@@ -237,7 +259,7 @@ async function checkCaptcha(): Promise<void> {
 function checkCaptchaValidator(
   rule: any,
   value: string,
-  callback: (error?: string | Error | undefined) => void,
+  callback: (error?: string | Error | undefined) => void
 ): void {
   // 在这里处理异步验证逻辑
   checkCaptcha()
@@ -259,15 +281,15 @@ const rules = reactive<FormRules<ResetPasswordForm>>({
     {
       pattern: /^[\w.!#$%&'*+/=?^_`{|}~-]+@[\w-]+(\.\w+)+$/,
       message: '请输入有效的邮箱',
-      trigger: 'blur',
+      trigger: 'blur'
     },
     // 邮箱查重
-    { validator: checkEmailValidator, trigger: 'blur' },
+    { validator: checkEmailValidator, trigger: 'blur' }
   ],
   captcha: [
     { required: true, message: '请输入验证码', trigger: 'blur' },
     { pattern: /^\d{6}$/, message: '验证码为6位的数字', trigger: 'blur' },
-    { validator: checkCaptchaValidator, trigger: 'blur' },
+    { validator: checkCaptchaValidator, trigger: 'blur' }
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
@@ -275,10 +297,10 @@ const rules = reactive<FormRules<ResetPasswordForm>>({
     {
       pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*(),.?;:|[\]\\{}<>`~_+=-]{6,64}$/,
       message: '必须包含：大小写字母+数字,长度:6-64',
-      trigger: 'change',
-    },
+      trigger: 'change'
+    }
   ],
-  rePassword: [{ required: true, validator: rePasswordValidator, trigger: 'blur' }],
+  rePassword: [{ required: true, validator: rePasswordValidator, trigger: 'blur' }]
 })
 
 /**
@@ -296,7 +318,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         captcha: fogetPasswordForm.captcha,
         password: fogetPasswordForm.password,
         re_password: fogetPasswordForm.rePassword,
-        email: fogetPasswordForm.email,
+        email: fogetPasswordForm.email
       }
 
       const { data } = await resetPasswordAPI(req) // 将 resStr 转换为对象
@@ -422,7 +444,6 @@ const closeSlideVerify = () => {
     background-color: transparent;
   }
 }
-
 
 h2 {
   text-align: center;

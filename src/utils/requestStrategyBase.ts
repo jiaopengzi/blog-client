@@ -93,7 +93,7 @@ export abstract class RequestStrategyBase implements RequestStrategy {
     file: File,
     signedUrl: string,
     headers: Record<string, string>,
-    onProgress: (percent: number) => void,
+    onProgress: (percent: number) => void
   ): Promise<any> {
     if (this.uploadFileInfo?.upload_strategy.signed_url) {
       // await this.uploadFileBySignedUrlAPI(file, signedUrl, headers, onProgress)
@@ -116,7 +116,7 @@ export abstract class RequestStrategyBase implements RequestStrategy {
       part_numbers: chunk.part_numbers,
       part_index: chunk.part_index,
       start: chunk.start,
-      end: chunk.end,
+      end: chunk.end
     }
     return (await this.uploadChunkAPI(formData, meta)).data
   }

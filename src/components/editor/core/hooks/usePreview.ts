@@ -21,13 +21,13 @@ export function usePreview() {
     preview,
     imgUrls: imgUrlsStore,
     isShowElImageViewer: isShowElImageViewerStore,
-    isShowPreviewWechat,
+    isShowPreviewWechat
   } = storeToRefs(editorStore)
 
   const previewData = reactive({
     html: preview.value,
     imgUrls: imgUrlsStore.value,
-    isShowElImageViewer: isShowElImageViewerStore.value,
+    isShowElImageViewer: isShowElImageViewerStore.value
   })
 
   const showImageViewer = (imgUrls: string[], isShowElImageViewer: boolean) => {
@@ -51,6 +51,6 @@ export function usePreview() {
     previewData,
     isShowPreviewWechat,
     showImageViewer,
-    closeImageViewer,
+    closeImageViewer
   }
 }

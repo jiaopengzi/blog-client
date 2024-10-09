@@ -38,10 +38,10 @@ WEBVTT
       {
         status: 200,
         statusText: 'OK',
-        headers: new Headers({ 'Content-Type': 'text/vtt' }),
-      },
-    ),
-  ),
+        headers: new Headers({ 'Content-Type': 'text/vtt' })
+      }
+    )
+  )
 )
 
 test('parseVTT should parse VTT file and return correct subtitles array', async () => {
@@ -54,7 +54,7 @@ test('parseVTT should parse VTT file and return correct subtitles array', async 
     { start: 70, end: 130, text: '我正在测试中文字幕3' },
     { start: 130, end: 190, text: '我正在测试中文字幕4' },
     { start: 190, end: 250, text: '我正在测试中文字幕5' },
-    { start: 250, end: 310, text: '我正在测试中文字幕6' },
+    { start: 250, end: 310, text: '我正在测试中文字幕6' }
   ])
 })
 
@@ -70,17 +70,17 @@ describe('isWebvtt', () => {
 00:05.000 --> 00:09.000
 - It will perforate your stomach.
 - You could die.`,
-      expected: [true, ''],
+      expected: [true, '']
     },
     {
       name: '最简单的VTT内容',
       content: `WEBVTT `,
-      expected: [true, ''],
+      expected: [true, '']
     },
     {
       name: '只有WEBVTT头部和标题',
       content: `WEBVTT - This file has no cues.`,
-      expected: [true, ''],
+      expected: [true, '']
     },
     {
       name: '有文本标题和cue的通用WebVTT',
@@ -99,7 +99,7 @@ describe('isWebvtt', () => {
 00:01:21.058 --> 00:01:23.868
 - [ Bats Screeching ]
 - They won't get in your hair. They're after the bugs.`,
-      expected: [true, ''],
+      expected: [true, '']
     },
     {
       name: '通用注释用法',
@@ -124,7 +124,7 @@ NOTE This last line may not translate well.
 3
 00:02:25.000 --> 00:02:30.000
 - Ta en kopp`,
-      expected: [true, ''],
+      expected: [true, '']
     },
     {
       name: 'WebVTT文件自身中定义样式',
@@ -148,18 +148,18 @@ STYLE
 - Hello <b>world</b>.
 
 NOTE style blocks cannot appear after the first cue.`,
-      expected: [true, ''],
+      expected: [true, '']
     },
     {
       name: '无任何VTT格式的随机文本',
       content: `Some random text
 without any VTT format`,
-      expected: [false, '字幕需要以 WEBVTT 开头'],
+      expected: [false, '字幕需要以 WEBVTT 开头']
     },
     {
       name: '空字符串',
       content: ``,
-      expected: [false, '字幕内容不能为空'],
+      expected: [false, '字幕内容不能为空']
     },
     {
       name: '不正确的时间分割符号',
@@ -171,7 +171,7 @@ without any VTT format`,
 00:05.000 -- 00:09.000
 - It will perforate your stomach.
 - You could die.`,
-      expected: [false, '时间表达式中需要 --> 分隔符'],
+      expected: [false, '时间表达式中需要 --> 分隔符']
     },
     {
       name: '不正确的时间表达式',
@@ -183,7 +183,7 @@ without any VTT format`,
 00:05 --> 00:09.000
 - It will perforate your stomach.
 - You could die.`,
-      expected: [false, '时间格式错误，支持 hh:mm:ss.mmm, mm:ss.mmm, ss.mmm'],
+      expected: [false, '时间格式错误，支持 hh:mm:ss.mmm, mm:ss.mmm, ss.mmm']
     },
     {
       name: '中文VTT',
@@ -212,7 +212,7 @@ without any VTT format`,
 6
 00:04:10.000 -- 00:05:10.000
 我正在测试中文字幕6`,
-      expected: [false, '时间表达式中需要 --> 分隔符'],
+      expected: [false, '时间表达式中需要 --> 分隔符']
     },
     {
       name: '空字幕',
@@ -227,8 +227,8 @@ without any VTT format`,
 
 
 `,
-      expected: [false, '时间表达式后需要有字幕内容,不能为空'],
-    },
+      expected: [false, '时间表达式后需要有字幕内容,不能为空']
+    }
   ]
 
   testCases.forEach(({ name, content, expected }) => {

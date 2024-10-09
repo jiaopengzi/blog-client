@@ -10,13 +10,9 @@
 -->
 
 <template>
-    <div>
-        头部
-    </div>
+  <div>头部</div>
 </template>
-<script setup lang='ts'>
-
+<script setup lang="ts">
 defineOptions({ name: 'AdminHeader' })
-
 </script>
-<style scoped lang='scss'></style>
+<style scoped lang="scss"></style>

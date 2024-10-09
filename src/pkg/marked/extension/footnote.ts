@@ -30,7 +30,7 @@ const optionFootnote: Options = {
    *
    * @default false
    */
-  refMarkers: false, // 脚注标记;
+  refMarkers: false // 脚注标记;
 }
 
 export default optionFootnote

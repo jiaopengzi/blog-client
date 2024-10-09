@@ -19,12 +19,12 @@ export interface Chunk extends ChunkMetadataWithoutFileId {
 enum ChunkSplitorEvents {
   CHUNKS = 'chunks', // 一部分分片产生了
   WHOLE_HASH = 'wholeHash', // 整个文件的hash计算完成
-  DRAIN = 'drain', // 所有分片处理完成
+  DRAIN = 'drain' // 所有分片处理完成
 }
 
 // 文件上传的相关事件
 enum FileUploadEvents {
-  CHUNKS = 'chunks', // 一部分分片产生了
+  CHUNKS = 'chunks' // 一部分分片产生了
 }
 
 // 上传进度 100
@@ -36,7 +36,7 @@ export enum UploadControllerEvents {
   CHECK_WHOLE_HASH = 'checkWholeHash', // 检查整个文件的hash,主要用在文件已经存在的情况,文件秒传。
   PROGRESS = 'progress', // 上传进度
   END = 'end', // 上传结束
-  ERROR = 'error', // 上传错误
+  ERROR = 'error' // 上传错误
 }
 
 // 分片文件类
@@ -55,7 +55,7 @@ export abstract class ChunkSplitor extends EventEmitter<ChunkSplitorEvents> {
     file: File,
     chunkSize: number = 1024 * 1024 * 10, // 默认分片大小为10MB
     algorithm: HashAlgorithm = HashAlgorithm.SHA256, // 默认哈希算法为SHA-256
-    uploadedpartIndexList = [], // 已上传的分片序号列表
+    uploadedpartIndexList = [] // 已上传的分片序号列表
   ) {
     super()
     this.file = file // 文件
@@ -92,7 +92,7 @@ export abstract class ChunkSplitor extends EventEmitter<ChunkSplitorEvents> {
       hash_key: '',
       part_index: index,
       hash_algorithm: '',
-      part_numbers: partNumbers,
+      part_numbers: partNumbers
     }
   }
 
@@ -143,15 +143,15 @@ export class MultiThreadSplitor extends ChunkSplitor {
 
   concurrency = Math.min(
     Math.max(navigator.hardwareConcurrency - 2, 1),
-    import.meta.env.VITE_MAX_NAVIGATOR_HARDWARE_CONCURRENCY,
+    import.meta.env.VITE_MAX_NAVIGATOR_HARDWARE_CONCURRENCY
   )
 
   // 多线程Worker
   private workers: Worker[] = new Array(this.concurrency).fill(0).map(
     () =>
       new Worker(new URL('@/utils/splitWorker', import.meta.url), {
-        type: 'module',
-      }),
+        type: 'module'
+      })
   )
 
   // 计算每一个分片的hash
@@ -167,7 +167,7 @@ export class MultiThreadSplitor extends ChunkSplitor {
       // 向 Worker 发送消息
       worker.postMessage({
         chunks: workerChunks,
-        algorithm: this.hashCalculator.getAlgorithm(), // 将算法名称传递给 Worker
+        algorithm: this.hashCalculator.getAlgorithm() // 将算法名称传递给 Worker
       })
 
       // promise 用于保存 Worker 的处理结果
@@ -232,7 +232,7 @@ export interface RequestStrategy {
     file: File,
     signedUrl: string,
     headers: Record<string, string>,
-    onProgress: (percent: number) => void,
+    onProgress: (percent: number) => void
   ): Promise<any>
 
   confirmAfterUploadBySignedUrl(req: { file_id: string }): Promise<Res>
@@ -272,7 +272,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
       first_chunk_hash_key: await this.chunkSplitor.hashCalculator.getFirstChunkHash(this.file),
       part_numbers: this.chunkSplitor.partNumbers,
       is_encrypt: isEncrypt,
-      is_Free: isFree,
+      is_Free: isFree
     }
 
     this.uploadFileInfo = await this.requestStrategy.confirmBeforeUpload(req)
@@ -314,7 +314,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
             if (percent === UPLOAD_PROGRESS_100) {
               this.requestStrategy
                 .confirmAfterUploadBySignedUrl({
-                  file_id: this.uploadFileInfo?.id?.toString() || '',
+                  file_id: this.uploadFileInfo?.id?.toString() || ''
                 })
                 .then(async (res) => {
                   if (res.code === ResponseCode.ConfirmAfterUploadBySignedUrlSuccess) {
@@ -326,7 +326,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
                   }
                 })
             }
-          },
+          }
         )
         .catch((error) => {
           this.emit(UploadControllerEvents.ERROR, error) // 上传错误
@@ -399,7 +399,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
     // 累加计算已上传的大小
     const uploadedSize = Array.from(this.progressTrackers.values()).reduce(
       (acc, size) => acc + size,
-      0,
+      0
     )
     return uploadedSize / this.file.size
   }
@@ -408,7 +408,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
   private async handleUploadCompletion() {
     const info: UploadFileSuccessInfo = {
       fileName: this.uploadFileInfo?.file_name || '',
-      fileUrl: '',
+      fileUrl: ''
     }
 
     const res = await this.requestStrategy.getUploadFileUrl(this.uploadFileInfo?.id || '')

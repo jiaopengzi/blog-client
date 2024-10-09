@@ -31,7 +31,7 @@ export function getMarkdownHeadingLines(markdownStr: string): MarkdownHeadingLin
     if (mathcArray) {
       targetLines.push({
         markdownheading: lines[i],
-        markdownLineNumber: i + 1,
+        markdownLineNumber: i + 1
       })
     }
   }

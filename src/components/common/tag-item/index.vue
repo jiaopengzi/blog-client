@@ -10,8 +10,14 @@
 -->
 
 <template>
-  <el-tag :key="tag.data.label" class="tag-item" effect="dark" :round="false" @click="handleClick(tag)"
-    :style="[{ 'background-color': tag.color.bgColor }, { color: tag.color.color }]">
+  <el-tag
+    :key="tag.data.label"
+    class="tag-item"
+    effect="dark"
+    :round="false"
+    @click="handleClick(tag)"
+    :style="[{ 'background-color': tag.color.bgColor }, { color: tag.color.color }]"
+  >
     {{ tag.data.label + '(' + tag.data.tagPostNum + ')' }}
   </el-tag>
 </template>
@@ -19,7 +25,7 @@
 <script lang="ts" setup>
 import type { TagDataObj, Tag, TagColor } from '@/components/common/tag-item'
 
-defineOptions({ name: "TagItem" })
+defineOptions({ name: 'TagItem' })
 
 const props = defineProps<{
   tagData: TagDataObj
@@ -29,11 +35,9 @@ const emit = defineEmits<{
   (event: 'click', tagItemData: TagDataObj): void
 }>()
 
-
-
 const tag: Tag = {
   data: props.tagData,
-  color: generateItemColor(),
+  color: generateItemColor()
 }
 
 // tag 随机生成RGB颜色中的r值、g值、b值
@@ -60,7 +64,6 @@ const handleClick = (clickedItem: Tag) => {
   emit('click', clickedItem.data)
   // console.log(clickedItem.data)
 }
-
 </script>
 
 <style scoped lang="scss">

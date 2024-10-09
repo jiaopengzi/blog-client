@@ -13,7 +13,6 @@
   <div>评论</div>
 </template>
 <script setup lang="ts">
-
 defineOptions({ name: 'UserInfoCommentPC' })
 </script>
 <style scoped lang="scss"></style>

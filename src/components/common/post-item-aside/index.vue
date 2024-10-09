@@ -46,7 +46,7 @@ import type { PostItemAsideObj } from '@/components/common/post-item-aside'
 import { computed } from 'vue'
 import { View } from '@element-plus/icons-vue'
 
-defineOptions({ name: "PostItemAside" })
+defineOptions({ name: 'PostItemAside' })
 
 const props = defineProps<{
   postData: PostItemAsideObj
@@ -56,7 +56,7 @@ const view = computed(() =>
   // 显示千分符 , 如果大于 1 万 就显示 ?w
   props.postData.view > 10000
     ? `${Math.floor(props.postData.view / 10000)}w`
-    : props.postData.view.toLocaleString(),
+    : props.postData.view.toLocaleString()
 )
 </script>
 <style scoped lang="scss">
@@ -123,5 +123,4 @@ const view = computed(() =>
   justify-content: center;
 }
 </style>
-@/components/pc/content/aside/item/postItem
-@/components/common/post-item-aside/postItemAside
+@/components/pc/content/aside/item/postItem @/components/common/post-item-aside/postItemAside

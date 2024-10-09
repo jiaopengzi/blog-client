@@ -9,7 +9,6 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 
-
 <template>
   <div class="content">
     <!-- 面包屑 -->
@@ -32,7 +31,9 @@
       <div class="not-found">
         <h1>404</h1>
         <p>抱歉，您访问的页面不存在。</p>
-        <p>将在 <span class="countdown">{{ props.countdown }}</span> 秒后，返回首页。</p>
+        <p>
+          将在 <span class="countdown">{{ props.countdown }}</span> 秒后，返回首页。
+        </p>
       </div>
     </div>
   </div>
@@ -45,7 +46,6 @@ defineOptions({ name: 'NotFound404PC' })
 const props = defineProps({
   countdown: Number
 })
-
 </script>
 <style scoped lang="scss">
 .content {
@@ -81,7 +81,6 @@ const props = defineProps({
   padding-top: 100px;
   font-size: 24px;
   color: $primary-color;
-
 
   h1 {
     font-size: 100px;

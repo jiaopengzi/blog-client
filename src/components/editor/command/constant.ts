@@ -57,7 +57,7 @@ export enum CommandsKey {
   Html = 'html',
   Pdf = 'pdf',
   Help = 'help',
-  Info = 'info',
+  Info = 'info'
 }
 
 // mardkdown 编辑器 单个命令对象 的类型
@@ -86,7 +86,7 @@ export const MardkdownEditorCommands: MardkdownEditorCommandsType = {
       undo(view)
     },
     // icon: 'undo',
-    icon: IconKeys.Undo,
+    icon: IconKeys.Undo
   },
   // 重做
   [CommandsKey.Redo]: {
@@ -95,7 +95,7 @@ export const MardkdownEditorCommands: MardkdownEditorCommandsType = {
     action: (view: EditorView) => {
       redo(view)
     },
-    icon: IconKeys.Redo,
+    icon: IconKeys.Redo
   },
   // 清空
   [CommandsKey.Clear]: {
@@ -104,10 +104,10 @@ export const MardkdownEditorCommands: MardkdownEditorCommandsType = {
     action: (view: EditorView) => {
       view.dispatch({
         changes: { from: 0, to: view.state.doc.length, insert: '' },
-        selection: { anchor: 0, head: 0 }, // 将光标移至文档起始位置
+        selection: { anchor: 0, head: 0 } // 将光标移至文档起始位置
       })
     },
-    icon: IconKeys.Clear,
+    icon: IconKeys.Clear
   },
   // 粗体
   [CommandsKey.Bold]: {
@@ -115,7 +115,7 @@ export const MardkdownEditorCommands: MardkdownEditorCommandsType = {
     prefix: '**',
     suffix: '**',
     hotKey: 'Ctrl+B',
-    icon: IconKeys.Bold,
+    icon: IconKeys.Bold
   },
   // 斜体
   [CommandsKey.Italic]: {
@@ -123,7 +123,7 @@ export const MardkdownEditorCommands: MardkdownEditorCommandsType = {
     prefix: '*',
     suffix: '*',
     hotKey: 'Ctrl+I',
-    icon: IconKeys.Italic,
+    icon: IconKeys.Italic
   },
   // 删除线
   [CommandsKey.Strikethrough]: {
@@ -131,7 +131,7 @@ export const MardkdownEditorCommands: MardkdownEditorCommandsType = {
     prefix: '~~',
     suffix: '~~',
     hotKey: 'Ctrl+Shift+S',
-    icon: IconKeys.Strikethrough,
+    icon: IconKeys.Strikethrough
   },
   // mark标记
   [CommandsKey.Mark]: {
@@ -139,7 +139,7 @@ export const MardkdownEditorCommands: MardkdownEditorCommandsType = {
     prefix: '==',
     suffix: '==',
     hotKey: 'Ctrl+Shift+M',
-    icon: IconKeys.Mark,
+    icon: IconKeys.Mark
   },
   //   emoji
   [CommandsKey.Emoji]: {
@@ -148,70 +148,70 @@ export const MardkdownEditorCommands: MardkdownEditorCommandsType = {
     content: 'smile',
     suffix: ':',
     hotKey: 'Ctrl+Shift+E',
-    icon: IconKeys.Emoji,
+    icon: IconKeys.Emoji
   },
   // 标题1
   [CommandsKey.H1]: {
     tip: '标题1',
     prefix: '# ',
     hotKey: 'Ctrl+1',
-    icon: IconKeys.H1,
+    icon: IconKeys.H1
   },
   // 标题2
   [CommandsKey.H2]: {
     tip: '标题2',
     prefix: '## ',
     hotKey: 'Ctrl+2',
-    icon: IconKeys.H2,
+    icon: IconKeys.H2
   },
   // 标题3
   [CommandsKey.H3]: {
     tip: '标题3',
     prefix: '### ',
     hotKey: 'Ctrl+3',
-    icon: IconKeys.H3,
+    icon: IconKeys.H3
   },
   // 标题4
   [CommandsKey.H4]: {
     tip: '标题4',
     prefix: '#### ',
     hotKey: 'Ctrl+4',
-    icon: IconKeys.H4,
+    icon: IconKeys.H4
   },
   // 标题5
   [CommandsKey.H5]: {
     tip: '标题5',
     prefix: '##### ',
     hotKey: 'Ctrl+5',
-    icon: IconKeys.H5,
+    icon: IconKeys.H5
   },
   // 标题6
   [CommandsKey.H6]: {
     tip: '标题6',
     prefix: '###### ',
     hotKey: 'Ctrl+6',
-    icon: IconKeys.H6,
+    icon: IconKeys.H6
   },
   // 有序列表
   [CommandsKey.Ol]: {
     tip: '有序列表',
     prefix: '1. ',
     hotKey: 'Ctrl+Shift+O',
-    icon: IconKeys.Ol,
+    icon: IconKeys.Ol
   },
   // 无序列表
   [CommandsKey.Ul]: {
     tip: '无序列表',
     prefix: '- ',
     hotKey: 'Ctrl+Shift+U',
-    icon: IconKeys.Ul,
+    icon: IconKeys.Ul
   },
   // 引用
   [CommandsKey.Quote]: {
     tip: '引用',
     prefix: '> ',
     hotKey: 'Ctrl+Shift+Q',
-    icon: IconKeys.Quote,
+    icon: IconKeys.Quote
   },
   // 代码块
   [CommandsKey.CodeBlock]: {
@@ -220,7 +220,7 @@ export const MardkdownEditorCommands: MardkdownEditorCommandsType = {
     content: '\n',
     suffix: '```',
     hotKey: 'Ctrl+Shift+C',
-    icon: IconKeys.CodeBlock,
+    icon: IconKeys.CodeBlock
   },
   // 行内代码
   [CommandsKey.CodeInline]: {
@@ -228,7 +228,7 @@ export const MardkdownEditorCommands: MardkdownEditorCommandsType = {
     prefix: '`',
     suffix: '`',
     hotKey: 'Ctrl+Shift+I',
-    icon: IconKeys.CodeInline,
+    icon: IconKeys.CodeInline
   },
   // 链接
   [CommandsKey.Link]: {
@@ -236,7 +236,7 @@ export const MardkdownEditorCommands: MardkdownEditorCommandsType = {
     prefix: '[',
     suffix: '](url)',
     hotKey: 'Ctrl+Shift+L',
-    icon: IconKeys.Link,
+    icon: IconKeys.Link
   },
   // 图片
   [CommandsKey.Image]: {
@@ -244,28 +244,28 @@ export const MardkdownEditorCommands: MardkdownEditorCommandsType = {
     prefix: '![alt](',
     suffix: ')',
     hotKey: 'Ctrl+Shift+P',
-    icon: IconKeys.Image,
+    icon: IconKeys.Image
   },
   // 表格
   [CommandsKey.Table]: {
     tip: '表格',
     content: '|column1|column2|column3|\n|:---:|:---:|:---:|\n|content1|content2|content3|',
     hotKey: 'Ctrl+Shift+T',
-    icon: IconKeys.Table,
+    icon: IconKeys.Table
   },
   // 分割线
   [CommandsKey.Hr]: {
     tip: '分割线',
     content: '---',
     hotKey: 'Ctrl+Shift+H',
-    icon: IconKeys.Hr,
+    icon: IconKeys.Hr
   },
   // 任务列表
   [CommandsKey.TaskList]: {
     tip: '任务列表',
     prefix: '- [ ] ',
     hotKey: 'Ctrl+Shift+X',
-    icon: IconKeys.TaskList,
+    icon: IconKeys.TaskList
   },
   // 块级数学公式
   [CommandsKey.MathBlock]: {
@@ -274,7 +274,7 @@ export const MardkdownEditorCommands: MardkdownEditorCommandsType = {
     content: '\n',
     suffix: '$$',
     hotKey: 'Ctrl+Shift+M',
-    icon: IconKeys.MathBlock,
+    icon: IconKeys.MathBlock
   },
   // 行内数学公式
   [CommandsKey.MathInline]: {
@@ -282,7 +282,7 @@ export const MardkdownEditorCommands: MardkdownEditorCommandsType = {
     prefix: '$',
     suffix: '$',
     hotKey: 'Ctrl+Shift+N',
-    icon: IconKeys.MathInline,
+    icon: IconKeys.MathInline
   },
   // 脚注
   [CommandsKey.Footnote]: {
@@ -290,7 +290,7 @@ export const MardkdownEditorCommands: MardkdownEditorCommandsType = {
     prefix: '[^1]',
     suffix: '\n\n[^1]:脚注内容',
     hotKey: 'Ctrl+Shift+F',
-    icon: IconKeys.Footnote,
+    icon: IconKeys.Footnote
   },
   // 上标
   [CommandsKey.Superscript]: {
@@ -298,7 +298,7 @@ export const MardkdownEditorCommands: MardkdownEditorCommandsType = {
     prefix: '^',
     suffix: '^',
     hotKey: 'Ctrl+Shift+U',
-    icon: IconKeys.Superscript,
+    icon: IconKeys.Superscript
   },
   // 下标
   [CommandsKey.Subscript]: {
@@ -306,106 +306,106 @@ export const MardkdownEditorCommands: MardkdownEditorCommandsType = {
     prefix: '~',
     suffix: '~',
     hotKey: 'Ctrl+Shift+D',
-    icon: IconKeys.Subscript,
+    icon: IconKeys.Subscript
   },
   // 付费内容
   [CommandsKey.PayContent]: {
     tip: '付费内容',
     prefix: '<!--more-->',
     hotKey: 'Ctrl+Alt+M',
-    icon: IconKeys.PayContent,
+    icon: IconKeys.PayContent
   },
   // 复制
   [CommandsKey.Copy]: {
     tip: '复制',
     hotKey: 'Alt+C',
-    icon: IconKeys.Copy,
+    icon: IconKeys.Copy
   },
 
   // 保存
   [CommandsKey.Save]: {
     tip: '保存',
     hotKey: 'Ctrl+S',
-    icon: IconKeys.Save,
+    icon: IconKeys.Save
   },
   // 发布
   [CommandsKey.Publish]: {
     tip: '发布',
     hotKey: 'Ctrl+P',
-    icon: IconKeys.Publish,
+    icon: IconKeys.Publish
   },
   // 预览
   [CommandsKey.Preview]: {
     tip: '预览',
     hotKey: 'Ctrl+Shift+V',
-    icon: IconKeys.Preview,
+    icon: IconKeys.Preview
   },
   // 目录
   [CommandsKey.Toc]: {
     tip: '目录',
     hotKey: 'Ctrl+T',
-    icon: IconKeys.Toc,
+    icon: IconKeys.Toc
   },
   // 同步滚动条
   [CommandsKey.Scroll]: {
     tip: '同步滚动条',
     hotKey: 'Ctrl+Shift+S',
-    icon: IconKeys.Scroll,
+    icon: IconKeys.Scroll
   },
   // 全屏
   [CommandsKey.Fullscreen]: {
     tip: '全屏',
     hotKey: 'Ctrl+Alt+F',
-    icon: IconKeys.Fullscreen,
+    icon: IconKeys.Fullscreen
   },
   // 退出全屏
   [CommandsKey.ExitFullscreen]: {
     tip: '退出全屏',
     hotKey: 'Esc',
-    icon: IconKeys.ExitFullscreen,
+    icon: IconKeys.ExitFullscreen
   },
   // 桌面端
   [CommandsKey.Edit]: {
     tip: '编辑模式',
     hotKey: 'Ctrl+Shift+D',
-    icon: IconKeys.Edit,
+    icon: IconKeys.Edit
   },
   // 移动端
   [CommandsKey.WechatOfficialAccount]: {
     tip: '微信公众号',
     hotKey: 'Ctrl+Shift+M',
-    icon: IconKeys.WechatOfficialAccount,
+    icon: IconKeys.WechatOfficialAccount
   },
   // 导出 markdown
   [CommandsKey.Markdown]: {
     tip: '导出 markdown',
     hotKey: 'Ctrl+Alt+M',
-    icon: IconKeys.Markdown,
+    icon: IconKeys.Markdown
   },
   // 导出 html
   [CommandsKey.Html]: {
     tip: '导出 html',
     hotKey: 'Ctrl+Alt+H',
-    icon: IconKeys.Html,
+    icon: IconKeys.Html
   },
   // 导出 pdf
   [CommandsKey.Pdf]: {
     tip: '导出 PDF',
     hotKey: 'Ctrl+Alt+P',
-    icon: IconKeys.Pdf,
+    icon: IconKeys.Pdf
   },
   // 帮助
   [CommandsKey.Help]: {
     tip: '帮助',
     hotKey: 'Ctrl+Shift+P',
-    icon: IconKeys.Help,
+    icon: IconKeys.Help
   },
   // 关于
   [CommandsKey.Info]: {
     tip: '关于',
     hotKey: 'Ctrl+Shift+I',
-    icon: IconKeys.Info,
-  },
+    icon: IconKeys.Info
+  }
 }
 
 // 需要滚动的元素标签

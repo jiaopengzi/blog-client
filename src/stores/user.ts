@@ -32,7 +32,7 @@ import {
   loginByWeChatUrlCallback,
   bindWeChatUrl,
   bindWeChatUrlCallback,
-  unBindWeChat,
+  unBindWeChat
 } from '@/api/user/login'
 import type { UserInfo } from '@/api/user/getUserInfo'
 import { emptyUserInfo, getUserInfoAPI } from '@/api/user/getUserInfo'
@@ -57,7 +57,7 @@ function createEmptyUserInfoStore(): UserInfoStore {
     avatar: '',
     isBindEmail: false,
     showDialogBindEmail: false,
-    permissions: [],
+    permissions: []
   }
 }
 
@@ -89,7 +89,7 @@ export const useUserStore = defineStore({
     // 获取权限列表
     getPermissions(): PermissionNames[] {
       return this.permissions || []
-    },
+    }
   },
 
   actions: {
@@ -190,8 +190,8 @@ export const useUserStore = defineStore({
     // 是否具有权限
     hasPermission(permission: PermissionNames): boolean {
       return this.permissions?.includes(permission) || false
-    },
-  },
+    }
+  }
 })
 
 /**
@@ -203,7 +203,7 @@ export const useUserStore = defineStore({
 async function apiLogin(loginName: string, password: string): Promise<UserInfoStore> {
   const req: LoginRequest = {
     login_name: loginName,
-    password: password,
+    password: password
   }
 
   const resObj = await handleResponse<Res>(loginAPI(req)) // 使用辅助函数处理请求
@@ -312,7 +312,7 @@ async function apiGetUserInfoByToken(): Promise<UserInfoStore> {
         avatar: getAvatarUrl(dataUser),
         isBindEmail: !!dataUser?.user?.user_email,
         showDialogBindEmail: !dataUser?.user?.user_email,
-        permissions,
+        permissions
       }
     }
   } catch (err: unknown) {
@@ -339,7 +339,7 @@ async function handleResponse<T>(requestPromise: Promise<AxiosResponse<T>>): Pro
  */
 async function redirectToSocialLogin(
   requestPromise: Promise<AxiosResponse<Res>>,
-  successCode: ResponseCode,
+  successCode: ResponseCode
 ): Promise<void> {
   const resObj = await handleResponse<Res>(requestPromise) // 使用辅助函数处理请求
 

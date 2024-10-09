@@ -25,13 +25,13 @@ export function setIsFullScreenClassName(
   baseClass: string,
   fullScreenClass: string,
   isContainerItem: boolean,
-  isFullScreen: boolean,
+  isFullScreen: boolean
 ): object {
   return {
     [baseClass]: !isFullScreen,
     [fullScreenClass]: isFullScreen,
     'md-container-item': isContainerItem && !isFullScreen,
-    'md-container-item-fs': isContainerItem && isFullScreen,
+    'md-container-item-fs': isContainerItem && isFullScreen
   }
 }
 

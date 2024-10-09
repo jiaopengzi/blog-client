@@ -16,8 +16,8 @@ import { copyLineDown } from '@codemirror/commands'
 const customKeymap: Extension = keymap.of([
   {
     key: 'Ctrl-d',
-    run: copyLineDown, // 复制当前行
-  },
+    run: copyLineDown // 复制当前行
+  }
 ])
 
 export { customKeymap }

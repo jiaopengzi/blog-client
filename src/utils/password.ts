@@ -23,7 +23,7 @@ export function generatePassword(options: GeneratePasswordOptions = {}) {
     lowerCaseCount = 4,
     numberCount = 4,
     specialChar = '!@#$%^&*()_+{}|:"<>?',
-    specialCharCount = 4,
+    specialCharCount = 4
   } = options
 
   const passwordLength = upperCaseCount + lowerCaseCount + numberCount + specialCharCount // 密码长度
@@ -44,7 +44,7 @@ export function generatePassword(options: GeneratePasswordOptions = {}) {
     let chars = ''
     for (let i = 0; i < length; i++) {
       chars += String.fromCharCode(
-        Math.floor(Math.random() * (assciiEnd - assciiStart)) + assciiStart,
+        Math.floor(Math.random() * (assciiEnd - assciiStart)) + assciiStart
       )
     }
     return chars

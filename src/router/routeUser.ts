@@ -16,63 +16,63 @@ export const userRoutes = {
     name: 'login',
     component: () => import('@/views/login'),
     meta: {
-      requiresAuth: false,
-    },
+      requiresAuth: false
+    }
   },
   socialQQLoginCallback: {
     path: '/social/qq/login/callback',
     name: 'socialQQLoginCallback',
     component: () => import('@/views/social-login-callback'),
     meta: {
-      requiresAuth: false,
-    },
+      requiresAuth: false
+    }
   },
   socialQQBindCallback: {
     path: '/social/qq/bind/callback',
     name: 'socialQQBindCallback',
     component: () => import('@/views/social-login-callback'),
     meta: {
-      requiresAuth: false,
-    },
+      requiresAuth: false
+    }
   },
   sociaWeChatLoginCallback: {
     path: '/social/wechat/login/callback',
     name: 'sociaWeChatLoginCallback',
     component: () => import('@/views/social-login-callback'),
     meta: {
-      requiresAuth: false,
-    },
+      requiresAuth: false
+    }
   },
   socialWeChatBindCallback: {
     path: '/social/wechat/bind/callback',
     name: 'socialWeChatBindCallback',
     component: () => import('@/views/social-login-callback'),
     meta: {
-      requiresAuth: false,
-    },
+      requiresAuth: false
+    }
   },
   register: {
     path: '/register',
     name: 'register',
     component: () => import('@/views/register'),
     meta: {
-      requiresAuth: false,
-    },
+      requiresAuth: false
+    }
   },
   resetPassword: {
     path: '/reset-password',
     name: 'resetPassword',
     component: () => import('@/views/reset-password'),
     meta: {
-      requiresAuth: false,
-    },
+      requiresAuth: false
+    }
   },
   userInfo: {
     path: '/userinfo',
     name: 'userinfo',
     component: () => import('@/views/userinfo'),
     meta: {
-      requiresAuth: true,
-    },
-  },
+      requiresAuth: true
+    }
+  }
 }

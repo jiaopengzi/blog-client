@@ -25,7 +25,7 @@ export const subExtensionInline: TokenizerAndRendererExtension = {
         type: 'sub',
         raw: match[0],
         text: match[1],
-        tokens: [],
+        tokens: []
       }
       this.lexer.inline(token.text, token.tokens)
       return token
@@ -33,5 +33,5 @@ export const subExtensionInline: TokenizerAndRendererExtension = {
   },
   renderer(token): string {
     return `<sub>${this.parser.parseInline(token.tokens || [])}</sub>`
-  },
+  }
 }

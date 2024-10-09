@@ -76,7 +76,7 @@ export function useInfo(): UseInfoReturnType {
     userName: userData.value.user.user_name,
     nickName: userData.value.user.user_display_name,
     sex: getUserMetaValue('sex', userData.value) || '男',
-    description: getUserMetaValue('description', userData.value) || '',
+    description: getUserMetaValue('description', userData.value) || ''
   })
 
   const email = computed(() => {
@@ -91,7 +91,7 @@ export function useInfo(): UseInfoReturnType {
   // hooks
   const { checkUserNameExcludingUserIDValidator } = useFormValidation({
     FormUserName: userNameRef,
-    FormExcludingUserID: excludingUserIDRef,
+    FormExcludingUserID: excludingUserIDRef
   })
 
   // 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
@@ -101,10 +101,10 @@ export function useInfo(): UseInfoReturnType {
       {
         pattern: new RegExp(RegexPatterns.UserName),
         message: '用户名长度:6-20的小写字母或数字',
-        trigger: 'change',
+        trigger: 'change'
       },
       // 用户查重
-      { validator: checkUserNameExcludingUserIDValidator, trigger: 'blur' },
+      { validator: checkUserNameExcludingUserIDValidator, trigger: 'blur' }
     ],
 
     nickName: [
@@ -112,9 +112,9 @@ export function useInfo(): UseInfoReturnType {
       {
         pattern: new RegExp(RegexPatterns.NickName),
         message: '昵称长度1-20字符',
-        trigger: 'change',
-      },
-    ],
+        trigger: 'change'
+      }
+    ]
   })
 
   /**
@@ -132,7 +132,7 @@ export function useInfo(): UseInfoReturnType {
           user_name: editForm.userName,
           nick_name: editForm.nickName,
           sex: editForm.sex,
-          description: editForm.description,
+          description: editForm.description
         }
 
         const { data } = await editUserInfoAPI(req)
@@ -221,7 +221,7 @@ export function useInfo(): UseInfoReturnType {
   const updateAvatarToDB = async (avatarUrl: string) => {
     const req: SetAvatarRequest = {
       user_id: userData.value.user.id.toString(),
-      avatar_url: avatarUrl,
+      avatar_url: avatarUrl
     }
     // 更新头像
     await setAvatarAPI(req).then((res) => {
@@ -258,6 +258,6 @@ export function useInfo(): UseInfoReturnType {
     unBindSocial,
     userNameDisabled,
     email,
-    updateAvatarToDB,
+    updateAvatarToDB
   }
 }

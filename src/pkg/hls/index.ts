@@ -15,7 +15,7 @@ import type {
   LoaderCallbacks,
   LoaderContext,
   LoaderStats,
-  PlaylistLoaderContext,
+  PlaylistLoaderContext
 } from 'hls.js'
 
 import type { KeyLoaderContext } from 'custom-hls'
@@ -42,7 +42,7 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
   async load(
     context: KeyLoaderContext | PlaylistLoaderContext,
     config: LoaderConfiguration,
-    callbacks: LoaderCallbacks<LoaderContext>,
+    callbacks: LoaderCallbacks<LoaderContext>
   ): Promise<void> {
     // 初始化 loaderStats
     const loaderStats: LoaderStats = {
@@ -55,17 +55,17 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
       loading: {
         start: window.performance.now(), // 记录开始时间
         first: 0,
-        end: 0,
+        end: 0
       },
       parsing: {
         start: 0,
-        end: 0,
+        end: 0
       },
       buffering: {
         start: 0,
         first: 0,
-        end: 0,
-      },
+        end: 0
+      }
     }
 
     // 主 m3u8
@@ -81,14 +81,14 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
               { url: context.url, data: response.data.data },
               loaderStats,
               context,
-              null,
+              null
             )
           } else {
             callbacks.onError(
               { code: response.data.code, text: response.data.msg },
               context,
               null,
-              loaderStats,
+              loaderStats
             )
           }
         })
@@ -118,7 +118,7 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
               { code: response.data.code, text: response.data.msg },
               context,
               null,
-              loaderStats,
+              loaderStats
             )
           }
         })
@@ -154,7 +154,7 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
               { url: context.keyInfo.decryptdata.uri, data: decryptedKey.buffer },
               loaderStats,
               context,
-              null,
+              null
             )
           } else {
             callbacks.onError({ code: data.code, text: data.msg }, context, null, loaderStats)
@@ -196,7 +196,7 @@ function playKeyDecryptAES2Bin(playKeyEncrypt: string): Uint8Array {
   const playKeyDecryptBin = new Uint8Array(
     encryptPlayKey.match(/[\da-f]{2}/gi)!.map(function (h) {
       return parseInt(h, 16)
-    }),
+    })
   )
   return playKeyDecryptBin
 }

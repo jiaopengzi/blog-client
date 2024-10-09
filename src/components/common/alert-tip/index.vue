@@ -9,28 +9,31 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 
-
 <template>
-    <el-alert :title="MsgTitle[props.typeAlert]" :type="props.typeAlert" :description="props.descriptionAlert" show-icon />
+  <el-alert
+    :title="MsgTitle[props.typeAlert]"
+    :type="props.typeAlert"
+    :description="props.descriptionAlert"
+    show-icon
+  />
 </template>
-  
+
 <script setup lang="ts">
 import { MsgType, MsgTitle } from '@/components/common'
 
 defineOptions({ name: 'AlertTip' })
 
 const props = defineProps<{
-    typeAlert: MsgType
-    descriptionAlert: string
+  typeAlert: MsgType
+  descriptionAlert: string
 }>()
 </script>
 <style lang="scss" scoped>
 .el-alert {
-    margin: 20px 0 0;
+  margin: 20px 0 0;
 }
 
 .el-alert:first-child {
-    margin: 0;
+  margin: 0;
 }
 </style>
-  

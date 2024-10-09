@@ -38,7 +38,7 @@ export enum PermissionNames {
   UserEdit = 'UserEdit',
   UserView = 'UserView',
   LoginLogView = 'LoginLogView',
-  LoginLogDelete = 'LoginLogDelete',
+  LoginLogDelete = 'LoginLogDelete'
 }
 
 // 定义权限接口
@@ -90,10 +90,10 @@ interface GetPermissionListParams {
  * @return {Promise<Permission[]>}
  */
 export async function getPermissionList(
-  params: GetPermissionListParams = {},
+  params: GetPermissionListParams = {}
 ): Promise<Permission[]> {
   const { useCache = true } = params // 默认使用缓存
- 
+
   if (useCache) {
     const cachedData = localStorage.getItem(LocalStorageKey.PermissionList)
     if (cachedData) {
@@ -127,7 +127,7 @@ export const permissionDirective: Directive = {
     if (!hasPerm) {
       el.parentNode?.removeChild(el)
     }
-  },
+  }
 }
 
 // 开发环境下检查权限枚举是否有遗漏
@@ -147,7 +147,7 @@ export async function devPermissionNames() {
     if (newPermissionNames) {
       console.error(
         '前端权限和后端权限有差异:\n 请将如下内容添加到枚举 enum PermissionNames 中\n' +
-          newPermissionNames,
+          newPermissionNames
       )
     }
   }

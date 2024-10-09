@@ -24,19 +24,17 @@ import type { IconProps } from '@/components/common/icons'
 import { iconMap } from '@/components/common/icons'
 
 // eslint-disable-next-line vue/multi-word-component-names
-defineOptions({ name: "Icon" })
+defineOptions({ name: 'Icon' })
 
 // props 为 IconProps 类型
 const props = withDefaults(defineProps<IconProps>(), {
-  customClass: '',
+  customClass: ''
 })
 
 // iconClass 为 icon 的 class 属性
 const iconClass = computed(() => {
   return [props.name, props.customClass]
 })
-
-
 </script>
 
 <style scoped lang="scss">

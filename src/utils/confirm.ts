@@ -23,19 +23,19 @@ export const handleConfirmCommon = (callback: () => void) => {
   ElMessageBox.confirm('是否需要删除?', MsgTitle[MsgType.warning], {
     confirmButtonText: '确认',
     cancelButtonText: '取消',
-    type: MsgType.warning,
+    type: MsgType.warning
   })
     .then(() => {
       callback()
       ElMessage({
         type: MsgType.success,
-        message: '开始删除',
+        message: '开始删除'
       })
     })
     .catch(() => {
       ElMessage({
         type: MsgType.info,
-        message: '取消删除',
+        message: '取消删除'
       })
     })
 }

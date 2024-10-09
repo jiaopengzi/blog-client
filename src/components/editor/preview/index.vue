@@ -10,9 +10,13 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-    <div ref="previewRef" id="preview" v-html="html" @click="handleDelegateClick"></div>
-    <!-- 参考:https://github.com/element-plus/element-plus/blob/dev/packages/components/image/src/image.vue -->
-    <el-image-viewer v-if="preview.isShowElImageViewer" @close="closeElImageViewer" :url-list="preview.imgUrls" />
+  <div ref="previewRef" id="preview" v-html="html" @click="handleDelegateClick"></div>
+  <!-- 参考:https://github.com/element-plus/element-plus/blob/dev/packages/components/image/src/image.vue -->
+  <el-image-viewer
+    v-if="preview.isShowElImageViewer"
+    @close="closeElImageViewer"
+    :url-list="preview.imgUrls"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -30,237 +34,234 @@ import '@/assets/scss/highlight.js.jpz.scss'
 import 'katex/dist/katex.min.css' // katex 样式
 
 // eslint-disable-next-line vue/multi-word-component-names
-defineOptions({ name: "Preview" })
+defineOptions({ name: 'Preview' })
 
-// 定义 props 
-const props = defineProps<PriviewProps>();
+// 定义 props
+const props = defineProps<PriviewProps>()
 
 // 定义 emits 子组件 传参
 const emit = defineEmits<{
-    (event: 'show-image-viewer', imgUrls: string[], isShowElImageViewer: boolean): void
-    (event: 'close-image-viewer', isShowElImageViewer: boolean): void
+  (event: 'show-image-viewer', imgUrls: string[], isShowElImageViewer: boolean): void
+  (event: 'close-image-viewer', isShowElImageViewer: boolean): void
 }>()
 
 // const previewRef = ref<HTMLElement | null>(null) // 预览容器
-const previewRef = useTemplateRef<HTMLElement | null>("previewRef")
+const previewRef = useTemplateRef<HTMLElement | null>('previewRef')
 
 // html 内容 清洗
 const html = computed(() => {
-    const html = htmlHandleUtf8(props.preview.html)
+  const html = htmlHandleUtf8(props.preview.html)
 
-    if (props.isShowPreviewWechat) {
-        // 微信公众号预览
-        return htmlHandleWeChat(html)
-    } else {
-        // 普通预览
-        return html
-    }
+  if (props.isShowPreviewWechat) {
+    // 微信公众号预览
+    return htmlHandleWeChat(html)
+  } else {
+    // 普通预览
+    return html
+  }
 })
 
-
 const initializeCssVariable = () => {
-    // 初始化编辑器宽度和高度
-    if (previewRef.value && props.width) {
-        previewRef.value.style.setProperty('--my-preview-width', `${props.width}`);
-    }
-    if (previewRef.value && props.height) {
-        previewRef.value.style.setProperty('--my-preview-height', `${props.height}`);
-    }
+  // 初始化编辑器宽度和高度
+  if (previewRef.value && props.width) {
+    previewRef.value.style.setProperty('--my-preview-width', `${props.width}`)
+  }
+  if (previewRef.value && props.height) {
+    previewRef.value.style.setProperty('--my-preview-height', `${props.height}`)
+  }
 }
 
 // 监听 props isShowPreviewWechat 变化 添加自定义属性
 watchEffect(() => {
-    if (previewRef.value && props.isShowPreviewWechat) {
-        previewRef.value.setAttribute('data-preview', 'wechat')
-    } else {
-        previewRef.value?.removeAttribute('data-preview')
-    }
+  if (previewRef.value && props.isShowPreviewWechat) {
+    previewRef.value.setAttribute('data-preview', 'wechat')
+  } else {
+    previewRef.value?.removeAttribute('data-preview')
+  }
 })
 
 // 监听 props 宽高 变化
 watchEffect(() => {
-    if (previewRef.value && (props.height || props.width)) {
-        initializeCssVariable() // 初始化 css 变量
-    }
+  if (previewRef.value && (props.height || props.width)) {
+    initializeCssVariable() // 初始化 css 变量
+  }
 })
 
 // 事件委托
 const handleDelegateClick = (event: MouseEvent) => {
-    const target = event.target as HTMLElement;
-    // const previewContainer = getParentWithClass(target, 'md-preview')
+  const target = event.target as HTMLElement
+  // const previewContainer = getParentWithClass(target, 'md-preview')
 
-    if (previewRef.value) {
-        if (target.tagName.toLowerCase() === 'button') {
-            // pre 按钮
-            const preElement = target.nextElementSibling as HTMLElement;
-            handlePreClick(preElement);
-        } else if (target.tagName.toLowerCase() === 'img' && 'src' in target) {
-            // img 图片
-            const imgElement = target as HTMLImageElement;
-            updateImageViewer(imgElement)
-        }
+  if (previewRef.value) {
+    if (target.tagName.toLowerCase() === 'button') {
+      // pre 按钮
+      const preElement = target.nextElementSibling as HTMLElement
+      handlePreClick(preElement)
+    } else if (target.tagName.toLowerCase() === 'img' && 'src' in target) {
+      // img 图片
+      const imgElement = target as HTMLImageElement
+      updateImageViewer(imgElement)
     }
+  }
 }
 
 // pre 按钮 点击
 const handlePreClick = (preElement: HTMLElement) => {
-    if (preElement) {
-        preElement.click();
-    }
+  if (preElement) {
+    preElement.click()
+  }
 }
 
 // 更新图片预览
 const updateImageViewer = (imgElement: HTMLImageElement) => {
-    if (imgElement.src) {
-        emit('show-image-viewer', shiftArray(props.preview.imgUrls, imgElement.src) || [], true)
-        document.body.style.overflow = 'hidden'
-    }
+  if (imgElement.src) {
+    emit('show-image-viewer', shiftArray(props.preview.imgUrls, imgElement.src) || [], true)
+    document.body.style.overflow = 'hidden'
+  }
 }
 
 // 关闭图片预览
 const closeElImageViewer = () => {
-    emit('close-image-viewer', false)
-    document.body.style.overflow = 'auto'
+  emit('close-image-viewer', false)
+  document.body.style.overflow = 'auto'
 }
 
 /**
  * @description: 暴露给父组件的方法，用于点击目录时候跳转到对应的标题
  * @param index 目录索引
- * @return 
+ * @return
  */
 const navigateToHeading = (index: number): void => {
-    scrollToElement(previewRef.value, index, ScrollElementTagHeading)
+  scrollToElement(previewRef.value, index, ScrollElementTagHeading)
 }
 
 /**
  * @description: 暴露给父组件的方法,跳转到对应的元素
  * @param index 目录索引
- * @return 
+ * @return
  */
 const navigateToElement = (index: number): void => {
-    // console.log('navigateToElement=====>>>>', index)
-    scrollToElement(previewRef.value, index, ScrollElementTag)
+  // console.log('navigateToElement=====>>>>', index)
+  scrollToElement(previewRef.value, index, ScrollElementTag)
 }
 
 /**
  * @description: 暴露给父组件的方法,跳转到顶部
  * @param behavior 滚动行为
- * @return 
+ * @return
  */
 const navigateGoHome = (behavior: ScrollBehavior = 'smooth'): void => {
-    previewRef.value?.scrollTo({
-        top: 0,
-        behavior: behavior,
-    })
+  previewRef.value?.scrollTo({
+    top: 0,
+    behavior: behavior
+  })
 }
 
 /**
  * @description: 暴露给父组件的方法,跳转到底部
  * @param behavior 滚动行为
- * @return 
+ * @return
  */
 const navigateGoEnd = (behavior: ScrollBehavior = 'smooth'): void => {
-    previewRef.value?.scrollTo({
-        top: previewRef.value.scrollHeight - previewRef.value.clientHeight,
-        behavior: behavior,
-    })
+  previewRef.value?.scrollTo({
+    top: previewRef.value.scrollHeight - previewRef.value.clientHeight,
+    behavior: behavior
+  })
 }
 
 // 初始化 ClipboardJS 的复制代码函数
 const initializeClipboard = () => {
-    const clipboard = new ClipboardJS('.copy-button', {
-        text: (trigger: Element) => {
-            // 获取对应 pre 元素的文本内容
-            const preElement = trigger.nextElementSibling
+  const clipboard = new ClipboardJS('.copy-button', {
+    text: (trigger: Element) => {
+      // 获取对应 pre 元素的文本内容
+      const preElement = trigger.nextElementSibling
 
-            // 添加条件检查，确保 preElement 和 preElement.textContent 不为 null
-            if (preElement && preElement.textContent !== null) {
-                return preElement.textContent.trim()
-            } else {
-                return ''
-            }
-        },
-    })
+      // 添加条件检查，确保 preElement 和 preElement.textContent 不为 null
+      if (preElement && preElement.textContent !== null) {
+        return preElement.textContent.trim()
+      } else {
+        return ''
+      }
+    }
+  })
 
-    clipboard.on('success', (e: ClipboardEvent) => {
-        // 处理成功的反馈（例如显示提示信息）
-        ShowMsgTip(ShowMsgTip.MsgType.success, '已复制到剪贴板！')
-        // console.log('已复制到剪贴板！')
-        // console.info('Action:', e.action)
-        // console.info('Text:', e.text)
-        // console.info('Trigger:', e.trigger)
-        e.clearSelection()
-    })
+  clipboard.on('success', (e: ClipboardEvent) => {
+    // 处理成功的反馈（例如显示提示信息）
+    ShowMsgTip(ShowMsgTip.MsgType.success, '已复制到剪贴板！')
+    // console.log('已复制到剪贴板！')
+    // console.info('Action:', e.action)
+    // console.info('Text:', e.text)
+    // console.info('Trigger:', e.trigger)
+    e.clearSelection()
+  })
 
-    clipboard.on('error', (e: ClipboardEvent) => {
-        // 处理错误的反馈
-        ShowMsgTip(ShowMsgTip.MsgType.error, '复制到剪贴板失败！')
-        console.error('复制到剪贴板失败:', e)
-        // console.error('Action:', e.action)
-        // console.error('Trigger:', e.trigger)
-    })
+  clipboard.on('error', (e: ClipboardEvent) => {
+    // 处理错误的反馈
+    ShowMsgTip(ShowMsgTip.MsgType.error, '复制到剪贴板失败！')
+    console.error('复制到剪贴板失败:', e)
+    // console.error('Action:', e.action)
+    // console.error('Trigger:', e.trigger)
+  })
 }
-
 
 // 导出方法
 defineExpose({
-    root: previewRef,
-    navigateToHeading,
-    navigateToElement,
-    navigateGoHome,
-    navigateGoEnd,
+  root: previewRef,
+  navigateToHeading,
+  navigateToElement,
+  navigateGoHome,
+  navigateGoEnd
 })
 
 // 初始化
 onMounted(() => {
-    initializeCssVariable() // 初始化 css 变量
-    initializeClipboard() // 初始化剪切板
+  initializeCssVariable() // 初始化 css 变量
+  initializeClipboard() // 初始化剪切板
 })
 </script>
 
 <style scoped lang="scss">
 #preview {
-    overflow: auto;
-    padding: 0 20px;
-    box-sizing: border-box;
-    font-size: 16px;
-    line-height: 1.5;
-    color: $primary-color;
-    background-color: $background-color-content;
-    height: var(--my-codemirror-height, 100%);
+  overflow: auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+  font-size: 16px;
+  line-height: 1.5;
+  color: $primary-color;
+  background-color: $background-color-content;
+  height: var(--my-codemirror-height, 100%);
 }
 
-
 @include respond-to('pc') {
-    #preview {
-        max-width: pc.$width-page-main;
-        width: 100%;
-    }
+  #preview {
+    max-width: pc.$width-page-main;
+    width: 100%;
+  }
 
-    #preview[data-preview="wechat"] {
-        width: 390px;
-    }
+  #preview[data-preview='wechat'] {
+    width: 390px;
+  }
 }
 
 @include respond-to('pad') {
-    #preview {
-        max-width: 100%;
-    }
+  #preview {
+    max-width: 100%;
+  }
 
-    #preview[data-preview="wechat"] {
-        max-width: 390px;
-        width: 100%;
-    }
+  #preview[data-preview='wechat'] {
+    max-width: 390px;
+    width: 100%;
+  }
 }
 
 @include respond-to('phone') {
-    #preview {
-        max-width: 100%;
-    }
+  #preview {
+    max-width: 100%;
+  }
 
-    #preview[data-preview="wechat"] {
-        max-width: 390px;
-        width: 100%;
-    }
+  #preview[data-preview='wechat'] {
+    max-width: 390px;
+    width: 100%;
+  }
 }
 </style>

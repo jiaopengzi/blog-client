@@ -9,10 +9,9 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-    <div>评论</div>
+  <div>评论</div>
 </template>
 <script setup lang="ts">
-
 defineOptions({ name: 'UserInfoCommentPhone' })
 </script>
 <style scoped lang="scss"></style>

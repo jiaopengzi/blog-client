@@ -9,24 +9,19 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 
-
 <template>
-    <div class="container">
-        首页面板
-    </div>
+  <div class="container">首页面板</div>
 </template>
-<script setup lang='ts'>
-
+<script setup lang="ts">
 import { AadminSideMenu } from '@/views/admin/component/aside'
 
 // eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: AadminSideMenu.Dashborad })
-
 </script>
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .container {
-    height: 100%;
-    width: 100%;
-    background-color: red;
+  height: 100%;
+  width: 100%;
+  background-color: red;
 }
 </style>

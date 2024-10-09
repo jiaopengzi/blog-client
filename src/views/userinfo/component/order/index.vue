@@ -10,17 +10,16 @@
 -->
 
 <template>
-    <div class="pc">
-        <UserInfoOrderPC />
-    </div>
-    <div class="phone">
-        <UserInfoOrderPhone />
-    </div>
+  <div class="pc">
+    <UserInfoOrderPC />
+  </div>
+  <div class="phone">
+    <UserInfoOrderPhone />
+  </div>
 </template>
 <script setup lang="ts">
 import UserInfoOrderPC from './pc.vue'
 import UserInfoOrderPhone from './phone.vue'
 defineOptions({ name: 'UserInfoOrder' })
-
 </script>
 <style scoped lang="scss"></style>

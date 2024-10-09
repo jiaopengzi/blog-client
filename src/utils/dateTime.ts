@@ -20,7 +20,7 @@ export function convertToBeijingTime(
   Timestamp: string,
   timeZone: string = 'Asia/Shanghai',
   formatStr: string = 'YYYY-MM-DD HH:mm:ss',
-  addHours = 0, // 默认不增加小时
+  addHours = 0 // 默认不增加小时
 ): string {
   // 将时间戳转换为 Date 对象,默认会转换为本地时间
   const dateTime = new Date(Timestamp)
@@ -37,7 +37,7 @@ export function convertToBeijingTime(
     minute: '2-digit',
     second: '2-digit',
     hour12: false,
-    timeZone: timeZone,
+    timeZone: timeZone
   })
 
   // 格式化时间
@@ -53,7 +53,7 @@ export function convertToBeijingTime(
         .replace('YYYY', p3)
         .replace('HH', p4)
         .replace('mm', p5)
-        .replace('ss', p6),
+        .replace('ss', p6)
   )
 }
 
@@ -106,7 +106,7 @@ export function parseTimeSegments(
   hours: string,
   minutes: string,
   seconds: string,
-  milliseconds: string,
+  milliseconds: string
 ): number {
   return (
     parseInt(hours) * 3600 +

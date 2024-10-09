@@ -33,7 +33,7 @@ export enum PlayerCommandsKey {
   // 快退
   Rewind = 'rewind',
   // 退出全屏
-  ExitFullscreen = 'exitFullscreen',
+  ExitFullscreen = 'exitFullscreen'
 
   // // 上一个
   // Previous = 'previous',
@@ -74,43 +74,43 @@ export const PlayerCommands: PlayerCommandsType = {
   [PlayerCommandsKey.PalyPause]: {
     tip: '播放/暂停',
     hotKey: 'Space',
-    action: () => playerStore.togglePlayPause(),
+    action: () => playerStore.togglePlayPause()
   },
   [PlayerCommandsKey.Fullscreen]: {
     tip: '全屏',
     hotKey: 'F',
     action: () => {
       playerStore.toggleFullScreen()
-    },
+    }
   },
   [PlayerCommandsKey.WebFullscreen]: {
     tip: '网页全屏',
     hotKey: 'W',
-    action: () => playerStore.toggleWebFullScreen(),
+    action: () => playerStore.toggleWebFullScreen()
   },
 
   [PlayerCommandsKey.PictureInPicture]: {
     tip: '画中画',
     hotKey: 'P',
-    action: () => playerStore.togglePictureInPicture(),
+    action: () => playerStore.togglePictureInPicture()
   },
 
   [PlayerCommandsKey.Mute]: {
     tip: '静音',
     hotKey: 'M',
-    action: () => playerStore.toggleMute(),
+    action: () => playerStore.toggleMute()
   },
   [PlayerCommandsKey.VolumeUp]: {
     tip: '音量增加',
     hotKey: 'ArrowUp',
     action: () => playerStore.setVolume(volume.value.volume + 10),
-    longPressAction: () => playerStore.setVolume(volume.value.volume + 20),
+    longPressAction: () => playerStore.setVolume(volume.value.volume + 20)
   },
   [PlayerCommandsKey.VolumeDown]: {
     tip: '音量减小',
     hotKey: 'ArrowDown',
     action: () => playerStore.setVolume(volume.value.volume - 10),
-    longPressAction: () => playerStore.setVolume(volume.value.volume - 20),
+    longPressAction: () => playerStore.setVolume(volume.value.volume - 20)
   },
   [PlayerCommandsKey.FastForward]: {
     tip: '快进',
@@ -122,7 +122,7 @@ export const PlayerCommands: PlayerCommandsType = {
     longPressAction: () => {
       playerStore.setUserInput(true)
       playerStore.fastForward()
-    },
+    }
   },
   [PlayerCommandsKey.Rewind]: {
     tip: '快退',
@@ -134,13 +134,13 @@ export const PlayerCommands: PlayerCommandsType = {
     longPressAction: () => {
       playerStore.setUserInput(true)
       playerStore.rewind()
-    },
+    }
   },
   [PlayerCommandsKey.ExitFullscreen]: {
     tip: '退出全屏',
-    hotKey: 'Escape',
+    hotKey: 'Escape'
     // action: () => playerStore.exitFullScreen(),
-  },
+  }
 
   // [PlayerCommandsKey.Previous]: {
   //   tip: '上一个',
