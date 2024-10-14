@@ -8,6 +8,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import terser from '@rollup/plugin-terser' // 会报错 没有调用签名。 但是不影响使用
+import Inspect from 'vite-plugin-inspect'
 // ------------------------------element-plus 按需自动导入 开始
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
@@ -19,22 +20,23 @@ export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
+    Inspect(), // vite-plugin-inspect 查看编译后的文件
     // ------------------------------element-plus 自动导入 开始
     AutoImport({
-      resolvers: [ElementPlusResolver()],
+      resolvers: [ElementPlusResolver()]
     }),
     Components({
       resolvers: [ElementPlusResolver({ importStyle: 'sass' })], //scss需要添加 { importStyle: 'sass' } 留空默认为css
 
-      directoryAsNamespace: true, // 解决组件名称重复问题 `component xxx has naming conflicts with other components, ignored.`
-    }),
+      directoryAsNamespace: true // 解决组件名称重复问题 `component xxx has naming conflicts with other components, ignored.`
+    })
     // ------------------------------element-plus 自动导入 结束
   ],
 
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'),
-    },
+      '@': path.resolve(__dirname, 'src')
+    }
   },
 
   // ------------------------------ scss全局变量生效 开始
@@ -47,10 +49,10 @@ export default defineConfig({
         @use './src/assets/scss/platform/phone.scss' as phone;
         @use './src/assets/scss/platform/pc.scss' as pc;
         @use './src/assets/scss/mixin.scss' as *;
-        `,
-      },
+        `
+      }
       // devSourceMap: true, // 开发环境下是否生成 sourceMap
-    },
+    }
   },
   // ------------------------------ scss全局变量生效 结束
   // ------------------------------ 设置代理 开始
@@ -61,10 +63,10 @@ export default defineConfig({
       // dev Server.proxy 可以是一个指向开发环境 API 服务器的字符串
       '/api': {
         target: 'http://10.10.2.222:8080',
-        changeOrigin: true,
+        changeOrigin: true
         // rewrite: (path) => path.replace(/^\/api/, 'myadmin'),
-      },
-    },
+      }
+    }
   },
   // ------------------------------ 设置代理 结束
   // ------------------------------ 设置打包分块 开始
@@ -95,7 +97,7 @@ export default defineConfig({
         // assetFileNames: 'static/[ext]/[hash].[ext]',
 
         // ------------------------------ 将打包文件按照类型目录分类 结束
-        inlineDynamicImports: false, // 将动态导入的模块内联到生成的代码中
+        inlineDynamicImports: false // 将动态导入的模块内联到生成的代码中
       },
       plugins: [
         terser({
@@ -103,11 +105,11 @@ export default defineConfig({
           compress: {
             // drop_console: true, // 去除全部console
             pure_funcs: ['console.log'], // 去除console.log,保留其他console
-            drop_debugger: true, // 去除debugger
-          },
-        }),
-      ],
-    },
-  },
+            drop_debugger: true // 去除debugger
+          }
+        })
+      ]
+    }
+  }
   // ------------------------------ 设置打包分块 结束
 })

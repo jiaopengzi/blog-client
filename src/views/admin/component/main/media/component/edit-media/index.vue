@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 10:24:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-08 17:10:01
+ * @LastEditTime : 2024-10-14 16:00:07
  * @FilePath     : \blog-client\src\views\admin\component\main\media\component\edit-media\index.vue
  * @Description  : 编辑媒体
  * @Blog         : https://jiaopengzi.com
@@ -110,7 +110,6 @@
             />
           </el-select>
         </el-form-item>
-
         <el-form-item label="字幕内容" prop="subtitles">
           <el-input
             v-model="subtitlesForm.subtitles"
@@ -460,7 +459,7 @@ const videoWidth = ref(400)
 
 // 设置播放器
 watchEffect(() => {
-  if (isVideoFile.value) {
+  if (isVideoFile.value && editMediaData.editDialogVisible) {
     // 加载时设置视频宽度
     nextTick(() => {
       if (leftRef.value) {
