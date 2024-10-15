@@ -13,7 +13,7 @@ import { ShowMsgTip } from '@/utils/message'
 import {
   UploadControllerEvents,
   UploadController,
-  MultiThreadSplitor,
+  MultiThreadSplitter,
   type UploadFileSuccessInfo
 } from '@/utils/chunkUpload'
 import { HashAlgorithm } from '@/utils/hash'
@@ -27,7 +27,7 @@ export const uploadFileCommon = async (
   RequestStrategyClass: new (file: File) => any
 ): Promise<string | undefined> => {
   const requestStrategy = new RequestStrategyClass(file)
-  const splitStrategy = new MultiThreadSplitor(file, chunkSizeServer, hashAlgorithmServer)
+  const splitStrategy = new MultiThreadSplitter(file, chunkSizeServer, hashAlgorithmServer)
   const uploadController = new UploadController(file, requestStrategy, splitStrategy)
 
   return new Promise((resolve, reject) => {

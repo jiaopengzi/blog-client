@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-15 15:09:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-06 17:45:38
+ * @LastEditTime : 2024-10-15 10:23:30
  * @FilePath     : \blog-client\src\views\admin\component\main\permission-role\index.vue
  * @Description  : 权限角色页面
  * @Blog         : https://jiaopengzi.com
@@ -156,7 +156,7 @@ import {
 } from '@/utils/permissionRole'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import type { Role, PermissionRow } from '@/views/admin/component/main/permission-role'
-import { AadminSideMenu } from '@/views/admin/component/aside'
+import { AdminSideMenu } from '@/views/admin/component/aside'
 import {
   updateRolesAPI,
   type UpdateRolesRequest,
@@ -185,7 +185,7 @@ import {
   type GetPermissionRoleRequest
 } from '@/api/permissionRole/getPermissionRole'
 
-defineOptions({ name: AadminSideMenu.PermissionRole })
+defineOptions({ name: AdminSideMenu.PermissionRole })
 
 // 定义权限列表 包含权限名和权限描述
 const permissionsList: Ref<Permission[]> = ref([])
@@ -222,7 +222,7 @@ const handleCellEditClick = async (permissionName: string, roleName: string) => 
   // 更新 permissionRoleForm 数据
   permissionRoleForm.permission_name = permissionName as PermissionNames
   permissionRoleForm.role_name = roleName
-  // 设置 limt_count 和 limit_period 默认值
+  // 设置 limit_count 和 limit_period 默认值
   permissionRoleForm.limit_count = 0
   permissionRoleForm.limit_period = 0
 
@@ -412,7 +412,7 @@ const submitDeleteForm = debounce(100, async (formEl: FormInstance | undefined) 
         const { data } = await deletePermissionRoleAPI(req)
 
         if (data.code === ResponseCode.DeletePermissionRoleSuccess) {
-          // 将 limt_count 和 limit_period 设置为 0
+          // 将 limit_count 和 limit_period 设置为 0
           permissionRoleForm.limit_count = 0
           permissionRoleForm.limit_period = 0
 

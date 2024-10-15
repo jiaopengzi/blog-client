@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-28 16:56:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-23 19:44:09
+ * @LastEditTime : 2024-10-15 08:57:45
  * @FilePath     : \blog-client\src\views\admin\component\main\login-log\index.vue
  * @Description  : 登录日志
  * @Blog         : https://jiaopengzi.com
@@ -36,7 +36,7 @@ import { ref, reactive, onBeforeMount, watch } from 'vue'
 import type { Pagination } from '@/components/common'
 import type { TableData, TableColumn } from '@/components/common/base-table'
 import { debounce } from 'throttle-debounce'
-import { AadminSideMenu } from '@/views/admin/component/aside'
+import { AdminSideMenu } from '@/views/admin/component/aside'
 import {
   getLoginLogsAPI,
   emptyLoginLogs,
@@ -58,7 +58,7 @@ import { handleConfirmCommon } from '@/utils/confirm'
 
 import BaseTable from '@/components/common/base-table'
 
-defineOptions({ name: AadminSideMenu.LoginLog })
+defineOptions({ name: AdminSideMenu.LoginLog })
 
 const cols: TableColumn[] = reactive([
   {
@@ -245,7 +245,7 @@ function routerPush(pageSize: number, currentPage: number, searchStr: string) {
   // 当搜索关键字为空时
   if (!searchStr) {
     router.push({
-      name: AadminSideMenu.LoginLog,
+      name: AdminSideMenu.LoginLog,
       query: {
         'page-size': pageSize,
         'current-page': currentPage
@@ -256,7 +256,7 @@ function routerPush(pageSize: number, currentPage: number, searchStr: string) {
 
   // 当搜索关键字不为空
   router.push({
-    name: AadminSideMenu.LoginLog,
+    name: AdminSideMenu.LoginLog,
     query: {
       'page-size': pageSize,
       'current-page': currentPage,

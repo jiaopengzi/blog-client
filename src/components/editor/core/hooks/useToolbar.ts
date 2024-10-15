@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-20 22:10:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-08 13:59:45
+ * @LastEditTime : 2024-10-15 09:33:36
  * @FilePath     : \blog-client\src\components\editor\core\hooks\useToolbar.ts
  * @Description  : 工具栏 hook
  * @Blog         : https://jiaopengzi.com
@@ -12,7 +12,7 @@
 import type { Ref } from 'vue'
 import { ref, onMounted, nextTick, watch } from 'vue'
 import type { ToolbarRef, CodemirrorRef, PreviewRef } from '@/components/editor/core'
-import { CommandsKey, MardkdownEditorCommands } from '@/components/editor/command'
+import { CommandsKey, MarkdownEditorCommands } from '@/components/editor/command'
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
 import type { IconKeys } from '@/components/common/icons'
@@ -33,15 +33,15 @@ export function useToolbar(
     storeToRefs(useEditorStore())
 
   // 工具栏按钮
-  const toobarBtns = () => {
+  const toolbarBtns = () => {
     return constantKeys.map((key) => {
       return {
         name: key as CommandsKey,
-        display: (MardkdownEditorCommands[key].tip +
+        display: (MarkdownEditorCommands[key].tip +
           ' <' +
-          MardkdownEditorCommands[key].hotKey +
+          MarkdownEditorCommands[key].hotKey +
           '>') as string,
-        icon: MardkdownEditorCommands[key].icon as IconKeys
+        icon: MarkdownEditorCommands[key].icon as IconKeys
       }
     })
   }
@@ -111,7 +111,7 @@ export function useToolbar(
   const keys = useMagicKeys() // 使用 useMagicKeys() 之后，就可以通过 keys 来获取键盘按键的状态了
   const registerHotKeys = () => {
     Object.values(CommandsKey).forEach((item) => {
-      const hotKey = MardkdownEditorCommands[item].hotKey
+      const hotKey = MarkdownEditorCommands[item].hotKey
       if (hotKey) {
         watch(keys[hotKey], (v) => {
           // v 为 true 时表示按下了快捷键 v 为 false 时释放了快捷键
@@ -123,10 +123,10 @@ export function useToolbar(
     })
   }
 
-  const toolBarHight = ref(0)
+  const toolbarHight = ref(0)
 
   // 计算工具栏高度
-  const updateToolBarHeight = (): void => {
+  const updateToolbarHeight = (): void => {
     if (!toolbarRef.value) return
 
     const toolbarEl = toolbarRef.value.root
@@ -134,18 +134,18 @@ export function useToolbar(
     const marginTop = getComputedStyleValue(toolbarEl, 'margin-top')
     const marginBottom = getComputedStyleValue(toolbarEl, 'margin-bottom')
 
-    toolBarHight.value = height + marginTop + marginBottom
+    toolbarHight.value = height + marginTop + marginBottom
   }
 
   // 更新 mdContainerRef 中 css 变量 --md-editor-container-height 的值
   const updateMdContainerStyle = (): void => {
-    if (!mdContainerRef.value || !toolBarHight.value) return
+    if (!mdContainerRef.value || !toolbarHight.value) return
 
     // 设置 cmContainerRef 中 css 变量 --md-editor-container-height 的值为 100vh - toolbar 高度 - toolbar margin
     setCSSVariable(
       mdContainerRef.value,
       '--md-editor-container-height',
-      `calc(100vh - ${toolBarHight.value}px)`
+      `calc(100vh - ${toolbarHight.value}px)`
     )
 
     // 将内层的变量 --el-tabs-header-height 设置到 cmContainerRef 中 css 变量 --el-tabs-header-height
@@ -158,8 +158,8 @@ export function useToolbar(
     setCSSVariable(mdContainerRef.value, '--el-tabs-header-height', `${tabsHeaderHeight}px`)
   }
 
-  const caclToolBarHight = (): void => {
-    updateToolBarHeight()
+  const calcToolbarHight = (): void => {
+    updateToolbarHeight()
     updateMdContainerStyle()
   }
 
@@ -173,14 +173,14 @@ export function useToolbar(
 
   onMounted(() => {
     registerHotKeys() // 注册快捷键
-    caclToolBarHight() // 计算工具栏高度
+    calcToolbarHight() // 计算工具栏高度
   })
 
   return {
-    toobarBtns,
+    toolbarBtns,
     toolbarBtnClicked,
-    caclToolBarHight,
-    toolBarHight,
+    calcToolbarHight,
+    toolbarHight,
     iconNumberPerLine
   }
 }

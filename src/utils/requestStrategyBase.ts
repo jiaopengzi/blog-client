@@ -45,7 +45,7 @@ export abstract class RequestStrategyBase implements RequestStrategy {
   //   onProgress: (percent: number) => void,
   // ): Promise<Res>
   abstract confirmAfterUploadBySignedUrlAPI(req: ConfirmAfterUploadBySignedUrlRequest): Promise<Res>
-  abstract handleconfirmBeforeUploadError(errorMessage: string): void
+  abstract handleConfirmBeforeUploadError(errorMessage: string): void
   abstract uploadChunkAPI(formData: FormData, meta: ChunkMetadata): Promise<Res>
   abstract getUploadFileUrlAPI(req: GetUploadFileUrlRequest): Promise<Res>
 
@@ -70,7 +70,7 @@ export abstract class RequestStrategyBase implements RequestStrategy {
             errorMessage = `${response.data.msg}`
           }
 
-          this.handleconfirmBeforeUploadError(errorMessage)
+          this.handleConfirmBeforeUploadError(errorMessage)
 
           const error: any = new Error(response.data.msg)
           if (this.elUploadRequestOptions) {

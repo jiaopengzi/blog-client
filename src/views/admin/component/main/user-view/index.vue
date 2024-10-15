@@ -78,7 +78,7 @@ import { ref, reactive, watch } from 'vue'
 import type { Pagination } from '@/components/common'
 import type { TableData, TableColumn } from '@/components/common/base-table'
 import { debounce } from 'throttle-debounce'
-import { AadminSideMenu } from '@/views/admin/component/aside'
+import { AdminSideMenu } from '@/views/admin/component/aside'
 import { type User } from '@/api/user/getUsers'
 import { getUsersAPI, emptyUsers, type GetUsersRequest } from '@/api/user/getUsers'
 import {
@@ -90,7 +90,7 @@ import { type Role } from '@/api/permissionRole/role'
 import { ResponseCode } from '@/api/responseCode'
 import router from '@/router'
 import { paginationRouterPush, PaginationQueryKey } from '@/router/utils'
-import { DeleteUserAPI, type DeleteUserRequest } from '@/api/user/deleteUser'
+import { deleteUserAPI, type DeleteUserRequest } from '@/api/user/deleteUser'
 import { ShowMsgTip } from '@/utils/message'
 import { type EditUserByAdminForm } from '@/views/admin/component/main/user-view/component/edit-user'
 import { convertToBeijingTime } from '@/utils/dateTime'
@@ -100,7 +100,7 @@ import BaseTable from '@/components/common/base-table'
 import AddUser from '@/views/admin/component/main/user-view/component/add-user'
 import EditUser from '@/views/admin/component/main/user-view/component/edit-user'
 
-defineOptions({ name: AadminSideMenu.UserView })
+defineOptions({ name: AdminSideMenu.UserView })
 
 const cols: TableColumn[] = reactive([
   {
@@ -226,7 +226,7 @@ const handleAdd = () => {
 
 const updateCurrentPage = async (val: number) => {
   pagination.value.current_page = val
-  paginationRouterPush(AadminSideMenu.UserView, pagination.value.page_size, val, {
+  paginationRouterPush(AdminSideMenu.UserView, pagination.value.page_size, val, {
     [queryKey.RoleName]: activeRole.value,
     [queryKey.Search]: search.value
   })
@@ -235,7 +235,7 @@ const updateCurrentPage = async (val: number) => {
 
 const updatePageSize = async (val: number) => {
   pagination.value.page_size = val
-  paginationRouterPush(AadminSideMenu.UserView, val, pagination.value.current_page, {
+  paginationRouterPush(AdminSideMenu.UserView, val, pagination.value.current_page, {
     [queryKey.RoleName]: activeRole.value,
     [queryKey.Search]: search.value
   })
@@ -319,7 +319,7 @@ const deleteRows = async (rows: TableData[]) => {
   const deleteUserRequest: DeleteUserRequest = { user_id_list: ids }
 
   // 删除用户
-  await DeleteUserAPI(deleteUserRequest).then((res) => {
+  await deleteUserAPI(deleteUserRequest).then((res) => {
     if (res.data.code === ResponseCode.DeleteUserSuccess) {
       // 删除成功后重新获取用户列表
       getUserPaginate({
@@ -341,7 +341,7 @@ const deleteRows = async (rows: TableData[]) => {
 const updateSearch = debounce(500, async (val: string) => {
   search.value = val
   paginationRouterPush(
-    AadminSideMenu.UserView,
+    AdminSideMenu.UserView,
     pagination.value.page_size,
     pagination.value.current_page,
     { [queryKey.RoleName]: activeRole.value, [queryKey.Search]: val }
@@ -437,7 +437,7 @@ const handleUserCountByRole = async (role: string) => {
   // 添加路由跳转
   console.log('10============')
   paginationRouterPush(
-    AadminSideMenu.UserView,
+    AdminSideMenu.UserView,
     pagination.value.page_size,
     pagination.value.current_page,
     { [queryKey.RoleName]: role, [queryKey.Search]: search.value }

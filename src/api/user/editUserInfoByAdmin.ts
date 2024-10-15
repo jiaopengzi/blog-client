@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-18 08:52:22
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-22 10:52:02
+ * @LastEditTime : 2024-10-15 09:03:30
  * @FilePath     : \blog-client\src\api\user\editUserInfoByAdmin.ts
  * @Description  : 编辑用户
  * @Blog         : https://jiaopengzi.com
@@ -29,11 +29,11 @@ export interface EditUserInfoByAdminRequest {
   description: string // 描述
 }
 
-export function EditUserInfoByAdminAPI(requestData: EditUserInfoByAdminRequest): AxiosPromise<Res> {
+export function editUserInfoByAdminAPI(requestData: EditUserInfoByAdminRequest): AxiosPromise<Res> {
   const urlStr = routerGroup + '/user/edit'
   return request({
     url: urlStr,
     method: 'post',
-    data: requestData,
+    data: requestData
   })
 }

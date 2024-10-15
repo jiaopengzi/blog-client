@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 20:56:51
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-11 22:19:10
+ * @LastEditTime : 2024-10-15 09:41:33
  * @FilePath     : \blog-client\src\components\layout\header-nav\pc.vue
  * @Description  : 导航栏 pc 端
  * @Blog         : https://jiaopengzi.com
@@ -19,7 +19,7 @@
             :name="item.iconKey"
             :customClass="'my-icon ' + item.customClass"
           />
-          <span class="titile">{{ item.title }}</span>
+          <span class="title">{{ item.title }}</span>
         </router-link>
       </li>
     </ul>

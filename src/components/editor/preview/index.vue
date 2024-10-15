@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:01:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-24 15:51:27
+ * @LastEditTime : 2024-10-15 09:29:42
  * @FilePath     : \blog-client\src\components\editor\preview\index.vue
  * @Description  : 预览组件
  * @Blog         : https://jiaopengzi.com
@@ -28,7 +28,7 @@ import { shiftArray } from '@/utils/img'
 import { htmlHandleUtf8, htmlHandleWeChat } from '@/utils/preview'
 import { ScrollElementTag, ScrollElementTagHeading } from '@/components/editor/command'
 import { scrollToElement } from '@/utils/scroll'
-import type { PriviewProps } from '@/components/editor/preview'
+import type { PreviewProps } from '@/components/editor/preview'
 import '@/assets/scss/preview.scss'
 import '@/assets/scss/highlight.js.jpz.scss'
 import 'katex/dist/katex.min.css' // katex 样式
@@ -37,7 +37,7 @@ import 'katex/dist/katex.min.css' // katex 样式
 defineOptions({ name: 'Preview' })
 
 // 定义 props
-const props = defineProps<PriviewProps>()
+const props = defineProps<PreviewProps>()
 
 // 定义 emits 子组件 传参
 const emit = defineEmits<{

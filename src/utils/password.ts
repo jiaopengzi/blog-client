@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 17:48:53
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-16 17:48:56
- * @FilePath     : \blog-client\src\utils\generatePassword.ts
+ * @LastEditTime : 2024-10-15 10:13:24
+ * @FilePath     : \blog-client\src\utils\password.ts
  * @Description  : 生成随机密码
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
@@ -35,17 +35,15 @@ export function generatePassword(options: GeneratePasswordOptions = {}) {
   /**
    * @description: 获取随机字符
    * @param length 获取字符数
-   * @param assciiStart 字符开始 即ASCII码开始
-   * @param assciiEnd 字符结束 即ASCII码结束
+   * @param asciiStart 字符开始 即ASCII码开始
+   * @param asciiEnd 字符结束 即ASCII码结束
    * @return string 返回随机字符
    */
   // 定义生成随机字符函数
-  const generateChars = (length: number, assciiStart: number, assciiEnd: number) => {
+  const generateChars = (length: number, asciiStart: number, asciiEnd: number) => {
     let chars = ''
     for (let i = 0; i < length; i++) {
-      chars += String.fromCharCode(
-        Math.floor(Math.random() * (assciiEnd - assciiStart)) + assciiStart
-      )
+      chars += String.fromCharCode(Math.floor(Math.random() * (asciiEnd - asciiStart)) + asciiStart)
     }
     return chars
   }

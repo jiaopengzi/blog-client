@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 17:31:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-09 09:32:28
+ * @LastEditTime : 2024-10-15 09:12:44
  * @FilePath     : \blog-client\src\components\common\avatar-upload\index.vue
  * @Description  : 头像上传
  * @Blog         : https://jiaopengzi.com

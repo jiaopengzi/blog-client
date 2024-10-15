@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-28 16:21:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-28 19:27:15
- * @FilePath     : \blog-client\src\api\user\getLoginLogs.ts
+ * @LastEditTime : 2024-10-15 08:58:54
+ * @FilePath     : \blog-client\src\api\loginLog\getLoginLogs.ts
  * @Description  : 获取日志
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
@@ -32,13 +32,13 @@ export interface GetLoginLogsResponse {
 
 // 获取用户信息 api 函数
 export async function getLoginLogsAPI(
-  requestData: GetLoginLogsRequest = { current_page: 1, page_size: 10 }, // 设置默认值,
+  requestData: GetLoginLogsRequest = { current_page: 1, page_size: 10 } // 设置默认值,
 ): AxiosPromise<GetLoginLogsResponse> {
   const urlStr = routerGroup + '/login-log/view'
   const response = await request({
     url: urlStr,
     method: 'post',
-    data: requestData,
+    data: requestData
   })
   // 在这里使用 map 函数来格式化每行信息
   if (response.data.code === ResponseCode.GetLoginLogsSuccess) {
@@ -63,10 +63,10 @@ export interface LoginLog extends DataWithImg {
 }
 
 // 格式化日志信息
-export function formatUserLoginLog({ platform, created_at, ...loginlog }: any): LoginLog {
+export function formatUserLoginLog({ platform, created_at, ...loginLog }: any): LoginLog {
   const formattedLoginLog: LoginLog = {
-    ...loginlog,
-    created_at: convertToBeijingTime(created_at), // 使用 convertToBeijingTime 进行格式化
+    ...loginLog,
+    created_at: convertToBeijingTime(created_at) // 使用 convertToBeijingTime 进行格式化
   }
 
   // 如果 user_avatar 不为空，添加 img 属性
@@ -85,6 +85,6 @@ export function emptyLoginLogs(): Pagination<LoginLog> {
     page_size: 10,
     page_count: 1,
     page_sizes: [10],
-    records: [],
+    records: []
   }
 }

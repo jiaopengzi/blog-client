@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-28 17:42:05
+ * @LastEditTime : 2024-10-15 10:41:19
  * @FilePath     : \blog-client\src\App.vue
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -36,7 +36,7 @@ useHead({
       content:
         '焦棚子,jiaopengzi,power bi,power pivot,power query,power bi report server,数据分析,透视表,excel,目录'
     },
-    { property: 'og:type', content: 'acticle' },
+    { property: 'og:type', content: 'article' },
     { property: 'og:locale', content: 'zh-CN' },
     { property: 'og:title', content: '焦棚子的文章目录' },
     { property: 'og:author', content: '焦棚子' },

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-15 15:11:14
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-24 12:31:25
+ * @LastEditTime : 2024-10-15 09:51:37
  * @FilePath     : \blog-client\src\components\player\components\watermark\index.vue
  * @Description  : 水印
  * @Blog         : https://jiaopengzi.com
@@ -188,7 +188,7 @@ const isReRendering = (mutation: MutationRecord, watermarkElement?: HTMLElement)
 }
 
 // 重新渲染文字水印
-const reRenderRextWatermark = () => {
+const reRenderTextWatermark = () => {
   if (textWatermarkRef.value) {
     destroyWatermark(textWatermarkRef.value)
     appendTextWatermark()
@@ -212,7 +212,7 @@ const mutationCallback = (mutations: MutationRecord[]) => {
   }
   mutations.forEach((mutation) => {
     // 判断是否需要重新渲染水印
-    if (isReRendering(mutation, textWatermarkRef.value)) reRenderRextWatermark()
+    if (isReRendering(mutation, textWatermarkRef.value)) reRenderTextWatermark()
     if (isReRendering(mutation, logoWatermarkRef.value)) reRenderLogoWatermark()
   })
 }

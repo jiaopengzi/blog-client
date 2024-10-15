@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:33:58
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-28 12:15:19
+ * @LastEditTime : 2024-10-15 08:53:38
  * @FilePath     : \blog-client\src\views\admin\component\aside\index.ts
  * @Description  : 侧边栏菜单项
  * @Blog         : https://jiaopengzi.com
@@ -14,8 +14,8 @@ import { PermissionNames } from '@/utils/permissionRole' // 权限名称枚举
 import type { MenuItemMap, MenuItemMapWithIndex } from '@/components/common/recursive-menu-item'
 
 // 管理后台菜单项枚举 注意使用大驼峰命名
-export enum AadminSideMenu {
-  'Dashborad' = 'Dashborad',
+export enum AdminSideMenu {
+  'Dashboard' = 'Dashboard',
   'Post' = 'Post',
   'PostAll' = 'PostAll',
   'PostWrite' = 'PostWrite',
@@ -55,171 +55,171 @@ export enum AadminSideMenu {
 }
 
 // admin管理后台菜单项映射表
-export type AdminMenuItemMap = MenuItemMap<AadminSideMenu>
+export type AdminMenuItemMap = MenuItemMap<AdminSideMenu>
 // admin管理后台菜单项映射表 包含 index 属性
-export type AdminMenuItemMapWithIndex = MenuItemMapWithIndex<AadminSideMenu>
+export type AdminMenuItemMapWithIndex = MenuItemMapWithIndex<AdminSideMenu>
 
 const adminMenuItemMap: AdminMenuItemMap = {
-  [AadminSideMenu.Dashborad]: {
+  [AdminSideMenu.Dashboard]: {
     display: '仪表板',
     icon: {
-      name: IconKeys.Dashborad,
+      name: IconKeys.Dashboard,
       class: 'icon-menu'
     }
   },
-  [AadminSideMenu.Post]: {
+  [AdminSideMenu.Post]: {
     display: '文章',
     icon: {
       name: IconKeys.Post,
       class: 'icon-menu'
     }
   },
-  [AadminSideMenu.PostAll]: {
+  [AdminSideMenu.PostAll]: {
     display: '所有文章',
-    parentIndex: AadminSideMenu.Post
+    parentIndex: AdminSideMenu.Post
   },
-  [AadminSideMenu.PostWrite]: {
+  [AdminSideMenu.PostWrite]: {
     display: '写文章',
-    parentIndex: AadminSideMenu.Post
+    parentIndex: AdminSideMenu.Post
   },
-  [AadminSideMenu.PostTag]: {
+  [AdminSideMenu.PostTag]: {
     display: '标签',
-    parentIndex: AadminSideMenu.Post
+    parentIndex: AdminSideMenu.Post
   },
-  [AadminSideMenu.PostCategory]: {
+  [AdminSideMenu.PostCategory]: {
     display: '分类',
-    parentIndex: AadminSideMenu.Post
+    parentIndex: AdminSideMenu.Post
   },
-  [AadminSideMenu.Media]: {
+  [AdminSideMenu.Media]: {
     display: '媒体',
     icon: {
       name: IconKeys.Media,
       class: 'icon-menu'
     }
   },
-  [AadminSideMenu.Link]: {
+  [AdminSideMenu.Link]: {
     display: '链接',
     icon: {
       name: IconKeys.Link,
       class: 'icon-menu'
     }
   },
-  [AadminSideMenu.LinkAll]: {
+  [AdminSideMenu.LinkAll]: {
     display: '所有链接',
-    parentIndex: AadminSideMenu.Link
+    parentIndex: AdminSideMenu.Link
   },
-  [AadminSideMenu.LinkAdd]: {
+  [AdminSideMenu.LinkAdd]: {
     display: '新增链接',
-    parentIndex: AadminSideMenu.Link
+    parentIndex: AdminSideMenu.Link
   },
-  [AadminSideMenu.LinkCategory]: {
+  [AdminSideMenu.LinkCategory]: {
     display: '链接分类',
-    parentIndex: AadminSideMenu.Link
+    parentIndex: AdminSideMenu.Link
   },
-  [AadminSideMenu.Page]: {
+  [AdminSideMenu.Page]: {
     display: '页面',
     icon: {
       name: IconKeys.Page,
       class: 'icon-menu'
     }
   },
-  [AadminSideMenu.PageAll]: {
+  [AdminSideMenu.PageAll]: {
     display: '所有页面',
-    parentIndex: AadminSideMenu.Page
+    parentIndex: AdminSideMenu.Page
   },
-  [AadminSideMenu.PageAdd]: {
+  [AdminSideMenu.PageAdd]: {
     display: '新增页面',
-    parentIndex: AadminSideMenu.Page
+    parentIndex: AdminSideMenu.Page
   },
-  [AadminSideMenu.Comment]: {
+  [AdminSideMenu.Comment]: {
     display: '评论',
     icon: {
       name: IconKeys.Comment,
       class: 'icon-menu'
     }
   },
-  [AadminSideMenu.Announcement]: {
+  [AdminSideMenu.Announcement]: {
     display: '公告',
     icon: {
       name: IconKeys.Announcement,
       class: 'icon-menu'
     }
   },
-  [AadminSideMenu.AnnouncementAll]: {
+  [AdminSideMenu.AnnouncementAll]: {
     display: '所有公告',
-    parentIndex: AadminSideMenu.Announcement
+    parentIndex: AdminSideMenu.Announcement
   },
-  [AadminSideMenu.AnnouncementPublish]: {
+  [AdminSideMenu.AnnouncementPublish]: {
     display: '发布公告',
-    parentIndex: AadminSideMenu.Announcement
+    parentIndex: AdminSideMenu.Announcement
   },
-  [AadminSideMenu.AnnouncementCategory]: {
+  [AdminSideMenu.AnnouncementCategory]: {
     display: '公告分类',
-    parentIndex: AadminSideMenu.Announcement
+    parentIndex: AdminSideMenu.Announcement
   },
-  [AadminSideMenu.Video]: {
+  [AdminSideMenu.Video]: {
     display: '视频',
     icon: {
       name: IconKeys.Video,
       class: 'icon-menu'
     }
   },
-  [AadminSideMenu.VideoAll]: {
+  [AdminSideMenu.VideoAll]: {
     display: '所有视频',
-    parentIndex: AadminSideMenu.Video
+    parentIndex: AdminSideMenu.Video
   },
-  [AadminSideMenu.VideoPublish]: {
+  [AdminSideMenu.VideoPublish]: {
     display: '发布视频',
-    parentIndex: AadminSideMenu.Video
+    parentIndex: AdminSideMenu.Video
   },
-  [AadminSideMenu.VideoCategory]: {
+  [AdminSideMenu.VideoCategory]: {
     display: '视频分类',
-    parentIndex: AadminSideMenu.Video
+    parentIndex: AdminSideMenu.Video
   },
-  [AadminSideMenu.Shop]: {
+  [AdminSideMenu.Shop]: {
     display: '商城',
     icon: {
       name: IconKeys.Shop,
       class: 'icon-menu'
     }
   },
-  [AadminSideMenu.Product]: {
+  [AdminSideMenu.Product]: {
     display: '产品',
-    parentIndex: AadminSideMenu.Shop
+    parentIndex: AdminSideMenu.Shop
   },
-  [AadminSideMenu.Order]: {
+  [AdminSideMenu.Order]: {
     display: '订单',
-    parentIndex: AadminSideMenu.Shop
+    parentIndex: AdminSideMenu.Shop
   },
-  [AadminSideMenu.MemberManagement]: {
+  [AdminSideMenu.MemberManagement]: {
     display: '会员管理',
-    parentIndex: AadminSideMenu.Shop
+    parentIndex: AdminSideMenu.Shop
   },
-  [AadminSideMenu.ShortLink]: {
+  [AdminSideMenu.ShortLink]: {
     display: '短连接',
     icon: {
       name: IconKeys.ShortLink,
       class: 'icon-menu'
     }
   },
-  [AadminSideMenu.ShortLinkAll]: {
+  [AdminSideMenu.ShortLinkAll]: {
     display: '所有短连接',
-    parentIndex: AadminSideMenu.ShortLink
+    parentIndex: AdminSideMenu.ShortLink
   },
-  [AadminSideMenu.ShortLinkAdd]: {
+  [AdminSideMenu.ShortLinkAdd]: {
     display: '新增短连接',
-    parentIndex: AadminSideMenu.ShortLink
+    parentIndex: AdminSideMenu.ShortLink
   },
-  [AadminSideMenu.User]: {
+  [AdminSideMenu.User]: {
     display: '用户',
     icon: {
       name: IconKeys.User,
       class: 'icon-menu'
     }
   },
-  [AadminSideMenu.UserView]: {
+  [AdminSideMenu.UserView]: {
     display: '所有用户',
-    parentIndex: AadminSideMenu.User,
+    parentIndex: AdminSideMenu.User,
     permissionName: PermissionNames.UserView,
     params: {
       roleName: 'role-name',
@@ -228,30 +228,30 @@ const adminMenuItemMap: AdminMenuItemMap = {
       currentPage: 'current-page'
     }
   },
-  [AadminSideMenu.LoginLog]: {
+  [AdminSideMenu.LoginLog]: {
     display: '登录日志',
-    parentIndex: AadminSideMenu.User
+    parentIndex: AdminSideMenu.User
   },
-  [AadminSideMenu.PermissionRole]: {
+  [AdminSideMenu.PermissionRole]: {
     display: '权限角色',
-    parentIndex: AadminSideMenu.User,
+    parentIndex: AdminSideMenu.User,
     permissionName: PermissionNames.PermissionRole
   },
-  [AadminSideMenu.Setting]: {
+  [AdminSideMenu.Setting]: {
     display: '网站配置',
     icon: {
       name: IconKeys.Setting,
       class: 'icon-menu'
     }
   },
-  [AadminSideMenu.Notification]: {
+  [AdminSideMenu.Notification]: {
     display: '通知',
     icon: {
       name: IconKeys.Notification,
       class: 'icon-menu'
     }
   },
-  [AadminSideMenu.Backup]: {
+  [AdminSideMenu.Backup]: {
     display: '备份',
     icon: {
       name: IconKeys.Backup,
@@ -279,7 +279,7 @@ export function generateAdminMenuItemMapWithIndex(
   const result: Partial<AdminMenuItemMapWithIndex> = {} // 生成的菜单项映射表
 
   // 递归生成菜单项映射表
-  function createIndex(itemKey: AadminSideMenu, parentIndex?: string) {
+  function createIndex(itemKey: AdminSideMenu, parentIndex?: string) {
     const currentItem = menuItemMap[itemKey] // 当前菜单项
     const kebabItemKey = toKebabCase(itemKey) // 菜单项转换为小写短横线连接形式
     // const newIndex = `${parentIndex ? parentIndex : parentPath}/${kebabItemKey}` // 包含上级菜单项索引的当前菜单项索引
@@ -302,16 +302,16 @@ export function generateAdminMenuItemMapWithIndex(
 
     // 遍历子菜单项并进行递归调用
     for (const childKey in menuItemMap) {
-      if (menuItemMap[childKey as AadminSideMenu].parentIndex === itemKey) {
-        createIndex(childKey as AadminSideMenu, newIndex)
+      if (menuItemMap[childKey as AdminSideMenu].parentIndex === itemKey) {
+        createIndex(childKey as AdminSideMenu, newIndex)
       }
     }
   }
 
   // 生成顶级菜单项映射表
   for (const key in menuItemMap) {
-    if (!menuItemMap[key as AadminSideMenu].parentIndex) {
-      createIndex(key as AadminSideMenu)
+    if (!menuItemMap[key as AdminSideMenu].parentIndex) {
+      createIndex(key as AdminSideMenu)
     }
   }
 

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 15:42:11
  * @LastPlayers  : jiaopengzi
- * @LastEditTime : 2024-10-08 17:53:50
+ * @LastEditTime : 2024-10-15 10:02:52
  * @FilePath     : \blog-client\src\stores\player.ts
  * @Description  : 播放器 store
  * @Blog         : https://jiaopengzi.com
@@ -107,7 +107,7 @@ export interface PlayProgress {
   isDragging: boolean // 是否正在拖拽进度条
 }
 
-// 常用的语言及显示名称 eumn
+// 常用的语言及显示名称 enum
 export enum Language {
   'zh-CN' = '简体中文',
   'zh-TW' = '繁體中文',

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-18 13:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-19 10:49:07
+ * @LastEditTime : 2024-10-15 09:02:24
  * @FilePath     : \blog-client\src\api\user\checkEmailExcludingUserID.ts
  * @Description  : 校验邮箱是否唯一 排除指定用户ID
  * @Blog         : https://jiaopengzi.com
@@ -21,12 +21,12 @@ export interface CheckEmailExcludingUserIDRequest {
 
 // 检测用户名是否存在
 export function checkEmailExcludingUserIDAPI(
-  requestData: CheckEmailExcludingUserIDRequest,
+  requestData: CheckEmailExcludingUserIDRequest
 ): AxiosPromise<Res> {
   const urlStr = routerGroup + '/user/check-email-excluding-user-id'
   return request({
     url: urlStr,
     method: 'post',
-    data: requestData,
+    data: requestData
   })
 }

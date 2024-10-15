@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-03 12:48:46
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-28 15:39:22
+ * @LastEditTime : 2024-10-15 10:41:46
  * @FilePath     : \blog-client\src\version.ts
  * @Description  : 版本信息
  * @Blog         : https://jiaopengzi.com
@@ -30,11 +30,11 @@ export function getInfo() {
 // 控制台输出项目信息
 export function consoleInfoFormat() {
   const info = getInfo() // 获取项目信息
-  const stypleName = [
+  const styleName = [
     'color: #1E2858; background-color:#c89828; font-size: 24px; font-weight: bold; border-radius: 4px;'
   ] // name 样式
-  const stypleOther = Array(6).fill('font-size: 14px;') // 其他字段样式
-  const stypleList = [...stypleName, ...stypleOther] // 样式列表
+  const styleOther = Array(6).fill('font-size: 14px;') // 其他字段样式
+  const styleList = [...styleName, ...styleOther] // 样式列表
 
   // 将 info 对象转换为数组 计算最长的字段名
   const infoList = Object.entries(info)
@@ -54,5 +54,5 @@ export function consoleInfoFormat() {
     return `${acc}%c${key.padEnd(longestKeyLength)}: ${value}\n`
   }, '')
 
-  console.info(logContent, ...stypleList)
+  console.info(logContent, ...styleList)
 }

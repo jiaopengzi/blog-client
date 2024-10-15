@@ -130,9 +130,9 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
 
     // 判断是否有 keyInfo
     else if ('keyInfo' in context && context.keyInfo) {
-      // 不使用全局 videoId, 使用 context.keyInfo.decryptdata.uri 获取 videoId
-      // const videoId = context.keyInfo.decryptdata.uri.substring(
-      //   context.keyInfo.decryptdata.uri.lastIndexOf('/') + 1,
+      // 不使用全局 videoId, 使用 context.keyInfo.decryptData.uri 获取 videoId
+      // const videoId = context.keyInfo.decryptData.uri.substring(
+      //   context.keyInfo.decryptData.uri.lastIndexOf('/') + 1,
       // )
       // await getKeyAPI(videoId)
 
@@ -146,12 +146,12 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
           loaderStats.loading.end = window.performance.now() // 记录结束时间
 
           // 密钥获取成功
-          if (data.code === ResponseCode.GetVdideoKeySuccess) {
+          if (data.code === ResponseCode.GetVideoKeySuccess) {
             const decryptedKey = this.decryptKey(data.data) // 解密播放密钥
-            context.keyInfo.decryptdata.key = decryptedKey // 将解密后的密钥赋值给 keyInfo
+            context.keyInfo.decryptData.key = decryptedKey // 将解密后的密钥赋值给 keyInfo
 
             callbacks.onSuccess(
-              { url: context.keyInfo.decryptdata.uri, data: decryptedKey.buffer },
+              { url: context.keyInfo.decryptData.uri, data: decryptedKey.buffer },
               loaderStats,
               context,
               null

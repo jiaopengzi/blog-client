@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 10:16:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 11:00:54
+ * @LastEditTime : 2024-10-15 09:39:58
  * @FilePath     : \blog-client\src\components\layout\footer\index.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -23,7 +23,7 @@ export interface FooterProps {
   right?: {
     title?: string
     content?: string
-    beianMPS?: string
-    beianMIIT?: string
+    beianMPS?: string // 联网备案
+    beianMIIT?: string // ICP备案
   }
 }

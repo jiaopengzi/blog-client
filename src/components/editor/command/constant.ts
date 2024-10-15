@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:51:36
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-08 13:18:10
+ * @LastEditTime : 2024-10-15 09:22:23
  * @FilePath     : \blog-client\src\components\editor\command\constant.ts
  * @Description  : markdown 标记常量
  * @Blog         : https://jiaopengzi.com
@@ -60,8 +60,8 @@ export enum CommandsKey {
   Info = 'info'
 }
 
-// mardkdown 编辑器 单个命令对象 的类型
-export interface MardkdownEditorCommandItemType {
+// markdown 编辑器 单个命令对象 的类型
+export interface MarkdownEditorCommandItemType {
   tip?: string // 前端提示
   prefix?: string // 前缀
   content?: string // 内容
@@ -71,13 +71,13 @@ export interface MardkdownEditorCommandItemType {
   icon?: IconKeys // 图标名称
 }
 
-// 使用映射类型定义 MardkdownEditorCommandsType
-export type MardkdownEditorCommandsType = {
-  [key in CommandsKey]: MardkdownEditorCommandItemType
+// 使用映射类型定义 MarkdownEditorCommandsType
+export type MarkdownEditorCommandsType = {
+  [key in CommandsKey]: MarkdownEditorCommandItemType
 }
 
-// mardkdown 编辑器 所有 排序 命令 集合对象
-export const MardkdownEditorCommands: MardkdownEditorCommandsType = {
+// markdown 编辑器 所有 排序 命令 集合对象
+export const MarkdownEditorCommands: MarkdownEditorCommandsType = {
   // 撤销重做
   [CommandsKey.Undo]: {
     tip: '撤销',

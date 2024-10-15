@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 18:53:25
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 20:10:20
+ * @LastEditTime : 2024-10-15 09:15:44
  * @FilePath     : \blog-client\src\components\common\bind-email-dialog\index.vue
  * @Description  : 绑定邮箱弹窗
  * @Blog         : https://jiaopengzi.com
@@ -17,21 +17,21 @@
     :show-close="false"
     :close-on-click-modal="true"
     :close-on-press-escape="false"
-    class="bindemail-dialog"
+    class="bind-email-dialog"
   >
     <div class="bind-email-wrapper">
       <SlideVerify
         v-if="showSlideVerify"
         @on-close="closeSlideVerify"
-        @on-success="sendcaptcha"
+        @on-success="sendCaptcha"
       ></SlideVerify>
       <el-form
         :label-position="labelPosition"
         label-width="100px"
-        ref="bindemailFormRef"
-        :model="bindemailForm"
+        ref="bindEmailFormRef"
+        :model="bindEmailForm"
         :rules="rules"
-        class="bindemail-form"
+        class="bindEmail-form"
         :size="formSize"
         status-icon
       >
@@ -41,11 +41,11 @@
         </div>
 
         <el-form-item label="邮箱" prop="email">
-          <el-input v-model="bindemailForm.email" />
+          <el-input v-model="bindEmailForm.email" />
         </el-form-item>
 
         <el-form-item label="验证码" prop="captcha">
-          <el-input class="email-code" v-model="bindemailForm.captcha" />
+          <el-input class="email-code" v-model="bindEmailForm.captcha" />
           <button
             class="btn-captcha"
             type="button"
@@ -58,7 +58,7 @@
 
         <div class="btn-submit">
           <el-form-item>
-            <el-button type="primary" @click="submitForm(bindemailFormRef as FormInstance)"
+            <el-button type="primary" @click="submitForm(bindEmailFormRef as FormInstance)"
               >绑定邮箱</el-button
             >
           </el-form-item>
@@ -104,10 +104,10 @@ const labelPosition = ref('top')
 const formSize = ref('default')
 
 // 表单实例
-const bindemailFormRef = useTemplateRef<FormInstance>('bindemailFormRef')
+const bindEmailFormRef = useTemplateRef<FormInstance>('bindEmailFormRef')
 
 // 表单数据
-const bindemailForm = reactive<BindEmailForm>({
+const bindEmailForm = reactive<BindEmailForm>({
   email: '',
   captcha: ''
 })
@@ -120,7 +120,7 @@ async function checkSendCaptcha(): Promise<void> {
   try {
     // 创建请求对象 加密内容
     const req: CaptchaSendRequest = {
-      email: bindemailForm.email,
+      email: bindEmailForm.email,
       purpose: CaptchaPurpose.BindEmail
     }
     const { data } = await captchaSendAPI(req) // 将 resStr 转换为对象
@@ -149,7 +149,7 @@ async function checkSendCaptcha(): Promise<void> {
 async function checkEmail(): Promise<void> {
   // 创建请求对象 加密内容
   const req: CheckEmailRequest = {
-    email: bindemailForm.email
+    email: bindEmailForm.email
   }
 
   try {
@@ -189,8 +189,8 @@ async function checkCaptcha(): Promise<void> {
   try {
     // 创建请求对象 加密内容
     const req: CaptchaCheckRequest = {
-      email: bindemailForm.email,
-      captcha: bindemailForm.captcha,
+      email: bindEmailForm.email,
+      captcha: bindEmailForm.captcha,
       purpose: CaptchaPurpose.BindEmail
     }
 
@@ -253,8 +253,8 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   await formEl.validate(async (valid) => {
     if (valid) {
       const req: BindEmailRequest = {
-        email: bindemailForm.email,
-        captcha: bindemailForm.captcha
+        email: bindEmailForm.email,
+        captcha: bindEmailForm.captcha
       }
 
       const { data } = await bindEmailAPI(req)
@@ -288,13 +288,13 @@ const btnCaptchaState = reactive({ disabled: false })
 
 // 发送邮箱验证码
 
-const sendcaptcha = async () => {
+const sendCaptcha = async () => {
   // 关闭滑块验证
   showSlideVerify.value = false
 
   // 手动触发 FormInstance 的校验，校验 userName 和 email 字段
 
-  const emailResult = await bindemailFormRef.value?.validateField('email').catch(() => false)
+  const emailResult = await bindEmailFormRef.value?.validateField('email').catch(() => false)
   if (!emailResult) {
     ShowMsgTip(ShowMsgTip.MsgType.error, '请输入正确的邮箱地址。', 0)
     console.log('请输入邮箱')
@@ -338,7 +338,7 @@ const closeSlideVerify = () => {
 </script>
 
 <style lang="scss" scoped>
-.bindemail-form {
+.bindEmail-form {
   min-width: 360px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -349,7 +349,7 @@ const closeSlideVerify = () => {
 }
 
 @media (max-width: pc.$width-page-main) {
-  .bindemail-form {
+  .bindEmail-form {
     /* 当屏幕宽度小于 1024px 时 */
     width: 90vw;
     box-shadow: none;

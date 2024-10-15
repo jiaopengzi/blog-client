@@ -35,9 +35,9 @@ export const userRoutes = {
       requiresAuth: false
     }
   },
-  sociaWeChatLoginCallback: {
+  socialWeChatLoginCallback: {
     path: '/social/wechat/login/callback',
-    name: 'sociaWeChatLoginCallback',
+    name: 'socialWeChatLoginCallback',
     component: () => import('@/views/social-login-callback'),
     meta: {
       requiresAuth: false
@@ -70,7 +70,7 @@ export const userRoutes = {
   userInfo: {
     path: '/userinfo',
     name: 'userinfo',
-    component: () => import('@/views/userinfo'),
+    component: () => import('@/views/user-info'),
     meta: {
       requiresAuth: true
     }

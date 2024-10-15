@@ -43,7 +43,7 @@ import { lintKeymap } from '@codemirror/lint'
 import { markdown } from '@codemirror/lang-markdown'
 import { bottomPanelExt } from '@/pkg/codemirror/extension/bottomPanel'
 import { customKeymap } from '@/pkg/codemirror/extension/hotkey'
-import { handlePasteImage, handleDropImage } from '@/pkg/codemirror/extension/imgupload'
+import { handlePasteImage, handleDropImage } from '@/pkg/codemirror/extension/imgUpload'
 import { emojiCompletions } from '@/pkg/codemirror/extension/emoji'
 
 // 自定义 codemirror setup 工厂函数

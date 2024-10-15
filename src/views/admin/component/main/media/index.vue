@@ -82,7 +82,7 @@ import type { TableData, TableColumn } from '@/components/common/base-table'
 import type { MediaFile, GetMediaFilesRequest } from '@/api/upload/getFiles'
 import { getMediaFilesAPI, emptyMediaFiles } from '@/api/upload/getFiles'
 import { debounce } from 'throttle-debounce'
-import { AadminSideMenu } from '@/views/admin/component/aside'
+import { AdminSideMenu } from '@/views/admin/component/aside'
 import { ShowMsgTip } from '@/utils/message'
 import { ResponseCode } from '@/api/responseCode'
 import { ImgFit } from '@/components/common'
@@ -101,7 +101,7 @@ import BaseTable from '@/components/common/base-table'
 import AddMedia from '@/views/admin/component/main/media/component/add-media'
 import EditMedia from '@/views/admin/component/main/media/component/edit-media'
 
-defineOptions({ name: AadminSideMenu.Media })
+defineOptions({ name: AdminSideMenu.Media })
 
 const cols: TableColumn[] = reactive([
   {
@@ -219,7 +219,7 @@ const handleAdd = () => {
 
 const updateCurrentPage = (val: number) => {
   pagination.value.current_page = val
-  paginationRouterPush(AadminSideMenu.Media, pagination.value.page_size, val, {
+  paginationRouterPush(AdminSideMenu.Media, pagination.value.page_size, val, {
     [queryKey.FileType]: activeFileType.value,
     [queryKey.Search]: search.value
   })
@@ -228,7 +228,7 @@ const updateCurrentPage = (val: number) => {
 
 const updatePageSize = (val: number) => {
   pagination.value.page_size = val
-  paginationRouterPush(AadminSideMenu.Media, val, pagination.value.current_page, {
+  paginationRouterPush(AdminSideMenu.Media, val, pagination.value.current_page, {
     [queryKey.FileType]: activeFileType.value,
     [queryKey.Search]: search.value
   })
@@ -301,7 +301,7 @@ const deleteRows = async (rows: TableData[]) => {
 const updateSearch = debounce(300, (val: string) => {
   search.value = val
   paginationRouterPush(
-    AadminSideMenu.Media,
+    AdminSideMenu.Media,
     pagination.value.page_size,
     pagination.value.current_page,
     { [queryKey.FileType]: activeFileType.value, [queryKey.Search]: val }
@@ -429,7 +429,7 @@ const handleFileCountByFiletype = async (fileType: string) => {
   console.log('10============')
   console.log(activeFileType.value)
   paginationRouterPush(
-    AadminSideMenu.Media,
+    AdminSideMenu.Media,
     pagination.value.page_size,
     pagination.value.current_page,
     { [queryKey.FileType]: fileType, [queryKey.Search]: search.value }

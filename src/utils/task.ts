@@ -45,7 +45,7 @@ enum TaskQueueEvents {
 // 任务状态
 enum TaskStatus {
   PAUSED = 'paused', // 暂停
-  RUNING = 'running' // 运行中
+  RUNNING = 'running' // 运行中
 }
 // 可并发执行的任务队列
 export class TaskQueue extends EventEmitter<TaskQueueEvents> {
@@ -78,7 +78,7 @@ export class TaskQueue extends EventEmitter<TaskQueueEvents> {
 
   // 启动任务
   start() {
-    if (this.status === TaskStatus.RUNING) {
+    if (this.status === TaskStatus.RUNNING) {
       return // 任务正在进行中，结束
     }
     if (this.tasks.size === 0) {
@@ -87,7 +87,7 @@ export class TaskQueue extends EventEmitter<TaskQueueEvents> {
       return
     }
     // 设置任务状态为running
-    this.status = TaskStatus.RUNING
+    this.status = TaskStatus.RUNNING
     this.emit(TaskQueueEvents.START) // 触发start事件
     this.runNext() // 开始执行下一个任务
   }
@@ -103,7 +103,7 @@ export class TaskQueue extends EventEmitter<TaskQueueEvents> {
 
   // 执行任务
   private runNext() {
-    if (this.status !== TaskStatus.RUNING) {
+    if (this.status !== TaskStatus.RUNNING) {
       return // 如果整体的任务状态不是running，结束
     }
     while (this.currentCount < this.concurrency) {

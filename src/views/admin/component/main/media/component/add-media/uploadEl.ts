@@ -15,7 +15,7 @@ import { type UploadRequestOptions } from 'element-plus'
 import {
   UploadControllerEvents,
   UploadController,
-  MultiThreadSplitor,
+  MultiThreadSplitter,
   type UploadFileSuccessInfo
 } from '@/utils/chunkUpload'
 import { HashAlgorithm } from '@/utils/hash'
@@ -29,7 +29,7 @@ export const uploadEl = async (
 ): Promise<string | undefined> => {
   const file: File = options.file
   const requestStrategy = new RequestStrategyEl(options)
-  const splitStrategy = new MultiThreadSplitor(file, chunkSizeServer, hashAlgorithmServer)
+  const splitStrategy = new MultiThreadSplitter(file, chunkSizeServer, hashAlgorithmServer)
   const uploadController = new UploadController(file, requestStrategy, splitStrategy)
 
   return new Promise((resolve, reject) => {

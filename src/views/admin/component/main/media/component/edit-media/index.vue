@@ -150,7 +150,7 @@ import { type UpsertSubtitlesRequest, upsertSubtitlesAPI } from '@/api/video/ups
 import { type DeleteSubtitlesRequest, deleteSubtitlesAPI } from '@/api/video/deleteSubtitles'
 import { checkSlugAPI, type CheckSlugRequest } from '@/api/upload/checkSlug'
 import { updateFileAPI, type UpdateFileRequest } from '@/api/upload/updateFile'
-import { isWebvtt, createSubtitlesByVideoHashId } from '@/utils/vttParser'
+import { isWebvtt, createSubtitlesByVideoHashId } from '@/utils/vttParse'
 import { isVideo } from '@/utils/isVideo'
 import VideoPlayer from '@/components/player'
 import { usePlayerStore, Language, type SubtitlesItem, MediaTypes } from '@/stores/player'

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-27 16:55:44
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-04-01 19:38:16
+ * @LastEditTime : 2024-10-15 10:15:29
  * @FilePath     : \blog-client\src\utils\preview.ts
  * @Description  : 处理预览html
  * @Blog         : https://jiaopengzi.com
@@ -47,15 +47,15 @@ export function htmlHandleDivToSection(htmlSrc: string) {
 /**
  * @description: 将 katex 公式转成图片 为了微信预览
  * @param container 预览容器
- * @param calssName katex 公式的类名
+ * @param className katex 公式的类名
  */
 export async function katexToImage(container: HTMLElement, className: string = 'katex-html') {
   // 获取所有 katex 公式
-  const katexsArray = Array.from(container.getElementsByClassName(className))
-  if (katexsArray) {
+  const katexArray = Array.from(container.getElementsByClassName(className))
+  if (katexArray) {
     // 遍历所有 katex 公式
-    for (let i = 0; i < katexsArray.length; i++) {
-      const katex = katexsArray[i] as HTMLElement // 当前 katex 公式
+    for (let i = 0; i < katexArray.length; i++) {
+      const katex = katexArray[i] as HTMLElement // 当前 katex 公式
       // 判断 katex 是否有父元素 的类名为 katex-display
       const isKatexDisplay = HasParentByClass(katex, 'katex-display')
 
@@ -120,8 +120,8 @@ function getSortedStyleSheets(): [CSSStyleSheet, number][] {
 }
 
 /**
- * @description: 指定类名的 sapn 元素是否应该保留其行内样式
- * @param sapnElement sapn元素
+ * @description: 指定类名的 span 元素是否应该保留其行内样式
+ * @param spanElement span元素
  * @param className 类名
  * @return boolean 是否应该保留其行内样式
  */
@@ -156,14 +156,14 @@ function applyInlineStyles(el: HTMLElement | SVGElement) {
               for (let i = 0; i < rule.style.length; i++) {
                 const property = rule.style[i] // 属性名
 
-                const cssStyplevalue = rule.style.getPropertyValue(property) // 样式表的属性值
+                const cssStyleValue = rule.style.getPropertyValue(property) // 样式表的属性值
 
                 // 如果属性值不为空且不为默认值 或者 不是 katex 的 span 元素
-                if (cssStyplevalue.startsWith('var(--')) {
+                if (cssStyleValue.startsWith('var(--')) {
                   // 如果值为 CSS 变量，获取计算后的具体值
                   el.style.setProperty(property, getComputedStyle(el).getPropertyValue(property))
                 } else {
-                  el.style.setProperty(property, cssStyplevalue)
+                  el.style.setProperty(property, cssStyleValue)
                 }
               }
             }

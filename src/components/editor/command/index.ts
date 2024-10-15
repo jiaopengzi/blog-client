@@ -12,9 +12,9 @@
 export { editorInsertFormatContent } from './insert'
 export {
   CommandsKey,
-  MardkdownEditorCommands,
+  MarkdownEditorCommands,
   ScrollElementTag,
   ScrollElementTagHeading
 } from './constant'
 
-export type { MardkdownEditorCommandItemType, MardkdownEditorCommandsType } from './constant'
+export type { MarkdownEditorCommandItemType, MarkdownEditorCommandsType } from './constant'

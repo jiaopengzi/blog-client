@@ -39,7 +39,7 @@ export interface IconJson {
       font_class: string
       unicode: string
       unicode_decimal: number
-    },
+    }
   ]
 }
 
@@ -75,7 +75,7 @@ export function isIconJson(obj: any): IconJson {
         typeof glyph.name === 'string' &&
         typeof glyph.font_class === 'string' &&
         typeof glyph.unicode === 'string' &&
-        typeof glyph.unicode_decimal === 'number',
+        typeof glyph.unicode_decimal === 'number'
     )
   )
 }
@@ -83,7 +83,7 @@ export function isIconJson(obj: any): IconJson {
 /**
  * @description: 通过 iconfont.json 数据获取 iconMap 对象
  * 检查 iconFontJSON 是否符合 IconJson 类型
- * 读取 @/components/icons/iconfont.josn 中的数据 将 iconfont.josn 中的 glyphs 数组转换成 iconMap 对象
+ * 读取 @/components/icons/iconfont.json 中的数据 将 iconfont.json 中的 glyphs 数组转换成 iconMap 对象
  * iconMap 对象的 key 为 glyphs 数组中的 font_class 字段，value 为 "#icon-" + glyph.font_class
  * @param iconFontJSON iconfont.json 数据
  * @return {IconMap} iconMap 对象
@@ -135,7 +135,7 @@ export enum IconKeys {
   Collapse = 'collapse',
   Comment = 'comment',
   Copy = 'copy',
-  Dashborad = 'dashborad',
+  Dashboard = 'dashboard',
   Data = 'data',
   DataAnalysis = 'data-analysis',
   Demo = 'demo',
@@ -224,7 +224,7 @@ export enum IconKeys {
   Loading = 'loading',
   Unmute = 'unmute',
   Pause = 'pause',
-  Setting = 'setting',
+  Setting = 'setting'
 }
 
 // 开发模式下运行 历遍 iconMap 对象中的 key 校验是否符合 IconKeys 类型约束
@@ -241,7 +241,7 @@ export const devCheckIconKeys = (iconMap: IconMap): void => {
   if (newIconKeys) {
     console.error(
       'iconMap 对象中的 key 有不符合 IconKeys 类型的值:\n 请将如下内容添加到枚举 enum IconKeys 中\n' +
-        newIconKeys,
+        newIconKeys
     )
   }
 }

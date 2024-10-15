@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4152487 */
-  src: url('iconfont.woff2?t=1725975428278') format('woff2'),
-       url('iconfont.woff?t=1725975428278') format('woff'),
-       url('iconfont.ttf?t=1725975428278') format('truetype');
+  src: url('iconfont.woff2?t=1728953784943') format('woff2'),
+       url('iconfont.woff?t=1728953784943') format('woff'),
+       url('iconfont.ttf?t=1728953784943') format('truetype');
 }
 
 .iconfont {
@@ -89,7 +89,7 @@
   content: "\e6d9";
 }
 
-.icon-dashborad:before {
+.icon-dashboard:before {
   content: "\e643";
 }
 

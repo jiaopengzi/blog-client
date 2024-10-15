@@ -11,7 +11,7 @@
 
 <template>
   <footer>
-    <div class="footer-mian">
+    <div class="footer-main">
       <div class="footer-l">
         <h3>{{ footerData.left?.title }}</h3>
         <p>{{ footerData.left?.content }}</p>
@@ -63,7 +63,7 @@ footer {
   width: calc(phone.$width-page - phone.$scrollbar-y-width);
 }
 
-.footer-mian {
+.footer-main {
   display: flex;
   flex-direction: column;
   justify-content: center;

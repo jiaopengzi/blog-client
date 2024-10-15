@@ -9,7 +9,7 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 import type { RouteRecordRaw } from 'vue-router'
-import { adminMenuItemMapWithIndex, AadminSideMenu } from '@/views/admin/component/aside'
+import { adminMenuItemMapWithIndex, AdminSideMenu } from '@/views/admin/component/aside'
 
 // 生成管理后台路由
 function generateAdminRoutes() {
@@ -25,7 +25,7 @@ function generateAdminRoutes() {
   }
   // 生成管理后台路由
   Object.keys(adminMenuItemMapWithIndex).forEach((key) => {
-    const menuItem = adminMenuItemMapWithIndex[key as AadminSideMenu]
+    const menuItem = adminMenuItemMapWithIndex[key as AdminSideMenu]
     const route = {
       path: menuItem.index,
       name: key,

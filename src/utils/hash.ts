@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-08-02 14:11:08
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-02 15:05:40
+ * @LastEditTime : 2024-10-15 10:09:54
  * @FilePath     : \blog-client\src\utils\hash.ts
  * @Description  : 哈希计算器
  * @Blog         : https://jiaopengzi.com
@@ -41,7 +41,7 @@ export class HashCalculator {
         return crypto.algo.SHA512.create()
       default:
         throw new Error(
-          `Unsupported hash algorithm: ${this.algorithm},shuold be SHA-256,SHA-384,SHA-512`
+          `Unsupported hash algorithm: ${this.algorithm},should be SHA-256,SHA-384,SHA-512`
         )
     }
   }
@@ -107,7 +107,7 @@ export class HashCalculator {
         break
       default:
         throw new Error(
-          `Unsupported hash algorithm: ${this.algorithm},shuold be SHA-256,SHA-384,SHA-512`
+          `Unsupported hash algorithm: ${this.algorithm},should be SHA-256,SHA-384,SHA-512`
         )
     }
 

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 10:16:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-02-28 12:38:42
+ * @LastEditTime : 2024-10-15 09:40:23
  * @FilePath     : \blog-client\src\components\layout\footer\pc.vue
  * @Description  : 底部 PC端
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,7 @@
 
 <template>
   <footer>
-    <div class="footer-mian">
+    <div class="footer-main">
       <div class="footer-l">
         <h3>{{ footerData.left?.title }}</h3>
         <p>{{ footerData.left?.content }}</p>
@@ -63,7 +63,7 @@ footer {
   width: calc(pc.$width-page - pc.$scrollbar-y-width);
 }
 
-.footer-mian {
+.footer-main {
   width: pc.$width-page-main;
   display: flex;
   justify-content: space-around;

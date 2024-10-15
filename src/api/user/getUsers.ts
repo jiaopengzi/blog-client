@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 16:30:57
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-29 18:30:52
+ * @LastEditTime : 2024-10-15 09:04:01
  * @FilePath     : \blog-client\src\api\user\getUsers.ts
  * @Description  : 获取用户信息
  * @Blog         : https://jiaopengzi.com
@@ -32,29 +32,28 @@ export interface GetUsersResponse {
 }
 
 // 获取用户信息 api 函数
-export function getUsersAPI(
+export async function getUsersAPI(
   requestData: GetUsersRequest = { current_page: 1, page_size: 10 }, // 设置默认值,
   width: number = 30, // 默认值 50px
   height: number = 30, // 默认值 50px
-  imgFit: ImgFit = ImgFit.Cover,
+  imgFit: ImgFit = ImgFit.Cover
 ): AxiosPromise<GetUsersResponse> {
   const urlStr = routerGroup + '/user/view'
-  return request({
+  const response = await request({
     url: urlStr,
     method: 'post',
-    data: requestData,
-  }).then((response) => {
-    // 在这里使用 map 函数来转换每个用户对象
-    if (response.data.code === ResponseCode.UserGetAllSuccess) {
-      response.data.data.records = response.data.data.records.map((user: any) =>
-        formatUser(user, width, height, imgFit),
-      )
-      return response
-    } else {
-      response.data.data = emptyUsers()
-      return response
-    }
+    data: requestData
   })
+  // 在这里使用 map 函数来转换每个用户对象
+  if (response.data.code === ResponseCode.UserGetAllSuccess) {
+    response.data.data.records = response.data.data.records.map((user: any) =>
+      formatUser(user, width, height, imgFit)
+    )
+    return response
+  } else {
+    response.data.data = emptyUsers()
+    return response
+  }
 }
 
 // 每行用户信息
@@ -85,11 +84,11 @@ export function formatUser(
   { user_avatar, created_at, ...user }: any,
   width: number,
   height: number,
-  imgFit: ImgFit,
+  imgFit: ImgFit
 ): User {
   const formattedUser: User = {
     ...user,
-    created_at: convertToBeijingTime(created_at), // 使用 convertToBeijingTime 进行格式化
+    created_at: convertToBeijingTime(created_at) // 使用 convertToBeijingTime 进行格式化
   }
 
   // 如果 user_avatar 不为空，添加 img 属性
@@ -98,7 +97,7 @@ export function formatUser(
       url: user_avatar,
       width: width,
       height: height,
-      imgFit: imgFit,
+      imgFit: imgFit
     }
   }
 
@@ -113,6 +112,6 @@ export function emptyUsers(): Pagination<User> {
     page_size: 10,
     page_count: 1,
     page_sizes: [10],
-    records: [],
+    records: []
   }
 }

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-23 19:46:14
+ * @LastEditTime : 2024-10-15 10:26:46
  * @FilePath     : \blog-client\src\views\register\index.vue
  * @Description  : 注册
  * @Blog         : https://jiaopengzi.com
@@ -15,7 +15,7 @@
     <SlideVerify
       v-if="showSlideVerify"
       @on-close="closeSlideVerify"
-      @on-success="sendcaptcha"
+      @on-success="sendCaptcha"
     ></SlideVerify>
     <el-form
       :label-position="labelPosition"
@@ -271,7 +271,7 @@ const captcha = ref('发送验证码')
 const btnCaptchaState = reactive({ disabled: false })
 
 // 发送邮箱验证码
-const sendcaptcha = async () => {
+const sendCaptcha = async () => {
   // 关闭滑块验证
   showSlideVerify.value = false
 

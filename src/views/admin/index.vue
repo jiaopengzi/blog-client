@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-28 17:03:50
+ * @LastEditTime : 2024-10-15 10:25:02
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -46,13 +46,13 @@ import router from '@/router/index'
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
 import { components } from '@/views/admin'
-import { adminMenuItemMapWithIndex, AadminSideMenu } from '@/views/admin/component/aside'
+import { adminMenuItemMapWithIndex, AdminSideMenu } from '@/views/admin/component/aside'
 import { PermissionNames } from '@/utils/permissionRole'
 import { useUserStore } from '@/stores/user'
 
 import AdminHeader from '@/views/admin/component/header'
 import AdminAside from '@/views/admin/component/aside'
-import Dashborad from '@/views/admin/component/main/dashborad'
+import Dashboard from '@/views/admin/component/main/dashboard'
 import NoPermission from '@/views/admin/component/main/no-permission'
 import Page404 from '@/views/404'
 
@@ -80,7 +80,7 @@ const updatePermissionLoginAdmin = () => {
   isLoading.value = false
 }
 
-const currentComponent = shallowRef(Dashborad) // 组件的响应式引用 使用 shallowRef 代替 ref，避免组件重复渲染
+const currentComponent = shallowRef(Dashboard) // 组件的响应式引用 使用 shallowRef 代替 ref，避免组件重复渲染
 const editorStore = useEditorStore()
 const { isFullScreen } = storeToRefs(editorStore)
 
@@ -118,12 +118,12 @@ const handleSelect = (index: string) => {
 function updateCurrentComponentByPath(path: string): void {
   //通过 筛选 adminMenuItemMapWithIndex 中对象的 index 与 传入 index 相等的对象，获取对应的 key 值
   const key = Object.keys(adminMenuItemMapWithIndex).filter(
-    (key) => adminMenuItemMapWithIndex[key as AadminSideMenu].index === path
+    (key) => adminMenuItemMapWithIndex[key as AdminSideMenu].index === path
   )[0]
   if (!key) return
   defaultActive.value = path
   const userStore = useUserStore()
-  const permission = adminMenuItemMapWithIndex[key as AadminSideMenu]?.permissionName
+  const permission = adminMenuItemMapWithIndex[key as AdminSideMenu]?.permissionName
   if (permission && !userStore.hasPermission(permission)) {
     currentComponent.value = NoPermission
     return

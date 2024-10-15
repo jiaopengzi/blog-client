@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 15:40:22
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 22:01:36
+ * @LastEditTime : 2024-10-15 09:11:24
  * @FilePath     : \blog-client\src\components\common\add-tag\index.vue
  * @Description  : 添加标签组件
  * @Blog         : https://jiaopengzi.com
@@ -52,7 +52,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (evnet: 'update-tag-list', tagList: string[]): void
+  (event: 'update-tag-list', tagList: string[]): void
 }>()
 
 const inputValue = ref('')

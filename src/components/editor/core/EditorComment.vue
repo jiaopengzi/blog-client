@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-26 17:26:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-24 16:03:00
+ * @LastEditTime : 2024-10-15 09:28:12
  * @FilePath     : \blog-client\src\components\editor\core\EditorComment.vue
  * @Description  : 评论编辑器
  * @Blog         : https://jiaopengzi.com
@@ -15,7 +15,7 @@
     <div :class="toolbarClass">
       <Toolbar
         ref="toolbarRef"
-        :toobar-btns="toobarBtns()"
+        :toolbar-btns="toolbarBtns()"
         :icon-number-per-line="iconNumberPerLine()"
         @toolbar-btn-clicked="toolbarBtnClicked"
         @emoji-picker-selected="onSelectEmoji"
@@ -61,7 +61,7 @@ import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
 import type { ToolbarRef, CodemirrorRef, PreviewRef } from '@/components/editor/core'
 import { setIsFullScreenClassName } from '@/components/editor/core'
-import { CommandsKey } from '@/components/editor/command' // import picker compopnent
+import { CommandsKey } from '@/components/editor/command' // import picker component
 import 'vue3-emoji-picker/css' // import css
 
 import Toolbar from '@/components/editor/toolbar'
@@ -120,7 +120,7 @@ const previewClass = computed(() =>
 )
 
 // 工具栏点击事件
-const { toobarBtns, toolbarBtnClicked, iconNumberPerLine } = useToolbar(
+const { toolbarBtns, toolbarBtnClicked, iconNumberPerLine } = useToolbar(
   mdContainerRef,
   toolbarRef,
   codemirrorRef,

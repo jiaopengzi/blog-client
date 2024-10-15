@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-04 12:40:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-13 16:12:23
- * @FilePath     : \blog-client\src\assets\scss\themes\dark.scss
+ * @LastEditTime : 2024-10-15 09:08:36
+ * @FilePath     : \blog-client\src\assets\scss\themes\_dark.scss
  * @Description  : 暗色模式
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -11,10 +11,10 @@
 
 @use '../element.scss' as el;
 
-$thpme-name: 'dark';
+$theme-name: 'dark';
 $primary-color-dark: red;
 
-html[data-theme='#{$thpme-name}'] {
+html[data-theme='#{$theme-name}'] {
   --scrollbar-y-width: 6px; // Y轴滚动条宽度
   --scrollbar-x-height: 12px; // x轴滚动条高度
   /* ============================================================ CSS 颜色变量 开始*/
@@ -43,15 +43,15 @@ html[data-theme='#{$thpme-name}'] {
 /* ============================================================ element-plus 的颜色设置 开始*/
 /* 如下主要是 element-plus 的颜色设置 */
 $el-theme: (
-  'theme-name': #{$thpme-name},
+  'theme-name': #{$theme-name},
   'colors': (
     'primary': $primary-color-dark,
     'success': #67c23a,
     'warning': #e6a23c,
     'danger': #f56c6c,
     'error': #f56c6c,
-    'info': #909399,
-  ),
+    'info': #909399
+  )
 );
 
 // element 主题样式 ($el-theme,) 逗号不能省略

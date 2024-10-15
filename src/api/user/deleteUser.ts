@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-13 16:35:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-19 10:49:40
+ * @LastEditTime : 2024-10-15 09:03:05
  * @FilePath     : \blog-client\src\api\user\deleteUser.ts
  * @Description  : 删除用户
  * @Blog         : https://jiaopengzi.com
@@ -19,7 +19,7 @@ export interface DeleteUserRequest {
 }
 
 // 注册
-export function DeleteUserAPI(requestData: DeleteUserRequest): AxiosPromise<Res> {
+export function deleteUserAPI(requestData: DeleteUserRequest): AxiosPromise<Res> {
   const urlStr = routerGroup + '/user/delete'
   return request({
     url: urlStr,

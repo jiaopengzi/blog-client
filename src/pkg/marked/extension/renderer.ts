@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-05 11:12:27
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-07-19 15:56:54
+ * @LastEditTime : 2024-10-15 10:00:12
  * @FilePath     : \blog-client\src\pkg\marked\extension\renderer.ts
  * @Description  : 自定义 renderer 主要是为了加类名
  * @Blog         : https://jiaopengzi.com
@@ -58,8 +58,8 @@ export const renderer = {
  */
 function constructWeChatPreCode(htmlStr: string): string {
   const lines = htmlStr.split('\n') || []
-  let wechtPreCode = '' // 微信 pre 代码块内容
-  let wechtPreCodeLang = '' // 微信 pre 代码块语言
+  let wechatPreCode = '' // 微信 pre 代码块内容
+  let wechatPreCodeLang = '' // 微信 pre 代码块语言
   const regexLang = /language-(\w+)/ // 正则匹配 pre 代码块语言
   // 正则匹配出 `<pre><code class="language-???">` 或 `<pre><code>` 问号是占位符
   const regexStart = /<pre><code(?: class="language-(\w+)")?>/
@@ -73,7 +73,7 @@ function constructWeChatPreCode(htmlStr: string): string {
         item = item.replace(matchStart[0], '') // 删除 pre 开始标签
         const matchLang = matchStart[0].match(regexLang) // 匹配 pre 代码块语言
         if (matchLang) {
-          wechtPreCodeLang = matchLang[0] // 保存 pre 代码块语言
+          wechatPreCodeLang = matchLang[0] // 保存 pre 代码块语言
         }
       }
 
@@ -84,7 +84,7 @@ function constructWeChatPreCode(htmlStr: string): string {
         }
       }
       item = '<code>' + item + '</code>\n' // 拼接 code 标签
-      wechtPreCode = wechtPreCode + item
+      wechatPreCode = wechatPreCode + item
     }
   })
 
@@ -94,17 +94,18 @@ function constructWeChatPreCode(htmlStr: string): string {
   const copyBtnStart = '<button class="copy-button">'
   const copyBtnEnd = '</button>'
   let copyBtn = ''
-  if (wechtPreCodeLang) {
-    wechtPreCodeLang = ' ' + wechtPreCodeLang
-    const btnLangText = wechtPreCodeLang.replace('language-', '').toUpperCase()
+  if (wechatPreCodeLang) {
+    wechatPreCodeLang = ' ' + wechatPreCodeLang
+    const btnLangText = wechatPreCodeLang.replace('language-', '').toUpperCase()
     copyBtn = copyBtnStart + btnLangText + copyBtnEnd
   } else {
     copyBtn = copyBtnStart + 'TEXT' + copyBtnEnd
   }
-  const wechtPreCodeStart =
-    '<pre class="code-snippet code-snippet_nowrap code-snippet__js' + wechtPreCodeLang + '">' // 微信 pre 代码块开始标签添 加类名和语言
-  const wechtPreCodeEnd = '</pre>'
-  const preBlock = divStart + copyBtn + wechtPreCodeStart + wechtPreCode + wechtPreCodeEnd + divEnd // 拼接微信代码块
+  const wechatPreCodeStart =
+    '<pre class="code-snippet code-snippet_nowrap code-snippet__js' + wechatPreCodeLang + '">' // 微信 pre 代码块开始标签添 加类名和语言
+  const wechatPreCodeEnd = '</pre>'
+  const preBlock =
+    divStart + copyBtn + wechatPreCodeStart + wechatPreCode + wechatPreCodeEnd + divEnd // 拼接微信代码块
   return preBlock // 拼接微信代码块
 }
 
@@ -127,14 +128,14 @@ function handleHljsStringSpanTag(hljsStringSpanTagStr: string): string {
       const matchStart = item.match(regexStart)
       const matchEnd = item.match(regexEnd)
       if (matchStart) {
-        item = item.replace(matchStart[0], '') // 删除 sapn 开始标签
+        item = item.replace(matchStart[0], '') // 删除 span 开始标签
       }
 
       if (matchEnd) {
-        item = item.replace(matchEnd[0], '') // 删除 sapn 结束标签
+        item = item.replace(matchEnd[0], '') // 删除 span 结束标签
         hljsStringSpanTagEnd = '</span>' // 注意：[末尾是没有匹配换行符]
       }
-      item = hljsStringSpanTagStart + item + hljsStringSpanTagEnd // 拼接 sapn 标签
+      item = hljsStringSpanTagStart + item + hljsStringSpanTagEnd // 拼接 span 标签
 
       hljsStringSpanTagTargetStr += item
     }

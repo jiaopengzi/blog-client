@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-30 15:49:09
+ * @LastEditTime : 2024-10-15 09:13:29
  * @FilePath     : \blog-client\src\components\common\avatar-upload\requestStrategyAvatar.ts
  * @Description  : 上传头像请求策略
  * @Blog         : https://jiaopengzi.com
@@ -24,8 +24,8 @@ export class RequestStrategyAvatar extends RequestStrategyBase {
   uploadChunkAPI = uploadChunkAvatarAPI
   getUploadFileUrlAPI = getUploadFileUrlAvatarAPI
 
-  // 实现 handleconfirmBeforeUploadError
-  async handleconfirmBeforeUploadError(errorMessage: string): Promise<void> {
+  // 实现 handleConfirmBeforeUploadError
+  async handleConfirmBeforeUploadError(errorMessage: string): Promise<void> {
     ShowMsgTip(ShowMsgTip.MsgType.error, errorMessage, 6000)
   }
 }

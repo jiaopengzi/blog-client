@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 22:31:47
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-26 15:01:44
+ * @LastEditTime : 2024-10-15 09:40:52
  * @FilePath     : \blog-client\src\components\layout\header\pc.vue
  * @Description  : pc 头部
  * @Blog         : https://jiaopengzi.com
@@ -16,7 +16,7 @@
       v-if="headerVisible"
       :style="{ height: `$height-header-pc`, width: '$width-header-pc' }"
     >
-      <div class="header-mian">
+      <div class="header-main">
         <div class="logo">
           <h1>
             <img
@@ -111,7 +111,7 @@ header {
   border-bottom: 2px solid #ebebeb;
 }
 
-.header-mian {
+.header-main {
   display: flex;
   justify-content: space-between;
   align-items: center;

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 15:53:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-28 17:32:01
+ * @LastEditTime : 2024-10-15 09:34:50
  * @FilePath     : \blog-client\src\components\hooks\useFormValidation\index.ts
  * @Description  : 用户表单校验
  * @Blog         : https://jiaopengzi.com
@@ -282,10 +282,10 @@ export function useFormValidation(options: FormValidationOptions = {}) {
    * @description: 邮箱查重 异步函数
    * @return
    */
-  async function checkEmail(eamil: string): Promise<void> {
+  async function checkEmail(email: string): Promise<void> {
     // 创建请求对象 加密内容
     const req: CheckEmailRequest = {
-      email: eamil
+      email: email
     }
 
     try {
@@ -335,11 +335,11 @@ export function useFormValidation(options: FormValidationOptions = {}) {
    * @description: 邮箱查重 异步函数 排除指定用户ID
    * @return
    */
-  async function checkEmailExcludingUserID(excludingUserID: string, eamil: string): Promise<void> {
+  async function checkEmailExcludingUserID(excludingUserID: string, email: string): Promise<void> {
     // 创建请求对象 加密内容
     const req: CheckEmailExcludingUserIDRequest = {
       excluding_user_id: excludingUserID,
-      email: eamil
+      email: email
     }
 
     try {
@@ -382,11 +382,11 @@ export function useFormValidation(options: FormValidationOptions = {}) {
   }
 
   // 验证码校验 异步函数
-  async function checkCaptcha(eamil: string, captcha: string): Promise<void> {
+  async function checkCaptcha(email: string, captcha: string): Promise<void> {
     try {
       // 创建请求对象 加密内容
       const req: CaptchaCheckRequest = {
-        email: eamil,
+        email: email,
         captcha: captcha,
         purpose: CaptchaPurpose.Register
       }

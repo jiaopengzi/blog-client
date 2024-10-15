@@ -24,8 +24,8 @@ export class RequestStrategyEditor extends RequestStrategyBase {
   uploadChunkAPI = uploadChunkEditorAPI
   getUploadFileUrlAPI = getUploadFileUrlEditorAPI
 
-  // 实现 handleconfirmBeforeUploadError
-  async handleconfirmBeforeUploadError(errorMessage: string): Promise<void> {
+  // 实现 handleConfirmBeforeUploadError
+  async handleConfirmBeforeUploadError(errorMessage: string): Promise<void> {
     ShowMsgTip(ShowMsgTip.MsgType.error, errorMessage, 6000)
   }
 }

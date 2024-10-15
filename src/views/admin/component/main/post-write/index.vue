@@ -70,12 +70,12 @@ import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
 import { IconKeys } from '@/components/common/icons'
 import type { SwitchItem, SwitchItemLabel } from '@/components/common/switch-group'
-import { AadminSideMenu } from '@/views/admin/component/aside'
+import { AdminSideMenu } from '@/views/admin/component/aside'
 
 import AddTag from '@/components/common/add-tag'
 import SwitchGroup from '@/components/common/switch-group'
 
-defineOptions({ name: AadminSideMenu.PostWrite })
+defineOptions({ name: AdminSideMenu.PostWrite })
 
 // const addTagRef = useTemplateRef <InstanceType<typeof AddTag>>("addTagRef")
 const editorStore = useEditorStore()

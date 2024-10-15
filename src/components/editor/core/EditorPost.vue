@@ -14,7 +14,7 @@
     <div :class="toolbarClass">
       <Toolbar
         ref="toolbarRef"
-        :toobar-btns="toobarBtns()"
+        :toolbar-btns="toolbarBtns()"
         :icon-number-per-line="iconNumberPerLine()"
         @toolbar-btn-clicked="toolbarBtnClicked"
         @emoji-picker-selected="onSelectEmoji"
@@ -146,7 +146,7 @@ const previewClass = computed(() =>
 )
 
 // 工具栏点击事件
-const { toobarBtns, toolbarBtnClicked, iconNumberPerLine } = useToolbar(
+const { toolbarBtns, toolbarBtnClicked, iconNumberPerLine } = useToolbar(
   mdContainerRef,
   toolbarRef,
   codemirrorRef,

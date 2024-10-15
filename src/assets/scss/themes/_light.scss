@@ -11,10 +11,10 @@
 
 @use '../element.scss' as el;
 
-$thpme-name: 'light';
+$theme-name: 'light';
 $primary-color-light: #1e2858;
 
-html[data-theme='#{$thpme-name}'] {
+html[data-theme='#{$theme-name}'] {
   --scrollbar-y-width: 6px; // Y轴滚动条宽度
   --scrollbar-x-height: 12px; // x轴滚动条高度
   /* ============================================================ CSS 颜色变量 开始*/
@@ -106,15 +106,15 @@ html[data-theme='#{$thpme-name}'] {
 /* ============================================================ element-plus 的颜色设置 开始*/
 /* 如下主要是 element-plus 的颜色设置 */
 $el-theme: (
-  'theme-name': #{$thpme-name},
+  'theme-name': #{$theme-name},
   'colors': (
     'primary': $primary-color-light,
     'success': #67c23a,
     'warning': #e6a23c,
     'danger': #f56c6c,
     'error': #f56c6c,
-    'info': #909399,
-  ),
+    'info': #909399
+  )
 );
 
 // element 主题样式 ($el-theme,) 逗号不能省略

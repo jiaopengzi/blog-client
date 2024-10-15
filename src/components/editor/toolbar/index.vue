@@ -12,7 +12,7 @@
 <template>
   <div ref="toolbarRef" id="toolbar">
     <button
-      v-for="(btn, index) in props.toobarBtns"
+      v-for="(btn, index) in props.toolbarBtns"
       :key="index"
       class="toolbar-btn"
       @click="emitToolbarBtnClicked(btn.name)"
@@ -46,7 +46,7 @@ import { ref, onMounted, watch, useTemplateRef } from 'vue'
 import { CommandsKey } from '@/components/editor/command'
 import type { ToolbarProps } from '@/components/editor/toolbar'
 
-import EmojiPicker from 'vue3-emoji-picker' // import picker compopnent
+import EmojiPicker from 'vue3-emoji-picker' // import picker component
 
 // eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: 'Toolbar' })

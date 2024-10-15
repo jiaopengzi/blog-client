@@ -106,7 +106,7 @@ import { usePlayerStore, PlayStatus, PlaybackRate, PlayLevelLabel } from '@/stor
 // 名称
 defineOptions({ name: 'VideoControls' })
 
-// 定义 porps
+// 定义 props
 const props = defineProps<{
   elPopoverAppendToElement: HTMLElement | null // el-popover 的 append-to 属性
 }>()

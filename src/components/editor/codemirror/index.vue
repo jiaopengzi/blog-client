@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-24 16:04:33
+ * @LastEditTime : 2024-10-15 09:20:29
  * @FilePath     : \blog-client\src\components\editor\codemirror\index.vue
  * @Description  : codemirror 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -19,10 +19,10 @@ import type { ViewUpdate } from '@codemirror/view'
 import { EditorView, EditorState, createCustomSetup } from '@/pkg/codemirror/setup'
 import {
   CommandsKey,
-  MardkdownEditorCommands,
+  MarkdownEditorCommands,
   editorInsertFormatContent
 } from '@/components/editor/command'
-import type { MardkdownEditorCommandItemType } from '@/components/editor/command'
+import type { MarkdownEditorCommandItemType } from '@/components/editor/command'
 import type { CodeEditorProps } from '@/components/editor/codemirror'
 
 // eslint-disable-next-line vue/multi-word-component-names
@@ -95,19 +95,19 @@ const updateDocInfo: Extension = EditorView.updateListener.of((viewUpdate: ViewU
 // 执行按钮命令
 const runCommand = (
   commandName: CommandsKey,
-  customContent: MardkdownEditorCommandItemType = {}
+  customContent: MarkdownEditorCommandItemType = {}
 ): void => {
   if (commandName) {
     if (customContent) {
       // 合并自定义内容
       editorInsertFormatContent(cmView, {
-        ...MardkdownEditorCommands[commandName],
+        ...MarkdownEditorCommands[commandName],
         ...customContent
       })
       return
     }
     // 执行命令
-    editorInsertFormatContent(cmView, MardkdownEditorCommands[commandName])
+    editorInsertFormatContent(cmView, MarkdownEditorCommands[commandName])
   }
 }
 

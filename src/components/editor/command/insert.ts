@@ -9,7 +9,7 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 import { EditorView } from '@/pkg/codemirror/setup'
-import type { MardkdownEditorCommandItemType } from '@/components/editor/command'
+import type { MarkdownEditorCommandItemType } from '@/components/editor/command'
 
 /**
  * @description: 插入格式化内容
@@ -19,7 +19,7 @@ import type { MardkdownEditorCommandItemType } from '@/components/editor/command
  */
 export function editorInsertFormatContent(
   view: EditorView,
-  command: MardkdownEditorCommandItemType
+  command: MarkdownEditorCommandItemType
 ) {
   // 从当前光标位置开始插入内容
   const insert = (position: number, content: string) => {

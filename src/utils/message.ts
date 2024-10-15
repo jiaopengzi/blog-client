@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-16 20:01:16
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-23 20:36:42
+ * @LastEditTime : 2024-10-15 10:12:37
  * @FilePath     : \blog-client\src\utils\message.ts
  * @Description  : 消息提示 工具类
  * @blog         : https://jiaopengzi.com
@@ -12,12 +12,12 @@ import { ElMessage } from 'element-plus'
 import { MsgType } from '@/components/common'
 // 按需引入 element-plus 消息提示组件样式
 import 'element-plus/theme-chalk/el-message.css'
-export const ShowMsgTip = (msgtype: MsgType, msgStr: string, duration: number = 3000): void => {
+export const ShowMsgTip = (msgType: MsgType, msgStr: string, duration: number = 3000): void => {
   ElMessage({
     showClose: true,
-    // message: MsgTitle[msgtype] + ':' + msgStr,
+    // message: MsgTitle[msgType] + ':' + msgStr,
     message: msgStr,
-    type: msgtype,
+    type: msgType,
     duration: duration
   })
 }

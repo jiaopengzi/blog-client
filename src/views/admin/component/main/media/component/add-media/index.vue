@@ -11,7 +11,7 @@
 
 <template>
   <div>
-    <div class="switchs">
+    <div class="switch-all">
       <span class="switch">视频文件选项:</span>
       <el-switch
         class="switch"
@@ -110,7 +110,7 @@ onBeforeMount(async () => {
 </script>
 
 <style lang="scss" scoped>
-.switchs {
+.switch-all {
   display: flex;
   align-items: center;
 }

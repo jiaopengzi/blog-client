@@ -114,7 +114,7 @@ import { ShowMsgTip } from '@/utils/message'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import {
   type EditUserInfoByAdminRequest,
-  EditUserInfoByAdminAPI
+  editUserInfoByAdminAPI
 } from '@/api/user/editUserInfoByAdmin'
 import { ResponseCode } from '@/api/responseCode'
 import type {
@@ -360,7 +360,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
           sex: editUserForm.sex,
           description: editUserForm.description
         }
-        const { data } = await EditUserInfoByAdminAPI(req)
+        const { data } = await editUserInfoByAdminAPI(req)
 
         if (data.code === ResponseCode.EditUserInfoByAdminSuccess) {
           // 添加成功提示

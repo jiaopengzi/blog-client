@@ -33,7 +33,7 @@
               :name="item.iconKey"
               :customClass="'my-icon ' + item.customClass"
             />
-            <span class="titile">{{ item.title }}</span>
+            <span class="title">{{ item.title }}</span>
           </router-link>
         </li>
       </ul>

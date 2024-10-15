@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-23 19:46:26
+ * @LastEditTime : 2024-10-15 10:28:11
  * @FilePath     : \blog-client\src\views\reset-password\index.vue
  * @Description  : 重置密码
  * @Blog         : https://jiaopengzi.com
@@ -16,15 +16,15 @@
     <SlideVerify
       v-if="showSlideVerify"
       @on-close="closeSlideVerify"
-      @on-success="sendcaptcha"
+      @on-success="sendCaptcha"
     ></SlideVerify>
     <el-form
       :label-position="labelPosition"
       label-width="100px"
-      ref="fogetPasswordFormRef"
-      :model="fogetPasswordForm"
+      ref="forgotPasswordFormRef"
+      :model="forgotPasswordForm"
       :rules="rules"
-      class="fogetPassword-form"
+      class="forgotPassword-form"
       :size="formSize"
       status-icon
     >
@@ -43,11 +43,11 @@
       </div>
 
       <el-form-item label="邮箱" prop="email">
-        <el-input v-model.trim="fogetPasswordForm.email" />
+        <el-input v-model.trim="forgotPasswordForm.email" />
       </el-form-item>
 
       <el-form-item label="验证码" prop="captcha">
-        <el-input class="email-code" v-model.trim="fogetPasswordForm.captcha" />
+        <el-input class="email-code" v-model.trim="forgotPasswordForm.captcha" />
         <button
           class="btn-captcha"
           type="button"
@@ -59,16 +59,16 @@
       </el-form-item>
 
       <el-form-item label="新密码" prop="password">
-        <el-input type="password" v-model.trim="fogetPasswordForm.password" />
+        <el-input type="password" v-model.trim="forgotPasswordForm.password" />
       </el-form-item>
 
       <el-form-item label="确认密码" prop="rePassword">
-        <el-input type="password" v-model.trim="fogetPasswordForm.rePassword" />
+        <el-input type="password" v-model.trim="forgotPasswordForm.rePassword" />
       </el-form-item>
 
       <div class="btn-submit">
         <el-form-item>
-          <el-button type="primary" @click="submitForm(fogetPasswordFormRef as FormInstance)"
+          <el-button type="primary" @click="submitForm(forgotPasswordFormRef as FormInstance)"
             >重置密码</el-button
           >
         </el-form-item>
@@ -116,10 +116,10 @@ const labelPosition = ref('top')
 const formSize = ref('default')
 
 // 表单实例
-const fogetPasswordFormRef = useTemplateRef<FormInstance>('fogetPasswordFormRef')
+const forgotPasswordFormRef = useTemplateRef<FormInstance>('forgotPasswordFormRef')
 
 // 表单数据
-const fogetPasswordForm = reactive<ResetPasswordForm>({
+const forgotPasswordForm = reactive<ResetPasswordForm>({
   email: 'jiaopengzi@qq.com',
   captcha: '123456',
   password: '123QWEasd123',
@@ -132,9 +132,9 @@ const fogetPasswordForm = reactive<ResetPasswordForm>({
  */
 async function checkRePassword(): Promise<void> {
   try {
-    if (fogetPasswordForm.rePassword === '') {
+    if (forgotPasswordForm.rePassword === '') {
       throw new Error('请再次输入密码')
-    } else if (fogetPasswordForm.rePassword !== fogetPasswordForm.password) {
+    } else if (forgotPasswordForm.rePassword !== forgotPasswordForm.password) {
       throw new Error('两次输入的密码不一致')
     }
   } catch (err: unknown) {
@@ -170,7 +170,7 @@ async function checkSendCaptcha(): Promise<void> {
   try {
     // 创建请求对象 加密内容
     const req: CaptchaSendRequest = {
-      email: fogetPasswordForm.email,
+      email: forgotPasswordForm.email,
       purpose: CaptchaPurpose.ResetPassword
     }
     console.log('==========>发送验证码')
@@ -200,7 +200,7 @@ async function checkSendCaptcha(): Promise<void> {
 async function checkEmail(): Promise<void> {
   // 创建请求对象 加密内容
   const req: CheckEmailRequest = {
-    email: fogetPasswordForm.email
+    email: forgotPasswordForm.email
   }
 
   try {
@@ -240,8 +240,8 @@ async function checkCaptcha(): Promise<void> {
   try {
     // 创建请求对象 加密内容
     const req: CaptchaCheckRequest = {
-      email: fogetPasswordForm.email,
-      captcha: fogetPasswordForm.captcha,
+      email: forgotPasswordForm.email,
+      captcha: forgotPasswordForm.captcha,
       purpose: CaptchaPurpose.ResetPassword
     }
 
@@ -315,10 +315,10 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     if (valid) {
       // 创建请求对象 加密内容
       const req: ResetPasswordRequest = {
-        captcha: fogetPasswordForm.captcha,
-        password: fogetPasswordForm.password,
-        re_password: fogetPasswordForm.rePassword,
-        email: fogetPasswordForm.email
+        captcha: forgotPasswordForm.captcha,
+        password: forgotPasswordForm.password,
+        re_password: forgotPasswordForm.rePassword,
+        email: forgotPasswordForm.email
       }
 
       const { data } = await resetPasswordAPI(req) // 将 resStr 转换为对象
@@ -356,11 +356,11 @@ const btnCaptchaState = reactive({ disabled: false })
 
 // 发送邮箱验证码
 
-const sendcaptcha = async () => {
+const sendCaptcha = async () => {
   // 关闭滑块验证
   showSlideVerify.value = false
 
-  const emailResult = await fogetPasswordFormRef.value?.validateField('email').catch(() => false)
+  const emailResult = await forgotPasswordFormRef.value?.validateField('email').catch(() => false)
   if (!emailResult) {
     ShowMsgTip(ShowMsgTip.MsgType.error, '请输入正确的邮箱地址。', 0)
     console.log('请输入邮箱')
@@ -412,7 +412,7 @@ const closeSlideVerify = () => {
 }
 
 @include respond-to('pc') {
-  .fogetPassword-form {
+  .forgotPassword-form {
     width: 360px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -424,7 +424,7 @@ const closeSlideVerify = () => {
 }
 
 @include respond-to('pad') {
-  .fogetPassword-form {
+  .forgotPassword-form {
     width: 360px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -436,7 +436,7 @@ const closeSlideVerify = () => {
 }
 
 @include respond-to('phone') {
-  .fogetPassword-form {
+  .forgotPassword-form {
     /* 当屏幕宽度小于 1024px 时 */
     width: 90vw;
     box-shadow: none;

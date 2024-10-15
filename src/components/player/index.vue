@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-17 10:03:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-09 09:11:07
+ * @LastEditTime : 2024-10-15 09:52:43
  * @FilePath     : \blog-client\src\components\player\index.vue
  * @Description  : 视频播放器
  * @Blog         : https://jiaopengzi.com
@@ -168,7 +168,7 @@ const handleDblclick = () => {
 
 // 处理视频进度
 const handleProgress = () => {
-  handleProgressbuffered()
+  handleProgressBuffered()
 }
 
 // 视频播放结束
@@ -189,7 +189,7 @@ const handleCanplay = () => {
 }
 
 // 处理缓存进度
-const handleProgressbuffered = () => {
+const handleProgressBuffered = () => {
   if (videoRef.value) {
     // 更新缓存进度
     const buffered = videoRef.value.buffered
@@ -451,7 +451,7 @@ watchEffect(() => {
 // 视频加载完成
 const handleLoadedmetadata = () => {
   if (videoRef.value) {
-    handleProgressbuffered()
+    handleProgressBuffered()
     updateStore()
   }
 }
@@ -473,7 +473,7 @@ watchEffect(() => {
 
     // 更新缓存进度
     if (!playProgress.value.isDragging) {
-      handleProgressbuffered()
+      handleProgressBuffered()
     }
     playerStore.setUserInput(false)
   }
@@ -590,7 +590,7 @@ const loadHls = () => {
         const successCodes = [
           ResponseCode.GetVideoM3u8Success,
           ResponseCode.GetVideoMainM3u8Success,
-          ResponseCode.GetVdideoKeySuccess
+          ResponseCode.GetVideoKeySuccess
         ]
         // 將 data.response.code 转换为 number 类型
         const resCode = parseInt(data.response.code.toString())

@@ -16,7 +16,7 @@
 
 <script lang="ts" setup>
 import { ref, watch, watchEffect, onBeforeMount } from 'vue'
-import { parseVTT } from '@/utils/vttParser'
+import { parseVTT } from '@/utils/vttParse'
 
 defineOptions({ name: 'VideoSubtitles' })
 

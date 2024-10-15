@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-07 21:01:15
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-28 12:09:27
+ * @LastEditTime : 2024-10-15 09:00:11
  * @FilePath     : \blog-client\src\api\permissionRole\role.ts
  * @Description  : 角色相关
  * @Blog         : https://jiaopengzi.com
@@ -18,13 +18,13 @@ import { type UpsertPermissionRoleRequest } from '@/api/permissionRole/upsertPer
 export interface RolesResponse {
   code: number
   msg: string
-  data: RoleWithLimt
+  data: RoleWithLimit
 }
 
 export function getRolesByJson(): AxiosPromise<RolesResponse> {
   return request({
     url: routerGroup + '/role/get-roles',
-    method: 'get',
+    method: 'get'
   })
 }
 
@@ -34,7 +34,7 @@ export interface Role {
   description: string
 }
 
-export interface RoleWithLimt {
+export interface RoleWithLimit {
   roles: Role[]
   permission_role: Record<string, UpsertPermissionRoleRequest>
 }

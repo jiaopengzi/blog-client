@@ -9,7 +9,7 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import type { CommandsKey, MardkdownEditorCommandItemType } from '@/components/editor/command'
+import type { CommandsKey, MarkdownEditorCommandItemType } from '@/components/editor/command'
 
 export { default as EditorPost } from './EditorPost.vue'
 export { default as EditorComment } from './EditorComment.vue'
@@ -43,7 +43,7 @@ export interface ToolbarRef extends HTMLElement {
 
 export interface CodemirrorRef extends HTMLElement {
   root: HTMLElement
-  runCommand: (commandName: CommandsKey, customContent?: MardkdownEditorCommandItemType) => void
+  runCommand: (commandName: CommandsKey, customContent?: MarkdownEditorCommandItemType) => void
   scrollIntoViewLine: (line: number) => void
 }
 

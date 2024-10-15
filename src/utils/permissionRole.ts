@@ -12,7 +12,7 @@
 // 从 API 获取权限列表
 import type { Directive, DirectiveBinding } from 'vue'
 import { getPermissionsByJson } from '@/api/permissionRole/getPermissions'
-import { getRolesByJson, type RoleWithLimt } from '@/api/permissionRole/role'
+import { getRolesByJson, type RoleWithLimit } from '@/api/permissionRole/role'
 import { ResponseCode, LocalStorageKey } from '@/api/responseCode'
 import { kebabToPascalCase } from '@/utils/namingConversion'
 import { hasPermissionAPI } from '@/api/permissionRole/hasPermission'
@@ -57,9 +57,9 @@ interface GetRolesListParams {
 /**
  * @description: 获取角色列表
  * @param {GetRolesListParams} params - 参数
- * @return {Promise<RoleWithLimt>}
+ * @return {Promise<RoleWithLimit>}
  */
-export async function getRolesList(params: GetRolesListParams = {}): Promise<RoleWithLimt> {
+export async function getRolesList(params: GetRolesListParams = {}): Promise<RoleWithLimit> {
   const { useCache = true } = params // 默认使用缓存
 
   if (useCache) {

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-06 09:35:02
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-08 16:01:59
+ * @LastEditTime : 2024-10-15 09:05:11
  * @FilePath     : \blog-client\src\api\video\getSubtitles.ts
  * @Description  : 获取视频字幕
  * @Blog         : https://jiaopengzi.com
@@ -23,11 +23,11 @@ export interface SubtitlesResponse extends Res {
 
 export function getSubtitlesAPI(
   videoHashId: string,
-  subtitlesLanguage: string,
+  subtitlesLanguage: string
 ): AxiosPromise<SubtitlesResponse> {
   return request({
     url: `${routerGroup}/subtitles/${videoHashId}/${subtitlesLanguage}`,
-    method: 'get',
+    method: 'get'
   })
 }
 
@@ -36,7 +36,7 @@ export function getSubtitlesURL(videoHashId: string, subtitlesLanguage: string):
   // 使用 axios 的 getUri 方法获取完整的 URL
   const config = {
     url: `${routerGroup}/subtitles/webvtt/${videoHashId}/${subtitlesLanguage}`,
-    method: 'get',
+    method: 'get'
   }
   return request.getUri(config)
 }

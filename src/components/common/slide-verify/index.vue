@@ -10,7 +10,7 @@
 -->
 
 <template>
-  <div calss="page">
+  <div class="page">
     <!-- @touchmove.prevent.stop 阻止触摸事件传播并阻止默认行为。确保滑动验证码不会导致页面滑动。 -->
     <div class="verify-main" @touchmove.prevent.stop>
       <h4>
