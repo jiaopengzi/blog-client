@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-28 16:56:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 08:57:45
+ * @LastEditTime : 2024-10-15 11:02:26
  * @FilePath     : \blog-client\src\views\admin\component\main\login-log\index.vue
  * @Description  : 登录日志
  * @Blog         : https://jiaopengzi.com
@@ -19,7 +19,6 @@
     :is-show-edit="false"
     @update-current-page="updateCurrentPage"
     @update-page-size="updatePageSize"
-    @update-page-sizes="updatePageSizes"
     @delete-rows="deleteRows"
     @update-search="updateSearch"
     @update-selection="updateSelection"
@@ -178,11 +177,6 @@ const updatePageSize = async (val: number) => {
   pagination.value.page_size = val
   routerPush(val, pagination.value.current_page, search.value)
   console.log('02============', val)
-}
-
-const updatePageSizes = (val: any) => {
-  // pagination.value.page_size = val
-  console.log('03============', val)
 }
 
 const deleteRows = async (rows: TableData[]) => {

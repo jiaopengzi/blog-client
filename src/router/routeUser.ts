@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-23 12:02:58
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 18:36:06
+ * @LastEditTime : 2024-10-15 10:49:36
  * @FilePath     : \blog-client\src\router\routeUser.ts
  * @Description  : 用户相关路由
  * @Blog         : https://jiaopengzi.com
@@ -68,8 +68,8 @@ export const userRoutes = {
     }
   },
   userInfo: {
-    path: '/userinfo',
-    name: 'userinfo',
+    path: '/user-info',
+    name: 'userInfo',
     component: () => import('@/views/user-info'),
     meta: {
       requiresAuth: true

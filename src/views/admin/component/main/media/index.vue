@@ -408,7 +408,7 @@ const fileCountGroupByFiletype = ref<FileCountGroupByFiletype[]>([])
 // 获取文件统计
 async function getFileCountGroupByFiletype() {
   await getFileCountGroupByFiletypeAPI().then((res) => {
-    if (res.data.code === ResponseCode.GetFileCountGroupByTypeSuccess) {
+    if (res.data.code === ResponseCode.GetFileCountGroupByTypeSuccess && res.data.data) {
       const filetypeALL = res.data.data
       const total = filetypeALL.reduce((prev, cur) => {
         return prev + cur.file_count

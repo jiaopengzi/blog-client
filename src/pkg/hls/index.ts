@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 15:17:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-08 09:40:26
+ * @LastEditTime : 2024-10-15 11:56:09
  * @FilePath     : \blog-client\src\pkg\hls\index.ts
  * @Description  : hls 自定义 loader
  * @Blog         : https://jiaopengzi.com
@@ -25,7 +25,14 @@ import { getM3u8API } from '@/api/video/getM3u8'
 import { getMainM3u8API } from '@/api/video/getMainM3u8'
 import { getKeyAPI } from '@/api/video/getKey'
 
-// 自定义 KeyLoader 类
+// 自定义 Loader 错误码
+enum CustomLoaderError {
+  MainM3u8 = 5001,
+  LevelM3u8 = 5002,
+  Key = 5003
+}
+
+// 自定义 Loader 类
 export class CustomLoader extends Hls.DefaultConfig.loader {
   private static globalState: { videoId: string } = { videoId: '' } // 定义全局状态
 
@@ -94,7 +101,12 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
         })
         .catch((error) => {
           loaderStats.loading.end = window.performance.now()
-          callbacks.onError({ code: 500, text: error.message }, context, null, loaderStats)
+          callbacks.onError(
+            { code: CustomLoaderError.MainM3u8, text: error.message },
+            context,
+            null,
+            loaderStats
+          )
         })
     }
 
@@ -124,7 +136,12 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
         })
         .catch((error) => {
           loaderStats.loading.end = window.performance.now()
-          callbacks.onError({ code: 500, text: error.message }, context, null, loaderStats)
+          callbacks.onError(
+            { code: CustomLoaderError.LevelM3u8, text: error.message },
+            context,
+            null,
+            loaderStats
+          )
         })
     }
 
@@ -148,6 +165,7 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
           // 密钥获取成功
           if (data.code === ResponseCode.GetVideoKeySuccess) {
             const decryptedKey = this.decryptKey(data.data) // 解密播放密钥
+            console.log('decryptedKey2', decryptedKey)
             context.keyInfo.decryptData.key = decryptedKey // 将解密后的密钥赋值给 keyInfo
 
             callbacks.onSuccess(
@@ -162,7 +180,12 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
         })
         .catch((error) => {
           loaderStats.loading.end = window.performance.now()
-          callbacks.onError({ code: 500, text: error.message }, context, null, loaderStats)
+          callbacks.onError(
+            { code: CustomLoaderError.Key, text: error.message },
+            context,
+            null,
+            loaderStats
+          )
         })
     } else {
       // 对于未加密的视频，直接调用父类的 load 方法
