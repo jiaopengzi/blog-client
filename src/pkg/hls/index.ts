@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 15:17:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 12:31:55
+ * @LastEditTime : 2024-10-15 14:31:02
  * @FilePath     : \blog-client\src\pkg\hls\index.ts
  * @Description  : hls 自定义 loader
  * @Blog         : https://jiaopengzi.com
@@ -32,7 +32,7 @@ enum CustomLoaderError {
   Key = 5003
 }
 
-// 自定义 KeyLoader 类
+// 自定义 Loader 类
 export class CustomLoader extends Hls.DefaultConfig.loader {
   private static globalState: { videoId: string } = { videoId: '' } // 定义全局状态
 
@@ -197,8 +197,12 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
   }
 }
 
-// 播放密钥自定义解密函数
-function playKeyDecryptAES2Bin(playKeyEncrypt: string): Uint8Array {
+/**
+ * @description: 播放密钥解密函数
+ * @param playKeyEncrypt 加密的播放密钥
+ * @return  返回 Uint8Array 的二进制播放密钥
+ */
+export function playKeyDecryptAES2Bin(playKeyEncrypt: string): Uint8Array {
   // 获取 playKeyEncrypt 字符长度
   const playKeyEncryptLen = playKeyEncrypt.length
 

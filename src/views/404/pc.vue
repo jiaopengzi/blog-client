@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-13 18:50:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-14 09:55:14
+ * @LastEditTime : 2024-10-15 18:02:26
  * @FilePath     : \blog-client\src\views\404\pc.vue
  * @Description  : 404 页面 pc
  * @Blog         : https://jiaopengzi.com
@@ -29,11 +29,13 @@
     <!-- 正文内容 -->
     <div class="common-layout">
       <div class="not-found">
-        <h1>404</h1>
-        <p>抱歉，您访问的页面不存在。</p>
-        <p>
-          将在 <span class="countdown">{{ props.countdown }}</span> 秒后，返回首页。
-        </p>
+        <el-empty description=" ">
+          <h1>404</h1>
+          <p>抱歉，您访问的页面不存在。</p>
+          <p>
+            将在 <span class="countdown">{{ props.countdown }}</span> 秒后，返回首页。
+          </p>
+        </el-empty>
       </div>
     </div>
   </div>

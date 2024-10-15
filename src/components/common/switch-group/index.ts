@@ -3,7 +3,7 @@ import { acceptHMRUpdate } from 'pinia'
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 16:36:41
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-24 13:38:47
+ * @LastEditTime : 2024-10-15 15:55:47
  * @FilePath     : \blog-client\src\components\common\switch-group\index.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -23,7 +23,7 @@ export interface SwitchItem {
   color?: SwitchItemColor
 }
 
-// 自定义文字
+// 自定义标签
 export interface SwitchItemLabel {
   labelTrue?: string
   labelFalse?: string

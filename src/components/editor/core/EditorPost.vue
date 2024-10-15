@@ -205,7 +205,7 @@ onMounted(() => {
   .md-container,
   .md-container-fs {
     display: flex;
-    width: 100vw;
+    width: 100%;
 
     .md-container-item,
     .md-container-item-fs {

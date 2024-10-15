@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-06 16:34:11
+ * @LastEditTime : 2024-10-15 19:27:08
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格
  * @Blog         : https://jiaopengzi.com
@@ -105,6 +105,24 @@
         </template>
       </el-table-column>
     </el-table>
+    <ul>
+      <li v-for="(row, index) in paginationData.records" :key="index">
+        <div class="thumbnail" @click="handleDelegateClick">
+          <img
+            class="thumbnail-img"
+            v-if="row.img?.url"
+            :src="row.img.url"
+            :style="imgStyle(row.img?.width, row.img?.height, row.img?.imgFit)"
+          />
+          <Icon
+            v-else-if="row.img?.iconKeyName"
+            :name="row.img?.iconKeyName"
+            :style="iconStyle(row.img?.fontSize)"
+          />
+        </div>
+      </li>
+    </ul>
+
     <!-- 分页 -->
     <div class="pagination-block">
       <el-pagination
@@ -196,7 +214,7 @@ const emit = defineEmits<{
 
 const tableRef = useTemplateRef<InstanceType<typeof ElTable>>('tableRef') //表格实例
 const search = ref(searchStr) // 搜索关键字
-const paginationData = ref(pagination) // 分页配置
+const paginationData = ref<Pagination<TableData>>(pagination)
 const addItemDialogVisibleStatus = ref(false) // 对话框状态
 const editItemDialogVisibleStatus = ref(false) // 对话框状态
 

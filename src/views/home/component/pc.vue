@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:26:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 21:28:53
+ * @LastEditTime : 2024-10-15 18:07:33
  * @FilePath     : \blog-client\src\views\home\component\pc.vue
  * @Description  : pc 内容页
  * @Blog         : https://jiaopengzi.com
@@ -61,6 +61,21 @@
       </el-container>
     </div>
   </div>
+  <el-backtop :bottom="100">
+    <div
+      style="
+        height: 100%;
+        width: 100%;
+        background-color: var(--el-bg-color-overlay);
+        box-shadow: var(--el-box-shadow-lighter);
+        text-align: center;
+        line-height: 40px;
+        color: #1989fa;
+      "
+    >
+      UP
+    </div>
+  </el-backtop>
 </template>
 <script setup lang="ts">
 import { ref, onMounted, nextTick, onBeforeUnmount, useTemplateRef } from 'vue'

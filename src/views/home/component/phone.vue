@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:43:31
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 10:25:54
+ * @LastEditTime : 2024-10-15 18:07:40
  * @FilePath     : \blog-client\src\views\home\component\phone.vue
  * @Description  : phone 内容页
  * @Blog         : https://jiaopengzi.com
@@ -49,6 +49,21 @@
       </el-container>
     </div>
   </div>
+  <el-backtop :bottom="100">
+    <div
+      style="
+        height: 100%;
+        width: 100%;
+        background-color: var(--el-bg-color-overlay);
+        box-shadow: var(--el-box-shadow-lighter);
+        text-align: center;
+        line-height: 40px;
+        color: #1989fa;
+      "
+    >
+      UP
+    </div>
+  </el-backtop>
 </template>
 <script setup lang="ts">
 import { ref } from 'vue'

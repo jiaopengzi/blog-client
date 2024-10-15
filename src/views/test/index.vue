@@ -1,60 +1,75 @@
 <!--
+ * @Author       : jiaopengzi
+ * @Date         : 2024-09-29 10:52:39
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2024-10-15 17:48:46
  * @FilePath     : \blog-client\src\views\test\index.vue
  * @Description  : 
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-  <div class="container">
-    <VideoPlayer />
-  </div>
+  <el-upload
+    v-model:file-list="fileList"
+    action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+    list-type="picture-card"
+    :on-preview="handlePictureCardPreview"
+    :on-remove="handleRemove"
+  >
+    <el-icon><Plus /></el-icon>
+  </el-upload>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref } from 'vue'
-import VideoPlayer from '@/components/player'
-import { usePlayerStore, type SubtitlesItem, MediaTypes } from '@/stores/player'
-defineOptions({ name: 'VideoPlayerTest' })
+import { Plus } from '@element-plus/icons-vue'
 
-// 从 store 中获取数据
-const playerStore = usePlayerStore()
+import type { UploadProps, UploadUserFile } from 'element-plus'
 
-// 设置视频地址
-// playerStore.setMediaType(MediaTypes.MP4) // 静音
-// playerStore.setSrc("http://10.10.2.222:8081/api/v1/uploads/test.mp4")
-playerStore.setPoster('http://10.10.2.222:8081/api/v1/uploads/poster.png')
-
-playerStore.setMediaType(MediaTypes.HLS) // 静音
-// playerStore.setSrc("6-c19424aa") // 多清晰度 免费 不加密
-// playerStore.setSrc("8-8e72860c") // 多清晰度 付费 加密
-playerStore.setSrc('9-31df6df9') // 单清晰度 免费 不加密
-
-const subtitles = ref<{ [language: string]: SubtitlesItem }>({
-  cn: {
-    label: '中文',
-    src: 'http://10.10.2.222:8081/api/v1/uploads/cn.vtt'
+const fileList = ref<UploadUserFile[]>([
+  {
+    name: 'food.jpeg',
+    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
   },
-  en: {
-    label: 'English',
-    src: 'http://10.10.2.222:8081/api/v1/uploads/en.vtt'
+  {
+    name: 'plant-1.png',
+    url: '/images/plant-1.png'
+  },
+  {
+    name: 'food.jpeg',
+    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+  },
+  {
+    name: 'plant-2.png',
+    url: '/images/plant-2.png'
+  },
+  {
+    name: 'food.jpeg',
+    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+  },
+  {
+    name: 'figure-1.png',
+    url: '/images/figure-1.png'
+  },
+  {
+    name: 'food.jpeg',
+    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+  },
+  {
+    name: 'figure-2.png',
+    url: '/images/figure-2.png'
   }
-})
+])
 
-const textWatermark = {
-  content: 'jiaopengzi.com1111',
-  style: {
-    color: 'red',
-    fontSize: '14px'
-  }
+const dialogImageUrl = ref('')
+const dialogVisible = ref(false)
+
+const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
+  console.log(uploadFile, uploadFiles)
 }
-playerStore.setTextWatermark(textWatermark)
-playerStore.setAvailableSubtitles(subtitles.value)
+
+const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
+  dialogImageUrl.value = uploadFile.url!
+  dialogVisible.value = true
+}
 </script>
-
-<style scoped lang="scss">
-// 让视频播放器水平垂直居中
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-</style>

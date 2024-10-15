@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 15:14:31
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 12:36:59
+ * @LastEditTime : 2024-10-15 14:17:29
  * @FilePath     : \blog-client\src\pkg\hls\hls.d.ts
  * @Description  : 将自定义的KeyLoaderContext接口导出
  * @Blog         : https://jiaopengzi.com

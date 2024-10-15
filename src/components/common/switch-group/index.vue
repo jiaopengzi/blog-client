@@ -2,33 +2,25 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 16:36:18
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-24 14:26:33
+ * @LastEditTime : 2024-10-15 17:10:00
  * @FilePath     : \blog-client\src\components\common\switch-group\index.vue
  * @Description  : 开关组件 
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-  <span
-    v-if="localNamePosition === 'left'"
-    class="span-left"
-    :style="getSpanWidth(props.spanWordCount)"
-    >{{ props.switchItem.name }}
-  </span>
-  <el-switch
-    v-model="localStatus"
-    :style="getSwitchStyle(props.switchItem)"
-    class="my-el-switch"
-    inline-prompt
-    :active-text="props.switchItem.label?.labelTrue"
-    :inactive-text="props.switchItem.label?.labelFalse"
-  />
-  <span
-    v-if="localNamePosition === 'right'"
-    class="span-right"
-    :style="getSpanWidth(props.spanWordCount)"
-    >{{ props.switchItem.name }}</span
-  >
+  <div class="my-switch">
+    <span v-if="localNamePosition === 'left'" class="span-left">{{ props.switchItem.name }} </span>
+    <el-switch
+      v-model="localStatus"
+      :style="getSwitchStyle(props.switchItem)"
+      class="my-el-switch"
+      inline-prompt
+      :active-text="props.switchItem.label?.labelTrue"
+      :inactive-text="props.switchItem.label?.labelFalse"
+    />
+    <span v-if="localNamePosition === 'right'" class="span-right">{{ props.switchItem.name }}</span>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -69,13 +61,21 @@ const getSpanWidth = (spanWordCount: number | undefined) => {
 </script>
 
 <style lang="scss" scoped>
+.my-switch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .my-el-switch {
   margin: 0 10px;
 }
 
-.span-left {
-  display: inline-block;
-  text-align: right;
+.span-left,
+.span-right {
+  // display: inline-block;
+  // text-align: right;
   // width: 100px;
+  // padding: 0 4px;
 }
 </style>

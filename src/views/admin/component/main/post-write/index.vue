@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-07 17:46:35
+ * @LastEditTime : 2024-10-15 17:25:42
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -48,9 +48,13 @@
         <el-input v-model="postInfo.price" />
       </el-form-item>
     </el-form>
-    <AddTag ref="addTagRef" :tag-list-in="postInfo.tagList" @update-tag-list="updateTagListIn" />
-    <ul>
-      <li v-for="(item, index) in si" :key="index">
+    <div class="add-tag">
+      <AddTag ref="addTagRef" :tag-list-in="postInfo.tagList" @update-tag-list="updateTagListIn" />
+    </div>
+
+    <ul class="switch-group">
+      <span class="switch-label">免费管理：</span>
+      <li class="switch-item" v-for="(item, index) in switchItemList" :key="index">
         <SwitchGroup
           :switch-item="item"
           :span-word-count="nameMaxLength"
@@ -58,9 +62,17 @@
         />
       </li>
     </ul>
-    <el-button type="primary" class="add-media">
-      <Icon :name="IconKeys.Media" custom-class="add-media-icon" /> <span>发布</span>
-    </el-button>
+
+    <div class="btns-footer">
+      <el-button type="primary" class="save-post">
+        <Icon :name="IconKeys.Save" custom-class="btns-footer-item-icon" />
+        <span>保存草稿</span>
+      </el-button>
+      <el-button type="primary" class="post-push">
+        <Icon :name="IconKeys.Media" custom-class="btns-footer-item-icon" />
+        <span>发布</span>
+      </el-button>
+    </div>
   </el-container>
 </template>
 <script lang="ts" setup>
@@ -105,7 +117,7 @@ const label: SwitchItemLabel = {
   labelFalse: '付费'
 }
 
-const si: SwitchItem[] = reactive([
+const switchItemList: SwitchItem[] = reactive([
   {
     name: 'admin',
     status: true,
@@ -124,13 +136,13 @@ const si: SwitchItem[] = reactive([
 ])
 
 const updateStatus = (item: SwitchItem) => {
-  const index = si.findIndex((i) => i.name === item.name)
-  si[index].status = item.status
-  console.log('si', si)
+  const index = switchItemList.findIndex((i) => i.name === item.name)
+  switchItemList[index].status = item.status
+  console.log('si', switchItemList)
 }
 
 // 计算 name 最大长度
-const nameMaxLength = Math.max(...si.map((item) => (item.name ?? '').length))
+const nameMaxLength = Math.max(...switchItemList.map((item) => (item.name ?? '').length))
 </script>
 
 <style scoped lang="scss">
@@ -139,7 +151,7 @@ const nameMaxLength = Math.max(...si.map((item) => (item.name ?? '').length))
   justify-content: center;
   align-items: center;
 
-  margin: 4px 4px;
+  margin: 16px 16px;
   width: 100px;
   height: 40px;
   line-height: 40px;
@@ -155,6 +167,32 @@ const nameMaxLength = Math.max(...si.map((item) => (item.name ?? '').length))
   }
 }
 
+.add-tag {
+  margin: 16px 16px;
+}
+
+.switch-group {
+  margin: 16px 16px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap; // 自动换行
+}
+.switch-label {
+  font-size: 15px;
+  font-weight: 700;
+}
+.switch-item {
+  margin: 8px 16px;
+}
+
+.btns-footer {
+  margin: 8px 16px;
+}
+
+.btns-footer-item-icon {
+  font-size: 20px;
+  fill: var(--text-color);
+}
 .post-info {
   // margin: 10px 20px;
   padding: 10px 20px;

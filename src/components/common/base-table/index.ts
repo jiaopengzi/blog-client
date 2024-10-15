@@ -24,7 +24,7 @@ export interface TableColumn {
   width?: number | string // 列宽
   align?: string // 对齐方式
   isImg?: boolean // 是否为图片
-  formatter?: (row: TableData) => any // 格式化函数
+  formatter?: (row: TableData) => void // 格式化函数
   isTest?: boolean // 是否为测试列
 }
 
