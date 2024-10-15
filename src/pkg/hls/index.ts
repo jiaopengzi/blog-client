@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 15:17:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 11:56:09
+ * @LastEditTime : 2024-10-15 12:31:55
  * @FilePath     : \blog-client\src\pkg\hls\index.ts
  * @Description  : hls 自定义 loader
  * @Blog         : https://jiaopengzi.com
@@ -32,7 +32,7 @@ enum CustomLoaderError {
   Key = 5003
 }
 
-// 自定义 Loader 类
+// 自定义 KeyLoader 类
 export class CustomLoader extends Hls.DefaultConfig.loader {
   private static globalState: { videoId: string } = { videoId: '' } // 定义全局状态
 
@@ -147,11 +147,10 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
 
     // 判断是否有 keyInfo
     else if ('keyInfo' in context && context.keyInfo) {
-      // 不使用全局 videoId, 使用 context.keyInfo.decryptData.uri 获取 videoId
-      // const videoId = context.keyInfo.decryptData.uri.substring(
-      //   context.keyInfo.decryptData.uri.lastIndexOf('/') + 1,
+      // 不使用全局 videoId, 使用 context.keyInfo.decryptdata.uri 获取 videoId
+      // const videoId = context.keyInfo.decryptdata.uri.substring(
+      //   context.keyInfo.decryptdata.uri.lastIndexOf('/') + 1,
       // )
-      // await getKeyAPI(videoId)
 
       // 获取解密密钥
       await getKeyAPI(CustomLoader.globalState.videoId)
@@ -165,11 +164,10 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
           // 密钥获取成功
           if (data.code === ResponseCode.GetVideoKeySuccess) {
             const decryptedKey = this.decryptKey(data.data) // 解密播放密钥
-            console.log('decryptedKey2', decryptedKey)
-            context.keyInfo.decryptData.key = decryptedKey // 将解密后的密钥赋值给 keyInfo
+            context.keyInfo.decryptdata.key = decryptedKey // 将解密后的密钥赋值给 keyInfo
 
             callbacks.onSuccess(
-              { url: context.keyInfo.decryptData.uri, data: decryptedKey.buffer },
+              { url: context.keyInfo.decryptdata.uri, data: decryptedKey.buffer },
               loaderStats,
               context,
               null
