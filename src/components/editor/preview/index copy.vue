@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:01:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-16 17:24:18
+ * @LastEditTime : 2024-10-15 09:29:42
  * @FilePath     : \blog-client\src\components\editor\preview\index.vue
  * @Description  : 预览组件
  * @Blog         : https://jiaopengzi.com
@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, computed, watchEffect, useTemplateRef, createApp, h } from 'vue'
+import { onMounted, computed, watchEffect, useTemplateRef } from 'vue'
 import ClipboardJS from 'clipboard' //代码块复制
 import type { ClipboardEvent } from 'clipboard'
 import { ShowMsgTip } from '@/utils/message'
@@ -32,9 +32,8 @@ import type { PreviewProps } from '@/components/editor/preview'
 import '@/assets/scss/preview.scss'
 import '@/assets/scss/highlight.js.jpz.scss'
 import 'katex/dist/katex.min.css' // katex 样式
-import VideoPlayer from '@/components/player'
-import Icon from '@/components/common/icons' // 引用自定义的全局图标
 
+// eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: 'Preview' })
 
 // 定义 props
@@ -218,15 +217,6 @@ defineExpose({
 onMounted(() => {
   initializeCssVariable() // 初始化 css 变量
   initializeClipboard() // 初始化剪切板
-
-  // 挂载新的 Vue 实例
-  const app = createApp({
-    render() {
-      return h('Icon', { type: 'icon-arrow-up', name: 'save' })
-    }
-  })
-
-  app.mount('#preview')
 })
 </script>
 

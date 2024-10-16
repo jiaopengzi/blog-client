@@ -2,13 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-05 11:12:27
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 10:00:12
+ * @LastEditTime : 2024-10-16 16:40:52
  * @FilePath     : \blog-client\src\pkg\marked\extension\renderer.ts
  * @Description  : 自定义 renderer 主要是为了加类名
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
+import html2canvas from 'html2canvas'
 import type { Tokens } from 'marked'
 
 export const renderer = {
@@ -49,6 +50,12 @@ export const renderer = {
       '</code></pre>\n' // marked 源码默认代码块
     return constructWeChatPreCode(replaceAllHljsStringSpanTag(result)) // 自定义代码块
   }
+
+  // // 重写 html 函数
+  // html(html: string) {
+
+  //   return html
+  // }
 }
 
 /**
