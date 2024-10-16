@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 19:27:08
+ * @LastEditTime : 2024-10-16 15:02:31
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格
  * @Blog         : https://jiaopengzi.com
@@ -11,15 +11,23 @@
 
 <template>
   <!-- 参考:https://github.com/element-plus/element-plus/blob/dev/packages/components/image/src/image.vue -->
-  <el-image-viewer v-if="isShowElImageViewer" @close="closeElImageViewer" :url-list="imgUrls" />
+  <!-- <el-image-viewer v-if="isShowElImageViewer" @close="closeElImageViewer" :url-list="imgUrls" /> -->
   <div class="container">
     <div class="btns">
       <!-- 按钮 -->
       <slot name="btns"></slot>
       <el-button v-if="isShowDeleteAll" type="danger" @click="handleBatchDelete"> 删除 </el-button>
-      <!-- 分类 -->
-      <slot name="category"></slot>
+      <span
+        v-if="isShowListOrGrid"
+        class="switch-item"
+        v-for="(item, index) in switchItemList"
+        :key="index"
+      >
+        <SwitchGroup :switch-item="item" @update-status="updateStatus" />
+      </span>
     </div>
+    <!-- 分类 -->
+    <slot name="category"></slot>
     <!-- 搜索 -->
     <el-input
       v-if="isShowSearch"
@@ -30,6 +38,7 @@
     />
 
     <el-table
+      v-show="showListOrGridStatus"
       ref="tableRef"
       :data="paginationData.records"
       stripe
@@ -50,10 +59,10 @@
             <span>{{ col.label }}</span>
           </template>
           <template #default="scope">
-            <div class="thumbnail" @click="handleDelegateClick">
+            <div class="thumbnail" @click="handleDelegateClick(scope.row)">
               <img
-                class="thumbnail-img"
                 v-if="scope.row.img?.url"
+                class="thumbnail-img"
                 :src="scope.row.img.url"
                 :style="
                   imgStyle(scope.row.img?.width, scope.row.img?.height, scope.row.img?.imgFit)
@@ -61,6 +70,7 @@
               />
               <Icon
                 v-else-if="scope.row.img?.iconKeyName"
+                class="thumbnail-img"
                 :name="scope.row.img?.iconKeyName"
                 :style="iconStyle(scope.row.img?.fontSize)"
               />
@@ -105,23 +115,49 @@
         </template>
       </el-table-column>
     </el-table>
-    <ul>
-      <li v-for="(row, index) in paginationData.records" :key="index">
-        <div class="thumbnail" @click="handleDelegateClick">
+
+    <!-- 宫格 -->
+    <el-checkbox-group
+      v-show="!showListOrGridStatus"
+      v-model="checkedRows"
+      @change="handleCheckedGridChange"
+    >
+      <ul ref="gridRef" class="grid">
+        <li v-for="(row, index) in paginationData.records" :key="index" class="thumbnail grid-item">
+          <el-checkbox
+            v-if="isSelected(row)"
+            class="grid-item-selection-status"
+            :key="row"
+            :value="row"
+            size="large"
+          />
+
           <img
-            class="thumbnail-img"
             v-if="row.img?.url"
+            class="thumbnail-img"
             :src="row.img.url"
             :style="imgStyle(row.img?.width, row.img?.height, row.img?.imgFit)"
+            @click="handleDelegateGridClick(row)"
           />
+
           <Icon
             v-else-if="row.img?.iconKeyName"
+            class="thumbnail-img"
             :name="row.img?.iconKeyName"
             :style="iconStyle(row.img?.fontSize)"
+            @click="handleDelegateGridClick(row)"
           />
-        </div>
-      </li>
-    </ul>
+
+          <el-button
+            class="grid-item-edit"
+            size="small"
+            type="primary"
+            @click="handleEdit(index, row)"
+            >编辑</el-button
+          >
+        </li>
+      </ul>
+    </el-checkbox-group>
 
     <!-- 分页 -->
     <div class="pagination-block">
@@ -164,13 +200,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watchEffect, watch, useTemplateRef } from 'vue'
-import type { ElTable } from 'element-plus'
+import { ref, reactive, watchEffect, watch, useTemplateRef } from 'vue'
+import { colProps, type ElTable } from 'element-plus'
 import type { Pagination } from '@/components/common'
 import { MsgType } from '@/components/common'
 import type { TableData, TableColumn } from '@/components/common/base-table'
 import { handleConfirmCommon } from '@/utils/confirm'
 import { imgStyle, iconStyle } from '@/utils/style'
+import type { SwitchItem, SwitchItemLabel, SwitchItemColor } from '@/components/common/switch-group'
+import SwitchGroup from '@/components/common/switch-group'
 
 defineOptions({ name: 'BaseTable' })
 
@@ -181,6 +219,8 @@ const {
   addItemDialogVisible = false, // 默认添加对话框不显示
   editItemDialogVisible = false, // 默认编辑对话框不显示
   isShowDeleteAll = false, // 默认不显示批量删除按钮
+  isShowListOrGrid = false, // 默认不显示切换按钮
+  showListOrGridStatus = true, // 默认显示列表 true:列表,false:宫格
   isShowEdit = false, // 默认不显示批量删除按钮
   isShowSearch = false, // 默认不显示批量删除按钮
   searchStr = '' // 默认搜索关键字为空
@@ -189,6 +229,8 @@ const {
   tableColumn: TableColumn[] // 表格列配置
   addItemDialogVisible?: boolean // 对话框是否显示
   editItemDialogVisible?: boolean // 对话框是否显示
+  isShowListOrGrid?: boolean // 是否显示列表或宫格
+  showListOrGridStatus?: boolean // 列表或宫格状态  true:列表,false:宫格
   isShowDeleteAll?: boolean // 是否显示批量删除按钮
   isShowEdit?: boolean // 是否显示每行编辑按钮
   isShowSearch?: boolean // 是否显示每行编辑按钮
@@ -208,11 +250,14 @@ const emit = defineEmits<{
   (event: 'delete-rows', rows: TableData[]): void // 删除多行
   (event: 'update-search', value: string): void // 更新搜索关键字
   (event: 'update-selection', rows: TableData[]): void // 更新选择
+  (event: 'click-row-by-picture', rows: TableData): void // 点击行中的图片
   (event: 'add-item-update-dialog-visible', value: boolean): void // 更新添加元素对话框状态
   (event: 'edit-item-update-dialog-visible', value: boolean): void // 更新编辑元素对话框状态
+  (event: 'is-show-list-or-grid', value: boolean): void // 是否显示列表或宫格
 }>()
 
 const tableRef = useTemplateRef<InstanceType<typeof ElTable>>('tableRef') //表格实例
+// const gridRef = useTemplateRef<HTMLUListElement>('gridRef') //宫格实例
 const search = ref(searchStr) // 搜索关键字
 const paginationData = ref<Pagination<TableData>>(pagination)
 const addItemDialogVisibleStatus = ref(false) // 对话框状态
@@ -221,17 +266,60 @@ const editItemDialogVisibleStatus = ref(false) // 对话框状态
 const isShowElImageViewer = ref(false)
 const imgUrls = ref<string[]>([])
 
-// 点击事件委托,图片预览.
-const handleDelegateClick = (event: MouseEvent) => {
-  const target = event.target as HTMLElement
-  if (target.tagName.toLowerCase() === 'img' && 'src' in target) {
-    // img 图片
-    const imgElement = target as HTMLImageElement // 断言 img 元素
-    isShowElImageViewer.value = true // 显示图片预览
-    imgUrls.value = [imgElement.src] // 图片地址
-    document.body.style.overflow = 'hidden' // 隐藏滚动条
+const switchItemLabel: SwitchItemLabel = {
+  labelTrue: '表格',
+  labelFalse: '宫格'
+}
+
+const switchItemColor: SwitchItemColor = {
+  colorTrue: '#409EFF',
+  colorFalse: '#409EFF'
+}
+
+const switchItemList: SwitchItem[] = reactive([
+  {
+    name: '',
+    status: showListOrGridStatus,
+    label: switchItemLabel,
+    color: switchItemColor
+  }
+])
+
+const updateStatus = (item: SwitchItem) => {
+  const index = switchItemList.findIndex((i) => i.name === item.name)
+  switchItemList[index].status = item.status
+  emit('is-show-list-or-grid', item.status)
+}
+
+// 处理宫格点击事件
+const handleDelegateGridClick = (row: TableData) => {
+  // 宫格点击事件，首先判断 row 是否在 gridSelection 中，如果在，则取消选中，否则选中
+  emit('click-row-by-picture', row)
+  const gridSelection = tableRef.value?.getSelectionRows() as TableData[]
+  const i = gridSelection.findIndex((item) => item === row)
+  if (i === -1) {
+    tableRef.value?.toggleRowSelection(row)
+  } else {
+    tableRef.value?.toggleRowSelection(row, false)
   }
 }
+
+// 列表图片点击事件
+const handleDelegateClick = (row: TableData) => {
+  emit('click-row-by-picture', row)
+}
+
+// // 点击事件委托,图片预览.
+// const handleDelegateClick = (event: MouseEvent) => {
+//   const target = event.target as HTMLElement
+//   if (target.tagName.toLowerCase() === 'img' && 'src' in target) {
+//     // img 图片
+//     const imgElement = target as HTMLImageElement // 断言 img 元素
+//     isShowElImageViewer.value = true // 显示图片预览
+//     imgUrls.value = [imgElement.src] // 图片地址
+//     document.body.style.overflow = 'hidden' // 隐藏滚动条
+//   }
+// }
 
 // 关闭图片预览
 const closeElImageViewer = () => {
@@ -298,54 +386,125 @@ const handleBatchDelete = () => {
   }
 }
 
+// 已经选择的行
+const checkedRows = ref<TableData[]>([])
+
 // 处理选择变化
 const handleSelectionChange = (rows: TableData[]) => {
+  // 更新宫格选择状态
+  checkedRows.value = rows
   // 选择的行
   emit('update-selection', rows)
+}
+
+// 复选框状态变化
+const handleCheckedGridChange = (rows: TableData[]) => {
+  // 1、清空表格选择
+  tableRef.value?.clearSelection()
+
+  // 2、选中宫格选择
+  rows.forEach((row) => {
+    tableRef.value?.toggleRowSelection(row, true)
+  })
+}
+
+// 宫格模式下是否选中
+const isSelected = (row: TableData) => {
+  return checkedRows.value.includes(row)
 }
 </script>
 
 <style scoped lang="scss">
 .container {
   margin: 10px;
+}
+.btns {
+  display: flex;
+  margin: 10px 0;
+}
 
-  .btns {
-    margin: 10px 0;
-  }
+.search {
+  margin: 0 0 10px 0;
+  width: 250px;
+}
 
-  .search {
-    margin: 0 0 10px 0;
-    width: 250px;
-  }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 20px;
+}
 
-  .pagination-block {
-    display: flex;
-    justify-content: center;
-    margin-top: 10px;
+.grid-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // border: 1px solid #dddddd;
+  position: relative;
+  .grid-item-selection-status {
+    position: absolute;
+    top: 0;
+    right: 0;
+    // display: none;
+    z-index: 1;
   }
+  .grid-item-edit {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: none;
+  }
+}
 
-  .dialog-footer button:first-child {
-    margin-right: 10px;
-  }
+:deep(.el-checkbox) {
+  margin: 0;
+  padding: 0;
+  height: 14px;
+}
+:deep(.el-checkbox__label) {
+  display: none;
+}
 
-  .thumbnail {
-    float: left;
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    overflow: hidden;
-  }
+// 宫格 hover 显示编辑按钮
+.grid-item:hover .grid-item-edit {
+  display: block;
+}
 
-  .thumbnail-img {
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    transition: transform 0.3s ease;
-  }
+// 当选择选中时，显示选择状态
+.grid-item.el-checkbox__inner {
+  display: none;
+}
 
-  .thumbnail:hover .thumbnail-img {
-    transform: scale(1.2);
-  }
+.pagination-block {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.dialog-footer button:first-child {
+  margin-right: 10px;
+}
+
+.thumbnail {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  float: left;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.thumbnail-img {
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  transition: transform 0.3s ease;
+}
+
+.thumbnail:hover .thumbnail-img {
+  transform: scale(1.2);
 }
 
 // 图片 img
@@ -355,7 +514,6 @@ img {
   width: auto; // 根据图片的实际尺寸进行缩放
   margin: 4px auto;
   border-radius: 4px;
-  cursor: pointer;
   // box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);     // 阴影
 }
 </style>

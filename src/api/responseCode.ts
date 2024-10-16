@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 09:06:40
+ * @LastEditTime : 2024-10-16 13:32:30
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -132,7 +132,8 @@ export enum LocalStorageKey {
   AccessToken = 'access_token', // token名称：访问令牌
   RolesList = 'roles_list', // 角色列表
   PermissionList = 'permission_list', // 权限列表
-  IsCollapse = 'is_collapse' // 侧边栏是否折叠
+  IsCollapse = 'is_collapse', // 侧边栏是否折叠
+  IsShowListOrGridAtMedia = 'is_show_list_or_grid_at_media' // 媒体列表是否显示为列表或网格
 }
 
 // 社交登录

@@ -16,6 +16,7 @@ export interface EditMediaProps {
   file_id: string // 文件ID
   file_name: string // 文件名称
   file_type: string // 文件类型
+  file_url: string // 文件地址
   thumbnail: string // 缩略图
   file_name_display: string // 显示名称
   description: string // 描述
@@ -31,6 +32,7 @@ export interface EditMediaForm {
   file_name_display: string // 显示名称
   description: string // 描述
   slug: string // 文件别名
+  file_url: string // 文件地址
   is_free: boolean // 是否免费
 }
 

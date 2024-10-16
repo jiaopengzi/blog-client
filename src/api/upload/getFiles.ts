@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-08-27 16:38:22
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-07 09:40:54
+ * @LastEditTime : 2024-10-16 15:31:53
  * @FilePath     : \blog-client\src\api\upload\getFiles.ts
  * @Description  : 获取文件列表
  * @Blog         : https://jiaopengzi.com
@@ -38,18 +38,18 @@ export async function getMediaFilesAPI(
   width: number = 30, // 默认值 50px
   height: number = 30, // 默认值 50px
   imgFit: ImgFit = ImgFit.Cover, // 默认值 cover
-  fontSize = 30, // 默认值 30px
+  fontSize = 30 // 默认值 30px
 ): AxiosPromise<GetMediaFilesResponse> {
   const urlStr = routerGroup + '/upload/view'
   const response = await request({
     url: urlStr,
     method: 'post',
-    data: requestData,
+    data: requestData
   })
   // 在这里使用 map 函数来转换每个用户对象
   if (response.data.code === ResponseCode.GetFilesSuccess) {
     response.data.data.records = response.data.data.records.map((file: any) =>
-      formatMediaFile(file, width, height, imgFit, fontSize),
+      formatMediaFile(file, width, height, imgFit, fontSize)
     )
     return response
   } else {
@@ -68,6 +68,8 @@ export interface MediaFile extends DataWithImg {
   is_server_process: boolean // 是否服务器处理
   is_ffmpeg_process: boolean // 是否ffmpeg处理
   author: string // 作者
+  url_belong: string // 所属网址
+  path: string // 路径
   description: string // 描述
   slug: string // 别名
   thumbnail: string // 缩略图
@@ -91,11 +93,11 @@ export function formatMediaFile(
   width: number,
   height: number,
   imgFit: ImgFit,
-  fontSize: number,
+  fontSize: number
 ): MediaFile {
   const formattedMediaFile: MediaFile = {
     ...MediaFile,
-    created_at: convertToBeijingTime(created_at), // 使用 convertToBeijingTime 进行格式化
+    created_at: convertToBeijingTime(created_at) // 使用 convertToBeijingTime 进行格式化
   }
 
   // 如果 thumbnail 不为空，添加 img 属性
@@ -104,7 +106,7 @@ export function formatMediaFile(
       url: thumbnail,
       width: width,
       height: height,
-      imgFit: imgFit,
+      imgFit: imgFit
     }
   }
 
@@ -113,7 +115,7 @@ export function formatMediaFile(
     formattedMediaFile.img = {
       url: '',
       fontSize: fontSize,
-      iconKeyName: IconKeys.Zip,
+      iconKeyName: IconKeys.Zip
     }
   }
 
@@ -128,6 +130,6 @@ export function emptyMediaFiles(): Pagination<MediaFile> {
     page_size: 10,
     page_count: 1,
     page_sizes: [10],
-    records: [],
+    records: []
   }
 }

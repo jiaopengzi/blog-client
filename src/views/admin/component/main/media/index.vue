@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-08 09:55:48
+ * @LastEditTime : 2024-10-16 15:46:49
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -14,6 +14,8 @@
     :pagination="pagination"
     :table-column="cols"
     :is-show-delete-all="true"
+    :is-show-list-or-grid="true"
+    :show-list-or-grid-status="isShowListOrGrid"
     :add-item-dialog-visible="addItemDialogVisible"
     :edit-item-dialog-visible="editItemDialogVisible"
     :is-show-edit="true"
@@ -28,8 +30,10 @@
     @delete-rows="deleteRows"
     @update-search="updateSearch"
     @update-selection="updateSelection"
+    @click-row-by-picture="clickRowByPicture"
     @add-item-update-dialog-visible="addItemUpdateDialogVisible"
     @edit-item-update-dialog-visible="editItemUpdateDialogVisible"
+    @is-show-list-or-grid="updateIsShowListOrGrid"
   >
     <template #btns>
       <el-button type="primary" @click="handleAdd"> 新增 </el-button>
@@ -84,7 +88,7 @@ import { getMediaFilesAPI, emptyMediaFiles } from '@/api/upload/getFiles'
 import { debounce } from 'throttle-debounce'
 import { AdminSideMenu } from '@/views/admin/component/aside'
 import { ShowMsgTip } from '@/utils/message'
-import { ResponseCode } from '@/api/responseCode'
+import { ResponseCode, LocalStorageKey } from '@/api/responseCode'
 import { ImgFit } from '@/components/common'
 import router from '@/router'
 import { paginationRouterPush, PaginationQueryKey } from '@/router/utils'
@@ -197,6 +201,19 @@ enum queryKey {
   Search = 'search'
 }
 
+// 是否显示列表或网格
+const isShowListOrGrid = ref(
+  localStorage.getItem(LocalStorageKey.IsShowListOrGridAtMedia) == 'true'
+)
+
+console.log('0============>', isShowListOrGrid.value)
+
+// 更新是否显示列表或网格
+const updateIsShowListOrGrid = (status: boolean) => {
+  isShowListOrGrid.value = status
+  localStorage.setItem(LocalStorageKey.IsShowListOrGridAtMedia, status.toString())
+}
+
 const addItemDialogVisible = ref(false)
 const editItemDialogVisible = ref(false)
 
@@ -204,6 +221,7 @@ const editMediaData: EditMediaProps = reactive({
   file_id: '', // 文件ID
   file_name: '', // 文件名
   file_type: '', // 文件类型
+  file_url: '', // 文件地址S
   thumbnail: '', // 缩略图
   file_name_display: '', // 显示名称
   description: '', // 描述
@@ -244,6 +262,7 @@ const editRow = (index: number, row: TableData) => {
   if ('file_name_display' in row) {
     editMediaData.file_id = row.id.toString()
     editMediaData.file_type = row.file_type
+    editMediaData.file_url = row.url_belong + row.path
     editMediaData.file_name = row.file_name
     editMediaData.file_name_display = row.file_name_display
     editMediaData.description = row.description
@@ -311,6 +330,33 @@ const updateSearch = debounce(300, (val: string) => {
 
 const updateSelection = (rows: TableData[]) => {
   console.log('7', rows)
+}
+
+const clickRowByPicture = (row: TableData) => {
+  console.log('8', row)
+  if ('url_belong' in row && 'path' in row && row.url_belong && row.path) {
+    const url = row.url_belong + row.path
+    if (typeof ClipboardItem !== 'undefined') {
+      console.log('新版复制API')
+      navigator.clipboard.writeText(url).then(() => {
+        ShowMsgTip(ShowMsgTip.MsgType.success, '复制成功', 3000)
+      })
+    } else {
+      console.log('旧版复制API')
+      // 使用 execCommand
+      const input = document.createElement('input')
+      input.style.position = 'fixed'
+      input.style.top = '0'
+      input.style.left = '0'
+      input.style.opacity = '0'
+      input.value = url
+      document.body.appendChild(input)
+      input.select()
+      document.execCommand('copy')
+      document.body.removeChild(input)
+      ShowMsgTip(ShowMsgTip.MsgType.success, '复制成功', 3000)
+    }
+  }
 }
 
 // 添加媒体文件对话框是否显示

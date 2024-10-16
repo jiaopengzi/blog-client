@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 10:24:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-14 16:00:07
+ * @LastEditTime : 2024-10-16 15:54:16
  * @FilePath     : \blog-client\src\views\admin\component\main\media\component\edit-media\index.vue
  * @Description  : 编辑媒体
  * @Blog         : https://jiaopengzi.com
@@ -10,8 +10,10 @@
 -->
 
 <template>
+  <!-- 参考:https://github.com/element-plus/element-plus/blob/dev/packages/components/image/src/image.vue -->
+  <el-image-viewer v-if="isShowElImageViewer" @close="closeElImageViewer" :url-list="imgUrls" />
   <div :class="layoutClass">
-    <div class="left" ref="leftRef">
+    <div class="left" ref="leftRef" @click="handleDelegateClick">
       <img
         class="view-img"
         v-if="editMediaData.img?.url && !isVideoFile"
@@ -57,6 +59,10 @@
 
         <el-form-item label="文件别名" prop="slug">
           <el-input v-model="editMediaForm.slug" />
+        </el-form-item>
+
+        <el-form-item label="文件URL" prop="file_url">
+          <el-input v-model="editMediaForm.file_url" />
         </el-form-item>
 
         <el-form-item label="说明" prop="description">
@@ -192,6 +198,7 @@ const editMediaForm = reactive<EditMediaForm>({
   file_name_display: '', // 显示名称
   description: '', // 描述
   slug: '', // 文件别名
+  file_url: '', // 文件地址
   is_free: false // 是否免费
 })
 
@@ -209,6 +216,7 @@ const updateForm = (data: EditMediaProps) => {
   editMediaForm.file_name_display = data.file_name_display
   editMediaForm.description = data.description
   editMediaForm.slug = data.slug
+  editMediaForm.file_url = data.file_url
   editMediaForm.is_free = data.is_free
 
   subtitlesForm.file_id = data.file_id
@@ -485,6 +493,28 @@ watchEffect(() => {
     playerStore.setSubtitles(subtitles) // 设置字幕
   }
 })
+
+// 图片预览
+const isShowElImageViewer = ref(false)
+const imgUrls = ref<string[]>([])
+
+// 关闭图片预览
+const closeElImageViewer = () => {
+  isShowElImageViewer.value = false
+  document.body.style.overflow = 'auto'
+}
+
+// 点击事件委托,图片预览.
+const handleDelegateClick = (event: MouseEvent) => {
+  const target = event.target as HTMLElement
+  if (target.tagName.toLowerCase() === 'img' && 'src' in target) {
+    // img 图片
+    const imgElement = target as HTMLImageElement // 断言 img 元素
+    isShowElImageViewer.value = true // 显示图片预览
+    imgUrls.value = [imgElement.src] // 图片地址
+    document.body.style.overflow = 'hidden' // 隐藏滚动条
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -495,6 +525,7 @@ watchEffect(() => {
   padding: 20px;
 
   .left {
+    cursor: pointer;
     width: 30%;
     display: flex;
     justify-content: center;
