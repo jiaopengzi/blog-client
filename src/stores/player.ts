@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 15:42:11
  * @LastPlayers  : jiaopengzi
- * @LastEditTime : 2024-10-15 10:02:52
+ * @LastEditTime : 2024-10-17 18:23:18
  * @FilePath     : \blog-client\src\stores\player.ts
  * @Description  : 播放器 store
  * @Blog         : https://jiaopengzi.com
@@ -10,6 +10,8 @@
  */
 
 import { defineStore } from 'pinia'
+import { getSubtitlesAPI, type Subtitles as SubtitlesRes } from '@/api/video/getSubtitles'
+import { ResponseCode } from '@/api/responseCode'
 
 // 播放状态
 export enum MediaTypes {
@@ -140,6 +142,9 @@ export enum Language {
   'disabled' = '禁用'
 }
 
+// 语言约束类型
+type LanguageKey = keyof typeof Language
+
 // 字幕
 export interface SubtitlesItem {
   label: string // 字幕标签，例如 'English', '中文', 'Español' 等
@@ -148,17 +153,17 @@ export interface SubtitlesItem {
 
 // 定义 disabled 字幕
 // export const DisabledSubtitles: { [language: string]: SubtitlesItem } = {
-export const DisabledSubtitles: Partial<Record<keyof typeof Language, SubtitlesItem>> = {
-  [Language.disabled as unknown as keyof typeof Language]: {
-    label: Language['disabled'],
+export const DisabledSubtitles: Partial<Record<LanguageKey, SubtitlesItem>> = {
+  disabled: {
+    label: Language.disabled,
     src: ''
   }
 }
 
 // 字幕状态
 export interface Subtitles {
-  availableSubtitles?: Partial<Record<keyof typeof Language, SubtitlesItem>> // 可用字幕列表,字幕语言，例如 'en', 'zh', 'es' 等
-  selectedSubtitlesLanguage?: string // 当前选择的字幕的语言 key 默认值 disabled
+  availableSubtitles?: Partial<Record<LanguageKey, SubtitlesItem>> // 可用字幕列表,字幕语言，例如 'en', 'zh', 'es' 等
+  selectedSubtitlesLanguage?: LanguageKey // 当前选择的字幕的语言 key 默认值 disabled
 }
 
 // 位置
@@ -215,6 +220,8 @@ export interface PlayerStore {
   size: PlayerSize
   // 字幕
   subtitles: Subtitles
+  // 本地视频字幕 URL
+  localVideoSubtitlesURLs: string[]
   // 画中画
   isPictureInPicture: boolean
   // 是否为移动端
@@ -236,7 +243,7 @@ export interface PlayerStore {
 
 // 默认播放器 store 数据
 const defaultPlayerStore = (): PlayerStore => ({
-  mediaType: MediaTypes.MP4,
+  mediaType: MediaTypes.HLS,
   src: '',
   poster: '',
   playStatus: PlayStatus.STOPPED,
@@ -286,6 +293,7 @@ const defaultPlayerStore = (): PlayerStore => ({
   subtitles: {
     selectedSubtitlesLanguage: 'disabled'
   },
+  localVideoSubtitlesURLs: [],
   isIphone: false,
   isShortcutKey: true
 })
@@ -306,14 +314,6 @@ export const usePlayerStore = defineStore({
   },
 
   actions: {
-    /**
-     * @description: 初始化播放器 store
-     * @param playerStore 播放器 store 数据,默认值为 defaultPlayerStore()
-     */
-    init(playerStore: PlayerStore = defaultPlayerStore()) {
-      Object.assign(this, playerStore)
-    },
-
     // 设置媒体类型
     setMediaType(mediaType: MediaTypes) {
       this.mediaType = mediaType
@@ -497,7 +497,7 @@ export const usePlayerStore = defineStore({
     },
 
     // 设置字幕
-    setSelectedSubtitlesLanguage(language: string) {
+    setSelectedSubtitlesLanguage(language: LanguageKey) {
       // 如果字幕可用且选择的字幕语言存在
       this.subtitles.selectedSubtitlesLanguage = language
     },
@@ -510,6 +510,15 @@ export const usePlayerStore = defineStore({
     // 设置字幕
     setSubtitles(subtitles: Subtitles) {
       this.subtitles = subtitles
+    },
+
+    // 根据视频 hash ID 自动设置字幕
+    setSubtitlesByVideoHashIdAuto() {
+      if (!this.src) return
+      // 根据视频 hash ID 和字幕语言列表创建字幕对象
+      createSubtitlesByVideoHashId(this.src, this).then((subtitles) => {
+        this.setSubtitles(subtitles) // 设置字幕
+      })
     },
 
     // 设置画中画状态
@@ -560,6 +569,84 @@ export const usePlayerStore = defineStore({
     // 设置快捷键状态
     setShortcutKey(isShortcutKey: boolean) {
       this.isShortcutKey = isShortcutKey
+    },
+
+    // 清除所有创建的本地视频字幕 URL,避免内存泄漏
+    clearLocalVideoSubtitlesURLs() {
+      if (this.localVideoSubtitlesURLs && this.localVideoSubtitlesURLs.length > 0) {
+        console.log('清除所有创建的本地视频字幕 URL,避免内存泄漏')
+        this.localVideoSubtitlesURLs.forEach((url) => URL.revokeObjectURL(url))
+        this.localVideoSubtitlesURLs.length = 0 // 清空数组
+      }
+    },
+
+    /**
+     * @description: 销毁播放器 store
+     */
+    destroy() {
+      this.clearLocalVideoSubtitlesURLs() // 清除所有创建的本地视频字幕 URL,避免内存泄漏
+      Object.assign(this, defaultPlayerStore()) // 重置播放器 store 数据
     }
   }
 })
+
+/**
+ * 根据视频的哈希 ID 创建字幕对象。
+ *
+ * @param {string} videoHashId - 视频的哈希 ID。
+ * @returns {Subtitles} - 返回字幕对象。
+ */
+const createSubtitlesByVideoHashId = async (
+  videoHashId: string | null | undefined | '',
+  playerStore: PlayerStore
+): Promise<Subtitles> => {
+  // 如果没有指定哈希 ID，则返回空字幕对象
+  if (!videoHashId) return {}
+
+  // 初始化字幕对象
+  let subtitlesRes: SubtitlesRes = {}
+
+  // 获取字幕语言信息
+  await getSubtitlesAPI(videoHashId).then((response) => {
+    // 如果请求失败，则返回空字幕对象
+    if (response.data.code !== ResponseCode.GetVideoSubtitlesSuccess) return {}
+
+    // 如果没有字幕数据，则返回空字幕对象
+    if (!response.data.data) return {}
+
+    // 保存字幕数据
+    subtitlesRes = response.data.data
+  })
+
+  // 初始化 availableSubtitles
+  const subtitles: Subtitles = {
+    availableSubtitles: {},
+    selectedSubtitlesLanguage: 'disabled'
+  }
+
+  // 获取字幕语言列表
+  const languages = Object.keys(subtitlesRes) as Array<keyof typeof Language>
+
+  // 遍历字幕语言列表构造字幕对象
+  for (const subtitlesLanguage of languages) {
+    // 构造本地 URL
+    const subtitlesBlob = new Blob([subtitlesRes[subtitlesLanguage].subtitles], {
+      type: 'text/vtt'
+    })
+
+    // 创建 URL
+    const subtitlesURL = URL.createObjectURL(subtitlesBlob)
+    playerStore.localVideoSubtitlesURLs.push(subtitlesURL) // 保存 URL 引用
+
+    // 构造字幕项
+    const item: SubtitlesItem = {
+      label: Language[subtitlesLanguage as keyof typeof Language], // 字幕标签，例如 'English', '中文', 'Español' 等
+      src: subtitlesURL // 字幕文件的URL
+    }
+
+    // 将字幕项添加到 availableSubtitles 中
+    subtitles.availableSubtitles![subtitlesLanguage as keyof typeof Language] = item
+  }
+
+  return subtitles
+}

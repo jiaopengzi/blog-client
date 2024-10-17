@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-17 10:03:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 09:52:43
+ * @LastEditTime : 2024-10-17 18:12:40
  * @FilePath     : \blog-client\src\components\player\index.vue
  * @Description  : 视频播放器
  * @Blog         : https://jiaopengzi.com
@@ -79,7 +79,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watchEffect, onBeforeUnmount, useTemplateRef } from 'vue'
+import { ref, computed, watchEffect, onBeforeUnmount, useTemplateRef } from 'vue'
 import { storeToRefs } from 'pinia'
 import screenfull from 'screenfull'
 import {
@@ -99,6 +99,7 @@ import { IconKeys } from '@/components/common/icons'
 import Hls from 'hls.js'
 import { CustomLoader } from '@/pkg/hls'
 import { ResponseCode } from '@/api/responseCode'
+import player from '.'
 
 defineOptions({ name: 'VideoPlayer' })
 
@@ -202,8 +203,8 @@ const handleProgressBuffered = () => {
 
 // 是否显示字幕选择
 const isShowSubtitles = computed(() => {
-  // 判断 subtitles.value.selectedSubtitlesLanguage 是否在 DisabledSubtitles keys 中
   if (subtitles.value && subtitles.value.selectedSubtitlesLanguage) {
+    // 判断 subtitles.value.selectedSubtitlesLanguage 是否在 DisabledSubtitles keys 中, 如果在则不显示字幕, 否则显示字幕
     return !Object.keys(DisabledSubtitles).includes(subtitles.value.selectedSubtitlesLanguage)
   }
   return false
@@ -640,22 +641,28 @@ const updateVideo = () => {
   }
 }
 
+// TODO 后续观察是否需要监听 src 变化
+
 // 监听 src 变化
 watchEffect(() => {
-  if (src.value) {
+  // 注意需要等待 videoRef.value 加载完成,否则会造成多次 updateVideo 调用执行多次网络请求
+  if (src.value && videoRef.value) {
+    playerStore.setSubtitlesByVideoHashIdAuto() // 自动更新字幕
     updateVideo()
   }
 })
 
-onMounted(async () => {
-  updateVideo()
-})
+// onMounted(async () => {
+//   updateVideo()
+// })
 
 onBeforeUnmount(() => {
   // 移除屏幕方向变化监听
   const mediaQueryList = window.matchMedia('(orientation: landscape)')
   mediaQueryList.removeEventListener('change', handleOrientationChange)
-  playerStore.init()
+
+  // 销毁 hls 实例 destroy
+  playerStore.destroy()
 })
 </script>
 

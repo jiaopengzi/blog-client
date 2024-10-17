@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 15:17:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 14:31:02
+ * @LastEditTime : 2024-10-17 16:49:02
  * @FilePath     : \blog-client\src\pkg\hls\index.ts
  * @Description  : hls 自定义 loader
  * @Blog         : https://jiaopengzi.com
@@ -97,6 +97,7 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
               null,
               loaderStats
             )
+            return // 直接返回，不再继续后续的请求
           }
         })
         .catch((error) => {
@@ -107,6 +108,7 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
             null,
             loaderStats
           )
+          return // 直接返回，不再继续后续的请求
         })
     }
 
@@ -132,6 +134,7 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
               null,
               loaderStats
             )
+            return // 直接返回，不再继续后续的请求
           }
         })
         .catch((error) => {
@@ -142,6 +145,7 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
             null,
             loaderStats
           )
+          return // 直接返回，不再继续后续的请求
         })
     }
 
@@ -174,6 +178,7 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
             )
           } else {
             callbacks.onError({ code: data.code, text: data.msg }, context, null, loaderStats)
+            return // 直接返回，不再继续后续的请求
           }
         })
         .catch((error) => {
@@ -184,6 +189,7 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
             null,
             loaderStats
           )
+          return // 直接返回，不再继续后续的请求
         })
     } else {
       // 对于未加密的视频，直接调用父类的 load 方法

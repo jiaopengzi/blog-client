@@ -115,6 +115,7 @@ export enum ResponseCode {
   GetVideoSubtitlesSuccess = 8605, // 获取视频字幕成功
   SubtitlesUpsertSuccess = 8607, // 更新字幕成功
   SubtitlesDeleteSuccess = 8608, // 删除字幕成功
+  GetVideoSubtitlesLanguagesSuccess = 8609, // 获取视频字幕语言列表成功
 
   ClientIPTooManyRequests = 9006, //客户端IP请求次数过多
   ClientIDTooManyRequests = 9007 //客户端ID请求次数过多

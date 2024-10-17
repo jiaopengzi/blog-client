@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 10:24:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-16 15:54:16
+ * @LastEditTime : 2024-10-17 12:49:02
  * @FilePath     : \blog-client\src\views\admin\component\main\media\component\edit-media\index.vue
  * @Description  : 编辑媒体
  * @Blog         : https://jiaopengzi.com
@@ -151,7 +151,7 @@ import type {
 import { ShowMsgTip } from '@/utils/message'
 import type { FormInstance, FormRules } from 'element-plus' // 需要全部安装 npm i element-plus -S
 import { ResponseCode } from '@/api/responseCode'
-import { getSubtitlesAPI } from '@/api/video/getSubtitles'
+import { getSubtitlesByAdminAPI } from '@/api/video/getSubtitlesByAdmin'
 import { type UpsertSubtitlesRequest, upsertSubtitlesAPI } from '@/api/video/upsertSubtitles'
 import { type DeleteSubtitlesRequest, deleteSubtitlesAPI } from '@/api/video/deleteSubtitles'
 import { checkSlugAPI, type CheckSlugRequest } from '@/api/upload/checkSlug'
@@ -175,6 +175,9 @@ const emit = defineEmits<{
   (event: 'update-subtitles', language: string): void // 更新字幕
   (event: 'delete-subtitles', language: string): void // 删除字幕
 }>()
+
+const playerStore = usePlayerStore()
+playerStore.setShortcutKey(false) // 禁用快捷键
 
 // 表单label位置 top | left | right
 const labelPosition = ref('left')
@@ -240,11 +243,11 @@ WEBVTT
 
 1
 00:00:00.000 --> 00:00:03.000
-Hello, world!
+这是一个字幕示例。
 
 2
 00:00:03.000 --> 00:00:06.000
-This is a WebVTT file.
+请按照上面的格式输入字幕内容。
 `)
 
 // 检查别名是否可用
@@ -293,6 +296,7 @@ const saveSubtitles = async (formEl: FormInstance | undefined) => {
   const res = await upsertSubtitlesAPI(params)
   if (res.data.code === ResponseCode.SubtitlesUpsertSuccess) {
     emit('update-subtitles', subtitlesForm.language)
+    playerStore.setSubtitlesByVideoHashIdAuto() // 更新字幕
     ShowMsgTip(ShowMsgTip.MsgType.success, '保存成功', 3000)
   } else {
     let errMsg = res.data.msg || '保存失败'
@@ -320,6 +324,7 @@ const delSubtitles = async () => {
   await deleteSubtitlesAPI(params).then((res) => {
     if (res.data.code === ResponseCode.SubtitlesDeleteSuccess) {
       emit('delete-subtitles', subtitlesForm.language)
+      playerStore.setSubtitlesByVideoHashIdAuto() // 更新字幕
       // 重置表单，不会触发校验
       subtitlesFormRef.value?.resetFields()
       ShowMsgTip(ShowMsgTip.MsgType.success, '删除成功', 3000)
@@ -335,7 +340,7 @@ const delSubtitles = async () => {
 
 // 获取字幕
 const getSubtitles = async (language: string) => {
-  await getSubtitlesAPI(hashID.value, language).then((res) => {
+  await getSubtitlesByAdminAPI(hashID.value, language).then((res) => {
     if (res.data.code === ResponseCode.GetVideoSubtitlesSuccess) {
       subtitlesForm.language = language
       subtitlesForm.subtitles = res.data.data.subtitles
@@ -468,29 +473,19 @@ const videoWidth = ref(400)
 // 设置播放器
 watchEffect(() => {
   if (isVideoFile.value && editMediaData.editDialogVisible) {
-    // 加载时设置视频宽度
+    // 设置视频宽度
     nextTick(() => {
       if (leftRef.value) {
         videoWidth.value = leftRef.value.clientWidth
       }
     })
 
-    const playerStore = usePlayerStore()
-    playerStore.setMediaType(MediaTypes.HLS)
     playerStore.size = {
       width: videoWidth.value,
       height: (videoWidth.value * 9) / 16 // 视频比例为 16:9
     }
+
     playerStore.setSrc(hashID.value) // 设置视频hashID
-    playerStore.setShortcutKey(false) // 禁用快捷键
-
-    // 构造字幕数据
-    const subtitles = createSubtitlesByVideoHashId(
-      hashID.value,
-      editMediaData.subtitles_language_list
-    )
-
-    playerStore.setSubtitles(subtitles) // 设置字幕
   }
 })
 

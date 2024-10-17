@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-20 15:52:06
+ * @LastEditTime : 2024-10-17 15:51:40
  * @FilePath     : \blog-client\src\api\request.ts
  * @Description  : axios封装
  * @Blog         : https://jiaopengzi.com
@@ -24,11 +24,14 @@ service.interceptors.request.use(
       config.headers.Authorization = `Bearer ${access_token}`
     }
 
+    // console.log('config==============>', config)
+    // console.log('config.url==============>', config.url)
+
     return config
   },
   (error) => {
     Promise.reject(error)
-  },
+  }
 )
 
 //3. 响应拦截器
@@ -47,7 +50,7 @@ service.interceptors.response.use(
   },
   (error) => {
     return Promise.reject(error)
-  },
+  }
 )
 
 export default service
