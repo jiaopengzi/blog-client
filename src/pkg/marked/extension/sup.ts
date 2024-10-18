@@ -9,31 +9,31 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import type { Token, TokenizerAndRendererExtension } from 'marked'
+import type { Token, TokenizerAndRendererExtension } from "marked"
 
 export const supExtensionInline: TokenizerAndRendererExtension = {
-  name: 'sup',
-  level: 'inline',
-  start(src: string): number | undefined {
-    // eslint-disable-next-line no-useless-escape
-    return src.match(/\^([^\^\n]+)\^/)?.index
-  },
-  tokenizer(src: string): Token | undefined {
-    // eslint-disable-next-line no-useless-escape
-    const rule = /^\^([^\^\n]+)\^/
-    const match = rule.exec(src)
-    if (match) {
-      const token: Token = {
-        type: 'sup',
-        raw: match[0],
-        text: match[1],
-        tokens: []
-      }
-      this.lexer.inline(token.text, token.tokens)
-      return token
-    }
-  },
-  renderer(token): string {
-    return `<sup>${this.parser.parseInline(token.tokens || [])}</sup>`
-  }
+    name: "sup",
+    level: "inline",
+    start(src: string): number | undefined {
+        // eslint-disable-next-line no-useless-escape
+        return src.match(/\^([^\^\n]+)\^/)?.index
+    },
+    tokenizer(src: string): Token | undefined {
+        // eslint-disable-next-line no-useless-escape
+        const rule = /^\^([^\^\n]+)\^/
+        const match = rule.exec(src)
+        if (match) {
+            const token: Token = {
+                type: "sup",
+                raw: match[0],
+                text: match[1],
+                tokens: [],
+            }
+            this.lexer.inline(token.text, token.tokens)
+            return token
+        }
+    },
+    renderer(token): string {
+        return `<sup>${this.parser.parseInline(token.tokens || [])}</sup>`
+    },
 }

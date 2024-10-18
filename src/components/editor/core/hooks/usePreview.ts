@@ -9,48 +9,48 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import { reactive, watchEffect } from 'vue'
-import { useEditorStore } from '@/stores/editor'
-import { storeToRefs } from 'pinia'
+import { reactive, watchEffect } from "vue"
+import { useEditorStore } from "@/stores/editor"
+import { storeToRefs } from "pinia"
 
 export function usePreview() {
-  // 获取用户信息
-  const editorStore = useEditorStore()
+    // 获取用户信息
+    const editorStore = useEditorStore()
 
-  const {
-    preview,
-    imgUrls: imgUrlsStore,
-    isShowElImageViewer: isShowElImageViewerStore,
-    isShowPreviewWechat
-  } = storeToRefs(editorStore)
+    const {
+        preview,
+        imgUrls: imgUrlsStore,
+        isShowElImageViewer: isShowElImageViewerStore,
+        isShowPreviewWechat,
+    } = storeToRefs(editorStore)
 
-  const previewData = reactive({
-    html: preview.value,
-    imgUrls: imgUrlsStore.value,
-    isShowElImageViewer: isShowElImageViewerStore.value
-  })
+    const previewData = reactive({
+        html: preview.value,
+        imgUrls: imgUrlsStore.value,
+        isShowElImageViewer: isShowElImageViewerStore.value,
+    })
 
-  const showImageViewer = (imgUrls: string[], isShowElImageViewer: boolean) => {
-    // console.log(imgUrls)
-    // console.log(isShowElImageViewer)
-    imgUrlsStore.value = imgUrls
-    isShowElImageViewerStore.value = isShowElImageViewer
-  }
+    const showImageViewer = (imgUrls: string[], isShowElImageViewer: boolean) => {
+        // console.log(imgUrls)
+        // console.log(isShowElImageViewer)
+        imgUrlsStore.value = imgUrls
+        isShowElImageViewerStore.value = isShowElImageViewer
+    }
 
-  const closeImageViewer = (isShowElImageViewer: boolean) => {
-    isShowElImageViewerStore.value = isShowElImageViewer
-  }
+    const closeImageViewer = (isShowElImageViewer: boolean) => {
+        isShowElImageViewerStore.value = isShowElImageViewer
+    }
 
-  watchEffect(() => {
-    previewData.html = preview.value
-    previewData.imgUrls = imgUrlsStore.value
-    previewData.isShowElImageViewer = isShowElImageViewerStore.value
-  })
+    watchEffect(() => {
+        previewData.html = preview.value
+        previewData.imgUrls = imgUrlsStore.value
+        previewData.isShowElImageViewer = isShowElImageViewerStore.value
+    })
 
-  return {
-    previewData,
-    isShowPreviewWechat,
-    showImageViewer,
-    closeImageViewer
-  }
+    return {
+        previewData,
+        isShowPreviewWechat,
+        showImageViewer,
+        closeImageViewer,
+    }
 }

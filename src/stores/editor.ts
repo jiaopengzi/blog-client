@@ -10,89 +10,89 @@
  */
 
 // @ts-check
-import { defineStore } from 'pinia'
-import { extractImageUrlsFromHtml } from '@/utils/img'
-import createMarked from '@/pkg/marked/new-marked'
-import { getMarkdownHeadingLines } from '@/utils/lineNumbers'
-import type { MarkdownHeadingLineType } from '@/utils/lineNumbers'
-import axios from 'axios'
+import { defineStore } from "pinia"
+import { extractImageUrlsFromHtml } from "@/utils/img"
+import createMarked from "@/pkg/marked/new-marked"
+import { getMarkdownHeadingLines } from "@/utils/lineNumbers"
+import type { MarkdownHeadingLineType } from "@/utils/lineNumbers"
+import axios from "axios"
 
 export interface editorStore {
-  tocMarkdown: MarkdownHeadingLineType[] // markdown 目录内容
-  tocHtml: HeadingType[] // html 目录内容
-  tocShow: boolean // 是否显示目录
-  editor: string // 编辑器内容
-  editorShow: boolean // 是否显示编辑器
-  preview: string // 预览内容
-  previewShow: boolean // 是否显示预览
-  imgUrls: string[] // 图片链接数组
-  isShowElImageViewer: boolean // 是否显示图片预览组件
-  scrollHideViewStr: string // 滚动条隐藏的编辑器 view 字符串
-  isAsyncScroll: boolean // 是否异步滚动
-  isFullScreen: boolean // 是否全屏
-  isShowEmojiPicker: boolean // 是否显示 emoji picker
-  isShowPreviewWechat: boolean // 是否显示微信预览
+    tocMarkdown: MarkdownHeadingLineType[] // markdown 目录内容
+    tocHtml: HeadingType[] // html 目录内容
+    tocShow: boolean // 是否显示目录
+    editor: string // 编辑器内容
+    editorShow: boolean // 是否显示编辑器
+    preview: string // 预览内容
+    previewShow: boolean // 是否显示预览
+    imgUrls: string[] // 图片链接数组
+    isShowElImageViewer: boolean // 是否显示图片预览组件
+    scrollHideViewStr: string // 滚动条隐藏的编辑器 view 字符串
+    isAsyncScroll: boolean // 是否异步滚动
+    isFullScreen: boolean // 是否全屏
+    isShowEmojiPicker: boolean // 是否显示 emoji picker
+    isShowPreviewWechat: boolean // 是否显示微信预览
 }
 
 // h 标签类型
 export interface HeadingType {
-  level: number
-  text: string
-  anchor?: string
+    level: number
+    text: string
+    anchor?: string
 }
 
 // 创建空值编辑器信息
 function createEmptyEditorStore(): editorStore {
-  return {
-    tocMarkdown: [], // markdown 目录内容
-    tocHtml: [], // html 目录内容
-    tocShow: false, // 是否显示目录
-    editor: '', // 编辑器内容
-    editorShow: true, // 是否显示编辑器
-    preview: '', // 预览内容
-    previewShow: true, // 是否显示预览
-    imgUrls: [], // 图片链接数组
-    isShowElImageViewer: false, // 是否显示图片预览组件
-    scrollHideViewStr: '', // 滚动条隐藏的编辑器 markdown 字符串
-    isAsyncScroll: true, // 是否异步滚动
-    isFullScreen: false, // 是否全屏
-    isShowEmojiPicker: false, // 是否显示 emoji picker
-    isShowPreviewWechat: false // 是否显示微信预览
-  }
+    return {
+        tocMarkdown: [], // markdown 目录内容
+        tocHtml: [], // html 目录内容
+        tocShow: false, // 是否显示目录
+        editor: "", // 编辑器内容
+        editorShow: true, // 是否显示编辑器
+        preview: "", // 预览内容
+        previewShow: true, // 是否显示预览
+        imgUrls: [], // 图片链接数组
+        isShowElImageViewer: false, // 是否显示图片预览组件
+        scrollHideViewStr: "", // 滚动条隐藏的编辑器 markdown 字符串
+        isAsyncScroll: true, // 是否异步滚动
+        isFullScreen: false, // 是否全屏
+        isShowEmojiPicker: false, // 是否显示 emoji picker
+        isShowPreviewWechat: false, // 是否显示微信预览
+    }
 }
 
 export const useEditorStore = defineStore({
-  id: 'editor',
-  state: () => createEmptyEditorStore(),
+    id: "editor",
+    state: () => createEmptyEditorStore(),
 
-  getters: {
-    // 获取滚动条隐藏的 html 字符串
-    getScrollHideHtmlStr(): string {
-      return createMarked().parse(this.scrollHideViewStr).toString()
-    }
-  },
-
-  actions: {
-    // 更新编辑器 store
-    updateEditorStore(markdownSrc: string): void {
-      this.editor = markdownSrc.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n') // 去除 BOM 头 和 windows 换行符)
-      this.preview = createMarked().parse(markdownSrc).toString()
-      this.tocMarkdown = getMarkdownHeadingLines(this.editor)
-      this.tocHtml = matchAllHeadingToList(this.preview)
-      this.imgUrls = extractImageUrlsFromHtml(this.preview)
+    getters: {
+        // 获取滚动条隐藏的 html 字符串
+        getScrollHideHtmlStr(): string {
+            return createMarked().parse(this.scrollHideViewStr).toString()
+        },
     },
 
-    // 设置滚动条隐藏的编辑器view 字符串
-    setScrollHideViewStr(scrollHideViewStr: string): void {
-      this.scrollHideViewStr = scrollHideViewStr
-    },
+    actions: {
+        // 更新编辑器 store
+        updateEditorStore(markdownSrc: string): void {
+            this.editor = markdownSrc.replace(/^\uFEFF/, "").replace(/\r\n/g, "\n") // 去除 BOM 头 和 windows 换行符)
+            this.preview = createMarked().parse(markdownSrc).toString()
+            this.tocMarkdown = getMarkdownHeadingLines(this.editor)
+            this.tocHtml = matchAllHeadingToList(this.preview)
+            this.imgUrls = extractImageUrlsFromHtml(this.preview)
+        },
 
-    // 通过 url 获取编辑器内容
-    async getEditorContentFromUrl(url: string) {
-      const res = await axios.get(url)
-      this.updateEditorStore(res.data)
-    }
-  }
+        // 设置滚动条隐藏的编辑器view 字符串
+        setScrollHideViewStr(scrollHideViewStr: string): void {
+            this.scrollHideViewStr = scrollHideViewStr
+        },
+
+        // 通过 url 获取编辑器内容
+        async getEditorContentFromUrl(url: string) {
+            const res = await axios.get(url)
+            this.updateEditorStore(res.data)
+        },
+    },
 })
 
 /**
@@ -101,19 +101,19 @@ export const useEditorStore = defineStore({
  * @return      : 匹配到的 h 标签数组
  */
 function matchAllHeadingToList(html: string): HeadingType[] {
-  const regex = /<h\d.*?>.*?<\/h\d>/g // 匹配 h 标签
-  const matches = html.match(regex) || [] // 匹配到的 h 标签数组
-  const headingList: HeadingType[] = [] // h 标签数组
-  matches.forEach((item) => {
-    // 遍历匹配到的 h 标签数组
-    const level = Number(item.match(/<h(\d).*?>/)?.[1]) || 0 // h 标签的等级
-    const text = item.replace(/<.*?>/g, '') // h 标签的文本
-    const anchor = item.match(/id="(.*)"/)?.[1] // h 标签的锚点
-    headingList.push({
-      level,
-      text,
-      anchor
+    const regex = /<h\d.*?>.*?<\/h\d>/g // 匹配 h 标签
+    const matches = html.match(regex) || [] // 匹配到的 h 标签数组
+    const headingList: HeadingType[] = [] // h 标签数组
+    matches.forEach((item) => {
+        // 遍历匹配到的 h 标签数组
+        const level = Number(item.match(/<h(\d).*?>/)?.[1]) || 0 // h 标签的等级
+        const text = item.replace(/<.*?>/g, "") // h 标签的文本
+        const anchor = item.match(/id="(.*)"/)?.[1] // h 标签的锚点
+        headingList.push({
+            level,
+            text,
+            anchor,
+        })
     })
-  })
-  return headingList
+    return headingList
 }

@@ -9,24 +9,24 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from '@/api/request'
-import { routerGroup } from '@/api/routerGroup'
-import type { AxiosPromise } from 'axios'
-import { type Res } from '@/api/responseCode'
+import request from "@/api/request"
+import { routerGroup } from "@/api/routerGroup"
+import type { AxiosPromise } from "axios"
+import { type Res } from "@/api/responseCode"
 
 export interface CheckEmailExcludingUserIDRequest {
-  excluding_user_id: string // 需要排除的用户id
-  email: string
+    excluding_user_id: string // 需要排除的用户id
+    email: string
 }
 
 // 检测用户名是否存在
 export function checkEmailExcludingUserIDAPI(
-  requestData: CheckEmailExcludingUserIDRequest
+    requestData: CheckEmailExcludingUserIDRequest,
 ): AxiosPromise<Res> {
-  const urlStr = routerGroup + '/user/check-email-excluding-user-id'
-  return request({
-    url: urlStr,
-    method: 'post',
-    data: requestData
-  })
+    const urlStr = routerGroup + "/user/check-email-excluding-user-id"
+    return request({
+        url: urlStr,
+        method: "post",
+        data: requestData,
+    })
 }

@@ -10,14 +10,14 @@
 -->
 <!-- src/components/MyVideo.vue -->
 <template>
-  <div class="my-video">
-    <!-- 这里假设你有一个视频播放器组件或者直接使用 video 标签 -->
-    <video :src="videoSrc" controls></video>
-  </div>
+    <div class="my-video">
+        <!-- 这里假设你有一个视频播放器组件或者直接使用 video 标签 -->
+        <video :src="videoSrc" controls></video>
+    </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref } from "vue"
 
 const props = defineProps<{ videoID: string }>()
 const videoSrc = ref(`http://10.10.2.222:8081/api/v1/uploads/${props.videoID}.mp4`)
@@ -25,6 +25,6 @@ const videoSrc = ref(`http://10.10.2.222:8081/api/v1/uploads/${props.videoID}.mp
 
 <style scoped>
 .my-video {
-  /* 样式定义 */
+    /* 样式定义 */
 }
 </style>

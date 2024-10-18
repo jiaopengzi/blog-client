@@ -9,32 +9,32 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from '@/api/request'
-import type { AxiosPromise } from 'axios'
-import { routerGroup } from '@/api/routerGroup'
-import { PermissionNames } from '@/utils/permissionRole'
-import { type UpsertPermissionRoleRequest } from '@/api/permissionRole/upsertPermissionRole'
+import request from "@/api/request"
+import type { AxiosPromise } from "axios"
+import { routerGroup } from "@/api/routerGroup"
+import { PermissionNames } from "@/utils/permissionRole"
+import { type UpsertPermissionRoleRequest } from "@/api/permissionRole/upsertPermissionRole"
 
 export interface RolesResponse {
-  code: number
-  msg: string
-  data: RoleWithLimit
+    code: number
+    msg: string
+    data: RoleWithLimit
 }
 
 export function getRolesByJson(): AxiosPromise<RolesResponse> {
-  return request({
-    url: routerGroup + '/role/get-roles',
-    method: 'get'
-  })
+    return request({
+        url: routerGroup + "/role/get-roles",
+        method: "get",
+    })
 }
 
 export interface Role {
-  role_name: string
-  permission_names: PermissionNames[]
-  description: string
+    role_name: string
+    permission_names: PermissionNames[]
+    description: string
 }
 
 export interface RoleWithLimit {
-  roles: Role[]
-  permission_role: Record<string, UpsertPermissionRoleRequest>
+    roles: Role[]
+    permission_role: Record<string, UpsertPermissionRoleRequest>
 }

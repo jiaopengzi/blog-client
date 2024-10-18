@@ -9,25 +9,25 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from '@/api/request'
-import { routerGroup } from '@/api/routerGroup'
-import type { AxiosPromise } from 'axios'
-import { type Res } from '@/api/responseCode'
+import request from "@/api/request"
+import { routerGroup } from "@/api/routerGroup"
+import type { AxiosPromise } from "axios"
+import { type Res } from "@/api/responseCode"
 
 //  插入或更新字幕 请求参数
 export interface UpsertSubtitlesRequest {
-  file_id: string // 视频文件id
-  language: string // 字幕语言
-  label: string // 字幕标签
-  subtitles: string // 字幕内容
+    file_id: string // 视频文件id
+    language: string // 字幕语言
+    label: string // 字幕标签
+    subtitles: string // 字幕内容
 }
 
 // 更新字幕
 export function upsertSubtitlesAPI(requestData: UpsertSubtitlesRequest): AxiosPromise<Res> {
-  const urlStr = routerGroup + '/subtitles/upsert'
-  return request({
-    url: urlStr,
-    method: 'post',
-    data: requestData,
-  })
+    const urlStr = routerGroup + "/subtitles/upsert"
+    return request({
+        url: urlStr,
+        method: "post",
+        data: requestData,
+    })
 }

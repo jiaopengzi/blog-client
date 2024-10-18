@@ -12,7 +12,7 @@
 // 1.安装库：npm install crypto-js --save
 // 2.安装类型声明文件： npm install @types/crypto-js --save-dev
 
-import CryptoJS from 'crypto-js'
+import CryptoJS from "crypto-js"
 
 const keyStrBase = import.meta.env.VITE_APP_SECRET_KEY
 const ivStrBase = import.meta.env.VITE_APP_SECRET_IV
@@ -25,20 +25,20 @@ const ivStrBase = import.meta.env.VITE_APP_SECRET_IV
  * @return 密文
  */
 export function encryptData(
-  plainText: string,
-  keyStr: string = keyStrBase,
-  ivStr: string = ivStrBase
+    plainText: string,
+    keyStr: string = keyStrBase,
+    ivStr: string = ivStrBase,
 ): string {
-  const key = CryptoJS.enc.Utf8.parse(keyStr)
-  const iv = CryptoJS.enc.Utf8.parse(ivStr)
+    const key = CryptoJS.enc.Utf8.parse(keyStr)
+    const iv = CryptoJS.enc.Utf8.parse(ivStr)
 
-  const encryptedData = CryptoJS.AES.encrypt(plainText, key, {
-    iv: iv,
-    mode: CryptoJS.mode.CBC,
-    padding: CryptoJS.pad.Pkcs7
-  })
+    const encryptedData = CryptoJS.AES.encrypt(plainText, key, {
+        iv: iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7,
+    })
 
-  return CryptoJS.enc.Base64.stringify(encryptedData.ciphertext)
+    return CryptoJS.enc.Base64.stringify(encryptedData.ciphertext)
 }
 
 /**
@@ -49,25 +49,25 @@ export function encryptData(
  * @return  明文
  */
 export function decryptData(
-  encryptedData: string,
-  keyStr: string = keyStrBase,
-  ivStr: string = ivStrBase
+    encryptedData: string,
+    keyStr: string = keyStrBase,
+    ivStr: string = ivStrBase,
 ): string {
-  const key = CryptoJS.enc.Utf8.parse(keyStr)
-  const iv = CryptoJS.enc.Utf8.parse(ivStr)
+    const key = CryptoJS.enc.Utf8.parse(keyStr)
+    const iv = CryptoJS.enc.Utf8.parse(ivStr)
 
-  const ciphertext = CryptoJS.enc.Base64.parse(encryptedData)
-  const cipherParams = CryptoJS.lib.CipherParams.create({
-    ciphertext: ciphertext
-  })
+    const ciphertext = CryptoJS.enc.Base64.parse(encryptedData)
+    const cipherParams = CryptoJS.lib.CipherParams.create({
+        ciphertext: ciphertext,
+    })
 
-  const decryptedData = CryptoJS.AES.decrypt(cipherParams, key, {
-    iv: iv,
-    mode: CryptoJS.mode.CBC,
-    padding: CryptoJS.pad.Pkcs7
-  })
+    const decryptedData = CryptoJS.AES.decrypt(cipherParams, key, {
+        iv: iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7,
+    })
 
-  return decryptedData.toString(CryptoJS.enc.Utf8)
+    return decryptedData.toString(CryptoJS.enc.Utf8)
 }
 
 /**
@@ -76,5 +76,5 @@ export function decryptData(
  * @return  反转后的字符串
  */
 export function reverseString(str: string): string {
-  return str.split('').reverse().join('')
+    return str.split("").reverse().join("")
 }

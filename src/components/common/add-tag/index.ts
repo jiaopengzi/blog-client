@@ -4,9 +4,9 @@
  * @LastEditors  : jiaopengzi
  * @LastEditTime : 2024-10-09 09:31:47
  * @FilePath     : \blog-client\src\components\common\add-tag\index.ts
- * @Description  : 
+ * @Description  :
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-export { default } from './index.vue'
+export { default } from "./index.vue"

@@ -17,44 +17,44 @@
  * @return
  */
 export function convertToBeijingTime(
-  Timestamp: string,
-  timeZone: string = 'Asia/Shanghai',
-  formatStr: string = 'YYYY-MM-DD HH:mm:ss',
-  addHours = 0 // 默认不增加小时
+    Timestamp: string,
+    timeZone: string = "Asia/Shanghai",
+    formatStr: string = "YYYY-MM-DD HH:mm:ss",
+    addHours = 0, // 默认不增加小时
 ): string {
-  // 将时间戳转换为 Date 对象,默认会转换为本地时间
-  const dateTime = new Date(Timestamp)
+    // 将时间戳转换为 Date 对象,默认会转换为本地时间
+    const dateTime = new Date(Timestamp)
 
-  // 将 Date 对象的时间调整为 UTC 时间
-  dateTime.setHours(dateTime.getHours() + addHours)
+    // 将 Date 对象的时间调整为 UTC 时间
+    dateTime.setHours(dateTime.getHours() + addHours)
 
-  // 使用 Intl.DateTimeFormat API 格式化时间
-  const formatter = new Intl.DateTimeFormat('en-GB', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false,
-    timeZone: timeZone
-  })
+    // 使用 Intl.DateTimeFormat API 格式化时间
+    const formatter = new Intl.DateTimeFormat("en-GB", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+        timeZone: timeZone,
+    })
 
-  // 格式化时间
-  const formattedDateTime = formatter.format(dateTime).replace(',', '')
+    // 格式化时间
+    const formattedDateTime = formatter.format(dateTime).replace(",", "")
 
-  // 返回北京时间字符串
-  return formattedDateTime.replace(
-    /(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})/,
-    (_, p1, p2, p3, p4, p5, p6) =>
-      formatStr
-        .replace('DD', p1)
-        .replace('MM', p2)
-        .replace('YYYY', p3)
-        .replace('HH', p4)
-        .replace('mm', p5)
-        .replace('ss', p6)
-  )
+    // 返回北京时间字符串
+    return formattedDateTime.replace(
+        /(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})/,
+        (_, p1, p2, p3, p4, p5, p6) =>
+            formatStr
+                .replace("DD", p1)
+                .replace("MM", p2)
+                .replace("YYYY", p3)
+                .replace("HH", p4)
+                .replace("mm", p5)
+                .replace("ss", p6),
+    )
 }
 
 // /**
@@ -62,26 +62,26 @@ export function convertToBeijingTime(
 //  * @param duration 时间间隔 秒数
 //  */
 export function formatDurationTime(duration: number): string {
-  const days = Math.floor(duration / 60 / 60 / 24) // 计算天数
-  const hours = Math.floor((duration / 60 / 60) % 24) // 计算小时数
-  const minutes = Math.floor((duration / 60) % 60) // 计算分钟数
-  const seconds = Math.floor(duration % 60) // 计算秒数，并向下取整
+    const days = Math.floor(duration / 60 / 60 / 24) // 计算天数
+    const hours = Math.floor((duration / 60 / 60) % 24) // 计算小时数
+    const minutes = Math.floor((duration / 60) % 60) // 计算分钟数
+    const seconds = Math.floor(duration % 60) // 计算秒数，并向下取整
 
-  // 将小时、分钟和秒数补全为两位
-  const hoursStr = hours.toString().padStart(2, '0')
-  const minutesStr = minutes.toString().padStart(2, '0')
-  const secondsStr = seconds.toString().padStart(2, '0')
+    // 将小时、分钟和秒数补全为两位
+    const hoursStr = hours.toString().padStart(2, "0")
+    const minutesStr = minutes.toString().padStart(2, "0")
+    const secondsStr = seconds.toString().padStart(2, "0")
 
-  // 根据不同的时间段返回不同的时间格式
-  if (days > 0) {
-    return `${days}天 ${hoursStr}:${minutesStr}:${secondsStr}`
-  } else if (hours > 0) {
-    return `${hoursStr}:${minutesStr}:${secondsStr}`
-  } else if (minutes > 0) {
-    return `${minutesStr}:${secondsStr}`
-  } else {
-    return `${minutesStr}:${secondsStr}`
-  }
+    // 根据不同的时间段返回不同的时间格式
+    if (days > 0) {
+        return `${days}天 ${hoursStr}:${minutesStr}:${secondsStr}`
+    } else if (hours > 0) {
+        return `${hoursStr}:${minutesStr}:${secondsStr}`
+    } else if (minutes > 0) {
+        return `${minutesStr}:${secondsStr}`
+    } else {
+        return `${minutesStr}:${secondsStr}`
+    }
 }
 
 /**
@@ -90,8 +90,8 @@ export function formatDurationTime(duration: number): string {
  * @return  {number} 秒数(三位小数,即毫秒)
  */
 export function parseTime(time: string): number {
-  const [hours, minutes, seconds] = time.split(':')
-  return parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseFloat(seconds)
+    const [hours, minutes, seconds] = time.split(":")
+    return parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseFloat(seconds)
 }
 
 /**
@@ -103,15 +103,15 @@ export function parseTime(time: string): number {
  * @return  {number} 秒数(三位小数,即毫秒)
  */
 export function parseTimeSegments(
-  hours: string,
-  minutes: string,
-  seconds: string,
-  milliseconds: string
+    hours: string,
+    minutes: string,
+    seconds: string,
+    milliseconds: string,
 ): number {
-  return (
-    parseInt(hours) * 3600 +
-    parseInt(minutes) * 60 +
-    parseInt(seconds) +
-    parseInt(milliseconds) / 1000
-  )
+    return (
+        parseInt(hours) * 3600 +
+        parseInt(minutes) * 60 +
+        parseInt(seconds) +
+        parseInt(milliseconds) / 1000
+    )
 }

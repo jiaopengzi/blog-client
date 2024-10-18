@@ -9,54 +9,54 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import type { IconKeys } from '@/components/common/icons'
+import type { IconKeys } from "@/components/common/icons"
 
 // 图片填充方式
 export enum ImgFit {
-  Cover = 'cover', // 默认值
-  Contain = 'contain', // 保持宽高比缩放图片，使图片的长边能完全显示出来
-  Fill = 'fill', // 拉伸图片，使图片填满元素
-  None = 'none', // 保持原图尺寸
-  ScaleDown = 'scale-down' // 保持原图尺寸，但是不超过元素的尺寸
+    Cover = "cover", // 默认值
+    Contain = "contain", // 保持宽高比缩放图片，使图片的长边能完全显示出来
+    Fill = "fill", // 拉伸图片，使图片填满元素
+    None = "none", // 保持原图尺寸
+    ScaleDown = "scale-down", // 保持原图尺寸，但是不超过元素的尺寸
 }
 
 // 分页
 export interface Pagination<T> {
-  total: number // 总记录数量
-  current_page: number // 当前页
-  page_size: number // 每页显示条数
-  page_count: number // 总页数
-  page_sizes: number[] // 每页显示个数选择器的选项设置
-  records: T[] // 数据
+    total: number // 总记录数量
+    current_page: number // 当前页
+    page_size: number // 每页显示条数
+    page_count: number // 总页数
+    page_sizes: number[] // 每页显示个数选择器的选项设置
+    records: T[] // 数据
 }
 
 // 表格图片配置
 export interface TableImg {
-  url?: string // 图片地址
-  width?: number // 图片宽度 px
-  height?: number // 图片高度 px
-  imgFit?: ImgFit // 图片填充方式 cover | contain | fill | none | scale-down
-  iconKeyName?: IconKeys // 图标键名
-  fontSize?: number // 图标字体大小
+    url?: string // 图片地址
+    width?: number // 图片宽度 px
+    height?: number // 图片高度 px
+    imgFit?: ImgFit // 图片填充方式 cover | contain | fill | none | scale-down
+    iconKeyName?: IconKeys // 图标键名
+    fontSize?: number // 图标字体大小
 }
 
 // 具有 img 属性的数据类型
 export type DataWithImg = {
-  img?: TableImg // 图片
+    img?: TableImg // 图片
 }
 
 // 枚举 alert 弹窗 element 组件类型
 export enum MsgType {
-  success = 'success',
-  info = 'info',
-  warning = 'warning',
-  error = 'error'
+    success = "success",
+    info = "info",
+    warning = "warning",
+    error = "error",
 }
 
 // 枚举 alert 弹窗 element 组件标题
 export enum MsgTitle {
-  success = '成功',
-  info = '提示',
-  warning = '警告',
-  error = '错误'
+    success = "成功",
+    info = "提示",
+    warning = "警告",
+    error = "错误",
 }

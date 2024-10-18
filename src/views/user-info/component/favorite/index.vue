@@ -10,17 +10,17 @@
 -->
 
 <template>
-  <div class="pc">
-    <UserInfoFavoritePC />
-  </div>
-  <div class="phone">
-    <UserInfoFavoritePhone />
-  </div>
+    <div class="pc">
+        <UserInfoFavoritePC />
+    </div>
+    <div class="phone">
+        <UserInfoFavoritePhone />
+    </div>
 </template>
 <script setup lang="ts">
-import UserInfoFavoritePC from './pc.vue'
-import UserInfoFavoritePhone from './phone.vue'
+import UserInfoFavoritePC from "./pc.vue"
+import UserInfoFavoritePhone from "./phone.vue"
 
-defineOptions({ name: 'UserInfoFavorite' })
+defineOptions({ name: "UserInfoFavorite" })
 </script>
 <style scoped lang="scss"></style>

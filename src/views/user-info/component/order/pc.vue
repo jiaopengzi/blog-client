@@ -9,11 +9,10 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 
-
 <template>
-  <div>订单</div>
+    <div>订单</div>
 </template>
 <script setup lang="ts">
-defineOptions({ name: 'UserInfoOrderPC' })
+defineOptions({ name: "UserInfoOrderPC" })
 </script>
 <style scoped lang="scss"></style>

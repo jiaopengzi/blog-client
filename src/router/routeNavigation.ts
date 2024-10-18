@@ -11,44 +11,44 @@
 
 // 路由配置
 export const navigationRoutes = {
-  post: {
-    path: '/post',
-    name: 'post',
-    component: () => import('@/views/test'),
-    meta: {
-      requiresAuth: false
-    }
-  },
-  video: {
-    path: '/video',
-    name: 'video',
-    component: () => import('@/views/test'),
-    meta: {
-      requiresAuth: false
-    }
-  },
-  doc: {
-    path: '/doc',
-    name: 'doc',
-    component: () => import('@/views/test'),
-    meta: {
-      requiresAuth: false
-    }
-  },
-  tool: {
-    path: '/tool',
-    name: 'tool',
-    component: () => import('@/views/test'),
-    meta: {
-      requiresAuth: false
-    }
-  },
-  vip: {
-    path: '/vip',
-    name: 'vip',
-    component: () => import('@/views/test'),
-    meta: {
-      requiresAuth: false
-    }
-  }
+    post: {
+        path: "/post",
+        name: "post",
+        component: () => import("@/views/test"),
+        meta: {
+            requiresAuth: false,
+        },
+    },
+    video: {
+        path: "/video",
+        name: "video",
+        component: () => import("@/views/test"),
+        meta: {
+            requiresAuth: false,
+        },
+    },
+    doc: {
+        path: "/doc",
+        name: "doc",
+        component: () => import("@/views/test"),
+        meta: {
+            requiresAuth: false,
+        },
+    },
+    tool: {
+        path: "/tool",
+        name: "tool",
+        component: () => import("@/views/test"),
+        meta: {
+            requiresAuth: false,
+        },
+    },
+    vip: {
+        path: "/vip",
+        name: "vip",
+        component: () => import("@/views/test"),
+        meta: {
+            requiresAuth: false,
+        },
+    },
 }

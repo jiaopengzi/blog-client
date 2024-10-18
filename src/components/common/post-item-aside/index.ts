@@ -9,13 +9,13 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-export { default } from './index.vue'
+export { default } from "./index.vue"
 
 export interface PostItemAsideObj {
-  thumbnailSrc: string
-  thumbnailHref: string
-  title: string
-  titleHref: string
-  date: string
-  view: number
+    thumbnailSrc: string
+    thumbnailHref: string
+    title: string
+    titleHref: string
+    date: string
+    view: number
 }

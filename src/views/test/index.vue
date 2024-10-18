@@ -1,60 +1,37 @@
 <!--
+ * @Author       : jiaopengzi
+ * @Date         : 2024-09-29 10:52:39
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2024-10-18 18:33:03
  * @FilePath     : \blog-client\src\views\test\index.vue
  * @Description  : 
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-  <div class="container">
-    <VideoPlayer />
-  </div>
+    <div class="container">
+        <VideoPlayer :player-props="state" />
+    </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import VideoPlayer from '@/components/player'
-import { usePlayerStore, type SubtitlesItem, MediaTypes } from '@/stores/player'
-defineOptions({ name: 'VideoPlayerTest' })
+import { UsePlayerProps } from "@/components/player"
+import VideoPlayer from "@/components/player"
+// import VideoPlayer from "./index1.vue"
 
-// 从 store 中获取数据
-const playerStore = usePlayerStore()
+defineOptions({ name: "MyTest" })
 
-// 设置视频地址
-// playerStore.setMediaType(MediaTypes.MP4) // 静音
-// playerStore.setSrc("http://10.10.2.222:8081/api/v1/uploads/test.mp4")
-playerStore.setPoster('http://10.10.2.222:8081/api/v1/uploads/poster.png')
-
-playerStore.setMediaType(MediaTypes.HLS) // 静音
-// playerStore.setSrc("6-c19424aa") // 多清晰度 免费 不加密
-// playerStore.setSrc("8-8e72860c") // 多清晰度 付费 加密
-playerStore.setSrc('3-c19424aa') // 单清晰度 免费 不加密
-
-const subtitles = ref<{ [language: string]: SubtitlesItem }>({
-  cn: {
-    label: '中文',
-    src: 'http://10.10.2.222:8081/api/v1/uploads/cn.vtt'
-  },
-  en: {
-    label: 'English',
-    src: 'http://10.10.2.222:8081/api/v1/uploads/en.vtt'
-  }
-})
-
-const textWatermark = {
-  content: 'jiaopengzi.com1111',
-  style: {
-    color: 'red',
-    fontSize: '14px'
-  }
-}
-playerStore.setTextWatermark(textWatermark)
-playerStore.setAvailableSubtitles(subtitles.value)
+const videoState = new UsePlayerProps()
+videoState.setSrc("2-7f9d0d9c")
+const state = videoState.getState()
 </script>
 
 <style scoped lang="scss">
 // 让视频播放器水平垂直居中
 .container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 </style>

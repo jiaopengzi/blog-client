@@ -8,14 +8,14 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
-import { ref, computed, onBeforeUnmount, type Ref } from 'vue'
-import FakeProgress from 'fake-progress'
+import { ref, computed, onBeforeUnmount, type Ref } from "vue"
+import FakeProgress from "fake-progress"
 
 interface IUseFakeProgress {
-  progress: Ref<number>
-  percentage: Ref<number>
-  start: () => void
-  end: () => void
+    progress: Ref<number>
+    percentage: Ref<number>
+    start: () => void
+    end: () => void
 }
 
 /**
@@ -26,49 +26,49 @@ interface IUseFakeProgress {
  * @return {IUseFakeProgress}
  */
 export function useFakeProgress(timeConstant?: number, autoStart?: boolean): IUseFakeProgress {
-  const fake = new FakeProgress({
-    timeConstant: timeConstant || 5000,
-    autoStart
-  })
-  const progress = ref(fake.progress)
-  const percentage = computed(() => parseInt(progress.value * 100 + ''))
-  let timerInterval: ReturnType<typeof setInterval> | null
-  if (autoStart) {
-    setTimerInterval()
-  }
-
-  onBeforeUnmount(() => {
-    clearTimerInterval()
-  })
-
-  function start() {
-    if (!percentage.value || percentage.value === 100) {
-      fake.start()
-      setTimerInterval()
+    const fake = new FakeProgress({
+        timeConstant: timeConstant || 5000,
+        autoStart,
+    })
+    const progress = ref(fake.progress)
+    const percentage = computed(() => parseInt(progress.value * 100 + ""))
+    let timerInterval: ReturnType<typeof setInterval> | null
+    if (autoStart) {
+        setTimerInterval()
     }
-  }
 
-  function end() {
-    fake.end()
-    progress.value = fake.progress
-  }
+    onBeforeUnmount(() => {
+        clearTimerInterval()
+    })
 
-  function setTimerInterval() {
-    clearTimerInterval()
-    timerInterval = setInterval(() => {
-      progress.value = fake.progress
-    }, 100)
-  }
+    function start() {
+        if (!percentage.value || percentage.value === 100) {
+            fake.start()
+            setTimerInterval()
+        }
+    }
 
-  function clearTimerInterval() {
-    if (timerInterval) clearInterval(timerInterval)
-    timerInterval = null
-  }
+    function end() {
+        fake.end()
+        progress.value = fake.progress
+    }
 
-  return {
-    progress,
-    percentage,
-    start,
-    end
-  }
+    function setTimerInterval() {
+        clearTimerInterval()
+        timerInterval = setInterval(() => {
+            progress.value = fake.progress
+        }, 100)
+    }
+
+    function clearTimerInterval() {
+        if (timerInterval) clearInterval(timerInterval)
+        timerInterval = null
+    }
+
+    return {
+        progress,
+        percentage,
+        start,
+        end,
+    }
 }

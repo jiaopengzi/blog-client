@@ -9,22 +9,22 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-export { default } from './index.vue'
+export { default } from "./index.vue"
 
-import Dashboard from '@/views/admin/component/main/dashboard'
-import PostWrite from '@/views/admin/component/main/post-write'
+import Dashboard from "@/views/admin/component/main/dashboard"
+import PostWrite from "@/views/admin/component/main/post-write"
 // import PostCategory from '@/views/admin/component/main/post-category'
-import Media from '@/views/admin/component/main/media'
-import PermissionRole from '@/views/admin/component/main/permission-role'
-import UserView from '@/views/admin/component/main/user-view'
-import LoginLog from '@/views/admin/component/main/login-log'
+import Media from "@/views/admin/component/main/media"
+import PermissionRole from "@/views/admin/component/main/permission-role"
+import UserView from "@/views/admin/component/main/user-view"
+import LoginLog from "@/views/admin/component/main/login-log"
 
 // 将组件存放在一个对象内
 export const components = {
-  Dashboard,
-  PostWrite,
-  Media,
-  PermissionRole,
-  UserView,
-  LoginLog
+    Dashboard,
+    PostWrite,
+    Media,
+    PermissionRole,
+    UserView,
+    LoginLog,
 }

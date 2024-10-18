@@ -9,12 +9,12 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-export { default } from './index.vue'
+export { default } from "./index.vue"
 
 export interface TagDataObj {
-  path: string // 标签路径
-  label: string // 标签名称
-  tagPostNum: number // 标签下文章数量
+    path: string // 标签路径
+    label: string // 标签名称
+    tagPostNum: number // 标签下文章数量
 }
 // 标签对象
 export type Tag = { data: TagDataObj; color: TagColor }

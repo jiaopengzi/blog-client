@@ -10,17 +10,17 @@
 -->
 
 <template>
-  <div class="container">首页面板</div>
+    <div class="container">首页面板</div>
 </template>
 <script setup lang="ts">
-import { AdminSideMenu } from '@/views/admin/component/aside'
+import { AdminSideMenu } from "@/views/admin/component/aside"
 
 defineOptions({ name: AdminSideMenu.Dashboard })
 </script>
 <style scoped lang="scss">
 .container {
-  height: 100%;
-  width: 100%;
-  background-color: red;
+    height: 100%;
+    width: 100%;
+    background-color: red;
 }
 </style>

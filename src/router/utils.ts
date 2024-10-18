@@ -8,12 +8,12 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
-import router from '@/router'
+import router from "@/router"
 
 // 分页查询参数键
 export enum PaginationQueryKey {
-  PageSize = 'page-size',
-  CurrentPage = 'current-page'
+    PageSize = "page-size",
+    CurrentPage = "current-page",
 }
 
 /**
@@ -25,26 +25,26 @@ export enum PaginationQueryKey {
  * @example paginationRouterPush('PostAll', 10, 1,  { 'file-type': 'pdf', 'search': 'example' })
  */
 export function paginationRouterPush(
-  routeName: string,
-  pageSize: number,
-  currentPage: number,
-  additionalParams: Record<string, string | number>
+    routeName: string,
+    pageSize: number,
+    currentPage: number,
+    additionalParams: Record<string, string | number>,
 ) {
-  const query: Record<string, string | number> = {
-    [PaginationQueryKey.PageSize]: pageSize,
-    [PaginationQueryKey.CurrentPage]: currentPage
-  }
-
-  // 过滤掉值为空字符串的参数
-  Object.keys(additionalParams).forEach((key) => {
-    const value = additionalParams[key]
-    if (value !== '') {
-      query[key] = value
+    const query: Record<string, string | number> = {
+        [PaginationQueryKey.PageSize]: pageSize,
+        [PaginationQueryKey.CurrentPage]: currentPage,
     }
-  })
 
-  router.push({
-    name: routeName,
-    query: query
-  })
+    // 过滤掉值为空字符串的参数
+    Object.keys(additionalParams).forEach((key) => {
+        const value = additionalParams[key]
+        if (value !== "") {
+            query[key] = value
+        }
+    })
+
+    router.push({
+        name: routeName,
+        query: query,
+    })
 }

@@ -9,21 +9,21 @@
  * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import request from '@/api/request'
-import { routerGroup } from '@/api/routerGroup'
-import type { AxiosPromise } from 'axios'
-import { type Res } from '@/api/responseCode'
+import request from "@/api/request"
+import { routerGroup } from "@/api/routerGroup"
+import type { AxiosPromise } from "axios"
+import { type Res } from "@/api/responseCode"
 
 export interface CheckUserNameRequest {
-  user_name: string
+    user_name: string
 }
 
 // 检测用户名是否存在
 export function checkUserNameAPI(requestData: CheckUserNameRequest): AxiosPromise<Res> {
-  const urlStr = routerGroup + '/user/check-username'
-  return request({
-    url: urlStr,
-    method: 'post',
-    data: requestData,
-  })
+    const urlStr = routerGroup + "/user/check-username"
+    return request({
+        url: urlStr,
+        method: "post",
+        data: requestData,
+    })
 }

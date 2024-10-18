@@ -9,10 +9,10 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-export { default } from './index.vue'
+export { default } from "./index.vue"
 
 export interface CodeEditorProps {
-  codemirrorDoc: string // 编辑器内容
-  width?: string // 宽度
-  height?: string // 高度
+    codemirrorDoc: string // 编辑器内容
+    width?: string // 宽度
+    height?: string // 高度
 }

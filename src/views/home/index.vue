@@ -10,19 +10,19 @@
 -->
 
 <template>
-  <div class="page">
-    <LayoutHeader />
-    <LayoutHome />
-    <LayoutFooter />
-  </div>
+    <div class="page">
+        <LayoutHeader />
+        <LayoutHome />
+        <LayoutFooter />
+    </div>
 </template>
 
 <script setup lang="ts">
-import LayoutHeader from '@/components/layout/header'
-import LayoutHome from '@/views/home/component'
-import LayoutFooter from '@/components/layout/footer'
+import LayoutHeader from "@/components/layout/header"
+import LayoutHome from "@/views/home/component"
+import LayoutFooter from "@/components/layout/footer"
 
-defineOptions({ name: 'PageHome' })
+defineOptions({ name: "PageHome" })
 </script>
 
 <style scoped lang="scss"></style>

@@ -9,5 +9,5 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-export type { PlayerCommandItemType, PlayerCommandsType } from './constant'
-export { PlayerCommandsKey, PlayerCommands } from './constant'
+export type { PlayerCommandItemType, PlayerCommandsType } from "./constant"
+export { PlayerCommandsKey, PlayerCommands } from "./constant"

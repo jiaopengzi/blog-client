@@ -1,13 +1,17 @@
-
 ## 1 数学公式
+
 ### 1.1 内联公式
+
 **开头的`$`必须在其右边紧跟一个非空格字符，而结尾的`$`必须在其左边紧接一个非空格字符，并且不能紧跟一个数字。**
-- 勾股定理: $a^2+b^2=c^2$
-- 等差数列求和公式: $S_{n}=n a_{1}+\frac{n(n-1)}{2} d, n \in N^{*}$
-- 牛顿-莱布尼茨公式: $\int_{a}^{b} f(x) d x=F(b)-F(a)=\left.F(x)\right|_{a} ^{b}$
-- 二项分布: $P_{n}(k)=C_{n}^{k} p^{k} q^{n-k} \quad k=0,1,2 \ldots \ldots, n$
+
+-   勾股定理: $a^2+b^2=c^2$
+-   等差数列求和公式: $S_{n}=n a_{1}+\frac{n(n-1)}{2} d, n \in N^{*}$
+-   牛顿-莱布尼茨公式: $\int_{a}^{b} f(x) d x=F(b)-F(a)=\left.F(x)\right|_{a} ^{b}$
+-   二项分布: $P_{n}(k)=C_{n}^{k} p^{k} q^{n-k} \quad k=0,1,2 \ldots \ldots, n$
+
 ### 1.2 块公式
-正态分布 $X \sim N(\mu,\sigma^2)$: 
+
+正态分布 $X \sim N(\mu,\sigma^2)$:
 $$f(x) = \frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$$
 
 斐波那契数列 $A_n=A_{n-1}+A_{n-2}$,前后两项的比值逐渐收敛到黄金分割比例
@@ -16,8 +20,8 @@ $$\lim_{n\to \infty}\frac{A_{n-1}}{A_n}=\frac{\sqrt{5}-1}{2}.$$
 因式分解
 
 $$
-\begin{split}(x−1)(x−3)&=x^2−4x+3 \\ 
-&=x^2−4x+4−1 \\ 
+\begin{split}(x−1)(x−3)&=x^2−4x+3 \\
+&=x^2−4x+4−1 \\
 &=(x−2)^2−1
 \end{split}
 $$
@@ -61,10 +65,11 @@ a_{m 1} x_{1}+a_{m 2} x_{2}+\cdots+a_{m n} x_{n} &=b_{m}
 $$
 
 ## 2 物理公式
-- 牛顿第一定律: $\sum \vec{F}_{i}=\frac{\mathrm{d} \vec{v}}{\mathrm{d} t}=0$
-- 牛顿第二定律: $\vec{F}=\frac{\mathrm{d} m}{\mathrm{d} t} \vec{v}+m \frac{\mathrm{d} \vec{v}}{\mathrm{d} t}=\frac{\mathrm{d} m}{\mathrm{d} t} \vec{v}+m \vec{a}=\frac{\mathrm{d} m}{\mathrm{d} t} \vec{v}+m \frac{\mathrm{d}^{2} \vec{r}}{\mathrm{d} t^{2}}$
-- 牛顿第三定律: $\overrightarrow{F_{12}}=-\overrightarrow{F_{21}}$
-- 质能守恒: $E=mc^2$
+
+-   牛顿第一定律: $\sum \vec{F}_{i}=\frac{\mathrm{d} \vec{v}}{\mathrm{d} t}=0$
+-   牛顿第二定律: $\vec{F}=\frac{\mathrm{d} m}{\mathrm{d} t} \vec{v}+m \frac{\mathrm{d} \vec{v}}{\mathrm{d} t}=\frac{\mathrm{d} m}{\mathrm{d} t} \vec{v}+m \vec{a}=\frac{\mathrm{d} m}{\mathrm{d} t} \vec{v}+m \frac{\mathrm{d}^{2} \vec{r}}{\mathrm{d} t^{2}}$
+-   牛顿第三定律: $\overrightarrow{F_{12}}=-\overrightarrow{F_{21}}$
+-   质能守恒: $E=mc^2$
 
 万有引力定律: $F=\frac{G M m}{r^{2}}$
 $$G \frac{m M}{(r+h)^{2}}=m \frac{\nu^{2}}{(r+h)}$$
@@ -72,7 +77,9 @@ $$G \frac{m M}{(r+h)^{2}}=m \frac{\nu^{2}}{(r+h)}$$
 $$\left[\frac{\partial\left(\Delta_{r} H_{m}\right)}{\partial T}\right]_{p}=\sum_{B} v_{B} C_{p, m}(B)$$
 热力学第二定律
 $$d S \geq \frac{\delta Q}{T}$$
+
 ## 3 化学公式
+
 离子反应与沉淀: $\ce{SO4^2- + Ba^2+ -> BaSO4 v}$
 
 氮气氢气合成氨
@@ -85,5 +92,6 @@ $$
 $$K^{\theta}=\frac{\left[p\left(\mathrm{H}_{2}\right) / p^{\theta}\right]\left[c\left(\mathrm{ZnCl}_{2}\right)\right]}{c^{2}(\mathrm{HC})}$$
 
 ## 4 生物公式
+
 光合作用
 $$\ce{{CO}_{2} + 2{H}_{2}{O} ->T[光、叶绿体][酶] ({CH}_{2}O) + {H}_{2}{O} + {O}_{2}}$$

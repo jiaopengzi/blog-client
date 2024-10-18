@@ -9,24 +9,24 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import request from '@/api/request'
-import { routerGroup } from '@/api/routerGroup'
-import type { AxiosPromise } from 'axios'
-import { type Res } from '@/api/responseCode'
+import request from "@/api/request"
+import { routerGroup } from "@/api/routerGroup"
+import type { AxiosPromise } from "axios"
+import { type Res } from "@/api/responseCode"
 
 export interface EditUserInfoRequest {
-  user_name: string
-  nick_name: string
-  sex: string
-  description: string
+    user_name: string
+    nick_name: string
+    sex: string
+    description: string
 }
 
 // 注册
 export function editUserInfoAPI(requestData: EditUserInfoRequest): AxiosPromise<Res> {
-  const urlStr = routerGroup + '/user/info-edit'
-  return request({
-    url: urlStr,
-    method: 'post',
-    data: requestData,
-  })
+    const urlStr = routerGroup + "/user/info-edit"
+    return request({
+        url: urlStr,
+        method: "post",
+        data: requestData,
+    })
 }

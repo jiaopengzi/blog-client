@@ -20,9 +20,9 @@
 -->
 
 <template>
-  <div>订单</div>
+    <div>订单</div>
 </template>
 <script setup lang="ts">
-defineOptions({ name: 'UserInfoOrderPhone' })
+defineOptions({ name: "UserInfoOrderPhone" })
 </script>
 <style scoped lang="scss"></style>

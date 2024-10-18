@@ -10,9 +10,9 @@
 -->
 
 <template>
-  <div>文章</div>
+    <div>文章</div>
 </template>
 <script setup lang="ts">
-defineOptions({ name: 'UserInfoPostPhone' })
+defineOptions({ name: "UserInfoPostPhone" })
 </script>
 <style scoped lang="scss"></style>

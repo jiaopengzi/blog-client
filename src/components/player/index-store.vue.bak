@@ -1,0 +1,845 @@
+<!--
+ * @Author       : jiaopengzi
+ * @Date         : 2024-09-17 10:03:45
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2024-10-18 17:16:00
+ * @FilePath     : \blog-client\src\components\player\index-store.vue.bak
+ * @Description  : 视频播放器
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+-->
+<template>
+    <div
+        ref="videoContainerRef"
+        class="video-container"
+        @fullscreenchange="handleFullscreenChange"
+        @mousemove="handleMousemove"
+        @mouseenter="handleMouseenter"
+        @mouseleave="handleMouseleave"
+    >
+        <VideoWatermark :text-watermark="textWatermark" :logo-watermark="logoWatermark">
+            <!-- video元素不使用默认的  controls-->
+            <video
+                ref="videoRef"
+                :src="src"
+                :poster="poster"
+                @timeupdate="handleTimeupdate"
+                @loadedmetadata="handleLoadedmetadata"
+                @progress="handleProgress"
+                @ended="handleEnded"
+                @waiting="handleWaiting"
+                @canplay="handleCanplay"
+                playsinline
+                webkit-playsinline
+                x5-video-player-type="h5"
+                x5-video-player-fullscreen="true"
+            >
+                <!-- <track v-if="isShowSubtitles" src="http://10.10.2.222:8081/api/v1/uploads/cn.vtt" kind="subtitles" srclang="cn" label="中文" default /> -->
+                <track
+                    v-if="isShowSubtitles"
+                    :src="subtitlesSrc"
+                    kind="subtitles"
+                    :srclang="srclang"
+                    :label="subtitlesLabel"
+                    default
+                />
+
+                您的浏览器不支持 video 标签。请使用最新版本的 Chrome 浏览器观看视频。
+            </video>
+            <!-- 视频控制器 -->
+            <div
+                ref="controlsContainerRef"
+                class="controls-Container"
+                :class="{ hidden: controlsHidden }"
+                @mouseenter="handleMouseenter"
+                @mouseleave="handleMouseleave"
+            >
+                <Controls class="controls" :el-popover-append-to-element="videoContainerRef" />
+            </div>
+
+            <!-- 播放按钮 -->
+        </VideoWatermark>
+        <div
+            v-if="showPlayButton"
+            class="play-button-page"
+            @click="togglePlayPause"
+            @dblclick="handleDblclick"
+        >
+            <Icon v-show="!showLoader" :name="IconKeys.Play" custom-class="iconfont" />
+            <div v-show="showLoader" class="loader"></div>
+        </div>
+        <div
+            v-if="!showPlayButton"
+            class="play-to-paused-page"
+            :class="{ hidden: controlsHidden }"
+            @click="togglePlayPause"
+            @dblclick="handleDblclick"
+        ></div>
+    </div>
+</template>
+
+<script setup lang="ts">
+import { ref, computed, watchEffect, onBeforeUnmount, useTemplateRef } from "vue"
+import { storeToRefs } from "pinia"
+import screenfull from "screenfull"
+import {
+    MediaTypes,
+    usePlayerStore,
+    PlayStatus,
+    DisabledSubtitles,
+    getVideoQualityLabel,
+    Language,
+    type PlayLevelLabel,
+} from "@/stores/player"
+import Controls from "@/components/player/components/controls"
+import VideoWatermark from "@/components/player/components/watermark"
+import { ShowMsgTip } from "@/utils/message"
+import { MsgType } from "@/components/common"
+import { IconKeys } from "@/components/common/icons"
+import Hls from "hls.js"
+import { CustomLoader } from "@/pkg/hls"
+import { ResponseCode } from "@/api/responseCode"
+
+defineOptions({ name: "VideoPlayer" })
+
+// 从 store 中获取数据
+const playerStore = usePlayerStore()
+const {
+    mediaType,
+    src,
+    poster,
+    isWebFullScreen,
+    isFullScreen,
+    isPictureInPicture,
+    size,
+    textWatermark,
+    logoWatermark,
+    playStatus,
+    playProgress,
+    playLevel,
+    playbackRate,
+    volume,
+    subtitles,
+    isLoop,
+    isUserInput,
+    isMobile,
+    isIphone,
+} = storeToRefs(playerStore)
+
+// 根据当前环境更新 isMobile
+playerStore.setIsMobile(
+    /mobile|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent,
+    ),
+)
+
+// 判断是否是 Iphone
+playerStore.setIsIphone(/iPhone/i.test(navigator.userAgent))
+
+// 定义 video 元素的 ref
+const videoContainerRef = useTemplateRef<HTMLElement | null>("videoContainerRef")
+const videoRef = useTemplateRef<HTMLVideoElement | null>("videoRef")
+const controlsContainerRef = useTemplateRef<HTMLElement | null>("controlsContainerRef")
+
+// 状态
+const showPlayButton = computed(() => playStatus.value !== PlayStatus.PLAYING)
+const showLoader = computed(() => playStatus.value === PlayStatus.BUFFERING)
+
+// 切换播放暂停
+const togglePlayPause = () => {
+    playerStore.togglePlayPause()
+}
+
+// 处理视频页面双击事件
+const handleDblclick = () => {
+    // 判断是否是网页全屏
+    if (isWebFullScreen.value) {
+        playerStore.toggleWebFullScreen()
+        return
+    }
+
+    // 判断是否是画中画
+    if (isPictureInPicture.value) {
+        playerStore.togglePictureInPicture()
+        return
+    }
+
+    // 判断是否是全屏
+    playerStore.toggleFullScreen()
+}
+
+// 处理视频进度
+const handleProgress = () => {
+    handleProgressBuffered()
+}
+
+// 视频播放结束
+const handleEnded = () => {
+    playerStore.end()
+}
+
+// 视频缓冲事件
+const handleWaiting = () => {
+    // 如果是播放状态, 则缓冲,否则保持原状态
+    if (playStatus.value === PlayStatus.PLAYING) playerStore.buffering()
+}
+
+// 处理可以播放事件
+const handleCanplay = () => {
+    // 如果是缓冲状态, 则播放,否则保持原状态
+    if (playStatus.value === PlayStatus.BUFFERING) playerStore.play()
+}
+
+// 处理缓存进度
+const handleProgressBuffered = () => {
+    if (videoRef.value) {
+        // 更新缓存进度
+        const buffered = videoRef.value.buffered
+        if (buffered.length > 0) {
+            const bufferedEnd = buffered.end(buffered.length - 1)
+            playerStore.setBuffered(bufferedEnd)
+        }
+    }
+}
+
+// 是否显示字幕选择
+const isShowSubtitles = computed(() => {
+    if (subtitles.value && subtitles.value.selectedSubtitlesLanguage) {
+        // 判断 subtitles.value.selectedSubtitlesLanguage 是否在 DisabledSubtitles keys 中, 如果在则不显示字幕, 否则显示字幕
+        return !Object.keys(DisabledSubtitles).includes(subtitles.value.selectedSubtitlesLanguage)
+    }
+    return false
+})
+
+// 字幕 src
+const subtitlesSrc = computed(() => {
+    if (
+        subtitles.value &&
+        subtitles.value.availableSubtitles &&
+        subtitles.value.selectedSubtitlesLanguage
+    ) {
+        const availableSubtitles = {
+            ...DisabledSubtitles, // 确保不会出现 undefined
+            ...subtitles.value.availableSubtitles,
+        }
+        const selectedSubtitle =
+            availableSubtitles[subtitles.value.selectedSubtitlesLanguage as keyof typeof Language]
+        return selectedSubtitle ? selectedSubtitle.src : ""
+    }
+    return ""
+})
+
+// 字幕语言
+const srclang = computed(() => {
+    if (subtitles.value && subtitles.value.selectedSubtitlesLanguage) {
+        return subtitles.value.selectedSubtitlesLanguage
+    }
+    return ""
+})
+
+// 字幕 label
+const subtitlesLabel = computed(() => {
+    if (
+        subtitles.value &&
+        subtitles.value.availableSubtitles &&
+        subtitles.value.selectedSubtitlesLanguage
+    ) {
+        const availableSubtitles = {
+            ...DisabledSubtitles,
+            ...subtitles.value.availableSubtitles,
+        }
+        const selectedSubtitle =
+            availableSubtitles[subtitles.value.selectedSubtitlesLanguage as keyof typeof Language]
+        return selectedSubtitle ? selectedSubtitle.label : ""
+    }
+    return ""
+})
+
+// 控制器显示隐藏
+const controlsHidden = ref(true)
+let hideControlsTimeout: ReturnType<typeof setTimeout> | null = null
+
+// 鼠标移动事件
+const handleMousemove = (event: MouseEvent) => {
+    // 鼠标在控制器上时不隐藏控制器
+    if (controlsContainerRef.value && controlsContainerRef.value.contains(event.target as Node)) {
+        controlsHidden.value = false
+        if (hideControlsTimeout) clearTimeout(hideControlsTimeout)
+        return
+    }
+
+    // 鼠标移动时显示控制器
+    controlsHidden.value = false
+    if (hideControlsTimeout) clearTimeout(hideControlsTimeout)
+
+    // 不移动 3s 后隐藏控制器
+    hideControlsTimeout = setTimeout(() => {
+        controlsHidden.value = true
+    }, 3000)
+}
+
+// 鼠标进入事件
+const handleMouseenter = (event: MouseEvent) => {
+    // 鼠标在控制器上时不隐藏控制器
+    if (controlsContainerRef.value && controlsContainerRef.value.contains(event.target as Node)) {
+        controlsHidden.value = false
+        if (hideControlsTimeout) clearTimeout(hideControlsTimeout)
+        return
+    }
+    controlsHidden.value = false
+}
+
+// 鼠标离开事件
+const handleMouseleave = (event: MouseEvent) => {
+    // 鼠标在控制器上时不隐藏控制器
+    if (controlsContainerRef.value && controlsContainerRef.value.contains(event.target as Node)) {
+        controlsHidden.value = false
+
+        // 不移动 2s 后隐藏控制器
+        if (hideControlsTimeout) clearTimeout(hideControlsTimeout)
+        return
+    }
+    controlsHidden.value = true
+}
+
+// 根据 size 设置 video 容器的宽高
+watchEffect(() => {
+    if (videoContainerRef.value) {
+        videoContainerRef.value.style.width = size.value.width + "px"
+        videoContainerRef.value.style.height = size.value.height + "px"
+    }
+})
+
+// 进入全屏 调整 video 元素的宽高
+const adjustSizeFullscreen = () => {
+    if (videoRef.value) {
+        videoRef.value.style.width = "100%"
+        videoRef.value.style.height = "100%"
+    }
+}
+
+// 进入网页全屏 调整 video 元素的宽高
+const adjustSizeWebFullscreen = () => {
+    if (videoContainerRef.value && videoRef.value) {
+        videoRef.value.style.width = "100vw"
+        videoRef.value.style.height = "100vh"
+        videoContainerRef.value.style.width = "100vw"
+        videoContainerRef.value.style.height = "100vh"
+    }
+}
+
+// 通用退出全屏 调整 video 元素的宽高
+const adjustSizeExitFullscreen = () => {
+    if (videoContainerRef.value && videoRef.value) {
+        videoRef.value.style.width = size.value.width + "px"
+        videoRef.value.style.height = size.value.height + "px"
+        videoContainerRef.value.style.width = size.value.width + "px"
+        videoContainerRef.value.style.height = size.value.height + "px"
+    }
+}
+
+// 处理全屏变化
+const handleFullscreenChange = () => {
+    if (screenfull.isEnabled) {
+        // 更新 store 中的全屏状态
+        playerStore.setIsFullScreen(screenfull.isFullscreen)
+
+        // 根据全屏状态调整 video 元素的宽高
+        if (screenfull.isFullscreen) {
+            adjustSizeFullscreen()
+        } else {
+            adjustSizeExitFullscreen()
+        }
+    }
+}
+
+// 处理退出全屏
+const handleExitFullscreen = async () => {
+    if (screenfull.isEnabled && screenfull.isFullscreen) {
+        await screenfull.exit()
+    }
+}
+
+// 监控是否全屏状态
+watchEffect(() => {
+    // 获取屏幕方向对象，断言为 any 类型
+    const orientation = screen.orientation as any
+
+    if (isFullScreen.value) {
+        if (videoContainerRef.value && videoRef.value) {
+            if (screenfull.isEnabled) {
+                adjustSizeFullscreen()
+                screenfull.request(videoContainerRef.value)
+            }
+
+            if (isIphone.value) {
+                // 主要是 iOS 手机，不支持全屏时，提示用户手动调整屏幕方向
+                // ElMessage({
+                //     type: MsgType.warning,
+                //     message: 'iOS 不支持全屏, 请手动调整屏幕方向为横屏.',
+                // })
+
+                // Safari for iOS
+                const videoElement = videoRef.value as HTMLVideoElement & {
+                    webkitEnterFullscreen?: () => void
+                }
+                if (videoElement.webkitEnterFullscreen) {
+                    videoElement.webkitEnterFullscreen()
+                    playerStore.setIsFullScreen(false) // 只要进入全屏，就设置为 false,退出后也是false
+                }
+            }
+
+            // 移动端时 锁定屏幕方向为横屏
+            if (isMobile.value && typeof orientation.lock === "function") {
+                orientation.lock("landscape").catch((err: any) => {
+                    console.log("屏幕方向锁定失败:", err)
+                    // 弹窗提示用户手动调整屏幕方向
+                    // ElMessage({
+                    //     type: MsgType.warning,
+                    //     message: '请手动调整屏幕方向为横屏',
+                    // })
+                })
+            }
+        }
+    } else {
+        // 退出全屏
+        handleExitFullscreen()
+
+        // 解锁屏幕方向
+        if (orientation && typeof orientation.unlock === "function") orientation.unlock()
+    }
+})
+
+// 处理屏幕方向变化
+const handleOrientationChange = (e: MediaQueryListEvent) => {
+    if (e.matches) {
+        // 横屏
+        if (videoContainerRef.value && videoRef.value) {
+            if (screenfull.isEnabled) {
+                screenfull.request(videoContainerRef.value)
+            }
+        }
+    } else {
+        // 竖屏
+        handleExitFullscreen()
+    }
+}
+
+// 监控网页全屏状态
+watchEffect(() => {
+    if (isWebFullScreen.value) {
+        adjustSizeWebFullscreen()
+    } else {
+        adjustSizeExitFullscreen()
+    }
+})
+
+// 监控画中画状态
+watchEffect(() => {
+    if (videoRef.value && isPictureInPicture.value) {
+        videoRef.value.requestPictureInPicture()
+    }
+    if (!isPictureInPicture.value && document.pictureInPictureElement) {
+        document.exitPictureInPicture()
+    }
+})
+
+// 根据 playStatus 控制 video 播放暂停
+watchEffect(() => {
+    if (videoRef.value)
+        playStatus.value === PlayStatus.PLAYING ? videoRef.value.play() : videoRef.value.pause()
+})
+
+// 视频加载完成
+const handleLoadedmetadata = () => {
+    if (videoRef.value) {
+        handleProgressBuffered()
+        updateStore()
+    }
+}
+
+// 监听 video 元素的 timeupdate 事件
+const handleTimeupdate = () => {
+    if (isUserInput.value || playProgress.value.isDragging) return
+    if (videoRef.value) {
+        playerStore.setUserInput(false)
+        playerStore.setCurrentTime(videoRef.value.currentTime)
+    }
+}
+
+// 监听用户输入进度变化
+watchEffect(() => {
+    if (!isUserInput.value) return
+    if (videoRef.value) {
+        videoRef.value.currentTime = playProgress.value.currentTime
+
+        // 更新缓存进度
+        if (!playProgress.value.isDragging) {
+            handleProgressBuffered()
+        }
+        playerStore.setUserInput(false)
+    }
+})
+
+// 监控音量变化
+watchEffect(() => {
+    if (videoRef.value) videoRef.value.volume = volume.value.volume / 100
+})
+
+// 监控播放速度变化
+watchEffect(() => {
+    if (videoRef.value) videoRef.value.playbackRate = playbackRate.value
+})
+
+// 监控是否循环播放
+watchEffect(() => {
+    if (videoRef.value) videoRef.value.loop = isLoop.value
+})
+
+// 根据video元素更新 store 中的数据
+const updateStore = () => {
+    if (videoRef.value) {
+        playerStore.setCurrentTime(videoRef.value.currentTime)
+        playerStore.setDuration(videoRef.value.duration)
+        playerStore.setIsDragging(false)
+        playerStore.setPlaybackRate(videoRef.value.playbackRate)
+        videoRef.value.loop = isLoop.value
+        videoRef.value.volume = volume.value.volume / 100
+    }
+}
+
+// 将 hls 实例提到外部, 以便销毁
+let hls: Hls | null = null
+
+// load hls
+const loadHls = () => {
+    if (Hls.isSupported()) {
+        // 创建 hls 实例及配置
+        hls = new Hls({
+            loader: CustomLoader,
+            maxMaxBufferLength: 10, // 最大缓冲时间（秒）
+            maxBufferLength: 10, // 缓冲时间（秒）
+            maxBufferSize: 2 * 1024 * 1024, // 缓冲大小（字节），假设每个分片大小约为1MB
+            maxBufferHole: 0.5, // 最大缓冲空洞（秒）
+        })
+
+        // 加载视频源
+        hls.loadSource(src.value)
+
+        // 绑定 video 元素
+        hls.attachMedia(videoRef.value!)
+
+        // 当清单解析完成时
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            // 历遍 hls.levels 获取清晰度信息, 保存到 store 中
+            const localLevels: Record<string, number> = {}
+            hls?.levels.forEach((level) => {
+                localLevels[getVideoQualityLabel(level.height)] = level.height
+            })
+
+            // 更新 store 中的清晰度信息
+            playerStore.setPlayLevelAllLevels(localLevels)
+        })
+
+        // 获取当前播放清晰度
+        hls.on(Hls.Events.LEVEL_SWITCHED, function (event, data) {
+            var currentLevel = hls?.levels[data.level]
+            const selectedLevel = getVideoQualityLabel(currentLevel?.height || 0)
+            playerStore.setSelectedPlayLevel(selectedLevel as PlayLevelLabel)
+            // TODO 切换清晰度时, 显示提示信息
+        })
+
+        // 监听用户选择清晰度的变化
+        watchEffect(() => {
+            const levels = hls?.levels
+            if (levels) {
+                const levelIndex = levels.findIndex(
+                    (level) => getVideoQualityLabel(level.height) === playLevel.value.level,
+                )
+                if (levelIndex !== -1 && hls) {
+                    hls.currentLevel = levelIndex
+                }
+            }
+        })
+
+        // 处理 HLS 错误
+        hls.on(Hls.Events.ERROR, function (event, data) {
+            if (data.fatal) {
+                switch (data.type) {
+                    case Hls.ErrorTypes.NETWORK_ERROR:
+                        // 尝试恢复网络错误
+                        console.warn("fatal network error encountered, try to recover")
+                        hls?.startLoad()
+                        break
+                    case Hls.ErrorTypes.MEDIA_ERROR:
+                        console.warn("fatal media error encountered, try to recover")
+                        hls?.recoverMediaError()
+                        break
+                    default:
+                        // 无法恢复的错误
+                        console.warn("fatal error encountered, destroy hls instance")
+                        hls?.destroy()
+                        ShowMsgTip(MsgType.error, `播放错误: ${data.details}`, 0)
+                        break
+                }
+            } else {
+                console.warn("non-fatal error encountered:", data)
+            }
+
+            // 处理自定义 loader 中的错误
+            if (data.type === Hls.ErrorTypes.NETWORK_ERROR && data.response && data.response.code) {
+                // 成功的 code
+                const successCodes = [
+                    ResponseCode.GetVideoM3u8Success,
+                    ResponseCode.GetVideoMainM3u8Success,
+                    ResponseCode.GetVideoKeySuccess,
+                ]
+                // 將 data.response.code 转换为 number 类型
+                const resCode = parseInt(data.response.code.toString())
+                // 如果 code 不在 successCodes 中, 则提示错误信息
+                if (resCode === ResponseCode.VideoNotFound) {
+                    ShowMsgTip(MsgType.error, "视频不存在", 0)
+                    return
+                }
+
+                if (!successCodes.includes(resCode)) {
+                    ShowMsgTip(
+                        MsgType.error,
+                        `错误代码: ${data.response.code},${data.response.text}`,
+                        0,
+                    )
+                }
+            }
+        })
+    } else {
+        ShowMsgTip(MsgType.error, "HLS 不支持当前浏览器, 请使用最新版本的 Chrome 浏览器观看视频", 0)
+    }
+}
+
+// 监听是否为 Iphone,如果是 Iphone 则将poster设置为空
+watchEffect(() => {
+    if (isIphone.value) {
+        playerStore.setPoster("")
+    }
+})
+
+// 更新视频
+const updateVideo = () => {
+    // 判断视频类型
+    if (mediaType.value === MediaTypes.HLS) {
+        // 先销毁 hls 实例再加载
+        // if (hls) {
+        //     console.log('存在 销毁 destroy hls instance')
+        //     hls.destroy()
+        // }
+
+        loadHls()
+    }
+    if (mediaType.value in [MediaTypes.MP4, MediaTypes.WEBM]) {
+        handleLoadedmetadata()
+    }
+
+    // 监听屏幕方向变化
+    if (videoRef.value) {
+        const mediaQueryList = window.matchMedia("(orientation: landscape)")
+        mediaQueryList.addEventListener("change", handleOrientationChange)
+    }
+}
+
+// TODO 后续观察是否需要监听 src 变化
+
+// 监听 src 变化
+watchEffect(() => {
+    // 注意需要等待 videoRef.value 加载完成,否则会造成多次 updateVideo 调用执行多次网络请求
+    if (src.value && videoRef.value) {
+        playerStore.setSubtitlesByVideoHashIdAuto() // 自动更新字幕
+        updateVideo()
+    }
+})
+
+// onMounted(async () => {
+//   updateVideo()
+// })
+
+onBeforeUnmount(() => {
+    // 移除屏幕方向变化监听
+    const mediaQueryList = window.matchMedia("(orientation: landscape)")
+    mediaQueryList.removeEventListener("change", handleOrientationChange)
+
+    // 销毁 hls 实例 destroy
+    playerStore.destroy()
+})
+</script>
+
+<style scoped lang="scss">
+// 禁用 video 默认控制器
+video::-webkit-media-controls {
+    display: none !important;
+}
+
+video::-webkit-media-controls-enclosure {
+    display: none !important;
+}
+
+.video-container {
+    position: relative;
+    background-color: transparent;
+
+    video {
+        object-fit: contain;
+        width: 100%;
+        height: 100%;
+    }
+
+    .controls-Container {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3));
+        transition: opacity 0.8s;
+        opacity: 1;
+        z-index: 3;
+    }
+
+    // 控制器隐藏
+    .controls-Container.hidden {
+        opacity: 0;
+    }
+
+    .controls {
+        position: absolute;
+        bottom: 0;
+        left: 10px;
+        width: calc(100% - 20px);
+        background-color: rgba(0, 0, 0, 0);
+    }
+
+    // 播放暂停页面占位元素
+    %play-paused-page {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        // 内部元素垂直水平居中
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        z-index: 2;
+
+        .iconfont {
+            font-size: 100px;
+            fill: rgba(0, 0, 0, 0.5);
+            transition: fill 0.3s ease;
+        }
+    }
+
+    .play-button-page {
+        @extend %play-paused-page;
+        // 背景颜色从中心向四周扩散
+        background-image: radial-gradient(circle, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+        z-index: 2;
+    }
+
+    .play-to-paused-page {
+        @extend %play-paused-page;
+        // 透明背景
+        background-color: rgba(0, 0, 0, 0);
+        z-index: 2;
+    }
+
+    // 播放状态下隐藏鼠标
+    .play-to-paused-page.hidden {
+        cursor: none;
+    }
+}
+
+// 字幕样式
+// TODO 不同媒介类型字幕样式不同
+::cue {
+    color: rgba(230, 230, 230);
+    background: rgba(0, 0, 0, 0.4);
+    font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 2em;
+}
+
+/* 
+HTML: <div class="loader"></div> 
+https://css-loaders.com/infinity/ 
+*/
+.loader {
+    width: calc(80px / cos(45deg));
+    height: 14px;
+    background: repeating-linear-gradient(-45deg, $primary-color 0 15px, #0000 0 20px) left/200%
+        100%;
+    animation: l3 2s infinite linear;
+    border-radius: 7px;
+    z-index: 2;
+}
+
+@keyframes l3 {
+    100% {
+        background-position: right;
+    }
+}
+
+@include respond-to("pc") {
+    ::cue {
+        font-size: 32px;
+    }
+
+    .video-container {
+        width: pc.$width-video-main;
+    }
+
+    .video-container[data-preview="wechat"] {
+        width: 390px;
+    }
+}
+
+@include respond-to("pad") {
+    ::cue {
+        font-size: 24px;
+    }
+
+    .video-container {
+        max-width: phone.$width-video-main;
+        max-height: phone.$height-video-main;
+    }
+
+    .video-container[data-preview="wechat"] {
+        max-width: phone.$width-video-main;
+        max-height: phone.$height-video-main;
+        width: 100%;
+    }
+}
+
+@include respond-to("phone") {
+    ::cue {
+        font-size: 16px;
+    }
+
+    .video-container {
+        max-width: phone.$width-video-main;
+        max-height: phone.$height-video-main;
+    }
+
+    video {
+        max-width: phone.$width-video-main;
+        max-height: phone.$height-video-main;
+    }
+
+    .video-container[data-preview="wechat"] {
+        max-width: phone.$width-video-main;
+        max-height: phone.$height-video-main;
+        width: 100%;
+    }
+}
+</style>

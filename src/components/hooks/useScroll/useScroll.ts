@@ -9,37 +9,37 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { onMounted, onUnmounted } from 'vue'
-import type { ScrollHandler, Direction } from '@/components/hooks/useScroll'
+import { onMounted, onUnmounted } from "vue"
+import type { ScrollHandler, Direction } from "@/components/hooks/useScroll"
 
 export function useScroll(handler: ScrollHandler) {
-  let lastPosition = window.scrollY || document.documentElement.scrollTop
-  let lastTimestamp = performance.now() // 上一次滚动时间戳
+    let lastPosition = window.scrollY || document.documentElement.scrollTop
+    let lastTimestamp = performance.now() // 上一次滚动时间戳
 
-  const handleScroll = () => {
-    const currentPosition = window.scrollY || document.documentElement.scrollTop
-    const currentTimestamp = performance.now() // 当前滚动时间戳
-    const direction: Direction = currentPosition > lastPosition ? 'down' : 'up'
+    const handleScroll = () => {
+        const currentPosition = window.scrollY || document.documentElement.scrollTop
+        const currentTimestamp = performance.now() // 当前滚动时间戳
+        const direction: Direction = currentPosition > lastPosition ? "down" : "up"
 
-    const deltaTime = currentTimestamp - lastTimestamp // 时间间隔（毫秒）
-    const deltaPosition = Math.abs(currentPosition - lastPosition) // 滚动距离
-    const speed = (deltaPosition / deltaTime) * 1000 // 计算滚动速度（像素/秒）
+        const deltaTime = currentTimestamp - lastTimestamp // 时间间隔（毫秒）
+        const deltaPosition = Math.abs(currentPosition - lastPosition) // 滚动距离
+        const speed = (deltaPosition / deltaTime) * 1000 // 计算滚动速度（像素/秒）
 
-    handler({
-      position: currentPosition,
-      direction,
-      speed
+        handler({
+            position: currentPosition,
+            direction,
+            speed,
+        })
+
+        lastPosition = currentPosition
+        lastTimestamp = currentTimestamp // 更新滚动时间戳
+    }
+
+    onMounted(() => {
+        window.addEventListener("scroll", handleScroll, { passive: true })
     })
 
-    lastPosition = currentPosition
-    lastTimestamp = currentTimestamp // 更新滚动时间戳
-  }
-
-  onMounted(() => {
-    window.addEventListener('scroll', handleScroll, { passive: true })
-  })
-
-  onUnmounted(() => {
-    window.removeEventListener('scroll', handleScroll)
-  })
+    onUnmounted(() => {
+        window.removeEventListener("scroll", handleScroll)
+    })
 }

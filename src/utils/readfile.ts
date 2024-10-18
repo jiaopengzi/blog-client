@@ -9,18 +9,18 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import axios from 'axios'
+import axios from "axios"
 export async function readFile(filepath: string): Promise<string> {
-  try {
-    const response = await axios.get(filepath)
+    try {
+        const response = await axios.get(filepath)
 
-    if (response.status === 200) {
-      return response.data
-    } else {
-      throw new Error(`Error fetching markdown file, status code: ${response.status}`)
+        if (response.status === 200) {
+            return response.data
+        } else {
+            throw new Error(`Error fetching markdown file, status code: ${response.status}`)
+        }
+    } catch (error) {
+        console.error("Error loading and formatting markdown file:", error)
+        return ""
     }
-  } catch (error) {
-    console.error('Error loading and formatting markdown file:', error)
-    return ''
-  }
 }

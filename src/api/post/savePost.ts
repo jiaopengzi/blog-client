@@ -9,34 +9,34 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from '@/api/request'
-import { routerGroup } from '@/api/routerGroup'
-import type { AxiosPromise } from 'axios'
-import { type Res } from '@/api/responseCode'
+import request from "@/api/request"
+import { routerGroup } from "@/api/routerGroup"
+import type { AxiosPromise } from "axios"
+import { type Res } from "@/api/responseCode"
 
 export interface SavePostRequest {
-  post: string
-  title: string
-  tags: string
-  category: string
-  summary: string
-  content: string
-  status: string
-  isComment: string
-  isTop: string
-  isOriginal: string
-  isPrivate: string
-  password: string
-  views: string
-  likes: string
+    post: string
+    title: string
+    tags: string
+    category: string
+    summary: string
+    content: string
+    status: string
+    isComment: string
+    isTop: string
+    isOriginal: string
+    isPrivate: string
+    password: string
+    views: string
+    likes: string
 }
 
 // 注册
 export function RegisterAPI(requestData: SavePostRequest): AxiosPromise<Res> {
-  const urlStr = routerGroup + '/post/save'
-  return request({
-    url: urlStr,
-    method: 'post',
-    data: requestData,
-  })
+    const urlStr = routerGroup + "/post/save"
+    return request({
+        url: urlStr,
+        method: "post",
+        data: requestData,
+    })
 }

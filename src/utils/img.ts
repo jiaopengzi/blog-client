@@ -15,12 +15,12 @@
  * @return       图片链接数组
  */
 export function extractImageUrlsFromHtml(input: string): string[] {
-  const regex = /<img[^>]*src="([^"]*)"[^>]*>/g
-  const matches = input.match(regex) || []
-  return matches.map((match) => {
-    const urlMatch = /<img[^>]*src="([^"]*)"[^>]*>/.exec(match)
-    return urlMatch ? urlMatch[1] : ''
-  })
+    const regex = /<img[^>]*src="([^"]*)"[^>]*>/g
+    const matches = input.match(regex) || []
+    return matches.map((match) => {
+        const urlMatch = /<img[^>]*src="([^"]*)"[^>]*>/.exec(match)
+        return urlMatch ? urlMatch[1] : ""
+    })
 }
 
 /** 
@@ -38,15 +38,15 @@ function(srcList,item)
 当 x=D 返回 ["D","A","B","C"]     
  */
 export function shiftArray(srcList: string[] | undefined, item: string): string[] {
-  if (!srcList) {
-    return []
-  }
-  const index = srcList.indexOf(item)
+    if (!srcList) {
+        return []
+    }
+    const index = srcList.indexOf(item)
 
-  if (index === -1) {
-    // 如果item不在数组中，返回原数组
-    return srcList
-  }
+    if (index === -1) {
+        // 如果item不在数组中，返回原数组
+        return srcList
+    }
 
-  return [...srcList.slice(index), ...srcList.slice(0, index)]
+    return [...srcList.slice(index), ...srcList.slice(0, index)]
 }

@@ -8,20 +8,20 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
-import type { MarkedEmojiOptions, EmojiObject } from 'marked-emoji'
-import emojiJson from 'emoji.json'
+import type { MarkedEmojiOptions, EmojiObject } from "marked-emoji"
+import emojiJson from "emoji.json"
 
 // grinning: { char: '😀' },
 const emojiObj: Record<string, string | EmojiObject> = {}
 
 // 循环遍历 emojiJson 生成 emojiObj
 emojiJson.forEach((item) => {
-  emojiObj[item.name] = { char: item.char }
+    emojiObj[item.name] = { char: item.char }
 })
 
 const optionEmojis: MarkedEmojiOptions = {
-  emojis: emojiObj,
-  unicode: true
+    emojis: emojiObj,
+    unicode: true,
 }
 
 export default optionEmojis

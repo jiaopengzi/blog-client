@@ -9,21 +9,21 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-export { default } from './index.vue'
+export { default } from "./index.vue"
 
 export interface FooterProps {
-  left?: {
-    title?: string
-    content?: string
-  }
-  middle?: {
-    imgUrl: string
-    display?: string
-  }[]
-  right?: {
-    title?: string
-    content?: string
-    beianMPS?: string // 联网备案
-    beianMIIT?: string // ICP备案
-  }
+    left?: {
+        title?: string
+        content?: string
+    }
+    middle?: {
+        imgUrl: string
+        display?: string
+    }[]
+    right?: {
+        title?: string
+        content?: string
+        beianMPS?: string // 联网备案
+        beianMIIT?: string // ICP备案
+    }
 }

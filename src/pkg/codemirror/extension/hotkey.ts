@@ -9,15 +9,15 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import type { Extension } from '@codemirror/state'
-import { keymap } from '@codemirror/view'
-import { copyLineDown } from '@codemirror/commands'
+import type { Extension } from "@codemirror/state"
+import { keymap } from "@codemirror/view"
+import { copyLineDown } from "@codemirror/commands"
 
 const customKeymap: Extension = keymap.of([
-  {
-    key: 'Ctrl-d',
-    run: copyLineDown // 复制当前行
-  }
+    {
+        key: "Ctrl-d",
+        run: copyLineDown, // 复制当前行
+    },
 ])
 
 export { customKeymap }

@@ -9,10 +9,10 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import type { CommandsKey, MarkdownEditorCommandItemType } from '@/components/editor/command'
+import type { CommandsKey, MarkdownEditorCommandItemType } from "@/components/editor/command"
 
-export { default as EditorPost } from './EditorPost.vue'
-export { default as EditorComment } from './EditorComment.vue'
+export { default as EditorPost } from "./EditorPost.vue"
+export { default as EditorComment } from "./EditorComment.vue"
 /**
  * @description: 设置是否全屏的类名
  * @param baseClass 基础类名
@@ -22,35 +22,35 @@ export { default as EditorComment } from './EditorComment.vue'
  * @return {Object} 类名对象
  */
 export function setIsFullScreenClassName(
-  baseClass: string,
-  fullScreenClass: string,
-  isContainerItem: boolean,
-  isFullScreen: boolean
+    baseClass: string,
+    fullScreenClass: string,
+    isContainerItem: boolean,
+    isFullScreen: boolean,
 ): object {
-  return {
-    [baseClass]: !isFullScreen,
-    [fullScreenClass]: isFullScreen,
-    'md-container-item': isContainerItem && !isFullScreen,
-    'md-container-item-fs': isContainerItem && isFullScreen
-  }
+    return {
+        [baseClass]: !isFullScreen,
+        [fullScreenClass]: isFullScreen,
+        "md-container-item": isContainerItem && !isFullScreen,
+        "md-container-item-fs": isContainerItem && isFullScreen,
+    }
 }
 
 // ComponentPublicInstance 与 HTMLElement 并集 为了解决 $el 问题
 // 参考：https://cn.vuejs.org/guide/typescript/composition-api.html#typing-component-template-refs
 export interface ToolbarRef extends HTMLElement {
-  root: HTMLElement
+    root: HTMLElement
 }
 
 export interface CodemirrorRef extends HTMLElement {
-  root: HTMLElement
-  runCommand: (commandName: CommandsKey, customContent?: MarkdownEditorCommandItemType) => void
-  scrollIntoViewLine: (line: number) => void
+    root: HTMLElement
+    runCommand: (commandName: CommandsKey, customContent?: MarkdownEditorCommandItemType) => void
+    scrollIntoViewLine: (line: number) => void
 }
 
 export interface PreviewRef extends HTMLElement {
-  root: HTMLElement
-  navigateToHeading: (index: number) => void
-  navigateToElement: (index: number) => void
-  navigateGoHome: (behavior: ScrollBehavior) => void
-  navigateGoEnd: (behavior: ScrollBehavior) => void
+    root: HTMLElement
+    navigateToHeading: (index: number) => void
+    navigateToElement: (index: number) => void
+    navigateGoHome: (behavior: ScrollBehavior) => void
+    navigateGoEnd: (behavior: ScrollBehavior) => void
 }

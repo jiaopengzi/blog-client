@@ -10,117 +10,117 @@
 -->
 
 <template>
-  <div class="post-item">
-    <!-- 缩略图 -->
-    <div class="thumbnail">
-      <a :href="props.postData.thumbnailHref">
-        <img class="thumbnail-img" :src="props.postData.thumbnailSrc" alt="" />
-      </a>
-    </div>
+    <div class="post-item">
+        <!-- 缩略图 -->
+        <div class="thumbnail">
+            <a :href="props.postData.thumbnailHref">
+                <img class="thumbnail-img" :src="props.postData.thumbnailSrc" alt="" />
+            </a>
+        </div>
 
-    <!-- 文章摘要内容 -->
-    <div class="content">
-      <!-- 标题 -->
-      <div class="title">
-        <a :href="props.postData.titleHref">
-          <h2>{{ props.postData.title }}</h2>
-        </a>
-      </div>
+        <!-- 文章摘要内容 -->
+        <div class="content">
+            <!-- 标题 -->
+            <div class="title">
+                <a :href="props.postData.titleHref">
+                    <h2>{{ props.postData.title }}</h2>
+                </a>
+            </div>
 
-      <!-- 作者 日志 访问量 -->
-      <div class="meta">
-        <span class="meta-view meta-item">
-          <el-icon>
-            <View />
-          </el-icon>
-          {{ view }}
-        </span>
-        <span class="meta-date meta-item">{{ props.postData.date }}</span>
-      </div>
+            <!-- 作者 日志 访问量 -->
+            <div class="meta">
+                <span class="meta-view meta-item">
+                    <el-icon>
+                        <View />
+                    </el-icon>
+                    {{ view }}
+                </span>
+                <span class="meta-date meta-item">{{ props.postData.date }}</span>
+            </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script setup lang="ts">
-import type { PostItemAsideObj } from '@/components/common/post-item-aside'
-import { computed } from 'vue'
-import { View } from '@element-plus/icons-vue'
+import type { PostItemAsideObj } from "@/components/common/post-item-aside"
+import { computed } from "vue"
+import { View } from "@element-plus/icons-vue"
 
-defineOptions({ name: 'PostItemAside' })
+defineOptions({ name: "PostItemAside" })
 
 const props = defineProps<{
-  postData: PostItemAsideObj
+    postData: PostItemAsideObj
 }>()
 
 const view = computed(() =>
-  // 显示千分符 , 如果大于 1 万 就显示 ?w
-  props.postData.view > 10000
-    ? `${Math.floor(props.postData.view / 10000)}w`
-    : props.postData.view.toLocaleString()
+    // 显示千分符 , 如果大于 1 万 就显示 ?w
+    props.postData.view > 10000
+        ? `${Math.floor(props.postData.view / 10000)}w`
+        : props.postData.view.toLocaleString(),
 )
 </script>
 <style scoped lang="scss">
 .post-item {
-  position: relative;
-  height: 75px;
-  border-radius: 3px;
-  overflow: hidden;
+    position: relative;
+    height: 75px;
+    border-radius: 3px;
+    overflow: hidden;
 
-  &:hover {
-    // 鼠标移动到 .post-item 上时, .post-item 出现上下阴影
-    box-shadow:
-      0 0 5px #ccc,
-      0 0 10px #ccc;
-  }
+    &:hover {
+        // 鼠标移动到 .post-item 上时, .post-item 出现上下阴影
+        box-shadow:
+            0 0 5px #ccc,
+            0 0 10px #ccc;
+    }
 }
 
 .thumbnail {
-  float: left;
-  width: 100px;
-  height: 100%;
-  box-sizing: border-box;
-  overflow: hidden;
+    float: left;
+    width: 100px;
+    height: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .thumbnail-img {
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  transition: transform 0.3s ease;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    transition: transform 0.3s ease;
 }
 
 .thumbnail:hover .thumbnail-img {
-  transform: scale(1.2);
+    transform: scale(1.2);
 }
 
 .title {
-  margin: 0;
-  color: #333;
-  border: 0;
-  padding: 0;
-  height: 4em;
-  line-height: 2em;
-  display: -webkit-box;
-  -webkit-line-clamp: 2; // 限制行数为2
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    margin: 0;
+    color: #333;
+    border: 0;
+    padding: 0;
+    height: 4em;
+    line-height: 2em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; // 限制行数为2
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .meta {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .meta-item {
-  margin-right: 10px;
-  color: #888;
-  font-size: smaller;
-  line-height: 150%;
-  // 图标居中
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    margin-right: 10px;
+    color: #888;
+    font-size: smaller;
+    line-height: 150%;
+    // 图标居中
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 </style>
 @/components/pc/content/aside/item/postItem @/components/common/post-item-aside/postItemAside

@@ -8,29 +8,29 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
-import type { Ref } from 'vue'
-import type { CodemirrorRef, PreviewRef } from '@/components/editor/core'
-import { useEditorStore } from '@/stores/editor'
-import { storeToRefs } from 'pinia'
+import type { Ref } from "vue"
+import type { CodemirrorRef, PreviewRef } from "@/components/editor/core"
+import { useEditorStore } from "@/stores/editor"
+import { storeToRefs } from "pinia"
 
 export function useToc(
-  codemirrorRef: Ref<CodemirrorRef | null>,
-  previewRef: Ref<PreviewRef | null>
+    codemirrorRef: Ref<CodemirrorRef | null>,
+    previewRef: Ref<PreviewRef | null>,
 ) {
-  const editorStore = useEditorStore()
-  const { tocMarkdown } = storeToRefs(editorStore)
+    const editorStore = useEditorStore()
+    const { tocMarkdown } = storeToRefs(editorStore)
 
-  /**
-   * @description: 目录导航点击事件
-   * @param index 点击的目录索引
-   */
-  const tocHeadingClicked = (index: number) => {
-    // isAsyncScroll.value = false // 点击目录时候关闭异步滚动
-    codemirrorRef.value?.scrollIntoViewLine(tocMarkdown.value[index].markdownLineNumber) // 跳转编辑器选中目标行
-    previewRef.value?.navigateToHeading(index) // 跳转预览选中目标行
-  }
+    /**
+     * @description: 目录导航点击事件
+     * @param index 点击的目录索引
+     */
+    const tocHeadingClicked = (index: number) => {
+        // isAsyncScroll.value = false // 点击目录时候关闭异步滚动
+        codemirrorRef.value?.scrollIntoViewLine(tocMarkdown.value[index].markdownLineNumber) // 跳转编辑器选中目标行
+        previewRef.value?.navigateToHeading(index) // 跳转预览选中目标行
+    }
 
-  return {
-    tocHeadingClicked
-  }
+    return {
+        tocHeadingClicked,
+    }
 }

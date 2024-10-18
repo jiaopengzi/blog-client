@@ -8,25 +8,25 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
-import { type Res } from '@/api/responseCode'
-import { formatDurationTime } from '@/utils/dateTime'
-import { ResponseCode } from '@/api/responseCode'
+import { type Res } from "@/api/responseCode"
+import { formatDurationTime } from "@/utils/dateTime"
+import { ResponseCode } from "@/api/responseCode"
 
 // 获取用户禁用信息
 export function getUserForbiddenMsg(res: Res) {
-  // 小于等于7天的禁用时间，显示倒计时, 大于7天的禁用时间，显示禁用信息
-  if (res.code === ResponseCode.UserForbidden && res.data && res.data <= 60 * 60 * 24 * 7) {
-    const countdown = formatDurationTime(res.data)
-    return `${res.msg}, ${countdown} 后解禁!` // 占位符替换
-  }
+    // 小于等于7天的禁用时间，显示倒计时, 大于7天的禁用时间，显示禁用信息
+    if (res.code === ResponseCode.UserForbidden && res.data && res.data <= 60 * 60 * 24 * 7) {
+        const countdown = formatDurationTime(res.data)
+        return `${res.msg}, ${countdown} 后解禁!` // 占位符替换
+    }
 
-  // 客户端IP请求频繁 和 客户端ID请求频繁
-  if (
-    (res.code === ResponseCode.ClientIPTooManyRequests ||
-      res.code === ResponseCode.ClientIDTooManyRequests) &&
-    res.data
-  ) {
-    return `${res.msg}:${res.data}` // 占位符替换
-  }
-  return res.msg
+    // 客户端IP请求频繁 和 客户端ID请求频繁
+    if (
+        (res.code === ResponseCode.ClientIPTooManyRequests ||
+            res.code === ResponseCode.ClientIDTooManyRequests) &&
+        res.data
+    ) {
+        return `${res.msg}:${res.data}` // 占位符替换
+    }
+    return res.msg
 }

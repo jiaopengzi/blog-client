@@ -15,5 +15,5 @@
  * @return {boolean} 是否为视频
  */
 export const isVideo = (fileType: string): boolean => {
-  return fileType.startsWith('video/')
+    return fileType.startsWith("video/")
 }

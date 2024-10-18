@@ -9,21 +9,21 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from '@/api/request'
-import { routerGroup } from '@/api/routerGroup'
-import type { AxiosPromise } from 'axios'
-import { type Res } from '@/api/responseCode'
+import request from "@/api/request"
+import { routerGroup } from "@/api/routerGroup"
+import type { AxiosPromise } from "axios"
+import { type Res } from "@/api/responseCode"
 
 export interface LogoutByAdminRequest {
-  logout_user_id: string
+    logout_user_id: string
 }
 
 // 管理员登出用户
 export function logoutByAdminAPI(logoutByAdminRequest: LogoutByAdminRequest): AxiosPromise<Res> {
-  const urlStr = routerGroup + '/user/logout-by-admin'
-  return request({
-    url: urlStr,
-    method: 'post',
-    data: logoutByAdminRequest,
-  })
+    const urlStr = routerGroup + "/user/logout-by-admin"
+    return request({
+        url: urlStr,
+        method: "post",
+        data: logoutByAdminRequest,
+    })
 }

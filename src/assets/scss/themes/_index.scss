@@ -9,8 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
  */
 
-@use './light.scss' as *;
-@use './dark.scss' as *;
+@use "./light.scss" as *;
+@use "./dark.scss" as *;
 
 $scrollbar-y-width: var(--scrollbar-y-width); // Y轴滚动条宽度
 $scrollbar-x-height: var(--scrollbar-x-height); // Y轴滚动条宽度

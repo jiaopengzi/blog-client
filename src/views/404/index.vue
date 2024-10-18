@@ -10,47 +10,47 @@
 -->
 
 <template>
-  <div class="page">
-    <LayoutHeader />
-    <div class="pc">
-      <HomePC :countdown="countdown" />
+    <div class="page">
+        <LayoutHeader />
+        <div class="pc">
+            <HomePC :countdown="countdown" />
+        </div>
+        <div class="phone">
+            <HomePhone :countdown="countdown" />
+        </div>
+        <LayoutFooter />
     </div>
-    <div class="phone">
-      <HomePhone :countdown="countdown" />
-    </div>
-    <LayoutFooter />
-  </div>
 </template>
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, onUnmounted } from "vue"
+import { useRouter } from "vue-router"
 
-import HomePC from './pc.vue'
-import HomePhone from './phone.vue'
-import LayoutHeader from '@/components/layout/header'
-import LayoutFooter from '@/components/layout/footer'
+import HomePC from "./pc.vue"
+import HomePhone from "./phone.vue"
+import LayoutHeader from "@/components/layout/header"
+import LayoutFooter from "@/components/layout/footer"
 
-defineOptions({ name: 'NotFound404' })
+defineOptions({ name: "NotFound404" })
 
 const router = useRouter() // 路由
 const countdown = ref(5) // 倒计时
 let intervalId: number | undefined // 定时器id
 
 onMounted(() => {
-  // 倒计时
-  intervalId = window.setInterval(() => {
-    if (countdown.value > 0) {
-      countdown.value--
-    } else {
-      clearInterval(intervalId)
-      router.push('/')
-    }
-  }, 1000)
+    // 倒计时
+    intervalId = window.setInterval(() => {
+        if (countdown.value > 0) {
+            countdown.value--
+        } else {
+            clearInterval(intervalId)
+            router.push("/")
+        }
+    }, 1000)
 })
 
 onUnmounted(() => {
-  if (intervalId) {
-    clearInterval(intervalId)
-  }
+    if (intervalId) {
+        clearInterval(intervalId)
+    }
 })
 </script>

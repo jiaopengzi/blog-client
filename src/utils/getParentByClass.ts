@@ -16,16 +16,16 @@
  * @return 具有指定类名的父元素，如果不存在则返回null
  */
 export function getParentByClass(element: HTMLElement, className: string): HTMLElement | null {
-  let currentElement = element
-  while (currentElement) {
-    // 循环查找父元素
-    if (currentElement.classList.contains(className)) {
-      // 判断是否有指定类名
-      return currentElement // 返回具有指定类名的父元素
+    let currentElement = element
+    while (currentElement) {
+        // 循环查找父元素
+        if (currentElement.classList.contains(className)) {
+            // 判断是否有指定类名
+            return currentElement // 返回具有指定类名的父元素
+        }
+        currentElement = currentElement.parentElement as HTMLElement // 获取父元素
     }
-    currentElement = currentElement.parentElement as HTMLElement // 获取父元素
-  }
-  return null // 如果不存在则返回null
+    return null // 如果不存在则返回null
 }
 
 /**
@@ -35,11 +35,11 @@ export function getParentByClass(element: HTMLElement, className: string): HTMLE
  * @return 如果存在则返回true，否则返回false
  */
 export function HasParentByClass(element: HTMLElement | null, className: string): boolean {
-  while (element) {
-    if (element.classList.contains(className)) {
-      return true
+    while (element) {
+        if (element.classList.contains(className)) {
+            return true
+        }
+        element = element.parentElement
     }
-    element = element.parentElement
-  }
-  return false
+    return false
 }

@@ -10,22 +10,22 @@
  */
 
 // import request from '../request'
-import request from '@/api/request'
-import { routerGroup } from '@/api//routerGroup'
-import type { AxiosPromise } from 'axios'
-import { type Res } from '@/api/responseCode'
+import request from "@/api/request"
+import { routerGroup } from "@/api//routerGroup"
+import type { AxiosPromise } from "axios"
+import { type Res } from "@/api/responseCode"
 
 export interface BindEmailRequest {
-  email: string
-  captcha: string
+    email: string
+    captcha: string
 }
 
 // 注册
 export function bindEmailAPI(requestData: BindEmailRequest): AxiosPromise<Res> {
-  const urlStr = routerGroup + '/user/bind-email'
-  return request({
-    url: urlStr,
-    method: 'post',
-    data: requestData,
-  })
+    const urlStr = routerGroup + "/user/bind-email"
+    return request({
+        url: urlStr,
+        method: "post",
+        data: requestData,
+    })
 }

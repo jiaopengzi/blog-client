@@ -1,0 +1,5 @@
+// .prettierignore
+dist
+node_modules
+.eslintignore
+.prettierignore

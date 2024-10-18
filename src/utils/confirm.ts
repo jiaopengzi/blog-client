@@ -8,7 +8,7 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
-import { MsgTitle, MsgType } from '@/components/common'
+import { MsgTitle, MsgType } from "@/components/common"
 
 /**
  * @description: 通用确认框
@@ -20,22 +20,22 @@ import { MsgTitle, MsgType } from '@/components/common'
  * })
  */
 export const handleConfirmCommon = (callback: () => void) => {
-  ElMessageBox.confirm('是否需要删除?', MsgTitle[MsgType.warning], {
-    confirmButtonText: '确认',
-    cancelButtonText: '取消',
-    type: MsgType.warning
-  })
-    .then(() => {
-      callback()
-      ElMessage({
-        type: MsgType.success,
-        message: '开始删除'
-      })
+    ElMessageBox.confirm("是否需要删除?", MsgTitle[MsgType.warning], {
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
+        type: MsgType.warning,
     })
-    .catch(() => {
-      ElMessage({
-        type: MsgType.info,
-        message: '取消删除'
-      })
-    })
+        .then(() => {
+            callback()
+            ElMessage({
+                type: MsgType.success,
+                message: "开始删除",
+            })
+        })
+        .catch(() => {
+            ElMessage({
+                type: MsgType.info,
+                message: "取消删除",
+            })
+        })
 }

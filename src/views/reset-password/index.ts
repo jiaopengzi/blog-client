@@ -9,11 +9,11 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-export { default } from './index.vue'
+export { default } from "./index.vue"
 
 export interface ResetPasswordForm {
-  email: string
-  captcha: string
-  password: string
-  rePassword: string
+    email: string
+    captcha: string
+    password: string
+    rePassword: string
 }

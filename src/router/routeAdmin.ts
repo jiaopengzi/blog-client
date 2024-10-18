@@ -8,36 +8,36 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
-import type { RouteRecordRaw } from 'vue-router'
-import { adminMenuItemMapWithIndex, AdminSideMenu } from '@/views/admin/component/aside'
+import type { RouteRecordRaw } from "vue-router"
+import { adminMenuItemMapWithIndex, AdminSideMenu } from "@/views/admin/component/aside"
 
 // 生成管理后台路由
 function generateAdminRoutes() {
-  const routes: { [key: string]: RouteRecordRaw } = {
-    admin: {
-      path: '/admin',
-      name: 'admin',
-      component: () => import('@/views/admin'),
-      meta: {
-        requiresAuth: true
-      }
+    const routes: { [key: string]: RouteRecordRaw } = {
+        admin: {
+            path: "/admin",
+            name: "admin",
+            component: () => import("@/views/admin"),
+            meta: {
+                requiresAuth: true,
+            },
+        },
     }
-  }
-  // 生成管理后台路由
-  Object.keys(adminMenuItemMapWithIndex).forEach((key) => {
-    const menuItem = adminMenuItemMapWithIndex[key as AdminSideMenu]
-    const route = {
-      path: menuItem.index,
-      name: key,
-      component: () => import('@/views/admin'),
-      meta: {
-        requiresAuth: true
-      }
-    }
-    routes[key] = route
-  })
+    // 生成管理后台路由
+    Object.keys(adminMenuItemMapWithIndex).forEach((key) => {
+        const menuItem = adminMenuItemMapWithIndex[key as AdminSideMenu]
+        const route = {
+            path: menuItem.index,
+            name: key,
+            component: () => import("@/views/admin"),
+            meta: {
+                requiresAuth: true,
+            },
+        }
+        routes[key] = route
+    })
 
-  return routes
+    return routes
 }
 
 export const adminRoutes = generateAdminRoutes()

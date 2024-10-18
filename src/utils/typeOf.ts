@@ -15,7 +15,7 @@
  * @return 是否为对象
  */
 export function isObject(obj: any): boolean {
-  return obj !== null && typeof obj === 'object'
+    return obj !== null && typeof obj === "object"
 }
 
 /**
@@ -24,7 +24,7 @@ export function isObject(obj: any): boolean {
  * @return 是否为数组
  */
 export function isArray(arr: any): boolean {
-  return Array.isArray(arr) || Object.prototype.toString.call(arr) === '[object Array]'
+    return Array.isArray(arr) || Object.prototype.toString.call(arr) === "[object Array]"
 }
 
 /**
@@ -33,7 +33,7 @@ export function isArray(arr: any): boolean {
  * @return 是否为函数
  */
 export function isFunction(fn: any): boolean {
-  return typeof fn === 'function'
+    return typeof fn === "function"
 }
 
 /**
@@ -42,7 +42,7 @@ export function isFunction(fn: any): boolean {
  * @return 是否为字符串
  */
 export function isString(str: any): boolean {
-  return typeof str === 'string'
+    return typeof str === "string"
 }
 
 /**
@@ -51,7 +51,7 @@ export function isString(str: any): boolean {
  * @return 是否为数字
  */
 export function isNumber(num: any): boolean {
-  return typeof num === 'number'
+    return typeof num === "number"
 }
 
 /**
@@ -60,7 +60,7 @@ export function isNumber(num: any): boolean {
  * @return 是否为布尔值
  */
 export function isBoolean(bool: any): boolean {
-  return typeof bool === 'boolean'
+    return typeof bool === "boolean"
 }
 
 /**
@@ -69,7 +69,7 @@ export function isBoolean(bool: any): boolean {
  * @return 是否为undefined
  */
 export function isUndefined(val: any): boolean {
-  return typeof val === 'undefined'
+    return typeof val === "undefined"
 }
 
 /**
@@ -78,7 +78,7 @@ export function isUndefined(val: any): boolean {
  * @return 是否为null
  */
 export function isNull(val: any): boolean {
-  return val === null
+    return val === null
 }
 
 /**
@@ -87,7 +87,7 @@ export function isNull(val: any): boolean {
  * @return 是否为NaN
  */
 export function isNaN(val: any): boolean {
-  return Number.isNaN(val)
+    return Number.isNaN(val)
 }
 
 /**
@@ -96,7 +96,7 @@ export function isNaN(val: any): boolean {
  * @return 是否为Symbol
  */
 export function isSymbol(val: any): boolean {
-  return typeof val === 'symbol'
+    return typeof val === "symbol"
 }
 
 /**
@@ -105,7 +105,7 @@ export function isSymbol(val: any): boolean {
  * @return 是否为Promise
  */
 export function isPromise(val: any): boolean {
-  return val instanceof Promise
+    return val instanceof Promise
 }
 
 /**
@@ -114,7 +114,7 @@ export function isPromise(val: any): boolean {
  * @return 是否为Set
  */
 export function isSet(val: any): boolean {
-  return val instanceof Set
+    return val instanceof Set
 }
 
 /**
@@ -123,7 +123,7 @@ export function isSet(val: any): boolean {
  * @return 是否为Map
  */
 export function isMap(val: any): boolean {
-  return val instanceof Map
+    return val instanceof Map
 }
 
 /**
@@ -132,7 +132,7 @@ export function isMap(val: any): boolean {
  * @return 是否为Date
  */
 export function isDate(val: any): boolean {
-  return val instanceof Date
+    return val instanceof Date
 }
 
 /**
@@ -141,7 +141,7 @@ export function isDate(val: any): boolean {
  * @return 是否为RegExp
  */
 export function isRegExp(val: any): boolean {
-  return val instanceof RegExp
+    return val instanceof RegExp
 }
 
 /**
@@ -150,5 +150,5 @@ export function isRegExp(val: any): boolean {
  * @return 是否为Error
  */
 export function isError(val: any): boolean {
-  return val instanceof Error
+    return val instanceof Error
 }

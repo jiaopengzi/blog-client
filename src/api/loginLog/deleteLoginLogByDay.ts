@@ -9,21 +9,21 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from '@/api/request'
-import { routerGroup } from '@/api/routerGroup'
-import type { AxiosPromise } from 'axios'
-import { type Res } from '@/api/responseCode'
+import request from "@/api/request"
+import { routerGroup } from "@/api/routerGroup"
+import type { AxiosPromise } from "axios"
+import { type Res } from "@/api/responseCode"
 
 export interface DeleteLoginLogByDayRequest {
-  days_before: number // 天数
+    days_before: number // 天数
 }
 
 // 通过天删除登录日志
 export function DeleteLoginLogByDayAPI(requestData: DeleteLoginLogByDayRequest): AxiosPromise<Res> {
-  const urlStr = routerGroup + '/login-log/delete-by-day'
-  return request({
-    url: urlStr,
-    method: 'post',
-    data: requestData,
-  })
+    const urlStr = routerGroup + "/login-log/delete-by-day"
+    return request({
+        url: urlStr,
+        method: "post",
+        data: requestData,
+    })
 }

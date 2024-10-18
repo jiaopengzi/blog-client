@@ -8,4 +8,13 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
-export { default } from './index.vue'
+export { default } from "./index.vue"
+
+// 将 .types.ts 文件中的所有内容导出到 index.ts 文件中
+export * from "./types"
+
+// 将 .methods.ts 文件中的所有内容导出到 index.ts 文件中
+export * from "./methods"
+
+// 将 .status.ts 文件中的所有内容导出到 index.ts 文件中
+export * from "./status"

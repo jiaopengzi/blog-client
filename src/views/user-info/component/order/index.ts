@@ -4,10 +4,9 @@
  * @LastEditors  : jiaopengzi
  * @LastEditTime : 2024-10-15 10:36:58
  * @FilePath     : \blog-client\src\views\user-info\component\order\index.ts
- * @Description  : 
+ * @Description  :
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-
-export { default } from './index.vue'
+export { default } from "./index.vue"

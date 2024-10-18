@@ -9,141 +9,141 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-  <div class="aside-item">
-    <div class="title">
-      <h2><Icon :name="IconKeys.Archive" customClass="aside-icon" />文章归档</h2>
+    <div class="aside-item">
+        <div class="title">
+            <h2><Icon :name="IconKeys.Archive" custom-class="aside-icon" />文章归档</h2>
+        </div>
+        <div class="table">
+            <el-table
+                :max-height="400"
+                :data="tableData"
+                :show-header="true"
+                :row-class-name="tableRowClassName"
+                @row-click="handleRowClick"
+            >
+                <el-table-column prop="date" label="月份" align="center" />
+                <el-table-column prop="num" label="文章数量" align="center" />
+            </el-table>
+        </div>
     </div>
-    <div class="table">
-      <el-table
-        :max-height="400"
-        :data="tableData"
-        :show-header="true"
-        :row-class-name="tableRowClassName"
-        @row-click="handleRowClick"
-      >
-        <el-table-column prop="date" label="月份" align="center" />
-        <el-table-column prop="num" label="文章数量" align="center" />
-      </el-table>
-    </div>
-  </div>
 </template>
 <script setup lang="ts">
-import router from '@/router/index'
-import { onMounted, nextTick } from 'vue'
-import { IconKeys } from '@/components/common/icons'
+import router from "@/router/index"
+import { onMounted, nextTick } from "vue"
+import { IconKeys } from "@/components/common/icons"
 
-defineOptions({ name: 'MonthArchive' })
+defineOptions({ name: "MonthArchive" })
 
-const emits = defineEmits(['ready']) // 用于通知父组件已经渲染完毕
+const emits = defineEmits(["ready"]) // 用于通知父组件已经渲染完毕
 
 onMounted(async () => {
-  await nextTick() // 等待渲染完毕
-  emits('ready') // 通知父组件已经渲染完毕
+    await nextTick() // 等待渲染完毕
+    emits("ready") // 通知父组件已经渲染完毕
 })
 
 // 参考官方文档 https://element-plus.org/zh-CN/component/table.html#table-%E4%BA%8B%E4%BB%B6
 function handleRowClick(row: any) {
-  router.push({ path: row.path })
+    router.push({ path: row.path })
 }
 
 const tableData = [
-  {
-    date: '2016-05',
-    num: 1,
-    path: '/post/1'
-  },
-  {
-    date: '2016-05',
-    num: 2,
-    path: '/post/2'
-  },
-  {
-    date: '2016-05',
-    num: 1,
-    path: '/post/1'
-  }
-  // {
-  //   date: '2016-05',
-  //   num: 2,
-  //   path: '/post/2',
-  // },
-  // {
-  //   date: '2016-05',
-  //   num: 1,
-  //   path: '/post/1',
-  // },
-  // {
-  //   date: '2016-05',
-  //   num: 2,
-  //   path: '/post/2',
-  // },
-  // {
-  //   date: '2016-05',
-  //   num: 1,
-  //   path: '/post/1',
-  // },
-  // {
-  //   date: '2016-05',
-  //   num: 2,
-  //   path: '/post/2',
-  // },
-  // {
-  //   date: '2016-05',
-  //   num: 1,
-  //   path: '/post/1',
-  // },
-  // {
-  //   date: '2016-05',
-  //   num: 2,
-  //   path: '/post/2',
-  // },
-  // {
-  //   date: '2016-05',
-  //   num: 2,
-  //   path: '/post/2',
-  // },
-  // {
-  //   date: '2016-05',
-  //   num: 1,
-  //   path: '/post/1',
-  // },
-  // {
-  //   date: '2016-05',
-  //   num: 2,
-  //   path: '/post/2',
-  // },
+    {
+        date: "2016-05",
+        num: 1,
+        path: "/post/1",
+    },
+    {
+        date: "2016-05",
+        num: 2,
+        path: "/post/2",
+    },
+    {
+        date: "2016-05",
+        num: 1,
+        path: "/post/1",
+    },
+    // {
+    //   date: '2016-05',
+    //   num: 2,
+    //   path: '/post/2',
+    // },
+    // {
+    //   date: '2016-05',
+    //   num: 1,
+    //   path: '/post/1',
+    // },
+    // {
+    //   date: '2016-05',
+    //   num: 2,
+    //   path: '/post/2',
+    // },
+    // {
+    //   date: '2016-05',
+    //   num: 1,
+    //   path: '/post/1',
+    // },
+    // {
+    //   date: '2016-05',
+    //   num: 2,
+    //   path: '/post/2',
+    // },
+    // {
+    //   date: '2016-05',
+    //   num: 1,
+    //   path: '/post/1',
+    // },
+    // {
+    //   date: '2016-05',
+    //   num: 2,
+    //   path: '/post/2',
+    // },
+    // {
+    //   date: '2016-05',
+    //   num: 2,
+    //   path: '/post/2',
+    // },
+    // {
+    //   date: '2016-05',
+    //   num: 1,
+    //   path: '/post/1',
+    // },
+    // {
+    //   date: '2016-05',
+    //   num: 2,
+    //   path: '/post/2',
+    // },
 ]
 
 const tableRowClassName = () => {
-  return 'month-archive-row-class' // 返回 class 名称 全局样式
+    return "month-archive-row-class" // 返回 class 名称 全局样式
 }
 </script>
 <style scoped lang="scss">
 .aside-item {
-  border: 1px solid #eaeaea;
-  background-color: $background-color-content;
-  border-radius: 5px;
+    border: 1px solid #eaeaea;
+    background-color: $background-color-content;
+    border-radius: 5px;
 }
 
 .title {
-  background-color: $background-color-page;
-  padding: 10px 5px;
+    background-color: $background-color-page;
+    padding: 10px 5px;
 }
 
 h2 {
-  font-size: 16px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
 }
 
 .aside-icon {
-  font-size: 20px;
-  margin-right: 5px;
-  fill: #bb1818;
+    font-size: 20px;
+    margin-right: 5px;
+    fill: #bb1818;
 }
 
 :deep(.month-archive-row-class) {
-  cursor: pointer;
+    cursor: pointer;
 }
 </style>

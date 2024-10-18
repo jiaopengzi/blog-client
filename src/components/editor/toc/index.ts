@@ -8,10 +8,10 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
-import type { HeadingType } from '@/stores/editor'
+import type { HeadingType } from "@/stores/editor"
 
-export { default } from './index.vue'
+export { default } from "./index.vue"
 
 export interface TocProps {
-  headings: Array<HeadingType> // 预览内容
+    headings: Array<HeadingType> // 预览内容
 }

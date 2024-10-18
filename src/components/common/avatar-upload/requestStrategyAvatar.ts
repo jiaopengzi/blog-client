@@ -9,23 +9,23 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { ShowMsgTip } from '@/utils/message'
-import { RequestStrategyBase } from '@/utils/requestStrategyBase'
-import { confirmBeforeUploadAvatarAPI } from '@/api/upload/confirmBeforeUpload'
+import { ShowMsgTip } from "@/utils/message"
+import { RequestStrategyBase } from "@/utils/requestStrategyBase"
+import { confirmBeforeUploadAvatarAPI } from "@/api/upload/confirmBeforeUpload"
 // import { uploadFileBySignedUrlAPI } from '@/api/upload/uploadFileBySignedUrl'
-import { confirmAfterUploadBySignedUrlAvatarAPI } from '@/api/upload/confirmAfterUploadBySignedUrl'
-import { uploadChunkAvatarAPI } from '@/api/upload/chunk'
-import { getUploadFileUrlAvatarAPI } from '@/api/upload/getUploadFileUrl'
+import { confirmAfterUploadBySignedUrlAvatarAPI } from "@/api/upload/confirmAfterUploadBySignedUrl"
+import { uploadChunkAvatarAPI } from "@/api/upload/chunk"
+import { getUploadFileUrlAvatarAPI } from "@/api/upload/getUploadFileUrl"
 
 export class RequestStrategyAvatar extends RequestStrategyBase {
-  confirmBeforeUploadAPI = confirmBeforeUploadAvatarAPI
-  // uploadFileBySignedUrlAPI = uploadFileBySignedUrlAPI
-  confirmAfterUploadBySignedUrlAPI = confirmAfterUploadBySignedUrlAvatarAPI
-  uploadChunkAPI = uploadChunkAvatarAPI
-  getUploadFileUrlAPI = getUploadFileUrlAvatarAPI
+    confirmBeforeUploadAPI = confirmBeforeUploadAvatarAPI
+    // uploadFileBySignedUrlAPI = uploadFileBySignedUrlAPI
+    confirmAfterUploadBySignedUrlAPI = confirmAfterUploadBySignedUrlAvatarAPI
+    uploadChunkAPI = uploadChunkAvatarAPI
+    getUploadFileUrlAPI = getUploadFileUrlAvatarAPI
 
-  // 实现 handleConfirmBeforeUploadError
-  async handleConfirmBeforeUploadError(errorMessage: string): Promise<void> {
-    ShowMsgTip(ShowMsgTip.MsgType.error, errorMessage, 6000)
-  }
+    // 实现 handleConfirmBeforeUploadError
+    async handleConfirmBeforeUploadError(errorMessage: string): Promise<void> {
+        ShowMsgTip(ShowMsgTip.MsgType.error, errorMessage, 6000)
+    }
 }

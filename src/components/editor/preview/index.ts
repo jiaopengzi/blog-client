@@ -9,15 +9,15 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-export { default } from './index.vue'
+export { default } from "./index.vue"
 
 export interface PreviewProps {
-  preview: {
-    html: string // html 内容
-    imgUrls: string[] // 图片地址 list
-    isShowElImageViewer: boolean // 是否显示图片预览
-  } // 预览内容
-  width?: string // 宽度
-  height?: string // 高度
-  isShowPreviewWechat?: boolean // 是否显示微信预览
+    preview: {
+        html: string // html 内容
+        imgUrls: string[] // 图片地址 list
+        isShowElImageViewer: boolean // 是否显示图片预览
+    } // 预览内容
+    width?: string // 宽度
+    height?: string // 高度
+    isShowPreviewWechat?: boolean // 是否显示微信预览
 }

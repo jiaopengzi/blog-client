@@ -9,23 +9,23 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { RequestStrategyAvatar } from './requestStrategyAvatar'
-import { uploadFileCommon } from '@/utils/uploadFileCommon'
-import { HashAlgorithm } from '@/utils/hash'
+import { RequestStrategyAvatar } from "./requestStrategyAvatar"
+import { uploadFileCommon } from "@/utils/uploadFileCommon"
+import { HashAlgorithm } from "@/utils/hash"
 
 export const uploadAvatar = async (
-  file: File,
-  isEncrypt: boolean = true,
-  isNoFree: boolean = true,
-  chunkSizeServer = 1024 * 1024 * 10,
-  hashAlgorithmServer: HashAlgorithm = HashAlgorithm.SHA256
+    file: File,
+    isEncrypt: boolean = true,
+    isNoFree: boolean = true,
+    chunkSizeServer = 1024 * 1024 * 10,
+    hashAlgorithmServer: HashAlgorithm = HashAlgorithm.SHA256,
 ): Promise<string | undefined> => {
-  return await uploadFileCommon(
-    file,
-    isEncrypt,
-    isNoFree,
-    chunkSizeServer,
-    hashAlgorithmServer,
-    RequestStrategyAvatar
-  )
+    return await uploadFileCommon(
+        file,
+        isEncrypt,
+        isNoFree,
+        chunkSizeServer,
+        hashAlgorithmServer,
+        RequestStrategyAvatar,
+    )
 }

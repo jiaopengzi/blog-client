@@ -9,17 +9,17 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { HashCalculator } from '@/utils/hash'
+import { HashCalculator } from "@/utils/hash"
 
 // 监听主线程发送的消息
 onmessage = function (e) {
-  const { chunks, algorithm } = e.data
-  for (const chunk of chunks) {
-    const { calcHash } = new HashCalculator(algorithm)
-    calcHash(chunk.blob).then((hash) => {
-      chunk.hash_key = hash
-      chunk.hash_algorithm = algorithm
-      postMessage([chunk])
-    })
-  }
+    const { chunks, algorithm } = e.data
+    for (const chunk of chunks) {
+        const { calcHash } = new HashCalculator(algorithm)
+        calcHash(chunk.blob).then((hash) => {
+            chunk.hash_key = hash
+            chunk.hash_algorithm = algorithm
+            postMessage([chunk])
+        })
+    }
 }

@@ -9,14 +9,14 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import { type ImgFit } from '@/components/common'
+import { type ImgFit } from "@/components/common"
 
 /**
  * @description: 设置主题
  * @param theme  主题名称
  */
 export function setTheme(theme: string) {
-  document.documentElement.setAttribute('data-theme', theme)
+    document.documentElement.setAttribute("data-theme", theme)
 }
 
 /**
@@ -26,7 +26,7 @@ export function setTheme(theme: string) {
  * @return         样式值
  */
 export function getComputedStyleValue(element: HTMLElement, property: string): any {
-  return parseFloat(getComputedStyle(element).getPropertyValue(property))
+    return parseFloat(getComputedStyle(element).getPropertyValue(property))
 }
 
 /**
@@ -36,7 +36,7 @@ export function getComputedStyleValue(element: HTMLElement, property: string): a
  * @param value 变量值
  */
 export function setCSSVariable(element: HTMLElement, variableName: string, value: any): void {
-  element.style.setProperty(variableName, value)
+    element.style.setProperty(variableName, value)
 }
 
 /**
@@ -46,7 +46,7 @@ export function setCSSVariable(element: HTMLElement, variableName: string, value
  * @return 变量值
  */
 export function getCSSVariableValue(element: HTMLElement, variableName: string): any {
-  return getComputedStyle(element).getPropertyValue(variableName)
+    return getComputedStyle(element).getPropertyValue(variableName)
 }
 
 /**
@@ -57,15 +57,15 @@ export function getCSSVariableValue(element: HTMLElement, variableName: string):
  * @return    图片样式
  */
 export function imgStyle(
-  width: number | undefined,
-  height: number | undefined,
-  imgFit: ImgFit | undefined
+    width: number | undefined,
+    height: number | undefined,
+    imgFit: ImgFit | undefined,
 ): Record<string, string> {
-  return {
-    width: width ? `${width}px` : '50px', // 宽度
-    height: height ? `${height}px` : '50px', // 高度
-    'object-fit': imgFit ? imgFit : 'cover' // 图片填充方式
-  }
+    return {
+        width: width ? `${width}px` : "50px", // 宽度
+        height: height ? `${height}px` : "50px", // 高度
+        "object-fit": imgFit ? imgFit : "cover", // 图片填充方式
+    }
 }
 
 /**
@@ -74,7 +74,7 @@ export function imgStyle(
  * @return 图标样式
  */
 export function iconStyle(fontSize: number | undefined): Record<string, string> {
-  return {
-    'font-size': fontSize ? `${fontSize}px` : '40px' // 字体大小
-  }
+    return {
+        "font-size": fontSize ? `${fontSize}px` : "40px", // 字体大小
+    }
 }

@@ -9,31 +9,31 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from '@/api/request'
-import { routerGroup } from '@/api/routerGroup'
-import type { AxiosPromise } from 'axios'
-import { type Res } from '@/api/responseCode'
+import request from "@/api/request"
+import { routerGroup } from "@/api/routerGroup"
+import type { AxiosPromise } from "axios"
+import { type Res } from "@/api/responseCode"
 
 export interface EditUserInfoByAdminRequest {
-  edit_user_id: string // 用户id
-  user_name: string // 用户名
-  email: string // 邮箱
-  disable_expires_at: {
-    time: Date | null // 禁用到期时间
-    valid: boolean
-  }
-  password: string // 密码
-  role_name: string // 角色
-  nick_name: string // 昵称
-  sex: string // 性别
-  description: string // 描述
+    edit_user_id: string // 用户id
+    user_name: string // 用户名
+    email: string // 邮箱
+    disable_expires_at: {
+        time: Date | null // 禁用到期时间
+        valid: boolean
+    }
+    password: string // 密码
+    role_name: string // 角色
+    nick_name: string // 昵称
+    sex: string // 性别
+    description: string // 描述
 }
 
 export function editUserInfoByAdminAPI(requestData: EditUserInfoByAdminRequest): AxiosPromise<Res> {
-  const urlStr = routerGroup + '/user/edit'
-  return request({
-    url: urlStr,
-    method: 'post',
-    data: requestData
-  })
+    const urlStr = routerGroup + "/user/edit"
+    return request({
+        url: urlStr,
+        method: "post",
+        data: requestData,
+    })
 }

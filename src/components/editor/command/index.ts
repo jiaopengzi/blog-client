@@ -9,12 +9,12 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-export { editorInsertFormatContent } from './insert'
+export { editorInsertFormatContent } from "./insert"
 export {
-  CommandsKey,
-  MarkdownEditorCommands,
-  ScrollElementTag,
-  ScrollElementTagHeading
-} from './constant'
+    CommandsKey,
+    MarkdownEditorCommands,
+    ScrollElementTag,
+    ScrollElementTagHeading,
+} from "./constant"
 
-export type { MarkdownEditorCommandItemType, MarkdownEditorCommandsType } from './constant'
+export type { MarkdownEditorCommandItemType, MarkdownEditorCommandsType } from "./constant"

@@ -10,49 +10,49 @@
 -->
 
 <template>
-  <Head>
-    <title>My awesome site</title>
-    <meta name="description" content="My awesome site description" />
-  </Head>
+    <Head>
+        <title>My awesome site</title>
+        <meta name="description" content="My awesome site description" />
+    </Head>
 
-  <!-- :key="$route.fullPath" 解决url变化而页面不刷新问题 -->
-  <!-- <router-view :key="$route.fullPath" /> -->
+    <!-- :key="$route.fullPath" 解决url变化而页面不刷新问题 -->
+    <!-- <router-view :key="$route.fullPath" /> -->
 
-  <router-view />
-  <!-- <keep-alive></keep-alive> -->
+    <router-view />
+    <!-- <keep-alive></keep-alive> -->
 </template>
 <script setup lang="ts">
-import { setTheme } from '@/utils/style'
-import { useHead } from '@unhead/vue'
-import { Head } from '@unhead/vue/components'
+import { setTheme } from "@/utils/style"
+import { useHead } from "@unhead/vue"
+import { Head } from "@unhead/vue/components"
 // import Icon from '@/components/icons/Icon.vue'
 
 useHead({
-  title: 'My awesome site',
-  meta: [
-    { name: 'description', content: '目录，就是目录。' },
-    {
-      name: 'keywords',
-      content:
-        '焦棚子,jiaopengzi,power bi,power pivot,power query,power bi report server,数据分析,透视表,excel,目录'
-    },
-    { property: 'og:type', content: 'article' },
-    { property: 'og:locale', content: 'zh-CN' },
-    { property: 'og:title', content: '焦棚子的文章目录' },
-    { property: 'og:author', content: '焦棚子' },
-    {
-      property: 'og:image',
-      content: 'https://image.jiaopengzi.com/wp-content/uploads/2020/02/logo_1920_2_w280.png'
-    },
-    { property: 'og:site_name', content: '焦棚子' },
-    { property: 'og:description', content: '目录，就是目录。' },
-    { property: 'og:url', content: 'https://jiaopengzi.com/75.html' },
-    { property: 'og:release_date', content: '2020-02-27 15:15:29' }
-  ]
+    title: "My awesome site",
+    meta: [
+        { name: "description", content: "目录，就是目录。" },
+        {
+            name: "keywords",
+            content:
+                "焦棚子,jiaopengzi,power bi,power pivot,power query,power bi report server,数据分析,透视表,excel,目录",
+        },
+        { property: "og:type", content: "article" },
+        { property: "og:locale", content: "zh-CN" },
+        { property: "og:title", content: "焦棚子的文章目录" },
+        { property: "og:author", content: "焦棚子" },
+        {
+            property: "og:image",
+            content: "https://image.jiaopengzi.com/wp-content/uploads/2020/02/logo_1920_2_w280.png",
+        },
+        { property: "og:site_name", content: "焦棚子" },
+        { property: "og:description", content: "目录，就是目录。" },
+        { property: "og:url", content: "https://jiaopengzi.com/75.html" },
+        { property: "og:release_date", content: "2020-02-27 15:15:29" },
+    ],
 })
 
 // 设置主题
-setTheme('light')
+setTheme("light")
 </script>
 
 <style scoped lang="scss"></style>

@@ -9,11 +9,10 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 
-
 <template>
-  <div>收藏</div>
+    <div>收藏</div>
 </template>
 <script setup lang="ts">
-defineOptions({ name: 'UserInfoFavoritePC' })
+defineOptions({ name: "UserInfoFavoritePC" })
 </script>
 <style scoped lang="scss"></style>

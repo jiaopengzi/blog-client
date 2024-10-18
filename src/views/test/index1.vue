@@ -1,70 +1,34 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-09-30 16:55:24
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-07 17:26:44
  * @FilePath     : \blog-client\src\views\test\index1.vue
- * @Description  : 
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
-<!--
- * @FilePath     : \blog-client\src\views\test\index.vue
- * @Description  : 
--->
+
 <template>
-  <div class="container">
-    <VideoPlayer />
-  </div>
+    <button @click="togglePlayPause">点击</button>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import VideoPlayer from '@/components/player'
-import { usePlayerStore, type SubtitlesItem, MediaTypes } from '@/stores/player'
-defineOptions({ name: 'VideoPlayerTest' })
+import { ref, reactive, watchEffect } from "vue"
+import { UsePlayerProps } from "@/components/player"
+import type { PlayerProps } from "@/components/player"
 
-// 从 store 中获取数据
-const playerStore = usePlayerStore()
+defineOptions({ name: "VideoPlayerTest1" })
 
-// 设置视频地址
-// playerStore.setMediaType(MediaTypes.MP4) // 静音
-// playerStore.setSrc("http://10.10.2.222:8081/api/v1/uploads/test.mp4")
-playerStore.setPoster('http://10.10.2.222:8081/api/v1/uploads/poster.png')
+// 定义props
+const { playerProps } = defineProps<{ playerProps: PlayerProps }>()
 
-playerStore.setMediaType(MediaTypes.HLS) // 静音
-// playerStore.setSrc("6-c19424aa") // 多清晰度 免费 不加密
-playerStore.setSrc('1-c19424aa') // 多清晰度 付费 加密
-// playerStore.setSrc("9-31df6df9") // 单清晰度 免费 不加密
+const localPlayerState = ref<UsePlayerProps>(new UsePlayerProps(playerProps))
 
-const subtitles = ref<{ [language: string]: SubtitlesItem }>({
-  cn: {
-    label: '中文',
-    src: 'http://10.10.2.222:8081/api/v1/uploads/cn.vtt'
-  },
-  en: {
-    label: 'English',
-    src: 'http://10.10.2.222:8081/api/v1/uploads/en.vtt'
-  }
-})
-playerStore.setAvailableSubtitles(subtitles.value)
+// 将 playerProps 包裹成 reactive
+const reactivePlayerProps = reactive(playerProps)
 
-const textWatermark = {
-  content: 'jiaopengzi.com1111',
-  style: {
-    color: 'red',
-    fontSize: '14px'
-  }
+// 切换播放暂停
+const togglePlayPause = () => {
+    localPlayerState.value.togglePlayPause()
 }
-playerStore.setTextWatermark(textWatermark)
+
+// 根据 playStatus 控制 video 播放暂停
+watchEffect(() => {
+    console.log("playStatus=============>", reactivePlayerProps.playStatus)
+})
 </script>
 
-<style scoped lang="scss">
-// 让视频播放器水平垂直居中
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-</style>

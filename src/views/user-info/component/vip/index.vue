@@ -20,17 +20,17 @@
 -->
 
 <template>
-  <div class="pc">
-    <UserInfoVipPC />
-  </div>
-  <div class="phone">
-    <UserInfoVipPhone />
-  </div>
+    <div class="pc">
+        <UserInfoVipPC />
+    </div>
+    <div class="phone">
+        <UserInfoVipPhone />
+    </div>
 </template>
 <script setup lang="ts">
-import UserInfoVipPC from './pc.vue'
-import UserInfoVipPhone from './phone.vue'
+import UserInfoVipPC from "./pc.vue"
+import UserInfoVipPhone from "./phone.vue"
 
-defineOptions({ name: 'UserInfoVip' })
+defineOptions({ name: "UserInfoVip" })
 </script>
 <style scoped lang="scss"></style>

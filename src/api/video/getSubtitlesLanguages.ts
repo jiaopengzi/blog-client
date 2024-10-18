@@ -9,20 +9,20 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from '@/api/request'
-import type { AxiosPromise } from 'axios'
-import { routerGroup } from '@/api/routerGroup'
-import { type Res } from '@/api/responseCode'
+import request from "@/api/request"
+import type { AxiosPromise } from "axios"
+import { routerGroup } from "@/api/routerGroup"
+import { type Res } from "@/api/responseCode"
 
 export interface SubtitlesLanguagesResponse extends Res {
-  data: string[] | null
+    data: string[] | null
 }
 
 export function getSubtitlesLanguagesAPI(
-  videoHashId: string
+    videoHashId: string,
 ): AxiosPromise<SubtitlesLanguagesResponse> {
-  return request({
-    url: `${routerGroup}/subtitles/languages/${videoHashId}`,
-    method: 'get'
-  })
+    return request({
+        url: `${routerGroup}/subtitles/languages/${videoHashId}`,
+        method: "get",
+    })
 }

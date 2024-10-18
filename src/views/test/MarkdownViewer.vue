@@ -10,21 +10,21 @@
 -->
 <!-- src/components/MarkdownViewer.vue -->
 <template>
-  <div ref="markdownContainer" v-html="parsedContent"></div>
+    <div ref="markdownContainer" v-html="parsedContent"></div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { parseMarkdown, mountVueComponents } from './markdownParser'
+import { ref, onMounted } from "vue"
+import { parseMarkdown, mountVueComponents } from "./markdownParser"
 
 const props = defineProps<{ content: string }>()
 const parsedContent = ref(parseMarkdown(props.content))
 const markdownContainer = ref<HTMLElement | null>(null)
 
 onMounted(() => {
-  if (markdownContainer.value) {
-    mountVueComponents(markdownContainer.value)
-  }
+    if (markdownContainer.value) {
+        mountVueComponents(markdownContainer.value)
+    }
 })
 </script>
 

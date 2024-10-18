@@ -9,10 +9,10 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import { ref } from 'vue'
-import type { Ref } from 'vue'
-import type { ScrollData } from '@/components/hooks/useScroll'
-import { useScroll } from './useScroll'
+import { ref } from "vue"
+import type { Ref } from "vue"
+import type { ScrollData } from "@/components/hooks/useScroll"
+import { useScroll } from "./useScroll"
 
 /**
  * @description:  滚动事件
@@ -21,24 +21,24 @@ import { useScroll } from './useScroll'
  * @return {Ref<ScrollData>} 滚动数据 ref 对象  position 滚动位置 direction 滚动方向
  */
 export function useScrollActions(actionUp: () => void, actionDown: () => void): Ref<ScrollData> {
-  const scrollData = ref<ScrollData>({
-    position: 0,
-    direction: 'up',
-    speed: 0
-  })
+    const scrollData = ref<ScrollData>({
+        position: 0,
+        direction: "up",
+        speed: 0,
+    })
 
-  const handleScroll = (data: ScrollData) => {
-    scrollData.value = data
+    const handleScroll = (data: ScrollData) => {
+        scrollData.value = data
 
-    if (data.direction === 'up') {
-      actionUp() // 向上滚动事件
-    } else {
-      actionDown() // 向下滚动事件
+        if (data.direction === "up") {
+            actionUp() // 向上滚动事件
+        } else {
+            actionDown() // 向下滚动事件
+        }
     }
-  }
-  useScroll(handleScroll) // 滚动事件
+    useScroll(handleScroll) // 滚动事件
 
-  return scrollData
+    return scrollData
 }
 
 // 示例代码

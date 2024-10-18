@@ -9,19 +9,19 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from '@/api/request'
-import { routerGroup } from '@/api/routerGroup'
-import { type Res } from '@/api/responseCode'
+import request from "@/api/request"
+import { routerGroup } from "@/api/routerGroup"
+import { type Res } from "@/api/responseCode"
 
 export interface SetAvatarRequest {
-  user_id: string // 用户ID
-  avatar_url: string // 头像URL
+    user_id: string // 用户ID
+    avatar_url: string // 头像URL
 }
 
 export function setAvatarAPI(req: SetAvatarRequest): Promise<Res> {
-  return request({
-    url: routerGroup + '/upload/avatar/set',
-    method: 'post',
-    data: req,
-  })
+    return request({
+        url: routerGroup + "/upload/avatar/set",
+        method: "post",
+        data: req,
+    })
 }

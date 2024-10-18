@@ -10,70 +10,70 @@
 -->
 
 <template>
-  <div class="nav">
-    <ul>
-      <li v-for="(item, index) in props.navData" :key="index">
-        <router-link :to="item.path" class="link">
-          <Icon
-            v-if="item.iconKey"
-            :name="item.iconKey"
-            :customClass="'my-icon ' + item.customClass"
-          />
-          <span class="title">{{ item.title }}</span>
-        </router-link>
-      </li>
-    </ul>
-  </div>
+    <div class="nav">
+        <ul>
+            <li v-for="(item, index) in props.navData" :key="index">
+                <router-link :to="item.path" class="link">
+                    <Icon
+                        v-if="item.iconKey"
+                        :name="item.iconKey"
+                        :custom-class="'my-icon ' + item.customClass"
+                    />
+                    <span class="title">{{ item.title }}</span>
+                </router-link>
+            </li>
+        </ul>
+    </div>
 </template>
 <script setup lang="ts">
-import type { HeaderNavPropsItem } from '@/components/layout/header-nav'
+import type { HeaderNavPropsItem } from "@/components/layout/header-nav"
 
-defineOptions({ name: 'HeaderNavPC' })
+defineOptions({ name: "HeaderNavPC" })
 
 const props = defineProps<{ navData: HeaderNavPropsItem[] }>()
 </script>
 <style scoped lang="scss">
 .nav ul {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  width: 500px;
-  height: 100%;
-
-  li {
-    /* width: 100px; */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 500px;
     height: 100%;
-    text-align: center;
-    line-height: 88px;
-    font-size: 16px;
-    font-weight: 600;
-    color: #808080;
-  }
+
+    li {
+        /* width: 100px; */
+        height: 100%;
+        text-align: center;
+        line-height: 88px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #808080;
+    }
 }
 
 .link {
-  display: flex;
-  /* 使用 Flexbox 布局 */
-  align-items: center;
-  /* 垂直居中对齐 */
-  text-decoration: none;
-  /* 可选：去除链接的下划线 */
-  padding-left: 8px;
-  padding-right: 8px;
-  color: #333;
+    display: flex;
+    /* 使用 Flexbox 布局 */
+    align-items: center;
+    /* 垂直居中对齐 */
+    text-decoration: none;
+    /* 可选：去除链接的下划线 */
+    padding-left: 8px;
+    padding-right: 8px;
+    color: #333;
 }
 
 span {
-  display: flex;
-  /* 使用 Flexbox 布局 */
-  align-items: center;
-  /* 垂直居中对齐 */
+    display: flex;
+    /* 使用 Flexbox 布局 */
+    align-items: center;
+    /* 垂直居中对齐 */
 }
 
 .my-icon {
-  font-size: 20px;
-  fill: #333;
-  margin-right: 4px;
+    font-size: 20px;
+    fill: #333;
+    margin-right: 4px;
 }
 
 // .my-icon-red {

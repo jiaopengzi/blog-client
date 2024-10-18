@@ -9,13 +9,13 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { IconKeys } from '@/components/common/icons'
+import { IconKeys } from "@/components/common/icons"
 
 export interface HeaderNavPropsItem {
-  path: string
-  iconKey?: IconKeys
-  title?: string
-  customClass?: string
+    path: string
+    iconKey?: IconKeys
+    title?: string
+    customClass?: string
 }
 
-export { default } from './index.vue'
+export { default } from "./index.vue"

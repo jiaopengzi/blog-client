@@ -9,23 +9,23 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from '@/api/request'
-import { routerGroup } from '@/api/routerGroup'
-import { type Res } from '@/api/responseCode'
+import request from "@/api/request"
+import { routerGroup } from "@/api/routerGroup"
+import { type Res } from "@/api/responseCode"
 
 export interface UpdateFileRequest {
-  file_id: string // 文件 ID
-  file_name_display: string // 文件名
-  description: string // 描述
-  slug: string // 别名
-  is_free: boolean // 是否免费
-  is_video: boolean // 是否为视频
+    file_id: string // 文件 ID
+    file_name_display: string // 文件名
+    description: string // 描述
+    slug: string // 别名
+    is_free: boolean // 是否免费
+    is_video: boolean // 是否为视频
 }
 
 export function updateFileAPI(req: UpdateFileRequest): Promise<Res> {
-  return request({
-    url: routerGroup + '/upload/update',
-    method: 'post',
-    data: req,
-  })
+    return request({
+        url: routerGroup + "/upload/update",
+        method: "post",
+        data: req,
+    })
 }

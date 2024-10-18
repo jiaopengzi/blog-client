@@ -9,21 +9,21 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from '@/api/request'
-import { routerGroup } from '@/api/routerGroup'
-import type { AxiosPromise } from 'axios'
-import { type Res } from '@/api/responseCode'
+import request from "@/api/request"
+import { routerGroup } from "@/api/routerGroup"
+import type { AxiosPromise } from "axios"
+import { type Res } from "@/api/responseCode"
 
 export interface DeleteFileRequest {
-  file_id_list: string[] // 文件 id 列表
+    file_id_list: string[] // 文件 id 列表
 }
 
 // 删除文件
 export function DeleteFileAPI(requestData: DeleteFileRequest): AxiosPromise<Res> {
-  const urlStr = routerGroup + '/upload/delete'
-  return request({
-    url: urlStr,
-    method: 'post',
-    data: requestData,
-  })
+    const urlStr = routerGroup + "/upload/delete"
+    return request({
+        url: urlStr,
+        method: "post",
+        data: requestData,
+    })
 }

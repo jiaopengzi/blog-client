@@ -9,4 +9,4 @@
  * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-export const routerGroup: string = '/api/v1'
+export const routerGroup: string = "/api/v1"

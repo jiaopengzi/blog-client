@@ -9,29 +9,29 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from '@/api/request'
-import { routerGroup } from '@/api/routerGroup'
-import type { AxiosPromise } from 'axios'
-import { PermissionNames } from '@/utils/permissionRole'
-import { type Res } from '@/api/responseCode'
+import request from "@/api/request"
+import { routerGroup } from "@/api/routerGroup"
+import type { AxiosPromise } from "axios"
+import { PermissionNames } from "@/utils/permissionRole"
+import { type Res } from "@/api/responseCode"
 
 // 更新列表角色权限 请求参数
 export interface UpdateRolesRequest {
-  roles: UpdateRoleRequest[]
+    roles: UpdateRoleRequest[]
 }
 
 // 单行角色权限 请求参数
 export interface UpdateRoleRequest {
-  role_name: string
-  permission_names: PermissionNames[]
+    role_name: string
+    permission_names: PermissionNames[]
 }
 
 // 更新列表角色权限
 export function updateRolesAPI(requestData: UpdateRolesRequest): AxiosPromise<Res> {
-  const urlStr = routerGroup + '/role/update-roles'
-  return request({
-    url: urlStr,
-    method: 'post',
-    data: requestData,
-  })
+    const urlStr = routerGroup + "/role/update-roles"
+    return request({
+        url: urlStr,
+        method: "post",
+        data: requestData,
+    })
 }

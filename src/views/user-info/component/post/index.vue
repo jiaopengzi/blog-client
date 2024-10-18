@@ -9,19 +9,18 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 
-
 <template>
-  <div class="pc">
-    <UserInfoPostPC />
-  </div>
-  <div class="phone">
-    <UserInfoPostPhone />
-  </div>
+    <div class="pc">
+        <UserInfoPostPC />
+    </div>
+    <div class="phone">
+        <UserInfoPostPhone />
+    </div>
 </template>
 <script setup lang="ts">
-import UserInfoPostPC from './pc.vue'
-import UserInfoPostPhone from './phone.vue'
+import UserInfoPostPC from "./pc.vue"
+import UserInfoPostPhone from "./phone.vue"
 
-defineOptions({ name: 'UserInfoPost' })
+defineOptions({ name: "UserInfoPost" })
 </script>
 <style scoped lang="scss"></style>

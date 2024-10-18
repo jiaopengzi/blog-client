@@ -10,9 +10,9 @@
 -->
 
 <template>
-  <div>收藏</div>
+    <div>收藏</div>
 </template>
 <script setup lang="ts">
-defineOptions({ name: 'UserInfoFavoritePhone' })
+defineOptions({ name: "UserInfoFavoritePhone" })
 </script>
 <style scoped lang="scss"></style>

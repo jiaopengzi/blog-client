@@ -9,23 +9,23 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from '@/api/request'
-import { routerGroup } from '@/api/routerGroup'
-import { type Res } from '@/api/responseCode'
-import type { AxiosPromise } from 'axios'
+import request from "@/api/request"
+import { routerGroup } from "@/api/routerGroup"
+import { type Res } from "@/api/responseCode"
+import type { AxiosPromise } from "axios"
 
 export interface CaptchaCheckRequest {
-  email: string
-  captcha: string
-  purpose: string // 验证码用途
+    email: string
+    captcha: string
+    purpose: string // 验证码用途
 }
 
 // 检测验证码是否正确
 export function captchaCheckAPI(requestData: CaptchaCheckRequest): AxiosPromise<Res> {
-  const urlStr = routerGroup + '/captcha/check'
-  return request({
-    url: urlStr,
-    method: 'post',
-    data: requestData
-  })
+    const urlStr = routerGroup + "/captcha/check"
+    return request({
+        url: urlStr,
+        method: "post",
+        data: requestData,
+    })
 }

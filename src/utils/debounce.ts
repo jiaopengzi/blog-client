@@ -24,20 +24,20 @@ type DebouncedFn = (...args: any[]) => void
  * @example const debouncedFn = debounce(fn, 100)
  */
 export function debounce(wait: number = 100, fn: DebounceFn): DebouncedFn {
-  // 用于存储 setTimeout 的返回值
-  let timeoutId: ReturnType<typeof setTimeout> | null = null
+    // 用于存储 setTimeout 的返回值
+    let timeoutId: ReturnType<typeof setTimeout> | null = null
 
-  // 返回一个新的 debounced 函数
-  return function debounced(this: unknown, ...args: any[]): void {
-    // 如果 timeoutId 不为 null，表示已存在计时器，清除计时器并重新设置
-    if (timeoutId !== null) {
-      clearTimeout(timeoutId)
+    // 返回一个新的 debounced 函数
+    return function debounced(this: unknown, ...args: any[]): void {
+        // 如果 timeoutId 不为 null，表示已存在计时器，清除计时器并重新设置
+        if (timeoutId !== null) {
+            clearTimeout(timeoutId)
+        }
+
+        // 设置一个计时器，在指定时间后执行原始函数，并传入相应参数和正确的上下文
+        timeoutId = setTimeout(() => {
+            fn.call(this, ...args)
+            timeoutId = null
+        }, wait)
     }
-
-    // 设置一个计时器，在指定时间后执行原始函数，并传入相应参数和正确的上下文
-    timeoutId = setTimeout(() => {
-      fn.call(this, ...args)
-      timeoutId = null
-    }, wait)
-  }
 }
