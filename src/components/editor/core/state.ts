@@ -1,0 +1,155 @@
+/**
+ * @Author       : jiaopengzi
+ * @Date         : 2024-10-19 14:13:44
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2024-10-19 15:17:21
+ * @FilePath     : \blog-client\src\components\editor\core\state.ts
+ * @Description  : 编辑器状态管理
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ */
+
+import { extractImageUrlsFromHtml } from "@/utils/img"
+import createMarked from "@/pkg/marked/new-marked"
+import { createEmptyEditorState, matchAllHeadingToList, getMarkdownHeadingLines } from "./utils"
+import type { EditorState } from "./types"
+import axios from "axios"
+
+/**
+ * @description: 编辑器状态管理
+ * @return    : 编辑器状态管理
+ */
+export class EditorStateManager {
+    private state: EditorState
+
+    // 初始化为默认状态
+    constructor(initialState: EditorState = createEmptyEditorState()) {
+        this.state = initialState
+    }
+
+    // 获取滚动条隐藏的 html 字符串
+    get getScrollHideHtmlStr(): string {
+        return createMarked().parse(this.state.scrollHideViewStr).toString()
+    }
+
+    // 更新编辑器 store
+    updateState(markdownSrc: string): void {
+        this.state.editor = markdownSrc.replace(/^\uFEFF/, "").replace(/\r\n/g, "\n") // 去除 BOM 头 和 windows 换行符)
+        this.state.preview = createMarked().parse(markdownSrc).toString()
+        this.state.tocMarkdown = getMarkdownHeadingLines(this.state.editor)
+        this.state.tocHtml = matchAllHeadingToList(this.state.preview)
+        this.state.imgUrls = extractImageUrlsFromHtml(this.state.preview)
+    }
+
+    // 设置滚动条隐藏的编辑器view 字符串
+    setScrollHideViewStr(scrollHideViewStr: string): void {
+        this.state.scrollHideViewStr = scrollHideViewStr
+    }
+
+    // 设置图片链接数组
+    setImgUrls(imgUrls: string[]): void {
+        this.state.imgUrls = imgUrls
+    }
+
+    // 设置是否显示图片预览组件
+    setIsShowElImageViewer(isShowElImageViewer: boolean): void {
+        this.state.isShowElImageViewer = isShowElImageViewer
+    }
+
+    // 显示图片预览组件
+    showImageViewer = (imgUrls: string[], isShowElImageViewer: boolean): void => {
+        this.setImgUrls(imgUrls)
+        this.setIsShowElImageViewer(isShowElImageViewer)
+    }
+
+    // 设置是否显示目录
+    setEditorShow(editorShow: boolean): void {
+        this.state.editorShow = editorShow
+    }
+
+    // 切换是否显示目录
+    toggleEditorShow(): void {
+        this.state.editorShow = !this.state.editorShow
+    }
+
+    // 设置是否显示预览
+    setPreviewShow(previewShow: boolean): void {
+        this.state.previewShow = previewShow
+    }
+
+    // 切换是否显示预览
+    togglePreviewShow(): void {
+        this.state.previewShow = !this.state.previewShow
+    }
+
+    // 设置是否显示目录
+    setIsAsyncScroll(): void {
+        this.state.isAsyncScroll = !this.state.isAsyncScroll
+    }
+
+    // 切换是否异步滚动
+    toggleAsyncScroll(): void {
+        this.state.isAsyncScroll = !this.state.isAsyncScroll
+    }
+
+    // 设置是否显示目录
+    setTocShow(tocShow: boolean): void {
+        this.state.tocShow = tocShow
+    }
+
+    // 切换是否显示目录
+    toggleTocShow(): void {
+        this.state.tocShow = !this.state.tocShow
+    }
+
+    // 设置是否全屏
+    setIsFullScreen(isFullScreen: boolean): void {
+        this.state.isFullScreen = isFullScreen
+    }
+
+    // 切换是否全屏
+    toggleFullScreen(): void {
+        this.state.isFullScreen = !this.state.isFullScreen
+    }
+
+    // 设置是否显示微信预览
+    setIsShowPreviewWechat(isShowPreviewWechat: boolean): void {
+        this.state.isShowPreviewWechat = isShowPreviewWechat
+    }
+
+    // 切换是否显示微信预览
+    toggleShowPreviewWechat(): void {
+        this.state.isShowPreviewWechat = !this.state.isShowPreviewWechat
+    }
+
+    // 设置是否显示 emoji picker
+    setIsShowEmojiPicker(isShowEmojiPicker: boolean): void {
+        this.state.isShowEmojiPicker = isShowEmojiPicker
+    }
+
+    // 切换是否显示 emoji picker
+    toggleShowEmojiPicker(): void {
+        this.state.isShowEmojiPicker = !this.state.isShowEmojiPicker
+    }
+
+    // 通过 url 获取编辑器内容
+    async getEditorContentFromUrl(url: string): Promise<void> {
+        const res = await axios.get(url)
+        this.updateState(res.data)
+    }
+
+    // 设置快捷键状态
+    setShortcutKeyStatus(status: boolean): void {
+        this.state.isShortcutKey = status
+    }
+
+    // 获取编辑器状态
+    getState(): EditorState {
+        return this.state
+    }
+
+    // 销毁编辑器状态
+    destroy(): void {
+        this.state = createEmptyEditorState()
+    }
+}

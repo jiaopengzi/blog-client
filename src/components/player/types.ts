@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-18 16:02:21
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-18 16:12:36
+ * @LastEditTime : 2024-10-19 09:08:32
  * @FilePath     : \blog-client\src\components\player\types.ts
  * @Description  : 视频组件类型定义
  * @Blog         : https://jiaopengzi.com
@@ -153,7 +153,7 @@ export interface PlayerSize {
     height: number // 播放器高度（像素）
 }
 
-export interface PlayerProps {
+export interface PlayerState {
     // 媒体类型
     mediaType: MediaTypes
     // 视频地址

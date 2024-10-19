@@ -1,55 +1,39 @@
 /**
  * @Author       : jiaopengzi
- * @Date         : 2023-12-20 22:41:35
+ * @Date         : 2024-10-19 15:32:12
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-27 16:51:04
- * @FilePath     : \blog-client\src\components\common\editor\core\hooks\usePreview.ts
+ * @LastEditTime : 2024-10-19 15:35:27
+ * @FilePath     : \blog-client\src\components\editor\core\hooks\usePreview.ts
  * @Description  : preview hook
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { reactive, watchEffect } from "vue"
-import { useEditorStore } from "@/stores/editor"
-import { storeToRefs } from "pinia"
-
-export function usePreview() {
-    // 获取用户信息
-    const editorStore = useEditorStore()
-
-    const {
-        preview,
-        imgUrls: imgUrlsStore,
-        isShowElImageViewer: isShowElImageViewerStore,
-        isShowPreviewWechat,
-    } = storeToRefs(editorStore)
+import { reactive } from "vue"
+import type { EditorState } from "../types"
+import { EditorStateManager } from "../state"
+export function usePreview(editorState: EditorState) {
+    // 状态管理
+    const localEditorState = reactive(editorState)
+    const localManager = new EditorStateManager(localEditorState)
 
     const previewData = reactive({
-        html: preview.value,
-        imgUrls: imgUrlsStore.value,
-        isShowElImageViewer: isShowElImageViewerStore.value,
+        html: localEditorState.preview,
+        imgUrls: localEditorState.imgUrls,
+        isShowElImageViewer: localEditorState.isShowElImageViewer,
     })
 
     const showImageViewer = (imgUrls: string[], isShowElImageViewer: boolean) => {
-        // console.log(imgUrls)
-        // console.log(isShowElImageViewer)
-        imgUrlsStore.value = imgUrls
-        isShowElImageViewerStore.value = isShowElImageViewer
+        localManager.setImgUrls(imgUrls)
+        localManager.setIsShowElImageViewer(isShowElImageViewer)
     }
 
     const closeImageViewer = (isShowElImageViewer: boolean) => {
-        isShowElImageViewerStore.value = isShowElImageViewer
+        localManager.setIsShowElImageViewer(isShowElImageViewer)
     }
-
-    watchEffect(() => {
-        previewData.html = preview.value
-        previewData.imgUrls = imgUrlsStore.value
-        previewData.isShowElImageViewer = isShowElImageViewerStore.value
-    })
 
     return {
         previewData,
-        isShowPreviewWechat,
         showImageViewer,
         closeImageViewer,
     }

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-19 15:51:19
+ * @LastEditTime : 2024-10-18 10:30:16
  * @FilePath     : \blog-client\src\components\editor\core\EditorPost.vue
  * @Description  : 文章编辑器
  * @Blog         : https://jiaopengzi.com
@@ -24,15 +24,15 @@
         <!-- 编辑器容器 -->
         <div ref="mdContainerRef" :class="mdContainerClass">
             <!-- 导航栏 -->
-            <div :class="tocClass" v-show="localEditorState.tocShow">
-                <Toc :headings="localEditorState.tocHtml" @heading-clicked="tocHeadingClicked" />
+            <div :class="tocClass" v-show="tocShow">
+                <Toc :headings="tocHtml" @heading-clicked="tocHeadingClicked" />
             </div>
 
             <!-- 编辑器 -->
-            <div :class="editorClass" v-show="localEditorState.editorShow">
+            <div :class="editorClass" v-show="editorShow">
                 <Codemirror
                     ref="codemirrorRef"
-                    :codemirror-doc="localEditorState.editor"
+                    :codemirror-doc="editor"
                     :height="cmHeight"
                     @handle-scroll="handleScroll"
                     @update-editor-doc="updateEditorDoc"
@@ -40,11 +40,11 @@
             </div>
 
             <!-- 预览 -->
-            <div :class="previewClass" v-show="localEditorState.previewShow">
+            <div :class="previewClass" v-show="previewShow">
                 <HtmlPreview
                     ref="previewRef"
                     :preview="previewData"
-                    :is-show-preview-wechat="localEditorState.isShowPreviewWechat"
+                    :is-show-preview-wechat="isShowPreviewWechat"
                     :height="cmHeight"
                     @show-image-viewer="showImageViewer"
                     @close-image-viewer="closeImageViewer"
@@ -55,11 +55,12 @@
 </template>
 
 <script lang="ts" setup>
-import { useTemplateRef, watchEffect, reactive, computed, onMounted } from "vue"
-import { useToolbar, useCodemirror, usePreview, useToc } from "./hooks"
-import type { EditorState, ToolbarRef, CodemirrorRef, PreviewRef } from "./types"
-import { EditorStateManager } from "./state"
-import { setIsFullScreenClassName } from "./utils"
+import { useTemplateRef, reactive, computed, onMounted } from "vue"
+import { useToolbar, useToc, useCodemirror, usePreview } from "@/components/editor/core/hooks"
+import { useEditorStore } from "@/stores/editor"
+import { storeToRefs } from "pinia"
+import type { ToolbarRef, CodemirrorRef, PreviewRef } from "@/components/editor/core"
+import { setIsFullScreenClassName } from "@/components/editor/core"
 import { CommandsKey } from "@/components/editor/command"
 import "vue3-emoji-picker/css" // import css
 
@@ -71,13 +72,10 @@ import HtmlPreview from "@/components/editor/preview"
 // 文章编辑器命名
 defineOptions({ name: "EditorPost" })
 
-const { editorState } = defineProps<{
-    editorState: EditorState
-}>()
-
-// 状态管理
-const localEditorState = reactive(editorState)
-const localManager = new EditorStateManager(localEditorState)
+// store
+const editorStore = useEditorStore()
+const { tocHtml, tocShow, editor, editorShow, previewShow, isFullScreen, isShowEmojiPicker } =
+    storeToRefs(editorStore)
 
 // ref
 const mdContainerRef = useTemplateRef<HTMLElement | null>("mdContainerRef") //编辑器容器
@@ -130,27 +128,22 @@ const ModePost = reactive([
 
 // 动态生成类名
 const layoutClass = computed(() =>
-    setIsFullScreenClassName("md-layout", "md-layout-fs", false, localEditorState.isFullScreen),
+    setIsFullScreenClassName("md-layout", "md-layout-fs", false, isFullScreen.value),
 )
 const toolbarClass = computed(() =>
-    setIsFullScreenClassName("md-toolbar", "md-toolbar-fs", false, localEditorState.isFullScreen),
+    setIsFullScreenClassName("md-toolbar", "md-toolbar-fs", false, isFullScreen.value),
 )
 const mdContainerClass = computed(() =>
-    setIsFullScreenClassName(
-        "md-container",
-        "md-container-fs",
-        false,
-        localEditorState.isFullScreen,
-    ),
+    setIsFullScreenClassName("md-container", "md-container-fs", false, isFullScreen.value),
 )
 const tocClass = computed(() =>
-    setIsFullScreenClassName("md-toc", "md-toc-fs", true, localEditorState.isFullScreen),
+    setIsFullScreenClassName("md-toc", "md-toc-fs", true, isFullScreen.value),
 )
 const editorClass = computed(() =>
-    setIsFullScreenClassName("md-editor", "md-editor-fs", true, localEditorState.isFullScreen),
+    setIsFullScreenClassName("md-editor", "md-editor-fs", true, isFullScreen.value),
 )
 const previewClass = computed(() =>
-    setIsFullScreenClassName("md-preview", "md-preview-fs", true, localEditorState.isFullScreen),
+    setIsFullScreenClassName("md-preview", "md-preview-fs", true, isFullScreen.value),
 )
 
 // 工具栏点击事件
@@ -160,32 +153,26 @@ const { toolbarBtns, toolbarBtnClicked, iconNumberPerLine } = useToolbar(
     codemirrorRef,
     previewRef,
     ModePost,
-    localEditorState,
 )
 
 // event callback
 function onSelectEmoji(emoji: any) {
     codemirrorRef.value?.runCommand(CommandsKey.Emoji, { prefix: "", content: emoji.i, suffix: "" })
-    localManager.setIsShowEmojiPicker(false)
+    isShowEmojiPicker.value = false
 }
 
 // 目录点击事件
-const { tocHeadingClicked } = useToc(codemirrorRef, previewRef, localEditorState.tocMarkdown)
+const { tocHeadingClicked } = useToc(codemirrorRef, previewRef)
 
 // codemirror
 const { cmHeight, updateCmHeightNotIsFullScreen, handleScroll, updateEditorDoc } = useCodemirror(
     mdContainerRef,
     codemirrorRef,
     previewRef,
-    localEditorState,
 )
 
 // preview
-const { previewData, showImageViewer, closeImageViewer } = usePreview(localEditorState)
-
-watchEffect(() => {
-    console.log("localEditorState1111", localEditorState)
-})
+const { previewData, isShowPreviewWechat, showImageViewer, closeImageViewer } = usePreview()
 
 // 初始化
 onMounted(() => {

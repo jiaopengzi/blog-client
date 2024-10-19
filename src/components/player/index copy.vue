@@ -1,5 +1,15 @@
 <!--
  * @Author       : jiaopengzi
+ * @Date         : 2024-10-19 11:58:00
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2024-10-19 12:11:12
+ * @FilePath     : \blog-client\src\components\player\index copy.vue
+ * @Description  : 
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+-->
+<!--
+ * @Author       : jiaopengzi
  * @Date         : 2024-09-17 10:03:45
  * @LastEditors  : jiaopengzi
  * @LastEditTime : 2024-10-19 11:42:18

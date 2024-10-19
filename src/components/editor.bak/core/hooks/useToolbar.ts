@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-20 22:10:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-19 15:23:32
+ * @LastEditTime : 2024-10-15 09:33:36
  * @FilePath     : \blog-client\src\components\editor\core\hooks\useToolbar.ts
  * @Description  : 工具栏 hook
  * @Blog         : https://jiaopengzi.com
@@ -10,10 +10,11 @@
  */
 
 import type { Ref } from "vue"
-import { ref, reactive, onMounted, nextTick, watch } from "vue"
-import type { ToolbarRef, CodemirrorRef, PreviewRef, EditorState } from "../types"
-import { EditorStateManager } from "../state"
+import { ref, onMounted, nextTick, watch } from "vue"
+import type { ToolbarRef, CodemirrorRef, PreviewRef } from "@/components/editor/core"
 import { CommandsKey, MarkdownEditorCommands } from "@/components/editor/command"
+import { useEditorStore } from "@/stores/editor"
+import { storeToRefs } from "pinia"
 import type { IconKeys } from "@/components/common/icons"
 import { ShowMsgTip } from "@/utils/message"
 import { getComputedStyleValue, setCSSVariable, getCSSVariableValue } from "@/utils/style"
@@ -27,11 +28,9 @@ export function useToolbar(
     codemirrorRef: Ref<CodemirrorRef | null>,
     previewRef: Ref<PreviewRef | null>,
     constantKeys: CommandsKey[],
-    editorState: EditorState,
 ) {
-    // 状态管理
-    const localEditorState = reactive(editorState)
-    const localManager = new EditorStateManager(localEditorState)
+    const { editorShow, previewShow, tocShow, isAsyncScroll, isFullScreen, isShowPreviewWechat } =
+        storeToRefs(useEditorStore())
 
     // 工具栏按钮
     const toolbarBtns = () => {
@@ -55,40 +54,37 @@ export function useToolbar(
      */
     const toolbarBtnClicked = (name: CommandsKey) => {
         if (name === CommandsKey.Preview) {
-            localManager.toggleEditorShow()
-            if (!localEditorState.editorShow) {
-                localManager.setPreviewShow(true)
+            editorShow.value = !editorShow.value
+            if (!editorShow.value) {
+                previewShow.value = true
             }
             return
         }
         if (name === CommandsKey.Edit) {
-            localManager.togglePreviewShow()
-            if (!localEditorState.previewShow) {
-                localManager.setEditorShow(true)
+            previewShow.value = !previewShow.value
+            if (!previewShow.value) {
+                editorShow.value = true
             }
             return
         }
         if (name === CommandsKey.Toc) {
-            localManager.toggleTocShow()
+            tocShow.value = !tocShow.value
             return
         }
         if (name === CommandsKey.Scroll) {
-            localManager.toggleAsyncScroll()
-            ShowMsgTip(
-                ShowMsgTip.MsgType.success,
-                localEditorState.isAsyncScroll ? "同步滚动" : "异步滚动",
-            )
+            isAsyncScroll.value = !isAsyncScroll.value
+            ShowMsgTip(ShowMsgTip.MsgType.success, isAsyncScroll.value ? "同步滚动" : "异步滚动")
             return
         }
         if (name === CommandsKey.Fullscreen) {
-            localManager.toggleFullScreen()
+            isFullScreen.value = !isFullScreen.value
             return
         }
         if (name === CommandsKey.Emoji) {
             return
         }
         if (name === CommandsKey.WechatOfficialAccount) {
-            localManager.toggleShowPreviewWechat()
+            isShowPreviewWechat.value = !isShowPreviewWechat.value
         }
         if (name === CommandsKey.Copy) {
             nextTick(() => {

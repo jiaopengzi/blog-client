@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 19:53:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-18 19:08:19
+ * @LastEditTime : 2024-10-19 11:47:57
  * @FilePath     : \blog-client\src\components\player\components\controls\index.vue
  * @Description  : 视频控制器
  * @Blog         : https://jiaopengzi.com
@@ -14,7 +14,7 @@
         <!-- 视频进度条 -->
         <ProgressBar
             class="row1"
-            :play-progress="localPlayerProps.playProgress"
+            :play-progress="localPlayerState.playProgress"
             @seek="seekVideo"
             @is-dragging="handleIsDragging"
         />
@@ -62,10 +62,10 @@
                     <VideoSetting
                         class="setting"
                         :is-show="isShowVideoSetting"
-                        :subtitles="localPlayerProps.subtitles"
-                        :play-level="localPlayerProps.playLevel"
-                        :playback-rate="localPlayerProps.playbackRate"
-                        :is-loop="localPlayerProps.isLoop"
+                        :subtitles="localPlayerState.subtitles"
+                        :play-level="localPlayerState.playLevel"
+                        :playback-rate="localPlayerState.playbackRate"
+                        :is-loop="localPlayerState.isLoop"
                         @selected-subtitles-language="handleSelectedSubtitleLanguage"
                         @get-is-loop="handelIsLoop"
                         @get-play-level="handelPlayLevel"
@@ -99,55 +99,55 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onUnmounted, watchEffect } from "vue"
+import { ref, reactive, computed, watch, onUnmounted, watchEffect } from "vue"
 import { IconKeys } from "@/components/common/icons"
 import { formatDurationTime } from "@/utils/dateTime"
 import ProgressBar from "@/components/player/components/progress-bar"
 import VideoSetting from "@/components/player/components/setting"
 import { useMagicKeys } from "@vueuse/core"
-import { PlayerCommandsKey, PlayerCommands } from "@/components/player/command"
-import { UsePlayerProps, PlayStatus, PlaybackRate, PlayLevelLabel } from "@/components/player"
-import type { PlayerProps, LanguageKey } from "@/components/player"
+import { PlayerCommandsKey, createPlayerCommands } from "@/components/player/command"
+import { PlayerStateManager, PlayStatus, PlaybackRate, PlayLevelLabel } from "@/components/player"
+import type { PlayerState, LanguageKey } from "@/components/player"
 
 // 名称
 defineOptions({ name: "VideoControls" })
 
 // 定义 props
-const { elPopoverAppendToElement, playerProps } = defineProps<{
+const { elPopoverAppendToElement, playerState } = defineProps<{
     elPopoverAppendToElement: HTMLElement | null // el-popover 的 append-to 属性
-    playerProps: PlayerProps // 播放器状态
+    playerState: PlayerState // 播放器状态
 }>()
 
 // 定义 emit
 const emit = defineEmits<{
-    (e: "update-status", status: PlayerProps): void
+    (e: "update-status", status: PlayerState): void
 }>()
 
-// 拿到播放器的状态
-const localPlayerState = ref<UsePlayerProps>(new UsePlayerProps(playerProps))
-
 // 将 playerProps 包裹成 ref
-const localPlayerProps = ref<PlayerProps>(playerProps)
+const localPlayerState = reactive<PlayerState>(playerState)
+
+// 拿到播放器的状态
+const localManager = new PlayerStateManager(localPlayerState)
 
 // 定义图标名称
 const IconNamePlayPause = ref(IconKeys.Pause)
 const IconNameMute = ref(IconKeys.Unmute)
 
 // 本地状态
-const localVolume = ref(localPlayerProps.value.volume.volume)
+const localVolume = ref(localPlayerState.volume.volume)
 
 // 设置视频进度值
 const seekVideo = (currentTime: number) => {
-    localPlayerState.value.setUserInput(true)
+    localManager.setUserInput(true)
     // 设置当前时间
-    localPlayerState.value.setCurrentTime(currentTime)
+    localManager.setCurrentTime(currentTime)
 }
 
 // 是否正在拖拽进度条
-const handleIsDragging = (isDragging: boolean) => localPlayerState.value.setIsDragging(isDragging)
+const handleIsDragging = (isDragging: boolean) => localManager.setIsDragging(isDragging)
 
 // 设置音量
-const seekVolume = () => localPlayerState.value.setVolume(localVolume.value)
+const seekVolume = () => localManager.setVolume(localVolume.value)
 
 // 注册快捷键 使用 useMagicKeys() 之后，就可以通过 keys 来获取键盘按键的状态了
 const keys = useMagicKeys()
@@ -161,12 +161,16 @@ const unRegisterHotKeys = () => {
     registeredWatchers = []
 }
 
+// 播放器命令
+const playerCommands = createPlayerCommands(localManager)
+
+// 注册快捷键
 const registerHotKeys = () => {
     // 注册前先注销所有已注册的监听器
     unRegisterHotKeys()
 
     Object.values(PlayerCommandsKey).forEach((item) => {
-        const hotKey = PlayerCommands[item].hotKey
+        const hotKey = playerCommands[item].hotKey
         if (hotKey) {
             let intervalId: number | null = null // 用于存储长按的定时器 id
 
@@ -176,14 +180,14 @@ const registerHotKeys = () => {
                 // console.log('item[0]', item)
                 if (v) {
                     // 执行普通按键逻辑
-                    if (PlayerCommands[item].action) PlayerCommands[item].action()
+                    if (playerCommands[item].action) playerCommands[item].action()
 
                     // 按下快捷键
-                    if (PlayerCommands[item].longPressAction) {
+                    if (playerCommands[item].longPressAction) {
                         // 开始检测长按
                         intervalId = window.setInterval(() => {
-                            if (PlayerCommands[item].longPressAction)
-                                PlayerCommands[item].longPressAction()
+                            if (playerCommands[item].longPressAction)
+                                playerCommands[item].longPressAction()
                         }, 200) // 200ms 作为长按的阈值
                     }
                 } else {
@@ -202,36 +206,35 @@ const registerHotKeys = () => {
 }
 
 // 切换播放暂停
-const togglePlayPause = () => localPlayerState.value.togglePlayPause()
+const togglePlayPause = () => localManager.togglePlayPause()
 
 // 切换静音
-const toggleMute = () => localPlayerState.value.toggleMute()
+const toggleMute = () => localManager.toggleMute()
 
 // 视频时间显示
 const formattedTimeDisplay = computed(() => {
-    const currentFormatted = formatDurationTime(localPlayerProps.value.playProgress.currentTime)
-    const durationFormatted = formatDurationTime(localPlayerProps.value.playProgress.duration)
+    const currentFormatted = formatDurationTime(localPlayerState.playProgress.currentTime)
+    const durationFormatted = formatDurationTime(localPlayerState.playProgress.duration)
     return `${currentFormatted} / ${durationFormatted}`
 })
 
 // 处理选择字幕语言
 const handleSelectedSubtitleLanguage = (language: LanguageKey) => {
-    localPlayerState.value.setSelectedSubtitlesLanguage(language)
+    localManager.setSelectedSubtitlesLanguage(language)
 }
 
 // 处理播放清晰度
-const handelPlayLevel = (level: PlayLevelLabel) =>
-    localPlayerState.value.setSelectedPlayLevel(level)
+const handelPlayLevel = (level: PlayLevelLabel) => localManager.setSelectedPlayLevel(level)
 
 // 处理播放速度
 const handelPlaybackRate = (playbackRate: PlaybackRate) =>
-    localPlayerState.value.setPlaybackRate(playbackRate)
+    localManager.setPlaybackRate(playbackRate)
 
 // 处理是否循环播放
-const handelIsLoop = () => localPlayerState.value.toggleLoop()
+const handelIsLoop = () => localManager.toggleLoop()
 
 // 切换画中画
-const togglePIP = () => localPlayerState.value.togglePictureInPicture()
+const togglePIP = () => localManager.togglePictureInPicture()
 
 // 是否显示设置菜单
 const isShowVideoSetting = ref(false)
@@ -243,10 +246,10 @@ const handleHideSetting = () => (isShowVideoSetting.value = false)
 const handleShowSetting = () => (isShowVideoSetting.value = true)
 
 // 切换网页全屏
-const toggleWebFullscreen = () => localPlayerState.value.toggleWebFullScreen()
+const toggleWebFullscreen = () => localManager.toggleWebFullScreen()
 
 // 切换全屏
-const toggleFullscreen = () => localPlayerState.value.toggleFullScreen()
+const toggleFullscreen = () => localManager.toggleFullScreen()
 
 // 处理按钮点击事件,点击完成后失去焦点, 防止键盘事件冲突,主要是快捷键.
 const handleButtonClick = (action: () => void) => {
@@ -257,18 +260,18 @@ const handleButtonClick = (action: () => void) => {
 
 // 监控是否静音, 切换静音图标
 watchEffect(() => {
-    if (localPlayerProps.value.volume.muted) {
+    if (localPlayerState.volume.muted) {
         IconNameMute.value = IconKeys.Mute
         localVolume.value = 0
     } else {
         IconNameMute.value = IconKeys.Unmute
-        localVolume.value = localPlayerProps.value.volume.volume
+        localVolume.value = localPlayerState.volume.volume
     }
 })
 
 // 监控播放状态, 切换播放暂停图标
 watchEffect(() => {
-    if (localPlayerProps.value.playStatus === PlayStatus.PLAYING) {
+    if (localPlayerState.playStatus === PlayStatus.PLAYING) {
         // 当播放状态为播放时，显示暂停图标
         IconNamePlayPause.value = IconKeys.Pause
     } else {
@@ -279,7 +282,7 @@ watchEffect(() => {
 
 // 监控快捷键开关
 watch(
-    () => localPlayerProps.value.isShortcutKey,
+    () => localPlayerState.isShortcutKey,
     (newVal) => {
         if (newVal) {
             registerHotKeys()
@@ -292,7 +295,7 @@ watch(
 
 // 监控播放器状态,有变化就 emit
 watch(
-    () => localPlayerProps.value,
+    () => localPlayerState,
     (newVal) => {
         emit("update-status", newVal)
     },
@@ -380,8 +383,6 @@ onUnmounted(() => {
 
 @include respond-to("pad") {
     // pad端隐藏如下按钮
-    .volume-mute,
-    .volume,
     .pip,
     .web-fullscreen {
         display: none;
@@ -390,8 +391,6 @@ onUnmounted(() => {
 
 @include respond-to("phone") {
     // 手机端隐藏如下按钮
-    .volume-mute,
-    .volume,
     .pip,
     .web-fullscreen {
         display: none;

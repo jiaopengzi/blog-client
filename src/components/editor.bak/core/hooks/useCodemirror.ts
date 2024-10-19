@@ -2,18 +2,19 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-20 22:22:25
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-19 14:51:12
+ * @LastEditTime : 2024-09-08 13:52:19
  * @FilePath     : \blog-client\src\components\editor\core\hooks\useCodemirror.ts
  * @Description  : codemirror hook
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import { nextTick, ref, reactive, watchEffect } from "vue"
+import { nextTick, ref, watch } from "vue"
 import type { Ref } from "vue"
-import type { CodemirrorRef, PreviewRef, EditorState } from "../types"
-import { EditorStateManager } from "../state"
+import type { CodemirrorRef, PreviewRef } from "@/components/editor/core"
 import { ScrollElementTag } from "@/components/editor/command"
+import { useEditorStore } from "@/stores/editor"
+import { storeToRefs } from "pinia"
 import { debounce } from "throttle-debounce"
 import { getCSSVariableValue } from "@/utils/style"
 import { htmlHandleCopyBtns } from "@/utils/preview"
@@ -22,18 +23,17 @@ export function useCodemirror(
     mdContainerRef: Ref<HTMLElement | null>,
     codemirrorRef: Ref<CodemirrorRef | null>,
     previewRef: Ref<PreviewRef | null>,
-    editorState: EditorState,
 ) {
-    // 状态管理
-    const localEditorState = reactive(editorState)
-    const localManager = new EditorStateManager(localEditorState)
+    // store
+    const editorStore = useEditorStore()
+    const { isFullScreen, isAsyncScroll, isShowPreviewWechat } = storeToRefs(editorStore)
 
     // codemirror 高度
     const cmHeight = ref<string | undefined>(void 0)
 
     // 更新 cmView 编辑器实例高度 全屏时
     const updateCmHeightIsFullScreen = (): void => {
-        if (mdContainerRef.value && localEditorState.isFullScreen) {
+        if (mdContainerRef.value && isFullScreen.value) {
             // 读取 mdContainerRef 容器中的 css 变量 --md-editor-container-height 的值
             const mdContainerHeight = getCSSVariableValue(
                 mdContainerRef.value,
@@ -55,25 +55,15 @@ export function useCodemirror(
 
     // 更新 cmView 编辑器实例高度 非全屏时
     const updateCmHeightNotIsFullScreen = (): void => {
-        if (codemirrorRef.value && !localEditorState.isFullScreen) {
+        if (codemirrorRef.value && !isFullScreen.value) {
             // 读取 codemirror 容器中的 css 变量 --md-editor-height 的值
             cmHeight.value = getCSSVariableValue(codemirrorRef.value.root, "--md-editor-height")
             // console.log('cmHeight.value====>非全屏', isFullScreen.value, cmHeight.value)
         }
     }
 
-    // watch(localEditorState.isFullScreen, () => {
-    //     if (localEditorState.isFullScreen) {
-    //         updateCmHeightIsFullScreen()
-    //     } else {
-    //         nextTick(() => {
-    //             updateCmHeightNotIsFullScreen()
-    //         })
-    //     }
-    // })
-
-    watchEffect(() => {
-        if (localEditorState.isFullScreen) {
+    watch(isFullScreen, () => {
+        if (isFullScreen.value) {
             updateCmHeightIsFullScreen()
         } else {
             nextTick(() => {
@@ -85,7 +75,7 @@ export function useCodemirror(
     const handleScroll = debounce(
         200,
         (scrollHeight: number, clientHeight: number, scrollTop: number, hideDoc: string) => {
-            if (!localEditorState.isAsyncScroll) return // 如果不是异步滚动就直接返回
+            if (!isAsyncScroll.value) return // 如果不是异步滚动就直接返回
 
             // 滚动条在顶部时附近时
             if (scrollTop <= 4 && previewRef.value) {
@@ -100,12 +90,12 @@ export function useCodemirror(
             }
             // isAsyncScroll.value = true // 异步滚动
             // TODO 当滚动的内容如 表格 br元素 等不太精确 后续优化
-            localManager.setScrollHideViewStr(hideDoc) // store 存储不可见部分的 markdown
+            editorStore.setScrollHideViewStr(hideDoc) // store 存储不可见部分的 markdown
 
-            let html = localManager.getScrollHideHtmlStr // 获取不可见部分的 markdown 解析出来的 html
+            let html = editorStore.getScrollHideHtmlStr // 获取不可见部分的 markdown 解析出来的 html
 
             // 如果是微信预览模式就去掉复制按钮
-            if (localEditorState.isShowPreviewWechat) {
+            if (isShowPreviewWechat.value) {
                 html = htmlHandleCopyBtns(html)
             }
 
@@ -116,7 +106,7 @@ export function useCodemirror(
     )
 
     const updateEditorDoc = (editorDoc: string) => {
-        localManager.updateState(editorDoc) // 更新 store 中的 editor
+        editorStore.updateEditorStore(editorDoc) // 更新 store 中的 editor
     }
 
     return {

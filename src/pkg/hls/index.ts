@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 15:17:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-17 16:49:02
+ * @LastEditTime : 2024-10-19 09:59:03
  * @FilePath     : \blog-client\src\pkg\hls\index.ts
  * @Description  : hls 自定义 loader
  * @Blog         : https://jiaopengzi.com
@@ -34,15 +34,8 @@ enum CustomLoaderError {
 
 // 自定义 Loader 类
 export class CustomLoader extends Hls.DefaultConfig.loader {
-    private static globalState: { videoId: string } = { videoId: "" } // 定义全局状态
-
     constructor(config: HlsConfig) {
         super(config)
-    }
-
-    // 设置 videoId
-    static setVideoId(videoId: string) {
-        CustomLoader.globalState.videoId = videoId
     }
 
     // load 方法重写
@@ -83,7 +76,6 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
                     loaderStats.loading.end = window.performance.now()
 
                     if (response.data.code === ResponseCode.GetVideoMainM3u8Success) {
-                        CustomLoader.setVideoId(context.url) // 成功拿到 主m3u8 后,设置 videoId, 便于后续使用
                         callbacks.onSuccess(
                             { url: context.url, data: response.data.data },
                             loaderStats,
@@ -97,7 +89,6 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
                             null,
                             loaderStats,
                         )
-                        return // 直接返回，不再继续后续的请求
                     }
                 })
                 .catch((error) => {
@@ -108,7 +99,6 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
                         null,
                         loaderStats,
                     )
-                    return // 直接返回，不再继续后续的请求
                 })
         }
 
@@ -139,7 +129,6 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
                             null,
                             loaderStats,
                         )
-                        return // 直接返回，不再继续后续的请求
                     }
                 })
                 .catch((error) => {
@@ -150,19 +139,20 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
                         null,
                         loaderStats,
                     )
-                    return // 直接返回，不再继续后续的请求
                 })
         }
 
         // 判断是否有 keyInfo
         else if ("keyInfo" in context && context.keyInfo) {
-            // 不使用全局 videoId, 使用 context.keyInfo.decryptdata.uri 获取 videoId
-            // const videoId = context.keyInfo.decryptdata.uri.substring(
-            //   context.keyInfo.decryptdata.uri.lastIndexOf('/') + 1,
-            // )
+            // context.keyInfo.decryptdata.uri 在后端使用的是相对路径，hls在这里会自动拼接成绝url路径
+            // 例如:http://10.10.2.222:8081/api/v1/uploads/2024/10/17/2-7f9d0d9c/2-7f9d0d9c
+            // 但是这个路径在后端是无法访问的，所以需要将这个路径截取出来，拿到 path 中最后一个 / 后面的字符串就是 videoId
+            const videoId = context.keyInfo.decryptdata.uri.substring(
+                context.keyInfo.decryptdata.uri.lastIndexOf("/") + 1,
+            )
 
             // 获取解密密钥
-            await getKeyAPI(CustomLoader.globalState.videoId)
+            await getKeyAPI(videoId)
                 .then((response) => {
                     loaderStats.loading.first = window.performance.now() // 记录首次请求时间
                     return response.data
@@ -188,7 +178,6 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
                             null,
                             loaderStats,
                         )
-                        return // 直接返回，不再继续后续的请求
                     }
                 })
                 .catch((error) => {
@@ -199,7 +188,6 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
                         null,
                         loaderStats,
                     )
-                    return // 直接返回，不再继续后续的请求
                 })
         } else {
             // 对于未加密的视频，直接调用父类的 load 方法

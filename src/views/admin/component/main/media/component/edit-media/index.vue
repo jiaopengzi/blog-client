@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 10:24:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-17 12:49:02
+ * @LastEditTime : 2024-10-19 10:15:14
  * @FilePath     : \blog-client\src\views\admin\component\main\media\component\edit-media\index.vue
  * @Description  : 编辑媒体
  * @Blog         : https://jiaopengzi.com
@@ -24,7 +24,10 @@
                 v-else-if="editMediaData.img?.iconKeyName && !isVideoFile"
                 :name="editMediaData.img?.iconKeyName"
             />
-            <VideoPlayer v-if="isVideoFile && editMediaData.editDialogVisible" />
+            <VideoPlayer
+                v-if="isVideoFile && editMediaData.editDialogVisible"
+                :player-state="playerState"
+            />
         </div>
 
         <div class="middle">
@@ -162,10 +165,10 @@ import { type UpsertSubtitlesRequest, upsertSubtitlesAPI } from "@/api/video/ups
 import { type DeleteSubtitlesRequest, deleteSubtitlesAPI } from "@/api/video/deleteSubtitles"
 import { checkSlugAPI, type CheckSlugRequest } from "@/api/upload/checkSlug"
 import { updateFileAPI, type UpdateFileRequest } from "@/api/upload/updateFile"
-import { isWebvtt, createSubtitlesByVideoHashId } from "@/utils/vttParse"
+import { isWebvtt } from "@/utils/vttParse"
 import { isVideo } from "@/utils/isVideo"
 import VideoPlayer from "@/components/player"
-import { usePlayerStore, Language, type SubtitlesItem, MediaTypes } from "@/stores/player"
+import { PlayerStateManager, type PlayerState, Language } from "@/components/player"
 
 // 定义组件名称
 defineOptions({ name: "EditMedia" })
@@ -182,8 +185,10 @@ const emit = defineEmits<{
     (event: "delete-subtitles", language: string): void // 删除字幕
 }>()
 
-const playerStore = usePlayerStore()
-playerStore.setShortcutKey(false) // 禁用快捷键
+const playerStateManager = new PlayerStateManager()
+playerStateManager.setShortcutKey(false) // 禁用快捷键
+
+let playerState = reactive<PlayerState>(playerStateManager.getState())
 
 // 表单label位置 top | left | right
 const labelPosition = ref("left")
@@ -302,7 +307,7 @@ const saveSubtitles = async (formEl: FormInstance | undefined) => {
     const res = await upsertSubtitlesAPI(params)
     if (res.data.code === ResponseCode.SubtitlesUpsertSuccess) {
         emit("update-subtitles", subtitlesForm.language)
-        playerStore.setSubtitlesByVideoHashIdAuto() // 更新字幕
+        playerStateManager.setSubtitlesByVideoHashIdAuto() // 更新字幕
         ShowMsgTip(ShowMsgTip.MsgType.success, "保存成功", 3000)
     } else {
         let errMsg = res.data.msg || "保存失败"
@@ -330,7 +335,7 @@ const delSubtitles = async () => {
     await deleteSubtitlesAPI(params).then((res) => {
         if (res.data.code === ResponseCode.SubtitlesDeleteSuccess) {
             emit("delete-subtitles", subtitlesForm.language)
-            playerStore.setSubtitlesByVideoHashIdAuto() // 更新字幕
+            playerStateManager.setSubtitlesByVideoHashIdAuto() // 更新字幕
             // 重置表单，不会触发校验
             subtitlesFormRef.value?.resetFields()
             ShowMsgTip(ShowMsgTip.MsgType.success, "删除成功", 3000)
@@ -474,24 +479,23 @@ watch(
 )
 
 // 视频宽度
-const videoWidth = ref(400)
+const videoWidth = ref(480)
 
 // 设置播放器
 watchEffect(() => {
     if (isVideoFile.value && editMediaData.editDialogVisible) {
         // 设置视频宽度
-        nextTick(() => {
-            if (leftRef.value) {
-                videoWidth.value = leftRef.value.clientWidth
-            }
-        })
+        // nextTick(() => {
+        //     if (leftRef.value) {
+        //         videoWidth.value = leftRef.value.clientWidth
+        //     }
+        // })
 
-        playerStore.size = {
-            width: videoWidth.value,
-            height: (videoWidth.value * 9) / 16, // 视频比例为 16:9
-        }
+        playerStateManager.setSize(videoWidth.value, (videoWidth.value * 9) / 16) // 16:9
 
-        playerStore.setSrc(hashID.value) // 设置视频hashID
+        playerStateManager.setSrc(hashID.value) // 设置视频hashID
+
+        playerState = playerStateManager.getState()
     }
 })
 

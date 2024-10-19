@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-07 17:53:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-18 16:13:51
+ * @LastEditTime : 2024-10-19 12:12:43
  * @FilePath     : \blog-client\src\components\player\command\constant.ts
  * @Description  : 播放器命令常量
  * @Blog         : https://jiaopengzi.com
@@ -10,8 +10,7 @@
  */
 
 import { IconKeys } from "@/components/common/icons"
-import { storeToRefs } from "pinia"
-import { usePlayerStore } from "@/stores/player"
+import { PlayerStateManager } from "@/components/player"
 
 export enum PlayerCommandsKey {
     // 播放暂停
@@ -65,109 +64,110 @@ export type PlayerCommandsType = {
     [key in PlayerCommandsKey]: PlayerCommandItemType
 }
 
-// 从 store 中获取数据
-const playerStore = usePlayerStore()
-const { volume } = storeToRefs(playerStore)
+/**
+ * @description: 创建播放器命令
+ * @param playerStateManager 播放器状态管理器
+ * @return {PlayerCommandsType} 播放器命令
+ */
+export function createPlayerCommands(playerStateManager: PlayerStateManager): PlayerCommandsType {
+    const { volume } = playerStateManager.getState()
 
-// 播放器器 所有 排序 命令 集合对象
-export const PlayerCommands: PlayerCommandsType = {
-    [PlayerCommandsKey.PalyPause]: {
-        tip: "播放/暂停",
-        hotKey: "Space",
-        action: () => playerStore.togglePlayPause(),
-    },
-    [PlayerCommandsKey.Fullscreen]: {
-        tip: "全屏",
-        hotKey: "F",
-        action: () => {
-            playerStore.toggleFullScreen()
+    return {
+        [PlayerCommandsKey.PalyPause]: {
+            tip: "播放/暂停",
+            hotKey: "Space",
+            action: () => playerStateManager.togglePlayPause(),
         },
-    },
-    [PlayerCommandsKey.WebFullscreen]: {
-        tip: "网页全屏",
-        hotKey: "W",
-        action: () => playerStore.toggleWebFullScreen(),
-    },
-
-    [PlayerCommandsKey.PictureInPicture]: {
-        tip: "画中画",
-        hotKey: "P",
-        action: () => playerStore.togglePictureInPicture(),
-    },
-
-    [PlayerCommandsKey.Mute]: {
-        tip: "静音",
-        hotKey: "M",
-        action: () => playerStore.toggleMute(),
-    },
-    [PlayerCommandsKey.VolumeUp]: {
-        tip: "音量增加",
-        hotKey: "ArrowUp",
-        action: () => playerStore.setVolume(volume.value.volume + 10),
-        longPressAction: () => playerStore.setVolume(volume.value.volume + 20),
-    },
-    [PlayerCommandsKey.VolumeDown]: {
-        tip: "音量减小",
-        hotKey: "ArrowDown",
-        action: () => playerStore.setVolume(volume.value.volume - 10),
-        longPressAction: () => playerStore.setVolume(volume.value.volume - 20),
-    },
-    [PlayerCommandsKey.FastForward]: {
-        tip: "快进",
-        hotKey: "ArrowRight",
-        action: () => {
-            playerStore.setUserInput(true)
-            playerStore.fastForward()
+        [PlayerCommandsKey.Fullscreen]: {
+            tip: "全屏",
+            hotKey: "F",
+            action: () => {
+                playerStateManager.toggleFullScreen()
+            },
         },
-        longPressAction: () => {
-            playerStore.setUserInput(true)
-            playerStore.fastForward()
+        [PlayerCommandsKey.WebFullscreen]: {
+            tip: "网页全屏",
+            hotKey: "W",
+            action: () => playerStateManager.toggleWebFullScreen(),
         },
-    },
-    [PlayerCommandsKey.Rewind]: {
-        tip: "快退",
-        hotKey: "ArrowLeft",
-        action: () => {
-            playerStore.setUserInput(true)
-            playerStore.rewind()
+        [PlayerCommandsKey.PictureInPicture]: {
+            tip: "画中画",
+            hotKey: "P",
+            action: () => playerStateManager.togglePictureInPicture(),
         },
-        longPressAction: () => {
-            playerStore.setUserInput(true)
-            playerStore.rewind()
+        [PlayerCommandsKey.Mute]: {
+            tip: "静音",
+            hotKey: "M",
+            action: () => playerStateManager.toggleMute(),
         },
-    },
-    [PlayerCommandsKey.ExitFullscreen]: {
-        tip: "退出全屏",
-        hotKey: "Escape",
-        // action: () => playerStore.exitFullScreen(),
-    },
-
-    // [PlayerCommandsKey.Previous]: {
-    //   tip: '上一个',
-    //   hotKey: 'Ctrl+Shift+ArrowLeft',
-    // },
-    // [PlayerCommandsKey.Next]: {
-    //   tip: '下一个',
-    //   hotKey: 'Ctrl+Shift+ArrowRight',
-    // },
-    // [PlayerCommandsKey.RepeatOne]: {
-    //   tip: '循环播放',
-    //   hotKey: 'R',
-    // },
-    // [PlayerCommandsKey.Shuffle]: {
-    //   tip: '随机播放',
-    //   hotKey: 'S',
-    // },
-    // [PlayerCommandsKey.Repeat]: {
-    //   tip: '列表循环',
-    //   hotKey: 'L',
-    // },
-    // [PlayerCommandsKey.PlaybackRate]: {
-    //   tip: '播放速度',
-    //   hotKey: 'P',
-    // },
-    // [PlayerCommandsKey.ShowList]: {
-    //   tip: '展示列表',
-    //   hotKey: 'L',
-    // },
+        [PlayerCommandsKey.VolumeUp]: {
+            tip: "音量增加",
+            hotKey: "ArrowUp",
+            action: () => playerStateManager.setVolume(volume.volume + 10),
+            longPressAction: () => playerStateManager.setVolume(volume.volume + 20),
+        },
+        [PlayerCommandsKey.VolumeDown]: {
+            tip: "音量减小",
+            hotKey: "ArrowDown",
+            action: () => playerStateManager.setVolume(volume.volume - 10),
+            longPressAction: () => playerStateManager.setVolume(volume.volume - 20),
+        },
+        [PlayerCommandsKey.FastForward]: {
+            tip: "快进",
+            hotKey: "ArrowRight",
+            action: () => {
+                playerStateManager.setUserInput(true)
+                playerStateManager.fastForward()
+            },
+            longPressAction: () => {
+                playerStateManager.setUserInput(true)
+                playerStateManager.fastForward()
+            },
+        },
+        [PlayerCommandsKey.Rewind]: {
+            tip: "快退",
+            hotKey: "ArrowLeft",
+            action: () => {
+                playerStateManager.setUserInput(true)
+                playerStateManager.rewind()
+            },
+            longPressAction: () => {
+                playerStateManager.setUserInput(true)
+                playerStateManager.rewind()
+            },
+        },
+        [PlayerCommandsKey.ExitFullscreen]: {
+            tip: "退出全屏",
+            hotKey: "Escape",
+            action: () => playerStateManager.exitFullScreen(),
+        },
+        // [PlayerCommandsKey.Previous]: {
+        //   tip: '上一个',
+        //   hotKey: 'Ctrl+Shift+ArrowLeft',
+        // },
+        // [PlayerCommandsKey.Next]: {
+        //   tip: '下一个',
+        //   hotKey: 'Ctrl+Shift+ArrowRight',
+        // },
+        // [PlayerCommandsKey.RepeatOne]: {
+        //   tip: '循环播放',
+        //   hotKey: 'R',
+        // },
+        // [PlayerCommandsKey.Shuffle]: {
+        //   tip: '随机播放',
+        //   hotKey: 'S',
+        // },
+        // [PlayerCommandsKey.Repeat]: {
+        //   tip: '列表循环',
+        //   hotKey: 'L',
+        // },
+        // [PlayerCommandsKey.PlaybackRate]: {
+        //   tip: '播放速度',
+        //   hotKey: 'P',
+        // },
+        // [PlayerCommandsKey.ShowList]: {
+        //   tip: '展示列表',
+        //   hotKey: 'L',
+        // },
+    }
 }

@@ -10,13 +10,13 @@
 -->
 <!-- App.vue -->
 <template>
-    <!-- <EditorPost /> -->
-    <EditorComment />
+    <EditorPost />
+    <!-- <EditorComment /> -->
 </template>
 
 <script lang="ts" setup>
-import { EditorPost } from "@/components/editor/core"
-import { EditorComment } from "@/components/editor/core"
+import { EditorPost } from "@/components/editor"
+import { EditorComment } from "@/components/editor"
 import { onBeforeMount } from "vue"
 import { useEditorStore } from "@/stores/editor"
 defineOptions({ name: "EditorAll" })

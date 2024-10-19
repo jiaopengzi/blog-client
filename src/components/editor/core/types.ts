@@ -1,0 +1,63 @@
+/**
+ * @Author       : jiaopengzi
+ * @Date         : 2024-10-19 13:34:36
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2024-10-19 14:39:17
+ * @FilePath     : \blog-client\src\components\editor\core\types.ts
+ * @Description  : 编辑器类型
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ */
+
+import type { CommandsKey, MarkdownEditorCommandItemType } from "@/components/editor/command"
+
+// ComponentPublicInstance 与 HTMLElement 并集 为了解决 $el 问题
+// 参考：https://cn.vuejs.org/guide/typescript/composition-api.html#typing-component-template-refs
+export interface ToolbarRef extends HTMLElement {
+    root: HTMLElement
+}
+
+export interface CodemirrorRef extends HTMLElement {
+    root: HTMLElement
+    runCommand: (commandName: CommandsKey, customContent?: MarkdownEditorCommandItemType) => void
+    scrollIntoViewLine: (line: number) => void
+}
+
+export interface PreviewRef extends HTMLElement {
+    root: HTMLElement
+    navigateToHeading: (index: number) => void
+    navigateToElement: (index: number) => void
+    navigateGoHome: (behavior: ScrollBehavior) => void
+    navigateGoEnd: (behavior: ScrollBehavior) => void
+}
+
+// h 标签类型
+export interface HeadingType {
+    level: number
+    text: string
+    anchor?: string
+}
+
+// markdown 标题行号类型
+export interface MarkdownHeadingLineType {
+    markdownHeading: string // markdown 标题
+    markdownLineNumber: number // markdown行号
+}
+
+export interface EditorState {
+    tocMarkdown: MarkdownHeadingLineType[] // markdown 目录内容
+    tocHtml: HeadingType[] // html 目录内容
+    tocShow: boolean // 是否显示目录
+    editor: string // 编辑器内容
+    editorShow: boolean // 是否显示编辑器
+    preview: string // 预览内容
+    previewShow: boolean // 是否显示预览
+    imgUrls: string[] // 图片链接数组
+    isShowElImageViewer: boolean // 是否显示图片预览组件
+    scrollHideViewStr: string // 滚动条隐藏的编辑器 view 字符串
+    isAsyncScroll: boolean // 是否异步滚动
+    isFullScreen: boolean // 是否全屏
+    isShowEmojiPicker: boolean // 是否显示 emoji picker
+    isShowPreviewWechat: boolean // 是否显示微信预览
+    isShortcutKey: boolean // 是否开启快捷键
+}

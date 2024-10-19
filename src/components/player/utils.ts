@@ -2,9 +2,9 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-18 16:04:30
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-18 16:53:53
- * @FilePath     : \blog-client\src\components\player\methods.ts
- * @Description  : 视频组件方法
+ * @LastEditTime : 2024-10-19 12:46:55
+ * @FilePath     : \blog-client\src\components\player\utils.ts
+ * @Description  : 视频组件工具方法
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
@@ -12,14 +12,14 @@
 import { getSubtitlesAPI, type Subtitles as SubtitlesRes } from "@/api/video/getSubtitles"
 import { ResponseCode } from "@/api/responseCode"
 import { Language, PlayStatus, MediaTypes, PlayLevelLabel, PlaybackRate } from "./types"
-import type { PlayerProps, Subtitles, SubtitlesItem } from "./types"
+import type { LanguageKey, PlayerState, Subtitles, SubtitlesItem } from "./types"
 
 /**
  * 创建默认播放器属性。
  *
- * @returns {PlayerProps} - 返回默认播放器属性。
+ * @returns {PlayerState} - 返回默认播放器属性。
  */
-export const defaultPlayerProps = (): PlayerProps => ({
+export const createDefaultPlayerState = (): PlayerState => ({
     mediaType: MediaTypes.HLS,
     src: "",
     poster: "",
@@ -83,7 +83,7 @@ export const defaultPlayerProps = (): PlayerProps => ({
  */
 export const createSubtitlesByVideoHashId = async (
     videoHashId: string | null | undefined | "",
-    playerProps: PlayerProps,
+    playerState: PlayerState,
 ): Promise<Subtitles> => {
     // 如果没有指定哈希 ID，则返回空字幕对象
     if (!videoHashId) return {}
@@ -110,7 +110,7 @@ export const createSubtitlesByVideoHashId = async (
     }
 
     // 获取字幕语言列表
-    const languages = Object.keys(subtitlesRes) as Array<keyof typeof Language>
+    const languages = Object.keys(subtitlesRes) as Array<LanguageKey>
 
     // 遍历字幕语言列表构造字幕对象
     for (const subtitlesLanguage of languages) {
@@ -121,16 +121,16 @@ export const createSubtitlesByVideoHashId = async (
 
         // 创建 URL
         const subtitlesURL = URL.createObjectURL(subtitlesBlob)
-        playerProps.localVideoSubtitlesURLs.push(subtitlesURL) // 保存 URL 引用
+        playerState.localVideoSubtitlesURLs.push(subtitlesURL) // 保存 URL 引用
 
         // 构造字幕项
         const item: SubtitlesItem = {
-            label: Language[subtitlesLanguage as keyof typeof Language], // 字幕标签，例如 'English', '中文', 'Español' 等
+            label: Language[subtitlesLanguage as LanguageKey], // 字幕标签，例如 'English', '中文', 'Español' 等
             src: subtitlesURL, // 字幕文件的URL
         }
 
         // 将字幕项添加到 availableSubtitles 中
-        subtitles.availableSubtitles![subtitlesLanguage as keyof typeof Language] = item
+        subtitles.availableSubtitles![subtitlesLanguage as LanguageKey] = item
     }
 
     return subtitles

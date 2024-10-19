@@ -8,18 +8,20 @@
 
 <script setup lang="ts">
 import { ref, reactive, watchEffect } from "vue"
-import { UsePlayerProps } from "@/components/player"
-import type { PlayerProps } from "@/components/player"
+import { PlayerStateManager } from "@/components/player"
+import type { PlayerState } from "@/components/player"
 
 defineOptions({ name: "VideoPlayerTest1" })
 
 // 定义props
-const { playerProps } = defineProps<{ playerProps: PlayerProps }>()
+const { playerState } = defineProps<{
+    playerState: PlayerState
+}>()
 
-const localPlayerState = ref<UsePlayerProps>(new UsePlayerProps(playerProps))
+const localPlayerState = ref<PlayerStateManager>(new PlayerStateManager(playerState))
 
 // 将 playerProps 包裹成 reactive
-const reactivePlayerProps = reactive(playerProps)
+const reactivePlayerPropsRea = reactive(playerState)
 
 // 切换播放暂停
 const togglePlayPause = () => {
@@ -28,7 +30,6 @@ const togglePlayPause = () => {
 
 // 根据 playStatus 控制 video 播放暂停
 watchEffect(() => {
-    console.log("playStatus=============>", reactivePlayerProps.playStatus)
+    console.log("playStatus=============>1", reactivePlayerPropsRea.playStatus)
 })
 </script>
-

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-26 17:26:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-19 15:35:54
+ * @LastEditTime : 2024-10-18 10:29:50
  * @FilePath     : \blog-client\src\components\editor\core\EditorComment.vue
  * @Description  : 评论编辑器
  * @Blog         : https://jiaopengzi.com
@@ -30,7 +30,7 @@
                     <div :class="editorClass">
                         <Codemirror
                             ref="codemirrorRef"
-                            :codemirror-doc="localEditorState.editor"
+                            :codemirror-doc="editor"
                             :height="cmHeight"
                             @update-editor-doc="updateEditorDoc"
                         />
@@ -55,11 +55,12 @@
 </template>
 
 <script lang="ts" setup>
-import { useTemplateRef, reactive, computed, onMounted, watchEffect } from "vue"
-import { useToolbar, useCodemirror, usePreview } from "./hooks"
-import type { EditorState, ToolbarRef, CodemirrorRef, PreviewRef } from "./types"
-import { EditorStateManager } from "./state"
-import { setIsFullScreenClassName } from "./utils"
+import { useTemplateRef, reactive, computed, onMounted } from "vue"
+import { useToolbar, useCodemirror, usePreview } from "@/components/editor/core/hooks"
+import { useEditorStore } from "@/stores/editor"
+import { storeToRefs } from "pinia"
+import type { ToolbarRef, CodemirrorRef, PreviewRef } from "@/components/editor/core"
+import { setIsFullScreenClassName } from "@/components/editor/core"
 import { CommandsKey } from "@/components/editor/command" // import picker component
 import "vue3-emoji-picker/css" // import css
 
@@ -70,13 +71,9 @@ import HtmlPreview from "@/components/editor/preview"
 // 评论编辑器命名
 defineOptions({ name: "EditorComment" })
 
-const { editorState } = defineProps<{
-    editorState: EditorState
-}>()
-
-// 状态管理
-const localEditorState = reactive(editorState)
-const localManager = new EditorStateManager(localEditorState)
+// store
+const editorStore = useEditorStore()
+const { editor, isFullScreen } = storeToRefs(editorStore)
 
 // ref
 const mdContainerRef = useTemplateRef<HTMLElement | null>("mdContainerRef") //编辑器容器
@@ -107,24 +104,19 @@ const ModeComment = reactive([
 
 // 动态生成类名
 const layoutClass = computed(() =>
-    setIsFullScreenClassName("md-layout", "md-layout-fs", false, localEditorState.isFullScreen),
+    setIsFullScreenClassName("md-layout", "md-layout-fs", false, isFullScreen.value),
 )
 const toolbarClass = computed(() =>
-    setIsFullScreenClassName("md-toolbar", "md-toolbar-fs", false, localEditorState.isFullScreen),
+    setIsFullScreenClassName("md-toolbar", "md-toolbar-fs", false, isFullScreen.value),
 )
 const mdContainerClass = computed(() =>
-    setIsFullScreenClassName(
-        "md-container",
-        "md-container-fs",
-        false,
-        localEditorState.isFullScreen,
-    ),
+    setIsFullScreenClassName("md-container", "md-container-fs", false, isFullScreen.value),
 )
 const editorClass = computed(() =>
-    setIsFullScreenClassName("md-editor", "md-editor-fs", false, localEditorState.isFullScreen),
+    setIsFullScreenClassName("md-editor", "md-editor-fs", false, isFullScreen.value),
 )
 const previewClass = computed(() =>
-    setIsFullScreenClassName("md-preview", "md-preview-fs", false, localEditorState.isFullScreen),
+    setIsFullScreenClassName("md-preview", "md-preview-fs", false, isFullScreen.value),
 )
 
 // 工具栏点击事件
@@ -134,7 +126,6 @@ const { toolbarBtns, toolbarBtnClicked, iconNumberPerLine } = useToolbar(
     codemirrorRef,
     previewRef,
     ModeComment,
-    localEditorState,
 )
 
 // emoji 选择
@@ -147,15 +138,10 @@ const { cmHeight, updateCmHeightNotIsFullScreen, updateEditorDoc } = useCodemirr
     mdContainerRef,
     codemirrorRef,
     previewRef,
-    localEditorState,
 )
 
 // preview
-const { previewData, showImageViewer, closeImageViewer } = usePreview(localEditorState)
-
-watchEffect(() => {
-    console.log("localEditorState1111", localEditorState)
-})
+const { previewData, showImageViewer, closeImageViewer } = usePreview()
 
 // 初始化
 onMounted(() => {
