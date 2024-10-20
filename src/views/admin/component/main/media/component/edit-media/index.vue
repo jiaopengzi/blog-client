@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 10:24:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-19 10:15:14
+ * @LastEditTime : 2024-10-20 11:14:25
  * @FilePath     : \blog-client\src\views\admin\component\main\media\component\edit-media\index.vue
  * @Description  : 编辑媒体
  * @Blog         : https://jiaopengzi.com
@@ -151,7 +151,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, watch, useTemplateRef, computed, watchEffect, nextTick } from "vue"
+import { reactive, ref, watch, useTemplateRef, computed, watchEffect } from "vue"
 import type {
     EditMediaProps,
     EditMediaForm,
@@ -186,9 +186,12 @@ const emit = defineEmits<{
 }>()
 
 const playerStateManager = new PlayerStateManager()
+
+// 设置播放器状态
+
 playerStateManager.setShortcutKey(false) // 禁用快捷键
 
-let playerState = reactive<PlayerState>(playerStateManager.getState())
+let playerState: PlayerState = playerStateManager.getState()
 
 // 表单label位置 top | left | right
 const labelPosition = ref("left")

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-26 17:26:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-19 15:35:54
+ * @LastEditTime : 2024-10-20 11:43:23
  * @FilePath     : \blog-client\src\components\editor\core\EditorComment.vue
  * @Description  : 评论编辑器
  * @Blog         : https://jiaopengzi.com
@@ -28,7 +28,7 @@
                 <el-tab-pane label="编辑">
                     <!-- 编辑器 -->
                     <div :class="editorClass">
-                        <Codemirror
+                        <EditorCodemirror
                             ref="codemirrorRef"
                             :codemirror-doc="localEditorState.editor"
                             :height="cmHeight"
@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useTemplateRef, reactive, computed, onMounted, watchEffect } from "vue"
+import { useTemplateRef, reactive, computed, onMounted } from "vue"
 import { useToolbar, useCodemirror, usePreview } from "./hooks"
 import type { EditorState, ToolbarRef, CodemirrorRef, PreviewRef } from "./types"
 import { EditorStateManager } from "./state"
@@ -64,7 +64,7 @@ import { CommandsKey } from "@/components/editor/command" // import picker compo
 import "vue3-emoji-picker/css" // import css
 
 import Toolbar from "@/components/editor/toolbar"
-import Codemirror from "@/components/editor/codemirror"
+import EditorCodemirror from "@/components/editor/codemirror"
 import HtmlPreview from "@/components/editor/preview"
 
 // 评论编辑器命名
@@ -75,8 +75,8 @@ const { editorState } = defineProps<{
 }>()
 
 // 状态管理
-const localEditorState = reactive(editorState)
-const localManager = new EditorStateManager(localEditorState)
+const localManager = new EditorStateManager(editorState)
+const localEditorState = reactive<EditorState>(localManager.getState())
 
 // ref
 const mdContainerRef = useTemplateRef<HTMLElement | null>("mdContainerRef") //编辑器容器
@@ -112,6 +112,8 @@ const layoutClass = computed(() =>
 const toolbarClass = computed(() =>
     setIsFullScreenClassName("md-toolbar", "md-toolbar-fs", false, localEditorState.isFullScreen),
 )
+
+// 编辑器容器、编辑器、预览容器动态类名
 const mdContainerClass = computed(() =>
     setIsFullScreenClassName(
         "md-container",
@@ -120,9 +122,11 @@ const mdContainerClass = computed(() =>
         localEditorState.isFullScreen,
     ),
 )
+
 const editorClass = computed(() =>
     setIsFullScreenClassName("md-editor", "md-editor-fs", false, localEditorState.isFullScreen),
 )
+
 const previewClass = computed(() =>
     setIsFullScreenClassName("md-preview", "md-preview-fs", false, localEditorState.isFullScreen),
 )
@@ -134,7 +138,7 @@ const { toolbarBtns, toolbarBtnClicked, iconNumberPerLine } = useToolbar(
     codemirrorRef,
     previewRef,
     ModeComment,
-    localEditorState,
+    localManager,
 )
 
 // emoji 选择
@@ -147,24 +151,16 @@ const { cmHeight, updateCmHeightNotIsFullScreen, updateEditorDoc } = useCodemirr
     mdContainerRef,
     codemirrorRef,
     previewRef,
-    localEditorState,
+    localManager,
 )
 
 // preview
-const { previewData, showImageViewer, closeImageViewer } = usePreview(localEditorState)
-
-watchEffect(() => {
-    console.log("localEditorState1111", localEditorState)
-})
+const { previewData, showImageViewer, closeImageViewer } = usePreview(localManager)
 
 // 初始化
 onMounted(() => {
     updateCmHeightNotIsFullScreen() // 初始化编辑器实例高度
 })
-
-// onBeforeMount(async () => {
-//     await editorStore.getEditorContentFromUrl("src/assets/example/markdown.md")
-// })
 </script>
 
 <style scoped lang="scss">

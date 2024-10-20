@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-19 14:00:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-19 14:37:45
+ * @LastEditTime : 2024-10-20 19:17:37
  * @FilePath     : \blog-client\src\components\editor\core\utils.ts
  * @Description  : 编辑器工具函数
  * @Blog         : https://jiaopengzi.com
@@ -32,8 +32,41 @@ export function createEmptyEditorState(): EditorState {
         isShowEmojiPicker: false, // 是否显示 emoji picker
         isShowPreviewWechat: false, // 是否显示微信预览
         isShortcutKey: true, // 默认开启快捷键
+        width: 1200, // 编辑器宽度
     }
 }
+
+// 使用闭包缓存正则表达式
+interface RegexCache {
+    hTagRegex: RegExp // 匹配 h 标签
+    hTagLevelRegex: RegExp // 匹配 h 标签的等级
+    hTagAnchorRegex: RegExp // 匹配 h 标签的锚点
+    htmlTagRegex: RegExp // 匹配所有 HTML 标签
+    markdownHeadingRegex: RegExp // 匹配 markdown 标题
+}
+
+/**
+ * @description: 使用闭包创建正则表达式缓存
+ * @return {Object} 正则表达式缓存
+ */
+const createRegexCache = (): RegexCache => {
+    const hTagRegex = /<h\d.*?>.*?<\/h\d>/g // 匹配 h 标签
+    const hTagLevelRegex = /<h(\d).*?>/ // 匹配 h 标签的等级
+    const hTagAnchorRegex = /id="(.*)"/ // 匹配 h 标签的锚点
+    const htmlTagRegex = /<.*?>/g // 匹配所有 HTML 标签
+    const markdownHeadingRegex = /^ {0,3}(#{1,6})\s+(.*)(?:\n+|$)/ // 匹配 markdown 标题
+
+    return {
+        hTagRegex,
+        hTagLevelRegex,
+        hTagAnchorRegex,
+        htmlTagRegex,
+        markdownHeadingRegex,
+    }
+}
+
+// 正则表达式缓存
+const regexCache = createRegexCache()
 
 /**
  * @description : 通过正则表达式匹配 html 中所有的 h 标签 并转换为 HeadingType 数组
@@ -41,20 +74,22 @@ export function createEmptyEditorState(): EditorState {
  * @return      : 匹配到的 h 标签数组
  */
 export function matchAllHeadingToList(html: string): HeadingType[] {
-    const regex = /<h\d.*?>.*?<\/h\d>/g // 匹配 h 标签
-    const matches = html.match(regex) || [] // 匹配到的 h 标签数组
+    const { hTagRegex, hTagLevelRegex, hTagAnchorRegex, htmlTagRegex } = regexCache
+    const matches = html.match(hTagRegex) || [] // 匹配到的 h 标签数组
     const headingList: HeadingType[] = [] // h 标签数组
+
     matches.forEach((item) => {
         // 遍历匹配到的 h 标签数组
-        const level = Number(item.match(/<h(\d).*?>/)?.[1]) || 0 // h 标签的等级
-        const text = item.replace(/<.*?>/g, "") // h 标签的文本
-        const anchor = item.match(/id="(.*)"/)?.[1] // h 标签的锚点
+        const level = Number(item.match(hTagLevelRegex)?.[1]) || 0 // h 标签的等级
+        const text = item.replace(htmlTagRegex, "") // h 标签的文本
+        const anchor = item.match(hTagAnchorRegex)?.[1] // h 标签的锚点
         headingList.push({
             level,
             text,
             anchor,
         })
     })
+
     return headingList
 }
 
@@ -64,13 +99,12 @@ export function matchAllHeadingToList(html: string): HeadingType[] {
  * @return       标题,行号数组
  */
 export function getMarkdownHeadingLines(markdownStr: string): MarkdownHeadingLineType[] {
-    // console.log('markdownStr====>length', markdownStr.length)
+    const { markdownHeadingRegex } = regexCache
     const lines = markdownStr.split("\n")
-    const targetLines = []
+    const targetLines: MarkdownHeadingLineType[] = []
 
     for (let i = 0; i < lines.length; i++) {
-        // const matchArray = lines[i].match(/^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)/)
-        const matchArray = lines[i].match(/^ {0,3}(#{1,6})\s+(.*)(?:\n+|$)/)
+        const matchArray = lines[i].match(markdownHeadingRegex)
         if (matchArray) {
             targetLines.push({
                 markdownHeading: lines[i],
@@ -78,6 +112,7 @@ export function getMarkdownHeadingLines(markdownStr: string): MarkdownHeadingLin
             })
         }
     }
+
     return targetLines
 }
 

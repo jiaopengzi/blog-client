@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-18 16:21:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-19 10:29:59
+ * @LastEditTime : 2024-10-20 11:10:35
  * @FilePath     : \blog-client\src\components\player\state.ts
  * @Description  : 视频组件状态管理
  * @Blog         : https://jiaopengzi.com
@@ -23,6 +23,7 @@ import type {
 
 import { PlayStatus } from "./types"
 import { createDefaultPlayerState, createSubtitlesByVideoHashId } from "./utils"
+import { reactive } from "vue"
 
 /**
  * @description: 播放器 props 类
@@ -32,7 +33,7 @@ export class PlayerStateManager {
 
     // 初始化为默认状态
     constructor(initialState: PlayerState = createDefaultPlayerState()) {
-        this.state = initialState
+        this.state = reactive(initialState) // 响应式对象
     }
 
     // 获取当前播放状态是否为播放中

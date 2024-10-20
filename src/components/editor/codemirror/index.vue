@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 09:20:29
+ * @LastEditTime : 2024-10-20 18:57:29
  * @FilePath     : \blog-client\src\components\editor\codemirror\index.vue
  * @Description  : codemirror 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -19,14 +19,16 @@ import type { ViewUpdate } from "@codemirror/view"
 import { EditorView, EditorState, createCustomSetup } from "@/pkg/codemirror/setup"
 import {
     CommandsKey,
-    MarkdownEditorCommands,
+    createMarkdownEditorCommands,
     editorInsertFormatContent,
 } from "@/components/editor/command"
-import type { MarkdownEditorCommandItemType } from "@/components/editor/command"
+import type { MarkdownEditorCommandItem, MarkdownEditorCommands } from "@/components/editor/command"
 import type { CodeEditorProps } from "@/components/editor/codemirror"
 
-// eslint-disable-next-line vue/multi-word-component-names
-defineOptions({ name: "Codemirror" })
+defineOptions({ name: "EditorCodemirror" })
+
+// 创建 markdown 编辑器命令
+const commands: MarkdownEditorCommands = createMarkdownEditorCommands()
 
 const props = defineProps<CodeEditorProps>() // 定义 props
 const codemirrorRef = useTemplateRef<HTMLElement | null>("codemirrorRef") // 编辑器 dom 节点
@@ -95,19 +97,19 @@ const updateDocInfo: Extension = EditorView.updateListener.of((viewUpdate: ViewU
 // 执行按钮命令
 const runCommand = (
     commandName: CommandsKey,
-    customContent: MarkdownEditorCommandItemType = {},
+    customContent: MarkdownEditorCommandItem = {},
 ): void => {
     if (commandName) {
         if (customContent) {
             // 合并自定义内容
             editorInsertFormatContent(cmView, {
-                ...MarkdownEditorCommands[commandName],
+                ...commands[commandName],
                 ...customContent,
             })
             return
         }
         // 执行命令
-        editorInsertFormatContent(cmView, MarkdownEditorCommands[commandName])
+        editorInsertFormatContent(cmView, commands[commandName])
     }
 }
 
@@ -148,7 +150,7 @@ const handleScroll = () => {
         cmView.scrollDOM.clientHeight,
         cmView.scrollDOM.scrollTop,
         hideTopMarkdown,
-    ) // 提交给父组件
+    )
 }
 
 // 监听 props.codemirrorDoc 变化 更新编辑器内容 只有第一次加载的时候才更新

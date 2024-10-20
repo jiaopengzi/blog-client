@@ -2,14 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-19 13:34:36
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-19 14:39:17
+ * @LastEditTime : 2024-10-20 11:38:56
  * @FilePath     : \blog-client\src\components\editor\core\types.ts
  * @Description  : 编辑器类型
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import type { CommandsKey, MarkdownEditorCommandItemType } from "@/components/editor/command"
+import type { CommandsKey, MarkdownEditorCommandItem } from "@/components/editor/command"
 
 // ComponentPublicInstance 与 HTMLElement 并集 为了解决 $el 问题
 // 参考：https://cn.vuejs.org/guide/typescript/composition-api.html#typing-component-template-refs
@@ -19,7 +19,7 @@ export interface ToolbarRef extends HTMLElement {
 
 export interface CodemirrorRef extends HTMLElement {
     root: HTMLElement
-    runCommand: (commandName: CommandsKey, customContent?: MarkdownEditorCommandItemType) => void
+    runCommand: (commandName: CommandsKey, customContent?: MarkdownEditorCommandItem) => void
     scrollIntoViewLine: (line: number) => void
 }
 
@@ -60,4 +60,5 @@ export interface EditorState {
     isShowEmojiPicker: boolean // 是否显示 emoji picker
     isShowPreviewWechat: boolean // 是否显示微信预览
     isShortcutKey: boolean // 是否开启快捷键
+    width: number // 编辑器宽度
 }

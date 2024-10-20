@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-18 09:51:29
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-19 15:45:30
+ * @LastEditTime : 2024-10-20 17:53:29
  * @FilePath     : \blog-client\src\views\test\index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -10,27 +10,21 @@
 -->
 <!-- App.vue -->
 <template>
-    <EditorPost :editor-state="editorState" />
-    <!-- <EditorComment  :editor-state="editorState"/> -->
+    <EditorPost :editor-state="stateManager.getState()" />
+    <!-- <EditorComment :editor-state="stateManager.getState()" /> -->
 </template>
 
 <script lang="ts" setup>
-import {
-    EditorStateManager,
-    EditorPost,
-    EditorComment,
-    createEmptyEditorState,
-} from "@/components/editor"
-import type { EditorState } from "@/components/editor"
+import { EditorStateManager, EditorPost, EditorComment } from "@/components/editor"
 
 import { onBeforeMount } from "vue"
 
 defineOptions({ name: "EditorAll" })
-// store
-const editorState: EditorState = createEmptyEditorState()
-const stateManager = new EditorStateManager(editorState)
+
+const stateManager = new EditorStateManager()
+
 onBeforeMount(async () => {
     await stateManager.getEditorContentFromUrl("src/assets/example/markdown.md")
-    console.log("editorState", editorState)
 })
 </script>
+<style scoped lang="scss"></style>

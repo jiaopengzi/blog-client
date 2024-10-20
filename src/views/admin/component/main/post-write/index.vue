@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 17:25:42
+ * @LastEditTime : 2024-10-20 17:52:40
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -10,19 +10,19 @@
 -->
 
 <template>
-    <el-container direction="vertical">
+    <el-container ref="elContainerRef" direction="vertical">
         <el-button type="primary" class="add-media">
             <Icon :name="IconKeys.Media" custom-class="add-media-icon" /> <span>添加媒体</span>
         </el-button>
 
-        <EditorPost />
+        <EditorPost :editor-state="editorState" />
 
         <el-form
             class="post-info"
             label-position="top"
             label-width="200px"
             :model="postInfo"
-            v-show="!isFullScreen"
+            v-show="!editorState.isFullScreen"
         >
             <el-form-item label="标题">
                 <el-input v-model="postInfo.title" placeholder="添加标题" />
@@ -80,22 +80,31 @@
     </el-container>
 </template>
 <script lang="ts" setup>
-import { reactive } from "vue"
-import { EditorPost } from "@/components/editor/core"
-import { useEditorStore } from "@/stores/editor"
-import { storeToRefs } from "pinia"
+import { reactive, useTemplateRef } from "vue"
+import { useResizeObserver } from "@vueuse/core"
+import { EditorPost, EditorStateManager } from "@/components/editor"
 import { IconKeys } from "@/components/common/icons"
 import type { SwitchItem, SwitchItemLabel } from "@/components/common/switch-group"
 import SwitchGroup from "@/components/common/switch-group"
 import { AdminSideMenu } from "@/views/admin/component/aside"
+import { type ElContainer } from "element-plus"
 
 import AddTag from "@/components/common/add-tag"
 
 defineOptions({ name: AdminSideMenu.PostWrite })
 
+const elContainerRef = useTemplateRef<InstanceType<typeof ElContainer> | null>("elContainerRef")
+
 // const addTagRef = useTemplateRef <InstanceType<typeof AddTag>>("addTagRef")
-const editorStore = useEditorStore()
-const { isFullScreen } = storeToRefs(editorStore)
+const stateManager = new EditorStateManager()
+const editorState = stateManager.getState()
+
+// 监听编辑器宽度变化
+useResizeObserver(elContainerRef, (entries) => {
+    const entry = entries[0]
+    const { width } = entry.contentRect
+    stateManager.setEditorWidth(width)
+})
 
 const postInfo = reactive({
     title: "",

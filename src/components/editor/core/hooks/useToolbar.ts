@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-20 22:10:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-19 15:23:32
+ * @LastEditTime : 2024-10-20 11:08:51
  * @FilePath     : \blog-client\src\components\editor\core\hooks\useToolbar.ts
  * @Description  : 工具栏 hook
  * @Blog         : https://jiaopengzi.com
@@ -10,10 +10,14 @@
  */
 
 import type { Ref } from "vue"
-import { ref, reactive, onMounted, nextTick, watch } from "vue"
-import type { ToolbarRef, CodemirrorRef, PreviewRef, EditorState } from "../types"
+import { ref, onMounted, nextTick, watch } from "vue"
+import type { ToolbarRef, CodemirrorRef, PreviewRef } from "../types"
 import { EditorStateManager } from "../state"
-import { CommandsKey, MarkdownEditorCommands } from "@/components/editor/command"
+import {
+    CommandsKey,
+    createMarkdownEditorCommands,
+    type MarkdownEditorCommands,
+} from "@/components/editor/command"
 import type { IconKeys } from "@/components/common/icons"
 import { ShowMsgTip } from "@/utils/message"
 import { getComputedStyleValue, setCSSVariable, getCSSVariableValue } from "@/utils/style"
@@ -27,22 +31,21 @@ export function useToolbar(
     codemirrorRef: Ref<CodemirrorRef | null>,
     previewRef: Ref<PreviewRef | null>,
     constantKeys: CommandsKey[],
-    editorState: EditorState,
+    editorStateManager: EditorStateManager,
 ) {
     // 状态管理
-    const localEditorState = reactive(editorState)
-    const localManager = new EditorStateManager(localEditorState)
+    const editorState = editorStateManager.getState()
+
+    // 创建 markdown 编辑器命令
+    const commands: MarkdownEditorCommands = createMarkdownEditorCommands()
 
     // 工具栏按钮
     const toolbarBtns = () => {
         return constantKeys.map((key) => {
             return {
                 name: key as CommandsKey,
-                display: (MarkdownEditorCommands[key].tip +
-                    " <" +
-                    MarkdownEditorCommands[key].hotKey +
-                    ">") as string,
-                icon: MarkdownEditorCommands[key].icon as IconKeys,
+                display: (commands[key].tip + " <" + commands[key].hotKey + ">") as string,
+                icon: commands[key].icon as IconKeys,
             }
         })
     }
@@ -55,40 +58,40 @@ export function useToolbar(
      */
     const toolbarBtnClicked = (name: CommandsKey) => {
         if (name === CommandsKey.Preview) {
-            localManager.toggleEditorShow()
-            if (!localEditorState.editorShow) {
-                localManager.setPreviewShow(true)
+            editorStateManager.toggleEditorShow()
+            if (!editorState.editorShow) {
+                editorStateManager.setPreviewShow(true)
             }
             return
         }
         if (name === CommandsKey.Edit) {
-            localManager.togglePreviewShow()
-            if (!localEditorState.previewShow) {
-                localManager.setEditorShow(true)
+            editorStateManager.togglePreviewShow()
+            if (!editorState.previewShow) {
+                editorStateManager.setEditorShow(true)
             }
             return
         }
         if (name === CommandsKey.Toc) {
-            localManager.toggleTocShow()
+            editorStateManager.toggleTocShow()
             return
         }
         if (name === CommandsKey.Scroll) {
-            localManager.toggleAsyncScroll()
+            editorStateManager.toggleAsyncScroll()
             ShowMsgTip(
                 ShowMsgTip.MsgType.success,
-                localEditorState.isAsyncScroll ? "同步滚动" : "异步滚动",
+                editorState.isAsyncScroll ? "同步滚动" : "异步滚动",
             )
             return
         }
         if (name === CommandsKey.Fullscreen) {
-            localManager.toggleFullScreen()
+            editorStateManager.toggleFullScreen()
             return
         }
         if (name === CommandsKey.Emoji) {
             return
         }
         if (name === CommandsKey.WechatOfficialAccount) {
-            localManager.toggleShowPreviewWechat()
+            editorStateManager.toggleShowPreviewWechat()
         }
         if (name === CommandsKey.Copy) {
             nextTick(() => {
@@ -115,7 +118,7 @@ export function useToolbar(
     const keys = useMagicKeys() // 使用 useMagicKeys() 之后，就可以通过 keys 来获取键盘按键的状态了
     const registerHotKeys = () => {
         Object.values(CommandsKey).forEach((item) => {
-            const hotKey = MarkdownEditorCommands[item].hotKey
+            const hotKey = commands[item].hotKey
             if (hotKey) {
                 watch(keys[hotKey], (v) => {
                     // v 为 true 时表示按下了快捷键 v 为 false 时释放了快捷键

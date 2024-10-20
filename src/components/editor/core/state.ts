@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-19 14:13:44
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-19 15:17:21
+ * @LastEditTime : 2024-10-20 11:07:41
  * @FilePath     : \blog-client\src\components\editor\core\state.ts
  * @Description  : 编辑器状态管理
  * @Blog         : https://jiaopengzi.com
@@ -14,6 +14,7 @@ import createMarked from "@/pkg/marked/new-marked"
 import { createEmptyEditorState, matchAllHeadingToList, getMarkdownHeadingLines } from "./utils"
 import type { EditorState } from "./types"
 import axios from "axios"
+import { reactive } from "vue"
 
 /**
  * @description: 编辑器状态管理
@@ -24,7 +25,7 @@ export class EditorStateManager {
 
     // 初始化为默认状态
     constructor(initialState: EditorState = createEmptyEditorState()) {
-        this.state = initialState
+        this.state = reactive(initialState) // 响应式对象
     }
 
     // 获取滚动条隐藏的 html 字符串
@@ -141,6 +142,16 @@ export class EditorStateManager {
     // 设置快捷键状态
     setShortcutKeyStatus(status: boolean): void {
         this.state.isShortcutKey = status
+    }
+
+    // 切换快捷键状态
+    toggleShortcutKeyStatus(): void {
+        this.state.isShortcutKey = !this.state.isShortcutKey
+    }
+
+    // 设置编辑器宽度
+    setEditorWidth(width: number): void {
+        this.state.width = width
     }
 
     // 获取编辑器状态

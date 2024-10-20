@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:01:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-18 10:24:38
+ * @LastEditTime : 2024-10-20 17:36:07
  * @FilePath     : \blog-client\src\components\editor\preview\index.vue
  * @Description  : 预览组件
  * @Blog         : https://jiaopengzi.com
@@ -239,6 +239,7 @@ onMounted(() => {
     color: $primary-color;
     background-color: $background-color-content;
     height: var(--my-codemirror-height, 100%);
+    
 }
 
 @include respond-to("pc") {

@@ -126,11 +126,9 @@ const { playerState } = defineProps<{
     playerState: PlayerState // 播放器状态
 }>()
 
-// 将 playerState 包裹成 reactive 响应式对象
-const localPlayerState = reactive<PlayerState>(playerState)
-
 // 初始化播放器状态管理器
-const localManager = new PlayerStateManager(localPlayerState)
+const localManager = new PlayerStateManager(playerState)
+const localPlayerState = reactive(localManager.getState())
 
 const updatePlayerByControls = (playerProps: PlayerState) => {
     localManager.updateState(playerProps)

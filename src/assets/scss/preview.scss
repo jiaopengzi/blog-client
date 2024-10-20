@@ -197,6 +197,8 @@
     p {
         margin: 0.5em 0;
         line-height: 1.8em;
+        // 自动换行
+        word-break: break-all;
     }
 
     // 表格容器

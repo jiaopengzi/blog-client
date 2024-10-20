@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-19 15:51:19
+ * @LastEditTime : 2024-10-20 18:09:28
  * @FilePath     : \blog-client\src\components\editor\core\EditorPost.vue
  * @Description  : 文章编辑器
  * @Blog         : https://jiaopengzi.com
@@ -12,7 +12,7 @@
     <div :class="layoutClass">
         <!-- 工具栏 -->
         <div :class="toolbarClass">
-            <Toolbar
+            <EditorToolbar
                 ref="toolbarRef"
                 :toolbar-btns="toolbarBtns()"
                 :icon-number-per-line="iconNumberPerLine()"
@@ -25,12 +25,15 @@
         <div ref="mdContainerRef" :class="mdContainerClass">
             <!-- 导航栏 -->
             <div :class="tocClass" v-show="localEditorState.tocShow">
-                <Toc :headings="localEditorState.tocHtml" @heading-clicked="tocHeadingClicked" />
+                <EditorToc
+                    :headings="localEditorState.tocHtml"
+                    @heading-clicked="tocHeadingClicked"
+                />
             </div>
 
             <!-- 编辑器 -->
             <div :class="editorClass" v-show="localEditorState.editorShow">
-                <Codemirror
+                <EditorCodemirror
                     ref="codemirrorRef"
                     :codemirror-doc="localEditorState.editor"
                     :height="cmHeight"
@@ -55,7 +58,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useTemplateRef, watchEffect, reactive, computed, onMounted } from "vue"
+import { useTemplateRef, reactive, computed, onMounted, watchEffect } from "vue"
 import { useToolbar, useCodemirror, usePreview, useToc } from "./hooks"
 import type { EditorState, ToolbarRef, CodemirrorRef, PreviewRef } from "./types"
 import { EditorStateManager } from "./state"
@@ -63,9 +66,9 @@ import { setIsFullScreenClassName } from "./utils"
 import { CommandsKey } from "@/components/editor/command"
 import "vue3-emoji-picker/css" // import css
 
-import Toolbar from "@/components/editor/toolbar"
-import Toc from "@/components/editor/toc"
-import Codemirror from "@/components/editor/codemirror"
+import EditorToolbar from "@/components/editor/toolbar"
+import EditorToc from "@/components/editor/toc"
+import EditorCodemirror from "@/components/editor/codemirror"
 import HtmlPreview from "@/components/editor/preview"
 
 // 文章编辑器命名
@@ -76,8 +79,8 @@ const { editorState } = defineProps<{
 }>()
 
 // 状态管理
-const localEditorState = reactive(editorState)
-const localManager = new EditorStateManager(localEditorState)
+const localManager = new EditorStateManager(editorState)
+const localEditorState = reactive<EditorState>(localManager.getState())
 
 // ref
 const mdContainerRef = useTemplateRef<HTMLElement | null>("mdContainerRef") //编辑器容器
@@ -135,6 +138,8 @@ const layoutClass = computed(() =>
 const toolbarClass = computed(() =>
     setIsFullScreenClassName("md-toolbar", "md-toolbar-fs", false, localEditorState.isFullScreen),
 )
+
+// 编辑器容器、目录、编辑器、预览容器动态类名
 const mdContainerClass = computed(() =>
     setIsFullScreenClassName(
         "md-container",
@@ -143,12 +148,15 @@ const mdContainerClass = computed(() =>
         localEditorState.isFullScreen,
     ),
 )
+
 const tocClass = computed(() =>
     setIsFullScreenClassName("md-toc", "md-toc-fs", true, localEditorState.isFullScreen),
 )
+
 const editorClass = computed(() =>
     setIsFullScreenClassName("md-editor", "md-editor-fs", true, localEditorState.isFullScreen),
 )
+
 const previewClass = computed(() =>
     setIsFullScreenClassName("md-preview", "md-preview-fs", true, localEditorState.isFullScreen),
 )
@@ -160,7 +168,7 @@ const { toolbarBtns, toolbarBtnClicked, iconNumberPerLine } = useToolbar(
     codemirrorRef,
     previewRef,
     ModePost,
-    localEditorState,
+    localManager,
 )
 
 // event callback
@@ -170,21 +178,22 @@ function onSelectEmoji(emoji: any) {
 }
 
 // 目录点击事件
-const { tocHeadingClicked } = useToc(codemirrorRef, previewRef, localEditorState.tocMarkdown)
+const { tocHeadingClicked } = useToc(codemirrorRef, previewRef, localManager)
 
 // codemirror
 const { cmHeight, updateCmHeightNotIsFullScreen, handleScroll, updateEditorDoc } = useCodemirror(
     mdContainerRef,
     codemirrorRef,
     previewRef,
-    localEditorState,
+    localManager,
 )
 
 // preview
-const { previewData, showImageViewer, closeImageViewer } = usePreview(localEditorState)
+const { previewData, showImageViewer, closeImageViewer } = usePreview(localManager)
 
+// 监听编辑器宽度变化
 watchEffect(() => {
-    console.log("localEditorState1111", localEditorState)
+    document.documentElement.style.setProperty("--md-editor-width", `${localEditorState.width}px`)
 })
 
 // 初始化
@@ -192,10 +201,6 @@ onMounted(() => {
     updateCmHeightNotIsFullScreen() // 初始化编辑器实例高度
     // console.log('editorCore onMounted', previewRef.value?.$el)
 })
-
-// onBeforeMount(async () => {
-//     await editorStore.getEditorContentFromUrl("src/assets/example/markdown.md")
-// })
 </script>
 
 <style scoped lang="scss">
@@ -215,11 +220,15 @@ onMounted(() => {
     .md-toolbar-fs {
         position: relative;
     }
-
+    .md-container {
+        width: var(--md-editor-width);
+    }
+    .md-container-fs {
+        width: 100vw;
+    }
     .md-container,
     .md-container-fs {
         display: flex;
-        width: 100%;
 
         .md-container-item,
         .md-container-item-fs {
@@ -264,7 +273,8 @@ onMounted(() => {
             height: pc.$editor-md-container-height;
 
             .md-editor {
-                --md-editor-height: #{pc.$editor-md-container-height}; // 设置 css 变量 引用scss变量 使用#{}包裹 插值语法将 SASS 变量插入到自定义属性中
+                // 设置 css 变量 引用scss变量 使用#{}包裹 插值语法将 SASS 变量插入到自定义属性中
+                --md-editor-height: #{pc.$editor-md-container-height};
             }
 
             .md-preview {
@@ -305,7 +315,8 @@ onMounted(() => {
             height: phone.$editor-md-container-height;
 
             .md-editor {
-                --md-editor-height: #{phone.$editor-md-container-height}; // 设置 css 变量 引用scss变量 使用#{}包裹 插值语法将 SASS 变量插入到自定义属性中
+                // 设置 css 变量 引用scss变量 使用#{}包裹 插值语法将 SASS 变量插入到自定义属性中
+                --md-editor-height: #{phone.$editor-md-container-height};
             }
 
             .md-preview {
@@ -346,7 +357,8 @@ onMounted(() => {
             height: phone.$editor-md-container-height;
 
             .md-editor {
-                --md-editor-height: #{phone.$editor-md-container-height}; // 设置 css 变量 引用scss变量 使用#{}包裹 插值语法将 SASS 变量插入到自定义属性中
+                // 设置 css 变量 引用scss变量 使用#{}包裹 插值语法将 SASS 变量插入到自定义属性中
+                --md-editor-height: #{phone.$editor-md-container-height};
             }
 
             .md-preview {

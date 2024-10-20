@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-18 09:51:29
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-24 16:11:25
+ * @LastEditTime : 2024-10-20 17:01:34
  * @FilePath     : \blog-client\src\views\test\编辑器.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -10,19 +10,21 @@
 -->
 <!-- App.vue -->
 <template>
-    <EditorPost />
-    <!-- <EditorComment /> -->
+    <EditorPost :editor-state="stateManager.getState()" />
+    <!-- <EditorComment :editor-state="stateManager.getState()" /> -->
 </template>
 
 <script lang="ts" setup>
-import { EditorPost } from "@/components/editor"
-import { EditorComment } from "@/components/editor"
+import { EditorStateManager, EditorPost, EditorComment } from "@/components/editor"
+
 import { onBeforeMount } from "vue"
-import { useEditorStore } from "@/stores/editor"
+
 defineOptions({ name: "EditorAll" })
-// store
-const editorStore = useEditorStore()
+
+const stateManager = new EditorStateManager()
+
 onBeforeMount(async () => {
-    await editorStore.getEditorContentFromUrl("src/assets/example/markdown.md")
+    // await stateManager.getEditorContentFromUrl("src/assets/example/markdown.md")
 })
 </script>
+<style scoped lang="scss"></style>

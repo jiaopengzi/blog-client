@@ -48,8 +48,7 @@ import type { ToolbarProps } from "@/components/editor/toolbar"
 
 import EmojiPicker from "vue3-emoji-picker" // import picker component
 
-// eslint-disable-next-line vue/multi-word-component-names
-defineOptions({ name: "Toolbar" })
+defineOptions({ name: "EditorToolbar" })
 
 // 定义 props
 const props = defineProps<ToolbarProps>()
