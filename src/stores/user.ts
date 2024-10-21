@@ -345,7 +345,9 @@ async function redirectToSocialLogin(
 
     if (resObj.code === successCode) {
         console.log("三方登录链接=====>", resObj.data)
-        window.location.href = resObj.data // 重定向到第三方登录页面
+        // window.location.href = resObj.data // 重定向到第三方登录页面
+        // 使用 window.open 打开新窗口
+        window.open(resObj.data)
     }
 }
 
