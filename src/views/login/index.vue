@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 08:43:37
+ * @LastEditTime : 2024-10-22 00:47:32
  * @FilePath     : \blog-client\src\views\login\index.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -199,12 +199,14 @@ const login = () => {
     // console.log('登录')
 }
 
-const loginByWeChat = () => {
-    userStore.loginByWeChat()
+const loginByWeChat = async (event: Event) => {
+    event.preventDefault() // 阻止默认行为
+    await userStore.loginByWeChat()
 }
 
-const loginByQQ = () => {
-    userStore.loginByQQ()
+const loginByQQ = async (event: Event) => {
+    event.preventDefault() // 阻止默认行为
+    await userStore.loginByQQ()
 }
 </script>
 
