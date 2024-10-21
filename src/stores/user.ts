@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 09:35:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-22 00:16:01
+ * @LastEditTime : 2024-10-22 00:31:02
  * @FilePath     : \blog-client\src\stores\user.ts
  * @Description  : 用户信息
  * @Blog         : https://jiaopengzi.com
@@ -123,7 +123,7 @@ export const useUserStore = defineStore({
         // QQ登录
         async loginByQQ() {
             await apiLoginQQ()
-            this.$patch(createEmptyUserInfoStore())
+            // this.$patch(createEmptyUserInfoStore())
         },
 
         // QQ登录回调
@@ -135,7 +135,7 @@ export const useUserStore = defineStore({
         // 绑定QQ
         async bindQQ() {
             await apiBindQQ()
-            this.$patch(createEmptyUserInfoStore())
+            // this.$patch(createEmptyUserInfoStore())
         },
 
         // QQ绑定回调
@@ -153,7 +153,7 @@ export const useUserStore = defineStore({
         // 微信登录
         async loginByWeChat() {
             await apiLoginWeChat()
-            this.$patch(createEmptyUserInfoStore())
+            // this.$patch(createEmptyUserInfoStore())
         },
 
         // 微信登录回调
@@ -165,7 +165,7 @@ export const useUserStore = defineStore({
         // 绑定微信
         async bindWeChat() {
             await apiBindWeChat()
-            this.$patch(createEmptyUserInfoStore())
+            // this.$patch(createEmptyUserInfoStore())
         },
 
         // 微信绑定回调
