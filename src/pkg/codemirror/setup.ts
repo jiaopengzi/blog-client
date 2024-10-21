@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 11:33:04
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-21 21:57:04
+ * @LastEditTime : 2024-10-21 22:03:47
  * @FilePath     : \blog-client\src\pkg\codemirror\setup.ts
  * @Description  : 重新封装 codemirror 参考: codemirror 包源码 https://www.npmjs.com/package/codemirror
  * @Blog         : https://jiaopengzi.com
