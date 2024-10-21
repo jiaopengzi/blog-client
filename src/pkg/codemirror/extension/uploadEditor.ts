@@ -9,7 +9,7 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { RequestStrategyEditor } from "@/pkg/codemirror/extension/requestStrategyEditor"
+import { RequestStrategyEditor } from "./requestStrategyEditor"
 import { uploadFileCommon } from "@/utils/uploadFileCommon"
 import { HashAlgorithm } from "@/utils/hash"
 

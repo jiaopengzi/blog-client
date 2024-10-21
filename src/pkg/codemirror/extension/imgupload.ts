@@ -11,7 +11,7 @@
 
 import { EditorView } from "@codemirror/view"
 import type { Extension } from "@codemirror/state"
-import { uploadEditor } from "@/pkg/codemirror/extension/uploadEditor"
+import { uploadEditor } from "./uploadEditor"
 import { ShowMsgTip } from "@/utils/message"
 
 // 自定义键盘事件

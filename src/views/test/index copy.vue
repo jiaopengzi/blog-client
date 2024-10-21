@@ -2,7 +2,7 @@
  * @FilePath     : \blog-client\src\views\test\index copy.vue
  * @Description  : 
 -->
-<template>
+<!-- <template>
     <div class="container">
         <VideoPlayer />
     </div>
@@ -58,4 +58,4 @@ playerStore.setAvailableSubtitles(subtitles.value)
     align-items: center;
     height: 100vh;
 }
-</style>
+</style> -->

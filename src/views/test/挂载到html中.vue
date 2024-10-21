@@ -2,14 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-17 11:39:27
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-18 10:26:51
+ * @LastEditTime : 2024-10-21 21:47:42
  * @FilePath     : \blog-client\src\views\test\挂载到html中.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 <!-- src/App.vue -->
-<template>
+<!-- <template>
     <div ref="previewRef" id="preview">
         <VideoPlayer />
     </div>
@@ -21,4 +21,4 @@ import { usePlayerStore } from "@/stores/player"
 defineOptions({ name: "MyTest" })
 const playerStore = usePlayerStore()
 playerStore.setSrc("3-c19424aa") // 设置视频hashID
-</script>
+</script> -->

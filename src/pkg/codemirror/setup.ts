@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 11:33:04
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-25 22:06:38
+ * @LastEditTime : 2024-10-21 21:57:04
  * @FilePath     : \blog-client\src\pkg\codemirror\setup.ts
  * @Description  : 重新封装 codemirror 参考: codemirror 包源码 https://www.npmjs.com/package/codemirror
  * @Blog         : https://jiaopengzi.com
@@ -41,10 +41,10 @@ import {
 } from "@codemirror/autocomplete"
 import { lintKeymap } from "@codemirror/lint"
 import { markdown } from "@codemirror/lang-markdown"
-import { bottomPanelExt } from "@/pkg/codemirror/extension/bottomPanel"
-import { customKeymap } from "@/pkg/codemirror/extension/hotkey"
-import { handlePasteImage, handleDropImage } from "@/pkg/codemirror/extension/imgUpload"
-import { emojiCompletions } from "@/pkg/codemirror/extension/emoji"
+import { bottomPanelExt } from "./extension/bottomPanel"
+import { customKeymap } from "./extension/hotkey"
+import { handlePasteImage, handleDropImage } from "./extension/imgUpload"
+import { emojiCompletions } from "./extension/emoji"
 
 // 自定义 codemirror setup 工厂函数
 const createCustomSetup = () => {
