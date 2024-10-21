@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 09:35:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-22 00:00:18
+ * @LastEditTime : 2024-10-22 00:16:01
  * @FilePath     : \blog-client\src\stores\user.ts
  * @Description  : 用户信息
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,7 @@
  */
 
 // @ts-check
-import { defineStore } from "pinia"
+import { defineStore, acceptHMRUpdate } from "pinia"
 import { ResponseCode, LocalStorageKey } from "@/api/responseCode"
 import { type AxiosResponse } from "axios"
 import { ShowMsgTip } from "@/utils/message"
@@ -72,22 +72,27 @@ export const useUserStore = defineStore({
         getUserData(): UserInfo {
             return this.data
         },
+
         // 获取登录状态
         getIsLogin(): boolean {
             return this.isLogin
         },
+
         // 获取是否绑定邮箱
         getIsBindEmail(): boolean {
             return this.isBindEmail
         },
+
         // 获取头像
         getAvatar(): string {
             return this.avatar || ""
         },
+
         // 获取是否显示绑定邮箱弹窗
         getShowDialogBindEmail(): boolean {
             return this.showDialogBindEmail || false
         },
+
         // 获取权限列表
         getPermissions(): PermissionNames[] {
             return this.permissions || []
@@ -102,77 +107,77 @@ export const useUserStore = defineStore({
 
         // 退出登录
         async logout() {
+            // localStorage.removeItem(LocalStorageKey.AccessToken)
             localStorage.clear()
-            this.$reset()
+            this.$patch(createEmptyUserInfoStore())
             // 重定向到登录页
             window.location.href = "/"
         },
 
         // 登录
         async login(loginName: string, password: string) {
-            await apiLogin(loginName, password).then((res) => this.$patch(res))
+            const userInfoStore: UserInfoStore = await apiLogin(loginName, password)
+            this.$patch(userInfoStore)
         },
 
         // QQ登录
         async loginByQQ() {
             await apiLoginQQ()
+            this.$patch(createEmptyUserInfoStore())
         },
 
         // QQ登录回调
         async loginByQQCallback(code: string) {
-            await apiLoginQQCallback(code).then((res) => {
-                this.$patch(res)
-            })
+            const userInfoStore: UserInfoStore = await apiLoginQQCallback(code)
+            this.$patch(userInfoStore)
         },
 
         // 绑定QQ
         async bindQQ() {
             await apiBindQQ()
+            this.$patch(createEmptyUserInfoStore())
         },
 
         // QQ绑定回调
         async bindQQCallback(code: string) {
-            await apiBindQQCallback(code).then((res) => {
-                this.$patch(res)
-            })
+            const userInfoStore: UserInfoStore = await apiBindQQCallback(code)
+            this.$patch(userInfoStore)
         },
 
         // 解绑QQ
         async unBindQQ() {
-            await apiUnBindQQ().then((res) => {
-                this.$patch(res)
-            })
+            const userInfoStore: UserInfoStore = await apiUnBindQQ()
+            this.$patch(userInfoStore)
         },
 
         // 微信登录
         async loginByWeChat() {
             await apiLoginWeChat()
+            this.$patch(createEmptyUserInfoStore())
         },
 
         // 微信登录回调
         async loginByWeChatCallback(code: string) {
-            await apiLoginWeChatCallback(code).then((res) => {
-                this.$patch(res)
-            })
+            const userInfoStore: UserInfoStore = await apiLoginWeChatCallback(code)
+            this.$patch(userInfoStore)
         },
 
         // 绑定微信
         async bindWeChat() {
             await apiBindWeChat()
+            this.$patch(createEmptyUserInfoStore())
         },
 
         // 微信绑定回调
         async bindWeChatCallback(code: string) {
-            await apiBindWeChatCallback(code).then((res) => {
-                this.$patch(res)
-            })
+            const userInfoStore: UserInfoStore = await apiBindWeChatCallback(code)
+            this.$patch(userInfoStore)
         },
 
         // 解绑微信
         async unBindWeChat() {
-            await apiUnBindWeChat().then((res) => {
-                this.$patch(res)
-            })
+            const userInfoStore: UserInfoStore = await apiUnBindWeChat()
+            this.$patch(userInfoStore)
         },
 
         // 从token中获取用户信息
@@ -185,13 +190,13 @@ export const useUserStore = defineStore({
             if (this.isLogin && !IsUpdate) {
                 return
             }
-            await apiGetUserInfoByToken().then((res) => {
-                this.$patch(res)
-            })
+            const userInfoStore: UserInfoStore = await apiGetUserInfoByToken()
+
+            this.$patch(userInfoStore)
         },
 
         // 修改是否显示绑定邮箱弹窗
-        changeShowDialogBindEmail(status: boolean) {
+        async changeShowDialogBindEmail(status: boolean) {
             this.showDialogBindEmail = status
         },
 
@@ -214,13 +219,9 @@ async function apiLogin(loginName: string, password: string): Promise<UserInfoSt
         password: password,
     }
 
-    await handleResponse<Res>(loginAPI(req)).then(async (res) => {
-        await handleLoginResult(res, ResponseCode.UserLoginSuccess).then((res) => {
-            return res
-        })
-    })
+    const resObj = await handleResponse<Res>(loginAPI(req)) // 使用辅助函数处理请求
 
-    return createEmptyUserInfoStore()
+    return await handleLoginResult(resObj, ResponseCode.UserLoginSuccess)
 }
 
 // QQ登录
@@ -230,11 +231,9 @@ async function apiLoginQQ(): Promise<void> {
 
 // QQ登录回调
 async function apiLoginQQCallback(code: string): Promise<UserInfoStore> {
-    await handleResponse<Res>(loginByQQUrlCallback(code)).then(async (res) => {
-        return await handleLoginResult(res, ResponseCode.SocialLoginQQCallbackSuccess)
-    })
+    const resObj: Res = await handleResponse<Res>(loginByQQUrlCallback(code)) // 使用辅助函数处理请求
 
-    return createEmptyUserInfoStore()
+    return await handleLoginResult(resObj, ResponseCode.SocialLoginQQCallbackSuccess)
 }
 
 // 绑定QQ
@@ -244,20 +243,15 @@ async function apiBindQQ(): Promise<void> {
 
 // 绑定QQ回调
 async function apiBindQQCallback(code: string): Promise<UserInfoStore> {
-    await handleResponse<Res>(bindQQUrlCallback(code)).then(async (res) => {
-        return await handleBindResult(res, ResponseCode.SocialBindQQCallbackSuccess)
-    })
+    const resObj: Res = await handleResponse<Res>(bindQQUrlCallback(code)) // 使用辅助函数处理请求
 
-    return createEmptyUserInfoStore()
+    return await handleBindResult(resObj, ResponseCode.SocialBindQQCallbackSuccess)
 }
-
 // 解绑QQ
 async function apiUnBindQQ(): Promise<UserInfoStore> {
-    await handleResponse<Res>(unBindQQ()).then(async (res) => {
-        return await handleBindResult(res, ResponseCode.SocialUnBindQQSuccess)
-    })
+    const resObj: Res = await handleResponse<Res>(unBindQQ()) // 使用辅助函数处理请求
 
-    return createEmptyUserInfoStore()
+    return await handleBindResult(resObj, ResponseCode.SocialUnBindQQSuccess)
 }
 
 // 微信登录
@@ -267,11 +261,8 @@ async function apiLoginWeChat(): Promise<void> {
 
 // 微信登录回调
 async function apiLoginWeChatCallback(code: string): Promise<UserInfoStore> {
-    await handleResponse<Res>(loginByWeChatUrlCallback(code)).then(async (res) => {
-        return await handleLoginResult(res, ResponseCode.SocialLoginWeChatCallbackSuccess)
-    })
-
-    return createEmptyUserInfoStore()
+    const resObj: Res = await handleResponse<Res>(loginByWeChatUrlCallback(code)) // 使用辅助函数处理请求
+    return await handleLoginResult(resObj, ResponseCode.SocialLoginWeChatCallbackSuccess)
 }
 
 // 绑定微信
@@ -281,19 +272,16 @@ async function apiBindWeChat(): Promise<void> {
 
 // 绑定微信回调
 async function apiBindWeChatCallback(code: string): Promise<UserInfoStore> {
-    await handleResponse<Res>(bindWeChatUrlCallback(code)).then(async (res) => {
-        return await handleBindResult(res, ResponseCode.SocialBindWeChatCallbackSuccess)
-    })
+    const resObj: Res = await handleResponse<Res>(bindWeChatUrlCallback(code)) // 使用辅助函数处理请求
 
-    return createEmptyUserInfoStore()
+    return await handleBindResult(resObj, ResponseCode.SocialBindWeChatCallbackSuccess)
 }
 
 // 解绑微信
 async function apiUnBindWeChat(): Promise<UserInfoStore> {
-    await handleResponse<Res>(unBindWeChat()).then(async (res) => {
-        return await handleBindResult(res, ResponseCode.SocialUnBindWeChatSuccess)
-    })
-    return createEmptyUserInfoStore()
+    const resObj: Res = await handleResponse<Res>(unBindWeChat()) // 使用辅助函数处理请求
+
+    return await handleBindResult(resObj, ResponseCode.SocialUnBindWeChatSuccess)
 }
 
 // 从token中获取用户信息
@@ -367,12 +355,11 @@ async function redirectToSocialLogin(
     requestPromise: Promise<AxiosResponse<Res>>,
     successCode: ResponseCode,
 ): Promise<void> {
-    await handleResponse<Res>(requestPromise).then((res) => {
-        if (res.code === successCode) {
-            console.log("三方登录链接=====>", res.data)
-            window.location.href = res.data // 重定向到第三方登录页面
-        }
-    })
+    const resObj = await handleResponse<Res>(requestPromise) // 使用辅助函数处理请求
+
+    if (resObj.code === successCode) {
+        window.location.href = resObj.data // 重定向到第三方登录页面
+    }
 }
 
 /**
@@ -415,6 +402,12 @@ async function handleBindResult(resObj: Res, successCode: ResponseCode): Promise
 
     // 显示登录失败提示
     ShowMsgTip(ShowMsgTip.MsgType.error, resObj.msg, 3000)
+    // localStorage.removeItem(LocalStorageKey.AccessToken)
     localStorage.clear()
     return createEmptyUserInfoStore() // 获取用户信息
+}
+
+// 允许开发环境下进行热更新 HMR(Hot Module Replacement)
+if (import.meta.hot) {
+    import.meta.hot.accept(acceptHMRUpdate(useUserStore, import.meta.hot))
 }

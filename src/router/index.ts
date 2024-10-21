@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-04 18:07:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-21 23:45:27
+ * @LastEditTime : 2024-10-22 00:16:18
  * @FilePath     : \blog-client\src\router\index.ts
  * @Description  : 路由配置
  * @blog         : https://jiaopengzi.com
@@ -29,7 +29,7 @@ router.beforeEach(async (to, from, next) => {
     }
     // 如果已经登录，未绑定邮箱，且访问的页面不是用户信息页面，则跳转到用户信息页面
     else if (userStore.isLogin && !userStore.isBindEmail && to.path !== routeObj.userInfo.path) {
-        userStore.changeShowDialogBindEmail(true)
+        await userStore.changeShowDialogBindEmail(true)
         ShowMsgTip(ShowMsgTip.MsgType.warning, "请绑定邮箱！", 3000)
         next(routeObj.userInfo.path)
     }
