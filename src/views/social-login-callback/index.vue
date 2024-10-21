@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-18 22:59:01
+ * @LastEditTime : 2024-10-22 01:22:48
  * @FilePath     : \blog-client\src\views\social-login-callback\index.vue
  * @Description  : 三方登录回调页面
  * @Blog         : https://jiaopengzi.com
@@ -73,7 +73,7 @@ onMounted(async () => {
     } else if (route.path === routeObj.socialQQBindCallback.path) {
         _platform.value = Social.QQDisplay
         await bindQQCallback() // 等待 bindQQCallback 执行完毕后，跳转到首页
-    } else if (route.path === routeObj.sociaWeChatLoginCallback.path) {
+    } else if (route.path === routeObj.socialWeChatLoginCallback.path) {
         _platform.value = Social.WeChatDisplay
         await loginByWeChatCallback() // 等待 loginByWeChatCallback 执行完毕后，跳转到首页
     } else if (route.path === routeObj.socialWeChatBindCallback.path) {
