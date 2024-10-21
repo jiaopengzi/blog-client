@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 10:35:32
+ * @LastEditTime : 2024-10-21 23:46:33
  * @FilePath     : \blog-client\src\views\user-info\component\info\hooks\useInfo.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -172,7 +172,7 @@ export function useInfo(): UseInfoReturnType {
      */
     const bindSocial = async (platform: Social) => {
         if (!userStore.isBindEmail) {
-            await userStore.changeShowDialogBindEmail(true)
+            userStore.changeShowDialogBindEmail(true)
             return
         }
 
