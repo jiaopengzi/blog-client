@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 09:35:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 08:46:47
+ * @LastEditTime : 2024-10-21 22:55:45
  * @FilePath     : \blog-client\src\stores\user.ts
  * @Description  : 用户信息
  * @Blog         : https://jiaopengzi.com
@@ -344,6 +344,7 @@ async function redirectToSocialLogin(
     const resObj = await handleResponse<Res>(requestPromise) // 使用辅助函数处理请求
 
     if (resObj.code === successCode) {
+        console.log("三方登录链接=====>", resObj.data)
         window.location.href = resObj.data // 重定向到第三方登录页面
     }
 }

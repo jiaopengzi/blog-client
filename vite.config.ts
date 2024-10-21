@@ -3,113 +3,113 @@
  * @Description  : vite 配置文件
  */
 
-import path from 'path'
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import vueJsx from '@vitejs/plugin-vue-jsx'
-import terser from '@rollup/plugin-terser' // 会报错 没有调用签名。 但是不影响使用
-import Inspect from 'vite-plugin-inspect'
+import path from "path"
+import { defineConfig } from "vite"
+import vue from "@vitejs/plugin-vue"
+import vueJsx from "@vitejs/plugin-vue-jsx"
+import terser from "@rollup/plugin-terser" // 会报错 没有调用签名。 但是不影响使用
+import Inspect from "vite-plugin-inspect"
 // ------------------------------element-plus 按需自动导入 开始
-import AutoImport from 'unplugin-auto-import/vite'
-import Components from 'unplugin-vue-components/vite'
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import AutoImport from "unplugin-auto-import/vite"
+import Components from "unplugin-vue-components/vite"
+import { ElementPlusResolver } from "unplugin-vue-components/resolvers"
 // ------------------------------element-plus 按需自动导入 结束
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    vue(),
-    vueJsx(),
-    Inspect(), // vite-plugin-inspect 查看编译后的文件
-    // ------------------------------element-plus 自动导入 开始
-    AutoImport({
-      resolvers: [ElementPlusResolver()]
-    }),
-    Components({
-      resolvers: [ElementPlusResolver({ importStyle: 'sass' })], //scss需要添加 { importStyle: 'sass' } 留空默认为css
+    plugins: [
+        vue(),
+        vueJsx(),
+        Inspect(), // vite-plugin-inspect 查看编译后的文件
+        // ------------------------------element-plus 自动导入 开始
+        AutoImport({
+            resolvers: [ElementPlusResolver()],
+        }),
+        Components({
+            resolvers: [ElementPlusResolver({ importStyle: "sass" })], //scss需要添加 { importStyle: 'sass' } 留空默认为css
 
-      directoryAsNamespace: true // 解决组件名称重复问题 `component xxx has naming conflicts with other components, ignored.`
-    })
-    // ------------------------------element-plus 自动导入 结束
-  ],
+            directoryAsNamespace: true, // 解决组件名称重复问题 `component xxx has naming conflicts with other components, ignored.`
+        }),
+        // ------------------------------element-plus 自动导入 结束
+    ],
 
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, 'src')
-    }
-  },
+    resolve: {
+        alias: {
+            "@": path.resolve(__dirname, "src"),
+        },
+    },
 
-  // ------------------------------ scss全局变量生效 开始
-  css: {
-    preprocessorOptions: {
-      scss: {
-        // 多个scss文件变量生效
-        additionalData: `
+    // ------------------------------ scss全局变量生效 开始
+    css: {
+        preprocessorOptions: {
+            scss: {
+                // 多个scss文件变量生效
+                additionalData: `
         @use "./src/assets/scss/themes/index.scss" as *;
         @use './src/assets/scss/platform/phone.scss' as phone;
         @use './src/assets/scss/platform/pc.scss' as pc;
         @use './src/assets/scss/mixin.scss' as *;
-        `
-      }
-      // devSourceMap: true, // 开发环境下是否生成 sourceMap
-    }
-  },
-  // ------------------------------ scss全局变量生效 结束
-  // ------------------------------ 设置代理 开始
-  server: {
-    host: 'localhost',
-    port: 8081,
-    proxy: {
-      // dev Server.proxy 可以是一个指向开发环境 API 服务器的字符串
-      '/api': {
-        target: 'http://10.10.2.222:8080',
-        changeOrigin: true
-        // rewrite: (path) => path.replace(/^\/api/, 'myadmin'),
-      }
-    }
-  },
-  // ------------------------------ 设置代理 结束
-  // ------------------------------ 设置打包分块 开始
-  build: {
-    minify: true, //是否压缩编译后结果。
-    chunkSizeWarningLimit: 500, // 打包警告阈值 单位 KB
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          // 打包策略
-          if (id.includes('node_modules')) {
-            // 将 'node_modules' 分割为名为 'vendor' 的代码块
-            const dirs = id.split('/')
-            const name = dirs[dirs.lastIndexOf('node_modules') + 1]
-            return `vendor/${name}`
-          }
+        `,
+            },
+            // devSourceMap: true, // 开发环境下是否生成 sourceMap
         },
-        // ------------------------------ 将打包文件按照类型目录分类 开始
+    },
+    // ------------------------------ scss全局变量生效 结束
+    // ------------------------------ 设置代理 开始
+    server: {
+        host: "localhost",
+        port: 8081,
+        proxy: {
+            // dev Server.proxy 可以是一个指向开发环境 API 服务器的字符串
+            "/api": {
+                target: "http://10.10.2.222:8080",
+                changeOrigin: true,
+                // rewrite: (path) => path.replace(/^\/api/, 'myadmin'),
+            },
+        },
+    },
+    // ------------------------------ 设置代理 结束
+    // ------------------------------ 设置打包分块 开始
+    build: {
+        minify: true, //是否压缩编译后结果。
+        chunkSizeWarningLimit: 500, // 打包警告阈值 单位 KB
+        rollupOptions: {
+            output: {
+                manualChunks(id) {
+                    // 打包策略
+                    if (id.includes("node_modules")) {
+                        // 将 'node_modules' 分割为名为 'vendor' 的代码块
+                        const dirs = id.split("/")
+                        const name = dirs[dirs.lastIndexOf("node_modules") + 1]
+                        return `vendor/${name}`
+                    }
+                },
+                // ------------------------------ 将打包文件按照类型目录分类 开始
 
-        // 静态资源需要文件名 开发模式下
-        chunkFileNames: 'static/js/[name]-[hash].js',
-        entryFileNames: 'static/js/[name]-[hash].js',
-        assetFileNames: 'static/[ext]/[name]-[hash].[ext]',
+                // 静态资源需要文件名 开发模式下
+                chunkFileNames: "static/js/[name]-[hash].js",
+                entryFileNames: "static/js/[name]-[hash].js",
+                assetFileNames: "static/[ext]/[name]-[hash].[ext]",
 
-        // 静态资源不需要文件名 更加简洁 生产模式下
-        // chunkFileNames: 'static/js/[hash].js',
-        // entryFileNames: 'static/js/[hash].js',
-        // assetFileNames: 'static/[ext]/[hash].[ext]',
+                // 静态资源不需要文件名 更加简洁 生产模式下
+                // chunkFileNames: 'static/js/[hash].js',
+                // entryFileNames: 'static/js/[hash].js',
+                // assetFileNames: 'static/[ext]/[hash].[ext]',
 
-        // ------------------------------ 将打包文件按照类型目录分类 结束
-        inlineDynamicImports: false // 将动态导入的模块内联到生成的代码中
-      },
-      plugins: [
-        terser({
-          maxWorkers: 2, // 开启多进程压缩
-          compress: {
-            // drop_console: true, // 去除全部console
-            pure_funcs: ['console.log'], // 去除console.log,保留其他console
-            drop_debugger: true // 去除debugger
-          }
-        })
-      ]
-    }
-  }
-  // ------------------------------ 设置打包分块 结束
+                // ------------------------------ 将打包文件按照类型目录分类 结束
+                inlineDynamicImports: false, // 将动态导入的模块内联到生成的代码中
+            },
+            plugins: [
+                terser({
+                    maxWorkers: 2, // 开启多进程压缩
+                    compress: {
+                        // drop_console: true, // 去除全部console
+                        // pure_funcs: ['console.log'], // 去除console.log,保留其他console
+                        // drop_debugger: true // 去除debugger
+                    },
+                }),
+            ],
+        },
+    },
+    // ------------------------------ 设置打包分块 结束
 })
