@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-20 18:09:28
+ * @LastEditTime : 2024-10-21 18:02:25
  * @FilePath     : \blog-client\src\components\editor\core\EditorPost.vue
  * @Description  : 文章编辑器
  * @Blog         : https://jiaopengzi.com
@@ -27,6 +27,7 @@
             <div :class="tocClass" v-show="localEditorState.tocShow">
                 <EditorToc
                     :headings="localEditorState.tocHtml"
+                    :heading-show-current-index="localEditorState.headingShowCurrentIndex"
                     @heading-clicked="tocHeadingClicked"
                 />
             </div>
@@ -48,9 +49,12 @@
                     ref="previewRef"
                     :preview="previewData"
                     :is-show-preview-wechat="localEditorState.isShowPreviewWechat"
+                    :is-user-scroll-preview="localEditorState.isUserScrollPreview"
                     :height="cmHeight"
                     @show-image-viewer="showImageViewer"
                     @close-image-viewer="closeImageViewer"
+                    @is-mouse-in-element="handleMouseInElement"
+                    @heading-show-current="handleHeadingShowCurrent"
                 />
             </div>
         </div>
@@ -189,7 +193,13 @@ const { cmHeight, updateCmHeightNotIsFullScreen, handleScroll, updateEditorDoc }
 )
 
 // preview
-const { previewData, showImageViewer, closeImageViewer } = usePreview(localManager)
+const {
+    previewData,
+    showImageViewer,
+    closeImageViewer,
+    handleMouseInElement,
+    handleHeadingShowCurrent,
+} = usePreview(codemirrorRef, localManager)
 
 // 监听编辑器宽度变化
 watchEffect(() => {

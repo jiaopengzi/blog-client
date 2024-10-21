@@ -2,14 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-20 16:08:44
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-20 18:07:53
+ * @LastEditTime : 2024-10-21 12:04:08
  * @FilePath     : \blog-client\src\components\editor\core\hooks\useToc.ts
  * @Description  : toc 目录导航 hook
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 import type { Ref } from "vue"
-import type { CodemirrorRef, PreviewRef, MarkdownHeadingLineType } from "../types"
+import type { CodemirrorRef, PreviewRef } from "../types"
 import { EditorStateManager } from "../state"
 
 export function useToc(
@@ -25,7 +25,6 @@ export function useToc(
      * @param index 点击的目录索引
      */
 
-    console.log("tocMarkdown2222", editorState.tocMarkdown)
     const tocHeadingClicked = (index: number) => {
         // isAsyncScroll.value = false // 点击目录时候关闭异步滚动
         codemirrorRef.value?.scrollIntoViewLine(editorState.tocMarkdown[index].markdownLineNumber) // 跳转编辑器选中目标行

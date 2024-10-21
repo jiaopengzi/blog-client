@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-26 17:26:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-20 11:43:23
+ * @LastEditTime : 2024-10-21 20:46:50
  * @FilePath     : \blog-client\src\components\editor\core\EditorComment.vue
  * @Description  : 评论编辑器
  * @Blog         : https://jiaopengzi.com
@@ -43,6 +43,7 @@
                         <HtmlPreview
                             ref="previewRef"
                             :preview="previewData"
+                            :is-user-scroll-preview="localEditorState.isUserScrollPreview"
                             :height="cmHeight"
                             @show-image-viewer="showImageViewer"
                             @close-image-viewer="closeImageViewer"
@@ -155,7 +156,7 @@ const { cmHeight, updateCmHeightNotIsFullScreen, updateEditorDoc } = useCodemirr
 )
 
 // preview
-const { previewData, showImageViewer, closeImageViewer } = usePreview(localManager)
+const { previewData, showImageViewer, closeImageViewer } = usePreview(codemirrorRef, localManager)
 
 // 初始化
 onMounted(() => {

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-19 13:34:36
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-20 11:38:56
+ * @LastEditTime : 2024-10-21 15:44:07
  * @FilePath     : \blog-client\src\components\editor\core\types.ts
  * @Description  : 编辑器类型
  * @Blog         : https://jiaopengzi.com
@@ -26,27 +26,29 @@ export interface CodemirrorRef extends HTMLElement {
 export interface PreviewRef extends HTMLElement {
     root: HTMLElement
     navigateToHeading: (index: number) => void
-    navigateToElement: (index: number) => void
+    navigateToElement: (index: number, callback?: () => void) => void
     navigateGoHome: (behavior: ScrollBehavior) => void
     navigateGoEnd: (behavior: ScrollBehavior) => void
 }
 
 // h 标签类型
-export interface HeadingType {
+export interface Heading {
+    index: number
     level: number
     text: string
-    anchor?: string
+    anchor?: string // 锚点
 }
 
 // markdown 标题行号类型
-export interface MarkdownHeadingLineType {
+export interface MarkdownHeadingLine {
+    index: number // markdown 标题索引
     markdownHeading: string // markdown 标题
     markdownLineNumber: number // markdown行号
 }
 
 export interface EditorState {
-    tocMarkdown: MarkdownHeadingLineType[] // markdown 目录内容
-    tocHtml: HeadingType[] // html 目录内容
+    tocMarkdown: MarkdownHeadingLine[] // markdown 目录内容
+    tocHtml: Heading[] // html 目录内容
     tocShow: boolean // 是否显示目录
     editor: string // 编辑器内容
     editorShow: boolean // 是否显示编辑器
@@ -61,4 +63,6 @@ export interface EditorState {
     isShowPreviewWechat: boolean // 是否显示微信预览
     isShortcutKey: boolean // 是否开启快捷键
     width: number // 编辑器宽度
+    isUserScrollPreview: boolean // 用户是否滚动预览
+    headingShowCurrentIndex: number // 当前显示的 h 标签 index
 }

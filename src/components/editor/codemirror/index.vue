@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-20 18:57:29
+ * @LastEditTime : 2024-10-21 21:38:36
  * @FilePath     : \blog-client\src\components\editor\codemirror\index.vue
  * @Description  : codemirror 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -38,10 +38,11 @@ const emit = defineEmits<{
     (event: "update-editor-doc", editorDoc: string): void
     (
         event: "handle-scroll",
-        scrollHeight: number,
-        clientHeight: number,
-        scrollTop: number,
-        hideDoc: string,
+        scrollHeight: number, // 滚动高度
+        clientHeight: number, // 可视区域高度
+        scrollTop: number, // 滚动距离
+        hideDoc: string, // 隐藏部分的 markdown
+        showFirstLineNumber: number, // 显示的第一行行号
     ): void
 }>()
 
@@ -118,24 +119,27 @@ const scrollIntoViewLine = (lineNumber: number): void => {
     const line = cmView.state.doc.line(lineNumber) // 获取当前元素在编辑器中的行数
 
     // 滑动到指定行有一些问题 内容较多的时候不太精确
-    // const { top } = cmView.lineBlockAt(line.from); // 获取当前元素在编辑器中的位置
-    // cmView.scrollDOM.scrollTo({ top, behavior: 'smooth' }) // 滚动到当前行
+    const { top } = cmView.lineBlockAt(line.from) // 获取当前元素在编辑器中的位置
+    cmView.scrollDOM.scrollTo({ top, behavior: "smooth" }) // 滚动到当前行
 
-    // 精准跳转选中目标行 但不能是平滑滚动
-    cmView.dispatch({
-        selection: {
-            anchor: line.from,
-            head: line.from,
-        },
-        effects: EditorView.scrollIntoView(
-            // 滚动到当前行
-            line.from,
-            {
-                y: "start", // 滚动到顶部
-                yMargin: 0, // 不留边距
+    // 使用定时器延迟执行，解决滚动到指定行不准确的问题
+    setTimeout(() => {
+        // 精准跳转选中目标行 但不能是平滑滚动
+        cmView.dispatch({
+            selection: {
+                anchor: line.from,
+                head: line.from,
             },
-        ),
-    })
+            effects: EditorView.scrollIntoView(
+                // 滚动到当前行
+                line.from,
+                {
+                    y: "start", // 滚动到顶部
+                    yMargin: 0, // 不留边距
+                },
+            ),
+        })
+    }, 800)
 }
 
 /**
@@ -150,6 +154,7 @@ const handleScroll = () => {
         cmView.scrollDOM.clientHeight,
         cmView.scrollDOM.scrollTop,
         hideTopMarkdown,
+        cmView.state.doc.lineAt(hideTopBlockInfo.from).number,
     )
 }
 

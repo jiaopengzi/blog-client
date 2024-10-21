@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-19 14:13:44
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-20 11:07:41
+ * @LastEditTime : 2024-10-21 15:51:24
  * @FilePath     : \blog-client\src\components\editor\core\state.ts
  * @Description  : 编辑器状态管理
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,12 @@
 
 import { extractImageUrlsFromHtml } from "@/utils/img"
 import createMarked from "@/pkg/marked/new-marked"
-import { createEmptyEditorState, matchAllHeadingToList, getMarkdownHeadingLines } from "./utils"
+import {
+    createEmptyEditorState,
+    matchAllHeadingToList,
+    getMarkdownHeadingLines,
+    generateAllHeadingAnchor,
+} from "./utils"
 import type { EditorState } from "./types"
 import axios from "axios"
 import { reactive } from "vue"
@@ -36,9 +41,9 @@ export class EditorStateManager {
     // 更新编辑器 store
     updateState(markdownSrc: string): void {
         this.state.editor = markdownSrc.replace(/^\uFEFF/, "").replace(/\r\n/g, "\n") // 去除 BOM 头 和 windows 换行符)
-        this.state.preview = createMarked().parse(markdownSrc).toString()
-        this.state.tocMarkdown = getMarkdownHeadingLines(this.state.editor)
-        this.state.tocHtml = matchAllHeadingToList(this.state.preview)
+        this.state.preview = generateAllHeadingAnchor(createMarked().parse(markdownSrc).toString()) // markdown 转 html
+        this.state.tocMarkdown = getMarkdownHeadingLines(this.state.editor) // 通过正则获取 markdown 文件的目录
+        this.state.tocHtml = matchAllHeadingToList(this.state.preview) // 获取 html 目录
         this.state.imgUrls = extractImageUrlsFromHtml(this.state.preview)
     }
 
@@ -152,6 +157,16 @@ export class EditorStateManager {
     // 设置编辑器宽度
     setEditorWidth(width: number): void {
         this.state.width = width
+    }
+
+    // 设置用户是否滚动预览
+    setIsUserScrollPreview(isUserScrollPreview: boolean): void {
+        this.state.isUserScrollPreview = isUserScrollPreview
+    }
+
+    // 设置目录显示当前索引
+    setHeadingShowCurrentIndex(index: number): void {
+        this.state.headingShowCurrentIndex = index
     }
 
     // 获取编辑器状态

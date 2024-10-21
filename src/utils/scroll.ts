@@ -2,12 +2,15 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-11 15:32:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-27 00:29:17
+ * @LastEditTime : 2024-10-21 17:32:32
  * @FilePath     : \blog-client\src\utils\scroll.ts
  * @Description  : 滚动条工具类
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
+
+import { watch } from "vue"
+import { useScroll } from "@vueuse/core"
 
 /**
  * @description: 滚动到指定元素
@@ -21,9 +24,12 @@ export function scrollToElement(
     index: number,
     selectors: string = "*",
     behavior: ScrollBehavior = "smooth",
+    callback?: () => void,
 ): void {
     // 如果容器为null，则不执行滚动操作。
     if (!container) return
+    // 使用 useScroll 监听滚动事件
+    const { isScrolling } = useScroll(container)
 
     // 使用选择器查询滚动容器内的所有元素。
     const elements = container.querySelectorAll(selectors)
@@ -44,6 +50,14 @@ export function scrollToElement(
             behavior: behavior,
         })
     }
+
+    watch(isScrolling, (newValue) => {
+        if (!newValue) {
+            if (callback) {
+                callback()
+            }
+        }
+    })
 }
 
 /**

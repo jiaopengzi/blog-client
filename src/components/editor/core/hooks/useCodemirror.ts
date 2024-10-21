@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-20 22:22:25
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-20 11:09:00
+ * @LastEditTime : 2024-10-21 21:32:22
  * @FilePath     : \blog-client\src\components\editor\core\hooks\useCodemirror.ts
  * @Description  : codemirror hook
  * @Blog         : https://jiaopengzi.com
@@ -74,8 +74,24 @@ export function useCodemirror(
 
     const handleScroll = debounce(
         200,
-        (scrollHeight: number, clientHeight: number, scrollTop: number, hideDoc: string) => {
+        (
+            scrollHeight: number,
+            clientHeight: number,
+            scrollTop: number,
+            hideDoc: string,
+            showFirstLineNumber: number,
+        ) => {
+            // 高亮当前标题
+            for (let i = 0; i < editorState.tocMarkdown.length; i++) {
+                const item = editorState.tocMarkdown[i]
+                if (showFirstLineNumber <= item.markdownLineNumber) {
+                    editorStateManager.setHeadingShowCurrentIndex(item.index)
+                    break
+                }
+            }
+
             if (!editorState.isAsyncScroll) return // 如果不是异步滚动就直接返回
+            if (editorState.isUserScrollPreview) return // 如果用户滚动预览就直接返回
 
             // 滚动条在顶部时附近时
             if (scrollTop <= 4 && previewRef.value) {
@@ -88,6 +104,7 @@ export function useCodemirror(
                 previewRef.value?.navigateGoEnd("smooth") // 跳转预览底部
                 return
             }
+
             // isAsyncScroll.value = true // 异步滚动
             // TODO 当滚动的内容如 表格 br元素 等不太精确 后续优化
             editorStateManager.setScrollHideViewStr(hideDoc) // store 存储不可见部分的 markdown

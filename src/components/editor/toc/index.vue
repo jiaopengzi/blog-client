@@ -16,7 +16,7 @@
             <!-- 根据 heading.level 动态设置 li 的 id 和 class -->
             <li
                 v-for="(heading, index) in props.headings"
-                :id="'toc-' + index"
+                :id="'toc-' + heading.index"
                 :key="index"
                 :class="'h-level-' + heading.level"
                 @click="emitHeadingClicked(index)"
@@ -29,6 +29,7 @@
 
 <script lang="ts" setup>
 import type { TocProps } from "@/components/editor/toc"
+import { watchEffect } from "vue"
 
 defineOptions({ name: "EditorToc" })
 // 定义 props 调用时候传递为 headings="headings"
@@ -39,11 +40,17 @@ const emit = defineEmits<{
     (e: "heading-clicked", index: number): void
 }>()
 
-function emitHeadingClicked(index: number) {
+// 点击标题触发事件
+const emitHeadingClicked = (index: number) => {
     console.log("emitHeadingClicked", index)
     // 触发自定义事件 "heading-clicked"，将 index 和 heading 传递给父组件
     emit("heading-clicked", index)
 
+    highlightHeading(index)
+}
+
+// 高亮标题
+const highlightHeading = (index: number) => {
     // 查找当前激活的目录项，移除激活状态
     document.querySelectorAll("#toc li").forEach((li) => {
         li.classList.remove("toc-active")
@@ -52,6 +59,12 @@ function emitHeadingClicked(index: number) {
     // 添加激活状态
     document.getElementById("toc-" + index)?.classList.add("toc-active")
 }
+
+watchEffect(() => {
+    if (props.headingShowCurrentIndex >= 0) {
+        highlightHeading(props.headingShowCurrentIndex)
+    }
+})
 </script>
 
 <style scoped lang="scss">

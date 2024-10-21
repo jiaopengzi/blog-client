@@ -1,15 +1,32 @@
 <!--
  * @Author       : jiaopengzi
+ * @Date         : 2024-10-21 18:49:10
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2024-10-21 18:49:10
+ * @FilePath     : \blog-client\src\components\editor\preview\index copy.vue
+ * @Description  : 
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+-->
+<!--
+ * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:01:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 09:29:42
+ * @LastEditTime : 2024-10-21 18:31:52
  * @FilePath     : \blog-client\src\components\editor\preview\index.vue
  * @Description  : 预览组件
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-    <div ref="previewRef" id="preview" v-html="html" @click="handleDelegateClick"></div>
+    <div
+        ref="previewRef"
+        id="preview"
+        v-html="html"
+        @click="handleDelegateClick"
+        @mouseenter="onMouseEnter"
+        @mouseleave="onMouseLeave"
+    ></div>
     <!-- 参考:https://github.com/element-plus/element-plus/blob/dev/packages/components/image/src/image.vue -->
     <el-image-viewer
         v-if="preview.isShowElImageViewer"
@@ -19,7 +36,9 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, computed, watchEffect, useTemplateRef } from "vue"
+import { ref, onMounted, computed, watchEffect, useTemplateRef, createApp, h } from "vue"
+import { useScroll } from "@vueuse/core"
+import { debounce } from "throttle-debounce"
 import ClipboardJS from "clipboard" //代码块复制
 import type { ClipboardEvent } from "clipboard"
 import { ShowMsgTip } from "@/utils/message"
@@ -31,6 +50,8 @@ import type { PreviewProps } from "@/components/editor/preview"
 import "@/assets/scss/preview.scss"
 import "@/assets/scss/highlight.js.jpz.scss"
 import "katex/dist/katex.min.css" // katex 样式
+import VideoPlayer from "@/components/player"
+import Icon from "@/components/common/icons" // 引用自定义的全局图标
 
 defineOptions({ name: "HtmlPreview" })
 
@@ -41,6 +62,7 @@ const props = defineProps<PreviewProps>()
 const emit = defineEmits<{
     (event: "show-image-viewer", imgUrls: string[], isShowElImageViewer: boolean): void
     (event: "close-image-viewer", isShowElImageViewer: boolean): void
+    (event: "is-mouse-in-element", isMouseInElement: boolean): void
 }>()
 
 // const previewRef = ref<HTMLElement | null>(null) // 预览容器
@@ -58,6 +80,21 @@ const html = computed(() => {
         return html
     }
 })
+
+// 鼠标是否在元素内
+const isMouseInElement = ref(false) // 鼠标是否在元素内
+
+// 鼠标进入
+const onMouseEnter = () => {
+    isMouseInElement.value = true
+    emit("is-mouse-in-element", true)
+}
+
+// 鼠标离开
+const onMouseLeave = () => {
+    isMouseInElement.value = false
+    emit("is-mouse-in-element", false)
+}
 
 const initializeCssVariable = () => {
     // 初始化编辑器宽度和高度
@@ -138,9 +175,9 @@ const navigateToHeading = (index: number): void => {
  * @param index 目录索引
  * @return
  */
-const navigateToElement = (index: number): void => {
+const navigateToElement = (index: number, callback?: () => void): void => {
     // console.log('navigateToElement=====>>>>', index)
-    scrollToElement(previewRef.value, index, ScrollElementTag)
+    scrollToElement(previewRef.value, index, ScrollElementTag, "smooth", callback)
 }
 
 /**
@@ -202,6 +239,62 @@ const initializeClipboard = () => {
     })
 }
 
+const allHeadings = ref<NodeListOf<HTMLHeadingElement> | null>(null)
+
+const getAllHeadings = (): NodeListOf<HTMLHeadingElement> | null => {
+    return previewRef.value?.querySelectorAll("h1, h2, h3, h4, h5, h6") || null
+}
+
+const handleScroll = debounce(100, () => {
+    if (!allHeadings.value) return
+    console.log("heading222222", allHeadings.value)
+    for (let i = 0; i < allHeadings.value.length; i++) {
+        const heading = allHeadings.value[i] as HTMLElement
+        const rect = heading.getBoundingClientRect()
+        console.log("heading", heading)
+        if (rect.top >= 0 && rect.top <= 100) {
+            console.log("heading", heading)
+            break
+        }
+    }
+})
+
+// 监听滚动事件
+const { isScrolling } = useScroll(previewRef)
+
+watchEffect(() => {
+    if (isMouseInElement.value && isScrolling.value) {
+        console.log("heading11111111")
+        handleScroll()
+    }
+})
+
+// 监控 html 变化,重新获取所有的 h 标签
+watchEffect(() => {
+    if (html.value) {
+        console.log("heading33333")
+        allHeadings.value = getAllHeadings()
+        console.log("allHeadings", allHeadings.value)
+    }
+})
+
+// 初始化
+onMounted(() => {
+    initializeCssVariable() // 初始化 css 变量
+    initializeClipboard() // 初始化剪切板
+    allHeadings.value = getAllHeadings() // 初始化所有的 h 标签
+    console.log("allHeadings", allHeadings.value)
+
+    // // 挂载新的 Vue 实例
+    // const app = createApp({
+    //     render() {
+    //         return h("Icon", { type: "icon-arrow-up", name: "save" })
+    //     },
+    // })
+
+    // app.mount("#preview")
+})
+
 // 导出方法
 defineExpose({
     root: previewRef,
@@ -209,12 +302,6 @@ defineExpose({
     navigateToElement,
     navigateGoHome,
     navigateGoEnd,
-})
-
-// 初始化
-onMounted(() => {
-    initializeCssVariable() // 初始化 css 变量
-    initializeClipboard() // 初始化剪切板
 })
 </script>
 

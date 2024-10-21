@@ -20,4 +20,5 @@ export interface PreviewProps {
     width?: string // 宽度
     height?: string // 高度
     isShowPreviewWechat?: boolean // 是否显示微信预览
+    isUserScrollPreview?: boolean // 是否用户滚动预览
 }
