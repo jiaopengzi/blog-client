@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-21 21:38:36
+ * @LastEditTime : 2024-10-22 10:47:31
  * @FilePath     : \blog-client\src\components\editor\codemirror\index.vue
  * @Description  : codemirror 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -118,28 +118,25 @@ const runCommand = (
 const scrollIntoViewLine = (lineNumber: number): void => {
     const line = cmView.state.doc.line(lineNumber) // 获取当前元素在编辑器中的行数
 
-    // 滑动到指定行有一些问题 内容较多的时候不太精确
-    const { top } = cmView.lineBlockAt(line.from) // 获取当前元素在编辑器中的位置
-    cmView.scrollDOM.scrollTo({ top, behavior: "smooth" }) // 滚动到当前行
+    // 滑动到指定行有一些问题 内容较多时会出现滑动不到指定行的情况,因为没有渲染完全
+    // const { top } = cmView.lineBlockAt(line.from) // 获取当前元素在编辑器中的位置
+    // cmView.scrollDOM.scrollTo({ top, behavior: "smooth" }) // 滚动到当前行
 
-    // 使用定时器延迟执行，解决滚动到指定行不准确的问题
-    setTimeout(() => {
-        // 精准跳转选中目标行 但不能是平滑滚动
-        cmView.dispatch({
-            selection: {
-                anchor: line.from,
-                head: line.from,
+    // 精准跳转选中目标行 但不能是平滑滚动
+    cmView.dispatch({
+        selection: {
+            anchor: line.from,
+            head: line.from,
+        },
+        effects: EditorView.scrollIntoView(
+            // 滚动到当前行
+            line.from,
+            {
+                y: "nearest", // "nearest" | "start" | "end" | "center"
+                yMargin: 350, // 默认值 5
             },
-            effects: EditorView.scrollIntoView(
-                // 滚动到当前行
-                line.from,
-                {
-                    y: "start", // 滚动到顶部
-                    yMargin: 0, // 不留边距
-                },
-            ),
-        })
-    }, 800)
+        ),
+    })
 }
 
 /**

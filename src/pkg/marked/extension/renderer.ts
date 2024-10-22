@@ -2,18 +2,18 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-05 11:12:27
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-16 16:40:52
+ * @LastEditTime : 2024-10-22 11:26:03
  * @FilePath     : \blog-client\src\pkg\marked\extension\renderer.ts
  * @Description  : 自定义 renderer 主要是为了加类名
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import html2canvas from "html2canvas"
 import type { Tokens } from "marked"
 
 export const renderer = {
     // listitem 函数重写
+    // TODO 多层嵌套的列表，只会处理第一层,等待参考源码修改
     listitem({ text, task, checked }: Tokens.ListItem) {
         if (task) {
             if (checked) {
@@ -51,11 +51,6 @@ export const renderer = {
         return constructWeChatPreCode(replaceAllHljsStringSpanTag(result)) // 自定义代码块
     },
 
-    // // 重写 html 函数
-    // html(html: string) {
-
-    //   return html
-    // }
 }
 
 /**

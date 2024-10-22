@@ -2,13 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-31 15:50:41
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-13 15:54:45
- * @FilePath     : \blog-client\src\assets\scss\element.scss
+ * @LastEditTime : 2024-10-22 11:44:12
+ * @FilePath     : \blog-client\src\assets\scss\_element.scss
  * @Description  : element-plus 主题样式生成器
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
  */
-
+ @use "sass:map";
+ @use 'sass:color';
 // 定义模式 light dark
 $mode-light: "light";
 $mode-dark: "dark";
@@ -41,7 +42,7 @@ $mode-dark: "dark";
             80: 55,
             90: 63,
         );
-        $blackNumber: map-get($blackNumbers, $number);
+        $blackNumber: map.get($blackNumbers, $number);
 
         $mix-color: $color-black;
         $mix-number: $blackNumber;
@@ -54,7 +55,7 @@ $mode-dark: "dark";
 
     // 返回颜色
     // 将 $mix-number 转为百分比
-    @return mix($mix-color, $color, $mix-number * 1%);
+    @return color.mix($mix-color, $color, $mix-number * 1%);
 }
 
 /*
@@ -85,8 +86,8 @@ $mode-dark: "dark";
 // 生成 element-plus 主题样式
 // 示例：generateElementPlusTheme($el-theme, $mode-light);
 @mixin generateElementPlusTheme($theme, $mode) {
-    $themeName: map-get($theme, "theme-name"); // 获取 theme-name 变量
-    $colors: map-get($theme, "colors"); // 获取 colors 变量
+    $themeName: map.get($theme, "theme-name"); // 获取 theme-name 变量
+    $colors: map.get($theme, "colors"); // 获取 colors 变量
 
     html[data-theme="#{$themeName}"] {
         @each $key, $value in $colors {

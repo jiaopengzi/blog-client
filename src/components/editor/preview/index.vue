@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:01:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-21 21:00:37
+ * @LastEditTime : 2024-10-22 09:21:27
  * @FilePath     : \blog-client\src\components\editor\preview\index.vue
  * @Description  : 预览组件
  * @Blog         : https://jiaopengzi.com
@@ -260,7 +260,7 @@ const handleScroll = debounce(200, () => {
         // 当前标题在可视区域内
         if (
             rect.top >= previewRefRectTop.value &&
-            rect.top <= previewRefRectTop.value + previewRefClientHeight.value / 3 // 标题在 preview 可视区域上方 1/3
+            rect.top <= previewRefRectTop.value + (previewRefClientHeight.value / 3) * 2 // 标题在 preview 可视区域上方 2/3
         ) {
             // console.log("heading", heading)
             emit("heading-show-current", i)
@@ -268,7 +268,7 @@ const handleScroll = debounce(200, () => {
         }
 
         // 当前标题在 preview 可视区域上方,下一个标题不在 preview 可视区域内
-        if (
+        else if (
             rect.top < previewRefRectTop.value &&
             allHeadings.value[i + 1] &&
             allHeadings.value[i + 1].getBoundingClientRect().top > previewRefClientHeight.value
@@ -302,7 +302,7 @@ watchEffect(() => {
 // 监控 html 变化,获取所有的 h 标签
 watchEffect(() => {
     if (html.value) {
-        // 注意：这里使用 nextTick，确保 html 已经渲染完成
+        // // 注意：这里使用 nextTick，确保 html 已经渲染完成
         nextTick(() => {
             allHeadings.value = getAllHeadings()
         })

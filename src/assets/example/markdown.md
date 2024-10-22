@@ -15,6 +15,33 @@
 > [!CAUTION]
 > Negative potential consequences of an action.
 
+# 多层无序列表
+
+-   content1
+-   content2
+    -   content2.1
+    -   content2.2
+    -   content2.3
+        -   content2.3.1
+        -   content2.3.2
+        -   content2.3.3
+            -   content2.3.3.1
+            -   content2.3.3.2
+
+# 多层有序列表
+
+1. ol1
+2. ol2
+3. ol3
+    1. ol3.1
+    2. ol3.2
+    3. ol3.3
+        1. ol3.3.1
+        2. ol3.3.2
+        3. ol3.3.3
+            1. ol3.3.3.1
+            2. ol3.3.3.2
+
 `code`
 `code` `caculate` `sum` `sumx`
 我是行内代码`code` `caculate` `sum` `sumx`
