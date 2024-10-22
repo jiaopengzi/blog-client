@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:51:36
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-20 11:30:58
+ * @LastEditTime : 2024-10-22 16:03:25
  * @FilePath     : \blog-client\src\components\editor\command\constant.ts
  * @Description  : markdown 标记常量
  * @Blog         : https://jiaopengzi.com
@@ -375,7 +375,7 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         // 退出全屏
         [CommandsKey.ExitFullscreen]: {
             tip: "退出全屏",
-            hotKey: "Esc",
+            hotKey: "Escape",
             icon: IconKeys.ExitFullscreen,
         },
         // 桌面端

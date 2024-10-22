@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-05 11:12:27
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-22 11:26:03
+ * @LastEditTime : 2024-10-22 14:49:22
  * @FilePath     : \blog-client\src\pkg\marked\extension\renderer.ts
  * @Description  : 自定义 renderer 主要是为了加类名
  * @Blog         : https://jiaopengzi.com
@@ -11,17 +11,50 @@
 
 import type { Tokens } from "marked"
 
+import { Parser } from "marked"
+
 export const renderer = {
+    parser: new Parser(),
     // listitem 函数重写
-    // TODO 多层嵌套的列表，只会处理第一层,等待参考源码修改
-    listitem({ text, task, checked }: Tokens.ListItem) {
-        if (task) {
-            if (checked) {
-                return `<li class="task-list-item task-list-item-checked">${text}</li>\n` // 选中状态
+    listitem(item: Tokens.ListItem): string {
+        let itemBody = ""
+        if (item.task) {
+            const checkbox = this.checkbox({ checked: !!item.checked })
+            if (item.loose) {
+                if (item.tokens.length > 0 && item.tokens[0].type === "paragraph") {
+                    item.tokens[0].text = checkbox + " " + item.tokens[0].text
+                    if (
+                        item.tokens[0].tokens &&
+                        item.tokens[0].tokens.length > 0 &&
+                        item.tokens[0].tokens[0].type === "text"
+                    ) {
+                        item.tokens[0].tokens[0].text =
+                            checkbox + " " + item.tokens[0].tokens[0].text
+                    }
+                } else {
+                    item.tokens.unshift({
+                        type: "text",
+                        raw: checkbox + " ",
+                        text: checkbox + " ",
+                    })
+                }
+            } else {
+                itemBody += checkbox + " "
             }
-            return `<li class="task-list-item task-list-item-unchecked">${text}</li>\n` // 未选中状态
         }
-        return `<li>${text}</li>\n`
+
+        itemBody += this.parser.parse(item.tokens, !!item.loose)
+
+        // 选中状态和未选中状态添加类名
+        if (item.task) {
+            if (item.checked) {
+                return `<li class="task-list-item task-list-item-checked">${itemBody}</li>\n` // 选中状态
+            }
+            return `<li class="task-list-item task-list-item-unchecked">${itemBody}</li>\n` // 未选中状态
+        }
+
+        // 非 checkbox 项
+        return `<li>${itemBody}</li>\n`
     },
 
     // checkbox 函数重写
@@ -50,7 +83,6 @@ export const renderer = {
             "</code></pre>\n" // marked 源码默认代码块
         return constructWeChatPreCode(replaceAllHljsStringSpanTag(result)) // 自定义代码块
     },
-
 }
 
 /**

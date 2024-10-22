@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-20 22:10:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-20 11:08:51
+ * @LastEditTime : 2024-10-22 16:52:41
  * @FilePath     : \blog-client\src\components\editor\core\hooks\useToolbar.ts
  * @Description  : 工具栏 hook
  * @Blog         : https://jiaopengzi.com
@@ -24,6 +24,7 @@ import { getComputedStyleValue, setCSSVariable, getCSSVariableValue } from "@/ut
 import { copyWithCustomStyle } from "@/utils/preview"
 import { debounce } from "throttle-debounce"
 import { useMagicKeys } from "@vueuse/core"
+import { type TableRowCol } from "@/components/editor/toolbar"
 
 export function useToolbar(
     mdContainerRef: Ref<HTMLElement | null>,
@@ -50,7 +51,8 @@ export function useToolbar(
         })
     }
 
-    const debounceCopyWithCustomStyle = debounce(500, copyWithCustomStyle) // 防抖
+    // 防抖处理 copyWithCustomStyle
+    const debounceCopyWithCustomStyle = debounce(500, copyWithCustomStyle)
 
     /**
      * @description: 处理工具栏按钮点击事件
@@ -178,6 +180,49 @@ export function useToolbar(
         return parseInt(icons)
     }
 
+    // 选择 emoji
+    const emojiPickerSelected = (emoji: any) => {
+        codemirrorRef.value?.runCommand(CommandsKey.Emoji, {
+            prefix: "",
+            content: emoji.i,
+            suffix: "",
+        })
+        editorStateManager.setIsShowEmojiPicker(false)
+    }
+
+    // 插入表格行列
+    const insertTableRowCol = (rowCol: TableRowCol) => {
+        console.log("rowCol", rowCol)
+        // content: "|column1|column2|column3|\n|:---:|:---:|:---:|\n|content1|content2|content3|",
+        const { row, col } = rowCol
+        let content = ""
+
+        // 表头
+        for (let i = 0; i < col; i++) {
+            content += "|column" + (i + 1) + (i === col - 1 ? "|\n" : "")
+        }
+
+        // 对齐方式
+        content += "|"
+        for (let i = 0; i < col; i++) {
+            content += ":---:" + (i === col - 1 ? "|\n" : "|")
+        }
+
+        // 内容
+        for (let i = 0; i < row; i++) {
+            for (let j = 0; j < col; j++) {
+                content += "|content" + (j + 1) + (j === col - 1 ? "|\n" : "")
+            }
+        }
+
+        // 插入表格
+        codemirrorRef.value?.runCommand(CommandsKey.Table, {
+            prefix: "",
+            content,
+            suffix: "",
+        })
+    }
+
     onMounted(() => {
         registerHotKeys() // 注册快捷键
         calcToolbarHight() // 计算工具栏高度
@@ -189,5 +234,7 @@ export function useToolbar(
         calcToolbarHight,
         toolbarHight,
         iconNumberPerLine,
+        emojiPickerSelected,
+        insertTableRowCol,
     }
 }

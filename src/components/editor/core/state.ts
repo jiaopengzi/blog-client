@@ -44,7 +44,7 @@ export class EditorStateManager {
         this.state.preview = generateAllHeadingAnchor(createMarked().parse(markdownSrc).toString()) // markdown 转 html
         this.state.tocMarkdown = getMarkdownHeadingLines(this.state.editor) // 通过正则获取 markdown 文件的目录
         this.state.tocHtml = matchAllHeadingToList(this.state.preview) // 获取 html 目录
-        this.state.imgUrls = extractImageUrlsFromHtml(this.state.preview)
+        this.state.imgUrls = extractImageUrlsFromHtml(this.state.preview) // 获取图片链接
     }
 
     // 设置滚动条隐藏的编辑器view 字符串

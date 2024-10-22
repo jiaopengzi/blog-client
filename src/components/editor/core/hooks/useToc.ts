@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-20 16:08:44
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-21 12:04:08
+ * @LastEditTime : 2024-10-22 14:55:34
  * @FilePath     : \blog-client\src\components\editor\core\hooks\useToc.ts
  * @Description  : toc 目录导航 hook
  * @Blog         : https://jiaopengzi.com
@@ -24,7 +24,6 @@ export function useToc(
      * @description: 目录导航点击事件
      * @param index 点击的目录索引
      */
-
     const tocHeadingClicked = (index: number) => {
         // isAsyncScroll.value = false // 点击目录时候关闭异步滚动
         codemirrorRef.value?.scrollIntoViewLine(editorState.tocMarkdown[index].markdownLineNumber) // 跳转编辑器选中目标行

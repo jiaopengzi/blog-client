@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:02:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-11 11:40:33
+ * @LastEditTime : 2024-10-22 16:39:09
  * @FilePath     : \blog-client\src\components\editor\toolbar\index.vue
  * @Description  : 工具栏组件
  * @Blog         : https://jiaopengzi.com
@@ -34,6 +34,46 @@
                 <EmojiPicker :native="true" @select="onSelectEmoji" />
             </el-popover>
 
+            <el-popover
+                v-else-if="btn.name === CommandsKey.Table"
+                placement="bottom"
+                width="260"
+                trigger="hover"
+                popper-class="popper-class"
+                popper-style="background-color: transparent; border: none; box-shadow: none;"
+                :show-arrow="false"
+                :offset="0"
+            >
+                <template #reference>
+                    <Icon :name="btn.icon" custom-class="iconfont" />
+                </template>
+
+                <div class="table-row-col">
+                    <div class="row">
+                        <span>行数：</span>
+                        <el-input-number
+                            v-model="row"
+                            :min="1"
+                            :max="10000"
+                            controls-position="right"
+                            @change="handleRowChange"
+                        />
+                    </div>
+
+                    <div class="col">
+                        <span>列数：</span>
+                        <el-input-number
+                            v-model="col"
+                            :min="1"
+                            :max="10000"
+                            controls-position="right"
+                            @change="handleColChange"
+                        />
+                    </div>
+                    <el-button type="primary" @click="handleTableRowCol">插入表格</el-button>
+                </div>
+            </el-popover>
+
             <el-tooltip v-else effect="dark" :content="btn.display" :hide-after="0">
                 <Icon :name="btn.icon" custom-class="iconfont" />
             </el-tooltip>
@@ -44,7 +84,7 @@
 <script lang="ts" setup>
 import { ref, onMounted, watch, useTemplateRef } from "vue"
 import { CommandsKey } from "@/components/editor/command"
-import type { ToolbarProps } from "@/components/editor/toolbar"
+import type { ToolbarProps, TableRowCol } from "@/components/editor/toolbar"
 
 import EmojiPicker from "vue3-emoji-picker" // import picker component
 
@@ -60,14 +100,34 @@ const props = defineProps<ToolbarProps>()
 const emit = defineEmits<{
     (e: "toolbar-btn-clicked", name: CommandsKey): void
     (e: "emoji-picker-selected", emoji: any): void
+    (e: "table-row-col", tableRowCol: TableRowCol): void
 }>()
 
 const toolbarRef = useTemplateRef<HTMLElement | null>("toolbarRef") // 工具栏
 const toolbarHeight = ref(0) // 工具栏高度
 
-function emitToolbarBtnClicked(name: CommandsKey) {
+const emitToolbarBtnClicked = (name: CommandsKey) => {
     // 触发自定义事件 "onToolbarBtnClicked"，将 name 传递给父组件
     emit("toolbar-btn-clicked", name)
+}
+
+// 插入表格的行列数
+const row = ref(3)
+const col = ref(3)
+
+// 表格行列数变化
+const handleRowChange = (value: number) => {
+    row.value = value
+}
+
+// 表格行列数变化
+const handleColChange = (value: number) => {
+    col.value = value
+}
+
+// 插入表格
+const handleTableRowCol = () => {
+    emit("table-row-col", { row: row.value, col: col.value })
 }
 
 // 监听工具栏高度变化
@@ -82,7 +142,7 @@ watch(
 /**
  * @description: 更新工具栏高度
  */
-function updateToolbarHeight() {
+const updateToolbarHeight = () => {
     if (toolbarRef.value) {
         toolbarHeight.value = toolbarRef.value.clientHeight
         document.documentElement.style.setProperty("--toolbar-height", `${toolbarHeight.value}px`)
@@ -100,7 +160,7 @@ function updateToolbarHeight() {
 // }
 
 // emoji 选择
-function onSelectEmoji(emoji: any) {
+const onSelectEmoji = (emoji: any) => {
     emit("emoji-picker-selected", emoji)
     // console.log(emoji)
 }
@@ -126,6 +186,7 @@ defineExpose({
     min-height: pc.$editor-toolbar-height;
     margin-top: pc.$editor-toolbar-margin-top;
     margin-bottom: pc.$editor-toolbar-margin-top;
+    background-color: #fff;
 
     .toolbar-btn {
         border: none;
@@ -137,6 +198,27 @@ defineExpose({
         margin: 0
             calc((100% - 24px * var(--icon-number-per-line)) / var(--icon-number-per-line) / 2);
         padding: 0;
+    }
+}
+
+.table-row-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 8px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #efefef;
+
+    .row,
+    .col {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+
+        span {
+            margin-right: 10px;
+        }
     }
 }
 

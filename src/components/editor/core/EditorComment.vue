@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-26 17:26:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-21 20:46:50
+ * @LastEditTime : 2024-10-22 16:59:27
  * @FilePath     : \blog-client\src\components\editor\core\EditorComment.vue
  * @Description  : 评论编辑器
  * @Blog         : https://jiaopengzi.com
@@ -18,7 +18,8 @@
                 :toolbar-btns="toolbarBtns()"
                 :icon-number-per-line="iconNumberPerLine()"
                 @toolbar-btn-clicked="toolbarBtnClicked"
-                @emoji-picker-selected="onSelectEmoji"
+                @emoji-picker-selected="emojiPickerSelected"
+                @table-row-col="insertTableRowCol"
             />
         </div>
 
@@ -110,8 +111,17 @@ const ModeComment = reactive([
 const layoutClass = computed(() =>
     setIsFullScreenClassName("md-layout", "md-layout-fs", false, localEditorState.isFullScreen),
 )
+
 const toolbarClass = computed(() =>
     setIsFullScreenClassName("md-toolbar", "md-toolbar-fs", false, localEditorState.isFullScreen),
+)
+
+const editorClass = computed(() =>
+    setIsFullScreenClassName("md-editor", "md-editor-fs", false, localEditorState.isFullScreen),
+)
+
+const previewClass = computed(() =>
+    setIsFullScreenClassName("md-preview", "md-preview-fs", false, localEditorState.isFullScreen),
 )
 
 // 编辑器容器、编辑器、预览容器动态类名
@@ -124,28 +134,14 @@ const mdContainerClass = computed(() =>
     ),
 )
 
-const editorClass = computed(() =>
-    setIsFullScreenClassName("md-editor", "md-editor-fs", false, localEditorState.isFullScreen),
-)
-
-const previewClass = computed(() =>
-    setIsFullScreenClassName("md-preview", "md-preview-fs", false, localEditorState.isFullScreen),
-)
-
 // 工具栏点击事件
-const { toolbarBtns, toolbarBtnClicked, iconNumberPerLine } = useToolbar(
-    mdContainerRef,
-    toolbarRef,
-    codemirrorRef,
-    previewRef,
-    ModeComment,
-    localManager,
-)
-
-// emoji 选择
-function onSelectEmoji(emoji: any) {
-    codemirrorRef.value?.runCommand(CommandsKey.Emoji, { prefix: "", content: emoji.i, suffix: "" })
-}
+const {
+    toolbarBtns,
+    toolbarBtnClicked,
+    iconNumberPerLine,
+    emojiPickerSelected,
+    insertTableRowCol,
+} = useToolbar(mdContainerRef, toolbarRef, codemirrorRef, previewRef, ModeComment, localManager)
 
 // codemirror
 const { cmHeight, updateCmHeightNotIsFullScreen, updateEditorDoc } = useCodemirror(

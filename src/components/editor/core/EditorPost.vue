@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-21 18:02:25
+ * @LastEditTime : 2024-10-22 16:56:52
  * @FilePath     : \blog-client\src\components\editor\core\EditorPost.vue
  * @Description  : 文章编辑器
  * @Blog         : https://jiaopengzi.com
@@ -17,7 +17,8 @@
                 :toolbar-btns="toolbarBtns()"
                 :icon-number-per-line="iconNumberPerLine()"
                 @toolbar-btn-clicked="toolbarBtnClicked"
-                @emoji-picker-selected="onSelectEmoji"
+                @emoji-picker-selected="emojiPickerSelected"
+                @table-row-col="insertTableRowCol"
             />
         </div>
 
@@ -139,8 +140,21 @@ const ModePost = reactive([
 const layoutClass = computed(() =>
     setIsFullScreenClassName("md-layout", "md-layout-fs", false, localEditorState.isFullScreen),
 )
+
 const toolbarClass = computed(() =>
     setIsFullScreenClassName("md-toolbar", "md-toolbar-fs", false, localEditorState.isFullScreen),
+)
+
+const editorClass = computed(() =>
+    setIsFullScreenClassName("md-editor", "md-editor-fs", true, localEditorState.isFullScreen),
+)
+
+const previewClass = computed(() =>
+    setIsFullScreenClassName("md-preview", "md-preview-fs", true, localEditorState.isFullScreen),
+)
+
+const tocClass = computed(() =>
+    setIsFullScreenClassName("md-toc", "md-toc-fs", true, localEditorState.isFullScreen),
 )
 
 // 编辑器容器、目录、编辑器、预览容器动态类名
@@ -153,33 +167,14 @@ const mdContainerClass = computed(() =>
     ),
 )
 
-const tocClass = computed(() =>
-    setIsFullScreenClassName("md-toc", "md-toc-fs", true, localEditorState.isFullScreen),
-)
-
-const editorClass = computed(() =>
-    setIsFullScreenClassName("md-editor", "md-editor-fs", true, localEditorState.isFullScreen),
-)
-
-const previewClass = computed(() =>
-    setIsFullScreenClassName("md-preview", "md-preview-fs", true, localEditorState.isFullScreen),
-)
-
 // 工具栏点击事件
-const { toolbarBtns, toolbarBtnClicked, iconNumberPerLine } = useToolbar(
-    mdContainerRef,
-    toolbarRef,
-    codemirrorRef,
-    previewRef,
-    ModePost,
-    localManager,
-)
-
-// event callback
-function onSelectEmoji(emoji: any) {
-    codemirrorRef.value?.runCommand(CommandsKey.Emoji, { prefix: "", content: emoji.i, suffix: "" })
-    localManager.setIsShowEmojiPicker(false)
-}
+const {
+    toolbarBtns,
+    toolbarBtnClicked,
+    iconNumberPerLine,
+    emojiPickerSelected,
+    insertTableRowCol,
+} = useToolbar(mdContainerRef, toolbarRef, codemirrorRef, previewRef, ModePost, localManager)
 
 // 目录点击事件
 const { tocHeadingClicked } = useToc(codemirrorRef, previewRef, localManager)
@@ -225,17 +220,13 @@ onMounted(() => {
 .md-layout,
 .md-layout-fs {
     border-radius: 3px;
-
+    background-color: #eee;
+    width: var(--md-editor-width);
     .md-toolbar,
     .md-toolbar-fs {
         position: relative;
     }
-    .md-container {
-        width: var(--md-editor-width);
-    }
-    .md-container-fs {
-        width: 100vw;
-    }
+
     .md-container,
     .md-container-fs {
         display: flex;
@@ -269,6 +260,17 @@ onMounted(() => {
     }
 }
 
+// 全屏样式
+.md-layout-fs {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    z-index: 1000;
+}
+
 // 媒介查询
 @include respond-to("pc") {
     .md-layout {
@@ -294,8 +296,6 @@ onMounted(() => {
     }
 
     .md-layout-fs {
-        width: 100vw;
-
         .md-toolbar-fs {
             --icon-number-per-line: 30;
         }

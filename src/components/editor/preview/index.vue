@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:01:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-22 09:21:27
+ * @LastEditTime : 2024-10-22 15:03:26
  * @FilePath     : \blog-client\src\components\editor\preview\index.vue
  * @Description  : 预览组件
  * @Blog         : https://jiaopengzi.com
@@ -88,8 +88,8 @@ const onMouseLeave = () => {
     emit("is-mouse-in-element", false)
 }
 
+// 初始化 css 变量 编辑器宽度和高度
 const initializeCssVariable = () => {
-    // 初始化编辑器宽度和高度
     if (previewRef.value && props.width) {
         previewRef.value.style.setProperty("--my-preview-width", `${props.width}`)
     }
@@ -114,7 +114,7 @@ watchEffect(() => {
     }
 })
 
-// 事件委托
+// 点击事件委托 用于处理 pre 按钮和图片点击事件
 const handleDelegateClick = (event: MouseEvent) => {
     const target = event.target as HTMLElement
     // const previewContainer = getParentWithClass(target, 'md-preview')
@@ -231,17 +231,20 @@ const initializeClipboard = () => {
     })
 }
 
+// 所有的 h 标签响应式变量
 const allHeadings = ref<NodeListOf<HTMLHeadingElement> | null>(null)
 
+// 获取所有的 h 标签函数
 const getAllHeadings = (): NodeListOf<HTMLHeadingElement> | null => {
-    return previewRef.value?.querySelectorAll("h1, h2, h3, h4, h5, h6") || null
+    return previewRef.value?.querySelectorAll(ScrollElementTagHeading) || null
 }
 
-// 预览容器的 top 值 和 clientHeight
+// 预览容器的 top clientHeight scrollHeight
 const previewRefRectTop = ref(0)
 const previewRefClientHeight = ref(0)
 const previewRefScrollHeight = ref(0)
 
+// 获取预览容器的 top clientHeight scrollHeight
 const getPreviewRefRect = () => {
     if (previewRef.value) {
         previewRefRectTop.value = previewRef.value.getBoundingClientRect().top
@@ -253,28 +256,27 @@ const getPreviewRefRect = () => {
 // 处理滚动事件，节流
 const handleScroll = debounce(200, () => {
     if (!allHeadings.value) return
+
+    // 历遍所有的 h 标签 判断是否在设定的区域内
     for (let i = 0; i < allHeadings.value.length; i++) {
-        // const heading = allHeadings.value[i] as HTMLElement
-        const rect = allHeadings.value[i].getBoundingClientRect()
+        const rect = allHeadings.value[i].getBoundingClientRect() // 获取标题的矩形区域
+        const { top } = rect // 标题的 top 值
 
         // 当前标题在可视区域内
         if (
-            rect.top >= previewRefRectTop.value &&
-            rect.top <= previewRefRectTop.value + (previewRefClientHeight.value / 3) * 2 // 标题在 preview 可视区域上方 2/3
+            top >= previewRefRectTop.value && // 标题在 preview 顶部以下
+            top <= previewRefRectTop.value + (previewRefClientHeight.value / 3) * 2 // 标题在 preview 可视区域 2/3 上方
         ) {
-            // console.log("heading", heading)
             emit("heading-show-current", i)
             break
         }
 
         // 当前标题在 preview 可视区域上方,下一个标题不在 preview 可视区域内
         else if (
-            rect.top < previewRefRectTop.value &&
+            top < previewRefRectTop.value &&
             allHeadings.value[i + 1] &&
             allHeadings.value[i + 1].getBoundingClientRect().top > previewRefClientHeight.value
         ) {
-            // console.log("rect", rect)
-            // console.log("heading", heading)
             emit("heading-show-current", i)
             break
         }
@@ -286,8 +288,7 @@ const { y, isScrolling } = useScroll(previewRef)
 
 watchEffect(() => {
     if (isMouseInElement.value && isScrolling.value) {
-        // if (isScrolling.value) {
-        // 当鼠标在元素内并且正在滚动时
+        // 当鼠标在 preview 元素内并且正在滚动时
         handleScroll()
     }
 })

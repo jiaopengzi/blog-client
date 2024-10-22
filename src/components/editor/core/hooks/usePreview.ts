@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-19 15:32:12
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-21 20:51:18
+ * @LastEditTime : 2024-10-22 14:54:23
  * @FilePath     : \blog-client\src\components\editor\core\hooks\usePreview.ts
  * @Description  : preview hook
  * @Blog         : https://jiaopengzi.com
@@ -27,24 +27,33 @@ export function usePreview(
         isUserScrollPreview: editorState.isUserScrollPreview,
     })
 
+    // 显示图片预览
     const showImageViewer = (imgUrls: string[], isShowElImageViewer: boolean) => {
         editorStateManager.setImgUrls(imgUrls)
         editorStateManager.setIsShowElImageViewer(isShowElImageViewer)
     }
 
+    // 关闭图片预览
     const closeImageViewer = (isShowElImageViewer: boolean) => {
         editorStateManager.setIsShowElImageViewer(isShowElImageViewer)
     }
 
+    // 鼠标进入元素
     const handleMouseInElement = (isUserScrollPreview: boolean) => {
         editorStateManager.setIsUserScrollPreview(isUserScrollPreview)
     }
 
+    // 处理目录当前标题高亮显示
     const handleHeadingShowCurrent = (headingIndex: number) => {
         editorStateManager.setHeadingShowCurrentIndex(headingIndex)
 
         // 当同步滚动开启和用户滚动预览时，编辑器滚动到对应行
-        if (editorState.isAsyncScroll && editorState.isUserScrollPreview) {
+        if (
+            editorState.isAsyncScroll &&
+            editorState.isUserScrollPreview &&
+            editorState.tocMarkdown &&
+            editorState.tocMarkdown[headingIndex]
+        ) {
             codemirrorRef.value?.scrollIntoViewLine(
                 editorState.tocMarkdown[headingIndex].markdownLineNumber,
             )

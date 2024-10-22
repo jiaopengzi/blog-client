@@ -190,6 +190,8 @@ defineExpose({
 
 <style scoped lang="scss">
 #my-codemirror {
+    background-color: #fff;
+
     :deep(.cm-editor) {
         // width: 100%;
         height: var(--my-codemirror-height, 100%);

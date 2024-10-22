@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-20 17:52:40
+ * @LastEditTime : 2024-10-22 15:45:35
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -15,7 +15,9 @@
             <Icon :name="IconKeys.Media" custom-class="add-media-icon" /> <span>添加媒体</span>
         </el-button>
 
-        <EditorPost :editor-state="editorState" />
+        <div ref="editorContainerRef" class="editor">
+            <EditorPost :editor-state="editorState" />
+        </div>
 
         <el-form
             class="post-info"
@@ -94,13 +96,14 @@ import AddTag from "@/components/common/add-tag"
 defineOptions({ name: AdminSideMenu.PostWrite })
 
 const elContainerRef = useTemplateRef<InstanceType<typeof ElContainer> | null>("elContainerRef")
+const editorContainerRef = useTemplateRef<HTMLDivElement | null>("editorContainerRef")
 
 // const addTagRef = useTemplateRef <InstanceType<typeof AddTag>>("addTagRef")
 const stateManager = new EditorStateManager()
 const editorState = stateManager.getState()
 
 // 监听编辑器宽度变化
-useResizeObserver(elContainerRef, (entries) => {
+useResizeObserver(editorContainerRef, (entries) => {
     const entry = entries[0]
     const { width } = entry.contentRect
     stateManager.setEditorWidth(width)
@@ -178,6 +181,12 @@ const nameMaxLength = Math.max(...switchItemList.map((item) => (item.name ?? "")
         font-size: 20px;
         fill: var(--text-color);
     }
+}
+
+.editor {
+    margin-left: 16px;
+    width: 98%;
+    height: 100%;
 }
 
 .add-tag {
