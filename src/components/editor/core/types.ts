@@ -52,11 +52,11 @@ export interface EditorState {
     tocShow: boolean // 是否显示目录
     editor: string // 编辑器内容
     editorShow: boolean // 是否显示编辑器
-    preview: string // 预览内容
+    preview: string // 预览内容 html
     previewShow: boolean // 是否显示预览
     imgUrls: string[] // 图片链接数组
     isShowElImageViewer: boolean // 是否显示图片预览组件
-    scrollHideViewStr: string // 滚动条隐藏的编辑器 view 字符串
+    scrollHideViewStr: string // 滚动条隐藏的编辑器 view markdown 字符串
     isAsyncScroll: boolean // 是否异步滚动
     isFullScreen: boolean // 是否全屏
     isShowEmojiPicker: boolean // 是否显示 emoji picker

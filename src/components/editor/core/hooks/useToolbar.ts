@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-20 22:10:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-22 16:52:41
+ * @LastEditTime : 2024-10-23 10:45:23
  * @FilePath     : \blog-client\src\components\editor\core\hooks\useToolbar.ts
  * @Description  : 工具栏 hook
  * @Blog         : https://jiaopengzi.com
@@ -21,7 +21,7 @@ import {
 import type { IconKeys } from "@/components/common/icons"
 import { ShowMsgTip } from "@/utils/message"
 import { getComputedStyleValue, setCSSVariable, getCSSVariableValue } from "@/utils/style"
-import { copyWithCustomStyle } from "@/utils/preview"
+import { copyWithCustomStyle } from "../utils"
 import { debounce } from "throttle-debounce"
 import { useMagicKeys } from "@vueuse/core"
 import { type TableRowCol } from "@/components/editor/toolbar"

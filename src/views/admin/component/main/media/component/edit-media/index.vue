@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 10:24:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-20 11:14:25
+ * @LastEditTime : 2024-10-23 19:01:41
  * @FilePath     : \blog-client\src\views\admin\component\main\media\component\edit-media\index.vue
  * @Description  : 编辑媒体
  * @Blog         : https://jiaopengzi.com
@@ -152,11 +152,7 @@
 
 <script lang="ts" setup>
 import { reactive, ref, watch, useTemplateRef, computed, watchEffect } from "vue"
-import type {
-    EditMediaProps,
-    EditMediaForm,
-    SubtitlesForm,
-} from "@/views/admin/component/main/media/component/edit-media"
+import type { EditMediaProps, EditMediaForm, SubtitlesForm } from "./index"
 import { ShowMsgTip } from "@/utils/message"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { ResponseCode } from "@/api/responseCode"
@@ -168,7 +164,7 @@ import { updateFileAPI, type UpdateFileRequest } from "@/api/upload/updateFile"
 import { isWebvtt } from "@/utils/vttParse"
 import { isVideo } from "@/utils/isVideo"
 import VideoPlayer from "@/components/player"
-import { PlayerStateManager, type PlayerState, Language } from "@/components/player"
+import { PlayerStateManager, Language, type PlayerState } from "@/components/player"
 
 // 定义组件名称
 defineOptions({ name: "EditMedia" })

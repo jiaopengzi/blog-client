@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-18 09:51:29
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-20 17:01:34
+ * @LastEditTime : 2024-10-23 12:03:54
  * @FilePath     : \blog-client\src\views\test\编辑器.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -17,11 +17,19 @@
 <script lang="ts" setup>
 import { EditorStateManager, EditorPost, EditorComment } from "@/components/editor"
 
-import { onBeforeMount } from "vue"
+import { ref, onBeforeMount } from "vue"
 
 defineOptions({ name: "EditorAll" })
 
 const stateManager = new EditorStateManager()
+
+const myHtml = ref(`
+<h1>这是一个标题</h1>
+<video-player id="2-7f9d0d9c" class="test22" test11="test11"></video-player>
+<p>这是一个段落</p>
+`)
+
+stateManager.updateState(myHtml.value)
 
 onBeforeMount(async () => {
     // await stateManager.getEditorContentFromUrl("src/assets/example/markdown.md")

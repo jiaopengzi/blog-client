@@ -24,7 +24,7 @@ import ClipboardJS from "clipboard" //代码块复制
 import type { ClipboardEvent } from "clipboard"
 import { ShowMsgTip } from "@/utils/message"
 import { shiftArray } from "@/utils/img"
-import { htmlHandleUtf8, htmlHandleWeChat } from "@/utils/preview"
+import { htmlHandleUtf8BOM, htmlHandleWeChat } from "@/utils/preview"
 import { ScrollElementTag, ScrollElementTagHeading } from "@/components/editor/command"
 import { scrollToElement } from "@/utils/scroll"
 import type { PreviewProps } from "@/components/editor/preview"
@@ -48,7 +48,7 @@ const previewRef = useTemplateRef<HTMLElement | null>("previewRef")
 
 // html 内容 清洗
 const html = computed(() => {
-    const html = htmlHandleUtf8(props.preview.html)
+    const html = htmlHandleUtf8BOM(props.preview.html)
 
     if (props.isShowPreviewWechat) {
         // 微信公众号预览

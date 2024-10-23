@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-22 15:45:35
+ * @LastEditTime : 2024-10-23 19:43:22
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -84,7 +84,7 @@
 <script lang="ts" setup>
 import { reactive, useTemplateRef } from "vue"
 import { useResizeObserver } from "@vueuse/core"
-import { EditorPost, EditorStateManager } from "@/components/editor"
+import { EditorStateManager, EditorPost } from "@/components/editor"
 import { IconKeys } from "@/components/common/icons"
 import type { SwitchItem, SwitchItemLabel } from "@/components/common/switch-group"
 import SwitchGroup from "@/components/common/switch-group"

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:01:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-22 15:03:26
+ * @LastEditTime : 2024-10-23 18:43:57
  * @FilePath     : \blog-client\src\components\editor\preview\index.vue
  * @Description  : 预览组件
  * @Blog         : https://jiaopengzi.com
@@ -26,22 +26,22 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, computed, watchEffect, useTemplateRef, createApp, h, nextTick } from "vue"
+import { ref, onMounted, computed, watchEffect, useTemplateRef, nextTick } from "vue"
 import { useScroll } from "@vueuse/core"
 import { debounce } from "throttle-debounce"
 import ClipboardJS from "clipboard" //代码块复制
 import type { ClipboardEvent } from "clipboard"
 import { ShowMsgTip } from "@/utils/message"
 import { shiftArray } from "@/utils/img"
-import { htmlHandleUtf8, htmlHandleWeChat } from "@/utils/preview"
+import { htmlHandleWeChat } from "../core"
 import { ScrollElementTag, ScrollElementTagHeading } from "@/components/editor/command"
 import { scrollToElement } from "@/utils/scroll"
-import type { PreviewProps } from "@/components/editor/preview"
+import { mountVideoPlayerOnCustomElements } from "./utils"
+import { CustomElementVideoPlayer } from "./customElements"
+import type { PreviewProps } from "./index"
 import "@/assets/scss/preview.scss"
 import "@/assets/scss/highlight.js.jpz.scss"
 import "katex/dist/katex.min.css" // katex 样式
-import VideoPlayer from "@/components/player"
-import Icon from "@/components/common/icons" // 引用自定义的全局图标
 
 defineOptions({ name: "HtmlPreview" })
 
@@ -60,16 +60,14 @@ const emit = defineEmits<{
 // const previewRef = ref<HTMLElement | null>(null) // 预览容器
 const previewRef = useTemplateRef<HTMLElement | null>("previewRef")
 
-// html 内容 清洗
+//
 const html = computed(() => {
-    const html = htmlHandleUtf8(props.preview.html)
-
     if (props.isShowPreviewWechat) {
         // 微信公众号预览
-        return htmlHandleWeChat(html)
+        return htmlHandleWeChat(props.preview.html)
     } else {
         // 普通预览
-        return html
+        return props.preview.html
     }
 })
 
@@ -300,12 +298,18 @@ watchEffect(() => {
     }
 })
 
-// 监控 html 变化,获取所有的 h 标签
+// 监控 html 变化,获取所有的 h 标签 并挂载视频播放器
 watchEffect(() => {
     if (html.value) {
-        // // 注意：这里使用 nextTick，确保 html 已经渲染完成
+        // 注意：这里使用 nextTick，确保 html 已经渲染完成
         nextTick(() => {
             allHeadings.value = getAllHeadings()
+
+            // 挂载视频播放器到自定义元素 CustomElementVideoPlayer
+            mountVideoPlayerOnCustomElements(
+                previewRef.value as HTMLElement,
+                CustomElementVideoPlayer,
+            )
         })
     }
 })
@@ -315,19 +319,10 @@ onMounted(() => {
     initializeCssVariable() // 初始化 css 变量
     initializeClipboard() // 初始化剪切板
 
-    // 获取预览容器的 top 值
     nextTick(() => {
+        // 获取预览容器的 top 值
         getPreviewRefRect()
     })
-
-    // // 挂载新的 Vue 实例
-    // const app = createApp({
-    //     render() {
-    //         return h("Icon", { type: "icon-arrow-up", name: "save" })
-    //     },
-    // })
-
-    // app.mount("#preview")
 })
 
 // 导出方法

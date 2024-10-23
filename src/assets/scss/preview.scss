@@ -366,4 +366,13 @@
             }
         }
     }
+
+    // 自定义元素 video-player
+    video-player {
+        // 居中显示
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 16px 0;
+    }
 }

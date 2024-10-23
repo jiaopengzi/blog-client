@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-19 14:51:46
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 09:29:27
+ * @LastEditTime : 2024-10-23 18:15:45
  * @FilePath     : \blog-client\src\components\editor\preview\index.ts
  * @Description  : ts 声明文件
  * @Blog         : https://jiaopengzi.com
@@ -10,6 +10,8 @@
  */
 
 export { default } from "./index.vue"
+export * from "./utils"
+export * from "./customElements"
 
 export interface PreviewProps {
     preview: {

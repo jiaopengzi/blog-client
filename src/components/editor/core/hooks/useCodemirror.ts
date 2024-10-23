@@ -16,7 +16,7 @@ import { EditorStateManager } from "../state"
 import { ScrollElementTag } from "@/components/editor/command"
 import { debounce } from "throttle-debounce"
 import { getCSSVariableValue } from "@/utils/style"
-import { htmlHandleCopyBtns } from "@/utils/preview"
+import { htmlHandleCopyBtns } from "../utils"
 
 export function useCodemirror(
     mdContainerRef: Ref<HTMLElement | null>,

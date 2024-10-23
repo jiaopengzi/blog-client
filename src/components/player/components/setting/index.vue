@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-14 10:53:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-22 15:53:14
+ * @LastEditTime : 2024-10-23 19:17:00
  * @FilePath     : \blog-client\src\components\player\components\setting\index.vue
  * @Description  : 视频设置 - 播放速度、清晰度、字幕
  * @Blog         : https://jiaopengzi.com
@@ -95,9 +95,6 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from "vue"
-// import type { Subtitles, SubtitlesItem, PlayLevel } from "@/stores/player"
-// import { PlaybackRate, PlayLevelLabel, DisabledSubtitles } from "@/stores/player"
-
 import type { Subtitles, SubtitlesItem, PlayLevel, LanguageKey } from "@/components/player"
 import { PlaybackRate, PlayLevelLabel, DisabledSubtitles } from "@/components/player"
 

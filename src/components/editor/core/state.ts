@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-19 14:13:44
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-21 15:51:24
+ * @LastEditTime : 2024-10-23 10:38:43
  * @FilePath     : \blog-client\src\components\editor\core\state.ts
  * @Description  : 编辑器状态管理
  * @Blog         : https://jiaopengzi.com
@@ -10,13 +10,15 @@
  */
 
 import { extractImageUrlsFromHtml } from "@/utils/img"
-import createMarked from "@/pkg/marked/new-marked"
+
 import {
+    markdownToHtml,
     createEmptyEditorState,
     matchAllHeadingToList,
     getMarkdownHeadingLines,
-    generateAllHeadingAnchor,
+    htmlHandleUtf8BOM,
 } from "./utils"
+
 import type { EditorState } from "./types"
 import axios from "axios"
 import { reactive } from "vue"
@@ -35,13 +37,13 @@ export class EditorStateManager {
 
     // 获取滚动条隐藏的 html 字符串
     get getScrollHideHtmlStr(): string {
-        return createMarked().parse(this.state.scrollHideViewStr).toString()
+        return markdownToHtml(this.state.scrollHideViewStr)
     }
 
     // 更新编辑器 store
     updateState(markdownSrc: string): void {
-        this.state.editor = markdownSrc.replace(/^\uFEFF/, "").replace(/\r\n/g, "\n") // 去除 BOM 头 和 windows 换行符)
-        this.state.preview = generateAllHeadingAnchor(createMarked().parse(markdownSrc).toString()) // markdown 转 html
+        this.state.editor = htmlHandleUtf8BOM(markdownSrc) // 去除 BOM 头 和 windows 换行符)
+        this.state.preview = markdownToHtml(this.state.editor) // markdown 转 html
         this.state.tocMarkdown = getMarkdownHeadingLines(this.state.editor) // 通过正则获取 markdown 文件的目录
         this.state.tocHtml = matchAllHeadingToList(this.state.preview) // 获取 html 目录
         this.state.imgUrls = extractImageUrlsFromHtml(this.state.preview) // 获取图片链接

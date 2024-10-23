@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-17 10:03:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-19 11:42:18
+ * @LastEditTime : 2024-10-23 18:51:14
  * @FilePath     : \blog-client\src\components\player\index.vue
  * @Description  : 视频播放器
  * @Blog         : https://jiaopengzi.com
@@ -100,14 +100,10 @@ import {
 
 import { useResizeObserver } from "@vueuse/core"
 
-import {
-    PlayerStateManager,
-    PlayStatus,
-    DisabledSubtitles,
-    MediaTypes,
-    getVideoQualityLabel,
-} from "@/components/player"
-import type { LanguageKey, PlayLevelLabel, PlayerState } from "@/components/player"
+import { getVideoQualityLabel } from "./utils"
+import { PlayerStateManager } from "./state"
+import { PlayStatus, DisabledSubtitles, MediaTypes } from "./types"
+import type { LanguageKey, PlayLevelLabel, PlayerState } from "./types"
 
 import screenfull from "screenfull"
 import Controls from "@/components/player/components/controls"
@@ -704,8 +700,8 @@ watchEffect(() => {
     }
 })
 
-onMounted(async () => {
-    updateVideo()
+onMounted(() => {
+    // 初始化字幕字体大小
     updateCueFontSize()
 })
 

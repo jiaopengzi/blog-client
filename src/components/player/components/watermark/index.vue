@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-15 15:11:14
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 09:51:37
+ * @LastEditTime : 2024-10-23 19:16:31
  * @FilePath     : \blog-client\src\components\player\components\watermark\index.vue
  * @Description  : 水印
  * @Blog         : https://jiaopengzi.com
@@ -17,7 +17,6 @@
 <script setup lang="ts">
 import { useMutationObserver } from "@vueuse/core"
 import { ref, useTemplateRef, computed, onMounted, shallowRef, onBeforeUnmount } from "vue"
-// import type { TextWatermark, LogoWatermark } from "@/stores/player"
 import type { TextWatermark, LogoWatermark } from "@/components/player"
 
 defineOptions({ name: "VideoWatermark" })
