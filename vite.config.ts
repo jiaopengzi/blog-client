@@ -58,11 +58,11 @@ export default defineConfig({
     // ------------------------------ 设置代理 开始
     server: {
         host: "localhost",
-        port: 8081,
+        port: 7364, // 项目运行端口(九宫格 peng 的拼音键数字)
         proxy: {
             // dev Server.proxy 可以是一个指向开发环境 API 服务器的字符串
             "/api": {
-                target: "http://10.10.2.222:8080",
+                target: "http://10.10.2.222:5426",
                 changeOrigin: true,
                 // rewrite: (path) => path.replace(/^\/api/, 'myadmin'),
             },

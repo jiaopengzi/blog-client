@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 10:41:19
+ * @LastEditTime : 2024-10-24 18:00:34
  * @FilePath     : \blog-client\src\App.vue
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -23,6 +23,7 @@
 </template>
 <script setup lang="ts">
 import { setTheme } from "@/utils/style"
+
 import { useHead } from "@unhead/vue"
 import { Head } from "@unhead/vue/components"
 // import Icon from '@/components/icons/Icon.vue'
