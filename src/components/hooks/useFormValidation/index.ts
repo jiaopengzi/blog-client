@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 15:53:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 09:34:50
+ * @LastEditTime : 2024-10-28 20:44:30
  * @FilePath     : \blog-client\src\components\hooks\useFormValidation\index.ts
  * @Description  : 用户表单校验
  * @Blog         : https://jiaopengzi.com
@@ -290,7 +290,6 @@ export function useFormValidation(options: FormValidationOptions = {}) {
 
         try {
             const { data } = await CheckEmailAPI(req)
-
             if (data.code === ResponseCode.UserEmailExist) {
                 throw new Error(data.msg)
             }
