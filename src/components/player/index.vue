@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-17 10:03:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-23 18:51:14
+ * @LastEditTime : 2024-10-29 11:56:57
  * @FilePath     : \blog-client\src\components\player\index.vue
  * @Description  : 视频播放器
  * @Blog         : https://jiaopengzi.com
@@ -92,6 +92,7 @@ import {
     ref,
     reactive,
     computed,
+    watch,
     watchEffect,
     onBeforeUnmount,
     onMounted,
@@ -573,13 +574,13 @@ const loadHls = () => {
 
         // 当清单解析完成时
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
-            // 历遍 hls.levels 获取清晰度信息, 保存到 store 中
+            // 历遍 hls.levels 获取清晰度信息, 保存到 state 中
             const localLevels: Record<string, number> = {}
             hls?.levels.forEach((level) => {
                 localLevels[getVideoQualityLabel(level.height)] = level.height
             })
 
-            // 更新 store 中的清晰度信息
+            // 更新 state 中的清晰度信息
             localManager.setPlayLevelAllLevels(localLevels)
         })
 
@@ -592,18 +593,21 @@ const loadHls = () => {
         })
 
         // 监听用户选择清晰度的变化
-        watchEffect(() => {
-            const levels = hls?.levels
-            if (levels) {
-                const levelIndex = levels.findIndex(
-                    (level) =>
-                        getVideoQualityLabel(level.height) === localPlayerState.playLevel.level,
-                )
-                if (levelIndex !== -1 && hls) {
-                    hls.currentLevel = levelIndex
+        watch(
+            () => localPlayerState.playLevel.level,
+            (newVal) => {
+                const levels = hls?.levels
+                if (levels) {
+                    const levelIndex = levels.findIndex((level) => {
+                        return getVideoQualityLabel(level.height) === newVal
+                    })
+
+                    if (levelIndex !== -1 && hls) {
+                        hls.currentLevel = levelIndex
+                    }
                 }
-            }
-        })
+            },
+        )
 
         // 处理 HLS 错误
         hls.on(Hls.Events.ERROR, function (event, data) {

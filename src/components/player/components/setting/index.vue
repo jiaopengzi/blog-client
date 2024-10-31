@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-14 10:53:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-23 19:17:00
+ * @LastEditTime : 2024-10-29 12:21:53
  * @FilePath     : \blog-client\src\components\player\components\setting\index.vue
  * @Description  : 视频设置 - 播放速度、清晰度、字幕
  * @Blog         : https://jiaopengzi.com
@@ -121,7 +121,13 @@ const emit = defineEmits<{
 const localActiveNames = ref<string[]>([])
 
 // 是否显示字幕选择组件
-const isShowSubtitlesSelect = computed(() => !!props.subtitles?.availableSubtitles)
+const isShowSubtitlesSelect = computed(() => {
+    // 判断 props.subtitles?.availableSubtitles 是否存在或者为空对象
+    return (
+        props.subtitles?.availableSubtitles &&
+        Object.keys(props.subtitles.availableSubtitles).length > 0
+    )
+})
 
 // 可用字幕
 const availableSubtitles = computed<{ [key: string]: SubtitlesItem }>(() => {

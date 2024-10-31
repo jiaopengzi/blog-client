@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-18 16:21:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-20 11:10:35
+ * @LastEditTime : 2024-10-29 11:23:39
  * @FilePath     : \blog-client\src\components\player\state.ts
  * @Description  : 视频组件状态管理
  * @Blog         : https://jiaopengzi.com
