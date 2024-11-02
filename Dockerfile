@@ -1,15 +1,21 @@
-# Dockerfile
-# 使用基础开发镜像
-FROM blog-client:env AS builder
+# blog-client Dockerfile
+# 使用官方 Node.js 镜像作为构建环境
+FROM node:20.15.1 AS builder
 
 # 设置工作目录
 WORKDIR /app
 
-# 将源代码复制到容器中
-COPY . .
+# 复制 package.json 和 pnpm-lock.yaml 到容器中
+COPY package.json pnpm-lock.yaml ./
+
+# 安装 pnpm
+RUN npm install -g pnpm@latest
 
 # 安装依赖项
 RUN pnpm install --frozen-lockfile
+
+# 将源代码复制到容器中
+COPY . .
 
 # 编译 Vue 项目
 RUN pnpm build

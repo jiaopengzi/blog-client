@@ -1,18 +1,10 @@
-# blog-client Dockerfile
-# 使用官方 Node.js 镜像作为构建环境
-FROM node:20.15.1 AS builder
+# Dockerfile.dev
+# 从 blog-client:env 镜像中构建，这个镜像是在 blog-client 项目的 Dockerfile.env 中构建
+# 它包含了 Node.js 和 pnpm 环境及项目的依赖项，可以直接 build
+FROM blog-client:env AS builder
 
 # 设置工作目录
 WORKDIR /app
-
-# 复制 package.json 和 pnpm-lock.yaml 到容器中
-COPY package.json pnpm-lock.yaml ./
-
-# 安装 pnpm
-RUN npm install -g pnpm@latest
-
-# 安装依赖项
-RUN pnpm install --frozen-lockfile
 
 # 将源代码复制到容器中
 COPY . .
