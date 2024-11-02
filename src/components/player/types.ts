@@ -156,6 +156,8 @@ export interface PlayerSize {
 export interface PlayerState {
     // 媒体类型
     mediaType: MediaTypes
+    // 视频 ID
+    videoID: string
     // 视频地址
     src: string
     // 海报

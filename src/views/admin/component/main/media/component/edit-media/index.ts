@@ -22,6 +22,7 @@ export interface EditMediaProps {
     description: string // 描述
     slug: string // 文件别名
     is_free: boolean // 是否免费
+    is_generate_hls: boolean // 是否生成HLS
     subtitles_language_list: string[] // 字幕
     img?: TableImg // 图片
     editDialogVisible?: boolean // 编辑弹窗是否显示

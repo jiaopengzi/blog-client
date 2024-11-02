@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-23 18:08:06
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-23 18:18:43
+ * @LastEditTime : 2024-11-02 19:00:21
  * @FilePath     : \blog-client\src\components\editor\preview\utils\VideoPlayer.ts
  * @Description  : 挂载视频播放器到自定义元素
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,7 @@
  */
 
 import { h, createApp } from "vue"
-import { PlayerStateManager } from "@/components/player"
+import { PlayerStateManager, type MediaTypes } from "@/components/player"
 import VideoPlayer from "@/components/player"
 import Icon from "@/components/common/icons"
 import { BaseCustomElement } from "../customElements"
@@ -31,9 +31,16 @@ export const mountVideoPlayerOnCustomElements = (
     componentContainers.forEach((el) => {
         const videoID = el.getAttribute("id")
 
+        // 未设置默认为hls
+        const videoType = (el.getAttribute("video-type") || "hls") as MediaTypes
+        const videoSrc = el.getAttribute("src") || ""
+
         if (videoID) {
             const videoState = new PlayerStateManager()
-            videoState.setSrc(videoID)
+            videoState.setVideoID(videoID)
+            videoState.setMediaType(videoType)
+            videoState.setSrc(videoSrc)
+
             const state = videoState.getState()
 
             const app = createApp({

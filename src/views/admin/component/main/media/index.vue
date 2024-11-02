@@ -271,6 +271,7 @@ const editRow = (index: number, row: TableData) => {
         editMediaData.subtitles_language_list = row.subtitles_language_list || []
         editMediaData.img = row.img
         editMediaData.editDialogVisible = true
+        editMediaData.is_generate_hls = row.is_generate_hls
 
         // 如果是视频则设置宽高
         if (isVideo(row.file_type)) {

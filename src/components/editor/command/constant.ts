@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:51:36
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-29 11:11:36
+ * @LastEditTime : 2024-11-02 15:54:38
  * @FilePath     : \blog-client\src\components\editor\command\constant.ts
  * @Description  : markdown 标记常量
  * @Blog         : https://jiaopengzi.com
@@ -324,7 +324,7 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         // 视频
         [CommandsKey.Video]: {
             tip: "视频",
-            prefix: '<video-player id="',
+            prefix: '<video-player video-type="hls" src="" id="',
             suffix: '"></video-player>',
             hotKey: "Ctrl+Shift+V",
             icon: IconKeys.Video,

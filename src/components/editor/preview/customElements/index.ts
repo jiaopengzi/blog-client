@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-23 17:58:58
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-23 18:05:41
+ * @LastEditTime : 2024-11-02 15:51:30
  * @FilePath     : \blog-client\src\components\editor\preview\customElements\index.ts
  * @Description  : 自定义元素
  * @Blog         : https://jiaopengzi.com
@@ -11,14 +11,3 @@
 
 export * from "./base"
 export * from "./CustomElementVideoPlayer"
-import { CustomElementVideoPlayer } from "./CustomElementVideoPlayer"
-
-// 将所有自定义元素类放入对象
-const customElementsObj = {
-    "video-player": CustomElementVideoPlayer,
-}
-
-// 遍历对象进行注册
-Object.entries(customElementsObj).forEach(([tagName, elementClass]) => {
-    customElements.define(tagName, elementClass)
-})

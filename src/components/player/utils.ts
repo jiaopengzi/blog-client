@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-18 16:04:30
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-19 12:46:55
+ * @LastEditTime : 2024-11-02 19:26:27
  * @FilePath     : \blog-client\src\components\player\utils.ts
  * @Description  : 视频组件工具方法
  * @Blog         : https://jiaopengzi.com
@@ -21,6 +21,7 @@ import type { LanguageKey, PlayerState, Subtitles, SubtitlesItem } from "./types
  */
 export const createDefaultPlayerState = (): PlayerState => ({
     mediaType: MediaTypes.HLS,
+    videoID: "",
     src: "",
     poster: "",
     playStatus: PlayStatus.STOPPED,
@@ -29,12 +30,7 @@ export const createDefaultPlayerState = (): PlayerState => ({
     isFullScreen: false,
     playLevel: {
         level: PlayLevelLabel.FULL_HD_1080P,
-        allLevels: {
-            [PlayLevelLabel.QHD_2K]: 1440,
-            [PlayLevelLabel.FULL_HD_1080P]: 1080,
-            [PlayLevelLabel.HD_720P]: 720,
-            [PlayLevelLabel.SD_480P]: 480,
-        },
+        allLevels: {},
     },
     playbackRate: PlaybackRate.NORMAL,
     volume: {

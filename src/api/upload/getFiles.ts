@@ -67,6 +67,7 @@ export interface MediaFile extends DataWithImg {
     file_type: string // 文件类型
     is_server_process: boolean // 是否服务器处理
     is_ffmpeg_process: boolean // 是否ffmpeg处理
+    is_generate_hls: boolean // 是否生成HLS
     author: string // 作者
     url_belong: string // 所属网址
     path: string // 路径

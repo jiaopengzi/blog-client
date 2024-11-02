@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-17 10:03:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-29 11:56:57
+ * @LastEditTime : 2024-11-02 18:59:13
  * @FilePath     : \blog-client\src\components\player\index.vue
  * @Description  : 视频播放器
  * @Blog         : https://jiaopengzi.com
@@ -567,7 +567,7 @@ const loadHls = () => {
         })
 
         // 加载视频源
-        hls.loadSource(localPlayerState.src)
+        hls.loadSource(localPlayerState.videoID)
 
         // 绑定 video 元素
         hls.attachMedia(videoRef.value!)
@@ -698,7 +698,7 @@ const updateVideo = () => {
 // 监听 src 变化
 watchEffect(() => {
     // 注意需要等待 videoRef.value 加载完成,否则会造成多次 updateVideo 调用执行多次网络请求
-    if (localPlayerState.src && videoRef.value) {
+    if (localPlayerState.videoID && videoRef.value) {
         localManager.setSubtitlesByVideoHashIdAuto() // 自动更新字幕
         updateVideo()
     }

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 10:24:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-23 19:01:41
+ * @LastEditTime : 2024-11-02 19:24:05
  * @FilePath     : \blog-client\src\views\admin\component\main\media\component\edit-media\index.vue
  * @Description  : 编辑媒体
  * @Blog         : https://jiaopengzi.com
@@ -164,7 +164,7 @@ import { updateFileAPI, type UpdateFileRequest } from "@/api/upload/updateFile"
 import { isWebvtt } from "@/utils/vttParse"
 import { isVideo } from "@/utils/isVideo"
 import VideoPlayer from "@/components/player"
-import { PlayerStateManager, Language, type PlayerState } from "@/components/player"
+import { PlayerStateManager, Language, MediaTypes, type PlayerState } from "@/components/player"
 
 // 定义组件名称
 defineOptions({ name: "EditMedia" })
@@ -491,8 +491,12 @@ watchEffect(() => {
         // })
 
         playerStateManager.setSize(videoWidth.value, (videoWidth.value * 9) / 16) // 16:9
+        playerStateManager.setVideoID(hashID.value) // 设置视频hashID
 
-        playerStateManager.setSrc(hashID.value) // 设置视频hashID
+        if (!editMediaData.is_generate_hls) {
+            playerStateManager.setMediaType(MediaTypes.MP4) // 设置视频类型
+            playerStateManager.setSrc(editMediaData.file_url) // 设置视频地址
+        }
 
         playerState = playerStateManager.getState()
     }

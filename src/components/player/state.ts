@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-18 16:21:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-29 11:23:39
+ * @LastEditTime : 2024-11-02 18:55:39
  * @FilePath     : \blog-client\src\components\player\state.ts
  * @Description  : 视频组件状态管理
  * @Blog         : https://jiaopengzi.com
@@ -59,6 +59,11 @@ export class PlayerStateManager {
     // 设置媒体类型
     setMediaType(mediaType: MediaTypes): void {
         this.state.mediaType = mediaType
+    }
+
+    // 设置视频 ID
+    setVideoID(videoID: string): void {
+        this.state.videoID = videoID
     }
 
     // 设置视频源
@@ -253,9 +258,9 @@ export class PlayerStateManager {
 
     // 根据视频 hash ID 自动设置字幕
     setSubtitlesByVideoHashIdAuto(): void {
-        if (!this.state.src) return
+        if (!this.state.videoID) return
         // 根据视频 hash ID 和字幕语言列表创建字幕对象
-        createSubtitlesByVideoHashId(this.state.src, this.state).then((subtitles) => {
+        createSubtitlesByVideoHashId(this.state.videoID, this.state).then((subtitles) => {
             this.setSubtitles(subtitles) // 设置字幕
         })
     }
