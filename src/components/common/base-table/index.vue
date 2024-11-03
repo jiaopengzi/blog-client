@@ -216,7 +216,7 @@ import { colProps, type ElTable } from "element-plus"
 import type { Pagination } from "@/components/common"
 import { MsgType } from "@/components/common"
 import type { TableData, TableColumn } from "@/components/common/base-table"
-import { handleConfirmCommon } from "@/utils/confirm"
+import { deleteConfirmCommon } from "@/utils/confirm"
 import { imgStyle, iconStyle } from "@/utils/style"
 import type { SwitchItem, SwitchItemLabel, SwitchItemColor } from "@/components/common/switch-group"
 import SwitchGroup from "@/components/common/switch-group"
@@ -377,7 +377,7 @@ const handleEdit = (index: number, row: TableData) => {
 
 // // 处理单个删除
 // const handleDelete = (index: number, row: TableData) => {
-//     handleConfirmCommon(() => {
+//     deleteConfirmCommon(() => {
 //         emit('delete-row', index, row)
 //     })
 // }
@@ -386,7 +386,7 @@ const handleEdit = (index: number, row: TableData) => {
 const handleBatchDelete = () => {
     const selection = tableRef.value?.getSelectionRows()
     if (selection?.length) {
-        handleConfirmCommon(() => {
+        deleteConfirmCommon(() => {
             emit("delete-rows", selection)
         })
     } else {

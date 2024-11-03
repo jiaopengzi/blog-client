@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 19:43:22
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-26 19:39:34
+ * @LastEditTime : 2024-11-03 16:58:01
  * @FilePath     : \blog-client\src\router\routeAdmin.ts
  * @Description  : admin 路由配置
  * @Blog         : https://jiaopengzi.com
@@ -36,7 +36,7 @@ function generateAdminRoutes() {
         }
         routes[key] = route
     })
-
+    
     return routes
 }
 

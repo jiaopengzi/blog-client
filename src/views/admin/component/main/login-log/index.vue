@@ -53,7 +53,7 @@ import {
     type DeleteLoginLogByIDsRequest,
 } from "@/api/loginLog/deleteLoginLogByIds"
 import { ShowMsgTip } from "@/utils/message"
-import { handleConfirmCommon } from "@/utils/confirm"
+import { deleteConfirmCommon } from "@/utils/confirm"
 
 import BaseTable from "@/components/common/base-table"
 
@@ -145,7 +145,7 @@ const search = ref("")
 const deleteNum = ref(1)
 
 const handleDeleteN = () => {
-    handleConfirmCommon(async () => {
+    deleteConfirmCommon(async () => {
         // 删除用户
         const deleteLoginLogByDayRequest: DeleteLoginLogByDayRequest = {
             days_before: deleteNum.value,

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-23 19:43:22
+ * @LastEditTime : 2024-11-03 18:06:52
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -11,9 +11,24 @@
 
 <template>
     <el-container ref="elContainerRef" direction="vertical">
-        <el-button type="primary" class="add-media">
-            <Icon :name="IconKeys.Media" custom-class="add-media-icon" /> <span>添加媒体</span>
-        </el-button>
+        <div class="btns-header">
+            <div class="btns-header-left">
+                <el-button type="primary" class="add-media btns-header-item">
+                    <Icon :name="IconKeys.Media" custom-class="btns-header-item-icon" />
+                    <span>添加媒体</span>
+                </el-button>
+            </div>
+            <div class="btns-header-right">
+                <el-button type="primary" class="save-post btns-header-item">
+                    <Icon :name="IconKeys.Save" custom-class="btns-header-item-icon" />
+                    <span>保存草稿</span>
+                </el-button>
+                <el-button type="primary" class="post-push btns-header-item">
+                    <Icon :name="IconKeys.Media" custom-class="btns-header-item-icon" />
+                    <span>发布</span>
+                </el-button>
+            </div>
+        </div>
 
         <div ref="editorContainerRef" class="editor">
             <EditorPost :editor-state="editorState" />
@@ -59,7 +74,7 @@
         </div>
 
         <ul class="switch-group">
-            <span class="switch-label">免费管理：</span>
+            <span class="switch-label">付费管理：</span>
             <li class="switch-item" v-for="(item, index) in switchItemList" :key="index">
                 <SwitchGroup
                     :switch-item="item"
@@ -68,21 +83,10 @@
                 />
             </li>
         </ul>
-
-        <div class="btns-footer">
-            <el-button type="primary" class="save-post">
-                <Icon :name="IconKeys.Save" custom-class="btns-footer-item-icon" />
-                <span>保存草稿</span>
-            </el-button>
-            <el-button type="primary" class="post-push">
-                <Icon :name="IconKeys.Media" custom-class="btns-footer-item-icon" />
-                <span>发布</span>
-            </el-button>
-        </div>
     </el-container>
 </template>
 <script lang="ts" setup>
-import { reactive, useTemplateRef } from "vue"
+import { reactive, useTemplateRef, onMounted, onBeforeUnmount } from "vue"
 import { useResizeObserver } from "@vueuse/core"
 import { EditorStateManager, EditorPost } from "@/components/editor"
 import { IconKeys } from "@/components/common/icons"
@@ -90,6 +94,7 @@ import type { SwitchItem, SwitchItemLabel } from "@/components/common/switch-gro
 import SwitchGroup from "@/components/common/switch-group"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import { type ElContainer } from "element-plus"
+import { useUserStore } from "@/stores/user"
 
 import AddTag from "@/components/common/add-tag"
 
@@ -101,6 +106,8 @@ const editorContainerRef = useTemplateRef<HTMLDivElement | null>("editorContaine
 // const addTagRef = useTemplateRef <InstanceType<typeof AddTag>>("addTagRef")
 const stateManager = new EditorStateManager()
 const editorState = stateManager.getState()
+
+const userStore = useUserStore()
 
 // 监听编辑器宽度变化
 useResizeObserver(editorContainerRef, (entries) => {
@@ -151,6 +158,8 @@ const switchItemList: SwitchItem[] = reactive([
     },
 ])
 
+userStore.setIsEditing(true)
+
 const updateStatus = (item: SwitchItem) => {
     const index = switchItemList.findIndex((i) => i.name === item.name)
     switchItemList[index].status = item.status
@@ -159,25 +168,55 @@ const updateStatus = (item: SwitchItem) => {
 
 // 计算 name 最大长度
 const nameMaxLength = Math.max(...switchItemList.map((item) => (item.name ?? "").length))
+
+// 监听页面关闭事件,即用户手动修改ULR或关闭页面
+const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+    if (userStore.isEditing) {
+        // 参考：https://developer.mozilla.org/zh-CN/docs/Web/API/Window/beforeunload_event
+        event.preventDefault()
+        event.returnValue = ""
+    }
+}
+
+onMounted(() => {
+    window.addEventListener("beforeunload", handleBeforeUnload)
+})
+
+onBeforeUnmount(() => {
+    window.removeEventListener("beforeunload", handleBeforeUnload)
+})
 </script>
 
 <style scoped lang="scss">
-.add-media {
+.btns-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 16px;
+}
+
+.btns-header-left,
+.btns-header-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btns-header-item {
     display: flex;
     justify-content: center;
     align-items: center;
 
-    margin: 16px 16px;
     width: 100px;
-    height: 40px;
+    height: 38px;
     line-height: 40px;
     font-weight: 700;
 
     span {
-        margin-left: 4px;
+        margin-left: 8px;
     }
 
-    .add-media-icon {
+    .btns-header-item-icon {
         font-size: 20px;
         fill: var(--text-color);
     }
@@ -207,14 +246,6 @@ const nameMaxLength = Math.max(...switchItemList.map((item) => (item.name ?? "")
     margin: 8px 16px;
 }
 
-.btns-footer {
-    margin: 8px 16px;
-}
-
-.btns-footer-item-icon {
-    font-size: 20px;
-    fill: var(--text-color);
-}
 .post-info {
     // margin: 10px 20px;
     padding: 10px 20px;

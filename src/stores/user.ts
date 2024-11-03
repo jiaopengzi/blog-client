@@ -49,6 +49,7 @@ export interface UserInfoStore {
     isBindEmail: boolean // 是否绑定邮箱
     showDialogBindEmail?: boolean // 是否显示绑定邮箱弹窗
     permissions?: PermissionNames[] // 权限列表
+    isEditing?: boolean // 是否正在编辑
 }
 
 // 创建空值用户信息
@@ -60,6 +61,7 @@ function createEmptyUserInfoStore(): UserInfoStore {
         isBindEmail: false,
         showDialogBindEmail: false,
         permissions: [],
+        isEditing: false,
     }
 }
 
@@ -96,6 +98,11 @@ export const useUserStore = defineStore({
         // 获取权限列表
         getPermissions(): PermissionNames[] {
             return this.permissions || []
+        },
+
+        // 获取是否正在编辑
+        getIsEditing(): boolean {
+            return this.isEditing || false
         },
     },
 
@@ -203,6 +210,11 @@ export const useUserStore = defineStore({
         // 是否具有权限
         hasPermission(permission: PermissionNames): boolean {
             return this.permissions?.includes(permission) || false
+        },
+
+        // 设置是否正在编辑
+        setIsEditing(isEditing: boolean) {
+            this.isEditing = isEditing
         },
     },
 })

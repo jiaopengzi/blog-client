@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 10:25:02
+ * @LastEditTime : 2024-11-03 17:43:09
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -19,16 +19,11 @@
     ></div>
     <div v-else-if="hasPermissionLoginAdmin" class="admin-layout">
         <el-container class="container">
-            <el-header class="header" v-show="!isFullScreen">
+            <el-header class="header">
                 <AdminHeader />
             </el-header>
             <el-container ref="containerRef" class="content">
-                <AdminAside
-                    :default-active="defaultActive"
-                    class="aside"
-                    v-show="!isFullScreen"
-                    @select="handleSelect"
-                />
+                <AdminAside :default-active="defaultActive" class="aside" @select="handleSelect" />
 
                 <el-main class="main">
                     <component :is="currentComponent" />
@@ -41,14 +36,13 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { ref, watch, onMounted, shallowRef, onBeforeMount, useTemplateRef } from "vue"
+import { ref, shallowRef, onBeforeMount, useTemplateRef } from "vue"
 import router from "@/router/index"
-import { useEditorStore } from "@/stores/editor"
-import { storeToRefs } from "pinia"
 import { components } from "@/views/admin"
 import { adminMenuItemMapWithIndex, AdminSideMenu } from "@/views/admin/component/aside"
 import { PermissionNames } from "@/utils/permissionRole"
 import { useUserStore } from "@/stores/user"
+import { confirmCommon } from "@/utils/confirm"
 
 import AdminHeader from "@/views/admin/component/header"
 import AdminAside from "@/views/admin/component/aside"
@@ -57,6 +51,7 @@ import NoPermission from "@/views/admin/component/main/no-permission"
 import Page404 from "@/views/404"
 
 defineOptions({ name: "AdminLayout" })
+
 const hasPermissionLoginAdmin = ref(false)
 
 // 定义 HTMLElementRef 类型
@@ -69,11 +64,11 @@ const isLoading = ref(true)
 
 // 添加默认激活的菜单项
 const defaultActive = ref("")
+const userStore = useUserStore()
 
 // 更新 PermissionLoginAdmin
 const updatePermissionLoginAdmin = () => {
     isLoading.value = true
-    const userStore = useUserStore()
     if (userStore.hasPermission(PermissionNames.LoginAdmin)) {
         hasPermissionLoginAdmin.value = true
     }
@@ -81,20 +76,8 @@ const updatePermissionLoginAdmin = () => {
 }
 
 const currentComponent = shallowRef(Dashboard) // 组件的响应式引用 使用 shallowRef 代替 ref，避免组件重复渲染
-const editorStore = useEditorStore()
-const { isFullScreen } = storeToRefs(editorStore)
 
 const containerRef = useTemplateRef<HTMLElementRef | null>("containerRef")
-
-const stopWatch = watch(isFullScreen, (newValue) => {
-    if (containerRef.value) {
-        if (newValue) {
-            containerRef.value.$el.style.height = "100vh"
-        } else {
-            containerRef.value.$el.style.height = "calc(100vh - 80px)"
-        }
-    }
-})
 
 // 更新当前组件
 const updateCurrentComponent = () => {
@@ -110,12 +93,21 @@ const updateCurrentComponent = () => {
 
 // 选择菜单项
 const handleSelect = (index: string) => {
+    if (userStore.getIsEditing) {
+        return
+    }
+
     updateCurrentComponentByPath(index)
     console.log("1", index)
 }
 
+// 监听路由变化，主要在路由变化时更新当前组件
+router.afterEach(() => {
+    updateCurrentComponent()
+})
+
 // 通过 path 更新当前组件
-function updateCurrentComponentByPath(path: string): void {
+const updateCurrentComponentByPath = (path: string): void => {
     //通过 筛选 adminMenuItemMapWithIndex 中对象的 index 与 传入 index 相等的对象，获取对应的 key 值
     const key = Object.keys(adminMenuItemMapWithIndex).filter(
         (key) => adminMenuItemMapWithIndex[key as AdminSideMenu].index === path,
@@ -134,12 +126,6 @@ function updateCurrentComponentByPath(path: string): void {
 onBeforeMount(() => {
     updateCurrentComponent()
     updatePermissionLoginAdmin()
-})
-
-onMounted(() => {
-    return () => {
-        stopWatch()
-    }
 })
 </script>
 
