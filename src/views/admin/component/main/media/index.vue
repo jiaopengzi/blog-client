@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-16 15:46:49
+ * @LastEditTime : 2024-11-03 11:11:03
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -154,7 +154,7 @@ const cols: TableColumn[] = reactive([
         prop: "created_at",
         label: "上传时间",
         sortable: true,
-        width: 150,
+        width: 140,
         align: "center",
     },
     {
@@ -167,9 +167,16 @@ const cols: TableColumn[] = reactive([
     {
         prop: "is_encrypt",
         label: "视频加密",
-        width: 140,
+        width: 100,
         align: "center",
         formatter: (row: TableData) => formatterVideoIsEncrypt(row),
+    },
+    {
+        prop: "is_generate_hls",
+        label: "HLS",
+        width: 60,
+        align: "center",
+        formatter: (row: TableData) => formatterVideoIsHLS(row),
     },
     {
         prop: "video_quality_name",
@@ -229,6 +236,7 @@ const editMediaData: EditMediaProps = reactive({
     is_free: false, // 是否免费
     subtitles_language_list: [], // 字幕
     editDialogVisible: false, // 编辑对话框是否显示
+    is_generate_hls: true, // 是否生成HLS
 })
 
 const handleAdd = () => {
@@ -432,6 +440,17 @@ const formatterVideoIsEncrypt = (row: TableData) => {
             return "加密"
         }
         return "无密"
+    } else {
+        return "-"
+    }
+}
+
+const formatterVideoIsHLS = (row: TableData) => {
+    if ("is_generate_hls" in row && isVideo(row.file_type)) {
+        if (row.is_generate_hls) {
+            return "是"
+        }
+        return "否"
     } else {
         return "-"
     }
