@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-03 17:43:09
+ * @LastEditTime : 2024-11-05 16:19:49
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -42,7 +42,6 @@ import { components } from "@/views/admin"
 import { adminMenuItemMapWithIndex, AdminSideMenu } from "@/views/admin/component/aside"
 import { PermissionNames } from "@/utils/permissionRole"
 import { useUserStore } from "@/stores/user"
-import { confirmCommon } from "@/utils/confirm"
 
 import AdminHeader from "@/views/admin/component/header"
 import AdminAside from "@/views/admin/component/aside"

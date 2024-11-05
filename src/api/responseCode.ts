@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-16 13:32:30
+ * @LastEditTime : 2024-11-04 17:19:44
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -64,6 +64,16 @@ export enum ResponseCode {
     EditUserInfoByAdminSuccess = 1039, //管理员编辑用户成功
     UserLogoutByAdminSuccess = 1040, //管理员登出用户成功
     UserForbidden = 1041, //用户禁用
+
+    // 文章标签相关
+    PostTagInsertSuccess = 2100, // 插入文章标签成功
+    PostTagDeleteSuccess = 2101, // 删除文章标签成功
+    PostTagUpdateSuccess = 2102, // 更新文章标签成功
+    PostTagViewSuccess = 2103, // 查看文章标签成功
+    PostTagCheckNameNoExist = 2105, // 标签名称不存在
+    PostTagCheckSlugNoExist = 2107, // 别名名称不存在
+    PostTagCheckNameNoExistExcludingID = 2109, // 标签名称不存在，排除指定ID
+    PostTagCheckSlugNoExistExcludingID = 2111, // 别名名称不存在，排除指定ID
 
     // 验证码相关
     CaptchaSendSuccess = 8000, //验证码发送成功

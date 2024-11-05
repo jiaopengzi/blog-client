@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:25:00
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-29 15:00:13
+ * @LastEditTime : 2024-11-05 17:36:55
  * @FilePath     : \blog-client\src\components\common\base-table\index.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -12,7 +12,11 @@
 import { type DataWithImg } from "@/components/common" // 图片填充方式
 import { type User } from "@/api/user/getUsers"
 import { type MediaFile } from "@/api/upload/getFiles"
+import { type PostTag } from "@/api/postTag/view"
 import { type LoginLog } from "@/api/loginLog/getLoginLogs"
+import { ImgFit, type TableImg } from "@/components/common"
+import { convertToBeijingTime } from "@/utils/dateTime"
+import { IconKeys } from "@/components/common/icons"
 
 export { default } from "./index.vue"
 
@@ -35,8 +39,8 @@ export interface PostCategory extends DataWithImg {
     description: string // 分类描述
     count: number // 分类下文章数量
     slug?: string // 分类别名
-    parentID?: number // 父分类 ID
-    parentName?: string // 父分类名称
+    parent_id?: number // 父分类 ID
+    parent_name?: string // 父分类名称
 }
 
 // 文章
@@ -48,9 +52,58 @@ export interface Post extends DataWithImg {
     categories: string[] // 分类
     tags: string[] // 标签
     views: number // 阅读量
-    createdAt: string // 创建时间
-    updatedAt?: string // 更新时间
+    created_at: string // 创建时间
+    updated_at?: string // 更新时间
     slug?: string // 文章别名
 }
 
-export type TableData = PostCategory | Post | MediaFile | User | LoginLog
+export type TableData = PostCategory | Post | PostTag | MediaFile | User | LoginLog
+
+/**
+ * @description: 格式化表格的图片和时间
+ * @param TableData 表格数据
+ * @param width 图片宽度
+ * @param height 图片高度
+ * @param imgFit 图片填充方式
+ * @return  {T} 格式化后的用户信息
+ */
+export function formatTableData<
+    T extends {
+        thumbnail?: string
+        created_at?: string
+        file_type?: string
+        img?: TableImg
+    },
+>(
+    { thumbnail, created_at, ...tableData }: T,
+    width: number = 30, // 默认值 50px
+    height: number = 30, // 默认值 50px
+    imgFit: ImgFit = ImgFit.Cover, // 默认值 cover
+    fontSize = 30, // 默认值 30px
+): T {
+    const formatTableData = {
+        ...tableData,
+        created_at: created_at ? convertToBeijingTime(created_at) : "", // 使用 convertToBeijingTime 进行格式化
+    } as T
+
+    // 如果 thumbnail 不为空，添加 img 属性
+    if (thumbnail) {
+        formatTableData.img = {
+            url: thumbnail,
+            width: width,
+            height: height,
+            imgFit: imgFit,
+        }
+    }
+
+    // 如果 thumbnail 为空，添加 icon 属性
+    if (!thumbnail && tableData.file_type === "application/zip") {
+        formatTableData.img = {
+            url: "",
+            fontSize: fontSize,
+            iconKeyName: IconKeys.Zip,
+        }
+    }
+
+    return formatTableData
+}

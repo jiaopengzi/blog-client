@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-18 10:20:30
+ * @LastEditTime : 2024-11-05 18:00:27
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格
  * @Blog         : https://jiaopengzi.com
@@ -212,7 +212,7 @@
 
 <script lang="ts" setup>
 import { ref, reactive, watchEffect, watch, useTemplateRef } from "vue"
-import { colProps, type ElTable } from "element-plus"
+import { type ElTable } from "element-plus"
 import type { Pagination } from "@/components/common"
 import { MsgType } from "@/components/common"
 import type { TableData, TableColumn } from "@/components/common/base-table"
@@ -274,8 +274,8 @@ const paginationData = ref<Pagination<TableData>>(pagination)
 const addItemDialogVisibleStatus = ref(false) // 对话框状态
 const editItemDialogVisibleStatus = ref(false) // 对话框状态
 
-const isShowElImageViewer = ref(false)
-const imgUrls = ref<string[]>([])
+// const isShowElImageViewer = ref(false)
+// const imgUrls = ref<string[]>([])
 
 const switchItemLabel: SwitchItemLabel = {
     labelTrue: "表格",
@@ -333,10 +333,10 @@ const handleDelegateClick = (row: TableData) => {
 // }
 
 // 关闭图片预览
-const closeElImageViewer = () => {
-    isShowElImageViewer.value = false
-    document.body.style.overflow = "auto"
-}
+// const closeElImageViewer = () => {
+//     isShowElImageViewer.value = false
+//     document.body.style.overflow = "auto"
+// }
 
 // 更新分页配置
 watchEffect(() => {

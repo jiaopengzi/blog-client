@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 12:37:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 10:24:20
+ * @LastEditTime : 2024-11-04 10:02:22
  * @FilePath     : \blog-client\src\views\admin\index.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -13,6 +13,7 @@ export { default } from "./index.vue"
 
 import Dashboard from "@/views/admin/component/main/dashboard"
 import PostWrite from "@/views/admin/component/main/post-write"
+import PostTag from "@/views/admin/component/main/post-tag"
 // import PostCategory from '@/views/admin/component/main/post-category'
 import Media from "@/views/admin/component/main/media"
 import PermissionRole from "@/views/admin/component/main/permission-role"
@@ -27,4 +28,5 @@ export const components = {
     PermissionRole,
     UserView,
     LoginLog,
+    PostTag,
 }

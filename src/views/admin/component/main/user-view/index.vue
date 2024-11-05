@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-28 18:49:15
+ * @LastEditTime : 2024-11-05 17:18:53
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -74,7 +74,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, watch } from "vue"
+import { ref, reactive } from "vue"
 import type { Pagination } from "@/components/common"
 import type { TableData, TableColumn } from "@/components/common/base-table"
 import { debounce } from "throttle-debounce"
@@ -347,10 +347,6 @@ const updateSearch = debounce(500, async (val: string) => {
         { [queryKey.RoleName]: activeRole.value, [queryKey.Search]: val },
     )
     console.log("07============", val)
-})
-
-watch(search, (newVal) => {
-    console.log("08============", newVal)
 })
 
 const updateSelection = (rows: TableData[]) => {
