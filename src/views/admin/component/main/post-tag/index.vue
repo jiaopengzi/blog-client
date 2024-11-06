@@ -151,6 +151,7 @@ const {
     editItemUpdateDialogVisible, // 编辑对话框
     updatePaginate, // 更新分页数据
     deleteRows, // 删除行
+    updatePaginateOnBeforeMount, // 更新分页数据
 } = useBaseTable<PostTag, ViewPostTagRequest, DeletePostTagRequest>(
     AdminSideMenu.PostTag,
     viewPostTagAPI,
@@ -190,7 +191,7 @@ const editRow = (index: number, row: TableData) => {
 }
 
 // 获取数据
-useGetData(updatePaginate)
+useGetData(updatePaginateOnBeforeMount, updatePaginate)
 </script>
 
 <style scoped lang="scss">

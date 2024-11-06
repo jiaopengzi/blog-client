@@ -2,14 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 08:57:02
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 16:46:20
+ * @LastEditTime : 2024-11-06 17:54:38
  * @FilePath     : \blog-client\src\components\hooks\useBaseTable\index.ts
  * @Description  : 基础表格钩子
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { ref, reactive, watch } from "vue"
+import { ref, reactive } from "vue"
 import router from "@/router"
 import { debounce } from "throttle-debounce"
 import type { AxiosPromise } from "axios"
@@ -54,7 +54,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     const query: Record<string, string | number> = reactive<K>({ ...initParams })
 
     // 更新查询参数
-    const updateQuery = () => {
+    const updateQueryAndRouter = (isUpdateRouter: boolean = true) => {
         query.page_size = pagination.page_size
         query.current_page = pagination.current_page
         if (search.value) {
@@ -64,20 +64,45 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         if (!search.value && query.key_word) {
             delete query.key_word
         }
+
+        // 判断是否更新路由
+        if (isUpdateRouter) {
+            router.push({
+                name: routeName,
+                query: query,
+            })
+        }
     }
 
-    // 更新路由
-    const updateRouterPush = () => {
-        // 路由更新
-        router.push({
-            name: routeName,
-            query: query,
-        })
+    // 从路由中获取参数
+    const updateByQuery = () => {
+        // 判断路由中是否有参数
+        const queryUrl = router.currentRoute.value.query
+        // 如果 queryUrl 不为空 则将 queryUrl 赋值给 query
+        if (Object.keys(queryUrl).length) {
+            // 赋值给到 query, 如果 key 对应的值能解析为数字则解析为数字
+            for (const key in queryUrl) {
+                const value = queryUrl[key]
+                if (Array.isArray(value)) {
+                    continue // 丢弃数组
+                } else if (value !== null) {
+                    query[key] = isNaN(Number(value)) ? value : Number(value)
+                }
+            }
+            return
+        }
+        updateQueryAndRouter(false)
+    }
+
+    // 更新分页内容 在组件挂载之前,主要是为了链接跳转时能够获取到参数
+    const updatePaginateOnBeforeMount = async (): Promise<void> => {
+        updateByQuery()
+        await getPaginate(query as unknown as K)
     }
 
     // 更新分页内容
     const updatePaginate = async (): Promise<void> => {
-        updateQuery()
+        updateQueryAndRouter(false)
         await getPaginate(query as unknown as K)
     }
 
@@ -104,19 +129,19 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     // 更新当前页
     const updateCurrentPage = async (val: number) => {
         pagination.current_page = val
-        updateRouterPush()
+        updateQueryAndRouter()
     }
 
     // 更新每页显示条数
     const updatePageSize = async (val: number) => {
         pagination.page_size = val
-        updateRouterPush()
+        updateQueryAndRouter()
     }
 
     const updateSearch = debounce(500, async (val: string) => {
         search.value = val
         await getPaginate(query as unknown as K)
-        updateRouterPush()
+        updateQueryAndRouter()
     })
 
     // 更新添加状态
@@ -173,15 +198,6 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         })
     }
 
-    // 监控 pagination 的变化
-    watch(
-        () => pagination,
-        () => {
-            updateQuery()
-        },
-        { deep: true },
-    )
-
     return {
         addItemDialogVisible, // 添加对话框是否可见
         editItemDialogVisible, // 编辑对话框是否可见
@@ -198,5 +214,6 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         editItemUpdateDialogVisible, // 编辑对话框
         updatePaginate, // 更新分页数据
         deleteRows, // 删除行
+        updatePaginateOnBeforeMount, // 在组件挂载之前更新分页数据
     }
 }
