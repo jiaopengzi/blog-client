@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 08:57:02
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 16:05:15
+ * @LastEditTime : 2024-11-06 16:46:20
  * @FilePath     : \blog-client\src\components\hooks\useBaseTable\index.ts
  * @Description  : 基础表格钩子
  * @Blog         : https://jiaopengzi.com
@@ -51,11 +51,10 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     const search = ref("") // 搜索关键字
 
     // 查询参数
-    // const query: Record<string, string | number> = reactive<K>({} as K)
     const query: Record<string, string | number> = reactive<K>({ ...initParams })
 
     // 更新查询参数
-    const updateParams = () => {
+    const updateQuery = () => {
         query.page_size = pagination.page_size
         query.current_page = pagination.current_page
         if (search.value) {
@@ -65,18 +64,20 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         if (!search.value && query.key_word) {
             delete query.key_word
         }
+    }
 
+    // 更新路由
+    const updateRouterPush = () => {
+        // 路由更新
         router.push({
             name: routeName,
             query: query,
         })
     }
 
-    // 初始化参数
-    updateParams()
-
-    // updatePaginate
+    // 更新分页内容
     const updatePaginate = async (): Promise<void> => {
+        updateQuery()
         await getPaginate(query as unknown as K)
     }
 
@@ -103,16 +104,19 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     // 更新当前页
     const updateCurrentPage = async (val: number) => {
         pagination.current_page = val
+        updateRouterPush()
     }
 
     // 更新每页显示条数
     const updatePageSize = async (val: number) => {
         pagination.page_size = val
+        updateRouterPush()
     }
 
     const updateSearch = debounce(500, async (val: string) => {
         search.value = val
         await getPaginate(query as unknown as K)
+        updateRouterPush()
     })
 
     // 更新添加状态
@@ -173,7 +177,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     watch(
         () => pagination,
         () => {
-            updateParams()
+            updateQuery()
         },
         { deep: true },
     )
