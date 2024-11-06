@@ -1,10 +1,10 @@
 <!--
  * @Author       : jiaopengzi
- * @Date         : 2024-11-04 16:21:40
+ * @Date         : 2024-11-06 14:47:08
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 15:22:52
- * @FilePath     : \blog-client\src\views\admin\component\main\post-tag\component\edit\index.vue
- * @Description  : 编辑标签
+ * @LastEditTime : 2024-11-06 15:22:11
+ * @FilePath     : \blog-client\src\views\admin\component\main\post-category\component\edit\index.vue
+ * @Description  : 编辑分类
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
@@ -24,32 +24,40 @@
             <el-form-item label="ID" prop="id">
                 <el-input v-model.trim="editForm.id" disabled />
             </el-form-item>
-            <el-form-item label="标签" prop="name">
-                <el-input v-model.trim="editForm.name" placeholder="请输入标签名称-必填" />
+            <el-form-item label="分类" prop="name">
+                <el-input v-model.trim="editForm.name" placeholder="请输入分类名称-必填" />
             </el-form-item>
 
             <el-form-item label="别名" prop="slug">
-                <el-input v-model.trim="editForm.slug" placeholder="请输入标签别名-必填" />
+                <el-input v-model.trim="editForm.slug" placeholder="请输入分类别名-必填" />
             </el-form-item>
             <el-form-item label="描述" prop="description">
                 <el-input
                     v-model.trim="editForm.description"
                     type="textarea"
-                    placeholder="请输入标签描信息-选填"
+                    placeholder="请输入分类描信息-选填"
                     :rows="5"
                 />
             </el-form-item>
             <el-form-item label="图片" prop="thumbnail">
                 <el-input
                     v-model.trim="editForm.thumbnail"
-                    placeholder="请输入标签的图片URL-选填"
+                    placeholder="请输入分类的图片URL-选填"
                 />
             </el-form-item>
             <el-form-item label="排序" prop="order">
                 <el-input
                     v-model="editForm.order"
                     type="number"
-                    placeholder="请输入标签排序数字-选填"
+                    placeholder="请输入分类排序数字-选填"
+                    min="0"
+                />
+            </el-form-item>
+            <el-form-item label="父分类" prop="parent">
+                <el-input
+                    v-model="editForm.parent"
+                    type="number"
+                    placeholder="请输入父分类数字-选填"
                     min="0"
                 />
             </el-form-item>
@@ -69,12 +77,12 @@
 import { reactive, ref, toRefs, onBeforeMount, watch, useTemplateRef } from "vue"
 import { ShowMsgTip } from "@/utils/message"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { type UpdatePostTagRequest, updatePostTagAPI } from "@/api/postTag/update"
+import { type UpdateCategoryRequest, updateCategoryAPI } from "@/api/category/update"
 import { ResponseCode } from "@/api/responseCode"
 import type { EditForm } from "./index"
 import { useFormValidation } from "../hooks"
 
-defineOptions({ name: "EditTag" })
+defineOptions({ name: "EditCategory" })
 
 const emit = defineEmits<{
     (event: "edit-status", value: boolean): void // 编辑用户状态
@@ -102,6 +110,7 @@ const editForm = reactive<EditForm>({
     description: "", // 描述
     thumbnail: "", // 缩略图
     order: 0, // 排序
+    parent: 0, // 父分类
 })
 
 const updateEditForm = (data: EditForm) => {
@@ -111,12 +120,14 @@ const updateEditForm = (data: EditForm) => {
     editForm.description = data.description
     editForm.thumbnail = data.thumbnail
     editForm.order = data.order
+    editForm.parent = data.parent
 }
 
 // hooks
-const { checkTagSlugExcludingIDValidator, checkTagNameExcludingIDValidator } = useFormValidation({
-    form: toRefs(editForm),
-})
+const { checkCategorySlugExcludingIDValidator, checkCategoryNameExcludingIDValidator } =
+    useFormValidation({
+        form: toRefs(editForm),
+    })
 
 /**
  * @description: 表单校验规则
@@ -125,15 +136,15 @@ const { checkTagSlugExcludingIDValidator, checkTagNameExcludingIDValidator } = u
 const rules = reactive<FormRules<EditForm>>({
     id: [{ required: true, message: "id 不能为空", trigger: "blur" }],
     name: [
-        { required: true, message: "请输入标签名称", trigger: "blur" },
-        { validator: checkTagNameExcludingIDValidator, trigger: "blur" },
+        { required: true, message: "请输入分类名称", trigger: "blur" },
+        { validator: checkCategoryNameExcludingIDValidator, trigger: "blur" },
     ],
     slug: [
         { required: true, message: "请输入别名", trigger: "blur" },
-        { validator: checkTagSlugExcludingIDValidator, trigger: "blur" },
+        { validator: checkCategorySlugExcludingIDValidator, trigger: "blur" },
     ],
-    description: [{ message: "请输入标签描述信息", trigger: "blur" }],
-    thumbnail: [{ message: "请输入标签的图片URL", trigger: "blur" }],
+    description: [{ message: "请输入分类描述信息", trigger: "blur" }],
+    thumbnail: [{ message: "请输入分类的图片URL", trigger: "blur" }],
 })
 
 const submitForm = async (formEl: FormInstance | undefined) => {
@@ -141,17 +152,18 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     try {
         await formEl.validate(async (valid) => {
             if (valid) {
-                const req: UpdatePostTagRequest = {
+                const req: UpdateCategoryRequest = {
                     id: editForm.id,
                     name: editForm.name,
                     slug: editForm.slug,
                     description: editForm.description,
                     thumbnail: editForm.thumbnail,
                     order: Number(editForm.order),
+                    parent: Number(editForm.parent),
                 }
-                const { data } = await updatePostTagAPI(req)
+                const { data } = await updateCategoryAPI(req)
 
-                if (data.code === ResponseCode.PostTagUpdateSuccess) {
+                if (data.code === ResponseCode.CategoryUpdateSuccess) {
                     // 添加成功提示
                     emit("edit-status", true)
                     ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)

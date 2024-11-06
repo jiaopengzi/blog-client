@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-04 17:19:44
+ * @LastEditTime : 2024-11-06 14:52:44
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -74,6 +74,16 @@ export enum ResponseCode {
     PostTagCheckSlugNoExist = 2107, // 别名名称不存在
     PostTagCheckNameNoExistExcludingID = 2109, // 标签名称不存在，排除指定ID
     PostTagCheckSlugNoExistExcludingID = 2111, // 别名名称不存在，排除指定ID
+
+    // 文章分类相关
+    CategoryInsertSuccess = 2200, // 插入文章分类成功
+    CategoryDeleteSuccess = 2201, // 删除文章分类成功
+    CategoryUpdateSuccess = 2202, // 更新文章分类成功
+    CategoryViewSuccess = 2203, // 查看文章分类成功
+    CategoryCheckNameNoExist = 2205, // 分类名称不存在
+    CategoryCheckSlugNoExist = 2207, // 别名名称不存在
+    CategoryCheckNameNoExistExcludingID = 2209, // 分类名称不存在，排除指定ID
+    CategoryCheckSlugNoExistExcludingID = 2211, // 别名名称不存在，排除指定ID
 
     // 验证码相关
     CaptchaSendSuccess = 8000, //验证码发送成功

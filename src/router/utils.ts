@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-08-29 16:27:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-29 16:46:23
+ * @LastEditTime : 2024-11-06 10:15:41
  * @FilePath     : \blog-client\src\router\utils.ts
  * @Description  : 路由工具函数
  * @Blog         : https://jiaopengzi.com
@@ -39,6 +39,32 @@ export function paginationRouterPush(
     Object.keys(additionalParams).forEach((key) => {
         const value = additionalParams[key]
         if (value !== "") {
+            query[key] = value
+        }
+    })
+
+    router.push({
+        name: routeName,
+        query: query,
+    })
+}
+
+/**
+ * @description: 分页路由跳转
+ * @param routeName 路由名称
+ * @param additionalParams 其他参数
+ * @example routerPushByParams('PostAll', { 'file-type': 'pdf', 'search': 'example' })
+ */
+export function routerPushByParams(
+    routeName: string,
+    additionalParams: Record<string, string | number>,
+) {
+    const query: Record<string, string | number> = {}
+
+    // 过滤掉值为空字符串的参数
+    Object.keys(additionalParams).forEach((key) => {
+        const value = additionalParams[key]
+        if (value !== "" && value !== undefined) {
             query[key] = value
         }
     })

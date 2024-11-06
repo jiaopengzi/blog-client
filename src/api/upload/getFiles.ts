@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-08-27 16:38:22
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-16 15:31:53
+ * @LastEditTime : 2024-11-06 09:25:10
  * @FilePath     : \blog-client\src\api\upload\getFiles.ts
  * @Description  : 获取文件列表
  * @Blog         : https://jiaopengzi.com
@@ -12,24 +12,21 @@
 import request from "@/api/request"
 import { routerGroup } from "@/api/routerGroup"
 import type { AxiosPromise } from "axios"
-import type { DataWithImg, Pagination } from "@/components/common"
+import type { DataWithImg, Pagination, PaginationRequest } from "@/components/common"
 import { ResponseCode } from "@/api/responseCode"
 import { ImgFit } from "@/components/common"
 import { convertToBeijingTime } from "@/utils/dateTime"
 import { IconKeys } from "@/components/common/icons"
 
-export interface GetMediaFilesRequest {
-    current_page: number // 当前页
-    page_size: number // 每页显示条数
+export interface GetMediaFilesRequest extends PaginationRequest {
     file_type?: string // 角色
-    key_word?: string // 关键字
 }
 
 // 获取用户信息响应类型
 export interface GetMediaFilesResponse {
     code: number
     msg: string
-    data: Pagination<MediaFile> // 您可以根据实际返回的数据结构替换为更具体的类型
+    data: Pagination<MediaFile> // 根据实际返回的数据结构替换为更具体的类型
 }
 
 // 获取用户信息 api 函数

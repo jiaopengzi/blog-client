@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 16:30:57
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 09:04:01
+ * @LastEditTime : 2024-11-06 09:25:42
  * @FilePath     : \blog-client\src\api\user\getUsers.ts
  * @Description  : 获取用户信息
  * @Blog         : https://jiaopengzi.com
@@ -12,15 +12,12 @@
 import request from "@/api/request"
 import { routerGroup } from "@/api/routerGroup"
 import type { AxiosPromise } from "axios"
-import type { DataWithImg, Pagination } from "@/components/common"
+import type { DataWithImg, Pagination, PaginationRequest } from "@/components/common"
 import { ResponseCode } from "@/api/responseCode"
 import { ImgFit } from "@/components/common/index"
 import { convertToBeijingTime } from "@/utils/dateTime"
 
-export interface GetUsersRequest {
-    current_page: number // 当前页
-    page_size: number // 每页显示条数
-    key_word?: string // 关键字
+export interface GetUsersRequest extends PaginationRequest {
     role_name?: string // 角色
 }
 
@@ -28,7 +25,7 @@ export interface GetUsersRequest {
 export interface GetUsersResponse {
     code: number
     msg: string
-    data: Pagination<User> // 您可以根据实际返回的数据结构替换为更具体的类型
+    data: Pagination<User> // 根据实际返回的数据结构替换为更具体的类型
 }
 
 // 获取用户信息 api 函数

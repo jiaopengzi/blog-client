@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:38:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 18:35:53
+ * @LastEditTime : 2024-11-06 09:55:15
  * @FilePath     : \blog-client\src\components\common\index.ts
  * @Description  : 公用信息
  * @Blog         : https://jiaopengzi.com
@@ -18,6 +18,12 @@ export enum ImgFit {
     Fill = "fill", // 拉伸图片，使图片填满元素
     None = "none", // 保持原图尺寸
     ScaleDown = "scale-down", // 保持原图尺寸，但是不超过元素的尺寸
+}
+
+export interface PaginationRequest {
+    current_page: number // 当前页
+    page_size: number // 每页显示条数
+    key_word?: string // 关键字
 }
 
 // 分页

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-05 16:19:49
+ * @LastEditTime : 2024-11-06 15:31:28
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -17,6 +17,7 @@
         element-loading-text="加载中..."
         class="loading"
     ></div>
+
     <div v-else-if="hasPermissionLoginAdmin" class="admin-layout">
         <el-container class="container">
             <el-header class="header">
@@ -31,6 +32,7 @@
             </el-container>
         </el-container>
     </div>
+
     <div v-else>
         <Page404 />
     </div>

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:25:00
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-05 17:36:55
+ * @LastEditTime : 2024-11-06 15:51:09
  * @FilePath     : \blog-client\src\components\common\base-table\index.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -13,6 +13,7 @@ import { type DataWithImg } from "@/components/common" // 图片填充方式
 import { type User } from "@/api/user/getUsers"
 import { type MediaFile } from "@/api/upload/getFiles"
 import { type PostTag } from "@/api/postTag/view"
+import { type Category } from "@/api/category/view"
 import { type LoginLog } from "@/api/loginLog/getLoginLogs"
 import { ImgFit, type TableImg } from "@/components/common"
 import { convertToBeijingTime } from "@/utils/dateTime"
@@ -57,7 +58,14 @@ export interface Post extends DataWithImg {
     slug?: string // 文章别名
 }
 
-export type TableData = PostCategory | Post | PostTag | MediaFile | User | LoginLog
+export type TableData = PostCategory | Post | PostTag | Category | MediaFile | User | LoginLog
+
+export interface FormatTableData {
+    thumbnail?: string
+    created_at?: string
+    file_type?: string
+    img?: TableImg
+}
 
 /**
  * @description: 格式化表格的图片和时间
@@ -67,14 +75,7 @@ export type TableData = PostCategory | Post | PostTag | MediaFile | User | Login
  * @param imgFit 图片填充方式
  * @return  {T} 格式化后的用户信息
  */
-export function formatTableData<
-    T extends {
-        thumbnail?: string
-        created_at?: string
-        file_type?: string
-        img?: TableImg
-    },
->(
+export function formatTableData<T extends FormatTableData>(
     { thumbnail, created_at, ...tableData }: T,
     width: number = 30, // 默认值 50px
     height: number = 30, // 默认值 50px

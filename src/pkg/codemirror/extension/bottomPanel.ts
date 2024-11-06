@@ -44,7 +44,7 @@ function updateCursorInfo(viewUpdate: ViewUpdate): string {
         const line = state.doc.lineAt(pos) // 获取光标所在行
         const column = pos - line.from // 获取光标所在列
         cursorInfo = `pos:${pos} | row:${line.number} | col:${column + 1}` // 位置信息
-        // console.log(cursorInfo) // 输出光标位置到控制台，您可以根据需要修改这里的逻辑
+        // console.log(cursorInfo) // 输出光标位置到控制台，根据需要修改这里的逻辑
     }
     return cursorInfo
 }

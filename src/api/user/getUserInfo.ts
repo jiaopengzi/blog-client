@@ -16,7 +16,7 @@ import type { AxiosPromise } from "axios"
 export interface GetUserInfoResponse {
     code: number
     msg: string
-    data: UserInfo // 您可以根据实际返回的数据结构替换为更具体的类型
+    data: UserInfo // 根据实际返回的数据结构替换为更具体的类型
 }
 
 // 获取用户信息
