@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:38:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 09:55:15
+ * @LastEditTime : 2024-11-06 18:24:06
  * @FilePath     : \blog-client\src\components\common\index.ts
  * @Description  : 公用信息
  * @Blog         : https://jiaopengzi.com
@@ -34,6 +34,12 @@ export interface Pagination<T> {
     page_count: number // 总页数
     page_sizes: number[] // 每页显示个数选择器的选项设置
     records: T[] // 数据
+}
+
+// url 中是数字的参数名 URLQueryIsNumberKeys 的对象
+export const URLQueryIsNumberKeys = {
+    current_page: "current_page",
+    page_size: "page_size",
 }
 
 // 表格图片配置

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 08:57:02
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 17:54:38
+ * @LastEditTime : 2024-11-06 18:26:24
  * @FilePath     : \blog-client\src\components\hooks\useBaseTable\index.ts
  * @Description  : 基础表格钩子
  * @Blog         : https://jiaopengzi.com
@@ -13,7 +13,7 @@ import { ref, reactive } from "vue"
 import router from "@/router"
 import { debounce } from "throttle-debounce"
 import type { AxiosPromise } from "axios"
-import type { Pagination, PaginationRequest } from "@/components/common"
+import { type Pagination, type PaginationRequest, URLQueryIsNumberKeys } from "@/components/common"
 import { type Res, ResponseCode } from "@/api/responseCode"
 import {
     formatTableData,
@@ -83,11 +83,8 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
             // 赋值给到 query, 如果 key 对应的值能解析为数字则解析为数字
             for (const key in queryUrl) {
                 const value = queryUrl[key]
-                if (Array.isArray(value)) {
-                    continue // 丢弃数组
-                } else if (value !== null) {
-                    query[key] = isNaN(Number(value)) ? value : Number(value)
-                }
+                // 判断 key 是否在 URLQueryIsNumberKeys 中，如果在则解析为数字，否则保持原样
+                query[key] = key in URLQueryIsNumberKeys ? Number(value) : (value as string)
             }
             return
         }
