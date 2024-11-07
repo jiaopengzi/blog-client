@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-03 20:48:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-18 15:06:21
+ * @LastEditTime : 2024-11-07 10:35:17
  * @FilePath     : \blog-client\src\components\common\tag-item\index.vue
  * @Description  : 标签元素
  * @Blog         : https://jiaopengzi.com
@@ -11,28 +11,29 @@
 
 <template>
     <el-tag
-        :key="tag.data.label"
+        :key="tag.data.name"
         class="tag-item"
         effect="dark"
         :round="false"
         @click="handleClick(tag)"
         :style="[{ 'background-color': tag.color.bgColor }, { color: tag.color.color }]"
     >
-        {{ tag.data.label + "(" + tag.data.tagPostNum + ")" }}
+        {{ tag.data.name + "(" + tag.data.post_count + ")" }}
     </el-tag>
 </template>
 
 <script lang="ts" setup>
-import type { TagDataObj, Tag, TagColor } from "@/components/common/tag-item"
+import type { Tag, TagColor } from "@/components/common/tag-item"
+import { type PostTag } from "@/api/postTag/view"
 
 defineOptions({ name: "TagItem" })
 
 const props = defineProps<{
-    tagData: TagDataObj
+    tagData: PostTag
 }>()
 
 const emit = defineEmits<{
-    (event: "click", tagItemData: TagDataObj): void
+    (event: "click", tagItemData: PostTag): void
 }>()
 
 const tag: Tag = {

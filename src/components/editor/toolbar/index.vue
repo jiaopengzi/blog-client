@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:02:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-22 16:39:09
+ * @LastEditTime : 2024-11-07 18:58:01
  * @FilePath     : \blog-client\src\components\editor\toolbar\index.vue
  * @Description  : 工具栏组件
  * @Blog         : https://jiaopengzi.com
@@ -13,6 +13,7 @@
     <div ref="toolbarRef" id="toolbar">
         <button
             v-for="(btn, index) in props.toolbarBtns"
+            type="button"
             :key="index"
             class="toolbar-btn"
             @click="emitToolbarBtnClicked(btn.name)"

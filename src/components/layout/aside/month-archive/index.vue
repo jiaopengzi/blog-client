@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:14:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-26 15:00:27
+ * @LastEditTime : 2024-11-07 14:36:18
  * @FilePath     : \blog-client\src\components\layout\aside\month-archive\index.vue
  * @Description  : 阅读存档
  * @Blog         : https://jiaopengzi.com
@@ -29,17 +29,9 @@
 </template>
 <script setup lang="ts">
 import router from "@/router/index"
-import { onMounted, nextTick } from "vue"
 import { IconKeys } from "@/components/common/icons"
 
 defineOptions({ name: "MonthArchive" })
-
-const emits = defineEmits(["ready"]) // 用于通知父组件已经渲染完毕
-
-onMounted(async () => {
-    await nextTick() // 等待渲染完毕
-    emits("ready") // 通知父组件已经渲染完毕
-})
 
 // 参考官方文档 https://element-plus.org/zh-CN/component/table.html#table-%E4%BA%8B%E4%BB%B6
 function handleRowClick(row: any) {

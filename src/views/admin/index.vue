@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 15:31:28
+ * @LastEditTime : 2024-11-07 14:17:13
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -24,7 +24,13 @@
                 <AdminHeader />
             </el-header>
             <el-container ref="containerRef" class="content">
-                <AdminAside :default-active="defaultActive" class="aside" @select="handleSelect" />
+                <AdminAside
+                    :default-active="defaultActive"
+                    :class="collapseStatus ? 'aside-collapse' : 'aside-no-collapse'"
+                    class="aside"
+                    @select="handleSelect"
+                    @collapse-status="handleCollapseStatus"
+                />
 
                 <el-main class="main">
                     <component :is="currentComponent" />
@@ -102,6 +108,13 @@ const handleSelect = (index: string) => {
     console.log("1", index)
 }
 
+// 折叠状态
+
+const collapseStatus = ref(false)
+const handleCollapseStatus = (isCollapse: boolean) => {
+    collapseStatus.value = isCollapse
+}
+
 // 监听路由变化，主要在路由变化时更新当前组件
 router.afterEach(() => {
     updateCurrentComponent()
@@ -148,15 +161,26 @@ onBeforeMount(() => {
         }
 
         .content {
+            // display: flex;
             height: calc(100vh - 80px);
 
             .aside {
                 background-color: #409eff;
                 color: #fff;
+                transition: width 0.3s;
+            }
+
+            .aside-no-collapse {
+                width: 300px;
+            }
+
+            .aside-collapse {
+                width: 64px;
             }
 
             .main {
                 // background-color: red;
+                flex: 1; // 占据剩余空间
                 color: #333;
                 padding: 0;
                 margin: 0;

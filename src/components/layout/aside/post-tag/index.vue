@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:15:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 09:35:41
+ * @LastEditTime : 2024-11-07 10:46:09
  * @FilePath     : \blog-client\src\components\layout\aside\post-tag\index.vue
  * @Description  : 文章标签
  * @Blog         : https://jiaopengzi.com
@@ -31,65 +31,38 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
-import type { TagDataObj } from "@/components/common/tag-item"
+import { reactive, onBeforeMount } from "vue"
 import { IconKeys } from "@/components/common/icons"
 
 import TagItem from "@/components/common/tag-item"
+import { viewPostTagTopAPI, type PostTag } from "@/api/postTag/view"
+import { ResponseCode } from "@/api/responseCode"
 
 defineOptions({ name: "PostTag" })
 
 const emit = defineEmits<{
-    (event: "click", tagItemData: TagDataObj): void
+    (event: "click", tagItemData: PostTag): void
 }>()
 
-const items = ref<Array<TagDataObj>>([
-    { path: "/1", tagPostNum: 1, label: "Power BI" },
-    { path: "/1", tagPostNum: 2, label: "Power Query" },
-    { path: "/1", tagPostNum: 3, label: "DAX" },
-    { path: "/1", tagPostNum: 3, label: "PQ" },
-    { path: "/1", tagPostNum: 5, label: "数据分析" },
-    { path: "/1", tagPostNum: 6, label: "go" },
-    { path: "/1", tagPostNum: 7, label: "vue3" },
-    { path: "/1", tagPostNum: 8, label: "svg" },
-    { path: "/1", tagPostNum: 8, label: "Excel" },
-    { path: "/1", tagPostNum: 9, label: "安全库存" },
-    { path: "/1", tagPostNum: 10, label: "日期表" },
-    { path: "/1", tagPostNum: 11, label: "ODBC" },
-    { path: "/1", tagPostNum: 12, label: "模型" },
-    { path: "/1", tagPostNum: 13, label: "DAX Studio" },
-    { path: "/1", tagPostNum: 14, label: "热力图" },
-    { path: "/1", tagPostNum: 15, label: "pbirs" },
-    { path: "/1", tagPostNum: 16, label: "帕累托" },
-    { path: "/1", tagPostNum: 17, label: "排名" },
-    { path: "/1", tagPostNum: 18, label: "Rank" },
-    { path: "/1", tagPostNum: 18, label: "技巧" },
-    { path: "/1", tagPostNum: 20, label: "排名" },
-    { path: "/1", tagPostNum: 21, label: "access" },
-    { path: "/1", tagPostNum: 22, label: "Power BI Report Server" },
-    { path: "/1", tagPostNum: 23, label: "先进先出" },
-    { path: "/1", tagPostNum: 24, label: "M语言" },
-    { path: "/1", tagPostNum: 25, label: "模型" },
-    { path: "/1", tagPostNum: 26, label: "HR" },
-    { path: "/1", tagPostNum: 13, label: "DAX Studio" },
-    { path: "/1", tagPostNum: 14, label: "热力图" },
-    { path: "/1", tagPostNum: 15, label: "pbirs" },
-    { path: "/1", tagPostNum: 16, label: "帕累托" },
-    { path: "/1", tagPostNum: 17, label: "排名" },
-    { path: "/1", tagPostNum: 18, label: "Rank" },
-    { path: "/1", tagPostNum: 18, label: "技巧" },
-    { path: "/1", tagPostNum: 20, label: "排名" },
-    { path: "/1", tagPostNum: 21, label: "access" },
-    { path: "/1", tagPostNum: 22, label: "Power BI Report Server" },
-    { path: "/1", tagPostNum: 23, label: "先进先出" },
-    { path: "/1", tagPostNum: 24, label: "M语言" },
-    { path: "/1", tagPostNum: 25, label: "模型" },
-    { path: "/1", tagPostNum: 26, label: "HR" },
-])
+const items = reactive<PostTag[]>([])
 
-const handleClick = (tagItemData: TagDataObj) => {
+// 获取分页用户
+const getTagTopN = async () => {
+    // 获取标签列表
+    await viewPostTagTopAPI().then((res) => {
+        if (res.data.code === ResponseCode.PostTagViewTopNSuccess) {
+            Object.assign(items, res.data.data)
+        }
+    })
+}
+
+const handleClick = (tagItemData: PostTag) => {
     emit("click", tagItemData)
 }
+
+onBeforeMount(() => {
+    getTagTopN()
+})
 </script>
 <style scoped lang="scss">
 .aside-item {
@@ -111,7 +84,6 @@ const handleClick = (tagItemData: TagDataObj) => {
 }
 
 .tag-box {
-    // width: 320px;
     // border: 1px solid #000;
     overflow-y: auto;
     padding-bottom: 5px;

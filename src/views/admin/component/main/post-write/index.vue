@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-03 18:06:52
+ * @LastEditTime : 2024-11-07 18:38:32
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -30,25 +30,21 @@
             </div>
         </div>
 
-        <div ref="editorContainerRef" class="editor">
-            <EditorPost :editor-state="editorState" />
-        </div>
-
-        <el-form
-            class="post-info"
-            label-position="top"
-            label-width="200px"
-            :model="postInfo"
-            v-show="!editorState.isFullScreen"
-        >
+        <el-form class="post-info" label-position="top" label-width="200px" :model="postInfo">
             <el-form-item label="标题">
                 <el-input v-model="postInfo.title" placeholder="添加标题" />
             </el-form-item>
+
+            <!-- 编辑器 -->
+            <div ref="editorContainerRef" class="editor md-layout-fs">
+                <EditorPost :editor-state="editorState" />
+            </div>
+
             <el-form-item label="SEO自定义文章标题，留空则为文章标题。">
                 <el-input v-model="postInfo.seoTitle" />
             </el-form-item>
             <el-form-item label="SEO文章描述，留空则自动截取首段一定字数作为文章描。">
-                <el-input v-model="postInfo.seoDescription" autosize type="textarea" />
+                <el-input v-model="postInfo.seoDescription" :rows="5" type="textarea" />
             </el-form-item>
             <el-form-item
                 label="SEO文章关键词，多个关键词用英文半角逗号隔开，留空则自动将文章标签做为关键词。"
@@ -65,7 +61,24 @@
                 <el-input v-model="postInfo.price" />
             </el-form-item>
         </el-form>
-        <div class="add-tag">
+
+        <div class="category segmentation-line">
+            <h4>文章分类管理</h4>
+            <el-checkbox-group v-model="postInfo.categories">
+                <el-checkbox
+                    class="category-item"
+                    v-for="item in categories"
+                    :key="item.id"
+                    :value="item.id"
+                    size="large"
+                >
+                    {{ item.name }}
+                </el-checkbox>
+            </el-checkbox-group>
+        </div>
+
+        <div class="add-tag segmentation-line">
+            <h4>文章标签管理</h4>
             <AddTag
                 ref="addTagRef"
                 :tag-list-in="postInfo.tagList"
@@ -73,16 +86,28 @@
             />
         </div>
 
-        <ul class="switch-group">
-            <span class="switch-label">付费管理：</span>
-            <li class="switch-item" v-for="(item, index) in switchItemList" :key="index">
-                <SwitchGroup
-                    :switch-item="item"
-                    :span-word-count="nameMaxLength"
-                    @update-status="updateStatus"
-                />
-            </li>
-        </ul>
+        <div class="segmentation-line segmentation-line-last">
+            <h4>付费管理</h4>
+            <ul class="switch-group">
+                <li class="switch-item" v-for="(item, index) in switchItemList" :key="index">
+                    <SwitchGroup
+                        :switch-item="item"
+                        :span-word-count="nameMaxLength"
+                        @update-status="updateStatus"
+                    />
+                </li>
+            </ul>
+        </div>
+        <div class="btns-footer">
+            <el-button type="primary" class="save-post btns-footer-item">
+                <Icon :name="IconKeys.Save" custom-class="btns-footer-item-icon" />
+                <span>保存草稿</span>
+            </el-button>
+            <el-button type="primary" class="post-push btns-footer-item">
+                <Icon :name="IconKeys.Media" custom-class="btns-footer-item-icon" />
+                <span>发布</span>
+            </el-button>
+        </div>
     </el-container>
 </template>
 <script lang="ts" setup>
@@ -95,6 +120,8 @@ import SwitchGroup from "@/components/common/switch-group"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import { type ElContainer } from "element-plus"
 import { useUserStore } from "@/stores/user"
+import { viewListCategoryAPI, type Category } from "@/api/category/view"
+import { ResponseCode } from "@/api/responseCode"
 
 import AddTag from "@/components/common/add-tag"
 
@@ -123,7 +150,8 @@ const postInfo = reactive({
     seoKeyWord: "",
     thumbnail: "",
     price: "",
-    tagList: ["标签1", "标签2", "标签3"],
+    tagList: ["等待添加"],
+    categories: [],
 })
 
 const updateTagListIn = (tagList: string[]) => {
@@ -169,6 +197,16 @@ const updateStatus = (item: SwitchItem) => {
 // 计算 name 最大长度
 const nameMaxLength = Math.max(...switchItemList.map((item) => (item.name ?? "").length))
 
+// 获取分类列表
+const categories = reactive<Category[]>([])
+const getCategoryList = async () => {
+    await viewListCategoryAPI().then((res) => {
+        if (res.data.code === ResponseCode.CategoryViewListSuccess) {
+            Object.assign(categories, res.data.data)
+        }
+    })
+}
+
 // 监听页面关闭事件,即用户手动修改ULR或关闭页面
 const handleBeforeUnload = (event: BeforeUnloadEvent) => {
     if (userStore.isEditing) {
@@ -178,17 +216,19 @@ const handleBeforeUnload = (event: BeforeUnloadEvent) => {
     }
 }
 
-onMounted(() => {
-    window.addEventListener("beforeunload", handleBeforeUnload)
+onMounted(async () => {
+    await getCategoryList()
+    // window.addEventListener("beforeunload", handleBeforeUnload)
 })
 
 onBeforeUnmount(() => {
-    window.removeEventListener("beforeunload", handleBeforeUnload)
+    // window.removeEventListener("beforeunload", handleBeforeUnload)
 })
 </script>
 
 <style scoped lang="scss">
-.btns-header {
+.btns-header,
+.btns-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -202,7 +242,14 @@ onBeforeUnmount(() => {
     align-items: center;
 }
 
-.btns-header-item {
+.btns-footer {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+.btns-header-item,
+.btns-footer-item {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -215,35 +262,50 @@ onBeforeUnmount(() => {
     span {
         margin-left: 8px;
     }
-
-    .btns-header-item-icon {
-        font-size: 20px;
-        fill: var(--text-color);
-    }
+}
+.btns-header-item-icon,
+.btns-footer-item-icon {
+    font-size: 20px;
+    fill: var(--text-color);
 }
 
 .editor {
-    margin-left: 16px;
-    width: 98%;
-    height: 100%;
+    // margin-left: 16px;
+    // width: 98%;
+    // height: 100%;
+    margin-bottom: 32px;
 }
 
-.add-tag {
-    margin: 16px 16px;
+h4 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.segmentation-line {
+    border-top: 1px solid #eaeaea;
+    margin: 0 16px;
+    padding-top: 16px;
+}
+.segmentation-line-last {
+    margin-top: 16px;
+    border-bottom: 1px solid #eaeaea;
+    padding-bottom: 16px;
+}
+
+.category-item {
+    margin: 8px 16px;
+    min-width: 120px;
 }
 
 .switch-group {
-    margin: 16px 16px;
     display: flex;
     align-items: center;
     flex-wrap: wrap; // 自动换行
 }
-.switch-label {
-    font-size: 15px;
-    font-weight: 700;
-}
+
 .switch-item {
-    margin: 8px 16px;
+    min-width: 180px;
 }
 
 .post-info {
@@ -252,5 +314,7 @@ onBeforeUnmount(() => {
     width: calc(100% - 40px);
     height: 100%;
     overflow: auto;
+    // 相对定位
+    position: relative;
 }
 </style>

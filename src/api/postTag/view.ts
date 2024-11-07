@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:01:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-04 18:28:14
+ * @LastEditTime : 2024-11-07 16:40:10
  * @FilePath     : \blog-client\src\api\postTag\view.ts
  * @Description  : 查看文章标签
  * @Blog         : https://jiaopengzi.com
@@ -29,9 +29,14 @@ export interface PostTag extends DataWithImg {
     post_count: number // 文章数量
 }
 
-// 获取用户信息响应类型
+// 文章标签
 export interface ViewPostTagResponse extends Res {
     data: Pagination<PostTag> // 根据实际返回的数据结构替换为更具体的类型
+}
+
+// 查看文章标签 top n
+export interface ViewTopPostTagResponse extends Res {
+    data: PostTag // 根据实际返回的数据结构替换为更具体的类型
 }
 
 // 查看文章标签
@@ -41,5 +46,14 @@ export function viewPostTagAPI(requestData: ViewPostTagRequest): AxiosPromise<Vi
         url: urlStr,
         method: "post",
         data: requestData,
+    })
+}
+
+// 查看文章标签 top n
+export function viewPostTagTopAPI(): AxiosPromise<ViewTopPostTagResponse> {
+    const urlStr = routerGroup + "/post-tag/view-top-n"
+    return request({
+        url: urlStr,
+        method: "get",
     })
 }

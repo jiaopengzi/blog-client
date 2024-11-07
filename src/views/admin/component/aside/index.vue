@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:33:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 10:20:39
+ * @LastEditTime : 2024-11-07 14:07:42
  * @FilePath     : \blog-client\src\views\admin\component\aside\index.vue
  * @Description  : 左边菜单栏 
  * @Blog         : https://jiaopengzi.com
@@ -52,6 +52,7 @@ const props = defineProps<{
 // 定义组件事件
 const emit = defineEmits<{
     (event: "select", index: string, keyPath: string[]): void
+    (event: "collapse-status", isCollapse: boolean): void
 }>()
 
 // switch 开关 标签
@@ -82,6 +83,7 @@ const updateStatus = (value: SwitchItem) => {
     // 首选读取本地存储的状态 如果没有则使用默认状态
     localStorage.setItem(LocalStorageKey.IsCollapse, value.status.toString())
     isCollapse.value = value.status
+    emit("collapse-status", value.status)
 }
 
 // 生成菜单项索引

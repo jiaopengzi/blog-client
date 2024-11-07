@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:26:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 18:07:33
+ * @LastEditTime : 2024-11-07 16:07:33
  * @FilePath     : \blog-client\src\views\home\component\pc.vue
  * @Description  : pc 内容页
  * @Blog         : https://jiaopengzi.com
@@ -48,15 +48,17 @@
                     </div>
                 </el-main>
 
-                <el-aside class="el-aside" ref="asideRef" id="aside">
+                <el-aside ref="asideRef" class="el-aside">
                     <!-- 推荐阅读 -->
                     <RecommendedRead class="el-aside-item" />
                     <!-- 热门文章 -->
                     <HotPost class="el-aside-item" />
                     <!-- 月度归档 -->
-                    <!-- @ready="recalculateHeight" 通知子组件已经渲染完毕 执行 recalculateHeight-->
-                    <MonthArchive class="el-aside-item" @ready="reCalculateHeight" />
+                    <MonthArchive class="el-aside-item" />
+                    <!-- 文章标签 -->
                     <PostTag class="el-aside-item" @click="handleClick" />
+                    <!-- 观察点 -->
+                    <div ref="asideEndRef"></div>
                 </el-aside>
             </el-container>
         </div>
@@ -78,11 +80,12 @@
     </el-backtop>
 </template>
 <script setup lang="ts">
-import { ref, onMounted, nextTick, onBeforeUnmount, useTemplateRef } from "vue"
+import { ref, useTemplateRef } from "vue"
+import { useResizeObserver } from "@vueuse/core"
 import router from "@/router"
 import { ArrowRight, Location } from "@element-plus/icons-vue"
 import { routeObj } from "@/router/routeAll"
-import type { TagDataObj } from "@/components/common/tag-item"
+import { type PostTag as PostTagType } from "@/api/postTag/view"
 
 import Carousel from "@/views/home/component/carousel"
 import PostList from "@/views/home/component/post-list"
@@ -90,10 +93,11 @@ import RecommendedRead from "@/components/layout/aside/recommended-read"
 import HotPost from "@/components/layout/aside/hot-post"
 import MonthArchive from "@/components/layout/aside/month-archive"
 import PostTag from "@/components/layout/aside/post-tag"
+import type { ElAside } from "element-plus"
 
 defineOptions({ name: "HomePC" })
 
-const asideRef = useTemplateRef<HTMLElement | null>("asideRef")
+const asideRef = useTemplateRef<InstanceType<typeof ElAside>>("asideRef")
 
 const total = ref(1000)
 const currentPage = ref(5)
@@ -104,13 +108,17 @@ const handleCurrentChange = (val: number) => {
     console.log(`current page: ${val}`)
 }
 
-// 侧边栏高度计算
-const reCalculateHeight = async () => {
-    await nextTick() // 等待渲染完毕
+// 点击标签
+function handleClick(tagItemData: PostTagType) {
+    router.push({ path: "/tag/" + tagItemData.slug })
+}
 
-    const aside = document.getElementById("aside") // 获取侧边栏元素
-    if (aside) {
-        const height = Array.from(aside.children).reduce<number>((totalHeight, child: Element) => {
+// 侧边栏高度计算
+const reCalculateHeight = () => {
+    if (asideRef.value) {
+        const height = Array.from(
+            asideRef.value.$el.children as HTMLCollectionOf<HTMLElement>,
+        ).reduce<number>((totalHeight, child: HTMLElement) => {
             const htmlChild = child as HTMLElement // 断言为 HTMLElement 类型
             if (htmlChild.classList.contains("el-aside-item")) {
                 const style = getComputedStyle(htmlChild)
@@ -125,23 +133,22 @@ const reCalculateHeight = async () => {
             return totalHeight
         }, 0)
 
-        aside.style.height = `${height}px` // 设置侧边栏高度
-        aside.style.top = `-${height - window.innerHeight}px` // 设置侧边栏距离顶部的距离 = 侧边栏高度 - 视口高度
+        // 设置侧边栏高度
+        asideRef.value.$el.style.height = `${height}px`
+
+        // 设置侧边栏距离顶部的距离 = 侧边栏高度 - 视口高度
+        asideRef.value.$el.style.top = `-${height - window.innerHeight}px`
     }
 }
 
-// 点击标签
-function handleClick(tagItemData: TagDataObj) {
-    router.push({ path: "/tag" + tagItemData.path })
-}
-
-onMounted(() => {
+// 监控 asideRef 元素的变化 重新计算高度
+useResizeObserver(asideRef, (entries) => {
+    // const entry = entries[0]
+    // const { x, y, left, top, width, height } = entry.contentRect
+    // console.log(
+    //     `尺寸变化了  x: ${x},y: ${y},left: ${left},top: ${top},width: ${width}, height: ${height}`,
+    // )
     reCalculateHeight()
-    window.addEventListener("resize", reCalculateHeight) // 添加 resize 事件监听器
-})
-
-onBeforeUnmount(() => {
-    window.removeEventListener("resize", reCalculateHeight) // 移除 resize 事件监听器
 })
 </script>
 <style scoped lang="scss">
@@ -181,8 +188,7 @@ onBeforeUnmount(() => {
 .el-aside {
     width: pc.$width-aside;
     background-color: $background-color-page;
-    position: sticky; // 粘性定位
-    top: -400px; // 侧边栏距离顶部的距离
+    position: sticky; // 粘性定位 和 reCalculateHeight 配合使用
 }
 
 .el-aside-item {

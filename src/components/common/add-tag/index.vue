@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 15:40:22
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 09:11:24
+ * @LastEditTime : 2024-11-07 13:42:12
  * @FilePath     : \blog-client\src\components\common\add-tag\index.vue
  * @Description  : 添加标签组件
  * @Blog         : https://jiaopengzi.com
@@ -34,6 +34,7 @@
     <el-button type="primary" class="show-all-tag" @click="changeIsShowAllTag"
         >从常用标签中选择</el-button
     >
+
     <PostTag v-if="isShowAllTag" class="el-aside-item" @click="handleTagClick" />
 </template>
 
@@ -41,7 +42,7 @@
 import { nextTick, ref, computed, useTemplateRef } from "vue"
 import type { ElInput } from "element-plus"
 
-import type { TagDataObj } from "@/components/common/tag-item"
+import { type PostTag as PostTagType } from "@/api/postTag/view"
 
 import PostTag from "@/components/layout/aside/post-tag"
 
@@ -101,8 +102,8 @@ const handleInputConfirm = () => {
     inputValue.value = ""
 }
 
-const handleTagClick = (tagItemData: TagDataObj) => {
-    const newTags = [...dynamicTags.value, tagItemData.label]
+const handleTagClick = (tagItemData: PostTagType) => {
+    const newTags = [...dynamicTags.value, tagItemData.name]
     emit("update-tag-list", Array.from(new Set(newTags)))
 }
 

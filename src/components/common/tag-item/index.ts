@@ -10,14 +10,10 @@
  */
 
 export { default } from "./index.vue"
-
-export interface TagDataObj {
-    path: string // 标签路径
-    label: string // 标签名称
-    tagPostNum: number // 标签下文章数量
-}
-// 标签对象
-export type Tag = { data: TagDataObj; color: TagColor }
+import { type PostTag } from "@/api/postTag/view"
 
 // 标签颜色对象
 export type TagColor = { color: string; bgColor: string }
+
+// 标签对象
+export type Tag = { data: PostTag; color: TagColor }

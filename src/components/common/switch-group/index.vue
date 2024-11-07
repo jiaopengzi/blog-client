@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 16:36:18
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 17:10:00
+ * @LastEditTime : 2024-11-07 17:52:20
  * @FilePath     : \blog-client\src\components\common\switch-group\index.vue
  * @Description  : 开关组件 
  * @Blog         : https://jiaopengzi.com
@@ -65,11 +65,11 @@ const getSpanWidth = (spanWordCount: number | undefined) => {
 </script>
 
 <style lang="scss" scoped>
-.my-switch {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+// .my-switch {
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+// }
 
 .my-el-switch {
     margin: 0 10px;

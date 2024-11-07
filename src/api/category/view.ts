@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:33:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 14:45:36
+ * @LastEditTime : 2024-11-07 16:39:14
  * @FilePath     : \blog-client\src\api\category\view.ts
  * @Description  : 查看文章分类
  * @Blog         : https://jiaopengzi.com
@@ -30,9 +30,14 @@ export interface Category extends DataWithImg {
     parent: number // 父级分类
 }
 
-// 获取用户信息响应类型
+// 文章分类
 export interface ViewCategoryResponse extends Res {
     data: Pagination<Category> // 根据实际返回的数据结构替换为更具体的类型
+}
+
+// 查看文章分类
+export interface ViewListCategoryResponse extends Res {
+    data: Category // 根据实际返回的数据结构替换为更具体的类型
 }
 
 // 查看文章标签
@@ -44,5 +49,14 @@ export function viewCategoryAPI(
         url: urlStr,
         method: "post",
         data: requestData,
+    })
+}
+
+// 查看文章标签list
+export function viewListCategoryAPI(): AxiosPromise<ViewListCategoryResponse> {
+    const urlStr = routerGroup + "/post-category/view-list"
+    return request({
+        url: urlStr,
+        method: "get",
     })
 }
