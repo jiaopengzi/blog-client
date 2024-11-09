@@ -4,7 +4,7 @@
  * @LastEditors  : jiaopengzi
  * @LastEditTime : 2024-11-06 15:51:09
  * @FilePath     : \blog-client\src\components\common\base-table\index.ts
- * @Description  :
+ * @Description  : 基础表格组件
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
