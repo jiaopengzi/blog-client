@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 16:30:57
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 09:25:42
+ * @LastEditTime : 2024-11-08 12:54:37
  * @FilePath     : \blog-client\src\api\user\getUsers.ts
  * @Description  : 获取用户信息
  * @Blog         : https://jiaopengzi.com
@@ -16,6 +16,7 @@ import type { DataWithImg, Pagination, PaginationRequest } from "@/components/co
 import { ResponseCode } from "@/api/responseCode"
 import { ImgFit } from "@/components/common/index"
 import { convertToBeijingTime } from "@/utils/dateTime"
+import { type PgSqlDateTime } from "@/api/common"
 
 export interface GetUsersRequest extends PaginationRequest {
     role_name?: string // 角色
@@ -60,10 +61,7 @@ export interface User extends DataWithImg {
     user_display_name: string // 昵称
     user_email: string // 邮箱
     role: string // 角色
-    disable_expires_at: {
-        Time: Date | null // 禁用到期时间
-        Valid: boolean
-    }
+    disable_expires_at: PgSqlDateTime // 禁用到期时间
     post: number // 文章数量
     created_at: string // 注册时间
     user_avatar: string // 用户头像

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:47:08
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 15:22:34
+ * @LastEditTime : 2024-11-09 15:24:53
  * @FilePath     : \blog-client\src\views\admin\component\main\post-category\component\add\index.vue
  * @Description  : 添加分类
  * @Blog         : https://jiaopengzi.com
@@ -71,7 +71,7 @@
 import { reactive, ref, useTemplateRef, toRefs } from "vue"
 import { ShowMsgTip } from "@/utils/message"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { type InsertCategoryRequest, insertCategoryAPI } from "@/api/category/insert"
+import { type InsertPostCategoryRequest, insertPostCategoryAPI } from "@/api/postCategory/insert"
 import { ResponseCode } from "@/api/responseCode"
 import type { AddForm } from "./index"
 import { useFormValidation } from "../hooks"
@@ -125,7 +125,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         await formEl.validate(async (valid) => {
             if (valid) {
                 // 创建请求对象 加密内容
-                const req: InsertCategoryRequest = {
+                const req: InsertPostCategoryRequest = {
                     name: addForm.name,
                     slug: addForm.slug,
                     description: addForm.description,
@@ -134,9 +134,9 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                     parent: Number(addForm.parent),
                 }
                 console.log("req:", req)
-                const { data } = await insertCategoryAPI(req)
+                const { data } = await insertPostCategoryAPI(req)
 
-                if (data.code === ResponseCode.CategoryInsertSuccess) {
+                if (data.code === ResponseCode.PostCategoryInsertSuccess) {
                     // 添加成功提示
                     emit("add-status", true)
                     ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)

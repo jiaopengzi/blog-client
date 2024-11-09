@@ -14,7 +14,7 @@
             <h2><Icon :name="IconKeys.Recommended" custom-class="aside-icon" />推荐阅读</h2>
         </div>
         <div class="post-list">
-            <PostItem v-for="(item, index) in postItems" :key="index" :post-data="item" />
+            <PostItem v-for="item in postItems" :key="item.title" :post-data="item" />
         </div>
     </div>
 </template>

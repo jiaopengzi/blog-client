@@ -17,7 +17,7 @@
             <li
                 v-for="(heading, index) in props.headings"
                 :id="'toc-' + heading.index"
-                :key="index"
+                :key="heading.index"
                 :class="'h-level-' + heading.level"
                 @click="emitHeadingClicked(index)"
             >

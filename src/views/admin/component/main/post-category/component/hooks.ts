@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:47:08
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 14:58:19
+ * @LastEditTime : 2024-11-09 15:25:05
  * @FilePath     : \blog-client\src\views\admin\component\main\post-category\component\hooks.ts
  * @Description  : 分类表单验证
  * @Blog         : https://jiaopengzi.com
@@ -13,19 +13,19 @@ import { type Ref } from "vue"
 import {
     type CheckCategoryNameRequest,
     checkCategoryNameAPI,
-} from "@/api/category/checkCategoryName"
+} from "@/api/postCategory/checkCategoryName"
 import {
     type CheckCategoryNameExcludingIDRequest,
     checkCategoryNameExcludingIDAPI,
-} from "@/api/category/checkCategoryNameExcludingID"
+} from "@/api/postCategory/checkCategoryNameExcludingID"
 import {
     type CheckCategorySlugRequest,
     checkCategorySlugAPI,
-} from "@/api/category/checkCategorySlug"
+} from "@/api/postCategory/checkCategorySlug"
 import {
     type CheckCategorySlugExcludingIDRequest,
     checkCategorySlugExcludingIDAPI,
-} from "@/api/category/checkCategorySlugExcludingID"
+} from "@/api/postCategory/checkCategorySlugExcludingID"
 import { ResponseCode } from "@/api/responseCode"
 
 // 表单验证选项
@@ -64,7 +64,7 @@ export function useFormValidation(options: FormValidationOptions) {
 
         // 调用后端接口
         checkCategoryNameAPI(req).then((res) => {
-            if (res.data.code === ResponseCode.CategoryCheckNameNoExist) {
+            if (res.data.code === ResponseCode.PostCategoryCheckNameNoExist) {
                 callback()
             } else {
                 let errMsg = res.data.msg || "分类不可用"
@@ -107,7 +107,7 @@ export function useFormValidation(options: FormValidationOptions) {
 
         // 调用后端接口
         checkCategorySlugAPI(req).then((res) => {
-            if (res.data.code === ResponseCode.CategoryCheckSlugNoExist) {
+            if (res.data.code === ResponseCode.PostCategoryCheckSlugNoExist) {
                 callback()
             } else {
                 let errMsg = res.data.msg || "别名不可用"
@@ -145,7 +145,7 @@ export function useFormValidation(options: FormValidationOptions) {
 
         // 调用后端接口
         checkCategoryNameExcludingIDAPI(req).then((res) => {
-            if (res.data.code === ResponseCode.CategoryCheckNameNoExistExcludingID) {
+            if (res.data.code === ResponseCode.PostCategoryCheckNameNoExistExcludingID) {
                 callback()
             } else {
                 let errMsg = res.data.msg || "分类不可用"
@@ -194,7 +194,7 @@ export function useFormValidation(options: FormValidationOptions) {
 
         // 调用后端接口
         checkCategorySlugExcludingIDAPI(req).then((res) => {
-            if (res.data.code === ResponseCode.CategoryCheckSlugNoExistExcludingID) {
+            if (res.data.code === ResponseCode.PostCategoryCheckSlugNoExistExcludingID) {
                 callback()
             } else {
                 let errMsg = res.data.msg || "别名不可用"

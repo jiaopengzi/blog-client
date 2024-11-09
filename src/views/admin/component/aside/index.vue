@@ -73,6 +73,7 @@ const isCollapse = ref(savedIsCollapse !== null ? savedIsCollapse === "true" : f
 
 // switch 开关
 const isCollapseItem: SwitchItem = {
+    name: "isCollapse",
     status: isCollapse.value,
     label: label,
     color: color,

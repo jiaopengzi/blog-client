@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:47:08
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 15:22:11
+ * @LastEditTime : 2024-11-09 15:24:59
  * @FilePath     : \blog-client\src\views\admin\component\main\post-category\component\edit\index.vue
  * @Description  : 编辑分类
  * @Blog         : https://jiaopengzi.com
@@ -77,7 +77,7 @@
 import { reactive, ref, toRefs, onBeforeMount, watch, useTemplateRef } from "vue"
 import { ShowMsgTip } from "@/utils/message"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { type UpdateCategoryRequest, updateCategoryAPI } from "@/api/category/update"
+import { type UpdatePostCategoryRequest, updatePostCategoryAPI } from "@/api/postCategory/update"
 import { ResponseCode } from "@/api/responseCode"
 import type { EditForm } from "./index"
 import { useFormValidation } from "../hooks"
@@ -152,7 +152,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     try {
         await formEl.validate(async (valid) => {
             if (valid) {
-                const req: UpdateCategoryRequest = {
+                const req: UpdatePostCategoryRequest = {
                     id: editForm.id,
                     name: editForm.name,
                     slug: editForm.slug,
@@ -161,9 +161,9 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                     order: Number(editForm.order),
                     parent: Number(editForm.parent),
                 }
-                const { data } = await updateCategoryAPI(req)
+                const { data } = await updatePostCategoryAPI(req)
 
-                if (data.code === ResponseCode.CategoryUpdateSuccess) {
+                if (data.code === ResponseCode.PostCategoryUpdateSuccess) {
                     // 添加成功提示
                     emit("edit-status", true)
                     ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)

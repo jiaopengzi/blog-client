@@ -2,15 +2,15 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:24:36
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 13:32:57
- * @FilePath     : \blog-client\src\components\layout\content\main\post-list\index.vue
+ * @LastEditTime : 2024-11-08 14:41:52
+ * @FilePath     : \blog-client\src\views\home\component\post-list\index.vue
  * @Description  : 文章列表
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
     <div class="post-list">
-        <PostItem v-for="(item, index) in postItems" :key="index" :post-data="item" />
+        <PostItem v-for="item in postItems" :key="item.id" :post-data="item" />
     </div>
 </template>
 
@@ -21,6 +21,7 @@ import type { PostItemMainObj } from "@/components/common/post-item-main"
 defineOptions({ name: "PostList" })
 
 const postDataObj: PostItemMainObj = {
+    id: "1",
     category: "PowerBI",
     categoryHref: "http://192.168.2.222:8081/video",
     thumbnailSrc: "https://image.jiaopengzi.com/blog/202309181034415-w280h210.png",

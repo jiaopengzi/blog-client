@@ -20,9 +20,9 @@
         <div class="tag-box">
             <el-scrollbar max-height="300px">
                 <TagItem
-                    v-for="(item, index) in items"
+                    v-for="item in items"
                     :tag-data="item"
-                    :key="index"
+                    :key="item.id"
                     @click="handleClick(item)"
                 />
             </el-scrollbar>

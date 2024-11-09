@@ -14,12 +14,12 @@ import { routerGroup } from "@/api/routerGroup"
 import type { AxiosPromise } from "axios"
 import { type Res } from "@/api/responseCode"
 
-export interface DeleteCategoryRequest {
+export interface DeletePostCategoryRequest {
     id_list: number[] // category 名称
 }
 
 // 删除文章分类
-export function deleteCategoryAPI(requestData: DeleteCategoryRequest): AxiosPromise<Res> {
+export function deletePostCategoryAPI(requestData: DeletePostCategoryRequest): AxiosPromise<Res> {
     const urlStr = routerGroup + "/post-category/delete"
     return request({
         url: urlStr,

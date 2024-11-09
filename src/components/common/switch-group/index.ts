@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 16:36:41
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-18 10:05:12
+ * @LastEditTime : 2024-11-08 14:43:38
  * @FilePath     : \blog-client\src\components\common\switch-group\index.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -15,7 +15,8 @@ type NamePosition = "left" | "right"
 
 // 组件参数
 export interface SwitchItem {
-    name?: string
+    name: string
+    display?: string
     status: boolean
     namePosition?: NamePosition
     label?: SwitchItemLabel

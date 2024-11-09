@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-05 18:00:27
+ * @LastEditTime : 2024-11-08 14:47:37
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格
  * @Blog         : https://jiaopengzi.com
@@ -21,7 +21,7 @@
             </el-button>
 
             <span v-if="isShowListOrGrid">
-                <span class="switch-item" v-for="(item, index) in switchItemList" :key="index">
+                <span class="switch-item" v-for="item in switchItemList" :key="item.name">
                     <SwitchGroup :switch-item="item" @update-status="updateStatus" />
                 </span>
             </span>
@@ -98,7 +98,7 @@
                 </el-table-column>
                 <el-table-column
                     v-else
-                    :key="index"
+                    :key="col.prop"
                     :prop="col.prop"
                     :label="col.label"
                     :sortable="col.sortable"
@@ -132,7 +132,7 @@
             <ul ref="gridRef" class="grid">
                 <li
                     v-for="(row, index) in paginationData.records"
-                    :key="index"
+                    :key="row.id"
                     class="thumbnail grid-item"
                 >
                     <el-checkbox
@@ -289,7 +289,7 @@ const switchItemColor: SwitchItemColor = {
 
 const switchItemList: SwitchItem[] = reactive([
     {
-        name: "",
+        name: "listOrGrid",
         status: showListOrGridStatus,
         label: switchItemLabel,
         color: switchItemColor,

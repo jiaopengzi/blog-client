@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 20:56:51
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 09:41:33
+ * @LastEditTime : 2024-11-08 14:38:52
  * @FilePath     : \blog-client\src\components\layout\header-nav\pc.vue
  * @Description  : 导航栏 pc 端
  * @Blog         : https://jiaopengzi.com
@@ -12,7 +12,7 @@
 <template>
     <div class="nav">
         <ul>
-            <li v-for="(item, index) in props.navData" :key="index">
+            <li v-for="item in props.navData" :key="item.path">
                 <router-link :to="item.path" class="link">
                     <Icon
                         v-if="item.iconKey"

@@ -77,15 +77,15 @@ export enum ResponseCode {
     PostTagViewTopNSuccess = 2112, // 查看文章标签TopN成功
 
     // 文章分类相关
-    CategoryInsertSuccess = 2200, // 插入文章分类成功
-    CategoryDeleteSuccess = 2201, // 删除文章分类成功
-    CategoryUpdateSuccess = 2202, // 更新文章分类成功
-    CategoryViewSuccess = 2203, // 查看文章分类成功
-    CategoryCheckNameNoExist = 2205, // 分类名称不存在
-    CategoryCheckSlugNoExist = 2207, // 别名名称不存在
-    CategoryCheckNameNoExistExcludingID = 2209, // 分类名称不存在，排除指定ID
-    CategoryCheckSlugNoExistExcludingID = 2211, // 别名名称不存在，排除指定ID
-    CategoryViewListSuccess = 2212, // 查看文章分类列表成功
+    PostCategoryInsertSuccess = 2200, // 插入文章分类成功
+    PostCategoryDeleteSuccess = 2201, // 删除文章分类成功
+    PostCategoryUpdateSuccess = 2202, // 更新文章分类成功
+    PostCategoryViewSuccess = 2203, // 查看文章分类成功
+    PostCategoryCheckNameNoExist = 2205, // 分类名称不存在
+    PostCategoryCheckSlugNoExist = 2207, // 别名名称不存在
+    PostCategoryCheckNameNoExistExcludingID = 2209, // 分类名称不存在，排除指定ID
+    PostCategoryCheckSlugNoExistExcludingID = 2211, // 别名名称不存在，排除指定ID
+    PostCategoryViewListSuccess = 2212, // 查看文章分类列表成功
 
     // 验证码相关
     CaptchaSendSuccess = 8000, //验证码发送成功

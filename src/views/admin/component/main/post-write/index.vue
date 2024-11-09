@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-07 18:38:32
+ * @LastEditTime : 2024-11-09 15:25:30
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -21,7 +21,7 @@
             <div class="btns-header-right">
                 <el-button type="primary" class="save-post btns-header-item">
                     <Icon :name="IconKeys.Save" custom-class="btns-header-item-icon" />
-                    <span>保存草稿</span>
+                    <span>保存</span>
                 </el-button>
                 <el-button type="primary" class="post-push btns-header-item">
                     <Icon :name="IconKeys.Media" custom-class="btns-header-item-icon" />
@@ -32,7 +32,7 @@
 
         <el-form class="post-info" label-position="top" label-width="200px" :model="postInfo">
             <el-form-item label="标题">
-                <el-input v-model="postInfo.title" placeholder="添加标题" />
+                <el-input v-model="postInfo.post_title" placeholder="添加标题" />
             </el-form-item>
 
             <!-- 编辑器 -->
@@ -41,15 +41,15 @@
             </div>
 
             <el-form-item label="SEO自定义文章标题，留空则为文章标题。">
-                <el-input v-model="postInfo.seoTitle" />
+                <el-input v-model="postInfo.seo_title" />
             </el-form-item>
             <el-form-item label="SEO文章描述，留空则自动截取首段一定字数作为文章描。">
-                <el-input v-model="postInfo.seoDescription" :rows="5" type="textarea" />
+                <el-input v-model="postInfo.seo_description" :rows="5" type="textarea" />
             </el-form-item>
             <el-form-item
                 label="SEO文章关键词，多个关键词用英文半角逗号隔开，留空则自动将文章标签做为关键词。"
             >
-                <el-input v-model="postInfo.seoKeyWord" />
+                <el-input v-model="postInfo.seo_keywords" />
             </el-form-item>
             <el-form-item label="手动设置缩略图,如果没有则随机显示一张图片。">
                 <el-input v-model="postInfo.thumbnail" />
@@ -58,7 +58,7 @@
                 <el-input v-model="postInfo.price" />
             </el-form-item>
             <el-form-item label="别名，留空则使用默认ID值。">
-                <el-input v-model="postInfo.price" />
+                <el-input v-model="postInfo.slug" />
             </el-form-item>
         </el-form>
 
@@ -81,7 +81,7 @@
             <h4>文章标签管理</h4>
             <AddTag
                 ref="addTagRef"
-                :tag-list-in="postInfo.tagList"
+                :tag-list-in="postInfo.tags || []"
                 @update-tag-list="updateTagListIn"
             />
         </div>
@@ -89,11 +89,24 @@
         <div class="segmentation-line segmentation-line-last">
             <h4>付费管理</h4>
             <ul class="switch-group">
-                <li class="switch-item" v-for="(item, index) in switchItemList" :key="index">
+                <li class="switch-item" v-for="item in rolePaidList" :key="item.name">
                     <SwitchGroup
                         :switch-item="item"
                         :span-word-count="nameMaxLength"
-                        @update-status="updateStatus"
+                        @update-status="updateRolePaidList"
+                    />
+                </li>
+            </ul>
+        </div>
+
+        <div class="segmentation-line segmentation-line-last">
+            <h4>评论管理</h4>
+            <ul class="switch-group">
+                <li class="switch-item" v-for="item in commentStatus" :key="item.name">
+                    <SwitchGroup
+                        :switch-item="item"
+                        :span-word-count="nameMaxLength"
+                        @update-status="updateCommentStatus"
                     />
                 </li>
             </ul>
@@ -101,7 +114,7 @@
         <div class="btns-footer">
             <el-button type="primary" class="save-post btns-footer-item">
                 <Icon :name="IconKeys.Save" custom-class="btns-footer-item-icon" />
-                <span>保存草稿</span>
+                <span>保存</span>
             </el-button>
             <el-button type="primary" class="post-push btns-footer-item">
                 <Icon :name="IconKeys.Media" custom-class="btns-footer-item-icon" />
@@ -111,7 +124,7 @@
     </el-container>
 </template>
 <script lang="ts" setup>
-import { reactive, useTemplateRef, onMounted, onBeforeUnmount } from "vue"
+import { reactive, useTemplateRef, onBeforeMount, onMounted, onBeforeUnmount } from "vue"
 import { useResizeObserver } from "@vueuse/core"
 import { EditorStateManager, EditorPost } from "@/components/editor"
 import { IconKeys } from "@/components/common/icons"
@@ -120,8 +133,16 @@ import SwitchGroup from "@/components/common/switch-group"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import { type ElContainer } from "element-plus"
 import { useUserStore } from "@/stores/user"
-import { viewListCategoryAPI, type Category } from "@/api/category/view"
+import { viewListPostCategoryAPI, type PostCategory } from "@/api/postCategory/view"
 import { ResponseCode } from "@/api/responseCode"
+import { getRolesList } from "@/utils/permissionRole"
+import {
+    createEmptyInsertPostRequest,
+    insertPostRequestAPI,
+    PostStatusCode,
+    CommentStatusCode,
+    type InsertPostRequest,
+} from "@/api/post/insert"
 
 import AddTag from "@/components/common/add-tag"
 
@@ -135,6 +156,7 @@ const stateManager = new EditorStateManager()
 const editorState = stateManager.getState()
 
 const userStore = useUserStore()
+userStore.setIsEditing(true)
 
 // 监听编辑器宽度变化
 useResizeObserver(editorContainerRef, (entries) => {
@@ -143,65 +165,77 @@ useResizeObserver(editorContainerRef, (entries) => {
     stateManager.setEditorWidth(width)
 })
 
-const postInfo = reactive({
-    title: "",
-    seoTitle: "",
-    seoDescription: "",
-    seoKeyWord: "",
-    thumbnail: "",
-    price: "",
-    tagList: ["等待添加"],
-    categories: [],
-})
+const postInfo = reactive(createEmptyInsertPostRequest())
 
 const updateTagListIn = (tagList: string[]) => {
-    postInfo.tagList = tagList
+    postInfo.tags = tagList
     if (tagList) {
         console.log("标签", tagList)
     } else {
-        console.log("标签", postInfo.tagList)
+        console.log("标签", postInfo.tags)
+        return rolePaidList
     }
 }
 
-const label: SwitchItemLabel = {
+// 角色付费管理
+const rolePaidList: SwitchItem[] = reactive([])
+
+const rolePaidLabel: SwitchItemLabel = {
     labelTrue: "免费",
     labelFalse: "付费",
 }
 
-const switchItemList: SwitchItem[] = reactive([
+// 初始化角色付费管理都为付费状态，后续根据后端数据进行修改
+const initRolePaidManagement = async () => {
+    // 首先从 系统角色列表 获取角色列表
+    const { roles: rolesSystem } = await getRolesList()
+    // 历遍 rolesSystem 构造 rolePaidList
+    rolesSystem.forEach((role) => {
+        const switchItem: SwitchItem = {
+            name: role.role_name,
+            display: role.description,
+            status: false,
+            label: rolePaidLabel,
+        }
+        rolePaidList.push(switchItem)
+    })
+
+    // TODO 从商城角色列表获取角色列表
+}
+
+// 评论状态
+const commentStatus: SwitchItem[] = reactive([
     {
-        name: "admin",
+        name: "commentStatus",
+        display: "评论状态",
         status: true,
-        label: label,
-    },
-    {
-        name: "editor",
-        status: true,
-        label: label,
-    },
-    {
-        name: "viewer",
-        status: true,
-        label: label,
+        label: {
+            labelTrue: "开启",
+            labelFalse: "关闭",
+        },
     },
 ])
 
-userStore.setIsEditing(true)
+// 更新角色付费管理
+const updateRolePaidList = (item: SwitchItem) => {
+    const index = rolePaidList.findIndex((i) => i.name === item.name)
+    rolePaidList[index].status = item.status
+}
 
-const updateStatus = (item: SwitchItem) => {
-    const index = switchItemList.findIndex((i) => i.name === item.name)
-    switchItemList[index].status = item.status
-    console.log("si", switchItemList)
+// 更新评论状态
+const updateCommentStatus = (item: SwitchItem) => {
+    const index = commentStatus.findIndex((i) => i.name === item.name)
+    commentStatus[index].status = item.status
 }
 
 // 计算 name 最大长度
-const nameMaxLength = Math.max(...switchItemList.map((item) => (item.name ?? "").length))
+const nameMaxLength = Math.max(...rolePaidList.map((item) => (item.name ?? "").length))
 
 // 获取分类列表
-const categories = reactive<Category[]>([])
+const categories = reactive<PostCategory[]>([])
 const getCategoryList = async () => {
-    await viewListCategoryAPI().then((res) => {
-        if (res.data.code === ResponseCode.CategoryViewListSuccess) {
+    await viewListPostCategoryAPI().then((res) => {
+        if (res.data.code === ResponseCode.PostCategoryViewListSuccess) {
             Object.assign(categories, res.data.data)
         }
     })
@@ -215,6 +249,11 @@ const handleBeforeUnload = (event: BeforeUnloadEvent) => {
         event.returnValue = ""
     }
 }
+
+onBeforeMount(async () => {
+    // 生成角色付费管理
+    await initRolePaidManagement()
+})
 
 onMounted(async () => {
     await getCategoryList()
@@ -266,7 +305,8 @@ onBeforeUnmount(() => {
 .btns-header-item-icon,
 .btns-footer-item-icon {
     font-size: 20px;
-    fill: var(--text-color);
+    // fill: var(--text-color);
+    fill: red;
 }
 
 .editor {

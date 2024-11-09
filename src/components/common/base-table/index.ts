@@ -13,7 +13,7 @@ import { type DataWithImg } from "@/components/common" // 图片填充方式
 import { type User } from "@/api/user/getUsers"
 import { type MediaFile } from "@/api/upload/getFiles"
 import { type PostTag } from "@/api/postTag/view"
-import { type Category } from "@/api/category/view"
+import { type PostCategory } from "@/api/postCategory/view"
 import { type LoginLog } from "@/api/loginLog/getLoginLogs"
 import { ImgFit, type TableImg } from "@/components/common"
 import { convertToBeijingTime } from "@/utils/dateTime"
@@ -33,17 +33,6 @@ export interface TableColumn {
     isTest?: boolean // 是否为测试列
 }
 
-// 文章分类
-export interface PostCategory extends DataWithImg {
-    id: number // 分类 ID
-    name: string // 分类名称
-    description: string // 分类描述
-    count: number // 分类下文章数量
-    slug?: string // 分类别名
-    parent_id?: number // 父分类 ID
-    parent_name?: string // 父分类名称
-}
-
 // 文章
 export interface Post extends DataWithImg {
     id: number // 文章 ID
@@ -58,7 +47,7 @@ export interface Post extends DataWithImg {
     slug?: string // 文章别名
 }
 
-export type TableData = PostCategory | Post | PostTag | Category | MediaFile | User | LoginLog
+export type TableData = Post | PostTag | PostCategory | MediaFile | User | LoginLog
 
 export interface FormatTableData {
     thumbnail?: string

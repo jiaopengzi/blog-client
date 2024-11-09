@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:47:08
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 16:05:39
+ * @LastEditTime : 2024-11-09 15:25:23
  * @FilePath     : \blog-client\src\views\admin\component\main\post-category\index.vue
  * @Description  : 分类管理
  * @Blog         : https://jiaopengzi.com
@@ -59,15 +59,15 @@
 import { reactive } from "vue"
 import type { TableData, TableColumn } from "@/components/common/base-table"
 import { AdminSideMenu } from "@/views/admin/component/aside"
-import { type Category } from "@/api/category/view"
-import { viewCategoryAPI, type ViewCategoryRequest } from "@/api/category/view"
+import { type PostCategory } from "@/api/postCategory/view"
+import { viewPostCategoryAPI, type ViewPostCategoryRequest } from "@/api/postCategory/view"
 import { ResponseCode } from "@/api/responseCode"
 import BaseTable from "@/components/common/base-table"
 import AddTag from "./component/add"
 import EditTag from "./component/edit"
 import { type EditForm } from "./component/edit"
 import { useGetData } from "@/components/hooks/useGetData"
-import { type DeleteCategoryRequest, deleteCategoryAPI } from "@/api/category/delete"
+import { type DeletePostCategoryRequest, deletePostCategoryAPI } from "@/api/postCategory/delete"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
 
 defineOptions({ name: AdminSideMenu.PostCategory })
@@ -159,12 +159,12 @@ const {
     updatePaginate, // 更新分页数据
     deleteRows, // 删除行
     updatePaginateOnBeforeMount, // 更新分页数据
-} = useBaseTable<Category, ViewCategoryRequest, DeleteCategoryRequest>(
+} = useBaseTable<PostCategory, ViewPostCategoryRequest, DeletePostCategoryRequest>(
     AdminSideMenu.PostCategory,
-    viewCategoryAPI,
-    ResponseCode.CategoryViewSuccess,
-    deleteCategoryAPI,
-    ResponseCode.CategoryDeleteSuccess,
+    viewPostCategoryAPI,
+    ResponseCode.PostCategoryViewSuccess,
+    deletePostCategoryAPI,
+    ResponseCode.PostCategoryDeleteSuccess,
 )
 
 // 需要编辑的用户ID

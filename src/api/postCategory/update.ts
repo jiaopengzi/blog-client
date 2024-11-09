@@ -2,9 +2,9 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:33:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 14:41:44
- * @FilePath     : \blog-client\src\api\category\insert.ts
- * @Description  : 插入文章分类
+ * @LastEditTime : 2024-11-06 14:42:37
+ * @FilePath     : \blog-client\src\api\category\update.ts
+ * @Description  : 更新文章分类
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
@@ -14,7 +14,8 @@ import { routerGroup } from "@/api/routerGroup"
 import type { AxiosPromise } from "axios"
 import { type Res } from "@/api/responseCode"
 
-export interface InsertCategoryRequest {
+export interface UpdatePostCategoryRequest {
+    id: number // 标签id
     name: string // tag名称
     slug: string // 别名
     description?: string // 描述
@@ -23,9 +24,9 @@ export interface InsertCategoryRequest {
     parent?: number // 父级分类
 }
 
-// 插入文章标签
-export function insertCategoryAPI(requestData: InsertCategoryRequest): AxiosPromise<Res> {
-    const urlStr = routerGroup + "/post-category/insert"
+// 更新文章标签
+export function updatePostCategoryAPI(requestData: UpdatePostCategoryRequest): AxiosPromise<Res> {
+    const urlStr = routerGroup + "/post-category/update"
     return request({
         url: urlStr,
         method: "post",

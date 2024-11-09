@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 16:36:18
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-07 17:52:20
+ * @LastEditTime : 2024-11-08 10:11:13
  * @FilePath     : \blog-client\src\components\common\switch-group\index.vue
  * @Description  : 开关组件 
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,7 @@
 <template>
     <div class="my-switch">
         <span v-if="localNamePosition === 'left'" class="span-left"
-            >{{ props.switchItem.name }}
+            >{{ props.switchItem.display }}
         </span>
         <el-switch
             v-model="localStatus"
@@ -22,7 +22,7 @@
             :inactive-text="props.switchItem.label?.labelFalse"
         />
         <span v-if="localNamePosition === 'right'" class="span-right">{{
-            props.switchItem.name
+            props.switchItem.display
         }}</span>
     </div>
 </template>

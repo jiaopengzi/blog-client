@@ -16,7 +16,7 @@
             </h2>
         </div>
         <div class="post-list">
-            <PostItem v-for="(item, index) in postItems" :key="index" :post-data="item" />
+            <PostItem v-for="item in postItems" :key="item.title" :post-data="item" />
         </div>
     </div>
 </template>

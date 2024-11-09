@@ -12,9 +12,9 @@
 <template>
     <div ref="toolbarRef" id="toolbar">
         <button
-            v-for="(btn, index) in props.toolbarBtns"
+            v-for="btn in props.toolbarBtns"
             type="button"
-            :key="index"
+            :key="btn.name"
             class="toolbar-btn"
             @click="emitToolbarBtnClicked(btn.name)"
         >

@@ -13,6 +13,7 @@ export { default } from "./index.vue"
 
 // 定义props 后续调用
 export interface PostItemMainObj {
+    id: string
     category: string
     categoryHref: string
     thumbnailSrc: string

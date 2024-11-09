@@ -29,7 +29,7 @@
         </div>
         <div class="nav">
             <ul>
-                <li v-for="(item, index) in props.navData" :key="index">
+                <li v-for="item in props.navData" :key="item.path">
                     <router-link :to="item.path" class="link">
                         <Icon
                             v-if="item.iconKey"

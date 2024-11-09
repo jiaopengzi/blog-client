@@ -18,7 +18,7 @@
             </div>
             <div class="footer-m">
                 <ul>
-                    <li class="footer-m-li" v-for="(item, index) in footerData.middle" :key="index">
+                    <li class="footer-m-li" v-for="item in footerData.middle" :key="item.imgUrl">
                         <img :src="item.imgUrl" :alt="item.display" />
                         <span>{{ item.display }}</span>
                     </li>
