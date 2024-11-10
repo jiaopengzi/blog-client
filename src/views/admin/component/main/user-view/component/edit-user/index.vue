@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-18 08:47:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-30 11:36:21
+ * @LastEditTime : 2024-11-10 18:43:03
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\edit-user\index.vue
  * @Description  : 编辑用户
  * @Blog         : https://jiaopengzi.com
@@ -121,10 +121,8 @@ import {
     editUserInfoByAdminAPI,
 } from "@/api/user/editUserInfoByAdmin"
 import { ResponseCode } from "@/api/responseCode"
-import type {
-    EditUserByAdminForm,
-    DisableExpiresAt,
-} from "@/views/admin/component/main/user-view/component/edit-user"
+import type { EditUserByAdminForm } from "@/views/admin/component/main/user-view/component/edit-user"
+import { type PgSqlDateTime } from "@/api/common"
 import { useFormValidation } from "@/components/hooks/useFormValidation"
 import { generatePassword } from "@/utils/password"
 import { type Role } from "@/api/permissionRole/role"
@@ -162,10 +160,11 @@ const formSize = ref("large")
 
 // 默认时间为当前日期
 const defaultTime = new Date()
+
 // 时间快捷选项
 const shortcuts = [
     {
-        text: "禁用5分钟",
+        text: "禁止5分钟",
         value: () => {
             const date = new Date()
             date.setMinutes(date.getMinutes() + 5)
@@ -173,7 +172,7 @@ const shortcuts = [
         },
     },
     {
-        text: "禁用1小时",
+        text: "禁止1小时",
         value: () => {
             const date = new Date()
             date.setHours(date.getHours() + 1)
@@ -181,7 +180,7 @@ const shortcuts = [
         },
     },
     {
-        text: "禁用1天",
+        text: "禁止天",
         value: () => {
             const date = new Date()
             date.setDate(date.getDate() + 1)
@@ -189,7 +188,7 @@ const shortcuts = [
         },
     },
     {
-        text: "禁用7天",
+        text: "禁止7天",
         value: () => {
             const date = new Date()
             date.setDate(date.getDate() + 7)
@@ -202,7 +201,7 @@ const shortcuts = [
 const editUserFormRef = useTemplateRef<FormInstance>("editUserFormRef")
 
 // 按需获取禁用时间
-const getDisableExpiresAt = (disableExpiresAt: DisableExpiresAt) => {
+const getPgSqlDateTime = (disableExpiresAt: PgSqlDateTime) => {
     if (!disableExpiresAt.time) {
         return {
             time: null,
@@ -247,7 +246,7 @@ const updateEditUserForm = (data: EditUserByAdminForm) => {
     editUserForm.editUserID = data.editUserID
     editUserForm.userName = data.userName
     editUserForm.email = data.email
-    editUserForm.disableExpiresAt = getDisableExpiresAt(data.disableExpiresAt)
+    editUserForm.disableExpiresAt = getPgSqlDateTime(data.disableExpiresAt)
     editUserForm.password = ""
     editUserForm.roleName = data.roleName
     editUserForm.nickName = data.nickName
@@ -334,11 +333,6 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     try {
         await formEl.validate(async (valid) => {
             if (valid) {
-                console.log(
-                    "editUserForm.disableExpiresAt.time1:",
-                    editUserForm.disableExpiresAt.time,
-                )
-
                 // 当前时间
                 const now = new Date()
                 // 当前时间小于禁用时间 valid = true
@@ -358,12 +352,6 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                 if (!editUserForm.disableExpiresAt.time) {
                     editUserForm.disableExpiresAt.valid = false
                 }
-
-                console.log(
-                    "editUserForm.disableExpiresAt.time2:",
-                    editUserForm.disableExpiresAt.time,
-                )
-                console.log("editUserForm:", editUserForm)
 
                 const req: EditUserInfoByAdminRequest = {
                     edit_user_id: editUserForm.editUserID,

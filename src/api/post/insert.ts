@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-08 17:41:34
+ * @LastEditTime : 2024-11-10 17:48:27
  * @FilePath     : \blog-client\src\api\post\insert.ts
  * @Description  : 插入文章
  * @Blog         : https://jiaopengzi.com
@@ -17,12 +17,21 @@ import { type PgSqlDateTime } from "@/api/common"
 
 export enum PostStatusCode {
     Draft = 0, // 草稿
-    Pending = 1, // 待审核
-    Private = 2, // 私密
-    Cron = 3, // 定时发布
-    Publish = 4, // 已发布
-    Expired = 5, // 过期
-    Trash = 6, // 回收站
+    Private = 1, // 私密
+    Future = 2, // 定时发布
+    Password = 3, // 密码保护
+    Publish = 4, // 公开发布
+}
+
+// 获取文章状态选项
+export const gegPostStatusOptions = () => {
+    return [
+        { label: "草稿", value: PostStatusCode.Draft },
+        { label: "私密", value: PostStatusCode.Private },
+        { label: "定时发布", value: PostStatusCode.Future },
+        { label: "密码保护", value: PostStatusCode.Password },
+        { label: "公开发布", value: PostStatusCode.Publish },
+    ]
 }
 
 export enum CommentStatusCode {
@@ -45,10 +54,10 @@ export interface InsertPostRequest {
     slug: string // 别名
     thumbnail: string // 缩略图
     categories: number[] // 分类id
-    tags?: string[] // 标签
-    pay_roles?: string[] // 付费角色
-    post_push_time?: PgSqlDateTime // 发布时间
-    post_expired_time?: PgSqlDateTime // 过期时间
+    tags: string[] // 标签
+    pay_roles: string[] // 付费角色
+    post_push_time: PgSqlDateTime // 发布时间
+    post_expired_time: PgSqlDateTime // 过期时间
 }
 
 // 插入文章

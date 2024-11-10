@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-07 16:32:09
+ * @LastEditTime : 2024-11-10 19:17:02
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -64,6 +64,11 @@ export enum ResponseCode {
     EditUserInfoByAdminSuccess = 1039, //管理员编辑用户成功
     UserLogoutByAdminSuccess = 1040, //管理员登出用户成功
     UserForbidden = 1041, //用户禁用
+
+    // 文章标签相关
+    PostInsertSuccess = 2000, // 插入文章标签成功
+    PostCheckSlugNoExist = 2007, // 别名名称不存在
+    PostCheckSlugNoExistExcludingID = 2011, // 别名名称不存在，排除指定ID
 
     // 文章标签相关
     PostTagInsertSuccess = 2100, // 插入文章标签成功
@@ -157,6 +162,7 @@ export enum LocalStorageKey {
     PermissionList = "permission_list", // 权限列表
     IsCollapse = "is_collapse", // 侧边栏是否折叠
     IsShowListOrGridAtMedia = "is_show_list_or_grid_at_media", // 媒体列表是否显示为列表或网格
+    IsShowSeoAtPostWrite = "is_show_seo_at_post_write", // 文章写作是否显示SEO
 }
 
 // 社交登录
