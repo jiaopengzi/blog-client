@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-18 08:47:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-10 18:43:03
+ * @LastEditTime : 2024-11-10 20:17:18
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\edit-user\index.vue
  * @Description  : 编辑用户
  * @Blog         : https://jiaopengzi.com
@@ -49,7 +49,7 @@
 
             <el-form-item label="禁用到期时间" prop="disableExpiresAt">
                 <el-date-picker
-                    v-model="editUserForm.disableExpiresAt.time"
+                    v-model="editUserForm.disableExpiresAt.Time"
                     type="datetime"
                     placeholder="留空则为未禁用"
                     :shortcuts="shortcuts"
@@ -202,18 +202,18 @@ const editUserFormRef = useTemplateRef<FormInstance>("editUserFormRef")
 
 // 按需获取禁用时间
 const getPgSqlDateTime = (disableExpiresAt: PgSqlDateTime) => {
-    if (!disableExpiresAt.time) {
+    if (!disableExpiresAt.Time) {
         return {
             time: null,
             valid: false,
         }
     }
     const now = new Date().getTime() // 获取当前时间的时间戳
-    const disableExpiresAtTime = new Date(disableExpiresAt.time).getTime() // 获取 disableExpiresAt.time 的时间戳
+    const disableExpiresAtTime = new Date(disableExpiresAt.Time).getTime() // 获取 disableExpiresAt.Time 的时间戳
     // 比较两个时间戳，如果 disableExpiresAtTime 小于当前时间 now，则 valid 为 false，否则为 true
     if (disableExpiresAtTime > now) {
         return {
-            time: disableExpiresAt.time,
+            time: disableExpiresAt.Time,
             valid: true,
         }
     }
@@ -229,8 +229,8 @@ const editUserForm = reactive<EditUserByAdminForm>({
     userName: "",
     email: "",
     disableExpiresAt: {
-        time: null,
-        valid: false,
+        Time: null,
+        Valid: false,
     },
     password: "",
     roleName: "",
@@ -246,7 +246,7 @@ const updateEditUserForm = (data: EditUserByAdminForm) => {
     editUserForm.editUserID = data.editUserID
     editUserForm.userName = data.userName
     editUserForm.email = data.email
-    editUserForm.disableExpiresAt = getPgSqlDateTime(data.disableExpiresAt)
+    editUserForm.disableExpiresAt = data.disableExpiresAt
     editUserForm.password = ""
     editUserForm.roleName = data.roleName
     editUserForm.nickName = data.nickName
@@ -337,20 +337,20 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                 const now = new Date()
                 // 当前时间小于禁用时间 valid = true
                 if (
-                    editUserForm.disableExpiresAt.time &&
-                    now >= editUserForm.disableExpiresAt.time
+                    editUserForm.disableExpiresAt.Time &&
+                    now >= editUserForm.disableExpiresAt.Time
                 ) {
                     ShowMsgTip(ShowMsgTip.MsgType.error, "禁用时间不能小于当前时间", 6000)
                     return
                 }
                 if (
-                    editUserForm.disableExpiresAt.time &&
-                    now < editUserForm.disableExpiresAt.time
+                    editUserForm.disableExpiresAt.Time &&
+                    now < editUserForm.disableExpiresAt.Time
                 ) {
-                    editUserForm.disableExpiresAt.valid = true
+                    editUserForm.disableExpiresAt.Valid = true
                 }
-                if (!editUserForm.disableExpiresAt.time) {
-                    editUserForm.disableExpiresAt.valid = false
+                if (!editUserForm.disableExpiresAt.Time) {
+                    editUserForm.disableExpiresAt.Valid = false
                 }
 
                 const req: EditUserInfoByAdminRequest = {

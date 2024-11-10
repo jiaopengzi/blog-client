@@ -340,8 +340,8 @@ export function useFormValidation(options: FormValidationOptions) {
         }
 
         // 若不为空，再判断 post_push_time 是否小于 post_expired_time
-        if (form.post_expired_time?.value && form.post_expired_time.value.time) {
-            const postExpiredTime = new Date(form.post_expired_time.value.time).getTime()
+        if (form.post_expired_time?.value && form.post_expired_time.value.Time) {
+            const postExpiredTime = new Date(form.post_expired_time.value.Time).getTime()
             const postPushTime = new Date(value).getTime()
             if (postPushTime > postExpiredTime) {
                 callback(new Error("发布时间不能大于过期时间"))
@@ -369,9 +369,9 @@ export function useFormValidation(options: FormValidationOptions) {
         }
 
         // 若不为空，再判断 post_push_time 是否小于 post_expired_time
-        if (form.post_push_time?.value && form.post_push_time.value.time) {
+        if (form.post_push_time?.value && form.post_push_time.value.Time) {
             const postExpiredTime = new Date(value).getTime()
-            const postPushTime = new Date(form.post_push_time.value.time).getTime()
+            const postPushTime = new Date(form.post_push_time.value.Time).getTime()
             if (postPushTime > postExpiredTime) {
                 callback(new Error("发布时间不能大于过期时间"))
                 return

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-05 17:18:53
+ * @LastEditTime : 2024-11-10 20:15:16
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -248,8 +248,8 @@ const editUserByAdminForm = reactive<EditUserByAdminForm>({
     userName: "",
     email: "",
     disableExpiresAt: {
-        time: null,
-        valid: false,
+        Time: null,
+        Valid: false,
     },
     password: "",
     roleName: "",
@@ -265,8 +265,8 @@ const editRow = (index: number, row: TableData) => {
         // 如果 disable_expires_at 为 null 则返回 '永久'
         if (row.disable_expires_at === null) {
             editUserByAdminForm.disableExpiresAt = {
-                time: null,
-                valid: false,
+                Time: null,
+                Valid: false,
             }
 
             editUserByAdminForm.editUserID = row.id.toString()
@@ -281,8 +281,8 @@ const editRow = (index: number, row: TableData) => {
         // 如果 disable_expires_at 为 Valid 为 false 则返回 ''
         if ("Valid" in row.disable_expires_at && row.disable_expires_at.Valid === false) {
             editUserByAdminForm.disableExpiresAt = {
-                time: null,
-                valid: false,
+                Time: null,
+                Valid: false,
             }
             editUserByAdminForm.editUserID = row.id.toString()
             editUserByAdminForm.userName = row.user_name
@@ -299,8 +299,8 @@ const editRow = (index: number, row: TableData) => {
             row.disable_expires_at.Valid === true
         ) {
             editUserByAdminForm.disableExpiresAt = {
-                time: row.disable_expires_at.Time,
-                valid: row.disable_expires_at.Valid,
+                Time: row.disable_expires_at.Time,
+                Valid: row.disable_expires_at.Valid,
             }
             editUserByAdminForm.editUserID = row.id.toString()
             editUserByAdminForm.userName = row.user_name

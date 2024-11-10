@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-10 19:44:10
+ * @LastEditTime : 2024-11-10 20:19:20
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -156,7 +156,7 @@
                 prop="post_push_time"
             >
                 <el-date-picker
-                    v-model="postInfo.post_push_time.time"
+                    v-model="postInfo.post_push_time.Time"
                     type="datetime"
                     placeholder="留空则为立刻发布"
                     :shortcuts="generateShortcuts('发布')"
@@ -166,7 +166,7 @@
 
             <el-form-item label="文章过期时间" prop="post_expired_time">
                 <el-date-picker
-                    v-model="postInfo.post_expired_time.time"
+                    v-model="postInfo.post_expired_time.Time"
                     type="datetime"
                     placeholder="留空则为永不过期"
                     :shortcuts="generateShortcuts('过期')"

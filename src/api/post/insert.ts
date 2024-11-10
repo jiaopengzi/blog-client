@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-10 17:48:27
+ * @LastEditTime : 2024-11-10 20:19:45
  * @FilePath     : \blog-client\src\api\post\insert.ts
  * @Description  : 插入文章
  * @Blog         : https://jiaopengzi.com
@@ -88,12 +88,12 @@ export function createEmptyInsertPostRequest(): InsertPostRequest {
         tags: [],
         pay_roles: [],
         post_push_time: {
-            time: null,
-            valid: false,
+            Time: null,
+            Valid: false,
         },
         post_expired_time: {
-            time: null,
-            valid: false,
+            Time: null,
+            Valid: false,
         },
     }
 }
