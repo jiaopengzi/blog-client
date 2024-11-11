@@ -43,6 +43,8 @@ export default defineConfig({
     css: {
         preprocessorOptions: {
             scss: {
+                // TODO 暂时消除警告，部署前再处理 参考https://sass-lang.com/documentation/breaking-changes/legacy-js-api/
+                silenceDeprecations: ["legacy-js-api"],
                 // 多个scss文件变量生效
                 additionalData: `
         @use "./src/assets/scss/themes/index.scss" as *;
@@ -103,7 +105,7 @@ export default defineConfig({
                 terser({
                     maxWorkers: 2, // 开启多进程压缩
                     compress: {
-                        // drop_console: true, // 去除全部console
+                        // TODO 去除console.log,保留其他console
                         // pure_funcs: ['console.log'], // 去除console.log,保留其他console
                         // drop_debugger: true // 去除debugger
                     },

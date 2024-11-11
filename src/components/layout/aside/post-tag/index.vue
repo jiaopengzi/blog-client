@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:15:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-07 10:46:09
+ * @LastEditTime : 2024-11-11 10:08:05
  * @FilePath     : \blog-client\src\components\layout\aside\post-tag\index.vue
  * @Description  : 文章标签
  * @Blog         : https://jiaopengzi.com
@@ -17,7 +17,10 @@
                 文章标签
             </h2>
         </div>
-        <div class="tag-box">
+        <div v-if="noData" class="tag-box">
+            <el-empty description="暂无数据" />
+        </div>
+        <div v-else class="tag-box">
             <el-scrollbar max-height="300px">
                 <TagItem
                     v-for="item in items"
@@ -31,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, onBeforeMount } from "vue"
+import { reactive, onBeforeMount, computed } from "vue"
 import { IconKeys } from "@/components/common/icons"
 
 import TagItem from "@/components/common/tag-item"
@@ -45,6 +48,9 @@ const emit = defineEmits<{
 }>()
 
 const items = reactive<PostTag[]>([])
+
+// 是否没有数据
+const noData = computed(() => items.length === 0)
 
 // 获取分页用户
 const getTagTopN = async () => {

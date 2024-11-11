@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-10 20:19:20
+ * @LastEditTime : 2024-11-11 18:26:24
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -19,7 +19,11 @@
                 </el-button>
             </div>
             <div class="btns-header-right">
-                <el-button type="primary" class="save-post btns-header-item">
+                <el-button
+                    type="primary"
+                    class="save-post btns-header-item"
+                    @click="submitForm(formRef as FormInstance)"
+                >
                     <Icon :name="IconKeys.Save" custom-class="btns-header-item-icon" />
                     <span>保存</span>
                 </el-button>
@@ -27,14 +31,15 @@
         </div>
 
         <el-form
+            ref="formRef"
             class="post-info"
             label-position="top"
             label-width="200px"
-            :model="postInfo"
+            :model="postInfoForm"
             :rules="rules"
         >
             <el-form-item label="标题" prop="post_title">
-                <el-input v-model="postInfo.post_title" placeholder="添加标题" />
+                <el-input v-model="postInfoForm.post_title" placeholder="添加标题" />
             </el-form-item>
 
             <!-- 编辑器 -->
@@ -53,7 +58,7 @@
                 label="SEO自定义文章标题，留空则为文章标题。"
                 prop="seo_title"
             >
-                <el-input v-model="postInfo.seo_title" />
+                <el-input v-model="postInfoForm.seo_title" />
             </el-form-item>
 
             <el-form-item
@@ -61,7 +66,7 @@
                 label="SEO文章描述，留空则自动截取首段一定字数作为文章描。"
                 prop="seo_description"
             >
-                <el-input v-model="postInfo.seo_description" :rows="5" type="textarea" />
+                <el-input v-model="postInfoForm.seo_description" :rows="5" type="textarea" />
             </el-form-item>
 
             <el-form-item
@@ -69,27 +74,27 @@
                 label="SEO文章关键词，多个关键词用英文半角逗号隔开，留空则自动将文章标签做为关键词。"
                 prop="seo_keywords"
             >
-                <el-input v-model="postInfo.seo_keywords" />
+                <el-input v-model="postInfoForm.seo_keywords" />
             </el-form-item>
 
             <el-form-item label="手动设置缩略图,如果没有则随机显示一张图片。" prop="thumbnail">
-                <el-input v-model="postInfo.thumbnail" />
+                <el-input v-model="postInfoForm.thumbnail" />
             </el-form-item>
 
             <el-form-item label="销售价格 为空则为免费。" prop="price">
-                <el-input v-model="postInfo.price" />
+                <el-input v-model="postInfoForm.price" />
             </el-form-item>
 
             <el-form-item label="别名，留空则使用默认ID值。" prop="slug">
-                <el-input v-model="postInfo.slug" />
+                <el-input v-model="postInfoForm.slug" />
             </el-form-item>
 
             <el-form-item label="文章分类管理" prop="categories">
                 <div class="category">
-                    <el-checkbox-group v-model="postInfo.categories">
+                    <el-checkbox-group v-model="postInfoForm.categories">
                         <el-checkbox
                             class="category-item"
-                            v-for="item in categories"
+                            v-for="item in allCategories"
                             :key="item.id"
                             :value="item.id"
                             size="large"
@@ -104,7 +109,7 @@
                 <div class="add-tag">
                     <AddTag
                         ref="addTagRef"
-                        :tag-list-in="postInfo.tags || []"
+                        :tag-list-in="postInfoForm.tags || []"
                         @update-tag-list="updateTagListIn"
                     />
                 </div>
@@ -131,7 +136,7 @@
             </el-form-item>
 
             <el-form-item label="文章状态" prop="post_status">
-                <el-radio-group v-model="postInfo.post_status">
+                <el-radio-group v-model="postInfoForm.post_status">
                     <el-radio
                         v-for="item in radioOptions()"
                         :key="item.value"
@@ -142,21 +147,21 @@
             </el-form-item>
 
             <el-form-item
-                v-if="postInfo.post_status === PostStatusCode.Password"
+                v-if="postInfoForm.post_status === PostStatusCode.Password"
                 label="文章密码"
                 prop="post_password"
                 with="200"
             >
-                <el-input v-model="postInfo.post_password" />
+                <el-input v-model="postInfoForm.post_password" />
             </el-form-item>
 
             <el-form-item
-                v-if="postInfo.post_status === PostStatusCode.Future"
+                v-if="postInfoForm.post_status === PostStatusCode.Future"
                 label="文章发布时间"
                 prop="post_push_time"
             >
                 <el-date-picker
-                    v-model="postInfo.post_push_time.Time"
+                    v-model="postInfoForm.post_push_time.Time"
                     type="datetime"
                     placeholder="留空则为立刻发布"
                     :shortcuts="generateShortcuts('发布')"
@@ -166,7 +171,7 @@
 
             <el-form-item label="文章过期时间" prop="post_expired_time">
                 <el-date-picker
-                    v-model="postInfo.post_expired_time.Time"
+                    v-model="postInfoForm.post_expired_time.Time"
                     type="datetime"
                     placeholder="留空则为永不过期"
                     :shortcuts="generateShortcuts('过期')"
@@ -176,7 +181,11 @@
         </el-form>
 
         <div class="btns-footer">
-            <el-button type="primary" class="save-post btns-footer-item">
+            <el-button
+                type="primary"
+                class="save-post btns-footer-item"
+                @click="submitForm(formRef as FormInstance)"
+            >
                 <Icon :name="IconKeys.Save" custom-class="btns-footer-item-icon" />
                 <span>保存</span>
             </el-button>
@@ -192,6 +201,7 @@ import {
     onMounted,
     onBeforeUnmount,
     toRefs,
+    watch,
 } from "vue"
 import { useResizeObserver } from "@vueuse/core"
 import { EditorStateManager, EditorPost } from "@/components/editor"
@@ -205,7 +215,6 @@ import { viewListPostCategoryAPI, type PostCategory } from "@/api/postCategory/v
 import { ResponseCode, LocalStorageKey } from "@/api/responseCode"
 import { getRolesList } from "@/utils/permissionRole"
 import {
-    createEmptyInsertPostRequest,
     insertPostRequestAPI,
     PostStatusCode,
     CommentStatusCode,
@@ -215,12 +224,26 @@ import {
 import { useFormValidation } from "./hooks"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { PermissionNames } from "@/utils/permissionRole"
+import { createEmptyUpsertPostForm, type UpsertPostForm } from "./index"
 
 import AddTag from "@/components/common/add-tag"
+import { ShowMsgTip } from "@/utils/message"
 
 defineOptions({ name: AdminSideMenu.PostWrite })
 
+const { postInfo } = defineProps<{
+    postInfo?: UpsertPostForm
+}>()
+
+// 初始化表单数据
+const postInfoForm = reactive<UpsertPostForm>(createEmptyUpsertPostForm())
+
+// const emit = defineEmits<{
+//     (event: "edit-status", value: boolean): void // 编辑状态
+// }>()
+
 const elContainerRef = useTemplateRef<InstanceType<typeof ElContainer> | null>("elContainerRef")
+const formRef = useTemplateRef<FormInstance>("formRef")
 const editorContainerRef = useTemplateRef<HTMLDivElement | null>("editorContainerRef")
 
 // const addTagRef = useTemplateRef <InstanceType<typeof AddTag>>("addTagRef")
@@ -237,20 +260,18 @@ useResizeObserver(editorContainerRef, (entries) => {
     stateManager.setEditorWidth(width)
 })
 
-const postInfo = reactive(createEmptyInsertPostRequest())
-
 const updateTagListIn = (tagList: string[]) => {
-    postInfo.tags = tagList
+    postInfoForm.tags = tagList
     if (tagList) {
         console.log("标签", tagList)
     } else {
-        console.log("标签", postInfo.tags)
+        console.log("标签", postInfoForm.tags)
         return rolePaidList
     }
 }
 
 // 角色付费管理
-const rolePaidList: SwitchItem[] = []
+const rolePaidList: SwitchItem[] = reactive([])
 
 const rolePaidLabel: SwitchItemLabel = {
     labelTrue: "免费",
@@ -261,6 +282,7 @@ const rolePaidLabel: SwitchItemLabel = {
 const initRolePaidManagement = async () => {
     // 首先从 系统角色列表 获取角色列表
     const { roles: rolesSystem } = await getRolesList()
+
     // 历遍 rolesSystem 构造 rolePaidList
     rolesSystem.forEach((role) => {
         const switchItem: SwitchItem = {
@@ -276,7 +298,7 @@ const initRolePaidManagement = async () => {
 }
 
 // 评论状态
-const commentStatus: SwitchItem[] = [
+const commentStatus: SwitchItem[] = reactive([
     {
         name: "commentStatus",
         display: "评论状态",
@@ -286,7 +308,7 @@ const commentStatus: SwitchItem[] = [
             labelFalse: "关闭",
         },
     },
-]
+])
 
 // SEO状态
 const seoIsShow = ref(localStorage.getItem(LocalStorageKey.IsShowSeoAtPostWrite) == "true")
@@ -312,23 +334,49 @@ const updateSeoStatus = (item: SwitchItem) => {
 const updateRolePaidList = (item: SwitchItem) => {
     const index = rolePaidList.findIndex((i) => i.name === item.name)
     rolePaidList[index].status = item.status
+
+    // 更新 postInfoForm.pay_roles,筛选出 status 为 true 的角色
+    postInfoForm.pay_roles = rolePaidList
+        .filter((i) => i.status)
+        .map((i) => {
+            return i.name
+        })
 }
 
 // 更新评论状态
 const updateCommentStatus = (item: SwitchItem) => {
     const index = commentStatus.findIndex((i) => i.name === item.name)
     commentStatus[index].status = item.status
+
+    // 更新 postInfoForm.comment_status
+    postInfoForm.comment_status = item.status ? CommentStatusCode.Open : CommentStatusCode.Close
 }
 
 // 计算 name 最大长度
 const nameMaxLength = Math.max(...rolePaidList.map((item) => (item.name ?? "").length))
 
-// 获取分类列表
-const categories = reactive<PostCategory[]>([])
+// 所有分类列表
+const allCategories = reactive<PostCategory[]>([])
+
+const showWarningCategory = () => {
+    if (allCategories.length === 0) {
+        ShowMsgTip(ShowMsgTip.MsgType.warning, "请添加文章分类后在进入文章编辑")
+    }
+}
+
+// 监听分类列表变化
+watch(
+    () => allCategories,
+    () => {
+        showWarningCategory()
+    },
+)
+
 const getCategoryList = async () => {
     await viewListPostCategoryAPI().then((res) => {
         if (res.data.code === ResponseCode.PostCategoryViewListSuccess) {
-            Object.assign(categories, res.data.data)
+            Object.assign(allCategories, res.data.data)
+            showWarningCategory()
         }
     })
 }
@@ -404,7 +452,7 @@ const defaultTime = new Date()
 // hooks
 const {
     checkPostTitleValidator,
-    checkPostPasswordValidator,
+    checkSeoTitleValidator,
     checkSeoDescriptionValidator,
     checkSeoKeywordsValidator,
     checkThumbnailValidator,
@@ -414,8 +462,9 @@ const {
     checkCategoriesValidator,
     checkPostPushTimeValidator,
     checkPostExpiredTimeValidator,
+    checkPostPasswordValidator,
 } = useFormValidation({
-    form: toRefs(postInfo),
+    form: toRefs(postInfoForm),
 })
 
 /**
@@ -427,13 +476,12 @@ const rules = reactive<FormRules<InsertPostRequest>>({
         { required: true, message: "标题不能为空", trigger: "blur" },
         { validator: checkPostTitleValidator, trigger: "blur" },
     ],
-    post_password: [
-        { required: false, message: "文章密码,留空则为不设置密码。", trigger: "blur" },
-        { validator: checkPostPasswordValidator, trigger: "blur" },
-    ],
+
     seo_title: [
         { required: false, message: "SEO自定义文章标题，留空则为文章标题。", trigger: "blur" },
+        { validator: checkSeoTitleValidator, trigger: "blur" },
     ],
+
     seo_description: [
         {
             required: false,
@@ -442,6 +490,7 @@ const rules = reactive<FormRules<InsertPostRequest>>({
         },
         { validator: checkSeoDescriptionValidator, trigger: "blur" },
     ],
+
     seo_keywords: [
         {
             required: false,
@@ -451,6 +500,7 @@ const rules = reactive<FormRules<InsertPostRequest>>({
         },
         { validator: checkSeoKeywordsValidator, trigger: "blur" },
     ],
+
     thumbnail: [
         {
             required: false,
@@ -459,31 +509,120 @@ const rules = reactive<FormRules<InsertPostRequest>>({
         },
         { validator: checkThumbnailValidator, trigger: "blur" },
     ],
+
     price: [
         { required: false, message: "销售价格 为空则为免费。", trigger: "blur" },
         { validator: checkPriceValidator, trigger: "blur" },
     ],
+
     slug: [
         { required: false, message: "别名，留空则使用默认ID值。", trigger: "blur" },
         { validator: checkPostSlugValidator, trigger: "blur" },
         { validator: checkPostSlugExcludingIDValidator, trigger: "blur" },
     ],
+
     categories: [
-        { required: true, message: "文章分类管理", trigger: "blur" },
+        { required: true, message: "请选择文章分类1", trigger: "blur" },
         { validator: checkCategoriesValidator, trigger: "blur" },
     ],
-    tags: [{ required: false, message: "文章标签管理", trigger: "blur" }],
-    pay_roles: [{ required: false, message: "付费管理", trigger: "blur" }],
-    comment_status: [{ required: false, message: "评论管理", trigger: "blur" }],
+
     post_push_time: [
         { required: false, message: "文章发布时间", trigger: "blur" },
         { validator: checkPostPushTimeValidator, trigger: "blur" },
     ],
+
     post_expired_time: [
         { required: false, message: "文章过期时间", trigger: "blur" },
         { validator: checkPostExpiredTimeValidator, trigger: "blur" },
     ],
+
+    post_password: [
+        { required: false, message: "文章密码,留空则为不设置密码。", trigger: "blur" },
+        { validator: checkPostPasswordValidator, trigger: "blur" },
+    ],
 })
+
+const submitForm = async (formEl: FormInstance | undefined) => {
+    if (!formEl) {
+        return
+    }
+
+    try {
+        await formEl.validate((valid, fields) => {
+            if (valid) {
+                // 将 postInfoForm 解析到 InsertPostRequest
+                const req = {} as InsertPostRequest
+                Object.assign(req, postInfoForm)
+                // 更新作者ID
+                req.post_author = userStore.data.user.id.toString()
+
+                if (editorState.editor === "") {
+                    ShowMsgTip(ShowMsgTip.MsgType.warning, "文章内容不能为空", 6000)
+                    return
+                }
+
+                // 更新文章内容
+                req.post_content = editorState.editor
+
+                // 移除 req 空值字段
+                if (req.id === "") {
+                    delete req.id
+                }
+                if (req.post_password === "") {
+                    delete req.post_password
+                }
+                if (req.price === 0) {
+                    delete req.price
+                }
+                if (req.seo_title === "") {
+                    delete req.seo_title
+                }
+                if (req.seo_keywords === "") {
+                    delete req.seo_keywords
+                }
+                if (req.seo_description === "") {
+                    delete req.seo_description
+                }
+                if (req.slug === "") {
+                    delete req.slug
+                }
+                if (req.thumbnail === "") {
+                    delete req.thumbnail
+                }
+                if (req.tags?.length === 0) {
+                    delete req.tags
+                }
+                if (req.pay_roles?.length === 0) {
+                    delete req.pay_roles
+                }
+                if (req.post_push_time?.Time === null) {
+                    delete req.post_push_time
+                }
+                if (req.post_expired_time?.Time === null) {
+                    delete req.post_expired_time
+                }
+
+                insertPostRequestAPI(req).then(async (res) => {
+                    if (res.data.code === ResponseCode.PostInsertSuccess) {
+                        // 添加成功提示
+                        // emit("edit-status", true)
+                        await getCategoryList()
+                        ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 6000)
+                    } else {
+                        ShowMsgTip(ShowMsgTip.MsgType.error, res.data.msg, 0)
+                    }
+                    console.log("submit!")
+                })
+            } else {
+                console.log("Validation failed for fields:", fields)
+            }
+        })
+        console.log("After formEl.validate")
+    } catch (error) {
+        console.error("submitForm error", error)
+        return
+    }
+}
 
 onBeforeMount(async () => {
     // 生成角色付费管理

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-08 16:05:36
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-10 18:57:08
+ * @LastEditTime : 2024-11-11 14:51:13
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\hooks.ts
  * @Description  : 表单验证
  * @Blog         : https://jiaopengzi.com
@@ -43,6 +43,8 @@ interface FormValidationOptions {
     }
 }
 
+const titleLength = 255
+
 // 表单验证
 export function useFormValidation(options: FormValidationOptions) {
     const { form } = options
@@ -53,11 +55,31 @@ export function useFormValidation(options: FormValidationOptions) {
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {
-        // 首尾不能是空格
-        if (value.trim() === "") {
+        // 不能为空
+        if (!value) {
             callback(new Error("文章标题不能为空"))
             return
         }
+
+        // 如果不为空，开头不能是空格
+        if (value.startsWith(" ")) {
+            callback(new Error("不能以空格开头"))
+            return
+        }
+
+        // 如果不为空，结尾不能是空格
+        if (value.endsWith(" ")) {
+            callback(new Error("不能以空格结尾"))
+            return
+        }
+
+        // 长度不能超过 255
+        if (value.length > titleLength) {
+            callback(new Error("文章标题长度不能超过 255"))
+            return
+        }
+
+        callback()
     }
 
     // 检查文章密码是否可用
@@ -89,6 +111,41 @@ export function useFormValidation(options: FormValidationOptions) {
             callback(new Error("文章密码长度不能超过 64"))
             return
         }
+
+        callback()
+    }
+
+    // 检查 SEO 标题是否可用
+    function checkSeoTitleValidator(
+        rule: any,
+        value: string,
+        callback: (error?: string | Error | undefined) => void,
+    ): void {
+        // 若为空，则直接返回
+        if (!value) {
+            callback()
+            return
+        }
+
+        // 如果不为空，开头不能是空格
+        if (value.startsWith(" ")) {
+            callback(new Error("不能以空格开头"))
+            return
+        }
+
+        // 如果不为空，结尾不能是空格
+        if (value.endsWith(" ")) {
+            callback(new Error("不能以空格结尾"))
+            return
+        }
+
+        // 长度不能超过 255
+        if (value.length > titleLength) {
+            callback(new Error("SEO 标题长度不能超过 255"))
+            return
+        }
+
+        callback()
     }
 
     // 检查 SEO 描述是否可用
@@ -103,9 +160,15 @@ export function useFormValidation(options: FormValidationOptions) {
             return
         }
 
-        // 如果不为空，首尾不能是空格
-        if (value.trim() === "") {
-            callback(new Error("SEO 关键词不能为空"))
+        // 如果不为空，开头不能是空格
+        if (value.startsWith(" ")) {
+            callback(new Error("不能以空格开头"))
+            return
+        }
+
+        // 如果不为空，结尾不能是空格
+        if (value.endsWith(" ")) {
+            callback(new Error("不能以空格结尾"))
             return
         }
 
@@ -114,6 +177,8 @@ export function useFormValidation(options: FormValidationOptions) {
             callback(new Error("SEO 关键词长度不能超过 500"))
             return
         }
+
+        callback()
     }
 
     // 检查 SEO 关键词是否可用
@@ -127,9 +192,16 @@ export function useFormValidation(options: FormValidationOptions) {
             callback()
             return
         }
-        // 如果不为空，首尾不能是空格
-        if (value.trim() === "") {
-            callback(new Error("SEO 关键词不能为空"))
+
+        // 如果不为空，开头不能是空格
+        if (value.startsWith(" ")) {
+            callback(new Error("不能以空格开头"))
+            return
+        }
+
+        // 如果不为空，结尾不能是空格
+        if (value.endsWith(" ")) {
+            callback(new Error("不能以空格结尾"))
             return
         }
 
@@ -146,6 +218,8 @@ export function useFormValidation(options: FormValidationOptions) {
             callback(new Error("SEO 关键词必须由英文半角逗号分隔"))
             return
         }
+
+        callback()
     }
 
     //  检查 thumbnail 是否可用
@@ -160,9 +234,15 @@ export function useFormValidation(options: FormValidationOptions) {
             return
         }
 
-        // 如果不为空，首尾不能是空格
-        if (value.trim() === "") {
-            callback(new Error("缩略图不能为空"))
+        // 如果不为空，开头不能是空格
+        if (value.startsWith(" ")) {
+            callback(new Error("不能以空格开头"))
+            return
+        }
+
+        // 如果不为空，结尾不能是空格
+        if (value.endsWith(" ")) {
+            callback(new Error("不能以空格结尾"))
             return
         }
 
@@ -172,6 +252,8 @@ export function useFormValidation(options: FormValidationOptions) {
             callback(new Error("缩略图必须为合法的 URL"))
             return
         }
+
+        callback()
     }
 
     // 检查 price 是否可用
@@ -204,6 +286,8 @@ export function useFormValidation(options: FormValidationOptions) {
             callback(new Error("价格小数位数不能超过 2 位"))
             return
         }
+
+        callback()
     }
 
     // 检查别名是否可用
@@ -314,6 +398,7 @@ export function useFormValidation(options: FormValidationOptions) {
         callback: (error?: string | Error | undefined) => void,
     ): void {
         // 不能为空
+        console.log("请选择分类2", value)
         if (value.length === 0) {
             callback(new Error("请选择分类"))
             return
@@ -348,6 +433,8 @@ export function useFormValidation(options: FormValidationOptions) {
                 return
             }
         }
+
+        callback()
     }
 
     // 检查过期时间是否可用
@@ -377,11 +464,13 @@ export function useFormValidation(options: FormValidationOptions) {
                 return
             }
         }
+
+        callback()
     }
 
     return {
         checkPostTitleValidator,
-        checkPostPasswordValidator,
+        checkSeoTitleValidator,
         checkSeoDescriptionValidator,
         checkSeoKeywordsValidator,
         checkThumbnailValidator,
@@ -391,5 +480,6 @@ export function useFormValidation(options: FormValidationOptions) {
         checkCategoriesValidator,
         checkPostPushTimeValidator,
         checkPostExpiredTimeValidator,
+        checkPostPasswordValidator,
     }
 }

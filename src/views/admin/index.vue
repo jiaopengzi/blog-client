@@ -46,7 +46,7 @@
 <script lang="ts" setup>
 import { ref, shallowRef, onBeforeMount, useTemplateRef } from "vue"
 import router from "@/router/index"
-import { components } from "@/views/admin"
+import { components } from "./index"
 import { adminMenuItemMapWithIndex, AdminSideMenu } from "@/views/admin/component/aside"
 import { PermissionNames } from "@/utils/permissionRole"
 import { useUserStore } from "@/stores/user"
