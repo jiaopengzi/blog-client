@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-11 15:29:44
+ * @LastEditTime : 2024-11-12 11:46:36
  * @FilePath     : \blog-client\src\api\post\insert.ts
  * @Description  : 插入文章
  * @Blog         : https://jiaopengzi.com
@@ -60,8 +60,17 @@ export interface InsertPostRequest {
     post_expired_time?: PgSqlDateTime // 过期时间
 }
 
+// 插入文章响应
+export interface InsertPostResponse extends Res {
+    data: {
+        id: string
+    }
+}
+
 // 插入文章
-export function insertPostRequestAPI(requestData: InsertPostRequest): AxiosPromise<Res> {
+export function insertPostRequestAPI(
+    requestData: InsertPostRequest,
+): AxiosPromise<InsertPostResponse> {
     const urlStr = routerGroup + "/post/insert"
     return request({
         url: urlStr,

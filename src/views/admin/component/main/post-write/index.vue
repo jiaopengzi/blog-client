@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-11 18:26:24
+ * @LastEditTime : 2024-11-13 21:10:12
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -37,6 +37,9 @@
             label-width="200px"
             :model="postInfoForm"
             :rules="rules"
+            :scroll-to-error="true"
+            :status-icon="true"
+            :scroll-into-view-options="{ behavior: 'smooth', block: 'center' }"
         >
             <el-form-item label="标题" prop="post_title">
                 <el-input v-model="postInfoForm.post_title" placeholder="添加标题" />
@@ -221,6 +224,8 @@ import {
     gegPostStatusOptions,
     type InsertPostRequest,
 } from "@/api/post/insert"
+import { updatePostRequestAPI } from "@/api/post/update"
+updatePostRequestAPI
 import { useFormValidation } from "./hooks"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { PermissionNames } from "@/utils/permissionRole"
@@ -228,6 +233,7 @@ import { createEmptyUpsertPostForm, type UpsertPostForm } from "./index"
 
 import AddTag from "@/components/common/add-tag"
 import { ShowMsgTip } from "@/utils/message"
+import router from "@/router"
 
 defineOptions({ name: AdminSideMenu.PostWrite })
 
@@ -237,10 +243,6 @@ const { postInfo } = defineProps<{
 
 // 初始化表单数据
 const postInfoForm = reactive<UpsertPostForm>(createEmptyUpsertPostForm())
-
-// const emit = defineEmits<{
-//     (event: "edit-status", value: boolean): void // 编辑状态
-// }>()
 
 const elContainerRef = useTemplateRef<InstanceType<typeof ElContainer> | null>("elContainerRef")
 const formRef = useTemplateRef<FormInstance>("formRef")
@@ -533,7 +535,7 @@ const rules = reactive<FormRules<InsertPostRequest>>({
 
     post_expired_time: [
         { required: false, message: "文章过期时间", trigger: "blur" },
-        { validator: checkPostExpiredTimeValidator, trigger: "blur" },
+        { validator: checkPostExpiredTimeValidator, trigger: "change" },
     ],
 
     post_password: [
@@ -541,6 +543,14 @@ const rules = reactive<FormRules<InsertPostRequest>>({
         { validator: checkPostPasswordValidator, trigger: "blur" },
     ],
 })
+
+// 监控 categories 变化,手动执行校验
+watch(
+    () => postInfoForm.categories,
+    () => {
+        formRef.value?.validateField("categories")
+    },
+)
 
 const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) {
@@ -563,6 +573,29 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
                 // 更新文章内容
                 req.post_content = editorState.editor
+
+                // 价格需要乘以 100 以适应后端整数
+                if (req.price) {
+                    req.price = req.price * 100
+                }
+
+                // 如果有时间则设置为有效
+                if (req.post_push_time && req.post_push_time.Time !== null) {
+                    req.post_push_time.Valid = true
+                }
+
+                if (req.post_expired_time && req.post_expired_time.Time !== null) {
+                    req.post_expired_time.Valid = true
+                }
+
+                // 如果没有时间则设置为无效
+                if (req.post_push_time && req.post_push_time.Time === null) {
+                    req.post_push_time.Valid = false
+                }
+
+                if (req.post_expired_time && req.post_expired_time.Time === null) {
+                    req.post_expired_time.Valid = false
+                }
 
                 // 移除 req 空值字段
                 if (req.id === "") {
@@ -595,29 +628,42 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                 if (req.pay_roles?.length === 0) {
                     delete req.pay_roles
                 }
-                if (req.post_push_time?.Time === null) {
-                    delete req.post_push_time
-                }
-                if (req.post_expired_time?.Time === null) {
-                    delete req.post_expired_time
-                }
 
-                insertPostRequestAPI(req).then(async (res) => {
-                    if (res.data.code === ResponseCode.PostInsertSuccess) {
-                        // 添加成功提示
-                        // emit("edit-status", true)
-                        await getCategoryList()
-                        ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 6000)
-                    } else {
-                        ShowMsgTip(ShowMsgTip.MsgType.error, res.data.msg, 0)
-                    }
-                    console.log("submit!")
-                })
+                // 当 id 为空时，表示为新增文章
+                if (postInfoForm.id === "") {
+                    insertPostRequestAPI(req).then(async (res) => {
+                        if (res.data.code === ResponseCode.PostInsertSuccess) {
+                            // 将 data 中的 id 更新到 postInfoForm
+                            postInfoForm.id = res.data.data.id
+
+                            ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 6000)
+
+                            // 插入成功后变成编辑状态，更改路由
+                            router.push({
+                                name: AdminSideMenu.PostWrite,
+                                query: { id: res.data.data.id },
+                            })
+                        } else {
+                            ShowMsgTip(ShowMsgTip.MsgType.error, res.data.msg, 0)
+                        }
+                        console.log("新增提交!")
+                    })
+                } else {
+                    // 更新文章
+                    req.id = postInfoForm.id
+                    updatePostRequestAPI(req).then(async (res) => {
+                        if (res.data.code === ResponseCode.PostUpdateSuccess) {
+                            ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 6000)
+                        } else {
+                            ShowMsgTip(ShowMsgTip.MsgType.error, res.data.msg, 0)
+                        }
+                        console.log("更新提交!")
+                    })
+                }
             } else {
-                console.log("Validation failed for fields:", fields)
+                console.error("Validation failed for fields:", fields)
             }
         })
-        console.log("After formEl.validate")
     } catch (error) {
         console.error("submitForm error", error)
         return

@@ -67,6 +67,7 @@ export enum ResponseCode {
 
     // 文章标签相关
     PostInsertSuccess = 2000, // 插入文章标签成功
+    PostUpdateSuccess = 2002, // 更新文章标签成功
     PostCheckSlugNoExist = 2007, // 别名名称不存在
     PostCheckSlugNoExistExcludingID = 2011, // 别名名称不存在，排除指定ID
 

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-08 16:05:36
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-11 14:51:13
+ * @LastEditTime : 2024-11-12 17:15:31
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\hooks.ts
  * @Description  : 表单验证
  * @Blog         : https://jiaopengzi.com
@@ -297,7 +297,13 @@ export function useFormValidation(options: FormValidationOptions) {
         callback: (error?: string | Error | undefined) => void,
     ): void {
         // 如果 id 不为空，则直接返回
-        if (!form.id?.value) {
+        if (form.id?.value) {
+            callback()
+            return
+        }
+
+        // 如果为空，则直接返回
+        if (!value) {
             callback()
             return
         }
@@ -309,8 +315,8 @@ export function useFormValidation(options: FormValidationOptions) {
         }
 
         // 不能包含特殊字符
-        if (value.match(/[^a-zA-Z0-9-]/)) {
-            callback(new Error("别名不能包含特殊字符，只能包含字母、数字、中划线"))
+        if (value.match(/[^a-z0-9-]/)) {
+            callback(new Error("别名不能包含特殊字符，只能包含小写字母、数字、中划线"))
             return
         }
 
@@ -352,6 +358,12 @@ export function useFormValidation(options: FormValidationOptions) {
             return
         }
 
+        // 如果为空，则直接返回
+        if (!value) {
+            callback()
+            return
+        }
+
         // 不能包含空格
         if (value.includes(" ")) {
             callback(new Error("别名不能包含空格"))
@@ -359,8 +371,8 @@ export function useFormValidation(options: FormValidationOptions) {
         }
 
         // 不能包含特殊字符
-        if (value.match(/[^a-zA-Z0-9-]/)) {
-            callback(new Error("别名不能包含特殊字符，只能包含字母、数字、中划线"))
+        if (value.match(/[^a-z0-9-]/)) {
+            callback(new Error("别名不能包含特殊字符，只能包小写含字母、数字、中划线"))
             return
         }
 
@@ -397,8 +409,6 @@ export function useFormValidation(options: FormValidationOptions) {
         value: number[],
         callback: (error?: string | Error | undefined) => void,
     ): void {
-        // 不能为空
-        console.log("请选择分类2", value)
         if (value.length === 0) {
             callback(new Error("请选择分类"))
             return
@@ -409,25 +419,33 @@ export function useFormValidation(options: FormValidationOptions) {
     // 检查发布时间是否可用
     function checkPostPushTimeValidator(
         rule: any,
-        value: string,
+        value: PgSqlDateTime,
         callback: (error?: string | Error | undefined) => void,
     ): void {
         // 如果文章状态不是定时发布，则直接返回
-        if (form.post_status?.value !== PostStatusCode.Password) {
+        if (form.post_status?.value !== PostStatusCode.Future) {
             callback()
             return
         }
 
-        // 不能为空
-        if (!value) {
+        // PostStatusCode.Future 时，发布时间不能为空
+        if (!value.Time) {
             callback(new Error("发布时间不能为空"))
+            return
+        }
+
+        const now = new Date()
+        const postPushTime = value.Time
+
+        // 不能小于当前时间
+        if (now >= postPushTime) {
+            callback(new Error("发布时间不能小于当前时间"))
             return
         }
 
         // 若不为空，再判断 post_push_time 是否小于 post_expired_time
         if (form.post_expired_time?.value && form.post_expired_time.value.Time) {
-            const postExpiredTime = new Date(form.post_expired_time.value.Time).getTime()
-            const postPushTime = new Date(value).getTime()
+            const postExpiredTime = new Date(form.post_expired_time.value.Time)
             if (postPushTime > postExpiredTime) {
                 callback(new Error("发布时间不能大于过期时间"))
                 return
@@ -440,12 +458,21 @@ export function useFormValidation(options: FormValidationOptions) {
     // 检查过期时间是否可用
     function checkPostExpiredTimeValidator(
         rule: any,
-        value: string,
+        value: PgSqlDateTime,
         callback: (error?: string | Error | undefined) => void,
     ): void {
         // 若为空，则直接返回
-        if (!value) {
+        if (!value.Time) {
             callback()
+            return
+        }
+
+        const now = new Date()
+        const postExpiredTime = value.Time
+
+        // 不能小于当前时间
+        if (now >= postExpiredTime) {
+            callback(new Error("过期时间不能小于当前时间"))
             return
         }
 
@@ -457,10 +484,9 @@ export function useFormValidation(options: FormValidationOptions) {
 
         // 若不为空，再判断 post_push_time 是否小于 post_expired_time
         if (form.post_push_time?.value && form.post_push_time.value.Time) {
-            const postExpiredTime = new Date(value).getTime()
-            const postPushTime = new Date(form.post_push_time.value.Time).getTime()
+            const postPushTime = new Date(form.post_push_time.value.Time)
             if (postPushTime > postExpiredTime) {
-                callback(new Error("发布时间不能大于过期时间"))
+                callback(new Error("过期时间不能小于发布时间"))
                 return
             }
         }
