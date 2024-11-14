@@ -1,0 +1,29 @@
+/**
+ * @Author       : jiaopengzi
+ * @Date         : 2024-11-14 14:54:58
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2024-11-14 15:06:17
+ * @FilePath     : \blog-client\src\api\post\viewByID.ts
+ * @Description  : 查看文章
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ */
+
+import request from "@/api/request"
+import { routerGroup } from "@/api/routerGroup"
+import type { AxiosPromise } from "axios"
+import { type Res } from "@/api/responseCode"
+
+export interface ViewPostByIDRequest {
+    post_id: string // 文章ID
+}
+
+// 插入文章
+export function viewPostByIDRequestAPI(requestData: ViewPostByIDRequest): AxiosPromise<Res> {
+    const urlStr = routerGroup + "/post/view-by-id"
+    return request({
+        url: urlStr,
+        method: "post",
+        data: requestData,
+    })
+}

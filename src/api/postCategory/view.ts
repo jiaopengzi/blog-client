@@ -37,7 +37,7 @@ export interface ViewPostCategoryResponse extends Res {
 
 // 查看文章分类
 export interface ViewListPostCategoryResponse extends Res {
-    data: PostCategory // 根据实际返回的数据结构替换为更具体的类型
+    data: PostCategory[] // 根据实际返回的数据结构替换为更具体的类型
 }
 
 // 查看文章标签

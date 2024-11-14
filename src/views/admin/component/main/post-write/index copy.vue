@@ -1,8 +1,18 @@
 <!--
  * @Author       : jiaopengzi
+ * @Date         : 2024-11-14 19:50:15
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2024-11-14 20:22:09
+ * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index copy.vue
+ * @Description  : 
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+-->
+<!--
+ * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-14 21:25:33
+ * @LastEditTime : 2024-11-14 19:49:35
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -90,7 +100,7 @@
 
             <el-form-item label="文章分类管理" prop="category_ids">
                 <div class="category">
-                    <el-checkbox-group v-model="selectedCategories">
+                    <el-checkbox-group v-model="postInfoForm.category_ids">
                         <el-checkbox
                             class="category-item"
                             v-for="item in allCategories"
@@ -250,11 +260,10 @@ useResizeObserver(editorContainerRef, (entries) => {
 })
 
 // 所有分类列表
-const allCategories = ref<PostCategory[]>([])
-const selectedCategories = ref<string[]>([])
+const allCategories = reactive<PostCategory[]>([])
 
 const showWarningCategory = () => {
-    if (allCategories.value.length === 0) {
+    if (allCategories.length === 0) {
         ShowMsgTip(ShowMsgTip.MsgType.warning, "请添加文章分类后在进入文章编辑")
     }
 }
@@ -262,20 +271,12 @@ const showWarningCategory = () => {
 const getCategoryList = async () => {
     await viewListPostCategoryAPI().then((res) => {
         if (res.data.code === ResponseCode.PostCategoryViewListSuccess) {
-            allCategories.value = res.data.data
+            Object.assign(allCategories, res.data.data)
             showWarningCategory()
         }
     })
 }
 
-watch(
-    () => selectedCategories.value,
-    () => {
-        postInfoForm.category_ids = selectedCategories.value.map((i) => Number(i))
-    },
-)
-
-// 更新标签列表
 const updateTagListIn = (tagList: string[]) => {
     postInfoForm.tag_names = tagList
 }
@@ -523,6 +524,7 @@ watch(
     () => postInfoForm.category_ids,
     () => {
         formRef.value?.validateField("category_ids")
+        console.log("category_ids", postInfoForm.category_ids)
     },
 )
 
@@ -609,7 +611,6 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                     delete req.pay_roles
                 }
 
-                // req.category_ids.map((i) => Number(i))
                 // 当 id 为空时，表示为新增文章
                 if (!postInfoForm.id) {
                     insertPostRequestAPI(req).then(async (res) => {
@@ -691,10 +692,7 @@ const getDataOnBeforeMount = async () => {
                     postInfoForm.post_expired_time = data.post_expired_time
                 }
 
-                // 更新 分类 角色付费管理，评论状态
-
-                selectedCategories.value = data.category_ids.map((i: number) => i.toString())
-
+                // 更新 角色付费管理，评论状态
                 postInfoForm.pay_roles.forEach((role) => {
                     const index = rolePaidList.findIndex((i) => i.name === role)
                     rolePaidList[index].status = true

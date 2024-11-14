@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-08 16:05:36
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-12 17:15:31
+ * @LastEditTime : 2024-11-14 16:34:25
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\hooks.ts
  * @Description  : 表单验证
  * @Blog         : https://jiaopengzi.com
@@ -35,8 +35,8 @@ interface FormValidationOptions {
         seo_description?: Ref<string | undefined> // SEO描述
         slug?: Ref<string | undefined> // 别名
         thumbnail?: Ref<string | undefined> // 缩略图
-        categories?: Ref<number[]> // 分类id
-        tags?: Ref<string[] | undefined> // 标签
+        category_ids?: Ref<number[]> // 分类id
+        tag_names?: Ref<string[] | undefined> // 标签
         pay_roles?: Ref<string[] | undefined> // 付费角色
         post_push_time?: Ref<PgSqlDateTime | undefined> // 发布时间
         post_expired_time?: Ref<PgSqlDateTime | undefined> // 过期时间

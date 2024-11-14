@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-08 14:47:37
+ * @LastEditTime : 2024-11-14 19:38:19
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格
  * @Blog         : https://jiaopengzi.com
@@ -21,9 +21,7 @@
             </el-button>
 
             <span v-if="isShowListOrGrid">
-                <span class="switch-item" v-for="item in switchItemList" :key="item.name">
-                    <SwitchGroup :switch-item="item" @update-status="updateStatus" />
-                </span>
+                <SwitchGroup :switch-items="switchItemList" @update-status="updateStatus" />
             </span>
         </div>
         <!-- 分类 -->
@@ -44,7 +42,7 @@
             stripe
             max-height="700px"
             @selection-change="handleSelectionChange"
-            style="width: 100%"
+            table-layout="auto"
         >
             <el-table-column type="selection" width="55" align="center" />
 
@@ -52,7 +50,7 @@
                 <el-table-column
                     v-if="col.isImg"
                     :key="`img-${index}`"
-                    :width="col.width"
+                    :min-width="col.width"
                     :align="col.align"
                 >
                     <template #header>
@@ -86,7 +84,7 @@
                     :key="`formatter-${index}`"
                     :label="col.label"
                     :sortable="col.sortable"
-                    :width="col.width"
+                    :min-width="col.width"
                     :align="col.align"
                 >
                     <template #header>
@@ -102,7 +100,7 @@
                     :prop="col.prop"
                     :label="col.label"
                     :sortable="col.sortable"
-                    :width="col.width"
+                    :min-width="col.width"
                     :align="col.align"
                 />
             </template>
@@ -296,10 +294,8 @@ const switchItemList: SwitchItem[] = reactive([
     },
 ])
 
-const updateStatus = (item: SwitchItem) => {
-    const index = switchItemList.findIndex((i) => i.name === item.name)
-    switchItemList[index].status = item.status
-    emit("is-show-list-or-grid", item.status)
+const updateStatus = (items: SwitchItem[]) => {
+    emit("is-show-list-or-grid", items[0].status)
 }
 
 // 处理宫格点击事件

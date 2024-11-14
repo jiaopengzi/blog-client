@@ -21,6 +21,7 @@ export interface SwitchItem {
     namePosition?: NamePosition
     label?: SwitchItemLabel
     color?: SwitchItemColor
+    minWidth?: string | number
 }
 
 // 自定义标签

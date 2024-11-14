@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:05:03
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-11 15:15:14
+ * @LastEditTime : 2024-11-14 21:00:59
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -27,8 +27,8 @@ export interface UpsertPostForm {
     seo_description: string // SEO描述
     slug: string // 别名
     thumbnail: string // 缩略图
-    categories: number[] // 分类id
-    tags: string[] // 标签
+    category_ids: number[] // 分类id
+    tag_names: string[] // 标签
     pay_roles: string[] // 付费角色
     post_push_time: PgSqlDateTime // 发布时间
     post_expired_time: PgSqlDateTime // 过期时间
@@ -50,8 +50,8 @@ export function createEmptyUpsertPostForm(): UpsertPostForm {
         seo_description: "",
         slug: "",
         thumbnail: "",
-        categories: [],
-        tags: [],
+        category_ids: [],
+        tag_names: [],
         pay_roles: [],
         post_push_time: {
             Time: null,

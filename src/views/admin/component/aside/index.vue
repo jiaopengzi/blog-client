@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:33:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-07 14:07:42
+ * @LastEditTime : 2024-11-14 19:40:07
  * @FilePath     : \blog-client\src\views\admin\component\aside\index.vue
  * @Description  : 左边菜单栏 
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,7 @@
 
 <template>
     <el-scrollbar>
-        <SwitchGroup :switch-item="isCollapseItem" @update-status="updateStatus" />
+        <SwitchGroup :switch-items="isCollapseItem" @update-status="updateStatus" />
         <el-menu
             :default-openeds="['post']"
             :collapse="isCollapse"
@@ -72,19 +72,21 @@ const savedIsCollapse = localStorage.getItem(LocalStorageKey.IsCollapse)
 const isCollapse = ref(savedIsCollapse !== null ? savedIsCollapse === "true" : false)
 
 // switch 开关
-const isCollapseItem: SwitchItem = {
-    name: "isCollapse",
-    status: isCollapse.value,
-    label: label,
-    color: color,
-}
+const isCollapseItem: SwitchItem[] = reactive([
+    {
+        name: "isCollapse",
+        status: isCollapse.value,
+        label: label,
+        color: color,
+    },
+])
 
 // 更新菜单折叠状态
-const updateStatus = (value: SwitchItem) => {
+const updateStatus = (items: SwitchItem[]) => {
     // 首选读取本地存储的状态 如果没有则使用默认状态
-    localStorage.setItem(LocalStorageKey.IsCollapse, value.status.toString())
-    isCollapse.value = value.status
-    emit("collapse-status", value.status)
+    localStorage.setItem(LocalStorageKey.IsCollapse, items[0].status.toString())
+    isCollapse.value = items[0].status
+    emit("collapse-status", items[0].status)
 }
 
 // 生成菜单项索引

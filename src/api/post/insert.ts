@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-12 11:46:36
+ * @LastEditTime : 2024-11-14 16:15:15
  * @FilePath     : \blog-client\src\api\post\insert.ts
  * @Description  : 插入文章
  * @Blog         : https://jiaopengzi.com
@@ -53,8 +53,8 @@ export interface InsertPostRequest {
     seo_description?: string // SEO描述
     slug?: string // 别名
     thumbnail?: string // 缩略图
-    categories: number[] // 分类id
-    tags?: string[] // 标签
+    category_ids: number[] // 分类id
+    tag_names?: string[] // 标签
     pay_roles?: string[] // 付费角色
     post_push_time?: PgSqlDateTime // 发布时间
     post_expired_time?: PgSqlDateTime // 过期时间
