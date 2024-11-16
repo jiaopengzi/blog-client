@@ -11,11 +11,11 @@
     "lib": [
       "es2023"
     ],
-    "module": "node16",
+    "module": "nodenext",
     "target": "es2022",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "moduleResolution": "node16"
+    "moduleResolution": "nodenext"
   }
 }
