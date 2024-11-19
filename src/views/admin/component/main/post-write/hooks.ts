@@ -35,7 +35,7 @@ interface FormValidationOptions {
         seo_description?: Ref<string | undefined> // SEO描述
         slug?: Ref<string | undefined> // 别名
         thumbnail?: Ref<string | undefined> // 缩略图
-        category_ids?: Ref<number[]> // 分类id
+        category_ids?: Ref<string[]> // 分类id
         tag_names?: Ref<string[] | undefined> // 标签
         pay_roles?: Ref<string[] | undefined> // 付费角色
         post_push_time?: Ref<PgSqlDateTime | undefined> // 发布时间

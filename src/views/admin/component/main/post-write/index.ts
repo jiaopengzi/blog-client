@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:05:03
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-14 21:00:59
+ * @LastEditTime : 2024-11-19 16:11:14
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -27,7 +27,7 @@ export interface UpsertPostForm {
     seo_description: string // SEO描述
     slug: string // 别名
     thumbnail: string // 缩略图
-    category_ids: number[] // 分类id
+    category_ids: string[] // 分类id
     tag_names: string[] // 标签
     pay_roles: string[] // 付费角色
     post_push_time: PgSqlDateTime // 发布时间

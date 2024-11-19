@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-14 21:25:33
+ * @LastEditTime : 2024-11-19 16:34:28
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -90,7 +90,7 @@
 
             <el-form-item label="文章分类管理" prop="category_ids">
                 <div class="category">
-                    <el-checkbox-group v-model="selectedCategories">
+                    <el-checkbox-group v-model="postInfoForm.category_ids">
                         <el-checkbox
                             class="category-item"
                             v-for="item in allCategories"
@@ -251,7 +251,6 @@ useResizeObserver(editorContainerRef, (entries) => {
 
 // 所有分类列表
 const allCategories = ref<PostCategory[]>([])
-const selectedCategories = ref<string[]>([])
 
 const showWarningCategory = () => {
     if (allCategories.value.length === 0) {
@@ -267,13 +266,6 @@ const getCategoryList = async () => {
         }
     })
 }
-
-watch(
-    () => selectedCategories.value,
-    () => {
-        postInfoForm.category_ids = selectedCategories.value.map((i) => Number(i))
-    },
-)
 
 // 更新标签列表
 const updateTagListIn = (tagList: string[]) => {
@@ -677,7 +669,6 @@ const getDataOnBeforeMount = async () => {
                 postInfoForm.thumbnail = data.thumbnail
                 postInfoForm.price = data.price / 100
                 postInfoForm.slug = data.slug
-                postInfoForm.category_ids = data.category_ids
                 postInfoForm.tag_names = data.tag_names
                 postInfoForm.pay_roles = data.pay_roles
                 postInfoForm.comment_status = data.comment_status
@@ -691,10 +682,13 @@ const getDataOnBeforeMount = async () => {
                     postInfoForm.post_expired_time = data.post_expired_time
                 }
 
-                // 更新 分类 角色付费管理，评论状态
+                // 历遍 data.categories 列表,取出 id 组成新数组
+                postInfoForm.category_ids = data.categories.map((item: any) => item.id.toString())
 
-                selectedCategories.value = data.category_ids.map((i: number) => i.toString())
+                // 历遍 data.tags 列表,取出 name 组成新数组
+                postInfoForm.tag_names = data.tags.map((item: any) => item.name)
 
+                // 更新 角色付费管理，评论状态
                 postInfoForm.pay_roles.forEach((role) => {
                     const index = rolePaidList.findIndex((i) => i.name === role)
                     rolePaidList[index].status = true
