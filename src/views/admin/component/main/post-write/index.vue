@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-19 16:34:28
+ * @LastEditTime : 2024-11-20 15:19:22
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -659,27 +659,32 @@ const getDataOnBeforeMount = async () => {
         await viewPostByIDRequestAPI(req).then((res) => {
             if (res.data.code === ResponseCode.PostViewByIDSuccess) {
                 const data = res.data.data
-                postInfoForm.post_title = data.post_title
-                // 更新编辑器内容
-                stateManager.updateState(data.post_content)
+                postInfoForm.id = data.post.id
 
-                postInfoForm.seo_title = data.seo_title
-                postInfoForm.seo_description = data.seo_description
-                postInfoForm.seo_keywords = data.seo_keywords
-                postInfoForm.thumbnail = data.thumbnail
-                postInfoForm.price = data.price / 100
-                postInfoForm.slug = data.slug
-                postInfoForm.tag_names = data.tag_names
-                postInfoForm.pay_roles = data.pay_roles
-                postInfoForm.comment_status = data.comment_status
-                postInfoForm.post_status = data.post_status
-                postInfoForm.post_password = data.post_password
+                postInfoForm.post_author = data.author_info.id
+
+                postInfoForm.post_title = data.post.post_title
+
+                // 更新编辑器内容
+                stateManager.updateState(data.post.post_content)
+
+                postInfoForm.seo_title = data.post.seo_title
+                postInfoForm.seo_description = data.post.seo_description
+                postInfoForm.seo_keywords = data.post.seo_keywords
+                postInfoForm.thumbnail = data.post.thumbnail
+                postInfoForm.price = data.post.price / 100
+                postInfoForm.slug = data.post.slug
+                postInfoForm.tag_names = data.post.tag_names
+                postInfoForm.pay_roles = data.post.pay_roles
+                postInfoForm.comment_status = data.post.comment_status
+                postInfoForm.post_status = data.post.post_status
+                postInfoForm.post_password = data.post.post_password
 
                 if (data.post_push_time) {
-                    postInfoForm.post_push_time = data.post_push_time
+                    postInfoForm.post_push_time = data.post.post_push_time
                 }
                 if (data.post_expired_time) {
-                    postInfoForm.post_expired_time = data.post_expired_time
+                    postInfoForm.post_expired_time = data.post.post_expired_time
                 }
 
                 // 历遍 data.categories 列表,取出 id 组成新数组
@@ -688,12 +693,16 @@ const getDataOnBeforeMount = async () => {
                 // 历遍 data.tags 列表,取出 name 组成新数组
                 postInfoForm.tag_names = data.tags.map((item: any) => item.name)
 
-                // 更新 角色付费管理，评论状态
-                postInfoForm.pay_roles.forEach((role) => {
-                    const index = rolePaidList.findIndex((i) => i.name === role)
-                    rolePaidList[index].status = true
-                })
+                // 更新角色付费管理
+                if (data.pay_roles) {
+                    data.pay_roles.forEach((role: string) => {
+                        const index = rolePaidList.findIndex((i) => i.name === role)
+                        rolePaidList[index].status = true
+                    })
+                    postInfoForm.pay_roles = data.pay_roles
+                }
 
+                // 更新评论状态
                 const commentItem = commentStatus.find((item) => item.name === "commentStatus")
                 if (commentItem) {
                     commentItem.status = postInfoForm.comment_status === CommentStatusCode.Open
