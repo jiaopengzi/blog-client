@@ -1,10 +1,10 @@
 /**
  * @Author       : jiaopengzi
- * @Date         : 2024-11-06 14:33:52
+ * @Date         : 2024-11-23 17:30:34
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-24 18:31:09
- * @FilePath     : \blog-client\src\api\postCategory\delete.ts
- * @Description  : 删除文章分类
+ * @LastEditTime : 2024-11-23 17:30:40
+ * @FilePath     : \blog-client\src\api\post\delete.ts
+ * @Description  : 删除文章
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
@@ -14,13 +14,13 @@ import { routerGroup } from "@/api/routerGroup"
 import type { AxiosPromise } from "axios"
 import { type Res } from "@/api/responseCode"
 
-export interface DeletePostCategoryRequest {
-    id_list: string[] // 分类ID列表
+export interface DeletePostRequest {
+    id_list: string[]
 }
 
-// 删除文章分类
-export function deletePostCategoryAPI(requestData: DeletePostCategoryRequest): AxiosPromise<Res> {
-    const urlStr = routerGroup + "/post-category/delete"
+// 删除文章
+export function deletePostAPI(requestData: DeletePostRequest): AxiosPromise<Res> {
+    const urlStr = routerGroup + "/post/delete"
     return request({
         url: urlStr,
         method: "post",

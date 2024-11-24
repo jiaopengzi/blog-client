@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 15:57:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-04 15:59:10
- * @FilePath     : \blog-client\src\api\post_tag\update.ts
+ * @LastEditTime : 2024-11-24 18:37:35
+ * @FilePath     : \blog-client\src\api\postTag\update.ts
  * @Description  : 更新文章标签
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
@@ -15,12 +15,12 @@ import type { AxiosPromise } from "axios"
 import { type Res } from "@/api/responseCode"
 
 export interface UpdatePostTagRequest {
-    id: number // 标签id
+    id: string // 标签id
     name: string // tag名称
     slug: string // 别名
     description?: string // 描述
     thumbnail?: string // 缩略图
-    order?: number // 排序
+    order?: string // 排序
 }
 
 // 更新文章标签

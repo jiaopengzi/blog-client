@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 16:09:16
+ * @LastEditTime : 2024-11-24 21:25:30
  * @FilePath     : \blog-client\src\views\admin\component\main\post-tag\index.vue
  * @Description  : 标签管理
  * @Blog         : https://jiaopengzi.com
@@ -162,7 +162,7 @@ const {
 
 // 需要编辑的用户ID
 const editData = reactive<EditForm>({
-    id: 0,
+    id: "",
     name: "",
     slug: "",
 })
@@ -170,7 +170,7 @@ const editData = reactive<EditForm>({
 const editRow = (index: number, row: TableData) => {
     console.log("04============", index, row)
     if ("id" in row) {
-        editData.id = Number(row.id)
+        editData.id = row.id.toString()
     }
     if ("name" in row) {
         editData.name = row.name
@@ -184,8 +184,8 @@ const editRow = (index: number, row: TableData) => {
     if ("img" in row) {
         editData.thumbnail = row.img?.url
     }
-    if ("order" in row && row.order !== 0) {
-        editData.order = Number(row.order) // 确保 order 是数字
+    if ("order" in row && row.order !== "") {
+        editData.order = row.order
     }
     toggleEditDialog()
 }

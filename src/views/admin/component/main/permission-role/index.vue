@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-15 15:09:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 10:23:30
+ * @LastEditTime : 2024-11-23 16:30:11
  * @FilePath     : \blog-client\src\views\admin\component\main\permission-role\index.vue
  * @Description  : 权限角色页面
  * @Blog         : https://jiaopengzi.com
@@ -19,7 +19,9 @@
                 更新权限
             </el-button>
         </div>
-        <el-table :data="permissionsData" class="permission-table">
+        <el-table :data="permissionsData" class="permission-table" table-layout="auto" stripe>
+            <!-- 交叉表第一列 权限名称 -->
+            <el-table-column prop="permissionIndex" label="序号" width="100"></el-table-column>
             <!-- 交叉表第一列 权限名称 -->
             <el-table-column
                 prop="permissionDescription"
@@ -28,7 +30,7 @@
             ></el-table-column>
 
             <!-- 循环生成角色列 -->
-            <el-table-column v-for="role in rolesList" :key="role.role_name" width="200">
+            <el-table-column v-for="role in rolesList" :key="role.role_name">
                 <template #header>
                     <div class="header-wrapper">
                         {{ role.description }}
@@ -461,12 +463,30 @@ const initPermissionTable = async (useCache: boolean = true) => {
     // 初始化权限数据,不然会出现权限数据重复
     permissionsData.value = []
 
+    // // 初始化权限数据
+    // for (const permission in PermissionNames) {
+    //     const rowData: PermissionRow = {
+    //         permissionName: permission as PermissionNames,
+    //         permissionDescription: getPermissionDescription(permission as PermissionNames),
+    //     } as PermissionRow // 初始化每行权限数据
+
+    //     rolesList.value.forEach((role: Role) => {
+    //         // 根据角色的权限名数组判断是否拥有该权限
+    //         rowData[role.role_name] = role.permission_names.includes(permission as PermissionNames)
+    //     })
+    //     permissionsData.value.push(rowData) // 将每行权限数据添加到权限数据数组中
+    // }
+
     // 初始化权限数据
-    for (const permission in PermissionNames) {
+    const permissionKeys = Object.keys(PermissionNames)
+    for (let i = 0; i < permissionKeys.length; i++) {
+        const permission = permissionKeys[i]
         const rowData: PermissionRow = {
+            permissionIndex: i + 1,
             permissionName: permission as PermissionNames,
             permissionDescription: getPermissionDescription(permission as PermissionNames),
         } as PermissionRow // 初始化每行权限数据
+
         rolesList.value.forEach((role: Role) => {
             // 根据角色的权限名数组判断是否拥有该权限
             rowData[role.role_name] = role.permission_names.includes(permission as PermissionNames)

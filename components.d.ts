@@ -12,6 +12,8 @@ declare module 'vue' {
     CommonAvatarInitials: typeof import('./src/components/common/avatar-initials/index.vue')['default']
     CommonAvatarUpload: typeof import('./src/components/common/avatar-upload/index.vue')['default']
     CommonBaseTable: typeof import('./src/components/common/base-table/index.vue')['default']
+    CommonBaseTableCustomCol: typeof import('./src/components/common/base-table/custom-col/index.vue')['default']
+    'CommonBaseTableIndex copy': typeof import('./src/components/common/base-table/index copy.vue')['default']
     CommonBindEmailDialog: typeof import('./src/components/common/bind-email-dialog/index.vue')['default']
     CommonCountdown: typeof import('./src/components/common/countdown/index.vue')['default']
     CommonIcons: typeof import('./src/components/common/icons/index.vue')['default']

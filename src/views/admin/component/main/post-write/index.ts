@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:05:03
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-19 16:11:14
+ * @LastEditTime : 2024-11-24 21:27:18
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,7 @@
 
 export { default } from "./index.vue"
 import { type PgSqlDateTime } from "@/api/common"
-import { PostStatusCode, CommentStatusCode } from "@/api/post/insert"
+import { PostStatusCode, CommentStatusCode } from "@/api/post/common"
 
 export interface UpsertPostForm {
     id: string // 文章ID
@@ -21,7 +21,7 @@ export interface UpsertPostForm {
     post_status: PostStatusCode // 文章状态 0 草稿 1 待审核 2 私密 3 定时发布 4 已发布 5 过期 6 回收站
     post_password: string // 文章密码
     comment_status: CommentStatusCode // 评论是否开启 0 关闭 1 开启
-    price: number // 价格
+    price: string // 价格
     seo_title: string // SEO标题
     seo_keywords: string // SEO关键词
     seo_description: string // SEO描述
@@ -44,7 +44,7 @@ export function createEmptyUpsertPostForm(): UpsertPostForm {
         post_status: PostStatusCode.Draft,
         post_password: "",
         comment_status: CommentStatusCode.Open,
-        price: 0,
+        price: "",
         seo_title: "",
         seo_keywords: "",
         seo_description: "",

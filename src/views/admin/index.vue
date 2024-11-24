@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-07 14:17:13
+ * @LastEditTime : 2024-11-23 16:42:18
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -171,7 +171,7 @@ onBeforeMount(() => {
             }
 
             .aside-no-collapse {
-                width: 300px;
+                width: 200px;
             }
 
             .aside-collapse {

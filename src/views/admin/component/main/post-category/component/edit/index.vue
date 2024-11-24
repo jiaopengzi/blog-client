@@ -104,13 +104,13 @@ const editFormRef = useTemplateRef<FormInstance>("editFormRef")
 
 // 表单数据
 const editForm = reactive<EditForm>({
-    id: 0,
+    id: "",
     name: "",
     slug: "", // 别名
     description: "", // 描述
     thumbnail: "", // 缩略图
-    order: 0, // 排序
-    parent: 0, // 父分类
+    order: "", // 排序
+    parent: "", // 父分类
 })
 
 const updateEditForm = (data: EditForm) => {
@@ -153,13 +153,13 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         await formEl.validate(async (valid) => {
             if (valid) {
                 const req: UpdatePostCategoryRequest = {
-                    id: editForm.id,
+                    id: editForm.id.toString(),
                     name: editForm.name,
                     slug: editForm.slug,
                     description: editForm.description,
                     thumbnail: editForm.thumbnail,
-                    order: Number(editForm.order),
-                    parent: Number(editForm.parent),
+                    order: editForm.order,
+                    parent: editForm.parent,
                 }
                 const { data } = await updatePostCategoryAPI(req)
 

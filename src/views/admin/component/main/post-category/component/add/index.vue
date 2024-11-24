@@ -130,8 +130,8 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                     slug: addForm.slug,
                     description: addForm.description,
                     thumbnail: addForm.thumbnail,
-                    order: Number(addForm.order),
-                    parent: Number(addForm.parent),
+                    order: addForm.order,
+                    parent: addForm.parent,
                 }
                 console.log("req:", req)
                 const { data } = await insertPostCategoryAPI(req)

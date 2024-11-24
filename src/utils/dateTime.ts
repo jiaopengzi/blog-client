@@ -2,22 +2,22 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 16:07:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-10 14:52:11
+ * @LastEditTime : 2024-11-24 18:15:26
  * @FilePath     : \blog-client\src\utils\dateTime.ts
- * @Description  : UTC 转 北京时间
+ * @Description  : 格式化时间
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
 /**
- * @description: 将UTC时间转换为北京时间
- * @param utcTimestamp utc 时间戳
+ * @description: 格式化时间
+ * @param utcTimestamp utc 时间戳字符串或 Date 对象
  * @param timeZone 时区 默认 Asia/Shanghai
  * @param formatStr 格式化字符串 默认 YYYY-MM-DD HH:mm:ss
  * @return
  */
-export function convertToBeijingTime(
-    Timestamp: string,
+export function formatTime(
+    Timestamp: string | Date,
     timeZone: string = "Asia/Shanghai",
     formatStr: string = "YYYY-MM-DD HH:mm:ss",
     addHours = 0, // 默认不增加小时

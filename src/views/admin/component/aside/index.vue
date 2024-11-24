@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:33:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-14 19:40:07
+ * @LastEditTime : 2024-11-23 16:40:43
  * @FilePath     : \blog-client\src\views\admin\component\aside\index.vue
  * @Description  : 左边菜单栏 
  * @Blog         : https://jiaopengzi.com
@@ -123,7 +123,7 @@ const handleClose = (index: string, keyPath: string[]) => {
 
 // 参考官方文档：https://element-plus.org/zh-CN/component/menu.html#collapse-%E6%8A%98%E5%8F%A0%E9%9D%A2%E6%9D%BF
 .el-menu-vertical:not(.el-menu--collapse) {
-    width: 300px;
+    width: 200px;
     height: 100%;
 }
 

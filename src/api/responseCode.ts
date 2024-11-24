@@ -67,10 +67,12 @@ export enum ResponseCode {
 
     // 文章标签相关
     PostInsertSuccess = 2000, // 插入文章标签成功
+    PostDeleteSuccess = 2001, // 插入文章标签成功
     PostUpdateSuccess = 2002, // 更新文章标签成功
     PostCheckSlugNoExist = 2005, // 别名名称不存在
     PostCheckSlugNoExistExcludingID = 2007, // 别名名称不存在，排除指定ID
     PostViewByIDSuccess = 2008, // 根据ID查看文章成功
+    PostViewByAdminSuccess = 2009, // 管理员查看文章成功
 
     // 文章标签相关
     PostTagInsertSuccess = 2100, // 插入文章标签成功

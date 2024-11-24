@@ -12,6 +12,7 @@
 export { default } from "./index.vue"
 
 import Dashboard from "./component/main/dashboard"
+import PostAll from "./component/main/post-all"
 import PostWrite from "./component/main/post-write"
 import PostTag from "./component/main/post-tag"
 import PostCategory from "./component/main/post-category"
@@ -23,6 +24,7 @@ import LoginLog from "./component/main/login-log"
 // 将组件存放在一个对象内
 export const components = {
     Dashboard,
+    PostAll,
     PostWrite,
     Media,
     PermissionRole,

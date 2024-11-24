@@ -15,7 +15,7 @@ import type { AxiosPromise } from "axios"
 import type { DataWithImg, Pagination, PaginationRequest } from "@/components/common"
 import { ResponseCode } from "@/api/responseCode"
 import { ImgFit } from "@/components/common/index"
-import { convertToBeijingTime } from "@/utils/dateTime"
+import { formatTime } from "@/utils/dateTime"
 import { type PgSqlDateTime } from "@/api/common"
 
 export interface GetUsersRequest extends PaginationRequest {
@@ -26,7 +26,7 @@ export interface GetUsersRequest extends PaginationRequest {
 export interface GetUsersResponse {
     code: number
     msg: string
-    data: Pagination<User> // 根据实际返回的数据结构替换为更具体的类型
+    data: Pagination<User>
 }
 
 // 获取用户信息 api 函数
@@ -83,7 +83,7 @@ export function formatUser(
 ): User {
     const formattedUser: User = {
         ...user,
-        created_at: convertToBeijingTime(created_at), // 使用 convertToBeijingTime 进行格式化
+        created_at: formatTime(created_at), // 使用 formatTime 进行格式化
     }
 
     // 如果 user_avatar 不为空，添加 img 属性

@@ -21,7 +21,11 @@ export interface Role {
 }
 
 // 定义权限行接口，权限名+角色名对应的权限状态
-export type PermissionRow = { permissionName: PermissionNames; permissionDescription: string } & {
+export type PermissionRow = {
+    permissionIndex: number
+    permissionName: PermissionNames
+    permissionDescription: string
+} & {
     [roleName: string]: boolean
 }
 

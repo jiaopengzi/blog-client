@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-20 15:19:22
+ * @LastEditTime : 2024-11-24 18:40:36
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -199,15 +199,16 @@ import { AdminSideMenu } from "@/views/admin/component/aside"
 import { type ElContainer } from "element-plus"
 import { useUserStore } from "@/stores/user"
 import { viewListPostCategoryAPI, type PostCategory } from "@/api/postCategory/view"
+import { type PostTag } from "@/api/postTag/view"
 import { ResponseCode, LocalStorageKey } from "@/api/responseCode"
 import { getRolesList } from "@/utils/permissionRole"
+import { insertPostRequestAPI } from "@/api/post/insert"
 import {
-    insertPostRequestAPI,
     PostStatusCode,
     CommentStatusCode,
     gegPostStatusOptions,
-    type InsertPostRequest,
-} from "@/api/post/insert"
+    type UpsertPostRequest,
+} from "@/api/post/common"
 
 import { viewPostByIDRequestAPI, type ViewPostByIDRequest } from "@/api/post/viewByID"
 
@@ -439,7 +440,7 @@ const {
  * @description: 表单校验规则
  * @return  FormRules<EditMediaForm> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
  */
-const rules = reactive<FormRules<InsertPostRequest>>({
+const rules = reactive<FormRules<UpsertPostRequest>>({
     post_title: [
         { required: true, message: "标题不能为空", trigger: "blur" },
         { validator: checkPostTitleValidator, trigger: "blur" },
@@ -533,7 +534,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                 console.log("valid===============>", valid)
 
                 // 将 postInfoForm 解析到 InsertPostRequest
-                const req = {} as InsertPostRequest
+                const req = {} as UpsertPostRequest
                 Object.assign(req, postInfoForm)
                 // 更新作者ID
                 req.post_author = userStore.data.user.id.toString()
@@ -548,7 +549,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
                 // 价格需要乘以 100 以适应后端整数
                 if (req.price) {
-                    req.price = req.price * 100
+                    req.price = (Number(req.price) * 100).toString()
                 }
 
                 // 如果有时间则设置为有效
@@ -576,7 +577,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                 if (req.post_password === "") {
                     delete req.post_password
                 }
-                if (req.price === 0) {
+                if (req.price === "") {
                     delete req.price
                 }
                 if (req.seo_title === "") {
@@ -659,32 +660,32 @@ const getDataOnBeforeMount = async () => {
         await viewPostByIDRequestAPI(req).then((res) => {
             if (res.data.code === ResponseCode.PostViewByIDSuccess) {
                 const data = res.data.data
-                postInfoForm.id = data.post.id
+                postInfoForm.id = data.id
 
                 postInfoForm.post_author = data.author_info.id
 
-                postInfoForm.post_title = data.post.post_title
+                postInfoForm.post_title = data.post_title
 
                 // 更新编辑器内容
-                stateManager.updateState(data.post.post_content)
+                stateManager.updateState(data.post_content)
 
-                postInfoForm.seo_title = data.post.seo_title
-                postInfoForm.seo_description = data.post.seo_description
-                postInfoForm.seo_keywords = data.post.seo_keywords
-                postInfoForm.thumbnail = data.post.thumbnail
-                postInfoForm.price = data.post.price / 100
-                postInfoForm.slug = data.post.slug
-                postInfoForm.tag_names = data.post.tag_names
-                postInfoForm.pay_roles = data.post.pay_roles
-                postInfoForm.comment_status = data.post.comment_status
-                postInfoForm.post_status = data.post.post_status
-                postInfoForm.post_password = data.post.post_password
+                postInfoForm.seo_title = data.seo_title
+                postInfoForm.seo_description = data.seo_description
+                postInfoForm.seo_keywords = data.seo_keywords
+                postInfoForm.thumbnail = data.thumbnail
+                postInfoForm.price = (data.price / 100).toString()
+                postInfoForm.slug = data.slug
+                postInfoForm.tag_names = data.tags.map((item: PostTag) => item.name)
+                postInfoForm.pay_roles = data.pay_roles
+                postInfoForm.comment_status = data.comment_status
+                postInfoForm.post_status = data.post_status
+                postInfoForm.post_password = data.post_password
 
                 if (data.post_push_time) {
-                    postInfoForm.post_push_time = data.post.post_push_time
+                    postInfoForm.post_push_time = data.post_push_time
                 }
                 if (data.post_expired_time) {
-                    postInfoForm.post_expired_time = data.post.post_expired_time
+                    postInfoForm.post_expired_time = data.post_expired_time
                 }
 
                 // 历遍 data.categories 列表,取出 id 组成新数组

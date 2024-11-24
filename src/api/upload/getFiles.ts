@@ -15,7 +15,7 @@ import type { AxiosPromise } from "axios"
 import type { DataWithImg, Pagination, PaginationRequest } from "@/components/common"
 import { ResponseCode } from "@/api/responseCode"
 import { ImgFit } from "@/components/common"
-import { convertToBeijingTime } from "@/utils/dateTime"
+import { formatTime } from "@/utils/dateTime"
 import { IconKeys } from "@/components/common/icons"
 
 export interface GetMediaFilesRequest extends PaginationRequest {
@@ -26,7 +26,7 @@ export interface GetMediaFilesRequest extends PaginationRequest {
 export interface GetMediaFilesResponse {
     code: number
     msg: string
-    data: Pagination<MediaFile> // 根据实际返回的数据结构替换为更具体的类型
+    data: Pagination<MediaFile>
 }
 
 // 获取用户信息 api 函数
@@ -95,7 +95,7 @@ export function formatMediaFile(
 ): MediaFile {
     const formattedMediaFile: MediaFile = {
         ...MediaFile,
-        created_at: convertToBeijingTime(created_at), // 使用 convertToBeijingTime 进行格式化
+        created_at: formatTime(created_at), // 使用 formatTime 进行格式化
     }
 
     // 如果 thumbnail 不为空，添加 img 属性

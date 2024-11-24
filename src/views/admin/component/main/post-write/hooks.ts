@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-08 16:05:36
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-14 16:34:25
+ * @LastEditTime : 2024-11-24 21:26:00
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\hooks.ts
  * @Description  : 表单验证
  * @Blog         : https://jiaopengzi.com
@@ -17,7 +17,7 @@ import {
 } from "@/api/post/checkPostSlugExcludingID"
 import { ResponseCode } from "@/api/responseCode"
 import { type PgSqlDateTime } from "@/api/common"
-import { PostStatusCode, CommentStatusCode } from "@/api/post/insert"
+import { PostStatusCode, CommentStatusCode } from "@/api/post/common"
 
 // 表单验证选项
 interface FormValidationOptions {
@@ -29,7 +29,7 @@ interface FormValidationOptions {
         post_status?: Ref<PostStatusCode> // 文章状态 0 草稿 1 待审核 2 私密 3 定时发布 4 已发布 5 过期 6 回收站
         post_password?: Ref<string | undefined> // 文章密码
         comment_status?: Ref<CommentStatusCode> // 评论是否开启 0 关闭 1 开启
-        price?: Ref<number | undefined> // 价格
+        price?: Ref<string | undefined> // 价格
         seo_title?: Ref<string | undefined> // SEO标题
         seo_keywords?: Ref<string | undefined> // SEO关键词
         seo_description?: Ref<string | undefined> // SEO描述

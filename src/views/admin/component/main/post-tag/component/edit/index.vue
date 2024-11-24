@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 15:22:52
+ * @LastEditTime : 2024-11-24 21:22:29
  * @FilePath     : \blog-client\src\views\admin\component\main\post-tag\component\edit\index.vue
  * @Description  : 编辑标签
  * @Blog         : https://jiaopengzi.com
@@ -96,12 +96,12 @@ const editFormRef = useTemplateRef<FormInstance>("editFormRef")
 
 // 表单数据
 const editForm = reactive<EditForm>({
-    id: 0,
+    id: "",
     name: "",
     slug: "", // 别名
     description: "", // 描述
     thumbnail: "", // 缩略图
-    order: 0, // 排序
+    order: "", // 排序
 })
 
 const updateEditForm = (data: EditForm) => {
@@ -147,7 +147,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                     slug: editForm.slug,
                     description: editForm.description,
                     thumbnail: editForm.thumbnail,
-                    order: Number(editForm.order),
+                    order: editForm.order,
                 }
                 const { data } = await updatePostTagAPI(req)
 

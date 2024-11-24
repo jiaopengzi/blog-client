@@ -19,8 +19,8 @@ export interface InsertPostCategoryRequest {
     slug: string // 别名
     description?: string // 描述
     thumbnail?: string // 缩略图
-    order?: number // 排序
-    parent?: number // 父级分类
+    order?: string // 排序
+    parent?: string // 父级分类
 }
 
 // 插入文章标签

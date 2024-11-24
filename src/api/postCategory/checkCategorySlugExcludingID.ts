@@ -15,7 +15,7 @@ import type { AxiosPromise } from "axios"
 import { type Res } from "@/api/responseCode"
 
 export interface CheckCategorySlugExcludingIDRequest {
-    excluding_id: number // 不包含的ID
+    excluding_id: string // 不包含的ID
     slug: string // category 别名
 }
 

@@ -122,7 +122,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                     slug: addForm.slug,
                     description: addForm.description,
                     thumbnail: addForm.thumbnail,
-                    order: Number(addForm.order),
+                    order: addForm.order,
                 }
                 console.log("req:", req)
                 const { data } = await insertPostTagAPI(req)

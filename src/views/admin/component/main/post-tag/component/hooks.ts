@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-05 10:11:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-05 16:12:41
+ * @LastEditTime : 2024-11-24 21:21:27
  * @FilePath     : \blog-client\src\views\admin\component\main\post-tag\component\hooks.ts
  * @Description  : 表单验证
  * @Blog         : https://jiaopengzi.com
@@ -25,12 +25,12 @@ import { ResponseCode } from "@/api/responseCode"
 // 表单验证选项
 interface FormValidationOptions {
     form: {
-        id?: Ref<number>
+        id?: Ref<string>
         name?: Ref<string>
         slug?: Ref<string>
         description?: Ref<string | undefined>
         thumbnail?: Ref<string | undefined>
-        order?: Ref<number | undefined>
+        order?: Ref<string | undefined>
     }
 }
 

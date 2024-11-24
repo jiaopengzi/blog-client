@@ -21,7 +21,7 @@ import type { EditUserInfoRequest } from "@/api/user/editUserInfo"
 import { editUserInfoAPI } from "@/api/user/editUserInfo"
 import { ShowMsgTip } from "@/utils/message"
 import type { EditForm } from "@/views/user-info/component/info"
-import { convertToBeijingTime } from "@/utils/dateTime"
+import { formatTime } from "@/utils/dateTime"
 import { useFormValidation } from "@/components/hooks/useFormValidation"
 import { getUserMetaValue } from "@/utils/metaInfo"
 import { RegexPatterns } from "@/utils/regexPatterns"
@@ -69,7 +69,7 @@ export function useInfo(): UseInfoReturnType {
         userNameDisabled.value = userData.value.user.id.toString() !== userData.value.user.user_name
     }
 
-    const formatRegisterTime = convertToBeijingTime(userData.value.user.created_at)
+    const formatRegisterTime = formatTime(userData.value.user.created_at)
 
     // 表单数据
     const editForm = reactive<EditForm>({

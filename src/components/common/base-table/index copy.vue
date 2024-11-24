@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-24 17:16:53
+ * @LastEditTime : 2024-11-24 16:10:49
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格
  * @Blog         : https://jiaopengzi.com
@@ -24,10 +24,8 @@
                 <SwitchGroup :switch-items="switchItemList" @update-status="updateStatus" />
             </span>
         </div>
-
         <!-- 分类 -->
         <slot name="category"></slot>
-
         <!-- 搜索 -->
         <el-input
             v-if="isShowSearch"
@@ -37,7 +35,6 @@
             placeholder="关键字搜索"
         />
 
-        <!-- 表格内容 -->
         <el-table
             v-show="showListOrGridStatus"
             ref="tableRef"
@@ -50,7 +47,7 @@
             <el-table-column type="selection" width="55" align="center" />
 
             <template v-for="(col, index) in tableColumn">
-                <!-- 图片 -->
+                <!-- 1、是否为图片 -->
                 <el-table-column
                     v-if="col.isImg"
                     :key="`img-${index}`"
@@ -65,7 +62,7 @@
                             <img
                                 v-if="scope.row.img?.url"
                                 class="thumbnail-img"
-                                :src="scope.row.img?.url"
+                                :src="scope.row.img.url"
                                 :style="
                                     imgStyle(
                                         scope.row.img?.width,
@@ -84,37 +81,68 @@
                     </template>
                 </el-table-column>
 
-                <!-- 分类信息 -->
-                <CustomCol
+                <!-- 2、是否为分类信息 -->
+                <el-table-column
                     v-else-if="col.isCategories"
-                    :col="col"
-                    :index="index"
-                    @click-item="handleCategoryClick"
-                />
+                    :key="`category-${index}`"
+                    :min-width="col.width"
+                    :align="col.align"
+                >
+                    <template #header>
+                        <span>{{ col.label }}</span>
+                    </template>
+                    <template #default="scope">
+                        <el-scrollbar max-height="120px">
+                            <TagItem
+                                v-for="item in scope.row.categories"
+                                :tag-data="item"
+                                :key="item.id"
+                                @click="handleCategoryClick(item)"
+                            />
+                        </el-scrollbar>
+                    </template>
+                </el-table-column>
 
-                <!-- 标签信息 -->
-                <CustomCol
+                <!-- 3、是否为标签信息 -->
+                <el-table-column
                     v-else-if="col.isTags"
-                    :col="col"
-                    :index="index"
-                    @click-item="handleTagClick"
-                />
+                    :key="`tag-${index}`"
+                    :min-width="col.width"
+                    :align="col.align"
+                >
+                    <template #header>
+                        <span>{{ col.label }}</span>
+                    </template>
+                    <template #default="scope">
+                        <el-scrollbar max-height="120px">
+                            <TagItem
+                                v-for="item in scope.row.tags"
+                                :tag-data="item"
+                                :key="item.id"
+                                @click="handleTagClick(item)"
+                            />
+                        </el-scrollbar>
+                    </template>
+                </el-table-column>
 
-                <!-- 标题 -->
-                <CustomCol v-else-if="col.isHeading" :col="col" :index="index" />
+                <!-- 4、是否为格式化文本显示 -->
+                <el-table-column
+                    v-else-if="col.formatter"
+                    :key="`formatter-${index}`"
+                    :label="col.label"
+                    :sortable="col.sortable"
+                    :min-width="col.width"
+                    :align="col.align"
+                >
+                    <template #header>
+                        <span>{{ col.label }}</span>
+                    </template>
+                    <template #default="scope">
+                        <span>{{ col.formatter(scope.row) }}</span>
+                    </template>
+                </el-table-column>
 
-                <!-- 作者 -->
-                <CustomCol
-                    v-else-if="col.isAuthor"
-                    :col="col"
-                    :index="index"
-                    @click-author="handleAuthorClick"
-                />
-
-                <!-- 格式化文本 -->
-                <CustomCol v-else-if="col.formatter" :col="col" :index="index" />
-
-                <!-- 不需要处理，显示原值 -->
+                <!-- 5、不需要处理，显示原值 -->
                 <el-table-column
                     v-else
                     :key="col.prop"
@@ -218,7 +246,6 @@
         </template>
         <slot name="add-item"></slot>
     </el-dialog>
-
     <!-- 弹窗 edit -->
     <el-dialog
         v-model="editItemDialogVisibleStatus"
@@ -242,8 +269,8 @@ import { deleteConfirmCommon } from "@/utils/confirm"
 import { imgStyle, iconStyle } from "@/utils/style"
 import type { SwitchItem, SwitchItemLabel, SwitchItemColor } from "@/components/common/switch-group"
 import SwitchGroup from "@/components/common/switch-group"
-import type { PostTag } from "@/api/postTag/view"
-import type { User } from "@/api/user/getUsers"
+import { type PostTag } from "@/api/postTag/view"
+import TagItem from "@/components/common/tag-item"
 import CustomCol from "./custom-col"
 
 defineOptions({ name: "BaseTable" })
@@ -292,7 +319,6 @@ const emit = defineEmits<{
     (event: "is-show-list-or-grid", value: boolean): void // 是否显示列表或宫格
     (event: "click-category", tagItemData: PostTag): void // 点击分类
     (event: "click-tag", tagItemData: PostTag): void // 点击标签
-    (event: "click-author", author: User): void // 点击作者
 }>()
 
 const tableRef = useTemplateRef<InstanceType<typeof ElTable>>("tableRef") //表格实例
@@ -396,6 +422,7 @@ watch(
     search,
     (newVal) => {
         emit("update-search", newVal)
+        console.log("search====子组件:", newVal)
     },
     { immediate: false },
 ) // 不立即执行
@@ -414,11 +441,6 @@ const handleCategoryClick = (tagItemData: PostTag) => {
 // 处理标签点击
 const handleTagClick = (tagItemData: PostTag) => {
     emit("click-tag", tagItemData)
-}
-
-// 处理作者点击
-const handleAuthorClick = (author: User) => {
-    emit("click-author", author)
 }
 
 // // 处理单个删除
@@ -572,9 +594,5 @@ img {
     margin: 4px auto;
     border-radius: 4px;
     // box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);     // 阴影
-}
-
-:deep(h4) {
-    font-weight: 700;
 }
 </style>

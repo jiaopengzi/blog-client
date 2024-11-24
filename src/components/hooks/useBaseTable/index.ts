@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 08:57:02
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 18:26:24
+ * @LastEditTime : 2024-11-24 18:24:15
  * @FilePath     : \blog-client\src\components\hooks\useBaseTable\index.ts
  * @Description  : 基础表格钩子
  * @Blog         : https://jiaopengzi.com
@@ -178,7 +178,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
 
     const deleteRows = async (rows: TableData[]) => {
         // 将 rows 中的id 组成新的 list
-        const ids = rows.flatMap((item) => ("id" in item ? Number(item.id) : []))
+        const ids = rows.flatMap((item) => ("id" in item ? item.id.toString() : []))
 
         const deleteUserRequest = { id_list: ids } as Q
 

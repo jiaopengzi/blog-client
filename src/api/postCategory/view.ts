@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:33:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-09 15:15:26
+ * @LastEditTime : 2024-11-23 15:33:04
  * @FilePath     : \blog-client\src\api\postCategory\view.ts
  * @Description  : 查看文章分类
  * @Blog         : https://jiaopengzi.com
@@ -19,25 +19,25 @@ export interface ViewPostCategoryRequest extends PaginationRequest {}
 
 // 每行数据类型
 export interface PostCategory extends DataWithImg {
-    id: number // 标签id
+    id: string // 标签id
     created_at: string // 创建时间
     name: string // tag名称
     description: string // 描述
     slug: string // 别名
     thumbnail: string // 缩略图
-    order: number // 排序
-    post_count: number // 文章数量
-    parent: number // 父级分类
+    order: string // 排序
+    post_count: string // 文章数量
+    parent: string // 父级分类
 }
 
 // 文章分类
 export interface ViewPostCategoryResponse extends Res {
-    data: Pagination<PostCategory> // 根据实际返回的数据结构替换为更具体的类型
+    data: Pagination<PostCategory>
 }
 
 // 查看文章分类
 export interface ViewListPostCategoryResponse extends Res {
-    data: PostCategory[] // 根据实际返回的数据结构替换为更具体的类型
+    data: PostCategory[]
 }
 
 // 查看文章标签

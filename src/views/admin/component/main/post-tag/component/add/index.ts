@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 15:16:53
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-04 16:25:48
+ * @LastEditTime : 2024-11-24 21:21:13
  * @FilePath     : \blog-client\src\views\admin\component\main\post-tag\component\add\index.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -15,5 +15,5 @@ export interface AddForm {
     slug: string // 别名
     description?: string // 描述
     thumbnail?: string // 缩略图
-    order?: number // 排序
+    order?: string // 排序
 }

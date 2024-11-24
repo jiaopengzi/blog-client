@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-04 14:44:00
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-21 11:23:44
+ * @LastEditTime : 2024-11-23 15:38:42
  * @FilePath     : \blog-client\src\api\user\getUserInfo.ts
  * @Description  : 获取用户信息
  * @Blog         : https://jiaopengzi.com
@@ -16,7 +16,7 @@ import type { AxiosPromise } from "axios"
 export interface GetUserInfoResponse {
     code: number
     msg: string
-    data: UserInfo // 根据实际返回的数据结构替换为更具体的类型
+    data: UserInfo
 }
 
 // 获取用户信息
@@ -29,19 +29,22 @@ export function getUserInfoAPI(): AxiosPromise<GetUserInfoResponse> {
 }
 
 // 用户信息
+export interface User {
+    id: string
+    created_at: string
+    updated_at: string
+    user_name: string
+    user_display_name: string
+    user_email: string
+    user_avatar: string
+    disable_expires_at: string
+    post: number
+    role: string
+}
+
+// 用户信息
 export interface UserInfo {
-    user: {
-        id: number
-        created_at: string
-        updated_at: string
-        user_avatar: string
-        user_display_name: string
-        user_email: string
-        user_name: string
-        disable_expires_at: string
-        post: number
-        role: string
-    }
+    user: User
     user_meta: [
         {
             // id: number
@@ -96,7 +99,7 @@ export interface UserInfo {
 export function emptyUserInfo(): UserInfo {
     return {
         user: {
-            id: 0,
+            id: "",
             created_at: "",
             updated_at: "",
             user_avatar: "",

@@ -19,7 +19,7 @@ export interface InsertPostTagRequest {
     slug: string // 别名
     description?: string // 描述
     thumbnail?: string // 缩略图
-    order?: number // 排序
+    order?: string // 排序
 }
 
 // 插入文章标签

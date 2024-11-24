@@ -93,7 +93,7 @@ import { paginationRouterPush, PaginationQueryKey } from "@/router/utils"
 import { deleteUserAPI, type DeleteUserRequest } from "@/api/user/deleteUser"
 import { ShowMsgTip } from "@/utils/message"
 import { type EditUserByAdminForm } from "@/views/admin/component/main/user-view/component/edit-user"
-import { convertToBeijingTime } from "@/utils/dateTime"
+import { formatTime } from "@/utils/dateTime"
 import { useGetData } from "@/components/hooks/useGetData"
 
 import BaseTable from "@/components/common/base-table"
@@ -213,7 +213,7 @@ const getDisableExpiresTime = (row: TableData) => {
             if (disableExpiresAt < now) {
                 return "未禁用"
             }
-            return convertToBeijingTime(row.disable_expires_at.Time.toString())
+            return formatTime(row.disable_expires_at.Time.toString())
         }
     }
 }

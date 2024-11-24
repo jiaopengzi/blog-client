@@ -14,7 +14,7 @@ import { routerGroup } from "@/api/routerGroup"
 import type { AxiosPromise } from "axios"
 import type { DataWithImg, Pagination } from "@/components/common"
 import { ResponseCode } from "@/api/responseCode"
-import { convertToBeijingTime } from "@/utils/dateTime"
+import { formatTime } from "@/utils/dateTime"
 import { parsePlatform } from "@/utils/ipPlatform"
 
 export interface GetLoginLogsRequest {
@@ -66,7 +66,7 @@ export interface LoginLog extends DataWithImg {
 export function formatUserLoginLog({ platform, created_at, ...loginLog }: any): LoginLog {
     const formattedLoginLog: LoginLog = {
         ...loginLog,
-        created_at: convertToBeijingTime(created_at), // 使用 convertToBeijingTime 进行格式化
+        created_at: formatTime(created_at), // 使用 formatTime 进行格式化
     }
 
     // 如果 user_avatar 不为空，添加 img 属性
