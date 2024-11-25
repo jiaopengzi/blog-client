@@ -65,7 +65,7 @@ import { ResponseCode } from "@/api/responseCode"
 import BaseTable from "@/components/common/base-table"
 import AddTag from "./component/add"
 import EditTag from "./component/edit"
-import { type EditForm } from "./component/edit"
+import { type ViewForm } from "./component/view"
 import { useGetData } from "@/components/hooks/useGetData"
 import { type DeletePostCategoryRequest, deletePostCategoryAPI } from "@/api/postCategory/delete"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
@@ -168,7 +168,7 @@ const {
 )
 
 // 需要编辑的用户ID
-const editData = reactive<EditForm>({
+const editData = reactive<ViewForm>({
     id: "",
     name: "",
     slug: "",

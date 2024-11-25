@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:47:08
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 14:47:31
+ * @LastEditTime : 2024-11-25 10:38:45
  * @FilePath     : \blog-client\src\views\admin\component\main\post-category\component\add\index.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -10,12 +10,3 @@
  */
 
 export { default } from "./index.vue"
-
-export interface AddForm {
-    name: string // tag名称
-    slug: string // 别名
-    description?: string // 描述
-    thumbnail?: string // 缩略图
-    order?: string // 排序
-    parent?: string // 父级分类
-}

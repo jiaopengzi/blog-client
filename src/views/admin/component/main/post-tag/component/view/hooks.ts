@@ -2,14 +2,16 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-05 10:11:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-24 21:21:27
- * @FilePath     : \blog-client\src\views\admin\component\main\post-tag\component\hooks.ts
+ * @LastEditTime : 2024-11-25 11:06:02
+ * @FilePath     : \blog-client\src\views\admin\component\main\post-tag\component\view\hooks.ts
  * @Description  : 表单验证
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { type Ref } from "vue"
+import { type Ref, reactive } from "vue"
+import type { FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
+import type { ViewForm } from "./index"
 import { type CheckTagNameRequest, checkTagNameAPI } from "@/api/postTag/checkTagName"
 import {
     type CheckTagNameExcludingIDRequest,
@@ -25,7 +27,7 @@ import { ResponseCode } from "@/api/responseCode"
 // 表单验证选项
 interface FormValidationOptions {
     form: {
-        id?: Ref<string>
+        id?: Ref<string | undefined>
         name?: Ref<string>
         slug?: Ref<string>
         description?: Ref<string | undefined>
@@ -35,7 +37,10 @@ interface FormValidationOptions {
 }
 
 // 表单验证
-export function useFormValidation(options: FormValidationOptions) {
+export function useFormValidation(options: FormValidationOptions): {
+    addRules: FormRules<ViewForm>
+    editRules: FormRules<ViewForm>
+} {
     const { form } = options
 
     // 检查标签名称是否可用
@@ -200,10 +205,39 @@ export function useFormValidation(options: FormValidationOptions) {
         })
     }
 
+    const addRules = reactive<FormRules<ViewForm>>({
+        name: [
+            { required: true, message: "请输入标签名称", trigger: "blur" },
+            { validator: checkTagNameValidator, trigger: "blur" },
+        ],
+        slug: [
+            { required: true, message: "请输入别名", trigger: "blur" },
+            { validator: checkTagSlugValidator, trigger: "blur" },
+        ],
+        description: [{ message: "请输入标签描述信息", trigger: "blur" }],
+        thumbnail: [{ message: "请输入标签的图片URL", trigger: "blur" }],
+    })
+
+    /**
+     * @description: 表单校验规则
+     * @return  FormRules<EditMediaForm> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
+     */
+    const editRules = reactive<FormRules<ViewForm>>({
+        id: [{ required: true, message: "id 不能为空", trigger: "blur" }],
+        name: [
+            { required: true, message: "请输入标签名称", trigger: "blur" },
+            { validator: checkTagNameExcludingIDValidator, trigger: "blur" },
+        ],
+        slug: [
+            { required: true, message: "请输入别名", trigger: "blur" },
+            { validator: checkTagSlugExcludingIDValidator, trigger: "blur" },
+        ],
+        description: [{ message: "请输入标签描述信息", trigger: "blur" }],
+        thumbnail: [{ message: "请输入标签的图片URL", trigger: "blur" }],
+    })
+
     return {
-        checkTagNameValidator,
-        checkTagSlugValidator,
-        checkTagNameExcludingIDValidator,
-        checkTagSlugExcludingIDValidator,
+        addRules,
+        editRules,
     }
 }

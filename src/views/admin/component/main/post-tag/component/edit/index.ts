@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 14:54:49
+ * @LastEditTime : 2024-11-25 11:19:23
  * @FilePath     : \blog-client\src\views\admin\component\main\post-tag\component\edit\index.ts
  * @Description  : 编辑标签
  * @Blog         : https://jiaopengzi.com
@@ -10,12 +10,3 @@
  */
 
 export { default } from "./index.vue"
-
-export interface EditForm {
-    id: string // ID
-    name: string // tag名称
-    slug: string // 别名
-    description?: string // 描述
-    thumbnail?: string // 缩略图
-    order?: string // 排序
-}
