@@ -80,12 +80,12 @@ export interface PostRes extends DataWithImg {
     id: string // 标签id
     created_at: string // 创建时间
     updated_at: string // 更新时间
-    price: number // 价格
-    comment_count: number // 评论数量
-    view_count: number // 查看数量
-    like_count: number // 喜欢数量
-    collect_count: number // 收藏数量
-    words_count: number // 字数
+    price: string // 价格
+    comment_count: string // 评论数量
+    view_count: string // 查看数量
+    like_count: string // 喜欢数量
+    collect_count: string // 收藏数量
+    words_count: string // 字数
     post_type: number // 文章类型
     post_status: number // 文章状态
     comment_status: number // 评论状态

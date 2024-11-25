@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-24 18:21:01
+ * @LastEditTime : 2024-11-25 15:00:29
  * @FilePath     : \blog-client\src\views\admin\component\main\post-all\index.vue
  * @Description  : 标签管理
  * @Blog         : https://jiaopengzi.com
@@ -24,8 +24,6 @@
         @edit-row="editRow"
         @delete-rows="deleteRows"
         @update-search="updateSearch"
-        @add-item-update-dialog-visible="addItemUpdateDialogVisible"
-        @edit-item-update-dialog-visible="editItemUpdateDialogVisible"
     >
         <template #btns>
             <el-button type="primary" @click="toggleAddDialog"> 新增 </el-button>
@@ -125,6 +123,13 @@ const cols: TableColumn[] = reactive([
         isTags: true,
     },
     {
+        prop: "price",
+        label: "价格",
+        sortable: true,
+        width: 80,
+        align: "center",
+    },
+    {
         prop: "view_count",
         label: "查看",
         sortable: true,
@@ -164,8 +169,6 @@ const {
     updateCurrentPage, // 更新当前页
     updatePageSize, // 更新每页显示条数
     updateSearch, // 更新搜索关键字
-    addItemUpdateDialogVisible, // 新增对话框
-    editItemUpdateDialogVisible, // 编辑对话框
     updatePaginate, // 更新分页数据
     deleteRows, // 删除行
     updatePaginateOnBeforeMount, // 更新分页数据

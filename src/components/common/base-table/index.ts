@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:25:00
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-24 18:29:48
+ * @LastEditTime : 2024-11-25 14:51:23
  * @FilePath     : \blog-client\src\components\common\base-table\index.ts
  * @Description  : 基础表格组件
  * @Blog         : https://jiaopengzi.com
@@ -45,6 +45,7 @@ export interface FormatTableData {
     updated_at?: string // 更新时间
     file_type?: string // 文件类型
     img?: TableImg // 图片
+    price?: string // 价格
 }
 
 /**
@@ -56,7 +57,7 @@ export interface FormatTableData {
  * @return  {T} 格式化后的用户信息
  */
 export function formatTableData<T extends FormatTableData>(
-    { thumbnail, created_at, updated_at, ...tableData }: T,
+    { thumbnail, created_at, updated_at, price, ...tableData }: T,
     width: number = 30, // 默认值 50px
     height: number = 30, // 默认值 50px
     imgFit: ImgFit = ImgFit.Cover, // 默认值 cover
@@ -67,6 +68,7 @@ export function formatTableData<T extends FormatTableData>(
         // 使用 formatTime 进行格式化
         created_at: created_at ? formatTime(created_at) : "",
         updated_at: updated_at ? formatTime(updated_at) : "",
+        price: price ? Number(price) / 100 + "元" : "",
     } as T
 
     // 如果 thumbnail 不为空，添加 img 属性

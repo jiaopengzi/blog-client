@@ -1,15 +1,16 @@
 /**
  * @Author       : jiaopengzi
- * @Date         : 2024-11-08 16:05:36
+ * @Date         : 2024-11-25 15:09:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-24 21:26:00
+ * @LastEditTime : 2024-11-25 16:34:21
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\hooks.ts
  * @Description  : 表单验证
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { type Ref } from "vue"
+import { type Ref, reactive } from "vue"
+import type { FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { type CheckPostSlugRequest, checkPostSlugAPI } from "@/api/post/checkPostSlug"
 import {
     type CheckPostSlugExcludingIDRequest,
@@ -18,6 +19,8 @@ import {
 import { ResponseCode } from "@/api/responseCode"
 import { type PgSqlDateTime } from "@/api/common"
 import { PostStatusCode, CommentStatusCode } from "@/api/post/common"
+import { type UpsertPostForm } from "./index"
+import { RegexPatterns } from "@/utils/regexPatterns"
 
 // 表单验证选项
 interface FormValidationOptions {
@@ -46,7 +49,9 @@ interface FormValidationOptions {
 const titleLength = 255
 
 // 表单验证
-export function useFormValidation(options: FormValidationOptions) {
+export function useFormValidation(options: FormValidationOptions): {
+    rules: FormRules<UpsertPostForm>
+} {
     const { form } = options
 
     // 检查文章标题是否可用
@@ -315,7 +320,7 @@ export function useFormValidation(options: FormValidationOptions) {
         }
 
         // 不能包含特殊字符
-        if (value.match(/[^a-z0-9-]/)) {
+        if (!value.match(RegexPatterns.Slug)) {
             callback(new Error("别名不能包含特殊字符，只能包含小写字母、数字、中划线"))
             return
         }
@@ -371,7 +376,7 @@ export function useFormValidation(options: FormValidationOptions) {
         }
 
         // 不能包含特殊字符
-        if (value.match(/[^a-z0-9-]/)) {
+        if (!value.match(RegexPatterns.Slug)) {
             callback(new Error("别名不能包含特殊字符，只能包小写含字母、数字、中划线"))
             return
         }
@@ -494,18 +499,82 @@ export function useFormValidation(options: FormValidationOptions) {
         callback()
     }
 
+    /**
+     * @description: 表单校验规则
+     * @return  FormRules<EditMediaForm> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
+     */
+    const rules = reactive<FormRules<UpsertPostForm>>({
+        post_title: [
+            { required: true, message: "标题不能为空", trigger: "blur" },
+            { validator: checkPostTitleValidator, trigger: "blur" },
+        ],
+
+        seo_title: [
+            { required: false, message: "SEO自定义文章标题，留空则为文章标题。", trigger: "blur" },
+            { validator: checkSeoTitleValidator, trigger: "blur" },
+        ],
+
+        seo_description: [
+            {
+                required: false,
+                message: "SEO文章描述，留空则自动截取首段一定字数作为文章描。",
+                trigger: "blur",
+            },
+            { validator: checkSeoDescriptionValidator, trigger: "blur" },
+        ],
+
+        seo_keywords: [
+            {
+                required: false,
+                message:
+                    "SEO文章关键词，多个关键词用英文半角逗号隔开，留空则自动将文章标签做为关键词。",
+                trigger: "blur",
+            },
+            { validator: checkSeoKeywordsValidator, trigger: "blur" },
+        ],
+
+        thumbnail: [
+            {
+                required: false,
+                message: "手动设置缩略图,如果没有则随机显示一张图片。",
+                trigger: "blur",
+            },
+            { validator: checkThumbnailValidator, trigger: "blur" },
+        ],
+
+        price: [
+            { required: false, message: "销售价格 为空则为免费。", trigger: "blur" },
+            { validator: checkPriceValidator, trigger: "blur" },
+        ],
+
+        slug: [
+            { required: false, message: "别名，留空则使用默认ID值。", trigger: "blur" },
+            { validator: checkPostSlugValidator, trigger: "blur" },
+            { validator: checkPostSlugExcludingIDValidator, trigger: "blur" },
+        ],
+
+        category_ids: [
+            { required: true, message: "请选择文章分类1", trigger: "blur" },
+            { validator: checkCategoriesValidator, trigger: "blur" },
+        ],
+
+        post_push_time: [
+            { required: false, message: "文章发布时间", trigger: "blur" },
+            { validator: checkPostPushTimeValidator, trigger: "blur" },
+        ],
+
+        post_expired_time: [
+            { required: false, message: "文章过期时间", trigger: "blur" },
+            { validator: checkPostExpiredTimeValidator, trigger: "change" },
+        ],
+
+        post_password: [
+            { required: false, message: "文章密码,留空则为不设置密码。", trigger: "blur" },
+            { validator: checkPostPasswordValidator, trigger: "blur" },
+        ],
+    })
+
     return {
-        checkPostTitleValidator,
-        checkSeoTitleValidator,
-        checkSeoDescriptionValidator,
-        checkSeoKeywordsValidator,
-        checkThumbnailValidator,
-        checkPriceValidator,
-        checkPostSlugValidator,
-        checkPostSlugExcludingIDValidator,
-        checkCategoriesValidator,
-        checkPostPushTimeValidator,
-        checkPostExpiredTimeValidator,
-        checkPostPasswordValidator,
+        rules,
     }
 }

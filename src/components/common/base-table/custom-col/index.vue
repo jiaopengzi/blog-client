@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-24 15:53:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-24 18:12:33
+ * @LastEditTime : 2024-11-25 12:11:03
  * @FilePath     : \blog-client\src\components\common\base-table\custom-col\index.vue
  * @Description  : 自定义列
  * @Blog         : https://jiaopengzi.com
@@ -46,7 +46,6 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, defineEmits } from "vue"
 import TagItem from "@/components/common/tag-item"
 import type { TableColumn } from "../index"
 import type { PostTag } from "@/api/postTag/view"

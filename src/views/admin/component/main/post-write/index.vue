@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-24 18:40:36
+ * @LastEditTime : 2024-11-25 18:06:37
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -199,35 +199,19 @@ import { AdminSideMenu } from "@/views/admin/component/aside"
 import { type ElContainer } from "element-plus"
 import { useUserStore } from "@/stores/user"
 import { viewListPostCategoryAPI, type PostCategory } from "@/api/postCategory/view"
-import { type PostTag } from "@/api/postTag/view"
 import { ResponseCode, LocalStorageKey } from "@/api/responseCode"
 import { getRolesList } from "@/utils/permissionRole"
-import { insertPostRequestAPI } from "@/api/post/insert"
-import {
-    PostStatusCode,
-    CommentStatusCode,
-    gegPostStatusOptions,
-    type UpsertPostRequest,
-} from "@/api/post/common"
-
-import { viewPostByIDRequestAPI, type ViewPostByIDRequest } from "@/api/post/viewByID"
-
-import { updatePostRequestAPI } from "@/api/post/update"
-updatePostRequestAPI
+import { PostStatusCode, CommentStatusCode, gegPostStatusOptions } from "@/api/post/common"
 import { useFormValidation } from "./hooks"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { PermissionNames } from "@/utils/permissionRole"
 import { createEmptyUpsertPostForm, type UpsertPostForm } from "./index"
-
 import AddTag from "@/components/common/add-tag"
 import { ShowMsgTip } from "@/utils/message"
-import router from "@/router"
+import { useAdd } from "./useAdd"
+import { useEdit } from "./useEdit"
 
 defineOptions({ name: AdminSideMenu.PostWrite })
-
-const { postInfo } = defineProps<{
-    postInfo?: UpsertPostForm
-}>()
 
 // 初始化表单数据
 const postInfoForm = reactive<UpsertPostForm>(createEmptyUpsertPostForm())
@@ -419,96 +403,8 @@ const generateShortcuts = (useDisplay: string) => {
 const defaultTime = new Date()
 
 // hooks
-const {
-    checkPostTitleValidator,
-    checkSeoTitleValidator,
-    checkSeoDescriptionValidator,
-    checkSeoKeywordsValidator,
-    checkThumbnailValidator,
-    checkPriceValidator,
-    checkPostSlugValidator,
-    checkPostSlugExcludingIDValidator,
-    checkCategoriesValidator,
-    checkPostPushTimeValidator,
-    checkPostExpiredTimeValidator,
-    checkPostPasswordValidator,
-} = useFormValidation({
+const { rules } = useFormValidation({
     form: toRefs(postInfoForm),
-})
-
-/**
- * @description: 表单校验规则
- * @return  FormRules<EditMediaForm> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
- */
-const rules = reactive<FormRules<UpsertPostRequest>>({
-    post_title: [
-        { required: true, message: "标题不能为空", trigger: "blur" },
-        { validator: checkPostTitleValidator, trigger: "blur" },
-    ],
-
-    seo_title: [
-        { required: false, message: "SEO自定义文章标题，留空则为文章标题。", trigger: "blur" },
-        { validator: checkSeoTitleValidator, trigger: "blur" },
-    ],
-
-    seo_description: [
-        {
-            required: false,
-            message: "SEO文章描述，留空则自动截取首段一定字数作为文章描。",
-            trigger: "blur",
-        },
-        { validator: checkSeoDescriptionValidator, trigger: "blur" },
-    ],
-
-    seo_keywords: [
-        {
-            required: false,
-            message:
-                "SEO文章关键词，多个关键词用英文半角逗号隔开，留空则自动将文章标签做为关键词。",
-            trigger: "blur",
-        },
-        { validator: checkSeoKeywordsValidator, trigger: "blur" },
-    ],
-
-    thumbnail: [
-        {
-            required: false,
-            message: "手动设置缩略图,如果没有则随机显示一张图片。",
-            trigger: "blur",
-        },
-        { validator: checkThumbnailValidator, trigger: "blur" },
-    ],
-
-    price: [
-        { required: false, message: "销售价格 为空则为免费。", trigger: "blur" },
-        { validator: checkPriceValidator, trigger: "blur" },
-    ],
-
-    slug: [
-        { required: false, message: "别名，留空则使用默认ID值。", trigger: "blur" },
-        { validator: checkPostSlugValidator, trigger: "blur" },
-        { validator: checkPostSlugExcludingIDValidator, trigger: "blur" },
-    ],
-
-    category_ids: [
-        { required: true, message: "请选择文章分类1", trigger: "blur" },
-        { validator: checkCategoriesValidator, trigger: "blur" },
-    ],
-
-    post_push_time: [
-        { required: false, message: "文章发布时间", trigger: "blur" },
-        { validator: checkPostPushTimeValidator, trigger: "blur" },
-    ],
-
-    post_expired_time: [
-        { required: false, message: "文章过期时间", trigger: "blur" },
-        { validator: checkPostExpiredTimeValidator, trigger: "change" },
-    ],
-
-    post_password: [
-        { required: false, message: "文章密码,留空则为不设置密码。", trigger: "blur" },
-        { validator: checkPostPasswordValidator, trigger: "blur" },
-    ],
 })
 
 // 监控 category_ids 变化,手动执行校验
@@ -519,197 +415,27 @@ watch(
     },
 )
 
+// 查询参数
 const queryKey = {
     ID: "id",
 }
 
+const { submitForm: addSubmitForm } = useAdd(postInfoForm, editorState, userStore, queryKey)
+const { submitForm: editSubmitForm, getDataOnBeforeMount } = useEdit(
+    postInfoForm,
+    editorState,
+    rolePaidList,
+    commentStatus,
+    userStore,
+    queryKey,
+    stateManager,
+)
+
 const submitForm = async (formEl: FormInstance | undefined) => {
-    if (!formEl) {
-        return
-    }
-
-    try {
-        await formEl.validate((valid, fields) => {
-            if (valid) {
-                console.log("valid===============>", valid)
-
-                // 将 postInfoForm 解析到 InsertPostRequest
-                const req = {} as UpsertPostRequest
-                Object.assign(req, postInfoForm)
-                // 更新作者ID
-                req.post_author = userStore.data.user.id.toString()
-
-                if (editorState.editor === "") {
-                    ShowMsgTip(ShowMsgTip.MsgType.warning, "文章内容不能为空", 6000)
-                    return
-                }
-
-                // 更新文章内容
-                req.post_content = editorState.editor
-
-                // 价格需要乘以 100 以适应后端整数
-                if (req.price) {
-                    req.price = (Number(req.price) * 100).toString()
-                }
-
-                // 如果有时间则设置为有效
-                if (req.post_push_time && req.post_push_time.Time !== null) {
-                    req.post_push_time.Valid = true
-                }
-
-                if (req.post_expired_time && req.post_expired_time.Time !== null) {
-                    req.post_expired_time.Valid = true
-                }
-
-                // 如果没有时间则设置为无效
-                if (req.post_push_time && req.post_push_time.Time === null) {
-                    req.post_push_time.Valid = false
-                }
-
-                if (req.post_expired_time && req.post_expired_time.Time === null) {
-                    req.post_expired_time.Valid = false
-                }
-
-                // 移除 req 空值字段
-                if (req.id === "") {
-                    delete req.id
-                }
-                if (req.post_password === "") {
-                    delete req.post_password
-                }
-                if (req.price === "") {
-                    delete req.price
-                }
-                if (req.seo_title === "") {
-                    delete req.seo_title
-                }
-                if (req.seo_keywords === "") {
-                    delete req.seo_keywords
-                }
-                if (req.seo_description === "") {
-                    delete req.seo_description
-                }
-                if (req.slug === "") {
-                    delete req.slug
-                }
-                if (req.thumbnail === "") {
-                    delete req.thumbnail
-                }
-                if (req.tag_names?.length === 0) {
-                    delete req.tag_names
-                }
-                if (req.pay_roles?.length === 0) {
-                    delete req.pay_roles
-                }
-
-                // req.category_ids.map((i) => Number(i))
-                // 当 id 为空时，表示为新增文章
-                if (!postInfoForm.id) {
-                    insertPostRequestAPI(req).then(async (res) => {
-                        if (res.data.code === ResponseCode.PostInsertSuccess) {
-                            // 将 data 中的 id 更新到 postInfoForm
-                            postInfoForm.id = res.data.data.id
-
-                            ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 6000)
-
-                            // 插入成功后变成编辑状态，更改路由
-                            router.push({
-                                name: AdminSideMenu.PostWrite,
-                                query: { [queryKey.ID]: res.data.data.id },
-                            })
-                        } else {
-                            ShowMsgTip(ShowMsgTip.MsgType.error, res.data.msg, 0)
-                        }
-                        console.log("新增提交!")
-                    })
-                } else {
-                    // 更新文章
-                    req.id = postInfoForm.id
-                    updatePostRequestAPI(req).then(async (res) => {
-                        if (res.data.code === ResponseCode.PostUpdateSuccess) {
-                            ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 6000)
-                        } else {
-                            ShowMsgTip(ShowMsgTip.MsgType.error, res.data.msg, 0)
-                        }
-                        console.log("更新提交!")
-                    })
-                }
-            } else {
-                console.error("Validation failed for fields:", fields)
-            }
-        })
-    } catch (error) {
-        console.error("submitForm error", error)
-        return
-    }
-}
-
-// 从路由中query中获取值
-function getValueFromQuery() {
-    postInfoForm.id = router.currentRoute.value.query[queryKey.ID] as string
-}
-
-// 初始化数据
-const getDataOnBeforeMount = async () => {
-    getValueFromQuery()
-    if (postInfoForm.id) {
-        // 获取文章信息
-        const req: ViewPostByIDRequest = {
-            post_id: postInfoForm.id,
-        }
-        await viewPostByIDRequestAPI(req).then((res) => {
-            if (res.data.code === ResponseCode.PostViewByIDSuccess) {
-                const data = res.data.data
-                postInfoForm.id = data.id
-
-                postInfoForm.post_author = data.author_info.id
-
-                postInfoForm.post_title = data.post_title
-
-                // 更新编辑器内容
-                stateManager.updateState(data.post_content)
-
-                postInfoForm.seo_title = data.seo_title
-                postInfoForm.seo_description = data.seo_description
-                postInfoForm.seo_keywords = data.seo_keywords
-                postInfoForm.thumbnail = data.thumbnail
-                postInfoForm.price = (data.price / 100).toString()
-                postInfoForm.slug = data.slug
-                postInfoForm.tag_names = data.tags.map((item: PostTag) => item.name)
-                postInfoForm.pay_roles = data.pay_roles
-                postInfoForm.comment_status = data.comment_status
-                postInfoForm.post_status = data.post_status
-                postInfoForm.post_password = data.post_password
-
-                if (data.post_push_time) {
-                    postInfoForm.post_push_time = data.post_push_time
-                }
-                if (data.post_expired_time) {
-                    postInfoForm.post_expired_time = data.post_expired_time
-                }
-
-                // 历遍 data.categories 列表,取出 id 组成新数组
-                postInfoForm.category_ids = data.categories.map((item: any) => item.id.toString())
-
-                // 历遍 data.tags 列表,取出 name 组成新数组
-                postInfoForm.tag_names = data.tags.map((item: any) => item.name)
-
-                // 更新角色付费管理
-                if (data.pay_roles) {
-                    data.pay_roles.forEach((role: string) => {
-                        const index = rolePaidList.findIndex((i) => i.name === role)
-                        rolePaidList[index].status = true
-                    })
-                    postInfoForm.pay_roles = data.pay_roles
-                }
-
-                // 更新评论状态
-                const commentItem = commentStatus.find((item) => item.name === "commentStatus")
-                if (commentItem) {
-                    commentItem.status = postInfoForm.comment_status === CommentStatusCode.Open
-                }
-            }
-        })
+    if (!postInfoForm.id) {
+        await addSubmitForm(formEl)
+    } else {
+        await editSubmitForm(formEl)
     }
 }
 
@@ -717,16 +443,18 @@ onBeforeMount(async () => {
     // 生成角色付费管理
     await initRolePaidManagement()
     await getCategoryList()
-    // 获取数据
-    await getDataOnBeforeMount()
+
+    if (postInfoForm.id) {
+        await getDataOnBeforeMount()
+    }
 })
 
 onMounted(() => {
-    // window.addEventListener("beforeunload", handleBeforeUnload)
+    window.addEventListener("beforeunload", handleBeforeUnload)
 })
 
 onBeforeUnmount(() => {
-    // window.removeEventListener("beforeunload", handleBeforeUnload)
+    window.removeEventListener("beforeunload", handleBeforeUnload)
 })
 </script>
 

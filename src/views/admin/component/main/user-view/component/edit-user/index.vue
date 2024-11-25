@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-18 08:47:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-10 20:17:18
+ * @LastEditTime : 2024-11-25 12:05:55
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\edit-user\index.vue
  * @Description  : 编辑用户
  * @Blog         : https://jiaopengzi.com
@@ -294,7 +294,7 @@ const rules = reactive<FormRules<EditUserByAdminForm>>({
     userName: [
         { required: true, message: "请输入用户名！", trigger: "blur" },
         {
-            pattern: new RegExp(RegexPatterns.UserName),
+            pattern: RegexPatterns.UserName,
             message: "用户名长度:6-20的小写字母或数字",
             trigger: "change",
         },
@@ -304,7 +304,7 @@ const rules = reactive<FormRules<EditUserByAdminForm>>({
     email: [
         { required: true, message: "请输入小写的邮箱地址", trigger: "blur" },
         {
-            pattern: new RegExp(RegexPatterns.Email),
+            pattern: RegexPatterns.Email,
             message: "请输入有效的邮箱",
             trigger: "blur",
         },
@@ -315,7 +315,7 @@ const rules = reactive<FormRules<EditUserByAdminForm>>({
         { message: "请输入密码", trigger: "change" },
         // 必须包含：大小写字母+数字,长度:6-64 特殊字符可有可无
         {
-            pattern: new RegExp(RegexPatterns.Password),
+            pattern: RegexPatterns.Password,
             message: "必须包含：大小写字母+数字,长度:6-64",
             trigger: "blur",
         },

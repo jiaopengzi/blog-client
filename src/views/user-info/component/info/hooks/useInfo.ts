@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-22 00:16:25
+ * @LastEditTime : 2024-11-25 12:06:46
  * @FilePath     : \blog-client\src\views\user-info\component\info\hooks\useInfo.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -99,7 +99,7 @@ export function useInfo(): UseInfoReturnType {
         userName: [
             { required: true, message: "请输入用户名！", trigger: "blur" },
             {
-                pattern: new RegExp(RegexPatterns.UserName),
+                pattern: RegexPatterns.UserName,
                 message: "用户名长度:6-20的小写字母或数字",
                 trigger: "change",
             },
@@ -110,7 +110,7 @@ export function useInfo(): UseInfoReturnType {
         nickName: [
             { required: true, message: "请输入昵称！", trigger: "blur" },
             {
-                pattern: new RegExp(RegexPatterns.NickName),
+                pattern: RegexPatterns.NickName,
                 message: "昵称长度1-20字符",
                 trigger: "change",
             },

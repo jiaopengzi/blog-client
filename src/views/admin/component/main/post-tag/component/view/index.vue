@@ -84,7 +84,7 @@ const {
 
 // emits
 const emit = defineEmits<{
-    (event: "submit-data", value: ViewForm): void // 编辑用户状态
+    (event: "submit-data", value: ViewForm): void // 提交数据
 }>()
 
 // 表单label位置 top | left | right

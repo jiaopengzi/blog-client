@@ -126,7 +126,7 @@ const rules = reactive<FormRules<LoginForm>>({
     loginName: [
         { required: true, message: "请输入用户名！", trigger: "blur" },
         {
-            pattern: new RegExp(RegexPatterns.LoginName),
+            pattern: RegexPatterns.LoginName,
             message: "6-20位小写字母或数字 | 邮箱",
             trigger: "change",
         },
@@ -138,7 +138,7 @@ const rules = reactive<FormRules<LoginForm>>({
         { required: true, message: "请输入密码", trigger: "blur" },
         // 必须包含：大小写字母+数字,长度:6-64 特殊字符可有可无
         {
-            pattern: new RegExp(RegexPatterns.Password),
+            pattern: RegexPatterns.Password,
             message: "必须包含：大小写字母+数字,长度:6-64",
             trigger: "change",
         },

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-24 17:16:53
+ * @LastEditTime : 2024-11-25 17:58:03
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格
  * @Blog         : https://jiaopengzi.com
@@ -43,7 +43,7 @@
             ref="tableRef"
             :data="paginationData.records"
             stripe
-            max-height="700px"
+            min-height="700px"
             @selection-change="handleSelectionChange"
             table-layout="auto"
         >

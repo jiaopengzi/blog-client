@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-25 10:08:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-25 10:44:00
+ * @LastEditTime : 2024-11-25 12:15:23
  * @FilePath     : \blog-client\src\views\admin\component\main\post-category\component\view\hooks.ts
  * @Description  : 分类表单验证
  * @Blog         : https://jiaopengzi.com
@@ -29,6 +29,7 @@ import {
     checkCategorySlugExcludingIDAPI,
 } from "@/api/postCategory/checkCategorySlugExcludingID"
 import { ResponseCode } from "@/api/responseCode"
+import { RegexPatterns } from "@/utils/regexPatterns"
 
 // 表单验证选项
 interface FormValidationOptions {
@@ -94,7 +95,7 @@ export function useFormValidation(options: FormValidationOptions): {
         }
 
         // 不能包含特殊字符
-        if (value.match(/[^a-zA-Z0-9-]/)) {
+        if (!value.match(RegexPatterns.Slug)) {
             callback(new Error("别名不能包含特殊字符，只能包含字母、数字、中划线"))
             return
         }
@@ -175,7 +176,7 @@ export function useFormValidation(options: FormValidationOptions): {
         }
 
         // 不能包含特殊字符
-        if (value.match(/[^a-zA-Z0-9-]/)) {
+        if (!value.match(RegexPatterns.Slug)) {
             callback(new Error("别名不能包含特殊字符，只能包含字母、数字、中划线"))
             return
         }
