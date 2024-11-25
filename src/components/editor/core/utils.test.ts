@@ -2,15 +2,40 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-21 10:08:06
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-25 21:48:06
+ * @LastEditTime : 2024-11-26 01:00:07
  * @FilePath     : \blog-client\src\components\editor\core\utils.test.ts
  * @Description  : 测试工具函数
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { describe, it, expect } from "vitest"
-import { createRegexCache, anchorGenerator, generateAllHeadingAnchor } from "./utils"
+import { describe, it, expect, vi } from "vitest"
+import {
+    createRegexCache,
+    anchorGenerator,
+    generateAllHeadingAnchor,
+} from "@/components/editor/core/utils"
+
+// 不让控制台输出 log warn error
+vi.spyOn(console, "log").mockImplementation(() => {})
+// vi.spyOn(console, "warn").mockImplementation(() => {})
+// vi.spyOn(console, "error").mockImplementation(() => {})
+
+// 针对报错的情况 进行模拟
+
+// 模拟 iconfont.js
+vi.mock("@/components/common/icons/assets/iconfont.js", () => {
+    return {
+        default: {},
+    }
+})
+
+// 模拟 vue3-emoji-picker
+vi.mock("vue3-emoji-picker", () => {
+    return {
+        default: {},
+    }
+})
 
 describe("createRegexCache", () => {
     it("缓存中的正则匹配", () => {
@@ -291,8 +316,8 @@ describe("createRegexCache", () => {
                 it("为 html 中的所有 h 标签生成锚点和 href", () => {
                     const html = "<h1>Title</h1><h2>Subtitle</h2>"
                     const result = generateAllHeadingAnchor(html)
-                    expect(result).toContain('id="title0"')
-                    expect(result).toContain('id="subtitle1"')
+                    expect(result).toContain('id="title-0"')
+                    expect(result).toContain('id="subtitle-1"')
                 })
 
                 it("处理没有 h 标签的 html", () => {
@@ -304,7 +329,7 @@ describe("createRegexCache", () => {
                 it("处理包含特殊字符的 h 标签", () => {
                     const html = "<h1>Hello@World!</h1>"
                     const result = generateAllHeadingAnchor(html)
-                    expect(result).toContain('id="hello-world0"')
+                    expect(result).toContain('id="hello-world-0"')
                 })
             })
         })

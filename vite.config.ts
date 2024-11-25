@@ -1,11 +1,9 @@
-/// <reference types="vitest/config" />
-
 /*
  * @FilePath     : \blog-client\vite.config.ts
  * @Description  : vite 配置文件
  */
 
-import path from "path"
+import { fileURLToPath, URL } from "node:url"
 import { defineConfig } from "vite"
 import vue from "@vitejs/plugin-vue"
 import vueJsx from "@vitejs/plugin-vue-jsx"
@@ -39,10 +37,9 @@ export default defineConfig({
 
     resolve: {
         alias: {
-            "@": path.resolve(__dirname, "src"),
+            "@": fileURLToPath(new URL("./src", import.meta.url)),
         },
     },
-
     // ------------------------------ scss全局变量生效 开始
     css: {
         preprocessorOptions: {
@@ -118,17 +115,4 @@ export default defineConfig({
         },
     },
     // ------------------------------ 设置打包分块 结束
-    test: {
-        // 启用类似 jest 的全局测试 API
-        globals: true,
-        // 使用 happy-dom 模拟 DOM
-        // 安装 happy-dom 作为对等依赖（peer dependency）
-        environment: "jsdom",
-        server: {
-            deps: {
-                inline: ["element-plus"],
-            },
-        },
-        exclude: ["node_modules", "dist"],
-    },
 })
