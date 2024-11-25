@@ -1,3 +1,14 @@
+/**
+ * @Author       : jiaopengzi
+ * @Date         : 2024-10-21 10:08:06
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2024-11-25 21:48:06
+ * @FilePath     : \blog-client\src\components\editor\core\utils.test.ts
+ * @Description  : 测试工具函数
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ */
+
 import { describe, it, expect } from "vitest"
 import { createRegexCache, anchorGenerator, generateAllHeadingAnchor } from "./utils"
 

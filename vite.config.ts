@@ -1,3 +1,5 @@
+/// <reference types="vitest/config" />
+
 /*
  * @FilePath     : \blog-client\vite.config.ts
  * @Description  : vite 配置文件
@@ -9,6 +11,7 @@ import vue from "@vitejs/plugin-vue"
 import vueJsx from "@vitejs/plugin-vue-jsx"
 import terser from "@rollup/plugin-terser" // 会报错 没有调用签名。 但是不影响使用
 import Inspect from "vite-plugin-inspect"
+import tsconfigPaths from "vite-tsconfig-paths"
 // ------------------------------element-plus 按需自动导入 开始
 import AutoImport from "unplugin-auto-import/vite"
 import Components from "unplugin-vue-components/vite"
@@ -18,6 +21,7 @@ import { ElementPlusResolver } from "unplugin-vue-components/resolvers"
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
+        tsconfigPaths(), // tsconfig 路径别名
         vue(),
         vueJsx(),
         Inspect(), // vite-plugin-inspect 查看编译后的文件
@@ -47,10 +51,10 @@ export default defineConfig({
                 silenceDeprecations: ["legacy-js-api"],
                 // 多个scss文件变量生效
                 additionalData: `
-        @use "./src/assets/scss/themes/index.scss" as *;
-        @use './src/assets/scss/platform/phone.scss' as phone;
-        @use './src/assets/scss/platform/pc.scss' as pc;
-        @use './src/assets/scss/mixin.scss' as *;
+        @use "@/assets/scss/themes/index.scss" as *;
+        @use '@/assets/scss/platform/phone.scss' as phone;
+        @use '@/assets/scss/platform/pc.scss' as pc;
+        @use '@/assets/scss/mixin.scss' as *;
         `,
             },
             // devSourceMap: true, // 开发环境下是否生成 sourceMap
@@ -66,7 +70,7 @@ export default defineConfig({
             "/api": {
                 target: "http://10.10.2.222:5426",
                 changeOrigin: true,
-                // rewrite: (path) => path.replace(/^\/api/, 'myadmin'),
+                // rewrite: (path) => path.replace(/^\/api/, 'my-admin'),
             },
         },
     },
@@ -114,4 +118,17 @@ export default defineConfig({
         },
     },
     // ------------------------------ 设置打包分块 结束
+    test: {
+        // 启用类似 jest 的全局测试 API
+        globals: true,
+        // 使用 happy-dom 模拟 DOM
+        // 安装 happy-dom 作为对等依赖（peer dependency）
+        environment: "jsdom",
+        server: {
+            deps: {
+                inline: ["element-plus"],
+            },
+        },
+        exclude: ["node_modules", "dist"],
+    },
 })
