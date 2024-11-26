@@ -91,7 +91,7 @@ export function formatMediaFile(
     width: number,
     height: number,
     imgFit: ImgFit,
-    fontSize: number,
+    svgFontSize: number,
 ): MediaFile {
     const formattedMediaFile: MediaFile = {
         ...MediaFile,
@@ -112,7 +112,7 @@ export function formatMediaFile(
     if (!thumbnail && MediaFile.file_type === "application/zip") {
         formattedMediaFile.img = {
             url: "",
-            fontSize: fontSize,
+            svgFontSize: svgFontSize,
             iconKeyName: IconKeys.Zip,
         }
     }

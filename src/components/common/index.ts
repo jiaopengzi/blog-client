@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:38:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 18:24:06
+ * @LastEditTime : 2024-11-26 20:31:23
  * @FilePath     : \blog-client\src\components\common\index.ts
  * @Description  : 公用信息
  * @Blog         : https://jiaopengzi.com
@@ -49,7 +49,7 @@ export interface TableImg {
     height?: number // 图片高度 px
     imgFit?: ImgFit // 图片填充方式 cover | contain | fill | none | scale-down
     iconKeyName?: IconKeys // 图标键名
-    fontSize?: number // 图标字体大小
+    svgFontSize?: number // 图标字体大小
 }
 
 // 具有 img 属性的数据类型

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:05:03
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-24 21:27:18
+ * @LastEditTime : 2024-11-26 16:09:28
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -12,6 +12,11 @@
 export { default } from "./index.vue"
 import { type PgSqlDateTime } from "@/api/common"
 import { PostStatusCode, CommentStatusCode } from "@/api/post/common"
+
+// 查询参数
+export const queryKey = {
+    ID: "id",
+}
 
 export interface UpsertPostForm {
     id: string // 文章ID
@@ -32,6 +37,11 @@ export interface UpsertPostForm {
     pay_roles: string[] // 付费角色
     post_push_time: PgSqlDateTime // 发布时间
     post_expired_time: PgSqlDateTime // 过期时间
+}
+
+export interface PostInfoAboutTime {
+    created_at?: Date // 创建时间
+    updated_at?: Date // 更新时间
 }
 
 // 创建 empty InsertPostRequest

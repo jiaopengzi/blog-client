@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-25 22:23:57
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-26 11:32:19
+ * @LastEditTime : 2024-11-26 14:43:08
  * @FilePath     : \blog-client\src\utils\obj.ts
  * @Description  : 对象相关工具函数
  * @Blog         : https://jiaopengzi.com
@@ -102,11 +102,11 @@ export function deepEqual<T>(obj1: T, obj2: T): boolean {
  * @param original 原始数据
  * @param current 当前数据
  * @param primaryKey 主键字段
- * @return {Partial<T>} 已经更新的字段 如果没有更新则返回空对象
+ * @return {Partial<T>} 已经更新的字段 如果没有更新则返只有主键的对象
  */
 export function getUpdatedFields<T>(original: T, current: T, primaryKey: keyof T): Partial<T> {
     // 存储已经更新的字段
-    const updatedFields: Partial<T> = {}
+    const updatedFields = { [primaryKey]: current[primaryKey] } as T
 
     // 遍历所有字段
     for (const field in current) {

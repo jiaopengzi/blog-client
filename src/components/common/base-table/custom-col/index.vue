@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-24 15:53:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-25 12:11:03
+ * @LastEditTime : 2024-11-26 21:41:09
  * @FilePath     : \blog-client\src\components\common\base-table\custom-col\index.vue
  * @Description  : 自定义列
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,8 @@
 <template>
     <el-table-column
         :key="`custom-${index}`"
-        :min-width="col.width"
+        :width="col.width"
+        :min-width="col.minWidth"
         :align="col.align"
         :label="col.label"
     >
@@ -28,7 +29,10 @@
             >
 
             <!-- 可点击标签 -->
-            <el-scrollbar v-if="col.isTags || col.isCategories" max-height="120px">
+            <el-scrollbar
+                v-if="col.isTags || col.isCategories"
+                :max-height="tagsItemMaxHeight ? tagsItemMaxHeight : '100px'"
+            >
                 <TagItem
                     v-for="item in scope.row[col.prop]"
                     :tag-data="item"
@@ -53,9 +57,10 @@ import type { User } from "@/api/user/getUsers"
 
 defineOptions({ name: "CustomCol" })
 
-const { col, index } = defineProps<{
+const { col, index, tagsItemMaxHeight } = defineProps<{
     col: TableColumn
     index: number
+    tagsItemMaxHeight?: string // 标签项目最大高度
 }>()
 
 const emit = defineEmits<{

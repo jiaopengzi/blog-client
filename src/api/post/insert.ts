@@ -19,6 +19,8 @@ import { type UpsertPostRequest } from "./common"
 export interface InsertPostResponse extends Res {
     data: {
         id: string
+        created_at: string
+        updated_at: string
     }
 }
 

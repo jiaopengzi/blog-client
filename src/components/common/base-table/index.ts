@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:25:00
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-25 14:51:23
+ * @LastEditTime : 2024-11-26 20:31:38
  * @FilePath     : \blog-client\src\components\common\base-table\index.ts
  * @Description  : 基础表格组件
  * @Blog         : https://jiaopengzi.com
@@ -27,6 +27,7 @@ export interface TableColumn {
     label: string // 显示列标题
     sortable?: boolean | undefined // 是否可排序
     width?: number | string // 列宽
+    minWidth?: number | string // 最小列宽
     align?: string // 对齐方式
     isImg?: boolean // 是否为图片
     isCategories?: boolean // 是否为分类
@@ -58,10 +59,10 @@ export interface FormatTableData {
  */
 export function formatTableData<T extends FormatTableData>(
     { thumbnail, created_at, updated_at, price, ...tableData }: T,
-    width: number = 30, // 默认值 50px
-    height: number = 30, // 默认值 50px
+    width: number = 30, // 默认值 30px
+    height: number = 30, // 默认值 30px
     imgFit: ImgFit = ImgFit.Cover, // 默认值 cover
-    fontSize = 30, // 默认值 30px
+    svgFontSize = 30, // 默认值 30px
 ): T {
     const formatTableData = {
         ...tableData,
@@ -85,7 +86,7 @@ export function formatTableData<T extends FormatTableData>(
     if (!thumbnail && tableData.file_type === "application/zip") {
         formatTableData.img = {
             url: "",
-            fontSize: fontSize,
+            svgFontSize: svgFontSize,
             iconKeyName: IconKeys.Zip,
         }
     }

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:47:08
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-24 21:24:31
+ * @LastEditTime : 2024-11-26 22:30:10
  * @FilePath     : \blog-client\src\views\admin\component\main\post-category\index.vue
  * @Description  : 分类管理
  * @Blog         : https://jiaopengzi.com
@@ -77,13 +77,13 @@ const cols: TableColumn[] = reactive([
         prop: "id",
         label: "ID",
         sortable: true,
-        width: 180,
+        width: 100,
         align: "center",
     },
     {
         prop: "thumbnail",
         label: "图片",
-        width: 150,
+        width: 130,
         align: "center",
         isImg: true,
     },
@@ -91,28 +91,28 @@ const cols: TableColumn[] = reactive([
         prop: "name",
         label: "分类名称",
         sortable: true,
-        width: 150,
+        minWidth: 150,
         align: "center",
     },
     {
         prop: "slug",
         label: "别名",
         sortable: true,
-        width: 140,
+        width: 200,
         align: "center",
     },
     {
         prop: "created_at",
         label: "创建时间",
         sortable: true,
-        width: 180,
+        minWidth: 180,
         align: "center",
     },
     {
         prop: "description",
         label: "描述",
         sortable: true,
-        width: 180,
+        width: 200,
         align: "center",
         formatter: (row: TableData) => {
             return ("description" in row && row.description) || "-"
@@ -122,21 +122,21 @@ const cols: TableColumn[] = reactive([
         prop: "post_count",
         label: "文章数量",
         sortable: true,
-        width: 120,
+        minWidth: 120,
         align: "center",
     },
     {
         prop: "order",
         label: "排序",
         sortable: true,
-        width: 80,
+        minWidth: 80,
         align: "center",
     },
     {
         prop: "parent",
         label: "父分类",
         sortable: true,
-        width: 100,
+        minWidth: 100,
         align: "center",
     },
 ])

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-03 11:11:03
+ * @LastEditTime : 2024-11-26 22:32:26
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -118,7 +118,7 @@ const cols: TableColumn[] = reactive([
     {
         prop: "thumbnail",
         label: "图片",
-        width: 150,
+        width: 130,
         align: "center",
         isImg: true,
     },
@@ -126,7 +126,7 @@ const cols: TableColumn[] = reactive([
         prop: "file_name_display",
         label: "文件名",
         sortable: true,
-        width: 150,
+        minWidth: 150,
         align: "center",
     },
     {
@@ -140,14 +140,14 @@ const cols: TableColumn[] = reactive([
         prop: "description",
         label: "描述",
         sortable: true,
-        width: 150,
+        minWidth: 150,
         align: "center",
     },
     {
         prop: "slug",
         label: "别名",
         sortable: true,
-        width: 150,
+        minWidth: 150,
         align: "center",
     },
     {
@@ -174,14 +174,14 @@ const cols: TableColumn[] = reactive([
     {
         prop: "is_generate_hls",
         label: "HLS",
-        width: 60,
+        minWidth: 60,
         align: "center",
         formatter: (row: TableData) => formatterVideoIsHLS(row),
     },
     {
         prop: "video_quality_name",
         label: "视频分辨率",
-        width: 120,
+        minWidth: 120,
         align: "center",
         formatter: (row: TableData) => formatterVideoQuality(row),
     },

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-25 18:06:37
+ * @LastEditTime : 2024-11-26 19:26:12
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -48,6 +48,12 @@
             <!-- 编辑器 -->
             <div ref="editorContainerRef" class="editor md-layout-fs">
                 <EditorPost :editor-state="editorState" />
+
+                <!-- 创建时间和更新时间 -->
+                <div v-if="postInfoAboutTime.created_at" class="about-time">
+                    <span>创建时间：{{ formatTime(postInfoAboutTime.created_at || "") }}</span>
+                    <span>更新时间：{{ formatTime(postInfoAboutTime.updated_at || "") }}</span>
+                </div>
             </div>
 
             <SwitchGroup :switch-items="seoStatus" @update-status="updateSeoStatus" />
@@ -203,24 +209,31 @@ import { ResponseCode, LocalStorageKey } from "@/api/responseCode"
 import { getRolesList } from "@/utils/permissionRole"
 import { PostStatusCode, CommentStatusCode, gegPostStatusOptions } from "@/api/post/common"
 import { useFormValidation } from "./hooks"
-import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
+import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { PermissionNames } from "@/utils/permissionRole"
-import { createEmptyUpsertPostForm, type UpsertPostForm } from "./index"
+import {
+    queryKey,
+    createEmptyUpsertPostForm,
+    type UpsertPostForm,
+    type PostInfoAboutTime,
+} from "./index"
 import AddTag from "@/components/common/add-tag"
 import { ShowMsgTip } from "@/utils/message"
 import { useAdd } from "./useAdd"
 import { useEdit } from "./useEdit"
+import { deepClone, getUpdatedFields } from "@/utils/obj"
+import { formatTime } from "@/utils/dateTime"
 
 defineOptions({ name: AdminSideMenu.PostWrite })
 
 // 初始化表单数据
 const postInfoForm = reactive<UpsertPostForm>(createEmptyUpsertPostForm())
+const postInfoAboutTime = reactive<PostInfoAboutTime>({})
 
 const elContainerRef = useTemplateRef<InstanceType<typeof ElContainer> | null>("elContainerRef")
 const formRef = useTemplateRef<FormInstance>("formRef")
 const editorContainerRef = useTemplateRef<HTMLDivElement | null>("editorContainerRef")
 
-// const addTagRef = useTemplateRef <InstanceType<typeof AddTag>>("addTagRef")
 const stateManager = new EditorStateManager()
 const editorState = stateManager.getState()
 
@@ -415,27 +428,67 @@ watch(
     },
 )
 
-// 查询参数
-const queryKey = {
-    ID: "id",
-}
+// 文章信息快照，用于判断是否有更新
+let postInfoSnapshot: UpsertPostForm = deepClone(postInfoForm)
 
-const { submitForm: addSubmitForm } = useAdd(postInfoForm, editorState, userStore, queryKey)
-const { submitForm: editSubmitForm, getDataOnBeforeMount } = useEdit(
+// 需要更新的数据
+const dataOfUpdate: UpsertPostForm = reactive({}) as UpsertPostForm
+
+const { submitForm: addSubmitForm } = useAdd(postInfoForm, queryKey, postInfoAboutTime)
+const {
+    getValueFromQuery,
+    getDataOnBeforeMount,
+    submitForm: editSubmitForm,
+} = useEdit(
     postInfoForm,
-    editorState,
     rolePaidList,
     commentStatus,
-    userStore,
     queryKey,
     stateManager,
+    dataOfUpdate,
+    postInfoAboutTime,
 )
 
 const submitForm = async (formEl: FormInstance | undefined) => {
+    // 判断文章内容是否为空
+    if (editorState.editor === "") {
+        ShowMsgTip(ShowMsgTip.MsgType.warning, "文章内容不能为空", 6000)
+        return
+    }
+
+    // 将编辑器内容赋值给 post_content
+    postInfoForm.post_content = editorState.editor
+
+    // 将作者赋值给 post_author
+    postInfoForm.post_author = userStore.data.user.id.toString()
+
+    // 判断走新增还是更新
     if (!postInfoForm.id) {
-        await addSubmitForm(formEl)
+        await addSubmitForm(formEl).then((isFinish) => {
+            // 如果新增成功，将快照更新
+            if (isFinish) {
+                postInfoSnapshot = deepClone(postInfoForm)
+            }
+        })
     } else {
-        await editSubmitForm(formEl)
+        // 获取已经更新字段
+        const updatedFields = getUpdatedFields(postInfoSnapshot, postInfoForm, "id")
+
+        // 判断是否有更新
+        if (Object.keys(updatedFields).length === 1) {
+            ShowMsgTip(ShowMsgTip.MsgType.warning, "没有任何修改")
+            return
+        }
+
+        // 将更新字段合并到 dataOfUpdate
+        Object.assign(dataOfUpdate, updatedFields)
+
+        await editSubmitForm(formEl).then((isFinish) => {
+            // 如果更新成功，将快照更新
+            if (isFinish) {
+                postInfoSnapshot = deepClone(postInfoForm)
+            }
+        })
     }
 }
 
@@ -443,9 +496,10 @@ onBeforeMount(async () => {
     // 生成角色付费管理
     await initRolePaidManagement()
     await getCategoryList()
-
+    getValueFromQuery()
     if (postInfoForm.id) {
         await getDataOnBeforeMount()
+        postInfoSnapshot = deepClone(postInfoForm)
     }
 })
 
@@ -504,6 +558,14 @@ onBeforeUnmount(() => {
 
 .editor {
     margin-bottom: 32px;
+}
+
+.about-time {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--text-color);
 }
 
 h4 {

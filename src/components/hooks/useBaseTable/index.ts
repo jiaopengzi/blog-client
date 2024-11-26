@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 08:57:02
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-24 18:24:15
+ * @LastEditTime : 2024-11-26 20:46:57
  * @FilePath     : \blog-client\src\components\hooks\useBaseTable\index.ts
  * @Description  : 基础表格钩子
  * @Blog         : https://jiaopengzi.com
@@ -21,13 +21,17 @@ import {
     type TableData,
 } from "@/components/common/base-table"
 import { ShowMsgTip } from "@/utils/message"
+import { type TableImg } from "@/components/common"
 
 /**
  * @description: 基础表格钩子
  * @param routeName 路由名称
  * @param viewAPI 获取数据的 API
  * @param viewResCode 获取数据的响应码
- * @param initParams 初始化参数,可选
+ * @param deleteAPI 删除数据的 API
+ * @param deleteResCode 删除数据的响应码
+ * @param queryParams 查询参数,可选
+ * @param tableImg 表格图片配置,可选
  */
 export function useBaseTable<T extends FormatTableData, K extends PaginationRequest, Q>(
     routeName: string,
@@ -35,7 +39,8 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     viewResCode: ResponseCode,
     deleteAPI: (params: Q) => AxiosPromise<Res>,
     deleteResCode: ResponseCode,
-    initParams: K = {} as K, // 默认值处理
+    queryParams?: K,
+    tableImg?: TableImg,
 ) {
     const pagination = reactive<Pagination<T>>({
         total: 0,
@@ -51,7 +56,10 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     const search = ref("") // 搜索关键字
 
     // 查询参数
-    const query: Record<string, string | number> = reactive<K>({ ...initParams })
+    const query: Record<string, string | number> = reactive<K>({} as K)
+    if (queryParams) {
+        Object.assign(query, queryParams)
+    }
 
     // 更新查询参数
     const updateQueryAndRouter = (isUpdateRouter: boolean = true) => {
@@ -168,7 +176,13 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         await viewAPI(req).then((res) => {
             if (res.data.code === viewResCode) {
                 res.data.data.records = res.data.data.records.map((row: T) =>
-                    formatTableData(row as T),
+                    formatTableData(
+                        row as T,
+                        tableImg?.width,
+                        tableImg?.height,
+                        tableImg?.imgFit,
+                        tableImg?.svgFontSize,
+                    ),
                 )
 
                 Object.assign(pagination, res.data.data)

@@ -15,8 +15,16 @@ import type { AxiosPromise } from "axios"
 import { type Res } from "@/api/responseCode"
 import { type UpsertPostRequest } from "./common"
 
+export interface UpdatePostResponse extends Res {
+    data: {
+        updated_at: string
+    }
+}
+
 // 更新文章
-export function updatePostRequestAPI(requestData: UpsertPostRequest): AxiosPromise<Res> {
+export function updatePostRequestAPI(
+    requestData: UpsertPostRequest,
+): AxiosPromise<UpdatePostResponse> {
     const urlStr = routerGroup + "/post/update"
     return request({
         url: urlStr,

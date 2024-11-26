@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 16:07:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-24 18:15:26
+ * @LastEditTime : 2024-11-26 16:06:35
  * @FilePath     : \blog-client\src\utils\dateTime.ts
  * @Description  : 格式化时间
  * @Blog         : https://jiaopengzi.com
@@ -22,6 +22,11 @@ export function formatTime(
     formatStr: string = "YYYY-MM-DD HH:mm:ss",
     addHours = 0, // 默认不增加小时
 ): string {
+    // 如果时间戳为空,则返回空字符串
+    if (Timestamp === "") {
+        return ""
+    }
+
     // 将时间戳转换为 Date 对象,默认会转换为本地时间
     const dateTime = new Date(Timestamp)
 

@@ -2,9 +2,9 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-25 17:58:03
+ * @LastEditTime : 2024-11-26 22:26:46
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
- * @Description  : 基础表格
+ * @Description  : 基础表格 table-layout="auto"
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
@@ -43,18 +43,36 @@
             ref="tableRef"
             :data="paginationData.records"
             stripe
-            min-height="700px"
             @selection-change="handleSelectionChange"
-            table-layout="auto"
+            :row-style="rowStyle"
+            style="width: 100%"
         >
-            <el-table-column type="selection" width="55" align="center" />
+            <!-- 选择框 -->
+            <el-table-column type="selection" width="50" align="center" />
+
+            <!-- 编辑按钮 -->
+            <el-table-column v-if="isShowEdit" width="80" align="center">
+                <template #header>
+                    <span>操作</span>
+                </template>
+                <template #default="scope">
+                    <el-button
+                        size="small"
+                        type="primary"
+                        @click="handleEdit(scope.$index, scope.row)"
+                        >编辑</el-button
+                    >
+                    <!-- <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button> -->
+                </template>
+            </el-table-column>
 
             <template v-for="(col, index) in tableColumn">
                 <!-- 图片 -->
                 <el-table-column
                     v-if="col.isImg"
                     :key="`img-${index}`"
-                    :min-width="col.width"
+                    :width="col.width"
+                    :min-width="col.minWidth"
                     :align="col.align"
                 >
                     <template #header>
@@ -112,7 +130,12 @@
                 />
 
                 <!-- 格式化文本 -->
-                <CustomCol v-else-if="col.formatter" :col="col" :index="index" />
+                <CustomCol
+                    v-else-if="col.formatter"
+                    :col="col"
+                    :index="index"
+                    :tags-item-max-height="tagsItemMaxHeight"
+                />
 
                 <!-- 不需要处理，显示原值 -->
                 <el-table-column
@@ -121,25 +144,11 @@
                     :prop="col.prop"
                     :label="col.label"
                     :sortable="col.sortable"
-                    :min-width="col.width"
+                    :width="col.width"
+                    :min-width="col.minWidth"
                     :align="col.align"
                 />
             </template>
-
-            <el-table-column v-if="isShowEdit" align="center">
-                <template #header>
-                    <span>操作</span>
-                </template>
-                <template #default="scope">
-                    <el-button
-                        size="small"
-                        type="primary"
-                        @click="handleEdit(scope.$index, scope.row)"
-                        >编辑</el-button
-                    >
-                    <!-- <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button> -->
-                </template>
-            </el-table-column>
         </el-table>
 
         <!-- 宫格 -->
@@ -176,7 +185,7 @@
                         v-else-if="row.img?.iconKeyName"
                         class="thumbnail-img"
                         :name="row.img?.iconKeyName"
-                        :style="iconStyle(row.img?.fontSize)"
+                        :style="iconStyle(row.img?.svgFontSize)"
                         @click="handleDelegateGridClick(row)"
                     />
 
@@ -252,17 +261,24 @@ defineOptions({ name: "BaseTable" })
 const {
     pagination,
     tableColumn,
-    addItemDialogVisible = false, // 默认添加对话框不显示
-    editItemDialogVisible = false, // 默认编辑对话框不显示
-    isShowDeleteAll = false, // 默认不显示批量删除按钮
-    isShowListOrGrid = false, // 默认不显示切换按钮
-    showListOrGridStatus = true, // 默认显示列表 true:列表,false:宫格
-    isShowEdit = false, // 默认不显示批量删除按钮
-    isShowSearch = false, // 默认不显示批量删除按钮
-    searchStr = "", // 默认搜索关键字为空
+    rowStyle,
+    addItemDialogVisible = false,
+    editItemDialogVisible = false,
+    isShowListOrGrid = false,
+    showListOrGridStatus = true,
+    isShowDeleteAll = false,
+    isShowEdit = false,
+    isShowSearch = false,
+    searchStr = "",
+    addWidth,
+    addTop,
+    editWidth,
+    editTop,
+    tagsItemMaxHeight,
 } = defineProps<{
     pagination: Pagination<TableData> // 分页配置
     tableColumn: TableColumn[] // 表格列配置
+    rowStyle?: Record<string, string> // 表格行样式
     addItemDialogVisible?: boolean // 对话框是否显示
     editItemDialogVisible?: boolean // 对话框是否显示
     isShowListOrGrid?: boolean // 是否显示列表或宫格
@@ -275,6 +291,7 @@ const {
     addTop?: string // 添加对话框距离顶部距离
     editWidth?: string // 编辑对话框宽度
     editTop?: string // 编辑对话框距离顶部距离
+    tagsItemMaxHeight?: string // 标签项目最大高度
 }>()
 
 // 事件

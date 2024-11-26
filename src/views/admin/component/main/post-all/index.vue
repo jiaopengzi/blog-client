@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-25 15:00:29
+ * @LastEditTime : 2024-11-26 22:28:21
  * @FilePath     : \blog-client\src\views\admin\component\main\post-all\index.vue
  * @Description  : 标签管理
  * @Blog         : https://jiaopengzi.com
@@ -19,6 +19,8 @@
         :is-show-search="true"
         :search-str="search"
         :is-show-edit="true"
+        :row-style="{ height: '96px' }"
+        tags-item-max-height="96px"
         @update-current-page="updateCurrentPage"
         @update-page-size="updatePageSize"
         @edit-row="editRow"
@@ -26,7 +28,7 @@
         @update-search="updateSearch"
     >
         <template #btns>
-            <el-button type="primary" @click="toggleAddDialog"> 新增 </el-button>
+            <el-button type="primary" @click="postWrite"> 写文章 </el-button>
         </template>
     </BaseTable>
 </template>
@@ -43,6 +45,9 @@ import { useGetData } from "@/components/hooks/useGetData"
 import { type DeletePostRequest, deletePostAPI } from "@/api/post/delete"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { formatTime } from "@/utils/dateTime"
+import router from "@/router"
+import { queryKey } from "@/views/admin/component/main/post-write"
+import { type TableImg } from "@/components/common"
 
 defineOptions({ name: AdminSideMenu.PostTag })
 
@@ -51,13 +56,13 @@ const cols: TableColumn[] = reactive([
         prop: "id",
         label: "ID",
         sortable: true,
-        width: 80,
+        width: 100,
         align: "center",
     },
     {
         prop: "thumbnail",
         label: "图片",
-        width: 100,
+        width: 130,
         align: "center",
         isImg: true,
     },
@@ -65,46 +70,9 @@ const cols: TableColumn[] = reactive([
         prop: "post_title",
         label: "标题",
         sortable: true,
-        width: 160,
+        width: 180,
         align: "center",
         isHeading: true,
-    },
-    {
-        prop: "created_at",
-        label: "创建时间",
-        sortable: true,
-        width: 120,
-        align: "center",
-    },
-    {
-        prop: "author_info",
-        label: "作者",
-        sortable: true,
-        width: 120,
-        align: "center",
-        isAuthor: true,
-    },
-    {
-        prop: "post_status",
-        label: "状态",
-        sortable: true,
-        width: 120,
-        align: "center",
-        formatter: (row: TableData) => {
-            if ("post_status" in row) {
-                const display = PostStatusDisplay[row.post_status as PostStatusCode]
-                // 判断是否为定时或者过期
-                if (row.post_status === PostStatusCode.Future && row.post_push_time.Time) {
-                    return `${display}(${formatTime(row.post_push_time.Time)})`
-                }
-
-                if (row.post_status === PostStatusCode.Expired && row.post_expired_time.Time) {
-                    return `${display}(${formatTime(row.post_expired_time.Time)})`
-                }
-
-                return display
-            }
-        },
     },
     {
         prop: "categories",
@@ -126,45 +94,91 @@ const cols: TableColumn[] = reactive([
         prop: "price",
         label: "价格",
         sortable: true,
-        width: 80,
+        minWidth: 80,
         align: "center",
     },
     {
         prop: "view_count",
         label: "查看",
         sortable: true,
-        width: 80,
+        minWidth: 80,
         align: "center",
     },
     {
         prop: "like_count",
         label: "点赞",
         sortable: true,
-        width: 80,
+        minWidth: 80,
         align: "center",
     },
     {
         prop: "collect_count",
         label: "收藏",
         sortable: true,
-        width: 80,
+        minWidth: 80,
         align: "center",
     },
     {
         prop: "comment_count",
         label: "评论",
         sortable: true,
-        width: 80,
+        minWidth: 80,
+        align: "center",
+    },
+    {
+        prop: "author_info",
+        label: "作者",
+        sortable: true,
+        minWidth: 120,
+        align: "center",
+        isAuthor: true,
+    },
+    {
+        prop: "post_status",
+        label: "状态",
+        sortable: true,
+        minWidth: 120,
+        align: "center",
+        formatter: (row: TableData) => {
+            if ("post_status" in row) {
+                const display = PostStatusDisplay[row.post_status as PostStatusCode]
+                // 判断是否为定时或者过期
+                if (row.post_status === PostStatusCode.Future && row.post_push_time.Time) {
+                    return `${display}(${formatTime(row.post_push_time.Time)})`
+                }
+
+                if (row.post_status === PostStatusCode.Expired && row.post_expired_time.Time) {
+                    return `${display}(${formatTime(row.post_expired_time.Time)})`
+                }
+
+                return display
+            }
+        },
+    },
+    {
+        prop: "created_at",
+        label: "创建时间",
+        sortable: true,
+        minWidth: 120,
         align: "center",
     },
 ])
+
+// 表格图片配置
+const tableImg: TableImg = {
+    width: 96,
+    height: 96,
+    svgFontSize: 50,
+}
+
+// 查询参数
+const queryParams = reactive({} as ViewPostByAdminRequest)
 
 // hooks 使用
 const {
     addItemDialogVisible, // 添加对话框是否可见
     editItemDialogVisible, // 编辑对话框是否可见
     search, // 搜索关键字
-    toggleAddDialog, // 切换添加对话框
     pagination, // 分页数据
     updateCurrentPage, // 更新当前页
     updatePageSize, // 更新每页显示条数
@@ -178,10 +192,20 @@ const {
     ResponseCode.PostViewByAdminSuccess,
     deletePostAPI,
     ResponseCode.PostDeleteSuccess,
+    queryParams,
+    tableImg,
 )
 
+const postWrite = () => {
+    router.push({ name: AdminSideMenu.PostWrite })
+}
+
 const editRow = (index: number, row: TableData) => {
-    console.log("04============", index, row)
+    // 编辑文章
+    router.push({
+        name: AdminSideMenu.PostWrite,
+        query: { [queryKey.ID]: row.id },
+    })
 }
 
 // 获取数据
