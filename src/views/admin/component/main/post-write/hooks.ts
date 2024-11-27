@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-25 15:09:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-25 16:34:21
+ * @LastEditTime : 2024-11-27 16:41:44
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\hooks.ts
  * @Description  : 表单验证
  * @Blog         : https://jiaopengzi.com
@@ -16,7 +16,7 @@ import {
     type CheckPostSlugExcludingIDRequest,
     checkPostSlugExcludingIDAPI,
 } from "@/api/post/checkPostSlugExcludingID"
-import { ResponseCode } from "@/api/responseCode"
+import { ResponseCode, handleErrInfo } from "@/api/responseCode"
 import { type PgSqlDateTime } from "@/api/common"
 import { PostStatusCode, CommentStatusCode } from "@/api/post/common"
 import { type UpsertPostForm } from "./index"
@@ -218,9 +218,8 @@ export function useFormValidation(options: FormValidationOptions): {
 
         // 判断是否为英文半角逗号分隔
         // 正则表达式：匹配由英文半角逗号分隔的项（项内允许任何字符，但逗号前后不允许有空格）
-        const regex = /^([^,]+)(,[^,]+)*$/
-        if (!regex.test(value)) {
-            callback(new Error("SEO 关键词必须由英文半角逗号分隔"))
+        if (!RegexPatterns.SeoKeyWords.test(value)) {
+            callback(new Error("SEO 关键词必须由英文半角逗号分隔,关键字首尾不能有空格"))
             return
         }
 
@@ -252,8 +251,7 @@ export function useFormValidation(options: FormValidationOptions): {
         }
 
         // 检查是否为合法的 URL
-        const regex = /^(http|https):\/\/.*$/
-        if (!regex.test(value)) {
+        if (!RegexPatterns.ImgURL.test(value)) {
             callback(new Error("缩略图必须为合法的 URL"))
             return
         }
@@ -341,11 +339,7 @@ export function useFormValidation(options: FormValidationOptions): {
             if (res.data.code === ResponseCode.PostCheckSlugNoExist) {
                 callback()
             } else {
-                let errMsg = res.data.msg || "别名不可用"
-
-                if (res.data.data !== null) {
-                    errMsg = res.data.msg + "：" + res.data.data
-                }
+                const errMsg = handleErrInfo(res, "别名不可用")
                 callback(new Error(errMsg))
             }
         })
@@ -398,11 +392,7 @@ export function useFormValidation(options: FormValidationOptions): {
             if (res.data.code === ResponseCode.PostCheckSlugNoExistExcludingID) {
                 callback()
             } else {
-                let errMsg = res.data.msg || "别名不可用"
-
-                if (res.data.data !== null) {
-                    errMsg = res.data.msg + "：" + res.data.data
-                }
+                const errMsg = handleErrInfo(res, "别名不可用")
                 callback(new Error(errMsg))
             }
         })

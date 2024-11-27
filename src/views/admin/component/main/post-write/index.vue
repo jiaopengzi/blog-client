@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-26 19:26:12
+ * @LastEditTime : 2024-11-27 17:35:32
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -56,10 +56,13 @@
                 </div>
             </div>
 
-            <SwitchGroup :switch-items="seoStatus" @update-status="updateSeoStatus" />
+            <div class="seo-switch">
+                <span>SEO设置</span>
+                <SwitchGroup :switch-items="seoStatus" @update-status="updateSeoStatus" />
+            </div>
 
             <el-form-item
-                v-if="seoIsShow"
+                v-show="seoIsShow"
                 label="SEO自定义文章标题，留空则为文章标题。"
                 prop="seo_title"
             >
@@ -67,7 +70,8 @@
             </el-form-item>
 
             <el-form-item
-                v-if="seoIsShow"
+                ref="seoDescriptionRef"
+                v-show="seoIsShow"
                 label="SEO文章描述，留空则自动截取首段一定字数作为文章描。"
                 prop="seo_description"
             >
@@ -75,7 +79,7 @@
             </el-form-item>
 
             <el-form-item
-                v-if="seoIsShow"
+                v-show="seoIsShow"
                 label="SEO文章关键词，多个关键词用英文半角逗号隔开，留空则自动将文章标签做为关键词。"
                 prop="seo_keywords"
             >
@@ -196,13 +200,13 @@ import {
     toRefs,
     watch,
 } from "vue"
-import { useResizeObserver } from "@vueuse/core"
+import { useResizeObserver, useIntersectionObserver } from "@vueuse/core"
 import { EditorStateManager, EditorPost } from "@/components/editor"
 import { IconKeys } from "@/components/common/icons"
 import type { SwitchItem, SwitchItemLabel } from "@/components/common/switch-group"
 import SwitchGroup from "@/components/common/switch-group"
 import { AdminSideMenu } from "@/views/admin/component/aside"
-import { type ElContainer } from "element-plus"
+import type { ElContainer, ElFormItem } from "element-plus"
 import { useUserStore } from "@/stores/user"
 import { viewListPostCategoryAPI, type PostCategory } from "@/api/postCategory/view"
 import { ResponseCode, LocalStorageKey } from "@/api/responseCode"
@@ -232,6 +236,9 @@ const postInfoAboutTime = reactive<PostInfoAboutTime>({})
 
 const elContainerRef = useTemplateRef<InstanceType<typeof ElContainer> | null>("elContainerRef")
 const formRef = useTemplateRef<FormInstance>("formRef")
+const seoDescriptionRef = useTemplateRef<InstanceType<typeof ElFormItem> | null>(
+    "seoDescriptionRef",
+)
 const editorContainerRef = useTemplateRef<HTMLDivElement | null>("editorContainerRef")
 
 const stateManager = new EditorStateManager()
@@ -241,7 +248,7 @@ const userStore = useUserStore()
 userStore.setIsEditing(true)
 
 // 监听编辑器宽度变化
-useResizeObserver(editorContainerRef, (entries) => {
+const { stop: stopResizeObserver } = useResizeObserver(editorContainerRef, (entries) => {
     const entry = entries[0]
     const { width } = entry.contentRect
     stateManager.setEditorWidth(width)
@@ -278,8 +285,8 @@ const seoStatus: SwitchItem[] = reactive([
         display: "SEO状态",
         status: localStorage.getItem(LocalStorageKey.IsShowSeoAtPostWrite) == "true",
         label: {
-            labelTrue: "开启",
-            labelFalse: "关闭",
+            labelTrue: "展开",
+            labelFalse: "折叠",
         },
     },
 ])
@@ -289,6 +296,102 @@ const updateSeoStatus = (items: SwitchItem[]) => {
     seoIsShow.value = items[0].status
     localStorage.setItem(LocalStorageKey.IsShowSeoAtPostWrite, items[0].status.toString())
 }
+
+// 监控标题变化,更新 seo 标题
+watch(
+    () => postInfoForm.post_title,
+    (newVal, oldVal) => {
+        // 如果 seo 标题为空，则更新 seo 标题
+        if (!postInfoForm.seo_title) {
+            postInfoForm.seo_title = newVal
+        }
+
+        // 如果 seo 标题不为空，且和标题oldVal不相等，则不更新 seo 标题
+        if (postInfoForm.seo_title && postInfoForm.seo_title !== oldVal) {
+            return
+        }
+
+        // 如果 seo 标题不为空，且和标题oldVal相等，则更新 seo 标题
+        if (postInfoForm.seo_title && postInfoForm.seo_title === oldVal) {
+            postInfoForm.seo_title = newVal
+        }
+    },
+)
+
+// 监控文章内容变化,更新 seo 描述
+watch(
+    () => postInfoForm.post_content,
+    (newVal, oldVal) => {
+        // 如果 seo 描述为空，则更新 seo 描述
+        if (!postInfoForm.seo_description) {
+            postInfoForm.seo_description = newVal.slice(0, 200)
+        }
+
+        // 如果 seo 描述不为空，且和文章内容oldVal不相等，则不更新 seo 描述
+        if (postInfoForm.seo_description && postInfoForm.seo_description !== oldVal.slice(0, 200)) {
+            return
+        }
+
+        // 如果 seo 描述不为空，且和文章内容oldVal相等，则更新 seo 描述
+        if (postInfoForm.seo_description && postInfoForm.seo_description === oldVal.slice(0, 200)) {
+            postInfoForm.seo_description = newVal.slice(0, 200)
+        }
+    },
+)
+
+// 监控文章标签变化,更新 seo 关键词
+watch(
+    () => postInfoForm.tag_names,
+    (newVal, oldVal) => {
+        // 如果 seo 关键词为空，则更新 seo 关键词
+        if (!postInfoForm.seo_keywords) {
+            postInfoForm.seo_keywords = newVal.join(",")
+        }
+
+        // 如果末尾有逗号，则去掉
+        if (postInfoForm.seo_keywords.endsWith(",")) {
+            postInfoForm.seo_keywords = postInfoForm.seo_keywords.slice(0, -1)
+        }
+
+        // 将当前 postInfoForm.seo_keywords 使用逗号分割转为set
+        const keywordSet = new Set(postInfoForm.seo_keywords.split(","))
+
+        // 需要增加的标签
+        const addVal = newVal.filter((i) => !oldVal.includes(i))
+        // 先添加
+        addVal.forEach((i) => {
+            keywordSet.add(i)
+        })
+
+        // 需要移除的标签
+        const removeVal = oldVal.filter((i) => !newVal.includes(i))
+        // 再移除
+        removeVal.forEach((i) => {
+            keywordSet.delete(i)
+        })
+
+        // 更新 seo 关键词
+        postInfoForm.seo_keywords = Array.from(keywordSet).join(",")
+    },
+)
+
+// 监控 seo 描述是否是否出现在视口
+const seoDescriptionVisible = ref(false)
+const { stop: stopIntersectionObserver } = useIntersectionObserver(
+    seoDescriptionRef,
+    ([entry], observerElement) => {
+        seoDescriptionVisible.value = entry?.isIntersecting || false
+    },
+)
+
+// 监控 seo 描述显示状态变化,更新 seo 描述
+watch(
+    () => seoDescriptionVisible.value,
+    () => {
+        // 将编辑器内容赋值给 post_content
+        postInfoForm.post_content = editorState.editor
+    },
+)
 
 // 角色付费管理
 const rolePaidList: SwitchItem[] = reactive([])
@@ -355,15 +458,6 @@ const radioOptions = () => {
         return Options.filter((item) => item.value === PostStatusCode.Draft)
     }
     return Options
-}
-
-// 监听页面关闭事件,即用户手动修改ULR或关闭页面
-const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-    if (userStore.isEditing) {
-        // 参考：https://developer.mozilla.org/zh-CN/docs/Web/API/Window/beforeunload_event
-        event.preventDefault()
-        event.returnValue = ""
-    }
 }
 
 // 时间快捷选项
@@ -503,12 +597,23 @@ onBeforeMount(async () => {
     }
 })
 
+// 监听页面关闭事件,即用户手动修改ULR或关闭页面
+const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+    if (userStore.isEditing) {
+        // 参考：https://developer.mozilla.org/zh-CN/docs/Web/API/Window/beforeunload_event
+        event.preventDefault()
+        event.returnValue = ""
+    }
+}
+
 onMounted(() => {
     window.addEventListener("beforeunload", handleBeforeUnload)
 })
 
 onBeforeUnmount(() => {
     window.removeEventListener("beforeunload", handleBeforeUnload)
+    stopResizeObserver()
+    stopIntersectionObserver()
 })
 </script>
 
@@ -564,6 +669,14 @@ onBeforeUnmount(() => {
     display: flex;
     justify-content: space-between;
     margin-top: 16px;
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.seo-switch {
+    display: flex;
+    align-items: center;
+    margin: 16px 0;
     font-size: 14px;
     color: var(--text-color);
 }

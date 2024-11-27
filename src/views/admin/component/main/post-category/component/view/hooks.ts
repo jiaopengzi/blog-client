@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-25 10:08:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-25 12:15:23
+ * @LastEditTime : 2024-11-27 11:21:03
  * @FilePath     : \blog-client\src\views\admin\component\main\post-category\component\view\hooks.ts
  * @Description  : 分类表单验证
  * @Blog         : https://jiaopengzi.com
@@ -28,7 +28,7 @@ import {
     type CheckCategorySlugExcludingIDRequest,
     checkCategorySlugExcludingIDAPI,
 } from "@/api/postCategory/checkCategorySlugExcludingID"
-import { ResponseCode } from "@/api/responseCode"
+import { ResponseCode, handleErrInfo } from "@/api/responseCode"
 import { RegexPatterns } from "@/utils/regexPatterns"
 
 // 表单验证选项
@@ -73,10 +73,7 @@ export function useFormValidation(options: FormValidationOptions): {
             if (res.data.code === ResponseCode.PostCategoryCheckNameNoExist) {
                 callback()
             } else {
-                let errMsg = res.data.msg || "分类不可用"
-                if (res.data.data !== null) {
-                    errMsg = res.data.msg + "：" + res.data.data
-                }
+                const errMsg = handleErrInfo(res, "分类不可用")
                 callback(new Error(errMsg))
             }
         })
@@ -116,11 +113,7 @@ export function useFormValidation(options: FormValidationOptions): {
             if (res.data.code === ResponseCode.PostCategoryCheckSlugNoExist) {
                 callback()
             } else {
-                let errMsg = res.data.msg || "别名不可用"
-
-                if (res.data.data !== null) {
-                    errMsg = res.data.msg + "：" + res.data.data
-                }
+                const errMsg = handleErrInfo(res, "别名不可用")
                 callback(new Error(errMsg))
             }
         })
@@ -154,10 +147,7 @@ export function useFormValidation(options: FormValidationOptions): {
             if (res.data.code === ResponseCode.PostCategoryCheckNameNoExistExcludingID) {
                 callback()
             } else {
-                let errMsg = res.data.msg || "分类不可用"
-                if (res.data.data !== null) {
-                    errMsg = res.data.msg + "：" + res.data.data
-                }
+                const errMsg = handleErrInfo(res, "分类不可用")
                 callback(new Error(errMsg))
             }
         })
@@ -203,11 +193,7 @@ export function useFormValidation(options: FormValidationOptions): {
             if (res.data.code === ResponseCode.PostCategoryCheckSlugNoExistExcludingID) {
                 callback()
             } else {
-                let errMsg = res.data.msg || "别名不可用"
-
-                if (res.data.data !== null) {
-                    errMsg = res.data.msg + "：" + res.data.data
-                }
+                const errMsg = handleErrInfo(res, "别名不可用")
                 callback(new Error(errMsg))
             }
         })

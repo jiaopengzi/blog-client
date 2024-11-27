@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-26 22:26:46
+ * @LastEditTime : 2024-11-27 11:43:22
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格 table-layout="auto"
  * @Blog         : https://jiaopengzi.com
@@ -412,6 +412,10 @@ const editItemHandleDialogClose = () => {
 watch(
     search,
     (newVal) => {
+        // 如果字数大于50则截取前50个字符
+        if (newVal.length > 50) {
+            newVal = newVal.substring(0, 50)
+        }
         emit("update-search", newVal)
     },
     { immediate: false },

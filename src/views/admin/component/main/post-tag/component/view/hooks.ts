@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-05 10:11:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-25 12:14:27
+ * @LastEditTime : 2024-11-27 11:19:31
  * @FilePath     : \blog-client\src\views\admin\component\main\post-tag\component\view\hooks.ts
  * @Description  : 表单验证
  * @Blog         : https://jiaopengzi.com
@@ -22,7 +22,7 @@ import {
     type CheckTagSlugExcludingIDRequest,
     checkTagSlugExcludingIDAPI,
 } from "@/api/postTag/checkTagSlugExcludingID"
-import { ResponseCode } from "@/api/responseCode"
+import { ResponseCode, handleErrInfo } from "@/api/responseCode"
 import { RegexPatterns } from "@/utils/regexPatterns"
 
 // 表单验证选项
@@ -66,10 +66,7 @@ export function useFormValidation(options: FormValidationOptions): {
             if (res.data.code === ResponseCode.PostTagCheckNameNoExist) {
                 callback()
             } else {
-                let errMsg = res.data.msg || "标签不可用"
-                if (res.data.data !== null) {
-                    errMsg = res.data.msg + "：" + res.data.data
-                }
+                const errMsg = handleErrInfo(res, "标签不可用")
                 callback(new Error(errMsg))
             }
         })
@@ -109,11 +106,7 @@ export function useFormValidation(options: FormValidationOptions): {
             if (res.data.code === ResponseCode.PostTagCheckSlugNoExist) {
                 callback()
             } else {
-                let errMsg = res.data.msg || "别名不可用"
-
-                if (res.data.data !== null) {
-                    errMsg = res.data.msg + "：" + res.data.data
-                }
+                const errMsg = handleErrInfo(res, "别名不可用")
                 callback(new Error(errMsg))
             }
         })
@@ -147,10 +140,7 @@ export function useFormValidation(options: FormValidationOptions): {
             if (res.data.code === ResponseCode.PostTagCheckNameNoExistExcludingID) {
                 callback()
             } else {
-                let errMsg = res.data.msg || "标签不可用"
-                if (res.data.data !== null) {
-                    errMsg = res.data.msg + "：" + res.data.data
-                }
+                const errMsg = handleErrInfo(res, "标签不可用")
                 callback(new Error(errMsg))
             }
         })
@@ -196,11 +186,7 @@ export function useFormValidation(options: FormValidationOptions): {
             if (res.data.code === ResponseCode.PostTagCheckSlugNoExistExcludingID) {
                 callback()
             } else {
-                let errMsg = res.data.msg || "别名不可用"
-
-                if (res.data.data !== null) {
-                    errMsg = res.data.msg + "：" + res.data.data
-                }
+                const errMsg = handleErrInfo(res, "别名不可用")
                 callback(new Error(errMsg))
             }
         })

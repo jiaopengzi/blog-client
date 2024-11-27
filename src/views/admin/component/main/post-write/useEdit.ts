@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-25 16:44:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-26 19:24:08
+ * @LastEditTime : 2024-11-27 11:25:32
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\useEdit.ts
  * @Description  : 编辑文章
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,7 @@
 
 import { viewPostByIDRequestAPI, type ViewPostByIDRequest } from "@/api/post/viewByID"
 import { updatePostRequestAPI } from "@/api/post/update"
-import { ResponseCode } from "@/api/responseCode"
+import { ResponseCode, handleErrInfo } from "@/api/responseCode"
 import { ShowMsgTip } from "@/utils/message"
 import type { UpsertPostForm, PostInfoAboutTime } from "./index"
 import type { SwitchItem } from "@/components/common/switch-group"
@@ -113,7 +113,7 @@ export function useEdit(
                 ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 6000)
                 return true
             } else {
-                ShowMsgTip(ShowMsgTip.MsgType.error, res.data.msg, 0)
+                ShowMsgTip(ShowMsgTip.MsgType.error, handleErrInfo(res), 0)
                 return false
             }
         })

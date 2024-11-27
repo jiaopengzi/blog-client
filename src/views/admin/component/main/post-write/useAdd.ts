@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-25 16:42:09
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-26 19:10:02
+ * @LastEditTime : 2024-11-27 11:25:09
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\useAdd.ts
  * @Description  : 添加文章
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,7 @@
  */
 
 import { insertPostRequestAPI } from "@/api/post/insert"
-import { ResponseCode } from "@/api/responseCode"
+import { ResponseCode, handleErrInfo } from "@/api/responseCode"
 import { ShowMsgTip } from "@/utils/message"
 import router from "@/router"
 import type { UpsertPostForm, PostInfoAboutTime } from "./index"
@@ -49,7 +49,7 @@ export function useAdd(
                 })
                 return true
             } else {
-                ShowMsgTip(ShowMsgTip.MsgType.error, res.data.msg, 0)
+                ShowMsgTip(ShowMsgTip.MsgType.error, handleErrInfo(res), 0)
                 return false
             }
         })
