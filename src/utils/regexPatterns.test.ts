@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-27 15:17:31
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-27 16:35:17
+ * @LastEditTime : 2024-11-28 16:02:45
  * @FilePath     : \blog-client\src\utils\regexPatterns.test.ts
  * @Description  : 正则表达式测试
  * @Blog         : https://jiaopengzi.com
@@ -137,42 +137,42 @@ describe("RegexPatterns.Password", () => {
 
 describe("RegexPatterns.LoginName", () => {
     it("正确示例", () => {
-        expect(RegexPatterns.UserName.test("user123")).toBe(true)
+        expect(RegexPatterns.LoginName.test("user123")).toBe(true)
     })
     it("数字开头", () => {
-        expect(RegexPatterns.UserName.test("1username")).toBe(false)
+        expect(RegexPatterns.LoginName.test("1username")).toBe(false)
     })
     it("不足6个字符", () => {
-        expect(RegexPatterns.UserName.test("user1")).toBe(false)
+        expect(RegexPatterns.LoginName.test("user1")).toBe(false)
     })
     it("大于20字符", () => {
-        expect(RegexPatterns.UserName.test("user123456789user123456789")).toBe(false)
+        expect(RegexPatterns.LoginName.test("user123456789user123456789")).toBe(false)
     })
     it("有大写字符", () => {
-        expect(RegexPatterns.UserName.test("USER123")).toBe(false)
+        expect(RegexPatterns.LoginName.test("USER123")).toBe(false)
     })
     it("其他情况", () => {
-        expect(RegexPatterns.UserName.test("非法字符")).toBe(false)
+        expect(RegexPatterns.LoginName.test("非法字符")).toBe(false)
     })
 
     it("正确示例", () => {
-        expect(RegexPatterns.Email.test("test@jiaopengzi.com")).toBe(true)
+        expect(RegexPatterns.LoginName.test("test@jiaopengzi.com")).toBe(true)
     })
 
     it("不包含@", () => {
-        expect(RegexPatterns.Email.test("testjiaopengzi.com")).toBe(false)
+        expect(RegexPatterns.LoginName.test("testjiaopengzi.com")).toBe(false)
     })
 
     it("不包含.", () => {
-        expect(RegexPatterns.Email.test("test@jiaopengzicom")).toBe(false)
+        expect(RegexPatterns.LoginName.test("test@jiaopengzicom")).toBe(false)
     })
 
     it("不包含@和.", () => {
-        expect(RegexPatterns.Email.test("testjiaopengzicom")).toBe(false)
+        expect(RegexPatterns.LoginName.test("testjiaopengzicom")).toBe(true)
     })
 
     it("大写字母", () => {
-        expect(RegexPatterns.Email.test("TEST@jiaopengzi.com")).toBe(true)
+        expect(RegexPatterns.LoginName.test("TEST@jiaopengzi.com")).toBe(true)
     })
 })
 
