@@ -2,6 +2,9 @@
 # 使用官方 Node.js 镜像作为构建环境
 FROM node:20.18.0 AS builder
 
+# 设置时区
+ENV TZ=Asia/Shanghai
+
 # 设置工作目录
 WORKDIR /app
 
@@ -22,6 +25,9 @@ RUN pnpm build
 
 # 使用一个较小的基础镜像以减小构建产物的体积
 FROM nginx:1.27.2-alpine
+
+# 设置时区
+ENV TZ=Asia/Shanghai
 
 # 更改 Nginx 缓存目录的所有权（修复问题使用非 root 用户来启动容器）
 RUN chown -R nginx:nginx /var/cache/nginx
