@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-25 16:42:09
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-27 11:25:09
+ * @LastEditTime : 2024-11-30 14:35:34
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\useAdd.ts
  * @Description  : 添加文章
  * @Blog         : https://jiaopengzi.com
@@ -10,6 +10,7 @@
  */
 
 import { insertPostRequestAPI } from "@/api/post/insert"
+import type { InsertPostRequest } from "@/api/post/common"
 import { ResponseCode, handleErrInfo } from "@/api/responseCode"
 import { ShowMsgTip } from "@/utils/message"
 import router from "@/router"
@@ -25,7 +26,8 @@ export function useAdd(
 ) {
     // 提交表单
     const submitForm = async (formEl: FormInstance | undefined): Promise<boolean> => {
-        const req = await handleSubmit(formEl, postInfoForm)
+        // 表单校验及值转换
+        const req = await handleSubmit<InsertPostRequest>(formEl, postInfoForm)
 
         // 如果 req 是空对象，则表示表单验证失败
         if (Object.keys(req).length === 0) return false

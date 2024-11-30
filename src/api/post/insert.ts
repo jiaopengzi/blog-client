@@ -13,7 +13,7 @@ import request from "@/api/request"
 import { routerGroup } from "@/api/routerGroup"
 import type { AxiosPromise } from "axios"
 import { type Res } from "@/api/responseCode"
-import { type UpsertPostRequest } from "./common"
+import { type InsertPostRequest } from "./common"
 
 // 插入文章响应
 export interface InsertPostResponse extends Res {
@@ -26,7 +26,7 @@ export interface InsertPostResponse extends Res {
 
 // 插入文章
 export function insertPostRequestAPI(
-    requestData: UpsertPostRequest,
+    requestData: InsertPostRequest,
 ): AxiosPromise<InsertPostResponse> {
     const urlStr = routerGroup + "/post/insert"
     return request({

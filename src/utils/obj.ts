@@ -106,7 +106,7 @@ export function deepEqual<T>(obj1: T, obj2: T): boolean {
  */
 export function getUpdatedFields<T>(original: T, current: T, primaryKey: keyof T): Partial<T> {
     // 存储已经更新的字段
-    const updatedFields = { [primaryKey]: current[primaryKey] } as T
+    const updatedFields = {} as T
 
     // 遍历所有字段
     for (const field in current) {

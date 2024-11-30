@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-27 17:35:32
+ * @LastEditTime : 2024-11-30 12:29:54
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -211,7 +211,12 @@ import { useUserStore } from "@/stores/user"
 import { viewListPostCategoryAPI, type PostCategory } from "@/api/postCategory/view"
 import { ResponseCode, LocalStorageKey } from "@/api/responseCode"
 import { getRolesList } from "@/utils/permissionRole"
-import { PostStatusCode, CommentStatusCode, gegPostStatusOptions } from "@/api/post/common"
+import {
+    PostStatusCode,
+    CommentStatusCode,
+    gegPostStatusOptions,
+    type InsertPostRequest,
+} from "@/api/post/common"
 import { useFormValidation } from "./hooks"
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { PermissionNames } from "@/utils/permissionRole"
@@ -220,6 +225,7 @@ import {
     createEmptyUpsertPostForm,
     type UpsertPostForm,
     type PostInfoAboutTime,
+    type UpdatePostForm,
 } from "./index"
 import AddTag from "@/components/common/add-tag"
 import { ShowMsgTip } from "@/utils/message"
@@ -302,7 +308,7 @@ watch(
     () => postInfoForm.post_title,
     (newVal, oldVal) => {
         // 如果 seo 标题为空，则更新 seo 标题
-        if (!postInfoForm.seo_title) {
+        if (!postInfoForm.seo_title && newVal) {
             postInfoForm.seo_title = newVal
         }
 
@@ -312,7 +318,7 @@ watch(
         }
 
         // 如果 seo 标题不为空，且和标题oldVal相等，则更新 seo 标题
-        if (postInfoForm.seo_title && postInfoForm.seo_title === oldVal) {
+        if (postInfoForm.seo_title && postInfoForm.seo_title === oldVal && newVal) {
             postInfoForm.seo_title = newVal
         }
     },
@@ -323,7 +329,7 @@ watch(
     () => postInfoForm.post_content,
     (newVal, oldVal) => {
         // 如果 seo 描述为空，则更新 seo 描述
-        if (!postInfoForm.seo_description) {
+        if (!postInfoForm.seo_description && newVal) {
             postInfoForm.seo_description = newVal.slice(0, 200)
         }
 
@@ -333,7 +339,11 @@ watch(
         }
 
         // 如果 seo 描述不为空，且和文章内容oldVal相等，则更新 seo 描述
-        if (postInfoForm.seo_description && postInfoForm.seo_description === oldVal.slice(0, 200)) {
+        if (
+            postInfoForm.seo_description &&
+            postInfoForm.seo_description === oldVal.slice(0, 200) &&
+            newVal
+        ) {
             postInfoForm.seo_description = newVal.slice(0, 200)
         }
     },
@@ -344,7 +354,7 @@ watch(
     () => postInfoForm.tag_names,
     (newVal, oldVal) => {
         // 如果 seo 关键词为空，则更新 seo 关键词
-        if (!postInfoForm.seo_keywords) {
+        if (!postInfoForm.seo_keywords && newVal) {
             postInfoForm.seo_keywords = newVal.join(",")
         }
 
@@ -357,16 +367,16 @@ watch(
         const keywordSet = new Set(postInfoForm.seo_keywords.split(","))
 
         // 需要增加的标签
-        const addVal = newVal.filter((i) => !oldVal.includes(i))
+        const addVal = newVal?.filter((i) => !oldVal.includes(i))
         // 先添加
-        addVal.forEach((i) => {
+        addVal?.forEach((i) => {
             keywordSet.add(i)
         })
 
         // 需要移除的标签
-        const removeVal = oldVal.filter((i) => !newVal.includes(i))
+        const removeVal = oldVal?.filter((i) => !newVal.includes(i))
         // 再移除
-        removeVal.forEach((i) => {
+        removeVal?.forEach((i) => {
             keywordSet.delete(i)
         })
 
@@ -526,7 +536,7 @@ watch(
 let postInfoSnapshot: UpsertPostForm = deepClone(postInfoForm)
 
 // 需要更新的数据
-const dataOfUpdate: UpsertPostForm = reactive({}) as UpsertPostForm
+const dataOfUpdate: UpdatePostForm = reactive({}) as UpdatePostForm
 
 const { submitForm: addSubmitForm } = useAdd(postInfoForm, queryKey, postInfoAboutTime)
 const {
@@ -569,13 +579,20 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         const updatedFields = getUpdatedFields(postInfoSnapshot, postInfoForm, "id")
 
         // 判断是否有更新
-        if (Object.keys(updatedFields).length === 1) {
+        if (Object.keys(updatedFields).length === 0) {
             ShowMsgTip(ShowMsgTip.MsgType.warning, "没有任何修改")
             return
         }
 
-        // 将更新字段合并到 dataOfUpdate
+        // 先清空 dataOfUpdate 再将更新字段合并到 dataOfUpdate
+        Object.keys(dataOfUpdate).forEach((key) => {
+            delete dataOfUpdate[key as keyof UpsertPostForm]
+        })
         Object.assign(dataOfUpdate, updatedFields)
+
+        // 需要更新的字段
+        dataOfUpdate.update_fields = Object.keys(updatedFields) as (keyof InsertPostRequest)[]
+        dataOfUpdate.id = postInfoForm.id
 
         await editSubmitForm(formEl).then((isFinish) => {
             // 如果更新成功，将快照更新

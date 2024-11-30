@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-25 22:23:57
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-27 16:22:31
+ * @LastEditTime : 2024-11-30 12:03:29
  * @FilePath     : \blog-client\src\utils\obj.test.ts
  * @Description  : 对象相关工具函数测试
  * @Blog         : https://jiaopengzi.com
@@ -125,14 +125,13 @@ describe("getUpdatedFields", () => {
     it("sourceObj与equalObj相同即没有更新", () => {
         const updatedFields = getUpdatedFields(sourceObj, equalObj, "id")
 
-        expect(updatedFields).toEqual({ id: "1" })
+        expect(updatedFields).toEqual({})
     })
 
     it("sourceObj与noEqualObj不相同即有更新", () => {
         const updatedFields = getUpdatedFields(sourceObj, noEqualObj, "id")
 
         expect(updatedFields).toEqual({
-            id: "1",
             post_content: "content2",
             post_expired_time: { Time: newFixedDate, Valid: false },
         })

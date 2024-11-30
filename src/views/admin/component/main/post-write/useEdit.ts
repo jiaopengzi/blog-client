@@ -15,7 +15,7 @@ import { ResponseCode, handleErrInfo } from "@/api/responseCode"
 import { ShowMsgTip } from "@/utils/message"
 import type { UpsertPostForm, PostInfoAboutTime } from "./index"
 import type { SwitchItem } from "@/components/common/switch-group"
-import { CommentStatusCode } from "@/api/post/common"
+import { CommentStatusCode, type UpdatePostRequest } from "@/api/post/common"
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { handleSubmit } from "./formHandler"
 import router from "@/router"
@@ -103,7 +103,7 @@ export function useEdit(
 
     // 提交表单
     const submitForm = async (formEl: FormInstance | undefined): Promise<boolean> => {
-        const req = await handleSubmit(formEl, dataOfUpdate)
+        const req = await handleSubmit<UpdatePostRequest>(formEl, dataOfUpdate)
         // 如果 req 是空对象，则表示表单验证失败
         if (Object.keys(req).length === 0) return false
 
