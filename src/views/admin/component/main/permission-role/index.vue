@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-15 15:09:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-23 16:30:11
+ * @LastEditTime : 2024-12-01 09:49:06
  * @FilePath     : \blog-client\src\views\admin\component\main\permission-role\index.vue
  * @Description  : 权限角色页面
  * @Blog         : https://jiaopengzi.com
@@ -597,7 +597,7 @@ h4 {
                     opacity: 0;
                     transition: opacity 0.3s ease;
                     position: absolute;
-                    left: 100px;
+                    left: calc(50% + 16px); // 使其位于 .cell-checkbox 右边 16 像素
                     white-space: nowrap;
                 }
 
