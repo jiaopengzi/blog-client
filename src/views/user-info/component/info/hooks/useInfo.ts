@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-25 12:06:46
+ * @LastEditTime : 2024-12-02 10:36:45
  * @FilePath     : \blog-client\src\views\user-info\component\info\hooks\useInfo.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -16,7 +16,7 @@ import { useUserStore } from "@/stores/user"
 import { storeToRefs } from "pinia"
 import type { UserInfo } from "@/api/user/getUserInfo"
 import { Social } from "@/api/responseCode"
-import { ResponseCode } from "@/api/responseCode"
+import { ResponseCode, handleErrInfo } from "@/api/responseCode"
 import type { EditUserInfoRequest } from "@/api/user/editUserInfo"
 import { editUserInfoAPI } from "@/api/user/editUserInfo"
 import { ShowMsgTip } from "@/utils/message"
@@ -135,17 +135,17 @@ export function useInfo(): UseInfoReturnType {
                     description: editForm.description,
                 }
 
-                const { data } = await editUserInfoAPI(req)
+                const res = await editUserInfoAPI(req)
 
-                if (data.code === ResponseCode.UserEditUserInfoSuccess) {
+                if (res.data.code === ResponseCode.UserEditUserInfoSuccess) {
                     await userStore.getUserInfoByToken(true)
                     changeUserNameDisabled()
                     // 显示成功提示
-                    ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
+                    ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 6000)
                 } else {
                     // 注册失败
-                    // console.log("注册失败");
-                    ShowMsgTip(ShowMsgTip.MsgType.error, data.msg, 0)
+                    const msg = handleErrInfo(res)
+                    ShowMsgTip(ShowMsgTip.MsgType.error, msg, 0)
                 }
             }
         })
@@ -230,7 +230,8 @@ export function useInfo(): UseInfoReturnType {
                 userStore.setAvatar(req.avatar_url)
                 // userStore.getUserInfoByToken(true)
             } else {
-                ShowMsgTip(ShowMsgTip.MsgType.error, res.data.msg, 0)
+                const msg = handleErrInfo(res)
+                ShowMsgTip(ShowMsgTip.MsgType.error, msg, 0)
             }
         })
     }

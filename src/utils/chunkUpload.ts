@@ -7,8 +7,7 @@ import { Task, TaskQueue } from "@/utils/task"
 import { type ConfirmBeforeUploadRequest } from "@/api/upload/confirmBeforeUpload"
 import { type ChunkMetadataWithoutFileId } from "@/api/upload/chunk"
 import { HashCalculator, HashAlgorithm } from "@/utils/hash"
-import { ResponseCode } from "@/api/responseCode"
-import type { Res } from "@/api/responseCode"
+import { ResponseCode, handleErrInfo, type Res } from "@/api/responseCode"
 
 // 分片元数据,包含文件二进制数据
 export interface Chunk extends ChunkMetadataWithoutFileId {
@@ -392,7 +391,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
                         return
                     }
                 } else {
-                    const errorMsg = res.msg || "Failed to upload chunk."
+                    const errorMsg = handleErrInfo(res)
                     this.emit(UploadControllerEvents.ERROR, new Error(errorMsg))
                 }
             } catch (error) {
@@ -423,7 +422,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
             info.fileUrl = res.data
             this.emit(UploadControllerEvents.END, info)
         } else {
-            const errorMsg = res.msg || "Failed to get upload file url."
+            const errorMsg = handleErrInfo(res)
             this.emit(UploadControllerEvents.ERROR, new Error(errorMsg))
         }
     }

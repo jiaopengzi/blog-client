@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-27 11:14:49
+ * @LastEditTime : 2024-12-02 10:32:47
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -185,7 +185,7 @@ export enum Social {
  * @param msgTitle 根据不同的接口传入不同的标题 默认为空
  * @return {string} 返回错误信息
  */
-export const handleErrInfo = (res: AxiosResponse<Res, any>, msgTitle: string = ""): string => {
+export const handleErrInfo2 = (res: AxiosResponse<Res, any>, msgTitle: string = ""): string => {
     // 错误信息
     let errMsg = res.data.msg || msgTitle
 
@@ -201,6 +201,43 @@ export const handleErrInfo = (res: AxiosResponse<Res, any>, msgTitle: string = "
 
         for (const key in res.data.data) {
             errData.push(res.data.data[key])
+        }
+
+        // 拼接错误信息
+        return (errMsg += "：" + errData.join(","))
+    }
+
+    return errMsg
+}
+
+/**
+ * @description: 处理错误信息
+ * @param res 返回结果
+ * @param msgTitle 根据不同的接口传入不同的标题 默认为空
+ * @return {string} 返回错误信息
+ */
+export const handleErrInfo = (
+    res: AxiosResponse<Res, any> | Res,
+    msgTitle: string = "",
+): string => {
+    // 处理响应数据
+    const responseData: Res = "data" in res ? res.data : res
+
+    // 错误信息
+    let errMsg = responseData.msg || msgTitle
+
+    // 如果data不为空且不是对象
+    if (responseData.data !== null && typeof responseData.data !== "object") {
+        return (errMsg += "：" + responseData.data)
+    }
+
+    // 如果data不为空且是对象
+    if (responseData.data !== null && typeof responseData.data === "object") {
+        // 历遍对象取出错误信息，不需要key
+        const errData = []
+
+        for (const key in responseData.data) {
+            errData.push(responseData.data[key])
         }
 
         // 拼接错误信息

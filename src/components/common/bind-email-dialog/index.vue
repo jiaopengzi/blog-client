@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 18:53:25
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 09:15:44
+ * @LastEditTime : 2024-12-02 11:55:35
  * @FilePath     : \blog-client\src\components\common\bind-email-dialog\index.vue
  * @Description  : 绑定邮箱弹窗
  * @Blog         : https://jiaopengzi.com
@@ -82,7 +82,7 @@ import type { CaptchaSendRequest } from "@/api/captcha/send"
 import { captchaSendAPI } from "@/api/captcha/send"
 import type { CaptchaCheckRequest } from "@/api/captcha/check"
 import { captchaCheckAPI } from "@/api/captcha/check"
-import { ResponseCode, CaptchaPurpose } from "@/api/responseCode"
+import { ResponseCode, CaptchaPurpose, handleErrInfo } from "@/api/responseCode"
 import { storeToRefs } from "pinia"
 import { useUserStore } from "@/stores/user"
 
@@ -259,16 +259,16 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                 captcha: bindEmailForm.captcha,
             }
 
-            const { data } = await bindEmailAPI(req)
+            const res = await bindEmailAPI(req)
 
-            if (data.code === ResponseCode.UserBindEmailSuccess) {
+            if (res.data.code === ResponseCode.UserBindEmailSuccess) {
                 // 显示注册成功提示
                 userStore.getUserInfoByToken(true) // 强制更新用户信息
-                ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
+                ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 6000)
             } else {
                 // 注册失败
-                // console.log("注册失败");
-                ShowMsgTip(ShowMsgTip.MsgType.error, data.msg, 0)
+                const msg = handleErrInfo(res)
+                ShowMsgTip(ShowMsgTip.MsgType.error, msg, 0)
             }
             console.log("submit!")
         }

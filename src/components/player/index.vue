@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-17 10:03:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-02 18:59:13
+ * @LastEditTime : 2024-12-02 11:59:07
  * @FilePath     : \blog-client\src\components\player\index.vue
  * @Description  : 视频播放器
  * @Blog         : https://jiaopengzi.com

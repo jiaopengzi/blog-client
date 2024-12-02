@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 20:06:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-07 09:42:12
+ * @LastEditTime : 2024-12-02 10:53:27
  * @FilePath     : \blog-client\src\utils\requestStrategyBase.ts
  * @Description  : 上传请求策略基类
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,7 @@
  */
 
 import { ShowMsgTip } from "@/utils/message"
-import { ResponseCode } from "@/api/responseCode"
+import { ResponseCode, handleErrInfo } from "@/api/responseCode"
 import { type UploadRequestOptions } from "element-plus"
 import type { RequestStrategy, Chunk, UploadFileInfo } from "@/utils/chunkUpload"
 import { type ConfirmBeforeUploadRequest } from "@/api/upload/confirmBeforeUpload"
@@ -59,18 +59,7 @@ export abstract class RequestStrategyBase implements RequestStrategy {
                     this.uploadFileInfo = data
                     return data
                 } else {
-                    let errorMessage = response.data.msg
-                    if (typeof data === "object" && "error_msg" in data && data.error_msg) {
-                        // ShowMsgTip(
-                        //   ShowMsgTip.MsgType.error,
-                        //   `${response.data.msg}:${this.fileName},${data.error_msg} `,
-                        //   6000,
-                        // )
-                        errorMessage = `${response.data.msg},${data.error_msg}`
-                    } else {
-                        // ShowMsgTip(ShowMsgTip.MsgType.error, `${response.data.msg}:${this.fileName}`, 6000)
-                        errorMessage = `${response.data.msg}`
-                    }
+                    const errorMessage = handleErrInfo(response)
 
                     this.handleConfirmBeforeUploadError(errorMessage)
 

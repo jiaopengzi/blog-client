@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 15:17:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-19 09:59:03
+ * @LastEditTime : 2024-12-02 12:02:37
  * @FilePath     : \blog-client\src\pkg\hls\index.ts
  * @Description  : hls 自定义 loader
  * @Blog         : https://jiaopengzi.com
@@ -20,7 +20,7 @@ import type {
 
 import type { KeyLoaderContext } from "custom-hls"
 import { reverseString, decryptData } from "@/utils/encrypt"
-import { ResponseCode } from "@/api/responseCode"
+import { ResponseCode, handleErrInfo } from "@/api/responseCode"
 import { getM3u8API } from "@/api/video/getM3u8"
 import { getMainM3u8API } from "@/api/video/getMainM3u8"
 import { getKeyAPI } from "@/api/video/getKey"
@@ -83,8 +83,9 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
                             null,
                         )
                     } else {
+                        const msg = handleErrInfo(response)
                         callbacks.onError(
-                            { code: response.data.code, text: response.data.msg },
+                            { code: response.data.code, text: msg },
                             context,
                             null,
                             loaderStats,
@@ -123,8 +124,9 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
                             null,
                         )
                     } else {
+                        const msg = handleErrInfo(response)
                         callbacks.onError(
-                            { code: response.data.code, text: response.data.msg },
+                            { code: response.data.code, text: msg },
                             context,
                             null,
                             loaderStats,
@@ -172,8 +174,9 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
                             null,
                         )
                     } else {
+                        const msg = handleErrInfo(data)
                         callbacks.onError(
-                            { code: data.code, text: data.msg },
+                            { code: data.code, text: msg },
                             context,
                             null,
                             loaderStats,

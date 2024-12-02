@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-28 16:56:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 11:02:26
+ * @LastEditTime : 2024-12-02 12:12:36
  * @FilePath     : \blog-client\src\views\admin\component\main\login-log\index.vue
  * @Description  : 登录日志
  * @Blog         : https://jiaopengzi.com
@@ -42,7 +42,7 @@ import {
     type GetLoginLogsRequest,
     type LoginLog,
 } from "@/api/loginLog/getLoginLogs"
-import { ResponseCode } from "@/api/responseCode"
+import { ResponseCode, handleErrInfo } from "@/api/responseCode"
 import router from "@/router/index"
 import {
     DeleteLoginLogByDayAPI,
@@ -161,7 +161,8 @@ const handleDeleteN = () => {
                 ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 3000)
             } else {
                 // 显示错误信息
-                ShowMsgTip(ShowMsgTip.MsgType.error, res.data.msg, 3000)
+                const msg = handleErrInfo(res)
+                ShowMsgTip(ShowMsgTip.MsgType.error, msg, 3000)
             }
         })
     })
@@ -197,7 +198,8 @@ const deleteRows = async (rows: TableData[]) => {
             ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 3000)
         } else {
             // 显示错误信息
-            ShowMsgTip(ShowMsgTip.MsgType.error, res.data.msg, 3000)
+            const msg = handleErrInfo(res)
+            ShowMsgTip(ShowMsgTip.MsgType.error, msg, 3000)
         }
     })
 }

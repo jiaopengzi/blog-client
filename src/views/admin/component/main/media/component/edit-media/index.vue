@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 10:24:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-02 19:24:05
+ * @LastEditTime : 2024-12-02 12:16:20
  * @FilePath     : \blog-client\src\views\admin\component\main\media\component\edit-media\index.vue
  * @Description  : 编辑媒体
  * @Blog         : https://jiaopengzi.com
@@ -155,7 +155,7 @@ import { reactive, ref, watch, useTemplateRef, computed, watchEffect } from "vue
 import type { EditMediaProps, EditMediaForm, SubtitlesForm } from "./index"
 import { ShowMsgTip } from "@/utils/message"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { ResponseCode } from "@/api/responseCode"
+import { ResponseCode, handleErrInfo } from "@/api/responseCode"
 import { getSubtitlesByAdminAPI } from "@/api/video/getSubtitlesByAdmin"
 import { type UpsertSubtitlesRequest, upsertSubtitlesAPI } from "@/api/video/upsertSubtitles"
 import { type DeleteSubtitlesRequest, deleteSubtitlesAPI } from "@/api/video/deleteSubtitles"
@@ -309,10 +309,7 @@ const saveSubtitles = async (formEl: FormInstance | undefined) => {
         playerStateManager.setSubtitlesByVideoHashIdAuto() // 更新字幕
         ShowMsgTip(ShowMsgTip.MsgType.success, "保存成功", 3000)
     } else {
-        let errMsg = res.data.msg || "保存失败"
-        if (res.data.data) {
-            errMsg = res.data.msg + "：" + res.data.data
-        }
+        const errMsg = handleErrInfo(res, "保存失败")
         ShowMsgTip(ShowMsgTip.MsgType.error, errMsg)
     }
 }
@@ -339,10 +336,7 @@ const delSubtitles = async () => {
             subtitlesFormRef.value?.resetFields()
             ShowMsgTip(ShowMsgTip.MsgType.success, "删除成功", 3000)
         } else {
-            let errMsg = res.data.msg || "删除失败"
-            if (res.data.data) {
-                errMsg = res.data.msg + "：" + res.data.data
-            }
+            const errMsg = handleErrInfo(res, "删除失败")
             ShowMsgTip(ShowMsgTip.MsgType.error, errMsg)
         }
     })
@@ -356,10 +350,7 @@ const getSubtitles = async (language: string) => {
             subtitlesForm.subtitles = res.data.data.subtitles
             subtitlesForm.label = res.data.data.label
         } else {
-            let errMsg = res.data.msg || "获取字幕失败"
-            if (res.data.data) {
-                errMsg = res.data.msg + "：" + res.data.data
-            }
+            const errMsg = handleErrInfo(res, "获取字幕失败")
             ShowMsgTip(ShowMsgTip.MsgType.error, errMsg)
         }
     })
@@ -400,10 +391,7 @@ function checkSlugValidator(
         if (res.data.code === ResponseCode.CheckSlugAvailable) {
             callback()
         } else {
-            let errMsg = res.data.msg || "别名不可用"
-            if (res.data.data !== "") {
-                errMsg = res.data.msg + "：" + res.data.data
-            }
+            const errMsg = handleErrInfo(res, "别名不可用")
             callback(new Error(errMsg))
         }
     })
@@ -443,10 +431,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
             emit("edit-media-status", true)
             ShowMsgTip(ShowMsgTip.MsgType.success, "更新成功", 3000)
         } else {
-            let errMsg = res.data.msg || "更新失败"
-            if (res.data.data) {
-                errMsg = res.data.msg + "：" + res.data.data
-            }
+            const errMsg = handleErrInfo(res, "更新失败")
             ShowMsgTip(ShowMsgTip.MsgType.error, errMsg)
         }
     })

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-26 22:32:26
+ * @LastEditTime : 2024-12-02 12:12:52
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -88,7 +88,7 @@ import { getMediaFilesAPI, emptyMediaFiles } from "@/api/upload/getFiles"
 import { debounce } from "throttle-debounce"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import { ShowMsgTip } from "@/utils/message"
-import { ResponseCode, LocalStorageKey } from "@/api/responseCode"
+import { ResponseCode, LocalStorageKey, handleErrInfo } from "@/api/responseCode"
 import { ImgFit } from "@/components/common"
 import router from "@/router"
 import { paginationRouterPush, PaginationQueryKey } from "@/router/utils"
@@ -321,7 +321,8 @@ const deleteRows = async (rows: TableData[]) => {
             ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 3000)
         } else {
             // 显示错误信息
-            ShowMsgTip(ShowMsgTip.MsgType.error, res.data.msg, 3000)
+            const msg = handleErrInfo(res)
+            ShowMsgTip(ShowMsgTip.MsgType.error, msg, 3000)
         }
     })
 }

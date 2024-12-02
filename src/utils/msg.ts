@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-22 14:41:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-24 00:48:58
+ * @LastEditTime : 2024-12-02 12:10:13
  * @FilePath     : \blog-client\src\utils\msg.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,7 @@
  */
 import { type Res } from "@/api/responseCode"
 import { formatDurationTime } from "@/utils/dateTime"
-import { ResponseCode } from "@/api/responseCode"
+import { ResponseCode, handleErrInfo } from "@/api/responseCode"
 
 // 获取用户禁用信息
 export function getUserForbiddenMsg(res: Res) {
@@ -26,7 +26,7 @@ export function getUserForbiddenMsg(res: Res) {
             res.code === ResponseCode.ClientIDTooManyRequests) &&
         res.data
     ) {
-        return `${res.msg}:${res.data}` // 占位符替换
+        return handleErrInfo(res)
     }
     return res.msg
 }
