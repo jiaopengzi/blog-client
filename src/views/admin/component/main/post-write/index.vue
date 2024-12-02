@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-30 12:29:54
+ * @LastEditTime : 2024-12-02 14:28:23
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -57,7 +57,7 @@
             </div>
 
             <div class="seo-switch">
-                <span>SEO设置</span>
+                <span>常规设置</span>
                 <SwitchGroup :switch-items="seoStatus" @update-status="updateSeoStatus" />
             </div>
 
@@ -86,16 +86,16 @@
                 <el-input v-model="postInfoForm.seo_keywords" />
             </el-form-item>
 
+            <el-form-item v-show="seoIsShow" label="别名，留空则使用默认ID值。" prop="slug">
+                <el-input v-model="postInfoForm.slug" />
+            </el-form-item>
+
             <el-form-item label="手动设置缩略图,如果没有则随机显示一张图片。" prop="thumbnail">
                 <el-input v-model="postInfoForm.thumbnail" />
             </el-form-item>
 
             <el-form-item label="销售价格 为空则为免费。" prop="price">
                 <el-input v-model="postInfoForm.price" />
-            </el-form-item>
-
-            <el-form-item label="别名，留空则使用默认ID值。" prop="slug">
-                <el-input v-model="postInfoForm.slug" />
             </el-form-item>
 
             <el-form-item label="文章分类管理" prop="category_ids">
@@ -400,6 +400,17 @@ watch(
     () => {
         // 将编辑器内容赋值给 post_content
         postInfoForm.post_content = editorState.editor
+    },
+)
+
+// 更新 slug
+watch(
+    () => postInfoForm.id,
+    (newVal, oldVal) => {
+        // 如果 slug 为空，且 id 不为空，则更新 slug
+        if (!postInfoForm.slug && newVal) {
+            postInfoForm.slug = newVal
+        }
     },
 )
 

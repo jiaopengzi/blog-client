@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-07 14:24:11
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-30 16:02:07
+ * @LastEditTime : 2024-12-02 13:30:51
  * @FilePath     : \blog-client\src\utils\permissionRole.ts
  * @Description  : 权限工具类
  * @Blog         : https://jiaopengzi.com
@@ -26,6 +26,14 @@ export enum PermissionNames {
     EditMedia = "EditMedia",
     DeleteMedia = "DeleteMedia",
     ViewMedia = "ViewMedia",
+    AddCategory = "AddCategory",
+    EditCategory = "EditCategory",
+    DeleteCategory = "DeleteCategory",
+    ViewCategory = "ViewCategory",
+    AddTag = "AddTag",
+    EditTag = "EditTag",
+    DeleteTag = "DeleteTag",
+    ViewTag = "ViewTag",
     AddPost = "AddPost",
     EditPost = "EditPost",
     DeletePost = "DeletePost",

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-15 15:09:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-01 09:49:06
+ * @LastEditTime : 2024-12-02 14:04:51
  * @FilePath     : \blog-client\src\views\admin\component\main\permission-role\index.vue
  * @Description  : 权限角色页面
  * @Blog         : https://jiaopengzi.com
@@ -19,7 +19,13 @@
                 更新权限
             </el-button>
         </div>
-        <el-table :data="permissionsData" class="permission-table" table-layout="auto" stripe>
+        <el-table
+            :data="permissionsData"
+            class="permission-table"
+            table-layout="auto"
+            stripe
+            height="calc(100vh - 132px)"
+        >
             <!-- 交叉表第一列 权限名称 -->
             <el-table-column prop="permissionIndex" label="序号" width="100"></el-table-column>
             <!-- 交叉表第一列 权限名称 -->
@@ -261,6 +267,8 @@ const updatePermissionRole = async (permissionName: string, roleName: string) =>
 const labelPosition = ref("left")
 // 表单大小 '' | 'large' | 'default' | 'small'
 const formSize = ref("large")
+
+const containerRef = useTemplateRef<HTMLDivElement | null>("containerRef")
 
 // 表单实例
 const permissionRoleFormRef = useTemplateRef<FormInstance>("permissionRoleFormRef")

@@ -2,9 +2,9 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-24 15:53:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-26 21:41:09
+ * @LastEditTime : 2024-12-02 18:21:12
  * @FilePath     : \blog-client\src\components\common\base-table\custom-col\index.vue
- * @Description  : 自定义列
+ * @Description  : 自定义列 
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
@@ -33,10 +33,11 @@
                 v-if="col.isTags || col.isCategories"
                 :max-height="tagsItemMaxHeight ? tagsItemMaxHeight : '100px'"
             >
+                <!-- 注意 key 需要使用 id + 文章数量 -->
                 <TagItem
                     v-for="item in scope.row[col.prop]"
                     :tag-data="item"
-                    :key="item.id"
+                    :key="item.id + item.post_count"
                     @click="handleTagClick(item)"
                 />
             </el-scrollbar>

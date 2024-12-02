@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-26 22:28:21
+ * @LastEditTime : 2024-12-02 18:05:12
  * @FilePath     : \blog-client\src\views\admin\component\main\post-all\index.vue
  * @Description  : 标签管理
  * @Blog         : https://jiaopengzi.com
@@ -49,7 +49,7 @@ import router from "@/router"
 import { queryKey } from "@/views/admin/component/main/post-write"
 import { type TableImg } from "@/components/common"
 
-defineOptions({ name: AdminSideMenu.PostTag })
+defineOptions({ name: AdminSideMenu.PostAll })
 
 const cols: TableColumn[] = reactive([
     {
