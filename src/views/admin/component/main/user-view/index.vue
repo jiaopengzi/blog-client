@@ -504,7 +504,7 @@ const getDataOnRouteChange = async () => {
     })
 }
 
-useGetData(getDataOnBeforeMount, getDataOnRouteChange)
+useGetData([getDataOnBeforeMount], [getDataOnRouteChange])
 </script>
 
 <style scoped lang="scss">

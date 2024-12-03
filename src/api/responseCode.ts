@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-02 10:32:47
+ * @LastEditTime : 2024-12-03 16:49:45
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -75,6 +75,13 @@ export enum ResponseCode {
     PostCheckSlugNoExistExcludingID = 2007, // 别名名称不存在，排除指定ID
     PostViewByIDSuccess = 2008, // 根据ID查看文章成功
     PostViewByAdminSuccess = 2009, // 管理员查看文章成功
+    PostCountByMonthIsNone = 2010, // 无按照月份统计文章数量
+    PostCountByMonthSuccess = 2011, // 按照月份统计文章数量成功
+    PostCountByStatusIsNone = 2012, // 无按照文章状态统计文章数量
+    PostCountByStatusSuccess = 2013, // 按照文章状态统计文章数量成功
+    PostCountByAuthorIsNone = 2014, // 无按照作者统计文章数量
+    PostCountByAuthorSuccess = 2015, // 按照作者统计文章数量成功
+    PostStatusBatchOperationSuccess = 2016, // 批量操作文章状态成功
 
     // 文章标签相关
     PostTagInsertSuccess = 2100, // 插入文章标签成功

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 09:35:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-22 00:31:02
+ * @LastEditTime : 2024-12-03 17:48:41
  * @FilePath     : \blog-client\src\stores\user.ts
  * @Description  : 用户信息
  * @Blog         : https://jiaopengzi.com
@@ -70,6 +70,11 @@ export const useUserStore = defineStore({
     state: () => createEmptyUserInfoStore(),
 
     getters: {
+        // 获取用户ID
+        getUserID(): string {
+            return this.data.user.id
+        },
+
         // 获取用户信息
         getUserData(): UserInfo {
             return this.data

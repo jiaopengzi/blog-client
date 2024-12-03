@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-02 18:05:12
+ * @LastEditTime : 2024-12-03 18:23:52
  * @FilePath     : \blog-client\src\views\admin\component\main\post-all\index.vue
  * @Description  : 标签管理
  * @Blog         : https://jiaopengzi.com
@@ -30,11 +30,37 @@
         <template #btns>
             <el-button type="primary" @click="postWrite"> 写文章 </el-button>
         </template>
+
+        <template #category>
+            <!-- v-for 循环 postCountGroup生成 按钮 -->
+            <div class="category">
+                <el-button
+                    v-for="item in postCountGroup"
+                    :key="item.key"
+                    :class="{ active: item.key === activeGroup }"
+                    @click="handlePostCountByGroup(item)"
+                >
+                    {{ item.display }} ({{ item.count }})
+                </el-button>
+            </div>
+        </template>
+
+        <template #other-filter>
+            <!-- v-for 循环 postCountGroup生成 按钮 -->
+            <el-select v-model="postCountMonthSelect" placeholder="Select" style="width: 160px">
+                <el-option
+                    v-for="item in postCountMonth"
+                    :key="`${item.year}-${item.month}(${item.count})`"
+                    :label="`${item.year}-${item.month.toString().padStart(2, '0')}(${item.count})`"
+                    :value="`${item.year}-${item.month}`"
+                />
+            </el-select>
+        </template>
     </BaseTable>
 </template>
 
 <script lang="ts" setup>
-import { reactive } from "vue"
+import { ref, reactive } from "vue"
 import type { TableData, TableColumn } from "@/components/common/base-table"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import { type PostInfoRes, PostStatusCode, PostStatusDisplay } from "@/api/post/common"
@@ -48,6 +74,9 @@ import { formatTime } from "@/utils/dateTime"
 import router from "@/router"
 import { queryKey } from "@/views/admin/component/main/post-write"
 import { type TableImg } from "@/components/common"
+import { useHeader } from "./hooks"
+import { type PostCountGroup } from "./index"
+import { useUserStore } from "@/stores/user"
 
 defineOptions({ name: AdminSideMenu.PostAll })
 
@@ -143,11 +172,11 @@ const cols: TableColumn[] = reactive([
             if ("post_status" in row) {
                 const display = PostStatusDisplay[row.post_status as PostStatusCode]
                 // 判断是否为定时或者过期
-                if (row.post_status === PostStatusCode.Future && row.post_push_time.Time) {
+                if (row.post_status === PostStatusCode.Future && row.post_push_time?.Time) {
                     return `${display}(${formatTime(row.post_push_time.Time)})`
                 }
 
-                if (row.post_status === PostStatusCode.Expired && row.post_expired_time.Time) {
+                if (row.post_status === PostStatusCode.Expired && row.post_expired_time?.Time) {
                     return `${display}(${formatTime(row.post_expired_time.Time)})`
                 }
 
@@ -196,6 +225,24 @@ const {
     tableImg,
 )
 
+const userStore = useUserStore()
+
+const { postCountGroup, postCountMonth, postCountMonthSelect, activeGroup } = useHeader(
+    userStore.getUserID,
+)
+
+const handlePostCountByGroup = async (item: PostCountGroup) => {
+    activeGroup.value = item.key
+    // 添加路由跳转
+    console.log("10============")
+    // paginationRouterPush(
+    //     AdminSideMenu.UserView,
+    //     pagination.value.page_size,
+    //     pagination.value.current_page,
+    //     { [queryKey.RoleName]: role, [queryKey.Search]: search.value },
+    // )
+}
+
 const postWrite = () => {
     router.push({ name: AdminSideMenu.PostWrite })
 }
@@ -209,20 +256,40 @@ const editRow = (index: number, row: TableData) => {
 }
 
 // 获取数据
-useGetData(updatePaginateOnBeforeMount, updatePaginate)
+useGetData([updatePaginateOnBeforeMount], [updatePaginate])
 </script>
 
 <style scoped lang="scss">
-.dialog-title {
-    font-size: 20px;
-    font-weight: 700;
-}
-
-.dialog-add,
-.dialog-edit {
-    width: 100%;
-    // 浮动 水平居中
+.category {
+    margin-top: 10px;
     display: flex;
-    justify-content: center;
+    align-items: center;
+
+    .el-button {
+        position: relative;
+        // 背景透明
+        background-color: transparent;
+        // 无边框
+        border: none;
+
+        &.active {
+            font-weight: bold;
+            color: $primary-color;
+        }
+
+        &::after {
+            content: "";
+            position: absolute;
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 61.8%;
+            border-right: 1px solid $primary-color;
+        }
+
+        &:last-child::after {
+            display: none;
+        }
+    }
 }
 </style>

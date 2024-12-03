@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-02 12:12:52
+ * @LastEditTime : 2024-12-03 17:02:57
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -549,7 +549,7 @@ const deleteSubtitles = async (language: string) => {
 }
 
 // hook
-useGetData(getDataOnBeforeMount, getDataOnRouteChange)
+useGetData([getDataOnBeforeMount], [getDataOnRouteChange])
 </script>
 
 <style scoped lang="scss">

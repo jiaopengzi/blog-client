@@ -201,7 +201,7 @@ const editRow = (index: number, row: TableData) => {
 }
 
 // 获取数据
-useGetData(updatePaginateOnBeforeMount, updatePaginate)
+useGetData([updatePaginateOnBeforeMount], [updatePaginate])
 </script>
 
 <style scoped lang="scss">

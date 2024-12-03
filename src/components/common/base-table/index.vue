@@ -28,14 +28,16 @@
         <!-- 分类 -->
         <slot name="category"></slot>
 
-        <!-- 搜索 -->
-        <el-input
-            v-if="isShowSearch"
-            class="search"
-            v-model="search"
-            size="default"
-            placeholder="关键字搜索"
-        />
+        <div class="filter">
+            <!-- 搜索 -->
+            <el-input
+                v-if="isShowSearch"
+                class="search filter-item"
+                v-model="search"
+                placeholder="关键字搜索"
+            />
+            <slot class="filter-item" name="other-filter"></slot>
+        </div>
 
         <!-- 表格内容 -->
         <el-table
@@ -530,6 +532,14 @@ const isSelected = (row: TableData) => {
         bottom: 0;
         left: 0;
         display: none;
+    }
+}
+
+.filter {
+    display: flex;
+    margin-top: 6px;
+    .filter-item {
+        margin-right: 10px;
     }
 }
 

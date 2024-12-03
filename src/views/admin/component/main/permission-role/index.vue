@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-15 15:09:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-02 14:04:51
+ * @LastEditTime : 2024-12-03 14:36:42
  * @FilePath     : \blog-client\src\views\admin\component\main\permission-role\index.vue
  * @Description  : 权限角色页面
  * @Blog         : https://jiaopengzi.com
@@ -24,7 +24,7 @@
             class="permission-table"
             table-layout="auto"
             stripe
-            height="calc(100vh - 132px)"
+            height="calc(100vh - 142px)"
         >
             <!-- 交叉表第一列 权限名称 -->
             <el-table-column prop="permissionIndex" label="序号" width="100"></el-table-column>

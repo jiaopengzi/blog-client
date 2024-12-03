@@ -20,6 +20,8 @@ import type { Pagination, PaginationRequest } from "@/components/common"
 export interface ViewPostByAdminRequest extends PaginationRequest {
     post_author: string // 文章作者
     post_status: number // 文章状态
+    year: number // 文章年份
+    month: number // 文章月份
     post_category_id: string // 文章分类ID
     post_tag_id: string // 文章标签ID
     custom_filed: string // 自定义字段
