@@ -24,6 +24,7 @@
         @edit-row="editRow"
         @delete-rows="deleteRows"
         @update-search="updateSearch"
+        @run-search="runSearch"
         @add-item-update-dialog-visible="addItemUpdateDialogVisible"
         @edit-item-update-dialog-visible="editItemUpdateDialogVisible"
     >
@@ -145,6 +146,7 @@ const {
     updateCurrentPage, // 更新当前页
     updatePageSize, // 更新每页显示条数
     updateSearch, // 更新搜索关键字
+    runSearch, // 执行搜索
     addStatus, // 添加状态
     editStatus, // 编辑状态
     addItemUpdateDialogVisible, // 新增对话框

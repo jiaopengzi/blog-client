@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-23 15:28:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-30 14:32:51
+ * @LastEditTime : 2024-12-04 11:33:40
  * @FilePath     : \blog-client\src\api\post\common.ts
  * @Description  : 文章共用内容
  * @Blog         : https://jiaopengzi.com
@@ -45,6 +45,26 @@ export const gegPostStatusOptions = () => {
         { label: PostStatusDisplay[PostStatusCode.Publish], value: PostStatusCode.Publish },
         { label: PostStatusDisplay[PostStatusCode.Expired], value: PostStatusCode.Expired },
     ]
+}
+
+// 自定义字段
+export enum CustomFields {
+    Price = "price", // 价格
+    ViewCount = "View_count", // 浏览次数
+    CommentCount = "comment_count", // 评论次数
+    LikeCount = "like_count", // 点赞次数
+    CollectCount = "collect_count", // 收藏次数
+    WordsCount = "words_count", // 字数
+}
+
+// 自定义字段显示
+export const CustomFieldsDisplay: Record<CustomFields, string> = {
+    [CustomFields.Price]: "价格",
+    [CustomFields.ViewCount]: "浏览",
+    [CustomFields.CommentCount]: "评论",
+    [CustomFields.LikeCount]: "点赞",
+    [CustomFields.CollectCount]: "收藏",
+    [CustomFields.WordsCount]: "字数",
 }
 
 // 文章状态选项

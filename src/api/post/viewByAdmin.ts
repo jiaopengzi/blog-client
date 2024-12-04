@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-23 15:43:58
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-23 17:17:39
+ * @LastEditTime : 2024-12-04 11:33:33
  * @FilePath     : \blog-client\src\api\post\viewByAdmin.ts
  * @Description  : 管理员查看文章
  * @Blog         : https://jiaopengzi.com
@@ -13,7 +13,7 @@ import request from "@/api/request"
 import { routerGroup } from "@/api/routerGroup"
 import type { AxiosPromise } from "axios"
 import { type Res } from "@/api/responseCode"
-import { type PostInfoRes } from "./common"
+import { type PostInfoRes, CustomFields } from "./common"
 import type { Pagination, PaginationRequest } from "@/components/common"
 
 // 管理员查看文章请求
@@ -24,8 +24,8 @@ export interface ViewPostByAdminRequest extends PaginationRequest {
     month: number // 文章月份
     post_category_id: string // 文章分类ID
     post_tag_id: string // 文章标签ID
-    custom_filed: string // 自定义字段
-    custom_filed_value: string // 自定义字段值
+    custom_filed: CustomFields // 自定义字段
+    custom_filed_min: string // 自定义字段最小值
     custom_filed_max: string // 自定义字段最大值
 }
 

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-03 16:37:27
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-03 18:25:25
+ * @LastEditTime : 2024-12-04 11:40:39
  * @FilePath     : \blog-client\src\views\admin\component\main\post-all\hooks.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -16,7 +16,6 @@ import { getPostCountByStatusAPI, type PostCountByStatus } from "@/api/post/getP
 import { getPostCountByMonthAPI, type PostCountByMonth } from "@/api/post/getPostCountByMonth"
 import { ResponseCode, handleErrInfo } from "@/api/responseCode"
 import { ShowMsgTip } from "@/utils/message"
-import { useGetData } from "@/components/hooks/useGetData"
 import { PostStatusDisplay, PostStatusCode } from "@/api/post/common"
 
 // 获取文章统计数据
@@ -25,9 +24,8 @@ export function useHeader(userID: string = "") {
     const postCountStatus = ref<PostCountByStatus[]>([])
     const postCountMonth = ref<PostCountByMonth[]>([])
     const postCountGroup = ref<PostCountGroup[]>([])
-    const allGroupKey = ref("all")
-    const activeGroup = ref(allGroupKey)
-    const postCountMonthSelect = ref("")
+    const allGroup = "all"
+    const activeGroup = ref(allGroup)
 
     // 获取 postCountAuthor
     const getPostCountAuthor = async () => {
@@ -59,8 +57,6 @@ export function useHeader(userID: string = "") {
         }
     }
 
-    useGetData([getPostCountAuthor, getPostCountStatus, getPostCountMonth])
-
     watch(
         postCountAuthor,
         () => {
@@ -69,15 +65,15 @@ export function useHeader(userID: string = "") {
             // 构造 postCountGroup
             const allPosts: PostCountGroup = {
                 display: "全部",
-                key: allGroupKey.value,
+                key: allGroup,
                 count: allPostCount,
                 index: 0,
             }
 
-            // 构造全部文章
+            // 构造 全部
             postCountGroup.value.push(allPosts)
 
-            // 构造 我的文章
+            // 构造 我的
             if (userID) {
                 const myPost = postCountAuthor.value.find((item) => item.post_author === userID)
                 if (myPost) {
@@ -116,21 +112,19 @@ export function useHeader(userID: string = "") {
         () => {
             // 按照 index 排序
             postCountGroup.value.sort((a, b) => a.index - b.index)
-            console.log("===============>", postCountGroup.value)
         },
         { deep: true },
     )
-
-    watch(postCountMonthSelect, (newVal) => {
-        console.log("postCountMonthSelect", newVal)
-    })
 
     return {
         postCountAuthor,
         postCountStatus,
         postCountMonth,
         postCountGroup,
+        allGroup,
         activeGroup,
-        postCountMonthSelect,
+        getPostCountAuthor,
+        getPostCountStatus,
+        getPostCountMonth,
     }
 }

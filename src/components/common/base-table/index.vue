@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-27 11:43:22
+ * @LastEditTime : 2024-12-04 16:10:23
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格 table-layout="auto"
  * @Blog         : https://jiaopengzi.com
@@ -25,18 +25,28 @@
             </span>
         </div>
 
-        <!-- 分类 -->
+        <!-- 分组显示插槽 -->
         <slot name="category"></slot>
 
-        <div class="filter">
+        <!-- 筛选和操作 -->
+        <div class="filter-operation">
             <!-- 搜索 -->
             <el-input
                 v-if="isShowSearch"
-                class="search filter-item"
+                class="search filter-operation-item"
                 v-model="search"
                 placeholder="关键字搜索"
+                clearable
             />
-            <slot class="filter-item" name="other-filter"></slot>
+
+            <!-- 其他筛选插槽 -->
+            <slot class="filter-operation-item" name="custom-filter"></slot>
+            <el-button class="filter-operation-item" type="primary" @click="runSearch"
+                >搜索</el-button
+            >
+
+            <!-- 操作插槽 -->
+            <slot class="filter-operation-item operation" name="operation"></slot>
         </div>
 
         <!-- 表格内容 -->
@@ -304,6 +314,7 @@ const emit = defineEmits<{
     (event: "delete-row", index: number, row: TableData): void // 删除行
     (event: "delete-rows", rows: TableData[]): void // 删除多行
     (event: "update-search", value: string): void // 更新搜索关键字
+    (event: "run-search"): void // 执行搜索
     (event: "update-selection", rows: TableData[]): void // 更新选择
     (event: "click-row-by-picture", rows: TableData): void // 点击行中的图片
     (event: "add-item-update-dialog-visible", value: boolean): void // 更新添加元素对话框状态
@@ -423,6 +434,11 @@ watch(
     { immediate: false },
 ) // 不立即执行
 
+// 执行搜索
+const runSearch = () => {
+    emit("run-search")
+}
+
 // 处理编辑
 const handleEdit = (index: number, row: TableData) => {
     emit("edit-row", index, row)
@@ -504,7 +520,6 @@ const isSelected = (row: TableData) => {
 }
 
 .search {
-    margin: 0 0 10px 0;
     width: 250px;
 }
 
@@ -535,12 +550,17 @@ const isSelected = (row: TableData) => {
     }
 }
 
-.filter {
+.filter-operation {
     display: flex;
-    margin-top: 6px;
-    .filter-item {
+    align-items: center;
+    margin: 10px 0;
+    .filter-operation-item {
         margin-right: 10px;
     }
+
+    // .operation {
+    //     margin-left: 20px;
+    // }
 }
 
 :deep(.el-checkbox) {

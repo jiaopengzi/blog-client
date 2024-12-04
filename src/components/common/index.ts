@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:38:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-26 20:31:23
+ * @LastEditTime : 2024-12-04 19:45:22
  * @FilePath     : \blog-client\src\components\common\index.ts
  * @Description  : 公用信息
  * @Blog         : https://jiaopengzi.com
@@ -34,6 +34,17 @@ export interface Pagination<T> {
     page_count: number // 总页数
     page_sizes: number[] // 每页显示个数选择器的选项设置
     records: T[] // 数据
+}
+
+export const getEmptyPagination = <T>(): Pagination<T> => {
+    return {
+        total: 0, // 默认总记录数量为0
+        current_page: 1, // 默认当前页为1
+        page_size: 10, // 默认每页显示条数为10
+        page_count: 0, // 默认总页数为0
+        page_sizes: [10, 20, 30, 50], // 默认的每页显示个数选择器的选项设置
+        records: [], // 默认数据为空数组
+    }
 }
 
 // url 中是数字的参数名 URLQueryIsNumberKeys 的对象

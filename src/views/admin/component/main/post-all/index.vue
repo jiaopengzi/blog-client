@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-03 18:23:52
+ * @LastEditTime : 2024-12-04 19:55:20
  * @FilePath     : \blog-client\src\views\admin\component\main\post-all\index.vue
  * @Description  : 标签管理
  * @Blog         : https://jiaopengzi.com
@@ -45,16 +45,91 @@
             </div>
         </template>
 
-        <template #other-filter>
-            <!-- v-for 循环 postCountGroup生成 按钮 -->
-            <el-select v-model="postCountMonthSelect" placeholder="Select" style="width: 160px">
-                <el-option
-                    v-for="item in postCountMonth"
-                    :key="`${item.year}-${item.month}(${item.count})`"
-                    :label="`${item.year}-${item.month.toString().padStart(2, '0')}(${item.count})`"
-                    :value="`${item.year}-${item.month}`"
-                />
-            </el-select>
+        <template #custom-filter>
+            <div class="custom-filter">
+                <!-- 按照月份筛选 -->
+                <div class="custom-filter-item">
+                    <el-select
+                        v-model="postCountMonthSelect"
+                        placeholder="全部日期"
+                        clearable
+                        style="width: 130px"
+                    >
+                        <el-option
+                            v-for="item in postCountMonth"
+                            :key="`${item.year}-${item.month}(${item.count})`"
+                            :label="`${item.year}-${item.month.toString().padStart(2, '0')}(${item.count})`"
+                            :value="`${item.year}-${item.month}`"
+                        />
+                    </el-select>
+                </div>
+
+                <!-- 自定义字段筛选 -->
+                <div class="custom-filter-item custom-fields">
+                    <el-select
+                        class="custom-fields-item"
+                        v-model="postCustomFieldsSelect"
+                        placeholder="自定义筛选"
+                        clearable
+                        style="width: 130px"
+                    >
+                        <el-option
+                            v-for="item in CustomFields"
+                            :key="item"
+                            :label="CustomFieldsDisplay[item]"
+                            :value="item"
+                        />
+                    </el-select>
+                    <div class="custom-fields-item" v-show="postCustomFieldsSelect">
+                        <span>最小值:</span>
+                        <el-input-number
+                            v-model="postCustomFieldsMin"
+                            controls-position="right"
+                            :min="0"
+                            :max="9999999999999"
+                            style="width: 130px"
+                        />
+                    </div>
+
+                    <div class="custom-fields-item" v-show="postCustomFieldsSelect">
+                        <span>最大值:</span>
+                        <el-input-number
+                            v-model="postCustomFieldsMax"
+                            controls-position="right"
+                            :min="1"
+                            :max="9999999999999"
+                            style="width: 130px"
+                        />
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template #operation>
+            <!-- 批量操作 -->
+            <div class="operation">
+                <el-select
+                    class="operation-item"
+                    v-model="postOperationSelect"
+                    placeholder="批量更改"
+                    clearable
+                    style="width: 140px"
+                >
+                    <el-option
+                        v-for="item in postBatchOperations"
+                        :key="item"
+                        :label="`更改为：${PostStatusDisplay[item] || item}`"
+                        :value="item"
+                    />
+                </el-select>
+                <el-button
+                    class="operation-item"
+                    type="primary"
+                    @click="search"
+                    v-show="postOperationSelect"
+                    >更改</el-button
+                >
+            </div>
         </template>
     </BaseTable>
 </template>
@@ -63,16 +138,22 @@
 import { ref, reactive } from "vue"
 import type { TableData, TableColumn } from "@/components/common/base-table"
 import { AdminSideMenu } from "@/views/admin/component/aside"
-import { type PostInfoRes, PostStatusCode, PostStatusDisplay } from "@/api/post/common"
+import {
+    type PostInfoRes,
+    PostStatusCode,
+    PostStatusDisplay,
+    CustomFields,
+    CustomFieldsDisplay,
+} from "@/api/post/common"
 import { type ViewPostByAdminRequest, viewPostByAdminRequestAPI } from "@/api/post/viewByAdmin"
 import { ResponseCode } from "@/api/responseCode"
 import BaseTable from "@/components/common/base-table"
 import { useGetData } from "@/components/hooks/useGetData"
 import { type DeletePostRequest, deletePostAPI } from "@/api/post/delete"
-import { useBaseTable } from "@/components/hooks/useBaseTable"
+import { useBaseTable, type QueryRecord, type Options } from "@/components/hooks/useBaseTable"
 import { formatTime } from "@/utils/dateTime"
 import router from "@/router"
-import { queryKey } from "@/views/admin/component/main/post-write"
+import { queryKey as queryKeyWrite } from "@/views/admin/component/main/post-write"
 import { type TableImg } from "@/components/common"
 import { useHeader } from "./hooks"
 import { type PostCountGroup } from "./index"
@@ -193,6 +274,18 @@ const cols: TableColumn[] = reactive([
     },
 ])
 
+const userStore = useUserStore()
+
+const {
+    postCountGroup,
+    postCountMonth,
+    allGroup,
+    activeGroup,
+    getPostCountAuthor,
+    getPostCountStatus,
+    getPostCountMonth,
+} = useHeader(userStore.getUserID)
+
 // 表格图片配置
 const tableImg: TableImg = {
     width: 96,
@@ -200,8 +293,26 @@ const tableImg: TableImg = {
     svgFontSize: 50,
 }
 
+// url query key
+enum queryKey {
+    Group = "group",
+    PostAuthor = "post_author",
+    PostStatus = "post_status",
+    Year = "year",
+    Month = "month",
+    PostCategoryID = "post_category_id",
+    PostTagID = "post_tag_id",
+    CustomFiled = "custom_filed",
+    CustomFiledMin = "custom_filed_min",
+    CustomFiledMax = "custom_filed_max",
+    KeyWord = "key_word",
+}
+
 // 查询参数
 const queryParams = reactive({} as ViewPostByAdminRequest)
+
+// 不需要请求的参数
+const noRequest: QueryRecord<queryKey> = { [queryKey.Group]: allGroup }
 
 // hooks 使用
 const {
@@ -221,26 +332,28 @@ const {
     ResponseCode.PostViewByAdminSuccess,
     deletePostAPI,
     ResponseCode.PostDeleteSuccess,
-    queryParams,
-    tableImg,
+    { queryParams, tableImg },
 )
 
-const userStore = useUserStore()
+const postBatchOperations = ref([
+    PostStatusCode.Draft,
+    PostStatusCode.Private,
+    PostStatusCode.Publish,
+])
 
-const { postCountGroup, postCountMonth, postCountMonthSelect, activeGroup } = useHeader(
-    userStore.getUserID,
-)
+const postOperationSelect = ref("")
+const postCountMonthSelect = ref("")
+const postCustomFieldsSelect = ref("")
+const postCustomFieldsMin = ref(0)
+const postCustomFieldsMax = ref(100)
 
 const handlePostCountByGroup = async (item: PostCountGroup) => {
     activeGroup.value = item.key
     // 添加路由跳转
-    console.log("10============")
-    // paginationRouterPush(
-    //     AdminSideMenu.UserView,
-    //     pagination.value.page_size,
-    //     pagination.value.current_page,
-    //     { [queryKey.RoleName]: role, [queryKey.Search]: search.value },
-    // )
+    Object.assign(queryParams, {
+        [queryKey.Group]: item.key,
+        [queryKey.KeyWord]: search.value,
+    })
 }
 
 const postWrite = () => {
@@ -251,12 +364,15 @@ const editRow = (index: number, row: TableData) => {
     // 编辑文章
     router.push({
         name: AdminSideMenu.PostWrite,
-        query: { [queryKey.ID]: row.id },
+        query: { [queryKeyWrite.ID]: row.id },
     })
 }
 
 // 获取数据
-useGetData([updatePaginateOnBeforeMount], [updatePaginate])
+useGetData(
+    [updatePaginateOnBeforeMount, getPostCountAuthor, getPostCountStatus, getPostCountMonth],
+    [updatePaginate],
+)
 </script>
 
 <style scoped lang="scss">
@@ -290,6 +406,42 @@ useGetData([updatePaginateOnBeforeMount], [updatePaginate])
         &:last-child::after {
             display: none;
         }
+    }
+}
+
+.custom-filter {
+    display: flex;
+    align-items: center;
+    // margin-right: 10px;
+
+    .custom-filter-item {
+        margin-right: 10px;
+    }
+}
+
+.custom-fields {
+    display: flex;
+    align-items: center;
+    // margin-right: 10px;
+
+    .custom-fields-item {
+        span {
+            margin: 0 4px;
+            font-size: 14px;
+        }
+    }
+}
+
+.operation {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+
+    border-left: 1px solid $primary-color;
+    padding-left: 30px;
+
+    .operation-item {
+        margin-right: 10px;
     }
 }
 </style>

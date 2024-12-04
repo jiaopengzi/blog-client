@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-28 18:28:18
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 13:39:20
+ * @LastEditTime : 2024-12-04 11:22:58
  * @FilePath     : \blog-client\src\components\hooks\useGetData\index.ts
  * @Description  : 页面数据获取钩子
  * @Blog         : https://jiaopengzi.com
@@ -18,8 +18,8 @@ import { useRoute } from "vue-router"
  * @param getDataOnRouteChange 路由变化时获取数据的函数数组, 默认为 getDataOnBeforeMount
  */
 export function useGetData(
-    getDataOnBeforeMount: Array<() => Promise<void>>, // 初始化时获取数据的函数数组
-    getDataOnRouteChange?: Array<() => Promise<void>>, // 路由变化时获取数据的函数数组, 默认为 getDataOnBeforeMount
+    getDataOnBeforeMount: Array<() => Promise<void>>,
+    getDataOnRouteChange?: Array<() => Promise<void>>,
 ) {
     const route = useRoute()
     const isInitialLoad = ref(true) // 每次调用时创建新的标志变量实例
@@ -39,11 +39,10 @@ export function useGetData(
     watch(
         () => route.fullPath,
         async () => {
-            if (isInitialLoad.value) {
-                // 跳过首次加载
-                return
+            // 首次加载时不执行
+            if (!isInitialLoad.value) {
+                await executeFunctions(fetchDataOnRouteChange)
             }
-            await executeFunctions(fetchDataOnRouteChange)
         },
     )
 }

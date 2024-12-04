@@ -2,18 +2,23 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 08:57:02
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-26 20:46:57
+ * @LastEditTime : 2024-12-04 19:45:59
  * @FilePath     : \blog-client\src\components\hooks\useBaseTable\index.ts
  * @Description  : 基础表格钩子
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { ref, reactive } from "vue"
+import { ref, reactive, watch, type Reactive } from "vue"
 import router from "@/router"
 import { debounce } from "throttle-debounce"
 import type { AxiosPromise } from "axios"
-import { type Pagination, type PaginationRequest, URLQueryIsNumberKeys } from "@/components/common"
+import {
+    type Pagination,
+    type PaginationRequest,
+    URLQueryIsNumberKeys,
+    getEmptyPagination,
+} from "@/components/common"
 import { type Res, ResponseCode } from "@/api/responseCode"
 import {
     formatTableData,
@@ -23,6 +28,14 @@ import {
 import { ShowMsgTip } from "@/utils/message"
 import { type TableImg } from "@/components/common"
 
+export type QueryRecord<T extends keyof any> = { [key in T]?: string | number }
+
+export interface Options<K> {
+    queryParams?: Reactive<K> // 查询参数
+    tableImg?: TableImg // 表格图片配置
+    noRequest?: QueryRecord<keyof any> // 不请求的参数值比如全部,只显示在路由中，不请求.
+}
+
 /**
  * @description: 基础表格钩子
  * @param routeName 路由名称
@@ -30,8 +43,7 @@ import { type TableImg } from "@/components/common"
  * @param viewResCode 获取数据的响应码
  * @param deleteAPI 删除数据的 API
  * @param deleteResCode 删除数据的响应码
- * @param queryParams 查询参数,可选
- * @param tableImg 表格图片配置,可选
+ * @param options 可选参数
  */
 export function useBaseTable<T extends FormatTableData, K extends PaginationRequest, Q>(
     routeName: string,
@@ -39,17 +51,9 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     viewResCode: ResponseCode,
     deleteAPI: (params: Q) => AxiosPromise<Res>,
     deleteResCode: ResponseCode,
-    queryParams?: K,
-    tableImg?: TableImg,
+    options?: Options<K>,
 ) {
-    const pagination = reactive<Pagination<T>>({
-        total: 0,
-        current_page: 1,
-        page_size: 10,
-        page_count: 1,
-        page_sizes: [10, 20, 50, 100],
-        records: [],
-    })
+    const pagination = reactive<Pagination<T>>(getEmptyPagination<T>())
 
     const addItemDialogVisible = ref(false) // 添加对话框是否可见
     const editItemDialogVisible = ref(false) // 编辑对话框是否可见
@@ -57,21 +61,21 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
 
     // 查询参数
     const query: Record<string, string | number> = reactive<K>({} as K)
-    if (queryParams) {
-        Object.assign(query, queryParams)
+    if (options?.queryParams) {
+        Object.assign(query, options.queryParams)
     }
 
     // 更新查询参数
     const updateQueryAndRouter = (isUpdateRouter: boolean = true) => {
         query.page_size = pagination.page_size
         query.current_page = pagination.current_page
-        if (search.value) {
-            query.key_word = search.value
-        }
-
-        if (!search.value && query.key_word) {
+        console.log("delete key_word外", query.key_word)
+        if (!query.key_word) {
+            console.log("delete key_word内", query.key_word)
             delete query.key_word
         }
+
+        console.log("query 外", query)
 
         // 判断是否更新路由
         if (isUpdateRouter) {
@@ -143,8 +147,18 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         updateQueryAndRouter()
     }
 
-    const updateSearch = debounce(500, async (val: string) => {
+    // 更新搜索关键字
+    const updateSearch = async (val: string) => {
         search.value = val
+        query.key_word = val
+        if (val === "") {
+            await getPaginate(query as unknown as K)
+            updateQueryAndRouter()
+        }
+    }
+
+    // 执行搜索
+    const runSearch = debounce(200, async () => {
         await getPaginate(query as unknown as K)
         updateQueryAndRouter()
     })
@@ -167,6 +181,13 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
 
     // 获取分页用户
     async function getPaginate(req: K) {
+        // 遍历 options.NoRequest 中的参数，如果 req 中的参数值等于 options.NoRequest 中的值则删除,不请求
+        for (const key in options?.noRequest) {
+            if (key in req && req[key as keyof K] === options.noRequest[key]) {
+                delete req[key as keyof K]
+            }
+        }
+
         // 如果 key_word 为空 则不传 key_word
         if (!req.key_word) {
             delete req.key_word
@@ -178,14 +199,15 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
                 res.data.data.records = res.data.data.records.map((row: T) =>
                     formatTableData(
                         row as T,
-                        tableImg?.width,
-                        tableImg?.height,
-                        tableImg?.imgFit,
-                        tableImg?.svgFontSize,
+                        options?.tableImg?.width,
+                        options?.tableImg?.height,
+                        options?.tableImg?.imgFit,
+                        options?.tableImg?.svgFontSize,
                     ),
                 )
-
                 Object.assign(pagination, res.data.data)
+            } else {
+                Object.assign(pagination, getEmptyPagination<T>())
             }
         })
     }
@@ -209,6 +231,16 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         })
     }
 
+    watch(
+        () => options?.queryParams,
+        (newVal) => {
+            console.log("use queryParams", newVal)
+            Object.assign(query, newVal)
+            updateQueryAndRouter()
+        },
+        { deep: true },
+    )
+
     return {
         addItemDialogVisible, // 添加对话框是否可见
         editItemDialogVisible, // 编辑对话框是否可见
@@ -219,6 +251,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         updateCurrentPage, // 更新当前页
         updatePageSize, // 更新每页显示条数
         updateSearch, // 更新搜索关键字
+        runSearch, // 执行搜索
         addStatus, // 添加状态
         editStatus, // 编辑状态
         addItemUpdateDialogVisible, // 新增对话框

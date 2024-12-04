@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:47:08
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-26 22:30:10
+ * @LastEditTime : 2024-12-04 16:20:35
  * @FilePath     : \blog-client\src\views\admin\component\main\post-category\index.vue
  * @Description  : 分类管理
  * @Blog         : https://jiaopengzi.com
@@ -24,6 +24,7 @@
         @edit-row="editRow"
         @delete-rows="deleteRows"
         @update-search="updateSearch"
+        @run-search="runSearch"
         @add-item-update-dialog-visible="addItemUpdateDialogVisible"
         @edit-item-update-dialog-visible="editItemUpdateDialogVisible"
     >
@@ -152,6 +153,7 @@ const {
     updateCurrentPage, // 更新当前页
     updatePageSize, // 更新每页显示条数
     updateSearch, // 更新搜索关键字
+    runSearch, // 执行搜索
     addStatus, // 添加状态
     editStatus, // 编辑状态
     addItemUpdateDialogVisible, // 新增对话框
