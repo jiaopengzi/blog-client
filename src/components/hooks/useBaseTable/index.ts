@@ -9,7 +9,7 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { ref, reactive, watch, type Reactive } from "vue"
+import { ref, reactive, watch, onBeforeMount, type Reactive } from "vue"
 import router from "@/router"
 import { debounce } from "throttle-debounce"
 import type { AxiosPromise } from "axios"
@@ -69,13 +69,9 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     const updateQueryAndRouter = (isUpdateRouter: boolean = true) => {
         query.page_size = pagination.page_size
         query.current_page = pagination.current_page
-        console.log("delete key_word外", query.key_word)
         if (!query.key_word) {
-            console.log("delete key_word内", query.key_word)
             delete query.key_word
         }
-
-        console.log("query 外", query)
 
         // 判断是否更新路由
         if (isUpdateRouter) {
@@ -101,12 +97,6 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
             return
         }
         updateQueryAndRouter(false)
-    }
-
-    // 更新分页内容 在组件挂载之前,主要是为了链接跳转时能够获取到参数
-    const updatePaginateOnBeforeMount = async (): Promise<void> => {
-        updateByQuery()
-        await getPaginate(query as unknown as K)
     }
 
     // 更新分页内容
@@ -241,6 +231,12 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         { deep: true },
     )
 
+    onBeforeMount(async () => {
+        // 获取路由参数 并更新 query
+        updateByQuery()
+        await getPaginate(query as unknown as K)
+    })
+
     return {
         addItemDialogVisible, // 添加对话框是否可见
         editItemDialogVisible, // 编辑对话框是否可见
@@ -258,6 +254,5 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         editItemUpdateDialogVisible, // 编辑对话框
         updatePaginate, // 更新分页数据
         deleteRows, // 删除行
-        updatePaginateOnBeforeMount, // 在组件挂载之前更新分页数据
     }
 }

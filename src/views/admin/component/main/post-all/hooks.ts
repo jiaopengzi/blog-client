@@ -9,7 +9,7 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { ref, watch } from "vue"
+import { ref, watch, onBeforeMount } from "vue"
 import { type PostCountGroup } from "./index"
 import { getPostCountByAuthorAPI, type PostCountByAuthor } from "@/api/post/getPostCountByAuthor"
 import { getPostCountByStatusAPI, type PostCountByStatus } from "@/api/post/getPostCountByStatus"
@@ -116,6 +116,12 @@ export function useHeader(userID: string = "") {
         { deep: true },
     )
 
+    onBeforeMount(async () => {
+        await getPostCountAuthor()
+        await getPostCountStatus()
+        await getPostCountMonth()
+    })
+
     return {
         postCountAuthor,
         postCountStatus,
@@ -123,8 +129,5 @@ export function useHeader(userID: string = "") {
         postCountGroup,
         allGroup,
         activeGroup,
-        getPostCountAuthor,
-        getPostCountStatus,
-        getPostCountMonth,
     }
 }

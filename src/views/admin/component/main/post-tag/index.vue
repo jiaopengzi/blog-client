@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-26 22:28:56
+ * @LastEditTime : 2024-12-04 21:37:04
  * @FilePath     : \blog-client\src\views\admin\component\main\post-tag\index.vue
  * @Description  : 标签管理
  * @Blog         : https://jiaopengzi.com
@@ -57,7 +57,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from "vue"
+import { reactive, onBeforeMount } from "vue"
 import type { TableData, TableColumn } from "@/components/common/base-table"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import { type PostTag } from "@/api/postTag/view"
@@ -151,9 +151,7 @@ const {
     editStatus, // 编辑状态
     addItemUpdateDialogVisible, // 新增对话框
     editItemUpdateDialogVisible, // 编辑对话框
-    updatePaginate, // 更新分页数据
     deleteRows, // 删除行
-    updatePaginateOnBeforeMount, // 更新分页数据
 } = useBaseTable<PostTag, ViewPostTagRequest, DeletePostTagRequest>(
     AdminSideMenu.PostTag,
     viewPostTagAPI,
@@ -191,9 +189,6 @@ const editRow = (index: number, row: TableData) => {
     }
     toggleEditDialog()
 }
-
-// 获取数据
-useGetData([updatePaginateOnBeforeMount], [updatePaginate])
 </script>
 
 <style scoped lang="scss">

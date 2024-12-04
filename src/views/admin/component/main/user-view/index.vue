@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-04 18:59:44
+ * @LastEditTime : 2024-12-04 21:37:20
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -75,7 +75,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, reactive } from "vue"
+import { ref, watch, reactive, onBeforeMount } from "vue"
 import type { TableData, TableColumn } from "@/components/common/base-table"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import { type User } from "@/api/user/getUsers"
@@ -348,9 +348,7 @@ const {
     editStatus, // 编辑状态
     addItemUpdateDialogVisible, // 新增对话框
     editItemUpdateDialogVisible, // 编辑对话框
-    updatePaginate, // 更新分页数据
     deleteRows, // 删除行
-    updatePaginateOnBeforeMount, // 更新分页数据
 } = useBaseTable<User, GetUsersRequest, DeleteUserRequest>(
     AdminSideMenu.UserView,
     getUsersAPI,
@@ -359,9 +357,6 @@ const {
     ResponseCode.DeleteUserSuccess,
     options,
 )
-
-// 获取数据
-useGetData([updatePaginateOnBeforeMount, getRoles, getUserCountGroupByRole], [updatePaginate])
 </script>
 
 <style scoped lang="scss">

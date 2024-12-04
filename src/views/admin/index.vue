@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-23 16:42:18
+ * @LastEditTime : 2024-12-04 21:00:27
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -94,7 +94,7 @@ const updateCurrentComponent = () => {
 
     if (path) {
         updateCurrentComponentByPath(path)
-        console.log("2", path)
+        // console.log("2", path)
     }
 }
 
@@ -105,7 +105,7 @@ const handleSelect = (index: string) => {
     }
 
     updateCurrentComponentByPath(index)
-    console.log("1", index)
+    // console.log("1", index)
 }
 
 // 折叠状态

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-04 19:55:20
+ * @LastEditTime : 2024-12-04 21:40:02
  * @FilePath     : \blog-client\src\views\admin\component\main\post-all\index.vue
  * @Description  : 标签管理
  * @Blog         : https://jiaopengzi.com
@@ -276,15 +276,7 @@ const cols: TableColumn[] = reactive([
 
 const userStore = useUserStore()
 
-const {
-    postCountGroup,
-    postCountMonth,
-    allGroup,
-    activeGroup,
-    getPostCountAuthor,
-    getPostCountStatus,
-    getPostCountMonth,
-} = useHeader(userStore.getUserID)
+const { postCountGroup, postCountMonth, allGroup, activeGroup } = useHeader(userStore.getUserID)
 
 // 表格图片配置
 const tableImg: TableImg = {
@@ -323,9 +315,7 @@ const {
     updateCurrentPage, // 更新当前页
     updatePageSize, // 更新每页显示条数
     updateSearch, // 更新搜索关键字
-    updatePaginate, // 更新分页数据
     deleteRows, // 删除行
-    updatePaginateOnBeforeMount, // 更新分页数据
 } = useBaseTable<PostInfoRes, ViewPostByAdminRequest, DeletePostRequest>(
     AdminSideMenu.PostAll,
     viewPostByAdminRequestAPI,
@@ -367,12 +357,6 @@ const editRow = (index: number, row: TableData) => {
         query: { [queryKeyWrite.ID]: row.id },
     })
 }
-
-// 获取数据
-useGetData(
-    [updatePaginateOnBeforeMount, getPostCountAuthor, getPostCountStatus, getPostCountMonth],
-    [updatePaginate],
-)
 </script>
 
 <style scoped lang="scss">

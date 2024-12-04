@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:47:08
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-04 16:20:35
+ * @LastEditTime : 2024-12-04 21:36:42
  * @FilePath     : \blog-client\src\views\admin\component\main\post-category\index.vue
  * @Description  : 分类管理
  * @Blog         : https://jiaopengzi.com
@@ -57,7 +57,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from "vue"
+import { reactive, onBeforeMount } from "vue"
 import type { TableData, TableColumn } from "@/components/common/base-table"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import { type PostCategory } from "@/api/postCategory/view"
@@ -158,9 +158,7 @@ const {
     editStatus, // 编辑状态
     addItemUpdateDialogVisible, // 新增对话框
     editItemUpdateDialogVisible, // 编辑对话框
-    updatePaginate, // 更新分页数据
     deleteRows, // 删除行
-    updatePaginateOnBeforeMount, // 更新分页数据
 } = useBaseTable<PostCategory, ViewPostCategoryRequest, DeletePostCategoryRequest>(
     AdminSideMenu.PostCategory,
     viewPostCategoryAPI,
@@ -201,9 +199,6 @@ const editRow = (index: number, row: TableData) => {
     }
     toggleEditDialog()
 }
-
-// 获取数据
-useGetData([updatePaginateOnBeforeMount], [updatePaginate])
 </script>
 
 <style scoped lang="scss">
