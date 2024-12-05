@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-04 21:40:02
+ * @LastEditTime : 2024-12-05 19:24:33
  * @FilePath     : \blog-client\src\views\admin\component\main\post-all\index.vue
  * @Description  : 标签管理
  * @Blog         : https://jiaopengzi.com
@@ -26,6 +26,8 @@
         @edit-row="editRow"
         @delete-rows="deleteRows"
         @update-search="updateSearch"
+        @run-search="runSearch"
+        @update-selection="handleSelection"
     >
         <template #btns>
             <el-button type="primary" @click="postWrite"> 写文章 </el-button>
@@ -35,7 +37,7 @@
             <!-- v-for 循环 postCountGroup生成 按钮 -->
             <div class="category">
                 <el-button
-                    v-for="item in postCountGroup"
+                    v-for="item in sortedPostCountGroup"
                     :key="item.key"
                     :class="{ active: item.key === activeGroup }"
                     @click="handlePostCountByGroup(item)"
@@ -125,7 +127,7 @@
                 <el-button
                     class="operation-item"
                     type="primary"
-                    @click="search"
+                    @click="handlePostStatusOperation"
                     v-show="postOperationSelect"
                     >更改</el-button
                 >
@@ -135,7 +137,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from "vue"
+import { ref, reactive, computed, watch, nextTick, onBeforeMount } from "vue"
 import type { TableData, TableColumn } from "@/components/common/base-table"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import {
@@ -145,19 +147,28 @@ import {
     CustomFields,
     CustomFieldsDisplay,
 } from "@/api/post/common"
-import { type ViewPostByAdminRequest, viewPostByAdminRequestAPI } from "@/api/post/viewByAdmin"
+import { type ViewPostByAdminRequest, viewPostByAdminAPI } from "@/api/post/viewByAdmin"
 import { ResponseCode } from "@/api/responseCode"
 import BaseTable from "@/components/common/base-table"
-import { useGetData } from "@/components/hooks/useGetData"
 import { type DeletePostRequest, deletePostAPI } from "@/api/post/delete"
-import { useBaseTable, type QueryRecord, type Options } from "@/components/hooks/useBaseTable"
+import { useBaseTable, type QueryRecord } from "@/components/hooks/useBaseTable"
 import { formatTime } from "@/utils/dateTime"
 import router from "@/router"
 import { queryKey as queryKeyWrite } from "@/views/admin/component/main/post-write"
-import { type TableImg } from "@/components/common"
+import { queryKey } from "./index"
+import { type TableImg, type NumberKeys } from "@/components/common"
 import { useHeader } from "./hooks"
-import { type PostCountGroup } from "./index"
+import { type PostCountGroupItem, groupList, type GroupType } from "./index"
 import { useUserStore } from "@/stores/user"
+import {
+    type PostStatusOperation,
+    type BatchOperationPostStatusRequest,
+    batchOperationPostStatusAPI,
+} from "@/api/post/batchOperationPostStatus"
+import { confirmCommon } from "@/utils/confirm"
+import { MsgType } from "@/components/common"
+import { ShowMsgTip } from "@/utils/message"
+import { useParams } from "@/components/hooks/useParams"
 
 defineOptions({ name: AdminSideMenu.PostAll })
 
@@ -209,7 +220,14 @@ const cols: TableColumn[] = reactive([
     },
     {
         prop: "view_count",
-        label: "查看",
+        label: "浏览",
+        sortable: true,
+        minWidth: 80,
+        align: "center",
+    },
+    {
+        prop: "comment_count",
+        label: "评论",
         sortable: true,
         minWidth: 80,
         align: "center",
@@ -224,13 +242,6 @@ const cols: TableColumn[] = reactive([
     {
         prop: "collect_count",
         label: "收藏",
-        sortable: true,
-        minWidth: 80,
-        align: "center",
-    },
-    {
-        prop: "comment_count",
-        label: "评论",
         sortable: true,
         minWidth: 80,
         align: "center",
@@ -274,9 +285,34 @@ const cols: TableColumn[] = reactive([
     },
 ])
 
+// 可以批量操作的状态
+const postBatchOperations = ref([
+    PostStatusCode.Draft,
+    PostStatusCode.Private,
+    PostStatusCode.Publish,
+])
+
+const postStatusOperationList = ref<PostStatusOperation[]>([])
+
+const postOperationSelect = ref<PostStatusCode>()
+const postCountMonthSelect = ref("")
+const postCustomFieldsSelect = ref("")
+const postCustomFieldsMin = ref(0)
+const postCustomFieldsMax = ref(100)
+
 const userStore = useUserStore()
 
-const { postCountGroup, postCountMonth, allGroup, activeGroup } = useHeader(userStore.getUserID)
+// 获取头部数据
+const { postCountGroup, postCountMonth, allGroup, activeGroup, getPostCountStatus } = useHeader(
+    userStore.getUserID,
+)
+
+// 按 index 升序排序
+const sortedPostCountGroup = computed(() => {
+    return Object.values(postCountGroup.value)
+        .slice()
+        .sort((a, b) => a.index - b.index)
+})
 
 // 表格图片配置
 const tableImg: TableImg = {
@@ -285,28 +321,90 @@ const tableImg: TableImg = {
     svgFontSize: 50,
 }
 
-// url query key
-enum queryKey {
-    Group = "group",
-    PostAuthor = "post_author",
-    PostStatus = "post_status",
-    Year = "year",
-    Month = "month",
-    PostCategoryID = "post_category_id",
-    PostTagID = "post_tag_id",
-    CustomFiled = "custom_filed",
-    CustomFiledMin = "custom_filed_min",
-    CustomFiledMax = "custom_filed_max",
-    KeyWord = "key_word",
-}
-
 // 查询参数
 const queryParams = reactive({} as ViewPostByAdminRequest)
+
+// 查询参数中的数字类型参数
+const queryNumberParams: NumberKeys<ViewPostByAdminRequest>[] = ["post_status", "year", "month"]
 
 // 不需要请求的参数
 const noRequest: QueryRecord<queryKey> = { [queryKey.Group]: allGroup }
 
-// hooks 使用
+// 处理 postCountGroup 点击事件
+const handlePostCountByGroup = async (item: PostCountGroupItem) => {
+    activeGroup.value = item.key
+    // 清空重置
+    Object.keys(queryParams).forEach((key) => {
+        if (groupList.includes(key as GroupType)) {
+            delete queryParams[key as keyof ViewPostByAdminRequest]
+        }
+    })
+
+    // 配置查询参数
+    if (item.group === queryKey.Group) {
+        Object.assign(queryParams, { [queryKey.Group]: item.key })
+    }
+
+    if (item.group === queryKey.PostAuthor) {
+        Object.assign(queryParams, { [queryKey.PostAuthor]: item.key })
+    }
+
+    if (item.group === queryKey.PostStatus) {
+        Object.assign(queryParams, { [queryKey.PostStatus]: item.key })
+    }
+
+    Object.assign(queryParams, {
+        [queryKey.KeyWord]: search.value,
+    })
+
+    await nextTick()
+    updateQueryAndRouter(true)
+}
+
+// 监控 postCountMonthSelect
+watch(postCountMonthSelect, async (newVal) => {
+    if (newVal) {
+        const [year, month] = newVal.split("-")
+        queryParams.year = Number(year)
+        queryParams.month = Number(month)
+    } else {
+        delete queryParams.year
+        delete queryParams.month
+        await nextTick()
+        updateQueryAndRouter(true)
+    }
+})
+
+// 监控 postCustomFieldsSelect
+watch(
+    [postCustomFieldsSelect, postCustomFieldsMin, postCustomFieldsMax],
+    async ([newSelect, newMin, newMax], [oldSelect, oldMin, oldMax]) => {
+        queryParams.custom_filed_min = oldMin.toString()
+        queryParams.custom_filed_max = oldMax.toString()
+
+        if (newSelect !== oldSelect) {
+            queryParams.custom_filed = newSelect as CustomFields
+        }
+
+        if (newMin !== oldMin) {
+            queryParams.custom_filed_min = newMin.toString()
+        }
+
+        if (newMax !== oldMax) {
+            queryParams.custom_filed_max = newMax.toString()
+        }
+
+        if (newSelect === void 0) {
+            delete queryParams.custom_filed
+            delete queryParams.custom_filed_min
+            delete queryParams.custom_filed_max
+            await nextTick()
+            updateQueryAndRouter(true)
+        }
+    },
+)
+
+// useBaseTable hooks 使用
 const {
     addItemDialogVisible, // 添加对话框是否可见
     editItemDialogVisible, // 编辑对话框是否可见
@@ -316,40 +414,95 @@ const {
     updatePageSize, // 更新每页显示条数
     updateSearch, // 更新搜索关键字
     deleteRows, // 删除行
+    updatePaginate, // 更新分页
+    updateQueryAndRouter, // 更新查询参数和路由
+    params,
 } = useBaseTable<PostInfoRes, ViewPostByAdminRequest, DeletePostRequest>(
     AdminSideMenu.PostAll,
-    viewPostByAdminRequestAPI,
+    viewPostByAdminAPI,
     ResponseCode.PostViewByAdminSuccess,
     deletePostAPI,
     ResponseCode.PostDeleteSuccess,
-    { queryParams, tableImg },
+    { queryParams, queryNumberParams, tableImg, noRequest },
 )
 
-const postBatchOperations = ref([
-    PostStatusCode.Draft,
-    PostStatusCode.Private,
-    PostStatusCode.Publish,
-])
+// 执行搜索
+const runSearch = () => {
+    updateQueryAndRouter(true)
+}
 
-const postOperationSelect = ref("")
-const postCountMonthSelect = ref("")
-const postCustomFieldsSelect = ref("")
-const postCustomFieldsMin = ref(0)
-const postCustomFieldsMax = ref(100)
+// 批量操作
+const handlePostStatusOperation = async () => {
+    if (postStatusOperationList.value.length > 0) {
+        confirmCommon(
+            "确认更改?",
 
-const handlePostCountByGroup = async (item: PostCountGroup) => {
-    activeGroup.value = item.key
-    // 添加路由跳转
-    Object.assign(queryParams, {
-        [queryKey.Group]: item.key,
-        [queryKey.KeyWord]: search.value,
+            // 确认后的操作
+            () => {
+                // 构造请求参数
+                const req: BatchOperationPostStatusRequest = {
+                    operation_list: postStatusOperationList.value,
+                }
+
+                batchOperationPostStatusAPI(req).then(async (res) => {
+                    if (res.data.code === ResponseCode.PostStatusBatchOperationSuccess) {
+                        const msg = res.data.msg + "，请稍后刷新页面查看最新数据"
+                        ShowMsgTip(MsgType.success, msg, 3000)
+
+                        // 引入延迟，确保后端更新完成
+                        await new Promise((resolve) => setTimeout(resolve, 1000))
+
+                        await updatePaginate()
+                        await getPostCountStatus()
+                    } else {
+                        ShowMsgTip(MsgType.error, res.data.msg, 3000)
+                    }
+                })
+            },
+
+            // 取消后的操作
+            () => {},
+        )
+    } else {
+        ElMessage({
+            type: MsgType.info,
+            message: "请选择需要更改的数据",
+        })
+    }
+}
+
+// 处理选择行
+const handleSelection = async (rows: TableData[]) => {
+    // 先清空
+    postStatusOperationList.value = []
+
+    rows.flatMap((item) => {
+        if ("id" in item) {
+            postStatusOperationList.value.push({
+                id: item.id.toString(),
+                post_status: postOperationSelect.value as PostStatusCode,
+            })
+        }
     })
 }
 
+// 监控 postOperationSelect 更改
+watch(postOperationSelect, async (newVal) => {
+    if (newVal) {
+        // 更新 postStatusOperationList 状态更改为 newVal
+        postStatusOperationList.value = postStatusOperationList.value.map((item) => {
+            item.post_status = newVal
+            return item
+        })
+    }
+})
+
+// 写文章
 const postWrite = () => {
     router.push({ name: AdminSideMenu.PostWrite })
 }
 
+// 编辑文章
 const editRow = (index: number, row: TableData) => {
     // 编辑文章
     router.push({
@@ -357,6 +510,34 @@ const editRow = (index: number, row: TableData) => {
         query: { [queryKeyWrite.ID]: row.id },
     })
 }
+
+// 通用将 params 解析回对应的响应式变量中
+useParams(params, search, pagination)
+
+onBeforeMount(() => {
+    // 在加载前将 params 解析回对应的响应式变量中
+    const {
+        post_author,
+        post_status,
+        year,
+        month,
+        custom_filed,
+        custom_filed_min,
+        custom_filed_max,
+    } = params
+
+    if (post_author) {
+        activeGroup.value = post_author
+    }
+    if (post_status) {
+        activeGroup.value = post_status.toString()
+    }
+
+    postCountMonthSelect.value = year && month ? `${year}-${month}` : ""
+    postCustomFieldsSelect.value = custom_filed || ""
+    postCustomFieldsMin.value = custom_filed_min ? Number(custom_filed_min) : 0
+    postCustomFieldsMax.value = custom_filed_max ? Number(custom_filed_max) : 100
+})
 </script>
 
 <style scoped lang="scss">

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-25 22:23:57
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-30 12:03:29
+ * @LastEditTime : 2024-12-05 11:04:51
  * @FilePath     : \blog-client\src\utils\obj.test.ts
  * @Description  : 对象相关工具函数测试
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,7 @@
  */
 
 import { describe, it, expect } from "vitest"
-import { deepClone, deepEqual, getUpdatedFields } from "./obj"
+import { deepClone, deepEqual, getUpdatedFields, getNumberKeyOfTops } from "./obj"
 
 enum PostStatusCode {
     Draft = 1, // 草稿
@@ -220,5 +220,49 @@ describe("deepClone", () => {
         const clonedSet = deepClone(set)
         expect(clonedSet).toEqual(set)
         expect(clonedSet).not.toBe(set)
+    })
+})
+
+describe("getNumberKeys", () => {
+    it("获取对象中的数字类型的key数组", () => {
+        const obj = {
+            a: 1,
+            b: "string",
+            c: 2,
+            d: true,
+            e: 3,
+        }
+        const numberKeys = getNumberKeyOfTops(obj)
+        expect(numberKeys).toEqual(["a", "c", "e"])
+    })
+
+    it("对象中没有数字类型的key", () => {
+        const obj = {
+            a: "string",
+            b: true,
+            c: null,
+            d: undefined,
+        }
+        const numberKeys = getNumberKeyOfTops(obj)
+        expect(numberKeys).toEqual([])
+    })
+
+    it("对象为空", () => {
+        const obj = {}
+        const numberKeys = getNumberKeyOfTops(obj)
+        expect(numberKeys).toEqual([])
+    })
+
+    it("对象中包含嵌套对象", () => {
+        const obj = {
+            a: 1,
+            b: {
+                c: 2,
+                d: "string",
+            },
+            e: 3,
+        }
+        const numberKeys = getNumberKeyOfTops(obj)
+        expect(numberKeys).toEqual(["a", "e"])
     })
 })

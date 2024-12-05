@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-03 14:55:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-03 14:59:13
+ * @LastEditTime : 2024-12-05 16:52:59
  * @FilePath     : \blog-client\src\api\post\batchOperationPostStatus.ts
  * @Description  : 批量操作文章状态
  * @Blog         : https://jiaopengzi.com
@@ -25,7 +25,7 @@ export interface BatchOperationPostStatusRequest {
 }
 
 // 批量操作文章状态
-export function insertPostRequestAPI(
+export function batchOperationPostStatusAPI(
     requestData: BatchOperationPostStatusRequest,
 ): AxiosPromise<Res> {
     const urlStr = routerGroup + "/post/batch-operation-status"

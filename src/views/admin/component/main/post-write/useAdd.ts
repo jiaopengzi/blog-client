@@ -9,7 +9,7 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { insertPostRequestAPI } from "@/api/post/insert"
+import { insertPostAPI } from "@/api/post/insert"
 import type { InsertPostRequest } from "@/api/post/common"
 import { ResponseCode, handleErrInfo } from "@/api/responseCode"
 import { ShowMsgTip } from "@/utils/message"
@@ -33,7 +33,7 @@ export function useAdd(
         if (Object.keys(req).length === 0) return false
 
         // 插入文章
-        return await insertPostRequestAPI(req).then(async (res): Promise<boolean> => {
+        return await insertPostAPI(req).then(async (res): Promise<boolean> => {
             if (res.data.code === ResponseCode.PostInsertSuccess) {
                 // 将 data 中的 id 更新到 postInfoForm
                 postInfoForm.id = res.data.data.id

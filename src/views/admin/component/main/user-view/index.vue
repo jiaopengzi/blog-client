@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-04 21:37:20
+ * @LastEditTime : 2024-12-05 19:18:02
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -75,7 +75,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, reactive, onBeforeMount } from "vue"
+import { ref, reactive, onBeforeMount, nextTick } from "vue"
 import type { TableData, TableColumn } from "@/components/common/base-table"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import { type User } from "@/api/user/getUsers"
@@ -90,8 +90,8 @@ import { ResponseCode } from "@/api/responseCode"
 import { deleteUserAPI, type DeleteUserRequest } from "@/api/user/deleteUser"
 import { type EditUserByAdminForm } from "@/views/admin/component/main/user-view/component/edit-user"
 import { formatTime } from "@/utils/dateTime"
-import { useGetData } from "@/components/hooks/useGetData"
 import { useBaseTable, type QueryRecord, type Options } from "@/components/hooks/useBaseTable"
+import { useParams } from "@/components/hooks/useParams"
 
 import BaseTable from "@/components/common/base-table"
 import AddUser from "@/views/admin/component/main/user-view/component/add-user"
@@ -325,6 +325,9 @@ const handleUserCountByRole = async (role: string) => {
         [queryKey.RoleName]: role,
         [queryKey.KeyWord]: search.value,
     })
+
+    await nextTick()
+    updateQueryAndRouter(true)
 }
 
 const options: Options<GetUsersRequest> = {
@@ -343,12 +346,13 @@ const {
     updateCurrentPage, // 更新当前页
     updatePageSize, // 更新每页显示条数
     updateSearch, // 更新搜索关键字
-    runSearch, // 执行搜索
     addStatus, // 添加状态
     editStatus, // 编辑状态
     addItemUpdateDialogVisible, // 新增对话框
     editItemUpdateDialogVisible, // 编辑对话框
     deleteRows, // 删除行
+    updateQueryAndRouter, // 更新查询参数和路由
+    params,
 } = useBaseTable<User, GetUsersRequest, DeleteUserRequest>(
     AdminSideMenu.UserView,
     getUsersAPI,
@@ -357,6 +361,25 @@ const {
     ResponseCode.DeleteUserSuccess,
     options,
 )
+
+// 执行搜索
+const runSearch = () => {
+    updateQueryAndRouter(true)
+}
+
+// 在加载前将 params 解析回对应的响应式变量中
+useParams(params, search, pagination)
+
+onBeforeMount(async () => {
+    await getRoles()
+    await getUserCountGroupByRole()
+
+    const { role_name } = params
+
+    if (role_name) {
+        activeRole.value = role_name
+    }
+})
 </script>
 
 <style scoped lang="scss">

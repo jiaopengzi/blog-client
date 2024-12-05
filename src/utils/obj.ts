@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-25 22:23:57
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-26 14:43:08
+ * @LastEditTime : 2024-12-05 11:00:30
  * @FilePath     : \blog-client\src\utils\obj.ts
  * @Description  : 对象相关工具函数
  * @Blog         : https://jiaopengzi.com
@@ -117,4 +117,15 @@ export function getUpdatedFields<T>(original: T, current: T, primaryKey: keyof T
     }
 
     return updatedFields
+}
+
+/**
+ * @description: 获取对象中的数字类型的顶层key数组
+ * @param obj 对象
+ * @return {keyof T} 数字类型的顶层key数组
+ */
+export function getNumberKeyOfTops<T>(obj: T): (keyof T)[] {
+    return Object.keys(obj as object).filter(
+        (key) => typeof obj[key as keyof T] === "number",
+    ) as (keyof T)[]
 }

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 08:57:02
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-04 19:45:59
+ * @LastEditTime : 2024-12-05 18:22:16
  * @FilePath     : \blog-client\src\components\hooks\useBaseTable\index.ts
  * @Description  : 基础表格钩子
  * @Blog         : https://jiaopengzi.com
@@ -10,13 +10,12 @@
  */
 
 import { ref, reactive, watch, onBeforeMount, type Reactive } from "vue"
-import router from "@/router"
-import { debounce } from "throttle-debounce"
+import { useRoute, useRouter } from "vue-router"
 import type { AxiosPromise } from "axios"
 import {
     type Pagination,
     type PaginationRequest,
-    URLQueryIsNumberKeys,
+    NumberParamsFromURL,
     getEmptyPagination,
 } from "@/components/common"
 import { type Res, ResponseCode } from "@/api/responseCode"
@@ -26,14 +25,15 @@ import {
     type TableData,
 } from "@/components/common/base-table"
 import { ShowMsgTip } from "@/utils/message"
-import { type TableImg } from "@/components/common"
+import { type TableImg, type NumberKeys } from "@/components/common"
 
 export type QueryRecord<T extends keyof any> = { [key in T]?: string | number }
 
 export interface Options<K> {
     queryParams?: Reactive<K> // 查询参数
+    queryNumberParams?: NumberKeys<K>[] // 查询参数中的数字参数
     tableImg?: TableImg // 表格图片配置
-    noRequest?: QueryRecord<keyof any> // 不请求的参数值比如全部,只显示在路由中，不请求.
+    noRequest?: QueryRecord<keyof K> // 不请求的参数值比如全部,只显示在路由中，不请求.
 }
 
 /**
@@ -53,6 +53,9 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     deleteResCode: ResponseCode,
     options?: Options<K>,
 ) {
+    const route = useRoute()
+    const router = useRouter()
+
     const pagination = reactive<Pagination<T>>(getEmptyPagination<T>())
 
     const addItemDialogVisible = ref(false) // 添加对话框是否可见
@@ -60,24 +63,35 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     const search = ref("") // 搜索关键字
 
     // 查询参数
-    const query: Record<string, string | number> = reactive<K>({} as K)
+    const params = reactive<K>({} as K)
+    type KeyType = keyof typeof params
+
     if (options?.queryParams) {
-        Object.assign(query, options.queryParams)
+        Object.keys(params).forEach((key) => delete params[key as KeyType])
+        Object.assign(params, options.queryParams)
+    }
+
+    const numberParamSet = new Set<string>(Object.values(NumberParamsFromURL))
+    // 如果 options.queryNumberParams 不为空 将 options.queryNumberParams key 增加到 numberParamSet 中
+    if ((options?.queryNumberParams?.length ?? 0) > 0) {
+        options?.queryNumberParams?.forEach((key) => {
+            numberParamSet.add(key)
+        })
     }
 
     // 更新查询参数
     const updateQueryAndRouter = (isUpdateRouter: boolean = true) => {
-        query.page_size = pagination.page_size
-        query.current_page = pagination.current_page
-        if (!query.key_word) {
-            delete query.key_word
+        params.page_size = pagination.page_size
+        params.current_page = pagination.current_page
+        if (!params.key_word) {
+            delete params.key_word
         }
 
         // 判断是否更新路由
         if (isUpdateRouter) {
             router.push({
                 name: routeName,
-                query: query,
+                query: params,
             })
         }
     }
@@ -91,8 +105,8 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
             // 赋值给到 query, 如果 key 对应的值能解析为数字则解析为数字
             for (const key in queryUrl) {
                 const value = queryUrl[key]
-                // 判断 key 是否在 URLQueryIsNumberKeys 中，如果在则解析为数字，否则保持原样
-                query[key] = key in URLQueryIsNumberKeys ? Number(value) : (value as string)
+                // 判断 key 是否在 numberParamSet 中，如果在则解析为数字，否则保持原样
+                params[key as KeyType] = numberParamSet.has(key) ? Number(value) : (value as any)
             }
             return
         }
@@ -101,8 +115,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
 
     // 更新分页内容
     const updatePaginate = async (): Promise<void> => {
-        updateQueryAndRouter(false)
-        await getPaginate(query as unknown as K)
+        await getPaginate(params as K)
     }
 
     // 切换是否添加对话框
@@ -140,24 +153,18 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     // 更新搜索关键字
     const updateSearch = async (val: string) => {
         search.value = val
-        query.key_word = val
+        params.key_word = val
         if (val === "") {
-            await getPaginate(query as unknown as K)
+            await getPaginate(params as K)
             updateQueryAndRouter()
         }
     }
-
-    // 执行搜索
-    const runSearch = debounce(200, async () => {
-        await getPaginate(query as unknown as K)
-        updateQueryAndRouter()
-    })
 
     // 更新添加状态
     const addStatus = async (status: boolean) => {
         if (status) {
             // getValueFromQuery()
-            await getPaginate(query as unknown as K)
+            await getPaginate(params as K)
         }
     }
 
@@ -165,7 +172,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     const editStatus = async (status: boolean) => {
         if (status) {
             // getValueFromQuery()
-            await getPaginate(query as unknown as K)
+            await getPaginate(params as K)
         }
     }
 
@@ -224,17 +231,30 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     watch(
         () => options?.queryParams,
         (newVal) => {
-            console.log("use queryParams", newVal)
-            Object.assign(query, newVal)
-            updateQueryAndRouter()
+            Object.keys(params).forEach((key) => delete params[key as KeyType])
+
+            // 判断 newVal 中 key 是否在 numberParamSet 中，如果在则解析为数字，否则保持原样
+            for (const key in newVal) {
+                params[key as KeyType] = numberParamSet.has(key)
+                    ? Number(newVal[key as KeyType])
+                    : (newVal[key as KeyType] as any)
+            }
         },
         { deep: true },
+    )
+
+    // 监控 route.fullPath 的变化并执行操作
+    watch(
+        () => route.fullPath,
+        () => {
+            updatePaginate()
+        },
     )
 
     onBeforeMount(async () => {
         // 获取路由参数 并更新 query
         updateByQuery()
-        await getPaginate(query as unknown as K)
+        await getPaginate(params as K)
     })
 
     return {
@@ -247,12 +267,13 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         updateCurrentPage, // 更新当前页
         updatePageSize, // 更新每页显示条数
         updateSearch, // 更新搜索关键字
-        runSearch, // 执行搜索
         addStatus, // 添加状态
         editStatus, // 编辑状态
         addItemUpdateDialogVisible, // 新增对话框
         editItemUpdateDialogVisible, // 编辑对话框
         updatePaginate, // 更新分页数据
         deleteRows, // 删除行
+        updateQueryAndRouter, // 更新查询参数和路由
+        params,
     }
 }

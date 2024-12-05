@@ -9,8 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { viewPostByIDRequestAPI, type ViewPostByIDRequest } from "@/api/post/viewByID"
-import { updatePostRequestAPI } from "@/api/post/update"
+import { viewPostByIDAPI, type ViewPostByIDRequest } from "@/api/post/viewByID"
+import { updatePostAPI } from "@/api/post/update"
 import { ResponseCode, handleErrInfo } from "@/api/responseCode"
 import { ShowMsgTip } from "@/utils/message"
 import type { UpsertPostForm, PostInfoAboutTime } from "./index"
@@ -44,7 +44,7 @@ export function useEdit(
             const req: ViewPostByIDRequest = {
                 post_id: postInfoForm.id,
             }
-            await viewPostByIDRequestAPI(req).then((res) => {
+            await viewPostByIDAPI(req).then((res) => {
                 if (res.data.code === ResponseCode.PostViewByIDSuccess) {
                     const data = res.data.data
                     // 更新编辑器内容
@@ -107,7 +107,7 @@ export function useEdit(
         // 如果 req 是空对象，则表示表单验证失败
         if (Object.keys(req).length === 0) return false
 
-        return await updatePostRequestAPI(req).then(async (res): Promise<boolean> => {
+        return await updatePostAPI(req).then(async (res): Promise<boolean> => {
             if (res.data.code === ResponseCode.PostUpdateSuccess) {
                 postInfoAboutTime.updated_at = new Date(res.data.data.updated_at)
                 ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 6000)

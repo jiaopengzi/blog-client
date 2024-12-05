@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:38:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-04 19:45:22
+ * @LastEditTime : 2024-12-05 14:14:12
  * @FilePath     : \blog-client\src\components\common\index.ts
  * @Description  : 公用信息
  * @Blog         : https://jiaopengzi.com
@@ -47,11 +47,24 @@ export const getEmptyPagination = <T>(): Pagination<T> => {
     }
 }
 
-// url 中是数字的参数名 URLQueryIsNumberKeys 的对象
-export const URLQueryIsNumberKeys = {
-    current_page: "current_page",
-    page_size: "page_size",
+// url 中是数字的参数名 NumberParamsFromURL 的对象
+export enum NumberParamsFromURL {
+    current_page = "current_page",
+    page_size = "page_size",
 }
+
+// 获取对象中的值数字类型的string键名
+export type NumberKeys<T> = {
+    [K in keyof T]: K extends string
+        ? undefined extends T[K]
+            ? Exclude<T[K], undefined> extends number
+                ? K
+                : never
+            : T[K] extends number
+              ? K
+              : never
+        : never
+}[keyof T]
 
 // 表格图片配置
 export interface TableImg {

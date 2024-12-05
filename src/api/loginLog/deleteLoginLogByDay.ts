@@ -19,7 +19,7 @@ export interface DeleteLoginLogByDayRequest {
 }
 
 // 通过天删除登录日志
-export function DeleteLoginLogByDayAPI(requestData: DeleteLoginLogByDayRequest): AxiosPromise<Res> {
+export function deleteLoginLogByDayAPI(requestData: DeleteLoginLogByDayRequest): AxiosPromise<Res> {
     const urlStr = routerGroup + "/login-log/delete-by-day"
     return request({
         url: urlStr,

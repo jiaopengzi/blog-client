@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-04 16:10:23
+ * @LastEditTime : 2024-12-05 16:31:55
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格 table-layout="auto"
  * @Blog         : https://jiaopengzi.com
@@ -487,9 +487,7 @@ const checkedRows = ref<TableData[]>([])
 
 // 处理选择变化
 const handleSelectionChange = (rows: TableData[]) => {
-    // 更新宫格选择状态
     checkedRows.value = rows
-    // 选择的行
     emit("update-selection", rows)
 }
 

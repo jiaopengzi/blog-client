@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:47:08
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-04 21:36:42
+ * @LastEditTime : 2024-12-05 18:55:45
  * @FilePath     : \blog-client\src\views\admin\component\main\post-category\index.vue
  * @Description  : 分类管理
  * @Blog         : https://jiaopengzi.com
@@ -67,9 +67,9 @@ import BaseTable from "@/components/common/base-table"
 import AddTag from "./component/add"
 import EditTag from "./component/edit"
 import { type ViewForm } from "./component/view"
-import { useGetData } from "@/components/hooks/useGetData"
 import { type DeletePostCategoryRequest, deletePostCategoryAPI } from "@/api/postCategory/delete"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
+import { useParams } from "@/components/hooks/useParams"
 
 defineOptions({ name: AdminSideMenu.PostCategory })
 
@@ -153,12 +153,13 @@ const {
     updateCurrentPage, // 更新当前页
     updatePageSize, // 更新每页显示条数
     updateSearch, // 更新搜索关键字
-    runSearch, // 执行搜索
     addStatus, // 添加状态
     editStatus, // 编辑状态
     addItemUpdateDialogVisible, // 新增对话框
     editItemUpdateDialogVisible, // 编辑对话框
     deleteRows, // 删除行
+    updateQueryAndRouter, // 更新查询和路由
+    params,
 } = useBaseTable<PostCategory, ViewPostCategoryRequest, DeletePostCategoryRequest>(
     AdminSideMenu.PostCategory,
     viewPostCategoryAPI,
@@ -166,6 +167,11 @@ const {
     deletePostCategoryAPI,
     ResponseCode.PostCategoryDeleteSuccess,
 )
+
+// 执行搜索
+const runSearch = () => {
+    updateQueryAndRouter(true)
+}
 
 // 需要编辑的用户ID
 const editData = reactive<ViewForm>({
@@ -199,6 +205,9 @@ const editRow = (index: number, row: TableData) => {
     }
     toggleEditDialog()
 }
+
+// 在加载前将 params 解析回对应的响应式变量中
+useParams(params, search, pagination)
 </script>
 
 <style scoped lang="scss">

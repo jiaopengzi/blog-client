@@ -50,7 +50,7 @@ export const gegPostStatusOptions = () => {
 // 自定义字段
 export enum CustomFields {
     Price = "price", // 价格
-    ViewCount = "View_count", // 浏览次数
+    ViewCount = "view_count", // 浏览次数
     CommentCount = "comment_count", // 评论次数
     LikeCount = "like_count", // 点赞次数
     CollectCount = "collect_count", // 收藏次数

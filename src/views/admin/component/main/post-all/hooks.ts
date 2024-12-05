@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-03 16:37:27
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-04 11:40:39
+ * @LastEditTime : 2024-12-05 17:44:06
  * @FilePath     : \blog-client\src\views\admin\component\main\post-all\hooks.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,7 @@
  */
 
 import { ref, watch, onBeforeMount } from "vue"
-import { type PostCountGroup } from "./index"
+import { type PostCountGroupItem, queryKey } from "./index"
 import { getPostCountByAuthorAPI, type PostCountByAuthor } from "@/api/post/getPostCountByAuthor"
 import { getPostCountByStatusAPI, type PostCountByStatus } from "@/api/post/getPostCountByStatus"
 import { getPostCountByMonthAPI, type PostCountByMonth } from "@/api/post/getPostCountByMonth"
@@ -23,7 +23,7 @@ export function useHeader(userID: string = "") {
     const postCountAuthor = ref<PostCountByAuthor[]>([])
     const postCountStatus = ref<PostCountByStatus[]>([])
     const postCountMonth = ref<PostCountByMonth[]>([])
-    const postCountGroup = ref<PostCountGroup[]>([])
+    const postCountGroup = ref<Record<string, PostCountGroupItem>>({})
     const allGroup = "all"
     const activeGroup = ref(allGroup)
 
@@ -63,27 +63,29 @@ export function useHeader(userID: string = "") {
             // 从 postCountAuthor 文章数量累加拿到文章总数量
             const allPostCount = postCountAuthor.value.reduce((prev, cur) => prev + cur.count, 0)
             // 构造 postCountGroup
-            const allPosts: PostCountGroup = {
+            const allPosts: PostCountGroupItem = {
                 display: "全部",
                 key: allGroup,
                 count: allPostCount,
                 index: 0,
+                group: queryKey.Group,
             }
 
             // 构造 全部
-            postCountGroup.value.push(allPosts)
+            postCountGroup.value[allGroup] = allPosts
 
             // 构造 我的
             if (userID) {
                 const myPost = postCountAuthor.value.find((item) => item.post_author === userID)
                 if (myPost) {
-                    const myPosts: PostCountGroup = {
+                    const myPosts: PostCountGroupItem = {
                         display: "我的",
                         key: myPost.post_author,
                         count: myPost.count,
                         index: 1,
+                        group: queryKey.PostAuthor,
                     }
-                    postCountGroup.value.push(myPosts)
+                    postCountGroup.value[myPost.post_author] = myPosts
                 }
             }
         },
@@ -95,23 +97,15 @@ export function useHeader(userID: string = "") {
         () => {
             // 构造按照状态统计的文章数量
             postCountStatus.value.forEach((item) => {
-                const postStatus: PostCountGroup = {
+                const postStatus: PostCountGroupItem = {
                     display: PostStatusDisplay[item.post_status],
                     key: item.post_status.toString(),
                     count: item.count,
                     index: item.post_status + 1,
+                    group: queryKey.PostStatus,
                 }
-                postCountGroup.value.push(postStatus)
+                postCountGroup.value[item.post_status] = postStatus
             })
-        },
-        { deep: true },
-    )
-
-    watch(
-        postCountGroup,
-        () => {
-            // 按照 index 排序
-            postCountGroup.value.sort((a, b) => a.index - b.index)
         },
         { deep: true },
     )
@@ -129,5 +123,8 @@ export function useHeader(userID: string = "") {
         postCountGroup,
         allGroup,
         activeGroup,
+        getPostCountAuthor,
+        getPostCountStatus,
+        getPostCountMonth,
     }
 }

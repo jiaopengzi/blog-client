@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-28 16:56:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-05 19:41:33
+ * @LastEditTime : 2024-12-02 12:12:36
  * @FilePath     : \blog-client\src\views\admin\component\main\login-log\index.vue
  * @Description  : 登录日志
  * @Blog         : https://jiaopengzi.com
@@ -21,25 +21,29 @@
         @update-page-size="updatePageSize"
         @delete-rows="deleteRows"
         @update-search="updateSearch"
-        @run-search="runSearch"
+        @update-selection="updateSelection"
     >
         <template #btns>
-            <el-input-number class="delete-num" v-model="deleteNum" :min="1" :max="10000000" />
-            <el-button type="danger" @click="handleDeleteN"> 删除N天前记录 </el-button>
+            <el-input-number class="delete-num" v-model="deleteNum" :min="0" :max="10000000" />
+            <el-button type="danger" @click="handleDeleteN"> 删除 n 天前记录 </el-button>
         </template>
     </BaseTable>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from "vue"
+import { ref, reactive, onBeforeMount, watch } from "vue"
+import type { Pagination } from "@/components/common"
 import type { TableData, TableColumn } from "@/components/common/base-table"
+import { debounce } from "throttle-debounce"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import {
     getLoginLogsAPI,
+    emptyLoginLogs,
     type GetLoginLogsRequest,
     type LoginLog,
 } from "@/api/loginLog/getLoginLogs"
 import { ResponseCode, handleErrInfo } from "@/api/responseCode"
+import router from "@/router/index"
 import {
     deleteLoginLogByDayAPI,
     type DeleteLoginLogByDayRequest,
@@ -52,8 +56,6 @@ import { ShowMsgTip } from "@/utils/message"
 import { deleteConfirmCommon } from "@/utils/confirm"
 
 import BaseTable from "@/components/common/base-table"
-import { useBaseTable } from "@/components/hooks/useBaseTable"
-import { useParams } from "@/components/hooks/useParams"
 
 defineOptions({ name: AdminSideMenu.LoginLog })
 
@@ -130,29 +132,16 @@ const cols: TableColumn[] = reactive([
     },
 ])
 
-// hooks 使用
-const {
-    search, // 搜索关键字
-    pagination, // 分页数据
-    updateCurrentPage, // 更新当前页
-    updatePageSize, // 更新每页显示条数
-    updateSearch, // 更新搜索关键字
-    deleteRows, // 删除行
-    updateQueryAndRouter,
-    params,
-} = useBaseTable<LoginLog, GetLoginLogsRequest, DeleteLoginLogByIDsRequest>(
-    AdminSideMenu.LoginLog,
-    getLoginLogsAPI,
-    ResponseCode.GetLoginLogsSuccess,
-    deleteLoginLogByIDsAPI,
-    ResponseCode.LoginLogDeleteByIDsSuccess,
-)
+const pagination = ref<Pagination<LoginLog>>({
+    total: 0,
+    current_page: 1,
+    page_size: 10,
+    page_count: 1,
+    page_sizes: [10, 20, 50, 100],
+    records: [],
+})
 
-// 执行搜索
-const runSearch = () => {
-    updateQueryAndRouter(true)
-}
-
+const search = ref("")
 const deleteNum = ref(1)
 
 const handleDeleteN = () => {
@@ -164,7 +153,11 @@ const handleDeleteN = () => {
         await deleteLoginLogByDayAPI(deleteLoginLogByDayRequest).then((res) => {
             if (res.data.code === ResponseCode.LoginLogDeleteByDaySuccess) {
                 // 删除成功后重新获取用户列表
-                runSearch()
+                getLoginLogsPaginate({
+                    current_page: pagination.value.current_page,
+                    page_size: pagination.value.page_size,
+                    key_word: search.value,
+                })
                 ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 3000)
             } else {
                 // 显示错误信息
@@ -175,8 +168,117 @@ const handleDeleteN = () => {
     })
 }
 
-// 在加载前将 params 解析回对应的响应式变量中
-useParams(params, search, pagination)
+const updateCurrentPage = async (val: number) => {
+    pagination.value.current_page = val
+    routerPush(pagination.value.page_size, val, search.value)
+    console.log("01============", val)
+}
+
+const updatePageSize = async (val: number) => {
+    pagination.value.page_size = val
+    routerPush(val, pagination.value.current_page, search.value)
+    console.log("02============", val)
+}
+
+const deleteRows = async (rows: TableData[]) => {
+    // 将 rows 中的id 组成新的 list
+    const ids = rows.flatMap((item) => ("id" in item ? item.id.toString() : []))
+    // 将 ids 转换为 DeleteLoginLogByIDsRequest
+    const deleteLoginLogByIDsRequest: DeleteLoginLogByIDsRequest = { id_list: ids }
+
+    // 删除用户
+    await deleteLoginLogByIDsAPI(deleteLoginLogByIDsRequest).then((res) => {
+        if (res.data.code === ResponseCode.LoginLogDeleteByIDsSuccess) {
+            // 删除成功后重新获取用户列表
+            getLoginLogsPaginate({
+                current_page: pagination.value.current_page,
+                page_size: pagination.value.page_size,
+                key_word: search.value,
+            })
+            ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 3000)
+        } else {
+            // 显示错误信息
+            const msg = handleErrInfo(res)
+            ShowMsgTip(ShowMsgTip.MsgType.error, msg, 3000)
+        }
+    })
+}
+
+const updateSearch = debounce(500, async (val: string) => {
+    search.value = val
+    routerPush(pagination.value.page_size, pagination.value.current_page, val)
+    console.log("07============", val)
+})
+
+watch(search, (newVal) => {
+    console.log("08============", newVal)
+})
+
+const updateSelection = (rows: TableData[]) => {
+    console.log("18============", rows)
+}
+
+// 获取分页用户
+async function getLoginLogsPaginate(getLoginLogsRequest: GetLoginLogsRequest) {
+    // 如果 key_word 为空 则不传 key_word
+    if (!getLoginLogsRequest.key_word) {
+        delete getLoginLogsRequest.key_word
+    }
+
+    // 获取用户列表
+    await getLoginLogsAPI(getLoginLogsRequest).then((res) => {
+        if (res.data.code === ResponseCode.GetLoginLogsSuccess) {
+            pagination.value = res.data.data
+            console.log("11============", pagination.value)
+        } else {
+            pagination.value = emptyLoginLogs()
+        }
+    })
+}
+
+// 路由跳转
+function routerPush(pageSize: number, currentPage: number, searchStr: string) {
+    // 当搜索关键字为空时
+    if (!searchStr) {
+        router.push({
+            name: AdminSideMenu.LoginLog,
+            query: {
+                "page-size": pageSize,
+                "current-page": currentPage,
+            },
+        })
+        return
+    }
+
+    // 当搜索关键字不为空
+    router.push({
+        name: AdminSideMenu.LoginLog,
+        query: {
+            "page-size": pageSize,
+            "current-page": currentPage,
+            search: searchStr,
+        },
+    })
+    return
+}
+
+// 从路由中query中获取值
+function getValueFromQuery() {
+    pagination.value.page_size = Number(router.currentRoute.value.query["page-size"]) || 10
+    pagination.value.current_page = Number(router.currentRoute.value.query["current-page"]) || 1
+    search.value = (router.currentRoute.value.query["search"] as string) || ""
+    console.log("12============", search.value)
+}
+
+onBeforeMount(async () => {
+    console.log("13============")
+    getValueFromQuery()
+    await getLoginLogsPaginate({
+        current_page: pagination.value.current_page,
+        page_size: pagination.value.page_size,
+        key_word: search.value,
+    })
+})
 </script>
 
 <style scoped lang="scss">

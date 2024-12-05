@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-14 14:54:58
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-23 15:48:04
+ * @LastEditTime : 2024-12-05 16:54:18
  * @FilePath     : \blog-client\src\api\post\viewByID.ts
  * @Description  : 查看文章
  * @Blog         : https://jiaopengzi.com
@@ -24,9 +24,7 @@ export interface ViewPostResponse extends Res {
 }
 
 // 查看文章
-export function viewPostByIDRequestAPI(
-    requestData: ViewPostByIDRequest,
-): AxiosPromise<ViewPostResponse> {
+export function viewPostByIDAPI(requestData: ViewPostByIDRequest): AxiosPromise<ViewPostResponse> {
     const urlStr = routerGroup + "/post/view-by-id"
     return request({
         url: urlStr,

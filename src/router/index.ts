@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-04 18:07:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-03 17:55:47
+ * @LastEditTime : 2024-12-05 10:01:30
  * @FilePath     : \blog-client\src\router\index.ts
  * @Description  : 路由配置
  * @blog         : https://jiaopengzi.com
@@ -47,7 +47,6 @@ router.beforeEach(async (to, from, next) => {
     // 如果用户正在编辑，跳转到其他页面时，提示是否离开编辑页面
     else if (userStore.isEditing && to.path !== routeObj[AdminSideMenu.PostWrite].path) {
         // 提示是否离开编辑页面
-        console.log("编辑页面===============>2")
         await confirmCommon(
             "确认离开当前未保存编辑页面吗？",
             () => {
@@ -62,6 +61,7 @@ router.beforeEach(async (to, from, next) => {
             },
         )
     }
+
     // 其他情况
     else {
         next()
