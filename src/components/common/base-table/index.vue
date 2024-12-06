@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-06 11:38:42
+ * @LastEditTime : 2024-12-06 15:33:26
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格 table-layout="auto"
  * @Blog         : https://jiaopengzi.com
@@ -58,6 +58,7 @@
             @selection-change="handleSelectionChange"
             :row-style="rowStyle"
             style="width: 100%"
+            :height="height"
         >
             <!-- 选择框 -->
             <el-table-column type="selection" width="50" align="center" />
@@ -213,7 +214,7 @@
         </el-checkbox-group>
 
         <!-- 分页 -->
-        <div class="pagination-block">
+        <div ref="paginationBlockRef" class="pagination-block">
             <el-pagination
                 v-model:current-page="paginationData.current_page"
                 v-model:page-size="paginationData.page_size"
@@ -289,6 +290,7 @@ const {
     editWidth,
     editTop,
     tagsItemMaxHeight,
+    height,
 } = defineProps<{
     pagination: Pagination<TableData> // 分页配置
     tableColumn: TableColumn[] // 表格列配置
@@ -306,6 +308,7 @@ const {
     editWidth?: string // 编辑对话框宽度
     editTop?: string // 编辑对话框距离顶部距离
     tagsItemMaxHeight?: string // 标签项目最大高度
+    height?: string | number
 }>()
 
 // 事件
@@ -328,7 +331,7 @@ const emit = defineEmits<{
 }>()
 
 const tableRef = useTemplateRef<InstanceType<typeof ElTable>>("tableRef") //表格实例
-// const gridRef = useTemplateRef<HTMLUListElement>('gridRef') //宫格实例
+
 const search = ref(searchStr) // 搜索关键字
 const paginationData = ref<Pagination<TableData>>(pagination)
 const addItemDialogVisibleStatus = ref(false) // 对话框状态

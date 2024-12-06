@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-05 19:13:20
+ * @LastEditTime : 2024-12-06 17:23:14
  * @FilePath     : \blog-client\src\views\admin\component\main\post-tag\index.vue
  * @Description  : 标签管理
  * @Blog         : https://jiaopengzi.com
@@ -19,6 +19,7 @@
         :is-show-search="true"
         :search-str="search"
         :is-show-edit="true"
+        height="calc(100vh - 228px)"
         @update-current-page="updateCurrentPage"
         @update-page-size="updatePageSize"
         @edit-row="editRow"
@@ -135,6 +136,8 @@ const cols: TableColumn[] = reactive([
     },
 ])
 
+const queryParams = reactive<ViewPostTagRequest>({} as ViewPostTagRequest)
+
 // hooks 使用
 const {
     addItemDialogVisible, // 添加对话框是否可见
@@ -152,13 +155,13 @@ const {
     editItemUpdateDialogVisible, // 编辑对话框
     deleteRows, // 删除行
     updateQueryAndRouter,
-    params,
 } = useBaseTable<PostTag, ViewPostTagRequest, DeletePostTagRequest>(
     AdminSideMenu.PostTag,
     viewPostTagAPI,
     ResponseCode.PostTagViewSuccess,
     deletePostTagAPI,
     ResponseCode.PostTagDeleteSuccess,
+    queryParams,
 )
 
 // 执行搜索
@@ -197,7 +200,7 @@ const editRow = (index: number, row: TableData) => {
 }
 
 // 在加载前将 params 解析回对应的响应式变量中
-useParams(params, search, pagination)
+useParams(queryParams, search, pagination)
 </script>
 
 <style scoped lang="scss">

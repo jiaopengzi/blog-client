@@ -50,7 +50,7 @@
         "cropperjs": "^1.6.2",
         "crypto-js": "^4.2.0",
         "dompurify": "^3.1.7",
-        "element-plus": "^2.8.8",
+        "element-plus": "^2.9.0",
         "emoji.json": "^15.1.0",
         "highlight.js": "^11.10.0",
         "hls.js": "^1.5.17",

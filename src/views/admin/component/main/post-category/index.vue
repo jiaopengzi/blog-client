@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:47:08
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-05 18:55:45
+ * @LastEditTime : 2024-12-06 17:25:21
  * @FilePath     : \blog-client\src\views\admin\component\main\post-category\index.vue
  * @Description  : 分类管理
  * @Blog         : https://jiaopengzi.com
@@ -19,6 +19,7 @@
         :is-show-search="true"
         :search-str="search"
         :is-show-edit="true"
+        height="calc(100vh - 228px)"
         @update-current-page="updateCurrentPage"
         @update-page-size="updatePageSize"
         @edit-row="editRow"
@@ -142,6 +143,7 @@ const cols: TableColumn[] = reactive([
     },
 ])
 
+const queryParams = reactive<ViewPostCategoryRequest>({} as ViewPostCategoryRequest)
 // hooks 使用
 const {
     addItemDialogVisible, // 添加对话框是否可见
@@ -159,13 +161,13 @@ const {
     editItemUpdateDialogVisible, // 编辑对话框
     deleteRows, // 删除行
     updateQueryAndRouter, // 更新查询和路由
-    params,
 } = useBaseTable<PostCategory, ViewPostCategoryRequest, DeletePostCategoryRequest>(
     AdminSideMenu.PostCategory,
     viewPostCategoryAPI,
     ResponseCode.PostCategoryViewSuccess,
     deletePostCategoryAPI,
     ResponseCode.PostCategoryDeleteSuccess,
+    queryParams,
 )
 
 // 执行搜索
@@ -207,7 +209,7 @@ const editRow = (index: number, row: TableData) => {
 }
 
 // 在加载前将 params 解析回对应的响应式变量中
-useParams(params, search, pagination)
+useParams(queryParams, search, pagination)
 </script>
 
 <style scoped lang="scss">

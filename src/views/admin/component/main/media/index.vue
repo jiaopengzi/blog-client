@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-06 12:23:53
+ * @LastEditTime : 2024-12-06 17:26:51
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -23,6 +23,7 @@
         :search-str="search"
         :edit-width="editWidth"
         :edit-top="editTop"
+        height="calc(100vh - 270px)"
         @update-current-page="updateCurrentPage"
         @update-page-size="updatePageSize"
         @edit-row="editRow"
@@ -202,7 +203,6 @@ const noRequest: QueryRecord<queryKey> = { [queryKey.FileType]: AllFileType }
 const tableImg: TableImg = { width: 100, height: 100, imgFit: ImgFit.Cover, svgFontSize: 60 }
 
 const options: Options<GetMediaFilesRequest> = {
-    queryParams,
     noRequest,
     tableImg,
 }
@@ -235,13 +235,13 @@ const {
     deleteRows, // 删除行
     updateQueryAndRouter, // 更新查询参数和路由
     updatePaginate, // 更新分页
-    params,
 } = useBaseTable<MediaFile, GetMediaFilesRequest, DeleteFileRequest>(
     AdminSideMenu.Media,
     getMediaFilesAPI,
     ResponseCode.GetFilesSuccess,
     deleteFileAPI,
     ResponseCode.FileDeleteSuccess,
+    queryParams,
     options,
 )
 
@@ -436,12 +436,12 @@ const deleteSubtitles = (language: string) => {
 }
 
 // 在加载前将 params 解析回对应的响应式变量中
-useParams(params, search, pagination)
+useParams(queryParams, search, pagination)
 
 onBeforeMount(async () => {
     await getFileCountGroupByFiletype()
 
-    const { file_type } = params
+    const { file_type } = queryParams
 
     if (file_type) {
         activeFileType.value = file_type

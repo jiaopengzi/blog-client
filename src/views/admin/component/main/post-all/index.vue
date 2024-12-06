@@ -2,9 +2,9 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-06 10:20:31
+ * @LastEditTime : 2024-12-06 19:39:41
  * @FilePath     : \blog-client\src\views\admin\component\main\post-all\index.vue
- * @Description  : 标签管理
+ * @Description  : 文章管理 
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
@@ -21,6 +21,7 @@
         :is-show-edit="true"
         :row-style="{ height: '96px' }"
         tags-item-max-height="96px"
+        height="calc(100vh - 270px)"
         @update-current-page="updateCurrentPage"
         @update-page-size="updatePageSize"
         @edit-row="editRow"
@@ -28,14 +29,17 @@
         @update-search="updateSearch"
         @run-search="runSearch"
         @update-selection="handleSelection"
+        @click-category="handleClickCategory"
+        @click-tag="handleClickTag"
+        @click-author="handleClickAuthor"
     >
         <template #btns>
-            <el-button type="primary" @click="postWrite"> 写文章 </el-button>
+            <el-button ref="addBtnRef" type="primary" @click="postWrite"> 写文章 </el-button>
         </template>
 
         <template #category>
             <!-- v-for 循环 postCountGroup生成 按钮 -->
-            <div class="category">
+            <div ref="categoryRef" class="category">
                 <el-button
                     v-for="item in postCountGroup"
                     :key="item.key"
@@ -48,7 +52,23 @@
         </template>
 
         <template #custom-filter>
-            <div class="custom-filter">
+            <div ref="customFilterRef" class="custom-filter">
+                <!-- 按照作者 分类 标签 -->
+                <div v-if="authorCategoryTag.size" class="custom-filter-item author-category-tag">
+                    <el-button
+                        class="author-category-tag-item author-category-tag-btn"
+                        type="primary"
+                        size="small"
+                        @click="clearAuthorCategoryTag"
+                        >X</el-button
+                    >
+                    <el-input-tag
+                        class="author-category-tag-item"
+                        v-model="authorCategoryTag"
+                        disabled
+                    />
+                </div>
+
                 <!-- 按照月份筛选 -->
                 <div class="custom-filter-item">
                     <el-select
@@ -137,7 +157,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, watch, nextTick, onBeforeMount } from "vue"
+import { ref, reactive, watch, nextTick, onMounted, computed } from "vue"
 import type { TableData, TableColumn } from "@/components/common/base-table"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import {
@@ -169,6 +189,8 @@ import { confirmCommon } from "@/utils/confirm"
 import { MsgType } from "@/components/common"
 import { ShowMsgTip } from "@/utils/message"
 import { useParams } from "@/components/hooks/useParams"
+import type { PostTag } from "@/api/postTag/view"
+import type { User } from "@/api/user/getUsers"
 
 defineOptions({ name: AdminSideMenu.PostAll })
 
@@ -323,6 +345,11 @@ const queryNumberParams: NumberKeys<ViewPostByAdminRequest>[] = ["post_status", 
 // 不需要请求的参数
 const noRequest: QueryRecord<queryKey> = { [queryKey.Group]: allGroup }
 
+// 点击分类、标签、作者
+const clickCategory = ref<string>("")
+const clickTag = ref<string>("")
+const clickAuthor = ref<string>("")
+
 // 处理 postCountGroup 点击事件
 const handlePostCountByGroup = async (item: PostCountGroupItem) => {
     activeGroup.value = item.key
@@ -346,8 +373,85 @@ const handlePostCountByGroup = async (item: PostCountGroupItem) => {
         Object.assign(queryParams, { [queryKey.PostStatus]: item.key })
     }
 
+    // 清空
+    clickAuthor.value = ""
+
     Object.assign(queryParams, {
         [queryKey.KeyWord]: search.value,
+    })
+
+    await nextTick()
+    updateQueryAndRouter(true)
+}
+
+const handleClickCategory = async (item: PostTag) => {
+    // 配置查询参数
+    Object.assign(queryParams, {
+        [queryKey.PostCategoryID]: item.id,
+    })
+    clickCategory.value = item.name
+
+    await nextTick()
+    updateQueryAndRouter(true)
+}
+
+const handleClickTag = async (item: PostTag) => {
+    // 配置查询参数
+    Object.assign(queryParams, {
+        [queryKey.PostTagID]: item.id,
+    })
+    clickTag.value = item.name
+
+    await nextTick()
+    updateQueryAndRouter(true)
+}
+
+const handleClickAuthor = async (author: User) => {
+    // 配置查询参数
+    Object.assign(queryParams, {
+        [queryKey.PostAuthor]: author.id,
+    })
+    clickAuthor.value = author.user_name
+
+    await nextTick()
+    updateQueryAndRouter(true)
+}
+
+const authorCategoryTag = computed(() => {
+    const authorCategoryTagSet = new Set<string>()
+    if (clickCategory.value) {
+        authorCategoryTagSet.add(clickCategory.value)
+    }
+    if (clickTag.value) {
+        authorCategoryTagSet.add(clickTag.value)
+    }
+    if (clickAuthor.value) {
+        authorCategoryTagSet.add(clickAuthor.value)
+    }
+    return authorCategoryTagSet
+})
+
+// 判断 authorCategoryTag 是否为空
+const isAuthorCategoryTagEmpty = computed(() => authorCategoryTag.value.size === 0)
+
+const clearAuthorCategoryTag = async () => {
+    clickCategory.value = ""
+    clickTag.value = ""
+    clickAuthor.value = ""
+
+    // 删除查询参数
+    Object.keys(queryParams).forEach((key) => {
+        if (key === queryKey.PostCategoryID || key === queryKey.PostTagID) {
+            delete queryParams[key as keyof ViewPostByAdminRequest]
+        }
+
+        // 如果分組中显示的不是当前用户的文章，删除
+        if (
+            key === queryKey.PostAuthor &&
+            activeGroup.value !== queryParams[key as keyof ViewPostByAdminRequest]
+        ) {
+            delete queryParams[key as keyof ViewPostByAdminRequest]
+        }
     })
 
     await nextTick()
@@ -409,14 +513,14 @@ const {
     deleteRows, // 删除行
     updatePaginate, // 更新分页
     updateQueryAndRouter, // 更新查询参数和路由
-    params,
 } = useBaseTable<PostInfoRes, ViewPostByAdminRequest, DeletePostRequest>(
     AdminSideMenu.PostAll,
     viewPostByAdminAPI,
     ResponseCode.PostViewByAdminSuccess,
     deletePostAPI,
     ResponseCode.PostDeleteSuccess,
-    { queryParams, queryNumberParams, tableImg, noRequest },
+    queryParams,
+    { queryNumberParams, tableImg, noRequest },
 )
 
 // 执行搜索
@@ -505,9 +609,10 @@ const editRow = (index: number, row: TableData) => {
 }
 
 // 通用将 params 解析回对应的响应式变量中
-useParams(params, search, pagination)
+useParams(queryParams, search, pagination)
 
-onBeforeMount(() => {
+// 将 params 解析回对应的响应式变量中(不需要请求)
+const parseParamsNotLoaded = () => {
     // 在加载前将 params 解析回对应的响应式变量中
     const {
         post_author,
@@ -517,11 +622,12 @@ onBeforeMount(() => {
         custom_filed,
         custom_filed_min,
         custom_filed_max,
-    } = params
+    } = queryParams
 
-    if (post_author) {
+    if (post_author && post_author === userStore.getUserID) {
         activeGroup.value = post_author
     }
+
     if (post_status) {
         activeGroup.value = post_status.toString()
     }
@@ -530,6 +636,61 @@ onBeforeMount(() => {
     postCustomFieldsSelect.value = custom_filed || ""
     postCustomFieldsMin.value = custom_filed_min ? Number(custom_filed_min) : 0
     postCustomFieldsMax.value = custom_filed_max ? Number(custom_filed_max) : 100
+}
+
+// 将 params 解析回对应的响应式变量中(需要请求)
+const parseParamsHasLoaded = () => {
+    // 在加载前将 params 解析回对应的响应式变量中
+    const { post_author, post_category_id, post_tag_id } = queryParams
+    // 解析作者
+    if (post_author) {
+        for (const item of pagination.records) {
+            if (item.author_info.id === post_author) {
+                clickAuthor.value = item.author_info.user_display_name
+                break
+            }
+        }
+    }
+
+    // 解析分类
+    if (post_category_id) {
+        categoryLoop: for (const item of pagination.records) {
+            for (const category of item.categories) {
+                if (category.id === post_category_id) {
+                    clickCategory.value = category.name
+                    break categoryLoop
+                }
+            }
+        }
+    }
+
+    // 解析标签
+    if (post_tag_id) {
+        tagLoop: for (const item of pagination.records) {
+            for (const tag of item.tags) {
+                if (tag.id === post_tag_id) {
+                    clickTag.value = tag.name
+                    break tagLoop
+                }
+            }
+        }
+    }
+
+    stopParseParamsHasLoaded()
+}
+
+// 当 pagination.records 有数据时，解析 params,只需要执行一次
+const { stop: stopParseParamsHasLoaded } = watch(
+    () => pagination.records,
+    (newRecords) => {
+        if (newRecords.length > 0) {
+            parseParamsHasLoaded()
+        }
+    },
+)
+
+onMounted(() => {
+    parseParamsNotLoaded()
 })
 </script>
 
@@ -574,6 +735,25 @@ onBeforeMount(() => {
 
     .custom-filter-item {
         margin-right: 10px;
+    }
+}
+
+.author-category-tag {
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    .author-category-tag-item {
+        margin-right: 10px;
+    }
+
+    // author-category-tag-btn 绝对定位到最右边垂直居中
+    .author-category-tag-btn {
+        position: absolute;
+        right: 4px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 1;
     }
 }
 

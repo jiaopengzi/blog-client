@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-28 16:56:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-06 10:32:11
+ * @LastEditTime : 2024-12-06 17:28:04
  * @FilePath     : \blog-client\src\views\admin\component\main\login-log\index.vue
  * @Description  : 登录日志
  * @Blog         : https://jiaopengzi.com
@@ -17,6 +17,7 @@
         :is-show-search="true"
         :search-str="search"
         :is-show-edit="false"
+        height="calc(100vh - 228px)"
         @update-current-page="updateCurrentPage"
         @update-page-size="updatePageSize"
         @delete-rows="deleteRows"
@@ -130,6 +131,8 @@ const cols: TableColumn[] = reactive([
     },
 ])
 
+const queryParams = reactive<GetLoginLogsRequest>({} as GetLoginLogsRequest)
+
 // hooks 使用
 const {
     search, // 搜索关键字
@@ -139,13 +142,13 @@ const {
     updateSearch, // 更新搜索关键字
     deleteRows, // 删除行
     updateQueryAndRouter,
-    params,
 } = useBaseTable<LoginLog, GetLoginLogsRequest, DeleteLoginLogByIDsRequest>(
     AdminSideMenu.LoginLog,
     getLoginLogsAPI,
     ResponseCode.GetLoginLogsSuccess,
     deleteLoginLogByIDsAPI,
     ResponseCode.LoginLogDeleteByIDsSuccess,
+    queryParams,
 )
 
 // 执行搜索
@@ -176,7 +179,7 @@ const handleDeleteN = () => {
 }
 
 // 在加载前将 params 解析回对应的响应式变量中
-useParams(params, search, pagination)
+useParams(queryParams, search, pagination)
 </script>
 
 <style scoped lang="scss">

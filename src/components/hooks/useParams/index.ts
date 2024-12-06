@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-05 19:00:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-05 19:10:16
+ * @LastEditTime : 2024-12-06 17:24:37
  * @FilePath     : \blog-client\src\components\hooks\useParams\index.ts
  * @Description  : 路由参数解析回响应式变量
  * @Blog         : https://jiaopengzi.com
@@ -18,7 +18,7 @@ import type { PaginationRequest, Pagination } from "@/components/common"
  * @param pagination 分页信息
  */
 export function useParams<T, K extends PaginationRequest>(
-    params: K,
+    params: Reactive<K>,
     search: Ref<string>,
     pagination: Reactive<Pagination<T>>,
 ) {

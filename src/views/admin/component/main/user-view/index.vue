@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-06 10:45:47
+ * @LastEditTime : 2024-12-06 17:25:59
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -19,6 +19,7 @@
         :is-show-search="true"
         :search-str="search"
         :is-show-edit="true"
+        height="calc(100vh - 270px)"
         @update-current-page="updateCurrentPage"
         @update-page-size="updatePageSize"
         @edit-row="editRow"
@@ -326,7 +327,6 @@ const handleUserCountByRole = async (role: string) => {
 }
 
 const options: Options<GetUsersRequest> = {
-    queryParams,
     noRequest,
 }
 
@@ -347,13 +347,13 @@ const {
     editItemUpdateDialogVisible, // 编辑对话框
     deleteRows, // 删除行
     updateQueryAndRouter, // 更新查询参数和路由
-    params,
 } = useBaseTable<User, GetUsersRequest, DeleteUserRequest>(
     AdminSideMenu.UserView,
     getUsersAPI,
     ResponseCode.UserGetAllSuccess,
     deleteUserAPI,
     ResponseCode.DeleteUserSuccess,
+    queryParams,
     options,
 )
 
@@ -363,13 +363,13 @@ const runSearch = () => {
 }
 
 // 在加载前将 params 解析回对应的响应式变量中
-useParams(params, search, pagination)
+useParams(queryParams, search, pagination)
 
 onBeforeMount(async () => {
     await getRoles()
     await getUserCountGroupByRole()
 
-    const { role_name } = params
+    const { role_name } = queryParams
 
     if (role_name) {
         activeRole.value = role_name
