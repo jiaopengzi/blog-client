@@ -15,7 +15,7 @@ import type { AxiosPromise } from "axios"
 import { type Res } from "@/api/responseCode"
 
 export interface UpdatePostCategoryRequest {
-    id: string // 标签id
+    id: string // 分类id
     name: string // tag名称
     slug: string // 别名
     description?: string // 描述
@@ -24,7 +24,7 @@ export interface UpdatePostCategoryRequest {
     parent?: string // 父级分类
 }
 
-// 更新文章标签
+// 更新文章分类
 export function updatePostCategoryAPI(requestData: UpdatePostCategoryRequest): AxiosPromise<Res> {
     const urlStr = routerGroup + "/post-category/update"
     return request({

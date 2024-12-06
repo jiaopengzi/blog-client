@@ -19,7 +19,7 @@ export interface DeleteFileRequest {
 }
 
 // 删除文件
-export function DeleteFileAPI(requestData: DeleteFileRequest): AxiosPromise<Res> {
+export function deleteFileAPI(requestData: DeleteFileRequest): AxiosPromise<Res> {
     const urlStr = routerGroup + "/upload/delete"
     return request({
         url: urlStr,

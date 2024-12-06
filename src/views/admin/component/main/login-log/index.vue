@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-28 16:56:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-05 19:41:33
+ * @LastEditTime : 2024-12-06 10:32:11
  * @FilePath     : \blog-client\src\views\admin\component\main\login-log\index.vue
  * @Description  : 登录日志
  * @Blog         : https://jiaopengzi.com
@@ -183,73 +183,5 @@ useParams(params, search, pagination)
 .delete-num {
     width: 150px;
     margin-right: 10px;
-}
-
-.icon-upload-filled {
-    font-size: 6em;
-    fill: $primary-color;
-}
-
-:deep(.el-upload-list) {
-    li {
-        // 上下边距
-        margin: 30px 0;
-        padding: 0;
-    }
-}
-
-.dialog-title {
-    font-size: 20px;
-    font-weight: 700;
-}
-
-.el-upload__text {
-    // font-size: 16px;
-    font-weight: 500;
-}
-
-.el-upload__tip_title {
-    margin: 10px 0;
-}
-
-.user-count-by-role {
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-
-    .el-button {
-        position: relative;
-        // 背景透明
-        background-color: transparent;
-        // 无边框
-        border: none;
-
-        &.active {
-            font-weight: bold;
-            color: $primary-color;
-        }
-
-        &::after {
-            content: "";
-            position: absolute;
-            right: -8px;
-            top: 50%;
-            transform: translateY(-50%);
-            height: 61.8%;
-            border-right: 1px solid $primary-color;
-        }
-
-        &:last-child::after {
-            display: none;
-        }
-    }
-}
-
-.dialog-add,
-.dialog-edit {
-    width: 100%;
-    // 浮动 水平居中
-    display: flex;
-    justify-content: center;
 }
 </style>

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-05 16:31:55
+ * @LastEditTime : 2024-12-06 11:38:42
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格 table-layout="auto"
  * @Blog         : https://jiaopengzi.com
@@ -230,6 +230,7 @@
 
     <!-- 弹窗 add -->
     <el-dialog
+        v-if="addItemDialogVisibleStatus"
         v-model="addItemDialogVisibleStatus"
         @close="addItemHandleDialogClose"
         v-bind="{ width: addWidth, top: addTop }"
@@ -242,6 +243,7 @@
 
     <!-- 弹窗 edit -->
     <el-dialog
+        v-if="editItemDialogVisibleStatus"
         v-model="editItemDialogVisibleStatus"
         @close="editItemHandleDialogClose"
         v-bind="{ width: editWidth, top: editTop }"

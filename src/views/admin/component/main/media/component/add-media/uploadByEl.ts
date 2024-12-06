@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-30 10:48:16
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-05 11:40:59
- * @FilePath     : \blog-client\src\views\admin\component\main\media\component\add-media\uploadEl.ts
+ * @LastEditTime : 2024-12-06 11:53:52
+ * @FilePath     : \blog-client\src\views\admin\component\main\media\component\add-media\uploadByEl.ts
  * @Description  : 使用 Element Plus 的上传组件上传文件
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
@@ -20,7 +20,7 @@ import {
 } from "@/utils/chunkUpload"
 import { HashAlgorithm } from "@/utils/hash"
 
-export const uploadEl = async (
+export const uploadByEl = async (
     options: UploadRequestOptions,
     isEncrypt: boolean = true,
     isNoFree: boolean = true,

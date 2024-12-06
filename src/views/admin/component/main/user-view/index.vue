@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-05 19:18:02
+ * @LastEditTime : 2024-12-06 10:45:47
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -25,7 +25,6 @@
         @delete-rows="deleteRows"
         @update-search="updateSearch"
         @run-search="runSearch"
-        @update-selection="updateSelection"
         @add-item-update-dialog-visible="addItemUpdateDialogVisible"
         @edit-item-update-dialog-visible="editItemUpdateDialogVisible"
     >
@@ -279,10 +278,6 @@ const editRow = (index: number, row: TableData) => {
     toggleEditDialog()
 }
 
-const updateSelection = (rows: TableData[]) => {
-    console.log("18============", rows)
-}
-
 // 用户角色列表
 const userCountGroupByRole = ref<UserCountGroupByRole[]>([])
 
@@ -383,31 +378,9 @@ onBeforeMount(async () => {
 </script>
 
 <style scoped lang="scss">
-.icon-upload-filled {
-    font-size: 6em;
-    fill: $primary-color;
-}
-
-:deep(.el-upload-list) {
-    li {
-        // 上下边距
-        margin: 30px 0;
-        padding: 0;
-    }
-}
-
 .dialog-title {
     font-size: 20px;
     font-weight: 700;
-}
-
-.el-upload__text {
-    // font-size: 16px;
-    font-weight: 500;
-}
-
-.el-upload__tip_title {
-    margin: 10px 0;
 }
 
 .category {

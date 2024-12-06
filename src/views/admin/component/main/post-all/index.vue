@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-05 19:24:33
+ * @LastEditTime : 2024-12-06 10:20:31
  * @FilePath     : \blog-client\src\views\admin\component\main\post-all\index.vue
  * @Description  : 标签管理
  * @Blog         : https://jiaopengzi.com
@@ -37,7 +37,7 @@
             <!-- v-for 循环 postCountGroup生成 按钮 -->
             <div class="category">
                 <el-button
-                    v-for="item in sortedPostCountGroup"
+                    v-for="item in postCountGroup"
                     :key="item.key"
                     :class="{ active: item.key === activeGroup }"
                     @click="handlePostCountByGroup(item)"
@@ -137,7 +137,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, nextTick, onBeforeMount } from "vue"
+import { ref, reactive, watch, nextTick, onBeforeMount } from "vue"
 import type { TableData, TableColumn } from "@/components/common/base-table"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import {
@@ -306,13 +306,6 @@ const userStore = useUserStore()
 const { postCountGroup, postCountMonth, allGroup, activeGroup, getPostCountStatus } = useHeader(
     userStore.getUserID,
 )
-
-// 按 index 升序排序
-const sortedPostCountGroup = computed(() => {
-    return Object.values(postCountGroup.value)
-        .slice()
-        .sort((a, b) => a.index - b.index)
-})
 
 // 表格图片配置
 const tableImg: TableImg = {

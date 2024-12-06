@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-03 17:02:57
+ * @LastEditTime : 2024-12-06 12:23:53
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -26,17 +26,16 @@
         @update-current-page="updateCurrentPage"
         @update-page-size="updatePageSize"
         @edit-row="editRow"
-        @delete-row="deleteRow"
         @delete-rows="deleteRows"
         @update-search="updateSearch"
-        @update-selection="updateSelection"
+        @run-search="runSearch"
         @click-row-by-picture="clickRowByPicture"
         @add-item-update-dialog-visible="addItemUpdateDialogVisible"
         @edit-item-update-dialog-visible="editItemUpdateDialogVisible"
         @is-show-list-or-grid="updateIsShowListOrGrid"
     >
         <template #btns>
-            <el-button type="primary" @click="handleAdd"> 新增 </el-button>
+            <el-button type="primary" @click="toggleAddDialog"> 新增 </el-button>
         </template>
         <template #category>
             <!-- v-for 循环 fileCountGroupByFiletype 按钮 -->
@@ -59,7 +58,7 @@
 
         <template #add-item>
             <div class="dialog-add">
-                <AddMedia :is-visible="addItemDialogVisible" />
+                <AddMedia @has-upload="handleHasUpload" />
             </div>
         </template>
 
@@ -71,7 +70,7 @@
         <template #edit-item>
             <EditMedia
                 :edit-media-data="editMediaData"
-                @edit-media-status="updateMedia"
+                @edit-media-status="editStatus"
                 @update-subtitles="updateSubtitles"
                 @delete-subtitles="deleteSubtitles"
             />
@@ -80,26 +79,23 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from "vue"
-import type { Pagination } from "@/components/common"
+import { ref, reactive, onBeforeMount, nextTick, watch } from "vue"
 import type { TableData, TableColumn } from "@/components/common/base-table"
 import type { MediaFile, GetMediaFilesRequest } from "@/api/upload/getFiles"
-import { getMediaFilesAPI, emptyMediaFiles } from "@/api/upload/getFiles"
-import { debounce } from "throttle-debounce"
+import { getMediaFilesAPI } from "@/api/upload/getFiles"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import { ShowMsgTip } from "@/utils/message"
-import { ResponseCode, LocalStorageKey, handleErrInfo } from "@/api/responseCode"
-import { ImgFit } from "@/components/common"
-import router from "@/router"
-import { paginationRouterPush, PaginationQueryKey } from "@/router/utils"
+import { ResponseCode, LocalStorageKey } from "@/api/responseCode"
 import {
     getFileCountGroupByFiletypeAPI,
     type FileCountGroupByFiletype,
 } from "@/api/upload/getFileCountGroupByFiletype"
-import { DeleteFileAPI, type DeleteFileRequest } from "@/api/upload/deleteFile"
+import { deleteFileAPI, type DeleteFileRequest } from "@/api/upload/deleteFile"
 import type { EditMediaProps } from "@/views/admin/component/main/media/component/edit-media"
-import { useGetData } from "@/components/hooks/useGetData"
 import { isVideo } from "@/utils/isVideo"
+import { type TableImg, ImgFit } from "@/components/common"
+import { useBaseTable, type QueryRecord, type Options } from "@/components/hooks/useBaseTable"
+import { useParams } from "@/components/hooks/useParams"
 
 import BaseTable from "@/components/common/base-table"
 import AddMedia from "@/views/admin/component/main/media/component/add-media"
@@ -187,25 +183,28 @@ const cols: TableColumn[] = reactive([
     },
 ])
 
-// 分页数据
-const pagination = ref<Pagination<MediaFile>>({
-    total: 5,
-    current_page: 1,
-    page_size: 5,
-    page_count: 1,
-    page_sizes: [5, 10, 20, 30],
-    records: [],
-})
-
-const search = ref("")
-
 const AllFileType = "AllFileType"
 const activeFileType = ref(AllFileType)
 
 // url query key
 enum queryKey {
-    FileType = "file-type",
-    Search = "search",
+    FileType = "file_type",
+    KeyWord = "key_word",
+}
+
+// 查询参数
+const queryParams: GetMediaFilesRequest = reactive({} as GetMediaFilesRequest)
+
+// 不需要请求的参数
+const noRequest: QueryRecord<queryKey> = { [queryKey.FileType]: AllFileType }
+
+// 图片配置
+const tableImg: TableImg = { width: 100, height: 100, imgFit: ImgFit.Cover, svgFontSize: 60 }
+
+const options: Options<GetMediaFilesRequest> = {
+    queryParams,
+    noRequest,
+    tableImg,
 }
 
 // 是否显示列表或网格
@@ -213,16 +212,56 @@ const isShowListOrGrid = ref(
     localStorage.getItem(LocalStorageKey.IsShowListOrGridAtMedia) == "true",
 )
 
-console.log("0============>", isShowListOrGrid.value)
-
 // 更新是否显示列表或网格
 const updateIsShowListOrGrid = (status: boolean) => {
     isShowListOrGrid.value = status
     localStorage.setItem(LocalStorageKey.IsShowListOrGridAtMedia, status.toString())
 }
 
-const addItemDialogVisible = ref(false)
-const editItemDialogVisible = ref(false)
+// hooks 使用
+const {
+    addItemDialogVisible, // 添加对话框是否可见
+    editItemDialogVisible, // 编辑对话框是否可见
+    search, // 搜索关键字
+    toggleAddDialog, // 切换添加对话框
+    toggleEditDialog, // 切换编辑对话框
+    pagination, // 分页数据
+    updateCurrentPage, // 更新当前页
+    updatePageSize, // 更新每页显示条数
+    updateSearch, // 更新搜索关键字
+    editStatus, // 编辑状态
+    addItemUpdateDialogVisible, // 新增对话框
+    editItemUpdateDialogVisible, // 编辑对话框
+    deleteRows, // 删除行
+    updateQueryAndRouter, // 更新查询参数和路由
+    updatePaginate, // 更新分页
+    params,
+} = useBaseTable<MediaFile, GetMediaFilesRequest, DeleteFileRequest>(
+    AdminSideMenu.Media,
+    getMediaFilesAPI,
+    ResponseCode.GetFilesSuccess,
+    deleteFileAPI,
+    ResponseCode.FileDeleteSuccess,
+    options,
+)
+
+// 执行搜索
+const runSearch = () => {
+    updateQueryAndRouter(true)
+}
+
+// 是否有上传
+const hasUpload = ref(false)
+const handleHasUpload = (value: boolean) => {
+    hasUpload.value = value
+}
+
+// 监控 addItemDialogVisible 从 true 变为 false 同时 hasUpload 为 true 更新列表
+watch(addItemDialogVisible, (newVal, oldVal) => {
+    if (hasUpload.value && oldVal === true && newVal === false) {
+        updatePaginate()
+    }
+})
 
 const editMediaData: EditMediaProps = reactive({
     file_id: "", // 文件ID
@@ -238,28 +277,6 @@ const editMediaData: EditMediaProps = reactive({
     editDialogVisible: false, // 编辑对话框是否显示
     is_generate_hls: true, // 是否生成HLS
 })
-
-const handleAdd = () => {
-    addItemDialogVisible.value = !addItemDialogVisible.value
-}
-
-const updateCurrentPage = (val: number) => {
-    pagination.value.current_page = val
-    paginationRouterPush(AdminSideMenu.Media, pagination.value.page_size, val, {
-        [queryKey.FileType]: activeFileType.value,
-        [queryKey.Search]: search.value,
-    })
-    console.log("1", val)
-}
-
-const updatePageSize = (val: number) => {
-    pagination.value.page_size = val
-    paginationRouterPush(AdminSideMenu.Media, val, pagination.value.current_page, {
-        [queryKey.FileType]: activeFileType.value,
-        [queryKey.Search]: search.value,
-    })
-    console.log("2", val)
-}
 
 const editWidth = ref("90%")
 const editTop = ref("3vh")
@@ -290,56 +307,8 @@ const editRow = (index: number, row: TableData) => {
             editTop.value = ""
         }
     }
-
+    toggleEditDialog()
     console.log("3", index, row)
-}
-
-const deleteRow = (index: number, row: TableData) => {
-    console.log("4", index, row)
-}
-
-const deleteRows = async (rows: TableData[]) => {
-    console.log("5", rows)
-    // 将 rows 中的id 组成新的 list
-    const ids = rows.flatMap((item) => ("id" in item ? item.id.toString() : []))
-
-    // 将 ids 转换为 DeleteFileRequest
-    const req: DeleteFileRequest = { file_id_list: ids }
-
-    // 删除文件
-    await DeleteFileAPI(req).then((res) => {
-        if (res.data.code === ResponseCode.FileDeleteSuccess) {
-            // 重新获取文件统计
-            getFileCountGroupByFiletype()
-            // 重新获取分页文件
-            getMediaFilePaginate({
-                current_page: pagination.value.current_page,
-                page_size: pagination.value.page_size,
-                file_type: activeFileType.value,
-                key_word: search.value,
-            })
-            ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 3000)
-        } else {
-            // 显示错误信息
-            const msg = handleErrInfo(res)
-            ShowMsgTip(ShowMsgTip.MsgType.error, msg, 3000)
-        }
-    })
-}
-
-const updateSearch = debounce(300, (val: string) => {
-    search.value = val
-    paginationRouterPush(
-        AdminSideMenu.Media,
-        pagination.value.page_size,
-        pagination.value.current_page,
-        { [queryKey.FileType]: activeFileType.value, [queryKey.Search]: val },
-    )
-    console.log("6", val)
-})
-
-const updateSelection = (rows: TableData[]) => {
-    console.log("7", rows)
 }
 
 const clickRowByPicture = (row: TableData) => {
@@ -367,62 +336,6 @@ const clickRowByPicture = (row: TableData) => {
             ShowMsgTip(ShowMsgTip.MsgType.success, "复制成功", 3000)
         }
     }
-}
-
-// 添加媒体文件对话框是否显示
-const addItemUpdateDialogVisible = (val: boolean) => {
-    addItemDialogVisible.value = val
-    if (!val) {
-        // 关闭对话框的时候重新获取分页数据
-        getMediaFilePaginate({
-            current_page: pagination.value.current_page,
-            page_size: pagination.value.page_size,
-            file_type: activeFileType.value,
-            key_word: search.value,
-        })
-    }
-}
-
-// 编辑对话框
-const editItemUpdateDialogVisible = (val: boolean) => {
-    console.log("09============", val)
-    editItemDialogVisible.value = val
-    editMediaData.editDialogVisible = val
-}
-
-// 获取分页用户
-async function getMediaFilePaginate(req: GetMediaFilesRequest) {
-    // 如果 key_word 为空 则不传 key_word
-    if (!req.key_word) {
-        delete req.key_word
-    }
-
-    // 如果 file_type 为 AllFileType 则不传 file_type
-    if (req.file_type === AllFileType) {
-        delete req.file_type
-    }
-
-    // 获取用户列表 // 宽高 50px 50px
-    await getMediaFilesAPI(req, 100, 100, ImgFit.Cover, 60).then((res) => {
-        if (res.data.code === ResponseCode.GetFilesSuccess) {
-            pagination.value = res.data.data
-            console.log("11============", pagination.value)
-        } else {
-            pagination.value = emptyMediaFiles()
-        }
-    })
-}
-
-// 从路由中query中获取值
-function getValueFromQuery() {
-    pagination.value.page_size =
-        Number(router.currentRoute.value.query[PaginationQueryKey.PageSize]) || 10
-    pagination.value.current_page =
-        Number(router.currentRoute.value.query[PaginationQueryKey.CurrentPage]) || 1
-    activeFileType.value =
-        (router.currentRoute.value.query[queryKey.FileType] as string) || AllFileType
-    search.value = (router.currentRoute.value.query[queryKey.Search] as string) || ""
-    console.log("12============", search.value)
 }
 
 const formatterVideoIsFree = (row: TableData) => {
@@ -495,61 +408,45 @@ const handleFileCountByFiletype = async (fileType: string) => {
     // 添加路由跳转
     console.log("10============")
     console.log(activeFileType.value)
-    paginationRouterPush(
-        AdminSideMenu.Media,
-        pagination.value.page_size,
-        pagination.value.current_page,
-        { [queryKey.FileType]: fileType, [queryKey.Search]: search.value },
-    )
-}
-
-// 初始化数据
-const getDataOnBeforeMount = async () => {
-    getValueFromQuery()
-    await getFileCountGroupByFiletype()
-    await getMediaFilePaginate({
-        current_page: pagination.value.current_page,
-        page_size: pagination.value.page_size,
-        file_type: activeFileType.value,
-        key_word: search.value,
+    // 添加路由跳转
+    Object.assign(queryParams, {
+        [queryKey.FileType]: fileType,
+        [queryKey.KeyWord]: search.value,
     })
-}
 
-// 路由变化时获取数据
-const getDataOnRouteChange = async () => {
-    await getMediaFilePaginate({
-        current_page: pagination.value.current_page,
-        page_size: pagination.value.page_size,
-        file_type: activeFileType.value,
-        key_word: search.value,
-    })
-}
-
-const updateMedia = async (status: boolean) => {
-    if (status) {
-        await getDataOnRouteChange()
-    }
+    await nextTick()
+    updateQueryAndRouter(true)
 }
 
 // 更新字幕
-const updateSubtitles = async (language: string) => {
+const updateSubtitles = (language: string) => {
     // 如果已经存在则不添加,否则添加
     if (!editMediaData.subtitles_language_list.includes(language)) {
         editMediaData.subtitles_language_list.push(language)
     }
-    await getDataOnRouteChange()
+    updateQueryAndRouter(true)
 }
 
 // 删除字幕
-const deleteSubtitles = async (language: string) => {
+const deleteSubtitles = (language: string) => {
     editMediaData.subtitles_language_list = editMediaData.subtitles_language_list.filter(
         (item) => item !== language,
     )
-    await getDataOnRouteChange()
+    updateQueryAndRouter(true)
 }
 
-// hook
-useGetData([getDataOnBeforeMount], [getDataOnRouteChange])
+// 在加载前将 params 解析回对应的响应式变量中
+useParams(params, search, pagination)
+
+onBeforeMount(async () => {
+    await getFileCountGroupByFiletype()
+
+    const { file_type } = params
+
+    if (file_type) {
+        activeFileType.value = file_type
+    }
+})
 </script>
 
 <style scoped lang="scss">

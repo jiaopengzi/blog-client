@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-08-31 13:10:47
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-07 09:44:31
+ * @LastEditTime : 2024-12-06 12:10:44
  * @FilePath     : \blog-client\src\views\admin\component\main\media\component\add-media\index.vue
  * @Description  : 添加媒体
  * @Blog         : https://jiaopengzi.com
@@ -46,34 +46,48 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watchEffect, onBeforeMount, useTemplateRef } from "vue"
+import { ref, onBeforeMount, useTemplateRef } from "vue"
 import { IconKeys } from "@/components/common/icons"
 import { getUploadFileRequirementsAPI } from "@/api/upload/getUploadFileRequirements"
 import { ResponseCode } from "@/api/responseCode"
 import { type UploadRequestOptions, type ElUpload } from "element-plus"
 import { HashAlgorithm } from "@/utils/hash"
-import { uploadEl } from "@/views/admin/component/main/media/component/add-media"
+import { uploadByEl } from "@/views/admin/component/main/media/component/add-media"
 
 defineOptions({ name: "AddMedia" })
 
-// 定义是否显示
-const { isVisible = false } = defineProps<{
-    isVisible: boolean // 是否显示
+const emit = defineEmits<{
+    (event: "has-upload", value: boolean): void // 是否有上传
 }>()
 
 const uploadRef = useTemplateRef<typeof ElUpload>("uploadRef")
-
-// 监控 IsVisible 变化,如果为 false 则清空上传文件
-watchEffect(() => {
-    if (!isVisible) {
-        uploadRef.value?.clearFiles()
-    }
-})
 
 const allowedInfo = ref("")
 const chunkSizeServer = ref(1024 * 1024 * 10)
 let hashAlgorithmServer: HashAlgorithm = HashAlgorithm.SHA256
 
+// 上传视频是否加密
+const isEncrypt = ref(true)
+const isNoFree = ref(true)
+
+const httpRequest = async (options: UploadRequestOptions) => {
+    try {
+        const result = await uploadByEl(
+            options,
+            isEncrypt.value,
+            isNoFree.value,
+            chunkSizeServer.value,
+            hashAlgorithmServer,
+        )
+        if (result) {
+            emit("has-upload", true)
+        }
+    } catch (error) {
+        console.error("Upload failed:", error)
+    }
+}
+
+// 拿到上传文件的要求
 const getAllowedInfo = async () => {
     const strList: string[] = []
     await getUploadFileRequirementsAPI().then((response) => {
@@ -96,13 +110,6 @@ const getAllowedInfo = async () => {
         allowedInfo.value = strList.join("、") + "。"
     })
 }
-
-// 上传视频是否加密
-const isEncrypt = ref(true)
-const isNoFree = ref(true)
-
-const httpRequest = async (options: UploadRequestOptions) =>
-    uploadEl(options, isEncrypt.value, isNoFree.value, chunkSizeServer.value, hashAlgorithmServer)
 
 onBeforeMount(async () => {
     await getAllowedInfo()

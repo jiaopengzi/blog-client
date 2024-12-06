@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-08-27 16:38:22
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 09:25:10
+ * @LastEditTime : 2024-12-06 11:19:18
  * @FilePath     : \blog-client\src\api\upload\getFiles.ts
  * @Description  : 获取文件列表
  * @Blog         : https://jiaopengzi.com
@@ -22,42 +22,28 @@ export interface GetMediaFilesRequest extends PaginationRequest {
     file_type?: string // 角色
 }
 
-// 获取用户信息响应类型
+// 获取媒体文件信息响应类型
 export interface GetMediaFilesResponse {
     code: number
     msg: string
     data: Pagination<MediaFile>
 }
 
-// 获取用户信息 api 函数
+// 获取媒体文件信息 api 函数
 export async function getMediaFilesAPI(
-    requestData: GetMediaFilesRequest = { current_page: 1, page_size: 10 }, // 设置默认值,
-    width: number = 30, // 默认值 50px
-    height: number = 30, // 默认值 50px
-    imgFit: ImgFit = ImgFit.Cover, // 默认值 cover
-    fontSize = 30, // 默认值 30px
+    requestData: GetMediaFilesRequest,
 ): AxiosPromise<GetMediaFilesResponse> {
     const urlStr = routerGroup + "/upload/view"
-    const response = await request({
+    return request({
         url: urlStr,
         method: "post",
         data: requestData,
     })
-    // 在这里使用 map 函数来转换每个用户对象
-    if (response.data.code === ResponseCode.GetFilesSuccess) {
-        response.data.data.records = response.data.data.records.map((file: any) =>
-            formatMediaFile(file, width, height, imgFit, fontSize),
-        )
-        return response
-    } else {
-        response.data.data = emptyMediaFiles()
-        return response
-    }
 }
 
-// 每行用户信息
+// 每行媒体文件信息
 export interface MediaFile extends DataWithImg {
-    id: number // 用户 ID
+    id: number // 媒体文件 ID
     created_at: string // 注册时间
     file_name: string // 文件名 id 和 hash组成
     file_name_display: string // 文件显示名
@@ -78,56 +64,56 @@ export interface MediaFile extends DataWithImg {
     subtitles_language_list: string[] // 字幕语言列表
 }
 
-/**
- * @description: 格式化用户信息
- * @param MediaFile 后端用户信息
- * @param width 图片宽度
- * @param height 图片高度
- * @param imgFit 图片填充方式
- * @return  {MediaFile} 格式化后的用户信息
- */
-export function formatMediaFile(
-    { thumbnail, created_at, ...MediaFile }: any,
-    width: number,
-    height: number,
-    imgFit: ImgFit,
-    svgFontSize: number,
-): MediaFile {
-    const formattedMediaFile: MediaFile = {
-        ...MediaFile,
-        created_at: formatTime(created_at), // 使用 formatTime 进行格式化
-    }
+// /**
+//  * @description: 格式化媒体文件信息
+//  * @param MediaFile 后端媒体文件信息
+//  * @param width 图片宽度
+//  * @param height 图片高度
+//  * @param imgFit 图片填充方式
+//  * @return  {MediaFile} 格式化后的媒体文件信息
+//  */
+// export function formatMediaFile(
+//     { thumbnail, created_at, ...MediaFile }: any,
+//     width: number,
+//     height: number,
+//     imgFit: ImgFit,
+//     svgFontSize: number,
+// ): MediaFile {
+//     const formattedMediaFile: MediaFile = {
+//         ...MediaFile,
+//         created_at: formatTime(created_at), // 使用 formatTime 进行格式化
+//     }
 
-    // 如果 thumbnail 不为空，添加 img 属性
-    if (thumbnail) {
-        formattedMediaFile.img = {
-            url: thumbnail,
-            width: width,
-            height: height,
-            imgFit: imgFit,
-        }
-    }
+//     // 如果 thumbnail 不为空，添加 img 属性
+//     if (thumbnail) {
+//         formattedMediaFile.img = {
+//             url: thumbnail,
+//             width: width,
+//             height: height,
+//             imgFit: imgFit,
+//         }
+//     }
 
-    // 如果 thumbnail 为空，添加 icon 属性
-    if (!thumbnail && MediaFile.file_type === "application/zip") {
-        formattedMediaFile.img = {
-            url: "",
-            svgFontSize: svgFontSize,
-            iconKeyName: IconKeys.Zip,
-        }
-    }
+//     // 如果 thumbnail 为空，添加 icon 属性
+//     if (!thumbnail && MediaFile.file_type === "application/zip") {
+//         formattedMediaFile.img = {
+//             url: "",
+//             svgFontSize: svgFontSize,
+//             iconKeyName: IconKeys.Zip,
+//         }
+//     }
 
-    return formattedMediaFile
-}
+//     return formattedMediaFile
+// }
 
-// 默认的 MediaFileInfo 空对象
-export function emptyMediaFiles(): Pagination<MediaFile> {
-    return {
-        total: 0,
-        current_page: 1,
-        page_size: 10,
-        page_count: 1,
-        page_sizes: [10],
-        records: [],
-    }
-}
+// // 默认的 MediaFileInfo 空对象
+// export function emptyMediaFiles(): Pagination<MediaFile> {
+//     return {
+//         total: 0,
+//         current_page: 1,
+//         page_size: 10,
+//         page_count: 1,
+//         page_sizes: [10],
+//         records: [],
+//     }
+// }
