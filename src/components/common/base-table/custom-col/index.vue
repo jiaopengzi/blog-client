@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-24 15:53:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-02 18:21:12
+ * @LastEditTime : 2024-12-06 20:37:44
  * @FilePath     : \blog-client\src\components\common\base-table\custom-col\index.vue
  * @Description  : 自定义列 
  * @Blog         : https://jiaopengzi.com
@@ -84,5 +84,9 @@ const handleAuthorClick = (author: User) => {
     margin: 0;
     border: none;
     background-color: transparent;
+}
+
+.is-author:hover {
+    font-weight: 700;
 }
 </style>

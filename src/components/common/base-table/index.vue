@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-06 15:33:26
+ * @LastEditTime : 2024-12-06 20:28:49
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格 table-layout="auto"
  * @Blog         : https://jiaopengzi.com
@@ -12,248 +12,251 @@
 <template>
     <!-- 参考:https://github.com/element-plus/element-plus/blob/dev/packages/components/image/src/image.vue -->
     <!-- <el-image-viewer v-if="isShowElImageViewer" @close="closeElImageViewer" :url-list="imgUrls" /> -->
-    <div class="container">
-        <div class="btns">
-            <!-- 按钮 -->
-            <slot name="btns"></slot>
-            <el-button v-if="isShowDeleteAll" type="danger" @click="handleBatchDelete">
-                删除
-            </el-button>
+    <el-config-provider :locale="zhCn">
+        <div class="container">
+            <div class="btns">
+                <!-- 按钮 -->
+                <slot name="btns"></slot>
+                <el-button v-if="isShowDeleteAll" type="danger" @click="handleBatchDelete">
+                    删除
+                </el-button>
 
-            <span v-if="isShowListOrGrid">
-                <SwitchGroup :switch-items="switchItemList" @update-status="updateStatus" />
-            </span>
-        </div>
+                <span v-if="isShowListOrGrid">
+                    <SwitchGroup :switch-items="switchItemList" @update-status="updateStatus" />
+                </span>
+            </div>
 
-        <!-- 分组显示插槽 -->
-        <slot name="category"></slot>
+            <!-- 分组显示插槽 -->
+            <slot name="category"></slot>
 
-        <!-- 筛选和操作 -->
-        <div class="filter-operation">
-            <!-- 搜索 -->
-            <el-input
-                v-if="isShowSearch"
-                class="search filter-operation-item"
-                v-model="search"
-                placeholder="关键字搜索"
-                clearable
-            />
+            <!-- 筛选和操作 -->
+            <div class="filter-operation">
+                <!-- 搜索 -->
+                <el-input
+                    v-if="isShowSearch"
+                    class="search filter-operation-item"
+                    v-model="search"
+                    placeholder="关键字搜索"
+                    clearable
+                />
 
-            <!-- 其他筛选插槽 -->
-            <slot class="filter-operation-item" name="custom-filter"></slot>
-            <el-button class="filter-operation-item" type="primary" @click="runSearch"
-                >搜索</el-button
-            >
-
-            <!-- 操作插槽 -->
-            <slot class="filter-operation-item operation" name="operation"></slot>
-        </div>
-
-        <!-- 表格内容 -->
-        <el-table
-            v-show="showListOrGridStatus"
-            ref="tableRef"
-            :data="paginationData.records"
-            stripe
-            @selection-change="handleSelectionChange"
-            :row-style="rowStyle"
-            style="width: 100%"
-            :height="height"
-        >
-            <!-- 选择框 -->
-            <el-table-column type="selection" width="50" align="center" />
-
-            <!-- 编辑按钮 -->
-            <el-table-column v-if="isShowEdit" width="80" align="center">
-                <template #header>
-                    <span>操作</span>
-                </template>
-                <template #default="scope">
-                    <el-button
-                        size="small"
-                        type="primary"
-                        @click="handleEdit(scope.$index, scope.row)"
-                        >编辑</el-button
-                    >
-                    <!-- <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button> -->
-                </template>
-            </el-table-column>
-
-            <template v-for="(col, index) in tableColumn">
-                <!-- 图片 -->
-                <el-table-column
-                    v-if="col.isImg"
-                    :key="`img-${index}`"
-                    :width="col.width"
-                    :min-width="col.minWidth"
-                    :align="col.align"
+                <!-- 其他筛选插槽 -->
+                <slot class="filter-operation-item" name="custom-filter"></slot>
+                <el-button class="filter-operation-item" type="primary" @click="runSearch"
+                    >搜索</el-button
                 >
+
+                <!-- 操作插槽 -->
+                <slot class="filter-operation-item operation" name="operation"></slot>
+            </div>
+
+            <!-- 表格内容 -->
+            <el-table
+                v-show="showListOrGridStatus"
+                ref="tableRef"
+                :data="paginationData.records"
+                stripe
+                @selection-change="handleSelectionChange"
+                :row-style="rowStyle"
+                style="width: 100%"
+                :height="height"
+            >
+                <!-- 选择框 -->
+                <el-table-column type="selection" width="50" align="center" />
+
+                <!-- 编辑按钮 -->
+                <el-table-column v-if="isShowEdit" width="80" align="center">
                     <template #header>
-                        <span>{{ col.label }}</span>
+                        <span>操作</span>
                     </template>
                     <template #default="scope">
-                        <div class="thumbnail" @click="handleDelegateClick(scope.row)">
-                            <img
-                                v-if="scope.row.img?.url"
-                                class="thumbnail-img"
-                                :src="scope.row.img?.url"
-                                :style="
-                                    imgStyle(
-                                        scope.row.img?.width,
-                                        scope.row.img?.height,
-                                        scope.row.img?.imgFit,
-                                    )
-                                "
-                            />
-                            <Icon
-                                v-else-if="scope.row.img?.iconKeyName"
-                                class="thumbnail-img"
-                                :name="scope.row.img?.iconKeyName"
-                                :style="iconStyle(scope.row.img?.fontSize)"
-                            />
-                        </div>
+                        <el-button
+                            size="small"
+                            type="primary"
+                            @click="handleEdit(scope.$index, scope.row)"
+                            >编辑</el-button
+                        >
+                        <!-- <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button> -->
                     </template>
                 </el-table-column>
 
-                <!-- 分类信息 -->
-                <CustomCol
-                    v-else-if="col.isCategories"
-                    :col="col"
-                    :index="index"
-                    @click-item="handleCategoryClick"
-                />
-
-                <!-- 标签信息 -->
-                <CustomCol
-                    v-else-if="col.isTags"
-                    :col="col"
-                    :index="index"
-                    @click-item="handleTagClick"
-                />
-
-                <!-- 标题 -->
-                <CustomCol v-else-if="col.isHeading" :col="col" :index="index" />
-
-                <!-- 作者 -->
-                <CustomCol
-                    v-else-if="col.isAuthor"
-                    :col="col"
-                    :index="index"
-                    @click-author="handleAuthorClick"
-                />
-
-                <!-- 格式化文本 -->
-                <CustomCol
-                    v-else-if="col.formatter"
-                    :col="col"
-                    :index="index"
-                    :tags-item-max-height="tagsItemMaxHeight"
-                />
-
-                <!-- 不需要处理，显示原值 -->
-                <el-table-column
-                    v-else
-                    :key="col.prop"
-                    :prop="col.prop"
-                    :label="col.label"
-                    :sortable="col.sortable"
-                    :width="col.width"
-                    :min-width="col.minWidth"
-                    :align="col.align"
-                />
-            </template>
-        </el-table>
-
-        <!-- 宫格 -->
-        <el-checkbox-group
-            v-show="!showListOrGridStatus"
-            v-model="checkedRows"
-            @change="handleCheckedGridChange"
-        >
-            <el-empty v-if="!hasData" />
-
-            <ul ref="gridRef" class="grid">
-                <li
-                    v-for="(row, index) in paginationData.records"
-                    :key="row.id"
-                    class="thumbnail grid-item"
-                >
-                    <el-checkbox
-                        v-if="isSelected(row)"
-                        class="grid-item-selection-status"
-                        :key="row"
-                        :value="row"
-                        size="large"
-                    />
-
-                    <img
-                        v-if="row.img?.url"
-                        class="thumbnail-img"
-                        :src="row.img.url"
-                        :style="imgStyle(row.img?.width, row.img?.height, row.img?.imgFit)"
-                        @click="handleDelegateGridClick(row)"
-                    />
-
-                    <Icon
-                        v-else-if="row.img?.iconKeyName"
-                        class="thumbnail-img"
-                        :name="row.img?.iconKeyName"
-                        :style="iconStyle(row.img?.svgFontSize)"
-                        @click="handleDelegateGridClick(row)"
-                    />
-
-                    <el-button
-                        class="grid-item-edit"
-                        size="small"
-                        type="primary"
-                        @click="handleEdit(index, row)"
-                        >编辑</el-button
+                <template v-for="(col, index) in tableColumn">
+                    <!-- 图片 -->
+                    <el-table-column
+                        v-if="col.isImg"
+                        :key="`img-${index}`"
+                        :width="col.width"
+                        :min-width="col.minWidth"
+                        :align="col.align"
                     >
-                </li>
-            </ul>
-        </el-checkbox-group>
+                        <template #header>
+                            <span>{{ col.label }}</span>
+                        </template>
+                        <template #default="scope">
+                            <div class="thumbnail" @click="handleDelegateClick(scope.row)">
+                                <img
+                                    v-if="scope.row.img?.url"
+                                    class="thumbnail-img"
+                                    :src="scope.row.img?.url"
+                                    :style="
+                                        imgStyle(
+                                            scope.row.img?.width,
+                                            scope.row.img?.height,
+                                            scope.row.img?.imgFit,
+                                        )
+                                    "
+                                />
+                                <Icon
+                                    v-else-if="scope.row.img?.iconKeyName"
+                                    class="thumbnail-img"
+                                    :name="scope.row.img?.iconKeyName"
+                                    :style="iconStyle(scope.row.img?.fontSize)"
+                                />
+                            </div>
+                        </template>
+                    </el-table-column>
 
-        <!-- 分页 -->
-        <div ref="paginationBlockRef" class="pagination-block">
-            <el-pagination
-                v-model:current-page="paginationData.current_page"
-                v-model:page-size="paginationData.page_size"
-                :page-sizes="paginationData.page_sizes"
-                :page-count="paginationData.page_count"
-                :total="paginationData.total"
-                :background="true"
-                layout="total, prev, pager, next, jumper, sizes"
-                @update:current-page="(val: number) => emit('update-current-page', val)"
-                @update:page-size="(val: number) => emit('update-page-size', val)"
-            />
+                    <!-- 分类信息 -->
+                    <CustomCol
+                        v-else-if="col.isCategories"
+                        :col="col"
+                        :index="index"
+                        @click-item="handleCategoryClick"
+                    />
+
+                    <!-- 标签信息 -->
+                    <CustomCol
+                        v-else-if="col.isTags"
+                        :col="col"
+                        :index="index"
+                        @click-item="handleTagClick"
+                    />
+
+                    <!-- 标题 -->
+                    <CustomCol v-else-if="col.isHeading" :col="col" :index="index" />
+
+                    <!-- 作者 -->
+                    <CustomCol
+                        v-else-if="col.isAuthor"
+                        :col="col"
+                        :index="index"
+                        @click-author="handleAuthorClick"
+                    />
+
+                    <!-- 格式化文本 -->
+                    <CustomCol
+                        v-else-if="col.formatter"
+                        :col="col"
+                        :index="index"
+                        :tags-item-max-height="tagsItemMaxHeight"
+                    />
+
+                    <!-- 不需要处理，显示原值 -->
+                    <el-table-column
+                        v-else
+                        :key="col.prop"
+                        :prop="col.prop"
+                        :label="col.label"
+                        :sortable="col.sortable"
+                        :width="col.width"
+                        :min-width="col.minWidth"
+                        :align="col.align"
+                    />
+                </template>
+            </el-table>
+
+            <!-- 宫格 -->
+            <el-checkbox-group
+                v-show="!showListOrGridStatus"
+                v-model="checkedRows"
+                @change="handleCheckedGridChange"
+            >
+                <el-empty v-if="!hasData" />
+
+                <ul ref="gridRef" class="grid">
+                    <li
+                        v-for="(row, index) in paginationData.records"
+                        :key="row.id"
+                        class="thumbnail grid-item"
+                    >
+                        <el-checkbox
+                            v-if="isSelected(row)"
+                            class="grid-item-selection-status"
+                            :key="row"
+                            :value="row"
+                            size="large"
+                        />
+
+                        <img
+                            v-if="row.img?.url"
+                            class="thumbnail-img"
+                            :src="row.img.url"
+                            :style="imgStyle(row.img?.width, row.img?.height, row.img?.imgFit)"
+                            @click="handleDelegateGridClick(row)"
+                        />
+
+                        <Icon
+                            v-else-if="row.img?.iconKeyName"
+                            class="thumbnail-img"
+                            :name="row.img?.iconKeyName"
+                            :style="iconStyle(row.img?.svgFontSize)"
+                            @click="handleDelegateGridClick(row)"
+                        />
+
+                        <el-button
+                            class="grid-item-edit"
+                            size="small"
+                            type="primary"
+                            @click="handleEdit(index, row)"
+                            >编辑</el-button
+                        >
+                    </li>
+                </ul>
+            </el-checkbox-group>
+
+            <!-- 分页 -->
+            <div ref="paginationBlockRef" class="pagination-block">
+                <el-pagination
+                    v-model:current-page="paginationData.current_page"
+                    v-model:page-size="paginationData.page_size"
+                    :page-sizes="paginationData.page_sizes"
+                    :page-count="paginationData.page_count"
+                    :total="paginationData.total"
+                    :background="true"
+                    layout="total, prev, pager, next, jumper, sizes"
+                    size="small"
+                    @update:current-page="(val: number) => emit('update-current-page', val)"
+                    @update:page-size="(val: number) => emit('update-page-size', val)"
+                />
+            </div>
         </div>
-    </div>
 
-    <!-- 弹窗 add -->
-    <el-dialog
-        v-if="addItemDialogVisibleStatus"
-        v-model="addItemDialogVisibleStatus"
-        @close="addItemHandleDialogClose"
-        v-bind="{ width: addWidth, top: addTop }"
-    >
-        <template #header>
-            <slot name="add-item-title"></slot>
-        </template>
-        <slot name="add-item"></slot>
-    </el-dialog>
+        <!-- 弹窗 add -->
+        <el-dialog
+            v-if="addItemDialogVisibleStatus"
+            v-model="addItemDialogVisibleStatus"
+            @close="addItemHandleDialogClose"
+            v-bind="{ width: addWidth, top: addTop }"
+        >
+            <template #header>
+                <slot name="add-item-title"></slot>
+            </template>
+            <slot name="add-item"></slot>
+        </el-dialog>
 
-    <!-- 弹窗 edit -->
-    <el-dialog
-        v-if="editItemDialogVisibleStatus"
-        v-model="editItemDialogVisibleStatus"
-        @close="editItemHandleDialogClose"
-        v-bind="{ width: editWidth, top: editTop }"
-    >
-        <template #header>
-            <slot name="edit-item-title"></slot>
-        </template>
-        <slot name="edit-item"></slot>
-    </el-dialog>
+        <!-- 弹窗 edit -->
+        <el-dialog
+            v-if="editItemDialogVisibleStatus"
+            v-model="editItemDialogVisibleStatus"
+            @close="editItemHandleDialogClose"
+            v-bind="{ width: editWidth, top: editTop }"
+        >
+            <template #header>
+                <slot name="edit-item-title"></slot>
+            </template>
+            <slot name="edit-item"></slot>
+        </el-dialog>
+    </el-config-provider>
 </template>
 
 <script lang="ts" setup>
@@ -269,6 +272,7 @@ import SwitchGroup from "@/components/common/switch-group"
 import type { PostTag } from "@/api/postTag/view"
 import type { User } from "@/api/user/getUsers"
 import CustomCol from "./custom-col"
+import zhCn from "element-plus/dist/locale/zh-cn.mjs"
 
 defineOptions({ name: "BaseTable" })
 
