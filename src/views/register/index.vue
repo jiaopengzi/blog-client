@@ -61,11 +61,11 @@
             </el-form-item>
 
             <el-form-item label="密码" prop="password">
-                <el-input type="password" v-model.trim="registerForm.password" />
+                <el-input type="password" show-password v-model.trim="registerForm.password" />
             </el-form-item>
 
             <el-form-item label="确认密码" prop="rePassword">
-                <el-input type="password" v-model.trim="registerForm.rePassword" />
+                <el-input type="password" show-password v-model.trim="registerForm.rePassword" />
             </el-form-item>
 
             <el-form-item prop="acceptedTerms">

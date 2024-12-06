@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 10:28:11
+ * @LastEditTime : 2024-12-06 20:17:56
  * @FilePath     : \blog-client\src\views\reset-password\index.vue
  * @Description  : 重置密码
  * @Blog         : https://jiaopengzi.com
@@ -59,11 +59,19 @@
             </el-form-item>
 
             <el-form-item label="新密码" prop="password">
-                <el-input type="password" v-model.trim="forgotPasswordForm.password" />
+                <el-input
+                    type="password"
+                    show-password
+                    v-model.trim="forgotPasswordForm.password"
+                />
             </el-form-item>
 
             <el-form-item label="确认密码" prop="rePassword">
-                <el-input type="password" v-model.trim="forgotPasswordForm.rePassword" />
+                <el-input
+                    type="password"
+                    show-password
+                    v-model.trim="forgotPasswordForm.rePassword"
+                />
             </el-form-item>
 
             <div class="btn-submit">

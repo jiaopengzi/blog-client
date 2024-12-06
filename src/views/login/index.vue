@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-22 00:47:32
+ * @LastEditTime : 2024-12-06 20:16:22
  * @FilePath     : \blog-client\src\views\login\index.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -48,6 +48,7 @@
                     type="password"
                     v-model.trim="loginForm.password"
                     placeholder="大小写字母 + 数字, 长度:6-64"
+                    show-password
                 />
             </el-form-item>
             <div class="btn-submit">
