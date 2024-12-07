@@ -125,7 +125,7 @@ function constructWeChatPreCode(htmlStr: string): string {
     // 微信代码块行号类名 code-snippet code-snippet_nowrap code-snippet__js
     const divStart = '<div class="pre-code">'
     const divEnd = "</div>"
-    const copyBtnStart = '<button class="copy-button">'
+    const copyBtnStart = '<button type="button" class="copy-button">'
     const copyBtnEnd = "</button>"
     let copyBtn = ""
     if (wechatPreCodeLang) {
