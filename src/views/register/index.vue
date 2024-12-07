@@ -41,15 +41,15 @@
                 <h2>账号注册</h2>
             </div>
             <el-form-item label="用户名" prop="userName">
-                <el-input v-model.trim="registerForm.userName" />
+                <el-input v-model="registerForm.userName" />
             </el-form-item>
 
             <el-form-item label="邮箱" prop="email">
-                <el-input v-model.trim="registerForm.email" />
+                <el-input v-model="registerForm.email" />
             </el-form-item>
 
             <el-form-item label="验证码" prop="captcha">
-                <el-input class="email-code" v-model.trim="registerForm.captcha" />
+                <el-input class="email-code" v-model="registerForm.captcha" />
                 <button
                     class="btn-captcha"
                     type="button"
@@ -61,11 +61,11 @@
             </el-form-item>
 
             <el-form-item label="密码" prop="password">
-                <el-input type="password" show-password v-model.trim="registerForm.password" />
+                <el-input type="password" show-password v-model="registerForm.password" />
             </el-form-item>
 
             <el-form-item label="确认密码" prop="rePassword">
-                <el-input type="password" show-password v-model.trim="registerForm.rePassword" />
+                <el-input type="password" show-password v-model="registerForm.rePassword" />
             </el-form-item>
 
             <el-form-item prop="acceptedTerms">

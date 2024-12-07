@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-27 15:17:31
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-28 16:02:45
+ * @LastEditTime : 2024-12-07 14:04:22
  * @FilePath     : \blog-client\src\utils\regexPatterns.test.ts
  * @Description  : 正则表达式测试
  * @Blog         : https://jiaopengzi.com
@@ -307,5 +307,47 @@ describe("RegexPatterns.ImgURL", () => {
         expect(
             RegexPatterns.ImgURL.test("https://image.jiaopengzi.com/test.png?style/stylename"),
         ).toBe(true)
+    })
+})
+
+describe("RegexPatterns.IsTrim", () => {
+    it("全是空格", () => {
+        expect(RegexPatterns.IsTrim.test("  ")).toBe(true)
+    })
+    it("开头包含1个空格", () => {
+        expect(RegexPatterns.IsTrim.test(" abcdefg")).toBe(true)
+    })
+    it("开头包含多个个空格", () => {
+        expect(RegexPatterns.IsTrim.test("   abcdefg")).toBe(true)
+    })
+
+    it("结尾包含1个空格", () => {
+        expect(RegexPatterns.IsTrim.test("abcdefg ")).toBe(true)
+    })
+
+    it("结尾包含多个空格", () => {
+        expect(RegexPatterns.IsTrim.test("abcdefg   ")).toBe(true)
+    })
+
+    it("首尾包含1个空格", () => {
+        expect(RegexPatterns.IsTrim.test(" abcdefg ")).toBe(true)
+    })
+
+    it("首尾包含多个空格", () => {
+        expect(RegexPatterns.IsTrim.test("   abcdefg   ")).toBe(true)
+    })
+
+    it("首尾不包含空格中间有一个空格", () => {
+        expect(RegexPatterns.IsTrim.test("abcd efg")).toBe(false)
+    })
+
+    it("首尾不包含空格中间有多个连续空格", () => {
+        expect(RegexPatterns.IsTrim.test("abcd   efg")).toBe(false)
+    })
+    it("首尾不包含空格中间有多个间隔空格", () => {
+        expect(RegexPatterns.IsTrim.test("abc d   efg")).toBe(false)
+    })
+    it("不包含空格", () => {
+        expect(RegexPatterns.IsTrim.test("abcdefg")).toBe(false)
     })
 })

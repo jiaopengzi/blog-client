@@ -22,19 +22,15 @@
             status-icon
         >
             <el-form-item label="用户名" prop="userName">
-                <el-input v-model.trim="addUserForm.userName" />
+                <el-input v-model="addUserForm.userName" />
             </el-form-item>
 
             <el-form-item label="邮箱" prop="email">
-                <el-input v-model.trim="addUserForm.email" />
+                <el-input v-model="addUserForm.email" />
             </el-form-item>
 
             <el-form-item label="密码" prop="password">
-                <el-input
-                    class="generate-password"
-                    type="text"
-                    v-model.trim="addUserForm.password"
-                />
+                <el-input class="generate-password" type="text" v-model="addUserForm.password" />
                 <button class="btn-generate-password" type="button" @click="generatePasswordHandle">
                     生成密码
                 </button>

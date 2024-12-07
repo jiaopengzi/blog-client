@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:47:08
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-25 10:34:27
+ * @LastEditTime : 2024-12-07 13:31:22
  * @FilePath     : \blog-client\src\views\admin\component\main\post-category\component\view\index.vue
  * @Description  : 编辑分类展示组件
  * @Blog         : https://jiaopengzi.com
@@ -22,19 +22,19 @@
             status-icon
         >
             <el-form-item v-if="isShowId" label="ID" prop="id">
-                <el-input v-model.trim="viewData.id" disabled />
+                <el-input v-model="viewData.id" disabled />
             </el-form-item>
 
             <el-form-item label="分类" prop="name">
-                <el-input v-model.trim="viewData.name" placeholder="请输入分类名称-必填" />
+                <el-input v-model="viewData.name" placeholder="请输入分类名称-必填" />
             </el-form-item>
 
             <el-form-item label="别名" prop="slug">
-                <el-input v-model.trim="viewData.slug" placeholder="请输入分类别名-必填" />
+                <el-input v-model="viewData.slug" placeholder="请输入分类别名-必填" />
             </el-form-item>
             <el-form-item label="描述" prop="description">
                 <el-input
-                    v-model.trim="viewData.description"
+                    v-model="viewData.description"
                     type="textarea"
                     placeholder="请输入分类描信息-选填"
                     :rows="5"
@@ -42,7 +42,7 @@
             </el-form-item>
             <el-form-item label="图片" prop="thumbnail">
                 <el-input
-                    v-model.trim="viewData.thumbnail"
+                    v-model="viewData.thumbnail"
                     placeholder="请输入分类的图片URL-选填"
                 />
             </el-form-item>

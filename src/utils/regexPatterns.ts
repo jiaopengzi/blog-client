@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-19 22:34:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-28 16:01:20
+ * @LastEditTime : 2024-12-07 14:00:30
  * @FilePath     : \blog-client\src\utils\regexPatterns.ts
  * @Description  : 统一正则表达式
  * @Blog         : https://jiaopengzi.com
@@ -24,6 +24,8 @@ export const RegexPatterns = {
         /^([a-zA-Z0-9\u4e00-\u9fa5]+( [a-zA-Z0-9\u4e00-\u9fa5]+)*)(,([a-zA-Z0-9\u4e00-\u9fa5]+( [a-zA-Z0-9\u4e00-\u9fa5]+)*))*$/, // SEO关键字
 
     ImgURL: /^https?:\/\/(.+\/)+.+(\.(gif|png|jpg|jpeg|webp|svg|psd|bmp|tif))([?!=!].*)?$/i, // 图片URL
+
+    IsTrim: /^\s+|\s+$/, // 匹配首尾是否有空格
 } as const
 
 export type RegexPatterns = (typeof RegexPatterns)[keyof typeof RegexPatterns]

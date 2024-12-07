@@ -41,12 +41,12 @@
                 <h2>账号登录</h2>
             </div>
             <el-form-item label="用户名" prop="loginName">
-                <el-input v-model.trim="loginForm.loginName" placeholder="请输入用户名或邮箱" />
+                <el-input v-model="loginForm.loginName" placeholder="请输入用户名或邮箱" />
             </el-form-item>
             <el-form-item label="密码" prop="password">
                 <el-input
                     type="password"
-                    v-model.trim="loginForm.password"
+                    v-model="loginForm.password"
                     placeholder="大小写字母 + 数字, 长度:6-64"
                     show-password
                 />

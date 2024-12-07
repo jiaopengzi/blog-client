@@ -272,7 +272,7 @@ import SwitchGroup from "@/components/common/switch-group"
 import type { PostTag } from "@/api/postTag/view"
 import type { User } from "@/api/user/getUsers"
 import CustomCol from "./custom-col"
-import zhCn from "element-plus/dist/locale/zh-cn.mjs"
+import zhCn from "element-plus/es/locale/lang/zh-cn"
 
 defineOptions({ name: "BaseTable" })
 

@@ -22,28 +22,25 @@
             status-icon
         >
             <el-form-item v-if="isShowId" label="ID" prop="id">
-                <el-input v-model.trim="viewData.id" disabled />
+                <el-input v-model="viewData.id" disabled />
             </el-form-item>
             <el-form-item label="标签" prop="name">
-                <el-input v-model.trim="viewData.name" placeholder="请输入标签名称-必填" />
+                <el-input v-model="viewData.name" placeholder="请输入标签名称-必填" />
             </el-form-item>
 
             <el-form-item label="别名" prop="slug">
-                <el-input v-model.trim="viewData.slug" placeholder="请输入标签别名-必填" />
+                <el-input v-model="viewData.slug" placeholder="请输入标签别名-必填" />
             </el-form-item>
             <el-form-item label="描述" prop="description">
                 <el-input
-                    v-model.trim="viewData.description"
+                    v-model="viewData.description"
                     type="textarea"
                     placeholder="请输入标签描信息-选填"
                     :rows="5"
                 />
             </el-form-item>
             <el-form-item label="图片" prop="thumbnail">
-                <el-input
-                    v-model.trim="viewData.thumbnail"
-                    placeholder="请输入标签的图片URL-选填"
-                />
+                <el-input v-model="viewData.thumbnail" placeholder="请输入标签的图片URL-选填" />
             </el-form-item>
             <el-form-item label="排序" prop="order">
                 <el-input

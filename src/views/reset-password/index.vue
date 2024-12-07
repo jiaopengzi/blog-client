@@ -43,11 +43,11 @@
             </div>
 
             <el-form-item label="邮箱" prop="email">
-                <el-input v-model.trim="forgotPasswordForm.email" />
+                <el-input v-model="forgotPasswordForm.email" />
             </el-form-item>
 
             <el-form-item label="验证码" prop="captcha">
-                <el-input class="email-code" v-model.trim="forgotPasswordForm.captcha" />
+                <el-input class="email-code" v-model="forgotPasswordForm.captcha" />
                 <button
                     class="btn-captcha"
                     type="button"
@@ -59,19 +59,11 @@
             </el-form-item>
 
             <el-form-item label="新密码" prop="password">
-                <el-input
-                    type="password"
-                    show-password
-                    v-model.trim="forgotPasswordForm.password"
-                />
+                <el-input type="password" show-password v-model="forgotPasswordForm.password" />
             </el-form-item>
 
             <el-form-item label="确认密码" prop="rePassword">
-                <el-input
-                    type="password"
-                    show-password
-                    v-model.trim="forgotPasswordForm.rePassword"
-                />
+                <el-input type="password" show-password v-model="forgotPasswordForm.rePassword" />
             </el-form-item>
 
             <div class="btn-submit">

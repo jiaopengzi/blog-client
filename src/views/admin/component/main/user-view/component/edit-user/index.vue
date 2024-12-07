@@ -36,15 +36,15 @@
             </el-form-item>
 
             <el-form-item label="用户ID" prop="editUserID">
-                <el-input v-model.trim="editUserForm.editUserID" disabled />
+                <el-input v-model="editUserForm.editUserID" disabled />
             </el-form-item>
 
             <el-form-item label="用户名" prop="userName">
-                <el-input v-model.trim="editUserForm.userName" />
+                <el-input v-model="editUserForm.userName" />
             </el-form-item>
 
             <el-form-item label="邮箱" prop="email">
-                <el-input v-model.trim="editUserForm.email" />
+                <el-input v-model="editUserForm.email" />
             </el-form-item>
 
             <el-form-item label="禁用到期时间" prop="disableExpiresAt">
@@ -58,11 +58,7 @@
             </el-form-item>
 
             <el-form-item label="密码" prop="password">
-                <el-input
-                    class="generate-password"
-                    type="text"
-                    v-model.trim="editUserForm.password"
-                />
+                <el-input class="generate-password" type="text" v-model="editUserForm.password" />
                 <button class="btn-generate-password" type="button" @click="generatePasswordHandle">
                     重置密码
                 </button>

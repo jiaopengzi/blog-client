@@ -98,11 +98,11 @@
                 status-icon
             >
                 <el-form-item label="权限名称">
-                    <el-input v-model.trim="permissionRoleForm.permission_name" disabled />
+                    <el-input v-model="permissionRoleForm.permission_name" disabled />
                 </el-form-item>
 
                 <el-form-item label="角色名称">
-                    <el-input v-model.trim="permissionRoleForm.role_name" disabled />
+                    <el-input v-model="permissionRoleForm.role_name" disabled />
                 </el-form-item>
                 <el-form-item label="限制次数说明">
                     <h4>0：不限制(不受时长限制)，大于0：对应限制次数。</h4>

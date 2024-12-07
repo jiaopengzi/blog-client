@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-25 15:09:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-27 16:41:44
+ * @LastEditTime : 2024-12-07 14:24:19
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\hooks.ts
  * @Description  : 表单验证
  * @Blog         : https://jiaopengzi.com
@@ -66,15 +66,9 @@ export function useFormValidation(options: FormValidationOptions): {
             return
         }
 
-        // 如果不为空，开头不能是空格
-        if (value.startsWith(" ")) {
-            callback(new Error("不能以空格开头"))
-            return
-        }
-
-        // 如果不为空，结尾不能是空格
-        if (value.endsWith(" ")) {
-            callback(new Error("不能以空格结尾"))
+        // 首尾不能包含空格
+        if (value.match(RegexPatterns.IsTrim)) {
+            callback(new Error("首尾不能包含空格"))
             return
         }
 
@@ -132,15 +126,9 @@ export function useFormValidation(options: FormValidationOptions): {
             return
         }
 
-        // 如果不为空，开头不能是空格
-        if (value.startsWith(" ")) {
-            callback(new Error("不能以空格开头"))
-            return
-        }
-
-        // 如果不为空，结尾不能是空格
-        if (value.endsWith(" ")) {
-            callback(new Error("不能以空格结尾"))
+        // 首尾不能包含空格
+        if (value.match(RegexPatterns.IsTrim)) {
+            callback(new Error("首尾不能包含空格"))
             return
         }
 
@@ -165,15 +153,9 @@ export function useFormValidation(options: FormValidationOptions): {
             return
         }
 
-        // 如果不为空，开头不能是空格
-        if (value.startsWith(" ")) {
-            callback(new Error("不能以空格开头"))
-            return
-        }
-
-        // 如果不为空，结尾不能是空格
-        if (value.endsWith(" ")) {
-            callback(new Error("不能以空格结尾"))
+        // 首尾不能包含空格
+        if (value.match(RegexPatterns.IsTrim)) {
+            callback(new Error("首尾不能包含空格"))
             return
         }
 
@@ -198,15 +180,9 @@ export function useFormValidation(options: FormValidationOptions): {
             return
         }
 
-        // 如果不为空，开头不能是空格
-        if (value.startsWith(" ")) {
-            callback(new Error("不能以空格开头"))
-            return
-        }
-
-        // 如果不为空，结尾不能是空格
-        if (value.endsWith(" ")) {
-            callback(new Error("不能以空格结尾"))
+        // 首尾不能包含空格
+        if (value.match(RegexPatterns.IsTrim)) {
+            callback(new Error("首尾不能包含空格"))
             return
         }
 
@@ -238,15 +214,9 @@ export function useFormValidation(options: FormValidationOptions): {
             return
         }
 
-        // 如果不为空，开头不能是空格
-        if (value.startsWith(" ")) {
-            callback(new Error("不能以空格开头"))
-            return
-        }
-
-        // 如果不为空，结尾不能是空格
-        if (value.endsWith(" ")) {
-            callback(new Error("不能以空格结尾"))
+        // 首尾不能包含空格
+        if (value.match(RegexPatterns.IsTrim)) {
+            callback(new Error("首尾不能包含空格"))
             return
         }
 
@@ -324,7 +294,7 @@ export function useFormValidation(options: FormValidationOptions): {
         }
 
         // 去除前后空格
-        if (!form.slug?.value || !form.slug.value.trim()) {
+        if (!form.slug?.value || !form.slug.value) {
             callback("请输入别名")
             return
         }
@@ -376,7 +346,7 @@ export function useFormValidation(options: FormValidationOptions): {
         }
 
         // 去除前后空格
-        if (!form.slug?.value || !form.slug.value.trim()) {
+        if (!form.slug?.value || !form.slug.value) {
             callback("请输入别名")
             return
         }

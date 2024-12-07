@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-05 10:11:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-27 11:19:31
+ * @LastEditTime : 2024-12-07 14:21:49
  * @FilePath     : \blog-client\src\views\admin\component\main\post-tag\component\view\hooks.ts
  * @Description  : 表单验证
  * @Blog         : https://jiaopengzi.com
@@ -51,11 +51,15 @@ export function useFormValidation(options: FormValidationOptions): {
         callback: (error?: string | Error | undefined) => void,
     ): void {
         // 去除前后空格
-        if (!form.name?.value.trim()) {
+        if (!form.name?.value) {
             callback("请输入标签名称")
             return
         }
-
+        // 首尾不能包含空格
+        if (value.match(RegexPatterns.IsTrim)) {
+            callback(new Error("首尾不能包含空格"))
+            return
+        }
         // 请求参数
         const req: CheckTagNameRequest = {
             name: form.name.value,
@@ -91,7 +95,7 @@ export function useFormValidation(options: FormValidationOptions): {
         }
 
         // 去除前后空格
-        if (!form.slug?.value.trim()) {
+        if (!form.slug?.value) {
             callback("请输入别名")
             return
         }
@@ -119,8 +123,14 @@ export function useFormValidation(options: FormValidationOptions): {
         callback: (error?: string | Error | undefined) => void,
     ): void {
         // 去除前后空格
-        if (!form.name?.value.trim()) {
+        if (!form.name?.value) {
             callback("请输入标签名称")
+            return
+        }
+
+        // 首尾不能包含空格
+        if (value.match(RegexPatterns.IsTrim)) {
+            callback(new Error("首尾不能包含空格"))
             return
         }
 
@@ -170,7 +180,7 @@ export function useFormValidation(options: FormValidationOptions): {
         }
 
         // 去除前后空格
-        if (!form.slug?.value.trim()) {
+        if (!form.slug?.value) {
             callback("请输入别名")
             return
         }

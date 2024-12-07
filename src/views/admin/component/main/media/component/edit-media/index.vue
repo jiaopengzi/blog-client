@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 10:24:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-02 12:16:20
+ * @LastEditTime : 2024-12-07 14:26:01
  * @FilePath     : \blog-client\src\views\admin\component\main\media\component\edit-media\index.vue
  * @Description  : 编辑媒体
  * @Blog         : https://jiaopengzi.com
@@ -42,15 +42,11 @@
                 :rules="rulesEditMedia"
             >
                 <el-form-item label="文件ID" prop="file_ID">
-                    <el-input v-model.trim="editMediaForm.file_id" disabled />
+                    <el-input v-model="editMediaForm.file_id" disabled />
                 </el-form-item>
 
                 <el-form-item label="文件名" prop="file_name_display">
-                    <el-input
-                        v-model.trim="editMediaForm.file_name_display"
-                        :rows="5"
-                        type="textarea"
-                    />
+                    <el-input v-model="editMediaForm.file_name_display" :rows="5" type="textarea" />
                 </el-form-item>
 
                 <el-form-item v-if="isVideoFile" label="视频免费" prop="is_free">
@@ -165,6 +161,7 @@ import { isWebvtt } from "@/utils/vttParse"
 import { isVideo } from "@/utils/isVideo"
 import VideoPlayer from "@/components/player"
 import { PlayerStateManager, Language, MediaTypes, type PlayerState } from "@/components/player"
+import { RegexPatterns } from "@/utils/regexPatterns"
 
 // 定义组件名称
 defineOptions({ name: "EditMedia" })
@@ -367,15 +364,14 @@ function checkSlugValidator(
         callback(new Error("别名不能包含空格"))
         return
     }
-
     // 不能包含特殊字符
-    if (value.match(/[^a-zA-Z0-9-]/)) {
-        callback(new Error("别名不能包含特殊字符，只能包含字母、数字、中划线"))
+    if (!value.match(RegexPatterns.Slug)) {
+        callback(new Error("别名不能包含特殊字符，只能包含小写字母、数字、中划线"))
         return
     }
 
     // 去除前后空格
-    if (!editMediaForm.file_id.trim() || !editMediaForm.slug.trim()) {
+    if (!editMediaForm.file_id || !editMediaForm.slug) {
         callback("请输入别名")
         return
     }
