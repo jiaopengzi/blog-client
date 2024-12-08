@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-13 15:54:12
- * @FilePath     : \blog-client\src\assets\scss\themes\light.scss
+ * @LastEditTime : 2024-12-07 16:45:11
+ * @FilePath     : \blog-client\src\assets\scss\themes\_light.scss
  * @Description  : 亮色主题
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -12,7 +12,7 @@
 @use "../element.scss" as el;
 
 $theme-name: "light";
-$primary-color-light: #1e2858;
+$primary-color-light: #409eff;
 
 html[data-theme="#{$theme-name}"] {
     --scrollbar-y-width: 6px; // Y轴滚动条宽度

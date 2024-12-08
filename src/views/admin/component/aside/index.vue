@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:33:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-23 16:40:43
+ * @LastEditTime : 2024-12-07 15:06:54
  * @FilePath     : \blog-client\src\views\admin\component\aside\index.vue
  * @Description  : 左边菜单栏 
  * @Blog         : https://jiaopengzi.com
@@ -10,26 +10,31 @@
 -->
 
 <template>
-    <el-scrollbar>
-        <SwitchGroup :switch-items="isCollapseItem" @update-status="updateStatus" />
-        <el-menu
-            :default-openeds="['post']"
-            :collapse="isCollapse"
-            @select="handleSelect"
-            @open="handleOpen"
-            @close="handleClose"
-            class="el-menu-vertical"
-            :default-active="props.defaultActive"
-            :router="true"
-        >
-            <recursive-menu-item
-                v-for="(item, key) in topLevelMenuItems"
-                :key="key"
-                :menu-item-map="menuItemMap"
-                :menu-item="item"
-            />
-        </el-menu>
-    </el-scrollbar>
+    <div class="aside">
+        <div class="switch">
+            <SwitchGroup :switch-items="isCollapseItem" @update-status="updateStatus" />
+        </div>
+
+        <el-scrollbar>
+            <el-menu
+                :default-openeds="['post']"
+                :collapse="isCollapse"
+                @select="handleSelect"
+                @open="handleOpen"
+                @close="handleClose"
+                class="el-menu-vertical"
+                :default-active="props.defaultActive"
+                :router="true"
+            >
+                <recursive-menu-item
+                    v-for="(item, key) in topLevelMenuItems"
+                    :key="key"
+                    :menu-item-map="menuItemMap"
+                    :menu-item="item"
+                />
+            </el-menu>
+        </el-scrollbar>
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -114,11 +119,24 @@ const handleClose = (index: string, keyPath: string[]) => {
 </script>
 
 <style scoped lang="scss">
+.aside {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+.switch {
+    
+  
+}
+
 .el-menu-vertical {
     overflow-x: hidden;
-    // 背景色透明
-    background-color: transparent;
     border-right: none;
+    // --el-menu-bg-color: transparent;
+    // --el-menu-text-color: #fff;
+    --el-menu-active-color: #409eff;
 }
 
 // 参考官方文档：https://element-plus.org/zh-CN/component/menu.html#collapse-%E6%8A%98%E5%8F%A0%E9%9D%A2%E6%9D%BF
