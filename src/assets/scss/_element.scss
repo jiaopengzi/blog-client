@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-31 15:50:41
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-09 18:11:49
+ * @LastEditTime : 2024-12-09 19:46:28
  * @FilePath     : \blog-client\src\assets\scss\_element.scss
  * @Description  : element-plus 主题样式生成器
  * @Blog         : https://jiaopengzi.com
@@ -20,41 +20,17 @@ $mode-dark: "dark";
     $color-white: #ffffff;
     $color-black: #000000;
 
-    // light 模式
-    $mix-color: $color-white;
-    $mix-number: $number;
+    // 根据模式设置初始混合颜色
+    // dark模式混合颜色参考：https://github.com/element-plus/element-plus/blob/dev/packages/theme-chalk/src/dark/var.scss 中 map.get($bg-color, '')
+    $mix-color: if($mode == $mode-light, $color-white, #141414);
 
-    // 处理 light 模式 --el-color-primary-dark-2
-    @if $mode==$mode-light {
-        @if $number==20 {
-            $mix-color: $color-black;
-        }
-    } @else {
-        // 暗色模式混合比例没有规律，需要手动设置
-        // 不同的 number 对应不同的 blackNumber
-
-        $blackNumbers: (
-            20: 20,
-            30: 21,
-            50: 35,
-            70: 48,
-            80: 55,
-            90: 63,
-        );
-        $blackNumber: map.get($blackNumbers, $number);
-
-        $mix-color: $color-black;
-        $mix-number: $blackNumber;
-
-        // 处理 dark 模式 --el-color-primary-dark-2
-        @if $blackNumber==20 {
-            $mix-color: $color-white;
-        }
+    // 处理特殊情况 --el-color-primary-dark-2
+    @if $number == 20 {
+        $mix-color: if($mode == $mode-light, $color-black, $color-white);
     }
 
-    // 返回颜色
-    // 将 $mix-number 转为百分比
-    @return color.mix($mix-color, $color, $mix-number * 1%);
+    // 返回混合后的颜色
+    @return color.mix($mix-color, $color, $number * 1%);
 }
 
 //  create-color-group
@@ -69,13 +45,20 @@ $mode-dark: "dark";
 //  --el-color-primary-light-9: #ecf5ff;
 
 @mixin create-el-color-group($color-name, $base-color, $mode) {
+    // 设置基础颜色变量
     --el-color-#{$color-name}: #{$base-color};
 
-    @each $i in (2, 3, 5, 7, 8, 9) {
-        $suffix: if($i==2, $mode-dark, $mode-light);
-        --el-color-#{$color-name}-#{$suffix}-#{$i}: #{set-color-mix-level(
+    // 定义需要处理的混合比例
+    $mix-levels: (2, 3, 5, 7, 8, 9);
+
+    // 遍历每个混合比例
+    @each $level in $mix-levels {
+        $suffix: if($level == 2, $mode-dark, $mode-light);
+
+        // 生成颜色变量
+        --el-color-#{$color-name}-#{$suffix}-#{$level}: #{set-color-mix-level(
                 $base-color,
-                $i * 10,
+                $level * 10,
                 $mode
             )};
     }

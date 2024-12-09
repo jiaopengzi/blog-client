@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-04 12:40:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-09 18:21:51
+ * @LastEditTime : 2024-12-09 19:03:45
  * @FilePath     : \blog-client\src\assets\scss\themes\dark.scss
  * @Description  : 暗色模式
  * @Blog         : https://jiaopengzi.com
@@ -12,7 +12,8 @@
 @use "../element.scss" as el;
 
 $theme-name: "dark";
-$primary-color-dark: red;
+// $primary-color-dark: red;
+$primary-color-dark: #409eff;
 
 html.#{$theme-name} {
     --primary-color: #{$primary-color-dark}; // 主要颜色

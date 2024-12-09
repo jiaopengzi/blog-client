@@ -12,7 +12,8 @@
 @use "../element.scss" as el;
 
 $theme-name: "light";
-$primary-color-light: #1e2858;
+$primary-color-light: #409eff;
+// $primary-color-light: #1e2858;
 
 html.#{$theme-name} {
     --primary-color: #{$primary-color-light}; // 主要颜色
