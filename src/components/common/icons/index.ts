@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-21 15:05:09
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-25 21:54:59
+ * @LastEditTime : 2024-12-09 17:36:36
  * @FilePath     : \blog-client\src\components\common\icons\index.ts
  * @Description  : 图标组件
  * @Blog         : https://jiaopengzi.com
@@ -225,6 +225,8 @@ export enum IconKeys {
     Unmute = "unmute",
     Pause = "pause",
     Setting = "setting",
+    ThemeDark = "theme-dark",
+    ThemeLight = "theme-light",
 }
 
 // 开发模式下运行 历遍 iconMap 对象中的 key 校验是否符合 IconKeys 类型约束

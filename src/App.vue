@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-24 18:00:34
+ * @LastEditTime : 2024-12-09 17:52:53
  * @FilePath     : \blog-client\src\App.vue
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -22,11 +22,16 @@
     <!-- <keep-alive></keep-alive> -->
 </template>
 <script setup lang="ts">
-import { setTheme } from "@/utils/style"
-
+import { useDark } from "@vueuse/core"
 import { useHead } from "@unhead/vue"
 import { Head } from "@unhead/vue/components"
 // import Icon from '@/components/icons/Icon.vue'
+useDark({
+    selector: "html",
+    // attribute: "data-theme",
+    valueDark: "dark",
+    valueLight: "light",
+})
 
 useHead({
     title: "My awesome site",
@@ -51,9 +56,6 @@ useHead({
         { property: "og:release_date", content: "2020-02-27 15:15:29" },
     ],
 })
-
-// 设置主题
-setTheme("light")
 </script>
 
 <style scoped lang="scss"></style>

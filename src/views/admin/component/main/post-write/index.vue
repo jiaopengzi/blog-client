@@ -291,8 +291,8 @@ const seoStatus: SwitchItem[] = reactive([
         display: "SEO状态",
         status: localStorage.getItem(LocalStorageKey.IsShowSeoAtPostWrite) == "true",
         label: {
-            labelTrue: "展开",
-            labelFalse: "折叠",
+            active: "展开",
+            inactive: "折叠",
         },
     },
 ])
@@ -418,8 +418,8 @@ watch(
 const rolePaidList: SwitchItem[] = reactive([])
 
 const rolePaidLabel: SwitchItemLabel = {
-    labelTrue: "免费",
-    labelFalse: "付费",
+    active: "免费",
+    inactive: "付费",
 }
 
 // 初始化角色付费管理都为付费状态，后续根据后端数据进行修改
@@ -459,8 +459,8 @@ const commentStatus: SwitchItem[] = reactive([
         display: "评论状态",
         status: true,
         label: {
-            labelTrue: "开启",
-            labelFalse: "关闭",
+            active: "开启",
+            inactive: "关闭",
         },
     },
 ])

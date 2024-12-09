@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-06 20:28:49
+ * @LastEditTime : 2024-12-09 17:58:58
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格 table-layout="auto"
  * @Blog         : https://jiaopengzi.com
@@ -348,13 +348,13 @@ const editItemDialogVisibleStatus = ref(false) // 对话框状态
 const hasData = ref(false)
 
 const switchItemLabel: SwitchItemLabel = {
-    labelTrue: "表格",
-    labelFalse: "宫格",
+    active: "表格",
+    inactive: "宫格",
 }
 
 const switchItemColor: SwitchItemColor = {
-    colorTrue: "#409EFF",
-    colorFalse: "#409EFF",
+    active: "#409EFF",
+    inactive: "#409EFF",
 }
 
 const switchItemList: SwitchItem[] = reactive([

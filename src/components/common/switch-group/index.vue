@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 16:36:18
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-14 19:25:05
+ * @LastEditTime : 2024-12-09 17:48:56
  * @FilePath     : \blog-client\src\components\common\switch-group\index.vue
  * @Description  : 开关组件 
  * @Blog         : https://jiaopengzi.com
@@ -22,10 +22,17 @@
                 :style="getSwitchStyle(item)"
                 class="my-el-switch"
                 inline-prompt
-                :active-text="item.label?.labelTrue"
-                :inactive-text="item.label?.labelFalse"
+                :active-text="item.label?.active"
+                :inactive-text="item.label?.inactive"
                 @change="updateStatus"
-            />
+            >
+                <template #active-action v-if="item.icon?.active">
+                    <Icon :name="item.icon?.active" :custom-class="item.icon.activeClassName" />
+                </template>
+                <template #inactive-action v-if="item.icon?.inactive">
+                    <Icon :name="item.icon?.inactive" :custom-class="item.icon.inactiveClassName" />
+                </template>
+            </el-switch>
             <span v-if="item.namePosition === 'right'" class="span-right">{{ item.display }}</span>
         </li>
     </ul>
@@ -49,8 +56,8 @@ const updateStatus = () => {
 }
 
 const getSwitchStyle = (item: SwitchItem) => {
-    const colorOn = item.color?.colorTrue || "#13ce66"
-    const colorOff = item.color?.colorFalse || "#ff4949"
+    const colorOn = item.color?.active || "#13ce66"
+    const colorOff = item.color?.inactive || "#ff4949"
 
     return `
     --el-switch-on-color: ${colorOn}; 

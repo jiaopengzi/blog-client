@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 22:31:47
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 09:40:52
+ * @LastEditTime : 2024-12-09 17:47:19
  * @FilePath     : \blog-client\src\components\layout\header\pc.vue
  * @Description  : pc 头部
  * @Blog         : https://jiaopengzi.com
@@ -32,6 +32,10 @@
                     <Icon :name="IconKeys.Search" custom-class="search-icon" />
                 </div>
 
+                <div class="switch">
+                    <SwitchGroup :switch-items="themeSwitch" @update-status="updateStatus" />
+                </div>
+
                 <div class="login" v-if="!isLogin">
                     <router-link :to="routeObj.login.path" class="link">
                         <span>登录</span>
@@ -50,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeMount, type Ref } from "vue"
+import { ref, onBeforeMount, reactive, type Ref } from "vue"
 import { IconKeys } from "@/components/common/icons"
 import type { ScrollData } from "@/components/hooks/useScroll"
 import { useScrollActions } from "@/components/hooks/useScroll"
@@ -58,10 +62,44 @@ import UserInfoDropdown from "@/components/common/user-info-dropdown" // 导入 
 import { useUserStore } from "@/stores/user"
 import { storeToRefs } from "pinia"
 import { routeObj } from "@/router/routeAll"
+import { useDark, useToggle } from "@vueuse/core"
+import type { SwitchItem, SwitchItemIcon, SwitchItemColor } from "@/components/common/switch-group"
 
 import HeaderNav from "@/components/layout/header-nav"
+import SwitchGroup from "@/components/common/switch-group"
 
 defineOptions({ name: "HeaderPC" })
+
+const isDark = useDark()
+
+const toggleDark = useToggle(isDark)
+
+// switch 开关 标签
+const icon: SwitchItemIcon = {
+    active: IconKeys.ThemeDark,
+    inactive: IconKeys.ThemeLight,
+}
+
+// switch 开关 颜色
+const color: SwitchItemColor = {
+    active: "red",
+    inactive: "green",
+}
+
+// switch 开关
+const themeSwitch: SwitchItem[] = reactive([
+    {
+        name: "themeSwitch",
+        status: isDark.value,
+        color: color,
+        icon: icon,
+    },
+])
+
+// 更新菜单折叠状态
+const updateStatus = (items: SwitchItem[]) => {
+    toggleDark()
+}
 
 const headerVisible = ref(true) // 导航栏是否可见
 

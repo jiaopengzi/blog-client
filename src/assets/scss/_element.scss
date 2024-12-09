@@ -2,14 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-31 15:50:41
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-22 11:44:12
+ * @LastEditTime : 2024-12-09 18:11:49
  * @FilePath     : \blog-client\src\assets\scss\_element.scss
  * @Description  : element-plus 主题样式生成器
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
  */
- @use "sass:map";
- @use 'sass:color';
+@use "sass:map";
+@use "sass:color";
 // 定义模式 light dark
 $mode-light: "light";
 $mode-dark: "dark";
@@ -30,10 +30,9 @@ $mode-dark: "dark";
             $mix-color: $color-black;
         }
     } @else {
-        /*
-    * 暗色模式混合比例没有规律，需要手动设置
-    * 不同的 number 对应不同的 blackNumber
-    */
+        // 暗色模式混合比例没有规律，需要手动设置
+        // 不同的 number 对应不同的 blackNumber
+
         $blackNumbers: (
             20: 20,
             30: 21,
@@ -58,18 +57,17 @@ $mode-dark: "dark";
     @return color.mix($mix-color, $color, $mix-number * 1%);
 }
 
-/*
- create-color-group 
- 创建 element-plus 颜色组 生成 css 变量 例子：
- 参考：https://github.com/element-plus/element-plus/blob/dev/packages/theme-chalk/src/common/var.scss
- --el-color-primary: #409eff;
- --el-color-primary-light-2: #337ecc;
- --el-color-primary-light-3: #79bbff;
- --el-color-primary-light-5: #a0cfff;
- --el-color-primary-light-7: #c6e2ff;
- --el-color-primary-light-8: #d9ecff;
- --el-color-primary-light-9: #ecf5ff;
-*/
+//  create-color-group
+//  创建 element-plus 颜色组 生成 css 变量 例子：
+//  参考：https://github.com/element-plus/element-plus/blob/dev/packages/theme-chalk/src/common/var.scss
+//  --el-color-primary: #409eff;
+//  --el-color-primary-light-2: #337ecc;
+//  --el-color-primary-light-3: #79bbff;
+//  --el-color-primary-light-5: #a0cfff;
+//  --el-color-primary-light-7: #c6e2ff;
+//  --el-color-primary-light-8: #d9ecff;
+//  --el-color-primary-light-9: #ecf5ff;
+
 @mixin create-el-color-group($color-name, $base-color, $mode) {
     --el-color-#{$color-name}: #{$base-color};
 
@@ -89,7 +87,11 @@ $mode-dark: "dark";
     $themeName: map.get($theme, "theme-name"); // 获取 theme-name 变量
     $colors: map.get($theme, "colors"); // 获取 colors 变量
 
-    html[data-theme="#{$themeName}"] {
+    // data 属性
+    // html[data-theme="#{$themeName}"] {
+
+    // 类名
+    html.#{$mode} {
         @each $key, $value in $colors {
             @include create-el-color-group($key, $value, $mode);
         }

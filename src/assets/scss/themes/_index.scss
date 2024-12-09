@@ -2,89 +2,65 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-13 12:31:08
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-13 16:02:52
- * @FilePath     : \blog-client\src\assets\scss\themes\index.scss
+ * @LastEditTime : 2024-12-09 18:32:47
+ * @FilePath     : \blog-client\src\assets\scss\themes\_index.scss
  * @Description  : 多主题样式 主题变量归集
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
  */
 
-@use "./light.scss" as *;
-@use "./dark.scss" as *;
+$primary-color: var(--primary-color); // 主要颜色
+$secondary-color: var(--secondary-color); // 次要颜色
+$background-color-page: var(--background-color-page); // 页面背景颜色
+$background-color-content: var(--background-color-content); // 内容区域背景颜色
+$background-color-header: var(--background-color-header); // 头部背景颜色
+$background-color-footer: var(--background-color-footer); // 底部背景颜色
+$background-color-hover: var(--background-color-hover); // 鼠标悬停背景颜色
+$background-color-active: var(--background-color-active); // 鼠标点击背景颜色
+$background-color-disabled: var(--background-color-disabled); // 禁用状态背景颜色
+$blockquote-border-color: var(--blockquote-border-color); // 引用边框颜色
+$blockquote-bg-color: var(--blockquote-bg-color); // 引用背景颜色
+$blockquote-color: var(--blockquote-color); // 引用字体颜色
+$horizontal-divider-color: var(--horizontal-divider-color); // 分割线颜色
+$table-border-color: var(--table-border-color); // 表格边框颜色
+$table-header-bg-color: var(--table-header-bg-color); // 表格头部背景色
+$table-bg-color: var(--table-bg-color); // 表格背景色
+$table-n2-bg-color: var(--table-n2-bg-color); // 表格偶数行背景色
+$code-bg-color: var(--code-bg-color); // 行内背景色
+$code-color: var(--code-color); // 行内字体色
+$footnote-sup-color: var(--footnote-sup-color); // 脚注上标颜色
 
-$scrollbar-y-width: var(--scrollbar-y-width); // Y轴滚动条宽度
-$scrollbar-x-height: var(--scrollbar-x-height); // Y轴滚动条宽度
-/* ============================================================颜色变量 开始*/
-/* 主要颜色 */
-$primary-color: var(--primary-color);
-/* 次要颜色 */
-$secondary-color: var(--secondary-color);
-/* 页面背景颜色 */
-$background-color-page: var(--background-color-page);
-/* 内容区域背景颜色 */
-$background-color-content: var(--background-color-content);
-/* 头部背景颜色 */
-$background-color-header: var(--background-color-header);
-/* 底部背景颜色 */
-$background-color-footer: var(--background-color-footer);
-/* 鼠标悬停背景颜色 */
-$background-color-hover: var(--background-color-hover);
-/* 鼠标点击背景颜色 */
-$background-color-active: var(--background-color-active);
-/* 禁用状态背景颜色 */
-$background-color-disabled: var(--background-color-disabled);
-/* 引用边框颜色 */
-$blockquote-border-color: var(--blockquote-border-color);
-/* 引用背景颜色 */
-$blockquote-bg-color: var(--blockquote-bg-color);
-/* 引用字体颜色 */
-$blockquote-color: var(--blockquote-color);
-/* 分割线颜色 */
-$horizontal-divider-color: var(--horizontal-divider-color);
-/* 表格边框颜色 */
-$table-border-color: var(--table-border-color);
-/* 表格头部背景色 */
-$table-header-bg-color: var(--table-header-bg-color);
-/* 表格背景色 */
-$table-bg-color: var(--table-bg-color);
-/* 表格偶数行背景色 */
-$table-n2-bg-color: var(--table-n2-bg-color);
-/* 行内背景色 */
-$code-bg-color: var(--code-bg-color);
-/* 行内字体色 */
-$code-color: var(--code-color);
-/* 脚注 */
-$footnote-sup-color: var(--footnote-sup-color);
-
-/* markdown-alert-note */
+// markdown-alert-note
 $markdown-alert-note-color: var(--markdown-alert-note-color);
 $markdown-alert-note-bg-color: var(--markdown-alert-note-bg-color);
 $markdown-alert-note-border-color: var(--markdown-alert-note-border-color);
 $markdown-alert-note-title-color: var(--markdown-alert-note-title-color);
 $markdown-alert-note-svg-fill-color: var(--markdown-alert-note-svg-fill-color);
-/* markdown-alert-tip */
+
+// markdown-alert-tip
 $markdown-alert-tip-color: var(--markdown-alert-tip-color);
 $markdown-alert-tip-bg-color: var(--markdown-alert-tip-bg-color);
 $markdown-alert-tip-border-color: var(--markdown-alert-tip-border-color);
 $markdown-alert-tip-title-color: var(--markdown-alert-tip-title-color);
 $markdown-alert-tip-svg-fill-color: var(--markdown-alert-tip-svg-fill-color);
-/* markdown-alert-important */
+
+// markdown-alert-important
 $markdown-alert-important-color: var(--markdown-alert-important-color);
 $markdown-alert-important-bg-color: var(--markdown-alert-important-bg-color);
 $markdown-alert-important-border-color: var(--markdown-alert-important-border-color);
 $markdown-alert-important-title-color: var(--markdown-alert-important-title-color);
 $markdown-alert-important-svg-fill-color: var(--markdown-alert-important-svg-fill-color);
-/* markdown-alert-warning */
+
+// markdown-alert-warning
 $markdown-alert-warning-color: var(--markdown-alert-warning-color);
 $markdown-alert-warning-bg-color: var(--markdown-alert-warning-bg-color);
 $markdown-alert-warning-border-color: var(--markdown-alert-warning-border-color);
 $markdown-alert-warning-title-color: var(--markdown-alert-warning-title-color);
 $markdown-alert-warning-svg-fill-color: var(--markdown-alert-warning-svg-fill-color);
-/* markdown-alert-caution */
+
+// markdown-alert-caution
 $markdown-alert-caution-color: var(--markdown-alert-caution-color);
 $markdown-alert-caution-bg-color: var(--markdown-alert-caution-bg-color);
 $markdown-alert-caution-border-color: var(--markdown-alert-caution-border-color);
 $markdown-alert-caution-title-color: var(--markdown-alert-caution-title-color);
 $markdown-alert-caution-svg-fill-color: var(--markdown-alert-caution-svg-fill-color);
-
-/* ============================================================颜色变量 结束*/

@@ -16,7 +16,7 @@
 // ========================================== live sass compiler 插件使用 结束 ==========================================
 
 #preview {
-    /* ===================================== 标题 开始*/
+    // ===================================== 标题 开始
 
     h1 {
         font-size: 2em;
@@ -93,15 +93,15 @@
         position: relative; //子绝父相 让伪元素绝对定位
 
         > li {
-            /* 一级实心圆 */
+            // 一级实心圆
             list-style-type: disc;
 
             > ul > li {
-                /* 二级空心圆 */
+                // 二级空心圆
                 list-style-type: circle;
 
                 > ul > li {
-                    /* 三级实心方块 */
+                    // 三级实心方块
                     list-style-type: square;
                 }
             }
@@ -203,11 +203,10 @@
 
     // 表格容器
     .table-container {
-        /* 设置容器的宽度和高度 */
         width: 100%;
         max-height: 300px;
 
-        /* 添加横向和纵向滚动条 */
+        // 添加横向和纵向滚动条
         overflow-x: auto;
         overflow-y: auto;
 
@@ -233,12 +232,12 @@
         }
 
         // 表格偶数行
-        /* 为表格的偶数行设置背景颜色 */
+        // 为表格的偶数行设置背景颜色
         table tr:nth-child(2n) {
             background-color: $table-n2-bg-color;
         }
 
-        /* 为表格的奇数行设置背景颜色 */
+        // 为表格的奇数行设置背景颜色
         table tr:nth-child(2n + 1) {
             background-color: $background-color-content;
         }

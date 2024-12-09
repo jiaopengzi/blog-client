@@ -2,13 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-08 10:08:34
+ * @LastEditTime : 2024-12-09 17:54:41
  * @FilePath     : \blog-client\src\main.ts
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
+import "element-plus/theme-chalk/dark/css-vars.css"
 import "@/assets/scss/main.scss"
 import { createApp } from "vue"
 import { createPinia } from "pinia"

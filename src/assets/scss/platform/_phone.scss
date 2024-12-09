@@ -2,14 +2,15 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-20 19:35:27
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-20 12:15:28
+ * @LastEditTime : 2024-12-09 18:32:36
  * @FilePath     : \blog-client\src\assets\scss\platform\_phone.scss
  * @Description  : phone相关样式
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
  */
 
-$scrollbar-y-width: var(--scrollbar-y-width); // Y轴滚动条宽度
+ $scrollbar-y-width: var(--scrollbar-y-width); // Y轴滚动条宽度
+ $scrollbar-x-height: var(--scrollbar-x-height); // Y轴滚动条宽度
 $min-width: "320px";
 $max-width: "767px";
 

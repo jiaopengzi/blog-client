@@ -15,17 +15,17 @@ code.hljs {
 }
 
 .hljs-code {
-    /* 占位 */
+    // 占位
     color: #3f3f3f;
 }
 
 .hljs-property {
-    /* 占位 */
+    // 占位
     color: #3f3f3f;
 }
 
 .hljs-title.class_ {
-    /* 占位 */
+    // 占位
     color: #3f3f3f;
 }
 
@@ -40,22 +40,22 @@ code.hljs {
 }
 
 .hljs-operator {
-    /* 占位 */
+    // 占位
     color: #3f3f3f;
 }
 
 .hljs-title.function_ {
-    /* 占位 */
+    // 占位
     color: #3f3f3f;
 }
 
 .hljs-char.escape_ {
-    /* 占位 */
+    // 占位
     color: #3f3f3f;
 }
 
 .hljs-variable.language_ {
-    /* 占位 */
+    // 占位
     color: #3f3f3f;
 }
 
@@ -69,16 +69,16 @@ code.hljs {
 
 .hljs-link {
     color: #569cd6;
-    /* text-decoration: underline; */
+    // text-decoration: underline;
     font-size: 12px;
     font-style: italic;
 }
 
 .hljs-link-text {
-    /* color: #569cd6; */
-    /* text-decoration: underline; */
+    // color: #569cd6;
+    // text-decoration: underline;
     font-size: 14px;
-    /* font-weight: bold; */
+    // font-weight: bold;
 }
 
 .hljs-built_in,
@@ -112,7 +112,7 @@ code.hljs {
 .hljs-comment,
 .hljs-quote {
     color: #398e00;
-    /* font-style: italic */
+    // font-style: italic
 }
 
 .hljs-doctag {
@@ -132,7 +132,7 @@ code.hljs {
 
 .hljs-attr,
 .hljs-attribute {
-    /* color: #9cdcfe; */
+    // color: #9cdcfe;
     color: #16706b;
 }
 
@@ -169,7 +169,7 @@ code.hljs {
     width: 100%;
 }
 
-/* 如下是微信公众号的样式 */
+// 如下是微信公众号的样式
 
 .code-snippet {
     margin: 20px 0;
@@ -185,7 +185,7 @@ code.hljs {
     border: 1px solid #f0f0f0;
     border-radius: 2px;
     counter-reset: line;
-    /* white-space: normal; */
+    // white-space: normal;
     -webkit-overflow-scrolling: touch;
 }
 
@@ -196,7 +196,7 @@ code.hljs {
     text-align: left;
     font-size: 14px;
     display: block;
-    /* white-space: pre-wrap; */
+    // white-space: pre-wrap;
     position: relative;
     font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
 }

@@ -1,5 +1,8 @@
 @use "reset-css" as *; // live sass compiler 插件使用时注释掉
 
+@use "./themes/light.scss" as *;
+@use "./themes/dark.scss" as *;
+
 // ========================================== live sass compiler 插件使用 开始 ==========================================
 // 当使用 live sass compiler 插件时查看编译结果需要使用相对路径,不能使用别名 scss 目录下的注释都要检查一遍.
 // 如下注释解开即可(编译时,需要注释掉，避免命名空间重复 There's already a module with namespace "XXXX")
@@ -8,6 +11,11 @@
 // @use './mixin.scss' as *;
 // @use './themes/index.scss' as *;
 // ========================================== live sass compiler 插件使用 结束 ==========================================
+
+html {
+    --scrollbar-y-width: 6px; // Y轴滚动条宽度
+    --scrollbar-x-height: 12px; // x轴滚动条高度
+}
 
 // 主题样式
 body {
@@ -43,7 +51,7 @@ a {
         background-color: $background-color-hover;
         // 下划线
         // text-decoration: underline;
-        /* 字体变大20% */
+        // 字体变大20%
         // transform: scale(1.2); //使用 transform: scale(1.2) 代替 font-size: 120%; 效率更高。
     }
 }
@@ -112,7 +120,7 @@ a {
     }
 }
 
-/* =====================================全局设置层级 开始 */
+// =====================================全局设置层级 开始
 footer {
     z-index: 990;
 }
@@ -121,12 +129,12 @@ header {
     z-index: 999;
 }
 
-/* 移动端 侧边栏透明遮罩 */
+// 移动端 侧边栏透明遮罩
 .nav-backdrop {
     z-index: 997;
 }
 
-/* 移动端 侧边导航栏*/
+// 移动端 侧边导航栏
 .side-nav {
     z-index: 998;
 }
@@ -139,8 +147,8 @@ header {
 
 // 滚动条
 ::-webkit-scrollbar {
-    width: $scrollbar-y-width;
-    height: $scrollbar-x-height;
+    width: pc.$scrollbar-y-width;
+    height: pc.$scrollbar-x-height;
     background-color: #f5f5f5;
 }
 
@@ -159,7 +167,7 @@ header {
 //   cursor: pointer;
 // }
 
-/* =====================================全局设置层级 结束 */
+// =====================================全局设置层级 结束
 
 // 目录显示
 .md-toc {
@@ -252,7 +260,8 @@ header {
 
 // 全局设置视频设置弹出框
 .el-popover.el-popper.video-el-popover {
-    min-width: 0; //默认是150，影响设置宽度，设置成0，然后在 el-popover 组件中设置宽度
+    //默认是150，影响设置宽度，设置成0，然后在 el-popover 组件中设置宽度
+    min-width: 0;
     padding: 0;
     border: none;
     background-color: transparent;

@@ -62,14 +62,14 @@ const emit = defineEmits<{
 
 // switch 开关 标签
 const label: SwitchItemLabel = {
-    labelTrue: "收起",
-    labelFalse: "展开",
+    active: "收起",
+    inactive: "展开",
 }
 
 // switch 开关 颜色
 const color: SwitchItemColor = {
-    colorTrue: "#ffffff10",
-    colorFalse: "#ffffff10",
+    active: "#ffffff10",
+    inactive: "#ffffff10",
 }
 
 // 菜单是否折叠
@@ -127,8 +127,6 @@ const handleClose = (index: string, keyPath: string[]) => {
 }
 
 .switch {
-    
-  
 }
 
 .el-menu-vertical {
