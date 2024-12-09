@@ -2,14 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-09 18:27:42
+ * @LastEditTime : 2024-12-09 19:52:27
  * @FilePath     : \blog-client\src\assets\scss\themes\light.scss
  * @Description  : 亮色主题
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
  */
 
-@use "../element.scss" as el;
+@use "../_element.scss" as el;
 
 $theme-name: "light";
 $primary-color-light: #409eff;
