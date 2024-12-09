@@ -11,9 +11,9 @@
 @use "sass:map";
 @use "sass:meta";
 @use "sass:list";
-@use "./platform/phone.scss" as phone;
-@use "./platform/pad.scss" as pad;
-@use "./platform/pc.scss" as pc;
+@use "./platform/_phone.scss" as phone;
+@use "./platform/_pad.scss" as pad;
+@use "./platform/_pc.scss" as pc;
 
 $platforms: (
     "phone": (
