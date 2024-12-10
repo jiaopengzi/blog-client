@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:14:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 21:47:05
+ * @LastEditTime : 2024-12-10 13:08:26
  * @FilePath     : \blog-client\src\components\layout\aside\recommended-read\index.vue
  * @Description  : 推荐阅读
  * @Blog         : https://jiaopengzi.com
@@ -40,12 +40,12 @@ const postItems: PostItemAsideObj[] = Array(5).fill(postDataObj)
 </script>
 <style scoped lang="scss">
 .aside-item {
-    border: 1px solid #eaeaea;
-    background-color: $background-color-content;
+    border: 1px solid var(--el-border-color);
+    background-color: var(--el-bg-color-page);
     border-radius: 5px;
 
     .title {
-        background-color: $background-color-page;
+        background-color: var(--el-bg-color-page);
         padding: 10px 5px;
     }
 

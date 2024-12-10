@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:33:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-07 15:06:54
+ * @LastEditTime : 2024-12-10 15:49:44
  * @FilePath     : \blog-client\src\views\admin\component\aside\index.vue
  * @Description  : 左边菜单栏 
  * @Blog         : https://jiaopengzi.com
@@ -126,15 +126,12 @@ const handleClose = (index: string, keyPath: string[]) => {
     height: 100%;
 }
 
-.switch {
-}
-
 .el-menu-vertical {
     overflow-x: hidden;
     border-right: none;
     // --el-menu-bg-color: transparent;
-    // --el-menu-text-color: #fff;
-    --el-menu-active-color: #409eff;
+    --el-menu-text-color: var(--el-text-color-primary);
+    --el-menu-active-color: var(--jpz-color-secondary);
 }
 
 // 参考官方文档：https://element-plus.org/zh-CN/component/menu.html#collapse-%E6%8A%98%E5%8F%A0%E9%9D%A2%E6%9D%BF
@@ -144,7 +141,7 @@ const handleClose = (index: string, keyPath: string[]) => {
 }
 
 :deep(.icon-menu) {
-    fill: $primary-color;
+    fill: var(--jpz-color-primary);
     font-size: 1.2em;
 }
 </style>

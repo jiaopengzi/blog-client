@@ -40,7 +40,7 @@
         </template>
         <template #category>
             <!-- v-for 循环 fileCountGroupByFiletype 按钮 -->
-            <div class="category">
+            <div class="category-group">
                 <el-button
                     v-for="item in fileCountGroupByFiletype"
                     :key="item.file_type"
@@ -450,39 +450,6 @@ onBeforeMount(async () => {
 </script>
 
 <style scoped lang="scss">
-.category {
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-
-    .el-button {
-        position: relative;
-        // 背景透明
-        background-color: transparent;
-        // 无边框
-        border: none;
-
-        &.active {
-            font-weight: bold;
-            color: $primary-color;
-        }
-
-        &::after {
-            content: "";
-            position: absolute;
-            right: -8px;
-            top: 50%;
-            transform: translateY(-50%);
-            height: 61.8%;
-            border-right: 1px solid $primary-color;
-        }
-
-        &:last-child::after {
-            display: none;
-        }
-    }
-}
-
 .dialog-title {
     font-size: 20px;
     font-weight: 700;

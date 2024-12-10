@@ -96,7 +96,7 @@ const handleCurrentChange = (val: number) => {
 }
 
 .breadcrumb-logo {
-    color: $secondary-color;
+    color: var(--jpz-color-secondary);
 }
 
 .el-main {

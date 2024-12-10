@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 10:16:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 09:40:23
+ * @LastEditTime : 2024-12-10 17:47:54
  * @FilePath     : \blog-client\src\components\layout\footer\pc.vue
  * @Description  : 底部 PC端
  * @Blog         : https://jiaopengzi.com
@@ -55,12 +55,14 @@ const { footerData } = props
 <style scoped lang="scss">
 footer {
     height: pc.$height-footer;
-    background-color: $background-color-footer;
+    background-color: var(--el-bg-color);
     display: relative;
     align-items: center;
     justify-content: center;
-    z-index: 990;
+    z-index: -1;
     width: calc(pc.$width-page - pc.$scrollbar-y-width);
+
+    border-top: 1px solid var(--el-border-color);
 }
 
 .footer-main {
@@ -70,13 +72,12 @@ footer {
     align-items: flex-start;
     height: 100%;
     margin: 0 auto;
-    color: #eee;
+    color: var(--el-text-color-secondary);
     font-size: 15px;
-    /* 添加下面这一行 */
     flex-grow: 1;
 }
 
-/* 为 footer-l、footer-m 和 footer-r 添加 flex: 1 三等分*/
+// 为 footer-l、footer-m 和 footer-r 添加 flex: 1 三等分
 .footer-l,
 .footer-m,
 .footer-r {
@@ -88,7 +89,6 @@ footer {
     padding-top: 40px;
     line-height: 1.2;
 
-    /* 设置合适的行间距值 */
     p {
         margin: auto 20px;
     }
@@ -119,7 +119,6 @@ footer {
 
             span {
                 margin-top: 5px;
-                /* 设置合适的间隙值 */
             }
         }
     }
@@ -128,7 +127,6 @@ footer {
 h3 {
     margin-bottom: 20px;
     font-weight: 600;
-    /* 居中显示 */
     text-align: center;
 }
 
@@ -141,7 +139,7 @@ h3 {
     }
 
     a {
-        color: #eee;
+        color: var(--el-text-color-secondary);
 
         :hover {
             background-color: transparent;

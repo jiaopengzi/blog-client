@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 10:19:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-23 19:40:41
+ * @LastEditTime : 2024-12-10 17:07:11
  * @FilePath     : \blog-client\src\components\common\user-info-dropdown\index.vue
  * @Description  : 显示用户信息下拉菜单
  * @Blog         : https://jiaopengzi.com
@@ -17,17 +17,17 @@
 
         <template #dropdown>
             <el-dropdown-menu class="menu">
-                <el-dropdown-item>
-                    <h3 class="nickname">{{ data.user.user_display_name }}</h3>
+                <span class="nickname">{{ data.user.user_display_name }}</span>
+                <el-dropdown-item class="dropdown-item">
+                    <el-button class="btn-item" @click="userCenterBtn">用户中心</el-button>
                 </el-dropdown-item>
-                <el-dropdown-item>
-                    <button @click="userCenterBtn">用户中心</button>
+
+                <el-dropdown-item v-if="hasPermissionLoginAdmin" class="dropdown-item">
+                    <el-button class="btn-item" @click="userAdminBtn">后台管理</el-button>
                 </el-dropdown-item>
-                <el-dropdown-item v-if="hasPermissionLoginAdmin">
-                    <button @click="userAdminBtn">后台管理</button>
-                </el-dropdown-item>
-                <el-dropdown-item>
-                    <button @click="logout">退出</button>
+
+                <el-dropdown-item class="dropdown-item">
+                    <el-button class="btn-item" @click="logout">退出</el-button>
                 </el-dropdown-item>
             </el-dropdown-menu>
         </template>
@@ -83,15 +83,10 @@ span {
 }
 
 .menu {
-    /* 菜单宽度 */
     width: 120px;
-    /* 菜单背景色 */
-    background-color: #fff;
-    /* 菜单边框 */
-    border: 1px solid #eee;
-    /* 菜单圆角 */
+    background-color: var(--el-bg-color);
+    border: 1px solid var(--el-border-color);
     border-radius: 8px;
-    /* 菜单阴影 */
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -107,18 +102,11 @@ span {
     width: 120px;
 }
 
-button {
+.btn-item {
     width: 100%;
     border: none;
-    text-align: center;
-    text-decoration: none;
-    font-size: 14px;
     padding: 5px 0;
-    cursor: pointer;
+    color: var(--el-text-color-primary);
     background-color: transparent;
-
-    :hover {
-        background-color: #ddd;
-    }
 }
 </style>

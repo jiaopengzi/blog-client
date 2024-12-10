@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:24:36
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-08 14:41:52
+ * @LastEditTime : 2024-12-10 13:09:02
  * @FilePath     : \blog-client\src\views\home\component\post-list\index.vue
  * @Description  : 文章列表
  * @Blog         : https://jiaopengzi.com
@@ -43,15 +43,15 @@ const postItems: PostItemMainObj[] = Array(30).fill(postDataObj)
 .post-list {
     font-size: 14px;
     margin-top: 10px;
-    border: 1px solid #eaeaea;
+    border: 1px solid var(--el-border-color);
     // 除了最后一个元素显示下边框 其他都只显示上边框
 
     .post-item {
-        border-top: 1px solid #eaeaea;
-        border-bottom: 1px solid #eaeaea;
+        border-top: 1px solid var(--el-border-color);
+        border-bottom: 1px solid var(--el-border-color);
 
         &:last-child {
-            border-bottom: 1px solid #eaeaea;
+            border-bottom: 1px solid var(--el-border-color);
         }
     }
 }

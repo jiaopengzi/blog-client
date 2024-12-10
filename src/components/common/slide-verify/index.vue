@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 18:55:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 19:36:05
+ * @LastEditTime : 2024-12-10 14:14:01
  * @FilePath     : \blog-client\src\components\common\slide-verify\index.vue
  * @Description  : 滑块验证
  * @Blog         : https://jiaopengzi.com
@@ -15,7 +15,7 @@
         <div class="verify-main" @touchmove.prevent.stop>
             <h4>
                 <span class="title">拖动下方滑块完成拼图</span>
-                <button class="close-btn" @click="closeMe">
+                <button type="button" class="close-btn" @click="closeMe">
                     <Icon :name="IconKeys.Close" custom-class="icon-close" />
                 </button>
             </h4>
@@ -123,7 +123,7 @@ const closeMe = () => {
         display: flex;
         // justify-content: space-between;
         align-items: center;
-        background-color: $background-color-header;
+        background-color: var(--el-bg-color);
 
         .title {
             text-align: center;

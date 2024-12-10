@@ -342,8 +342,8 @@ defineExpose({
     box-sizing: border-box;
     font-size: 16px;
     line-height: 1.5;
-    color: $primary-color;
-    background-color: $background-color-content;
+    color: var(--jpz-color-primary);
+    background-color: var(--el-bg-color-page);
     height: var(--my-codemirror-height, 100%);
 }
 

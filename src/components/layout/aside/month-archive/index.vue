@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:14:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-07 14:36:18
+ * @LastEditTime : 2024-12-10 13:07:51
  * @FilePath     : \blog-client\src\components\layout\aside\month-archive\index.vue
  * @Description  : 阅读存档
  * @Blog         : https://jiaopengzi.com
@@ -112,13 +112,13 @@ const tableRowClassName = () => {
 </script>
 <style scoped lang="scss">
 .aside-item {
-    border: 1px solid #eaeaea;
-    background-color: $background-color-content;
+    border: 1px solid var(--el-border-color);
+    background-color: var(--el-bg-color-page);
     border-radius: 5px;
 }
 
 .title {
-    background-color: $background-color-page;
+    background-color: var(--el-bg-color-page);
     padding: 10px 5px;
 }
 

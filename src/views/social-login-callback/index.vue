@@ -99,7 +99,7 @@ onMounted(async () => {
 
 .loader {
     border: 8px solid #f3f3f3;
-    border-top: 8px solid $secondary-color;
+    border-top: 8px solid var(--jpz-color-secondary);
     border-radius: 50%;
     width: 40px;
     height: 40px;
@@ -109,7 +109,7 @@ onMounted(async () => {
 .text {
     font-size: 18px;
     margin-top: 20px;
-    color: $primary-color;
+    color: var(--jpz-color-primary);
     // 加粗
     font-weight: 700;
 }

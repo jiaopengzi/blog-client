@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-18 08:47:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-25 12:05:55
+ * @LastEditTime : 2024-12-10 15:28:52
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\edit-user\index.vue
  * @Description  : 编辑用户
  * @Blog         : https://jiaopengzi.com
@@ -59,7 +59,7 @@
 
             <el-form-item label="密码" prop="password">
                 <el-input class="generate-password" type="text" v-model="editUserForm.password" />
-                <button class="btn-generate-password" type="button" @click="generatePasswordHandle">
+                <button type="button" class="btn-generate-password" @click="generatePasswordHandle">
                     重置密码
                 </button>
             </el-form-item>

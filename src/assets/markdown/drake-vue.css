@@ -17,10 +17,10 @@
  */
 
 :root {
-    --text-color: #1e2858;
+    --el-text-color-primary: #1e2858;
     --bg-color: #eeeeee;
-    --control-text-color: var(--text-color);
-    --meta-content-color: var(--text-color);
+    --control-text-color: var(--el-text-color-primary);
+    --meta-content-color: var(--el-text-color-primary);
     --active-file-border-color: var(--drake-accent);
     --rawblock-edit-panel-bd: var(--code-block-bg-color);
     --item-hover-bg-color: #e5e5e596;
@@ -36,7 +36,7 @@
     --code-block-color: #525252;
     --title-color: #1e2858;
     --blockquote-border-color: #f66;
-    --blockquote-color: var(--text-color);
+    --blockquote-color: var(--el-text-color-primary);
     --blockquote-bg-color: #f8f8f8;
     --strong-color: var(--title-color);
     --h2-underline-color: var(--title-color);
@@ -63,7 +63,7 @@ html {
 
 body {
     font-family: var(--text-font) !important;
-    color: var(--text-color);
+    color: var(--el-text-color-primary);
     -webkit-font-smoothing: subpixel-antialiased;
     text-rendering: optimizeLegibility;
     letter-spacing: 0;
@@ -118,7 +118,7 @@ p {
 }
 
 [id^="mermaidChart"] .legend {
-    fill: var(--text-color) !important;
+    fill: var(--el-text-color-primary) !important;
 }
 
 [id^="mermaidChart"] g.label {
@@ -135,7 +135,7 @@ p {
 }
 
 tspan {
-    color: var(--text-color);
+    color: var(--el-text-color-primary);
 }
 
 [id^="mermaidChart"] .entityLabel {
@@ -143,7 +143,7 @@ tspan {
 }
 
 [id^="mermaidChart"] {
-    fill: var(--text-color) !important;
+    fill: var(--el-text-color-primary) !important;
 }
 
 [id^="mermaidChart"] rect.rect {
@@ -167,7 +167,7 @@ tspan {
 
 .md-diagram-panel-preview .actor-line {
     /*竖线*/
-    stroke: var(--text-color) !important;
+    stroke: var(--el-text-color-primary) !important;
     stroke-width: 1px;
 }
 
@@ -175,19 +175,19 @@ tspan {
     /*横线*/
     stroke-width: 1.5;
     stroke-dasharray: none;
-    stroke: var(--text-color) !important;
+    stroke: var(--el-text-color-primary) !important;
 }
 
 .md-diagram-panel-preview .messageLine1 {
     /*虚线*/
     stroke-width: 1.5 !important;
     stroke-dasharray: 2, 2 !important;
-    stroke: var(--text-color) !important;
+    stroke: var(--el-text-color-primary) !important;
 }
 
 .md-diagram-panel-preview .messageText {
     /*描述文字*/
-    fill: var(--text-color) !important;
+    fill: var(--el-text-color-primary) !important;
     font-family: var(--text-font) !important;
     font-size: 1rem !important;
 }
@@ -195,7 +195,7 @@ tspan {
 .md-diagram-panel-preview .activation0 {
     /*长方形*/
     fill: #e6e6e6 !important;
-    stroke: var(--text-color) !important;
+    stroke: var(--el-text-color-primary) !important;
 }
 
 .md-diagram-panel-preview .labelText,
@@ -214,13 +214,13 @@ tspan {
 
 .md-diagram-panel-preview .loopLine {
     /*循环标记虚线*/
-    stroke: var(--text-color) !important;
+    stroke: var(--el-text-color-primary) !important;
 }
 
 .md-diagram-panel-preview .loopText,
 .md-diagram-panel-preview .loopText > tspan {
     /*循环名称*/
-    fill: var(--text-color) !important;
+    fill: var(--el-text-color-primary) !important;
     font-size: 1rem !important;
 }
 
@@ -235,7 +235,7 @@ pre.md-fences-advanced.md-focus .md-fences-adv-panel {
 
 .md-diagram-panel-preview .edgePath .path {
     /*箭头*/
-    stroke: var(--text-color) !important;
+    stroke: var(--el-text-color-primary) !important;
 }
 
 .md-diagram-panel-preview .edgeLabel rect {
@@ -245,7 +245,7 @@ pre.md-fences-advanced.md-focus .md-fences-adv-panel {
 
 .md-diagram-panel-preview .edgeLabel span {
     /*条件文字*/
-    color: var(--text-color);
+    color: var(--el-text-color-primary);
 }
 
 .md-diagram-panel-preview .node rect,
@@ -642,7 +642,7 @@ table tr td:last-child {
 kbd {
     border: 0.1em solid #5b5b5e;
     background: transparent;
-    color: var(--text-color);
+    color: var(--el-text-color-primary);
     margin: 0 0.4rem;
     font-family: var(--text-font) !important;
     font-size: 0.95rem;
@@ -807,11 +807,11 @@ kbd {
     border-radius: 2px;
     border: none;
     background: transparent;
-    color: var(--text-color);
+    color: var(--el-text-color-primary);
 }
 
 .searchpanel-search-option-btn.active {
-    background: var(--text-color);
+    background: var(--el-text-color-primary);
     color: var(--bg-color);
 }
 
@@ -913,7 +913,7 @@ span.md-def-name {
 .footnotes {
     font-size: 1rem;
     font-weight: normal;
-    color: var(--text-color);
+    color: var(--el-text-color-primary);
     position: relative;
 }
 
@@ -945,25 +945,25 @@ div.code-tooltip-content {
 
 .md-def-name:after {
     content: ". ^";
-    color: var(--text-color);
+    color: var(--el-text-color-primary);
 }
 
 .md-def-footnote .md-def-name:before {
     content: "";
-    color: var(--text-color);
+    color: var(--el-text-color-primary);
     position: absolute;
 }
 
 .md-def-name:before {
     content: "";
-    color: var(--text-color);
+    color: var(--el-text-color-primary);
     position: absolute;
 }
 
 .md-content.md-url,
 .md-def-content.md-def-url.md-auto-disp {
     text-decoration: none;
-    border-bottom: 0.1rem solid var(--text-color);
+    border-bottom: 0.1rem solid var(--el-text-color-primary);
 }
 
 .CodeMirror-scroll::-webkit-scrollbar {
@@ -1077,13 +1077,13 @@ div.code-tooltip-content {
 
 #megamenu-menu-sidebar {
     background-color: var(--bg-color);
-    color: var(--text-color);
+    color: var(--el-text-color-primary);
 }
 
 .long-btn {
     width: inherit;
     min-width: 300px;
-    border: 1px solid var(--text-color);
+    border: 1px solid var(--el-text-color-primary);
     border-radius: 6px;
 }
 
@@ -1100,12 +1100,12 @@ div.code-tooltip-content {
 #recent-file-panel-search-input {
     height: 45px;
     border: none;
-    border-bottom: 1px solid var(--text-color);
+    border-bottom: 1px solid var(--el-text-color-primary);
     padding-left: 8px;
 }
 
 #recent-file-panel-search-input::placeholder {
-    color: var(--text-color);
+    color: var(--el-text-color-primary);
     opacity: 0.5;
 }
 
@@ -1126,12 +1126,12 @@ div.code-tooltip-content {
 #top-titlebar .toolbar-icon.btn.hover,
 #top-titlebar .toolbar-icon.btn:hover {
     background-color: var(--btn-hover-bg-color);
-    color: var(--text-color);
+    color: var(--el-text-color-primary);
 }
 
 .megamenu-menu-panel .btn:hover {
     background-color: var(--btn-hover-bg-color) !important;
-    color: var(--text-color);
+    color: var(--el-text-color-primary);
 }
 
 #recent-file-panel tbody tr:nth-child(2n-1),
@@ -1145,12 +1145,12 @@ div.code-tooltip-content {
 }
 
 #megamenu-back-btn {
-    color: var(--text-color);
-    border: 1px solid var(--text-color);
+    color: var(--el-text-color-primary);
+    border: 1px solid var(--el-text-color-primary);
 }
 
 .megamenu-menu-header #megamenu-menu-header-title {
-    color: var(--text-color);
+    color: var(--el-text-color-primary);
 }
 
 header,

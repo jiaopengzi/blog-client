@@ -86,7 +86,7 @@ const view = computed(() =>
     position: relative;
     border-radius: 3px;
     padding: 15px;
-    background-color: $background-color-content;
+    background-color: var(--el-bg-color-page);
     overflow: hidden;
 
     &:hover {
@@ -120,7 +120,7 @@ const view = computed(() =>
         top: 0;
         left: 0px; // 使得红色外边框在 .tip 的左侧
         height: 28px;
-        border-right: 6px solid $primary-color; // 绿色内边框
+        border-right: 6px solid var(--jpz-color-primary); // 绿色内边框
     }
 }
 
@@ -135,10 +135,10 @@ const view = computed(() =>
     padding-left: 10px;
     padding-right: 10px;
     z-index: 2;
-    background-color: $primary-color;
+    background-color: var(--jpz-color-primary);
     line-height: 200%;
     font-size: 14px;
-    color: $background-color-page;
+    color: var(--el-bg-color-page);
     border-radius: 5%;
 }
 
@@ -225,8 +225,8 @@ const view = computed(() =>
     z-index: 2;
     padding: 5px 10px;
     border-radius: 5px;
-    background-color: $primary-color;
-    color: $background-color-page;
+    background-color: var(--jpz-color-primary);
+    color: var(--el-bg-color-page);
     line-height: 150%;
     opacity: 0;
     transition: opacity 0.3s ease-in-out;

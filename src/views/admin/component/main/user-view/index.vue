@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-06 17:25:59
+ * @LastEditTime : 2024-12-10 15:44:26
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -34,7 +34,7 @@
         </template>
         <template #category>
             <!-- v-for 循环 userCountGroupByRole生成 按钮 -->
-            <div class="category">
+            <div class="category-group">
                 <el-button
                     v-for="item in userCountGroupByRole"
                     :key="item.role_name"
@@ -381,39 +381,6 @@ onBeforeMount(async () => {
 .dialog-title {
     font-size: 20px;
     font-weight: 700;
-}
-
-.category {
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-
-    .el-button {
-        position: relative;
-        // 背景透明
-        background-color: transparent;
-        // 无边框
-        border: none;
-
-        &.active {
-            font-weight: bold;
-            color: $primary-color;
-        }
-
-        &::after {
-            content: "";
-            position: absolute;
-            right: -8px;
-            top: 50%;
-            transform: translateY(-50%);
-            height: 61.8%;
-            border-right: 1px solid $primary-color;
-        }
-
-        &:last-child::after {
-            display: none;
-        }
-    }
 }
 
 .dialog-add,

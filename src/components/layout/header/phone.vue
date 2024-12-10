@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 22:31:43
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-23 19:42:42
+ * @LastEditTime : 2024-12-10 14:15:43
  * @FilePath     : \blog-client\src\components\layout\header\phone.vue
  * @Description  : phone 头部
  * @Blog         : https://jiaopengzi.com
@@ -14,8 +14,8 @@
         <header v-if="headerVisible">
             <ul class="header-main">
                 <li>
-                    <button class="btn-menu" @click="toggleNav">
-                        <Icon :name="IconKeys.Menu" />
+                    <button type="button" class="btn-menu" @click="toggleNav">
+                        <Icon :name="IconKeys.Menu" custom-class="my-icon" />
                     </button>
                 </li>
                 <li>
@@ -31,7 +31,7 @@
 
                 <li>
                     <div class="search">
-                        <Icon :name="IconKeys.Search" />
+                        <Icon :name="IconKeys.Search" custom-class="my-icon" />
                     </div>
                 </li>
             </ul>
@@ -91,7 +91,26 @@ const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownA
 </script>
 
 <style scoped lang="scss">
-/* 透明遮罩 */
+header {
+    width: 100%;
+    height: phone.$height-header;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    background-color: var(--el-bg-color);
+}
+
+.header-main {
+    border-bottom: 1px solid var(--el-border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100vw;
+    height: phone.$height-header;
+}
+
+//透明遮罩
 .nav-backdrop {
     width: 100vw;
     height: 100vh;
@@ -99,31 +118,22 @@ const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownA
     top: 0;
     left: 0;
     z-index: 997;
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: var(--el-border-color);
+    opacity: 0.5;
 }
 
-/* 侧边导航栏*/
+// 侧边导航栏
 .side-nav {
-    background: rgba(255, 255, 255, 0.97);
+    background-color: var(--el-bg-color);
     position: fixed;
     top: 0;
-    border: #ddd 1px solid;
+    // border: 1px solid var(--el-border-color);
     left: 0;
     z-index: 998;
     transition: transform 300ms ease-in-out;
-    box-shadow: 1px 0 5px rgba(0, 0, 0, 0.2);
+    // box-shadow: 1px 0 5px rgba(0, 0, 0, 0.2);
     height: 100vh;
     width: 61.8vw;
-}
-
-header {
-    width: 100%;
-    /* 更改此处 */
-    height: phone.$height-header;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 999;
 }
 
 // VUE3.0 transition 动画
@@ -138,20 +148,8 @@ header {
     opacity: 0;
 }
 
-.header-main {
-    border-bottom: 2px solid #ebebeb;
-    background-color: #fefefe;
-    display: flex;
-    justify-content: space-between;
-    /* 修改此处使logo居中 */
-    align-items: center;
-    width: 100vw;
-    height: phone.$height-header;
-}
-
 .logo {
     width: phone.$width-header-logo;
-    /* 让logo居中 */
     height: phone.$height-header-logo;
 }
 
@@ -169,5 +167,9 @@ li {
     background-color: transparent;
     border: none;
     outline: none;
+}
+
+.my-icon {
+    fill: var(--el-text-color-primary);
 }
 </style>

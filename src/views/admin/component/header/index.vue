@@ -11,8 +11,16 @@
 
 <template>
     <div>头部</div>
+    <div class="switch">
+        <SwitchGroup :switch-items="themeSwitch" @update-status="updateStatus" />
+    </div>
 </template>
 <script setup lang="ts">
+import { useTheme } from "@/components/hooks/useTheme"
+import SwitchGroup from "@/components/common/switch-group"
 defineOptions({ name: "AdminHeader" })
+
+// 主题切换
+const { themeSwitch, updateStatus } = useTheme()
 </script>
 <style scoped lang="scss"></style>

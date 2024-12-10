@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-19 10:58:05
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-19 10:58:06
+ * @LastEditTime : 2024-12-10 14:17:38
  * @FilePath     : \blog-client\src\views\test\FullScreenDiv.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,7 @@
 -->
 <template>
     <div :class="{ 'full-screen': isFullScreen }" class="content-container">
-        <button @click="toggleFullScreen">
+        <button type="button" @click="toggleFullScreen">
             {{ isFullScreen ? "Exit Full Screen" : "Enter Full Screen" }}
         </button>
         <div class="content">

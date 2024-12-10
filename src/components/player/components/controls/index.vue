@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 19:53:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-19 11:47:57
+ * @LastEditTime : 2024-12-10 14:16:11
  * @FilePath     : \blog-client\src\components\player\components\controls\index.vue
  * @Description  : 视频控制器
  * @Blog         : https://jiaopengzi.com
@@ -24,7 +24,11 @@
             <!-- 第二行左侧 -->
             <div class="left-controls">
                 <!-- 播放暂停按钮 -->
-                <button class="controls-btn play-pause" @click="handleButtonClick(togglePlayPause)">
+                <button
+                    type="button"
+                    class="controls-btn play-pause"
+                    @click="handleButtonClick(togglePlayPause)"
+                >
                     <Icon :name="IconNamePlayPause" custom-class="iconfont" />
                 </button>
 
@@ -35,7 +39,11 @@
             <!-- 第二行右侧 -->
             <div class="right-controls">
                 <!-- 静音按钮 -->
-                <button class="controls-btn volume-mute" @click="handleButtonClick(toggleMute)">
+                <button
+                    type="button"
+                    class="controls-btn volume-mute"
+                    @click="handleButtonClick(toggleMute)"
+                >
                     <Icon :name="IconNameMute" custom-class="iconfont" />
                 </button>
 
@@ -55,7 +63,7 @@
                     @show="handleShowSetting"
                 >
                     <template #reference>
-                        <button class="controls-btn">
+                        <button type="button" class="controls-btn">
                             <Icon :name="IconKeys.Setting" custom-class="iconfont" />
                         </button>
                     </template>
@@ -74,12 +82,17 @@
                 </el-popover>
 
                 <!-- 画中画 -->
-                <button class="controls-btn pip" @click="handleButtonClick(togglePIP)">
+                <button
+                    type="button"
+                    class="controls-btn pip"
+                    @click="handleButtonClick(togglePIP)"
+                >
                     <Icon :name="IconKeys.PictureInPicture" custom-class="iconfont" />
                 </button>
 
                 <!-- 网页全屏 -->
                 <button
+                    type="button"
                     class="controls-btn web-fullscreen"
                     @click="handleButtonClick(toggleWebFullscreen)"
                 >
@@ -88,6 +101,7 @@
 
                 <!-- 全屏 -->
                 <button
+                    type="button"
                     class="controls-btn fullscreen"
                     @click="handleButtonClick(toggleFullscreen)"
                 >

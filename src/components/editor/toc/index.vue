@@ -74,15 +74,15 @@ watchEffect(() => {
         line-height: 1.5;
         font-weight: 500;
         list-style: none; // 去除默认的列表样式
-        color: $primary-color;
+        color: var(--jpz-color-primary);
 
         &.toc-active {
-            color: $secondary-color;
+            color: var(--jpz-color-secondary);
         }
 
         &:hover {
             cursor: pointer;
-            color: $secondary-color;
+            color: var(--jpz-color-secondary);
             text-decoration: underline;
         }
     }

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 14:48:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 21:34:55
+ * @LastEditTime : 2024-12-10 15:29:10
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\add-user\index.vue
  * @Description  : 添加用户
  * @Blog         : https://jiaopengzi.com
@@ -31,7 +31,11 @@
 
             <el-form-item label="密码" prop="password">
                 <el-input class="generate-password" type="text" v-model="addUserForm.password" />
-                <button class="btn-generate-password" type="button" @click="generatePasswordHandle">
+                <button
+                    type="button"
+                    class="btn-generate-password"
+                    @click="generatePasswordHandle"
+                >
                     生成密码
                 </button>
             </el-form-item>

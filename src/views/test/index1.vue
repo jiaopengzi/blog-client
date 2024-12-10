@@ -3,7 +3,7 @@
 -->
 
 <template>
-    <button @click="togglePlayPause">点击</button>
+    <button type="button" @click="togglePlayPause">点击</button>
 </template>
 
 <script setup lang="ts">

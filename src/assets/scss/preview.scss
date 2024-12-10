@@ -21,7 +21,7 @@
     h1 {
         font-size: 2em;
         display: table;
-        border-bottom: 2px solid $primary-color;
+        border-bottom: 2px solid var(--jpz-color-primary);
         text-align: center;
         margin: 20px auto; // 居中
     }
@@ -53,7 +53,7 @@
     h4,
     h5,
     h6 {
-        color: $primary-color;
+        color: var(--jpz-color-primary);
         font-weight: 700;
         padding-bottom: 2px;
     }
@@ -62,13 +62,13 @@
 
     // 加粗
     strong {
-        color: $primary-color;
+        color: var(--jpz-color-primary);
         font-weight: 700;
     }
 
     // 斜体
     em {
-        color: $primary-color;
+        color: var(--jpz-color-primary);
         font-style: italic;
     }
 
@@ -110,17 +110,17 @@
 
     // 引用
     blockquote {
-        border-left: 4px solid $blockquote-border-color;
-        background-color: $blockquote-bg-color;
+        border-left: 4px solid var(--blockquote-border-color);
+        background-color: var(--blockquote-bg-color);
         padding: 0.5em 1em;
         margin: 0.5em 0;
-        color: $blockquote-color;
+        color: var(--blockquote-color);
         border-radius: 4px;
     }
 
     // 链接 继承上述 a 样式
     a {
-        color: $primary-color;
+        color: var(--jpz-color-primary);
         text-decoration: none;
         cursor: pointer;
         // 下划线
@@ -132,7 +132,7 @@
     // 分割线
     hr {
         border: none;
-        border-bottom: 1px solid $horizontal-divider-color;
+        border-bottom: 1px solid var(--horizontal-divider-color);
         margin: 1em 0;
     }
 
@@ -219,27 +219,27 @@
 
         // 表头
         th {
-            border: 1px solid $table-border-color;
-            background-color: $table-header-bg-color;
+            border: 1px solid var(--table-border-color);
+            background-color: var(--table-header-bg-color);
             line-height: 2em; // 行高
             font-weight: 700;
-            color: $primary-color;
+            color: var(--jpz-color-primary);
         }
 
         // 表格单元格
         td {
-            border: 1px solid $table-border-color;
+            border: 1px solid var(--table-border-color);
         }
 
         // 表格偶数行
         // 为表格的偶数行设置背景颜色
         table tr:nth-child(2n) {
-            background-color: $table-n2-bg-color;
+            background-color: var(--table-n2-bg-color);
         }
 
         // 为表格的奇数行设置背景颜色
         table tr:nth-child(2n + 1) {
-            background-color: $background-color-content;
+            background-color: var(--el-bg-color-page);
         }
     }
 
@@ -247,23 +247,23 @@
 
     // 数学公式
     .katex {
-        color: $primary-color;
+        color: var(--jpz-color-primary);
         padding: 0 4px 0 4px;
     }
 
     // 脚注
     .sr-only {
-        color: $primary-color;
+        color: var(--jpz-color-primary);
         font-size: 1.5em;
         margin: 0.5em 0 0.5em 0;
         display: block;
-        border-top: 1px solid $horizontal-divider-color;
+        border-top: 1px solid var(--horizontal-divider-color);
         padding-top: 0.5em;
     }
 
     a[data-footnote-ref] {
-        color: $primary-color;
-        color: $footnote-sup-color;
+        color: var(--jpz-color-primary);
+        color: var(--footnote-sup-color);
         // 下划线
         text-decoration: underline;
         text-underline-offset: 0.2rem;
@@ -292,76 +292,76 @@
 
     // note
     .markdown-alert-note {
-        color: $markdown-alert-note-color;
-        // border: 1px solid $markdown-alert-note-border-color;
-        background-color: $markdown-alert-note-bg-color;
+        color: var(--markdown-alert-note-color);
+        // border: 1px solid var(--markdown-alert-note-border-color);
+        background-color: var(--markdown-alert-note-bg-color);
         border: none;
 
         .markdown-alert-title {
-            color: $markdown-alert-note-title-color;
+            color: var(--markdown-alert-note-title-color);
 
             svg {
-                fill: $markdown-alert-note-svg-fill-color;
+                fill: var(--markdown-alert-note-svg-fill-color);
             }
         }
     }
 
     // tip
     .markdown-alert-tip {
-        color: $markdown-alert-tip-color;
-        border: 1px solid $markdown-alert-tip-border-color;
-        background-color: $markdown-alert-tip-bg-color;
+        color: var(--markdown-alert-tip-color);
+        border: 1px solid var(--markdown-alert-tip-border-color);
+        background-color: var(--markdown-alert-tip-bg-color);
 
         .markdown-alert-title {
-            color: $markdown-alert-tip-title-color;
+            color: var(--markdown-alert-tip-title-color);
 
             svg {
-                fill: $markdown-alert-tip-svg-fill-color;
+                fill: var(--markdown-alert-tip-svg-fill-color);
             }
         }
     }
 
     // important
     .markdown-alert-important {
-        color: $markdown-alert-important-color;
-        border: 1px solid $markdown-alert-important-border-color;
-        background-color: $markdown-alert-important-bg-color;
+        color: var(--markdown-alert-important-color);
+        border: 1px solid var(--markdown-alert-important-border-color);
+        background-color: var(--markdown-alert-important-bg-color);
 
         .markdown-alert-title {
-            color: $markdown-alert-important-title-color;
+            color: var(--markdown-alert-important-title-color);
 
             svg {
-                fill: $markdown-alert-important-svg-fill-color;
+                fill: var(--markdown-alert-important-svg-fill-color);
             }
         }
     }
 
     // warning
     .markdown-alert-warning {
-        color: $markdown-alert-warning-color;
-        border: 1px solid $markdown-alert-warning-border-color;
-        background-color: $markdown-alert-warning-bg-color;
+        color: var(--markdown-alert-warning-color);
+        border: 1px solid var(--markdown-alert-warning-border-color);
+        background-color: var(--markdown-alert-warning-bg-color);
 
         .markdown-alert-title {
-            color: $markdown-alert-warning-title-color;
+            color: var(--markdown-alert-warning-title-color);
 
             svg {
-                fill: $markdown-alert-warning-svg-fill-color;
+                fill: var(--markdown-alert-warning-svg-fill-color);
             }
         }
     }
 
     // caution
     .markdown-alert-caution {
-        color: $markdown-alert-caution-color;
-        border: 1px solid $markdown-alert-caution-border-color;
-        background-color: $markdown-alert-caution-bg-color;
+        color: var(--markdown-alert-caution-color);
+        border: 1px solid var(--markdown-alert-caution-border-color);
+        background-color: var(--markdown-alert-caution-bg-color);
 
         .markdown-alert-title {
-            color: $markdown-alert-caution-title-color;
+            color: var(--markdown-alert-caution-title-color);
 
             svg {
-                fill: $markdown-alert-caution-svg-fill-color;
+                fill: var(--markdown-alert-caution-svg-fill-color);
             }
         }
     }

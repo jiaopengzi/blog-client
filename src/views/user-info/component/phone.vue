@@ -139,7 +139,7 @@ if (hashValue) {
 .tabs {
     width: 94vw;
     min-height: calc(100vh - phone.$height-footer - phone.$height-header);
-    background-color: $background-color-page;
+    background-color: var(--el-bg-color-page);
 }
 
 .tabs > .el-tabs__content {

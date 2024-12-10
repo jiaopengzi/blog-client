@@ -48,10 +48,9 @@ export default defineConfig({
                 silenceDeprecations: ["legacy-js-api"],
                 // 多个scss文件变量生效
                 additionalData: `
-                    @use "@/assets/scss/themes/index.scss" as *;
-                    @use '@/assets/scss/platform/phone.scss' as phone;
-                    @use '@/assets/scss/platform/pad.scss' as pad;
-                    @use '@/assets/scss/platform/pc.scss' as pc;
+                    @use '@/assets/scss/platform/_phone.scss' as phone;
+                    @use '@/assets/scss/platform/_pad.scss' as pad;
+                    @use '@/assets/scss/platform/_pc.scss' as pc;
                     @use '@/assets/scss/mixin.scss' as *;
                     `,
             },

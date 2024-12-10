@@ -57,10 +57,10 @@
                 </el-form-item>
             </div>
             <div class="social">
-                <button class="social-btn" @click="loginByWeChat">
+                <button type="button" class="social-btn" @click="loginByWeChat">
                     <Icon :name="IconKeys.Wechat" custom-class="iconfont icon-wechat" />
                 </button>
-                <button class="social-btn" @click="loginByQQ">
+                <button type="button" class="social-btn" @click="loginByQQ">
                     <Icon :name="IconKeys.Qq" custom-class="iconfont icon-qq" />
                 </button>
             </div>

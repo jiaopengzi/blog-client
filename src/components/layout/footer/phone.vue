@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 10:17:04
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 20:19:24
+ * @LastEditTime : 2024-12-10 17:47:12
  * @FilePath     : \blog-client\src\components\layout\footer\phone.vue
  * @Description  : 底部 移动端
  * @Blog         : https://jiaopengzi.com
@@ -55,12 +55,13 @@ const { footerData } = props
 <style scoped lang="scss">
 footer {
     height: phone.$height-footer;
-    background-color: $background-color-footer;
+    background-color: var(--el-bg-color);
     display: relative;
     align-items: center;
     justify-content: center;
-    z-index: 990;
-    width: calc(phone.$width-page - phone.$scrollbar-y-width);
+    z-index: -1;
+    // width: calc(phone.$width-page - phone.$scrollbar-y-width);
+    border-top: 1px solid var(--el-border-color);
 }
 
 .footer-main {
@@ -69,15 +70,12 @@ footer {
     justify-content: center;
     align-items: flex-start;
     margin: 0;
-    color: #eee;
+    color: var(--el-text-color-disabled);
     font-size: 15px;
-    background-color: $background-color-footer;
-    border-top: 2px solid #ebebeb;
 }
 
 .footer-l {
     width: 100%;
-    /* 设置合适的行间距值 */
     margin-bottom: 20px;
 
     h3 {
@@ -121,7 +119,6 @@ footer {
 
             span {
                 margin-top: 5px;
-                /* 设置合适的间隙值 */
             }
         }
     }
@@ -154,7 +151,7 @@ footer {
     }
 
     a {
-        color: #eee;
+        color: var(--el-text-color-disabled);
 
         :hover {
             background-color: transparent;

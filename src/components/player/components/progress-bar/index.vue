@@ -313,7 +313,7 @@ $bar-height: 6px; // 进度条高度
         top: 0;
         left: 0;
         height: $bar-height;
-        background: $primary-color;
+        background: var(--jpz-color-primary);
         border-radius: 3px;
         z-index: 2;
     }
@@ -340,7 +340,7 @@ $bar-height: 6px; // 进度条高度
         transform: translate(-50%, -50%);
         z-index: 3;
         cursor: pointer;
-        border: 2px solid $primary-color; // 添加外边框
+        border: 2px solid var(--jpz-color-primary); // 添加外边框
 
         transition: transform 0.2s ease; // 添加变大动画效果
 

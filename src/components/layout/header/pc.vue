@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 22:31:47
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-09 17:47:19
+ * @LastEditTime : 2024-12-10 18:19:34
  * @FilePath     : \blog-client\src\components\layout\header\pc.vue
  * @Description  : pc 头部
  * @Blog         : https://jiaopengzi.com
@@ -27,9 +27,19 @@
                 </div>
 
                 <HeaderNav />
+
                 <div class="search">
-                    <input type="text" placeholder="搜索" />
-                    <Icon :name="IconKeys.Search" custom-class="search-icon" />
+                    <el-input
+                        v-model="searchAll"
+                        style="width: 240px"
+                        size="large"
+                        placeholder="搜索"
+                    >
+                        <!-- suffix插槽 -->
+                        <template #suffix>
+                            <Icon :name="IconKeys.Search" custom-class="search-icon" />
+                        </template>
+                    </el-input>
                 </div>
 
                 <div class="switch">
@@ -38,11 +48,11 @@
 
                 <div class="login" v-if="!isLogin">
                     <router-link :to="routeObj.login.path" class="link">
-                        <span>登录</span>
+                        <span class="login-text">登录</span>
                     </router-link>
-                    <span>/</span>
+                    <span class="login-text separator">/</span>
                     <router-link :to="routeObj.register.path" class="link">
-                        <span>注册</span>
+                        <span class="login-text">注册</span>
                     </router-link>
                 </div>
                 <div class="avatar" v-if="isLogin">
@@ -54,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeMount, reactive, type Ref } from "vue"
+import { ref, onBeforeMount, type Ref } from "vue"
 import { IconKeys } from "@/components/common/icons"
 import type { ScrollData } from "@/components/hooks/useScroll"
 import { useScrollActions } from "@/components/hooks/useScroll"
@@ -62,46 +72,19 @@ import UserInfoDropdown from "@/components/common/user-info-dropdown" // 导入 
 import { useUserStore } from "@/stores/user"
 import { storeToRefs } from "pinia"
 import { routeObj } from "@/router/routeAll"
-import { useDark, useToggle } from "@vueuse/core"
-import type { SwitchItem, SwitchItemIcon, SwitchItemColor } from "@/components/common/switch-group"
+import { useTheme } from "@/components/hooks/useTheme"
 
 import HeaderNav from "@/components/layout/header-nav"
 import SwitchGroup from "@/components/common/switch-group"
 
 defineOptions({ name: "HeaderPC" })
 
-const isDark = useDark()
-
-const toggleDark = useToggle(isDark)
-
-// switch 开关 标签
-const icon: SwitchItemIcon = {
-    active: IconKeys.ThemeDark,
-    inactive: IconKeys.ThemeLight,
-}
-
-// switch 开关 颜色
-const color: SwitchItemColor = {
-    active: "red",
-    inactive: "green",
-}
-
-// switch 开关
-const themeSwitch: SwitchItem[] = reactive([
-    {
-        name: "themeSwitch",
-        status: isDark.value,
-        color: color,
-        icon: icon,
-    },
-])
-
-// 更新菜单折叠状态
-const updateStatus = (items: SwitchItem[]) => {
-    toggleDark()
-}
+// 主题切换
+const { themeSwitch, updateStatus } = useTheme()
 
 const headerVisible = ref(true) // 导航栏是否可见
+
+const searchAll = ref("")
 
 // ======================================== 滚动条事件 ========================================
 
@@ -137,16 +120,13 @@ onBeforeMount(() => {
 header {
     width: pc.$width-header;
     height: pc.$height-header;
-    /* 将头部固定在屏幕顶部 */
     position: fixed;
-    /* 设置头部距离顶部的距离为0 */
     top: 0;
-    /* 设置头部距离左侧的距离为0 */
     left: 0;
-    /* 可选：如果需要头部在其他元素上方显示，可以设置一个较高的 z-index 值 */
-    z-index: 999;
-    background-color: $background-color-header;
-    border-bottom: 2px solid #ebebeb;
+    // 可选：如果需要头部在其他元素上方显示，可以设置一个较高的 z-index 值
+    // z-index: 999;
+    background-color: var(--el-bg-color);
+    border-bottom: 1px solid var(--el-border-color);
 }
 
 .header-main {
@@ -155,9 +135,8 @@ header {
     align-items: center;
     width: pc.$width-page-main;
     height: pc.$height-header;
-    margin-left: calc(
-        (pc.$width-page - pc.$width-page-main - pc.$scrollbar-y-width) / 2
-    ); // 居中减去滚动条宽度
+    // 居中减去滚动条宽度
+    margin-left: calc((pc.$width-page - pc.$width-page-main - pc.$scrollbar-y-width) / 2);
     margin-right: calc((pc.$width-page - pc.$width-page-main - pc.$scrollbar-y-width) / 2);
 }
 
@@ -182,34 +161,9 @@ header {
     height: 100%;
 }
 
-.search {
-    display: flex;
-    align-items: center;
-    position: relative;
-    width: pc.$width-header-search;
-    height: pc.$height-header-search;
-    background-color: #f5f5f5;
-}
-
-.search input {
-    width: 75%;
-    height: 100%;
-    padding: 0 10px;
-    border: none;
-    outline: none;
-    background-color: transparent;
-}
-
 .search-icon {
-    position: absolute;
-    right: 5px;
-    top: 0;
-    width: 24px;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    fill: #888;
+    font-size: 20px;
+    fill: var(--el-text-color-primary);
 }
 
 .login {
@@ -217,6 +171,13 @@ header {
     align-items: center;
     text-align: center;
     font-size: 16px;
-    color: #888;
+}
+
+.login-text {
+    color: var(--el-text-color-primary);
+}
+
+.separator {
+    margin: 0 4px;
 }
 </style>

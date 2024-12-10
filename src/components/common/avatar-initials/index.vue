@@ -42,7 +42,7 @@ const avatarBgStyle = computed(() => ({
     justify-content: center;
     align-items: center;
     background-color: #888;
-    color: $primary-color;
+    color: var(--jpz-color-primary);
     font-weight: 700;
     background-size: cover;
     background-repeat: no-repeat; // 使用cover值，根据容器大小自适应

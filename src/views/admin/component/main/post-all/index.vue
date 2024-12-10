@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-07 14:38:15
+ * @LastEditTime : 2024-12-10 15:42:40
  * @FilePath     : \blog-client\src\views\admin\component\main\post-all\index.vue
  * @Description  : 文章管理 
  * @Blog         : https://jiaopengzi.com
@@ -39,7 +39,7 @@
 
         <template #category>
             <!-- v-for 循环 postCountGroup生成 按钮 -->
-            <div ref="categoryRef" class="category">
+            <div ref="categoryRef" class="category-group">
                 <el-button
                     v-for="item in postCountGroup"
                     :key="item.key"
@@ -695,39 +695,6 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-.category {
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-
-    .el-button {
-        position: relative;
-        // 背景透明
-        background-color: transparent;
-        // 无边框
-        border: none;
-
-        &.active {
-            font-weight: bold;
-            color: $primary-color;
-        }
-
-        &::after {
-            content: "";
-            position: absolute;
-            right: -8px;
-            top: 50%;
-            transform: translateY(-50%);
-            height: 61.8%;
-            border-right: 1px solid $primary-color;
-        }
-
-        &:last-child::after {
-            display: none;
-        }
-    }
-}
-
 .custom-filter {
     display: flex;
     align-items: center;
@@ -766,6 +733,7 @@ onMounted(() => {
         span {
             margin: 0 4px;
             font-size: 14px;
+            color: var(--el-text-color-regular);
         }
     }
 }
@@ -775,7 +743,7 @@ onMounted(() => {
     align-items: center;
     margin-left: 20px;
 
-    border-left: 1px solid $primary-color;
+    border-left: 1px solid var(--jpz-color-primary);
     padding-left: 30px;
 
     .operation-item {

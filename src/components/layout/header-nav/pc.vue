@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 20:56:51
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-08 14:38:52
+ * @LastEditTime : 2024-12-10 17:59:16
  * @FilePath     : \blog-client\src\components\layout\header-nav\pc.vue
  * @Description  : 导航栏 pc 端
  * @Blog         : https://jiaopengzi.com
@@ -19,7 +19,7 @@
                         :name="item.iconKey"
                         :custom-class="'my-icon ' + item.customClass"
                     />
-                    <span class="title">{{ item.title }}</span>
+                    <span>{{ item.title }}</span>
                 </router-link>
             </li>
         </ul>
@@ -41,38 +41,35 @@ const props = defineProps<{ navData: HeaderNavPropsItem[] }>()
     height: 100%;
 
     li {
-        /* width: 100px; */
         height: 100%;
         text-align: center;
         line-height: 88px;
         font-size: 16px;
         font-weight: 600;
-        color: #808080;
     }
 }
 
 .link {
     display: flex;
-    /* 使用 Flexbox 布局 */
     align-items: center;
-    /* 垂直居中对齐 */
     text-decoration: none;
-    /* 可选：去除链接的下划线 */
     padding-left: 8px;
     padding-right: 8px;
-    color: #333;
+    color: var(--el-text-color-primary);
+
+    &:hover {
+        background-color: var(--jpz-color-secondary);
+    }
 }
 
 span {
     display: flex;
-    /* 使用 Flexbox 布局 */
     align-items: center;
-    /* 垂直居中对齐 */
 }
 
 .my-icon {
     font-size: 20px;
-    fill: #333;
+    fill: var(--el-text-color-primary);
     margin-right: 4px;
 }
 

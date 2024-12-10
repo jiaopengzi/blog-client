@@ -64,14 +64,14 @@ const props = defineProps({
 }
 
 .breadcrumb-logo {
-    color: $secondary-color;
+    color: var(--jpz-color-secondary);
 }
 
 .not-found {
     text-align: center;
     padding-top: 100px;
     font-size: 24px;
-    color: $primary-color;
+    color: var(--jpz-color-primary);
 
     h1 {
         font-size: 100px;

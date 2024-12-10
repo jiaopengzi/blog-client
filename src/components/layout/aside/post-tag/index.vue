@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:15:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-11 10:08:05
+ * @LastEditTime : 2024-12-10 13:08:08
  * @FilePath     : \blog-client\src\components\layout\aside\post-tag\index.vue
  * @Description  : 文章标签
  * @Blog         : https://jiaopengzi.com
@@ -72,12 +72,12 @@ onBeforeMount(() => {
 </script>
 <style scoped lang="scss">
 .aside-item {
-    border: 1px solid #eaeaea;
-    background-color: $background-color-content;
+    border: 1px solid var(--el-border-color);
+    background-color: var(--el-bg-color-page);
     border-radius: 5px;
 
     .title {
-        background-color: $background-color-page;
+        background-color: var(--el-bg-color-page);
         padding: 10px 5px;
     }
 

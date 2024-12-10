@@ -134,7 +134,7 @@ onBeforeMount(async () => {
 
 .icon-upload-filled {
     font-size: 6em;
-    fill: $primary-color;
+    fill: var(--jpz-color-primary);
 }
 
 :deep(.el-upload-list) {

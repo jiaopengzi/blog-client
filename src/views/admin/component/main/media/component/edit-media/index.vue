@@ -528,7 +528,7 @@ const handleDelegateClick = (event: MouseEvent) => {
 
         .view-icon {
             font-size: 15em;
-            fill: $primary-color;
+            fill: var(--jpz-color-primary);
         }
     }
 

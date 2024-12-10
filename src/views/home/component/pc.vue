@@ -176,18 +176,18 @@ useResizeObserver(asideRef, (entries) => {
 }
 
 .breadcrumb-logo {
-    color: $secondary-color;
+    color: var(--jpz-color-secondary);
 }
 
 .el-main {
-    background-color: $background-color-page;
+    background-color: var(--el-bg-color-page);
     padding-left: 0px;
     padding-top: 0px;
 }
 
 .el-aside {
     width: pc.$width-aside;
-    background-color: $background-color-page;
+    background-color: var(--el-bg-color-page);
     position: sticky; // 粘性定位 和 reCalculateHeight 配合使用
 }
 

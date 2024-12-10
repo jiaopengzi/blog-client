@@ -36,7 +36,7 @@ function generateAdminRoutes() {
         }
         routes[key] = route
     })
-    
+
     return routes
 }
 

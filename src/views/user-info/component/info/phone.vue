@@ -25,11 +25,17 @@
         <div class="el-social-div">
             <el-descriptions title="社交信息" :column="1" size="large" border>
                 <el-descriptions-item :label="Social.QQDisplay">
-                    <button class="btn-bind" v-if="!showQQ" @click="bindSocial(Social.QQ)">
+                    <button
+                        type="button"
+                        class="btn-bind"
+                        v-if="!showQQ"
+                        @click="bindSocial(Social.QQ)"
+                    >
                         绑定{{ Social.QQDisplay }}
                     </button>
                     <span class="social-nickname">{{ socialNickname("user_qq", "nickname") }}</span>
                     <button
+                        type="button"
                         class="btn-unbind"
                         v-if="showQQ && isBindEmail"
                         @click="unBindSocial(Social.QQ)"
@@ -39,13 +45,19 @@
                 </el-descriptions-item>
 
                 <el-descriptions-item :label="Social.WeChatDisplay">
-                    <button class="btn-bind" v-if="!showWeChat" @click="bindSocial(Social.WeChat)">
+                    <button
+                        type="button"
+                        class="btn-bind"
+                        v-if="!showWeChat"
+                        @click="bindSocial(Social.WeChat)"
+                    >
                         绑定{{ Social.WeChatDisplay }}
                     </button>
                     <span class="social-nickname">{{
                         socialNickname("user_wechat", "nickname")
                     }}</span>
                     <button
+                        type="button"
                         class="btn-unbind"
                         v-if="showWeChat && isBindEmail"
                         @click="unBindSocial(Social.WeChat)"

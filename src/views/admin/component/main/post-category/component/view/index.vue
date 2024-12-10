@@ -41,10 +41,7 @@
                 />
             </el-form-item>
             <el-form-item label="图片" prop="thumbnail">
-                <el-input
-                    v-model="viewData.thumbnail"
-                    placeholder="请输入分类的图片URL-选填"
-                />
+                <el-input v-model="viewData.thumbnail" placeholder="请输入分类的图片URL-选填" />
             </el-form-item>
             <el-form-item label="排序" prop="order">
                 <el-input

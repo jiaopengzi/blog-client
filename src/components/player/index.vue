@@ -836,8 +836,8 @@ HTML: <div class="loader"></div>
 .loader {
     width: calc(80px / cos(45deg));
     height: 14px;
-    background: repeating-linear-gradient(-45deg, $primary-color 0 15px, #0000 0 20px) left/200%
-        100%;
+    background: repeating-linear-gradient(-45deg, var(--jpz-color-primary) 0 15px, #0000 0 20px)
+        left/200% 100%;
     animation: l3 2s infinite linear;
     border-radius: 7px;
     z-index: 2;

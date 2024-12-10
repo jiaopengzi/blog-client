@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 20:57:06
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-23 19:43:02
+ * @LastEditTime : 2024-12-10 15:19:00
  * @FilePath     : \blog-client\src\components\layout\header-nav\phone.vue
  * @Description  : 导航栏 手机端
  * @Blog         : https://jiaopengzi.com
@@ -30,17 +30,27 @@
         <div class="nav">
             <ul>
                 <li v-for="item in props.navData" :key="item.path">
-                    <router-link :to="item.path" class="link">
-                        <Icon
-                            v-if="item.iconKey"
-                            :name="item.iconKey"
-                            :custom-class="'my-icon ' + item.customClass"
-                        />
-                        <span class="title">{{ item.title }}</span>
+                    <router-link :to="item.path">
+                        <div class="menu">
+                            <Icon
+                                v-if="item.iconKey"
+                                :name="item.iconKey"
+                                :custom-class="
+                                    item.customClass ? 'my-icon ' + item.customClass : 'my-icon'
+                                "
+                            />
+                            <span>{{ item.title }}</span>
+                        </div>
                     </router-link>
                 </li>
             </ul>
         </div>
+
+        <div class="switch">
+            <SwitchGroup :switch-items="themeSwitch" @update-status="updateStatus" />
+        </div>
+
+        <el-button v-show="isLogin" plain class="logout" @click="logout">退出</el-button>
     </div>
 </template>
 <script setup lang="ts">
@@ -49,6 +59,8 @@ import { routeObj } from "@/router/routeAll"
 import { useUserStore } from "@/stores/user"
 import { storeToRefs } from "pinia"
 import type { HeaderNavPropsItem } from "@/components/layout/header-nav"
+import { useTheme } from "@/components/hooks/useTheme"
+import SwitchGroup from "@/components/common/switch-group"
 
 import AvatarInitials from "@/components/common/avatar-initials"
 
@@ -59,6 +71,14 @@ const props = defineProps<{ navData: HeaderNavPropsItem[] }>()
 // 状态是否登录
 const userStore = useUserStore()
 let { data, isLogin } = storeToRefs(userStore)
+
+// 主题切换
+const { themeSwitch, updateStatus } = useTheme()
+
+// 退出登录
+const logout = async () => {
+    await userStore.logout()
+}
 
 onBeforeMount(() => {
     // 组件挂载前
@@ -80,26 +100,25 @@ onBeforeMount(() => {
         margin-bottom: 20px;
         display: flex;
         justify-content: center;
-        /* Aligns content horizontally */
         align-items: center;
-        /* Aligns content vertically */
         // height: 40px;
         // line-height: 40px;
         text-align: center;
         font-size: 16px;
-        color: #888;
+        color: var(--el-text-color-primary);
 
         .link {
             margin: 0 5px;
 
             span {
-                border: 1px solid #888;
+                border: 1px solid var(--el-border-color);
                 width: 60px;
                 height: 30px;
                 line-height: 30px;
                 border-radius: 3px;
                 display: inline-block;
                 // padding: 0 2px;
+                color: var(--el-text-color-primary);
             }
         }
     }
@@ -115,39 +134,32 @@ onBeforeMount(() => {
             height: 100%;
             width: 100%;
 
-            :first-child {
-                border-top: 1px solid #ebebeb;
-            }
-
             li {
                 height: 100%;
                 width: 80%;
                 text-align: center;
                 font-size: 16px;
                 font-weight: 600;
-                color: #888;
+                color: var(--el-text-color-primary);
                 // padding: 0 10%;
-                margin: 0 10%;
-                border-bottom: 1px solid #ebebeb;
+                margin: 0 10px;
+                border-bottom: 1px solid var(--el-border-color);
 
                 // 让 link 充满整个 li
-                .link {
+                .menu {
                     display: flex;
-                    /* 使用 Flexbox 布局 */
                     align-items: center;
-                    /* 垂直居中对齐 */
                     text-decoration: none;
-                    /* 可选：去除链接的下划线 */
-                    color: #333;
+                    color: var(--el-text-color-primary);
                     border: none;
                     line-height: 3em;
                 }
+            }
 
-                span {
-                    display: flex;
-                    /* 使用 Flexbox 布局 */
-                    align-items: center;
-                    /* 垂直居中对齐 */
+            // 选中第一个 li
+            li:first-child {
+                .menu {
+                    padding-left: 12px;
                 }
             }
         }
@@ -156,7 +168,15 @@ onBeforeMount(() => {
 
 .my-icon {
     font-size: 20px;
-    fill: #333;
-    margin-right: 4px;
+    fill: var(--el-text-color-primary);
+    width: 40px;
+}
+
+.switch {
+    margin-top: 20px;
+}
+
+.logout {
+    margin-top: 20px;
 }
 </style>
