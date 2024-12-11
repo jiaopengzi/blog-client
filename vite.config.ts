@@ -45,7 +45,7 @@ export default defineConfig({
         preprocessorOptions: {
             scss: {
                 // TODO 暂时消除警告，部署前再处理 参考https://sass-lang.com/documentation/breaking-changes/legacy-js-api/
-                silenceDeprecations: ["legacy-js-api"],
+                // silenceDeprecations: ["legacy-js-api"],
                 // 多个scss文件变量生效
                 additionalData: `
                     @use '@/assets/scss/platform/_phone.scss' as phone;

@@ -9,7 +9,9 @@
     "auto-imports.d.ts"
   ],
   "exclude": [
-    "src/**/__tests__/*"
+    "src/**/__tests__/*",
+    "dist",
+    "node_modules"
   ],
   "compilerOptions": {
     "composite": true,

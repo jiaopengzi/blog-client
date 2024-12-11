@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-19 14:00:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-26 00:00:08
+ * @LastEditTime : 2024-12-11 19:52:36
  * @FilePath     : \blog-client\src\components\editor\core\utils.ts
  * @Description  : 编辑器工具函数
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,7 @@
 
 import type { EditorState, Heading, MarkdownHeadingLine } from "./types"
 import createMarked from "@/pkg/marked/new-marked"
-import DOMPurify from "dompurify"
+import DOMPurify, { type Config } from "dompurify"
 import html2canvas from "html2canvas"
 import { ShowMsgTip } from "@/utils/message"
 import { HasParentByClass } from "@/utils/getParentByClass"
@@ -255,7 +255,7 @@ export function markdownToHtml(markdownSrc: string): string {
                 !!attr.match(regexCache.customElementHeadingAttributeNameRegex),
             allowCustomizedBuiltInElements: true, // 允许自定义内置函数
         },
-    } as DOMPurify.Config)
+    } as Config)
 
     const purifyHtml = DOMPurify.sanitize(htmlHandleUtf8) // 过滤 html,防止 xss 攻击
     return generateAllHeadingAnchor(purifyHtml) // 生成锚点
