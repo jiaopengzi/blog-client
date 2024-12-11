@@ -113,12 +113,12 @@ const tableRowClassName = () => {
 <style scoped lang="scss">
 .aside-item {
     border: 1px solid var(--jpz-border-color);
-    background-color: var(--jpz-bg-color-page);
+    background-color: var(--jpz-bg-color);
     border-radius: 5px;
 }
 
 .title {
-    background-color: var(--jpz-bg-color-page);
+    background-color: var(--jpz-bg-color);
     padding: 10px 5px;
 }
 
@@ -132,7 +132,7 @@ h2 {
 .aside-icon {
     font-size: 20px;
     margin-right: 5px;
-    fill: #bb1818;
+    fill: var(--jpz-color-secondary);
 }
 
 :deep(.month-archive-row-class) {

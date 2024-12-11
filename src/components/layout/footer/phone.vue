@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 10:17:04
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-10 17:47:12
+ * @LastEditTime : 2024-12-11 15:35:07
  * @FilePath     : \blog-client\src\components\layout\footer\phone.vue
  * @Description  : 底部 移动端
  * @Blog         : https://jiaopengzi.com
@@ -70,7 +70,7 @@ footer {
     justify-content: center;
     align-items: flex-start;
     margin: 0;
-    color: var(--jpz-text-color-disabled);
+    color: var(--jpz-text-color-placeholder);
     font-size: 15px;
 }
 
@@ -151,7 +151,7 @@ footer {
     }
 
     a {
-        color: var(--jpz-text-color-disabled);
+        color: var(--jpz-text-color-placeholder);
 
         :hover {
             background-color: transparent;

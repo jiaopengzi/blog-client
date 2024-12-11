@@ -242,7 +242,7 @@
 
         // 为表格的奇数行设置背景颜色
         table tr:nth-child(2n + 1) {
-            background-color: var(--jpz-bg-color);
+            background-color: var(--jpz-bg-color-page);
         }
     }
 

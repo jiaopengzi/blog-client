@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-06 20:17:56
+ * @LastEditTime : 2024-12-11 16:42:10
  * @FilePath     : \blog-client\src\views\reset-password\index.vue
  * @Description  : 重置密码
  * @Blog         : https://jiaopengzi.com
@@ -417,30 +417,27 @@ const closeSlideVerify = () => {
 @include respond-to("pc") {
     .forgotPassword-form {
         width: 360px;
-        border: 1px solid #ccc;
+        border: 1px solid var(--jpz-border-color);
         border-radius: 5px;
         padding: 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-        /* 添加阴影效果 */
-        background-color: #eee;
+        box-shadow: var(--jpz-box-shadow-light);
+        background-color: var(--jpz-bg-color);
     }
 }
 
 @include respond-to("pad") {
     .forgotPassword-form {
         width: 360px;
-        border: 1px solid #ccc;
+        border: 1px solid var(--jpz-border-color);
         border-radius: 5px;
         padding: 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-        /* 添加阴影效果 */
-        background-color: #eee;
+        box-shadow: var(--jpz-box-shadow-light);
+        background-color: var(--jpz-bg-color);
     }
 }
 
 @include respond-to("phone") {
     .forgotPassword-form {
-        /* 当屏幕宽度小于 1024px 时 */
         width: 90vw;
         box-shadow: none;
         border: none;
@@ -469,16 +466,16 @@ h2 {
     padding: 0 10px;
     height: 30px;
     line-height: 30px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--jpz-border-color);
     border-radius: 4px;
-    background-color: #fff;
+    background-color: var(--jpz-bg-color);
     cursor: pointer;
-    color: #333;
+    color: var(--jpz-text-color-regular);
 }
 
 .btn-captcha:disabled {
-    background-color: #fff;
-    color: #333;
+    background-color: var(--jpz-bg-color);
+    color: var(--jpz-text-color-disabled);
     cursor: not-allowed;
 }
 
@@ -487,12 +484,8 @@ h2 {
     margin-top: 20px;
 }
 
-a {
-    color: #409eff;
-}
-
 .go-home span {
-    color: #aaa;
+    color: var(--jpz-text-color-secondary);
 }
 
 .btn-submit {

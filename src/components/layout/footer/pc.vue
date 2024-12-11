@@ -72,7 +72,7 @@ footer {
     align-items: flex-start;
     height: 100%;
     margin: 0 auto;
-    color: var(--jpz-text-color-secondary);
+    color: var(--jpz-text-color-placeholder);
     font-size: 15px;
     flex-grow: 1;
 }
@@ -139,7 +139,7 @@ h3 {
     }
 
     a {
-        color: var(--jpz-text-color-secondary);
+        color: var(--jpz-text-color-placeholder);
 
         :hover {
             background-color: transparent;

@@ -33,7 +33,7 @@ body {
   align-items: center;
   min-height: 100vh;
   overflow-x: hidden;
-  background-color: var(--jpz-bg-color-page);
+  background-color: var(--jpz-bg-color);
 }
 ```
 
@@ -48,7 +48,7 @@ body {
     align-items: center;
     min-height: 100vh;
     overflow-x: hidden;
-    background-color: var(--jpz-bg-color-page);
+    background-color: var(--jpz-bg-color);
 }
 ```
 
@@ -458,7 +458,7 @@ body {
   align-items: center;
   min-height: 100vh;
   overflow-x: hidden;
-  background-color: var(--jpz-bg-color-page);
+  background-color: var(--jpz-bg-color);
 }
 ```
 
@@ -473,7 +473,7 @@ body {
     align-items: center;
     min-height: 100vh;
     overflow-x: hidden;
-    background-color: var(--jpz-bg-color-page);
+    background-color: var(--jpz-bg-color);
 }
 ```
 

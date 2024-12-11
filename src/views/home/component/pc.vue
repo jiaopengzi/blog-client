@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:26:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-07 16:07:33
+ * @LastEditTime : 2024-12-11 17:19:51
  * @FilePath     : \blog-client\src\views\home\component\pc.vue
  * @Description  : pc 内容页
  * @Blog         : https://jiaopengzi.com
@@ -64,19 +64,7 @@
         </div>
     </div>
     <el-backtop :bottom="100">
-        <div
-            style="
-                height: 100%;
-                width: 100%;
-                background-color: var(--jpz-bg-color-overlay);
-                box-shadow: var(--jpz-box-shadow-lighter);
-                text-align: center;
-                line-height: 40px;
-                color: #1989fa;
-            "
-        >
-            UP
-        </div>
+        <div class="backtop">UP</div>
     </el-backtop>
 </template>
 <script setup lang="ts">
@@ -180,14 +168,14 @@ useResizeObserver(asideRef, (entries) => {
 }
 
 .el-main {
-    background-color: var(--jpz-bg-color-page);
+    background-color: var(--jpz-bg-color);
     padding-left: 0px;
     padding-top: 0px;
 }
 
 .el-aside {
     width: pc.$width-aside;
-    background-color: var(--jpz-bg-color-page);
+    background-color: var(--jpz-bg-color);
     position: sticky; // 粘性定位 和 reCalculateHeight 配合使用
 }
 
@@ -199,5 +187,13 @@ useResizeObserver(asideRef, (entries) => {
     display: flex;
     justify-content: center;
     margin-top: 20px;
+}
+
+.backtop {
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    line-height: 40px;
+    color: var(--jpz-color-primary);
 }
 </style>

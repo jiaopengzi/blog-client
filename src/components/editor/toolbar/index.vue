@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:02:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 10:51:45
+ * @LastEditTime : 2024-12-11 15:43:42
  * @FilePath     : \blog-client\src\components\editor\toolbar\index.vue
  * @Description  : 工具栏组件
  * @Blog         : https://jiaopengzi.com

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-06 20:16:22
+ * @LastEditTime : 2024-12-11 16:38:43
  * @FilePath     : \blog-client\src\views\login\index.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -222,30 +222,27 @@ const loginByQQ = async (event: Event) => {
 @include respond-to("pc") {
     .login-form {
         width: 360px;
-        border: 1px solid #ccc;
+        border: 1px solid var(--jpz-border-color);
         border-radius: 5px;
         padding: 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-        /* 添加阴影效果 */
-        background-color: #eee;
+        box-shadow: var(--jpz-box-shadow-light);
+        background-color: var(--jpz-bg-color);
     }
 }
 
 @include respond-to("pad") {
     .login-form {
         width: 360px;
-        border: 1px solid #ccc;
+        border: 1px solid var(--jpz-border-color);
         border-radius: 5px;
         padding: 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-        /* 添加阴影效果 */
-        background-color: #eee;
+        box-shadow: var(--jpz-box-shadow-light);
+        background-color: var(--jpz-bg-color);
     }
 }
 
 @include respond-to("phone") {
     .login-form {
-        /* 当屏幕宽度小于 1024px 时 */
         width: 90vw;
         box-shadow: none;
         border: none;
@@ -270,13 +267,12 @@ h2 {
 }
 
 a {
-    color: #aaa;
-    /* 展示下划线 */
+    color: var(--jpz-text-color-secondary);
     // text-decoration: underline;
 }
 
 .go-home span {
-    color: #aaa;
+    color: var(--jpz-text-color-secondary);
 }
 
 .btn-submit {
@@ -304,7 +300,6 @@ a {
 
 .iconfont {
     font-size: 3em;
-    color: #222;
 }
 
 .icon-wechat {

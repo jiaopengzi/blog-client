@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 10:28:05
+ * @LastEditTime : 2024-12-11 18:04:30
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -47,7 +47,11 @@
 import { ref, shallowRef, onBeforeMount, useTemplateRef } from "vue"
 import router from "@/router/index"
 import { components } from "./index"
-import { adminMenuItemMapWithIndex, AdminSideMenu } from "@/views/admin/component/aside"
+import {
+    adminMenuItemMapWithIndex,
+    adminMenuItemMapWithIndexMap,
+    AdminSideMenu,
+} from "@/views/admin/component/aside"
 import { PermissionNames } from "@/utils/permissionRole"
 import { useUserStore } from "@/stores/user"
 
@@ -90,7 +94,9 @@ const containerRef = useTemplateRef<HTMLElementRef | null>("containerRef")
 const updateCurrentComponent = () => {
     // 从 url 中获取 path 更新当前组件
     const path = router.currentRoute.value.path as string | undefined
-    if (path === "/admin" || path === undefined) return
+    if (path === "/admin" || path === undefined) {
+        return
+    }
 
     if (path) {
         updateCurrentComponentByPath(path)
@@ -100,12 +106,14 @@ const updateCurrentComponent = () => {
 
 // 选择菜单项
 const handleSelect = (index: string) => {
+    console.log("index====>1", adminMenuItemMapWithIndexMap[index].display)
+    console.log("index====>2", adminMenuItemMapWithIndexMap[index].parentIndex)
+
     if (userStore.getIsEditing) {
         return
     }
 
     updateCurrentComponentByPath(index)
-    // console.log("1", index)
 }
 
 // 折叠状态

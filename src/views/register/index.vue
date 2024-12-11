@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 10:26:46
+ * @LastEditTime : 2024-12-11 16:37:42
  * @FilePath     : \blog-client\src\views\register\index.vue
  * @Description  : 注册
  * @Blog         : https://jiaopengzi.com
@@ -73,7 +73,7 @@
                     v-model="registerForm.acceptedTerms"
                     value="同意条款"
                     name="acceptedTerms"
-                />我已同意并接受：<a href="/">《服务条款》</a>
+                /><span class="i-agree">我已同意并接受：</span><a href="/">《服务条款》</a>
             </el-form-item>
 
             <div class="btn-submit">
@@ -340,30 +340,27 @@ const closeSlideVerify = () => {
 @include respond-to("pc") {
     .register-form {
         width: 360px;
-        border: 1px solid #ccc;
+        border: 1px solid var(--jpz-border-color);
         border-radius: 5px;
         padding: 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-        /* 添加阴影效果 */
-        background-color: #eee;
+        box-shadow: var(--jpz-box-shadow-light);
+        background-color: var(--jpz-bg-color);
     }
 }
 
 @include respond-to("pad") {
     .register-form {
         width: 360px;
-        border: 1px solid #ccc;
+        border: 1px solid var(--jpz-border-color);
         border-radius: 5px;
         padding: 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-        /* 添加阴影效果 */
-        background-color: #eee;
+        box-shadow: var(--jpz-box-shadow-light);
+        background-color: var(--jpz-bg-color);
     }
 }
 
 @include respond-to("phone") {
     .register-form {
-        /* 当屏幕宽度小于 1024px 时 */
         width: 90vw;
         box-shadow: none;
         border: none;
@@ -392,17 +389,21 @@ h2 {
     padding: 0 10px;
     height: 30px;
     line-height: 30px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--jpz-border-color);
     border-radius: 4px;
-    background-color: #fff;
+    background-color: var(--jpz-bg-color);
     cursor: pointer;
-    color: #333;
+    color: var(--jpz-text-color-regular);
 }
 
 .btn-captcha:disabled {
-    background-color: #fff;
-    color: #333;
+    background-color: var(--jpz-bg-color);
+    color: var(--jpz-text-color-disabled);
     cursor: not-allowed;
+}
+
+.i-agree {
+    color: var(--jpz-text-color-primary);
 }
 
 .go-home {
@@ -411,23 +412,22 @@ h2 {
 }
 
 a {
-    color: #409eff;
-    /* 展示下划线 */
+    color: var(--jpz-text-color-primary);
     // text-decoration: underline;
 }
 
 .go-home span {
-    color: #aaa;
+    color: var(--jpz-text-color-secondary);
 }
 
 .btn-submit {
     text-align: center;
+    .el-form-item {
+        display: inline-block;
+    }
 }
 
 .btn-submit .el-form-item {
     display: inline-block;
 }
 </style>
-@/utils/Encrypt @/api/user/CheckUserName@/api/user/CheckUserName
-@/api/user/checkEmail@/api/user/checkEmail@/api/user/register@/api/user/register@/api/utils/captchaCheck@/api/utils/captchaCheck@/api/utils/captchaSend@/api/utils/captchaSend
-@/utils/ip@/utils/message

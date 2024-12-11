@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 10:19:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 10:19:12
+ * @LastEditTime : 2024-12-11 15:39:56
  * @FilePath     : \blog-client\src\components\common\user-info-dropdown\index.vue
  * @Description  : 显示用户信息下拉菜单
  * @Blog         : https://jiaopengzi.com

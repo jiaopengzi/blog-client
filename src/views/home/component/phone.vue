@@ -50,19 +50,7 @@
         </div>
     </div>
     <el-backtop :bottom="100">
-        <div
-            style="
-                height: 100%;
-                width: 100%;
-                background-color: var(--jpz-bg-color-overlay);
-                box-shadow: var(--jpz-box-shadow-lighter);
-                text-align: center;
-                line-height: 40px;
-                color: #1989fa;
-            "
-        >
-            UP
-        </div>
+        <div class="backtop">UP</div>
     </el-backtop>
 </template>
 <script setup lang="ts">
@@ -109,5 +97,13 @@ const handleCurrentChange = (val: number) => {
     display: flex;
     justify-content: center;
     margin-top: 20px;
+}
+
+.backtop {
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    line-height: 40px;
+    color: var(--jpz-color-primary);
 }
 </style>

@@ -43,11 +43,11 @@ const postItems: PostItemAsideObj[] = Array(5).fill(postDataObj)
 <style scoped lang="scss">
 .aside-item {
     border: 1px solid var(--jpz-border-color);
-    background-color: var(--jpz-bg-color-page);
+    background-color: var(--jpz-bg-color);
     border-radius: 5px;
 
     .title {
-        background-color: var(--jpz-bg-color-page);
+        background-color: var(--jpz-bg-color);
         padding: 10px 5px;
     }
 
@@ -76,6 +76,6 @@ const postItems: PostItemAsideObj[] = Array(5).fill(postDataObj)
 .aside-icon {
     font-size: 20px;
     margin-right: 5px;
-    fill: #bb1818;
+    fill: var(--jpz-color-secondary);
 }
 </style>

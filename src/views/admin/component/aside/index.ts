@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:33:58
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 08:53:38
+ * @LastEditTime : 2024-12-11 17:44:20
  * @FilePath     : \blog-client\src\views\admin\component\aside\index.ts
  * @Description  : 侧边栏菜单项
  * @Blog         : https://jiaopengzi.com
@@ -322,5 +322,12 @@ export const adminMenuItemMapWithIndex = generateAdminMenuItemMapWithIndex(
     adminMenuItemMap,
     "admin",
 )
+
+// 根据 adminMenuItemMapWithIndex 将 index 作为 key 内容作为 value 生成菜单项映射表
+export const adminMenuItemMapWithIndexMap = Object.fromEntries(
+    Object.entries(adminMenuItemMapWithIndex).map(([key, value]) => [value.index, value]),
+)
+
+
 
 export { default } from "./index.vue"

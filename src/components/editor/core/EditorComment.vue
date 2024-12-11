@@ -173,7 +173,7 @@ onMounted(() => {
         border: 1px solid #ccc;
         border-radius: 3px;
         margin: 5px 0px;
-        background-color: var(--jpz-bg-color);
+        background-color: var(--jpz-bg-color-page);
         width: pc.$width-page-main;
 
         .md-toolbar {

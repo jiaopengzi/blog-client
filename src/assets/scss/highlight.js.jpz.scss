@@ -6,11 +6,11 @@
 
 code.hljs {
     padding: 3px 5px;
-    // background-color: var(--jpz-bg-color-page);
+    // background-color: var(--jpz-bg-color);
 }
 
 .hljs {
-    // background: var(--jpz-bg-color-page);
+    // background: var(--jpz-bg-color);
     color: var(--jpz-text-color-regular);
 }
 
@@ -218,7 +218,7 @@ code.hljs {
 .pre-code {
     position: relative;
     pre {
-        background-color: var(--jpz-bg-color);
+        background-color: var(--jpz-bg-color-page);
         border: 1px solid var(--jpz-border-color);
     }
 }
@@ -228,7 +228,7 @@ code.hljs {
     top: 4px;
     right: 8px;
     cursor: pointer;
-    background-color: var(--jpz-bg-color-page);
+    background-color: var(--jpz-bg-color);
     border: none;
     border-radius: 4px;
     padding: 2px 5px;

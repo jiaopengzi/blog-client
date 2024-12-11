@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-25 14:29:36
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 10:38:01
+ * @LastEditTime : 2024-12-11 15:41:55
  * @FilePath     : \blog-client\src\views\admin\component\header\index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -55,7 +55,6 @@ header {
     justify-content: space-between;
     align-items: center;
     height: 100%;
-    background-color: var(--jpz-bg-color);
 
     .btn-logo {
         padding: 0;

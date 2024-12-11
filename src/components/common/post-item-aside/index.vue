@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-30 16:23:53
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-25 16:16:21
- * @FilePath     : \blog-client\src\components\common\base\PostItemAside.vue
+ * @LastEditTime : 2024-12-11 17:12:43
+ * @FilePath     : \blog-client\src\components\common\post-item-aside\index.vue
  * @Description  : 单个文章元素
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
@@ -21,9 +21,9 @@
         <!-- 文章摘要内容 -->
         <div class="content">
             <!-- 标题 -->
-            <div class="title">
+            <div>
                 <a :href="props.postData.titleHref">
-                    <h2>{{ props.postData.title }}</h2>
+                    <h2 class="title">{{ props.postData.title }}</h2>
                 </a>
             </div>
 
@@ -68,9 +68,7 @@ const view = computed(() =>
 
     &:hover {
         // 鼠标移动到 .post-item 上时, .post-item 出现上下阴影
-        box-shadow:
-            0 0 5px #ccc,
-            0 0 10px #ccc;
+        box-shadow: var(--jpz-post-item-main-hover-shadow);
     }
 }
 
@@ -95,7 +93,7 @@ const view = computed(() =>
 
 .title {
     margin: 0;
-    color: #333;
+    color: var(--jpz-text-color-primary);
     border: 0;
     padding: 0;
     height: 4em;
@@ -114,7 +112,7 @@ const view = computed(() =>
 
 .meta-item {
     margin-right: 10px;
-    color: #888;
+    color: var(--jpz-text-color-placeholder);
     font-size: smaller;
     line-height: 150%;
     // 图标居中
@@ -123,4 +121,3 @@ const view = computed(() =>
     justify-content: center;
 }
 </style>
-@/components/pc/content/aside/item/postItem @/components/common/post-item-aside/postItemAside

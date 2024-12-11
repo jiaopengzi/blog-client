@@ -126,9 +126,9 @@ const ModePost = reactive([
     CommandsKey.Preview,
     CommandsKey.WechatOfficialAccount,
     CommandsKey.Fullscreen,
-    CommandsKey.Save,
+    // CommandsKey.Save,
     CommandsKey.Copy,
-    CommandsKey.Publish,
+    // CommandsKey.Publish,
     CommandsKey.Markdown,
     CommandsKey.Html,
     CommandsKey.Pdf,
@@ -220,7 +220,7 @@ onMounted(() => {
 .md-layout,
 .md-layout-fs {
     border-radius: 3px;
-    background-color: var(--jpz-bg-color);
+    background-color: var(--jpz-bg-color-page);
     width: var(--md-editor-width);
     .md-toolbar,
     .md-toolbar-fs {

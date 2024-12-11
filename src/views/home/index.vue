@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-10 12:29:58
+ * @LastEditTime : 2024-12-11 17:31:02
  * @FilePath     : \blog-client\src\views\home\index.vue
  * @Description  : 首页
  * @Blog         : https://jiaopengzi.com
@@ -18,6 +18,7 @@
 </template>
 
 <script setup lang="ts">
+
 import LayoutHeader from "@/components/layout/header"
 import LayoutHome from "@/views/home/component"
 import LayoutFooter from "@/components/layout/footer"

@@ -137,7 +137,7 @@ if (hashValue) {
 .tabs {
     width: pc.$width-page-main;
     min-height: calc(100vh - pc.$height-footer - pc.$height-header);
-    background-color: var(--jpz-bg-color-page);
+    background-color: var(--jpz-bg-color);
 }
 
 .tabs > .el-tabs__content {

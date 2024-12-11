@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-25 15:50:05
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-24 15:44:57
+ * @LastEditTime : 2024-12-11 17:08:13
  * @FilePath     : \blog-client\src\components\common\post-item-main\index.vue
  * @Description  : 单个文章元素
  * @Blog         : https://jiaopengzi.com
@@ -86,15 +86,12 @@ const view = computed(() =>
     position: relative;
     border-radius: 3px;
     padding: 15px;
-    background-color: var(--jpz-bg-color-page);
+    background-color: var(--jpz-bg-color);
     overflow: hidden;
 
     &:hover {
         // 鼠标移动到 .post-item 上时, .post-item 出现上下阴影
-        box-shadow:
-            0 0 5px #ccc,
-            0 0 10px #ccc;
-
+        box-shadow: var(--jpz-post-item-main-hover-shadow);
         .read-more {
             opacity: 1;
         }
@@ -138,7 +135,7 @@ const view = computed(() =>
     background-color: var(--jpz-color-primary);
     line-height: 200%;
     font-size: 14px;
-    color: var(--jpz-bg-color-page);
+    color: var(--jpz-bg-color);
     border-radius: 5%;
 }
 
@@ -171,7 +168,7 @@ const view = computed(() =>
     margin: 0;
     font-size: 14px;
     font-weight: 500;
-    color: #333;
+    color: var(--jpz-text-color-primary);
     border: 0;
     padding: 0;
     line-height: 2em;
@@ -184,7 +181,7 @@ const view = computed(() =>
 .summary {
     margin-top: 5px;
     flex-grow: 1;
-    color: #777;
+    color: var(--jpz-text-color-secondary);
     line-height: 1.5em;
     font-size: 14px;
     display: -webkit-box;
@@ -200,7 +197,7 @@ const view = computed(() =>
 
 .meta-item {
     margin-right: 10px;
-    color: #888;
+    color: var(--jpz-text-color-placeholder);
     font-size: 14px;
     line-height: 150%;
 
@@ -214,7 +211,6 @@ const view = computed(() =>
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background-color: gray;
     margin-right: 5px;
 }
 
@@ -226,7 +222,7 @@ const view = computed(() =>
     padding: 5px 10px;
     border-radius: 5px;
     background-color: var(--jpz-color-primary);
-    color: var(--jpz-bg-color-page);
+    color: var(--jpz-bg-color);
     line-height: 150%;
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
@@ -289,11 +285,6 @@ const view = computed(() =>
         height: 4em;
         -webkit-line-clamp: 2; // 限制行数为2
     }
-
-    .avatar {
-        // width: 10px;
-        // height: 10px;
-    }
 }
 
 @include respond-to("phone") {
@@ -320,11 +311,5 @@ const view = computed(() =>
         height: 4em;
         -webkit-line-clamp: 2; // 限制行数为2
     }
-
-    .avatar {
-        // width: 10px;
-        // height: 10px;
-    }
 }
 </style>
-@/components/common/post-item-main/postItemMain

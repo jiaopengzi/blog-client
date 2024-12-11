@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-02 14:28:23
+ * @LastEditTime : 2024-12-11 18:40:24
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -42,7 +42,11 @@
             :scroll-into-view-options="{ behavior: 'smooth', block: 'center' }"
         >
             <el-form-item label="标题" prop="post_title">
-                <el-input v-model="postInfoForm.post_title" placeholder="添加标题" />
+                <el-input
+                    class="post-title"
+                    v-model="postInfoForm.post_title"
+                    placeholder="添加标题"
+                />
             </el-form-item>
 
             <!-- 编辑器 -->
@@ -646,6 +650,12 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="scss">
+.post-title {
+    font-size: 24px;
+    font-weight: 700;
+    height: 40px;
+}
+
 .btns-header,
 .btns-footer {
     display: flex;
@@ -682,11 +692,11 @@ onBeforeUnmount(() => {
         margin-left: 8px;
     }
 }
+
 .btns-header-item-icon,
 .btns-footer-item-icon {
     font-size: 20px;
-    // fill: var(--jpz-text-color-primary);
-    fill: red;
+    fill: var(--jpz-color-secondary);
 }
 
 .editor {
@@ -698,7 +708,7 @@ onBeforeUnmount(() => {
     justify-content: space-between;
     margin-top: 16px;
     font-size: 14px;
-    color: var(--jpz-text-color-primary);
+    color: var(--jpz-text-color-disabled);
 }
 
 .seo-switch {

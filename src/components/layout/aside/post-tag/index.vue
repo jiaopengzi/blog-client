@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:15:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-10 13:08:08
+ * @LastEditTime : 2024-12-11 15:38:25
  * @FilePath     : \blog-client\src\components\layout\aside\post-tag\index.vue
  * @Description  : 文章标签
  * @Blog         : https://jiaopengzi.com
@@ -73,11 +73,11 @@ onBeforeMount(() => {
 <style scoped lang="scss">
 .aside-item {
     border: 1px solid var(--jpz-border-color);
-    background-color: var(--jpz-bg-color-page);
+    background-color: var(--jpz-bg-color);
     border-radius: 5px;
 
     .title {
-        background-color: var(--jpz-bg-color-page);
+        background-color: var(--jpz-bg-color);
         padding: 10px 5px;
     }
 
@@ -99,6 +99,6 @@ onBeforeMount(() => {
 .my-icon {
     font-size: 20px;
     margin-right: 5px;
-    fill: #bb1818;
+    fill: var(--jpz-color-secondary);
 }
 </style>

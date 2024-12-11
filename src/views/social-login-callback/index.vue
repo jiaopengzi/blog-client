@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-22 01:22:48
+ * @LastEditTime : 2024-12-11 16:46:59
  * @FilePath     : \blog-client\src\views\social-login-callback\index.vue
  * @Description  : 三方登录回调页面
  * @Blog         : https://jiaopengzi.com
@@ -92,13 +92,13 @@ onMounted(async () => {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* height: 100vh; */
+    // height: 100vh;
     flex-direction: column;
-    background-color: #f5f6fa;
+    background-color: var(--jpz-bg-color);
 }
 
 .loader {
-    border: 8px solid #f3f3f3;
+    border: 1px solid var(--jpz-border-color);
     border-top: 8px solid var(--jpz-color-secondary);
     border-radius: 50%;
     width: 40px;

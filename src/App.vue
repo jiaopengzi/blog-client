@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-10 11:28:53
+ * @LastEditTime : 2024-12-11 17:31:14
  * @FilePath     : \blog-client\src\App.vue
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -10,18 +10,21 @@
 -->
 
 <template>
-    <Head>
-        <title>My awesome site</title>
-        <meta name="description" content="My awesome site description" />
-    </Head>
+    <el-config-provider :locale="zhCn">
+        <Head>
+            <title>My awesome site</title>
+            <meta name="description" content="My awesome site description" />
+        </Head>
 
-    <!-- :key="$route.fullPath" 解决url变化而页面不刷新问题 -->
-    <!-- <router-view :key="$route.fullPath" /> -->
+        <!-- :key="$route.fullPath" 解决url变化而页面不刷新问题 -->
+        <!-- <router-view :key="$route.fullPath" /> -->
 
-    <router-view />
-    <!-- <keep-alive></keep-alive> -->
+        <router-view />
+        <!-- <keep-alive></keep-alive> -->
+    </el-config-provider>
 </template>
 <script setup lang="ts">
+import zhCn from "element-plus/es/locale/lang/zh-cn"
 import { useDark } from "@vueuse/core"
 import { useHead } from "@unhead/vue"
 import { Head } from "@unhead/vue/components"

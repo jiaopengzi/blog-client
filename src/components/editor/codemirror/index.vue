@@ -190,7 +190,7 @@ defineExpose({
 
 <style scoped lang="scss">
 #my-codemirror {
-    background-color: var(--jpz-bg-color-page);
+    background-color: var(--jpz-bg-color);
     color: var(--jpz-text-color-primary);
     font-size: 1.1em;
 
@@ -206,7 +206,7 @@ defineExpose({
 
     :deep(.cm-gutters) {
         // width: 100%;
-        background-color: var(--jpz-bg-color-page);
+        background-color: var(--jpz-bg-color);
         border-right: 1px solid var(--jpz-border-color);
     }
 
@@ -218,7 +218,7 @@ defineExpose({
         padding: 4px 4px;
         font-size: 0.8em;
         color: var(--jpz-text-color-placeholder);
-        background-color: var(--jpz-bg-color-page);
+        background-color: var(--jpz-bg-color);
         border-top: 1px solid var(--jpz-border-color);
     }
 }

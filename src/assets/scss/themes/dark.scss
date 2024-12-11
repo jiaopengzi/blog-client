@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-04 12:40:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 12:42:47
+ * @LastEditTime : 2024-12-11 17:07:55
  * @FilePath     : \blog-client\src\assets\scss\themes\dark.scss
  * @Description  : 暗色模式
  * @Blog         : https://jiaopengzi.com
@@ -19,7 +19,7 @@ $jpz-color-primary-dark: #c89828;
 
 html.#{$theme-name} {
     --jpz-color-primary: #{$jpz-color-primary-dark}; // 主要颜色
-    --jpz-color-secondary: #c89828; // 次要颜色
+    --jpz-color-secondary: #bb1818; // 次要颜色
 
     // 使用 element-plus 的颜色
     --jpz-bg-color: var(--el-bg-color);
@@ -27,7 +27,12 @@ html.#{$theme-name} {
     --jpz-color-overlay: var(--el-bg-color-overlay);
     --jpz-border-color: var(--el-border-color);
     --jpz-tabs-header-height: var(--el-tabs-header-height);
+
+    // 阴影
     --jpz-box-shadow-lighter: var(--el-box-shadow-lighter);
+    --jpz-box-shadow-light: var(--el-box-shadow-light);
+    --jpz-box-shadow-dark: var(--el-box-shadow-dark);
+    --jpz-post-item-main-hover-shadow: 0 0 5px #ccc, 0 0 10px #ccc; // 主文章hover阴影
 
     // 文字颜色
     --jpz-text-color-primary: var(--el-text-color-primary);
@@ -41,13 +46,14 @@ html.#{$theme-name} {
     --jpz-code-block-bg-color: var(--el-bg-color-page);
     --jpz-code-block-color: var(--el-bg-color-page);
 
-    // 引用块样式
-    --jpz-blockquote-border-color: #f66;
-    --jpz-blockquote-color: var(--el-text-color-primary);
-    --jpz-blockquote-bg-color: var(--el-bg-color);
     // 行内代码块样式
     --code-bg-color: #dddddd;
     --code-color: #d63200;
+
+    // 引用块样式
+    --jpz-blockquote-border-color: #f66;
+    --jpz-blockquote-color: var(--el-text-color-primary);
+    --jpz-blockquote-bg-color: var(--el-bg-color-page);
 
     --strong-color: var(--title-color);
     --h2-underline-color: var(--title-color);
