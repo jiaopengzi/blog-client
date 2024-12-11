@@ -61,7 +61,7 @@ body {
   align-items: center;
   min-height: 100vh;
   overflow-x: hidden;
-  background-color: var(--el-bg-color-page);
+  background-color: var(--jpz-bg-color-page);
 }
 ```
 
@@ -76,7 +76,7 @@ body {
     align-items: center;
     min-height: 100vh;
     overflow-x: hidden;
-    background-color: var(--el-bg-color-page);
+    background-color: var(--jpz-bg-color-page);
 }
 ```
 

@@ -84,8 +84,8 @@ span {
 
 .menu {
     width: 120px;
-    background-color: var(--el-bg-color);
-    border: 1px solid var(--el-border-color);
+    background-color: var(--jpz-bg-color);
+    border: 1px solid var(--jpz-border-color);
     border-radius: 8px;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
@@ -106,7 +106,7 @@ span {
     width: 100%;
     border: none;
     padding: 5px 0;
-    color: var(--el-text-color-primary);
+    color: var(--jpz-text-color-primary);
     background-color: transparent;
 }
 </style>

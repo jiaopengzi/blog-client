@@ -68,8 +68,8 @@
             style="
                 height: 100%;
                 width: 100%;
-                background-color: var(--el-bg-color-overlay);
-                box-shadow: var(--el-box-shadow-lighter);
+                background-color: var(--jpz-bg-color-overlay);
+                box-shadow: var(--jpz-box-shadow-lighter);
                 text-align: center;
                 line-height: 40px;
                 color: #1989fa;
@@ -180,14 +180,14 @@ useResizeObserver(asideRef, (entries) => {
 }
 
 .el-main {
-    background-color: var(--el-bg-color-page);
+    background-color: var(--jpz-bg-color-page);
     padding-left: 0px;
     padding-top: 0px;
 }
 
 .el-aside {
     width: pc.$width-aside;
-    background-color: var(--el-bg-color-page);
+    background-color: var(--jpz-bg-color-page);
     position: sticky; // 粘性定位 和 reCalculateHeight 配合使用
 }
 

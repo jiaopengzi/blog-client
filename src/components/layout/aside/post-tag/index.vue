@@ -72,12 +72,12 @@ onBeforeMount(() => {
 </script>
 <style scoped lang="scss">
 .aside-item {
-    border: 1px solid var(--el-border-color);
-    background-color: var(--el-bg-color-page);
+    border: 1px solid var(--jpz-border-color);
+    background-color: var(--jpz-bg-color-page);
     border-radius: 5px;
 
     .title {
-        background-color: var(--el-bg-color-page);
+        background-color: var(--jpz-bg-color-page);
         padding: 10px 5px;
     }
 

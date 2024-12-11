@@ -28,8 +28,8 @@ export function useTheme() {
 
     // switch 开关 颜色
     const color: SwitchItemColor = {
-        active: "var(--el-text-color-placeholder)",
-        inactive: "var(--el-text-color-placeholder)",
+        active: "var(--jpz-text-color-placeholder)",
+        inactive: "var(--jpz-text-color-placeholder)",
     }
 
     // switch 开关

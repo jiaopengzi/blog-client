@@ -86,7 +86,7 @@ const view = computed(() =>
     position: relative;
     border-radius: 3px;
     padding: 15px;
-    background-color: var(--el-bg-color-page);
+    background-color: var(--jpz-bg-color-page);
     overflow: hidden;
 
     &:hover {
@@ -138,7 +138,7 @@ const view = computed(() =>
     background-color: var(--jpz-color-primary);
     line-height: 200%;
     font-size: 14px;
-    color: var(--el-bg-color-page);
+    color: var(--jpz-bg-color-page);
     border-radius: 5%;
 }
 
@@ -226,7 +226,7 @@ const view = computed(() =>
     padding: 5px 10px;
     border-radius: 5px;
     background-color: var(--jpz-color-primary);
-    color: var(--el-bg-color-page);
+    color: var(--jpz-bg-color-page);
     line-height: 150%;
     opacity: 0;
     transition: opacity 0.3s ease-in-out;

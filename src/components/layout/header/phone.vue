@@ -98,11 +98,11 @@ header {
     top: 0;
     left: 0;
     z-index: 999;
-    background-color: var(--el-bg-color);
+    background-color: var(--jpz-bg-color);
 }
 
 .header-main {
-    border-bottom: 1px solid var(--el-border-color);
+    border-bottom: 1px solid var(--jpz-border-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -118,16 +118,16 @@ header {
     top: 0;
     left: 0;
     z-index: 997;
-    background-color: var(--el-border-color);
+    background-color: var(--jpz-border-color);
     opacity: 0.5;
 }
 
 // 侧边导航栏
 .side-nav {
-    background-color: var(--el-bg-color);
+    background-color: var(--jpz-bg-color);
     position: fixed;
     top: 0;
-    // border: 1px solid var(--el-border-color);
+    // border: 1px solid var(--jpz-border-color);
     left: 0;
     z-index: 998;
     transition: transform 300ms ease-in-out;
@@ -170,6 +170,6 @@ li {
 }
 
 .my-icon {
-    fill: var(--el-text-color-primary);
+    fill: var(--jpz-text-color-primary);
 }
 </style>

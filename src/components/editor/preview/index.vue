@@ -343,7 +343,7 @@ defineExpose({
     font-size: 16px;
     line-height: 1.5;
     color: var(--jpz-color-primary);
-    background-color: var(--el-bg-color-page);
+    background-color: var(--jpz-bg-color-page);
     height: var(--my-codemirror-height, 100%);
 }
 

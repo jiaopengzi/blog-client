@@ -222,15 +222,15 @@ onMounted(() => {
             :deep(.el-tabs__content) {
                 width: pc.$width-page-main;
                 padding: 0 0;
-                height: calc(var(--md-editor-container-height) - var(--el-tabs-header-height));
+                height: calc(var(--md-editor-container-height) - var(--jpz-tabs-header-height));
             }
 
             // .md-editor-fs {
-            //     --md-editor-height: calc(var(--md-editor-container-height) - var(--el-tabs-header-height));
+            //     --md-editor-height: calc(var(--md-editor-container-height) - var(--jpz-tabs-header-height));
             // }
 
             .md-preview-fs {
-                height: calc(var(--md-editor-container-height) - var(--el-tabs-header-height));
+                height: calc(var(--md-editor-container-height) - var(--jpz-tabs-header-height));
             }
         }
     }
@@ -287,15 +287,15 @@ onMounted(() => {
 
             :deep(.el-tabs__content) {
                 padding: 0 0;
-                height: calc(var(--md-editor-container-height) - var(--el-tabs-header-height));
+                height: calc(var(--md-editor-container-height) - var(--jpz-tabs-header-height));
             }
 
             // .md-editor-fs {
-            //     --md-editor-height: calc(var(--md-editor-container-height) - var(--el-tabs-header-height));
+            //     --md-editor-height: calc(var(--md-editor-container-height) - var(--jpz-tabs-header-height));
             // }
 
             .md-preview-fs {
-                height: calc(var(--md-editor-container-height) - var(--el-tabs-header-height));
+                height: calc(var(--md-editor-container-height) - var(--jpz-tabs-header-height));
             }
         }
     }
@@ -352,15 +352,15 @@ onMounted(() => {
 
             :deep(.el-tabs__content) {
                 padding: 0 0;
-                height: calc(var(--md-editor-container-height) - var(--el-tabs-header-height));
+                height: calc(var(--md-editor-container-height) - var(--jpz-tabs-header-height));
             }
 
             // .md-editor-fs {
-            //     --md-editor-height: calc(var(--md-editor-container-height) - var(--el-tabs-header-height));
+            //     --md-editor-height: calc(var(--md-editor-container-height) - var(--jpz-tabs-header-height));
             // }
 
             .md-preview-fs {
-                height: calc(var(--md-editor-container-height) - var(--el-tabs-header-height));
+                height: calc(var(--md-editor-container-height) - var(--jpz-tabs-header-height));
             }
         }
     }

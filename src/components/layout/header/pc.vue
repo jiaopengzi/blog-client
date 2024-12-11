@@ -125,8 +125,8 @@ header {
     left: 0;
     // 可选：如果需要头部在其他元素上方显示，可以设置一个较高的 z-index 值
     // z-index: 999;
-    background-color: var(--el-bg-color);
-    border-bottom: 1px solid var(--el-border-color);
+    background-color: var(--jpz-bg-color);
+    border-bottom: 1px solid var(--jpz-border-color);
 }
 
 .header-main {
@@ -163,7 +163,7 @@ header {
 
 .search-icon {
     font-size: 20px;
-    fill: var(--el-text-color-primary);
+    fill: var(--jpz-text-color-primary);
 }
 
 .login {
@@ -174,7 +174,7 @@ header {
 }
 
 .login-text {
-    color: var(--el-text-color-primary);
+    color: var(--jpz-text-color-primary);
 }
 
 .separator {

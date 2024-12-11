@@ -55,14 +55,14 @@ const { footerData } = props
 <style scoped lang="scss">
 footer {
     height: pc.$height-footer;
-    background-color: var(--el-bg-color);
+    background-color: var(--jpz-bg-color);
     display: relative;
     align-items: center;
     justify-content: center;
     z-index: -1;
     width: calc(pc.$width-page - pc.$scrollbar-y-width);
 
-    border-top: 1px solid var(--el-border-color);
+    border-top: 1px solid var(--jpz-border-color);
 }
 
 .footer-main {
@@ -72,7 +72,7 @@ footer {
     align-items: flex-start;
     height: 100%;
     margin: 0 auto;
-    color: var(--el-text-color-secondary);
+    color: var(--jpz-text-color-secondary);
     font-size: 15px;
     flex-grow: 1;
 }
@@ -139,7 +139,7 @@ h3 {
     }
 
     a {
-        color: var(--el-text-color-secondary);
+        color: var(--jpz-text-color-secondary);
 
         :hover {
             background-color: transparent;

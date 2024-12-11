@@ -55,7 +55,7 @@ const props = defineProps<{ navData: HeaderNavPropsItem[] }>()
     text-decoration: none;
     padding-left: 8px;
     padding-right: 8px;
-    color: var(--el-text-color-primary);
+    color: var(--jpz-text-color-primary);
 
     &:hover {
         background-color: var(--jpz-color-secondary);
@@ -69,7 +69,7 @@ span {
 
 .my-icon {
     font-size: 20px;
-    fill: var(--el-text-color-primary);
+    fill: var(--jpz-text-color-primary);
     margin-right: 4px;
 }
 

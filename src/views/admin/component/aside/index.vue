@@ -130,7 +130,7 @@ const handleClose = (index: string, keyPath: string[]) => {
     overflow-x: hidden;
     border-right: none;
     // --el-menu-bg-color: transparent;
-    --el-menu-text-color: var(--el-text-color-primary);
+    --el-menu-text-color: var(--jpz-text-color-primary);
     --el-menu-active-color: var(--jpz-color-secondary);
 }
 

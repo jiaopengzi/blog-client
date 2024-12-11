@@ -31,11 +31,7 @@
 
             <el-form-item label="密码" prop="password">
                 <el-input class="generate-password" type="text" v-model="addUserForm.password" />
-                <button
-                    type="button"
-                    class="btn-generate-password"
-                    @click="generatePasswordHandle"
-                >
+                <button type="button" class="btn-generate-password" @click="generatePasswordHandle">
                     生成密码
                 </button>
             </el-form-item>

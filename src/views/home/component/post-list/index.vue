@@ -43,15 +43,15 @@ const postItems: PostItemMainObj[] = Array(30).fill(postDataObj)
 .post-list {
     font-size: 14px;
     margin-top: 10px;
-    border: 1px solid var(--el-border-color);
+    border: 1px solid var(--jpz-border-color);
     // 除了最后一个元素显示下边框 其他都只显示上边框
 
     .post-item {
-        border-top: 1px solid var(--el-border-color);
-        border-bottom: 1px solid var(--el-border-color);
+        border-top: 1px solid var(--jpz-border-color);
+        border-bottom: 1px solid var(--jpz-border-color);
 
         &:last-child {
-            border-bottom: 1px solid var(--el-border-color);
+            border-bottom: 1px solid var(--jpz-border-color);
         }
     }
 }

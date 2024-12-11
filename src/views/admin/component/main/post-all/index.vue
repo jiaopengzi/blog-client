@@ -733,7 +733,7 @@ onMounted(() => {
         span {
             margin: 0 4px;
             font-size: 14px;
-            color: var(--el-text-color-regular);
+            color: var(--jpz-text-color-regular);
         }
     }
 }

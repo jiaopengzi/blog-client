@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-04 12:40:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-10 16:57:26
+ * @LastEditTime : 2024-12-11 09:54:01
  * @FilePath     : \blog-client\src\assets\scss\themes\dark.scss
  * @Description  : 暗色模式
  * @Blog         : https://jiaopengzi.com
@@ -20,6 +20,20 @@ $jpz-color-primary-dark: #c89828;
 html.#{$theme-name} {
     --jpz-color-primary: #{$jpz-color-primary-dark}; // 主要颜色
     --jpz-color-secondary: #c89828; // 次要颜色
+
+    // 使用 element-plus 的颜色
+    --jpz-bg-color: var(--el-bg-color);
+    --jpz-bg-color-pag: var(--el-bg-color-page);
+    --jpz-color-overlay: var(--el-bg-color-overlay);
+    --jpz-border-color: var(--el-border-color);
+    --jpz-tabs-header-height: var(--el-tabs-header-height);
+    --jpz-box-shadow-lighter: var(--el-box-shadow-lighter);
+    --jpz-text-color-primary: var(--el-text-color-primary);
+    --jpz-text-color-primary: var(--el-text-color-primary);
+    --jpz-text-color-regular: var(--el-text-color-regular);
+    --jpz-text-color-secondary: var(--el-text-color-secondary);
+    --jpz-text-color-placeholder: var(--el-text-color-placeholder);
+    --jpz-text-color-disabled: var(--el-text-color-disabled);
 
     // 字体颜色
     --code-block-bg-color: #f8f8f8;

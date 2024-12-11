@@ -25,7 +25,7 @@ defineOptions({ name: "Carousel" })
 
 <style scoped>
 .demonstration {
-    color: var(--el-text-color-secondary);
+    color: var(--jpz-text-color-secondary);
 }
 
 .el-carousel {

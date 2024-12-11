@@ -44,7 +44,7 @@ body {
     align-items: center;
     min-height: 100vh;
     overflow-x: hidden;
-    background-color: var(--el-bg-color);
+    background-color: var(--jpz-bg-color);
 }
 
 #app {
@@ -66,7 +66,7 @@ a {
     }
 
     a:hover {
-        background-color: var(--el-bg-color-overlay);
+        background-color: var(--jpz-bg-color-overlay);
         // 下划线
         // text-decoration: underline;
         // 字体变大20%
@@ -172,7 +172,7 @@ header {
 
 // 目录显示
 .md-toc {
-    background-color: var(--el-bg-color-page);
+    background-color: var(--jpz-bg-color-page);
 
     h1,
     h2,
@@ -216,7 +216,7 @@ header {
 }
 
 .md-toc-fs {
-    background-color: var(--el-bg-color-page);
+    background-color: var(--jpz-bg-color-page);
 
     h1,
     h2,
@@ -279,7 +279,7 @@ header {
         background-color: transparent;
         // 无边框
         border: none;
-        color: var(--el-text-color-primary);
+        color: var(--jpz-text-color-primary);
 
         &.active {
             font-weight: bold;

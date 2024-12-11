@@ -123,7 +123,7 @@ const closeMe = () => {
         display: flex;
         // justify-content: space-between;
         align-items: center;
-        background-color: var(--el-bg-color);
+        background-color: var(--jpz-bg-color);
 
         .title {
             text-align: center;

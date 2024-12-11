@@ -105,20 +105,20 @@ onBeforeMount(() => {
         // line-height: 40px;
         text-align: center;
         font-size: 16px;
-        color: var(--el-text-color-primary);
+        color: var(--jpz-text-color-primary);
 
         .link {
             margin: 0 5px;
 
             span {
-                border: 1px solid var(--el-border-color);
+                border: 1px solid var(--jpz-border-color);
                 width: 60px;
                 height: 30px;
                 line-height: 30px;
                 border-radius: 3px;
                 display: inline-block;
                 // padding: 0 2px;
-                color: var(--el-text-color-primary);
+                color: var(--jpz-text-color-primary);
             }
         }
     }
@@ -140,17 +140,17 @@ onBeforeMount(() => {
                 text-align: center;
                 font-size: 16px;
                 font-weight: 600;
-                color: var(--el-text-color-primary);
+                color: var(--jpz-text-color-primary);
                 // padding: 0 10%;
                 margin: 0 10px;
-                border-bottom: 1px solid var(--el-border-color);
+                border-bottom: 1px solid var(--jpz-border-color);
 
                 // 让 link 充满整个 li
                 .menu {
                     display: flex;
                     align-items: center;
                     text-decoration: none;
-                    color: var(--el-text-color-primary);
+                    color: var(--jpz-text-color-primary);
                     border: none;
                     line-height: 3em;
                 }
@@ -168,7 +168,7 @@ onBeforeMount(() => {
 
 .my-icon {
     font-size: 20px;
-    fill: var(--el-text-color-primary);
+    fill: var(--jpz-text-color-primary);
     width: 40px;
 }
 

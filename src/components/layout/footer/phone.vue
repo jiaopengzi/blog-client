@@ -55,13 +55,13 @@ const { footerData } = props
 <style scoped lang="scss">
 footer {
     height: phone.$height-footer;
-    background-color: var(--el-bg-color);
+    background-color: var(--jpz-bg-color);
     display: relative;
     align-items: center;
     justify-content: center;
     z-index: -1;
     // width: calc(phone.$width-page - phone.$scrollbar-y-width);
-    border-top: 1px solid var(--el-border-color);
+    border-top: 1px solid var(--jpz-border-color);
 }
 
 .footer-main {
@@ -70,7 +70,7 @@ footer {
     justify-content: center;
     align-items: flex-start;
     margin: 0;
-    color: var(--el-text-color-disabled);
+    color: var(--jpz-text-color-disabled);
     font-size: 15px;
 }
 
@@ -151,7 +151,7 @@ footer {
     }
 
     a {
-        color: var(--el-text-color-disabled);
+        color: var(--jpz-text-color-disabled);
 
         :hover {
             background-color: transparent;

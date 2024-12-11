@@ -685,7 +685,7 @@ onBeforeUnmount(() => {
 .btns-header-item-icon,
 .btns-footer-item-icon {
     font-size: 20px;
-    // fill: var(--el-text-color-primary);
+    // fill: var(--jpz-text-color-primary);
     fill: red;
 }
 
@@ -698,7 +698,7 @@ onBeforeUnmount(() => {
     justify-content: space-between;
     margin-top: 16px;
     font-size: 14px;
-    color: var(--el-text-color-primary);
+    color: var(--jpz-text-color-primary);
 }
 
 .seo-switch {
@@ -706,7 +706,7 @@ onBeforeUnmount(() => {
     align-items: center;
     margin: 16px 0;
     font-size: 14px;
-    color: var(--el-text-color-primary);
+    color: var(--jpz-text-color-primary);
 }
 
 h4 {
