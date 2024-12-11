@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:02:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-20 18:34:59
+ * @LastEditTime : 2024-12-11 10:59:42
  * @FilePath     : \blog-client\src\components\editor\toc\index.vue
  * @Description  : 目录组件
  * @Blog         : https://jiaopengzi.com
@@ -70,8 +70,9 @@ watchEffect(() => {
 <style scoped lang="scss">
 #toc {
     // 添加不同缩进和样式
+    background-color: var(--el-bg-color);
     li {
-        line-height: 1.5;
+        line-height: 2;
         font-weight: 500;
         list-style: none; // 去除默认的列表样式
         color: var(--jpz-color-primary);

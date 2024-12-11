@@ -22,7 +22,7 @@
     --control-text-color: var(--jpz-text-color-primary);
     --meta-content-color: var(--jpz-text-color-primary);
     --active-file-border-color: var(--drake-accent);
-    --rawblock-edit-panel-bd: var(--code-block-bg-color);
+    --rawblock-edit-panel-bd: var(--jpz-code-block-bg-color);
     --item-hover-bg-color: #e5e5e596;
     --active-file-bg-color: var(--item-hover-bg-color);
 
@@ -32,12 +32,12 @@
     --a-color: var(--drake-accent);
     --variable-color: var(--drake-highlight);
     --outline-active-color: var(--a-color);
-    --code-block-bg-color: #f8f8f8;
-    --code-block-color: #525252;
+    --jpz-code-block-bg-color: #f8f8f8;
+    --jpz-code-block-color: #525252;
     --title-color: #1e2858;
-    --blockquote-border-color: #f66;
-    --blockquote-color: var(--jpz-text-color-primary);
-    --blockquote-bg-color: #f8f8f8;
+    --jpz-blockquote-border-color: #f66;
+    --jpz-blockquote-color: var(--jpz-text-color-primary);
+    --jpz-blockquote-bg-color: #f8f8f8;
     --strong-color: var(--title-color);
     --h2-underline-color: var(--title-color);
     --horizontal-divider-color: var(--title-color);
@@ -81,8 +81,8 @@ p {
     padding: 0.5rem !important;
     border-radius: 2px;
     word-wrap: normal;
-    background-color: var(--code-block-bg-color);
-    color: var(--code-block-color);
+    background-color: var(--jpz-code-block-bg-color);
+    color: var(--jpz-code-block-color);
     border: none;
     line-height: var(--code-line-height);
 }
@@ -130,7 +130,7 @@ p {
 }
 
 [id^="mermaidChart"] span.nodeLabel {
-    color: var(--code-block-color) !important;
+    color: var(--jpz-code-block-color) !important;
     line-height: 1.8rem;
 }
 
@@ -139,7 +139,7 @@ tspan {
 }
 
 [id^="mermaidChart"] .entityLabel {
-    fill: var(--code-block-color) !important;
+    fill: var(--jpz-code-block-color) !important;
 }
 
 [id^="mermaidChart"] {
@@ -152,7 +152,7 @@ tspan {
 
 .md-diagram-panel-preview text.actor > tspan {
     /*方块文字*/
-    fill: var(--code-block-color) !important;
+    fill: var(--jpz-code-block-color) !important;
     stroke: none !important;
     font-family: var(--text-font) !important;
     font-size: 1rem !important;
@@ -162,7 +162,7 @@ tspan {
 .md-diagram-panel-preview .entityBox {
     /*方块*/
     stroke: var(--table-border-color) !important;
-    fill: var(--code-block-bg-color) !important;
+    fill: var(--jpz-code-block-bg-color) !important;
 }
 
 .md-diagram-panel-preview .actor-line {
@@ -201,7 +201,7 @@ tspan {
 .md-diagram-panel-preview .labelText,
 .md-diagram-panel-preview .labelText > tspan {
     /*循环标记*/
-    fill: var(--code-block-color) !important;
+    fill: var(--jpz-code-block-color) !important;
     font-family: var(--text-font) !important;
     font-size: 1rem !important;
 }
@@ -209,7 +209,7 @@ tspan {
 .md-diagram-panel-preview .labelBox {
     /*循环标记背景*/
     stroke: var(--table-border-color) !important;
-    fill: var(--code-block-bg-color) !important;
+    fill: var(--jpz-code-block-bg-color) !important;
 }
 
 .md-diagram-panel-preview .loopLine {
@@ -255,12 +255,12 @@ pre.md-fences-advanced.md-focus .md-fences-adv-panel {
 .md-diagram-panel-preview .node path {
     /*形状*/
     stroke: var(--table-border-color) !important;
-    fill: var(--code-block-bg-color) !important;
+    fill: var(--jpz-code-block-bg-color) !important;
 }
 
 #write .md-diagram-panel .md-diagram-panel-preview div {
     /*形状内文字*/
-    color: var(--code-block-color);
+    color: var(--jpz-code-block-color);
     font-family: var(--text-font) !important;
     font-size: 1rem !important;
 }
@@ -306,11 +306,11 @@ var {
 
 .md-rawblock-tooltip.md-rawblock-control {
     border-radius: 2px 2px 0 0;
-    color: var(--code-block-color);
+    color: var(--jpz-code-block-color);
 }
 
 .md-rawblock-tooltip-name {
-    color: var(--code-block-color);
+    color: var(--jpz-code-block-color);
     opacity: 1;
 }
 
@@ -323,15 +323,15 @@ blockquote:before {
     left: 0;
     top: 0;
     height: 100%;
-    background-color: var(--blockquote-border-color);
+    background-color: var(--jpz-blockquote-border-color);
     border-radius: 2px;
 }
 
 blockquote {
-    color: var(--blockquote-color);
+    color: var(--jpz-blockquote-color);
     border-radius: 2px;
     padding: 10px 16px;
-    background-color: var(--blockquote-bg-color);
+    background-color: var(--jpz-blockquote-bg-color);
     position: relative;
     border-left: none;
 }
@@ -342,7 +342,7 @@ blockquote {
 }
 
 #write blockquote strong {
-    color: var(--blockquote-color);
+    color: var(--jpz-blockquote-color);
 }
 
 /*link*/
@@ -1180,7 +1180,7 @@ a.ty-link {
  */
 .cm-s-inner.CodeMirror {
     background: none;
-    color: var(--code-block-color);
+    color: var(--jpz-code-block-color);
 }
 
 .cm-s-inner span.cm-number {
@@ -1192,11 +1192,11 @@ a.ty-link {
 }
 
 .cm-s-inner span.cm-def {
-    color: var(--code-block-color);
+    color: var(--jpz-code-block-color);
 }
 
 .cm-s-inner span.cm-variable {
-    color: var(--code-block-color);
+    color: var(--jpz-code-block-color);
 }
 
 .cm-s-inner span.cm-variable-2 {
@@ -1209,7 +1209,7 @@ a.ty-link {
 }
 
 .cm-s-inner span.cm-property {
-    color: var(--code-block-color);
+    color: var(--jpz-code-block-color);
 }
 
 .cm-s-inner span.cm-keyword {
@@ -1217,7 +1217,7 @@ a.ty-link {
 }
 
 .cm-s-inner span.cm-operator {
-    color: var(--code-block-color);
+    color: var(--jpz-code-block-color);
 }
 
 .cm-s-inner span.cm-comment {
@@ -1233,7 +1233,7 @@ a.ty-link {
 }
 
 .cm-s-inner span.cm-qualifier {
-    color: var(--code-block-color);
+    color: var(--jpz-code-block-color);
 }
 
 .cm-s-inner span.cm-error {
@@ -1253,7 +1253,7 @@ a.ty-link {
 }
 
 .cm-s-inner span.cm-builtin {
-    color: var(--code-block-color);
+    color: var(--jpz-code-block-color);
 }
 
 .cm-s-inner span.cm-bracket {
@@ -1262,7 +1262,7 @@ a.ty-link {
 
 .cm-s-inner .CodeMirror-gutters {
     border-right: 1px solid rgba(120, 120, 120, 0.3);
-    background: var(--code-block-bg-color);
+    background: var(--jpz-code-block-bg-color);
 }
 
 .cm-s-inner .CodeMirror-linenumber {

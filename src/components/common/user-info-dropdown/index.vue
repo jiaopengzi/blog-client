@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 10:19:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-10 17:07:11
+ * @LastEditTime : 2024-12-11 10:19:12
  * @FilePath     : \blog-client\src\components\common\user-info-dropdown\index.vue
  * @Description  : 显示用户信息下拉菜单
  * @Blog         : https://jiaopengzi.com
@@ -22,7 +22,7 @@
                     <el-button class="btn-item" @click="userCenterBtn">用户中心</el-button>
                 </el-dropdown-item>
 
-                <el-dropdown-item v-if="hasPermissionLoginAdmin" class="dropdown-item">
+                <el-dropdown-item v-if="isShowAdmin" class="dropdown-item">
                     <el-button class="btn-item" @click="userAdminBtn">后台管理</el-button>
                 </el-dropdown-item>
 
@@ -35,9 +35,10 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue"
 import { useUserStore } from "@/stores/user"
 import { storeToRefs } from "pinia"
-import router from "@/router/index"
+import router from "@/router"
 import { routeObj } from "@/router/routeAll"
 import { PermissionNames } from "@/utils/permissionRole"
 import { onMounted, ref } from "vue"
@@ -46,8 +47,12 @@ import AvatarInitials from "@/components/common/avatar-initials" // 导入 Avata
 
 defineOptions({ name: "UserInfoDropdown" })
 
+const { isHiddenAdmin = false } = defineProps<{
+    isHiddenAdmin?: boolean // 是否隐藏后台管理按钮
+}>()
+
 const userStore = useUserStore()
-let { data, avatar } = storeToRefs(userStore)
+const { data, avatar } = storeToRefs(userStore)
 
 // 跳转到用户中心
 const userCenterBtn = () => {
@@ -71,6 +76,11 @@ const updateHasPermissionLoginAdmin = () => {
 const logout = async () => {
     await userStore.logout()
 }
+
+// 是否显示后台管理按钮
+const isShowAdmin = computed(() => {
+    return hasPermissionLoginAdmin.value && !isHiddenAdmin
+})
 
 onMounted(() => {
     updateHasPermissionLoginAdmin()

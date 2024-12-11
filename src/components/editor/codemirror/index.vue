@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-22 10:47:31
+ * @LastEditTime : 2024-12-11 12:40:58
  * @FilePath     : \blog-client\src\components\editor\codemirror\index.vue
  * @Description  : codemirror 编辑器
  * @Blog         : https://jiaopengzi.com
@@ -190,7 +190,9 @@ defineExpose({
 
 <style scoped lang="scss">
 #my-codemirror {
-    background-color: #fff;
+    background-color: var(--jpz-bg-color-page);
+    color: var(--jpz-text-color-primary);
+    font-size: 1.1em;
 
     :deep(.cm-editor) {
         // width: 100%;
@@ -202,6 +204,12 @@ defineExpose({
     //     height: calc(var(--my-codemirror-height, 100%) - pc.$editor-panels-bottom-height - pc.$editor-panels-bottom-border);
     // }
 
+    :deep(.cm-gutters) {
+        // width: 100%;
+        background-color: var(--jpz-bg-color-page);
+        border-right: 1px solid var(--jpz-border-color);
+    }
+
     :deep(.cm-panels-bottom) {
         height: pc.$editor-panels-bottom-height;
         // 文字垂直居中
@@ -209,7 +217,9 @@ defineExpose({
         align-items: center;
         padding: 4px 4px;
         font-size: 0.8em;
-        color: #6c6c6c;
+        color: var(--jpz-text-color-placeholder);
+        background-color: var(--jpz-bg-color-page);
+        border-top: 1px solid var(--jpz-border-color);
     }
 }
 </style>

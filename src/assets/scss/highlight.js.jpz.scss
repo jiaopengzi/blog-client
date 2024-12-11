@@ -6,22 +6,22 @@
 
 code.hljs {
     padding: 3px 5px;
-    background-color: #dddddd;
+    // background-color: var(--jpz-bg-color-page);
 }
 
 .hljs {
-    background: #efefef;
-    color: #3f3f3f;
+    // background: var(--jpz-bg-color-page);
+    color: var(--jpz-text-color-regular);
 }
 
 .hljs-code {
     // 占位
-    color: #3f3f3f;
+    color: var(--jpz-text-color-regular);
 }
 
 .hljs-property {
     // 占位
-    color: #3f3f3f;
+    color: var(--jpz-text-color-regular);
 }
 
 .hljs-title.class_ {
@@ -31,32 +31,32 @@ code.hljs {
 
 .hljs-title.class_.inherited__ {
     /* 占位 */
-    color: #3f3f3f;
+    color: var(--jpz-text-color-regular);
 }
 
 .hljs-punctuation {
     /* 占位 */
-    color: #3f3f3f;
+    color: var(--jpz-text-color-regular);
 }
 
 .hljs-operator {
     // 占位
-    color: #3f3f3f;
+    color: var(--jpz-text-color-regular);
 }
 
 .hljs-title.function_ {
     // 占位
-    color: #3f3f3f;
+    color: var(--jpz-text-color-regular);
 }
 
 .hljs-char.escape_ {
     // 占位
-    color: #3f3f3f;
+    color: var(--jpz-text-color-regular);
 }
 
 .hljs-variable.language_ {
     // 占位
-    color: #3f3f3f;
+    color: var(--jpz-text-color-regular);
 }
 
 .hljs-keyword,
@@ -179,7 +179,7 @@ code.hljs {
     // font-size: 14px;
     // max-height: 500px;
     padding: 1em 1em 1em 3em;
-    color: #333;
+    color: var(--jpz-text-color-regular);
     position: relative;
     background-color: #fafafa;
     border: 1px solid #f0f0f0;
@@ -190,7 +190,7 @@ code.hljs {
 }
 
 .code-snippet code {
-    color: #333;
+    color: var(--jpz-text-color-regular);
     margin: 0 0.2em;
     background-color: transparent;
     text-align: left;
@@ -210,13 +210,17 @@ code.hljs {
     content: counter(line);
     display: inline;
     margin-right: 12px;
-    color: #dddddd;
+    color: var(--jpz-text-color-placeholder);
     padding-right: 0.5em;
-    border-right: 1px solid #dddddd;
+    border-right: 1px solid var(--jpz-text-color-placeholder);
 }
 
 .pre-code {
     position: relative;
+    pre {
+        background-color: var(--jpz-bg-color);
+        border: 1px solid var(--jpz-border-color);
+    }
 }
 
 .copy-button {
@@ -224,12 +228,12 @@ code.hljs {
     top: 4px;
     right: 8px;
     cursor: pointer;
-    background-color: #f0f0f0;
+    background-color: var(--jpz-bg-color-page);
     border: none;
     border-radius: 4px;
     padding: 2px 5px;
     z-index: 999;
-    color: #888;
+    color: var(--jpz-text-color-placeholder);
     min-width: 4em;
     text-align: center;
     font-size: 12px;
@@ -244,7 +248,6 @@ code.hljs {
 code {
     margin: 0 0.2em;
     background-color: var(--code-bg-color);
-    // background-color: red;
     border-radius: 4px;
     color: var(--code-color);
     padding: 0 5px 0 5px;

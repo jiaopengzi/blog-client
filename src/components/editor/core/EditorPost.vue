@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-22 16:56:52
+ * @LastEditTime : 2024-12-11 10:58:40
  * @FilePath     : \blog-client\src\components\editor\core\EditorPost.vue
  * @Description  : 文章编辑器
  * @Blog         : https://jiaopengzi.com
@@ -220,7 +220,7 @@ onMounted(() => {
 .md-layout,
 .md-layout-fs {
     border-radius: 3px;
-    background-color: #eee;
+    background-color: var(--jpz-bg-color);
     width: var(--md-editor-width);
     .md-toolbar,
     .md-toolbar-fs {
@@ -255,7 +255,7 @@ onMounted(() => {
             display: flex;
             justify-content: center;
             align-items: center;
-            border-left: 1px solid #ccc; // 子元素居中
+            border-left: 1px solid var(--jpz-border-color); // 子元素居中
         }
     }
 }
@@ -274,7 +274,7 @@ onMounted(() => {
 // 媒介查询
 @include respond-to("pc") {
     .md-layout {
-        border: 1px solid #ccc;
+        border: 1px solid var(--jpz-border-color);
         margin: 4px 0px;
 
         .md-toolbar {
@@ -314,7 +314,7 @@ onMounted(() => {
 
 @include respond-to("pad") {
     .md-layout {
-        border: 1px solid #ccc;
+        border: 1px solid var(--jpz-border-color);
         margin: 5px 0px;
 
         .md-toolbar {
@@ -356,7 +356,7 @@ onMounted(() => {
 
 @include respond-to("phone") {
     .md-layout {
-        border: 1px solid #ccc;
+        border: 1px solid var(--jpz-border-color);
         margin: 5px 0px;
 
         .md-toolbar {

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-26 17:26:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-22 16:59:27
+ * @LastEditTime : 2024-12-11 12:32:57
  * @FilePath     : \blog-client\src\components\editor\core\EditorComment.vue
  * @Description  : 评论编辑器
  * @Blog         : https://jiaopengzi.com
@@ -173,6 +173,7 @@ onMounted(() => {
         border: 1px solid #ccc;
         border-radius: 3px;
         margin: 5px 0px;
+        background-color: var(--jpz-bg-color);
         width: pc.$width-page-main;
 
         .md-toolbar {

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:02:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-07 18:58:01
+ * @LastEditTime : 2024-12-11 10:51:45
  * @FilePath     : \blog-client\src\components\editor\toolbar\index.vue
  * @Description  : 工具栏组件
  * @Blog         : https://jiaopengzi.com
@@ -183,11 +183,11 @@ defineExpose({
     flex-wrap: wrap; // 自动换行
     align-items: center;
     // justify-content: left;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid var(--jpz-border-color);
     min-height: pc.$editor-toolbar-height;
     margin-top: pc.$editor-toolbar-margin-top;
     margin-bottom: pc.$editor-toolbar-margin-top;
-    background-color: #fff;
+    background-color: var(--jpz-bg-color);
 
     .toolbar-btn {
         border: none;
@@ -209,7 +209,7 @@ defineExpose({
     border-radius: 8px;
     padding-top: 10px;
     padding-bottom: 10px;
-    background-color: #efefef;
+    background-color: var(--jpz-bg-color);
 
     .row,
     .col {
@@ -224,21 +224,21 @@ defineExpose({
 }
 
 .iconfont {
+    width: 28px;
+    height: 28px;
     font-size: 20px;
-    fill: #333;
+    fill: var(--jpz-text-color-primary);
     transition: fill 0.3s ease;
-    /* 添加平滑过渡效果 */
+    border-radius: 4px;
 }
 
 .iconfont:hover {
-    fill: #666;
-    /* 悬停时的颜色变化 */
+    background-color: var(--jpz-text-color-secondary);
 }
 
 .popper-class {
     background: transparent;
     border: none;
-    // 无阴影
     box-shadow: none;
 }
 </style>

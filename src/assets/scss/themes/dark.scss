@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-04 12:40:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 09:54:01
+ * @LastEditTime : 2024-12-11 12:42:47
  * @FilePath     : \blog-client\src\assets\scss\themes\dark.scss
  * @Description  : 暗色模式
  * @Blog         : https://jiaopengzi.com
@@ -23,25 +23,32 @@ html.#{$theme-name} {
 
     // 使用 element-plus 的颜色
     --jpz-bg-color: var(--el-bg-color);
-    --jpz-bg-color-pag: var(--el-bg-color-page);
+    --jpz-bg-color-page: var(--el-bg-color-page);
     --jpz-color-overlay: var(--el-bg-color-overlay);
     --jpz-border-color: var(--el-border-color);
     --jpz-tabs-header-height: var(--el-tabs-header-height);
     --jpz-box-shadow-lighter: var(--el-box-shadow-lighter);
-    --jpz-text-color-primary: var(--el-text-color-primary);
+
+    // 文字颜色
     --jpz-text-color-primary: var(--el-text-color-primary);
     --jpz-text-color-regular: var(--el-text-color-regular);
     --jpz-text-color-secondary: var(--el-text-color-secondary);
     --jpz-text-color-placeholder: var(--el-text-color-placeholder);
     --jpz-text-color-disabled: var(--el-text-color-disabled);
-
-    // 字体颜色
-    --code-block-bg-color: #f8f8f8;
-    --code-block-color: #525252;
     --title-color: var(--jpz-color-primary);
-    --blockquote-border-color: #f66;
-    --blockquote-color: var(--el-text-color-primary);
-    --blockquote-bg-color: #f8f8f8;
+
+    // 代码块样式
+    --jpz-code-block-bg-color: var(--el-bg-color-page);
+    --jpz-code-block-color: var(--el-bg-color-page);
+
+    // 引用块样式
+    --jpz-blockquote-border-color: #f66;
+    --jpz-blockquote-color: var(--el-text-color-primary);
+    --jpz-blockquote-bg-color: var(--el-bg-color);
+    // 行内代码块样式
+    --code-bg-color: #dddddd;
+    --code-color: #d63200;
+
     --strong-color: var(--title-color);
     --h2-underline-color: var(--title-color);
     --horizontal-divider-color: var(--title-color);
@@ -51,12 +58,11 @@ html.#{$theme-name} {
     --yaml-bg-color: #f7f7f7;
     --footnotes-bg-color: #3c3d3e;
     --footnotes-highlight: #ffd760;
-    --table-border-color: #dfe2e5;
-    --table-header-bg-color: var(--el-bg-color-page);
-    --table-bg-color: var(--bg-color);
-    --table-n2-bg-color: #eeeeee;
-    --code-bg-color: #dddddd;
-    --code-color: #d63200;
+    --jpz-table-border-color: var(--el-border-color);
+    --jpz-table-header-bg-color: var(--el-bg-color-page);
+    --jpz-table-bg-color: var(--el-bg-color);
+    --jpz-table-n2-bg-color: var(--el-bg-color-page);
+
     --input-bg-color: #f2f2f2;
     --btn-hover-bg-color: #f2f2f2;
     --footnote-sup-color: #0969da; // 脚注上标颜色 深色 #2F81F7

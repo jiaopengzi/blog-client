@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-04 21:00:27
+ * @LastEditTime : 2024-12-11 10:28:05
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -155,9 +155,10 @@ onBeforeMount(() => {
 
     .container {
         .header {
-            background-color: #409eff;
-            color: #fff;
+            background-color: var(--jpz-bg-color);
+            color: var(--jpz-text-color-primary);
             height: 80px;
+            border-bottom: 1px solid var(--jpz-border-color);
         }
 
         .content {
@@ -165,8 +166,8 @@ onBeforeMount(() => {
             height: calc(100vh - 80px);
 
             .aside {
-                background-color: #409eff;
-                color: #fff;
+                background-color: var(--jpz-bg-color);
+                color: var(--jpz-text-color-primary);
                 transition: width 0.3s;
             }
 
@@ -179,9 +180,8 @@ onBeforeMount(() => {
             }
 
             .main {
-                // background-color: red;
                 flex: 1; // 占据剩余空间
-                color: #333;
+                color: var(--jpz-text-color-primary);
                 padding: 0;
                 margin: 0;
             }

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 22:31:47
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-10 18:19:34
+ * @LastEditTime : 2024-12-11 10:02:03
  * @FilePath     : \blog-client\src\components\layout\header\pc.vue
  * @Description  : pc 头部
  * @Blog         : https://jiaopengzi.com
@@ -107,7 +107,7 @@ const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownA
 // 状态是否登录
 
 const userStore = useUserStore()
-let { isLogin } = storeToRefs(userStore)
+const { isLogin } = storeToRefs(userStore)
 
 onBeforeMount(() => {
     // 组件挂载前

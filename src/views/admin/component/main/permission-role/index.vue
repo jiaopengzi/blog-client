@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-15 15:09:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-03 14:36:42
+ * @LastEditTime : 2024-12-11 10:32:44
  * @FilePath     : \blog-client\src\views\admin\component\main\permission-role\index.vue
  * @Description  : 权限角色页面
  * @Blog         : https://jiaopengzi.com
@@ -642,12 +642,5 @@ h4 {
 .multi-btn-item {
     margin: 5px;
     width: 50px; // 固定宽度
-}
-
-.el-table {
-    // 斑马纹样式
-    :deep(.el-table__row:nth-child(odd)) {
-        background-color: #f2f2f2;
-    }
 }
 </style>

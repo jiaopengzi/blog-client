@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:33:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-10 15:49:44
+ * @LastEditTime : 2024-12-11 10:36:25
  * @FilePath     : \blog-client\src\views\admin\component\aside\index.vue
  * @Description  : 左边菜单栏 
  * @Blog         : https://jiaopengzi.com
@@ -68,8 +68,8 @@ const label: SwitchItemLabel = {
 
 // switch 开关 颜色
 const color: SwitchItemColor = {
-    active: "#ffffff10",
-    inactive: "#ffffff10",
+    active: "var(--jpz-text-color-placeholder)",
+    inactive: "var(--jpz-text-color-placeholder)",
 }
 
 // 菜单是否折叠
@@ -119,11 +119,16 @@ const handleClose = (index: string, keyPath: string[]) => {
 </script>
 
 <style scoped lang="scss">
+.switch {
+    margin-top: 10px;
+}
+
 .aside {
     display: flex;
     flex-direction: column;
     align-items: center;
     height: 100%;
+    border-right: 1px solid var(--jpz-border-color);
 }
 
 .el-menu-vertical {

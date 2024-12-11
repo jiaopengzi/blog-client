@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-13 12:31:08
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-13 16:05:31
+ * @LastEditTime : 2024-12-11 11:49:35
  * @FilePath     : \blog-client\src\assets\scss\preview.scss
  * @Description  : preview样式
  * @Blog         : https://jiaopengzi.com
@@ -62,13 +62,13 @@
 
     // 加粗
     strong {
-        color: var(--jpz-color-primary);
+        color: var(--jpz-text-color-primary);
         font-weight: 700;
     }
 
     // 斜体
     em {
-        color: var(--jpz-color-primary);
+        color: var(--jpz-text-color-primary);
         font-style: italic;
     }
 
@@ -90,7 +90,9 @@
     ul {
         padding-left: 2em;
 
-        position: relative; //子绝父相 让伪元素绝对定位
+        position: relative;
+
+        color: var(--jpz-text-color-primary);
 
         > li {
             // 一级实心圆
@@ -110,11 +112,10 @@
 
     // 引用
     blockquote {
-        border-left: 4px solid var(--blockquote-border-color);
-        background-color: var(--blockquote-bg-color);
+        border-left: 4px solid var(--jpz-blockquote-border-color);
+        background-color: var(--jpz-blockquote-bg-color);
         padding: 0.5em 1em;
         margin: 0.5em 0;
-        color: var(--blockquote-color);
         border-radius: 4px;
     }
 
@@ -199,6 +200,7 @@
         line-height: 1.8em;
         // 自动换行
         word-break: break-all;
+        color: var(--jpz-text-color-primary);
     }
 
     // 表格容器
@@ -215,31 +217,32 @@
             border-collapse: collapse;
             border-spacing: 0;
             margin: 1em auto;
+            color: var(--jpz-text-color-primary);
         }
 
         // 表头
         th {
-            border: 1px solid var(--table-border-color);
-            background-color: var(--table-header-bg-color);
+            border: 1px solid var(--jpz-table-border-color);
+            background-color: var(--jpz-table-header-bg-color);
             line-height: 2em; // 行高
             font-weight: 700;
-            color: var(--jpz-color-primary);
+            color: var(--jpz-text-color-primary);
         }
 
         // 表格单元格
         td {
-            border: 1px solid var(--table-border-color);
+            border: 1px solid var(--jpz-table-border-color);
         }
 
         // 表格偶数行
         // 为表格的偶数行设置背景颜色
         table tr:nth-child(2n) {
-            background-color: var(--table-n2-bg-color);
+            background-color: var(--jpz-table-n2-bg-color);
         }
 
         // 为表格的奇数行设置背景颜色
         table tr:nth-child(2n + 1) {
-            background-color: var(--jpz-bg-color-page);
+            background-color: var(--jpz-bg-color);
         }
     }
 
@@ -247,13 +250,13 @@
 
     // 数学公式
     .katex {
-        color: var(--jpz-color-primary);
+        color: var(--jpz-text-color-primary);
         padding: 0 4px 0 4px;
     }
 
     // 脚注
     .sr-only {
-        color: var(--jpz-color-primary);
+        color: var(--jpz-text-color-primary);
         font-size: 1.5em;
         margin: 0.5em 0 0.5em 0;
         display: block;
@@ -292,8 +295,7 @@
 
     // note
     .markdown-alert-note {
-        color: var(--markdown-alert-note-color);
-        // border: 1px solid var(--markdown-alert-note-border-color);
+        border: 1px solid var(--markdown-alert-note-border-color);
         background-color: var(--markdown-alert-note-bg-color);
         border: none;
 
@@ -304,11 +306,13 @@
                 fill: var(--markdown-alert-note-svg-fill-color);
             }
         }
+        p {
+            color: var(--markdown-alert-note-color);
+        }
     }
 
     // tip
     .markdown-alert-tip {
-        color: var(--markdown-alert-tip-color);
         border: 1px solid var(--markdown-alert-tip-border-color);
         background-color: var(--markdown-alert-tip-bg-color);
 
@@ -319,11 +323,13 @@
                 fill: var(--markdown-alert-tip-svg-fill-color);
             }
         }
+        p {
+            color: var(--markdown-alert-tip-color);
+        }
     }
 
     // important
     .markdown-alert-important {
-        color: var(--markdown-alert-important-color);
         border: 1px solid var(--markdown-alert-important-border-color);
         background-color: var(--markdown-alert-important-bg-color);
 
@@ -334,11 +340,13 @@
                 fill: var(--markdown-alert-important-svg-fill-color);
             }
         }
+        p {
+            color: var(--markdown-alert-important-color);
+        }
     }
 
     // warning
     .markdown-alert-warning {
-        color: var(--markdown-alert-warning-color);
         border: 1px solid var(--markdown-alert-warning-border-color);
         background-color: var(--markdown-alert-warning-bg-color);
 
@@ -348,6 +356,9 @@
             svg {
                 fill: var(--markdown-alert-warning-svg-fill-color);
             }
+        }
+        p {
+            color: var(--markdown-alert-warning-color);
         }
     }
 
@@ -363,6 +374,9 @@
             svg {
                 fill: var(--markdown-alert-caution-svg-fill-color);
             }
+        }
+        p {
+            color: var(--markdown-alert-caution-color);
         }
     }
 
