@@ -18,7 +18,6 @@
 </template>
 
 <script setup lang="ts">
-
 import LayoutHeader from "@/components/layout/header"
 import LayoutHome from "@/views/home/component"
 import LayoutFooter from "@/components/layout/footer"

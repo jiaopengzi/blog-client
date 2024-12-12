@@ -14,9 +14,9 @@
         ref="progressBar"
         class="progress-bar"
         @mousedown="onProgressBarClick"
-        @touchstart.passive="onProgressBarClick"
-        @mousemove="onProgressBarMousemove"
         @mouseleave="onProgressBarMouseleave"
+        @mousemove="onProgressBarMousemove"
+        @touchstart.passive="onProgressBarClick"
     >
         <!-- 缓冲 -->
         <div ref="buffered" class="buffered"></div>
@@ -40,8 +40,8 @@
     </div>
 </template>
 
-<script setup lang="ts">
-import { watch, useTemplateRef, onBeforeUnmount } from "vue"
+<script lang="ts" setup>
+import { onBeforeUnmount, useTemplateRef, watch } from "vue"
 // import { type PlayProgress } from "@/stores/player"
 import { type PlayProgress } from "@/components/player"
 import { formatDurationTime } from "@/utils/dateTime"
@@ -210,7 +210,7 @@ watch(
 )
 
 // 处理滑块的指针事件（鼠标和触摸）
-const onSliderDown = (event: MouseEvent | TouchEvent) => {
+const onSliderDown = () => {
     isDragging = true
     emit("is-dragging", isDragging)
     addDocumentEventListeners()
@@ -248,7 +248,7 @@ const onSliderPointerMove = (event: MouseEvent | TouchEvent) => {
 }
 
 // 滑块指针抬起事件
-const onSliderPointerUp = (event: MouseEvent | TouchEvent) => {
+const onSliderPointerUp = () => {
     isDragging = false
     emit("is-dragging", isDragging)
     removeDocumentEventListeners()
@@ -287,7 +287,7 @@ onBeforeUnmount(() => {
 })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 $bar-height: 6px; // 进度条高度
 
 .progress-bar {

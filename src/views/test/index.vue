@@ -1,20 +1,35 @@
+<!--
+ * @FilePath     : \blog-client\src\views\test\index1.vue
+-->
+
 <template>
-    <div class="page">
-        <el-scrollbar height="calc(100vh - 100px)" class="scroll-container">
-            <p v-for="item in 200" :key="item" class="scrollbar-demo-item">{{ item }}</p>
-        </el-scrollbar>
-    </div>
+    <button type="button" @click="togglePlayPause">点击</button>
 </template>
 
-<style scoped lang="scss">
-.page {
-    width: 100vw;
-    height: 100vh;
-    background-color: var(--jpz-bg-color);
+<script lang="ts" setup>
+import { reactive, ref, watchEffect } from "vue"
+import type { PlayerState } from "@/components/player"
+import { PlayerStateManager } from "@/components/player"
+
+defineOptions({ name: "VideoPlayerTest1" })
+
+// 定义props
+const { playerState } = defineProps<{
+    playerState: PlayerState
+}>()
+
+const localPlayerState = ref<PlayerStateManager>(new PlayerStateManager(playerState))
+
+// 将 playerProps 包裹成 reactive
+const reactivePlayerPropsRea = reactive(playerState)
+
+// 切换播放暂停
+const togglePlayPause = () => {
+    localPlayerState.value.togglePlayPause()
 }
 
-p {
-    width: 500px;
-    background-color: var(--jpz-bg-color-page);
-}
-</style>
+// 根据 playStatus 控制 video 播放暂停
+watchEffect(() => {
+    console.log("playStatus=============>1", reactivePlayerPropsRea.playStatus)
+})
+</script>

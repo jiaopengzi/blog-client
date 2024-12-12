@@ -4,10 +4,10 @@
 
 **开头的`$`必须在其右边紧跟一个非空格字符，而结尾的`$`必须在其左边紧接一个非空格字符，并且不能紧跟一个数字。**
 
--   勾股定理: $a^2+b^2=c^2$
--   等差数列求和公式: $S_{n}=n a_{1}+\frac{n(n-1)}{2} d, n \in N^{*}$
--   牛顿-莱布尼茨公式: $\int_{a}^{b} f(x) d x=F(b)-F(a)=\left.F(x)\right|_{a} ^{b}$
--   二项分布: $P_{n}(k)=C_{n}^{k} p^{k} q^{n-k} \quad k=0,1,2 \ldots \ldots, n$
+- 勾股定理: $a^2+b^2=c^2$
+- 等差数列求和公式: $S_{n}=n a_{1}+\frac{n(n-1)}{2} d, n \in N^{*}$
+- 牛顿-莱布尼茨公式: $\int_{a}^{b} f(x) d x=F(b)-F(a)=\left.F(x)\right|_{a} ^{b}$
+- 二项分布: $P_{n}(k)=C_{n}^{k} p^{k} q^{n-k} \quad k=0,1,2 \ldots \ldots, n$
 
 ### 1.2 块公式
 
@@ -66,10 +66,10 @@ $$
 
 ## 2 物理公式
 
--   牛顿第一定律: $\sum \vec{F}_{i}=\frac{\mathrm{d} \vec{v}}{\mathrm{d} t}=0$
--   牛顿第二定律: $\vec{F}=\frac{\mathrm{d} m}{\mathrm{d} t} \vec{v}+m \frac{\mathrm{d} \vec{v}}{\mathrm{d} t}=\frac{\mathrm{d} m}{\mathrm{d} t} \vec{v}+m \vec{a}=\frac{\mathrm{d} m}{\mathrm{d} t} \vec{v}+m \frac{\mathrm{d}^{2} \vec{r}}{\mathrm{d} t^{2}}$
--   牛顿第三定律: $\overrightarrow{F_{12}}=-\overrightarrow{F_{21}}$
--   质能守恒: $E=mc^2$
+- 牛顿第一定律: $\sum \vec{F}_{i}=\frac{\mathrm{d} \vec{v}}{\mathrm{d} t}=0$
+- 牛顿第二定律: $\vec{F}=\frac{\mathrm{d} m}{\mathrm{d} t} \vec{v}+m \frac{\mathrm{d} \vec{v}}{\mathrm{d} t}=\frac{\mathrm{d} m}{\mathrm{d} t} \vec{v}+m \vec{a}=\frac{\mathrm{d} m}{\mathrm{d} t} \vec{v}+m \frac{\mathrm{d}^{2} \vec{r}}{\mathrm{d} t^{2}}$
+- 牛顿第三定律: $\overrightarrow{F_{12}}=-\overrightarrow{F_{21}}$
+- 质能守恒: $E=mc^2$
 
 万有引力定律: $F=\frac{G M m}{r^{2}}$
 $$G \frac{m M}{(r+h)^{2}}=m \frac{\nu^{2}}{(r+h)}$$

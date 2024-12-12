@@ -1,5 +1,0 @@
-# .eslintignore
-dist
-node_modules
-package.json
-src/components/common/icons/assets

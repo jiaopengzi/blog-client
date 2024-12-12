@@ -13,6 +13,93 @@
 // ========================================== live sass compiler 插件使用 结束 ==========================================
 
 html {
+    // 使用 element-plus 的颜色
+    --jpz-bg-color: var(--el-bg-color);
+    --jpz-bg-color-page: var(--el-bg-color-page);
+    --jpz-color-overlay: var(--el-bg-color-overlay);
+    --jpz-border-color: var(--el-border-color);
+    --jpz-tabs-header-height: var(--el-tabs-header-height);
+
+    // 阴影
+    --jpz-box-shadow-lighter: var(--el-box-shadow-lighter);
+    --jpz-box-shadow-light: var(--el-box-shadow-light);
+    --jpz-box-shadow-dark: var(--el-box-shadow-dark);
+    --jpz-post-item-main-hover-shadow: 0 0 5px #ccc, 0 0 10px #ccc; // 主文章hover阴影
+
+    // 文字颜色
+    --jpz-text-color-primary: var(--el-text-color-primary);
+    --jpz-text-color-regular: var(--el-text-color-regular);
+    --jpz-text-color-secondary: var(--el-text-color-secondary);
+    --jpz-text-color-placeholder: var(--el-text-color-placeholder);
+    --jpz-text-color-disabled: var(--el-text-color-disabled);
+    --title-color: var(--jpz-color-primary);
+
+    // 代码块样式
+    --jpz-code-block-bg-color: var(--el-bg-color-page);
+    --jpz-code-block-color: var(--el-bg-color-page);
+
+    // 行内代码块样式
+    --code-bg-color: #dddddd;
+    --code-color: #d63200;
+
+    // 引用块样式
+    --jpz-blockquote-border-color: #f66;
+    --jpz-blockquote-color: var(--el-text-color-primary);
+    --jpz-blockquote-bg-color: var(--el-bg-color-page);
+
+    --strong-color: var(--title-color);
+    --h2-underline-color: var(--title-color);
+    --horizontal-divider-color: var(--title-color);
+    --height-light-color: var(--drake-highlight);
+    --height-light-border-color: var(--drake-highlight);
+    --yaml-color: #777777;
+    --yaml-bg-color: #f7f7f7;
+    --footnotes-bg-color: #3c3d3e;
+    --footnotes-highlight: #ffd760;
+    --jpz-table-border-color: var(--el-border-color);
+    --jpz-table-header-bg-color: var(--el-bg-color-page);
+    --jpz-table-bg-color: var(--el-bg-color);
+    --jpz-table-n2-bg-color: var(--el-bg-color-page);
+
+    --input-bg-color: #f2f2f2;
+    --btn-hover-bg-color: #f2f2f2;
+    --footnote-sup-color: #0969da; // 脚注上标颜色 深色 #2F81F7
+
+    // note
+    --markdown-alert-note-bg-color: #fffbe6;
+    --markdown-alert-note-border-color: #ffe58f;
+    --markdown-alert-note-color: #ffaa00;
+    --markdown-alert-note-title-color: #ffaa00;
+    --markdown-alert-note-svg-fill-color: #ffaa00;
+
+    // tip
+    --markdown-alert-tip-bg-color: #f0f9eb;
+    --markdown-alert-tip-border-color: #b7eb8f;
+    --markdown-alert-tip-color: #409eff;
+    --markdown-alert-tip-title-color: #409eff;
+    --markdown-alert-tip-svg-fill-color: #409eff;
+
+    // warning
+    --markdown-alert-warning-bg-color: #fff7cd;
+    --markdown-alert-warning-border-color: #ffe58f;
+    --markdown-alert-warning-color: #e6a23c;
+    --markdown-alert-warning-title-color: #e6a23c;
+    --markdown-alert-warning-svg-fill-color: #e6a23c;
+
+    // important
+    --markdown-alert-important-bg-color: #fff0f0;
+    --markdown-alert-important-border-color: #ffa39e;
+    --markdown-alert-important-color: #f56c6c;
+    --markdown-alert-important-title-color: #f56c6c;
+    --markdown-alert-important-svg-fill-color: #f56c6c;
+
+    // caution
+    --markdown-alert-caution-bg-color: #fffbe6;
+    --markdown-alert-caution-border-color: #ffe58f;
+    --markdown-alert-caution-color: #ffaa00;
+    --markdown-alert-caution-title-color: #ffaa00;
+    --markdown-alert-caution-svg-fill-color: #ffaa00;
+
     // 滚动条
     --scrollbar-y-width: 6px; // Y轴滚动条宽度
     --scrollbar-x-height: 12px; // x轴滚动条高度
@@ -23,6 +110,7 @@ html {
     }
 
     ::-webkit-scrollbar-thumb {
+        background-color: #cccccc;
         border-radius: 10px;
     }
 

@@ -22,16 +22,16 @@
 
 # 多层无序列表
 
--   content1
--   content2
-    -   content2.1
-    -   content2.2
-    -   content2.3
-        -   content2.3.1
-        -   content2.3.2
-        -   content2.3.3
-            -   content2.3.3.1
-            -   content2.3.3.2
+- content1
+- content2
+    - content2.1
+    - content2.2
+    - content2.3
+        - content2.3.1
+        - content2.3.2
+        - content2.3.3
+            - content2.3.3.1
+            - content2.3.3.2
 
 # 多层有序列表
 
@@ -119,9 +119,9 @@ Map_Area_Title_L1 = SELECTEDVALUE('D01_省份表'[F_05_省简称2])
 
 ## tasklist
 
--   [x] Write the press release
--   [x] Update the website
--   [ ] Contact the media
+- [x] Write the press release
+- [x] Update the website
+- [ ] Contact the media
 
 **声明以下地图元==素仅供==学习交流所用，如需地图公开使用请提前做好报审工作。**
 
@@ -160,11 +160,11 @@ jiaopengzi@outlook.com
 
 我们先来看结论：
 
--   省级市场共计：34 个，已开拓：34 个；占比：100.0%。
+- 省级市场共计：34 个，已开拓：34 个；占比：100.0%。
 
--   地市级市场共计：370 个，已开拓：214 个；占比：57.8%。
+- 地市级市场共计：370 个，已开拓：214 个；占比：57.8%。
 
--   区县级市场共计：2875 个，已开拓：356 个；占比：12.4%。
+- 区县级市场共计：2875 个，已开拓：356 个；占比：12.4%。
 
 其实从这个三条结论来看，市场层级越下沉，其实我们的空白市场越多；当然要业务能支撑这样的规模才行。
 

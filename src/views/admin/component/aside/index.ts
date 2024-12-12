@@ -328,6 +328,4 @@ export const adminMenuItemMapWithIndexMap = Object.fromEntries(
     Object.entries(adminMenuItemMapWithIndex).map(([key, value]) => [value.index, value]),
 )
 
-
-
 export { default } from "./index.vue"
