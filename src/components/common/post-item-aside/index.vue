@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-30 16:23:53
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 17:12:43
+ * @LastEditTime : 2024-12-12 15:35:15
  * @FilePath     : \blog-client\src\components\common\post-item-aside\index.vue
  * @Description  : 单个文章元素
  * @Blog         : https://jiaopengzi.com
@@ -13,8 +13,8 @@
     <div class="post-item">
         <!-- 缩略图 -->
         <div class="thumbnail">
-            <a :href="props.postData.thumbnailHref">
-                <img class="thumbnail-img" :src="props.postData.thumbnailSrc" alt="" />
+            <a :href="postData.thumbnailHref">
+                <img class="thumbnail-img" :src="postData.thumbnailSrc" alt="" />
             </a>
         </div>
 
@@ -22,20 +22,18 @@
         <div class="content">
             <!-- 标题 -->
             <div>
-                <a :href="props.postData.titleHref">
-                    <h2 class="title">{{ props.postData.title }}</h2>
+                <a :href="postData.titleHref">
+                    <h2 class="title">{{ postData.title }}</h2>
                 </a>
             </div>
 
             <!-- 作者 日志 访问量 -->
             <div class="meta">
                 <span class="meta-view meta-item">
-                    <el-icon>
-                        <View />
-                    </el-icon>
-                    {{ view }}
+                    <el-icon> <View /> </el-icon>
+                    {{ unit(postData.view) }}
                 </span>
-                <span class="meta-date meta-item">{{ props.postData.date }}</span>
+                <span class="meta-date meta-item">{{ postData.date }}</span>
             </div>
         </div>
     </div>
@@ -43,25 +41,18 @@
 
 <script setup lang="ts">
 import type { PostItemAsideObj } from "@/components/common/post-item-aside"
-import { computed } from "vue"
 import { View } from "@element-plus/icons-vue"
+import { unit } from "@/utils/unit"
 
 defineOptions({ name: "PostItemAside" })
 
-const props = defineProps<{
+const { postData } = defineProps<{
     postData: PostItemAsideObj
 }>()
-
-const view = computed(() =>
-    // 显示千分符 , 如果大于 1 万 就显示 ?w
-    props.postData.view > 10000
-        ? `${Math.floor(props.postData.view / 10000)}w`
-        : props.postData.view.toLocaleString(),
-)
 </script>
 <style scoped lang="scss">
 .post-item {
-    position: relative;
+    display: flex;
     height: 75px;
     border-radius: 3px;
     overflow: hidden;
@@ -73,11 +64,11 @@ const view = computed(() =>
 }
 
 .thumbnail {
-    float: left;
     width: 100px;
     height: 100%;
     box-sizing: border-box;
     overflow: hidden;
+    border-radius: 3px;
 }
 
 .thumbnail-img {
@@ -89,6 +80,12 @@ const view = computed(() =>
 
 .thumbnail:hover .thumbnail-img {
     transform: scale(1.2);
+}
+
+.content {
+    width: calc(100% - 100px);
+    height: 100%;
+    padding-left: 5px;
 }
 
 .title {
@@ -107,11 +104,10 @@ const view = computed(() =>
 
 .meta {
     display: flex;
-    align-items: center;
+    justify-content: space-between;
 }
 
 .meta-item {
-    margin-right: 10px;
     color: var(--jpz-text-color-placeholder);
     font-size: smaller;
     line-height: 150%;

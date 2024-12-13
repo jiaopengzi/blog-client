@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-25 15:50:05
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 17:08:13
+ * @LastEditTime : 2024-12-13 15:33:20
  * @FilePath     : \blog-client\src\components\common\post-item-main\index.vue
  * @Description  : 单个文章元素
  * @Blog         : https://jiaopengzi.com
@@ -14,73 +14,63 @@
         <!-- 左上角提示符 -->
         <div class="tip"></div>
         <!-- 分类 -->
-        <a :href="props.postData.categoryHref"
-            ><span class="category">{{ props.postData.category }}</span></a
-        >
+        <span class="category">{{ postData.categories[0].name }}</span>
         <!-- 缩略图 -->
         <div class="thumbnail">
-            <a :href="props.postData.thumbnailHref">
-                <img class="thumbnail-img" :src="props.postData.thumbnailSrc" alt="" />
-            </a>
+            <img :src="postData.thumbnail" alt="" class="thumbnail-img" />
         </div>
 
         <!-- 文章摘要内容 -->
         <div class="content">
             <!-- 标题 -->
-            <a :href="props.postData.titleHref">
-                <h2 class="title">{{ props.postData.title }}</h2>
-            </a>
+
+            <h2 class="title">{{ postData.post_title }}</h2>
 
             <!-- 摘要文字 -->
             <div class="summary">
-                <p>{{ props.postData.summary }}</p>
+                <p>{{ postData.seo_description }}</p>
             </div>
 
             <!-- 作者 日志 访问量 -->
             <div class="meta">
                 <span class="meta-avatar meta-item">
                     <AvatarInitials
-                        :name="props.postData.name"
+                        :avatar="postData.author_info.user_avatar"
+                        :name="postData.author_info.user_display_name"
                         :size="24"
-                        :avatar="props.postData.avatar"
                     />
                 </span>
-                <span class="meta-date meta-item">{{ props.postData.date }}</span>
-                <span class="meta-view meta-item">
-                    <el-icon>
-                        <View />
-                    </el-icon>
-                    {{ view }}
+                <span class="meta-date meta-item">{{ postData.created_at }}</span>
+                <span v-if="postData.view_count" class="meta-view meta-item">
+                    <el-icon><View /></el-icon>
+                    {{ unit(postData.view_count) }}
+                </span>
+                <span v-if="postData.comment_count" class="meta-comment meta-item">
+                    <el-icon><ChatRound /></el-icon>
+                    {{ unit(postData.comment_count) }}
                 </span>
             </div>
         </div>
 
         <!-- 阅读跳转 -->
-        <a :href="props.postData.readMoreHref"><span class="read-more">阅读全文</span></a>
+        <span class="read-more">阅读全文</span>
     </div>
 </template>
 
-<script setup lang="ts">
-import type { PostItemMainObj } from "@/components/common/post-item-main"
-import { computed } from "vue"
-import { View } from "@element-plus/icons-vue"
+<script lang="ts" setup>
+import type { PostResPagination } from "@/api/post/common"
+import { ChatRound, View } from "@element-plus/icons-vue"
+import { unit } from "@/utils/unit"
 
 import AvatarInitials from "@/components/common/avatar-initials"
 
 defineOptions({ name: "PostItemMain" })
 
-const props = defineProps<{
-    postData: PostItemMainObj
+const { postData } = defineProps<{
+    postData: PostResPagination
 }>()
-
-const view = computed(() =>
-    // 显示千分符 , 如果大于 1 万 就显示 ?w
-    props.postData.view > 10000
-        ? `${Math.floor(props.postData.view / 10000)}w`
-        : props.postData.view.toLocaleString(),
-)
 </script>
-<style scoped lang="scss">
+<style lang="scss" scoped>
 // 公共样式
 .post-item {
     position: relative;
@@ -101,7 +91,7 @@ const view = computed(() =>
 .tip {
     position: absolute;
     top: 10px;
-    left: 0px;
+    left: 0;
     z-index: 1;
     line-height: 200%;
     font-size: 14px;
@@ -115,7 +105,7 @@ const view = computed(() =>
         content: "";
         position: absolute;
         top: 0;
-        left: 0px; // 使得红色外边框在 .tip 的左侧
+        left: 0; // 使得红色外边框在 .tip 的左侧
         height: 28px;
         border-right: 6px solid var(--jpz-color-primary); // 绿色内边框
     }

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:00:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-30 12:14:31
+ * @LastEditTime : 2024-12-13 18:19:47
  * @FilePath     : \blog-client\src\api\upload\getUploadFileUrl.ts
  * @Description  : 获取上传文件的 url
  * @Blog         : https://jiaopengzi.com
@@ -11,6 +11,7 @@
 
 import request from "@/api/request"
 import { routerGroup } from "@/api/routerGroup"
+import type { AxiosPromise } from "axios"
 import { type Res } from "@/api/responseCode"
 
 export interface GetUploadFileUrlRequest {
@@ -18,7 +19,7 @@ export interface GetUploadFileUrlRequest {
 }
 
 // 获取上传文件的 url
-export function getUploadFileUrlAPI(requestData: GetUploadFileUrlRequest): Promise<Res> {
+export function getUploadFileUrlAPI(requestData: GetUploadFileUrlRequest): AxiosPromise<Res> {
     const urlStr = routerGroup + "/upload/get-upload-file-url"
     return request({
         url: urlStr,
@@ -28,7 +29,7 @@ export function getUploadFileUrlAPI(requestData: GetUploadFileUrlRequest): Promi
 }
 
 // 获取上传头像的 url
-export function getUploadFileUrlAvatarAPI(requestData: GetUploadFileUrlRequest): Promise<Res> {
+export function getUploadFileUrlAvatarAPI(requestData: GetUploadFileUrlRequest): AxiosPromise<Res> {
     const urlStr = routerGroup + "/upload/avatar/get-upload-file-url"
     return request({
         url: urlStr,
@@ -38,7 +39,7 @@ export function getUploadFileUrlAvatarAPI(requestData: GetUploadFileUrlRequest):
 }
 
 // 编辑器上传文件获取上传文件的 url
-export function getUploadFileUrlEditorAPI(requestData: GetUploadFileUrlRequest): Promise<Res> {
+export function getUploadFileUrlEditorAPI(requestData: GetUploadFileUrlRequest): AxiosPromise<Res> {
     const urlStr = routerGroup + "/upload/editor/get-upload-file-url"
     return request({
         url: urlStr,

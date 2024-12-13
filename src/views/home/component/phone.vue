@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:43:31
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 18:07:40
+ * @LastEditTime : 2024-12-13 15:57:10
  * @FilePath     : \blog-client\src\views\home\component\phone.vue
  * @Description  : phone 内容页
  * @Blog         : https://jiaopengzi.com
@@ -33,18 +33,6 @@
                     <Carousel />
                     <!-- 文章列表 -->
                     <PostList />
-                    <!-- 分页 -->
-                    <div class="pagination-block phone">
-                        <el-pagination
-                            v-model:current-page="currentPage"
-                            v-model:page-size="pageSize"
-                            :background="true"
-                            :size="size"
-                            layout="prev, pager, next"
-                            :total="totalPages"
-                            @current-change="handleCurrentChange"
-                        />
-                    </div>
                 </el-main>
             </el-container>
         </div>
@@ -54,7 +42,6 @@
     </el-backtop>
 </template>
 <script setup lang="ts">
-import { ref } from "vue"
 import { ArrowRight, Location } from "@element-plus/icons-vue"
 import { routeObj } from "@/router/routeAll"
 
@@ -62,14 +49,6 @@ import Carousel from "@/views/home/component/carousel"
 import PostList from "@/views/home/component/post-list"
 
 defineOptions({ name: "HomePhone" })
-const size = ref("small")
-const totalPages = ref(1000)
-const currentPage = ref(5)
-const pageSize = ref(10)
-
-const handleCurrentChange = (val: number) => {
-    console.log(`current page: ${val}`)
-}
 </script>
 <style scoped lang="scss">
 .content {

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-07 14:38:43
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-07 14:44:03
+ * @LastEditTime : 2024-12-13 18:19:57
  * @FilePath     : \blog-client\src\api\upload\updateFile.ts
  * @Description  : 更新文件
  * @Blog         : https://jiaopengzi.com
@@ -11,6 +11,7 @@
 
 import request from "@/api/request"
 import { routerGroup } from "@/api/routerGroup"
+import type { AxiosPromise } from "axios"
 import { type Res } from "@/api/responseCode"
 
 export interface UpdateFileRequest {
@@ -22,7 +23,7 @@ export interface UpdateFileRequest {
     is_video: boolean // 是否为视频
 }
 
-export function updateFileAPI(req: UpdateFileRequest): Promise<Res> {
+export function updateFileAPI(req: UpdateFileRequest): AxiosPromise<Res> {
     return request({
         url: routerGroup + "/upload/update",
         method: "post",

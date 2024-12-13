@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 16:42:10
+ * @LastEditTime : 2024-12-13 17:47:48
  * @FilePath     : \blog-client\src\views\reset-password\index.vue
  * @Description  : 重置密码
  * @Blog         : https://jiaopengzi.com
@@ -101,7 +101,7 @@ import { captchaSendAPI } from "@/api/captcha/send"
 
 import type { CaptchaCheckRequest } from "@/api/captcha/check"
 import { captchaCheckAPI } from "@/api/captcha/check"
-import { ResponseCode, CaptchaPurpose } from "@/api/responseCode"
+import { ResponseCode, CaptchaPurpose, handleErrInfo } from "@/api/responseCode"
 import { routeObj } from "@/router/routeAll"
 import router from "@/router/index"
 import type { ResetPasswordForm } from "@/views/reset-password"
@@ -179,12 +179,7 @@ async function checkSendCaptcha(): Promise<void> {
         const { data } = await captchaSendAPI(req)
 
         if (data.code !== ResponseCode.CaptchaSendSuccess && data.data !== null) {
-            // 历遍 data 中的错误信息 并抛出第一个key错误信息 停止循环
-            for (const key in data.data) {
-                if (Object.prototype.hasOwnProperty.call(data.data, key)) {
-                    throw new Error(data.data[key]) // 抛出错误信息
-                }
-            }
+            throw new Error(handleErrInfo(data))
         }
         if (data.code !== ResponseCode.CaptchaSendSuccess && data.data === null) {
             throw new Error(data.msg) // 抛出错误信息

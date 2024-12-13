@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 18:53:25
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-02 11:55:35
+ * @LastEditTime : 2024-12-13 18:09:14
  * @FilePath     : \blog-client\src\components\common\bind-email-dialog\index.vue
  * @Description  : 绑定邮箱弹窗
  * @Blog         : https://jiaopengzi.com

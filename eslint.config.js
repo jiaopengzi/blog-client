@@ -5,22 +5,19 @@ import skipFormatting from "@vue/eslint-config-prettier/skip-formatting"
 
 export default [
     {
-        ignores: [
-            "**/package.json",
-            "dist/*",
-            "node_modules/*",
-            "src/components/common/icons/assets/*",
-        ],
-    },
-
-    {
         name: "app/files-to-lint",
         files: ["**/*.{ts,mts,tsx,vue}"],
     },
 
     {
         name: "app/files-to-ignore",
-        ignores: ["**/dist/**", "**/dist-ssr/**", "**/coverage/**"],
+        ignores: [
+            "**/dist/**",
+            "**/dist-ssr/**",
+            "**/coverage/**",
+            "**/node_modules/**",
+            "**/src/components/common/icons/assets/**",
+        ],
     },
 
     ...pluginVue.configs["flat/essential"],
@@ -36,6 +33,8 @@ export default [
         rules: {
             "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
             "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
+            "@typescript-eslint/no-explicit-any": "off",
+            "@typescript-eslint/no-unused-vars": "warn",
         },
     },
 ]

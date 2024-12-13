@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 20:06:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-02 10:53:27
+ * @LastEditTime : 2024-12-13 18:26:32
  * @FilePath     : \blog-client\src\utils\requestStrategyBase.ts
  * @Description  : 上传请求策略基类
  * @Blog         : https://jiaopengzi.com
@@ -16,6 +16,7 @@ import type { RequestStrategy, Chunk, UploadFileInfo } from "@/utils/chunkUpload
 import { type ConfirmBeforeUploadRequest } from "@/api/upload/confirmBeforeUpload"
 import { type GetUploadFileUrlRequest } from "@/api/upload/getUploadFileUrl"
 import { type ChunkMetadata } from "@/api/upload/chunk"
+import type { AxiosPromise } from "axios"
 import type { Res } from "@/api/responseCode"
 import { uploadFileBySignedUrlAPI } from "@/api/upload/uploadFileBySignedUrl"
 import { type ConfirmAfterUploadBySignedUrlRequest } from "@/api/upload/confirmAfterUploadBySignedUrl"
@@ -37,19 +38,19 @@ export abstract class RequestStrategyBase implements RequestStrategy {
             this.fileName = this.elUploadRequestOptions.file.name
         }
     }
-    abstract confirmBeforeUploadAPI(req: ConfirmBeforeUploadRequest): Promise<Res>
+    abstract confirmBeforeUploadAPI(req: ConfirmBeforeUploadRequest): AxiosPromise<Res>
     // abstract uploadFileBySignedUrlAPI(
     //   file: File,
     //   signedUrl: string,
     //   headers: Record<string, string>,
     //   onProgress: (percent: number) => void,
-    // ): Promise<Res>
+    // ): AxiosPromise<Res>
     abstract confirmAfterUploadBySignedUrlAPI(
         req: ConfirmAfterUploadBySignedUrlRequest,
-    ): Promise<Res>
+    ): AxiosPromise<Res>
     abstract handleConfirmBeforeUploadError(errorMessage: string): void
-    abstract uploadChunkAPI(formData: FormData, meta: ChunkMetadata): Promise<Res>
-    abstract getUploadFileUrlAPI(req: GetUploadFileUrlRequest): Promise<Res>
+    abstract uploadChunkAPI(formData: FormData, meta: ChunkMetadata): AxiosPromise<Res>
+    abstract getUploadFileUrlAPI(req: GetUploadFileUrlRequest): AxiosPromise<Res>
 
     async confirmBeforeUpload(req: ConfirmBeforeUploadRequest): Promise<UploadFileInfo> {
         return await this.confirmBeforeUploadAPI(req)
@@ -92,16 +93,18 @@ export abstract class RequestStrategyBase implements RequestStrategy {
         }
     }
 
-    async confirmAfterUploadBySignedUrl(req: ConfirmAfterUploadBySignedUrlRequest): Promise<Res> {
-        return (await this.confirmAfterUploadBySignedUrlAPI(req)).data
+    async confirmAfterUploadBySignedUrl(
+        req: ConfirmAfterUploadBySignedUrlRequest,
+    ): AxiosPromise<Res> {
+        return await this.confirmAfterUploadBySignedUrlAPI(req)
     }
 
-    async uploadChunk(chunk: Chunk): Promise<Res> {
+    async uploadChunk(chunk: Chunk): AxiosPromise<Res> {
         const formData = new FormData()
         formData.append(MultipartFormFileKey, chunk.blob, chunk.part_index + this.fileName)
         const meta: ChunkMetadata = {
-            File_id: this.uploadFileInfo?.id!,
-            sub_dir: this.uploadFileInfo?.sub_dir!,
+            File_id: this.uploadFileInfo?.id ?? "",
+            sub_dir: this.uploadFileInfo?.sub_dir ?? "",
             hash_key: chunk.hash_key,
             hash_algorithm: chunk.hash_algorithm,
             part_numbers: chunk.part_numbers,
@@ -109,10 +112,10 @@ export abstract class RequestStrategyBase implements RequestStrategy {
             start: chunk.start,
             end: chunk.end,
         }
-        return (await this.uploadChunkAPI(formData, meta)).data
+        return await this.uploadChunkAPI(formData, meta)
     }
 
-    async getUploadFileUrl(file_id: string): Promise<Res> {
-        return (await this.getUploadFileUrlAPI({ file_id })).data
+    async getUploadFileUrl(file_id: string): AxiosPromise<Res> {
+        return await this.getUploadFileUrlAPI({ file_id })
     }
 }

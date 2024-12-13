@@ -375,7 +375,7 @@ async function redirectToSocialLogin(
     const resObj = await handleResponse<Res>(requestPromise) // 使用辅助函数处理请求
 
     if (resObj.code === successCode) {
-        window.location.href = resObj.data // 重定向到第三方登录页面
+        window.location.href = resObj.data  // 重定向到第三方登录页面
     }
 }
 

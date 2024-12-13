@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-18 08:47:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-10 15:28:52
+ * @LastEditTime : 2024-12-13 18:28:57
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\edit-user\index.vue
  * @Description  : 编辑用户
  * @Blog         : https://jiaopengzi.com
@@ -116,9 +116,9 @@ import {
     type EditUserInfoByAdminRequest,
     editUserInfoByAdminAPI,
 } from "@/api/user/editUserInfoByAdmin"
-import { ResponseCode } from "@/api/responseCode"
+import { ResponseCode, handleErrInfo } from "@/api/responseCode"
 import type { EditUserByAdminForm } from "@/views/admin/component/main/user-view/component/edit-user"
-import { type PgSqlDateTime } from "@/api/common"
+// import { type PgSqlDateTime } from "@/api/common"
 import { useFormValidation } from "@/components/hooks/useFormValidation"
 import { generatePassword } from "@/utils/password"
 import { type Role } from "@/api/permissionRole/role"
@@ -196,28 +196,28 @@ const shortcuts = [
 // 表单实例
 const editUserFormRef = useTemplateRef<FormInstance>("editUserFormRef")
 
-// 按需获取禁用时间
-const getPgSqlDateTime = (disableExpiresAt: PgSqlDateTime) => {
-    if (!disableExpiresAt.Time) {
-        return {
-            time: null,
-            valid: false,
-        }
-    }
-    const now = new Date().getTime() // 获取当前时间的时间戳
-    const disableExpiresAtTime = new Date(disableExpiresAt.Time).getTime() // 获取 disableExpiresAt.Time 的时间戳
-    // 比较两个时间戳，如果 disableExpiresAtTime 小于当前时间 now，则 valid 为 false，否则为 true
-    if (disableExpiresAtTime > now) {
-        return {
-            time: disableExpiresAt.Time,
-            valid: true,
-        }
-    }
-    return {
-        time: null,
-        valid: false,
-    }
-}
+// // 按需获取禁用时间
+// const getPgSqlDateTime = (disableExpiresAt: PgSqlDateTime) => {
+//     if (!disableExpiresAt.Time) {
+//         return {
+//             time: null,
+//             valid: false,
+//         }
+//     }
+//     const now = new Date().getTime() // 获取当前时间的时间戳
+//     const disableExpiresAtTime = new Date(disableExpiresAt.Time).getTime() // 获取 disableExpiresAt.Time 的时间戳
+//     // 比较两个时间戳，如果 disableExpiresAtTime 小于当前时间 now，则 valid 为 false，否则为 true
+//     if (disableExpiresAtTime > now) {
+//         return {
+//             time: disableExpiresAt.Time,
+//             valid: true,
+//         }
+//     }
+//     return {
+//         time: null,
+//         valid: false,
+//     }
+// }
 
 // 表单数据
 const editUserForm = reactive<EditUserByAdminForm>({
@@ -326,56 +326,47 @@ const rules = reactive<FormRules<EditUserByAdminForm>>({
  */
 const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    try {
-        await formEl.validate(async (valid) => {
-            if (valid) {
-                // 当前时间
-                const now = new Date()
-                // 当前时间小于禁用时间 valid = true
-                if (
-                    editUserForm.disableExpiresAt.Time &&
-                    now >= editUserForm.disableExpiresAt.Time
-                ) {
-                    ShowMsgTip(ShowMsgTip.MsgType.error, "禁用时间不能小于当前时间", 6000)
-                    return
-                }
-                if (
-                    editUserForm.disableExpiresAt.Time &&
-                    now < editUserForm.disableExpiresAt.Time
-                ) {
-                    editUserForm.disableExpiresAt.Valid = true
-                }
-                if (!editUserForm.disableExpiresAt.Time) {
-                    editUserForm.disableExpiresAt.Valid = false
-                }
 
-                const req: EditUserInfoByAdminRequest = {
-                    edit_user_id: editUserForm.editUserID,
-                    user_name: editUserForm.userName,
-                    email: editUserForm.email,
-                    disable_expires_at: editUserForm.disableExpiresAt,
-                    password: editUserForm.password,
-                    role_name: editUserForm.roleName,
-                    nick_name: editUserForm.nickName,
-                    sex: editUserForm.sex,
-                    description: editUserForm.description,
-                }
-                const { data } = await editUserInfoByAdminAPI(req)
-
-                if (data.code === ResponseCode.EditUserInfoByAdminSuccess) {
-                    // 添加成功提示
-                    emit("edit-user-status", true)
-                    ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
-                } else {
-                    // 添加失败提示
-                    ShowMsgTip(ShowMsgTip.MsgType.error, data.msg, 0)
-                }
-                console.log("submit!")
+    await formEl.validate(async (valid) => {
+        if (valid) {
+            // 当前时间
+            const now = new Date()
+            // 当前时间小于禁用时间 valid = true
+            if (editUserForm.disableExpiresAt.Time && now >= editUserForm.disableExpiresAt.Time) {
+                ShowMsgTip(ShowMsgTip.MsgType.error, "禁用时间不能小于当前时间", 6000)
+                return
             }
-        })
-    } catch (error) {
-        return
-    }
+            if (editUserForm.disableExpiresAt.Time && now < editUserForm.disableExpiresAt.Time) {
+                editUserForm.disableExpiresAt.Valid = true
+            }
+            if (!editUserForm.disableExpiresAt.Time) {
+                editUserForm.disableExpiresAt.Valid = false
+            }
+
+            const req: EditUserInfoByAdminRequest = {
+                edit_user_id: editUserForm.editUserID,
+                user_name: editUserForm.userName,
+                email: editUserForm.email,
+                disable_expires_at: editUserForm.disableExpiresAt,
+                password: editUserForm.password,
+                role_name: editUserForm.roleName,
+                nick_name: editUserForm.nickName,
+                sex: editUserForm.sex,
+                description: editUserForm.description,
+            }
+            const { data } = await editUserInfoByAdminAPI(req)
+
+            if (data.code === ResponseCode.EditUserInfoByAdminSuccess) {
+                // 添加成功提示
+                emit("edit-user-status", true)
+                ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
+            } else {
+                // 添加失败提示
+                ShowMsgTip(ShowMsgTip.MsgType.error, data.msg, 0)
+            }
+            console.log("submit!")
+        }
+    })
 }
 
 // 头像更新状态
@@ -391,7 +382,7 @@ const updateAvatarToDB = async (avatarUrl: string) => {
             getUserInfo()
             emit("edit-user-status", true)
         } else {
-            ShowMsgTip(ShowMsgTip.MsgType.error, res.data.msg, 0)
+            ShowMsgTip(ShowMsgTip.MsgType.error, handleErrInfo(res), 0)
         }
     })
 }

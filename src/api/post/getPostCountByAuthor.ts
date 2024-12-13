@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-03 14:46:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-03 14:51:50
+ * @LastEditTime : 2024-12-13 16:58:31
  * @FilePath     : \blog-client\src\api\post\getPostCountByAuthor.ts
  * @Description  : 按照作者统计文章数量
  * @Blog         : https://jiaopengzi.com
@@ -12,10 +12,9 @@
 import request from "@/api/request"
 import { routerGroup } from "@/api/routerGroup"
 import type { AxiosPromise } from "axios"
+import { type Res } from "@/api/responseCode"
 
-export interface GetPostCountByAuthorResponse {
-    code: number
-    msg: string
+export interface GetPostCountByAuthorResponse extends Res {
     data: PostCountByAuthor[]
 }
 

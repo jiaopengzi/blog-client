@@ -50,14 +50,6 @@ import { uploadAvatar } from "./uploadAvatar"
 
 defineOptions({ name: "AvatarUpload" })
 
-// 数据
-const props = defineProps({
-    avatar_user_id: {
-        type: String,
-        default: undefined, // 如果不传递，则默认为 undefined
-    },
-})
-
 const emit = defineEmits<{
     (event: "avatar-upload-url", value: string): void // 头像上传地址
 }>()

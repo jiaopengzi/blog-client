@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:26:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 17:19:51
+ * @LastEditTime : 2024-12-13 15:56:45
  * @FilePath     : \blog-client\src\views\home\component\pc.vue
  * @Description  : pc 内容页
  * @Blog         : https://jiaopengzi.com
@@ -34,18 +34,6 @@
                     <Carousel />
                     <!-- 文章列表 -->
                     <PostList />
-                    <!-- 分页 -->
-                    <div class="pagination-block">
-                        <el-pagination
-                            v-model:current-page="currentPage"
-                            v-model:page-size="pageSize"
-                            :page-sizes="pageSizes"
-                            :background="true"
-                            layout="prev, pager, next, jumper, total"
-                            :total="total"
-                            @current-change="handleCurrentChange"
-                        />
-                    </div>
                 </el-main>
 
                 <el-aside ref="asideRef" class="el-aside">
@@ -68,7 +56,7 @@
     </el-backtop>
 </template>
 <script setup lang="ts">
-import { ref, useTemplateRef } from "vue"
+import { useTemplateRef } from "vue"
 import { useResizeObserver } from "@vueuse/core"
 import router from "@/router"
 import { ArrowRight, Location } from "@element-plus/icons-vue"
@@ -86,15 +74,6 @@ import type { ElAside } from "element-plus"
 defineOptions({ name: "HomePC" })
 
 const asideRef = useTemplateRef<InstanceType<typeof ElAside>>("asideRef")
-
-const total = ref(1000)
-const currentPage = ref(5)
-const pageSize = ref(10)
-const pageSizes = ref([10, 20, 50, 100])
-
-const handleCurrentChange = (val: number) => {
-    console.log(`current page: ${val}`)
-}
 
 // 点击标签
 function handleClick(tagItemData: PostTagType) {

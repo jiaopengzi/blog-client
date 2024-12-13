@@ -12,7 +12,7 @@
 import { reactive } from "vue"
 import { IconKeys } from "@/components/common/icons"
 import { useDark, useToggle } from "@vueuse/core"
-import type { SwitchItem, SwitchItemIcon, SwitchItemColor } from "@/components/common/switch-group"
+import type { SwitchItem, SwitchItemColor, SwitchItemIcon } from "@/components/common/switch-group"
 
 // 主题切换
 export function useTheme() {
@@ -43,7 +43,7 @@ export function useTheme() {
     ])
 
     // 更新菜单折叠状态
-    const updateStatus = (items: SwitchItem[]) => {
+    const updateStatus = () => {
         toggleDark()
     }
 

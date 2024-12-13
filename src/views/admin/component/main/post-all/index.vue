@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-10 15:42:40
+ * @LastEditTime : 2024-12-13 17:29:58
  * @FilePath     : \blog-client\src\views\admin\component\main\post-all\index.vue
  * @Description  : 文章管理 
  * @Blog         : https://jiaopengzi.com
@@ -161,7 +161,7 @@ import { ref, reactive, watch, nextTick, onMounted, computed } from "vue"
 import type { TableData, TableColumn } from "@/components/common/base-table"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import {
-    type PostInfoRes,
+    type PostResPaginationByAdmin,
     PostStatusCode,
     PostStatusDisplay,
     CustomFields,
@@ -431,9 +431,6 @@ const authorCategoryTag = computed(() => {
     return authorCategoryTagSet
 })
 
-// 判断 authorCategoryTag 是否为空
-const isAuthorCategoryTagEmpty = computed(() => authorCategoryTag.value.size === 0)
-
 const clearAuthorCategoryTag = async () => {
     clickCategory.value = ""
     clickTag.value = ""
@@ -513,7 +510,7 @@ const {
     deleteRows, // 删除行
     updatePaginate, // 更新分页
     updateQueryAndRouter, // 更新查询参数和路由
-} = useBaseTable<PostInfoRes, ViewPostByAdminRequest, DeletePostRequest>(
+} = useBaseTable<PostResPaginationByAdmin, ViewPostByAdminRequest, DeletePostRequest>(
     AdminSideMenu.PostAll,
     viewPostByAdminAPI,
     ResponseCode.PostViewByAdminSuccess,

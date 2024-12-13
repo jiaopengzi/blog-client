@@ -12,10 +12,9 @@
 import request from "@/api/request"
 import { routerGroup } from "@/api/routerGroup"
 import type { AxiosPromise } from "axios"
+import { type Res } from "@/api/responseCode"
 
-export interface GetPostCountByMonthResponse {
-    code: number
-    msg: string
+export interface GetPostCountByMonthResponse extends Res {
     data: PostCountByMonth[]
 }
 

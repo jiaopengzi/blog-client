@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:25:00
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-26 20:31:38
+ * @LastEditTime : 2024-12-13 17:42:58
  * @FilePath     : \blog-client\src\components\common\base-table\index.ts
  * @Description  : 基础表格组件
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,7 @@
 
 import { type User } from "@/api/user/getUsers"
 import { type MediaFile } from "@/api/upload/getFiles"
-import { type PostInfoRes } from "@/api/post/common"
+import { type PostResPaginationByAdmin } from "@/api/post/common"
 import { type PostTag } from "@/api/postTag/view"
 import { type PostCategory } from "@/api/postCategory/view"
 import { type LoginLog } from "@/api/loginLog/getLoginLogs"
@@ -38,7 +38,13 @@ export interface TableColumn {
 }
 
 // 表格数据类型
-export type TableData = PostInfoRes | PostTag | PostCategory | MediaFile | User | LoginLog
+export type TableData =
+    | PostResPaginationByAdmin
+    | PostTag
+    | PostCategory
+    | MediaFile
+    | User
+    | LoginLog
 
 export interface FormatTableData {
     thumbnail?: string // 缩略图

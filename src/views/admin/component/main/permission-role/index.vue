@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-15 15:09:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 10:32:44
+ * @LastEditTime : 2024-12-13 17:53:33
  * @FilePath     : \blog-client\src\views\admin\component\main\permission-role\index.vue
  * @Description  : 权限角色页面
  * @Blog         : https://jiaopengzi.com
@@ -177,7 +177,7 @@ import {
     type UpdateRolesRequest,
     type UpdateRoleRequest,
 } from "@/api/permissionRole/updateRoles"
-import { ResponseCode } from "@/api/responseCode"
+import { ResponseCode, handleErrInfo } from "@/api/responseCode"
 import { ShowMsgTip } from "@/utils/message"
 import { getSortedEnumKeys } from "@/utils/enum"
 import { useUserStore } from "@/stores/user"
@@ -268,7 +268,7 @@ const labelPosition = ref("left")
 // 表单大小 '' | 'large' | 'default' | 'small'
 const formSize = ref("large")
 
-const containerRef = useTemplateRef<HTMLDivElement | null>("containerRef")
+// const containerRef = useTemplateRef<HTMLDivElement | null>("containerRef")
 
 // 表单实例
 const permissionRoleFormRef = useTemplateRef<FormInstance>("permissionRoleFormRef")
@@ -320,23 +320,23 @@ function validateIntegerAroundMinusOne(
     }
 }
 
-/**
- * @description: 正整数 Validator (el-form-item 需要绑定对应的prop才能触发校验)
- * @param rule 校验规则
- * @param value 对应输入框的值
- * @param callback 回调函数
- */
-function validatePositiveInteger(
-    rule: any,
-    value: string,
-    callback: (error?: string | Error | undefined) => void,
-): void {
-    if (!/^[1-9]\d*$/.test(value)) {
-        callback(new Error("请输入正整数"))
-    } else {
-        callback()
-    }
-}
+// /**
+//  * @description: 正整数 Validator (el-form-item 需要绑定对应的prop才能触发校验)
+//  * @param rule 校验规则
+//  * @param value 对应输入框的值
+//  * @param callback 回调函数
+//  */
+// function validatePositiveInteger(
+//     rule: any,
+//     value: string,
+//     callback: (error?: string | Error | undefined) => void,
+// ): void {
+//     if (!/^[1-9]\d*$/.test(value)) {
+//         callback(new Error("请输入正整数"))
+//     } else {
+//         callback()
+//     }
+// }
 
 /**
  * @description: 表单校验规则
@@ -358,94 +358,76 @@ const rules = reactive<FormRules<PermissionRole>>({
 // 提交更新表单
 const submitUpsertForm = debounce(100, async (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    try {
-        await formEl.validate(async (valid) => {
-            if (valid) {
-                const req: UpsertPermissionRoleRequest = {
-                    permission_name: permissionRoleForm.permission_name,
-                    role_name: permissionRoleForm.role_name,
-                    limit_count: Number(permissionRoleForm.limit_count),
-                    limit_period: Number(permissionRoleForm.limit_period),
-                }
 
-                // 当 limit_count 为 0 时，limit_period 不等于 0 时，警告提示
-                if (req.limit_count === 0 && req.limit_period !== 0) {
-                    ShowMsgTip(ShowMsgTip.MsgType.warning, "限制次数为 0 时，限制时长必须为 0", 0)
-                    return
-                }
-
-                // 当 limit_count 和 limit_period 都为 0 时，提示默认权限配置就是不限制，不用提交
-                if (req.limit_count === 0 && req.limit_period === 0) {
-                    ShowMsgTip(ShowMsgTip.MsgType.warning, "权限默认不限制，无需操作。", 0)
-                    return
-                }
-
-                const { data } = await upsertPermissionRoleAPI(req)
-
-                if (data.code === ResponseCode.UpsertPermissionRoleSuccess) {
-                    updatePermission()
-                    // 添加成功提示
-                    ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
-                } else {
-                    // 错误提示
-                    const errorMsg = () => {
-                        const errorData = data.data
-                        if (errorData.limit_count) {
-                            return errorData.limit_count
-                        }
-                        if (errorData.limit_period) {
-                            return errorData.limit_period
-                        }
-                        return data.msg
-                    }
-
-                    ShowMsgTip(ShowMsgTip.MsgType.error, errorMsg(), 0)
-                }
+    await formEl.validate(async (valid) => {
+        if (valid) {
+            const req: UpsertPermissionRoleRequest = {
+                permission_name: permissionRoleForm.permission_name,
+                role_name: permissionRoleForm.role_name,
+                limit_count: Number(permissionRoleForm.limit_count),
+                limit_period: Number(permissionRoleForm.limit_period),
             }
-        })
-    } catch (error) {
-        return
-    }
+
+            // 当 limit_count 为 0 时，limit_period 不等于 0 时，警告提示
+            if (req.limit_count === 0 && req.limit_period !== 0) {
+                ShowMsgTip(ShowMsgTip.MsgType.warning, "限制次数为 0 时，限制时长必须为 0", 0)
+                return
+            }
+
+            // 当 limit_count 和 limit_period 都为 0 时，提示默认权限配置就是不限制，不用提交
+            if (req.limit_count === 0 && req.limit_period === 0) {
+                ShowMsgTip(ShowMsgTip.MsgType.warning, "权限默认不限制，无需操作。", 0)
+                return
+            }
+
+            const { data } = await upsertPermissionRoleAPI(req)
+
+            if (data.code === ResponseCode.UpsertPermissionRoleSuccess) {
+                updatePermission()
+                // 添加成功提示
+                ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
+            } else {
+                ShowMsgTip(ShowMsgTip.MsgType.error, handleErrInfo(data), 0)
+            }
+        }
+    })
 })
 
 // 提交删除表单
 const submitDeleteForm = debounce(100, async (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    try {
-        await formEl.validate(async (valid) => {
-            if (valid) {
-                // 创建请求对象 加密内容
-                const req: DeletePermissionRoleRequest = {
-                    permission_name: permissionRoleForm.permission_name,
-                    role_name: permissionRoleForm.role_name,
-                }
 
-                // 当 limit_count 和 limit_period 都为 0 时，提示默认权限配置就是不限制，不用提交
-                if (permissionRoleForm.limit_count === 0 && permissionRoleForm.limit_period === 0) {
-                    ShowMsgTip(ShowMsgTip.MsgType.warning, "权限默认不限制，无需操作。", 0)
-                    return
-                }
-
-                const { data } = await deletePermissionRoleAPI(req)
-
-                if (data.code === ResponseCode.DeletePermissionRoleSuccess) {
-                    // 将 limit_count 和 limit_period 设置为 0
-                    permissionRoleForm.limit_count = 0
-                    permissionRoleForm.limit_period = 0
-
-                    // 添加成功提示
-                    updatePermission()
-                    await initPermissionTable(false)
-                    ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
-                } else {
-                    // 添加失败提示
-                    ShowMsgTip(ShowMsgTip.MsgType.error, data.msg, 0)
-                }
+    await formEl.validate(async (valid) => {
+        if (valid) {
+            // 创建请求对象 加密内容
+            const req: DeletePermissionRoleRequest = {
+                permission_name: permissionRoleForm.permission_name,
+                role_name: permissionRoleForm.role_name,
             }
-        })
-    } catch (error) {
-        return
-    }
+
+            // 当 limit_count 和 limit_period 都为 0 时，提示默认权限配置就是不限制，不用提交
+            if (permissionRoleForm.limit_count === 0 && permissionRoleForm.limit_period === 0) {
+                ShowMsgTip(ShowMsgTip.MsgType.warning, "权限默认不限制，无需操作。", 0)
+                return
+            }
+
+            const { data } = await deletePermissionRoleAPI(req)
+
+            if (data.code === ResponseCode.DeletePermissionRoleSuccess) {
+                // 将 limit_count 和 limit_period 设置为 0
+                permissionRoleForm.limit_count = 0
+                permissionRoleForm.limit_period = 0
+
+                // 添加成功提示
+                updatePermission()
+                await initPermissionTable(false)
+                ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
+            } else {
+                // 添加失败提示
+                ShowMsgTip(ShowMsgTip.MsgType.error, data.msg, 0)
+            }
+        }
+    })
 })
 
 // 获取权限列表

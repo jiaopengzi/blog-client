@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-24 15:53:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-06 20:37:44
+ * @LastEditTime : 2024-12-12 16:07:31
  * @FilePath     : \blog-client\src\components\common\base-table\custom-col\index.vue
  * @Description  : 自定义列 
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,6 @@
 -->
 <template>
     <el-table-column
-        :key="`custom-${index}`"
         :width="col.width"
         :min-width="col.minWidth"
         :align="col.align"
@@ -58,9 +57,8 @@ import type { User } from "@/api/user/getUsers"
 
 defineOptions({ name: "CustomCol" })
 
-const { col, index, tagsItemMaxHeight } = defineProps<{
+const { col, tagsItemMaxHeight } = defineProps<{
     col: TableColumn
-    index: number
     tagsItemMaxHeight?: string // 标签项目最大高度
 }>()
 

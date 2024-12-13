@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-07-24 21:48:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-07 09:27:36
+ * @LastEditTime : 2024-12-13 18:19:41
  * @FilePath     : \blog-client\src\api\upload\confirmBeforeUpload.ts
  * @Description  : 上传文件前确认
  * @Blog         : https://jiaopengzi.com
@@ -11,6 +11,7 @@
 
 import request from "@/api/request"
 import { routerGroup } from "@/api/routerGroup"
+import type { AxiosPromise } from "axios"
 import { type Res } from "@/api/responseCode"
 
 // ConfirmBeforeUploadRequest
@@ -28,7 +29,7 @@ export interface ConfirmBeforeUploadRequest {
 }
 
 // 普通文件上传前确认
-export function confirmBeforeUploadAPI(requestData: ConfirmBeforeUploadRequest): Promise<Res> {
+export function confirmBeforeUploadAPI(requestData: ConfirmBeforeUploadRequest): AxiosPromise<Res> {
     return request({
         url: routerGroup + "/upload/confirm-before-upload",
         method: "post",
@@ -39,7 +40,7 @@ export function confirmBeforeUploadAPI(requestData: ConfirmBeforeUploadRequest):
 // 头像上传前确认
 export function confirmBeforeUploadAvatarAPI(
     requestData: ConfirmBeforeUploadRequest,
-): Promise<Res> {
+): AxiosPromise<Res> {
     return request({
         url: routerGroup + "/upload/avatar/confirm-before-upload",
         method: "post",
@@ -50,7 +51,7 @@ export function confirmBeforeUploadAvatarAPI(
 // 编辑器文件上传前确认
 export function confirmBeforeUploadEditorAPI(
     requestData: ConfirmBeforeUploadRequest,
-): Promise<Res> {
+): AxiosPromise<Res> {
     return request({
         url: routerGroup + "/upload/editor/confirm-before-upload",
         method: "post",

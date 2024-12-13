@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 17:32:00
+ * @LastEditTime : 2024-12-12 15:51:40
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格 table-layout="auto"
  * @Blog         : https://jiaopengzi.com
@@ -63,22 +63,6 @@
             <!-- 选择框 -->
             <el-table-column type="selection" width="50" align="center" />
 
-            <!-- 编辑按钮 -->
-            <el-table-column v-if="isShowEdit" width="80" align="center">
-                <template #header>
-                    <span>操作</span>
-                </template>
-                <template #default="scope">
-                    <el-button
-                        size="small"
-                        type="primary"
-                        @click="handleEdit(scope.$index, scope.row)"
-                        >编辑</el-button
-                    >
-                    <!-- <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button> -->
-                </template>
-            </el-table-column>
-
             <template v-for="(col, index) in tableColumn">
                 <!-- 图片 -->
                 <el-table-column
@@ -118,35 +102,35 @@
                 <!-- 分类信息 -->
                 <CustomCol
                     v-else-if="col.isCategories"
+                    :key="`category-${index}`"
                     :col="col"
-                    :index="index"
                     @click-item="handleCategoryClick"
                 />
 
                 <!-- 标签信息 -->
                 <CustomCol
                     v-else-if="col.isTags"
+                    :key="`tag-${index}`"
                     :col="col"
-                    :index="index"
                     @click-item="handleTagClick"
                 />
 
                 <!-- 标题 -->
-                <CustomCol v-else-if="col.isHeading" :col="col" :index="index" />
+                <CustomCol v-else-if="col.isHeading" :key="`heading-${index}`" :col="col" />
 
                 <!-- 作者 -->
                 <CustomCol
                     v-else-if="col.isAuthor"
+                    :key="`author-${index}`"
                     :col="col"
-                    :index="index"
                     @click-author="handleAuthorClick"
                 />
 
                 <!-- 格式化文本 -->
                 <CustomCol
                     v-else-if="col.formatter"
+                    :key="`format-${index}`"
                     :col="col"
-                    :index="index"
                     :tags-item-max-height="tagsItemMaxHeight"
                 />
 
@@ -162,6 +146,21 @@
                     :align="col.align"
                 />
             </template>
+            <!-- 编辑按钮 -->
+            <el-table-column v-if="isShowEdit" width="80" align="center">
+                <template #header>
+                    <span>操作</span>
+                </template>
+                <template #default="scope">
+                    <el-button
+                        size="small"
+                        type="primary"
+                        @click="handleEdit(scope.$index, scope.row)"
+                        >编辑</el-button
+                    >
+                    <!-- <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button> -->
+                </template>
+            </el-table-column>
         </el-table>
 
         <!-- 宫格 -->

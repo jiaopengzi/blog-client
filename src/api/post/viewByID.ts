@@ -13,14 +13,14 @@ import request from "@/api/request"
 import { routerGroup } from "@/api/routerGroup"
 import type { AxiosPromise } from "axios"
 import { type Res } from "@/api/responseCode"
-import { type PostInfoRes } from "./common"
+import { type PostResByAdmin } from "./common"
 
 export interface ViewPostByIDRequest {
     post_id: string // 文章ID
 }
 
 export interface ViewPostResponse extends Res {
-    data: PostInfoRes
+    data: PostResByAdmin
 }
 
 // 查看文章

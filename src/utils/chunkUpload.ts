@@ -7,6 +7,7 @@ import { Task, TaskQueue } from "@/utils/task"
 import { type ConfirmBeforeUploadRequest } from "@/api/upload/confirmBeforeUpload"
 import { type ChunkMetadataWithoutFileId } from "@/api/upload/chunk"
 import { HashCalculator, HashAlgorithm } from "@/utils/hash"
+import type { AxiosPromise } from "axios"
 import { ResponseCode, handleErrInfo, type Res } from "@/api/responseCode"
 
 // 分片元数据,包含文件二进制数据
@@ -234,12 +235,12 @@ export interface RequestStrategy {
         onProgress: (percent: number) => void,
     ): Promise<any>
 
-    confirmAfterUploadBySignedUrl(req: { file_id: string }): Promise<Res>
+    confirmAfterUploadBySignedUrl(req: { file_id: string }): AxiosPromise<Res>
     // 分片上传请求
-    uploadChunk(chunk: Chunk): Promise<Res>
+    uploadChunk(chunk: Chunk): AxiosPromise<Res>
 
     // 获取上传文件URL
-    getUploadFileUrl(file_id: string): Promise<Res>
+    getUploadFileUrl(file_id: string): AxiosPromise<Res>
 }
 
 // 上传控制器
@@ -319,14 +320,14 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
                                 })
                                 .then(async (res) => {
                                     if (
-                                        res.code ===
+                                        res.data.code ===
                                         ResponseCode.ConfirmAfterUploadBySignedUrlSuccess
                                     ) {
                                         // 上传完成
                                         await this.handleUploadCompletion()
                                     } else {
                                         const errorMsg =
-                                            res.msg ||
+                                            res.data.msg ||
                                             "Failed to confirm after upload by signed url."
                                         this.emit(UploadControllerEvents.ERROR, new Error(errorMsg))
                                     }
@@ -376,7 +377,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
             try {
                 // this.requestStrategy.uploadChunk(chunk)
                 const res = await this.requestStrategy.uploadChunk(chunk)
-                if (res.code === ResponseCode.UploadFileSuccess) {
+                if (res.data.code === ResponseCode.UploadFileSuccess) {
                     // 当一个分片上传完成后，更新该分片在 Map 中的进度。分片的结束位置减去开始位置得到分片的大小。
                     this.progressTrackers.set(chunk.part_index, chunk.blob.size)
 
@@ -418,8 +419,8 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
         }
 
         const res = await this.requestStrategy.getUploadFileUrl(this.uploadFileInfo?.id || "")
-        if (res.code === ResponseCode.GetUploadFileUrlSuccess) {
-            info.fileUrl = res.data
+        if (res.data.code === ResponseCode.GetUploadFileUrlSuccess) {
+            info.fileUrl = res.data.data
             this.emit(UploadControllerEvents.END, info)
         } else {
             const errorMsg = handleErrInfo(res)

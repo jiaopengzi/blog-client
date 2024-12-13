@@ -13,7 +13,7 @@
     <el-config-provider :locale="zhCn">
         <Head>
             <title>My awesome site</title>
-            <meta name="description" content="My awesome site description" />
+            <meta content="My awesome site description" name="description" />
         </Head>
 
         <!-- :key="$route.fullPath" 解决url变化而页面不刷新问题 -->
@@ -23,12 +23,12 @@
         <!-- <keep-alive></keep-alive> -->
     </el-config-provider>
 </template>
-<script setup lang="ts">
+<script lang="ts" setup>
 import zhCn from "element-plus/es/locale/lang/zh-cn"
 import { useDark } from "@vueuse/core"
 import { useHead } from "@unhead/vue"
 import { Head } from "@unhead/vue/components"
-// import Icon from '@/components/icons/Icon.vue'
+
 useDark({
     selector: "html",
     // attribute: "data-theme",
@@ -61,4 +61,4 @@ useHead({
 })
 </script>
 
-<style scoped lang="scss"></style>
+<style lang="scss" scoped></style>

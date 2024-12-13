@@ -13,10 +13,9 @@ import request from "@/api/request"
 import { routerGroup } from "@/api/routerGroup"
 import type { AxiosPromise } from "axios"
 import { PostStatusCode } from "@/api/post/common"
+import { type Res } from "@/api/responseCode"
 
-export interface GetPostCountByStatusResponse {
-    code: number
-    msg: string
+export interface GetPostCountByStatusResponse extends Res {
     data: PostCountByStatus[]
 }
 

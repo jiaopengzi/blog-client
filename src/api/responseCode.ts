@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-03 16:49:45
+ * @LastEditTime : 2024-12-13 17:59:33
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -71,6 +71,7 @@ export enum ResponseCode {
     PostInsertSuccess = 2000, // 插入文章标签成功
     PostDeleteSuccess = 2001, // 插入文章标签成功
     PostUpdateSuccess = 2002, // 更新文章标签成功
+    PostViewSuccess = 2003, // 查看文章标签成功
     PostCheckSlugNoExist = 2005, // 别名名称不存在
     PostCheckSlugNoExistExcludingID = 2007, // 别名名称不存在，排除指定ID
     PostViewByIDSuccess = 2008, // 根据ID查看文章成功
@@ -193,43 +194,12 @@ export enum Social {
  * @param msgTitle 根据不同的接口传入不同的标题 默认为空
  * @return {string} 返回错误信息
  */
-export const handleErrInfo2 = (res: AxiosResponse<Res, any>, msgTitle: string = ""): string => {
-    // 错误信息
-    let errMsg = res.data.msg || msgTitle
-
-    // 如果data不为空且不是对象
-    if (res.data.data !== null && typeof res.data.data !== "object") {
-        return (errMsg += "：" + res.data.data)
-    }
-
-    // 如果data不为空且是对象
-    if (res.data.data !== null && typeof res.data.data === "object") {
-        // 历遍对象取出错误信息，不需要key
-        const errData = []
-
-        for (const key in res.data.data) {
-            errData.push(res.data.data[key])
-        }
-
-        // 拼接错误信息
-        return (errMsg += "：" + errData.join(","))
-    }
-
-    return errMsg
-}
-
-/**
- * @description: 处理错误信息
- * @param res 返回结果
- * @param msgTitle 根据不同的接口传入不同的标题 默认为空
- * @return {string} 返回错误信息
- */
 export const handleErrInfo = (
-    res: AxiosResponse<Res, any> | Res,
+    res: AxiosResponse<Res, unknown> | Res,
     msgTitle: string = "",
 ): string => {
     // 处理响应数据
-    const responseData: Res = "data" in res ? res.data : res
+    const responseData: Res = "data" in res ? (res as AxiosResponse<Res>).data : (res as Res)
 
     // 错误信息
     let errMsg = responseData.msg || msgTitle
@@ -242,10 +212,11 @@ export const handleErrInfo = (
     // 如果data不为空且是对象
     if (responseData.data !== null && typeof responseData.data === "object") {
         // 历遍对象取出错误信息，不需要key
-        const errData = []
+        const errData: string[] = []
 
-        for (const key in responseData.data) {
-            errData.push(responseData.data[key])
+        const data = responseData.data as Record<string, string>
+        for (const key in data) {
+            errData.push(data[key])
         }
 
         // 拼接错误信息

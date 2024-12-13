@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-07 09:29:08
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-07 09:30:55
+ * @LastEditTime : 2024-12-13 18:17:12
  * @FilePath     : \blog-client\src\api\upload\checkSlug.ts
  * @Description  : 检验 slug 是否可用
  * @Blog         : https://jiaopengzi.com
@@ -11,6 +11,7 @@
 
 import request from "@/api/request"
 import { routerGroup } from "@/api/routerGroup"
+import type { AxiosPromise } from "axios"
 import { type Res } from "@/api/responseCode"
 
 export interface CheckSlugRequest {
@@ -19,7 +20,7 @@ export interface CheckSlugRequest {
 }
 
 // 检验 slug 是否可用
-export function checkSlugAPI(requestData: CheckSlugRequest): Promise<Res> {
+export function checkSlugAPI(requestData: CheckSlugRequest): AxiosPromise<Res> {
     const urlStr = routerGroup + "/upload/check-slug"
     return request({
         url: urlStr,

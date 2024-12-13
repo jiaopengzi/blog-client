@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-29 17:43:43
+ * @LastEditTime : 2024-12-13 18:19:52
  * @FilePath     : \blog-client\src\api\upload\setAvatar.ts
  * @Description  : 上传头像
  * @Blog         : https://jiaopengzi.com
@@ -11,6 +11,7 @@
 
 import request from "@/api/request"
 import { routerGroup } from "@/api/routerGroup"
+import type { AxiosPromise } from "axios"
 import { type Res } from "@/api/responseCode"
 
 export interface SetAvatarRequest {
@@ -18,7 +19,7 @@ export interface SetAvatarRequest {
     avatar_url: string // 头像URL
 }
 
-export function setAvatarAPI(req: SetAvatarRequest): Promise<Res> {
+export function setAvatarAPI(req: SetAvatarRequest): AxiosPromise<Res> {
     return request({
         url: routerGroup + "/upload/avatar/set",
         method: "post",

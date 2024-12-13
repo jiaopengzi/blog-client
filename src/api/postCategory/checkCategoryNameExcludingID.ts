@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:33:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 14:37:14
- * @FilePath     : \blog-client\src\api\category\checkCategoryNameExcludingID.ts
+ * @LastEditTime : 2024-12-13 18:21:36
+ * @FilePath     : \blog-client\src\api\postCategory\checkCategoryNameExcludingID.ts
  * @Description  : 检查 分类 名称是否存在 (不包含ID)
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.

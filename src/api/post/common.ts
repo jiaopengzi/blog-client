@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-23 15:28:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-04 11:33:40
+ * @LastEditTime : 2024-12-13 17:50:59
  * @FilePath     : \blog-client\src\api\post\common.ts
  * @Description  : 文章共用内容
  * @Blog         : https://jiaopengzi.com
@@ -120,18 +120,50 @@ export interface UpdatePostRequest {
 }
 
 // 文章
-export interface PostRes extends DataWithImg {
+export interface PostResCommon extends DataWithImg {
     id: string // 标签id
     created_at: string // 创建时间
-    updated_at: string // 更新时间
-    price: string // 价格
     comment_count: string // 评论数量
     view_count: string // 查看数量
     like_count: string // 喜欢数量
     collect_count: string // 收藏数量
+    post_status: number // 文章状态
+    post_title: string // 文章标题
+    slug: string // 别名
+    thumbnail: string // 缩略图
+}
+
+// 文章
+export interface PostResPagination extends PostResCommon {
+    // 引用类型
+    author_info: User // 作者
+    categories: PostCategory[] // 文章分类
+    seo_description: string // SEO描述
+}
+
+// 文章
+export interface PostResPaginationByAdmin extends PostResCommon {
+    updated_at: string // 更新时间
+    price: string // 价格
+    post_type: number // 文章类型
+    comment_status: number // 评论状态
+    post_title: string // 文章标题
+    post_push_time: PgSqlDateTime // 发布时间
+    post_expired_time: PgSqlDateTime // 过期时间
+
+    // 引用类型
+    author_info: User // 作者
+    categories: PostCategory[] // 文章分类
+    tags: PostTag[] // 文章标签
+    pay_roles: string[] // 付费角色
+}
+
+// 文章
+export interface PostResByAdmin extends PostResCommon {
+    updated_at: string // 更新时间
+    price: string // 价格
     words_count: string // 字数
     post_type: number // 文章类型
-    post_status: number // 文章状态
     comment_status: number // 评论状态
     post_content: string // 文章内容
     post_title: string // 文章标题
@@ -139,19 +171,31 @@ export interface PostRes extends DataWithImg {
     seo_title: string // SEO标题
     seo_keywords: string // SEO关键字
     seo_description: string // SEO描述
-    slug: string // 别名
-    thumbnail: string // 缩略图
     post_push_time: PgSqlDateTime // 发布时间
     post_expired_time: PgSqlDateTime // 过期时间
-}
 
-// 文章信息
-export interface PostInfoRes extends PostRes {
+    // 引用类型
     author_info: User // 作者
     categories: PostCategory[] // 文章分类
     tags: PostTag[] // 文章标签
     pay_roles: string[] // 付费角色
 }
+
+// // 文章
+// export interface PostResByAdmin extends PostRes {
+//     updated_at: string // 更新时间
+//     price: string // 价格
+//     words_count: string // 字数
+//     post_type: number // 文章类型
+//     comment_status: number // 评论状态
+//     post_content: string // 文章内容
+//     post_title: string // 文章标题
+//     post_password: string // 文章密码
+//     seo_title: string // SEO标题
+//     seo_keywords: string // SEO关键字
+//     post_push_time: PgSqlDateTime // 发布时间
+//     post_expired_time: PgSqlDateTime // 过期时间
+// }
 
 // 文章自定义字段
 export enum PostCustomFieldKey {
