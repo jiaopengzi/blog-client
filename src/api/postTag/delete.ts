@@ -19,7 +19,7 @@ export interface DeletePostTagRequest {
 }
 
 // 删除文章标签
-export function deletePostTagAPI(requestData: DeletePostTagRequest): AxiosPromise<Res> {
+export function deletePostTagAPI(requestData: DeletePostTagRequest): AxiosPromise<Res<void>> {
     const urlStr = routerGroup + "/post-tag/delete"
     return request({
         url: urlStr,

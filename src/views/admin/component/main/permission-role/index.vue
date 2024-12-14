@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-15 15:09:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-13 17:53:33
+ * @LastEditTime : 2024-12-14 13:15:01
  * @FilePath     : \blog-client\src\views\admin\component\main\permission-role\index.vue
  * @Description  : 权限角色页面
  * @Blog         : https://jiaopengzi.com
@@ -212,11 +212,12 @@ const disabledRoleNames = ["Administrator"]
 const rolesList: Ref<Role[]> = ref([])
 const permissionRole: Ref<Record<string, PermissionRole>> = ref({})
 
+// 获取对象安全属性
 const getSafeProperty = (
     obj: Record<string, PermissionRole> | null,
     key: string,
-    defaultValue: any = null,
-): any => {
+    defaultValue: PermissionRole | null = null,
+): PermissionRole | null => {
     if (!obj) return defaultValue
     return obj[key] !== undefined && obj[key] !== null ? obj[key] : defaultValue
 }
@@ -308,7 +309,7 @@ const handleInsertLimitCount = (key: keyof typeof LimitCount) => {
  * @param callback 回调函数
  */
 function validateIntegerAroundMinusOne(
-    rule: any,
+    rule: unknown,
     value: string,
     callback: (error?: string | Error | undefined) => void,
 ): void {
@@ -327,7 +328,7 @@ function validateIntegerAroundMinusOne(
 //  * @param callback 回调函数
 //  */
 // function validatePositiveInteger(
-//     rule: any,
+//     rule: unknown,
 //     value: string,
 //     callback: (error?: string | Error | undefined) => void,
 // ): void {

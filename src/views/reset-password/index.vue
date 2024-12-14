@@ -150,7 +150,7 @@ async function checkRePassword(): Promise<void> {
  * @return  void
  */
 function rePasswordValidator(
-    rule: any,
+    rule: unknown,
     value: string,
     callback: (error?: string | Error | undefined) => void,
 ): void {
@@ -219,7 +219,7 @@ async function checkEmail(): Promise<void> {
  * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
  */
 function checkEmailValidator(
-    rule: any,
+    rule: unknown,
     value: string,
     callback: (error?: string | Error | undefined) => void,
 ): void {
@@ -254,7 +254,7 @@ async function checkCaptcha(): Promise<void> {
 }
 
 function checkCaptchaValidator(
-    rule: any,
+    rule: unknown,
     value: string,
     callback: (error?: string | Error | undefined) => void,
 ): void {

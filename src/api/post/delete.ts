@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-23 17:30:34
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-23 17:30:40
+ * @LastEditTime : 2024-12-14 13:18:23
  * @FilePath     : \blog-client\src\api\post\delete.ts
  * @Description  : 删除文章
  * @Blog         : https://jiaopengzi.com
@@ -19,7 +19,7 @@ export interface DeletePostRequest {
 }
 
 // 删除文章
-export function deletePostAPI(requestData: DeletePostRequest): AxiosPromise<Res> {
+export function deletePostAPI(requestData: DeletePostRequest): AxiosPromise<Res<void>> {
     const urlStr = routerGroup + "/post/delete"
     return request({
         url: urlStr,

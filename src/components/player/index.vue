@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-17 10:03:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-02 11:59:07
+ * @LastEditTime : 2024-12-14 12:55:58
  * @FilePath     : \blog-client\src\components\player\index.vue
  * @Description  : 视频播放器
  * @Blog         : https://jiaopengzi.com
@@ -403,7 +403,7 @@ const handleExitFullscreen = async () => {
 // 监控是否全屏状态
 watchEffect(() => {
     // 获取屏幕方向对象，断言为 any 类型
-    const orientation = screen.orientation as any
+    const orientation = screen.orientation as ScreenOrientation
 
     if (localPlayerState.isFullScreen) {
         if (videoContainerRef.value && videoRef.value) {
@@ -429,17 +429,17 @@ watchEffect(() => {
                 }
             }
 
-            // 移动端时 锁定屏幕方向为横屏
-            if (localPlayerState.isMobile && typeof orientation.lock === "function") {
-                orientation.lock("landscape").catch((err: any) => {
-                    console.log("屏幕方向锁定失败:", err)
-                    // 弹窗提示用户手动调整屏幕方向
-                    // ElMessage({
-                    //     type: MsgType.warning,
-                    //     message: '请手动调整屏幕方向为横屏',
-                    // })
-                })
-            }
+            // // 移动端时 锁定屏幕方向为横屏
+            // if (localPlayerState.isMobile && typeof orientation.lock === "function") {
+            //     orientation.lock("landscape").catch((err: unknown) => {
+            //         console.log("屏幕方向锁定失败:", err)
+            //         // 弹窗提示用户手动调整屏幕方向
+            //         // ElMessage({
+            //         //     type: MsgType.warning,
+            //         //     message: '请手动调整屏幕方向为横屏',
+            //         // })
+            //     })
+            // }
         }
     } else {
         // 退出全屏
@@ -487,9 +487,11 @@ watchEffect(() => {
 // 根据 playStatus 控制 video 播放暂停
 watchEffect(() => {
     if (videoRef.value) {
-        localPlayerState.playStatus === PlayStatus.PLAYING
-            ? videoRef.value.play()
-            : videoRef.value.pause()
+        if (localPlayerState.playStatus === PlayStatus.PLAYING) {
+            videoRef.value.play()
+        } else {
+            videoRef.value.pause()
+        }
     }
 })
 
@@ -586,7 +588,7 @@ const loadHls = () => {
 
         // 获取当前播放清晰度
         hls.on(Hls.Events.LEVEL_SWITCHED, function (event, data) {
-            var currentLevel = hls?.levels[data.level]
+            const currentLevel = hls?.levels[data.level]
             const selectedLevel = getVideoQualityLabel(currentLevel?.height || 0)
             localManager.setSelectedPlayLevel(selectedLevel as PlayLevelLabel)
             // TODO 切换清晰度时, 显示提示信息

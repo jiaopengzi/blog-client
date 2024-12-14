@@ -9,9 +9,9 @@ import { EventEmitter } from "@/utils/eventEmitter"
 export class Task {
     private retryCount: number = 0 // 重试次数
     public maxRetryCount: number = 3 // 最大重试次数
-    private taskFunc: () => Promise<any> // 任务函数
+    private taskFunc: () => Promise<void> // 任务函数
 
-    constructor(taskFunc: () => Promise<any>) {
+    constructor(taskFunc: () => Promise<void>) {
         this.taskFunc = taskFunc
     }
 

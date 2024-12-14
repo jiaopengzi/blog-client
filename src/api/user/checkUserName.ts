@@ -19,7 +19,7 @@ export interface CheckUserNameRequest {
 }
 
 // 检测用户名是否存在
-export function checkUserNameAPI(requestData: CheckUserNameRequest): AxiosPromise<Res> {
+export function checkUserNameAPI(requestData: CheckUserNameRequest): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/user/check-username"
     return request({
         url: urlStr,

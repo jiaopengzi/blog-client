@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * @Author       : jiaopengzi
  * @Date         : 2024-08-02 14:11:08

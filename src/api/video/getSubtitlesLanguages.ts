@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-17 10:43:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-17 10:46:16
+ * @LastEditTime : 2024-12-14 10:15:03
  * @FilePath     : \blog-client\src\api\video\getSubtitlesLanguages.ts
  * @Description  : 获取视频字幕语言列表
  * @Blog         : https://jiaopengzi.com
@@ -14,13 +14,11 @@ import type { AxiosPromise } from "axios"
 import { routerGroup } from "@/api/routerGroup"
 import { type Res } from "@/api/responseCode"
 
-export interface SubtitlesLanguagesResponse extends Res {
-    data: string[] | null
-}
+export type SubtitlesLanguagesResData = string[] | null
 
 export function getSubtitlesLanguagesAPI(
     videoHashId: string,
-): AxiosPromise<SubtitlesLanguagesResponse> {
+): AxiosPromise<Res<SubtitlesLanguagesResData>> {
     return request({
         url: `${routerGroup}/subtitles/languages/${videoHashId}`,
         method: "get",

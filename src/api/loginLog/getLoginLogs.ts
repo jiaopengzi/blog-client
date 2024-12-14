@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-28 16:21:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 08:58:54
+ * @LastEditTime : 2024-12-14 09:46:03
  * @FilePath     : \blog-client\src\api\loginLog\getLoginLogs.ts
  * @Description  : 获取日志
  * @Blog         : https://jiaopengzi.com
@@ -13,7 +13,7 @@ import request from "@/api/request"
 import { routerGroup } from "@/api/routerGroup"
 import type { AxiosPromise } from "axios"
 import type { DataWithImg, Pagination } from "@/components/common"
-import { ResponseCode } from "@/api/responseCode"
+import { ResponseCode, type Res } from "@/api/responseCode"
 import { formatTime } from "@/utils/dateTime"
 import { parsePlatform } from "@/utils/ipPlatform"
 
@@ -23,17 +23,10 @@ export interface GetLoginLogsRequest {
     key_word?: string // 关键字
 }
 
-// 获取日志信息响应类型
-export interface GetLoginLogsResponse {
-    code: number
-    msg: string
-    data: Pagination<LoginLog> // 日志信息
-}
-
 // 获取用户信息 api 函数
 export async function getLoginLogsAPI(
     requestData: GetLoginLogsRequest = { current_page: 1, page_size: 10 }, // 设置默认值,
-): AxiosPromise<GetLoginLogsResponse> {
+): AxiosPromise<Res<Pagination<LoginLog>>> {
     const urlStr = routerGroup + "/login-log/view"
     const response = await request({
         url: urlStr,
@@ -63,10 +56,11 @@ export interface LoginLog extends DataWithImg {
 }
 
 // 格式化日志信息
-export function formatUserLoginLog({ platform, created_at, ...loginLog }: any): LoginLog {
+export function formatUserLoginLog({ platform, created_at, ...loginLog }: LoginLog): LoginLog {
     const formattedLoginLog: LoginLog = {
         ...loginLog,
-        created_at: formatTime(created_at), // 使用 formatTime 进行格式化
+        created_at: formatTime(created_at),
+        platform: platform || "",
     }
 
     // 如果 user_avatar 不为空，添加 img 属性

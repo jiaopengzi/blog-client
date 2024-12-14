@@ -24,7 +24,7 @@ export interface DeletePermissionRoleRequest {
 // 删除列表角色权限
 export function deletePermissionRoleAPI(
     requestData: DeletePermissionRoleRequest,
-): AxiosPromise<Res> {
+): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/role/delete-permission-role"
     return request({
         url: urlStr,

@@ -24,7 +24,7 @@ export interface UpdatePostTagRequest {
 }
 
 // 更新文章标签
-export function updatePostTagAPI(requestData: UpdatePostTagRequest): AxiosPromise<Res> {
+export function updatePostTagAPI(requestData: UpdatePostTagRequest): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/post-tag/update"
     return request({
         url: urlStr,

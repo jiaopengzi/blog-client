@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 15:53:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-28 20:44:30
+ * @LastEditTime : 2024-12-14 12:45:36
  * @FilePath     : \blog-client\src\components\hooks\useFormValidation\index.ts
  * @Description  : 用户表单校验
  * @Blog         : https://jiaopengzi.com
@@ -75,7 +75,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
      * @return  void
      */
     function rePasswordValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -120,7 +120,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
      * @return  void
      */
     function acceptedTermsValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -157,7 +157,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
                 // 历遍 data 中的错误信息 并抛出第一个key错误信息 停止循环
                 for (const key in data.data) {
                     if (Object.prototype.hasOwnProperty.call(data.data, key)) {
-                        throw new Error(data.data[key]) // 抛出错误信息
+                        throw new Error((data.data as Record<string, string>)[key]) // 抛出错误信息
                     }
                 }
             }
@@ -199,7 +199,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
      * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
      */
     function checkUserNameValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -251,7 +251,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
      * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
      */
     function checkUserNameExcludingUserIDValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -306,7 +306,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
      * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
      */
     function checkEmailValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -363,7 +363,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
      * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
      */
     function checkEmailExcludingUserIDValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -405,7 +405,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
 
     // 校验验证码 Validator
     function checkCaptchaValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -460,7 +460,7 @@ export function useFormValidation(options: FormValidationOptions = {}) {
      * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
      */
     function checkLoginNameValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {

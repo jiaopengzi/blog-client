@@ -22,7 +22,7 @@ export interface CheckPostSlugExcludingIDRequest {
 // 检查 post 名称是否存在
 export function checkPostSlugExcludingIDAPI(
     requestData: CheckPostSlugExcludingIDRequest,
-): AxiosPromise<Res> {
+): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/post/check-post-slug-excluding-id"
     return request({
         url: urlStr,

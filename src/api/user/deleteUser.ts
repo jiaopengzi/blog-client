@@ -19,7 +19,7 @@ export interface DeleteUserRequest {
 }
 
 // 注册
-export function deleteUserAPI(requestData: DeleteUserRequest): AxiosPromise<Res> {
+export function deleteUserAPI(requestData: DeleteUserRequest): AxiosPromise<Res<void>> {
     const urlStr = routerGroup + "/user/delete"
     return request({
         url: urlStr,

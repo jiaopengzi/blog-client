@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-20 11:40:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-20 11:42:05
+ * @LastEditTime : 2024-12-14 10:12:25
  * @FilePath     : \blog-client\src\api\user\logoutByAdmin.ts
  * @Description  : 管理员登出用户
  * @Blog         : https://jiaopengzi.com
@@ -19,7 +19,9 @@ export interface LogoutByAdminRequest {
 }
 
 // 管理员登出用户
-export function logoutByAdminAPI(logoutByAdminRequest: LogoutByAdminRequest): AxiosPromise<Res> {
+export function logoutByAdminAPI(
+    logoutByAdminRequest: LogoutByAdminRequest,
+): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/user/logout-by-admin"
     return request({
         url: urlStr,

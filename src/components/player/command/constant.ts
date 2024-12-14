@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-07 17:53:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-19 12:12:43
+ * @LastEditTime : 2024-12-14 12:50:37
  * @FilePath     : \blog-client\src\components\player\command\constant.ts
  * @Description  : 播放器命令常量
  * @Blog         : https://jiaopengzi.com
@@ -54,8 +54,8 @@ export enum PlayerCommandsKey {
 export interface PlayerCommandItemType {
     tip?: string // 前端提示
     hotKey?: string // 快捷键
-    action?: Function // 执行函数
-    longPressAction?: Function // 长按执行函数
+    action?: () => void // 执行函数
+    longPressAction?: () => void // 长按执行函数
     icon?: IconKeys // 图标名称
 }
 

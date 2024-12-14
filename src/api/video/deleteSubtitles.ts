@@ -21,7 +21,9 @@ export interface DeleteSubtitlesRequest {
 }
 
 // 更新字幕
-export function deleteSubtitlesAPI(requestData: DeleteSubtitlesRequest): AxiosPromise<Res> {
+export function deleteSubtitlesAPI(
+    requestData: DeleteSubtitlesRequest,
+): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/subtitles/delete"
     return request({
         url: urlStr,

@@ -233,14 +233,15 @@ export interface RequestStrategy {
         signedUrl: string,
         headers: Record<string, string>,
         onProgress: (percent: number) => void,
-    ): Promise<any>
+    ): Promise<void>
 
-    confirmAfterUploadBySignedUrl(req: { file_id: string }): AxiosPromise<Res>
+    confirmAfterUploadBySignedUrl(req: { file_id: string }): AxiosPromise<Res<void>>
+
     // 分片上传请求
-    uploadChunk(chunk: Chunk): AxiosPromise<Res>
+    uploadChunk(chunk: Chunk): AxiosPromise<Res<string>>
 
     // 获取上传文件URL
-    getUploadFileUrl(file_id: string): AxiosPromise<Res>
+    getUploadFileUrl(file_id: string): AxiosPromise<Res<string>>
 }
 
 // 上传控制器

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 09:35:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-03 17:48:41
+ * @LastEditTime : 2024-12-14 10:43:35
  * @FilePath     : \blog-client\src\stores\user.ts
  * @Description  : 用户信息
  * @Blog         : https://jiaopengzi.com
@@ -39,7 +39,7 @@ import {
 import type { UserInfo } from "@/api/user/getUserInfo"
 import { emptyUserInfo, getUserInfoAPI } from "@/api/user/getUserInfo"
 import { PermissionNames } from "@/utils/permissionRole"
-import { getRolesByJson } from "@/api/permissionRole/role"
+import { getRolesAPI } from "@/api/permissionRole/role"
 
 // 用户信息
 export interface UserInfoStore {
@@ -236,7 +236,7 @@ async function apiLogin(loginName: string, password: string): Promise<UserInfoSt
         password: password,
     }
 
-    const resObj = await handleResponse<Res>(loginAPI(req)) // 使用辅助函数处理请求
+    const resObj = await handleResponse<Res<unknown>>(loginAPI(req)) // 使用辅助函数处理请求
 
     return await handleLoginResult(resObj, ResponseCode.UserLoginSuccess)
 }
@@ -248,7 +248,7 @@ async function apiLoginQQ(): Promise<void> {
 
 // QQ登录回调
 async function apiLoginQQCallback(code: string): Promise<UserInfoStore> {
-    const resObj: Res = await handleResponse<Res>(loginByQQUrlCallback(code)) // 使用辅助函数处理请求
+    const resObj = await handleResponse<Res<unknown>>(loginByQQUrlCallback(code)) // 使用辅助函数处理请求
 
     return await handleLoginResult(resObj, ResponseCode.SocialLoginQQCallbackSuccess)
 }
@@ -260,13 +260,13 @@ async function apiBindQQ(): Promise<void> {
 
 // 绑定QQ回调
 async function apiBindQQCallback(code: string): Promise<UserInfoStore> {
-    const resObj: Res = await handleResponse<Res>(bindQQUrlCallback(code)) // 使用辅助函数处理请求
+    const resObj = await handleResponse<Res<unknown>>(bindQQUrlCallback(code)) // 使用辅助函数处理请求
 
     return await handleBindResult(resObj, ResponseCode.SocialBindQQCallbackSuccess)
 }
 // 解绑QQ
 async function apiUnBindQQ(): Promise<UserInfoStore> {
-    const resObj: Res = await handleResponse<Res>(unBindQQ()) // 使用辅助函数处理请求
+    const resObj = await handleResponse<Res<unknown>>(unBindQQ()) // 使用辅助函数处理请求
 
     return await handleBindResult(resObj, ResponseCode.SocialUnBindQQSuccess)
 }
@@ -278,7 +278,7 @@ async function apiLoginWeChat(): Promise<void> {
 
 // 微信登录回调
 async function apiLoginWeChatCallback(code: string): Promise<UserInfoStore> {
-    const resObj: Res = await handleResponse<Res>(loginByWeChatUrlCallback(code)) // 使用辅助函数处理请求
+    const resObj = await handleResponse<Res<unknown>>(loginByWeChatUrlCallback(code)) // 使用辅助函数处理请求
     return await handleLoginResult(resObj, ResponseCode.SocialLoginWeChatCallbackSuccess)
 }
 
@@ -289,14 +289,14 @@ async function apiBindWeChat(): Promise<void> {
 
 // 绑定微信回调
 async function apiBindWeChatCallback(code: string): Promise<UserInfoStore> {
-    const resObj: Res = await handleResponse<Res>(bindWeChatUrlCallback(code)) // 使用辅助函数处理请求
+    const resObj = await handleResponse<Res<unknown>>(bindWeChatUrlCallback(code)) // 使用辅助函数处理请求
 
     return await handleBindResult(resObj, ResponseCode.SocialBindWeChatCallbackSuccess)
 }
 
 // 解绑微信
 async function apiUnBindWeChat(): Promise<UserInfoStore> {
-    const resObj: Res = await handleResponse<Res>(unBindWeChat()) // 使用辅助函数处理请求
+    const resObj = await handleResponse<Res<unknown>>(unBindWeChat()) // 使用辅助函数处理请求
 
     return await handleBindResult(resObj, ResponseCode.SocialUnBindWeChatSuccess)
 }
@@ -315,7 +315,7 @@ async function apiGetUserInfoByToken(): Promise<UserInfoStore> {
         const { data: dataUser } = resUser.data
 
         // 获取角色列表
-        const resRole = await getRolesByJson()
+        const resRole = await getRolesAPI()
         const { data: dataRole } = resRole.data
 
         // 判断是否获取成功
@@ -369,13 +369,13 @@ async function handleResponse<T>(requestPromise: Promise<AxiosResponse<T>>): Pro
  * @return {void}
  */
 async function redirectToSocialLogin(
-    requestPromise: Promise<AxiosResponse<Res>>,
+    requestPromise: Promise<AxiosResponse<Res<string>>>,
     successCode: ResponseCode,
 ): Promise<void> {
-    const resObj = await handleResponse<Res>(requestPromise) // 使用辅助函数处理请求
+    const resObj = await handleResponse<Res<string>>(requestPromise) // 使用辅助函数处理请求
 
     if (resObj.code === successCode) {
-        window.location.href = resObj.data  // 重定向到第三方登录页面
+        window.location.href = resObj.data // 重定向到第三方登录页面
     }
 }
 
@@ -385,13 +385,25 @@ async function redirectToSocialLogin(
  * @param successCode 请求成功的状态码
  * @return {UserInfoStore} 用户信息
  */
-async function handleLoginResult(resObj: Res, successCode: ResponseCode): Promise<UserInfoStore> {
+async function handleLoginResult(
+    resObj: Res<unknown>,
+    successCode: ResponseCode,
+): Promise<UserInfoStore> {
     if (resObj.code === successCode) {
         // 显示登录成功提示
         ShowMsgTip(ShowMsgTip.MsgType.success, resObj.msg, 3000)
 
         // 登录成功 存入token
-        localStorage.setItem(LocalStorageKey.AccessToken, resObj.data.access_token)
+        if (
+            typeof resObj.data === "object" &&
+            resObj.data !== null &&
+            "access_token" in resObj.data
+        ) {
+            localStorage.setItem(
+                LocalStorageKey.AccessToken,
+                (resObj.data as { access_token: string }).access_token,
+            )
+        }
 
         return await apiGetUserInfoByToken() // 获取用户信息
     }
@@ -400,7 +412,7 @@ async function handleLoginResult(resObj: Res, successCode: ResponseCode): Promis
     // localStorage.removeItem(LocalStorageKey.AccessToken)
     localStorage.clear()
 
-    const msg = getUserForbiddenMsg(resObj)
+    const msg = getUserForbiddenMsg(resObj as Res<number>)
 
     ShowMsgTip(ShowMsgTip.MsgType.error, msg, 10000)
 
@@ -410,7 +422,10 @@ async function handleLoginResult(resObj: Res, successCode: ResponseCode): Promis
 /**
  * @description: 辅助函数：处理绑定结果
  */
-async function handleBindResult(resObj: Res, successCode: ResponseCode): Promise<UserInfoStore> {
+async function handleBindResult(
+    resObj: Res<unknown>,
+    successCode: ResponseCode,
+): Promise<UserInfoStore> {
     if (resObj.code === successCode) {
         // 显示登录成功提示
         ShowMsgTip(ShowMsgTip.MsgType.success, resObj.msg, 3000)

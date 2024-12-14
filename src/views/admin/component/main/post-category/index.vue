@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:47:08
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-06 17:25:21
+ * @LastEditTime : 2024-12-14 13:32:09
  * @FilePath     : \blog-client\src\views\admin\component\main\post-category\index.vue
  * @Description  : 分类管理
  * @Blog         : https://jiaopengzi.com
@@ -58,11 +58,12 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, onBeforeMount } from "vue"
+import { reactive } from "vue"
 import type { TableData, TableColumn } from "@/components/common/base-table"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import { type PostCategory } from "@/api/postCategory/view"
-import { viewPostCategoryAPI, type ViewPostCategoryRequest } from "@/api/postCategory/view"
+import { viewPostCategoryAPI } from "@/api/postCategory/view"
+import type { PaginationRequest } from "@/components/common"
 import { ResponseCode } from "@/api/responseCode"
 import BaseTable from "@/components/common/base-table"
 import AddTag from "./component/add"
@@ -143,7 +144,7 @@ const cols: TableColumn[] = reactive([
     },
 ])
 
-const queryParams = reactive<ViewPostCategoryRequest>({} as ViewPostCategoryRequest)
+const queryParams = reactive<PaginationRequest>({} as PaginationRequest)
 // hooks 使用
 const {
     addItemDialogVisible, // 添加对话框是否可见
@@ -161,7 +162,7 @@ const {
     editItemUpdateDialogVisible, // 编辑对话框
     deleteRows, // 删除行
     updateQueryAndRouter, // 更新查询和路由
-} = useBaseTable<PostCategory, ViewPostCategoryRequest, DeletePostCategoryRequest>(
+} = useBaseTable<PostCategory, PaginationRequest, DeletePostCategoryRequest>(
     AdminSideMenu.PostCategory,
     viewPostCategoryAPI,
     ResponseCode.PostCategoryViewSuccess,

@@ -19,7 +19,9 @@ export interface CheckCategoryNameRequest {
 }
 
 // 检查 分类 名称是否存在
-export function checkCategoryNameAPI(requestData: CheckCategoryNameRequest): AxiosPromise<Res> {
+export function checkCategoryNameAPI(
+    requestData: CheckCategoryNameRequest,
+): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/post-category/check-category-name"
     return request({
         url: urlStr,

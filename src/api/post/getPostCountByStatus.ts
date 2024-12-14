@@ -15,19 +15,15 @@ import type { AxiosPromise } from "axios"
 import { PostStatusCode } from "@/api/post/common"
 import { type Res } from "@/api/responseCode"
 
-export interface GetPostCountByStatusResponse extends Res {
-    data: PostCountByStatus[]
+export interface PostCountByStatus {
+    post_status: PostStatusCode // 文章状态
+    count: number // 文章数量
 }
 
-export function getPostCountByStatusAPI(): AxiosPromise<GetPostCountByStatusResponse> {
+export function getPostCountByStatusAPI(): AxiosPromise<Res<PostCountByStatus[]>> {
     const urlStr = routerGroup + "/post/count-by-status"
     return request({
         url: urlStr,
         method: "get",
     })
-}
-
-export interface PostCountByStatus {
-    post_status: PostStatusCode // 文章状态
-    count: number // 文章数量
 }

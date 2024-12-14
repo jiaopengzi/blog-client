@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:51:36
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-02 15:54:38
+ * @LastEditTime : 2024-12-14 12:24:27
  * @FilePath     : \blog-client\src\components\editor\command\constant.ts
  * @Description  : markdown 标记常量
  * @Blog         : https://jiaopengzi.com
@@ -68,7 +68,7 @@ export interface MarkdownEditorCommandItem {
     content?: string // 内容
     suffix?: string // 后缀
     hotKey?: string // 快捷键
-    action?: Function // 执行函数
+    action?: (view: EditorView) => void // 执行函数
     icon?: IconKeys // 图标名称
 }
 

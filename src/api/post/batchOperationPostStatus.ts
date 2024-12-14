@@ -27,7 +27,7 @@ export interface BatchOperationPostStatusRequest {
 // 批量操作文章状态
 export function batchOperationPostStatusAPI(
     requestData: BatchOperationPostStatusRequest,
-): AxiosPromise<Res> {
+): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/post/batch-operation-status"
     return request({
         url: urlStr,

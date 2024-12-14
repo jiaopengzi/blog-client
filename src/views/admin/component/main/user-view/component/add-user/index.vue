@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 14:48:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-10 15:29:10
+ * @LastEditTime : 2024-12-14 13:33:46
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\add-user\index.vue
  * @Description  : 添加用户
  * @Blog         : https://jiaopengzi.com
@@ -164,34 +164,31 @@ const rules = reactive<FormRules<AddUserForm>>({
  */
 const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    try {
-        await formEl.validate(async (valid) => {
-            if (valid) {
-                // 创建请求对象 加密内容
-                const req: AddUserRequest = {
-                    user_name: addUserForm.userName,
-                    password: addUserForm.password,
-                    email: addUserForm.email,
-                    role_name: addUserForm.roleName,
-                    is_send_email: addUserForm.isSendEmail,
-                }
-                console.log("req:", req)
-                const { data } = await AddUserAPI(req)
 
-                if (data.code === ResponseCode.UserAddUserSuccess) {
-                    // 添加成功提示
-                    emit("add-user-status", true)
-                    ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
-                } else {
-                    // 添加失败提示
-                    ShowMsgTip(ShowMsgTip.MsgType.error, data.msg, 0)
-                }
-                console.log("submit!")
+    await formEl.validate(async (valid) => {
+        if (valid) {
+            // 创建请求对象 加密内容
+            const req: AddUserRequest = {
+                user_name: addUserForm.userName,
+                password: addUserForm.password,
+                email: addUserForm.email,
+                role_name: addUserForm.roleName,
+                is_send_email: addUserForm.isSendEmail,
             }
-        })
-    } catch (error) {
-        return
-    }
+            console.log("req:", req)
+            const { data } = await AddUserAPI(req)
+
+            if (data.code === ResponseCode.UserAddUserSuccess) {
+                // 添加成功提示
+                emit("add-user-status", true)
+                ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
+            } else {
+                // 添加失败提示
+                ShowMsgTip(ShowMsgTip.MsgType.error, data.msg, 0)
+            }
+            console.log("submit!")
+        }
+    })
 }
 </script>
 

@@ -14,19 +14,15 @@ import { routerGroup } from "@/api/routerGroup"
 import type { AxiosPromise } from "axios"
 import { type Res } from "@/api/responseCode"
 
-export interface GetPostCountByAuthorResponse extends Res {
-    data: PostCountByAuthor[]
+export interface PostCountByAuthor {
+    post_author: string // 作者ID
+    count: number // 文章数量
 }
 
-export function getPostCountByAuthorAPI(): AxiosPromise<GetPostCountByAuthorResponse> {
+export function getPostCountByAuthorAPI(): AxiosPromise<Res<PostCountByAuthor[]>> {
     const urlStr = routerGroup + "/post/count-by-author"
     return request({
         url: urlStr,
         method: "get",
     })
-}
-
-export interface PostCountByAuthor {
-    post_author: string // 作者ID
-    count: number // 文章数量
 }

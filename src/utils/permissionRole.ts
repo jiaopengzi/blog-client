@@ -11,8 +11,8 @@
 
 // 从 API 获取权限列表
 import type { Directive, DirectiveBinding } from "vue"
-import { getPermissionsByJson } from "@/api/permissionRole/getPermissions"
-import { getRolesByJson, type RoleWithLimit } from "@/api/permissionRole/role"
+import { getPermissionsAPI } from "@/api/permissionRole/getPermissions"
+import { getRolesAPI, type RoleWithLimit } from "@/api/permissionRole/role"
 import { ResponseCode, LocalStorageKey } from "@/api/responseCode"
 import { kebabToPascalCase } from "@/utils/namingConversion"
 import { hasPermissionAPI } from "@/api/permissionRole/hasPermission"
@@ -77,7 +77,7 @@ export async function getRolesList(params: GetRolesListParams = {}): Promise<Rol
         }
     }
 
-    const res = await getRolesByJson()
+    const res = await getRolesAPI()
     if (res.data.code === ResponseCode.GetRoleSuccess) {
         const data = res.data.data
         localStorage.setItem(LocalStorageKey.RolesList, JSON.stringify(data))
@@ -109,7 +109,7 @@ export async function getPermissionList(
         }
     }
 
-    const res = await getPermissionsByJson()
+    const res = await getPermissionsAPI()
     if (res.data.code === ResponseCode.GetPermissionSuccess) {
         const data = res.data.data
         localStorage.setItem(LocalStorageKey.PermissionList, JSON.stringify(data))
@@ -141,7 +141,7 @@ export const permissionDirective: Directive = {
 // 开发环境下检查权限枚举是否有遗漏
 export async function devPermissionNames() {
     let newPermissionNames = ""
-    const res = await getPermissionsByJson()
+    const res = await getPermissionsAPI()
     if (res.data.code === ResponseCode.GetPermissionSuccess) {
         const permissions = res.data.data
         for (let i = 0; i < permissions.length; i++) {

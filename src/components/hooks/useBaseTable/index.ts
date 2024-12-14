@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 08:57:02
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-06 17:50:13
+ * @LastEditTime : 2024-12-14 12:44:19
  * @FilePath     : \blog-client\src\components\hooks\useBaseTable\index.ts
  * @Description  : 基础表格钩子
  * @Blog         : https://jiaopengzi.com
@@ -27,7 +27,7 @@ import {
 import { ShowMsgTip } from "@/utils/message"
 import { type TableImg, type NumberKeys } from "@/components/common"
 
-export type QueryRecord<T extends keyof any> = { [key in T]?: string | number }
+export type QueryRecord<T extends string | number | symbol> = { [key in T]?: string | number }
 
 export interface Options<K> {
     queryNumberParams?: NumberKeys<K>[] // 查询参数中的数字参数
@@ -47,9 +47,9 @@ export interface Options<K> {
  */
 export function useBaseTable<T extends FormatTableData, K extends PaginationRequest, Q>(
     routeName: string,
-    viewAPI: (params: K) => AxiosPromise<Res>,
+    viewAPI: (params: K) => AxiosPromise<Res<Pagination<T>>>,
     viewResCode: ResponseCode,
-    deleteAPI: (params: Q) => AxiosPromise<Res>,
+    deleteAPI: (params: Q) => AxiosPromise<Res<void>>,
     deleteResCode: ResponseCode,
     queryParams: Reactive<K>, // 查询参数
     options?: Options<K>,
@@ -102,7 +102,8 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
                 // 判断 key 是否在 numberParamSet 中，如果在则解析为数字，否则保持原样
                 queryParams[key as KeyType] = numberParamSet.has(key)
                     ? Number(value)
-                    : (value as any)
+                    : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      (value as any)
             }
             return
         }
@@ -232,7 +233,8 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
             for (const key in newVal) {
                 queryParams[key as KeyType] = numberParamSet.has(key)
                     ? Number(newVal[key as KeyType])
-                    : (newVal[key as KeyType] as any)
+                    : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      (newVal[key as KeyType] as any)
             }
         },
         { deep: true },

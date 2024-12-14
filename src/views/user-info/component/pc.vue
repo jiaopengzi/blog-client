@@ -118,7 +118,7 @@ const activeTab = ref("info")
 const router = useRouter()
 
 // 根据 hash 值来设置当前的 activeTab
-function tabChange(name: any) {
+function tabChange(name: string) {
     router.push({ hash: `#${name}` }) // 使用哈希路由更新 URL
 }
 const hashValue = router.currentRoute.value.hash

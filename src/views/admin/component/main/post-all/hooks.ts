@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-03 16:37:27
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-06 10:29:32
+ * @LastEditTime : 2024-12-14 13:18:06
  * @FilePath     : \blog-client\src\views\admin\component\main\post-all\hooks.ts
  * @Description  : 文章统计数据
  * @Blog         : https://jiaopengzi.com
@@ -16,7 +16,7 @@ import { getPostCountByStatusAPI, type PostCountByStatus } from "@/api/post/getP
 import { getPostCountByMonthAPI, type PostCountByMonth } from "@/api/post/getPostCountByMonth"
 import { ResponseCode, handleErrInfo } from "@/api/responseCode"
 import { ShowMsgTip } from "@/utils/message"
-import { PostStatusDisplay, PostStatusCode } from "@/api/post/common"
+import { PostStatusDisplay } from "@/api/post/common"
 
 // 获取文章统计数据
 export function useHeader(userID: string = "") {

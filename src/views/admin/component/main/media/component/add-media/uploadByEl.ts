@@ -34,6 +34,7 @@ export const uploadByEl = async (
 
     return new Promise((resolve, reject) => {
         uploadController.on(UploadControllerEvents.PROGRESS, (progress: number) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const evt: any = {
                 percent: progress * 100,
             }

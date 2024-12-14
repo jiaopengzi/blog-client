@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-12 12:38:12
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-23 16:18:38
+ * @LastEditTime : 2024-12-14 10:12:36
  * @FilePath     : \blog-client\src\api\user\resetPassword.ts
  * @Description  : 忘记密码
  * @Blog         : https://jiaopengzi.com
@@ -22,7 +22,7 @@ export interface ResetPasswordRequest {
 }
 
 // 注册
-export function resetPasswordAPI(requestData: ResetPasswordRequest): AxiosPromise<Res> {
+export function resetPasswordAPI(requestData: ResetPasswordRequest): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/user/reset-password"
     return request({
         url: urlStr,

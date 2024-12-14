@@ -14,7 +14,7 @@ export function uploadFileBySignedUrlAPI(
     signedUrl: string, // 签名URL
     headers: Record<string, string>, // Content-Type 为必须
     onProgress: (percent: number) => void, // 上传进度回调
-): Promise<any> {
+): Promise<void> {
     return new Promise((resolve, reject) => {
         const reader = new FileReader()
         reader.readAsArrayBuffer(file)

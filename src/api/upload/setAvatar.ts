@@ -19,7 +19,7 @@ export interface SetAvatarRequest {
     avatar_url: string // 头像URL
 }
 
-export function setAvatarAPI(req: SetAvatarRequest): AxiosPromise<Res> {
+export function setAvatarAPI(req: SetAvatarRequest): AxiosPromise<Res<unknown>> {
     return request({
         url: routerGroup + "/upload/avatar/set",
         method: "post",

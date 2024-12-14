@@ -19,7 +19,7 @@ export interface DeleteLoginLogByIDsRequest {
 }
 
 // 通过 ID 删除登录日志
-export function deleteLoginLogByIDsAPI(requestData: DeleteLoginLogByIDsRequest): AxiosPromise<Res> {
+export function deleteLoginLogByIDsAPI(requestData: DeleteLoginLogByIDsRequest): AxiosPromise<Res<void>> {
     const urlStr = routerGroup + "/login-log/delete-by-ids"
     return request({
         url: urlStr,

@@ -22,7 +22,7 @@ export interface CheckTagNameExcludingIDRequest {
 // 检查 tag 名称是否存在
 export function checkTagNameExcludingIDAPI(
     requestData: CheckTagNameExcludingIDRequest,
-): AxiosPromise<Res> {
+): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/post-tag/check-tag-name-excluding-id"
     return request({
         url: urlStr,

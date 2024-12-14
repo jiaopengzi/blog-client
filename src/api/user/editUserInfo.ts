@@ -22,7 +22,7 @@ export interface EditUserInfoRequest {
 }
 
 // 注册
-export function editUserInfoAPI(requestData: EditUserInfoRequest): AxiosPromise<Res> {
+export function editUserInfoAPI(requestData: EditUserInfoRequest): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/user/info-edit"
     return request({
         url: urlStr,

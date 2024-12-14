@@ -56,7 +56,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查文章标题是否可用
     function checkPostTitleValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -83,7 +83,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查文章密码是否可用
     function checkPostPasswordValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -116,7 +116,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查 SEO 标题是否可用
     function checkSeoTitleValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -143,7 +143,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查 SEO 描述是否可用
     function checkSeoDescriptionValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -170,7 +170,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查 SEO 关键词是否可用
     function checkSeoKeywordsValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -204,7 +204,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     //  检查 thumbnail 是否可用
     function checkThumbnailValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -231,7 +231,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查 price 是否可用
     function checkPriceValidator(
-        rule: any,
+        rule: unknown,
         value: number,
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -265,7 +265,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查别名是否可用
     function checkPostSlugValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -317,7 +317,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查别名是否可用
     function checkPostSlugExcludingIDValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -370,7 +370,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查分类是否可用
     function checkCategoriesValidator(
-        rule: any,
+        rule: unknown,
         value: number[],
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -383,7 +383,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查发布时间是否可用
     function checkPostPushTimeValidator(
-        rule: any,
+        rule: unknown,
         value: PgSqlDateTime,
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -422,7 +422,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查过期时间是否可用
     function checkPostExpiredTimeValidator(
-        rule: any,
+        rule: unknown,
         value: PgSqlDateTime,
         callback: (error?: string | Error | undefined) => void,
     ): void {

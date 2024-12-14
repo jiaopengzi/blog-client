@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:14:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-10 13:07:51
+ * @LastEditTime : 2024-12-14 12:48:55
  * @FilePath     : \blog-client\src\components\layout\aside\month-archive\index.vue
  * @Description  : 阅读存档
  * @Blog         : https://jiaopengzi.com
@@ -34,6 +34,7 @@ import { IconKeys } from "@/components/common/icons"
 defineOptions({ name: "MonthArchive" })
 
 // 参考官方文档 https://element-plus.org/zh-CN/component/table.html#table-%E4%BA%8B%E4%BB%B6
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function handleRowClick(row: any) {
     router.push({ path: row.path })
 }

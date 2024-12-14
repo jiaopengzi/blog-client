@@ -19,7 +19,9 @@ export interface DeletePostCategoryRequest {
 }
 
 // 删除文章分类
-export function deletePostCategoryAPI(requestData: DeletePostCategoryRequest): AxiosPromise<Res> {
+export function deletePostCategoryAPI(
+    requestData: DeletePostCategoryRequest,
+): AxiosPromise<Res<void>> {
     const urlStr = routerGroup + "/post-category/delete"
     return request({
         url: urlStr,

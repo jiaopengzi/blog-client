@@ -162,6 +162,7 @@ export function useInfo(): UseInfoReturnType {
      */
     const socialNickname = (platform: keyof UserInfo, field: string) => {
         const userDataP = userData.value as UserInfo
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return userDataP[platform] ? (userDataP[platform] as any)[field] : ""
     }
 

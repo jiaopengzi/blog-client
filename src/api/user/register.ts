@@ -23,7 +23,7 @@ export interface RegisterRequest {
 }
 
 // 注册
-export function RegisterAPI(requestData: RegisterRequest): AxiosPromise<Res> {
+export function RegisterAPI(requestData: RegisterRequest): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/user/register"
     return request({
         url: urlStr,

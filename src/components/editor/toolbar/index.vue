@@ -87,7 +87,7 @@ import { ref, onMounted, watch, useTemplateRef } from "vue"
 import { CommandsKey } from "@/components/editor/command"
 import type { ToolbarProps, TableRowCol } from "@/components/editor/toolbar"
 
-import EmojiPicker from "vue3-emoji-picker" // import picker component
+import EmojiPicker, { type EmojiExt } from "vue3-emoji-picker"
 
 defineOptions({ name: "EditorToolbar" })
 
@@ -100,7 +100,7 @@ const props = defineProps<ToolbarProps>()
 // 子组件 传参
 const emit = defineEmits<{
     (e: "toolbar-btn-clicked", name: CommandsKey): void
-    (e: "emoji-picker-selected", emoji: any): void
+    (e: "emoji-picker-selected", emoji: EmojiExt): void
     (e: "table-row-col", tableRowCol: TableRowCol): void
 }>()
 
@@ -161,7 +161,7 @@ const updateToolbarHeight = () => {
 // }
 
 // emoji 选择
-const onSelectEmoji = (emoji: any) => {
+const onSelectEmoji = (emoji: EmojiExt) => {
     emit("emoji-picker-selected", emoji)
     // console.log(emoji)
 }

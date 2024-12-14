@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 10:40:04
+ * @LastEditTime : 2024-12-14 13:42:04
  * @FilePath     : \blog-client\src\views\user-info\component\phone.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -118,7 +118,7 @@ const activeTab = ref("info")
 const router = useRouter()
 
 // 根据 hash 值来设置当前的 activeTab
-function tabChange(name: any) {
+function tabChange(name: string) {
     router.push({ hash: `#${name}` }) // 使用哈希路由更新 URL
 }
 const hashValue = router.currentRoute.value.hash

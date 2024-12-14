@@ -27,7 +27,7 @@ export interface UpdateRoleRequest {
 }
 
 // 更新列表角色权限
-export function updateRolesAPI(requestData: UpdateRolesRequest): AxiosPromise<Res> {
+export function updateRolesAPI(requestData: UpdateRolesRequest): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/role/update-roles"
     return request({
         url: urlStr,

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-13 20:51:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-05 16:53:41
+ * @LastEditTime : 2024-12-14 09:55:27
  * @FilePath     : \blog-client\src\api\post\update.ts
  * @Description  : 更新文章
  * @Blog         : https://jiaopengzi.com
@@ -15,14 +15,14 @@ import type { AxiosPromise } from "axios"
 import { type Res } from "@/api/responseCode"
 import { type UpdatePostRequest } from "./common"
 
-export interface UpdatePostResponse extends Res {
-    data: {
-        updated_at: string
-    }
+export interface UpdatePostResData {
+    updated_at: string
 }
 
 // 更新文章
-export function updatePostAPI(requestData: UpdatePostRequest): AxiosPromise<UpdatePostResponse> {
+export function updatePostAPI(
+    requestData: UpdatePostRequest,
+): AxiosPromise<Res<UpdatePostResData>> {
     const urlStr = routerGroup + "/post/update"
     return request({
         url: urlStr,

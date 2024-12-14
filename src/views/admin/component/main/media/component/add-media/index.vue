@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-08-31 13:10:47
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-06 12:10:44
+ * @LastEditTime : 2024-12-14 13:12:19
  * @FilePath     : \blog-client\src\views\admin\component\main\media\component\add-media\index.vue
  * @Description  : 添加媒体
  * @Blog         : https://jiaopengzi.com
@@ -102,9 +102,11 @@ const getAllowedInfo = async () => {
                 // item的 MaxSize 是以字节为单位，转换为mb
                 const maxSize = allowedInfoList[i].max_size / 1024 / 1024
                 // 如果 maxSize 小于 1MB，保留两位小数 否则取整
-                maxSize < 1
-                    ? strList.push(`${_type}:${maxSize.toFixed(2)}MB`)
-                    : strList.push(`${_type}:${Math.floor(maxSize)}MB`)
+                if (maxSize < 1) {
+                    strList.push(`${_type}:${maxSize.toFixed(2)}MB`)
+                } else {
+                    strList.push(`${_type}:${Math.floor(maxSize)}MB`)
+                }
             }
         }
         allowedInfo.value = strList.join("、") + "。"

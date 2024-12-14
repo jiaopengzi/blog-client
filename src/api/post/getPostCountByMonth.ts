@@ -14,20 +14,16 @@ import { routerGroup } from "@/api/routerGroup"
 import type { AxiosPromise } from "axios"
 import { type Res } from "@/api/responseCode"
 
-export interface GetPostCountByMonthResponse extends Res {
-    data: PostCountByMonth[]
+export interface PostCountByMonth {
+    year: string // 年
+    month: string // 月
+    count: number // 文章数量
 }
 
-export function getPostCountByMonthAPI(): AxiosPromise<GetPostCountByMonthResponse> {
+export function getPostCountByMonthAPI(): AxiosPromise<Res<PostCountByMonth[]>> {
     const urlStr = routerGroup + "/post/count-by-month"
     return request({
         url: urlStr,
         method: "get",
     })
-}
-
-export interface PostCountByMonth {
-    year: string // 年
-    month: string // 月
-    count: number // 文章数量
 }

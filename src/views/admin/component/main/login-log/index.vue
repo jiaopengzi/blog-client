@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-28 16:56:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-06 17:28:04
+ * @LastEditTime : 2024-12-14 13:05:03
  * @FilePath     : \blog-client\src\views\admin\component\main\login-log\index.vue
  * @Description  : 登录日志
  * @Blog         : https://jiaopengzi.com
@@ -33,7 +33,7 @@
 
 <script lang="ts" setup>
 import { ref, reactive } from "vue"
-import type { TableData, TableColumn } from "@/components/common/base-table"
+import type { TableColumn } from "@/components/common/base-table"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import {
     getLoginLogsAPI,

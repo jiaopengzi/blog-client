@@ -11,16 +11,11 @@
 
 import request from "@/api/request"
 import { routerGroup } from "@/api/routerGroup"
+import { type Res } from "@/api/responseCode"
 import type { AxiosPromise } from "axios"
 
-export interface GetUserInfoResponse {
-    code: number
-    msg: string
-    data: UserInfo
-}
-
 // 获取用户信息
-export function getUserInfoAPI(): AxiosPromise<GetUserInfoResponse> {
+export function getUserInfoAPI(): AxiosPromise<Res<UserInfo>> {
     const urlStr = routerGroup + "/user/info"
     return request({
         url: urlStr,

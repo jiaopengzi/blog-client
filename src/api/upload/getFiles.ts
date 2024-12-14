@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-08-27 16:38:22
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-06 11:19:18
+ * @LastEditTime : 2024-12-14 10:03:23
  * @FilePath     : \blog-client\src\api\upload\getFiles.ts
  * @Description  : 获取文件列表
  * @Blog         : https://jiaopengzi.com
@@ -11,34 +11,12 @@
 
 import request from "@/api/request"
 import { routerGroup } from "@/api/routerGroup"
+import { type Res } from "@/api/responseCode"
 import type { AxiosPromise } from "axios"
 import type { DataWithImg, Pagination, PaginationRequest } from "@/components/common"
-import { ResponseCode } from "@/api/responseCode"
-import { ImgFit } from "@/components/common"
-import { formatTime } from "@/utils/dateTime"
-import { IconKeys } from "@/components/common/icons"
 
 export interface GetMediaFilesRequest extends PaginationRequest {
     file_type?: string // 角色
-}
-
-// 获取媒体文件信息响应类型
-export interface GetMediaFilesResponse {
-    code: number
-    msg: string
-    data: Pagination<MediaFile>
-}
-
-// 获取媒体文件信息 api 函数
-export async function getMediaFilesAPI(
-    requestData: GetMediaFilesRequest,
-): AxiosPromise<GetMediaFilesResponse> {
-    const urlStr = routerGroup + "/upload/view"
-    return request({
-        url: urlStr,
-        method: "post",
-        data: requestData,
-    })
 }
 
 // 每行媒体文件信息
@@ -64,56 +42,14 @@ export interface MediaFile extends DataWithImg {
     subtitles_language_list: string[] // 字幕语言列表
 }
 
-// /**
-//  * @description: 格式化媒体文件信息
-//  * @param MediaFile 后端媒体文件信息
-//  * @param width 图片宽度
-//  * @param height 图片高度
-//  * @param imgFit 图片填充方式
-//  * @return  {MediaFile} 格式化后的媒体文件信息
-//  */
-// export function formatMediaFile(
-//     { thumbnail, created_at, ...MediaFile }: any,
-//     width: number,
-//     height: number,
-//     imgFit: ImgFit,
-//     svgFontSize: number,
-// ): MediaFile {
-//     const formattedMediaFile: MediaFile = {
-//         ...MediaFile,
-//         created_at: formatTime(created_at), // 使用 formatTime 进行格式化
-//     }
-
-//     // 如果 thumbnail 不为空，添加 img 属性
-//     if (thumbnail) {
-//         formattedMediaFile.img = {
-//             url: thumbnail,
-//             width: width,
-//             height: height,
-//             imgFit: imgFit,
-//         }
-//     }
-
-//     // 如果 thumbnail 为空，添加 icon 属性
-//     if (!thumbnail && MediaFile.file_type === "application/zip") {
-//         formattedMediaFile.img = {
-//             url: "",
-//             svgFontSize: svgFontSize,
-//             iconKeyName: IconKeys.Zip,
-//         }
-//     }
-
-//     return formattedMediaFile
-// }
-
-// // 默认的 MediaFileInfo 空对象
-// export function emptyMediaFiles(): Pagination<MediaFile> {
-//     return {
-//         total: 0,
-//         current_page: 1,
-//         page_size: 10,
-//         page_count: 1,
-//         page_sizes: [10],
-//         records: [],
-//     }
-// }
+// 获取媒体文件信息 api 函数
+export async function getMediaFilesAPI(
+    requestData: GetMediaFilesRequest,
+): AxiosPromise<Res<Pagination<MediaFile>>> {
+    const urlStr = routerGroup + "/upload/view"
+    return request({
+        url: urlStr,
+        method: "post",
+        data: requestData,
+    })
+}

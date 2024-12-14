@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-05 16:53:33
+ * @LastEditTime : 2024-12-14 09:54:04
  * @FilePath     : \blog-client\src\api\post\insert.ts
  * @Description  : 插入文章
  * @Blog         : https://jiaopengzi.com
@@ -16,16 +16,16 @@ import { type Res } from "@/api/responseCode"
 import { type InsertPostRequest } from "./common"
 
 // 插入文章响应
-export interface InsertPostResponse extends Res {
-    data: {
-        id: string
-        created_at: string
-        updated_at: string
-    }
+export interface InsertPostResData {
+    id: string
+    created_at: string
+    updated_at: string
 }
 
 // 插入文章
-export function insertPostAPI(requestData: InsertPostRequest): AxiosPromise<InsertPostResponse> {
+export function insertPostAPI(
+    requestData: InsertPostRequest,
+): AxiosPromise<Res<InsertPostResData>> {
     const urlStr = routerGroup + "/post/insert"
     return request({
         url: urlStr,

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-05 17:18:25
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-06 10:39:28
+ * @LastEditTime : 2024-12-14 10:16:40
  * @FilePath     : \blog-client\src\api\video\upsertSubtitles.ts
  * @Description  : 视频字幕上传
  * @Blog         : https://jiaopengzi.com
@@ -23,7 +23,9 @@ export interface UpsertSubtitlesRequest {
 }
 
 // 更新字幕
-export function upsertSubtitlesAPI(requestData: UpsertSubtitlesRequest): AxiosPromise<Res> {
+export function upsertSubtitlesAPI(
+    requestData: UpsertSubtitlesRequest,
+): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/subtitles/upsert"
     return request({
         url: urlStr,

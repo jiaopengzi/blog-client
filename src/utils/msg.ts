@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-22 14:41:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-02 12:10:13
+ * @LastEditTime : 2024-12-14 11:05:45
  * @FilePath     : \blog-client\src\utils\msg.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -13,7 +13,7 @@ import { formatDurationTime } from "@/utils/dateTime"
 import { ResponseCode, handleErrInfo } from "@/api/responseCode"
 
 // 获取用户禁用信息
-export function getUserForbiddenMsg(res: Res) {
+export function getUserForbiddenMsg(res: Res<number>) {
     // 小于等于7天的禁用时间，显示倒计时, 大于7天的禁用时间，显示禁用信息
     if (res.code === ResponseCode.UserForbidden && res.data && res.data <= 60 * 60 * 24 * 7) {
         const countdown = formatDurationTime(res.data)

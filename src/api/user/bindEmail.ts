@@ -21,7 +21,7 @@ export interface BindEmailRequest {
 }
 
 // 注册
-export function bindEmailAPI(requestData: BindEmailRequest): AxiosPromise<Res> {
+export function bindEmailAPI(requestData: BindEmailRequest): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/user/bind-email"
     return request({
         url: urlStr,

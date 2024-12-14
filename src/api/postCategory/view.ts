@@ -15,8 +15,6 @@ import type { AxiosPromise } from "axios"
 import type { DataWithImg, Pagination, PaginationRequest } from "@/components/common"
 import { type Res } from "@/api/responseCode"
 
-export interface ViewPostCategoryRequest extends PaginationRequest {}
-
 // 每行数据类型
 export interface PostCategory extends DataWithImg {
     id: string // 分类id
@@ -30,20 +28,10 @@ export interface PostCategory extends DataWithImg {
     parent: string // 父级分类
 }
 
-// 文章分类
-export interface ViewPostCategoryResponse extends Res {
-    data: Pagination<PostCategory>
-}
-
-// 查看文章分类
-export interface ViewListPostCategoryResponse extends Res {
-    data: PostCategory[]
-}
-
 // 查看文章分类
 export function viewPostCategoryAPI(
-    requestData: ViewPostCategoryRequest,
-): AxiosPromise<ViewPostCategoryResponse> {
+    requestData: PaginationRequest,
+): AxiosPromise<Res<Pagination<PostCategory>>> {
     const urlStr = routerGroup + "/post-category/view"
     return request({
         url: urlStr,
@@ -53,7 +41,7 @@ export function viewPostCategoryAPI(
 }
 
 // 查看文章分类list
-export function viewListPostCategoryAPI(): AxiosPromise<ViewListPostCategoryResponse> {
+export function viewListPostCategoryAPI(): AxiosPromise<Res<PostCategory[]>> {
     const urlStr = routerGroup + "/post-category/view-list"
     return request({
         url: urlStr,

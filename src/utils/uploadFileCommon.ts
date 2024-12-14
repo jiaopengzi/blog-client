@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 20:13:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-05 12:09:28
+ * @LastEditTime : 2024-12-14 12:22:36
  * @FilePath     : \blog-client\src\utils\uploadFileCommon.ts
  * @Description  : 上传文件公共方法
  * @Blog         : https://jiaopengzi.com
@@ -15,16 +15,17 @@ import {
     UploadController,
     MultiThreadSplitter,
     type UploadFileSuccessInfo,
+    type RequestStrategy,
 } from "@/utils/chunkUpload"
 import { HashAlgorithm } from "@/utils/hash"
 
-export const uploadFileCommon = async (
+export const uploadFileCommon = async <T extends RequestStrategy>(
     file: File,
     isEncrypt: boolean,
     isNoFree: boolean,
     chunkSizeServer: number,
     hashAlgorithmServer: HashAlgorithm,
-    RequestStrategyClass: new (file: File) => any,
+    RequestStrategyClass: new (file: File) => T,
 ): Promise<string | undefined> => {
     const requestStrategy = new RequestStrategyClass(file)
     const splitStrategy = new MultiThreadSplitter(file, chunkSizeServer, hashAlgorithmServer)

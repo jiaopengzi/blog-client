@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-28 21:48:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-28 21:49:51
+ * @LastEditTime : 2024-12-14 09:40:55
  * @FilePath     : \blog-client\src\api\loginLog\deleteLoginLogByDay.ts
  * @Description  : 通过天删除登录日志
  * @Blog         : https://jiaopengzi.com
@@ -19,7 +19,7 @@ export interface DeleteLoginLogByDayRequest {
 }
 
 // 通过天删除登录日志
-export function deleteLoginLogByDayAPI(requestData: DeleteLoginLogByDayRequest): AxiosPromise<Res> {
+export function deleteLoginLogByDayAPI(requestData: DeleteLoginLogByDayRequest): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/login-log/delete-by-day"
     return request({
         url: urlStr,

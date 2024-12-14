@@ -19,12 +19,10 @@ export interface ViewPostByIDRequest {
     post_id: string // 文章ID
 }
 
-export interface ViewPostResponse extends Res {
-    data: PostResByAdmin
-}
-
 // 查看文章
-export function viewPostByIDAPI(requestData: ViewPostByIDRequest): AxiosPromise<ViewPostResponse> {
+export function viewPostByIDAPI(
+    requestData: ViewPostByIDRequest,
+): AxiosPromise<Res<PostResByAdmin>> {
     const urlStr = routerGroup + "/post/view-by-id"
     return request({
         url: urlStr,

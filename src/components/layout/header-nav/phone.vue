@@ -70,7 +70,7 @@ const props = defineProps<{ navData: HeaderNavPropsItem[] }>()
 
 // 状态是否登录
 const userStore = useUserStore()
-let { data, isLogin } = storeToRefs(userStore)
+const { data, isLogin } = storeToRefs(userStore)
 
 // 主题切换
 const { themeSwitch, updateStatus } = useTheme()

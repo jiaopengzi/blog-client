@@ -20,7 +20,7 @@ export interface CheckSlugRequest {
 }
 
 // 检验 slug 是否可用
-export function checkSlugAPI(requestData: CheckSlugRequest): AxiosPromise<Res> {
+export function checkSlugAPI(requestData: CheckSlugRequest): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/upload/check-slug"
     return request({
         url: urlStr,

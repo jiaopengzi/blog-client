@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-13 14:40:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-19 10:44:28
+ * @LastEditTime : 2024-12-14 09:47:57
  * @FilePath     : \blog-client\src\api\permissionRole\hasPermission.ts
  * @Description  : 判断是否具有权限
  * @Blog         : https://jiaopengzi.com
@@ -11,6 +11,7 @@
 
 import request from "@/api/request"
 import { routerGroup } from "@/api/routerGroup"
+import { type Res } from "@/api/responseCode"
 import type { AxiosPromise } from "axios"
 import { PermissionNames } from "@/utils/permissionRole"
 
@@ -19,17 +20,8 @@ export interface HasPermissionRequest {
     permission_name: PermissionNames
 }
 
-// 判断是否具有权限 返回参数
-export interface HasPermissionResponse {
-    code: number
-    msg: string
-    data: boolean
-}
-
 // 注册
-export function hasPermissionAPI(
-    requestData: HasPermissionRequest,
-): AxiosPromise<HasPermissionResponse> {
+export function hasPermissionAPI(requestData: HasPermissionRequest): AxiosPromise<Res<boolean>> {
     const urlStr = routerGroup + "/permission/has-permission"
     return request({
         url: urlStr,

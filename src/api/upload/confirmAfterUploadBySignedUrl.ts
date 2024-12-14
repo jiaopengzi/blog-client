@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-08-12 17:20:29
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-13 18:19:32
+ * @LastEditTime : 2024-12-14 10:01:53
  * @FilePath     : \blog-client\src\api\upload\confirmAfterUploadBySignedUrl.ts
  * @Description  : 使用 签名URL 上传文件 后确认
  * @Blog         : https://jiaopengzi.com
@@ -23,7 +23,7 @@ export interface ConfirmAfterUploadBySignedUrlRequest {
 // 普通文件使用 签名URL 上传文件 后确认
 export function confirmAfterUploadBySignedUrlAPI(
     requestData: ConfirmAfterUploadBySignedUrlRequest,
-): AxiosPromise<Res> {
+): AxiosPromise<Res<void>> {
     return request({
         url: routerGroup + "/upload/confirm-after-upload-by-signed-url",
         method: "post",
@@ -34,7 +34,7 @@ export function confirmAfterUploadBySignedUrlAPI(
 // 头像使用 签名URL 上传文件 后确认
 export function confirmAfterUploadBySignedUrlAvatarAPI(
     requestData: ConfirmAfterUploadBySignedUrlRequest,
-): AxiosPromise<Res> {
+): AxiosPromise<Res<void>> {
     return request({
         url: routerGroup + "/upload/avatar/confirm-after-upload-by-signed-url",
         method: "post",
@@ -45,7 +45,7 @@ export function confirmAfterUploadBySignedUrlAvatarAPI(
 // 编辑器文件上传使用 签名URL 上传文件 后确认
 export function confirmAfterUploadBySignedUrlEditorAPI(
     requestData: ConfirmAfterUploadBySignedUrlRequest,
-): AxiosPromise<Res> {
+): AxiosPromise<Res<void>> {
     return request({
         url: routerGroup + "/upload/editor/confirm-after-upload-by-signed-url",
         method: "post",

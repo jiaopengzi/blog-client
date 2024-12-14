@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-27 14:36:50
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-25 12:16:30
+ * @LastEditTime : 2024-12-14 11:54:55
  * @FilePath     : \blog-client\src\utils\style.ts
  * @Description  : 样式工具类
  * @Blog         : https://jiaopengzi.com
@@ -25,7 +25,7 @@ export function setTheme(theme: string) {
  * @param property 样式属性
  * @return         样式值
  */
-export function getComputedStyleValue(element: HTMLElement, property: string): any {
+export function getComputedStyleValue(element: HTMLElement, property: string): number {
     return parseFloat(getComputedStyle(element).getPropertyValue(property))
 }
 
@@ -35,7 +35,7 @@ export function getComputedStyleValue(element: HTMLElement, property: string): a
  * @param variableName 变量名称
  * @param value 变量值
  */
-export function setCSSVariable(element: HTMLElement, variableName: string, value: any): void {
+export function setCSSVariable(element: HTMLElement, variableName: string, value: string): void {
     element.style.setProperty(variableName, value)
 }
 
@@ -45,7 +45,7 @@ export function setCSSVariable(element: HTMLElement, variableName: string, value
  * @param variableName 变量名称
  * @return 变量值
  */
-export function getCSSVariableValue(element: HTMLElement, variableName: string): any {
+export function getCSSVariableValue(element: HTMLElement, variableName: string): string {
     return getComputedStyle(element).getPropertyValue(variableName)
 }
 

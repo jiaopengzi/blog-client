@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-23 16:14:12
+ * @LastEditTime : 2024-12-14 09:40:35
  * @FilePath     : \blog-client\src\api\captcha\send.ts
  * @Description  : 验证码发送
  * @Blog         : https://jiaopengzi.com
@@ -20,7 +20,7 @@ export interface CaptchaSendRequest {
 }
 
 // 检测验证码是否正确
-export function captchaSendAPI(requestData: CaptchaSendRequest): AxiosPromise<Res> {
+export function captchaSendAPI(requestData: CaptchaSendRequest): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/captcha/send"
     return request({
         url: urlStr,

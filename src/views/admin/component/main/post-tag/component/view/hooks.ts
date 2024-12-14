@@ -46,7 +46,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查标签名称是否可用
     function checkTagNameValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -78,7 +78,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查别名是否可用
     function checkTagSlugValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -118,7 +118,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查标签名称是否可用
     function checkTagNameExcludingIDValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -158,7 +158,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查别名是否可用
     function checkTagSlugExcludingIDValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {

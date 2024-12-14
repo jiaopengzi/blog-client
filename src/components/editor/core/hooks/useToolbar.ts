@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-20 22:10:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-23 10:45:23
+ * @LastEditTime : 2024-12-14 12:30:23
  * @FilePath     : \blog-client\src\components\editor\core\hooks\useToolbar.ts
  * @Description  : 工具栏 hook
  * @Blog         : https://jiaopengzi.com
@@ -25,6 +25,7 @@ import { copyWithCustomStyle } from "../utils"
 import { debounce } from "throttle-debounce"
 import { useMagicKeys } from "@vueuse/core"
 import { type TableRowCol } from "@/components/editor/toolbar"
+import { type EmojiExt } from "vue3-emoji-picker"
 
 export function useToolbar(
     mdContainerRef: Ref<HTMLElement | null>,
@@ -181,7 +182,7 @@ export function useToolbar(
     }
 
     // 选择 emoji
-    const emojiPickerSelected = (emoji: any) => {
+    const emojiPickerSelected = (emoji: EmojiExt) => {
         codemirrorRef.value?.runCommand(CommandsKey.Emoji, {
             prefix: "",
             content: emoji.i,

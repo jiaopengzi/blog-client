@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-03 20:48:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-07 10:35:17
+ * @LastEditTime : 2024-12-14 10:30:13
  * @FilePath     : \blog-client\src\components\common\tag-item\index.vue
  * @Description  : 标签元素
  * @Blog         : https://jiaopengzi.com
@@ -48,13 +48,13 @@ function randomRgbItem(): number {
 
 // tag 字体颜色和背景色生成函数
 function generateItemColor(a: number = 0.8): TagColor {
-    let r = randomRgbItem() // 随机生成RGB颜色中的r值
-    let g = randomRgbItem() // 随机生成RGB颜色中的g值
-    let b = randomRgbItem() // 随机生成RGB颜色中的b值
-    let L = Math.round(((0.2126 * r + 0.7152 * g + 0.0722 * b) / 255) * 100) // 计算亮度公式
+    const r = randomRgbItem() // 随机生成RGB颜色中的r值
+    const g = randomRgbItem() // 随机生成RGB颜色中的g值
+    const b = randomRgbItem() // 随机生成RGB颜色中的b值
+    const L = Math.round(((0.2126 * r + 0.7152 * g + 0.0722 * b) / 255) * 100) // 计算亮度公式
 
-    let bgColor = "rgba(" + r + "," + g + "," + b + "," + a + ")" // 设置背景色变量
-    let color = L > 50 ? "#222" : "#ddd" // 设置文字颜色变量
+    const bgColor = "rgba(" + r + "," + g + "," + b + "," + a + ")" // 设置背景色变量
+    const color = L > 50 ? "#222" : "#ddd" // 设置文字颜色变量
     // let color = 'rgba(' + (255 - r) + ',' + (255 - g) + ',' + (255 - b) + ')'// 模仿 css mix-blend-mode: difference;
 
     return { color: color, bgColor: bgColor }

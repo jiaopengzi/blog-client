@@ -22,7 +22,7 @@ export interface CheckUserNameExcludingUserIDRequest {
 // 检测用户名是否存在
 export function checkUserNameExcludingUserIDAPI(
     requestData: CheckUserNameExcludingUserIDRequest,
-): AxiosPromise<Res> {
+): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/user/check-username-excluding-user-id"
     return request({
         url: urlStr,

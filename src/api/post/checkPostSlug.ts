@@ -19,7 +19,7 @@ export interface CheckPostSlugRequest {
 }
 
 // 检查 post 名称是否存在
-export function checkPostSlugAPI(requestData: CheckPostSlugRequest): AxiosPromise<Res> {
+export function checkPostSlugAPI(requestData: CheckPostSlugRequest): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/post/check-post-slug"
     return request({
         url: urlStr,

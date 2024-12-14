@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 17:24:58
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-04 17:25:20
+ * @LastEditTime : 2024-12-14 10:00:01
  * @FilePath     : \blog-client\src\api\postTag\checkTagSlug.ts
  * @Description  : 检查 tag 别名是否存在
  * @Blog         : https://jiaopengzi.com
@@ -19,7 +19,7 @@ export interface CheckTagSlugRequest {
 }
 
 // 检查 tag 名称是否存在
-export function checkTagSlugAPI(requestData: CheckTagSlugRequest): AxiosPromise<Res> {
+export function checkTagSlugAPI(requestData: CheckTagSlugRequest): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/post-tag/check-tag-slug"
     return request({
         url: urlStr,

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-02-14 16:35:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-02-14 16:35:47
+ * @LastEditTime : 2024-12-14 11:57:37
  * @FilePath     : \blog-client\src\utils\typeOf.ts
  * @Description  : 类型判断工具类
  * @Blog         : https://jiaopengzi.com
@@ -14,7 +14,7 @@
  * @param obj 任意类型
  * @return 是否为对象
  */
-export function isObject(obj: any): boolean {
+export function isObject(obj: unknown): boolean {
     return obj !== null && typeof obj === "object"
 }
 
@@ -23,7 +23,7 @@ export function isObject(obj: any): boolean {
  * @param arr 任意类型
  * @return 是否为数组
  */
-export function isArray(arr: any): boolean {
+export function isArray(arr: unknown): boolean {
     return Array.isArray(arr) || Object.prototype.toString.call(arr) === "[object Array]"
 }
 
@@ -32,7 +32,7 @@ export function isArray(arr: any): boolean {
  * @param fn 任意类型
  * @return 是否为函数
  */
-export function isFunction(fn: any): boolean {
+export function isFunction(fn: unknown): boolean {
     return typeof fn === "function"
 }
 
@@ -41,7 +41,7 @@ export function isFunction(fn: any): boolean {
  * @param str 任意类型
  * @return 是否为字符串
  */
-export function isString(str: any): boolean {
+export function isString(str: unknown): boolean {
     return typeof str === "string"
 }
 
@@ -50,7 +50,7 @@ export function isString(str: any): boolean {
  * @param num 任意类型
  * @return 是否为数字
  */
-export function isNumber(num: any): boolean {
+export function isNumber(num: unknown): boolean {
     return typeof num === "number"
 }
 
@@ -59,7 +59,7 @@ export function isNumber(num: any): boolean {
  * @param bool 任意类型
  * @return 是否为布尔值
  */
-export function isBoolean(bool: any): boolean {
+export function isBoolean(bool: unknown): boolean {
     return typeof bool === "boolean"
 }
 
@@ -68,7 +68,7 @@ export function isBoolean(bool: any): boolean {
  * @param val 任意类型
  * @return 是否为undefined
  */
-export function isUndefined(val: any): boolean {
+export function isUndefined(val: unknown): boolean {
     return typeof val === "undefined"
 }
 
@@ -77,7 +77,7 @@ export function isUndefined(val: any): boolean {
  * @param val 任意类型
  * @return 是否为null
  */
-export function isNull(val: any): boolean {
+export function isNull(val: unknown): boolean {
     return val === null
 }
 
@@ -86,7 +86,7 @@ export function isNull(val: any): boolean {
  * @param val 任意类型
  * @return 是否为NaN
  */
-export function isNaN(val: any): boolean {
+export function isNaN(val: unknown): boolean {
     return Number.isNaN(val)
 }
 
@@ -95,7 +95,7 @@ export function isNaN(val: any): boolean {
  * @param val 任意类型
  * @return 是否为Symbol
  */
-export function isSymbol(val: any): boolean {
+export function isSymbol(val: unknown): boolean {
     return typeof val === "symbol"
 }
 
@@ -104,7 +104,7 @@ export function isSymbol(val: any): boolean {
  * @param val 任意类型
  * @return 是否为Promise
  */
-export function isPromise(val: any): boolean {
+export function isPromise(val: unknown): boolean {
     return val instanceof Promise
 }
 
@@ -113,7 +113,7 @@ export function isPromise(val: any): boolean {
  * @param val 任意类型
  * @return 是否为Set
  */
-export function isSet(val: any): boolean {
+export function isSet(val: unknown): boolean {
     return val instanceof Set
 }
 
@@ -122,7 +122,7 @@ export function isSet(val: any): boolean {
  * @param val 任意类型
  * @return 是否为Map
  */
-export function isMap(val: any): boolean {
+export function isMap(val: unknown): boolean {
     return val instanceof Map
 }
 
@@ -131,7 +131,7 @@ export function isMap(val: any): boolean {
  * @param val 任意类型
  * @return 是否为Date
  */
-export function isDate(val: any): boolean {
+export function isDate(val: unknown): boolean {
     return val instanceof Date
 }
 
@@ -140,7 +140,7 @@ export function isDate(val: any): boolean {
  * @param val 任意类型
  * @return 是否为RegExp
  */
-export function isRegExp(val: any): boolean {
+export function isRegExp(val: unknown): boolean {
     return val instanceof RegExp
 }
 
@@ -149,6 +149,6 @@ export function isRegExp(val: any): boolean {
  * @param val 任意类型
  * @return 是否为Error
  */
-export function isError(val: any): boolean {
+export function isError(val: unknown): boolean {
     return val instanceof Error
 }

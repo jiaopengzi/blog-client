@@ -14,7 +14,7 @@ import type { AxiosPromise } from "axios"
 import { routerGroup } from "@/api/routerGroup"
 import { type Res } from "@/api/responseCode"
 
-export function getKeyAPI(videoId: string): AxiosPromise<Res> {
+export function getKeyAPI(videoId: string): AxiosPromise<Res<string>> {
     return request({
         url: `${routerGroup}/video/key/${videoId}`,
         method: "get",

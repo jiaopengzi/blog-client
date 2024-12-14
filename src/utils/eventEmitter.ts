@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 /**
  * @FilePath     : \blog-client\src\utils\eventEmitter.ts
  * @Description  : 事件触发器 EventEmitter 类 参考袁老师的文章 https://fe.duyiedu.com/p/t_pc/goods_pc_detail/goods_detail/course_2hzyLq1i84ydVnT200svNMYPFVH
@@ -34,7 +35,7 @@ export class EventEmitter<T extends string> {
     // 'once' 方法用于订阅一个只触发一次的事件
     once(event: T, listener: Function) {
         // 定义一个只执行一次的监听器
-        const onceListener = (...args: any[]) => {
+        const onceListener = (...args: unknown[]) => {
             // 执行监听器的处理函数
             listener(...args)
             // 执行后立即取消订阅
@@ -45,7 +46,7 @@ export class EventEmitter<T extends string> {
     }
 
     // 'emit' 方法用于发射一个事件
-    emit(event: T, ...args: any[]) {
+    emit(event: T, ...args: unknown[]) {
         // 如果 events Map 中有这个事件
         if (this.events.has(event)) {
             // 对事件的 Set 中的每一个监听器执行处理函数，传入的参数为 'args'

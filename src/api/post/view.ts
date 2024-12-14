@@ -26,13 +26,10 @@ export interface ViewPostRequest extends PaginationRequest {
     post_tag_id?: string // 文章标签ID
 }
 
-// 查看文章分页数据
-export interface ViewPostResponse extends Res {
-    data: Pagination<PostResPagination>
-}
-
 // 查看文章
-export function viewPostAPI(requestData: ViewPostRequest): AxiosPromise<ViewPostResponse> {
+export function viewPostAPI(
+    requestData: ViewPostRequest,
+): AxiosPromise<Res<Pagination<PostResPagination>>> {
     const urlStr = routerGroup + "/post/view"
     return request({
         url: urlStr,

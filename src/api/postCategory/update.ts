@@ -25,7 +25,9 @@ export interface UpdatePostCategoryRequest {
 }
 
 // 更新文章分类
-export function updatePostCategoryAPI(requestData: UpdatePostCategoryRequest): AxiosPromise<Res> {
+export function updatePostCategoryAPI(
+    requestData: UpdatePostCategoryRequest,
+): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/post-category/update"
     return request({
         url: urlStr,

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-06 17:23:14
+ * @LastEditTime : 2024-12-14 13:32:28
  * @FilePath     : \blog-client\src\views\admin\component\main\post-tag\index.vue
  * @Description  : 标签管理
  * @Blog         : https://jiaopengzi.com
@@ -62,7 +62,8 @@ import { reactive } from "vue"
 import type { TableData, TableColumn } from "@/components/common/base-table"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import { type PostTag } from "@/api/postTag/view"
-import { viewPostTagAPI, type ViewPostTagRequest } from "@/api/postTag/view"
+import { viewPostTagAPI } from "@/api/postTag/view"
+import type { PaginationRequest } from "@/components/common"
 import { ResponseCode } from "@/api/responseCode"
 import BaseTable from "@/components/common/base-table"
 import AddTag from "./component/add"
@@ -136,7 +137,7 @@ const cols: TableColumn[] = reactive([
     },
 ])
 
-const queryParams = reactive<ViewPostTagRequest>({} as ViewPostTagRequest)
+const queryParams = reactive<PaginationRequest>({} as PaginationRequest)
 
 // hooks 使用
 const {
@@ -155,7 +156,7 @@ const {
     editItemUpdateDialogVisible, // 编辑对话框
     deleteRows, // 删除行
     updateQueryAndRouter,
-} = useBaseTable<PostTag, ViewPostTagRequest, DeletePostTagRequest>(
+} = useBaseTable<PostTag, PaginationRequest, DeletePostTagRequest>(
     AdminSideMenu.PostTag,
     viewPostTagAPI,
     ResponseCode.PostTagViewSuccess,

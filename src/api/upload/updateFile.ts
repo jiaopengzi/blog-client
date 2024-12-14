@@ -23,7 +23,7 @@ export interface UpdateFileRequest {
     is_video: boolean // 是否为视频
 }
 
-export function updateFileAPI(req: UpdateFileRequest): AxiosPromise<Res> {
+export function updateFileAPI(req: UpdateFileRequest): AxiosPromise<Res<unknown>> {
     return request({
         url: routerGroup + "/upload/update",
         method: "post",

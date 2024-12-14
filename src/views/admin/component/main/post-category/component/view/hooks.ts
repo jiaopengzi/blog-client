@@ -53,7 +53,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查分类名称是否可用
     function checkCategoryNameValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -87,7 +87,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查别名是否可用
     function checkCategorySlugValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -127,7 +127,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查分类名称是否可用
     function checkCategoryNameExcludingIDValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {
@@ -167,7 +167,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查别名是否可用
     function checkCategorySlugExcludingIDValidator(
-        rule: any,
+        rule: unknown,
         value: string,
         callback: (error?: string | Error | undefined) => void,
     ): void {

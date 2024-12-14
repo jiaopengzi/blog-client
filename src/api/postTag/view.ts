@@ -15,8 +15,6 @@ import type { AxiosPromise } from "axios"
 import type { DataWithImg, Pagination, PaginationRequest } from "@/components/common"
 import { type Res } from "@/api/responseCode"
 
-export interface ViewPostTagRequest extends PaginationRequest {}
-
 // 每行数据类型
 export interface PostTag extends DataWithImg {
     id: string // 标签id
@@ -29,18 +27,10 @@ export interface PostTag extends DataWithImg {
     post_count: string // 文章数量
 }
 
-// 文章标签
-export interface ViewPostTagResponse extends Res {
-    data: Pagination<PostTag>
-}
-
-// 查看文章标签 top n
-export interface ViewTopPostTagResponse extends Res {
-    data: PostTag
-}
-
 // 查看文章标签
-export function viewPostTagAPI(requestData: ViewPostTagRequest): AxiosPromise<ViewPostTagResponse> {
+export function viewPostTagAPI(
+    requestData: PaginationRequest,
+): AxiosPromise<Res<Pagination<PostTag>>> {
     const urlStr = routerGroup + "/post-tag/view"
     return request({
         url: urlStr,
@@ -50,7 +40,7 @@ export function viewPostTagAPI(requestData: ViewPostTagRequest): AxiosPromise<Vi
 }
 
 // 查看文章标签 top n
-export function viewPostTagTopAPI(): AxiosPromise<ViewTopPostTagResponse> {
+export function viewPostTagTopAPI(): AxiosPromise<Res<PostTag>> {
     const urlStr = routerGroup + "/post-tag/view-top-n"
     return request({
         url: urlStr,

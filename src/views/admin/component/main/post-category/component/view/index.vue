@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:47:08
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-07 13:31:22
+ * @LastEditTime : 2024-12-14 13:26:49
  * @FilePath     : \blog-client\src\views\admin\component\main\post-category\component\view\index.vue
  * @Description  : 编辑分类展示组件
  * @Blog         : https://jiaopengzi.com
@@ -22,30 +22,30 @@
             status-icon
         >
             <el-form-item v-if="isShowId" label="ID" prop="id">
-                <el-input v-model="viewData.id" disabled />
+                <el-input v-model="viewDataAc.id" disabled />
             </el-form-item>
 
             <el-form-item label="分类" prop="name">
-                <el-input v-model="viewData.name" placeholder="请输入分类名称-必填" />
+                <el-input v-model="viewDataAc.name" placeholder="请输入分类名称-必填" />
             </el-form-item>
 
             <el-form-item label="别名" prop="slug">
-                <el-input v-model="viewData.slug" placeholder="请输入分类别名-必填" />
+                <el-input v-model="viewDataAc.slug" placeholder="请输入分类别名-必填" />
             </el-form-item>
             <el-form-item label="描述" prop="description">
                 <el-input
-                    v-model="viewData.description"
+                    v-model="viewDataAc.description"
                     type="textarea"
                     placeholder="请输入分类描信息-选填"
                     :rows="5"
                 />
             </el-form-item>
             <el-form-item label="图片" prop="thumbnail">
-                <el-input v-model="viewData.thumbnail" placeholder="请输入分类的图片URL-选填" />
+                <el-input v-model="viewDataAc.thumbnail" placeholder="请输入分类的图片URL-选填" />
             </el-form-item>
             <el-form-item label="排序" prop="order">
                 <el-input
-                    v-model="viewData.order"
+                    v-model="viewDataAc.order"
                     type="number"
                     placeholder="请输入分类排序数字-选填"
                     min="0"
@@ -53,7 +53,7 @@
             </el-form-item>
             <el-form-item label="父分类" prop="parent">
                 <el-input
-                    v-model="viewData.parent"
+                    v-model="viewDataAc.parent"
                     type="number"
                     placeholder="请输入父分类数字-选填"
                     min="0"
@@ -70,7 +70,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, toRefs, useTemplateRef } from "vue"
+import { ref, reactive, toRefs, useTemplateRef } from "vue"
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
 import type { ViewForm } from "./index"
 import { useFormValidation } from "./hooks"
@@ -102,9 +102,12 @@ const formSize = ref("large")
 // 表单实例
 const viewFormRef = useTemplateRef<FormInstance>("viewFormRef")
 
+// 定义 v-model 的数据
+const viewDataAc = reactive<ViewForm>(viewData)
+
 // hooks
 const { addRules, editRules } = useFormValidation({
-    form: toRefs(viewData),
+    form: toRefs(viewDataAc),
 })
 
 // 根据是否显示ID来判断使用哪个rules
@@ -112,16 +115,12 @@ const rules = isShowId ? editRules : addRules
 
 const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    try {
-        await formEl.validate(async (valid) => {
-            if (valid) {
-                emit("submit-data", viewData)
-                console.log("submit!")
-            }
-        })
-    } catch (error) {
-        return
-    }
+    await formEl.validate(async (valid) => {
+        if (valid) {
+            emit("submit-data", viewData)
+            console.log("submit!")
+        }
+    })
 }
 </script>
 

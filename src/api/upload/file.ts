@@ -17,7 +17,7 @@ import { type Res } from "@/api/responseCode"
 export function uploadFileAPI(
     formData: FormData,
     progressCallback: (progressEvent: AxiosProgressEvent) => void,
-): AxiosPromise<Res> {
+): AxiosPromise<Res<unknown>> {
     return request({
         url: routerGroup + "/upload/file",
         method: "post",

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 16:30:57
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-08 12:54:37
+ * @LastEditTime : 2024-12-14 10:11:15
  * @FilePath     : \blog-client\src\api\user\getUsers.ts
  * @Description  : 获取用户信息
  * @Blog         : https://jiaopengzi.com
@@ -11,6 +11,7 @@
 
 import request from "@/api/request"
 import { routerGroup } from "@/api/routerGroup"
+import { type Res } from "@/api/responseCode"
 import type { AxiosPromise } from "axios"
 import type { DataWithImg, Pagination, PaginationRequest } from "@/components/common"
 import { ResponseCode } from "@/api/responseCode"
@@ -22,20 +23,13 @@ export interface GetUsersRequest extends PaginationRequest {
     role_name?: string // 角色
 }
 
-// 获取用户信息响应类型
-export interface GetUsersResponse {
-    code: number
-    msg: string
-    data: Pagination<User>
-}
-
 // 获取用户信息 api 函数
 export async function getUsersAPI(
     requestData: GetUsersRequest = { current_page: 1, page_size: 10 }, // 设置默认值,
     width: number = 30, // 默认值 50px
     height: number = 30, // 默认值 50px
     imgFit: ImgFit = ImgFit.Cover,
-): AxiosPromise<GetUsersResponse> {
+): AxiosPromise<Res<Pagination<User>>> {
     const urlStr = routerGroup + "/user/view"
     const response = await request({
         url: urlStr,
@@ -44,7 +38,7 @@ export async function getUsersAPI(
     })
     // 在这里使用 map 函数来转换每个用户对象
     if (response.data.code === ResponseCode.UserGetAllSuccess) {
-        response.data.data.records = response.data.data.records.map((user: any) =>
+        response.data.data.records = response.data.data.records.map((user: User) =>
             formatUser(user, width, height, imgFit),
         )
         return response
@@ -76,14 +70,15 @@ export interface User extends DataWithImg {
  * @return  {User} 格式化后的用户信息
  */
 export function formatUser(
-    { user_avatar, created_at, ...user }: any,
+    { user_avatar, created_at, ...user }: User,
     width: number,
     height: number,
     imgFit: ImgFit,
 ): User {
     const formattedUser: User = {
         ...user,
-        created_at: formatTime(created_at), // 使用 formatTime 进行格式化
+        created_at: formatTime(created_at),
+        user_avatar: user_avatar || "",
     }
 
     // 如果 user_avatar 不为空，添加 img 属性

@@ -2,8 +2,8 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 15:53:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-04 15:54:52
- * @FilePath     : \blog-client\src\api\post_tag\insert.ts
+ * @LastEditTime : 2024-12-14 10:00:14
+ * @FilePath     : \blog-client\src\api\postTag\insert.ts
  * @Description  : 插入文章标签
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
@@ -23,7 +23,7 @@ export interface InsertPostTagRequest {
 }
 
 // 插入文章标签
-export function insertPostTagAPI(requestData: InsertPostTagRequest): AxiosPromise<Res> {
+export function insertPostTagAPI(requestData: InsertPostTagRequest): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/post-tag/insert"
     return request({
         url: urlStr,

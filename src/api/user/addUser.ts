@@ -23,7 +23,7 @@ export interface AddUserRequest {
 }
 
 // 注册
-export function AddUserAPI(requestData: AddUserRequest): AxiosPromise<Res> {
+export function AddUserAPI(requestData: AddUserRequest): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/user/add"
     return request({
         url: urlStr,

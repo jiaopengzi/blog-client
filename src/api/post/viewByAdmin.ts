@@ -29,15 +29,10 @@ export interface ViewPostByAdminRequest extends PaginationRequest {
     custom_filed_max?: string // 自定义字段最大值
 }
 
-// 管理员查看文章分页数据
-export interface ViewPostByAdminResponse extends Res {
-    data: Pagination<PostResPaginationByAdmin>
-}
-
 // 查看文章
 export function viewPostByAdminAPI(
     requestData: ViewPostByAdminRequest,
-): AxiosPromise<ViewPostByAdminResponse> {
+): AxiosPromise<Res<Pagination<PostResPaginationByAdmin>>> {
     const urlStr = routerGroup + "/post/view-by-admin"
     return request({
         url: urlStr,

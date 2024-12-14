@@ -259,7 +259,7 @@ WEBVTT
 
 // 检查别名是否可用
 function isWebvttValidator(
-    rule: any,
+    rule: unknown,
     value: string,
     callback: (error?: string | Error | undefined) => void,
 ): void {
@@ -355,7 +355,7 @@ const getSubtitles = async (language: string) => {
 
 // 检查别名是否可用
 function checkSlugValidator(
-    rule: any,
+    rule: unknown,
     value: string,
     callback: (error?: string | Error | undefined) => void,
 ): void {

@@ -19,7 +19,7 @@ export interface CheckTagNameRequest {
 }
 
 // 检查 tag 名称是否存在
-export function checkTagNameAPI(requestData: CheckTagNameRequest): AxiosPromise<Res> {
+export function checkTagNameAPI(requestData: CheckTagNameRequest): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/post-tag/check-tag-name"
     return request({
         url: urlStr,

@@ -24,7 +24,9 @@ export interface InsertPostCategoryRequest {
 }
 
 // 插入文章分类
-export function insertPostCategoryAPI(requestData: InsertPostCategoryRequest): AxiosPromise<Res> {
+export function insertPostCategoryAPI(
+    requestData: InsertPostCategoryRequest,
+): AxiosPromise<Res<unknown>> {
     const urlStr = routerGroup + "/post-category/insert"
     return request({
         url: urlStr,

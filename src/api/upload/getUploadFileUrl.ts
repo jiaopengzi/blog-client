@@ -19,7 +19,9 @@ export interface GetUploadFileUrlRequest {
 }
 
 // 获取上传文件的 url
-export function getUploadFileUrlAPI(requestData: GetUploadFileUrlRequest): AxiosPromise<Res> {
+export function getUploadFileUrlAPI(
+    requestData: GetUploadFileUrlRequest,
+): AxiosPromise<Res<string>> {
     const urlStr = routerGroup + "/upload/get-upload-file-url"
     return request({
         url: urlStr,
@@ -29,7 +31,9 @@ export function getUploadFileUrlAPI(requestData: GetUploadFileUrlRequest): Axios
 }
 
 // 获取上传头像的 url
-export function getUploadFileUrlAvatarAPI(requestData: GetUploadFileUrlRequest): AxiosPromise<Res> {
+export function getUploadFileUrlAvatarAPI(
+    requestData: GetUploadFileUrlRequest,
+): AxiosPromise<Res<string>> {
     const urlStr = routerGroup + "/upload/avatar/get-upload-file-url"
     return request({
         url: urlStr,
@@ -39,7 +43,9 @@ export function getUploadFileUrlAvatarAPI(requestData: GetUploadFileUrlRequest):
 }
 
 // 编辑器上传文件获取上传文件的 url
-export function getUploadFileUrlEditorAPI(requestData: GetUploadFileUrlRequest): AxiosPromise<Res> {
+export function getUploadFileUrlEditorAPI(
+    requestData: GetUploadFileUrlRequest,
+): AxiosPromise<Res<string>> {
     const urlStr = routerGroup + "/upload/editor/get-upload-file-url"
     return request({
         url: urlStr,

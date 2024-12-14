@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-21 15:05:09
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-09 17:36:36
+ * @LastEditTime : 2024-12-14 10:28:45
  * @FilePath     : \blog-client\src\components\common\icons\index.ts
  * @Description  : 图标组件
  * @Blog         : https://jiaopengzi.com
@@ -51,9 +51,8 @@ export interface IconJson {
 // }
 
 // 图标 json 数据 类型守卫函数
-export function isIconJson(obj: any): IconJson {
-    return (
-        obj &&
+export function isIconJson(obj: unknown): IconJson {
+    return (obj &&
         typeof obj === "object" &&
         "id" in obj &&
         "name" in obj &&
@@ -63,7 +62,7 @@ export function isIconJson(obj: any): IconJson {
         "glyphs" in obj &&
         Array.isArray(obj.glyphs) &&
         obj.glyphs.every(
-            (glyph: any) =>
+            (glyph: unknown) =>
                 glyph &&
                 typeof glyph === "object" &&
                 "icon_id" in glyph &&
@@ -76,8 +75,7 @@ export function isIconJson(obj: any): IconJson {
                 typeof glyph.font_class === "string" &&
                 typeof glyph.unicode === "string" &&
                 typeof glyph.unicode_decimal === "number",
-        )
-    )
+        )) as IconJson
 }
 
 /**
@@ -88,7 +86,7 @@ export function isIconJson(obj: any): IconJson {
  * @param iconFontJSON iconfont.json 数据
  * @return {IconMap} iconMap 对象
  */
-export function getIconMap(iconFontJSON: any): IconMap {
+export function getIconMap(iconFontJSON: IconJson): IconMap {
     const iconMap: IconMap = {}
     if (isIconJson(iconFontJSON)) {
         const prefix = iconFontJSON.css_prefix_text //前缀
@@ -117,7 +115,7 @@ export function getIconMap(iconFontJSON: any): IconMap {
 }
 
 // 通过 iconMap 对象 得到 对应的 key 作为 icon 类型约束
-export const iconMap: IconMap = getIconMap(iconFontJSON)
+export const iconMap: IconMap = getIconMap(iconFontJSON as IconJson)
 
 // 枚举值使用小横线命名法 例如: 'wechat-official-account'
 export enum IconKeys {

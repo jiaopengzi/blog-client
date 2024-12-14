@@ -11,8 +11,9 @@
 
 import request from "@/api/request"
 import { routerGroup } from "@/api/routerGroup"
+import { type Res } from "@/api/responseCode"
 import type { AxiosPromise } from "axios"
-import type { GetUserInfoResponse } from "@/api/user/getUserInfo"
+import type { UserInfo } from "@/api/user/getUserInfo"
 
 export interface GetUserInfoByUserIDRequest {
     user_id: string // 用户id
@@ -21,7 +22,7 @@ export interface GetUserInfoByUserIDRequest {
 // 获取用户信息
 export function getUserInfoByUserIDAPI(
     requestData: GetUserInfoByUserIDRequest,
-): AxiosPromise<GetUserInfoResponse> {
+): AxiosPromise<Res<UserInfo>> {
     const urlStr = routerGroup + "/user/info-by-user-id"
     return request({
         url: urlStr,

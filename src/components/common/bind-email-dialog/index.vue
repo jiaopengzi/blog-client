@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 18:53:25
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-13 18:09:14
+ * @LastEditTime : 2024-12-14 10:22:40
  * @FilePath     : \blog-client\src\components\common\bind-email-dialog\index.vue
  * @Description  : 绑定邮箱弹窗
  * @Blog         : https://jiaopengzi.com
@@ -92,7 +92,7 @@ defineOptions({ name: "BindEmailDialog" })
 
 const userStore = useUserStore()
 
-let { showDialogBindEmail } = storeToRefs(userStore)
+const { showDialogBindEmail } = storeToRefs(userStore)
 
 interface BindEmailForm {
     email: string
@@ -129,9 +129,10 @@ async function checkSendCaptcha(): Promise<void> {
 
         if (data.code !== ResponseCode.CaptchaSendSuccess && data.data !== null) {
             // 历遍 data 中的错误信息 并抛出第一个key错误信息 停止循环
-            for (const key in data.data) {
-                if (Object.prototype.hasOwnProperty.call(data.data, key)) {
-                    throw new Error(data.data[key]) // 抛出错误信息
+            const errorData = data.data as Record<string, string>
+            for (const key in errorData) {
+                if (Object.prototype.hasOwnProperty.call(errorData, key)) {
+                    throw new Error(errorData[key]) // 抛出错误信息
                 }
             }
         }
@@ -173,7 +174,7 @@ async function checkEmail(): Promise<void> {
  * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
  */
 function checkEmailValidator(
-    rule: any,
+    rule: unknown,
     value: string,
     callback: (error?: string | Error | undefined) => void,
 ): void {
@@ -208,7 +209,7 @@ async function checkCaptcha(): Promise<void> {
 }
 
 function checkCaptchaValidator(
-    rule: any,
+    rule: unknown,
     value: string,
     callback: (error?: string | Error | undefined) => void,
 ): void {
