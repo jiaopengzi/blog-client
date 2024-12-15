@@ -109,10 +109,13 @@ span {
 
     text-align: center;
     font-size: 16px;
-    width: 120px;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
 }
 
 .btn-item {
+    height: 32px;
     width: 100%;
     border: none;
     padding: 5px 0;

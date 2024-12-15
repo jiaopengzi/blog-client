@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-13 16:10:45
+ * @LastEditTime : 2024-12-15 19:43:51
  * @FilePath     : \blog-client\src\views\home\component\post-list\index.vue
  * @Description  : 文章列表
  * @Blog         : https://jiaopengzi.com
@@ -51,6 +51,7 @@ const getPostList = async () => {
     }
 
     await viewPostAPI(req).then((res) => {
+        console.log("getPostList", res)
         if (res.data.code === ResponseCode.PostViewSuccess) {
             paginationData.value = res.data.data
         }

@@ -9,7 +9,7 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { viewPostByIDAPI, type ViewPostByIDRequest } from "@/api/post/viewByID"
+import { viewPostByIDAdminAPI, type ViewPostByIDRequest } from "@/api/post/viewByIDAdmin"
 import { updatePostAPI } from "@/api/post/update"
 import { ResponseCode, handleErrInfo } from "@/api/responseCode"
 import { ShowMsgTip } from "@/utils/message"
@@ -44,7 +44,7 @@ export function useEdit(
             const req: ViewPostByIDRequest = {
                 post_id: postInfoForm.id,
             }
-            await viewPostByIDAPI(req).then((res) => {
+            await viewPostByIDAdminAPI(req).then((res) => {
                 if (res.data.code === ResponseCode.PostViewByIDSuccess) {
                     const data = res.data.data
                     // 更新编辑器内容
