@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-13 17:47:48
+ * @LastEditTime : 2024-12-16 19:24:46
  * @FilePath     : \blog-client\src\views\reset-password\index.vue
  * @Description  : 重置密码
  * @Blog         : https://jiaopengzi.com
@@ -175,7 +175,7 @@ async function checkSendCaptcha(): Promise<void> {
             email: forgotPasswordForm.email,
             purpose: CaptchaPurpose.ResetPassword,
         }
-        console.log("==========>发送验证码")
+
         const { data } = await captchaSendAPI(req)
 
         if (data.code !== ResponseCode.CaptchaSendSuccess && data.data !== null) {

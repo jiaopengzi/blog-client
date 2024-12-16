@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 18:40:24
+ * @LastEditTime : 2024-12-16 19:21:28
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -49,6 +49,8 @@
                 />
             </el-form-item>
 
+            <!-- TODO 占位让校验生效, EditorPost 放到 el-form-item 宽度会无限增长原因待查 -->
+            <el-form-item prop="post_content"> </el-form-item>
             <!-- 编辑器 -->
             <div ref="editorContainerRef" class="editor md-layout-fs">
                 <EditorPost :editor-state="editorState" />
@@ -61,12 +63,11 @@
             </div>
 
             <div class="seo-switch">
-                <span>常规设置</span>
-                <SwitchGroup :switch-items="seoStatus" @update-status="updateSeoStatus" />
+                <SwitchGroup :switch-items="defaultStatus" @update-status="updateSeoStatus" />
             </div>
 
             <el-form-item
-                v-show="seoIsShow"
+                v-show="defaultStatusIsShow"
                 label="SEO自定义文章标题，留空则为文章标题。"
                 prop="seo_title"
             >
@@ -75,7 +76,7 @@
 
             <el-form-item
                 ref="seoDescriptionRef"
-                v-show="seoIsShow"
+                v-show="defaultStatusIsShow"
                 label="SEO文章描述，留空则自动截取首段一定字数作为文章描。"
                 prop="seo_description"
             >
@@ -83,14 +84,18 @@
             </el-form-item>
 
             <el-form-item
-                v-show="seoIsShow"
+                v-show="defaultStatusIsShow"
                 label="SEO文章关键词，多个关键词用英文半角逗号隔开，留空则自动将文章标签做为关键词。"
                 prop="seo_keywords"
             >
                 <el-input v-model="postInfoForm.seo_keywords" />
             </el-form-item>
 
-            <el-form-item v-show="seoIsShow" label="别名，留空则使用默认ID值。" prop="slug">
+            <el-form-item
+                v-show="defaultStatusIsShow"
+                label="别名，留空则使用默认ID值。"
+                prop="slug"
+            >
                 <el-input v-model="postInfoForm.slug" />
             </el-form-item>
 
@@ -137,14 +142,25 @@
             </el-form-item>
 
             <el-form-item label="文章状态" prop="post_status">
-                <el-radio-group v-model="postInfoForm.post_status">
-                    <el-radio
-                        v-for="item in radioOptions()"
-                        :key="item.value"
-                        :value="item.value"
-                        >{{ item.label }}</el-radio
+                <div class="post-status">
+                    <el-radio-group v-model="postInfoForm.post_status">
+                        <el-radio
+                            v-for="item in radioOptions()"
+                            :key="item.value"
+                            :value="item.value"
+                            >{{ item.label }}</el-radio
+                        >
+                    </el-radio-group>
+                    <div
+                        class="post-show-method"
+                        v-show="postInfoForm.post_status === PostStatusCode.Publish"
                     >
-                </el-radio-group>
+                        <SwitchGroup
+                            :switch-items="postShowMethod"
+                            @update-status="updatePostShowMethod"
+                        />
+                    </div>
+                </div>
             </el-form-item>
 
             <el-form-item
@@ -287,12 +303,15 @@ const updateTagListIn = (tagList: string[]) => {
     postInfoForm.tag_names = tagList
 }
 
-// SEO状态
-const seoIsShow = ref(localStorage.getItem(LocalStorageKey.IsShowSeoAtPostWrite) == "true")
-const seoStatus: SwitchItem[] = reactive([
+// 常规设置是否展示
+const defaultStatusIsShow = ref(
+    localStorage.getItem(LocalStorageKey.IsShowSeoAtPostWrite) == "true",
+)
+const defaultStatus: SwitchItem[] = reactive([
     {
-        name: "seoStatus",
-        display: "SEO状态",
+        name: "defaultStatus",
+        display: "常规设置",
+        namePosition: "left",
         status: localStorage.getItem(LocalStorageKey.IsShowSeoAtPostWrite) == "true",
         label: {
             active: "展开",
@@ -303,7 +322,7 @@ const seoStatus: SwitchItem[] = reactive([
 
 // 更新SEO状态
 const updateSeoStatus = (items: SwitchItem[]) => {
-    seoIsShow.value = items[0].status
+    defaultStatusIsShow.value = items[0].status
     localStorage.setItem(LocalStorageKey.IsShowSeoAtPostWrite, items[0].status.toString())
 }
 
@@ -456,23 +475,87 @@ const updateRolePaidList = (items: SwitchItem[]) => {
         })
 }
 
+// 公用开关项标签
+const commonSwitchItemLabel: SwitchItemLabel = {
+    active: "开启",
+    inactive: "关闭",
+}
+
 // 评论状态
 const commentStatus: SwitchItem[] = reactive([
     {
         name: "commentStatus",
-        display: "评论状态",
         status: true,
-        label: {
-            active: "开启",
-            inactive: "关闭",
-        },
+        label: commonSwitchItemLabel,
     },
 ])
+
+// 文章显示方式
+const postShowMethod: SwitchItem[] = reactive([
+    {
+        name: "is_pinned",
+        display: "文章置顶",
+        namePosition: "left",
+        status: false,
+        label: commonSwitchItemLabel,
+        minWidth: 180,
+    },
+    {
+        name: "is_recommended",
+        display: "推荐阅读",
+        namePosition: "left",
+        status: false,
+        label: commonSwitchItemLabel,
+        minWidth: 180,
+    },
+])
+
+// 更新 slug
+watch(
+    () => postInfoForm.post_status,
+    (newVal, oldVal) => {
+        // 如果文章状态不为密码，则清空文章密码
+        if (newVal !== PostStatusCode.Password) {
+            postInfoForm.post_password = ""
+        }
+
+        // 如果文章状态不为定时发布，则清空文章发布时间
+        if (newVal !== PostStatusCode.Future) {
+            postInfoForm.post_push_time = {
+                Time: null,
+                Valid: false,
+            }
+        }
+
+        // 如果文章状态不为过期，则清空文章过期时间
+        if (newVal !== PostStatusCode.Expired) {
+            postInfoForm.post_expired_time = {
+                Time: null,
+                Valid: false,
+            }
+        }
+
+        // 如果文章状态不为发布，则默认文章显示方式为关闭
+        if (newVal !== PostStatusCode.Publish) {
+            postShowMethod.forEach((item) => {
+                item.status = false
+            })
+            postInfoForm.is_pinned = false
+            postInfoForm.is_recommended = false
+        }
+    },
+)
 
 // 更新评论状态
 const updateCommentStatus = (items: SwitchItem[]) => {
     // 更新 postInfoForm.comment_status
     postInfoForm.comment_status = items[0].status ? CommentStatusCode.Open : CommentStatusCode.Close
+}
+
+const updatePostShowMethod = (items: SwitchItem[]) => {
+    items.forEach((item) => {
+        ;(postInfoForm as unknown as Record<string, boolean>)[item.name] = item.status
+    })
 }
 
 const radioOptions = () => {
@@ -566,14 +649,15 @@ const {
     stateManager,
     dataOfUpdate,
     postInfoAboutTime,
+    postShowMethod,
 )
 
 const submitForm = async (formEl: FormInstance | undefined) => {
-    // 判断文章内容是否为空
-    if (editorState.editor === "") {
-        ShowMsgTip(ShowMsgTip.MsgType.warning, "文章内容不能为空", 6000)
-        return
-    }
+    // // 判断文章内容是否为空
+    // if (editorState.editor === "") {
+    //     ShowMsgTip(ShowMsgTip.MsgType.warning, "文章内容不能为空", 6000)
+    //     return
+    // }
 
     // 将编辑器内容赋值给 post_content
     postInfoForm.post_content = editorState.editor

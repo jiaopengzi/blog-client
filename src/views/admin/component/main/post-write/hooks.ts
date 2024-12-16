@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-25 15:09:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-07 14:24:19
+ * @LastEditTime : 2024-12-16 19:38:21
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\hooks.ts
  * @Description  : 表单验证
  * @Blog         : https://jiaopengzi.com
@@ -75,6 +75,21 @@ export function useFormValidation(options: FormValidationOptions): {
         // 长度不能超过 255
         if (value.length > titleLength) {
             callback(new Error("文章标题长度不能超过 255"))
+            return
+        }
+
+        callback()
+    }
+
+    // 检查文章内容是否可用
+    function checkPostContentValidator(
+        rule: unknown,
+        value: string,
+        callback: (error?: string | Error | undefined) => void,
+    ): void {
+        // 不能为空
+        if (!value) {
+            callback(new Error("文章内容不能为空"))
             return
         }
 
@@ -426,33 +441,41 @@ export function useFormValidation(options: FormValidationOptions): {
         value: PgSqlDateTime,
         callback: (error?: string | Error | undefined) => void,
     ): void {
-        // 若为空，则直接返回
-        if (!value.Time) {
+        // 状态不为过期且过期时间为空，则直接返回
+        if (form.post_status?.value !== PostStatusCode.Expired && !value.Time) {
             callback()
             return
         }
 
-        const now = new Date()
-        const postExpiredTime = value.Time
-
-        // 不能小于当前时间
-        if (now >= postExpiredTime) {
-            callback(new Error("过期时间不能小于当前时间"))
+        // 状态为过期且过期时间为空
+        if (form.post_status?.value === PostStatusCode.Expired && !value.Time) {
+            callback(new Error("过期时间不能为空"))
             return
         }
 
-        // 若不为空，再判断 post_push_time 为空，直接返回
-        if (!form.post_push_time?.value) {
-            callback()
+        // 状态不为过期且过期时间不为空
+        if (form.post_status?.value !== PostStatusCode.Expired && value.Time) {
+            callback(new Error("状态不为过期时，过期时间必须为空"))
             return
         }
 
-        // 若不为空，再判断 post_push_time 是否小于 post_expired_time
-        if (form.post_push_time?.value && form.post_push_time.value.Time) {
-            const postPushTime = new Date(form.post_push_time.value.Time)
-            if (postPushTime > postExpiredTime) {
-                callback(new Error("过期时间不能小于发布时间"))
+        // 校验过期时间
+        if (value.Time) {
+            const postExpiredTime = value.Time
+
+            // 若不为空，再判断 post_push_time 为空，直接返回
+            if (!form.post_push_time?.value) {
+                callback()
                 return
+            }
+
+            // 若不为空，再判断 post_push_time 是否小于 post_expired_time
+            if (form.post_push_time?.value && form.post_push_time.value.Time) {
+                const postPushTime = new Date(form.post_push_time.value.Time)
+                if (postPushTime > postExpiredTime) {
+                    callback(new Error("过期时间不能小于发布时间"))
+                    return
+                }
             }
         }
 
@@ -467,6 +490,10 @@ export function useFormValidation(options: FormValidationOptions): {
         post_title: [
             { required: true, message: "标题不能为空", trigger: "blur" },
             { validator: checkPostTitleValidator, trigger: "blur" },
+        ],
+        post_content: [
+            { required: true, message: "文章内容不能为空", trigger: "blur" },
+            { validator: checkPostContentValidator, trigger: "blur" },
         ],
 
         seo_title: [

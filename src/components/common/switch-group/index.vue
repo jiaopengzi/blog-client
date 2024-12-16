@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 16:36:18
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-09 17:48:56
+ * @LastEditTime : 2024-12-16 18:31:36
  * @FilePath     : \blog-client\src\components\common\switch-group\index.vue
  * @Description  : 开关组件 
  * @Blog         : https://jiaopengzi.com
@@ -16,7 +16,9 @@
             class="switch-item"
             :style="getLiStyle(item)"
         >
-            <span v-if="item.namePosition === 'left'" class="span-left">{{ item.display }} </span>
+            <span v-if="item.namePosition === 'left'" class="display span-left"
+                >{{ item.display }}
+            </span>
             <el-switch
                 v-model="item.status"
                 :style="getSwitchStyle(item)"
@@ -33,7 +35,9 @@
                     <Icon :name="item.icon?.inactive" :custom-class="item.icon.inactiveClassName" />
                 </template>
             </el-switch>
-            <span v-if="item.namePosition === 'right'" class="span-right">{{ item.display }}</span>
+            <span v-if="item.namePosition === 'right'" class="display span-right">{{
+                item.display
+            }}</span>
         </li>
     </ul>
 </template>
@@ -87,6 +91,10 @@ const getLiStyle = (item: SwitchItem) => {
 
 .my-el-switch {
     margin: 0 10px;
+}
+
+.display {
+    color: var(--jpz-text-color-regular);
 }
 
 // .span-left,

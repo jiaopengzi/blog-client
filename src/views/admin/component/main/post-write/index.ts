@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:05:03
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-30 11:37:19
+ * @LastEditTime : 2024-12-16 17:23:04
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -37,7 +37,10 @@ export interface UpsertPostForm {
     pay_roles: string[] // 付费角色
     post_push_time: PgSqlDateTime // 发布时间
     post_expired_time: PgSqlDateTime // 过期时间
+    is_pinned: boolean // 是否置顶
+    is_recommended: boolean // 是否推荐阅读
 }
+
 
 export interface UpdatePostForm extends UpsertPostForm {
     update_fields: UpdateFields[]
@@ -75,5 +78,7 @@ export function createEmptyUpsertPostForm(): UpsertPostForm {
             Time: null,
             Valid: false,
         },
+        is_pinned: false,
+        is_recommended: false,
     }
 }

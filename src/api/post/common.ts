@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-23 15:28:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-13 17:50:59
+ * @LastEditTime : 2024-12-16 17:47:35
  * @FilePath     : \blog-client\src\api\post\common.ts
  * @Description  : 文章共用内容
  * @Blog         : https://jiaopengzi.com
@@ -92,6 +92,8 @@ export interface InsertPostRequest {
     pay_roles?: string[] // 付费角色
     post_push_time?: PgSqlDateTime // 发布时间
     post_expired_time?: PgSqlDateTime // 过期时间
+    is_pinned?: boolean // 是否置顶
+    is_recommended?: boolean // 是否推荐阅读
 }
 
 export type UpdateFields = keyof InsertPostRequest
@@ -116,6 +118,8 @@ export interface UpdatePostRequest {
     pay_roles?: string[] // 付费角色
     post_push_time?: PgSqlDateTime // 发布时间
     post_expired_time?: PgSqlDateTime // 过期时间
+    is_pinned?: boolean // 是否置顶
+    is_recommended?: boolean // 是否推荐阅读
     update_fields: UpdateFields[] // 显示指出需要更新的字段便于后端处理零值
 }
 
@@ -131,6 +135,8 @@ export interface PostResCommon extends DataWithImg {
     post_title: string // 文章标题
     slug: string // 别名
     thumbnail: string // 缩略图
+    is_pinned: boolean // 是否置顶
+    is_recommended: boolean // 是否推荐阅读
 }
 
 // 文章

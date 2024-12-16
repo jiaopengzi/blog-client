@@ -2,13 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-25 16:44:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-27 11:25:32
+ * @LastEditTime : 2024-12-16 18:22:58
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\useEdit.ts
  * @Description  : 编辑文章
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
+import { type Ref } from "vue"
 import { viewPostByIDAdminAPI, type ViewPostByIDRequest } from "@/api/post/viewByIDAdmin"
 import { updatePostAPI } from "@/api/post/update"
 import { ResponseCode, handleErrInfo } from "@/api/responseCode"
@@ -31,10 +32,19 @@ export function useEdit(
     stateManager: EditorStateManager,
     dataOfUpdate: UpsertPostForm,
     postInfoAboutTime: PostInfoAboutTime,
+    postShowMethod: SwitchItem[],
 ) {
     // 从路由中query中获取值
     const getValueFromQuery = () => {
         postInfoForm.id = router.currentRoute.value.query[queryKey.ID] as string
+    }
+
+    // 更新 SwitchItem 列表中的状态
+    const updateSwitchItem = (list: SwitchItem[], name: string, status: boolean) => {
+        const item = list.find((item) => item.name === name)
+        if (item) {
+            item.status = status
+        }
     }
 
     // 初始化数据
@@ -63,6 +73,8 @@ export function useEdit(
                     postInfoForm.comment_status = data.comment_status
                     postInfoForm.post_status = data.post_status
                     postInfoForm.post_password = data.post_password
+                    postInfoForm.is_pinned = data.is_pinned
+                    postInfoForm.is_recommended = data.is_recommended
 
                     if (data.post_push_time) {
                         postInfoForm.post_push_time = data.post_push_time
@@ -88,14 +100,19 @@ export function useEdit(
                         postInfoForm.pay_roles = data.pay_roles
                     }
 
-                    // 更新评论状态
-                    const commentItem = commentStatus.find((item) => item.name === "commentStatus")
-                    if (commentItem) {
-                        commentItem.status = postInfoForm.comment_status === CommentStatusCode.Open
-                    }
-
                     postInfoAboutTime.created_at = new Date(data.created_at)
                     postInfoAboutTime.updated_at = new Date(data.updated_at)
+
+                    // 更新评论状态
+                    updateSwitchItem(
+                        commentStatus,
+                        "commentStatus",
+                        postInfoForm.comment_status === CommentStatusCode.Open,
+                    )
+
+                    // 更新显示方式
+                    updateSwitchItem(postShowMethod, "is_pinned", postInfoForm.is_pinned)
+                    updateSwitchItem(postShowMethod, "is_recommended", postInfoForm.is_recommended)
                 }
             })
         }
