@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-17 15:41:17
+ * @LastEditTime : 2024-12-17 19:08:07
  * @FilePath     : \blog-client\src\App.vue
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -74,8 +74,7 @@ useHead({
 
 // 监听窗口变化
 const { stop } = useResizeObserver(appRef, (entries) => {
-    const { width } = entries[0].contentRect
-    const deviceType = getDeviceType(width)
+    const deviceType = getDeviceType()
     userStore.setDevice(deviceType)
 })
 
