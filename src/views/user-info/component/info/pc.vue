@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 16:55:48
+ * @LastEditTime : 2024-12-17 10:52:13
  * @FilePath     : \blog-client\src\views\user-info\component\info\pc.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -165,6 +165,7 @@ const {
     height: 100%;
     display: flex;
     flex-direction: column;
+    
 }
 
 .el-social-div {

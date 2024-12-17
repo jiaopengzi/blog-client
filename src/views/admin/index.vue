@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 18:04:30
+ * @LastEditTime : 2024-12-17 10:45:34
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -162,11 +162,12 @@ onBeforeMount(() => {
     height: 100vh;
 
     .container {
+        background-color: var(--jpz-bg-color-page);
         .header {
             background-color: var(--jpz-bg-color);
             color: var(--jpz-text-color-primary);
             height: 80px;
-            border-bottom: 1px solid var(--jpz-border-color);
+            // border-bottom: 1px solid var(--jpz-border-color);
         }
 
         .content {
@@ -174,7 +175,7 @@ onBeforeMount(() => {
             height: calc(100vh - 80px);
 
             .aside {
-                background-color: var(--jpz-bg-color);
+                background-color: var(--jpz-bg-color-page);
                 color: var(--jpz-text-color-primary);
                 transition: width 0.3s;
             }

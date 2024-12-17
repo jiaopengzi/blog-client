@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 22:31:43
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-10 14:15:43
+ * @LastEditTime : 2024-12-17 09:56:08
  * @FilePath     : \blog-client\src\components\layout\header\phone.vue
  * @Description  : phone 头部
  * @Blog         : https://jiaopengzi.com
@@ -102,7 +102,7 @@ header {
 }
 
 .header-main {
-    border-bottom: 1px solid var(--jpz-border-color);
+    // border-bottom: 1px solid var(--jpz-border-color);
     display: flex;
     justify-content: space-between;
     align-items: center;

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:26:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-13 15:56:45
+ * @LastEditTime : 2024-12-17 10:12:13
  * @FilePath     : \blog-client\src\views\home\component\pc.vue
  * @Description  : pc 内容页
  * @Blog         : https://jiaopengzi.com
@@ -13,17 +13,18 @@
     <div class="content">
         <!-- 面包屑 -->
         <div class="breadcrumb">
-            <span class="breadcrumb-item breadcrumb-logo">
-                <el-icon>
-                    <Location />
-                </el-icon>
-            </span>
-            <span class="breadcrumb-item">
-                <el-breadcrumb :separator-icon="ArrowRight">
-                    <el-breadcrumb-item>当前位置</el-breadcrumb-item>
-                    <el-breadcrumb-item :to="routeObj.login.path">首页</el-breadcrumb-item>
-                </el-breadcrumb>
-            </span>
+            <el-icon class="breadcrumb-item breadcrumb-logo">
+                <Location />
+            </el-icon>
+
+            <el-breadcrumb :separator-icon="ArrowRight">
+                <el-breadcrumb-item>
+                    <span class="breadcrumb-item">当前位置</span>
+                </el-breadcrumb-item>
+                <el-breadcrumb-item :to="routeObj.login.path">
+                    <span class="breadcrumb-item">首页</span></el-breadcrumb-item
+                >
+            </el-breadcrumb>
         </div>
 
         <!-- 正文内容 -->
@@ -51,9 +52,6 @@
             </el-container>
         </div>
     </div>
-    <el-backtop :bottom="100">
-        <div class="backtop">UP</div>
-    </el-backtop>
 </template>
 <script setup lang="ts">
 import { useTemplateRef } from "vue"
@@ -123,12 +121,12 @@ useResizeObserver(asideRef, (entries) => {
     width: pc.$width-page-main;
     display: flex;
     flex-direction: column;
+    background-color: var(--jpz-bg-color-page);
 }
 
 .breadcrumb {
     width: pc.$width-page-main;
     height: 40px;
-    color: #333;
     border: 0;
     margin: 0;
     margin-top: pc.$height-header;
@@ -140,6 +138,7 @@ useResizeObserver(asideRef, (entries) => {
 
 .breadcrumb-item {
     margin-right: 5px;
+    color: var(--jpz-text-color-secondary);
 }
 
 .breadcrumb-logo {
@@ -147,14 +146,14 @@ useResizeObserver(asideRef, (entries) => {
 }
 
 .el-main {
-    background-color: var(--jpz-bg-color);
+    // background-color: var(--jpz-bg-color);
     padding-left: 0px;
     padding-top: 0px;
 }
 
 .el-aside {
     width: pc.$width-aside;
-    background-color: var(--jpz-bg-color);
+    background-color: var(--jpz-bg-color-page);
     position: sticky; // 粘性定位 和 reCalculateHeight 配合使用
 }
 
@@ -166,13 +165,5 @@ useResizeObserver(asideRef, (entries) => {
     display: flex;
     justify-content: center;
     margin-top: 20px;
-}
-
-.backtop {
-    height: 100%;
-    width: 100%;
-    text-align: center;
-    line-height: 40px;
-    color: var(--jpz-color-primary);
 }
 </style>

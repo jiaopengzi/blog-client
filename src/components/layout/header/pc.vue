@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 22:31:47
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 15:33:08
+ * @LastEditTime : 2024-12-17 09:55:50
  * @FilePath     : \blog-client\src\components\layout\header\pc.vue
  * @Description  : pc 头部
  * @Blog         : https://jiaopengzi.com
@@ -126,7 +126,7 @@ header {
     // 可选：如果需要头部在其他元素上方显示，可以设置一个较高的 z-index 值
     // z-index: 999;
     background-color: var(--jpz-bg-color);
-    border-bottom: 1px solid var(--jpz-border-color);
+    // border-bottom: 1px solid var(--jpz-border-color);
 }
 
 .header-main {

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:43:31
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-13 15:57:10
+ * @LastEditTime : 2024-12-17 10:11:01
  * @FilePath     : \blog-client\src\views\home\component\phone.vue
  * @Description  : phone 内容页
  * @Blog         : https://jiaopengzi.com
@@ -12,17 +12,18 @@
     <div class="content">
         <!-- 面包屑 -->
         <div class="breadcrumb">
-            <span class="breadcrumb-item breadcrumb-logo">
-                <el-icon>
-                    <Location />
-                </el-icon>
-            </span>
-            <span class="breadcrumb-item">
-                <el-breadcrumb :separator-icon="ArrowRight">
-                    <el-breadcrumb-item>当前位置</el-breadcrumb-item>
-                    <el-breadcrumb-item :to="routeObj.login.path">首页</el-breadcrumb-item>
-                </el-breadcrumb>
-            </span>
+            <el-icon class="breadcrumb-item breadcrumb-logo">
+                <Location />
+            </el-icon>
+
+            <el-breadcrumb :separator-icon="ArrowRight">
+                <el-breadcrumb-item>
+                    <span class="breadcrumb-item">当前位置</span>
+                </el-breadcrumb-item>
+                <el-breadcrumb-item :to="routeObj.login.path">
+                    <span class="breadcrumb-item">首页</span></el-breadcrumb-item
+                >
+            </el-breadcrumb>
         </div>
 
         <!-- 正文内容 -->
@@ -37,9 +38,6 @@
             </el-container>
         </div>
     </div>
-    <el-backtop :bottom="100">
-        <div class="backtop">UP</div>
-    </el-backtop>
 </template>
 <script setup lang="ts">
 import { ArrowRight, Location } from "@element-plus/icons-vue"
@@ -56,10 +54,12 @@ defineOptions({ name: "HomePhone" })
     display: flex;
     flex-direction: column;
     width: 94vw;
+    background-color: var(--jpz-bg-color-page);
 }
 
 .breadcrumb-item {
     margin-right: 5px;
+    color: var(--jpz-text-color-secondary);
 }
 
 .breadcrumb-logo {
@@ -76,13 +76,5 @@ defineOptions({ name: "HomePhone" })
     display: flex;
     justify-content: center;
     margin-top: 20px;
-}
-
-.backtop {
-    height: 100%;
-    width: 100%;
-    text-align: center;
-    line-height: 40px;
-    color: var(--jpz-color-primary);
 }
 </style>

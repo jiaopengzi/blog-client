@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:33:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 17:49:53
+ * @LastEditTime : 2024-12-17 10:44:29
  * @FilePath     : \blog-client\src\views\admin\component\aside\index.vue
  * @Description  : 左边菜单栏 
  * @Blog         : https://jiaopengzi.com
@@ -128,7 +128,7 @@ const handleClose = (index: string, keyPath: string[]) => {
     flex-direction: column;
     align-items: center;
     height: 100%;
-    border-right: 1px solid var(--jpz-border-color);
+    // border-right: 1px solid var(--jpz-border-color);
 }
 
 .el-menu-vertical {

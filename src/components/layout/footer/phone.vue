@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 10:17:04
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 15:35:07
+ * @LastEditTime : 2024-12-17 10:35:00
  * @FilePath     : \blog-client\src\components\layout\footer\phone.vue
  * @Description  : 底部 移动端
  * @Blog         : https://jiaopengzi.com
@@ -55,13 +55,12 @@ const { footerData } = props
 <style scoped lang="scss">
 footer {
     height: phone.$height-footer;
-    background-color: var(--jpz-bg-color);
+    background-color: var(--jpz-bg-color-footer);
     display: relative;
     align-items: center;
     justify-content: center;
-    z-index: -1;
     // width: calc(phone.$width-page - phone.$scrollbar-y-width);
-    border-top: 1px solid var(--jpz-border-color);
+    // border-top: 1px solid var(--jpz-border-color);
 }
 
 .footer-main {

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 10:16:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-10 17:47:54
+ * @LastEditTime : 2024-12-17 10:34:43
  * @FilePath     : \blog-client\src\components\layout\footer\pc.vue
  * @Description  : 底部 PC端
  * @Blog         : https://jiaopengzi.com
@@ -55,14 +55,12 @@ const { footerData } = props
 <style scoped lang="scss">
 footer {
     height: pc.$height-footer;
-    background-color: var(--jpz-bg-color);
+    background-color: var(--jpz-bg-color-footer);
     display: relative;
     align-items: center;
     justify-content: center;
-    z-index: -1;
     width: calc(pc.$width-page - pc.$scrollbar-y-width);
-
-    border-top: 1px solid var(--jpz-border-color);
+    // border-top: 1px solid var(--jpz-border-color);
 }
 
 .footer-main {
