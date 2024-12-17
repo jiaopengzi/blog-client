@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-12 16:41:11
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-12 17:15:20
+ * @LastEditTime : 2024-12-17 16:33:21
  * @FilePath     : \blog-client\src\api\post\view.ts
  * @Description  : 查看文章
  * @Blog         : https://jiaopengzi.com
@@ -16,19 +16,9 @@ import { type Res } from "@/api/responseCode"
 import { type PostResPagination } from "./common"
 import type { Pagination, PaginationRequest } from "@/components/common"
 
-// 查看文章请求
-export interface ViewPostRequest extends PaginationRequest {
-    post_author?: string // 文章作者
-    post_status?: number // 文章状态
-    year?: number // 文章年份
-    month?: number // 文章月份
-    post_category_id?: string // 文章分类ID
-    post_tag_id?: string // 文章标签ID
-}
-
 // 查看文章
 export function viewPostAPI(
-    requestData: ViewPostRequest,
+    requestData: PaginationRequest,
 ): AxiosPromise<Res<Pagination<PostResPagination>>> {
     const urlStr = routerGroup + "/post/view"
     return request({

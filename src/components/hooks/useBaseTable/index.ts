@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 08:57:02
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-15 19:44:29
+ * @LastEditTime : 2024-12-17 17:50:59
  * @FilePath     : \blog-client\src\components\hooks\useBaseTable\index.ts
  * @Description  : 基础表格钩子
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,7 @@
  */
 
 import { ref, reactive, watch, onBeforeMount, type Reactive } from "vue"
-import { useRouter } from "vue-router"
+import { useRoute, useRouter } from "vue-router"
 import type { AxiosPromise } from "axios"
 import {
     type Pagination,
@@ -54,6 +54,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     queryParams: Reactive<K>, // 查询参数
     options?: Options<K>,
 ) {
+    const route = useRoute()
     const router = useRouter()
 
     const pagination = reactive<Pagination<T>>(getEmptyPagination<T>())
@@ -237,6 +238,14 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
             }
         },
         { deep: true },
+    )
+
+    // 监控 route.fullPath 的变化并执行操作
+    watch(
+        () => route.fullPath,
+        () => {
+            updatePaginate()
+        },
     )
 
     onBeforeMount(async () => {

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:43:31
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-17 10:11:01
+ * @LastEditTime : 2024-12-17 18:46:41
  * @FilePath     : \blog-client\src\views\home\component\phone.vue
  * @Description  : phone 内容页
  * @Blog         : https://jiaopengzi.com
@@ -58,7 +58,7 @@ defineOptions({ name: "HomePhone" })
 }
 
 .breadcrumb-item {
-    margin-right: 5px;
+    margin-right: 4px;
     color: var(--jpz-text-color-secondary);
 }
 

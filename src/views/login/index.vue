@@ -217,6 +217,8 @@ const loginByQQ = async (event: Event) => {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    width: 100vw;
+    background-color: var(--jpz-bg-color-page);
 }
 
 @include respond-to("pc") {

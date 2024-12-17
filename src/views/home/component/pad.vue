@@ -1,8 +1,18 @@
 <!--
  * @Author       : jiaopengzi
+ * @Date         : 2024-12-17 14:56:27
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2024-12-17 18:45:41
+ * @FilePath     : \blog-client\src\views\home\component\pad.vue
+ * @Description  : 
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+-->
+<!--
+ * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:26:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-17 18:46:31
+ * @LastEditTime : 2024-12-17 10:12:13
  * @FilePath     : \blog-client\src\views\home\component\pc.vue
  * @Description  : pc 内容页
  * @Blog         : https://jiaopengzi.com

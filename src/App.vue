@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 17:31:14
+ * @LastEditTime : 2024-12-17 15:41:17
  * @FilePath     : \blog-client\src\App.vue
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -10,25 +10,37 @@
 -->
 
 <template>
-    <el-config-provider :locale="zhCn">
-        <Head>
-            <title>My awesome site</title>
-            <meta content="My awesome site description" name="description" />
-        </Head>
+    <section ref="appRef" class="app">
+        <el-config-provider :locale="zhCn">
+            <Head>
+                <title>My awesome site</title>
+                <meta content="My awesome site description" name="description" />
+            </Head>
 
-        <!-- :key="$route.fullPath" 解决url变化而页面不刷新问题 -->
-        <!-- <router-view :key="$route.fullPath" /> -->
+            <!-- :key="$route.fullPath" 解决url变化而页面不刷新问题 -->
+            <!-- <router-view :key="$route.fullPath" /> -->
 
-        <router-view />
-        <!-- <keep-alive></keep-alive> -->
-    </el-config-provider>
+            <router-view />
+            <!-- <keep-alive></keep-alive> -->
+        </el-config-provider>
+    </section>
 </template>
 <script lang="ts" setup>
 import zhCn from "element-plus/es/locale/lang/zh-cn"
 import { useDark } from "@vueuse/core"
 import { useHead } from "@unhead/vue"
 import { Head } from "@unhead/vue/components"
+import { useResizeObserver } from "@vueuse/core"
+import { useTemplateRef, onBeforeUnmount } from "vue"
+import { useUserStore } from "@/stores/user"
+import { getDeviceType } from "@/utils/device"
 
+// 获取用户信息
+const userStore = useUserStore()
+
+const appRef = useTemplateRef<HTMLElement>("appRef")
+
+// 黑暗模式
 useDark({
     selector: "html",
     // attribute: "data-theme",
@@ -58,6 +70,17 @@ useHead({
         { property: "og:url", content: "https://jiaopengzi.com/75.html" },
         { property: "og:release_date", content: "2020-02-27 15:15:29" },
     ],
+})
+
+// 监听窗口变化
+const { stop } = useResizeObserver(appRef, (entries) => {
+    const { width } = entries[0].contentRect
+    const deviceType = getDeviceType(width)
+    userStore.setDevice(deviceType)
+})
+
+onBeforeUnmount(() => {
+    stop()
 })
 </script>
 

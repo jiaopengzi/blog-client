@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 16:37:42
+ * @LastEditTime : 2024-12-17 17:28:42
  * @FilePath     : \blog-client\src\views\register\index.vue
  * @Description  : 注册
  * @Blog         : https://jiaopengzi.com
@@ -335,6 +335,8 @@ const closeSlideVerify = () => {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    width: 100vw;
+    background-color: var(--jpz-bg-color-page);
 }
 
 @include respond-to("pc") {

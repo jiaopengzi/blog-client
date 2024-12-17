@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-15 19:43:51
+ * @LastEditTime : 2024-12-17 18:50:40
  * @FilePath     : \blog-client\src\views\home\component\post-list\index.vue
  * @Description  : 文章列表
  * @Blog         : https://jiaopengzi.com
@@ -11,55 +11,73 @@
 
 <template>
     <div class="post-list">
-        <PostItem v-for="item in paginationData.records" :key="item.id" :post-data="item" />
+        <PostItem v-for="item in paginationAC.records" :key="item.id" :post-data="item" />
     </div>
     <!-- 分页 -->
     <div class="pagination-block">
         <el-pagination
-            v-model:current-page="paginationData.current_page"
-            v-model:page-size="paginationData.page_size"
-            :page-sizes="paginationData.page_sizes"
-            :page-count="paginationData.page_count"
-            :total="paginationData.total"
+            v-model:current-page="paginationAC.current_page"
+            v-model:page-size="paginationAC.page_size"
+            :page-sizes="paginationAC.page_sizes"
+            :page-count="paginationAC.page_count"
+            :total="paginationAC.total"
             :background="true"
             layout="total, prev, pager, next, jumper, sizes"
             size="small"
+            @update:current-page="updateCurrentPage"
+            @update:page-size="updatePageSize"
         />
     </div>
 </template>
 
 <script lang="ts" setup>
-// @update:current-page="(val: number) => emit('update-current-page', val)"
-// @update:page-size="(val: number) => emit('update-page-size', val)"
-
-import { ref, onBeforeMount } from "vue"
+import { ref, onBeforeMount, inject } from "vue"
 import PostItem from "@/components/common/post-item-main"
 import { type PostResPagination } from "@/api/post/common"
-import { viewPostAPI, type ViewPostRequest } from "@/api/post/view"
-import { ResponseCode } from "@/api/responseCode"
+import { type Pagination } from "@/components/common"
+
 import { getEmptyPagination } from "@/components/common"
 
 defineOptions({ name: "PostList" })
 
-const paginationData = ref(getEmptyPagination<PostResPagination>())
+// pagination 可选，如果没有传入则从 provide 中获取
+const { pagination } = defineProps<{
+    pagination?: Pagination<PostResPagination>
+}>()
 
-// 获取文章列表
-const getPostList = async () => {
-    const req: ViewPostRequest = {
-        current_page: paginationData.value.current_page,
-        page_size: paginationData.value.page_size,
+// 保留事件
+const emit = defineEmits<{
+    (event: "updateCurrentPage", val: number): void
+    (event: "updatePageSize", val: number): void
+}>()
+
+// 当前分页数据
+const paginationAC = ref(getEmptyPagination<PostResPagination>())
+
+// 从 provide 中获取
+const paginationInject = inject<Pagination<PostResPagination>>("pagination")
+const updateCurrentPageInject = inject<(val: number) => void>("updateCurrentPage")
+const updatePageSizeInject = inject<(val: number) => void>("updatePageSize")
+
+// 更新当前页
+const updateCurrentPage = (val: number) => {
+    emit("updateCurrentPage", val)
+    if (updateCurrentPageInject) {
+        updateCurrentPageInject(val)
     }
+}
 
-    await viewPostAPI(req).then((res) => {
-        console.log("getPostList", res)
-        if (res.data.code === ResponseCode.PostViewSuccess) {
-            paginationData.value = res.data.data
-        }
-    })
+// 更新每页显示数量
+const updatePageSize = (val: number) => {
+    emit("updatePageSize", val)
+    if (updatePageSizeInject) {
+        updatePageSizeInject(val)
+    }
 }
 
 onBeforeMount(() => {
-    getPostList()
+    // 优先使用 provide 中的数据
+    paginationAC.value = paginationInject ?? pagination ?? getEmptyPagination<PostResPagination>()
 })
 </script>
 <style lang="scss" scoped>
