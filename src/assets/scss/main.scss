@@ -188,10 +188,6 @@ a {
 }
 
 @include respond-to("pc") {
-    .pc {
-        display: flex;
-    }
-
     .pad {
         display: none;
     }
@@ -210,10 +206,6 @@ a {
         display: none;
     }
 
-    .pad {
-        display: flex;
-    }
-
     .phone {
         display: none;
     }
@@ -230,10 +222,6 @@ a {
 
     .pad {
         display: none;
-    }
-
-    .phone {
-        display: flex;
     }
 
     .breadcrumb {

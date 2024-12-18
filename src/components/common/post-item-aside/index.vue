@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-30 16:23:53
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-12 15:35:15
+ * @LastEditTime : 2024-12-18 11:44:59
  * @FilePath     : \blog-client\src\components\common\post-item-aside\index.vue
  * @Description  : 单个文章元素
  * @Blog         : https://jiaopengzi.com
@@ -13,42 +13,56 @@
     <div class="post-item">
         <!-- 缩略图 -->
         <div class="thumbnail">
-            <a :href="postData.thumbnailHref">
-                <img class="thumbnail-img" :src="postData.thumbnailSrc" alt="" />
-            </a>
+            <el-image
+                :src="postData.thumbnail"
+                class="thumbnail-img"
+                loading="lazy"
+                @click="postId(postData.id)"
+            >
+            </el-image>
         </div>
 
         <!-- 文章摘要内容 -->
         <div class="content">
             <!-- 标题 -->
-            <div>
-                <a :href="postData.titleHref">
-                    <h2 class="title">{{ postData.title }}</h2>
-                </a>
-            </div>
+            <h2 class="title" @click="postId(postData.id)">{{ postData.post_title }}</h2>
 
             <!-- 作者 日志 访问量 -->
             <div class="meta">
-                <span class="meta-view meta-item">
-                    <el-icon> <View /> </el-icon>
-                    {{ unit(postData.view) }}
+                <span class="meta-date meta-item">{{
+                    formatTime(postData.created_at, "Asia/Shanghai", "YYYY-MM-DD")
+                }}</span>
+                <span v-if="postData.view_count" class="meta-view meta-item">
+                    <el-icon><View /></el-icon>
+                    <span class="meta-item-unit">{{ unit(postData.view_count) }}</span>
                 </span>
-                <span class="meta-date meta-item">{{ postData.date }}</span>
             </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import type { PostItemAsideObj } from "@/components/common/post-item-aside"
+import type { PostResCommon } from "@/api/post/common"
 import { View } from "@element-plus/icons-vue"
 import { unit } from "@/utils/unit"
+import { formatTime } from "@/utils/dateTime"
 
 defineOptions({ name: "PostItemAside" })
 
 const { postData } = defineProps<{
-    postData: PostItemAsideObj
+    postData: PostResCommon
 }>()
+
+// 事件
+const emit = defineEmits<{
+    (event: "postId", val: string): void
+}>()
+
+// 点击文章
+const postId = (val: string) => {
+    console.log(val)
+    emit("postId", val)
+}
 </script>
 <style scoped lang="scss">
 .post-item {

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-11 16:57:23
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 11:09:22
+ * @LastEditTime : 2024-12-18 12:01:47
  * @FilePath     : \blog-client\src\api\responseCode.ts
  * @Description  : 响应码
  * @Blog         : https://jiaopengzi.com
@@ -60,7 +60,6 @@ export enum ResponseCode {
     GetUserCountGroupByRolesSuccess = 1031, //查询用户统计成功
     DeleteUserSuccess = 1032, //删除用户成功
     UserAddUserSuccess = 1034, //添加用户成功
-    UserEditUserSuccess = 1035, //编辑用户成功
     UserNameExistExcludingUserID = 1035, //用户名已存在，排除指定用户ID
     EmailExistExcludingUserID = 1037, //用户邮箱已存在，排除指定用户ID
     EditUserInfoByAdminSuccess = 1039, //管理员编辑用户成功
@@ -84,6 +83,8 @@ export enum ResponseCode {
     PostCountByAuthorIsNone = 2015, // 无按照作者统计文章数量
     PostCountByAuthorSuccess = 2016, // 按照作者统计文章数量成功
     PostStatusBatchOperationSuccess = 2017, // 批量操作文章状态成功
+    PostViewHotSuccess = 2020, // 查看热门文章成功
+    PostViewRecommendedSuccess = 2022, // 查看推荐文章成功
 
     // 文章标签相关
     PostTagInsertSuccess = 2100, // 插入文章标签成功

@@ -10,12 +10,3 @@
  */
 
 export { default } from "./index.vue"
-
-export interface PostItemAsideObj {
-    thumbnailSrc: string
-    thumbnailHref: string
-    title: string
-    titleHref: string
-    date: string
-    view: number
-}

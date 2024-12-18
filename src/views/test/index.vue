@@ -1,35 +1,44 @@
 <!--
- * @FilePath     : \blog-client\src\views\test\index1.vue
+ * @Author       : jiaopengzi
+ * @Date         : 2024-09-29 10:52:39
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2024-12-18 11:19:15
+ * @FilePath     : \blog-client\src\views\test\index.vue
+ * @Description  : 
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
-
 <template>
-    <button type="button" @click="togglePlayPause">点击</button>
+    <div class="demo-image__lazy">
+        <el-image v-for="url in urls" :key="url" :src="url" lazy />
+    </div>
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, watchEffect } from "vue"
-import type { PlayerState } from "@/components/player"
-import { PlayerStateManager } from "@/components/player"
-
-defineOptions({ name: "VideoPlayerTest1" })
-
-// 定义props
-const { playerState } = defineProps<{
-    playerState: PlayerState
-}>()
-
-const localPlayerState = ref<PlayerStateManager>(new PlayerStateManager(playerState))
-
-// 将 playerProps 包裹成 reactive
-const reactivePlayerPropsRea = reactive(playerState)
-
-// 切换播放暂停
-const togglePlayPause = () => {
-    localPlayerState.value.togglePlayPause()
-}
-
-// 根据 playStatus 控制 video 播放暂停
-watchEffect(() => {
-    console.log("playStatus=============>1", reactivePlayerPropsRea.playStatus)
-})
+const urls = [
+    "https://image.jiaopengzi.com/wp-content/uploads/2022/07/159-1.png",
+    "https://image.jiaopengzi.com/wp-content/uploads/2022/07/159-2.png",
+    "https://image.jiaopengzi.com/wp-content/uploads/2022/07/159-3.png",
+    "https://image.jiaopengzi.com/wp-content/uploads/2022/07/159-4.png",
+    "https://image.jiaopengzi.com/wp-content/uploads/2022/07/159-5.png",
+    "https://image.jiaopengzi.com/wp-content/uploads/2022/07/159-6.png",
+    "https://image.jiaopengzi.com/wp-content/uploads/2022/07/159-7.png",
+    "https://image.jiaopengzi.com/wp-content/uploads/2022/07/159-8.png",
+    "https://image.jiaopengzi.com/wp-content/uploads/2022/07/159-9.png",
+]
 </script>
+
+<style scoped ts="scss">
+.demo-image__lazy {
+    /* height: 400px; */
+    /* overflow-y: auto; */
+}
+.demo-image__lazy .el-image {
+    /* display: block; */
+    min-height: 200px;
+    margin-bottom: 10px;
+}
+.demo-image__lazy .el-image:last-child {
+    margin-bottom: 0;
+}
+</style>

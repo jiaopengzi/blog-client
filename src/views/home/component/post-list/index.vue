@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-17 18:50:40
+ * @LastEditTime : 2024-12-18 10:19:48
  * @FilePath     : \blog-client\src\views\home\component\post-list\index.vue
  * @Description  : 文章列表
  * @Blog         : https://jiaopengzi.com
@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onBeforeMount, inject } from "vue"
+import { ref, onBeforeMount } from "vue"
 import PostItem from "@/components/common/post-item-main"
 import { type PostResPagination } from "@/api/post/common"
 import { type Pagination } from "@/components/common"
@@ -42,10 +42,10 @@ defineOptions({ name: "PostList" })
 
 // pagination 可选，如果没有传入则从 provide 中获取
 const { pagination } = defineProps<{
-    pagination?: Pagination<PostResPagination>
+    pagination: Pagination<PostResPagination>
 }>()
 
-// 保留事件
+// 事件
 const emit = defineEmits<{
     (event: "updateCurrentPage", val: number): void
     (event: "updatePageSize", val: number): void
@@ -54,30 +54,19 @@ const emit = defineEmits<{
 // 当前分页数据
 const paginationAC = ref(getEmptyPagination<PostResPagination>())
 
-// 从 provide 中获取
-const paginationInject = inject<Pagination<PostResPagination>>("pagination")
-const updateCurrentPageInject = inject<(val: number) => void>("updateCurrentPage")
-const updatePageSizeInject = inject<(val: number) => void>("updatePageSize")
-
 // 更新当前页
 const updateCurrentPage = (val: number) => {
     emit("updateCurrentPage", val)
-    if (updateCurrentPageInject) {
-        updateCurrentPageInject(val)
-    }
 }
 
 // 更新每页显示数量
 const updatePageSize = (val: number) => {
     emit("updatePageSize", val)
-    if (updatePageSizeInject) {
-        updatePageSizeInject(val)
-    }
 }
 
 onBeforeMount(() => {
     // 优先使用 provide 中的数据
-    paginationAC.value = paginationInject ?? pagination ?? getEmptyPagination<PostResPagination>()
+    paginationAC.value = pagination
 })
 </script>
 <style lang="scss" scoped>

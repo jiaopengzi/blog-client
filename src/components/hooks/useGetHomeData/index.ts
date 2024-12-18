@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-17 16:05:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-17 18:34:06
+ * @LastEditTime : 2024-12-18 12:07:59
  * @FilePath     : \blog-client\src\components\hooks\useGetHomeData\index.ts
  * @Description  : 首页数据获取
  * @Blog         : https://jiaopengzi.com
@@ -18,7 +18,9 @@ import { ResponseCode } from "@/api/responseCode"
 import type { NumberKeys, PaginationRequest } from "@/components/common"
 
 import { viewPostAPI } from "@/api/post/view"
-import { type PostResPagination } from "@/api/post/common"
+import { viewHotPostAPI } from "@/api/post/viewHotPost"
+import { viewRecommendedPostAPI } from "@/api/post/viewRecommendedPost"
+import type { PostResPagination, PostResCommon } from "@/api/post/common"
 
 export type QueryRecord<T extends string | number | symbol> = { [key in T]?: string | number }
 
@@ -104,7 +106,7 @@ export function useGetHomeData(
         updateQueryAndRouter()
     }
 
-    // 获取分页用户
+    // 获取分页
     async function getPaginate(req: PaginationRequest) {
         // 遍历 options.NoRequest 中的参数，如果 req 中的参数值等于 options.NoRequest 中的值则删除,不请求
         for (const key in options?.noRequest) {
@@ -124,6 +126,28 @@ export function useGetHomeData(
                 Object.assign(pagination, res.data.data)
             } else {
                 Object.assign(pagination, getEmptyPagination<PostResPagination>())
+            }
+        })
+    }
+
+    // 热门文章
+    const hotPost = reactive<PostResCommon[]>([])
+    async function getHostPost() {
+        // 获取标签列表
+        await viewHotPostAPI().then((res) => {
+            if (res.data.code === ResponseCode.PostViewHotSuccess) {
+                Object.assign(hotPost, res.data.data)
+            }
+        })
+    }
+
+    // 推荐文章
+    const recommendedPost = reactive<PostResCommon[]>([])
+    async function getRecommendedPost() {
+        // 获取标签列表
+        await viewRecommendedPostAPI().then((res) => {
+            if (res.data.code === ResponseCode.PostViewRecommendedSuccess) {
+                Object.assign(recommendedPost, res.data.data)
             }
         })
     }
@@ -154,6 +178,8 @@ export function useGetHomeData(
         // 获取路由参数 并更新 query
         updateByQuery()
         await getPaginate(queryParams)
+        await getHostPost()
+        await getRecommendedPost()
     })
 
     return {
@@ -162,5 +188,7 @@ export function useGetHomeData(
         updatePageSize, // 更新每页显示条数
         updatePaginate, // 更新分页数据
         updateQueryAndRouter, // 更新查询参数和路由
+        hotPost, // 热门文章
+        recommendedPost, // 推荐文章
     }
 }

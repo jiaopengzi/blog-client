@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:14:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 15:38:31
+ * @LastEditTime : 2024-12-18 12:10:14
  * @FilePath     : \blog-client\src\components\layout\aside\recommended-read\index.vue
  * @Description  : 推荐阅读
  * @Blog         : https://jiaopengzi.com
@@ -14,29 +14,23 @@
             <h2><Icon :name="IconKeys.Recommended" custom-class="aside-icon" />推荐阅读</h2>
         </div>
         <div class="post-list">
-            <PostItem v-for="item in postItems" :key="item.title" :post-data="item" />
+            <PostItem v-for="item in postData" :key="item.post_title" :post-data="item" />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import type { PostItemAsideObj } from "@/components/common/post-item-aside"
 import { IconKeys } from "@/components/common/icons"
 
 import PostItem from "@/components/common/post-item-aside"
 
+import { type PostResCommon } from "@/api/post/common"
+
 defineOptions({ name: "RecommendedRead" })
 
-const postDataObj: PostItemAsideObj = {
-    thumbnailSrc: "https://image.jiaopengzi.com/blog/202309181034415-w280h210.png",
-    thumbnailHref: "http://192.168.2.222:8081/post",
-    titleHref: "http://192.168.2.222:8081/tool",
-    title: "184_Python 在 Excel 和 Power BI 绘制堆积瀑布图",
-    date: "2023年3月15日",
-    view: 1000,
-}
-
-const postItems: PostItemAsideObj[] = Array(5).fill(postDataObj)
+const { postData } = defineProps<{
+    postData: PostResCommon[]
+}>()
 </script>
 <style scoped lang="scss">
 .aside-item {

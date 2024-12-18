@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-25 15:50:05
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-13 15:33:20
+ * @LastEditTime : 2024-12-18 11:43:19
  * @FilePath     : \blog-client\src\components\common\post-item-main\index.vue
  * @Description  : 单个文章元素
  * @Blog         : https://jiaopengzi.com
@@ -13,18 +13,27 @@
     <div class="post-item">
         <!-- 左上角提示符 -->
         <div class="tip"></div>
-        <!-- 分类 -->
-        <span class="category">{{ postData.categories[0].name }}</span>
+
+        <!-- 左上角分类 -->
+        <el-button class="category" plain @click="clickCategory(postData.categories[0])">{{
+            postData.categories[0].name
+        }}</el-button>
+
         <!-- 缩略图 -->
         <div class="thumbnail">
-            <img :src="postData.thumbnail" alt="" class="thumbnail-img" />
+            <el-image
+                :src="postData.thumbnail"
+                class="thumbnail-img"
+                loading="lazy"
+                @click="postId(postData.id)"
+            >
+            </el-image>
         </div>
 
         <!-- 文章摘要内容 -->
         <div class="content">
             <!-- 标题 -->
-
-            <h2 class="title">{{ postData.post_title }}</h2>
+            <h2 class="title" @click="postId(postData.id)">{{ postData.post_title }}</h2>
 
             <!-- 摘要文字 -->
             <div class="summary">
@@ -40,27 +49,31 @@
                         :size="24"
                     />
                 </span>
-                <span class="meta-date meta-item">{{ postData.created_at }}</span>
+                <span class="meta-date meta-item">{{
+                    formatTime(postData.created_at, "Asia/Shanghai", "YYYY-MM-DD")
+                }}</span>
                 <span v-if="postData.view_count" class="meta-view meta-item">
                     <el-icon><View /></el-icon>
-                    {{ unit(postData.view_count) }}
+                    <span class="meta-item-unit">{{ unit(postData.view_count) }}</span>
                 </span>
                 <span v-if="postData.comment_count" class="meta-comment meta-item">
                     <el-icon><ChatRound /></el-icon>
-                    {{ unit(postData.comment_count) }}
+                    <span class="meta-item-unit">{{ unit(postData.comment_count) }}</span>
                 </span>
             </div>
         </div>
 
         <!-- 阅读跳转 -->
-        <span class="read-more">阅读全文</span>
+        <el-button class="read-more" plain @click="postId(postData.id)">阅读全文</el-button>
     </div>
 </template>
 
 <script lang="ts" setup>
 import type { PostResPagination } from "@/api/post/common"
+import { type PostCategory } from "@/api/postCategory/view"
 import { ChatRound, View } from "@element-plus/icons-vue"
 import { unit } from "@/utils/unit"
+import { formatTime } from "@/utils/dateTime"
 
 import AvatarInitials from "@/components/common/avatar-initials"
 
@@ -69,6 +82,23 @@ defineOptions({ name: "PostItemMain" })
 const { postData } = defineProps<{
     postData: PostResPagination
 }>()
+
+// 事件
+const emit = defineEmits<{
+    (event: "clickCategory", val: PostCategory): void
+    (event: "postId", val: string): void
+}>()
+
+// 点击分类
+const clickCategory = (val: PostCategory) => {
+    emit("clickCategory", val)
+}
+
+// 点击文章
+const postId = (val: string) => {
+    console.log(val)
+    emit("postId", val)
+}
 </script>
 <style lang="scss" scoped>
 // 公共样式
@@ -81,7 +111,7 @@ const { postData } = defineProps<{
 
     &:hover {
         // 鼠标移动到 .post-item 上时, .post-item 出现上下阴影
-        box-shadow: var(--jpz-post-item-main-hover-shadow);
+        // box-shadow: var(--jpz-post-item-main-hover-shadow);
         .read-more {
             opacity: 1;
         }
@@ -92,7 +122,6 @@ const { postData } = defineProps<{
     position: absolute;
     top: 10px;
     left: 0;
-    z-index: 1;
     line-height: 200%;
     font-size: 14px;
     background-color: transparent;
@@ -107,11 +136,11 @@ const { postData } = defineProps<{
         top: 0;
         left: 0; // 使得红色外边框在 .tip 的左侧
         height: 28px;
-        border-right: 6px solid var(--jpz-color-primary); // 绿色内边框
+        border-right: 6px solid var(--jpz-color-primary);
     }
 }
 
-.post-box:hover .tip {
+.post-item:hover .tip {
     opacity: 1;
 }
 
@@ -134,6 +163,8 @@ const { postData } = defineProps<{
     height: 100%;
     box-sizing: border-box;
     overflow: hidden;
+    border-radius: 4px;
+    border: 1px solid var(--jpz-border-color);
 
     .thumbnail-img {
         width: 100%;
@@ -143,6 +174,7 @@ const { postData } = defineProps<{
     }
 
     &:hover .thumbnail-img {
+        // 鼠标移动到 .thumbnail 上时, .thumbnail-img 放大
         transform: scale(1.2);
     }
 }
@@ -186,7 +218,7 @@ const { postData } = defineProps<{
 }
 
 .meta-item {
-    margin-right: 10px;
+    margin-right: 14px;
     color: var(--jpz-text-color-placeholder);
     font-size: 14px;
     line-height: 150%;
@@ -195,6 +227,10 @@ const { postData } = defineProps<{
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.meta-item-unit {
+    margin-left: 4px;
 }
 
 .avatar {

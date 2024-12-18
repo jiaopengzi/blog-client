@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 16:07:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-26 16:06:35
+ * @LastEditTime : 2024-12-18 10:43:44
  * @FilePath     : \blog-client\src\utils\dateTime.ts
  * @Description  : 格式化时间
  * @Blog         : https://jiaopengzi.com
@@ -48,7 +48,7 @@ export function formatTime(
     // 格式化时间
     const formattedDateTime = formatter.format(dateTime).replace(",", "")
 
-    // 返回北京时间字符串
+    // 返回时间字符串
     return formattedDateTime.replace(
         /(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})/,
         (_, p1, p2, p3, p4, p5, p6) =>
@@ -62,10 +62,10 @@ export function formatTime(
     )
 }
 
-// /**
-//  * @description: 格式化时间
-//  * @param duration 时间间隔 秒数
-//  */
+/**
+ * @description: 格式化时间
+ * @param duration 时间间隔 秒数
+ */
 export function formatDurationTime(duration: number): string {
     const days = Math.floor(duration / 60 / 60 / 24) // 计算天数
     const hours = Math.floor((duration / 60 / 60) % 24) // 计算小时数
