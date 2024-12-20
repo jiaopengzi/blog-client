@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-17 16:05:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-18 12:07:59
+ * @LastEditTime : 2024-12-20 11:55:57
  * @FilePath     : \blog-client\src\components\hooks\useGetHomeData\index.ts
  * @Description  : 首页数据获取
  * @Blog         : https://jiaopengzi.com
@@ -20,6 +20,8 @@ import type { NumberKeys, PaginationRequest } from "@/components/common"
 import { viewPostAPI } from "@/api/post/view"
 import { viewHotPostAPI } from "@/api/post/viewHotPost"
 import { viewRecommendedPostAPI } from "@/api/post/viewRecommendedPost"
+import { getPostCountByMonthAPI } from "@/api/post/getPostCountByMonth"
+import { type MonthArchiveProps } from "@/components/common/month-archive"
 import type { PostResPagination, PostResCommon } from "@/api/post/common"
 
 export type QueryRecord<T extends string | number | symbol> = { [key in T]?: string | number }
@@ -152,6 +154,36 @@ export function useGetHomeData(
         })
     }
 
+    // 推荐文章
+    const monthArchiveProps = reactive<MonthArchiveProps[]>([])
+    async function getPostCountByMonth() {
+        // 获取标签列表
+        await getPostCountByMonthAPI().then((res) => {
+            if (res.data.code === ResponseCode.PostCountByMonthSuccess) {
+                // 清空现有的 monthArchiveProps
+                monthArchiveProps.length = 0
+                // 遍历 res.data.data 并更新 monthArchiveProps
+                res.data.data.forEach((item) => {
+                    // 创建新的对象并添加 year_month 字段
+                    const newItem = {
+                        ...item,
+                        year_month: `${item.year}-${item.month}`,
+                    }
+                    // 将 newItem 添加到 monthArchiveProps
+                    monthArchiveProps.push(newItem)
+                })
+
+                // 按照 year 和 month 进行降序排序
+                monthArchiveProps.sort((a, b) => {
+                    if (a.year !== b.year) {
+                        return b.year - a.year // 年份降序
+                    }
+                    return a.month - b.month // 月份降序
+                })
+            }
+        })
+    }
+
     // 判断 queryParams 中 key 是否在 numberParamSet 中，如果在则解析为数字，否则保持原样
     watch(
         () => queryParams,
@@ -180,6 +212,7 @@ export function useGetHomeData(
         await getPaginate(queryParams)
         await getHostPost()
         await getRecommendedPost()
+        await getPostCountByMonth()
     })
 
     return {
@@ -190,5 +223,6 @@ export function useGetHomeData(
         updateQueryAndRouter, // 更新查询参数和路由
         hotPost, // 热门文章
         recommendedPost, // 推荐文章
+        monthArchiveProps, // 月份归档
     }
 }

@@ -27,6 +27,8 @@ export interface ViewPostByAdminRequest extends PaginationRequest {
     custom_filed?: CustomFields // 自定义字段
     custom_filed_min?: string // 自定义字段最小值
     custom_filed_max?: string // 自定义字段最大值
+    is_pinned?: boolean // 是否置顶
+    is_recommended?: boolean // 是否推荐
 }
 
 // 查看文章

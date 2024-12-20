@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-30 16:23:53
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-18 11:44:59
+ * @LastEditTime : 2024-12-20 11:07:01
  * @FilePath     : \blog-client\src\components\common\post-item-aside\index.vue
  * @Description  : 单个文章元素
  * @Blog         : https://jiaopengzi.com
@@ -32,9 +32,13 @@
                 <span class="meta-date meta-item">{{
                     formatTime(postData.created_at, "Asia/Shanghai", "YYYY-MM-DD")
                 }}</span>
-                <span v-if="postData.view_count" class="meta-view meta-item">
+                <span v-if="!isZero(postData.view_count)" class="meta-view meta-item">
                     <el-icon><View /></el-icon>
                     <span class="meta-item-unit">{{ unit(postData.view_count) }}</span>
+                </span>
+                <span v-if="!isZero(postData.comment_count)" class="meta-comment meta-item">
+                    <el-icon><ChatRound /></el-icon>
+                    <span class="meta-item-unit">{{ unit(postData.comment_count) }}</span>
                 </span>
             </div>
         </div>
@@ -42,9 +46,10 @@
 </template>
 
 <script setup lang="ts">
+import {} from "vue"
 import type { PostResCommon } from "@/api/post/common"
-import { View } from "@element-plus/icons-vue"
-import { unit } from "@/utils/unit"
+import { View, ChatRound } from "@element-plus/icons-vue"
+import { unit, isZero } from "@/utils/unit"
 import { formatTime } from "@/utils/dateTime"
 
 defineOptions({ name: "PostItemAside" })
@@ -90,6 +95,7 @@ const postId = (val: string) => {
     height: 100%;
     background-size: cover;
     transition: transform 0.3s ease;
+    cursor: pointer;
 }
 
 .thumbnail:hover .thumbnail-img {
@@ -114,11 +120,12 @@ const postId = (val: string) => {
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+    cursor: pointer;
 }
 
 .meta {
     display: flex;
-    justify-content: space-between;
+    align-items: center;
 }
 
 .meta-item {
@@ -129,5 +136,10 @@ const postId = (val: string) => {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: 0 4px;
+}
+
+.meta-item-unit {
+    margin-left: 4px;
 }
 </style>

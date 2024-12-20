@@ -85,6 +85,8 @@ export enum ResponseCode {
     PostStatusBatchOperationSuccess = 2017, // 批量操作文章状态成功
     PostViewHotSuccess = 2020, // 查看热门文章成功
     PostViewRecommendedSuccess = 2022, // 查看推荐文章成功
+    PostCountByIsPinnedSuccess = 2024, // 按照是否置顶统计文章数量成功
+    PostCountByIsRecommendedSuccess = 2026, // 按照是否推荐统计文章数量成功
 
     // 文章标签相关
     PostTagInsertSuccess = 2100, // 插入文章标签成功

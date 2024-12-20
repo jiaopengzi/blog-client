@@ -2,13 +2,13 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 08:57:02
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-17 17:50:59
+ * @LastEditTime : 2024-12-20 15:04:29
  * @FilePath     : \blog-client\src\components\hooks\useBaseTable\index.ts
  * @Description  : 基础表格钩子
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ref, reactive, watch, onBeforeMount, type Reactive } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import type { AxiosPromise } from "axios"
@@ -25,7 +25,7 @@ import {
     type TableData,
 } from "@/components/common/base-table"
 import { ShowMsgTip } from "@/utils/message"
-import { type TableImg, type NumberKeys } from "@/components/common"
+import type { TableImg, NumberKeys, BooleanKeys } from "@/components/common"
 
 export type QueryRecord<T extends string | number | symbol> = { [key in T]?: string | number }
 
@@ -33,6 +33,7 @@ export interface Options<K> {
     queryNumberParams?: NumberKeys<K>[] // 查询参数中的数字参数
     tableImg?: TableImg // 表格图片配置
     noRequest?: QueryRecord<keyof K> // 不请求的参数值比如全部,只显示在路由中，不请求.
+    queryBooleanParams?: BooleanKeys<K>[] // 查询参数中的布尔参数
 }
 
 /**
@@ -67,6 +68,8 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     type KeyType = keyof typeof queryParams
 
     const numberParamSet = new Set<string>(Object.values(NumberParamsFromURL))
+    const booleanParamSet = new Set<string>()
+
     // 如果 options.queryNumberParams 不为空 将 options.queryNumberParams key 增加到 numberParamSet 中
     if ((options?.queryNumberParams?.length ?? 0) > 0) {
         options?.queryNumberParams?.forEach((key) => {
@@ -74,7 +77,17 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         })
     }
 
-    // 更新查询参数
+    // 如果 options.queryBooleanParams 不为空 将 options.queryBooleanParams key 增加到 booleanParamSet 中
+    if ((options?.queryBooleanParams?.length ?? 0) > 0) {
+        options?.queryBooleanParams?.forEach((key) => {
+            booleanParamSet.add(key as string)
+        })
+    }
+
+    /**
+     * @description: 更新查询参数和路由
+     * @param isUpdateRouter 是否更新路由 默认为 true 更新路由
+     */
     const updateQueryAndRouter = (isUpdateRouter: boolean = true) => {
         queryParams.page_size = pagination.page_size
         queryParams.current_page = pagination.current_page
@@ -99,13 +112,15 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
             // 赋值给到 query, 如果 key 对应的值能解析为数字则解析为数字
             for (const key in queryUrl) {
                 const value = queryUrl[key]
-                // 判断 key 是否在 numberParamSet 中，如果在则解析为数字，否则保持原样
-                queryParams[key as KeyType] = numberParamSet.has(key)
-                    ? Number(value)
-                    : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      (value as any)
+                // 判断 key 是否在 numberParamSet 或者 booleanParamSet 中，如果在则解析为数字或者布尔，否则保持原样
+                if (numberParamSet.has(key)) {
+                    ;(queryParams as any)[key as KeyType] = Number(value)
+                } else if (booleanParamSet.has(key)) {
+                    ;(queryParams as any)[key as KeyType] = value === "true"
+                } else {
+                    ;(queryParams as any)[key as KeyType] = value as string
+                }
             }
-            return
         }
         updateQueryAndRouter(false)
     }
@@ -229,12 +244,15 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     watch(
         () => queryParams,
         (newVal) => {
-            // 判断 newVal 中 key 是否在 numberParamSet 中，如果在则解析为数字，否则保持原样
             for (const key in newVal) {
-                queryParams[key as KeyType] = numberParamSet.has(key)
-                    ? Number(newVal[key as KeyType])
-                    : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      (newVal[key as KeyType] as any)
+                // 判断 key 是否在 numberParamSet 或者 booleanParamSet 中，如果在则解析为数字或者布尔，否则保持原样
+                if (numberParamSet.has(key)) {
+                    ;(queryParams as any)[key as KeyType] = Number(newVal[key as KeyType])
+                } else if (booleanParamSet.has(key)) {
+                    ;(queryParams as any)[key as KeyType] = newVal[key as KeyType]
+                } else {
+                    ;(queryParams as any)[key as KeyType] = newVal[key as KeyType]
+                }
             }
         },
         { deep: true },

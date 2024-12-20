@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:38:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-05 14:14:12
+ * @LastEditTime : 2024-12-20 14:36:24
  * @FilePath     : \blog-client\src\components\common\index.ts
  * @Description  : 公用信息
  * @Blog         : https://jiaopengzi.com
@@ -64,6 +64,11 @@ export type NumberKeys<T> = {
               ? K
               : never
         : never
+}[keyof T]
+
+// 获取对象中的值为布尔类型的string键名
+export type BooleanKeys<T> = {
+    [K in keyof T]: T[K] extends boolean | undefined ? K : never
 }[keyof T]
 
 // 表格图片配置

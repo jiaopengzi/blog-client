@@ -16,6 +16,7 @@ declare module 'vue' {
     CommonBindEmailDialog: typeof import('./src/components/common/bind-email-dialog/index.vue')['default']
     CommonCountdown: typeof import('./src/components/common/countdown/index.vue')['default']
     CommonIcons: typeof import('./src/components/common/icons/index.vue')['default']
+    CommonMonthArchive: typeof import('./src/components/common/month-archive/index.vue')['default']
     CommonPostItemAside: typeof import('./src/components/common/post-item-aside/index.vue')['default']
     CommonPostItemMain: typeof import('./src/components/common/post-item-main/index.vue')['default']
     CommonRecursiveMenuItem: typeof import('./src/components/common/recursive-menu-item/index.vue')['default']

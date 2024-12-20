@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:26:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-18 12:11:23
+ * @LastEditTime : 2024-12-20 11:45:29
  * @FilePath     : \blog-client\src\views\home\component\index.vue
  * @Description  : 主页内容
  * @Blog         : https://jiaopengzi.com
@@ -47,7 +47,7 @@
                     <!-- 热门文章 -->
                     <HotPost class="el-aside-item" :post-data="hotPost" />
                     <!-- 月度归档 -->
-                    <MonthArchive class="el-aside-item" />
+                    <MonthArchive class="el-aside-item" :post-list="monthArchiveProps" />
                     <!-- 文章标签 -->
                     <PostTag class="el-aside-item" @click="handleClick" />
                     <!-- 观察点 -->
@@ -69,7 +69,7 @@ import Carousel from "@/views/home/component/carousel"
 import PostList from "@/views/home/component/post-list"
 import RecommendedRead from "@/components/layout/aside/recommended-read"
 import HotPost from "@/components/layout/aside/hot-post"
-import MonthArchive from "@/components/layout/aside/month-archive"
+import MonthArchive from "@/components/common/month-archive"
 import PostTag from "@/components/layout/aside/post-tag"
 import type { ElAside } from "element-plus"
 
@@ -82,8 +82,14 @@ const asideRef = useTemplateRef<InstanceType<typeof ElAside>>("asideRef")
 
 // 获取首页数据
 const mainReq = reactive<PaginationRequest>({} as PaginationRequest)
-const { pagination, updateCurrentPage, updatePageSize, hotPost, recommendedPost } =
-    useGetHomeData(mainReq)
+const {
+    pagination,
+    updateCurrentPage,
+    updatePageSize,
+    hotPost,
+    recommendedPost,
+    monthArchiveProps,
+} = useGetHomeData(mainReq)
 
 // 点击标签
 function handleClick(tagItemData: PostTagType) {

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-25 15:50:05
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-18 11:43:19
+ * @LastEditTime : 2024-12-20 10:49:58
  * @FilePath     : \blog-client\src\components\common\post-item-main\index.vue
  * @Description  : 单个文章元素
  * @Blog         : https://jiaopengzi.com
@@ -52,11 +52,11 @@
                 <span class="meta-date meta-item">{{
                     formatTime(postData.created_at, "Asia/Shanghai", "YYYY-MM-DD")
                 }}</span>
-                <span v-if="postData.view_count" class="meta-view meta-item">
+                <span v-if="!isZero(postData.view_count)" class="meta-view meta-item">
                     <el-icon><View /></el-icon>
                     <span class="meta-item-unit">{{ unit(postData.view_count) }}</span>
                 </span>
-                <span v-if="postData.comment_count" class="meta-comment meta-item">
+                <span v-if="!isZero(postData.comment_count)" class="meta-comment meta-item">
                     <el-icon><ChatRound /></el-icon>
                     <span class="meta-item-unit">{{ unit(postData.comment_count) }}</span>
                 </span>
@@ -72,7 +72,7 @@
 import type { PostResPagination } from "@/api/post/common"
 import { type PostCategory } from "@/api/postCategory/view"
 import { ChatRound, View } from "@element-plus/icons-vue"
-import { unit } from "@/utils/unit"
+import { unit, isZero } from "@/utils/unit"
 import { formatTime } from "@/utils/dateTime"
 
 import AvatarInitials from "@/components/common/avatar-initials"
@@ -96,7 +96,6 @@ const clickCategory = (val: PostCategory) => {
 
 // 点击文章
 const postId = (val: string) => {
-    console.log(val)
     emit("postId", val)
 }
 </script>
@@ -171,6 +170,7 @@ const postId = (val: string) => {
         height: 100%;
         background-size: cover;
         transition: transform 0.3s ease;
+        cursor: pointer;
     }
 
     &:hover .thumbnail-img {
@@ -198,6 +198,7 @@ const postId = (val: string) => {
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+    cursor: pointer;
 }
 
 .summary {

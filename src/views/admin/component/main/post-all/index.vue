@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-13 17:29:58
+ * @LastEditTime : 2024-12-20 14:43:57
  * @FilePath     : \blog-client\src\views\admin\component\main\post-all\index.vue
  * @Description  : 文章管理 
  * @Blog         : https://jiaopengzi.com
@@ -176,7 +176,7 @@ import { formatTime } from "@/utils/dateTime"
 import router from "@/router"
 import { queryKey as queryKeyWrite } from "@/views/admin/component/main/post-write"
 import { queryKey } from "./index"
-import { type TableImg, type NumberKeys } from "@/components/common"
+import type { TableImg, NumberKeys, BooleanKeys } from "@/components/common"
 import { useHeader } from "./hooks"
 import { type PostCountGroupItem, groupList, type GroupType } from "./index"
 import { useUserStore } from "@/stores/user"
@@ -339,8 +339,9 @@ const tableImg: TableImg = {
 // 查询参数
 const queryParams = reactive({} as ViewPostByAdminRequest)
 
-// 查询参数中的数字类型参数
+// 查询参数中的数字和布尔类型
 const queryNumberParams: NumberKeys<ViewPostByAdminRequest>[] = ["post_status", "year", "month"]
+const queryBooleanParams: BooleanKeys<ViewPostByAdminRequest>[] = ["is_pinned", "is_recommended"]
 
 // 不需要请求的参数
 const noRequest: QueryRecord<queryKey> = { [queryKey.Group]: allGroup }
@@ -371,6 +372,14 @@ const handlePostCountByGroup = async (item: PostCountGroupItem) => {
 
     if (item.group === queryKey.PostStatus) {
         Object.assign(queryParams, { [queryKey.PostStatus]: item.key })
+    }
+
+    if (item.group === queryKey.IsPinned) {
+        Object.assign(queryParams, { [queryKey.IsPinned]: true })
+    }
+
+    if (item.group === queryKey.IsRecommended) {
+        Object.assign(queryParams, { [queryKey.IsRecommended]: true })
     }
 
     // 清空
@@ -517,7 +526,7 @@ const {
     deletePostAPI,
     ResponseCode.PostDeleteSuccess,
     queryParams,
-    { queryNumberParams, tableImg, noRequest },
+    { queryNumberParams, tableImg, noRequest, queryBooleanParams },
 )
 
 // 执行搜索
@@ -619,6 +628,8 @@ const parseParamsNotLoaded = () => {
         custom_filed,
         custom_filed_min,
         custom_filed_max,
+        is_pinned,
+        is_recommended,
     } = queryParams
 
     if (post_author && post_author === userStore.getUserID) {
@@ -627,6 +638,14 @@ const parseParamsNotLoaded = () => {
 
     if (post_status) {
         activeGroup.value = post_status.toString()
+    }
+
+    if (is_pinned) {
+        activeGroup.value = queryKey.IsPinned
+    }
+
+    if (is_recommended) {
+        activeGroup.value = queryKey.IsRecommended
     }
 
     postCountMonthSelect.value = year && month ? `${year}-${month}` : ""

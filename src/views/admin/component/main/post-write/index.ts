@@ -41,7 +41,6 @@ export interface UpsertPostForm {
     is_recommended: boolean // 是否推荐阅读
 }
 
-
 export interface UpdatePostForm extends UpsertPostForm {
     update_fields: UpdateFields[]
 }

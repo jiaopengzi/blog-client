@@ -2,7 +2,7 @@
  * @Month       : jiaopengzi
  * @Date         : 2024-12-03 14:46:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-03 14:54:03
+ * @LastEditTime : 2024-12-20 11:55:29
  * @FilePath     : \blog-client\src\api\post\getPostCountByMonth.ts
  * @Description  : 按照作者统计文章数量
  * @Blog         : https://jiaopengzi.com
@@ -15,8 +15,8 @@ import type { AxiosPromise } from "axios"
 import { type Res } from "@/api/responseCode"
 
 export interface PostCountByMonth {
-    year: string // 年
-    month: string // 月
+    year: number // 年
+    month: number // 月
     count: number // 文章数量
 }
 

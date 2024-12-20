@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-03 16:37:27
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 13:18:06
+ * @LastEditTime : 2024-12-20 14:06:54
  * @FilePath     : \blog-client\src\views\admin\component\main\post-all\hooks.ts
  * @Description  : 文章统计数据
  * @Blog         : https://jiaopengzi.com
@@ -13,6 +13,14 @@ import { ref, watch, computed, onBeforeMount } from "vue"
 import { type PostCountGroupItem, queryKey } from "./index"
 import { getPostCountByAuthorAPI, type PostCountByAuthor } from "@/api/post/getPostCountByAuthor"
 import { getPostCountByStatusAPI, type PostCountByStatus } from "@/api/post/getPostCountByStatus"
+import {
+    getPostCountByIsPinnedAPI,
+    type PostCountByIsPinned,
+} from "@/api/post/getPostCountByIsPinned"
+import {
+    getPostCountByIsRecommendedAPI,
+    type PostCountByIsRecommended,
+} from "@/api/post/getPostCountByIsRecommended"
 import { getPostCountByMonthAPI, type PostCountByMonth } from "@/api/post/getPostCountByMonth"
 import { ResponseCode, handleErrInfo } from "@/api/responseCode"
 import { ShowMsgTip } from "@/utils/message"
@@ -25,6 +33,8 @@ export function useHeader(userID: string = "") {
     const myPosts = ref<PostCountGroupItem>({} as PostCountGroupItem)
 
     const postCountStatus = ref<PostCountByStatus[]>([])
+    const postCountPinned = ref<PostCountByIsPinned>({} as PostCountByIsPinned)
+    const postCountRecommended = ref<PostCountByIsRecommended>({} as PostCountByIsRecommended)
     const statusPosts = ref<PostCountGroupItem[]>([])
 
     const postCountMonth = ref<PostCountByMonth[]>([])
@@ -57,6 +67,37 @@ export function useHeader(userID: string = "") {
         const res = await getPostCountByMonthAPI()
         if (res.data.code === ResponseCode.PostCountByMonthSuccess) {
             postCountMonth.value = res.data.data
+        } else {
+            ShowMsgTip(ShowMsgTip.MsgType.warning, handleErrInfo(res.data), 3000)
+        }
+    }
+
+    // 获取 postCountPinned
+    const getPostCountByIsPinned = async () => {
+        const res = await getPostCountByIsPinnedAPI()
+        if (res.data.code === ResponseCode.PostCountByIsPinnedSuccess) {
+            // 拿到置顶文章数量
+            res.data.data.forEach((item) => {
+                if (item.is_pinned) {
+                    postCountPinned.value = item
+                }
+            })
+        } else {
+            ShowMsgTip(ShowMsgTip.MsgType.warning, handleErrInfo(res.data), 3000)
+        }
+    }
+
+    // 获取 postCountRecommended
+    const getPostCountByIsRecommended = async () => {
+        const res = await getPostCountByIsRecommendedAPI()
+
+        if (res.data.code === ResponseCode.PostCountByIsRecommendedSuccess) {
+            // 拿到推荐文章数量
+            res.data.data.forEach((item) => {
+                if (item.is_recommended) {
+                    postCountRecommended.value = item
+                }
+            })
         } else {
             ShowMsgTip(ShowMsgTip.MsgType.warning, handleErrInfo(res.data), 3000)
         }
@@ -106,7 +147,7 @@ export function useHeader(userID: string = "") {
                     display: PostStatusDisplay[item.post_status],
                     key: item.post_status.toString(),
                     count: item.count,
-                    index: item.post_status + 1,
+                    index: item.post_status + 3,
                     group: queryKey.PostStatus,
                 }
                 statusPosts.value.push(statusPost)
@@ -129,6 +170,28 @@ export function useHeader(userID: string = "") {
             countGroup.value.push(myPosts.value)
         }
 
+        // 置顶
+        if (postCountPinned.value.count) {
+            countGroup.value.push({
+                display: "置顶",
+                key: queryKey.IsPinned,
+                count: postCountPinned.value.count,
+                index: 2,
+                group: queryKey.IsPinned,
+            })
+        }
+
+        // 推荐
+        if (postCountRecommended.value.count) {
+            countGroup.value.push({
+                display: "推荐",
+                key: queryKey.IsRecommended,
+                count: postCountRecommended.value.count,
+                index: 3,
+                group: queryKey.IsRecommended,
+            })
+        }
+
         // 状态
         if (statusPosts.value.length) {
             countGroup.value.push(...statusPosts.value)
@@ -144,17 +207,23 @@ export function useHeader(userID: string = "") {
         await getPostCountAuthor()
         await getPostCountStatus()
         await getPostCountMonth()
+        await getPostCountByIsPinned()
+        await getPostCountByIsRecommended()
     })
 
     return {
         postCountAuthor,
         postCountStatus,
         postCountMonth,
+        postCountPinned,
+        postCountRecommended,
         postCountGroup,
         allGroup,
         activeGroup,
         getPostCountAuthor,
         getPostCountStatus,
         getPostCountMonth,
+        getPostCountByIsPinned,
+        getPostCountByIsRecommended,
     }
 }
