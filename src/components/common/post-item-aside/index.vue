@@ -2,9 +2,9 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-30 16:23:53
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-20 11:07:01
+ * @LastEditTime : 2024-12-21 15:57:52
  * @FilePath     : \blog-client\src\components\common\post-item-aside\index.vue
- * @Description  : 单个文章元素
+ * @Description  : 单个边栏文章元素
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
@@ -65,7 +65,6 @@ const emit = defineEmits<{
 
 // 点击文章
 const postId = (val: string) => {
-    console.log(val)
     emit("postId", val)
 }
 </script>

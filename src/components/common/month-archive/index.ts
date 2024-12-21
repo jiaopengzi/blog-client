@@ -13,6 +13,6 @@ export { default } from "./index.vue"
 
 import { type PostCountByMonth } from "@/api/post/getPostCountByMonth"
 
-export interface MonthArchiveProps extends PostCountByMonth {
+export interface MonthArchiveData extends PostCountByMonth {
     year_month: string
 }

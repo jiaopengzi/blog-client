@@ -2,9 +2,9 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-25 15:50:05
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-20 10:49:58
+ * @LastEditTime : 2024-12-21 15:48:01
  * @FilePath     : \blog-client\src\components\common\post-item-main\index.vue
- * @Description  : 单个文章元素
+ * @Description  : 单个主文章元素
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
@@ -12,7 +12,8 @@
 <template>
     <div class="post-item">
         <!-- 左上角提示符 -->
-        <div class="tip"></div>
+        <div class="top-left-tip"></div>
+        <div class="top-right-tip" v-if="topRightTip">{{ topRightTip }}</div>
 
         <!-- 左上角分类 -->
         <el-button class="category" plain @click="clickCategory(postData.categories[0])">{{
@@ -33,7 +34,12 @@
         <!-- 文章摘要内容 -->
         <div class="content">
             <!-- 标题 -->
-            <h2 class="title" @click="postId(postData.id)">{{ postData.post_title }}</h2>
+            <h2 class="title" @click="postId(postData.id)">
+                <span class="pinned" v-if="postData.is_pinned">置顶</span
+                ><span class="pinned" v-if="postData.post_status === PostStatusCode.Private"
+                    >私密</span
+                >{{ postData.post_title }}
+            </h2>
 
             <!-- 摘要文字 -->
             <div class="summary">
@@ -69,7 +75,8 @@
 </template>
 
 <script lang="ts" setup>
-import type { PostResPagination } from "@/api/post/common"
+import { computed } from "vue"
+import { PostStatusCode, type PostResPagination } from "@/api/post/common"
 import { type PostCategory } from "@/api/postCategory/view"
 import { ChatRound, View } from "@element-plus/icons-vue"
 import { unit, isZero } from "@/utils/unit"
@@ -98,6 +105,20 @@ const clickCategory = (val: PostCategory) => {
 const postId = (val: string) => {
     emit("postId", val)
 }
+
+// 右上角提示符内容
+const topRightTip = computed(() => {
+    // 判断 postData 中创建时间是否在 7 天内,显示 NEW
+    const createTime = new Date(postData.created_at).getTime()
+    const nowTime = new Date().getTime()
+    const diffTime = nowTime - createTime
+    const diffDay = diffTime / (1000 * 60 * 60 * 24)
+    if (diffDay <= 7) {
+        return "NEW"
+    }
+
+    return ""
+})
 </script>
 <style lang="scss" scoped>
 // 公共样式
@@ -117,7 +138,7 @@ const postId = (val: string) => {
     }
 }
 
-.tip {
+.top-left-tip {
     position: absolute;
     top: 10px;
     left: 0;
@@ -139,7 +160,7 @@ const postId = (val: string) => {
     }
 }
 
-.post-item:hover .tip {
+.post-item:hover .top-left-tip {
     opacity: 1;
 }
 
@@ -199,6 +220,34 @@ const postId = (val: string) => {
     overflow: hidden;
     text-overflow: ellipsis;
     cursor: pointer;
+}
+
+.pinned {
+    padding: 0 6px;
+    margin-right: 5px;
+    background-color: var(--jpz-color-secondary);
+    color: var(--jpz-text-color-primary);
+    border-radius: 2px;
+    font-size: 0.9em;
+    line-height: 1.5em;
+    display: inline-block;
+}
+
+.top-right-tip {
+    background-color: var(--jpz-color-primary);
+    color: var(--jpz-color-secondary);
+    height: 1.5em;
+    line-height: 1.5em;
+    text-align: center;
+    position: absolute;
+    width: 70px;
+    transform-origin: bottom right; // 以右下角为旋转中心,只需要计算 top 值, right 等于0
+    transform: rotate(45deg);
+    // top 等于 width 乘以 sin(45deg) 再减去 height 的高度
+    top: 28px;
+    right: 0px;
+    font-size: 14px;
+    font-weight: 700;
 }
 
 .summary {

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:26:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-20 11:45:29
+ * @LastEditTime : 2024-12-21 16:18:10
  * @FilePath     : \blog-client\src\views\home\component\index.vue
  * @Description  : 主页内容
  * @Blog         : https://jiaopengzi.com
@@ -38,6 +38,8 @@
                         :pagination="pagination"
                         @update-current-page="updateCurrentPage"
                         @update-page-size="updatePageSize"
+                        @click-category="clickCategory"
+                        @post-id="handlePostId"
                     />
                 </el-main>
 
@@ -47,9 +49,13 @@
                     <!-- 热门文章 -->
                     <HotPost class="el-aside-item" :post-data="hotPost" />
                     <!-- 月度归档 -->
-                    <MonthArchive class="el-aside-item" :post-list="monthArchiveProps" />
+                    <MonthArchive
+                        class="el-aside-item"
+                        :post-list="monthArchiveProps"
+                        @post-by-month="clickMonthArchive"
+                    />
                     <!-- 文章标签 -->
-                    <PostTag class="el-aside-item" @click="handleClick" />
+                    <PostTag class="el-aside-item" @click="clickTag" />
                     <!-- 观察点 -->
                     <div ref="asideEndRef"></div>
                 </el-aside>
@@ -60,10 +66,8 @@
 <script setup lang="ts">
 import { reactive, useTemplateRef } from "vue"
 import { useResizeObserver } from "@vueuse/core"
-import router from "@/router"
 import { ArrowRight, Location } from "@element-plus/icons-vue"
 import { routeObj } from "@/router/routeAll"
-import { type PostTag as PostTagType } from "@/api/postTag/view"
 
 import Carousel from "@/views/home/component/carousel"
 import PostList from "@/views/home/component/post-list"
@@ -72,8 +76,7 @@ import HotPost from "@/components/layout/aside/hot-post"
 import MonthArchive from "@/components/common/month-archive"
 import PostTag from "@/components/layout/aside/post-tag"
 import type { ElAside } from "element-plus"
-
-import type { PaginationRequest } from "@/components/common"
+import { type ViewPostRequest } from "@/api/post/view"
 import { useGetHomeData } from "@/components/hooks/useGetHomeData"
 
 defineOptions({ name: "LayoutHome" })
@@ -81,7 +84,7 @@ defineOptions({ name: "LayoutHome" })
 const asideRef = useTemplateRef<InstanceType<typeof ElAside>>("asideRef")
 
 // 获取首页数据
-const mainReq = reactive<PaginationRequest>({} as PaginationRequest)
+const mainReq = reactive<ViewPostRequest>({} as ViewPostRequest)
 const {
     pagination,
     updateCurrentPage,
@@ -89,12 +92,11 @@ const {
     hotPost,
     recommendedPost,
     monthArchiveProps,
+    clickCategory,
+    clickTag,
+    clickMonthArchive,
+    handlePostId,
 } = useGetHomeData(mainReq)
-
-// 点击标签
-function handleClick(tagItemData: PostTagType) {
-    router.push({ path: "/tag/" + tagItemData.slug })
-}
 
 // 侧边栏高度计算
 const reCalculateHeight = () => {

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:14:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-20 11:47:06
+ * @LastEditTime : 2024-12-21 16:24:38
  * @FilePath     : \blog-client\src\components\common\month-archive\index.vue
  * @Description  : 月度归档
  * @Blog         : https://jiaopengzi.com
@@ -29,23 +29,23 @@
 </template>
 <script setup lang="ts">
 import { IconKeys } from "@/components/common/icons"
-import { type MonthArchiveProps } from "./index"
+import { type MonthArchiveData } from "./index"
 
 defineOptions({ name: "MonthArchive" })
 
 const { postList } = defineProps<{
-    postList: MonthArchiveProps[]
+    postList: MonthArchiveData[]
 }>()
 
 // 事件
 const emit = defineEmits<{
-    (event: "PostByMonth", val: MonthArchiveProps): void
+    (event: "PostByMonth", val: MonthArchiveData): void
 }>()
 
 // 参考官方文档 https://element-plus.org/zh-CN/component/table.html#table-%E4%BA%8B%E4%BB%B6
 
-const handleRowClick = (row: MonthArchiveProps) => {
-    console.log(row)
+const handleRowClick = (row: MonthArchiveData) => {
+    console.log({ row })
     emit("PostByMonth", row)
 }
 </script>

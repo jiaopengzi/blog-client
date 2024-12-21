@@ -11,7 +11,13 @@
 
 <template>
     <div class="post-list">
-        <PostItem v-for="item in paginationAC.records" :key="item.id" :post-data="item" />
+        <PostItem
+            v-for="item in paginationAC.records"
+            :key="item.id"
+            :post-data="item"
+            @click-category="clickCategory"
+            @post-id="postId"
+        />
     </div>
     <!-- 分页 -->
     <div class="pagination-block">
@@ -34,6 +40,7 @@
 import { ref, onBeforeMount } from "vue"
 import PostItem from "@/components/common/post-item-main"
 import { type PostResPagination } from "@/api/post/common"
+import { type PostCategory } from "@/api/postCategory/view"
 import { type Pagination } from "@/components/common"
 
 import { getEmptyPagination } from "@/components/common"
@@ -49,6 +56,8 @@ const { pagination } = defineProps<{
 const emit = defineEmits<{
     (event: "updateCurrentPage", val: number): void
     (event: "updatePageSize", val: number): void
+    (event: "clickCategory", val: PostCategory): void
+    (event: "postId", val: string): void
 }>()
 
 // 当前分页数据
@@ -62,6 +71,16 @@ const updateCurrentPage = (val: number) => {
 // 更新每页显示数量
 const updatePageSize = (val: number) => {
     emit("updatePageSize", val)
+}
+
+// 点击分类
+const clickCategory = (val: PostCategory) => {
+    emit("clickCategory", val)
+}
+
+// 点击文章
+const postId = (val: string) => {
+    emit("postId", val)
 }
 
 onBeforeMount(() => {

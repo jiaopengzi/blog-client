@@ -132,8 +132,9 @@ export const useUserStore = defineStore({
 
         // 退出登录
         async logout() {
-            // localStorage.removeItem(LocalStorageKey.AccessToken)
-            localStorage.clear()
+            localStorage.removeItem(LocalStorageKey.AccessToken)
+            localStorage.removeItem(LocalStorageKey.RolesList)
+            localStorage.removeItem(LocalStorageKey.PermissionList)
             this.$patch(createEmptyUserInfoStore())
             // 重定向到登录页
             window.location.href = "/"

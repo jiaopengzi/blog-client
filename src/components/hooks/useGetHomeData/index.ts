@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-17 16:05:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-20 11:55:57
+ * @LastEditTime : 2024-12-21 16:19:25
  * @FilePath     : \blog-client\src\components\hooks\useGetHomeData\index.ts
  * @Description  : 首页数据获取
  * @Blog         : https://jiaopengzi.com
@@ -13,15 +13,17 @@
 import { reactive, watch, onBeforeMount, type Reactive } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { type Pagination, NumberParamsFromURL, getEmptyPagination } from "@/components/common"
+import { type PostCategory } from "@/api/postCategory/view"
+import { type PostTag } from "@/api/postTag/view"
 import { ResponseCode } from "@/api/responseCode"
 
 import type { NumberKeys, PaginationRequest } from "@/components/common"
 
-import { viewPostAPI } from "@/api/post/view"
+import { viewPostAPI, type ViewPostRequest } from "@/api/post/view"
 import { viewHotPostAPI } from "@/api/post/viewHotPost"
 import { viewRecommendedPostAPI } from "@/api/post/viewRecommendedPost"
 import { getPostCountByMonthAPI } from "@/api/post/getPostCountByMonth"
-import { type MonthArchiveProps } from "@/components/common/month-archive"
+import { type MonthArchiveData } from "@/components/common/month-archive"
 import type { PostResPagination, PostResCommon } from "@/api/post/common"
 
 export type QueryRecord<T extends string | number | symbol> = { [key in T]?: string | number }
@@ -32,8 +34,8 @@ export interface Options<K> {
 }
 
 export function useGetHomeData(
-    queryParams: Reactive<PaginationRequest>, // 查询参数
-    options?: Options<PaginationRequest>,
+    queryParams: Reactive<ViewPostRequest>, // 查询参数
+    options?: Options<ViewPostRequest>,
 ) {
     const route = useRoute()
     const router = useRouter()
@@ -155,7 +157,7 @@ export function useGetHomeData(
     }
 
     // 推荐文章
-    const monthArchiveProps = reactive<MonthArchiveProps[]>([])
+    const monthArchiveProps = reactive<MonthArchiveData[]>([])
     async function getPostCountByMonth() {
         // 获取标签列表
         await getPostCountByMonthAPI().then((res) => {
@@ -181,6 +183,33 @@ export function useGetHomeData(
                     return a.month - b.month // 月份降序
                 })
             }
+        })
+    }
+
+    // 点击分类
+    const clickCategory = (category: PostCategory) => {
+        queryParams.post_category_id = category.id
+        updateQueryAndRouter()
+    }
+
+    // 点击标签
+    const clickTag = (tag: PostTag) => {
+        queryParams.post_tag_id = tag.id
+        updateQueryAndRouter()
+    }
+
+    // 点击月份归档
+    const clickMonthArchive = (row: MonthArchiveData) => {
+        queryParams.year = row.year
+        queryParams.month = row.month
+        updateQueryAndRouter()
+    }
+
+    // 点击文章
+    const handlePostId = (id: string) => {
+        router.push({
+            name: "post",
+            params: { id },
         })
     }
 
@@ -224,5 +253,9 @@ export function useGetHomeData(
         hotPost, // 热门文章
         recommendedPost, // 推荐文章
         monthArchiveProps, // 月份归档
+        clickCategory, // 点击分类
+        clickTag, // 点击标签
+        clickMonthArchive, // 点击月份归档
+        handlePostId, // 点击文章
     }
 }
