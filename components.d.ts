@@ -81,7 +81,6 @@ declare module 'vue' {
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     LayoutAsideHotPost: typeof import('./src/components/layout/aside/hot-post/index.vue')['default']
-    LayoutAsideMonthArchive: typeof import('./src/components/layout/aside/month-archive/index.vue')['default']
     LayoutAsidePostTag: typeof import('./src/components/layout/aside/post-tag/index.vue')['default']
     LayoutAsideRecommendedRead: typeof import('./src/components/layout/aside/recommended-read/index.vue')['default']
     LayoutFooter: typeof import('./src/components/layout/footer/index.vue')['default']
