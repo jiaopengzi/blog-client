@@ -36,7 +36,8 @@
                 <TagItem
                     v-for="item in scope.row[col.prop]"
                     :tag-data="item"
-                    :key="item.id + item.post_count"
+                    :is-admin="true"
+                    :key="item.id + item.post_count_admin"
                     @click="handleTagClick(item)"
                 />
             </el-scrollbar>

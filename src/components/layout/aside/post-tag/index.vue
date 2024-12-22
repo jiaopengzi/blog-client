@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:15:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 15:38:25
+ * @LastEditTime : 2024-12-22 20:28:02
  * @FilePath     : \blog-client\src\components\layout\aside\post-tag\index.vue
  * @Description  : 文章标签
  * @Blog         : https://jiaopengzi.com
@@ -25,6 +25,7 @@
                 <TagItem
                     v-for="item in items"
                     :tag-data="item"
+                    :is-admin="isAdmin"
                     :key="item.id"
                     @click="handleClick(item)"
                 />
@@ -42,6 +43,10 @@ import { viewPostTagTopAPI, type PostTag } from "@/api/postTag/view"
 import { ResponseCode } from "@/api/responseCode"
 
 defineOptions({ name: "PostTag" })
+
+const { isAdmin = false } = defineProps<{
+    isAdmin?: boolean
+}>()
 
 const emit = defineEmits<{
     (event: "click", tagItemData: PostTag): void

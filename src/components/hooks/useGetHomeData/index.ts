@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-17 16:05:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-21 16:19:25
+ * @LastEditTime : 2024-12-22 13:45:47
  * @FilePath     : \blog-client\src\components\hooks\useGetHomeData\index.ts
  * @Description  : 首页数据获取
  * @Blog         : https://jiaopengzi.com
@@ -17,7 +17,7 @@ import { type PostCategory } from "@/api/postCategory/view"
 import { type PostTag } from "@/api/postTag/view"
 import { ResponseCode } from "@/api/responseCode"
 
-import type { NumberKeys, PaginationRequest } from "@/components/common"
+import type { NumberKeys } from "@/components/common"
 
 import { viewPostAPI, type ViewPostRequest } from "@/api/post/view"
 import { viewHotPostAPI } from "@/api/post/viewHotPost"
@@ -27,6 +27,11 @@ import { type MonthArchiveData } from "@/components/common/month-archive"
 import type { PostResPagination, PostResCommon } from "@/api/post/common"
 
 export type QueryRecord<T extends string | number | symbol> = { [key in T]?: string | number }
+
+export interface BreadcrumbItem {
+    display: string // 显示的文字
+    to: string // 跳转的路由
+}
 
 export interface Options<K> {
     queryNumberParams?: NumberKeys<K>[] // 查询参数中的数字参数
@@ -43,8 +48,10 @@ export function useGetHomeData(
     const pagination =
         reactive<Pagination<PostResPagination>>(getEmptyPagination<PostResPagination>())
 
+    const breadcrumbItems = reactive<BreadcrumbItem[]>([])
+
     // 类型别名 KeyType 为 queryParams 的 key
-    type KeyType = keyof PaginationRequest
+    type KeyType = keyof ViewPostRequest
 
     const numberParamSet = new Set<string>(Object.values(NumberParamsFromURL))
     // 如果 options.queryNumberParams 不为空 将 options.queryNumberParams key 增加到 numberParamSet 中
@@ -111,7 +118,7 @@ export function useGetHomeData(
     }
 
     // 获取分页
-    async function getPaginate(req: PaginationRequest) {
+    async function getPaginate(req: ViewPostRequest) {
         // 遍历 options.NoRequest 中的参数，如果 req 中的参数值等于 options.NoRequest 中的值则删除,不请求
         for (const key in options?.noRequest) {
             if (key in req && req[key as KeyType] === options.noRequest[key as KeyType]) {
@@ -186,22 +193,91 @@ export function useGetHomeData(
         })
     }
 
+    // 清空查询参数中的特定字段
+    const clearParamsExcept = (fieldsToKeep: KeyType[]) => {
+        const keysToClear: KeyType[] = [
+            "key_word",
+            "year",
+            "month",
+            "post_author",
+            "post_category_id",
+            "post_tag_id",
+        ]
+
+        keysToClear.forEach((key) => {
+            if (!fieldsToKeep.includes(key)) {
+                delete queryParams[key]
+            }
+        })
+    }
+
+    // 生成面包屑路径
+    const generateBreadcrumbPath = () => {
+        return router.resolve({
+            name: "home",
+            query: queryParams,
+        }).href
+    }
+
     // 点击分类
     const clickCategory = (category: PostCategory) => {
+        // 清空其他查询条件
+        clearParamsExcept(["post_category_id"])
         queryParams.post_category_id = category.id
         updateQueryAndRouter()
+
+        // 清空面包屑
+        breadcrumbItems.length = 0
+
+        // 更新面包屑
+        const breadcrumbItem: BreadcrumbItem = {
+            display: category.name,
+            to: generateBreadcrumbPath(),
+        }
+
+        breadcrumbItems.push(breadcrumbItem)
     }
 
     // 点击标签
     const clickTag = (tag: PostTag) => {
+        // 清空其他查询条件
+        clearParamsExcept(["post_tag_id"])
         queryParams.post_tag_id = tag.id
         updateQueryAndRouter()
+        // 清空面包屑
+        breadcrumbItems.length = 0
+
+        // 更新面包屑
+        const breadcrumbItem: BreadcrumbItem = {
+            display: tag.name,
+            to: generateBreadcrumbPath(),
+        }
+        breadcrumbItems.push(breadcrumbItem)
     }
 
     // 点击月份归档
     const clickMonthArchive = (row: MonthArchiveData) => {
+        // 清空其他查询条件
+        clearParamsExcept(["year", "month"])
         queryParams.year = row.year
+
+        // 清空面包屑
+        breadcrumbItems.length = 0
+
+        // 更新面包屑
+        const breadcrumbItemYear: BreadcrumbItem = {
+            display: `${row.year}`,
+            to: generateBreadcrumbPath(),
+        }
+        breadcrumbItems.push(breadcrumbItemYear)
+
         queryParams.month = row.month
+
+        const breadcrumbItemMonth: BreadcrumbItem = {
+            display: `${row.month}`,
+            to: generateBreadcrumbPath(),
+        }
+        breadcrumbItems.push(breadcrumbItemMonth)
         updateQueryAndRouter()
     }
 
@@ -231,6 +307,7 @@ export function useGetHomeData(
     watch(
         () => route.fullPath,
         () => {
+            console.log("route.fullPath", route.fullPath)
             updatePaginate()
         },
     )
@@ -257,5 +334,6 @@ export function useGetHomeData(
         clickTag, // 点击标签
         clickMonthArchive, // 点击月份归档
         handlePostId, // 点击文章
+        breadcrumbItems, // 面包屑
     }
 }

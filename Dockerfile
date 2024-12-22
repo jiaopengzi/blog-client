@@ -45,7 +45,7 @@ COPY nginx.conf /etc/nginx/nginx.conf
 VOLUME ["/etc/nginx"]
 
 # 暴露 Nginx 服务的默认端口
-EXPOSE 80
+EXPOSE 80 443
 
 # 设置启动命令
 CMD ["nginx", "-g", "daemon off;"]

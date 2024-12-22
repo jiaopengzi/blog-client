@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:01:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-24 21:23:29
+ * @LastEditTime : 2024-12-22 20:16:55
  * @FilePath     : \blog-client\src\api\postTag\view.ts
  * @Description  : 查看文章标签
  * @Blog         : https://jiaopengzi.com
@@ -25,6 +25,7 @@ export interface PostTag extends DataWithImg {
     thumbnail: string // 缩略图
     order: string // 排序
     post_count: string // 文章数量
+    post_count_admin: string // 文章数量(管理员)
 }
 
 // 查看文章标签

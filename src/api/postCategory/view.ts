@@ -25,6 +25,7 @@ export interface PostCategory extends DataWithImg {
     thumbnail: string // 缩略图
     order: string // 排序
     post_count: string // 文章数量
+    post_count_admin: string // 文章数量(管理员)
     parent: string // 父级分类
 }
 

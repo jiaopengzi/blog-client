@@ -35,7 +35,7 @@
         >从常用标签中选择</el-button
     >
 
-    <PostTag v-if="isShowAllTag" class="el-aside-item" @click="handleTagClick" />
+    <PostTag v-if="isShowAllTag" :is-admin="true" class="el-aside-item" @click="handleTagClick" />
 </template>
 
 <script lang="ts" setup>

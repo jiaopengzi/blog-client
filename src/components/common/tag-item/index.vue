@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-03 20:48:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 10:30:13
+ * @LastEditTime : 2024-12-22 20:38:23
  * @FilePath     : \blog-client\src\components\common\tag-item\index.vue
  * @Description  : 标签元素
  * @Blog         : https://jiaopengzi.com
@@ -18,17 +18,19 @@
         @click="handleClick(tag)"
         :style="[{ 'background-color': tag.color.bgColor }, { color: tag.color.color }]"
     >
-        {{ tag.data.name + "(" + tag.data.post_count + ")" }}
+        {{ display }}
     </el-tag>
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue"
 import type { Tag, TagColor } from "@/components/common/tag-item"
 import { type PostTag } from "@/api/postTag/view"
 
 defineOptions({ name: "TagItem" })
 
-const props = defineProps<{
+const { tagData, isAdmin = false } = defineProps<{
+    isAdmin?: boolean
     tagData: PostTag
 }>()
 
@@ -36,18 +38,13 @@ const emit = defineEmits<{
     (event: "click", tagItemData: PostTag): void
 }>()
 
-const tag: Tag = {
-    data: props.tagData,
-    color: generateItemColor(),
-}
-
 // tag 随机生成RGB颜色中的r值、g值、b值
-function randomRgbItem(): number {
+const randomRgbItem = (): number => {
     return Math.floor(Math.random() * 0xff)
 }
 
 // tag 字体颜色和背景色生成函数
-function generateItemColor(a: number = 0.8): TagColor {
+const generateItemColor = (a: number = 0.8): TagColor => {
     const r = randomRgbItem() // 随机生成RGB颜色中的r值
     const g = randomRgbItem() // 随机生成RGB颜色中的g值
     const b = randomRgbItem() // 随机生成RGB颜色中的b值
@@ -60,10 +57,23 @@ function generateItemColor(a: number = 0.8): TagColor {
     return { color: color, bgColor: bgColor }
 }
 
+const tag: Tag = {
+    data: tagData,
+    color: generateItemColor(),
+}
+
+// 标签显示
+const display = computed(() => {
+    if (isAdmin) {
+        return `${tag.data.name}(${tag.data.post_count_admin})`
+    } else {
+        return `${tag.data.name}(${tag.data.post_count})`
+    }
+})
+
 // 点击标签跳转到标签页面
 const handleClick = (clickedItem: Tag) => {
     emit("click", clickedItem.data)
-    // console.log(clickedItem.data)
 }
 </script>
 

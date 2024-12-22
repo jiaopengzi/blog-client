@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-25 15:50:05
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-21 15:48:01
+ * @LastEditTime : 2024-12-22 15:42:53
  * @FilePath     : \blog-client\src\components\common\post-item-main\index.vue
  * @Description  : 单个主文章元素
  * @Blog         : https://jiaopengzi.com
@@ -34,11 +34,11 @@
         <!-- 文章摘要内容 -->
         <div class="content">
             <!-- 标题 -->
-            <h2 class="title" @click="postId(postData.id)">
+            <h2 class="title-row">
                 <span class="pinned" v-if="postData.is_pinned">置顶</span
                 ><span class="pinned" v-if="postData.post_status === PostStatusCode.Private"
                     >私密</span
-                >{{ postData.post_title }}
+                ><span class="title" @click="postId(postData.id)">{{ postData.post_title }}</span>
             </h2>
 
             <!-- 摘要文字 -->
@@ -207,7 +207,9 @@ const topRightTip = computed(() => {
     justify-content: space-between;
 }
 
-.title {
+.title-row {
+    display: flex;
+    align-items: center; // 垂直居中
     margin: 0;
     font-size: 14px;
     font-weight: 500;
@@ -215,11 +217,20 @@ const topRightTip = computed(() => {
     border: 0;
     padding: 0;
     line-height: 2em;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.title {
     cursor: pointer;
+    flex: 1; // 使标题占据剩余空间
+    display: flex;
+    align-items: center; // 垂直居中
+}
+
+// 当鼠标移动到 .title 上时, .title 的颜色变为 var(--jpz-color-primary)
+.title:hover {
+    color: var(--jpz-color-primary);
 }
 
 .pinned {
@@ -231,6 +242,7 @@ const topRightTip = computed(() => {
     font-size: 0.9em;
     line-height: 1.5em;
     display: inline-block;
+    font-weight: 700;
 }
 
 .top-right-tip {

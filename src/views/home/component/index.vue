@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:26:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-21 16:18:10
+ * @LastEditTime : 2024-12-22 13:16:32
  * @FilePath     : \blog-client\src\views\home\component\index.vue
  * @Description  : 主页内容
  * @Blog         : https://jiaopengzi.com
@@ -18,12 +18,15 @@
             </el-icon>
 
             <el-breadcrumb :separator-icon="ArrowRight">
-                <el-breadcrumb-item>
-                    <span class="breadcrumb-item">当前位置</span>
-                </el-breadcrumb-item>
-                <el-breadcrumb-item :to="routeObj.login.path">
-                    <span class="breadcrumb-item">首页</span></el-breadcrumb-item
+                <el-breadcrumb-item
+                    ><span class="breadcrumb-item">当前位置</span></el-breadcrumb-item
                 >
+                <el-breadcrumb-item :to="routeObj.home"
+                    ><span class="breadcrumb-item">首页</span></el-breadcrumb-item
+                >
+                <el-breadcrumb-item v-for="item in breadcrumbItems" :key="item.to" :to="item.to">{{
+                    item.display
+                }}</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
 
@@ -96,6 +99,7 @@ const {
     clickTag,
     clickMonthArchive,
     handlePostId,
+    breadcrumbItems,
 } = useGetHomeData(mainReq)
 
 // 侧边栏高度计算

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-30 16:23:53
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-21 15:57:52
+ * @LastEditTime : 2024-12-22 15:43:37
  * @FilePath     : \blog-client\src\components\common\post-item-aside\index.vue
  * @Description  : 单个边栏文章元素
  * @Blog         : https://jiaopengzi.com
@@ -120,6 +120,11 @@ const postId = (val: string) => {
     overflow: hidden;
     text-overflow: ellipsis;
     cursor: pointer;
+}
+
+// 当鼠标移动到 .title 上时, .title 的颜色变为 var(--jpz-color-primary)
+.title:hover {
+    color: var(--jpz-color-primary);
 }
 
 .meta {
