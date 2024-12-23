@@ -144,6 +144,7 @@ export interface PostResPagination extends PostResCommon {
     // 引用类型
     author_info: User // 作者
     categories: PostCategory[] // 文章分类
+    tags: PostTag[] // 文章标签
     seo_description: string // SEO描述
 }
 

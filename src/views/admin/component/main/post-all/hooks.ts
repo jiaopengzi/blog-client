@@ -21,7 +21,8 @@ import {
     getPostCountByIsRecommendedAPI,
     type PostCountByIsRecommended,
 } from "@/api/post/getPostCountByIsRecommended"
-import { getPostCountByMonthAPI, type PostCountByMonth } from "@/api/post/getPostCountByMonth"
+import { type PostCountByMonth } from "@/api/post/getPostCountByMonth"
+import { getPostCountByMonthAdminAPI } from "@/api/post/getPostCountByMonthAdmin"
 import { ResponseCode, handleErrInfo } from "@/api/responseCode"
 import { ShowMsgTip } from "@/utils/message"
 import { PostStatusDisplay } from "@/api/post/common"
@@ -64,7 +65,7 @@ export function useHeader(userID: string = "") {
 
     // 获取 postCountMonth
     const getPostCountMonth = async () => {
-        const res = await getPostCountByMonthAPI()
+        const res = await getPostCountByMonthAdminAPI()
         if (res.data.code === ResponseCode.PostCountByMonthSuccess) {
             postCountMonth.value = res.data.data
         } else {

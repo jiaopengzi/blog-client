@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:26:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-22 13:16:32
+ * @LastEditTime : 2024-12-23 19:41:59
  * @FilePath     : \blog-client\src\views\home\component\index.vue
  * @Description  : 主页内容
  * @Blog         : https://jiaopengzi.com
@@ -24,9 +24,9 @@
                 <el-breadcrumb-item :to="routeObj.home"
                     ><span class="breadcrumb-item">首页</span></el-breadcrumb-item
                 >
-                <el-breadcrumb-item v-for="item in breadcrumbItems" :key="item.to" :to="item.to">{{
-                    item.display
-                }}</el-breadcrumb-item>
+                <el-breadcrumb-item v-for="item in breadcrumbItems" :key="item.to" :to="item.to">
+                    <span class="breadcrumb-item">{{ item.display }}</span>
+                </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
 
@@ -71,6 +71,7 @@ import { reactive, useTemplateRef } from "vue"
 import { useResizeObserver } from "@vueuse/core"
 import { ArrowRight, Location } from "@element-plus/icons-vue"
 import { routeObj } from "@/router/routeAll"
+import type { NumberKeys } from "@/components/common"
 
 import Carousel from "@/views/home/component/carousel"
 import PostList from "@/views/home/component/post-list"
@@ -88,6 +89,9 @@ const asideRef = useTemplateRef<InstanceType<typeof ElAside>>("asideRef")
 
 // 获取首页数据
 const mainReq = reactive<ViewPostRequest>({} as ViewPostRequest)
+// 查询参数中的数字和布尔类型
+const queryNumberParams: NumberKeys<ViewPostRequest>[] = ["year", "month"]
+
 const {
     pagination,
     updateCurrentPage,
@@ -100,7 +104,7 @@ const {
     clickMonthArchive,
     handlePostId,
     breadcrumbItems,
-} = useGetHomeData(mainReq)
+} = useGetHomeData(mainReq, { queryNumberParams })
 
 // 侧边栏高度计算
 const reCalculateHeight = () => {
@@ -184,6 +188,7 @@ useResizeObserver(asideRef, (entries) => {
 .breadcrumb-item {
     margin-right: 4px;
     color: var(--jpz-text-color-secondary);
+    font-weight: 500;
 }
 
 .breadcrumb-logo {

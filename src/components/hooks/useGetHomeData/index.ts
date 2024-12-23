@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-17 16:05:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-22 13:45:47
+ * @LastEditTime : 2024-12-23 19:36:46
  * @FilePath     : \blog-client\src\components\hooks\useGetHomeData\index.ts
  * @Description  : 首页数据获取
  * @Blog         : https://jiaopengzi.com
@@ -10,15 +10,17 @@
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { reactive, watch, onBeforeMount, type Reactive } from "vue"
+import { reactive, watch, onBeforeMount, type Reactive, ref } from "vue"
 import { useRoute, useRouter } from "vue-router"
-import { type Pagination, NumberParamsFromURL, getEmptyPagination } from "@/components/common"
+import {
+    type Pagination,
+    type NumberKeys,
+    NumberParamsFromURL,
+    getEmptyPagination,
+} from "@/components/common"
 import { type PostCategory } from "@/api/postCategory/view"
 import { type PostTag } from "@/api/postTag/view"
 import { ResponseCode } from "@/api/responseCode"
-
-import type { NumberKeys } from "@/components/common"
-
 import { viewPostAPI, type ViewPostRequest } from "@/api/post/view"
 import { viewHotPostAPI } from "@/api/post/viewHotPost"
 import { viewRecommendedPostAPI } from "@/api/post/viewRecommendedPost"
@@ -68,6 +70,7 @@ export function useGetHomeData(
         if (!queryParams.key_word) {
             delete queryParams.key_word
         }
+
         // 判断是否更新路由
         if (isUpdateRouter) {
             router.push({
@@ -79,6 +82,9 @@ export function useGetHomeData(
 
     // 从路由中获取参数
     const updateByQuery = () => {
+        // 清空 queryParams
+        Object.keys(queryParams).forEach((key) => delete queryParams[key as KeyType])
+
         // 判断路由中是否有参数
         const queryUrl = router.currentRoute.value.query
         // 如果 queryUrl 不为空 则将 queryUrl 赋值给 query
@@ -95,8 +101,8 @@ export function useGetHomeData(
                     }
                 }
             }
-            return
         }
+        updateBreadcrumbFromPagination()
         updateQueryAndRouter(false)
     }
 
@@ -194,8 +200,8 @@ export function useGetHomeData(
     }
 
     // 清空查询参数中的特定字段
-    const clearParamsExcept = (fieldsToKeep: KeyType[]) => {
-        const keysToClear: KeyType[] = [
+    const clearParamsExcept = (fieldsToKeep: JpzOptionalKeys<ViewPostRequest>[]) => {
+        const keysToClear: JpzOptionalKeys<ViewPostRequest>[] = [
             "key_word",
             "year",
             "month",
@@ -206,7 +212,7 @@ export function useGetHomeData(
 
         keysToClear.forEach((key) => {
             if (!fieldsToKeep.includes(key)) {
-                delete queryParams[key]
+                delete queryParams[key as KeyType]
             }
         })
     }
@@ -219,23 +225,29 @@ export function useGetHomeData(
         }).href
     }
 
+    // 生成面包屑路径
+    const updateBreadcrumbItems = (text: string, isClear: boolean = true) => {
+        // 清空面包屑
+        if (isClear) {
+            breadcrumbItems.length = 0
+        }
+
+        // 更新面包屑
+        const breadcrumbItem: BreadcrumbItem = {
+            display: text,
+            to: generateBreadcrumbPath(),
+        }
+
+        breadcrumbItems.push(breadcrumbItem)
+    }
+
     // 点击分类
     const clickCategory = (category: PostCategory) => {
         // 清空其他查询条件
         clearParamsExcept(["post_category_id"])
         queryParams.post_category_id = category.id
         updateQueryAndRouter()
-
-        // 清空面包屑
-        breadcrumbItems.length = 0
-
-        // 更新面包屑
-        const breadcrumbItem: BreadcrumbItem = {
-            display: category.name,
-            to: generateBreadcrumbPath(),
-        }
-
-        breadcrumbItems.push(breadcrumbItem)
+        updateBreadcrumbItems(category.name)
     }
 
     // 点击标签
@@ -244,15 +256,7 @@ export function useGetHomeData(
         clearParamsExcept(["post_tag_id"])
         queryParams.post_tag_id = tag.id
         updateQueryAndRouter()
-        // 清空面包屑
-        breadcrumbItems.length = 0
-
-        // 更新面包屑
-        const breadcrumbItem: BreadcrumbItem = {
-            display: tag.name,
-            to: generateBreadcrumbPath(),
-        }
-        breadcrumbItems.push(breadcrumbItem)
+        updateBreadcrumbItems(tag.name)
     }
 
     // 点击月份归档
@@ -260,24 +264,9 @@ export function useGetHomeData(
         // 清空其他查询条件
         clearParamsExcept(["year", "month"])
         queryParams.year = row.year
-
-        // 清空面包屑
-        breadcrumbItems.length = 0
-
-        // 更新面包屑
-        const breadcrumbItemYear: BreadcrumbItem = {
-            display: `${row.year}`,
-            to: generateBreadcrumbPath(),
-        }
-        breadcrumbItems.push(breadcrumbItemYear)
-
+        updateBreadcrumbItems(`${row.year}`)
         queryParams.month = row.month
-
-        const breadcrumbItemMonth: BreadcrumbItem = {
-            display: `${row.month}`,
-            to: generateBreadcrumbPath(),
-        }
-        breadcrumbItems.push(breadcrumbItemMonth)
+        updateBreadcrumbItems(`${row.month}`, false)
         updateQueryAndRouter()
     }
 
@@ -289,25 +278,76 @@ export function useGetHomeData(
         })
     }
 
-    // 判断 queryParams 中 key 是否在 numberParamSet 中，如果在则解析为数字，否则保持原样
-    watch(
-        () => queryParams,
-        (newVal) => {
-            // 判断 newVal 中 key 是否在 numberParamSet 中，如果在则解析为数字，否则保持原样
-            for (const key in newVal) {
-                ;(queryParams as any)[key as KeyType] = numberParamSet.has(key)
-                    ? Number(newVal[key as KeyType])
-                    : (newVal[key as KeyType] as any)
+    const stopWatchFlag = ref(false)
+
+    // 从 pagination.records 中解析参数并更新面包屑
+    const updateBreadcrumbFromPagination = () => {
+        const { post_tag_id, post_category_id, year, month } = queryParams
+
+        // 解析分类
+        if (post_category_id) {
+            categoryLoop: for (const item of pagination.records) {
+                for (const category of item.categories) {
+                    if (category.id === post_category_id) {
+                        updateBreadcrumbItems(category.name)
+                        break categoryLoop
+                    }
+                }
+            }
+        }
+
+        // 解析标签
+        if (post_tag_id) {
+            tagLoop: for (const item of pagination.records) {
+                for (const tag of item.tags) {
+                    if (tag.id === post_tag_id) {
+                        updateBreadcrumbItems(tag.name)
+                        break tagLoop
+                    }
+                }
+            }
+        }
+
+        // 解析年份和月份
+        if (year) {
+            // 先移除 month
+            queryParams.month = undefined
+            updateBreadcrumbItems(`${year}`)
+        }
+
+        if (month) {
+            // 添加 month
+            queryParams.month = month
+            updateBreadcrumbItems(`${month}`, false)
+        }
+
+        if (!post_category_id && !post_tag_id && !year && !month) {
+            // 清空面包屑
+            breadcrumbItems.length = 0
+        }
+
+        if (stopWatchFlag.value) {
+            stopParseParams()
+            stopWatchFlag.value = false
+        }
+    }
+
+    // 当 pagination.records 有数据时，解析 params,只需要执行一次
+    const { stop: stopParseParams } = watch(
+        () => pagination.records,
+        (newRecords) => {
+            if (newRecords.length > 0) {
+                stopWatchFlag.value = true
+                updateBreadcrumbFromPagination()
             }
         },
-        { deep: true },
     )
 
     // 监控 route.fullPath 的变化并执行操作
     watch(
         () => route.fullPath,
         () => {
-            console.log("route.fullPath", route.fullPath)
+            updateByQuery()
             updatePaginate()
         },
     )
@@ -315,7 +355,7 @@ export function useGetHomeData(
     onBeforeMount(async () => {
         // 获取路由参数 并更新 query
         updateByQuery()
-        await getPaginate(queryParams)
+        await updatePaginate()
         await getHostPost()
         await getRecommendedPost()
         await getPostCountByMonth()

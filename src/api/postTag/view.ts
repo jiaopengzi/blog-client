@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:01:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-22 20:16:55
+ * @LastEditTime : 2024-12-23 15:29:00
  * @FilePath     : \blog-client\src\api\postTag\view.ts
  * @Description  : 查看文章标签
  * @Blog         : https://jiaopengzi.com
@@ -37,14 +37,5 @@ export function viewPostTagAPI(
         url: urlStr,
         method: "post",
         data: requestData,
-    })
-}
-
-// 查看文章标签 top n
-export function viewPostTagTopAPI(): AxiosPromise<Res<PostTag>> {
-    const urlStr = routerGroup + "/post-tag/view-top-n"
-    return request({
-        url: urlStr,
-        method: "get",
     })
 }

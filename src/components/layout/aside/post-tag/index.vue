@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:15:26
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-22 20:28:02
+ * @LastEditTime : 2024-12-23 15:32:31
  * @FilePath     : \blog-client\src\components\layout\aside\post-tag\index.vue
  * @Description  : 文章标签
  * @Blog         : https://jiaopengzi.com
@@ -39,7 +39,9 @@ import { reactive, onBeforeMount, computed } from "vue"
 import { IconKeys } from "@/components/common/icons"
 
 import TagItem from "@/components/common/tag-item"
-import { viewPostTagTopAPI, type PostTag } from "@/api/postTag/view"
+import { type PostTag } from "@/api/postTag/view"
+import { viewPostTagTopNAPI } from "@/api/postTag/viewPostTagTopN"
+import { viewPostTagTopNAdminAPI } from "@/api/postTag/viewPostTagTopNAdmin"
 import { ResponseCode } from "@/api/responseCode"
 
 defineOptions({ name: "PostTag" })
@@ -57,10 +59,12 @@ const items = reactive<PostTag[]>([])
 // 是否没有数据
 const noData = computed(() => items.length === 0)
 
+const topNAPI = isAdmin ? viewPostTagTopNAdminAPI : viewPostTagTopNAPI
+
 // 获取分页用户
 const getTagTopN = async () => {
     // 获取标签列表
-    await viewPostTagTopAPI().then((res) => {
+    await topNAPI().then((res) => {
         if (res.data.code === ResponseCode.PostTagViewTopNSuccess) {
             Object.assign(items, res.data.data)
         }
