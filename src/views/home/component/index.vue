@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:26:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-23 19:41:59
+ * @LastEditTime : 2024-12-24 20:17:34
  * @FilePath     : \blog-client\src\views\home\component\index.vue
  * @Description  : 主页内容
  * @Blog         : https://jiaopengzi.com
@@ -38,11 +38,12 @@
                     <Carousel />
                     <!-- 文章列表 -->
                     <PostList
-                        :pagination="pagination"
+                        :pagination-data="pagination"
                         @update-current-page="updateCurrentPage"
                         @update-page-size="updatePageSize"
                         @click-category="clickCategory"
                         @post-id="handlePostId"
+                        @pagination-block-visible="paginationBlockVisibleChange"
                     />
                 </el-main>
 
@@ -67,7 +68,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { reactive, useTemplateRef } from "vue"
+import { reactive, useTemplateRef, onUnmounted } from "vue"
 import { useResizeObserver } from "@vueuse/core"
 import { ArrowRight, Location } from "@element-plus/icons-vue"
 import { routeObj } from "@/router/routeAll"
@@ -89,6 +90,7 @@ const asideRef = useTemplateRef<InstanceType<typeof ElAside>>("asideRef")
 
 // 获取首页数据
 const mainReq = reactive<ViewPostRequest>({} as ViewPostRequest)
+
 // 查询参数中的数字和布尔类型
 const queryNumberParams: NumberKeys<ViewPostRequest>[] = ["year", "month"]
 
@@ -104,6 +106,7 @@ const {
     clickMonthArchive,
     handlePostId,
     breadcrumbItems,
+    paginationBlockVisibleChange,
 } = useGetHomeData(mainReq, { queryNumberParams })
 
 // 侧边栏高度计算
@@ -135,13 +138,17 @@ const reCalculateHeight = () => {
 }
 
 // 监控 asideRef 元素的变化 重新计算高度
-useResizeObserver(asideRef, (entries) => {
+const { stop } = useResizeObserver(asideRef, (entries) => {
     // const entry = entries[0]
     // const { x, y, left, top, width, height } = entry.contentRect
     // console.log(
     //     `尺寸变化了  x: ${x},y: ${y},left: ${left},top: ${top},width: ${width}, height: ${height}`,
     // )
     reCalculateHeight()
+})
+
+onUnmounted(() => {
+    stop()
 })
 </script>
 <style scoped lang="scss">

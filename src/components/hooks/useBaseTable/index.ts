@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 08:57:02
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-20 15:04:29
+ * @LastEditTime : 2024-12-24 15:17:01
  * @FilePath     : \blog-client\src\components\hooks\useBaseTable\index.ts
  * @Description  : 基础表格钩子
  * @Blog         : https://jiaopengzi.com
@@ -15,7 +15,7 @@ import type { AxiosPromise } from "axios"
 import {
     type Pagination,
     type PaginationRequest,
-    NumberParamsFromURL,
+    PaginationParamsInURL,
     getEmptyPagination,
 } from "@/components/common"
 import { type Res, ResponseCode } from "@/api/responseCode"
@@ -67,7 +67,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     // 类型别名 KeyType 为 queryParams 的 key
     type KeyType = keyof typeof queryParams
 
-    const numberParamSet = new Set<string>(Object.values(NumberParamsFromURL))
+    const numberParamSet = new Set<string>(Object.values(PaginationParamsInURL))
     const booleanParamSet = new Set<string>()
 
     // 如果 options.queryNumberParams 不为空 将 options.queryNumberParams key 增加到 numberParamSet 中
@@ -88,7 +88,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
      * @description: 更新查询参数和路由
      * @param isUpdateRouter 是否更新路由 默认为 true 更新路由
      */
-    const updateQueryAndRouter = (isUpdateRouter: boolean = true) => {
+    const updateQueryParamsAndRouter = (isUpdateRouter: boolean = true) => {
         queryParams.page_size = pagination.page_size
         queryParams.current_page = pagination.current_page
         if (!queryParams.key_word) {
@@ -104,7 +104,10 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     }
 
     // 从路由中获取参数
-    const updateByQuery = () => {
+    const parseParamsFromURL = () => {
+        // 清空 queryParams
+        Object.keys(queryParams).forEach((key) => delete queryParams[key as KeyType])
+
         // 判断路由中是否有参数
         const queryUrl = router.currentRoute.value.query
         // 如果 queryUrl 不为空 则将 queryUrl 赋值给 query
@@ -121,8 +124,11 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
                     ;(queryParams as any)[key as KeyType] = value as string
                 }
             }
+        } else {
+            // 默认每页显示 10 条 页码为 1
+            queryParams.page_size = 10
+            queryParams.current_page = 1
         }
-        updateQueryAndRouter(false)
     }
 
     // 更新分页内容
@@ -153,13 +159,13 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     // 更新当前页
     const updateCurrentPage = async (val: number) => {
         pagination.current_page = val
-        updateQueryAndRouter()
+        updateQueryParamsAndRouter()
     }
 
     // 更新每页显示条数
     const updatePageSize = async (val: number) => {
         pagination.page_size = val
-        updateQueryAndRouter()
+        updateQueryParamsAndRouter()
     }
 
     // 更新搜索关键字
@@ -168,14 +174,13 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         queryParams.key_word = val
         if (val === "") {
             await getPaginate(queryParams as K)
-            updateQueryAndRouter()
+            updateQueryParamsAndRouter()
         }
     }
 
     // 更新添加状态
     const addStatus = async (status: boolean) => {
         if (status) {
-            // getValueFromQuery()
             await getPaginate(queryParams as K)
         }
     }
@@ -183,7 +188,6 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     // 更新编辑状态
     const editStatus = async (status: boolean) => {
         if (status) {
-            // getValueFromQuery()
             await getPaginate(queryParams as K)
         }
     }
@@ -203,22 +207,20 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         }
 
         // 获取标签列表
-        await viewAPI(req).then((res) => {
-            if (res.data.code === viewResCode) {
-                res.data.data.records = res.data.data.records.map((row: T) =>
-                    formatTableData(
-                        row as T,
-                        options?.tableImg?.width,
-                        options?.tableImg?.height,
-                        options?.tableImg?.imgFit,
-                        options?.tableImg?.svgFontSize,
-                    ),
-                )
-                Object.assign(pagination, res.data.data)
-            } else {
-                Object.assign(pagination, getEmptyPagination<T>())
-            }
-        })
+        const res = await viewAPI(req)
+
+        if (res.data.code === viewResCode) {
+            res.data.data.records = res.data.data.records.map((row: T) =>
+                formatTableData(
+                    row as T,
+                    options?.tableImg?.width,
+                    options?.tableImg?.height,
+                    options?.tableImg?.imgFit,
+                    options?.tableImg?.svgFontSize,
+                ),
+            )
+            Object.assign(pagination, res.data.data)
+        }
     }
 
     const deleteRows = async (rows: TableData[]) => {
@@ -228,47 +230,30 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         const deleteUserRequest = { id_list: ids } as Q
 
         // 删除
-        await deleteAPI(deleteUserRequest).then((res) => {
-            if (res.data.code === deleteResCode) {
-                // 删除成功后重新获取列表
-                updatePaginate()
-                ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 3000)
-            } else {
-                // 显示错误信息
-                ShowMsgTip(ShowMsgTip.MsgType.error, res.data.msg, 3000)
-            }
-        })
-    }
+        const res = await deleteAPI(deleteUserRequest)
 
-    // 判断 queryParams 中 key 是否在 numberParamSet 中，如果在则解析为数字，否则保持原样
-    watch(
-        () => queryParams,
-        (newVal) => {
-            for (const key in newVal) {
-                // 判断 key 是否在 numberParamSet 或者 booleanParamSet 中，如果在则解析为数字或者布尔，否则保持原样
-                if (numberParamSet.has(key)) {
-                    ;(queryParams as any)[key as KeyType] = Number(newVal[key as KeyType])
-                } else if (booleanParamSet.has(key)) {
-                    ;(queryParams as any)[key as KeyType] = newVal[key as KeyType]
-                } else {
-                    ;(queryParams as any)[key as KeyType] = newVal[key as KeyType]
-                }
-            }
-        },
-        { deep: true },
-    )
+        if (res.data.code === deleteResCode) {
+            // 删除成功后重新获取列表
+            updatePaginate()
+            ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 3000)
+        } else {
+            // 显示错误信息
+            ShowMsgTip(ShowMsgTip.MsgType.error, res.data.msg, 3000)
+        }
+    }
 
     // 监控 route.fullPath 的变化并执行操作
     watch(
         () => route.fullPath,
-        () => {
-            updatePaginate()
+        async () => {
+            parseParamsFromURL()
+            await updatePaginate()
         },
     )
 
     onBeforeMount(async () => {
         // 获取路由参数 并更新 query
-        updateByQuery()
+        parseParamsFromURL()
         await getPaginate(queryParams as K)
     })
 
@@ -288,6 +273,6 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         editItemUpdateDialogVisible, // 编辑对话框
         updatePaginate, // 更新分页数据
         deleteRows, // 删除行
-        updateQueryAndRouter, // 更新查询参数和路由
+        updateQueryParamsAndRouter, // 更新查询参数和路由
     }
 }

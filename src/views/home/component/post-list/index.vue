@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-18 10:19:48
+ * @LastEditTime : 2024-12-24 23:49:17
  * @FilePath     : \blog-client\src\views\home\component\post-list\index.vue
  * @Description  : 文章列表
  * @Blog         : https://jiaopengzi.com
@@ -20,7 +20,7 @@
         />
     </div>
     <!-- 分页 -->
-    <div class="pagination-block">
+    <div class="pagination-block" ref="paginationBlockRef">
         <el-pagination
             v-model:current-page="paginationAC.current_page"
             v-model:page-size="paginationAC.page_size"
@@ -37,7 +37,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onBeforeMount } from "vue"
+import { ref, reactive, onMounted, onUnmounted, useTemplateRef, nextTick, watch } from "vue"
+import { useIntersectionObserver } from "@vueuse/core"
 import PostItem from "@/components/common/post-item-main"
 import { type PostResPagination } from "@/api/post/common"
 import { type PostCategory } from "@/api/postCategory/view"
@@ -47,9 +48,8 @@ import { getEmptyPagination } from "@/components/common"
 
 defineOptions({ name: "PostList" })
 
-// pagination 可选，如果没有传入则从 provide 中获取
-const { pagination } = defineProps<{
-    pagination: Pagination<PostResPagination>
+const { paginationData } = defineProps<{
+    paginationData: Pagination<PostResPagination>
 }>()
 
 // 事件
@@ -58,10 +58,14 @@ const emit = defineEmits<{
     (event: "updatePageSize", val: number): void
     (event: "clickCategory", val: PostCategory): void
     (event: "postId", val: string): void
+    (event: "paginationBlockVisible", val: boolean): void
 }>()
 
 // 当前分页数据
-const paginationAC = ref(getEmptyPagination<PostResPagination>())
+const paginationAC = reactive(getEmptyPagination<PostResPagination>())
+
+// 分页组件 ref
+const paginationBlockRef = useTemplateRef("paginationBlockRef")
 
 // 更新当前页
 const updateCurrentPage = (val: number) => {
@@ -83,9 +87,35 @@ const postId = (val: string) => {
     emit("postId", val)
 }
 
-onBeforeMount(() => {
-    // 优先使用 provide 中的数据
-    paginationAC.value = pagination
+let stopIntersectionObserver: () => void // 停止监听函数
+const isInitialRender = ref(true) // 是否是初始渲染
+
+onMounted(async () => {
+    await nextTick()
+
+    const { stop } = useIntersectionObserver(paginationBlockRef, ([entry], observerElement) => {
+        if (isInitialRender.value) {
+            // 初次加载时不emit
+            isInitialRender.value = false
+        } else {
+            // 非初次加载时，根据intersection情况emit
+            emit("paginationBlockVisible", entry?.isIntersecting || false)
+        }
+    })
+
+    stopIntersectionObserver = stop
+})
+
+watch(
+    () => paginationData,
+    (newVal) => {
+        Object.assign(paginationAC, newVal)
+    },
+    { deep: true },
+)
+
+onUnmounted(() => {
+    stopIntersectionObserver()
 })
 </script>
 <style lang="scss" scoped>

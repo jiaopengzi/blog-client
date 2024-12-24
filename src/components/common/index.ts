@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:38:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-20 14:36:24
+ * @LastEditTime : 2024-12-24 18:33:27
  * @FilePath     : \blog-client\src\components\common\index.ts
  * @Description  : 公用信息
  * @Blog         : https://jiaopengzi.com
@@ -21,8 +21,8 @@ export enum ImgFit {
 }
 
 export interface PaginationRequest {
-    current_page: number // 当前页
-    page_size: number // 每页显示条数
+    current_page?: number // 当前页
+    page_size?: number // 每页显示条数
     key_word?: string // 关键字
 }
 
@@ -47,8 +47,8 @@ export const getEmptyPagination = <T>(): Pagination<T> => {
     }
 }
 
-// url 中是数字的参数名 NumberParamsFromURL 的对象
-export enum NumberParamsFromURL {
+// url 中是分页参数名 PaginationParamsInURL 的对象
+export enum PaginationParamsInURL {
     current_page = "current_page",
     page_size = "page_size",
 }

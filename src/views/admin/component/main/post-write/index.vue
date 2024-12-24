@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-16 19:21:28
+ * @LastEditTime : 2024-12-24 15:07:09
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -216,7 +216,7 @@ import {
     useTemplateRef,
     onBeforeMount,
     onMounted,
-    onBeforeUnmount,
+    onUnmounted,
     toRefs,
     watch,
 } from "vue"
@@ -726,7 +726,7 @@ onMounted(() => {
     window.addEventListener("beforeunload", handleBeforeUnload)
 })
 
-onBeforeUnmount(() => {
+onUnmounted(() => {
     window.removeEventListener("beforeunload", handleBeforeUnload)
     stopResizeObserver()
     stopIntersectionObserver()

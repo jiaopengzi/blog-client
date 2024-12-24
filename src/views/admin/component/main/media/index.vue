@@ -233,7 +233,7 @@ const {
     addItemUpdateDialogVisible, // 新增对话框
     editItemUpdateDialogVisible, // 编辑对话框
     deleteRows, // 删除行
-    updateQueryAndRouter, // 更新查询参数和路由
+    updateQueryParamsAndRouter, // 更新查询参数和路由
     updatePaginate, // 更新分页
 } = useBaseTable<MediaFile, GetMediaFilesRequest, DeleteFileRequest>(
     AdminSideMenu.Media,
@@ -247,7 +247,7 @@ const {
 
 // 执行搜索
 const runSearch = () => {
-    updateQueryAndRouter(true)
+    updateQueryParamsAndRouter(true)
 }
 
 // 是否有上传
@@ -415,7 +415,7 @@ const handleFileCountByFiletype = async (fileType: string) => {
     })
 
     await nextTick()
-    updateQueryAndRouter(true)
+    updateQueryParamsAndRouter(true)
 }
 
 // 更新字幕
@@ -424,7 +424,7 @@ const updateSubtitles = (language: string) => {
     if (!editMediaData.subtitles_language_list.includes(language)) {
         editMediaData.subtitles_language_list.push(language)
     }
-    updateQueryAndRouter(true)
+    updateQueryParamsAndRouter(true)
 }
 
 // 删除字幕
@@ -432,7 +432,7 @@ const deleteSubtitles = (language: string) => {
     editMediaData.subtitles_language_list = editMediaData.subtitles_language_list.filter(
         (item) => item !== language,
     )
-    updateQueryAndRouter(true)
+    updateQueryParamsAndRouter(true)
 }
 
 // 在加载前将 params 解析回对应的响应式变量中

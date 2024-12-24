@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-05 19:00:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-06 17:24:37
+ * @LastEditTime : 2024-12-24 10:52:47
  * @FilePath     : \blog-client\src\components\hooks\useParams\index.ts
  * @Description  : 路由参数解析回响应式变量
  * @Blog         : https://jiaopengzi.com
@@ -22,11 +22,15 @@ export function useParams<T, K extends PaginationRequest>(
     search: Ref<string>,
     pagination: Reactive<Pagination<T>>,
 ) {
-    onBeforeMount(() => {
-        const { key_word, page_size, current_page } = params
-
+    // 监听搜索关键字
+    const update = (p: Reactive<K>) => {
+        const { key_word, page_size, current_page } = p
         search.value = key_word || ""
         pagination.page_size = page_size || 10
         pagination.current_page = current_page || 1
+    }
+
+    onBeforeMount(() => {
+        update(params)
     })
 }

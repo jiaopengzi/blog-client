@@ -1,36 +1,43 @@
+<!--
+ * @Author       : jiaopengzi
+ * @Date         : 2024-01-12 13:26:17
+ * @LastEditors  : jiaopengzi
+ * @LastEditTime : 2024-12-24 23:38:38
+ * @FilePath     : \blog-client\src\views\test\index.vue
+ * @Description  : 主页内容
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+-->
+
 <template>
-    <div class="conBg">
-        <div class="tag">补货补货</div>
-    </div>
+    <TestPagination :pagination-data="pagination" @update-page-size="updatePageSize" />
 </template>
+<script setup lang="ts">
+import { reactive } from "vue"
 
-<script lang="ts" setup>
-// 这里可以引入任何需要的TypeScript代码或Vue的组合式API
+import TestPagination from "./testPagination.vue"
+
+defineOptions({ name: "LayoutHome" })
+
+export interface Pagination {
+    total: number // 总记录数量
+    current_page: number // 当前页
+    page_size: number // 每页显示条数
+    page_count: number // 总页数
+    page_sizes: number[] // 每页显示个数选择器的选项设置
+}
+
+const pagination = reactive<Pagination>({
+    total: 100, // 总记录数量
+    current_page: 1, // 当前页
+    page_size: 10, // 每页显示条数
+    page_count: 10, // 总页数
+    page_sizes: [10, 20, 30, 40], // 每页显示个数选择器的选项设置
+}) // 分页数据
+
+// 更新每页显示条数
+const updatePageSize = (val: number) => {
+    console.log("val===>", val)
+    console.log("page_size before update===>", pagination.page_size)
+}
 </script>
-
-<style scoped lang="scss">
-.conBg {
-    width: 400px;
-    height: 200px;
-    background-color: #fff;
-    margin: 10px 0;
-    overflow: hidden;
-    position: relative;
-    border: 1px solid lightgray;
-    border-radius: 4px;
-}
-
-.tag {
-    background-color: lightgray;
-    color: white;
-    height: 25px;
-    line-height: 25px;
-    text-align: center;
-    position: absolute;
-    padding: 0 40px;
-    min-width: 80px;
-    transform: rotate(45deg); /* 修改旋转角度 */
-    top: 25px; /* 保持不变 */
-    right: -45px; /* 从左侧改为右侧 */
-}
-</style>

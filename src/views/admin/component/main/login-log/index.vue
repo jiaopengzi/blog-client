@@ -141,7 +141,7 @@ const {
     updatePageSize, // 更新每页显示条数
     updateSearch, // 更新搜索关键字
     deleteRows, // 删除行
-    updateQueryAndRouter,
+    updateQueryParamsAndRouter,
 } = useBaseTable<LoginLog, GetLoginLogsRequest, DeleteLoginLogByIDsRequest>(
     AdminSideMenu.LoginLog,
     getLoginLogsAPI,
@@ -153,7 +153,7 @@ const {
 
 // 执行搜索
 const runSearch = () => {
-    updateQueryAndRouter(true)
+    updateQueryParamsAndRouter(true)
 }
 
 const deleteNum = ref(1)

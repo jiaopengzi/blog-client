@@ -323,7 +323,7 @@ const handleUserCountByRole = async (role: string) => {
     })
 
     await nextTick()
-    updateQueryAndRouter(true)
+    updateQueryParamsAndRouter(true)
 }
 
 const options: Options<GetUsersRequest> = {
@@ -346,7 +346,7 @@ const {
     addItemUpdateDialogVisible, // 新增对话框
     editItemUpdateDialogVisible, // 编辑对话框
     deleteRows, // 删除行
-    updateQueryAndRouter, // 更新查询参数和路由
+    updateQueryParamsAndRouter, // 更新查询参数和路由
 } = useBaseTable<User, GetUsersRequest, DeleteUserRequest>(
     AdminSideMenu.UserView,
     getUsersAPI,
@@ -359,7 +359,7 @@ const {
 
 // 执行搜索
 const runSearch = () => {
-    updateQueryAndRouter(true)
+    updateQueryParamsAndRouter(true)
 }
 
 // 在加载前将 params 解析回对应的响应式变量中

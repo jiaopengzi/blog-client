@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-20 14:43:57
+ * @LastEditTime : 2024-12-24 10:46:06
  * @FilePath     : \blog-client\src\views\admin\component\main\post-all\index.vue
  * @Description  : 文章管理 
  * @Blog         : https://jiaopengzi.com
@@ -390,7 +390,7 @@ const handlePostCountByGroup = async (item: PostCountGroupItem) => {
     })
 
     await nextTick()
-    updateQueryAndRouter(true)
+    updateQueryParamsAndRouter(true)
 }
 
 const handleClickCategory = async (item: PostTag) => {
@@ -401,7 +401,7 @@ const handleClickCategory = async (item: PostTag) => {
     clickCategory.value = item.name
 
     await nextTick()
-    updateQueryAndRouter(true)
+    updateQueryParamsAndRouter(true)
 }
 
 const handleClickTag = async (item: PostTag) => {
@@ -412,7 +412,7 @@ const handleClickTag = async (item: PostTag) => {
     clickTag.value = item.name
 
     await nextTick()
-    updateQueryAndRouter(true)
+    updateQueryParamsAndRouter(true)
 }
 
 const handleClickAuthor = async (author: User) => {
@@ -423,7 +423,7 @@ const handleClickAuthor = async (author: User) => {
     clickAuthor.value = author.user_name
 
     await nextTick()
-    updateQueryAndRouter(true)
+    updateQueryParamsAndRouter(true)
 }
 
 const authorCategoryTag = computed(() => {
@@ -461,7 +461,7 @@ const clearAuthorCategoryTag = async () => {
     })
 
     await nextTick()
-    updateQueryAndRouter(true)
+    updateQueryParamsAndRouter(true)
 }
 
 // 监控 postCountMonthSelect
@@ -474,7 +474,7 @@ watch(postCountMonthSelect, async (newVal) => {
         delete queryParams.year
         delete queryParams.month
         await nextTick()
-        updateQueryAndRouter(true)
+        updateQueryParamsAndRouter(true)
     }
 })
 
@@ -502,7 +502,7 @@ watch(
             delete queryParams.custom_filed_min
             delete queryParams.custom_filed_max
             await nextTick()
-            updateQueryAndRouter(true)
+            updateQueryParamsAndRouter(true)
         }
     },
 )
@@ -518,7 +518,7 @@ const {
     updateSearch, // 更新搜索关键字
     deleteRows, // 删除行
     updatePaginate, // 更新分页
-    updateQueryAndRouter, // 更新查询参数和路由
+    updateQueryParamsAndRouter, // 更新查询参数和路由
 } = useBaseTable<PostResPaginationByAdmin, ViewPostByAdminRequest, DeletePostRequest>(
     AdminSideMenu.PostAll,
     viewPostByAdminAPI,
@@ -531,7 +531,7 @@ const {
 
 // 执行搜索
 const runSearch = () => {
-    updateQueryAndRouter(true)
+    updateQueryParamsAndRouter(true)
 }
 
 // 批量操作

@@ -155,7 +155,7 @@ const {
     addItemUpdateDialogVisible, // 新增对话框
     editItemUpdateDialogVisible, // 编辑对话框
     deleteRows, // 删除行
-    updateQueryAndRouter,
+    updateQueryParamsAndRouter,
 } = useBaseTable<PostTag, PaginationRequest, DeletePostTagRequest>(
     AdminSideMenu.PostTag,
     viewPostTagAPI,
@@ -167,7 +167,7 @@ const {
 
 // 执行搜索
 const runSearch = () => {
-    updateQueryAndRouter(true)
+    updateQueryParamsAndRouter(true)
 }
 
 // 需要编辑的用户ID
