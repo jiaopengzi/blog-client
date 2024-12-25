@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-24 23:49:17
+ * @LastEditTime : 2024-12-25 11:10:12
  * @FilePath     : \blog-client\src\views\home\component\post-list\index.vue
  * @Description  : 文章列表
  * @Blog         : https://jiaopengzi.com
@@ -20,19 +20,22 @@
         />
     </div>
     <!-- 分页 -->
-    <div class="pagination-block" ref="paginationBlockRef">
-        <el-pagination
-            v-model:current-page="paginationAC.current_page"
-            v-model:page-size="paginationAC.page_size"
-            :page-sizes="paginationAC.page_sizes"
-            :page-count="paginationAC.page_count"
-            :total="paginationAC.total"
-            :background="true"
-            layout="total, prev, pager, next, jumper, sizes"
-            size="small"
-            @update:current-page="updateCurrentPage"
-            @update:page-size="updatePageSize"
-        />
+    <div class="pagination-container">
+        <div class="loader" v-show="isShowLoading"></div>
+        <div class="pagination-block" ref="paginationBlockRef">
+            <el-pagination
+                v-model:current-page="paginationAC.current_page"
+                v-model:page-size="paginationAC.page_size"
+                :page-sizes="paginationAC.page_sizes"
+                :page-count="paginationAC.page_count"
+                :total="paginationAC.total"
+                :background="true"
+                layout="total, prev, pager, next, jumper, sizes"
+                size="small"
+                @update:current-page="updateCurrentPage"
+                @update:page-size="updatePageSize"
+            />
+        </div>
     </div>
 </template>
 
@@ -48,8 +51,9 @@ import { getEmptyPagination } from "@/components/common"
 
 defineOptions({ name: "PostList" })
 
-const { paginationData } = defineProps<{
+const { paginationData, isShowLoading = false } = defineProps<{
     paginationData: Pagination<PostResPagination>
+    isShowLoading?: boolean // 是否显示loading
 }>()
 
 // 事件
@@ -135,9 +139,55 @@ onUnmounted(() => {
     }
 }
 
+.pagination-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .pagination-block {
     display: flex;
     justify-content: center;
     margin-top: 20px;
+}
+
+/* 参考:https://css-loaders.com/dots/ */
+.loader {
+    width: 60px;
+    aspect-ratio: 3;
+    --_g: no-repeat radial-gradient(circle closest-side, var(--jpz-color-primary) 90%, #0000);
+    background:
+        var(--_g) 0% 50%,
+        var(--_g) 50% 50%,
+        var(--_g) 100% 50%;
+    background-size: calc(100% / 3) 50%;
+    animation: l3 1s infinite linear;
+    margin-top: 20px;
+}
+@keyframes l3 {
+    20% {
+        background-position:
+            0% 0%,
+            50% 50%,
+            100% 50%;
+    }
+    40% {
+        background-position:
+            0% 100%,
+            50% 0%,
+            100% 50%;
+    }
+    60% {
+        background-position:
+            0% 50%,
+            50% 100%,
+            100% 0%;
+    }
+    80% {
+        background-position:
+            0% 50%,
+            50% 50%,
+            100% 100%;
+    }
 }
 </style>

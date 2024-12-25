@@ -39,6 +39,7 @@
                     <!-- 文章列表 -->
                     <PostList
                         :pagination-data="pagination"
+                        :is-show-loading="isShowPostListLoading"
                         @update-current-page="updateCurrentPage"
                         @update-page-size="updatePageSize"
                         @click-category="clickCategory"
@@ -82,7 +83,7 @@ import MonthArchive from "@/components/common/month-archive"
 import PostTag from "@/components/layout/aside/post-tag"
 import type { ElAside } from "element-plus"
 import { type ViewPostRequest } from "@/api/post/view"
-import { useGetHomeData } from "@/components/hooks/useGetHomeData"
+import { useHome } from "@/components/hooks/useHome"
 
 defineOptions({ name: "LayoutHome" })
 
@@ -107,7 +108,8 @@ const {
     handlePostId,
     breadcrumbItems,
     paginationBlockVisibleChange,
-} = useGetHomeData(mainReq, { queryNumberParams })
+    isShowPostListLoading,
+} = useHome(mainReq, { queryNumberParams })
 
 // 侧边栏高度计算
 const reCalculateHeight = () => {
