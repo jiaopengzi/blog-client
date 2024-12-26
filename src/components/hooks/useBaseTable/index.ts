@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 08:57:02
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-24 15:17:01
+ * @LastEditTime : 2024-12-26 18:25:04
  * @FilePath     : \blog-client\src\components\hooks\useBaseTable\index.ts
  * @Description  : 基础表格钩子
  * @Blog         : https://jiaopengzi.com
@@ -208,7 +208,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
 
         // 获取标签列表
         const res = await viewAPI(req)
-
+        let data = getEmptyPagination<T>()
         if (res.data.code === viewResCode) {
             res.data.data.records = res.data.data.records.map((row: T) =>
                 formatTableData(
@@ -219,8 +219,9 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
                     options?.tableImg?.svgFontSize,
                 ),
             )
-            Object.assign(pagination, res.data.data)
+            data = res.data.data
         }
+        Object.assign(pagination, data)
     }
 
     const deleteRows = async (rows: TableData[]) => {

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-25 11:46:44
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-25 17:19:29
+ * @LastEditTime : 2024-12-26 18:22:57
  * @FilePath     : \blog-client\src\components\hooks\useHome\api.ts
  * @Description  : 数据请求
  * @Blog         : https://jiaopengzi.com
@@ -47,11 +47,10 @@ export function useGetData(
 
     // 更新分页内容
     const updatePaginate = async (): Promise<void> => {
-        if (!isRequest.value) {
-            isRequest.value = true
-            return Promise.resolve()
+        let data = getEmptyPagination<PostResPagination>()
+        if (isRequest.value) {
+            data = await getPaginate(queryParams)
         }
-        const data = await getPaginate(queryParams)
         Object.assign(pagination, data)
         isRequest.value = true
     }
