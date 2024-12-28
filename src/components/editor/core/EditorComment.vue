@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-26 17:26:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 12:32:57
+ * @LastEditTime : 2024-12-28 16:01:44
  * @FilePath     : \blog-client\src\components\editor\core\EditorComment.vue
  * @Description  : 评论编辑器
  * @Blog         : https://jiaopengzi.com
@@ -76,6 +76,10 @@ const { editorState } = defineProps<{
     editorState: EditorState
 }>()
 
+const emit = defineEmits<{
+    (event: "updateEditorStatus", val: boolean): void
+}>()
+
 // 状态管理
 const localManager = new EditorStateManager(editorState)
 const localEditorState = reactive<EditorState>(localManager.getState())
@@ -144,12 +148,17 @@ const {
 } = useToolbar(mdContainerRef, toolbarRef, codemirrorRef, previewRef, ModeComment, localManager)
 
 // codemirror
-const { cmHeight, updateCmHeightNotIsFullScreen, updateEditorDoc } = useCodemirror(
+const { cmHeight, updateCmHeightNotIsFullScreen } = useCodemirror(
     mdContainerRef,
     codemirrorRef,
     previewRef,
     localManager,
 )
+
+const updateEditorDoc = (editorDoc: string) => {
+    localManager.updateState(editorDoc) // 更新 store 中的 editor
+    emit("updateEditorStatus", true) // 更新编辑器状态
+}
 
 // preview
 const { previewData, showImageViewer, closeImageViewer } = usePreview(codemirrorRef, localManager)

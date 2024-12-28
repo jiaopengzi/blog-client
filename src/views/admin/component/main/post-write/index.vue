@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-24 15:07:09
+ * @LastEditTime : 2024-12-28 16:02:50
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -53,7 +53,10 @@
             <el-form-item prop="post_content"> </el-form-item>
             <!-- 编辑器 -->
             <div ref="editorContainerRef" class="editor md-layout-fs">
-                <EditorPost :editor-state="editorState" />
+                <EditorPost
+                    :editor-state="editorState"
+                    @update-editor-status="updateEditorStatus"
+                />
 
                 <!-- 创建时间和更新时间 -->
                 <div v-if="postInfoAboutTime.created_at" class="about-time">
@@ -63,7 +66,7 @@
             </div>
 
             <div class="seo-switch">
-                <SwitchGroup :switch-items="defaultStatus" @update-status="updateSeoStatus" />
+                <SwitchGroup :switch-items="defaultStatus" @update-status="updateDefaultStatus" />
             </div>
 
             <el-form-item
@@ -210,34 +213,18 @@
     </el-container>
 </template>
 <script lang="ts" setup>
-import {
-    ref,
-    reactive,
-    useTemplateRef,
-    onBeforeMount,
-    onMounted,
-    onUnmounted,
-    toRefs,
-    watch,
-} from "vue"
+import { ref, reactive, useTemplateRef, onBeforeMount, onUnmounted, toRefs, watch } from "vue"
 import { useResizeObserver, useIntersectionObserver } from "@vueuse/core"
 import { EditorStateManager, EditorPost } from "@/components/editor"
 import { IconKeys } from "@/components/common/icons"
-import type { SwitchItem, SwitchItemLabel } from "@/components/common/switch-group"
 import SwitchGroup from "@/components/common/switch-group"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import type { ElContainer, ElFormItem } from "element-plus"
 import { useUserStore } from "@/stores/user"
 import { viewListPostCategoryAPI, type PostCategory } from "@/api/postCategory/view"
-import { ResponseCode, LocalStorageKey } from "@/api/responseCode"
-import { getRolesList } from "@/utils/permissionRole"
-import {
-    PostStatusCode,
-    CommentStatusCode,
-    gegPostStatusOptions,
-    type InsertPostRequest,
-} from "@/api/post/common"
-import { useFormValidation } from "./hooks"
+import { ResponseCode } from "@/api/responseCode"
+import { PostStatusCode, gegPostStatusOptions, type InsertPostRequest } from "@/api/post/common"
+import { useFormValidation } from "./useFormValidation"
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { PermissionNames } from "@/utils/permissionRole"
 import {
@@ -251,8 +238,10 @@ import AddTag from "@/components/common/add-tag"
 import { ShowMsgTip } from "@/utils/message"
 import { useAdd } from "./useAdd"
 import { useEdit } from "./useEdit"
-import { deepClone, getUpdatedFields } from "@/utils/obj"
+import { useSwitchItem } from "./useSwitchItem"
+import { useSnapshot } from "./useSnapshot"
 import { formatTime } from "@/utils/dateTime"
+import { generateShortcuts } from "./utils"
 
 defineOptions({ name: AdminSideMenu.PostWrite })
 
@@ -271,7 +260,6 @@ const stateManager = new EditorStateManager()
 const editorState = stateManager.getState()
 
 const userStore = useUserStore()
-userStore.setIsEditing(true)
 
 // 监听编辑器宽度变化
 const { stop: stopResizeObserver } = useResizeObserver(editorContainerRef, (entries) => {
@@ -303,28 +291,19 @@ const updateTagListIn = (tagList: string[]) => {
     postInfoForm.tag_names = tagList
 }
 
-// 常规设置是否展示
-const defaultStatusIsShow = ref(
-    localStorage.getItem(LocalStorageKey.IsShowSeoAtPostWrite) == "true",
-)
-const defaultStatus: SwitchItem[] = reactive([
-    {
-        name: "defaultStatus",
-        display: "常规设置",
-        namePosition: "left",
-        status: localStorage.getItem(LocalStorageKey.IsShowSeoAtPostWrite) == "true",
-        label: {
-            active: "展开",
-            inactive: "折叠",
-        },
-    },
-])
-
-// 更新SEO状态
-const updateSeoStatus = (items: SwitchItem[]) => {
-    defaultStatusIsShow.value = items[0].status
-    localStorage.setItem(LocalStorageKey.IsShowSeoAtPostWrite, items[0].status.toString())
-}
+// 开关hooks
+const {
+    defaultStatusIsShow,
+    updateDefaultStatus,
+    defaultStatus,
+    rolePaidList,
+    initRolePaidManagement,
+    updateRolePaidList,
+    commentStatus,
+    updateCommentStatus,
+    postShowMethod,
+    updatePostShowMethod,
+} = useSwitchItem(postInfoForm)
 
 // 监控标题变化,更新 seo 标题
 watch(
@@ -437,79 +416,6 @@ watch(
     },
 )
 
-// 角色付费管理
-const rolePaidList: SwitchItem[] = reactive([])
-
-const rolePaidLabel: SwitchItemLabel = {
-    active: "免费",
-    inactive: "付费",
-}
-
-// 初始化角色付费管理都为付费状态，后续根据后端数据进行修改
-const initRolePaidManagement = async () => {
-    // 首先从 系统角色列表 获取角色列表
-    const { roles: rolesSystem } = await getRolesList()
-    // 历遍 rolesSystem 构造 rolePaidList
-    rolesSystem.forEach((role) => {
-        const switchItem: SwitchItem = {
-            name: role.role_name,
-            display: role.description,
-            namePosition: "left",
-            status: false,
-            label: rolePaidLabel,
-            minWidth: 180,
-        }
-        rolePaidList.push(switchItem)
-    })
-
-    // TODO 从商城角色列表获取角色列表
-}
-
-// 更新角色付费管理
-const updateRolePaidList = (items: SwitchItem[]) => {
-    // 更新 postInfoForm.pay_roles,筛选出 status 为 true 的角色
-    postInfoForm.pay_roles = items
-        .filter((i) => i.status)
-        .map((i) => {
-            return i.name
-        })
-}
-
-// 公用开关项标签
-const commonSwitchItemLabel: SwitchItemLabel = {
-    active: "开启",
-    inactive: "关闭",
-}
-
-// 评论状态
-const commentStatus: SwitchItem[] = reactive([
-    {
-        name: "commentStatus",
-        status: true,
-        label: commonSwitchItemLabel,
-    },
-])
-
-// 文章显示方式
-const postShowMethod: SwitchItem[] = reactive([
-    {
-        name: "is_pinned",
-        display: "文章置顶",
-        namePosition: "left",
-        status: false,
-        label: commonSwitchItemLabel,
-        minWidth: 180,
-    },
-    {
-        name: "is_recommended",
-        display: "推荐阅读",
-        namePosition: "left",
-        status: false,
-        label: commonSwitchItemLabel,
-        minWidth: 180,
-    },
-])
-
 // 更新 slug
 watch(
     () => postInfoForm.post_status,
@@ -546,18 +452,6 @@ watch(
     },
 )
 
-// 更新评论状态
-const updateCommentStatus = (items: SwitchItem[]) => {
-    // 更新 postInfoForm.comment_status
-    postInfoForm.comment_status = items[0].status ? CommentStatusCode.Open : CommentStatusCode.Close
-}
-
-const updatePostShowMethod = (items: SwitchItem[]) => {
-    items.forEach((item) => {
-        ;(postInfoForm as unknown as Record<string, boolean>)[item.name] = item.status
-    })
-}
-
 const radioOptions = () => {
     const Options = gegPostStatusOptions()
     // 判断是否有编辑文章的权限
@@ -566,52 +460,6 @@ const radioOptions = () => {
         return Options.filter((item) => item.value === PostStatusCode.Draft)
     }
     return Options
-}
-
-// 时间快捷选项
-const generateShortcuts = (useDisplay: string) => {
-    return [
-        {
-            text: `5分钟后${useDisplay}`,
-            value: () => {
-                const date = new Date()
-                date.setMinutes(date.getMinutes() + 5)
-                return date
-            },
-        },
-        {
-            text: `1小时后${useDisplay}`,
-            value: () => {
-                const date = new Date()
-                date.setHours(date.getHours() + 1)
-                return date
-            },
-        },
-        {
-            text: `1天后${useDisplay}`,
-            value: () => {
-                const date = new Date()
-                date.setDate(date.getDate() + 1)
-                return date
-            },
-        },
-        {
-            text: `7天后${useDisplay}`,
-            value: () => {
-                const date = new Date()
-                date.setDate(date.getDate() + 7)
-                return date
-            },
-        },
-        {
-            text: `30天后${useDisplay}`,
-            value: () => {
-                const date = new Date()
-                date.setDate(date.getDate() + 30)
-                return date
-            },
-        },
-    ]
 }
 
 // 默认时间为当前日期
@@ -629,9 +477,6 @@ watch(
         formRef.value?.validateField("category_ids")
     },
 )
-
-// 文章信息快照，用于判断是否有更新
-let postInfoSnapshot: UpsertPostForm = deepClone(postInfoForm)
 
 // 需要更新的数据
 const dataOfUpdate: UpdatePostForm = reactive({}) as UpdatePostForm
@@ -652,33 +497,29 @@ const {
     postShowMethod,
 )
 
-const submitForm = async (formEl: FormInstance | undefined) => {
-    // // 判断文章内容是否为空
-    // if (editorState.editor === "") {
-    //     ShowMsgTip(ShowMsgTip.MsgType.warning, "文章内容不能为空", 6000)
-    //     return
-    // }
+// 数据快照
+const { isUpdate, updatedFields, updateSnapshot } = useSnapshot(postInfoForm)
 
+// 更新编辑器状态
+const updateEditorStatus = () => {
     // 将编辑器内容赋值给 post_content
     postInfoForm.post_content = editorState.editor
-
     // 将作者赋值给 post_author
     postInfoForm.post_author = userStore.data.user.id.toString()
+}
 
+const submitForm = async (formEl: FormInstance | undefined) => {
     // 判断走新增还是更新
     if (!postInfoForm.id) {
         await addSubmitForm(formEl).then((isFinish) => {
             // 如果新增成功，将快照更新
             if (isFinish) {
-                postInfoSnapshot = deepClone(postInfoForm)
+                updateSnapshot()
             }
         })
     } else {
-        // 获取已经更新字段
-        const updatedFields = getUpdatedFields(postInfoSnapshot, postInfoForm, "id")
-
         // 判断是否有更新
-        if (Object.keys(updatedFields).length === 0) {
+        if (!isUpdate.value) {
             ShowMsgTip(ShowMsgTip.MsgType.warning, "没有任何修改")
             return
         }
@@ -696,7 +537,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         await editSubmitForm(formEl).then((isFinish) => {
             // 如果更新成功，将快照更新
             if (isFinish) {
-                postInfoSnapshot = deepClone(postInfoForm)
+                updateSnapshot()
             }
         })
     }
@@ -709,25 +550,11 @@ onBeforeMount(async () => {
     getValueFromQuery()
     if (postInfoForm.id) {
         await getDataOnBeforeMount()
-        postInfoSnapshot = deepClone(postInfoForm)
     }
-})
-
-// 监听页面关闭事件,即用户手动修改ULR或关闭页面
-const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-    if (userStore.isEditing) {
-        // 参考：https://developer.mozilla.org/zh-CN/docs/Web/API/Window/beforeunload_event
-        event.preventDefault()
-        event.returnValue = ""
-    }
-}
-
-onMounted(() => {
-    window.addEventListener("beforeunload", handleBeforeUnload)
+    updateSnapshot()
 })
 
 onUnmounted(() => {
-    window.removeEventListener("beforeunload", handleBeforeUnload)
     stopResizeObserver()
     stopIntersectionObserver()
 })

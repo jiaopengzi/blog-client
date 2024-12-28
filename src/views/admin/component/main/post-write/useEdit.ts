@@ -2,14 +2,13 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-25 16:44:10
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-16 18:22:58
+ * @LastEditTime : 2024-12-28 16:03:56
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\useEdit.ts
  * @Description  : 编辑文章
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { type Ref } from "vue"
 import { viewPostByIDAdminAPI, type ViewPostByIDRequest } from "@/api/post/viewByIDAdmin"
 import { updatePostAPI } from "@/api/post/update"
 import { ResponseCode, handleErrInfo } from "@/api/responseCode"

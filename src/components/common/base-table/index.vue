@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-12 15:51:40
+ * @LastEditTime : 2024-12-28 16:25:36
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格 table-layout="auto"
  * @Blog         : https://jiaopengzi.com
@@ -434,6 +434,7 @@ watch(
         if (newVal.length > 50) {
             newVal = newVal.substring(0, 50)
         }
+
         emit("update-search", newVal)
     },
     { immediate: false },

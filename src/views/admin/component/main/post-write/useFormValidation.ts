@@ -2,9 +2,9 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-25 15:09:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-16 19:38:21
- * @FilePath     : \blog-client\src\views\admin\component\main\post-write\hooks.ts
- * @Description  : 表单验证
+ * @LastEditTime : 2024-12-28 16:04:06
+ * @FilePath     : \blog-client\src\views\admin\component\main\post-write\useFormValidation.ts
+ * @Description  : 表单验证钩子
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */

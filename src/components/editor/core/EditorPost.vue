@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-02 10:33:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 10:58:40
+ * @LastEditTime : 2024-12-28 15:59:24
  * @FilePath     : \blog-client\src\components\editor\core\EditorPost.vue
  * @Description  : 文章编辑器
  * @Blog         : https://jiaopengzi.com
@@ -81,6 +81,10 @@ defineOptions({ name: "EditorPost" })
 
 const { editorState } = defineProps<{
     editorState: EditorState
+}>()
+
+const emit = defineEmits<{
+    (event: "updateEditorStatus", val: boolean): void
 }>()
 
 // 状态管理
@@ -180,12 +184,17 @@ const {
 const { tocHeadingClicked } = useToc(codemirrorRef, previewRef, localManager)
 
 // codemirror
-const { cmHeight, updateCmHeightNotIsFullScreen, handleScroll, updateEditorDoc } = useCodemirror(
+const { cmHeight, updateCmHeightNotIsFullScreen, handleScroll } = useCodemirror(
     mdContainerRef,
     codemirrorRef,
     previewRef,
     localManager,
 )
+
+const updateEditorDoc = (editorDoc: string) => {
+    localManager.updateState(editorDoc) // 更新 store 中的 editor
+    emit("updateEditorStatus", true) // 更新编辑器状态
+}
 
 // preview
 const {

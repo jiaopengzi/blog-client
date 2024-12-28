@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-09 17:54:41
+ * @LastEditTime : 2024-12-28 15:23:50
  * @FilePath     : \blog-client\src\main.ts
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -18,6 +18,7 @@ import App from "@/App.vue"
 import router from "@/router"
 import { useUserStore } from "@/stores/user"
 import Icon from "@/components/common/icons" // 引用自定义的全局图标
+import { useGlobal } from "@/components/hooks/useGlobal" // 全局钩子
 import { permissionDirective } from "@/utils/permissionRole"
 
 import { consoleInfoFormat } from "@/version"
@@ -27,7 +28,10 @@ const app = createApp(App)
 
 app.directive("permission", permissionDirective) // 注册全局权限指令
 
-app.use(createPinia()) // 在APP创建之后，使用Pinia
+const pinia = createPinia()
+
+app.use(pinia) // 在APP创建之后，使用Pinia
+
 app.use(router)
 
 app.use(createHead()) // 参考官方文档:https://unhead.unjs.io/setup/vue/installation
@@ -41,7 +45,7 @@ router.isReady().then(async () => {
     app.component("Icon", Icon) // 使用 'Icon' 作为全局组件名
     app.mount("#app")
 })
-
+useGlobal() // 全局钩子
 consoleInfoFormat() // 控制台输出项目信息
 
 if (import.meta.env.MODE === "development") {

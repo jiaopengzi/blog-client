@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 08:57:02
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-26 18:25:04
+ * @LastEditTime : 2024-12-28 16:29:37
  * @FilePath     : \blog-client\src\components\hooks\useBaseTable\index.ts
  * @Description  : 基础表格钩子
  * @Blog         : https://jiaopengzi.com
@@ -18,7 +18,7 @@ import {
     PaginationParamsInURL,
     getEmptyPagination,
 } from "@/components/common"
-import { type Res, ResponseCode } from "@/api/responseCode"
+import { type Res, ResponseCode, handleErrInfo } from "@/api/responseCode"
 import {
     formatTableData,
     type FormatTableData,
@@ -173,7 +173,6 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         search.value = val
         queryParams.key_word = val
         if (val === "") {
-            await getPaginate(queryParams as K)
             updateQueryParamsAndRouter()
         }
     }
@@ -208,7 +207,6 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
 
         // 获取标签列表
         const res = await viewAPI(req)
-        let data = getEmptyPagination<T>()
         if (res.data.code === viewResCode) {
             res.data.data.records = res.data.data.records.map((row: T) =>
                 formatTableData(
@@ -219,9 +217,17 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
                     options?.tableImg?.svgFontSize,
                 ),
             )
-            data = res.data.data
+
+            // 无数据时不更新
+            if (res.data.data.total === 0) {
+                ShowMsgTip(ShowMsgTip.MsgType.warning, "没有查询到数据", 6000)
+                return
+            }
+            Object.assign(pagination, res.data.data)
+        } else {
+            const msg = handleErrInfo(res)
+            ShowMsgTip(ShowMsgTip.MsgType.warning, msg, 6000)
         }
-        Object.assign(pagination, data)
     }
 
     const deleteRows = async (rows: TableData[]) => {

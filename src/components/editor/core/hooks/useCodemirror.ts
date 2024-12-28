@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-20 22:22:25
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-21 21:32:22
+ * @LastEditTime : 2024-12-28 15:43:15
  * @FilePath     : \blog-client\src\components\editor\core\hooks\useCodemirror.ts
  * @Description  : codemirror hook
  * @Blog         : https://jiaopengzi.com
@@ -122,14 +122,9 @@ export function useCodemirror(
         },
     )
 
-    const updateEditorDoc = (editorDoc: string) => {
-        editorStateManager.updateState(editorDoc) // 更新 store 中的 editor
-    }
-
     return {
         cmHeight,
         updateCmHeightNotIsFullScreen,
         handleScroll,
-        updateEditorDoc,
     }
 }

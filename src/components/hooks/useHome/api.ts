@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-25 11:46:44
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-26 18:22:57
+ * @LastEditTime : 2024-12-27 14:51:39
  * @FilePath     : \blog-client\src\components\hooks\useHome\api.ts
  * @Description  : 数据请求
  * @Blog         : https://jiaopengzi.com
@@ -45,16 +45,6 @@ export function useGetData(
         }
     }
 
-    // 更新分页内容
-    const updatePaginate = async (): Promise<void> => {
-        let data = getEmptyPagination<PostResPagination>()
-        if (isRequest.value) {
-            data = await getPaginate(queryParams)
-        }
-        Object.assign(pagination, data)
-        isRequest.value = true
-    }
-
     // 获取分页
     async function getPaginate(req: ViewPostRequest): Promise<Pagination<PostResPagination>> {
         // 遍历 options.NoRequest 中的参数，如果 req 中的参数值等于 options.NoRequest 中的值则删除,不请求
@@ -72,7 +62,20 @@ export function useGetData(
         if (res.data.code === ResponseCode.PostViewSuccess) {
             return res.data.data
         }
+
         return getEmptyPagination<PostResPagination>()
+    }
+
+    // 更新分页内容
+    const updatePaginate = async (): Promise<void> => {
+        if (!isRequest.value) {
+            isRequest.value = true
+            return
+        }
+        const data = await getPaginate(queryParams)
+        console.log(data)
+        Object.assign(pagination, data)
+        isRequest.value = true
     }
 
     // 热门文章
