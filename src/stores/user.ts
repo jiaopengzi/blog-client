@@ -68,8 +68,7 @@ function createEmptyUserInfoStore(): UserInfoStore {
     }
 }
 
-export const useUserStore = defineStore({
-    id: "user",
+export const useUserStore = defineStore("user", {
     state: () => createEmptyUserInfoStore(),
 
     getters: {
