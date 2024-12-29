@@ -2,17 +2,15 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 15:53:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 10:00:14
+ * @LastEditTime : 2024-12-29 12:51:54
  * @FilePath     : \blog-client\src\api\postTag\insert.ts
  * @Description  : 插入文章标签
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface InsertPostTagRequest {
     name: string // tag名称
@@ -23,7 +21,7 @@ export interface InsertPostTagRequest {
 }
 
 // 插入文章标签
-export function insertPostTagAPI(requestData: InsertPostTagRequest): AxiosPromise<Res<unknown>> {
+export function insertPostTagAPI(requestData: InsertPostTagRequest): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/post-tag/insert"
     return request({
         url: urlStr,

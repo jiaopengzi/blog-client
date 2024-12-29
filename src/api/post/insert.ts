@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 import { type InsertPostRequest } from "./common"
 
 // 插入文章响应
@@ -23,9 +21,7 @@ export interface InsertPostResData {
 }
 
 // 插入文章
-export function insertPostAPI(
-    requestData: InsertPostRequest,
-): AxiosPromise<Res<InsertPostResData>> {
+export function insertPostAPI(requestData: InsertPostRequest): ResPromise<Res<InsertPostResData>> {
     const urlStr = routerGroup + "/post/insert"
     return request({
         url: urlStr,

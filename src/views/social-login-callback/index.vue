@@ -22,7 +22,7 @@ import type { Ref } from "vue"
 import { useRoute } from "vue-router"
 import { useUserStore } from "@/stores/user"
 import { routeObj } from "@/router/routeAll"
-import { Social } from "@/api/responseCode"
+import { Social } from "@/api/common"
 import router from "@/router"
 
 defineOptions({ name: "SocialLoginCallback" })

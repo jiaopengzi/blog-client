@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface DeleteLoginLogByIDsRequest {
     id_list: string[] // 日志 id 列表
@@ -21,7 +19,7 @@ export interface DeleteLoginLogByIDsRequest {
 // 通过 ID 删除登录日志
 export function deleteLoginLogByIDsAPI(
     requestData: DeleteLoginLogByIDsRequest,
-): AxiosPromise<Res<void>> {
+): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/login-log/delete-by-ids"
     return request({
         url: urlStr,

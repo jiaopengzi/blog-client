@@ -109,12 +109,12 @@ import type { LanguageKey, PlayLevelLabel, PlayerState } from "./types"
 import screenfull from "screenfull"
 import Controls from "@/components/player/components/controls"
 import VideoWatermark from "@/components/player/components/watermark"
-import { ShowMsgTip } from "@/utils/message"
+import { MessageUtil } from "@/utils/message"
 import { MsgType } from "@/components/common"
 import { IconKeys } from "@/components/common/icons"
 import Hls from "hls.js"
 import { CustomLoader } from "@/pkg/hls"
-import { ResponseCode } from "@/api/responseCode"
+import { ResponseCode } from "@/api/response"
 
 defineOptions({ name: "VideoPlayer" })
 
@@ -628,7 +628,7 @@ const loadHls = () => {
                         // 无法恢复的错误
                         console.warn("fatal error encountered, destroy hls instance")
                         hls?.destroy()
-                        ShowMsgTip(MsgType.error, `播放错误: ${data.details}`, 0)
+                        MessageUtil.error(`播放错误: ${data.details}`, 0)
                         break
                 }
             } else {
@@ -647,21 +647,17 @@ const loadHls = () => {
                 const resCode = parseInt(data.response.code.toString())
                 // 如果 code 不在 successCodes 中, 则提示错误信息
                 if (resCode === ResponseCode.VideoNotFound) {
-                    ShowMsgTip(MsgType.error, "视频不存在", 0)
+                    MessageUtil.error("视频不存在", 0)
                     return
                 }
 
                 if (!successCodes.includes(resCode)) {
-                    ShowMsgTip(
-                        MsgType.error,
-                        `错误代码: ${data.response.code},${data.response.text}`,
-                        0,
-                    )
+                    MessageUtil.error(`错误代码: ${data.response.code},${data.response.text}`, 0)
                 }
             }
         })
     } else {
-        ShowMsgTip(MsgType.error, "HLS 不支持当前浏览器, 请使用最新版本的 Chrome 浏览器观看视频", 0)
+        MessageUtil.error("HLS 不支持当前浏览器, 请使用最新版本的 Chrome 浏览器观看视频", 0)
     }
 }
 

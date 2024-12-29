@@ -20,7 +20,7 @@ import type {
 
 import type { KeyLoaderContext } from "custom-hls"
 import { reverseString, decryptData } from "@/utils/encrypt"
-import { ResponseCode, handleErrInfo } from "@/api/responseCode"
+import { ResponseCode, handleResErr } from "@/api/response"
 import { getM3u8API } from "@/api/video/getM3u8"
 import { getMainM3u8API } from "@/api/video/getMainM3u8"
 import { getKeyAPI } from "@/api/video/getKey"
@@ -83,7 +83,7 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
                             null,
                         )
                     } else {
-                        const msg = handleErrInfo(response)
+                        const msg = handleResErr(response)
                         callbacks.onError(
                             { code: response.data.code, text: msg },
                             context,
@@ -124,7 +124,7 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
                             null,
                         )
                     } else {
-                        const msg = handleErrInfo(response)
+                        const msg = handleResErr(response)
                         callbacks.onError(
                             { code: response.data.code, text: msg },
                             context,
@@ -174,7 +174,7 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
                             null,
                         )
                     } else {
-                        const msg = handleErrInfo(data)
+                        const msg = handleResErr(data)
                         callbacks.onError(
                             { code: data.code, text: msg },
                             context,

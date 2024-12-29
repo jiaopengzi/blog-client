@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface EditUserInfoRequest {
     user_name: string
@@ -22,7 +20,7 @@ export interface EditUserInfoRequest {
 }
 
 // 注册
-export function editUserInfoAPI(requestData: EditUserInfoRequest): AxiosPromise<Res<unknown>> {
+export function editUserInfoAPI(requestData: EditUserInfoRequest): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/user/info-edit"
     return request({
         url: urlStr,

@@ -19,7 +19,7 @@ import {
     type MarkdownEditorCommands,
 } from "@/components/editor/command"
 import type { IconKeys } from "@/components/common/icons"
-import { ShowMsgTip } from "@/utils/message"
+import { MessageUtil } from "@/utils/message"
 import { getComputedStyleValue, setCSSVariable, getCSSVariableValue } from "@/utils/style"
 import { copyWithCustomStyle } from "../utils"
 import { debounce } from "throttle-debounce"
@@ -80,10 +80,7 @@ export function useToolbar(
         }
         if (name === CommandsKey.Scroll) {
             editorStateManager.toggleAsyncScroll()
-            ShowMsgTip(
-                ShowMsgTip.MsgType.success,
-                editorState.isAsyncScroll ? "同步滚动" : "异步滚动",
-            )
+            MessageUtil.success(editorState.isAsyncScroll ? "同步滚动" : "异步滚动")
             return
         }
         if (name === CommandsKey.Fullscreen) {

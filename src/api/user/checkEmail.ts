@@ -8,17 +8,15 @@
  * @blog         : https://jiaopengzi.com
  * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface CheckEmailRequest {
     email: string
 }
 
 // 检测用户名是否存在
-export function CheckEmailAPI(requestData: CheckEmailRequest): AxiosPromise<Res<unknown>> {
+export function CheckEmailAPI(requestData: CheckEmailRequest): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/user/check-email"
     return request({
         url: urlStr,

@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface LoginRequest {
     login_name: string
@@ -20,7 +18,7 @@ export interface LoginRequest {
 }
 
 // 默认账号登录
-export function loginAPI(loginRequest: LoginRequest): AxiosPromise<Res<unknown>> {
+export function loginAPI(loginRequest: LoginRequest): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/user/login"
     return request({
         url: urlStr,
@@ -30,7 +28,7 @@ export function loginAPI(loginRequest: LoginRequest): AxiosPromise<Res<unknown>>
 }
 
 // QQ登录
-export function loginByQQUrl(): AxiosPromise<Res<string>> {
+export function loginByQQUrl(): ResPromise<Res<string>> {
     const urlStr = routerGroup + "/social/qq/login?state=login"
     return request({
         url: urlStr,
@@ -39,7 +37,7 @@ export function loginByQQUrl(): AxiosPromise<Res<string>> {
 }
 
 // QQ登录回调
-export function loginByQQUrlCallback(code: string): AxiosPromise<Res<unknown>> {
+export function loginByQQUrlCallback(code: string): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/social/qq/login/callback?code=" + code
     return request({
         url: urlStr,
@@ -48,7 +46,7 @@ export function loginByQQUrlCallback(code: string): AxiosPromise<Res<unknown>> {
 }
 
 // QQ绑定
-export function bindQQUrl(): AxiosPromise<Res<string>> {
+export function bindQQUrl(): ResPromise<Res<string>> {
     const urlStr = routerGroup + "/social/qq/bind?state=bind"
     return request({
         url: urlStr,
@@ -57,7 +55,7 @@ export function bindQQUrl(): AxiosPromise<Res<string>> {
 }
 
 // QQ绑定回调
-export function bindQQUrlCallback(code: string): AxiosPromise<Res<unknown>> {
+export function bindQQUrlCallback(code: string): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/social/qq/bind/callback?code=" + code
     return request({
         url: urlStr,
@@ -66,7 +64,7 @@ export function bindQQUrlCallback(code: string): AxiosPromise<Res<unknown>> {
 }
 
 // QQ 解绑
-export function unBindQQ(): AxiosPromise<Res<unknown>> {
+export function unBindQQ(): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/social/qq/unbind"
     return request({
         url: urlStr,
@@ -75,7 +73,7 @@ export function unBindQQ(): AxiosPromise<Res<unknown>> {
 }
 
 // 微信登录
-export function loginByWeChatUrl(): AxiosPromise<Res<string>> {
+export function loginByWeChatUrl(): ResPromise<Res<string>> {
     const urlStr = routerGroup + "/social/wechat/login"
     return request({
         url: urlStr,
@@ -84,7 +82,7 @@ export function loginByWeChatUrl(): AxiosPromise<Res<string>> {
 }
 
 // 微信登录回调
-export function loginByWeChatUrlCallback(code: string): AxiosPromise<Res<unknown>> {
+export function loginByWeChatUrlCallback(code: string): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/social/wechat/login/callback?code=" + code
     return request({
         url: urlStr,
@@ -93,7 +91,7 @@ export function loginByWeChatUrlCallback(code: string): AxiosPromise<Res<unknown
 }
 
 // 微信绑定
-export function bindWeChatUrl(): AxiosPromise<Res<string>> {
+export function bindWeChatUrl(): ResPromise<Res<string>> {
     const urlStr = routerGroup + "/social/wechat/bind"
     return request({
         url: urlStr,
@@ -102,7 +100,7 @@ export function bindWeChatUrl(): AxiosPromise<Res<string>> {
 }
 
 // 微信绑定回调
-export function bindWeChatUrlCallback(code: string): AxiosPromise<Res<unknown>> {
+export function bindWeChatUrlCallback(code: string): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/social/wechat/bind/callback?code=" + code
     return request({
         url: urlStr,
@@ -111,7 +109,7 @@ export function bindWeChatUrlCallback(code: string): AxiosPromise<Res<unknown>> 
 }
 
 // 微信解绑
-export function unBindWeChat(): AxiosPromise<Res<unknown>> {
+export function unBindWeChat(): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/social/wechat/unbind"
     return request({
         url: urlStr,

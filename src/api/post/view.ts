@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 import type { Pagination, PaginationRequest } from "@/components/common"
 import type { PostResPagination } from "@/api/post/common"
 
@@ -28,7 +26,7 @@ export interface ViewPostRequest extends PaginationRequest {
 // 查看文章
 export function viewPostAPI(
     requestData: PaginationRequest,
-): AxiosPromise<Res<Pagination<PostResPagination>>> {
+): ResPromise<Res<Pagination<PostResPagination>>> {
     const urlStr = routerGroup + "/post/view"
     return request({
         url: urlStr,

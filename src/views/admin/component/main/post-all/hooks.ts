@@ -23,8 +23,8 @@ import {
 } from "@/api/post/getPostCountByIsRecommended"
 import { type PostCountByMonth } from "@/api/post/getPostCountByMonth"
 import { getPostCountByMonthAdminAPI } from "@/api/post/getPostCountByMonthAdmin"
-import { ResponseCode, handleErrInfo } from "@/api/responseCode"
-import { ShowMsgTip } from "@/utils/message"
+import { ResponseCode, handleResErr } from "@/api/response"
+import { MessageUtil } from "@/utils/message"
 import { PostStatusDisplay } from "@/api/post/common"
 
 // 获取文章统计数据
@@ -49,7 +49,7 @@ export function useHeader(userID: string = "") {
         if (res.data.code === ResponseCode.PostCountByAuthorSuccess) {
             postCountAuthor.value = res.data.data
         } else {
-            ShowMsgTip(ShowMsgTip.MsgType.warning, handleErrInfo(res.data), 3000)
+            MessageUtil.warning(handleResErr(res.data), 3000)
         }
     }
 
@@ -59,7 +59,7 @@ export function useHeader(userID: string = "") {
         if (res.data.code === ResponseCode.PostCountByStatusSuccess) {
             postCountStatus.value = res.data.data
         } else {
-            ShowMsgTip(ShowMsgTip.MsgType.warning, handleErrInfo(res.data), 3000)
+            MessageUtil.warning(handleResErr(res.data), 3000)
         }
     }
 
@@ -69,7 +69,7 @@ export function useHeader(userID: string = "") {
         if (res.data.code === ResponseCode.PostCountByMonthSuccess) {
             postCountMonth.value = res.data.data
         } else {
-            ShowMsgTip(ShowMsgTip.MsgType.warning, handleErrInfo(res.data), 3000)
+            MessageUtil.warning(handleResErr(res.data), 3000)
         }
     }
 
@@ -84,7 +84,7 @@ export function useHeader(userID: string = "") {
                 }
             })
         } else {
-            ShowMsgTip(ShowMsgTip.MsgType.warning, handleErrInfo(res.data), 3000)
+            MessageUtil.warning(handleResErr(res.data), 3000)
         }
     }
 
@@ -100,7 +100,7 @@ export function useHeader(userID: string = "") {
                 }
             })
         } else {
-            ShowMsgTip(ShowMsgTip.MsgType.warning, handleErrInfo(res.data), 3000)
+            MessageUtil.warning(handleResErr(res.data), 3000)
         }
     }
 

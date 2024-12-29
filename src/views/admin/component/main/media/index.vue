@@ -85,8 +85,9 @@ import type { TableData, TableColumn } from "@/components/common/base-table"
 import type { MediaFile, GetMediaFilesRequest } from "@/api/upload/getFiles"
 import { getMediaFilesAPI } from "@/api/upload/getFiles"
 import { AdminSideMenu } from "@/views/admin/component/aside"
-import { ShowMsgTip } from "@/utils/message"
-import { ResponseCode, LocalStorageKey } from "@/api/responseCode"
+import { MessageUtil } from "@/utils/message"
+import { ResponseCode } from "@/api/response"
+import { LocalStorageKey } from "@/stores/local"
 import {
     getFileCountGroupByFiletypeAPI,
     type FileCountGroupByFiletype,
@@ -318,7 +319,7 @@ const clickRowByPicture = (row: TableData) => {
         if (typeof ClipboardItem !== "undefined") {
             console.log("新版复制API")
             navigator.clipboard.writeText(url).then(() => {
-                ShowMsgTip(ShowMsgTip.MsgType.success, "复制成功", 3000)
+                MessageUtil.success("复制成功", 3000)
             })
         } else {
             console.log("旧版复制API")
@@ -333,7 +334,7 @@ const clickRowByPicture = (row: TableData) => {
             input.select()
             document.execCommand("copy")
             document.body.removeChild(input)
-            ShowMsgTip(ShowMsgTip.MsgType.success, "复制成功", 3000)
+            MessageUtil.success("复制成功", 3000)
         }
     }
 }

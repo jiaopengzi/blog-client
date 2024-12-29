@@ -9,10 +9,11 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import axios from "axios"
+import { request } from "@/api/request"
+
 export async function readFile(filepath: string): Promise<string> {
     try {
-        const response = await axios.get(filepath)
+        const response = await request.get(filepath)
 
         if (response.status === 200) {
             return response.data

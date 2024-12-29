@@ -2,18 +2,16 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-28 16:21:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 09:46:03
+ * @LastEditTime : 2024-12-29 13:10:27
  * @FilePath     : \blog-client\src\api\loginLog\getLoginLogs.ts
  * @Description  : 获取日志
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
+import { request, routerGroup } from "@/api/request"
 import type { DataWithImg, Pagination } from "@/components/common"
-import { ResponseCode, type Res } from "@/api/responseCode"
+import { ResponseCode, type Res, type ResPromise } from "@/api/response"
 import { formatTime } from "@/utils/dateTime"
 import { parsePlatform } from "@/utils/ipPlatform"
 
@@ -26,7 +24,7 @@ export interface GetLoginLogsRequest {
 // 获取用户信息 api 函数
 export async function getLoginLogsAPI(
     requestData: GetLoginLogsRequest = { current_page: 1, page_size: 10 }, // 设置默认值,
-): AxiosPromise<Res<Pagination<LoginLog>>> {
+): ResPromise<Res<Pagination<LoginLog>>> {
     const urlStr = routerGroup + "/login-log/view"
     const response = await request({
         url: urlStr,

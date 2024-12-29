@@ -2,17 +2,15 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:33:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 14:35:14
- * @FilePath     : \blog-client\src\api\category\checkCategoryName.ts
+ * @LastEditTime : 2024-12-29 13:11:56
+ * @FilePath     : \blog-client\src\api\postCategory\checkCategoryName.ts
  * @Description  : 检查分类名称是否存在
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface CheckCategoryNameRequest {
     name: string // tag名称
@@ -21,7 +19,7 @@ export interface CheckCategoryNameRequest {
 // 检查 分类 名称是否存在
 export function checkCategoryNameAPI(
     requestData: CheckCategoryNameRequest,
-): AxiosPromise<Res<unknown>> {
+): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/post-category/check-category-name"
     return request({
         url: urlStr,

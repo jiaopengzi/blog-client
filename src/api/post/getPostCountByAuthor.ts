@@ -9,17 +9,15 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface PostCountByAuthor {
     post_author: string // 作者ID
     count: number // 文章数量
 }
 
-export function getPostCountByAuthorAPI(): AxiosPromise<Res<PostCountByAuthor[]>> {
+export function getPostCountByAuthorAPI(): ResPromise<Res<PostCountByAuthor[]>> {
     const urlStr = routerGroup + "/post/count-by-author"
     return request({
         url: urlStr,

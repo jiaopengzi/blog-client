@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import { type Res } from "@/api/responseCode"
-import type { AxiosPromise } from "axios"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 import type { UserInfo } from "@/api/user/getUserInfo"
 
 export interface GetUserInfoByUserIDRequest {
@@ -22,7 +20,7 @@ export interface GetUserInfoByUserIDRequest {
 // 获取用户信息
 export function getUserInfoByUserIDAPI(
     requestData: GetUserInfoByUserIDRequest,
-): AxiosPromise<Res<UserInfo>> {
+): ResPromise<Res<UserInfo>> {
     const urlStr = routerGroup + "/user/info-by-user-id"
     return request({
         url: urlStr,

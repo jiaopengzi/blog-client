@@ -10,10 +10,8 @@
  */
 
 // import request from '../request'
-import request from "@/api/request"
-import { routerGroup } from "@/api//routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface BindEmailRequest {
     email: string
@@ -21,7 +19,7 @@ export interface BindEmailRequest {
 }
 
 // 注册
-export function bindEmailAPI(requestData: BindEmailRequest): AxiosPromise<Res<unknown>> {
+export function bindEmailAPI(requestData: BindEmailRequest): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/user/bind-email"
     return request({
         url: urlStr,

@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 import { type PostResByAdmin } from "./common"
 
 export interface ViewPostByIDRequest {
@@ -22,7 +20,7 @@ export interface ViewPostByIDRequest {
 // 查看文章
 export function viewPostByIDAdminAPI(
     requestData: ViewPostByIDRequest,
-): AxiosPromise<Res<PostResByAdmin>> {
+): ResPromise<Res<PostResByAdmin>> {
     const urlStr = routerGroup + "/post/view-by-id-admin"
     return request({
         url: urlStr,

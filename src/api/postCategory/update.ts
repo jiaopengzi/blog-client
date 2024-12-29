@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface UpdatePostCategoryRequest {
     id: string // 分类id
@@ -27,7 +25,7 @@ export interface UpdatePostCategoryRequest {
 // 更新文章分类
 export function updatePostCategoryAPI(
     requestData: UpdatePostCategoryRequest,
-): AxiosPromise<Res<unknown>> {
+): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/post-category/update"
     return request({
         url: urlStr,

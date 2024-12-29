@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 08:57:02
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-28 16:29:37
+ * @LastEditTime : 2024-12-29 15:04:21
  * @FilePath     : \blog-client\src\components\hooks\useBaseTable\index.ts
  * @Description  : 基础表格钩子
  * @Blog         : https://jiaopengzi.com
@@ -11,20 +11,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ref, reactive, watch, onBeforeMount, type Reactive } from "vue"
 import { useRoute, useRouter } from "vue-router"
-import type { AxiosPromise } from "axios"
 import {
     type Pagination,
     type PaginationRequest,
     PaginationParamsInURL,
     getEmptyPagination,
 } from "@/components/common"
-import { type Res, ResponseCode, handleErrInfo } from "@/api/responseCode"
+import { type Res, type ResPromise, ResponseCode, handleResErr } from "@/api/response"
 import {
     formatTableData,
     type FormatTableData,
     type TableData,
 } from "@/components/common/base-table"
-import { ShowMsgTip } from "@/utils/message"
+import { MessageUtil } from "@/utils/message"
 import type { TableImg, NumberKeys, BooleanKeys } from "@/components/common"
 
 export type QueryRecord<T extends string | number | symbol> = { [key in T]?: string | number }
@@ -48,9 +47,9 @@ export interface Options<K> {
  */
 export function useBaseTable<T extends FormatTableData, K extends PaginationRequest, Q>(
     routeName: string,
-    viewAPI: (params: K) => AxiosPromise<Res<Pagination<T>>>,
+    viewAPI: (params: K) => ResPromise<Res<Pagination<T>>>,
     viewResCode: ResponseCode,
-    deleteAPI: (params: Q) => AxiosPromise<Res<void>>,
+    deleteAPI: (params: Q) => ResPromise<Res<void>>,
     deleteResCode: ResponseCode,
     queryParams: Reactive<K>, // 查询参数
     options?: Options<K>,
@@ -220,13 +219,13 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
 
             // 无数据时不更新
             if (res.data.data.total === 0) {
-                ShowMsgTip(ShowMsgTip.MsgType.warning, "没有查询到数据", 6000)
+                MessageUtil.warning("没有查询到数据", 6000)
                 return
             }
             Object.assign(pagination, res.data.data)
         } else {
-            const msg = handleErrInfo(res)
-            ShowMsgTip(ShowMsgTip.MsgType.warning, msg, 6000)
+            const msg = handleResErr(res)
+            MessageUtil.warning(msg, 6000)
         }
     }
 
@@ -242,17 +241,19 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         if (res.data.code === deleteResCode) {
             // 删除成功后重新获取列表
             updatePaginate()
-            ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 3000)
+            MessageUtil.success(res.data.msg, 3000)
         } else {
             // 显示错误信息
-            ShowMsgTip(ShowMsgTip.MsgType.error, res.data.msg, 3000)
+            MessageUtil.error(res.data.msg, 3000)
         }
     }
 
     // 监控 route.fullPath 的变化并执行操作
     watch(
         () => route.fullPath,
-        async () => {
+        async (newVal, oldVal) => {
+            console.log("watch=====>oldVal", oldVal)
+            console.log("watch=====>newVal", newVal)
             parseParamsFromURL()
             await updatePaginate()
         },
@@ -260,8 +261,9 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
 
     onBeforeMount(async () => {
         // 获取路由参数 并更新 query
+        console.log("onBeforeMount")
         parseParamsFromURL()
-        await getPaginate(queryParams as K)
+        await updatePaginate()
     })
 
     return {

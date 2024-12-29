@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 09:35:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-28 15:18:23
+ * @LastEditTime : 2024-12-29 13:46:06
  * @FilePath     : \blog-client\src\stores\user.ts
  * @Description  : 用户信息
  * @Blog         : https://jiaopengzi.com
@@ -11,12 +11,12 @@
 
 // @ts-check
 import { defineStore, acceptHMRUpdate } from "pinia"
-import { ResponseCode, LocalStorageKey } from "@/api/responseCode"
-import { type AxiosResponse } from "axios"
-import { ShowMsgTip } from "@/utils/message"
+import { ResponseCode } from "@/api/response"
+import { LocalStorageKey } from "@/stores/local"
+import { MessageUtil } from "@/utils/message"
 import { type LoginRequest } from "@/api/user/login"
 import { getAvatarUrl } from "@/utils/avatar"
-import { type Res } from "@/api/responseCode"
+import type { Res, ResResponse } from "@/api/response"
 import { getUserForbiddenMsg } from "@/utils/msg"
 import { DeviceType } from "@/utils/device"
 
@@ -372,7 +372,7 @@ async function apiGetUserInfoByToken(): Promise<UserInfoStore> {
  * @param requestPromise 请求对象
  * @return  {T} 返回解析后的数据
  */
-async function handleResponse<T>(requestPromise: Promise<AxiosResponse<T>>): Promise<T> {
+async function handleResponse<T>(requestPromise: Promise<ResResponse<T>>): Promise<T> {
     return (await requestPromise).data
 }
 
@@ -383,7 +383,7 @@ async function handleResponse<T>(requestPromise: Promise<AxiosResponse<T>>): Pro
  * @return {void}
  */
 async function redirectToSocialLogin(
-    requestPromise: Promise<AxiosResponse<Res<string>>>,
+    requestPromise: Promise<ResResponse<Res<string>>>,
     successCode: ResponseCode,
 ): Promise<void> {
     const resObj = await handleResponse<Res<string>>(requestPromise) // 使用辅助函数处理请求
@@ -405,7 +405,7 @@ async function handleLoginResult(
 ): Promise<UserInfoStore> {
     if (resObj.code === successCode) {
         // 显示登录成功提示
-        ShowMsgTip(ShowMsgTip.MsgType.success, resObj.msg, 3000)
+        MessageUtil.success(resObj.msg, 3000)
 
         // 登录成功 存入token
         if (
@@ -428,7 +428,7 @@ async function handleLoginResult(
 
     const msg = getUserForbiddenMsg(resObj as Res<number>)
 
-    ShowMsgTip(ShowMsgTip.MsgType.error, msg, 10000)
+    MessageUtil.error(msg, 10000)
 
     return createEmptyUserInfoStore() // 获取用户信息
 }
@@ -442,12 +442,12 @@ async function handleBindResult(
 ): Promise<UserInfoStore> {
     if (resObj.code === successCode) {
         // 显示登录成功提示
-        ShowMsgTip(ShowMsgTip.MsgType.success, resObj.msg, 3000)
+        MessageUtil.success(resObj.msg, 3000)
         return await apiGetUserInfoByToken() // 获取用户信息
     }
 
     // 显示登录失败提示
-    ShowMsgTip(ShowMsgTip.MsgType.error, resObj.msg, 3000)
+    MessageUtil.error(resObj.msg, 3000)
     // localStorage.removeItem(LocalStorageKey.AccessToken)
     localStorage.clear()
     return createEmptyUserInfoStore() // 获取用户信息

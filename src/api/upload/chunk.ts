@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 // 定义分片元信息对象,不包含文件ID
 export interface ChunkMetadataWithoutFileId {
@@ -34,7 +32,7 @@ export interface ChunkMetadata extends ChunkMetadataWithoutFileId {
 export function uploadChunkAPI(
     formData: FormData, // FormData 对象
     chunkMetadata: ChunkMetadata, // 元信息对象
-): AxiosPromise<Res<string>> {
+): ResPromise<Res<string>> {
     // 将元信息对象转换为 JSON 字符串
     const metadataJson = JSON.stringify(chunkMetadata)
 
@@ -55,7 +53,7 @@ export function uploadChunkAPI(
 export function uploadChunkAvatarAPI(
     formData: FormData, // FormData 对象
     chunkMetadata: ChunkMetadata, // 元信息对象
-): AxiosPromise<Res<string>> {
+): ResPromise<Res<string>> {
     // 将元信息对象转换为 JSON 字符串
     const metadataJson = JSON.stringify(chunkMetadata)
 
@@ -76,7 +74,7 @@ export function uploadChunkAvatarAPI(
 export function uploadChunkEditorAPI(
     formData: FormData, // FormData 对象
     chunkMetadata: ChunkMetadata, // 元信息对象
-): AxiosPromise<Res<string>> {
+): ResPromise<Res<string>> {
     // 将元信息对象转换为 JSON 字符串
     const metadataJson = JSON.stringify(chunkMetadata)
 

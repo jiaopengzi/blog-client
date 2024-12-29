@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import { type Res } from "@/api/responseCode"
-import type { AxiosPromise } from "axios"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface CaptchaCheckRequest {
     email: string
@@ -21,7 +19,7 @@ export interface CaptchaCheckRequest {
 }
 
 // 检测验证码是否正确
-export function captchaCheckAPI(requestData: CaptchaCheckRequest): AxiosPromise<Res<unknown>> {
+export function captchaCheckAPI(requestData: CaptchaCheckRequest): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/captcha/check"
     return request({
         url: urlStr,

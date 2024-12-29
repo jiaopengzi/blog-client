@@ -9,13 +9,11 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import type { AxiosPromise } from "axios"
-import { routerGroup } from "@/api/routerGroup"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 import { type Permission } from "@/utils/permissionRole"
 
-export function getPermissionsAPI(): AxiosPromise<Res<Permission[]>> {
+export function getPermissionsAPI(): ResPromise<Res<Permission[]>> {
     return request({
         url: routerGroup + "/permission/get-permissions",
         method: "get",

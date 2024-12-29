@@ -9,11 +9,9 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
+import { request, routerGroup } from "@/api/request"
 import type { DataWithImg, Pagination, PaginationRequest } from "@/components/common"
-import { type Res } from "@/api/responseCode"
+import type { Res, ResPromise } from "@/api/response"
 
 // 每行数据类型
 export interface PostCategory extends DataWithImg {
@@ -32,7 +30,7 @@ export interface PostCategory extends DataWithImg {
 // 查看文章分类
 export function viewPostCategoryAPI(
     requestData: PaginationRequest,
-): AxiosPromise<Res<Pagination<PostCategory>>> {
+): ResPromise<Res<Pagination<PostCategory>>> {
     const urlStr = routerGroup + "/post-category/view"
     return request({
         url: urlStr,
@@ -42,7 +40,7 @@ export function viewPostCategoryAPI(
 }
 
 // 查看文章分类list
-export function viewListPostCategoryAPI(): AxiosPromise<Res<PostCategory[]>> {
+export function viewListPostCategoryAPI(): ResPromise<Res<PostCategory[]>> {
     const urlStr = routerGroup + "/post-category/view-list"
     return request({
         url: urlStr,

@@ -110,13 +110,13 @@
 
 <script lang="ts" setup>
 import { reactive, ref, toRef, onBeforeMount, watch, useTemplateRef } from "vue"
-import { ShowMsgTip } from "@/utils/message"
+import { MessageUtil } from "@/utils/message"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import {
     type EditUserInfoByAdminRequest,
     editUserInfoByAdminAPI,
 } from "@/api/user/editUserInfoByAdmin"
-import { ResponseCode, handleErrInfo } from "@/api/responseCode"
+import { ResponseCode, handleResErr } from "@/api/response"
 import type { EditUserByAdminForm } from "@/views/admin/component/main/user-view/component/edit-user"
 // import { type PgSqlDateTime } from "@/api/common"
 import { useFormValidation } from "@/components/hooks/useFormValidation"
@@ -333,7 +333,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
             const now = new Date()
             // 当前时间小于禁用时间 valid = true
             if (editUserForm.disableExpiresAt.Time && now >= editUserForm.disableExpiresAt.Time) {
-                ShowMsgTip(ShowMsgTip.MsgType.error, "禁用时间不能小于当前时间", 6000)
+                MessageUtil.error("禁用时间不能小于当前时间", 6000)
                 return
             }
             if (editUserForm.disableExpiresAt.Time && now < editUserForm.disableExpiresAt.Time) {
@@ -359,10 +359,10 @@ const submitForm = async (formEl: FormInstance | undefined) => {
             if (data.code === ResponseCode.EditUserInfoByAdminSuccess) {
                 // 添加成功提示
                 emit("edit-user-status", true)
-                ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
+                MessageUtil.success(data.msg, 6000)
             } else {
                 // 添加失败提示
-                ShowMsgTip(ShowMsgTip.MsgType.error, data.msg, 0)
+                MessageUtil.error(data.msg, 0)
             }
             console.log("submit!")
         }
@@ -382,7 +382,7 @@ const updateAvatarToDB = async (avatarUrl: string) => {
             getUserInfo()
             emit("edit-user-status", true)
         } else {
-            ShowMsgTip(ShowMsgTip.MsgType.error, handleErrInfo(res), 0)
+            MessageUtil.error(handleResErr(res), 0)
         }
     })
 }
@@ -398,10 +398,10 @@ const logoutByAdmin = async () => {
     if (data.code === ResponseCode.UserLogoutByAdminSuccess) {
         // 添加成功提示
         emit("edit-user-status", true)
-        ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
+        MessageUtil.success(data.msg, 6000)
     } else {
         // 添加失败提示
-        ShowMsgTip(ShowMsgTip.MsgType.error, data.msg, 0)
+        MessageUtil.error(data.msg, 0)
     }
 }
 

@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface CheckCategorySlugRequest {
     slug: string // category 别名
@@ -21,7 +19,7 @@ export interface CheckCategorySlugRequest {
 // 检查 category 名称是否存在
 export function checkCategorySlugAPI(
     requestData: CheckCategorySlugRequest,
-): AxiosPromise<Res<unknown>> {
+): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/post-category/check-category-slug"
     return request({
         url: urlStr,

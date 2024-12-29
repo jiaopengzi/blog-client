@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface CheckUserNameExcludingUserIDRequest {
     excluding_user_id: string // 需要排除的用户id
@@ -22,7 +20,7 @@ export interface CheckUserNameExcludingUserIDRequest {
 // 检测用户名是否存在
 export function checkUserNameExcludingUserIDAPI(
     requestData: CheckUserNameExcludingUserIDRequest,
-): AxiosPromise<Res<unknown>> {
+): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/user/check-username-excluding-user-id"
     return request({
         url: urlStr,

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-17 10:45:34
+ * @LastEditTime : 2024-12-29 15:06:12
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -45,11 +45,11 @@
 </template>
 <script lang="ts" setup>
 import { ref, shallowRef, onBeforeMount, useTemplateRef } from "vue"
-import router from "@/router/index"
+import { useRoute } from "vue-router"
 import { components } from "./index"
 import {
     adminMenuItemMapWithIndex,
-    adminMenuItemMapWithIndexMap,
+    // adminMenuItemMapWithIndexMap,
     AdminSideMenu,
 } from "@/views/admin/component/aside"
 import { PermissionNames } from "@/utils/permissionRole"
@@ -62,7 +62,7 @@ import NoPermission from "@/views/admin/component/main/no-permission"
 import Page404 from "@/views/404"
 
 defineOptions({ name: "AdminLayout" })
-
+const route = useRoute()
 const hasPermissionLoginAdmin = ref(false)
 
 // 定义 HTMLElementRef 类型
@@ -93,7 +93,7 @@ const containerRef = useTemplateRef<HTMLElementRef | null>("containerRef")
 // 更新当前组件
 const updateCurrentComponent = () => {
     // 从 url 中获取 path 更新当前组件
-    const path = router.currentRoute.value.path as string | undefined
+    const path = route.fullPath
     if (path === "/admin" || path === undefined) {
         return
     }
@@ -106,8 +106,8 @@ const updateCurrentComponent = () => {
 
 // 选择菜单项
 const handleSelect = (index: string) => {
-    console.log("index====>1", adminMenuItemMapWithIndexMap[index].display)
-    console.log("index====>2", adminMenuItemMapWithIndexMap[index].parentIndex)
+    // console.log("index====>1", adminMenuItemMapWithIndexMap[index].display)
+    // console.log("index====>2", adminMenuItemMapWithIndexMap[index].parentIndex)
 
     if (userStore.getIsEditing) {
         return
@@ -117,16 +117,10 @@ const handleSelect = (index: string) => {
 }
 
 // 折叠状态
-
 const collapseStatus = ref(false)
 const handleCollapseStatus = (isCollapse: boolean) => {
     collapseStatus.value = isCollapse
 }
-
-// 监听路由变化，主要在路由变化时更新当前组件
-router.afterEach(() => {
-    updateCurrentComponent()
-})
 
 // 通过 path 更新当前组件
 const updateCurrentComponentByPath = (path: string): void => {
@@ -136,7 +130,6 @@ const updateCurrentComponentByPath = (path: string): void => {
     )[0]
     if (!key) return
     defaultActive.value = path
-    const userStore = useUserStore()
     const permission = adminMenuItemMapWithIndex[key as AdminSideMenu]?.permissionName
     if (permission && !userStore.hasPermission(permission)) {
         currentComponent.value = NoPermission

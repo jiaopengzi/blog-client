@@ -9,17 +9,15 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface PostCountByIsRecommended {
     is_recommended: boolean // 是否推荐
     count: number // 文章数量
 }
 
-export function getPostCountByIsRecommendedAPI(): AxiosPromise<Res<PostCountByIsRecommended[]>> {
+export function getPostCountByIsRecommendedAPI(): ResPromise<Res<PostCountByIsRecommended[]>> {
     const urlStr = routerGroup + "/post/count-by-is-recommended"
     return request({
         url: urlStr,

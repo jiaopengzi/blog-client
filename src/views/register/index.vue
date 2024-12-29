@@ -99,11 +99,11 @@
 
 <script lang="ts" setup>
 import { reactive, ref, toRef, useTemplateRef } from "vue"
-import { ShowMsgTip } from "@/utils/message"
+import { MessageUtil } from "@/utils/message"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import type { RegisterRequest } from "@/api/user/register"
 import { RegisterAPI } from "@/api/user/register"
-import { ResponseCode } from "@/api/responseCode"
+import { ResponseCode } from "@/api/response"
 import { routeObj } from "@/router/routeAll"
 import router from "@/router/index"
 import type { RegisterForm } from "@/views/register"
@@ -239,7 +239,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
             if (data.code === ResponseCode.UserRegisterSuccess) {
                 // 显示注册成功提示
-                ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
+                MessageUtil.success(data.msg, 6000)
 
                 // 跳转到登录页面
                 setTimeout(() => {
@@ -248,7 +248,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
             } else {
                 // 注册失败
                 // console.log("注册失败");
-                ShowMsgTip(ShowMsgTip.MsgType.error, data.msg, 0)
+                MessageUtil.error(data.msg, 0)
             }
             console.log("submit!")
         }
@@ -282,13 +282,13 @@ const sendCaptcha = async () => {
     // 手动触发 FormInstance 的校验，校验 userName 和 email 字段
     const userNameResult = await registerFormRef.value?.validateField("userName").catch(() => false)
     if (!userNameResult) {
-        ShowMsgTip(ShowMsgTip.MsgType.error, "请输入正确的用户名。", 0)
+        MessageUtil.error("请输入正确的用户名。", 0)
         return
     }
 
     const emailResult = await registerFormRef.value?.validateField("email").catch(() => false)
     if (!emailResult) {
-        ShowMsgTip(ShowMsgTip.MsgType.error, "请输入正确的邮箱地址。", 0)
+        MessageUtil.error("请输入正确的邮箱地址。", 0)
         console.log("请输入邮箱")
         return
     }
@@ -300,11 +300,11 @@ const sendCaptcha = async () => {
         checkSendCaptcha(registerForm.email)
             .then(() => {
                 // 成功发送验证码
-                ShowMsgTip(ShowMsgTip.MsgType.success, "验证码已发送到邮箱。", 6000)
+                MessageUtil.success("验证码已发送到邮箱。", 6000)
             })
             .catch((err: Error) => {
                 // 错误提示
-                ShowMsgTip(ShowMsgTip.MsgType.error, err.message, 0)
+                MessageUtil.error(err.message, 0)
             })
 
         // 按钮设置不能点击状态

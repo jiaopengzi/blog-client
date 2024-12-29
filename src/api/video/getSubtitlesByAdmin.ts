@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import type { AxiosPromise } from "axios"
-import { routerGroup } from "@/api/routerGroup"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface SubtitlesByAdminResData {
     subtitles: string
@@ -23,7 +21,7 @@ export interface SubtitlesByAdminResData {
 export function getSubtitlesByAdminAPI(
     videoHashId: string,
     subtitlesLanguage: string,
-): AxiosPromise<Res<SubtitlesByAdminResData>> {
+): ResPromise<Res<SubtitlesByAdminResData>> {
     return request({
         url: `${routerGroup}/subtitles/${videoHashId}/${subtitlesLanguage}`,
         method: "get",

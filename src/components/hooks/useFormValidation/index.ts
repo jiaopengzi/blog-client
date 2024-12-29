@@ -27,7 +27,8 @@ import {
     type GetDisableExpiresAtSecondsRequest,
     getDisableExpiresAtSecondsAPI,
 } from "@/api/user/getDisableExpiresAtSeconds"
-import { ResponseCode, CaptchaPurpose } from "@/api/responseCode"
+import { ResponseCode } from "@/api/response"
+import { CaptchaPurpose } from "@/api/common"
 import { getUserForbiddenMsg } from "@/utils/msg"
 
 interface FormValidationOptions {

@@ -9,7 +9,7 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { ShowMsgTip } from "@/utils/message"
+import { MessageUtil } from "@/utils/message"
 import { RequestStrategyBase } from "@/utils/requestStrategyBase"
 import { confirmBeforeUploadAPI } from "@/api/upload/confirmBeforeUpload"
 // import { uploadFileBySignedUrlAPI } from '@/api/upload/uploadFileBySignedUrl'
@@ -27,6 +27,6 @@ export class RequestStrategyEl extends RequestStrategyBase {
     // 实现 handleConfirmBeforeUploadError
     async handleConfirmBeforeUploadError(errorMessage: string): Promise<void> {
         errorMessage = `${errorMessage},${this.fileName}`
-        ShowMsgTip(ShowMsgTip.MsgType.error, errorMessage, 6000)
+        MessageUtil.error(errorMessage, 6000)
     }
 }

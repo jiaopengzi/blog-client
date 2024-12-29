@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import { type Res } from "@/api/responseCode"
-import type { AxiosPromise } from "axios"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 // 文件统计
 export interface FileCountGroupByFiletype {
@@ -22,7 +20,7 @@ export interface FileCountGroupByFiletype {
 }
 
 // 获取文件信息 api 函数
-export function getFileCountGroupByFiletypeAPI(): AxiosPromise<Res<FileCountGroupByFiletype[]>> {
+export function getFileCountGroupByFiletypeAPI(): ResPromise<Res<FileCountGroupByFiletype[]>> {
     const urlStr = routerGroup + "/upload/count-group-by-type"
     return request({
         url: urlStr,

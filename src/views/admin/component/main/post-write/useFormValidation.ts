@@ -16,7 +16,7 @@ import {
     type CheckPostSlugExcludingIDRequest,
     checkPostSlugExcludingIDAPI,
 } from "@/api/post/checkPostSlugExcludingID"
-import { ResponseCode, handleErrInfo } from "@/api/responseCode"
+import { ResponseCode, handleResErr } from "@/api/response"
 import { type PgSqlDateTime } from "@/api/common"
 import { PostStatusCode, CommentStatusCode } from "@/api/post/common"
 import { type UpsertPostForm } from "./index"
@@ -324,7 +324,7 @@ export function useFormValidation(options: FormValidationOptions): {
             if (res.data.code === ResponseCode.PostCheckSlugNoExist) {
                 callback()
             } else {
-                const errMsg = handleErrInfo(res, "别名不可用")
+                const errMsg = handleResErr(res, "别名不可用")
                 callback(new Error(errMsg))
             }
         })
@@ -377,7 +377,7 @@ export function useFormValidation(options: FormValidationOptions): {
             if (res.data.code === ResponseCode.PostCheckSlugNoExistExcludingID) {
                 callback()
             } else {
-                const errMsg = handleErrInfo(res, "别名不可用")
+                const errMsg = handleResErr(res, "别名不可用")
                 callback(new Error(errMsg))
             }
         })

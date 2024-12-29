@@ -11,8 +11,8 @@
 
 import { insertPostAPI } from "@/api/post/insert"
 import type { InsertPostRequest } from "@/api/post/common"
-import { ResponseCode, handleErrInfo } from "@/api/responseCode"
-import { ShowMsgTip } from "@/utils/message"
+import { ResponseCode, handleResErr } from "@/api/response"
+import { MessageUtil } from "@/utils/message"
 import router from "@/router"
 import type { UpsertPostForm, PostInfoAboutTime } from "./index"
 import { AdminSideMenu } from "@/views/admin/component/aside"
@@ -42,7 +42,7 @@ export function useAdd(
                 postInfoAboutTime.created_at = new Date(res.data.data.created_at)
                 postInfoAboutTime.updated_at = new Date(res.data.data.updated_at)
 
-                ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 6000)
+                MessageUtil.success(res.data.msg, 6000)
 
                 // 插入成功后变成编辑状态，更改路由
                 router.push({
@@ -51,7 +51,7 @@ export function useAdd(
                 })
                 return true
             } else {
-                ShowMsgTip(ShowMsgTip.MsgType.error, handleErrInfo(res), 0)
+                MessageUtil.error(handleResErr(res), 0)
                 return false
             }
         })

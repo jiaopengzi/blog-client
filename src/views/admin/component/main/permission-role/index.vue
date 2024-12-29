@@ -177,8 +177,8 @@ import {
     type UpdateRolesRequest,
     type UpdateRoleRequest,
 } from "@/api/permissionRole/updateRoles"
-import { ResponseCode, handleErrInfo } from "@/api/responseCode"
-import { ShowMsgTip } from "@/utils/message"
+import { ResponseCode, handleResErr } from "@/api/response"
+import { MessageUtil } from "@/utils/message"
 import { getSortedEnumKeys } from "@/utils/enum"
 import { useUserStore } from "@/stores/user"
 import { debounce } from "throttle-debounce"
@@ -371,13 +371,13 @@ const submitUpsertForm = debounce(100, async (formEl: FormInstance | undefined) 
 
             // 当 limit_count 为 0 时，limit_period 不等于 0 时，警告提示
             if (req.limit_count === 0 && req.limit_period !== 0) {
-                ShowMsgTip(ShowMsgTip.MsgType.warning, "限制次数为 0 时，限制时长必须为 0", 0)
+                MessageUtil.warning("限制次数为 0 时，限制时长必须为 0", 0)
                 return
             }
 
             // 当 limit_count 和 limit_period 都为 0 时，提示默认权限配置就是不限制，不用提交
             if (req.limit_count === 0 && req.limit_period === 0) {
-                ShowMsgTip(ShowMsgTip.MsgType.warning, "权限默认不限制，无需操作。", 0)
+                MessageUtil.warning("权限默认不限制，无需操作。", 0)
                 return
             }
 
@@ -386,9 +386,9 @@ const submitUpsertForm = debounce(100, async (formEl: FormInstance | undefined) 
             if (data.code === ResponseCode.UpsertPermissionRoleSuccess) {
                 updatePermission()
                 // 添加成功提示
-                ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
+                MessageUtil.success(data.msg, 6000)
             } else {
-                ShowMsgTip(ShowMsgTip.MsgType.error, handleErrInfo(data), 0)
+                MessageUtil.error(handleResErr(data), 0)
             }
         }
     })
@@ -408,7 +408,7 @@ const submitDeleteForm = debounce(100, async (formEl: FormInstance | undefined) 
 
             // 当 limit_count 和 limit_period 都为 0 时，提示默认权限配置就是不限制，不用提交
             if (permissionRoleForm.limit_count === 0 && permissionRoleForm.limit_period === 0) {
-                ShowMsgTip(ShowMsgTip.MsgType.warning, "权限默认不限制，无需操作。", 0)
+                MessageUtil.warning("权限默认不限制，无需操作。", 0)
                 return
             }
 
@@ -422,10 +422,10 @@ const submitDeleteForm = debounce(100, async (formEl: FormInstance | undefined) 
                 // 添加成功提示
                 updatePermission()
                 await initPermissionTable(false)
-                ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
+                MessageUtil.success(data.msg, 6000)
             } else {
                 // 添加失败提示
-                ShowMsgTip(ShowMsgTip.MsgType.error, data.msg, 0)
+                MessageUtil.error(data.msg, 0)
             }
         }
     })
@@ -519,17 +519,17 @@ const updatePermission = debounce(100, async () => {
                 const userStore = useUserStore()
                 userStore.getUserInfoByToken()
                 initPermissionTable(false)
-                ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 2000)
+                MessageUtil.success(res.data.msg, 2000)
                 // 强制刷新页面 两秒后刷新
                 // setTimeout(() => {
                 //     location.reload()
                 // }, 2000)
             } else {
-                ShowMsgTip(ShowMsgTip.MsgType.warning, res.data.msg, 2000)
+                MessageUtil.warning(res.data.msg, 2000)
             }
         })
         .catch((err) => {
-            ShowMsgTip(ShowMsgTip.MsgType.error, err, 2000)
+            MessageUtil.error(err, 2000)
         })
 })
 

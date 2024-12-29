@@ -9,13 +9,11 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import { type Res } from "@/api/responseCode"
-import type { AxiosPromise } from "axios"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 // 获取用户信息
-export function getUserInfoAPI(): AxiosPromise<Res<UserInfo>> {
+export function getUserInfoAPI(): ResPromise<Res<UserInfo>> {
     const urlStr = routerGroup + "/user/info"
     return request({
         url: urlStr,

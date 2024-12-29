@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface DeleteLoginLogByDayRequest {
     days_before: number // 天数
@@ -21,7 +19,7 @@ export interface DeleteLoginLogByDayRequest {
 // 通过天删除登录日志
 export function deleteLoginLogByDayAPI(
     requestData: DeleteLoginLogByDayRequest,
-): AxiosPromise<Res<unknown>> {
+): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/login-log/delete-by-day"
     return request({
         url: urlStr,

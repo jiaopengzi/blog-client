@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-17 16:05:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-25 17:51:56
+ * @LastEditTime : 2024-12-29 14:23:15
  * @FilePath     : \blog-client\src\components\hooks\useHome\index.ts
  * @Description  : 首页hooks
  * @Blog         : https://jiaopengzi.com
@@ -198,16 +198,21 @@ export function useHome(
 
     watch(
         () => route.fullPath,
-        async () => {
+        async (newVal, oldVal) => {
+            console.log("watch=====>oldVal", oldVal)
+            console.log("watch=====>newVal", newVal)
             reSetPaginationConf()
             parseParamsFromURL()
             await updatePaginate()
             updateBreadcrumbFromPagination()
         },
+        // 立即执行
+        { immediate: true },
     )
 
     onBeforeMount(async () => {
         // 获取路由参数 并更新 query
+        console.log("onBeforeMount")
         parseParamsFromURL()
         await updatePaginate()
         updateBreadcrumbFromPagination()

@@ -31,7 +31,7 @@ import { useScroll } from "@vueuse/core"
 import { debounce } from "throttle-debounce"
 import ClipboardJS from "clipboard" //代码块复制
 import type { ClipboardEvent } from "clipboard"
-import { ShowMsgTip } from "@/utils/message"
+import { MessageUtil } from "@/utils/message"
 import { shiftArray } from "@/utils/img"
 import { htmlHandleWeChat } from "../core"
 import { ScrollElementTag, ScrollElementTagHeading } from "@/components/editor/command"
@@ -212,7 +212,7 @@ const initializeClipboard = () => {
 
     clipboard.on("success", (e: ClipboardEvent) => {
         // 处理成功的反馈（例如显示提示信息）
-        ShowMsgTip(ShowMsgTip.MsgType.success, "已复制到剪贴板！")
+        MessageUtil.success("已复制到剪贴板！")
         // console.log('已复制到剪贴板！')
         // console.info('Action:', e.action)
         // console.info('Text:', e.text)
@@ -222,7 +222,7 @@ const initializeClipboard = () => {
 
     clipboard.on("error", (e: ClipboardEvent) => {
         // 处理错误的反馈
-        ShowMsgTip(ShowMsgTip.MsgType.error, "复制到剪贴板失败！")
+        MessageUtil.error("复制到剪贴板失败！")
         console.error("复制到剪贴板失败:", e)
         // console.error('Action:', e.action)
         // console.error('Trigger:', e.trigger)

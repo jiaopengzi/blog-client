@@ -42,7 +42,7 @@ import TagItem from "@/components/common/tag-item"
 import { type PostTag } from "@/api/postTag/view"
 import { viewPostTagTopNAPI } from "@/api/postTag/viewPostTagTopN"
 import { viewPostTagTopNAdminAPI } from "@/api/postTag/viewPostTagTopNAdmin"
-import { ResponseCode } from "@/api/responseCode"
+import { ResponseCode } from "@/api/response"
 
 defineOptions({ name: "PostTag" })
 

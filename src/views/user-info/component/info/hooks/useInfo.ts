@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-13 18:13:40
+ * @LastEditTime : 2024-12-29 13:50:30
  * @FilePath     : \blog-client\src\views\user-info\component\info\hooks\useInfo.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -15,11 +15,11 @@ import type { FormInstance, FormRules } from "element-plus" // 需要全部安�
 import { useUserStore } from "@/stores/user"
 import { storeToRefs } from "pinia"
 import type { UserInfo } from "@/api/user/getUserInfo"
-import { Social } from "@/api/responseCode"
-import { ResponseCode, handleErrInfo } from "@/api/responseCode"
+import { Social } from "@/api/common"
+import { ResponseCode, handleResErr } from "@/api/response"
 import type { EditUserInfoRequest } from "@/api/user/editUserInfo"
 import { editUserInfoAPI } from "@/api/user/editUserInfo"
-import { ShowMsgTip } from "@/utils/message"
+import { MessageUtil } from "@/utils/message"
 import type { EditForm } from "@/views/user-info/component/info"
 import { formatTime } from "@/utils/dateTime"
 import { useFormValidation } from "@/components/hooks/useFormValidation"
@@ -141,11 +141,11 @@ export function useInfo(): UseInfoReturnType {
                     await userStore.getUserInfoByToken(true)
                     changeUserNameDisabled()
                     // 显示成功提示
-                    ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 6000)
+                    MessageUtil.success(res.data.msg, 6000)
                 } else {
                     // 注册失败
-                    const msg = handleErrInfo(res)
-                    ShowMsgTip(ShowMsgTip.MsgType.error, msg, 0)
+                    const msg = handleResErr(res)
+                    MessageUtil.error(msg, 0)
                 }
             }
         })
@@ -231,8 +231,8 @@ export function useInfo(): UseInfoReturnType {
                 userStore.setAvatar(req.avatar_url)
                 // userStore.getUserInfoByToken(true)
             } else {
-                const msg = handleErrInfo(res)
-                ShowMsgTip(ShowMsgTip.MsgType.error, msg, 0)
+                const msg = handleResErr(res)
+                MessageUtil.error(msg, 0)
             }
         })
     }

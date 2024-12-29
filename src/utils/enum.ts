@@ -2,19 +2,20 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-27 10:22:50
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-27 10:33:18
+ * @LastEditTime : 2024-12-29 11:28:30
  * @FilePath     : \blog-client\src\utils\enum.ts
  * @Description  : 枚举
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 /**
  * @description: 返回枚举的按照值排序后的键名数组
  * @param enumObj 枚举对象(数字值)
  * @param order 排序顺序，'asc' 表示升序，'desc' 表示降序，默认为 'asc'
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getSortedEnumKeys = (enumObj: any, order: "asc" | "desc" = "asc"): string[] => {
     const cacheKey = `${JSON.stringify(enumObj)}_${order}`
     if (!enumObj[cacheKey]) {

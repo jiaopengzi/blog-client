@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface DeletePostCategoryRequest {
     id_list: string[] // 分类ID列表
@@ -21,7 +19,7 @@ export interface DeletePostCategoryRequest {
 // 删除文章分类
 export function deletePostCategoryAPI(
     requestData: DeletePostCategoryRequest,
-): AxiosPromise<Res<void>> {
+): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/post-category/delete"
     return request({
         url: urlStr,

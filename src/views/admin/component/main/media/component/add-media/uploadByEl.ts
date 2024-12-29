@@ -9,7 +9,7 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { ShowMsgTip } from "@/utils/message"
+import { MessageUtil } from "@/utils/message"
 import { RequestStrategyEl } from "./requestStrategyEl"
 import { type UploadRequestOptions } from "element-plus"
 import {
@@ -42,13 +42,13 @@ export const uploadByEl = async (
         })
 
         uploadController.on(UploadControllerEvents.CHECK_WHOLE_HASH, (fileName: string) => {
-            ShowMsgTip(ShowMsgTip.MsgType.info, `正在校验:${fileName},请稍后...`, 3000)
+            MessageUtil.info(`正在校验:${fileName},请稍后...`, 3000)
         })
 
         uploadController.on(UploadControllerEvents.END, (info: UploadFileSuccessInfo) => {
             options.onSuccess(info.fileName)
             const msg = `上传成功：${info.fileName}`
-            ShowMsgTip(ShowMsgTip.MsgType.success, msg, 5000)
+            MessageUtil.success(msg, 5000)
             resolve(info.fileUrl)
         })
 

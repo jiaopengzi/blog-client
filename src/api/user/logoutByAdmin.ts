@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface LogoutByAdminRequest {
     logout_user_id: string
@@ -21,7 +19,7 @@ export interface LogoutByAdminRequest {
 // 管理员登出用户
 export function logoutByAdminAPI(
     logoutByAdminRequest: LogoutByAdminRequest,
-): AxiosPromise<Res<unknown>> {
+): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/user/logout-by-admin"
     return request({
         url: urlStr,

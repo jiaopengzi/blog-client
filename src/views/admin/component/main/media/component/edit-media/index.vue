@@ -149,9 +149,9 @@
 <script lang="ts" setup>
 import { reactive, ref, watch, useTemplateRef, computed, watchEffect } from "vue"
 import type { EditMediaProps, EditMediaForm, SubtitlesForm } from "./index"
-import { ShowMsgTip } from "@/utils/message"
+import { MessageUtil } from "@/utils/message"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { ResponseCode, handleErrInfo } from "@/api/responseCode"
+import { ResponseCode, handleResErr } from "@/api/response"
 import { getSubtitlesByAdminAPI } from "@/api/video/getSubtitlesByAdmin"
 import { type UpsertSubtitlesRequest, upsertSubtitlesAPI } from "@/api/video/upsertSubtitles"
 import { type DeleteSubtitlesRequest, deleteSubtitlesAPI } from "@/api/video/deleteSubtitles"
@@ -304,10 +304,10 @@ const saveSubtitles = async (formEl: FormInstance | undefined) => {
     if (res.data.code === ResponseCode.SubtitlesUpsertSuccess) {
         emit("update-subtitles", subtitlesForm.language)
         playerStateManager.setSubtitlesByVideoHashIdAuto() // 更新字幕
-        ShowMsgTip(ShowMsgTip.MsgType.success, "保存成功", 3000)
+        MessageUtil.success("保存成功", 3000)
     } else {
-        const errMsg = handleErrInfo(res, "保存失败")
-        ShowMsgTip(ShowMsgTip.MsgType.error, errMsg)
+        const errMsg = handleResErr(res, "保存失败")
+        MessageUtil.error(errMsg)
     }
 }
 
@@ -315,7 +315,7 @@ const saveSubtitles = async (formEl: FormInstance | undefined) => {
 const delSubtitles = async () => {
     // 判断是否选择了语言
     if (!subtitlesForm.language) {
-        ShowMsgTip(ShowMsgTip.MsgType.warning, "请选择要删除的语言")
+        MessageUtil.warning("请选择要删除的语言")
         return
     }
 
@@ -331,10 +331,10 @@ const delSubtitles = async () => {
             playerStateManager.setSubtitlesByVideoHashIdAuto() // 更新字幕
             // 重置表单，不会触发校验
             subtitlesFormRef.value?.resetFields()
-            ShowMsgTip(ShowMsgTip.MsgType.success, "删除成功", 3000)
+            MessageUtil.success("删除成功", 3000)
         } else {
-            const errMsg = handleErrInfo(res, "删除失败")
-            ShowMsgTip(ShowMsgTip.MsgType.error, errMsg)
+            const errMsg = handleResErr(res, "删除失败")
+            MessageUtil.error(errMsg)
         }
     })
 }
@@ -347,8 +347,8 @@ const getSubtitles = async (language: string) => {
             subtitlesForm.subtitles = res.data.data.subtitles
             subtitlesForm.label = res.data.data.label
         } else {
-            const errMsg = handleErrInfo(res, "获取字幕失败")
-            ShowMsgTip(ShowMsgTip.MsgType.error, errMsg)
+            const errMsg = handleResErr(res, "获取字幕失败")
+            MessageUtil.error(errMsg)
         }
     })
 }
@@ -387,7 +387,7 @@ function checkSlugValidator(
         if (res.data.code === ResponseCode.CheckSlugAvailable) {
             callback()
         } else {
-            const errMsg = handleErrInfo(res, "别名不可用")
+            const errMsg = handleResErr(res, "别名不可用")
             callback(new Error(errMsg))
         }
     })
@@ -425,10 +425,10 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     await updateFileAPI(params).then((res) => {
         if (res.data.code === ResponseCode.UpdateFileSuccess) {
             emit("edit-media-status", true)
-            ShowMsgTip(ShowMsgTip.MsgType.success, "更新成功", 3000)
+            MessageUtil.success("更新成功", 3000)
         } else {
-            const errMsg = handleErrInfo(res, "更新失败")
-            ShowMsgTip(ShowMsgTip.MsgType.error, errMsg)
+            const errMsg = handleResErr(res, "更新失败")
+            MessageUtil.error(errMsg)
         }
     })
 }

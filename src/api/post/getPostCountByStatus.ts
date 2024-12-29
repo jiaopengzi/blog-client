@@ -9,18 +9,16 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
+import { request, routerGroup } from "@/api/request"
 import { PostStatusCode } from "@/api/post/common"
-import { type Res } from "@/api/responseCode"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface PostCountByStatus {
     post_status: PostStatusCode // 文章状态
     count: number // 文章数量
 }
 
-export function getPostCountByStatusAPI(): AxiosPromise<Res<PostCountByStatus[]>> {
+export function getPostCountByStatusAPI(): ResPromise<Res<PostCountByStatus[]>> {
     const urlStr = routerGroup + "/post/count-by-status"
     return request({
         url: urlStr,

@@ -8,12 +8,9 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
-
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
+import { request, routerGroup } from "@/api/request"
 import { PermissionNames } from "@/utils/permissionRole"
-import { type Res } from "@/api/responseCode"
+import type { Res, ResPromise } from "@/api/response"
 
 //  删除角色权限 请求参数
 export interface GetPermissionRoleRequest {
@@ -31,7 +28,7 @@ export interface GetPermissionRoleResData {
 // 获取角色权限
 export function getPermissionRoleAPI(
     requestData: GetPermissionRoleRequest,
-): AxiosPromise<Res<GetPermissionRoleResData>> {
+): ResPromise<Res<GetPermissionRoleResData>> {
     const urlStr = routerGroup + "/role/get-permission-role"
     return request({
         url: urlStr,

@@ -2,17 +2,15 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-18 08:52:22
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 10:07:05
+ * @LastEditTime : 2024-12-29 12:54:30
  * @FilePath     : \blog-client\src\api\user\editUserInfoByAdmin.ts
  * @Description  : 编辑用户
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 import { type PgSqlDateTime } from "@/api/common"
 
 export interface EditUserInfoByAdminRequest {
@@ -29,7 +27,7 @@ export interface EditUserInfoByAdminRequest {
 
 export function editUserInfoByAdminAPI(
     requestData: EditUserInfoByAdminRequest,
-): AxiosPromise<Res<unknown>> {
+): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/user/edit"
     return request({
         url: urlStr,

@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 //  删除字幕 请求参数
 export interface DeleteSubtitlesRequest {
@@ -21,9 +19,7 @@ export interface DeleteSubtitlesRequest {
 }
 
 // 更新字幕
-export function deleteSubtitlesAPI(
-    requestData: DeleteSubtitlesRequest,
-): AxiosPromise<Res<unknown>> {
+export function deleteSubtitlesAPI(requestData: DeleteSubtitlesRequest): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/subtitles/delete"
     return request({
         url: urlStr,

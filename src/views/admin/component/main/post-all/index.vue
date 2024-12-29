@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-24 10:46:06
+ * @LastEditTime : 2024-12-29 13:54:06
  * @FilePath     : \blog-client\src\views\admin\component\main\post-all\index.vue
  * @Description  : 文章管理 
  * @Blog         : https://jiaopengzi.com
@@ -168,7 +168,7 @@ import {
     CustomFieldsDisplay,
 } from "@/api/post/common"
 import { type ViewPostByAdminRequest, viewPostByAdminAPI } from "@/api/post/viewByAdmin"
-import { ResponseCode } from "@/api/responseCode"
+import { ResponseCode } from "@/api/response"
 import BaseTable from "@/components/common/base-table"
 import { type DeletePostRequest, deletePostAPI } from "@/api/post/delete"
 import { useBaseTable, type QueryRecord } from "@/components/hooks/useBaseTable"
@@ -187,7 +187,7 @@ import {
 } from "@/api/post/batchOperationPostStatus"
 import { confirmCommon } from "@/utils/confirm"
 import { MsgType } from "@/components/common"
-import { ShowMsgTip } from "@/utils/message"
+import { MessageUtil } from "@/utils/message"
 import { useParams } from "@/components/hooks/useParams"
 import type { PostTag } from "@/api/postTag/view"
 import type { User } from "@/api/user/getUsers"
@@ -550,15 +550,14 @@ const handlePostStatusOperation = async () => {
                 batchOperationPostStatusAPI(req).then(async (res) => {
                     if (res.data.code === ResponseCode.PostStatusBatchOperationSuccess) {
                         const msg = res.data.msg + "，请稍后刷新页面查看最新数据"
-                        ShowMsgTip(MsgType.success, msg, 3000)
-
+                        MessageUtil.success(msg, 3000)
                         // 引入延迟，确保后端更新完成
                         await new Promise((resolve) => setTimeout(resolve, 1000))
 
                         await updatePaginate()
                         await getPostCountStatus()
                     } else {
-                        ShowMsgTip(MsgType.error, res.data.msg, 3000)
+                        MessageUtil.error(res.data.msg, 3000)
                     }
                 })
             },

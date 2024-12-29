@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface CheckTagSlugExcludingIDRequest {
     excluding_id: string // 不包含的ID
@@ -22,7 +20,7 @@ export interface CheckTagSlugExcludingIDRequest {
 // 检查 tag 名称是否存在
 export function checkTagSlugExcludingIDAPI(
     requestData: CheckTagSlugExcludingIDRequest,
-): AxiosPromise<Res<unknown>> {
+): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/post-tag/check-tag-slug-excluding-id"
     return request({
         url: urlStr,

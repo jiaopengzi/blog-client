@@ -9,13 +9,11 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 import { type PostCountByMonth } from "./getPostCountByMonth"
 
-export function getPostCountByMonthAdminAPI(): AxiosPromise<Res<PostCountByMonth[]>> {
+export function getPostCountByMonthAdminAPI(): ResPromise<Res<PostCountByMonth[]>> {
     const urlStr = routerGroup + "/post/count-by-month-admin"
     return request({
         url: urlStr,

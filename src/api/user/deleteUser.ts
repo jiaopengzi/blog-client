@@ -9,17 +9,15 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface DeleteUserRequest {
     user_id_list: string[] // 用户 id 列表
 }
 
 // 注册
-export function deleteUserAPI(requestData: DeleteUserRequest): AxiosPromise<Res<void>> {
+export function deleteUserAPI(requestData: DeleteUserRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/user/delete"
     return request({
         url: urlStr,

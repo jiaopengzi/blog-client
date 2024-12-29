@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-17 17:28:12
+ * @LastEditTime : 2024-12-29 12:27:40
  * @FilePath     : \blog-client\src\views\reset-password\index.vue
  * @Description  : 重置密码
  * @Blog         : https://jiaopengzi.com
@@ -90,7 +90,7 @@
 
 <script lang="ts" setup>
 import { reactive, ref, useTemplateRef } from "vue"
-import { ShowMsgTip } from "@/utils/message"
+import { MessageUtil } from "@/utils/message"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import type { CheckEmailRequest } from "@/api/user/checkEmail"
 import { CheckEmailAPI } from "@/api/user/checkEmail"
@@ -101,7 +101,8 @@ import { captchaSendAPI } from "@/api/captcha/send"
 
 import type { CaptchaCheckRequest } from "@/api/captcha/check"
 import { captchaCheckAPI } from "@/api/captcha/check"
-import { ResponseCode, CaptchaPurpose, handleErrInfo } from "@/api/responseCode"
+import { ResponseCode, handleResErr } from "@/api/response"
+import { CaptchaPurpose } from "@/api/common"
 import { routeObj } from "@/router/routeAll"
 import router from "@/router/index"
 import type { ResetPasswordForm } from "@/views/reset-password"
@@ -179,7 +180,7 @@ async function checkSendCaptcha(): Promise<void> {
         const { data } = await captchaSendAPI(req)
 
         if (data.code !== ResponseCode.CaptchaSendSuccess && data.data !== null) {
-            throw new Error(handleErrInfo(data))
+            throw new Error(handleResErr(data))
         }
         if (data.code !== ResponseCode.CaptchaSendSuccess && data.data === null) {
             throw new Error(data.msg) // 抛出错误信息
@@ -323,7 +324,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
             if (data.code === ResponseCode.UserResetPasswordSuccess) {
                 // 显示注册成功提示
-                ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
+                MessageUtil.success(data.msg, 6000)
 
                 // 跳转到登录页面
                 setTimeout(() => {
@@ -332,7 +333,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
             } else {
                 // 注册失败
                 // console.log("注册失败");
-                ShowMsgTip(ShowMsgTip.MsgType.error, data.msg, 0)
+                MessageUtil.error(data.msg, 0)
             }
             console.log("submit!")
         }
@@ -360,7 +361,7 @@ const sendCaptcha = async () => {
 
     const emailResult = await forgotPasswordFormRef.value?.validateField("email").catch(() => false)
     if (!emailResult) {
-        ShowMsgTip(ShowMsgTip.MsgType.error, "请输入正确的邮箱地址。", 0)
+        MessageUtil.error("请输入正确的邮箱地址。", 0)
         console.log("请输入邮箱")
         return
     }
@@ -372,11 +373,11 @@ const sendCaptcha = async () => {
         checkSendCaptcha()
             .then(() => {
                 // 成功发送验证码
-                ShowMsgTip(ShowMsgTip.MsgType.success, "验证码已发送到邮箱。", 6000)
+                MessageUtil.success("验证码已发送到邮箱。", 6000)
             })
             .catch((err: Error) => {
                 // 错误提示
-                ShowMsgTip(ShowMsgTip.MsgType.error, err.message, 0)
+                MessageUtil.error(err.message, 0)
             })
 
         // 按钮设置不能点击状态

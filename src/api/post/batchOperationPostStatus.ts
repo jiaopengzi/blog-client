@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 import { PostStatusCode } from "./common"
 
 export interface PostStatusOperation {
@@ -27,7 +25,7 @@ export interface BatchOperationPostStatusRequest {
 // 批量操作文章状态
 export function batchOperationPostStatusAPI(
     requestData: BatchOperationPostStatusRequest,
-): AxiosPromise<Res<unknown>> {
+): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/post/batch-operation-status"
     return request({
         url: urlStr,

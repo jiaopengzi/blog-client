@@ -10,7 +10,7 @@
  */
 
 import { getSubtitlesAPI, type Subtitles as SubtitlesRes } from "@/api/video/getSubtitles"
-import { ResponseCode } from "@/api/responseCode"
+import { ResponseCode } from "@/api/response"
 import { Language, PlayStatus, MediaTypes, PlayLevelLabel, PlaybackRate } from "./types"
 import type { LanguageKey, PlayerState, Subtitles, SubtitlesItem } from "./types"
 

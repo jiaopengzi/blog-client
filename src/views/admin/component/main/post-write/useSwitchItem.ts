@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-28 12:32:15
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-28 12:48:30
+ * @LastEditTime : 2024-12-29 12:25:05
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\useSwitchItem.ts
  * @Description  : 开关项
  * @Blog         : https://jiaopengzi.com
@@ -12,7 +12,7 @@
 import { ref, reactive } from "vue"
 import type { UpsertPostForm } from "./index"
 import type { SwitchItem, SwitchItemLabel } from "@/components/common/switch-group"
-import { LocalStorageKey } from "@/api/responseCode"
+import { LocalStorageKey } from "@/stores/local"
 import { CommentStatusCode } from "@/api/post/common"
 import { getRolesList } from "@/utils/permissionRole"
 

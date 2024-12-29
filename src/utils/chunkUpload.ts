@@ -7,8 +7,7 @@ import { Task, TaskQueue } from "@/utils/task"
 import { type ConfirmBeforeUploadRequest } from "@/api/upload/confirmBeforeUpload"
 import { type ChunkMetadataWithoutFileId } from "@/api/upload/chunk"
 import { HashCalculator, HashAlgorithm } from "@/utils/hash"
-import type { AxiosPromise } from "axios"
-import { ResponseCode, handleErrInfo, type Res } from "@/api/responseCode"
+import { ResponseCode, handleResErr, type Res, type ResPromise } from "@/api/response"
 
 // 分片元数据,包含文件二进制数据
 export interface Chunk extends ChunkMetadataWithoutFileId {
@@ -235,13 +234,13 @@ export interface RequestStrategy {
         onProgress: (percent: number) => void,
     ): Promise<void>
 
-    confirmAfterUploadBySignedUrl(req: { file_id: string }): AxiosPromise<Res<void>>
+    confirmAfterUploadBySignedUrl(req: { file_id: string }): ResPromise<Res<void>>
 
     // 分片上传请求
-    uploadChunk(chunk: Chunk): AxiosPromise<Res<string>>
+    uploadChunk(chunk: Chunk): ResPromise<Res<string>>
 
     // 获取上传文件URL
-    getUploadFileUrl(file_id: string): AxiosPromise<Res<string>>
+    getUploadFileUrl(file_id: string): ResPromise<Res<string>>
 }
 
 // 上传控制器
@@ -393,7 +392,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
                         return
                     }
                 } else {
-                    const errorMsg = handleErrInfo(res)
+                    const errorMsg = handleResErr(res)
                     this.emit(UploadControllerEvents.ERROR, new Error(errorMsg))
                 }
             } catch (error) {
@@ -424,7 +423,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
             info.fileUrl = res.data.data
             this.emit(UploadControllerEvents.END, info)
         } else {
-            const errorMsg = handleErrInfo(res)
+            const errorMsg = handleResErr(res)
             this.emit(UploadControllerEvents.ERROR, new Error(errorMsg))
         }
     }

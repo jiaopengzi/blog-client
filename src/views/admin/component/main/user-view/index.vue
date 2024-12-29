@@ -86,7 +86,7 @@ import {
 } from "@/api/user/getUserCountGroupByRole"
 import { getRolesList } from "@/utils/permissionRole"
 import { type Role } from "@/api/permissionRole/role"
-import { ResponseCode } from "@/api/responseCode"
+import { ResponseCode } from "@/api/response"
 import { deleteUserAPI, type DeleteUserRequest } from "@/api/user/deleteUser"
 import { type EditUserByAdminForm } from "@/views/admin/component/main/user-view/component/edit-user"
 import { formatTime } from "@/utils/dateTime"

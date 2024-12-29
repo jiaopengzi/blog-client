@@ -28,7 +28,7 @@ import {
     type CheckCategorySlugExcludingIDRequest,
     checkCategorySlugExcludingIDAPI,
 } from "@/api/postCategory/checkCategorySlugExcludingID"
-import { ResponseCode, handleErrInfo } from "@/api/responseCode"
+import { ResponseCode, handleResErr } from "@/api/response"
 import { RegexPatterns } from "@/utils/regexPatterns"
 
 // 表单验证选项
@@ -79,7 +79,7 @@ export function useFormValidation(options: FormValidationOptions): {
             if (res.data.code === ResponseCode.PostCategoryCheckNameNoExist) {
                 callback()
             } else {
-                const errMsg = handleErrInfo(res, "分类不可用")
+                const errMsg = handleResErr(res, "分类不可用")
                 callback(new Error(errMsg))
             }
         })
@@ -119,7 +119,7 @@ export function useFormValidation(options: FormValidationOptions): {
             if (res.data.code === ResponseCode.PostCategoryCheckSlugNoExist) {
                 callback()
             } else {
-                const errMsg = handleErrInfo(res, "别名不可用")
+                const errMsg = handleResErr(res, "别名不可用")
                 callback(new Error(errMsg))
             }
         })
@@ -159,7 +159,7 @@ export function useFormValidation(options: FormValidationOptions): {
             if (res.data.code === ResponseCode.PostCategoryCheckNameNoExistExcludingID) {
                 callback()
             } else {
-                const errMsg = handleErrInfo(res, "分类不可用")
+                const errMsg = handleResErr(res, "分类不可用")
                 callback(new Error(errMsg))
             }
         })
@@ -205,7 +205,7 @@ export function useFormValidation(options: FormValidationOptions): {
             if (res.data.code === ResponseCode.PostCategoryCheckSlugNoExistExcludingID) {
                 callback()
             } else {
-                const errMsg = handleErrInfo(res, "别名不可用")
+                const errMsg = handleResErr(res, "别名不可用")
                 callback(new Error(errMsg))
             }
         })

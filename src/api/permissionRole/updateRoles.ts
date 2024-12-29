@@ -9,11 +9,9 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
+import { request, routerGroup } from "@/api/request"
 import { PermissionNames } from "@/utils/permissionRole"
-import { type Res } from "@/api/responseCode"
+import type { Res, ResPromise } from "@/api/response"
 
 // 更新列表角色权限 请求参数
 export interface UpdateRolesRequest {
@@ -27,7 +25,7 @@ export interface UpdateRoleRequest {
 }
 
 // 更新列表角色权限
-export function updateRolesAPI(requestData: UpdateRolesRequest): AxiosPromise<Res<unknown>> {
+export function updateRolesAPI(requestData: UpdateRolesRequest): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/role/update-roles"
     return request({
         url: urlStr,

@@ -9,10 +9,8 @@
  * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface RegisterRequest {
     captcha: string
@@ -23,7 +21,7 @@ export interface RegisterRequest {
 }
 
 // 注册
-export function RegisterAPI(requestData: RegisterRequest): AxiosPromise<Res<unknown>> {
+export function RegisterAPI(requestData: RegisterRequest): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/user/register"
     return request({
         url: urlStr,

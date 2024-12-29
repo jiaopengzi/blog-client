@@ -45,7 +45,7 @@ import { ref, onUnmounted, useTemplateRef } from "vue"
 import Cropper from "cropperjs"
 import "cropperjs/dist/cropper.min.css"
 import { ElButton, ElDialog } from "element-plus"
-import { ShowMsgTip } from "@/utils/message"
+import { MessageUtil } from "@/utils/message"
 import { uploadAvatar } from "./uploadAvatar"
 
 defineOptions({ name: "AvatarUpload" })
@@ -90,7 +90,7 @@ function onFileChange(e: Event) {
     // 检查文件大小
     const maxFileSize = 10 * 1024 * 1024 // 10MB
     if (file.size > maxFileSize) {
-        ShowMsgTip(ShowMsgTip.MsgType.warning, "请选择小于 10MB 的图片")
+        MessageUtil.warning("请选择小于 10MB 的图片")
         return
     }
 
@@ -134,7 +134,7 @@ function uploadImage() {
     if (cropperInstance) {
         cropperInstance.getCroppedCanvas().toBlob(async (blob: Blob | null) => {
             if (!blob) {
-                ShowMsgTip(ShowMsgTip.MsgType.error, "无法获取裁剪后的图像")
+                MessageUtil.error("无法获取裁剪后的图像")
                 return
             }
 
@@ -145,11 +145,11 @@ function uploadImage() {
             if (imageUrl) {
                 emit("avatar-upload-url", imageUrl)
                 cropperVisible.value = false
-                ShowMsgTip(ShowMsgTip.MsgType.success, "上传成功")
+                MessageUtil.success("上传成功")
             }
         })
     } else {
-        ShowMsgTip(ShowMsgTip.MsgType.warning, "请先选择并裁剪图片")
+        MessageUtil.warning("请先选择并裁剪图片")
     }
 }
 

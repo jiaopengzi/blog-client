@@ -2,17 +2,15 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-12 12:38:12
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 10:12:36
+ * @LastEditTime : 2024-12-29 12:55:20
  * @FilePath     : \blog-client\src\api\user\resetPassword.ts
  * @Description  : 忘记密码
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface ResetPasswordRequest {
     captcha: string
@@ -22,7 +20,7 @@ export interface ResetPasswordRequest {
 }
 
 // 注册
-export function resetPasswordAPI(requestData: ResetPasswordRequest): AxiosPromise<Res<unknown>> {
+export function resetPasswordAPI(requestData: ResetPasswordRequest): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/user/reset-password"
     return request({
         url: urlStr,

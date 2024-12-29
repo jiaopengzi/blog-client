@@ -9,12 +9,10 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import type { AxiosPromise } from "axios"
-import { routerGroup } from "@/api/routerGroup"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
-export function getKeyAPI(videoId: string): AxiosPromise<Res<string>> {
+export function getKeyAPI(videoId: string): ResPromise<Res<string>> {
     return request({
         url: `${routerGroup}/video/key/${videoId}`,
         method: "get",

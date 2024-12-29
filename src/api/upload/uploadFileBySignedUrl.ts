@@ -8,7 +8,8 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
-import axios from "axios"
+
+import { request } from "@/api/request"
 export function uploadFileBySignedUrlAPI(
     file: File, // 文件
     signedUrl: string, // 签名URL
@@ -22,7 +23,7 @@ export function uploadFileBySignedUrlAPI(
             const arrayBuffer = event.target?.result as ArrayBuffer | null
 
             if (arrayBuffer) {
-                axios
+                request
                     .put(signedUrl, arrayBuffer, {
                         headers: headers,
                         onUploadProgress: (progressEvent) => {

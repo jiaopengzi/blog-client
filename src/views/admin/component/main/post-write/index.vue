@@ -222,7 +222,7 @@ import { AdminSideMenu } from "@/views/admin/component/aside"
 import type { ElContainer, ElFormItem } from "element-plus"
 import { useUserStore } from "@/stores/user"
 import { viewListPostCategoryAPI, type PostCategory } from "@/api/postCategory/view"
-import { ResponseCode } from "@/api/responseCode"
+import { ResponseCode } from "@/api/response"
 import { PostStatusCode, gegPostStatusOptions, type InsertPostRequest } from "@/api/post/common"
 import { useFormValidation } from "./useFormValidation"
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
@@ -235,7 +235,7 @@ import {
     type UpdatePostForm,
 } from "./index"
 import AddTag from "@/components/common/add-tag"
-import { ShowMsgTip } from "@/utils/message"
+import { MessageUtil } from "@/utils/message"
 import { useAdd } from "./useAdd"
 import { useEdit } from "./useEdit"
 import { useSwitchItem } from "./useSwitchItem"
@@ -273,7 +273,7 @@ const allCategories = ref<PostCategory[]>([])
 
 const showWarningCategory = () => {
     if (allCategories.value.length === 0) {
-        ShowMsgTip(ShowMsgTip.MsgType.warning, "请添加文章分类后在进入文章编辑")
+        MessageUtil.warning("请添加文章分类后在进入文章编辑")
     }
 }
 
@@ -520,7 +520,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     } else {
         // 判断是否有更新
         if (!isUpdate.value) {
-            ShowMsgTip(ShowMsgTip.MsgType.warning, "没有任何修改")
+            MessageUtil.warning("没有任何修改")
             return
         }
 

@@ -9,11 +9,11 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import axios from "axios"
+import { request } from "@/api/request"
 
 export async function getPublicIp(): Promise<string> {
     try {
-        const response = await axios.get("https://api.ipify.org?format=json")
+        const response = await request.get("https://api.ipify.org?format=json")
         return response.data.ip
     } catch (error) {
         console.error("获取公网IP地址失败:", error)

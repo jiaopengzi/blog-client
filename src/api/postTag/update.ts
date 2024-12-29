@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface UpdatePostTagRequest {
     id: string // 标签id
@@ -24,7 +22,7 @@ export interface UpdatePostTagRequest {
 }
 
 // 更新文章标签
-export function updatePostTagAPI(requestData: UpdatePostTagRequest): AxiosPromise<Res<unknown>> {
+export function updatePostTagAPI(requestData: UpdatePostTagRequest): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/post-tag/update"
     return request({
         url: urlStr,

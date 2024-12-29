@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import type { AxiosPromise } from "axios"
-import { routerGroup } from "@/api/routerGroup"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 import { HashAlgorithm } from "@/utils/hash"
 
 export interface FileAllowed {
@@ -29,7 +27,7 @@ export interface UploadFileRequirements {
     chunk_size: number // 分片大小
 }
 
-export function getUploadFileRequirementsAPI(): AxiosPromise<Res<UploadFileRequirements>> {
+export function getUploadFileRequirementsAPI(): ResPromise<Res<UploadFileRequirements>> {
     return request({
         url: routerGroup + "/upload/file-requirements",
         method: "get",

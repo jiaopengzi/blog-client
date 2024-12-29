@@ -49,7 +49,7 @@
 import { ref, onBeforeMount, useTemplateRef } from "vue"
 import { IconKeys } from "@/components/common/icons"
 import { getUploadFileRequirementsAPI } from "@/api/upload/getUploadFileRequirements"
-import { ResponseCode } from "@/api/responseCode"
+import { ResponseCode } from "@/api/response"
 import { type UploadRequestOptions, type ElUpload } from "element-plus"
 import { HashAlgorithm } from "@/utils/hash"
 import { uploadByEl } from "@/views/admin/component/main/media/component/add-media"

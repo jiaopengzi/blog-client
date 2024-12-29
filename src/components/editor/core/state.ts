@@ -20,7 +20,7 @@ import {
 } from "./utils"
 
 import type { EditorState } from "./types"
-import axios from "axios"
+import { request } from "@/api/request"
 import { reactive } from "vue"
 
 /**
@@ -142,7 +142,7 @@ export class EditorStateManager {
 
     // 通过 url 获取编辑器内容
     async getEditorContentFromUrl(url: string): Promise<void> {
-        const res = await axios.get(url)
+        const res = await request.get(url)
         this.updateState(res.data)
     }
 

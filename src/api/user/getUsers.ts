@@ -2,19 +2,17 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 16:30:57
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 10:11:15
+ * @LastEditTime : 2024-12-29 13:18:46
  * @FilePath     : \blog-client\src\api\user\getUsers.ts
  * @Description  : 获取用户信息
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import { type Res } from "@/api/responseCode"
-import type { AxiosPromise } from "axios"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
+import { ResponseCode } from "@/api/response"
 import type { DataWithImg, Pagination, PaginationRequest } from "@/components/common"
-import { ResponseCode } from "@/api/responseCode"
 import { ImgFit } from "@/components/common/index"
 import { formatTime } from "@/utils/dateTime"
 import { type PgSqlDateTime } from "@/api/common"
@@ -29,7 +27,7 @@ export async function getUsersAPI(
     width: number = 30, // 默认值 50px
     height: number = 30, // 默认值 50px
     imgFit: ImgFit = ImgFit.Cover,
-): AxiosPromise<Res<Pagination<User>>> {
+): ResPromise<Res<Pagination<User>>> {
     const urlStr = routerGroup + "/user/view"
     const response = await request({
         url: urlStr,

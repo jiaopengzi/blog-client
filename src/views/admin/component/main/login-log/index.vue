@@ -40,7 +40,7 @@ import {
     type GetLoginLogsRequest,
     type LoginLog,
 } from "@/api/loginLog/getLoginLogs"
-import { ResponseCode, handleErrInfo } from "@/api/responseCode"
+import { ResponseCode, handleResErr } from "@/api/response"
 import {
     deleteLoginLogByDayAPI,
     type DeleteLoginLogByDayRequest,
@@ -49,7 +49,7 @@ import {
     deleteLoginLogByIDsAPI,
     type DeleteLoginLogByIDsRequest,
 } from "@/api/loginLog/deleteLoginLogByIds"
-import { ShowMsgTip } from "@/utils/message"
+import { MessageUtil } from "@/utils/message"
 import { deleteConfirmCommon } from "@/utils/confirm"
 
 import BaseTable from "@/components/common/base-table"
@@ -168,11 +168,11 @@ const handleDeleteN = () => {
             if (res.data.code === ResponseCode.LoginLogDeleteByDaySuccess) {
                 // 删除成功后重新获取用户列表
                 runSearch()
-                ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 3000)
+                MessageUtil.success(res.data.msg, 3000)
             } else {
                 // 显示错误信息
-                const msg = handleErrInfo(res)
-                ShowMsgTip(ShowMsgTip.MsgType.error, msg, 3000)
+                const msg = handleResErr(res)
+                MessageUtil.error(msg, 3000)
             }
         })
     })

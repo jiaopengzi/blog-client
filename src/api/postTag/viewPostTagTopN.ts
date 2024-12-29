@@ -9,14 +9,12 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 import { type PostTag } from "./view"
 
 // 查看文章标签 top n
-export function viewPostTagTopNAPI(): AxiosPromise<Res<PostTag[]>> {
+export function viewPostTagTopNAPI(): ResPromise<Res<PostTag[]>> {
     const urlStr = routerGroup + "/post-tag/view-top-n"
     return request({
         url: urlStr,

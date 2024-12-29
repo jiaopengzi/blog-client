@@ -10,7 +10,7 @@
  */
 import { createRouter, createWebHistory } from "vue-router"
 import { routeObj, routes } from "@/router/routeAll"
-import { ShowMsgTip } from "@/utils/message"
+import { MessageUtil } from "@/utils/message"
 import { useUserStore } from "@/stores/user"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import { confirmCommon } from "@/utils/confirm"
@@ -34,7 +34,7 @@ router.beforeEach(async (to, from, next) => {
     // 如果已经登录，未绑定邮箱，且访问的页面不是用户信息页面，则跳转到用户信息页面
     else if (userStore.isLogin && !userStore.isBindEmail && to.path !== routeObj.userInfo.path) {
         await userStore.changeShowDialogBindEmail(true)
-        ShowMsgTip(ShowMsgTip.MsgType.warning, "请绑定邮箱！", 3000)
+        MessageUtil.warning("请绑定邮箱！", 3000)
         next(routeObj.userInfo.path)
     }
 

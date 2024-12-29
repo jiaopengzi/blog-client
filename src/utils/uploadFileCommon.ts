@@ -9,7 +9,7 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { ShowMsgTip } from "@/utils/message"
+import { MessageUtil } from "@/utils/message"
 import {
     UploadControllerEvents,
     UploadController,
@@ -33,20 +33,20 @@ export const uploadFileCommon = async <T extends RequestStrategy>(
 
     return new Promise((resolve, reject) => {
         uploadController.on(UploadControllerEvents.CHECK_WHOLE_HASH, (fileName: string) => {
-            ShowMsgTip(ShowMsgTip.MsgType.info, `正在校验:${fileName},请稍后...`, 3000)
+            MessageUtil.info(`正在校验:${fileName},请稍后...`, 3000)
         })
 
         uploadController.on(UploadControllerEvents.END, (info: UploadFileSuccessInfo) => {
             // const msg = `上传成功：${info.fileName}`
             // const msg = `上传成功1`
-            // ShowMsgTip(ShowMsgTip.MsgType.success, msg, 5000)
+            // MessageUtil.success( msg, 5000)
             resolve(info.fileUrl)
         })
 
         uploadController.on(UploadControllerEvents.ERROR, (error: Error) => {
             // 处理错误
             // console.error(error)
-            ShowMsgTip(ShowMsgTip.MsgType.error, error.message, 6000)
+            MessageUtil.error(error.message, 6000)
             reject(error)
         })
 

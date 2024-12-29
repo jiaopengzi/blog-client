@@ -11,8 +11,8 @@
 
 import { viewPostByIDAdminAPI, type ViewPostByIDRequest } from "@/api/post/viewByIDAdmin"
 import { updatePostAPI } from "@/api/post/update"
-import { ResponseCode, handleErrInfo } from "@/api/responseCode"
-import { ShowMsgTip } from "@/utils/message"
+import { ResponseCode, handleResErr } from "@/api/response"
+import { MessageUtil } from "@/utils/message"
 import type { UpsertPostForm, PostInfoAboutTime } from "./index"
 import type { SwitchItem } from "@/components/common/switch-group"
 import { CommentStatusCode, type UpdatePostRequest } from "@/api/post/common"
@@ -126,10 +126,10 @@ export function useEdit(
         return await updatePostAPI(req).then(async (res): Promise<boolean> => {
             if (res.data.code === ResponseCode.PostUpdateSuccess) {
                 postInfoAboutTime.updated_at = new Date(res.data.data.updated_at)
-                ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 6000)
+                MessageUtil.success(res.data.msg, 6000)
                 return true
             } else {
-                ShowMsgTip(ShowMsgTip.MsgType.error, handleErrInfo(res), 0)
+                MessageUtil.error(handleResErr(res), 0)
                 return false
             }
         })

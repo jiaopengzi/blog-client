@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import type { AxiosPromise } from "axios"
-import { routerGroup } from "@/api/routerGroup"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export type Subtitles = Record<
     string,
@@ -23,7 +21,7 @@ export type Subtitles = Record<
 >
 
 // 根据 videoHashId 和 subtitlesLanguage 获取字幕
-export function getSubtitlesAPI(videoHashId: string): AxiosPromise<Res<Subtitles>> {
+export function getSubtitlesAPI(videoHashId: string): ResPromise<Res<Subtitles>> {
     return request({
         url: `${routerGroup}/subtitles/webvtt/${videoHashId}`,
         method: "get",

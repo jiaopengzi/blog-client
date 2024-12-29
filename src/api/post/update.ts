@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 import { type UpdatePostRequest } from "./common"
 
 export interface UpdatePostResData {
@@ -20,9 +18,7 @@ export interface UpdatePostResData {
 }
 
 // 更新文章
-export function updatePostAPI(
-    requestData: UpdatePostRequest,
-): AxiosPromise<Res<UpdatePostResData>> {
+export function updatePostAPI(requestData: UpdatePostRequest): ResPromise<Res<UpdatePostResData>> {
     const urlStr = routerGroup + "/post/update"
     return request({
         url: urlStr,

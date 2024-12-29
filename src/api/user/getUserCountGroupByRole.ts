@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import { type Res } from "@/api/responseCode"
-import type { AxiosPromise } from "axios"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 // 用户统计
 export interface UserCountGroupByRole {
@@ -21,7 +19,7 @@ export interface UserCountGroupByRole {
 }
 
 // 获取用户信息 api 函数
-export function getUserCountGroupByRoleAPI(): AxiosPromise<Res<UserCountGroupByRole[]>> {
+export function getUserCountGroupByRoleAPI(): ResPromise<Res<UserCountGroupByRole[]>> {
     const urlStr = routerGroup + "/user/count-group-by-role"
     return request({
         url: urlStr,

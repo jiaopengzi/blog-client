@@ -2,18 +2,16 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-26 16:54:04
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-28 11:56:30
+ * @LastEditTime : 2024-12-29 12:49:10
  * @FilePath     : \blog-client\src\api\permissionRole\upsertPermissionRole.ts
  * @Description  : 插入或更新角色权限
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
+import { request, routerGroup } from "@/api/request"
 import { PermissionNames } from "@/utils/permissionRole"
-import { type Res } from "@/api/responseCode"
+import type { Res, ResPromise } from "@/api/response"
 
 //  插入或更新角色权限 请求参数
 export interface UpsertPermissionRoleRequest {
@@ -26,7 +24,7 @@ export interface UpsertPermissionRoleRequest {
 // 更新列表角色权限
 export function upsertPermissionRoleAPI(
     requestData: UpsertPermissionRoleRequest,
-): AxiosPromise<Res<unknown>> {
+): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/role/upsert-permission-role"
     return request({
         url: urlStr,

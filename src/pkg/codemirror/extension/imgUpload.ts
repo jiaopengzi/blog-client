@@ -12,7 +12,7 @@
 import { EditorView } from "@codemirror/view"
 import type { Extension } from "@codemirror/state"
 import { uploadEditor } from "./uploadEditor"
-import { ShowMsgTip } from "@/utils/message"
+import { MessageUtil } from "@/utils/message"
 
 // 自定义键盘事件
 const handlePasteImage: Extension = EditorView.domEventHandlers({
@@ -50,9 +50,9 @@ async function uploadImage(file: File, view: EditorView) {
         })
 
         // 将光标移动指定位置 cursorPosMove 处 更新状态
-        ShowMsgTip(ShowMsgTip.MsgType.success, "图片上传成功", 2000)
+        MessageUtil.success("图片上传成功", 2000)
     } else {
-        ShowMsgTip(ShowMsgTip.MsgType.error, "上传失败，请重试")
+        MessageUtil.error("上传失败，请重试")
     }
 }
 

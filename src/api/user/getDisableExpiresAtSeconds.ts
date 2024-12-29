@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface GetDisableExpiresAtSecondsRequest {
     login_name: string
@@ -21,7 +19,7 @@ export interface GetDisableExpiresAtSecondsRequest {
 // 检测用户名是否存在
 export function getDisableExpiresAtSecondsAPI(
     requestData: GetDisableExpiresAtSecondsRequest,
-): AxiosPromise<Res<number>> {
+): ResPromise<Res<number>> {
     const urlStr = routerGroup + "/user/get-disable-expires-at-seconds"
     return request({
         url: urlStr,

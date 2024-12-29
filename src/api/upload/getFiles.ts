@@ -9,10 +9,9 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import { type Res } from "@/api/responseCode"
-import type { AxiosPromise } from "axios"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
+
 import type { DataWithImg, Pagination, PaginationRequest } from "@/components/common"
 
 export interface GetMediaFilesRequest extends PaginationRequest {
@@ -45,7 +44,7 @@ export interface MediaFile extends DataWithImg {
 // 获取媒体文件信息 api 函数
 export async function getMediaFilesAPI(
     requestData: GetMediaFilesRequest,
-): AxiosPromise<Res<Pagination<MediaFile>>> {
+): ResPromise<Res<Pagination<MediaFile>>> {
     const urlStr = routerGroup + "/upload/view"
     return request({
         url: urlStr,

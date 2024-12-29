@@ -1,24 +1,16 @@
 /**
  * @Author       : jiaopengzi
- * @Date         : 2023-08-11 16:57:23
+ * @Date         : 2024-12-29 12:08:15
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-18 12:01:47
- * @FilePath     : \blog-client\src\api\responseCode.ts
- * @Description  : 响应码
+ * @LastEditTime : 2024-12-29 12:09:19
+ * @FilePath     : \blog-client\src\api\response\code.ts
+ * @Description  : 相应状态码
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import type { AxiosResponse } from "axios"
-
-// 统一响应结构
-export interface Res<T> {
-    code: number
-    msg: string
-    data: T // 可以根据实际返回的数据结构替换为更具体的类型
-}
-
 export enum ResponseCode {
+    // 常规响应码
     SUCCESS = 200,
     ERROR = 500,
     NOT_FOUND = 404,
@@ -43,7 +35,6 @@ export enum ResponseCode {
     HTTP_VERSION_NOT_SUPPORTED = 505,
     NETWORK_AUTHENTICATION_REQUIRED = 511,
 
-    // 自定义
     // 用户相关
     UserRegisterSuccess = 1000, //用户注册成功
     UserNameExist = 1001, //用户名已存在
@@ -142,6 +133,7 @@ export enum ResponseCode {
     SocialBindWeChatCallbackSuccess = 8208, //微信绑定成功回调
     SocialUnBindWeChatSuccess = 8209, //微信解绑成功
 
+    // 权限相关
     GetPermissionSuccess = 8300, //获取权限列表成功
     HasPermission = 8305, //判断是否有权限成功
     GetRoleSuccess = 8400, //获取角色列表成功
@@ -150,9 +142,12 @@ export enum ResponseCode {
     DeletePermissionRoleSuccess = 8405, //删除角色权限成功
     GetPermissionRoleSuccess = 8407, //获取角色权限成功
 
+    // 登录日志相关
     GetLoginLogsSuccess = 8500, //获取登录日志成功
     LoginLogDeleteByIDsSuccess = 8502, //通过ID删除登录日志成功
     LoginLogDeleteByDaySuccess = 8503, //通过天数删除登录日志成功
+
+    // 视频相关
     VideoNotFound = 8600, // 视频不存在
     GetVideoMainM3u8Success = 8601, // 获取视频主M3u8成功
     GetVideoM3u8Success = 8602, // 获取视频M3u8成功
@@ -162,71 +157,7 @@ export enum ResponseCode {
     SubtitlesDeleteSuccess = 8608, // 删除字幕成功
     GetVideoSubtitlesLanguagesSuccess = 8609, // 获取视频字幕语言列表成功
 
+    // 客户端请求频繁
     ClientIPTooManyRequests = 9006, //客户端IP请求次数过多
     ClientIDTooManyRequests = 9007, //客户端ID请求次数过多
-}
-
-// 验证码用途
-export enum CaptchaPurpose {
-    Register = "Register", // 验证码用途：注册
-    ResetPassword = "ResetPassword", // 验证码用途：重置密码
-    BindEmail = "BindEmail", // 验证码用途：绑定邮箱
-}
-
-// 本地存储键
-export enum LocalStorageKey {
-    AccessToken = "access_token", // token名称：访问令牌
-    RolesList = "roles_list", // 角色列表
-    PermissionList = "permission_list", // 权限列表
-    IsCollapse = "is_collapse", // 侧边栏是否折叠
-    IsShowListOrGridAtMedia = "is_show_list_or_grid_at_media", // 媒体列表是否显示为列表或网格
-    IsShowSeoAtPostWrite = "is_show_seo_at_post_write", // 文章写作是否显示SEO
-}
-
-// 社交登录
-export enum Social {
-    QQ = "qq",
-    QQDisplay = "QQ",
-    WeChat = "wechat",
-    WeChatDisplay = "微信",
-}
-
-/**
- * @description: 处理错误信息
- * @param res 返回结果
- * @param msgTitle 根据不同的接口传入不同的标题 默认为空
- * @return {string} 返回错误信息
- */
-export const handleErrInfo = <T>(
-    res: AxiosResponse<Res<T>, unknown> | Res<T>,
-    msgTitle: string = "",
-): string => {
-    // 处理响应数据
-    const resAc = "data" in res ? (res as AxiosResponse<Res<T>>).data : (res as Res<T>)
-
-    // 错误信息
-    let errMsg = resAc.msg || msgTitle
-
-    const resData = resAc.data
-
-    // 如果data不为空且不是对象
-    if (resData !== null && typeof resData !== "object") {
-        return (errMsg += "：" + resData)
-    }
-
-    // 如果data不为空且是对象
-    if (resData !== null && typeof resData === "object") {
-        // 历遍对象取出错误信息，不需要key
-        const errData: string[] = []
-
-        const data = resData as Record<string, string>
-        for (const key in data) {
-            errData.push(data[key])
-        }
-
-        // 拼接错误信息
-        return (errMsg += "：" + errData.join(","))
-    }
-
-    return errMsg
 }

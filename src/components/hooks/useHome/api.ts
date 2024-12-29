@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-25 11:46:44
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-27 14:51:39
+ * @LastEditTime : 2024-12-29 13:45:26
  * @FilePath     : \blog-client\src\components\hooks\useHome\api.ts
  * @Description  : 数据请求
  * @Blog         : https://jiaopengzi.com
@@ -10,9 +10,8 @@
  */
 
 import { ref, reactive, type Reactive } from "vue"
-import type { AxiosPromise } from "axios"
 import { type Pagination, getEmptyPagination } from "@/components/common"
-import { ResponseCode, type Res } from "@/api/responseCode"
+import { type Res, type ResPromise, ResponseCode } from "@/api/response"
 import { viewPostAPI, type ViewPostRequest } from "@/api/post/view"
 import { viewHotPostAPI } from "@/api/post/viewHotPost"
 import { viewRecommendedPostAPI } from "@/api/post/viewRecommendedPost"
@@ -35,7 +34,7 @@ export function useGetData(
 
     // 通用返回为 PostResCommon[] 的 API
     const getPostResCommons = async (
-        apiFunc: () => AxiosPromise<Res<PostResCommon[]>>,
+        apiFunc: () => ResPromise<Res<PostResCommon[]>>,
         targetArray: PostResCommon[],
         successCode: number,
     ) => {

@@ -2,18 +2,16 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:01:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-23 15:29:00
+ * @LastEditTime : 2024-12-29 12:47:22
  * @FilePath     : \blog-client\src\api\postTag\view.ts
  * @Description  : 查看文章标签
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
+import { request, routerGroup } from "@/api/request"
 import type { DataWithImg, Pagination, PaginationRequest } from "@/components/common"
-import { type Res } from "@/api/responseCode"
+import type { Res, ResPromise } from "@/api/response"
 
 // 每行数据类型
 export interface PostTag extends DataWithImg {
@@ -31,7 +29,7 @@ export interface PostTag extends DataWithImg {
 // 查看文章标签
 export function viewPostTagAPI(
     requestData: PaginationRequest,
-): AxiosPromise<Res<Pagination<PostTag>>> {
+): ResPromise<Res<Pagination<PostTag>>> {
     const urlStr = routerGroup + "/post-tag/view"
     return request({
         url: urlStr,

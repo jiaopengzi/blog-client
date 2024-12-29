@@ -9,17 +9,15 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import type { AxiosPromise } from "axios"
-import { routerGroup } from "@/api/routerGroup"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface M3u8ResData {
     base_url: string
     m3u8: string
 }
 
-export function getM3u8API(videoIdLevel: string): AxiosPromise<Res<M3u8ResData>> {
+export function getM3u8API(videoIdLevel: string): ResPromise<Res<M3u8ResData>> {
     return request({
         url: `${routerGroup}/video/${videoIdLevel}`,
         method: "get",

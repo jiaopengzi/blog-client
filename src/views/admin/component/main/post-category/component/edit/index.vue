@@ -19,9 +19,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ShowMsgTip } from "@/utils/message"
+import { MessageUtil } from "@/utils/message"
 import { type UpdatePostCategoryRequest, updatePostCategoryAPI } from "@/api/postCategory/update"
-import { ResponseCode } from "@/api/responseCode"
+import { ResponseCode } from "@/api/response"
 import View from "../view"
 import { type ViewForm } from "../view"
 
@@ -51,10 +51,10 @@ const submitData = async (form: ViewForm) => {
     if (data.code === ResponseCode.PostCategoryUpdateSuccess) {
         // 添加成功提示
         emit("edit-status", true)
-        ShowMsgTip(ShowMsgTip.MsgType.success, data.msg, 6000)
+        MessageUtil.success(data.msg, 6000)
     } else {
         // 添加失败提示
-        ShowMsgTip(ShowMsgTip.MsgType.error, data.msg, 0)
+        MessageUtil.error(data.msg, 0)
     }
     console.log("submit!")
 }

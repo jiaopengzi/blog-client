@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 import { type PostResPaginationByAdmin, CustomFields } from "./common"
 import type { Pagination, PaginationRequest } from "@/components/common"
 
@@ -34,7 +32,7 @@ export interface ViewPostByAdminRequest extends PaginationRequest {
 // 查看文章
 export function viewPostByAdminAPI(
     requestData: ViewPostByAdminRequest,
-): AxiosPromise<Res<Pagination<PostResPaginationByAdmin>>> {
+): ResPromise<Res<Pagination<PostResPaginationByAdmin>>> {
     const urlStr = routerGroup + "/post/view-by-admin"
     return request({
         url: urlStr,

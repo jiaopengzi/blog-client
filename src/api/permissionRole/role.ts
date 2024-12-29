@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import type { AxiosPromise } from "axios"
-import { routerGroup } from "@/api/routerGroup"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 import { PermissionNames } from "@/utils/permissionRole"
 import { type UpsertPermissionRoleRequest } from "@/api/permissionRole/upsertPermissionRole"
 
@@ -27,7 +25,7 @@ export interface RoleWithLimit {
     permission_role: Record<string, UpsertPermissionRoleRequest>
 }
 
-export function getRolesAPI(): AxiosPromise<Res<RoleWithLimit>> {
+export function getRolesAPI(): ResPromise<Res<RoleWithLimit>> {
     return request({
         url: routerGroup + "/role/get-roles",
         method: "get",

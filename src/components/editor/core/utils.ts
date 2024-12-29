@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-19 14:00:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 19:52:36
+ * @LastEditTime : 2024-12-29 14:24:36
  * @FilePath     : \blog-client\src\components\editor\core\utils.ts
  * @Description  : 编辑器工具函数
  * @Blog         : https://jiaopengzi.com
@@ -13,7 +13,7 @@ import type { EditorState, Heading, MarkdownHeadingLine } from "./types"
 import createMarked from "@/pkg/marked/new-marked"
 import DOMPurify, { type Config } from "dompurify"
 import html2canvas from "html2canvas"
-import { ShowMsgTip } from "@/utils/message"
+import { MessageUtil } from "@/utils/message"
 import { HasParentByClass } from "@/utils/getParentByClass"
 import { CustomElementVideoPlayer, CustomElementAttributes } from "../preview"
 
@@ -101,7 +101,7 @@ export const createRegexCache = (): RegexCache => {
 
     const getCustomElementHeadingTagNameRegex = () => {
         const videoPlayer = new CustomElementVideoPlayer()
-        console.log("videoPlayer.tagName", videoPlayer.tagName.toLocaleLowerCase())
+        // console.log("videoPlayer.tagName", videoPlayer.tagName.toLocaleLowerCase())
         return new RegExp(`^${videoPlayer.tagName.toLocaleLowerCase()}|^video-test`) // 动态生成正则表达式  DOMPurify 允许的 自定义元素的标签名
     }
 
@@ -488,13 +488,13 @@ function applyInlineStyles(el: HTMLElement | SVGElement) {
 
 //       // 写入剪贴板
 //       await navigator.clipboard.write([clipboardItemInput])
-//       ShowMsgTip(ShowMsgTip.MsgType.success, '内容已复制到剪贴板')
+//       MessageUtil.success( '内容已复制到剪贴板')
 //     } else {
-//       ShowMsgTip(ShowMsgTip.MsgType.warning, '请升级你的浏览器以获得更好的复制功能支持')
+//       MessageUtil.warning( '请升级你的浏览器以获得更好的复制功能支持')
 //     }
 //   } catch (err) {
 //     console.error('无法复制内容', err)
-//     ShowMsgTip(ShowMsgTip.MsgType.error, '无法复制内容')
+//     MessageUtil.error( '无法复制内容')
 //   }
 // }
 
@@ -523,7 +523,7 @@ export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
 
             // 写入剪贴板
             await navigator.clipboard.write([clipboardItemInput])
-            ShowMsgTip(ShowMsgTip.MsgType.success, "内容已复制到剪贴板")
+            MessageUtil.success("内容已复制到剪贴板")
         } else {
             console.log("老复制api")
             const textArea = document.createElement("textarea")
@@ -537,16 +537,20 @@ export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
             try {
                 const successful = document.execCommand("copy")
                 const msg = successful ? "内容已复制到剪贴板" : "无法复制内容"
-                ShowMsgTip(successful ? ShowMsgTip.MsgType.success : ShowMsgTip.MsgType.error, msg)
+                if (successful) {
+                    MessageUtil.success(msg)
+                } else {
+                    MessageUtil.error(msg)
+                }
             } catch (err) {
                 console.error("无法复制内容", err)
-                ShowMsgTip(ShowMsgTip.MsgType.error, "无法复制内容")
+                MessageUtil.error("无法复制内容")
             } finally {
                 document.body.removeChild(textArea)
             }
         }
     } catch (err) {
         console.error("无法复制内容", err)
-        ShowMsgTip(ShowMsgTip.MsgType.error, "无法复制内容")
+        MessageUtil.error("无法复制内容")
     }
 }

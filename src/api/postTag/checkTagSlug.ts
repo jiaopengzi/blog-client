@@ -9,17 +9,15 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface CheckTagSlugRequest {
     slug: string // tag别名
 }
 
 // 检查 tag 名称是否存在
-export function checkTagSlugAPI(requestData: CheckTagSlugRequest): AxiosPromise<Res<unknown>> {
+export function checkTagSlugAPI(requestData: CheckTagSlugRequest): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/post-tag/check-tag-slug"
     return request({
         url: urlStr,

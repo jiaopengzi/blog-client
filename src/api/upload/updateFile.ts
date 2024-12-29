@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface UpdateFileRequest {
     file_id: string // 文件 ID
@@ -23,7 +21,7 @@ export interface UpdateFileRequest {
     is_video: boolean // 是否为视频
 }
 
-export function updateFileAPI(req: UpdateFileRequest): AxiosPromise<Res<unknown>> {
+export function updateFileAPI(req: UpdateFileRequest): ResPromise<Res<unknown>> {
     return request({
         url: routerGroup + "/upload/update",
         method: "post",

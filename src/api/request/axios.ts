@@ -1,22 +1,22 @@
 /**
  * @Author       : jiaopengzi
- * @Date         : 2023-08-04 10:54:19
+ * @Date         : 2024-12-29 12:37:34
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-17 15:51:40
- * @FilePath     : \blog-client\src\api\request.ts
+ * @LastEditTime : 2024-12-29 12:42:57
+ * @FilePath     : \blog-client\src\api\request\axios.ts
  * @Description  : axios封装
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
 import axios from "axios"
-import { LocalStorageKey } from "@/api/responseCode"
+import { LocalStorageKey } from "@/stores/local"
 
 //1. 创建axios对象
-const service = axios.create()
+const axiosInstance = axios.create()
 
 //2. 请求拦截器
-service.interceptors.request.use(
+axiosInstance.interceptors.request.use(
     (config) => {
         // 添加请求头 token
         const access_token = localStorage.getItem(LocalStorageKey.AccessToken)
@@ -35,7 +35,7 @@ service.interceptors.request.use(
 )
 
 //3. 响应拦截器
-service.interceptors.response.use(
+axiosInstance.interceptors.response.use(
     (response) => {
         // 检查响应头是否包含新的 Access Token
         const newAccessToken = response.headers["authorization"]
@@ -53,4 +53,4 @@ service.interceptors.response.use(
     },
 )
 
-export default service
+export default axiosInstance

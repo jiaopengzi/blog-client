@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 18:53:25
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 10:22:40
+ * @LastEditTime : 2024-12-29 12:25:47
  * @FilePath     : \blog-client\src\components\common\bind-email-dialog\index.vue
  * @Description  : 绑定邮箱弹窗
  * @Blog         : https://jiaopengzi.com
@@ -72,7 +72,7 @@
 
 <script lang="ts" setup>
 import { reactive, ref, useTemplateRef } from "vue"
-import { ShowMsgTip } from "@/utils/message"
+import { MessageUtil } from "@/utils/message"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import type { CheckEmailRequest } from "@/api/user/checkEmail"
 import { CheckEmailAPI } from "@/api/user/checkEmail"
@@ -82,7 +82,8 @@ import type { CaptchaSendRequest } from "@/api/captcha/send"
 import { captchaSendAPI } from "@/api/captcha/send"
 import type { CaptchaCheckRequest } from "@/api/captcha/check"
 import { captchaCheckAPI } from "@/api/captcha/check"
-import { ResponseCode, CaptchaPurpose, handleErrInfo } from "@/api/responseCode"
+import { ResponseCode, handleResErr } from "@/api/response"
+import { CaptchaPurpose } from "@/api/common"
 import { storeToRefs } from "pinia"
 import { useUserStore } from "@/stores/user"
 
@@ -265,11 +266,11 @@ const submitForm = async (formEl: FormInstance | undefined) => {
             if (res.data.code === ResponseCode.UserBindEmailSuccess) {
                 // 显示注册成功提示
                 userStore.getUserInfoByToken(true) // 强制更新用户信息
-                ShowMsgTip(ShowMsgTip.MsgType.success, res.data.msg, 6000)
+                MessageUtil.success(res.data.msg, 6000)
             } else {
                 // 注册失败
-                const msg = handleErrInfo(res)
-                ShowMsgTip(ShowMsgTip.MsgType.error, msg, 0)
+                const msg = handleResErr(res)
+                MessageUtil.error(msg, 0)
             }
             console.log("submit!")
         }
@@ -299,7 +300,7 @@ const sendCaptcha = async () => {
 
     const emailResult = await bindEmailFormRef.value?.validateField("email").catch(() => false)
     if (!emailResult) {
-        ShowMsgTip(ShowMsgTip.MsgType.error, "请输入正确的邮箱地址。", 0)
+        MessageUtil.error("请输入正确的邮箱地址。", 0)
         console.log("请输入邮箱")
         return
     }
@@ -311,11 +312,11 @@ const sendCaptcha = async () => {
         checkSendCaptcha()
             .then(() => {
                 // 成功发送验证码
-                ShowMsgTip(ShowMsgTip.MsgType.success, "验证码已发送到邮箱。", 6000)
+                MessageUtil.success("验证码已发送到邮箱。", 6000)
             })
             .catch((err: Error) => {
                 // 错误提示
-                ShowMsgTip(ShowMsgTip.MsgType.error, err.message, 0)
+                MessageUtil.error(err.message, 0)
             })
 
         // 按钮设置不能点击状态

@@ -2,17 +2,15 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-10-05 17:18:25
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 10:16:40
+ * @LastEditTime : 2024-12-29 12:56:33
  * @FilePath     : \blog-client\src\api\video\upsertSubtitles.ts
  * @Description  : 视频字幕上传
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 //  插入或更新字幕 请求参数
 export interface UpsertSubtitlesRequest {
@@ -23,9 +21,7 @@ export interface UpsertSubtitlesRequest {
 }
 
 // 更新字幕
-export function upsertSubtitlesAPI(
-    requestData: UpsertSubtitlesRequest,
-): AxiosPromise<Res<unknown>> {
+export function upsertSubtitlesAPI(requestData: UpsertSubtitlesRequest): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/subtitles/upsert"
     return request({
         url: urlStr,

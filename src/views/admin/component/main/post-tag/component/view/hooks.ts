@@ -22,7 +22,7 @@ import {
     type CheckTagSlugExcludingIDRequest,
     checkTagSlugExcludingIDAPI,
 } from "@/api/postTag/checkTagSlugExcludingID"
-import { ResponseCode, handleErrInfo } from "@/api/responseCode"
+import { ResponseCode, handleResErr } from "@/api/response"
 import { RegexPatterns } from "@/utils/regexPatterns"
 
 // 表单验证选项
@@ -70,7 +70,7 @@ export function useFormValidation(options: FormValidationOptions): {
             if (res.data.code === ResponseCode.PostTagCheckNameNoExist) {
                 callback()
             } else {
-                const errMsg = handleErrInfo(res, "标签不可用")
+                const errMsg = handleResErr(res, "标签不可用")
                 callback(new Error(errMsg))
             }
         })
@@ -110,7 +110,7 @@ export function useFormValidation(options: FormValidationOptions): {
             if (res.data.code === ResponseCode.PostTagCheckSlugNoExist) {
                 callback()
             } else {
-                const errMsg = handleErrInfo(res, "别名不可用")
+                const errMsg = handleResErr(res, "别名不可用")
                 callback(new Error(errMsg))
             }
         })
@@ -150,7 +150,7 @@ export function useFormValidation(options: FormValidationOptions): {
             if (res.data.code === ResponseCode.PostTagCheckNameNoExistExcludingID) {
                 callback()
             } else {
-                const errMsg = handleErrInfo(res, "标签不可用")
+                const errMsg = handleResErr(res, "标签不可用")
                 callback(new Error(errMsg))
             }
         })
@@ -196,7 +196,7 @@ export function useFormValidation(options: FormValidationOptions): {
             if (res.data.code === ResponseCode.PostTagCheckSlugNoExistExcludingID) {
                 callback()
             } else {
-                const errMsg = handleErrInfo(res, "别名不可用")
+                const errMsg = handleResErr(res, "别名不可用")
                 callback(new Error(errMsg))
             }
         })

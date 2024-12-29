@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:33:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-17 10:44:29
+ * @LastEditTime : 2024-12-29 12:24:43
  * @FilePath     : \blog-client\src\views\admin\component\aside\index.vue
  * @Description  : 左边菜单栏 
  * @Blog         : https://jiaopengzi.com
@@ -41,7 +41,7 @@
 import { ref, reactive, computed } from "vue"
 import type { SwitchItem, SwitchItemLabel, SwitchItemColor } from "@/components/common/switch-group"
 import { adminMenuItemMapWithIndex } from "@/views/admin/component/aside"
-import { LocalStorageKey } from "@/api/responseCode"
+import { LocalStorageKey } from "@/stores/local"
 
 import SwitchGroup from "@/components/common/switch-group"
 import RecursiveMenuItem from "@/components/common/recursive-menu-item" // 引入递归菜单组件

@@ -9,10 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import request from "@/api/request"
-import { routerGroup } from "@/api/routerGroup"
-import type { AxiosPromise } from "axios"
-import { type Res } from "@/api/responseCode"
+import { request, routerGroup } from "@/api/request"
+import type { Res, ResPromise } from "@/api/response"
 
 export interface AddUserRequest {
     user_name: string // 用户名
@@ -23,7 +21,7 @@ export interface AddUserRequest {
 }
 
 // 注册
-export function AddUserAPI(requestData: AddUserRequest): AxiosPromise<Res<unknown>> {
+export function AddUserAPI(requestData: AddUserRequest): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/user/add"
     return request({
         url: urlStr,
