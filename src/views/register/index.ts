@@ -10,12 +10,4 @@
  */
 
 export { default } from "./index.vue"
-
-export interface RegisterForm {
-    userName: string
-    email: string
-    captcha: string
-    password: string
-    rePassword: string
-    acceptedTerms: boolean
-}
+export * from "./types"

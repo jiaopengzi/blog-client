@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 14:48:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 13:33:46
+ * @LastEditTime : 2024-12-30 12:14:02
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\add-user\index.vue
  * @Description  : 添加用户
  * @Blog         : https://jiaopengzi.com
@@ -70,7 +70,7 @@ import type { FormInstance, FormRules } from "element-plus" // 需要全部安�
 import type { AddUserRequest } from "@/api/user/addUser"
 import { AddUserAPI } from "@/api/user/addUser"
 import { ResponseCode } from "@/api/response"
-import type { AddUserForm } from "@/views/admin/component/main/user-view/component/add-user"
+import type { AddUserForm } from "./types"
 import { useFormValidation } from "@/components/hooks/useFormValidation"
 import { generatePassword } from "@/utils/password"
 import { type Role } from "@/api/permissionRole/role"

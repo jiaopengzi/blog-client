@@ -2,13 +2,12 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 15:06:12
+ * @LastEditTime : 2024-12-29 19:21:38
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
-
 <template>
     <!-- 加载中 防止页面失去响应提高用户体验 -->
     <div
@@ -33,7 +32,7 @@
                 />
 
                 <el-main class="main">
-                    <component :is="currentComponent" />
+                    <router-view />
                 </el-main>
             </el-container>
         </el-container>
@@ -43,26 +42,19 @@
         <Page404 />
     </div>
 </template>
+
 <script lang="ts" setup>
-import { ref, shallowRef, onBeforeMount, useTemplateRef } from "vue"
-import { useRoute } from "vue-router"
-import { components } from "./index"
-import {
-    adminMenuItemMapWithIndex,
-    // adminMenuItemMapWithIndexMap,
-    AdminSideMenu,
-} from "@/views/admin/component/aside"
+import { ref, onBeforeMount, useTemplateRef } from "vue"
+import { useRouter } from "vue-router"
 import { PermissionNames } from "@/utils/permissionRole"
 import { useUserStore } from "@/stores/user"
 
 import AdminHeader from "@/views/admin/component/header"
 import AdminAside from "@/views/admin/component/aside"
-import Dashboard from "@/views/admin/component/main/dashboard"
-import NoPermission from "@/views/admin/component/main/no-permission"
 import Page404 from "@/views/404"
 
 defineOptions({ name: "AdminLayout" })
-const route = useRoute()
+const router = useRouter()
 const hasPermissionLoginAdmin = ref(false)
 
 // 定义 HTMLElementRef 类型
@@ -86,34 +78,15 @@ const updatePermissionLoginAdmin = () => {
     isLoading.value = false
 }
 
-const currentComponent = shallowRef(Dashboard) // 组件的响应式引用 使用 shallowRef 代替 ref，避免组件重复渲染
-
 const containerRef = useTemplateRef<HTMLElementRef | null>("containerRef")
-
-// 更新当前组件
-const updateCurrentComponent = () => {
-    // 从 url 中获取 path 更新当前组件
-    const path = route.fullPath
-    if (path === "/admin" || path === undefined) {
-        return
-    }
-
-    if (path) {
-        updateCurrentComponentByPath(path)
-        // console.log("2", path)
-    }
-}
 
 // 选择菜单项
 const handleSelect = (index: string) => {
-    // console.log("index====>1", adminMenuItemMapWithIndexMap[index].display)
-    // console.log("index====>2", adminMenuItemMapWithIndexMap[index].parentIndex)
-
     if (userStore.getIsEditing) {
         return
     }
 
-    updateCurrentComponentByPath(index)
+    router.push(index)
 }
 
 // 折叠状态
@@ -122,24 +95,7 @@ const handleCollapseStatus = (isCollapse: boolean) => {
     collapseStatus.value = isCollapse
 }
 
-// 通过 path 更新当前组件
-const updateCurrentComponentByPath = (path: string): void => {
-    //通过 筛选 adminMenuItemMapWithIndex 中对象的 index 与 传入 index 相等的对象，获取对应的 key 值
-    const key = Object.keys(adminMenuItemMapWithIndex).filter(
-        (key) => adminMenuItemMapWithIndex[key as AdminSideMenu].index === path,
-    )[0]
-    if (!key) return
-    defaultActive.value = path
-    const permission = adminMenuItemMapWithIndex[key as AdminSideMenu]?.permissionName
-    if (permission && !userStore.hasPermission(permission)) {
-        currentComponent.value = NoPermission
-        return
-    }
-    currentComponent.value = components[key as keyof typeof components]
-}
-
 onBeforeMount(() => {
-    updateCurrentComponent()
     updatePermissionLoginAdmin()
 })
 </script>

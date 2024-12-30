@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-25 10:24:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-13 17:54:55
+ * @LastEditTime : 2024-12-30 11:59:05
  * @FilePath     : \blog-client\src\views\admin\component\main\media\component\edit-media\index.vue
  * @Description  : 编辑媒体
  * @Blog         : https://jiaopengzi.com
@@ -148,7 +148,7 @@
 
 <script lang="ts" setup>
 import { reactive, ref, watch, useTemplateRef, computed, watchEffect } from "vue"
-import type { EditMediaProps, EditMediaForm, SubtitlesForm } from "./index"
+import type { EditMediaProps, EditMediaForm, SubtitlesForm } from "./types"
 import { MessageUtil } from "@/utils/message"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { ResponseCode, handleResErr } from "@/api/response"

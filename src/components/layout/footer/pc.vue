@@ -42,14 +42,11 @@
     </footer>
 </template>
 <script setup lang="ts">
-// import { toRefs } from 'vue'
-import type { FooterProps } from "@/components/layout/footer"
+import type { FooterProps } from "./types"
 
 defineOptions({ name: "FooterPC" })
 
-const props = defineProps<{ footerData: FooterProps }>()
-// const { footerData } = toRefs(props)
-const { footerData } = props
+const { footerData } = defineProps<{ footerData: FooterProps }>()
 </script>
 
 <style scoped lang="scss">

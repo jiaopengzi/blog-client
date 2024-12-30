@@ -40,7 +40,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed } from "vue"
 import type { SwitchItem, SwitchItemLabel, SwitchItemColor } from "@/components/common/switch-group"
-import { adminMenuItemMapWithIndex } from "@/views/admin/component/aside"
+import { adminMenuItemMapWithIndex } from "./utils"
 import { LocalStorageKey } from "@/stores/local"
 
 import SwitchGroup from "@/components/common/switch-group"

@@ -10,10 +10,4 @@
  */
 
 export { default } from "./index.vue"
-
-export interface ResetPasswordForm {
-    email: string
-    captcha: string
-    password: string
-    rePassword: string
-}
+export * from "./types"

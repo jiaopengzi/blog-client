@@ -1,14 +1,16 @@
 /**
  * @Author       : jiaopengzi
- * @Date         : 2024-01-24 19:43:22
+ * @Date         : 2024-12-29 17:35:11
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-03 16:58:01
+ * @LastEditTime : 2024-12-30 14:52:45
  * @FilePath     : \blog-client\src\router\routeAdmin.ts
  * @Description  : admin 路由配置
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
+
 import type { RouteRecordRaw } from "vue-router"
+import { toKebabCase } from "@/utils/namingConversion"
 import { adminMenuItemMapWithIndex, AdminSideMenu } from "@/views/admin/component/aside"
 
 // 生成管理后台路由
@@ -21,21 +23,35 @@ function generateAdminRoutes() {
             meta: {
                 requiresAuth: true,
             },
+            children: [
+                // 默认子路由 dashboard
+                {
+                    path: "",
+                    name: "dashboard",
+                    component: () => import("@/views/admin/component/main/dashboard"),
+                },
+                // 其他子路由
+                ...Object.keys(adminMenuItemMapWithIndex).map((key) => {
+                    const menuItem = adminMenuItemMapWithIndex[key as AdminSideMenu]
+                    // 判断是否单独设置父级菜单默认是显示子菜单的组件,
+                    let component = toKebabCase(key)
+                    if (menuItem.components) {
+                        component = toKebabCase(menuItem.components)
+                    }
+
+                    return {
+                        path: menuItem.index,
+                        name: key,
+                        component: () =>
+                            import(`@/views/admin/component/main/${component}/index.vue`), // 需要具体到文件拓展名
+                        meta: {
+                            requiresAuth: true,
+                        },
+                    }
+                }),
+            ],
         },
     }
-    // 生成管理后台路由
-    Object.keys(adminMenuItemMapWithIndex).forEach((key) => {
-        const menuItem = adminMenuItemMapWithIndex[key as AdminSideMenu]
-        const route = {
-            path: menuItem.index,
-            name: key,
-            component: () => import("@/views/admin"),
-            meta: {
-                requiresAuth: true,
-            },
-        }
-        routes[key] = route
-    })
 
     return routes
 }

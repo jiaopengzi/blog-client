@@ -26,7 +26,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import type { HeaderNavPropsItem } from "@/components/layout/header-nav"
+import type { HeaderNavPropsItem } from "./types"
 
 defineOptions({ name: "HeaderNavPC" })
 

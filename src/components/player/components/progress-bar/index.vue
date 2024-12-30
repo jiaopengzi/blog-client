@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-11 16:17:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-23 14:48:00
+ * @LastEditTime : 2024-12-30 11:43:07
  * @FilePath     : \blog-client\src\components\player\components\progress-bar\index.vue
  * @Description  : 视频进度条
  * @Blog         : https://jiaopengzi.com
@@ -42,8 +42,7 @@
 
 <script lang="ts" setup>
 import { onBeforeUnmount, useTemplateRef, watch } from "vue"
-// import { type PlayProgress } from "@/stores/player"
-import { type PlayProgress } from "@/components/player"
+import { type PlayProgress } from "@/components/player/types"
 import { formatDurationTime } from "@/utils/dateTime"
 
 defineOptions({ name: "VideoProgressBar" })

@@ -2,20 +2,20 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-23 11:45:46
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-03 16:55:53
+ * @LastEditTime : 2024-12-30 13:28:41
  * @FilePath     : \blog-client\src\router\routeAll.ts
  * @Description  : 所有路由配置
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 import type { RouteRecordRaw } from "vue-router"
-import { userRoutes } from "@/router/routeUser"
-import { adminRoutes } from "@/router/routeAdmin"
-import { navigationRoutes } from "@/router/routeNavigation"
+import { userRoutes } from "./routeUser"
+import { adminRoutes } from "./routeAdmin"
+import { navigationRoutes } from "./routeNavigation"
 
 // 路由对象类型
 interface RouteObjectType {
-    [key: string]: RouteRecordRaw
+    [key: string | number]: RouteRecordRaw
 }
 
 // 路由对象

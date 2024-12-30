@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-28 16:02:50
+ * @LastEditTime : 2024-12-30 12:12:17
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -227,13 +227,7 @@ import { PostStatusCode, gegPostStatusOptions, type InsertPostRequest } from "@/
 import { useFormValidation } from "./useFormValidation"
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { PermissionNames } from "@/utils/permissionRole"
-import {
-    queryKey,
-    createEmptyUpsertPostForm,
-    type UpsertPostForm,
-    type PostInfoAboutTime,
-    type UpdatePostForm,
-} from "./index"
+import { queryKey, type UpsertPostForm, type PostInfoAboutTime, type UpdatePostForm } from "./types"
 import AddTag from "@/components/common/add-tag"
 import { MessageUtil } from "@/utils/message"
 import { useAdd } from "./useAdd"
@@ -241,7 +235,7 @@ import { useEdit } from "./useEdit"
 import { useSwitchItem } from "./useSwitchItem"
 import { useSnapshot } from "./useSnapshot"
 import { formatTime } from "@/utils/dateTime"
-import { generateShortcuts } from "./utils"
+import { generateShortcuts, createEmptyUpsertPostForm } from "./utils"
 
 defineOptions({ name: AdminSideMenu.PostWrite })
 

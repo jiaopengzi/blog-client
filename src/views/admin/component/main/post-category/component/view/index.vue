@@ -72,7 +72,7 @@
 <script lang="ts" setup>
 import { ref, reactive, toRefs, useTemplateRef } from "vue"
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
-import type { ViewForm } from "./index"
+import type { ViewForm } from "./types"
 import { useFormValidation } from "./hooks"
 
 defineOptions({ name: "CommonView" })

@@ -2,12 +2,15 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-28 12:28:21
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-28 12:28:21
+ * @LastEditTime : 2024-12-30 12:10:33
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\utils.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
+
+import { PostStatusCode, CommentStatusCode } from "@/api/post/common"
+import { type UpsertPostForm } from "./types"
 
 // 时间快捷选项
 export const generateShortcuts = (useDisplay: string) => {
@@ -53,4 +56,36 @@ export const generateShortcuts = (useDisplay: string) => {
             },
         },
     ]
+}
+
+// 创建 empty InsertPostRequest
+export function createEmptyUpsertPostForm(): UpsertPostForm {
+    return {
+        id: "",
+        post_author: "",
+        post_content: "",
+        post_title: "",
+        post_status: PostStatusCode.Draft,
+        post_password: "",
+        comment_status: CommentStatusCode.Open,
+        price: "",
+        seo_title: "",
+        seo_keywords: "",
+        seo_description: "",
+        slug: "",
+        thumbnail: "",
+        category_ids: [],
+        tag_names: [],
+        pay_roles: [],
+        post_push_time: {
+            Time: null,
+            Valid: false,
+        },
+        post_expired_time: {
+            Time: null,
+            Valid: false,
+        },
+        is_pinned: false,
+        is_recommended: false,
+    }
 }

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-15 15:09:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 13:15:01
+ * @LastEditTime : 2024-12-30 12:05:29
  * @FilePath     : \blog-client\src\views\admin\component\main\permission-role\index.vue
  * @Description  : 权限角色页面
  * @Blog         : https://jiaopengzi.com
@@ -182,11 +182,8 @@ import { MessageUtil } from "@/utils/message"
 import { getSortedEnumKeys } from "@/utils/enum"
 import { useUserStore } from "@/stores/user"
 import { debounce } from "throttle-debounce"
-import {
-    type PermissionRole,
-    LimitPeriod,
-    LimitCount,
-} from "@/views/admin/component/main/permission-role"
+import { type PermissionRole, LimitPeriod, LimitCount } from "./types"
+import { getSafeProperty } from "./utils"
 import {
     upsertPermissionRoleAPI,
     type UpsertPermissionRoleRequest,
@@ -211,16 +208,6 @@ const disabledRoleNames = ["Administrator"]
 // 定义角色列表和权限数据，使用 ref 使其为响应式数据
 const rolesList: Ref<Role[]> = ref([])
 const permissionRole: Ref<Record<string, PermissionRole>> = ref({})
-
-// 获取对象安全属性
-const getSafeProperty = (
-    obj: Record<string, PermissionRole> | null,
-    key: string,
-    defaultValue: PermissionRole | null = null,
-): PermissionRole | null => {
-    if (!obj) return defaultValue
-    return obj[key] !== undefined && obj[key] !== null ? obj[key] : defaultValue
-}
 
 // 定义权限数据
 const permissionsData: Ref<PermissionRow[]> = ref([])

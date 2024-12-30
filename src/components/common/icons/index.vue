@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-05 11:39:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-25 22:11:32
+ * @LastEditTime : 2024-12-30 12:52:14
  * @FilePath     : \blog-client\src\components\common\icons\index.vue
  * @Description  : 图标组件
  * @Blog         : https://jiaopengzi.com
@@ -12,28 +12,24 @@
 <template>
     <div class="container" :class="iconClass">
         <svg class="icon" aria-hidden="true">
-            <use :xlink:href="iconMap[props.name]" />
+            <use :xlink:href="iconMap[name]" />
         </svg>
     </div>
 </template>
 
 <script lang="ts" setup>
-import "@/components/common/icons/assets/iconfont.js"
+import "./assets/iconfont.js"
 import { computed } from "vue"
-import type { IconProps } from "@/components/common/icons"
-import { iconMap } from "@/components/common/icons"
+import { iconMap } from "./utils"
 
 // eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: "Icon" })
 
-// props 为 IconProps 类型
-const props = withDefaults(defineProps<IconProps>(), {
-    customClass: "",
-})
+const { name, customClass } = defineProps<{ name: string; customClass?: string }>()
 
 // iconClass 为 icon 的 class 属性
 const iconClass = computed(() => {
-    return [props.name, props.customClass]
+    return customClass ? `${name} ${customClass}` : name
 })
 </script>
 

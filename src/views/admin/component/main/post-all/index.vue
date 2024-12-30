@@ -178,7 +178,7 @@ import { queryKey as queryKeyWrite } from "@/views/admin/component/main/post-wri
 import { queryKey } from "./index"
 import type { TableImg, NumberKeys, BooleanKeys } from "@/components/common"
 import { useHeader } from "./hooks"
-import { type PostCountGroupItem, groupList, type GroupType } from "./index"
+import { type PostCountGroupItem, type GroupType, groupList } from "./types"
 import { useUserStore } from "@/stores/user"
 import {
     type PostStatusOperation,

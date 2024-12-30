@@ -9,39 +9,5 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { IconKeys } from "@/components/common/icons"
-
 export { default } from "./index.vue"
-
-type NamePosition = "left" | "right"
-
-// 组件参数
-export interface SwitchItem {
-    name: string
-    display?: string
-    status: boolean
-    namePosition?: NamePosition
-    label?: SwitchItemLabel
-    icon?: SwitchItemIcon
-    color?: SwitchItemColor
-    minWidth?: string | number
-}
-
-// 自定义标签
-export interface SwitchItemLabel {
-    active?: string
-    inactive?: string
-}
-
-export interface SwitchItemIcon {
-    active?: IconKeys
-    activeClassName?: string
-    inactive?: IconKeys
-    inactiveClassName?: string
-}
-
-// 自定义颜色
-export interface SwitchItemColor {
-    active?: string
-    inactive?: string
-}
+export * from "./types"

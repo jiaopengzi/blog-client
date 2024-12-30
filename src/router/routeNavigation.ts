@@ -2,14 +2,13 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-23 15:26:27
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-15 20:24:49
+ * @LastEditTime : 2024-12-29 19:14:25
  * @FilePath     : \blog-client\src\router\routeNavigation.ts
  * @Description  : 导航相关路由
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-// 路由配置
 export const navigationRoutes = {
     post: {
         path: "/post",

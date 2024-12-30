@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-18 08:47:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-13 18:28:57
+ * @LastEditTime : 2024-12-30 12:14:49
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\edit-user\index.vue
  * @Description  : 编辑用户
  * @Blog         : https://jiaopengzi.com
@@ -117,7 +117,7 @@ import {
     editUserInfoByAdminAPI,
 } from "@/api/user/editUserInfoByAdmin"
 import { ResponseCode, handleResErr } from "@/api/response"
-import type { EditUserByAdminForm } from "@/views/admin/component/main/user-view/component/edit-user"
+import type { EditUserByAdminForm } from "./types"
 // import { type PgSqlDateTime } from "@/api/common"
 import { useFormValidation } from "@/components/hooks/useFormValidation"
 import { generatePassword } from "@/utils/password"

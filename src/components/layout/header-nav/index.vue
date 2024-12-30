@@ -18,7 +18,7 @@
 </template>
 <script setup lang="ts">
 import { IconKeys } from "@/components/common/icons"
-import type { HeaderNavPropsItem } from "@/components/layout/header-nav"
+import type { HeaderNavPropsItem } from "./types"
 import { routeObj } from "@/router/routeAll"
 
 import HeaderNavPC from "./pc.vue"

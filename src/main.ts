@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-28 15:23:50
+ * @LastEditTime : 2024-12-29 18:31:11
  * @FilePath     : \blog-client\src\main.ts
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -16,6 +16,7 @@ import { createPinia } from "pinia"
 import { createHead } from "@unhead/vue" //seo head
 import App from "@/App.vue"
 import router from "@/router"
+// import { useRouter } from "vue-router"
 import { useUserStore } from "@/stores/user"
 import Icon from "@/components/common/icons" // 引用自定义的全局图标
 import { useGlobal } from "@/components/hooks/useGlobal" // 全局钩子
@@ -35,7 +36,6 @@ app.use(pinia) // 在APP创建之后，使用Pinia
 app.use(router)
 
 app.use(createHead()) // 参考官方文档:https://unhead.unjs.io/setup/vue/installation
-// app.use(ElementPlus)
 
 // 路由准备就绪后挂载APP实例 先获取用户信息
 router.isReady().then(async () => {

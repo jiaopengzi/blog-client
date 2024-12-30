@@ -9,9 +9,4 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 export { default } from "./index.vue"
-
-export interface AvatarInitialsProps {
-    name: string
-    avatar?: string
-    size?: number
-}
+export * from "./types"

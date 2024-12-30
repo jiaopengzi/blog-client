@@ -23,7 +23,7 @@ import {
     editorInsertFormatContent,
 } from "@/components/editor/command"
 import type { MarkdownEditorCommandItem, MarkdownEditorCommands } from "@/components/editor/command"
-import type { CodeEditorProps } from "@/components/editor/codemirror"
+import type { CodeEditorProps } from "./types"
 
 defineOptions({ name: "EditorCodemirror" })
 

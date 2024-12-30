@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-10 19:53:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-10 14:16:11
+ * @LastEditTime : 2024-12-30 11:42:02
  * @FilePath     : \blog-client\src\components\player\components\controls\index.vue
  * @Description  : 视频控制器
  * @Blog         : https://jiaopengzi.com
@@ -120,8 +120,14 @@ import ProgressBar from "@/components/player/components/progress-bar"
 import VideoSetting from "@/components/player/components/setting"
 import { useMagicKeys } from "@vueuse/core"
 import { PlayerCommandsKey, createPlayerCommands } from "@/components/player/command"
-import { PlayerStateManager, PlayStatus, PlaybackRate, PlayLevelLabel } from "@/components/player"
-import type { PlayerState, LanguageKey } from "@/components/player"
+import {
+    type PlayerState,
+    type LanguageKey,
+    PlayStatus,
+    PlaybackRate,
+    PlayLevelLabel,
+} from "@/components/player/types"
+import { PlayerStateManager } from "@/components/player/state"
 
 // 名称
 defineOptions({ name: "VideoControls" })

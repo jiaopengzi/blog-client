@@ -38,7 +38,7 @@ import { ScrollElementTag, ScrollElementTagHeading } from "@/components/editor/c
 import { scrollToElement } from "@/utils/scroll"
 import { mountVideoPlayerOnCustomElements } from "./utils"
 import { CustomElementVideoPlayer } from "./customElements"
-import type { PreviewProps } from "./index"
+import type { PreviewProps } from "./types"
 import "@/assets/scss/preview.scss"
 import "@/assets/scss/highlight.js.jpz.scss"
 import "katex/dist/katex.min.css" // katex 样式

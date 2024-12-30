@@ -18,7 +18,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import type { FooterProps } from "@/components/layout/footer"
+import type { FooterProps } from "./types"
 
 import FooterPC from "./pc.vue"
 import FooterPhone from "./phone.vue"

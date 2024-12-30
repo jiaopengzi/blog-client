@@ -10,9 +10,4 @@
  */
 
 export { default } from "./index.vue"
-
-export interface CodeEditorProps {
-    codemirrorDoc: string // 编辑器内容
-    width?: string // 宽度
-    height?: string // 高度
-}
+export * from "./types"

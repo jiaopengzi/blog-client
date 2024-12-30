@@ -29,7 +29,7 @@
 </template>
 <script setup lang="ts">
 import { IconKeys } from "@/components/common/icons"
-import { type MonthArchiveData } from "./index"
+import { type MonthArchiveData } from "./types"
 
 defineOptions({ name: "MonthArchive" })
 

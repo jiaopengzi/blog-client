@@ -9,7 +9,6 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-// 路由配置
 export const userRoutes = {
     login: {
         path: "/login",

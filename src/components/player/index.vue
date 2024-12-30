@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-17 10:03:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 12:55:58
+ * @LastEditTime : 2024-12-30 11:45:02
  * @FilePath     : \blog-client\src\components\player\index.vue
  * @Description  : 视频播放器
  * @Blog         : https://jiaopengzi.com
@@ -103,14 +103,19 @@ import { useResizeObserver } from "@vueuse/core"
 
 import { getVideoQualityLabel } from "./utils"
 import { PlayerStateManager } from "./state"
-import { PlayStatus, DisabledSubtitles, MediaTypes } from "./types"
-import type { LanguageKey, PlayLevelLabel, PlayerState } from "./types"
+import {
+    type LanguageKey,
+    type PlayLevelLabel,
+    type PlayerState,
+    PlayStatus,
+    DisabledSubtitles,
+    MediaTypes,
+} from "./types"
 
 import screenfull from "screenfull"
 import Controls from "@/components/player/components/controls"
 import VideoWatermark from "@/components/player/components/watermark"
 import { MessageUtil } from "@/utils/message"
-import { MsgType } from "@/components/common"
 import { IconKeys } from "@/components/common/icons"
 import Hls from "hls.js"
 import { CustomLoader } from "@/pkg/hls"

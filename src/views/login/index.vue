@@ -83,11 +83,11 @@
 
 <script lang="ts" setup>
 import { reactive, ref, toRef, useTemplateRef } from "vue"
+import { useRouter } from "vue-router"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
-import router from "@/router/index"
 import { routeObj } from "@/router/routeAll"
 import { useUserStore } from "@/stores/user"
-import type { LoginForm } from "@/views/login"
+import type { LoginForm } from "./types"
 import { IconKeys } from "@/components/common/icons"
 import type { RouteLocationRaw } from "vue-router"
 import { RegexPatterns } from "@/utils/regexPatterns"
@@ -97,7 +97,7 @@ import SlideVerify from "@/components/common/slide-verify"
 
 // eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: "Login" })
-
+const router = useRouter()
 // 表单label位置 top | left | right
 const labelPosition = ref("top")
 

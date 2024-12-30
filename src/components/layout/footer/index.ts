@@ -10,20 +10,4 @@
  */
 
 export { default } from "./index.vue"
-
-export interface FooterProps {
-    left?: {
-        title?: string
-        content?: string
-    }
-    middle?: {
-        imgUrl: string
-        display?: string
-    }[]
-    right?: {
-        title?: string
-        content?: string
-        beianMPS?: string // 联网备案
-        beianMIIT?: string // ICP备案
-    }
-}
+export * from "./types"

@@ -259,9 +259,8 @@
 <script lang="ts" setup>
 import { ref, reactive, watchEffect, watch, useTemplateRef } from "vue"
 import { type ElTable } from "element-plus"
-import type { Pagination } from "@/components/common"
-import { MsgType } from "@/components/common"
-import type { TableData, TableColumn } from "@/components/common/base-table"
+import { type Pagination, MsgType } from "@/components/common"
+import type { TableData, TableColumn } from "./types"
 import { deleteConfirmCommon } from "@/utils/confirm"
 import { imgStyle, iconStyle } from "@/utils/style"
 import type { SwitchItem, SwitchItemLabel, SwitchItemColor } from "@/components/common/switch-group"

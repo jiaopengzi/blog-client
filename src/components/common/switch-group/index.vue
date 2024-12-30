@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { SwitchItem } from "./index"
+import type { SwitchItem } from "./types"
 
 defineOptions({ name: "SwitchGroup" })
 

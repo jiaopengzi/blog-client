@@ -99,14 +99,14 @@
 
 <script lang="ts" setup>
 import { reactive, ref, toRef, useTemplateRef } from "vue"
+import { useRouter } from "vue-router"
 import { MessageUtil } from "@/utils/message"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import type { RegisterRequest } from "@/api/user/register"
 import { RegisterAPI } from "@/api/user/register"
 import { ResponseCode } from "@/api/response"
 import { routeObj } from "@/router/routeAll"
-import router from "@/router/index"
-import type { RegisterForm } from "@/views/register"
+import type { RegisterForm } from "./types"
 import { useFormValidation } from "@/components/hooks/useFormValidation"
 import { RegexPatterns } from "@/utils/regexPatterns"
 
@@ -114,6 +114,8 @@ import SlideVerify from "@/components/common/slide-verify"
 
 // eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: "Register" })
+
+const router = useRouter()
 
 // 表单label位置 top | left | right
 const labelPosition = ref("top")

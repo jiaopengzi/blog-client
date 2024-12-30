@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-20 17:43:05
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-24 12:30:51
+ * @LastEditTime : 2024-12-30 11:06:55
  * @FilePath     : \blog-client\src\components\common\countdown\index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -28,14 +28,11 @@ const emit = defineEmits<{
     (event: "countdown-over", value: boolean): void // 编辑用户状态
 }>()
 
-const props = defineProps({
-    countdown: {
-        type: Number,
-        default: 100,
-    },
-})
+const { countdown = 100 } = defineProps<{
+    countdown?: number
+}>()
 
-const totalSeconds = ref(props.countdown) // 初始化倒计时时间，单位为秒
+const totalSeconds = ref(countdown) // 初始化倒计时时间，单位为秒
 
 let timer: ReturnType<typeof setInterval> | undefined = undefined // 定时器
 
@@ -46,7 +43,7 @@ const seconds = computed(() => Math.floor(totalSeconds.value % 60)) // 计算秒
 
 // 监控 props.countdown 变化 重新开始倒计时
 watch(
-    () => props.countdown,
+    () => countdown,
     (valNew) => {
         totalSeconds.value = valNew // 更新 totalSeconds.value 的值
         stopCountdown()

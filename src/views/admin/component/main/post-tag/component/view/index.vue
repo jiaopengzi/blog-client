@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-25 11:03:13
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 13:31:20
+ * @LastEditTime : 2024-12-30 12:09:38
  * @FilePath     : \blog-client\src\views\admin\component\main\post-tag\component\view\index.vue
  * @Description  : 标签展示组件
  * @Blog         : https://jiaopengzi.com
@@ -63,7 +63,7 @@
 <script lang="ts" setup>
 import { ref, reactive, toRefs, useTemplateRef } from "vue"
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
-import type { ViewForm } from "./index"
+import type { ViewForm } from "./types"
 import { useFormValidation } from "./hooks"
 
 defineOptions({ name: "CommonView" })

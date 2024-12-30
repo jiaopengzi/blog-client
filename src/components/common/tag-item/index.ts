@@ -10,10 +10,4 @@
  */
 
 export { default } from "./index.vue"
-import { type PostTag } from "@/api/postTag/view"
-
-// 标签颜色对象
-export type TagColor = { color: string; bgColor: string }
-
-// 标签对象
-export type Tag = { data: PostTag; color: TagColor }
+export * from "./types"

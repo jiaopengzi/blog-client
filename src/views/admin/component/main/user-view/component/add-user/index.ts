@@ -9,11 +9,4 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 export { default } from "./index.vue"
-
-export interface AddUserForm {
-    userName: string
-    email: string
-    password: string
-    roleName: string
-    isSendEmail: boolean
-}
+export * from "./types"

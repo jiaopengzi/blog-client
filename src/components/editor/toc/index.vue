@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { TocProps } from "@/components/editor/toc"
+import type { TocProps } from "./types"
 import { watchEffect } from "vue"
 
 defineOptions({ name: "EditorToc" })

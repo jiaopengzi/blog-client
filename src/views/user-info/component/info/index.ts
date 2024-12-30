@@ -10,11 +10,4 @@
  */
 
 export { default } from "./index.vue"
-
-// info 表单数据
-export interface EditForm {
-    userName: string
-    nickName: string
-    sex: string
-    description: string
-}
+export * from "./types"

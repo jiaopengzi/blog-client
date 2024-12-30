@@ -10,13 +10,4 @@
  */
 
 export { default } from "./index.vue"
-
-export interface ViewForm {
-    id?: string // ID
-    name: string // 名称
-    slug: string // 别名
-    description?: string // 描述
-    thumbnail?: string // 缩略图
-    order?: string // 排序
-    parent?: string // 父级分类
-}
+export * from "./types"

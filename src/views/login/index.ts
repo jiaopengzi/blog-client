@@ -10,8 +10,4 @@
  */
 
 export { default } from "./index.vue"
-
-export interface LoginForm {
-    loginName: string
-    password: string
-}
+export * from "./types"

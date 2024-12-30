@@ -24,7 +24,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue"
-import type { Tag, TagColor } from "@/components/common/tag-item"
+import type { Tag, TagColor } from "./types"
 import { type PostTag } from "@/api/postTag/view"
 
 defineOptions({ name: "TagItem" })

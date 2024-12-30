@@ -134,6 +134,9 @@ importers:
       vue-cropperjs:
         specifier: ^5.0.0
         version: 5.0.0(vue@3.5.13(typescript@5.7.2))
+      vue-router:
+        specifier: ^4.5.0
+        version: 4.5.0(vue@3.5.13(typescript@5.7.2))
       vue3-emoji-picker:
         specifier: ^1.1.8
         version: 1.1.8(typescript@5.7.2)
@@ -264,9 +267,6 @@ importers:
       vitest:
         specifier: ^2.1.8
         version: 2.1.8(@types/node@20.17.10)(jsdom@25.0.1)(sass-embedded@1.81.0)(sass@1.82.0)(terser@5.37.0)
-      vue-router:
-        specifier: ^4.5.0
-        version: 4.5.0(vue@3.5.13(typescript@5.7.2))
       vue-tsc:
         specifier: https://pkg.pr.new/vuejs/language-tools/vue-tsc@b8befb2
         version: https://pkg.pr.new/vuejs/language-tools/vue-tsc@b8befb2(typescript@5.7.2)

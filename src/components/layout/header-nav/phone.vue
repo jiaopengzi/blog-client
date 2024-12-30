@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 20:57:06
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-10 15:19:00
+ * @LastEditTime : 2024-12-30 10:52:00
  * @FilePath     : \blog-client\src\components\layout\header-nav\phone.vue
  * @Description  : 导航栏 手机端
  * @Blog         : https://jiaopengzi.com
@@ -58,7 +58,7 @@ import { onBeforeMount } from "vue"
 import { routeObj } from "@/router/routeAll"
 import { useUserStore } from "@/stores/user"
 import { storeToRefs } from "pinia"
-import type { HeaderNavPropsItem } from "@/components/layout/header-nav"
+import type { HeaderNavPropsItem } from "./types"
 import { useTheme } from "@/components/hooks/useTheme"
 import SwitchGroup from "@/components/common/switch-group"
 

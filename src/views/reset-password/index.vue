@@ -90,6 +90,7 @@
 
 <script lang="ts" setup>
 import { reactive, ref, useTemplateRef } from "vue"
+import { useRouter } from "vue-router"
 import { MessageUtil } from "@/utils/message"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import type { CheckEmailRequest } from "@/api/user/checkEmail"
@@ -104,13 +105,13 @@ import { captchaCheckAPI } from "@/api/captcha/check"
 import { ResponseCode, handleResErr } from "@/api/response"
 import { CaptchaPurpose } from "@/api/common"
 import { routeObj } from "@/router/routeAll"
-import router from "@/router/index"
-import type { ResetPasswordForm } from "@/views/reset-password"
+import type { ResetPasswordForm } from "./types"
 
 import SlideVerify from "@/components/common/slide-verify"
 
 // 定义组件名称
 defineOptions({ name: "ResetPassword" })
+const router = useRouter()
 
 // 表单label位置 top | left | right
 const labelPosition = ref("top")

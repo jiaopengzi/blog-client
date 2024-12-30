@@ -9,19 +9,5 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import { CommandsKey } from "@/components/editor/command"
-
 export { default } from "./index.vue"
-
-import type { IconKeys } from "@/components/common/icons"
-
-export interface ToolbarProps {
-    toolbarBtns: Array<{ name: CommandsKey; display: string; icon: IconKeys }> // 预览内容
-    iconNumberPerLine?: number // iconNumberPerLine 可选 每行显示的图标个数 默认 20
-}
-
-// 表格行列
-export interface TableRowCol {
-    row: number
-    col: number
-}
+export * from "./types"

@@ -85,7 +85,7 @@
 <script lang="ts" setup>
 import { ref, onMounted, watch, useTemplateRef } from "vue"
 import { CommandsKey } from "@/components/editor/command"
-import type { ToolbarProps, TableRowCol } from "@/components/editor/toolbar"
+import type { ToolbarProps, TableRowCol } from "./types"
 
 import EmojiPicker, { type EmojiExt } from "vue3-emoji-picker"
 

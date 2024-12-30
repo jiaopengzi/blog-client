@@ -8,11 +8,6 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
-import type { Heading } from "@/components/editor/core"
 
 export { default } from "./index.vue"
-
-export interface TocProps {
-    headingShowCurrentIndex: number // 当前显示的 heading 索引
-    headings: Array<Heading> // 预览内容
-}
+export * from "./types"

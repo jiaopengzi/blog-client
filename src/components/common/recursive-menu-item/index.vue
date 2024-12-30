@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:28:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 21:58:37
+ * @LastEditTime : 2024-12-30 14:26:24
  * @FilePath     : \blog-client\src\components\common\recursive-menu-item\index.vue
  * @Description  : 递归创建层级菜单
  * @Blog         : https://jiaopengzi.com
@@ -41,22 +41,19 @@
 
 <script lang="ts" setup>
 // import Icon from '@/components/common/icons'
-import type {
-    MenuItemMapWithIndex,
-    MenuItemWithIndex,
-} from "@/components/common/recursive-menu-item"
+import type { MenuItemMapWithIndex, MenuItemWithIndex } from "./types"
 
 defineOptions({ name: "RecursiveMenuItem" })
 
 // 定义组件属性（props）
-const props = defineProps<{
+const { menuItemMap, menuItem } = defineProps<{
     menuItemMap: MenuItemMapWithIndex<string>
     menuItem: MenuItemWithIndex
 }>()
 
 // 根据父菜单索引获取子菜单
 function getChildren(parentIndex: string) {
-    return Object.values(props.menuItemMap).filter((item) => item.parentIndex === parentIndex)
+    return Object.values(menuItemMap).filter((item) => item.parentIndex === parentIndex)
 }
 </script>
 
