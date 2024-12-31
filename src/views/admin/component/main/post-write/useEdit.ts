@@ -18,7 +18,7 @@ import type { SwitchItem } from "@/components/common/switch-group"
 import { CommentStatusCode, type UpdatePostRequest } from "@/api/post/common"
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { handleSubmit } from "./formHandler"
-import router from "@/router"
+import { useRoute } from "vue-router"
 import { EditorStateManager } from "@/components/editor"
 import { type PostTag } from "@/api/postTag/view"
 import { type PostCategory } from "@/api/postCategory/view"
@@ -33,9 +33,11 @@ export function useEdit(
     postInfoAboutTime: PostInfoAboutTime,
     postShowMethod: SwitchItem[],
 ) {
+    const route = useRoute()
+
     // 从路由中query中获取值
     const getValueFromQuery = () => {
-        postInfoForm.id = router.currentRoute.value.query[queryKey.ID] as string
+        postInfoForm.id = route.query[queryKey.ID] as string
     }
 
     // 更新 SwitchItem 列表中的状态

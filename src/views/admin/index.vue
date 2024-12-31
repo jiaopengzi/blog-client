@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-31 16:18:57
+ * @LastEditTime : 2024-12-31 18:23:32
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -35,13 +35,22 @@
                     <!-- 控制台警告：Component inside <Transition> renders non-element root node that cannot be animated. -->
                     <!-- 参考:https://stackoverflow.com/questions/65553121/vue-3-transition-renders-non-element-root-node-that-cannot-be-animated -->
                     <!-- 在组件外包裹一层 div,需要单独包括在子组件中，才能缓存,不能在这里包裹 -->
-                    <router-view v-slot="{ Component }">
-                        <transition>
-                            <KeepAlive>
-                                <component :is="Component" />
+
+                    <!-- <router-view></router-view> -->
+
+                    <router-view v-slot="{ Component, route }">
+                        <KeepAlive :exclude="[AdminSideMenu.PostWrite]">
+                            <component :is="Component" :key="route.fullPath" />
+                        </KeepAlive>
+                    </router-view>
+
+                    <!-- <router-view v-slot="{ Component }">
+                        <transition name="admin-main">
+                            <KeepAlive :exclude="[AdminSideMenu.PostWrite]">
+                                <component :is="Component" :key="route.fullPath" />
                             </KeepAlive>
                         </transition>
-                    </router-view>
+                    </router-view> -->
                 </el-main>
             </el-container>
         </el-container>
@@ -55,6 +64,7 @@
 <script lang="ts" setup>
 import { ref, onBeforeMount, useTemplateRef } from "vue"
 import { useRouter } from "vue-router"
+import { AdminSideMenu } from "@/views/admin/component/aside"
 
 import { PermissionNames } from "@/utils/permissionRole"
 import { useUserStore } from "@/stores/user"
@@ -100,10 +110,6 @@ const handleCollapseStatus = (isCollapse: boolean) => {
 
 // 选择菜单项
 const handleSelect = (index: string) => {
-    if (userStore.getIsEditing) {
-        return
-    }
-
     router.push(index)
 }
 
@@ -158,4 +164,14 @@ onBeforeMount(() => {
         }
     }
 }
+
+// .admin-main-enter-active,
+// .admin-main-leave-active {
+//     transition: opacity 0.3s ease;
+// }
+
+// .admin-main-enter-from,
+// .admin-main-leave-to {
+//     opacity: 0;
+// }
 </style>

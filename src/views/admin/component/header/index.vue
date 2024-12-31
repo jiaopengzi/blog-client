@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-25 14:29:36
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 15:41:55
+ * @LastEditTime : 2024-12-31 16:53:42
  * @FilePath     : \blog-client\src\views\admin\component\header\index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -31,7 +31,7 @@
     </header>
 </template>
 <script setup lang="ts">
-import router from "@/router"
+import { useRouter } from "vue-router"
 import { routeObj } from "@/router/routeAll"
 import { storeToRefs } from "pinia"
 import { useUserStore } from "@/stores/user"
@@ -43,6 +43,7 @@ const userStore = useUserStore()
 const { isLogin } = storeToRefs(userStore)
 // 主题切换
 const { themeSwitch, updateStatus } = useTheme()
+const router = useRouter()
 
 // 跳转到用户中心
 const goHome = () => {

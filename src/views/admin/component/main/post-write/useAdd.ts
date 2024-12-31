@@ -13,7 +13,7 @@ import { insertPostAPI } from "@/api/post/insert"
 import type { InsertPostRequest } from "@/api/post/common"
 import { ResponseCode, handleResErr } from "@/api/response"
 import { MessageUtil } from "@/utils/message"
-import router from "@/router"
+import { useRouter } from "vue-router"
 import type { UpsertPostForm, PostInfoAboutTime } from "./index"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
@@ -26,6 +26,7 @@ export function useAdd(
 ) {
     // 提交表单
     const submitForm = async (formEl: FormInstance | undefined): Promise<boolean> => {
+        const router = useRouter()
         // 表单校验及值转换
         const req = await handleSubmit<InsertPostRequest>(formEl, postInfoForm)
 

@@ -38,7 +38,7 @@
 import { computed } from "vue"
 import { useUserStore } from "@/stores/user"
 import { storeToRefs } from "pinia"
-import router from "@/router"
+import { useRouter } from "vue-router"
 import { routeObj } from "@/router/routeAll"
 import { PermissionNames } from "@/utils/permissionRole"
 import { onMounted, ref } from "vue"
@@ -51,6 +51,7 @@ const { isHiddenAdmin = false } = defineProps<{
     isHiddenAdmin?: boolean // 是否隐藏后台管理按钮
 }>()
 
+const router = useRouter()
 const userStore = useUserStore()
 const { data, avatar } = storeToRefs(userStore)
 

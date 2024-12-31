@@ -19,15 +19,15 @@
 <script lang="ts" setup>
 import { onMounted, ref } from "vue"
 import type { Ref } from "vue"
-import { useRoute } from "vue-router"
+import { useRoute, useRouter } from "vue-router"
 import { useUserStore } from "@/stores/user"
 import { routeObj } from "@/router/routeAll"
 import { Social } from "@/api/common"
-import router from "@/router"
 
 defineOptions({ name: "SocialLoginCallback" })
 
 const userStore = useUserStore()
+const router = useRouter()
 const route = useRoute()
 
 const loginByQQCallback = async () => {

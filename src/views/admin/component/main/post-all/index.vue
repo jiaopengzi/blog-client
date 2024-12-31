@@ -179,7 +179,7 @@ import { type DeletePostRequest, deletePostAPI } from "@/api/post/delete"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { type QueryParamsRecord } from "@/api/request"
 import { formatTime } from "@/utils/dateTime"
-import router from "@/router"
+import { useRouter } from "vue-router"
 import { queryKey as queryKeyWrite } from "@/views/admin/component/main/post-write"
 import { queryKey } from "./index"
 import type { TableImg } from "@/components/common"
@@ -329,6 +329,7 @@ const postCustomFieldsMin = ref(0)
 const postCustomFieldsMax = ref(100)
 
 const userStore = useUserStore()
+const router = useRouter()
 
 // 获取头部数据
 const { postCountGroup, postCountMonth, allGroup, activeGroup, getPostCountStatus } = useHeader(

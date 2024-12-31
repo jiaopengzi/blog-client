@@ -2,13 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-08-29 16:27:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-06 10:15:41
+ * @LastEditTime : 2024-12-31 16:51:38
  * @FilePath     : \blog-client\src\router\utils.ts
  * @Description  : 路由工具函数
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
-import router from "@/router"
+
+import { useRouter } from "vue-router"
 
 // 分页查询参数键
 export enum PaginationQueryKey {
@@ -34,6 +35,7 @@ export function paginationRouterPush(
         [PaginationQueryKey.PageSize]: pageSize,
         [PaginationQueryKey.CurrentPage]: currentPage,
     }
+    const router = useRouter()
 
     // 过滤掉值为空字符串的参数
     Object.keys(additionalParams).forEach((key) => {
@@ -60,7 +62,7 @@ export function routerPushByParams(
     additionalParams: Record<string, string | number>,
 ) {
     const query: Record<string, string | number> = {}
-
+    const router = useRouter()
     // 过滤掉值为空字符串的参数
     Object.keys(additionalParams).forEach((key) => {
         const value = additionalParams[key]

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-28 15:27:53
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 17:01:16
+ * @LastEditTime : 2024-12-31 17:16:28
  * @FilePath     : \blog-client\src\components\hooks\useGlobal\index.ts
  * @Description  : 全局钩子
  * @Blog         : https://jiaopengzi.com
@@ -22,8 +22,9 @@ import { useUserStore } from "@/stores/user"
  * @param queryParams 查询参数
  * @param options 可选参数
  */
-export function useGlobal() {
+export async function useGlobal() {
     const userStore = useUserStore()
+    await userStore.getUserInfoByToken()
 
     // 监听页面关闭事件,即用户手动修改ULR或关闭页面
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
