@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-28 16:56:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 13:05:03
+ * @LastEditTime : 2024-12-31 14:36:35
  * @FilePath     : \blog-client\src\views\admin\component\main\login-log\index.vue
  * @Description  : 登录日志
  * @Blog         : https://jiaopengzi.com
@@ -10,25 +10,27 @@
 -->
 
 <template>
-    <BaseTable
-        :pagination="pagination"
-        :table-column="cols"
-        :is-show-delete-all="true"
-        :is-show-search="true"
-        :search-str="search"
-        :is-show-edit="false"
-        height="calc(100vh - 228px)"
-        @update-current-page="updateCurrentPage"
-        @update-page-size="updatePageSize"
-        @delete-rows="deleteRows"
-        @update-search="updateSearch"
-        @run-search="runSearch"
-    >
-        <template #btns>
-            <el-input-number class="delete-num" v-model="deleteNum" :min="1" :max="10000000" />
-            <el-button type="danger" @click="handleDeleteN"> 删除N天前记录 </el-button>
-        </template>
-    </BaseTable>
+    <section>
+        <BaseTable
+            :pagination="pagination"
+            :table-column="cols"
+            :is-show-delete-all="true"
+            :is-show-search="true"
+            :search-str="search"
+            :is-show-edit="false"
+            height="calc(100vh - 228px)"
+            @update-current-page="updateCurrentPage"
+            @update-page-size="updatePageSize"
+            @delete-rows="deleteRows"
+            @update-search="updateSearch"
+            @run-search="runSearch"
+        >
+            <template #btns>
+                <el-input-number class="delete-num" v-model="deleteNum" :min="1" :max="10000000" />
+                <el-button type="danger" @click="handleDeleteN"> 删除N天前记录 </el-button>
+            </template>
+        </BaseTable>
+    </section>
 </template>
 
 <script lang="ts" setup>
@@ -133,6 +135,12 @@ const cols: TableColumn[] = reactive([
 
 const queryParams = reactive<GetLoginLogsRequest>({} as GetLoginLogsRequest)
 
+// 字符串类型的 key
+const stringKeys: StringKeys<GetLoginLogsRequest>[] = ["key_word"]
+
+// 数字类型的 key
+const numberKeys: NumberKeys<GetLoginLogsRequest>[] = ["current_page", "page_size"]
+
 // hooks 使用
 const {
     search, // 搜索关键字
@@ -142,6 +150,7 @@ const {
     updateSearch, // 更新搜索关键字
     deleteRows, // 删除行
     updateQueryParamsAndRouter,
+    updatePaginate,
 } = useBaseTable<LoginLog, GetLoginLogsRequest, DeleteLoginLogByIDsRequest>(
     AdminSideMenu.LoginLog,
     getLoginLogsAPI,
@@ -149,11 +158,13 @@ const {
     deleteLoginLogByIDsAPI,
     ResponseCode.LoginLogDeleteByIDsSuccess,
     queryParams,
+    { stringKeys, numberKeys },
 )
 
 // 执行搜索
-const runSearch = () => {
-    updateQueryParamsAndRouter(true)
+const runSearch = async () => {
+    await updateQueryParamsAndRouter(true)
+    await updatePaginate()
 }
 
 const deleteNum = ref(1)

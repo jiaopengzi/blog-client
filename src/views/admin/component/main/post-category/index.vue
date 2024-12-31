@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:47:08
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 13:32:09
+ * @LastEditTime : 2024-12-31 14:37:59
  * @FilePath     : \blog-client\src\views\admin\component\main\post-category\index.vue
  * @Description  : 分类管理
  * @Blog         : https://jiaopengzi.com
@@ -10,51 +10,53 @@
 -->
 
 <template>
-    <BaseTable
-        :pagination="pagination"
-        :table-column="cols"
-        :add-item-dialog-visible="addItemDialogVisible"
-        :edit-item-dialog-visible="editItemDialogVisible"
-        :is-show-delete-all="true"
-        :is-show-search="true"
-        :search-str="search"
-        :is-show-edit="true"
-        height="calc(100vh - 228px)"
-        @update-current-page="updateCurrentPage"
-        @update-page-size="updatePageSize"
-        @edit-row="editRow"
-        @delete-rows="deleteRows"
-        @update-search="updateSearch"
-        @run-search="runSearch"
-        @add-item-update-dialog-visible="addItemUpdateDialogVisible"
-        @edit-item-update-dialog-visible="editItemUpdateDialogVisible"
-    >
-        <template #btns>
-            <el-button type="primary" @click="toggleAddDialog"> 新增 </el-button>
-        </template>
+    <section>
+        <BaseTable
+            :pagination="pagination"
+            :table-column="cols"
+            :add-item-dialog-visible="addItemDialogVisible"
+            :edit-item-dialog-visible="editItemDialogVisible"
+            :is-show-delete-all="true"
+            :is-show-search="true"
+            :search-str="search"
+            :is-show-edit="true"
+            height="calc(100vh - 228px)"
+            @update-current-page="updateCurrentPage"
+            @update-page-size="updatePageSize"
+            @edit-row="editRow"
+            @delete-rows="deleteRows"
+            @update-search="updateSearch"
+            @run-search="runSearch"
+            @add-item-update-dialog-visible="addItemUpdateDialogVisible"
+            @edit-item-update-dialog-visible="editItemUpdateDialogVisible"
+        >
+            <template #btns>
+                <el-button type="primary" @click="toggleAddDialog"> 新增 </el-button>
+            </template>
 
-        <!-- 新增弹窗 -->
-        <template #add-item-title>
-            <span class="dialog-title">新增分类</span>
-        </template>
+            <!-- 新增弹窗 -->
+            <template #add-item-title>
+                <span class="dialog-title">新增分类</span>
+            </template>
 
-        <template #add-item>
-            <div class="dialog-add">
-                <AddTag @add-status="addStatus" />
-            </div>
-        </template>
+            <template #add-item>
+                <div class="dialog-add">
+                    <AddTag @add-status="addStatus" />
+                </div>
+            </template>
 
-        <!-- 编辑弹窗 -->
-        <template #edit-item-title>
-            <span class="dialog-title">编辑分类</span>
-        </template>
+            <!-- 编辑弹窗 -->
+            <template #edit-item-title>
+                <span class="dialog-title">编辑分类</span>
+            </template>
 
-        <template #edit-item>
-            <div class="dialog-edit">
-                <EditTag :edit-data="editData" @edit-status="editStatus" />
-            </div>
-        </template>
-    </BaseTable>
+            <template #edit-item>
+                <div class="dialog-edit">
+                    <EditTag :edit-data="editData" @edit-status="editStatus" />
+                </div>
+            </template>
+        </BaseTable>
+    </section>
 </template>
 
 <script lang="ts" setup>
@@ -145,6 +147,13 @@ const cols: TableColumn[] = reactive([
 ])
 
 const queryParams = reactive<PaginationRequest>({} as PaginationRequest)
+
+// 字符串类型的 key
+const stringKeys: StringKeys<PaginationRequest>[] = ["key_word"]
+
+// 数字类型的 key
+const numberKeys: NumberKeys<PaginationRequest>[] = ["current_page", "page_size"]
+
 // hooks 使用
 const {
     addItemDialogVisible, // 添加对话框是否可见
@@ -162,6 +171,7 @@ const {
     editItemUpdateDialogVisible, // 编辑对话框
     deleteRows, // 删除行
     updateQueryParamsAndRouter, // 更新查询和路由
+    updatePaginate,
 } = useBaseTable<PostCategory, PaginationRequest, DeletePostCategoryRequest>(
     AdminSideMenu.PostCategory,
     viewPostCategoryAPI,
@@ -169,11 +179,13 @@ const {
     deletePostCategoryAPI,
     ResponseCode.PostCategoryDeleteSuccess,
     queryParams,
+    { stringKeys, numberKeys },
 )
 
 // 执行搜索
-const runSearch = () => {
-    updateQueryParamsAndRouter(true)
+const runSearch = async () => {
+    await updateQueryParamsAndRouter(true)
+    await updatePaginate()
 }
 
 // 需要编辑的用户ID

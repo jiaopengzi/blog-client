@@ -24,7 +24,7 @@
                 @close="handleClose"
                 class="el-menu-vertical"
                 :default-active="props.defaultActive"
-                :router="true"
+                :router="false"
             >
                 <recursive-menu-item
                     v-for="(item, key) in topLevelMenuItems"

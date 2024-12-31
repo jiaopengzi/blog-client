@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-29 13:35:31
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 13:35:35
+ * @LastEditTime : 2024-12-31 11:29:30
  * @FilePath     : \blog-client\src\api\request\types.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -11,3 +11,26 @@
 
 import type { AxiosProgressEvent } from "axios"
 export type { AxiosProgressEvent as ReqProgressEvent }
+
+export type QueryParamsRecord<T extends string | number | symbol> = { [key in T]?: string | number }
+
+// 分页请求参数
+export interface PaginationRequest {
+    current_page?: number // 当前页
+    page_size?: number // 每页显示条数
+    key_word?: string // 关键字
+}
+
+// url 中是分页参数名 PaginationParamsInURL 的对象
+export enum PaginationParamsInURL {
+    current_page = "current_page",
+    page_size = "page_size",
+}
+
+// 请求参数选项
+export interface QueryParamsOptions<K> {
+    stringKeys?: StringKeys<K>[] // 查询参数中的字符串参数
+    numberKeys?: NumberKeys<K>[] // 查询参数中的数字参数
+    booleanKeys?: BooleanKeys<K>[] // 查询参数中的布尔参数
+    noRequestKeys?: QueryParamsRecord<keyof K> // 不请求的参数
+}

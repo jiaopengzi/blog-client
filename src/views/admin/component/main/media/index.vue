@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-06 17:26:51
+ * @LastEditTime : 2024-12-31 15:55:04
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -10,73 +10,75 @@
 -->
 
 <template>
-    <BaseTable
-        :pagination="pagination"
-        :table-column="cols"
-        :is-show-delete-all="true"
-        :is-show-list-or-grid="true"
-        :show-list-or-grid-status="isShowListOrGrid"
-        :add-item-dialog-visible="addItemDialogVisible"
-        :edit-item-dialog-visible="editItemDialogVisible"
-        :is-show-edit="true"
-        :is-show-search="true"
-        :search-str="search"
-        :edit-width="editWidth"
-        :edit-top="editTop"
-        height="calc(100vh - 270px)"
-        @update-current-page="updateCurrentPage"
-        @update-page-size="updatePageSize"
-        @edit-row="editRow"
-        @delete-rows="deleteRows"
-        @update-search="updateSearch"
-        @run-search="runSearch"
-        @click-row-by-picture="clickRowByPicture"
-        @add-item-update-dialog-visible="addItemUpdateDialogVisible"
-        @edit-item-update-dialog-visible="editItemUpdateDialogVisible"
-        @is-show-list-or-grid="updateIsShowListOrGrid"
-    >
-        <template #btns>
-            <el-button type="primary" @click="toggleAddDialog"> 新增 </el-button>
-        </template>
-        <template #category>
-            <!-- v-for 循环 fileCountGroupByFiletype 按钮 -->
-            <div class="category-group">
-                <el-button
-                    v-for="item in fileCountGroupByFiletype"
-                    :key="item.file_type"
-                    :class="{ active: item.file_type === activeFileType }"
-                    @click="handleFileCountByFiletype(item.file_type)"
-                >
-                    {{ item.file_extension }} ({{ item.file_count }})
-                </el-button>
-            </div>
-        </template>
+    <section>
+        <BaseTable
+            :pagination="pagination"
+            :table-column="cols"
+            :is-show-delete-all="true"
+            :is-show-list-or-grid="true"
+            :show-list-or-grid-status="isShowListOrGrid"
+            :add-item-dialog-visible="addItemDialogVisible"
+            :edit-item-dialog-visible="editItemDialogVisible"
+            :is-show-edit="true"
+            :is-show-search="true"
+            :search-str="search"
+            :edit-width="editWidth"
+            :edit-top="editTop"
+            height="calc(100vh - 270px)"
+            @update-current-page="updateCurrentPage"
+            @update-page-size="updatePageSize"
+            @edit-row="editRow"
+            @delete-rows="deleteRows"
+            @update-search="updateSearch"
+            @run-search="runSearch"
+            @click-row-by-picture="clickRowByPicture"
+            @add-item-update-dialog-visible="addItemUpdateDialogVisible"
+            @edit-item-update-dialog-visible="editItemUpdateDialogVisible"
+            @is-show-list-or-grid="updateIsShowListOrGrid"
+        >
+            <template #btns>
+                <el-button type="primary" @click="toggleAddDialog"> 新增 </el-button>
+            </template>
+            <template #category>
+                <!-- v-for 循环 fileCountGroupByFiletype 按钮 -->
+                <div class="category-group">
+                    <el-button
+                        v-for="item in fileCountGroupByFiletype"
+                        :key="item.file_type"
+                        :class="{ active: item.file_type === activeFileType }"
+                        @click="handleFileCountByFiletype(item.file_type)"
+                    >
+                        {{ item.file_extension }} ({{ item.file_count }})
+                    </el-button>
+                </div>
+            </template>
 
-        <!-- 新增弹窗 -->
-        <template #add-item-title>
-            <span class="dialog-title">新增媒体文件</span>
-        </template>
+            <!-- 新增弹窗 -->
+            <template #add-item-title>
+                <span class="dialog-title">新增媒体文件</span>
+            </template>
 
-        <template #add-item>
-            <div class="dialog-add">
-                <AddMedia @has-upload="handleHasUpload" />
-            </div>
-        </template>
+            <template #add-item>
+                <div class="dialog-add">
+                    <AddMedia @has-upload="handleHasUpload" />
+                </div>
+            </template>
 
-        <!-- 编辑弹窗  -->
-        <template #edit-item-title>
-            <span class="dialog-title">编辑媒体文件</span>
-        </template>
+            <!-- 编辑弹窗  -->
+            <template #edit-item-title>
+                <span class="dialog-title">编辑媒体文件</span>
+            </template>
 
-        <template #edit-item>
-            <EditMedia
-                :edit-media-data="editMediaData"
-                @edit-media-status="editStatus"
-                @update-subtitles="updateSubtitles"
-                @delete-subtitles="deleteSubtitles"
-            />
-        </template>
-    </BaseTable>
+            <template #edit-item>
+                <EditMedia
+                    :edit-media-data="editMediaData"
+                    @edit-media-status="editStatus"
+                    @update-subtitles="updateSubtitles"
+                    @delete-subtitles="deleteSubtitles"
+                />
+            </template>
+        </BaseTable>
+    </section>
 </template>
 
 <script lang="ts" setup>
@@ -96,7 +98,8 @@ import { deleteFileAPI, type DeleteFileRequest } from "@/api/upload/deleteFile"
 import type { EditMediaProps } from "@/views/admin/component/main/media/component/edit-media"
 import { isVideo } from "@/utils/isVideo"
 import { type TableImg, ImgFit } from "@/components/common"
-import { useBaseTable, type QueryRecord, type Options } from "@/components/hooks/useBaseTable"
+import { useBaseTable } from "@/components/hooks/useBaseTable"
+import { type QueryParamsRecord } from "@/api/request"
 import { useParams } from "@/components/hooks/useParams"
 
 import BaseTable from "@/components/common/base-table"
@@ -195,18 +198,19 @@ enum queryKey {
 }
 
 // 查询参数
-const queryParams: GetMediaFilesRequest = reactive({} as GetMediaFilesRequest)
-
-// 不需要请求的参数
-const noRequest: QueryRecord<queryKey> = { [queryKey.FileType]: AllFileType }
+const queryParams = reactive({} as GetMediaFilesRequest)
 
 // 图片配置
 const tableImg: TableImg = { width: 100, height: 100, imgFit: ImgFit.Cover, svgFontSize: 60 }
 
-const options: Options<GetMediaFilesRequest> = {
-    noRequest,
-    tableImg,
-}
+// 字符串类型的 key
+const stringKeys: StringKeys<GetMediaFilesRequest>[] = ["file_type", "key_word"]
+
+// 数字类型的 key
+const numberKeys: NumberKeys<GetMediaFilesRequest>[] = ["current_page", "page_size"]
+
+// 不需要请求的参数
+const noRequestKeys: QueryParamsRecord<queryKey> = { [queryKey.FileType]: AllFileType }
 
 // 是否显示列表或网格
 const isShowListOrGrid = ref(
@@ -243,12 +247,18 @@ const {
     deleteFileAPI,
     ResponseCode.FileDeleteSuccess,
     queryParams,
-    options,
+    { stringKeys, numberKeys, noRequestKeys, tableImg },
 )
 
+// 更新数据
+const updateData = async () => {
+    await updateQueryParamsAndRouter(true)
+    await updatePaginate()
+}
+
 // 执行搜索
-const runSearch = () => {
-    updateQueryParamsAndRouter(true)
+const runSearch = async () => {
+    await updateData()
 }
 
 // 是否有上传
@@ -258,11 +268,14 @@ const handleHasUpload = (value: boolean) => {
 }
 
 // 监控 addItemDialogVisible 从 true 变为 false 同时 hasUpload 为 true 更新列表
-watch(addItemDialogVisible, (newVal, oldVal) => {
-    if (hasUpload.value && oldVal === true && newVal === false) {
-        updatePaginate()
-    }
-})
+watch(
+    () => addItemDialogVisible.value,
+    async (newVal, oldVal) => {
+        if (hasUpload.value && oldVal === true && newVal === false) {
+            await updatePaginate()
+        }
+    },
+)
 
 const editMediaData: EditMediaProps = reactive({
     file_id: "", // 文件ID
@@ -415,25 +428,24 @@ const handleFileCountByFiletype = async (fileType: string) => {
         [queryKey.KeyWord]: search.value,
     })
 
-    await nextTick()
-    updateQueryParamsAndRouter(true)
+    await updateData()
 }
 
 // 更新字幕
-const updateSubtitles = (language: string) => {
+const updateSubtitles = async (language: string) => {
     // 如果已经存在则不添加,否则添加
     if (!editMediaData.subtitles_language_list.includes(language)) {
         editMediaData.subtitles_language_list.push(language)
     }
-    updateQueryParamsAndRouter(true)
+    await updateData()
 }
 
 // 删除字幕
-const deleteSubtitles = (language: string) => {
+const deleteSubtitles = async (language: string) => {
     editMediaData.subtitles_language_list = editMediaData.subtitles_language_list.filter(
         (item) => item !== language,
     )
-    updateQueryParamsAndRouter(true)
+    await updateData()
 }
 
 // 在加载前将 params 解析回对应的响应式变量中

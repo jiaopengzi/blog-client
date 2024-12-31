@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-17 16:05:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 14:23:15
+ * @LastEditTime : 2024-12-31 13:10:38
  * @FilePath     : \blog-client\src\components\hooks\useHome\index.ts
  * @Description  : 首页hooks
  * @Blog         : https://jiaopengzi.com
@@ -15,13 +15,13 @@ import { type PostCategory } from "@/api/postCategory/view"
 import { type PostTag } from "@/api/postTag/view"
 import { type ViewPostRequest } from "@/api/post/view"
 import { type MonthArchiveData } from "@/components/common/month-archive"
-import type { Options } from "./types"
 import { useUtils } from "./utils"
 import { useGetData } from "./api"
+import { type QueryParamsOptions } from "@/api/request"
 
 export function useHome(
     queryParams: Reactive<ViewPostRequest>, // 查询参数
-    options?: Options<ViewPostRequest>,
+    options?: QueryParamsOptions<ViewPostRequest>,
 ) {
     const route = useRoute()
     const router = useRouter()

@@ -2,28 +2,28 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-25 11:51:57
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-25 17:52:20
+ * @LastEditTime : 2024-12-31 12:54:11
  * @FilePath     : \blog-client\src\components\hooks\useHome\utils.ts
  * @Description  : 工具
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { reactive, ref, type Reactive, type Ref } from "vue"
-import { useRouter } from "vue-router"
-import { type Pagination, PaginationParamsInURL } from "@/components/common"
+import { useRoute, useRouter } from "vue-router"
+import { type Pagination } from "@/components/common"
 import { type ViewPostRequest } from "@/api/post/view"
 import type { PostResPagination } from "@/api/post/common"
-import type { BreadcrumbItem, Options, ViewPostResKey } from "./types"
+import type { BreadcrumbItem, ViewPostResKey } from "./types"
+import { parseQueryParams, type QueryParamsOptions } from "@/api/request"
 
 export function useUtils(
     pagination: Reactive<Pagination<PostResPagination>>, // 分页数据
     isRequest: Ref<boolean>, // 是否请求
     queryParams: Reactive<ViewPostRequest>, // 查询参数
-    options?: Options<ViewPostRequest>, // 请求参数选项
+    options?: QueryParamsOptions<ViewPostRequest>, // 请求参数选项
 ) {
+    const route = useRoute()
     const router = useRouter()
 
     const breadcrumbItems = reactive<BreadcrumbItem[]>([]) // 面包屑
@@ -31,19 +31,6 @@ export function useUtils(
 
     const paginationBlockVisibleCount = ref(1) // 分页块出现次数
     const pageSizeTemp = ref(10) // 临时每页显示条数
-
-    // 分页参数集合
-    const paginationParamSet = new Set<string>(Object.values(PaginationParamsInURL))
-
-    // 数字参数集合
-    const numberParamSet = new Set<string>(Object.values(PaginationParamsInURL))
-
-    // 如果 options.queryNumberParams 不为空 将 options.queryNumberParams key 增加到 numberParamSet 中
-    if ((options?.queryNumberParams?.length ?? 0) > 0) {
-        options?.queryNumberParams?.forEach((key) => {
-            numberParamSet.add(key || "")
-        })
-    }
 
     // 更新查询参数
     const updateQueryParamsAndRouter = (isUpdateRouter: boolean = true) => {
@@ -61,35 +48,18 @@ export function useUtils(
     }
 
     // 从URL中解析参数
-    const parseParamsFromURL = () => {
+    const parseParamsFromURL = async () => {
+        const { hasPaginationParams, hasQueryParams, queryParamsResult } = await parseQueryParams(
+            route.query,
+            options as QueryParamsOptions<ViewPostRequest>,
+        )
+
         // 清空 queryParams
-        Object.keys(queryParams).forEach((key) => delete queryParams[key as ViewPostResKey])
-
-        // 标志变量，判断是否有分页参数
-        let hasPaginationParams = false
-
-        // 判断路由中是否有参数
-        const queryUrl = router.currentRoute.value.query
-
-        // 如果 queryUrl 不为空 则将 queryUrl 赋值给 query
-        if (Object.keys(queryUrl).length) {
-            // 赋值给到 query, 如果 key 对应的值能解析为数字则解析为数字
-            for (const key in queryUrl) {
-                // 判断是否有分页参数
-                if (paginationParamSet.has(key)) {
-                    hasPaginationParams = true
-                }
-
-                const value = queryUrl[key]
-                if (value !== undefined && value !== null) {
-                    // 判断 key 是否在 numberParamSet 中，如果在则解析为数字，否则保持原样
-                    if (numberParamSet.has(key)) {
-                        ;(queryParams as any)[key as ViewPostResKey] = Number(value)
-                    } else {
-                        ;(queryParams as any)[key as ViewPostResKey] = value as string
-                    }
-                }
-            }
+        Object.keys(queryParams).forEach(
+            (key) => delete queryParams[key as keyof typeof queryParams],
+        )
+        if (hasQueryParams) {
+            Object.assign(queryParams, queryParamsResult)
         }
 
         hasPaginationParamsInURL.value = hasPaginationParams

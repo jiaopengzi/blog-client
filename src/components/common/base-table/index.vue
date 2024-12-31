@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-28 16:25:36
+ * @LastEditTime : 2024-12-31 15:41:53
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格 table-layout="auto"
  * @Blog         : https://jiaopengzi.com
@@ -427,7 +427,14 @@ const editItemHandleDialogClose = () => {
 
 // 监听搜索关键字变化
 watch(
-    search,
+    () => searchStr,
+    (newVal) => {
+        search.value = newVal
+    },
+)
+
+watch(
+    () => search.value,
     (newVal) => {
         // 如果字数大于50则截取前50个字符
         if (newVal.length > 50) {
@@ -436,8 +443,7 @@ watch(
 
         emit("update-search", newVal)
     },
-    { immediate: false },
-) // 不立即执行
+)
 
 // 执行搜索
 const runSearch = () => {

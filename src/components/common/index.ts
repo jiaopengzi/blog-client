@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:38:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 10:30:02
+ * @LastEditTime : 2024-12-31 11:29:24
  * @FilePath     : \blog-client\src\components\common\index.ts
  * @Description  : 公用信息
  * @Blog         : https://jiaopengzi.com
@@ -46,30 +46,6 @@ export const getEmptyPagination = <T>(): Pagination<T> => {
         records: [], // 默认数据为空数组
     }
 }
-
-// url 中是分页参数名 PaginationParamsInURL 的对象
-export enum PaginationParamsInURL {
-    current_page = "current_page",
-    page_size = "page_size",
-}
-
-// 获取对象中的值数字类型的string键名
-export type NumberKeys<T> = {
-    [K in keyof T]: K extends string
-        ? undefined extends T[K]
-            ? Exclude<T[K], undefined> extends number
-                ? K
-                : never
-            : T[K] extends number
-              ? K
-              : never
-        : never
-}[keyof T]
-
-// 获取对象中的值为布尔类型的string键名
-export type BooleanKeys<T> = {
-    [K in keyof T]: T[K] extends boolean | undefined ? K : never
-}[keyof T]
 
 // 表格图片配置
 export interface TableImg {

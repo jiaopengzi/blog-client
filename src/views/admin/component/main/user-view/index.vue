@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-10 15:44:26
+ * @LastEditTime : 2024-12-31 16:02:33
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -10,68 +10,70 @@
 -->
 
 <template>
-    <BaseTable
-        :pagination="pagination"
-        :table-column="cols"
-        :add-item-dialog-visible="addItemDialogVisible"
-        :edit-item-dialog-visible="editItemDialogVisible"
-        :is-show-delete-all="true"
-        :is-show-search="true"
-        :search-str="search"
-        :is-show-edit="true"
-        height="calc(100vh - 270px)"
-        @update-current-page="updateCurrentPage"
-        @update-page-size="updatePageSize"
-        @edit-row="editRow"
-        @delete-rows="deleteRows"
-        @update-search="updateSearch"
-        @run-search="runSearch"
-        @add-item-update-dialog-visible="addItemUpdateDialogVisible"
-        @edit-item-update-dialog-visible="editItemUpdateDialogVisible"
-    >
-        <template #btns>
-            <el-button type="primary" @click="toggleAddDialog"> 新增 </el-button>
-        </template>
-        <template #category>
-            <!-- v-for 循环 userCountGroupByRole生成 按钮 -->
-            <div class="category-group">
-                <el-button
-                    v-for="item in userCountGroupByRole"
-                    :key="item.role_name"
-                    :class="{ active: item.role_name === activeRole }"
-                    @click="handleUserCountByRole(item.role_name)"
-                >
-                    {{ roleDisplay(item.role_name) }} ({{ item.user_count }})
-                </el-button>
-            </div>
-        </template>
+    <section>
+        <BaseTable
+            :pagination="pagination"
+            :table-column="cols"
+            :add-item-dialog-visible="addItemDialogVisible"
+            :edit-item-dialog-visible="editItemDialogVisible"
+            :is-show-delete-all="true"
+            :is-show-search="true"
+            :search-str="search"
+            :is-show-edit="true"
+            height="calc(100vh - 270px)"
+            @update-current-page="updateCurrentPage"
+            @update-page-size="updatePageSize"
+            @edit-row="editRow"
+            @delete-rows="deleteRows"
+            @update-search="updateSearch"
+            @run-search="runSearch"
+            @add-item-update-dialog-visible="addItemUpdateDialogVisible"
+            @edit-item-update-dialog-visible="editItemUpdateDialogVisible"
+        >
+            <template #btns>
+                <el-button type="primary" @click="toggleAddDialog"> 新增 </el-button>
+            </template>
+            <template #category>
+                <!-- v-for 循环 userCountGroupByRole生成 按钮 -->
+                <div class="category-group">
+                    <el-button
+                        v-for="item in userCountGroupByRole"
+                        :key="item.role_name"
+                        :class="{ active: item.role_name === activeRole }"
+                        @click="handleUserCountByRole(item.role_name)"
+                    >
+                        {{ roleDisplay(item.role_name) }} ({{ item.user_count }})
+                    </el-button>
+                </div>
+            </template>
 
-        <!-- 新增弹窗 -->
-        <template #add-item-title>
-            <span class="dialog-title">新增用户</span>
-        </template>
+            <!-- 新增弹窗 -->
+            <template #add-item-title>
+                <span class="dialog-title">新增用户</span>
+            </template>
 
-        <template #add-item>
-            <div class="dialog-add">
-                <AddUser :roles="roles" @add-user-status="addStatus" />
-            </div>
-        </template>
+            <template #add-item>
+                <div class="dialog-add">
+                    <AddUser :roles="roles" @add-user-status="addStatus" />
+                </div>
+            </template>
 
-        <!-- 编辑弹窗 -->
-        <template #edit-item-title>
-            <span class="dialog-title">编辑用户</span>
-        </template>
+            <!-- 编辑弹窗 -->
+            <template #edit-item-title>
+                <span class="dialog-title">编辑用户</span>
+            </template>
 
-        <template #edit-item>
-            <div class="dialog-edit">
-                <EditUser
-                    :roles="roles"
-                    :edit-user-data="editUserByAdminForm"
-                    @edit-user-status="editStatus"
-                />
-            </div>
-        </template>
-    </BaseTable>
+            <template #edit-item>
+                <div class="dialog-edit">
+                    <EditUser
+                        :roles="roles"
+                        :edit-user-data="editUserByAdminForm"
+                        @edit-user-status="editStatus"
+                    />
+                </div>
+            </template>
+        </BaseTable>
+    </section>
 </template>
 
 <script lang="ts" setup>
@@ -90,7 +92,8 @@ import { ResponseCode } from "@/api/response"
 import { deleteUserAPI, type DeleteUserRequest } from "@/api/user/deleteUser"
 import { type EditUserByAdminForm } from "@/views/admin/component/main/user-view/component/edit-user"
 import { formatTime } from "@/utils/dateTime"
-import { useBaseTable, type QueryRecord, type Options } from "@/components/hooks/useBaseTable"
+import { useBaseTable } from "@/components/hooks/useBaseTable"
+import { type QueryParamsRecord } from "@/api/request"
 import { useParams } from "@/components/hooks/useParams"
 
 import BaseTable from "@/components/common/base-table"
@@ -179,8 +182,14 @@ enum queryKey {
 // 查询参数
 const queryParams: GetUsersRequest = reactive({} as GetUsersRequest)
 
+// 字符串类型的 key
+const stringKeys: StringKeys<GetUsersRequest>[] = ["role_name", "key_word"]
+
+// 数字类型的 key
+const numberKeys: NumberKeys<GetUsersRequest>[] = ["current_page", "page_size"]
+
 // 不需要请求的参数
-const noRequest: QueryRecord<queryKey> = { [queryKey.RoleName]: AllRoleName }
+const noRequestKeys: QueryParamsRecord<queryKey> = { [queryKey.RoleName]: AllRoleName }
 
 const getDisableExpiresTime = (row: TableData) => {
     if ("disable_expires_at" in row) {
@@ -314,22 +323,6 @@ function roleDisplay(role: string) {
     return roleObj ? roleObj.description : role
 }
 
-const handleUserCountByRole = async (role: string) => {
-    activeRole.value = role
-    // 添加路由跳转
-    Object.assign(queryParams, {
-        [queryKey.RoleName]: role,
-        [queryKey.KeyWord]: search.value,
-    })
-
-    await nextTick()
-    updateQueryParamsAndRouter(true)
-}
-
-const options: Options<GetUsersRequest> = {
-    noRequest,
-}
-
 // hooks 使用
 const {
     addItemDialogVisible, // 添加对话框是否可见
@@ -347,6 +340,7 @@ const {
     editItemUpdateDialogVisible, // 编辑对话框
     deleteRows, // 删除行
     updateQueryParamsAndRouter, // 更新查询参数和路由
+    updatePaginate,
 } = useBaseTable<User, GetUsersRequest, DeleteUserRequest>(
     AdminSideMenu.UserView,
     getUsersAPI,
@@ -354,12 +348,29 @@ const {
     deleteUserAPI,
     ResponseCode.DeleteUserSuccess,
     queryParams,
-    options,
+    { stringKeys, numberKeys, noRequestKeys },
 )
 
+// 更新数据
+const updateData = async () => {
+    await updateQueryParamsAndRouter(true)
+    await updatePaginate()
+}
+
 // 执行搜索
-const runSearch = () => {
-    updateQueryParamsAndRouter(true)
+const runSearch = async () => {
+    await updateData()
+}
+
+const handleUserCountByRole = async (role: string) => {
+    activeRole.value = role
+    // 添加路由跳转
+    Object.assign(queryParams, {
+        [queryKey.RoleName]: role,
+        [queryKey.KeyWord]: search.value,
+    })
+
+    await updateData()
 }
 
 // 在加载前将 params 解析回对应的响应式变量中

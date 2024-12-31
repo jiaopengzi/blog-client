@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 15:40:22
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-07 13:42:12
+ * @LastEditTime : 2024-12-30 15:19:00
  * @FilePath     : \blog-client\src\components\common\add-tag\index.vue
  * @Description  : 添加标签组件
  * @Blog         : https://jiaopengzi.com
@@ -30,10 +30,10 @@
             @blur="handleInputConfirm"
         />
         <el-button class="tag-input" v-else @click="showInput"> + 新标签 </el-button>
+        <el-button type="primary" class="show-all-tag" @click="changeIsShowAllTag"
+            >选择标签</el-button
+        >
     </div>
-    <el-button type="primary" class="show-all-tag" @click="changeIsShowAllTag"
-        >从常用标签中选择</el-button
-    >
 
     <PostTag v-if="isShowAllTag" :is-admin="true" class="el-aside-item" @click="handleTagClick" />
 </template>
@@ -113,20 +113,16 @@ const changeIsShowAllTag = () => {
 </script>
 
 <style scoped lang="scss">
-.tag-group {
-    .tag-item {
-        margin: 2px 2px;
-    }
-
-    .tag-input {
-        width: 100px;
-        margin-left: 2px;
-    }
+.tag-item {
+    margin: 4px 4px;
+}
+.tag-input {
+    width: 80px;
+    margin: 4px 4px;
 }
 
 .show-all-tag {
-    // 宽度刚好适应文本宽度
-    width: fit-content;
-    margin-top: 4px;
+    margin: 4px 4px;
+    width: 80px;
 }
 </style>

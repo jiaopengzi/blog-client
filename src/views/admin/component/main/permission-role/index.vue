@@ -9,156 +9,167 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-    <div class="container">
-        <div class="btns">
-            <el-button
-                v-permission="PermissionNames.PermissionRole"
-                type="primary"
-                @click="updatePermission"
+    <section>
+        <div class="container">
+            <div class="btns">
+                <el-button
+                    v-permission="PermissionNames.PermissionRole"
+                    type="primary"
+                    @click="updatePermission"
+                >
+                    更新权限
+                </el-button>
+            </div>
+            <el-table
+                :data="permissionsData"
+                class="permission-table"
+                table-layout="auto"
+                stripe
+                height="calc(100vh - 142px)"
             >
-                更新权限
-            </el-button>
-        </div>
-        <el-table
-            :data="permissionsData"
-            class="permission-table"
-            table-layout="auto"
-            stripe
-            height="calc(100vh - 142px)"
-        >
-            <!-- 交叉表第一列 权限名称 -->
-            <el-table-column prop="permissionIndex" label="序号" width="100"></el-table-column>
-            <!-- 交叉表第一列 权限名称 -->
-            <el-table-column
-                prop="permissionDescription"
-                label="权限"
-                width="180"
-            ></el-table-column>
+                <!-- 交叉表第一列 权限名称 -->
+                <el-table-column prop="permissionIndex" label="序号" width="100"></el-table-column>
+                <!-- 交叉表第一列 权限名称 -->
+                <el-table-column
+                    prop="permissionDescription"
+                    label="权限"
+                    width="180"
+                ></el-table-column>
 
-            <!-- 循环生成角色列 -->
-            <el-table-column v-for="role in rolesList" :key="role.role_name">
-                <template #header>
-                    <div class="header-wrapper">
-                        {{ role.description }}
-                        <el-checkbox
-                            v-model="role.allSelected"
-                            @change="selectAll(role.role_name)"
-                            :disabled="disabledRoleNames.includes(role.role_name)"
-                        ></el-checkbox>
-                    </div>
-                </template>
-                <template #default="{ row }">
-                    <div class="cell">
-                        <div class="cell-top" :class="{ 'show-edit': row[role.role_name] }">
+                <!-- 循环生成角色列 -->
+                <el-table-column v-for="role in rolesList" :key="role.role_name">
+                    <template #header>
+                        <div class="header-wrapper">
+                            {{ role.description }}
                             <el-checkbox
-                                class="cell-checkbox"
-                                v-model="row[role.role_name]"
+                                v-model="role.allSelected"
+                                @change="selectAll(role.role_name)"
                                 :disabled="disabledRoleNames.includes(role.role_name)"
                             ></el-checkbox>
-                            <el-button
-                                type="primary"
-                                class="cell-edit"
+                        </div>
+                    </template>
+                    <template #default="{ row }">
+                        <div class="cell">
+                            <div class="cell-top" :class="{ 'show-edit': row[role.role_name] }">
+                                <el-checkbox
+                                    class="cell-checkbox"
+                                    v-model="row[role.role_name]"
+                                    :disabled="disabledRoleNames.includes(role.role_name)"
+                                ></el-checkbox>
+                                <el-button
+                                    type="primary"
+                                    class="cell-edit"
+                                    v-if="!disabledRoleNames.includes(role.role_name)"
+                                    @click="handleCellEditClick(row.permissionName, role.role_name)"
+                                    >编辑</el-button
+                                >
+                            </div>
+                            <span
+                                class="cell-down"
                                 v-if="!disabledRoleNames.includes(role.role_name)"
-                                @click="handleCellEditClick(row.permissionName, role.role_name)"
-                                >编辑</el-button
+                            >
+                                {{
+                                    getSafeProperty(
+                                        permissionRole,
+                                        row.permissionName + role.role_name,
+                                    )?.limit_count
+                                        ? `限制次数:${
+                                              getSafeProperty(
+                                                  permissionRole,
+                                                  row.permissionName + role.role_name,
+                                              )?.limit_count
+                                          }`
+                                        : ""
+                                }}</span
                             >
                         </div>
-                        <span class="cell-down" v-if="!disabledRoleNames.includes(role.role_name)">
-                            {{
-                                getSafeProperty(permissionRole, row.permissionName + role.role_name)
-                                    ?.limit_count
-                                    ? `限制次数:${
-                                          getSafeProperty(
-                                              permissionRole,
-                                              row.permissionName + role.role_name,
-                                          )?.limit_count
-                                      }`
-                                    : ""
-                            }}</span
-                        >
-                    </div>
-                </template>
-            </el-table-column>
-        </el-table>
-    </div>
-    <!-- 弹窗 edit -->
-    <el-dialog v-model="editItemDialogVisibleStatus" @close="editItemHandleDialogClose" width="35%">
-        <template #header>
-            <h3>编辑</h3>
-        </template>
-        <template #default>
-            <el-form
-                :rules="rules"
-                :label-position="labelPosition"
-                label-width="100px"
-                ref="permissionRoleFormRef"
-                :model="permissionRoleForm"
-                class="permission-role-form"
-                :size="formSize"
-                status-icon
-            >
-                <el-form-item label="权限名称">
-                    <el-input v-model="permissionRoleForm.permission_name" disabled />
-                </el-form-item>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+        <!-- 弹窗 edit -->
+        <el-dialog
+            v-model="editItemDialogVisibleStatus"
+            @close="editItemHandleDialogClose"
+            width="35%"
+        >
+            <template #header>
+                <h3>编辑</h3>
+            </template>
+            <template #default>
+                <el-form
+                    :rules="rules"
+                    :label-position="labelPosition"
+                    label-width="100px"
+                    ref="permissionRoleFormRef"
+                    :model="permissionRoleForm"
+                    class="permission-role-form"
+                    :size="formSize"
+                    status-icon
+                >
+                    <el-form-item label="权限名称">
+                        <el-input v-model="permissionRoleForm.permission_name" disabled />
+                    </el-form-item>
 
-                <el-form-item label="角色名称">
-                    <el-input v-model="permissionRoleForm.role_name" disabled />
-                </el-form-item>
-                <el-form-item label="限制次数说明">
-                    <h4>0：不限制(不受时长限制)，大于0：对应限制次数。</h4>
-                </el-form-item>
-                <el-form-item label="限制次数" prop="limit_count">
-                    <el-input type="number" v-model="permissionRoleForm.limit_count" />
-                </el-form-item>
-                <el-form-item label="限制次数选项">
-                    <div class="multi-btn">
+                    <el-form-item label="角色名称">
+                        <el-input v-model="permissionRoleForm.role_name" disabled />
+                    </el-form-item>
+                    <el-form-item label="限制次数说明">
+                        <h4>0：不限制(不受时长限制)，大于0：对应限制次数。</h4>
+                    </el-form-item>
+                    <el-form-item label="限制次数" prop="limit_count">
+                        <el-input type="number" v-model="permissionRoleForm.limit_count" />
+                    </el-form-item>
+                    <el-form-item label="限制次数选项">
+                        <div class="multi-btn">
+                            <el-button
+                                class="multi-btn-item"
+                                size="small"
+                                v-for="item in getSortedEnumKeys(LimitCount)"
+                                :key="item"
+                                type="primary"
+                                @click="handleInsertLimitCount(item as keyof typeof LimitCount)"
+                                >{{ item }}</el-button
+                            >
+                        </div>
+                    </el-form-item>
+
+                    <el-form-item label="限制时长-秒" prop="limit_period">
+                        <el-input type="number" v-model="permissionRoleForm.limit_period" />
+                    </el-form-item>
+
+                    <el-form-item label="限制时长选项">
+                        <div class="multi-btn">
+                            <el-button
+                                class="multi-btn-item"
+                                size="small"
+                                v-for="item in getSortedEnumKeys(LimitPeriod)"
+                                :key="item"
+                                type="primary"
+                                @click="handleInsertLimitPeriod(item as keyof typeof LimitPeriod)"
+                                >{{ item }}</el-button
+                            >
+                        </div>
+                    </el-form-item>
+
+                    <div class="save-delete">
                         <el-button
-                            class="multi-btn-item"
-                            size="small"
-                            v-for="item in getSortedEnumKeys(LimitCount)"
-                            :key="item"
+                            size="default"
                             type="primary"
-                            @click="handleInsertLimitCount(item as keyof typeof LimitCount)"
-                            >{{ item }}</el-button
+                            @click="submitUpsertForm(permissionRoleFormRef as FormInstance)"
+                            >保存</el-button
                         >
-                    </div>
-                </el-form-item>
-
-                <el-form-item label="限制时长-秒" prop="limit_period">
-                    <el-input type="number" v-model="permissionRoleForm.limit_period" />
-                </el-form-item>
-
-                <el-form-item label="限制时长选项">
-                    <div class="multi-btn">
                         <el-button
-                            class="multi-btn-item"
-                            size="small"
-                            v-for="item in getSortedEnumKeys(LimitPeriod)"
-                            :key="item"
-                            type="primary"
-                            @click="handleInsertLimitPeriod(item as keyof typeof LimitPeriod)"
-                            >{{ item }}</el-button
+                            size="default"
+                            type="danger"
+                            @click="submitDeleteForm(permissionRoleFormRef as FormInstance)"
+                            >删除</el-button
                         >
                     </div>
-                </el-form-item>
-
-                <div class="save-delete">
-                    <el-button
-                        size="default"
-                        type="primary"
-                        @click="submitUpsertForm(permissionRoleFormRef as FormInstance)"
-                        >保存</el-button
-                    >
-                    <el-button
-                        size="default"
-                        type="danger"
-                        @click="submitDeleteForm(permissionRoleFormRef as FormInstance)"
-                        >删除</el-button
-                    >
-                </div>
-            </el-form>
-        </template>
-    </el-dialog>
+                </el-form>
+            </template>
+        </el-dialog>
+    </section>
 </template>
 
 <script lang="ts" setup>

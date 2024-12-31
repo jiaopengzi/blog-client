@@ -2,13 +2,13 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-05 19:00:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-24 10:52:47
+ * @LastEditTime : 2024-12-31 15:45:00
  * @FilePath     : \blog-client\src\components\hooks\useParams\index.ts
  * @Description  : 路由参数解析回响应式变量
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
-import { onBeforeMount, type Ref, type Reactive } from "vue"
+import { onBeforeMount, watch, type Ref, type Reactive } from "vue"
 import type { PaginationRequest, Pagination } from "@/components/common"
 
 /**
@@ -29,6 +29,20 @@ export function useParams<T, K extends PaginationRequest>(
         pagination.page_size = page_size || 10
         pagination.current_page = current_page || 1
     }
+
+    const updateWatch = (newVal: Reactive<K>) => {
+        update(newVal)
+        stop()
+    }
+
+    // 监控 queryParams
+    const { stop } = watch(
+        () => params,
+        (newVal) => {
+            updateWatch(newVal)
+        },
+        { deep: true },
+    )
 
     onBeforeMount(() => {
         update(params)

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-25 11:46:44
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 13:45:26
+ * @LastEditTime : 2024-12-31 12:43:13
  * @FilePath     : \blog-client\src\components\hooks\useHome\api.ts
  * @Description  : 数据请求
  * @Blog         : https://jiaopengzi.com
@@ -18,11 +18,12 @@ import { viewRecommendedPostAPI } from "@/api/post/viewRecommendedPost"
 import { getPostCountByMonthAPI } from "@/api/post/getPostCountByMonth"
 import { type MonthArchiveData } from "@/components/common/month-archive"
 import type { PostResPagination, PostResCommon } from "@/api/post/common"
-import type { Options, ViewPostResKey } from "./types"
+import type { ViewPostResKey } from "./types"
+import { type QueryParamsOptions } from "@/api/request"
 
 export function useGetData(
     queryParams: Reactive<ViewPostRequest>, // 查询参数
-    options?: Options<ViewPostRequest>,
+    options?: QueryParamsOptions<ViewPostRequest>,
 ) {
     const pagination =
         reactive<Pagination<PostResPagination>>(getEmptyPagination<PostResPagination>()) // 分页数据
@@ -47,10 +48,10 @@ export function useGetData(
     // 获取分页
     async function getPaginate(req: ViewPostRequest): Promise<Pagination<PostResPagination>> {
         // 遍历 options.NoRequest 中的参数，如果 req 中的参数值等于 options.NoRequest 中的值则删除,不请求
-        for (const key in options?.noRequest) {
+        for (const key in options?.noRequestKeys) {
             if (
                 key in req &&
-                req[key as ViewPostResKey] === options.noRequest[key as ViewPostResKey]
+                req[key as ViewPostResKey] === options.noRequestKeys[key as ViewPostResKey]
             ) {
                 delete req[key as ViewPostResKey]
             }

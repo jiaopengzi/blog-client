@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 19:21:38
+ * @LastEditTime : 2024-12-31 16:18:57
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -27,12 +27,21 @@
                     :default-active="defaultActive"
                     :class="collapseStatus ? 'aside-collapse' : 'aside-no-collapse'"
                     class="aside"
-                    @select="handleSelect"
                     @collapse-status="handleCollapseStatus"
+                    @select="handleSelect"
                 />
 
                 <el-main class="main">
-                    <router-view />
+                    <!-- 控制台警告：Component inside <Transition> renders non-element root node that cannot be animated. -->
+                    <!-- 参考:https://stackoverflow.com/questions/65553121/vue-3-transition-renders-non-element-root-node-that-cannot-be-animated -->
+                    <!-- 在组件外包裹一层 div,需要单独包括在子组件中，才能缓存,不能在这里包裹 -->
+                    <router-view v-slot="{ Component }">
+                        <transition>
+                            <KeepAlive>
+                                <component :is="Component" />
+                            </KeepAlive>
+                        </transition>
+                    </router-view>
                 </el-main>
             </el-container>
         </el-container>
@@ -46,6 +55,7 @@
 <script lang="ts" setup>
 import { ref, onBeforeMount, useTemplateRef } from "vue"
 import { useRouter } from "vue-router"
+
 import { PermissionNames } from "@/utils/permissionRole"
 import { useUserStore } from "@/stores/user"
 
@@ -54,7 +64,9 @@ import AdminAside from "@/views/admin/component/aside"
 import Page404 from "@/views/404"
 
 defineOptions({ name: "AdminLayout" })
+
 const router = useRouter()
+
 const hasPermissionLoginAdmin = ref(false)
 
 // 定义 HTMLElementRef 类型
@@ -80,6 +92,12 @@ const updatePermissionLoginAdmin = () => {
 
 const containerRef = useTemplateRef<HTMLElementRef | null>("containerRef")
 
+// 折叠状态
+const collapseStatus = ref(false)
+const handleCollapseStatus = (isCollapse: boolean) => {
+    collapseStatus.value = isCollapse
+}
+
 // 选择菜单项
 const handleSelect = (index: string) => {
     if (userStore.getIsEditing) {
@@ -87,12 +105,6 @@ const handleSelect = (index: string) => {
     }
 
     router.push(index)
-}
-
-// 折叠状态
-const collapseStatus = ref(false)
-const handleCollapseStatus = (isCollapse: boolean) => {
-    collapseStatus.value = isCollapse
 }
 
 onBeforeMount(() => {

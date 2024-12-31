@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:26:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-24 20:17:34
+ * @LastEditTime : 2024-12-31 13:18:08
  * @FilePath     : \blog-client\src\views\home\component\index.vue
  * @Description  : 主页内容
  * @Blog         : https://jiaopengzi.com
@@ -73,7 +73,6 @@ import { reactive, useTemplateRef, onUnmounted } from "vue"
 import { useResizeObserver } from "@vueuse/core"
 import { ArrowRight, Location } from "@element-plus/icons-vue"
 import { routeObj } from "@/router/routeAll"
-import type { NumberKeys } from "@/components/common"
 
 import Carousel from "@/views/home/component/carousel"
 import PostList from "@/views/home/component/post-list"
@@ -92,8 +91,16 @@ const asideRef = useTemplateRef<InstanceType<typeof ElAside>>("asideRef")
 // 获取首页数据
 const mainReq = reactive<ViewPostRequest>({} as ViewPostRequest)
 
-// 查询参数中的数字和布尔类型
-const queryNumberParams: NumberKeys<ViewPostRequest>[] = ["year", "month"]
+// 字符串类型的key
+const stringKeys: StringKeys<ViewPostRequest>[] = [
+    "post_author",
+    "post_category_id",
+    "post_tag_id",
+    "key_word",
+]
+
+// 字符串类型的key
+const numberKeys: NumberKeys<ViewPostRequest>[] = ["year", "month", "current_page", "page_size"]
 
 const {
     pagination,
@@ -109,7 +116,7 @@ const {
     breadcrumbItems,
     paginationBlockVisibleChange,
     isShowPostListLoading,
-} = useHome(mainReq, { queryNumberParams })
+} = useHome(mainReq, { stringKeys, numberKeys })
 
 // 侧边栏高度计算
 const reCalculateHeight = () => {
