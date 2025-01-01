@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:33:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-01 11:51:11
+ * @LastEditTime : 2025-01-01 12:55:33
  * @FilePath     : \blog-client\src\views\admin\component\aside\index.vue
  * @Description  : 左边菜单栏 
  * @Blog         : https://jiaopengzi.com
@@ -17,7 +17,6 @@
 
         <el-scrollbar>
             <el-menu
-                :default-openeds="['post']"
                 :collapse="isCollapse"
                 @select="handleSelect"
                 @open="handleOpen"
@@ -127,7 +126,6 @@ const handleClose = (index: string, keyPath: string[]) => {
 .el-menu-vertical {
     overflow-x: hidden;
     border-right: none;
-    // --el-menu-bg-color: transparent;
     --el-menu-text-color: var(--jpz-text-color-primary);
     --el-menu-active-color: var(--jpz-color-secondary);
     --el-menu-bg-color: var(--jpz-bg-color-page);
@@ -142,5 +140,11 @@ const handleClose = (index: string, keyPath: string[]) => {
 :deep(.icon-menu) {
     fill: var(--jpz-color-primary);
     font-size: 1.2em;
+}
+
+:deep(.no-children.is-active) {
+    .icon-menu {
+        fill: var(--el-menu-active-color);
+    }
 }
 </style>

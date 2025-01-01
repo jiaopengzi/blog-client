@@ -24,7 +24,7 @@
             </el-header>
             <el-container ref="containerRef" class="content">
                 <AdminAside
-                    :default-active="defaultActive"
+                    :default-active="$route.path"
                     :class="collapseStatus ? 'aside-collapse' : 'aside-no-collapse'"
                     :is-collapse="collapseStatus"
                     class="aside"
@@ -89,8 +89,6 @@ interface HTMLElementRef extends HTMLElement {
 // 添加 isLoading 变量
 const isLoading = ref(true)
 
-// 添加默认激活的菜单项
-const defaultActive = ref("")
 const userStore = useUserStore()
 
 // 更新 PermissionLoginAdmin
@@ -109,6 +107,7 @@ const savedIsCollapse = localStorage.getItem(LocalStorageKey.IsCollapse)
 const collapseStatus = ref(savedIsCollapse !== null ? savedIsCollapse === "true" : false)
 const handleCollapseStatus = (isCollapse: boolean) => {
     collapseStatus.value = isCollapse
+
     localStorage.setItem(LocalStorageKey.IsCollapse, isCollapse.toString())
 }
 
