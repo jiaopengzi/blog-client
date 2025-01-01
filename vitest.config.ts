@@ -17,6 +17,9 @@ export default mergeConfig(
                 "**/node_modules/**", // 排除所有 node_modules 中的测试
                 "**/vue3-emoji-picker/**", // 排除特定包的测试
                 "**/dist/**",
+                "**/.vscode/**",
+                "**/.VSCodeCounter/**",
+                "**/vite-plugin-inspect/**",
             ],
             root: fileURLToPath(new URL("./", import.meta.url)),
             server: {

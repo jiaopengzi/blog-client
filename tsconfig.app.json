@@ -3,7 +3,6 @@
   "include": [
     "env.d.ts",
     "src/**/*.ts",
-    "src/**/*.json",
     "src/**/*.vue",
     "types/**/*.d.ts",
     "auto-imports.d.ts"

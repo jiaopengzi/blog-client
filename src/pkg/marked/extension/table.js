@@ -18,7 +18,7 @@ export default function () {
                 start(src) {
                     return src.match(/^\n *([^\n ].*\|.*)\n/)?.index
                 }, // Hint to Marked.js to stop and check for a match
-                // eslint-disable-next-line no-unused-vars
+                 
                 tokenizer(src, tokens) {
                     // const regex = this.tokenizer.rules.block.table;
                     const regex = new RegExp(

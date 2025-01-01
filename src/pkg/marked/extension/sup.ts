@@ -15,11 +15,11 @@ export const supExtensionInline: TokenizerAndRendererExtension = {
     name: "sup",
     level: "inline",
     start(src: string): number | undefined {
-        // eslint-disable-next-line no-useless-escape
+         
         return src.match(/\^([^\^\n]+)\^/)?.index
     },
     tokenizer(src: string): Token | undefined {
-        // eslint-disable-next-line no-useless-escape
+         
         const rule = /^\^([^\^\n]+)\^/
         const match = rule.exec(src)
         if (match) {

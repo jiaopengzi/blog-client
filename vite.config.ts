@@ -22,7 +22,7 @@ export default defineConfig({
         tsconfigPaths(), // tsconfig 路径别名
         vue(),
         vueJsx(),
-        Inspect(), // vite-plugin-inspect 查看编译后的文件
+
         // ------------------------------element-plus 自动导入 开始
         AutoImport({
             resolvers: [ElementPlusResolver()],
@@ -33,6 +33,7 @@ export default defineConfig({
             directoryAsNamespace: true, // 解决组件名称重复问题 `component xxx has naming conflicts with other components, ignored.`
         }),
         // ------------------------------element-plus 自动导入 结束
+        Inspect(), // vite-plugin-inspect 查看编译后的文件
     ],
 
     resolve: {
@@ -44,8 +45,6 @@ export default defineConfig({
     css: {
         preprocessorOptions: {
             scss: {
-                // TODO 暂时消除警告，部署前再处理 参考https://sass-lang.com/documentation/breaking-changes/legacy-js-api/
-                // silenceDeprecations: ["legacy-js-api"],
                 // 多个scss文件变量生效
                 additionalData: `
                     @use '@/assets/scss/platform/_phone.scss' as phone;
