@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:33:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 12:24:43
+ * @LastEditTime : 2025-01-01 11:51:11
  * @FilePath     : \blog-client\src\views\admin\component\aside\index.vue
  * @Description  : 左边菜单栏 
  * @Blog         : https://jiaopengzi.com
@@ -23,7 +23,7 @@
                 @open="handleOpen"
                 @close="handleClose"
                 class="el-menu-vertical"
-                :default-active="props.defaultActive"
+                :default-active="defaultActive"
                 :router="false"
             >
                 <recursive-menu-item
@@ -38,10 +38,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed } from "vue"
+import { reactive, computed } from "vue"
 import type { SwitchItem, SwitchItemLabel, SwitchItemColor } from "@/components/common/switch-group"
 import { adminMenuItemMapWithIndex } from "./utils"
-import { LocalStorageKey } from "@/stores/local"
 
 import SwitchGroup from "@/components/common/switch-group"
 import RecursiveMenuItem from "@/components/common/recursive-menu-item" // 引入递归菜单组件
@@ -50,8 +49,9 @@ import RecursiveMenuItem from "@/components/common/recursive-menu-item" // 引�
 defineOptions({ name: "AdminAside" })
 
 // 定义组件 props
-const props = defineProps<{
+const { defaultActive, isCollapse } = defineProps<{
     defaultActive: string | undefined // 默认选中的菜单项
+    isCollapse: boolean // 菜单是否折叠
 }>()
 
 // 定义组件事件
@@ -72,15 +72,11 @@ const color: SwitchItemColor = {
     inactive: "var(--jpz-text-color-placeholder)",
 }
 
-// 菜单是否折叠
-const savedIsCollapse = localStorage.getItem(LocalStorageKey.IsCollapse)
-const isCollapse = ref(savedIsCollapse !== null ? savedIsCollapse === "true" : false)
-
 // switch 开关
 const isCollapseItem: SwitchItem[] = reactive([
     {
         name: "isCollapse",
-        status: isCollapse.value,
+        status: isCollapse,
         label: label,
         color: color,
     },
@@ -88,9 +84,6 @@ const isCollapseItem: SwitchItem[] = reactive([
 
 // 更新菜单折叠状态
 const updateStatus = (items: SwitchItem[]) => {
-    // 首选读取本地存储的状态 如果没有则使用默认状态
-    localStorage.setItem(LocalStorageKey.IsCollapse, items[0].status.toString())
-    isCollapse.value = items[0].status
     emit("collapse-status", items[0].status)
 }
 
@@ -137,6 +130,7 @@ const handleClose = (index: string, keyPath: string[]) => {
     // --el-menu-bg-color: transparent;
     --el-menu-text-color: var(--jpz-text-color-primary);
     --el-menu-active-color: var(--jpz-color-secondary);
+    --el-menu-bg-color: var(--jpz-bg-color-page);
 }
 
 // 参考官方文档：https://element-plus.org/zh-CN/component/menu.html#collapse-%E6%8A%98%E5%8F%A0%E9%9D%A2%E6%9D%BF

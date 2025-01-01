@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-08-04 10:54:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-31 18:31:45
+ * @LastEditTime : 2025-01-01 11:05:01
  * @FilePath     : \blog-client\src\main.ts
  * @Description  : 入口文件
  * @Blog         : https://jiaopengzi.com
@@ -49,7 +49,7 @@ app.use(router) // 使用路由
 app.use(createHead()) // 参考官方文档:https://unhead.unjs.io/setup/vue/installation
 
 /* eslint-disable vue/multi-word-component-names */
-app.component("Icon", Icon) // 使用 'Icon' 作为全局组件名
+app.component("Icon", Icon) //  'Icon' 作为全局组件
 app.mount("#app")
 
 useGlobal() // 全局钩子
