@@ -1,24 +1,29 @@
 /**
  * @Author       : jiaopengzi
- * @Date         : 2024-12-25 11:51:57
+ * @Date         : 2025-01-03 15:14:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-31 12:47:53
- * @FilePath     : \blog-client\src\api\request\utils.ts
- * @Description  : 工具
+ * @LastEditTime : 2025-01-03 15:20:31
+ * @FilePath     : \blog-client\src\utils\queryParam.ts
+ * @Description  : 解析 URL 查询参数
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  */
 
-import { type PaginationRequest, type QueryParamsOptions, PaginationParamsInURL } from "./types"
+import {
+    type PaginationRequest,
+    type QueryParamsOptions,
+    PaginationParamsInURL,
+} from "@/api/request"
+import { type LocationQuery } from "vue-router"
 
 /**
- * 从 URL 中解析参数
- * @param routeQuery URL 中的查询参数
+ * 解析路由查询参数
+ * @param routeQuery 路由查询参数
  * @param options 请求参数选项
  * @returns {Promise<{ hasPaginationParams: boolean, hasQueryParams: boolean, queryParamsResult: T }>}
  */
-export const parseQueryParams = async <T extends PaginationRequest>(
-    routeQuery: Record<string, unknown>,
+export const parseRouteQuery = async <T extends PaginationRequest>(
+    routeQuery: LocationQuery,
     options: QueryParamsOptions<T>,
 ): Promise<{ hasPaginationParams: boolean; hasQueryParams: boolean; queryParamsResult: T }> => {
     type KeyType = keyof T // key 类型

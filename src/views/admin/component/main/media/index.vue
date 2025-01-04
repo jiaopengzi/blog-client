@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-31 15:55:04
+ * @LastEditTime : 2025-01-03 12:36:48
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -82,7 +82,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onBeforeMount, nextTick, watch } from "vue"
+import { ref, reactive, onBeforeMount, watch } from "vue"
 import type { TableData, TableColumn } from "@/components/common/base-table"
 import type { MediaFile, GetMediaFilesRequest } from "@/api/upload/getFiles"
 import { getMediaFilesAPI } from "@/api/upload/getFiles"
@@ -238,7 +238,7 @@ const {
     addItemUpdateDialogVisible, // 新增对话框
     editItemUpdateDialogVisible, // 编辑对话框
     deleteRows, // 删除行
-    updateQueryParamsAndRouter, // 更新查询参数和路由
+    updateRouterPush, // 更新查询参数和路由
     updatePaginate, // 更新分页
 } = useBaseTable<MediaFile, GetMediaFilesRequest, DeleteFileRequest>(
     AdminSideMenu.Media,
@@ -252,7 +252,7 @@ const {
 
 // 更新数据
 const updateData = async () => {
-    await updateQueryParamsAndRouter(true)
+    updateRouterPush()
     await updatePaginate()
 }
 

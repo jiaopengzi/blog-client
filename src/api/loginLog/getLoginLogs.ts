@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-28 16:21:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 13:10:27
+ * @LastEditTime : 2025-01-03 11:36:11
  * @FilePath     : \blog-client\src\api\loginLog\getLoginLogs.ts
  * @Description  : 获取日志
  * @Blog         : https://jiaopengzi.com
@@ -10,8 +10,8 @@
  */
 
 import { request, routerGroup } from "@/api/request"
-import type { DataWithImg, Pagination } from "@/components/common"
-import { ResponseCode, type Res, type ResPromise } from "@/api/response"
+import type { DataWithImg } from "@/components/common"
+import { ResponseCode, type Res, type ResPromise, type Pagination } from "@/api/response"
 import { formatTime } from "@/utils/dateTime"
 import { parsePlatform } from "@/utils/ipPlatform"
 

@@ -2,76 +2,38 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-08-29 16:27:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-31 16:51:38
+ * @LastEditTime : 2025-01-03 14:38:54
  * @FilePath     : \blog-client\src\router\utils.ts
  * @Description  : 路由工具函数
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { useRouter } from "vue-router"
-
-// 分页查询参数键
-export enum PaginationQueryKey {
-    PageSize = "page-size",
-    CurrentPage = "current-page",
-}
+import type { Router, LocationQueryRaw } from "vue-router"
 
 /**
  * @description: 分页路由跳转
+ * @param router 路由实例
  * @param routeName 路由名称
- * @param pageSize 每页显示条数
- * @param currentPage 当前页
- * @param additionalParams 其他参数
- * @example paginationRouterPush('PostAll', 10, 1,  { 'file-type': 'pdf', 'search': 'example' })
- */
-export function paginationRouterPush(
-    routeName: string,
-    pageSize: number,
-    currentPage: number,
-    additionalParams: Record<string, string | number>,
-) {
-    const query: Record<string, string | number> = {
-        [PaginationQueryKey.PageSize]: pageSize,
-        [PaginationQueryKey.CurrentPage]: currentPage,
-    }
-    const router = useRouter()
-
-    // 过滤掉值为空字符串的参数
-    Object.keys(additionalParams).forEach((key) => {
-        const value = additionalParams[key]
-        if (value !== "") {
-            query[key] = value
-        }
-    })
-
-    router.push({
-        name: routeName,
-        query: query,
-    })
-}
-
-/**
- * @description: 分页路由跳转
- * @param routeName 路由名称
- * @param additionalParams 其他参数
+ * @param queryParams 查询参数
  * @example routerPushByParams('PostAll', { 'file-type': 'pdf', 'search': 'example' })
  */
-export function routerPushByParams(
+export async function routerPushByParams(
+    router: Router,
     routeName: string,
-    additionalParams: Record<string, string | number>,
-) {
-    const query: Record<string, string | number> = {}
-    const router = useRouter()
+    queryParams: LocationQueryRaw,
+): Promise<void> {
+    const query: LocationQueryRaw = {}
+
     // 过滤掉值为空字符串的参数
-    Object.keys(additionalParams).forEach((key) => {
-        const value = additionalParams[key]
+    Object.keys(queryParams).forEach((key) => {
+        const value = queryParams[key]
         if (value !== "" && value !== undefined) {
             query[key] = value
         }
     })
 
-    router.push({
+    await router.push({
         name: routeName,
         query: query,
     })

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-31 17:25:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-31 18:10:35
+ * @LastEditTime : 2025-01-03 20:16:04
  * @FilePath     : \blog-client\src\router\middleware\auth.ts
  * @Description  : 认证中间件
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,7 @@
 
 import { type RouteLocationNormalized } from "vue-router"
 import { useUserStore } from "@/stores/user"
-import { routeObj } from "@/router/routeAll"
+import { routeObj } from "../routeAll"
 import { MessageUtil } from "@/utils/message"
 
 /**
@@ -29,7 +29,6 @@ export const authMiddleware = async (
 ) => {
     const userStore = useUserStore()
     await userStore.getUserInfoByToken() // 获取用户信息
-
     // 如果用户没有登录，且访问的页面需要登录，则跳转到登录页
     if (to.meta.requiresAuth && !userStore.isLogin) {
         return { path: routeObj.login.path, query: { redirect: to.fullPath } } // 重定向到登录页带上当前页面路径参数

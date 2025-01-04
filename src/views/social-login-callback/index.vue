@@ -21,7 +21,7 @@ import { onMounted, ref } from "vue"
 import type { Ref } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useUserStore } from "@/stores/user"
-import { routeObj } from "@/router/routeAll"
+import { routeObj } from "@/router"
 import { Social } from "@/api/common"
 
 defineOptions({ name: "SocialLoginCallback" })

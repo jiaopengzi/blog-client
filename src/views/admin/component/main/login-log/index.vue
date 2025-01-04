@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-28 16:56:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-31 14:36:35
+ * @LastEditTime : 2025-01-03 12:29:44
  * @FilePath     : \blog-client\src\views\admin\component\main\login-log\index.vue
  * @Description  : 登录日志
  * @Blog         : https://jiaopengzi.com
@@ -149,7 +149,7 @@ const {
     updatePageSize, // 更新每页显示条数
     updateSearch, // 更新搜索关键字
     deleteRows, // 删除行
-    updateQueryParamsAndRouter,
+    updateRouterPush,
     updatePaginate,
 } = useBaseTable<LoginLog, GetLoginLogsRequest, DeleteLoginLogByIDsRequest>(
     AdminSideMenu.LoginLog,
@@ -163,7 +163,7 @@ const {
 
 // 执行搜索
 const runSearch = async () => {
-    await updateQueryParamsAndRouter(true)
+    updateRouterPush()
     await updatePaginate()
 }
 

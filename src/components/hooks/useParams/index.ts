@@ -2,14 +2,15 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-05 19:00:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-31 15:45:00
+ * @LastEditTime : 2025-01-03 12:39:20
  * @FilePath     : \blog-client\src\components\hooks\useParams\index.ts
  * @Description  : 路由参数解析回响应式变量
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 import { onBeforeMount, watch, type Ref, type Reactive } from "vue"
-import type { PaginationRequest, Pagination } from "@/components/common"
+import type { PaginationRequest } from "@/api/request"
+import type { Pagination } from "@/api/response"
 
 /**
  * @description: 解析路由参数回响应式变量

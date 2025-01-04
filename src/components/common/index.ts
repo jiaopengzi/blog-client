@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:38:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-31 11:29:24
+ * @LastEditTime : 2025-01-03 11:27:43
  * @FilePath     : \blog-client\src\components\common\index.ts
  * @Description  : 公用信息
  * @Blog         : https://jiaopengzi.com
@@ -18,33 +18,6 @@ export enum ImgFit {
     Fill = "fill", // 拉伸图片，使图片填满元素
     None = "none", // 保持原图尺寸
     ScaleDown = "scale-down", // 保持原图尺寸，但是不超过元素的尺寸
-}
-
-export interface PaginationRequest {
-    current_page?: number // 当前页
-    page_size?: number // 每页显示条数
-    key_word?: string // 关键字
-}
-
-// 分页
-export interface Pagination<T> {
-    total: number // 总记录数量
-    current_page: number // 当前页
-    page_size: number // 每页显示条数
-    page_count: number // 总页数
-    page_sizes: number[] // 每页显示个数选择器的选项设置
-    records: T[] // 数据
-}
-
-export const getEmptyPagination = <T>(): Pagination<T> => {
-    return {
-        total: 0, // 默认总记录数量为0
-        current_page: 1, // 默认当前页为1
-        page_size: 10, // 默认每页显示条数为10
-        page_count: 0, // 默认总页数为0
-        page_sizes: [10, 20, 30, 50], // 默认的每页显示个数选择器的选项设置
-        records: [], // 默认数据为空数组
-    }
 }
 
 // 表格图片配置

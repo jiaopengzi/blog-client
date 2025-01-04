@@ -65,7 +65,7 @@ import type { TableData, TableColumn } from "@/components/common/base-table"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import { type PostTag } from "@/api/postTag/view"
 import { viewPostTagAPI } from "@/api/postTag/view"
-import type { PaginationRequest } from "@/components/common"
+import type { PaginationRequest } from "@/api/request"
 import { ResponseCode } from "@/api/response"
 import BaseTable from "@/components/common/base-table"
 import AddTag from "./component/add"
@@ -163,7 +163,7 @@ const {
     addItemUpdateDialogVisible, // 新增对话框
     editItemUpdateDialogVisible, // 编辑对话框
     deleteRows, // 删除行
-    updateQueryParamsAndRouter,
+    updateRouterPush,
     updatePaginate,
 } = useBaseTable<PostTag, PaginationRequest, DeletePostTagRequest>(
     AdminSideMenu.PostTag,
@@ -177,7 +177,7 @@ const {
 
 // 执行搜索
 const runSearch = async () => {
-    await updateQueryParamsAndRouter(true)
+    updateRouterPush()
     await updatePaginate()
 }
 

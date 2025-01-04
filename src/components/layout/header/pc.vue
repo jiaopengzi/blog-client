@@ -71,7 +71,7 @@ import { useScrollActions } from "@/components/hooks/useScroll"
 import UserInfoDropdown from "@/components/common/user-info-dropdown" // 导入 UserDropdown 组件
 import { useUserStore } from "@/stores/user"
 import { storeToRefs } from "pinia"
-import { routeObj } from "@/router/routeAll"
+import { routeObj } from "@/router"
 import { useTheme } from "@/components/hooks/useTheme"
 
 import HeaderNav from "@/components/layout/header-nav"

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-23 11:45:46
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 19:04:16
+ * @LastEditTime : 2025-01-03 20:08:29
  * @FilePath     : \blog-client\src\router\routeAll.ts
  * @Description  : 所有路由配置
  * @Blog         : https://jiaopengzi.com

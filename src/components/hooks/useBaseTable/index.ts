@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 08:57:02
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-31 15:50:58
+ * @LastEditTime : 2025-01-04 11:13:24
  * @FilePath     : \blog-client\src\components\hooks\useBaseTable\index.ts
  * @Description  : 基础表格钩子
  * @Blog         : https://jiaopengzi.com
@@ -10,10 +10,17 @@
  */
 import { ref, reactive, onBeforeMount, type Reactive } from "vue"
 import { useRoute, useRouter } from "vue-router"
-import { type Pagination, type PaginationRequest, getEmptyPagination } from "@/components/common"
-import { parseQueryParams, type QueryParamsOptions } from "@/api/request"
-import { type Res, type ResPromise, ResponseCode, handleResErr } from "@/api/response"
-
+import { routerPushByParams } from "@/router"
+import { type QueryParamsOptions, type PaginationRequest } from "@/api/request"
+import { parseRouteQuery } from "@/utils/queryParam"
+import {
+    type Res,
+    type ResPromise,
+    type Pagination,
+    getEmptyPagination,
+    ResponseCode,
+    handleResErr,
+} from "@/api/response"
 import {
     formatTableData,
     type FormatTableData,
@@ -21,6 +28,7 @@ import {
 } from "@/components/common/base-table"
 import { MessageUtil } from "@/utils/message"
 import type { TableImg } from "@/components/common"
+import { usePagination } from "@/components/hooks/usePagination"
 
 export interface Options<T> extends QueryParamsOptions<T> {
     tableImg?: TableImg // 表格图片配置
@@ -53,31 +61,36 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     const addItemDialogVisible = ref(false) // 添加对话框是否可见
     const editItemDialogVisible = ref(false) // 编辑对话框是否可见
     const search = ref("") // 搜索关键字
-
     /**
-     * @description: 更新查询参数和路由
-     * @param isUpdateRouter 是否更新路由 默认为 true 更新路由
+     * @description: 更新和路由
      */
-    const updateQueryParamsAndRouter = async (isUpdateRouter: boolean = true): Promise<void> => {
-        // queryParams.page_size = pagination.page_size
-        // queryParams.current_page = pagination.current_page
-        if (!queryParams.key_word) {
-            delete queryParams.key_word
-        }
-
-        // 判断是否更新路由
-        if (isUpdateRouter) {
-            router.push({
-                name: routeName,
-                query: queryParams,
-            })
-        }
-        // console.log("queryParams=====>1", queryParams)
+    const updateRouterPush = async () => {
+        await routerPushByParams(router, routeName, queryParams)
     }
 
-    // 从路由中获取参数
-    const parseParamsFromURL = async (): Promise<void> => {
-        const { hasQueryParams, queryParamsResult } = await parseQueryParams(
+    // 更新分页内容
+    const updatePaginate = async (): Promise<void> => {
+        await updatePaginateWithIsRequest()
+    }
+
+    // 是否请求
+    const {
+        updateCurrentPageWithIsRequest,
+        updatePageSizeWithIsRequest,
+        updatePaginateWithIsRequest,
+    } = usePagination(
+        pagination,
+        getPaginate,
+        queryParams,
+        updatePaginate,
+        updatePaginate,
+        updateRouterPush,
+    )
+
+    // 更新查询参数
+    const updateQueryParams = async () => {
+        console.log("route.query===========>", route.query)
+        const { hasQueryParams, queryParamsResult } = await parseRouteQuery(
             route.query,
             options as QueryParamsOptions<K>,
         )
@@ -90,11 +103,6 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         if (hasQueryParams) {
             Object.assign(queryParams, queryParamsResult)
         }
-    }
-
-    // 更新分页内容
-    const updatePaginate = async (): Promise<void> => {
-        await getPaginate(queryParams as K)
     }
 
     // 切换是否添加对话框
@@ -119,16 +127,12 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
 
     // 更新当前页
     const updateCurrentPage = async (val: number) => {
-        queryParams.current_page = val
-        await updateQueryParamsAndRouter()
-        await updatePaginate()
+        await updateCurrentPageWithIsRequest(val)
     }
 
     // 更新每页显示条数
     const updatePageSize = async (val: number) => {
-        queryParams.page_size = val
-        await updateQueryParamsAndRouter()
-        await updatePaginate()
+        await updatePageSizeWithIsRequest(val)
     }
 
     // 更新搜索关键字
@@ -136,7 +140,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         search.value = val
         queryParams.key_word = val
         if (val === "") {
-            await updateQueryParamsAndRouter()
+            await updateRouterPush()
             await updatePaginate()
         }
     }
@@ -155,18 +159,13 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         }
     }
 
-    // 获取分页用户
-    async function getPaginate(req: K) {
+    // 获取分页
+    async function getPaginate(req: K): Promise<Pagination<T>> {
         // 遍历 options.NoRequest 中的参数，如果 req 中的参数值等于 options.NoRequest 中的值则删除,不请求
         for (const key in options?.noRequestKeys) {
             if (key in req && req[key as keyof K] === options.noRequestKeys[key]) {
                 delete req[key as keyof K]
             }
-        }
-
-        // 如果 key_word 为空 则不传 key_word
-        if (!req.key_word) {
-            delete req.key_word
         }
 
         // 获取标签列表
@@ -185,13 +184,16 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
             // 无数据时不更新
             if (res.data.data.total === 0) {
                 MessageUtil.warning("没有查询到数据", 6000)
-                return
+                return res.data.data
             }
-            Object.assign(pagination, res.data.data)
-        } else {
-            const msg = handleResErr(res)
-            MessageUtil.warning(msg, 6000)
+
+            return res.data.data
         }
+
+        // 显示错误信息
+        const msg = handleResErr(res)
+        MessageUtil.warning(msg, 6000)
+        return getEmptyPagination<T>()
     }
 
     const deleteRows = async (rows: TableData[]) => {
@@ -214,7 +216,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     }
 
     onBeforeMount(async () => {
-        await parseParamsFromURL()
+        await updateQueryParams()
         await updatePaginate()
     })
 
@@ -234,6 +236,6 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         editItemUpdateDialogVisible, // 编辑对话框
         updatePaginate, // 更新分页数据
         deleteRows, // 删除行
-        updateQueryParamsAndRouter, // 更新查询参数和路由
+        updateRouterPush, // 更新路由
     }
 }

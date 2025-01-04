@@ -104,7 +104,7 @@ import type { CaptchaCheckRequest } from "@/api/captcha/check"
 import { captchaCheckAPI } from "@/api/captcha/check"
 import { ResponseCode, handleResErr } from "@/api/response"
 import { CaptchaPurpose } from "@/api/common"
-import { routeObj } from "@/router/routeAll"
+import { routeObj } from "@/router"
 import type { ResetPasswordForm } from "./types"
 
 import SlideVerify from "@/components/common/slide-verify"

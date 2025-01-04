@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-17 15:20:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-17 15:20:49
+ * @LastEditTime : 2025-01-03 11:56:12
  * @FilePath     : \blog-client\src\utils\device.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com

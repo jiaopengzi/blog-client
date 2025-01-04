@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-31 15:41:53
+ * @LastEditTime : 2025-01-03 18:15:40
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格 table-layout="auto"
  * @Blog         : https://jiaopengzi.com
@@ -53,7 +53,7 @@
         <el-table
             v-show="showListOrGridStatus"
             ref="tableRef"
-            :data="paginationData.records"
+            :data="pagination.records"
             stripe
             @selection-change="handleSelectionChange"
             :row-style="rowStyle"
@@ -173,7 +173,7 @@
 
             <ul ref="gridRef" class="grid">
                 <li
-                    v-for="(row, index) in paginationData.records"
+                    v-for="(row, index) in pagination.records"
                     :key="row.id"
                     class="thumbnail grid-item"
                 >
@@ -215,16 +215,16 @@
         <!-- 分页 -->
         <div ref="paginationBlockRef" class="pagination-block">
             <el-pagination
-                v-model:current-page="paginationData.current_page"
-                v-model:page-size="paginationData.page_size"
-                :page-sizes="paginationData.page_sizes"
-                :page-count="paginationData.page_count"
-                :total="paginationData.total"
+                v-model:current-page="paginationAC.current_page"
+                v-model:page-size="paginationAC.page_size"
+                :page-sizes="paginationAC.page_sizes"
+                :page-count="paginationAC.page_count"
+                :total="paginationAC.total"
                 :background="true"
                 layout="total, prev, pager, next, jumper, sizes"
                 size="small"
-                @update:current-page="(val: number) => emit('update-current-page', val)"
-                @update:page-size="(val: number) => emit('update-page-size', val)"
+                @update:current-page="updateCurrentPage"
+                @update:page-size="updatePageSize"
             />
         </div>
     </div>
@@ -259,7 +259,8 @@
 <script lang="ts" setup>
 import { ref, reactive, watchEffect, watch, useTemplateRef } from "vue"
 import { type ElTable } from "element-plus"
-import { type Pagination, MsgType } from "@/components/common"
+import { MsgType } from "@/components/common"
+import { type Pagination, getEmptyPagination } from "@/api/response"
 import type { TableData, TableColumn } from "./types"
 import { deleteConfirmCommon } from "@/utils/confirm"
 import { imgStyle, iconStyle } from "@/utils/style"
@@ -332,12 +333,33 @@ const emit = defineEmits<{
 const tableRef = useTemplateRef<InstanceType<typeof ElTable>>("tableRef") //表格实例
 
 const search = ref(searchStr) // 搜索关键字
-const paginationData = ref<Pagination<TableData>>(pagination)
+// const paginationData = ref<Pagination<TableData>>(pagination)
 const addItemDialogVisibleStatus = ref(false) // 对话框状态
 const editItemDialogVisibleStatus = ref(false) // 对话框状态
 
 // const isShowElImageViewer = ref(false)
 // const imgUrls = ref<string[]>([])
+
+// 当前分页数据
+const paginationAC = reactive(getEmptyPagination<Pagination<TableData>>())
+
+// 更新当前页
+const updateCurrentPage = (val: number) => {
+    emit("update-current-page", val)
+}
+
+// 更新每页显示数量
+const updatePageSize = (val: number) => {
+    emit("update-page-size", val)
+}
+
+watch(
+    () => pagination,
+    (newVal) => {
+        Object.assign(paginationAC, newVal)
+    },
+    { deep: true },
+)
 
 // 判断是否有数据
 const hasData = ref(false)
@@ -403,10 +425,11 @@ const handleDelegateClick = (row: TableData) => {
 
 // 更新分页配置
 watchEffect(() => {
-    paginationData.value = pagination
+    // paginationData.value = pagination
 
     // 更新是否有数据
-    hasData.value = paginationData.value.records.length > 0
+    hasData.value = pagination.records.length > 0
+    // hasData.value = paginationData.value.records.length > 0
 })
 
 // 更新对话框状态

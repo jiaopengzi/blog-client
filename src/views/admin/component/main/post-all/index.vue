@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-31 16:25:11
+ * @LastEditTime : 2025-01-04 11:00:00
  * @FilePath     : \blog-client\src\views\admin\component\main\post-all\index.vue
  * @Description  : 文章管理 
  * @Blog         : https://jiaopengzi.com
@@ -388,7 +388,7 @@ const {
     updateSearch, // 更新搜索关键字
     deleteRows, // 删除行
     updatePaginate, // 更新分页
-    updateQueryParamsAndRouter, // 更新查询参数和路由
+    updateRouterPush, // 更新查询参数和路由
 } = useBaseTable<PostResPaginationByAdmin, ViewPostByAdminRequest, DeletePostRequest>(
     AdminSideMenu.PostAll,
     viewPostByAdminAPI,
@@ -401,7 +401,7 @@ const {
 
 // 更新查询参数
 const updateData = async () => {
-    await updateQueryParamsAndRouter(true)
+    updateRouterPush()
     await updatePaginate()
 }
 
@@ -642,13 +642,6 @@ const editRow = (index: number, row: TableData) => {
 
 // 通用将 params 解析回对应的响应式变量中
 useParams(queryParams, search, pagination)
-// 监控 queryParams
-watch(
-    () => search.value,
-    (newVal) => {
-        console.log("search postWrite===========>", newVal)
-    },
-)
 
 // 将 params 解析回对应的响应式变量中(不需要请求)
 const parseParamsNotLoaded = () => {

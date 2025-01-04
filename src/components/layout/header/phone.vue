@@ -51,7 +51,7 @@
 </template>
 <script setup lang="ts">
 import { ref } from "vue"
-import { routeObj } from "@/router/routeAll"
+import { routeObj } from "@/router"
 import type { Ref } from "vue"
 import type { ScrollData } from "@/components/hooks/useScroll"
 import { useScrollActions } from "@/components/hooks/useScroll"

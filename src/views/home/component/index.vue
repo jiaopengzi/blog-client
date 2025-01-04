@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:26:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-31 13:18:08
+ * @LastEditTime : 2025-01-03 22:07:31
  * @FilePath     : \blog-client\src\views\home\component\index.vue
  * @Description  : 主页内容
  * @Blog         : https://jiaopengzi.com
@@ -21,10 +21,15 @@
                 <el-breadcrumb-item
                     ><span class="breadcrumb-item">当前位置</span></el-breadcrumb-item
                 >
-                <el-breadcrumb-item :to="routeObj.home"
+                <el-breadcrumb-item :to="routeObj.home.path" @click="clickBreadcrumb"
                     ><span class="breadcrumb-item">首页</span></el-breadcrumb-item
                 >
-                <el-breadcrumb-item v-for="item in breadcrumbItems" :key="item.to" :to="item.to">
+                <el-breadcrumb-item
+                    v-for="item in breadcrumbItems"
+                    :key="item.to"
+                    :to="item.to"
+                    @click="clickBreadcrumb"
+                >
                     <span class="breadcrumb-item">{{ item.display }}</span>
                 </el-breadcrumb-item>
             </el-breadcrumb>
@@ -72,7 +77,7 @@
 import { reactive, useTemplateRef, onUnmounted } from "vue"
 import { useResizeObserver } from "@vueuse/core"
 import { ArrowRight, Location } from "@element-plus/icons-vue"
-import { routeObj } from "@/router/routeAll"
+import { routeObj } from "@/router"
 
 import Carousel from "@/views/home/component/carousel"
 import PostList from "@/views/home/component/post-list"
@@ -114,6 +119,7 @@ const {
     clickMonthArchive,
     handlePostId,
     breadcrumbItems,
+    clickBreadcrumb,
     paginationBlockVisibleChange,
     isShowPostListLoading,
 } = useHome(mainReq, { stringKeys, numberKeys })

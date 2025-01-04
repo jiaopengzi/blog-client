@@ -55,7 +55,7 @@
 </template>
 <script setup lang="ts">
 import { onBeforeMount } from "vue"
-import { routeObj } from "@/router/routeAll"
+import { routeObj } from "@/router"
 import { useUserStore } from "@/stores/user"
 import { storeToRefs } from "pinia"
 import type { HeaderNavPropsItem } from "./types"

@@ -2,29 +2,29 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-25 11:51:57
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-31 12:54:11
+ * @LastEditTime : 2025-01-04 11:20:48
  * @FilePath     : \blog-client\src\components\hooks\useHome\utils.ts
  * @Description  : 工具
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { reactive, ref, type Reactive, type Ref } from "vue"
+import { reactive, ref, type Reactive } from "vue"
 import { useRoute, useRouter } from "vue-router"
-import { type Pagination } from "@/components/common"
+import { routerPushByParams, routeObj } from "@/router"
 import { type ViewPostRequest } from "@/api/post/view"
-import type { PostResPagination } from "@/api/post/common"
 import type { BreadcrumbItem, ViewPostResKey } from "./types"
-import { parseQueryParams, type QueryParamsOptions } from "@/api/request"
+import { type QueryParamsOptions } from "@/api/request"
+import { parseRouteQuery } from "@/utils/queryParam"
 
 export function useUtils(
-    pagination: Reactive<Pagination<PostResPagination>>, // 分页数据
-    isRequest: Ref<boolean>, // 是否请求
     queryParams: Reactive<ViewPostRequest>, // 查询参数
     options?: QueryParamsOptions<ViewPostRequest>, // 请求参数选项
 ) {
     const route = useRoute()
     const router = useRouter()
+
+    const isBreadcrumbClick = ref(false) // 是否点击面包屑
 
     const breadcrumbItems = reactive<BreadcrumbItem[]>([]) // 面包屑
     const hasPaginationParamsInURL = ref(false) // URL 中是否有分页参数
@@ -33,26 +33,18 @@ export function useUtils(
     const pageSizeTemp = ref(10) // 临时每页显示条数
 
     // 更新查询参数
-    const updateQueryParamsAndRouter = (isUpdateRouter: boolean = true) => {
-        if (!queryParams.key_word) {
-            delete queryParams.key_word
-        }
-
-        // 判断是否更新路由
-        if (isUpdateRouter) {
-            router.push({
-                name: "home",
-                query: queryParams,
-            })
-        }
+    const updateRouterPush = async () => {
+        await routerPushByParams(router, routeObj.home.name as string, queryParams)
     }
 
-    // 从URL中解析参数
-    const parseParamsFromURL = async () => {
-        const { hasPaginationParams, hasQueryParams, queryParamsResult } = await parseQueryParams(
+    // 更新查询参数
+    const updateQueryParams = async () => {
+        const { hasPaginationParams, hasQueryParams, queryParamsResult } = await parseRouteQuery(
             route.query,
             options as QueryParamsOptions<ViewPostRequest>,
         )
+
+        console.log("route.query===========>", route.query)
 
         // 清空 queryParams
         Object.keys(queryParams).forEach(
@@ -65,18 +57,10 @@ export function useUtils(
         hasPaginationParamsInURL.value = hasPaginationParams
     }
 
-    // 更新是否请求标志
-    const updateIsRequest = ({ newPageSize = 10, newCurrentPage = 1 }) => {
-        // 超过请记录数则不请求
-        const isMaxPageSizeOld = pagination.total < pagination.page_size * pagination.current_page
-        const isMaxPageSizeNew = pagination.total < newPageSize * newCurrentPage
-        isRequest.value = !(isMaxPageSizeOld && isMaxPageSizeNew)
-    }
-
     // 生成面包屑路径
     const generateBreadcrumbPath = () => {
         return router.resolve({
-            name: "home",
+            name: routeObj.home.name,
             query: queryParams,
         }).href
     }
@@ -103,6 +87,11 @@ export function useUtils(
         if (queryParams.current_page && queryParams.current_page !== 1) {
             updateBreadcrumbItems(`第 ${queryParams.current_page} 页`, false)
         }
+    }
+
+    // 点击面包屑
+    const clickBreadcrumb = (item: BreadcrumbItem) => {
+        isBreadcrumbClick.value = true
     }
 
     // 清空查询参数中的特定字段
@@ -132,11 +121,12 @@ export function useUtils(
     }
 
     return {
+        isBreadcrumbClick,
         breadcrumbItems,
+        clickBreadcrumb,
         hasPaginationParamsInURL,
-        updateQueryParamsAndRouter,
-        parseParamsFromURL,
-        updateIsRequest,
+        updateRouterPush,
+        updateQueryParams,
         generateBreadcrumbPath,
         updateBreadcrumbItems,
         updatePageBreadcrumb,

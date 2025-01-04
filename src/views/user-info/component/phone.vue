@@ -101,7 +101,7 @@
 import { View, Tickets, Goods, Document, ChatLineSquare, Star } from "@element-plus/icons-vue"
 import { ArrowRight } from "@element-plus/icons-vue"
 import { ref } from "vue"
-import { routeObj } from "@/router/routeAll"
+import { routeObj } from "@/router"
 import { useRouter } from "vue-router"
 import BindEmailDialog from "@/components/common/bind-email-dialog"
 import UserInfoInfo from "@/views/user-info/component/info"

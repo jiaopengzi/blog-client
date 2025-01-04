@@ -2,16 +2,21 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-25 11:46:44
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-31 12:43:13
+ * @LastEditTime : 2025-01-03 16:25:17
  * @FilePath     : \blog-client\src\components\hooks\useHome\api.ts
  * @Description  : 数据请求
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { ref, reactive, type Reactive } from "vue"
-import { type Pagination, getEmptyPagination } from "@/components/common"
-import { type Res, type ResPromise, ResponseCode } from "@/api/response"
+import { reactive } from "vue"
+import {
+    type Res,
+    type ResPromise,
+    type Pagination,
+    getEmptyPagination,
+    ResponseCode,
+} from "@/api/response"
 import { viewPostAPI, type ViewPostRequest } from "@/api/post/view"
 import { viewHotPostAPI } from "@/api/post/viewHotPost"
 import { viewRecommendedPostAPI } from "@/api/post/viewRecommendedPost"
@@ -21,14 +26,10 @@ import type { PostResPagination, PostResCommon } from "@/api/post/common"
 import type { ViewPostResKey } from "./types"
 import { type QueryParamsOptions } from "@/api/request"
 
-export function useGetData(
-    queryParams: Reactive<ViewPostRequest>, // 查询参数
-    options?: QueryParamsOptions<ViewPostRequest>,
-) {
+export function useGetData(options?: QueryParamsOptions<ViewPostRequest>) {
     const pagination =
         reactive<Pagination<PostResPagination>>(getEmptyPagination<PostResPagination>()) // 分页数据
 
-    const isRequest = ref(true) // 是否请求 默认为 true
     const hotPost = reactive<PostResCommon[]>([]) // 热门文章
     const recommendedPost = reactive<PostResCommon[]>([]) // 推荐文章
     const monthArchiveProps = reactive<MonthArchiveData[]>([]) // 月份归档
@@ -64,18 +65,6 @@ export function useGetData(
         }
 
         return getEmptyPagination<PostResPagination>()
-    }
-
-    // 更新分页内容
-    const updatePaginate = async (): Promise<void> => {
-        if (!isRequest.value) {
-            isRequest.value = true
-            return
-        }
-        const data = await getPaginate(queryParams)
-        console.log(data)
-        Object.assign(pagination, data)
-        isRequest.value = true
     }
 
     // 热门文章
@@ -125,11 +114,9 @@ export function useGetData(
         hotPost, // 热门文章
         recommendedPost, // 推荐文章
         monthArchiveProps, // 月份归档
-        updatePaginate, // 更新分页内容
         getHostPost, // 热门文章
         getRecommendedPost, // 推荐文章
         getPostCountByMonth, // 月份归档
         getPaginate, // 获取分页
-        isRequest, // 是否请求
     }
 }

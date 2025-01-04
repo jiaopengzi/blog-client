@@ -12,7 +12,9 @@
 import type { AxiosProgressEvent } from "axios"
 export type { AxiosProgressEvent as ReqProgressEvent }
 
-export type QueryParamsRecord<T extends string | number | symbol> = { [key in T]?: string | number }
+export type QueryParamsRecord<T extends string | number | symbol> = {
+    [key in T]?: string | number | boolean
+}
 
 // 分页请求参数
 export interface PaginationRequest {

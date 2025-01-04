@@ -9,9 +9,9 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { request, routerGroup } from "@/api/request"
-import type { DataWithImg, Pagination, PaginationRequest } from "@/components/common"
-import type { Res, ResPromise } from "@/api/response"
+import { request, routerGroup, type PaginationRequest } from "@/api/request"
+import type { DataWithImg } from "@/components/common"
+import type { Res, ResPromise, Pagination } from "@/api/response"
 
 // 每行数据类型
 export interface PostTag extends DataWithImg {

@@ -2,17 +2,16 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-08-27 16:38:22
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 10:03:23
+ * @LastEditTime : 2025-01-03 11:39:05
  * @FilePath     : \blog-client\src\api\upload\getFiles.ts
  * @Description  : 获取文件列表
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { request, routerGroup } from "@/api/request"
-import type { Res, ResPromise } from "@/api/response"
-
-import type { DataWithImg, Pagination, PaginationRequest } from "@/components/common"
+import { request, routerGroup, type PaginationRequest } from "@/api/request"
+import type { Res, ResPromise, Pagination } from "@/api/response"
+import type { DataWithImg } from "@/components/common"
 
 export interface GetMediaFilesRequest extends PaginationRequest {
     file_type?: string // 角色

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-01 11:29:21
+ * @LastEditTime : 2025-01-03 13:55:08
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -41,7 +41,7 @@
 
                     <router-view v-slot="{ Component, route }">
                         <KeepAlive :exclude="[AdminSideMenu.PostWrite]">
-                            <component :is="Component" :key="route.fullPath" />
+                            <component :is="Component" :key="route.path" />
                         </KeepAlive>
                     </router-view>
 
@@ -113,7 +113,8 @@ const handleCollapseStatus = (isCollapse: boolean) => {
 
 // 选择菜单项
 const handleSelect = (index: string) => {
-    router.push(index)
+    router.push({ path: index })
+    // router.push(index)
 }
 
 onBeforeMount(() => {

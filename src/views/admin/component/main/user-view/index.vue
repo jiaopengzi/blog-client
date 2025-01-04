@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 13:58:49
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-31 16:02:33
+ * @LastEditTime : 2025-01-03 12:38:32
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\index.vue
  * @Description  : 所有用户页面
  * @Blog         : https://jiaopengzi.com
@@ -77,7 +77,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onBeforeMount, nextTick } from "vue"
+import { ref, reactive, onBeforeMount } from "vue"
 import type { TableData, TableColumn } from "@/components/common/base-table"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import { type User } from "@/api/user/getUsers"
@@ -339,7 +339,7 @@ const {
     addItemUpdateDialogVisible, // 新增对话框
     editItemUpdateDialogVisible, // 编辑对话框
     deleteRows, // 删除行
-    updateQueryParamsAndRouter, // 更新查询参数和路由
+    updateRouterPush, // 更新查询参数和路由
     updatePaginate,
 } = useBaseTable<User, GetUsersRequest, DeleteUserRequest>(
     AdminSideMenu.UserView,
@@ -353,7 +353,7 @@ const {
 
 // 更新数据
 const updateData = async () => {
-    await updateQueryParamsAndRouter(true)
+    updateRouterPush()
     await updatePaginate()
 }
 

@@ -16,7 +16,7 @@ import { createApp } from "vue" // 创建Vue实例
 import { createPinia } from "pinia" // 状态管理
 import { createHead } from "@unhead/vue" // 参考官方文档:https://unhead.unjs.io/setup/vue/installation
 import App from "@/App.vue" // 根组件
-import router from "@/router" // 路由
+import { router } from "@/router" // 路由
 import Icon from "@/components/common/icons" // 引用自定义的全局图标
 import { useGlobal } from "@/components/hooks/useGlobal" // 全局钩子
 import { permissionDirective } from "@/utils/permissionRole" // 权限指令

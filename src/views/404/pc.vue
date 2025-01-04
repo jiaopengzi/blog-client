@@ -42,7 +42,7 @@
 </template>
 <script setup lang="ts">
 import { ArrowRight, Location } from "@element-plus/icons-vue"
-import { routeObj } from "@/router/routeAll"
+import { routeObj } from "@/router"
 
 defineOptions({ name: "NotFound404PC" })
 const { countdown } = defineProps({

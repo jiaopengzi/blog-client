@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:47:08
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-31 14:37:59
+ * @LastEditTime : 2025-01-03 12:33:10
  * @FilePath     : \blog-client\src\views\admin\component\main\post-category\index.vue
  * @Description  : 分类管理
  * @Blog         : https://jiaopengzi.com
@@ -65,7 +65,7 @@ import type { TableData, TableColumn } from "@/components/common/base-table"
 import { AdminSideMenu } from "@/views/admin/component/aside"
 import { type PostCategory } from "@/api/postCategory/view"
 import { viewPostCategoryAPI } from "@/api/postCategory/view"
-import type { PaginationRequest } from "@/components/common"
+import type { PaginationRequest } from "@/api/request"
 import { ResponseCode } from "@/api/response"
 import BaseTable from "@/components/common/base-table"
 import AddTag from "./component/add"
@@ -170,7 +170,7 @@ const {
     addItemUpdateDialogVisible, // 新增对话框
     editItemUpdateDialogVisible, // 编辑对话框
     deleteRows, // 删除行
-    updateQueryParamsAndRouter, // 更新查询和路由
+    updateRouterPush, // 更新路由
     updatePaginate,
 } = useBaseTable<PostCategory, PaginationRequest, DeletePostCategoryRequest>(
     AdminSideMenu.PostCategory,
@@ -184,7 +184,7 @@ const {
 
 // 执行搜索
 const runSearch = async () => {
-    await updateQueryParamsAndRouter(true)
+    updateRouterPush()
     await updatePaginate()
 }
 

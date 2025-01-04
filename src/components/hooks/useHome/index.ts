@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-17 16:05:54
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-31 13:10:38
+ * @LastEditTime : 2025-01-04 11:24:47
  * @FilePath     : \blog-client\src\components\hooks\useHome\index.ts
  * @Description  : 首页hooks
  * @Blog         : https://jiaopengzi.com
@@ -10,7 +10,7 @@
  */
 
 import { watch, onBeforeMount, ref, type Reactive } from "vue"
-import { useRoute, useRouter } from "vue-router"
+import { useRouter } from "vue-router"
 import { type PostCategory } from "@/api/postCategory/view"
 import { type PostTag } from "@/api/postTag/view"
 import { type ViewPostRequest } from "@/api/post/view"
@@ -18,12 +18,12 @@ import { type MonthArchiveData } from "@/components/common/month-archive"
 import { useUtils } from "./utils"
 import { useGetData } from "./api"
 import { type QueryParamsOptions } from "@/api/request"
+import { usePagination } from "@/components/hooks/usePagination"
 
 export function useHome(
     queryParams: Reactive<ViewPostRequest>, // 查询参数
     options?: QueryParamsOptions<ViewPostRequest>,
 ) {
-    const route = useRoute()
     const router = useRouter()
 
     const isShowPostListLoading = ref(false) // 是否显示文章列表加载中
@@ -33,54 +33,81 @@ export function useHome(
         hotPost, // 热门文章
         recommendedPost, // 推荐文章
         monthArchiveProps, // 月份归档
-        updatePaginate, // 更新分页内容
         getHostPost, // 热门文章
         getRecommendedPost, // 推荐文章
         getPostCountByMonth, // 月份归档
         getPaginate, // 获取分页
-        isRequest, // 是否请求
-    } = useGetData(queryParams, options)
+    } = useGetData(options)
 
     const {
+        isBreadcrumbClick, // 是否点击面包屑
         breadcrumbItems, // 面包屑
+        clickBreadcrumb, // 点击面包屑
         hasPaginationParamsInURL, // URL 中是否有分页参数
-        updateQueryParamsAndRouter, // 更新查询参数和路由
-        parseParamsFromURL, // 从URL中解析参数
-        updateIsRequest, // 更新不请求标志
+        updateRouterPush, // 更新查询参数和路由
+        updateQueryParams, // 从URL中解析参数
         updateBreadcrumbItems, // 更新面包屑
         updatePageBreadcrumb, // 更新分页面包屑
         clearParamsExcept, // 清空除了指定参数的查询条件
         paginationBlockVisibleCount, // 分页块出现次数
         pageSizeTemp, // 临时每页显示条数
         reSetPaginationConf, // 重置分页配置
-    } = useUtils(pagination, isRequest, queryParams, options)
+    } = useUtils(queryParams, options)
+
+    /**
+     * @description: 通过路由更新数据
+     * @param isUpdateRouterPush 是否更新路由 默认 true 即更新路由
+     */
+    const updateByRoute = async (isUpdateRouterPush: boolean = true) => {
+        // 更新路由
+        if (isUpdateRouterPush) {
+            await updateRouterPush()
+        }
+
+        reSetPaginationConf()
+        await updateQueryParams()
+        await updatePaginate()
+        updateBreadcrumbFromPagination()
+    }
+
+    // 分页 hooks
+    const {
+        isRequest,
+        updateIsRequest,
+        updateCurrentPageWithIsRequest,
+        updatePageSizeWithIsRequest,
+        updatePaginateWithIsRequest,
+    } = usePagination(
+        pagination,
+        getPaginate,
+        queryParams,
+        updateByRoute,
+        updateByRoute,
+        updateRouterPush,
+    )
 
     // 更新当前页
-    const updateCurrentPage = (val: number) => {
-        updateIsRequest({ newPageSize: pagination.page_size, newCurrentPage: val })
-        queryParams.current_page = val
-        updateQueryParamsAndRouter()
+    const updateCurrentPage = async (val: number) => {
+        await updateCurrentPageWithIsRequest(val)
     }
 
     // 更新每页显示条数
-    const updatePageSize = (val: number) => {
-        updateIsRequest({ newPageSize: val, newCurrentPage: pagination.current_page })
-        queryParams.page_size = val
-        updateQueryParamsAndRouter()
+    const updatePageSize = async (val: number) => {
+        await updatePageSizeWithIsRequest(val)
     }
 
     // 点击分类
     const clickCategory = (category: PostCategory) => {
         clearParamsExcept(["post_category_id"])
         queryParams.post_category_id = category.id
-        updateQueryParamsAndRouter()
+        updateByRoute()
     }
 
     // 点击标签
     const clickTag = (tag: PostTag) => {
         clearParamsExcept(["post_tag_id"])
         queryParams.post_tag_id = tag.id
-        updateQueryParamsAndRouter()
+        updateByRoute()
     }
 
     // 点击月份归档
@@ -88,7 +115,7 @@ export function useHome(
         clearParamsExcept(["year", "month"])
         queryParams.year = row.year
         queryParams.month = row.month
-        updateQueryParamsAndRouter()
+        updateByRoute()
     }
 
     // 点击文章
@@ -97,6 +124,11 @@ export function useHome(
             name: "post",
             params: { id },
         })
+    }
+
+    // 更新分页数据
+    const updatePaginate = async () => {
+        await updatePaginateWithIsRequest()
     }
 
     // 分页块显示次数变化
@@ -197,25 +229,19 @@ export function useHome(
     }
 
     watch(
-        () => route.fullPath,
-        async (newVal, oldVal) => {
-            console.log("watch=====>oldVal", oldVal)
-            console.log("watch=====>newVal", newVal)
-            reSetPaginationConf()
-            parseParamsFromURL()
-            await updatePaginate()
-            updateBreadcrumbFromPagination()
+        () => isBreadcrumbClick.value,
+        async (newVal) => {
+            if (newVal) {
+                await updateByRoute(false)
+
+                // 重置面包屑点击状态
+                isBreadcrumbClick.value = false
+            }
         },
-        // 立即执行
-        { immediate: true },
     )
 
     onBeforeMount(async () => {
-        // 获取路由参数 并更新 query
-        console.log("onBeforeMount")
-        parseParamsFromURL()
-        await updatePaginate()
-        updateBreadcrumbFromPagination()
+        await updateByRoute(false)
         await getHostPost()
         await getRecommendedPost()
         await getPostCountByMonth()
@@ -226,7 +252,7 @@ export function useHome(
         updateCurrentPage, // 更新当前页
         updatePageSize, // 更新每页显示条数
         updatePaginate, // 更新分页数据
-        updateQueryParamsAndRouter, // 更新查询参数和路由
+        updateRouterPush, // 更新查询参数和路由
         hotPost, // 热门文章
         recommendedPost, // 推荐文章
         monthArchiveProps, // 月份归档
@@ -235,6 +261,7 @@ export function useHome(
         clickMonthArchive, // 点击月份归档
         handlePostId, // 点击文章
         breadcrumbItems, // 面包屑
+        clickBreadcrumb, // 点击面包屑
         paginationBlockVisibleChange, // 分页块显示次数变化
         isShowPostListLoading, // 是否显示文章列表加载中
     }

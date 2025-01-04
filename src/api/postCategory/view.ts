@@ -2,16 +2,16 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:33:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-06 11:20:24
+ * @LastEditTime : 2025-01-03 11:35:00
  * @FilePath     : \blog-client\src\api\postCategory\view.ts
  * @Description  : 查看文章分类
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { request, routerGroup } from "@/api/request"
-import type { DataWithImg, Pagination, PaginationRequest } from "@/components/common"
-import type { Res, ResPromise } from "@/api/response"
+import { request, routerGroup, type PaginationRequest } from "@/api/request"
+import type { DataWithImg } from "@/components/common"
+import type { Res, ResPromise, Pagination } from "@/api/response"
 
 // 每行数据类型
 export interface PostCategory extends DataWithImg {

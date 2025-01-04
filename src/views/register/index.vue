@@ -105,7 +105,7 @@ import type { FormInstance, FormRules } from "element-plus" // 需要全部安�
 import type { RegisterRequest } from "@/api/user/register"
 import { RegisterAPI } from "@/api/user/register"
 import { ResponseCode } from "@/api/response"
-import { routeObj } from "@/router/routeAll"
+import { routeObj } from "@/router"
 import type { RegisterForm } from "./types"
 import { useFormValidation } from "@/components/hooks/useFormValidation"
 import { RegexPatterns } from "@/utils/regexPatterns"

@@ -2,17 +2,16 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-20 16:30:57
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 13:18:46
+ * @LastEditTime : 2025-01-03 11:41:12
  * @FilePath     : \blog-client\src\api\user\getUsers.ts
  * @Description  : 获取用户信息
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { request, routerGroup } from "@/api/request"
-import type { Res, ResPromise } from "@/api/response"
-import { ResponseCode } from "@/api/response"
-import type { DataWithImg, Pagination, PaginationRequest } from "@/components/common"
+import { request, routerGroup, type PaginationRequest } from "@/api/request"
+import { ResponseCode, type Res, type ResPromise, type Pagination } from "@/api/response"
+import type { DataWithImg } from "@/components/common"
 import { ImgFit } from "@/components/common/index"
 import { formatTime } from "@/utils/dateTime"
 import { type PgSqlDateTime } from "@/api/common"

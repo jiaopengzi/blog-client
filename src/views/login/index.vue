@@ -85,7 +85,7 @@
 import { reactive, ref, toRef, useTemplateRef } from "vue"
 import { useRouter } from "vue-router"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { routeObj } from "@/router/routeAll"
+import { routeObj } from "@/router"
 import { useUserStore } from "@/stores/user"
 import type { LoginForm } from "./types"
 import { IconKeys } from "@/components/common/icons"

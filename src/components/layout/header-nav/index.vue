@@ -19,7 +19,7 @@
 <script setup lang="ts">
 import { IconKeys } from "@/components/common/icons"
 import type { HeaderNavPropsItem } from "./types"
-import { routeObj } from "@/router/routeAll"
+import { routeObj } from "@/router"
 
 import HeaderNavPC from "./pc.vue"
 import HeaderNavPhone from "./phone.vue"

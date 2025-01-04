@@ -39,7 +39,7 @@ import { computed } from "vue"
 import { useUserStore } from "@/stores/user"
 import { storeToRefs } from "pinia"
 import { useRouter } from "vue-router"
-import { routeObj } from "@/router/routeAll"
+import { routeObj } from "@/router"
 import { PermissionNames } from "@/utils/permissionRole"
 import { onMounted, ref } from "vue"
 

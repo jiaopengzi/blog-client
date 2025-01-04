@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-25 11:10:12
+ * @LastEditTime : 2025-01-03 12:40:25
  * @FilePath     : \blog-client\src\views\home\component\post-list\index.vue
  * @Description  : 文章列表
  * @Blog         : https://jiaopengzi.com
@@ -45,9 +45,7 @@ import { useIntersectionObserver } from "@vueuse/core"
 import PostItem from "@/components/common/post-item-main"
 import { type PostResPagination } from "@/api/post/common"
 import { type PostCategory } from "@/api/postCategory/view"
-import { type Pagination } from "@/components/common"
-
-import { getEmptyPagination } from "@/components/common"
+import { type Pagination, getEmptyPagination } from "@/api/response"
 
 defineOptions({ name: "PostList" })
 
