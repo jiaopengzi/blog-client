@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-17 20:28:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-01 12:31:34
+ * @LastEditTime : 2025-01-04 12:37:19
  * @FilePath     : \blog-client\src\components\common\recursive-menu-item\index.vue
  * @Description  : 递归创建层级菜单
  * @Blog         : https://jiaopengzi.com
@@ -10,17 +10,15 @@
 -->
 <template>
     <!-- 当前菜单项没有子菜单时，显示一个普通的菜单项 -->
+    <!-- 注意 Icon 在 item 和 menu 是不同的 -->
     <el-menu-item
         v-if="!getChildren(menuItem.index).length"
         :index="menuItem.index"
         class="no-children"
     >
+        <Icon v-if="menuItem.icon" :name="menuItem.icon.name" :custom-class="menuItem.icon.class" />
         <template #title>
-            <Icon
-                v-if="menuItem.icon"
-                :name="menuItem.icon.name"
-                :custom-class="menuItem.icon.class"
-            /><span class="title">{{ menuItem.display }}</span></template
+            <span class="title">{{ menuItem.display }}</span></template
         >
     </el-menu-item>
 
