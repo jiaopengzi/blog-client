@@ -37,12 +37,13 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, computed } from "vue"
-import type { SwitchItem, SwitchItemLabel, SwitchItemColor } from "@/components/common/switch-group"
-import { adminMenuItemMapWithIndex } from "./utils"
+import { computed,reactive } from "vue"
 
-import SwitchGroup from "@/components/common/switch-group"
 import RecursiveMenuItem from "@/components/common/recursive-menu-item" // 引入递归菜单组件
+import type { SwitchItem, SwitchItemColor,SwitchItemLabel } from "@/components/common/switch-group"
+import SwitchGroup from "@/components/common/switch-group"
+
+import { adminMenuItemMapWithIndex } from "./utils"
 
 // 定义组件名称
 defineOptions({ name: "AdminAside" })

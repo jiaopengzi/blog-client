@@ -17,6 +17,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue"
+
 import type { AvatarInitialsProps } from "./types"
 
 defineOptions({ name: "AvatarInitials" })

@@ -98,19 +98,20 @@
 </template>
 
 <script lang="ts" setup>
+import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { reactive, ref, toRef, useTemplateRef } from "vue"
 import { useRouter } from "vue-router"
-import { MessageUtil } from "@/utils/message"
-import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
+
+import { ResponseCode } from "@/api/response"
 import type { RegisterRequest } from "@/api/user/register"
 import { RegisterAPI } from "@/api/user/register"
-import { ResponseCode } from "@/api/response"
-import { routeObj } from "@/router"
-import type { RegisterForm } from "./types"
+import SlideVerify from "@/components/common/slide-verify"
 import { useFormValidation } from "@/components/hooks/useFormValidation"
+import { routeObj } from "@/router/routeAll"
+import { MessageUtil } from "@/utils/message"
 import { RegexPatterns } from "@/utils/regexPatterns"
 
-import SlideVerify from "@/components/common/slide-verify"
+import type { RegisterForm } from "./types"
 
 // eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: "Register" })

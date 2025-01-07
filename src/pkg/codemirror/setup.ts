@@ -9,42 +9,43 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 import {
-    lineNumbers,
-    highlightActiveLineGutter,
-    highlightSpecialChars,
-    drawSelection,
-    dropCursor,
-    rectangularSelection,
-    crosshairCursor,
-    highlightActiveLine,
-    keymap,
-    gutter,
-    EditorView,
-} from "@codemirror/view"
-import { EditorState } from "@codemirror/state"
-import type { Extension } from "@codemirror/state"
-import {
-    foldGutter,
-    indentOnInput,
-    syntaxHighlighting,
-    defaultHighlightStyle,
-    bracketMatching,
-    foldKeymap,
-} from "@codemirror/language"
-import { history, defaultKeymap, historyKeymap, indentWithTab } from "@codemirror/commands"
-import { highlightSelectionMatches, searchKeymap } from "@codemirror/search"
-import {
-    closeBrackets,
     autocompletion,
+    closeBrackets,
     closeBracketsKeymap,
     completionKeymap,
 } from "@codemirror/autocomplete"
-import { lintKeymap } from "@codemirror/lint"
+import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands"
 import { markdown } from "@codemirror/lang-markdown"
+import {
+    bracketMatching,
+    defaultHighlightStyle,
+    foldGutter,
+    foldKeymap,
+    indentOnInput,
+    syntaxHighlighting,
+} from "@codemirror/language"
+import { lintKeymap } from "@codemirror/lint"
+import { highlightSelectionMatches, searchKeymap } from "@codemirror/search"
+import type { Extension } from "@codemirror/state"
+import { EditorState } from "@codemirror/state"
+import {
+    crosshairCursor,
+    drawSelection,
+    dropCursor,
+    EditorView,
+    gutter,
+    highlightActiveLine,
+    highlightActiveLineGutter,
+    highlightSpecialChars,
+    keymap,
+    lineNumbers,
+    rectangularSelection,
+} from "@codemirror/view"
+
 import { bottomPanelExt } from "./extension/bottomPanel"
-import { customKeymap } from "./extension/hotkey"
-import { handlePasteImage, handleDropImage } from "./extension/imgUpload"
 import { emojiCompletions } from "./extension/emoji"
+import { customKeymap } from "./extension/hotkey"
+import { handleDropImage,handlePasteImage } from "./extension/imgUpload"
 
 // 自定义 codemirror setup 工厂函数
 const createCustomSetup = () => {
@@ -87,6 +88,6 @@ const createCustomSetup = () => {
     return customSetup
 }
 
-export { EditorView } from "@codemirror/view"
 export { EditorState } from "@codemirror/state"
+export { EditorView } from "@codemirror/view"
 export { createCustomSetup }

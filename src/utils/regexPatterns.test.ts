@@ -8,7 +8,8 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
-import { describe, it, expect } from "vitest"
+import { describe, expect,it } from "vitest"
+
 import { RegexPatterns } from "./regexPatterns"
 
 describe("RegexPatterns.UserName", () => {

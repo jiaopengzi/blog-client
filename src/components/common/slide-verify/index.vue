@@ -43,12 +43,13 @@
 
 <script setup lang="ts">
 // 引用图标
+import "vue3-slide-verify/dist/style.css"
+
 import { ref, useTemplateRef } from "vue"
 import type { SlideVerifyInstance } from "vue3-slide-verify"
-import "vue3-slide-verify/dist/style.css"
-import { IconKeys } from "@/components/common/icons"
-
 import SlideVerify from "vue3-slide-verify"
+
+import { IconKeys } from "@/components/common/icons"
 
 defineOptions({ name: "SlideVerify" })
 

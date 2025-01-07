@@ -61,19 +61,21 @@
 
 <script lang="ts" setup>
 import { reactive } from "vue"
-import type { TableData, TableColumn } from "@/components/common/base-table"
-import { AdminSideMenu } from "@/views/admin/component/aside"
+
+import { deletePostCategoryAPI,type DeletePostCategoryRequest } from "@/api/postCategory/delete"
 import { type PostCategory } from "@/api/postCategory/view"
 import { viewPostCategoryAPI } from "@/api/postCategory/view"
 import type { PaginationRequest } from "@/api/request"
 import { ResponseCode } from "@/api/response"
+import type { TableColumn,TableData } from "@/components/common/base-table"
 import BaseTable from "@/components/common/base-table"
+import { useBaseTable } from "@/components/hooks/useBaseTable"
+import { useParams } from "@/components/hooks/useParams"
+import { AdminSideMenu } from "@/views/admin/component/aside"
+
 import AddTag from "./component/add"
 import EditTag from "./component/edit"
 import { type ViewForm } from "./component/view"
-import { type DeletePostCategoryRequest, deletePostCategoryAPI } from "@/api/postCategory/delete"
-import { useBaseTable } from "@/components/hooks/useBaseTable"
-import { useParams } from "@/components/hooks/useParams"
 
 defineOptions({ name: AdminSideMenu.PostCategory })
 

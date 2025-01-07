@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-29 12:08:15
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-03 11:54:37
+ * @LastEditTime : 2025-01-07 17:04:30
  * @FilePath     : \blog-client\src\api\response\code.ts
  * @Description  : 相应状态码
  * @Blog         : https://jiaopengzi.com
@@ -160,4 +160,8 @@ export enum ResponseCode {
     // 客户端请求频繁
     ClientIPTooManyRequests = 9006, //客户端IP请求次数过多
     ClientIDTooManyRequests = 9007, //客户端ID请求次数过多
+    SetupSuccess = 9011, // 项目初始化成功
+    SetupError = 9012, // 项目初始化失败
+    SetupAlready = 9013, // 项目已经初始化完毕
+    SetupNotCompleted = 9014, // 项目未初始化
 }

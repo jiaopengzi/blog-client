@@ -9,9 +9,9 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { request, routerGroup, type PaginationRequest } from "@/api/request"
-import type { Res, ResPromise, Pagination } from "@/api/response"
 import type { PostResPagination } from "@/api/post/common"
+import { type PaginationRequest,request, routerGroup } from "@/api/request"
+import type { Pagination,Res, ResPromise } from "@/api/response"
 
 // 管理员查看文章请求
 export interface ViewPostRequest extends PaginationRequest {

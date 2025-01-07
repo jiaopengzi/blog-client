@@ -18,11 +18,11 @@
 </template>
 <script setup lang="ts">
 import { IconKeys } from "@/components/common/icons"
-import type { HeaderNavPropsItem } from "./types"
-import { routeObj } from "@/router"
+import { routeObj } from "@/router/routeAll"
 
 import HeaderNavPC from "./pc.vue"
 import HeaderNavPhone from "./phone.vue"
+import type { HeaderNavPropsItem } from "./types"
 
 defineOptions({ name: "HeaderNav" })
 

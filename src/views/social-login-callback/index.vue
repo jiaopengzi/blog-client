@@ -17,12 +17,13 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from "vue"
 import type { Ref } from "vue"
+import { onMounted, ref } from "vue"
 import { useRoute, useRouter } from "vue-router"
-import { useUserStore } from "@/stores/user"
-import { routeObj } from "@/router"
+
 import { Social } from "@/api/common"
+import { routeObj } from "@/router/routeAll"
+import { useUserStore } from "@/stores/user"
 
 defineOptions({ name: "SocialLoginCallback" })
 

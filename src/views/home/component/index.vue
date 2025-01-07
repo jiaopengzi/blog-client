@@ -74,20 +74,20 @@
     </div>
 </template>
 <script setup lang="ts">
-import { reactive, useTemplateRef, onUnmounted } from "vue"
-import { useResizeObserver } from "@vueuse/core"
 import { ArrowRight, Location } from "@element-plus/icons-vue"
-import { routeObj } from "@/router"
+import { useResizeObserver } from "@vueuse/core"
+import type { ElAside } from "element-plus"
+import { onUnmounted, reactive, useTemplateRef } from "vue"
 
+import { type ViewPostRequest } from "@/api/post/view"
+import MonthArchive from "@/components/common/month-archive"
+import { useHome } from "@/components/hooks/useHome"
+import HotPost from "@/components/layout/aside/hot-post"
+import PostTag from "@/components/layout/aside/post-tag"
+import RecommendedRead from "@/components/layout/aside/recommended-read"
+import { routeObj } from "@/router/routeAll"
 import Carousel from "@/views/home/component/carousel"
 import PostList from "@/views/home/component/post-list"
-import RecommendedRead from "@/components/layout/aside/recommended-read"
-import HotPost from "@/components/layout/aside/hot-post"
-import MonthArchive from "@/components/common/month-archive"
-import PostTag from "@/components/layout/aside/post-tag"
-import type { ElAside } from "element-plus"
-import { type ViewPostRequest } from "@/api/post/view"
-import { useHome } from "@/components/hooks/useHome"
 
 defineOptions({ name: "LayoutHome" })
 

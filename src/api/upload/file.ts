@@ -9,7 +9,7 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { request, routerGroup, type ReqProgressEvent } from "@/api/request"
+import { type ReqProgressEvent,request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
 export function uploadFileAPI(

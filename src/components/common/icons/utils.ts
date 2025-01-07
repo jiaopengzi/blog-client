@@ -9,9 +9,10 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { kebabToPascalCase } from "@/utils/namingConversion"
 import iconFontJSON from "@/components/common/icons/assets/iconfont.json" // 导入 iconfont.json 数据
-import { type IconJson, type IconMap, IconKeys } from "./types"
+import { kebabToPascalCase } from "@/utils/namingConversion"
+
+import { type IconJson, IconKeys,type IconMap } from "./types"
 
 // 图标 json 数据 类型守卫函数
 export function isIconJson(obj: unknown): IconJson {

@@ -9,9 +9,11 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import type { UpsertPostForm } from "./index"
-import type { InsertPostRequest, UpdatePostRequest } from "@/api/post/common"
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
+
+import type { InsertPostRequest, UpdatePostRequest } from "@/api/post/common"
+
+import type { UpsertPostForm } from "./index"
 
 /**
  * 提交表单

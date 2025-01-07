@@ -88,38 +88,37 @@
 </template>
 
 <script setup lang="ts">
+import { useResizeObserver } from "@vueuse/core"
+import Hls from "hls.js"
+import screenfull from "screenfull"
 import {
-    ref,
-    reactive,
     computed,
-    watch,
-    watchEffect,
     onBeforeUnmount,
     onMounted,
+    reactive,
+    ref,
     useTemplateRef,
+    watch,
+    watchEffect,
 } from "vue"
 
-import { useResizeObserver } from "@vueuse/core"
-
-import { getVideoQualityLabel } from "./utils"
-import { PlayerStateManager } from "./state"
-import {
-    type LanguageKey,
-    type PlayLevelLabel,
-    type PlayerState,
-    PlayStatus,
-    DisabledSubtitles,
-    MediaTypes,
-} from "./types"
-
-import screenfull from "screenfull"
+import { ResponseCode } from "@/api/response"
+import { IconKeys } from "@/components/common/icons"
 import Controls from "@/components/player/components/controls"
 import VideoWatermark from "@/components/player/components/watermark"
-import { MessageUtil } from "@/utils/message"
-import { IconKeys } from "@/components/common/icons"
-import Hls from "hls.js"
 import { CustomLoader } from "@/pkg/hls"
-import { ResponseCode } from "@/api/response"
+import { MessageUtil } from "@/utils/message"
+
+import { PlayerStateManager } from "./state"
+import {
+    DisabledSubtitles,
+    type LanguageKey,
+    MediaTypes,
+    type PlayerState,
+    type PlayLevelLabel,
+    PlayStatus,
+} from "./types"
+import { getVideoQualityLabel } from "./utils"
 
 defineOptions({ name: "VideoPlayer" })
 

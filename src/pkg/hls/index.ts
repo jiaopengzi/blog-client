@@ -8,22 +8,22 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
-import Hls from "hls.js"
+import type { KeyLoaderContext } from "custom-hls"
 import type {
     HlsConfig,
-    LoaderConfiguration,
     LoaderCallbacks,
+    LoaderConfiguration,
     LoaderContext,
     LoaderStats,
     PlaylistLoaderContext,
 } from "hls.js"
+import Hls from "hls.js"
 
-import type { KeyLoaderContext } from "custom-hls"
-import { reverseString, decryptData } from "@/utils/encrypt"
-import { ResponseCode, handleResErr } from "@/api/response"
+import { handleResErr,ResponseCode } from "@/api/response"
+import { getKeyAPI } from "@/api/video/getKey"
 import { getM3u8API } from "@/api/video/getM3u8"
 import { getMainM3u8API } from "@/api/video/getMainM3u8"
-import { getKeyAPI } from "@/api/video/getKey"
+import { decryptData,reverseString } from "@/utils/encrypt"
 
 // 自定义 Loader 错误码
 enum CustomLoaderError {

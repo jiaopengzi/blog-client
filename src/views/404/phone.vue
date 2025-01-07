@@ -42,7 +42,8 @@
 </template>
 <script setup lang="ts">
 import { ArrowRight, Location } from "@element-plus/icons-vue"
-import { routeObj } from "@/router"
+
+import { routeObj } from "@/router/routeAll"
 
 defineOptions({ name: "NotFound404Phone" })
 

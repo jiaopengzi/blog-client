@@ -9,21 +9,23 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { type Ref, reactive } from "vue"
 import type { FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
-import type { ViewForm } from "./index"
-import { type CheckTagNameRequest, checkTagNameAPI } from "@/api/postTag/checkTagName"
+import { reactive,type Ref } from "vue"
+
+import { checkTagNameAPI,type CheckTagNameRequest } from "@/api/postTag/checkTagName"
 import {
-    type CheckTagNameExcludingIDRequest,
     checkTagNameExcludingIDAPI,
+    type CheckTagNameExcludingIDRequest,
 } from "@/api/postTag/checkTagNameExcludingID"
-import { type CheckTagSlugRequest, checkTagSlugAPI } from "@/api/postTag/checkTagSlug"
+import { checkTagSlugAPI,type CheckTagSlugRequest } from "@/api/postTag/checkTagSlug"
 import {
-    type CheckTagSlugExcludingIDRequest,
     checkTagSlugExcludingIDAPI,
+    type CheckTagSlugExcludingIDRequest,
 } from "@/api/postTag/checkTagSlugExcludingID"
-import { ResponseCode, handleResErr } from "@/api/response"
+import { handleResErr,ResponseCode } from "@/api/response"
 import { RegexPatterns } from "@/utils/regexPatterns"
+
+import type { ViewForm } from "./index"
 
 // 表单验证选项
 interface FormValidationOptions {

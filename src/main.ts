@@ -12,16 +12,17 @@
 import "element-plus/theme-chalk/dark/css-vars.css" // 引入element-plus的暗黑主题
 import "@/assets/scss/main.scss" // 引入全局样式
 
-import { createApp } from "vue" // 创建Vue实例
-import { createPinia } from "pinia" // 状态管理
 import { createHead } from "@unhead/vue" // 参考官方文档:https://unhead.unjs.io/setup/vue/installation
+import { createPinia } from "pinia" // 状态管理
+import { createApp } from "vue" // 创建Vue实例
+
 import App from "@/App.vue" // 根组件
-import { router } from "@/router" // 路由
 import Icon from "@/components/common/icons" // 引用自定义的全局图标
 import { useGlobal } from "@/components/hooks/useGlobal" // 全局钩子
+import { devRun } from "@/dev" // 开发环境运行的函数
+import { router } from "@/router" // 路由
 import { permissionDirective } from "@/utils/permissionRole" // 权限指令
 import { consoleInfoFormat } from "@/version" // 控制台输出项目信息
-import { devRun } from "@/dev" // 开发环境运行的函数
 
 consoleInfoFormat() // 控制台输出项目信息
 

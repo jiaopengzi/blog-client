@@ -9,16 +9,18 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { MessageUtil } from "@/utils/message"
-import { RequestStrategyEl } from "./requestStrategyEl"
 import { type UploadRequestOptions } from "element-plus"
+
 import {
-    UploadControllerEvents,
-    UploadController,
     MultiThreadSplitter,
+    UploadController,
+    UploadControllerEvents,
     type UploadFileSuccessInfo,
 } from "@/utils/chunkUpload"
 import { HashAlgorithm } from "@/utils/hash"
+import { MessageUtil } from "@/utils/message"
+
+import { RequestStrategyEl } from "./requestStrategyEl"
 
 export const uploadByEl = async (
     options: UploadRequestOptions,

@@ -94,15 +94,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from "vue"
+import { computed, ref, watch } from "vue"
+
 import {
-    type Subtitles,
-    type SubtitlesItem,
-    type PlayLevel,
+    DisabledSubtitles,
     type LanguageKey,
     PlaybackRate,
+    type PlayLevel,
     PlayLevelLabel,
-    DisabledSubtitles,
+    type Subtitles,
+    type SubtitlesItem,
 } from "@/components/player/types"
 
 defineOptions({ name: "VideoSetting" })

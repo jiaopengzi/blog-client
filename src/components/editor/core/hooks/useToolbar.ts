@@ -9,23 +9,25 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
+import { useMagicKeys } from "@vueuse/core"
+import { debounce } from "throttle-debounce"
 import type { Ref } from "vue"
-import { ref, onMounted, nextTick, watch } from "vue"
-import type { ToolbarRef, CodemirrorRef, PreviewRef } from "../types"
-import { EditorStateManager } from "../state"
+import { nextTick, onMounted, ref, watch } from "vue"
+import { type EmojiExt } from "vue3-emoji-picker"
+
+import type { IconKeys } from "@/components/common/icons"
 import {
     CommandsKey,
     createMarkdownEditorCommands,
     type MarkdownEditorCommands,
 } from "@/components/editor/command"
-import type { IconKeys } from "@/components/common/icons"
-import { MessageUtil } from "@/utils/message"
-import { getComputedStyleValue, setCSSVariable, getCSSVariableValue } from "@/utils/style"
-import { copyWithCustomStyle } from "../utils"
-import { debounce } from "throttle-debounce"
-import { useMagicKeys } from "@vueuse/core"
 import { type TableRowCol } from "@/components/editor/toolbar"
-import { type EmojiExt } from "vue3-emoji-picker"
+import { MessageUtil } from "@/utils/message"
+import { getComputedStyleValue, getCSSVariableValue,setCSSVariable } from "@/utils/style"
+
+import { EditorStateManager } from "../state"
+import type { CodemirrorRef, PreviewRef,ToolbarRef } from "../types"
+import { copyWithCustomStyle } from "../utils"
 
 export function useToolbar(
     mdContainerRef: Ref<HTMLElement | null>,

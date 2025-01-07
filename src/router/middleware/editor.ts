@@ -10,6 +10,7 @@
  */
 
 import { type RouteLocationNormalized } from "vue-router"
+
 import { useUserStore } from "@/stores/user"
 import { confirmCommon } from "@/utils/confirm"
 

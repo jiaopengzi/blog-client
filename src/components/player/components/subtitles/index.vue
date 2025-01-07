@@ -21,7 +21,8 @@
 <script lang="ts" setup>
 // TODO: 自定义字幕组件
 
-import { ref, onMounted } from "vue"
+import { onMounted,ref } from "vue"
+
 import CustomSubtitles from "./subtitles.vue"
 
 defineOptions({ name: "VideoSubtitles" })

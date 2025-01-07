@@ -9,8 +9,9 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 import type { Ref } from "vue"
-import type { CodemirrorRef, PreviewRef } from "../types"
+
 import { EditorStateManager } from "../state"
+import type { CodemirrorRef, PreviewRef } from "../types"
 
 export function useToc(
     codemirrorRef: Ref<CodemirrorRef | null>,

@@ -10,8 +10,8 @@
  */
 
 import { request, routerGroup } from "@/api/request"
+import { type Pagination,type Res, ResponseCode, type ResPromise } from "@/api/response"
 import type { DataWithImg } from "@/components/common"
-import { ResponseCode, type Res, type ResPromise, type Pagination } from "@/api/response"
 import { formatTime } from "@/utils/dateTime"
 import { parsePlatform } from "@/utils/ipPlatform"
 

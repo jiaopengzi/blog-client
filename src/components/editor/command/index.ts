@@ -9,5 +9,5 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-export * from "./insert"
 export * from "./constant"
+export * from "./insert"

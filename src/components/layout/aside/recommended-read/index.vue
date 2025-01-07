@@ -20,11 +20,9 @@
 </template>
 
 <script setup lang="ts">
-import { IconKeys } from "@/components/common/icons"
-
-import PostItem from "@/components/common/post-item-aside"
-
 import { type PostResCommon } from "@/api/post/common"
+import { IconKeys } from "@/components/common/icons"
+import PostItem from "@/components/common/post-item-aside"
 
 defineOptions({ name: "RecommendedRead" })
 

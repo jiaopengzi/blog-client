@@ -10,7 +10,7 @@
  */
 
 import { type PgSqlDateTime } from "@/api/common"
-import { PostStatusCode, CommentStatusCode, type UpdateFields } from "@/api/post/common"
+import { CommentStatusCode, PostStatusCode, type UpdateFields } from "@/api/post/common"
 
 // 查询参数
 export const queryKey = {

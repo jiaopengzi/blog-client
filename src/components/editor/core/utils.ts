@@ -9,13 +9,15 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import type { EditorState, Heading, MarkdownHeadingLine } from "./types"
-import createMarked from "@/pkg/marked/new-marked"
 import DOMPurify, { type Config } from "dompurify"
 import html2canvas from "html2canvas"
-import { MessageUtil } from "@/utils/message"
+
+import createMarked from "@/pkg/marked/new-marked"
 import { HasParentByClass } from "@/utils/getParentByClass"
-import { CustomElementVideoPlayer, CustomElementAttributes } from "../preview"
+import { MessageUtil } from "@/utils/message"
+
+import { CustomElementAttributes,CustomElementVideoPlayer } from "../preview"
+import type { EditorState, Heading, MarkdownHeadingLine } from "./types"
 
 /**
  * @description : 创建空值编辑器信息

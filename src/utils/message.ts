@@ -8,9 +8,11 @@
  * @blog         : https://jiaopengzi.com
  * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
-import { ElMessage } from "element-plus"
-import { MsgType } from "@/components/common"
 import "element-plus/theme-chalk/el-message.css"
+
+import { ElMessage } from "element-plus"
+
+import { MsgType } from "@/components/common"
 
 export class MessageUtil {
     static success(msgStr: string, duration: number = 3000): void {

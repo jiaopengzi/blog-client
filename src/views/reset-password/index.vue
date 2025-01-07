@@ -89,25 +89,25 @@
 </template>
 
 <script lang="ts" setup>
+import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { reactive, ref, useTemplateRef } from "vue"
 import { useRouter } from "vue-router"
-import { MessageUtil } from "@/utils/message"
-import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
+
+import type { CaptchaCheckRequest } from "@/api/captcha/check"
+import { captchaCheckAPI } from "@/api/captcha/check"
+import type { CaptchaSendRequest } from "@/api/captcha/send"
+import { captchaSendAPI } from "@/api/captcha/send"
+import { CaptchaPurpose } from "@/api/common"
+import { handleResErr, ResponseCode } from "@/api/response"
 import type { CheckEmailRequest } from "@/api/user/checkEmail"
 import { CheckEmailAPI } from "@/api/user/checkEmail"
 import type { ResetPasswordRequest } from "@/api/user/resetPassword"
 import { resetPasswordAPI } from "@/api/user/resetPassword"
-import type { CaptchaSendRequest } from "@/api/captcha/send"
-import { captchaSendAPI } from "@/api/captcha/send"
-
-import type { CaptchaCheckRequest } from "@/api/captcha/check"
-import { captchaCheckAPI } from "@/api/captcha/check"
-import { ResponseCode, handleResErr } from "@/api/response"
-import { CaptchaPurpose } from "@/api/common"
-import { routeObj } from "@/router"
-import type { ResetPasswordForm } from "./types"
-
 import SlideVerify from "@/components/common/slide-verify"
+import { routeObj } from "@/router/routeAll"
+import { MessageUtil } from "@/utils/message"
+
+import type { ResetPasswordForm } from "./types"
 
 // 定义组件名称
 defineOptions({ name: "ResetPassword" })

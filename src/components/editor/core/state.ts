@@ -9,19 +9,19 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
+import { reactive } from "vue"
+
+import { request } from "@/api/request"
 import { extractImageUrlsFromHtml } from "@/utils/img"
 
+import type { EditorState } from "./types"
 import {
-    markdownToHtml,
     createEmptyEditorState,
-    matchAllHeadingToList,
     getMarkdownHeadingLines,
     htmlHandleUtf8BOM,
+    markdownToHtml,
+    matchAllHeadingToList,
 } from "./utils"
-
-import type { EditorState } from "./types"
-import { request } from "@/api/request"
-import { reactive } from "vue"
 
 /**
  * @description: 编辑器状态管理

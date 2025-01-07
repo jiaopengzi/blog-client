@@ -19,9 +19,10 @@
 </template>
 
 <script lang="ts" setup>
-import { MessageUtil } from "@/utils/message"
-import { type UpdatePostCategoryRequest, updatePostCategoryAPI } from "@/api/postCategory/update"
+import { updatePostCategoryAPI,type UpdatePostCategoryRequest } from "@/api/postCategory/update"
 import { ResponseCode } from "@/api/response"
+import { MessageUtil } from "@/utils/message"
+
 import View from "../view"
 import { type ViewForm } from "../view"
 

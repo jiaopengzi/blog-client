@@ -9,9 +9,9 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
+import { type PgSqlDateTime } from "@/api/common"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
-import { type PgSqlDateTime } from "@/api/common"
 
 export interface EditUserInfoByAdminRequest {
     edit_user_id: string // 用户id

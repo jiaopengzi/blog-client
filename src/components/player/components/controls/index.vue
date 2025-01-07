@@ -113,21 +113,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, watch, onUnmounted, watchEffect } from "vue"
+import { useMagicKeys } from "@vueuse/core"
+import { computed, onUnmounted, reactive, ref, watch, watchEffect } from "vue"
+
 import { IconKeys } from "@/components/common/icons"
-import { formatDurationTime } from "@/utils/dateTime"
+import { createPlayerCommands,PlayerCommandsKey } from "@/components/player/command"
 import ProgressBar from "@/components/player/components/progress-bar"
 import VideoSetting from "@/components/player/components/setting"
-import { useMagicKeys } from "@vueuse/core"
-import { PlayerCommandsKey, createPlayerCommands } from "@/components/player/command"
-import {
-    type PlayerState,
-    type LanguageKey,
-    PlayStatus,
-    PlaybackRate,
-    PlayLevelLabel,
-} from "@/components/player/types"
 import { PlayerStateManager } from "@/components/player/state"
+import {
+    type LanguageKey,
+    PlaybackRate,
+    type PlayerState,
+    PlayLevelLabel,
+    PlayStatus,
+} from "@/components/player/types"
+import { formatDurationTime } from "@/utils/dateTime"
 
 // 名称
 defineOptions({ name: "VideoControls" })

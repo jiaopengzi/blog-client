@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { MsgType, MsgTitle } from "@/components/common"
+import { MsgTitle,MsgType } from "@/components/common"
 
 defineOptions({ name: "AlertTip" })
 

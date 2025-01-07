@@ -22,13 +22,14 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue"
+import { onMounted, onUnmounted,ref } from "vue"
 import { useRouter } from "vue-router"
+
+import LayoutFooter from "@/components/layout/footer"
+import LayoutHeader from "@/components/layout/header"
 
 import HomePC from "./pc.vue"
 import HomePhone from "./phone.vue"
-import LayoutHeader from "@/components/layout/header"
-import LayoutFooter from "@/components/layout/footer"
 
 defineOptions({ name: "NotFound404" })
 

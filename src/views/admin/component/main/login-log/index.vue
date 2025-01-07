@@ -34,15 +34,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from "vue"
-import type { TableColumn } from "@/components/common/base-table"
-import { AdminSideMenu } from "@/views/admin/component/aside"
-import {
-    getLoginLogsAPI,
-    type GetLoginLogsRequest,
-    type LoginLog,
-} from "@/api/loginLog/getLoginLogs"
-import { ResponseCode, handleResErr } from "@/api/response"
+import { reactive,ref } from "vue"
+
 import {
     deleteLoginLogByDayAPI,
     type DeleteLoginLogByDayRequest,
@@ -51,12 +44,19 @@ import {
     deleteLoginLogByIDsAPI,
     type DeleteLoginLogByIDsRequest,
 } from "@/api/loginLog/deleteLoginLogByIds"
-import { MessageUtil } from "@/utils/message"
-import { deleteConfirmCommon } from "@/utils/confirm"
-
+import {
+    getLoginLogsAPI,
+    type GetLoginLogsRequest,
+    type LoginLog,
+} from "@/api/loginLog/getLoginLogs"
+import { handleResErr,ResponseCode } from "@/api/response"
+import type { TableColumn } from "@/components/common/base-table"
 import BaseTable from "@/components/common/base-table"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { useParams } from "@/components/hooks/useParams"
+import { deleteConfirmCommon } from "@/utils/confirm"
+import { MessageUtil } from "@/utils/message"
+import { AdminSideMenu } from "@/views/admin/component/aside"
 
 defineOptions({ name: AdminSideMenu.LoginLog })
 

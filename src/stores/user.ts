@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 09:35:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 13:46:06
+ * @LastEditTime : 2025-01-07 17:35:15
  * @FilePath     : \blog-client\src\stores\user.ts
  * @Description  : 用户信息
  * @Blog         : https://jiaopengzi.com
@@ -10,37 +10,35 @@
  */
 
 // @ts-check
-import { defineStore, acceptHMRUpdate } from "pinia"
-import { ResponseCode } from "@/api/response"
-import { LocalStorageKey } from "@/stores/local"
-import { MessageUtil } from "@/utils/message"
-import { type LoginRequest } from "@/api/user/login"
-import { getAvatarUrl } from "@/utils/avatar"
+import { acceptHMRUpdate,defineStore } from "pinia"
+
+import { getRolesAPI } from "@/api/permissionRole/role"
 import type { Res, ResResponse } from "@/api/response"
-import { getUserForbiddenMsg } from "@/utils/msg"
-import { DeviceType } from "@/utils/device"
-
+import { ResponseCode } from "@/api/response"
+import type { UserInfo } from "@/api/user/getUserInfo"
+import { emptyUserInfo, getUserInfoAPI } from "@/api/user/getUserInfo"
+import { type LoginRequest } from "@/api/user/login"
 import {
+    bindQQUrl,
+    bindQQUrlCallback,
+    bindWeChatUrl,
+    bindWeChatUrlCallback,
     loginAPI,
-
     // QQ
     loginByQQUrl,
     loginByQQUrlCallback,
-    bindQQUrl,
-    bindQQUrlCallback,
-    unBindQQ,
-
     // 微信
     loginByWeChatUrl,
     loginByWeChatUrlCallback,
-    bindWeChatUrl,
-    bindWeChatUrlCallback,
+    unBindQQ,
     unBindWeChat,
 } from "@/api/user/login"
-import type { UserInfo } from "@/api/user/getUserInfo"
-import { emptyUserInfo, getUserInfoAPI } from "@/api/user/getUserInfo"
+import { LocalStorageKey } from "@/stores/local"
+import { getAvatarUrl } from "@/utils/avatar"
+import { DeviceType } from "@/utils/device"
+import { MessageUtil } from "@/utils/message"
+import { getUserForbiddenMsg } from "@/utils/msg"
 import { PermissionNames } from "@/utils/permissionRole"
-import { getRolesAPI } from "@/api/permissionRole/role"
 
 // 用户信息
 export interface UserInfoStore {
@@ -52,6 +50,7 @@ export interface UserInfoStore {
     showDialogBindEmail?: boolean // 是否显示绑定邮箱弹窗
     permissions?: PermissionNames[] // 权限列表
     isEditing?: boolean // 是否正在编辑
+    isSetupDB: boolean // 是否已经设置数据库
 }
 
 // 创建空值用户信息
@@ -65,6 +64,7 @@ function createEmptyUserInfoStore(): UserInfoStore {
         showDialogBindEmail: false,
         permissions: [],
         isEditing: false,
+        isSetupDB: true,
     }
 }
 
@@ -115,6 +115,11 @@ export const useUserStore = defineStore("user", {
         // 获取是否正在编辑
         getIsEditing(): boolean {
             return this.isEditing || false
+        },
+
+        // 获取是否已经设置数据库
+        getIsSetupDB(): boolean {
+            return this.isSetupDB
         },
     },
 
@@ -233,6 +238,11 @@ export const useUserStore = defineStore("user", {
         // 设置是否正在编辑
         setIsEditing(isEditing: boolean) {
             this.isEditing = isEditing
+        },
+
+        // 设置是否已经设置数据库
+        setIsSetupDB(isSetupDB: boolean) {
+            this.isSetupDB = isSetupDB
         },
     },
 })
@@ -358,6 +368,7 @@ async function apiGetUserInfoByToken(): Promise<UserInfoStore> {
                 isBindEmail: !!dataUser?.user?.user_email,
                 showDialogBindEmail: !dataUser?.user?.user_email,
                 permissions,
+                isSetupDB: true,
             }
         }
     } catch (err: unknown) {

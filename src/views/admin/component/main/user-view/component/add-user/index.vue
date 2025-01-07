@@ -64,17 +64,19 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, toRef, useTemplateRef } from "vue"
-import { MessageUtil } from "@/utils/message"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
+import { reactive, ref, toRef, useTemplateRef } from "vue"
+
+import { type Role } from "@/api/permissionRole/role"
+import { ResponseCode } from "@/api/response"
 import type { AddUserRequest } from "@/api/user/addUser"
 import { AddUserAPI } from "@/api/user/addUser"
-import { ResponseCode } from "@/api/response"
-import type { AddUserForm } from "./types"
 import { useFormValidation } from "@/components/hooks/useFormValidation"
+import { MessageUtil } from "@/utils/message"
 import { generatePassword } from "@/utils/password"
-import { type Role } from "@/api/permissionRole/role"
 import { RegexPatterns } from "@/utils/regexPatterns"
+
+import type { AddUserForm } from "./types"
 
 defineOptions({ name: "AddUser" })
 

@@ -1,6 +1,7 @@
 // src/utils/markdownParser.ts
 import { marked } from "marked"
 import { createApp, h } from "vue"
+
 import MyVideo from "./MyVideo.vue"
 
 export async function parseMarkdown(content: string): Promise<string> {

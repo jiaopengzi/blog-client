@@ -9,8 +9,9 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import { CompletionContext } from "@codemirror/autocomplete"
 import type { CompletionResult } from "@codemirror/autocomplete"
+import { CompletionContext } from "@codemirror/autocomplete"
+
 import emojiCompletionList from "@/utils/emoji"
 
 /**

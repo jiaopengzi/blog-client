@@ -2,8 +2,9 @@
  * @FilePath     : \blog-client\src\utils\vttParse.test.ts
  * @Description  : parseVTT测试文件
  */
-import { describe, it, expect, test, vi } from "vitest"
-import { parseVTT, isWebvtt } from "./vttParse"
+import { describe, expect, it, test, vi } from "vitest"
+
+import { isWebvtt,parseVTT } from "./vttParse"
 
 // Mock fetch to return the VTT content
 global.fetch = vi.fn(() =>

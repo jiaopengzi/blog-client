@@ -10,6 +10,5 @@
  */
 
 export { default } from "./index.vue"
-
 export { RequestStrategyEl } from "./requestStrategyEl"
 export { uploadByEl } from "./uploadByEl"

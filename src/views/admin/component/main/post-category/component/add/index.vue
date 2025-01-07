@@ -20,9 +20,11 @@
 
 <script lang="ts" setup>
 import { reactive } from "vue"
-import { MessageUtil } from "@/utils/message"
-import { type InsertPostCategoryRequest, insertPostCategoryAPI } from "@/api/postCategory/insert"
+
+import { insertPostCategoryAPI,type InsertPostCategoryRequest } from "@/api/postCategory/insert"
 import { ResponseCode } from "@/api/response"
+import { MessageUtil } from "@/utils/message"
+
 import View from "../view"
 import { type ViewForm } from "../view"
 

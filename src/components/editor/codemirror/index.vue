@@ -13,16 +13,18 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, watchEffect, onUnmounted, useTemplateRef } from "vue"
 import type { Extension } from "@codemirror/state"
 import type { ViewUpdate } from "@codemirror/view"
-import { EditorView, EditorState, createCustomSetup } from "@/pkg/codemirror/setup"
+import { onMounted, onUnmounted, useTemplateRef,watchEffect } from "vue"
+
+import type { MarkdownEditorCommandItem, MarkdownEditorCommands } from "@/components/editor/command"
 import {
     CommandsKey,
     createMarkdownEditorCommands,
     editorInsertFormatContent,
 } from "@/components/editor/command"
-import type { MarkdownEditorCommandItem, MarkdownEditorCommands } from "@/components/editor/command"
+import { createCustomSetup,EditorState, EditorView } from "@/pkg/codemirror/setup"
+
 import type { CodeEditorProps } from "./types"
 
 defineOptions({ name: "EditorCodemirror" })

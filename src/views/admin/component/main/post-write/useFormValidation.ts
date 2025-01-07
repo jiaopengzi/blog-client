@@ -9,18 +9,20 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { type Ref, reactive } from "vue"
 import type { FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { type CheckPostSlugRequest, checkPostSlugAPI } from "@/api/post/checkPostSlug"
-import {
-    type CheckPostSlugExcludingIDRequest,
-    checkPostSlugExcludingIDAPI,
-} from "@/api/post/checkPostSlugExcludingID"
-import { ResponseCode, handleResErr } from "@/api/response"
+import { reactive,type Ref } from "vue"
+
 import { type PgSqlDateTime } from "@/api/common"
-import { PostStatusCode, CommentStatusCode } from "@/api/post/common"
-import { type UpsertPostForm } from "./index"
+import { checkPostSlugAPI,type CheckPostSlugRequest } from "@/api/post/checkPostSlug"
+import {
+    checkPostSlugExcludingIDAPI,
+    type CheckPostSlugExcludingIDRequest,
+} from "@/api/post/checkPostSlugExcludingID"
+import { CommentStatusCode,PostStatusCode } from "@/api/post/common"
+import { handleResErr,ResponseCode } from "@/api/response"
 import { RegexPatterns } from "@/utils/regexPatterns"
+
+import { type UpsertPostForm } from "./index"
 
 // 表单验证选项
 interface FormValidationOptions {

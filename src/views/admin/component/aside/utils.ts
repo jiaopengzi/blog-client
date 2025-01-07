@@ -12,7 +12,8 @@
 import { IconKeys } from "@/components/common/icons" // 图标名称枚举
 import { toKebabCase } from "@/utils/namingConversion"
 import { PermissionNames } from "@/utils/permissionRole" // 权限名称枚举
-import { AdminSideMenu, type AdminMenuItemMap, type AdminMenuItemMapWithIndex } from "./types"
+
+import { type AdminMenuItemMap, type AdminMenuItemMapWithIndex,AdminSideMenu } from "./types"
 
 const adminMenuItemMap: AdminMenuItemMap = {
     [AdminSideMenu.Dashboard]: {

@@ -11,24 +11,25 @@
 
 // useFormValidation.ts
 import { type Ref } from "vue"
-import { type CheckUserNameRequest, checkUserNameAPI } from "@/api/user/checkUserName"
-import {
-    type CheckUserNameExcludingUserIDRequest,
-    checkUserNameExcludingUserIDAPI,
-} from "@/api/user/checkUserNameExcludingUserID"
-import { type CheckEmailRequest, CheckEmailAPI } from "@/api/user/checkEmail"
-import {
-    type CheckEmailExcludingUserIDRequest,
-    checkEmailExcludingUserIDAPI,
-} from "@/api/user/checkEmailExcludingUserID"
-import { type CaptchaSendRequest, captchaSendAPI } from "@/api/captcha/send"
-import { type CaptchaCheckRequest, captchaCheckAPI } from "@/api/captcha/check"
-import {
-    type GetDisableExpiresAtSecondsRequest,
-    getDisableExpiresAtSecondsAPI,
-} from "@/api/user/getDisableExpiresAtSeconds"
-import { ResponseCode } from "@/api/response"
+
+import { captchaCheckAPI,type CaptchaCheckRequest } from "@/api/captcha/check"
+import { captchaSendAPI,type CaptchaSendRequest } from "@/api/captcha/send"
 import { CaptchaPurpose } from "@/api/common"
+import { ResponseCode } from "@/api/response"
+import { CheckEmailAPI,type CheckEmailRequest } from "@/api/user/checkEmail"
+import {
+    checkEmailExcludingUserIDAPI,
+    type CheckEmailExcludingUserIDRequest,
+} from "@/api/user/checkEmailExcludingUserID"
+import { checkUserNameAPI,type CheckUserNameRequest } from "@/api/user/checkUserName"
+import {
+    checkUserNameExcludingUserIDAPI,
+    type CheckUserNameExcludingUserIDRequest,
+} from "@/api/user/checkUserNameExcludingUserID"
+import {
+    getDisableExpiresAtSecondsAPI,
+    type GetDisableExpiresAtSecondsRequest,
+} from "@/api/user/getDisableExpiresAtSeconds"
 import { getUserForbiddenMsg } from "@/utils/msg"
 
 interface FormValidationOptions {

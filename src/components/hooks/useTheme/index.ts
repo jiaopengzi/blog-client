@@ -9,9 +9,10 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { reactive } from "vue"
-import { IconKeys } from "@/components/common/icons"
 import { useDark, useToggle } from "@vueuse/core"
+import { reactive } from "vue"
+
+import { IconKeys } from "@/components/common/icons"
 import type { SwitchItem, SwitchItemColor, SwitchItemIcon } from "@/components/common/switch-group"
 
 // 主题切换

@@ -14,5 +14,5 @@ export * from "./types"
 export * from "./utils"
 
 // 如果有多个内容导出,避免循环依赖的问题使用如下方式导出,且导出的内容必须在最后
-export { default as EditorPost } from "./EditorPost.vue"
 export { default as EditorComment } from "./EditorComment.vue"
+export { default as EditorPost } from "./EditorPost.vue"

@@ -31,13 +31,14 @@
     </header>
 </template>
 <script setup lang="ts">
-import { useRouter } from "vue-router"
-import { routeObj } from "@/router"
 import { storeToRefs } from "pinia"
-import { useUserStore } from "@/stores/user"
-import { useTheme } from "@/components/hooks/useTheme"
-import UserInfoDropdown from "@/components/common/user-info-dropdown"
+import { useRouter } from "vue-router"
+
 import SwitchGroup from "@/components/common/switch-group"
+import UserInfoDropdown from "@/components/common/user-info-dropdown"
+import { useTheme } from "@/components/hooks/useTheme"
+import { routeObj } from "@/router/routeAll"
+import { useUserStore } from "@/stores/user"
 defineOptions({ name: "AdminHeader" })
 const userStore = useUserStore()
 const { isLogin } = storeToRefs(userStore)

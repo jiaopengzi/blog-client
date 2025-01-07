@@ -71,23 +71,23 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, useTemplateRef } from "vue"
-import { MessageUtil } from "@/utils/message"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
-import type { CheckEmailRequest } from "@/api/user/checkEmail"
-import { CheckEmailAPI } from "@/api/user/checkEmail"
-import type { BindEmailRequest } from "@/api/user/bindEmail"
-import { bindEmailAPI } from "@/api/user/bindEmail"
-import type { CaptchaSendRequest } from "@/api/captcha/send"
-import { captchaSendAPI } from "@/api/captcha/send"
+import { storeToRefs } from "pinia"
+import { reactive, ref, useTemplateRef } from "vue"
+
 import type { CaptchaCheckRequest } from "@/api/captcha/check"
 import { captchaCheckAPI } from "@/api/captcha/check"
-import { ResponseCode, handleResErr } from "@/api/response"
+import type { CaptchaSendRequest } from "@/api/captcha/send"
+import { captchaSendAPI } from "@/api/captcha/send"
 import { CaptchaPurpose } from "@/api/common"
-import { storeToRefs } from "pinia"
-import { useUserStore } from "@/stores/user"
-
+import { handleResErr,ResponseCode } from "@/api/response"
+import type { BindEmailRequest } from "@/api/user/bindEmail"
+import { bindEmailAPI } from "@/api/user/bindEmail"
+import type { CheckEmailRequest } from "@/api/user/checkEmail"
+import { CheckEmailAPI } from "@/api/user/checkEmail"
 import SlideVerify from "@/components/common/slide-verify" // 引用滑块验证组件
+import { useUserStore } from "@/stores/user"
+import { MessageUtil } from "@/utils/message"
 
 defineOptions({ name: "BindEmailDialog" })
 

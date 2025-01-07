@@ -131,10 +131,9 @@
 </template>
 <script setup lang="ts">
 import { Social } from "@/api/common"
-import { useInfo } from "@/views/user-info/component/info/hooks"
-
 import AvatarInitials from "@/components/common/avatar-initials"
 import AvatarUpload from "@/components/common/avatar-upload"
+import { useInfo } from "@/views/user-info/component/info/hooks"
 
 defineOptions({ name: "UserInfoInfoPC" })
 

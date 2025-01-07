@@ -147,21 +147,23 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, watch, useTemplateRef, computed, watchEffect } from "vue"
-import type { EditMediaProps, EditMediaForm, SubtitlesForm } from "./types"
-import { MessageUtil } from "@/utils/message"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { ResponseCode, handleResErr } from "@/api/response"
-import { getSubtitlesByAdminAPI } from "@/api/video/getSubtitlesByAdmin"
-import { type UpsertSubtitlesRequest, upsertSubtitlesAPI } from "@/api/video/upsertSubtitles"
-import { type DeleteSubtitlesRequest, deleteSubtitlesAPI } from "@/api/video/deleteSubtitles"
+import { computed, reactive, ref, useTemplateRef, watch, watchEffect } from "vue"
+
+import { handleResErr,ResponseCode } from "@/api/response"
 import { checkSlugAPI, type CheckSlugRequest } from "@/api/upload/checkSlug"
 import { updateFileAPI, type UpdateFileRequest } from "@/api/upload/updateFile"
-import { isWebvtt } from "@/utils/vttParse"
-import { isVideo } from "@/utils/isVideo"
+import { deleteSubtitlesAPI,type DeleteSubtitlesRequest } from "@/api/video/deleteSubtitles"
+import { getSubtitlesByAdminAPI } from "@/api/video/getSubtitlesByAdmin"
+import { upsertSubtitlesAPI,type UpsertSubtitlesRequest } from "@/api/video/upsertSubtitles"
 import VideoPlayer from "@/components/player"
-import { PlayerStateManager, Language, MediaTypes, type PlayerState } from "@/components/player"
+import { Language, MediaTypes, type PlayerState,PlayerStateManager } from "@/components/player"
+import { isVideo } from "@/utils/isVideo"
+import { MessageUtil } from "@/utils/message"
 import { RegexPatterns } from "@/utils/regexPatterns"
+import { isWebvtt } from "@/utils/vttParse"
+
+import type { EditMediaForm, EditMediaProps, SubtitlesForm } from "./types"
 
 // 定义组件名称
 defineOptions({ name: "EditMedia" })

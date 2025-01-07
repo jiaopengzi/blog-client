@@ -9,5 +9,5 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-export { useInfo } from "./useInfo"
 export type { UseInfoReturnType } from "./useInfo"
+export { useInfo } from "./useInfo"

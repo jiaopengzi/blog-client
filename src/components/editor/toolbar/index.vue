@@ -83,11 +83,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, watch, useTemplateRef } from "vue"
-import { CommandsKey } from "@/components/editor/command"
-import type { ToolbarProps, TableRowCol } from "./types"
-
+import { onMounted, ref, useTemplateRef,watch } from "vue"
 import EmojiPicker, { type EmojiExt } from "vue3-emoji-picker"
+
+import { CommandsKey } from "@/components/editor/command"
+
+import type { TableRowCol,ToolbarProps } from "./types"
 
 defineOptions({ name: "EditorToolbar" })
 

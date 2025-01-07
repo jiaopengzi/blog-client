@@ -9,8 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { PermissionNames } from "@/utils/permissionRole"
 import { type UpsertPermissionRoleRequest } from "@/api/permissionRole/upsertPermissionRole"
+import { PermissionNames } from "@/utils/permissionRole"
 
 // 定义角色接口
 export interface Role {

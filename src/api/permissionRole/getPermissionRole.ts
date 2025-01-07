@@ -9,8 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 import { request, routerGroup } from "@/api/request"
-import { PermissionNames } from "@/utils/permissionRole"
 import type { Res, ResPromise } from "@/api/response"
+import { PermissionNames } from "@/utils/permissionRole"
 
 //  删除角色权限 请求参数
 export interface GetPermissionRoleRequest {

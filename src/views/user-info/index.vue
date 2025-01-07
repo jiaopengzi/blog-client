@@ -18,9 +18,9 @@
 </template>
 
 <script setup lang="ts">
+import LayoutFooter from "@/components/layout/footer"
 import LayoutHeader from "@/components/layout/header"
 import UserInfo from "@/views/user-info/component"
-import LayoutFooter from "@/components/layout/footer"
 
 defineOptions({ name: "PageUserInfo" })
 </script>

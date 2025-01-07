@@ -9,10 +9,11 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { reactive, watchEffect } from "vue"
 import type { Ref } from "vue"
-import type { CodemirrorRef } from "../types"
+import { reactive, watchEffect } from "vue"
+
 import { EditorStateManager } from "../state"
+import type { CodemirrorRef } from "../types"
 export function usePreview(
     codemirrorRef: Ref<CodemirrorRef | null>,
     editorStateManager: EditorStateManager,

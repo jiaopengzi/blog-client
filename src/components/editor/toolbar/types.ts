@@ -9,9 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { CommandsKey } from "@/components/editor/command"
-
 import type { IconKeys } from "@/components/common/icons"
+import { CommandsKey } from "@/components/editor/command"
 
 export interface ToolbarProps {
     toolbarBtns: Array<{ name: CommandsKey; display: string; icon: IconKeys }> // 预览内容

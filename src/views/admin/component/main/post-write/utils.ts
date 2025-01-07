@@ -9,7 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { PostStatusCode, CommentStatusCode } from "@/api/post/common"
+import { CommentStatusCode,PostStatusCode } from "@/api/post/common"
+
 import { type UpsertPostForm } from "./types"
 
 // 时间快捷选项

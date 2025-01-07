@@ -64,18 +64,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeMount, type Ref } from "vue"
+import { storeToRefs } from "pinia"
+import { onBeforeMount, type Ref, ref } from "vue"
+
 import { IconKeys } from "@/components/common/icons"
+import SwitchGroup from "@/components/common/switch-group"
+import UserInfoDropdown from "@/components/common/user-info-dropdown" // 导入 UserDropdown 组件
 import type { ScrollData } from "@/components/hooks/useScroll"
 import { useScrollActions } from "@/components/hooks/useScroll"
-import UserInfoDropdown from "@/components/common/user-info-dropdown" // 导入 UserDropdown 组件
-import { useUserStore } from "@/stores/user"
-import { storeToRefs } from "pinia"
-import { routeObj } from "@/router"
 import { useTheme } from "@/components/hooks/useTheme"
-
 import HeaderNav from "@/components/layout/header-nav"
-import SwitchGroup from "@/components/common/switch-group"
+import { routeObj } from "@/router/routeAll"
+import { useUserStore } from "@/stores/user"
 
 defineOptions({ name: "HeaderPC" })
 

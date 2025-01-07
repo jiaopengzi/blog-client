@@ -9,15 +9,15 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { MessageUtil } from "@/utils/message"
 import {
-    UploadControllerEvents,
-    UploadController,
     MultiThreadSplitter,
-    type UploadFileSuccessInfo,
     type RequestStrategy,
+    UploadController,
+    UploadControllerEvents,
+    type UploadFileSuccessInfo,
 } from "@/utils/chunkUpload"
 import { HashAlgorithm } from "@/utils/hash"
+import { MessageUtil } from "@/utils/message"
 
 export const uploadFileCommon = async <T extends RequestStrategy>(
     file: File,

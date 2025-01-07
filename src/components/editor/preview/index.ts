@@ -9,7 +9,7 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-export { default } from "./index.vue"
-export * from "./utils"
 export * from "./customElements"
+export { default } from "./index.vue"
 export * from "./types"
+export * from "./utils"

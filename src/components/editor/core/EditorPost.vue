@@ -63,18 +63,20 @@
 </template>
 
 <script lang="ts" setup>
-import { useTemplateRef, reactive, computed, onMounted, watchEffect } from "vue"
-import { useToolbar, useCodemirror, usePreview, useToc } from "./hooks"
-import type { EditorState, ToolbarRef, CodemirrorRef, PreviewRef } from "./types"
-import { EditorStateManager } from "./state"
-import { setIsFullScreenClassName } from "./utils"
-import { CommandsKey } from "@/components/editor/command"
 import "vue3-emoji-picker/css" // import css
 
-import EditorToolbar from "@/components/editor/toolbar"
-import EditorToc from "@/components/editor/toc"
+import { computed, onMounted, reactive, useTemplateRef, watchEffect } from "vue"
+
 import EditorCodemirror from "@/components/editor/codemirror"
+import { CommandsKey } from "@/components/editor/command"
 import HtmlPreview from "@/components/editor/preview"
+import EditorToc from "@/components/editor/toc"
+import EditorToolbar from "@/components/editor/toolbar"
+
+import { useCodemirror, usePreview, useToc,useToolbar } from "./hooks"
+import { EditorStateManager } from "./state"
+import type { CodemirrorRef, EditorState, PreviewRef,ToolbarRef } from "./types"
+import { setIsFullScreenClassName } from "./utils"
 
 // 文章编辑器命名
 defineOptions({ name: "EditorPost" })

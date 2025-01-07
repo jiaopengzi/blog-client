@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-03 11:08:03
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-03 11:08:06
+ * @LastEditTime : 2025-01-07 21:58:12
  * @FilePath     : \blog-client\src\router\middleware\utils.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -10,6 +10,7 @@
  */
 
 import type { RouteLocationNormalized } from "vue-router"
+
 import type { MiddlewareFunction } from "./types"
 
 /**

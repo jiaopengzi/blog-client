@@ -39,11 +39,10 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, ref, computed, useTemplateRef } from "vue"
 import type { ElInput } from "element-plus"
+import { computed, nextTick, ref, useTemplateRef } from "vue"
 
 import { type PostTag as PostTagType } from "@/api/postTag/view"
-
 import PostTag from "@/components/layout/aside/post-tag"
 
 defineOptions({ name: "AddTag" })

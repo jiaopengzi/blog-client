@@ -8,8 +8,8 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
-import { ref, computed, onBeforeUnmount, type Ref } from "vue"
 import FakeProgress from "fake-progress"
+import { computed, onBeforeUnmount, type Ref,ref } from "vue"
 
 interface IUseFakeProgress {
     progress: Ref<number>

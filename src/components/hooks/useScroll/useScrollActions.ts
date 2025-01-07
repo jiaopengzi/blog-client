@@ -9,9 +9,11 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import { ref } from "vue"
 import type { Ref } from "vue"
+import { ref } from "vue"
+
 import type { ScrollData } from "@/components/hooks/useScroll"
+
 import { useScroll } from "./useScroll"
 
 /**

@@ -26,22 +26,25 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, computed, watchEffect, useTemplateRef, nextTick } from "vue"
-import { useScroll } from "@vueuse/core"
-import { debounce } from "throttle-debounce"
-import ClipboardJS from "clipboard" //代码块复制
-import type { ClipboardEvent } from "clipboard"
-import { MessageUtil } from "@/utils/message"
-import { shiftArray } from "@/utils/img"
-import { htmlHandleWeChat } from "../core"
-import { ScrollElementTag, ScrollElementTagHeading } from "@/components/editor/command"
-import { scrollToElement } from "@/utils/scroll"
-import { mountVideoPlayerOnCustomElements } from "./utils"
-import { CustomElementVideoPlayer } from "./customElements"
-import type { PreviewProps } from "./types"
 import "@/assets/scss/preview.scss"
 import "@/assets/scss/highlight.js.jpz.scss"
 import "katex/dist/katex.min.css" // katex 样式
+
+import { useScroll } from "@vueuse/core"
+import type { ClipboardEvent } from "clipboard"
+import ClipboardJS from "clipboard" //代码块复制
+import { debounce } from "throttle-debounce"
+import { computed, nextTick,onMounted, ref, useTemplateRef, watchEffect } from "vue"
+
+import { ScrollElementTag, ScrollElementTagHeading } from "@/components/editor/command"
+import { shiftArray } from "@/utils/img"
+import { MessageUtil } from "@/utils/message"
+import { scrollToElement } from "@/utils/scroll"
+
+import { htmlHandleWeChat } from "../core"
+import { CustomElementVideoPlayer } from "./customElements"
+import type { PreviewProps } from "./types"
+import { mountVideoPlayerOnCustomElements } from "./utils"
 
 defineOptions({ name: "HtmlPreview" })
 

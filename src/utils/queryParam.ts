@@ -9,12 +9,13 @@
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  */
 
+import { type LocationQuery } from "vue-router"
+
 import {
+    PaginationParamsInURL,
     type PaginationRequest,
     type QueryParamsOptions,
-    PaginationParamsInURL,
 } from "@/api/request"
-import { type LocationQuery } from "vue-router"
 
 /**
  * 解析路由查询参数

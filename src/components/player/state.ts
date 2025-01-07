@@ -8,22 +8,22 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
+import { reactive } from "vue"
+
 import type {
+    LanguageKey,
+    LogoWatermark,
+    MediaTypes,
+    PlaybackRate,
     PlayerState,
     PlayLevelLabel,
-    PlaybackRate,
     PlayProgress,
     Subtitles,
-    MediaTypes,
     SubtitlesItem,
-    LanguageKey,
     TextWatermark,
-    LogoWatermark,
 } from "./types"
-
 import { PlayStatus } from "./types"
 import { createDefaultPlayerState, createSubtitlesByVideoHashId } from "./utils"
-import { reactive } from "vue"
 
 /**
  * @description: 播放器 props 类

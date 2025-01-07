@@ -221,29 +221,31 @@
     </section>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, useTemplateRef, onBeforeMount, onUnmounted, toRefs, watch } from "vue"
-import { useResizeObserver, useIntersectionObserver } from "@vueuse/core"
-import { EditorStateManager, EditorPost } from "@/components/editor"
+import { useIntersectionObserver,useResizeObserver } from "@vueuse/core"
+import type { ElContainer, ElFormItem } from "element-plus"
+import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
+import { onBeforeMount, onUnmounted, reactive, ref, toRefs, useTemplateRef, watch } from "vue"
+
+import { gegPostStatusOptions, type InsertPostRequest,PostStatusCode } from "@/api/post/common"
+import { type PostCategory,viewListPostCategoryAPI } from "@/api/postCategory/view"
+import { ResponseCode } from "@/api/response"
+import AddTag from "@/components/common/add-tag"
 import { IconKeys } from "@/components/common/icons"
 import SwitchGroup from "@/components/common/switch-group"
-import { AdminSideMenu } from "@/views/admin/component/aside"
-import type { ElContainer, ElFormItem } from "element-plus"
+import { EditorPost,EditorStateManager } from "@/components/editor"
 import { useUserStore } from "@/stores/user"
-import { viewListPostCategoryAPI, type PostCategory } from "@/api/postCategory/view"
-import { ResponseCode } from "@/api/response"
-import { PostStatusCode, gegPostStatusOptions, type InsertPostRequest } from "@/api/post/common"
-import { useFormValidation } from "./useFormValidation"
-import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { PermissionNames } from "@/utils/permissionRole"
-import { queryKey, type UpsertPostForm, type PostInfoAboutTime, type UpdatePostForm } from "./types"
-import AddTag from "@/components/common/add-tag"
+import { formatTime } from "@/utils/dateTime"
 import { MessageUtil } from "@/utils/message"
+import { PermissionNames } from "@/utils/permissionRole"
+import { AdminSideMenu } from "@/views/admin/component/aside"
+
+import { type PostInfoAboutTime, queryKey, type UpdatePostForm,type UpsertPostForm } from "./types"
 import { useAdd } from "./useAdd"
 import { useEdit } from "./useEdit"
-import { useSwitchItem } from "./useSwitchItem"
+import { useFormValidation } from "./useFormValidation"
 import { useSnapshot } from "./useSnapshot"
-import { formatTime } from "@/utils/dateTime"
-import { generateShortcuts, createEmptyUpsertPostForm } from "./utils"
+import { useSwitchItem } from "./useSwitchItem"
+import { createEmptyUpsertPostForm,generateShortcuts } from "./utils"
 
 defineOptions({ name: AdminSideMenu.PostWrite })
 

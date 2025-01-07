@@ -10,9 +10,11 @@
  */
 
 import { type RouteLocationNormalized } from "vue-router"
+
 import { useUserStore } from "@/stores/user"
-import { routeObj } from "../routeAll"
 import { MessageUtil } from "@/utils/message"
+
+import { routeObj } from "../routeAll"
 
 /**
  * 认证中间件 如果用户没有登录，且访问的页面需要登录，则跳转到登录页；
@@ -50,3 +52,4 @@ export const authMiddleware = async (
     // 其他情况
     return true
 }
+export {}

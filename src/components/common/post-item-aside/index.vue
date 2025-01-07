@@ -46,11 +46,12 @@
 </template>
 
 <script setup lang="ts">
+import { ChatRound,View } from "@element-plus/icons-vue"
 import {} from "vue"
+
 import type { PostResCommon } from "@/api/post/common"
-import { View, ChatRound } from "@element-plus/icons-vue"
-import { unit, isZero } from "@/utils/unit"
 import { formatTime } from "@/utils/dateTime"
+import { isZero,unit } from "@/utils/unit"
 
 defineOptions({ name: "PostItemAside" })
 

@@ -173,32 +173,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onBeforeMount, reactive, useTemplateRef, type Ref } from "vue"
-import {
-    getRolesList,
-    getPermissionList,
-    PermissionNames,
-    type Permission,
-} from "@/utils/permissionRole"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
-import type { Role, PermissionRow } from "@/views/admin/component/main/permission-role"
-import { AdminSideMenu } from "@/views/admin/component/aside"
-import {
-    updateRolesAPI,
-    type UpdateRolesRequest,
-    type UpdateRoleRequest,
-} from "@/api/permissionRole/updateRoles"
-import { ResponseCode, handleResErr } from "@/api/response"
-import { MessageUtil } from "@/utils/message"
-import { getSortedEnumKeys } from "@/utils/enum"
-import { useUserStore } from "@/stores/user"
 import { debounce } from "throttle-debounce"
-import { type PermissionRole, LimitPeriod, LimitCount } from "./types"
-import { getSafeProperty } from "./utils"
-import {
-    upsertPermissionRoleAPI,
-    type UpsertPermissionRoleRequest,
-} from "@/api/permissionRole/upsertPermissionRole"
+import { onBeforeMount, reactive, type Ref,ref, useTemplateRef } from "vue"
+
 import {
     deletePermissionRoleAPI,
     type DeletePermissionRoleRequest,
@@ -207,6 +185,30 @@ import {
     getPermissionRoleAPI,
     type GetPermissionRoleRequest,
 } from "@/api/permissionRole/getPermissionRole"
+import {
+    type UpdateRoleRequest,
+    updateRolesAPI,
+    type UpdateRolesRequest,
+} from "@/api/permissionRole/updateRoles"
+import {
+    upsertPermissionRoleAPI,
+    type UpsertPermissionRoleRequest,
+} from "@/api/permissionRole/upsertPermissionRole"
+import { handleResErr,ResponseCode } from "@/api/response"
+import { useUserStore } from "@/stores/user"
+import { getSortedEnumKeys } from "@/utils/enum"
+import { MessageUtil } from "@/utils/message"
+import {
+    getPermissionList,
+    getRolesList,
+    type Permission,
+    PermissionNames,
+} from "@/utils/permissionRole"
+import { AdminSideMenu } from "@/views/admin/component/aside"
+import type { PermissionRow,Role } from "@/views/admin/component/main/permission-role"
+
+import { LimitCount,LimitPeriod, type PermissionRole } from "./types"
+import { getSafeProperty } from "./utils"
 
 defineOptions({ name: AdminSideMenu.PermissionRole })
 

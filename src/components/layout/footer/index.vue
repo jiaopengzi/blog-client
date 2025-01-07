@@ -18,10 +18,9 @@
     </div>
 </template>
 <script setup lang="ts">
-import type { FooterProps } from "./types"
-
 import FooterPC from "./pc.vue"
 import FooterPhone from "./phone.vue"
+import type { FooterProps } from "./types"
 
 defineOptions({ name: "LayoutFooter" })
 // 箭头函数返回 约束 FooterProps

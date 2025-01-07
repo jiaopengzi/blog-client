@@ -9,7 +9,7 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import type { Res, ResResponse, Pagination } from "./types"
+import type { Pagination,Res, ResResponse } from "./types"
 
 /**
  * @description: 处理错误信息

@@ -77,27 +77,27 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onBeforeMount } from "vue"
-import type { TableData, TableColumn } from "@/components/common/base-table"
-import { AdminSideMenu } from "@/views/admin/component/aside"
-import { type User } from "@/api/user/getUsers"
-import { getUsersAPI, type GetUsersRequest } from "@/api/user/getUsers"
+import { onBeforeMount,reactive, ref } from "vue"
+
+import { type Role } from "@/api/permissionRole/role"
+import { type QueryParamsRecord } from "@/api/request"
+import { ResponseCode } from "@/api/response"
+import { deleteUserAPI, type DeleteUserRequest } from "@/api/user/deleteUser"
 import {
     getUserCountGroupByRoleAPI,
     type UserCountGroupByRole,
 } from "@/api/user/getUserCountGroupByRole"
-import { getRolesList } from "@/utils/permissionRole"
-import { type Role } from "@/api/permissionRole/role"
-import { ResponseCode } from "@/api/response"
-import { deleteUserAPI, type DeleteUserRequest } from "@/api/user/deleteUser"
-import { type EditUserByAdminForm } from "@/views/admin/component/main/user-view/component/edit-user"
-import { formatTime } from "@/utils/dateTime"
-import { useBaseTable } from "@/components/hooks/useBaseTable"
-import { type QueryParamsRecord } from "@/api/request"
-import { useParams } from "@/components/hooks/useParams"
-
+import { type User } from "@/api/user/getUsers"
+import { getUsersAPI, type GetUsersRequest } from "@/api/user/getUsers"
+import type { TableColumn,TableData } from "@/components/common/base-table"
 import BaseTable from "@/components/common/base-table"
+import { useBaseTable } from "@/components/hooks/useBaseTable"
+import { useParams } from "@/components/hooks/useParams"
+import { formatTime } from "@/utils/dateTime"
+import { getRolesList } from "@/utils/permissionRole"
+import { AdminSideMenu } from "@/views/admin/component/aside"
 import AddUser from "@/views/admin/component/main/user-view/component/add-user"
+import { type EditUserByAdminForm } from "@/views/admin/component/main/user-view/component/edit-user"
 import EditUser from "@/views/admin/component/main/user-view/component/edit-user"
 
 defineOptions({ name: AdminSideMenu.UserView })

@@ -2,12 +2,12 @@
  * @FilePath     : \blog-client\src\utils\chunkUpload.ts
  */
 
-import { EventEmitter } from "@/utils/eventEmitter"
-import { Task, TaskQueue } from "@/utils/task"
-import { type ConfirmBeforeUploadRequest } from "@/api/upload/confirmBeforeUpload"
+import { handleResErr, type Res, ResponseCode, type ResPromise } from "@/api/response"
 import { type ChunkMetadataWithoutFileId } from "@/api/upload/chunk"
-import { HashCalculator, HashAlgorithm } from "@/utils/hash"
-import { ResponseCode, handleResErr, type Res, type ResPromise } from "@/api/response"
+import { type ConfirmBeforeUploadRequest } from "@/api/upload/confirmBeforeUpload"
+import { EventEmitter } from "@/utils/eventEmitter"
+import { HashAlgorithm,HashCalculator } from "@/utils/hash"
+import { Task, TaskQueue } from "@/utils/task"
 
 // 分片元数据,包含文件二进制数据
 export interface Chunk extends ChunkMetadataWithoutFileId {

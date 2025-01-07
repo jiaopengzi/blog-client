@@ -9,10 +9,11 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { type FormatTableData } from "./types"
 import { ImgFit } from "@/components/common"
-import { formatTime } from "@/utils/dateTime"
 import { IconKeys } from "@/components/common/icons"
+import { formatTime } from "@/utils/dateTime"
+
+import { type FormatTableData } from "./types"
 
 /**
  * @description: 格式化表格的图片和时间

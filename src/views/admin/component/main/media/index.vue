@@ -82,28 +82,28 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onBeforeMount, watch } from "vue"
-import type { TableData, TableColumn } from "@/components/common/base-table"
-import type { MediaFile, GetMediaFilesRequest } from "@/api/upload/getFiles"
-import { getMediaFilesAPI } from "@/api/upload/getFiles"
-import { AdminSideMenu } from "@/views/admin/component/aside"
-import { MessageUtil } from "@/utils/message"
-import { ResponseCode } from "@/api/response"
-import { LocalStorageKey } from "@/stores/local"
-import {
-    getFileCountGroupByFiletypeAPI,
-    type FileCountGroupByFiletype,
-} from "@/api/upload/getFileCountGroupByFiletype"
-import { deleteFileAPI, type DeleteFileRequest } from "@/api/upload/deleteFile"
-import type { EditMediaProps } from "@/views/admin/component/main/media/component/edit-media"
-import { isVideo } from "@/utils/isVideo"
-import { type TableImg, ImgFit } from "@/components/common"
-import { useBaseTable } from "@/components/hooks/useBaseTable"
-import { type QueryParamsRecord } from "@/api/request"
-import { useParams } from "@/components/hooks/useParams"
+import { onBeforeMount, reactive, ref, watch } from "vue"
 
+import { type QueryParamsRecord } from "@/api/request"
+import { ResponseCode } from "@/api/response"
+import { deleteFileAPI, type DeleteFileRequest } from "@/api/upload/deleteFile"
+import {
+    type FileCountGroupByFiletype,
+    getFileCountGroupByFiletypeAPI,
+} from "@/api/upload/getFileCountGroupByFiletype"
+import type { GetMediaFilesRequest,MediaFile } from "@/api/upload/getFiles"
+import { getMediaFilesAPI } from "@/api/upload/getFiles"
+import { ImgFit,type TableImg } from "@/components/common"
+import type { TableColumn,TableData } from "@/components/common/base-table"
 import BaseTable from "@/components/common/base-table"
+import { useBaseTable } from "@/components/hooks/useBaseTable"
+import { useParams } from "@/components/hooks/useParams"
+import { LocalStorageKey } from "@/stores/local"
+import { isVideo } from "@/utils/isVideo"
+import { MessageUtil } from "@/utils/message"
+import { AdminSideMenu } from "@/views/admin/component/aside"
 import AddMedia from "@/views/admin/component/main/media/component/add-media"
+import type { EditMediaProps } from "@/views/admin/component/main/media/component/edit-media"
 import EditMedia from "@/views/admin/component/main/media/component/edit-media"
 
 defineOptions({ name: AdminSideMenu.Media })

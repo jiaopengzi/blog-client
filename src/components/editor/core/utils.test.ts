@@ -9,10 +9,11 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { describe, it, expect, vi } from "vitest"
+import { describe, expect, it, vi } from "vitest"
+
 import {
-    createRegexCache,
     anchorGenerator,
+    createRegexCache,
     generateAllHeadingAnchor,
 } from "@/components/editor/core/utils"
 

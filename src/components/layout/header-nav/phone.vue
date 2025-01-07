@@ -54,15 +54,16 @@
     </div>
 </template>
 <script setup lang="ts">
-import { onBeforeMount } from "vue"
-import { routeObj } from "@/router"
-import { useUserStore } from "@/stores/user"
 import { storeToRefs } from "pinia"
-import type { HeaderNavPropsItem } from "./types"
-import { useTheme } from "@/components/hooks/useTheme"
-import SwitchGroup from "@/components/common/switch-group"
+import { onBeforeMount } from "vue"
 
 import AvatarInitials from "@/components/common/avatar-initials"
+import SwitchGroup from "@/components/common/switch-group"
+import { useTheme } from "@/components/hooks/useTheme"
+import { routeObj } from "@/router/routeAll"
+import { useUserStore } from "@/stores/user"
+
+import type { HeaderNavPropsItem } from "./types"
 
 defineOptions({ name: "HeaderNavPhone" })
 

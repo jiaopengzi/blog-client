@@ -9,7 +9,7 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import type { Router, LocationQueryRaw } from "vue-router"
+import type { LocationQueryRaw,Router } from "vue-router"
 
 /**
  * @description: 分页路由跳转

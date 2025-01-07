@@ -61,19 +61,21 @@
 
 <script lang="ts" setup>
 import { reactive } from "vue"
-import type { TableData, TableColumn } from "@/components/common/base-table"
-import { AdminSideMenu } from "@/views/admin/component/aside"
+
+import { deletePostTagAPI,type DeletePostTagRequest } from "@/api/postTag/delete"
 import { type PostTag } from "@/api/postTag/view"
 import { viewPostTagAPI } from "@/api/postTag/view"
 import type { PaginationRequest } from "@/api/request"
 import { ResponseCode } from "@/api/response"
+import type { TableColumn,TableData } from "@/components/common/base-table"
 import BaseTable from "@/components/common/base-table"
+import { useBaseTable } from "@/components/hooks/useBaseTable"
+import { useParams } from "@/components/hooks/useParams"
+import { AdminSideMenu } from "@/views/admin/component/aside"
+
 import AddTag from "./component/add"
 import EditTag from "./component/edit"
 import { type ViewForm } from "./component/view"
-import { type DeletePostTagRequest, deletePostTagAPI } from "@/api/postTag/delete"
-import { useBaseTable } from "@/components/hooks/useBaseTable"
-import { useParams } from "@/components/hooks/useParams"
 
 defineOptions({ name: AdminSideMenu.PostTag })
 

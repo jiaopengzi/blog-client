@@ -75,14 +75,14 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue"
-import { PostStatusCode, type PostResPagination } from "@/api/post/common"
-import { type PostCategory } from "@/api/postCategory/view"
 import { ChatRound, View } from "@element-plus/icons-vue"
-import { unit, isZero } from "@/utils/unit"
-import { formatTime } from "@/utils/dateTime"
+import { computed } from "vue"
 
+import { type PostResPagination,PostStatusCode } from "@/api/post/common"
+import { type PostCategory } from "@/api/postCategory/view"
 import AvatarInitials from "@/components/common/avatar-initials"
+import { formatTime } from "@/utils/dateTime"
+import { isZero,unit } from "@/utils/unit"
 
 defineOptions({ name: "PostItemMain" })
 

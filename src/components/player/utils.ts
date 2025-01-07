@@ -9,10 +9,11 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { getSubtitlesAPI, type Subtitles as SubtitlesRes } from "@/api/video/getSubtitles"
 import { ResponseCode } from "@/api/response"
-import { Language, PlayStatus, MediaTypes, PlayLevelLabel, PlaybackRate } from "./types"
+import { getSubtitlesAPI, type Subtitles as SubtitlesRes } from "@/api/video/getSubtitles"
+
 import type { LanguageKey, PlayerState, Subtitles, SubtitlesItem } from "./types"
+import { Language, MediaTypes, PlaybackRate,PlayLevelLabel, PlayStatus } from "./types"
 
 /**
  * 创建默认播放器属性。

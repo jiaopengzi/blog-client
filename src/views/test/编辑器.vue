@@ -15,9 +15,9 @@
 </template>
 
 <script lang="ts" setup>
-import { EditorStateManager, EditorPost, EditorComment } from "@/components/editor"
+import { onBeforeMount,ref } from "vue"
 
-import { ref, onBeforeMount } from "vue"
+import { EditorComment,EditorPost, EditorStateManager } from "@/components/editor"
 
 defineOptions({ name: "EditorAll" })
 

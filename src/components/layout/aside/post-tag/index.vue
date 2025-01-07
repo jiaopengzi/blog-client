@@ -35,14 +35,14 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, onBeforeMount, computed } from "vue"
-import { IconKeys } from "@/components/common/icons"
+import { computed,onBeforeMount, reactive } from "vue"
 
-import TagItem from "@/components/common/tag-item"
 import { type PostTag } from "@/api/postTag/view"
 import { viewPostTagTopNAPI } from "@/api/postTag/viewPostTagTopN"
 import { viewPostTagTopNAdminAPI } from "@/api/postTag/viewPostTagTopNAdmin"
 import { ResponseCode } from "@/api/response"
+import { IconKeys } from "@/components/common/icons"
+import TagItem from "@/components/common/tag-item"
 
 defineOptions({ name: "PostTag" })
 

@@ -9,7 +9,7 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { type PermissionRole, LimitPeriod } from "./types"
+import { LimitPeriod,type PermissionRole } from "./types"
 
 /**
  * @description: 返回升序排序的限制时间键数组

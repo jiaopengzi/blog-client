@@ -2,20 +2,23 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-25 11:51:57
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-04 11:20:48
+ * @LastEditTime : 2025-01-07 23:22:16
  * @FilePath     : \blog-client\src\components\hooks\useHome\utils.ts
  * @Description  : 工具
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { reactive, ref, type Reactive } from "vue"
+import { type Reactive, reactive, ref } from "vue"
 import { useRoute, useRouter } from "vue-router"
-import { routerPushByParams, routeObj } from "@/router"
+
 import { type ViewPostRequest } from "@/api/post/view"
-import type { BreadcrumbItem, ViewPostResKey } from "./types"
 import { type QueryParamsOptions } from "@/api/request"
+import { routerPushByParams } from "@/router"
+import { routeObj } from "@/router/routeAll"
 import { parseRouteQuery } from "@/utils/queryParam"
+
+import type { BreadcrumbItem, ViewPostResKey } from "./types"
 
 export function useUtils(
     queryParams: Reactive<ViewPostRequest>, // 查询参数

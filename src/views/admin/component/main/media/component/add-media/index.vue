@@ -46,11 +46,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onBeforeMount, useTemplateRef } from "vue"
-import { IconKeys } from "@/components/common/icons"
-import { getUploadFileRequirementsAPI } from "@/api/upload/getUploadFileRequirements"
+import { type ElUpload,type UploadRequestOptions } from "element-plus"
+import { onBeforeMount, ref, useTemplateRef } from "vue"
+
 import { ResponseCode } from "@/api/response"
-import { type UploadRequestOptions, type ElUpload } from "element-plus"
+import { getUploadFileRequirementsAPI } from "@/api/upload/getUploadFileRequirements"
+import { IconKeys } from "@/components/common/icons"
 import { HashAlgorithm } from "@/utils/hash"
 import { uploadByEl } from "@/views/admin/component/main/media/component/add-media"
 

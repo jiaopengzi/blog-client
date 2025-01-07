@@ -1,43 +1,34 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-29 10:07:18
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 10:07:49
  * @FilePath     : \blog-client\src\event\types.ts
- * @Description  :
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Description  : 事件类型(参考mitt：https://github.com/developit/mitt)
  */
+
+// 事件类型可以是字符串或符号
 export type EventType = string | symbol
 
-// An event handler can take an optional event argument
-// and should not return a value
+// 事件处理函数类型
 export type Handler<T = unknown> = (event: T) => void
 
+// 通配符事件处理函数类型
 export type WildcardHandler<T = Record<string, unknown>> = (
     type: keyof T,
     event: T[keyof T],
 ) => void
 
-// An array of all currently registered event handlers for a type
+// 某个事件类型当前注册的所有事件处理函数数组
 export type EventHandlerList<T = unknown> = Array<Handler<T>>
+
+// 通配符事件处理函数数组
 export type WildCardEventHandlerList<T = Record<string, unknown>> = Array<WildcardHandler<T>>
 
-// A map of event types and their corresponding event handlers.
+// 事件类型与其对应的事件处理函数的映射
 export type EventHandlerMap<Events extends Record<EventType, unknown>> = Map<
     keyof Events | "*",
     EventHandlerList<Events[keyof Events]> | WildCardEventHandlerList<Events>
 >
 
-export interface Emitter<Events extends Record<EventType, unknown>> {
-    all: EventHandlerMap<Events>
-
-    on<Key extends keyof Events>(type: Key, handler: Handler<Events[Key]>): void
-    on(type: "*", handler: WildcardHandler<Events>): void
-
-    off<Key extends keyof Events>(type: Key, handler?: Handler<Events[Key]>): void
-    off(type: "*", handler: WildcardHandler<Events>): void
-
-    emit<Key extends keyof Events>(type: Key, event: Events[Key]): void
-    emit<Key extends keyof Events>(type: undefined extends Events[Key] ? Key : never): void
+//  配置选项接口
+export interface Options {
+    enableTriggerSource?: boolean
 }
+export {}

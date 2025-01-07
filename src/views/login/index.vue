@@ -82,18 +82,19 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, toRef, useTemplateRef } from "vue"
-import { useRouter } from "vue-router"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { routeObj } from "@/router"
-import { useUserStore } from "@/stores/user"
-import type { LoginForm } from "./types"
-import { IconKeys } from "@/components/common/icons"
+import { reactive, ref, toRef, useTemplateRef } from "vue"
 import type { RouteLocationRaw } from "vue-router"
-import { RegexPatterns } from "@/utils/regexPatterns"
-import { useFormValidation } from "@/components/hooks/useFormValidation"
+import { useRouter } from "vue-router"
 
+import { IconKeys } from "@/components/common/icons"
 import SlideVerify from "@/components/common/slide-verify"
+import { useFormValidation } from "@/components/hooks/useFormValidation"
+import { routeObj } from "@/router/routeAll"
+import { useUserStore } from "@/stores/user"
+import { RegexPatterns } from "@/utils/regexPatterns"
+
+import type { LoginForm } from "./types"
 
 // eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: "Login" })

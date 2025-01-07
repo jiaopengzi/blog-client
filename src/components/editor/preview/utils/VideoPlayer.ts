@@ -9,10 +9,12 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { h, createApp } from "vue"
-import { PlayerStateManager, type MediaTypes } from "@/components/player"
-import VideoPlayer from "@/components/player"
+import { createApp,h } from "vue"
+
 import Icon from "@/components/common/icons"
+import { type MediaTypes,PlayerStateManager } from "@/components/player"
+import VideoPlayer from "@/components/player"
+
 import { BaseCustomElement } from "../customElements"
 import { getComponentContainersFromCustomElements } from "./getComponentContainers"
 

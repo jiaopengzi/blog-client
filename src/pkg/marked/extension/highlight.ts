@@ -10,6 +10,7 @@
  */
 
 import type { SynchronousOptions } from "marked-highlight" // 代码高亮选项
+
 import createHighlighter from "@/pkg/highlight.js/highlight.js" // 自定义代码高亮 js
 
 const optionHighlight: SynchronousOptions = {

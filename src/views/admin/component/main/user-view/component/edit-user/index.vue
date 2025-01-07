@@ -109,32 +109,33 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, toRef, onBeforeMount, watch, useTemplateRef } from "vue"
-import { MessageUtil } from "@/utils/message"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
-import {
-    type EditUserInfoByAdminRequest,
-    editUserInfoByAdminAPI,
-} from "@/api/user/editUserInfoByAdmin"
-import { ResponseCode, handleResErr } from "@/api/response"
-import type { EditUserByAdminForm } from "./types"
-// import { type PgSqlDateTime } from "@/api/common"
-import { useFormValidation } from "@/components/hooks/useFormValidation"
-import { generatePassword } from "@/utils/password"
+import { onBeforeMount, reactive, ref, toRef, useTemplateRef,watch } from "vue"
+
 import { type Role } from "@/api/permissionRole/role"
+import { handleResErr,ResponseCode } from "@/api/response"
+import { setAvatarAPI, type SetAvatarRequest } from "@/api/upload/setAvatar"
+import {
+    editUserInfoByAdminAPI,
+    type EditUserInfoByAdminRequest,
+} from "@/api/user/editUserInfoByAdmin"
 import { type UserInfo } from "@/api/user/getUserInfo"
 import {
-    type GetUserInfoByUserIDRequest,
     getUserInfoByUserIDAPI,
+    type GetUserInfoByUserIDRequest,
 } from "@/api/user/getUserInfoByUserID"
-import { getUserMetaValue } from "@/utils/metaInfo"
-import { getAvatarUrl } from "@/utils/avatar"
-import { RegexPatterns } from "@/utils/regexPatterns"
-import { type LogoutByAdminRequest, logoutByAdminAPI } from "@/api/user/logoutByAdmin"
-import { setAvatarAPI, type SetAvatarRequest } from "@/api/upload/setAvatar"
-
+import { logoutByAdminAPI,type LogoutByAdminRequest } from "@/api/user/logoutByAdmin"
 import AvatarInitials from "@/components/common/avatar-initials"
 import AvatarUpload from "@/components/common/avatar-upload"
+// import { type PgSqlDateTime } from "@/api/common"
+import { useFormValidation } from "@/components/hooks/useFormValidation"
+import { getAvatarUrl } from "@/utils/avatar"
+import { MessageUtil } from "@/utils/message"
+import { getUserMetaValue } from "@/utils/metaInfo"
+import { generatePassword } from "@/utils/password"
+import { RegexPatterns } from "@/utils/regexPatterns"
+
+import type { EditUserByAdminForm } from "./types"
 
 defineOptions({ name: "EditUser" })
 

@@ -51,10 +51,11 @@
 </template>
 
 <script lang="ts" setup>
-import TagItem from "@/components/common/tag-item"
-import type { TableColumn } from "../types"
 import type { PostTag } from "@/api/postTag/view"
 import type { User } from "@/api/user/getUsers"
+import TagItem from "@/components/common/tag-item"
+
+import type { TableColumn } from "../types"
 
 defineOptions({ name: "CustomCol" })
 

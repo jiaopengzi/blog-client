@@ -9,15 +9,16 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { ResponseCode, handleResErr } from "@/api/response"
 import { type UploadRequestOptions } from "element-plus"
-import type { RequestStrategy, Chunk, UploadFileInfo } from "@/utils/chunkUpload"
+
+import type { Res, ResPromise } from "@/api/response"
+import { handleResErr,ResponseCode } from "@/api/response"
+import { type ChunkMetadata } from "@/api/upload/chunk"
+import { type ConfirmAfterUploadBySignedUrlRequest } from "@/api/upload/confirmAfterUploadBySignedUrl"
 import { type ConfirmBeforeUploadRequest } from "@/api/upload/confirmBeforeUpload"
 import { type GetUploadFileUrlRequest } from "@/api/upload/getUploadFileUrl"
-import { type ChunkMetadata } from "@/api/upload/chunk"
-import type { Res, ResPromise } from "@/api/response"
 import { uploadFileBySignedUrlAPI } from "@/api/upload/uploadFileBySignedUrl"
-import { type ConfirmAfterUploadBySignedUrlRequest } from "@/api/upload/confirmAfterUploadBySignedUrl"
+import type { Chunk, RequestStrategy, UploadFileInfo } from "@/utils/chunkUpload"
 
 export const MultipartFormFileKey = "file"
 

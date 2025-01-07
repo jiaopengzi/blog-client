@@ -42,6 +42,7 @@
 
 <script lang="ts" setup>
 import { onBeforeUnmount, useTemplateRef, watch } from "vue"
+
 import { type PlayProgress } from "@/components/player/types"
 import { formatDurationTime } from "@/utils/dateTime"
 

@@ -28,8 +28,9 @@
 </template>
 
 <script lang="ts" setup>
-import type { TocProps } from "./types"
 import { watchEffect } from "vue"
+
+import type { TocProps } from "./types"
 
 defineOptions({ name: "EditorToc" })
 // 定义 props 调用时候传递为 headings="headings"

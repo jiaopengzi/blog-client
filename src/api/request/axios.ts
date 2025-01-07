@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-29 12:37:34
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 12:42:57
+ * @LastEditTime : 2025-01-07 20:02:22
  * @FilePath     : \blog-client\src\api\request\axios.ts
  * @Description  : axios封装
  * @Blog         : https://jiaopengzi.com
@@ -10,6 +10,10 @@
  */
 
 import axios from "axios"
+
+import { ResponseCode } from "@/api/response/code"
+import { isSetupAPI } from "@/api/setting/isSetup"
+import { router } from "@/router"
 import { LocalStorageKey } from "@/stores/local"
 
 //1. 创建axios对象
@@ -34,6 +38,9 @@ axiosInstance.interceptors.request.use(
     },
 )
 
+// 是否已经请求过 isSetupAPI 接口，避免重复请求
+let isSetupAPIRequested = false
+
 //3. 响应拦截器
 axiosInstance.interceptors.response.use(
     (response) => {
@@ -49,6 +56,21 @@ axiosInstance.interceptors.response.use(
         return response
     },
     (error) => {
+        // 从响应中提取错误信息，判断是不是 404 错误，就请求 isSetupAPI 接口 判断是否已经设置数据库,在 user store 中设置 isSetup
+        const { response } = error
+        const { status } = response
+
+        if (status === 404 && !isSetupAPIRequested) {
+            isSetupAPIRequested = true // 避免重复请求
+
+            isSetupAPI().then((res) => {
+                if (res.data.code === ResponseCode.SetupNotCompleted) {
+                    // 跳转到 setup 页面
+                    router.push("/setup")
+                }
+            })
+        }
+
         return Promise.reject(error)
     },
 )

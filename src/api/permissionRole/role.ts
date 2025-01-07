@@ -9,10 +9,10 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
+import { type UpsertPermissionRoleRequest } from "@/api/permissionRole/upsertPermissionRole"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 import { PermissionNames } from "@/utils/permissionRole"
-import { type UpsertPermissionRoleRequest } from "@/api/permissionRole/upsertPermissionRole"
 
 export interface Role {
     role_name: string

@@ -19,9 +19,10 @@
 </template>
 
 <script lang="ts" setup>
-import { MessageUtil } from "@/utils/message"
-import { type UpdatePostTagRequest, updatePostTagAPI } from "@/api/postTag/update"
+import { updatePostTagAPI,type UpdatePostTagRequest } from "@/api/postTag/update"
 import { ResponseCode } from "@/api/response"
+import { MessageUtil } from "@/utils/message"
+
 import View from "../view"
 import { type ViewForm } from "../view"
 

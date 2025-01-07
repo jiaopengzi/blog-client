@@ -41,11 +41,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onUnmounted, useTemplateRef } from "vue"
-import Cropper from "cropperjs"
 import "cropperjs/dist/cropper.min.css"
+
+import Cropper from "cropperjs"
 import { ElButton, ElDialog } from "element-plus"
+import { onUnmounted, ref, useTemplateRef } from "vue"
+
 import { MessageUtil } from "@/utils/message"
+
 import { uploadAvatar } from "./uploadAvatar"
 
 defineOptions({ name: "AvatarUpload" })

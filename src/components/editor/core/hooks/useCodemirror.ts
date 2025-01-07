@@ -9,13 +9,15 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import { nextTick, ref, watchEffect } from "vue"
-import type { Ref } from "vue"
-import type { CodemirrorRef, PreviewRef } from "../types"
-import { EditorStateManager } from "../state"
-import { ScrollElementTag } from "@/components/editor/command"
 import { debounce } from "throttle-debounce"
+import type { Ref } from "vue"
+import { nextTick, ref, watchEffect } from "vue"
+
+import { ScrollElementTag } from "@/components/editor/command"
 import { getCSSVariableValue } from "@/utils/style"
+
+import { EditorStateManager } from "../state"
+import type { CodemirrorRef, PreviewRef } from "../types"
 import { htmlHandleCopyBtns } from "../utils"
 
 export function useCodemirror(

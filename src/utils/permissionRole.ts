@@ -11,13 +11,14 @@
 
 // 从 API 获取权限列表
 import type { Directive, DirectiveBinding } from "vue"
+
 import { getPermissionsAPI } from "@/api/permissionRole/getPermissions"
+import { hasPermissionAPI } from "@/api/permissionRole/hasPermission"
 import { getRolesAPI, type RoleWithLimit } from "@/api/permissionRole/role"
 import { ResponseCode } from "@/api/response"
 import { LocalStorageKey } from "@/stores/local"
-import { kebabToPascalCase } from "@/utils/namingConversion"
-import { hasPermissionAPI } from "@/api/permissionRole/hasPermission"
 import { useUserStore } from "@/stores/user"
+import { kebabToPascalCase } from "@/utils/namingConversion"
 
 // 权限枚举
 export enum PermissionNames {

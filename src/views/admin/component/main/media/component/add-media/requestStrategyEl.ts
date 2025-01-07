@@ -9,13 +9,13 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { MessageUtil } from "@/utils/message"
-import { RequestStrategyBase } from "@/utils/requestStrategyBase"
-import { confirmBeforeUploadAPI } from "@/api/upload/confirmBeforeUpload"
+import { uploadChunkAPI } from "@/api/upload/chunk"
 // import { uploadFileBySignedUrlAPI } from '@/api/upload/uploadFileBySignedUrl'
 import { confirmAfterUploadBySignedUrlAPI } from "@/api/upload/confirmAfterUploadBySignedUrl"
-import { uploadChunkAPI } from "@/api/upload/chunk"
+import { confirmBeforeUploadAPI } from "@/api/upload/confirmBeforeUpload"
 import { getUploadFileUrlAPI } from "@/api/upload/getUploadFileUrl"
+import { MessageUtil } from "@/utils/message"
+import { RequestStrategyBase } from "@/utils/requestStrategyBase"
 
 export class RequestStrategyEl extends RequestStrategyBase {
     confirmBeforeUploadAPI = confirmBeforeUploadAPI

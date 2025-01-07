@@ -10,6 +10,7 @@
  */
 
 import type { RouteRecordRaw } from "vue-router"
+
 import { toKebabCase } from "@/utils/namingConversion"
 import { adminMenuItemMapWithIndex, AdminSideMenu } from "@/views/admin/component/aside"
 

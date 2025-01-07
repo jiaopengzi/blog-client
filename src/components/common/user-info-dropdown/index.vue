@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 10:19:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 15:39:56
+ * @LastEditTime : 2025-01-07 23:19:56
  * @FilePath     : \blog-client\src\components\common\user-info-dropdown\index.vue
  * @Description  : 显示用户信息下拉菜单
  * @Blog         : https://jiaopengzi.com
@@ -35,15 +35,15 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue"
-import { useUserStore } from "@/stores/user"
 import { storeToRefs } from "pinia"
-import { useRouter } from "vue-router"
-import { routeObj } from "@/router"
-import { PermissionNames } from "@/utils/permissionRole"
+import { computed } from "vue"
 import { onMounted, ref } from "vue"
+import { useRouter } from "vue-router"
 
 import AvatarInitials from "@/components/common/avatar-initials" // 导入 AvatarInitials 组件
+import { routeObj } from "@/router/routeAll"
+import { useUserStore } from "@/stores/user"
+import { PermissionNames } from "@/utils/permissionRole"
 
 defineOptions({ name: "UserInfoDropdown" })
 

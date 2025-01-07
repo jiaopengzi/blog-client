@@ -10,6 +10,7 @@
  */
 // myHighlighter.ts
 import hljs from "highlight.js"
+
 import DAX from "@/pkg/highlight.js/language/dax"
 // import 'highlight.js/styles/atom-one-dark.min.css'
 // import 'highlight.js/styles/atom-one-light.min.css'

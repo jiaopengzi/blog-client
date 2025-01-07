@@ -17,21 +17,18 @@
                 <meta content="My awesome site description" name="description" />
             </Head>
 
-            <!-- :key="$route.fullPath" 解决url变化而页面不刷新问题 -->
-            <!-- <router-view :key="$route.fullPath" /> -->
-
             <router-view />
-            <!-- <keep-alive></keep-alive> -->
         </el-config-provider>
     </section>
 </template>
 <script lang="ts" setup>
-import zhCn from "element-plus/es/locale/lang/zh-cn"
-import { useDark } from "@vueuse/core"
 import { useHead } from "@unhead/vue"
 import { Head } from "@unhead/vue/components"
+import { useDark } from "@vueuse/core"
 import { useResizeObserver } from "@vueuse/core"
-import { useTemplateRef, onBeforeUnmount } from "vue"
+import zhCn from "element-plus/es/locale/lang/zh-cn"
+import { onBeforeUnmount,useTemplateRef } from "vue"
+
 import { useUserStore } from "@/stores/user"
 import { getDeviceType } from "@/utils/device"
 

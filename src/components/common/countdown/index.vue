@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onUnmounted, computed, watch } from "vue"
+import { computed, onUnmounted, ref, watch } from "vue"
 
 // eslint-disable-next-line vue/multi-word-component-names
 defineOptions({ name: "Countdown" })

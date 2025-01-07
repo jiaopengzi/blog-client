@@ -9,8 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 import type { Res, ResPromise } from "@/api/response"
+import { handleResErr,ResponseCode } from "@/api/response"
 import { formatDurationTime } from "@/utils/dateTime"
-import { ResponseCode, handleResErr } from "@/api/response"
 
 // 获取用户禁用信息
 export function getUserForbiddenMsg(res: Res<number>) {

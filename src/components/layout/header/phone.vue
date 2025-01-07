@@ -50,14 +50,14 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ref } from "vue"
-import { routeObj } from "@/router"
 import type { Ref } from "vue"
+import { ref } from "vue"
+
+import { IconKeys } from "@/components/common/icons"
 import type { ScrollData } from "@/components/hooks/useScroll"
 import { useScrollActions } from "@/components/hooks/useScroll"
-import { IconKeys } from "@/components/common/icons"
-
 import HeaderNav from "@/components/layout/header-nav"
+import { routeObj } from "@/router/routeAll"
 
 defineOptions({ name: "HeaderPhone" })
 

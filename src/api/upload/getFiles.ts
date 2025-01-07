@@ -9,8 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { request, routerGroup, type PaginationRequest } from "@/api/request"
-import type { Res, ResPromise, Pagination } from "@/api/response"
+import { type PaginationRequest,request, routerGroup } from "@/api/request"
+import type { Pagination,Res, ResPromise } from "@/api/response"
 import type { DataWithImg } from "@/components/common"
 
 export interface GetMediaFilesRequest extends PaginationRequest {

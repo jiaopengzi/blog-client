@@ -10,7 +10,6 @@
  */
 
 import type { Tokens } from "marked"
-
 import { Parser } from "marked"
 
 export const renderer = {

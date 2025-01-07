@@ -63,17 +63,16 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onBeforeMount, useTemplateRef } from "vue"
+import { onBeforeMount, ref, useTemplateRef } from "vue"
 import { useRouter } from "vue-router"
-import { AdminSideMenu } from "@/views/admin/component/aside"
 
-import { PermissionNames } from "@/utils/permissionRole"
-import { useUserStore } from "@/stores/user"
 import { LocalStorageKey } from "@/stores/local"
-
-import AdminHeader from "@/views/admin/component/header"
-import AdminAside from "@/views/admin/component/aside"
+import { useUserStore } from "@/stores/user"
+import { PermissionNames } from "@/utils/permissionRole"
 import Page404 from "@/views/404"
+import { AdminSideMenu } from "@/views/admin/component/aside"
+import AdminAside from "@/views/admin/component/aside"
+import AdminHeader from "@/views/admin/component/header"
 
 defineOptions({ name: "AdminLayout" })
 

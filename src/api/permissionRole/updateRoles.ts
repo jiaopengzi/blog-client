@@ -10,8 +10,8 @@
  */
 
 import { request, routerGroup } from "@/api/request"
-import { PermissionNames } from "@/utils/permissionRole"
 import type { Res, ResPromise } from "@/api/response"
+import { PermissionNames } from "@/utils/permissionRole"
 
 // 更新列表角色权限 请求参数
 export interface UpdateRolesRequest {

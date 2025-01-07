@@ -40,12 +40,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onMounted, onUnmounted, useTemplateRef, nextTick, watch } from "vue"
 import { useIntersectionObserver } from "@vueuse/core"
-import PostItem from "@/components/common/post-item-main"
+import { nextTick, onMounted, onUnmounted, reactive, ref, useTemplateRef, watch } from "vue"
+
 import { type PostResPagination } from "@/api/post/common"
 import { type PostCategory } from "@/api/postCategory/view"
-import { type Pagination, getEmptyPagination } from "@/api/response"
+import { getEmptyPagination,type Pagination } from "@/api/response"
+import PostItem from "@/components/common/post-item-main"
 
 defineOptions({ name: "PostList" })
 

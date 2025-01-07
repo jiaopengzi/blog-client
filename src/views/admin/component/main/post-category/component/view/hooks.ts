@@ -9,27 +9,29 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { type Ref, reactive } from "vue"
 import type { FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
-import type { ViewForm } from "./index"
+import { reactive,type Ref } from "vue"
+
 import {
-    type CheckCategoryNameRequest,
     checkCategoryNameAPI,
+    type CheckCategoryNameRequest,
 } from "@/api/postCategory/checkCategoryName"
 import {
-    type CheckCategoryNameExcludingIDRequest,
     checkCategoryNameExcludingIDAPI,
+    type CheckCategoryNameExcludingIDRequest,
 } from "@/api/postCategory/checkCategoryNameExcludingID"
 import {
-    type CheckCategorySlugRequest,
     checkCategorySlugAPI,
+    type CheckCategorySlugRequest,
 } from "@/api/postCategory/checkCategorySlug"
 import {
-    type CheckCategorySlugExcludingIDRequest,
     checkCategorySlugExcludingIDAPI,
+    type CheckCategorySlugExcludingIDRequest,
 } from "@/api/postCategory/checkCategorySlugExcludingID"
-import { ResponseCode, handleResErr } from "@/api/response"
+import { handleResErr,ResponseCode } from "@/api/response"
 import { RegexPatterns } from "@/utils/regexPatterns"
+
+import type { ViewForm } from "./index"
 
 // 表单验证选项
 interface FormValidationOptions {

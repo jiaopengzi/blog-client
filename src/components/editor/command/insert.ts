@@ -8,8 +8,8 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
-import { EditorView } from "@/pkg/codemirror/setup"
 import type { MarkdownEditorCommandItem } from "@/components/editor/command"
+import { EditorView } from "@/pkg/codemirror/setup"
 
 /**
  * @description: 插入格式化内容

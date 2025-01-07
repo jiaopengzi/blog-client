@@ -8,8 +8,8 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
-import type { MarkedEmojiOptions, EmojiObject } from "marked-emoji"
 import emojiJson from "emoji.json"
+import type { EmojiObject,MarkedEmojiOptions } from "marked-emoji"
 
 // grinning: { char: '😀' },
 const emojiObj: Record<string, string | EmojiObject> = {}

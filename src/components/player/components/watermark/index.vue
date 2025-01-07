@@ -16,8 +16,9 @@
 
 <script setup lang="ts">
 import { useMutationObserver } from "@vueuse/core"
-import { ref, useTemplateRef, computed, onMounted, shallowRef, onBeforeUnmount } from "vue"
-import type { TextWatermark, LogoWatermark } from "@/components/player/types"
+import { computed, onBeforeUnmount,onMounted, ref, shallowRef, useTemplateRef } from "vue"
+
+import type { LogoWatermark,TextWatermark } from "@/components/player/types"
 
 defineOptions({ name: "VideoWatermark" })
 

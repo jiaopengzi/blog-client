@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-03 11:01:47
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-03 21:37:07
+ * @LastEditTime : 2025-01-07 23:18:00
  * @FilePath     : \blog-client\src\router\router.ts
  * @Description  : 路由
  * @Blog         : https://jiaopengzi.com
@@ -10,18 +10,19 @@
  */
 
 import { createRouter, createWebHistory } from "vue-router"
+
+import { authMiddleware, editorMiddleware, handleMiddleware, setupMiddleware } from "./middleware"
 import { routes } from "./routeAll"
-import { handleMiddleware, authMiddleware, editorMiddleware } from "./middleware"
 
 // 创建路由实例
-const router = createRouter({
+export const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL), // 使用history路由模式
     routes, // 路由配置
 })
 
 // 路由守卫
 router.beforeEach(async (to, from) => {
-    const middlewares = [authMiddleware, editorMiddleware]
+    const middlewares = [authMiddleware, editorMiddleware, setupMiddleware]
     return await handleMiddleware(middlewares, to, from)
 })
 

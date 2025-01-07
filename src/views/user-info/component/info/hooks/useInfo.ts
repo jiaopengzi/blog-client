@@ -9,23 +9,25 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { reactive, ref, onBeforeMount, onMounted, computed, toRef } from "vue"
-import type { Ref, ComputedRef } from "vue"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { useUserStore } from "@/stores/user"
 import { storeToRefs } from "pinia"
-import type { UserInfo } from "@/api/user/getUserInfo"
+import type { ComputedRef,Ref } from "vue"
+import { computed, onBeforeMount, onMounted, reactive, ref, toRef } from "vue"
+
 import { Social } from "@/api/common"
-import { ResponseCode, handleResErr } from "@/api/response"
+import { handleResErr,ResponseCode } from "@/api/response"
+import { setAvatarAPI, type SetAvatarRequest } from "@/api/upload/setAvatar"
 import type { EditUserInfoRequest } from "@/api/user/editUserInfo"
 import { editUserInfoAPI } from "@/api/user/editUserInfo"
-import { MessageUtil } from "@/utils/message"
-import type { EditForm } from "../types"
-import { formatTime } from "@/utils/dateTime"
+import type { UserInfo } from "@/api/user/getUserInfo"
 import { useFormValidation } from "@/components/hooks/useFormValidation"
+import { useUserStore } from "@/stores/user"
+import { formatTime } from "@/utils/dateTime"
+import { MessageUtil } from "@/utils/message"
 import { getUserMetaValue } from "@/utils/metaInfo"
 import { RegexPatterns } from "@/utils/regexPatterns"
-import { setAvatarAPI, type SetAvatarRequest } from "@/api/upload/setAvatar"
+
+import type { EditForm } from "../types"
 
 export interface UseInfoReturnType {
     editFormRef: Ref<FormInstance | undefined>

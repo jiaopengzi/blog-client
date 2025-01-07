@@ -96,18 +96,19 @@
     </div>
 </template>
 <script setup lang="ts">
-import { View, Tickets, Goods, Document, ChatLineSquare, Star } from "@element-plus/icons-vue"
+import { ChatLineSquare, Document, Goods, Star, Tickets, View } from "@element-plus/icons-vue"
 import { ArrowRight } from "@element-plus/icons-vue"
 import { ref } from "vue"
-import { routeObj } from "@/router"
 import { useRouter } from "vue-router"
+
 import BindEmailDialog from "@/components/common/bind-email-dialog"
-import UserInfoInfo from "@/views/user-info/component/info"
-import UserInfoOrder from "@/views/user-info/component/order"
-import UserInfoVip from "@/views/user-info/component/vip"
-import UserInfoPost from "@/views/user-info/component/post"
+import { routeObj } from "@/router/routeAll"
 import UserInfoComment from "@/views/user-info/component/comment"
 import UserInfoFavorite from "@/views/user-info/component/favorite"
+import UserInfoInfo from "@/views/user-info/component/info"
+import UserInfoOrder from "@/views/user-info/component/order"
+import UserInfoPost from "@/views/user-info/component/post"
+import UserInfoVip from "@/views/user-info/component/vip"
 
 defineOptions({ name: "UserInfoPC" })
 

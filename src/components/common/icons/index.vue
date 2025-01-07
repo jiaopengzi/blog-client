@@ -19,7 +19,9 @@
 
 <script lang="ts" setup>
 import "./assets/iconfont.js"
+
 import { computed } from "vue"
+
 import { iconMap } from "./utils"
 
 // eslint-disable-next-line vue/multi-word-component-names

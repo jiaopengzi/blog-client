@@ -9,10 +9,12 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
-import { EditorView } from "@codemirror/view"
 import type { Extension } from "@codemirror/state"
-import { uploadEditor } from "./uploadEditor"
+import { EditorView } from "@codemirror/view"
+
 import { MessageUtil } from "@/utils/message"
+
+import { uploadEditor } from "./uploadEditor"
 
 // 自定义键盘事件
 const handlePasteImage: Extension = EditorView.domEventHandlers({
@@ -82,4 +84,4 @@ const handleDropImage: Extension = EditorView.domEventHandlers({
     },
 })
 
-export { handlePasteImage, handleDropImage }
+export { handleDropImage,handlePasteImage }

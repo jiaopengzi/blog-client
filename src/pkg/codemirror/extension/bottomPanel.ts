@@ -2,11 +2,10 @@
  * @FilePath     : \blog-client\src\pkg\codemirror\extension\bottomPanel.ts
  */
 import type { Extension } from "@codemirror/state"
+import type { TextIterator } from "@codemirror/state"
+import { Text } from "@codemirror/state"
 import type { Panel } from "@codemirror/view"
 import { EditorView, showPanel, ViewUpdate } from "@codemirror/view"
-
-import { Text } from "@codemirror/state"
-import type { TextIterator } from "@codemirror/state"
 
 // 字数统计
 function countWords(doc: Text): string {
