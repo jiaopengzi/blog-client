@@ -18,7 +18,7 @@
 </template>
 <script setup lang="ts">
 import { IconKeys } from "@/components/common/icons"
-import { routeObj } from "@/router/routeAll"
+import { RouteNames } from "@/router"
 
 import HeaderNavPC from "./pc.vue"
 import HeaderNavPhone from "./phone.vue"
@@ -29,31 +29,31 @@ defineOptions({ name: "HeaderNav" })
 const navData: HeaderNavPropsItem[] = [
     {
         title: "首页",
-        path: routeObj.home.path,
+        name: RouteNames.Home,
     },
     {
         title: "文章",
-        path: routeObj.post.path,
+        name: RouteNames.Post,
         iconKey: IconKeys.Article,
     },
     {
         title: "视频课",
-        path: routeObj.video.path,
+        name: RouteNames.Video,
         iconKey: IconKeys.Video,
     },
     {
         title: "文档",
-        path: routeObj.doc.path,
+        name: RouteNames.Doc,
         iconKey: IconKeys.Doc,
     },
     {
         title: "工具下载",
-        path: routeObj.tool.path,
+        name: RouteNames.Tool,
         iconKey: IconKeys.Tool,
     },
     {
         title: "加入VIP",
-        path: routeObj.vip.path,
+        name: RouteNames.Vip,
         iconKey: IconKeys.VipRed,
         customClass: "my-icon-red",
     },

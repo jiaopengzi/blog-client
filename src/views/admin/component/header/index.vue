@@ -37,7 +37,7 @@ import { useRouter } from "vue-router"
 import SwitchGroup from "@/components/common/switch-group"
 import UserInfoDropdown from "@/components/common/user-info-dropdown"
 import { useTheme } from "@/components/hooks/useTheme"
-import { routeObj } from "@/router/routeAll"
+import { RouteNames } from "@/router"
 import { useUserStore } from "@/stores/user"
 defineOptions({ name: "AdminHeader" })
 const userStore = useUserStore()
@@ -48,7 +48,7 @@ const router = useRouter()
 
 // 跳转到用户中心
 const goHome = () => {
-    router.push(routeObj.home.path)
+    router.push({ name: RouteNames.Home })
 }
 </script>
 <style scoped lang="scss">

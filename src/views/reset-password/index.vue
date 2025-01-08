@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 12:27:40
+ * @LastEditTime : 2025-01-08 11:46:05
  * @FilePath     : \blog-client\src\views\reset-password\index.vue
  * @Description  : 重置密码
  * @Blog         : https://jiaopengzi.com
@@ -29,16 +29,16 @@
             status-icon
         >
             <div class="header-main">
-                <a :href="routeObj.home.path">
+                <router-link :to="{ name: RouteNames.Home }" class="link">
                     <div class="logo">
                         <h2>
                             <img
                                 src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
-                                :alt="routeObj.home.path"
+                                :alt="RouteNames.Home"
                             />
                         </h2>
                     </div>
-                </a>
+                </router-link>
                 <h2>密码重置</h2>
             </div>
 
@@ -76,11 +76,11 @@
                 </el-form-item>
             </div>
             <div class="go-home">
-                <router-link :to="routeObj.home.path" class="link">
+                <router-link :to="{ name: RouteNames.Home }" class="link">
                     <span>首页</span>
                 </router-link>
                 <span> | </span>
-                <router-link :to="routeObj.login.path" class="link">
+                <router-link :to="{ name: RouteNames.Login }" class="link">
                     <span>登录</span>
                 </router-link>
             </div>
@@ -104,7 +104,7 @@ import { CheckEmailAPI } from "@/api/user/checkEmail"
 import type { ResetPasswordRequest } from "@/api/user/resetPassword"
 import { resetPasswordAPI } from "@/api/user/resetPassword"
 import SlideVerify from "@/components/common/slide-verify"
-import { routeObj } from "@/router/routeAll"
+import { RouteNames } from "@/router"
 import { MessageUtil } from "@/utils/message"
 
 import type { ResetPasswordForm } from "./types"

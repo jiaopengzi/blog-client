@@ -2,39 +2,42 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-23 12:02:58
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 10:49:36
+ * @LastEditTime : 2025-01-08 12:08:12
  * @FilePath     : \blog-client\src\router\routeUser.ts
  * @Description  : 用户相关路由
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
+import type { RouteRecordRaw } from "vue-router"
 
-export const userRoutes = {
-    login: {
+import { RouteNames } from "./types"
+
+export const userRoutes: RouteRecordRaw[] = [
+    {
         path: "/login",
-        name: "login",
+        name: RouteNames.Login,
         component: () => import("@/views/login"),
         meta: {
             requiresAuth: false,
         },
     },
-    socialQQLoginCallback: {
+    {
         path: "/social/qq/login/callback",
-        name: "socialQQLoginCallback",
+        name: RouteNames.SocialQQLoginCallback,
         component: () => import("@/views/social-login-callback"),
         meta: {
             requiresAuth: false,
         },
     },
-    socialQQBindCallback: {
+    {
         path: "/social/qq/bind/callback",
-        name: "socialQQBindCallback",
+        name: RouteNames.SocialQQBindCallback,
         component: () => import("@/views/social-login-callback"),
         meta: {
             requiresAuth: false,
         },
     },
-    socialWeChatLoginCallback: {
+    {
         path: "/social/wechat/login/callback",
         name: "socialWeChatLoginCallback",
         component: () => import("@/views/social-login-callback"),
@@ -42,36 +45,36 @@ export const userRoutes = {
             requiresAuth: false,
         },
     },
-    socialWeChatBindCallback: {
+    {
         path: "/social/wechat/bind/callback",
-        name: "socialWeChatBindCallback",
+        name: RouteNames.SocialWeChatBindCallback,
         component: () => import("@/views/social-login-callback"),
         meta: {
             requiresAuth: false,
         },
     },
-    register: {
+    {
         path: "/register",
-        name: "register",
+        name: RouteNames.Register,
         component: () => import("@/views/register"),
         meta: {
             requiresAuth: false,
         },
     },
-    resetPassword: {
+    {
         path: "/reset-password",
-        name: "resetPassword",
+        name: RouteNames.ResetPassword,
         component: () => import("@/views/reset-password"),
         meta: {
             requiresAuth: false,
         },
     },
-    userInfo: {
+    {
         path: "/user-info",
-        name: "userInfo",
+        name: RouteNames.UserInfo,
         component: () => import("@/views/user-info"),
         meta: {
             requiresAuth: true,
         },
     },
-}
+]

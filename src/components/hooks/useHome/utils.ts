@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-25 11:51:57
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-07 23:22:16
+ * @LastEditTime : 2025-01-08 12:01:29
  * @FilePath     : \blog-client\src\components\hooks\useHome\utils.ts
  * @Description  : 工具
  * @Blog         : https://jiaopengzi.com
@@ -15,7 +15,7 @@ import { useRoute, useRouter } from "vue-router"
 import { type ViewPostRequest } from "@/api/post/view"
 import { type QueryParamsOptions } from "@/api/request"
 import { routerPushByParams } from "@/router"
-import { routeObj } from "@/router/routeAll"
+import { RouteNames } from "@/router"
 import { parseRouteQuery } from "@/utils/queryParam"
 
 import type { BreadcrumbItem, ViewPostResKey } from "./types"
@@ -37,7 +37,7 @@ export function useUtils(
 
     // 更新查询参数
     const updateRouterPush = async () => {
-        await routerPushByParams(router, routeObj.home.name as string, queryParams)
+        await routerPushByParams(router, RouteNames.Home, queryParams)
     }
 
     // 更新查询参数
@@ -63,7 +63,7 @@ export function useUtils(
     // 生成面包屑路径
     const generateBreadcrumbPath = () => {
         return router.resolve({
-            name: routeObj.home.name,
+            name: RouteNames.Home,
             query: queryParams,
         }).href
     }

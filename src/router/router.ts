@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-03 11:01:47
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-07 23:18:00
+ * @LastEditTime : 2025-01-08 10:49:00
  * @FilePath     : \blog-client\src\router\router.ts
  * @Description  : 路由
  * @Blog         : https://jiaopengzi.com
@@ -12,7 +12,7 @@
 import { createRouter, createWebHistory } from "vue-router"
 
 import { authMiddleware, editorMiddleware, handleMiddleware, setupMiddleware } from "./middleware"
-import { routes } from "./routeAll"
+import { routes } from "./routes"
 
 // 创建路由实例
 export const router = createRouter({

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 13:42:04
+ * @LastEditTime : 2025-01-08 11:59:45
  * @FilePath     : \blog-client\src\views\user-info\component\phone.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -17,7 +17,7 @@
     <div class="content">
         <div class="breadcrumb">
             <el-breadcrumb :separator-icon="ArrowRight">
-                <el-breadcrumb-item :to="routeObj.home.path">首页</el-breadcrumb-item>
+                <el-breadcrumb-item :to="{ name: RouteNames.Home }">首页</el-breadcrumb-item>
                 <el-breadcrumb-item>用户信息</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -104,7 +104,7 @@ import { ref } from "vue"
 import { useRouter } from "vue-router"
 
 import BindEmailDialog from "@/components/common/bind-email-dialog"
-import { routeObj } from "@/router/routeAll"
+import { RouteNames } from "@/router"
 import UserInfoComment from "@/views/user-info/component/comment"
 import UserInfoFavorite from "@/views/user-info/component/favorite"
 import UserInfoInfo from "@/views/user-info/component/info"

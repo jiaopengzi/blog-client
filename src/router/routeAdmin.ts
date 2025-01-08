@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-29 17:35:11
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 14:52:45
+ * @LastEditTime : 2025-01-08 11:31:57
  * @FilePath     : \blog-client\src\router\routeAdmin.ts
  * @Description  : admin 路由配置
  * @Blog         : https://jiaopengzi.com
@@ -14,12 +14,14 @@ import type { RouteRecordRaw } from "vue-router"
 import { toKebabCase } from "@/utils/namingConversion"
 import { adminMenuItemMapWithIndex, AdminSideMenu } from "@/views/admin/component/aside"
 
+import { RouteNames } from "./types"
+
 // 生成管理后台路由
 function generateAdminRoutes() {
-    const routes: { [key: string]: RouteRecordRaw } = {
-        admin: {
+    const routesAdmin: RouteRecordRaw[] = [
+        {
             path: "/admin",
-            name: "admin",
+            name: RouteNames.Admin,
             component: () => import("@/views/admin"),
             meta: {
                 requiresAuth: true,
@@ -28,7 +30,7 @@ function generateAdminRoutes() {
                 // 默认子路由 dashboard
                 {
                     path: "",
-                    name: "dashboard",
+                    name: AdminSideMenu.Dashboard,
                     component: () => import("@/views/admin/component/main/dashboard"),
                 },
                 // 其他子路由
@@ -52,9 +54,9 @@ function generateAdminRoutes() {
                 }),
             ],
         },
-    }
+    ]
 
-    return routes
+    return routesAdmin
 }
 
 export const adminRoutes = generateAdminRoutes()

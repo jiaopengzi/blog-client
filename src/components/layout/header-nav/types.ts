@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-30 10:51:03
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 10:52:19
+ * @LastEditTime : 2025-01-08 11:56:39
  * @FilePath     : \blog-client\src\components\layout\header-nav\types.ts
  * @Description  : 类型定义
  * @Blog         : https://jiaopengzi.com
@@ -12,7 +12,7 @@
 import { IconKeys } from "@/components/common/icons"
 
 export interface HeaderNavPropsItem {
-    path: string
+    name: string
     iconKey?: IconKeys
     title?: string
     customClass?: string

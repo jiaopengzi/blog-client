@@ -17,14 +17,16 @@
             :style="{ height: `$height-header-pc`, width: '$width-header-pc' }"
         >
             <div class="header-main">
-                <div class="logo">
-                    <h1>
-                        <img
-                            src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
-                            :alt="routeObj.home.path"
-                        />
-                    </h1>
-                </div>
+                <router-link :to="{ name: RouteNames.Home }" class="link">
+                    <div class="logo">
+                        <h2>
+                            <img
+                                src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
+                                :alt="RouteNames.Home"
+                            />
+                        </h2>
+                    </div>
+                </router-link>
 
                 <HeaderNav />
 
@@ -47,11 +49,11 @@
                 </div>
 
                 <div class="login" v-if="!isLogin">
-                    <router-link :to="routeObj.login.path" class="link">
+                    <router-link :to="{ name: RouteNames.Login }" class="link">
                         <span class="login-text">登录</span>
                     </router-link>
                     <span class="login-text separator">/</span>
-                    <router-link :to="routeObj.register.path" class="link">
+                    <router-link :to="{ name: RouteNames.Register }" class="link">
                         <span class="login-text">注册</span>
                     </router-link>
                 </div>
@@ -74,7 +76,7 @@ import type { ScrollData } from "@/components/hooks/useScroll"
 import { useScrollActions } from "@/components/hooks/useScroll"
 import { useTheme } from "@/components/hooks/useTheme"
 import HeaderNav from "@/components/layout/header-nav"
-import { routeObj } from "@/router/routeAll"
+import { RouteNames } from "@/router"
 import { useUserStore } from "@/stores/user"
 
 defineOptions({ name: "HeaderPC" })

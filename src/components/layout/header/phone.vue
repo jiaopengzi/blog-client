@@ -19,14 +19,16 @@
                     </button>
                 </li>
                 <li>
-                    <div class="logo">
-                        <h1>
-                            <img
-                                src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
-                                :alt="routeObj.home.path"
-                            />
-                        </h1>
-                    </div>
+                    <router-link :to="{ name: RouteNames.Home }" class="link">
+                        <div class="logo">
+                            <h2>
+                                <img
+                                    src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
+                                    :alt="RouteNames.Home"
+                                />
+                            </h2>
+                        </div>
+                    </router-link>
                 </li>
 
                 <li>
@@ -57,7 +59,7 @@ import { IconKeys } from "@/components/common/icons"
 import type { ScrollData } from "@/components/hooks/useScroll"
 import { useScrollActions } from "@/components/hooks/useScroll"
 import HeaderNav from "@/components/layout/header-nav"
-import { routeObj } from "@/router/routeAll"
+import { RouteNames } from "@/router"
 
 defineOptions({ name: "HeaderPhone" })
 

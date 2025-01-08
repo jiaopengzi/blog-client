@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 20:57:06
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 10:52:00
+ * @LastEditTime : 2025-01-08 11:56:51
  * @FilePath     : \blog-client\src\components\layout\header-nav\phone.vue
  * @Description  : 导航栏 手机端
  * @Blog         : https://jiaopengzi.com
@@ -12,15 +12,15 @@
 <template>
     <div class="container">
         <div class="login" v-if="!isLogin">
-            <router-link :to="routeObj.login.path" class="link">
+            <router-link :to="{ name: RouteNames.Login }" class="link">
                 <span>登录</span>
             </router-link>
-            <router-link :to="routeObj.register.path" class="link">
+            <router-link :to="{ name: RouteNames.Register }" class="link">
                 <span>注册</span>
             </router-link>
         </div>
         <div class="login" v-if="isLogin">
-            <router-link :to="routeObj.userInfo.path" class="link">
+            <router-link :to="{ name: RouteNames.UserInfo }" class="link">
                 <AvatarInitials
                     :name="data.user.user_display_name"
                     :avatar="data.user.user_avatar"
@@ -29,8 +29,8 @@
         </div>
         <div class="nav">
             <ul>
-                <li v-for="item in props.navData" :key="item.path">
-                    <router-link :to="item.path">
+                <li v-for="item in navData" :key="item.name">
+                    <router-link :to="{ name: item.name }">
                         <div class="menu">
                             <Icon
                                 v-if="item.iconKey"
@@ -60,14 +60,14 @@ import { onBeforeMount } from "vue"
 import AvatarInitials from "@/components/common/avatar-initials"
 import SwitchGroup from "@/components/common/switch-group"
 import { useTheme } from "@/components/hooks/useTheme"
-import { routeObj } from "@/router/routeAll"
+import { RouteNames } from "@/router"
 import { useUserStore } from "@/stores/user"
 
 import type { HeaderNavPropsItem } from "./types"
 
 defineOptions({ name: "HeaderNavPhone" })
 
-const props = defineProps<{ navData: HeaderNavPropsItem[] }>()
+const { navData } = defineProps<{ navData: HeaderNavPropsItem[] }>()
 
 // 状态是否登录
 const userStore = useUserStore()

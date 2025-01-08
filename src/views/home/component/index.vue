@@ -21,7 +21,7 @@
                 <el-breadcrumb-item
                     ><span class="breadcrumb-item">当前位置</span></el-breadcrumb-item
                 >
-                <el-breadcrumb-item :to="routeObj.home.path" @click="clickBreadcrumb"
+                <el-breadcrumb-item :to="{ name: RouteNames.Home }" @click="clickBreadcrumb"
                     ><span class="breadcrumb-item">首页</span></el-breadcrumb-item
                 >
                 <el-breadcrumb-item
@@ -85,7 +85,7 @@ import { useHome } from "@/components/hooks/useHome"
 import HotPost from "@/components/layout/aside/hot-post"
 import PostTag from "@/components/layout/aside/post-tag"
 import RecommendedRead from "@/components/layout/aside/recommended-read"
-import { routeObj } from "@/router/routeAll"
+import { RouteNames } from "@/router"
 import Carousel from "@/views/home/component/carousel"
 import PostList from "@/views/home/component/post-list"
 

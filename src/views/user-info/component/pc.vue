@@ -17,7 +17,7 @@
     <div class="content">
         <div class="breadcrumb">
             <el-breadcrumb :separator-icon="ArrowRight">
-                <el-breadcrumb-item :to="routeObj.home.path">首页</el-breadcrumb-item>
+                <el-breadcrumb-item :to="{ name: RouteNames.Home }">首页</el-breadcrumb-item>
                 <el-breadcrumb-item>用户信息</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -102,7 +102,7 @@ import { ref } from "vue"
 import { useRouter } from "vue-router"
 
 import BindEmailDialog from "@/components/common/bind-email-dialog"
-import { routeObj } from "@/router/routeAll"
+import { RouteNames } from "@/router"
 import UserInfoComment from "@/views/user-info/component/comment"
 import UserInfoFavorite from "@/views/user-info/component/favorite"
 import UserInfoInfo from "@/views/user-info/component/info"

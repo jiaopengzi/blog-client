@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 16:38:43
+ * @LastEditTime : 2025-01-08 11:42:55
  * @FilePath     : \blog-client\src\views\login\index.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -28,16 +28,16 @@
             status-icon
         >
             <div class="header-main">
-                <a :href="routeObj.home.path">
+                <router-link :to="{ name: RouteNames.Home }" class="link">
                     <div class="logo">
                         <h2>
                             <img
                                 src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
-                                :alt="routeObj.home.path"
+                                :alt="RouteNames.Home"
                             />
                         </h2>
                     </div>
-                </a>
+                </router-link>
                 <h2>账号登录</h2>
             </div>
             <el-form-item label="用户名" prop="loginName">
@@ -65,15 +65,15 @@
                 </button>
             </div>
             <div class="go-home">
-                <router-link :to="routeObj.home.path" class="link">
+                <router-link :to="{ name: RouteNames.Home }" class="link">
                     <span>首页</span>
                 </router-link>
                 <span> | </span>
-                <router-link :to="routeObj.register.path" class="link">
+                <router-link :to="{ name: RouteNames.Register }" class="link">
                     <span>注册</span>
                 </router-link>
                 <span> | </span>
-                <router-link :to="routeObj.resetPassword.path" class="link">
+                <router-link :to="{ name: RouteNames.ResetPassword }" class="link">
                     <span>忘记密码</span>
                 </router-link>
             </div>
@@ -90,7 +90,7 @@ import { useRouter } from "vue-router"
 import { IconKeys } from "@/components/common/icons"
 import SlideVerify from "@/components/common/slide-verify"
 import { useFormValidation } from "@/components/hooks/useFormValidation"
-import { routeObj } from "@/router/routeAll"
+import { RouteNames } from "@/router"
 import { useUserStore } from "@/stores/user"
 import { RegexPatterns } from "@/utils/regexPatterns"
 
@@ -176,7 +176,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
                     router.push(routeLocation) // 跳转到指定页面
                 } else {
-                    router.push({ path: routeObj.home.path })
+                    router.push({ name: RouteNames.Home })
                 }
             }
         }

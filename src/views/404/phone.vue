@@ -20,7 +20,7 @@
             </span>
             <span class="breadcrumb-item">
                 <el-breadcrumb :separator-icon="ArrowRight">
-                    <el-breadcrumb-item :to="routeObj.home.path">首页</el-breadcrumb-item>
+                    <el-breadcrumb-item :to="{ name: RouteNames.Login }">首页</el-breadcrumb-item>
                     <el-breadcrumb-item>404</el-breadcrumb-item>
                 </el-breadcrumb>
             </span>
@@ -43,7 +43,7 @@
 <script setup lang="ts">
 import { ArrowRight, Location } from "@element-plus/icons-vue"
 
-import { routeObj } from "@/router/routeAll"
+import { RouteNames } from "@/router"
 
 defineOptions({ name: "NotFound404Phone" })
 

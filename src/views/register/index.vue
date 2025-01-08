@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-17 17:28:42
+ * @LastEditTime : 2025-01-08 11:45:45
  * @FilePath     : \blog-client\src\views\register\index.vue
  * @Description  : 注册
  * @Blog         : https://jiaopengzi.com
@@ -28,16 +28,16 @@
             status-icon
         >
             <div class="header-main">
-                <a :href="routeObj.home.path">
+                <router-link :to="{ name: RouteNames.Home }" class="link">
                     <div class="logo">
                         <h2>
                             <img
                                 src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
-                                :alt="routeObj.home.path"
+                                :alt="RouteNames.Home"
                             />
                         </h2>
                     </div>
-                </a>
+                </router-link>
                 <h2>账号注册</h2>
             </div>
             <el-form-item label="用户名" prop="userName">
@@ -85,11 +85,11 @@
                 </el-form-item>
             </div>
             <div class="go-home">
-                <router-link :to="routeObj.home.path" class="link">
+                <router-link :to="{ name: RouteNames.Home }" class="link">
                     <span>首页</span>
                 </router-link>
                 <span> | </span>
-                <router-link :to="routeObj.login.path" class="link">
+                <router-link :to="{ name: RouteNames.Login }" class="link">
                     <span>登录</span>
                 </router-link>
             </div>
@@ -107,7 +107,7 @@ import type { RegisterRequest } from "@/api/user/register"
 import { RegisterAPI } from "@/api/user/register"
 import SlideVerify from "@/components/common/slide-verify"
 import { useFormValidation } from "@/components/hooks/useFormValidation"
-import { routeObj } from "@/router/routeAll"
+import { RouteNames } from "@/router"
 import { MessageUtil } from "@/utils/message"
 import { RegexPatterns } from "@/utils/regexPatterns"
 

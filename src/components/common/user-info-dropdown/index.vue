@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 10:19:24
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-07 23:19:56
+ * @LastEditTime : 2025-01-08 12:00:46
  * @FilePath     : \blog-client\src\components\common\user-info-dropdown\index.vue
  * @Description  : 显示用户信息下拉菜单
  * @Blog         : https://jiaopengzi.com
@@ -41,7 +41,7 @@ import { onMounted, ref } from "vue"
 import { useRouter } from "vue-router"
 
 import AvatarInitials from "@/components/common/avatar-initials" // 导入 AvatarInitials 组件
-import { routeObj } from "@/router/routeAll"
+import { RouteNames } from "@/router"
 import { useUserStore } from "@/stores/user"
 import { PermissionNames } from "@/utils/permissionRole"
 
@@ -57,12 +57,12 @@ const { data, avatar } = storeToRefs(userStore)
 
 // 跳转到用户中心
 const userCenterBtn = () => {
-    router.push(routeObj.userInfo.path)
+    router.push({ name: RouteNames.UserInfo })
 }
 
 // 跳转到后台管理
 const userAdminBtn = () => {
-    router.push(routeObj.admin.path)
+    router.push({ name: RouteNames.Admin })
 }
 
 // 是否有后台管理权限

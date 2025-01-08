@@ -12,8 +12,8 @@
 <template>
     <div class="nav">
         <ul>
-            <li v-for="item in props.navData" :key="item.path">
-                <router-link :to="item.path" class="link">
+            <li v-for="item in navData" :key="item.name">
+                <router-link :to="{ name: item.name }" class="link">
                     <Icon
                         v-if="item.iconKey"
                         :name="item.iconKey"
@@ -30,7 +30,7 @@ import type { HeaderNavPropsItem } from "./types"
 
 defineOptions({ name: "HeaderNavPC" })
 
-const props = defineProps<{ navData: HeaderNavPropsItem[] }>()
+const { navData } = defineProps<{ navData: HeaderNavPropsItem[] }>()
 </script>
 <style scoped lang="scss">
 .nav ul {

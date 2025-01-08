@@ -22,7 +22,7 @@ import { onMounted, ref } from "vue"
 import { useRoute, useRouter } from "vue-router"
 
 import { Social } from "@/api/common"
-import { routeObj } from "@/router/routeAll"
+import { RouteNames } from "@/router"
 import { useUserStore } from "@/stores/user"
 
 defineOptions({ name: "SocialLoginCallback" })
@@ -67,22 +67,22 @@ const bindWeChatCallback = async () => {
 const _platform: Ref<string> = ref("")
 
 onMounted(async () => {
-    console.log(route.path)
-    if (route.path === routeObj.socialQQLoginCallback.path) {
+    console.log(route.name)
+    if (route.name === RouteNames.SocialQQLoginCallback) {
         _platform.value = Social.QQDisplay
         await loginByQQCallback() // 等待 loginByQQCallback 执行完毕后，跳转到首页
-    } else if (route.path === routeObj.socialQQBindCallback.path) {
+    } else if (route.name === RouteNames.SocialQQBindCallback) {
         _platform.value = Social.QQDisplay
         await bindQQCallback() // 等待 bindQQCallback 执行完毕后，跳转到首页
-    } else if (route.path === routeObj.socialWeChatLoginCallback.path) {
+    } else if (route.name === RouteNames.SocialWeChatLoginCallback) {
         _platform.value = Social.WeChatDisplay
         await loginByWeChatCallback() // 等待 loginByWeChatCallback 执行完毕后，跳转到首页
-    } else if (route.path === routeObj.socialWeChatBindCallback.path) {
+    } else if (route.name === RouteNames.SocialWeChatBindCallback) {
         _platform.value = Social.WeChatDisplay
         await bindWeChatCallback()
     }
 
-    router.push({ path: routeObj.home.path })
+    router.push({ name: RouteNames.Home })
 
     // window.location.href = routeObj.home.path
 })
