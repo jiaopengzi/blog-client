@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-23 15:24:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-03 18:15:40
+ * @LastEditTime : 2025-01-09 21:56:43
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
  * @Description  : 基础表格 table-layout="auto"
  * @Blog         : https://jiaopengzi.com
@@ -235,6 +235,7 @@
         v-model="addItemDialogVisibleStatus"
         @close="addItemHandleDialogClose"
         v-bind="{ width: addWidth, top: addTop }"
+        :align-center="true"
     >
         <template #header>
             <slot name="add-item-title"></slot>
@@ -248,6 +249,7 @@
         v-model="editItemDialogVisibleStatus"
         @close="editItemHandleDialogClose"
         v-bind="{ width: editWidth, top: editTop }"
+        :align-center="true"
     >
         <template #header>
             <slot name="edit-item-title"></slot>
@@ -258,19 +260,19 @@
 
 <script lang="ts" setup>
 import { type ElTable } from "element-plus"
-import { reactive, ref, useTemplateRef,watch, watchEffect } from "vue"
+import { reactive, ref, useTemplateRef, watch, watchEffect } from "vue"
 
 import type { PostTag } from "@/api/postTag/view"
-import { getEmptyPagination,type Pagination } from "@/api/response"
+import { getEmptyPagination, type Pagination } from "@/api/response"
 import type { User } from "@/api/user/getUsers"
 import { MsgType } from "@/components/common"
-import type { SwitchItem, SwitchItemColor,SwitchItemLabel } from "@/components/common/switch-group"
+import type { SwitchItem, SwitchItemColor, SwitchItemLabel } from "@/components/common/switch-group"
 import SwitchGroup from "@/components/common/switch-group"
 import { deleteConfirmCommon } from "@/utils/confirm"
-import { iconStyle,imgStyle } from "@/utils/style"
+import { iconStyle, imgStyle } from "@/utils/style"
 
 import CustomCol from "./custom-col"
-import type { TableColumn,TableData } from "./types"
+import type { TableColumn, TableData } from "./types"
 
 defineOptions({ name: "BaseTable" })
 

@@ -5,17 +5,15 @@
 
 import { fileURLToPath, URL } from "node:url"
 
-import terser from "@rollup/plugin-terser" // 会报错 没有调用签名。 但是不影响使用
+import terser from "@rollup/plugin-terser"
 import vue from "@vitejs/plugin-vue"
 import vueJsx from "@vitejs/plugin-vue-jsx"
-// ------------------------------element-plus 按需自动导入 开始
 import AutoImport from "unplugin-auto-import/vite"
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers"
 import Components from "unplugin-vue-components/vite"
 import { defineConfig } from "vite"
 import Inspect from "vite-plugin-inspect"
 import tsconfigPaths from "vite-tsconfig-paths"
-// ------------------------------element-plus 按需自动导入 结束
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -76,18 +74,22 @@ export default defineConfig({
     build: {
         minify: true, //是否压缩编译后结果。
         chunkSizeWarningLimit: 500, // 打包警告阈值 单位 KB
+
         rollupOptions: {
             output: {
                 manualChunks(id) {
-                    // 处理 routeObj 循环依赖
-                    // if (id.includes('src/router')) {
-                    //     return 'router-chunk';
-                    // }
                     // 打包策略
                     if (id.includes("node_modules")) {
                         // 将 'node_modules' 分割为名为 'vendor' 的代码块
                         const dirs = id.split("/")
                         const name = dirs[dirs.lastIndexOf("node_modules") + 1]
+
+                        // // 过滤掉空包
+                        // const emptyChunks = ["@floating-ui", "lodash-unified", "memoize-one", "vue"]
+                        // if (emptyChunks.includes(name)) {
+                        //     return
+                        // }
+
                         return `vendor/${name}`
                     }
                 },

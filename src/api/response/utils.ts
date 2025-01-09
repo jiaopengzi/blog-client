@@ -2,14 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-29 12:09:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-03 11:28:23
- * @FilePath     : \blog-client\src\api\response\handleResErr.ts
+ * @LastEditTime : 2025-01-09 22:08:34
+ * @FilePath     : \blog-client\src\api\response\utils.ts
  * @Description  : 处理响应错误
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import type { Pagination,Res, ResResponse } from "./types"
+import type { Pagination, Res, ResResponse } from "./types"
 
 /**
  * @description: 处理错误信息
@@ -30,7 +30,7 @@ export const handleResErr = <T>(
     const resData = resAc.data
 
     // 如果data不为空且不是对象
-    if (resData !== null && typeof resData !== "object") {
+    if (resData !== null && typeof resData !== "object" && resData !== "") {
         return (errMsg += "：" + resData)
     }
 

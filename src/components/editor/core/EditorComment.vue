@@ -59,16 +59,16 @@
 <script lang="ts" setup>
 import "vue3-emoji-picker/css" // import css
 
-import { computed, onMounted,reactive, useTemplateRef } from "vue"
+import { computed, onMounted, reactive, useTemplateRef } from "vue"
 
 import EditorCodemirror from "@/components/editor/codemirror"
 import { CommandsKey } from "@/components/editor/command" // import picker component
 import HtmlPreview from "@/components/editor/preview"
 import Toolbar from "@/components/editor/toolbar"
 
-import { useCodemirror, usePreview,useToolbar } from "./hooks"
+import { useCodemirror, usePreview, useToolbar } from "./hooks"
 import { EditorStateManager } from "./state"
-import type { CodemirrorRef, EditorState, PreviewRef,ToolbarRef } from "./types"
+import type { CodemirrorRef, EditorState, PreviewRef, ToolbarRef } from "./types"
 import { setIsFullScreenClassName } from "./utils"
 
 // 评论编辑器命名
