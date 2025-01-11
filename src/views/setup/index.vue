@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-07 19:35:55
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-09 23:58:31
+ * @LastEditTime : 2025-01-11 17:36:58
  * @FilePath     : \blog-client\src\views\setup\index.vue
  * @Description  : 数据库配置页面
  * @Blog         : https://jiaopengzi.com
@@ -135,14 +135,18 @@ const submit = async () => {
             pgsqlData.port = Number(pgsqlData.port)
         }
 
-        const redisData = Object.values(redisFormRefs).map((ref) => {
-            // 转换为 number 类型
-            if (ref?.databaseFormRef?.dbForm) {
-                ref.databaseFormRef.dbForm.port = Number(ref.databaseFormRef.dbForm.port)
-                ref.databaseFormRef.dbForm.database = Number(ref.databaseFormRef.dbForm.database)
-            }
-            return ref?.databaseFormRef?.dbForm
-        })
+        const redisData = Object.values(redisFormRefs)
+            .map((ref) => {
+                // 转换为 number 类型
+                if (ref?.databaseFormRef?.dbForm) {
+                    ref.databaseFormRef.dbForm.port = Number(ref.databaseFormRef.dbForm.port)
+                    ref.databaseFormRef.dbForm.database = Number(
+                        ref.databaseFormRef.dbForm.database,
+                    )
+                    return ref.databaseFormRef.dbForm
+                }
+            })
+            .filter((item) => item !== undefined) // 过滤掉 undefined
 
         const req: SetupRequest = {
             pgsql: pgsqlData as PgsqlSetupRequest,
