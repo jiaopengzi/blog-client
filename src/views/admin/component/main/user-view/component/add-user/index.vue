@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 14:48:56
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 12:14:02
+ * @LastEditTime : 2025-01-13 14:08:03
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\add-user\index.vue
  * @Description  : 添加用户
  * @Blog         : https://jiaopengzi.com
@@ -71,10 +71,9 @@ import { type Role } from "@/api/permissionRole/role"
 import { ResponseCode } from "@/api/response"
 import type { AddUserRequest } from "@/api/user/addUser"
 import { AddUserAPI } from "@/api/user/addUser"
-import { useFormValidation } from "@/components/hooks/useFormValidation"
+import { useAccountFormValidation } from "@/components/hooks/useAccountFormValidation"
 import { MessageUtil } from "@/utils/message"
 import { generatePassword } from "@/utils/password"
-import { RegexPatterns } from "@/utils/regexPatterns"
 
 import type { AddUserForm } from "./types"
 
@@ -112,7 +111,13 @@ const emailRef = toRef(addUserForm, "email")
 const passwordRef = toRef(addUserForm, "password")
 
 // hooks
-const { checkUserNameValidator, checkEmailValidator } = useFormValidation({
+const {
+    checkUserNameValidator,
+    checkEmailValidator,
+    createEmailRules,
+    createPasswordRules,
+    createUserNameRules,
+} = useAccountFormValidation({
     FormUserName: userNameRef,
     FormEmail: emailRef,
     FormPassword: passwordRef,
@@ -122,40 +127,10 @@ const generatePasswordHandle = () => {
     addUserForm.password = generatePassword()
 }
 
-/**
- * @description: 表单校验规则
- * @return  FormRules<AddUserForm> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
- */
 const rules = reactive<FormRules<AddUserForm>>({
-    userName: [
-        { required: true, message: "请输入用户名！", trigger: "blur" },
-        {
-            pattern: RegexPatterns.UserName,
-            message: "用户名长度:6-20的小写字母或数字",
-            trigger: "change",
-        },
-        // 用户查重
-        { validator: checkUserNameValidator, trigger: "blur" },
-    ],
-    email: [
-        { required: true, message: "请输入小写的邮箱地址", trigger: "blur" },
-        {
-            pattern: RegexPatterns.Email,
-            message: "请输入有效的邮箱",
-            trigger: "blur",
-        },
-        // 邮箱查重
-        { validator: checkEmailValidator, trigger: "blur" },
-    ],
-    password: [
-        { required: true, message: "请输入密码", trigger: "change" },
-        // 必须包含：大小写字母+数字,长度:6-64 特殊字符可有可无
-        {
-            pattern: RegexPatterns.Password,
-            message: "必须包含：大小写字母+数字,长度:6-64",
-            trigger: "blur",
-        },
-    ],
+    userName: createUserNameRules(checkUserNameValidator),
+    email: createEmailRules(checkEmailValidator),
+    password: createPasswordRules(),
 })
 
 /**

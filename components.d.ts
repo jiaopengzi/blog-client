@@ -7,6 +7,8 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    CommonAccountFormFooter: typeof import('./src/components/common/account-form-footer/index.vue')['default']
+    CommonAccountFormHeader: typeof import('./src/components/common/account-form-header/index.vue')['default']
     CommonAddTag: typeof import('./src/components/common/add-tag/index.vue')['default']
     CommonAlertTip: typeof import('./src/components/common/alert-tip/index.vue')['default']
     CommonAvatarInitials: typeof import('./src/components/common/avatar-initials/index.vue')['default']

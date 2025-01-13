@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-18 08:47:01
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 12:14:49
+ * @LastEditTime : 2025-01-13 14:08:23
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\edit-user\index.vue
  * @Description  : 编辑用户
  * @Blog         : https://jiaopengzi.com
@@ -110,10 +110,10 @@
 
 <script lang="ts" setup>
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { onBeforeMount, reactive, ref, toRef, useTemplateRef,watch } from "vue"
+import { onBeforeMount, reactive, ref, toRef, useTemplateRef, watch } from "vue"
 
 import { type Role } from "@/api/permissionRole/role"
-import { handleResErr,ResponseCode } from "@/api/response"
+import { handleResErr, ResponseCode } from "@/api/response"
 import { setAvatarAPI, type SetAvatarRequest } from "@/api/upload/setAvatar"
 import {
     editUserInfoByAdminAPI,
@@ -124,16 +124,15 @@ import {
     getUserInfoByUserIDAPI,
     type GetUserInfoByUserIDRequest,
 } from "@/api/user/getUserInfoByUserID"
-import { logoutByAdminAPI,type LogoutByAdminRequest } from "@/api/user/logoutByAdmin"
+import { logoutByAdminAPI, type LogoutByAdminRequest } from "@/api/user/logoutByAdmin"
 import AvatarInitials from "@/components/common/avatar-initials"
 import AvatarUpload from "@/components/common/avatar-upload"
 // import { type PgSqlDateTime } from "@/api/common"
-import { useFormValidation } from "@/components/hooks/useFormValidation"
+import { useAccountFormValidation } from "@/components/hooks/useAccountFormValidation"
 import { getAvatarUrl } from "@/utils/avatar"
 import { MessageUtil } from "@/utils/message"
 import { getUserMetaValue } from "@/utils/metaInfo"
 import { generatePassword } from "@/utils/password"
-import { RegexPatterns } from "@/utils/regexPatterns"
 
 import type { EditUserByAdminForm } from "./types"
 
@@ -271,52 +270,27 @@ const passwordRef = toRef(editUserForm, "password")
 const excludingUserIDRef = toRef(editUserForm, "editUserID")
 
 // hooks
-const { checkUserNameExcludingUserIDValidator, checkEmailExcludingUserIDValidator } =
-    useFormValidation({
-        FormUserName: userNameRef,
-        FormEmail: emailRef,
-        FormPassword: passwordRef,
-        FormExcludingUserID: excludingUserIDRef,
-    })
+const {
+    checkUserNameExcludingUserIDValidator,
+    checkEmailExcludingUserIDValidator,
+    createEmailRules,
+    createPasswordRules,
+    createUserNameRules,
+} = useAccountFormValidation({
+    FormUserName: userNameRef,
+    FormEmail: emailRef,
+    FormPassword: passwordRef,
+    FormExcludingUserID: excludingUserIDRef,
+})
 
 const generatePasswordHandle = () => {
     editUserForm.password = generatePassword()
 }
 
-/**
- * @description: 表单校验规则
- * @return  FormRules<EditUserForm> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
- */
 const rules = reactive<FormRules<EditUserByAdminForm>>({
-    userName: [
-        { required: true, message: "请输入用户名！", trigger: "blur" },
-        {
-            pattern: RegexPatterns.UserName,
-            message: "用户名长度:6-20的小写字母或数字",
-            trigger: "change",
-        },
-        // 用户查重
-        { validator: checkUserNameExcludingUserIDValidator, trigger: "blur" },
-    ],
-    email: [
-        { required: true, message: "请输入小写的邮箱地址", trigger: "blur" },
-        {
-            pattern: RegexPatterns.Email,
-            message: "请输入有效的邮箱",
-            trigger: "blur",
-        },
-        // 邮箱查重
-        { validator: checkEmailExcludingUserIDValidator, trigger: "blur" },
-    ],
-    password: [
-        { message: "请输入密码", trigger: "change" },
-        // 必须包含：大小写字母+数字,长度:6-64 特殊字符可有可无
-        {
-            pattern: RegexPatterns.Password,
-            message: "必须包含：大小写字母+数字,长度:6-64",
-            trigger: "blur",
-        },
-    ],
+    userName: createUserNameRules(checkUserNameExcludingUserIDValidator),
+    email: createEmailRules(checkEmailExcludingUserIDValidator),
+    password: createPasswordRules(),
 })
 
 /**

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-08 11:45:45
+ * @LastEditTime : 2025-01-13 14:09:20
  * @FilePath     : \blog-client\src\views\register\index.vue
  * @Description  : 注册
  * @Blog         : https://jiaopengzi.com
@@ -27,29 +27,18 @@
             :size="formSize"
             status-icon
         >
-            <div class="header-main">
-                <router-link :to="{ name: RouteNames.Home }" class="link">
-                    <div class="logo">
-                        <h2>
-                            <img
-                                src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
-                                :alt="RouteNames.Home"
-                            />
-                        </h2>
-                    </div>
-                </router-link>
-                <h2>账号注册</h2>
-            </div>
+            <AccountFormHeader :router-link-to="{ name: RouteNames.Home }" title="账号注册" />
+
             <el-form-item label="用户名" prop="userName">
-                <el-input v-model="registerForm.userName" />
+                <el-input v-model="registerForm.userName" clearable />
             </el-form-item>
 
             <el-form-item label="邮箱" prop="email">
-                <el-input v-model="registerForm.email" />
+                <el-input v-model="registerForm.email" clearable />
             </el-form-item>
 
             <el-form-item label="验证码" prop="captcha">
-                <el-input class="email-code" v-model="registerForm.captcha" />
+                <el-input class="email-code" v-model="registerForm.captcha" clearable />
                 <button
                     class="btn-captcha"
                     type="button"
@@ -61,11 +50,16 @@
             </el-form-item>
 
             <el-form-item label="密码" prop="password">
-                <el-input type="password" show-password v-model="registerForm.password" />
+                <el-input type="password" show-password v-model="registerForm.password" clearable />
             </el-form-item>
 
             <el-form-item label="确认密码" prop="rePassword">
-                <el-input type="password" show-password v-model="registerForm.rePassword" />
+                <el-input
+                    type="password"
+                    show-password
+                    v-model="registerForm.rePassword"
+                    clearable
+                />
             </el-form-item>
 
             <el-form-item prop="acceptedTerms">
@@ -84,15 +78,7 @@
                     <el-button @click="resetForm(registerFormRef as FormInstance)">重置</el-button>
                 </el-form-item>
             </div>
-            <div class="go-home">
-                <router-link :to="{ name: RouteNames.Home }" class="link">
-                    <span>首页</span>
-                </router-link>
-                <span> | </span>
-                <router-link :to="{ name: RouteNames.Login }" class="link">
-                    <span>登录</span>
-                </router-link>
-            </div>
+            <AccountFormFooter :to="['home', 'login']" />
         </el-form>
     </div>
 </template>
@@ -102,14 +88,16 @@ import type { FormInstance, FormRules } from "element-plus" // 需要全部安�
 import { reactive, ref, toRef, useTemplateRef } from "vue"
 import { useRouter } from "vue-router"
 
+import { CaptchaPurpose } from "@/api/common"
 import { ResponseCode } from "@/api/response"
 import type { RegisterRequest } from "@/api/user/register"
 import { RegisterAPI } from "@/api/user/register"
+import AccountFormFooter from "@/components/common/account-form-footer"
+import AccountFormHeader from "@/components/common/account-form-header"
 import SlideVerify from "@/components/common/slide-verify"
-import { useFormValidation } from "@/components/hooks/useFormValidation"
+import { useAccountFormValidation } from "@/components/hooks/useAccountFormValidation"
 import { RouteNames } from "@/router"
 import { MessageUtil } from "@/utils/message"
-import { RegexPatterns } from "@/utils/regexPatterns"
 
 import type { RegisterForm } from "./types"
 
@@ -155,10 +143,17 @@ const {
     checkSendCaptcha,
     checkUserNameValidator,
     checkEmailValidator,
-    checkCaptchaValidator,
+    checkCaptchaValidatorFactory,
     rePasswordValidator,
     acceptedTermsValidator,
-} = useFormValidation({
+
+    createAcceptedTermsRules,
+    createCaptchaRules,
+    createEmailRules,
+    createPasswordRules,
+    createRePasswordRules,
+    createUserNameRules,
+} = useAccountFormValidation({
     FormUserName: userNameRef,
     FormEmail: emailRef,
     FormPassword: passwordRef,
@@ -167,55 +162,13 @@ const {
     FormAcceptedTerms: acceptedTermsRef,
 })
 
-/**
- * @description: 表单校验规则
- * @return  FormRules<RegisterForm> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
- */
 const rules = reactive<FormRules<RegisterForm>>({
-    userName: [
-        { required: true, message: "请输入用户名！", trigger: "blur" },
-        // { pattern: /^[a-z0-9]{6,20}$/, message: '用户名长度:6-20的小写字母或数字', trigger: 'change' },
-        {
-            pattern: RegexPatterns.UserName,
-            message: "用户名长度:6-20的小写字母或数字",
-            trigger: "change",
-        },
-        // 用户查重
-        { validator: checkUserNameValidator, trigger: "blur" },
-    ],
-    email: [
-        { required: true, message: "请输入小写的邮箱地址", trigger: "blur" },
-        {
-            pattern: RegexPatterns.Email,
-            message: "请输入有效的邮箱",
-            trigger: "blur",
-        },
-        // 邮箱查重
-        { validator: checkEmailValidator, trigger: "blur" },
-    ],
-    captcha: [
-        { required: true, message: "请输入验证码", trigger: "blur" },
-        {
-            pattern: RegexPatterns.Captcha,
-            message: "验证码为6位的数字",
-            trigger: "blur",
-        },
-        { validator: checkCaptchaValidator, trigger: "blur" },
-    ],
-    password: [
-        { required: true, message: "请输入密码", trigger: "blur" },
-        // 必须包含：大小写字母+数字,长度:6-64 特殊字符可有可无
-        {
-            pattern: RegexPatterns.Password,
-            message: "必须包含：大小写字母+数字,长度:6-64",
-            trigger: "change",
-        },
-    ],
-    rePassword: [{ required: true, validator: rePasswordValidator, trigger: "blur" }],
-
-    acceptedTerms: [
-        { type: "boolean", required: true, validator: acceptedTermsValidator, trigger: "change" },
-    ],
+    userName: createUserNameRules(checkUserNameValidator),
+    email: createEmailRules(checkEmailValidator),
+    captcha: createCaptchaRules(checkCaptchaValidatorFactory(CaptchaPurpose.Register)),
+    password: createPasswordRules(),
+    rePassword: createRePasswordRules(rePasswordValidator),
+    acceptedTerms: createAcceptedTermsRules(acceptedTermsValidator),
 })
 
 /**
@@ -300,7 +253,7 @@ const sendCaptcha = async () => {
         btnCaptchaState.disabled = true // 按钮设置不能点击状态
 
         // 发送验证码
-        checkSendCaptcha(registerForm.email)
+        checkSendCaptcha(registerForm.email, CaptchaPurpose.Register)
             .then(() => {
                 // 成功发送验证码
                 MessageUtil.success("验证码已发送到邮箱。", 6000)
@@ -373,13 +326,6 @@ const closeSlideVerify = () => {
     }
 }
 
-h2 {
-    text-align: center;
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 20px;
-}
-
 .email-code {
     flex: 5;
 }
@@ -409,20 +355,6 @@ h2 {
 
 .i-agree {
     color: var(--jpz-text-color-primary);
-}
-
-.go-home {
-    text-align: center;
-    margin-top: 20px;
-}
-
-a {
-    color: var(--jpz-text-color-primary);
-    // text-decoration: underline;
-}
-
-.go-home span {
-    color: var(--jpz-text-color-secondary);
 }
 
 .btn-submit {

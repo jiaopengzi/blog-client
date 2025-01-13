@@ -2,47 +2,36 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-16 15:53:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 12:45:36
- * @FilePath     : \blog-client\src\components\hooks\useFormValidation\index.ts
+ * @LastEditTime : 2025-01-13 15:04:38
+ * @FilePath     : \blog-client\src\components\hooks\useAccountFormValidation\hook.ts
  * @Description  : 用户表单校验
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-// useFormValidation.ts
-import { type Ref } from "vue"
-
-import { captchaCheckAPI,type CaptchaCheckRequest } from "@/api/captcha/check"
-import { captchaSendAPI,type CaptchaSendRequest } from "@/api/captcha/send"
 import { CaptchaPurpose } from "@/api/common"
-import { ResponseCode } from "@/api/response"
-import { CheckEmailAPI,type CheckEmailRequest } from "@/api/user/checkEmail"
-import {
-    checkEmailExcludingUserIDAPI,
-    type CheckEmailExcludingUserIDRequest,
-} from "@/api/user/checkEmailExcludingUserID"
-import { checkUserNameAPI,type CheckUserNameRequest } from "@/api/user/checkUserName"
-import {
-    checkUserNameExcludingUserIDAPI,
-    type CheckUserNameExcludingUserIDRequest,
-} from "@/api/user/checkUserNameExcludingUserID"
-import {
-    getDisableExpiresAtSecondsAPI,
-    type GetDisableExpiresAtSecondsRequest,
-} from "@/api/user/getDisableExpiresAtSeconds"
-import { getUserForbiddenMsg } from "@/utils/msg"
 
-interface FormValidationOptions {
-    FormUserName?: Ref<string>
-    FormEmail?: Ref<string>
-    FormCaptcha?: Ref<string>
-    FormPassword?: Ref<string>
-    FormRePassword?: Ref<string>
-    FormAcceptedTerms?: Ref<boolean>
-    FormExcludingUserID?: Ref<string>
-}
+import { checkCaptcha, checkSendCaptcha } from "./api/captcha"
+import {
+    checkEmail,
+    checkEmailExcludingUserID,
+    checkLoginName,
+    checkUserName,
+    checkUserNameExcludingUserID,
+} from "./api/user"
+import {
+    createAcceptedTermsRules,
+    createCaptchaRules,
+    createEmailRules,
+    createLoginNameRules,
+    createNickNameRules,
+    createPasswordRules,
+    createRePasswordRules,
+    createUserNameRules,
+} from "./rules"
+import type { FormValidationOptions } from "./type"
 
-export function useFormValidation(options: FormValidationOptions = {}) {
+export function useAccountFormValidation(options: FormValidationOptions = {}) {
     const {
         FormUserName = "",
         FormEmail = "",
@@ -141,60 +130,6 @@ export function useFormValidation(options: FormValidationOptions = {}) {
     }
 
     /**
-     * @description: 验证码发送 异步函数
-     * @return Promise<void> 验证码错误返回 Promise.reject()，否则返回 Promise.resolve()
-     */
-    async function checkSendCaptcha(email: string): Promise<void> {
-        try {
-            // 创建请求对象 加密内容
-            const req: CaptchaSendRequest = {
-                email: email,
-                purpose: CaptchaPurpose.Register,
-            }
-            console.log("==========>发送验证码")
-
-            const { data } = await captchaSendAPI(req) // 将 resStr 转换为对象
-
-            if (data.code !== ResponseCode.CaptchaSendSuccess && data.data !== null) {
-                // 历遍 data 中的错误信息 并抛出第一个key错误信息 停止循环
-                for (const key in data.data) {
-                    if (Object.prototype.hasOwnProperty.call(data.data, key)) {
-                        throw new Error((data.data as Record<string, string>)[key]) // 抛出错误信息
-                    }
-                }
-            }
-            if (data.code !== ResponseCode.CaptchaSendSuccess && data.data === null) {
-                throw new Error(data.msg) // 抛出错误信息
-            }
-        } catch (err: unknown) {
-            console.log(err)
-            throw err
-        }
-    }
-
-    /**
-     * @description: 用户名查重 异步函数
-     * @return  Promise<void> 用户名存在返回 Promise.reject()，否则返回 Promise.resolve()
-     */
-    async function checkUserName(userName: string): Promise<void> {
-        try {
-            // 创建请求对象 加密内容
-            const req: CheckUserNameRequest = {
-                user_name: userName,
-            }
-
-            const { data } = await checkUserNameAPI(req)
-
-            if (data.code === ResponseCode.UserNameExist) {
-                throw new Error(data.msg)
-            }
-        } catch (err: unknown) {
-            console.log(err)
-            throw err
-        }
-    }
-
-    /**
      * @description: 用户名查重 Validator
      * @param rule 校验规则
      * @param value 对应输入框的值
@@ -218,32 +153,6 @@ export function useFormValidation(options: FormValidationOptions = {}) {
             .catch((err: Error) => {
                 callback(err.message) // 如果失败（用户名已经存在），则传入错误提示字符串
             })
-    }
-
-    /**
-     * @description: 用户名查重 异步函数，排除指定用户ID
-     * @return  Promise<void> 用户名存在返回 Promise.reject()，否则返回 Promise.resolve()
-     */
-    async function checkUserNameExcludingUserID(
-        excludingUserID: string,
-        userName: string,
-    ): Promise<void> {
-        try {
-            // 创建请求对象 加密内容
-            const req: CheckUserNameExcludingUserIDRequest = {
-                excluding_user_id: excludingUserID,
-                user_name: userName,
-            }
-
-            const { data } = await checkUserNameExcludingUserIDAPI(req)
-
-            if (data.code === ResponseCode.UserNameExistExcludingUserID) {
-                throw new Error(data.msg)
-            }
-        } catch (err: unknown) {
-            console.log(err)
-            throw err
-        }
     }
 
     /**
@@ -281,27 +190,6 @@ export function useFormValidation(options: FormValidationOptions = {}) {
     }
 
     /**
-     * @description: 邮箱查重 异步函数
-     * @return
-     */
-    async function checkEmail(email: string): Promise<void> {
-        // 创建请求对象 加密内容
-        const req: CheckEmailRequest = {
-            email: email,
-        }
-
-        try {
-            const { data } = await CheckEmailAPI(req)
-            if (data.code === ResponseCode.UserEmailExist) {
-                throw new Error(data.msg)
-            }
-        } catch (err: unknown) {
-            console.log(err)
-            throw err
-        }
-    }
-
-    /**
      * @description: 用户名查重 Validator
      * @param rule 校验规则
      * @param value 对应输入框的值
@@ -333,32 +221,6 @@ export function useFormValidation(options: FormValidationOptions = {}) {
     }
 
     /**
-     * @description: 邮箱查重 异步函数 排除指定用户ID
-     * @return
-     */
-    async function checkEmailExcludingUserID(
-        excludingUserID: string,
-        email: string,
-    ): Promise<void> {
-        // 创建请求对象 加密内容
-        const req: CheckEmailExcludingUserIDRequest = {
-            excluding_user_id: excludingUserID,
-            email: email,
-        }
-
-        try {
-            const { data } = await checkEmailExcludingUserIDAPI(req)
-
-            if (data.code === ResponseCode.EmailExistExcludingUserID) {
-                throw new Error(data.msg)
-            }
-        } catch (err: unknown) {
-            console.log(err)
-            throw err
-        }
-    }
-
-    /**
      * @description: 用户名查重 Validator 排除指定用户ID
      * @param rule 校验规则
      * @param value 对应输入框的值
@@ -385,73 +247,31 @@ export function useFormValidation(options: FormValidationOptions = {}) {
             })
     }
 
-    // 验证码校验 异步函数
-    async function checkCaptcha(email: string, captcha: string): Promise<void> {
-        try {
-            // 创建请求对象 加密内容
-            const req: CaptchaCheckRequest = {
-                email: email,
-                captcha: captcha,
-                purpose: CaptchaPurpose.Register,
+    const checkCaptchaValidatorFactory = (purpose: CaptchaPurpose) => {
+        return (
+            rule: unknown,
+            value: string,
+            callback: (error?: string | Error | undefined) => void,
+        ) => {
+            // 在这里处理异步验证逻辑
+            if (FormEmail === undefined) {
+                callback("请输入邮箱")
+                return
             }
-            const { data } = await captchaCheckAPI(req)
-
-            if (data.code !== ResponseCode.CaptchaCheckSuccess) {
-                throw new Error(data.msg)
-            }
-        } catch (err: unknown) {
-            console.log(err)
-            throw err
-        }
-    }
-
-    // 校验验证码 Validator
-    function checkCaptchaValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
-        // 在这里处理异步验证逻辑
-        if (FormEmail === undefined) {
-            callback("请输入邮箱")
-            return
-        }
-        if (FormCaptcha === undefined) {
-            callback("请输入验证码")
-            return
-        }
-
-        const formEmail = options.FormEmail?.value || ""
-        const formCaptcha = options.FormCaptcha?.value || ""
-        checkCaptcha(formEmail, formCaptcha)
-            .then(() => {
-                callback() // 校验成功
-            })
-            .catch((err: Error) => {
-                callback(err.message) // 如果失败（用户名已经存在），则传入错误提示字符串
-            })
-    }
-
-    /**
-     * @description: 用户名查重 异步函数
-     * @return  Promise<void> 用户名存在返回 Promise.reject()，否则返回 Promise.resolve()
-     */
-    async function checkLoginName(loginName: string): Promise<void> {
-        try {
-            // 创建请求对象 加密内容
-            const req: GetDisableExpiresAtSecondsRequest = {
-                login_name: loginName,
+            if (FormCaptcha === undefined) {
+                callback("请输入验证码")
+                return
             }
 
-            const { data } = await getDisableExpiresAtSecondsAPI(req)
-
-            const msg = getUserForbiddenMsg(data)
-            if (data.code === ResponseCode.UserForbidden) {
-                throw new Error(msg)
-            }
-        } catch (err: unknown) {
-            console.log(err)
-            throw err
+            const formEmail = options.FormEmail?.value || ""
+            const formCaptcha = options.FormCaptcha?.value || ""
+            checkCaptcha(formEmail, formCaptcha, purpose)
+                .then(() => {
+                    callback() // 校验成功
+                })
+                .catch((err: Error) => {
+                    callback(err.message) // 如果失败（用户名已经存在），则传入错误提示字符串
+                })
         }
     }
 
@@ -491,13 +311,23 @@ export function useFormValidation(options: FormValidationOptions = {}) {
         checkEmailExcludingUserID,
         checkEmailExcludingUserIDValidator,
         checkCaptcha,
-        checkCaptchaValidator,
         checkSendCaptcha,
+        checkCaptchaValidatorFactory,
         checkRePassword,
         rePasswordValidator,
         checkAcceptedTerms,
         acceptedTermsValidator,
         checkLoginName,
         checkLoginNameValidator,
+
+        // 表单校验规则
+        createLoginNameRules,
+        createUserNameRules,
+        createPasswordRules,
+        createEmailRules,
+        createCaptchaRules,
+        createRePasswordRules,
+        createAcceptedTermsRules,
+        createNickNameRules,
     }
 }

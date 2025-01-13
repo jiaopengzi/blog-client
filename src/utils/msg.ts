@@ -2,14 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-22 14:41:19
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 10:33:19
+ * @LastEditTime : 2025-01-13 14:49:53
  * @FilePath     : \blog-client\src\utils\msg.ts
  * @Description  : 消息生成
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
-import type { Res, ResPromise } from "@/api/response"
-import { handleResErr,ResponseCode } from "@/api/response"
+import type { Res } from "@/api/response"
+import { handleResErr, ResponseCode } from "@/api/response"
 import { formatDurationTime } from "@/utils/dateTime"
 
 // 获取用户禁用信息

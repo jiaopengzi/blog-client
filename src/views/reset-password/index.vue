@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-08 11:46:05
+ * @LastEditTime : 2025-01-13 14:09:48
  * @FilePath     : \blog-client\src\views\reset-password\index.vue
  * @Description  : 重置密码
  * @Blog         : https://jiaopengzi.com
@@ -28,26 +28,14 @@
             :size="formSize"
             status-icon
         >
-            <div class="header-main">
-                <router-link :to="{ name: RouteNames.Home }" class="link">
-                    <div class="logo">
-                        <h2>
-                            <img
-                                src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
-                                :alt="RouteNames.Home"
-                            />
-                        </h2>
-                    </div>
-                </router-link>
-                <h2>密码重置</h2>
-            </div>
+            <AccountFormHeader :router-link-to="{ name: RouteNames.Home }" title="密码重置" />
 
             <el-form-item label="邮箱" prop="email">
-                <el-input v-model="forgotPasswordForm.email" />
+                <el-input v-model="forgotPasswordForm.email" clearable />
             </el-form-item>
 
             <el-form-item label="验证码" prop="captcha">
-                <el-input class="email-code" v-model="forgotPasswordForm.captcha" />
+                <el-input class="email-code" v-model="forgotPasswordForm.captcha" clearable />
                 <button
                     class="btn-captcha"
                     type="button"
@@ -59,11 +47,21 @@
             </el-form-item>
 
             <el-form-item label="新密码" prop="password">
-                <el-input type="password" show-password v-model="forgotPasswordForm.password" />
+                <el-input
+                    type="password"
+                    show-password
+                    v-model="forgotPasswordForm.password"
+                    clearable
+                />
             </el-form-item>
 
             <el-form-item label="确认密码" prop="rePassword">
-                <el-input type="password" show-password v-model="forgotPasswordForm.rePassword" />
+                <el-input
+                    type="password"
+                    show-password
+                    v-model="forgotPasswordForm.rePassword"
+                    clearable
+                />
             </el-form-item>
 
             <div class="btn-submit">
@@ -75,35 +73,24 @@
                     >
                 </el-form-item>
             </div>
-            <div class="go-home">
-                <router-link :to="{ name: RouteNames.Home }" class="link">
-                    <span>首页</span>
-                </router-link>
-                <span> | </span>
-                <router-link :to="{ name: RouteNames.Login }" class="link">
-                    <span>登录</span>
-                </router-link>
-            </div>
+            <AccountFormFooter :to="['home', 'login']" />
         </el-form>
     </div>
 </template>
 
 <script lang="ts" setup>
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { reactive, ref, useTemplateRef } from "vue"
+import { reactive, ref, toRef, useTemplateRef } from "vue"
 import { useRouter } from "vue-router"
 
-import type { CaptchaCheckRequest } from "@/api/captcha/check"
-import { captchaCheckAPI } from "@/api/captcha/check"
-import type { CaptchaSendRequest } from "@/api/captcha/send"
-import { captchaSendAPI } from "@/api/captcha/send"
 import { CaptchaPurpose } from "@/api/common"
-import { handleResErr, ResponseCode } from "@/api/response"
-import type { CheckEmailRequest } from "@/api/user/checkEmail"
-import { CheckEmailAPI } from "@/api/user/checkEmail"
+import { ResponseCode } from "@/api/response"
 import type { ResetPasswordRequest } from "@/api/user/resetPassword"
 import { resetPasswordAPI } from "@/api/user/resetPassword"
+import AccountFormFooter from "@/components/common/account-form-footer"
+import AccountFormHeader from "@/components/common/account-form-header"
 import SlideVerify from "@/components/common/slide-verify"
+import { useAccountFormValidation } from "@/components/hooks/useAccountFormValidation"
 import { RouteNames } from "@/router"
 import { MessageUtil } from "@/utils/message"
 
@@ -130,177 +117,33 @@ const forgotPasswordForm = reactive<ResetPasswordForm>({
     rePassword: "123QWEasd123",
 })
 
-/**
- * @description: 确认密码 异步函数
- * @return  Promise<void> 两次输入的密码不一致返回 Promise.reject()，否则返回 Promise.resolve()
- */
-async function checkRePassword(): Promise<void> {
-    try {
-        if (forgotPasswordForm.rePassword === "") {
-            throw new Error("请再次输入密码")
-        } else if (forgotPasswordForm.rePassword !== forgotPasswordForm.password) {
-            throw new Error("两次输入的密码不一致")
-        }
-    } catch (err: unknown) {
-        console.log(err)
-        throw err
-    }
-}
+const emailRef = toRef(forgotPasswordForm, "email")
+const passwordRef = toRef(forgotPasswordForm, "password")
+const rePasswordRef = toRef(forgotPasswordForm, "rePassword")
+const captchaRef = toRef(forgotPasswordForm, "captcha")
 
-/**
- * @description: 确认密码 Validator
- * @return  void
- */
-function rePasswordValidator(
-    rule: unknown,
-    value: string,
-    callback: (error?: string | Error | undefined) => void,
-): void {
-    // 在这里处理异步验证逻辑
-    checkRePassword()
-        .then(() => {
-            callback() // 校验成功
-        })
-        .catch((err: Error) => {
-            callback(err.message)
-        })
-}
+// hook 函数
+const {
+    checkSendCaptcha,
+    checkEmailValidator,
+    checkCaptchaValidatorFactory,
+    rePasswordValidator,
+    createCaptchaRules,
+    createEmailRules,
+    createPasswordRules,
+    createRePasswordRules,
+} = useAccountFormValidation({
+    FormEmail: emailRef,
+    FormPassword: passwordRef,
+    FormRePassword: rePasswordRef,
+    FormCaptcha: captchaRef,
+})
 
-/**
- * @description: 验证码发送 异步函数
- * @return Promise<void> 验证码错误返回 Promise.reject()，否则返回 Promise.resolve()
- */
-async function checkSendCaptcha(): Promise<void> {
-    try {
-        // 创建请求对象 加密内容
-        const req: CaptchaSendRequest = {
-            email: forgotPasswordForm.email,
-            purpose: CaptchaPurpose.ResetPassword,
-        }
-
-        const { data } = await captchaSendAPI(req)
-
-        if (data.code !== ResponseCode.CaptchaSendSuccess && data.data !== null) {
-            throw new Error(handleResErr(data))
-        }
-        if (data.code !== ResponseCode.CaptchaSendSuccess && data.data === null) {
-            throw new Error(data.msg) // 抛出错误信息
-        }
-    } catch (err: unknown) {
-        console.log(err)
-        throw err
-    }
-}
-
-/**
- * @description: 邮箱查重 异步函数
- * @return
- */
-async function checkEmail(): Promise<void> {
-    // 创建请求对象 加密内容
-    const req: CheckEmailRequest = {
-        email: forgotPasswordForm.email,
-    }
-
-    try {
-        const { data } = await CheckEmailAPI(req)
-
-        if (data.code !== ResponseCode.UserEmailExist) {
-            throw new Error(data.msg)
-        }
-    } catch (err: unknown) {
-        console.log(err)
-        throw err
-    }
-}
-
-/**
- * @description: 用户名查重 Validator
- * @param rule 校验规则
- * @param value 对应输入框的值
- * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
- */
-function checkEmailValidator(
-    rule: unknown,
-    value: string,
-    callback: (error?: string | Error | undefined) => void,
-): void {
-    // 在这里处理异步验证逻辑
-    checkEmail()
-        .then(() => {
-            callback() // 校验成功
-        })
-        .catch((err: Error) => {
-            callback(err.message) // 如果失败（邮箱已经存在），则传入错误提示字符串
-        })
-}
-
-async function checkCaptcha(): Promise<void> {
-    try {
-        // 创建请求对象 加密内容
-        const req: CaptchaCheckRequest = {
-            email: forgotPasswordForm.email,
-            captcha: forgotPasswordForm.captcha,
-            purpose: CaptchaPurpose.ResetPassword,
-        }
-
-        const { data } = await captchaCheckAPI(req)
-
-        if (data.code !== ResponseCode.CaptchaCheckSuccess) {
-            throw new Error(data.msg)
-        }
-    } catch (err: unknown) {
-        console.log(err)
-        throw err
-    }
-}
-
-function checkCaptchaValidator(
-    rule: unknown,
-    value: string,
-    callback: (error?: string | Error | undefined) => void,
-): void {
-    // 在这里处理异步验证逻辑
-    checkCaptcha()
-        .then(() => {
-            callback() // 校验成功
-        })
-        .catch((err: Error) => {
-            callback(err.message) // 如果失败（用户名已经存在），则传入错误提示字符串
-        })
-}
-
-/**
- * @description: 表单校验规则
- * @return  FormRules<ResetPasswordForm> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
- */
 const rules = reactive<FormRules<ResetPasswordForm>>({
-    email: [
-        { required: true, message: "请输入邮箱地址", trigger: "blur" },
-        {
-            pattern: /^[\w.!#$%&'*+/=?^_`{|}~-]+@[\w-]+(\.\w+)+$/,
-            message: "请输入有效的邮箱",
-            trigger: "blur",
-        },
-        // 邮箱查重
-        { validator: checkEmailValidator, trigger: "blur" },
-    ],
-    captcha: [
-        { required: true, message: "请输入验证码", trigger: "blur" },
-        { pattern: /^\d{6}$/, message: "验证码为6位的数字", trigger: "blur" },
-        { validator: checkCaptchaValidator, trigger: "blur" },
-    ],
-    password: [
-        { required: true, message: "请输入密码", trigger: "blur" },
-        // 必须包含：大小写字母+数字,长度:6-64 特殊字符可有可无
-        {
-            pattern:
-                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*(),.?;:|[\]\\{}<>`~_+=-]{6,64}$/,
-            message: "必须包含：大小写字母+数字,长度:6-64",
-            trigger: "change",
-        },
-    ],
-    rePassword: [{ required: true, validator: rePasswordValidator, trigger: "blur" }],
+    email: createEmailRules(checkEmailValidator),
+    captcha: createCaptchaRules(checkCaptchaValidatorFactory(CaptchaPurpose.ResetPassword)),
+    password: createPasswordRules(),
+    rePassword: createRePasswordRules(rePasswordValidator),
 })
 
 /**
@@ -329,7 +172,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
                 // 跳转到登录页面
                 setTimeout(() => {
-                    router.push({ name: "login" })
+                    router.push({ name: RouteNames.Login })
                 }, 3000)
             } else {
                 // 注册失败
@@ -371,7 +214,7 @@ const sendCaptcha = async () => {
         btnCaptchaState.disabled = true // 按钮设置不能点击状态
 
         // 发送验证码
-        checkSendCaptcha()
+        checkSendCaptcha(forgotPasswordForm.email, CaptchaPurpose.ResetPassword)
             .then(() => {
                 // 成功发送验证码
                 MessageUtil.success("验证码已发送到邮箱。", 6000)
@@ -444,13 +287,6 @@ const closeSlideVerify = () => {
     }
 }
 
-h2 {
-    text-align: center;
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 20px;
-}
-
 .email-code {
     flex: 5;
 }
@@ -476,15 +312,6 @@ h2 {
     background-color: var(--jpz-bg-color);
     color: var(--jpz-text-color-disabled);
     cursor: not-allowed;
-}
-
-.go-home {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.go-home span {
-    color: var(--jpz-text-color-secondary);
 }
 
 .btn-submit {

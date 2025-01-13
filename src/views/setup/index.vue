@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-07 19:35:55
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-11 17:36:58
+ * @LastEditTime : 2025-01-13 12:01:27
  * @FilePath     : \blog-client\src\views\setup\index.vue
  * @Description  : 数据库配置页面
  * @Blog         : https://jiaopengzi.com
@@ -34,17 +34,11 @@
     </el-dialog>
     <div class="page">
         <div class="setup">
-            <div class="header-main">
-                <a href="www.jiaopengzi.com" target="_blank">
-                    <div class="logo">
-                        <img
-                            src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
-                            alt="www.jiaopengzi.com"
-                        />
-                    </div>
-                </a>
-                <h2>数据库配置</h2>
-            </div>
+            <AccountFormHeader
+                :a-tag="{ href: 'https://www.jiaopengzi.com', target: '_blank' }"
+                title="数据库配置"
+            />
+
             <PgsqlForm class="data-form" ref="pgsqlFormRef" />
             <div class="redis-forms">
                 <div class="redis-header">
@@ -81,6 +75,7 @@ import {
     setupAPI,
     type SetupRequest,
 } from "@/api/setting/setup"
+import AccountFormHeader from "@/components/common/account-form-header"
 import PgsqlForm from "@/components/common/db-pgsql"
 import RedisForm from "@/components/common/db-redis"
 import { RouteNames } from "@/router"

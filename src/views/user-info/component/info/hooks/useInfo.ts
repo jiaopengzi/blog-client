@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 13:50:30
+ * @LastEditTime : 2025-01-13 14:17:34
  * @FilePath     : \blog-client\src\views\user-info\component\info\hooks\useInfo.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -11,21 +11,20 @@
 
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { storeToRefs } from "pinia"
-import type { ComputedRef,Ref } from "vue"
+import type { ComputedRef, Ref } from "vue"
 import { computed, onBeforeMount, onMounted, reactive, ref, toRef } from "vue"
 
 import { Social } from "@/api/common"
-import { handleResErr,ResponseCode } from "@/api/response"
+import { handleResErr, ResponseCode } from "@/api/response"
 import { setAvatarAPI, type SetAvatarRequest } from "@/api/upload/setAvatar"
 import type { EditUserInfoRequest } from "@/api/user/editUserInfo"
 import { editUserInfoAPI } from "@/api/user/editUserInfo"
 import type { UserInfo } from "@/api/user/getUserInfo"
-import { useFormValidation } from "@/components/hooks/useFormValidation"
+import { useAccountFormValidation } from "@/components/hooks/useAccountFormValidation"
 import { useUserStore } from "@/stores/user"
 import { formatTime } from "@/utils/dateTime"
 import { MessageUtil } from "@/utils/message"
 import { getUserMetaValue } from "@/utils/metaInfo"
-import { RegexPatterns } from "@/utils/regexPatterns"
 
 import type { EditForm } from "../types"
 
@@ -91,32 +90,15 @@ export function useInfo(): UseInfoReturnType {
     const excludingUserIDRef = toRef(userData.value.user.id.toString())
 
     // hooks
-    const { checkUserNameExcludingUserIDValidator } = useFormValidation({
-        FormUserName: userNameRef,
-        FormExcludingUserID: excludingUserIDRef,
-    })
+    const { checkUserNameExcludingUserIDValidator, createUserNameRules, createNickNameRules } =
+        useAccountFormValidation({
+            FormUserName: userNameRef,
+            FormExcludingUserID: excludingUserIDRef,
+        })
 
-    // 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
     const rules = reactive<FormRules<EditForm>>({
-        userName: [
-            { required: true, message: "请输入用户名！", trigger: "blur" },
-            {
-                pattern: RegexPatterns.UserName,
-                message: "用户名长度:6-20的小写字母或数字",
-                trigger: "change",
-            },
-            // 用户查重
-            { validator: checkUserNameExcludingUserIDValidator, trigger: "blur" },
-        ],
-
-        nickName: [
-            { required: true, message: "请输入昵称！", trigger: "blur" },
-            {
-                pattern: RegexPatterns.NickName,
-                message: "昵称长度1-20字符",
-                trigger: "change",
-            },
-        ],
+        userName: createUserNameRules(checkUserNameExcludingUserIDValidator),
+        nickName: createNickNameRules(),
     })
 
     /**

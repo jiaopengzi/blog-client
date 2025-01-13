@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-08 11:42:55
+ * @LastEditTime : 2025-01-13 14:08:43
  * @FilePath     : \blog-client\src\views\login\index.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -27,21 +27,14 @@
             :size="formSize"
             status-icon
         >
-            <div class="header-main">
-                <router-link :to="{ name: RouteNames.Home }" class="link">
-                    <div class="logo">
-                        <h2>
-                            <img
-                                src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
-                                :alt="RouteNames.Home"
-                            />
-                        </h2>
-                    </div>
-                </router-link>
-                <h2>账号登录</h2>
-            </div>
-            <el-form-item label="用户名" prop="loginName">
-                <el-input v-model="loginForm.loginName" placeholder="请输入用户名或邮箱" />
+            <AccountFormHeader :router-link-to="{ name: RouteNames.Home }" title="账号登录" />
+
+            <el-form-item label="用户名/邮箱" prop="loginName">
+                <el-input
+                    v-model="loginForm.loginName"
+                    placeholder="请输入用户名或邮箱"
+                    clearable
+                />
             </el-form-item>
             <el-form-item label="密码" prop="password">
                 <el-input
@@ -49,6 +42,7 @@
                     v-model="loginForm.password"
                     placeholder="大小写字母 + 数字, 长度:6-64"
                     show-password
+                    clearable
                 />
             </el-form-item>
             <div class="btn-submit">
@@ -64,19 +58,7 @@
                     <Icon :name="IconKeys.Qq" custom-class="iconfont icon-qq" />
                 </button>
             </div>
-            <div class="go-home">
-                <router-link :to="{ name: RouteNames.Home }" class="link">
-                    <span>首页</span>
-                </router-link>
-                <span> | </span>
-                <router-link :to="{ name: RouteNames.Register }" class="link">
-                    <span>注册</span>
-                </router-link>
-                <span> | </span>
-                <router-link :to="{ name: RouteNames.ResetPassword }" class="link">
-                    <span>忘记密码</span>
-                </router-link>
-            </div>
+            <AccountFormFooter :to="['home', 'register', 'resetPassword']" />
         </el-form>
     </div>
 </template>
@@ -87,12 +69,13 @@ import { reactive, ref, toRef, useTemplateRef } from "vue"
 import type { RouteLocationRaw } from "vue-router"
 import { useRouter } from "vue-router"
 
+import AccountFormFooter from "@/components/common/account-form-footer"
+import AccountFormHeader from "@/components/common/account-form-header"
 import { IconKeys } from "@/components/common/icons"
 import SlideVerify from "@/components/common/slide-verify"
-import { useFormValidation } from "@/components/hooks/useFormValidation"
+import { useAccountFormValidation } from "@/components/hooks/useAccountFormValidation"
 import { RouteNames } from "@/router"
 import { useUserStore } from "@/stores/user"
-import { RegexPatterns } from "@/utils/regexPatterns"
 
 import type { LoginForm } from "./types"
 
@@ -118,33 +101,12 @@ const loginForm = reactive<LoginForm>({
 const loginNameRef = toRef(loginForm, "loginName")
 
 // hook 函数
-const { checkLoginNameValidator } = useFormValidation({ FormUserName: loginNameRef })
+const { checkLoginNameValidator, createLoginNameRules, createPasswordRules } =
+    useAccountFormValidation({ FormUserName: loginNameRef })
 
-/**
- * @description: 表单校验规则
- * @return  FormRules<loginForm> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
- */
 const rules = reactive<FormRules<LoginForm>>({
-    loginName: [
-        { required: true, message: "请输入用户名！", trigger: "blur" },
-        {
-            pattern: RegexPatterns.LoginName,
-            message: "6-20位小写字母或数字 | 邮箱",
-            trigger: "change",
-        },
-        // 用户状态校验
-        { validator: checkLoginNameValidator, trigger: "blur" },
-    ],
-
-    password: [
-        { required: true, message: "请输入密码", trigger: "blur" },
-        // 必须包含：大小写字母+数字,长度:6-64 特殊字符可有可无
-        {
-            pattern: RegexPatterns.Password,
-            message: "必须包含：大小写字母+数字,长度:6-64",
-            trigger: "change",
-        },
-    ],
+    loginName: createLoginNameRules(checkLoginNameValidator),
+    password: createPasswordRules(),
 })
 
 /**
@@ -253,29 +215,8 @@ const loginByQQ = async (event: Event) => {
     }
 }
 
-h2 {
-    text-align: center;
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 20px;
-}
-
 .email-code {
     flex: 5;
-}
-
-.go-home {
-    text-align: center;
-    margin-top: 20px;
-}
-
-a {
-    color: var(--jpz-text-color-secondary);
-    // text-decoration: underline;
-}
-
-.go-home span {
-    color: var(--jpz-text-color-secondary);
 }
 
 .btn-submit {
