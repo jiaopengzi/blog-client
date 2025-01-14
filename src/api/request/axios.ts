@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-29 12:37:34
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-14 12:15:48
+ * @LastEditTime : 2025-01-14 12:21:08
  * @FilePath     : \blog-client\src\api\request\axios.ts
  * @Description  : axios封装
  * @Blog         : https://jiaopengzi.com
@@ -62,9 +62,10 @@ axiosInstance.interceptors.response.use(
 
         // 需要请求 isSetupAPI 接口的状态码
         const needSetupStatus = [404, 502]
-        console.log("status==============>", status)
+        console.log("status==============>1", status)
 
         if (needSetupStatus.includes(status) && !isSetupAPIRequested) {
+            console.log("status==============>2", status)
             isSetupAPIRequested = true // 避免重复请求
 
             isSetupAPI().then((res) => {
