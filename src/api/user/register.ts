@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-13 15:34:55
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-23 16:18:55
+ * @LastEditTime : 2025-01-13 15:43:27
  * @FilePath     : \blog-client\src\api\user\register.ts
  * @Description  : 注册
  * @blog         : https://jiaopengzi.com
@@ -21,7 +21,7 @@ export interface RegisterRequest {
 }
 
 // 注册
-export function RegisterAPI(requestData: RegisterRequest): ResPromise<Res<unknown>> {
+export function registerAPI(requestData: RegisterRequest): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/user/register"
     return request({
         url: urlStr,

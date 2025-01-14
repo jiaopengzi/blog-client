@@ -1,22 +1,16 @@
 <!--
  * @Author       : jiaopengzi
- * @Date         : 2023-11-22 16:05:07
+ * @Date         : 2025-01-13 15:37:17
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-13 15:55:57
- * @FilePath     : \blog-client\src\views\register\index.vue
- * @Description  : 注册
+ * @LastEditTime : 2025-01-13 16:38:49
+ * @FilePath     : \blog-client\src\views\register-admin\index.vue
+ * @Description  : 注册管理员
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
 -->
 
 <template>
     <div class="register-page">
-        <!-- 添加滑动验证组件：SlideVerify -->
-        <SlideVerify
-            v-if="showSlideVerify"
-            @on-close="closeSlideVerify"
-            @on-success="sendCaptcha"
-        ></SlideVerify>
         <el-form
             :label-position="labelPosition"
             label-width="100px"
@@ -27,7 +21,10 @@
             :size="formSize"
             status-icon
         >
-            <AccountFormHeader :router-link-to="{ name: RouteNames.Home }" title="账号注册" />
+            <AccountFormHeader
+                :a-tag="{ href: 'https://www.jiaopengzi.com', target: '_blank' }"
+                title="注册管理员"
+            />
 
             <el-form-item label="用户名" prop="userName">
                 <el-input v-model="registerForm.userName" clearable />
@@ -35,18 +32,6 @@
 
             <el-form-item label="邮箱" prop="email">
                 <el-input v-model="registerForm.email" clearable />
-            </el-form-item>
-
-            <el-form-item label="验证码" prop="captcha">
-                <el-input class="email-code" v-model="registerForm.captcha" clearable />
-                <button
-                    class="btn-captcha"
-                    type="button"
-                    @click="openSlideVerify"
-                    :disabled="btnCaptchaState.disabled"
-                >
-                    {{ captcha }}
-                </button>
             </el-form-item>
 
             <el-form-item label="密码" prop="password">
@@ -79,31 +64,25 @@
                     <el-button @click="resetForm(registerFormRef as FormInstance)">重置</el-button>
                 </el-form-item>
             </div>
-            <AccountFormFooter :to="['home', 'login']" />
         </el-form>
     </div>
 </template>
 
 <script lang="ts" setup>
-import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
+import type { FormInstance, FormRules } from "element-plus"
 import { reactive, ref, toRef, useTemplateRef } from "vue"
 import { useRouter } from "vue-router"
 
-import { CaptchaPurpose } from "@/api/common"
 import { ResponseCode } from "@/api/response"
-import type { RegisterRequest } from "@/api/user/register"
-import { registerAPI } from "@/api/user/register"
-import AccountFormFooter from "@/components/common/account-form-footer"
+import { registerAdminAPI, type RegisterAdminRequest } from "@/api/user/registerAdmin"
 import AccountFormHeader from "@/components/common/account-form-header"
-import SlideVerify from "@/components/common/slide-verify"
 import { useAccountFormValidation } from "@/components/hooks/useAccountFormValidation"
 import { RouteNames } from "@/router"
 import { MessageUtil } from "@/utils/message"
 
 import type { RegisterForm } from "./types"
 
-// eslint-disable-next-line vue/multi-word-component-names
-defineOptions({ name: "Register" })
+defineOptions({ name: "RegisterAdmin" })
 
 const router = useRouter()
 
@@ -120,13 +99,11 @@ const registerFormRef = useTemplateRef<FormInstance>("registerFormRef")
 const registerForm = reactive<RegisterForm>({
     // userName: '',
     // email: '',
-    // captcha: '',
     // password: '',
     // rePassword: '',
     // acceptedTerms: [],
     userName: "jiaopengzi",
     email: "jiaopengzi@qq.com",
-    captcha: "123456",
     password: "123QWEasd",
     rePassword: "123QWEasd",
     acceptedTerms: false,
@@ -136,20 +113,16 @@ const userNameRef = toRef(registerForm, "userName")
 const emailRef = toRef(registerForm, "email")
 const passwordRef = toRef(registerForm, "password")
 const rePasswordRef = toRef(registerForm, "rePassword")
-const captchaRef = toRef(registerForm, "captcha")
 const acceptedTermsRef = toRef(registerForm, "acceptedTerms")
 
 // hook 函数
 const {
-    checkSendCaptcha,
     checkUserNameValidator,
     checkEmailValidator,
-    checkCaptchaValidatorFactory,
     rePasswordValidator,
     acceptedTermsValidator,
 
     createAcceptedTermsRules,
-    createCaptchaRules,
     createEmailRules,
     createPasswordRules,
     createRePasswordRules,
@@ -159,14 +132,12 @@ const {
     FormEmail: emailRef,
     FormPassword: passwordRef,
     FormRePassword: rePasswordRef,
-    FormCaptcha: captchaRef,
     FormAcceptedTerms: acceptedTermsRef,
 })
 
 const rules = reactive<FormRules<RegisterForm>>({
     userName: createUserNameRules(checkUserNameValidator),
     email: createEmailRules(checkEmailValidator),
-    captcha: createCaptchaRules(checkCaptchaValidatorFactory(CaptchaPurpose.Register)),
     password: createPasswordRules(),
     rePassword: createRePasswordRules(rePasswordValidator),
     acceptedTerms: createAcceptedTermsRules(acceptedTermsValidator),
@@ -176,32 +147,26 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
     await formEl.validate(async (valid) => {
         if (valid) {
-            // 创建请求对象 加密内容
-            const req: RegisterRequest = {
-                captcha: registerForm.captcha,
+            // 创建请求对象
+            const req: RegisterAdminRequest = {
                 user_name: registerForm.userName,
                 password: registerForm.password,
                 re_password: registerForm.rePassword,
                 email: registerForm.email,
             }
 
-            console.log("req:", req)
-            const { data } = await registerAPI(req)
+            const { data } = await registerAdminAPI(req)
 
             if (data.code === ResponseCode.UserRegisterSuccess) {
                 // 显示注册成功提示
                 MessageUtil.success(data.msg, 6000)
 
-                // 跳转到登录页面
                 setTimeout(() => {
                     router.push({ name: RouteNames.Login })
                 }, 3000)
             } else {
-                // 注册失败
-                // console.log("注册失败");
                 MessageUtil.error(data.msg, 0)
             }
-            console.log("submit!")
         }
     })
 }
@@ -210,73 +175,6 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 const resetForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.resetFields()
-}
-
-// 显示滑块验证 状态
-const showSlideVerify = ref(false)
-
-// 显示滑块验证
-const openSlideVerify = () => {
-    // 显示滑块验证
-    console.log("打开滑块验证")
-    showSlideVerify.value = true
-}
-
-const captcha = ref("发送验证码")
-const btnCaptchaState = reactive({ disabled: false })
-
-// 发送邮箱验证码
-const sendCaptcha = async () => {
-    // 关闭滑块验证
-    showSlideVerify.value = false
-
-    // 手动触发 FormInstance 的校验，校验 userName 和 email 字段
-    const userNameResult = await registerFormRef.value?.validateField("userName").catch(() => false)
-    if (!userNameResult) {
-        MessageUtil.error("请输入正确的用户名。", 0)
-        return
-    }
-
-    const emailResult = await registerFormRef.value?.validateField("email").catch(() => false)
-    if (!emailResult) {
-        MessageUtil.error("请输入正确的邮箱地址。", 0)
-        console.log("请输入邮箱")
-        return
-    }
-
-    if (userNameResult && emailResult) {
-        btnCaptchaState.disabled = true // 按钮设置不能点击状态
-
-        // 发送验证码
-        checkSendCaptcha(registerForm.email, CaptchaPurpose.Register)
-            .then(() => {
-                // 成功发送验证码
-                MessageUtil.success("验证码已发送到邮箱。", 6000)
-            })
-            .catch((err: Error) => {
-                // 错误提示
-                MessageUtil.error(err.message, 0)
-            })
-
-        // 按钮设置不能点击状态
-        let timer = 5
-        captcha.value = `${timer}s后重新发送`
-        const interval = setInterval(() => {
-            timer--
-            if (timer === 0) {
-                clearInterval(interval)
-                captcha.value = "发送验证码"
-                btnCaptchaState.disabled = false // 启用按钮
-            } else {
-                captcha.value = `${timer}s后重新发送`
-            }
-        }, 1000)
-    }
-}
-
-// 关闭滑块验证
-const closeSlideVerify = () => {
-    showSlideVerify.value = false
 }
 </script>
 
@@ -321,37 +219,9 @@ const closeSlideVerify = () => {
     }
 }
 
-.email-code {
-    flex: 5;
-}
-
-.btn-captcha {
-    flex: 2;
-}
-
-.btn-captcha {
-    width: 120px;
-    margin-left: 10px;
-    padding: 0 10px;
-    height: 30px;
-    line-height: 30px;
-    border: 1px solid var(--jpz-border-color);
-    border-radius: 4px;
-    background-color: var(--jpz-bg-color);
-    cursor: pointer;
-    color: var(--jpz-text-color-regular);
-}
-
-.btn-captcha:disabled {
-    background-color: var(--jpz-bg-color);
-    color: var(--jpz-text-color-disabled);
-    cursor: not-allowed;
-}
-
 .i-agree {
     color: var(--jpz-text-color-primary);
 }
-
 .i-agree-link {
     color: var(--jpz-text-color-primary);
     text-decoration: underline;

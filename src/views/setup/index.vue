@@ -176,7 +176,7 @@ const submit = async () => {
                             clearInterval(timer)
                             hasShowSuccessMsg.value = true
                             MessageUtil.success("后台重启完成！", 10000)
-                            router.push({ name: RouteNames.Login })
+                            router.push({ name: RouteNames.RegisterAdmin })
                         }
                     }
                 }, 5000)

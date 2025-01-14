@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-23 12:02:58
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-08 12:08:12
+ * @LastEditTime : 2025-01-13 15:49:23
  * @FilePath     : \blog-client\src\router\routeUser.ts
  * @Description  : 用户相关路由
  * @Blog         : https://jiaopengzi.com
@@ -57,6 +57,14 @@ export const userRoutes: RouteRecordRaw[] = [
         path: "/register",
         name: RouteNames.Register,
         component: () => import("@/views/register"),
+        meta: {
+            requiresAuth: false,
+        },
+    },
+    {
+        path: "/register-admin",
+        name: RouteNames.RegisterAdmin,
+        component: () => import("@/views/register-admin"),
         meta: {
             requiresAuth: false,
         },

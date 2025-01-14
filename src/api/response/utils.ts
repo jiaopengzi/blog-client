@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-29 12:09:37
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-09 22:08:34
+ * @LastEditTime : 2025-01-13 15:21:33
  * @FilePath     : \blog-client\src\api\response\utils.ts
  * @Description  : 处理响应错误
  * @Blog         : https://jiaopengzi.com
@@ -40,6 +40,13 @@ export const handleResErr = <T>(
         const errData: string[] = []
 
         const data = resData as Record<string, string>
+
+        // 判断是否为空对象
+        if (Object.keys(data).length === 0) {
+            return errMsg
+        }
+
+        // 非空对象，取出错误信息
         for (const key in data) {
             errData.push(data[key])
         }

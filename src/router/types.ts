@@ -22,6 +22,7 @@ export const enum RouteNames {
     SocialWeChatLoginCallback = "social-wechat-login-callback",
     SocialWeChatBindCallback = "social-wechat-bind-callback",
     Register = "register",
+    RegisterAdmin = "register-admin",
     ResetPassword = "reset-password",
     UserInfo = "user-info",
     Post = "post",

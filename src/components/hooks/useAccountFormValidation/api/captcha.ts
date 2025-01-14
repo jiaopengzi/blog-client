@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-13 14:24:30
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-13 14:41:27
+ * @LastEditTime : 2025-01-13 15:26:40
  * @FilePath     : \blog-client\src\components\hooks\useAccountFormValidation\api\captcha.ts
  * @Description  : 验证码相关API
  * @Blog         : https://jiaopengzi.com
@@ -29,9 +29,9 @@ export async function checkSendCaptcha(email: string, purpose: CaptchaPurpose): 
 
         const { data } = await captchaSendAPI(req)
 
-        if (data.code !== ResponseCode.CaptchaSendSuccess && data.data !== null) {
+        if (data.code !== ResponseCode.CaptchaSendSuccess) {
             const errMsg = handleResErr(data)
-            throw new Error(errMsg) // 抛出错误信息
+            throw new Error(errMsg)
         }
     } catch (err: unknown) {
         console.error(err)
@@ -57,11 +57,11 @@ export async function checkCaptcha(
             captcha: captcha,
             purpose: purpose,
         }
-        const { data } = await captchaCheckAPI(req)
+        const res = await captchaCheckAPI(req)
 
-        if (data.code !== ResponseCode.CaptchaCheckSuccess) {
-            const errMsg = handleResErr(data)
-            throw new Error(errMsg) // 抛出错误信息
+        if (res.data.code !== ResponseCode.CaptchaCheckSuccess) {
+            const errMsg = handleResErr(res)
+            throw new Error(errMsg)
         }
     } catch (err: unknown) {
         console.error(err)

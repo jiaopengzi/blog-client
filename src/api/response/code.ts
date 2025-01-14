@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-29 12:08:15
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-07 17:04:30
+ * @LastEditTime : 2025-01-14 11:47:29
  * @FilePath     : \blog-client\src\api\response\code.ts
  * @Description  : 相应状态码
  * @Blog         : https://jiaopengzi.com
@@ -157,11 +157,16 @@ export enum ResponseCode {
     SubtitlesDeleteSuccess = 8608, // 删除字幕成功
     GetVideoSubtitlesLanguagesSuccess = 8609, // 获取视频字幕语言列表成功
 
-    // 客户端请求频繁
+    // 系统相关
     ClientIPTooManyRequests = 9006, //客户端IP请求次数过多
     ClientIDTooManyRequests = 9007, //客户端ID请求次数过多
     SetupSuccess = 9011, // 项目初始化成功
     SetupError = 9012, // 项目初始化失败
     SetupAlready = 9013, // 项目已经初始化完毕
     SetupNotCompleted = 9014, // 项目未初始化
+    ConnectionPgsqlError = 9015, // 连接 pgsql 数据库失败
+    ConnectionRedisError = 9016, // 连接 redis 数据库失败
+    RedisNodeCountError = 9017, // redis 节点数量错误
+    HasAdmin = 9018, // 已经存在管理员
+    NoAdmin = 9019, // 不存在管理员
 }

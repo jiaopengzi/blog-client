@@ -11,7 +11,13 @@
 
 import { createRouter, createWebHistory } from "vue-router"
 
-import { authMiddleware, editorMiddleware, handleMiddleware, setupMiddleware } from "./middleware"
+import {
+    authMiddleware,
+    editorMiddleware,
+    handleMiddleware,
+    registerAdminMiddleware,
+    setupMiddleware,
+} from "./middleware"
 import { routes } from "./routes"
 
 // 创建路由实例
@@ -22,7 +28,7 @@ export const router = createRouter({
 
 // 路由守卫
 router.beforeEach(async (to, from) => {
-    const middlewares = [authMiddleware, editorMiddleware, setupMiddleware]
+    const middlewares = [authMiddleware, editorMiddleware, registerAdminMiddleware, setupMiddleware]
     return await handleMiddleware(middlewares, to, from)
 })
 

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-13 14:08:43
+ * @LastEditTime : 2025-01-13 15:56:05
  * @FilePath     : \blog-client\src\views\login\index.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -109,11 +109,6 @@ const rules = reactive<FormRules<LoginForm>>({
     password: createPasswordRules(),
 })
 
-/**
- * @description: 提交表单
- * @param formEl 表单实例
- * @return  void
- */
 const userStore = useUserStore()
 
 const submitForm = async (formEl: FormInstance | undefined) => {

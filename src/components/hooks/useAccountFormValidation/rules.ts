@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-13 14:22:20
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-13 14:56:39
+ * @LastEditTime : 2025-01-13 15:31:28
  * @FilePath     : \blog-client\src\components\hooks\useAccountFormValidation\rules.ts
  * @Description  : 生成校验规则
  * @Blog         : https://jiaopengzi.com
@@ -43,16 +43,21 @@ export function createLoginNameRules(validatorFunc: ValidatorFunc): FormItemRule
  * @param validatorFunc 自定义校验函数
  * @return {FormItemRule[]} 校验规则
  */
-export function createUserNameRules(validatorFunc: ValidatorFunc): FormItemRule[] {
-    return [
+export function createUserNameRules(validatorFunc?: ValidatorFunc): FormItemRule[] {
+    const rules: FormItemRule[] = [
         { required: true, message: "请输入用户名！", trigger: "blur" },
         {
             pattern: RegexPatterns.UserName,
             message: "用户名长度:6-20的小写字母或数字",
             trigger: "change",
         },
-        { validator: validatorFunc, trigger: "blur" },
     ]
+
+    if (validatorFunc) {
+        rules.push({ validator: validatorFunc, trigger: "blur" })
+    }
+
+    return rules
 }
 
 /**
@@ -75,12 +80,17 @@ export function createPasswordRules(): FormItemRule[] {
  * @param validatorFunc 自定义校验函数
  * @return {FormItemRule[]} 校验规则
  */
-export function createEmailRules(validatorFunc: ValidatorFunc): FormItemRule[] {
-    return [
+export function createEmailRules(validatorFunc?: ValidatorFunc): FormItemRule[] {
+    const rules: FormItemRule[] = [
         { required: true, message: "请输入邮箱地址", trigger: "blur" },
         { pattern: RegexPatterns.Email, message: "请输入有效的邮箱", trigger: "blur" },
-        { validator: validatorFunc, trigger: "blur" },
     ]
+
+    if (validatorFunc) {
+        rules.push({ validator: validatorFunc, trigger: "blur" })
+    }
+
+    return rules
 }
 
 /**
@@ -88,12 +98,17 @@ export function createEmailRules(validatorFunc: ValidatorFunc): FormItemRule[] {
  * @param validatorFactory 自定义校验函数
  * @return {FormItemRule[]} 校验规则
  */
-export function createCaptchaRules(validatorFunc: ValidatorFunc): FormItemRule[] {
-    return [
+export function createCaptchaRules(validatorFunc?: ValidatorFunc): FormItemRule[] {
+    const rules: FormItemRule[] = [
         { required: true, message: "请输入验证码", trigger: "blur" },
         { pattern: RegexPatterns.Captcha, message: "验证码为6位的数字", trigger: "blur" },
-        { validator: validatorFunc, trigger: "blur" },
     ]
+
+    if (validatorFunc) {
+        rules.push({ validator: validatorFunc, trigger: "blur" })
+    }
+
+    return rules
 }
 
 /**

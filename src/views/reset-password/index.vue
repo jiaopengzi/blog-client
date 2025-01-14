@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-13 14:09:48
+ * @LastEditTime : 2025-01-13 15:56:15
  * @FilePath     : \blog-client\src\views\reset-password\index.vue
  * @Description  : 重置密码
  * @Blog         : https://jiaopengzi.com
@@ -125,7 +125,6 @@ const captchaRef = toRef(forgotPasswordForm, "captcha")
 // hook 函数
 const {
     checkSendCaptcha,
-    checkEmailValidator,
     checkCaptchaValidatorFactory,
     rePasswordValidator,
     createCaptchaRules,
@@ -140,18 +139,12 @@ const {
 })
 
 const rules = reactive<FormRules<ResetPasswordForm>>({
-    email: createEmailRules(checkEmailValidator),
+    email: createEmailRules(),
     captcha: createCaptchaRules(checkCaptchaValidatorFactory(CaptchaPurpose.ResetPassword)),
     password: createPasswordRules(),
     rePassword: createRePasswordRules(rePasswordValidator),
 })
 
-/**
- * @description: 提交表单
- * @param formEl 表单实例
- * @param fields 表单字段
- * @return  void
- */
 const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
     await formEl.validate(async (valid) => {
