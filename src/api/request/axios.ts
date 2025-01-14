@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-29 12:37:34
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-09 16:59:51
+ * @LastEditTime : 2025-01-14 12:11:23
  * @FilePath     : \blog-client\src\api\request\axios.ts
  * @Description  : axios封装
  * @Blog         : https://jiaopengzi.com
@@ -13,7 +13,7 @@ import axios from "axios"
 
 import { ResponseCode } from "@/api/response/code"
 import { isSetupAPI } from "@/api/setting/isSetup"
-import { router } from "@/router"
+import { RouteNames, router } from "@/router"
 import { LocalStorageKey } from "@/stores/local"
 
 //1. 创建axios对象
@@ -60,13 +60,16 @@ axiosInstance.interceptors.response.use(
         const { response } = error
         const { status } = response
 
-        if (status === 404 && !isSetupAPIRequested) {
+        // 需要请求 isSetupAPI 接口的状态码
+        const needSetupStatus = [404, 502]
+
+        if (needSetupStatus.includes(status) && !isSetupAPIRequested) {
             isSetupAPIRequested = true // 避免重复请求
 
             isSetupAPI().then((res) => {
                 if (res.data.code === ResponseCode.SetupNotCompleted) {
                     // 跳转到 setup 页面
-                    router.push("/setup")
+                    router.push({ name: RouteNames.Setup })
                 }
             })
         }
