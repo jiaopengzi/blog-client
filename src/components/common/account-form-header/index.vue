@@ -15,7 +15,7 @@
         <div v-if="aTag" class="header-main">
             <a :href="aTag.href" :target="aTag.target">
                 <div class="logo">
-                    <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" :alt="alt" />
+                    <img :src="imgSrc" :alt="alt" />
                 </div>
             </a>
             <h2 v-if="title" class="title">{{ title }}</h2>
@@ -25,7 +25,7 @@
         <div v-if="routerLinkTo" class="header-main">
             <router-link v-if="routerLinkTo" :to="routerLinkTo" class="link">
                 <div class="logo">
-                    <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" :alt="alt" />
+                    <img :src="imgSrc" :alt="alt" />
                 </div>
             </router-link>
             <h2 v-if="title" class="title">{{ title }}</h2>
@@ -42,8 +42,8 @@ const {
     title,
     alt = "www.jiaopengzi.com",
     // 注意: Vite 的 import.meta.url 结合 new URL() 方法来解析图片路径。确保在开发和生产环境中都能正确解析路径。
-    // imgSrc = new URL("@/assets/img/logo-text-rounded-rectangle-200-52.png", import.meta.url).href,
-    imgSrc,
+    imgSrc = new URL("@/assets/img/logo-text-rounded-rectangle-200-52.png", import.meta.url).href,
+    // imgSrc,
     aTag,
     routerLinkTo,
 } = defineProps<{
