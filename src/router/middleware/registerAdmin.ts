@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-14 11:43:34
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-14 11:48:50
+ * @LastEditTime : 2025-01-14 15:29:43
  * @FilePath     : \blog-client\src\router\middleware\registerAdmin.ts
  * @Description  : 注册管理员中间件
  * @Blog         : https://jiaopengzi.com
@@ -17,7 +17,7 @@ import { hasAdminAPI } from "@/api/setting/hasAdmin"
 import { RouteNames } from "../types"
 
 /**
- * 当数据库已经安装时，访问设置页面时，重定向到404页面
+ * 注册管理员中间件
  *
  * @param to - 即将进入的路由对象
  * @param from - 当前导航正要离开的路由对象
@@ -26,11 +26,20 @@ export const registerAdminMiddleware = async (
     to: RouteLocationNormalized,
     from: RouteLocationNormalized,
 ) => {
+    // 当访问注册管理员页面时，检查是否已经注册管理员，如果已经注册管理员，则重定向到404页面
     if (to.name === RouteNames.RegisterAdmin) {
         const res = await hasAdminAPI()
         if (res.data.code === ResponseCode.HasAdmin) {
             // 重定向到404页面
             return { name: RouteNames.NotFound }
+        }
+    }
+
+    // 当从注册管理员页面离开时，检查是否已经注册管理员，如果没有注册管理员，则重定向到注册管理员页面
+    if (from.name === RouteNames.RegisterAdmin) {
+        const res = await hasAdminAPI()
+        if (res.data.code === ResponseCode.NoAdmin) {
+            return { name: RouteNames.RegisterAdmin }
         }
     }
 

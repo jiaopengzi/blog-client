@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-13 10:19:16
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-13 12:05:38
+ * @LastEditTime : 2025-01-14 15:20:23
  * @FilePath     : \blog-client\src\components\common\account-form-header\index.vue
  * @Description  : 账号相关表单头部
  * @Blog         : https://jiaopengzi.com
@@ -41,7 +41,8 @@ defineOptions({ name: "AccountFormHeader" })
 const {
     title,
     alt = "www.jiaopengzi.com",
-    imgSrc = "/src/assets/img/logo-text-rounded-rectangle-200-52.png",
+    // 注意: Vite 的 import.meta.url 结合 new URL() 方法来解析图片路径。确保在开发和生产环境中都能正确解析路径。
+    imgSrc = new URL("@/assets/img/logo-text-rounded-rectangle-200-52.png", import.meta.url).href,
     aTag,
     routerLinkTo,
 } = defineProps<{
