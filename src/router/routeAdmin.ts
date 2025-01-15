@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-29 17:35:11
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-08 11:31:57
+ * @LastEditTime : 2025-01-15 12:43:36
  * @FilePath     : \blog-client\src\router\routeAdmin.ts
  * @Description  : admin 路由配置
  * @Blog         : https://jiaopengzi.com
@@ -12,9 +12,9 @@
 import type { RouteRecordRaw } from "vue-router"
 
 import { toKebabCase } from "@/utils/namingConversion"
-import { adminMenuItemMapWithIndex, AdminSideMenu } from "@/views/admin/component/aside"
+import { adminMenuItemMapWithIndex } from "@/views/admin/component/aside"
 
-import { RouteNames } from "./types"
+import { RouteNames, RouteNamesAdmin } from "./types"
 
 // 生成管理后台路由
 function generateAdminRoutes() {
@@ -30,12 +30,12 @@ function generateAdminRoutes() {
                 // 默认子路由 dashboard
                 {
                     path: "",
-                    name: AdminSideMenu.Dashboard,
+                    name: RouteNamesAdmin.Dashboard,
                     component: () => import("@/views/admin/component/main/dashboard"),
                 },
                 // 其他子路由
                 ...Object.keys(adminMenuItemMapWithIndex).map((key) => {
-                    const menuItem = adminMenuItemMapWithIndex[key as AdminSideMenu]
+                    const menuItem = adminMenuItemMapWithIndex[key as RouteNamesAdmin]
                     // 判断是否单独设置父级菜单默认是显示子菜单的组件,
                     let component = toKebabCase(key)
                     if (menuItem.components) {

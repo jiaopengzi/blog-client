@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-13 15:35:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-03 13:55:08
+ * @LastEditTime : 2025-01-15 12:46:02
  * @FilePath     : \blog-client\src\views\admin\index.vue
  * @Description  : admin 页面
  * @Blog         : https://jiaopengzi.com
@@ -40,14 +40,14 @@
                     <!-- <router-view></router-view> -->
 
                     <router-view v-slot="{ Component, route }">
-                        <KeepAlive :exclude="[AdminSideMenu.PostWrite]">
+                        <KeepAlive :exclude="[RouteNames.PostWrite]">
                             <component :is="Component" :key="route.path" />
                         </KeepAlive>
                     </router-view>
 
                     <!-- <router-view v-slot="{ Component }">
                         <transition name="admin-main">
-                            <KeepAlive :exclude="[AdminSideMenu.PostWrite]">
+                            <KeepAlive :exclude="[RouteNames.PostWrite]">
                                 <component :is="Component" :key="route.fullPath" />
                             </KeepAlive>
                         </transition>
@@ -66,11 +66,11 @@
 import { onBeforeMount, ref, useTemplateRef } from "vue"
 import { useRouter } from "vue-router"
 
+import { RouteNames } from "@/router"
 import { LocalStorageKey } from "@/stores/local"
 import { useUserStore } from "@/stores/user"
 import { PermissionNames } from "@/utils/permissionRole"
 import Page404 from "@/views/404"
-import { AdminSideMenu } from "@/views/admin/component/aside"
 import AdminAside from "@/views/admin/component/aside"
 import AdminHeader from "@/views/admin/component/header"
 

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-25 14:23:27
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 08:52:27
+ * @LastEditTime : 2025-01-15 12:37:14
  * @FilePath     : \blog-client\src\views\admin\component\main\dashboard\index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -13,9 +13,9 @@
     <div class="container">首页面板</div>
 </template>
 <script setup lang="ts">
-import { AdminSideMenu } from "@/views/admin/component/aside"
+import { RouteNames } from "@/router"
 
-defineOptions({ name: AdminSideMenu.Dashboard })
+defineOptions({ name: RouteNames.Dashboard })
 </script>
 <style scoped lang="scss">
 .container {

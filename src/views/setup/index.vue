@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-07 19:35:55
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-13 12:01:27
+ * @LastEditTime : 2025-01-14 16:19:13
  * @FilePath     : \blog-client\src\views\setup\index.vue
  * @Description  : 数据库配置页面
  * @Blog         : https://jiaopengzi.com
@@ -116,6 +116,9 @@ const isShowTimer = ref(false)
 const hasShowSuccessMsg = ref(false)
 
 const submit = async () => {
+    // 清空本地存储
+    localStorage.clear()
+
     const isValid = await validateForms()
     // isShowTimer.value = true
 
@@ -175,7 +178,7 @@ const submit = async () => {
                             clearInterval(interval)
                             clearInterval(timer)
                             hasShowSuccessMsg.value = true
-                            MessageUtil.success("后台重启完成！", 10000)
+                            MessageUtil.success("后台重启完成,及时完成管理员注册！", 10000)
                             router.push({ name: RouteNames.RegisterAdmin })
                         }
                     }

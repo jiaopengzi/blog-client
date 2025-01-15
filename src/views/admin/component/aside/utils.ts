@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-30 11:52:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 14:50:17
+ * @LastEditTime : 2025-01-15 12:53:23
  * @FilePath     : \blog-client\src\views\admin\component\aside\utils.ts
  * @Description  : 工具
  * @Blog         : https://jiaopengzi.com
@@ -10,174 +10,176 @@
  */
 
 import { IconKeys } from "@/components/common/icons" // 图标名称枚举
-import { toKebabCase } from "@/utils/namingConversion"
+import { RouteNamesAdmin } from "@/router"
+// import { toKebabCase } from "@/utils/namingConversion"
 import { PermissionNames } from "@/utils/permissionRole" // 权限名称枚举
 
-import { type AdminMenuItemMap, type AdminMenuItemMapWithIndex,AdminSideMenu } from "./types"
+import { type AdminMenuItemMap, type AdminMenuItemMapWithIndex } from "./types"
 
+// const adminMenuItemMap: Partial<AdminMenuItemMap> = {
 const adminMenuItemMap: AdminMenuItemMap = {
-    [AdminSideMenu.Dashboard]: {
+    [RouteNamesAdmin.Dashboard]: {
         display: "仪表板",
         icon: {
             name: IconKeys.Dashboard,
             class: "icon-menu",
         },
     },
-    [AdminSideMenu.Post]: {
+    [RouteNamesAdmin.Post]: {
         display: "文章",
         icon: {
             name: IconKeys.Post,
             class: "icon-menu",
         },
-        components: AdminSideMenu.PostAll,
+        components: RouteNamesAdmin.PostAll,
     },
-    [AdminSideMenu.PostAll]: {
+    [RouteNamesAdmin.PostAll]: {
         display: "所有文章",
-        parentIndex: AdminSideMenu.Post,
+        parentIndex: RouteNamesAdmin.Post,
     },
-    [AdminSideMenu.PostWrite]: {
+    [RouteNamesAdmin.PostWrite]: {
         display: "写文章",
-        parentIndex: AdminSideMenu.Post,
+        parentIndex: RouteNamesAdmin.Post,
     },
-    [AdminSideMenu.PostTag]: {
+    [RouteNamesAdmin.PostTag]: {
         display: "标签",
-        parentIndex: AdminSideMenu.Post,
+        parentIndex: RouteNamesAdmin.Post,
     },
-    [AdminSideMenu.PostCategory]: {
+    [RouteNamesAdmin.PostCategory]: {
         display: "分类",
-        parentIndex: AdminSideMenu.Post,
+        parentIndex: RouteNamesAdmin.Post,
     },
-    [AdminSideMenu.Media]: {
+    [RouteNamesAdmin.Media]: {
         display: "媒体",
         icon: {
             name: IconKeys.Media,
             class: "icon-menu",
         },
     },
-    [AdminSideMenu.Link]: {
+    [RouteNamesAdmin.Link]: {
         display: "链接",
         icon: {
             name: IconKeys.Link,
             class: "icon-menu",
         },
     },
-    [AdminSideMenu.LinkAll]: {
+    [RouteNamesAdmin.LinkAll]: {
         display: "所有链接",
-        parentIndex: AdminSideMenu.Link,
+        parentIndex: RouteNamesAdmin.Link,
     },
-    [AdminSideMenu.LinkAdd]: {
+    [RouteNamesAdmin.LinkAdd]: {
         display: "新增链接",
-        parentIndex: AdminSideMenu.Link,
+        parentIndex: RouteNamesAdmin.Link,
     },
-    [AdminSideMenu.LinkCategory]: {
+    [RouteNamesAdmin.LinkCategory]: {
         display: "链接分类",
-        parentIndex: AdminSideMenu.Link,
+        parentIndex: RouteNamesAdmin.Link,
     },
-    [AdminSideMenu.Page]: {
+    [RouteNamesAdmin.Page]: {
         display: "页面",
         icon: {
             name: IconKeys.Page,
             class: "icon-menu",
         },
     },
-    [AdminSideMenu.PageAll]: {
+    [RouteNamesAdmin.PageAll]: {
         display: "所有页面",
-        parentIndex: AdminSideMenu.Page,
+        parentIndex: RouteNamesAdmin.Page,
     },
-    [AdminSideMenu.PageAdd]: {
+    [RouteNamesAdmin.PageAdd]: {
         display: "新增页面",
-        parentIndex: AdminSideMenu.Page,
+        parentIndex: RouteNamesAdmin.Page,
     },
-    [AdminSideMenu.Comment]: {
+    [RouteNamesAdmin.Comment]: {
         display: "评论",
         icon: {
             name: IconKeys.Comment,
             class: "icon-menu",
         },
     },
-    [AdminSideMenu.Announcement]: {
+    [RouteNamesAdmin.Announcement]: {
         display: "公告",
         icon: {
             name: IconKeys.Announcement,
             class: "icon-menu",
         },
     },
-    [AdminSideMenu.AnnouncementAll]: {
+    [RouteNamesAdmin.AnnouncementAll]: {
         display: "所有公告",
-        parentIndex: AdminSideMenu.Announcement,
+        parentIndex: RouteNamesAdmin.Announcement,
     },
-    [AdminSideMenu.AnnouncementPublish]: {
+    [RouteNamesAdmin.AnnouncementPublish]: {
         display: "发布公告",
-        parentIndex: AdminSideMenu.Announcement,
+        parentIndex: RouteNamesAdmin.Announcement,
     },
-    [AdminSideMenu.AnnouncementCategory]: {
+    [RouteNamesAdmin.AnnouncementCategory]: {
         display: "公告分类",
-        parentIndex: AdminSideMenu.Announcement,
+        parentIndex: RouteNamesAdmin.Announcement,
     },
-    [AdminSideMenu.Video]: {
+    [RouteNamesAdmin.Video]: {
         display: "视频",
         icon: {
             name: IconKeys.Video,
             class: "icon-menu",
         },
     },
-    [AdminSideMenu.VideoAll]: {
+    [RouteNamesAdmin.VideoAll]: {
         display: "所有视频",
-        parentIndex: AdminSideMenu.Video,
+        parentIndex: RouteNamesAdmin.Video,
     },
-    [AdminSideMenu.VideoPublish]: {
+    [RouteNamesAdmin.VideoPublish]: {
         display: "发布视频",
-        parentIndex: AdminSideMenu.Video,
+        parentIndex: RouteNamesAdmin.Video,
     },
-    [AdminSideMenu.VideoCategory]: {
+    [RouteNamesAdmin.VideoCategory]: {
         display: "视频分类",
-        parentIndex: AdminSideMenu.Video,
+        parentIndex: RouteNamesAdmin.Video,
     },
-    [AdminSideMenu.Shop]: {
+    [RouteNamesAdmin.Shop]: {
         display: "商城",
         icon: {
             name: IconKeys.Shop,
             class: "icon-menu",
         },
     },
-    [AdminSideMenu.Product]: {
+    [RouteNamesAdmin.Product]: {
         display: "产品",
-        parentIndex: AdminSideMenu.Shop,
+        parentIndex: RouteNamesAdmin.Shop,
     },
-    [AdminSideMenu.Order]: {
+    [RouteNamesAdmin.Order]: {
         display: "订单",
-        parentIndex: AdminSideMenu.Shop,
+        parentIndex: RouteNamesAdmin.Shop,
     },
-    [AdminSideMenu.MemberManagement]: {
+    [RouteNamesAdmin.MemberManagement]: {
         display: "会员管理",
-        parentIndex: AdminSideMenu.Shop,
+        parentIndex: RouteNamesAdmin.Shop,
     },
-    [AdminSideMenu.ShortLink]: {
+    [RouteNamesAdmin.ShortLink]: {
         display: "短连接",
         icon: {
             name: IconKeys.ShortLink,
             class: "icon-menu",
         },
     },
-    [AdminSideMenu.ShortLinkAll]: {
+    [RouteNamesAdmin.ShortLinkAll]: {
         display: "所有短连接",
-        parentIndex: AdminSideMenu.ShortLink,
+        parentIndex: RouteNamesAdmin.ShortLink,
     },
-    [AdminSideMenu.ShortLinkAdd]: {
+    [RouteNamesAdmin.ShortLinkAdd]: {
         display: "新增短连接",
-        parentIndex: AdminSideMenu.ShortLink,
+        parentIndex: RouteNamesAdmin.ShortLink,
     },
-    [AdminSideMenu.User]: {
+    [RouteNamesAdmin.User]: {
         display: "用户",
         icon: {
             name: IconKeys.User,
             class: "icon-menu",
         },
-        components: AdminSideMenu.UserView,
+        components: RouteNamesAdmin.UserView,
     },
-    [AdminSideMenu.UserView]: {
+    [RouteNamesAdmin.UserView]: {
         display: "所有用户",
-        parentIndex: AdminSideMenu.User,
+        parentIndex: RouteNamesAdmin.User,
         permissionName: PermissionNames.UserView,
         params: {
             roleName: "role-name",
@@ -186,30 +188,47 @@ const adminMenuItemMap: AdminMenuItemMap = {
             currentPage: "current-page",
         },
     },
-    [AdminSideMenu.LoginLog]: {
+    [RouteNamesAdmin.LoginLog]: {
         display: "登录日志",
-        parentIndex: AdminSideMenu.User,
+        parentIndex: RouteNamesAdmin.User,
     },
-    [AdminSideMenu.PermissionRole]: {
+    [RouteNamesAdmin.PermissionRole]: {
         display: "权限角色",
-        parentIndex: AdminSideMenu.User,
+        parentIndex: RouteNamesAdmin.User,
         permissionName: PermissionNames.PermissionRole,
     },
-    [AdminSideMenu.Setting]: {
+    [RouteNamesAdmin.Setting]: {
         display: "网站配置",
         icon: {
             name: IconKeys.Setting,
             class: "icon-menu",
         },
     },
-    [AdminSideMenu.Notification]: {
+    // [RouteNamesAdmin.SettingDatabase]: {
+    //     display: "数据库",
+    //     parentIndex: RouteNamesAdmin.Setting,
+    // },
+    // [RouteNamesAdmin.SettingEmail]: {
+    //     display: "邮箱",
+    //     parentIndex: RouteNamesAdmin.Setting,
+    // },
+    // [RouteNamesAdmin.SettingSocial]: {
+    //     display: "社交",
+    //     parentIndex: RouteNamesAdmin.Setting,
+    // },
+    // [RouteNamesAdmin.SettingUpload]: {
+    //     display: "上传",
+    //     parentIndex: RouteNamesAdmin.Setting,
+    // },
+    [RouteNamesAdmin.Notification]: {
         display: "通知",
         icon: {
             name: IconKeys.Notification,
             class: "icon-menu",
         },
     },
-    [AdminSideMenu.Backup]: {
+
+    [RouteNamesAdmin.Backup]: {
         display: "备份",
         icon: {
             name: IconKeys.Backup,
@@ -237,9 +256,9 @@ export function generateAdminMenuItemMapWithIndex(
     const result: Partial<AdminMenuItemMapWithIndex> = {} // 生成的菜单项映射表
 
     // 递归生成菜单项映射表
-    function createIndex(itemKey: AdminSideMenu, parentIndex?: string) {
+    function createIndex(itemKey: RouteNamesAdmin, parentIndex?: string) {
         const currentItem = menuItemMap[itemKey] // 当前菜单项
-        const kebabItemKey = toKebabCase(itemKey) // 菜单项转换为小写短横线连接形式
+        // const kebabItemKey = toKebabCase(itemKey) // 菜单项转换为小写短横线连接形式
         // const newIndex = `${parentIndex ? parentIndex : parentPath}/${kebabItemKey}` // 包含上级菜单项索引的当前菜单项索引
         // // 如果 currentItem 中包含 params 属性，则添加到索引中
         // if (currentItem.params) {
@@ -248,7 +267,8 @@ export function generateAdminMenuItemMapWithIndex(
         //     .join('/')
         //   kebabItemKey += `/${params}`
         // }
-        const newIndex = `${parentPath}/${kebabItemKey}` // 不包含上级菜单项索引的当前菜单项索引
+        // const newIndex = `${parentPath}/${kebabItemKey}` // 不包含上级菜单项索引的当前菜单项索引
+        const newIndex = `${parentPath}/${itemKey}` // 不包含上级菜单项索引的当前菜单项索引
         const newParentIndex = parentIndex || parentPath // 父菜单项索引
 
         // 将新增的 / 更新的属性添加到当前结果对象中 保证点击菜单项时路由跳转正确 不会重复叠加路由
@@ -260,16 +280,16 @@ export function generateAdminMenuItemMapWithIndex(
 
         // 遍历子菜单项并进行递归调用
         for (const childKey in menuItemMap) {
-            if (menuItemMap[childKey as AdminSideMenu].parentIndex === itemKey) {
-                createIndex(childKey as AdminSideMenu, newIndex)
+            if (menuItemMap[childKey as RouteNamesAdmin].parentIndex === itemKey) {
+                createIndex(childKey as RouteNamesAdmin, newIndex)
             }
         }
     }
 
     // 生成顶级菜单项映射表
     for (const key in menuItemMap) {
-        if (!menuItemMap[key as AdminSideMenu].parentIndex) {
-            createIndex(key as AdminSideMenu)
+        if (!menuItemMap[key as RouteNamesAdmin].parentIndex) {
+            createIndex(key as RouteNamesAdmin)
         }
     }
 
@@ -277,7 +297,7 @@ export function generateAdminMenuItemMapWithIndex(
 }
 
 export const adminMenuItemMapWithIndex = generateAdminMenuItemMapWithIndex(
-    adminMenuItemMap,
+    adminMenuItemMap as AdminMenuItemMap,
     "admin",
 )
 

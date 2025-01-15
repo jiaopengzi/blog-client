@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-24 14:30:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-03 12:36:48
+ * @LastEditTime : 2025-01-15 12:38:35
  * @FilePath     : \blog-client\src\views\admin\component\main\media\index.vue
  * @Description  : 媒体文件管理
  * @Blog         : https://jiaopengzi.com
@@ -91,22 +91,22 @@ import {
     type FileCountGroupByFiletype,
     getFileCountGroupByFiletypeAPI,
 } from "@/api/upload/getFileCountGroupByFiletype"
-import type { GetMediaFilesRequest,MediaFile } from "@/api/upload/getFiles"
+import type { GetMediaFilesRequest, MediaFile } from "@/api/upload/getFiles"
 import { getMediaFilesAPI } from "@/api/upload/getFiles"
-import { ImgFit,type TableImg } from "@/components/common"
-import type { TableColumn,TableData } from "@/components/common/base-table"
+import { ImgFit, type TableImg } from "@/components/common"
+import type { TableColumn, TableData } from "@/components/common/base-table"
 import BaseTable from "@/components/common/base-table"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { useParams } from "@/components/hooks/useParams"
 import { LocalStorageKey } from "@/stores/local"
 import { isVideo } from "@/utils/isVideo"
 import { MessageUtil } from "@/utils/message"
-import { AdminSideMenu } from "@/views/admin/component/aside"
+import { RouteNames } from "@/router"
 import AddMedia from "@/views/admin/component/main/media/component/add-media"
 import type { EditMediaProps } from "@/views/admin/component/main/media/component/edit-media"
 import EditMedia from "@/views/admin/component/main/media/component/edit-media"
 
-defineOptions({ name: AdminSideMenu.Media })
+defineOptions({ name: RouteNames.Media })
 
 const cols: TableColumn[] = reactive([
     {
@@ -241,7 +241,7 @@ const {
     updateRouterPush, // 更新查询参数和路由
     updatePaginate, // 更新分页
 } = useBaseTable<MediaFile, GetMediaFilesRequest, DeleteFileRequest>(
-    AdminSideMenu.Media,
+    RouteNames.Media,
     getMediaFilesAPI,
     ResponseCode.GetFilesSuccess,
     deleteFileAPI,

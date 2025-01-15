@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-03-15 15:09:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 12:05:29
+ * @LastEditTime : 2025-01-15 12:46:58
  * @FilePath     : \blog-client\src\views\admin\component\main\permission-role\index.vue
  * @Description  : 权限角色页面
  * @Blog         : https://jiaopengzi.com
@@ -175,7 +175,7 @@
 <script lang="ts" setup>
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { debounce } from "throttle-debounce"
-import { onBeforeMount, reactive, type Ref,ref, useTemplateRef } from "vue"
+import { onBeforeMount, reactive, type Ref, ref, useTemplateRef } from "vue"
 
 import {
     deletePermissionRoleAPI,
@@ -194,7 +194,8 @@ import {
     upsertPermissionRoleAPI,
     type UpsertPermissionRoleRequest,
 } from "@/api/permissionRole/upsertPermissionRole"
-import { handleResErr,ResponseCode } from "@/api/response"
+import { handleResErr, ResponseCode } from "@/api/response"
+import { RouteNames } from "@/router"
 import { useUserStore } from "@/stores/user"
 import { getSortedEnumKeys } from "@/utils/enum"
 import { MessageUtil } from "@/utils/message"
@@ -204,13 +205,12 @@ import {
     type Permission,
     PermissionNames,
 } from "@/utils/permissionRole"
-import { AdminSideMenu } from "@/views/admin/component/aside"
-import type { PermissionRow,Role } from "@/views/admin/component/main/permission-role"
+import type { PermissionRow, Role } from "@/views/admin/component/main/permission-role"
 
-import { LimitCount,LimitPeriod, type PermissionRole } from "./types"
+import { LimitCount, LimitPeriod, type PermissionRole } from "./types"
 import { getSafeProperty } from "./utils"
 
-defineOptions({ name: AdminSideMenu.PermissionRole })
+defineOptions({ name: RouteNames.PermissionRole })
 
 // 定义权限列表 包含权限名和权限描述
 const permissionsList: Ref<Permission[]> = ref([])

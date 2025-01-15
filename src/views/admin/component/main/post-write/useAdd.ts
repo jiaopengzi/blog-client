@@ -14,12 +14,12 @@ import { useRouter } from "vue-router"
 
 import type { InsertPostRequest } from "@/api/post/common"
 import { insertPostAPI } from "@/api/post/insert"
-import { handleResErr,ResponseCode } from "@/api/response"
+import { handleResErr, ResponseCode } from "@/api/response"
+import { RouteNames } from "@/router"
 import { MessageUtil } from "@/utils/message"
-import { AdminSideMenu } from "@/views/admin/component/aside"
 
 import { handleSubmit } from "./formHandler"
-import type { PostInfoAboutTime,UpsertPostForm } from "./index"
+import type { PostInfoAboutTime, UpsertPostForm } from "./index"
 
 export function useAdd(
     postInfoForm: UpsertPostForm,
@@ -49,7 +49,7 @@ export function useAdd(
 
                 // 插入成功后变成编辑状态，更改路由
                 router.push({
-                    name: AdminSideMenu.PostWrite,
+                    name: RouteNames.PostWrite,
                     query: { [queryKey.ID]: res.data.data.id },
                 })
                 return true

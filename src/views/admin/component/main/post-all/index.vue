@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-04 11:00:00
+ * @LastEditTime : 2025-01-15 12:47:06
  * @FilePath     : \blog-client\src\views\admin\component\main\post-all\index.vue
  * @Description  : 文章管理 
  * @Blog         : https://jiaopengzi.com
@@ -162,7 +162,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed,reactive, ref, watch } from "vue"
+import { computed, reactive, ref, watch } from "vue"
 import { useRouter } from "vue-router"
 
 import {
@@ -177,30 +177,30 @@ import {
     PostStatusCode,
     PostStatusDisplay,
 } from "@/api/post/common"
-import { deletePostAPI,type DeletePostRequest } from "@/api/post/delete"
-import { viewPostByAdminAPI,type ViewPostByAdminRequest } from "@/api/post/viewByAdmin"
+import { deletePostAPI, type DeletePostRequest } from "@/api/post/delete"
+import { viewPostByAdminAPI, type ViewPostByAdminRequest } from "@/api/post/viewByAdmin"
 import type { PostTag } from "@/api/postTag/view"
 import { type QueryParamsRecord } from "@/api/request"
 import { ResponseCode } from "@/api/response"
 import type { User } from "@/api/user/getUsers"
 import type { TableImg } from "@/components/common"
 import { MsgType } from "@/components/common"
-import type { TableColumn,TableData } from "@/components/common/base-table"
+import type { TableColumn, TableData } from "@/components/common/base-table"
 import BaseTable from "@/components/common/base-table"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { useParams } from "@/components/hooks/useParams"
+import { RouteNames } from "@/router"
 import { useUserStore } from "@/stores/user"
 import { confirmCommon } from "@/utils/confirm"
 import { formatTime } from "@/utils/dateTime"
 import { MessageUtil } from "@/utils/message"
-import { AdminSideMenu } from "@/views/admin/component/aside"
 import { queryKey as queryKeyWrite } from "@/views/admin/component/main/post-write"
 
 import { useHeader } from "./hooks"
 import { queryKey } from "./index"
-import { groupList,type GroupType, type PostCountGroupItem } from "./types"
+import { groupList, type GroupType, type PostCountGroupItem } from "./types"
 
-defineOptions({ name: AdminSideMenu.PostAll })
+defineOptions({ name: RouteNames.PostAll })
 
 const cols: TableColumn[] = reactive([
     {
@@ -392,7 +392,7 @@ const {
     updatePaginate, // 更新分页
     updateRouterPush, // 更新查询参数和路由
 } = useBaseTable<PostResPaginationByAdmin, ViewPostByAdminRequest, DeletePostRequest>(
-    AdminSideMenu.PostAll,
+    RouteNames.PostAll,
     viewPostByAdminAPI,
     ResponseCode.PostViewByAdminSuccess,
     deletePostAPI,
@@ -630,14 +630,14 @@ watch(postOperationSelect, async (newVal) => {
 
 // 写文章
 const postWrite = () => {
-    router.push({ name: AdminSideMenu.PostWrite })
+    router.push({ name: RouteNames.PostWrite })
 }
 
 // 编辑文章
 const editRow = (index: number, row: TableData) => {
     // 编辑文章
     router.push({
-        name: AdminSideMenu.PostWrite,
+        name: RouteNames.PostWrite,
         query: { [queryKeyWrite.ID]: row.id },
     })
 }

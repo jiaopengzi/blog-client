@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:47:08
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-03 12:33:10
+ * @LastEditTime : 2025-01-15 12:41:14
  * @FilePath     : \blog-client\src\views\admin\component\main\post-category\index.vue
  * @Description  : 分类管理
  * @Blog         : https://jiaopengzi.com
@@ -62,22 +62,22 @@
 <script lang="ts" setup>
 import { reactive } from "vue"
 
-import { deletePostCategoryAPI,type DeletePostCategoryRequest } from "@/api/postCategory/delete"
+import { deletePostCategoryAPI, type DeletePostCategoryRequest } from "@/api/postCategory/delete"
 import { type PostCategory } from "@/api/postCategory/view"
 import { viewPostCategoryAPI } from "@/api/postCategory/view"
 import type { PaginationRequest } from "@/api/request"
 import { ResponseCode } from "@/api/response"
-import type { TableColumn,TableData } from "@/components/common/base-table"
+import type { TableColumn, TableData } from "@/components/common/base-table"
 import BaseTable from "@/components/common/base-table"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { useParams } from "@/components/hooks/useParams"
-import { AdminSideMenu } from "@/views/admin/component/aside"
+import { RouteNames } from "@/router"
 
 import AddTag from "./component/add"
 import EditTag from "./component/edit"
 import { type ViewForm } from "./component/view"
 
-defineOptions({ name: AdminSideMenu.PostCategory })
+defineOptions({ name: RouteNames.PostCategory })
 
 const cols: TableColumn[] = reactive([
     {
@@ -175,7 +175,7 @@ const {
     updateRouterPush, // 更新路由
     updatePaginate,
 } = useBaseTable<PostCategory, PaginationRequest, DeletePostCategoryRequest>(
-    AdminSideMenu.PostCategory,
+    RouteNames.PostCategory,
     viewPostCategoryAPI,
     ResponseCode.PostCategoryViewSuccess,
     deletePostCategoryAPI,

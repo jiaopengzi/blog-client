@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-06-28 16:56:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-03 12:29:44
+ * @LastEditTime : 2025-01-15 12:46:23
  * @FilePath     : \blog-client\src\views\admin\component\main\login-log\index.vue
  * @Description  : 登录日志
  * @Blog         : https://jiaopengzi.com
@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive,ref } from "vue"
+import { reactive, ref } from "vue"
 
 import {
     deleteLoginLogByDayAPI,
@@ -49,16 +49,16 @@ import {
     type GetLoginLogsRequest,
     type LoginLog,
 } from "@/api/loginLog/getLoginLogs"
-import { handleResErr,ResponseCode } from "@/api/response"
+import { handleResErr, ResponseCode } from "@/api/response"
 import type { TableColumn } from "@/components/common/base-table"
 import BaseTable from "@/components/common/base-table"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { useParams } from "@/components/hooks/useParams"
+import { RouteNames } from "@/router"
 import { deleteConfirmCommon } from "@/utils/confirm"
 import { MessageUtil } from "@/utils/message"
-import { AdminSideMenu } from "@/views/admin/component/aside"
 
-defineOptions({ name: AdminSideMenu.LoginLog })
+defineOptions({ name: RouteNames.LoginLog })
 
 const cols: TableColumn[] = reactive([
     {
@@ -152,7 +152,7 @@ const {
     updateRouterPush,
     updatePaginate,
 } = useBaseTable<LoginLog, GetLoginLogsRequest, DeleteLoginLogByIDsRequest>(
-    AdminSideMenu.LoginLog,
+    RouteNames.LoginLog,
     getLoginLogsAPI,
     ResponseCode.GetLoginLogsSuccess,
     deleteLoginLogByIDsAPI,

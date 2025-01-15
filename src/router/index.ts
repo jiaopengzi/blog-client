@@ -10,5 +10,5 @@
  */
 
 export { default as router } from "./router"
-export { RouteNames } from "./types"
+export * from "./types"
 export { routerPushByParams } from "./utils"

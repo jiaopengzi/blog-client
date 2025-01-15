@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-31 16:25:56
+ * @LastEditTime : 2025-01-15 12:47:34
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -221,33 +221,33 @@
     </section>
 </template>
 <script lang="ts" setup>
-import { useIntersectionObserver,useResizeObserver } from "@vueuse/core"
+import { useIntersectionObserver, useResizeObserver } from "@vueuse/core"
 import type { ElContainer, ElFormItem } from "element-plus"
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { onBeforeMount, onUnmounted, reactive, ref, toRefs, useTemplateRef, watch } from "vue"
 
-import { gegPostStatusOptions, type InsertPostRequest,PostStatusCode } from "@/api/post/common"
-import { type PostCategory,viewListPostCategoryAPI } from "@/api/postCategory/view"
+import { gegPostStatusOptions, type InsertPostRequest, PostStatusCode } from "@/api/post/common"
+import { type PostCategory, viewListPostCategoryAPI } from "@/api/postCategory/view"
 import { ResponseCode } from "@/api/response"
 import AddTag from "@/components/common/add-tag"
 import { IconKeys } from "@/components/common/icons"
 import SwitchGroup from "@/components/common/switch-group"
-import { EditorPost,EditorStateManager } from "@/components/editor"
+import { EditorPost, EditorStateManager } from "@/components/editor"
+import { RouteNames } from "@/router"
 import { useUserStore } from "@/stores/user"
 import { formatTime } from "@/utils/dateTime"
 import { MessageUtil } from "@/utils/message"
 import { PermissionNames } from "@/utils/permissionRole"
-import { AdminSideMenu } from "@/views/admin/component/aside"
 
-import { type PostInfoAboutTime, queryKey, type UpdatePostForm,type UpsertPostForm } from "./types"
+import { type PostInfoAboutTime, queryKey, type UpdatePostForm, type UpsertPostForm } from "./types"
 import { useAdd } from "./useAdd"
 import { useEdit } from "./useEdit"
 import { useFormValidation } from "./useFormValidation"
 import { useSnapshot } from "./useSnapshot"
 import { useSwitchItem } from "./useSwitchItem"
-import { createEmptyUpsertPostForm,generateShortcuts } from "./utils"
+import { createEmptyUpsertPostForm, generateShortcuts } from "./utils"
 
-defineOptions({ name: AdminSideMenu.PostWrite })
+defineOptions({ name: RouteNames.PostWrite })
 
 // 初始化表单数据
 const postInfoForm = reactive<UpsertPostForm>(createEmptyUpsertPostForm())

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-31 14:38:27
+ * @LastEditTime : 2025-01-15 12:41:26
  * @FilePath     : \blog-client\src\views\admin\component\main\post-tag\index.vue
  * @Description  : 标签管理
  * @Blog         : https://jiaopengzi.com
@@ -62,22 +62,22 @@
 <script lang="ts" setup>
 import { reactive } from "vue"
 
-import { deletePostTagAPI,type DeletePostTagRequest } from "@/api/postTag/delete"
+import { deletePostTagAPI, type DeletePostTagRequest } from "@/api/postTag/delete"
 import { type PostTag } from "@/api/postTag/view"
 import { viewPostTagAPI } from "@/api/postTag/view"
 import type { PaginationRequest } from "@/api/request"
 import { ResponseCode } from "@/api/response"
-import type { TableColumn,TableData } from "@/components/common/base-table"
+import type { TableColumn, TableData } from "@/components/common/base-table"
 import BaseTable from "@/components/common/base-table"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { useParams } from "@/components/hooks/useParams"
-import { AdminSideMenu } from "@/views/admin/component/aside"
+import { RouteNames } from "@/router"
 
 import AddTag from "./component/add"
 import EditTag from "./component/edit"
 import { type ViewForm } from "./component/view"
 
-defineOptions({ name: AdminSideMenu.PostTag })
+defineOptions({ name: RouteNames.PostTag })
 
 const cols: TableColumn[] = reactive([
     {
@@ -168,7 +168,7 @@ const {
     updateRouterPush,
     updatePaginate,
 } = useBaseTable<PostTag, PaginationRequest, DeletePostTagRequest>(
-    AdminSideMenu.PostTag,
+    RouteNames.PostTag,
     viewPostTagAPI,
     ResponseCode.PostTagViewSuccess,
     deletePostTagAPI,
