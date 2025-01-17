@@ -33,7 +33,7 @@
 
         <div class="row2">建议:收费视频加密,免费视频不加密."</div>
         <el-upload ref="uploadRef" class="upload" drag multiple :http-request="httpRequest">
-            <Icon :name="IconKeys.UploadFilled" custom-class="icon-upload-filled" />
+            <Icon :name="IconKeys.Upload" custom-class="icon-upload-filled" />
             <div class="el-upload__text">将文件拖放到此处 或 <em>点击上传</em></div>
             <template #tip>
                 <div class="el-upload__tip">
@@ -46,7 +46,7 @@
 </template>
 
 <script lang="ts" setup>
-import { type ElUpload,type UploadRequestOptions } from "element-plus"
+import { type ElUpload, type UploadRequestOptions } from "element-plus"
 import { onBeforeMount, ref, useTemplateRef } from "vue"
 
 import { ResponseCode } from "@/api/response"

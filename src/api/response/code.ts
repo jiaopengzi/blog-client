@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-29 12:08:15
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-14 11:47:29
+ * @LastEditTime : 2025-01-17 12:23:07
  * @FilePath     : \blog-client\src\api\response\code.ts
  * @Description  : 相应状态码
  * @Blog         : https://jiaopengzi.com
@@ -100,6 +100,12 @@ export enum ResponseCode {
     PostCategoryCheckNameNoExistExcludingID = 2209, // 分类名称不存在，排除指定ID
     PostCategoryCheckSlugNoExistExcludingID = 2211, // 别名名称不存在，排除指定ID
     PostCategoryViewListSuccess = 2212, // 查看文章分类列表成功
+
+    // 设置相关
+    GetDBsSuccess = 2300, // 获取数据库信息成功
+    DBsNoUpdated = 2301, // 数据库信息未更新
+    DBsUpdateOnlyPassword = 2302, // 数据库信息只允许更新密码
+    DBsUpdateSuccess = 2303, // 数据库信息更新成功
 
     // 验证码相关
     CaptchaSendSuccess = 8000, //验证码发送成功

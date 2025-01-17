@@ -2,103 +2,104 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-15 13:12:06
+ * @LastEditTime : 2025-01-17 12:02:23
  * @FilePath     : \blog-client\src\views\admin\component\main\setting\index.vue
- * @Description  : 
+ * @Description  : 网站设置
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 
 <template>
     <div class="content">
-        <el-tabs
-            type="border-card"
-            :tab-position="tabPosition"
-            class="tabs"
-            v-model="activeTab"
-            @tab-change="tabChange"
-        >
-            <el-tab-pane v-for="tab in tabs" :key="tab.hash" :name="tab.hash">
-                <template #label>
-                    <span class="custom-tabs-label">
-                        <el-icon> <component :is="tab.icon" /> </el-icon>
-                        <span>{{ tab.label }}</span>
-                    </span>
-                </template>
-                <component :is="tab.component" />
-            </el-tab-pane>
+        <el-tabs type="border-card" :tab-position="tabPosition" class="tabs" v-model="activeTab" @tab-change="tabChange">
+            <el-scrollbar>
+                <el-tab-pane v-for="tab in tabs" :key="tab.hash" :name="tab.hash">
+                    <template #label>
+                        <div class="custom-tabs-label">
+                            <Icon :name="tab.icon" custom-class="iconfont" />
+                            <span>{{ tab.label }}</span>
+                        </div>
+                    </template>
+                    <component :is="tab.component" />
+                </el-tab-pane>
+            </el-scrollbar>
         </el-tabs>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ChatLineSquare, Document, Goods, Star, Tickets, View } from "@element-plus/icons-vue"
-import { ref } from "vue"
+import { onMounted, ref } from "vue"
 import { useRouter } from "vue-router"
 
+import { IconKeys } from "@/components/common/icons"
 import { RouteNames } from "@/router"
-import UserInfoComment from "@/views/user-info/component/comment"
-import UserInfoFavorite from "@/views/user-info/component/favorite"
-import UserInfoInfo from "@/views/user-info/component/info"
-import UserInfoOrder from "@/views/user-info/component/order"
-import UserInfoPost from "@/views/user-info/component/post"
-import UserInfoVip from "@/views/user-info/component/vip"
 
+import SettingDatabase from "./database"
+import SettingEmail from "./email"
+import SettingSocial from "./social"
 import type { Tab } from "./types"
+import SettingUpload from "./upload"
 
 defineOptions({ name: RouteNames.Setting })
 
 const tabPosition = ref("left") // tab位置
-const activeTab = ref("info")
+const activeTab = ref("database")
 const router = useRouter()
 
 const tabs: Tab[] = [
-    { hash: "info", label: "我的信息", icon: View, component: UserInfoInfo },
-    { hash: "order", label: "我的订单", icon: Tickets, component: UserInfoOrder },
-    { hash: "vip", label: "购买会员", icon: Goods, component: UserInfoVip },
-    { hash: "favorite", label: "我的文章", icon: Document, component: UserInfoPost },
+    { hash: "database", label: "数据库", icon: IconKeys.Data, component: SettingDatabase },
+    {
+        hash: "notification",
+        label: "邮件通知",
+        icon: IconKeys.Notification,
+        component: SettingEmail,
+    },
+    { hash: "social", label: "三方登录", icon: IconKeys.Social, component: SettingSocial },
+    { hash: "upload", label: "文件上传", icon: IconKeys.Upload, component: SettingUpload },
 ]
 
-// 根据 hash 值来设置当前的 activeTab
-function tabChange(name: string) {
-    router.push({ hash: `#${name}` }) // 使用哈希路由更新 URL
-    // router.push({ name: name }) // 使用哈希路由更新 URL
+// 切换 tab
+const tabChange = (name: string) => {
+    router.push({ hash: `#${name}` }) // 更新路由
 }
 
-const hashValue = router.currentRoute.value.hash
-if (hashValue) {
-    activeTab.value = hashValue.replace("#", "")
+// 更新当前的 activeTab
+const updateActiveTab = (hash: string) => {
+    if (!hash) return
+    activeTab.value = hash.replace("#", "")
 }
+
+onMounted(() => {
+    updateActiveTab(router.currentRoute.value.hash)
+})
 </script>
 
 <style scoped lang="scss">
 .content {
-    width: pc.$width-page-main;
+    width: 100%;
     display: flex;
     flex-direction: column;
 }
 
 .tabs {
-    width: pc.$width-page-main;
-    min-height: calc(100vh - pc.$height-footer - pc.$height-header);
-    background-color: var(--jpz-bg-color);
+    box-sizing: border-box; // 使元素的内外边距都计入宽度和高度
+    width: 100%;
+    min-height: 100%;
+    background-color: var(--jpz-bg-page-color);
     border: none;
-    margin-bottom: 8px;
+    // margin-bottom: 8px;
 }
 
-.tabs > .el-tabs__content {
-    padding: 32px;
-    color: #6b778c;
-    font-size: 32px;
-    font-weight: 600;
-}
+.custom-tabs-label {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%; // 100% 宽度才能让左对齐生效
+    color: var(--jpz-text-color-regular);
 
-.tabs .custom-tabs-label .el-icon {
-    vertical-align: middle;
-}
-
-.tabs .custom-tabs-label span {
-    vertical-align: middle;
-    margin-left: 4px;
+    .iconfont {
+        margin-right: 4px;
+        fill: var(--jpz-text-color-regular);
+    }
 }
 </style>

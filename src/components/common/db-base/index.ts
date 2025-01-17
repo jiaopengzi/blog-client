@@ -11,3 +11,4 @@
 
 export { commonRules } from "./commonRules"
 export { default } from "./index.vue"
+export * from "./types"

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-08 17:43:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-09 23:10:51
+ * @LastEditTime : 2025-01-17 14:44:11
  * @FilePath     : \blog-client\src\components\common\db-base\index.vue
  * @Description  : 数据库配置表单-基础组件
  * @Blog         : https://jiaopengzi.com
@@ -15,24 +15,20 @@
             label-position="left"
             label-width="100px"
             ref="formRef"
-            :model="dbForm"
+            :model="dbFormData"
             :rules="rules"
-            class="setup-form"
+            class="db-form"
             size="default"
             status-icon
             :scroll-to-error="true"
             :scroll-into-view-options="{ behavior: 'smooth', block: 'center' }"
+            :style="{ width: formWidth ? `${formWidth}px` : '100%' }"
         >
             <h2>{{ title }}</h2>
 
-            <el-form-item
-                v-for="item in formItems"
-                :key="item.prop"
-                :label="item.label"
-                :prop="item.prop"
-            >
+            <el-form-item v-for="item in formItems" :key="item.prop" :label="item.label" :prop="item.prop">
                 <el-input
-                    v-model="dbForm[item.prop as keyof DbFormType]"
+                    v-model="dbFormData[item.prop as keyof DbFormType]"
                     :type="item.type"
                     :placeholder="item.placeholder"
                     :show-password="item.showPassword"
@@ -47,11 +43,9 @@
 import type { FormInstance, FormRules } from "element-plus"
 import { reactive, useTemplateRef } from "vue"
 
-import type { PgsqlSetupRequest, RedisNodeSetupRequest } from "@/api/setting/setup"
+import { type DbFormType } from "./types"
 
 defineOptions({ name: "DatabaseForm" })
-
-type DbFormType = PgsqlSetupRequest | RedisNodeSetupRequest
 
 const { title, db, rules, formItems } = defineProps<{
     title: string
@@ -64,15 +58,16 @@ const { title, db, rules, formItems } = defineProps<{
         placeholder?: string
         showPassword?: boolean
     }>
+    formWidth?: number
 }>()
 
 const formRef = useTemplateRef<FormInstance>("formRef")
 
-const dbForm = reactive<DbFormType>({ ...db })
+const dbFormData = reactive<DbFormType>(db)
 
 defineExpose({
-    dbForm,
-    validateForm: async () => {
+    dbFormData,
+    validateForm: async (): Promise<boolean> => {
         if (formRef.value) {
             try {
                 await formRef.value.validate()
@@ -94,14 +89,14 @@ defineExpose({
     background-color: var(--jpz-bg-color-page);
 }
 
-.setup-form {
+.db-form {
     width: 100%;
     // border-bottom: 1px solid var(--jpz-border-color);
     padding: 20px;
     background-color: var(--jpz-bg-color);
-    .el-input {
-        --el-input-width: 220px;
-    }
+    // .el-input {
+    //     --el-input-width: 220px;
+    // }
     border-radius: 6px;
 }
 

@@ -2,20 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-07 19:35:55
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-09 21:31:29
+ * @LastEditTime : 2025-01-17 11:35:35
  * @FilePath     : \blog-client\src\components\common\db-redis\index.vue
  * @Description  : redis数据库配置表单
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-    <DatabaseForm
-        ref="databaseFormRef"
-        :title="nodeName"
-        :db="db"
-        :rules="rules"
-        :formItems="formItems"
-    />
+    <DatabaseForm ref="databaseFormRef" :title="nodeName" :db="db" :rules="rules" :formItems="formItems" :formWidth="formWidth" />
 </template>
 
 <script lang="ts" setup>
@@ -23,11 +17,11 @@ import type { FormRules } from "element-plus"
 import { reactive, useTemplateRef } from "vue"
 
 import { type RedisNodeSetupRequest } from "@/api/setting/setup"
-import DatabaseForm, { commonRules } from "@/components/common/db-base"
+import DatabaseForm, { commonRules, type DatabaseFormRef } from "@/components/common/db-base"
 
 defineOptions({ name: "RedisDatabaseForm" })
 
-const databaseFormRef = useTemplateRef<InstanceType<typeof DatabaseForm>>("databaseFormRef")
+const databaseFormRef = useTemplateRef<DatabaseFormRef>("databaseFormRef")
 
 const {
     node,
@@ -38,9 +32,11 @@ const {
         user: "default",
         password: "",
     },
+    formWidth,
 } = defineProps<{
     node?: number
     db?: RedisNodeSetupRequest
+    formWidth?: number
 }>()
 
 const nodeName = node ? `redis节点${node}` : "redis数据库"

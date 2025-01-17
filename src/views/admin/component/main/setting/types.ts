@@ -10,10 +10,12 @@
  */
 import { defineComponent } from "vue"
 
+import { IconKeys } from "@/components/common/icons"
+
 // tab 类型
 export interface Tab {
     hash: string // 路由名称
     label?: string // 标签显示
-    icon?: ReturnType<typeof defineComponent> // 图标
+    icon?: IconKeys // 图标
     component: ReturnType<typeof defineComponent> // 组件
 }

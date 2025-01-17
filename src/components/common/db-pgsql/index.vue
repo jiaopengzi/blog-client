@@ -2,32 +2,26 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-07 19:35:55
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-09 21:24:25
+ * @LastEditTime : 2025-01-16 12:34:50
  * @FilePath     : \blog-client\src\components\common\db-pgsql\index.vue
  * @Description  : pgsql数据库配置表单
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-    <DatabaseForm
-        ref="databaseFormRef"
-        :title="'pgsql数据库'"
-        :db="db"
-        :rules="rules"
-        :formItems="formItems"
-    />
+    <DatabaseForm ref="databaseFormRef" :title="'pgsql数据库'" :db="dbData" :rules="rules" :formItems="formItems" :formWidth="formWidth" />
 </template>
 
 <script lang="ts" setup>
 import type { FormRules } from "element-plus"
-import { reactive, useTemplateRef } from "vue"
+import { reactive, useTemplateRef, watch } from "vue"
 
 import { type PgsqlSetupRequest } from "@/api/setting/setup"
-import DatabaseForm, { commonRules } from "@/components/common/db-base"
+import DatabaseForm, { commonRules, type DatabaseFormRef } from "@/components/common/db-base"
 
 defineOptions({ name: "PgsqlDatabaseForm" })
 
-const databaseFormRef = useTemplateRef<InstanceType<typeof DatabaseForm>>("databaseFormRef")
+const databaseFormRef = useTemplateRef<DatabaseFormRef>("databaseFormRef")
 
 const {
     db = {
@@ -38,9 +32,13 @@ const {
         password: "",
         table_prefix: "",
     },
+    formWidth,
 } = defineProps<{
     db?: PgsqlSetupRequest
+    formWidth?: number
 }>()
+
+const dbData = reactive<PgsqlSetupRequest>(db)
 
 const rules = reactive<FormRules<PgsqlSetupRequest>>({
     ...commonRules,
@@ -68,6 +66,14 @@ const formItems = [
     { label: "密码", prop: "password", type: "password", showPassword: true },
     { label: "表格前缀", prop: "table_prefix", placeholder: "例如:blog_" },
 ]
+
+watch(
+    () => db,
+    (newDb) => {
+        Object.assign(dbData, newDb)
+    },
+    { deep: true, immediate: true },
+)
 
 defineExpose({
     databaseFormRef,

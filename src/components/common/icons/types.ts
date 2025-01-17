@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-30 11:09:28
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 12:53:47
+ * @LastEditTime : 2025-01-15 16:40:21
  * @FilePath     : \blog-client\src\components\common\icons\types.ts
  * @Description  : 类型定义
  * @Blog         : https://jiaopengzi.com
@@ -121,7 +121,6 @@ export enum IconKeys {
     Tool = "tool",
     Ul = "ul",
     Undo = "undo",
-    UploadFilled = "upload-filled",
     User = "user",
     Video = "video",
     Vip = "vip",
@@ -140,4 +139,6 @@ export enum IconKeys {
     Setting = "setting",
     ThemeDark = "theme-dark",
     ThemeLight = "theme-light",
+    Social = "social",
+    Upload = "upload",
 }

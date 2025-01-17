@@ -14,14 +14,7 @@ import { watch } from "vue"
 import { useUserStore } from "@/stores/user"
 
 /**
- * @description: 基础表格钩子
- * @param routeName 路由名称
- * @param viewAPI 获取数据的 API
- * @param viewResCode 获取数据的响应码
- * @param deleteAPI 删除数据的 API
- * @param deleteResCode 删除数据的响应码
- * @param queryParams 查询参数
- * @param options 可选参数
+ * @description: 全局钩子
  */
 export async function useGlobal() {
     const userStore = useUserStore()
