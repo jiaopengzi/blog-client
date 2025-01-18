@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-18 17:57:52
+ * @LastEditTime : 2025-01-18 19:13:20
  * @FilePath     : \blog-client\src\views\social-login-callback\index.vue
  * @Description  : 三方登录回调页面
  * @Blog         : https://jiaopengzi.com
@@ -34,43 +34,50 @@ const platformDisplay = ref("")
 
 const socialCallbacks: Record<
     RouteNamesSocial,
-    { platform: SocialLoginType; display: string; action: (code: string, loginType: SocialLoginType) => Promise<void> }
+    { platform: SocialLoginType; display: string; action: (code: string, loginType: SocialLoginType) => Promise<void>; routeName: RouteNames }
 > = {
     [RouteNames.SocialQQLoginCallback]: {
         platform: SocialLoginType.QQ,
         display: SocialLoginDisplay.QQ,
         action: userStore.socialLoginCallback,
+        routeName: RouteNames.Home,
     },
     [RouteNames.SocialQQBindCallback]: {
         platform: SocialLoginType.QQ,
         display: SocialLoginDisplay.QQ,
         action: userStore.socialBindCallback,
+        routeName: RouteNames.UserInfo,
     },
     [RouteNames.SocialWeChatLoginCallback]: {
         platform: SocialLoginType.WeChat,
         display: SocialLoginDisplay.WeChat,
         action: userStore.socialLoginCallback,
+        routeName: RouteNames.Home,
     },
     [RouteNames.SocialWeChatBindCallback]: {
         platform: SocialLoginType.WeChat,
         display: SocialLoginDisplay.WeChat,
         action: userStore.socialBindCallback,
+        routeName: RouteNames.UserInfo,
     },
 }
 
 onMounted(async () => {
     const routeName = route.name as RouteNamesSocial
     const callbackInfo = socialCallbacks[routeName]
-
-    if (callbackInfo) {
-        const code = new URLSearchParams(window.location.search).get("code")
-        if (code) {
-            platformDisplay.value = callbackInfo.display
-            await callbackInfo.action(code, callbackInfo.platform)
-        }
+    // if (!callbackInfo) {
+    //     router.push({ name: RouteNames.Home })
+    //     return
+    // }
+    console.log("routeName===============>", routeName)
+    console.log("callbackInfo===============>", routeName)
+    const code = new URLSearchParams(window.location.search).get("code")
+    if (code) {
+        platformDisplay.value = callbackInfo.display
+        await callbackInfo.action(code, callbackInfo.platform)
     }
 
-    router.push({ name: RouteNames.Home })
+    // router.push({ name: callbackInfo.routeName })
 })
 </script>
 
