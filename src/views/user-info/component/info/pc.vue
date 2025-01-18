@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-17 10:52:13
+ * @LastEditTime : 2025-01-18 18:06:01
  * @FilePath     : \blog-client\src\views\user-info\component\info\pc.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -15,62 +15,30 @@
             <el-descriptions title="我的信息" :column="3" size="large" border>
                 <el-descriptions-item label="文章">86</el-descriptions-item>
                 <el-descriptions-item label="评论">53</el-descriptions-item>
-                <el-descriptions-item label="注册时间">{{
-                    formatRegisterTime
-                }}</el-descriptions-item>
+                <el-descriptions-item label="注册时间">{{ formatRegisterTime }}</el-descriptions-item>
                 <el-descriptions-item label="最后登录">53</el-descriptions-item>
             </el-descriptions>
         </div>
 
         <div class="el-social-div">
             <el-descriptions title="社交信息" :column="3" size="large" border>
-                <el-descriptions-item :label="Social.QQDisplay">
-                    <el-button
-                        class="btns"
-                        type="primary"
-                        plain
-                        size="small"
-                        v-if="!showQQ"
-                        @click="bindSocial(Social.QQ)"
-                    >
-                        绑定{{ Social.QQDisplay }}
+                <el-descriptions-item :label="SocialLoginDisplay.QQ">
+                    <el-button class="btns" type="primary" plain size="small" v-if="!showQQ" @click="bindSocial(SocialLoginType.QQ)">
+                        绑定{{ SocialLoginDisplay.QQ }}
                     </el-button>
                     <span class="social-nickname">{{ socialNickname("user_qq", "nickname") }}</span>
-                    <el-button
-                        class="btns"
-                        type="primary"
-                        plain
-                        size="small"
-                        v-if="showQQ && isBindEmail"
-                        @click="unBindSocial(Social.QQ)"
-                    >
-                        解绑{{ Social.QQDisplay }}
+                    <el-button class="btns" type="primary" plain size="small" v-if="showQQ && isBindEmail" @click="unBindSocial(SocialLoginType.QQ)">
+                        解绑{{ SocialLoginDisplay.QQ }}
                     </el-button>
                 </el-descriptions-item>
 
-                <el-descriptions-item :label="Social.WeChatDisplay">
-                    <el-button
-                        class="btns"
-                        type="primary"
-                        plain
-                        size="small"
-                        v-if="!showWeChat"
-                        @click="bindSocial(Social.WeChat)"
-                    >
-                        绑定{{ Social.WeChatDisplay }}
+                <el-descriptions-item :label="SocialLoginDisplay.WeChat">
+                    <el-button class="btns" type="primary" plain size="small" v-if="!showWeChat" @click="bindSocial(SocialLoginType.WeChat)">
+                        绑定{{ SocialLoginDisplay.WeChat }}
                     </el-button>
-                    <span class="social-nickname">{{
-                        socialNickname("user_wechat", "nickname")
-                    }}</span>
-                    <el-button
-                        class="btns"
-                        type="primary"
-                        plain
-                        size="small"
-                        v-if="showWeChat && isBindEmail"
-                        @click="unBindSocial(Social.WeChat)"
-                    >
-                        解绑{{ Social.WeChatDisplay }}
+                    <span class="social-nickname">{{ socialNickname("user_wechat", "nickname") }}</span>
+                    <el-button class="btns" type="primary" plain size="small" v-if="showWeChat && isBindEmail" @click="unBindSocial(SocialLoginType.WeChat)">
+                        解绑{{ SocialLoginDisplay.WeChat }}
                     </el-button>
                 </el-descriptions-item>
             </el-descriptions>
@@ -116,11 +84,7 @@
                 </el-form-item>
 
                 <el-form-item label="简介" prop="description">
-                    <el-input
-                        v-model="editForm.description"
-                        type="textarea"
-                        placeholder="这个人很懒,什么也没有留下。"
-                    />
+                    <el-input v-model="editForm.description" type="textarea" placeholder="这个人很懒,什么也没有留下。" />
                 </el-form-item>
                 <div class="btn-submit">
                     <el-button type="primary" @click="submitForm(editFormRef)">保存修改</el-button>
@@ -130,7 +94,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { Social } from "@/api/common"
+import { SocialLoginDisplay, SocialLoginType } from "@/api/common"
 import AvatarInitials from "@/components/common/avatar-initials"
 import AvatarUpload from "@/components/common/avatar-upload"
 import { useInfo } from "@/views/user-info/component/info/hooks"

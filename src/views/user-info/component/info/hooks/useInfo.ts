@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-13 14:17:34
+ * @LastEditTime : 2025-01-18 18:02:20
  * @FilePath     : \blog-client\src\views\user-info\component\info\hooks\useInfo.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -14,7 +14,7 @@ import { storeToRefs } from "pinia"
 import type { ComputedRef, Ref } from "vue"
 import { computed, onBeforeMount, onMounted, reactive, ref, toRef } from "vue"
 
-import { Social } from "@/api/common"
+import { SocialLoginType } from "@/api/common"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { setAvatarAPI, type SetAvatarRequest } from "@/api/upload/setAvatar"
 import type { EditUserInfoRequest } from "@/api/user/editUserInfo"
@@ -42,8 +42,8 @@ export interface UseInfoReturnType {
     showQQ: Ref<boolean>
     showWeChat: Ref<boolean>
     socialNickname: (platform: keyof UserInfo, field: string) => string
-    bindSocial: (platform: Social) => Promise<void>
-    unBindSocial: (platform: Social) => Promise<void>
+    bindSocial: (platform: SocialLoginType) => Promise<void>
+    unBindSocial: (platform: SocialLoginType) => Promise<void>
     userNameDisabled: Ref<boolean>
     email: ComputedRef<string>
     updateAvatarToDB(avatarUrl: string): void
@@ -81,20 +81,17 @@ export function useInfo(): UseInfoReturnType {
     })
 
     const email = computed(() => {
-        return userData.value.user.id.toString() === userData.value.user.user_email
-            ? ""
-            : userData.value.user.user_email
+        return userData.value.user.id.toString() === userData.value.user.user_email ? "" : userData.value.user.user_email
     })
 
     const userNameRef = toRef(editForm, "userName")
     const excludingUserIDRef = toRef(userData.value.user.id.toString())
 
     // hooks
-    const { checkUserNameExcludingUserIDValidator, createUserNameRules, createNickNameRules } =
-        useAccountFormValidation({
-            FormUserName: userNameRef,
-            FormExcludingUserID: excludingUserIDRef,
-        })
+    const { checkUserNameExcludingUserIDValidator, createUserNameRules, createNickNameRules } = useAccountFormValidation({
+        FormUserName: userNameRef,
+        FormExcludingUserID: excludingUserIDRef,
+    })
 
     const rules = reactive<FormRules<EditForm>>({
         userName: createUserNameRules(checkUserNameExcludingUserIDValidator),
@@ -155,28 +152,25 @@ export function useInfo(): UseInfoReturnType {
      * @param platform 平台
      * @return  void
      */
-    const bindSocial = async (platform: Social) => {
+    const bindSocial = async (platform: SocialLoginType) => {
         if (!userStore.isBindEmail) {
             await userStore.changeShowDialogBindEmail(true)
             return
         }
 
-        if (platform === Social.QQ) {
-            await userStore.bindQQ()
-        } else if (platform === Social.WeChat) {
-            await userStore.bindWeChat()
-        }
+        await userStore.socialBind(platform)
+
         updateShowStatus(platform)
     }
 
-    const unBindSocial = async (platform: Social) => {
-        if (platform === Social.QQ) {
-            await userStore.unBindQQ()
+    const unBindSocial = async (platform: SocialLoginType) => {
+        await userStore.socialUnBind(platform)
+        if (platform === SocialLoginType.QQ) {
             showQQ.value = false
-        } else if (platform === Social.WeChat) {
-            await userStore.unBindWeChat()
+        } else if (platform === SocialLoginType.WeChat) {
             showWeChat.value = false
         }
+
         updateShowStatus(platform)
     }
 
@@ -185,21 +179,17 @@ export function useInfo(): UseInfoReturnType {
      * @param platform 平台
      * @return  void
      */
-    const updateShowStatus = (platform: Social) => {
-        if (platform === Social.QQ && userData.value.user_qq && userData.value.user_qq.openid) {
+    const updateShowStatus = (platform: SocialLoginType) => {
+        if (platform === SocialLoginType.QQ && userData.value.user_qq && userData.value.user_qq.openid) {
             showQQ.value = true
-        } else if (
-            platform === Social.WeChat &&
-            userData.value.user_wechat &&
-            userData.value.user_wechat.unionid
-        ) {
+        } else if (platform === SocialLoginType.WeChat && userData.value.user_wechat && userData.value.user_wechat.unionid) {
             showWeChat.value = true
         }
     }
 
     onMounted(() => {
-        updateShowStatus(Social.QQ)
-        updateShowStatus(Social.WeChat)
+        updateShowStatus(SocialLoginType.QQ)
+        updateShowStatus(SocialLoginType.WeChat)
         changeUserNameDisabled()
     })
 

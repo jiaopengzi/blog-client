@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-08 12:51:21
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 13:35:13
+ * @LastEditTime : 2025-01-18 17:34:51
  * @FilePath     : \blog-client\src\api\common.ts
  * @Description  : 公用
  * @Blog         : https://jiaopengzi.com
@@ -27,10 +27,16 @@ export enum CaptchaPurpose {
     BindEmail = "BindEmail", // 验证码用途：绑定邮箱
 }
 
-// 社交登录
-export enum Social {
-    QQ = "qq",
-    QQDisplay = "QQ",
-    WeChat = "wechat",
-    WeChatDisplay = "微信",
+// 三方登录方式
+export enum SocialLoginType {
+    WeChat = "WeChat",
+    QQ = "QQ",
+    Phone = "Phone",
+}
+
+// 三方登录方式显示
+export const SocialLoginDisplay = {
+    [SocialLoginType.QQ]: "QQ",
+    [SocialLoginType.WeChat]: "微信",
+    [SocialLoginType.Phone]: "手机号",
 }

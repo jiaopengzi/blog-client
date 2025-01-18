@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-10-09 09:35:45
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-07 17:35:15
+ * @LastEditTime : 2025-01-18 17:31:48
  * @FilePath     : \blog-client\src\stores\user.ts
  * @Description  : 用户信息
  * @Blog         : https://jiaopengzi.com
@@ -10,29 +10,14 @@
  */
 
 // @ts-check
-import { acceptHMRUpdate,defineStore } from "pinia"
+import { acceptHMRUpdate, defineStore } from "pinia"
 
+import { SocialLoginType } from "@/api/common"
 import { getRolesAPI } from "@/api/permissionRole/role"
-import type { Res, ResResponse } from "@/api/response"
-import { ResponseCode } from "@/api/response"
-import type { UserInfo } from "@/api/user/getUserInfo"
-import { emptyUserInfo, getUserInfoAPI } from "@/api/user/getUserInfo"
-import { type LoginRequest } from "@/api/user/login"
-import {
-    bindQQUrl,
-    bindQQUrlCallback,
-    bindWeChatUrl,
-    bindWeChatUrlCallback,
-    loginAPI,
-    // QQ
-    loginByQQUrl,
-    loginByQQUrlCallback,
-    // 微信
-    loginByWeChatUrl,
-    loginByWeChatUrlCallback,
-    unBindQQ,
-    unBindWeChat,
-} from "@/api/user/login"
+import { type Res, ResponseCode, type ResResponse } from "@/api/response"
+import { emptyUserInfo, getUserInfoAPI, type UserInfo } from "@/api/user/getUserInfo"
+import { loginAPI, type LoginRequest } from "@/api/user/login"
+import { socialBind, socialBindCallback, socialLogin, socialLoginCallback, socialUnBind } from "@/api/user/socialLogin"
 import { LocalStorageKey } from "@/stores/local"
 import { getAvatarUrl } from "@/utils/avatar"
 import { DeviceType } from "@/utils/device"
@@ -136,9 +121,7 @@ export const useUserStore = defineStore("user", {
 
         // 退出登录
         async logout() {
-            localStorage.removeItem(LocalStorageKey.AccessToken)
-            localStorage.removeItem(LocalStorageKey.RolesList)
-            localStorage.removeItem(LocalStorageKey.PermissionList)
+            localStorageClearByLogout()
             this.$patch(createEmptyUserInfoStore())
             // 重定向到登录页
             window.location.href = "/"
@@ -150,63 +133,38 @@ export const useUserStore = defineStore("user", {
             this.$patch(userInfoStore)
         },
 
-        // QQ登录
-        async loginByQQ() {
-            await apiLoginQQ()
-            // this.$patch(createEmptyUserInfoStore())
+        // 三方登录
+        async socialLogin(loginType: SocialLoginType) {
+            await redirectToSocialLogin(socialLogin(loginType), ResponseCode.SocialLoginSuccess)
         },
 
-        // QQ登录回调
-        async loginByQQCallback(code: string) {
-            const userInfoStore: UserInfoStore = await apiLoginQQCallback(code)
+        // 三方登录回调
+        async socialLoginCallback(code: string, loginType: SocialLoginType) {
+            const resObj = await handleResponse<Res<unknown>>(socialLoginCallback(code, loginType))
+            const userInfoStore = await handleLoginResult(resObj, ResponseCode.SocialLoginCallbackSuccess)
+
             this.$patch(userInfoStore)
         },
 
-        // 绑定QQ
-        async bindQQ() {
-            await apiBindQQ()
-            // this.$patch(createEmptyUserInfoStore())
+        // 三方绑定
+        async socialBind(loginType: SocialLoginType) {
+            await redirectToSocialLogin(socialBind(loginType), ResponseCode.SocialLoginSuccess)
         },
 
-        // QQ绑定回调
-        async bindQQCallback(code: string) {
-            const userInfoStore: UserInfoStore = await apiBindQQCallback(code)
+        // 三方绑定回调
+        async socialBindCallback(code: string, loginType: SocialLoginType) {
+            const resObj = await handleResponse<Res<unknown>>(socialBindCallback(code, loginType))
+            const userInfoStore = await handleBindResult(resObj, ResponseCode.SocialBindCallbackSuccess)
+
             this.$patch(userInfoStore)
         },
 
-        // 解绑QQ
-        async unBindQQ() {
-            const userInfoStore: UserInfoStore = await apiUnBindQQ()
-            this.$patch(userInfoStore)
-        },
+        // 三方解绑
+        async socialUnBind(loginType: SocialLoginType) {
+            const resObj = await handleResponse<Res<unknown>>(socialUnBind(loginType))
 
-        // 微信登录
-        async loginByWeChat() {
-            await apiLoginWeChat()
-            // this.$patch(createEmptyUserInfoStore())
-        },
+            const userInfoStore = await handleBindResult(resObj, ResponseCode.SocialUnBindSuccess)
 
-        // 微信登录回调
-        async loginByWeChatCallback(code: string) {
-            const userInfoStore: UserInfoStore = await apiLoginWeChatCallback(code)
-            this.$patch(userInfoStore)
-        },
-
-        // 绑定微信
-        async bindWeChat() {
-            await apiBindWeChat()
-            // this.$patch(createEmptyUserInfoStore())
-        },
-
-        // 微信绑定回调
-        async bindWeChatCallback(code: string) {
-            const userInfoStore: UserInfoStore = await apiBindWeChatCallback(code)
-            this.$patch(userInfoStore)
-        },
-
-        // 解绑微信
-        async unBindWeChat() {
-            const userInfoStore: UserInfoStore = await apiUnBindWeChat()
             this.$patch(userInfoStore)
         },
 
@@ -264,66 +222,6 @@ async function apiLogin(loginName: string, password: string): Promise<UserInfoSt
     return await handleLoginResult(resObj, ResponseCode.UserLoginSuccess)
 }
 
-// QQ登录
-async function apiLoginQQ(): Promise<void> {
-    await redirectToSocialLogin(loginByQQUrl(), ResponseCode.SocialLoginQQSuccess)
-}
-
-// QQ登录回调
-async function apiLoginQQCallback(code: string): Promise<UserInfoStore> {
-    const resObj = await handleResponse<Res<unknown>>(loginByQQUrlCallback(code)) // 使用辅助函数处理请求
-
-    return await handleLoginResult(resObj, ResponseCode.SocialLoginQQCallbackSuccess)
-}
-
-// 绑定QQ
-async function apiBindQQ(): Promise<void> {
-    await redirectToSocialLogin(bindQQUrl(), ResponseCode.SocialLoginQQSuccess)
-}
-
-// 绑定QQ回调
-async function apiBindQQCallback(code: string): Promise<UserInfoStore> {
-    const resObj = await handleResponse<Res<unknown>>(bindQQUrlCallback(code)) // 使用辅助函数处理请求
-
-    return await handleBindResult(resObj, ResponseCode.SocialBindQQCallbackSuccess)
-}
-// 解绑QQ
-async function apiUnBindQQ(): Promise<UserInfoStore> {
-    const resObj = await handleResponse<Res<unknown>>(unBindQQ()) // 使用辅助函数处理请求
-
-    return await handleBindResult(resObj, ResponseCode.SocialUnBindQQSuccess)
-}
-
-// 微信登录
-async function apiLoginWeChat(): Promise<void> {
-    await redirectToSocialLogin(loginByWeChatUrl(), ResponseCode.SocialLoginWeChatSuccess)
-}
-
-// 微信登录回调
-async function apiLoginWeChatCallback(code: string): Promise<UserInfoStore> {
-    const resObj = await handleResponse<Res<unknown>>(loginByWeChatUrlCallback(code)) // 使用辅助函数处理请求
-    return await handleLoginResult(resObj, ResponseCode.SocialLoginWeChatCallbackSuccess)
-}
-
-// 绑定微信
-async function apiBindWeChat(): Promise<void> {
-    await redirectToSocialLogin(bindWeChatUrl(), ResponseCode.SocialLoginWeChatSuccess)
-}
-
-// 绑定微信回调
-async function apiBindWeChatCallback(code: string): Promise<UserInfoStore> {
-    const resObj = await handleResponse<Res<unknown>>(bindWeChatUrlCallback(code)) // 使用辅助函数处理请求
-
-    return await handleBindResult(resObj, ResponseCode.SocialBindWeChatCallbackSuccess)
-}
-
-// 解绑微信
-async function apiUnBindWeChat(): Promise<UserInfoStore> {
-    const resObj = await handleResponse<Res<unknown>>(unBindWeChat()) // 使用辅助函数处理请求
-
-    return await handleBindResult(resObj, ResponseCode.SocialUnBindWeChatSuccess)
-}
-
 // 从token中获取用户信息
 async function apiGetUserInfoByToken(): Promise<UserInfoStore> {
     try {
@@ -342,10 +240,7 @@ async function apiGetUserInfoByToken(): Promise<UserInfoStore> {
         const { data: dataRole } = resRole.data
 
         // 判断是否获取成功
-        if (
-            resUser.data.code === ResponseCode.UserGetInfoSuccess &&
-            resRole.data.code === ResponseCode.GetRoleSuccess
-        ) {
+        if (resUser.data.code === ResponseCode.UserGetInfoSuccess && resRole.data.code === ResponseCode.GetRoleSuccess) {
             const meta = dataUser.user_meta.find((item) => item.meta_key === "role_name")
             const roleName = meta ? meta.meta_value : undefined
 
@@ -393,10 +288,7 @@ async function handleResponse<T>(requestPromise: Promise<ResResponse<T>>): Promi
  * @param successCode 请求成功的状态码
  * @return {void}
  */
-async function redirectToSocialLogin(
-    requestPromise: Promise<ResResponse<Res<string>>>,
-    successCode: ResponseCode,
-): Promise<void> {
+async function redirectToSocialLogin(requestPromise: Promise<ResResponse<Res<string>>>, successCode: ResponseCode): Promise<void> {
     const resObj = await handleResponse<Res<string>>(requestPromise) // 使用辅助函数处理请求
 
     if (resObj.code === successCode) {
@@ -410,32 +302,21 @@ async function redirectToSocialLogin(
  * @param successCode 请求成功的状态码
  * @return {UserInfoStore} 用户信息
  */
-async function handleLoginResult(
-    resObj: Res<unknown>,
-    successCode: ResponseCode,
-): Promise<UserInfoStore> {
+async function handleLoginResult(resObj: Res<unknown>, successCode: ResponseCode): Promise<UserInfoStore> {
     if (resObj.code === successCode) {
         // 显示登录成功提示
         MessageUtil.success(resObj.msg, 3000)
 
         // 登录成功 存入token
-        if (
-            typeof resObj.data === "object" &&
-            resObj.data !== null &&
-            "access_token" in resObj.data
-        ) {
-            localStorage.setItem(
-                LocalStorageKey.AccessToken,
-                (resObj.data as { access_token: string }).access_token,
-            )
+        if (typeof resObj.data === "object" && resObj.data !== null && "access_token" in resObj.data) {
+            localStorage.setItem(LocalStorageKey.AccessToken, (resObj.data as { access_token: string }).access_token)
         }
 
         return await apiGetUserInfoByToken() // 获取用户信息
     }
 
     // 显示登录失败提示
-    // localStorage.removeItem(LocalStorageKey.AccessToken)
-    localStorage.clear()
+    localStorageClearByLogout()
 
     const msg = getUserForbiddenMsg(resObj as Res<number>)
 
@@ -447,10 +328,7 @@ async function handleLoginResult(
 /**
  * @description: 辅助函数：处理绑定结果
  */
-async function handleBindResult(
-    resObj: Res<unknown>,
-    successCode: ResponseCode,
-): Promise<UserInfoStore> {
+async function handleBindResult(resObj: Res<unknown>, successCode: ResponseCode): Promise<UserInfoStore> {
     if (resObj.code === successCode) {
         // 显示登录成功提示
         MessageUtil.success(resObj.msg, 3000)
@@ -459,9 +337,16 @@ async function handleBindResult(
 
     // 显示登录失败提示
     MessageUtil.error(resObj.msg, 3000)
-    // localStorage.removeItem(LocalStorageKey.AccessToken)
-    localStorage.clear()
+
+    localStorageClearByLogout()
     return createEmptyUserInfoStore() // 获取用户信息
+}
+
+// 退出登录的时候清除对应 localStorage
+function localStorageClearByLogout() {
+    localStorage.removeItem(LocalStorageKey.AccessToken)
+    localStorage.removeItem(LocalStorageKey.RolesList)
+    localStorage.removeItem(LocalStorageKey.PermissionList)
 }
 
 // 允许开发环境下进行热更新 HMR(Hot Module Replacement)

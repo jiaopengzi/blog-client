@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-08 10:46:47
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-15 13:10:04
+ * @LastEditTime : 2025-01-18 17:57:17
  * @FilePath     : \blog-client\src\router\types.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -10,17 +10,13 @@
  */
 
 // public 路由名称
-export enum RouteNamesPublic {
+export enum RouteNamesDefault {
     Home = "home",
     Setup = "setup",
     Test = "test",
     Test1 = "test1",
     NotFound = "not-found",
     Login = "login",
-    SocialQQLoginCallback = "social-qq-login-callback",
-    SocialQQBindCallback = "social-qq-bind-callback",
-    SocialWeChatLoginCallback = "social-wechat-login-callback",
-    SocialWeChatBindCallback = "social-wechat-bind-callback",
     Register = "register",
     RegisterAdmin = "register-admin",
     ResetPassword = "reset-password",
@@ -31,6 +27,14 @@ export enum RouteNamesPublic {
     Tool = "tool",
     Vip = "vip",
     Admin = "admin",
+}
+
+// public 路由名称
+export enum RouteNamesSocial {
+    SocialQQLoginCallback = "social-qq-login-callback",
+    SocialQQBindCallback = "social-qq-bind-callback",
+    SocialWeChatLoginCallback = "social-wechat-login-callback",
+    SocialWeChatBindCallback = "social-wechat-bind-callback",
 }
 
 // 后台管理路由名称
@@ -79,8 +83,12 @@ export enum RouteNamesAdmin {
 }
 
 // 枚举转换为对象
-const routeNamesPublic = {
-    ...RouteNamesPublic,
+const routeNamesDefault = {
+    ...RouteNamesDefault,
+}
+
+const routeNamesSocial = {
+    ...RouteNamesSocial,
 }
 
 const routeNamesAdmin = {
@@ -89,12 +97,13 @@ const routeNamesAdmin = {
 
 // 合并对象
 const mergedRouteNames = {
-    ...routeNamesPublic,
+    ...routeNamesDefault,
+    ...routeNamesSocial,
     ...routeNamesAdmin,
 }
 
 // 将合并后的对象转换为枚举
-export const RouteNames = mergedRouteNames as typeof RouteNamesPublic & typeof RouteNamesAdmin
+export const RouteNames = mergedRouteNames as typeof RouteNamesDefault & typeof RouteNamesSocial & typeof RouteNamesAdmin
 
 // RouteNames 类型
 export type RouteNames = (typeof RouteNames)[keyof typeof RouteNames]

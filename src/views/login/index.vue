@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-13 15:56:05
+ * @LastEditTime : 2025-01-18 17:31:13
  * @FilePath     : \blog-client\src\views\login\index.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -12,11 +12,7 @@
 <template>
     <div class="login-page">
         <!-- 添加滑动验证组件：SlideVerify -->
-        <SlideVerify
-            v-if="showSlideVerify"
-            @on-close="closeSlideVerify"
-            @on-success="login"
-        ></SlideVerify>
+        <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="login"></SlideVerify>
         <el-form
             :label-position="labelPosition"
             label-width="100px"
@@ -30,20 +26,10 @@
             <AccountFormHeader :router-link-to="{ name: RouteNames.Home }" title="账号登录" />
 
             <el-form-item label="用户名/邮箱" prop="loginName">
-                <el-input
-                    v-model="loginForm.loginName"
-                    placeholder="请输入用户名或邮箱"
-                    clearable
-                />
+                <el-input v-model="loginForm.loginName" placeholder="请输入用户名或邮箱" clearable />
             </el-form-item>
             <el-form-item label="密码" prop="password">
-                <el-input
-                    type="password"
-                    v-model="loginForm.password"
-                    placeholder="大小写字母 + 数字, 长度:6-64"
-                    show-password
-                    clearable
-                />
+                <el-input type="password" v-model="loginForm.password" placeholder="大小写字母 + 数字, 长度:6-64" show-password clearable />
             </el-form-item>
             <div class="btn-submit">
                 <el-form-item>
@@ -69,6 +55,7 @@ import { reactive, ref, toRef, useTemplateRef } from "vue"
 import type { RouteLocationRaw } from "vue-router"
 import { useRouter } from "vue-router"
 
+import { SocialLoginType } from "@/api/common"
 import AccountFormFooter from "@/components/common/account-form-footer"
 import AccountFormHeader from "@/components/common/account-form-header"
 import { IconKeys } from "@/components/common/icons"
@@ -101,8 +88,7 @@ const loginForm = reactive<LoginForm>({
 const loginNameRef = toRef(loginForm, "loginName")
 
 // hook 函数
-const { checkLoginNameValidator, createLoginNameRules, createPasswordRules } =
-    useAccountFormValidation({ FormUserName: loginNameRef })
+const { checkLoginNameValidator, createLoginNameRules, createPasswordRules } = useAccountFormValidation({ FormUserName: loginNameRef })
 
 const rules = reactive<FormRules<LoginForm>>({
     loginName: createLoginNameRules(checkLoginNameValidator),
@@ -160,12 +146,12 @@ const login = () => {
 
 const loginByWeChat = async (event: Event) => {
     event.preventDefault() // 阻止默认行为
-    await userStore.loginByWeChat()
+    await userStore.socialLogin(SocialLoginType.WeChat)
 }
 
 const loginByQQ = async (event: Event) => {
     event.preventDefault() // 阻止默认行为
-    await userStore.loginByQQ()
+    await userStore.socialLogin(SocialLoginType.QQ)
 }
 </script>
 

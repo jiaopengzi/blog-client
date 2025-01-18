@@ -8,7 +8,6 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     CommonAccountFormFooter: typeof import('./src/components/common/account-form-footer/index.vue')['default']
-    CommonAccountFormFootercopy: typeof import('./src/components/common/account-form-footer copy/index.vue')['default']
     CommonAccountFormHeader: typeof import('./src/components/common/account-form-header/index.vue')['default']
     CommonAddTag: typeof import('./src/components/common/add-tag/index.vue')['default']
     CommonAlertTip: typeof import('./src/components/common/alert-tip/index.vue')['default']
@@ -18,12 +17,9 @@ declare module 'vue' {
     CommonBaseTableCustomCol: typeof import('./src/components/common/base-table/custom-col/index.vue')['default']
     CommonBindEmailDialog: typeof import('./src/components/common/bind-email-dialog/index.vue')['default']
     CommonCountdown: typeof import('./src/components/common/countdown/index.vue')['default']
-    CommonDbAllContainer: typeof import('./src/components/common/db-all-container/index.vue')['default']
     CommonDbBase: typeof import('./src/components/common/db-base/index.vue')['default']
-    CommonDbContainer: typeof import('./src/components/common/db-container/index.vue')['default']
     CommonDbPgsql: typeof import('./src/components/common/db-pgsql/index.vue')['default']
     CommonDbRedis: typeof import('./src/components/common/db-redis/index.vue')['default']
-    CommonDbRediscopy: typeof import('./src/components/common/db-redis copy/index.vue')['default']
     CommonIcons: typeof import('./src/components/common/icons/index.vue')['default']
     CommonMonthArchive: typeof import('./src/components/common/month-archive/index.vue')['default']
     CommonPostItemAside: typeof import('./src/components/common/post-item-aside/index.vue')['default']

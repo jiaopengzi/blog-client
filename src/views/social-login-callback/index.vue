@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 16:46:59
+ * @LastEditTime : 2025-01-18 17:57:52
  * @FilePath     : \blog-client\src\views\social-login-callback\index.vue
  * @Description  : 三方登录回调页面
  * @Blog         : https://jiaopengzi.com
@@ -12,17 +12,16 @@
 <template>
     <div class="container">
         <div class="loader"></div>
-        <p class="text">{{ _platform }}登录中...</p>
+        <p class="text">{{ platformDisplay }}登录中...</p>
     </div>
 </template>
 
 <script lang="ts" setup>
-import type { Ref } from "vue"
 import { onMounted, ref } from "vue"
 import { useRoute, useRouter } from "vue-router"
 
-import { Social } from "@/api/common"
-import { RouteNames } from "@/router"
+import { SocialLoginDisplay, SocialLoginType } from "@/api/common"
+import { RouteNames, RouteNamesSocial } from "@/router"
 import { useUserStore } from "@/stores/user"
 
 defineOptions({ name: "SocialLoginCallback" })
@@ -31,60 +30,47 @@ const userStore = useUserStore()
 const router = useRouter()
 const route = useRoute()
 
-const loginByQQCallback = async () => {
-    const code = new URLSearchParams(window.location.search).get("code")
-    if (!code) {
-        return
-    }
-    await userStore.loginByQQCallback(code)
-}
+const platformDisplay = ref("")
 
-const bindQQCallback = async () => {
-    const code = new URLSearchParams(window.location.search).get("code")
-    if (!code) {
-        return
-    }
-    await userStore.bindQQCallback(code)
+const socialCallbacks: Record<
+    RouteNamesSocial,
+    { platform: SocialLoginType; display: string; action: (code: string, loginType: SocialLoginType) => Promise<void> }
+> = {
+    [RouteNames.SocialQQLoginCallback]: {
+        platform: SocialLoginType.QQ,
+        display: SocialLoginDisplay.QQ,
+        action: userStore.socialLoginCallback,
+    },
+    [RouteNames.SocialQQBindCallback]: {
+        platform: SocialLoginType.QQ,
+        display: SocialLoginDisplay.QQ,
+        action: userStore.socialBindCallback,
+    },
+    [RouteNames.SocialWeChatLoginCallback]: {
+        platform: SocialLoginType.WeChat,
+        display: SocialLoginDisplay.WeChat,
+        action: userStore.socialLoginCallback,
+    },
+    [RouteNames.SocialWeChatBindCallback]: {
+        platform: SocialLoginType.WeChat,
+        display: SocialLoginDisplay.WeChat,
+        action: userStore.socialBindCallback,
+    },
 }
-
-const loginByWeChatCallback = async () => {
-    const code = new URLSearchParams(window.location.search).get("code")
-    if (!code) {
-        return
-    }
-    await userStore.loginByWeChatCallback(code)
-}
-
-const bindWeChatCallback = async () => {
-    const code = new URLSearchParams(window.location.search).get("code")
-    if (!code) {
-        return
-    }
-    await userStore.bindWeChatCallback(code)
-}
-
-// 三方平台
-const _platform: Ref<string> = ref("")
 
 onMounted(async () => {
-    console.log(route.name)
-    if (route.name === RouteNames.SocialQQLoginCallback) {
-        _platform.value = Social.QQDisplay
-        await loginByQQCallback() // 等待 loginByQQCallback 执行完毕后，跳转到首页
-    } else if (route.name === RouteNames.SocialQQBindCallback) {
-        _platform.value = Social.QQDisplay
-        await bindQQCallback() // 等待 bindQQCallback 执行完毕后，跳转到首页
-    } else if (route.name === RouteNames.SocialWeChatLoginCallback) {
-        _platform.value = Social.WeChatDisplay
-        await loginByWeChatCallback() // 等待 loginByWeChatCallback 执行完毕后，跳转到首页
-    } else if (route.name === RouteNames.SocialWeChatBindCallback) {
-        _platform.value = Social.WeChatDisplay
-        await bindWeChatCallback()
+    const routeName = route.name as RouteNamesSocial
+    const callbackInfo = socialCallbacks[routeName]
+
+    if (callbackInfo) {
+        const code = new URLSearchParams(window.location.search).get("code")
+        if (code) {
+            platformDisplay.value = callbackInfo.display
+            await callbackInfo.action(code, callbackInfo.platform)
+        }
     }
 
     router.push({ name: RouteNames.Home })
-
-    // window.location.href = routeObj.home.path
 })
 </script>
 
