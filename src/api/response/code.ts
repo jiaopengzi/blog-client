@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-29 12:08:15
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-18 16:43:30
+ * @LastEditTime : 2025-01-18 20:34:58
  * @FilePath     : \blog-client\src\api\response\code.ts
  * @Description  : 相应状态码
  * @Blog         : https://jiaopengzi.com
@@ -129,11 +129,11 @@ export enum ResponseCode {
     // 社交登录相关
     SocialLoginNoLoginType = 8200, // 未传递三方登录登录方式,请传递正确的登录方式
     SocialLoginLoginTypeError = 8201, // 三方登录登录方式错误,请传递正确的登录方式
-    SocialLoginSuccess = 8202, // 重定向QQ登录成功
-    SocialLoginUnLogin = 8203, // QQ未登录
-    SocialLoginCallbackSuccess = 8204, // QQ回调成功
-    SocialBindCallbackSuccess = 8205, // QQ绑定回调成功
-    SocialUnBindSuccess = 8206, // QQ解绑成功
+    SocialLoginSuccess = 8202, // 重定向三方登录成功
+    SocialLoginUnLogin = 8203, // 三方登录未登录
+    SocialLoginCallbackSuccess = 8204, // 三方登录回调成功
+    SocialBindCallbackSuccess = 8205, // 三方登录绑定回调成功
+    SocialUnBindSuccess = 8206, // 三方登录解绑成功
 
     // 权限相关
     GetPermissionSuccess = 8300, //获取权限列表成功

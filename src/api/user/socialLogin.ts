@@ -51,6 +51,7 @@ export function socialBindCallback(code: string, loginType: SocialLoginType): Re
 
 // 三方解绑
 export function socialUnBind(loginType: SocialLoginType): ResPromise<Res<unknown>> {
+    console.log("===============>05", loginType)
     const urlStr = `${routerGroup}/social/unbind?login-type=${loginType}`
     return request({
         url: urlStr,

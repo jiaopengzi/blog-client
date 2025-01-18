@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-18 19:36:27
+ * @LastEditTime : 2025-01-18 21:33:49
  * @FilePath     : \blog-client\src\views\social-login-callback\index.vue
  * @Description  : 三方登录回调页面
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,7 @@
 
 <template>
     <div class="container">
-        <div class="loader">{{ platformDisplay }}登录中, 请稍后!</div>
+        <div class="loader">{{ platformDisplay }}{{ loginOrBind }}, 请稍后!</div>
     </div>
 </template>
 
@@ -30,6 +30,7 @@ const router = useRouter()
 const route = useRoute()
 
 const platformDisplay = ref("")
+const loginOrBind = ref("登录中")
 
 const socialCallbacks: Record<
     RouteNamesSocial,
@@ -68,6 +69,9 @@ onMounted(async () => {
         router.push({ name: RouteNames.Home })
         return
     }
+
+    const LoginList = [RouteNames.SocialQQLoginCallback, RouteNames.SocialWeChatLoginCallback]
+    loginOrBind.value = LoginList.includes(routeName) ? "登录中" : "绑定中"
 
     const code = new URLSearchParams(window.location.search).get("code")
 
