@@ -4,7 +4,7 @@
  * @LastEditors  : jiaopengzi
  * @LastEditTime : 2025-01-18 18:27:56
  * @FilePath     : \blog-client\src\api\user\socialLogin.ts
- * @Description  : 三方登录
+ * @Description  : 社交登录
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  */
@@ -13,7 +13,7 @@ import type { SocialLoginType } from "@/api/common"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
-// 三方登录
+// 社交登录
 export function socialLogin(loginType: SocialLoginType): ResPromise<Res<string>> {
     const urlStr = `${routerGroup}/social/login?state=login&login-type=${loginType}`
     return request({
@@ -22,7 +22,7 @@ export function socialLogin(loginType: SocialLoginType): ResPromise<Res<string>>
     })
 }
 
-// 三方登录回调
+// 社交登录回调
 export function socialLoginCallback(code: string, loginType: SocialLoginType): ResPromise<Res<unknown>> {
     const urlStr = `${routerGroup}/social/login/callback?code=${code}&login-type=${loginType}`
     return request({
@@ -31,7 +31,7 @@ export function socialLoginCallback(code: string, loginType: SocialLoginType): R
     })
 }
 
-// 三方绑定
+// 社交绑定
 export function socialBind(loginType: SocialLoginType): ResPromise<Res<string>> {
     const urlStr = `${routerGroup}/social/bind?state=bind&login-type=${loginType}`
     return request({
@@ -49,7 +49,7 @@ export function socialBindCallback(code: string, loginType: SocialLoginType): Re
     })
 }
 
-// 三方解绑
+// 社交解绑
 export function socialUnBind(loginType: SocialLoginType): ResPromise<Res<unknown>> {
     console.log("===============>05", loginType)
     const urlStr = `${routerGroup}/social/unbind?login-type=${loginType}`

@@ -27,14 +27,14 @@ export enum CaptchaPurpose {
     BindEmail = "BindEmail", // 验证码用途：绑定邮箱
 }
 
-// 三方登录方式
+// 社交登录方式
 export enum SocialLoginType {
     WeChat = "WeChat",
     QQ = "QQ",
     Phone = "Phone",
 }
 
-// 三方登录方式显示
+// 社交登录方式显示
 export const SocialLoginDisplay = {
     [SocialLoginType.QQ]: "QQ",
     [SocialLoginType.WeChat]: "微信",

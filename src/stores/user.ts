@@ -133,12 +133,12 @@ export const useUserStore = defineStore("user", {
             this.$patch(userInfoStore)
         },
 
-        // 三方登录
+        // 社交登录
         async socialLogin(loginType: SocialLoginType) {
             await redirectToSocialLogin(socialLogin(loginType), ResponseCode.SocialLoginSuccess)
         },
 
-        // 三方登录回调
+        // 社交登录回调
         async socialLoginCallback(code: string, loginType: SocialLoginType) {
             const resObj = await handleResponse<Res<unknown>>(socialLoginCallback(code, loginType))
             const userInfoStore = await handleLoginResult(resObj, ResponseCode.SocialLoginCallbackSuccess)
@@ -146,12 +146,12 @@ export const useUserStore = defineStore("user", {
             this.$patch(userInfoStore)
         },
 
-        // 三方绑定
+        // 社交绑定
         async socialBind(loginType: SocialLoginType) {
             await redirectToSocialLogin(socialBind(loginType), ResponseCode.SocialLoginSuccess)
         },
 
-        // 三方绑定回调
+        // 社交绑定回调
         async socialBindCallback(code: string, loginType: SocialLoginType) {
             const resObj = await handleResponse<Res<unknown>>(socialBindCallback(code, loginType))
             const userInfoStore = await handleBindResult(resObj, ResponseCode.SocialBindCallbackSuccess)
@@ -159,7 +159,7 @@ export const useUserStore = defineStore("user", {
             this.$patch(userInfoStore)
         },
 
-        // 三方解绑
+        // 社交解绑
         async socialUnBind(loginType: SocialLoginType) {
             const resObj = await handleResponse<Res<unknown>>(socialUnBind(loginType))
 
@@ -292,7 +292,7 @@ async function redirectToSocialLogin(requestPromise: Promise<ResResponse<Res<str
     const resObj = await handleResponse<Res<string>>(requestPromise) // 使用辅助函数处理请求
 
     if (resObj.code === successCode) {
-        window.location.href = resObj.data // 重定向到第三方登录页面
+        window.location.href = resObj.data // 重定向到第社交登录页面
     }
 }
 

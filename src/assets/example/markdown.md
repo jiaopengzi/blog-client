@@ -69,8 +69,7 @@ body {
 
 ```css
 body {
-    font-family: "Noto Sans SC", "Microsoft YaHei", "PingFang SC", "Helvetica Neue", Helvetica,
-        Arial, sans-serif;
+    font-family: "Noto Sans SC", "Microsoft YaHei", "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -436,7 +435,7 @@ RETURN
 
 ![159-11](https://image.jiaopengzi.com/wp-content/uploads/2022/07/159-11.png)
 
-图例，根据条件创建度量值，使用三方视觉对象 HTML Content 制作最大值和最小值的颜色过渡图例，当选中地图元素可以显示具体位置。
+图例，根据条件创建度量值，使用社交视觉对象 HTML Content 制作最大值和最小值的颜色过渡图例，当选中地图元素可以显示具体位置。
 
 ![159-12](https://image.jiaopengzi.com/wp-content/uploads/2022/07/159-12.png)
 

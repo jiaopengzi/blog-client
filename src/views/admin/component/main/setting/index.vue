@@ -54,7 +54,7 @@ const tabs: Tab[] = [
         icon: IconKeys.Notification,
         component: SettingEmail,
     },
-    { hash: "social", label: "三方登录", icon: IconKeys.Social, component: SettingSocial },
+    { hash: "social", label: "社交登录", icon: IconKeys.Social, component: SettingSocial },
     { hash: "upload", label: "文件上传", icon: IconKeys.Upload, component: SettingUpload },
 ]
 

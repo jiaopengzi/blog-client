@@ -127,13 +127,13 @@ export enum ResponseCode {
     UpdateFileSuccess = 8117, // 更新文件成功
 
     // 社交登录相关
-    SocialLoginNoLoginType = 8200, // 未传递三方登录登录方式,请传递正确的登录方式
-    SocialLoginLoginTypeError = 8201, // 三方登录登录方式错误,请传递正确的登录方式
-    SocialLoginSuccess = 8202, // 重定向三方登录成功
-    SocialLoginUnLogin = 8203, // 三方登录未登录
-    SocialLoginCallbackSuccess = 8204, // 三方登录回调成功
-    SocialBindCallbackSuccess = 8205, // 三方登录绑定回调成功
-    SocialUnBindSuccess = 8206, // 三方登录解绑成功
+    SocialLoginNoLoginType = 8200, // 未传递社交登录登录方式,请传递正确的登录方式
+    SocialLoginLoginTypeError = 8201, // 社交登录登录方式错误,请传递正确的登录方式
+    SocialLoginSuccess = 8202, // 重定向社交登录成功
+    SocialLoginUnLogin = 8203, // 社交登录未登录
+    SocialLoginCallbackSuccess = 8204, // 社交登录回调成功
+    SocialBindCallbackSuccess = 8205, // 社交登录绑定回调成功
+    SocialUnBindSuccess = 8206, // 社交登录解绑成功
 
     // 权限相关
     GetPermissionSuccess = 8300, //获取权限列表成功

@@ -2,9 +2,9 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-18 21:33:49
+ * @LastEditTime : 2025-01-18 21:52:24
  * @FilePath     : \blog-client\src\views\social-login-callback\index.vue
- * @Description  : 三方登录回调页面
+ * @Description  : 社交登录回调页面
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
