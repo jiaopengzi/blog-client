@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-18 19:18:03
+ * @LastEditTime : 2025-01-18 19:36:27
  * @FilePath     : \blog-client\src\views\social-login-callback\index.vue
  * @Description  : 三方登录回调页面
  * @Blog         : https://jiaopengzi.com
@@ -11,8 +11,7 @@
 
 <template>
     <div class="container">
-        <div class="loader"></div>
-        <p class="text">{{ platformDisplay }}登录中...</p>
+        <div class="loader">{{ platformDisplay }}登录中, 请稍后!</div>
     </div>
 </template>
 
@@ -65,20 +64,19 @@ const socialCallbacks: Record<
 onMounted(async () => {
     const routeName = route.name as RouteNamesSocial
     const callbackInfo = socialCallbacks[routeName]
-    // if (!callbackInfo) {
-    //     router.push({ name: RouteNames.Home })
-    //     return
-    // }
-    console.log("routeName===============>", routeName)
-    console.log("callbackInfo===============>", callbackInfo)
+    if (!callbackInfo) {
+        router.push({ name: RouteNames.Home })
+        return
+    }
+
     const code = new URLSearchParams(window.location.search).get("code")
-    console.log("code===============>", code)
+
     if (code) {
         platformDisplay.value = callbackInfo.display
         await callbackInfo.action(code, callbackInfo.platform)
     }
 
-    // router.push({ name: callbackInfo.routeName })
+    router.push({ name: callbackInfo.routeName })
 })
 </script>
 
@@ -87,36 +85,28 @@ onMounted(async () => {
     display: flex;
     align-items: center;
     justify-content: center;
-    // height: 100vh;
+    height: 100vh;
     flex-direction: column;
     background-color: var(--jpz-bg-color);
 }
 
+// 参考 https://css-loaders.com/classic/
 .loader {
-    border: 1px solid var(--jpz-border-color);
-    border-top: 8px solid var(--jpz-color-secondary);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-}
-
-.text {
-    font-size: 18px;
-    margin-top: 20px;
+    width: fit-content;
+    font-weight: bold;
+    font-family: sans-serif;
+    font-size: 30px;
+    padding-bottom: 8px;
+    background: linear-gradient(currentColor 0 0) 0 100%/0% 3px no-repeat;
+    animation: l2 2s linear infinite;
     color: var(--jpz-color-primary);
-    // 加粗
-    font-weight: 700;
 }
-
-// 动画
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
+.loader::after {
+    content: "";
+}
+@keyframes l2 {
+    to {
+        background-size: 100% 3px;
     }
 }
 </style>
