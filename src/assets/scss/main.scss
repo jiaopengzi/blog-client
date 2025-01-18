@@ -26,7 +26,7 @@ html {
     --jpz-box-shadow-lighter: var(--el-box-shadow-lighter);
     --jpz-box-shadow-light: var(--el-box-shadow-light);
     --jpz-box-shadow-dark: var(--el-box-shadow-dark);
-    --jpz-post-item-main-hover-shadow: 0 0 5px #ccc, 0 0 10px #ccc; // 主文章hover阴影
+    --jpz-post-item-main-hover-shadow: 0 0 5px #ccc, 0 0 10px #ccc; // 主文章 hover 阴影
 
     // 文字颜色
     --jpz-text-color-primary: var(--el-text-color-primary);
@@ -127,8 +127,7 @@ html {
 
 // 主题样式
 body {
-    font-family: "Noto Sans SC", "Microsoft YaHei", "PingFang SC", "Helvetica Neue", Helvetica,
-        Arial, sans-serif;
+    font-family: "Noto Sans SC", "Microsoft YaHei", "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;

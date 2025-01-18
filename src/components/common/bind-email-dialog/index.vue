@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-11 18:53:25
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 12:25:47
+ * @LastEditTime : 2025-01-18 19:50:27
  * @FilePath     : \blog-client\src\components\common\bind-email-dialog\index.vue
  * @Description  : 绑定邮箱弹窗
  * @Blog         : https://jiaopengzi.com
@@ -20,11 +20,7 @@
         class="bind-email-dialog"
     >
         <div class="bind-email-wrapper">
-            <SlideVerify
-                v-if="showSlideVerify"
-                @on-close="closeSlideVerify"
-                @on-success="sendCaptcha"
-            ></SlideVerify>
+            <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="sendCaptcha"></SlideVerify>
             <el-form
                 :label-position="labelPosition"
                 label-width="100px"
@@ -36,7 +32,7 @@
                 status-icon
             >
                 <div class="header-main">
-                    <h2>绑定邮箱</h2>
+                    <h2 class="header-title">绑定邮箱</h2>
                     <p>请绑定邮箱后继续使用。</p>
                 </div>
 
@@ -46,23 +42,14 @@
 
                 <el-form-item label="验证码" prop="captcha">
                     <el-input class="email-code" v-model="bindEmailForm.captcha" />
-                    <button
-                        class="btn-captcha"
-                        type="button"
-                        @click="openSlideVerify"
-                        :disabled="btnCaptchaState.disabled"
-                    >
+                    <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="btnCaptchaState.disabled">
                         {{ captcha }}
                     </button>
                 </el-form-item>
 
                 <div class="btn-submit">
                     <el-form-item>
-                        <el-button
-                            type="primary"
-                            @click="submitForm(bindEmailFormRef as FormInstance)"
-                            >绑定邮箱</el-button
-                        >
+                        <el-button type="primary" @click="submitForm(bindEmailFormRef as FormInstance)">绑定邮箱</el-button>
                     </el-form-item>
                 </div>
             </el-form>
@@ -80,7 +67,7 @@ import { captchaCheckAPI } from "@/api/captcha/check"
 import type { CaptchaSendRequest } from "@/api/captcha/send"
 import { captchaSendAPI } from "@/api/captcha/send"
 import { CaptchaPurpose } from "@/api/common"
-import { handleResErr,ResponseCode } from "@/api/response"
+import { handleResErr, ResponseCode } from "@/api/response"
 import type { BindEmailRequest } from "@/api/user/bindEmail"
 import { bindEmailAPI } from "@/api/user/bindEmail"
 import type { CheckEmailRequest } from "@/api/user/checkEmail"
@@ -174,11 +161,7 @@ async function checkEmail(): Promise<void> {
  * @param value 对应输入框的值
  * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
  */
-function checkEmailValidator(
-    rule: unknown,
-    value: string,
-    callback: (error?: string | Error | undefined) => void,
-): void {
+function checkEmailValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
     // 在这里处理异步验证逻辑
     checkEmail()
         .then(() => {
@@ -209,11 +192,7 @@ async function checkCaptcha(): Promise<void> {
     }
 }
 
-function checkCaptchaValidator(
-    rule: unknown,
-    value: string,
-    callback: (error?: string | Error | undefined) => void,
-): void {
+function checkCaptchaValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
     // 在这里处理异步验证逻辑
     checkCaptcha()
         .then(() => {
@@ -344,17 +323,16 @@ const closeSlideVerify = () => {
 <style lang="scss" scoped>
 .bindEmail-form {
     min-width: 360px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--jpz-border-color);
     border-radius: 5px;
     padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-    /* 添加阴影效果 */
-    background-color: #eee;
+    box-shadow: var(--jpz-box-shadow-lighter);
+    background-color: var(--jpz-bg-color);
 }
 
 @media (max-width: pc.$width-page-main) {
     .bindEmail-form {
-        /* 当屏幕宽度小于 1024px 时 */
+        // 当屏幕宽度小于 1024px 时
         width: 90vw;
         box-shadow: none;
         border: none;
@@ -362,11 +340,12 @@ const closeSlideVerify = () => {
     }
 }
 
-h2 {
+.header-title {
     text-align: center;
     font-size: 24px;
     font-weight: 700;
     margin-bottom: 20px;
+    color: var(--jpz-text-color-primary);
 }
 
 .email-code {
