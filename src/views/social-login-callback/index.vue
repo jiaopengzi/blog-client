@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-12-01 22:04:48
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-18 19:13:20
+ * @LastEditTime : 2025-01-18 19:18:03
  * @FilePath     : \blog-client\src\views\social-login-callback\index.vue
  * @Description  : 三方登录回调页面
  * @Blog         : https://jiaopengzi.com
@@ -70,8 +70,9 @@ onMounted(async () => {
     //     return
     // }
     console.log("routeName===============>", routeName)
-    console.log("callbackInfo===============>", routeName)
+    console.log("callbackInfo===============>", callbackInfo)
     const code = new URLSearchParams(window.location.search).get("code")
+    console.log("code===============>", code)
     if (code) {
         platformDisplay.value = callbackInfo.display
         await callbackInfo.action(code, callbackInfo.platform)
