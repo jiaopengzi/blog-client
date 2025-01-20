@@ -1,17 +1,17 @@
 <!--
  * @Author       : jiaopengzi
- * @Date         : 2025-01-15 15:42:42
+ * @Date         : 2025-01-20 15:49:22
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-20 16:45:02
- * @FilePath     : \blog-client\src\views\test\index.vue
- * @Description  : 邮箱配置
+ * @LastEditTime : 2025-01-20 17:01:58
+ * @FilePath     : \blog-client\src\components\common\send-test-email\index.vue
+ * @Description  : 测试发送邮件组件
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
 -->
 
 <template>
     <div class="send-test-email" :style="widthStyle">
-        <el-input class="send-test-email-item in" v-model="toEmail" placeholder="请输入接收邮箱账号" clearable />
+        <el-input class="send-test-email-item in" v-model="toEmail" :placeholder="inputPlaceholder" clearable />
         <el-button class="send-test-email-item btn" type="primary" @click="sendEmail" :loading="loading">{{ btnTextInner }}</el-button>
     </div>
 </template>
@@ -26,21 +26,23 @@ import { RegexPatterns } from "@/utils/regexPatterns"
 
 defineOptions({ name: "TestSendEmail" })
 
-const { sendAPI, successCode, width, btnText } = defineProps<{
-    sendAPI: (requestData: SendTestEmailRequest) => ResPromise<Res<unknown>>
+const { sendApi, successCode, width, btnText, placeholder } = defineProps<{
+    sendApi: (requestData: SendTestEmailRequest) => ResPromise<Res<unknown>>
     successCode: ResponseCode
     width?: string | number
     btnText?: string
+    placeholder?: string
 }>()
 
 const widthStyle = computed(() => {
+    // 判断是数字还是字符串
     return {
-        width: width ? `${width}px` : "400px",
+        width: typeof width === "number" ? `${width}px` : width || "100%",
     }
 })
 
 const toEmail = ref("")
-
+const inputPlaceholder = ref("请输入接收邮箱账号")
 const loading = ref(false)
 const btnTextInner = ref("发起测试")
 const btnTextTemp = ref("")
@@ -48,7 +50,18 @@ const btnTextTemp = ref("")
 watch(
     () => btnText,
     (newVal) => {
-        btnTextInner.value = newVal || "发起测试"
+        if (newVal) {
+            btnTextInner.value = newVal
+        }
+    },
+)
+
+watch(
+    () => placeholder,
+    (newVal) => {
+        if (newVal) {
+            inputPlaceholder.value = newVal
+        }
     },
 )
 
@@ -68,7 +81,7 @@ const sendEmail = async () => {
     btnTextTemp.value = btnTextInner.value
     btnTextInner.value = "等待结果..."
 
-    const res = await sendAPI({
+    const res = await sendApi({
         email: toEmail.value,
     })
 
@@ -88,8 +101,6 @@ const sendEmail = async () => {
     display: flex;
     justify-content: center;
     align-items: center;
-
-    margin: 10px 0;
 
     // btn 固定宽度
     .btn {

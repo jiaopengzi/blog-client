@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-11-08 12:51:21
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-18 17:34:51
+ * @LastEditTime : 2025-01-20 16:07:04
  * @FilePath     : \blog-client\src\api\common.ts
  * @Description  : 公用
  * @Blog         : https://jiaopengzi.com
@@ -18,6 +18,11 @@ export interface PgSqlDateTime {
 // 使用ID列表删除请求参数
 export interface DeleteByIDsRequest {
     id_list: string[]
+}
+
+// 发送测试邮件请求
+export interface SendTestEmailRequest {
+    email: string
 }
 
 // 验证码用途

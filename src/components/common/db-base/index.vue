@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-08 17:43:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-17 14:44:11
+ * @LastEditTime : 2025-01-20 13:50:08
  * @FilePath     : \blog-client\src\components\common\db-base\index.vue
  * @Description  : 数据库配置表单-基础组件
  * @Blog         : https://jiaopengzi.com
@@ -24,7 +24,7 @@
             :scroll-into-view-options="{ behavior: 'smooth', block: 'center' }"
             :style="{ width: formWidth ? `${formWidth}px` : '100%' }"
         >
-            <h2>{{ title }}</h2>
+            <h2 class="title">{{ title }}</h2>
 
             <el-form-item v-for="item in formItems" :key="item.prop" :label="item.label" :prop="item.prop">
                 <el-input
@@ -100,7 +100,7 @@ defineExpose({
     border-radius: 6px;
 }
 
-h2 {
+.title {
     text-align: left;
     font-size: 16px;
     font-weight: 700;

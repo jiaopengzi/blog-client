@@ -2,9 +2,6 @@
 # 使用官方 Node.js 镜像作为构建环境
 FROM node:20.18.0 AS builder
 
-# 设置时区
-ENV TZ=Asia/Shanghai
-
 # 设置工作目录
 WORKDIR /app
 
@@ -25,6 +22,13 @@ RUN pnpm build
 
 # 使用一个较小的基础镜像以减小构建产物的体积
 FROM nginx:1.27.2-alpine
+
+# 安装 tzdata 包
+RUN apk add --no-cache tzdata
+
+# 设置时区为 Asia/Shanghai
+RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &&
+    echo "Asia/Shanghai" >/etc/timezone
 
 # 设置时区
 ENV TZ=Asia/Shanghai

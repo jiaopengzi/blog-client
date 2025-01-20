@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-15 15:42:42
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-15 15:48:03
+ * @LastEditTime : 2025-01-20 17:13:33
  * @FilePath     : \blog-client\src\views\admin\component\main\setting\email\index.vue
  * @Description  : 邮箱配置
  * @Blog         : https://jiaopengzi.com
@@ -10,9 +10,149 @@
 -->
 
 <template>
-    <div>邮箱</div>
+    <div class="form-page">
+        <el-form
+            :label-position="labelPosition"
+            label-width="120px"
+            ref="formRef"
+            :model="form"
+            :rules="rules"
+            class="form-content"
+            :size="formSize"
+            status-icon
+        >
+            <h2 class="title">邮件配置</h2>
+            <el-form-item label="发件名称" prop="user_name">
+                <el-input v-model="form.user_name" placeholder="请输入发件名称" clearable />
+            </el-form-item>
+            <el-form-item label="邮箱服务器" prop="host">
+                <el-input v-model="form.host" placeholder="请输入邮箱服务器" clearable />
+            </el-form-item>
+            <el-form-item label="端口" prop="port">
+                <el-input v-model="form.port" placeholder="请输入邮箱服务器发件端口" clearable />
+            </el-form-item>
+            <el-form-item label="邮箱账号" prop="from">
+                <el-input v-model="form.from" placeholder="请输入发件邮箱账号" clearable />
+            </el-form-item>
+            <el-form-item label="密码" prop="password">
+                <el-input type="password" v-model="form.password" placeholder="邮箱密码或授权码" show-password clearable />
+            </el-form-item>
+            <el-form-item label="测试邮件">
+                <SendTestEmail
+                    :send-api="testEmailAPI"
+                    :success-code="ResponseCode.EmailTestSendSuccess"
+                    btn-text="测试连接"
+                    placeholder="需要发送测试邮件，才填写接收邮箱账号，否则不填写。"
+                />
+            </el-form-item>
+            <div class="btn-submit">
+                <el-button type="primary" @click="submitForm">提交</el-button>
+            </div>
+        </el-form>
+    </div>
 </template>
-<script setup lang="ts">
+
+<script lang="ts" setup>
+import type { FormInstance, FormRules } from "element-plus"
+import { onBeforeMount, reactive, ref, useTemplateRef } from "vue"
+
+import { handleResErr, ResponseCode } from "@/api/response"
+import { getEmailAPI, type GetEmailResponse } from "@/api/setting/getEmail"
+import { testEmailAPI } from "@/api/setting/testEmail"
+import { updateEmailAPI, type UpdateEmailRequest } from "@/api/setting/updateEmail"
+import SendTestEmail from "@/components/common/send-test-email"
+import { MessageUtil } from "@/utils/message"
+import { RegexPatterns } from "@/utils/regexPatterns"
+
 defineOptions({ name: "SettingEmail" })
+
+// 表单label位置 top | left | right
+const labelPosition = ref("left")
+
+// 表单大小 '' | 'large' | 'default' | 'small'
+const formSize = ref("default")
+
+// 表单实例
+const formRef = useTemplateRef<FormInstance>("formRef")
+
+// 表单数据
+const form = ref<GetEmailResponse>({} as GetEmailResponse)
+
+const rules = reactive<FormRules<GetEmailResponse>>({
+    user_name: [{ required: true, message: "请输入发件名称", trigger: "blur" }],
+    host: [{ required: true, message: "请输入正确的邮件服务器", trigger: "blur" }],
+    port: [{ required: true, message: "请输入正确的端口号", trigger: "blur" }],
+    from: [
+        { required: true, message: "请输入用户名或邮箱！", trigger: "blur" },
+        {
+            pattern: RegexPatterns.Email,
+            message: "请输入正确的邮箱地址！",
+            trigger: "change",
+        },
+    ],
+    password: [{ required: true, message: "请输入密码！", trigger: "blur" }],
+})
+
+const submitForm = async () => {
+    if (!formRef.value) return
+
+    await formRef.value.validate(async (valid) => {
+        if (valid) {
+            const req: UpdateEmailRequest = {
+                user_name: form.value.user_name,
+                host: form.value.host,
+                port: form.value.port,
+                from: form.value.from,
+                password: form.value.password,
+            }
+
+            const res = await updateEmailAPI(req)
+            if (res.data.code === ResponseCode.EmailUpdateSuccess) {
+                MessageUtil.success("更新成功！")
+            } else {
+                handleResErr(res.data)
+                MessageUtil.error(handleResErr(res), 10000)
+            }
+        }
+    })
+}
+
+onBeforeMount(async () => {
+    const res = await getEmailAPI()
+    if (res.data.code === ResponseCode.GetEmailSuccess) {
+        form.value = res.data.data
+    } else {
+        handleResErr(res.data)
+        MessageUtil.error(handleResErr(res), 10000)
+    }
+})
 </script>
-<style scoped lang="scss"></style>
+
+<style lang="scss" scoped>
+.form-page {
+    height: 100%;
+    width: 100%;
+    background-color: var(--jpz-bg-color-page);
+}
+
+.title {
+    text-align: left;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--jpz-text-color-regular);
+}
+
+.form-content {
+    width: 660px;
+    border: 1px solid var(--jpz-border-color);
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: var(--jpz-box-shadow-light);
+    background-color: var(--jpz-bg-color);
+}
+
+.btn-submit {
+    text-align: center;
+}
+</style>

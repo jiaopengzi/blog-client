@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-07-16 20:01:16
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 10:26:30
+ * @LastEditTime : 2025-01-20 16:16:59
  * @FilePath     : \blog-client\src\utils\message.ts
  * @Description  : 消息提示 工具类
  * @blog         : https://jiaopengzi.com
@@ -27,7 +27,7 @@ export class MessageUtil {
         this.showMessage(MsgType.warning, msgStr, duration)
     }
 
-    static error(msgStr: string, duration: number = 3000): void {
+    static error(msgStr: string, duration: number = 6000): void {
         this.showMessage(MsgType.error, msgStr, duration)
     }
 

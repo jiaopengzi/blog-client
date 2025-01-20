@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-29 12:08:15
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-18 20:34:58
+ * @LastEditTime : 2025-01-20 17:12:58
  * @FilePath     : \blog-client\src\api\response\code.ts
  * @Description  : 相应状态码
  * @Blog         : https://jiaopengzi.com
@@ -106,6 +106,14 @@ export enum ResponseCode {
     DBsNoUpdated = 2301, // 数据库信息未更新
     DBsUpdateOnlyPassword = 2302, // 数据库信息只允许更新密码
     DBsUpdateSuccess = 2303, // 数据库信息更新成功
+    GetEmailSuccess = 2304, // 获取邮箱信息成功
+    EmailNoUpdate = 2305, // 邮箱信息未更新
+    EmailUpdateSuccess = 2306, // 邮箱信息更新成功
+    EmailTestSendSuccess = 2307, // 测试邮件发送成功，请查阅接收邮箱
+    EmailTestSendError = 2308, // 测试邮件发送失败，请检查邮箱配置
+    GetSocialLoginSuccess = 2309, // 获取社交登录信息成功
+    SocialLoginNoUpdate = 2310, // 社交登录信息未更新
+    SocialLoginUpdateSuccess = 2311, // 社交登录信息更新成功
 
     // 验证码相关
     CaptchaSendSuccess = 8000, //验证码发送成功
