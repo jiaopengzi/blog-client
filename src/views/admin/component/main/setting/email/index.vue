@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-15 15:42:42
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-21 15:43:20
+ * @LastEditTime : 2025-01-21 18:08:54
  * @FilePath     : \blog-client\src\views\admin\component\main\setting\email\index.vue
  * @Description  : 邮箱配置
  * @Blog         : https://jiaopengzi.com
@@ -11,6 +11,7 @@
 
 <template>
     <div class="form-page">
+        <el-button class="submit-btn" type="primary" @click="submitForm">提交</el-button>
         <el-form
             :label-position="labelPosition"
             label-width="120px"
@@ -45,9 +46,6 @@
                     placeholder="需要发送测试邮件，才填写接收测试邮件的邮箱，否则不填写。"
                 />
             </el-form-item>
-            <div class="btn-submit">
-                <el-button type="primary" @click="submitForm">提交</el-button>
-            </div>
         </el-form>
     </div>
 </template>
@@ -112,7 +110,6 @@ const submitForm = async () => {
             if (res.data.code === ResponseCode.EmailUpdateSuccess) {
                 MessageUtil.success("更新成功！")
             } else {
-                handleResErr(res.data)
                 MessageUtil.error(handleResErr(res), 10000)
             }
         }
@@ -154,7 +151,7 @@ onBeforeMount(async () => {
     background-color: var(--jpz-bg-color);
 }
 
-.btn-submit {
-    text-align: center;
+.submit-btn {
+    margin-bottom: 10px;
 }
 </style>

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-15 15:27:42
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-17 14:55:32
+ * @LastEditTime : 2025-01-21 18:09:59
  * @FilePath     : \blog-client\src\views\admin\component\main\setting\database\index.vue
  * @Description  : 数据库配置页面
  * @Blog         : https://jiaopengzi.com
@@ -115,6 +115,6 @@ onBeforeMount(async () => {
 }
 
 .submit-btn {
-    margin: 20px 0px;
+    margin-bottom: 10px;
 }
 </style>

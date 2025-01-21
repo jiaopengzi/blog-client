@@ -16,7 +16,7 @@
             <template #description>
                 <div class="callback-description">
                     <p>申请地址：https://connect.qq.com</p>
-                    <p>请将<span class="strong">登录回调域</span>和<span class="strong">绑定回调域</span>填写到 QQ 互联的应用管理的网站回调域中。</p>
+                    <p>请将<span class="strong"> 登录回调域 </span>和<span class="strong"> 绑定回调域 </span>填写到 QQ 互联的应用管理的网站回调域中。</p>
                 </div>
             </template>
         </SocialLoginConfig>
