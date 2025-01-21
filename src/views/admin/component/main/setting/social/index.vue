@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-15 15:42:58
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-21 16:06:49
+ * @LastEditTime : 2025-01-21 18:32:05
  * @FilePath     : \blog-client\src\views\admin\component\main\setting\social\index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,7 @@
 
 <template>
     <div class="components">
-        <el-button class="component-item" type="primary" @click="submitForm">提交</el-button>
+        <el-button class="component-item" type="primary" @click="submitForm">保存</el-button>
         <SocialLoginConfig ref="qqRef" class="component-item" :platform="SocialLoginType.QQ" :config="configQQ">
             <template #description>
                 <div class="callback-description">

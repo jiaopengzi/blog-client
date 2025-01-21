@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-15 15:42:42
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-21 18:08:54
+ * @LastEditTime : 2025-01-21 18:23:28
  * @FilePath     : \blog-client\src\views\admin\component\main\setting\email\index.vue
  * @Description  : 邮箱配置
  * @Blog         : https://jiaopengzi.com
@@ -11,7 +11,7 @@
 
 <template>
     <div class="form-page">
-        <el-button class="submit-btn" type="primary" @click="submitForm">提交</el-button>
+        <el-button class="submit-btn" type="primary" @click="submitForm">保存</el-button>
         <el-form
             :label-position="labelPosition"
             label-width="120px"

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-15 15:27:42
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-21 18:09:59
+ * @LastEditTime : 2025-01-21 18:31:54
  * @FilePath     : \blog-client\src\views\admin\component\main\setting\database\index.vue
  * @Description  : 数据库配置页面
  * @Blog         : https://jiaopengzi.com
@@ -13,7 +13,7 @@
     <RestartDialog :is-show-timer="isShowTimer" :wait-seconds="waitSeconds" />
 
     <div class="content">
-        <el-button class="submit-btn" type="primary" @click="submit">提交</el-button>
+        <el-button class="submit-btn" type="primary" @click="submit">保存</el-button>
         <div :class="[isMultiRedisNode ? 'forms-multi' : 'forms']">
             <PgsqlForm class="forms-item" ref="pgsqlFormRef" :db="dbPgsql" :formWidth="formWidth" />
 
@@ -108,10 +108,10 @@ onBeforeMount(async () => {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+}
 
-    .forms-item {
-        margin-bottom: 20px;
-    }
+.forms-item {
+    margin-bottom: 10px;
 }
 
 .submit-btn {

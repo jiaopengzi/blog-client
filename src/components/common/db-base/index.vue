@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-08 17:43:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-20 13:50:08
+ * @LastEditTime : 2025-01-21 18:25:06
  * @FilePath     : \blog-client\src\components\common\db-base\index.vue
  * @Description  : 数据库配置表单-基础组件
  * @Blog         : https://jiaopengzi.com
@@ -86,7 +86,11 @@ defineExpose({
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--jpz-bg-color-page);
+    // background-color: var(--jpz-bg-color-page);
+    border: 1px solid var(--jpz-border-color);
+    border-radius: 5px;
+    box-shadow: var(--jpz-box-shadow-light);
+    background-color: var(--jpz-bg-color);
 }
 
 .db-form {
