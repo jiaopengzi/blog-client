@@ -9,7 +9,7 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { onBeforeMount, type Reactive,ref, watch } from "vue"
+import { onBeforeMount, type Reactive, ref, watch } from "vue"
 import { useRouter } from "vue-router"
 
 import { type ViewPostRequest } from "@/api/post/view"
@@ -73,13 +73,7 @@ export function useHome(
     }
 
     // 分页 hooks
-    const {
-        isRequest,
-        updateIsRequest,
-        updateCurrentPageWithIsRequest,
-        updatePageSizeWithIsRequest,
-        updatePaginateWithIsRequest,
-    } = usePagination(
+    const { isRequest, updateIsRequest, updateCurrentPageWithIsRequest, updatePageSizeWithIsRequest, updatePaginateWithIsRequest } = usePagination(
         pagination,
         getPaginate,
         queryParams,

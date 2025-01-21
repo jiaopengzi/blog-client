@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-25 11:51:57
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-08 12:01:29
+ * @LastEditTime : 2025-01-21 15:17:19
  * @FilePath     : \blog-client\src\components\hooks\useHome\utils.ts
  * @Description  : 工具
  * @Blog         : https://jiaopengzi.com
@@ -42,17 +42,10 @@ export function useUtils(
 
     // 更新查询参数
     const updateQueryParams = async () => {
-        const { hasPaginationParams, hasQueryParams, queryParamsResult } = await parseRouteQuery(
-            route.query,
-            options as QueryParamsOptions<ViewPostRequest>,
-        )
-
-        console.log("route.query===========>", route.query)
+        const { hasPaginationParams, hasQueryParams, queryParamsResult } = await parseRouteQuery(route.query, options as QueryParamsOptions<ViewPostRequest>)
 
         // 清空 queryParams
-        Object.keys(queryParams).forEach(
-            (key) => delete queryParams[key as keyof typeof queryParams],
-        )
+        Object.keys(queryParams).forEach((key) => delete queryParams[key as keyof typeof queryParams])
         if (hasQueryParams) {
             Object.assign(queryParams, queryParamsResult)
         }
@@ -99,16 +92,7 @@ export function useUtils(
 
     // 清空查询参数中的特定字段
     const clearParamsExcept = (fieldsToKeep: ViewPostResKey[]) => {
-        const keysToClear: ViewPostResKey[] = [
-            "key_word",
-            "year",
-            "month",
-            "post_author",
-            "post_category_id",
-            "post_tag_id",
-            "current_page",
-            "page_size",
-        ]
+        const keysToClear: ViewPostResKey[] = ["key_word", "year", "month", "post_author", "post_category_id", "post_tag_id", "current_page", "page_size"]
 
         keysToClear.forEach((key) => {
             if (!fieldsToKeep.includes(key)) {

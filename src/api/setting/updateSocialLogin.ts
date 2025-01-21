@@ -14,7 +14,7 @@ import type { Res, ResPromise } from "@/api/response"
 
 import type { GetSocialLoginResponse } from "./getSocialLogin" // 复用类型
 
-type UpdateSocialLoginRequest = GetSocialLoginResponse
+export type UpdateSocialLoginRequest = GetSocialLoginResponse
 
 // 更新社交登录信息
 export function updateSocialLoginAPI(requestData: UpdateSocialLoginRequest): ResPromise<Res<unknown>> {

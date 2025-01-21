@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-20 15:49:22
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-20 17:01:58
+ * @LastEditTime : 2025-01-21 15:21:04
  * @FilePath     : \blog-client\src\components\common\send-test-email\index.vue
  * @Description  : 测试发送邮件组件
  * @Blog         : https://jiaopengzi.com
@@ -34,6 +34,10 @@ const { sendApi, successCode, width, btnText, placeholder } = defineProps<{
     placeholder?: string
 }>()
 
+const toEmail = ref("")
+const loading = ref(false)
+const btnTextTemp = ref("")
+
 const widthStyle = computed(() => {
     // 判断是数字还是字符串
     return {
@@ -41,29 +45,20 @@ const widthStyle = computed(() => {
     }
 })
 
-const toEmail = ref("")
-const inputPlaceholder = ref("请输入接收邮箱账号")
-const loading = ref(false)
 const btnTextInner = ref("发起测试")
-const btnTextTemp = ref("")
 
 watch(
     () => btnText,
-    (newVal) => {
-        if (newVal) {
-            btnTextInner.value = newVal
+    () => {
+        if (btnText) {
+            btnTextInner.value = btnText
         }
     },
 )
 
-watch(
-    () => placeholder,
-    (newVal) => {
-        if (newVal) {
-            inputPlaceholder.value = newVal
-        }
-    },
-)
+const inputPlaceholder = computed(() => {
+    return placeholder || "请输入接收邮箱账号"
+})
 
 const sendEmail = async () => {
     if (!toEmail.value) {

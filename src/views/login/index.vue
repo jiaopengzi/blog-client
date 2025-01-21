@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2023-11-22 16:05:07
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-18 17:31:13
+ * @LastEditTime : 2025-01-21 16:28:20
  * @FilePath     : \blog-client\src\views\login\index.vue
  * @Description  : 登录
  * @Blog         : https://jiaopengzi.com
@@ -37,10 +37,10 @@
                 </el-form-item>
             </div>
             <div class="social">
-                <button type="button" class="social-btn" @click="loginByWeChat">
+                <button v-if="socialLoginStatus.qq" type="button" class="social-btn" @click="loginByWeChat">
                     <Icon :name="IconKeys.Wechat" custom-class="iconfont icon-wechat" />
                 </button>
-                <button type="button" class="social-btn" @click="loginByQQ">
+                <button v-if="socialLoginStatus.wechat" type="button" class="social-btn" @click="loginByQQ">
                     <Icon :name="IconKeys.Qq" custom-class="iconfont icon-qq" />
                 </button>
             </div>
@@ -51,11 +51,13 @@
 
 <script lang="ts" setup>
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { reactive, ref, toRef, useTemplateRef } from "vue"
+import { onBeforeMount, reactive, ref, toRef, useTemplateRef } from "vue"
 import type { RouteLocationRaw } from "vue-router"
 import { useRouter } from "vue-router"
 
 import { SocialLoginType } from "@/api/common"
+import { handleResErr, ResponseCode } from "@/api/response"
+import { getSocialLoginStatusAPI, type GetSocialLoginStatusResponse } from "@/api/setting/getSocialLoginStatus"
 import AccountFormFooter from "@/components/common/account-form-footer"
 import AccountFormHeader from "@/components/common/account-form-header"
 import { IconKeys } from "@/components/common/icons"
@@ -63,11 +65,11 @@ import SlideVerify from "@/components/common/slide-verify"
 import { useAccountFormValidation } from "@/components/hooks/useAccountFormValidation"
 import { RouteNames } from "@/router"
 import { useUserStore } from "@/stores/user"
+import { MessageUtil } from "@/utils/message"
 
 import type { LoginForm } from "./types"
 
-// eslint-disable-next-line vue/multi-word-component-names
-defineOptions({ name: "Login" })
+defineOptions({ name: "AppLogin" })
 const router = useRouter()
 // 表单label位置 top | left | right
 const labelPosition = ref("top")
@@ -82,6 +84,12 @@ const loginFormRef = useTemplateRef<FormInstance>("loginFormRef")
 const loginForm = reactive<LoginForm>({
     loginName: "jiaopengzi@qq.com",
     password: "123QWEasd",
+})
+
+// 获取社交登录状态
+const socialLoginStatus = ref<GetSocialLoginStatusResponse>({
+    qq: false,
+    wechat: false,
 })
 
 // 表单数据动态绑定
@@ -141,7 +149,6 @@ const login = () => {
     // 关闭滑块验证
     showSlideVerify.value = false
     submitForm(loginFormRef.value as FormInstance)
-    // console.log('登录')
 }
 
 const loginByWeChat = async (event: Event) => {
@@ -153,6 +160,16 @@ const loginByQQ = async (event: Event) => {
     event.preventDefault() // 阻止默认行为
     await userStore.socialLogin(SocialLoginType.QQ)
 }
+
+onBeforeMount(async () => {
+    // 获取社交登录状态
+    const res = await getSocialLoginStatusAPI()
+    if (res.data.code === ResponseCode.GetSocialLoginStatusSuccess) {
+        socialLoginStatus.value = res.data.data
+    } else {
+        MessageUtil.error(handleResErr(res), 10000)
+    }
+})
 </script>
 
 <style lang="scss" scoped>

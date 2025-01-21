@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-20 11:23:38
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-20 11:25:31
+ * @LastEditTime : 2025-01-21 12:57:22
  * @FilePath     : \blog-client\src\api\setting\getSocialLogin.ts
  * @Description  : 获取社交登录信息
  * @Blog         : https://jiaopengzi.com
@@ -15,8 +15,10 @@ import type { Res, ResPromise } from "@/api/response"
 export interface LoginConfig {
     app_id: string
     app_key: string
+    base_url: string
     redirect_uri: string
     redirect_uri_bind: string
+    is_enabled: boolean
 }
 
 export interface GetSocialLoginResponse {

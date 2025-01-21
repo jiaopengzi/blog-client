@@ -9,7 +9,7 @@
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  */
 
-import { type Reactive,ref } from "vue"
+import { type Reactive, ref } from "vue"
 
 import { type PaginationRequest } from "@/api/request"
 import { type Pagination } from "@/api/response"

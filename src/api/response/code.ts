@@ -114,6 +114,7 @@ export enum ResponseCode {
     GetSocialLoginSuccess = 2309, // 获取社交登录信息成功
     SocialLoginNoUpdate = 2310, // 社交登录信息未更新
     SocialLoginUpdateSuccess = 2311, // 社交登录信息更新成功
+    GetSocialLoginStatusSuccess = 2312, // 获取社交登录状态成功
 
     // 验证码相关
     CaptchaSendSuccess = 8000, //验证码发送成功

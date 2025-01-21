@@ -12,11 +12,7 @@
 <template>
     <div class="register-page">
         <!-- 添加滑动验证组件：SlideVerify -->
-        <SlideVerify
-            v-if="showSlideVerify"
-            @on-close="closeSlideVerify"
-            @on-success="sendCaptcha"
-        ></SlideVerify>
+        <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="sendCaptcha"></SlideVerify>
         <el-form
             :label-position="labelPosition"
             label-width="100px"
@@ -39,12 +35,7 @@
 
             <el-form-item label="验证码" prop="captcha">
                 <el-input class="email-code" v-model="registerForm.captcha" clearable />
-                <button
-                    class="btn-captcha"
-                    type="button"
-                    @click="openSlideVerify"
-                    :disabled="btnCaptchaState.disabled"
-                >
+                <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="btnCaptchaState.disabled">
                     {{ captcha }}
                 </button>
             </el-form-item>
@@ -54,28 +45,17 @@
             </el-form-item>
 
             <el-form-item label="确认密码" prop="rePassword">
-                <el-input
-                    type="password"
-                    show-password
-                    v-model="registerForm.rePassword"
-                    clearable
-                />
+                <el-input type="password" show-password v-model="registerForm.rePassword" clearable />
             </el-form-item>
 
             <el-form-item prop="acceptedTerms">
-                <el-checkbox
-                    v-model="registerForm.acceptedTerms"
-                    value="同意条款"
-                    name="acceptedTerms"
-                /><span class="i-agree">我已同意并接受：</span
+                <el-checkbox v-model="registerForm.acceptedTerms" value="同意条款" name="acceptedTerms" /><span class="i-agree">我已同意并接受：</span
                 ><a class="i-agree-link" href="/">《服务条款》</a>
             </el-form-item>
 
             <div class="btn-submit">
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm(registerFormRef as FormInstance)"
-                        >注册</el-button
-                    >
+                    <el-button type="primary" @click="submitForm(registerFormRef as FormInstance)">注册</el-button>
                     <el-button @click="resetForm(registerFormRef as FormInstance)">重置</el-button>
                 </el-form-item>
             </div>
@@ -102,8 +82,7 @@ import { MessageUtil } from "@/utils/message"
 
 import type { RegisterForm } from "./types"
 
-// eslint-disable-next-line vue/multi-word-component-names
-defineOptions({ name: "Register" })
+defineOptions({ name: "AppRegister" })
 
 const router = useRouter()
 

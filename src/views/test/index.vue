@@ -1,105 +1,67 @@
 <!--
  * @Author       : jiaopengzi
- * @Date         : 2025-01-15 15:42:42
+ * @Date         : 2024-10-19 10:58:05
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-20 16:45:02
+ * @LastEditTime : 2025-01-21 16:31:38
  * @FilePath     : \blog-client\src\views\test\index.vue
- * @Description  : 邮箱配置
+ * @Description  : 
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
-
 <template>
-    <div class="send-test-email" :style="widthStyle">
-        <el-input class="send-test-email-item in" v-model="toEmail" placeholder="请输入接收邮箱账号" clearable />
-        <el-button class="send-test-email-item btn" type="primary" @click="sendEmail" :loading="loading">{{ btnTextInner }}</el-button>
+    <div :class="{ 'full-screen': isFullScreen }" class="content-container">
+        <button type="button" @click="toggleFullScreen">
+            {{ isFullScreen ? "Exit Full Screen" : "Enter Full Screen" }}
+        </button>
+        <div class="content">
+            <!-- 你的内容在这里 -->
+            <p>这里是网页内容...</p>
+        </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from "vue"
+import { ref } from "vue"
 
-import type { SendTestEmailRequest } from "@/api/common"
-import { handleResErr, type Res, ResponseCode, type ResPromise } from "@/api/response"
-import { MessageUtil } from "@/utils/message"
-import { RegexPatterns } from "@/utils/regexPatterns"
+const isFullScreen = ref(false)
 
-defineOptions({ name: "TestSendEmail" })
-
-const { sendAPI, successCode, width, btnText } = defineProps<{
-    sendAPI: (requestData: SendTestEmailRequest) => ResPromise<Res<unknown>>
-    successCode: ResponseCode
-    width?: string | number
-    btnText?: string
-}>()
-
-const widthStyle = computed(() => {
-    return {
-        width: width ? `${width}px` : "400px",
-    }
-})
-
-const toEmail = ref("")
-
-const loading = ref(false)
-const btnTextInner = ref("发起测试")
-const btnTextTemp = ref("")
-
-watch(
-    () => btnText,
-    (newVal) => {
-        btnTextInner.value = newVal || "发起测试"
-    },
-)
-
-const sendEmail = async () => {
-    if (!toEmail.value) {
-        MessageUtil.error("请输入接收邮箱账号")
-        return
-    }
-
-    // 使用正则表达式验证邮箱格式
-    if (!RegexPatterns.Email.test(toEmail.value)) {
-        MessageUtil.error("请输入正确的邮箱地址")
-        return
-    }
-
-    loading.value = true
-    btnTextTemp.value = btnTextInner.value
-    btnTextInner.value = "等待结果..."
-
-    const res = await sendAPI({
-        email: toEmail.value,
-    })
-
-    if (res.data.code === successCode) {
-        MessageUtil.success(res.data.msg)
-    } else {
-        MessageUtil.error(handleResErr(res))
-    }
-
-    loading.value = false
-    btnTextInner.value = btnTextTemp.value
+const toggleFullScreen = () => {
+    isFullScreen.value = !isFullScreen.value
 }
 </script>
 
-<style lang="scss" scoped>
-.send-test-email {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+<style scoped lang="scss">
+.content-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
 
-    margin: 10px 0;
-
-    // btn 固定宽度
-    .btn {
-        margin-left: 10px;
-        width: 100px;
+    &.full-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        padding: 0;
+        z-index: 1000;
+        background-color: #fff;
     }
+}
 
-    // in 使用剩余宽度
-    .in {
-        flex: 1;
-    }
+button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.content {
+    margin-top: 50px;
+    /* 其他内容样式 */
 }
 </style>

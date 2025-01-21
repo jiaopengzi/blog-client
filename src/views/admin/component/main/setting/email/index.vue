@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-15 15:42:42
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-20 17:13:33
+ * @LastEditTime : 2025-01-21 15:43:20
  * @FilePath     : \blog-client\src\views\admin\component\main\setting\email\index.vue
  * @Description  : 邮箱配置
  * @Blog         : https://jiaopengzi.com
@@ -37,12 +37,12 @@
             <el-form-item label="密码" prop="password">
                 <el-input type="password" v-model="form.password" placeholder="邮箱密码或授权码" show-password clearable />
             </el-form-item>
-            <el-form-item label="测试邮件">
+            <el-form-item label="测试邮件" v-if="isSendTestEmail">
                 <SendTestEmail
                     :send-api="testEmailAPI"
                     :success-code="ResponseCode.EmailTestSendSuccess"
                     btn-text="测试连接"
-                    placeholder="需要发送测试邮件，才填写接收邮箱账号，否则不填写。"
+                    placeholder="需要发送测试邮件，才填写接收测试邮件的邮箱，否则不填写。"
                 />
             </el-form-item>
             <div class="btn-submit">
@@ -54,13 +54,14 @@
 
 <script lang="ts" setup>
 import type { FormInstance, FormRules } from "element-plus"
-import { onBeforeMount, reactive, ref, useTemplateRef } from "vue"
+import { computed, onBeforeMount, reactive, ref, useTemplateRef } from "vue"
 
 import { handleResErr, ResponseCode } from "@/api/response"
 import { getEmailAPI, type GetEmailResponse } from "@/api/setting/getEmail"
 import { testEmailAPI } from "@/api/setting/testEmail"
 import { updateEmailAPI, type UpdateEmailRequest } from "@/api/setting/updateEmail"
 import SendTestEmail from "@/components/common/send-test-email"
+import { useFormItemRule } from "@/components/hooks/useFormItemRule"
 import { MessageUtil } from "@/utils/message"
 import { RegexPatterns } from "@/utils/regexPatterns"
 
@@ -77,11 +78,12 @@ const formRef = useTemplateRef<FormInstance>("formRef")
 
 // 表单数据
 const form = ref<GetEmailResponse>({} as GetEmailResponse)
+const isSendTestEmail = computed(() => form.value.from && form.value.password && form.value.host && form.value.port && form.value.user_name)
 
 const rules = reactive<FormRules<GetEmailResponse>>({
     user_name: [{ required: true, message: "请输入发件名称", trigger: "blur" }],
     host: [{ required: true, message: "请输入正确的邮件服务器", trigger: "blur" }],
-    port: [{ required: true, message: "请输入正确的端口号", trigger: "blur" }],
+    port: [{ required: true, message: "请输入正确的端口号", trigger: "blur" }, useFormItemRule().portFormItemRule()],
     from: [
         { required: true, message: "请输入用户名或邮箱！", trigger: "blur" },
         {
@@ -101,7 +103,7 @@ const submitForm = async () => {
             const req: UpdateEmailRequest = {
                 user_name: form.value.user_name,
                 host: form.value.host,
-                port: form.value.port,
+                port: Number(form.value.port),
                 from: form.value.from,
                 password: form.value.password,
             }
