@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-12-29 12:08:15
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-20 17:12:58
+ * @LastEditTime : 2025-02-04 17:00:23
  * @FilePath     : \blog-client\src\api\response\code.ts
  * @Description  : 相应状态码
  * @Blog         : https://jiaopengzi.com
@@ -115,6 +115,10 @@ export enum ResponseCode {
     SocialLoginNoUpdate = 2310, // 社交登录信息未更新
     SocialLoginUpdateSuccess = 2311, // 社交登录信息更新成功
     GetSocialLoginStatusSuccess = 2312, // 获取社交登录状态成功
+    GetUploadSuccess = 2313, // 获取上传配置成功
+    UploadNoUpdate = 2314, // 上传配置未更新
+    UploadUpdateSuccess = 2315, // 上传配置更新成功
+    UploadConfigError = 2316, // 上传配置错误
 
     // 验证码相关
     CaptchaSendSuccess = 8000, //验证码发送成功

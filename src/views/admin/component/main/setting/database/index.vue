@@ -26,7 +26,7 @@
                         if (el) redisFormRefs[index] = el as RedisDatabaseFormRef
                     }
                 "
-                :node="index + 1"
+                :node="isShowRedisNodeNumber ? index + 1 : void 0"
                 :db="item"
                 :formWidth="formWidth"
             />
@@ -55,6 +55,10 @@ const dbRedis = ref<RedisNodeSetupRequest[]>([])
 
 const pgsqlFormRef = useTemplateRef<PgsqlDatabaseFormRef>("pgsqlFormRef")
 const redisFormRefs = reactive<{ [key: number]: RedisDatabaseFormRef | undefined }>({})
+
+const isShowRedisNodeNumber = computed(() => {
+    return dbRedis.value.length > 1
+})
 
 const isMultiRedisNode = computed(() => {
     return dbRedis.value.length > 4

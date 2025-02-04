@@ -1,12 +1,12 @@
 /**
  * @Author       : jiaopengzi
- * @Date         : 2025-01-15 15:42:58
+ * @Date         : 2025-01-21 11:23:59
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-15 15:49:03
- * @FilePath     : \blog-client\src\views\admin\component\main\setting\social\index.ts
- * @Description  : 社交登录
+ * @LastEditTime : 2025-01-21 11:24:02
+ * @FilePath     : \blog-client\src\views\admin\component\main\setting\social\component\index.ts
+ * @Description  :
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  */
-
 export { default } from "./index.vue"
+export * from "./types"
