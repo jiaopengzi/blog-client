@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-02-04 16:54:22
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-02-04 20:23:26
+ * @LastEditTime : 2025-02-05 16:21:12
  * @FilePath     : \blog-client\src\views\admin\component\main\setting\upload\file-allowed\index.vue
  * @Description  : 文件限制表单组件
  * @Blog         : https://jiaopengzi.com
@@ -94,11 +94,7 @@ watch(
 )
 
 // 结果数据
-const formDataResult = computed<FileAllowed[]>(() => {
-    return {
-        ...formData.value,
-    }
-})
+const formDataResult = computed<FileAllowed[]>(() => [...formData.value])
 
 // 验证规则
 const rules = reactive<FormRules<FileAllowed>>({

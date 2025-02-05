@@ -2,14 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-07 19:35:55
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-17 11:35:35
+ * @LastEditTime : 2025-02-05 15:19:13
  * @FilePath     : \blog-client\src\components\common\db-redis\index.vue
  * @Description  : redis数据库配置表单
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-    <DatabaseForm ref="databaseFormRef" :title="nodeName" :db="db" :rules="rules" :formItems="formItems" :formWidth="formWidth" />
+    <BaseConfigForm ref="formRef" :title="nodeName" :form-data="db" :rules="rules" :form-items="formItems" :form-width="formWidth" />
 </template>
 
 <script lang="ts" setup>
@@ -17,11 +17,11 @@ import type { FormRules } from "element-plus"
 import { reactive, useTemplateRef } from "vue"
 
 import { type RedisNodeSetupRequest } from "@/api/setting/setup"
-import DatabaseForm, { commonRules, type DatabaseFormRef } from "@/components/common/db-base"
+import BaseConfigForm, { type BaseConfigFormRef, dbRules } from "@/components/common/base-config-form"
 
 defineOptions({ name: "RedisDatabaseForm" })
 
-const databaseFormRef = useTemplateRef<DatabaseFormRef>("databaseFormRef")
+const formRef = useTemplateRef<BaseConfigFormRef>("formRef")
 
 const {
     node,
@@ -42,7 +42,7 @@ const {
 const nodeName = node ? `redis节点${node}` : "redis数据库"
 
 const rules = reactive<FormRules<RedisNodeSetupRequest>>({
-    ...commonRules,
+    ...dbRules,
     database: [
         { required: true, message: "请输入数据库名称", trigger: "blur" },
         {
@@ -68,6 +68,6 @@ const formItems = [
 ]
 
 defineExpose({
-    databaseFormRef,
+    formRef,
 })
 </script>

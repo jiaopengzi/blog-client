@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-21 11:23:46
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-21 14:59:20
+ * @LastEditTime : 2025-02-05 12:32:13
  * @FilePath     : \blog-client\src\views\admin\component\main\setting\social\social-login-config\index.vue
  * @Description  : 社交登录表单组件
  * @Blog         : https://jiaopengzi.com
@@ -24,7 +24,7 @@
             <h2 class="title">社交登录配置{{ platformDisplay }}</h2>
             <!-- 说明内容插槽 -->
             <slot name="description"></slot>
-            <el-form-item label="是否启用" prop="is_enabled">
+            <el-form-item label="启用" prop="is_enabled">
                 <el-checkbox v-model="formData.is_enabled" />
             </el-form-item>
             <el-form-item label="app_id" prop="app_id">

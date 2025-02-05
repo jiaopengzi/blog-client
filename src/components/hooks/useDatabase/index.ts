@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-15 17:39:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-17 13:21:55
+ * @LastEditTime : 2025-02-05 15:26:44
  * @FilePath     : \blog-client\src\components\hooks\useDatabase\index.ts
  * @Description  : 数据库 hooks
  * @Blog         : https://jiaopengzi.com
@@ -45,13 +45,13 @@ export function useDatabase<K extends SetupRequest>(
 
         // 添加 pgsqlForm 的验证
         if (pgsqlFormRef.value) {
-            promises.push(pgsqlFormRef.value.databaseFormRef.validateForm())
+            promises.push(pgsqlFormRef.value.formRef.validateForm())
         }
 
         // 添加每个 RedisForm 的验证
         for (const key in redisFormRefs) {
             if (redisFormRefs[key]) {
-                promises.push(redisFormRefs[key].databaseFormRef.validateForm())
+                promises.push(redisFormRefs[key].formRef.validateForm())
             }
         }
 
@@ -67,7 +67,7 @@ export function useDatabase<K extends SetupRequest>(
             isShowTimer.value = true
             waitSeconds.value = 0
 
-            const pgsqlData = pgsqlFormRef.value?.databaseFormRef?.dbFormData
+            const pgsqlData = pgsqlFormRef.value?.formRef?.configFormData as PgsqlSetupRequest
 
             // 转换为 number 类型
             if (pgsqlData) {
@@ -77,10 +77,14 @@ export function useDatabase<K extends SetupRequest>(
             const redisData = Object.values(redisFormRefs)
                 .map((ref) => {
                     // 转换为 number 类型
-                    if (ref?.databaseFormRef?.dbFormData) {
-                        ref.databaseFormRef.dbFormData.port = Number(ref.databaseFormRef.dbFormData.port)
-                        ref.databaseFormRef.dbFormData.database = Number(ref.databaseFormRef.dbFormData.database)
-                        return ref.databaseFormRef.dbFormData
+                    if (ref?.formRef?.configFormData) {
+                        if ("port" in ref.formRef.configFormData) {
+                            ref.formRef.configFormData.port = Number(ref.formRef.configFormData.port)
+                        }
+                        if ("database" in ref.formRef.configFormData) {
+                            ref.formRef.configFormData.database = Number(ref.formRef.configFormData.database)
+                        }
+                        return ref.formRef.configFormData
                     }
                 })
                 .filter((item) => item !== undefined) // 过滤掉 undefined

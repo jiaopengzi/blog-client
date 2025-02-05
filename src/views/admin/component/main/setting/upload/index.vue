@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-15 15:42:58
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-02-04 20:35:16
+ * @LastEditTime : 2025-02-05 15:09:13
  * @FilePath     : \blog-client\src\views\admin\component\main\setting\upload\index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -12,14 +12,15 @@
 <template>
     <div class="components">
         <el-button class="component-item" type="primary" @click="submitForm">保存</el-button>
-        <FileAllowed ref="fileAllowedRef" class="component-item" :data="fileAllowedList"> </FileAllowed>
+        <FileAllowed ref="fileAllowedRef" class="component-item" :data="fileAllowedList" />
+        <UploadLocal ref="localRef" class="component-item" :config="localData" :form-width="1080" :label-width="140" />
+        <UploadOSS ref="ossRef" class="component-item" :config="ossData" :form-width="1080" :label-width="140" />
     </div>
 </template>
 
 <script lang="ts" setup>
 import { onBeforeMount, ref, useTemplateRef } from "vue"
 
-import { SocialLoginType } from "@/api/common"
 import { handleResErr, ResponseCode } from "@/api/response"
 import type { FileAllowed as FileAllowedType, GetUploadResponse, Local as LocalType, OSS as OSSType } from "@/api/setting/getUpload"
 import { getUploadAPI } from "@/api/setting/getUpload"
@@ -27,29 +28,53 @@ import { updateUploadAPI, type UpdateUploadRequest } from "@/api/setting/updateU
 import { MessageUtil } from "@/utils/message"
 
 import FileAllowed, { type FileAllowedRef } from "./file-allowed"
+import UploadLocal, { type UploadLocalFormRef } from "./local"
+import UploadOSS, { type UploadOSSFormRef } from "./oss"
 
 defineOptions({ name: "SettingUpload" })
 
 const fileAllowedList = ref<FileAllowedType[]>([])
+const localData = ref<LocalType>({} as LocalType)
+const ossData = ref<OSSType>({} as OSSType)
 
 // 表单实例
 const fileAllowedRef = useTemplateRef<FileAllowedRef>("fileAllowedRef")
+const localRef = useTemplateRef<UploadLocalFormRef>("localRef")
+const ossRef = useTemplateRef<UploadOSSFormRef>("ossRef")
 
 const submitForm = async () => {
     const req: UpdateUploadRequest = {} as UpdateUploadRequest
 
     // 校验表单
     if (fileAllowedRef.value) {
-        if (!(await fileAllowedRef.value?.validateForm())) {
+        if (!(await fileAllowedRef.value.validateForm())) {
             return
         }
     }
 
-    req.file_allowed = fileAllowedList.value
+    req.file_allowed = fileAllowedRef.value?.formDataResult || []
+    console.log("====>", typeof req.file_allowed)
+    console.log("====>", req.file_allowed)
+
+    if (localRef.value) {
+        if (!(await localRef.value.formRef.validateForm())) {
+            return
+        }
+    }
+    req.local = localRef.value?.formRef.configFormData as LocalType
+
+    if (ossRef.value) {
+        if (!(await ossRef.value.formRef.validateForm())) {
+            return
+        }
+    }
+    req.oss = ossRef.value?.formRef.configFormData as OSSType
 
     const res = await updateUploadAPI(req)
     if (res.data.code === ResponseCode.UploadUpdateSuccess) {
         MessageUtil.success("保存成功")
+    } else if (res.data.code === ResponseCode.UploadNoUpdate) {
+        MessageUtil.warning(handleResErr(res), 5000)
     } else {
         MessageUtil.error(handleResErr(res), 10000)
     }
@@ -59,6 +84,8 @@ onBeforeMount(async () => {
     const res = await getUploadAPI()
     if (res.data.code === ResponseCode.GetUploadSuccess) {
         fileAllowedList.value = res.data.data.file_allowed
+        localData.value = res.data.data.local
+        ossData.value = res.data.data.oss
     } else {
         handleResErr(res.data)
         MessageUtil.error(handleResErr(res), 10000)

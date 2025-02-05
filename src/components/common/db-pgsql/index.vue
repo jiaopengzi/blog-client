@@ -2,14 +2,14 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-07 19:35:55
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-16 12:34:50
+ * @LastEditTime : 2025-02-05 15:18:55
  * @FilePath     : \blog-client\src\components\common\db-pgsql\index.vue
  * @Description  : pgsql数据库配置表单
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-    <DatabaseForm ref="databaseFormRef" :title="'pgsql数据库'" :db="dbData" :rules="rules" :formItems="formItems" :formWidth="formWidth" />
+    <BaseConfigForm ref="formRef" title="pgsql数据库" :form-data="dbData" :rules="rules" :form-items="formItems" :form-width="formWidth" />
 </template>
 
 <script lang="ts" setup>
@@ -17,11 +17,11 @@ import type { FormRules } from "element-plus"
 import { reactive, useTemplateRef, watch } from "vue"
 
 import { type PgsqlSetupRequest } from "@/api/setting/setup"
-import DatabaseForm, { commonRules, type DatabaseFormRef } from "@/components/common/db-base"
+import BaseConfigForm, { type BaseConfigFormRef, dbRules } from "@/components/common/base-config-form"
 
 defineOptions({ name: "PgsqlDatabaseForm" })
 
-const databaseFormRef = useTemplateRef<DatabaseFormRef>("databaseFormRef")
+const formRef = useTemplateRef<BaseConfigFormRef>("formRef")
 
 const {
     db = {
@@ -41,7 +41,7 @@ const {
 const dbData = reactive<PgsqlSetupRequest>(db)
 
 const rules = reactive<FormRules<PgsqlSetupRequest>>({
-    ...commonRules,
+    ...dbRules,
     table_prefix: [
         { required: true, message: "请输入表格前缀", trigger: "blur" },
         {
@@ -76,6 +76,6 @@ watch(
 )
 
 defineExpose({
-    databaseFormRef,
+    formRef,
 })
 </script>
