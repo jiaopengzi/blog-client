@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-15 15:42:58
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-21 18:32:05
+ * @LastEditTime : 2025-02-05 18:19:59
  * @FilePath     : \blog-client\src\views\admin\component\main\setting\social\index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -28,6 +28,7 @@
             </template>
         </SocialLoginConfig>
     </div>
+    <RestartDialog :is-show-timer="isShowTimer" :wait-seconds="waitSeconds" />
 </template>
 
 <script lang="ts" setup>
@@ -37,6 +38,8 @@ import { SocialLoginType } from "@/api/common"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { getSocialLoginAPI, type LoginConfig } from "@/api/setting/getSocialLogin"
 import { updateSocialLoginAPI, type UpdateSocialLoginRequest } from "@/api/setting/updateSocialLogin"
+import RestartDialog from "@/components/common/restart-dialog"
+import { useRestart } from "@/components/hooks/useRestart"
 import { MessageUtil } from "@/utils/message"
 
 import SocialLoginConfig, { type SocialLoginConfigRef } from "./social-login-config"
@@ -49,6 +52,9 @@ const configWeChat = ref<LoginConfig>({} as LoginConfig)
 // 表单实例
 const qqRef = useTemplateRef<SocialLoginConfigRef>("qqRef")
 const wechatRef = useTemplateRef<SocialLoginConfigRef>("wechatRef")
+
+// hooks
+const { showRestart, waitSeconds, isShowTimer } = useRestart()
 
 const submitForm = async () => {
     // 校验表单
@@ -75,6 +81,7 @@ const submitForm = async () => {
     const res = await updateSocialLoginAPI(req)
 
     if (res.data.code === ResponseCode.SocialLoginUpdateSuccess) {
+        await showRestart()
         MessageUtil.success("更新成功")
     } else {
         MessageUtil.error(handleResErr(res), 10000)

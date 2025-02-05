@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-15 15:42:58
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-02-05 15:09:13
+ * @LastEditTime : 2025-02-05 18:16:36
  * @FilePath     : \blog-client\src\views\admin\component\main\setting\upload\index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -16,15 +16,18 @@
         <UploadLocal ref="localRef" class="component-item" :config="localData" :form-width="1080" :label-width="140" />
         <UploadOSS ref="ossRef" class="component-item" :config="ossData" :form-width="1080" :label-width="140" />
     </div>
+    <RestartDialog :is-show-timer="isShowTimer" :wait-seconds="waitSeconds" />
 </template>
 
 <script lang="ts" setup>
 import { onBeforeMount, ref, useTemplateRef } from "vue"
 
 import { handleResErr, ResponseCode } from "@/api/response"
-import type { FileAllowed as FileAllowedType, GetUploadResponse, Local as LocalType, OSS as OSSType } from "@/api/setting/getUpload"
+import type { FileAllowed as FileAllowedType, Local as LocalType, OSS as OSSType } from "@/api/setting/getUpload"
 import { getUploadAPI } from "@/api/setting/getUpload"
 import { updateUploadAPI, type UpdateUploadRequest } from "@/api/setting/updateUpload"
+import RestartDialog from "@/components/common/restart-dialog"
+import { useRestart } from "@/components/hooks/useRestart"
 import { MessageUtil } from "@/utils/message"
 
 import FileAllowed, { type FileAllowedRef } from "./file-allowed"
@@ -42,6 +45,9 @@ const fileAllowedRef = useTemplateRef<FileAllowedRef>("fileAllowedRef")
 const localRef = useTemplateRef<UploadLocalFormRef>("localRef")
 const ossRef = useTemplateRef<UploadOSSFormRef>("ossRef")
 
+// hooks
+const { showRestart, waitSeconds, isShowTimer } = useRestart()
+
 const submitForm = async () => {
     const req: UpdateUploadRequest = {} as UpdateUploadRequest
 
@@ -53,8 +59,6 @@ const submitForm = async () => {
     }
 
     req.file_allowed = fileAllowedRef.value?.formDataResult || []
-    console.log("====>", typeof req.file_allowed)
-    console.log("====>", req.file_allowed)
 
     if (localRef.value) {
         if (!(await localRef.value.formRef.validateForm())) {
@@ -71,7 +75,9 @@ const submitForm = async () => {
     req.oss = ossRef.value?.formRef.configFormData as OSSType
 
     const res = await updateUploadAPI(req)
+
     if (res.data.code === ResponseCode.UploadUpdateSuccess) {
+        await showRestart()
         MessageUtil.success("保存成功")
     } else if (res.data.code === ResponseCode.UploadNoUpdate) {
         MessageUtil.warning(handleResErr(res), 5000)
