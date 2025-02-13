@@ -4,7 +4,7 @@
  * @LastEditors  : jiaopengzi
  * @LastEditTime : 2025-02-05 18:13:37
  * @FilePath     : \blog-client\src\components\hooks\useRestart\index.ts
- * @Description  : 常规重启hook
+ * @Description  : 常规重启 hook
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  */
@@ -15,6 +15,10 @@ import { ResponseCode } from "@/api/response"
 import { isSetupAPI } from "@/api/setting/isSetup"
 import { MessageUtil } from "@/utils/message"
 
+/**
+ * 重启服务端
+ * @param maxWaitSeconds 最大等待秒数 默认 60 秒
+ */
 export function useRestart(maxWaitSeconds: number = 60) {
     const waitSeconds = ref(0) // 等待秒数
     const isShowTimer = ref(false) // 是否显示计时器
@@ -41,6 +45,7 @@ export function useRestart(maxWaitSeconds: number = 60) {
                 MessageUtil.error("服务端重启超时，请检查网络和后台数据是否正常！", 10000)
             }
 
+            // 轮训检查是否重启成功
             const res = await isSetupAPI()
             if (res.data.code === ResponseCode.SetupAlready) {
                 if (!hasShowSuccessMsg.value) {

@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2025-01-15 17:39:32
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-02-05 15:26:44
+ * @LastEditTime : 2025-02-05 18:22:07
  * @FilePath     : \blog-client\src\components\hooks\useDatabase\index.ts
  * @Description  : 数据库 hooks
  * @Blog         : https://jiaopengzi.com
@@ -22,7 +22,11 @@ import { MessageUtil } from "@/utils/message"
  *
  * @param pgsqlFormRef pgsql 表单
  * @param redisFormRefs redis 表单
- * @param handleRequest 处理请求
+ * @param submitAPI 提交请求
+ * @param submitResCode 提交请求返回码
+ * @param confirmAPI 确认请求
+ * @param confirmResCode 确认请求返回码
+ * @param confirmFunc 确认成功后的回调函数
  * @param maxWaitSeconds 最大等待秒数 默认 60 秒
  */
 export function useDatabase<K extends SetupRequest>(

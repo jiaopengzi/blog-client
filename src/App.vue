@@ -27,7 +27,7 @@ import { Head } from "@unhead/vue/components"
 import { useDark } from "@vueuse/core"
 import { useResizeObserver } from "@vueuse/core"
 import zhCn from "element-plus/es/locale/lang/zh-cn"
-import { onBeforeUnmount,useTemplateRef } from "vue"
+import { onBeforeUnmount, useTemplateRef } from "vue"
 
 import { useUserStore } from "@/stores/user"
 import { getDeviceType } from "@/utils/device"
@@ -51,8 +51,7 @@ useHead({
         { name: "description", content: "目录，就是目录。" },
         {
             name: "keywords",
-            content:
-                "焦棚子,jiaopengzi,power bi,power pivot,power query,power bi report server,数据分析,透视表,excel,目录",
+            content: "焦棚子,jiaopengzi,power bi,power pivot,power query,power bi report server,数据分析,透视表,excel,目录",
         },
         { property: "og:type", content: "article" },
         { property: "og:locale", content: "zh-CN" },
