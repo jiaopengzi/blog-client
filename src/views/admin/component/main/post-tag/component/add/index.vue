@@ -1,8 +1,8 @@
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-25 11:14:04
+ * @LastEditors  : Please set LastEditors
+ * @LastEditTime : 2025-02-26 17:15:22
  * @FilePath     : \blog-client\src\views\admin\component\main\post-tag\component\add\index.vue
  * @Description  : 添加标签 
  * @Blog         : https://jiaopengzi.com
@@ -46,7 +46,7 @@ const submitData = async (form: ViewForm) => {
         slug: form.slug,
         description: form.description,
         thumbnail: form.thumbnail,
-        order: form.order,
+        order: form.order ? form.order.toString() : "0",
     }
     console.log("req:", req)
     const { data } = await insertPostTagAPI(req)

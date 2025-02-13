@@ -1,13 +1,11 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-01-13 15:35:59
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-15 12:46:02
  * @FilePath     : \blog-client\src\views\admin\index.vue
- * @Description  : admin 页面
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  :  
 -->
+
 <template>
     <!-- 加载中 防止页面失去响应提高用户体验 -->
     <div
@@ -37,13 +35,14 @@
                     <!-- 参考:https://stackoverflow.com/questions/65553121/vue-3-transition-renders-non-element-root-node-that-cannot-be-animated -->
                     <!-- 在组件外包裹一层 div,需要单独包括在子组件中，才能缓存,不能在这里包裹 -->
 
-                    <!-- <router-view></router-view> -->
-
-                    <router-view v-slot="{ Component, route }">
+                    <router-view></router-view>
+                    
+                    <!-- TODO 是否启用 KeepAlive 待后续思考 -->
+                    <!-- <router-view v-slot="{ Component, route }">
                         <KeepAlive :exclude="[RouteNames.PostWrite]">
                             <component :is="Component" :key="route.path" />
                         </KeepAlive>
-                    </router-view>
+                    </router-view> -->
 
                     <!-- <router-view v-slot="{ Component }">
                         <transition name="admin-main">

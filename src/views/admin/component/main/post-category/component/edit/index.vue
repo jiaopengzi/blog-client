@@ -1,8 +1,8 @@
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:47:08
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-25 11:22:21
+ * @LastEditors  : Please set LastEditors
+ * @LastEditTime : 2025-02-26 17:17:38
  * @FilePath     : \blog-client\src\views\admin\component\main\post-category\component\edit\index.vue
  * @Description  : 编辑分类
  * @Blog         : https://jiaopengzi.com
@@ -44,8 +44,8 @@ const submitData = async (form: ViewForm) => {
         slug: form.slug,
         description: form.description,
         thumbnail: form.thumbnail,
-        order: form.order,
-        parent: form.parent,
+        order: form.order ? form.order.toString() : "0",
+        parent: form.parent ? form.parent.toString() : "0",
     }
     const { data } = await updatePostCategoryAPI(req)
 

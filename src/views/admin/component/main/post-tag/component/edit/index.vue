@@ -1,8 +1,8 @@
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2024-11-04 16:21:40
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-25 11:22:11
+ * @LastEditors  : Please set LastEditors
+ * @LastEditTime : 2025-02-26 17:15:31
  * @FilePath     : \blog-client\src\views\admin\component\main\post-tag\component\edit\index.vue
  * @Description  : 编辑标签
  * @Blog         : https://jiaopengzi.com
@@ -44,7 +44,7 @@ const submitData = async (form: ViewForm) => {
         slug: form.slug,
         description: form.description,
         thumbnail: form.thumbnail,
-        order: form.order,
+        order: form.order ? form.order.toString() : "0",
     }
     const { data } = await updatePostTagAPI(req)
 

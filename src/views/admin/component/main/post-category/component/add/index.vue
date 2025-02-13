@@ -1,8 +1,8 @@
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:47:08
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-25 10:47:56
+ * @LastEditors  : Please set LastEditors
+ * @LastEditTime : 2025-02-26 17:17:03
  * @FilePath     : \blog-client\src\views\admin\component\main\post-category\component\add\index.vue
  * @Description  : 添加分类
  * @Blog         : https://jiaopengzi.com
@@ -10,18 +10,13 @@
 -->
 
 <template>
-    <View
-        :view-data="addForm"
-        :is-show-id="false"
-        btn-submit-display="新增"
-        @submit-data="submitData"
-    />
+    <View :view-data="addForm" :is-show-id="false" btn-submit-display="新增" @submit-data="submitData" />
 </template>
 
 <script lang="ts" setup>
 import { reactive } from "vue"
 
-import { insertPostCategoryAPI,type InsertPostCategoryRequest } from "@/api/postCategory/insert"
+import { insertPostCategoryAPI, type InsertPostCategoryRequest } from "@/api/postCategory/insert"
 import { ResponseCode } from "@/api/response"
 import { MessageUtil } from "@/utils/message"
 
@@ -47,8 +42,8 @@ const submitData = async (form: ViewForm) => {
         slug: form.slug,
         description: form.description,
         thumbnail: form.thumbnail,
-        order: form.order,
-        parent: form.parent,
+        order: form.order ? form.order.toString() : "0",
+        parent: form.parent ? form.parent.toString() : "0",
     }
 
     const { data } = await insertPostCategoryAPI(req)
