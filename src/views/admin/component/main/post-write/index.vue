@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : Please set LastEditors
- * @LastEditTime : 2025-02-11 20:07:45
+ * @LastEditTime : 2025-02-26 19:06:12
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -20,24 +20,17 @@
                     </el-button>
                 </div>
                 <div class="btns-header-right">
-                    <el-button type="primary" class="save-post btns-header-item" @click="submitForm(formRef as FormInstance)">
+                    <el-button type="primary" class="save-post btns-header-item"
+                        @click="submitForm(formRef as FormInstance)">
                         <Icon :name="IconKeys.Save" custom-class="btns-header-item-icon" />
                         <span>保存</span>
                     </el-button>
                 </div>
             </div>
 
-            <el-form
-                ref="formRef"
-                class="post-info"
-                label-position="top"
-                label-width="200px"
-                :model="postInfoForm"
-                :rules="rules"
-                :scroll-to-error="true"
-                :status-icon="true"
-                :scroll-into-view-options="{ behavior: 'smooth', block: 'center' }"
-            >
+            <el-form ref="formRef" class="post-info" label-position="top" label-width="200px" :model="postInfoForm"
+                :rules="rules" :scroll-to-error="true" :status-icon="true"
+                :scroll-into-view-options="{ behavior: 'smooth', block: 'center' }">
                 <el-form-item label="标题" prop="post_title">
                     <el-input class="post-title" v-model="postInfoForm.post_title" placeholder="添加标题" />
                 </el-form-item>
@@ -63,20 +56,13 @@
                     <el-input v-model="postInfoForm.seo_title" />
                 </el-form-item>
 
-                <el-form-item
-                    ref="seoDescriptionRef"
-                    v-show="defaultStatusIsShow"
-                    label="SEO文章描述，留空则自动截取首段一定字数作为文章描。"
-                    prop="seo_description"
-                >
+                <el-form-item ref="seoDescriptionRef" v-show="defaultStatusIsShow" label="SEO文章描述，留空则自动截取首段一定字数作为文章描。"
+                    prop="seo_description">
                     <el-input v-model="postInfoForm.seo_description" :rows="5" type="textarea" />
                 </el-form-item>
 
-                <el-form-item
-                    v-show="defaultStatusIsShow"
-                    label="SEO文章关键词，多个关键词用英文半角逗号隔开，留空则自动将文章标签做为关键词。"
-                    prop="seo_keywords"
-                >
+                <el-form-item v-show="defaultStatusIsShow" label="SEO文章关键词，多个关键词用英文半角逗号隔开，留空则自动将文章标签做为关键词。"
+                    prop="seo_keywords">
                     <el-input v-model="postInfoForm.seo_keywords" />
                 </el-form-item>
 
@@ -95,7 +81,8 @@
                 <el-form-item label="分类管理" prop="category_ids">
                     <div class="category">
                         <el-checkbox-group v-model="postInfoForm.category_ids">
-                            <el-checkbox class="category-item" v-for="item in allCategories" :key="item.id" :value="item.id" size="large">
+                            <el-checkbox class="category-item" v-for="item in allCategories" :key="item.id"
+                                :value="item.id" size="large">
                                 {{ item.name }}
                             </el-checkbox>
                         </el-checkbox-group>
@@ -104,7 +91,8 @@
 
                 <el-form-item label="标签管理" prop="tags">
                     <div class="add-tag">
-                        <AddTag ref="addTagRef" :tag-list-in="postInfoForm.tag_names || []" @update-tag-list="updateTagListIn" />
+                        <AddTag ref="addTagRef" :tag-list-in="postInfoForm.tag_names || []"
+                            @update-tag-list="updateTagListIn" />
                     </div>
                 </el-form-item>
 
@@ -119,7 +107,8 @@
                 <el-form-item label="文章状态" prop="post_status">
                     <div class="post-status">
                         <el-radio-group v-model="postInfoForm.post_status">
-                            <el-radio v-for="item in radioOptions()" :key="item.value" :value="item.value">{{ item.label }}</el-radio>
+                            <el-radio v-for="item in radioOptions()" :key="item.value" :value="item.value">{{ item.label
+                                }}</el-radio>
                         </el-radio-group>
                         <div class="post-show-method" v-show="postInfoForm.post_status === PostStatusCode.Publish">
                             <SwitchGroup :switch-items="postShowMethod" @update-status="updatePostShowMethod" />
@@ -127,33 +116,26 @@
                     </div>
                 </el-form-item>
 
-                <el-form-item v-if="postInfoForm.post_status === PostStatusCode.Password" label="文章密码" prop="post_password" with="200">
+                <el-form-item v-if="postInfoForm.post_status === PostStatusCode.Password" label="文章密码"
+                    prop="post_password" with="200">
                     <el-input v-model="postInfoForm.post_password" />
                 </el-form-item>
 
-                <el-form-item v-if="postInfoForm.post_status === PostStatusCode.Future" label="发布时间" prop="post_push_time">
-                    <el-date-picker
-                        v-model="postInfoForm.post_push_time.Time"
-                        type="datetime"
-                        placeholder="留空则为立刻发布"
-                        :shortcuts="generateShortcuts('发布')"
-                        :default-time="defaultTime"
-                    />
+                <el-form-item v-if="postInfoForm.post_status === PostStatusCode.Future" label="发布时间"
+                    prop="post_push_time">
+                    <el-date-picker v-model="postInfoForm.post_push_time.Time" type="datetime" placeholder="留空则为立刻发布"
+                        :shortcuts="generateShortcuts('发布')" :default-time="defaultTime" />
                 </el-form-item>
 
                 <el-form-item label="过期时间" prop="post_expired_time">
-                    <el-date-picker
-                        v-model="postInfoForm.post_expired_time.Time"
-                        type="datetime"
-                        placeholder="留空则为永不过期"
-                        :shortcuts="generateShortcuts('过期')"
-                        :default-time="defaultTime"
-                    />
+                    <el-date-picker v-model="postInfoForm.post_expired_time.Time" type="datetime" placeholder="留空则为永不过期"
+                        :shortcuts="generateShortcuts('过期')" :default-time="defaultTime" />
                 </el-form-item>
             </el-form>
 
             <div class="btns-footer">
-                <el-button type="primary" class="save-post btns-footer-item" @click="submitForm(formRef as FormInstance)">
+                <el-button type="primary" class="save-post btns-footer-item"
+                    @click="submitForm(formRef as FormInstance)">
                     <Icon :name="IconKeys.Save" custom-class="btns-footer-item-icon" />
                     <span>保存</span>
                 </el-button>
@@ -171,8 +153,9 @@
 <script lang="ts" setup>
 import { useIntersectionObserver, useResizeObserver } from "@vueuse/core"
 import type { ElContainer, ElFormItem } from "element-plus"
-import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
+import type { FormInstance } from "element-plus"
 import { onBeforeMount, onUnmounted, reactive, ref, toRefs, useTemplateRef, watch } from "vue"
+import { useRouter } from "vue-router"
 
 import { gegPostStatusOptions, type InsertPostRequest, PostStatusCode } from "@/api/post/common"
 import { type PostCategory, viewListPostCategoryAPI } from "@/api/postCategory/view"
@@ -212,6 +195,7 @@ const editorState = stateManager.getState()
 const mediaDialogVisible = ref(false)
 
 const userStore = useUserStore()
+const router = useRouter()
 
 // 监听编辑器宽度变化
 const { stop: stopResizeObserver } = useResizeObserver(editorContainerRef, (entries) => {
@@ -303,6 +287,10 @@ watch(
 watch(
     () => postInfoForm.tag_names,
     (newVal, oldVal) => {
+        // 如果 newVal oldVal 为 undefined, 为了后续不报错, 设置为空数组
+        newVal = newVal || []
+        oldVal = oldVal || []
+
         // 如果 seo 关键词为空，则更新 seo 关键词
         if (!postInfoForm.seo_keywords && newVal) {
             postInfoForm.seo_keywords = newVal.join(",")
@@ -426,7 +414,7 @@ watch(
 // 需要更新的数据
 const dataOfUpdate: UpdatePostForm = reactive({}) as UpdatePostForm
 
-const { submitForm: addSubmitForm } = useAdd(postInfoForm, queryKey, postInfoAboutTime)
+const { submitForm: addSubmitForm } = useAdd(postInfoForm, queryKey, postInfoAboutTime, router)
 const {
     getValueFromQuery,
     getDataOnBeforeMount,

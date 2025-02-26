@@ -1,8 +1,8 @@
 /**
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 08:57:02
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-04 11:13:24
+ * @LastEditors  : Please set LastEditors
+ * @LastEditTime : 2025-02-26 19:09:57
  * @FilePath     : \blog-client\src\components\hooks\useBaseTable\index.ts
  * @Description  : 基础表格钩子
  * @Blog         : https://jiaopengzi.com
@@ -90,7 +90,6 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
 
     // 更新查询参数
     const updateQueryParams = async () => {
-        console.log("route.query===========>", route.query)
         const { hasQueryParams, queryParamsResult } = await parseRouteQuery(
             route.query,
             options as QueryParamsOptions<K>,

@@ -1,16 +1,13 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-11-25 16:42:09
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-30 14:35:34
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\useAdd.ts
- * @Description  : 添加文章
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 添加文章
  */
 
-import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { useRouter } from "vue-router"
+import type { FormInstance } from "element-plus"
+import { type Router } from "vue-router"
 
 import type { InsertPostRequest } from "@/api/post/common"
 import { insertPostAPI } from "@/api/post/insert"
@@ -21,14 +18,9 @@ import { MessageUtil } from "@/utils/message"
 import { handleSubmit } from "./formHandler"
 import type { PostInfoAboutTime, UpsertPostForm } from "./index"
 
-export function useAdd(
-    postInfoForm: UpsertPostForm,
-    queryKey: { ID: string },
-    postInfoAboutTime: PostInfoAboutTime,
-) {
+export function useAdd(postInfoForm: UpsertPostForm, queryKey: { ID: string }, postInfoAboutTime: PostInfoAboutTime, router: Router) {
     // 提交表单
     const submitForm = async (formEl: FormInstance | undefined): Promise<boolean> => {
-        const router = useRouter()
         // 表单校验及值转换
         const req = await handleSubmit<InsertPostRequest>(formEl, postInfoForm)
 

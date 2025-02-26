@@ -1,8 +1,8 @@
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2024-11-06 14:47:08
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-15 12:41:14
+ * @LastEditors  : Please set LastEditors
+ * @LastEditTime : 2025-02-26 18:22:48
  * @FilePath     : \blog-client\src\views\admin\component\main\post-category\index.vue
  * @Description  : 分类管理
  * @Blog         : https://jiaopengzi.com
@@ -126,7 +126,7 @@ const cols: TableColumn[] = reactive([
         },
     },
     {
-        prop: "post_count",
+        prop: "post_count_admin",
         label: "文章数量",
         sortable: true,
         minWidth: 120,
