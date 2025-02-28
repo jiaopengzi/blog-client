@@ -1,15 +1,15 @@
 /**
  * @Author       : jiaopengzi
  * @Date         : 2024-12-28 12:32:15
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 12:25:05
+ * @LastEditors  : Please set LastEditors
+ * @LastEditTime : 2025-02-28 21:28:51
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\useSwitchItem.ts
  * @Description  : 开关项
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { reactive,ref } from "vue"
+import { reactive, ref } from "vue"
 
 import { CommentStatusCode } from "@/api/post/common"
 import type { SwitchItem, SwitchItemLabel } from "@/components/common/switch-group"
@@ -30,9 +30,7 @@ export function useSwitchItem(postInfoForm: UpsertPostForm) {
     }
 
     // 常规设置是否展示
-    const defaultStatusIsShow = ref(
-        localStorage.getItem(LocalStorageKey.IsShowSeoAtPostWrite) == "true",
-    )
+    const defaultStatusIsShow = ref(localStorage.getItem(LocalStorageKey.IsShowSeoAtPostWrite) == "true")
     const defaultStatus: SwitchItem[] = reactive([
         {
             name: "defaultStatus",
@@ -102,9 +100,7 @@ export function useSwitchItem(postInfoForm: UpsertPostForm) {
     // 更新评论状态
     const updateCommentStatus = (items: SwitchItem[]) => {
         // 更新 postInfoForm.comment_status
-        postInfoForm.comment_status = items[0].status
-            ? CommentStatusCode.Open
-            : CommentStatusCode.Close
+        postInfoForm.comment_status = items[0].status ? CommentStatusCode.Open : CommentStatusCode.Close
     }
 
     // 文章显示方式
@@ -130,7 +126,7 @@ export function useSwitchItem(postInfoForm: UpsertPostForm) {
     // 更新文章显示方式
     const updatePostShowMethod = (items: SwitchItem[]) => {
         items.forEach((item) => {
-            ;(postInfoForm as unknown as Record<string, boolean>)[item.name] = item.status
+            ;(postInfoForm as unknown as Record<string, number>)[item.name] = item.status ? 1 : 0
         })
     }
 

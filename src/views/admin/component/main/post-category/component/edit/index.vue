@@ -1,25 +1,17 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-11-06 14:47:08
- * @LastEditors  : Please set LastEditors
- * @LastEditTime : 2025-02-26 17:17:38
  * @FilePath     : \blog-client\src\views\admin\component\main\post-category\component\edit\index.vue
- * @Description  : 编辑分类
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 
 -->
 
 <template>
-    <View
-        :view-data="editData"
-        :is-show-id="true"
-        btn-submit-display="提交修改"
-        @submit-data="submitData"
-    />
+    <View :view-data="editData" :is-show-id="true" btn-submit-display="提交修改" @submit-data="submitData" />
 </template>
 
 <script lang="ts" setup>
-import { updatePostCategoryAPI,type UpdatePostCategoryRequest } from "@/api/postCategory/update"
+import { updatePostCategoryAPI, type UpdatePostCategoryRequest } from "@/api/postCategory/update"
 import { ResponseCode } from "@/api/response"
 import { MessageUtil } from "@/utils/message"
 

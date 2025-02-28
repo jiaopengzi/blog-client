@@ -1,8 +1,8 @@
 /**
  * @Author       : jiaopengzi
  * @Date         : 2024-11-25 16:44:10
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-28 16:03:56
+ * @LastEditors  : Please set LastEditors
+ * @LastEditTime : 2025-02-28 21:18:10
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\useEdit.ts
  * @Description  : 编辑文章
  * @Blog         : https://jiaopengzi.com
@@ -17,13 +17,13 @@ import { updatePostAPI } from "@/api/post/update"
 import { viewPostByIDAdminAPI, type ViewPostByIDRequest } from "@/api/post/viewByIDAdmin"
 import { type PostCategory } from "@/api/postCategory/view"
 import { type PostTag } from "@/api/postTag/view"
-import { handleResErr,ResponseCode } from "@/api/response"
+import { handleResErr, ResponseCode } from "@/api/response"
 import type { SwitchItem } from "@/components/common/switch-group"
 import { EditorStateManager } from "@/components/editor"
 import { MessageUtil } from "@/utils/message"
 
 import { handleSubmit } from "./formHandler"
-import type { PostInfoAboutTime,UpsertPostForm } from "./index"
+import type { PostInfoAboutTime, UpsertPostForm } from "./index"
 
 export function useEdit(
     postInfoForm: UpsertPostForm,
@@ -87,9 +87,7 @@ export function useEdit(
                     }
 
                     // 历遍 data.categories 列表,取出 id 组成新数组
-                    postInfoForm.category_ids = data.categories?.map((item: PostCategory) =>
-                        item.id.toString(),
-                    )
+                    postInfoForm.category_ids = data.categories?.map((item: PostCategory) => item.id.toString())
 
                     // 历遍 data.tags 列表,取出 name 组成新数组
                     postInfoForm.tag_names = data.tags?.map((item: PostTag) => item.name)
@@ -107,15 +105,11 @@ export function useEdit(
                     postInfoAboutTime.updated_at = new Date(data.updated_at)
 
                     // 更新评论状态
-                    updateSwitchItem(
-                        commentStatus,
-                        "commentStatus",
-                        postInfoForm.comment_status === CommentStatusCode.Open,
-                    )
+                    updateSwitchItem(commentStatus, "commentStatus", postInfoForm.comment_status === CommentStatusCode.Open)
 
                     // 更新显示方式
-                    updateSwitchItem(postShowMethod, "is_pinned", postInfoForm.is_pinned)
-                    updateSwitchItem(postShowMethod, "is_recommended", postInfoForm.is_recommended)
+                    updateSwitchItem(postShowMethod, "is_pinned", postInfoForm.is_pinned > 0)
+                    updateSwitchItem(postShowMethod, "is_recommended", postInfoForm.is_recommended > 0)
                 }
             })
         }

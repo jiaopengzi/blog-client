@@ -1,8 +1,8 @@
 /**
  * @Author       : jiaopengzi
  * @Date         : 2024-12-30 12:09:47
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 12:09:59
+ * @LastEditors  : Please set LastEditors
+ * @LastEditTime : 2025-02-28 21:16:53
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\types.ts
  * @Description  : 类型
  * @Blog         : https://jiaopengzi.com
@@ -36,8 +36,8 @@ export interface UpsertPostForm {
     pay_roles: string[] // 付费角色
     post_push_time: PgSqlDateTime // 发布时间
     post_expired_time: PgSqlDateTime // 过期时间
-    is_pinned: boolean // 是否置顶
-    is_recommended: boolean // 是否推荐阅读
+    is_pinned: number // 是否置顶
+    is_recommended: number // 是否推荐阅读
 }
 
 export interface UpdatePostForm extends UpsertPostForm {

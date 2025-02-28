@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-11-04 16:21:40
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-15 12:47:06
  * @FilePath     : \blog-client\src\views\admin\component\main\post-all\index.vue
- * @Description  : 文章管理 
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 文章管理 
 -->
 
 <template>
@@ -55,32 +52,16 @@
             <template #custom-filter>
                 <div ref="customFilterRef" class="custom-filter">
                     <!-- 按照作者 分类 标签 -->
-                    <div
-                        v-if="authorCategoryTag.size"
-                        class="custom-filter-item author-category-tag"
-                    >
-                        <el-button
-                            class="author-category-tag-item author-category-tag-btn"
-                            type="primary"
-                            size="small"
-                            @click="clearAuthorCategoryTag"
+                    <div v-if="authorCategoryTag.size" class="custom-filter-item author-category-tag">
+                        <el-button class="author-category-tag-item author-category-tag-btn" type="primary" size="small" @click="clearAuthorCategoryTag"
                             >X</el-button
                         >
-                        <el-input-tag
-                            class="author-category-tag-item"
-                            v-model="authorCategoryTag"
-                            disabled
-                        />
+                        <el-input-tag class="author-category-tag-item" v-model="authorCategoryTag" disabled />
                     </div>
 
                     <!-- 按照月份筛选 -->
                     <div class="custom-filter-item">
-                        <el-select
-                            v-model="postCountMonthSelect"
-                            placeholder="全部日期"
-                            clearable
-                            style="width: 130px"
-                        >
+                        <el-select v-model="postCountMonthSelect" placeholder="全部日期" clearable style="width: 130px">
                             <el-option
                                 v-for="item in postCountMonth"
                                 :key="`${item.year}-${item.month}(${item.count})`"
@@ -92,40 +73,17 @@
 
                     <!-- 自定义字段筛选 -->
                     <div class="custom-filter-item custom-fields">
-                        <el-select
-                            class="custom-fields-item"
-                            v-model="postCustomFieldsSelect"
-                            placeholder="自定义筛选"
-                            clearable
-                            style="width: 130px"
-                        >
-                            <el-option
-                                v-for="item in CustomFields"
-                                :key="item"
-                                :label="CustomFieldsDisplay[item]"
-                                :value="item"
-                            />
+                        <el-select class="custom-fields-item" v-model="postCustomFieldsSelect" placeholder="自定义筛选" clearable style="width: 130px">
+                            <el-option v-for="item in CustomFields" :key="item" :label="CustomFieldsDisplay[item]" :value="item" />
                         </el-select>
                         <div class="custom-fields-item" v-show="postCustomFieldsSelect">
                             <span>最小值:</span>
-                            <el-input-number
-                                v-model="postCustomFieldsMin"
-                                controls-position="right"
-                                :min="0"
-                                :max="9999999999999"
-                                style="width: 130px"
-                            />
+                            <el-input-number v-model="postCustomFieldsMin" controls-position="right" :min="0" :max="9999999999999" style="width: 130px" />
                         </div>
 
                         <div class="custom-fields-item" v-show="postCustomFieldsSelect">
                             <span>最大值:</span>
-                            <el-input-number
-                                v-model="postCustomFieldsMax"
-                                controls-position="right"
-                                :min="1"
-                                :max="9999999999999"
-                                style="width: 130px"
-                            />
+                            <el-input-number v-model="postCustomFieldsMax" controls-position="right" :min="1" :max="9999999999999" style="width: 130px" />
                         </div>
                     </div>
                 </div>
@@ -134,27 +92,10 @@
             <template #operation>
                 <!-- 批量操作 -->
                 <div class="operation">
-                    <el-select
-                        class="operation-item"
-                        v-model="postOperationSelect"
-                        placeholder="批量更改"
-                        clearable
-                        style="width: 140px"
-                    >
-                        <el-option
-                            v-for="item in postBatchOperations"
-                            :key="item"
-                            :label="`更改为：${PostStatusDisplay[item] || item}`"
-                            :value="item"
-                        />
+                    <el-select class="operation-item" v-model="postOperationSelect" placeholder="批量更改" clearable style="width: 140px">
+                        <el-option v-for="item in postBatchOperations" :key="item" :label="`更改为：${PostStatusDisplay[item] || item}`" :value="item" />
                     </el-select>
-                    <el-button
-                        class="operation-item"
-                        type="primary"
-                        @click="handlePostStatusOperation"
-                        v-show="postOperationSelect"
-                        >更改</el-button
-                    >
+                    <el-button class="operation-item" type="primary" @click="handlePostStatusOperation" v-show="postOperationSelect">更改</el-button>
                 </div>
             </template>
         </BaseTable>
@@ -165,18 +106,8 @@
 import { computed, reactive, ref, watch } from "vue"
 import { useRouter } from "vue-router"
 
-import {
-    batchOperationPostStatusAPI,
-    type BatchOperationPostStatusRequest,
-    type PostStatusOperation,
-} from "@/api/post/batchOperationPostStatus"
-import {
-    CustomFields,
-    CustomFieldsDisplay,
-    type PostResPaginationByAdmin,
-    PostStatusCode,
-    PostStatusDisplay,
-} from "@/api/post/common"
+import { batchOperationPostStatusAPI, type BatchOperationPostStatusRequest, type PostStatusOperation } from "@/api/post/batchOperationPostStatus"
+import { CustomFields, CustomFieldsDisplay, type PostResPaginationByAdmin, PostStatusCode, PostStatusDisplay } from "@/api/post/common"
 import { deletePostAPI, type DeletePostRequest } from "@/api/post/delete"
 import { viewPostByAdminAPI, type ViewPostByAdminRequest } from "@/api/post/viewByAdmin"
 import type { PostTag } from "@/api/postTag/view"
@@ -316,11 +247,7 @@ const cols: TableColumn[] = reactive([
 ])
 
 // 可以批量操作的状态
-const postBatchOperations = ref([
-    PostStatusCode.Draft,
-    PostStatusCode.Private,
-    PostStatusCode.Publish,
-])
+const postBatchOperations = ref([PostStatusCode.Draft, PostStatusCode.Private, PostStatusCode.Publish])
 
 const postStatusOperationList = ref<PostStatusOperation[]>([])
 
@@ -334,9 +261,7 @@ const userStore = useUserStore()
 const router = useRouter()
 
 // 获取头部数据
-const { postCountGroup, postCountMonth, allGroup, activeGroup, getPostCountStatus } = useHeader(
-    userStore.getUserID,
-)
+const { postCountGroup, postCountMonth, allGroup, activeGroup, getPostCountStatus } = useHeader(userStore.getUserID)
 
 // 表格图片配置
 const tableImg: TableImg = {
@@ -360,16 +285,7 @@ const stringKeys: StringKeys<ViewPostByAdminRequest>[] = [
 ]
 
 // 数字类型的 key
-const numberKeys: NumberKeys<ViewPostByAdminRequest>[] = [
-    "post_status",
-    "year",
-    "month",
-    "current_page",
-    "page_size",
-]
-
-// 布尔类型的 key
-const booleanKeys: BooleanKeys<ViewPostByAdminRequest>[] = ["is_pinned", "is_recommended"]
+const numberKeys: NumberKeys<ViewPostByAdminRequest>[] = ["post_status", "year", "month", "is_pinned", "is_recommended", "current_page", "page_size"]
 
 // 不需要请求的参数
 const noRequestKeys: QueryParamsRecord<queryKey> = { [queryKey.Group]: allGroup }
@@ -398,7 +314,7 @@ const {
     deletePostAPI,
     ResponseCode.PostDeleteSuccess,
     queryParams,
-    { stringKeys, numberKeys, booleanKeys, noRequestKeys, tableImg },
+    { stringKeys, numberKeys, noRequestKeys, tableImg },
 )
 
 // 更新查询参数
@@ -433,11 +349,11 @@ const handlePostCountByGroup = async (item: PostCountGroupItem) => {
     }
 
     if (item.group === queryKey.IsPinned) {
-        Object.assign(queryParams, { [queryKey.IsPinned]: true })
+        Object.assign(queryParams, { [queryKey.IsPinned]: 1 })
     }
 
     if (item.group === queryKey.IsRecommended) {
-        Object.assign(queryParams, { [queryKey.IsRecommended]: true })
+        Object.assign(queryParams, { [queryKey.IsRecommended]: 1 })
     }
 
     // 清空
@@ -506,10 +422,7 @@ const clearAuthorCategoryTag = async () => {
         }
 
         // 如果分組中显示的不是当前用户的文章，删除
-        if (
-            key === queryKey.PostAuthor &&
-            activeGroup.value !== queryParams[key as keyof ViewPostByAdminRequest]
-        ) {
+        if (key === queryKey.PostAuthor && activeGroup.value !== queryParams[key as keyof ViewPostByAdminRequest]) {
             delete queryParams[key as keyof ViewPostByAdminRequest]
         }
     })
@@ -531,32 +444,29 @@ watch(postCountMonthSelect, async (newVal) => {
 })
 
 // 监控 postCustomFieldsSelect
-watch(
-    [postCustomFieldsSelect, postCustomFieldsMin, postCustomFieldsMax],
-    async ([newSelect, newMin, newMax], [oldSelect, oldMin, oldMax]) => {
-        queryParams.custom_filed_min = oldMin.toString()
-        queryParams.custom_filed_max = oldMax.toString()
+watch([postCustomFieldsSelect, postCustomFieldsMin, postCustomFieldsMax], async ([newSelect, newMin, newMax], [oldSelect, oldMin, oldMax]) => {
+    queryParams.custom_filed_min = oldMin.toString()
+    queryParams.custom_filed_max = oldMax.toString()
 
-        if (newSelect !== oldSelect) {
-            queryParams.custom_filed = newSelect as CustomFields
-        }
+    if (newSelect !== oldSelect) {
+        queryParams.custom_filed = newSelect as CustomFields
+    }
 
-        if (newMin !== oldMin) {
-            queryParams.custom_filed_min = newMin.toString()
-        }
+    if (newMin !== oldMin) {
+        queryParams.custom_filed_min = newMin.toString()
+    }
 
-        if (newMax !== oldMax) {
-            queryParams.custom_filed_max = newMax.toString()
-        }
+    if (newMax !== oldMax) {
+        queryParams.custom_filed_max = newMax.toString()
+    }
 
-        if (newSelect === void 0) {
-            delete queryParams.custom_filed
-            delete queryParams.custom_filed_min
-            delete queryParams.custom_filed_max
-            await updateData()
-        }
-    },
-)
+    if (newSelect === void 0) {
+        delete queryParams.custom_filed
+        delete queryParams.custom_filed_min
+        delete queryParams.custom_filed_max
+        await updateData()
+    }
+})
 
 // 执行搜索
 const runSearch = async () => {
@@ -648,17 +558,7 @@ useParams(queryParams, search, pagination)
 // 将 params 解析回对应的响应式变量中(不需要请求)
 const parseParamsNotLoaded = () => {
     // 在加载前将 params 解析回对应的响应式变量中
-    const {
-        post_author,
-        post_status,
-        year,
-        month,
-        custom_filed,
-        custom_filed_min,
-        custom_filed_max,
-        is_pinned,
-        is_recommended,
-    } = queryParams
+    const { post_author, post_status, year, month, custom_filed, custom_filed_min, custom_filed_max, is_pinned, is_recommended } = queryParams
 
     if (post_author && post_author === userStore.getUserID) {
         activeGroup.value = post_author

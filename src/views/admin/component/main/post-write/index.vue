@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-01-18 10:04:52
  * @LastEditors  : Please set LastEditors
- * @LastEditTime : 2025-02-26 19:06:12
+ * @LastEditTime : 2025-02-28 21:19:41
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\index.vue
  * @Description  : 写文章
  * @Blog         : https://jiaopengzi.com
@@ -379,8 +379,8 @@ watch(
             postShowMethod.forEach((item) => {
                 item.status = false
             })
-            postInfoForm.is_pinned = false
-            postInfoForm.is_recommended = false
+            postInfoForm.is_pinned = 0
+            postInfoForm.is_recommended = 0
         }
     },
 )

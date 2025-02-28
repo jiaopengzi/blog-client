@@ -1,8 +1,8 @@
 /**
  * @Author       : jiaopengzi
  * @Date         : 2024-12-28 12:28:21
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 12:10:33
+ * @LastEditors  : Please set LastEditors
+ * @LastEditTime : 2025-02-28 21:19:53
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\utils.ts
  * @Description  :
  * @Blog         : https://jiaopengzi.com
@@ -86,7 +86,7 @@ export function createEmptyUpsertPostForm(): UpsertPostForm {
             Time: null,
             Valid: false,
         },
-        is_pinned: false,
-        is_recommended: false,
+        is_pinned: 0,
+        is_recommended: 0,
     }
 }
