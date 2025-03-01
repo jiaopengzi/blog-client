@@ -10,19 +10,13 @@
  */
 
 import type { FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { reactive,type Ref } from "vue"
+import { reactive, type Ref } from "vue"
 
-import { checkTagNameAPI,type CheckTagNameRequest } from "@/api/postTag/checkTagName"
-import {
-    checkTagNameExcludingIDAPI,
-    type CheckTagNameExcludingIDRequest,
-} from "@/api/postTag/checkTagNameExcludingID"
-import { checkTagSlugAPI,type CheckTagSlugRequest } from "@/api/postTag/checkTagSlug"
-import {
-    checkTagSlugExcludingIDAPI,
-    type CheckTagSlugExcludingIDRequest,
-} from "@/api/postTag/checkTagSlugExcludingID"
-import { handleResErr,ResponseCode } from "@/api/response"
+import { checkTagNameAPI, type CheckTagNameRequest } from "@/api/postTag/checkTagName"
+import { checkTagNameExcludingIDAPI, type CheckTagNameExcludingIDRequest } from "@/api/postTag/checkTagNameExcludingID"
+import { checkTagSlugAPI, type CheckTagSlugRequest } from "@/api/postTag/checkTagSlug"
+import { checkTagSlugExcludingIDAPI, type CheckTagSlugExcludingIDRequest } from "@/api/postTag/checkTagSlugExcludingID"
+import { handleResErr, ResponseCode } from "@/api/response"
 import { RegexPatterns } from "@/utils/regexPatterns"
 
 import type { ViewForm } from "./index"
@@ -47,11 +41,7 @@ export function useFormValidation(options: FormValidationOptions): {
     const { form } = options
 
     // 检查标签名称是否可用
-    function checkTagNameValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkTagNameValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 去除前后空格
         if (!form.name?.value) {
             callback("请输入标签名称")
@@ -79,11 +69,7 @@ export function useFormValidation(options: FormValidationOptions): {
     }
 
     // 检查别名是否可用
-    function checkTagSlugValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkTagSlugValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 不能包含空格
         if (value.includes(" ")) {
             callback(new Error("别名不能包含空格"))
@@ -119,11 +105,7 @@ export function useFormValidation(options: FormValidationOptions): {
     }
 
     // 检查标签名称是否可用
-    function checkTagNameExcludingIDValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkTagNameExcludingIDValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 去除前后空格
         if (!form.name?.value) {
             callback("请输入标签名称")
@@ -159,11 +141,7 @@ export function useFormValidation(options: FormValidationOptions): {
     }
 
     // 检查别名是否可用
-    function checkTagSlugExcludingIDValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkTagSlugExcludingIDValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 不能包含空格
         if (value.includes(" ")) {
             callback(new Error("别名不能包含空格"))

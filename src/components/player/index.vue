@@ -18,10 +18,7 @@
         @mouseenter="handleMouseenter"
         @mouseleave="handleMouseleave"
     >
-        <VideoWatermark
-            :text-watermark="localPlayerState.textWatermark"
-            :logo-watermark="localPlayerState.logoWatermark"
-        >
+        <VideoWatermark :text-watermark="localPlayerState.textWatermark" :logo-watermark="localPlayerState.logoWatermark">
             <!-- video元素不使用默认的  controls-->
             <video
                 ref="videoRef"
@@ -39,14 +36,7 @@
                 x5-video-player-fullscreen="true"
             >
                 <!-- <track v-if="isShowSubtitles" src="http://10.10.2.222:8081/api/v1/uploads/cn.vtt" kind="subtitles" srclang="cn" label="中文" default /> -->
-                <track
-                    v-if="isShowSubtitles"
-                    :src="subtitlesSrc"
-                    kind="subtitles"
-                    :srclang="srclang"
-                    :label="subtitlesLabel"
-                    default
-                />
+                <track v-if="isShowSubtitles" :src="subtitlesSrc" kind="subtitles" :srclang="srclang" :label="subtitlesLabel" default />
 
                 您的浏览器不支持 video 标签。请使用最新版本的 Chrome 浏览器观看视频。
             </video>
@@ -68,22 +58,11 @@
 
             <!-- 播放按钮 -->
         </VideoWatermark>
-        <div
-            v-if="showPlayButton"
-            class="play-button-page"
-            @click="togglePlayPause"
-            @dblclick="handleDblclick"
-        >
+        <div v-if="showPlayButton" class="play-button-page" @click="togglePlayPause" @dblclick="handleDblclick">
             <Icon v-show="!showLoader" :name="IconKeys.Play" custom-class="iconfont" />
             <div v-show="showLoader" class="loader"></div>
         </div>
-        <div
-            v-if="!showPlayButton"
-            class="play-to-paused-page"
-            :class="{ hidden: controlsHidden }"
-            @click="togglePlayPause"
-            @dblclick="handleDblclick"
-        ></div>
+        <div v-if="!showPlayButton" class="play-to-paused-page" :class="{ hidden: controlsHidden }" @click="togglePlayPause" @dblclick="handleDblclick"></div>
     </div>
 </template>
 
@@ -91,16 +70,7 @@
 import { useResizeObserver } from "@vueuse/core"
 import Hls from "hls.js"
 import screenfull from "screenfull"
-import {
-    computed,
-    onBeforeUnmount,
-    onMounted,
-    reactive,
-    ref,
-    useTemplateRef,
-    watch,
-    watchEffect,
-} from "vue"
+import { computed, onBeforeUnmount, onMounted, reactive, ref, useTemplateRef, watch, watchEffect } from "vue"
 
 import { ResponseCode } from "@/api/response"
 import { IconKeys } from "@/components/common/icons"
@@ -110,14 +80,7 @@ import { CustomLoader } from "@/pkg/hls"
 import { MessageUtil } from "@/utils/message"
 
 import { PlayerStateManager } from "./state"
-import {
-    DisabledSubtitles,
-    type LanguageKey,
-    MediaTypes,
-    type PlayerState,
-    type PlayLevelLabel,
-    PlayStatus,
-} from "./types"
+import { DisabledSubtitles, type LanguageKey, MediaTypes, type PlayerState, type PlayLevelLabel, PlayStatus } from "./types"
 import { getVideoQualityLabel } from "./utils"
 
 defineOptions({ name: "VideoPlayer" })
@@ -136,11 +99,7 @@ const updatePlayerByControls = (playerProps: PlayerState) => {
 }
 
 // 根据当前环境更新 isMobile
-localManager.setIsMobile(
-    /mobile|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent,
-    ),
-)
+localManager.setIsMobile(/mobile|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
 
 // 判断是否是 Iphone
 localManager.setIsIphone(/iPhone/i.test(navigator.userAgent))
@@ -215,26 +174,19 @@ const handleProgressBuffered = () => {
 const isShowSubtitles = computed(() => {
     if (localPlayerState.subtitles && localPlayerState.subtitles.selectedSubtitlesLanguage) {
         // 判断 subtitles.value.selectedSubtitlesLanguage 是否在 DisabledSubtitles keys 中, 如果在则不显示字幕, 否则显示字幕
-        return !Object.keys(DisabledSubtitles).includes(
-            localPlayerState.subtitles.selectedSubtitlesLanguage as LanguageKey,
-        )
+        return !Object.keys(DisabledSubtitles).includes(localPlayerState.subtitles.selectedSubtitlesLanguage as LanguageKey)
     }
     return false
 })
 
 // 字幕 src
 const subtitlesSrc = computed(() => {
-    if (
-        localPlayerState.subtitles &&
-        localPlayerState.subtitles.availableSubtitles &&
-        localPlayerState.subtitles.selectedSubtitlesLanguage
-    ) {
+    if (localPlayerState.subtitles && localPlayerState.subtitles.availableSubtitles && localPlayerState.subtitles.selectedSubtitlesLanguage) {
         const availableSubtitles = {
             ...DisabledSubtitles, // 确保不会出现 undefined
             ...localPlayerState.subtitles.availableSubtitles,
         }
-        const selectedSubtitle =
-            availableSubtitles[localPlayerState.subtitles.selectedSubtitlesLanguage as LanguageKey]
+        const selectedSubtitle = availableSubtitles[localPlayerState.subtitles.selectedSubtitlesLanguage as LanguageKey]
         return selectedSubtitle ? selectedSubtitle.src : ""
     }
     return ""
@@ -250,17 +202,12 @@ const srclang = computed(() => {
 
 // 字幕 label
 const subtitlesLabel = computed(() => {
-    if (
-        localPlayerState.subtitles &&
-        localPlayerState.subtitles.availableSubtitles &&
-        localPlayerState.subtitles.selectedSubtitlesLanguage
-    ) {
+    if (localPlayerState.subtitles && localPlayerState.subtitles.availableSubtitles && localPlayerState.subtitles.selectedSubtitlesLanguage) {
         const availableSubtitles = {
             ...DisabledSubtitles,
             ...localPlayerState.subtitles.availableSubtitles,
         }
-        const selectedSubtitle =
-            availableSubtitles[localPlayerState.subtitles.selectedSubtitlesLanguage as LanguageKey]
+        const selectedSubtitle = availableSubtitles[localPlayerState.subtitles.selectedSubtitlesLanguage as LanguageKey]
         return selectedSubtitle ? selectedSubtitle.label : ""
     }
     return ""
@@ -642,11 +589,7 @@ const loadHls = () => {
             // 处理自定义 loader 中的错误
             if (data.type === Hls.ErrorTypes.NETWORK_ERROR && data.response && data.response.code) {
                 // 成功的 code
-                const successCodes = [
-                    ResponseCode.GetVideoM3u8Success,
-                    ResponseCode.GetVideoMainM3u8Success,
-                    ResponseCode.GetVideoKeySuccess,
-                ]
+                const successCodes = [ResponseCode.GetVideoM3u8Success, ResponseCode.GetVideoMainM3u8Success, ResponseCode.GetVideoKeySuccess]
                 // 將 data.response.code 转换为 number 类型
                 const resCode = parseInt(data.response.code.toString())
                 // 如果 code 不在 successCodes 中, 则提示错误信息
@@ -838,8 +781,7 @@ HTML: <div class="loader"></div>
 .loader {
     width: calc(80px / cos(45deg));
     height: 14px;
-    background: repeating-linear-gradient(-45deg, var(--jpz-color-primary) 0 15px, #0000 0 20px)
-        left/200% 100%;
+    background: repeating-linear-gradient(-45deg, var(--jpz-color-primary) 0 15px, #0000 0 20px) left/200% 100%;
     animation: l3 2s infinite linear;
     border-radius: 7px;
     z-index: 2;

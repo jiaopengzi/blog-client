@@ -16,17 +16,13 @@ import { nextTick, onMounted, ref, watch } from "vue"
 import { type EmojiExt } from "vue3-emoji-picker"
 
 import type { IconKeys } from "@/components/common/icons"
-import {
-    CommandsKey,
-    createMarkdownEditorCommands,
-    type MarkdownEditorCommands,
-} from "@/components/editor/command"
+import { CommandsKey, createMarkdownEditorCommands, type MarkdownEditorCommands } from "@/components/editor/command"
 import { type TableRowCol } from "@/components/editor/toolbar"
 import { MessageUtil } from "@/utils/message"
-import { getComputedStyleValue, getCSSVariableValue,setCSSVariable } from "@/utils/style"
+import { getComputedStyleValue, getCSSVariableValue, setCSSVariable } from "@/utils/style"
 
 import { EditorStateManager } from "../state"
-import type { CodemirrorRef, PreviewRef,ToolbarRef } from "../types"
+import type { CodemirrorRef, PreviewRef, ToolbarRef } from "../types"
 import { copyWithCustomStyle } from "../utils"
 
 export function useToolbar(
@@ -151,11 +147,7 @@ export function useToolbar(
         if (!mdContainerRef.value || !toolbarHight.value) return
 
         // 设置 cmContainerRef 中 css 变量 --md-editor-container-height 的值为 100vh - toolbar 高度 - toolbar margin
-        setCSSVariable(
-            mdContainerRef.value,
-            "--md-editor-container-height",
-            `calc(100vh - ${toolbarHight.value}px)`,
-        )
+        setCSSVariable(mdContainerRef.value, "--md-editor-container-height", `calc(100vh - ${toolbarHight.value}px)`)
 
         // 将内层的变量 --el-tabs-header-height 设置到 cmContainerRef 中 css 变量 --el-tabs-header-height
         const elTabsHeader = mdContainerRef.value.querySelector(".el-tabs__header") as HTMLElement

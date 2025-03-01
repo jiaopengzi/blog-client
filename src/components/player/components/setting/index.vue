@@ -16,17 +16,8 @@
             <template #title>
                 <div class="title-content">字幕</div>
             </template>
-            <el-radio-group
-                class="radio-group"
-                v-model="selectedSubtitlesLanguage"
-                @change="handleSubtitlesChange"
-            >
-                <el-radio
-                    class="radio-item"
-                    v-for="(item, key) in availableSubtitles"
-                    :key="key"
-                    :value="key"
-                >
+            <el-radio-group class="radio-group" v-model="selectedSubtitlesLanguage" @change="handleSubtitlesChange">
+                <el-radio class="radio-item" v-for="(item, key) in availableSubtitles" :key="key" :value="key">
                     {{ item.label }}
                 </el-radio>
             </el-radio-group>
@@ -37,17 +28,8 @@
             <template #title>
                 <div class="title-content">清晰度</div>
             </template>
-            <el-radio-group
-                class="radio-group"
-                v-model="selectedPlayLevel"
-                @change="handlePlayLevelChange"
-            >
-                <el-radio
-                    class="radio-item"
-                    v-for="level in Object.keys(props.playLevel.allLevels)"
-                    :key="level"
-                    :value="level"
-                >
+            <el-radio-group class="radio-group" v-model="selectedPlayLevel" @change="handlePlayLevelChange">
+                <el-radio class="radio-item" v-for="level in Object.keys(props.playLevel.allLevels)" :key="level" :value="level">
                     {{ level }}
                 </el-radio>
             </el-radio-group>
@@ -58,16 +40,10 @@
             <template #title>
                 <div class="title-content">播放速度</div>
             </template>
-            <el-radio-group
-                class="radio-group"
-                v-model="selectedPlaybackRate"
-                @change="handlePlaySpeedChange"
-            >
+            <el-radio-group class="radio-group" v-model="selectedPlaybackRate" @change="handlePlaySpeedChange">
                 <el-radio
                     class="radio-item"
-                    v-for="speed in Object.values(PlaybackRate).filter(
-                        (value) => typeof value === 'number',
-                    )"
+                    v-for="speed in Object.values(PlaybackRate).filter((value) => typeof value === 'number')"
                     :key="speed"
                     :value="speed"
                 >
@@ -81,14 +57,7 @@
             <template #title>
                 <div class="title-content">循环播放</div>
             </template>
-            <el-switch
-                class="switch"
-                v-model="isLoop"
-                inline-prompt
-                active-text="on"
-                inactive-text="off"
-                @change="handleIsLoopChange"
-            />
+            <el-switch class="switch" v-model="isLoop" inline-prompt active-text="on" inactive-text="off" @change="handleIsLoopChange" />
         </el-collapse-item>
     </el-collapse>
 </template>
@@ -131,10 +100,7 @@ const localActiveNames = ref<string[]>([])
 // 是否显示字幕选择组件
 const isShowSubtitlesSelect = computed(() => {
     // 判断 props.subtitles?.availableSubtitles 是否存在或者为空对象
-    return (
-        props.subtitles?.availableSubtitles &&
-        Object.keys(props.subtitles.availableSubtitles).length > 0
-    )
+    return props.subtitles?.availableSubtitles && Object.keys(props.subtitles.availableSubtitles).length > 0
 })
 
 // 可用字幕
@@ -182,8 +148,7 @@ const handleIsLoopChange = (value: boolean) => {
 }
 
 // 保持只展开一个
-const handleChange = (activeNames: string[]) =>
-    (localActiveNames.value = activeNames.length > 0 ? [activeNames[activeNames.length - 1]] : [])
+const handleChange = (activeNames: string[]) => (localActiveNames.value = activeNames.length > 0 ? [activeNames[activeNames.length - 1]] : [])
 
 // 监控 isShow 的变化,如果 isShow 为 false,则清空选中状态
 watch(

@@ -10,29 +10,12 @@
 -->
 <template>
     <div class="tag-group">
-        <el-tag
-            v-for="tag in dynamicTags"
-            :key="tag"
-            class="tag-item"
-            size="large"
-            closable
-            :disable-transitions="false"
-            @close="handleClose(tag)"
-        >
+        <el-tag v-for="tag in dynamicTags" :key="tag" class="tag-item" size="large" closable :disable-transitions="false" @close="handleClose(tag)">
             {{ tag }}
         </el-tag>
-        <el-input
-            class="tag-input"
-            v-if="inputVisible"
-            ref="InputRef"
-            v-model="inputValue"
-            @keyup.enter="handleInputConfirm"
-            @blur="handleInputConfirm"
-        />
+        <el-input class="tag-input" v-if="inputVisible" ref="InputRef" v-model="inputValue" @keyup.enter="handleInputConfirm" @blur="handleInputConfirm" />
         <el-button class="tag-input" v-else @click="showInput"> + 新标签 </el-button>
-        <el-button type="primary" class="show-all-tag" @click="changeIsShowAllTag"
-            >选择标签</el-button
-        >
+        <el-button type="primary" class="show-all-tag" @click="changeIsShowAllTag">选择标签</el-button>
     </div>
 
     <PostTag v-if="isShowAllTag" :is-admin="true" class="el-aside-item" @click="handleTagClick" />

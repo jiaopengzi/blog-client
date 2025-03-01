@@ -17,9 +17,7 @@ export interface DeleteLoginLogByDayRequest {
 }
 
 // 通过天删除登录日志
-export function deleteLoginLogByDayAPI(
-    requestData: DeleteLoginLogByDayRequest,
-): ResPromise<Res<unknown>> {
+export function deleteLoginLogByDayAPI(requestData: DeleteLoginLogByDayRequest): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/login-log/delete-by-day"
     return request({
         url: urlStr,

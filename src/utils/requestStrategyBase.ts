@@ -12,7 +12,7 @@
 import { type UploadRequestOptions } from "element-plus"
 
 import type { Res, ResPromise } from "@/api/response"
-import { handleResErr,ResponseCode } from "@/api/response"
+import { handleResErr, ResponseCode } from "@/api/response"
 import { type ChunkMetadata } from "@/api/upload/chunk"
 import { type ConfirmAfterUploadBySignedUrlRequest } from "@/api/upload/confirmAfterUploadBySignedUrl"
 import { type ConfirmBeforeUploadRequest } from "@/api/upload/confirmBeforeUpload"
@@ -37,18 +37,14 @@ export abstract class RequestStrategyBase implements RequestStrategy {
             this.fileName = this.elUploadRequestOptions.file.name
         }
     }
-    abstract confirmBeforeUploadAPI(
-        req: ConfirmBeforeUploadRequest,
-    ): ResPromise<Res<UploadFileInfo>>
+    abstract confirmBeforeUploadAPI(req: ConfirmBeforeUploadRequest): ResPromise<Res<UploadFileInfo>>
     // abstract uploadFileBySignedUrlAPI(
     //   file: File,
     //   signedUrl: string,
     //   headers: Record<string, string>,
     //   onProgress: (percent: number) => void,
     // ): AxiosPromise<Res>
-    abstract confirmAfterUploadBySignedUrlAPI(
-        req: ConfirmAfterUploadBySignedUrlRequest,
-    ): ResPromise<Res<void>>
+    abstract confirmAfterUploadBySignedUrlAPI(req: ConfirmAfterUploadBySignedUrlRequest): ResPromise<Res<void>>
     abstract handleConfirmBeforeUploadError(errorMessage: string): void
     abstract uploadChunkAPI(formData: FormData, meta: ChunkMetadata): ResPromise<Res<string>>
     abstract getUploadFileUrlAPI(req: GetUploadFileUrlRequest): ResPromise<Res<string>>
@@ -81,21 +77,14 @@ export abstract class RequestStrategyBase implements RequestStrategy {
         }
     }
 
-    async uploadFileBySignedUrl(
-        file: File,
-        signedUrl: string,
-        headers: Record<string, string>,
-        onProgress: (percent: number) => void,
-    ): Promise<void> {
+    async uploadFileBySignedUrl(file: File, signedUrl: string, headers: Record<string, string>, onProgress: (percent: number) => void): Promise<void> {
         if (this.uploadFileInfo?.upload_strategy.signed_url) {
             // await this.uploadFileBySignedUrlAPI(file, signedUrl, headers, onProgress)
             await uploadFileBySignedUrlAPI(file, signedUrl, headers, onProgress)
         }
     }
 
-    async confirmAfterUploadBySignedUrl(
-        req: ConfirmAfterUploadBySignedUrlRequest,
-    ): ResPromise<Res<void>> {
+    async confirmAfterUploadBySignedUrl(req: ConfirmAfterUploadBySignedUrlRequest): ResPromise<Res<void>> {
         return await this.confirmAfterUploadBySignedUrlAPI(req)
     }
 

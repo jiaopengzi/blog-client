@@ -17,9 +17,7 @@ export interface DeletePostCategoryRequest {
 }
 
 // 删除文章分类
-export function deletePostCategoryAPI(
-    requestData: DeletePostCategoryRequest,
-): ResPromise<Res<void>> {
+export function deletePostCategoryAPI(requestData: DeletePostCategoryRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/post-category/delete"
     return request({
         url: urlStr,

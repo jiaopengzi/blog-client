@@ -11,13 +11,7 @@
 
 <template>
     <div class="post-list">
-        <PostItem
-            v-for="item in paginationAC.records"
-            :key="item.id"
-            :post-data="item"
-            @click-category="clickCategory"
-            @post-id="postId"
-        />
+        <PostItem v-for="item in paginationAC.records" :key="item.id" :post-data="item" @click-category="clickCategory" @post-id="postId" />
     </div>
     <!-- 分页 -->
     <div class="pagination-container">
@@ -45,7 +39,7 @@ import { nextTick, onMounted, onUnmounted, reactive, ref, useTemplateRef, watch 
 
 import { type PostResPagination } from "@/api/post/common"
 import { type PostCategory } from "@/api/postCategory/view"
-import { getEmptyPagination,type Pagination } from "@/api/response"
+import { getEmptyPagination, type Pagination } from "@/api/response"
 import PostItem from "@/components/common/post-item-main"
 
 defineOptions({ name: "PostList" })

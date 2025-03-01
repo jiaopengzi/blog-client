@@ -11,11 +11,7 @@
 
 import { type LocationQuery } from "vue-router"
 
-import {
-    PaginationParamsInURL,
-    type PaginationRequest,
-    type QueryParamsOptions,
-} from "@/api/request"
+import { PaginationParamsInURL, type PaginationRequest, type QueryParamsOptions } from "@/api/request"
 
 /**
  * 解析路由查询参数

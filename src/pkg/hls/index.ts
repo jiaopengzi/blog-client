@@ -9,21 +9,14 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 import type { KeyLoaderContext } from "custom-hls"
-import type {
-    HlsConfig,
-    LoaderCallbacks,
-    LoaderConfiguration,
-    LoaderContext,
-    LoaderStats,
-    PlaylistLoaderContext,
-} from "hls.js"
+import type { HlsConfig, LoaderCallbacks, LoaderConfiguration, LoaderContext, LoaderStats, PlaylistLoaderContext } from "hls.js"
 import Hls from "hls.js"
 
-import { handleResErr,ResponseCode } from "@/api/response"
+import { handleResErr, ResponseCode } from "@/api/response"
 import { getKeyAPI } from "@/api/video/getKey"
 import { getM3u8API } from "@/api/video/getM3u8"
 import { getMainM3u8API } from "@/api/video/getMainM3u8"
-import { decryptData,reverseString } from "@/utils/encrypt"
+import { decryptData, reverseString } from "@/utils/encrypt"
 
 // 自定义 Loader 错误码
 enum CustomLoaderError {
@@ -39,11 +32,7 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
     }
 
     // load 方法重写
-    async load(
-        context: KeyLoaderContext | PlaylistLoaderContext,
-        config: LoaderConfiguration,
-        callbacks: LoaderCallbacks<LoaderContext>,
-    ): Promise<void> {
+    async load(context: KeyLoaderContext | PlaylistLoaderContext, config: LoaderConfiguration, callbacks: LoaderCallbacks<LoaderContext>): Promise<void> {
         // 初始化 loaderStats
         const loaderStats: LoaderStats = {
             aborted: false,
@@ -76,30 +65,15 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
                     loaderStats.loading.end = window.performance.now()
 
                     if (response.data.code === ResponseCode.GetVideoMainM3u8Success) {
-                        callbacks.onSuccess(
-                            { url: context.url, data: response.data.data },
-                            loaderStats,
-                            context,
-                            null,
-                        )
+                        callbacks.onSuccess({ url: context.url, data: response.data.data }, loaderStats, context, null)
                     } else {
                         const msg = handleResErr(response)
-                        callbacks.onError(
-                            { code: response.data.code, text: msg },
-                            context,
-                            null,
-                            loaderStats,
-                        )
+                        callbacks.onError({ code: response.data.code, text: msg }, context, null, loaderStats)
                     }
                 })
                 .catch((error) => {
                     loaderStats.loading.end = window.performance.now()
-                    callbacks.onError(
-                        { code: CustomLoaderError.MainM3u8, text: error.message },
-                        context,
-                        null,
-                        loaderStats,
-                    )
+                    callbacks.onError({ code: CustomLoaderError.MainM3u8, text: error.message }, context, null, loaderStats)
                 })
         }
 
@@ -117,30 +91,15 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
                         // 将 m3u8 中的 _url_ 替换为 base_url
                         const levelM3u8 = m3u8.replace(/_url_/g, base_url + "/")
 
-                        callbacks.onSuccess(
-                            { url: base_url, data: levelM3u8 },
-                            loaderStats,
-                            context,
-                            null,
-                        )
+                        callbacks.onSuccess({ url: base_url, data: levelM3u8 }, loaderStats, context, null)
                     } else {
                         const msg = handleResErr(response)
-                        callbacks.onError(
-                            { code: response.data.code, text: msg },
-                            context,
-                            null,
-                            loaderStats,
-                        )
+                        callbacks.onError({ code: response.data.code, text: msg }, context, null, loaderStats)
                     }
                 })
                 .catch((error) => {
                     loaderStats.loading.end = window.performance.now()
-                    callbacks.onError(
-                        { code: CustomLoaderError.LevelM3u8, text: error.message },
-                        context,
-                        null,
-                        loaderStats,
-                    )
+                    callbacks.onError({ code: CustomLoaderError.LevelM3u8, text: error.message }, context, null, loaderStats)
                 })
         }
 
@@ -149,9 +108,7 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
             // context.keyInfo.decryptdata.uri 在后端使用的是相对路径，hls在这里会自动拼接成绝url路径
             // 例如:http://10.10.2.222:8081/api/v1/uploads/2024/10/17/2-7f9d0d9c/2-7f9d0d9c
             // 但是这个路径在后端是无法访问的，所以需要将这个路径截取出来，拿到 path 中最后一个 / 后面的字符串就是 videoId
-            const videoId = context.keyInfo.decryptdata.uri.substring(
-                context.keyInfo.decryptdata.uri.lastIndexOf("/") + 1,
-            )
+            const videoId = context.keyInfo.decryptdata.uri.substring(context.keyInfo.decryptdata.uri.lastIndexOf("/") + 1)
 
             // 获取解密密钥
             await getKeyAPI(videoId)
@@ -167,30 +124,15 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
                         const decryptedKey = this.decryptKey(data.data) // 解密播放密钥
                         context.keyInfo.decryptdata.key = decryptedKey // 将解密后的密钥赋值给 keyInfo
 
-                        callbacks.onSuccess(
-                            { url: context.keyInfo.decryptdata.uri, data: decryptedKey.buffer },
-                            loaderStats,
-                            context,
-                            null,
-                        )
+                        callbacks.onSuccess({ url: context.keyInfo.decryptdata.uri, data: decryptedKey.buffer }, loaderStats, context, null)
                     } else {
                         const msg = handleResErr(data)
-                        callbacks.onError(
-                            { code: data.code, text: msg },
-                            context,
-                            null,
-                            loaderStats,
-                        )
+                        callbacks.onError({ code: data.code, text: msg }, context, null, loaderStats)
                     }
                 })
                 .catch((error) => {
                     loaderStats.loading.end = window.performance.now()
-                    callbacks.onError(
-                        { code: CustomLoaderError.Key, text: error.message },
-                        context,
-                        null,
-                        loaderStats,
-                    )
+                    callbacks.onError({ code: CustomLoaderError.Key, text: error.message }, context, null, loaderStats)
                 })
         } else {
             // 对于未加密的视频，直接调用父类的 load 方法

@@ -12,7 +12,7 @@
 import iconFontJSON from "@/components/common/icons/assets/iconfont.json" // 导入 iconfont.json 数据
 import { kebabToPascalCase } from "@/utils/namingConversion"
 
-import { type IconJson, IconKeys,type IconMap } from "./types"
+import { type IconJson, IconKeys, type IconMap } from "./types"
 
 // 图标 json 数据 类型守卫函数
 export function isIconJson(obj: unknown): IconJson {
@@ -93,9 +93,6 @@ export const devCheckIconKeys = (iconMap: IconMap): void => {
         }
     })
     if (newIconKeys) {
-        console.error(
-            "iconMap 对象中的 key 有不符合 IconKeys 类型的值:\n 请将如下内容添加到枚举 enum IconKeys 中\n" +
-                newIconKeys,
-        )
+        console.error("iconMap 对象中的 key 有不符合 IconKeys 类型的值:\n 请将如下内容添加到枚举 enum IconKeys 中\n" + newIconKeys)
     }
 }

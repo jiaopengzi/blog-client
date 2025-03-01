@@ -23,13 +23,7 @@
         </div>
 
         <div>
-            <el-tabs
-                type="border-card"
-                :tab-position="tabPosition"
-                class="tabs"
-                v-model="activeTab"
-                @tab-change="tabChange"
-            >
+            <el-tabs type="border-card" :tab-position="tabPosition" class="tabs" v-model="activeTab" @tab-change="tabChange">
                 <el-tab-pane name="info">
                     <template #label>
                         <span class="custom-tabs-label">

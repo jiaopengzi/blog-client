@@ -12,23 +12,14 @@
     <!-- 视频控制器 -->
     <div class="controls">
         <!-- 视频进度条 -->
-        <ProgressBar
-            class="row1"
-            :play-progress="localPlayerState.playProgress"
-            @seek="seekVideo"
-            @is-dragging="handleIsDragging"
-        />
+        <ProgressBar class="row1" :play-progress="localPlayerState.playProgress" @seek="seekVideo" @is-dragging="handleIsDragging" />
 
         <!-- 第二行 -->
         <div class="row2">
             <!-- 第二行左侧 -->
             <div class="left-controls">
                 <!-- 播放暂停按钮 -->
-                <button
-                    type="button"
-                    class="controls-btn play-pause"
-                    @click="handleButtonClick(togglePlayPause)"
-                >
+                <button type="button" class="controls-btn play-pause" @click="handleButtonClick(togglePlayPause)">
                     <Icon :name="IconNamePlayPause" custom-class="iconfont" />
                 </button>
 
@@ -39,11 +30,7 @@
             <!-- 第二行右侧 -->
             <div class="right-controls">
                 <!-- 静音按钮 -->
-                <button
-                    type="button"
-                    class="controls-btn volume-mute"
-                    @click="handleButtonClick(toggleMute)"
-                >
+                <button type="button" class="controls-btn volume-mute" @click="handleButtonClick(toggleMute)">
                     <Icon :name="IconNameMute" custom-class="iconfont" />
                 </button>
 
@@ -82,29 +69,17 @@
                 </el-popover>
 
                 <!-- 画中画 -->
-                <button
-                    type="button"
-                    class="controls-btn pip"
-                    @click="handleButtonClick(togglePIP)"
-                >
+                <button type="button" class="controls-btn pip" @click="handleButtonClick(togglePIP)">
                     <Icon :name="IconKeys.PictureInPicture" custom-class="iconfont" />
                 </button>
 
                 <!-- 网页全屏 -->
-                <button
-                    type="button"
-                    class="controls-btn web-fullscreen"
-                    @click="handleButtonClick(toggleWebFullscreen)"
-                >
+                <button type="button" class="controls-btn web-fullscreen" @click="handleButtonClick(toggleWebFullscreen)">
                     <Icon :name="IconKeys.WebFullscreen" custom-class="iconfont" />
                 </button>
 
                 <!-- 全屏 -->
-                <button
-                    type="button"
-                    class="controls-btn fullscreen"
-                    @click="handleButtonClick(toggleFullscreen)"
-                >
+                <button type="button" class="controls-btn fullscreen" @click="handleButtonClick(toggleFullscreen)">
                     <Icon :name="IconKeys.Fullscreen" custom-class="iconfont" />
                 </button>
             </div>
@@ -117,17 +92,11 @@ import { useMagicKeys } from "@vueuse/core"
 import { computed, onUnmounted, reactive, ref, watch, watchEffect } from "vue"
 
 import { IconKeys } from "@/components/common/icons"
-import { createPlayerCommands,PlayerCommandsKey } from "@/components/player/command"
+import { createPlayerCommands, PlayerCommandsKey } from "@/components/player/command"
 import ProgressBar from "@/components/player/components/progress-bar"
 import VideoSetting from "@/components/player/components/setting"
 import { PlayerStateManager } from "@/components/player/state"
-import {
-    type LanguageKey,
-    PlaybackRate,
-    type PlayerState,
-    PlayLevelLabel,
-    PlayStatus,
-} from "@/components/player/types"
+import { type LanguageKey, PlaybackRate, type PlayerState, PlayLevelLabel, PlayStatus } from "@/components/player/types"
 import { formatDurationTime } from "@/utils/dateTime"
 
 // 名称
@@ -207,8 +176,7 @@ const registerHotKeys = () => {
                     if (playerCommands[item].longPressAction) {
                         // 开始检测长按
                         intervalId = window.setInterval(() => {
-                            if (playerCommands[item].longPressAction)
-                                playerCommands[item].longPressAction()
+                            if (playerCommands[item].longPressAction) playerCommands[item].longPressAction()
                         }, 200) // 200ms 作为长按的阈值
                     }
                 } else {
@@ -248,8 +216,7 @@ const handleSelectedSubtitleLanguage = (language: LanguageKey) => {
 const handelPlayLevel = (level: PlayLevelLabel) => localManager.setSelectedPlayLevel(level)
 
 // 处理播放速度
-const handelPlaybackRate = (playbackRate: PlaybackRate) =>
-    localManager.setPlaybackRate(playbackRate)
+const handelPlaybackRate = (playbackRate: PlaybackRate) => localManager.setPlaybackRate(playbackRate)
 
 // 处理是否循环播放
 const handelIsLoop = () => localManager.toggleLoop()

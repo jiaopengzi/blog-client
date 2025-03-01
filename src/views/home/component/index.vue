@@ -18,18 +18,9 @@
             </el-icon>
 
             <el-breadcrumb :separator-icon="ArrowRight">
-                <el-breadcrumb-item
-                    ><span class="breadcrumb-item">当前位置</span></el-breadcrumb-item
-                >
-                <el-breadcrumb-item :to="{ name: RouteNames.Home }" @click="clickBreadcrumb"
-                    ><span class="breadcrumb-item">首页</span></el-breadcrumb-item
-                >
-                <el-breadcrumb-item
-                    v-for="item in breadcrumbItems"
-                    :key="item.to"
-                    :to="item.to"
-                    @click="clickBreadcrumb"
-                >
+                <el-breadcrumb-item><span class="breadcrumb-item">当前位置</span></el-breadcrumb-item>
+                <el-breadcrumb-item :to="{ name: RouteNames.Home }" @click="clickBreadcrumb"><span class="breadcrumb-item">首页</span></el-breadcrumb-item>
+                <el-breadcrumb-item v-for="item in breadcrumbItems" :key="item.to" :to="item.to" @click="clickBreadcrumb">
                     <span class="breadcrumb-item">{{ item.display }}</span>
                 </el-breadcrumb-item>
             </el-breadcrumb>
@@ -59,11 +50,7 @@
                     <!-- 热门文章 -->
                     <HotPost class="el-aside-item" :post-data="hotPost" />
                     <!-- 月度归档 -->
-                    <MonthArchive
-                        class="el-aside-item"
-                        :post-list="monthArchiveProps"
-                        @post-by-month="clickMonthArchive"
-                    />
+                    <MonthArchive class="el-aside-item" :post-list="monthArchiveProps" @post-by-month="clickMonthArchive" />
                     <!-- 文章标签 -->
                     <PostTag class="el-aside-item" @click="clickTag" />
                     <!-- 观察点 -->
@@ -97,12 +84,7 @@ const asideRef = useTemplateRef<InstanceType<typeof ElAside>>("asideRef")
 const mainReq = reactive<ViewPostRequest>({} as ViewPostRequest)
 
 // 字符串类型的key
-const stringKeys: StringKeys<ViewPostRequest>[] = [
-    "post_author",
-    "post_category_id",
-    "post_tag_id",
-    "key_word",
-]
+const stringKeys: StringKeys<ViewPostRequest>[] = ["post_author", "post_category_id", "post_tag_id", "key_word"]
 
 // 字符串类型的key
 const numberKeys: NumberKeys<ViewPostRequest>[] = ["year", "month", "current_page", "page_size"]
@@ -127,19 +109,12 @@ const {
 // 侧边栏高度计算
 const reCalculateHeight = () => {
     if (asideRef.value) {
-        const height = Array.from(
-            asideRef.value.$el.children as HTMLCollectionOf<HTMLElement>,
-        ).reduce<number>((totalHeight, child: HTMLElement) => {
+        const height = Array.from(asideRef.value.$el.children as HTMLCollectionOf<HTMLElement>).reduce<number>((totalHeight, child: HTMLElement) => {
             const htmlChild = child as HTMLElement
             if (htmlChild.classList.contains("el-aside-item")) {
                 const style = getComputedStyle(htmlChild)
                 // 高度 = 之前的高度 + 当前元素的高度 + 当前元素的 marginTop + 当前元素的 marginBottom
-                return (
-                    totalHeight +
-                    htmlChild.offsetHeight +
-                    parseFloat(style.marginTop) +
-                    parseFloat(style.marginBottom)
-                )
+                return totalHeight + htmlChild.offsetHeight + parseFloat(style.marginTop) + parseFloat(style.marginBottom)
             }
             return totalHeight
         }, 0)

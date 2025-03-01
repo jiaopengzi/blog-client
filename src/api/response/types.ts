@@ -19,7 +19,6 @@ export interface Res<T> {
     data: T // 可以根据实际返回的数据结构替换为更具体的类型
 }
 
-
 // 分页
 export interface Pagination<T> {
     total: number // 总记录数量

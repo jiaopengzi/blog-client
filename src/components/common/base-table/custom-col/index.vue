@@ -9,29 +9,16 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-    <el-table-column
-        :width="col.width"
-        :min-width="col.minWidth"
-        :align="col.align"
-        :label="col.label"
-    >
+    <el-table-column :width="col.width" :min-width="col.minWidth" :align="col.align" :label="col.label">
         <template #default="scope">
             <!-- 标题 -->
             <h4 v-if="col.isHeading">{{ scope.row[col.prop] }}</h4>
 
             <!-- 作者 -->
-            <el-button
-                v-if="col.isAuthor"
-                class="is-author"
-                @click="handleAuthorClick(scope.row[col.prop])"
-                >{{ scope.row[col.prop].user_name }}</el-button
-            >
+            <el-button v-if="col.isAuthor" class="is-author" @click="handleAuthorClick(scope.row[col.prop])">{{ scope.row[col.prop].user_name }}</el-button>
 
             <!-- 可点击标签 -->
-            <el-scrollbar
-                v-if="col.isTags || col.isCategories"
-                :max-height="tagsItemMaxHeight ? tagsItemMaxHeight : '100px'"
-            >
+            <el-scrollbar v-if="col.isTags || col.isCategories" :max-height="tagsItemMaxHeight ? tagsItemMaxHeight : '100px'">
                 <!-- 注意 key 需要使用 id + 文章数量 -->
                 <TagItem
                     v-for="item in scope.row[col.prop]"
@@ -43,9 +30,7 @@
             </el-scrollbar>
 
             <!-- 格式化 -->
-            <span v-if="col.formatter">{{
-                col.formatter ? col.formatter(scope.row) : scope.row[col.prop]
-            }}</span>
+            <span v-if="col.formatter">{{ col.formatter ? col.formatter(scope.row) : scope.row[col.prop] }}</span>
         </template>
     </el-table-column>
 </template>

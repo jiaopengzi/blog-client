@@ -14,9 +14,7 @@ import type { Res, ResPromise } from "@/api/response"
 
 export type SubtitlesLanguagesResData = string[] | null
 
-export function getSubtitlesLanguagesAPI(
-    videoHashId: string,
-): ResPromise<Res<SubtitlesLanguagesResData>> {
+export function getSubtitlesLanguagesAPI(videoHashId: string): ResPromise<Res<SubtitlesLanguagesResData>> {
     return request({
         url: `${routerGroup}/subtitles/languages/${videoHashId}`,
         method: "get",

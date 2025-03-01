@@ -17,9 +17,7 @@ export interface CheckCategorySlugRequest {
 }
 
 // 检查 category 名称是否存在
-export function checkCategorySlugAPI(
-    requestData: CheckCategorySlugRequest,
-): ResPromise<Res<unknown>> {
+export function checkCategorySlugAPI(requestData: CheckCategorySlugRequest): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/post-category/check-category-slug"
     return request({
         url: urlStr,

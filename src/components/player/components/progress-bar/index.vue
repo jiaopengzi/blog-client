@@ -28,12 +28,7 @@
         <div ref="tooltip" class="tooltip"></div>
 
         <!-- 滑块 -->
-        <div
-            ref="slider"
-            class="slider"
-            @mousedown="onSliderDown"
-            @touchstart.passive="onSliderDown"
-        ></div>
+        <div ref="slider" class="slider" @mousedown="onSliderDown" @touchstart.passive="onSliderDown"></div>
 
         <!-- 透明的点击区域 -->
         <div ref="clickAreaRef" class="click-area"></div>
@@ -257,8 +252,7 @@ const onSliderPointerUp = () => {
         const rect = progressBarRef.value.getBoundingClientRect()
         const totalWidth = rect.width
         // 计算滑块中心点的 offsetX
-        const { left: sliderRefLeft, width: sliderRefWidth } =
-            sliderRef.value.getBoundingClientRect()
+        const { left: sliderRefLeft, width: sliderRefWidth } = sliderRef.value.getBoundingClientRect()
         let offsetX = sliderRefLeft + sliderRefWidth / 2 - rect.left
 
         // 限制 offsetX 在 0 和 totalWidth 之间

@@ -8,24 +8,13 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
-import { onBeforeMount, type Reactive,reactive, ref } from "vue"
+import { onBeforeMount, type Reactive, reactive, ref } from "vue"
 import { useRoute, useRouter } from "vue-router"
 
-import { type PaginationRequest,type QueryParamsOptions } from "@/api/request"
-import {
-    getEmptyPagination,
-    handleResErr,
-    type Pagination,
-    type Res,
-    ResponseCode,
-    type ResPromise,
-} from "@/api/response"
+import { type PaginationRequest, type QueryParamsOptions } from "@/api/request"
+import { getEmptyPagination, handleResErr, type Pagination, type Res, ResponseCode, type ResPromise } from "@/api/response"
 import type { TableImg } from "@/components/common"
-import {
-    type FormatTableData,
-    formatTableData,
-    type TableData,
-} from "@/components/common/base-table"
+import { type FormatTableData, formatTableData, type TableData } from "@/components/common/base-table"
 import { usePagination } from "@/components/hooks/usePagination"
 import { routerPushByParams } from "@/router"
 import { MessageUtil } from "@/utils/message"
@@ -75,11 +64,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     }
 
     // 是否请求
-    const {
-        updateCurrentPageWithIsRequest,
-        updatePageSizeWithIsRequest,
-        updatePaginateWithIsRequest,
-    } = usePagination(
+    const { updateCurrentPageWithIsRequest, updatePageSizeWithIsRequest, updatePaginateWithIsRequest } = usePagination(
         pagination,
         getPaginate,
         queryParams,
@@ -90,15 +75,10 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
 
     // 更新查询参数
     const updateQueryParams = async () => {
-        const { hasQueryParams, queryParamsResult } = await parseRouteQuery(
-            route.query,
-            options as QueryParamsOptions<K>,
-        )
+        const { hasQueryParams, queryParamsResult } = await parseRouteQuery(route.query, options as QueryParamsOptions<K>)
 
         // 清空 queryParams
-        Object.keys(queryParams).forEach(
-            (key) => delete queryParams[key as keyof typeof queryParams],
-        )
+        Object.keys(queryParams).forEach((key) => delete queryParams[key as keyof typeof queryParams])
 
         if (hasQueryParams) {
             Object.assign(queryParams, queryParamsResult)
@@ -172,13 +152,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         const res = await viewAPI(req)
         if (res.data.code === viewResCode) {
             res.data.data.records = res.data.data.records.map((row: T) =>
-                formatTableData(
-                    row as T,
-                    options?.tableImg?.width,
-                    options?.tableImg?.height,
-                    options?.tableImg?.imgFit,
-                    options?.tableImg?.svgFontSize,
-                ),
+                formatTableData(row as T, options?.tableImg?.width, options?.tableImg?.height, options?.tableImg?.imgFit, options?.tableImg?.svgFontSize),
             )
 
             // 无数据时不更新

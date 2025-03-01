@@ -11,19 +11,10 @@
 
 import { ResponseCode } from "@/api/response"
 import { CheckEmailAPI, type CheckEmailRequest } from "@/api/user/checkEmail"
-import {
-    checkEmailExcludingUserIDAPI,
-    type CheckEmailExcludingUserIDRequest,
-} from "@/api/user/checkEmailExcludingUserID"
+import { checkEmailExcludingUserIDAPI, type CheckEmailExcludingUserIDRequest } from "@/api/user/checkEmailExcludingUserID"
 import { checkUserNameAPI, type CheckUserNameRequest } from "@/api/user/checkUserName"
-import {
-    checkUserNameExcludingUserIDAPI,
-    type CheckUserNameExcludingUserIDRequest,
-} from "@/api/user/checkUserNameExcludingUserID"
-import {
-    getDisableExpiresAtSecondsAPI,
-    type GetDisableExpiresAtSecondsRequest,
-} from "@/api/user/getDisableExpiresAtSeconds"
+import { checkUserNameExcludingUserIDAPI, type CheckUserNameExcludingUserIDRequest } from "@/api/user/checkUserNameExcludingUserID"
+import { getDisableExpiresAtSecondsAPI, type GetDisableExpiresAtSecondsRequest } from "@/api/user/getDisableExpiresAtSeconds"
 import { getUserForbiddenMsg } from "@/utils/msg"
 
 /**
@@ -52,10 +43,7 @@ export async function checkUserName(userName: string): Promise<void> {
  * @param {string} excludingUserID 排除的用户ID
  * @param {string} userName 用户名
  */
-export async function checkUserNameExcludingUserID(
-    excludingUserID: string,
-    userName: string,
-): Promise<void> {
+export async function checkUserNameExcludingUserID(excludingUserID: string, userName: string): Promise<void> {
     try {
         const req: CheckUserNameExcludingUserIDRequest = {
             excluding_user_id: excludingUserID,
@@ -98,10 +86,7 @@ export async function checkEmail(email: string): Promise<void> {
  * @param {string} excludingUserID 排除的用户ID
  * @param {string} email 邮箱
  */
-export async function checkEmailExcludingUserID(
-    excludingUserID: string,
-    email: string,
-): Promise<void> {
+export async function checkEmailExcludingUserID(excludingUserID: string, email: string): Promise<void> {
     const req: CheckEmailExcludingUserIDRequest = {
         excluding_user_id: excludingUserID,
         email: email,

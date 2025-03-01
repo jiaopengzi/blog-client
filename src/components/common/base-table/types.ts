@@ -34,13 +34,7 @@ export interface TableColumn {
 }
 
 // 表格数据类型
-export type TableData =
-    | PostResPaginationByAdmin
-    | PostTag
-    | PostCategory
-    | MediaFile
-    | User
-    | LoginLog
+export type TableData = PostResPaginationByAdmin | PostTag | PostCategory | MediaFile | User | LoginLog
 
 export interface FormatTableData {
     thumbnail?: string // 缩略图

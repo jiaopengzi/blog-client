@@ -11,11 +11,7 @@
 <template>
     <!-- 当前菜单项没有子菜单时，显示一个普通的菜单项 -->
     <!-- 注意 Icon 在 item 和 menu 是不同的 -->
-    <el-menu-item
-        v-if="!getChildren(menuItem.index).length"
-        :index="menuItem.index"
-        class="no-children"
-    >
+    <el-menu-item v-if="!getChildren(menuItem.index).length" :index="menuItem.index" class="no-children">
         <Icon v-if="menuItem.icon" :name="menuItem.icon.name" :custom-class="menuItem.icon.class" />
         <template #title>
             <span class="title">{{ menuItem.display }}</span></template
@@ -25,21 +21,12 @@
     <!-- 当前菜单项有子菜单时，显示一个子菜单 -->
     <el-sub-menu v-else :index="menuItem.index">
         <template #title>
-            <Icon
-                v-if="menuItem.icon"
-                :name="menuItem.icon.name"
-                :custom-class="menuItem.icon.class"
-            />
+            <Icon v-if="menuItem.icon" :name="menuItem.icon.name" :custom-class="menuItem.icon.class" />
             <span class="title">{{ menuItem.display }}</span>
         </template>
 
         <!-- 递归调用自身组件，渲染子菜单项 -->
-        <recursive-menu-item
-            v-for="(item, key) in getChildren(menuItem.index)"
-            :key="key"
-            :menu-item-map="menuItemMap"
-            :menu-item="item"
-        />
+        <recursive-menu-item v-for="(item, key) in getChildren(menuItem.index)" :key="key" :menu-item-map="menuItemMap" :menu-item="item" />
     </el-sub-menu>
 </template>
 

@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeMount,ref, watch, watchEffect } from "vue"
+import { onBeforeMount, ref, watch, watchEffect } from "vue"
 
 import { parseVTT } from "@/utils/vttParse"
 
@@ -43,8 +43,7 @@ watch(
     () => props.currentTime,
     (newTime) => {
         if (newTime !== undefined) {
-            currentCue.value =
-                cues.value.find((cue) => newTime >= cue.start && newTime <= cue.end) || null
+            currentCue.value = cues.value.find((cue) => newTime >= cue.start && newTime <= cue.end) || null
         }
     },
 )

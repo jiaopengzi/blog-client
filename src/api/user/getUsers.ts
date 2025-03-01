@@ -10,8 +10,8 @@
  */
 
 import { type PgSqlDateTime } from "@/api/common"
-import { type PaginationRequest,request, routerGroup } from "@/api/request"
-import { type Pagination,type Res, ResponseCode, type ResPromise } from "@/api/response"
+import { type PaginationRequest, request, routerGroup } from "@/api/request"
+import { type Pagination, type Res, ResponseCode, type ResPromise } from "@/api/response"
 import type { DataWithImg } from "@/components/common"
 import { ImgFit } from "@/components/common/index"
 import { formatTime } from "@/utils/dateTime"
@@ -35,9 +35,7 @@ export async function getUsersAPI(
     })
     // 在这里使用 map 函数来转换每个用户对象
     if (response.data.code === ResponseCode.UserGetAllSuccess) {
-        response.data.data.records = response.data.data.records.map((user: User) =>
-            formatUser(user, width, height, imgFit),
-        )
+        response.data.data.records = response.data.data.records.map((user: User) => formatUser(user, width, height, imgFit))
         return response
     } else {
         response.data.data = emptyUsers()
@@ -66,12 +64,7 @@ export interface User extends DataWithImg {
  * @param imgFit 图片填充方式
  * @return  {User} 格式化后的用户信息
  */
-export function formatUser(
-    { user_avatar, created_at, ...user }: User,
-    width: number,
-    height: number,
-    imgFit: ImgFit,
-): User {
+export function formatUser({ user_avatar, created_at, ...user }: User, width: number, height: number, imgFit: ImgFit): User {
     const formattedUser: User = {
         ...user,
         created_at: formatTime(created_at),

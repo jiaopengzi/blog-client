@@ -6,7 +6,7 @@ import { handleResErr, type Res, ResponseCode, type ResPromise } from "@/api/res
 import { type ChunkMetadataWithoutFileId } from "@/api/upload/chunk"
 import { type ConfirmBeforeUploadRequest } from "@/api/upload/confirmBeforeUpload"
 import { EventEmitter } from "@/utils/eventEmitter"
-import { HashAlgorithm,HashCalculator } from "@/utils/hash"
+import { HashAlgorithm, HashCalculator } from "@/utils/hash"
 import { Task, TaskQueue } from "@/utils/task"
 
 // 分片元数据,包含文件二进制数据
@@ -66,9 +66,7 @@ export abstract class ChunkSplitter extends EventEmitter<ChunkSplitterEvents> {
         const chunkCount = Math.ceil(this.file.size / this.chunkSize)
 
         // 创建分片不包含hash,能迅速的获取到分片的大小
-        this.chunks = new Array(chunkCount)
-            .fill(0)
-            .map((_, index) => this.createChunkWithoutHash(index))
+        this.chunks = new Array(chunkCount).fill(0).map((_, index) => this.createChunkWithoutHash(index))
         this.uploadedPartIndexList = uploadedPartIndexList
     }
 
@@ -140,10 +138,7 @@ export class MultiThreadSplitter extends ChunkSplitter {
     // 计算机CPU核心数 - 2 作为并发数 不能小于1 保证至少有一个线程 不能大于4 保证不会占用太多资源
     // 获取环境变量 import.meta.env.VITE_MAX_NAVIGATOR_HARDWARE_CONCURRENCY
 
-    concurrency = Math.min(
-        Math.max(navigator.hardwareConcurrency - 2, 1),
-        import.meta.env.VITE_MAX_NAVIGATOR_HARDWARE_CONCURRENCY,
-    )
+    concurrency = Math.min(Math.max(navigator.hardwareConcurrency - 2, 1), import.meta.env.VITE_MAX_NAVIGATOR_HARDWARE_CONCURRENCY)
 
     // 多线程Worker
     private workers: Worker[] = new Array(this.concurrency).fill(0).map(
@@ -227,12 +222,7 @@ export interface RequestStrategy {
     confirmBeforeUpload(req: ConfirmBeforeUploadRequest): Promise<UploadFileInfo>
 
     // 使用签名URL上传,不走分片上传
-    uploadFileBySignedUrl(
-        file: File,
-        signedUrl: string,
-        headers: Record<string, string>,
-        onProgress: (percent: number) => void,
-    ): Promise<void>
+    uploadFileBySignedUrl(file: File, signedUrl: string, headers: Record<string, string>, onProgress: (percent: number) => void): Promise<void>
 
     confirmAfterUploadBySignedUrl(req: { file_id: string }): ResPromise<Res<void>>
 
@@ -269,9 +259,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
             file_type: this.file.type,
             file_chunk_size: this.chunkSplitter.chunkSize,
             hash_algorithm: this.chunkSplitter.hashCalculator.getAlgorithm(),
-            first_chunk_hash_key: await this.chunkSplitter.hashCalculator.getFirstChunkHash(
-                this.file,
-            ),
+            first_chunk_hash_key: await this.chunkSplitter.hashCalculator.getFirstChunkHash(this.file),
             part_numbers: this.chunkSplitter.partNumbers,
             is_encrypt: isEncrypt,
             is_Free: isFree,
@@ -319,16 +307,11 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
                                     file_id: this.uploadFileInfo?.id?.toString() || "",
                                 })
                                 .then(async (res) => {
-                                    if (
-                                        res.data.code ===
-                                        ResponseCode.ConfirmAfterUploadBySignedUrlSuccess
-                                    ) {
+                                    if (res.data.code === ResponseCode.ConfirmAfterUploadBySignedUrlSuccess) {
                                         // 上传完成
                                         await this.handleUploadCompletion()
                                     } else {
-                                        const errorMsg =
-                                            res.data.msg ||
-                                            "Failed to confirm after upload by signed url."
+                                        const errorMsg = res.data.msg || "Failed to confirm after upload by signed url."
                                         this.emit(UploadControllerEvents.ERROR, new Error(errorMsg))
                                     }
                                 })
@@ -404,10 +387,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
     // 计算上传进度
     private calculateProgress = () => {
         // 累加计算已上传的大小
-        const uploadedSize = Array.from(this.progressTrackers.values()).reduce(
-            (acc, size) => acc + size,
-            0,
-        )
+        const uploadedSize = Array.from(this.progressTrackers.values()).reduce((acc, size) => acc + size, 0)
         return uploadedSize / this.file.size
     }
 

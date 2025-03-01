@@ -22,20 +22,14 @@
         </div>
         <div v-else class="tag-box">
             <el-scrollbar max-height="300px">
-                <TagItem
-                    v-for="item in items"
-                    :tag-data="item"
-                    :is-admin="isAdmin"
-                    :key="item.id"
-                    @click="handleClick(item)"
-                />
+                <TagItem v-for="item in items" :tag-data="item" :is-admin="isAdmin" :key="item.id" @click="handleClick(item)" />
             </el-scrollbar>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { computed,onBeforeMount, reactive } from "vue"
+import { computed, onBeforeMount, reactive } from "vue"
 
 import { type PostTag } from "@/api/postTag/view"
 import { viewPostTagTopNAPI } from "@/api/postTag/viewPostTagTopN"

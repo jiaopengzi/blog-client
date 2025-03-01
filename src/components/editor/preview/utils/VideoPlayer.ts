@@ -9,10 +9,10 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { createApp,h } from "vue"
+import { createApp, h } from "vue"
 
 import Icon from "@/components/common/icons"
-import { type MediaTypes,PlayerStateManager } from "@/components/player"
+import { type MediaTypes, PlayerStateManager } from "@/components/player"
 import VideoPlayer from "@/components/player"
 
 import { BaseCustomElement } from "../customElements"
@@ -23,10 +23,7 @@ import { getComponentContainersFromCustomElements } from "./getComponentContaine
  * @param container 自定义元素父容器
  * @param childElement 自定义元素类即组件挂载容器的类
  */
-export const mountVideoPlayerOnCustomElements = (
-    container: HTMLElement,
-    childElement: typeof BaseCustomElement,
-) => {
+export const mountVideoPlayerOnCustomElements = (container: HTMLElement, childElement: typeof BaseCustomElement) => {
     const componentContainers = getComponentContainersFromCustomElements(container, childElement)
     if (!componentContainers) return
 

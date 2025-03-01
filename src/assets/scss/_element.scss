@@ -56,11 +56,7 @@ $mode-dark: "dark";
         $suffix: if($level == 2, $mode-dark, $mode-light);
 
         // 生成颜色变量
-        --el-color-#{$color-name}-#{$suffix}-#{$level}: #{set-color-mix-level(
-                $base-color,
-                $level * 10,
-                $mode
-            )};
+        --el-color-#{$color-name}-#{$suffix}-#{$level}: #{set-color-mix-level($base-color, $level * 10, $mode)};
     }
 }
 

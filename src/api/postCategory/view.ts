@@ -9,8 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { type PaginationRequest,request, routerGroup } from "@/api/request"
-import type { Pagination,Res, ResPromise } from "@/api/response"
+import { type PaginationRequest, request, routerGroup } from "@/api/request"
+import type { Pagination, Res, ResPromise } from "@/api/response"
 import type { DataWithImg } from "@/components/common"
 
 // 每行数据类型
@@ -28,9 +28,7 @@ export interface PostCategory extends DataWithImg {
 }
 
 // 查看文章分类
-export function viewPostCategoryAPI(
-    requestData: PaginationRequest,
-): ResPromise<Res<Pagination<PostCategory>>> {
+export function viewPostCategoryAPI(requestData: PaginationRequest): ResPromise<Res<Pagination<PostCategory>>> {
     const urlStr = routerGroup + "/post-category/view"
     return request({
         url: urlStr,

@@ -18,13 +18,7 @@ export interface GeneratePasswordOptions {
 
 // 生成密码
 export function generatePassword(options: GeneratePasswordOptions = {}) {
-    const {
-        upperCaseCount = 4,
-        lowerCaseCount = 4,
-        numberCount = 4,
-        specialChar = '!@#$%^&*()_+{}|:"<>?',
-        specialCharCount = 4,
-    } = options
+    const { upperCaseCount = 4, lowerCaseCount = 4, numberCount = 4, specialChar = '!@#$%^&*()_+{}|:"<>?', specialCharCount = 4 } = options
 
     const passwordLength = upperCaseCount + lowerCaseCount + numberCount + specialCharCount // 密码长度
     // 检查参数
@@ -43,9 +37,7 @@ export function generatePassword(options: GeneratePasswordOptions = {}) {
     const generateChars = (length: number, asciiStart: number, asciiEnd: number) => {
         let chars = ""
         for (let i = 0; i < length; i++) {
-            chars += String.fromCharCode(
-                Math.floor(Math.random() * (asciiEnd - asciiStart)) + asciiStart,
-            )
+            chars += String.fromCharCode(Math.floor(Math.random() * (asciiEnd - asciiStart)) + asciiStart)
         }
         return chars
     }

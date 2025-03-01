@@ -21,9 +21,7 @@ export const getSortedEnumKeys = (enumObj: any, order: "asc" | "desc" = "asc"): 
     if (!enumObj[cacheKey]) {
         const enumEntries = Object.entries(enumObj)
             .filter(([, value]) => typeof value === "number")
-            .sort(([, a], [, b]) =>
-                order === "asc" ? (a as number) - (b as number) : (b as number) - (a as number),
-            )
+            .sort(([, a], [, b]) => (order === "asc" ? (a as number) - (b as number) : (b as number) - (a as number)))
         enumObj[cacheKey] = enumEntries.map(([key]) => key)
     }
     return enumObj[cacheKey]

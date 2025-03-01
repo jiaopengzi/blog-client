@@ -19,9 +19,7 @@ export interface ViewPostByIDRequest {
 }
 
 // 查看文章
-export function viewPostByIDAdminAPI(
-    requestData: ViewPostByIDRequest,
-): ResPromise<Res<PostResByAdmin>> {
+export function viewPostByIDAdminAPI(requestData: ViewPostByIDRequest): ResPromise<Res<PostResByAdmin>> {
     const urlStr = routerGroup + "/post/view-by-id-admin"
     return request({
         url: urlStr,

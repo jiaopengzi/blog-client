@@ -28,11 +28,7 @@ export function editorInsertFormatContent(view: EditorView, command: MarkdownEdi
     let cursorPosMove = 0 // 光标移动位置
     const range = view.state.selection.ranges[0] // 获取选中的内容
     // 判断命令对象是否有前缀、内容、后缀 任意一个
-    if (
-        command.prefix !== undefined ||
-        command.suffix !== undefined ||
-        command.content !== undefined
-    ) {
+    if (command.prefix !== undefined || command.suffix !== undefined || command.content !== undefined) {
         const { prefix = "", content = "", suffix = "" } = command // 解构获取命令对象的前缀、内容、后缀
 
         if (range) {

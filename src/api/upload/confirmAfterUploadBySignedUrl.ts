@@ -19,9 +19,7 @@ export interface ConfirmAfterUploadBySignedUrlRequest {
 }
 
 // 普通文件使用 签名URL 上传文件 后确认
-export function confirmAfterUploadBySignedUrlAPI(
-    requestData: ConfirmAfterUploadBySignedUrlRequest,
-): ResPromise<Res<void>> {
+export function confirmAfterUploadBySignedUrlAPI(requestData: ConfirmAfterUploadBySignedUrlRequest): ResPromise<Res<void>> {
     return request({
         url: routerGroup + "/upload/confirm-after-upload-by-signed-url",
         method: "post",
@@ -30,9 +28,7 @@ export function confirmAfterUploadBySignedUrlAPI(
 }
 
 // 头像使用 签名URL 上传文件 后确认
-export function confirmAfterUploadBySignedUrlAvatarAPI(
-    requestData: ConfirmAfterUploadBySignedUrlRequest,
-): ResPromise<Res<void>> {
+export function confirmAfterUploadBySignedUrlAvatarAPI(requestData: ConfirmAfterUploadBySignedUrlRequest): ResPromise<Res<void>> {
     return request({
         url: routerGroup + "/upload/avatar/confirm-after-upload-by-signed-url",
         method: "post",
@@ -41,9 +37,7 @@ export function confirmAfterUploadBySignedUrlAvatarAPI(
 }
 
 // 编辑器文件上传使用 签名URL 上传文件 后确认
-export function confirmAfterUploadBySignedUrlEditorAPI(
-    requestData: ConfirmAfterUploadBySignedUrlRequest,
-): ResPromise<Res<void>> {
+export function confirmAfterUploadBySignedUrlEditorAPI(requestData: ConfirmAfterUploadBySignedUrlRequest): ResPromise<Res<void>> {
     return request({
         url: routerGroup + "/upload/editor/confirm-after-upload-by-signed-url",
         method: "post",

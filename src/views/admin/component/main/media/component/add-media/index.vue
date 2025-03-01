@@ -73,13 +73,7 @@ const isNoFree = ref(true)
 
 const httpRequest = async (options: UploadRequestOptions) => {
     try {
-        const result = await uploadByEl(
-            options,
-            isEncrypt.value,
-            isNoFree.value,
-            chunkSizeServer.value,
-            hashAlgorithmServer,
-        )
+        const result = await uploadByEl(options, isEncrypt.value, isNoFree.value, chunkSizeServer.value, hashAlgorithmServer)
         if (result) {
             emit("has-upload", true)
         }

@@ -18,10 +18,7 @@ export interface SubtitlesByAdminResData {
 }
 
 // 根据 videoHashId 和 subtitlesLanguage 获取字幕(用于管理员)
-export function getSubtitlesByAdminAPI(
-    videoHashId: string,
-    subtitlesLanguage: string,
-): ResPromise<Res<SubtitlesByAdminResData>> {
+export function getSubtitlesByAdminAPI(videoHashId: string, subtitlesLanguage: string): ResPromise<Res<SubtitlesByAdminResData>> {
     return request({
         url: `${routerGroup}/subtitles/${videoHashId}/${subtitlesLanguage}`,
         method: "get",

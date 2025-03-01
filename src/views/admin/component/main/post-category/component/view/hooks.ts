@@ -10,25 +10,13 @@
  */
 
 import type { FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { reactive,type Ref } from "vue"
+import { reactive, type Ref } from "vue"
 
-import {
-    checkCategoryNameAPI,
-    type CheckCategoryNameRequest,
-} from "@/api/postCategory/checkCategoryName"
-import {
-    checkCategoryNameExcludingIDAPI,
-    type CheckCategoryNameExcludingIDRequest,
-} from "@/api/postCategory/checkCategoryNameExcludingID"
-import {
-    checkCategorySlugAPI,
-    type CheckCategorySlugRequest,
-} from "@/api/postCategory/checkCategorySlug"
-import {
-    checkCategorySlugExcludingIDAPI,
-    type CheckCategorySlugExcludingIDRequest,
-} from "@/api/postCategory/checkCategorySlugExcludingID"
-import { handleResErr,ResponseCode } from "@/api/response"
+import { checkCategoryNameAPI, type CheckCategoryNameRequest } from "@/api/postCategory/checkCategoryName"
+import { checkCategoryNameExcludingIDAPI, type CheckCategoryNameExcludingIDRequest } from "@/api/postCategory/checkCategoryNameExcludingID"
+import { checkCategorySlugAPI, type CheckCategorySlugRequest } from "@/api/postCategory/checkCategorySlug"
+import { checkCategorySlugExcludingIDAPI, type CheckCategorySlugExcludingIDRequest } from "@/api/postCategory/checkCategorySlugExcludingID"
+import { handleResErr, ResponseCode } from "@/api/response"
 import { RegexPatterns } from "@/utils/regexPatterns"
 
 import type { ViewForm } from "./index"
@@ -54,11 +42,7 @@ export function useFormValidation(options: FormValidationOptions): {
     const { form } = options
 
     // 检查分类名称是否可用
-    function checkCategoryNameValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkCategoryNameValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 去除前后空格
         if (!form.name?.value) {
             callback("请输入分类名称")
@@ -88,11 +72,7 @@ export function useFormValidation(options: FormValidationOptions): {
     }
 
     // 检查别名是否可用
-    function checkCategorySlugValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkCategorySlugValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 不能包含空格
         if (value.includes(" ")) {
             callback(new Error("别名不能包含空格"))
@@ -128,11 +108,7 @@ export function useFormValidation(options: FormValidationOptions): {
     }
 
     // 检查分类名称是否可用
-    function checkCategoryNameExcludingIDValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkCategoryNameExcludingIDValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 去除前后空格
         if (!form.name?.value) {
             callback("请输入分类名称")
@@ -168,11 +144,7 @@ export function useFormValidation(options: FormValidationOptions): {
     }
 
     // 检查别名是否可用
-    function checkCategorySlugExcludingIDValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkCategorySlugExcludingIDValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 不能包含空格
         if (value.includes(" ")) {
             callback(new Error("别名不能包含空格"))

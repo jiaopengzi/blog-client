@@ -8,7 +8,7 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
-import { describe, expect,it } from "vitest"
+import { describe, expect, it } from "vitest"
 
 import { RegexPatterns } from "./regexPatterns"
 
@@ -105,11 +105,7 @@ describe("RegexPatterns.Password", () => {
     })
 
     it("超过64位", () => {
-        expect(
-            RegexPatterns.Password.test(
-                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890000",
-            ),
-        ).toBe(false)
+        expect(RegexPatterns.Password.test("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890000")).toBe(false)
     })
 
     it("纯大写字母", () => {
@@ -293,21 +289,15 @@ describe("RegexPatterns.ImgURL", () => {
     })
 
     it("正确示例 png 带参数 =", () => {
-        expect(
-            RegexPatterns.ImgURL.test("https://image.jiaopengzi.com/test.png=style/stylename"),
-        ).toBe(true)
+        expect(RegexPatterns.ImgURL.test("https://image.jiaopengzi.com/test.png=style/stylename")).toBe(true)
     })
 
     it("正确示例 png 带参数 !", () => {
-        expect(
-            RegexPatterns.ImgURL.test("https://image.jiaopengzi.com/test.png!style/stylename"),
-        ).toBe(true)
+        expect(RegexPatterns.ImgURL.test("https://image.jiaopengzi.com/test.png!style/stylename")).toBe(true)
     })
 
     it("正确示例 png 带参数 ?", () => {
-        expect(
-            RegexPatterns.ImgURL.test("https://image.jiaopengzi.com/test.png?style/stylename"),
-        ).toBe(true)
+        expect(RegexPatterns.ImgURL.test("https://image.jiaopengzi.com/test.png?style/stylename")).toBe(true)
     })
 })
 

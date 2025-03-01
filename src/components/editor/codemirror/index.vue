@@ -15,15 +15,11 @@
 <script lang="ts" setup>
 import type { Extension } from "@codemirror/state"
 import type { ViewUpdate } from "@codemirror/view"
-import { onMounted, onUnmounted, useTemplateRef,watchEffect } from "vue"
+import { onMounted, onUnmounted, useTemplateRef, watchEffect } from "vue"
 
 import type { MarkdownEditorCommandItem, MarkdownEditorCommands } from "@/components/editor/command"
-import {
-    CommandsKey,
-    createMarkdownEditorCommands,
-    editorInsertFormatContent,
-} from "@/components/editor/command"
-import { createCustomSetup,EditorState, EditorView } from "@/pkg/codemirror/setup"
+import { CommandsKey, createMarkdownEditorCommands, editorInsertFormatContent } from "@/components/editor/command"
+import { createCustomSetup, EditorState, EditorView } from "@/pkg/codemirror/setup"
 
 import type { CodeEditorProps } from "./types"
 
@@ -98,10 +94,7 @@ const updateDocInfo: Extension = EditorView.updateListener.of((viewUpdate: ViewU
 })
 
 // 执行按钮命令
-const runCommand = (
-    commandName: CommandsKey,
-    customContent: MarkdownEditorCommandItem = {},
-): void => {
+const runCommand = (commandName: CommandsKey, customContent: MarkdownEditorCommandItem = {}): void => {
     if (commandName) {
         if (customContent) {
             // 合并自定义内容

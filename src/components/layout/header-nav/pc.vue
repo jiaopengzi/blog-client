@@ -14,11 +14,7 @@
         <ul>
             <li v-for="item in navData" :key="item.name">
                 <router-link :to="{ name: item.name }" class="link">
-                    <Icon
-                        v-if="item.iconKey"
-                        :name="item.iconKey"
-                        :custom-class="'my-icon ' + item.customClass"
-                    />
+                    <Icon v-if="item.iconKey" :name="item.iconKey" :custom-class="'my-icon ' + item.customClass" />
                     <span>{{ item.title }}</span>
                 </router-link>
             </li>

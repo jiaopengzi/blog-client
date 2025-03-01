@@ -126,7 +126,5 @@ export function getUpdatedFields<T>(original: T, current: T, primaryKey: keyof T
  * @return {keyof T} 数字类型的顶层key数组
  */
 export function getNumberKeyOfTops<T>(obj: T): (keyof T)[] {
-    return Object.keys(obj as object).filter(
-        (key) => typeof obj[key as keyof T] === "number",
-    ) as (keyof T)[]
+    return Object.keys(obj as object).filter((key) => typeof obj[key as keyof T] === "number") as (keyof T)[]
 }

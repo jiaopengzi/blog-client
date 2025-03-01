@@ -27,10 +27,7 @@
                         <AvatarInitials :name="editUserForm.userName" :avatar="avatar" />
                     </div>
                     <div class="edit-avatar-btn">
-                        <AvatarUpload
-                            :avatar_user_id="editUserForm.editUserID"
-                            @avatar-upload-url="updateAvatarToDB"
-                        />
+                        <AvatarUpload :avatar_user_id="editUserForm.editUserID" @avatar-upload-url="updateAvatarToDB" />
                     </div>
                 </div>
             </el-form-item>
@@ -59,19 +56,12 @@
 
             <el-form-item label="密码" prop="password">
                 <el-input class="generate-password" type="text" v-model="editUserForm.password" />
-                <button type="button" class="btn-generate-password" @click="generatePasswordHandle">
-                    重置密码
-                </button>
+                <button type="button" class="btn-generate-password" @click="generatePasswordHandle">重置密码</button>
             </el-form-item>
 
             <el-form-item label="角色" prop="roleName">
                 <el-select v-model="editUserForm.roleName" placeholder="选择用户角色">
-                    <el-option
-                        v-for="item in props.roles"
-                        :key="item.role_name"
-                        :label="item.description"
-                        :value="item.role_name"
-                    />
+                    <el-option v-for="item in props.roles" :key="item.role_name" :label="item.description" :value="item.role_name" />
                 </el-select>
             </el-form-item>
 
@@ -87,18 +77,12 @@
             </el-form-item>
 
             <el-form-item label="简介" prop="description">
-                <el-input
-                    v-model="editUserForm.description"
-                    type="textarea"
-                    placeholder="这个人很懒,什么也没有留下。"
-                />
+                <el-input v-model="editUserForm.description" type="textarea" placeholder="这个人很懒,什么也没有留下。" />
             </el-form-item>
 
             <div class="btn-submit">
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm(editUserFormRef as FormInstance)"
-                        >更新</el-button
-                    >
+                    <el-button type="primary" @click="submitForm(editUserFormRef as FormInstance)">更新</el-button>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="danger" @click="logoutByAdmin">登出</el-button>
@@ -115,15 +99,9 @@ import { onBeforeMount, reactive, ref, toRef, useTemplateRef, watch } from "vue"
 import { type Role } from "@/api/permissionRole/role"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { setAvatarAPI, type SetAvatarRequest } from "@/api/upload/setAvatar"
-import {
-    editUserInfoByAdminAPI,
-    type EditUserInfoByAdminRequest,
-} from "@/api/user/editUserInfoByAdmin"
+import { editUserInfoByAdminAPI, type EditUserInfoByAdminRequest } from "@/api/user/editUserInfoByAdmin"
 import { type UserInfo } from "@/api/user/getUserInfo"
-import {
-    getUserInfoByUserIDAPI,
-    type GetUserInfoByUserIDRequest,
-} from "@/api/user/getUserInfoByUserID"
+import { getUserInfoByUserIDAPI, type GetUserInfoByUserIDRequest } from "@/api/user/getUserInfoByUserID"
 import { logoutByAdminAPI, type LogoutByAdminRequest } from "@/api/user/logoutByAdmin"
 import AvatarInitials from "@/components/common/avatar-initials"
 import AvatarUpload from "@/components/common/avatar-upload"
@@ -270,18 +248,13 @@ const passwordRef = toRef(editUserForm, "password")
 const excludingUserIDRef = toRef(editUserForm, "editUserID")
 
 // hooks
-const {
-    checkUserNameExcludingUserIDValidator,
-    checkEmailExcludingUserIDValidator,
-    createEmailRules,
-    createPasswordRules,
-    createUserNameRules,
-} = useAccountFormValidation({
-    FormUserName: userNameRef,
-    FormEmail: emailRef,
-    FormPassword: passwordRef,
-    FormExcludingUserID: excludingUserIDRef,
-})
+const { checkUserNameExcludingUserIDValidator, checkEmailExcludingUserIDValidator, createEmailRules, createPasswordRules, createUserNameRules } =
+    useAccountFormValidation({
+        FormUserName: userNameRef,
+        FormEmail: emailRef,
+        FormPassword: passwordRef,
+        FormExcludingUserID: excludingUserIDRef,
+    })
 
 const generatePasswordHandle = () => {
     editUserForm.password = generatePassword()

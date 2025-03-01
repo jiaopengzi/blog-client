@@ -249,10 +249,7 @@ export function getAdminMenuItemMap() {
  * @param parentPath 前缀路径
  * @return MenuItemMapWithIndex 菜单项映射表
  */
-export function generateAdminMenuItemMapWithIndex(
-    menuItemMap: AdminMenuItemMap,
-    parentPath: string,
-): AdminMenuItemMapWithIndex {
+export function generateAdminMenuItemMapWithIndex(menuItemMap: AdminMenuItemMap, parentPath: string): AdminMenuItemMapWithIndex {
     const result: Partial<AdminMenuItemMapWithIndex> = {} // 生成的菜单项映射表
 
     // 递归生成菜单项映射表
@@ -296,12 +293,7 @@ export function generateAdminMenuItemMapWithIndex(
     return result as AdminMenuItemMapWithIndex
 }
 
-export const adminMenuItemMapWithIndex = generateAdminMenuItemMapWithIndex(
-    adminMenuItemMap as AdminMenuItemMap,
-    "admin",
-)
+export const adminMenuItemMapWithIndex = generateAdminMenuItemMapWithIndex(adminMenuItemMap as AdminMenuItemMap, "admin")
 
 // 根据 adminMenuItemMapWithIndex 将 index 作为 key 内容作为 value 生成菜单项映射表
-export const adminMenuItemMapWithIndexMap = Object.fromEntries(
-    Object.entries(adminMenuItemMapWithIndex).map(([key, value]) => [value.index, value]),
-)
+export const adminMenuItemMapWithIndexMap = Object.fromEntries(Object.entries(adminMenuItemMapWithIndex).map(([key, value]) => [value.index, value]))

@@ -18,12 +18,9 @@ import { parseTimeSegments } from "@/utils/dateTime"
  */
 export const parseVTT = (function () {
     // 正则表达式匹配字幕(vtt文件)
-    const regex =
-        /(\d{2}):(\d{2}):(\d{2})\.(\d{3}) --> (\d{2}):(\d{2}):(\d{2})\.(\d{3})\s+([\s\S]*?)(?=\r?\n\r?\n|\r?\n*$)/g
+    const regex = /(\d{2}):(\d{2}):(\d{2})\.(\d{3}) --> (\d{2}):(\d{2}):(\d{2})\.(\d{3})\s+([\s\S]*?)(?=\r?\n\r?\n|\r?\n*$)/g
 
-    return async function parseVTT(
-        url: string,
-    ): Promise<Array<{ start: number; end: number; text: string }>> {
+    return async function parseVTT(url: string): Promise<Array<{ start: number; end: number; text: string }>> {
         const response = await fetch(url)
         const vttText = await response.text()
         const cues = [] as Array<{ start: number; end: number; text: string }>
@@ -62,8 +59,7 @@ export const isWebvtt = (function () {
     const reNoteStyle = /(NOTE[\s\S]*?(\r?\n){2}|STYLE[\s\S]*?(\r?\n){2})/g
 
     // 匹配时间表达式,中间符号 --> 在后续判断 支持的时间格式包括 hh:mm:ss.mmm, mm:ss.mmm, ss.mmm
-    const reTimeExpression =
-        /\b(?:\d{2}:)?(?:\d{2}:)?\d{2}\.\d{3}.*(?:\d{2}:)?(?:\d{2}:)?\d{2}\.\d{3}\b|.*-->.*/g
+    const reTimeExpression = /\b(?:\d{2}:)?(?:\d{2}:)?\d{2}\.\d{3}.*(?:\d{2}:)?(?:\d{2}:)?\d{2}\.\d{3}\b|.*-->.*/g
 
     // 匹配时间格式 hh:mm:ss.mmm, mm:ss.mmm, ss.mmm
     const reTimeFormat = /^(?:\d{2}:)?(?:\d{2}:)?\d{2}\.\d{3}$/

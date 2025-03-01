@@ -16,7 +16,7 @@ import createMarked from "@/pkg/marked/new-marked"
 import { HasParentByClass } from "@/utils/getParentByClass"
 import { MessageUtil } from "@/utils/message"
 
-import { CustomElementAttributes,CustomElementVideoPlayer } from "../preview"
+import { CustomElementAttributes, CustomElementVideoPlayer } from "../preview"
 import type { EditorState, Heading, MarkdownHeadingLine } from "./types"
 
 /**
@@ -70,10 +70,7 @@ interface RegexCache {
  * @param srcAttributeNamesList 源元素的属性名数组列表
  * @return  更新后目标元素的属性名数组
  */
-const updateAttributeNames = (
-    tarAttributeNames: Array<string>,
-    srcAttributeNamesList: Array<Array<string>>,
-) => {
+const updateAttributeNames = (tarAttributeNames: Array<string>, srcAttributeNamesList: Array<Array<string>>) => {
     // /id|class/ DOMPurify 允许的 自定义元素的属性名
     for (let i = 0; i < srcAttributeNamesList.length; i++) {
         const srcAttributeNames = srcAttributeNamesList[i]
@@ -161,10 +158,7 @@ export const anchorGenerator = (text: string | undefined): string => {
  * @param index 索引
  * @return {String} 生成的锚点
  */
-export const anchorGeneratorWithIndex = (
-    text: string | undefined,
-    index: number | undefined,
-): string => {
+export const anchorGeneratorWithIndex = (text: string | undefined, index: number | undefined): string => {
     if (!text || index === undefined) return ""
     return `${anchorGenerator(text)}-${index.toString()}`
 }
@@ -253,8 +247,7 @@ export function markdownToHtml(markdownSrc: string): string {
     DOMPurify.setConfig({
         CUSTOM_ELEMENT_HANDLING: {
             tagNameCheck: (tagName) => !!tagName.match(regexCache.customElementHeadingTagNameRegex),
-            attributeNameCheck: (attr) =>
-                !!attr.match(regexCache.customElementHeadingAttributeNameRegex),
+            attributeNameCheck: (attr) => !!attr.match(regexCache.customElementHeadingAttributeNameRegex),
             allowCustomizedBuiltInElements: true, // 允许自定义内置函数
         },
     } as Config)
@@ -271,12 +264,7 @@ export function markdownToHtml(markdownSrc: string): string {
  * @param isFullScreen 是否全屏
  * @return {Object} 类名对象
  */
-export function setIsFullScreenClassName(
-    baseClass: string,
-    fullScreenClass: string,
-    isContainerItem: boolean,
-    isFullScreen: boolean,
-): object {
+export function setIsFullScreenClassName(baseClass: string, fullScreenClass: string, isContainerItem: boolean, isFullScreen: boolean): object {
     return {
         [baseClass]: !isFullScreen,
         [fullScreenClass]: isFullScreen,
@@ -292,9 +280,7 @@ export function setIsFullScreenClassName(
  */
 export function htmlHandleUtf8BOM(htmlSrc: string) {
     // 处理 utf-8 编码问题
-    return htmlSrc
-        .replace(regexCache.utf8BomRegex, "")
-        .replace(regexCache.windowsNewLineRegex, "\n") // 去除 BOM 头 和 windows 换行符
+    return htmlSrc.replace(regexCache.utf8BomRegex, "").replace(regexCache.windowsNewLineRegex, "\n") // 去除 BOM 头 和 windows 换行符
 }
 
 /**
@@ -383,10 +369,7 @@ export function htmlHandleWeChat(htmlSrc: string) {
  * @return 已排序的外部样式表列表和索引
  */
 function getSortedStyleSheets(): [CSSStyleSheet, number][] {
-    const styleSheets = Array.from(document.styleSheets).map((styleSheet, index) => [
-        styleSheet as CSSStyleSheet,
-        index,
-    ]) as [CSSStyleSheet, number][]
+    const styleSheets = Array.from(document.styleSheets).map((styleSheet, index) => [styleSheet as CSSStyleSheet, index]) as [CSSStyleSheet, number][]
 
     // 对样式表按照它们在 document.styleSheets 中的位置进行排序
     return styleSheets.sort((a, b) => a[1] - b[1])
@@ -398,16 +381,10 @@ function getSortedStyleSheets(): [CSSStyleSheet, number][] {
  * @param className 类名
  * @return boolean 是否应该保留其行内样式
  */
-export function shouldPreserveInlineStyles(
-    element: HTMLElement | SVGElement,
-    className: string,
-): boolean {
+export function shouldPreserveInlineStyles(element: HTMLElement | SVGElement, className: string): boolean {
     let currentElement: Element | null = element
     while (currentElement) {
-        if (
-            currentElement instanceof HTMLSpanElement &&
-            currentElement.classList.contains(className)
-        ) {
+        if (currentElement instanceof HTMLSpanElement && currentElement.classList.contains(className)) {
             return true
         }
         currentElement = currentElement.parentElement
@@ -437,10 +414,7 @@ function applyInlineStyles(el: HTMLElement | SVGElement) {
                                 // 如果属性值不为空且不为默认值 或者 不是 katex 的 span 元素
                                 if (cssStyleValue.startsWith("var(--")) {
                                     // 如果值为 CSS 变量，获取计算后的具体值
-                                    el.style.setProperty(
-                                        property,
-                                        getComputedStyle(el).getPropertyValue(property),
-                                    )
+                                    el.style.setProperty(property, getComputedStyle(el).getPropertyValue(property))
                                 } else {
                                     el.style.setProperty(property, cssStyleValue)
                                 }

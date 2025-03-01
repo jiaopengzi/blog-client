@@ -11,13 +11,7 @@
 
 <template>
     <div ref="toolbarRef" id="toolbar">
-        <button
-            v-for="btn in props.toolbarBtns"
-            type="button"
-            :key="btn.name"
-            class="toolbar-btn"
-            @click="emitToolbarBtnClicked(btn.name)"
-        >
+        <button v-for="btn in props.toolbarBtns" type="button" :key="btn.name" class="toolbar-btn" @click="emitToolbarBtnClicked(btn.name)">
             <el-popover
                 v-if="btn.name === CommandsKey.Emoji"
                 placement="bottom"
@@ -52,24 +46,12 @@
                 <div class="table-row-col">
                     <div class="row">
                         <span>行数：</span>
-                        <el-input-number
-                            v-model="row"
-                            :min="1"
-                            :max="10000"
-                            controls-position="right"
-                            @change="handleRowChange"
-                        />
+                        <el-input-number v-model="row" :min="1" :max="10000" controls-position="right" @change="handleRowChange" />
                     </div>
 
                     <div class="col">
                         <span>列数：</span>
-                        <el-input-number
-                            v-model="col"
-                            :min="1"
-                            :max="10000"
-                            controls-position="right"
-                            @change="handleColChange"
-                        />
+                        <el-input-number v-model="col" :min="1" :max="10000" controls-position="right" @change="handleColChange" />
                     </div>
                     <el-button type="primary" @click="handleTableRowCol">插入表格</el-button>
                 </div>
@@ -83,12 +65,12 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, useTemplateRef,watch } from "vue"
+import { onMounted, ref, useTemplateRef, watch } from "vue"
 import EmojiPicker, { type EmojiExt } from "vue3-emoji-picker"
 
 import { CommandsKey } from "@/components/editor/command"
 
-import type { TableRowCol,ToolbarProps } from "./types"
+import type { TableRowCol, ToolbarProps } from "./types"
 
 defineOptions({ name: "EditorToolbar" })
 
@@ -197,8 +179,7 @@ defineExpose({
         outline: none;
         height: pc.$editor-toolbar-height;
         // 通过计算每个按钮的 margin-left 和 margin-right 来实现每行显示的按钮个数
-        margin: 0
-            calc((100% - 24px * var(--icon-number-per-line)) / var(--icon-number-per-line) / 2);
+        margin: 0 calc((100% - 24px * var(--icon-number-per-line)) / var(--icon-number-per-line) / 2);
         padding: 0;
     }
 }

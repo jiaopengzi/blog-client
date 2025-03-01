@@ -14,20 +14,9 @@
     <el-image-viewer v-if="isShowElImageViewer" @close="closeElImageViewer" :url-list="imgUrls" />
     <div :class="layoutClass">
         <div class="left" ref="leftRef" @click="handleDelegateClick">
-            <img
-                class="view-img"
-                v-if="editMediaData.img?.url && !isVideoFile"
-                :src="editMediaData.img.url"
-            />
-            <Icon
-                custom-class="view-icon"
-                v-else-if="editMediaData.img?.iconKeyName && !isVideoFile"
-                :name="editMediaData.img?.iconKeyName"
-            />
-            <VideoPlayer
-                v-if="isVideoFile && editMediaData.editDialogVisible"
-                :player-state="playerState"
-            />
+            <img class="view-img" v-if="editMediaData.img?.url && !isVideoFile" :src="editMediaData.img.url" />
+            <Icon custom-class="view-icon" v-else-if="editMediaData.img?.iconKeyName && !isVideoFile" :name="editMediaData.img?.iconKeyName" />
+            <VideoPlayer v-if="isVideoFile && editMediaData.editDialogVisible" :player-state="playerState" />
         </div>
 
         <div class="middle">
@@ -69,18 +58,11 @@
                 </el-form-item>
 
                 <el-form-item label="说明" prop="description">
-                    <el-input
-                        v-model="editMediaForm.description"
-                        type="textarea"
-                        :rows="10"
-                        placeholder="文件说明"
-                    />
+                    <el-input v-model="editMediaForm.description" type="textarea" :rows="10" placeholder="文件说明" />
                 </el-form-item>
 
                 <div class="btn-submit">
-                    <el-button type="primary" @click="submitForm(editMediaFormRef as FormInstance)"
-                        >更新</el-button
-                    >
+                    <el-button type="primary" @click="submitForm(editMediaFormRef as FormInstance)">更新</el-button>
                 </div>
             </el-form>
         </div>
@@ -111,34 +93,17 @@
 
                 <el-form-item label="字幕语言" prop="language">
                     <el-select v-model="subtitlesForm.language" placeholder="选择语言">
-                        <el-option
-                            v-for="item in languageKeys"
-                            :key="item"
-                            :label="Language[item as keyof typeof Language]"
-                            :value="item"
-                        />
+                        <el-option v-for="item in languageKeys" :key="item" :label="Language[item as keyof typeof Language]" :value="item" />
                     </el-select>
                 </el-form-item>
                 <el-form-item label="字幕内容" prop="subtitles">
-                    <el-input
-                        v-model="subtitlesForm.subtitles"
-                        type="textarea"
-                        :rows="28"
-                        :placeholder="subtitlesPlaceholder"
-                    />
+                    <el-input v-model="subtitlesForm.subtitles" type="textarea" :rows="28" :placeholder="subtitlesPlaceholder" />
                 </el-form-item>
 
                 <div class="btn-submit">
                     <el-form-item>
-                        <el-button
-                            type="primary"
-                            size="default"
-                            @click="saveSubtitles(subtitlesFormRef as FormInstance)"
-                            >保存</el-button
-                        >
-                        <el-button type="danger" size="default" @click="delSubtitles"
-                            >删除</el-button
-                        >
+                        <el-button type="primary" size="default" @click="saveSubtitles(subtitlesFormRef as FormInstance)">保存</el-button>
+                        <el-button type="danger" size="default" @click="delSubtitles">删除</el-button>
                     </el-form-item>
                 </div>
             </el-form>
@@ -150,14 +115,14 @@
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { computed, reactive, ref, useTemplateRef, watch, watchEffect } from "vue"
 
-import { handleResErr,ResponseCode } from "@/api/response"
+import { handleResErr, ResponseCode } from "@/api/response"
 import { checkSlugAPI, type CheckSlugRequest } from "@/api/upload/checkSlug"
 import { updateFileAPI, type UpdateFileRequest } from "@/api/upload/updateFile"
-import { deleteSubtitlesAPI,type DeleteSubtitlesRequest } from "@/api/video/deleteSubtitles"
+import { deleteSubtitlesAPI, type DeleteSubtitlesRequest } from "@/api/video/deleteSubtitles"
 import { getSubtitlesByAdminAPI } from "@/api/video/getSubtitlesByAdmin"
-import { upsertSubtitlesAPI,type UpsertSubtitlesRequest } from "@/api/video/upsertSubtitles"
+import { upsertSubtitlesAPI, type UpsertSubtitlesRequest } from "@/api/video/upsertSubtitles"
 import VideoPlayer from "@/components/player"
-import { Language, MediaTypes, type PlayerState,PlayerStateManager } from "@/components/player"
+import { Language, MediaTypes, type PlayerState, PlayerStateManager } from "@/components/player"
 import { isVideo } from "@/utils/isVideo"
 import { MessageUtil } from "@/utils/message"
 import { RegexPatterns } from "@/utils/regexPatterns"
@@ -260,11 +225,7 @@ WEBVTT
 `)
 
 // 检查别名是否可用
-function isWebvttValidator(
-    rule: unknown,
-    value: string,
-    callback: (error?: string | Error | undefined) => void,
-): void {
+function isWebvttValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
     // 判断是否是 webvtt 格式
     const checkResult = isWebvtt(subtitlesForm.subtitles)
     if (checkResult[0]) {
@@ -356,11 +317,7 @@ const getSubtitles = async (language: string) => {
 }
 
 // 检查别名是否可用
-function checkSlugValidator(
-    rule: unknown,
-    value: string,
-    callback: (error?: string | Error | undefined) => void,
-): void {
+function checkSlugValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
     // 不能包含空格
     if (value.includes(" ")) {
         callback(new Error("别名不能包含空格"))

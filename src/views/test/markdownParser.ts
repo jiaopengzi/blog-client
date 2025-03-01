@@ -10,11 +10,7 @@ export async function parseMarkdown(content: string): Promise<string> {
 
     // 覆盖默认的 HTML 标签渲染逻辑
     renderer.html = ({ text }: { text: string }) => {
-        if (
-            typeof text === "string" &&
-            text.startsWith("<my-video>") &&
-            text.endsWith("</my-video>")
-        ) {
+        if (typeof text === "string" && text.startsWith("<my-video>") && text.endsWith("</my-video>")) {
             const videoID = text.slice(10, -11)
             return `<div class="vue-component" data-component="MyVideo" data-video-id="${videoID}"></div>`
         }

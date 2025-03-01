@@ -9,7 +9,7 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { CommentStatusCode,PostStatusCode } from "@/api/post/common"
+import { CommentStatusCode, PostStatusCode } from "@/api/post/common"
 
 import { type UpsertPostForm } from "./types"
 

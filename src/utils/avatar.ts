@@ -17,10 +17,5 @@ import type { UserInfo } from "@/api/user/getUserInfo"
  * @return 头像地址
  */
 export function getAvatarUrl(userInfo: UserInfo): string {
-    return (
-        userInfo?.user?.user_avatar ||
-        userInfo?.user_wechat?.avatar ||
-        userInfo?.user_qq?.avatar ||
-        ""
-    )
+    return userInfo?.user?.user_avatar || userInfo?.user_wechat?.avatar || userInfo?.user_qq?.avatar || ""
 }

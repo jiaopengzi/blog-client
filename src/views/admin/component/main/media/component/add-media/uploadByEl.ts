@@ -11,12 +11,7 @@
 
 import { type UploadRequestOptions } from "element-plus"
 
-import {
-    MultiThreadSplitter,
-    UploadController,
-    UploadControllerEvents,
-    type UploadFileSuccessInfo,
-} from "@/utils/chunkUpload"
+import { MultiThreadSplitter, UploadController, UploadControllerEvents, type UploadFileSuccessInfo } from "@/utils/chunkUpload"
 import { HashAlgorithm } from "@/utils/hash"
 import { MessageUtil } from "@/utils/message"
 

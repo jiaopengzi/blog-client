@@ -22,13 +22,8 @@ export const renderer = {
             if (item.loose) {
                 if (item.tokens.length > 0 && item.tokens[0].type === "paragraph") {
                     item.tokens[0].text = checkbox + " " + item.tokens[0].text
-                    if (
-                        item.tokens[0].tokens &&
-                        item.tokens[0].tokens.length > 0 &&
-                        item.tokens[0].tokens[0].type === "text"
-                    ) {
-                        item.tokens[0].tokens[0].text =
-                            checkbox + " " + item.tokens[0].tokens[0].text
+                    if (item.tokens[0].tokens && item.tokens[0].tokens.length > 0 && item.tokens[0].tokens[0].type === "text") {
+                        item.tokens[0].tokens[0].text = checkbox + " " + item.tokens[0].tokens[0].text
                     }
                 } else {
                     item.tokens.unshift({
@@ -74,12 +69,7 @@ export const renderer = {
 
             return constructWeChatPreCode(replaceAllHljsStringSpanTag(result)) // 自定义代码块
         }
-        const result =
-            '<pre><code class="language-' +
-            escape(langString, true) +
-            '">' +
-            (escaped ? code : escape(code, true)) +
-            "</code></pre>\n" // marked 源码默认代码块
+        const result = '<pre><code class="language-' + escape(langString, true) + '">' + (escaped ? code : escape(code, true)) + "</code></pre>\n" // marked 源码默认代码块
         return constructWeChatPreCode(replaceAllHljsStringSpanTag(result)) // 自定义代码块
     },
 }
@@ -134,11 +124,9 @@ function constructWeChatPreCode(htmlStr: string): string {
     } else {
         copyBtn = copyBtnStart + "TEXT" + copyBtnEnd
     }
-    const wechatPreCodeStart =
-        '<pre class="code-snippet code-snippet_nowrap code-snippet__js' + wechatPreCodeLang + '">' // 微信 pre 代码块开始标签添 加类名和语言
+    const wechatPreCodeStart = '<pre class="code-snippet code-snippet_nowrap code-snippet__js' + wechatPreCodeLang + '">' // 微信 pre 代码块开始标签添 加类名和语言
     const wechatPreCodeEnd = "</pre>"
-    const preBlock =
-        divStart + copyBtn + wechatPreCodeStart + wechatPreCode + wechatPreCodeEnd + divEnd // 拼接微信代码块
+    const preBlock = divStart + copyBtn + wechatPreCodeStart + wechatPreCode + wechatPreCodeEnd + divEnd // 拼接微信代码块
     return preBlock // 拼接微信代码块
 }
 

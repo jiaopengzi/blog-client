@@ -12,13 +12,7 @@
 import { CaptchaPurpose } from "@/api/common"
 
 import { checkCaptcha, checkSendCaptcha } from "./api/captcha"
-import {
-    checkEmail,
-    checkEmailExcludingUserID,
-    checkLoginName,
-    checkUserName,
-    checkUserNameExcludingUserID,
-} from "./api/user"
+import { checkEmail, checkEmailExcludingUserID, checkLoginName, checkUserName, checkUserNameExcludingUserID } from "./api/user"
 import {
     createAcceptedTermsRules,
     createCaptchaRules,
@@ -65,11 +59,7 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
      * @description: 确认密码 Validator
      * @return  void
      */
-    function rePasswordValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function rePasswordValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 在这里处理异步验证逻辑
 
         const formPassword = options.FormPassword?.value || ""
@@ -110,11 +100,7 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
      * @description: 是否同意 Validator
      * @return  void
      */
-    function acceptedTermsValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function acceptedTermsValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         if (FormAcceptedTerms === undefined) {
             callback("请勾选同意服务条款")
             return
@@ -135,11 +121,7 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
      * @param value 对应输入框的值
      * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
      */
-    function checkUserNameValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkUserNameValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 在这里处理异步验证逻辑
         if (FormUserName === undefined) {
             callback("请输入用户名")
@@ -161,11 +143,7 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
      * @param value 对应输入框的值
      * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
      */
-    function checkUserNameExcludingUserIDValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkUserNameExcludingUserIDValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         if (FormExcludingUserID === undefined) {
             callback("请输入用户ID")
             return
@@ -195,11 +173,7 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
      * @param value 对应输入框的值
      * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
      */
-    function checkEmailValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkEmailValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         if (FormExcludingUserID === undefined) {
             callback("请输入用户ID")
             return
@@ -226,11 +200,7 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
      * @param value 对应输入框的值
      * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
      */
-    function checkEmailExcludingUserIDValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkEmailExcludingUserIDValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 在这里处理异步验证逻辑
         if (FormEmail === undefined) {
             callback("请输入邮箱")
@@ -248,11 +218,7 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
     }
 
     const checkCaptchaValidatorFactory = (purpose: CaptchaPurpose) => {
-        return (
-            rule: unknown,
-            value: string,
-            callback: (error?: string | Error | undefined) => void,
-        ) => {
+        return (rule: unknown, value: string, callback: (error?: string | Error | undefined) => void) => {
             // 在这里处理异步验证逻辑
             if (FormEmail === undefined) {
                 callback("请输入邮箱")
@@ -281,11 +247,7 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
      * @param value 对应输入框的值
      * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
      */
-    function checkLoginNameValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkLoginNameValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 在这里处理异步验证逻辑
         if (FormUserName === undefined) {
             callback("请输入用户名")

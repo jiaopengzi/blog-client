@@ -18,9 +18,7 @@ export interface GetUserInfoByUserIDRequest {
 }
 
 // 获取用户信息
-export function getUserInfoByUserIDAPI(
-    requestData: GetUserInfoByUserIDRequest,
-): ResPromise<Res<UserInfo>> {
+export function getUserInfoByUserIDAPI(requestData: GetUserInfoByUserIDRequest): ResPromise<Res<UserInfo>> {
     const urlStr = routerGroup + "/user/info-by-user-id"
     return request({
         url: urlStr,

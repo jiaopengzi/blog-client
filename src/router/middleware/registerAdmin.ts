@@ -22,10 +22,7 @@ import { RouteNames } from "../types"
  * @param to - 即将进入的路由对象
  * @param from - 当前导航正要离开的路由对象
  */
-export const registerAdminMiddleware = async (
-    to: RouteLocationNormalized,
-    from: RouteLocationNormalized,
-) => {
+export const registerAdminMiddleware = async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
     // 当访问注册管理员页面时，检查是否已经注册管理员，如果已经注册管理员，则重定向到404页面
     if (to.name === RouteNames.RegisterAdmin) {
         const res = await hasAdminAPI()

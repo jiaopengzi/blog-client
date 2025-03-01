@@ -10,18 +10,13 @@
 -->
 
 <template>
-    <View
-        :view-data="addForm"
-        :is-show-id="false"
-        btn-submit-display="新增"
-        @submit-data="submitData"
-    />
+    <View :view-data="addForm" :is-show-id="false" btn-submit-display="新增" @submit-data="submitData" />
 </template>
 
 <script lang="ts" setup>
 import { reactive } from "vue"
 
-import { insertPostTagAPI,type InsertPostTagRequest } from "@/api/postTag/insert"
+import { insertPostTagAPI, type InsertPostTagRequest } from "@/api/postTag/insert"
 import { ResponseCode } from "@/api/response"
 import { MessageUtil } from "@/utils/message"
 

@@ -9,20 +9,9 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
 -->
 <template>
-    <div
-        ref="previewRef"
-        id="preview"
-        v-html="html"
-        @click="handleDelegateClick"
-        @mouseenter="onMouseEnter"
-        @mouseleave="onMouseLeave"
-    ></div>
+    <div ref="previewRef" id="preview" v-html="html" @click="handleDelegateClick" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave"></div>
     <!-- 参考:https://github.com/element-plus/element-plus/blob/dev/packages/components/image/src/image.vue -->
-    <el-image-viewer
-        v-if="preview.isShowElImageViewer"
-        @close="closeElImageViewer"
-        :url-list="preview.imgUrls"
-    />
+    <el-image-viewer v-if="preview.isShowElImageViewer" @close="closeElImageViewer" :url-list="preview.imgUrls" />
 </template>
 
 <script lang="ts" setup>
@@ -34,7 +23,7 @@ import { useScroll } from "@vueuse/core"
 import type { ClipboardEvent } from "clipboard"
 import ClipboardJS from "clipboard" //代码块复制
 import { debounce } from "throttle-debounce"
-import { computed, nextTick,onMounted, ref, useTemplateRef, watchEffect } from "vue"
+import { computed, nextTick, onMounted, ref, useTemplateRef, watchEffect } from "vue"
 
 import { ScrollElementTag, ScrollElementTagHeading } from "@/components/editor/command"
 import { shiftArray } from "@/utils/img"
@@ -309,10 +298,7 @@ watchEffect(() => {
             allHeadings.value = getAllHeadings()
 
             // 挂载视频播放器到自定义元素 CustomElementVideoPlayer
-            mountVideoPlayerOnCustomElements(
-                previewRef.value as HTMLElement,
-                CustomElementVideoPlayer,
-            )
+            mountVideoPlayerOnCustomElements(previewRef.value as HTMLElement, CustomElementVideoPlayer)
         })
     }
 })

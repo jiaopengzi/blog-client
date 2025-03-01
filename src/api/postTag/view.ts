@@ -9,8 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { type PaginationRequest,request, routerGroup } from "@/api/request"
-import type { Pagination,Res, ResPromise } from "@/api/response"
+import { type PaginationRequest, request, routerGroup } from "@/api/request"
+import type { Pagination, Res, ResPromise } from "@/api/response"
 import type { DataWithImg } from "@/components/common"
 
 // 每行数据类型
@@ -27,9 +27,7 @@ export interface PostTag extends DataWithImg {
 }
 
 // 查看文章标签
-export function viewPostTagAPI(
-    requestData: PaginationRequest,
-): ResPromise<Res<Pagination<PostTag>>> {
+export function viewPostTagAPI(requestData: PaginationRequest): ResPromise<Res<Pagination<PostTag>>> {
     const urlStr = routerGroup + "/post-tag/view"
     return request({
         url: urlStr,

@@ -28,9 +28,7 @@ export interface ConfirmBeforeUploadRequest {
 }
 
 // 普通文件上传前确认
-export function confirmBeforeUploadAPI(
-    requestData: ConfirmBeforeUploadRequest,
-): ResPromise<Res<UploadFileInfo>> {
+export function confirmBeforeUploadAPI(requestData: ConfirmBeforeUploadRequest): ResPromise<Res<UploadFileInfo>> {
     return request({
         url: routerGroup + "/upload/confirm-before-upload",
         method: "post",
@@ -39,9 +37,7 @@ export function confirmBeforeUploadAPI(
 }
 
 // 头像上传前确认
-export function confirmBeforeUploadAvatarAPI(
-    requestData: ConfirmBeforeUploadRequest,
-): ResPromise<Res<UploadFileInfo>> {
+export function confirmBeforeUploadAvatarAPI(requestData: ConfirmBeforeUploadRequest): ResPromise<Res<UploadFileInfo>> {
     return request({
         url: routerGroup + "/upload/avatar/confirm-before-upload",
         method: "post",
@@ -50,9 +46,7 @@ export function confirmBeforeUploadAvatarAPI(
 }
 
 // 编辑器文件上传前确认
-export function confirmBeforeUploadEditorAPI(
-    requestData: ConfirmBeforeUploadRequest,
-): ResPromise<Res<UploadFileInfo>> {
+export function confirmBeforeUploadEditorAPI(requestData: ConfirmBeforeUploadRequest): ResPromise<Res<UploadFileInfo>> {
     return request({
         url: routerGroup + "/upload/editor/confirm-before-upload",
         method: "post",

@@ -13,11 +13,7 @@ import type { Ref } from "vue"
 import { EditorStateManager } from "../state"
 import type { CodemirrorRef, PreviewRef } from "../types"
 
-export function useToc(
-    codemirrorRef: Ref<CodemirrorRef | null>,
-    previewRef: Ref<PreviewRef | null>,
-    editorStateManager: EditorStateManager,
-) {
+export function useToc(codemirrorRef: Ref<CodemirrorRef | null>, previewRef: Ref<PreviewRef | null>, editorStateManager: EditorStateManager) {
     // 状态管理
     const editorState = editorStateManager.getState()
 

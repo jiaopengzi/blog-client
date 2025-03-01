@@ -12,11 +12,7 @@
 <template>
     <header>
         <div class="left">
-            <el-button class="btn-logo" @click="goHome">
-                <img
-                    src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
-                    alt="routeObj.home.path"
-            /></el-button>
+            <el-button class="btn-logo" @click="goHome"> <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" alt="routeObj.home.path" /></el-button>
         </div>
 
         <div class="right">

@@ -2,10 +2,9 @@
  * @FilePath     : \blog-client\src\api\post\common.ts
  * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * @Description  : 文章共用内容
  */
-
 
 import { type PgSqlDateTime } from "@/api/common"
 import { type PostCategory } from "@/api/postCategory/view"

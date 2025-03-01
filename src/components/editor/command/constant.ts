@@ -8,7 +8,7 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
-import { redo,undo } from "@codemirror/commands"
+import { redo, undo } from "@codemirror/commands"
 
 import { IconKeys } from "@/components/common/icons"
 import { EditorView } from "@/pkg/codemirror/setup"

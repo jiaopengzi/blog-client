@@ -17,7 +17,7 @@ import "@/assets/scss/preview.scss"
 import "@/assets/scss/highlight.js.jpz.scss"
 import "katex/dist/katex.min.css" // katex 样式
 
-import { createApp, h, nextTick,onMounted, ref } from "vue"
+import { createApp, h, nextTick, onMounted, ref } from "vue"
 
 import Icon from "@/components/common/icons" // 引用自定义的全局图标
 import { PlayerStateManager } from "@/components/player"

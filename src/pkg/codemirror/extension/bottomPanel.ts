@@ -66,9 +66,6 @@ function bottomPanel(view: EditorView): Panel {
     }
 }
 
-const bottomPanelExt: Extension = [
-    showPanel.of(bottomPanel),
-    EditorView.updateListener.of(updateCursorInfo),
-]
+const bottomPanelExt: Extension = [showPanel.of(bottomPanel), EditorView.updateListener.of(updateCursorInfo)]
 
 export { bottomPanelExt }

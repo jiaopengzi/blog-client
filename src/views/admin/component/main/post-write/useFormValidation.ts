@@ -10,16 +10,13 @@
  */
 
 import type { FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { reactive,type Ref } from "vue"
+import { reactive, type Ref } from "vue"
 
 import { type PgSqlDateTime } from "@/api/common"
-import { checkPostSlugAPI,type CheckPostSlugRequest } from "@/api/post/checkPostSlug"
-import {
-    checkPostSlugExcludingIDAPI,
-    type CheckPostSlugExcludingIDRequest,
-} from "@/api/post/checkPostSlugExcludingID"
-import { CommentStatusCode,PostStatusCode } from "@/api/post/common"
-import { handleResErr,ResponseCode } from "@/api/response"
+import { checkPostSlugAPI, type CheckPostSlugRequest } from "@/api/post/checkPostSlug"
+import { checkPostSlugExcludingIDAPI, type CheckPostSlugExcludingIDRequest } from "@/api/post/checkPostSlugExcludingID"
+import { CommentStatusCode, PostStatusCode } from "@/api/post/common"
+import { handleResErr, ResponseCode } from "@/api/response"
 import { RegexPatterns } from "@/utils/regexPatterns"
 
 import { type UpsertPostForm } from "./index"
@@ -57,11 +54,7 @@ export function useFormValidation(options: FormValidationOptions): {
     const { form } = options
 
     // 检查文章标题是否可用
-    function checkPostTitleValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkPostTitleValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 不能为空
         if (!value) {
             callback(new Error("文章标题不能为空"))
@@ -84,11 +77,7 @@ export function useFormValidation(options: FormValidationOptions): {
     }
 
     // 检查文章内容是否可用
-    function checkPostContentValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkPostContentValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 不能为空
         if (!value) {
             callback(new Error("文章内容不能为空"))
@@ -99,11 +88,7 @@ export function useFormValidation(options: FormValidationOptions): {
     }
 
     // 检查文章密码是否可用
-    function checkPostPasswordValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkPostPasswordValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 如果文章状态不是密码保护，则直接返回
         if (form.post_status?.value !== PostStatusCode.Password) {
             callback()
@@ -132,11 +117,7 @@ export function useFormValidation(options: FormValidationOptions): {
     }
 
     // 检查 SEO 标题是否可用
-    function checkSeoTitleValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkSeoTitleValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 若为空，则直接返回
         if (!value) {
             callback()
@@ -159,11 +140,7 @@ export function useFormValidation(options: FormValidationOptions): {
     }
 
     // 检查 SEO 描述是否可用
-    function checkSeoDescriptionValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkSeoDescriptionValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 若为空，则直接返回
         if (!value) {
             callback()
@@ -186,11 +163,7 @@ export function useFormValidation(options: FormValidationOptions): {
     }
 
     // 检查 SEO 关键词是否可用
-    function checkSeoKeywordsValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkSeoKeywordsValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 若为空，则直接返回
         if (!value) {
             callback()
@@ -220,11 +193,7 @@ export function useFormValidation(options: FormValidationOptions): {
     }
 
     //  检查 thumbnail 是否可用
-    function checkThumbnailValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkThumbnailValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 若可以为空，则直接返回
         if (!value) {
             callback()
@@ -247,11 +216,7 @@ export function useFormValidation(options: FormValidationOptions): {
     }
 
     // 检查 price 是否可用
-    function checkPriceValidator(
-        rule: unknown,
-        value: number,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkPriceValidator(rule: unknown, value: number, callback: (error?: string | Error | undefined) => void): void {
         // 若为空，则直接返回
         if (!value) {
             callback()
@@ -281,11 +246,7 @@ export function useFormValidation(options: FormValidationOptions): {
     }
 
     // 检查别名是否可用
-    function checkPostSlugValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkPostSlugValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 如果 id 不为空，则直接返回
         if (form.id?.value) {
             callback()
@@ -333,11 +294,7 @@ export function useFormValidation(options: FormValidationOptions): {
     }
 
     // 检查别名是否可用
-    function checkPostSlugExcludingIDValidator(
-        rule: unknown,
-        value: string,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkPostSlugExcludingIDValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 如果 id 为空，则直接返回
         if (!form.id?.value) {
             callback()
@@ -386,11 +343,7 @@ export function useFormValidation(options: FormValidationOptions): {
     }
 
     // 检查分类是否可用
-    function checkCategoriesValidator(
-        rule: unknown,
-        value: number[],
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkCategoriesValidator(rule: unknown, value: number[], callback: (error?: string | Error | undefined) => void): void {
         if (value.length === 0) {
             callback(new Error("请选择分类"))
             return
@@ -399,11 +352,7 @@ export function useFormValidation(options: FormValidationOptions): {
     }
 
     // 检查发布时间是否可用
-    function checkPostPushTimeValidator(
-        rule: unknown,
-        value: PgSqlDateTime,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkPostPushTimeValidator(rule: unknown, value: PgSqlDateTime, callback: (error?: string | Error | undefined) => void): void {
         // 如果文章状态不是定时发布，则直接返回
         if (form.post_status?.value !== PostStatusCode.Future) {
             callback()
@@ -438,11 +387,7 @@ export function useFormValidation(options: FormValidationOptions): {
     }
 
     // 检查过期时间是否可用
-    function checkPostExpiredTimeValidator(
-        rule: unknown,
-        value: PgSqlDateTime,
-        callback: (error?: string | Error | undefined) => void,
-    ): void {
+    function checkPostExpiredTimeValidator(rule: unknown, value: PgSqlDateTime, callback: (error?: string | Error | undefined) => void): void {
         // 状态不为过期且过期时间为空，则直接返回
         if (form.post_status?.value !== PostStatusCode.Expired && !value.Time) {
             callback()
@@ -515,8 +460,7 @@ export function useFormValidation(options: FormValidationOptions): {
         seo_keywords: [
             {
                 required: false,
-                message:
-                    "SEO文章关键词，多个关键词用英文半角逗号隔开，留空则自动将文章标签做为关键词。",
+                message: "SEO文章关键词，多个关键词用英文半角逗号隔开，留空则自动将文章标签做为关键词。",
                 trigger: "blur",
             },
             { validator: checkSeoKeywordsValidator, trigger: "blur" },

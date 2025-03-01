@@ -9,7 +9,7 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import type { LocationQueryRaw,Router } from "vue-router"
+import type { LocationQueryRaw, Router } from "vue-router"
 
 /**
  * @description: 分页路由跳转
@@ -18,11 +18,7 @@ import type { LocationQueryRaw,Router } from "vue-router"
  * @param queryParams 查询参数
  * @example routerPushByParams('PostAll', { 'file-type': 'pdf', 'search': 'example' })
  */
-export async function routerPushByParams(
-    router: Router,
-    routeName: string,
-    queryParams: LocationQueryRaw,
-): Promise<void> {
+export async function routerPushByParams(router: Router, routeName: string, queryParams: LocationQueryRaw): Promise<void> {
     const query: LocationQueryRaw = {}
 
     // 过滤掉值为空字符串的参数

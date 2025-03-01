@@ -13,13 +13,7 @@
     <div class="post-item">
         <!-- 缩略图 -->
         <div class="thumbnail">
-            <el-image
-                :src="postData.thumbnail"
-                class="thumbnail-img"
-                loading="lazy"
-                @click="postId(postData.id)"
-            >
-            </el-image>
+            <el-image :src="postData.thumbnail" class="thumbnail-img" loading="lazy" @click="postId(postData.id)"> </el-image>
         </div>
 
         <!-- 文章摘要内容 -->
@@ -29,9 +23,7 @@
 
             <!-- 作者 日志 访问量 -->
             <div class="meta">
-                <span class="meta-date meta-item">{{
-                    formatTime(postData.created_at, "Asia/Shanghai", "YYYY-MM-DD")
-                }}</span>
+                <span class="meta-date meta-item">{{ formatTime(postData.created_at, "Asia/Shanghai", "YYYY-MM-DD") }}</span>
                 <span v-if="!isZero(postData.view_count)" class="meta-view meta-item">
                     <el-icon><View /></el-icon>
                     <span class="meta-item-unit">{{ unit(postData.view_count) }}</span>
@@ -46,12 +38,12 @@
 </template>
 
 <script setup lang="ts">
-import { ChatRound,View } from "@element-plus/icons-vue"
+import { ChatRound, View } from "@element-plus/icons-vue"
 import {} from "vue"
 
 import type { PostResCommon } from "@/api/post/common"
 import { formatTime } from "@/utils/dateTime"
-import { isZero,unit } from "@/utils/unit"
+import { isZero, unit } from "@/utils/unit"
 
 defineOptions({ name: "PostItemAside" })
 

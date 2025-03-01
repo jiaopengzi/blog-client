@@ -14,9 +14,9 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted,ref } from "vue"
+import { onMounted, ref } from "vue"
 
-import { mountVueComponents,parseMarkdown } from "./markdownParser"
+import { mountVueComponents, parseMarkdown } from "./markdownParser"
 
 const props = defineProps<{ content: string }>()
 const parsedContent = ref(parseMarkdown(props.content))

@@ -21,12 +21,5 @@ export const uploadAvatar = async (
     chunkSizeServer = 1024 * 1024 * 10,
     hashAlgorithmServer: HashAlgorithm = HashAlgorithm.SHA256,
 ): Promise<string | undefined> => {
-    return await uploadFileCommon(
-        file,
-        isEncrypt,
-        isNoFree,
-        chunkSizeServer,
-        hashAlgorithmServer,
-        RequestStrategyAvatar,
-    )
+    return await uploadFileCommon(file, isEncrypt, isNoFree, chunkSizeServer, hashAlgorithmServer, RequestStrategyAvatar)
 }

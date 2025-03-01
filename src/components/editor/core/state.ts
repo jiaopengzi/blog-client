@@ -15,13 +15,7 @@ import { request } from "@/api/request"
 import { extractImageUrlsFromHtml } from "@/utils/img"
 
 import type { EditorState } from "./types"
-import {
-    createEmptyEditorState,
-    getMarkdownHeadingLines,
-    htmlHandleUtf8BOM,
-    markdownToHtml,
-    matchAllHeadingToList,
-} from "./utils"
+import { createEmptyEditorState, getMarkdownHeadingLines, htmlHandleUtf8BOM, markdownToHtml, matchAllHeadingToList } from "./utils"
 
 /**
  * @description: 编辑器状态管理

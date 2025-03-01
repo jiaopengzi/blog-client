@@ -87,10 +87,7 @@ import { onBeforeMount, reactive, ref, watch } from "vue"
 import { type QueryParamsRecord } from "@/api/request"
 import { ResponseCode } from "@/api/response"
 import { deleteFileAPI, type DeleteFileRequest } from "@/api/upload/deleteFile"
-import {
-    type FileCountGroupByFiletype,
-    getFileCountGroupByFiletypeAPI,
-} from "@/api/upload/getFileCountGroupByFiletype"
+import { type FileCountGroupByFiletype, getFileCountGroupByFiletypeAPI } from "@/api/upload/getFileCountGroupByFiletype"
 import type { GetMediaFilesRequest, MediaFile } from "@/api/upload/getFiles"
 import { getMediaFilesAPI } from "@/api/upload/getFiles"
 import { ImgFit, type TableImg } from "@/components/common"
@@ -213,9 +210,7 @@ const numberKeys: NumberKeys<GetMediaFilesRequest>[] = ["current_page", "page_si
 const noRequestKeys: QueryParamsRecord<queryKey> = { [queryKey.FileType]: AllFileType }
 
 // 是否显示列表或网格
-const isShowListOrGrid = ref(
-    localStorage.getItem(LocalStorageKey.IsShowListOrGridAtMedia) == "true",
-)
+const isShowListOrGrid = ref(localStorage.getItem(LocalStorageKey.IsShowListOrGridAtMedia) == "true")
 
 // 更新是否显示列表或网格
 const updateIsShowListOrGrid = (status: boolean) => {
@@ -442,9 +437,7 @@ const updateSubtitles = async (language: string) => {
 
 // 删除字幕
 const deleteSubtitles = async (language: string) => {
-    editMediaData.subtitles_language_list = editMediaData.subtitles_language_list.filter(
-        (item) => item !== language,
-    )
+    editMediaData.subtitles_language_list = editMediaData.subtitles_language_list.filter((item) => item !== language)
     await updateData()
 }
 

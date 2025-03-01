@@ -18,9 +18,7 @@ export interface CheckCategoryNameExcludingIDRequest {
 }
 
 // 检查 category 名称是否存在
-export function checkCategoryNameExcludingIDAPI(
-    requestData: CheckCategoryNameExcludingIDRequest,
-): ResPromise<Res<unknown>> {
+export function checkCategoryNameExcludingIDAPI(requestData: CheckCategoryNameExcludingIDRequest): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/post-category/check-category-name-excluding-id"
     return request({
         url: urlStr,

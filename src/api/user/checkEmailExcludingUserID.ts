@@ -18,9 +18,7 @@ export interface CheckEmailExcludingUserIDRequest {
 }
 
 // 检测用户名是否存在
-export function checkEmailExcludingUserIDAPI(
-    requestData: CheckEmailExcludingUserIDRequest,
-): ResPromise<Res<unknown>> {
+export function checkEmailExcludingUserIDAPI(requestData: CheckEmailExcludingUserIDRequest): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/user/check-email-excluding-user-id"
     return request({
         url: urlStr,

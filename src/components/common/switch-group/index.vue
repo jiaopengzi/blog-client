@@ -10,15 +10,8 @@
 -->
 <template>
     <ul class="switch-group">
-        <li
-            v-for="item in switchItems"
-            :key="item.name"
-            class="switch-item"
-            :style="getLiStyle(item)"
-        >
-            <span v-if="item.namePosition === 'left'" class="display span-left"
-                >{{ item.display }}
-            </span>
+        <li v-for="item in switchItems" :key="item.name" class="switch-item" :style="getLiStyle(item)">
+            <span v-if="item.namePosition === 'left'" class="display span-left">{{ item.display }} </span>
             <el-switch
                 v-model="item.status"
                 :style="getSwitchStyle(item)"
@@ -35,9 +28,7 @@
                     <Icon :name="item.icon?.inactive" :custom-class="item.icon.inactiveClassName" />
                 </template>
             </el-switch>
-            <span v-if="item.namePosition === 'right'" class="display span-right">{{
-                item.display
-            }}</span>
+            <span v-if="item.namePosition === 'right'" class="display span-right">{{ item.display }}</span>
         </li>
     </ul>
 </template>
@@ -70,8 +61,7 @@ const getSwitchStyle = (item: SwitchItem) => {
 }
 
 const getLiStyle = (item: SwitchItem) => {
-    const minWidth =
-        typeof item.minWidth === "number" ? `${item.minWidth}px` : item.minWidth || "auto"
+    const minWidth = typeof item.minWidth === "number" ? `${item.minWidth}px` : item.minWidth || "auto"
     return `min-width: ${minWidth};`
 }
 </script>

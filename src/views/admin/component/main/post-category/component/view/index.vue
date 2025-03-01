@@ -33,38 +33,21 @@
                 <el-input v-model="viewDataAc.slug" placeholder="请输入分类别名-必填" />
             </el-form-item>
             <el-form-item label="描述" prop="description">
-                <el-input
-                    v-model="viewDataAc.description"
-                    type="textarea"
-                    placeholder="请输入分类描信息-选填"
-                    :rows="5"
-                />
+                <el-input v-model="viewDataAc.description" type="textarea" placeholder="请输入分类描信息-选填" :rows="5" />
             </el-form-item>
             <el-form-item label="图片" prop="thumbnail">
                 <el-input v-model="viewDataAc.thumbnail" placeholder="请输入分类的图片URL-选填" />
             </el-form-item>
             <el-form-item label="排序" prop="order">
-                <el-input
-                    v-model="viewDataAc.order"
-                    type="number"
-                    placeholder="请输入分类排序数字-选填"
-                    min="0"
-                />
+                <el-input v-model="viewDataAc.order" type="number" placeholder="请输入分类排序数字-选填" min="0" />
             </el-form-item>
             <el-form-item label="父分类" prop="parent">
-                <el-input
-                    v-model="viewDataAc.parent"
-                    type="number"
-                    placeholder="请输入父分类数字-选填"
-                    min="0"
-                />
+                <el-input v-model="viewDataAc.parent" type="number" placeholder="请输入父分类数字-选填" min="0" />
             </el-form-item>
         </el-form>
 
         <div class="btn-submit">
-            <el-button type="primary" @click="submitForm(viewFormRef as FormInstance)">{{
-                btnSubmitDisplay
-            }}</el-button>
+            <el-button type="primary" @click="submitForm(viewFormRef as FormInstance)">{{ btnSubmitDisplay }}</el-button>
         </div>
     </div>
 </template>

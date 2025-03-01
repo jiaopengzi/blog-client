@@ -45,8 +45,7 @@ function generateAdminRoutes() {
                     return {
                         path: menuItem.index,
                         name: key,
-                        component: () =>
-                            import(`@/views/admin/component/main/${component}/index.vue`), // 需要具体到文件拓展名
+                        component: () => import(`@/views/admin/component/main/${component}/index.vue`), // 需要具体到文件拓展名
                         meta: {
                             requiresAuth: true,
                         },

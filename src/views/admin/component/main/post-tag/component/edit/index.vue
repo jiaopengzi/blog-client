@@ -10,16 +10,11 @@
 -->
 
 <template>
-    <View
-        :view-data="editData"
-        :is-show-id="true"
-        btn-submit-display="提交修改"
-        @submit-data="submitData"
-    />
+    <View :view-data="editData" :is-show-id="true" btn-submit-display="提交修改" @submit-data="submitData" />
 </template>
 
 <script lang="ts" setup>
-import { updatePostTagAPI,type UpdatePostTagRequest } from "@/api/postTag/update"
+import { updatePostTagAPI, type UpdatePostTagRequest } from "@/api/postTag/update"
 import { ResponseCode } from "@/api/response"
 import { MessageUtil } from "@/utils/message"
 

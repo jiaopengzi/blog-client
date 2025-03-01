@@ -9,14 +9,7 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 declare module "custom-hls" {
-    import type {
-        Fragment,
-        KeyLoadedData,
-        LevelKey,
-        Loader,
-        LoaderContext,
-        MediaKeySessionContext,
-    } from "hls.js"
+    import type { Fragment, KeyLoadedData, LevelKey, Loader, LoaderContext, MediaKeySessionContext } from "hls.js"
 
     export interface KeyLoaderContext extends LoaderContext {
         keyInfo: KeyLoaderInfo

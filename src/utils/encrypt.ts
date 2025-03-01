@@ -24,11 +24,7 @@ const ivStrBase = import.meta.env.VITE_APP_SECRET_IV
  * @param ivStr 偏移量
  * @return 密文
  */
-export function encryptData(
-    plainText: string,
-    keyStr: string = keyStrBase,
-    ivStr: string = ivStrBase,
-): string {
+export function encryptData(plainText: string, keyStr: string = keyStrBase, ivStr: string = ivStrBase): string {
     const key = CryptoJS.enc.Utf8.parse(keyStr)
     const iv = CryptoJS.enc.Utf8.parse(ivStr)
 
@@ -48,11 +44,7 @@ export function encryptData(
  * @param ivStr 偏移量
  * @return  明文
  */
-export function decryptData(
-    encryptedData: string,
-    keyStr: string = keyStrBase,
-    ivStr: string = ivStrBase,
-): string {
+export function decryptData(encryptedData: string, keyStr: string = keyStrBase, ivStr: string = ivStrBase): string {
     const key = CryptoJS.enc.Utf8.parse(keyStr)
     const iv = CryptoJS.enc.Utf8.parse(ivStr)
 

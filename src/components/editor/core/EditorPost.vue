@@ -73,9 +73,9 @@ import HtmlPreview from "@/components/editor/preview"
 import EditorToc from "@/components/editor/toc"
 import EditorToolbar from "@/components/editor/toolbar"
 
-import { useCodemirror, usePreview, useToc,useToolbar } from "./hooks"
+import { useCodemirror, usePreview, useToc, useToolbar } from "./hooks"
 import { EditorStateManager } from "./state"
-import type { CodemirrorRef, EditorState, PreviewRef,ToolbarRef } from "./types"
+import type { CodemirrorRef, EditorState, PreviewRef, ToolbarRef } from "./types"
 import { setIsFullScreenClassName } from "./utils"
 
 // 文章编辑器命名
@@ -143,55 +143,34 @@ const ModePost = reactive([
 ])
 
 // 动态生成类名
-const layoutClass = computed(() =>
-    setIsFullScreenClassName("md-layout", "md-layout-fs", false, localEditorState.isFullScreen),
-)
+const layoutClass = computed(() => setIsFullScreenClassName("md-layout", "md-layout-fs", false, localEditorState.isFullScreen))
 
-const toolbarClass = computed(() =>
-    setIsFullScreenClassName("md-toolbar", "md-toolbar-fs", false, localEditorState.isFullScreen),
-)
+const toolbarClass = computed(() => setIsFullScreenClassName("md-toolbar", "md-toolbar-fs", false, localEditorState.isFullScreen))
 
-const editorClass = computed(() =>
-    setIsFullScreenClassName("md-editor", "md-editor-fs", true, localEditorState.isFullScreen),
-)
+const editorClass = computed(() => setIsFullScreenClassName("md-editor", "md-editor-fs", true, localEditorState.isFullScreen))
 
-const previewClass = computed(() =>
-    setIsFullScreenClassName("md-preview", "md-preview-fs", true, localEditorState.isFullScreen),
-)
+const previewClass = computed(() => setIsFullScreenClassName("md-preview", "md-preview-fs", true, localEditorState.isFullScreen))
 
-const tocClass = computed(() =>
-    setIsFullScreenClassName("md-toc", "md-toc-fs", true, localEditorState.isFullScreen),
-)
+const tocClass = computed(() => setIsFullScreenClassName("md-toc", "md-toc-fs", true, localEditorState.isFullScreen))
 
 // 编辑器容器、目录、编辑器、预览容器动态类名
-const mdContainerClass = computed(() =>
-    setIsFullScreenClassName(
-        "md-container",
-        "md-container-fs",
-        false,
-        localEditorState.isFullScreen,
-    ),
-)
+const mdContainerClass = computed(() => setIsFullScreenClassName("md-container", "md-container-fs", false, localEditorState.isFullScreen))
 
 // 工具栏点击事件
-const {
-    toolbarBtns,
-    toolbarBtnClicked,
-    iconNumberPerLine,
-    emojiPickerSelected,
-    insertTableRowCol,
-} = useToolbar(mdContainerRef, toolbarRef, codemirrorRef, previewRef, ModePost, localManager)
+const { toolbarBtns, toolbarBtnClicked, iconNumberPerLine, emojiPickerSelected, insertTableRowCol } = useToolbar(
+    mdContainerRef,
+    toolbarRef,
+    codemirrorRef,
+    previewRef,
+    ModePost,
+    localManager,
+)
 
 // 目录点击事件
 const { tocHeadingClicked } = useToc(codemirrorRef, previewRef, localManager)
 
 // codemirror
-const { cmHeight, updateCmHeightNotIsFullScreen, handleScroll } = useCodemirror(
-    mdContainerRef,
-    codemirrorRef,
-    previewRef,
-    localManager,
-)
+const { cmHeight, updateCmHeightNotIsFullScreen, handleScroll } = useCodemirror(mdContainerRef, codemirrorRef, previewRef, localManager)
 
 const updateEditorDoc = (editorDoc: string) => {
     localManager.updateState(editorDoc) // 更新 store 中的 editor
@@ -199,13 +178,7 @@ const updateEditorDoc = (editorDoc: string) => {
 }
 
 // preview
-const {
-    previewData,
-    showImageViewer,
-    closeImageViewer,
-    handleMouseInElement,
-    handleHeadingShowCurrent,
-} = usePreview(codemirrorRef, localManager)
+const { previewData, showImageViewer, closeImageViewer, handleMouseInElement, handleHeadingShowCurrent } = usePreview(codemirrorRef, localManager)
 
 // 监听编辑器宽度变化
 watchEffect(() => {

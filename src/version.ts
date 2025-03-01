@@ -30,9 +30,7 @@ export function getInfo() {
 // 控制台输出项目信息
 export function consoleInfoFormat() {
     const info = getInfo() // 获取项目信息
-    const styleName = [
-        "color: #1E2858; background-color:#c89828; font-size: 24px; font-weight: bold; border-radius: 4px;",
-    ] // name 样式
+    const styleName = ["color: #1E2858; background-color:#c89828; font-size: 24px; font-weight: bold; border-radius: 4px;"] // name 样式
     const styleOther = Array(6).fill("font-size: 14px;") // 其他字段样式
     const styleList = [...styleName, ...styleOther] // 样式列表
 

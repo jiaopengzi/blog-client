@@ -21,10 +21,7 @@
         </div>
         <div class="login" v-if="isLogin">
             <router-link :to="{ name: RouteNames.UserInfo }" class="link">
-                <AvatarInitials
-                    :name="data.user.user_display_name"
-                    :avatar="data.user.user_avatar"
-                />
+                <AvatarInitials :name="data.user.user_display_name" :avatar="data.user.user_avatar" />
             </router-link>
         </div>
         <div class="nav">
@@ -32,13 +29,7 @@
                 <li v-for="item in navData" :key="item.name">
                     <router-link :to="{ name: item.name }">
                         <div class="menu">
-                            <Icon
-                                v-if="item.iconKey"
-                                :name="item.iconKey"
-                                :custom-class="
-                                    item.customClass ? 'my-icon ' + item.customClass : 'my-icon'
-                                "
-                            />
+                            <Icon v-if="item.iconKey" :name="item.iconKey" :custom-class="item.customClass ? 'my-icon ' + item.customClass : 'my-icon'" />
                             <span>{{ item.title }}</span>
                         </div>
                     </router-link>

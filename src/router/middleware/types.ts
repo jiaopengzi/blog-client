@@ -12,7 +12,4 @@
 import type { RouteLocationNormalized } from "vue-router"
 
 // 中间件函数类型约束
-export type MiddlewareFunction = (
-    to: RouteLocationNormalized,
-    from: RouteLocationNormalized,
-) => Promise<boolean | string | object>
+export type MiddlewareFunction = (to: RouteLocationNormalized, from: RouteLocationNormalized) => Promise<boolean | string | object>

@@ -17,11 +17,7 @@ import { type Ref } from "vue"
 /**
  * @description: 自定义校验函数类型
  */
-export type ValidatorFunc = (
-    rule: any,
-    value: any,
-    callback: (error?: string | Error | undefined) => void,
-) => void
+export type ValidatorFunc = (rule: any, value: any, callback: (error?: string | Error | undefined) => void) => void
 
 export interface FormValidationOptions {
     FormUserName?: Ref<string>

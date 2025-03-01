@@ -41,9 +41,7 @@ export class HashCalculator {
             case HashAlgorithm.SHA512:
                 return crypto.algo.SHA512.create()
             default:
-                throw new Error(
-                    `Unsupported hash algorithm: ${this.algorithm},should be SHA-256,SHA-384,SHA-512`,
-                )
+                throw new Error(`Unsupported hash algorithm: ${this.algorithm},should be SHA-256,SHA-384,SHA-512`)
         }
     }
 
@@ -107,9 +105,7 @@ export class HashCalculator {
                 chunkHash = crypto.SHA512(wordArray)
                 break
             default:
-                throw new Error(
-                    `Unsupported hash algorithm: ${this.algorithm},should be SHA-256,SHA-384,SHA-512`,
-                )
+                throw new Error(`Unsupported hash algorithm: ${this.algorithm},should be SHA-256,SHA-384,SHA-512`)
         }
 
         return chunkHash.toString()

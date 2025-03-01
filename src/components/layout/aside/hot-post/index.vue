@@ -11,9 +11,7 @@
 <template>
     <div class="aside-item">
         <div class="title">
-            <h2 class="icon-container">
-                <Icon :name="IconKeys.Hot" custom-class="aside-icon" /> 热门文章
-            </h2>
+            <h2 class="icon-container"><Icon :name="IconKeys.Hot" custom-class="aside-icon" /> 热门文章</h2>
         </div>
         <div class="post-list">
             <PostItem v-for="item in postData" :key="item.post_title" :post-data="item" />

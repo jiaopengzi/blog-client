@@ -9,13 +9,7 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import {
-    MultiThreadSplitter,
-    type RequestStrategy,
-    UploadController,
-    UploadControllerEvents,
-    type UploadFileSuccessInfo,
-} from "@/utils/chunkUpload"
+import { MultiThreadSplitter, type RequestStrategy, UploadController, UploadControllerEvents, type UploadFileSuccessInfo } from "@/utils/chunkUpload"
 import { HashAlgorithm } from "@/utils/hash"
 import { MessageUtil } from "@/utils/message"
 

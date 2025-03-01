@@ -16,28 +16,18 @@
         <div class="top-right-tip" v-if="topRightTip">{{ topRightTip }}</div>
 
         <!-- 左上角分类 -->
-        <el-button class="category" plain @click="clickCategory(postData.categories[0])">{{
-            postData.categories[0].name
-        }}</el-button>
+        <el-button class="category" plain @click="clickCategory(postData.categories[0])">{{ postData.categories[0].name }}</el-button>
 
         <!-- 缩略图 -->
         <div class="thumbnail">
-            <el-image
-                :src="postData.thumbnail"
-                class="thumbnail-img"
-                loading="lazy"
-                @click="postId(postData.id)"
-            >
-            </el-image>
+            <el-image :src="postData.thumbnail" class="thumbnail-img" loading="lazy" @click="postId(postData.id)"> </el-image>
         </div>
 
         <!-- 文章摘要内容 -->
         <div class="content">
             <!-- 标题 -->
             <h2 class="title-row">
-                <span class="pinned" v-if="postData.is_pinned">置顶</span
-                ><span class="pinned" v-if="postData.post_status === PostStatusCode.Private"
-                    >私密</span
+                <span class="pinned" v-if="postData.is_pinned">置顶</span><span class="pinned" v-if="postData.post_status === PostStatusCode.Private">私密</span
                 ><span class="title" @click="postId(postData.id)">{{ postData.post_title }}</span>
             </h2>
 
@@ -49,15 +39,9 @@
             <!-- 作者 日志 访问量 -->
             <div class="meta">
                 <span class="meta-avatar meta-item">
-                    <AvatarInitials
-                        :avatar="postData.author_info.user_avatar"
-                        :name="postData.author_info.user_display_name"
-                        :size="24"
-                    />
+                    <AvatarInitials :avatar="postData.author_info.user_avatar" :name="postData.author_info.user_display_name" :size="24" />
                 </span>
-                <span class="meta-date meta-item">{{
-                    formatTime(postData.created_at, "Asia/Shanghai", "YYYY-MM-DD")
-                }}</span>
+                <span class="meta-date meta-item">{{ formatTime(postData.created_at, "Asia/Shanghai", "YYYY-MM-DD") }}</span>
                 <span v-if="!isZero(postData.view_count)" class="meta-view meta-item">
                     <el-icon><View /></el-icon>
                     <span class="meta-item-unit">{{ unit(postData.view_count) }}</span>
@@ -78,11 +62,11 @@
 import { ChatRound, View } from "@element-plus/icons-vue"
 import { computed } from "vue"
 
-import { type PostResPagination,PostStatusCode } from "@/api/post/common"
+import { type PostResPagination, PostStatusCode } from "@/api/post/common"
 import { type PostCategory } from "@/api/postCategory/view"
 import AvatarInitials from "@/components/common/avatar-initials"
 import { formatTime } from "@/utils/dateTime"
-import { isZero,unit } from "@/utils/unit"
+import { isZero, unit } from "@/utils/unit"
 
 defineOptions({ name: "PostItemMain" })
 

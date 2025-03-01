@@ -21,10 +21,7 @@
             :size="formSize"
             status-icon
         >
-            <AccountFormHeader
-                :a-tag="{ href: 'https://www.jiaopengzi.com', target: '_blank' }"
-                title="注册管理员"
-            />
+            <AccountFormHeader :a-tag="{ href: 'https://www.jiaopengzi.com', target: '_blank' }" title="注册管理员" />
 
             <el-form-item label="用户名" prop="userName">
                 <el-input v-model="registerForm.userName" clearable />
@@ -39,28 +36,17 @@
             </el-form-item>
 
             <el-form-item label="确认密码" prop="rePassword">
-                <el-input
-                    type="password"
-                    show-password
-                    v-model="registerForm.rePassword"
-                    clearable
-                />
+                <el-input type="password" show-password v-model="registerForm.rePassword" clearable />
             </el-form-item>
 
             <el-form-item prop="acceptedTerms">
-                <el-checkbox
-                    v-model="registerForm.acceptedTerms"
-                    value="同意条款"
-                    name="acceptedTerms"
-                /><span class="i-agree">我已同意并接受：</span
+                <el-checkbox v-model="registerForm.acceptedTerms" value="同意条款" name="acceptedTerms" /><span class="i-agree">我已同意并接受：</span
                 ><a class="i-agree-link" href="/">《服务条款》</a>
             </el-form-item>
 
             <div class="btn-submit">
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm(registerFormRef as FormInstance)"
-                        >注册</el-button
-                    >
+                    <el-button type="primary" @click="submitForm(registerFormRef as FormInstance)">注册</el-button>
                     <el-button @click="resetForm(registerFormRef as FormInstance)">重置</el-button>
                 </el-form-item>
             </div>

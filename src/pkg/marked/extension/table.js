@@ -18,7 +18,7 @@ export default function () {
                 start(src) {
                     return src.match(/^\n *([^\n ].*\|.*)\n/)?.index
                 }, // Hint to Marked.js to stop and check for a match
-                 
+
                 tokenizer(src, tokens) {
                     // const regex = this.tokenizer.rules.block.table;
                     const regex = new RegExp(
@@ -70,11 +70,7 @@ export default function () {
                             // Get any remaining header rows
                             l = item.header.length
                             for (i = 1; i < l; i++) {
-                                item.header[i] = splitCells(
-                                    item.header[i],
-                                    colCount,
-                                    item.header[i - 1],
-                                )
+                                item.header[i] = splitCells(item.header[i], colCount, item.header[i - 1])
                             }
 
                             // Get main table cells

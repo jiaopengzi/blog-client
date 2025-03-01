@@ -26,13 +26,7 @@ export enum queryKey {
     IsRecommended = "is_recommended",
 }
 
-export const groupList = [
-    queryKey.Group,
-    queryKey.PostAuthor,
-    queryKey.PostStatus,
-    queryKey.IsPinned,
-    queryKey.IsRecommended,
-] as const
+export const groupList = [queryKey.Group, queryKey.PostAuthor, queryKey.PostStatus, queryKey.IsPinned, queryKey.IsRecommended] as const
 
 export type GroupType = (typeof groupList)[number]
 

@@ -25,22 +25,17 @@
                 :default-active="defaultActive"
                 :router="false"
             >
-                <recursive-menu-item
-                    v-for="(item, key) in topLevelMenuItems"
-                    :key="key"
-                    :menu-item-map="menuItemMap"
-                    :menu-item="item"
-                />
+                <recursive-menu-item v-for="(item, key) in topLevelMenuItems" :key="key" :menu-item-map="menuItemMap" :menu-item="item" />
             </el-menu>
         </el-scrollbar>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { computed,reactive } from "vue"
+import { computed, reactive } from "vue"
 
 import RecursiveMenuItem from "@/components/common/recursive-menu-item" // 引入递归菜单组件
-import type { SwitchItem, SwitchItemColor,SwitchItemLabel } from "@/components/common/switch-group"
+import type { SwitchItem, SwitchItemColor, SwitchItemLabel } from "@/components/common/switch-group"
 import SwitchGroup from "@/components/common/switch-group"
 
 import { adminMenuItemMapWithIndex } from "./utils"
@@ -91,9 +86,7 @@ const updateStatus = (items: SwitchItem[]) => {
 const menuItemMap = reactive(adminMenuItemMapWithIndex)
 
 // 计算顶级菜单项
-const topLevelMenuItems = computed(() =>
-    Object.values(menuItemMap).filter((item) => !item.parentIndex),
-)
+const topLevelMenuItems = computed(() => Object.values(menuItemMap).filter((item) => !item.parentIndex))
 
 // 处理菜单项选中事件
 const handleSelect = (index: string, keyPath: string[]) => {

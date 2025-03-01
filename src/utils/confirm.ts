@@ -52,11 +52,7 @@ export const deleteConfirmCommon = (callback: () => void) => {
  *   console.log('取消');
  * });
  */
-export const confirmCommon = async (
-    info: string,
-    callback: () => void,
-    cancelCallback: () => void,
-): Promise<void> => {
+export const confirmCommon = async (info: string, callback: () => void, cancelCallback: () => void): Promise<void> => {
     try {
         await ElMessageBox.confirm(info, MsgTitle[MsgType.warning], {
             confirmButtonText: "确认",

@@ -10,16 +10,11 @@
 -->
 
 <template>
-    <el-alert
-        :title="MsgTitle[props.typeAlert]"
-        :type="props.typeAlert"
-        :description="props.descriptionAlert"
-        show-icon
-    />
+    <el-alert :title="MsgTitle[props.typeAlert]" :type="props.typeAlert" :description="props.descriptionAlert" show-icon />
 </template>
 
 <script setup lang="ts">
-import { MsgTitle,MsgType } from "@/components/common"
+import { MsgTitle, MsgType } from "@/components/common"
 
 defineOptions({ name: "AlertTip" })
 

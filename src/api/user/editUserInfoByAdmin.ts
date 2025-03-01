@@ -25,9 +25,7 @@ export interface EditUserInfoByAdminRequest {
     description: string // 描述
 }
 
-export function editUserInfoByAdminAPI(
-    requestData: EditUserInfoByAdminRequest,
-): ResPromise<Res<unknown>> {
+export function editUserInfoByAdminAPI(requestData: EditUserInfoByAdminRequest): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/user/edit"
     return request({
         url: urlStr,

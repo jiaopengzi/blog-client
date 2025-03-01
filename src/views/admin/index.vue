@@ -8,12 +8,7 @@
 
 <template>
     <!-- 加载中 防止页面失去响应提高用户体验 -->
-    <div
-        v-if="isLoading"
-        v-loading="isLoading"
-        element-loading-text="加载中..."
-        class="loading"
-    ></div>
+    <div v-if="isLoading" v-loading="isLoading" element-loading-text="加载中..." class="loading"></div>
 
     <div v-else-if="hasPermissionLoginAdmin" class="admin-layout">
         <el-container class="container">
@@ -36,7 +31,7 @@
                     <!-- 在组件外包裹一层 div,需要单独包括在子组件中，才能缓存,不能在这里包裹 -->
 
                     <router-view></router-view>
-                    
+
                     <!-- TODO 是否启用 KeepAlive 待后续思考 -->
                     <!-- <router-view v-slot="{ Component, route }">
                         <KeepAlive :exclude="[RouteNames.PostWrite]">

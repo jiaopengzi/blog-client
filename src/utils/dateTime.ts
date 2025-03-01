@@ -49,16 +49,8 @@ export function formatTime(
     const formattedDateTime = formatter.format(dateTime).replace(",", "")
 
     // 返回时间字符串
-    return formattedDateTime.replace(
-        /(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})/,
-        (_, p1, p2, p3, p4, p5, p6) =>
-            formatStr
-                .replace("DD", p1)
-                .replace("MM", p2)
-                .replace("YYYY", p3)
-                .replace("HH", p4)
-                .replace("mm", p5)
-                .replace("ss", p6),
+    return formattedDateTime.replace(/(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})/, (_, p1, p2, p3, p4, p5, p6) =>
+        formatStr.replace("DD", p1).replace("MM", p2).replace("YYYY", p3).replace("HH", p4).replace("mm", p5).replace("ss", p6),
     )
 }
 
@@ -107,16 +99,6 @@ export function parseTime(time: string): number {
  * @param milliseconds 毫秒
  * @return  {number} 秒数(三位小数,即毫秒)
  */
-export function parseTimeSegments(
-    hours: string,
-    minutes: string,
-    seconds: string,
-    milliseconds: string,
-): number {
-    return (
-        parseInt(hours) * 3600 +
-        parseInt(minutes) * 60 +
-        parseInt(seconds) +
-        parseInt(milliseconds) / 1000
-    )
+export function parseTimeSegments(hours: string, minutes: string, seconds: string, milliseconds: string): number {
+    return parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseInt(seconds) + parseInt(milliseconds) / 1000
 }

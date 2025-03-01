@@ -12,29 +12,13 @@
     <section>
         <div class="container">
             <div class="btns">
-                <el-button
-                    v-permission="PermissionNames.PermissionRole"
-                    type="primary"
-                    @click="updatePermission"
-                >
-                    更新权限
-                </el-button>
+                <el-button v-permission="PermissionNames.PermissionRole" type="primary" @click="updatePermission"> 更新权限 </el-button>
             </div>
-            <el-table
-                :data="permissionsData"
-                class="permission-table"
-                table-layout="auto"
-                stripe
-                height="calc(100vh - 142px)"
-            >
+            <el-table :data="permissionsData" class="permission-table" table-layout="auto" stripe height="calc(100vh - 142px)">
                 <!-- 交叉表第一列 权限名称 -->
                 <el-table-column prop="permissionIndex" label="序号" width="100"></el-table-column>
                 <!-- 交叉表第一列 权限名称 -->
-                <el-table-column
-                    prop="permissionDescription"
-                    label="权限"
-                    width="180"
-                ></el-table-column>
+                <el-table-column prop="permissionDescription" label="权限" width="180"></el-table-column>
 
                 <!-- 循环生成角色列 -->
                 <el-table-column v-for="role in rolesList" :key="role.role_name">
@@ -64,21 +48,10 @@
                                     >编辑</el-button
                                 >
                             </div>
-                            <span
-                                class="cell-down"
-                                v-if="!disabledRoleNames.includes(role.role_name)"
-                            >
+                            <span class="cell-down" v-if="!disabledRoleNames.includes(role.role_name)">
                                 {{
-                                    getSafeProperty(
-                                        permissionRole,
-                                        row.permissionName + role.role_name,
-                                    )?.limit_count
-                                        ? `限制次数:${
-                                              getSafeProperty(
-                                                  permissionRole,
-                                                  row.permissionName + role.role_name,
-                                              )?.limit_count
-                                          }`
+                                    getSafeProperty(permissionRole, row.permissionName + role.role_name)?.limit_count
+                                        ? `限制次数:${getSafeProperty(permissionRole, row.permissionName + role.role_name)?.limit_count}`
                                         : ""
                                 }}</span
                             >
@@ -88,11 +61,7 @@
             </el-table>
         </div>
         <!-- 弹窗 edit -->
-        <el-dialog
-            v-model="editItemDialogVisibleStatus"
-            @close="editItemHandleDialogClose"
-            width="35%"
-        >
+        <el-dialog v-model="editItemDialogVisibleStatus" @close="editItemHandleDialogClose" width="35%">
             <template #header>
                 <h3>编辑</h3>
             </template>
@@ -153,18 +122,8 @@
                     </el-form-item>
 
                     <div class="save-delete">
-                        <el-button
-                            size="default"
-                            type="primary"
-                            @click="submitUpsertForm(permissionRoleFormRef as FormInstance)"
-                            >保存</el-button
-                        >
-                        <el-button
-                            size="default"
-                            type="danger"
-                            @click="submitDeleteForm(permissionRoleFormRef as FormInstance)"
-                            >删除</el-button
-                        >
+                        <el-button size="default" type="primary" @click="submitUpsertForm(permissionRoleFormRef as FormInstance)">保存</el-button>
+                        <el-button size="default" type="danger" @click="submitDeleteForm(permissionRoleFormRef as FormInstance)">删除</el-button>
                     </div>
                 </el-form>
             </template>
@@ -177,34 +136,16 @@ import type { FormInstance, FormRules } from "element-plus" // 需要全部安�
 import { debounce } from "throttle-debounce"
 import { onBeforeMount, reactive, type Ref, ref, useTemplateRef } from "vue"
 
-import {
-    deletePermissionRoleAPI,
-    type DeletePermissionRoleRequest,
-} from "@/api/permissionRole/deletePermissionRole"
-import {
-    getPermissionRoleAPI,
-    type GetPermissionRoleRequest,
-} from "@/api/permissionRole/getPermissionRole"
-import {
-    type UpdateRoleRequest,
-    updateRolesAPI,
-    type UpdateRolesRequest,
-} from "@/api/permissionRole/updateRoles"
-import {
-    upsertPermissionRoleAPI,
-    type UpsertPermissionRoleRequest,
-} from "@/api/permissionRole/upsertPermissionRole"
+import { deletePermissionRoleAPI, type DeletePermissionRoleRequest } from "@/api/permissionRole/deletePermissionRole"
+import { getPermissionRoleAPI, type GetPermissionRoleRequest } from "@/api/permissionRole/getPermissionRole"
+import { type UpdateRoleRequest, updateRolesAPI, type UpdateRolesRequest } from "@/api/permissionRole/updateRoles"
+import { upsertPermissionRoleAPI, type UpsertPermissionRoleRequest } from "@/api/permissionRole/upsertPermissionRole"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { RouteNames } from "@/router"
 import { useUserStore } from "@/stores/user"
 import { getSortedEnumKeys } from "@/utils/enum"
 import { MessageUtil } from "@/utils/message"
-import {
-    getPermissionList,
-    getRolesList,
-    type Permission,
-    PermissionNames,
-} from "@/utils/permissionRole"
+import { getPermissionList, getRolesList, type Permission, PermissionNames } from "@/utils/permissionRole"
 import type { PermissionRow, Role } from "@/views/admin/component/main/permission-role"
 
 import { LimitCount, LimitPeriod, type PermissionRole } from "./types"
@@ -308,11 +249,7 @@ const handleInsertLimitCount = (key: keyof typeof LimitCount) => {
  * @param value 对应输入框的值
  * @param callback 回调函数
  */
-function validateIntegerAroundMinusOne(
-    rule: unknown,
-    value: string,
-    callback: (error?: string | Error | undefined) => void,
-): void {
+function validateIntegerAroundMinusOne(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
     // 大于等于0的整数
     if (!/^[0-9]\d*$/.test(value)) {
         callback(new Error("请输入大于等于 0 的整数"))

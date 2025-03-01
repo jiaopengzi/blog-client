@@ -14,10 +14,7 @@ import { reactive, watchEffect } from "vue"
 
 import { EditorStateManager } from "../state"
 import type { CodemirrorRef } from "../types"
-export function usePreview(
-    codemirrorRef: Ref<CodemirrorRef | null>,
-    editorStateManager: EditorStateManager,
-) {
+export function usePreview(codemirrorRef: Ref<CodemirrorRef | null>, editorStateManager: EditorStateManager) {
     // 状态管理
     const editorState = editorStateManager.getState()
 
@@ -49,15 +46,8 @@ export function usePreview(
         editorStateManager.setHeadingShowCurrentIndex(headingIndex)
 
         // 当同步滚动开启和用户滚动预览时，编辑器滚动到对应行
-        if (
-            editorState.isAsyncScroll &&
-            editorState.isUserScrollPreview &&
-            editorState.tocMarkdown &&
-            editorState.tocMarkdown[headingIndex]
-        ) {
-            codemirrorRef.value?.scrollIntoViewLine(
-                editorState.tocMarkdown[headingIndex].markdownLineNumber,
-            )
+        if (editorState.isAsyncScroll && editorState.isUserScrollPreview && editorState.tocMarkdown && editorState.tocMarkdown[headingIndex]) {
+            codemirrorRef.value?.scrollIntoViewLine(editorState.tocMarkdown[headingIndex].markdownLineNumber)
         }
     }
 

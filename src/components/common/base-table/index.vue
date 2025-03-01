@@ -16,9 +16,7 @@
         <div class="btns">
             <!-- 按钮 -->
             <slot name="btns"></slot>
-            <el-button v-if="isShowDeleteAll" type="danger" @click="handleBatchDelete">
-                删除
-            </el-button>
+            <el-button v-if="isShowDeleteAll" type="danger" @click="handleBatchDelete"> 删除 </el-button>
 
             <span v-if="isShowListOrGrid">
                 <SwitchGroup :switch-items="switchItemList" @update-status="updateStatus" />
@@ -31,19 +29,11 @@
         <!-- 筛选和操作 -->
         <div class="filter-operation">
             <!-- 搜索 -->
-            <el-input
-                v-if="isShowSearch"
-                class="search filter-operation-item"
-                v-model="search"
-                placeholder="关键字搜索"
-                clearable
-            />
+            <el-input v-if="isShowSearch" class="search filter-operation-item" v-model="search" placeholder="关键字搜索" clearable />
 
             <!-- 其他筛选插槽 -->
             <slot class="filter-operation-item" name="custom-filter"></slot>
-            <el-button class="filter-operation-item" type="primary" @click="runSearch"
-                >搜索</el-button
-            >
+            <el-button class="filter-operation-item" type="primary" @click="runSearch">搜索</el-button>
 
             <!-- 操作插槽 -->
             <slot class="filter-operation-item operation" name="operation"></slot>
@@ -65,13 +55,7 @@
 
             <template v-for="(col, index) in tableColumn">
                 <!-- 图片 -->
-                <el-table-column
-                    v-if="col.isImg"
-                    :key="`img-${index}`"
-                    :width="col.width"
-                    :min-width="col.minWidth"
-                    :align="col.align"
-                >
+                <el-table-column v-if="col.isImg" :key="`img-${index}`" :width="col.width" :min-width="col.minWidth" :align="col.align">
                     <template #header>
                         <span>{{ col.label }}</span>
                     </template>
@@ -81,13 +65,7 @@
                                 v-if="scope.row.img?.url"
                                 class="thumbnail-img"
                                 :src="scope.row.img?.url"
-                                :style="
-                                    imgStyle(
-                                        scope.row.img?.width,
-                                        scope.row.img?.height,
-                                        scope.row.img?.imgFit,
-                                    )
-                                "
+                                :style="imgStyle(scope.row.img?.width, scope.row.img?.height, scope.row.img?.imgFit)"
                             />
                             <Icon
                                 v-else-if="scope.row.img?.iconKeyName"
@@ -100,39 +78,19 @@
                 </el-table-column>
 
                 <!-- 分类信息 -->
-                <CustomCol
-                    v-else-if="col.isCategories"
-                    :key="`category-${index}`"
-                    :col="col"
-                    @click-item="handleCategoryClick"
-                />
+                <CustomCol v-else-if="col.isCategories" :key="`category-${index}`" :col="col" @click-item="handleCategoryClick" />
 
                 <!-- 标签信息 -->
-                <CustomCol
-                    v-else-if="col.isTags"
-                    :key="`tag-${index}`"
-                    :col="col"
-                    @click-item="handleTagClick"
-                />
+                <CustomCol v-else-if="col.isTags" :key="`tag-${index}`" :col="col" @click-item="handleTagClick" />
 
                 <!-- 标题 -->
                 <CustomCol v-else-if="col.isHeading" :key="`heading-${index}`" :col="col" />
 
                 <!-- 作者 -->
-                <CustomCol
-                    v-else-if="col.isAuthor"
-                    :key="`author-${index}`"
-                    :col="col"
-                    @click-author="handleAuthorClick"
-                />
+                <CustomCol v-else-if="col.isAuthor" :key="`author-${index}`" :col="col" @click-author="handleAuthorClick" />
 
                 <!-- 格式化文本 -->
-                <CustomCol
-                    v-else-if="col.formatter"
-                    :key="`format-${index}`"
-                    :col="col"
-                    :tags-item-max-height="tagsItemMaxHeight"
-                />
+                <CustomCol v-else-if="col.formatter" :key="`format-${index}`" :col="col" :tags-item-max-height="tagsItemMaxHeight" />
 
                 <!-- 不需要处理，显示原值 -->
                 <el-table-column
@@ -152,38 +110,19 @@
                     <span>操作</span>
                 </template>
                 <template #default="scope">
-                    <el-button
-                        size="small"
-                        type="primary"
-                        @click="handleEdit(scope.$index, scope.row)"
-                        >编辑</el-button
-                    >
+                    <el-button size="small" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                     <!-- <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button> -->
                 </template>
             </el-table-column>
         </el-table>
 
         <!-- 宫格 -->
-        <el-checkbox-group
-            v-show="!showListOrGridStatus"
-            v-model="checkedRows"
-            @change="handleCheckedGridChange"
-        >
+        <el-checkbox-group v-show="!showListOrGridStatus" v-model="checkedRows" @change="handleCheckedGridChange">
             <el-empty v-if="!hasData" />
 
             <ul ref="gridRef" class="grid">
-                <li
-                    v-for="(row, index) in pagination.records"
-                    :key="row.id"
-                    class="thumbnail grid-item"
-                >
-                    <el-checkbox
-                        v-if="isSelected(row)"
-                        class="grid-item-selection-status"
-                        :key="row"
-                        :value="row"
-                        size="large"
-                    />
+                <li v-for="(row, index) in pagination.records" :key="row.id" class="thumbnail grid-item">
+                    <el-checkbox v-if="isSelected(row)" class="grid-item-selection-status" :key="row" :value="row" size="large" />
 
                     <img
                         v-if="row.img?.url"
@@ -201,13 +140,7 @@
                         @click="handleDelegateGridClick(row)"
                     />
 
-                    <el-button
-                        class="grid-item-edit"
-                        size="small"
-                        type="primary"
-                        @click="handleEdit(index, row)"
-                        >编辑</el-button
-                    >
+                    <el-button class="grid-item-edit" size="small" type="primary" @click="handleEdit(index, row)">编辑</el-button>
                 </li>
             </ul>
         </el-checkbox-group>

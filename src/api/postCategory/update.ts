@@ -23,9 +23,7 @@ export interface UpdatePostCategoryRequest {
 }
 
 // 更新文章分类
-export function updatePostCategoryAPI(
-    requestData: UpdatePostCategoryRequest,
-): ResPromise<Res<unknown>> {
+export function updatePostCategoryAPI(requestData: UpdatePostCategoryRequest): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/post-category/update"
     return request({
         url: urlStr,

@@ -18,9 +18,7 @@ export interface CheckCategorySlugExcludingIDRequest {
 }
 
 // 检查 category 名称是否存在
-export function checkCategorySlugExcludingIDAPI(
-    requestData: CheckCategorySlugExcludingIDRequest,
-): ResPromise<Res<unknown>> {
+export function checkCategorySlugExcludingIDAPI(requestData: CheckCategorySlugExcludingIDRequest): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/post-category/check-category-slug-excluding-id"
     return request({
         url: urlStr,

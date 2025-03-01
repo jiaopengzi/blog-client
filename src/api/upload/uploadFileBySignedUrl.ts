@@ -27,13 +27,8 @@ export function uploadFileBySignedUrlAPI(
                     .put(signedUrl, arrayBuffer, {
                         headers: headers,
                         onUploadProgress: (progressEvent) => {
-                            if (
-                                progressEvent.lengthComputable &&
-                                progressEvent.total !== undefined
-                            ) {
-                                const percentCompleted = Math.round(
-                                    (progressEvent.loaded * 100) / progressEvent.total,
-                                )
+                            if (progressEvent.lengthComputable && progressEvent.total !== undefined) {
+                                const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
                                 onProgress(percentCompleted)
                             }
                         },

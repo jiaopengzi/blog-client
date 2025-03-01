@@ -4,7 +4,7 @@
  */
 import { describe, expect, it, test, vi } from "vitest"
 
-import { isWebvtt,parseVTT } from "./vttParse"
+import { isWebvtt, parseVTT } from "./vttParse"
 
 // Mock fetch to return the VTT content
 global.fetch = vi.fn(() =>

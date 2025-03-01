@@ -91,6 +91,8 @@
         "@types/node": "^22.13.5",
         "@types/throttle-debounce": "^5.0.2",
         "@types/tinycolor2": "^1.4.6",
+        "@typescript-eslint/eslint-plugin": "^8.25.0",
+        "@typescript-eslint/parser": "^8.25.0",
         "@vitejs/plugin-vue": "^5.2.1",
         "@vitejs/plugin-vue-jsx": "^4.1.1",
         "@vitest/eslint-plugin": "^1.1.33",

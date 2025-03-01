@@ -25,10 +25,7 @@ import { RouteNames } from "../types"
  * @param from - 当前导航正要离开的路由对象
  * @returns 如果用户没有登录，且访问的页面需要登录，则返回登录页路径；
  */
-export const authMiddleware = async (
-    to: RouteLocationNormalized,
-    from: RouteLocationNormalized,
-) => {
+export const authMiddleware = async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
     const userStore = useUserStore()
     await userStore.getUserInfoByToken() // 获取用户信息
     // 如果用户没有登录，且访问的页面需要登录，则跳转到登录页

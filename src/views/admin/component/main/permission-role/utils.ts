@@ -9,7 +9,7 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { LimitPeriod,type PermissionRole } from "./types"
+import { LimitPeriod, type PermissionRole } from "./types"
 
 /**
  * @description: 返回升序排序的限制时间键数组
@@ -32,11 +32,7 @@ export const getSortedLimitPeriodKeys = (() => {
 /**
  * @description: 获取对象安全属性
  */
-export const getSafeProperty = (
-    obj: Record<string, PermissionRole> | null,
-    key: string,
-    defaultValue: PermissionRole | null = null,
-): PermissionRole | null => {
+export const getSafeProperty = (obj: Record<string, PermissionRole> | null, key: string, defaultValue: PermissionRole | null = null): PermissionRole | null => {
     if (!obj) return defaultValue
     return obj[key] !== undefined && obj[key] !== null ? obj[key] : defaultValue
 }

@@ -11,7 +11,7 @@
 
 import { onMounted, onUnmounted } from "vue"
 
-import type { Direction,ScrollHandler } from "@/components/hooks/useScroll"
+import type { Direction, ScrollHandler } from "@/components/hooks/useScroll"
 
 export function useScroll(handler: ScrollHandler) {
     let lastPosition = window.scrollY || document.documentElement.scrollTop

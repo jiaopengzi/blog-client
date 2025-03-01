@@ -21,11 +21,7 @@ export function getUserForbiddenMsg(res: Res<number>) {
     }
 
     // 客户端IP请求频繁 和 客户端ID请求频繁
-    if (
-        (res.code === ResponseCode.ClientIPTooManyRequests ||
-            res.code === ResponseCode.ClientIDTooManyRequests) &&
-        res.data
-    ) {
+    if ((res.code === ResponseCode.ClientIPTooManyRequests || res.code === ResponseCode.ClientIDTooManyRequests) && res.data) {
         return handleResErr(res)
     }
     return res.msg

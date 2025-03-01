@@ -10,8 +10,8 @@
  */
 
 import type { PostResPagination } from "@/api/post/common"
-import { type PaginationRequest,request, routerGroup } from "@/api/request"
-import type { Pagination,Res, ResPromise } from "@/api/response"
+import { type PaginationRequest, request, routerGroup } from "@/api/request"
+import type { Pagination, Res, ResPromise } from "@/api/response"
 
 // 管理员查看文章请求
 export interface ViewPostRequest extends PaginationRequest {
@@ -23,9 +23,7 @@ export interface ViewPostRequest extends PaginationRequest {
 }
 
 // 查看文章
-export function viewPostAPI(
-    requestData: PaginationRequest,
-): ResPromise<Res<Pagination<PostResPagination>>> {
+export function viewPostAPI(requestData: PaginationRequest): ResPromise<Res<Pagination<PostResPagination>>> {
     const urlStr = routerGroup + "/post/view"
     return request({
         url: urlStr,

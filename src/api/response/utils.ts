@@ -17,10 +17,7 @@ import type { Pagination, Res, ResResponse } from "./types"
  * @param msgTitle 根据不同的接口传入不同的标题 默认为空
  * @return {string} 返回错误信息
  */
-export const handleResErr = <T>(
-    res: ResResponse<Res<T>, unknown> | Res<T>,
-    msgTitle: string = "",
-): string => {
+export const handleResErr = <T>(res: ResResponse<Res<T>, unknown> | Res<T>, msgTitle: string = ""): string => {
     // 处理响应数据
     const resAc = "data" in res ? (res as ResResponse<Res<T>>).data : (res as Res<T>)
 

@@ -16,9 +16,9 @@
 
 <script setup lang="ts">
 import { useMutationObserver } from "@vueuse/core"
-import { computed, onBeforeUnmount,onMounted, ref, shallowRef, useTemplateRef } from "vue"
+import { computed, onBeforeUnmount, onMounted, ref, shallowRef, useTemplateRef } from "vue"
 
-import type { LogoWatermark,TextWatermark } from "@/components/player/types"
+import type { LogoWatermark, TextWatermark } from "@/components/player/types"
 
 defineOptions({ name: "VideoWatermark" })
 
@@ -66,11 +66,7 @@ const logoWatermarkZindex = computed(() => props.logoWatermark?.style?.zIndex ||
  * @param style 水印样式
  * @param isRandomPosition 是否随机生成水印位置
  */
-const setWatermarkStyle = (
-    watermark: HTMLElement | undefined,
-    style: Partial<CSSStyleDeclaration>,
-    isRandomPosition: boolean,
-) => {
+const setWatermarkStyle = (watermark: HTMLElement | undefined, style: Partial<CSSStyleDeclaration>, isRandomPosition: boolean) => {
     const container = containerRef.value
 
     if (container && watermark) {
@@ -177,11 +173,7 @@ const isReRendering = (mutation: MutationRecord, watermarkElement?: HTMLElement)
     }
 
     // 当 style 变化时，重新渲染水印, 排除自动刷新水印.
-    if (
-        mutation.type === "attributes" &&
-        mutation.target === watermarkElement &&
-        !isWatermarkAutoRefresh.value
-    ) {
+    if (mutation.type === "attributes" && mutation.target === watermarkElement && !isWatermarkAutoRefresh.value) {
         flag = true
     }
 

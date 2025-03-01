@@ -21,10 +21,7 @@ import { confirmCommon } from "@/utils/confirm"
  * @param from - 当前导航正要离开的路由对象
  * @returns 如果用户正在编辑，且点击确认离开编辑页面，则返回 true；否则返回 false
  */
-export const editorMiddleware = async (
-    to: RouteLocationNormalized,
-    from: RouteLocationNormalized,
-) => {
+export const editorMiddleware = async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
     const userStore = useUserStore()
 
     if (userStore.isEditing) {

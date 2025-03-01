@@ -10,10 +10,7 @@ export type EventType = string | symbol
 export type Handler<T = unknown> = (event: T) => void
 
 // 通配符事件处理函数类型
-export type WildcardHandler<T = Record<string, unknown>> = (
-    type: keyof T,
-    event: T[keyof T],
-) => void
+export type WildcardHandler<T = Record<string, unknown>> = (type: keyof T, event: T[keyof T]) => void
 
 // 某个事件类型当前注册的所有事件处理函数数组
 export type EventHandlerList<T = unknown> = Array<Handler<T>>

@@ -1,10 +1,16 @@
 import pluginVitest from "@vitest/eslint-plugin"
 import skipFormatting from "@vue/eslint-config-prettier/skip-formatting"
-import vueTsEslintConfig from "@vue/eslint-config-typescript"
+import { defineConfigWithVueTs, vueTsConfigs } from "@vue/eslint-config-typescript"
+import eslintConfigPrettier from "eslint-config-prettier"
 import simpleImportSort from "eslint-plugin-simple-import-sort"
 import pluginVue from "eslint-plugin-vue"
 
-export default [
+// To allow more languages other than `ts` in `.vue` files, uncomment the following lines:
+// import { configureVueProject } from '@vue/eslint-config-typescript'
+// configureVueProject({ scriptLangs: ['ts', 'tsx'] })
+// More info at https://github.com/vuejs/eslint-config-typescript/#advanced-setup
+
+export default defineConfigWithVueTs(
     {
         name: "app/files-to-lint",
         files: ["**/*.{ts,mts,tsx,vue}"],
@@ -12,17 +18,11 @@ export default [
 
     {
         name: "app/files-to-ignore",
-        ignores: [
-            "**/dist/**",
-            "**/dist-ssr/**",
-            "**/coverage/**",
-            "**/node_modules/**",
-            "**/src/components/common/icons/assets/**",
-        ],
+        ignores: ["**/dist/**", "**/dist-ssr/**", "**/coverage/**", "**/node_modules/**", "**/src/components/common/icons/assets/**"],
     },
 
     ...pluginVue.configs["flat/essential"],
-    ...vueTsEslintConfig(),
+    vueTsConfigs.recommended,
 
     {
         ...pluginVitest.configs.recommended,
@@ -43,4 +43,6 @@ export default [
             "simple-import-sort/exports": "error",
         },
     },
-]
+
+    eslintConfigPrettier,
+)

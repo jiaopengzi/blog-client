@@ -65,11 +65,7 @@
 
             <template #edit-item>
                 <div class="dialog-edit">
-                    <EditUser
-                        :roles="roles"
-                        :edit-user-data="editUserByAdminForm"
-                        @edit-user-status="editStatus"
-                    />
+                    <EditUser :roles="roles" :edit-user-data="editUserByAdminForm" @edit-user-status="editStatus" />
                 </div>
             </template>
         </BaseTable>
@@ -83,10 +79,7 @@ import { type Role } from "@/api/permissionRole/role"
 import { type QueryParamsRecord } from "@/api/request"
 import { ResponseCode } from "@/api/response"
 import { deleteUserAPI, type DeleteUserRequest } from "@/api/user/deleteUser"
-import {
-    getUserCountGroupByRoleAPI,
-    type UserCountGroupByRole,
-} from "@/api/user/getUserCountGroupByRole"
+import { getUserCountGroupByRoleAPI, type UserCountGroupByRole } from "@/api/user/getUserCountGroupByRole"
 import { type User } from "@/api/user/getUsers"
 import { getUsersAPI, type GetUsersRequest } from "@/api/user/getUsers"
 import type { TableColumn, TableData } from "@/components/common/base-table"
@@ -268,11 +261,7 @@ const editRow = (index: number, row: TableData) => {
             return
         }
 
-        if (
-            "Time" in row.disable_expires_at &&
-            "Valid" in row.disable_expires_at &&
-            row.disable_expires_at.Valid === true
-        ) {
+        if ("Time" in row.disable_expires_at && "Valid" in row.disable_expires_at && row.disable_expires_at.Valid === true) {
             editUserByAdminForm.disableExpiresAt = {
                 Time: row.disable_expires_at.Time,
                 Valid: row.disable_expires_at.Valid,

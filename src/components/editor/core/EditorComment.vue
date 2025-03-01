@@ -114,48 +114,29 @@ const ModeComment = reactive([
 ])
 
 // 动态生成类名
-const layoutClass = computed(() =>
-    setIsFullScreenClassName("md-layout", "md-layout-fs", false, localEditorState.isFullScreen),
-)
+const layoutClass = computed(() => setIsFullScreenClassName("md-layout", "md-layout-fs", false, localEditorState.isFullScreen))
 
-const toolbarClass = computed(() =>
-    setIsFullScreenClassName("md-toolbar", "md-toolbar-fs", false, localEditorState.isFullScreen),
-)
+const toolbarClass = computed(() => setIsFullScreenClassName("md-toolbar", "md-toolbar-fs", false, localEditorState.isFullScreen))
 
-const editorClass = computed(() =>
-    setIsFullScreenClassName("md-editor", "md-editor-fs", false, localEditorState.isFullScreen),
-)
+const editorClass = computed(() => setIsFullScreenClassName("md-editor", "md-editor-fs", false, localEditorState.isFullScreen))
 
-const previewClass = computed(() =>
-    setIsFullScreenClassName("md-preview", "md-preview-fs", false, localEditorState.isFullScreen),
-)
+const previewClass = computed(() => setIsFullScreenClassName("md-preview", "md-preview-fs", false, localEditorState.isFullScreen))
 
 // 编辑器容器、编辑器、预览容器动态类名
-const mdContainerClass = computed(() =>
-    setIsFullScreenClassName(
-        "md-container",
-        "md-container-fs",
-        false,
-        localEditorState.isFullScreen,
-    ),
-)
+const mdContainerClass = computed(() => setIsFullScreenClassName("md-container", "md-container-fs", false, localEditorState.isFullScreen))
 
 // 工具栏点击事件
-const {
-    toolbarBtns,
-    toolbarBtnClicked,
-    iconNumberPerLine,
-    emojiPickerSelected,
-    insertTableRowCol,
-} = useToolbar(mdContainerRef, toolbarRef, codemirrorRef, previewRef, ModeComment, localManager)
-
-// codemirror
-const { cmHeight, updateCmHeightNotIsFullScreen } = useCodemirror(
+const { toolbarBtns, toolbarBtnClicked, iconNumberPerLine, emojiPickerSelected, insertTableRowCol } = useToolbar(
     mdContainerRef,
+    toolbarRef,
     codemirrorRef,
     previewRef,
+    ModeComment,
     localManager,
 )
+
+// codemirror
+const { cmHeight, updateCmHeightNotIsFullScreen } = useCodemirror(mdContainerRef, codemirrorRef, previewRef, localManager)
 
 const updateEditorDoc = (editorDoc: string) => {
     localManager.updateState(editorDoc) // 更新 store 中的 editor

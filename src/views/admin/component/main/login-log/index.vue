@@ -36,19 +36,9 @@
 <script lang="ts" setup>
 import { reactive, ref } from "vue"
 
-import {
-    deleteLoginLogByDayAPI,
-    type DeleteLoginLogByDayRequest,
-} from "@/api/loginLog/deleteLoginLogByDay"
-import {
-    deleteLoginLogByIDsAPI,
-    type DeleteLoginLogByIDsRequest,
-} from "@/api/loginLog/deleteLoginLogByIds"
-import {
-    getLoginLogsAPI,
-    type GetLoginLogsRequest,
-    type LoginLog,
-} from "@/api/loginLog/getLoginLogs"
+import { deleteLoginLogByDayAPI, type DeleteLoginLogByDayRequest } from "@/api/loginLog/deleteLoginLogByDay"
+import { deleteLoginLogByIDsAPI, type DeleteLoginLogByIDsRequest } from "@/api/loginLog/deleteLoginLogByIds"
+import { getLoginLogsAPI, type GetLoginLogsRequest, type LoginLog } from "@/api/loginLog/getLoginLogs"
 import { handleResErr, ResponseCode } from "@/api/response"
 import type { TableColumn } from "@/components/common/base-table"
 import BaseTable from "@/components/common/base-table"

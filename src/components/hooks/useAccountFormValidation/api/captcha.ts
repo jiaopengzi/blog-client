@@ -45,11 +45,7 @@ export async function checkSendCaptcha(email: string, purpose: CaptchaPurpose): 
  * @param captcha 验证码
  * @param purpose 验证码用途
  */
-export async function checkCaptcha(
-    email: string,
-    captcha: string,
-    purpose: CaptchaPurpose,
-): Promise<void> {
+export async function checkCaptcha(email: string, captcha: string, purpose: CaptchaPurpose): Promise<void> {
     try {
         // 创建请求对象
         const req: CaptchaCheckRequest = {

@@ -20,13 +20,7 @@
 
             <!-- 图片选择 -->
             <el-button type="primary" @click="openFileDialog">选择文件</el-button>
-            <input
-                type="file"
-                ref="fileInput"
-                accept="image/*"
-                @change="onFileChange"
-                style="display: none"
-            />
+            <input type="file" ref="fileInput" accept="image/*" @change="onFileChange" style="display: none" />
             <!-- 选择后预览容器 -->
             <div ref="cropperContainer" class="cropper-container"></div>
 

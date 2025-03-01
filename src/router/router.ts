@@ -11,13 +11,7 @@
 
 import { createRouter, createWebHistory } from "vue-router"
 
-import {
-    authMiddleware,
-    editorMiddleware,
-    handleMiddleware,
-    registerAdminMiddleware,
-    setupMiddleware,
-} from "./middleware"
+import { authMiddleware, editorMiddleware, handleMiddleware, registerAdminMiddleware, setupMiddleware } from "./middleware"
 import { routes } from "./routes"
 
 // 创建路由实例

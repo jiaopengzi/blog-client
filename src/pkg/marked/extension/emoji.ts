@@ -9,7 +9,7 @@
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 import emojiJson from "emoji.json"
-import type { EmojiObject,MarkedEmojiOptions } from "marked-emoji"
+import type { EmojiObject, MarkedEmojiOptions } from "marked-emoji"
 
 // grinning: { char: '😀' },
 const emojiObj: Record<string, string | EmojiObject> = {}

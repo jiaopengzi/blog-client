@@ -11,19 +11,12 @@
 
 <template>
     <transition name="slide-header">
-        <header
-            class="header"
-            v-if="headerVisible"
-            :style="{ height: `$height-header-pc`, width: '$width-header-pc' }"
-        >
+        <header class="header" v-if="headerVisible" :style="{ height: `$height-header-pc`, width: '$width-header-pc' }">
             <div class="header-main">
                 <router-link :to="{ name: RouteNames.Home }" class="link">
                     <div class="logo">
                         <h2>
-                            <img
-                                src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
-                                :alt="RouteNames.Home"
-                            />
+                            <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" :alt="RouteNames.Home" />
                         </h2>
                     </div>
                 </router-link>
@@ -31,12 +24,7 @@
                 <HeaderNav />
 
                 <div class="search">
-                    <el-input
-                        v-model="searchAll"
-                        style="width: 240px"
-                        size="large"
-                        placeholder="搜索"
-                    >
+                    <el-input v-model="searchAll" style="width: 240px" size="large" placeholder="搜索">
                         <!-- suffix插槽 -->
                         <template #suffix>
                             <Icon :name="IconKeys.Search" custom-class="search-icon" />

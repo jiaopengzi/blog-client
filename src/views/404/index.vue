@@ -22,7 +22,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { onMounted, onUnmounted,ref } from "vue"
+import { onMounted, onUnmounted, ref } from "vue"
 import { useRouter } from "vue-router"
 
 import LayoutFooter from "@/components/layout/footer"

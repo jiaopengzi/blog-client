@@ -14,13 +14,7 @@
             <h2><Icon :name="IconKeys.Archive" custom-class="aside-icon" />文章归档</h2>
         </div>
         <div class="table">
-            <el-table
-                :max-height="400"
-                :data="postList"
-                :show-header="true"
-                row-class-name="month-archive-row-class"
-                @row-click="handleRowClick"
-            >
+            <el-table :max-height="400" :data="postList" :show-header="true" row-class-name="month-archive-row-class" @row-click="handleRowClick">
                 <el-table-column prop="year_month" label="年月" align="center" />
                 <el-table-column prop="count" label="文章" align="center" />
             </el-table>

@@ -8,22 +8,10 @@
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
-import {
-    autocompletion,
-    closeBrackets,
-    closeBracketsKeymap,
-    completionKeymap,
-} from "@codemirror/autocomplete"
+import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from "@codemirror/autocomplete"
 import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands"
 import { markdown } from "@codemirror/lang-markdown"
-import {
-    bracketMatching,
-    defaultHighlightStyle,
-    foldGutter,
-    foldKeymap,
-    indentOnInput,
-    syntaxHighlighting,
-} from "@codemirror/language"
+import { bracketMatching, defaultHighlightStyle, foldGutter, foldKeymap, indentOnInput, syntaxHighlighting } from "@codemirror/language"
 import { lintKeymap } from "@codemirror/lint"
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search"
 import type { Extension } from "@codemirror/state"
@@ -45,7 +33,7 @@ import {
 import { bottomPanelExt } from "./extension/bottomPanel"
 import { emojiCompletions } from "./extension/emoji"
 import { customKeymap } from "./extension/hotkey"
-import { handleDropImage,handlePasteImage } from "./extension/imgUpload"
+import { handleDropImage, handlePasteImage } from "./extension/imgUpload"
 
 // 自定义 codemirror setup 工厂函数
 const createCustomSetup = () => {

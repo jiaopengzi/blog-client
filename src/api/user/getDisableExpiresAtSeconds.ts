@@ -17,9 +17,7 @@ export interface GetDisableExpiresAtSecondsRequest {
 }
 
 // 检测用户名是否存在
-export function getDisableExpiresAtSecondsAPI(
-    requestData: GetDisableExpiresAtSecondsRequest,
-): ResPromise<Res<number>> {
+export function getDisableExpiresAtSecondsAPI(requestData: GetDisableExpiresAtSecondsRequest): ResPromise<Res<number>> {
     const urlStr = routerGroup + "/user/get-disable-expires-at-seconds"
     return request({
         url: urlStr,

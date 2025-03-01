@@ -11,11 +11,7 @@
 
 import { describe, expect, it, vi } from "vitest"
 
-import {
-    anchorGenerator,
-    createRegexCache,
-    generateAllHeadingAnchor,
-} from "@/components/editor/core/utils"
+import { anchorGenerator, createRegexCache, generateAllHeadingAnchor } from "@/components/editor/core/utils"
 
 // 不让控制台输出 log warn error
 vi.spyOn(console, "log").mockImplementation(() => {})

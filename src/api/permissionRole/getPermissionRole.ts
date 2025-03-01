@@ -26,9 +26,7 @@ export interface GetPermissionRoleResData {
 }
 
 // 获取角色权限
-export function getPermissionRoleAPI(
-    requestData: GetPermissionRoleRequest,
-): ResPromise<Res<GetPermissionRoleResData>> {
+export function getPermissionRoleAPI(requestData: GetPermissionRoleRequest): ResPromise<Res<GetPermissionRoleResData>> {
     const urlStr = routerGroup + "/role/get-permission-role"
     return request({
         url: urlStr,

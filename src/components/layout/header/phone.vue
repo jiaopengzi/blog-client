@@ -22,10 +22,7 @@
                     <router-link :to="{ name: RouteNames.Home }" class="link">
                         <div class="logo">
                             <h2>
-                                <img
-                                    src="@/assets/img/logo-text-rounded-rectangle-200-52.png"
-                                    :alt="RouteNames.Home"
-                                />
+                                <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" :alt="RouteNames.Home" />
                             </h2>
                         </div>
                     </router-link>

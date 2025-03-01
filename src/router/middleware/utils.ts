@@ -21,11 +21,7 @@ import type { MiddlewareFunction } from "./types"
  * @param from - 当前导航正要离开的路由对象
  * @returns 如果所有中间件都返回 true，则返回 true；否则返回第一个非 true 的结果
  */
-export const handleMiddleware = async (
-    middlewares: MiddlewareFunction[],
-    to: RouteLocationNormalized,
-    from: RouteLocationNormalized,
-) => {
+export const handleMiddleware = async (middlewares: MiddlewareFunction[], to: RouteLocationNormalized, from: RouteLocationNormalized) => {
     // 遍历所有中间件函数
     for (const middleware of middlewares) {
         // 执行中间件函数并等待其结果

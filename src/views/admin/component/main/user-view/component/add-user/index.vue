@@ -31,32 +31,21 @@
 
             <el-form-item label="密码" prop="password">
                 <el-input class="generate-password" type="text" v-model="addUserForm.password" />
-                <button type="button" class="btn-generate-password" @click="generatePasswordHandle">
-                    生成密码
-                </button>
+                <button type="button" class="btn-generate-password" @click="generatePasswordHandle">生成密码</button>
             </el-form-item>
 
             <el-form-item label="角色" prop="roleName">
                 <el-select v-model="addUserForm.roleName" placeholder="选择用户角色">
-                    <el-option
-                        v-for="item in props.roles"
-                        :key="item.role_name"
-                        :label="item.description"
-                        :value="item.role_name"
-                    />
+                    <el-option v-for="item in props.roles" :key="item.role_name" :label="item.description" :value="item.role_name" />
                 </el-select>
             </el-form-item>
             <el-form-item prop="isSendEmail">
-                <el-checkbox v-model="addUserForm.isSendEmail" value="发送邮件" name="send_email"
-                    >是否发送邮件到用户邮箱。</el-checkbox
-                >
+                <el-checkbox v-model="addUserForm.isSendEmail" value="发送邮件" name="send_email">是否发送邮件到用户邮箱。</el-checkbox>
             </el-form-item>
 
             <div class="btn-submit">
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm(addUserFormRef as FormInstance)"
-                        >新增用户</el-button
-                    >
+                    <el-button type="primary" @click="submitForm(addUserFormRef as FormInstance)">新增用户</el-button>
                 </el-form-item>
             </div>
         </el-form>
@@ -111,13 +100,7 @@ const emailRef = toRef(addUserForm, "email")
 const passwordRef = toRef(addUserForm, "password")
 
 // hooks
-const {
-    checkUserNameValidator,
-    checkEmailValidator,
-    createEmailRules,
-    createPasswordRules,
-    createUserNameRules,
-} = useAccountFormValidation({
+const { checkUserNameValidator, checkEmailValidator, createEmailRules, createPasswordRules, createUserNameRules } = useAccountFormValidation({
     FormUserName: userNameRef,
     FormEmail: emailRef,
     FormPassword: passwordRef,

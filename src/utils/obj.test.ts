@@ -10,9 +10,9 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { describe, expect,it } from "vitest"
+import { describe, expect, it } from "vitest"
 
-import { deepClone, deepEqual, getNumberKeyOfTops,getUpdatedFields } from "./obj"
+import { deepClone, deepEqual, getNumberKeyOfTops, getUpdatedFields } from "./obj"
 
 enum PostStatusCode {
     Draft = 1, // 草稿

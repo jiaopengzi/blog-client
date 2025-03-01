@@ -17,10 +17,7 @@ import { BaseCustomElement } from "../customElements"
  * @param {typeof BaseCustomElement} childElement 自定义元素类即组件挂载容器的类
  * @return {NodeListOf<Element>} 返回自定义组件容器列表 或 null
  */
-export const getComponentContainersFromCustomElements = (
-    container: HTMLElement,
-    childElement: typeof BaseCustomElement,
-): NodeListOf<Element> | null => {
+export const getComponentContainersFromCustomElements = (container: HTMLElement, childElement: typeof BaseCustomElement): NodeListOf<Element> | null => {
     // 判断 container childElement 是否存在，不存在则返回
     if (!container || !childElement) return null
 

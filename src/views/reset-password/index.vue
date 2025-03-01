@@ -13,11 +13,7 @@
 <template>
     <div class="reset-password-page">
         <!-- 添加滑动验证组件：SlideVerify -->
-        <SlideVerify
-            v-if="showSlideVerify"
-            @on-close="closeSlideVerify"
-            @on-success="sendCaptcha"
-        ></SlideVerify>
+        <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="sendCaptcha"></SlideVerify>
         <el-form
             :label-position="labelPosition"
             label-width="100px"
@@ -36,41 +32,22 @@
 
             <el-form-item label="验证码" prop="captcha">
                 <el-input class="email-code" v-model="forgotPasswordForm.captcha" clearable />
-                <button
-                    class="btn-captcha"
-                    type="button"
-                    @click="openSlideVerify"
-                    :disabled="btnCaptchaState.disabled"
-                >
+                <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="btnCaptchaState.disabled">
                     {{ captcha }}
                 </button>
             </el-form-item>
 
             <el-form-item label="新密码" prop="password">
-                <el-input
-                    type="password"
-                    show-password
-                    v-model="forgotPasswordForm.password"
-                    clearable
-                />
+                <el-input type="password" show-password v-model="forgotPasswordForm.password" clearable />
             </el-form-item>
 
             <el-form-item label="确认密码" prop="rePassword">
-                <el-input
-                    type="password"
-                    show-password
-                    v-model="forgotPasswordForm.rePassword"
-                    clearable
-                />
+                <el-input type="password" show-password v-model="forgotPasswordForm.rePassword" clearable />
             </el-form-item>
 
             <div class="btn-submit">
                 <el-form-item>
-                    <el-button
-                        type="primary"
-                        @click="submitForm(forgotPasswordFormRef as FormInstance)"
-                        >重置密码</el-button
-                    >
+                    <el-button type="primary" @click="submitForm(forgotPasswordFormRef as FormInstance)">重置密码</el-button>
                 </el-form-item>
             </div>
             <AccountFormFooter :to="['home', 'login']" />

@@ -28,8 +28,7 @@ const footerData = (): FooterProps => {
     return {
         left: {
             title: "本站简介",
-            content:
-                "我们主要玩：Power BI、Power Pivot、Power Query、Power BI Report Server及DAX等相关数据分析的内容。",
+            content: "我们主要玩：Power BI、Power Pivot、Power Query、Power BI Report Server及DAX等相关数据分析的内容。",
         },
         middle: [
             {

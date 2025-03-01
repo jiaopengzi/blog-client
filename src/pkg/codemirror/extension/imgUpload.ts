@@ -84,4 +84,4 @@ const handleDropImage: Extension = EditorView.domEventHandlers({
     },
 })
 
-export { handleDropImage,handlePasteImage }
+export { handleDropImage, handlePasteImage }

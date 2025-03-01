@@ -13,7 +13,7 @@ import { ResponseCode } from "@/api/response"
 import { getSubtitlesAPI, type Subtitles as SubtitlesRes } from "@/api/video/getSubtitles"
 
 import type { LanguageKey, PlayerState, Subtitles, SubtitlesItem } from "./types"
-import { Language, MediaTypes, PlaybackRate,PlayLevelLabel, PlayStatus } from "./types"
+import { Language, MediaTypes, PlaybackRate, PlayLevelLabel, PlayStatus } from "./types"
 
 /**
  * 创建默认播放器属性。
@@ -78,10 +78,7 @@ export const createDefaultPlayerState = (): PlayerState => ({
  * @param {string} videoHashId - 视频的哈希 ID。
  * @returns {Subtitles} - 返回字幕对象。
  */
-export const createSubtitlesByVideoHashId = async (
-    videoHashId: string | null | undefined | "",
-    playerState: PlayerState,
-): Promise<Subtitles> => {
+export const createSubtitlesByVideoHashId = async (videoHashId: string | null | undefined | "", playerState: PlayerState): Promise<Subtitles> => {
     // 如果没有指定哈希 ID，则返回空字幕对象
     if (!videoHashId) return {}
 

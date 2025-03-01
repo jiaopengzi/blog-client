@@ -9,8 +9,8 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
-import { type PaginationRequest,request, routerGroup } from "@/api/request"
-import type { Pagination,Res, ResPromise } from "@/api/response"
+import { type PaginationRequest, request, routerGroup } from "@/api/request"
+import type { Pagination, Res, ResPromise } from "@/api/response"
 import type { DataWithImg } from "@/components/common"
 
 export interface GetMediaFilesRequest extends PaginationRequest {
@@ -41,9 +41,7 @@ export interface MediaFile extends DataWithImg {
 }
 
 // 获取媒体文件信息 api 函数
-export async function getMediaFilesAPI(
-    requestData: GetMediaFilesRequest,
-): ResPromise<Res<Pagination<MediaFile>>> {
+export async function getMediaFilesAPI(requestData: GetMediaFilesRequest): ResPromise<Res<Pagination<MediaFile>>> {
     const urlStr = routerGroup + "/upload/view"
     return request({
         url: urlStr,

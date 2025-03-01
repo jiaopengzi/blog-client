@@ -43,7 +43,7 @@ export enum PermissionNames {
     LoginAdmin = "LoginAdmin",
     Backup = "Backup",
     PermissionRole = "PermissionRole",
-    AppOption = 'AppOption',
+    AppOption = "AppOption",
     UserAdd = "UserAdd",
     UserDelete = "UserDelete",
     UserEdit = "UserEdit",
@@ -100,9 +100,7 @@ interface GetPermissionListParams {
  * @param {GetPermissionListParams} params - 参数
  * @return {Promise<Permission[]>}
  */
-export async function getPermissionList(
-    params: GetPermissionListParams = {},
-): Promise<Permission[]> {
+export async function getPermissionList(params: GetPermissionListParams = {}): Promise<Permission[]> {
     const { useCache = true } = params // 默认使用缓存
 
     if (useCache) {
@@ -156,10 +154,7 @@ export async function devPermissionNames() {
             }
         }
         if (newPermissionNames) {
-            console.error(
-                "前端权限和后端权限有差异:\n 请将如下内容添加到枚举 enum PermissionNames 中\n" +
-                    newPermissionNames,
-            )
+            console.error("前端权限和后端权限有差异:\n 请将如下内容添加到枚举 enum PermissionNames 中\n" + newPermissionNames)
         }
     }
 }
