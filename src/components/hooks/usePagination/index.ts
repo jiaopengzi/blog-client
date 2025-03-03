@@ -1,8 +1,8 @@
 /**
  * @Author       : jiaopengzi
  * @Date         : 2025-01-03 15:39:05
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-04 10:43:53
+ * @LastEditors  : Please set LastEditors
+ * @LastEditTime : 2025-03-03 17:12:55
  * @FilePath     : \blog-client\src\components\hooks\usePagination\index.ts
  * @Description  : 分页内容是否请求
  * @Blog         : https://jiaopengzi.com
@@ -50,6 +50,7 @@ export function usePagination<T, K extends PaginationRequest>(
             isRequest.value = true
             return
         }
+
         const isMaxPageSizeOld = pagination.total < pagination.page_size * pagination.current_page
         const isMaxPageSizeNew = pagination.total < newPageSize * newCurrentPage
         isRequest.value = !(isMaxPageSizeOld && isMaxPageSizeNew)
@@ -97,7 +98,8 @@ export function usePagination<T, K extends PaginationRequest>(
 
     //  更新分页携带是否请求标志
     const updatePaginateWithIsRequest = async () => {
-        if (!isRequest.value) {
+        // pagination.total 等于 0, 说明上次没有请求到数据, 无论 isRequest 是否为 false, 都需要再次请求
+        if (!isRequest.value && pagination.total > 0) {
             isRequest.value = true // 重置为 true
             return
         }

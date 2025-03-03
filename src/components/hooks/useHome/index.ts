@@ -1,8 +1,8 @@
 /**
  * @Author       : jiaopengzi
  * @Date         : 2024-12-17 16:05:54
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-04 11:24:47
+ * @LastEditors  : Please set LastEditors
+ * @LastEditTime : 2025-03-03 17:08:54
  * @FilePath     : \blog-client\src\components\hooks\useHome\index.ts
  * @Description  : 首页hooks
  * @Blog         : https://jiaopengzi.com
@@ -143,7 +143,7 @@ export function useHome(
             current_page: paginationBlockVisibleCount.value,
         }
 
-        // 更新不请求标志
+        // 更新请求标志
         updateIsRequest({ newPageSize: req.page_size, newCurrentPage: req.current_page })
 
         if (!isRequest.value) {
