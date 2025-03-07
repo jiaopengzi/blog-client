@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2025-01-15 17:23:05
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-15 17:29:32
  * @FilePath     : \blog-client\src\components\common\restart-dialog\index.vue
- * @Description  : 重启弹窗
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 重启弹窗
 -->
 
 <template>

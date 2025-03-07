@@ -1,13 +1,12 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-08 17:47:39
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-02-05 17:07:43
  * @FilePath     : \blog-client\src\components\common\base-config-form\commonRules.ts
- * @Description  : 基础校验规则
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 基础校验规则
  */
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import type { FormRules } from "element-plus"
 
@@ -40,4 +39,52 @@ export const uploadRules: FormRules = {
             trigger: "blur",
         },
     ],
+}
+
+// 前缀校验 结尾为'_'且长度不超过50,不包含空格
+export const prefixValidatorFunc = (rule: any, value: any, callback: any) => {
+    if (!value.endsWith("_") || value.length > 50 || /\s/.test(value)) {
+        callback(new Error("前缀必须以'_'结尾,长度不超过50,不包含空格"))
+    } else {
+        callback()
+    }
+}
+
+// urlList校验 以逗号分隔的url列表,每个url必须以http或https开头
+// 例如: http://localhost:9200,https://localhost:9200
+// 同时判断逗号是否合法,不能有空格
+export const urlListValidatorFunc = (rule: any, value: any, callback: any) => {
+    // 判断是否有空格
+    if (value.includes(" ")) {
+        callback(new Error("url列表不能包含空格"))
+        return
+    }
+
+    // 判断逗号是否为合法的逗号
+    if (value.startsWith(",") || value.endsWith(",")) {
+        callback(new Error("逗号不合法"))
+        return
+    }
+
+    // 判断是否有连续的逗号
+    if (value.includes(",,") || value.includes(",,")) {
+        callback(new Error("逗号不合法"))
+        return
+    }
+
+    // 如果逗号为中文逗号则不合法
+    if (value.includes("，")) {
+        callback(new Error("逗号不合法,请使用英文逗号"))
+        return
+    }
+
+    const urlList = value.split(",")
+    for (const url of urlList) {
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            callback(new Error("url必须以http或https开头"))
+            return
+        }
+    }
+
+    callback()
 }

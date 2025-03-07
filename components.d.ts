@@ -19,6 +19,7 @@ declare module 'vue' {
     CommonBaseTableCustomCol: typeof import('./src/components/common/base-table/custom-col/index.vue')['default']
     CommonBindEmailDialog: typeof import('./src/components/common/bind-email-dialog/index.vue')['default']
     CommonCountdown: typeof import('./src/components/common/countdown/index.vue')['default']
+    CommonDbEs: typeof import('./src/components/common/db-es/index.vue')['default']
     CommonDbPgsql: typeof import('./src/components/common/db-pgsql/index.vue')['default']
     CommonDbRedis: typeof import('./src/components/common/db-redis/index.vue')['default']
     CommonIcons: typeof import('./src/components/common/icons/index.vue')['default']

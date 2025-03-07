@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2025-01-08 17:43:07
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-02-05 15:03:45
  * @FilePath     : \blog-client\src\components\common\base-config-form\index.vue
- * @Description  : 配置表单-基础组件
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 配置表单-基础组件
 -->
 
 <template>

@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2025-01-15 15:27:42
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-21 18:31:54
  * @FilePath     : \blog-client\src\views\admin\component\main\setting\database\index.vue
- * @Description  : 数据库配置页面
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 数据库配置页面
 -->
 
 <template>
@@ -30,6 +27,8 @@
                 :db="item"
                 :formWidth="formWidth"
             />
+
+            <ElasticsearchForm class="forms-item" ref="esFormRef" :db="dbES" :formWidth="formWidth" />
         </div>
     </div>
 </template>
@@ -40,8 +39,9 @@ import { computed, onBeforeMount, reactive, ref, useTemplateRef } from "vue"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { getDBsAPI } from "@/api/setting/getDBs"
 import { isSetupAPI } from "@/api/setting/isSetup"
-import { type PgsqlSetupRequest, type RedisNodeSetupRequest } from "@/api/setting/setup"
+import type { PgsqlSetupRequest, RedisNodeSetupRequest } from "@/api/setting/setup"
 import { updateDbsPasswordAPI } from "@/api/setting/updateDbsPassword"
+import ElasticsearchForm, { type ElasticsearchFormRef, type ESForm } from "@/components/common/db-es"
 import PgsqlForm, { type PgsqlDatabaseFormRef } from "@/components/common/db-pgsql"
 import RedisForm, { type RedisDatabaseFormRef } from "@/components/common/db-redis"
 import RestartDialog from "@/components/common/restart-dialog"
@@ -52,9 +52,11 @@ defineOptions({ name: "DatabaseUpdateForm" })
 
 const dbPgsql = ref<PgsqlSetupRequest>({} as PgsqlSetupRequest)
 const dbRedis = ref<RedisNodeSetupRequest[]>([])
+const dbES = ref<ESForm>({} as ESForm)
 
 const pgsqlFormRef = useTemplateRef<PgsqlDatabaseFormRef>("pgsqlFormRef")
 const redisFormRefs = reactive<{ [key: number]: RedisDatabaseFormRef | undefined }>({})
+const esFormRef = useTemplateRef<ElasticsearchFormRef>("esFormRef")
 
 const isShowRedisNodeNumber = computed(() => {
     return dbRedis.value.length > 1
@@ -81,6 +83,7 @@ const confirmFunc = () => {
 const { submit, waitSeconds, isShowTimer } = useDatabase(
     pgsqlFormRef,
     redisFormRefs,
+    esFormRef,
     updateDbsPasswordAPI,
     ResponseCode.DBsUpdateSuccess,
     isSetupAPI,
@@ -94,6 +97,14 @@ onBeforeMount(async () => {
     if (res.data.code === ResponseCode.GetDBsSuccess) {
         dbPgsql.value = res.data.data.pgsql
         dbRedis.value = res.data.data.redis
+
+        const esData = res.data.data.es
+        dbES.value = {
+            addresses: esData.addresses.join(","), // 转为字符串,使用逗号分隔便于展示
+            user_name: esData.user_name,
+            password: esData.password,
+            index_prefix: esData.index_prefix,
+        }
     } else {
         MessageUtil.error(handleResErr(res), 10000)
     }

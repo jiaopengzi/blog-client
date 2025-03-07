@@ -1,8 +1,8 @@
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2025-01-07 19:35:55
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-02-05 15:18:55
+ * @LastEditors  : Please set LastEditors
+ * @LastEditTime : 2025-03-07 13:34:14
  * @FilePath     : \blog-client\src\components\common\db-pgsql\index.vue
  * @Description  : pgsql数据库配置表单
  * @Blog         : https://jiaopengzi.com
@@ -17,7 +17,7 @@ import type { FormRules } from "element-plus"
 import { reactive, useTemplateRef, watch } from "vue"
 
 import { type PgsqlSetupRequest } from "@/api/setting/setup"
-import BaseConfigForm, { type BaseConfigFormRef, dbRules } from "@/components/common/base-config-form"
+import BaseConfigForm, { type BaseConfigFormRef, dbRules, prefixValidatorFunc } from "@/components/common/base-config-form"
 
 defineOptions({ name: "PgsqlDatabaseForm" })
 
@@ -46,13 +46,7 @@ const rules = reactive<FormRules<PgsqlSetupRequest>>({
         { required: true, message: "请输入表格前缀", trigger: "blur" },
         {
             // 结尾为'_'且长度不超过50,不包含空格
-            validator: (rule, value, callback) => {
-                if (!value.endsWith("_") || value.length > 50 || /\s/.test(value)) {
-                    callback(new Error("表格前缀必须以'_'结尾,长度不超过50,不包含空格"))
-                } else {
-                    callback()
-                }
-            },
+            validator: prefixValidatorFunc,
             trigger: "blur",
         },
     ],

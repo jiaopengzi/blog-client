@@ -1,13 +1,11 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2025-01-07 19:35:55
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-17 14:20:17
  * @FilePath     : \blog-client\src\views\setup\index.vue
- * @Description  : 数据库配置页面
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 数据库配置页面
 -->
+
 <template>
     <RestartDialog :is-show-timer="isShowTimer" :wait-seconds="waitSeconds" />
     <div class="page">
@@ -34,6 +32,9 @@
                     :form-width="330"
                 />
             </div>
+
+            <ElasticsearchForm class="data-form" ref="esFormRef" :form-width="330" />
+
             <el-button class="submit-btn" type="primary" @click="setupSubmit">提交</el-button>
         </div>
     </div>
@@ -47,6 +48,7 @@ import { ResponseCode } from "@/api/response"
 import { isSetupAPI } from "@/api/setting/isSetup"
 import { setupAPI } from "@/api/setting/setup"
 import AccountFormHeader from "@/components/common/account-form-header"
+import ElasticsearchForm, { type ElasticsearchFormRef } from "@/components/common/db-es"
 import PgsqlForm, { type PgsqlDatabaseFormRef } from "@/components/common/db-pgsql"
 import RedisForm, { type RedisDatabaseFormRef } from "@/components/common/db-redis"
 import RestartDialog from "@/components/common/restart-dialog"
@@ -61,6 +63,7 @@ const pgsqlFormRef = useTemplateRef<PgsqlDatabaseFormRef>("pgsqlFormRef")
 const redisNodeCount = ref(1)
 // 使用一个对象来存储所有 RedisForm 的 refs
 const redisFormRefs = reactive<{ [key: number]: RedisDatabaseFormRef | undefined }>({})
+const esFormRef = useTemplateRef<ElasticsearchFormRef>("esFormRef")
 
 const router = useRouter()
 
@@ -77,6 +80,7 @@ const setupSubmit = async () => {
 const { submit, waitSeconds, isShowTimer } = useDatabase(
     pgsqlFormRef,
     redisFormRefs,
+    esFormRef,
     setupAPI,
     ResponseCode.SetupSuccess,
     isSetupAPI,

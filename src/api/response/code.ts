@@ -1,8 +1,8 @@
 /**
  * @Author       : jiaopengzi
  * @Date         : 2024-12-29 12:08:15
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-02-04 17:00:23
+ * @LastEditors  : Please set LastEditors
+ * @LastEditTime : 2025-03-07 12:57:27
  * @FilePath     : \blog-client\src\api\response\code.ts
  * @Description  : 相应状态码
  * @Blog         : https://jiaopengzi.com
@@ -182,6 +182,7 @@ export enum ResponseCode {
     ConnectionPgsqlError = 9015, // 连接 pgsql 数据库失败
     ConnectionRedisError = 9016, // 连接 redis 数据库失败
     RedisNodeCountError = 9017, // redis 节点数量错误
-    HasAdmin = 9018, // 已经存在管理员
-    NoAdmin = 9019, // 不存在管理员
+    ConnectionESError = 9018, // 连接 ES 失败
+    HasAdmin = 9019, // 已经存在管理员
+    NoAdmin = 9020, // 不存在管理员
 }
