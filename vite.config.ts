@@ -19,7 +19,13 @@ import tsconfigPaths from "vite-tsconfig-paths"
 export default defineConfig({
     plugins: [
         tsconfigPaths(), // tsconfig 路径别名
-        vue(),
+        vue({
+            template: {
+                compilerOptions: {
+                    isCustomElement: (tag) => tag.startsWith("cropper-"), // 处理自定义元素警告 [Vue warn]: Failed to resolve component
+                },
+            },
+        }),
         vueJsx(),
 
         // ------------------------------element-plus 自动导入 开始
