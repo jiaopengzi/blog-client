@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-01-11 17:31:13
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 09:12:44
  * @FilePath     : \blog-client\src\components\common\avatar-upload\index.vue
- * @Description  : 头像上传
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 头像上传
 -->
 
 <template>
@@ -22,7 +19,28 @@
             <el-button type="primary" @click="openFileDialog">选择文件</el-button>
             <input type="file" ref="fileInput" accept="image/*" @change="onFileChange" style="display: none" />
             <!-- 选择后预览容器 -->
-            <div ref="cropperContainer" class="cropper-container"></div>
+
+            <!-- 文档参考1:https://fengyuanchen.github.io/cropperjs/zh/guide.html -->
+            <!-- 文档参考2:https://fengyuanchen.github.io/cropperjs/zh/playground.html -->
+            <div v-if="!imgURL" class="cropper-image-tip">请选择头像图片</div>
+            <cropper-canvas v-if="imgURL" background class="cropper-canvas">
+                <cropper-image :src="imgURL" alt="图片" rotatable scalable skewable translatable></cropper-image>
+                <cropper-shade hidden></cropper-shade>
+                <cropper-handle action="select" plain></cropper-handle>
+                <cropper-selection ref="cropperSelectionRef" initial-coverage="0.5" movable resizable>
+                    <cropper-grid role="grid" covered></cropper-grid>
+                    <cropper-crosshair centered></cropper-crosshair>
+                    <cropper-handle action="move" theme-color="rgba(255, 255, 255, 0.35)"></cropper-handle>
+                    <cropper-handle action="n-resize"></cropper-handle>
+                    <cropper-handle action="e-resize"></cropper-handle>
+                    <cropper-handle action="s-resize"></cropper-handle>
+                    <cropper-handle action="w-resize"></cropper-handle>
+                    <cropper-handle action="ne-resize"></cropper-handle>
+                    <cropper-handle action="nw-resize"></cropper-handle>
+                    <cropper-handle action="se-resize"></cropper-handle>
+                    <cropper-handle action="sw-resize"></cropper-handle>
+                </cropper-selection>
+            </cropper-canvas>
 
             <template #footer>
                 <div class="button-group">
@@ -35,11 +53,11 @@
 </template>
 
 <script lang="ts" setup>
-import "cropperjs/dist/cropper.min.css"
+import "cropperjs"
 
-import Cropper from "cropperjs"
+import { type CropperSelection } from "cropperjs"
 import { ElButton, ElDialog } from "element-plus"
-import { onUnmounted, ref, useTemplateRef } from "vue"
+import { ref, useTemplateRef } from "vue"
 
 import { MessageUtil } from "@/utils/message"
 
@@ -51,12 +69,12 @@ const emit = defineEmits<{
     (event: "avatar-upload-url", value: string): void // 头像上传地址
 }>()
 
+const imgURL = ref<string>("") // 图片地址
+
 const cropperVisible = ref(false)
 
 const fileInput = useTemplateRef<HTMLInputElement | null>("fileInput")
-const cropperContainer = useTemplateRef<HTMLDivElement | null>("cropperContainer")
-
-let cropperInstance: Cropper | null = null
+const cropperSelectionRef = useTemplateRef<CropperSelection | null>("cropperSelectionRef")
 
 // 切换 cropperVisible 状态
 const toggleCropperVisible = () => {
@@ -65,13 +83,6 @@ const toggleCropperVisible = () => {
 
 // 打开文件选择器
 const openFileDialog = () => {
-    fileInput.value?.click()
-}
-
-/**
- * @description: 打开裁剪器
- */
-function openCropper() {
     fileInput.value?.click()
 }
 
@@ -92,78 +103,34 @@ function onFileChange(e: Event) {
     }
 
     const url = URL.createObjectURL(file)
-    initCropper(url)
-}
 
-// 初始化裁剪器
-function initCropper(url: string) {
-    if (cropperInstance) {
-        cropperInstance.destroy() // 销毁之前的裁剪器
-    }
-
-    const imageWrapper = document.createElement("div") // 创建一个 div 用于包裹图片
-    const image = new Image() // 创建一个图片元素
-
-    // 图片加载完成后初始化裁剪器
-    image.addEventListener("load", () => {
-        cropperInstance = new Cropper(image, {
-            aspectRatio: 1, // 裁剪框比例
-            viewMode: 3, // 显示模式
-            autoCropArea: 1, // 自动裁剪区域
-            background: false, // 背景
-        })
-    })
-
-    image.src = url // 设置图片地址
-    imageWrapper.appendChild(image) // 将图片添加到包裹元素中
-
-    // 将包裹元素添加到裁剪器容器中
-    if (cropperContainer.value) {
-        cropperContainer.value.innerHTML = ""
-        cropperContainer.value.appendChild(imageWrapper)
-    }
-
-    cropperVisible.value = true // 显示裁剪器
+    imgURL.value = url
 }
 
 // 上传图片
-function uploadImage() {
-    if (cropperInstance) {
-        cropperInstance.getCroppedCanvas().toBlob(async (blob: Blob | null) => {
-            if (!blob) {
-                MessageUtil.error("无法获取裁剪后的图像")
-                return
-            }
-
-            const file = new File([blob], "avatar.png", { type: blob.type })
-            const imageUrl = await uploadAvatar(file)
-
-            // 上传成功后触发事件
-            if (imageUrl) {
-                emit("avatar-upload-url", imageUrl)
-                cropperVisible.value = false
-                MessageUtil.success("上传成功")
-            }
-        })
-    } else {
-        MessageUtil.warning("请先选择并裁剪图片")
+async function uploadImage() {
+    if (!cropperSelectionRef.value) {
+        MessageUtil.error("无法获取裁剪器")
+        return
     }
+    const canvas = await cropperSelectionRef.value.$toCanvas()
+    canvas.toBlob(async (blob: Blob | null) => {
+        if (!blob) {
+            MessageUtil.error("无法获取裁剪后的图像")
+            return
+        }
+
+        const file = new File([blob], "avatar.png", { type: blob.type })
+        const imageUrl = await uploadAvatar(file)
+
+        // 上传成功后触发事件
+        if (imageUrl) {
+            emit("avatar-upload-url", imageUrl)
+            cropperVisible.value = false
+            MessageUtil.success("上传成功")
+        }
+    })
 }
-
-// 组件销毁时销毁裁剪器实例
-onUnmounted(() => {
-    if (cropperInstance) {
-        cropperInstance.destroy()
-    }
-})
-
-// 导出方法
-defineExpose({
-    openCropper,
-    onFileChange,
-    initCropper,
-    uploadImage,
-})
 </script>
 
 <style scoped lang="scss">
@@ -180,30 +147,28 @@ defineExpose({
     justify-content: center;
 }
 
-.cropper-container {
-    margin-top: 20px;
+.cropper-canvas {
+    margin: 20px 0;
+    width: 100%;
+    height: 400px;
     overflow: hidden;
     position: relative;
 }
 
-img {
-    max-width: 100%;
-    max-height: 100%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+.cropper-image-tip {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 400px;
+    font-size: 20px;
+    color: var(--jpz-text-color-primary);
 }
 
 .button-group {
     display: flex;
-    /* 居中显示 */
+    // 居中显示
     justify-content: center;
     width: 100%;
-    margin: 10px 0;
-}
-
-.my-el-upload {
-    display: none;
 }
 </style>

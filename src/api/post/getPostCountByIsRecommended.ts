@@ -1,19 +1,16 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-20 12:28:27
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-20 14:06:34
  * @FilePath     : \blog-client\src\api\post\getPostCountByIsRecommended.ts
- * @Description  : 按照是否推荐统计文章数量
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 按照是否推荐统计文章数量
  */
 
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
 export interface PostCountByIsRecommended {
-    is_recommended: boolean // 是否推荐
+    is_recommended: number // 是否推荐
     count: number // 文章数量
 }
 

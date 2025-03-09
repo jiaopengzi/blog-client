@@ -17,6 +17,7 @@ export const dbRules: FormRules = {
     port: [{ required: true, message: "请输入数据库的端口号", trigger: "blur" }, useFormItemRule().portFormItemRule()],
     database: [{ required: true, message: "请输入数据库名称", trigger: "blur" }],
     user: [{ required: true, message: "请输入数据库用户", trigger: "blur" }],
+    user_name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
     password: [{ required: true, message: "请输入数据库密码", trigger: "blur" }],
 }
 

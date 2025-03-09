@@ -125,6 +125,6 @@ const { submit, waitSeconds, isShowTimer } = useDatabase(
 }
 
 .submit-btn {
-    margin-bottom: 20px;
+    margin: 20px 0;
 }
 </style>

@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-03 16:37:27
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-20 14:06:54
  * @FilePath     : \blog-client\src\views\admin\component\main\post-all\hooks.ts
- * @Description  : 文章统计数据
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 文章统计数据
  */
 
 import { computed, onBeforeMount, ref, watch } from "vue"
@@ -75,7 +72,7 @@ export function useHeader(userID: string = "") {
         if (res.data.code === ResponseCode.PostCountByIsPinnedSuccess) {
             // 拿到置顶文章数量
             res.data.data.forEach((item) => {
-                if (item.is_pinned) {
+                if (item.is_pinned > 0) {
                     postCountPinned.value = item
                 }
             })
@@ -91,7 +88,7 @@ export function useHeader(userID: string = "") {
         if (res.data.code === ResponseCode.PostCountByIsRecommendedSuccess) {
             // 拿到推荐文章数量
             res.data.data.forEach((item) => {
-                if (item.is_recommended) {
+                if (item.is_recommended > 0) {
                     postCountRecommended.value = item
                 }
             })
