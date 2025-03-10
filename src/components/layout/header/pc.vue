@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-01-11 22:31:47
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-17 09:55:50
  * @FilePath     : \blog-client\src\components\layout\header\pc.vue
- * @Description  : pc 头部
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : pc 头部
 -->
 
 <template>
@@ -100,7 +97,6 @@ const userStore = useUserStore()
 const { isLogin } = storeToRefs(userStore)
 
 onBeforeMount(() => {
-    // 组件挂载前
     // 通过本地信息 获取用户信息
     userStore.getUserInfoByToken()
 })

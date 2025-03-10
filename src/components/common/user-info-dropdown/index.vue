@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-01-12 10:19:24
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-08 12:00:46
  * @FilePath     : \blog-client\src\components\common\user-info-dropdown\index.vue
- * @Description  : 显示用户信息下拉菜单
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 用户信息下拉框 
 -->
 
 <template>

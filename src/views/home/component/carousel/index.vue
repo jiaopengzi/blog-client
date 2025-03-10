@@ -1,13 +1,11 @@
 <!--
+ * @FilePath     : \blog-client\src\views\home\component\carousel\index.vue
  * @Author       : jiaopengzi
- * @Date         : 2024-01-12 13:24:00
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 13:30:53
- * @FilePath     : \blog-client\src\components\layout\content\main\carousel\index.vue
- * @Description  : 轮播图
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 首页轮播图
 -->
+
 <template>
     <div class="block text-center">
         <el-carousel>
@@ -19,8 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-// eslint-disable-next-line vue/multi-word-component-names
-defineOptions({ name: "Carousel" })
+defineOptions({ name: "HomeCarousel" })
 </script>
 
 <style scoped>

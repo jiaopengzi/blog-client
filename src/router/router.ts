@@ -1,17 +1,14 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-03 11:01:47
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-08 10:49:00
  * @FilePath     : \blog-client\src\router\router.ts
- * @Description  : 路由
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 路由
  */
 
 import { createRouter, createWebHistory } from "vue-router"
 
-import { authMiddleware, editorMiddleware, handleMiddleware, registerAdminMiddleware, setupMiddleware } from "./middleware"
+import { authMiddleware, beforeunloadMiddleware, editorMiddleware, handleMiddleware, registerAdminMiddleware, setupMiddleware } from "./middleware"
 import { routes } from "./routes"
 
 // 创建路由实例
@@ -22,7 +19,7 @@ export const router = createRouter({
 
 // 路由守卫
 router.beforeEach(async (to, from) => {
-    const middlewares = [authMiddleware, editorMiddleware, registerAdminMiddleware, setupMiddleware]
+    const middlewares = [authMiddleware, beforeunloadMiddleware, editorMiddleware, registerAdminMiddleware, setupMiddleware]
     return await handleMiddleware(middlewares, to, from)
 })
 

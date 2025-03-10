@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-01-11 18:53:25
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-18 19:50:27
  * @FilePath     : \blog-client\src\components\common\bind-email-dialog\index.vue
- * @Description  : 绑定邮箱弹窗
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 绑定邮箱弹窗
 -->
 
 <template>

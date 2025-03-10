@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-01-11 20:57:06
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-08 11:56:51
  * @FilePath     : \blog-client\src\components\layout\header-nav\phone.vue
- * @Description  : 导航栏 手机端
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 导航栏 手机端
 -->
 
 <template>

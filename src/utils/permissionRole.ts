@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-03-07 14:24:11
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-03 12:17:00
  * @FilePath     : \blog-client\src\utils\permissionRole.ts
- * @Description  : 权限工具类
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 权限工具类
  */
 
 // 从 API 获取权限列表

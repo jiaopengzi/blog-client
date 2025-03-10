@@ -15,7 +15,6 @@ import { createApp } from "vue" // 创建Vue实例
 
 import App from "@/App.vue" // 根组件
 import JIcon from "@/components/common/icons" // 引用自定义的全局图标
-import { useGlobal } from "@/components/hooks/useGlobal" // 全局钩子
 import { devRun } from "@/dev" // 开发环境运行的函数
 import { router } from "@/router" // 路由
 import { permissionDirective } from "@/utils/permissionRole" // 权限指令
@@ -48,5 +47,3 @@ app.use(createHead()) // 参考官方文档:https://unhead.unjs.io/setup/vue/ins
 
 app.component("JIcon", JIcon) //  'JIcon' 作为全局组件
 app.mount("#app")
-
-useGlobal() // 全局钩子

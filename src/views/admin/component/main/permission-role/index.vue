@@ -1,13 +1,11 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-03-15 15:09:07
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-15 12:46:58
  * @FilePath     : \blog-client\src\views\admin\component\main\permission-role\index.vue
- * @Description  : 权限角色页面
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 权限角色页面
 -->
+
 <template>
     <section>
         <div class="container">

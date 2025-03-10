@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-03-07 21:01:15
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 09:48:44
  * @FilePath     : \blog-client\src\api\permissionRole\role.ts
- * @Description  : 角色相关
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 角色相关
  */
 
 import { type UpsertPermissionRoleRequest } from "@/api/permissionRole/upsertPermissionRole"

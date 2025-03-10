@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-08-29 16:27:59
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-03 14:38:54
  * @FilePath     : \blog-client\src\router\utils.ts
- * @Description  : 路由工具函数
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 路由工具
  */
 
 import type { LocationQueryRaw, Router } from "vue-router"

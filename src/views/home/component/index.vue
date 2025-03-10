@@ -1,8 +1,8 @@
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2024-01-12 13:26:17
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-03 22:07:31
+ * @LastEditors  : Please set LastEditors
+ * @LastEditTime : 2025-03-10 11:20:55
  * @FilePath     : \blog-client\src\views\home\component\index.vue
  * @Description  : 主页内容
  * @Blog         : https://jiaopengzi.com
@@ -31,7 +31,7 @@
             <el-container>
                 <el-main>
                     <!-- 轮播图 -->
-                    <Carousel />
+                    <HomeCarousel />
                     <!-- 文章列表 -->
                     <PostList
                         :pagination-data="pagination"
@@ -73,7 +73,7 @@ import HotPost from "@/components/layout/aside/hot-post"
 import PostTag from "@/components/layout/aside/post-tag"
 import RecommendedRead from "@/components/layout/aside/recommended-read"
 import { RouteNames } from "@/router"
-import Carousel from "@/views/home/component/carousel"
+import HomeCarousel from "@/views/home/component/carousel"
 import PostList from "@/views/home/component/post-list"
 
 defineOptions({ name: "LayoutHome" })

@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-09-29 10:52:39
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-18 18:02:20
  * @FilePath     : \blog-client\src\views\user-info\component\info\hooks\useInfo.ts
- * @Description  :
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 用户信息 hooks
  */
 
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S

@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-08 10:46:47
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-18 17:57:17
  * @FilePath     : \blog-client\src\router\types.ts
- * @Description  :
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 路由名称
  */
 
 // public 路由名称

@@ -1,15 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-10-09 09:35:45
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-18 17:31:48
  * @FilePath     : \blog-client\src\stores\user.ts
- * @Description  : 用户信息
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 用户信息 store
  */
 
-// @ts-check
 import { acceptHMRUpdate, defineStore } from "pinia"
 
 import { SocialLoginType } from "@/api/common"

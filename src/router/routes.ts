@@ -1,13 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-10-23 11:45:46
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-08 12:12:49
  * @FilePath     : \blog-client\src\router\routes.ts
- * @Description  : 所有路由配置
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 所有路由配置
  */
+
 import type { RouteRecordRaw } from "vue-router"
 
 import { adminRoutes } from "./routeAdmin"

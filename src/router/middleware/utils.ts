@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-03 11:08:03
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-07 21:58:12
  * @FilePath     : \blog-client\src\router\middleware\utils.ts
- * @Description  :
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 中间件处理函数
  */
 
 import type { RouteLocationNormalized } from "vue-router"

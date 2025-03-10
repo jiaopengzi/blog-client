@@ -1,13 +1,11 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-01-11 20:31:17
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-10 11:49:06
  * @FilePath     : \blog-client\src\components\layout\header\index.vue
- * @Description  : 头部
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 头部
 -->
+
 <template>
     <div class="pc">
         <HeaderPC />

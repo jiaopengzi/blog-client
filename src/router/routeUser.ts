@@ -1,13 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-10-23 12:02:58
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-18 19:23:25
  * @FilePath     : \blog-client\src\router\routeUser.ts
- * @Description  : 用户相关路由
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 用户相关路由
  */
+
 import type { RouteRecordRaw } from "vue-router"
 
 import { RouteNames } from "./types"
