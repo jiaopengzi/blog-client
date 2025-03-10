@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-01-12 19:26:45
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 19:29:06
  * @FilePath     : \blog-client\src\components\hooks\useScroll\index.ts
- * @Description  : 监控滚动条
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 监听滚动条
  */
 
 import { useScroll } from "./useScroll"

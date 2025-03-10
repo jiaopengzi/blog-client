@@ -1,12 +1,9 @@
 /**
+ * @FilePath     : \blog-client\src\views\admin\component\main\post-write\formHandler.ts
  * @Author       : jiaopengzi
- * @Date         : 2024-11-25 17:24:13
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-30 14:23:43
- * @FilePath     : \blog-client\src\views\admin\component\main\post-write\formHandler copy.ts
- * @Description  : 表单处理
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 表单处理
  */
 
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S

@@ -1,13 +1,11 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-01-11 20:51:41
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-26 15:12:20
  * @FilePath     : \blog-client\src\components\layout\header-nav\index.vue
- * @Description  : 导航栏
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 导航栏
 -->
+
 <template>
     <div class="pc">
         <HeaderNavPC :nav-data="navData" />

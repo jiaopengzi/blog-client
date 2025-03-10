@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-15 15:42:42
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-15 15:48:16
  * @FilePath     : \blog-client\src\views\admin\component\main\setting\email\index.ts
- * @Description  : 邮箱设置
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 邮箱配置
  */
 
 export { default } from "./index.vue"

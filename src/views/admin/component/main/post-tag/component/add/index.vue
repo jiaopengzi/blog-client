@@ -1,13 +1,11 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-11-04 16:21:40
- * @LastEditors  : Please set LastEditors
- * @LastEditTime : 2025-02-26 17:15:22
  * @FilePath     : \blog-client\src\views\admin\component\main\post-tag\component\add\index.vue
- * @Description  : 添加标签 
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 添加标签 
 -->
+
 
 <template>
     <View :view-data="addForm" :is-show-id="false" btn-submit-display="新增" @submit-data="submitData" />

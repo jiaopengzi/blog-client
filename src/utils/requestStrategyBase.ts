@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-09-25 20:06:48
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 13:48:37
  * @FilePath     : \blog-client\src\utils\requestStrategyBase.ts
- * @Description  : 上传请求策略基类
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 上传请求策略基类
  */
 
 import { type UploadRequestOptions } from "element-plus"

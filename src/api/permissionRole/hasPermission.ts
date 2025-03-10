@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-03-13 14:40:54
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 13:10:46
  * @FilePath     : \blog-client\src\api\permissionRole\hasPermission.ts
- * @Description  : 判断是否具有权限
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 判断是否具有权限
  */
 
 import { request, routerGroup } from "@/api/request"

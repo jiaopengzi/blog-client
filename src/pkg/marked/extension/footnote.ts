@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-11-28 18:53:28
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 09:58:09
  * @FilePath     : \blog-client\src\pkg\marked\extension\footnote.ts
- * @Description  : 脚注配置
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 脚注配置
  */
 
 import type { Options } from "marked-footnote"

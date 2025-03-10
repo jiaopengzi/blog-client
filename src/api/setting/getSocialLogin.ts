@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-20 11:23:38
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-21 12:57:22
  * @FilePath     : \blog-client\src\api\setting\getSocialLogin.ts
- * @Description  : 获取社交登录信息
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 获取社交登录信息
  */
 
 import { request, routerGroup } from "@/api/request"

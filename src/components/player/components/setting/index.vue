@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-09-14 10:53:37
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 11:43:43
  * @FilePath     : \blog-client\src\components\player\components\setting\index.vue
- * @Description  : 视频设置 - 播放速度、清晰度、字幕
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 视频设置 - 播放速度、清晰度、字幕
 -->
 
 <template>

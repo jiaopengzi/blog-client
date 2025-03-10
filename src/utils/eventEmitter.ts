@@ -1,8 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 /**
  * @FilePath     : \blog-client\src\utils\eventEmitter.ts
  * @Description  : 事件触发器 EventEmitter 类 参考袁老师的文章 https://fe.duyiedu.com/p/t_pc/goods_pc_detail/goods_detail/course_2hzyLq1i84ydVnT200svNMYPFVH
  */
+
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 
 // 定义一个事件触发器类
 export class EventEmitter<T extends string> {

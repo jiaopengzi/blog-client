@@ -1,12 +1,9 @@
 /**
+ * @FilePath     : \blog-client\src\api\upload\uploadFileBySignedUrl.ts
  * @Author       : jiaopengzi
- * @Date         : 2024-08-09 09:11:52
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-09 09:28:36
- * @FilePath     : \blog-client\src\api\upload\uploadFileBySingedUrl.ts
- * @Description  : 使用 签名URL 上传文件
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 使用 签名URL 上传文件
  */
 
 import { request } from "@/api/request"

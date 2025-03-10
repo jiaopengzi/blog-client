@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-01-27 16:23:49
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 13:13:53
  * @FilePath     : \blog-client\src\api\upload\file.ts
- * @Description  : 上传文件
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 上传文件
  */
 
 import { type ReqProgressEvent, request, routerGroup } from "@/api/request"

@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2025-02-05 14:03:20
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-02-05 14:56:33
  * @FilePath     : \blog-client\src\views\admin\component\main\setting\upload\local\index.vue
- * @Description  : 本地上传配置
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 本地上传配置
 -->
 
 <template>

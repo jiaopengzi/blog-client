@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2025-02-05 12:39:42
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-02-05 17:06:52
  * @FilePath     : \blog-client\src\views\admin\component\main\setting\upload\oss\index.vue
- * @Description  : 阿里云OSS上传配置
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 阿里云OSS上传配置
 -->
 
 <template>

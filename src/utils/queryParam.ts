@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-03 15:14:40
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-03 15:20:31
  * @FilePath     : \blog-client\src\utils\queryParam.ts
- * @Description  : 解析 URL 查询参数
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 解析 URL 查询参数
  */
 
 import { type LocationQuery } from "vue-router"

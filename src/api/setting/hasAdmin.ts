@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-14 11:45:59
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-14 11:46:09
  * @FilePath     : \blog-client\src\api\setting\hasAdmin.ts
- * @Description  : 是否已经设置了管理员
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 是否已经设置了管理员
  */
 
 import { request, routerGroup } from "@/api/request"

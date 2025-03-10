@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-02-14 16:35:26
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 11:57:37
  * @FilePath     : \blog-client\src\utils\typeOf.ts
- * @Description  : 类型判断工具类
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 类型判断工具类
  */
 
 /**

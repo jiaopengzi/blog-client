@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-23 12:09:26
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-23 12:10:49
  * @FilePath     : \blog-client\src\api\post\getPostCountByMonthAdmin.ts
- * @Description  : 按照作者统计文章数量(管理员)
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 按照作者统计文章数量(管理员)
  */
 
 import { request, routerGroup } from "@/api/request"

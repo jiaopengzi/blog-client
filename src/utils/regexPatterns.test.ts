@@ -1,13 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-11-27 15:17:31
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-07 14:04:22
  * @FilePath     : \blog-client\src\utils\regexPatterns.test.ts
- * @Description  : 正则表达式测试
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 正则表达式测试
  */
+
 import { describe, expect, it } from "vitest"
 
 import { RegexPatterns } from "./regexPatterns"

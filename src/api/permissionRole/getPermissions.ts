@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-03-07 10:39:40
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 11:22:05
  * @FilePath     : \blog-client\src\api\permissionRole\getPermissions.ts
- * @Description  : 权限
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 获取权限列表
  */
 
 import { request, routerGroup } from "@/api/request"

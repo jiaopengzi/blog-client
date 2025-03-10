@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-12-10 17:55:55
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 10:10:51
  * @FilePath     : \blog-client\src\utils\lineNumbers.ts
- * @Description  : 行号工具类
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 行号工具类
  */
 
 // markdown 标题行号类型

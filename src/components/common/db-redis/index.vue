@@ -1,13 +1,11 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2025-01-07 19:35:55
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-02-05 15:19:13
  * @FilePath     : \blog-client\src\components\common\db-redis\index.vue
- * @Description  : redis数据库配置表单
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : redis 数据库配置表单
 -->
+
 <template>
     <BaseConfigForm ref="formRef" :title="nodeName" :form-data="db" :rules="rules" :form-items="formItems" :form-width="formWidth" />
 </template>

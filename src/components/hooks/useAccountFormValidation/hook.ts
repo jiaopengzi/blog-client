@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-06-16 15:53:38
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-13 15:04:38
  * @FilePath     : \blog-client\src\components\hooks\useAccountFormValidation\hook.ts
- * @Description  : 用户表单校验
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 用户表单校验
  */
 
 import { CaptchaPurpose } from "@/api/common"

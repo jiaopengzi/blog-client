@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-18 16:27:07
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-18 18:27:56
  * @FilePath     : \blog-client\src\api\user\socialLogin.ts
- * @Description  : 社交登录
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 社交登录
  */
 
 import type { SocialLoginType } from "@/api/common"
@@ -51,7 +48,6 @@ export function socialBindCallback(code: string, loginType: SocialLoginType): Re
 
 // 社交解绑
 export function socialUnBind(loginType: SocialLoginType): ResPromise<Res<unknown>> {
-    console.log("===============>05", loginType)
     const urlStr = `${routerGroup}/social/unbind?login-type=${loginType}`
     return request({
         url: urlStr,

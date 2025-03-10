@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-12-07 22:26:49
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 09:54:46
  * @FilePath     : \blog-client\src\pkg\codemirror\extension\hotkey.ts
- * @Description  : codemirror 自定义快捷键
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : codemirror 自定义快捷键
  */
 
 import { copyLineDown } from "@codemirror/commands"

@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-10-19 13:34:36
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-21 15:44:07
  * @FilePath     : \blog-client\src\components\editor\core\types.ts
- * @Description  : 编辑器类型
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 编辑器类型
  */
 
 import type { CommandsKey, MarkdownEditorCommandItem } from "@/components/editor/command"

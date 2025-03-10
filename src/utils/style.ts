@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-12-27 14:36:50
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 11:54:55
  * @FilePath     : \blog-client\src\utils\style.ts
- * @Description  : 样式工具类
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 样式工具类
  */
 
 import { type ImgFit } from "@/components/common"

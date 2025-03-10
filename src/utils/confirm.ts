@@ -1,13 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-03-20 16:06:12
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-03 17:26:51
  * @FilePath     : \blog-client\src\utils\confirm.ts
- * @Description  :
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 确认框逻辑
  */
+
 import { MsgTitle, MsgType } from "@/components/common"
 
 /**

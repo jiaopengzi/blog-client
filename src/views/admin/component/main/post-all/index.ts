@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-11-23 17:05:44
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-20 12:21:11
  * @FilePath     : \blog-client\src\views\admin\component\main\post-all\index.ts
- * @Description  : 查看所有文章
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 文章管理
  */
 
 export { default } from "./index.vue"

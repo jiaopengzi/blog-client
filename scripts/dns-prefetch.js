@@ -2,6 +2,7 @@
  * @FilePath     : \blog-client\scripts\dns-prefetch.js
  * @Description  : 度一袁老师的短视频，学习到的，用于预取链接 package.json 中配置 新增 build-dns
  */
+
 import fs from "fs"
 import { glob } from "glob"
 // import path from 'path';

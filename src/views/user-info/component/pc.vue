@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-09-29 10:52:39
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-17 10:56:55
  * @FilePath     : \blog-client\src\views\user-info\component\pc.vue
- * @Description  : 
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 用户信息组件 PC 端
 -->
 
 <template>

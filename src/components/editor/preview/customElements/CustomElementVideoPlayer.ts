@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-10-23 18:01:44
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-02 15:42:59
  * @FilePath     : \blog-client\src\components\editor\preview\customElements\CustomElementVideoPlayer.ts
- * @Description  : 自定义元素 VideoPlayer 视频播放器,用于挂载视频播放器vue组件
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 自定义元素 VideoPlayer 视频播放器,用于挂载视频播放器vue组件
  */
 
 import { BaseCustomElement } from "./base"

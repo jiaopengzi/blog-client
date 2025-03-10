@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-07-25 09:41:24
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 13:13:10
  * @FilePath     : \blog-client\src\api\upload\chunk.ts
- * @Description  : 分片上传
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 分片上传
  */
 
 import { request, routerGroup } from "@/api/request"

@@ -1,13 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-12-20 16:08:44
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-22 14:55:34
  * @FilePath     : \blog-client\src\components\editor\core\hooks\useToc.ts
- * @Description  : toc 目录导航 hook
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : toc 目录导航 hook
  */
+
 import type { Ref } from "vue"
 
 import { EditorStateManager } from "../state"

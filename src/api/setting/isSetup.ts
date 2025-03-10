@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-07 16:52:53
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-07 16:54:29
  * @FilePath     : \blog-client\src\api\setting\isSetup.ts
- * @Description  : 是否已经设置数据库
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 是否已经设置数据库
  */
 
 import { request, routerGroup } from "@/api/request"

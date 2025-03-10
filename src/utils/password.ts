@@ -1,13 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-06-16 17:48:53
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 10:13:24
  * @FilePath     : \blog-client\src\utils\password.ts
- * @Description  : 生成随机密码
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 生成随机密码
  */
+
 export interface GeneratePasswordOptions {
     upperCaseCount?: number // 大写字母个数
     lowerCaseCount?: number // 小写字母个数

@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2025-01-13 12:13:04
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-14 15:38:06
  * @FilePath     : \blog-client\src\components\common\account-form-footer\index.vue
- * @Description  : 账号相关表单底部
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 账号相关表单底部
 -->
 
 <template>

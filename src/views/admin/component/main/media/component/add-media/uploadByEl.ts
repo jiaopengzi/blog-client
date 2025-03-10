@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-09-30 10:48:16
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-06 11:53:52
  * @FilePath     : \blog-client\src\views\admin\component\main\media\component\add-media\uploadByEl.ts
- * @Description  : 使用 Element Plus 的上传组件上传文件
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 使用 Element Plus 的上传组件上传文件
  */
 
 import { type UploadRequestOptions } from "element-plus"

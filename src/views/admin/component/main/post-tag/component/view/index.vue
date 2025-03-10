@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-11-25 11:03:13
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 12:09:38
  * @FilePath     : \blog-client\src\views\admin\component\main\post-tag\component\view\index.vue
- * @Description  : 标签展示组件
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 标签展示组件
 -->
 
 <template>

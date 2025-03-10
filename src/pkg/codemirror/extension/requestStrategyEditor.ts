@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-09-30 10:59:48
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-30 12:20:56
  * @FilePath     : \blog-client\src\pkg\codemirror\extension\requestStrategyEditor.ts
- * @Description  : 编辑器上传请求策略
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 编辑器上传请求策略
  */
 
 import { uploadChunkEditorAPI } from "@/api/upload/chunk"

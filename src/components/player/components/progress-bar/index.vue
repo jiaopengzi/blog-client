@@ -1,13 +1,11 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-09-11 16:17:45
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 11:43:07
  * @FilePath     : \blog-client\src\components\player\components\progress-bar\index.vue
- * @Description  : 视频进度条
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 视频进度条
 -->
+
 <template>
     <!-- 视频进度条 -->
     <div

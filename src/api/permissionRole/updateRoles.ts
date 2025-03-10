@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-03-19 21:07:35
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-19 21:16:23
  * @FilePath     : \blog-client\src\api\permissionRole\updateRoles.ts
- * @Description  : 更新角色权限
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 更新角色权限接口
  */
 
 import { request, routerGroup } from "@/api/request"

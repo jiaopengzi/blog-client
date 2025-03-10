@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-20 11:19:58
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-20 11:23:27
  * @FilePath     : \blog-client\src\api\setting\getEmail.ts
- * @Description  : 获取邮箱信息
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 获取邮箱信息
  */
 
 import { request, routerGroup } from "@/api/request"

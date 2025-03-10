@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-13 15:40:33
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-13 15:41:54
  * @FilePath     : \blog-client\src\api\user\registerAdmin.ts
- * @Description  : 注册管理员
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 注册管理员
  */
 
 import { request, routerGroup } from "@/api/request"

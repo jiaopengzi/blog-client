@@ -1,13 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-09-10 15:14:31
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 14:17:29
  * @FilePath     : \blog-client\src\pkg\hls\hls.d.ts
- * @Description  : 将自定义的KeyLoaderContext接口导出
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 将自定义的KeyLoaderContext接口导出
  */
+
 declare module "custom-hls" {
     import type { Fragment, KeyLoadedData, LevelKey, Loader, LoaderContext, MediaKeySessionContext } from "hls.js"
 

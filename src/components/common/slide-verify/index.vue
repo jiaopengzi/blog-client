@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-01-11 18:55:56
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-10 14:14:01
  * @FilePath     : \blog-client\src\components\common\slide-verify\index.vue
- * @Description  : 滑块验证
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 滑块验证
 -->
 
 <template>

@@ -1,13 +1,11 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-01-17 20:28:32
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-04 12:37:19
  * @FilePath     : \blog-client\src\components\common\recursive-menu-item\index.vue
- * @Description  : 递归创建层级菜单
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 递归创建层级菜单
 -->
+
 <template>
     <!-- 当前菜单项没有子菜单时，显示一个普通的菜单项 -->
     <!-- 注意 Icon 在 item 和 menu 是不同的 -->

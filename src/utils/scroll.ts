@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-12-11 15:32:10
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-21 17:32:32
  * @FilePath     : \blog-client\src\utils\scroll.ts
- * @Description  : 滚动条工具类
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 滚动条工具类
  */
 
 import { useScroll } from "@vueuse/core"

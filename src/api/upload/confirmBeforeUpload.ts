@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-07-24 21:48:24
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 13:13:40
  * @FilePath     : \blog-client\src\api\upload\confirmBeforeUpload.ts
- * @Description  : 上传文件前确认
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 上传文件前确认
  */
 
 import { request, routerGroup } from "@/api/request"

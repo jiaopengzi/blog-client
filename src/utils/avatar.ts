@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-06-18 18:11:58
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-18 18:18:28
  * @FilePath     : \blog-client\src\utils\avatar.ts
- * @Description  : 头像逻辑
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 头像逻辑
  */
 
 import type { UserInfo } from "@/api/user/getUserInfo"

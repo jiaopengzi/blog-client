@@ -1,13 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-02-22 14:05:54
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-02-22 14:37:07
  * @FilePath     : \blog-client\src\components\hooks\useFakeProgress\index.ts
- * @Description  : 参考：https://liubing.me/article/vue/vue3-use-fake-progress.html#%E5%B0%81%E8%A3%85%E6%88%90-hook
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 生成虚假进度条 参考：https://liubing.me/article/vue/vue3-use-fake-progress.html#%E5%B0%81%E8%A3%85%E6%88%90-hook
  */
+
 import FakeProgress from "fake-progress"
 import { computed, onBeforeUnmount, type Ref, ref } from "vue"
 

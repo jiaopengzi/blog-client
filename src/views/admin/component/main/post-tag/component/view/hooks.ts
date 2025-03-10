@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-11-05 10:11:52
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-07 14:21:49
  * @FilePath     : \blog-client\src\views\admin\component\main\post-tag\component\view\hooks.ts
- * @Description  : 表单验证
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 表单验证
  */
 
 import type { FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S

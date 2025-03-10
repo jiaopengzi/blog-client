@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-03-26 15:02:29
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 10:08:23
  * @FilePath     : \blog-client\src\api\user\getUserCountGroupByRole.ts
- * @Description  : 用户统计
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 用户统计
  */
 
 import { request, routerGroup } from "@/api/request"

@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-17 12:15:49
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-17 12:19:01
  * @FilePath     : \blog-client\src\api\setting\updateDbsPassword.ts
- * @Description  : 更新数据库密码
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 更新数据库密码
  */
 
 import { request, routerGroup } from "@/api/request"

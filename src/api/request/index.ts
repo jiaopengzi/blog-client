@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-29 12:38:43
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-03 15:19:27
  * @FilePath     : \blog-client\src\api\request\index.ts
- * @Description  : 聚合导出
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 聚合导出
  */
 
 export { default as request } from "./axios"

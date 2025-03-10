@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-11-25 16:44:10
- * @LastEditors  : Please set LastEditors
- * @LastEditTime : 2025-02-28 21:18:10
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\useEdit.ts
- * @Description  : 编辑文章
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 编辑文章
  */
 
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S

@@ -1,13 +1,11 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-11-24 15:53:28
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 11:01:44
  * @FilePath     : \blog-client\src\components\common\base-table\custom-col\index.vue
- * @Description  : 自定义列 
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 自定义列 
 -->
+
 <template>
     <el-table-column :width="col.width" :min-width="col.minWidth" :align="col.align" :label="col.label">
         <template #default="scope">

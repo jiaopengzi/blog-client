@@ -1,13 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-01-03 12:48:46
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 10:41:46
  * @FilePath     : \blog-client\src\version.ts
- * @Description  : 版本信息
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 版本信息
  */
+
 
 import pkg from "../package.json"
 

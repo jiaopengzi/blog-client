@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-30 11:52:45
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-15 12:53:23
  * @FilePath     : \blog-client\src\views\admin\component\aside\utils.ts
- * @Description  : 工具
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 工具
  */
 
 import { IconKeys } from "@/components/common/icons" // 图标名称枚举

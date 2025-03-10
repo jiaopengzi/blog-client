@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-21 16:19:45
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-21 16:20:37
  * @FilePath     : \blog-client\src\api\setting\getSocialLoginStatus.ts
- * @Description  : 获取社交登录状态信息
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 获取社交登录状态信息
  */
 
 import { request, routerGroup } from "@/api/request"

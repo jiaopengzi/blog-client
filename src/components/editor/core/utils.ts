@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-10-19 14:00:38
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 14:24:36
  * @FilePath     : \blog-client\src\components\editor\core\utils.ts
- * @Description  : 编辑器工具函数
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 编辑器工具函数
  */
 
 import DOMPurify, { type Config } from "dompurify"

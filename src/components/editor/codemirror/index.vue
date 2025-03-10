@@ -1,13 +1,11 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2023-12-02 10:33:32
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 12:40:58
  * @FilePath     : \blog-client\src\components\editor\codemirror\index.vue
- * @Description  : codemirror 编辑器
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : codemirror 编辑器
 -->
+
 <template>
     <div ref="codemirrorRef" id="my-codemirror"></div>
 </template>

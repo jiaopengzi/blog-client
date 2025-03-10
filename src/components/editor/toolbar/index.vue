@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2023-12-12 13:02:01
- * @LastEditors  : Please set LastEditors
- * @LastEditTime : 2025-03-10 10:43:46
  * @FilePath     : \blog-client\src\components\editor\toolbar\index.vue
- * @Description  : 工具栏组件
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 工具栏组件
 -->
 
 <template>

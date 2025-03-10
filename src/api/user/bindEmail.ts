@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-10-21 20:26:33
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-23 16:16:50
  * @FilePath     : \blog-client\src\api\user\bindEmail.ts
- * @Description  : 绑定邮箱
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 绑定邮箱
  */
 
 // import request from '../request'

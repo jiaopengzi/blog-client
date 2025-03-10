@@ -1,13 +1,11 @@
 /**
+ * @FilePath     : \blog-client\src\components\editor\command\insert.ts
  * @Author       : jiaopengzi
- * @Date         : 2023-12-02 11:30:23
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-21 14:28:55
- * @FilePath     : \blog-client\src\components\common\editor\command\insert.ts
- * @Description  : markdown 插入命令
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : markdown 插入命令
  */
+
 import type { MarkdownEditorCommandItem } from "@/components/editor/command"
 import { EditorView } from "@/pkg/codemirror/setup"
 

@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2023-08-04 10:54:19
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-17 19:08:07
  * @FilePath     : \blog-client\src\App.vue
- * @Description  : 入口文件
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 入口文件
 -->
 
 <template>

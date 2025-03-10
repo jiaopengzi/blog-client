@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-08-31 13:10:47
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 13:12:19
  * @FilePath     : \blog-client\src\views\admin\component\main\media\component\add-media\index.vue
- * @Description  : 添加媒体
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 添加媒体文件
 -->
 
 <template>

@@ -1,13 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-05 19:00:17
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-03 12:39:20
  * @FilePath     : \blog-client\src\components\hooks\useParams\index.ts
- * @Description  : 路由参数解析回响应式变量
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 路由参数解析回响应式变量
  */
+
 import { onBeforeMount, type Reactive, type Ref, watch } from "vue"
 
 import type { PaginationRequest } from "@/api/request"

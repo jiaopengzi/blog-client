@@ -1,13 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-03 14:46:07
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-13 16:58:31
  * @FilePath     : \blog-client\src\api\post\getPostCountByAuthor.ts
- * @Description  : 按照作者统计文章数量
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 按照作者统计文章数量
  */
+
 
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"

@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-01-12 10:17:04
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-17 10:35:00
  * @FilePath     : \blog-client\src\components\layout\footer\phone.vue
- * @Description  : 底部 移动端
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 底部 移动端
 -->
 
 <template>

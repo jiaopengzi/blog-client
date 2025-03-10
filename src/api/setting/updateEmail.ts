@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-20 11:28:20
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-20 11:29:42
  * @FilePath     : \blog-client\src\api\setting\updateEmail.ts
- * @Description  : 更新邮箱信息
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 更新邮箱信息
  */
 
 import { request, routerGroup } from "@/api/request"

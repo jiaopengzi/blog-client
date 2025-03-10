@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-13 14:24:30
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-13 15:26:40
  * @FilePath     : \blog-client\src\components\hooks\useAccountFormValidation\api\captcha.ts
- * @Description  : 验证码相关API
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 验证码相关API
  */
 
 import { captchaCheckAPI, type CaptchaCheckRequest } from "@/api/captcha/check"

@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-01-13 13:36:09
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-24 18:48:50
  * @FilePath     : \blog-client\scripts\openDocument.js
- * @Description  : 打开指定的文档
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 打开指定URL
  */
 
 import child_process from "child_process"

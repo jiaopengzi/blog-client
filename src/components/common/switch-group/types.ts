@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-30 11:26:06
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 11:26:19
  * @FilePath     : \blog-client\src\components\common\switch-group\types.ts
- * @Description  : 开关组件类型
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 开关组件类型
  */
 
 import { IconKeys } from "@/components/common/icons"

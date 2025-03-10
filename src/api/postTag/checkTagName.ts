@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-11-04 17:22:32
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-04 17:24:00
  * @FilePath     : \blog-client\src\api\postTag\checkTagName.ts
- * @Description  : 检查 tag 名称是否存在
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 检查 tag 名称是否存在
  */
 
 import { request, routerGroup } from "@/api/request"

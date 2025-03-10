@@ -1,13 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-11-28 15:32:40
- * @LastEditors  : Please set LastEditors
- * @LastEditTime : 2025-03-09 23:55:24
  * @FilePath     : \blog-client\src\pkg\marked\extension\emoji.ts
- * @Description  : 扩展 marked 的解析器，支持 emoji 标记
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 扩展 marked 的解析器，支持 emoji 标记
  */
+
 import emojiJson from "emoji.json"
 import type { MarkedEmojiOptions } from "marked-emoji"
 

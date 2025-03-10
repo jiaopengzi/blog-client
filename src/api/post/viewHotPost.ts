@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-18 11:57:15
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 12:50:36
  * @FilePath     : \blog-client\src\api\post\viewHotPost.ts
- * @Description  : 热门文章
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 热门文章
  */
 
 import { request, routerGroup } from "@/api/request"

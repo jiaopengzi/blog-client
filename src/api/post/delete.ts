@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-11-23 17:30:34
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 13:18:23
  * @FilePath     : \blog-client\src\api\post\delete.ts
- * @Description  : 删除文章
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 删除文章
  */
 
 import { request, routerGroup } from "@/api/request"

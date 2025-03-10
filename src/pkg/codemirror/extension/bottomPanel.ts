@@ -1,6 +1,11 @@
 /**
  * @FilePath     : \blog-client\src\pkg\codemirror\extension\bottomPanel.ts
+ * @Author       : jiaopengzi
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : codemirror 底部面板
  */
+
 import type { Extension } from "@codemirror/state"
 import type { TextIterator } from "@codemirror/state"
 import { Text } from "@codemirror/state"

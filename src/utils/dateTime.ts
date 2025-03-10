@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-10-09 16:07:26
- * @LastEditors  : Please set LastEditors
- * @LastEditTime : 2025-02-17 16:31:42
  * @FilePath     : \blog-client\src\utils\dateTime.ts
- * @Description  : 格式化时间
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 格式化时间
  */
 
 /**

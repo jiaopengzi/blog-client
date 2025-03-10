@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-21 15:22:37
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-21 15:35:04
  * @FilePath     : \blog-client\src\components\hooks\useFormItemRule\index.ts
- * @Description  : 表单子项校验规则
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 表单子项校验规则
  */
 
 import type { FormItemRule } from "element-plus"

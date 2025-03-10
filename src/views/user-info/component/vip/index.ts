@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-09-29 10:52:39
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 10:38:25
  * @FilePath     : \blog-client\src\views\user-info\component\vip\index.ts
- * @Description  :
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : VIP组件
  */
 
 export { default } from "./index.vue"

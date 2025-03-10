@@ -1,13 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-11-06 08:57:02
- * @LastEditors  : Please set LastEditors
- * @LastEditTime : 2025-03-03 17:05:44
  * @FilePath     : \blog-client\src\components\hooks\useBaseTable\index.ts
- * @Description  : 基础表格钩子
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 基础表格钩子
  */
+
 import { onBeforeMount, type Reactive, reactive, ref } from "vue"
 import { useRoute, useRouter } from "vue-router"
 

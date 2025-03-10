@@ -1,13 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-11-06 14:33:52
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-06 11:20:41
  * @FilePath     : \blog-client\src\api\postCategory\insert.ts
- * @Description  : 插入文章分类
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 插入文章分类
  */
+
 
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"

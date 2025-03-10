@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-03-07 11:14:21
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 18:28:24
  * @FilePath     : \blog-client\src\dev.ts
- * @Description  : 开发环境下需要运行的函数
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 开发环境下需要运行的函数
  */
 
 import { devCheckIconKeys, iconMap } from "@/components/common/icons"

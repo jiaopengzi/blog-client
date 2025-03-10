@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-01-12 22:59:22
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-04 21:49:30
  * @FilePath     : \blog-client\src\components\hooks\useScroll\useScroll.ts
- * @Description  : 滚动事件监听
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 滚动事件监听
  */
 
 import { onMounted, onUnmounted } from "vue"

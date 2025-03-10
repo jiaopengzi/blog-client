@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-12-01 22:04:48
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 09:39:50
  * @FilePath     : \blog-client\src\api\captcha\check.ts
- * @Description  : 验证码校验
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 验证码校验接口
  */
 
 import { request, routerGroup } from "@/api/request"

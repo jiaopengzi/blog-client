@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-12-21 14:44:02
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-18 17:15:44
  * @FilePath     : \blog-client\src\components\common\tag-item\index.ts
- * @Description  :
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 标签组件
  */
 
 export { default } from "./index.vue"

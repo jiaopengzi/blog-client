@@ -1,13 +1,11 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-09-15 15:11:14
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 11:44:43
  * @FilePath     : \blog-client\src\components\player\components\watermark\index.vue
- * @Description  : 水印
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 水印
 -->
+
 <template>
     <div class="watermark-container" ref="containerRef">
         <slot />

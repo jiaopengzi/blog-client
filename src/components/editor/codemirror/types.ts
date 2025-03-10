@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-30 11:28:31
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 11:28:40
  * @FilePath     : \blog-client\src\components\editor\codemirror\types.ts
- * @Description  : 类型定义
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 类型定义
  */
 
 export interface CodeEditorProps {

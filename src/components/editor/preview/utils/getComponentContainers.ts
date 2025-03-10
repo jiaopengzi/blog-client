@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-10-23 18:08:10
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-23 18:15:20
  * @FilePath     : \blog-client\src\components\editor\preview\utils\getComponentContainers.ts
- * @Description  : 获取自定义组件容器
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 获取自定义组件容器
  */
 
 import { BaseCustomElement } from "../customElements"

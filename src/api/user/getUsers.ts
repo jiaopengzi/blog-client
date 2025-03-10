@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-03-20 16:30:57
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-03 11:41:12
  * @FilePath     : \blog-client\src\api\user\getUsers.ts
- * @Description  : 获取用户信息
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 获取用户信息
  */
 
 import { type PgSqlDateTime } from "@/api/common"

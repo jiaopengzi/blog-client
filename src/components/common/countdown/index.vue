@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-06-20 17:43:05
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 11:06:55
  * @FilePath     : \blog-client\src\components\common\countdown\index.vue
- * @Description  : 
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 倒计时 
 -->
 
 <template>

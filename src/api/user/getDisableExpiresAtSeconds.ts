@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-12-01 22:04:48
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 11:05:35
  * @FilePath     : \blog-client\src\api\user\getDisableExpiresAtSeconds.ts
- * @Description  : 获取用户禁用剩余时间 秒, 0表示未禁用
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 获取用户禁用剩余时间 秒, 0表示未禁用
  */
 
 import { request, routerGroup } from "@/api/request"

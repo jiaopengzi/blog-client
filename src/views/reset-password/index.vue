@@ -1,13 +1,9 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2023-11-22 16:05:07
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-13 15:56:15
  * @FilePath     : \blog-client\src\views\reset-password\index.vue
- * @Description  : 重置密码
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 重置密码
 -->
 
 <template>

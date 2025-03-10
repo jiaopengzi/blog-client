@@ -1,13 +1,11 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2023-12-12 13:01:07
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-23 18:43:57
  * @FilePath     : \blog-client\src\components\editor\preview\index.vue
- * @Description  : 预览组件
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 预览组件
 -->
+
 <template>
     <div ref="previewRef" id="preview" v-html="html" @click="handleDelegateClick" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave"></div>
     <!-- 参考:https://github.com/element-plus/element-plus/blob/dev/packages/components/image/src/image.vue -->

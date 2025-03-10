@@ -1,12 +1,9 @@
 /**
- * @Status       : jiaopengzi
- * @Date         : 2024-12-03 14:51:46
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-03 17:33:41
  * @FilePath     : \blog-client\src\api\post\getPostCountByStatus.ts
- * @Description  : 按照文章状态统计文章数量
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 按照文章状态统计文章数量
  */
 
 import { PostStatusCode } from "@/api/post/common"

@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-03 15:39:05
- * @LastEditors  : Please set LastEditors
- * @LastEditTime : 2025-03-03 17:12:55
  * @FilePath     : \blog-client\src\components\hooks\usePagination\index.ts
- * @Description  : 分页内容是否请求
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 分页内容是否请求
  */
 
 import { type Reactive, ref } from "vue"

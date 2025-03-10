@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-25 11:41:52
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-03 19:28:11
  * @FilePath     : \blog-client\src\components\hooks\useHome\types.ts
- * @Description  : 类型约束
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 类型
  */
 
 import { type ViewPostRequest } from "@/api/post/view"

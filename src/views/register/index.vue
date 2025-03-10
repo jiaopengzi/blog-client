@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2023-11-22 16:05:07
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-13 15:55:57
  * @FilePath     : \blog-client\src\views\register\index.vue
- * @Description  : 注册
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 注册
 -->
 
 <template>

@@ -1,5 +1,5 @@
 /**
- * @FilePath     : \blog-client\src\event\index.ts
+ * @FilePath     : \blog-client\src\event\emitter.ts.
  * @Description  : 事件处理器(参考mitt：https://github.com/developit/mitt)
  */
 

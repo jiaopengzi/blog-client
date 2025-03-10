@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-06-18 15:40:48
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-19 10:50:35
  * @FilePath     : \blog-client\src\api\user\getUserInfoByUserID.ts
- * @Description  : 通过用户ID 获取用户信息
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 通过用户ID 获取用户信息
  */
 
 import { request, routerGroup } from "@/api/request"

@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-11-28 10:17:45
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-11-28 11:08:15
  * @FilePath     : \blog-client\src\utils\readfile.ts
- * @Description  : 读取文件
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 读取文件
  */
 
 import { request } from "@/api/request"

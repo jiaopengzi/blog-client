@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-10-19 15:32:12
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-22 14:54:23
  * @FilePath     : \blog-client\src\components\editor\core\hooks\usePreview.ts
- * @Description  : preview hook
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : preview hook
  */
 
 import type { Ref } from "vue"

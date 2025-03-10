@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-12-21 23:01:55
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-25 22:17:40
  * @FilePath     : \blog-client\src\pkg\codemirror\extension\emoji.ts
- * @Description  : emoji 补全
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : emoji 补全
  */
 
 import type { CompletionResult } from "@codemirror/autocomplete"

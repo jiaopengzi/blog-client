@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-11-14 14:54:58
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-15 12:21:56
  * @FilePath     : \blog-client\src\api\post\viewByIDAdmin.ts
- * @Description  : 查看文章
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 查看文章
  */
 
 import { request, routerGroup } from "@/api/request"

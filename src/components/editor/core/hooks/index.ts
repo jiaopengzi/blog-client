@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-12-21 12:52:31
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-19 15:24:14
  * @FilePath     : \blog-client\src\components\editor\core\hooks\index.ts
- * @Description  : editor hooks index
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 统一导出
  */
 
 export { useCodemirror } from "./useCodemirror"

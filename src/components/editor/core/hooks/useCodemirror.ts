@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-12-20 22:22:25
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-28 15:43:15
  * @FilePath     : \blog-client\src\components\editor\core\hooks\useCodemirror.ts
- * @Description  : codemirror hook
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : codemirror hook
  */
 
 import { debounce } from "throttle-debounce"

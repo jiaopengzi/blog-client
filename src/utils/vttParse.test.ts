@@ -1,7 +1,11 @@
 /**
  * @FilePath     : \blog-client\src\utils\vttParse.test.ts
+ * @Author       : jiaopengzi
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * @Description  : parseVTT测试文件
  */
+
 import { describe, expect, it, test, vi } from "vitest"
 
 import { isWebvtt, parseVTT } from "./vttParse"

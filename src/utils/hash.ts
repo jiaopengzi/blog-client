@@ -1,14 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-08-02 14:11:08
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 10:09:54
  * @FilePath     : \blog-client\src\utils\hash.ts
- * @Description  : 哈希计算器
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 哈希计算器
  */
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import crypto from "crypto-js"
 

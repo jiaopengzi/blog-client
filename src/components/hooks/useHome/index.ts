@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-17 16:05:54
- * @LastEditors  : Please set LastEditors
- * @LastEditTime : 2025-03-03 17:08:54
  * @FilePath     : \blog-client\src\components\hooks\useHome\index.ts
- * @Description  : 首页hooks
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 首页 hooks
  */
 
 import { onBeforeMount, type Reactive, ref, watch } from "vue"

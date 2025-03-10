@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-09-29 10:00:59
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-13 18:19:47
  * @FilePath     : \blog-client\src\api\upload\getUploadFileUrl.ts
- * @Description  : 获取上传文件的 url
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 获取上传文件的 url
  */
 
 import { request, routerGroup } from "@/api/request"

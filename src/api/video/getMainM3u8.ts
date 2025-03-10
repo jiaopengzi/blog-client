@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-09-21 15:21:17
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 12:59:49
  * @FilePath     : \blog-client\src\api\video\getMainM3u8.ts
- * @Description  : 获取视频主 m3u8
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 获取视频主 m3u8
  */
 
 import { request, routerGroup } from "@/api/request"

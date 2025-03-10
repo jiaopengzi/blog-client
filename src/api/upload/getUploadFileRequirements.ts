@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-02-24 11:10:23
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 13:11:33
  * @FilePath     : \blog-client\src\api\upload\getUploadFileRequirements.ts
- * @Description  : 上传文件的要求
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 上传文件的要求
  */
 
 import { request, routerGroup } from "@/api/request"

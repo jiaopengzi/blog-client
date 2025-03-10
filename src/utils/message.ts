@@ -1,13 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-07-16 20:01:16
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-20 16:16:59
  * @FilePath     : \blog-client\src\utils\message.ts
+ * @Author       : jiaopengzi
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * @Description  : 消息提示 工具类
- * @blog         : https://jiaopengzi.com
- * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
+
 import "element-plus/theme-chalk/el-message.css"
 
 import { ElMessage } from "element-plus"

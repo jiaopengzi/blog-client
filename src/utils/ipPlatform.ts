@@ -1,12 +1,9 @@
 /**
+ * @FilePath     : \blog-client\src\utils\ipPlatform.ts
  * @Author       : jiaopengzi
- * @Date         : 2023-08-04 21:31:44
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-28 17:29:21
- * @FilePath     : \blog-client\src\utils\ip.ts
- * @Description  : 获取公网IP地址
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 获取公网IP地址
  */
 
 import { request } from "@/api/request"

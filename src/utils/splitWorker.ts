@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-07-23 15:28:35
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-08-02 14:25:47
  * @FilePath     : \blog-client\src\utils\splitWorker.ts
- * @Description  : 文件分片计算hash的web worker
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 文件分片计算 hash 的 web worker
  */
 
 import { HashCalculator } from "@/utils/hash"

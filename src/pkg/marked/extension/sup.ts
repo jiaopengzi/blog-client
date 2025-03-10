@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-11-29 12:04:35
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-07-19 15:01:35
  * @FilePath     : \blog-client\src\pkg\marked\extension\sup.ts
- * @Description  : 上标配置
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 上标配置
  */
 
 import type { Token, TokenizerAndRendererExtension } from "marked"

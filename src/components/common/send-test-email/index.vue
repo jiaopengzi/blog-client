@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2025-01-20 15:49:22
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-21 15:21:04
  * @FilePath     : \blog-client\src\components\common\send-test-email\index.vue
- * @Description  : 测试发送邮件组件
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 测试发送邮件组件
 -->
 
 <template>

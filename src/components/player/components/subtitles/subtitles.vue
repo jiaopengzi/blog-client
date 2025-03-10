@@ -1,13 +1,11 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-09-23 20:11:15
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-08 18:11:02
  * @FilePath     : \blog-client\src\components\player\components\subtitles\subtitles.vue
- * @Description  : 自定义字幕组件-待完善
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 自定义字幕组件-待完善
 -->
+
 <template>
     <div class="subtitles" v-if="currentCue">
         {{ currentCue.text }}

@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-25 11:46:44
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-07 17:54:22
  * @FilePath     : \blog-client\src\components\hooks\useHome\api.ts
- * @Description  : 数据请求
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 数据请求
  */
 
 import { reactive } from "vue"

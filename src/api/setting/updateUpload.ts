@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-02-04 16:51:00
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-02-04 16:59:31
  * @FilePath     : \blog-client\src\api\setting\updateUpload.ts
- * @Description  : 更新上传信息
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 更新上传信息
  */
 
 import { request, routerGroup } from "@/api/request"

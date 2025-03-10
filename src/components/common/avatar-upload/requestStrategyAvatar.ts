@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-09-29 10:52:39
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 12:06:22
  * @FilePath     : \blog-client\src\components\common\avatar-upload\requestStrategyAvatar.ts
- * @Description  : 上传头像请求策略
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 上传头像请求策略
  */
 
 import { uploadChunkAvatarAPI } from "@/api/upload/chunk"

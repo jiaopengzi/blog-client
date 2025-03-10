@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-11-28 18:31:10
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-13 10:21:59
  * @FilePath     : \blog-client\src\pkg\marked\extension\highlight.ts
- * @Description  : 代码高亮
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 代码高亮
  */
 
 import type { SynchronousOptions } from "marked-highlight" // 代码高亮选项

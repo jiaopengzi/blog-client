@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-02-05 17:34:19
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-02-05 18:13:37
  * @FilePath     : \blog-client\src\components\hooks\useRestart\index.ts
- * @Description  : 常规重启 hook
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 常规重启 hook
  */
 
 import { ref } from "vue"

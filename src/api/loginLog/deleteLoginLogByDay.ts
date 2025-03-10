@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-06-28 21:48:28
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 09:40:55
  * @FilePath     : \blog-client\src\api\loginLog\deleteLoginLogByDay.ts
- * @Description  : 通过天删除登录日志
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 通过天删除登录日志
  */
 
 import { request, routerGroup } from "@/api/request"

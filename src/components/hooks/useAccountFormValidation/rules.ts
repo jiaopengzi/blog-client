@@ -1,15 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-13 14:22:20
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-13 15:31:28
  * @FilePath     : \blog-client\src\components\hooks\useAccountFormValidation\rules.ts
- * @Description  : 生成校验规则
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 生成校验规则
  */
 
-// useFormValidation.ts
 import type { FormItemRule } from "element-plus"
 
 import { RegexPatterns } from "@/utils/regexPatterns"

@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-01-12 10:16:10
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 09:39:58
  * @FilePath     : \blog-client\src\components\layout\footer\index.ts
- * @Description  :
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 底部 移动端
  */
 
 export { default } from "./index.vue"

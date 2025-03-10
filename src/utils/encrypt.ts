@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-08-04 10:54:19
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 10:09:05
  * @FilePath     : \blog-client\src\utils\encrypt.ts
+ * @Author       : jiaopengzi
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * @Description  : 加密解密工具类
- * @blog         : https://jiaopengzi.com
- * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
 // 1.安装库：npm install crypto-js --save

@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-08-27 16:38:22
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-03 11:39:05
  * @FilePath     : \blog-client\src\api\upload\getFiles.ts
- * @Description  : 获取文件列表
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 获取文件列表
  */
 
 import { type PaginationRequest, request, routerGroup } from "@/api/request"

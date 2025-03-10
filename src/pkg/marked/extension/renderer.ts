@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-12-05 11:12:27
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-22 14:49:22
  * @FilePath     : \blog-client\src\pkg\marked\extension\renderer.ts
- * @Description  : 自定义 renderer 主要是为了加类名
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 自定义 renderer 主要是为了加类名
  */
 
 import type { Tokens } from "marked"

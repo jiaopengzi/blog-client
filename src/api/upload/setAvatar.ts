@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-12-01 22:04:48
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-13 18:19:52
  * @FilePath     : \blog-client\src\api\upload\setAvatar.ts
- * @Description  : 上传头像
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 上传头像
  */
 
 import { request, routerGroup } from "@/api/request"

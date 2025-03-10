@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-09-23 20:10:42
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-17 16:24:36
  * @FilePath     : \blog-client\src\utils\vttParse.ts
- * @Description  : 字幕解析器
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 字幕解析器
  */
 
 import { parseTimeSegments } from "@/utils/dateTime"

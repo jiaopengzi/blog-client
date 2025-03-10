@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-06-16 14:48:56
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-13 14:08:03
  * @FilePath     : \blog-client\src\views\admin\component\main\user-view\component\add-user\index.vue
- * @Description  : 添加用户
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 添加用户
 -->
 
 <template>

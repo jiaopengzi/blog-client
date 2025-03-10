@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-01-17 20:33:49
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-04 12:26:49
  * @FilePath     : \blog-client\src\views\admin\component\aside\index.vue
- * @Description  : 左边菜单栏 
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 侧边栏菜单
 -->
 
 <template>

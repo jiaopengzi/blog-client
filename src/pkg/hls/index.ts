@@ -1,13 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-09-10 15:17:56
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-02 12:02:37
  * @FilePath     : \blog-client\src\pkg\hls\index.ts
- * @Description  : hls 自定义 loader
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : hls 自定义 loader
  */
+
 import type { KeyLoaderContext } from "custom-hls"
 import type { HlsConfig, LoaderCallbacks, LoaderConfiguration, LoaderContext, LoaderStats, PlaylistLoaderContext } from "hls.js"
 import Hls from "hls.js"

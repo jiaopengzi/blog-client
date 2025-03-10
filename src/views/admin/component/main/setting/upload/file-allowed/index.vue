@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2025-02-04 16:54:22
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-02-05 16:21:12
  * @FilePath     : \blog-client\src\views\admin\component\main\setting\upload\file-allowed\index.vue
- * @Description  : 文件限制表单组件
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 文件限制表单组件 
 -->
 
 <template>

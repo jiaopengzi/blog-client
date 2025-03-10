@@ -1,13 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-12-02 10:51:36
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 12:24:27
  * @FilePath     : \blog-client\src\components\editor\command\constant.ts
- * @Description  : markdown 标记常量
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : markdown 标记常量
  */
+
 import { redo, undo } from "@codemirror/commands"
 
 import { IconKeys } from "@/components/common/icons"

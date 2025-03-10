@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-13 14:24:19
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-13 14:50:37
  * @FilePath     : \blog-client\src\components\hooks\useAccountFormValidation\api\user.ts
- * @Description  : 用户相关API
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 用户相关API
  */
 
 import { ResponseCode } from "@/api/response"

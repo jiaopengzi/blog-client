@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-29 12:37:34
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-14 12:21:08
  * @FilePath     : \blog-client\src\api\request\axios.ts
- * @Description  : axios封装
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : axios封装
  */
 
 import axios from "axios"

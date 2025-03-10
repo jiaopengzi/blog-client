@@ -1,13 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-12-08 20:13:30
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-15 09:55:22
  * @FilePath     : \blog-client\src\pkg\codemirror\extension\imgUpload.ts
- * @Description  : 图片上传
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 图片上传
  */
+
 
 import type { Extension } from "@codemirror/state"
 import { EditorView } from "@codemirror/view"

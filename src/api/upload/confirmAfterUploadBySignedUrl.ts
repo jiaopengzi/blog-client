@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-08-12 17:20:29
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 10:01:53
  * @FilePath     : \blog-client\src\api\upload\confirmAfterUploadBySignedUrl.ts
- * @Description  : 使用 签名URL 上传文件 后确认
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 使用 签名URL 上传文件 后确认
  */
 
 import { request, routerGroup } from "@/api/request"

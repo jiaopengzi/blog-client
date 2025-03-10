@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-11-04 16:21:40
- * @LastEditors  : Please set LastEditors
- * @LastEditTime : 2025-02-26 17:15:31
  * @FilePath     : \blog-client\src\views\admin\component\main\post-tag\component\edit\index.vue
- * @Description  : 编辑标签
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 编辑标签
 -->
 
 <template>

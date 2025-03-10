@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-12-01 22:04:48
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-24 09:55:03
  * @FilePath     : \blog-client\types\vue3-slide-verify.d.ts
- * @Description  : 手动编写的vue3-slide-verify.d.ts文件
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 手动编写的 vue3-slide-verify.d.ts 文件
  */
 
 // declare module "vue3-slide-verify" {

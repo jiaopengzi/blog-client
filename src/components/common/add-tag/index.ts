@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-01-18 15:40:30
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-09 09:31:47
  * @FilePath     : \blog-client\src\components\common\add-tag\index.ts
- * @Description  :
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 添加标签
  */
 
 export { default } from "./index.vue"

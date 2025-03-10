@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-28 12:54:49
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-28 15:32:45
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\useSnapshot.ts
- * @Description  : 数据快照
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 数据快照
  */
 
 import { reactive, ref, watch } from "vue"

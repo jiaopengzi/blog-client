@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-01-11 20:56:51
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-10 17:59:16
  * @FilePath     : \blog-client\src\components\layout\header-nav\pc.vue
- * @Description  : 导航栏 pc 端
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 导航栏 pc 端
 -->
 
 <template>

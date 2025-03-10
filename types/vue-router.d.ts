@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-03 20:05:55
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-03 21:45:35
  * @FilePath     : \blog-client\types\vue-router.d.ts
- * @Description  : 路由元信息 参考：https://router.vuejs.org/zh/guide/advanced/meta.html
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 路由元信息 参考：https://router.vuejs.org/zh/guide/advanced/meta.html
  */
 
 import "vue-router"

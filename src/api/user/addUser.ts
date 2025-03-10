@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-06-16 15:12:20
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-16 21:33:26
  * @FilePath     : \blog-client\src\api\user\addUser.ts
- * @Description  : 添加用户
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 添加用户
  */
 
 import { request, routerGroup } from "@/api/request"

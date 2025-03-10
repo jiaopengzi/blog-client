@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-10 15:08:28
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-10 15:24:10
  * @FilePath     : \blog-client\src\components\hooks\useTheme\index.ts
- * @Description  : 主题切换
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 主题切换
  */
 
 import { useDark, useToggle } from "@vueuse/core"

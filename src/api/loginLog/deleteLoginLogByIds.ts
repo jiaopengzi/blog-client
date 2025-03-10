@@ -1,12 +1,9 @@
 /**
+ * @FilePath     : \blog-client\src\api\loginLog\deleteLoginLogByIds.ts
  * @Author       : jiaopengzi
- * @Date         : 2024-06-28 19:33:06
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-28 20:59:14
- * @FilePath     : \blog-client\src\api\login_log\deleteLoginLogByIds.ts
- * @Description  : 删除登录日志
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 删除登录日志
  */
 
 import { request, routerGroup } from "@/api/request"

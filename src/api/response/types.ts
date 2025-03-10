@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-29 12:15:45
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-03 11:27:54
  * @FilePath     : \blog-client\src\api\response\types.ts
- * @Description  :
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 响应类型
  */
 
 import type { AxiosPromise, AxiosResponse } from "axios"

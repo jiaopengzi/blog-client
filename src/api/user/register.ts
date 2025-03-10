@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-07-13 15:34:55
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-13 15:43:27
  * @FilePath     : \blog-client\src\api\user\register.ts
+ * @Author       : jiaopengzi
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * @Description  : 注册
- * @blog         : https://jiaopengzi.com
- * @Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
  */
 
 import { request, routerGroup } from "@/api/request"

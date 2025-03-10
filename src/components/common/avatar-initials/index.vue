@@ -1,12 +1,9 @@
 <!--
+ * @FilePath     : \blog-client\src\components\common\avatar-initials\index.vue
  * @Author       : jiaopengzi
- * @Date         : 2024-01-11 18:37:12
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-11 19:10:42
- * @FilePath     : \blog-client\src\components\common\base\avatar-Initials\index.vue
- * @Description  : 头像
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 头像
 -->
 
 <template>

@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-12-06 21:07:44
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-06 21:33:47
  * @FilePath     : \blog-client\src\utils\img.ts
- * @Description  : 图片工具类
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 图片工具类
  */
 
 /**

@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-01-11 17:20:59
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-23 20:34:02
  * @FilePath     : \blog-client\src\components\common\alert-tip\index.vue
- * @Description  : 弹窗提示
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 弹窗提示
 -->
 
 <template>

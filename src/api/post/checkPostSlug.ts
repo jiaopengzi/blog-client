@@ -1,12 +1,9 @@
 /**
+ * @FilePath     : \blog-client\src\api\post\checkPostSlug.ts
  * @Author       : jiaopengzi
- * @Date         : 2024-11-04 17:24:58
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-04 17:25:20
- * @FilePath     : \blog-client\src\api\postPost\checkPostSlug.ts
- * @Description  : 检查 文章 别名是否存在
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 检查 文章 别名是否存在
  */
 
 import { request, routerGroup } from "@/api/request"

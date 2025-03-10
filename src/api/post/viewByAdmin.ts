@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-11-23 15:43:58
- * @LastEditors  : Please set LastEditors
- * @LastEditTime : 2025-02-28 21:12:10
  * @FilePath     : \blog-client\src\api\post\viewByAdmin.ts
- * @Description  : 管理员查看文章
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 管理员查看文章
  */
 
 import { type PaginationRequest, request, routerGroup } from "@/api/request"

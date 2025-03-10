@@ -1,13 +1,11 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2025-01-07 19:35:55
- * @LastEditors  : Please set LastEditors
- * @LastEditTime : 2025-03-07 13:34:14
  * @FilePath     : \blog-client\src\components\common\db-pgsql\index.vue
- * @Description  : pgsql数据库配置表单
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : pgsql 数据库配置表单
 -->
+
 <template>
     <BaseConfigForm ref="formRef" title="pgsql数据库" :form-data="dbData" :rules="rules" :form-items="formItems" :form-width="formWidth" />
 </template>

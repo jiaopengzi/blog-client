@@ -1,5 +1,9 @@
 /**
  * @FilePath     : \blog-client\src\utils\chunkUpload.ts
+ * @Author       : jiaopengzi
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 文件分片上传
  */
 
 import { handleResErr, type Res, ResponseCode, type ResPromise } from "@/api/response"

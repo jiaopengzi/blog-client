@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-08-12 12:38:12
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 12:55:20
  * @FilePath     : \blog-client\src\api\user\resetPassword.ts
- * @Description  : 忘记密码
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 忘记密码
  */
 
 import { request, routerGroup } from "@/api/request"

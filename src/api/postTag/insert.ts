@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-11-04 15:53:40
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 12:51:54
  * @FilePath     : \blog-client\src\api\postTag\insert.ts
- * @Description  : 插入文章标签
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 插入文章标签
  */
 
 import { request, routerGroup } from "@/api/request"

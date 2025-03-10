@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-29 12:09:37
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-13 15:21:33
  * @FilePath     : \blog-client\src\api\response\utils.ts
- * @Description  : 处理响应错误
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 处理响应错误
  */
 
 import type { Pagination, Res, ResResponse } from "./types"

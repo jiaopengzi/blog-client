@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-28 12:28:21
- * @LastEditors  : Please set LastEditors
- * @LastEditTime : 2025-02-28 21:19:53
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\utils.ts
- * @Description  :
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 工具
  */
 
 import { CommentStatusCode, PostStatusCode } from "@/api/post/common"

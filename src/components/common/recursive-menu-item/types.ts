@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-30 11:24:50
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 14:39:53
  * @FilePath     : \blog-client\src\components\common\recursive-menu-item\types.ts
- * @Description  : 类型
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 类型定义
  */
 
 import { IconKeys } from "@/components/common/icons"

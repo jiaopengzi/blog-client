@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-11-06 14:33:52
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 09:57:31
  * @FilePath     : \blog-client\src\api\postCategory\checkCategorySlugExcludingID.ts
- * @Description  : 检查 分类 别名是否存在 (不包含ID)
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 检查 分类 别名是否存在 (不包含ID)
  */
 
 import { request, routerGroup } from "@/api/request"

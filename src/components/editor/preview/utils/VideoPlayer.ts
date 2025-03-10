@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-10-23 18:08:06
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-02 19:00:21
  * @FilePath     : \blog-client\src\components\editor\preview\utils\VideoPlayer.ts
- * @Description  : 挂载视频播放器到自定义元素
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 挂载视频播放器到自定义元素
  */
 
 import { createApp, h } from "vue"

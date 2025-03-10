@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-10-19 14:13:44
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-23 10:38:43
  * @FilePath     : \blog-client\src\components\editor\core\state.ts
- * @Description  : 编辑器状态管理
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 编辑器状态管理
  */
 
 import { reactive } from "vue"

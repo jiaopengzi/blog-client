@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-10-17 10:43:24
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 12:56:16
  * @FilePath     : \blog-client\src\api\video\getSubtitlesLanguages.ts
- * @Description  : 获取视频字幕语言列表
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 获取视频字幕语言列表
  */
 
 import { request, routerGroup } from "@/api/request"

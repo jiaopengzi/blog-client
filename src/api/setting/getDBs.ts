@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-16 11:30:24
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-16 11:39:01
  * @FilePath     : \blog-client\src\api\setting\getDBs.ts
- * @Description  : 获取数据库信息
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 获取数据库信息
  */
 
 import { request, routerGroup } from "@/api/request"

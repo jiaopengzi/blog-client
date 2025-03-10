@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-30 11:32:27
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 11:32:39
  * @FilePath     : \blog-client\src\components\editor\toolbar\types.ts
- * @Description  : 类型
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 类型
  */
 
 import type { IconKeys } from "@/components/common/icons"

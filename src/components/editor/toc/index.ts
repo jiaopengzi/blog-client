@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-12-19 15:05:31
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-21 19:54:59
  * @FilePath     : \blog-client\src\components\editor\toc\index.ts
- * @Description  : ts 声明文件
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 统一导出
  */
 
 export { default } from "./index.vue"

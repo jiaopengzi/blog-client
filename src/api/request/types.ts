@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-29 13:35:31
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-31 11:29:30
  * @FilePath     : \blog-client\src\api\request\types.ts
- * @Description  :
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 请求相关类型
  */
 
 import type { AxiosProgressEvent } from "axios"

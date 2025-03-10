@@ -1,17 +1,13 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-13 14:05:30
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-13 14:25:04
  * @FilePath     : \blog-client\src\components\hooks\useAccountFormValidation\type.ts
- * @Description  :
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 类型定义
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-// useFormValidation.ts
 import { type Ref } from "vue"
 
 /**

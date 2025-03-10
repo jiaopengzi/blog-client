@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-10-06 09:33:17
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-06 10:39:43
  * @FilePath     : \blog-client\src\api\video\deleteSubtitles.ts
- * @Description  : 删除字幕
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 删除字幕
  */
 
 import { request, routerGroup } from "@/api/request"

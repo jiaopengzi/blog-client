@@ -1,13 +1,11 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-01-12 13:14:11
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-18 11:54:00
  * @FilePath     : \blog-client\src\components\layout\aside\hot-post\index.vue
- * @Description  : 热门文章
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 热门文章
 -->
+
 <template>
     <div class="aside-item">
         <div class="title">

@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-09-24 09:43:15
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-24 09:44:39
  * @FilePath     : \blog-client\src\components\player\components\subtitles\index.vue
- * @Description  : 自定义字幕组件-待完善
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 自定义字幕组件-待完善
 -->
 
 <template>

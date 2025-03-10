@@ -1,13 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-11-28 18:10:18
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-08 09:53:56
  * @FilePath     : \blog-client\src\pkg\marked\extension\katex.ts
- * @Description  : 公式扩展配置 https://katex.org/docs/options
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 公式扩展配置 https://katex.org/docs/options
  */
+
 import type { KatexOptions } from "katex" // 公式
 
 const optionKatex: KatexOptions = {

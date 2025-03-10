@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-02-04 16:42:12
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-02-04 16:49:48
  * @FilePath     : \blog-client\src\api\setting\getUpload.ts
- * @Description  : 获取上传配置
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 获取上传配置
  */
 
 import { request, routerGroup } from "@/api/request"

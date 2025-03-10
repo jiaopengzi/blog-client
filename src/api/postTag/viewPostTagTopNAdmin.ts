@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-23 15:25:40
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 12:52:12
  * @FilePath     : \blog-client\src\api\postTag\viewPostTagTopNAdmin.ts
- * @Description  : 文章标签 top n (管理员)
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 文章标签 top n (管理员)
  */
 
 import { request, routerGroup } from "@/api/request"

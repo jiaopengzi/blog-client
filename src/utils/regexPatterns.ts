@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-06-19 22:34:32
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-07 14:00:30
  * @FilePath     : \blog-client\src\utils\regexPatterns.ts
- * @Description  : 统一正则表达式
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 统一正则表达式
  */
 
 export const RegexPatterns = {

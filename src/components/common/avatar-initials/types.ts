@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-30 10:56:34
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 10:56:42
  * @FilePath     : \blog-client\src\components\common\avatar-initials\types.ts
- * @Description  : 类型
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 类型
  */
 
 export interface AvatarInitialsProps {

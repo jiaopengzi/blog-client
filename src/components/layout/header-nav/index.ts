@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-01-11 20:51:22
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 10:55:21
  * @FilePath     : \blog-client\src\components\layout\header-nav\index.ts
- * @Description  :
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 统一导出头部导航
  */
 
 export { default } from "./index.vue"

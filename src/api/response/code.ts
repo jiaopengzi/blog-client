@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-29 12:08:15
- * @LastEditors  : Please set LastEditors
- * @LastEditTime : 2025-03-07 12:57:27
  * @FilePath     : \blog-client\src\api\response\code.ts
- * @Description  : 相应状态码
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 响应状态码
  */
 
 export enum ResponseCode {

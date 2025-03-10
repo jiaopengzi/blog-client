@@ -1,13 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-11-26 13:27:10
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-12 22:44:15
  * @FilePath     : \blog-client\src\pkg\highlight.js\language\dax.ts
- * @Description  : DAX 语法高亮
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : DAX 语法高亮
  */
+
 import type { LanguageFn, Mode } from "highlight.js"
 import hljs from "highlight.js"
 const regex = hljs.regex

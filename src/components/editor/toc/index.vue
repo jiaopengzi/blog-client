@@ -1,13 +1,9 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2023-12-12 13:02:01
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 10:59:42
  * @FilePath     : \blog-client\src\components\editor\toc\index.vue
- * @Description  : 目录组件
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 目录组件
 -->
 
 <template>

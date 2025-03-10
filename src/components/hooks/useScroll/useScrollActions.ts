@@ -1,12 +1,9 @@
 /**
+ * @FilePath     : \blog-client\src\components\hooks\useScroll\useScrollActions.ts
  * @Author       : jiaopengzi
- * @Date         : 2023-08-04 10:54:19
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-12 19:25:43
- * @FilePath     : \blog-client\src\components\hooks\useScrollActions.ts
- * @Description  : 滚动事件
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 滚动事件
  */
 
 import type { Ref } from "vue"

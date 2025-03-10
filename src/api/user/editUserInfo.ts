@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-10-27 15:51:47
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-19 10:49:58
  * @FilePath     : \blog-client\src\api\user\editUserInfo.ts
- * @Description  :  修改用户信息
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 修改用户信息
  */
 
 import { request, routerGroup } from "@/api/request"

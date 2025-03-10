@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-10-07 09:29:08
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-13 18:17:12
  * @FilePath     : \blog-client\src\api\upload\checkSlug.ts
- * @Description  : 检验 slug 是否可用
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 检验 slug 是否可用
  */
 
 import { request, routerGroup } from "@/api/request"

@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-12 15:09:09
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-22 12:18:11
  * @FilePath     : \blog-client\src\utils\unit.ts
- * @Description  : 单位转换
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 单位转换
  */
 
 /**

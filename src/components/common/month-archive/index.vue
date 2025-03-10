@@ -1,13 +1,11 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-01-12 13:14:28
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-21 16:24:38
  * @FilePath     : \blog-client\src\components\common\month-archive\index.vue
- * @Description  : 月度归档
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 月度归档
 -->
+
 <template>
     <div class="aside-item">
         <div class="title">

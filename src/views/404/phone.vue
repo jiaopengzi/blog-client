@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-03-13 18:50:26
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 11:48:07
  * @FilePath     : \blog-client\src\views\404\phone.vue
- * @Description  : 404 页面 phone
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 404 页面 phone
 -->
 
 <template>

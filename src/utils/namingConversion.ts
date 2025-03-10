@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-01-24 18:34:35
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-03-17 11:25:55
  * @FilePath     : \blog-client\src\utils\namingConversion.ts
- * @Description  : 命名转换
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 命名转换
  */
 
 /**

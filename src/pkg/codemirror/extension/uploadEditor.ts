@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-09-30 11:00:20
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-09-30 11:02:12
  * @FilePath     : \blog-client\src\pkg\codemirror\extension\uploadEditor.ts
- * @Description  : 编辑器上传
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 编辑器上传
  */
 
 import { HashAlgorithm } from "@/utils/hash"

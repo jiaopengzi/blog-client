@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-09-29 10:52:39
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-19 13:18:59
  * @FilePath     : \blog-client\src\components\editor\index.ts
- * @Description  : 编辑器入口文件
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 编辑器入口文件
  */
 
 export * from "./core"

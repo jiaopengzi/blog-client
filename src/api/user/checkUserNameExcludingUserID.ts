@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-06-18 13:28:37
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-06-19 10:49:31
  * @FilePath     : \blog-client\src\api\user\checkUserNameExcludingUserID.ts
- * @Description  : 校验用户名是否唯一 排除指定用户ID
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 校验用户名是否唯一 排除指定用户ID
  */
 
 import { request, routerGroup } from "@/api/request"

@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-09-19 17:31:49
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-31 11:58:55
  * @FilePath     : \blog-client\types\global.d.ts
- * @Description  : 扩展全局类型
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 扩展全局类型
  */
 
 // document 全屏属性

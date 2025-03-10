@@ -1,13 +1,11 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-01-18 15:40:22
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 15:19:00
  * @FilePath     : \blog-client\src\components\common\add-tag\index.vue
- * @Description  : 添加标签组件
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 添加标签
 -->
+
 <template>
     <div class="tag-group">
         <el-tag v-for="tag in dynamicTags" :key="tag" class="tag-item" size="large" closable :disable-transitions="false" @close="handleClose(tag)">

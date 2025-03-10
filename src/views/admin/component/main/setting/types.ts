@@ -1,13 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-15 11:23:11
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-15 12:58:31
  * @FilePath     : \blog-client\src\views\admin\component\main\setting\types.ts
- * @Description  :
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 类型
  */
+
 import { defineComponent } from "vue"
 
 import { IconKeys } from "@/components/common/icons"

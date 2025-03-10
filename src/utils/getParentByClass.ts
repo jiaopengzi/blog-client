@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-12-21 14:19:20
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-01-09 17:19:00
  * @FilePath     : \blog-client\src\utils\getParentByClass.ts
- * @Description  : 根据类名获取父元素
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 根据类名获取父元素
  */
 
 /**

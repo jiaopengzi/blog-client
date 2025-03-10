@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-14 11:43:34
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-14 15:29:43
  * @FilePath     : \blog-client\src\router\middleware\registerAdmin.ts
- * @Description  : 注册管理员中间件
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 注册管理员中间件
  */
 
 import { type RouteLocationNormalized } from "vue-router"

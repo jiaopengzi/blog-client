@@ -1,14 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-11-25 22:23:57
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-05 11:04:51
  * @FilePath     : \blog-client\src\utils\obj.test.ts
- * @Description  : 对象相关工具函数测试
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 对象相关工具函数测试
  */
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { describe, expect, it } from "vitest"
 

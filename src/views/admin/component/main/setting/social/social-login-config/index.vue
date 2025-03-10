@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2025-01-21 11:23:46
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-02-05 12:32:13
  * @FilePath     : \blog-client\src\views\admin\component\main\setting\social\social-login-config\index.vue
- * @Description  : 社交登录表单组件
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 社交登录表单组件
 -->
 
 <template>

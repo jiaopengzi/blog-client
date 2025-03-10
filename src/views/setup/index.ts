@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2025-01-07 19:35:55
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-07 19:37:56
  * @FilePath     : \blog-client\src\views\setup\index.ts
- * @Description  : 安装数据库
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 数据库配置
  */
 
 export { default } from "./index.vue"

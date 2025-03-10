@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-11-06 23:28:40
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-07-19 14:59:08
  * @FilePath     : \blog-client\src\pkg\marked\extension\mark.ts
- * @Description  :  扩展 marked 的解析器，支持 ==mark== 标记
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 扩展 marked 的解析器，支持 ==mark== 标记
  */
 
 import type { Token, TokenizerAndRendererExtension } from "marked"

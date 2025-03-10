@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-12 16:41:11
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-03 11:32:34
  * @FilePath     : \blog-client\src\api\post\view.ts
- * @Description  : 查看文章
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 查看文章
  */
 
 import type { PostResPagination } from "@/api/post/common"

@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-06-28 16:21:39
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-03 11:36:11
  * @FilePath     : \blog-client\src\api\loginLog\getLoginLogs.ts
- * @Description  : 获取日志
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 获取日志
  */
 
 import { request, routerGroup } from "@/api/request"

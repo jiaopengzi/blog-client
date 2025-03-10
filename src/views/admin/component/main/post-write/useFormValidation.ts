@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-11-25 15:09:39
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-28 16:04:06
  * @FilePath     : \blog-client\src\views\admin\component\main\post-write\useFormValidation.ts
- * @Description  : 表单验证钩子
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 表单验证钩子
  */
 
 import type { FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S

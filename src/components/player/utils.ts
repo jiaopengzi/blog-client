@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-10-18 16:04:30
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-02 19:26:27
  * @FilePath     : \blog-client\src\components\player\utils.ts
- * @Description  : 视频组件工具方法
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 视频组件工具方法
  */
 
 import { ResponseCode } from "@/api/response"

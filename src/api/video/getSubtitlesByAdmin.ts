@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-10-06 09:35:02
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-14 10:14:35
  * @FilePath     : \blog-client\src\api\video\getSubtitlesByAdmin.ts
- * @Description  : 获取字幕(管理员)
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 获取字幕(管理员)
  */
 
 import { request, routerGroup } from "@/api/request"

@@ -1,13 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-06-22 14:41:19
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-13 14:49:53
  * @FilePath     : \blog-client\src\utils\msg.ts
- * @Description  : 消息生成
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 消息提示
  */
+
 import type { Res } from "@/api/response"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { formatDurationTime } from "@/utils/dateTime"

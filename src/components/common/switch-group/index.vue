@@ -1,13 +1,11 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-01-18 16:36:18
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-16 18:31:36
  * @FilePath     : \blog-client\src\components\common\switch-group\index.vue
- * @Description  : 开关组件 
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 开关组件 
 -->
+
 <template>
     <ul class="switch-group">
         <li v-for="item in switchItems" :key="item.name" class="switch-item" :style="getLiStyle(item)">

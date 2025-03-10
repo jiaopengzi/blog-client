@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-29 12:21:42
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-07 19:33:00
  * @FilePath     : \blog-client\src\stores\local.ts
- * @Description  : 本地存储键
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 本地存储键名
  */
 
 export enum LocalStorageKey {

@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-03-13 18:50:26
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 11:47:41
  * @FilePath     : \blog-client\src\views\404\pc.vue
- * @Description  : 404 页面 pc
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 404 页面 pc
 -->
 
 <template>

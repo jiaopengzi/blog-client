@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-10-05 17:18:25
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-29 12:56:33
  * @FilePath     : \blog-client\src\api\video\upsertSubtitles.ts
- * @Description  : 视频字幕上传
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 视频字幕上传
  */
 
 import { request, routerGroup } from "@/api/request"

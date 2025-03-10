@@ -1,13 +1,11 @@
 /*
+ * @FilePath     : \blog-client\src\assets\scss\mixin.scss
  * @Author       : jiaopengzi
- * @Date         : 2023-11-20 19:48:10
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-11-10 20:08:36
- * @FilePath     : \blog-client\src\assets\scss\_mixin.scss
- * @Description  : 混合器
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : mixin 
  */
+
 @use "sass:map";
 @use "sass:meta";
 @use "sass:list";
@@ -18,13 +16,13 @@
 $platforms: (
     "phone": (
         phone.$min-width,
-        phone.$max-width,
+        phone.$max-width
     ),
     "pad": (
         pad.$min-width,
-        pad.$max-width,
+        pad.$max-width
     ),
-    "pc": pc.$min-width,
+    "pc": pc.$min-width
 );
 
 // respond-to 作用是根据平台的最小宽度和最大宽度来判断是否使用媒体查询

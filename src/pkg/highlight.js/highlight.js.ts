@@ -1,14 +1,11 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-11-26 13:53:14
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2023-12-12 23:35:44
  * @FilePath     : \blog-client\src\pkg\highlight.js\highlight.js.ts
- * @Description  : 封装 highlight.js
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 封装 highlight.js
  */
-// myHighlighter.ts
+
 import hljs from "highlight.js"
 
 import DAX from "@/pkg/highlight.js/language/dax"
