@@ -33,7 +33,7 @@
 
         <div class="row2">建议:收费视频加密,免费视频不加密."</div>
         <el-upload ref="uploadRef" class="upload" drag multiple :http-request="httpRequest">
-            <Icon :name="IconKeys.Upload" custom-class="icon-upload-filled" />
+            <j-icon :name="IconKeys.Upload" custom-class="icon-upload-filled" />
             <div class="el-upload__text">将文件拖放到此处 或 <em>点击上传</em></div>
             <template #tip>
                 <div class="el-upload__tip">

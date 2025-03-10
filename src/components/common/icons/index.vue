@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2023-11-05 11:39:40
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-30 12:52:14
  * @FilePath     : \blog-client\src\components\common\icons\index.vue
- * @Description  : 图标组件
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 图标组件
 -->
 
 <template>
@@ -24,8 +21,7 @@ import { computed } from "vue"
 
 import { iconMap } from "./utils"
 
-// eslint-disable-next-line vue/multi-word-component-names
-defineOptions({ name: "Icon" })
+defineOptions({ name: "JIcon" })
 
 const { name, customClass } = defineProps<{ name: string; customClass?: string }>()
 

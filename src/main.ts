@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2023-08-04 10:54:19
- * @LastEditors  : Please set LastEditors
- * @LastEditTime : 2025-03-10 00:59:47
  * @FilePath     : \blog-client\src\main.ts
- * @Description  : 入口文件
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2023 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 入口文件
  */
 
 import "element-plus/theme-chalk/dark/css-vars.css" // 引入element-plus的暗黑主题
@@ -17,7 +14,7 @@ import { createPinia } from "pinia" // 状态管理
 import { createApp } from "vue" // 创建Vue实例
 
 import App from "@/App.vue" // 根组件
-import Icon from "@/components/common/icons" // 引用自定义的全局图标
+import JIcon from "@/components/common/icons" // 引用自定义的全局图标
 import { useGlobal } from "@/components/hooks/useGlobal" // 全局钩子
 import { devRun } from "@/dev" // 开发环境运行的函数
 import { router } from "@/router" // 路由
@@ -49,8 +46,7 @@ app.use(router) // 使用路由
 
 app.use(createHead()) // 参考官方文档:https://unhead.unjs.io/setup/vue/installation
 
-/* eslint-disable vue/multi-word-component-names */
-app.component("Icon", Icon) //  'Icon' 作为全局组件
+app.component("JIcon", JIcon) //  'JIcon' 作为全局组件
 app.mount("#app")
 
 useGlobal() // 全局钩子

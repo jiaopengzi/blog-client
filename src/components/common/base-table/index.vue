@@ -1,12 +1,9 @@
 <!--
- * @Author       : jiaopengzi
- * @Date         : 2024-01-23 15:24:45
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-09 21:56:43
  * @FilePath     : \blog-client\src\components\common\base-table\index.vue
- * @Description  : 基础表格 table-layout="auto"
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Description  : 基础表格 table-layout="auto"
 -->
 
 <template>
@@ -67,7 +64,7 @@
                                 :src="scope.row.img?.url"
                                 :style="imgStyle(scope.row.img?.width, scope.row.img?.height, scope.row.img?.imgFit)"
                             />
-                            <Icon
+                            <j-icon
                                 v-else-if="scope.row.img?.iconKeyName"
                                 class="thumbnail-img"
                                 :name="scope.row.img?.iconKeyName"
@@ -132,7 +129,7 @@
                         @click="handleDelegateGridClick(row)"
                     />
 
-                    <Icon
+                    <j-icon
                         v-else-if="row.img?.iconKeyName"
                         class="thumbnail-img"
                         :name="row.img?.iconKeyName"
@@ -192,7 +189,7 @@
 </template>
 
 <script lang="ts" setup>
-import { type ElTable } from "element-plus"
+import type { ElTable } from "element-plus"
 import { reactive, ref, useTemplateRef, watch, watchEffect } from "vue"
 
 import type { PostTag } from "@/api/postTag/view"

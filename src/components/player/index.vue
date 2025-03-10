@@ -59,7 +59,7 @@
             <!-- 播放按钮 -->
         </VideoWatermark>
         <div v-if="showPlayButton" class="play-button-page" @click="togglePlayPause" @dblclick="handleDblclick">
-            <Icon v-show="!showLoader" :name="IconKeys.Play" custom-class="iconfont" />
+            <j-icon v-show="!showLoader" :name="IconKeys.Play" custom-class="iconfont" />
             <div v-show="showLoader" class="loader"></div>
         </div>
         <div v-if="!showPlayButton" class="play-to-paused-page" :class="{ hidden: controlsHidden }" @click="togglePlayPause" @dblclick="handleDblclick"></div>

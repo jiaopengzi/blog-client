@@ -15,7 +15,7 @@
     <div :class="layoutClass">
         <div class="left" ref="leftRef" @click="handleDelegateClick">
             <img class="view-img" v-if="editMediaData.img?.url && !isVideoFile" :src="editMediaData.img.url" />
-            <Icon custom-class="view-icon" v-else-if="editMediaData.img?.iconKeyName && !isVideoFile" :name="editMediaData.img?.iconKeyName" />
+            <j-icon custom-class="view-icon" v-else-if="editMediaData.img?.iconKeyName && !isVideoFile" :name="editMediaData.img?.iconKeyName" />
             <VideoPlayer v-if="isVideoFile && editMediaData.editDialogVisible" :player-state="playerState" />
         </div>
 

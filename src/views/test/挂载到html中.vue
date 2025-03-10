@@ -1,8 +1,8 @@
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-23 15:33:23
+ * @LastEditors  : Please set LastEditors
+ * @LastEditTime : 2025-03-10 10:45:26
  * @FilePath     : \blog-client\src\views\test\挂载到html中.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -19,7 +19,7 @@ import "katex/dist/katex.min.css" // katex 样式
 
 import { createApp, h, nextTick, onMounted, ref } from "vue"
 
-import Icon from "@/components/common/icons" // 引用自定义的全局图标
+import JIcon from "@/components/common/icons" // 引用自定义的全局图标
 import { PlayerStateManager } from "@/components/player"
 import VideoPlayer from "@/components/player"
 
@@ -42,7 +42,7 @@ const App = {
 }
 
 const app = createApp(App)
-app.component("Icon", Icon) // 使用 'Icon' 作为全局组件名
+app.component("JIcon", JIcon) // 使用 'Icon' 作为全局组件名
 
 onMounted(() => {
     nextTick(() => {

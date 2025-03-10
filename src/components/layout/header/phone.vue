@@ -15,7 +15,7 @@
             <ul class="header-main">
                 <li>
                     <button type="button" class="btn-menu" @click="toggleNav">
-                        <Icon :name="IconKeys.Menu" custom-class="my-icon" />
+                        <j-icon :name="IconKeys.Menu" custom-class="my-icon" />
                     </button>
                 </li>
                 <li>
@@ -30,7 +30,7 @@
 
                 <li>
                     <div class="search">
-                        <Icon :name="IconKeys.Search" custom-class="my-icon" />
+                        <j-icon :name="IconKeys.Search" custom-class="my-icon" />
                     </div>
                 </li>
             </ul>

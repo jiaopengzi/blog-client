@@ -22,10 +22,10 @@
                 @change="updateStatus"
             >
                 <template #active-action v-if="item.icon?.active">
-                    <Icon :name="item.icon?.active" :custom-class="item.icon.activeClassName" />
+                    <j-icon :name="item.icon?.active" :custom-class="item.icon.activeClassName" />
                 </template>
                 <template #inactive-action v-if="item.icon?.inactive">
-                    <Icon :name="item.icon?.inactive" :custom-class="item.icon.inactiveClassName" />
+                    <j-icon :name="item.icon?.inactive" :custom-class="item.icon.inactiveClassName" />
                 </template>
             </el-switch>
             <span v-if="item.namePosition === 'right'" class="display span-right">{{ item.display }}</span>

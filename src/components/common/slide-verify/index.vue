@@ -16,7 +16,7 @@
             <h4>
                 <span class="title">拖动下方滑块完成拼图</span>
                 <button type="button" class="close-btn" @click="closeMe">
-                    <Icon :name="IconKeys.Close" custom-class="icon-close" />
+                    <j-icon :name="IconKeys.Close" custom-class="icon-close" />
                 </button>
             </h4>
 

@@ -11,7 +11,7 @@
 <template>
     <div class="aside-item">
         <div class="title">
-            <h2><Icon :name="IconKeys.Archive" custom-class="aside-icon" />文章归档</h2>
+            <h2><j-icon :name="IconKeys.Archive" custom-class="aside-icon" />文章归档</h2>
         </div>
         <div class="table">
             <el-table :max-height="400" :data="postList" :show-header="true" row-class-name="month-archive-row-class" @row-click="handleRowClick">

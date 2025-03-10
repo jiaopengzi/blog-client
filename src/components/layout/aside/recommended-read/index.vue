@@ -11,7 +11,7 @@
 <template>
     <div class="aside-item">
         <div class="title">
-            <h2><Icon :name="IconKeys.Recommended" custom-class="aside-icon" />推荐阅读</h2>
+            <h2><j-icon :name="IconKeys.Recommended" custom-class="aside-icon" />推荐阅读</h2>
         </div>
         <div class="post-list">
             <PostItem v-for="item in postData" :key="item.post_title" :post-data="item" />

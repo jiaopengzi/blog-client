@@ -13,7 +13,7 @@
     <div class="aside-item">
         <div class="title">
             <h2>
-                <Icon :name="IconKeys.Label" custom-class="my-icon" />
+                <j-icon :name="IconKeys.Label" custom-class="my-icon" />
                 文章标签
             </h2>
         </div>

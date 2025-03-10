@@ -1,8 +1,8 @@
 <!--
  * @Author       : jiaopengzi
  * @Date         : 2023-12-12 13:02:01
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-12-11 15:43:42
+ * @LastEditors  : Please set LastEditors
+ * @LastEditTime : 2025-03-10 10:43:46
  * @FilePath     : \blog-client\src\components\editor\toolbar\index.vue
  * @Description  : 工具栏组件
  * @Blog         : https://jiaopengzi.com
@@ -23,7 +23,7 @@
                 :offset="0"
             >
                 <template #reference>
-                    <Icon :name="btn.icon" custom-class="iconfont" />
+                    <j-icon :name="btn.icon" custom-class="iconfont" />
                 </template>
 
                 <EmojiPicker :native="true" @select="onSelectEmoji" />
@@ -40,7 +40,7 @@
                 :offset="0"
             >
                 <template #reference>
-                    <Icon :name="btn.icon" custom-class="iconfont" />
+                    <j-icon :name="btn.icon" custom-class="iconfont" />
                 </template>
 
                 <div class="table-row-col">
@@ -58,7 +58,7 @@
             </el-popover>
 
             <el-tooltip v-else effect="dark" :content="btn.display" :hide-after="0">
-                <Icon :name="btn.icon" custom-class="iconfont" />
+                <j-icon :name="btn.icon" custom-class="iconfont" />
             </el-tooltip>
         </button>
     </div>

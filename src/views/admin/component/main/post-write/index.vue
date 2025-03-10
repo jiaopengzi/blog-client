@@ -15,13 +15,13 @@
             <div class="btns-header">
                 <div class="btns-header-left">
                     <el-button type="primary" class="add-media btns-header-item" @click="mediaDialogVisible = true">
-                        <Icon :name="IconKeys.Media" custom-class="btns-header-item-icon" />
+                        <j-icon :name="IconKeys.Media" custom-class="btns-header-item-icon" />
                         <span>添加媒体</span>
                     </el-button>
                 </div>
                 <div class="btns-header-right">
                     <el-button type="primary" class="save-post btns-header-item" @click="submitForm(formRef as FormInstance)">
-                        <Icon :name="IconKeys.Save" custom-class="btns-header-item-icon" />
+                        <j-icon :name="IconKeys.Save" custom-class="btns-header-item-icon" />
                         <span>保存</span>
                     </el-button>
                 </div>
@@ -154,7 +154,7 @@
 
             <div class="btns-footer">
                 <el-button type="primary" class="save-post btns-footer-item" @click="submitForm(formRef as FormInstance)">
-                    <Icon :name="IconKeys.Save" custom-class="btns-footer-item-icon" />
+                    <j-icon :name="IconKeys.Save" custom-class="btns-footer-item-icon" />
                     <span>保存</span>
                 </el-button>
             </div>

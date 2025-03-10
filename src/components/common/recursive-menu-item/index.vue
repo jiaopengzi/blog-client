@@ -12,7 +12,7 @@
     <!-- 当前菜单项没有子菜单时，显示一个普通的菜单项 -->
     <!-- 注意 Icon 在 item 和 menu 是不同的 -->
     <el-menu-item v-if="!getChildren(menuItem.index).length" :index="menuItem.index" class="no-children">
-        <Icon v-if="menuItem.icon" :name="menuItem.icon.name" :custom-class="menuItem.icon.class" />
+        <j-icon v-if="menuItem.icon" :name="menuItem.icon.name" :custom-class="menuItem.icon.class" />
         <template #title>
             <span class="title">{{ menuItem.display }}</span></template
         >
@@ -21,7 +21,7 @@
     <!-- 当前菜单项有子菜单时，显示一个子菜单 -->
     <el-sub-menu v-else :index="menuItem.index">
         <template #title>
-            <Icon v-if="menuItem.icon" :name="menuItem.icon.name" :custom-class="menuItem.icon.class" />
+            <j-icon v-if="menuItem.icon" :name="menuItem.icon.name" :custom-class="menuItem.icon.class" />
             <span class="title">{{ menuItem.display }}</span>
         </template>
 

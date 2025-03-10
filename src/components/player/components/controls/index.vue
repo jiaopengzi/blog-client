@@ -20,7 +20,7 @@
             <div class="left-controls">
                 <!-- 播放暂停按钮 -->
                 <button type="button" class="controls-btn play-pause" @click="handleButtonClick(togglePlayPause)">
-                    <Icon :name="IconNamePlayPause" custom-class="iconfont" />
+                    <j-icon :name="IconNamePlayPause" custom-class="iconfont" />
                 </button>
 
                 <!-- 时间显示 -->
@@ -31,7 +31,7 @@
             <div class="right-controls">
                 <!-- 静音按钮 -->
                 <button type="button" class="controls-btn volume-mute" @click="handleButtonClick(toggleMute)">
-                    <Icon :name="IconNameMute" custom-class="iconfont" />
+                    <j-icon :name="IconNameMute" custom-class="iconfont" />
                 </button>
 
                 <!-- 音量控制 -->
@@ -51,7 +51,7 @@
                 >
                     <template #reference>
                         <button type="button" class="controls-btn">
-                            <Icon :name="IconKeys.Setting" custom-class="iconfont" />
+                            <j-icon :name="IconKeys.Setting" custom-class="iconfont" />
                         </button>
                     </template>
                     <VideoSetting
@@ -70,17 +70,17 @@
 
                 <!-- 画中画 -->
                 <button type="button" class="controls-btn pip" @click="handleButtonClick(togglePIP)">
-                    <Icon :name="IconKeys.PictureInPicture" custom-class="iconfont" />
+                    <j-icon :name="IconKeys.PictureInPicture" custom-class="iconfont" />
                 </button>
 
                 <!-- 网页全屏 -->
                 <button type="button" class="controls-btn web-fullscreen" @click="handleButtonClick(toggleWebFullscreen)">
-                    <Icon :name="IconKeys.WebFullscreen" custom-class="iconfont" />
+                    <j-icon :name="IconKeys.WebFullscreen" custom-class="iconfont" />
                 </button>
 
                 <!-- 全屏 -->
                 <button type="button" class="controls-btn fullscreen" @click="handleButtonClick(toggleFullscreen)">
-                    <Icon :name="IconKeys.Fullscreen" custom-class="iconfont" />
+                    <j-icon :name="IconKeys.Fullscreen" custom-class="iconfont" />
                 </button>
             </div>
         </div>

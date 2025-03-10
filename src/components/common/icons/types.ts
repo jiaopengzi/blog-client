@@ -1,12 +1,9 @@
 /**
- * @Author       : jiaopengzi
- * @Date         : 2024-12-30 11:09:28
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2025-01-15 16:40:21
  * @FilePath     : \blog-client\src\components\common\icons\types.ts
- * @Description  : 类型定义
+ * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 类型定义
  */
 
 // 图标字典
@@ -15,7 +12,7 @@ export interface IconMap {
 }
 
 // 图标 json 数据 格式
-export interface IconJson {
+export interface IconJSON {
     id: string
     name: string
     font_family: string

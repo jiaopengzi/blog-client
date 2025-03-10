@@ -38,10 +38,10 @@
             </div>
             <div class="social">
                 <button v-if="socialLoginStatus.qq" type="button" class="social-btn" @click="loginByWeChat">
-                    <Icon :name="IconKeys.Wechat" custom-class="iconfont icon-wechat" />
+                    <j-icon :name="IconKeys.Wechat" custom-class="iconfont icon-wechat" />
                 </button>
                 <button v-if="socialLoginStatus.wechat" type="button" class="social-btn" @click="loginByQQ">
-                    <Icon :name="IconKeys.Qq" custom-class="iconfont icon-qq" />
+                    <j-icon :name="IconKeys.Qq" custom-class="iconfont icon-qq" />
                 </button>
             </div>
             <AccountFormFooter :to="['home', 'register', 'resetPassword']" />

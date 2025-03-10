@@ -16,7 +16,7 @@
                 <el-tab-pane v-for="tab in tabs" :key="tab.hash" :name="tab.hash">
                     <template #label>
                         <div class="custom-tabs-label">
-                            <Icon :name="tab.icon" custom-class="iconfont" />
+                            <j-icon :name="tab.icon" custom-class="iconfont" />
                             <span>{{ tab.label }}</span>
                         </div>
                     </template>

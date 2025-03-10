@@ -27,7 +27,7 @@
                     <el-input v-model="searchAll" style="width: 240px" size="large" placeholder="搜索">
                         <!-- suffix插槽 -->
                         <template #suffix>
-                            <Icon :name="IconKeys.Search" custom-class="search-icon" />
+                            <j-icon :name="IconKeys.Search" custom-class="search-icon" />
                         </template>
                     </el-input>
                 </div>

@@ -29,7 +29,7 @@
                 <li v-for="item in navData" :key="item.name">
                     <router-link :to="{ name: item.name }">
                         <div class="menu">
-                            <Icon v-if="item.iconKey" :name="item.iconKey" :custom-class="item.customClass ? 'my-icon ' + item.customClass : 'my-icon'" />
+                            <j-icon v-if="item.iconKey" :name="item.iconKey" :custom-class="item.customClass ? 'my-icon ' + item.customClass : 'my-icon'" />
                             <span>{{ item.title }}</span>
                         </div>
                     </router-link>
