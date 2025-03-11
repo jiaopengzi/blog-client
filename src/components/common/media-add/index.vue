@@ -1,5 +1,5 @@
 <!--
- * @FilePath     : \blog-client\src\views\admin\component\main\media\component\add-media\index.vue
+ * @FilePath     : \blog-client\src\components\common\media-add\index.vue
  * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
@@ -50,7 +50,8 @@ import { ResponseCode } from "@/api/response"
 import { getUploadFileRequirementsAPI } from "@/api/upload/getUploadFileRequirements"
 import { IconKeys } from "@/components/common/icons"
 import { HashAlgorithm } from "@/utils/hash"
-import { uploadByEl } from "@/views/admin/component/main/media/component/add-media"
+
+import { uploadByEl } from "./uploadByEl.ts"
 
 defineOptions({ name: "AddMedia" })
 

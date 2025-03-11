@@ -158,12 +158,7 @@
         </el-container>
     </section>
     <!-- 媒体文件选择弹窗 -->
-    <el-dialog v-model="mediaDialogVisible">
-        <template #header>
-            <h4>选择媒体文件</h4>
-        </template>
-        <Media />
-    </el-dialog>
+    <SelectMedia v-model="mediaDialogVisible" />
 </template>
 <script lang="ts" setup>
 import { useIntersectionObserver, useResizeObserver } from "@vueuse/core"
@@ -177,6 +172,7 @@ import { type PostCategory, viewListPostCategoryAPI } from "@/api/postCategory/v
 import { ResponseCode } from "@/api/response"
 import AddTag from "@/components/common/add-tag"
 import { IconKeys } from "@/components/common/icons"
+import SelectMedia from "@/components/common/media-select"
 import SwitchGroup from "@/components/common/switch-group"
 import { EditorPost, EditorStateManager } from "@/components/editor"
 import { RouteNames } from "@/router"
@@ -184,7 +180,6 @@ import { useUserStore } from "@/stores/user"
 import { formatTime } from "@/utils/dateTime"
 import { MessageUtil } from "@/utils/message"
 import { PermissionNames } from "@/utils/permissionRole"
-import Media from "@/views/admin/component/main/media"
 
 import { type PostInfoAboutTime, queryKey, type UpdatePostForm, type UpsertPostForm } from "./types"
 import { useAdd } from "./useAdd"

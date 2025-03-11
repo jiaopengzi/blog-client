@@ -103,22 +103,24 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         editItemDialogVisible.value = val
     }
 
-    // 更新当前页
-    const updateCurrentPage = async (val: number) => {
-        await updateCurrentPageWithIsRequest(val)
+    // 更新当前页, 是否更新路由, 默认更新路由
+    const updateCurrentPage = async (val: number, isUpdateRouter: boolean = true) => {
+        await updateCurrentPageWithIsRequest(val, isUpdateRouter)
     }
 
-    // 更新每页显示条数
-    const updatePageSize = async (val: number) => {
-        await updatePageSizeWithIsRequest(val)
+    // 更新每页显示条数, 是否更新路由, 默认更新路由
+    const updatePageSize = async (val: number, isUpdateRouter: boolean = true) => {
+        await updatePageSizeWithIsRequest(val, isUpdateRouter)
     }
 
-    // 更新搜索关键字
-    const updateSearch = async (val: string) => {
+    // 更新搜索关键字, 是否更新路由, 默认更新路由
+    const updateSearch = async (val: string, isUpdateRouter: boolean = true) => {
         search.value = val
         queryParams.key_word = val
         if (val === "") {
-            await updateRouterPush()
+            if (isUpdateRouter) {
+                await updateRouterPush()
+            }
             await updatePaginate()
         }
     }

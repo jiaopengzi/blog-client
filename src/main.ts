@@ -25,13 +25,12 @@ consoleInfoFormat() // 控制台输出项目信息
 // 开发模式下
 if (import.meta.env.MODE === "development") {
     devRun() // 开发环境运行的函数
-    console.log("开发环境：", import.meta.env.VITE_MAX_NAVIGATOR_HARDWARE_CONCURRENCY)
+    console.info("开发环境：", import.meta.env.VITE_MAX_NAVIGATOR_HARDWARE_CONCURRENCY)
 }
 
 // 生产模式下
-// 如果环境变量为production，则移除console.log
 if (import.meta.env.MODE === "production") {
-    console.log("生产环境：", import.meta.env.VITE_MAX_NAVIGATOR_HARDWARE_CONCURRENCY)
+    console.info("生产环境：", import.meta.env.VITE_MAX_NAVIGATOR_HARDWARE_CONCURRENCY)
 }
 
 const app = createApp(App)
@@ -45,5 +44,5 @@ app.use(router) // 使用路由
 
 app.use(createHead()) // 参考官方文档:https://unhead.unjs.io/setup/vue/installation
 
-app.component("JIcon", JIcon) //  'JIcon' 作为全局组件
+app.component("j-icon", JIcon) //  'j-icon' 作为全局组件
 app.mount("#app")

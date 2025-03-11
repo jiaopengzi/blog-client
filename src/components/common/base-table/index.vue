@@ -258,7 +258,7 @@ const emit = defineEmits<{
     (event: "click-row-by-picture", rows: TableData): void // 点击行中的图片
     (event: "add-item-update-dialog-visible", value: boolean): void // 更新添加元素对话框状态
     (event: "edit-item-update-dialog-visible", value: boolean): void // 更新编辑元素对话框状态
-    (event: "is-show-list-or-grid", value: boolean): void // 是否显示列表或宫格
+    (event: "update-show-list-or-grid-status", value: boolean): void // 更新列表或宫格状态
     (event: "click-category", tagItemData: PostTag): void // 点击分类
     (event: "click-tag", tagItemData: PostTag): void // 点击标签
     (event: "click-author", author: User): void // 点击作者
@@ -318,7 +318,7 @@ const switchItemList: SwitchItem[] = reactive([
 ])
 
 const updateStatus = (items: SwitchItem[]) => {
-    emit("is-show-list-or-grid", items[0].status)
+    emit("update-show-list-or-grid-status", items[0].status)
 }
 
 // 处理宫格点击事件
