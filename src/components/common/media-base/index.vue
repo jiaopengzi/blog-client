@@ -8,32 +8,7 @@
 
 <template>
     <section>
-        <BaseTable
-            :pagination="pagination"
-            :table-column="tableColumn"
-            :is-show-delete-all="isShowDeleteAll"
-            :is-show-list-or-grid="isShowListOrGrid"
-            :show-list-or-grid-status="showListOrGridStatus"
-            :add-item-dialog-visible="addItemDialogVisible"
-            :edit-item-dialog-visible="editItemDialogVisible"
-            :is-show-edit="isShowEdit"
-            :is-show-search="isShowSearch"
-            :search-str="searchStr"
-            :edit-width="editWidth"
-            :edit-top="editTop"
-            :height="height"
-            @update-current-page="updateCurrentPage"
-            @update-page-size="updatePageSize"
-            @edit-row="editRow"
-            @delete-rows="deleteRows"
-            @update-search="updateSearch"
-            @run-search="runSearch"
-            @click-row-by-picture="clickRowByPicture"
-            @add-item-update-dialog-visible="addItemUpdateDialogVisible"
-            @edit-item-update-dialog-visible="editItemUpdateDialogVisible"
-            @update-show-list-or-grid-status="updateShowListOrGridStatus"
-            @update-selection="updateSelection"
-        >
+        <BaseTable :pagination="pagination" :tableColumn="tableColumn" v-bind="$attrs">
             <template #btns>
                 <el-button type="primary" @click="toggleAddDialog"> 新增 </el-button>
             </template>
@@ -91,39 +66,8 @@ import EditMedia, { type EditMediaProps } from "@/components/common/media-edit"
 defineOptions({ name: "MediaBase" })
 
 // 数据
-const {
-    tableColumn,
-    addItemDialogVisible = true,
-    editItemDialogVisible = true,
-    isShowListOrGrid = true,
-    showListOrGridStatus = false,
-    isShowDeleteAll = true,
-    isShowEdit = true,
-    isShowSearch = true,
-    editWidth,
-    editTop,
-    height,
-
-    // hooks 需要参数
-    pagination,
-    searchStr = "",
-    editMediaData,
-    fileCountGroupByFileType,
-    activeFileType,
-    handleFileCountByFileType,
-} = defineProps<{
+const { tableColumn, pagination, editMediaData, fileCountGroupByFileType, activeFileType, handleFileCountByFileType } = defineProps<{
     tableColumn: TableColumn[] // 表格列配置
-    addItemDialogVisible?: boolean // 对话框是否显示
-    editItemDialogVisible?: boolean // 对话框是否显示
-    isShowListOrGrid?: boolean // 是否显示列表或宫格
-    showListOrGridStatus?: boolean // 列表或宫格状态  true:列表,false:宫格
-    isShowDeleteAll?: boolean // 是否显示批量删除按钮
-    isShowEdit?: boolean // 是否显示每行编辑按钮
-    isShowSearch?: boolean // 是否显示每行编辑按钮
-    editWidth?: string // 编辑对话框宽度
-    editTop?: string // 编辑对话框距离顶部距离
-    height?: string | number
-
     pagination: Pagination<TableData> // 分页数据
     searchStr?: string // 搜索关键字
     editMediaData: EditMediaProps // 编辑媒体数据
@@ -134,87 +78,25 @@ const {
 
 // 事件
 const emit = defineEmits<{
-    (event: "update-current-page", value: number): void // 更新当前页
-    (event: "update-page-size", value: number): void // 更新每页显示条数
-    (event: "edit-row", index: number, row: TableData): void // 编辑行
-    (event: "delete-rows", rows: TableData[]): void // 删除多行
-    (event: "update-search", value: string): void // 更新搜索关键字
-    (event: "run-search"): void // 执行搜索
-    (event: "click-row-by-picture", rows: TableData): void // 点击行中的图片
-    (event: "add-item-update-dialog-visible", value: boolean): void // 更新添加元素对话框状态
-    (event: "edit-item-update-dialog-visible", value: boolean): void // 更新编辑元素对话框状态
-    (event: "update-show-list-or-grid-status", value: boolean): void // 更新列表或宫格状态
-
     (event: "toggle-add-dialog"): void // 编辑Media状态
     (event: "edit-media-status", value: boolean): void // 编辑Media状态
     (event: "has-upload", value: boolean): void // 是否有上传
     (event: "update-subtitles", language: string): void // 更新字幕
     (event: "delete-subtitles", language: string): void // 删除字幕
-    (event: "update-selection", value: TableData[]): void // 更新选择
 }>()
-
-// 更新当前页
-const updateCurrentPage = (value: number) => {
-    emit("update-current-page", value)
-}
-
-// 更新每页显示条数
-const updatePageSize = (value: number) => {
-    emit("update-page-size", value)
-}
-
-// 编辑行
-const editRow = (index: number, row: TableData) => {
-    emit("edit-row", index, row)
-}
-
-// 删除多行
-const deleteRows = (rows: TableData[]) => {
-    emit("delete-rows", rows)
-}
-
-// 更新搜索关键字
-const updateSearch = (value: string) => {
-    emit("update-search", value)
-}
-
-// 执行搜索
-const runSearch = () => {
-    emit("run-search")
-}
-
-// 点击行中的图片
-const clickRowByPicture = (rows: TableData) => {
-    emit("click-row-by-picture", rows)
-}
-
-// 更新添加元素对话框状态
-const addItemUpdateDialogVisible = (value: boolean) => {
-    emit("add-item-update-dialog-visible", value)
-}
-
-// 更新编辑元素对话框状态
-const editItemUpdateDialogVisible = (value: boolean) => {
-    emit("edit-item-update-dialog-visible", value)
-}
-
-// 更新列表或宫格状态
-const updateShowListOrGridStatus = (value: boolean) => {
-    emit("update-show-list-or-grid-status", value)
-}
 
 // 切换添加对话框
 const toggleAddDialog = () => {
     emit("toggle-add-dialog")
 }
 
-const handleHasUpload = (value: boolean) => {
-    emit("has-upload", value)
-}
-
 // 编辑Media状态
 const editStatus = (value: boolean) => {
     emit("edit-media-status", value)
+}
+
+const handleHasUpload = (value: boolean) => {
+    emit("has-upload", value)
 }
 
 // 更新字幕
@@ -225,11 +107,6 @@ const updateSubtitles = (language: string) => {
 // 删除字幕
 const deleteSubtitles = (language: string) => {
     emit("delete-subtitles", language)
-}
-
-// 更新选择
-const updateSelection = (rows: TableData[]) => {
-    emit("update-selection", rows)
 }
 </script>
 
