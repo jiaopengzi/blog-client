@@ -90,6 +90,7 @@ import { useMagicKeys } from "@vueuse/core"
 import { computed, onUnmounted, reactive, ref, watch, watchEffect } from "vue"
 
 import { IconKeys } from "@/components/common/icons"
+import JIcon from "@/components/common/icons"
 import { createPlayerCommands, PlayerCommandsKey } from "@/components/player/command"
 import ProgressBar from "@/components/player/components/progress-bar"
 import VideoSetting from "@/components/player/components/setting"

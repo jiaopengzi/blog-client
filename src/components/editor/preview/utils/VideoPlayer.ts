@@ -8,7 +8,6 @@
 
 import { createApp, h } from "vue"
 
-import Icon from "@/components/common/icons"
 import { type MediaTypes, PlayerStateManager } from "@/components/player"
 import VideoPlayer from "@/components/player"
 
@@ -25,30 +24,30 @@ export const mountVideoPlayerOnCustomElements = (container: HTMLElement, childEl
     if (!componentContainers) return
 
     componentContainers.forEach((el) => {
-        const videoID = el.getAttribute("id")
+        const videoType = (el.getAttribute("video-type") || "hls") as MediaTypes // 未设置默认为 hls
+        const videoID = el.getAttribute("id") // hls 设置 videoID
+        const videoSrc = el.getAttribute("src") // 非 hls 设置 videoSrc
 
-        // 未设置默认为hls
-        const videoType = (el.getAttribute("video-type") || "hls") as MediaTypes
-        const videoSrc = el.getAttribute("src") || ""
+        const videoState = new PlayerStateManager()
+        videoState.setMediaType(videoType)
 
+        // hls 设置 videoID
         if (videoID) {
-            const videoState = new PlayerStateManager()
             videoState.setVideoID(videoID)
-            videoState.setMediaType(videoType)
-            videoState.setSrc(videoSrc)
-
-            const state = videoState.getState()
-
-            const app = createApp({
-                render() {
-                    return h(VideoPlayer, { playerState: state })
-                },
-            })
-
-            // eslint-disable-next-line vue/multi-word-component-names
-            app.component("Icon", Icon) // 注册全局组件
-
-            app.mount(el)
         }
+
+        // 非 hls 设置 videoSrc
+        if (videoSrc) {
+            videoState.setSrc(videoSrc)
+        }
+
+        const state = videoState.getState()
+        const app = createApp({
+            render() {
+                return h(VideoPlayer, { playerState: state })
+            },
+        })
+
+        app.mount(el)
     })
 }

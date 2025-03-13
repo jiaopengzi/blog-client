@@ -13,7 +13,7 @@ import { nextTick, onMounted, ref, watch } from "vue"
 import { type EmojiExt } from "vue3-emoji-picker"
 
 import type { IconKeys } from "@/components/common/icons"
-import { CommandsKey, createMarkdownEditorCommands, type MarkdownEditorCommands } from "@/components/editor/command"
+import { CommandsKey, markdownEditorCommands } from "@/components/editor/command"
 import { type TableRowCol } from "@/components/editor/toolbar"
 import { MessageUtil } from "@/utils/message"
 import { getComputedStyleValue, getCSSVariableValue, setCSSVariable } from "@/utils/style"
@@ -33,16 +33,13 @@ export function useToolbar(
     // 状态管理
     const editorState = editorStateManager.getState()
 
-    // 创建 markdown 编辑器命令
-    const commands: MarkdownEditorCommands = createMarkdownEditorCommands()
-
     // 工具栏按钮
     const toolbarBtns = () => {
         return constantKeys.map((key) => {
             return {
                 name: key as CommandsKey,
-                display: (commands[key].tip + " <" + commands[key].hotKey + ">") as string,
-                icon: commands[key].icon as IconKeys,
+                display: (markdownEditorCommands[key].tip + " <" + markdownEditorCommands[key].hotKey + ">") as string,
+                icon: markdownEditorCommands[key].icon as IconKeys,
             }
         })
     }
@@ -113,7 +110,7 @@ export function useToolbar(
     const keys = useMagicKeys() // 使用 useMagicKeys() 之后，就可以通过 keys 来获取键盘按键的状态了
     const registerHotKeys = () => {
         Object.values(CommandsKey).forEach((item) => {
-            const hotKey = commands[item].hotKey
+            const hotKey = markdownEditorCommands[item].hotKey
             if (hotKey) {
                 watch(keys[hotKey], (v) => {
                     // v 为 true 时表示按下了快捷键 v 为 false 时释放了快捷键
@@ -181,7 +178,6 @@ export function useToolbar(
 
     // 插入表格行列
     const insertTableRowCol = (rowCol: TableRowCol) => {
-        console.log("rowCol", rowCol)
         // content: "|column1|column2|column3|\n|:---:|:---:|:---:|\n|content1|content2|content3|",
         const { row, col } = rowCol
         let content = ""

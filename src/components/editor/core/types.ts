@@ -17,6 +17,7 @@ export interface ToolbarRef extends HTMLElement {
 export interface CodemirrorRef extends HTMLElement {
     root: HTMLElement
     runCommand: (commandName: CommandsKey, customContent?: MarkdownEditorCommandItem) => void
+    insertContent: (content: string) => void
     scrollIntoViewLine: (line: number) => void
 }
 

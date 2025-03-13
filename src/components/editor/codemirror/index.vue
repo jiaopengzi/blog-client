@@ -15,16 +15,13 @@ import type { Extension } from "@codemirror/state"
 import type { ViewUpdate } from "@codemirror/view"
 import { onMounted, onUnmounted, useTemplateRef, watchEffect } from "vue"
 
-import type { MarkdownEditorCommandItem, MarkdownEditorCommands } from "@/components/editor/command"
-import { CommandsKey, createMarkdownEditorCommands, editorInsertFormatContent } from "@/components/editor/command"
+import type { MarkdownEditorCommandItem } from "@/components/editor/command"
+import { CommandsKey, editorInsertContent, editorInsertFormatContent, markdownEditorCommands } from "@/components/editor/command"
 import { createCustomSetup, EditorState, EditorView } from "@/pkg/codemirror/setup"
 
 import type { CodeEditorProps } from "./types"
 
 defineOptions({ name: "EditorCodemirror" })
-
-// 创建 markdown 编辑器命令
-const commands: MarkdownEditorCommands = createMarkdownEditorCommands()
 
 const props = defineProps<CodeEditorProps>() // 定义 props
 const codemirrorRef = useTemplateRef<HTMLElement | null>("codemirrorRef") // 编辑器 dom 节点
@@ -97,14 +94,19 @@ const runCommand = (commandName: CommandsKey, customContent: MarkdownEditorComma
         if (customContent) {
             // 合并自定义内容
             editorInsertFormatContent(cmView, {
-                ...commands[commandName],
+                ...markdownEditorCommands[commandName],
                 ...customContent,
             })
             return
         }
         // 执行命令
-        editorInsertFormatContent(cmView, commands[commandName])
+        editorInsertFormatContent(cmView, markdownEditorCommands[commandName])
     }
+}
+
+// 插入内容
+const insertContent = (content: string): void => {
+    editorInsertContent(cmView, content)
 }
 
 // 滚动到指定行
@@ -177,6 +179,7 @@ onUnmounted(() => {
 defineExpose({
     root: codemirrorRef,
     runCommand,
+    insertContent,
     scrollIntoViewLine,
 })
 </script>

@@ -147,6 +147,11 @@ const { previewData, showImageViewer, closeImageViewer } = usePreview(codemirror
 onMounted(() => {
     updateCmHeightNotIsFullScreen() // 初始化编辑器实例高度
 })
+
+// 暴露给父组件的属性
+defineExpose({
+    codemirror: codemirrorRef,
+})
 </script>
 
 <style scoped lang="scss">

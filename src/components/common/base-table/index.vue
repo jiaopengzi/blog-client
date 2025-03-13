@@ -190,7 +190,7 @@
 
 <script lang="ts" setup>
 import type { ElTable } from "element-plus"
-import { reactive, ref, useTemplateRef, watch, watchEffect } from "vue"
+import { reactive, type Ref, ref, useTemplateRef, watch, watchEffect } from "vue"
 
 import type { PostTag } from "@/api/postTag/view"
 import { getEmptyPagination, type Pagination } from "@/api/response"
@@ -264,7 +264,7 @@ const emit = defineEmits<{
     (event: "click-author", author: User): void // 点击作者
 }>()
 
-const tableRef = useTemplateRef<InstanceType<typeof ElTable>>("tableRef") //表格实例
+const tableRef: Ref<InstanceType<typeof ElTable> | null> = useTemplateRef<InstanceType<typeof ElTable>>("tableRef") //表格实例
 
 const search = ref(searchStr) // 搜索关键字
 // const paginationData = ref<Pagination<TableData>>(pagination)

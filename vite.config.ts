@@ -22,7 +22,9 @@ export default defineConfig({
         vue({
             template: {
                 compilerOptions: {
-                    isCustomElement: (tag) => tag.startsWith("cropper-"), // 处理自定义元素警告 [Vue warn]: Failed to resolve component
+                    isCustomElement: (tag) => {
+                        return tag.startsWith("cropper-")
+                    }, // 处理自定义元素警告 [Vue warn]: Failed to resolve component
                 },
             },
         }),

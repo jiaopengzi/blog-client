@@ -43,7 +43,7 @@
                 <el-form-item prop="post_content"> </el-form-item>
                 <!-- 编辑器 -->
                 <div ref="editorContainerRef" class="editor md-layout-fs">
-                    <EditorPost :editor-state="editorState" @update-editor-status="updateEditorStatus" />
+                    <EditorPost ref="editorPostRef" :editor-state="editorState" @update-editor-status="updateEditorStatus" />
 
                     <!-- 创建时间和更新时间 -->
                     <div v-if="postInfoAboutTime.created_at" class="about-time">
@@ -158,7 +158,7 @@
         </el-container>
     </section>
     <!-- 媒体文件选择弹窗 -->
-    <SelectMedia v-model="mediaDialogVisible" />
+    <SelectMedia v-model="mediaDialogVisible" @insert-data="insertData" />
 </template>
 <script lang="ts" setup>
 import { useIntersectionObserver, useResizeObserver } from "@vueuse/core"
@@ -171,6 +171,7 @@ import { gegPostStatusOptions, type InsertPostRequest, PostStatusCode } from "@/
 import { type PostCategory, viewListPostCategoryAPI } from "@/api/postCategory/view"
 import { ResponseCode } from "@/api/response"
 import AddTag from "@/components/common/add-tag"
+import type { TableData } from "@/components/common/base-table"
 import { IconKeys } from "@/components/common/icons"
 import SelectMedia from "@/components/common/media-select"
 import SwitchGroup from "@/components/common/switch-group"
@@ -199,6 +200,7 @@ const elContainerRef = useTemplateRef<InstanceType<typeof ElContainer> | null>("
 const formRef = useTemplateRef<FormInstance>("formRef")
 const seoDescriptionRef = useTemplateRef<InstanceType<typeof ElFormItem> | null>("seoDescriptionRef")
 const editorContainerRef = useTemplateRef<HTMLDivElement | null>("editorContainerRef")
+const editorPostRef = useTemplateRef<InstanceType<typeof EditorPost>>("editorPostRef")
 
 const stateManager = new EditorStateManager()
 const editorState = stateManager.getState()
@@ -477,6 +479,46 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     }
 }
 
+const insertData = (data: TableData[]) => {
+    // 不满足条件直接返回
+    if (!editorPostRef.value || data.length === 0) return
+    // 遍历数据插入到编辑器
+    for (const item of data) {
+        // 判断 file_type 是否在 item 中, 即为 Media 类型
+        if (!("file_type" in item)) return
+        let content = ""
+        // 视频 hls
+        if (item.file_type.startsWith("video") && item.is_generate_hls) {
+            const videoID = item.file_name.split(".")[0]
+            content = `<video-player video-type="hls" id="${videoID}"></video-player>\n`
+        }
+
+        // 视频 非 hls
+        if (item.file_type.startsWith("video") && !item.is_generate_hls) {
+            const src = item.url_belong + item.path
+            const type = item.file_type.split("/")[1]
+            content = `<video-player video-type="${type}" src="${src}"></video-player>\n`
+        }
+
+        // 图片
+        if (item.file_type.startsWith("image") && item.img?.url) {
+            content = `![alt](${item.img?.url})\n`
+        }
+
+        // TODO: 其他类型
+
+        editorPostRef.value?.codemirror?.insertContent(content)
+    }
+
+    // 关闭弹窗
+    mediaDialogVisible.value = false
+}
+
+onUnmounted(() => {
+    stopResizeObserver()
+    stopIntersectionObserver()
+})
+
 onBeforeMount(async () => {
     // 生成角色付费管理
     await initRolePaidManagement()
@@ -486,11 +528,6 @@ onBeforeMount(async () => {
         await getDataOnBeforeMount()
     }
     updateSnapshot()
-})
-
-onUnmounted(() => {
-    stopResizeObserver()
-    stopIntersectionObserver()
 })
 </script>
 

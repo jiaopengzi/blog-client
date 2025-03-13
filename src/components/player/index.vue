@@ -72,6 +72,7 @@ import { computed, onBeforeUnmount, onMounted, reactive, ref, useTemplateRef, wa
 
 import { ResponseCode } from "@/api/response"
 import { IconKeys } from "@/components/common/icons"
+import JIcon from "@/components/common/icons"
 import Controls from "@/components/player/components/controls"
 import VideoWatermark from "@/components/player/components/watermark"
 import { CustomLoader } from "@/pkg/hls"

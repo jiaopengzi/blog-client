@@ -77,7 +77,7 @@ const { isShow = false } = defineProps<{
 // 定义 emit
 const emit = defineEmits<{
     (event: "update:isShow", val: boolean): void
-    (event: "insert", selection: TableData[]): void
+    (event: "insert-data", selection: TableData[]): void
 }>()
 
 // v-model 绑定
@@ -183,7 +183,7 @@ const insert = () => {
         return MessageUtil.warning("选择数据不能大于10条")
     }
 
-    emit("insert", selectionRows.value)
+    emit("insert-data", selectionRows.value)
 
     // 关闭对话框
     handleClose()
