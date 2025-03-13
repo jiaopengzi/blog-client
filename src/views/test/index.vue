@@ -2,7 +2,7 @@
  * @Author       : jiaopengzi
  * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : Please set LastEditors
- * @LastEditTime : 2025-03-13 13:06:57
+ * @LastEditTime : 2025-03-13 17:53:38
  * @FilePath     : \blog-client\src\views\test\index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
@@ -10,20 +10,18 @@
 -->
 <template>
     <div class="container">
-        <VideoPlayer :player-state="state" />
+        <ImageInput v-model="u" />
     </div>
 </template>
 
 <script setup lang="ts">
-import { PlayerStateManager } from "@/components/player"
-import VideoPlayer from "@/components/player"
+import { ref } from "vue"
+
+import ImageInput from "@/components/common/image-input"
 
 defineOptions({ name: "MyTest" })
 
-const videoState = new PlayerStateManager()
-// videoState.set
-videoState.setSrc("http://10.10.2.222:7364/api/v1/uploads/2025/03/13/m-19-8de13d3c.mp4")
-const state = videoState.getState()
+const u = ref("http://10.10.2.222:7364/api/v1/uploads/2025/03/13/j-3-08959f82.jpg")
 </script>
 
 <style scoped lang="scss">
