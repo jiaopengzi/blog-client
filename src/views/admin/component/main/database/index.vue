@@ -1,5 +1,5 @@
 <!--
- * @FilePath     : \blog-client\src\views\admin\component\main\setting\database\index.vue
+ * @FilePath     : \blog-client\src\views\admin\component\main\database\index.vue
  * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
@@ -46,9 +46,10 @@ import PgsqlForm, { type PgsqlDatabaseFormRef } from "@/components/common/db-pgs
 import RedisForm, { type RedisDatabaseFormRef } from "@/components/common/db-redis"
 import RestartDialog from "@/components/common/restart-dialog"
 import { useDatabase } from "@/components/hooks/useDatabase"
+import { RouteNames } from "@/router"
 import { MessageUtil } from "@/utils/message"
 
-defineOptions({ name: "DatabaseUpdateForm" })
+defineOptions({ name: RouteNames.SettingDatabase })
 
 const dbPgsql = ref<PgsqlSetupRequest>({} as PgsqlSetupRequest)
 const dbRedis = ref<RedisNodeSetupRequest[]>([])
@@ -112,6 +113,10 @@ onBeforeMount(async () => {
 </script>
 
 <style scoped lang="scss">
+.content {
+    padding-left: 10px;
+}
+
 .forms-multi {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));

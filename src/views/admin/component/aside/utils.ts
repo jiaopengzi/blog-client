@@ -201,22 +201,22 @@ const adminMenuItemMap: AdminMenuItemMap = {
             class: "icon-menu",
         },
     },
-    // [RouteNamesAdmin.SettingDatabase]: {
-    //     display: "数据库",
-    //     parentIndex: RouteNamesAdmin.Setting,
-    // },
-    // [RouteNamesAdmin.SettingEmail]: {
-    //     display: "邮箱",
-    //     parentIndex: RouteNamesAdmin.Setting,
-    // },
-    // [RouteNamesAdmin.SettingSocial]: {
-    //     display: "社交",
-    //     parentIndex: RouteNamesAdmin.Setting,
-    // },
-    // [RouteNamesAdmin.SettingUpload]: {
-    //     display: "上传",
-    //     parentIndex: RouteNamesAdmin.Setting,
-    // },
+    [RouteNamesAdmin.SettingDatabase]: {
+        display: "数据库配置",
+        parentIndex: RouteNamesAdmin.Setting,
+    },
+    [RouteNamesAdmin.SettingEmail]: {
+        display: "邮箱配置",
+        parentIndex: RouteNamesAdmin.Setting,
+    },
+    [RouteNamesAdmin.SettingSocial]: {
+        display: "社交登录",
+        parentIndex: RouteNamesAdmin.Setting,
+    },
+    [RouteNamesAdmin.SettingUpload]: {
+        display: "文件上传",
+        parentIndex: RouteNamesAdmin.Setting,
+    },
     [RouteNamesAdmin.Notification]: {
         display: "通知",
         icon: {

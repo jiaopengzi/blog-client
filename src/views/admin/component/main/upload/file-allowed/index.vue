@@ -1,5 +1,5 @@
 <!--
- * @FilePath     : \blog-client\src\views\admin\component\main\setting\upload\file-allowed\index.vue
+ * @FilePath     : \blog-client\src\views\admin\component\main\upload\file-allowed\index.vue
  * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 

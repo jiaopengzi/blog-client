@@ -1,5 +1,5 @@
 <!--
- * @FilePath     : \blog-client\src\views\admin\component\main\setting\social\social-login-config\index.vue
+ * @FilePath     : \blog-client\src\views\admin\component\main\social\social-login-config\index.vue
  * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
@@ -93,7 +93,7 @@ const formDataResult = computed<LoginConfig>(() => {
     }
 })
 
-const rules = reactive<FormRules<LoginConfig>>({
+const rules: FormRules<LoginConfig> = reactive<FormRules<LoginConfig>>({
     app_id: [
         {
             validator: (rule, value, callback) => {

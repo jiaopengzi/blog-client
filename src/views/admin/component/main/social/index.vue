@@ -1,5 +1,5 @@
 <!--
- * @FilePath     : \blog-client\src\views\admin\component\main\setting\social\index.vue
+ * @FilePath     : \blog-client\src\views\admin\component\main\social\index.vue
  * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
@@ -37,11 +37,11 @@ import { getSocialLoginAPI, type LoginConfig } from "@/api/setting/getSocialLogi
 import { updateSocialLoginAPI, type UpdateSocialLoginRequest } from "@/api/setting/updateSocialLogin"
 import RestartDialog from "@/components/common/restart-dialog"
 import { useRestart } from "@/components/hooks/useRestart"
+import { RouteNames } from "@/router"
 import { MessageUtil } from "@/utils/message"
 
 import SocialLoginConfig, { type SocialLoginConfigRef } from "./social-login-config"
-
-defineOptions({ name: "SettingSocial" })
+defineOptions({ name: RouteNames.SettingSocial })
 
 const configQQ = ref<LoginConfig>({} as LoginConfig)
 const configWeChat = ref<LoginConfig>({} as LoginConfig)
@@ -98,6 +98,10 @@ onBeforeMount(async () => {
 </script>
 
 <style lang="scss" scoped>
+.components {
+    padding-left: 10px;
+}
+
 .component-item {
     margin-bottom: 10px;
 }

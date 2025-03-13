@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\views\admin\component\main\setting\email\index.vue
+ * @FilePath     : \blog-client\src\views\admin\component\main\email\index.vue
  * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 邮箱配置
+ * @Description  : 邮箱配置页面
 -->
 
 <template>
@@ -57,10 +57,11 @@ import { testEmailAPI } from "@/api/setting/testEmail"
 import { updateEmailAPI, type UpdateEmailRequest } from "@/api/setting/updateEmail"
 import SendTestEmail from "@/components/common/send-test-email"
 import { useFormItemRule } from "@/components/hooks/useFormItemRule"
+import { RouteNames } from "@/router"
 import { MessageUtil } from "@/utils/message"
 import { RegexPatterns } from "@/utils/regexPatterns"
 
-defineOptions({ name: "SettingEmail" })
+defineOptions({ name: RouteNames.SettingEmail })
 
 // 表单label位置 top | left | right
 const labelPosition = ref("left")
@@ -126,9 +127,10 @@ onBeforeMount(async () => {
 
 <style lang="scss" scoped>
 .form-page {
-    height: 100%;
-    width: 100%;
+    // height: 100%;
+    // width: 100%;
     background-color: var(--jpz-bg-color-page);
+    padding-left: 10px;
 }
 
 .title {

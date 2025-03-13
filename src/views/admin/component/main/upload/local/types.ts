@@ -1,5 +1,5 @@
 /**
- * @FilePath     : \blog-client\src\views\admin\component\main\setting\upload\oss\types.ts
+ * @FilePath     : \blog-client\src\views\admin\component\main\upload\local\types.ts
  * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -8,7 +8,7 @@
 
 import { type BaseConfigFormRef } from "@/components/common/base-config-form"
 
-export interface UploadOSSFormRef extends HTMLElement {
+export interface UploadLocalFormRef extends HTMLElement {
     root: HTMLElement
     formRef: BaseConfigFormRef
 }

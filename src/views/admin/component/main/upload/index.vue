@@ -1,5 +1,5 @@
 <!--
- * @FilePath     : \blog-client\src\views\admin\component\main\setting\upload\index.vue
+ * @FilePath     : \blog-client\src\views\admin\component\main\upload\index.vue
  * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
@@ -25,13 +25,14 @@ import { getUploadAPI } from "@/api/setting/getUpload"
 import { updateUploadAPI, type UpdateUploadRequest } from "@/api/setting/updateUpload"
 import RestartDialog from "@/components/common/restart-dialog"
 import { useRestart } from "@/components/hooks/useRestart"
+import { RouteNames } from "@/router"
 import { MessageUtil } from "@/utils/message"
 
 import FileAllowed, { type FileAllowedRef } from "./file-allowed"
 import UploadLocal, { type UploadLocalFormRef } from "./local"
 import UploadOSS, { type UploadOSSFormRef } from "./oss"
 
-defineOptions({ name: "SettingUpload" })
+defineOptions({ name: RouteNames.SettingUpload })
 
 const fileAllowedList = ref<FileAllowedType[]>([])
 const localData = ref<LocalType>({} as LocalType)
@@ -97,6 +98,10 @@ onBeforeMount(async () => {
 </script>
 
 <style lang="scss" scoped>
+.components {
+    padding-left: 10px;
+}
+
 .component-item {
     margin-bottom: 10px;
 }
