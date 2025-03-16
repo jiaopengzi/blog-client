@@ -11,7 +11,7 @@ import type { Res, ResPromise } from "@/api/response"
 
 // 检测验证码是否正确
 export function hasAdminAPI(): ResPromise<Res<unknown>> {
-    const urlStr = routerGroup + "/option/has-admin"
+    const urlStr = routerGroup + "/setting/has-admin"
     return request({
         url: urlStr,
         method: "get",

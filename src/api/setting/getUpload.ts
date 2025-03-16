@@ -48,7 +48,7 @@ export interface GetUploadResponse {
 
 // 获取上传配置
 export function getUploadAPI(): ResPromise<Res<GetUploadResponse>> {
-    const urlStr = routerGroup + "/option/get-upload"
+    const urlStr = routerGroup + "/setting/get-upload"
     return request({
         url: urlStr,
         method: "get",

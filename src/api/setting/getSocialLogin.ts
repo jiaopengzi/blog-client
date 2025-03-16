@@ -25,7 +25,7 @@ export interface GetSocialLoginResponse {
 
 // 获取社交登录信息
 export function getSocialLoginAPI(): ResPromise<Res<GetSocialLoginResponse>> {
-    const urlStr = routerGroup + "/option/get-social-login"
+    const urlStr = routerGroup + "/setting/get-social-login"
     return request({
         url: urlStr,
         method: "get",

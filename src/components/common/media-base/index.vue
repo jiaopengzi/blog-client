@@ -69,7 +69,6 @@ defineOptions({ name: "MediaBase" })
 const { tableColumn, pagination, editMediaData, fileCountGroupByFileType, activeFileType, handleFileCountByFileType } = defineProps<{
     tableColumn: TableColumn[] // 表格列配置
     pagination: Pagination<TableData> // 分页数据
-    searchStr?: string // 搜索关键字
     editMediaData: EditMediaProps // 编辑媒体数据
     fileCountGroupByFileType: FileCountGroupByFileType[]
     activeFileType: string // 当前选中的文件类型

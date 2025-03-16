@@ -71,6 +71,7 @@ export enum RouteNamesAdmin {
     LoginLog = "login-log",
     PermissionRole = "permission-role",
     Setting = "setting",
+    SettingAPPOption = "app-option",
     SettingDatabase = "database",
     SettingEmail = "email",
     SettingSocial = "social",

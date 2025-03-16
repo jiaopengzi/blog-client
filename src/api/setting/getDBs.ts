@@ -15,7 +15,7 @@ type GetDBsResponse = SetupRequest
 
 // 获取数据库信息
 export function getDBsAPI(): ResPromise<Res<GetDBsResponse>> {
-    const urlStr = routerGroup + "/option/get-dbs"
+    const urlStr = routerGroup + "/setting/get-dbs"
     return request({
         url: urlStr,
         method: "get",

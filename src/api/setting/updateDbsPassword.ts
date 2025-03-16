@@ -15,7 +15,7 @@ type UpdateDbsPasswordRequest = SetupRequest
 
 // 更新数据库密码
 export function updateDbsPasswordAPI(requestData: UpdateDbsPasswordRequest): ResPromise<Res<unknown>> {
-    const urlStr = routerGroup + "/option/update-dbs-password"
+    const urlStr = routerGroup + "/setting/update-dbs-password"
     return request({
         url: urlStr,
         method: "post",

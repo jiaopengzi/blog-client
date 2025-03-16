@@ -15,7 +15,7 @@ export type UpdateEmailRequest = GetEmailResponse
 
 // 更新邮箱信息
 export function updateEmailAPI(requestData: UpdateEmailRequest): ResPromise<Res<unknown>> {
-    const urlStr = routerGroup + "/option/update-email"
+    const urlStr = routerGroup + "/setting/update-email"
     return request({
         url: urlStr,
         method: "post",

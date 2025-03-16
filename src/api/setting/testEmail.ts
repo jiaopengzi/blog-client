@@ -12,7 +12,7 @@ import type { Res, ResPromise } from "@/api/response"
 
 // 发送测试邮件
 export function testEmailAPI(requestData: SendTestEmailRequest): ResPromise<Res<unknown>> {
-    const urlStr = routerGroup + "/option/test-email"
+    const urlStr = routerGroup + "/setting/test-email"
     return request({
         url: urlStr,
         method: "post",

@@ -31,9 +31,9 @@ import SelectMedia from "@/components/common/media-select"
 import { MessageUtil } from "@/utils/message"
 
 // 定义组件名称
-defineOptions({ name: "ImageInput" })
+defineOptions({ name: "ImageInput", inheritAttrs: false })
 
-const { modelValue } = defineProps<{
+const { modelValue = "" } = defineProps<{
     modelValue: string // 绑定值
 }>()
 

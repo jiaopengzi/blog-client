@@ -201,12 +201,16 @@ const adminMenuItemMap: AdminMenuItemMap = {
             class: "icon-menu",
         },
     },
+    [RouteNamesAdmin.SettingAPPOption]: {
+        display: "网站选项",
+        parentIndex: RouteNamesAdmin.Setting,
+    },
     [RouteNamesAdmin.SettingDatabase]: {
-        display: "数据库配置",
+        display: "数据库",
         parentIndex: RouteNamesAdmin.Setting,
     },
     [RouteNamesAdmin.SettingEmail]: {
-        display: "邮箱配置",
+        display: "邮箱",
         parentIndex: RouteNamesAdmin.Setting,
     },
     [RouteNamesAdmin.SettingSocial]: {

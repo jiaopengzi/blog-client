@@ -22,7 +22,6 @@
             :edit-top="editTop"
             height="calc(100vh - 270px)"
             :pagination="pagination"
-            :search="search"
             :edit-media-data="editMediaData"
             :file-count-group-by-file-type="fileCountGroupByFileType"
             :active-file-type="activeFileType"

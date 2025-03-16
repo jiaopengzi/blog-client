@@ -1,0 +1,73 @@
+/*
+ * FilePath    : blog-client\src\views\admin\component\main\app-option\base\types.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 网站选项表单类型
+ */
+
+export interface APPOptionFormRef extends HTMLElement {
+    root: HTMLElement
+    validateForm: () => Promise<boolean>
+    formDataResult: APPOptionForm
+}
+
+export interface APPOptionForm {
+    // logo 相关
+    logo: string // logo
+    favicon: string // favicon
+
+    // 文章相关
+    carousel_interval: number // 轮播图间隔 默认 5秒
+    post_text_truncate: number // 文章文字截断 100字
+    post_summary_truncate: number // 文章摘要截断 80字
+    history_today_enable: boolean // 历史上今天
+    reading_mode_enable: boolean // 阅读模式
+    word_count_enable: boolean // 文章字数
+    reading_time_enable: boolean // 阅读时间
+    show_create_time_enable: boolean // 显示创建时间
+    show_category_enable: boolean // 显示分类
+    show_like_enable: boolean // 显示点赞
+    show_favorite_enable: boolean // 显示收藏
+    show_tags_enable: boolean // 显示标签
+    show_copyright_enable: boolean // 版权信息开启
+    show_copyright_info: string // 版权信息
+    article_footer_info_enable: boolean // 文末固定信息开启
+    article_footer_info: string // 文末固定信息
+
+    // 互动相关
+    like_enable: boolean // 点赞
+    favorite_enable: boolean // 收藏
+    share_enable: boolean // 分享
+    poster_enable: boolean // 海报
+    link_enable: boolean // 链接
+
+    // 二维码相关
+    wechat_official_account_qrcode: string // 微信公众号二维码
+    wechat_qrcode: string // 微信二维码
+    qq_qrcode: string // 微信二维码
+    footer_wechat_official_account_enable: boolean // 底部微信
+    footer_wechat_enable: boolean // 底部微信
+    footer_qq_enable: boolean // 底部qq
+
+    // seo 相关
+    seo_title: string // seo title
+    seo_keywords: string // seo KeyWords
+    seo_description: string // seo Description
+    custom_home_title: string // 自定义网站首页title
+    custom_home_subtitle: string // 自定义网站首页副标题
+    separator: string // 分隔符
+    sitemap: string // 站点地图
+    footer_statistics_code: string // 页脚添加同步统计代码
+
+    // 备案相关
+    psb_filing_icon: string // 公网安备图标
+    psb_filing_number: string // 公网安备号
+    psb_filing_link: string // 公网安备查询链接
+    icp_filing_icon: string // 域名备案小图标
+    icp_filing_number: string // 域名备案号
+    miit_link: string // 工信部备案查询链接
+
+    // 样式相关
+    custom_style_css: string // 定制风格颜色css
+}

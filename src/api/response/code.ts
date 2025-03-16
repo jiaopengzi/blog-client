@@ -116,6 +116,8 @@ export enum ResponseCode {
     UploadNoUpdate = 2314, // 上传配置未更新
     UploadUpdateSuccess = 2315, // 上传配置更新成功
     UploadConfigError = 2316, // 上传配置错误
+    GetAPPOptionSuccess = 2317, // 获取网站配置成功
+    UpdateAPPOptionSuccess = 2318, // 更新网站配置成功
 
     // 验证码相关
     CaptchaSendSuccess = 8000, //验证码发送成功

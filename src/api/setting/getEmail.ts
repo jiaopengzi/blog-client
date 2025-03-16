@@ -19,7 +19,7 @@ export interface GetEmailResponse {
 
 // 获取数据库信息
 export function getEmailAPI(): ResPromise<Res<GetEmailResponse>> {
-    const urlStr = routerGroup + "/option/get-email"
+    const urlStr = routerGroup + "/setting/get-email"
     return request({
         url: urlStr,
         method: "get",

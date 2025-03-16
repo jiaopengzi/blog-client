@@ -16,7 +16,7 @@ export interface GetSocialLoginStatusResponse {
 
 // 获取社交登录状态信息
 export function getSocialLoginStatusAPI(): ResPromise<Res<GetSocialLoginStatusResponse>> {
-    const urlStr = routerGroup + "/option/get-social-login-status"
+    const urlStr = routerGroup + "/setting/get-social-login-status"
     return request({
         url: urlStr,
         method: "get",

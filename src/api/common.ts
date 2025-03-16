@@ -42,3 +42,11 @@ export const SocialLoginDisplay = {
     [SocialLoginType.WeChat]: "微信",
     [SocialLoginType.Phone]: "手机号",
 }
+
+// 选项类型
+export enum OptionType {
+    String = "string",
+    Number = "number",
+    Boolean = "bool",
+    JSON = "json",
+}

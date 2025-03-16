@@ -15,7 +15,7 @@ export type UpdateUploadRequest = GetUploadResponse
 
 // 更新上传信息
 export function updateUploadAPI(requestData: UpdateUploadRequest): ResPromise<Res<unknown>> {
-    const urlStr = routerGroup + "/option/update-upload"
+    const urlStr = routerGroup + "/setting/update-upload"
     return request({
         url: urlStr,
         method: "post",

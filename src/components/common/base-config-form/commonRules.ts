@@ -89,3 +89,25 @@ export const urlListValidatorFunc = (rule: any, value: any, callback: any) => {
 
     callback()
 }
+
+// url校验 必须以http或https开头
+export const urlValidatorFunc = (rule: any, value: any, callback: any) => {
+    if (!value.startsWith("http://") && !value.startsWith("https://")) {
+        callback(new Error("url必须以http或https开头"))
+    } else {
+        callback()
+    }
+}
+
+// imageURL校验 必须以http或https开头,判断是否为图片,可以为空
+export const imageURLRequiredValidatorFunc = (rule: any, value: any, callback: any) => {
+    if (value === "") {
+        callback()
+    } else if (!value.startsWith("http://") && !value.startsWith("https://")) {
+        callback(new Error("url必须以http或https开头"))
+    } else if (!/\.(gif|jpg|jpeg|tiff|png)$/i.test(value)) {
+        callback(new Error("url必须为图片"))
+    } else {
+        callback()
+    }
+}
