@@ -56,7 +56,7 @@
 
 <script lang="ts" setup>
 import { type Pagination } from "@/api/response"
-import { type FileCountGroupByFileType } from "@/api/upload/getFileCountGroupByFileType"
+import { type FileCountGroupByFileType } from "@/api/upload/getFileCountGroupByFileType1"
 import type { TableColumn, TableData } from "@/components/common/base-table"
 import BaseTable from "@/components/common/base-table"
 import AddMedia from "@/components/common/media-add"

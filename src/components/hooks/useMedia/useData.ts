@@ -9,7 +9,7 @@
 import { reactive, ref } from "vue"
 
 import { type QueryParamsRecord } from "@/api/request"
-import { type FileCountGroupByFileType } from "@/api/upload/getFileCountGroupByFileType"
+import { type FileCountGroupByFileType } from "@/api/upload/getFileCountGroupByFileType1"
 import type { GetMediaFilesRequest } from "@/api/upload/getFiles"
 import { ImgFit, type TableImg } from "@/components/common"
 import type { TableColumn, TableData } from "@/components/common/base-table"

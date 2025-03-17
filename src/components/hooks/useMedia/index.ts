@@ -10,7 +10,7 @@ import { onBeforeMount, watch } from "vue"
 
 import { ResponseCode } from "@/api/response"
 import { deleteFileAPI, type DeleteFileRequest } from "@/api/upload/deleteFile"
-import { type FileCountGroupByFileType, getFileCountGroupByFileTypeAPI } from "@/api/upload/getFileCountGroupByFileType"
+import { type FileCountGroupByFileType, getFileCountGroupByFileTypeAPI } from "@/api/upload/getFileCountGroupByFileType1"
 import type { GetMediaFilesRequest, MediaFile } from "@/api/upload/getFiles"
 import { getMediaFilesAPI } from "@/api/upload/getFiles"
 import type { TableData } from "@/components/common/base-table"
