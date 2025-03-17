@@ -114,6 +114,7 @@ onBeforeMount(async () => {
 
 <style scoped lang="scss">
 .content {
+    padding-top: 10px;
     padding-left: 10px;
 }
 

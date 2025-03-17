@@ -202,7 +202,7 @@ const adminMenuItemMap: AdminMenuItemMap = {
         },
     },
     [RouteNamesAdmin.SettingAPPOption]: {
-        display: "网站选项",
+        display: "选项",
         parentIndex: RouteNamesAdmin.Setting,
     },
     [RouteNamesAdmin.SettingDatabase]: {

@@ -127,6 +127,7 @@ onBeforeMount(async () => {
 
 <style lang="scss" scoped>
 .form-page {
+    padding-top: 10px;
     // height: 100%;
     // width: 100%;
     background-color: var(--jpz-bg-color-page);

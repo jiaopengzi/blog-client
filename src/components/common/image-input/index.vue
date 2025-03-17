@@ -9,8 +9,8 @@
 <template>
     <div :class="modelValue ? 'media-container-show-image' : 'media-container'">
         <div class="media-input">
-            <el-input class="media-input-item" :model-value="modelValue" @update:modelValue="$emit('update:modelValue', $event)" v-bind="$attrs" />
-            <el-button class="media-input-item media-input-btn" type="primary" @click="mediaDialogVisible = true">
+            <el-input class="media-input-item in" :model-value="modelValue" @update:modelValue="$emit('update:modelValue', $event)" v-bind="$attrs" />
+            <el-button class="media-input-item btn" type="primary" @click="mediaDialogVisible = true">
                 <span>选择</span>
             </el-button>
         </div>
@@ -20,7 +20,7 @@
     </div>
 
     <!-- 媒体文件选择弹窗 -->
-    <SelectMedia v-model="mediaDialogVisible" @insert-data="insertData" />
+    <SelectMedia v-if="mediaDialogVisible" v-model="mediaDialogVisible" @insert-data="insertData" />
 </template>
 
 <script lang="ts" setup>
@@ -73,7 +73,8 @@ const insertData = (data: TableData[]) => {
 .media-container {
     display: flex;
     flex-direction: column;
-    padding: 10px 0;
+    // padding: 10px 0;
+    width: 100%;
 }
 
 .media-container-show-image {
@@ -81,19 +82,28 @@ const insertData = (data: TableData[]) => {
     @extend .media-container;
 
     border-bottom: 1px solid var(--jpz-border-color);
+    width: 100%;
 }
 
 .media-input {
     display: flex;
     justify-content: center;
     align-items: center;
-
-    .media-input-btn {
+    width: 100%;
+    // btn 固定宽度
+    .btn {
         margin-left: 10px;
+        width: 50px;
+    }
+
+    // in 使用剩余宽度
+    .in {
+        flex: 1;
     }
 }
 
 .media-show {
     margin-top: 10px;
+    margin-bottom: 5px;
 }
 </style>
