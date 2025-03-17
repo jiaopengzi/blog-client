@@ -16,7 +16,7 @@ export interface FileCountGroupByFileType {
     file_count: number // 文件数量
 }
 
-// 获取文件信息 api 函数
+// 获取文件信息
 export function getFileCountGroupByFileTypeAPI(): ResPromise<Res<FileCountGroupByFileType[]>> {
     const urlStr = routerGroup + "/upload/count-group-by-type"
     return request({
