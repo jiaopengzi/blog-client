@@ -136,6 +136,7 @@ export const formatFooterInfo = async (data: GetAPPOptionResponse): Promise<Foot
         beian_miit_id: data.beian_miit_id?.value,
         beian_miit_link: data.beian_miit_link?.value,
     }
+
     return {
         left,
         middle,

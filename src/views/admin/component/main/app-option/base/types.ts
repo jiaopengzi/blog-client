@@ -42,6 +42,16 @@ export interface APPOptionForm {
     poster_enable: boolean // 海报
     link_enable: boolean // 链接
 
+    // seo 相关
+    seo_title: string // seo title
+    seo_keywords: string // seo KeyWords
+    seo_description: string // seo Description
+    custom_home_title: string // 自定义网站首页title
+    custom_home_subtitle: string // 自定义网站首页副标题
+    separator: string // 分隔符
+    sitemap: string // 站点地图
+    footer_statistics_code: string // 页脚添加同步统计代码
+
     // 二维码相关
     wechat_official_account_qrcode: string // 微信公众号二维码
     wechat_qrcode: string // 微信二维码
@@ -64,16 +74,6 @@ export interface APPOptionForm {
     footer_qrcode3_enable: boolean // 底部二维码3是否开启
     footer_qrcode3: string // 底部二维码3
     footer_qrcode3_description: string // 底部二维码3显示描述
-
-    // seo 相关
-    seo_title: string // seo title
-    seo_keywords: string // seo KeyWords
-    seo_description: string // seo Description
-    custom_home_title: string // 自定义网站首页title
-    custom_home_subtitle: string // 自定义网站首页副标题
-    separator: string // 分隔符
-    sitemap: string // 站点地图
-    footer_statistics_code: string // 页脚添加同步统计代码
 
     // 备案相关
     beian_mps_icon: string // 公网安备图标

@@ -159,6 +159,17 @@ const formItems = [
     { label: "开启海报", prop: "poster_enable", isCheckbox: true },
     { label: "开启分享链接", prop: "link_enable", isCheckbox: true },
 
+    // seo 相关
+    { label: "SEO", isCategoryTitle: true },
+    { label: "SEO 标题", prop: "seo_title" },
+    { label: "SEO 关键词", prop: "seo_keywords" },
+    { label: "SEO 描述", prop: "seo_description" },
+    { label: "首页主标题", prop: "custom_home_title" },
+    { label: "首页副标题", prop: "custom_home_subtitle" },
+    { label: "标题分隔符", prop: "separator" },
+    { label: "站点地图", prop: "sitemap", type: "textarea" },
+    { label: "页脚统计代码", prop: "footer_statistics_code", type: "textarea" },
+
     // 二维码相关
     { label: "二维码", isCategoryTitle: true },
     { label: "微信公用号", prop: "wechat_official_account_qrcode", isImageInput: true },
@@ -166,37 +177,26 @@ const formItems = [
     { label: "QQ", prop: "qq_qrcode", isImageInput: true },
 
     { label: "底部标题和内容", isCategoryTitle: true },
-    { label: "底部左侧标题", prop: "footer_left_title" },
-    { label: "底部左侧内容", prop: "footer_left_content", type: "textarea" },
+    { label: "左侧标题", prop: "footer_left_title" },
+    { label: "左侧内容", prop: "footer_left_content", type: "textarea" },
 
-    { label: "底部右侧标题", prop: "footer_right_title" },
-    { label: "底部右侧内容", prop: "footer_right_content", type: "textarea" },
+    { label: "右侧标题", prop: "footer_right_title" },
+    { label: "右侧内容", prop: "footer_right_content", type: "textarea" },
 
     { label: "底部二维码1", isCategoryTitle: true },
     { label: "开启", prop: "footer_qrcode1_enable", isCheckbox: true },
     { label: "二维码", prop: "footer_qrcode1", isImageInput: true },
-    { label: "二维码描述", prop: "footer_qrcode1_description" },
+    { label: "描述", prop: "footer_qrcode1_description" },
 
     { label: "底部二维码2", isCategoryTitle: true },
-    { label: "二维码开启", prop: "footer_qrcode2_enable", isCheckbox: true },
+    { label: "开启", prop: "footer_qrcode2_enable", isCheckbox: true },
     { label: "二维码", prop: "footer_qrcode2", isImageInput: true },
-    { label: "二维码描述", prop: "footer_qrcode2_description" },
+    { label: "描述", prop: "footer_qrcode2_description" },
 
     { label: "底部二维码3", isCategoryTitle: true },
-    { label: "二维码开启", prop: "footer_qrcode3_enable", isCheckbox: true },
+    { label: "开启", prop: "footer_qrcode3_enable", isCheckbox: true },
     { label: "二维码", prop: "footer_qrcode3", isImageInput: true },
-    { label: "二维码描述", prop: "footer_qrcode3_description" },
-
-    // seo 相关
-    { label: "SEO", isCategoryTitle: true },
-    { label: "SEO 标题", prop: "seo_title" },
-    { label: "SEO 关键词", prop: "seo_keywords" },
-    { label: "SEO 描述", prop: "seo_description" },
-    { label: "自定义网站首页标题", prop: "custom_home_title" },
-    { label: "自定义网站首页副标题", prop: "custom_home_subtitle" },
-    { label: "分隔符", prop: "separator" },
-    { label: "站点地图", prop: "sitemap", type: "textarea" },
-    { label: "页脚统计代码", prop: "footer_statistics_code", type: "textarea" },
+    { label: "描述", prop: "footer_qrcode3_description" },
 
     // 备案相关
     { label: "备案信息", isCategoryTitle: true },

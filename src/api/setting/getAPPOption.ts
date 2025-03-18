@@ -46,6 +46,16 @@ export interface GetAPPOptionResponse {
     poster_enable: APPOptionItem // 海报
     link_enable: APPOptionItem // 链接
 
+    // seo 相关
+    seo_title: APPOptionItem // seo title
+    seo_keywords: APPOptionItem // seo KeyWords
+    seo_description: APPOptionItem // seo Description
+    custom_home_title: APPOptionItem // 自定义网站首页title
+    custom_home_subtitle: APPOptionItem // 自定义网站首页副标题
+    separator: APPOptionItem // 分隔符
+    sitemap: APPOptionItem // 站点地图
+    footer_statistics_code: APPOptionItem // 页脚添加同步统计代码
+
     // 二维码相关
     wechat_official_account_qrcode: APPOptionItem // 微信公众号二维码
     wechat_qrcode: APPOptionItem // 微信二维码
@@ -68,16 +78,6 @@ export interface GetAPPOptionResponse {
     footer_qrcode3_enable: APPOptionItem // 底部二维码3是否开启
     footer_qrcode3: APPOptionItem // 底部二维码3
     footer_qrcode3_description: APPOptionItem // 底部二维码3显示描述
-
-    // seo 相关
-    seo_title: APPOptionItem // seo title
-    seo_keywords: APPOptionItem // seo KeyWords
-    seo_description: APPOptionItem // seo Description
-    custom_home_title: APPOptionItem // 自定义网站首页title
-    custom_home_subtitle: APPOptionItem // 自定义网站首页副标题
-    separator: APPOptionItem // 分隔符
-    sitemap: APPOptionItem // 站点地图
-    footer_statistics_code: APPOptionItem // 页脚添加同步统计代码
 
     // 备案相关
     beian_mps_icon: APPOptionItem // 公网安备图标
