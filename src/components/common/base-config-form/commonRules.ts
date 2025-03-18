@@ -101,7 +101,7 @@ export const urlValidatorFunc = (rule: any, value: any, callback: any) => {
 
 // imageURL校验 必须以http或https开头,判断是否为图片,可以为空
 export const imageURLRequiredValidatorFunc = (rule: any, value: any, callback: any) => {
-    if (value === "") {
+    if (value === "" || value === void 0 || value === null) {
         callback()
     } else if (!value.startsWith("http://") && !value.startsWith("https://")) {
         callback(new Error("url必须以http或https开头"))
