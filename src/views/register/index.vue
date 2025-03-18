@@ -62,6 +62,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useHead } from "@unhead/vue"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { reactive, ref, toRef, useTemplateRef } from "vue"
 import { useRouter } from "vue-router"
@@ -80,6 +81,10 @@ import { MessageUtil } from "@/utils/message"
 import type { RegisterForm } from "./types"
 
 defineOptions({ name: "AppRegister" })
+
+useHead({
+    title: "注册",
+})
 
 const router = useRouter()
 

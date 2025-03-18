@@ -13,6 +13,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useHead } from "@unhead/vue"
 import { onMounted, ref } from "vue"
 import { useRoute, useRouter } from "vue-router"
 
@@ -21,6 +22,10 @@ import { RouteNames, RouteNamesSocial } from "@/router"
 import { useUserStore } from "@/stores/user"
 
 defineOptions({ name: "SocialLoginCallback" })
+
+useHead({
+    title: "社交登录回调",
+})
 
 const userStore = useUserStore()
 const router = useRouter()

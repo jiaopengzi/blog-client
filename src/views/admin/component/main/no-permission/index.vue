@@ -13,7 +13,12 @@
     </div>
 </template>
 <script setup lang="ts">
+import { useHead } from "@unhead/vue"
 defineOptions({ name: "NoPermission" })
+
+useHead({
+    title: "无权限",
+})
 </script>
 <style scoped lang="scss">
 .no-permission {

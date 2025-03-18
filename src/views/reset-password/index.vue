@@ -52,6 +52,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useHead } from "@unhead/vue"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { reactive, ref, toRef, useTemplateRef } from "vue"
 import { useRouter } from "vue-router"
@@ -69,8 +70,12 @@ import { MessageUtil } from "@/utils/message"
 
 import type { ResetPasswordForm } from "./types"
 
-// 定义组件名称
 defineOptions({ name: "ResetPassword" })
+
+useHead({
+    title: "密码重置",
+})
+
 const router = useRouter()
 
 // 表单label位置 top | left | right

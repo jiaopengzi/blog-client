@@ -47,6 +47,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useHead } from "@unhead/vue"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { onBeforeMount, reactive, ref, toRef, useTemplateRef } from "vue"
 import type { RouteLocationRaw } from "vue-router"
@@ -67,6 +68,11 @@ import { MessageUtil } from "@/utils/message"
 import type { LoginForm } from "./types"
 
 defineOptions({ name: "AppLogin" })
+
+useHead({
+    title: "登录",
+})
+
 const router = useRouter()
 // 表单label位置 top | left | right
 const labelPosition = ref("top")

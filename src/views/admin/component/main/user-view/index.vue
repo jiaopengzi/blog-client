@@ -70,6 +70,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useHead } from "@unhead/vue"
 import { onBeforeMount, reactive, ref } from "vue"
 
 import { type Role } from "@/api/permissionRole/role"
@@ -86,11 +87,16 @@ import { useParams } from "@/components/hooks/useParams"
 import { RouteNames } from "@/router"
 import { formatTime } from "@/utils/dateTime"
 import { getRolesList } from "@/utils/permissionRole"
+import { adminMenuItemMap } from "@/views/admin/component/aside"
 import AddUser from "@/views/admin/component/main/user-view/component/add-user"
 import { type EditUserByAdminForm } from "@/views/admin/component/main/user-view/component/edit-user"
 import EditUser from "@/views/admin/component/main/user-view/component/edit-user"
 
 defineOptions({ name: RouteNames.UserView })
+
+useHead({
+    title: adminMenuItemMap[RouteNames.UserView].display,
+})
 
 const cols: TableColumn[] = reactive([
     {

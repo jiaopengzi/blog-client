@@ -13,8 +13,7 @@ import { PermissionNames } from "@/utils/permissionRole" // 权限名称枚举
 
 import { type AdminMenuItemMap, type AdminMenuItemMapWithIndex } from "./types"
 
-// const adminMenuItemMap: Partial<AdminMenuItemMap> = {
-const adminMenuItemMap: AdminMenuItemMap = {
+export const adminMenuItemMap: AdminMenuItemMap = {
     [RouteNamesAdmin.Dashboard]: {
         display: "仪表板",
         icon: {

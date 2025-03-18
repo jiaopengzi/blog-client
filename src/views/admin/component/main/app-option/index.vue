@@ -9,29 +9,40 @@
 <template>
     <div class="components">
         <el-button class="component-item" type="primary" @click="submitForm">保存</el-button>
-        <BaseForm ref="formRef" title="网站选项" :form-data="optionData" :rules="rules" :form-items="formItems" :label-width="160" :form-width="660" />
+        <BaseForm ref="formRef" title="网站选项" :form-data="optionData" :rules="rules" :form-items="formItems" :label-width="160" :form-width="800" />
     </div>
 </template>
 
 <script lang="ts" setup>
+import { useHead } from "@unhead/vue"
 import type { FormRules } from "element-plus"
+import { storeToRefs } from "pinia"
 import { onBeforeMount, reactive, useTemplateRef } from "vue"
 
 import { OptionType } from "@/api/common"
 import { handleResErr, ResponseCode } from "@/api/response"
-import { getAPPOptionAPI, type GetAPPOptionResponse } from "@/api/setting/getAPPOption"
+import { type GetAPPOptionResponse } from "@/api/setting/getAPPOption"
 import { type UpdateAPPOption, updateAPPOptionAPI, type UpdateAPPOptionRequest } from "@/api/setting/updateAPPOption"
 import { imageURLRequiredValidatorFunc } from "@/components/common/base-config-form"
 import { RouteNames } from "@/router"
+import { useOptionsStore } from "@/stores/options" // 网站配置选项
 import { MessageUtil } from "@/utils/message"
+import { adminMenuItemMap } from "@/views/admin/component/aside"
 
 import BaseForm, { type APPOptionForm, type APPOptionFormRef } from "./base"
 
 defineOptions({ name: RouteNames.SettingAPPOption })
 
+useHead({
+    title: adminMenuItemMap[RouteNames.SettingAPPOption].display,
+})
+
+// 获取网站配置选项
+const optionsStore = useOptionsStore()
+
 const formRef = useTemplateRef<APPOptionFormRef>("formRef")
 
-const optionDataSrc = reactive<GetAPPOptionResponse>({} as GetAPPOptionResponse)
+const { app_options: optionDataSrc } = storeToRefs(optionsStore)
 const optionData = reactive<APPOptionForm>({} as APPOptionForm)
 
 const submitForm = async () => {
@@ -47,9 +58,9 @@ const submitForm = async () => {
     for (const key in optionDataTar) {
         if (Object.prototype.hasOwnProperty.call(optionDataTar, key)) {
             const valTar = optionDataTar[key as keyof APPOptionForm]
-            const itemSrc = optionDataSrc[key as keyof GetAPPOptionResponse]
+            const itemSrc = optionDataSrc.value[key as keyof GetAPPOptionResponse]
             // 判断是否更新
-            const valSrc = optionDataSrc[key as keyof GetAPPOptionResponse].value
+            const valSrc = optionDataSrc.value[key as keyof GetAPPOptionResponse].value
             if (valTar.toString() !== valSrc) {
                 reqList.push({
                     key: key as keyof APPOptionForm,
@@ -62,6 +73,7 @@ const submitForm = async () => {
     const req = { options: reqList } as UpdateAPPOptionRequest
     const res = await updateAPPOptionAPI(req)
     if (res.data.code === ResponseCode.UpdateAPPOptionSuccess) {
+        optionsStore.updateOptions(true) // 强制刷新
         MessageUtil.success("更新成功")
     } else {
         MessageUtil.error(handleResErr(res), 10000)
@@ -100,19 +112,20 @@ const rules = reactive<FormRules<APPOptionForm>>({
         },
     ],
 
-    psb_filing_icon: [
+    beian_mps_icon: [
         {
             validator: imageURLRequiredValidatorFunc,
             trigger: "blur",
         },
     ],
-    icp_filing_icon: [
+    beian_miit_icon: [
         {
             validator: imageURLRequiredValidatorFunc,
             trigger: "blur",
         },
     ],
 })
+
 const formItems = [
     // logo 相关
     { label: "logo", isCategoryTitle: true },
@@ -151,9 +164,28 @@ const formItems = [
     { label: "微信公用号", prop: "wechat_official_account_qrcode", isImageInput: true },
     { label: "微信", prop: "wechat_qrcode", isImageInput: true },
     { label: "QQ", prop: "qq_qrcode", isImageInput: true },
-    { label: "显示底部微信公众账号", prop: "footer_wechat_official_account_enable", isCheckbox: true },
-    { label: "显示底部微信", prop: "footer_wechat_enable", isCheckbox: true },
-    { label: "显示底部 QQ", prop: "footer_qq_enable", isCheckbox: true },
+
+    { label: "底部标题和内容", isCategoryTitle: true },
+    { label: "底部左侧标题", prop: "footer_left_title" },
+    { label: "底部左侧内容", prop: "footer_left_content", type: "textarea" },
+
+    { label: "底部右侧标题", prop: "footer_right_title" },
+    { label: "底部右侧内容", prop: "footer_right_content", type: "textarea" },
+
+    { label: "底部二维码1", isCategoryTitle: true },
+    { label: "开启", prop: "footer_qrcode1_enable", isCheckbox: true },
+    { label: "二维码", prop: "footer_qrcode1", isImageInput: true },
+    { label: "二维码描述", prop: "footer_qrcode1_description" },
+
+    { label: "底部二维码2", isCategoryTitle: true },
+    { label: "二维码开启", prop: "footer_qrcode2_enable", isCheckbox: true },
+    { label: "二维码", prop: "footer_qrcode2", isImageInput: true },
+    { label: "二维码描述", prop: "footer_qrcode2_description" },
+
+    { label: "底部二维码3", isCategoryTitle: true },
+    { label: "二维码开启", prop: "footer_qrcode3_enable", isCheckbox: true },
+    { label: "二维码", prop: "footer_qrcode3", isImageInput: true },
+    { label: "二维码描述", prop: "footer_qrcode3_description" },
 
     // seo 相关
     { label: "SEO", isCategoryTitle: true },
@@ -163,17 +195,17 @@ const formItems = [
     { label: "自定义网站首页标题", prop: "custom_home_title" },
     { label: "自定义网站首页副标题", prop: "custom_home_subtitle" },
     { label: "分隔符", prop: "separator" },
-    { label: "站点地图", prop: "sitemap" },
-    { label: "页脚统计代码", prop: "footer_statistics_code" },
+    { label: "站点地图", prop: "sitemap", type: "textarea" },
+    { label: "页脚统计代码", prop: "footer_statistics_code", type: "textarea" },
 
     // 备案相关
     { label: "备案信息", isCategoryTitle: true },
-    { label: "公网安备图标", prop: "psb_filing_icon", isImageInput: true },
-    { label: "公网安备号", prop: "psb_filing_number" },
-    { label: "公网安备查询链接", prop: "psb_filing_link" },
-    { label: "域名备案图标", prop: "icp_filing_icon", isImageInput: true },
-    { label: "域名备案号", prop: "icp_filing_number" },
-    { label: "工信部备案查询链接", prop: "miit_link" },
+    { label: "公网安备图标", prop: "beian_mps_icon", isImageInput: true },
+    { label: "公网安备号", prop: "beian_mps_id" },
+    { label: "公网安备查询链接", prop: "beian_mps_link" },
+    { label: "域名备案图标", prop: "beian_miit_icon", isImageInput: true },
+    { label: "域名备案号", prop: "beian_miit_id" },
+    { label: "工信部备案查询链接", prop: "beian_miit_link" },
 
     // 样式相关
     { label: "样式相关", isCategoryTitle: true },
@@ -181,25 +213,18 @@ const formItems = [
 ]
 
 onBeforeMount(async () => {
-    const res = await getAPPOptionAPI()
-    if (res.data.code === ResponseCode.GetAPPOptionSuccess) {
-        Object.assign(optionDataSrc, res.data.data)
-        const data = res.data.data
-        // 循环历遍 data 的所有属性
-        for (const key in data) {
-            if (Object.prototype.hasOwnProperty.call(data, key)) {
-                const item = data[key as keyof APPOptionForm]
-                // 根据 item 的类型，将其转换为对应的类型
-                if (item.type === OptionType.Boolean) {
-                    ;(optionData[key as keyof APPOptionForm] as boolean) = item.value === "true"
-                } else {
-                    ;(optionData[key as keyof APPOptionForm] as string) = item.value
-                }
+    const data = optionDataSrc.value
+    // 循环历遍 data 的所有属性
+    for (const key in data) {
+        if (Object.prototype.hasOwnProperty.call(data, key)) {
+            const item = data[key as keyof APPOptionForm]
+            // 根据 item 的类型，将其转换为对应的类型
+            if (item.type === OptionType.Boolean) {
+                ;(optionData[key as keyof APPOptionForm] as boolean) = item.value === "true"
+            } else {
+                ;(optionData[key as keyof APPOptionForm] as string) = item.value
             }
         }
-    } else {
-        handleResErr(res.data)
-        MessageUtil.error(handleResErr(res), 10000)
     }
 })
 </script>

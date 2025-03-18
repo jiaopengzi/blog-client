@@ -31,6 +31,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useHead } from "@unhead/vue"
 import { reactive, ref } from "vue"
 
 import { deleteLoginLogByDayAPI, type DeleteLoginLogByDayRequest } from "@/api/loginLog/deleteLoginLogByDay"
@@ -44,8 +45,13 @@ import { useParams } from "@/components/hooks/useParams"
 import { RouteNames } from "@/router"
 import { deleteConfirmCommon } from "@/utils/confirm"
 import { MessageUtil } from "@/utils/message"
+import { adminMenuItemMap } from "@/views/admin/component/aside"
 
 defineOptions({ name: RouteNames.LoginLog })
+
+useHead({
+    title: adminMenuItemMap[RouteNames.LoginLog].display,
+})
 
 const cols: TableColumn[] = reactive([
     {

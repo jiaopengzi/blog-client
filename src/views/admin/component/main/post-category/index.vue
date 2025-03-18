@@ -57,6 +57,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useHead } from "@unhead/vue"
 import { reactive } from "vue"
 
 import { deletePostCategoryAPI, type DeletePostCategoryRequest } from "@/api/postCategory/delete"
@@ -69,12 +70,17 @@ import BaseTable from "@/components/common/base-table"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { useParams } from "@/components/hooks/useParams"
 import { RouteNames } from "@/router"
+import { adminMenuItemMap } from "@/views/admin/component/aside"
 
 import AddTag from "./component/add"
 import EditTag from "./component/edit"
 import { type ViewForm } from "./component/view"
 
 defineOptions({ name: RouteNames.PostCategory })
+
+useHead({
+    title: adminMenuItemMap[RouteNames.PostCategory].display,
+})
 
 const cols: TableColumn[] = reactive([
     {

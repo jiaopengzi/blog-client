@@ -47,11 +47,19 @@
 </template>
 
 <script lang="ts" setup>
+import { useHead } from "@unhead/vue"
+
 import MediaBase from "@/components/common/media-base"
 import { useMedia } from "@/components/hooks/useMedia"
 import { RouteNames } from "@/router"
+import { adminMenuItemMap } from "@/views/admin/component/aside"
 
 defineOptions({ name: RouteNames.Media })
+
+useHead({
+    title: adminMenuItemMap[RouteNames.Media].display,
+})
+
 const {
     cols, // 列配置
     showListOrGridStatus, // 是否显示列表或网格

@@ -41,6 +41,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useHead } from "@unhead/vue"
 import { reactive, ref, useTemplateRef } from "vue"
 import { useRouter } from "vue-router"
 
@@ -57,6 +58,10 @@ import { RouteNames } from "@/router"
 import { MessageUtil } from "@/utils/message"
 
 defineOptions({ name: "SetupForm" })
+
+useHead({
+    title: "数据库配置",
+})
 
 const pgsqlFormRef = useTemplateRef<PgsqlDatabaseFormRef>("pgsqlFormRef")
 

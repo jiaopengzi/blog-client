@@ -15,11 +15,16 @@
 </template>
 
 <script setup lang="ts">
+import { useHead } from "@unhead/vue"
+
 import LayoutFooter from "@/components/layout/footer"
 import LayoutHeader from "@/components/layout/header"
 import UserInfo from "@/views/user-info/component"
-
 defineOptions({ name: "PageUserInfo" })
+
+useHead({
+    title: "用户中心",
+})
 </script>
 
 <style scoped lang="scss"></style>

@@ -29,6 +29,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useHead } from "@unhead/vue"
 import { onBeforeMount, ref, useTemplateRef } from "vue"
 
 import { SocialLoginType } from "@/api/common"
@@ -39,9 +40,15 @@ import RestartDialog from "@/components/common/restart-dialog"
 import { useRestart } from "@/components/hooks/useRestart"
 import { RouteNames } from "@/router"
 import { MessageUtil } from "@/utils/message"
+import { adminMenuItemMap } from "@/views/admin/component/aside"
 
 import SocialLoginConfig, { type SocialLoginConfigRef } from "./social-login-config"
+
 defineOptions({ name: RouteNames.SettingSocial })
+
+useHead({
+    title: adminMenuItemMap[RouteNames.SettingSocial].display,
+})
 
 const configQQ = ref<LoginConfig>({} as LoginConfig)
 const configWeChat = ref<LoginConfig>({} as LoginConfig)

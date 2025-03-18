@@ -50,9 +50,24 @@ export interface GetAPPOptionResponse {
     wechat_official_account_qrcode: APPOptionItem // 微信公众号二维码
     wechat_qrcode: APPOptionItem // 微信二维码
     qq_qrcode: APPOptionItem // 微信二维码
-    footer_wechat_official_account_enable: APPOptionItem // 底部微信
-    footer_wechat_enable: APPOptionItem // 底部微信
-    footer_qq_enable: APPOptionItem // 底部qq
+
+    footer_left_title: APPOptionItem // 底部左侧标题
+    footer_left_content: APPOptionItem // 底部左侧内容
+
+    footer_right_title: APPOptionItem // 底部右侧标题
+    footer_right_content: APPOptionItem // 底部右侧内容
+
+    footer_qrcode1_enable: APPOptionItem // 底部二维码1是否开启
+    footer_qrcode1: APPOptionItem // 底部二维码1
+    footer_qrcode1_description: APPOptionItem // 底部二维码1显示描述
+
+    footer_qrcode2_enable: APPOptionItem // 底部二维码2是否开启
+    footer_qrcode2: APPOptionItem // 底部二维码2
+    footer_qrcode2_description: APPOptionItem // 底部二维码2显示描述
+
+    footer_qrcode3_enable: APPOptionItem // 底部二维码3是否开启
+    footer_qrcode3: APPOptionItem // 底部二维码3
+    footer_qrcode3_description: APPOptionItem // 底部二维码3显示描述
 
     // seo 相关
     seo_title: APPOptionItem // seo title
@@ -65,12 +80,12 @@ export interface GetAPPOptionResponse {
     footer_statistics_code: APPOptionItem // 页脚添加同步统计代码
 
     // 备案相关
-    psb_filing_icon: APPOptionItem // 公网安备图标
-    psb_filing_number: APPOptionItem // 公网安备号
-    psb_filing_link: APPOptionItem // 公网安备查询链接
-    icp_filing_icon: APPOptionItem // 域名备案小图标
-    icp_filing_number: APPOptionItem // 域名备案号
-    miit_link: APPOptionItem // 工信部备案查询链接
+    beian_mps_icon: APPOptionItem // 公网安备图标
+    beian_mps_id: APPOptionItem // 公网安备号
+    beian_mps_link: APPOptionItem // 公网安备查询链接
+    beian_miit_icon: APPOptionItem // 域名备案小图标
+    beian_miit_id: APPOptionItem // 域名备案号
+    beian_miit_link: APPOptionItem // 工信部备案查询链接
 
     // 样式相关
     custom_style_css: APPOptionItem // 定制风格颜色css

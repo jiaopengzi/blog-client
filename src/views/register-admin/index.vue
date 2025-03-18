@@ -52,6 +52,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useHead } from "@unhead/vue"
 import type { FormInstance, FormRules } from "element-plus"
 import { reactive, ref, toRef, useTemplateRef } from "vue"
 import { useRouter } from "vue-router"
@@ -66,6 +67,10 @@ import { MessageUtil } from "@/utils/message"
 import type { RegisterForm } from "./types"
 
 defineOptions({ name: "RegisterAdmin" })
+
+useHead({
+    title: "注册管理员",
+})
 
 const router = useRouter()
 

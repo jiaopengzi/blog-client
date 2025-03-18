@@ -98,8 +98,6 @@ declare module 'vue' {
     LayoutAsidePostTag: typeof import('./src/components/layout/aside/post-tag/index.vue')['default']
     LayoutAsideRecommendedRead: typeof import('./src/components/layout/aside/recommended-read/index.vue')['default']
     LayoutFooter: typeof import('./src/components/layout/footer/index.vue')['default']
-    LayoutFooterPc: typeof import('./src/components/layout/footer/pc.vue')['default']
-    LayoutFooterPhone: typeof import('./src/components/layout/footer/phone.vue')['default']
     LayoutHeader: typeof import('./src/components/layout/header/index.vue')['default']
     LayoutHeaderNav: typeof import('./src/components/layout/header-nav/index.vue')['default']
     LayoutHeaderNavPc: typeof import('./src/components/layout/header-nav/pc.vue')['default']

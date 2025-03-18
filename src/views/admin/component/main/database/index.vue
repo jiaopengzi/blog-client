@@ -34,6 +34,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useHead } from "@unhead/vue"
 import { computed, onBeforeMount, reactive, ref, useTemplateRef } from "vue"
 
 import { handleResErr, ResponseCode } from "@/api/response"
@@ -48,8 +49,13 @@ import RestartDialog from "@/components/common/restart-dialog"
 import { useDatabase } from "@/components/hooks/useDatabase"
 import { RouteNames } from "@/router"
 import { MessageUtil } from "@/utils/message"
+import { adminMenuItemMap } from "@/views/admin/component/aside"
 
 defineOptions({ name: RouteNames.SettingDatabase })
+
+useHead({
+    title: adminMenuItemMap[RouteNames.SettingDatabase].display,
+})
 
 const dbPgsql = ref<PgsqlSetupRequest>({} as PgsqlSetupRequest)
 const dbRedis = ref<RedisNodeSetupRequest[]>([])

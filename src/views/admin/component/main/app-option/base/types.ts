@@ -46,9 +46,24 @@ export interface APPOptionForm {
     wechat_official_account_qrcode: string // 微信公众号二维码
     wechat_qrcode: string // 微信二维码
     qq_qrcode: string // 微信二维码
-    footer_wechat_official_account_enable: boolean // 底部微信
-    footer_wechat_enable: boolean // 底部微信
-    footer_qq_enable: boolean // 底部qq
+
+    footer_left_title: string // 底部左侧标题
+    footer_left_content: string // 底部左侧内容
+
+    footer_right_title: string // 底部右侧标题
+    footer_right_content: string // 底部右侧内容
+
+    footer_qrcode1_enable: boolean // 底部二维码1是否开启
+    footer_qrcode1: string // 底部二维码1
+    footer_qrcode1_description: string // 底部二维码1显示描述
+
+    footer_qrcode2_enable: boolean // 底部二维码2是否开启
+    footer_qrcode2: string // 底部二维码2
+    footer_qrcode2_description: string // 底部二维码2显示描述
+
+    footer_qrcode3_enable: boolean // 底部二维码3是否开启
+    footer_qrcode3: string // 底部二维码3
+    footer_qrcode3_description: string // 底部二维码3显示描述
 
     // seo 相关
     seo_title: string // seo title
@@ -61,12 +76,12 @@ export interface APPOptionForm {
     footer_statistics_code: string // 页脚添加同步统计代码
 
     // 备案相关
-    psb_filing_icon: string // 公网安备图标
-    psb_filing_number: string // 公网安备号
-    psb_filing_link: string // 公网安备查询链接
-    icp_filing_icon: string // 域名备案小图标
-    icp_filing_number: string // 域名备案号
-    miit_link: string // 工信部备案查询链接
+    beian_mps_icon: string // 公网安备图标
+    beian_mps_id: string // 公网安备号
+    beian_mps_link: string // 公网安备查询链接
+    beian_miit_icon: string // 域名备案小图标
+    beian_miit_id: string // 域名备案号
+    beian_miit_link: string // 工信部备案查询链接
 
     // 样式相关
     custom_style_css: string // 定制风格颜色css

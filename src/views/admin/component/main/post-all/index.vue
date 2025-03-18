@@ -103,6 +103,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useHead } from "@unhead/vue"
 import { computed, reactive, ref, watch } from "vue"
 import { useRouter } from "vue-router"
 
@@ -125,6 +126,7 @@ import { useUserStore } from "@/stores/user"
 import { confirmCommon } from "@/utils/confirm"
 import { formatTime } from "@/utils/dateTime"
 import { MessageUtil } from "@/utils/message"
+import { adminMenuItemMap } from "@/views/admin/component/aside"
 import { queryKey as queryKeyWrite } from "@/views/admin/component/main/post-write"
 
 import { useHeader } from "./hooks"
@@ -132,6 +134,10 @@ import { queryKey } from "./index"
 import { groupList, type GroupType, type PostCountGroupItem } from "./types"
 
 defineOptions({ name: RouteNames.PostAll })
+
+useHead({
+    title: adminMenuItemMap[RouteNames.PostAll].display,
+})
 
 const cols: TableColumn[] = reactive([
     {

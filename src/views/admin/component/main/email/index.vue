@@ -48,6 +48,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useHead } from "@unhead/vue"
 import type { FormInstance, FormRules } from "element-plus"
 import { computed, onBeforeMount, reactive, ref, useTemplateRef } from "vue"
 
@@ -60,8 +61,13 @@ import { useFormItemRule } from "@/components/hooks/useFormItemRule"
 import { RouteNames } from "@/router"
 import { MessageUtil } from "@/utils/message"
 import { RegexPatterns } from "@/utils/regexPatterns"
+import { adminMenuItemMap } from "@/views/admin/component/aside"
 
 defineOptions({ name: RouteNames.SettingEmail })
+
+useHead({
+    title: adminMenuItemMap[RouteNames.SettingEmail].display,
+})
 
 // 表单label位置 top | left | right
 const labelPosition = ref("left")

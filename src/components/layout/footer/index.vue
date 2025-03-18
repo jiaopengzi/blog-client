@@ -7,47 +7,47 @@
 -->
 
 <template>
-    <div class="pc">
-        <FooterPC :footer-data="footerData()" />
-    </div>
-    <div class="phone">
-        <FooterPhone :footer-data="footerData()" />
-    </div>
+    <footer v-if="isShowFooter">
+        <div class="footer-main">
+            <div class="footer-l" v-if="footerData.left?.title">
+                <h3 class="title">{{ footerData.left?.title }}</h3>
+                <p class="content">{{ footerData.left?.content }}</p>
+            </div>
+            <div class="footer-m" v-if="(footerData.middle ?? []).length > 0">
+                <ul>
+                    <li class="footer-m-li" v-for="item in footerData.middle" :key="item.imgUrl">
+                        <img :src="item.imgUrl" :alt="item.display" />
+                        <span>{{ item.display }}</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="footer-r" v-if="footerData.right">
+                <div class="footer-r-item" v-if="footerData.right?.title">
+                    <h3 class="title">{{ footerData.right?.title }}</h3>
+                    <p class="content">{{ footerData.right?.content }}</p>
+                </div>
+
+                <div class="footer-r-beian footer-r-item">
+                    <img v-if="footerData.right?.beian_mps_icon" :src="footerData.right?.beian_mps_icon" />
+                    <a :href="footerData.right?.beian_mps_link">{{ footerData.right?.beian_mps_id }}</a>
+                </div>
+
+                <div class="footer-r-beian footer-r-item">
+                    <img v-if="footerData.right?.beian_miit_icon" :src="footerData.right?.beian_miit_icon" />
+                    <a :href="footerData.right?.beian_miit_link">{{ footerData.right?.beian_miit_id }}</a>
+                </div>
+            </div>
+        </div>
+    </footer>
 </template>
 <script setup lang="ts">
-import FooterPC from "./pc.vue"
-import FooterPhone from "./phone.vue"
-import type { FooterProps } from "./types"
+import "./style.scss"
 
+import { useOptionsStore } from "@/stores/options" // 网站配置选项
 defineOptions({ name: "LayoutFooter" })
-// 箭头函数返回 约束 FooterProps
-const footerData = (): FooterProps => {
-    return {
-        left: {
-            title: "本站简介",
-            content: "我们主要玩：Power BI、Power Pivot、Power Query、Power BI Report Server及DAX等相关数据分析的内容。",
-        },
-        middle: [
-            {
-                imgUrl: "https://jiaopengzi.com/wp-content/uploads/2020/03/weixin.png",
-                display: "微信",
-            },
-            {
-                imgUrl: "https://jiaopengzi.com/wp-content/uploads/2021/11/weixingongzhonghao.png",
-                display: "公众号",
-            },
-            {
-                imgUrl: "https://jiaopengzi.com/wp-content/uploads/2021/12/qq1618582.png",
-                display: "QQ:1618582",
-            },
-        ],
-        right: {
-            title: "焦棚子",
-            content: "焦棚子 版权所有",
-            beianMPS: "川公网安备 51019002002570号",
-            beianMIIT: "蜀ICP备20003928号-1",
-        },
-    }
-}
+
+// 获取网站配置选项
+const optionsStore = useOptionsStore()
+const footerData = optionsStore.getFooterInfo
+const isShowFooter = optionsStore.isShowFooter
 </script>
-<style scoped lang="scss"></style>

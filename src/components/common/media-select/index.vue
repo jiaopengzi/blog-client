@@ -72,7 +72,7 @@ defineOptions({ name: "SelectMedia" })
 const { isShow = false } = defineProps<{
     isShow?: boolean // 是否显示
 }>()
-console.log("============>0002")
+
 // 定义 emit
 const emit = defineEmits<{
     (event: "update:isShow", val: boolean): void

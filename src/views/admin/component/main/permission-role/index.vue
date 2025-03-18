@@ -130,6 +130,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useHead } from "@unhead/vue"
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { debounce } from "throttle-debounce"
 import { onBeforeMount, reactive, type Ref, ref, useTemplateRef } from "vue"
@@ -144,12 +145,17 @@ import { useUserStore } from "@/stores/user"
 import { getSortedEnumKeys } from "@/utils/enum"
 import { MessageUtil } from "@/utils/message"
 import { getPermissionList, getRolesList, type Permission, PermissionNames } from "@/utils/permissionRole"
+import { adminMenuItemMap } from "@/views/admin/component/aside"
 import type { PermissionRow, Role } from "@/views/admin/component/main/permission-role"
 
 import { LimitCount, LimitPeriod, type PermissionRole } from "./types"
 import { getSafeProperty } from "./utils"
 
 defineOptions({ name: RouteNames.PermissionRole })
+
+useHead({
+    title: adminMenuItemMap[RouteNames.PermissionRole].display,
+})
 
 // 定义权限列表 包含权限名和权限描述
 const permissionsList: Ref<Permission[]> = ref([])

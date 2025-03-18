@@ -57,6 +57,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useHead } from "@unhead/vue"
 import { onBeforeMount, ref, useTemplateRef } from "vue"
 import { useRouter } from "vue-router"
 
@@ -69,6 +70,10 @@ import AdminAside from "@/views/admin/component/aside"
 import AdminHeader from "@/views/admin/component/header"
 
 defineOptions({ name: "AdminLayout" })
+
+useHead({
+    title: "后台管理",
+})
 
 const router = useRouter()
 

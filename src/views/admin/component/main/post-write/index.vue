@@ -161,6 +161,7 @@
     <SelectMedia v-model="mediaDialogVisible" @insert-data="insertData" />
 </template>
 <script lang="ts" setup>
+import { useHead } from "@unhead/vue"
 import { useIntersectionObserver, useResizeObserver } from "@vueuse/core"
 import type { ElContainer, ElFormItem } from "element-plus"
 import type { FormInstance } from "element-plus"
@@ -181,6 +182,7 @@ import { useUserStore } from "@/stores/user"
 import { formatTime } from "@/utils/dateTime"
 import { MessageUtil } from "@/utils/message"
 import { PermissionNames } from "@/utils/permissionRole"
+import { adminMenuItemMap } from "@/views/admin/component/aside"
 
 import { type PostInfoAboutTime, queryKey, type UpdatePostForm, type UpsertPostForm } from "./types"
 import { useAdd } from "./useAdd"
@@ -191,6 +193,10 @@ import { useSwitchItem } from "./useSwitchItem"
 import { createEmptyUpsertPostForm, generateShortcuts } from "./utils"
 
 defineOptions({ name: RouteNames.PostWrite })
+
+useHead({
+    title: adminMenuItemMap[RouteNames.PostWrite].display,
+})
 
 // 初始化表单数据
 const postInfoForm = reactive<UpsertPostForm>(createEmptyUpsertPostForm())

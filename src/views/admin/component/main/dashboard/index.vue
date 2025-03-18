@@ -10,9 +10,15 @@
     <div class="container">首页面板</div>
 </template>
 <script setup lang="ts">
-import { RouteNames } from "@/router"
+import { useHead } from "@unhead/vue"
 
+import { RouteNames } from "@/router"
+import { adminMenuItemMap } from "@/views/admin/component/aside"
 defineOptions({ name: RouteNames.Dashboard })
+
+useHead({
+    title: adminMenuItemMap[RouteNames.Dashboard].display,
+})
 </script>
 <style scoped lang="scss">
 .container {

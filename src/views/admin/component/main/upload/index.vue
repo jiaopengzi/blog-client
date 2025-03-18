@@ -17,6 +17,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useHead } from "@unhead/vue"
 import { onBeforeMount, ref, useTemplateRef } from "vue"
 
 import { handleResErr, ResponseCode } from "@/api/response"
@@ -27,12 +28,17 @@ import RestartDialog from "@/components/common/restart-dialog"
 import { useRestart } from "@/components/hooks/useRestart"
 import { RouteNames } from "@/router"
 import { MessageUtil } from "@/utils/message"
+import { adminMenuItemMap } from "@/views/admin/component/aside"
 
 import FileAllowed, { type FileAllowedRef } from "./file-allowed"
 import UploadLocal, { type UploadLocalFormRef } from "./local"
 import UploadOSS, { type UploadOSSFormRef } from "./oss"
 
 defineOptions({ name: RouteNames.SettingUpload })
+
+useHead({
+    title: adminMenuItemMap[RouteNames.SettingUpload].display,
+})
 
 const fileAllowedList = ref<FileAllowedType[]>([])
 const localData = ref<LocalType>({} as LocalType)
