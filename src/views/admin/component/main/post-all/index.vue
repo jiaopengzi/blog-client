@@ -52,7 +52,7 @@
             <template #custom-filter>
                 <div ref="customFilterRef" class="custom-filter">
                     <!-- 按照作者 分类 标签 -->
-                    <div v-if="authorCategoryTag.size" class="custom-filter-item author-category-tag">
+                    <div v-if="tags.size" class="custom-filter-item author-category-tag">
                         <el-button class="author-category-tag-item author-category-tag-btn" type="primary" size="small" @click="clearAuthorCategoryTag"
                             >X</el-button
                         >
@@ -402,7 +402,7 @@ const handleClickAuthor = async (author: User) => {
     await updateData()
 }
 
-const authorCategoryTag = computed(() => {
+const tags = computed(() => {
     const authorCategoryTagSet = new Set<string>()
     if (clickCategory.value) {
         authorCategoryTagSet.add(clickCategory.value)
@@ -414,6 +414,11 @@ const authorCategoryTag = computed(() => {
         authorCategoryTagSet.add(clickAuthor.value)
     }
     return authorCategoryTagSet
+})
+
+const authorCategoryTag = ref<string[]>([])
+watch(tags, (newVal) => {
+    authorCategoryTag.value = Array.from(newVal)
 })
 
 const clearAuthorCategoryTag = async () => {
