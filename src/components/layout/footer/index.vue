@@ -41,7 +41,7 @@
     </footer>
 </template>
 <script setup lang="ts">
-import "./style.scss"
+// import "./style.scss"
 
 import { useOptionsStore } from "@/stores/options" // 网站配置选项
 defineOptions({ name: "LayoutFooter" })
@@ -51,3 +51,5 @@ const optionsStore = useOptionsStore()
 const footerData = optionsStore.getFooterInfo
 const isShowFooter = optionsStore.isShowFooter
 </script>
+
+<style lang="scss" scoped src="./style.scss"></style>

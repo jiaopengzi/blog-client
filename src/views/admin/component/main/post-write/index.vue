@@ -158,7 +158,7 @@
         </el-container>
     </section>
     <!-- 媒体文件选择弹窗 -->
-    <SelectMedia v-model="mediaDialogVisible" @insert-data="insertData" />
+    <SelectMedia v-if="mediaDialogVisible" v-model="mediaDialogVisible" @insert-data="insertData" />
 </template>
 <script lang="ts" setup>
 import { useHead } from "@unhead/vue"

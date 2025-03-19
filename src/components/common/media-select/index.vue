@@ -7,7 +7,7 @@
 -->
 
 <template>
-    <el-dialog v-model="isVisible" width="98%" top="3vh" @close="handleClose" footer-class="media-select-dialog-footer">
+    <el-dialog v-model="isVisible" width="98%" top="3vh" @close="handleClose">
         <template #header>
             <h4 class="header-text">选择媒体文件</h4>
         </template>
@@ -189,17 +189,11 @@ const insert = () => {
 }
 </script>
 
-<!-- <style scoped lang="scss"> -->
-<style lang="scss">
+<style scoped lang="scss">
 .header-text {
     font-size: 18px;
     font-weight: 700;
     color: var(--jpz-text-color-regular);
-}
-
-// 使用 :deep 不生效, 这里去掉 scoped
-.media-select-dialog-footer {
-    padding-top: 0;
 }
 
 .insert {
