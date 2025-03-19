@@ -9,7 +9,7 @@
 import { type UpsertPermissionRoleRequest } from "@/api/permissionRole/upsertPermissionRole"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
-import { PermissionNames } from "@/utils/permissionRole"
+import { PermissionNames } from "@/stores/permissionRole"
 
 export interface Role {
     role_name: string

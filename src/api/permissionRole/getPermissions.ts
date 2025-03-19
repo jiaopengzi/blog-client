@@ -8,7 +8,7 @@
 
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
-import { type Permission } from "@/utils/permissionRole"
+import { type Permission } from "@/stores/permissionRole"
 
 export function getPermissionsAPI(): ResPromise<Res<Permission[]>> {
     return request({

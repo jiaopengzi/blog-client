@@ -39,8 +39,8 @@ import { useRouter } from "vue-router"
 
 import AvatarInitials from "@/components/common/avatar-initials" // 导入 AvatarInitials 组件
 import { RouteNames } from "@/router"
+import { PermissionNames } from "@/stores/permissionRole"
 import { useUserStore } from "@/stores/user"
-import { PermissionNames } from "@/utils/permissionRole"
 
 defineOptions({ name: "UserInfoDropdown" })
 

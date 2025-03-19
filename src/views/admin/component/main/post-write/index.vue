@@ -178,10 +178,10 @@ import SelectMedia from "@/components/common/media-select"
 import SwitchGroup from "@/components/common/switch-group"
 import { EditorPost, EditorStateManager } from "@/components/editor"
 import { RouteNames } from "@/router"
+import { PermissionNames } from "@/stores/permissionRole"
 import { useUserStore } from "@/stores/user"
 import { formatTime } from "@/utils/dateTime"
 import { MessageUtil } from "@/utils/message"
-import { PermissionNames } from "@/utils/permissionRole"
 import { adminMenuItemMap } from "@/views/admin/component/aside"
 
 import { type PostInfoAboutTime, queryKey, type UpdatePostForm, type UpsertPostForm } from "./types"
@@ -527,7 +527,7 @@ onUnmounted(() => {
 
 onBeforeMount(async () => {
     // 生成角色付费管理
-    await initRolePaidManagement()
+    initRolePaidManagement()
     await getCategoryList()
     getValueFromQuery()
     if (postInfoForm.id) {

@@ -10,7 +10,6 @@ import { acceptHMRUpdate, defineStore } from "pinia"
 
 import { ResponseCode } from "@/api/response"
 import { getAPPOptionAPI, type GetAPPOptionResponse } from "@/api/setting/getAPPOption"
-import { LocalStorageKey } from "@/stores/local"
 
 export interface FooterLeftInfo {
     title?: string
@@ -76,24 +75,20 @@ export const useOptionsStore = defineStore("options", {
 
     actions: {
         // 获取网站配置, 参数为是否强制从服务器获取, 默认为false
-        async updateOptions(is_get_from_server: boolean = false): Promise<void> {
+        async update(is_get_from_server: boolean = false): Promise<void> {
             if (is_get_from_server) {
-                await this.updateOptionsFromServer()
+                await this.updateFromServer()
             }
-            const footerStr = localStorage.getItem(LocalStorageKey.APPOptionsFooter)
-            this.footer = footerStr ? JSON.parse(footerStr) : {}
         },
 
         // 从服务器获取网站配置
-        async updateOptionsFromServer() {
+        async updateFromServer() {
             const res = await getAPPOptionAPI()
             if (res.data.code === ResponseCode.GetAPPOptionSuccess) {
                 this.app_options = res.data.data
 
                 // footer格式化后存储本地
-                const footer = await formatFooterInfo(this.app_options)
-                this.footer = footer
-                localStorage.setItem(LocalStorageKey.APPOptionsFooter, JSON.stringify(this.footer))
+                this.footer = await formatFooterInfo(this.app_options)
             }
         },
     },

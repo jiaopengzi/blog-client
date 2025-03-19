@@ -9,7 +9,7 @@
 import { IconKeys } from "@/components/common/icons" // 图标名称枚举
 import { RouteNamesAdmin } from "@/router"
 // import { toKebabCase } from "@/utils/namingConversion"
-import { PermissionNames } from "@/utils/permissionRole" // 权限名称枚举
+import { PermissionNames } from "@/stores/permissionRole" // 权限名称枚举
 
 import { type AdminMenuItemMap, type AdminMenuItemMapWithIndex } from "./types"
 

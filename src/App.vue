@@ -36,14 +36,18 @@ import zhCn from "element-plus/es/locale/lang/zh-cn"
 import { storeToRefs } from "pinia"
 import { onBeforeMount, onBeforeUnmount, ref, useTemplateRef } from "vue"
 
-import { useOptionsStore } from "@/stores/options" // 网站配置选项
+import { useOptionsStore } from "@/stores/options"
+import { usePermissionRoleStore } from "@/stores/permissionRole"
 import { useUserStore } from "@/stores/user"
 import { getDeviceType } from "@/utils/device"
 
-// 获取网站配置选项
+// 网站配置选项
 const optionsStore = useOptionsStore()
 
-// 获取用户信息
+// 权限角色
+const permissionRole = usePermissionRoleStore()
+
+// 用户信息
 const userStore = useUserStore()
 
 const appRef = useTemplateRef<HTMLElement>("appRef")
@@ -67,7 +71,8 @@ const { stop } = useResizeObserver(appRef, (entries) => {
 })
 
 onBeforeMount(async () => {
-    await optionsStore.updateOptions(true) // 强制刷新
+    await permissionRole.update(true) // 强制刷新
+    await optionsStore.update(true) // 强制刷新
     const { app_options: headData } = storeToRefs(optionsStore)
     if (headData.value.custom_home_title.value && headData.value.custom_home_subtitle.value) {
         title.value = headData.value.custom_home_title.value + headData.value.separator.value + headData.value.custom_home_subtitle.value

@@ -85,8 +85,8 @@ import BaseTable from "@/components/common/base-table"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { useParams } from "@/components/hooks/useParams"
 import { RouteNames } from "@/router"
+import { usePermissionRoleStore } from "@/stores/permissionRole"
 import { formatTime } from "@/utils/dateTime"
-import { getRolesList } from "@/utils/permissionRole"
 import { adminMenuItemMap } from "@/views/admin/component/aside"
 import AddUser from "@/views/admin/component/main/user-view/component/add-user"
 import { type EditUserByAdminForm } from "@/views/admin/component/main/user-view/component/edit-user"
@@ -287,12 +287,11 @@ const userCountGroupByRole = ref<UserCountGroupByRole[]>([])
 const roles = ref<Role[]>([]) // 不包含全部角色
 const rolesALL = ref<Role[]>([]) // 包含全部角色
 
-async function getRoles() {
-    await getRolesList().then((res) => {
-        const newRole = { role_name: AllRoleName, permission_names: [], description: "全部" }
-        roles.value = res.roles
-        rolesALL.value = [newRole, ...res.roles]
-    })
+function getRoles() {
+    const permissionRoleStore = usePermissionRoleStore()
+    const res = permissionRoleStore.getRoleList
+    const newRole = { role_name: AllRoleName, permission_names: [], description: "全部" }
+    rolesALL.value = [newRole, ...res.roles]
 }
 
 // 获取用户列表
@@ -369,9 +368,9 @@ const handleUserCountByRole = async (role: string) => {
 useParams(queryParams, search, pagination)
 
 onBeforeMount(async () => {
-    await getRoles()
+    getRoles()
     await getUserCountGroupByRole()
-
+    
     const { role_name } = queryParams
 
     if (role_name) {

@@ -9,17 +9,18 @@
 import { acceptHMRUpdate, defineStore } from "pinia"
 
 import { SocialLoginType } from "@/api/common"
-import { getRolesAPI } from "@/api/permissionRole/role"
 import { type Res, ResponseCode, type ResResponse } from "@/api/response"
 import { emptyUserInfo, getUserInfoAPI, type UserInfo } from "@/api/user/getUserInfo"
 import { loginAPI, type LoginRequest } from "@/api/user/login"
 import { socialBind, socialBindCallback, socialLogin, socialLoginCallback, socialUnBind } from "@/api/user/socialLogin"
 import { LocalStorageKey } from "@/stores/local"
+import { PermissionNames } from "@/stores/permissionRole"
 import { getAvatarUrl } from "@/utils/avatar"
 import { DeviceType } from "@/utils/device"
 import { MessageUtil } from "@/utils/message"
 import { getUserForbiddenMsg } from "@/utils/msg"
-import { PermissionNames } from "@/utils/permissionRole"
+
+import { usePermissionRoleStore } from "./permissionRole"
 
 // 用户信息
 export interface UserInfoStore {
@@ -232,11 +233,11 @@ async function apiGetUserInfoByToken(): Promise<UserInfoStore> {
         const { data: dataUser } = resUser.data
 
         // 获取角色列表
-        const resRole = await getRolesAPI()
-        const { data: dataRole } = resRole.data
+        const permissionRoleStore = usePermissionRoleStore()
+        const dataRole = permissionRoleStore.getRoleList
 
         // 判断是否获取成功
-        if (resUser.data.code === ResponseCode.UserGetInfoSuccess && resRole.data.code === ResponseCode.GetRoleSuccess) {
+        if (resUser.data.code === ResponseCode.UserGetInfoSuccess && dataRole.roles.length > 0) {
             const meta = dataUser.user_meta.find((item) => item.meta_key === "role_name")
             const roleName = meta ? meta.meta_value : undefined
 
@@ -341,8 +342,6 @@ async function handleBindResult(resObj: Res<unknown>, successCode: ResponseCode)
 // 退出登录的时候清除对应 localStorage
 function localStorageClearByLogout() {
     localStorage.removeItem(LocalStorageKey.AccessToken)
-    localStorage.removeItem(LocalStorageKey.RolesList)
-    localStorage.removeItem(LocalStorageKey.PermissionList)
 }
 
 // 允许开发环境下进行热更新 HMR(Hot Module Replacement)

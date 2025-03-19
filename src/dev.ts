@@ -7,7 +7,7 @@
  */
 
 import { devCheckIconKeys, iconMap } from "@/components/common/icons"
-import { devPermissionNames } from "@/utils/permissionRole"
+import { usePermissionRoleStore } from "@/stores/permissionRole"
 
 /**
  * @description: 开发环境运行的函数，主要在控制台输出一些信息便于开发调试
@@ -15,5 +15,6 @@ import { devPermissionNames } from "@/utils/permissionRole"
  */
 export function devRun() {
     devCheckIconKeys(iconMap) // 校验 iconMap
-    devPermissionNames() // 校验权限枚举
+    const permissionRoleStore = usePermissionRoleStore()
+    permissionRoleStore.devCheckPermissionNames() // 校验权限枚举
 }

@@ -73,7 +73,7 @@ const submitForm = async () => {
     const req = { options: reqList } as UpdateAPPOptionRequest
     const res = await updateAPPOptionAPI(req)
     if (res.data.code === ResponseCode.UpdateAPPOptionSuccess) {
-        optionsStore.updateOptions(true) // 强制刷新
+        optionsStore.update(true) // 强制刷新
         MessageUtil.success("更新成功")
     } else {
         MessageUtil.error(handleResErr(res), 10000)

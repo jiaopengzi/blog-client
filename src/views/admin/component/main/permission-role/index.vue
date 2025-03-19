@@ -141,10 +141,10 @@ import { type UpdateRoleRequest, updateRolesAPI, type UpdateRolesRequest } from 
 import { upsertPermissionRoleAPI, type UpsertPermissionRoleRequest } from "@/api/permissionRole/upsertPermissionRole"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { RouteNames } from "@/router"
+import { type Permission, PermissionNames, usePermissionRoleStore } from "@/stores/permissionRole"
 import { useUserStore } from "@/stores/user"
 import { getSortedEnumKeys } from "@/utils/enum"
 import { MessageUtil } from "@/utils/message"
-import { getPermissionList, getRolesList, type Permission, PermissionNames } from "@/utils/permissionRole"
 import { adminMenuItemMap } from "@/views/admin/component/aside"
 import type { PermissionRow, Role } from "@/views/admin/component/main/permission-role"
 
@@ -156,6 +156,8 @@ defineOptions({ name: RouteNames.PermissionRole })
 useHead({
     title: adminMenuItemMap[RouteNames.PermissionRole].display,
 })
+
+const permissionRoleStore = usePermissionRoleStore()
 
 // 定义权限列表 包含权限名和权限描述
 const permissionsList: Ref<Permission[]> = ref([])
@@ -362,7 +364,7 @@ const submitDeleteForm = debounce(100, async (formEl: FormInstance | undefined) 
 
                 // 添加成功提示
                 updatePermission()
-                await initPermissionTable(false)
+                initPermissionTable()
                 MessageUtil.success(data.msg, 6000)
             } else {
                 // 添加失败提示
@@ -373,8 +375,8 @@ const submitDeleteForm = debounce(100, async (formEl: FormInstance | undefined) 
 })
 
 // 获取权限列表
-const getPermissions = async () => {
-    permissionsList.value = await getPermissionList()
+const getPermissions = () => {
+    permissionsList.value = permissionRoleStore.getPermissionList
 }
 
 // 根据权限名获取权限描述
@@ -384,8 +386,8 @@ function getPermissionDescription(permissionName: PermissionNames) {
 }
 
 // 初始化权限表格
-const initPermissionTable = async (useCache: boolean = true) => {
-    const { roles, permission_role } = await getRolesList({ useCache: useCache })
+const initPermissionTable = () => {
+    const { roles, permission_role } = permissionRoleStore.getRoleList
     permissionRole.value = permission_role
     rolesList.value = roles.map((role: Role) => ({
         ...role,
@@ -453,31 +455,23 @@ const updatePermission = debounce(100, async () => {
     }
 
     // 更新角色权限api
-    await updateRolesAPI(updateRolesRequest)
-        .then((res) => {
-            if (res.data.code === ResponseCode.UpdateRoleSuccess) {
-                // 更新用户信息
-                const userStore = useUserStore()
-                userStore.getUserInfoByToken()
-                initPermissionTable(false)
-                MessageUtil.success(res.data.msg, 2000)
-                // 强制刷新页面 两秒后刷新
-                // setTimeout(() => {
-                //     location.reload()
-                // }, 2000)
-            } else {
-                MessageUtil.warning(res.data.msg, 2000)
-            }
-        })
-        .catch((err) => {
-            MessageUtil.error(err, 2000)
-        })
+    const res = await updateRolesAPI(updateRolesRequest)
+    if (res.data.code === ResponseCode.UpdateRoleSuccess) {
+        // 更新用户信息
+        const userStore = useUserStore()
+        userStore.getUserInfoByToken()
+        permissionRoleStore.update(true) // 强制刷新
+        initPermissionTable()
+        MessageUtil.success(res.data.msg, 3000)
+    } else {
+        MessageUtil.warning(res.data.msg, 6000)
+    }
 })
 
 // 组件挂载后获取权限列表和初始化权限表格
-onBeforeMount(async () => {
-    await getPermissions()
-    await initPermissionTable()
+onBeforeMount(() => {
+    getPermissions()
+    initPermissionTable()
 })
 </script>
 <style scoped lang="scss">

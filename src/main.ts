@@ -17,21 +17,10 @@ import App from "@/App.vue" // 根组件
 import JIcon from "@/components/common/icons" // 引用自定义的全局图标
 import { devRun } from "@/dev" // 开发环境运行的函数
 import { router } from "@/router" // 路由
-import { permissionDirective } from "@/utils/permissionRole" // 权限指令
+import { permissionDirective } from "@/utils/permissionDirective" // 权限指令
 import { consoleInfoFormat } from "@/version" // 控制台输出项目信息
 
 consoleInfoFormat() // 控制台输出项目信息
-
-// 开发模式下
-if (import.meta.env.MODE === "development") {
-    devRun() // 开发环境运行的函数
-    console.info("开发环境：", import.meta.env.VITE_MAX_NAVIGATOR_HARDWARE_CONCURRENCY)
-}
-
-// 生产模式下
-if (import.meta.env.MODE === "production") {
-    console.info("生产环境：", import.meta.env.VITE_MAX_NAVIGATOR_HARDWARE_CONCURRENCY)
-}
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -46,3 +35,14 @@ app.use(createHead()) // 参考官方文档:https://unhead.unjs.io/setup/vue/ins
 
 app.component("j-icon", JIcon) //  'j-icon' 作为全局组件
 app.mount("#app")
+
+// 开发模式下
+if (import.meta.env.MODE === "development") {
+    devRun() // 开发环境运行的函数
+    console.info("开发环境：", import.meta.env.VITE_MAX_NAVIGATOR_HARDWARE_CONCURRENCY)
+}
+
+// 生产模式下
+if (import.meta.env.MODE === "production") {
+    console.info("生产环境：", import.meta.env.VITE_MAX_NAVIGATOR_HARDWARE_CONCURRENCY)
+}

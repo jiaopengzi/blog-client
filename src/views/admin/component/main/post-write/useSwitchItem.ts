@@ -11,7 +11,7 @@ import { reactive, ref } from "vue"
 import { CommentStatusCode } from "@/api/post/common"
 import type { SwitchItem, SwitchItemLabel } from "@/components/common/switch-group"
 import { LocalStorageKey } from "@/stores/local"
-import { getRolesList } from "@/utils/permissionRole"
+import { usePermissionRoleStore } from "@/stores/permissionRole"
 
 import type { UpsertPostForm } from "./index"
 
@@ -56,9 +56,10 @@ export function useSwitchItem(postInfoForm: UpsertPostForm) {
     }
 
     // 初始化角色付费管理都为付费状态，后续根据后端数据进行修改
-    const initRolePaidManagement = async () => {
+    const initRolePaidManagement = () => {
+        const permissionRoleStore = usePermissionRoleStore()
         // 首先从 系统角色列表 获取角色列表
-        const { roles: rolesSystem } = await getRolesList()
+        const { roles: rolesSystem } = permissionRoleStore.getRoleList
         // 历遍 rolesSystem 构造 rolePaidList
         rolesSystem.forEach((role) => {
             const switchItem: SwitchItem = {

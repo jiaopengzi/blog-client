@@ -7,7 +7,7 @@
  */
 
 import { IconKeys } from "@/components/common/icons"
-import { PermissionNames } from "@/utils/permissionRole"
+import { PermissionNames } from "@/stores/permissionRole"
 
 // 菜单项接口定义无需 index 属性
 export interface MenuItem {

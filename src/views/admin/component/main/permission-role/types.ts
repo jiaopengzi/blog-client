@@ -7,7 +7,7 @@
  */
 
 import { type UpsertPermissionRoleRequest } from "@/api/permissionRole/upsertPermissionRole"
-import { PermissionNames } from "@/utils/permissionRole"
+import { PermissionNames } from "@/stores/permissionRole"
 
 // 定义角色接口
 export interface Role {
