@@ -158,6 +158,7 @@ useHead({
 })
 
 const permissionRoleStore = usePermissionRoleStore()
+const userStore = useUserStore()
 
 // 定义权限列表 包含权限名和权限描述
 const permissionsList: Ref<Permission[]> = ref([])
@@ -457,10 +458,10 @@ const updatePermission = debounce(100, async () => {
     // 更新角色权限api
     const res = await updateRolesAPI(updateRolesRequest)
     if (res.data.code === ResponseCode.UpdateRoleSuccess) {
-        // 更新用户信息
-        const userStore = useUserStore()
-        userStore.getUserInfoByToken()
-        permissionRoleStore.update(true) // 强制刷新
+        // 强制刷新, 注意先后顺序
+        permissionRoleStore.update(true)
+        userStore.getUserInfoByToken(true)
+
         initPermissionTable()
         MessageUtil.success(res.data.msg, 3000)
     } else {

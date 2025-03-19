@@ -35,7 +35,7 @@
             @delete-rows="deleteRows"
             @update-search="updateSearch"
             @run-search="runSearch"
-            @click-row-by-picture="clickRowByPicture"
+            @double-click-row-by-picture="clickRowByPicture"
             @add-item-update-dialog-visible="addItemUpdateDialogVisible"
             @edit-item-update-dialog-visible="editItemUpdateDialogVisible"
             @update-show-list-or-grid-status="updateShowListOrGridStatus"
@@ -147,7 +147,7 @@ const emit = defineEmits<{
     (event: "delete-rows", rows: TableData[]): void // 删除多行
     (event: "update-search", value: string): void // 更新搜索关键字
     (event: "run-search"): void // 执行搜索
-    (event: "click-row-by-picture", rows: TableData): void // 点击行中的图片
+    (event: "double-click-row-by-picture", rows: TableData): void // 点击行中的图片
     (event: "add-item-update-dialog-visible", value: boolean): void // 更新添加元素对话框状态
     (event: "edit-item-update-dialog-visible", value: boolean): void // 更新编辑元素对话框状态
     (event: "update-show-list-or-grid-status", value: boolean): void // 更新列表或宫格状态
@@ -192,7 +192,7 @@ const runSearch = () => {
 
 // 点击行中的图片
 const clickRowByPicture = (rows: TableData) => {
-    emit("click-row-by-picture", rows)
+    emit("double-click-row-by-picture", rows)
 }
 
 // 更新添加元素对话框状态

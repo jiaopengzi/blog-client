@@ -10,6 +10,7 @@ import { acceptHMRUpdate, defineStore } from "pinia"
 
 import { ResponseCode } from "@/api/response"
 import { getAPPOptionAPI, type GetAPPOptionResponse } from "@/api/setting/getAPPOption"
+import { type HeadProps } from "@/components/common/head-tag"
 
 export interface FooterLeftInfo {
     title?: string
@@ -43,6 +44,8 @@ export interface FooterInfo {
 export interface OptionsStore {
     app_options: GetAPPOptionResponse
     footer: FooterInfo
+    isLoadedOptions: boolean
+    head: HeadProps
 }
 
 // 创建一个空的选项存储
@@ -50,6 +53,8 @@ function createEmptyOptionsStore(): OptionsStore {
     return {
         app_options: {} as GetAPPOptionResponse,
         footer: {},
+        isLoadedOptions: false,
+        head: {},
     }
 }
 
@@ -71,6 +76,16 @@ export const useOptionsStore = defineStore("options", {
         isShowFooter(): boolean {
             return !!this.footer.left?.title || !!this.footer.middle?.length || !!this.footer.right?.title
         },
+
+        // 是否加载完成
+        isLoaded(): boolean {
+            return this.isLoaded
+        },
+
+        // 获取头部信息
+        getHeadInfo(): HeadProps {
+            return this.head
+        },
     },
 
     actions: {
@@ -89,7 +104,18 @@ export const useOptionsStore = defineStore("options", {
 
                 // footer格式化后存储本地
                 this.footer = await formatFooterInfo(this.app_options)
+
+                this.isLoadedOptions = true
+
+                // head格式化后存储本地
+                this.head = await formatHeadInfo(this.app_options)
             }
+        },
+
+        // 增量更新 head 标签
+        async updateHead(head: HeadProps): Promise<void> {
+            // 用 head 对象的属性覆盖 this.head 对象的属性
+            this.head = { ...this.head, ...head }
         },
     },
 })
@@ -139,6 +165,20 @@ export const formatFooterInfo = async (data: GetAPPOptionResponse): Promise<Foot
     }
 }
 
+const formatHeadInfo = async (data: GetAPPOptionResponse): Promise<HeadProps> => {
+    const title = data.custom_home_title?.value + data.separator?.value + data.custom_home_subtitle?.value
+    return {
+        title: title,
+        description: data.seo_description?.value,
+        keywords: data.seo_keywords?.value,
+        type: "article",
+        locale: "zh-CN",
+        author: "jiaopengzi",
+        siteName: title,
+        url: "https://jiaopengzi.com",
+        releaseDate: new Date().toISOString(),
+    }
+}
 // 允许开发环境下进行热更新 HMR(Hot Module Replacement)
 if (import.meta.hot) {
     import.meta.hot.accept(acceptHMRUpdate(useOptionsStore, import.meta.hot))

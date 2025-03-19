@@ -32,7 +32,7 @@
             @delete-rows="deleteRows"
             @update-search="updateSearch"
             @run-search="runSearch"
-            @click-row-by-picture="clickRowByPicture"
+            @double-click-row-by-picture="clickRowByPicture"
             @add-item-update-dialog-visible="addItemUpdateDialogVisible"
             @edit-item-update-dialog-visible="editItemUpdateDialogVisible"
             @update-show-list-or-grid-status="updateShowListOrGridStatus"

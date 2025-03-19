@@ -8,8 +8,9 @@
 
 <template>
     <div class="components">
-        <el-button class="component-item" type="primary" @click="submitForm">保存</el-button>
+        <el-button class="head" type="primary" @click="submitForm">保存</el-button>
         <BaseForm ref="formRef" title="网站选项" :form-data="optionData" :rules="rules" :form-items="formItems" :label-width="160" :form-width="800" />
+        <el-button class="foot" type="primary" @click="submitForm">保存</el-button>
     </div>
 </template>
 
@@ -235,8 +236,12 @@ onBeforeMount(async () => {
     padding-left: 10px;
 }
 
-.component-item {
+.head {
     margin-bottom: 10px;
+}
+
+.foot {
+    margin: 10px 0;
 }
 
 .btn-submit {

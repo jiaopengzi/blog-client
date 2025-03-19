@@ -8,6 +8,7 @@
 
 import { type RouteLocationNormalized } from "vue-router"
 
+import { initStores } from "@/stores/init"
 import { useUserStore } from "@/stores/user"
 import { MessageUtil } from "@/utils/message"
 
@@ -23,8 +24,8 @@ import { RouteNames } from "../types"
  * @returns 如果用户没有登录，且访问的页面需要登录，则返回登录页路径；
  */
 export const authMiddleware = async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
+    await initStores() // 初始化所有 store
     const userStore = useUserStore()
-    await userStore.getUserInfoByToken() // 获取用户信息
 
     // 如果用户没有登录，且访问的页面需要登录，则跳转到登录页
     if (to.meta.requiresAuth && !userStore.isLogin) {

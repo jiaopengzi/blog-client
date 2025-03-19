@@ -200,7 +200,7 @@ export function useInfo(): UseInfoReturnType {
             if (res.data.code === ResponseCode.SetAvatarSuccess) {
                 // 更新用户信息
                 userStore.setAvatar(req.avatar_url)
-                // userStore.getUserInfoByToken(true)
+                userStore.getUserInfoByToken(true)
             } else {
                 const msg = handleResErr(res)
                 MessageUtil.error(msg, 0)

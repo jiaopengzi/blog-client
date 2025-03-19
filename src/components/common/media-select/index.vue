@@ -36,7 +36,7 @@
             @run-search="runSearchAc"
             @edit-row="editRow"
             @delete-rows="deleteRows"
-            @click-row-by-picture="clickRowByPicture"
+            @double-click-row-by-picture="clickRowByPicture"
             @add-item-update-dialog-visible="addItemUpdateDialogVisible"
             @edit-item-update-dialog-visible="editItemUpdateDialogVisible"
             @update-show-list-or-grid-status="updateShowListOrGridStatus"

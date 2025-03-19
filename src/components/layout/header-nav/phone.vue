@@ -70,8 +70,7 @@ const logout = async () => {
 }
 
 onBeforeMount(() => {
-    // 组件挂载前
-    // 通过本地信息 获取用户信息
+    // 组件挂载前 通过本地信息 获取用户信息
     userStore.getUserInfoByToken()
 })
 </script>

@@ -18,6 +18,7 @@ import JIcon from "@/components/common/icons" // 引用自定义的全局图标
 import { devRun } from "@/dev" // 开发环境运行的函数
 import { router } from "@/router" // 路由
 import { permissionDirective } from "@/utils/permissionDirective" // 权限指令
+import { singleDblClickDirective } from "@/utils/singleDblClickDirective" // 权限指令
 import { consoleInfoFormat } from "@/version" // 控制台输出项目信息
 
 consoleInfoFormat() // 控制台输出项目信息
@@ -26,6 +27,7 @@ const app = createApp(App)
 const pinia = createPinia()
 
 app.directive("permission", permissionDirective) // 注册全局权限指令
+app.directive("single-dbl-click", singleDblClickDirective) // 注册全局单击/双击指令
 
 app.use(pinia) // 使用状态管理
 

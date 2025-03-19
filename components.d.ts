@@ -22,6 +22,7 @@ declare module 'vue' {
     CommonDbEs: typeof import('./src/components/common/db-es/index.vue')['default']
     CommonDbPgsql: typeof import('./src/components/common/db-pgsql/index.vue')['default']
     CommonDbRedis: typeof import('./src/components/common/db-redis/index.vue')['default']
+    CommonHeadTag: typeof import('./src/components/common/head-tag/index.vue')['default']
     CommonIcons: typeof import('./src/components/common/icons/index.vue')['default']
     CommonImageInput: typeof import('./src/components/common/image-input/index.vue')['default']
     CommonMediaAdd: typeof import('./src/components/common/media-add/index.vue')['default']

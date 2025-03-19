@@ -18,7 +18,6 @@ import { useUserStore } from "@/stores/user"
  */
 export const beforeunloadMiddleware = async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
     const userStore = useUserStore()
-    await userStore.getUserInfoByToken() // 获取用户信息
 
     // 监听页面关闭事件,即用户手动修改ULR或关闭页面
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {

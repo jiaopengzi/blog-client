@@ -239,7 +239,7 @@ async function apiGetUserInfoByToken(): Promise<UserInfoStore> {
         // 判断是否获取成功
         if (resUser.data.code === ResponseCode.UserGetInfoSuccess && dataRole.roles.length > 0) {
             const meta = dataUser.user_meta.find((item) => item.meta_key === "role_name")
-            const roleName = meta ? meta.meta_value : undefined
+            const roleName = meta ? meta.meta_value : void 0
 
             // 循环 dataRole 获取权限列表
             const permissions: PermissionNames[] = []

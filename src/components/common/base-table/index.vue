@@ -8,7 +8,7 @@
 
 <template>
     <!-- 参考:https://github.com/element-plus/element-plus/blob/dev/packages/components/image/src/image.vue -->
-    <!-- <el-image-viewer v-if="isShowElImageViewer" @close="closeElImageViewer" :url-list="imgUrls" /> -->
+    <el-image-viewer v-if="isShowElImageViewer" @close="closeElImageViewer" :url-list="imgUrls" />
     <div class="container">
         <div class="btns">
             <!-- 按钮 -->
@@ -57,7 +57,7 @@
                         <span>{{ col.label }}</span>
                     </template>
                     <template #default="scope">
-                        <div class="thumbnail" @click="handleDelegateClick(scope.row)">
+                        <div class="thumbnail" v-single-dbl-click="clickHandler(scope.row)">
                             <img
                                 v-if="scope.row.img?.url"
                                 class="thumbnail-img"
@@ -126,7 +126,7 @@
                         class="thumbnail-img"
                         :src="row.img.url"
                         :style="imgStyle(row.img?.width, row.img?.height, row.img?.imgFit)"
-                        @click="handleDelegateGridClick(row)"
+                        v-single-dbl-click="clickInGridHandler(row)"
                     />
 
                     <j-icon
@@ -134,7 +134,7 @@
                         class="thumbnail-img"
                         :name="row.img?.iconKeyName"
                         :style="iconStyle(row.img?.svgFontSize)"
-                        @click="handleDelegateGridClick(row)"
+                        v-single-dbl-click="clickInGridHandler(row)"
                     />
 
                     <el-button class="grid-item-edit" size="small" type="primary" @click="handleEdit(index, row)">编辑</el-button>
@@ -190,7 +190,7 @@
 
 <script lang="ts" setup>
 import type { ElTable } from "element-plus"
-import { reactive, type Ref, ref, useTemplateRef, watch, watchEffect } from "vue"
+import { reactive, type Ref, ref, useTemplateRef, watch } from "vue"
 
 import type { PostTag } from "@/api/postTag/view"
 import { getEmptyPagination, type Pagination } from "@/api/response"
@@ -199,6 +199,7 @@ import { MsgType } from "@/components/common"
 import type { SwitchItem, SwitchItemColor, SwitchItemLabel } from "@/components/common/switch-group"
 import SwitchGroup from "@/components/common/switch-group"
 import { deleteConfirmCommon } from "@/utils/confirm"
+import { type SingleDblClickBinding } from "@/utils/singleDblClickDirective"
 import { iconStyle, imgStyle } from "@/utils/style"
 
 import CustomCol from "./custom-col"
@@ -255,7 +256,7 @@ const emit = defineEmits<{
     (event: "update-search", value: string): void // 更新搜索关键字
     (event: "run-search"): void // 执行搜索
     (event: "update-selection", rows: TableData[]): void // 更新选择
-    (event: "click-row-by-picture", rows: TableData): void // 点击行中的图片
+    (event: "double-click-row-by-picture", rows: TableData): void // 点击行中的图片
     (event: "add-item-update-dialog-visible", value: boolean): void // 更新添加元素对话框状态
     (event: "edit-item-update-dialog-visible", value: boolean): void // 更新编辑元素对话框状态
     (event: "update-show-list-or-grid-status", value: boolean): void // 更新列表或宫格状态
@@ -271,8 +272,8 @@ const search = ref(searchStr) // 搜索关键字
 const addItemDialogVisibleStatus = ref(false) // 对话框状态
 const editItemDialogVisibleStatus = ref(false) // 对话框状态
 
-// const isShowElImageViewer = ref(false)
-// const imgUrls = ref<string[]>([])
+const isShowElImageViewer = ref(false)
+const imgUrls = ref<string[]>([])
 
 // 当前分页数据
 const paginationAC = reactive(getEmptyPagination<Pagination<TableData>>())
@@ -291,6 +292,7 @@ watch(
     () => pagination,
     (newVal) => {
         Object.assign(paginationAC, newVal)
+        hasData.value = newVal.records.length > 0
     },
     { deep: true },
 )
@@ -321,10 +323,24 @@ const updateStatus = (items: SwitchItem[]) => {
     emit("update-show-list-or-grid-status", items[0].status)
 }
 
-// 处理宫格点击事件
-const handleDelegateGridClick = (row: TableData) => {
+// 单击事件
+const handleSingleClick = (event: MouseEvent) => {
+    // 判断点击目标是否为 img
+    const target = event.target as HTMLElement
+    if (target.tagName.toLowerCase() === "img" && "src" in target) {
+        const imgElement = target as HTMLImageElement
+        // 记录图片地址
+        imgUrls.value = [imgElement.src]
+        // 显示图片预览
+        isShowElImageViewer.value = true
+        // 隐藏滚动条
+        document.body.style.overflow = "hidden"
+    }
+}
+
+// 处理宫格单击事件
+const handleSingleClickInGrid = (row: TableData) => {
     // 宫格点击事件，首先判断 row 是否在 gridSelection 中，如果在，则取消选中，否则选中
-    emit("click-row-by-picture", row)
     const gridSelection = tableRef.value?.getSelectionRows() as TableData[]
     const i = gridSelection.findIndex((item) => item === row)
     if (i === -1) {
@@ -334,43 +350,45 @@ const handleDelegateGridClick = (row: TableData) => {
     }
 }
 
-// 列表图片点击事件
-const handleDelegateClick = (row: TableData) => {
-    emit("click-row-by-picture", row)
+// 双击事件
+const handleDoubleClick = (row: TableData) => {
+    emit("double-click-row-by-picture", row)
 }
 
-// // 点击事件委托,图片预览.
-// const handleDelegateClick = (event: MouseEvent) => {
-//   const target = event.target as HTMLElement
-//   if (target.tagName.toLowerCase() === 'img' && 'src' in target) {
-//     // img 图片
-//     const imgElement = target as HTMLImageElement // 断言 img 元素
-//     isShowElImageViewer.value = true // 显示图片预览
-//     imgUrls.value = [imgElement.src] // 图片地址
-//     document.body.style.overflow = 'hidden' // 隐藏滚动条
-//   }
-// }
+// **注意这两个 clickHandler 函数不要写到 template 标签中, 会造成递归循环**
+
+// 表格行双击事件
+const clickHandler = (row: TableData): SingleDblClickBinding => {
+    return {
+        single: (e: MouseEvent) => handleSingleClick(e),
+        double: () => handleDoubleClick(row),
+        delay: 200,
+    }
+}
+
+// 宫格行双击事件
+const clickInGridHandler = (row: TableData): SingleDblClickBinding => {
+    return {
+        single: () => handleSingleClickInGrid(row),
+        double: () => handleDoubleClick(row),
+        delay: 200,
+    }
+}
 
 // 关闭图片预览
-// const closeElImageViewer = () => {
-//     isShowElImageViewer.value = false
-//     document.body.style.overflow = "auto"
-// }
-
-// 更新分页配置
-watchEffect(() => {
-    // paginationData.value = pagination
-
-    // 更新是否有数据
-    hasData.value = pagination.records.length > 0
-    // hasData.value = paginationData.value.records.length > 0
-})
+const closeElImageViewer = () => {
+    isShowElImageViewer.value = false
+    document.body.style.overflow = "auto"
+}
 
 // 更新对话框状态
-watchEffect(() => {
-    addItemDialogVisibleStatus.value = addItemDialogVisible
-    editItemDialogVisibleStatus.value = editItemDialogVisible
-})
+watch(
+    () => [addItemDialogVisible, editItemDialogVisible],
+    ([addItemDialogVisible, editItemDialogVisible]) => {
+        addItemDialogVisibleStatus.value = addItemDialogVisible
+        editItemDialogVisibleStatus.value = editItemDialogVisible
+    },
+)
 
 // 关闭对话框
 const addItemHandleDialogClose = () => {

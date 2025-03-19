@@ -55,6 +55,7 @@ export interface Permission {
 export interface PermissionRoleStore {
     roles: RoleWithLimit
     permissionList: Permission[]
+    isLoadedPermissionRole: boolean
 }
 
 // 创建一个空的权限角色存储
@@ -62,6 +63,7 @@ function createEmptyPermissionRoleStore(): PermissionRoleStore {
     return {
         roles: {} as RoleWithLimit,
         permissionList: [],
+        isLoadedPermissionRole: false,
     }
 }
 
@@ -78,6 +80,11 @@ export const usePermissionRoleStore = defineStore("permissionRole", {
         getPermissionList(): Permission[] {
             return this.permissionList
         },
+
+        // 是否已加载
+        getIsLoaded(): boolean {
+            return this.isLoadedPermissionRole
+        },
     },
 
     actions: {
@@ -92,14 +99,14 @@ export const usePermissionRoleStore = defineStore("permissionRole", {
         async updateFromServer(): Promise<void> {
             // 获取角色列表
             const resRole = await getRolesAPI()
-            if (resRole.data.code === ResponseCode.GetRoleSuccess) {
-                this.roles = resRole.data.data
-            }
-
             // 获取权限列表
             const resPermission = await getPermissionsAPI()
-            if (resPermission.data.code === ResponseCode.GetPermissionSuccess) {
+
+            if (resRole.data.code === ResponseCode.GetRoleSuccess && resPermission.data.code === ResponseCode.GetPermissionSuccess) {
+                this.roles = resRole.data.data
                 this.permissionList = resPermission.data.data
+
+                this.isLoadedPermissionRole = true
             }
         },
 
