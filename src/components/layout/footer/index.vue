@@ -7,7 +7,7 @@
 -->
 
 <template>
-    <footer v-if="isShowFooter">
+    <footer class="footer-root" v-if="isShowFooter">
         <div class="footer-main">
             <div class="footer-l" v-if="footerData.left?.title">
                 <h3 class="title">{{ footerData.left?.title }}</h3>
@@ -41,9 +41,8 @@
     </footer>
 </template>
 <script setup lang="ts">
-// import "./style.scss"
-
 import { useOptionsStore } from "@/stores/options" // 网站配置选项
+
 defineOptions({ name: "LayoutFooter" })
 
 // 获取网站配置选项
@@ -52,4 +51,6 @@ const footerData = optionsStore.getFooterInfo
 const isShowFooter = optionsStore.isShowFooter
 </script>
 
-<style lang="scss" scoped src="./style.scss"></style>
+<style scoped lang="scss">
+@use "./style.module.scss";
+</style>

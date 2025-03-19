@@ -1,12 +1,17 @@
 /*
- * FilePath    : blog-client\src\components\layout\footer\index.scss
+ * FilePath    : blog-client\src\components\layout\footer\style.module.scss
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * Description : 样式导入
  */
 
-footer {
+@use "@/assets/scss/platform/_phone.scss" as phone;
+@use "@/assets/scss/platform/_pad.scss" as pad;
+@use "@/assets/scss/platform/_pc.scss" as pc;
+@use "@/assets/scss/mixin.scss" as *;
+
+.footer-root {
     background-color: var(--jpz-bg-color-footer);
     display: relative;
     align-items: center;
