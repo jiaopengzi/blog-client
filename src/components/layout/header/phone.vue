@@ -19,7 +19,7 @@
                     <router-link :to="{ name: RouteNames.Home }" class="link">
                         <div class="logo">
                             <h2>
-                                <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" :alt="RouteNames.Home" />
+                                <img v-if="logo" :src="logo" :alt="RouteNames.Home" />
                             </h2>
                         </div>
                     </router-link>
@@ -54,8 +54,12 @@ import type { ScrollData } from "@/components/hooks/useScroll"
 import { useScrollActions } from "@/components/hooks/useScroll"
 import HeaderNav from "@/components/layout/header-nav"
 import { RouteNames } from "@/router"
+import { useOptionsStore } from "@/stores/options"
 
 defineOptions({ name: "HeaderPhone" })
+
+const optionsStore = useOptionsStore()
+const logo = optionsStore.getLogo
 
 const navVisible = ref(false) // 侧边导航栏是否可见
 const headerVisible = ref(true) // 导航栏是否可见
@@ -145,13 +149,10 @@ header {
 }
 
 .logo {
-    width: phone.$width-header-logo;
-    height: phone.$height-header-logo;
-}
-
-.logo img {
-    width: 100%;
-    height: 100%;
+    img {
+        width: auto;
+        height: pc.$height-header-logo;
+    }
 }
 
 li {

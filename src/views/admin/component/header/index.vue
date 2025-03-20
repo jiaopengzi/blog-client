@@ -9,7 +9,7 @@
 <template>
     <header>
         <div class="left">
-            <el-button class="btn-logo" @click="goHome"> <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" alt="routeObj.home.path" /></el-button>
+            <el-button class="btn-logo" @click="goHome"> <img v-if="logo" :src="logo" alt="routeObj.home.path" /></el-button>
         </div>
 
         <div class="right">
@@ -31,10 +31,17 @@ import SwitchGroup from "@/components/common/switch-group"
 import UserInfoDropdown from "@/components/common/user-info-dropdown"
 import { useTheme } from "@/components/hooks/useTheme"
 import { RouteNames } from "@/router"
+import { useOptionsStore } from "@/stores/options"
 import { useUserStore } from "@/stores/user"
+
 defineOptions({ name: "AdminHeader" })
+
 const userStore = useUserStore()
+const optionsStore = useOptionsStore()
+
 const { isLogin } = storeToRefs(userStore)
+const logo = optionsStore.getLogo
+
 // 主题切换
 const { themeSwitch, updateStatus } = useTheme()
 const router = useRouter()
@@ -56,8 +63,8 @@ header {
         border: none;
         background-color: transparent;
         img {
-            width: 200px;
-            height: 52px;
+            width: auto;
+            height: pc.$height-header-logo;
         }
     }
 

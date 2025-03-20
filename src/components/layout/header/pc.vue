@@ -13,7 +13,7 @@
                 <router-link :to="{ name: RouteNames.Home }" class="link">
                     <div class="logo">
                         <h2>
-                            <img src="@/assets/img/logo-text-rounded-rectangle-200-52.png" :alt="RouteNames.Home" />
+                            <img v-if="logo" :src="logo" :alt="RouteNames.Home" />
                         </h2>
                     </div>
                 </router-link>
@@ -62,9 +62,13 @@ import { useScrollActions } from "@/components/hooks/useScroll"
 import { useTheme } from "@/components/hooks/useTheme"
 import HeaderNav from "@/components/layout/header-nav"
 import { RouteNames } from "@/router"
+import { useOptionsStore } from "@/stores/options"
 import { useUserStore } from "@/stores/user"
 
 defineOptions({ name: "HeaderPC" })
+
+const optionsStore = useOptionsStore()
+const logo = optionsStore.getLogo
 
 // 主题切换
 const { themeSwitch, updateStatus } = useTheme()
@@ -138,13 +142,10 @@ header {
 }
 
 .logo {
-    width: pc.$width-header-logo;
-    height: pc.$height-header-logo;
-}
-
-.logo img {
-    width: 100%;
-    height: 100%;
+    img {
+        width: auto;
+        height: pc.$height-header-logo;
+    }
 }
 
 .search-icon {

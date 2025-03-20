@@ -4,6 +4,7 @@
         "qrcode",
         "skewable",
         "tzdata",
+        "Vite",
         "zoneinfo"
     ],
     "workbench.colorCustomizations": {

@@ -30,7 +30,6 @@ export const updateHeadMiddleware = async (to: RouteLocationNormalized, from: Ro
     const head: HeadProps = {
         url: fullUrl,
     }
-
     await updateHead(head)
 
     return true

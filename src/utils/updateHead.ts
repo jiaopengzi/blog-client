@@ -11,5 +11,6 @@ import { useOptionsStore } from "@/stores/options"
 
 export const updateHead = async (head: HeadProps) => {
     const optionsStore = useOptionsStore()
+    await optionsStore.updateFavicon()
     await optionsStore.updateHead(head)
 }

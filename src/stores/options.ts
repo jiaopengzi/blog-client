@@ -86,6 +86,11 @@ export const useOptionsStore = defineStore("options", {
         getHeadInfo(): HeadProps {
             return this.head
         },
+
+        // 获取 logo
+        getLogo(): string {
+            return this.app_options.logo?.value
+        },
     },
 
     actions: {
@@ -116,6 +121,25 @@ export const useOptionsStore = defineStore("options", {
         async updateHead(head: HeadProps): Promise<void> {
             // 用 head 对象的属性覆盖 this.head 对象的属性
             this.head = { ...this.head, ...head }
+        },
+
+        // 更新 favicon
+        async updateFavicon(): Promise<void> {
+            const faviconLink = document.getElementById("dynamic-favicon") as HTMLLinkElement
+
+            if (faviconLink && this.app_options.favicon?.value) {
+                const oldHref = faviconLink.href
+                const neoHref = this.app_options.favicon.value
+
+                // 如果新旧链接一样, 则不更新, 直接返回
+                if (oldHref === neoHref) return
+
+                faviconLink.href = neoHref
+
+                // // 强制刷新
+                // const timestamp = new Date().getTime()
+                // faviconLink.href = `${neoHref}?v=${timestamp}`
+            }
         },
     },
 })
