@@ -136,7 +136,7 @@ import { groupList, type GroupType, type PostCountGroupItem } from "./types"
 defineOptions({ name: RouteNames.PostAll })
 
 useHead({
-    title: adminMenuItemMap[RouteNames.PostAll].display,
+    title: adminMenuItemMap[RouteNames.PostAll].text,
 })
 
 const cols: TableColumn[] = reactive([

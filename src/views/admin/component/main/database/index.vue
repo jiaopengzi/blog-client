@@ -54,7 +54,7 @@ import { adminMenuItemMap } from "@/views/admin/component/aside"
 defineOptions({ name: RouteNames.SettingDatabase })
 
 useHead({
-    title: adminMenuItemMap[RouteNames.SettingDatabase].display,
+    title: adminMenuItemMap[RouteNames.SettingDatabase].text,
 })
 
 const dbPgsql = ref<PgsqlSetupRequest>({} as PgsqlSetupRequest)

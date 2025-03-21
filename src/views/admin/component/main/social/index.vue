@@ -47,7 +47,7 @@ import SocialLoginConfig, { type SocialLoginConfigRef } from "./social-login-con
 defineOptions({ name: RouteNames.SettingSocial })
 
 useHead({
-    title: adminMenuItemMap[RouteNames.SettingSocial].display,
+    title: adminMenuItemMap[RouteNames.SettingSocial].text,
 })
 
 const configQQ = ref<LoginConfig>({} as LoginConfig)

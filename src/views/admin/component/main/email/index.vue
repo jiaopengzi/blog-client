@@ -66,7 +66,7 @@ import { adminMenuItemMap } from "@/views/admin/component/aside"
 defineOptions({ name: RouteNames.SettingEmail })
 
 useHead({
-    title: adminMenuItemMap[RouteNames.SettingEmail].display,
+    title: adminMenuItemMap[RouteNames.SettingEmail].text,
 })
 
 // 表单label位置 top | left | right

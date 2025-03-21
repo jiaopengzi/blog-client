@@ -7,8 +7,8 @@
 -->
 
 <template>
-    <div class="container" :class="iconClass">
-        <svg class="icon" aria-hidden="true">
+    <div :class="iconClass ? `container ${iconClass}` : 'container'">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon">
             <use :xlink:href="iconMap[name]" />
         </svg>
     </div>

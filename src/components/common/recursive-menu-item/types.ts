@@ -11,11 +11,21 @@ import { PermissionNames } from "@/stores/permissionRole"
 
 // 菜单项接口定义无需 index 属性
 export interface MenuItem {
-    display: string // 显示名称
+    text: string // 显示名称
     icon?: {
-        name: IconKeys // 图标名称
+        name?: IconKeys // 图标名称
         class?: string // 图标样式
+
+        // icon 使用外部链接
+        src?: string // 图标地址
+        alt?: string // 图标提示
+        style?: string // 图标样式
     }
+
+    // icon 使用外部链接
+    href?: string // 链接地址
+    target?: "_blank" | "_self" | "_parent" | "_top" // 打开方式
+
     parentIndex?: string // 父级菜单索引
     permissionName?: PermissionNames // 权限名称
 

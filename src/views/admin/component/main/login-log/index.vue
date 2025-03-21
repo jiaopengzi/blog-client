@@ -50,7 +50,7 @@ import { adminMenuItemMap } from "@/views/admin/component/aside"
 defineOptions({ name: RouteNames.LoginLog })
 
 useHead({
-    title: adminMenuItemMap[RouteNames.LoginLog].display,
+    title: adminMenuItemMap[RouteNames.LoginLog].text,
 })
 
 const cols: TableColumn[] = reactive([

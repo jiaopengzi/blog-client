@@ -195,7 +195,7 @@ import { createEmptyUpsertPostForm, generateShortcuts } from "./utils"
 defineOptions({ name: RouteNames.PostWrite })
 
 useHead({
-    title: adminMenuItemMap[RouteNames.PostWrite].display,
+    title: adminMenuItemMap[RouteNames.PostWrite].text,
 })
 
 // 初始化表单数据

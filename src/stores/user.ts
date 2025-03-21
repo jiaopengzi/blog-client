@@ -16,7 +16,6 @@ import { socialBind, socialBindCallback, socialLogin, socialLoginCallback, socia
 import { LocalStorageKey } from "@/stores/local"
 import { PermissionNames } from "@/stores/permissionRole"
 import { getAvatarUrl } from "@/utils/avatar"
-import { DeviceType } from "@/utils/device"
 import { MessageUtil } from "@/utils/message"
 import { getUserForbiddenMsg } from "@/utils/msg"
 
@@ -26,7 +25,6 @@ import { usePermissionRoleStore } from "./permissionRole"
 export interface UserInfoStore {
     data: UserInfo
     isLogin: boolean // 是否登录
-    device: DeviceType // 设备类型
     avatar?: string // 头像
     isBindEmail: boolean // 是否绑定邮箱
     showDialogBindEmail?: boolean // 是否显示绑定邮箱弹窗
@@ -40,7 +38,6 @@ function createEmptyUserInfoStore(): UserInfoStore {
     return {
         data: emptyUserInfo(),
         isLogin: false,
-        device: DeviceType.PC,
         avatar: "",
         isBindEmail: false,
         showDialogBindEmail: false,
@@ -67,11 +64,6 @@ export const useUserStore = defineStore("user", {
         // 获取登录状态
         getIsLogin(): boolean {
             return this.isLogin
-        },
-
-        // 获取设备类型
-        getDevice(): DeviceType {
-            return this.device
         },
 
         // 获取是否绑定邮箱
@@ -109,11 +101,6 @@ export const useUserStore = defineStore("user", {
         // 设置头像
         setAvatar(avatar: string) {
             this.avatar = avatar
-        },
-
-        // 设置设备类型
-        setDevice(device: DeviceType) {
-            this.device = device
         },
 
         // 退出登录
@@ -254,7 +241,6 @@ async function apiGetUserInfoByToken(): Promise<UserInfoStore> {
 
             return {
                 data: dataUser,
-                device: DeviceType.PC,
                 isLogin: true,
                 avatar: getAvatarUrl(dataUser),
                 isBindEmail: !!dataUser?.user?.user_email,

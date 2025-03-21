@@ -1,30 +1,38 @@
-// 自定义字段
-export enum CustomFields {
-    Price = "price", // 价格
-    ViewCount = "view_count", // 浏览次数
-    CommentCount = "comment_count", // 评论次数
-    LikeCount = "like_count", // 点赞次数
-    CollectCount = "collect_count", // 收藏次数
-    WordsCount = "words_count", // 字数
+/**
+ * @FilePath     : \blog-client\src\components\common\recursive-menu-item\types.ts
+ * @Author       : jiaopengzi
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 类型定义
+ */
+
+export interface MenuItem {
+    index: string // 菜单索引
+    text: string // 显示名称
+    parentIndex?: string // 父级菜单索引
 }
 
-export interface Request1 {
-    post_author?: string // 文章作者
-    post_status?: number // 文章状态
-    year?: number // 文章年份
-    month?: number // 文章月份
+export type MenuItemMap<T extends string> = {
+    [key in T]: MenuItem
 }
 
-export interface Request2 {
-    post_author?: string // 文章作者
-    post_status?: number // 文章状态
-    year?: number // 文章年份
-    month?: number // 文章月份
-    post_category_id?: string // 文章分类ID
-    post_tag_id?: string // 文章标签ID
-    custom_filed?: CustomFields // 自定义字段
-    custom_filed_min?: string // 自定义字段最小值
-    custom_filed_max?: string // 自定义字段最大值
-    is_pinned?: boolean // 是否置顶
-    is_recommended?: boolean // 是否推荐
+export enum TestIndex {
+    Test1 = "Test1",
+    Test2 = "Test2",
+    Test3 = "Test3",
+    Test4 = "Test4",
+    Test5 = "Test5",
+    Test6 = "Test6",
+    Test7 = "Test7",
+    Test8 = "Test8",
+    Test9 = "Test9",
+    Test10 = "Test10",
+    Test11 = "Test11",
+    Test12 = "Test12",
+    Test13 = "Test13",
+    Test14 = "Test14",
+    Test15 = "Test15",
 }
+
+// test 菜单项映射表
+export type TestMenuItemMap = MenuItemMap<TestIndex>

@@ -79,7 +79,7 @@ import { type ViewForm } from "./component/view"
 defineOptions({ name: RouteNames.PostTag })
 
 useHead({
-    title: adminMenuItemMap[RouteNames.PostTag].display,
+    title: adminMenuItemMap[RouteNames.PostTag].text,
 })
 
 const cols: TableColumn[] = reactive([

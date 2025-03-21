@@ -27,28 +27,28 @@ export const navigationRoutes: RouteRecordRaw[] = [
             requiresAuth: false,
         },
     },
-    {
-        path: "/doc",
-        name: RouteNames.Doc,
-        component: () => import("@/views/test"),
-        meta: {
-            requiresAuth: false,
-        },
-    },
-    {
-        path: "/tool",
-        name: RouteNames.Tool,
-        component: () => import("@/views/test"),
-        meta: {
-            requiresAuth: false,
-        },
-    },
-    {
-        path: "/vip",
-        name: RouteNames.Vip,
-        component: () => import("@/views/test"),
-        meta: {
-            requiresAuth: false,
-        },
-    },
+    // {
+    //     path: "/doc",
+    //     name: RouteNames.Doc,
+    //     component: () => import("@/views/test"),
+    //     meta: {
+    //         requiresAuth: false,
+    //     },
+    // },
+    // {
+    //     path: "/tool",
+    //     name: RouteNames.Tool,
+    //     component: () => import("@/views/test"),
+    //     meta: {
+    //         requiresAuth: false,
+    //     },
+    // },
+    // {
+    //     path: "/vip",
+    //     name: RouteNames.Vip,
+    //     component: () => import("@/views/test"),
+    //     meta: {
+    //         requiresAuth: false,
+    //     },
+    // },
 ]

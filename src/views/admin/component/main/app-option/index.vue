@@ -35,7 +35,7 @@ import BaseForm, { type APPOptionForm, type APPOptionFormRef } from "./base"
 defineOptions({ name: RouteNames.SettingAPPOption })
 
 useHead({
-    title: adminMenuItemMap[RouteNames.SettingAPPOption].display,
+    title: adminMenuItemMap[RouteNames.SettingAPPOption].text,
 })
 
 // 获取网站配置选项

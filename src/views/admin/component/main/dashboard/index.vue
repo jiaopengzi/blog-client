@@ -17,7 +17,7 @@ import { adminMenuItemMap } from "@/views/admin/component/aside"
 defineOptions({ name: RouteNames.Dashboard })
 
 useHead({
-    title: adminMenuItemMap[RouteNames.Dashboard].display,
+    title: adminMenuItemMap[RouteNames.Dashboard].text,
 })
 </script>
 <style scoped lang="scss">

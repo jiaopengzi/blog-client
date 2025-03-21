@@ -1,32 +1,21 @@
-<!--
- * FilePath    : blog-client\src\views\test\index.vue
- * Author      : jiaopengzi
- * Blog        : https://jiaopengzi.com
- * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 测试页面
--->
 <template>
-    <div class="container">
-        <ImageInput v-model="u" />
-    </div>
+    <el-menu ellipsis class="el-menu-popper-demo" mode="horizontal" :popper-offset="16" style="max-width: 300px">
+        <recursive-menu-item v-for="(item, key) in topLevelMenuItems" :key="key" :menu-item-map="menuItemMap" :menu-item="item" />
+    </el-menu>
 </template>
 
-<script setup lang="ts">
-import { ref } from "vue"
+<script lang="ts" setup>
+import { computed, reactive } from "vue"
 
-import ImageInput from "@/components/common/image-input"
+import RecursiveMenuItem from "./recursive-menu-item.vue" // 引入递归菜单组件
+import { testMenuItemMap } from "./utils"
 
-defineOptions({ name: "MyTest" })
+// 定义组件名称
+defineOptions({ name: "HeaderNav" })
 
-const u = ref("http://10.10.2.222:7364/api/v1/uploads/2025/03/13/j-3-08959f82.jpg")
+// 生成菜单项索引
+const menuItemMap = reactive(testMenuItemMap)
+
+// 计算顶级菜单项
+const topLevelMenuItems = computed(() => Object.values(menuItemMap).filter((item) => !item.parentIndex))
 </script>
-
-<style scoped lang="scss">
-// 让视频播放器水平垂直居中
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-</style>

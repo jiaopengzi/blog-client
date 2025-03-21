@@ -18,11 +18,11 @@ export enum RouteNamesDefault {
     RegisterAdmin = "register-admin",
     ResetPassword = "reset-password",
     UserInfo = "user-info",
-    PostPublic = "post-public",
-    VideoPublic = "video-public",
-    Doc = "doc",
-    Tool = "tool",
-    Vip = "vip",
+    // PostPublic = "post-public",
+    // VideoPublic = "video-public",
+    // Doc = "doc",
+    // Tool = "tool",
+    // Vip = "vip",
     Admin = "admin",
 }
 

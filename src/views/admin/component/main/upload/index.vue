@@ -37,7 +37,7 @@ import UploadOSS, { type UploadOSSFormRef } from "./oss"
 defineOptions({ name: RouteNames.SettingUpload })
 
 useHead({
-    title: adminMenuItemMap[RouteNames.SettingUpload].display,
+    title: adminMenuItemMap[RouteNames.SettingUpload].text,
 })
 
 const fileAllowedList = ref<FileAllowedType[]>([])

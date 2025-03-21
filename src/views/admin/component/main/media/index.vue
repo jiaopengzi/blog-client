@@ -57,7 +57,7 @@ import { adminMenuItemMap } from "@/views/admin/component/aside"
 defineOptions({ name: RouteNames.Media })
 
 useHead({
-    title: adminMenuItemMap[RouteNames.Media].display,
+    title: adminMenuItemMap[RouteNames.Media].text,
 })
 
 const {

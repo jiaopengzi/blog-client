@@ -22,16 +22,15 @@ import { storeToRefs } from "pinia"
 import { onBeforeUnmount, useTemplateRef } from "vue"
 
 import HeadTag from "@/components/common/head-tag"
+import { useDeviceStore } from "@/stores/device"
 import { useOptionsStore } from "@/stores/options"
-import { useUserStore } from "@/stores/user"
-import { getDeviceType } from "@/utils/device"
 
 // 网站配置选项
 const optionsStore = useOptionsStore()
 const { head } = storeToRefs(optionsStore)
 
-// 用户信息
-const userStore = useUserStore()
+// 设备类型
+const deviceStore = useDeviceStore()
 
 const appRef = useTemplateRef<HTMLElement>("appRef")
 
@@ -45,8 +44,7 @@ useDark({
 
 // 监听窗口变化
 const { stop } = useResizeObserver(appRef, (entries) => {
-    const deviceType = getDeviceType()
-    userStore.setDevice(deviceType)
+    deviceStore.updateDevice()
 })
 
 onBeforeUnmount(() => {

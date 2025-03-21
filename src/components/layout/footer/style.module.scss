@@ -53,7 +53,8 @@
     }
 
     @include respond-to("phone") {
-        height: phone.$height-footer;
+        // height: phone.$height-footer;
+        height: auto;
     }
 }
 
@@ -208,6 +209,10 @@
     }
 
     @include respond-to("pad") {
+        padding-top: 40px;
+        .footer-r-item {
+            margin-bottom: 10px;
+        }
     }
 
     @include respond-to("phone") {

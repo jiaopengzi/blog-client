@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\views\admin\component\aside\utils.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 工具
+/*
+ * FilePath    : blog-client\src\components\layout\header-nav\utils.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 头部导航工具
  */
 
 import { IconKeys } from "@/components/common/icons" // 图标名称枚举

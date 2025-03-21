@@ -95,7 +95,7 @@ import EditUser from "@/views/admin/component/main/user-view/component/edit-user
 defineOptions({ name: RouteNames.UserView })
 
 useHead({
-    title: adminMenuItemMap[RouteNames.UserView].display,
+    title: adminMenuItemMap[RouteNames.UserView].text,
 })
 
 const cols: TableColumn[] = reactive([
@@ -370,7 +370,7 @@ useParams(queryParams, search, pagination)
 onBeforeMount(async () => {
     getRoles()
     await getUserCountGroupByRole()
-    
+
     const { role_name } = queryParams
 
     if (role_name) {

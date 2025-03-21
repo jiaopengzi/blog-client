@@ -25,6 +25,7 @@ export default defineConfig({
                     isCustomElement: (tag) => {
                         return tag.startsWith("cropper-")
                     }, // 处理自定义元素警告 [Vue warn]: Failed to resolve component
+                    comments: false, // 删除模板中的注释
                 },
             },
         }),

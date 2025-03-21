@@ -7,7 +7,7 @@
 -->
 
 <template>
-    <el-dialog v-model="isVisible" width="98%" top="3vh" @close="handleClose">
+    <el-dialog v-model="isVisible" width="98%" top="5vh" @close="handleClose">
         <template #header>
             <h4 class="header-text">选择媒体文件</h4>
         </template>
@@ -24,7 +24,7 @@
             :search-str="search"
             :edit-width="editWidth"
             :edit-top="editTop"
-            height="calc(100vh - 340px)"
+            height="55vh"
             :pagination="pagination"
             :edit-media-data="editMediaData"
             :file-count-group-by-file-type="fileCountGroupByFileType"

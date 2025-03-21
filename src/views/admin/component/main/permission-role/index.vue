@@ -154,7 +154,7 @@ import { getSafeProperty } from "./utils"
 defineOptions({ name: RouteNames.PermissionRole })
 
 useHead({
-    title: adminMenuItemMap[RouteNames.PermissionRole].display,
+    title: adminMenuItemMap[RouteNames.PermissionRole].text,
 })
 
 const permissionRoleStore = usePermissionRoleStore()
