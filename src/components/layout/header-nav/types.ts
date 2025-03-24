@@ -6,11 +6,7 @@
  * Description : 头部导航类型定义
  */
 
-import type { MenuItemMap, MenuItemMapWithIndex } from "@/components/common/recursive-menu-item"
-import { RouteNamesAdmin } from "@/router"
+import type { MenuItemMapWithIndex } from "@/components/common/recursive-menu-item"
 
-// admin管理后台菜单项映射表
-export type AdminMenuItemMap = MenuItemMap<RouteNamesAdmin>
-
-// admin管理后台菜单项映射表 包含 index 属性
-export type AdminMenuItemMapWithIndex = MenuItemMapWithIndex<RouteNamesAdmin>
+// 主页菜单项映射表 包含 index 属性
+export type HomeMenuItemMapWithIndex = MenuItemMapWithIndex<string>

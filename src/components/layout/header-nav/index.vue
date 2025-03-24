@@ -12,17 +12,9 @@
         <div class="switch" v-if="!isHorizontal">
             <SwitchGroup :switch-items="themeSwitch" @update-status="updateStatus" />
         </div>
-        <el-scrollbar class="header-nav-item menu">
-            <el-menu
-                :mode="isHorizontal ? 'horizontal' : 'vertical'"
-                @select="handleSelect"
-                :default-active="defaultActive"
-                ellipsis
-                :style="horizontalMenuStyle"
-            >
-                <recursive-menu-item v-for="(item, key) in topLevelMenuItems" :key="key" :menu-item-map="menuItemMap" :menu-item="item" />
-            </el-menu>
-        </el-scrollbar>
+        <el-menu :mode="isHorizontal ? 'horizontal' : 'vertical'" @select="handleSelect" :default-active="defaultActive" ellipsis :style="horizontalMenuStyle">
+            <recursive-menu-item v-for="(item, key) in topLevelMenuItems" :key="key" :menu-item-map="menuItemMap" :menu-item="item" />
+        </el-menu>
     </nav>
 </template>
 
@@ -36,7 +28,7 @@ import { useTheme } from "@/components/hooks/useTheme"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 
 import Account from "../account"
-import { adminMenuItemMapWithIndex } from "./utils"
+import { homeMenuItemMapWithIndex } from "./utils"
 
 // 定义组件名称
 defineOptions({ name: "HeaderNav" })
@@ -65,7 +57,7 @@ const horizontalMenuStyle = computed(() => {
 })
 
 // 生成菜单项索引
-const menuItemMap = reactive(adminMenuItemMapWithIndex)
+const menuItemMap = reactive(homeMenuItemMapWithIndex)
 
 // 计算顶级菜单项
 const topLevelMenuItems = computed(() => Object.values(menuItemMap).filter((item) => !item.parentIndex))
@@ -75,6 +67,8 @@ const handleSelect = (index: string, keyPath: string[]) => {}
 </script>
 
 <style scoped lang="scss">
+@use "./style.module.scss";
+
 .header-nav {
     background-color: var(--jpz-bg-color-header);
     @include respond-to("pc") {
@@ -115,47 +109,5 @@ const handleSelect = (index: string, keyPath: string[]) => {}
             height: calc(100vh - phone.$height-header - 170px);
         }
     }
-}
-
-:deep(.icon-menu) {
-    font-size: 1.2em;
-}
-
-// 共用样式
-%common-menu-style {
-    --el-menu-text-color: var(--jpz-text-color-primary);
-    --el-menu-active-color: var(--jpz-color-secondary);
-    fill: var(--jpz-color-primary);
-
-    .el-menu-item.is-active {
-        fill: var(--el-menu-active-color);
-    }
-}
-
-// 横向菜单样式
-.el-menu--horizontal {
-    width: 100%;
-    border: none;
-
-    :deep(.el-sub-menu.is-active) {
-        fill: var(--el-menu-active-color);
-    }
-
-    @extend %common-menu-style;
-}
-
-// 纵向菜单样式
-.el-menu--vertical {
-    overflow-x: hidden;
-    border-right: none;
-
-    :deep(.el-sub-menu.is-active) {
-        .el-sub-menu__title {
-            fill: var(--jpz-color-secondary);
-            color: var(--jpz-color-secondary);
-        }
-    }
-
-    @extend %common-menu-style;
 }
 </style>

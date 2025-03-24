@@ -12,11 +12,9 @@
             <SwitchGroup :switch-items="isCollapseItem" @update-status="updateStatus" />
         </div>
 
-        <el-scrollbar>
-            <el-menu :collapse="isCollapse" @select="handleSelect" :default-active="defaultActive" :router="false">
-                <recursive-menu-item v-for="(item, key) in topLevelMenuItems" :key="key" :menu-item-map="menuItemMap" :menu-item="item" />
-            </el-menu>
-        </el-scrollbar>
+        <el-menu :collapse="isCollapse" @select="handleSelect" :default-active="defaultActive" :router="false">
+            <recursive-menu-item v-for="(item, key) in topLevelMenuItems" :key="key" :menu-item-map="menuItemMap" :menu-item="item" />
+        </el-menu>
     </div>
 </template>
 
@@ -95,7 +93,7 @@ const handleSelect = (index: string, keyPath: string[]) => {
 
 <style scoped lang="scss">
 .switch {
-    margin-top: 10px;
+    margin: 10px 0;
 }
 
 .aside {

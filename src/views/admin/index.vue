@@ -64,9 +64,12 @@ import { useRouter } from "vue-router"
 import { LocalStorageKey } from "@/stores/local"
 import { PermissionNames } from "@/stores/permissionRole"
 import { useUserStore } from "@/stores/user"
+import { MessageUtil } from "@/utils/message"
 import Page404 from "@/views/404"
 import AdminAside from "@/views/admin/component/aside"
 import AdminHeader from "@/views/admin/component/header"
+
+import { adminMenuItemMapWithIndexMap } from "./component/aside"
 
 defineOptions({ name: "AdminLayout" })
 
@@ -110,8 +113,14 @@ const handleCollapseStatus = (isCollapse: boolean) => {
 
 // 选择菜单项
 const handleSelect = (index: string) => {
+    // 判断是否有权限
+    const permission = adminMenuItemMapWithIndexMap[index].permissionName
+    if (permission && !userStore.hasPermission(permission)) {
+        MessageUtil.warning("没有权限")
+        return
+    }
+
     router.push({ path: index })
-    // router.push(index)
 }
 
 onBeforeMount(() => {

@@ -56,7 +56,7 @@ export enum IconKeys {
     Editor = "editor",
     Emoji = "emoji",
     Excel = "excel",
-    ExitFullscreen = "exit-fullscreen",
+    // ExitFullscreen = "exit-fullscreen",
     Favorite = "favorite",
     Follow = "follow",
     Footnote = "footnote",

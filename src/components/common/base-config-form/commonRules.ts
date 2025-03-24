@@ -105,7 +105,7 @@ export const imageURLRequiredValidatorFunc = (rule: any, value: any, callback: a
         callback()
     } else if (!value.startsWith("http://") && !value.startsWith("https://")) {
         callback(new Error("url必须以http或https开头"))
-    } else if (!/\.(gif|jpg|jpeg|tiff|png|ico)$/i.test(value)) {
+    } else if (!/\.(gif|jpg|jpeg|tiff|png|ico|svg)$/i.test(value)) {
         callback(new Error("url必须为图片"))
     } else {
         callback()

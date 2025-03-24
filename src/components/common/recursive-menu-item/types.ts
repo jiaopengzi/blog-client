@@ -23,7 +23,7 @@ export interface MenuItem {
     }
 
     // icon 使用外部链接
-    href?: string // 链接地址
+    href?: string // 链接地址或者路由地址
     target?: "_blank" | "_self" | "_parent" | "_top" // 打开方式
 
     parentIndex?: string // 父级菜单索引

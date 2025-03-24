@@ -291,6 +291,7 @@ function getRoles() {
     const permissionRoleStore = usePermissionRoleStore()
     const res = permissionRoleStore.getRoleList
     const newRole = { role_name: AllRoleName, permission_names: [], description: "全部" }
+    roles.value = res.roles
     rolesALL.value = [newRole, ...res.roles]
 }
 

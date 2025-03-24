@@ -375,7 +375,7 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         [CommandsKey.ExitFullscreen]: {
             tip: "退出全屏",
             hotKey: "Escape",
-            icon: IconKeys.ExitFullscreen,
+            // icon: IconKeys.ExitFullscreen,
         },
         // 桌面端
         [CommandsKey.Edit]: {

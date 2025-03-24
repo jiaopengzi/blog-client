@@ -16,7 +16,7 @@
         </div>
 
         <!-- 显示出选择的图片 -->
-        <el-image class="media-show" v-if="modelValue" style="height: 100px; width: auto" :src="modelValue" fit="contain" />
+        <el-image class="media-show" v-if="isShowImg && modelValue" style="height: 100px; width: auto" :src="modelValue" fit="contain" />
     </div>
 
     <!-- 媒体文件选择弹窗 -->
@@ -31,14 +31,18 @@ import SelectMedia from "@/components/common/media-select"
 import { MessageUtil } from "@/utils/message"
 
 // 定义组件名称
-defineOptions({ name: "ImageInput", inheritAttrs: false })
+defineOptions({ name: "ImageInput" })
 
-const { modelValue = "" } = defineProps<{
-    modelValue: string // 绑定值
+const { modelValue = "", isShowImg = true } = defineProps<{
+    modelValue: string | undefined | null // 绑定值
+    isShowImg?: boolean // 是否显示图片,默认显示
 }>()
 
-// 定义 emits 事件
+// // 定义 emits 事件
 const emit = defineEmits(["update:modelValue"])
+// const emit = defineEmits<{
+//     (event: "update:modelValue", val: string | null | undefined): boolean // 更新绑定值
+// }>()
 
 const mediaDialogVisible = ref(false)
 const insertData = (data: TableData[]) => {

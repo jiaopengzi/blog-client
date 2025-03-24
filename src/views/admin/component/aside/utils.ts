@@ -200,6 +200,10 @@ export const adminMenuItemMap: AdminMenuItemMap = {
             class: "icon-menu",
         },
     },
+    [RouteNamesAdmin.SettingAPPNav]: {
+        text: "导航",
+        parentIndex: RouteNamesAdmin.Setting,
+    },
     [RouteNamesAdmin.SettingAPPOption]: {
         text: "选项",
         parentIndex: RouteNamesAdmin.Setting,

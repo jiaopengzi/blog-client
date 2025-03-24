@@ -93,3 +93,13 @@ export const devCheckIconKeys = (iconMap: IconMap): void => {
         console.error("iconMap 对象中的 key 有不符合 IconKeys 类型的值:\n 请将如下内容添加到枚举 enum IconKeys 中\n" + newIconKeys)
     }
 }
+
+/**
+ * 检查 iconKeys 是否符合 IconKeys 中的值
+ * @param iconKey icon 名称
+ * @return {boolean} 是否符合 IconKeys 类型约束
+ */
+export const checkIconKeys = (iconKey: string): boolean => {
+    const keyPascalCase = kebabToPascalCase(iconKey)
+    return keyPascalCase in IconKeys
+}

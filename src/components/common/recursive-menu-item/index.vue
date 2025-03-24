@@ -7,31 +7,30 @@
 -->
 
 <template>
-    <!-- 当前菜单项没有子菜单时，显示一个普通的菜单项 -->
-    <!-- 注意 Icon 在 item 和 menu 是不同的 -->
     <el-menu-item v-if="!getChildren(menuItem.index).length" :index="menuItem.index" class="no-children">
+        <!-- 当前菜单项没有子菜单时，显示一个普通的菜单项 -->
+        <!-- 注意 Icon 在 item 和 menu 是不同的 -->
         <img v-if="menuItem.icon?.src" :src="menuItem.icon?.src" :alt="menuItem.icon?.alt" :style="menuItem.icon?.style" class="icon-img" />
-        <j-icon v-if="menuItem.icon" :name="menuItem.icon.name" :custom-class="menuItem.icon.class" />
+        <j-icon v-if="menuItem.icon?.name" :name="menuItem.icon.name" :custom-class="menuItem.icon.class" :style="menuItem.icon?.style" />
         <template #title>
             <span class="title">{{ menuItem.text }}</span>
         </template>
     </el-menu-item>
 
-    <!-- 当前菜单项有子菜单时，显示一个子菜单 -->
     <el-sub-menu v-else :index="menuItem.index">
+        <!-- 当前菜单项有子菜单时，显示一个子菜单 -->
         <template #title>
             <img v-if="menuItem.icon?.src" :src="menuItem.icon?.src" :alt="menuItem.icon?.alt" :style="menuItem.icon?.style" class="icon-img" />
-            <j-icon v-if="menuItem.icon" :name="menuItem.icon.name" :custom-class="menuItem.icon.class" />
+            <j-icon v-if="menuItem.icon?.name" :name="menuItem.icon.name" :custom-class="menuItem.icon.class" :style="menuItem.icon?.style" />
             <span class="title">{{ menuItem.text }}</span>
         </template>
 
         <!-- 递归调用自身组件，渲染子菜单项 -->
-        <recursive-menu-item v-for="(item, key) in getChildren(menuItem.index)" :key="key" :menu-item-map="menuItemMap" :menu-item="item" />
+        <RecursiveMenuItem v-for="(item, key) in getChildren(menuItem.index)" :key="key" :menu-item-map="menuItemMap" :menu-item="item" />
     </el-sub-menu>
 </template>
 
 <script lang="ts" setup>
-// import Icon from '@/components/common/icons'
 import type { MenuItemMapWithIndex, MenuItemWithIndex } from "./types"
 
 defineOptions({ name: "RecursiveMenuItem" })
@@ -56,5 +55,10 @@ function getChildren(parentIndex: string) {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.icon-img {
+    width: 16px;
+    height: 16px;
 }
 </style>

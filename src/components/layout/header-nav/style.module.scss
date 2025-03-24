@@ -1,0 +1,54 @@
+/*
+ * FilePath    : blog-client\src\components\layout\header-nav\style.module.scss
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 导航按钮样式
+ */
+
+@use "@/assets/scss/platform/_phone.scss" as phone;
+@use "@/assets/scss/platform/_pad.scss" as pad;
+@use "@/assets/scss/platform/_pc.scss" as pc;
+@use "@/assets/scss/mixin.scss" as *;
+
+:deep(.icon-menu) {
+    font-size: 1.2em;
+}
+
+// 共用样式
+%common-menu-style {
+    --el-menu-text-color: var(--jpz-text-color-primary);
+    --el-menu-active-color: var(--jpz-color-secondary);
+    fill: var(--jpz-color-primary);
+
+    .el-menu-item.is-active {
+        fill: var(--el-menu-active-color);
+    }
+}
+
+// 横向菜单样式
+.el-menu--horizontal {
+    width: 100%;
+    border: none;
+
+    :deep(.el-sub-menu.is-active) {
+        fill: var(--el-menu-active-color);
+    }
+
+    @extend %common-menu-style;
+}
+
+// 纵向菜单样式
+.el-menu--vertical {
+    overflow-x: hidden;
+    border-right: none;
+
+    :deep(.el-sub-menu.is-active) {
+        .el-sub-menu__title {
+            fill: var(--jpz-color-secondary);
+            color: var(--jpz-color-secondary);
+        }
+    }
+
+    @extend %common-menu-style;
+}

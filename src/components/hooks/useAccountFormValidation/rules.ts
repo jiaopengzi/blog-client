@@ -58,17 +58,23 @@ export function createUserNameRules(validatorFunc?: ValidatorFunc): FormItemRule
 
 /**
  * @description: 创建密码校验规则
+ * @param isRequired 是否必填, 默认必填
  * @return {FormItemRule[]} 校验规则
  */
-export function createPasswordRules(): FormItemRule[] {
-    return [
-        { required: true, message: "请输入密码", trigger: "blur" },
+export function createPasswordRules(isRequired: boolean = true): FormItemRule[] {
+    const rules: FormItemRule[] = [
         {
             pattern: RegexPatterns.Password,
             message: "必须包含：大小写字母+数字,长度:6-64",
             trigger: "change",
         },
     ]
+
+    if (!isRequired) {
+        return rules
+    }
+
+    return [{ required: true, message: "请输入密码", trigger: "blur" }, ...rules]
 }
 
 /**

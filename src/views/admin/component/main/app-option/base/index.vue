@@ -21,7 +21,6 @@
         :style="{ width: formWidth ? `${formWidth}px` : '100%' }"
     >
         <h2 class="title">{{ title }}</h2>
-
         <template v-for="(item, index) in formItems" :key="index">
             <!-- 如果是分类标题，则使用 h4 显示在表单项外 -->
             <h4 v-if="item.isCategoryTitle" class="category-title">{{ item.label }}</h4>

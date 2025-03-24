@@ -260,7 +260,7 @@ const generatePasswordHandle = () => {
 const rules = reactive<FormRules<EditUserByAdminForm>>({
     userName: createUserNameRules(checkUserNameExcludingUserIDValidator),
     email: createEmailRules(checkEmailExcludingUserIDValidator),
-    password: createPasswordRules(),
+    password: createPasswordRules(false),
 })
 
 /**
