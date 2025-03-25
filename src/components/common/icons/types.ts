@@ -68,6 +68,7 @@ export enum IconKeys {
     H5 = "h5",
     H6 = "h6",
     Help = "help",
+    Home = "home",
     Hot = "hot",
     Hr = "hr",
     Html = "html",

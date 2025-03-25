@@ -9,29 +9,38 @@
 <template>
     <div class="components">
         <el-button class="head" type="primary" @click="submitForm">保存</el-button>
-        <el-collapse>
-            <el-collapse-item v-for="item in navData" :key="item.index" :name="item.index">
+        <el-button class="head" type="primary" @click="handleAdd">增加</el-button>
+        <el-collapse v-model="activeNames">
+            <el-collapse-item v-for="(item, i) in navList" :key="item.index" :name="item.index">
                 <template #title>
                     <h4 class="collapse-title">{{ item.text }}</h4>
                 </template>
-                <NavItem ref="formRef" :form-data="item" :rules="rules" :label-width="160" :form-width="800" />
+                <NavItem
+                    :ref="
+                        (el) => {
+                            if (el) navItemRefs[i] = el as NavItemFormRef
+                        }
+                    "
+                    :form-data="item"
+                    :label-width="160"
+                    :form-width="800"
+                    @handle-delete="handleDelete"
+                />
             </el-collapse-item>
         </el-collapse>
+        <el-empty v-if="isEmpty" description="暂无导航" />
     </div>
 </template>
 
 <script lang="ts" setup>
 import { useHead } from "@unhead/vue"
-import type { FormRules } from "element-plus"
 import { storeToRefs } from "pinia"
-import { reactive, useTemplateRef } from "vue"
+import { computed, reactive, ref } from "vue"
 
+import { OptionType } from "@/api/common"
 import { handleResErr, ResponseCode } from "@/api/response"
-import { type GetAPPOptionResponse } from "@/api/setting/getAPPOption"
 import { type UpdateAPPOption, updateAPPOptionAPI, type UpdateAPPOptionRequest } from "@/api/setting/updateAPPOption"
-import { imageURLRequiredValidatorFunc } from "@/components/common/base-config-form"
 import { IconKeys } from "@/components/common/icons"
-import { checkIconKeys } from "@/components/common/icons"
 import { RouteNames } from "@/router"
 import { useOptionsStore } from "@/stores/options" // 网站配置选项
 import { MessageUtil } from "@/utils/message"
@@ -48,172 +57,103 @@ useHead({
 // 获取网站配置选项
 const optionsStore = useOptionsStore()
 
-const formRef = useTemplateRef<NavItemFormRef>("formRef")
+const navItemRefs = reactive<{ [key: number]: NavItemFormRef | undefined }>({})
 
-const { app_options: optionDataSrc } = storeToRefs(optionsStore)
+const { navList: navList } = storeToRefs(optionsStore)
 
-const navData = reactive<NavItemProps[]>([
-    {
-        index: "1",
-        text: "首页",
-        href: "admin/post-all",
-        parentIndex: "",
-        icon: {
-            name: IconKeys.H1,
-            src: "http://10.10.2.222:7364/api/v1/uploads/2025/03/22/s-1-ac79f0db.svg",
-            style: "width: 24px; height: 24px; fill: red; font-size: 24px;",
-        },
-        is_enabled: true,
-    },
-    {
-        index: "2",
-        text: "Power BI",
-        href: "admin/post-all",
-        parentIndex: "",
-        icon: {
-            name: IconKeys.Demo,
-            src: "http://10.10.2.222:7364/api/v1/uploads/2025/03/22/s-1-ac79f0db.svg",
-            style: "width: 24px; height: 24px; fill: red; font-size: 24px;",
-        },
-        is_enabled: true,
-    },
-    {
-        index: "3",
-        text: "视频课",
-        href: "admin/post-all",
-        parentIndex: "",
-        icon: {
-            name: IconKeys.Video,
-            src: "http://10.10.2.222:7364/api/v1/uploads/2025/03/22/s-1-ac79f0db.svg",
-            style: "width: 24px; height: 24px; fill: red; font-size: 24px;",
-        },
-        is_enabled: true,
-    },
-    {
-        index: "4",
-        text: "文档",
-        href: "admin/post-all",
-        parentIndex: "",
-        icon: {
-            name: IconKeys.Doc,
-            src: "http://10.10.2.222:7364/api/v1/uploads/2025/03/22/s-1-ac79f0db.svg",
-            style: "width: 24px; height: 24px; fill: red; font-size: 24px;",
-        },
-        is_enabled: true,
-    },
-    {
-        index: "5",
-        text: "加入vip",
-        text_style: "color: red;",
-        href: "admin/post-all",
-        parentIndex: "",
-        icon: {
-            name: IconKeys.Vip,
-            src: "http://10.10.2.222:7364/api/v1/uploads/2025/03/22/s-1-ac79f0db.svg",
-            style: "width: 24px; height: 24px; fill: red; font-size: 24px;",
-        },
-        is_enabled: true,
-    },
-    {
-        index: "6",
-        text: "DAX",
-        href: "admin/post-all",
-        parentIndex: "1",
-        icon: {
-            name: IconKeys.Bold,
-            src: "http://10.10.2.222:7364/api/v1/uploads/2025/03/22/s-1-ac79f0db.svg",
-            style: "width: 24px; height: 24px; fill: red; font-size: 24px;",
-        },
-        is_enabled: true,
-    },
-])
+const isEmpty = computed(() => navList.value.length === 0)
+const activeNames = ref<string[]>([])
 
-const submitForm = async () => {
-    // // 校验表单
-    // if (formRef.value) {
-    //     if (!(await formRef.value.validateForm())) {
-    //         return
-    //     }
-    // }
-    // const reqList: UpdateAPPOption[] = []
-    // const optionDataTar = formRef.value?.formDataResult
-    // // 循环历遍 optionData 的所有属性
-    // for (const key in optionDataTar) {
-    //     if (Object.prototype.hasOwnProperty.call(optionDataTar, key)) {
-    //         const valTar = optionDataTar[key as keyof APPOptionForm]
-    //         const itemSrc = optionDataSrc.value[key as keyof GetAPPOptionResponse]
-    //         // 判断是否更新
-    //         const valSrc = optionDataSrc.value[key as keyof GetAPPOptionResponse].value
-    //         if (valTar.toString() !== valSrc) {
-    //             reqList.push({
-    //                 key: key as keyof APPOptionForm,
-    //                 value: valTar.toString(),
-    //                 type: itemSrc.type,
-    //             })
-    //         }
-    //     }
-    // }
-    // const req = { options: reqList } as UpdateAPPOptionRequest
-    // const res = await updateAPPOptionAPI(req)
-    // if (res.data.code === ResponseCode.UpdateAPPOptionSuccess) {
-    //     optionsStore.update(true) // 强制刷新
-    //     MessageUtil.success("更新成功")
-    // } else {
-    //     MessageUtil.error(handleResErr(res), 10000)
-    // }
+const handleAdd = () => {
+    navList.value.push({
+        index: `${navList.value.length + 1}`,
+        text: "新增",
+        href: "/",
+        parentIndex: "",
+        icon: {
+            name: "" as IconKeys,
+            src: "",
+            style: "",
+        },
+        is_enabled: true,
+    })
 }
 
-const rules = reactive<FormRules<NavItemProps>>({
-    index: [
-        {
-            required: true,
-            message: "请输入索引",
-            trigger: "blur",
-        },
-    ],
-    text: [
-        {
-            required: true,
-            message: "请输入文字",
-            trigger: "blur",
-        },
-    ],
-    href: [
-        {
-            required: true,
-            message: "请输入目的",
-            trigger: "blur",
-        },
-    ],
-    parentIndex: [
-        {
-            required: false,
-            trigger: "blur",
-        },
-    ],
-    "icon.name": [
-        {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            validator: (rule: any, value: any, callback: any) => {
-                const isIconKey = checkIconKeys(value as IconKeys)
-                if (value === "") {
-                    callback()
-                } else if (!isIconKey) {
-                    callback(new Error("请输入正确的内置图标"))
-                } else {
-                    callback()
-                }
-            },
-            trigger: "blur",
-        },
-    ],
-    "icon.src": [
-        {
-            validator: imageURLRequiredValidatorFunc,
-            trigger: "blur",
-        },
-    ],
-})
+const handleDelete = (index: string) => {
+    const indexTar = navList.value.findIndex((item) => item.index === index)
+    if (indexTar !== -1) {
+        navList.value.splice(indexTar, 1)
+    }
+}
+
+// 验证所有表单
+const validateForms = async (): Promise<boolean[]> => {
+    const promises: Promise<boolean>[] = []
+
+    // 添加每个 form 的验证
+    for (const key in navItemRefs) {
+        if (navItemRefs[key]) {
+            promises.push(navItemRefs[key].validateForm())
+        }
+    }
+
+    // 等待所有验证完成
+    return await Promise.all(promises)
+}
+
+// 验证数据, navList 列表中是否存在重复的 index
+const validateData = async (): Promise<boolean> => {
+    const indexList: string[] = []
+    for (const item of navList.value) {
+        if (indexList.includes(item.index)) {
+            MessageUtil.error("导航索引重复: " + item.index)
+            return false
+        }
+        indexList.push(item.index)
+    }
+    return true
+}
+
+// 打开所有折叠面板
+const openAllCollapse = () => {
+    activeNames.value = navList.value.map((item) => item.index)
+}
+
+const submitForm = async () => {
+    // 校验表单
+    const validList = await validateForms()
+
+    // 如果有一个表单不通过，则不提交
+    if (validList.some((item) => !item)) {
+        openAllCollapse()
+        return
+    }
+
+    // 校验数据
+    if (!(await validateData())) {
+        openAllCollapse()
+        return
+    }
+
+    // 将 navList 转成 字符串
+    const navListStr = JSON.stringify(navList.value)
+
+    const reqNav: UpdateAPPOption = {
+        key: "nav",
+        value: navListStr,
+        type: OptionType.JSON,
+    }
+
+    // 更新网站配置选项
+    const req = { options: [reqNav] } as UpdateAPPOptionRequest
+    const res = await updateAPPOptionAPI(req)
+    if (res.data.code === ResponseCode.UpdateAPPOptionSuccess) {
+        optionsStore.update(true) // 强制刷新
+        MessageUtil.success("更新成功")
+    } else {
+        MessageUtil.error(handleResErr(res), 10000)
+    }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -11,6 +11,7 @@
 @use "@/assets/scss/platform/_pc.scss" as pc;
 @use "@/assets/scss/mixin.scss" as *;
 
+// 图标样式
 :deep(.icon-menu) {
     font-size: 1.2em;
 }
@@ -21,8 +22,18 @@
     --el-menu-active-color: var(--jpz-color-secondary);
     fill: var(--jpz-color-primary);
 
-    .el-menu-item.is-active {
-        fill: var(--el-menu-active-color);
+    // 精确匹配第一层父级激活的标题
+    :deep(.el-sub-menu.is-active) {
+        // 直接子级标题
+        > .el-sub-menu__title {
+            fill: var(--el-menu-active-color);
+            color: var(--el-menu-active-color);
+        }
+    }
+
+    .el-menu-item {
+        padding-left: 12px;
+        padding-right: 12px;
     }
 }
 
@@ -30,10 +41,6 @@
 .el-menu--horizontal {
     width: 100%;
     border: none;
-
-    :deep(.el-sub-menu.is-active) {
-        fill: var(--el-menu-active-color);
-    }
 
     @extend %common-menu-style;
 }
@@ -43,12 +50,13 @@
     overflow-x: hidden;
     border-right: none;
 
-    :deep(.el-sub-menu.is-active) {
-        .el-sub-menu__title {
-            fill: var(--jpz-color-secondary);
-            color: var(--jpz-color-secondary);
-        }
-    }
-
     @extend %common-menu-style;
+}
+
+// 选中样式
+:deep(.el-menu-item) {
+    &.is-active {
+        fill: var(--el-menu-active-color);
+        color: var(--el-menu-active-color);
+    }
 }

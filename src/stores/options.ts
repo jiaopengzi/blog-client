@@ -11,6 +11,7 @@ import { acceptHMRUpdate, defineStore } from "pinia"
 import { ResponseCode } from "@/api/response"
 import { getAPPOptionAPI, type GetAPPOptionResponse } from "@/api/setting/getAPPOption"
 import { type HeadProps } from "@/components/common/head-tag"
+import { type NavItemProps } from "@/views/admin/component/main/app-nav/nav-item"
 
 export interface FooterLeftInfo {
     title?: string
@@ -46,6 +47,8 @@ export interface OptionsStore {
     footer: FooterInfo
     isLoadedOptions: boolean
     head: HeadProps
+    navList: NavItemProps[]
+    navObj: Record<string, NavItemProps>
 }
 
 // 创建一个空的选项存储
@@ -55,6 +58,8 @@ function createEmptyOptionsStore(): OptionsStore {
         footer: {},
         isLoadedOptions: false,
         head: {},
+        navList: [],
+        navObj: {},
     }
 }
 
@@ -91,6 +96,15 @@ export const useOptionsStore = defineStore("options", {
         getLogo(): string {
             return this.app_options.logo?.value
         },
+
+        // 获取导航信息
+        getNavLost(): NavItemProps[] {
+            return this.navList
+        },
+
+        getNavObj(): Record<string, NavItemProps> {
+            return this.navObj
+        },
     },
 
     actions: {
@@ -114,6 +128,12 @@ export const useOptionsStore = defineStore("options", {
 
                 // head格式化后存储本地
                 this.head = await formatHeadInfo(this.app_options)
+
+                // navList 格式化后存储本地
+                this.navList = await formatNavList(this.app_options.nav.value)
+
+                // navObg 格式化后存储本地
+                this.navObj = await formatNavObj(this.navList)
             }
         },
 
@@ -203,6 +223,45 @@ const formatHeadInfo = async (data: GetAPPOptionResponse): Promise<HeadProps> =>
         releaseDate: new Date().toISOString(),
     }
 }
+
+// 将导航字符串转换为数组
+const formatNavList = async (navStr: string | undefined | null): Promise<NavItemProps[]> => {
+    // 如果 navStr 为空, 则返回空数组
+    if (!navStr) return []
+
+    // 将字符串转换为 json 对象
+    const navList = JSON.parse(navStr)
+
+    // 将 navList 按照 index 升序排序
+    const navListOrder = navList.sort((a: NavItemProps, b: NavItemProps) => {
+        // 将 index 转换为字符数字
+        const indexA = parseInt(a.index) || 0
+        const indexB = parseInt(b.index) || 1
+        return indexA - indexB
+    })
+
+    return navListOrder
+}
+
+// 将导航数组转换为对象
+const formatNavObj = async (navList: NavItemProps[]): Promise<Record<string, NavItemProps>> => {
+    const navObj: Record<string, NavItemProps> = {}
+    navList.forEach((nav) => {
+        // 筛选出未启用的导航
+        if (!nav.is_enabled) {
+            return
+        }
+
+        // 判断 nav 中 parentIndex 是否存在, 如果不存在, 则设置为空字符串
+        if (!nav.parentIndex) {
+            nav.parentIndex = ""
+        }
+
+        navObj[nav.index] = nav
+    })
+    return navObj
+}
+
 // 允许开发环境下进行热更新 HMR(Hot Module Replacement)
 if (import.meta.hot) {
     import.meta.hot.accept(acceptHMRUpdate(useOptionsStore, import.meta.hot))

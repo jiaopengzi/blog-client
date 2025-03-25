@@ -12,27 +12,40 @@
         <div class="switch" v-if="!isHorizontal">
             <SwitchGroup :switch-items="themeSwitch" @update-status="updateStatus" />
         </div>
-        <el-menu :mode="isHorizontal ? 'horizontal' : 'vertical'" @select="handleSelect" :default-active="defaultActive" ellipsis :style="horizontalMenuStyle">
-            <recursive-menu-item v-for="(item, key) in topLevelMenuItems" :key="key" :menu-item-map="menuItemMap" :menu-item="item" />
+        <!-- 
+            jpz-header-menu-popover 样式在 main.scss
+            由于 Element Plus 的 Popover 挂载在 body 上，所以需要在全局样式中定义
+        -->
+        <el-menu
+            :mode="isHorizontal ? 'horizontal' : 'vertical'"
+            @select="handleSelect"
+            :default-active="defaultActive"
+            ellipsis
+            :style="horizontalMenuStyle"
+            popper-class="jpz-header-menu-popover"
+        >
+            <recursive-menu-item v-for="(item, key) in topLevelMenuItems" :key="key" :menu-item-map="navObj" :menu-item="item" />
         </el-menu>
     </nav>
 </template>
 
 <script lang="ts" setup>
 import { storeToRefs } from "pinia"
-import { computed, reactive, ref } from "vue"
+import { computed, ref } from "vue"
+import { useRouter } from "vue-router"
 
 import RecursiveMenuItem from "@/components/common/recursive-menu-item" // 引入递归菜单组件
 import SwitchGroup from "@/components/common/switch-group"
 import { useTheme } from "@/components/hooks/useTheme"
 import { DeviceType, useDeviceStore } from "@/stores/device"
+import { useOptionsStore } from "@/stores/options"
 
 import Account from "../account"
-import { homeMenuItemMapWithIndex } from "./utils"
 
 // 定义组件名称
 defineOptions({ name: "HeaderNav" })
 
+const router = useRouter()
 const deviceStore = useDeviceStore()
 const { device } = storeToRefs(deviceStore)
 const defaultActive = ref("")
@@ -44,9 +57,9 @@ const { themeSwitch, updateStatus } = useTheme()
 const isHorizontal = computed(() => device.value !== DeviceType.PHONE)
 
 const horizontalMenuStyle = computed(() => {
-    let maxWidth = "720px"
+    let maxWidth = "800px"
     if (device.value === DeviceType.PC) {
-        maxWidth = "720px"
+        maxWidth = "800px"
     }
     if (device.value === DeviceType.PAD) {
         maxWidth = "460px"
@@ -56,14 +69,24 @@ const horizontalMenuStyle = computed(() => {
     }
 })
 
-// 生成菜单项索引
-const menuItemMap = reactive(homeMenuItemMapWithIndex)
+const optionsStore = useOptionsStore()
+const { navObj } = storeToRefs(optionsStore)
 
 // 计算顶级菜单项
-const topLevelMenuItems = computed(() => Object.values(menuItemMap).filter((item) => !item.parentIndex))
+const topLevelMenuItems = computed(() => {
+    return Object.values(navObj.value).filter((item) => !item.parentIndex)
+})
 
 // 处理菜单项选中事件
-const handleSelect = (index: string, keyPath: string[]) => {}
+const handleSelect = (index: string) => {
+    const href = navObj.value[index].href
+    // 判断 href 是否为外部链接
+    if (href && href.startsWith("http")) {
+        window.open(href, "_blank")
+    } else {
+        router.push({ path: href })
+    }
+}
 </script>
 
 <style scoped lang="scss">

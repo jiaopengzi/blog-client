@@ -89,6 +89,9 @@ export interface GetAPPOptionResponse {
 
     // 样式相关
     custom_style_css: APPOptionItem // 定制风格颜色css
+
+    // 样式相关
+    nav: APPOptionItem // 导航栏
 }
 
 // 获取网站配置

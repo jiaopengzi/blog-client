@@ -366,6 +366,26 @@ header {
     background-color: transparent;
 }
 
+// 导航菜单按钮样式
+.jpz-header-menu-popover {
+    --el-menu-text-color: var(--jpz-text-color-primary);
+    --el-menu-active-color: var(--jpz-color-secondary);
+    // 选中样式
+    .el-sub-menu.is-active {
+        > .el-sub-menu__title {
+            fill: var(--el-menu-active-color);
+            color: var(--el-menu-active-color);
+        }
+    }
+
+    .el-menu-item {
+        &.is-active {
+            fill: var(--el-menu-active-color);
+            color: var(--el-menu-active-color);
+        }
+    }
+}
+
 .category-group {
     margin-top: 10px;
     display: flex;

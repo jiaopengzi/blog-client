@@ -6,6 +6,7 @@
  * @Description  : 类型定义
  */
 
+import { Target } from "@/api/common"
 import { IconKeys } from "@/components/common/icons"
 import { PermissionNames } from "@/stores/permissionRole"
 
@@ -24,7 +25,7 @@ export interface MenuItem {
 
     // icon 使用外部链接
     href?: string // 链接地址或者路由地址
-    target?: "_blank" | "_self" | "_parent" | "_top" // 打开方式
+    target?: Target // 打开方式
 
     parentIndex?: string // 父级菜单索引
     permissionName?: PermissionNames // 权限名称
