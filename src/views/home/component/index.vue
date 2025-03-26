@@ -86,7 +86,7 @@ const asideRef = useTemplateRef<InstanceType<typeof ElAside>>("asideRef")
 const mainReq = reactive<ViewPostRequest>({} as ViewPostRequest)
 
 // 字符串类型的key
-const stringKeys: StringKeys<ViewPostRequest>[] = ["post_author", "post_category_id", "post_tag_id", "key_word"]
+const stringKeys: StringKeys<ViewPostRequest>[] = ["post_author", "post_category_id", "post_category_slug", "post_tag_id", "post_tag_slug", "key_word"]
 
 // 字符串类型的key
 const numberKeys: NumberKeys<ViewPostRequest>[] = ["year", "month", "current_page", "page_size"]

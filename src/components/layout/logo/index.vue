@@ -8,20 +8,32 @@
 
 <template>
     <div class="logo-container">
-        <router-link :to="{ name: RouteNames.Home }">
+        <router-link :to="{ name: RouteNames.Home }" @click="clickLogo">
             <img class="logo" v-if="logo" :src="logo" :alt="RouteNames.Home" />
         </router-link>
     </div>
 </template>
 
 <script setup lang="ts">
+import { useRoute } from "vue-router"
+
 import { RouteNames } from "@/router"
 import { useOptionsStore } from "@/stores/options"
 
 defineOptions({ name: "HeaderLogo" })
 
+const route = useRoute()
+
 const optionsStore = useOptionsStore()
 const logo = optionsStore.getLogo
+
+const clickLogo = () => {
+    const { name } = route
+    // 处于首页的情况下点击 Logo 进入 / 路径强制刷新
+    if (name === RouteNames.Home) {
+        window.location.href = "/"
+    }
+}
 </script>
 
 <style scoped lang="scss">

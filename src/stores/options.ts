@@ -49,6 +49,7 @@ export interface OptionsStore {
     head: HeadProps
     navList: NavItemProps[]
     navObj: Record<string, NavItemProps>
+    navActiveIndex: string
 }
 
 // 创建一个空的选项存储
@@ -60,6 +61,7 @@ function createEmptyOptionsStore(): OptionsStore {
         head: {},
         navList: [],
         navObj: {},
+        navActiveIndex: "",
     }
 }
 
@@ -104,6 +106,11 @@ export const useOptionsStore = defineStore("options", {
 
         getNavObj(): Record<string, NavItemProps> {
             return this.navObj
+        },
+
+        // 获取当前激活的导航索引
+        getNavActiveIndex(): string {
+            return this.navActiveIndex
         },
     },
 
@@ -160,6 +167,11 @@ export const useOptionsStore = defineStore("options", {
                 // const timestamp = new Date().getTime()
                 // faviconLink.href = `${neoHref}?v=${timestamp}`
             }
+        },
+
+        // 设置导航激活索引
+        setNavActiveIndex(index: string): void {
+            this.navActiveIndex = index
         },
     },
 })

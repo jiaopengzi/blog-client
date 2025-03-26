@@ -19,7 +19,7 @@
         <el-menu
             :mode="isHorizontal ? 'horizontal' : 'vertical'"
             @select="handleSelect"
-            :default-active="defaultActive"
+            :default-active="navActiveIndex"
             ellipsis
             :style="horizontalMenuStyle"
             popper-class="jpz-header-menu-popover"
@@ -31,8 +31,8 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from "pinia"
-import { computed, ref } from "vue"
-import { useRouter } from "vue-router"
+import { computed, watch } from "vue"
+import { useRoute, useRouter } from "vue-router"
 
 import RecursiveMenuItem from "@/components/common/recursive-menu-item" // 引入递归菜单组件
 import SwitchGroup from "@/components/common/switch-group"
@@ -46,10 +46,13 @@ import Account from "../account"
 // 定义组件名称
 defineOptions({ name: "HeaderNav" })
 
+const route = useRoute()
 const router = useRouter()
 const deviceStore = useDeviceStore()
 const { device } = storeToRefs(deviceStore)
-const defaultActive = ref("")
+
+const optionsStore = useOptionsStore()
+const { navObj, navActiveIndex } = storeToRefs(optionsStore)
 
 const statusStore = useStatusStore()
 
@@ -72,9 +75,6 @@ const horizontalMenuStyle = computed(() => {
     }
 })
 
-const optionsStore = useOptionsStore()
-const { navObj } = storeToRefs(optionsStore)
-
 // 计算顶级菜单项
 const topLevelMenuItems = computed(() => {
     return Object.values(navObj.value).filter((item) => !item.parentIndex)
@@ -88,6 +88,7 @@ const handleSelect = async (index: string) => {
         window.open(href, "_blank")
         return
     }
+
     // 读取路由信息路由跳转
     const location = router.resolve(href)
     const path = location.path
@@ -99,6 +100,20 @@ const handleSelect = async (index: string) => {
         statusStore.setIsHomeUpdateRoute(true)
     }
 }
+
+// 监听路由变化，更新默认选中菜单项
+watch(
+    () => route.fullPath,
+    (newVal: string) => {
+        const index = Object.keys(navObj.value).find((key) => navObj.value[key].href === newVal)
+        if (index) {
+            navActiveIndex.value = index
+        } else {
+            navActiveIndex.value = ""
+        }
+    },
+    { immediate: true },
+)
 </script>
 
 <style scoped lang="scss">

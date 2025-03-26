@@ -8,7 +8,7 @@
 
 <template>
     <transition name="header-bar">
-        <header class="header-container" v-if="headerVisible">
+        <header class="header-container" v-show="headerVisible">
             <!-- pc pad 结构共用 -->
             <div class="header-main-common">
                 <Logo />
@@ -29,7 +29,7 @@
 
     <!-- 手机端的侧边栏, 需要在 header 外部, 让 header 不会被遮盖 -->
     <div v-if="phoneNavVisible" class="phone-nav-backdrop" @click="phoneToggleNav"></div>
-    <div class="phone-side-nav" :style="{ transform: phoneNavVisible ? 'translateX(0)' : 'translateX(-100%)' }">
+    <div v-if="phoneNavVisible" class="phone-side-nav" :style="{ transform: phoneNavVisible ? 'translateX(0)' : 'translateX(-100%)' }">
         <HeaderNav />
     </div>
 </template>

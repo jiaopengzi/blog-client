@@ -10,23 +10,27 @@
     <div class="components">
         <el-button class="head" type="primary" @click="submitForm">保存</el-button>
         <el-button class="head" type="primary" @click="handleAdd">增加</el-button>
+        <el-button class="head" type="primary" @click="toggleDisabledDrag" v-if="isShowDrag">{{ isDisabledDrag ? "开启拖拽" : "关闭拖拽" }}</el-button>
+        <div class="description" v-if="isShowDrag">导航项可以拖拽排序，在输入的时候无法选中文字，请关闭拖拽排序</div>
         <el-collapse v-model="activeNames">
-            <el-collapse-item v-for="(item, i) in navList" :key="item.index" :name="item.index">
-                <template #title>
-                    <h4 class="collapse-title">{{ item.text }}</h4>
-                </template>
-                <NavItem
-                    :ref="
-                        (el) => {
-                            if (el) navItemRefs[i] = el as NavItemFormRef
-                        }
-                    "
-                    :form-data="item"
-                    :label-width="160"
-                    :form-width="800"
-                    @handle-delete="handleDelete"
-                />
-            </el-collapse-item>
+            <VueDraggable v-model="navList" :animation="150" @end="onEnd" :disabled="isDisabledDrag">
+                <el-collapse-item v-for="(item, i) in navList" :key="`${item.index}-${item.href}`" :name="item.index">
+                    <template #title>
+                        <h4 class="collapse-title">{{ item.text }}</h4>
+                    </template>
+                    <NavItem
+                        :ref="
+                            (el) => {
+                                if (el) navItemRefs[i] = el as NavItemFormRef
+                            }
+                        "
+                        :form-data="item"
+                        :label-width="160"
+                        :form-width="800"
+                        @handle-delete="handleDelete"
+                    />
+                </el-collapse-item>
+            </VueDraggable>
         </el-collapse>
         <el-empty v-if="isEmpty" description="暂无导航" />
     </div>
@@ -36,6 +40,7 @@
 import { useHead } from "@unhead/vue"
 import { storeToRefs } from "pinia"
 import { computed, reactive, ref } from "vue"
+import { VueDraggable } from "vue-draggable-plus"
 
 import { OptionType } from "@/api/common"
 import { handleResErr, ResponseCode } from "@/api/response"
@@ -46,7 +51,7 @@ import { useOptionsStore } from "@/stores/options" // 网站配置选项
 import { MessageUtil } from "@/utils/message"
 import { adminMenuItemMap } from "@/views/admin/component/aside"
 
-import NavItem, { type NavItemFormRef, type NavItemProps } from "./nav-item"
+import NavItem, { type NavItemFormRef } from "./nav-item"
 
 defineOptions({ name: RouteNames.SettingAPPNav })
 
@@ -59,7 +64,25 @@ const optionsStore = useOptionsStore()
 
 const navItemRefs = reactive<{ [key: number]: NavItemFormRef | undefined }>({})
 
-const { navList: navList } = storeToRefs(optionsStore)
+const { navList } = storeToRefs(optionsStore)
+
+const isShowDrag = computed(() => navList.value.length > 1)
+
+const onEnd = () => {
+    // 更新 navList 列表索引顺序更新 index
+    navList.value = navList.value.map((item, i) => {
+        item.index = `${i + 1}`
+        return item
+    })
+}
+
+// 是否禁用拖拽
+const isDisabledDrag = ref(false)
+
+// 切换是否禁用拖拽
+const toggleDisabledDrag = () => {
+    isDisabledDrag.value = !isDisabledDrag.value
+}
 
 const isEmpty = computed(() => navList.value.length === 0)
 const activeNames = ref<string[]>([])
@@ -161,6 +184,12 @@ const submitForm = async () => {
     padding-top: 10px;
     padding-left: 10px;
     width: 960px;
+}
+
+.description {
+    color: var(--jpz-text-color-regular);
+    font-size: 14px;
+    margin: 20px 0;
 }
 
 .head {

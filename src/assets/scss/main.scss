@@ -187,7 +187,7 @@ a {
     color: #333;
     border: 0;
     margin: 0;
-    margin-top: calc(pc.$height-header - 60px);
+    margin-top: pc.$height-header;
     padding: 0;
     vertical-align: baseline;
     display: flex;

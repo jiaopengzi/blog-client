@@ -91,15 +91,15 @@ export function useHome(
 
     // 点击分类
     const clickCategory = (category: PostCategory) => {
-        clearParamsExcept(["post_category_id"])
-        queryParams.post_category_id = category.id
+        clearParamsExcept(["post_category_slug"])
+        queryParams.post_category_slug = category.slug
         updateByRoute()
     }
 
     // 点击标签
     const clickTag = (tag: PostTag) => {
-        clearParamsExcept(["post_tag_id"])
-        queryParams.post_tag_id = tag.id
+        clearParamsExcept(["post_tag_slug"])
+        queryParams.post_tag_slug = tag.slug
         updateByRoute()
     }
 
@@ -168,16 +168,16 @@ export function useHome(
 
     // 从 pagination.records 中解析参数并更新面包屑
     const updateBreadcrumbFromPagination = () => {
-        const { current_page, page_size, post_tag_id, post_category_id, year, month } = queryParams
+        const { current_page, page_size, post_tag_slug, post_category_slug, year, month } = queryParams
         // 清空分页的 current_page 和 page_size 参数，保证生成面包屑路径正确
         queryParams.current_page = undefined
         queryParams.page_size = undefined
 
         // 解析分类
-        if (post_category_id) {
+        if (post_category_slug) {
             categoryLoop: for (const item of pagination.records) {
                 for (const category of item.categories) {
-                    if (category.id === post_category_id) {
+                    if (category.slug === post_category_slug) {
                         updateBreadcrumbItems(category.name)
                         break categoryLoop
                     }
@@ -186,10 +186,10 @@ export function useHome(
         }
 
         // 解析标签
-        if (post_tag_id) {
+        if (post_tag_slug) {
             tagLoop: for (const item of pagination.records) {
                 for (const tag of item.tags) {
-                    if (tag.id === post_tag_id) {
+                    if (tag.slug === post_tag_slug) {
                         updateBreadcrumbItems(tag.name)
                         break tagLoop
                     }
@@ -209,7 +209,7 @@ export function useHome(
             updateBreadcrumbItems(`${month}`, false)
         }
 
-        if (!post_category_id && !post_tag_id && !year && !month) {
+        if (!post_category_slug && !post_tag_slug && !year && !month) {
             // 清空面包屑
             breadcrumbItems.length = 0
         }
