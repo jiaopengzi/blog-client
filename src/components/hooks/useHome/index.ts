@@ -246,6 +246,7 @@ export function useHome(
         updatePageSize, // 更新每页显示条数
         updatePaginate, // 更新分页数据
         updateRouterPush, // 更新查询参数和路由
+        updateByRoute, // 通过路由更新数据
         hotPost, // 热门文章
         recommendedPost, // 推荐文章
         monthArchiveProps, // 月份归档

@@ -1,27 +1,19 @@
 <template>
-    <div class="selects">
-        <IconInput v-model="icon" />
+    <div>
+        <TestProvide />
     </div>
 </template>
 <script setup lang="ts">
-import { ref, watch } from "vue"
+import { inject, watch } from "vue"
 
-import IconInput from "@/components/common/icon-input"
-import { checkIconKeys } from "@/components/common/icons"
+import TestProvide from "./provide.vue"
 defineOptions({ name: "MyTest" })
-const icon = ref("")
+const isTestProvide = inject<boolean>("TestProvideKey")
 watch(
-    () => icon.value,
-    (newVal) => {
-        const isIconKey = checkIconKeys(newVal)
-        console.log("===========>is", isIconKey)
+    () => isTestProvide,
+    (newVal: boolean | undefined) => {
+        console.log("============>", newVal)
     },
+    { immediate: true },
 )
 </script>
-
-<style scoped lang="scss">
-// .select {
-//     width: 200px;
-//     height: 200px;
-// }
-</style>

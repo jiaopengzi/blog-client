@@ -39,6 +39,7 @@ import SwitchGroup from "@/components/common/switch-group"
 import { useTheme } from "@/components/hooks/useTheme"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 import { useOptionsStore } from "@/stores/options"
+import { useStatusStore } from "@/stores/status"
 
 import Account from "../account"
 
@@ -49,6 +50,8 @@ const router = useRouter()
 const deviceStore = useDeviceStore()
 const { device } = storeToRefs(deviceStore)
 const defaultActive = ref("")
+
+const statusStore = useStatusStore()
 
 // 主题切换
 const { themeSwitch, updateStatus } = useTheme()
@@ -78,13 +81,22 @@ const topLevelMenuItems = computed(() => {
 })
 
 // 处理菜单项选中事件
-const handleSelect = (index: string) => {
-    const href = navObj.value[index].href
+const handleSelect = async (index: string) => {
+    const href = navObj.value[index].href || "/"
     // 判断 href 是否为外部链接
     if (href && href.startsWith("http")) {
         window.open(href, "_blank")
-    } else {
-        router.push({ path: href })
+        return
+    }
+    // 读取路由信息路由跳转
+    const location = router.resolve(href)
+    const path = location.path
+    const query = location.query
+    await router.push({ path, query })
+
+    // 判断 path 是否为首页，如果是首页则刷新页面
+    if (path === "/") {
+        statusStore.setIsHomeUpdateRoute(true)
     }
 }
 </script>
