@@ -176,7 +176,6 @@ const {
     editItemUpdateDialogVisible, // 编辑对话框
     deleteRows, // 删除行
     updateRouterPush, // 更新路由
-    updatePaginate,
 } = useBaseTable<PostCategory, PaginationRequest, DeletePostCategoryRequest>(
     RouteNames.PostCategory,
     viewPostCategoryAPI,
@@ -189,8 +188,7 @@ const {
 
 // 执行搜索
 const runSearch = async () => {
-    updateRouterPush()
-    await updatePaginate()
+    await updateRouterPush()
 }
 
 // 需要编辑的用户ID
@@ -201,7 +199,6 @@ const editData = reactive<ViewForm>({
 })
 
 const editRow = (index: number, row: TableData) => {
-    console.log("04============", index, row)
     if ("id" in row) {
         editData.id = row.id.toString()
     }

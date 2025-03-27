@@ -61,8 +61,7 @@
 import { ArrowRight, Location } from "@element-plus/icons-vue"
 import { useResizeObserver } from "@vueuse/core"
 import type { ElAside } from "element-plus"
-import { storeToRefs } from "pinia"
-import { onUnmounted, reactive, useTemplateRef, watch } from "vue"
+import { onUnmounted, reactive, useTemplateRef } from "vue"
 
 import { type ViewPostRequest } from "@/api/post/view"
 import MonthArchive from "@/components/common/month-archive"
@@ -71,14 +70,10 @@ import HotPost from "@/components/layout/aside/hot-post"
 import PostTag from "@/components/layout/aside/post-tag"
 import RecommendedRead from "@/components/layout/aside/recommended-read"
 import { RouteNames } from "@/router"
-import { useStatusStore } from "@/stores/status"
 import HomeCarousel from "@/views/home/component/carousel"
 import PostList from "@/views/home/component/post-list"
 
 defineOptions({ name: "LayoutHome" })
-
-const statusStore = useStatusStore()
-const { isHomeUpdateRoute } = storeToRefs(statusStore)
 
 const asideRef = useTemplateRef<InstanceType<typeof ElAside>>("asideRef")
 
@@ -95,7 +90,6 @@ const {
     pagination,
     updateCurrentPage,
     updatePageSize,
-    updateByRoute,
     hotPost,
     recommendedPost,
     monthArchiveProps,
@@ -108,16 +102,6 @@ const {
     paginationBlockVisibleChange,
     isShowPostListLoading,
 } = useHome(mainReq, { stringKeys, numberKeys })
-
-watch(
-    () => isHomeUpdateRoute.value,
-    async (newVal: boolean) => {
-        if (newVal) {
-            await updateByRoute(false)
-            statusStore.resetIsHomeUpdateRouteStatus()
-        }
-    },
-)
 
 // 侧边栏高度计算
 const reCalculateHeight = () => {

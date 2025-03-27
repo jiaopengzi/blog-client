@@ -7,7 +7,7 @@
  */
 
 import { onBeforeMount, type Reactive, ref, watch } from "vue"
-import { useRoute, useRouter } from "vue-router"
+import { useRouter } from "vue-router"
 
 import { type ViewPostRequest } from "@/api/post/view"
 import { type PostCategory } from "@/api/postCategory/view"
@@ -23,7 +23,6 @@ export function useHome(
     queryParams: Reactive<ViewPostRequest>, // 查询参数
     options?: QueryParamsOptions<ViewPostRequest>,
 ) {
-    const route = useRoute()
     const router = useRouter()
 
     const isShowPostListLoading = ref(false) // 是否显示文章列表加载中
@@ -58,7 +57,12 @@ export function useHome(
      * @description: 通过路由更新数据
      * @param isUpdateRouterPush 是否更新路由 默认 true 即更新路由
      */
-    const updateByRoute = async () => {
+    const updateByRoute = async (isUpdateRouterPush: boolean = true) => {
+        // 更新路由
+        if (isUpdateRouterPush) {
+            await updateRouterPush()
+        }
+
         resetPaginationConf()
         await updateQueryParams()
         await updatePaginate()
@@ -86,25 +90,25 @@ export function useHome(
     }
 
     // 点击分类
-    const clickCategory = async (category: PostCategory) => {
+    const clickCategory = (category: PostCategory) => {
         clearParamsExcept(["post_category_slug"])
         queryParams.post_category_slug = category.slug
-        await updateRouterPush()
+        updateByRoute()
     }
 
     // 点击标签
-    const clickTag = async (tag: PostTag) => {
+    const clickTag = (tag: PostTag) => {
         clearParamsExcept(["post_tag_slug"])
         queryParams.post_tag_slug = tag.slug
-        await updateRouterPush()
+        updateByRoute()
     }
 
     // 点击月份归档
-    const clickMonthArchive = async (row: MonthArchiveData) => {
+    const clickMonthArchive = (row: MonthArchiveData) => {
         clearParamsExcept(["year", "month"])
         queryParams.year = row.year
         queryParams.month = row.month
-        await updateRouterPush()
+        updateByRoute()
     }
 
     // 点击文章
@@ -218,11 +222,10 @@ export function useHome(
     }
 
     watch(
-        () => route.fullPath,
+        () => isBreadcrumbClick.value,
         async (newVal) => {
-            console.log("============>", route.fullPath)
             if (newVal) {
-                await updateByRoute()
+                await updateByRoute(false)
 
                 // 重置面包屑点击状态
                 isBreadcrumbClick.value = false
@@ -231,7 +234,7 @@ export function useHome(
     )
 
     onBeforeMount(async () => {
-        await updateByRoute()
+        await updateByRoute(false)
         await getHostPost()
         await getRecommendedPost()
         await getPostCountByMonth()

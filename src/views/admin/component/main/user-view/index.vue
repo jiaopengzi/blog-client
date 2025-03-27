@@ -71,7 +71,7 @@
 
 <script lang="ts" setup>
 import { useHead } from "@unhead/vue"
-import { onBeforeMount, reactive, ref } from "vue"
+import { onBeforeMount, reactive, ref, watch } from "vue"
 
 import { type Role } from "@/api/permissionRole/role"
 import { type QueryParamsRecord } from "@/api/request"
@@ -230,7 +230,6 @@ const editUserByAdminForm = reactive<EditUserByAdminForm>({
 })
 
 const editRow = (index: number, row: TableData) => {
-    console.log("04============", index, row)
     // 断言 row 中有 user_name ts 不会报错
     if ("disable_expires_at" in row) {
         // 如果 disable_expires_at 为 null 则返回 '永久'
@@ -332,7 +331,6 @@ const {
     editItemUpdateDialogVisible, // 编辑对话框
     deleteRows, // 删除行
     updateRouterPush, // 更新查询参数和路由
-    updatePaginate,
 } = useBaseTable<User, GetUsersRequest, DeleteUserRequest>(
     RouteNames.UserView,
     getUsersAPI,
@@ -345,8 +343,7 @@ const {
 
 // 更新数据
 const updateData = async () => {
-    updateRouterPush()
-    await updatePaginate()
+    await updateRouterPush()
 }
 
 // 执行搜索
@@ -364,6 +361,25 @@ const handleUserCountByRole = async (role: string) => {
 
     await updateData()
 }
+
+// 将 params 解析回对应的响应式变量中(不需要请求)
+const parseParamsNotLoaded = () => {
+    // 在加载前将 params 解析回对应的响应式变量中
+    const { role_name } = queryParams
+
+    if (role_name) {
+        activeRole.value = role_name
+    }
+}
+
+// 监控 queryParams
+watch(
+    () => queryParams,
+    () => {
+        parseParamsNotLoaded()
+    },
+    { deep: true },
+)
 
 // 在加载前将 params 解析回对应的响应式变量中
 useParams(queryParams, search, pagination)

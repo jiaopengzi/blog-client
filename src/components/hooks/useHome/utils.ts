@@ -89,7 +89,18 @@ export function useUtils(
 
     // 清空查询参数中的特定字段
     const clearParamsExcept = (fieldsToKeep: ViewPostResKey[]) => {
-        const keysToClear: ViewPostResKey[] = ["key_word", "year", "month", "post_author", "post_category_id", "post_tag_id", "current_page", "page_size"]
+        const keysToClear: ViewPostResKey[] = [
+            "key_word",
+            "year",
+            "month",
+            "post_author",
+            "post_category_id",
+            "post_category_slug",
+            "post_tag_id",
+            "post_tag_slug",
+            "current_page",
+            "page_size",
+        ]
 
         keysToClear.forEach((key) => {
             if (!fieldsToKeep.includes(key)) {
@@ -99,7 +110,7 @@ export function useUtils(
     }
 
     // 重置分页配置
-    const reSetPaginationConf = () => {
+    const resetPaginationConf = () => {
         paginationBlockVisibleCount.value = 1
         pageSizeTemp.value = 10
     }
@@ -117,6 +128,6 @@ export function useUtils(
         clearParamsExcept,
         paginationBlockVisibleCount,
         pageSizeTemp,
-        reSetPaginationConf,
+        resetPaginationConf,
     }
 }

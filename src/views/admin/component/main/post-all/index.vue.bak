@@ -324,6 +324,10 @@ const {
 )
 
 // 更新查询参数
+const updateData = async () => {
+    updateRouterPush()
+    await updatePaginate()
+}
 
 // 处理 postCountGroup 点击事件
 const handlePostCountByGroup = async (item: PostCountGroupItem) => {
@@ -365,7 +369,7 @@ const handlePostCountByGroup = async (item: PostCountGroupItem) => {
         [queryKey.KeyWord]: search.value,
     })
 
-    await updateRouterPush()
+    await updateData()
 }
 
 const handleClickCategory = async (item: PostTag) => {
@@ -375,7 +379,7 @@ const handleClickCategory = async (item: PostTag) => {
     })
     clickCategory.value = item.name
 
-    await updateRouterPush()
+    await updateData()
 }
 
 const handleClickTag = async (item: PostTag) => {
@@ -385,7 +389,7 @@ const handleClickTag = async (item: PostTag) => {
     })
     clickTag.value = item.name
 
-    await updateRouterPush()
+    updateData()
 }
 
 const handleClickAuthor = async (author: User) => {
@@ -395,7 +399,7 @@ const handleClickAuthor = async (author: User) => {
     })
     clickAuthor.value = author.user_name
 
-    await updateRouterPush()
+    await updateData()
 }
 
 const tags = computed(() => {
@@ -434,7 +438,7 @@ const clearAuthorCategoryTag = async () => {
         }
     })
 
-    await updateRouterPush()
+    await updateData()
 }
 
 // 监控 postCountMonthSelect
@@ -446,7 +450,7 @@ watch(postCountMonthSelect, async (newVal) => {
     } else {
         delete queryParams.year
         delete queryParams.month
-        await updateRouterPush()
+        await updateData()
     }
 })
 
@@ -471,13 +475,13 @@ watch([postCustomFieldsSelect, postCustomFieldsMin, postCustomFieldsMax], async 
         delete queryParams.custom_filed
         delete queryParams.custom_filed_min
         delete queryParams.custom_filed_max
-        await updateRouterPush()
+        await updateData()
     }
 })
 
 // 执行搜索
 const runSearch = async () => {
-    await updateRouterPush()
+    await updateData()
 }
 
 // 批量操作
@@ -587,10 +591,12 @@ const parseParamsNotLoaded = () => {
     postCustomFieldsSelect.value = custom_filed || ""
     postCustomFieldsMin.value = custom_filed_min ? Number(custom_filed_min) : 0
     postCustomFieldsMax.value = custom_filed_max ? Number(custom_filed_max) : 100
+
+    stopParseParamsNotLoaded()
 }
 
 // 监控 queryParams
-watch(
+const { stop: stopParseParamsNotLoaded } = watch(
     () => queryParams,
     () => {
         parseParamsNotLoaded()
@@ -602,11 +608,6 @@ watch(
 const parseParamsHasLoaded = () => {
     // 在加载前将 params 解析回对应的响应式变量中
     const { post_author, post_category_id, post_tag_id } = queryParams
-
-    // 清空原有的数据
-    clickAuthor.value = ""
-    clickCategory.value = ""
-    clickTag.value = ""
 
     // 解析作者
     if (post_author) {
@@ -641,17 +642,18 @@ const parseParamsHasLoaded = () => {
             }
         }
     }
+
+    stopParseParamsHasLoaded()
 }
 
 // 当 pagination.records 有数据时，解析 params,只需要执行一次
-watch(
+const { stop: stopParseParamsHasLoaded } = watch(
     () => pagination.records,
     (newRecords) => {
         if (newRecords.length > 0) {
             parseParamsHasLoaded()
         }
     },
-    { deep: true },
 )
 </script>
 

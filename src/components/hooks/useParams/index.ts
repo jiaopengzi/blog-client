@@ -26,16 +26,11 @@ export function useParams<T, K extends PaginationRequest>(params: Reactive<K>, s
         pagination.current_page = current_page || 1
     }
 
-    const updateWatch = (newVal: Reactive<K>) => {
-        update(newVal)
-        stop()
-    }
-
     // 监控 queryParams
-    const { stop } = watch(
+    watch(
         () => params,
         (newVal) => {
-            updateWatch(newVal)
+            update(newVal)
         },
         { deep: true },
     )

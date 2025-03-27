@@ -85,7 +85,6 @@ export function useMedia() {
         if (isUpdateRouter) {
             await updateRouterPush()
         }
-        await updatePaginate()
     }
 
     // 执行搜索
@@ -190,6 +189,25 @@ export function useMedia() {
         editMediaData.subtitles_language_list = editMediaData.subtitles_language_list.filter((item) => item !== language)
         await updateData(isUpdateRouter)
     }
+
+    // 将 params 解析回对应的响应式变量中(不需要请求)
+    const parseParamsNotLoaded = () => {
+        // 在加载前将 params 解析回对应的响应式变量中
+        const { file_type } = queryParams
+
+        if (file_type) {
+            activeFileType.value = file_type
+        }
+    }
+
+    // 监控 queryParams
+    watch(
+        () => queryParams,
+        () => {
+            parseParamsNotLoaded()
+        },
+        { deep: true },
+    )
 
     // 在加载前将 params 解析回对应的响应式变量中
     useParams(queryParams, search, pagination)

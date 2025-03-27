@@ -6,7 +6,7 @@
  * @Description  : 基础表格钩子
  */
 
-import { onBeforeMount, type Reactive, reactive, ref } from "vue"
+import { onBeforeMount, type Reactive, reactive, ref, watch } from "vue"
 import { useRoute, useRouter } from "vue-router"
 
 import { type PaginationRequest, type QueryParamsOptions } from "@/api/request"
@@ -117,11 +117,8 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     const updateSearch = async (val: string, isUpdateRouter: boolean = true) => {
         search.value = val
         queryParams.key_word = val
-        if (val === "") {
-            if (isUpdateRouter) {
-                await updateRouterPush()
-            }
-            await updatePaginate()
+        if (val === "" && isUpdateRouter) {
+            await updateRouterPush()
         }
     }
 
@@ -188,6 +185,15 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
             MessageUtil.error(res.data.msg, 3000)
         }
     }
+
+    // 监控路由变化
+    watch(
+        () => route.fullPath,
+        async () => {
+            await updateQueryParams()
+            await updatePaginate()
+        },
+    )
 
     onBeforeMount(async () => {
         await updateQueryParams()
