@@ -181,19 +181,6 @@ a {
     background-color: var(--jpz-bg-color-page);
 }
 
-// 导航面包屑
-.breadcrumb {
-    height: 56px;
-    color: #333;
-    border: 0;
-    margin: 0;
-    margin-top: pc.$height-header;
-    padding: 0;
-    vertical-align: baseline;
-    display: flex;
-    align-items: center;
-}
-
 @include respond-to("pc") {
     .pad {
         display: none;
@@ -201,10 +188,6 @@ a {
 
     .phone {
         display: none;
-    }
-
-    .breadcrumb {
-        width: pc.$width-page-main;
     }
 }
 
@@ -216,10 +199,6 @@ a {
     .phone {
         display: none;
     }
-
-    .breadcrumb {
-        width: 100%;
-    }
 }
 
 @include respond-to("phone") {
@@ -229,10 +208,6 @@ a {
 
     .pad {
         display: none;
-    }
-
-    .breadcrumb {
-        width: 100%;
     }
 }
 
@@ -384,6 +359,11 @@ header {
             color: var(--el-menu-active-color);
         }
     }
+}
+
+// 文章搜索弹窗
+.search-dialog {
+    opacity: 0.9;
 }
 
 .category-group {

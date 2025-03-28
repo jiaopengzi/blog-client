@@ -9,13 +9,13 @@
 <template>
     <div class="icon-input">
         <el-input class="icon-input-item in" :model-value="modelValue" @update:modelValue="$emit('update:modelValue', $event)" v-bind="$attrs" />
-        <el-button class="icon-input-item btn" type="primary" @click="mediaDialogVisible = true">
+        <el-button class="icon-input-item btn" type="primary" @click="iconDialogVisible = true">
             <span>选择</span>
         </el-button>
     </div>
 
     <!-- icon选择弹窗 -->
-    <IconSelect v-if="mediaDialogVisible" v-model="mediaDialogVisible" @select-icon-key="selectIconKey" />
+    <IconSelect v-if="iconDialogVisible" v-model="iconDialogVisible" @select-icon-key="selectIconKey" />
 </template>
 
 <script lang="ts" setup>
@@ -37,11 +37,11 @@ const emit = defineEmits(["update:modelValue"])
 //     (event: "update:modelValue", val: IconKeys | string | null | undefined): boolean // 更新绑定值
 // }>()
 
-const mediaDialogVisible = ref(false)
+const iconDialogVisible = ref(false)
 const selectIconKey = (iconKey: IconKeys) => {
     // 关闭弹窗
     emit("update:modelValue", iconKey)
-    mediaDialogVisible.value = false
+    iconDialogVisible.value = false
 }
 </script>
 

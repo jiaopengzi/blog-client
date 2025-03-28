@@ -21,7 +21,8 @@
 <script setup lang="ts">
 import LayoutFooter from "@/components/layout/footer"
 import LayoutHeader from "@/components/layout/header"
-import LayoutHome from "@/views/home/component"
+
+import LayoutHome from "./component"
 
 defineOptions({ name: "PageHome" })
 </script>

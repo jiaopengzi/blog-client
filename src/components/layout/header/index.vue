@@ -97,7 +97,7 @@ const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownA
 .header-container {
     position: fixed;
     top: 0;
-    left: 0;
+    left: -1;
     // 可选：如果需要头部在其他元素上方显示，可以设置一个较高的 z-index 值
     // z-index: 999;
     background-color: var(--jpz-bg-color);
@@ -107,7 +107,7 @@ const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownA
 .header-main-common {
     // 使用网格布局
     display: grid;
-    grid-template-columns: auto 1fr auto auto auto auto;
+    grid-template-columns: auto 1fr auto auto auto; // 5列布局
     align-items: center;
     gap: 16px;
 }
@@ -120,8 +120,7 @@ const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownA
     .header-main-common {
         width: pc.$width-page-main;
         height: pc.$height-header;
-        margin-left: calc((pc.$width-page - pc.$width-page-main) / 2);
-        margin-right: calc((pc.$width-page - pc.$width-page-main) / 2);
+        margin: 0 auto;
     }
 
     // 隐藏 phone 结构

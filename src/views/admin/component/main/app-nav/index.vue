@@ -77,7 +77,7 @@ const onEnd = () => {
 }
 
 // 是否禁用拖拽
-const isDisabledDrag = ref(false)
+const isDisabledDrag = ref(true)
 
 // 切换是否禁用拖拽
 const toggleDisabledDrag = () => {

@@ -49,7 +49,7 @@ defineOptions({ name: "HeaderNav" })
 const route = useRoute()
 const router = useRouter()
 const deviceStore = useDeviceStore()
-const { device } = storeToRefs(deviceStore)
+const { device, windowWidth } = storeToRefs(deviceStore)
 
 const optionsStore = useOptionsStore()
 const { navObj, navActiveIndex } = storeToRefs(optionsStore)
@@ -63,12 +63,12 @@ const { themeSwitch, updateStatus } = useTheme()
 const isHorizontal = computed(() => device.value !== DeviceType.PHONE)
 
 const horizontalMenuStyle = computed(() => {
-    let maxWidth = "800px"
+    let maxWidth = "780px"
     if (device.value === DeviceType.PC) {
-        maxWidth = "800px"
+        maxWidth = "780px"
     }
     if (device.value === DeviceType.PAD) {
-        maxWidth = "460px"
+        maxWidth = `${windowWidth.value - 420}px`
     }
     return {
         "max-width": maxWidth,
@@ -122,11 +122,11 @@ watch(
 .header-nav {
     background-color: var(--jpz-bg-color-header);
     @include respond-to("pc") {
-        max-width: 720px;
+        // max-width: 720px;
     }
 
     @include respond-to("pad") {
-        max-width: 720px;
+        // max-width: 720px;
     }
 
     @include respond-to("phone") {

@@ -56,4 +56,18 @@ onBeforeMount(() => {
 .separator {
     margin: 0 4px;
 }
+
+.account {
+    @include respond-to("pc") {
+        margin: 0;
+    }
+
+    @include respond-to("pad") {
+        margin-right: 10px;
+    }
+
+    @include respond-to("phone") {
+        margin-right: 10px;
+    }
+}
 </style>

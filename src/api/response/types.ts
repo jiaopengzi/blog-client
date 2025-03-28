@@ -24,4 +24,5 @@ export interface Pagination<T> {
     page_count: number // 总页数
     page_sizes: number[] // 每页显示个数选择器的选项设置
     records: T[] // 数据
+    highlight?: Record<string, string[]>[] // 高亮内容
 }

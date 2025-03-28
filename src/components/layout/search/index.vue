@@ -7,17 +7,39 @@
 -->
 
 <template>
-    <div class="search">
-        <j-icon :name="IconKeys.Search" custom-class="search-icon" />
+    <div>
+        <el-button class="search-btn" type="primary" @click="searchDialogVisible = true">
+            <j-icon :name="IconKeys.Search" custom-class="search-icon" />
+        </el-button>
+
+        <!-- icon选择弹窗 -->
+        <SearchDialog v-if="searchDialogVisible" v-model="searchDialogVisible" @search="handleSearch" />
     </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
+import { ref } from "vue"
+
 import { IconKeys } from "@/components/common/icons"
+
+import SearchDialog from "./search-dialog"
+
 defineOptions({ name: "HeaderSearch" })
+
+const handleSearch = (val: string) => {
+    searchDialogVisible.value = false
+    console.log("搜索内容", val)
+}
+
+const searchDialogVisible = ref(false)
 </script>
 
 <style scoped lang="scss">
+.search-btn {
+    // 透明
+    background-color: transparent;
+    border: none;
+}
 // .search {
 //     @include respond-to("pc") {
 //     }

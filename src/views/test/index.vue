@@ -1,13 +1,18 @@
 <!--
- * FilePath    : blog-client\src\views\test\index.vue
- * Author      : jiaopengzi
- * Blog        : https://jiaopengzi.com
- * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : test
+ * filepath    : blog-client\src\views\test\mytest.vue
+ * author      : jiaopengzi
+ * blog        : https://jiaopengzi.com
+ * copyright   : copyright (c) 2025 by jiaopengzi, all rights reserved.
+ * description : 
 -->
 <template>
-    <div>Test</div>
+    <div>
+        <h1>MyKeepAlive</h1>
+    </div>
 </template>
 <script setup lang="ts">
-defineOptions({ name: "MyTest" })
+defineOptions({ name: "MyKeepAlive" })
+import { useTest } from "./useTest"
+
+useTest()
 </script>

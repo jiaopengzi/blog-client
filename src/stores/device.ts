@@ -35,12 +35,14 @@ export function getDeviceType(): DeviceType {
 // 设备信息
 export interface DeviceStore {
     device: DeviceType // 设备类型
+    windowWidth: number // 窗口宽度
 }
 
 // 创建设备信息
 function createDeviceStore(): DeviceStore {
     return {
         device: getDeviceType(),
+        windowWidth: window.innerWidth,
     }
 }
 
@@ -52,12 +54,22 @@ export const useDeviceStore = defineStore("device", {
         getDevice(): DeviceType {
             return this.device
         },
+
+        // 获取窗口宽度
+        getWindowWidth(): number {
+            return this.windowWidth
+        },
     },
 
     actions: {
         // 设置设备类型
         updateDevice() {
             this.device = getDeviceType()
+        },
+
+        // 设置窗口宽度
+        updateWindowWidth() {
+            this.windowWidth = window.innerWidth
         },
     },
 })
