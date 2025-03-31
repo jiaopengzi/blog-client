@@ -40,10 +40,17 @@ export interface OSS {
     is_internal: boolean
 }
 
+export interface FFmpeg {
+    is_generate_hls: boolean // 是否生成 HLS
+    is_generate_multi_resolution: boolean // 是否生成多分辨率视频
+    is_delete_original: boolean // 是否删除原始视频
+}
+
 export interface GetUploadResponse {
     file_allowed: FileAllowed[]
     local: Local
     oss: OSS
+    ffmpeg: FFmpeg
 }
 
 // 获取上传配置

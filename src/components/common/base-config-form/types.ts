@@ -8,11 +8,11 @@
 
 import { type Reactive } from "vue"
 
-import type { Local, OSS } from "@/api/setting/getUpload"
+import type { FFmpeg, Local, OSS } from "@/api/setting/getUpload"
 import type { PgsqlSetupRequest, RedisNodeSetupRequest } from "@/api/setting/setup"
 import type { ESForm } from "@/components/common/db-es"
 
-export type BaseConfigFormType = ESForm | PgsqlSetupRequest | RedisNodeSetupRequest | Local | OSS
+export type BaseConfigFormType = ESForm | PgsqlSetupRequest | RedisNodeSetupRequest | Local | OSS | FFmpeg
 
 export interface BaseConfigFormRef extends HTMLElement {
     root: HTMLElement
