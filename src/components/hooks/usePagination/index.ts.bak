@@ -17,12 +17,16 @@ import { type Pagination } from "@/api/response"
  * @param pagination 分页数据
  * @param paginateAPI 分页 API
  * @param queryParams 查询参数
+ * @param servicePageSize 业务逻辑(每页显示条数)
+ * @param serviceCurrentPage 业务逻辑(当前页)
  * @param updateRouterPush 更新路由
  */
 export function usePagination<T, K extends PaginationRequest>(
     pagination: Reactive<Pagination<T>>,
     paginateAPI: (params: K) => Promise<Pagination<T>>,
     queryParams: Reactive<K>,
+    servicePageSize: () => Promise<void>,
+    serviceCurrentPage: () => Promise<void>,
     updateRouterPush: () => Promise<void>,
 ) {
     /**
@@ -49,36 +53,53 @@ export function usePagination<T, K extends PaginationRequest>(
         isRequest.value = !(isMaxPageSizeOld && isMaxPageSizeNew)
     }
 
+    // 更新路由参数, 默认更新路由
+    const updatePaginationParams = async (isUpdateRouter: boolean = true) => {
+        queryParams.page_size = pagination.page_size
+        queryParams.current_page = pagination.current_page
+        if (isUpdateRouter) {
+            await updateRouterPush()
+        }
+    }
+
     /**
      * 更新当前页
      * @param val 当前页
+     * @param isUpdateRouter 是否更新路由, 默认更新路由
      */
-    const updateCurrentPage = async (val: number) => {
+    const updateCurrentPageWithIsRequest = async (val: number, isUpdateRouter: boolean = true) => {
+        updateIsRequest({ newPageSize: pagination.page_size, newCurrentPage: val })
         queryParams.current_page = val
 
-        await updateRouterPush()
+        if (!isRequest.value && isUpdateRouter) {
+            await updateRouterPush()
+            return
+        }
+
+        await serviceCurrentPage()
+        await updatePaginationParams(isUpdateRouter)
     }
 
     /**
      * 更新每页显示条数
      * @param val 每页显示条数
      */
-    const updatePageSize = async (val: number) => {
+    const updatePageSizeWithIsRequest = async (val: number, isUpdateRouter: boolean = true) => {
+        updateIsRequest({ newPageSize: val, newCurrentPage: pagination.current_page })
         queryParams.page_size = val
 
-        await updateRouterPush()
+        if (!isRequest.value && isUpdateRouter) {
+            await updateRouterPush()
+            return
+        }
+        await servicePageSize()
+        await updatePaginationParams(isUpdateRouter)
     }
 
     //  更新分页携带是否请求标志
     const updatePaginateWithIsRequest = async () => {
         // pagination.total 等于 0, 说明上次没有请求到数据, 无论 isRequest 是否为 false, 都需要再次请求
         if (!isRequest.value && pagination.total > 0) {
-            isRequest.value = true // 重置为 true
-            return
-        }
-
-        // 关键字搜索时, pagination.total 为 0, 说明没有数据, 不需要再次请求
-        if (queryParams.key_word && pagination.total === 0) {
             isRequest.value = true // 重置为 true
             return
         }
@@ -92,8 +113,8 @@ export function usePagination<T, K extends PaginationRequest>(
     return {
         isRequest,
         updateIsRequest,
-        updateCurrentPage,
-        updatePageSize,
+        updateCurrentPageWithIsRequest,
+        updatePageSizeWithIsRequest,
         updatePaginateWithIsRequest,
     }
 }

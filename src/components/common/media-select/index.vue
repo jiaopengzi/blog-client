@@ -30,8 +30,8 @@
             :file-count-group-by-file-type="fileCountGroupByFileType"
             :active-file-type="activeFileType"
             :handle-file-count-by-file-type="handleFileCountByFileTypeAc"
-            @update-current-page="updateCurrentPageAc"
-            @update-page-size="updatePageSizeAc"
+            @update-current-page="updateCurrentPage"
+            @update-page-size="updatePageSize"
             @update-search="updateSearchAc"
             @run-search="runSearchAc"
             @edit-row="editRow"
@@ -125,16 +125,6 @@ const {
 // 更新搜索关键字
 const updateSearchAc = async (val: string) => {
     updateSearch(val, false)
-}
-
-// 更新当前页
-const updateCurrentPageAc = async (val: number) => {
-    updateCurrentPage(val, false)
-}
-
-// 更新每页显示条数
-const updatePageSizeAc = async (val: number) => {
-    updatePageSize(val, false)
 }
 
 // 更新数据

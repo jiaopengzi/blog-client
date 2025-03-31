@@ -12,43 +12,43 @@
         <JBreadcrumb :breadcrumb-items="breadcrumbItems" @click-breadcrumb-item="clickBreadcrumb" />
 
         <!-- 正文内容 -->
-        <div class="common-layout">
-            <el-container>
-                <el-main>
-                    <!-- 轮播图 -->
-                    <HomeCarousel />
-                    <!-- 文章列表 -->
-                    <PostList
-                        :pagination-data="pagination"
-                        :is-show-loading="isShowPostListLoading"
-                        @update-current-page="updateCurrentPage"
-                        @update-page-size="updatePageSize"
-                        @click-category="clickCategory"
-                        @post-id="handlePostId"
-                        @pagination-block-visible="paginationBlockVisibleChange"
-                    />
-                </el-main>
+        <el-container class="container-main">
+            <el-main>
+                <!-- 轮播图 -->
+                <HomeCarousel v-if="!hasSearchKeyWord" />
+                <!-- 文章列表 -->
+                <PostList
+                    :pagination-data="pagination"
+                    :is-show-loading="isShowPostListLoading"
+                    :highlight-key="highlightKey"
+                    :has-search-key-word="hasSearchKeyWord"
+                    @update-current-page="updateCurrentPage"
+                    @update-page-size="updatePageSize"
+                    @click-category="clickCategory"
+                    @post-id="handlePostId"
+                    @pagination-block-visible="paginationBlockVisibleChange"
+                />
+            </el-main>
 
-                <el-aside ref="asideRef" class="el-aside pc">
-                    <!-- 推荐阅读 -->
-                    <RecommendedRead class="el-aside-item" :post-data="recommendedPost" />
-                    <!-- 热门文章 -->
-                    <HotPost class="el-aside-item" :post-data="hotPost" />
-                    <!-- 月度归档 -->
-                    <MonthArchive class="el-aside-item" :post-list="monthArchiveProps" @post-by-month="clickMonthArchive" />
-                    <!-- 文章标签 -->
-                    <PostTag class="el-aside-item" @click="clickTag" />
-                    <!-- 观察点 -->
-                    <div ref="asideEndRef"></div>
-                </el-aside>
-            </el-container>
-        </div>
+            <el-aside ref="asideRef" class="el-aside pc" v-if="!hasSearchKeyWord">
+                <!-- 推荐阅读 -->
+                <RecommendedRead class="el-aside-item" :post-data="recommendedPost" />
+                <!-- 热门文章 -->
+                <HotPost class="el-aside-item" :post-data="hotPost" />
+                <!-- 月度归档 -->
+                <MonthArchive class="el-aside-item" :post-list="monthArchiveProps" @post-by-month="clickMonthArchive" />
+                <!-- 文章标签 -->
+                <PostTag class="el-aside-item" @click="clickTag" />
+                <!-- 观察点 -->
+                <div ref="asideEndRef"></div>
+            </el-aside>
+        </el-container>
     </div>
 </template>
 <script setup lang="ts">
 import { useResizeObserver } from "@vueuse/core"
 import type { ElAside } from "element-plus"
-import { onUnmounted, reactive, useTemplateRef, watch } from "vue"
+import { computed, onUnmounted, reactive, useTemplateRef, watch } from "vue"
 
 import { type ViewPostRequest } from "@/api/post/view"
 import JBreadcrumb from "@/components/common/breadcrumb"
@@ -62,19 +62,38 @@ import PostList from "@/views/home/component/post-list"
 
 defineOptions({ name: "LayoutHome" })
 
+const { searchKeyWord = "" } = defineProps<{
+    searchKeyWord?: string // 搜索关键字
+}>()
+
 const asideRef = useTemplateRef<InstanceType<typeof ElAside>>("asideRef")
+
+const highlightKey = "post_title" // 高亮的key
 
 // 获取首页数据
 const mainReq = reactive<ViewPostRequest>({} as ViewPostRequest)
 
 // 字符串类型的key
-const stringKeys: StringKeys<ViewPostRequest>[] = ["post_author", "post_category_id", "post_category_slug", "post_tag_id", "post_tag_slug", "key_word"]
+const stringKeys: StringKeys<ViewPostRequest>[] = [
+    "post_author",
+    "post_category_id",
+    "post_category_slug",
+    "post_tag_id",
+    "post_tag_slug",
+    "key_word",
+    "pre_tags",
+    "post_tags",
+]
 
 // 字符串类型的key
 const numberKeys: NumberKeys<ViewPostRequest>[] = ["year", "month", "current_page", "page_size"]
 
+// 不需要路由的key
+const noRouteKeys: (keyof ViewPostRequest)[] = ["highlight_fields", "pre_tags", "post_tags"]
+
 const {
     pagination,
+    updateRouterPush,
     updateCurrentPage,
     updatePageSize,
     hotPost,
@@ -88,14 +107,28 @@ const {
     clickBreadcrumb,
     paginationBlockVisibleChange,
     isShowPostListLoading,
-} = useHome(mainReq, { stringKeys, numberKeys })
+    clearParamsExcept,
+} = useHome(mainReq, {
+    stringKeys,
+    numberKeys,
+    noRouteKeys,
+    highlight_fields: [highlightKey], // 高亮字段
+    pre_tags: "<span class='highlight-title'>", // 高亮前缀
+    post_tags: "</span>", // 高亮后缀
+})
 
 watch(
-    breadcrumbItems,
-    (newVal) => {
-        console.log("面包屑数据", newVal)
+    () => searchKeyWord,
+    async (val: string) => {
+        if (!val) {
+            return
+        }
+        // 处理搜索关键字
+        mainReq.key_word = val
+        // 去除掉参数中的 highlight_fields, pre_tags, post_tags,后续会根据 useHome自动加上, 避免在url中出现
+        clearParamsExcept(["key_word"])
+        await updateRouterPush()
     },
-    { deep: true },
 )
 
 // 侧边栏高度计算
@@ -129,11 +162,21 @@ const { stop } = useResizeObserver(asideRef, (entries) => {
     reCalculateHeight()
 })
 
+// 判断是否有搜索关键字
+const hasSearchKeyWord = computed(() => {
+    return !!mainReq.key_word
+})
+
 onUnmounted(() => {
     stop()
 })
 </script>
 <style scoped lang="scss">
+:deep(.highlight-title) {
+    color: var(--jpz-color-secondary);
+    font-weight: 600;
+}
+
 @include respond-to("pc") {
     .content {
         width: pc.$width-page-main;
@@ -160,8 +203,7 @@ onUnmounted(() => {
         width: pad.$width-page;
     }
     .el-main {
-        padding-left: 0px;
-        padding-top: 0px;
+        padding: 0px;
     }
     .el-aside {
         display: none;
@@ -170,7 +212,7 @@ onUnmounted(() => {
 
 @include respond-to("phone") {
     .content {
-        width: 94vw;
+        width: 100vw;
     }
     .el-main {
         padding-left: 0;

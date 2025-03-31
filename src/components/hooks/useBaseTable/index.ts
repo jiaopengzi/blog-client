@@ -62,14 +62,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     }
 
     // 是否请求
-    const { updateCurrentPageWithIsRequest, updatePageSizeWithIsRequest, updatePaginateWithIsRequest } = usePagination(
-        pagination,
-        getPaginate,
-        queryParams,
-        updatePaginate,
-        updatePaginate,
-        updateRouterPush,
-    )
+    const { updateCurrentPage, updatePageSize, updatePaginateWithIsRequest } = usePagination(pagination, getPaginate, queryParams, updateRouterPush)
 
     // 更新查询参数
     const updateQueryParams = async () => {
@@ -101,16 +94,6 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     // 编辑对话框
     const editItemUpdateDialogVisible = (val: boolean) => {
         editItemDialogVisible.value = val
-    }
-
-    // 更新当前页, 是否更新路由, 默认更新路由
-    const updateCurrentPage = async (val: number, isUpdateRouter: boolean = true) => {
-        await updateCurrentPageWithIsRequest(val, isUpdateRouter)
-    }
-
-    // 更新每页显示条数, 是否更新路由, 默认更新路由
-    const updatePageSize = async (val: number, isUpdateRouter: boolean = true) => {
-        await updatePageSizeWithIsRequest(val, isUpdateRouter)
     }
 
     // 更新搜索关键字, 是否更新路由, 默认更新路由

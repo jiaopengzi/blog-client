@@ -6,7 +6,6 @@
  * @Description  : phone 相关样式
  */
 
-
 $scrollbar-y-width: var(--scrollbar-y-width); // Y轴滚动条宽度
 $scrollbar-x-height: var(--scrollbar-x-height); // Y轴滚动条宽度
 $min-width: "320px";
@@ -15,6 +14,7 @@ $max-width: "767px";
 $width-page: 100vw;
 
 $height-header: 72px;
+$height-breadcrumb: 56px;
 $height-footer: 412px;
 $height-header-logo: 42.5px;
 

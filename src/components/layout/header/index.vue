@@ -13,7 +13,7 @@
             <div class="header-main-common">
                 <Logo />
                 <HeaderNav />
-                <Search />
+                <Search @handle-search="handleSearch" />
                 <SwitchGroup :switch-items="themeSwitch" @update-status="updateStatus" />
                 <Account />
             </div>
@@ -22,7 +22,7 @@
                     <j-icon :name="IconKeys.Menu" custom-class="menu-icon" />
                 </button>
                 <Logo class="phone-item" />
-                <Search class="phone-item" />
+                <Search class="phone-item" @handle-search="handleSearch" />
             </div>
         </header>
     </transition>
@@ -60,6 +60,16 @@ const phoneNavVisible = ref(false) // 侧边导航栏是否可见
 const phoneToggleNav = () => {
     phoneNavVisible.value = !phoneNavVisible.value
 }
+
+// 事件
+const emit = defineEmits<{
+    (event: "handle-search", val: string): void
+}>()
+
+const handleSearch = (val: string) => {
+    emit("handle-search", val)
+}
+
 // ======================================== 滚动条事件 ========================================
 
 const scrollUpAction = () => {
@@ -109,7 +119,7 @@ const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownA
     display: grid;
     grid-template-columns: auto 1fr auto auto auto; // 5列布局
     align-items: center;
-    gap: 16px;
+    gap: 20px;
 }
 
 @include respond-to("pc") {

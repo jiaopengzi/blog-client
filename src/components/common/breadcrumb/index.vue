@@ -49,18 +49,16 @@ const clickBreadcrumb = (item: BreadcrumbItem) => {
 <style scoped lang="scss">
 // 导航面包屑
 .breadcrumb {
-    height: 56px;
     color: var(--jpz-text-color-secondary);
-    border: 0;
-    margin: 0;
-    padding: 0;
     vertical-align: baseline;
     display: flex;
     align-items: center;
+    box-sizing: border-box; // 解决 padding 溢出
 }
 
 @include respond-to("pc") {
     .breadcrumb {
+        height: pc.$height-breadcrumb;
         margin-top: pc.$height-header;
         width: pc.$width-page-main;
     }
@@ -68,6 +66,7 @@ const clickBreadcrumb = (item: BreadcrumbItem) => {
 
 @include respond-to("pad") {
     .breadcrumb {
+        height: pad.$height-breadcrumb;
         margin-top: pad.$height-header;
         width: pad.$width-page;
         padding: 0 10px;
@@ -76,8 +75,10 @@ const clickBreadcrumb = (item: BreadcrumbItem) => {
 
 @include respond-to("phone") {
     .breadcrumb {
+        height: phone.$height-breadcrumb;
         margin-top: phone.$height-header;
         width: phone.$width-page;
+        padding: 0 10px;
     }
 }
 

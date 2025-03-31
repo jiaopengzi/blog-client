@@ -43,6 +43,13 @@ export function useGetData(options?: QueryParamsOptions<ViewPostRequest>) {
             }
         }
 
+        // 如果是关键字查询需要设置高亮字
+        if (req.key_word && options?.highlight_fields && options.highlight_fields.length > 0) {
+            req.highlight_fields = options?.highlight_fields
+            req.pre_tags = options?.pre_tags
+            req.post_tags = options?.post_tags
+        }
+
         // 获取标签列表
         const res = await viewPostAPI(req)
         if (res.data.code === ResponseCode.PostViewSuccess) {

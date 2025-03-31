@@ -7,7 +7,7 @@
 -->
 
 <template>
-    <div class="block text-center">
+    <div class="carousel-container">
         <el-carousel>
             <el-carousel-item v-for="item in 4" :key="item">
                 <h3 class="small justify-center" text="2xl">{{ item }}</h3>
@@ -20,7 +20,7 @@
 defineOptions({ name: "HomeCarousel" })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .demonstration {
     color: var(--jpz-text-color-secondary);
 }
@@ -44,5 +44,20 @@ defineOptions({ name: "HomeCarousel" })
 
 .el-carousel__item:nth-child(2n + 1) {
     background-color: #d3dce6;
+}
+
+@include respond-to("pc") {
+}
+
+@include respond-to("pad") {
+    .carousel-container {
+        padding: 0px 10px;
+    }
+}
+
+@include respond-to("phone") {
+    .carousel-container {
+        padding: 0px 10px;
+    }
 }
 </style>

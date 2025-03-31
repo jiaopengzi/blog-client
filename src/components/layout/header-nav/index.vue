@@ -63,9 +63,9 @@ const { themeSwitch, updateStatus } = useTheme()
 const isHorizontal = computed(() => device.value !== DeviceType.PHONE)
 
 const horizontalMenuStyle = computed(() => {
-    let maxWidth = "780px"
+    let maxWidth = "750px"
     if (device.value === DeviceType.PC) {
-        maxWidth = "780px"
+        maxWidth = "750px"
     }
     if (device.value === DeviceType.PAD) {
         maxWidth = `${windowWidth.value - 420}px`

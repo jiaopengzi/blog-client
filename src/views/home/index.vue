@@ -8,8 +8,8 @@
 
 <template>
     <div class="page">
-        <LayoutHeader />
-        <LayoutHome />
+        <LayoutHeader @handle-search="handleSearch" />
+        <LayoutHome :search-key-word="searchKeyWord" />
         <LayoutFooter />
     </div>
 
@@ -19,12 +19,21 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue"
+
 import LayoutFooter from "@/components/layout/footer"
 import LayoutHeader from "@/components/layout/header"
 
 import LayoutHome from "./component"
 
 defineOptions({ name: "PageHome" })
+
+const searchKeyWord = ref("") // 搜索关键字
+
+const handleSearch = (val: string) => {
+    console.log("搜索内容:", val)
+    searchKeyWord.value = val
+}
 </script>
 
 <style scoped lang="scss">

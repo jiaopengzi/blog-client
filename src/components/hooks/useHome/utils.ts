@@ -34,6 +34,16 @@ export function useUtils(
 
     // 更新查询参数
     const updateRouterPush = async () => {
+        // 遍历 options.noRouteKeys 中的参数, 如果 queryParams 存在该 key 则删除, 不参与路由
+        if (options?.noRouteKeys) {
+            options.noRouteKeys.forEach((key) => {
+                if (key in queryParams) {
+                    delete queryParams[key as ViewPostResKey]
+                }
+            })
+        }
+
+        // 路由中不需要高亮字段和前后标签
         await routerPushByParams(router, RouteNames.Home, queryParams)
     }
 
@@ -87,7 +97,7 @@ export function useUtils(
         isBreadcrumbClick.value = true
     }
 
-    // 清空查询参数中的特定字段
+    // 清空查询参数, 除了特定字段
     const clearParamsExcept = (fieldsToKeep: ViewPostResKey[]) => {
         const keysToClear: ViewPostResKey[] = [
             "key_word",
@@ -100,6 +110,10 @@ export function useUtils(
             "post_tag_slug",
             "current_page",
             "page_size",
+
+            // "highlight_fields",
+            // "pre_tags",
+            // "post_tags",
         ]
 
         keysToClear.forEach((key) => {

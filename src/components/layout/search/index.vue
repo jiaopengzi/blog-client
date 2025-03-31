@@ -26,9 +26,14 @@ import SearchDialog from "./search-dialog"
 
 defineOptions({ name: "HeaderSearch" })
 
+// 事件
+const emit = defineEmits<{
+    (event: "handle-search", val: string): void
+}>()
+
 const handleSearch = (val: string) => {
     searchDialogVisible.value = false
-    console.log("搜索内容", val)
+    emit("handle-search", val)
 }
 
 const searchDialogVisible = ref(false)
@@ -37,8 +42,11 @@ const searchDialogVisible = ref(false)
 <style scoped lang="scss">
 .search-btn {
     // 透明
+    width: 40px;
+    height: 40px;
     background-color: transparent;
     border: none;
+    padding: none;
 }
 // .search {
 //     @include respond-to("pc") {

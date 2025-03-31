@@ -54,10 +54,7 @@ export function useHome(
         resetPaginationConf, // 重置分页配置
     } = useUtils(queryParams, options)
 
-    /**
-     * @description: 通过路由更新数据
-     * @param isUpdateRouterPush 是否更新路由 默认 true 即更新路由
-     */
+    // 通过路由更新数据
     const updateByRoute = async () => {
         resetPaginationConf()
         await updateQueryParams()
@@ -65,25 +62,18 @@ export function useHome(
         updateBreadcrumbFromPagination()
     }
 
+    // 更新分页数据
+    const updatePaginate = async () => {
+        await updatePaginateWithIsRequest()
+    }
+
     // 分页 hooks
-    const { isRequest, updateIsRequest, updateCurrentPageWithIsRequest, updatePageSizeWithIsRequest, updatePaginateWithIsRequest } = usePagination(
+    const { isRequest, updateIsRequest, updateCurrentPage, updatePageSize, updatePaginateWithIsRequest } = usePagination(
         pagination,
         getPaginate,
         queryParams,
-        updateByRoute,
-        updateByRoute,
         updateRouterPush,
     )
-
-    // 更新当前页
-    const updateCurrentPage = async (val: number) => {
-        await updateCurrentPageWithIsRequest(val)
-    }
-
-    // 更新每页显示条数
-    const updatePageSize = async (val: number) => {
-        await updatePageSizeWithIsRequest(val)
-    }
 
     // 点击分类
     const clickCategory = async (category: PostCategory) => {
@@ -115,13 +105,13 @@ export function useHome(
         })
     }
 
-    // 更新分页数据
-    const updatePaginate = async () => {
-        await updatePaginateWithIsRequest()
-    }
-
     // 分页块显示次数变化
     const paginationBlockVisibleChange = async (visible: boolean) => {
+        // 如果是关键字搜索则不请求
+        if (queryParams.key_word) {
+            return
+        }
+
         // 如果分页块不可见 或者 URL 中有分页参数 或者 分页块显示次数超过 5 则不请求
         if (!visible || hasPaginationParamsInURL.value || paginationBlockVisibleCount.value >= 5) {
             return
@@ -131,6 +121,7 @@ export function useHome(
         paginationBlockVisibleCount.value++
 
         // 构造后续数据请求
+        console.log("============>结构", queryParams)
         const req = {
             ...queryParams,
             current_page: paginationBlockVisibleCount.value,
@@ -164,10 +155,15 @@ export function useHome(
 
     // 从 pagination.records 中解析参数并更新面包屑
     const updateBreadcrumbFromPagination = () => {
-        const { current_page, page_size, post_tag_slug, post_category_slug, year, month } = queryParams
+        const { key_word, current_page, page_size, post_tag_slug, post_category_slug, year, month } = queryParams
         // 清空分页的 current_page 和 page_size 参数，保证生成面包屑路径正确
         queryParams.current_page = undefined
         queryParams.page_size = undefined
+
+        // 解析关键字
+        if (key_word) {
+            updateBreadcrumbItems(key_word)
+        }
 
         // 解析分类
         if (post_category_slug) {
@@ -205,7 +201,7 @@ export function useHome(
             updateBreadcrumbItems(`${month}`, false)
         }
 
-        if (!post_category_slug && !post_tag_slug && !year && !month) {
+        if (!key_word && !post_category_slug && !post_tag_slug && !year && !month) {
             // 清空面包屑
             breadcrumbItems.length = 0
         }
@@ -220,7 +216,6 @@ export function useHome(
     watch(
         () => route.fullPath,
         async (newVal) => {
-            console.log("============>", route.fullPath)
             if (newVal) {
                 await updateByRoute()
 
@@ -255,5 +250,6 @@ export function useHome(
         clickBreadcrumb, // 点击面包屑
         paginationBlockVisibleChange, // 分页块显示次数变化
         isShowPostListLoading, // 是否显示文章列表加载中
+        clearParamsExcept, // 清空除了指定参数的查询条件
     }
 }

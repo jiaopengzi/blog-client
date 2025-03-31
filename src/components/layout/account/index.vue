@@ -44,9 +44,11 @@ onBeforeMount(() => {
 <style scoped lang="scss">
 .login {
     display: flex;
+    justify-content: center;
     align-items: center;
     text-align: center;
     font-size: 16px;
+    width: 80px;
 }
 
 .login-text {

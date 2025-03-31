@@ -32,4 +32,9 @@ export interface QueryParamsOptions<K> {
     numberKeys?: NumberKeys<K>[] // 查询参数中的数字参数
     booleanKeys?: BooleanKeys<K>[] // 查询参数中的布尔参数
     noRequestKeys?: QueryParamsRecord<keyof K> // 不请求的参数
+    noRouteKeys?: (keyof K)[] // 不参与路由的参数
+
+    highlight_fields?: string[] // 高亮字段 可以为空
+    pre_tags?: string // 高亮前缀 可以为空
+    post_tags?: string // 高亮后缀 可以为空
 }

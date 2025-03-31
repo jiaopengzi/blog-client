@@ -8,7 +8,21 @@
 
 <template>
     <div class="post-list">
-        <PostItem v-for="item in paginationAC.records" :key="item.id" :post-data="item" @click-category="clickCategory" @post-id="postId" />
+        <section v-if="!hasSearchKeyWord">
+            <PostItemMain v-for="item in paginationAC.records" :key="item.id" :post-data="item" @click-category="clickCategory" @post-id="postId" />
+        </section>
+        <section v-if="hasSearchKeyWord">
+            <PostItemSearch
+                v-for="(item, i) in paginationAC.records"
+                :key="item.id"
+                :post-data="item"
+                :highlight="paginationAC.highlight?.[i]"
+                :highlight-key="highlightKey"
+                @post-id="postId"
+            />
+        </section>
+        <!-- 空 -->
+        <el-empty v-if="paginationAC.records.length === 0" class="empty" description="没有数据" />
     </div>
     <!-- 分页 -->
     <div class="pagination-container">
@@ -21,7 +35,7 @@
                 :page-count="paginationAC.page_count"
                 :total="paginationAC.total"
                 :background="true"
-                layout="total, prev, pager, next, jumper, sizes"
+                :layout="paginationLayout"
                 size="small"
                 @update:current-page="updateCurrentPage"
                 @update:page-size="updatePageSize"
@@ -32,18 +46,23 @@
 
 <script lang="ts" setup>
 import { useIntersectionObserver } from "@vueuse/core"
-import { nextTick, onMounted, onUnmounted, reactive, ref, useTemplateRef, watch } from "vue"
+import { storeToRefs } from "pinia"
+import { computed, nextTick, onMounted, onUnmounted, reactive, ref, useTemplateRef, watch } from "vue"
 
 import { type PostResPagination } from "@/api/post/common"
 import { type PostCategory } from "@/api/postCategory/view"
 import { getEmptyPagination, type Pagination } from "@/api/response"
-import PostItem from "@/components/common/post-item-main"
+import PostItemMain from "@/components/common/post-item-main"
+import PostItemSearch from "@/components/common/post-item-search"
+import { DeviceType, useDeviceStore } from "@/stores/device"
 
 defineOptions({ name: "PostList" })
 
 const { paginationData, isShowLoading = false } = defineProps<{
     paginationData: Pagination<PostResPagination>
     isShowLoading?: boolean // 是否显示loading
+    highlightKey?: string // 高亮的key
+    hasSearchKeyWord?: boolean // 是否有搜索关键字
 }>()
 
 // 事件
@@ -54,6 +73,13 @@ const emit = defineEmits<{
     (event: "postId", val: string): void
     (event: "paginationBlockVisible", val: boolean): void
 }>()
+
+const deviceStore = useDeviceStore()
+const { device } = storeToRefs(deviceStore)
+
+const paginationLayout = computed(() => {
+    return device.value === DeviceType.PHONE ? "total, prev, pager, next, sizes" : "total, prev, pager, next, jumper, sizes"
+})
 
 // 当前分页数据
 const paginationAC = reactive(getEmptyPagination<PostResPagination>())
@@ -116,19 +142,49 @@ onUnmounted(() => {
 .post-list {
     font-size: 14px;
     margin-top: 10px;
-    border-left: 1px solid var(--jpz-border-color);
-    border-right: 1px solid var(--jpz-border-color);
-    // 除了最后一个元素显示下边框 其他都只显示上边框
 
+    // 只有最后一个元素显示下边框
     .post-item {
+        border-left: 1px solid var(--jpz-border-color);
+        border-right: 1px solid var(--jpz-border-color);
         border-top: 1px solid var(--jpz-border-color);
+
+        // 选中第一个元素时，显示上边框
+        &:first-child {
+            border-radius: 5px 5px 0 0;
+        }
 
         &:last-child {
             border-bottom: 1px solid var(--jpz-border-color);
+            border-radius: 0 0 5px 5px;
         }
     }
 }
 
+@include respond-to("pc") {
+    .post-list {
+        // 最小高度,减去头部和面包屑的高度再减去 80px为了分页的高度
+        min-height: calc(100vh - pc.$height-header - pc.$height-breadcrumb - 80px);
+    }
+}
+
+@include respond-to("pad") {
+    .post-list {
+        // 最小高度,减去头部和面包屑的高度再减去 80px为了分页的高度
+        min-height: calc(100vh - pad.$height-header - pad.$height-breadcrumb - 80px);
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+}
+
+@include respond-to("phone") {
+    .post-list {
+        // 最小高度,减去头部和面包屑的高度再减去 80px为了分页的高度
+        min-height: calc(100vh - phone.$height-header - phone.$height-breadcrumb - 80px);
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+}
 .pagination-container {
     display: flex;
     flex-direction: column;
@@ -138,7 +194,7 @@ onUnmounted(() => {
 .pagination-block {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    margin: 10px;
 }
 
 /* 参考:https://css-loaders.com/dots/ */

@@ -105,7 +105,6 @@ const topRightTip = computed(() => {
 // 公共样式
 .post-item {
     position: relative;
-    border-radius: 3px;
     padding: 15px;
     background-color: var(--jpz-bg-color);
     overflow: hidden;
