@@ -176,7 +176,7 @@ const updateEditorDoc = (editorDoc: string) => {
 }
 
 // preview
-const { previewData, showImageViewer, closeImageViewer, handleMouseInElement, handleHeadingShowCurrent } = usePreview(codemirrorRef, localManager)
+const { previewData, showImageViewer, closeImageViewer, handleMouseInElement, handleHeadingShowCurrent } = usePreview(localManager, codemirrorRef)
 
 // 监听编辑器宽度变化
 watchEffect(() => {

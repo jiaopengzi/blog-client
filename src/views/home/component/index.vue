@@ -15,9 +15,9 @@
         <el-container class="container-main">
             <el-main>
                 <!-- 轮播图 -->
-                <HomeCarousel v-if="!hasSearchKeyWord" />
+                <!-- <HomeCarousel v-if="!hasSearchKeyWord" /> -->
                 <!-- 文章列表 -->
-                <PostList
+                <!-- <PostList
                     :pagination-data="pagination"
                     :is-show-loading="isShowPostListLoading"
                     :highlight-key="highlightKey"
@@ -27,7 +27,8 @@
                     @click-category="clickCategory"
                     @post-id="handlePostId"
                     @pagination-block-visible="paginationBlockVisibleChange"
-                />
+                /> -->
+                <PostDetail post-id="81355993295946470" />
             </el-main>
 
             <el-aside ref="asideRef" class="el-aside pc" v-if="!hasSearchKeyWord">
@@ -57,8 +58,10 @@ import { useHome } from "@/components/hooks/useHome"
 import HotPost from "@/components/layout/aside/hot-post"
 import PostTag from "@/components/layout/aside/post-tag"
 import RecommendedRead from "@/components/layout/aside/recommended-read"
-import HomeCarousel from "@/views/home/component/carousel"
-import PostList from "@/views/home/component/post-list"
+
+import HomeCarousel from "./carousel"
+import PostDetail from "./post-detail"
+import PostList from "./post-list"
 
 defineOptions({ name: "LayoutHome" })
 

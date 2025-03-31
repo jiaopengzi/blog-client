@@ -185,6 +185,29 @@ export interface PostResByAdmin extends PostResCommon {
     pay_roles: string[] // 付费角色
 }
 
+// 文章
+export interface PostResByID extends PostResCommon {
+    updated_at: string // 更新时间
+    price: string // 价格
+    words_count: string // 字数
+    post_type: number // 文章类型
+    comment_status: number // 评论状态
+    post_content: string // 文章内容
+    post_title: string // 文章标题
+    post_password: string // 文章密码
+    seo_title: string // SEO标题
+    seo_keywords: string // SEO关键字
+    seo_description: string // SEO描述
+    post_push_time: PgSqlDateTime // 发布时间
+    post_expired_time: PgSqlDateTime // 过期时间
+
+    // 引用类型
+    author_info: User // 作者
+    categories: PostCategory[] // 文章分类
+    tags: PostTag[] // 文章标签
+    pay_roles: string[] // 付费角色
+}
+
 // // 文章
 // export interface PostResByAdmin extends PostRes {
 //     updated_at: string // 更新时间

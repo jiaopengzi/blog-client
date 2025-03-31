@@ -141,7 +141,7 @@ const updateEditorDoc = (editorDoc: string) => {
 }
 
 // preview
-const { previewData, showImageViewer, closeImageViewer } = usePreview(codemirrorRef, localManager)
+const { previewData, showImageViewer, closeImageViewer } = usePreview(localManager, codemirrorRef)
 
 // 初始化
 onMounted(() => {
