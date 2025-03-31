@@ -345,6 +345,7 @@ header {
 .jpz-header-menu-popover {
     --el-menu-text-color: var(--jpz-text-color-primary);
     --el-menu-active-color: var(--jpz-color-secondary);
+    fill: var(--jpz-color-primary);
     // 选中样式
     .el-sub-menu.is-active {
         > .el-sub-menu__title {
