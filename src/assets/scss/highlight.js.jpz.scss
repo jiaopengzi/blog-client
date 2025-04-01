@@ -13,6 +13,7 @@
 // ========================================== live sass compiler 插件使用 结束 ==========================================
 
 code.hljs {
+    font-family: "JBMonoNerdFont", "Microsoft YaHei", Arial, sans-serif;
     padding: 3px 5px;
     // background-color: var(--jpz-bg-color);
 }
@@ -178,7 +179,6 @@ code.hljs {
 }
 
 // 如下是微信公众号的样式
-
 .code-snippet {
     margin: 20px 0;
     display: flex;
@@ -206,7 +206,6 @@ code.hljs {
     display: block;
     // white-space: pre-wrap;
     position: relative;
-    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
 }
 
 .code-snippet code::before {
