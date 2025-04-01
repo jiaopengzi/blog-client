@@ -36,9 +36,10 @@ export function useToolbar(
     // 工具栏按钮
     const toolbarBtns = () => {
         return constantKeys.map((key) => {
+            const hotKey = markdownEditorCommands[key].hotKey ? ` <${markdownEditorCommands[key].hotKey}>` : ""
             return {
                 name: key as CommandsKey,
-                display: (markdownEditorCommands[key].tip + " <" + markdownEditorCommands[key].hotKey + ">") as string,
+                display: (markdownEditorCommands[key].tip + hotKey) as string,
                 icon: markdownEditorCommands[key].icon as IconKeys,
             }
         })
@@ -52,6 +53,10 @@ export function useToolbar(
      * @param name 工具栏按钮对应的常量
      */
     const toolbarBtnClicked = (name: CommandsKey) => {
+        if (name === CommandsKey.Vim) {
+            editorStateManager.toggleVimMode()
+            return
+        }
         if (name === CommandsKey.Preview) {
             editorStateManager.toggleEditorShow()
             if (!editorState.editorShow) {

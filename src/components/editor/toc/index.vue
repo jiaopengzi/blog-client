@@ -12,9 +12,9 @@
             <!-- 根据 heading.level 动态设置 li 的 id 和 class -->
             <li
                 v-for="(heading, index) in props.headings"
-                :id="'toc-' + heading.index"
+                :id="`toc-${heading.index}`"
                 :key="heading.index"
-                :class="'h-level-' + heading.level"
+                :class="`h-level-${heading.index}`"
                 @click="emitHeadingClicked(index)"
             >
                 {{ heading.text }}
@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts" setup>
-import { watchEffect } from "vue"
+import { watch } from "vue"
 
 import type { TocProps } from "./types"
 
@@ -57,11 +57,14 @@ const highlightHeading = (index: number) => {
     document.getElementById("toc-" + index)?.classList.add("toc-active")
 }
 
-watchEffect(() => {
-    if (props.headingShowCurrentIndex >= 0) {
-        highlightHeading(props.headingShowCurrentIndex)
-    }
-})
+watch(
+    () => props.headingShowCurrentIndex,
+    (newVal) => {
+        if (newVal >= 0) {
+            highlightHeading(newVal)
+        }
+    },
+)
 </script>
 
 <style scoped lang="scss">

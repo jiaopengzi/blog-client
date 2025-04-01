@@ -40,6 +40,7 @@ export function createEmptyEditorState(): EditorState {
         width: 1200, // 编辑器宽度
         isUserScrollPreview: true, // 用户是否滚动预览
         headingShowCurrentIndex: 0, // 目录显示当前索引
+        vimMode: false, // 是否开启 vim 模式
     }
 }
 

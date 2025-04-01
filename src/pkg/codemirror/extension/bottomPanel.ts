@@ -11,6 +11,7 @@ import type { TextIterator } from "@codemirror/state"
 import { Text } from "@codemirror/state"
 import type { Panel } from "@codemirror/view"
 import { EditorView, showPanel, ViewUpdate } from "@codemirror/view"
+import { getCM } from "@replit/codemirror-vim"
 
 // 字数统计
 function countWords(doc: Text): string {
@@ -38,34 +39,70 @@ function countWords(doc: Text): string {
     return `words: ${count} `
 }
 
+// 获取光标位置信息
+function getCursorInfo(view: EditorView): string {
+    let cursorInfo = ""
+    // 如果光标位置发生变化
+    const { state } = view // 获取当前编辑器状态
+    const pos = state.selection.main.head // 获取光标位置
+    const line = state.doc.lineAt(pos) // 获取光标所在行
+    const column = pos - line.from // 获取光标所在列
+    cursorInfo = `pos: ${pos} | row: ${line.number} | col: ${column + 1}` // 位置信息
+    // console.log(cursorInfo) // 输出光标位置到控制台，根据需要修改这里的逻辑
+    return cursorInfo
+}
+
 // 更新光标位置信息
 function updateCursorInfo(viewUpdate: ViewUpdate): string {
-    let cursorInfo = ""
     if (viewUpdate.selectionSet) {
-        // 如果光标位置发生变化
-        const { state } = viewUpdate.view // 获取当前编辑器状态
-        const pos = state.selection.main.head // 获取光标位置
-        const line = state.doc.lineAt(pos) // 获取光标所在行
-        const column = pos - line.from // 获取光标所在列
-        cursorInfo = `pos:${pos} | row:${line.number} | col:${column + 1}` // 位置信息
-        // console.log(cursorInfo) // 输出光标位置到控制台，根据需要修改这里的逻辑
+        return getCursorInfo(viewUpdate.view) // 获取光标位置信息
     }
-    return cursorInfo
+    return "" // 如果没有选择集变化，则返回空字符串
+}
+
+// 获取 vim 的模式信息
+function getVimMode(view: EditorView): string {
+    const cm = getCM(view) // 获取 vim 实例
+    if (cm && cm.state.vim && cm.state.vim.mode) {
+        return `--${cm.state.vim.mode}--` // 返回 vim 模式名称
+    }
+    if (cm && cm.state.vim) {
+        return `--normal--` // 返回 normal 模式名称
+    }
+    return "" // 如果没有 vim 实例，则返回空字符串
+}
+
+// 更新底部面板内容
+function updateBottomPanelContent(view: EditorView): string {
+    const contentArray: string[] = [] // 内容数组
+
+    const vimMode = getVimMode(view) // vim 模式信息
+    if (vimMode) {
+        contentArray.push(vimMode) // 如果 vim 模式存在，则添加到内容数组
+    }
+
+    const wordCount = countWords(view.state.doc) // 字数统计
+    contentArray.push(wordCount) // 添加字数统计到内容数组
+
+    const rowCol = getCursorInfo(view) // 光标位置信息
+    if (rowCol) {
+        contentArray.push(rowCol) // 如果光标位置信息存在，则添加到内容数组
+    }
+
+    return contentArray.join(" | ") // 拼接底部面板内容
 }
 
 // 底部面板
 function bottomPanel(view: EditorView): Panel {
     const dom: HTMLElement | null = document.createElement("div")
-    dom.textContent = countWords(view.state.doc)
+    dom.textContent = updateBottomPanelContent(view) // 初始化底部面板内容
+    // todo 等待 codemirror-vim 更新， 解决 vim 模式不更新的问题 https://github.com/replit/codemirror-vim/issues/227
     return {
         top: false, // 面板是否顶部
         dom,
         update(update) {
             if (update.docChanged || update.selectionSet) {
-                const wordCount = countWords(update.state.doc) // 字数统计
-                const rowCol = updateCursorInfo(update) // 光标位置信息
-                const textContent = wordCount + "| " + rowCol // 拼接底部面板内容
-                dom.textContent = textContent
+                dom.textContent = updateBottomPanelContent(update.view) // 更新底部面板内容
             }
         },
     }

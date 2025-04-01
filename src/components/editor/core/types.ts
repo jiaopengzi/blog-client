@@ -63,4 +63,5 @@ export interface EditorState {
     width: number // 编辑器宽度
     isUserScrollPreview: boolean // 用户是否滚动预览
     headingShowCurrentIndex: number // 当前显示的 h 标签 index
+    vimMode: boolean // 是否开启 vim 模式
 }

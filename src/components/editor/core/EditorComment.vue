@@ -30,7 +30,9 @@
                             ref="codemirrorRef"
                             :codemirror-doc="localEditorState.editor"
                             :height="cmHeight"
+                            :vim-mode="localEditorState.vimMode"
                             @update-editor-doc="updateEditorDoc"
+
                         />
                     </div>
                 </el-tab-pane>
@@ -90,6 +92,7 @@ const codemirrorRef = useTemplateRef<CodemirrorRef | null>("codemirrorRef") //�
 const previewRef = useTemplateRef<PreviewRef | null>("previewRef") // 预览容器
 // 将 CommandsKey 解构
 const ModeComment = reactive([
+    CommandsKey.Vim,
     CommandsKey.Undo,
     CommandsKey.Redo,
     CommandsKey.Clear,

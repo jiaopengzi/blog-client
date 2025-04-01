@@ -11,13 +11,14 @@
 </template>
 
 <script lang="ts" setup>
-import type { Extension } from "@codemirror/state"
+import { type Extension } from "@codemirror/state"
 import type { ViewUpdate } from "@codemirror/view"
-import { onMounted, onUnmounted, useTemplateRef, watchEffect } from "vue"
+import { vim } from "@replit/codemirror-vim"
+import { onMounted, onUnmounted, type Ref, ref, useTemplateRef, watch, watchEffect } from "vue"
 
 import type { MarkdownEditorCommandItem } from "@/components/editor/command"
 import { CommandsKey, editorInsertContent, editorInsertFormatContent, markdownEditorCommands } from "@/components/editor/command"
-import { createCustomSetup, EditorState, EditorView } from "@/pkg/codemirror/setup"
+import { createCustomSetup, type CustomSetupOptions, EditorState, EditorView, vimModeCompartment } from "@/pkg/codemirror/setup"
 
 import type { CodeEditorProps } from "./types"
 
@@ -59,22 +60,9 @@ watchEffect(() => {
 // 编辑器实例
 let cmView: EditorView = null! // 编辑器实例 null后的感叹号表示不为空
 
-// 初始化 CodeMirror
-const initializeCodeMirror = () => {
-    // 初始化编辑器
-    const state = EditorState.create({
-        doc: props.codemirrorDoc || "",
-        extensions: [createCustomSetup(), updateDocInfo],
-    })
-
-    // 创建编辑器实例
-    cmView = new EditorView({
-        state,
-        parent: codemirrorRef.value!,
-    })
-
-    cmView.scrollDOM.addEventListener("scroll", handleScroll) // 监听滚动事件
-}
+const options: Ref<CustomSetupOptions> = ref({
+    vimMode: props.vimMode || true, // 是否开启 vim 模式
+})
 
 // 更新编辑器内容
 const updateDocInfo: Extension = EditorView.updateListener.of((viewUpdate: ViewUpdate) => {
@@ -87,6 +75,23 @@ const updateDocInfo: Extension = EditorView.updateListener.of((viewUpdate: ViewU
         }
     }
 })
+
+// 初始化 CodeMirror
+const initializeCodeMirror = (options: CustomSetupOptions) => {
+    // 初始化编辑器
+    const state = EditorState.create({
+        doc: props.codemirrorDoc || "",
+        extensions: [createCustomSetup(options), updateDocInfo],
+    })
+
+    // 创建编辑器实例
+    cmView = new EditorView({
+        state,
+        parent: codemirrorRef.value!,
+    })
+
+    cmView.scrollDOM.addEventListener("scroll", handleScroll) // 监听滚动事件
+}
 
 // 执行按钮命令
 const runCommand = (commandName: CommandsKey, customContent: MarkdownEditorCommandItem = {}): void => {
@@ -164,10 +169,23 @@ const watchStop = watchEffect(() => {
     }
 })
 
+watch(
+    () => props.vimMode,
+    (newVal) => {
+        // 更新 vim 模式
+        options.value.vimMode = newVal
+
+        // 重新配置 vim 模式
+        cmView.dispatch({
+            effects: vimModeCompartment.reconfigure(newVal ? vim() : []),
+        })
+    },
+)
+
 // 初始化
 onMounted(() => {
     initializeCssVariable() // 初始化 css 变量
-    initializeCodeMirror() // 初始化 CodeMirror
+    initializeCodeMirror(options.value) // 初始化 CodeMirror
 })
 
 onUnmounted(() => {

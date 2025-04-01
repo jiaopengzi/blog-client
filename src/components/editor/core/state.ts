@@ -162,6 +162,11 @@ export class EditorStateManager {
         this.state.headingShowCurrentIndex = index
     }
 
+    // 切换 vim 模式
+    toggleVimMode(): void {
+        this.state.vimMode = !this.state.vimMode
+    }
+
     // 获取编辑器状态
     getState(): EditorState {
         return this.state

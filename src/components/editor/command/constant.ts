@@ -58,6 +58,7 @@ export enum CommandsKey {
     Pdf = "pdf",
     Help = "help",
     Info = "info",
+    Vim = "vim",
 }
 
 // markdown 编辑器 单个命令对象 的类型
@@ -84,13 +85,17 @@ export type MarkdownEditorCommands = {
 export function createMarkdownEditorCommands(): MarkdownEditorCommands {
     return {
         // 撤销重做
+        [CommandsKey.Vim]: {
+            tip: "vim模式",
+            icon: IconKeys.Vim,
+        },
+        // 撤销重做
         [CommandsKey.Undo]: {
             tip: "撤销",
             hotKey: "Ctrl+Z",
             action: (view: EditorView) => {
                 undo(view)
             },
-            // icon: 'undo',
             icon: IconKeys.Undo,
         },
         // 重做

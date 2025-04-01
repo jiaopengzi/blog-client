@@ -121,6 +121,7 @@ export enum IconKeys {
     Undo = "undo",
     User = "user",
     Video = "video",
+    Vim = "vim",
     Vip = "vip",
     VipRed = "vip-red",
     Wechat = "wechat",

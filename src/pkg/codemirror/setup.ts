@@ -12,7 +12,7 @@ import { markdown } from "@codemirror/lang-markdown"
 import { bracketMatching, defaultHighlightStyle, foldGutter, foldKeymap, indentOnInput, syntaxHighlighting } from "@codemirror/language"
 import { lintKeymap } from "@codemirror/lint"
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search"
-import type { Extension } from "@codemirror/state"
+import { Compartment, type Extension } from "@codemirror/state"
 import { EditorState } from "@codemirror/state"
 import {
     crosshairCursor,
@@ -27,15 +27,35 @@ import {
     lineNumbers,
     rectangularSelection,
 } from "@codemirror/view"
+import { vim } from "@replit/codemirror-vim"
 
 import { bottomPanelExt } from "./extension/bottomPanel"
 import { emojiCompletions } from "./extension/emoji"
 import { customKeymap } from "./extension/hotkey"
 import { handleDropImage, handlePasteImage } from "./extension/imgUpload"
 
+const vimModeCompartment = new Compartment()
+const themeCompartment = new Compartment()
+
+// 主题名称枚举
+// export enum ThemeName {
+// }
+
+// createCustomSetup 定义options 类型， 首先是是否开启 vim 模式， 其次是是否开启 markdown 语法高亮
+type CustomSetupOptions = {
+    vimMode?: boolean // 是否开启 vim 模式
+    // theme?: ThemeName // 主题名称
+}
+
+const defaultOptions: CustomSetupOptions = {
+    vimMode: false, // 默认不开启 vim 模式
+    // theme: ThemeName.Dracula, // 默认主题
+}
+
 // 自定义 codemirror setup 工厂函数
-const createCustomSetup = () => {
-    const customSetup: Extension = (() => [
+const createCustomSetup = (options: CustomSetupOptions = defaultOptions) => {
+    const baseExtension: Extension[] = [
+        vimModeCompartment.of(options.vimMode ? vim() : []),
         EditorView.lineWrapping, // 自动换行
         lineNumbers(), // 行号
         highlightActiveLineGutter(), // 高亮当前行 gutter
@@ -70,10 +90,11 @@ const createCustomSetup = () => {
         customKeymap, // 自定义快捷键
         handlePasteImage, // 自定义键盘事件
         handleDropImage, // 自定义拖拽事件
-    ])()
-    return customSetup
+    ]
+    return baseExtension
 }
 
 export { EditorState } from "@codemirror/state"
 export { EditorView } from "@codemirror/view"
-export { createCustomSetup }
+export { createCustomSetup, themeCompartment, vimModeCompartment }
+export type { CustomSetupOptions }

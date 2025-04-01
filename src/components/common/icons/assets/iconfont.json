@@ -6,6 +6,13 @@
   "description": "vue 重写项目",
   "glyphs": [
     {
+      "icon_id": "3876340",
+      "name": "vim",
+      "font_class": "vim",
+      "unicode": "e63c",
+      "unicode_decimal": 58940
+    },
+    {
       "icon_id": "33519",
       "name": "home",
       "font_class": "home",

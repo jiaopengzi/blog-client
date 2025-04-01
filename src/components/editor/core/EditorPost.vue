@@ -37,6 +37,7 @@
                     ref="codemirrorRef"
                     :codemirror-doc="localEditorState.editor"
                     :height="cmHeight"
+                    :vim-mode="localEditorState.vimMode"
                     @handle-scroll="handleScroll"
                     @update-editor-doc="updateEditorDoc"
                 />
@@ -98,6 +99,7 @@ const codemirrorRef = useTemplateRef<CodemirrorRef | null>("codemirrorRef") //�
 const previewRef = useTemplateRef<PreviewRef | null>("previewRef") // 预览容器
 
 const ModePost = reactive([
+    CommandsKey.Vim,
     CommandsKey.Undo,
     CommandsKey.Redo,
     CommandsKey.Clear,
