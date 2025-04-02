@@ -6,12 +6,8 @@
  * @Description  : codemirror 底部面板
  */
 
-import type { Extension } from "@codemirror/state"
-import type { TextIterator } from "@codemirror/state"
-import { Text } from "@codemirror/state"
-import type { Panel } from "@codemirror/view"
-import { EditorView, showPanel, ViewUpdate } from "@codemirror/view"
-import { getCM } from "@replit/codemirror-vim"
+import { type Extension, Text, type TextIterator } from "@codemirror/state"
+import { EditorView, type Panel, showPanel } from "@codemirror/view"
 
 // 字数统计
 function countWords(doc: Text): string {
@@ -52,34 +48,9 @@ function getCursorInfo(view: EditorView): string {
     return cursorInfo
 }
 
-// 更新光标位置信息
-function updateCursorInfo(viewUpdate: ViewUpdate): string {
-    if (viewUpdate.selectionSet) {
-        return getCursorInfo(viewUpdate.view) // 获取光标位置信息
-    }
-    return "" // 如果没有选择集变化，则返回空字符串
-}
-
-// 获取 vim 的模式信息
-function getVimMode(view: EditorView): string {
-    const cm = getCM(view) // 获取 vim 实例
-    if (cm && cm.state.vim && cm.state.vim.mode) {
-        return `--${cm.state.vim.mode}--` // 返回 vim 模式名称
-    }
-    if (cm && cm.state.vim) {
-        return `--normal--` // 返回 normal 模式名称
-    }
-    return "" // 如果没有 vim 实例，则返回空字符串
-}
-
 // 更新底部面板内容
 function updateBottomPanelContent(view: EditorView): string {
     const contentArray: string[] = [] // 内容数组
-
-    const vimMode = getVimMode(view) // vim 模式信息
-    if (vimMode) {
-        contentArray.push(vimMode) // 如果 vim 模式存在，则添加到内容数组
-    }
 
     const wordCount = countWords(view.state.doc) // 字数统计
     contentArray.push(wordCount) // 添加字数统计到内容数组
@@ -95,19 +66,20 @@ function updateBottomPanelContent(view: EditorView): string {
 // 底部面板
 function bottomPanel(view: EditorView): Panel {
     const dom: HTMLElement | null = document.createElement("div")
-    dom.textContent = updateBottomPanelContent(view) // 初始化底部面板内容
-    // todo 等待 codemirror-vim 更新， 解决 vim 模式不更新的问题 https://github.com/replit/codemirror-vim/issues/227
+    // 初始化底部面板内容
+    dom.textContent = updateBottomPanelContent(view)
+
     return {
         top: false, // 面板是否顶部
         dom,
         update(update) {
-            if (update.docChanged || update.selectionSet) {
+            if (update.docChanged || update.selectionSet || update.viewportChanged) {
                 dom.textContent = updateBottomPanelContent(update.view) // 更新底部面板内容
             }
         },
     }
 }
 
-const bottomPanelExt: Extension = [showPanel.of(bottomPanel), EditorView.updateListener.of(updateCursorInfo)]
+const bottomPanelExt: Extension = [showPanel.of(bottomPanel)]
 
 export { bottomPanelExt }

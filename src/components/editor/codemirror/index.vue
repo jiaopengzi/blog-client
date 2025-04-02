@@ -11,6 +11,8 @@
 </template>
 
 <script lang="ts" setup>
+import "@/assets/scss/codemirror.scss"
+
 import { type Extension } from "@codemirror/state"
 import type { ViewUpdate } from "@codemirror/view"
 import { vim } from "@replit/codemirror-vim"
@@ -177,7 +179,7 @@ watch(
 
         // 重新配置 vim 模式
         cmView.dispatch({
-            effects: vimModeCompartment.reconfigure(newVal ? vim() : []),
+            effects: vimModeCompartment.reconfigure(newVal ? vim({ status: true }) : []),
         })
     },
 )
@@ -207,38 +209,5 @@ defineExpose({
     background-color: var(--jpz-bg-color);
     color: var(--jpz-text-color-primary);
     font-size: 1.1em;
-
-    :deep(.cm-editor) {
-        // width: 100%;
-        height: var(--my-codemirror-height, 100%);
-    }
-
-    :deep(.cm-content) {
-        font-family: "JBMonoNerdFont", "Microsoft YaHei", Arial, sans-serif;
-        font-size: 16px;
-        // width: 100%;
-        // height: calc(var(--my-codemirror-height, 100%) - pc.$editor-panels-bottom-height - pc.$editor-panels-bottom-border);
-    }
-
-    :deep(.cm-gutters) {
-        // width: 100%;
-        font-family: "JBMonoNerdFont", "Microsoft YaHei", Arial, sans-serif;
-        font-size: 12px;
-        background-color: var(--jpz-bg-color);
-        border-right: 1px solid var(--jpz-border-color);
-    }
-
-    :deep(.cm-panels-bottom) {
-        font-family: "JBMonoNerdFont", "Microsoft YaHei", Arial, sans-serif;
-        height: pc.$editor-panels-bottom-height;
-        // 文字垂直居中
-        display: flex;
-        align-items: center;
-        padding: 4px 4px;
-        font-size: 0.8em;
-        color: var(--jpz-text-color-placeholder);
-        background-color: var(--jpz-bg-color);
-        border-top: 1px solid var(--jpz-border-color);
-    }
 }
 </style>

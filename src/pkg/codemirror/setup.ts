@@ -12,8 +12,7 @@ import { markdown } from "@codemirror/lang-markdown"
 import { bracketMatching, defaultHighlightStyle, foldGutter, foldKeymap, indentOnInput, syntaxHighlighting } from "@codemirror/language"
 import { lintKeymap } from "@codemirror/lint"
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search"
-import { Compartment, type Extension } from "@codemirror/state"
-import { EditorState } from "@codemirror/state"
+import { Compartment, EditorState, type Extension } from "@codemirror/state"
 import {
     crosshairCursor,
     drawSelection,
@@ -55,7 +54,8 @@ const defaultOptions: CustomSetupOptions = {
 // 自定义 codemirror setup 工厂函数
 const createCustomSetup = (options: CustomSetupOptions = defaultOptions) => {
     const baseExtension: Extension[] = [
-        vimModeCompartment.of(options.vimMode ? vim() : []),
+        // 参考 https://github.com/replit/codemirror-vim/issues/227
+        vimModeCompartment.of(options.vimMode ? vim({ status: true }) : []),
         EditorView.lineWrapping, // 自动换行
         lineNumbers(), // 行号
         highlightActiveLineGutter(), // 高亮当前行 gutter

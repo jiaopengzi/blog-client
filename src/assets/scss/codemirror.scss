@@ -1,0 +1,50 @@
+/*
+ * FilePath    : blog-client\src\assets\scss\codemirror.scss
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 编辑器全局样式
+ */
+#my-codemirror {
+    .cm-editor {
+        // width: 100%;
+        height: var(--my-codemirror-height, 100%);
+    }
+
+    .cm-content {
+        font-family: "JBMonoNerdFont", "Microsoft YaHei", Arial, sans-serif;
+        font-size: 16px;
+        // width: 100%;
+        // height: calc(var(--my-codemirror-height, 100%) - pc.$editor-panels-bottom-height - pc.$editor-panels-bottom-border);
+    }
+
+    .cm-gutters {
+        // width: 100%;
+        font-family: "JBMonoNerdFont", "Microsoft YaHei", Arial, sans-serif;
+        font-size: 12px;
+        background-color: var(--jpz-bg-color);
+        border-right: 1px solid var(--jpz-border-color);
+    }
+
+    .cm-panels-bottom {
+        font-family: "JBMonoNerdFont", "Microsoft YaHei", Arial, sans-serif;
+        height: pc.$editor-panels-bottom-height;
+        // 文字垂直居中
+        display: flex;
+        align-items: center;
+        padding: 4px 4px;
+        font-size: 0.8em;
+        color: var(--jpz-text-color-placeholder);
+        background-color: var(--jpz-bg-color);
+        border-top: 1px solid var(--jpz-border-color);
+    }
+
+    .cm-vim-panel {
+        // todo 命令行的样式无法修改 等待 issue 结果 https://github.com/replit/codemirror-vim/issues/227#issuecomment-2771472344
+        font-family: "JBMonoNerdFont", "Microsoft YaHei", Arial, sans-serif;
+        align-items: center;
+        font-size: 0.8em;
+        color: var(--jpz-text-color-placeholder);
+        background-color: var(--jpz-bg-color);
+    }
+}
