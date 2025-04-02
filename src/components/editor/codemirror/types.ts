@@ -7,7 +7,7 @@
  */
 
 export interface CodeEditorProps {
-    codemirrorDoc: string // 编辑器内容
+    doc: string // 编辑器内容
     width?: string // 宽度
     height?: string // 高度
     vimMode?: boolean // 是否开启 vim 模式

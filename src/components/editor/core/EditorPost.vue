@@ -35,7 +35,7 @@
             <div :class="editorClass" v-show="localEditorState.editorShow">
                 <EditorCodemirror
                     ref="codemirrorRef"
-                    :codemirror-doc="localEditorState.editor"
+                    :doc="localEditorState.editor"
                     :height="cmHeight"
                     :vim-mode="localEditorState.vimMode"
                     @handle-scroll="handleScroll"

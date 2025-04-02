@@ -28,11 +28,10 @@
                     <div :class="editorClass">
                         <EditorCodemirror
                             ref="codemirrorRef"
-                            :codemirror-doc="localEditorState.editor"
+                            :doc="localEditorState.editor"
                             :height="cmHeight"
                             :vim-mode="localEditorState.vimMode"
                             @update-editor-doc="updateEditorDoc"
-
                         />
                     </div>
                 </el-tab-pane>

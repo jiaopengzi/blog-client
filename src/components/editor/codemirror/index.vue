@@ -63,7 +63,7 @@ watchEffect(() => {
 let cmView: EditorView = null! // 编辑器实例 null后的感叹号表示不为空
 
 const options: Ref<CustomSetupOptions> = ref({
-    vimMode: props.vimMode || true, // 是否开启 vim 模式
+    vimMode: props.vimMode || false, // 是否开启 vim 模式
 })
 
 // 更新编辑器内容
@@ -71,7 +71,7 @@ const updateDocInfo: Extension = EditorView.updateListener.of((viewUpdate: ViewU
     if (viewUpdate.docChanged) {
         const { state } = viewUpdate.view
         const newDoc = state.doc.toString()
-        if (newDoc !== props.codemirrorDoc) {
+        if (newDoc !== props.doc) {
             // console.log('newDoc-子组件', newDoc)
             emit("update-editor-doc", newDoc) // 更新编辑器内容 提交给父组件
         }
@@ -82,7 +82,7 @@ const updateDocInfo: Extension = EditorView.updateListener.of((viewUpdate: ViewU
 const initializeCodeMirror = (options: CustomSetupOptions) => {
     // 初始化编辑器
     const state = EditorState.create({
-        doc: props.codemirrorDoc || "",
+        doc: props.doc || "",
         extensions: [createCustomSetup(options), updateDocInfo],
     })
 
@@ -159,12 +159,12 @@ const handleScroll = () => {
 
 // 监听 props.codemirrorDoc 变化 更新编辑器内容 只有第一次加载的时候才更新
 const watchStop = watchEffect(() => {
-    if (props.codemirrorDoc && cmView) {
+    if (props.doc && cmView) {
         cmView.dispatch({
             changes: {
                 from: 0,
                 to: cmView.state.doc.length,
-                insert: props.codemirrorDoc,
+                insert: props.doc,
             },
         })
         watchStop() // 只执行一次
