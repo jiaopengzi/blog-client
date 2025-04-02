@@ -9,7 +9,7 @@
 import "element-plus/theme-chalk/dark/css-vars.css" // 引入element-plus的暗黑主题
 import "@/assets/scss/main.scss" // 引入全局样式
 
-import { createHead } from "@unhead/vue" // 参考官方文档:https://unhead.unjs.io/setup/vue/installation
+import { createHead } from "@unhead/vue/client" // 参考官方文档:https://unhead.unjs.io/docs/vue/head/guides/get-started/installation
 import { createPinia } from "pinia" // 状态管理
 import { createApp } from "vue" // 创建Vue实例
 
@@ -33,7 +33,7 @@ app.use(pinia) // 使用状态管理
 
 app.use(router) // 使用路由
 
-app.use(createHead()) // 参考官方文档:https://unhead.unjs.io/setup/vue/installation
+app.use(createHead()) // 参考官方文档:https://unhead.unjs.io/docs/vue/head/guides/get-started/installation
 
 app.component("j-icon", JIcon) //  'j-icon' 作为全局组件
 app.mount("#app")

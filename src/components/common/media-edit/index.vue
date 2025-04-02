@@ -110,7 +110,7 @@
 
 <script lang="ts" setup>
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { computed, reactive, ref, useTemplateRef, watch, watchEffect } from "vue"
+import { computed, reactive, ref, useTemplateRef, watch } from "vue"
 
 import { handleResErr, ResponseCode } from "@/api/response"
 import { checkSlugAPI, type CheckSlugRequest } from "@/api/upload/checkSlug"
@@ -418,26 +418,30 @@ watch(
 const videoWidth = ref(480)
 
 // 设置播放器
-watchEffect(() => {
-    if (isVideoFile.value && editMediaData.editDialogVisible) {
-        // 设置视频宽度
-        // nextTick(() => {
-        //     if (leftRef.value) {
-        //         videoWidth.value = leftRef.value.clientWidth
-        //     }
-        // })
+watch(
+    () => [isVideoFile.value, editMediaData.editDialogVisible],
+    ([isVideoFileVal, editDialogVisibleVal]) => {
+        if (isVideoFileVal && editDialogVisibleVal) {
+            // 设置视频宽度
+            // nextTick(() => {
+            //     if (leftRef.value) {
+            //         videoWidth.value = leftRef.value.clientWidth
+            //     }
+            // })
 
-        playerStateManager.setSize(videoWidth.value, (videoWidth.value * 9) / 16) // 16:9
-        playerStateManager.setVideoID(hashID.value) // 设置视频hashID
+            playerStateManager.setSize(videoWidth.value, (videoWidth.value * 9) / 16) // 16:9
+            playerStateManager.setVideoID(hashID.value) // 设置视频hashID
 
-        if (!editMediaData.is_generate_hls) {
-            playerStateManager.setMediaType(MediaTypes.MP4) // 设置视频类型
-            playerStateManager.setSrc(editMediaData.file_url) // 设置视频地址
+            if (!editMediaData.is_generate_hls) {
+                playerStateManager.setMediaType(MediaTypes.MP4) // 设置视频类型
+                playerStateManager.setSrc(editMediaData.file_url) // 设置视频地址
+            }
+
+            playerState = playerStateManager.getState()
         }
-
-        playerState = playerStateManager.getState()
-    }
-})
+    },
+    { immediate: true },
+)
 
 // 图片预览
 const isShowElImageViewer = ref(false)

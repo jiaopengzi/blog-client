@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeMount, ref, watch, watchEffect } from "vue"
+import { onBeforeMount, ref, watch } from "vue"
 
 import { parseVTT } from "@/utils/vttParse"
 
@@ -31,11 +31,14 @@ onBeforeMount(async () => {
     }
 })
 
-watchEffect(() => {
-    if (cues.value) {
-        console.log("cues2", cues.value)
-    }
-})
+watch(
+    () => cues.value,
+    (newCues) => {
+        if (newCues) {
+            console.log("cues2", newCues)
+        }
+    },
+)
 
 watch(
     () => props.currentTime,

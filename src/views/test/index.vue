@@ -1,37 +1,36 @@
 <!--
  * @Author       : jiaopengzi
- * @Date         : 2024-09-18 09:51:29
+ * @Date         : 2024-09-29 10:52:39
  * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-23 12:03:54
- * @FilePath     : \blog-client\src\views\test\编辑器.vue
+ * @LastEditTime : 2024-10-19 11:14:01
+ * @FilePath     : \blog-client\src\views\test\index.vue
  * @Description  : 
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
 -->
-<!-- App.vue -->
 <template>
-    <!-- <EditorPost :editor-state="stateManager.getState()" /> -->
-    <EditorComment :editor-state="stateManager.getState()" />
+    <div class="container">
+        <VideoPlayer :player-state="state" />
+    </div>
 </template>
 
-<script lang="ts" setup>
-import { onBeforeMount, ref } from "vue"
+<script setup lang="ts">
+import { PlayerStateManager } from "@/components/player"
+import VideoPlayer from "@/components/player"
 
-import { EditorComment, EditorPost, EditorStateManager } from "@/components/editor"
+defineOptions({ name: "MyTest" })
 
-defineOptions({ name: "EditorAll" })
-
-const stateManager = new EditorStateManager()
-
-const myHtml = ref(`
-<h1>这是一个标题</h1>
-<p>这是一个段落</p>
-`)
-
-stateManager.updateState(myHtml.value)
-
-onBeforeMount(async () => {
-    // await stateManager.getEditorContentFromUrl("src/assets/example/markdown.md")
-})
+const videoState = new PlayerStateManager()
+videoState.setSrc("m-12-8de13d3c")
+const state = videoState.getState()
 </script>
-<style scoped lang="scss"></style>
+
+<style scoped lang="scss">
+// 让视频播放器水平垂直居中
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+</style>

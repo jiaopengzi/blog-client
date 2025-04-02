@@ -68,7 +68,7 @@
 import { useResizeObserver } from "@vueuse/core"
 import Hls from "hls.js"
 import screenfull from "screenfull"
-import { computed, onBeforeUnmount, onMounted, reactive, ref, useTemplateRef, watch, watchEffect } from "vue"
+import { computed, onBeforeUnmount, onMounted, reactive, ref, useTemplateRef, watch } from "vue"
 
 import { ResponseCode } from "@/api/response"
 import { IconKeys } from "@/components/common/icons"
@@ -260,12 +260,16 @@ const handleMouseleave = (event: MouseEvent) => {
 }
 
 // 根据 size 设置 video 容器的宽高
-watchEffect(() => {
-    if (videoContainerRef.value) {
-        videoContainerRef.value.style.width = localPlayerState.size.width + "px"
-        videoContainerRef.value.style.height = localPlayerState.size.height + "px"
-    }
-})
+watch(
+    () => localPlayerState.size,
+    (newSize) => {
+        if (videoContainerRef.value) {
+            videoContainerRef.value.style.width = newSize.width + "px"
+            videoContainerRef.value.style.height = newSize.height + "px"
+        }
+    },
+    { immediate: true },
+)
 
 // 进入全屏 调整 video 元素的宽高
 const adjustSizeFullscreen = () => {
@@ -299,7 +303,6 @@ const adjustSizeExitFullscreen = () => {
 const updateCueFontSize = () => {
     if (videoRef.value) {
         const width = videoRef.value.clientWidth
-        console.log("width=============>", width)
         let fontSize = "16px" // 默认字体大小
 
         if (width <= 600) {
@@ -351,54 +354,57 @@ const handleExitFullscreen = async () => {
 }
 
 // 监控是否全屏状态
-watchEffect(() => {
-    // 获取屏幕方向对象，断言为 any 类型
-    const orientation = screen.orientation as ScreenOrientation
+watch(
+    () => localPlayerState.isFullScreen,
+    (isFullScreen) => {
+        // 获取屏幕方向对象，断言为 any 类型
+        const orientation = screen.orientation as ScreenOrientation
 
-    if (localPlayerState.isFullScreen) {
-        if (videoContainerRef.value && videoRef.value) {
-            if (screenfull.isEnabled) {
-                adjustSizeFullscreen()
-                screenfull.request(videoContainerRef.value)
-            }
-
-            if (localPlayerState.isIphone) {
-                // 主要是 iOS 手机，不支持全屏时，提示用户手动调整屏幕方向
-                // ElMessage({
-                //     type: MsgType.warning,
-                //     message: 'iOS 不支持全屏, 请手动调整屏幕方向为横屏.',
-                // })
-
-                // Safari for iOS
-                const videoElement = videoRef.value as HTMLVideoElement & {
-                    webkitEnterFullscreen?: () => void
+        if (isFullScreen) {
+            if (videoContainerRef.value && videoRef.value) {
+                if (screenfull.isEnabled) {
+                    adjustSizeFullscreen()
+                    screenfull.request(videoContainerRef.value)
                 }
-                if (videoElement.webkitEnterFullscreen) {
-                    videoElement.webkitEnterFullscreen()
-                    localManager.setIsFullScreen(false) // 只要进入全屏，就设置为 false,退出后也是false
-                }
-            }
 
-            // // 移动端时 锁定屏幕方向为横屏
-            // if (localPlayerState.isMobile && typeof orientation.lock === "function") {
-            //     orientation.lock("landscape").catch((err: unknown) => {
-            //         console.log("屏幕方向锁定失败:", err)
-            //         // 弹窗提示用户手动调整屏幕方向
-            //         // ElMessage({
-            //         //     type: MsgType.warning,
-            //         //     message: '请手动调整屏幕方向为横屏',
-            //         // })
-            //     })
-            // }
+                if (localPlayerState.isIphone) {
+                    // 主要是 iOS 手机，不支持全屏时，提示用户手动调整屏幕方向
+                    // ElMessage({
+                    //     type: MsgType.warning,
+                    //     message: 'iOS 不支持全屏, 请手动调整屏幕方向为横屏.',
+                    // })
+
+                    // Safari for iOS
+                    const videoElement = videoRef.value as HTMLVideoElement & {
+                        webkitEnterFullscreen?: () => void
+                    }
+                    if (videoElement.webkitEnterFullscreen) {
+                        videoElement.webkitEnterFullscreen()
+                        localManager.setIsFullScreen(false) // 只要进入全屏，就设置为 false,退出后也是false
+                    }
+                }
+
+                // // 移动端时 锁定屏幕方向为横屏
+                // if (localPlayerState.isMobile && typeof orientation.lock === "function") {
+                //     orientation.lock("landscape").catch((err: unknown) => {
+                //         console.log("屏幕方向锁定失败:", err)
+                //         // 弹窗提示用户手动调整屏幕方向
+                //         // ElMessage({
+                //         //     type: MsgType.warning,
+                //         //     message: '请手动调整屏幕方向为横屏',
+                //         // })
+                //     })
+                // }
+            }
+        } else {
+            // 退出全屏
+            handleExitFullscreen()
+
+            // 解锁屏幕方向
+            if (orientation && typeof orientation.unlock === "function") orientation.unlock()
         }
-    } else {
-        // 退出全屏
-        handleExitFullscreen()
-
-        // 解锁屏幕方向
-        if (orientation && typeof orientation.unlock === "function") orientation.unlock()
-    }
-})
+    },
+)
 
 // 处理屏幕方向变化
 const handleOrientationChange = (e: MediaQueryListEvent) => {
@@ -416,34 +422,43 @@ const handleOrientationChange = (e: MediaQueryListEvent) => {
 }
 
 // 监控网页全屏状态
-watchEffect(() => {
-    if (localPlayerState.isWebFullScreen) {
-        adjustSizeWebFullscreen()
-    } else {
-        adjustSizeExitFullscreen()
-    }
-})
+watch(
+    () => localPlayerState.isWebFullScreen,
+    (isWebFullScreen) => {
+        if (isWebFullScreen) {
+            adjustSizeWebFullscreen()
+        } else {
+            adjustSizeExitFullscreen()
+        }
+    },
+)
 
 // 监控画中画状态
-watchEffect(() => {
-    if (videoRef.value && localPlayerState.isPictureInPicture) {
-        videoRef.value.requestPictureInPicture()
-    }
-    if (!localPlayerState.isPictureInPicture && document.pictureInPictureElement) {
-        document.exitPictureInPicture()
-    }
-})
+watch(
+    () => localPlayerState.isPictureInPicture,
+    (isPictureInPicture) => {
+        if (videoRef.value && isPictureInPicture) {
+            videoRef.value.requestPictureInPicture()
+        }
+        if (!isPictureInPicture && document.pictureInPictureElement) {
+            document.exitPictureInPicture()
+        }
+    },
+)
 
 // 根据 playStatus 控制 video 播放暂停
-watchEffect(() => {
-    if (videoRef.value) {
-        if (localPlayerState.playStatus === PlayStatus.PLAYING) {
-            videoRef.value.play()
-        } else {
-            videoRef.value.pause()
+watch(
+    () => localPlayerState.playStatus,
+    (playStatus) => {
+        if (videoRef.value) {
+            if (playStatus === PlayStatus.PLAYING) {
+                videoRef.value.play()
+            } else {
+                videoRef.value.pause()
+            }
         }
-    }
-})
+    },
+)
 
 // 视频加载完成
 const handleLoadedmetadata = () => {
@@ -463,33 +478,45 @@ const handleTimeupdate = () => {
 }
 
 // 监听用户输入进度变化
-watchEffect(() => {
-    if (!localPlayerState.isUserInput) return
-    if (videoRef.value) {
-        videoRef.value.currentTime = localPlayerState.playProgress.currentTime
+watch(
+    () => localPlayerState.isUserInput,
+    (isUserInput) => {
+        if (!isUserInput) return
+        if (videoRef.value) {
+            videoRef.value.currentTime = localPlayerState.playProgress.currentTime
 
-        // 更新缓存进度
-        if (!localPlayerState.playProgress.isDragging) {
-            handleProgressBuffered()
+            // 更新缓存进度
+            if (!localPlayerState.playProgress.isDragging) {
+                handleProgressBuffered()
+            }
+            localManager.setUserInput(false)
         }
-        localManager.setUserInput(false)
-    }
-})
+    },
+)
 
 // 监控音量变化
-watchEffect(() => {
-    if (videoRef.value) videoRef.value.volume = localPlayerState.volume.volume / 100
-})
+watch(
+    () => localPlayerState.volume.volume,
+    (volume) => {
+        if (videoRef.value) videoRef.value.volume = volume / 100
+    },
+)
 
 // 监控播放速度变化
-watchEffect(() => {
-    if (videoRef.value) videoRef.value.playbackRate = localPlayerState.playbackRate
-})
+watch(
+    () => localPlayerState.playbackRate,
+    (playbackRate) => {
+        if (videoRef.value) videoRef.value.playbackRate = playbackRate
+    },
+)
 
 // 监控是否循环播放
-watchEffect(() => {
-    if (videoRef.value) videoRef.value.loop = localPlayerState.isLoop
-})
+watch(
+    () => localPlayerState.isLoop,
+    (isLoop) => {
+        if (videoRef.value) videoRef.value.loop = isLoop
+    },
+)
 
 // 根据video元素更新 store 中的数据
 const updateStore = () => {
@@ -608,11 +635,14 @@ const loadHls = () => {
 }
 
 // 监听是否为 Iphone,如果是 Iphone 则将poster设置为空
-watchEffect(() => {
-    if (localPlayerState.isIphone) {
-        localManager.setPoster("")
-    }
-})
+watch(
+    () => localPlayerState.isIphone,
+    (isIphone) => {
+        if (isIphone) {
+            localManager.setPoster("")
+        }
+    },
+)
 
 // 更新视频
 const updateVideo = () => {
@@ -640,13 +670,17 @@ const updateVideo = () => {
 // TODO 后续观察是否需要监听 src 变化
 
 // 监听 src 变化
-watchEffect(() => {
-    // 注意需要等待 videoRef.value 加载完成,否则会造成多次 updateVideo 调用执行多次网络请求
-    if (localPlayerState.videoID && videoRef.value) {
-        localManager.setSubtitlesByVideoHashIdAuto() // 自动更新字幕
-        updateVideo()
-    }
-})
+watch(
+    () => [localPlayerState.videoID, videoRef.value],
+    ([videoID, videoEl]) => {
+        // 只有在 videoID 和 videoRef 都准备好时才执行
+        if (videoID && videoEl) {
+            localManager.setSubtitlesByVideoHashIdAuto()
+            updateVideo()
+        }
+    },
+    { immediate: true },
+)
 
 onMounted(() => {
     // 初始化字幕字体大小

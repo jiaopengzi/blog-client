@@ -28,8 +28,9 @@ import { computed, nextTick, onMounted, onUnmounted, reactive, ref, useTemplateR
 import { viewPostByIDAPI, type ViewPostByIDRequest } from "@/api/post/viewByID"
 import { viewPostByIDAdminAPI } from "@/api/post/viewByIDAdmin"
 import { ResponseCode } from "@/api/response"
-import { type EditorState, EditorStateManager, usePreview } from "@/components/editor/core"
-import HtmlPreview from "@/components/editor/preview"
+import { type EditorState, EditorStateManager } from "@/components/editor"
+import HtmlPreview from "@/components/editor/components/preview"
+import { usePreview } from "@/components/editor/hooks/usePreview"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 defineOptions({ name: "PostDetail" })
 

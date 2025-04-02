@@ -1,9 +1,14 @@
 /**
- * @FilePath     : \blog-client\src\components\editor\index.ts
+ * @FilePath     : \blog-client\src\components\editor\core\index.ts
  * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 编辑器入口文件
+ * @Description  : 编辑器核心
  */
 
-export * from "./core"
+export * from "./state"
+export * from "./types"
+
+// 如果有多个内容导出,避免循环依赖的问题使用如下方式导出,且导出的内容必须在最后
+export { default as EditorComment } from "./EditorComment.vue"
+export { default as EditorPost } from "./EditorPost.vue"

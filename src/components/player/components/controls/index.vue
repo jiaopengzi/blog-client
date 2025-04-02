@@ -87,7 +87,7 @@
 
 <script setup lang="ts">
 import { useMagicKeys } from "@vueuse/core"
-import { computed, onUnmounted, reactive, ref, watch, watchEffect } from "vue"
+import { computed, onUnmounted, reactive, ref, watch } from "vue"
 
 import { IconKeys } from "@/components/common/icons"
 import JIcon from "@/components/common/icons"
@@ -246,26 +246,32 @@ const handleButtonClick = (action: () => void) => {
 }
 
 // 监控是否静音, 切换静音图标
-watchEffect(() => {
-    if (localPlayerState.volume.muted) {
-        IconNameMute.value = IconKeys.Mute
-        localVolume.value = 0
-    } else {
-        IconNameMute.value = IconKeys.Unmute
-        localVolume.value = localPlayerState.volume.volume
-    }
-})
+watch(
+    () => localPlayerState.volume.muted,
+    (muted) => {
+        if (muted) {
+            IconNameMute.value = IconKeys.Mute
+            localVolume.value = 0
+        } else {
+            IconNameMute.value = IconKeys.Unmute
+            localVolume.value = localPlayerState.volume.volume
+        }
+    },
+)
 
 // 监控播放状态, 切换播放暂停图标
-watchEffect(() => {
-    if (localPlayerState.playStatus === PlayStatus.PLAYING) {
-        // 当播放状态为播放时，显示暂停图标
-        IconNamePlayPause.value = IconKeys.Pause
-    } else {
-        // 当播放状态为暂停时，显示播放图标
-        IconNamePlayPause.value = IconKeys.Play
-    }
-})
+watch(
+    () => localPlayerState.playStatus,
+    (playStatus) => {
+        if (playStatus === PlayStatus.PLAYING) {
+            // 当播放状态为播放时，显示暂停图标
+            IconNamePlayPause.value = IconKeys.Pause
+        } else {
+            // 当播放状态为暂停时，显示播放图标
+            IconNamePlayPause.value = IconKeys.Play
+        }
+    },
+)
 
 // 监控快捷键开关
 watch(
