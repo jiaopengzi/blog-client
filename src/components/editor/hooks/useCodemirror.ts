@@ -6,9 +6,10 @@
  * Description : codemirror hook
  */
 
+import { useResizeObserver } from "@vueuse/core"
 import { debounce } from "throttle-debounce"
 import type { Ref } from "vue"
-import { nextTick, ref, watch } from "vue"
+import { nextTick, onBeforeUnmount, ref } from "vue"
 
 import { ScrollElementTag } from "@/components/editor/command"
 import { getCSSVariableValue } from "@/utils/style"
@@ -55,19 +56,17 @@ export function useCodemirror(
         }
     }
 
-    // 监控是否全屏状态变化，切换全屏时更新编辑器高度
-    watch(
-        () => editorState.isFullScreen,
-        (isFullScreen) => {
-            if (isFullScreen) {
-                updateCmHeightIsFullScreen()
-            } else {
-                nextTick(() => {
-                    updateCmHeightNotIsFullScreen()
-                })
-            }
-        },
-    )
+    // 监听窗口变化
+    const { stop } = useResizeObserver(mdContainerRef, () => {
+        if (editorState.isFullScreen) {
+            updateCmHeightIsFullScreen()
+        } else {
+            nextTick(() => {
+                updateCmHeightNotIsFullScreen()
+            })
+        }
+        console.log("============>cm", cmHeight.value)
+    })
 
     const handleScroll = debounce(200, (scrollHeight: number, clientHeight: number, scrollTop: number, hideDoc: string, showFirstLineNumber: number) => {
         // 高亮当前标题
@@ -108,6 +107,10 @@ export function useCodemirror(
         const hideDom = new DOMParser().parseFromString(html, "text/html") // 隐藏的markdown解析出来的html转换为dom
         const els = hideDom.body.querySelectorAll(ScrollElementTag) // 获取隐藏的markdown解析出来的html转换为dom中的所有元素 注意要在 body 中寻找
         previewRef.value?.navigateToElement(els.length) // 跳转预览选中目标行
+    })
+
+    onBeforeUnmount(() => {
+        stop()
     })
 
     return {

@@ -43,3 +43,14 @@ $platforms: (
         }
     }
 }
+
+// 全屏样式
+@mixin webFullscreen {
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    transition: all 0.3s ease;
+}

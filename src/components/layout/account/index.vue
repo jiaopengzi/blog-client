@@ -48,7 +48,7 @@ onBeforeMount(() => {
     align-items: center;
     text-align: center;
     font-size: 16px;
-    width: 80px;
+    width: 100px;
 }
 
 .login-text {

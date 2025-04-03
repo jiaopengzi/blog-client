@@ -7,11 +7,13 @@
  */
 
 import { useMagicKeys } from "@vueuse/core"
+import { useResizeObserver } from "@vueuse/core"
 import { debounce } from "throttle-debounce"
-import { nextTick, onMounted, type Ref, ref, watch } from "vue"
+import { nextTick, onBeforeUnmount, onMounted, type Ref, ref, watch } from "vue"
 import { type EmojiExt } from "vue3-emoji-picker"
 
 import type { IconKeys } from "@/components/common/icons"
+import { useWebFullscreen } from "@/components/hooks/useWebFullscreen"
 import { MessageUtil } from "@/utils/message"
 import { getComputedStyleValue, getCSSVariableValue, setCSSVariable } from "@/utils/style"
 
@@ -24,6 +26,7 @@ import { EditorStateManager } from "../state"
 import { copyWithCustomStyle } from "../utils"
 
 export function useToolbar(
+    mdLayoutRef: Ref<HTMLElement | null>,
     mdContainerRef: Ref<HTMLElement | null>,
     toolbarRef: Ref<ToolbarRef | null>,
     codemirrorRef: Ref<CodemirrorRef | null>,
@@ -31,6 +34,8 @@ export function useToolbar(
     constantKeys: CommandsKey[],
     editorStateManager: EditorStateManager,
 ) {
+    const { isWebFullscreen, toggle } = useWebFullscreen(mdLayoutRef)
+
     // 状态管理
     const editorState = editorStateManager.getState()
 
@@ -53,7 +58,7 @@ export function useToolbar(
      * @description: 处理工具栏按钮点击事件
      * @param name 工具栏按钮对应的常量
      */
-    const toolbarBtnClicked = (name: CommandsKey) => {
+    const toolbarBtnClicked = async (name: CommandsKey) => {
         if (name === CommandsKey.Vim) {
             editorStateManager.toggleVimMode()
             return
@@ -82,7 +87,8 @@ export function useToolbar(
             return
         }
         if (name === CommandsKey.Fullscreen) {
-            editorStateManager.toggleFullScreen()
+            toggle()
+            editorStateManager.setIsFullScreen(isWebFullscreen.value)
             return
         }
         if (name === CommandsKey.Emoji) {
@@ -92,11 +98,12 @@ export function useToolbar(
             editorStateManager.toggleShowPreviewWechat()
         }
         if (name === CommandsKey.Copy) {
-            nextTick(() => {
+            await nextTick(() => {
                 if (!previewRef.value) return
                 debounceCopyWithCustomStyle(previewRef.value.root)
             })
         }
+
         // if (name === CommandsKey.save) {
         //   isShowPreviewWechat.value = !isShowPreviewWechat.value
         //   if (isShowPreviewWechat.value) return
@@ -164,6 +171,11 @@ export function useToolbar(
         updateMdContainerStyle()
     }
 
+    // 监听窗口变化
+    const { stop } = useResizeObserver(mdLayoutRef, () => {
+        calcToolbarHight()
+    })
+
     // 每行 icon 个数
     const iconNumberPerLine = () => {
         if (!toolbarRef.value) return
@@ -216,7 +228,10 @@ export function useToolbar(
 
     onMounted(() => {
         registerHotKeys() // 注册快捷键
-        calcToolbarHight() // 计算工具栏高度
+    })
+
+    onBeforeUnmount(() => {
+        stop()
     })
 
     return {

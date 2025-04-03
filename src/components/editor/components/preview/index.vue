@@ -101,7 +101,9 @@ watch(
 watch(
     () => [props.height, props.width],
     ([newHeight, newWidth]) => {
+        console.log("============>h1", newHeight)
         if (previewRef.value && (newHeight || newWidth)) {
+            console.log("============>h2", newHeight)
             initializeCssVariable() // 初始化 css 变量
         }
     },

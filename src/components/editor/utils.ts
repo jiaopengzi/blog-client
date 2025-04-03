@@ -256,23 +256,6 @@ export function markdownToHtml(markdownSrc: string): string {
 }
 
 /**
- * @description: 设置是否全屏的类名
- * @param baseClass 基础类名
- * @param fullScreenClass 全屏类名
- * @param isContainerItem 是否是容器子项
- * @param isFullScreen 是否全屏
- * @return {Object} 类名对象
- */
-export function setIsFullScreenClassName(baseClass: string, fullScreenClass: string, isContainerItem: boolean, isFullScreen: boolean): object {
-    return {
-        [baseClass]: !isFullScreen,
-        [fullScreenClass]: isFullScreen,
-        "md-container-item": isContainerItem && !isFullScreen,
-        "md-container-item-fs": isContainerItem && isFullScreen,
-    }
-}
-
-/**
  * @description:  处理 utf-8 编码问题
  * @param htmlSrc html 源码
  * @return 替换后的 html 源码
