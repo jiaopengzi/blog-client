@@ -9,7 +9,7 @@
 import { useMagicKeys } from "@vueuse/core"
 import { useResizeObserver } from "@vueuse/core"
 import { debounce } from "throttle-debounce"
-import { nextTick, onBeforeUnmount, onMounted, type Ref, ref, watch } from "vue"
+import { computed, nextTick, onBeforeUnmount, onMounted, type Ref, ref, watch } from "vue"
 import { type EmojiExt } from "vue3-emoji-picker"
 
 import type { IconKeys } from "@/components/common/icons"
@@ -31,17 +31,16 @@ export function useToolbar(
     toolbarRef: Ref<ToolbarRef | null>,
     codemirrorRef: Ref<CodemirrorRef | null>,
     previewRef: Ref<PreviewRef | null>,
-    constantKeys: CommandsKey[],
-    editorStateManager: EditorStateManager,
+    stateManager: EditorStateManager,
 ) {
     const { isWebFullscreen, toggle } = useWebFullscreen(mdLayoutRef)
 
     // 状态管理
-    const editorState = editorStateManager.getState()
+    const editorState = stateManager.getState()
 
     // 工具栏按钮
-    const toolbarBtns = () => {
-        return constantKeys.map((key) => {
+    const toolbarBtns = computed(() => {
+        return editorState.commandKeys.map((key) => {
             const hotKey = markdownEditorCommands[key].hotKey ? ` <${markdownEditorCommands[key].hotKey}>` : ""
             return {
                 name: key as CommandsKey,
@@ -49,7 +48,7 @@ export function useToolbar(
                 icon: markdownEditorCommands[key].icon as IconKeys,
             }
         })
-    }
+    })
 
     // 防抖处理 copyWithCustomStyle
     const debounceCopyWithCustomStyle = debounce(500, copyWithCustomStyle)
@@ -60,42 +59,42 @@ export function useToolbar(
      */
     const toolbarBtnClicked = async (name: CommandsKey) => {
         if (name === CommandsKey.Vim) {
-            editorStateManager.toggleVimMode()
+            stateManager.toggleVimMode()
             return
         }
         if (name === CommandsKey.Preview) {
-            editorStateManager.toggleEditorShow()
+            stateManager.toggleEditorShow()
             if (!editorState.editorShow) {
-                editorStateManager.setPreviewShow(true)
+                stateManager.setPreviewShow(true)
             }
             return
         }
         if (name === CommandsKey.Edit) {
-            editorStateManager.togglePreviewShow()
+            stateManager.togglePreviewShow()
             if (!editorState.previewShow) {
-                editorStateManager.setEditorShow(true)
+                stateManager.setEditorShow(true)
             }
             return
         }
         if (name === CommandsKey.Toc) {
-            editorStateManager.toggleTocShow()
+            stateManager.toggleTocShow()
             return
         }
         if (name === CommandsKey.Scroll) {
-            editorStateManager.toggleAsyncScroll()
+            stateManager.toggleAsyncScroll()
             MessageUtil.success(editorState.isAsyncScroll ? "同步滚动" : "异步滚动")
             return
         }
         if (name === CommandsKey.Fullscreen) {
             toggle()
-            editorStateManager.setIsFullScreen(isWebFullscreen.value)
+            stateManager.setIsFullScreen(isWebFullscreen.value)
             return
         }
         if (name === CommandsKey.Emoji) {
             return
         }
         if (name === CommandsKey.WechatOfficialAccount) {
-            editorStateManager.toggleShowPreviewWechat()
+            stateManager.toggleShowPreviewWechat()
         }
         if (name === CommandsKey.Copy) {
             await nextTick(() => {
@@ -155,15 +154,6 @@ export function useToolbar(
 
         // 设置 cmContainerRef 中 css 变量 --md-editor-container-height 的值为 100vh - toolbar 高度 - toolbar margin
         setCSSVariable(mdContainerRef.value, "--md-editor-container-height", `calc(100vh - ${toolbarHight.value}px)`)
-
-        // 将内层的变量 --el-tabs-header-height 设置到 cmContainerRef 中 css 变量 --el-tabs-header-height
-        const elTabsHeader = mdContainerRef.value.querySelector(".el-tabs__header") as HTMLElement
-        if (!elTabsHeader) return
-
-        const tabsHeaderHeight = getComputedStyleValue(elTabsHeader, "--el-tabs-header-height")
-        if (!tabsHeaderHeight) return
-
-        setCSSVariable(mdContainerRef.value, "--el-tabs-header-height", `${tabsHeaderHeight}px`)
     }
 
     const calcToolbarHight = (): void => {
@@ -191,7 +181,7 @@ export function useToolbar(
             content: emoji.i,
             suffix: "",
         })
-        editorStateManager.setIsShowEmojiPicker(false)
+        stateManager.setIsShowEmojiPicker(false)
     }
 
     // 插入表格行列

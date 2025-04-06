@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\components\editor\core\EditorPost.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 文章编辑器
+ * FilePath    : blog-client\src\components\editor\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 编辑器
 -->
 
 <template>
@@ -12,7 +12,7 @@
         <div class="md-toolbar">
             <Toolbar
                 ref="toolbarRef"
-                :toolbar-btns="toolbarBtns()"
+                :toolbar-btns="toolbarBtns"
                 :icon-number-per-line="iconNumberPerLine()"
                 @toolbar-btn-clicked="toolbarBtnClicked"
                 @emoji-picker-selected="emojiPickerSelected"
@@ -23,33 +23,33 @@
         <!-- 编辑器容器 -->
         <div ref="mdContainerRef" class="md-container">
             <!-- 导航栏 -->
-            <div class="md-toc md-container-item" v-show="localEditorState.tocShow">
+            <div class="md-toc md-container-item" v-show="editorState.tocShow">
                 <EditorToc
-                    :headings="localEditorState.tocHtml"
-                    :heading-show-current-index="localEditorState.headingShowCurrentIndex"
+                    :headings="editorState.tocHtml"
+                    :heading-show-current-index="editorState.headingShowCurrentIndex"
                     @heading-clicked="tocHeadingClicked"
                 />
             </div>
 
             <!-- 编辑器 -->
-            <div class="md-editor md-container-item" v-show="localEditorState.editorShow">
+            <div class="md-editor md-container-item" v-show="editorState.editorShow">
                 <EditorCodemirror
                     ref="codemirrorRef"
-                    :doc="localEditorState.editor"
+                    :doc="editorState.editor"
                     :height="cmHeight"
-                    :vim-mode="localEditorState.vimMode"
+                    :vim-mode="editorState.vimMode"
                     @handle-scroll="handleScroll"
                     @update-editor-doc="updateEditorDoc"
                 />
             </div>
 
             <!-- 预览 -->
-            <div class="md-preview md-container-item" v-show="localEditorState.previewShow">
+            <div class="md-preview md-container-item" v-show="editorState.previewShow">
                 <HtmlPreview
                     ref="previewRef"
                     :preview="previewData"
-                    :is-show-preview-wechat="localEditorState.isShowPreviewWechat"
-                    :is-user-scroll-preview="localEditorState.isUserScrollPreview"
+                    :is-show-preview-wechat="editorState.isShowPreviewWechat"
+                    :is-user-scroll-preview="editorState.isUserScrollPreview"
                     :height="cmHeight"
                     @show-image-viewer="showImageViewer"
                     @close-image-viewer="closeImageViewer"
@@ -64,31 +64,27 @@
 <script lang="ts" setup>
 import "vue3-emoji-picker/css"
 
-import { onMounted, reactive, useTemplateRef, watch } from "vue"
+import { onMounted, useTemplateRef, watch } from "vue"
 
-import { CommandsKey } from "./command"
 import EditorCodemirror, { type CodemirrorRef } from "./components/codemirror"
 import HtmlPreview, { type PreviewRef } from "./components/preview"
 import EditorToc from "./components/toc"
 import Toolbar, { type ToolbarRef } from "./components/toolbar"
 import { useCodemirror, usePreview, useToc, useToolbar } from "./hooks"
 import { EditorStateManager } from "./state"
-import type { EditorState } from "./types"
 
 // 文章编辑器命名
-defineOptions({ name: "EditorPost" })
+defineOptions({ name: "JEditor" })
 
-const { editorState } = defineProps<{
-    editorState: EditorState
+const { stateManager } = defineProps<{
+    stateManager: EditorStateManager
 }>()
 
 const emit = defineEmits<{
     (event: "updateEditorStatus", val: boolean): void
 }>()
 
-// 状态管理
-const localManager = new EditorStateManager(editorState)
-const localEditorState = reactive<EditorState>(localManager.getState())
+const editorState = stateManager.getState() // 获取编辑器状态
 
 // ref
 const mdLayoutRef = useTemplateRef<HTMLElement | null>("mdLayoutRef") //编辑器布局
@@ -97,50 +93,6 @@ const toolbarRef = useTemplateRef<ToolbarRef | null>("toolbarRef") //编辑器�
 const codemirrorRef = useTemplateRef<CodemirrorRef | null>("codemirrorRef") //编辑器
 const previewRef = useTemplateRef<PreviewRef | null>("previewRef") // 预览容器
 
-const ModePost = reactive([
-    CommandsKey.Vim,
-    CommandsKey.Undo,
-    CommandsKey.Redo,
-    CommandsKey.Clear,
-    CommandsKey.H1,
-    CommandsKey.H2,
-    CommandsKey.H3,
-    CommandsKey.Bold,
-    CommandsKey.Italic,
-    CommandsKey.Quote,
-    CommandsKey.CodeBlock,
-    CommandsKey.Link,
-    CommandsKey.Ol,
-    CommandsKey.Ul,
-    CommandsKey.TaskList,
-    CommandsKey.Mark,
-    CommandsKey.Emoji,
-    CommandsKey.Strikethrough,
-    CommandsKey.Image,
-    CommandsKey.Table,
-    CommandsKey.Hr,
-    CommandsKey.MathBlock,
-    CommandsKey.Footnote,
-    CommandsKey.Superscript,
-    CommandsKey.Subscript,
-    CommandsKey.PayContent,
-    CommandsKey.Video,
-    CommandsKey.Toc,
-    CommandsKey.Edit,
-    CommandsKey.Scroll,
-    CommandsKey.Preview,
-    CommandsKey.WechatOfficialAccount,
-    CommandsKey.Fullscreen,
-    // CommandsKey.Save,
-    CommandsKey.Copy,
-    // CommandsKey.Publish,
-    CommandsKey.Markdown,
-    CommandsKey.Html,
-    CommandsKey.Pdf,
-    CommandsKey.Help,
-    CommandsKey.Info,
-])
-
 // 工具栏点击事件
 const { toolbarBtns, toolbarBtnClicked, iconNumberPerLine, emojiPickerSelected, insertTableRowCol } = useToolbar(
     mdLayoutRef,
@@ -148,27 +100,26 @@ const { toolbarBtns, toolbarBtnClicked, iconNumberPerLine, emojiPickerSelected, 
     toolbarRef,
     codemirrorRef,
     previewRef,
-    ModePost,
-    localManager,
+    stateManager,
 )
 
 // 目录点击事件
-const { tocHeadingClicked } = useToc(codemirrorRef, previewRef, localManager)
+const { tocHeadingClicked } = useToc(codemirrorRef, previewRef, stateManager)
 
 // codemirror
-const { cmHeight, updateCmHeightNotIsFullScreen, handleScroll } = useCodemirror(mdContainerRef, codemirrorRef, previewRef, localManager)
+const { cmHeight, updateCmHeightNotIsFullScreen, handleScroll } = useCodemirror(mdContainerRef, codemirrorRef, previewRef, stateManager)
 
 const updateEditorDoc = (editorDoc: string) => {
-    localManager.updateState(editorDoc) // 更新 store 中的 editor
+    stateManager.updateState(editorDoc) // 更新 store 中的 editor
     emit("updateEditorStatus", true) // 更新编辑器状态
 }
 
 // preview
-const { previewData, showImageViewer, closeImageViewer, handleMouseInElement, handleHeadingShowCurrent } = usePreview(localManager, codemirrorRef)
+const { previewData, showImageViewer, closeImageViewer, handleMouseInElement, handleHeadingShowCurrent } = usePreview(stateManager, codemirrorRef)
 
 // 监听编辑器宽度变化
 watch(
-    () => localEditorState.width,
+    () => editorState.width,
     (newWidth) => {
         document.documentElement.style.setProperty("--md-editor-width", `${newWidth}px`)
     },
@@ -318,7 +269,7 @@ defineExpose({
 @include respond-to("phone") {
     .md-layout {
         .md-toolbar {
-            --icon-number-per-line: 10;
+            --icon-number-per-line: 15;
         }
 
         .md-container {

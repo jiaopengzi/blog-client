@@ -43,7 +43,7 @@
                 <el-form-item prop="post_content"> </el-form-item>
                 <!-- 编辑器 -->
                 <div ref="editorContainerRef" class="editor md-layout-fs">
-                    <EditorPost ref="editorPostRef" :editor-state="editorState" @update-editor-status="updateEditorStatus" />
+                    <JEditor ref="editorPostRef" :state-manager="stateManager" @update-editor-status="updateEditorStatus" />
 
                     <!-- 创建时间和更新时间 -->
                     <div v-if="postInfoAboutTime.created_at" class="about-time">
@@ -176,7 +176,8 @@ import type { TableData } from "@/components/common/base-table"
 import { IconKeys } from "@/components/common/icons"
 import SelectMedia from "@/components/common/media-select"
 import SwitchGroup from "@/components/common/switch-group"
-import { EditorPost, EditorStateManager } from "@/components/editor"
+import JEditor, { EditorStateManager } from "@/components/editor"
+import { useEditor } from "@/components/hooks/useEditor"
 import { RouteNames } from "@/router"
 import { PermissionNames } from "@/stores/permissionRole"
 import { useUserStore } from "@/stores/user"
@@ -206,13 +207,16 @@ const elContainerRef = useTemplateRef<InstanceType<typeof ElContainer> | null>("
 const formRef = useTemplateRef<FormInstance>("formRef")
 const seoDescriptionRef = useTemplateRef<InstanceType<typeof ElFormItem> | null>("seoDescriptionRef")
 const editorContainerRef = useTemplateRef<HTMLDivElement | null>("editorContainerRef")
-const editorPostRef = useTemplateRef<InstanceType<typeof EditorPost>>("editorPostRef")
+const editorPostRef = useTemplateRef<InstanceType<typeof JEditor>>("editorPostRef")
 
 const stateManager = new EditorStateManager()
+useEditor(stateManager)
+
 const editorState = stateManager.getState()
 const mediaDialogVisible = ref(false)
 
 const userStore = useUserStore()
+
 const router = useRouter()
 
 // 监听编辑器宽度变化

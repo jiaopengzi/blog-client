@@ -1,28 +1,18 @@
-<!--
- * @Author       : jiaopengzi
- * @Date         : 2024-09-18 09:51:29
- * @LastEditors  : jiaopengzi
- * @LastEditTime : 2024-10-23 12:03:54
- * @FilePath     : \blog-client\src\views\test\编辑器.vue
- * @Description  : 
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved. 
--->
-<!-- App.vue -->
 <template>
-    <!-- <EditorPost :editor-state="stateManager.getState()" /> -->
-    <EditorComment :editor-state="stateManager.getState()" />
+    <JEditor :state-manager="stateManager" />
 </template>
 
 <script lang="ts" setup>
 import { onBeforeMount, ref } from "vue"
 
-import { EditorStateManager } from "@/components/editor"
-import EditorComment from "@/components/editor/EditorComment.vue"
-import EditorPost from "@/components/editor/EditorPost.vue"
+import JEditor, { EditorStateManager } from "@/components/editor"
+import { useEditor } from "@/components/hooks/useEditor"
 defineOptions({ name: "EditorAll" })
 
-const stateManager = new EditorStateManager()
+const stateManager = new EditorStateManager({
+    mode: "comment",
+})
+useEditor(stateManager)
 
 const myHtml = ref(`
 <h1>这是一个标题</h1>
@@ -32,7 +22,7 @@ const myHtml = ref(`
 stateManager.updateState(myHtml.value)
 
 onBeforeMount(async () => {
-    // await stateManager.getEditorContentFromUrl("src/assets/example/markdown.md")
+    // await stateManager.getEditorContentFromUrl("src/assets/example/katex.md")
 })
 </script>
 <style scoped lang="scss"></style>

@@ -13,16 +13,17 @@ import createMarked from "@/pkg/marked/new-marked"
 import { HasParentByClass } from "@/utils/getParentByClass"
 import { MessageUtil } from "@/utils/message"
 
+import { defaultCommandKeys } from "./command"
 import type { Heading } from "./components/toc"
 import { CustomElementAttributes, CustomElementVideoPlayer } from "./customElements"
-import type { EditorState, MarkdownHeadingLine } from "./types"
+import type { EditorState, EditorStateOptions, MarkdownHeadingLine } from "./types"
 
 /**
- * @description : 创建空值编辑器信息
+ * @description : 创建默认的编辑器状态
  * @return      : 空值编辑器信息
  */
-export function createEmptyEditorState(): EditorState {
-    return {
+export function createDefaultEditorState(options: EditorStateOptions = {}): EditorState {
+    const defaultState: EditorState = {
         tocMarkdown: [], // markdown 目录内容
         tocHtml: [], // html 目录内容
         tocShow: false, // 是否显示目录
@@ -42,7 +43,10 @@ export function createEmptyEditorState(): EditorState {
         isUserScrollPreview: true, // 用户是否滚动预览
         headingShowCurrentIndex: 0, // 目录显示当前索引
         vimMode: false, // 是否开启 vim 模式
+        commandKeys: defaultCommandKeys.postPc, // 默认使用 postPc 模式的快捷键
+        mode: "post", // 默认模式为文章模式
     }
+    return { ...defaultState, ...options }
 }
 
 // 使用闭包缓存正则表达式

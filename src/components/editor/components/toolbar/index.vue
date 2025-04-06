@@ -54,7 +54,7 @@
                 </div>
             </el-popover>
 
-            <el-tooltip v-else effect="dark" :content="btn.display" :hide-after="0">
+            <el-tooltip v-else effect="dark" :content="btn.display" :hide-after="0" :show-after="300">
                 <j-icon :name="btn.icon" custom-class="iconfont" />
             </el-tooltip>
         </button>

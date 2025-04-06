@@ -11,8 +11,9 @@ import { reactive } from "vue"
 import { request } from "@/api/request"
 import { extractImageUrlsFromHtml } from "@/utils/img"
 
-import type { EditorState } from "./types"
-import { createEmptyEditorState, getMarkdownHeadingLines, htmlHandleUtf8BOM, markdownToHtml, matchAllHeadingToList } from "./utils"
+import { CommandsKey } from "./command"
+import type { EditorMode, EditorState, EditorStateOptions } from "./types"
+import { createDefaultEditorState, getMarkdownHeadingLines, htmlHandleUtf8BOM, markdownToHtml, matchAllHeadingToList } from "./utils"
 
 /**
  * @description: 编辑器状态管理
@@ -21,8 +22,8 @@ export class EditorStateManager {
     private state: EditorState
 
     // 初始化为默认状态
-    constructor(initialState: EditorState = createEmptyEditorState()) {
-        this.state = reactive(initialState) // 响应式对象
+    constructor(options: EditorStateOptions = {}) {
+        this.state = reactive(createDefaultEditorState(options)) // 响应式对象
     }
 
     // 获取滚动条隐藏的 html 字符串
@@ -166,6 +167,16 @@ export class EditorStateManager {
         this.state.vimMode = !this.state.vimMode
     }
 
+    // 设置工具栏按钮
+    setCommandKeys(commandKeys: CommandsKey[]): void {
+        this.state.commandKeys = commandKeys
+    }
+
+    // 设置编辑器模式
+    setEditorMode(mode: EditorMode): void {
+        this.state.mode = mode
+    }
+
     // 获取编辑器状态
     getState(): EditorState {
         return this.state
@@ -173,6 +184,6 @@ export class EditorStateManager {
 
     // 销毁编辑器状态
     destroy(): void {
-        this.state = createEmptyEditorState()
+        this.state = createDefaultEditorState()
     }
 }
