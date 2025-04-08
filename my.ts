@@ -1,4 +1,4 @@
-// 原始枚举
+// Original Enum
 export enum AdminSideMenu1 {
     "Dashboard1" = "Dashboard1",
     "Post1" = "Post1",
@@ -11,7 +11,7 @@ export enum AdminSideMenu2 {
     "PostAll2" = "PostAll2",
 }
 
-// 将两个枚举转换为对象
+// Convert two enums to objects
 const adminSideMenu1 = {
     ...AdminSideMenu1,
 }
@@ -20,11 +20,11 @@ const adminSideMenu2 = {
     ...AdminSideMenu2,
 }
 
-// 合并两个对象
+// Merge two objects
 const mergedAdminSideMenu = {
     ...adminSideMenu1,
     ...adminSideMenu2,
 }
 
-// 将合并后的对象转换为枚举
+// Convert the merged object to an enum
 export const AdminSideMenu = mergedAdminSideMenu as typeof AdminSideMenu1 & typeof AdminSideMenu2

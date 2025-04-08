@@ -40,11 +40,20 @@
     }
 
     .cm-vim-panel {
-        // todo 命令行的样式无法修改 等待 issue 结果 https://github.com/replit/codemirror-vim/issues/227#issuecomment-2771472344
+        // 参考: https://github.com/replit/codemirror-vim/issues/227#issuecomment-2771472344
         font-family: "JBMonoNerdFont", "Microsoft YaHei", Arial, sans-serif;
         align-items: center;
         font-size: 0.8em;
         color: var(--jpz-text-color-placeholder);
         background-color: var(--jpz-bg-color);
+    }
+
+    .cm-vim-panel span {
+        font-family: "JBMonoNerdFont", "Microsoft YaHei", Arial, sans-serif !important;
+        display: flex;
+        align-items: center;
+    }
+    .cm-vim-panel input {
+        font-family: "JBMonoNerdFont", "Microsoft YaHei", Arial, sans-serif !important;
     }
 }
