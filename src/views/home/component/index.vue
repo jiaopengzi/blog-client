@@ -15,24 +15,25 @@
         <el-container class="container-main">
             <el-main>
                 <!-- 轮播图 -->
-                <HomeCarousel v-if="!hasSearchKeyWord && !isPostDetailUpdateRoute" />
+                <HomeCarousel v-show="showHomeCarousel" />
                 <!-- 文章列表 -->
                 <PostList
-                    v-if="!isPostDetailUpdateRoute"
+                    v-if="showPostList || showSearchList"
                     :pagination-data="pagination"
                     :is-show-loading="isShowPostListLoading"
                     :highlight-key="highlightKey"
-                    :has-search-key-word="hasSearchKeyWord"
+                    :show-post-list="showPostList"
+                    :show-search-list="showSearchList"
                     @update-current-page="updateCurrentPage"
                     @update-page-size="updatePageSize"
                     @click-category="clickCategory"
                     @post-id="handlePostId"
                     @pagination-block-visible="paginationBlockVisibleChange"
                 />
-                <PostDetail v-if="isPostDetailUpdateRoute" :post-id="postId" />
+                <PostDetail v-if="showPostDetail" :post-id="postId" />
             </el-main>
 
-            <el-aside ref="asideRef" class="el-aside pc" v-if="!hasSearchKeyWord">
+            <el-aside ref="asideRef" class="el-aside pc" v-show="showHomeAside">
                 <!-- 推荐阅读 -->
                 <RecommendedRead class="el-aside-item" :post-data="recommendedPost" />
                 <!-- 热门文章 -->
@@ -51,7 +52,7 @@
 import { useResizeObserver } from "@vueuse/core"
 import type { ElAside } from "element-plus"
 import { storeToRefs } from "pinia"
-import { computed, onUnmounted, reactive, ref, useTemplateRef, watch } from "vue"
+import { onUnmounted, reactive, ref, useTemplateRef, watch } from "vue"
 
 import { type ViewPostRequest } from "@/api/post/view"
 import JBreadcrumb from "@/components/common/breadcrumb"
@@ -74,7 +75,7 @@ const { searchData } = defineProps<{ searchData: SearchData }>()
 const asideRef = useTemplateRef<InstanceType<typeof ElAside>>("asideRef")
 
 const statusStore = useStatusStore()
-const { isPostDetailUpdateRoute } = storeToRefs(statusStore)
+const { showPostDetail, showPostList, showHomeCarousel, showHomeAside, showSearchList } = storeToRefs(statusStore)
 const highlightKey = "post_title" // 高亮的key
 
 // 获取首页数据
@@ -124,12 +125,16 @@ const {
 watch(
     () => searchData,
     async (val: SearchData) => {
-        console.log("============>搜索参数", val)
         // 关键字为空时，直接返回
-        if (val.keyword === "" || val.keyword.trim() === "") return
+        if (val.keyword === "" || val.keyword.trim() === "") {
+            statusStore.setHome() // 文章列表状态
+            return
+        }
 
         // 处理搜索关键字
         mainReq.key_word = val.keyword.trim()
+        statusStore.setSearch() // 搜索状态
+
         // 去除掉参数中的 highlight_fields, pre_tags, post_tags,后续会根据 useHome自动加上, 避免在url中出现
         clearParamsExcept(["key_word"])
         await updateRouterPush()
@@ -137,16 +142,11 @@ watch(
     { deep: true },
 )
 
-// 判断是否有搜索关键字
-const hasSearchKeyWord = computed(() => {
-    return !!mainReq.key_word
-})
-
 const postId = ref<string>("") // 文章id
 
 // 点击文章
 const handlePostId = (id: string) => {
-    statusStore.setIsPostDetailUpdateRoute(true) // 设置为文章详情路由
+    statusStore.setPostDetail() // 显示文章详情
     postId.value = id
 }
 

@@ -42,14 +42,14 @@ const statusStore = useStatusStore()
 
 // 点击面包屑
 const clickBreadcrumbHome = () => {
-    statusStore.setIsPostDetailUpdateRoute(false)
+    statusStore.setHome()
     breadcrumbStore.click({ display: "首页", to: RouteNames.Home })
     router.push({ name: RouteNames.Home })
 }
 
 // 点击面包屑
 const clickBreadcrumb = (item: BreadcrumbItem) => {
-    statusStore.setIsPostDetailUpdateRoute(false)
+    statusStore.setHome()
     breadcrumbStore.click(item)
     router.push(item.to)
 }

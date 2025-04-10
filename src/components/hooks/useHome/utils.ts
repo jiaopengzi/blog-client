@@ -13,7 +13,6 @@ import { type ViewPostRequest } from "@/api/post/view"
 import { type QueryParamsOptions } from "@/api/request"
 import { routerPushByParams } from "@/router"
 import { RouteNames } from "@/router"
-import { useStatusStore } from "@/stores/status"
 import { parseRouteQuery } from "@/utils/queryParam"
 
 import type { ViewPostResKey } from "./types"
@@ -24,7 +23,6 @@ export function useUtils(
 ) {
     const route = useRoute()
     const router = useRouter()
-    const statusStore = useStatusStore()
 
     const hasPaginationParamsInURL = ref(false) // URL 中是否有分页参数
 
@@ -33,7 +31,6 @@ export function useUtils(
 
     // 更新查询参数
     const updateRouterPush = async () => {
-        statusStore.setIsPostDetailUpdateRoute(false) //非详情页
         // 遍历 options.noRouteKeys 中的参数, 如果 queryParams 存在该 key 则删除, 不参与路由
         if (options?.noRouteKeys) {
             options.noRouteKeys.forEach((key) => {

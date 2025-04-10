@@ -90,7 +90,7 @@ const handleSelect = async (index: string) => {
     }
 
     // 读取路由信息路由跳转
-    statusStore.setIsPostDetailUpdateRoute(false)
+    statusStore.setHome()
 
     const location = router.resolve(href)
     const path = location.path

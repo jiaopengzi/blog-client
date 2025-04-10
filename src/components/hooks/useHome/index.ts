@@ -32,7 +32,7 @@ export function useHome(
     const breadcrumbStore = useBreadcrumbStore()
     const statusStore = useStatusStore()
 
-    const { isPostDetailUpdateRoute } = storeToRefs(statusStore)
+    const { showPostList, showSearchList } = storeToRefs(statusStore)
 
     const {
         pagination, // 分页数据
@@ -69,6 +69,7 @@ export function useHome(
 
     // 点击分类
     const clickCategory = async (category: PostCategory) => {
+        statusStore.setHome() // 显示文章列表
         clearParamsExcept(["post_category_slug"])
         queryParams.post_category_slug = category.slug
         await updateRouterPush()
@@ -76,6 +77,7 @@ export function useHome(
 
     // 点击标签
     const clickTag = async (tag: PostTag) => {
+        statusStore.setHome() // 显示文章列表
         clearParamsExcept(["post_tag_slug"])
         queryParams.post_tag_slug = tag.slug
         await updateRouterPush()
@@ -83,6 +85,7 @@ export function useHome(
 
     // 点击月份归档
     const clickMonthArchive = async (row: MonthArchiveData) => {
+        statusStore.setHome() // 显示文章列表
         clearParamsExcept(["year", "month"])
         queryParams.year = row.year
         queryParams.month = row.month
@@ -190,9 +193,7 @@ export function useHome(
         () => route.fullPath,
         async (newVal) => {
             if (newVal) {
-                console.log("============>执行搜索", newVal)
-                // 非文章详情页，需要在请求数据前设置 isPostDetail 为 false
-                if (!isPostDetailUpdateRoute.value) {
+                if (showPostList.value || showSearchList.value) {
                     await updateByRoute()
                 }
             }

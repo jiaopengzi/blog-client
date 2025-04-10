@@ -32,7 +32,7 @@ export function useHome(
     const breadcrumbStore = useBreadcrumbStore()
     const statusStore = useStatusStore()
 
-    const { isPostDetailUpdateRoute } = storeToRefs(statusStore)
+    const { isPostDetail } = storeToRefs(statusStore)
 
     const {
         pagination, // 分页数据
@@ -212,7 +212,7 @@ export function useHome(
             if (newVal) {
                 console.log("============>执行搜索", newVal)
                 // 非文章详情页，需要在请求数据前设置 isPostDetail 为 false
-                if (!isPostDetailUpdateRoute.value) {
+                if (!isPostDetail.value) {
                     await updateByRoute()
                 }
             }

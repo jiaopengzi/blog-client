@@ -8,10 +8,10 @@
 
 <template>
     <div class="post-list">
-        <section v-if="!hasSearchKeyWord">
+        <section v-show="showPostList">
             <PostItemMain v-for="item in paginationAC.records" :key="item.id" :post-data="item" @click-category="clickCategory" @post-id="postId" />
         </section>
-        <section v-if="hasSearchKeyWord">
+        <section v-show="showSearchList">
             <PostItemSearch
                 v-for="(item, i) in paginationAC.records"
                 :key="item.id"
@@ -62,12 +62,14 @@ const {
     paginationData,
     isShowLoading = false,
     highlightKey,
-    hasSearchKeyWord,
+    showPostList,
+    showSearchList,
 } = defineProps<{
     paginationData: Pagination<PostResPagination>
     isShowLoading?: boolean // 是否显示loading
     highlightKey?: string // 高亮的key
-    hasSearchKeyWord?: boolean // 是否有搜索关键字
+    showPostList?: boolean // 默认文章列表
+    showSearchList?: boolean // 搜索列表
 }>()
 
 // 事件
@@ -135,7 +137,7 @@ onMounted(async () => {
 
 watch(
     () => paginationData,
-    (newVal, oldVal) => {
+    (newVal) => {
         paginationAC.value = newVal
     },
     { deep: true },
