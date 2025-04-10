@@ -27,24 +27,29 @@ export function createDefaultEditorState(options: EditorStateOptions = {}): Edit
         tocMarkdown: [], // markdown 目录内容
         tocHtml: [], // html 目录内容
         tocShow: false, // 是否显示目录
+
         editor: "", // 编辑器内容
         editorShow: true, // 是否显示编辑器
-        preview: "", // 预览内容
-        previewShow: true, // 是否显示预览
-        imgUrls: [], // 图片链接数组
-        isShowElImageViewer: false, // 是否显示图片预览组件
         scrollHideViewStr: "", // 滚动条隐藏的编辑器 markdown 字符串
         isAsyncScroll: true, // 是否异步滚动
         isFullScreen: false, // 是否全屏
         isShowEmojiPicker: false, // 是否显示 emoji picker
-        isShowPreviewWechat: false, // 是否显示微信预览
         isShortcutKey: true, // 默认开启快捷键
-        width: 1200, // 编辑器宽度
-        isUserScrollPreview: true, // 用户是否滚动预览
         headingShowCurrentIndex: 0, // 目录显示当前索引
         vimMode: false, // 是否开启 vim 模式
         commandKeys: defaultCommandKeys.postPc, // 默认使用 postPc 模式的快捷键
         mode: "post", // 默认模式为文章模式
+
+        // preview 相关内容
+        previewShow: true, // 是否显示预览
+        html: "", // html 内容
+        imgUrls: [], // 图片地址 list
+        isShowElImageViewer: false, // 是否显示图片预览
+        width: 1200, // 宽度
+        height: "600", // 高度
+        isShowPreviewWechat: false, // 是否显示微信预览
+        isUserScrollPreview: true, // 是否用户滚动预览
+        isRemoveFirstH1: false, // 是否移除第一个 H1 标签
     }
     return { ...defaultState, ...options }
 }
@@ -347,6 +352,20 @@ export async function katexToImage(container: HTMLElement, className: string = "
 export function htmlHandleWeChat(htmlSrc: string) {
     htmlSrc = htmlHandleCopyBtns(htmlSrc)
     htmlSrc = htmlHandleDivToSection(htmlSrc)
+    return htmlSrc
+}
+/**
+ * @description: html 移除第一个 h1 标签
+ * @param htmlSrc html 源码
+ * @return  移除后的 html 源码
+ */
+export function htmlRemoveFirstH1(htmlSrc: string) {
+    // 移除第一个 h1 标签
+    const h1Match = htmlSrc.match(regexCache.hTagRegex)
+    if (h1Match) {
+        const h1Tag = h1Match[0] // 获取第一个 h1 标签
+        htmlSrc = htmlSrc.replace(h1Tag, "") // 移除第一个 h1 标签
+    }
     return htmlSrc
 }
 

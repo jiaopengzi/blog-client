@@ -6,6 +6,62 @@
   "description": "vue 重写项目",
   "glyphs": [
     {
+      "icon_id": "248964",
+      "name": "comment",
+      "font_class": "comment",
+      "unicode": "e689",
+      "unicode_decimal": 59017
+    },
+    {
+      "icon_id": "1127387",
+      "name": "time",
+      "font_class": "time",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "1467358",
+      "name": "hourglass",
+      "font_class": "hourglass",
+      "unicode": "e693",
+      "unicode_decimal": 59027
+    },
+    {
+      "icon_id": "886699",
+      "name": "like",
+      "font_class": "like",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "11466624",
+      "name": "collect",
+      "font_class": "collect",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "17483004",
+      "name": "words",
+      "font_class": "words",
+      "unicode": "e66b",
+      "unicode_decimal": 58987
+    },
+    {
+      "icon_id": "40379398",
+      "name": "share",
+      "font_class": "share",
+      "unicode": "e6b0",
+      "unicode_decimal": 59056
+    },
+    {
+      "icon_id": "40379447",
+      "name": "view",
+      "font_class": "view",
+      "unicode": "e6c8",
+      "unicode_decimal": 59080
+    },
+    {
       "icon_id": "3876340",
       "name": "vim",
       "font_class": "vim",
@@ -151,13 +207,6 @@
       "font_class": "post",
       "unicode": "e68b",
       "unicode_decimal": 59019
-    },
-    {
-      "icon_id": "1512527",
-      "name": "comment",
-      "font_class": "comment",
-      "unicode": "e7e2",
-      "unicode_decimal": 59362
     },
     {
       "icon_id": "12048871",

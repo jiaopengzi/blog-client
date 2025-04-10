@@ -90,15 +90,12 @@ const handleSelect = async (index: string) => {
     }
 
     // 读取路由信息路由跳转
+    statusStore.setIsPostDetailUpdateRoute(false)
+
     const location = router.resolve(href)
     const path = location.path
     const query = location.query
     await router.push({ path, query })
-
-    // 判断 path 是否为首页，如果是首页则刷新页面
-    if (path === "/") {
-        statusStore.setIsHomeUpdateRoute(true)
-    }
 }
 
 // 监听路由变化，更新默认选中菜单项

@@ -9,15 +9,16 @@
 <template>
     <div class="content">
         <!-- 面包屑 -->
-        <JBreadcrumb :breadcrumb-items="breadcrumbItems" @click-breadcrumb-item="clickBreadcrumb" />
+        <JBreadcrumb />
 
         <!-- 正文内容 -->
         <el-container class="container-main">
             <el-main>
                 <!-- 轮播图 -->
-                <!-- <HomeCarousel v-if="!hasSearchKeyWord" /> -->
+                <HomeCarousel v-if="!hasSearchKeyWord && !isPostDetailUpdateRoute" />
                 <!-- 文章列表 -->
-                <!-- <PostList
+                <PostList
+                    v-if="!isPostDetailUpdateRoute"
                     :pagination-data="pagination"
                     :is-show-loading="isShowPostListLoading"
                     :highlight-key="highlightKey"
@@ -27,8 +28,8 @@
                     @click-category="clickCategory"
                     @post-id="handlePostId"
                     @pagination-block-visible="paginationBlockVisibleChange"
-                /> -->
-                <PostDetail post-id="81355993295946470" />
+                />
+                <PostDetail v-if="isPostDetailUpdateRoute" :post-id="postId" />
             </el-main>
 
             <el-aside ref="asideRef" class="el-aside pc" v-if="!hasSearchKeyWord">
@@ -49,7 +50,8 @@
 <script setup lang="ts">
 import { useResizeObserver } from "@vueuse/core"
 import type { ElAside } from "element-plus"
-import { computed, onUnmounted, reactive, useTemplateRef, watch } from "vue"
+import { storeToRefs } from "pinia"
+import { computed, onUnmounted, reactive, ref, useTemplateRef, watch } from "vue"
 
 import { type ViewPostRequest } from "@/api/post/view"
 import JBreadcrumb from "@/components/common/breadcrumb"
@@ -58,19 +60,21 @@ import { useHome } from "@/components/hooks/useHome"
 import HotPost from "@/components/layout/aside/hot-post"
 import PostTag from "@/components/layout/aside/post-tag"
 import RecommendedRead from "@/components/layout/aside/recommended-read"
+import { useStatusStore } from "@/stores/status"
 
 import HomeCarousel from "./carousel"
 import PostDetail from "./post-detail"
 import PostList from "./post-list"
+import type { SearchData } from "./types"
 
 defineOptions({ name: "LayoutHome" })
 
-const { searchKeyWord = "" } = defineProps<{
-    searchKeyWord?: string // 搜索关键字
-}>()
+const { searchData } = defineProps<{ searchData: SearchData }>()
 
 const asideRef = useTemplateRef<InstanceType<typeof ElAside>>("asideRef")
 
+const statusStore = useStatusStore()
+const { isPostDetailUpdateRoute } = storeToRefs(statusStore)
 const highlightKey = "post_title" // 高亮的key
 
 // 获取首页数据
@@ -105,9 +109,6 @@ const {
     clickCategory,
     clickTag,
     clickMonthArchive,
-    handlePostId,
-    breadcrumbItems,
-    clickBreadcrumb,
     paginationBlockVisibleChange,
     isShowPostListLoading,
     clearParamsExcept,
@@ -121,18 +122,33 @@ const {
 })
 
 watch(
-    () => searchKeyWord,
-    async (val: string) => {
-        if (!val) {
-            return
-        }
+    () => searchData,
+    async (val: SearchData) => {
+        console.log("============>搜索参数", val)
+        // 关键字为空时，直接返回
+        if (val.keyword === "" || val.keyword.trim() === "") return
+
         // 处理搜索关键字
-        mainReq.key_word = val
+        mainReq.key_word = val.keyword.trim()
         // 去除掉参数中的 highlight_fields, pre_tags, post_tags,后续会根据 useHome自动加上, 避免在url中出现
         clearParamsExcept(["key_word"])
         await updateRouterPush()
     },
+    { deep: true },
 )
+
+// 判断是否有搜索关键字
+const hasSearchKeyWord = computed(() => {
+    return !!mainReq.key_word
+})
+
+const postId = ref<string>("") // 文章id
+
+// 点击文章
+const handlePostId = (id: string) => {
+    statusStore.setIsPostDetailUpdateRoute(true) // 设置为文章详情路由
+    postId.value = id
+}
 
 // 侧边栏高度计算
 const reCalculateHeight = () => {
@@ -163,11 +179,6 @@ const { stop } = useResizeObserver(asideRef, (entries) => {
     //     `尺寸变化了  x: ${x},y: ${y},left: ${left},top: ${top},width: ${width}, height: ${height}`,
     // )
     reCalculateHeight()
-})
-
-// 判断是否有搜索关键字
-const hasSearchKeyWord = computed(() => {
-    return !!mainReq.key_word
 })
 
 onUnmounted(() => {

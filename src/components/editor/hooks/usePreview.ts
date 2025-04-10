@@ -7,7 +7,6 @@
  */
 
 import type { Ref } from "vue"
-import { reactive, watchEffect } from "vue"
 
 import type { CodemirrorRef } from "../components/codemirror"
 import { EditorStateManager } from "../state"
@@ -20,13 +19,6 @@ import { EditorStateManager } from "../state"
 export function usePreview(editorStateManager: EditorStateManager, codemirrorRef: Ref<CodemirrorRef | null> | null = null) {
     // 状态管理
     const editorState = editorStateManager.getState()
-
-    const previewData = reactive({
-        html: editorState.preview,
-        imgUrls: editorState.imgUrls,
-        isShowElImageViewer: editorState.isShowElImageViewer,
-        isUserScrollPreview: editorState.isUserScrollPreview,
-    })
 
     // 显示图片预览
     const showImageViewer = (imgUrls: string[], isShowElImageViewer: boolean) => {
@@ -57,15 +49,7 @@ export function usePreview(editorStateManager: EditorStateManager, codemirrorRef
         }
     }
 
-    watchEffect(() => {
-        previewData.html = editorState.preview
-        previewData.imgUrls = editorState.imgUrls
-        previewData.isShowElImageViewer = editorState.isShowElImageViewer
-        previewData.isUserScrollPreview = editorState.isUserScrollPreview
-    })
-
     return {
-        previewData,
         showImageViewer,
         closeImageViewer,
         handleMouseInElement,

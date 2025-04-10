@@ -8,7 +8,8 @@
 
 import { type LocationQuery } from "vue-router"
 
-import { PaginationParamsInURL, type PaginationRequest, type QueryParamsOptions } from "@/api/request"
+import { PaginationParamsInURL, type QueryParamsOptions } from "@/api/request"
+// import { PaginationParamsInURL, type PaginationRequest, type QueryParamsOptions } from "@/api/request"
 
 /**
  * 解析路由查询参数
@@ -16,9 +17,10 @@ import { PaginationParamsInURL, type PaginationRequest, type QueryParamsOptions 
  * @param options 请求参数选项
  * @returns {Promise<{ hasPaginationParams: boolean, hasQueryParams: boolean, queryParamsResult: T }>}
  */
-export const parseRouteQuery = async <T extends PaginationRequest>(
+export const parseRouteQuery = async <T>(
+    // export const parseRouteQuery = async <T extends PaginationRequest>(
     routeQuery: LocationQuery,
-    options: QueryParamsOptions<T>,
+    options?: QueryParamsOptions<T>,
 ): Promise<{ hasPaginationParams: boolean; hasQueryParams: boolean; queryParamsResult: T }> => {
     type KeyType = keyof T // key 类型
 

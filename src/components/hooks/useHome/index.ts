@@ -6,8 +6,9 @@
  * @Description  : 首页 hooks
  */
 
+import { storeToRefs } from "pinia"
 import { onBeforeMount, type Reactive, ref, watch } from "vue"
-import { useRoute, useRouter } from "vue-router"
+import { useRoute } from "vue-router"
 
 import { type ViewPostRequest } from "@/api/post/view"
 import { type PostCategory } from "@/api/postCategory/view"
@@ -15,6 +16,8 @@ import { type PostTag } from "@/api/postTag/view"
 import { type QueryParamsOptions } from "@/api/request"
 import { type MonthArchiveData } from "@/components/common/month-archive"
 import { usePagination } from "@/components/hooks/usePagination"
+import { useBreadcrumbStore } from "@/stores/breadcrumb"
+import { useStatusStore } from "@/stores/status"
 
 import { useGetData } from "./api"
 import { useUtils } from "./utils"
@@ -24,9 +27,12 @@ export function useHome(
     options?: QueryParamsOptions<ViewPostRequest>,
 ) {
     const route = useRoute()
-    const router = useRouter()
 
     const isShowPostListLoading = ref(false) // 是否显示文章列表加载中
+    const breadcrumbStore = useBreadcrumbStore()
+    const statusStore = useStatusStore()
+
+    const { isPostDetailUpdateRoute } = storeToRefs(statusStore)
 
     const {
         pagination, // 分页数据
@@ -40,18 +46,14 @@ export function useHome(
     } = useGetData(options)
 
     const {
-        isBreadcrumbClick, // 是否点击面包屑
-        breadcrumbItems, // 面包屑
-        clickBreadcrumb, // 点击面包屑
         hasPaginationParamsInURL, // URL 中是否有分页参数
         updateRouterPush, // 更新查询参数和路由
         updateQueryParams, // 从URL中解析参数
-        updateBreadcrumbItems, // 更新面包屑
-        updatePageBreadcrumb, // 更新分页面包屑
         clearParamsExcept, // 清空除了指定参数的查询条件
         paginationBlockVisibleCount, // 分页块出现次数
         pageSizeTemp, // 临时每页显示条数
         resetPaginationConf, // 重置分页配置
+        generateBreadcrumbPath, // 生成面包屑路径
     } = useUtils(queryParams, options)
 
     // 通过路由更新数据
@@ -62,18 +64,8 @@ export function useHome(
         updateBreadcrumbFromPagination()
     }
 
-    // 更新分页数据
-    const updatePaginate = async () => {
-        await updatePaginateWithIsRequest()
-    }
-
     // 分页 hooks
-    const { isRequest, updateIsRequest, updateCurrentPage, updatePageSize, updatePaginateWithIsRequest } = usePagination(
-        pagination,
-        getPaginate,
-        queryParams,
-        updateRouterPush,
-    )
+    const { updateCurrentPage, updatePageSize, updatePaginate } = usePagination(pagination, getPaginate, queryParams, updateRouterPush)
 
     // 点击分类
     const clickCategory = async (category: PostCategory) => {
@@ -97,14 +89,6 @@ export function useHome(
         await updateRouterPush()
     }
 
-    // 点击文章
-    const handlePostId = (id: string) => {
-        router.push({
-            name: "post",
-            params: { id },
-        })
-    }
-
     // 分页块显示次数变化
     const paginationBlockVisibleChange = async (visible: boolean) => {
         // 如果是关键字搜索则不请求
@@ -121,19 +105,9 @@ export function useHome(
         paginationBlockVisibleCount.value++
 
         // 构造后续数据请求
-        console.log("============>结构", queryParams)
         const req = {
             ...queryParams,
             current_page: paginationBlockVisibleCount.value,
-        }
-
-        // 更新请求标志
-        updateIsRequest({ newPageSize: req.page_size, newCurrentPage: req.current_page })
-
-        if (!isRequest.value) {
-            isRequest.value = true
-            isShowPostListLoading.value = false
-            return
         }
 
         isShowPostListLoading.value = true
@@ -149,7 +123,6 @@ export function useHome(
         }
 
         // 恢复状态
-        isRequest.value = true
         isShowPostListLoading.value = false
     }
 
@@ -162,7 +135,7 @@ export function useHome(
 
         // 解析关键字
         if (key_word) {
-            updateBreadcrumbItems(key_word)
+            breadcrumbStore.updateItems(key_word, generateBreadcrumbPath())
         }
 
         // 解析分类
@@ -170,7 +143,7 @@ export function useHome(
             categoryLoop: for (const item of pagination.records) {
                 for (const category of item.categories) {
                     if (category.slug === post_category_slug) {
-                        updateBreadcrumbItems(category.name)
+                        breadcrumbStore.updateItems(category.name, generateBreadcrumbPath())
                         break categoryLoop
                     }
                 }
@@ -182,7 +155,7 @@ export function useHome(
             tagLoop: for (const item of pagination.records) {
                 for (const tag of item.tags) {
                     if (tag.slug === post_tag_slug) {
-                        updateBreadcrumbItems(tag.name)
+                        breadcrumbStore.updateItems(tag.name, generateBreadcrumbPath())
                         break tagLoop
                     }
                 }
@@ -193,34 +166,35 @@ export function useHome(
         if (year) {
             // 先移除 month
             queryParams.month = undefined
-            updateBreadcrumbItems(`${year}`)
+            breadcrumbStore.updateItems(`${year}`, generateBreadcrumbPath())
         }
         if (month) {
             // 添加 month
             queryParams.month = month
-            updateBreadcrumbItems(`${month}`, false)
+            breadcrumbStore.updateItems(`${month}`, generateBreadcrumbPath(), false)
         }
 
         if (!key_word && !post_category_slug && !post_tag_slug && !year && !month) {
             // 清空面包屑
-            breadcrumbItems.length = 0
+            breadcrumbStore.init()
         }
 
         // 更新页码面包屑前设置回原来的值
         queryParams.current_page = current_page
         queryParams.page_size = page_size
 
-        updatePageBreadcrumb()
+        breadcrumbStore.updatePage(current_page)
     }
 
     watch(
         () => route.fullPath,
         async (newVal) => {
             if (newVal) {
-                await updateByRoute()
-
-                // 重置面包屑点击状态
-                isBreadcrumbClick.value = false
+                console.log("============>执行搜索", newVal)
+                // 非文章详情页，需要在请求数据前设置 isPostDetail 为 false
+                if (!isPostDetailUpdateRoute.value) {
+                    await updateByRoute()
+                }
             }
         },
     )
@@ -245,9 +219,6 @@ export function useHome(
         clickCategory, // 点击分类
         clickTag, // 点击标签
         clickMonthArchive, // 点击月份归档
-        handlePostId, // 点击文章
-        breadcrumbItems, // 面包屑
-        clickBreadcrumb, // 点击面包屑
         paginationBlockVisibleChange, // 分页块显示次数变化
         isShowPostListLoading, // 是否显示文章列表加载中
         clearParamsExcept, // 清空除了指定参数的查询条件

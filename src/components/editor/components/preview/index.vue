@@ -7,9 +7,9 @@
 -->
 
 <template>
-    <div ref="previewRef" id="preview" v-html="html" @click="handleDelegateClick" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave"></div>
+    <div ref="previewRef" id="preview" v-html="htmlData" @click="handleDelegateClick" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave"></div>
     <!-- 参考:https://github.com/element-plus/element-plus/blob/dev/packages/components/image/src/image.vue -->
-    <el-image-viewer v-if="preview.isShowElImageViewer" @close="closeElImageViewer" :url-list="preview.imgUrls" />
+    <el-image-viewer v-if="isShowElImageViewer" @close="closeElImageViewer" :url-list="imgUrls" />
 </template>
 
 <script lang="ts" setup>
@@ -30,13 +30,22 @@ import { scrollToElement } from "@/utils/scroll"
 
 import { CustomElementVideoPlayer } from "../../customElements"
 import { mountVideoPlayerOnCustomElements } from "../../customElementsMount"
-import { htmlHandleWeChat } from "../../utils"
+import { htmlHandleWeChat, htmlRemoveFirstH1 } from "../../utils"
 import type { PreviewProps } from "./types"
 
 defineOptions({ name: "HtmlPreview" })
 
 // 定义 props
-const props = defineProps<PreviewProps>()
+const {
+    html, // html 内容
+    imgUrls, // 图片地址 list
+    isShowElImageViewer, // 是否显示图片预览
+    width, // 宽度
+    height, // 高度
+    isShowPreviewWechat, // 是否显示微信预览
+    isUserScrollPreview, // 是否用户滚动预览
+    isRemoveFirstH1, // 是否移除第一个 H1 标签
+} = defineProps<PreviewProps>()
 
 // 定义 emits 子组件 传参
 const emit = defineEmits<{
@@ -50,14 +59,19 @@ const emit = defineEmits<{
 // const previewRef = ref<HTMLElement | null>(null) // 预览容器
 const previewRef = useTemplateRef<HTMLElement | null>("previewRef")
 
-const html = computed(() => {
-    if (props.isShowPreviewWechat) {
-        // 微信公众号预览
-        return htmlHandleWeChat(props.preview.html)
-    } else {
-        // 普通预览
-        return props.preview.html
+const htmlData = computed(() => {
+    // 获取预览内容
+    let htmlStr = html || "" // 预览内容
+    if (isRemoveFirstH1) {
+        htmlStr = htmlRemoveFirstH1(htmlStr) // 移除第一个 h1 标签
     }
+
+    if (isShowPreviewWechat) {
+        // 微信公众号预览
+        htmlStr = htmlHandleWeChat(html)
+    }
+
+    return htmlStr
 })
 
 // 鼠标是否在元素内
@@ -77,17 +91,17 @@ const onMouseLeave = () => {
 
 // 初始化 css 变量 编辑器宽度和高度
 const initializeCssVariable = () => {
-    if (previewRef.value && props.width) {
-        previewRef.value.style.setProperty("--my-preview-width", `${props.width}`)
+    if (previewRef.value && width) {
+        previewRef.value.style.setProperty("--my-preview-width", `${width}`)
     }
-    if (previewRef.value && props.height) {
-        previewRef.value.style.setProperty("--my-preview-height", `${props.height}`)
+    if (previewRef.value && height) {
+        previewRef.value.style.setProperty("--my-preview-height", `${height}`)
     }
 }
 
 // 监听 props isShowPreviewWechat 变化 添加自定义属性
 watch(
-    () => props.isShowPreviewWechat,
+    () => isShowPreviewWechat,
     (newVal) => {
         if (previewRef.value && newVal) {
             previewRef.value.setAttribute("data-preview", "wechat")
@@ -99,11 +113,9 @@ watch(
 
 // 监听 props 宽高 变化
 watch(
-    () => [props.height, props.width],
+    () => [height, width],
     ([newHeight, newWidth]) => {
-        console.log("============>h1", newHeight)
         if (previewRef.value && (newHeight || newWidth)) {
-            console.log("============>h2", newHeight)
             initializeCssVariable() // 初始化 css 变量
         }
     },
@@ -137,7 +149,7 @@ const handlePreClick = (preElement: HTMLElement) => {
 // 更新图片预览
 const updateImageViewer = (imgElement: HTMLImageElement) => {
     if (imgElement.src) {
-        emit("show-image-viewer", shiftArray(props.preview.imgUrls, imgElement.src) || [], true)
+        emit("show-image-viewer", shiftArray(imgUrls, imgElement.src) || [], true)
         document.body.style.overflow = "hidden"
     }
 }
@@ -297,7 +309,7 @@ watch([y, isMouseInElement], ([yVal, isMouseInElementVal]) => {
 
 // 监控 html 变化,获取所有的 h 标签 并挂载视频播放器
 watch(
-    () => html.value,
+    () => htmlData.value,
     (newHtml) => {
         if (newHtml) {
             // 注意：这里使用 nextTick，确保 html 已经渲染完成

@@ -56,8 +56,13 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         await routerPushByParams(router, routeName, queryParams)
     }
 
+    // 更新分页内容
+    const updatePaginate = async (): Promise<void> => {
+        await updatePaginateWithIsRequest()
+    }
+
     // 是否请求
-    const { updateCurrentPage, updatePageSize, updatePaginate } = usePagination(pagination, getPaginate, queryParams, updateRouterPush)
+    const { updateCurrentPage, updatePageSize, updatePaginateWithIsRequest } = usePagination(pagination, getPaginate, queryParams, updateRouterPush)
 
     // 更新查询参数
     const updateQueryParams = async () => {

@@ -20,27 +20,34 @@ export interface MarkdownHeadingLine {
 export type EditorMode = "post" | "comment"
 
 export interface EditorState {
+    // toc 目录相关
     tocMarkdown: MarkdownHeadingLine[] // markdown 目录内容
     tocHtml: Heading[] // html 目录内容
     tocShow: boolean // 是否显示目录
+    
+    // 编辑器
     editor: string // 编辑器内容
     editorShow: boolean // 是否显示编辑器
-    preview: string // 预览内容 html
-    previewShow: boolean // 是否显示预览
-    imgUrls: string[] // 图片链接数组
-    isShowElImageViewer: boolean // 是否显示图片预览组件
     scrollHideViewStr: string // 滚动条隐藏的编辑器 view markdown 字符串
     isAsyncScroll: boolean // 是否异步滚动
     isFullScreen: boolean // 是否全屏
     isShowEmojiPicker: boolean // 是否显示 emoji picker
-    isShowPreviewWechat: boolean // 是否显示微信预览
     isShortcutKey: boolean // 是否开启快捷键
-    width: number // 编辑器宽度
-    isUserScrollPreview: boolean // 用户是否滚动预览
     headingShowCurrentIndex: number // 当前显示的 h 标签 index
     vimMode: boolean // 是否开启 vim 模式
     commandKeys: CommandsKey[] // 工具栏按钮
     mode: EditorMode // 编辑器模式
+    
+    // preview 相关内容
+    previewShow: boolean // 是否显示预览
+    html: string // html 内容
+    imgUrls: string[] // 图片地址 list
+    isShowElImageViewer: boolean // 是否显示图片预览
+    width: number // 宽度
+    height: string // 高度
+    isShowPreviewWechat: boolean // 是否显示微信预览
+    isUserScrollPreview: boolean // 是否用户滚动预览
+    isRemoveFirstH1: boolean // 是否移除第一个 H1 标签
 }
 
 // EditorStateOptions 编辑器状态选项

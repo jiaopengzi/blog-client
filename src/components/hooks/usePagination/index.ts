@@ -6,7 +6,7 @@
  * @Description  : 分页内容是否请求
  */
 
-import { type Reactive, ref } from "vue"
+import { type Reactive } from "vue"
 
 import { type PaginationRequest } from "@/api/request"
 import { type Pagination } from "@/api/response"
@@ -25,30 +25,6 @@ export function usePagination<T, K extends PaginationRequest>(
     queryParams: Reactive<K>,
     updateRouterPush: () => Promise<void>,
 ) {
-    /**
-     * 是否请求
-     * 主要是在分页组件中，页码和每页显示条数变化时，根据总记录数判断是否需要再次请求
-     * 减少不必要的请求
-     */
-    const isRequest = ref(true)
-
-    /**
-     * 更新是否请求
-     * @param newPageSize 新的每页显示条数
-     * @param newCurrentPage 新的当前页
-     */
-    const updateIsRequest = ({ newPageSize = 10, newCurrentPage = 1 }) => {
-        // 超过请记录数则不请求
-        if (pagination.current_page !== 1) {
-            isRequest.value = true
-            return
-        }
-
-        const isMaxPageSizeOld = pagination.total < pagination.page_size * pagination.current_page
-        const isMaxPageSizeNew = pagination.total < newPageSize * newCurrentPage
-        isRequest.value = !(isMaxPageSizeOld && isMaxPageSizeNew)
-    }
-
     /**
      * 更新当前页
      * @param val 当前页
@@ -70,30 +46,14 @@ export function usePagination<T, K extends PaginationRequest>(
     }
 
     //  更新分页携带是否请求标志
-    const updatePaginateWithIsRequest = async () => {
-        // pagination.total 等于 0, 说明上次没有请求到数据, 无论 isRequest 是否为 false, 都需要再次请求
-        if (!isRequest.value && pagination.total > 0) {
-            isRequest.value = true // 重置为 true
-            return
-        }
-
-        // 关键字搜索时, pagination.total 为 0, 说明没有数据, 不需要再次请求
-        if (queryParams.key_word && pagination.total === 0) {
-            isRequest.value = true // 重置为 true
-            return
-        }
-
+    const updatePaginate = async () => {
         const data = await paginateAPI(queryParams as K)
         Object.assign(pagination, data)
-
-        isRequest.value = true // 重置为 true
     }
 
     return {
-        isRequest,
-        updateIsRequest,
         updateCurrentPage,
         updatePageSize,
-        updatePaginateWithIsRequest,
+        updatePaginate,
     }
 }

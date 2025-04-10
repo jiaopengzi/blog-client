@@ -23,33 +23,31 @@
         <!-- 编辑器容器 -->
         <div ref="mdContainerRef" class="md-container">
             <!-- 导航栏 -->
-            <div class="md-toc md-container-item" v-show="editorState.tocShow">
-                <EditorToc
-                    :headings="editorState.tocHtml"
-                    :heading-show-current-index="editorState.headingShowCurrentIndex"
-                    @heading-clicked="tocHeadingClicked"
-                />
+            <div class="md-toc md-container-item" v-show="state.tocShow">
+                <EditorToc :headings="state.tocHtml" :heading-show-current-index="state.headingShowCurrentIndex" @heading-clicked="tocHeadingClicked" />
             </div>
 
             <!-- 编辑器 -->
-            <div class="md-editor md-container-item" v-show="editorState.editorShow">
+            <div class="md-editor md-container-item" v-show="state.editorShow">
                 <EditorCodemirror
                     ref="codemirrorRef"
-                    :doc="editorState.editor"
+                    :doc="state.editor"
                     :height="cmHeight"
-                    :vim-mode="editorState.vimMode"
+                    :vim-mode="state.vimMode"
                     @handle-scroll="handleScroll"
                     @update-editor-doc="updateEditorDoc"
                 />
             </div>
 
             <!-- 预览 -->
-            <div class="md-preview md-container-item" v-show="editorState.previewShow">
+            <div class="md-preview md-container-item" v-show="state.previewShow">
                 <HtmlPreview
                     ref="previewRef"
-                    :preview="previewData"
-                    :is-show-preview-wechat="editorState.isShowPreviewWechat"
-                    :is-user-scroll-preview="editorState.isUserScrollPreview"
+                    :html="state.html"
+                    :img-urls="state.imgUrls"
+                    :is-show-el-image-viewer="state.isShowElImageViewer"
+                    :is-show-preview-wechat="state.isShowPreviewWechat"
+                    :is-user-scroll-preview="state.isUserScrollPreview"
                     :height="cmHeight"
                     @show-image-viewer="showImageViewer"
                     @close-image-viewer="closeImageViewer"
@@ -84,7 +82,7 @@ const emit = defineEmits<{
     (event: "updateEditorStatus", val: boolean): void
 }>()
 
-const editorState = stateManager.getState() // 获取编辑器状态
+const state = stateManager.getState()
 
 // ref
 const mdLayoutRef = useTemplateRef<HTMLElement | null>("mdLayoutRef") //编辑器布局
@@ -115,11 +113,11 @@ const updateEditorDoc = (editorDoc: string) => {
 }
 
 // preview
-const { previewData, showImageViewer, closeImageViewer, handleMouseInElement, handleHeadingShowCurrent } = usePreview(stateManager, codemirrorRef)
+const { showImageViewer, closeImageViewer, handleMouseInElement, handleHeadingShowCurrent } = usePreview(stateManager, codemirrorRef)
 
 // 监听编辑器宽度变化
 watch(
-    () => editorState.width,
+    () => state.width,
     (newWidth) => {
         document.documentElement.style.setProperty("--md-editor-width", `${newWidth}px`)
     },

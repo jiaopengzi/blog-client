@@ -11,7 +11,11 @@
  * @param src 源数据 string | number
  * @return string 返回带单位的数据
  */
-export function unit(src: string | number): string {
+export function unit(src: string | number | null | undefined): string {
+    if (src === null || src === undefined) {
+        return ""
+    }
+
     // 首先判断 src 是否为 string 类型,转换为float
     const temp = typeof src === "string" ? parseFloat(src) : (src as number)
 
@@ -39,7 +43,11 @@ export function unit(src: string | number): string {
  * @param src 源数据 string | number
  * @return boolean 返回是否为0
  */
-export function isZero(src: string | number): boolean {
+export function isZero(src: string | number | null | undefined): boolean {
+    if (src === null || src === undefined) {
+        return true
+    }
+
     // 首先判断 src 是否为 string 类型,转换为int
     const temp = typeof src === "string" ? parseInt(src) : (src as number)
 

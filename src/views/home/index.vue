@@ -9,7 +9,7 @@
 <template>
     <div class="page">
         <LayoutHeader @handle-search="handleSearch" />
-        <LayoutHome :search-key-word="searchKeyWord" />
+        <LayoutHome :search-data="searchData" />
         <LayoutFooter />
     </div>
 
@@ -24,15 +24,18 @@ import { ref } from "vue"
 import LayoutFooter from "@/components/layout/footer"
 import LayoutHeader from "@/components/layout/header"
 
-import LayoutHome from "./component"
+import LayoutHome, { type SearchData } from "./component"
 
 defineOptions({ name: "PageHome" })
 
-const searchKeyWord = ref("") // 搜索关键字
+const searchData = ref<SearchData>({
+    keyword: "",
+    time: new Date(),
+})
 
 const handleSearch = (val: string) => {
-    console.log("搜索内容:", val)
-    searchKeyWord.value = val
+    searchData.value.keyword = val
+    searchData.value.time = new Date()
 }
 </script>
 
@@ -40,7 +43,7 @@ const handleSearch = (val: string) => {
 // 返回顶部容器
 .backtop-container {
     // 位置参考 main.scss中的 z-index 管理
-    z-index: 999;
+    z-index: 1000;
 
     .backtop {
         height: 100%;

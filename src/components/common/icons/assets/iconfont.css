@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4152487 */
-  src: url('iconfont.woff2?t=1743480360771') format('woff2'),
-       url('iconfont.woff?t=1743480360771') format('woff'),
-       url('iconfont.ttf?t=1743480360771') format('truetype');
+  src: url('iconfont.woff2?t=1744200720311') format('woff2'),
+       url('iconfont.woff?t=1744200720311') format('woff'),
+       url('iconfont.ttf?t=1744200720311') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,38 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-comment:before {
+  content: "\e689";
+}
+
+.icon-time:before {
+  content: "\e61d";
+}
+
+.icon-hourglass:before {
+  content: "\e693";
+}
+
+.icon-like:before {
+  content: "\e616";
+}
+
+.icon-collect:before {
+  content: "\e605";
+}
+
+.icon-words:before {
+  content: "\e66b";
+}
+
+.icon-share:before {
+  content: "\e6b0";
+}
+
+.icon-view:before {
+  content: "\e6c8";
 }
 
 .icon-vim:before {
@@ -95,10 +127,6 @@
 
 .icon-post:before {
   content: "\e68b";
-}
-
-.icon-comment:before {
-  content: "\e7e2";
 }
 
 .icon-collapse:before {

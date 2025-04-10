@@ -19,34 +19,32 @@
             <h2 class="title" @click="postId(postData.id)">{{ postData.post_title }}</h2>
 
             <!-- 作者 日志 访问量 -->
-            <div class="meta">
-                <span class="meta-date meta-item">{{ formatTime(postData.created_at, "Asia/Shanghai", "YYYY-MM-DD") }}</span>
-                <span v-if="!isZero(postData.view_count)" class="meta-view meta-item">
-                    <el-icon><View /></el-icon>
-                    <span class="meta-item-unit">{{ unit(postData.view_count) }}</span>
-                </span>
-                <span v-if="!isZero(postData.comment_count)" class="meta-comment meta-item">
-                    <el-icon><ChatRound /></el-icon>
-                    <span class="meta-item-unit">{{ unit(postData.comment_count) }}</span>
-                </span>
-            </div>
+            <PostMeta :meta="postMeta" />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ChatRound, View } from "@element-plus/icons-vue"
-import {} from "vue"
+import { computed } from "vue"
 
 import type { PostResCommon } from "@/api/post/common"
-import { formatTime } from "@/utils/dateTime"
-import { isZero, unit } from "@/utils/unit"
+import PostMeta, { type PostMetaProps } from "@/components/common/post-meta"
 
 defineOptions({ name: "PostItemAside" })
 
 const { postData } = defineProps<{
     postData: PostResCommon
 }>()
+
+// 文章元数据
+const postMeta = computed(() => {
+    const data: PostMetaProps = {
+        created_at: postData.created_at,
+        formatStr: "YYYY-MM-DD",
+        view_count: postData.view_count,
+    }
+    return data
+})
 
 // 事件
 const emit = defineEmits<{
@@ -115,25 +113,5 @@ const postId = (val: string) => {
 // 当鼠标移动到 .title 上时, .title 的颜色变为 var(--jpz-color-primary)
 .title:hover {
     color: var(--jpz-color-primary);
-}
-
-.meta {
-    display: flex;
-    align-items: center;
-}
-
-.meta-item {
-    color: var(--jpz-text-color-placeholder);
-    font-size: smaller;
-    line-height: 150%;
-    // 图标居中
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 4px;
-}
-
-.meta-item-unit {
-    margin-left: 4px;
 }
 </style>

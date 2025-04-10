@@ -6,16 +6,17 @@
  * @Description  : 工具
  */
 
-import { type Reactive, reactive, ref } from "vue"
+import { type Reactive, ref } from "vue"
 import { useRoute, useRouter } from "vue-router"
 
 import { type ViewPostRequest } from "@/api/post/view"
 import { type QueryParamsOptions } from "@/api/request"
 import { routerPushByParams } from "@/router"
 import { RouteNames } from "@/router"
+import { useStatusStore } from "@/stores/status"
 import { parseRouteQuery } from "@/utils/queryParam"
 
-import type { BreadcrumbItem, ViewPostResKey } from "./types"
+import type { ViewPostResKey } from "./types"
 
 export function useUtils(
     queryParams: Reactive<ViewPostRequest>, // 查询参数
@@ -23,10 +24,8 @@ export function useUtils(
 ) {
     const route = useRoute()
     const router = useRouter()
+    const statusStore = useStatusStore()
 
-    const isBreadcrumbClick = ref(false) // 是否点击面包屑
-
-    const breadcrumbItems = reactive<BreadcrumbItem[]>([]) // 面包屑
     const hasPaginationParamsInURL = ref(false) // URL 中是否有分页参数
 
     const paginationBlockVisibleCount = ref(1) // 分页块出现次数
@@ -34,6 +33,7 @@ export function useUtils(
 
     // 更新查询参数
     const updateRouterPush = async () => {
+        statusStore.setIsPostDetailUpdateRoute(false) //非详情页
         // 遍历 options.noRouteKeys 中的参数, 如果 queryParams 存在该 key 则删除, 不参与路由
         if (options?.noRouteKeys) {
             options.noRouteKeys.forEach((key) => {
@@ -68,36 +68,6 @@ export function useUtils(
         }).href
     }
 
-    // 生成面包屑路径
-    const updateBreadcrumbItems = (text: string, isClear: boolean = true) => {
-        // 清空面包屑
-        if (isClear) {
-            breadcrumbItems.length = 0
-        }
-
-        // 更新面包屑
-        const breadcrumbItem: BreadcrumbItem = {
-            display: text,
-            to: generateBreadcrumbPath(),
-        }
-
-        breadcrumbItems.push(breadcrumbItem)
-    }
-
-    // 更新页码面包屑
-    const updatePageBreadcrumb = () => {
-        // 当 current_page 为 1 时不显示
-        if (queryParams.current_page && queryParams.current_page !== 1) {
-            updateBreadcrumbItems(`第 ${queryParams.current_page} 页`, false)
-        }
-    }
-
-    // 点击面包屑
-    const clickBreadcrumb = (item: BreadcrumbItem) => {
-        isBreadcrumbClick.value = true
-    }
-
-    // 清空查询参数, 除了特定字段
     const clearParamsExcept = (fieldsToKeep: ViewPostResKey[]) => {
         const keysToClear: ViewPostResKey[] = [
             "key_word",
@@ -130,18 +100,13 @@ export function useUtils(
     }
 
     return {
-        isBreadcrumbClick,
-        breadcrumbItems,
-        clickBreadcrumb,
         hasPaginationParamsInURL,
         updateRouterPush,
         updateQueryParams,
-        generateBreadcrumbPath,
-        updateBreadcrumbItems,
-        updatePageBreadcrumb,
         clearParamsExcept,
         paginationBlockVisibleCount,
         pageSizeTemp,
         resetPaginationConf,
+        generateBreadcrumbPath,
     }
 }

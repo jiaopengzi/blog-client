@@ -140,4 +140,11 @@ export enum IconKeys {
     ThemeLight = "theme-light",
     Social = "social",
     Upload = "upload",
+    Like = "like",
+    Collect = "collect",
+    Words = "words",
+    Share = "share",
+    View = "view",
+    Time = "time",
+    Hourglass = "hourglass",
 }

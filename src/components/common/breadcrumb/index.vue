@@ -14,38 +14,47 @@
         </el-icon>
 
         <el-breadcrumb :separator-icon="ArrowRight">
-            <el-breadcrumb-item><span class="breadcrumb-item">当前位置</span></el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ name: RouteNames.Home }" @click="clickBreadcrumb"><span class="breadcrumb-item">首页</span></el-breadcrumb-item>
-            <el-breadcrumb-item v-for="item in breadcrumbItems" :key="item.to" :to="item.to" @click="clickBreadcrumb">
-                <span class="breadcrumb-item">{{ item.display }}</span>
+            <el-breadcrumb-item><span class="breadcrumb-start">当前位置</span></el-breadcrumb-item>
+            <el-breadcrumb-item @click="clickBreadcrumbHome"><span class="breadcrumb-home">首页</span></el-breadcrumb-item>
+            <el-breadcrumb-item v-for="(item, index) in items" :key="item.to" @click="index === items.length - 1 ? null : clickBreadcrumb(item)">
+                <span :class="index === items.length - 1 ? 'breadcrumb-last' : 'breadcrumb-item'">
+                    {{ item.display }}
+                </span>
             </el-breadcrumb-item>
         </el-breadcrumb>
     </div>
 </template>
 <script setup lang="ts">
 import { ArrowRight, Location } from "@element-plus/icons-vue"
+import { storeToRefs } from "pinia"
+import { useRouter } from "vue-router"
 
 import { RouteNames } from "@/router"
-
-import type { BreadcrumbItem } from "./types"
+import { type BreadcrumbItem, useBreadcrumbStore } from "@/stores/breadcrumb"
+import { useStatusStore } from "@/stores/status"
 
 defineOptions({ name: "JBreadcrumb" })
+const router = useRouter()
 
-// 数据
-const { breadcrumbItems } = defineProps<{
-    breadcrumbItems: BreadcrumbItem[]
-}>()
+const breadcrumbStore = useBreadcrumbStore()
+const { items } = storeToRefs(breadcrumbStore)
+const statusStore = useStatusStore()
 
-// 事件
-const emit = defineEmits<{
-    (event: "click-breadcrumb-item", val: BreadcrumbItem): void // 更新当前页
-}>()
+// 点击面包屑
+const clickBreadcrumbHome = () => {
+    statusStore.setIsPostDetailUpdateRoute(false)
+    breadcrumbStore.click({ display: "首页", to: RouteNames.Home })
+    router.push({ name: RouteNames.Home })
+}
 
 // 点击面包屑
 const clickBreadcrumb = (item: BreadcrumbItem) => {
-    emit("click-breadcrumb-item", item)
+    statusStore.setIsPostDetailUpdateRoute(false)
+    breadcrumbStore.click(item)
+    router.push(item.to)
 }
 </script>
+
 <style scoped lang="scss">
 // 导航面包屑
 .breadcrumb {
@@ -82,10 +91,18 @@ const clickBreadcrumb = (item: BreadcrumbItem) => {
     }
 }
 
-.breadcrumb-item {
+.breadcrumb-start,
+.breadcrumb-home,
+.breadcrumb-item,
+.breadcrumb-last {
     margin-right: 4px;
     color: var(--jpz-text-color-secondary);
     font-weight: 500;
+}
+
+.breadcrumb-home,
+.breadcrumb-item {
+    cursor: pointer;
 }
 
 .breadcrumb-logo {

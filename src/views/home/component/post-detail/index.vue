@@ -7,77 +7,84 @@
 -->
 
 <template>
-    <div class="post-detail">
-        <HtmlPreview
-            ref="previewRef"
-            :preview="previewData"
-            :is-show-preview-wechat="localEditorState.isShowPreviewWechat"
-            :is-user-scroll-preview="localEditorState.isUserScrollPreview"
-            @show-image-viewer="showImageViewer"
-            @close-image-viewer="closeImageViewer"
-            @is-mouse-in-element="handleMouseInElement"
-            @heading-show-current="handleHeadingShowCurrent"
-        />
-    </div>
+    <section ref="webFullscreenRef">
+        <section class="post-detail-bg">
+            <div class="post-detail">
+                <PostMeta :meta="postMeta" @immersion-read="toggle" @author-id="clickAuthorId" @post-id="editPost" />
+                <HtmlPreview
+                    ref="previewRef"
+                    :html="state.html"
+                    :img-urls="state.imgUrls"
+                    :is-show-el-image-viewer="state.isShowElImageViewer"
+                    :is-show-preview-wechat="state.isShowPreviewWechat"
+                    :is-user-scroll-preview="state.isUserScrollPreview"
+                    :is-remove-first-h1="state.isRemoveFirstH1"
+                    @show-image-viewer="showImageViewer"
+                    @close-image-viewer="closeImageViewer"
+                    @is-mouse-in-element="handleMouseInElement"
+                    @heading-show-current="handleHeadingShowCurrent"
+                />
+            </div>
+        </section>
+    </section>
 </template>
 
 <script lang="ts" setup>
-import { storeToRefs } from "pinia"
-import { computed, nextTick, onMounted, onUnmounted, reactive, ref, useTemplateRef, watch } from "vue"
+import { reactive, useTemplateRef } from "vue"
 
-import { viewPostByIDAPI, type ViewPostByIDRequest } from "@/api/post/viewByID"
-import { viewPostByIDAdminAPI } from "@/api/post/viewByIDAdmin"
-import { ResponseCode } from "@/api/response"
-import { type EditorState, EditorStateManager } from "@/components/editor"
+import { type ViewPostByIDRequest } from "@/api/post/viewByID"
+import PostMeta from "@/components/common/post-meta"
 import HtmlPreview from "@/components/editor/components/preview"
 import { usePreview } from "@/components/editor/hooks/usePreview"
-import { DeviceType, useDeviceStore } from "@/stores/device"
+import { usePostDetail } from "@/components/hooks/usePostDetail"
+import { useWebFullscreen } from "@/components/hooks/useWebFullscreen"
+
 defineOptions({ name: "PostDetail" })
 
 const { postId } = defineProps<{
     postId: string
 }>()
 
-// 事件
-const emit = defineEmits<{
-    (event: "postId", val: string): void
-}>()
+const postDetailRef = useTemplateRef("webFullscreenRef")
+const { toggle } = useWebFullscreen(postDetailRef)
 
-const markdownStr = ref("") // 文章内容
+// 文章id
+const postIdReq = reactive<ViewPostByIDRequest>({
+    post_id: postId,
+})
 
-const getData = async (postID: string) => {
-    const req: ViewPostByIDRequest = {
-        post_id: postID,
-    }
-    const res = await viewPostByIDAdminAPI(req)
-    if (res.data.code === ResponseCode.PostViewByIDSuccess) {
-        const postData = res.data.data
-        if (postData) {
-            // 文章数据
-            markdownStr.value = postData.post_content
-        }
-        return res
-    }
-}
+const { manager, state, postMeta, clickAuthorId, editPost } = usePostDetail(postIdReq)
 
-const localManager = new EditorStateManager()
-const localEditorState = reactive<EditorState>(localManager.getState())
 // preview
-const { previewData, showImageViewer, closeImageViewer, handleMouseInElement, handleHeadingShowCurrent } = usePreview(localManager)
-
-watch(
-    () => postId,
-    async (val) => {
-        await getData(val)
-        localManager.updateState(markdownStr.value)
-    },
-    { immediate: true },
-)
-const deviceStore = useDeviceStore()
-const { device } = storeToRefs(deviceStore)
+const { showImageViewer, closeImageViewer, handleMouseInElement, handleHeadingShowCurrent } = usePreview(manager)
 </script>
 <style lang="scss" scoped>
+.web--fullscreen {
+    @include webFullscreen();
+    overflow-y: auto;
+}
+
+.post-detail {
+    background-color: var(--jpz-bg-color);
+    // 居中
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 @include respond-to("pc") {
+    .web--fullscreen {
+        .post-detail-bg {
+            width: 100%;
+            height: 100%;
+            background-color: var(--jpz-bg-color-page);
+        }
+        .post-detail {
+            width: pc.$width-page-main;
+            margin: auto;
+        }
+    }
 }
 
 @include respond-to("pad") {

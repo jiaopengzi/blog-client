@@ -34,20 +34,7 @@
             </div>
 
             <!-- 作者 日志 访问量 -->
-            <div class="meta">
-                <span class="meta-avatar meta-item">
-                    <AvatarInitials :avatar="postData.author_info.user_avatar" :name="postData.author_info.user_display_name" :size="24" />
-                </span>
-                <span class="meta-date meta-item">{{ formatTime(postData.created_at, "Asia/Shanghai", "YYYY-MM-DD") }}</span>
-                <span v-if="!isZero(postData.view_count)" class="meta-view meta-item">
-                    <el-icon><View /></el-icon>
-                    <span class="meta-item-unit">{{ unit(postData.view_count) }}</span>
-                </span>
-                <span v-if="!isZero(postData.comment_count)" class="meta-comment meta-item">
-                    <el-icon><ChatRound /></el-icon>
-                    <span class="meta-item-unit">{{ unit(postData.comment_count) }}</span>
-                </span>
-            </div>
+            <PostMeta :meta="postMeta" @author-id="clickAuthorId" />
         </div>
 
         <!-- 阅读跳转 -->
@@ -56,14 +43,11 @@
 </template>
 
 <script lang="ts" setup>
-import { ChatRound, View } from "@element-plus/icons-vue"
 import { computed } from "vue"
 
 import { type PostResPagination, PostStatusCode } from "@/api/post/common"
 import { type PostCategory } from "@/api/postCategory/view"
-import AvatarInitials from "@/components/common/avatar-initials"
-import { formatTime } from "@/utils/dateTime"
-import { isZero, unit } from "@/utils/unit"
+import PostMeta, { type PostMetaProps } from "@/components/common/post-meta"
 
 defineOptions({ name: "PostItemMain" })
 
@@ -71,10 +55,28 @@ const { postData } = defineProps<{
     postData: PostResPagination
 }>()
 
+// 文章元数据
+const postMeta = computed(() => {
+    const data: PostMetaProps = {
+        created_at: postData.created_at,
+        formatStr: "YYYY-MM-DD",
+        comment_count: postData.comment_count,
+        view_count: postData.view_count,
+        like_count: postData.like_count,
+        author_avatar: postData.author_info.user_avatar,
+        author_display_name: postData.author_info.user_display_name,
+        avatar_size: 24, // 头像大小，默认 24px
+        author_id: postData.author_info.id,
+        is_show_read_time: false, // 是否显示阅读时间
+    }
+    return data
+})
+
 // 事件
 const emit = defineEmits<{
     (event: "clickCategory", val: PostCategory): void
     (event: "postId", val: string): void
+    (event: "author-id", val: string): void
 }>()
 
 // 点击分类
@@ -85,6 +87,11 @@ const clickCategory = (val: PostCategory) => {
 // 点击文章
 const postId = (val: string) => {
     emit("postId", val)
+}
+
+// 点击作者
+const clickAuthorId = (val: string) => {
+    emit("author-id", val)
 }
 
 // 右上角提示符内容
@@ -252,34 +259,6 @@ const topRightTip = computed(() => {
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-.meta {
-    display: flex;
-    align-items: center;
-}
-
-.meta-item {
-    margin-right: 14px;
-    color: var(--jpz-text-color-placeholder);
-    font-size: 14px;
-    line-height: 150%;
-
-    // 图标居中
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.meta-item-unit {
-    margin-left: 4px;
-}
-
-.avatar {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    margin-right: 5px;
 }
 
 .read-more {

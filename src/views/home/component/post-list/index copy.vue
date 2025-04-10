@@ -47,7 +47,7 @@
 <script lang="ts" setup>
 import { useIntersectionObserver } from "@vueuse/core"
 import { storeToRefs } from "pinia"
-import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from "vue"
+import { computed, nextTick, onMounted, onUnmounted, reactive, ref, useTemplateRef, watch } from "vue"
 
 import { type PostResPagination } from "@/api/post/common"
 import { type PostCategory } from "@/api/postCategory/view"
@@ -87,15 +87,14 @@ const paginationLayout = computed(() => {
 })
 
 // 当前分页数据
-const paginationAC = ref(getEmptyPagination<PostResPagination>())
+const paginationAC = reactive(getEmptyPagination<PostResPagination>())
 
 // 分页组件 ref
 const paginationBlockRef = useTemplateRef("paginationBlockRef")
 
 // 更新当前页
 const updateCurrentPage = (val: number) => {
-    // TODO: 当没有数据的时候会触发当前页为 1,导致后续问题,暂时使用 if 来解决
-    if (paginationAC.value.total === 0) return
+    console.log("============>组件触发分页", val)
     emit("updateCurrentPage", val)
 }
 
@@ -135,8 +134,8 @@ onMounted(async () => {
 
 watch(
     () => paginationData,
-    (newVal, oldVal) => {
-        paginationAC.value = newVal
+    (newVal) => {
+        Object.assign(paginationAC, newVal)
     },
     { deep: true },
 )
