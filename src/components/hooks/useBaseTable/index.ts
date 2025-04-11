@@ -61,13 +61,13 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
 
     // 更新查询参数
     const updateQueryParams = async () => {
-        const { hasQueryParams, queryParamsResult } = await parseRouteQuery(route.query, options as QueryParamsOptions<K>)
+        const { hasQuery, result } = await parseRouteQuery(route.query, options as QueryParamsOptions<K>)
 
         // 清空 queryParams
         Object.keys(queryParams).forEach((key) => delete queryParams[key as keyof typeof queryParams])
 
-        if (hasQueryParams) {
-            Object.assign(queryParams, queryParamsResult)
+        if (hasQuery) {
+            Object.assign(queryParams, result)
         }
     }
 

@@ -8,10 +8,10 @@
 
 <template>
     <div class="post-list">
-        <section v-show="showPostList">
+        <div v-if="showPostList">
             <PostItemMain v-for="item in paginationAC.records" :key="item.id" :post-data="item" @click-category="clickCategory" @post-id="postId" />
-        </section>
-        <section v-show="showSearchList">
+        </div>
+        <div v-if="showSearchList">
             <PostItemSearch
                 v-for="(item, i) in paginationAC.records"
                 :key="item.id"
@@ -20,7 +20,7 @@
                 :highlight-key="highlightKey"
                 @post-id="postId"
             />
-        </section>
+        </div>
         <!-- 空 -->
         <el-empty v-if="paginationAC.records.length === 0" class="empty" description="没有数据" />
     </div>
@@ -116,6 +116,14 @@ const postId = (val: string) => {
     emit("postId", val)
 }
 
+watch(
+    () => paginationData,
+    (newVal) => {
+        paginationAC.value = newVal
+    },
+    { deep: true },
+)
+
 let stopIntersectionObserver: () => void // 停止监听函数
 const isInitialRender = ref(true) // 是否是初始渲染
 
@@ -134,14 +142,6 @@ onMounted(async () => {
 
     stopIntersectionObserver = stop
 })
-
-watch(
-    () => paginationData,
-    (newVal) => {
-        paginationAC.value = newVal
-    },
-    { deep: true },
-)
 
 onUnmounted(() => {
     stopIntersectionObserver()

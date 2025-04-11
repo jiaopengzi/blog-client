@@ -9,6 +9,7 @@
 export * from "./auth"
 export * from "./beforeunload"
 export * from "./editor"
+export * from "./home"
 export * from "./registerAdmin"
 export * from "./setup"
 export * from "./types"

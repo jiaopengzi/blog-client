@@ -6,23 +6,20 @@
  * @Description  : 数据请求
  */
 
-import { reactive, ref } from "vue"
+import { reactive } from "vue"
 
 import type { PostResCommon, PostResPagination } from "@/api/post/common"
 import { getPostCountByMonthAPI } from "@/api/post/getPostCountByMonth"
-import { viewPostAPI } from "@/api/post/view"
-import { viewPostByIDAPI, type ViewPostByIDRequest } from "@/api/post/viewByID"
+import { viewPostAPI, type ViewPostRequest } from "@/api/post/view"
 import { viewHotPostAPI } from "@/api/post/viewHotPost"
 import { viewRecommendedPostAPI } from "@/api/post/viewRecommendedPost"
 import { type QueryParamsOptions } from "@/api/request"
 import { getEmptyPagination, type Pagination, type Res, ResponseCode, type ResPromise } from "@/api/response"
 import { type MonthArchiveData } from "@/components/common/month-archive"
-import { type PostMetaProps } from "@/components/common/post-meta"
-import { EditorStateManager } from "@/components/editor"
 
-import type { ReqQuery, ViewPostReqKey } from "./types"
+import type { ViewPostReqKey } from "./types"
 
-export function useGetData(manager: EditorStateManager, options?: QueryParamsOptions<ReqQuery>) {
+export function useGetData(options?: QueryParamsOptions<ViewPostRequest>) {
     const pagination = reactive<Pagination<PostResPagination>>(getEmptyPagination<PostResPagination>()) // 分页数据
 
     const hotPost = reactive<PostResCommon[]>([]) // 热门文章
@@ -38,7 +35,7 @@ export function useGetData(manager: EditorStateManager, options?: QueryParamsOpt
     }
 
     // 获取分页
-    async function getPaginate(req: ReqQuery): Promise<Pagination<PostResPagination>> {
+    async function getPaginate(req: ViewPostRequest): Promise<Pagination<PostResPagination>> {
         // 遍历 options.NoRequest 中的参数，如果 req 中的参数值等于 options.NoRequest 中的值则删除,不请求
         for (const key in options?.noRequestKeys) {
             if (key in req && req[key as ViewPostReqKey] === options.noRequestKeys[key as ViewPostReqKey]) {
@@ -99,38 +96,6 @@ export function useGetData(manager: EditorStateManager, options?: QueryParamsOpt
             })
         }
     }
-    const postMeta = ref<PostMetaProps>({}) // 文章元数据
-
-    const getPostDetail = async (req: ViewPostByIDRequest) => {
-        const res = await viewPostByIDAPI(req)
-        if (res.data.code === ResponseCode.PostViewByIDSuccess) {
-            const postData = res.data.data
-            if (postData) {
-                // 文章数据
-                manager.updateState(postData.post_content)
-                // 文章元数据
-                postMeta.value = {
-                    post_id: postData.id,
-                    created_at: postData.created_at,
-                    comment_count: postData.comment_count,
-                    view_count: postData.view_count,
-                    like_count: postData.like_count,
-                    collect_count: postData.collect_count,
-                    words_count: postData.words_count,
-                    post_title: postData.post_title,
-                    author_avatar: postData.author_info.user_avatar,
-                    author_display_name: postData.author_info.user_display_name,
-                    avatar_size: 20, // 头像大小，默认 24px
-                    author_id: postData.author_info.id,
-                    is_show_read_time: true,
-                    // TODO: 判断是否启用作者
-                    is_author_edit: true,
-                    is_immersion_read: true,
-                }
-            }
-            return res
-        }
-    }
 
     return {
         pagination, // 分页数据
@@ -141,8 +106,5 @@ export function useGetData(manager: EditorStateManager, options?: QueryParamsOpt
         getRecommendedPost, // 推荐文章
         getPostCountByMonth, // 月份归档
         getPaginate, // 获取分页
-
-        postMeta, // 文章元数据
-        getPostDetail, // 获取文章详情
     }
 }

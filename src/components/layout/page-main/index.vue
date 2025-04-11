@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\views\home\component\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 主页内容
+ * FilePath    : blog-client\src\components\layout\page-main\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 主页面
 -->
 
 <template>
@@ -17,20 +17,7 @@
                 <!-- 轮播图 -->
                 <HomeCarousel v-show="showHomeCarousel" />
                 <!-- 文章列表 -->
-                <PostList
-                    v-if="showPostList || showSearchList"
-                    :pagination-data="pagination"
-                    :is-show-loading="isShowPostListLoading"
-                    :highlight-key="highlightKey"
-                    :show-post-list="showPostList"
-                    :show-search-list="showSearchList"
-                    @update-current-page="updateCurrentPage"
-                    @update-page-size="updatePageSize"
-                    @click-category="clickCategory"
-                    @post-id="clickPost"
-                    @pagination-block-visible="paginationBlockVisibleChange"
-                />
-                <PostDetail v-if="showPostDetail" />
+                <slot />
             </el-main>
 
             <el-aside ref="asideRef" class="el-aside pc" v-show="showHomeAside">
@@ -54,20 +41,19 @@ import type { ElAside } from "element-plus"
 import { storeToRefs } from "pinia"
 import { onBeforeMount, onUnmounted, reactive, useTemplateRef, watch } from "vue"
 
+import { type ViewPostRequest } from "@/api/post/view"
 import JBreadcrumb from "@/components/common/breadcrumb"
 import MonthArchive from "@/components/common/month-archive"
-import { type ReqQuery, useHome } from "@/components/hooks/useHome"
+import { usePageMain } from "@/components/hooks/usePageMain"
 import HotPost from "@/components/layout/aside/hot-post"
 import PostTag from "@/components/layout/aside/post-tag"
 import RecommendedRead from "@/components/layout/aside/recommended-read"
-import { type SearchData } from "@/components/layout/search"
 import { useStatusStore } from "@/stores/status"
 
-import HomeCarousel from "./carousel"
-import PostDetail from "./post-detail"
-import PostList from "./post-list"
+import HomeCarousel from "../carousel"
+import type { SearchData } from "../search"
 
-defineOptions({ name: "LayoutHome" })
+defineOptions({ name: "LayoutPageMain" })
 
 const { searchData } = defineProps<{ searchData: SearchData }>()
 
@@ -77,29 +63,20 @@ const statusStore = useStatusStore()
 const { showPostDetail, showPostList, showHomeCarousel, showHomeAside, showSearchList } = storeToRefs(statusStore)
 
 // 获取首页数据
-const mainReq = reactive<ReqQuery>({} as ReqQuery)
+const mainReq = reactive<ViewPostRequest>({} as ViewPostRequest)
 
 const {
-    pagination,
     updateRouterPush,
-    updateCurrentPage,
-    updatePageSize,
-    updateByRoute,
-    getHostPost,
-    getRecommendedPost,
-    getPostCountByMonth,
     hotPost,
     recommendedPost,
     monthArchiveProps,
-    clickCategory,
+    getHostPost, // 热门文章
+    getRecommendedPost, // 推荐文章
+    getPostCountByMonth, // 月份归档
     clickTag,
     clickMonthArchive,
-    paginationBlockVisibleChange,
-    isShowPostListLoading,
     clearParamsExcept,
-    highlightKey,
-    clickPost,
-} = useHome(mainReq)
+} = usePageMain(mainReq)
 
 watch(
     () => searchData,
@@ -157,7 +134,6 @@ onUnmounted(() => {
 })
 
 onBeforeMount(async () => {
-    await updateByRoute()
     await getHostPost()
     await getRecommendedPost()
     await getPostCountByMonth()
@@ -217,11 +193,5 @@ onBeforeMount(async () => {
     display: flex;
     flex-direction: column;
     background-color: var(--jpz-bg-color-page);
-}
-
-.pagination-block {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
 }
 </style>

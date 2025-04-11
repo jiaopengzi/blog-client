@@ -9,6 +9,8 @@
 // public 路由名称
 export enum RouteNamesDefault {
     Home = "home",
+    Search = "search",
+    Detail = "detail",
     Setup = "setup",
     Test = "test",
     Test1 = "test1",

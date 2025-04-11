@@ -27,9 +27,10 @@ export function useUtils(
 
     // 更新查询参数
     const updateQueryParams = async () => {
-        const { hasQueryParams, queryParamsResult } = await parseRouteQuery(route.query)
-        if (hasQueryParams) {
-            Object.assign(queryParams, queryParamsResult)
+        console.log("============>detail", route.query)
+        const { hasQuery, result } = await parseRouteQuery(route.query)
+        if (hasQuery) {
+            Object.assign(queryParams, result)
         }
     }
 

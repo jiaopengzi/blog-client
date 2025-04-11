@@ -13,6 +13,7 @@ import {
     beforeunloadMiddleware,
     editorMiddleware,
     handleMiddleware,
+    homeMiddleware,
     registerAdminMiddleware,
     setupMiddleware,
     updateHeadMiddleware,
@@ -27,7 +28,15 @@ export const router = createRouter({
 
 // 路由守卫
 router.beforeEach(async (to, from) => {
-    const middlewares = [authMiddleware, beforeunloadMiddleware, editorMiddleware, registerAdminMiddleware, setupMiddleware, updateHeadMiddleware]
+    const middlewares = [
+        authMiddleware,
+        beforeunloadMiddleware,
+        editorMiddleware,
+        homeMiddleware,
+        registerAdminMiddleware,
+        setupMiddleware,
+        updateHeadMiddleware,
+    ]
     return await handleMiddleware(middlewares, to, from)
 })
 

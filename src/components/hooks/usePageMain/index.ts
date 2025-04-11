@@ -7,7 +7,7 @@
  */
 
 import { storeToRefs } from "pinia"
-import { onBeforeMount, type Reactive, ref, watch } from "vue"
+import { type Reactive, ref, watch } from "vue"
 import { useRoute } from "vue-router"
 
 import { type ViewPostRequest } from "@/api/post/view"
@@ -22,17 +22,45 @@ import { useStatusStore } from "@/stores/status"
 import { useGetData } from "./api"
 import { useUtils } from "./utils"
 
-export function useHome(
+export function usePageMain(
     queryParams: Reactive<ViewPostRequest>, // 查询参数
-    options?: QueryParamsOptions<ViewPostRequest>,
 ) {
     const route = useRoute()
+
+    // 字符串类型的key
+    const stringKeys: StringKeys<ViewPostRequest>[] = [
+        "post_author",
+        "post_category_id",
+        "post_category_slug",
+        "post_tag_id",
+        "post_tag_slug",
+        "key_word",
+        "pre_tags",
+        "post_tags",
+    ]
+
+    // 字符串类型的key
+    const numberKeys: NumberKeys<ViewPostRequest>[] = ["year", "month", "current_page", "page_size"]
+
+    // 不需要路由的key
+    const noRouteKeys: (keyof ViewPostRequest)[] = ["highlight_fields", "pre_tags", "post_tags"]
+
+    const highlightKey = "post_title" // 高亮的key
+
+    const options: QueryParamsOptions<ViewPostRequest> = {
+        stringKeys,
+        numberKeys,
+        noRouteKeys,
+        highlight_fields: [highlightKey], // 高亮字段
+        pre_tags: "<span class='highlight-title'>", // 高亮前缀
+        post_tags: "</span>", // 高亮后缀
+    }
 
     const isShowPostListLoading = ref(false) // 是否显示文章列表加载中
     const breadcrumbStore = useBreadcrumbStore()
     const statusStore = useStatusStore()
 
-    const { isPostDetail } = storeToRefs(statusStore)
+    const { showPostList, showSearchList } = storeToRefs(statusStore)
 
     const {
         pagination, // 分页数据
@@ -46,7 +74,7 @@ export function useHome(
     } = useGetData(options)
 
     const {
-        hasPaginationParamsInURL, // URL 中是否有分页参数
+        hasPaginationInURL, // URL 中是否有分页参数
         updateRouterPush, // 更新查询参数和路由
         updateQueryParams, // 从URL中解析参数
         clearParamsExcept, // 清空除了指定参数的查询条件
@@ -61,24 +89,15 @@ export function useHome(
         resetPaginationConf()
         await updateQueryParams()
         await updatePaginate()
-        updateBreadcrumbFromPagination()
-    }
-
-    // 更新分页数据
-    const updatePaginate = async () => {
-        await updatePaginateWithIsRequest()
+        updateBreadcrumb()
     }
 
     // 分页 hooks
-    const { isRequest, updateIsRequest, updateCurrentPage, updatePageSize, updatePaginateWithIsRequest } = usePagination(
-        pagination,
-        getPaginate,
-        queryParams,
-        updateRouterPush,
-    )
+    const { updateCurrentPage, updatePageSize, updatePaginate } = usePagination(pagination, getPaginate, queryParams, updateRouterPush)
 
     // 点击分类
     const clickCategory = async (category: PostCategory) => {
+        statusStore.setHome() // 显示文章列表
         clearParamsExcept(["post_category_slug"])
         queryParams.post_category_slug = category.slug
         await updateRouterPush()
@@ -86,6 +105,7 @@ export function useHome(
 
     // 点击标签
     const clickTag = async (tag: PostTag) => {
+        statusStore.setHome() // 显示文章列表
         clearParamsExcept(["post_tag_slug"])
         queryParams.post_tag_slug = tag.slug
         await updateRouterPush()
@@ -93,6 +113,7 @@ export function useHome(
 
     // 点击月份归档
     const clickMonthArchive = async (row: MonthArchiveData) => {
+        statusStore.setHome() // 显示文章列表
         clearParamsExcept(["year", "month"])
         queryParams.year = row.year
         queryParams.month = row.month
@@ -107,7 +128,7 @@ export function useHome(
         }
 
         // 如果分页块不可见 或者 URL 中有分页参数 或者 分页块显示次数超过 5 则不请求
-        if (!visible || hasPaginationParamsInURL.value || paginationBlockVisibleCount.value >= 5) {
+        if (!visible || hasPaginationInURL.value || paginationBlockVisibleCount.value >= 5) {
             return
         }
 
@@ -118,15 +139,6 @@ export function useHome(
         const req = {
             ...queryParams,
             current_page: paginationBlockVisibleCount.value,
-        }
-
-        // 更新请求标志
-        updateIsRequest({ newPageSize: req.page_size, newCurrentPage: req.current_page })
-
-        if (!isRequest.value) {
-            isRequest.value = true
-            isShowPostListLoading.value = false
-            return
         }
 
         isShowPostListLoading.value = true
@@ -142,12 +154,11 @@ export function useHome(
         }
 
         // 恢复状态
-        isRequest.value = true
         isShowPostListLoading.value = false
     }
 
     // 从 pagination.records 中解析参数并更新面包屑
-    const updateBreadcrumbFromPagination = () => {
+    const updateBreadcrumb = () => {
         const { key_word, current_page, page_size, post_tag_slug, post_category_slug, year, month } = queryParams
         // 清空分页的 current_page 和 page_size 参数，保证生成面包屑路径正确
         queryParams.current_page = undefined
@@ -210,21 +221,12 @@ export function useHome(
         () => route.fullPath,
         async (newVal) => {
             if (newVal) {
-                console.log("============>执行搜索", newVal)
-                // 非文章详情页，需要在请求数据前设置 isPostDetail 为 false
-                if (!isPostDetail.value) {
+                if (showPostList.value || showSearchList.value) {
                     await updateByRoute()
                 }
             }
         },
     )
-
-    onBeforeMount(async () => {
-        await updateByRoute()
-        await getHostPost()
-        await getRecommendedPost()
-        await getPostCountByMonth()
-    })
 
     return {
         pagination, // 分页数据
@@ -236,6 +238,9 @@ export function useHome(
         hotPost, // 热门文章
         recommendedPost, // 推荐文章
         monthArchiveProps, // 月份归档
+        getHostPost, // 热门文章
+        getRecommendedPost, // 推荐文章
+        getPostCountByMonth, // 月份归档
         clickCategory, // 点击分类
         clickTag, // 点击标签
         clickMonthArchive, // 点击月份归档

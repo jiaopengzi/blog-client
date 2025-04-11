@@ -280,6 +280,8 @@ const paginationAC = reactive(getEmptyPagination<Pagination<TableData>>())
 
 // 更新当前页
 const updateCurrentPage = (val: number) => {
+    // TODO: 当没有数据的时候会触发当前页为 1,导致后续问题,暂时使用 if 来解决
+    if (paginationAC.total === 0) return
     emit("update-current-page", val)
 }
 

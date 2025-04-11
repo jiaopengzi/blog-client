@@ -9,19 +9,22 @@
 import { type Reactive, ref } from "vue"
 import { useRoute, useRouter } from "vue-router"
 
+import { type ViewPostRequest } from "@/api/post/view"
 import { type QueryParamsOptions } from "@/api/request"
 import { routerPushByParams } from "@/router"
 import { RouteNames } from "@/router"
+import { useStatusStore } from "@/stores/status"
 import { parseRouteQuery } from "@/utils/queryParam"
 
-import type { ReqQuery, ViewPostReqKey } from "./types"
+import type { ViewPostReqKey } from "./types"
 
 export function useUtils(
-    queryParams: Reactive<ReqQuery>, // 查询参数
-    options?: QueryParamsOptions<ReqQuery>, // 请求参数选项
+    queryParams: Reactive<ViewPostRequest>, // 查询参数
+    options?: QueryParamsOptions<ViewPostRequest>, // 请求参数选项
 ) {
     const route = useRoute()
     const router = useRouter()
+    const statusStore = useStatusStore()
 
     const hasPaginationInURL = ref(false) // URL 中是否有分页参数
 
@@ -39,15 +42,17 @@ export function useUtils(
             })
         }
 
-        console.log("============>路由更新计数")
-
         // 路由中不需要高亮字段和前后标签
         await routerPushByParams(router, RouteNames.Home, queryParams)
     }
 
     // 更新查询参数
     const updateQueryParams = async () => {
-        const { hasQuery, hasPagination, result } = await parseRouteQuery(route.query, options as QueryParamsOptions<ReqQuery>)
+        const { hasPagination, hasQuery, hasPostDetail, result } = await parseRouteQuery(route.query, options as QueryParamsOptions<ViewPostRequest>)
+        if (hasPostDetail) {
+            statusStore.setPostDetail()
+            // return
+        }
 
         // 清空 queryParams
         Object.keys(queryParams).forEach((key) => delete queryParams[key as keyof typeof queryParams])
@@ -78,8 +83,6 @@ export function useUtils(
             "post_tag_slug",
             "current_page",
             "page_size",
-
-            "post_id",
 
             // "highlight_fields",
             // "pre_tags",

@@ -20,10 +20,20 @@ export interface PaginationRequest {
     key_word?: string // 关键字
 }
 
-// url 中是分页参数名 PaginationParamsInURL 的对象
+// url 中是分页参数键名 PaginationParamsInURL 的对象
 export enum PaginationParamsInURL {
     current_page = "current_page",
     page_size = "page_size",
+}
+
+// url 中是文章明细参数键名 PostDetailParamsInURL 的对象 
+export enum PostDetailParamsInURL {
+    post_id = "post_id",
+}
+
+// url 中是关键字参数键名 KeyWordParamsInURL 的对象
+export enum KeyWordParamsInURL {
+    key_word = "key_word",
 }
 
 // 请求参数选项

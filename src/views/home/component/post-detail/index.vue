@@ -36,24 +36,19 @@ import { type ViewPostByIDRequest } from "@/api/post/viewByID"
 import PostMeta from "@/components/common/post-meta"
 import HtmlPreview from "@/components/editor/components/preview"
 import { usePreview } from "@/components/editor/hooks/usePreview"
-import { usePostDetail } from "@/components/hooks/usePostDetail"
+import { useHome } from "@/components/hooks/useHome"
 import { useWebFullscreen } from "@/components/hooks/useWebFullscreen"
 
 defineOptions({ name: "PostDetail" })
-
-const { postId } = defineProps<{
-    postId: string
-}>()
 
 const postDetailRef = useTemplateRef("webFullscreenRef")
 const { toggle } = useWebFullscreen(postDetailRef)
 
 // 文章id
-const postIdReq = reactive<ViewPostByIDRequest>({
-    post_id: postId,
-})
+const postIdReq = reactive<ViewPostByIDRequest>({} as ViewPostByIDRequest)
+console.log("============>组件加载次数")
 
-const { manager, state, postMeta, clickAuthorId, editPost } = usePostDetail(postIdReq)
+const { manager, state, postMeta, clickAuthorId, editPost } = useHome(postIdReq)
 
 // preview
 const { showImageViewer, closeImageViewer, handleMouseInElement, handleHeadingShowCurrent } = usePreview(manager)

@@ -45,8 +45,8 @@ export function usePagination<T, K extends PaginationRequest>(
         await updateRouterPush()
     }
 
-    //  更新分页携带是否请求标志
-    const updatePaginate = async () => {
+    //  更新分页数据
+    const updatePaginate = async (): Promise<void> => {
         const data = await paginateAPI(queryParams as K)
         Object.assign(pagination, data)
     }
