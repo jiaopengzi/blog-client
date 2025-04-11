@@ -27,7 +27,6 @@
                     @update-current-page="updateCurrentPage"
                     @update-page-size="updatePageSize"
                     @click-category="clickCategory"
-                    @post-id="clickPost"
                     @pagination-block-visible="paginationBlockVisibleChange"
                 />
                 <PostDetail v-if="showPostDetail" />
@@ -52,7 +51,8 @@
 import { useResizeObserver } from "@vueuse/core"
 import type { ElAside } from "element-plus"
 import { storeToRefs } from "pinia"
-import { onBeforeMount, onUnmounted, reactive, useTemplateRef, watch } from "vue"
+import { onBeforeMount, onUnmounted, reactive, ref, useTemplateRef, watch } from "vue"
+import { useRoute } from "vue-router"
 
 import JBreadcrumb from "@/components/common/breadcrumb"
 import MonthArchive from "@/components/common/month-archive"
@@ -69,12 +69,13 @@ import PostList from "./post-list"
 
 defineOptions({ name: "LayoutHome" })
 
+const route = useRoute()
 const { searchData } = defineProps<{ searchData: SearchData }>()
 
 const asideRef = useTemplateRef<InstanceType<typeof ElAside>>("asideRef")
 
 const statusStore = useStatusStore()
-const { showPostDetail, showPostList, showHomeCarousel, showHomeAside, showSearchList } = storeToRefs(statusStore)
+const { showPostDetail, postId, showPostList, showHomeCarousel, showHomeAside, showSearchList } = storeToRefs(statusStore)
 
 // 获取首页数据
 const mainReq = reactive<ReqQuery>({} as ReqQuery)
@@ -98,9 +99,28 @@ const {
     isShowPostListLoading,
     clearParamsExcept,
     highlightKey,
-    clickPost,
 } = useHome(mainReq)
 
+// 文章详情
+watch(
+    () => postId.value,
+    async (newVal) => {
+        if (!newVal) return
+        statusStore.setPostDetail()
+    },
+)
+
+// 监听路由更新文章列表
+watch(
+    () => route.fullPath,
+    async (newVal, oldVal) => {
+        // 注意是非详情页
+        if (!newVal || newVal === oldVal || showPostDetail.value) return
+        await updateByRoute()
+    },
+)
+
+// 监听搜索关键字变化，更新路由
 watch(
     () => searchData,
     async (val: SearchData) => {
@@ -157,7 +177,9 @@ onUnmounted(() => {
 })
 
 onBeforeMount(async () => {
-    await updateByRoute()
+    if (!showPostDetail.value) {
+        await updateByRoute()
+    }
     await getHostPost()
     await getRecommendedPost()
     await getPostCountByMonth()

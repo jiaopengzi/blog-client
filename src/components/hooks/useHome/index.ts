@@ -9,8 +9,7 @@
 export * from "./types"
 
 import { storeToRefs } from "pinia"
-import { type Reactive, ref, watch } from "vue"
-import { useRoute } from "vue-router"
+import { type Reactive, ref } from "vue"
 
 import { type PostCategory } from "@/api/postCategory/view"
 import { type PostTag } from "@/api/postTag/view"
@@ -28,8 +27,6 @@ import { useUtils } from "./utils"
 export function useHome(
     queryParams: Reactive<ReqQuery>, // 查询参数
 ) {
-    const route = useRoute()
-
     // 字符串类型的key
     const stringKeys: StringKeys<ReqQuery>[] = [
         "post_author",
@@ -95,7 +92,6 @@ export function useHome(
 
     // 通过路由更新数据
     const updateByRoute = async () => {
-        console.log("============>执行更新")
         resetPaginationConf()
 
         await updateQueryParams()
@@ -141,7 +137,6 @@ export function useHome(
         clearParamsExcept(["post_id"])
         queryParams.post_id = id
         await updateRouterPush()
-        console.log("============>点击文章id计数")
     }
 
     // 点击作者
@@ -255,18 +250,6 @@ export function useHome(
 
         breadcrumbStore.updatePage(current_page)
     }
-
-    watch(
-        () => route.fullPath,
-        async (newVal, oldVal) => {
-            if (!newVal || newVal === oldVal) return // 关键：过滤相同路径
-
-            console.log("============>old", oldVal)
-            console.log("============>new", newVal)
-            console.log("============>fullPath", route.fullPath)
-            await updateByRoute()
-        },
-    )
 
     return {
         pagination, // 分页数据

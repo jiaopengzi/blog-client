@@ -10,6 +10,7 @@ import { acceptHMRUpdate, defineStore } from "pinia"
 
 export interface StatusStore {
     showPostDetail: boolean // 是否显示文章详情
+    postId: string // 文章 ID
     showPostList: boolean // 是否显示文章列表
     showHomeCarousel: boolean // 是否显示首页轮播图
     showHomeAside: boolean // 是否显示首页侧边栏
@@ -19,6 +20,7 @@ export interface StatusStore {
 function createStatusStore(): StatusStore {
     return {
         showPostDetail: false, // 默认不显示文章详情
+        postId: "", // 文章 ID
         showPostList: true, // 默认显示文章列表
         showHomeCarousel: true, // 默认显示首页轮播图
         showHomeAside: true, // 默认显示首页侧边栏
@@ -31,38 +33,44 @@ export const useStatusStore = defineStore("status", {
 
     actions: {
         // 重置状态
-        init(): void {
+        async init(): Promise<void> {
             this.$state = createStatusStore()
         },
 
         // 设置是否显示文章详情
-        setShowPostDetail(status: boolean): void {
+        async setShowPostDetail(status: boolean): Promise<void> {
             this.showPostDetail = status
         },
 
+        // 设置文章 ID
+        async setPostId(id: string): Promise<void> {
+            this.postId = id
+        },
+
         // 设置是否显示文章列表
-        setShowPostList(status: boolean): void {
+        async setShowPostList(status: boolean): Promise<void> {
             this.showPostList = status
         },
 
         // 设置是否显示首页轮播图
-        setShowHomeCarousel(status: boolean): void {
+        async setShowHomeCarousel(status: boolean): Promise<void> {
             this.showHomeCarousel = status
         },
 
         // 设置是否显示首页侧边栏
-        setShowHomeAside(status: boolean): void {
+        async setShowHomeAside(status: boolean): Promise<void> {
             this.showHomeAside = status
         },
 
         // 设置是否显示搜索列表
-        setShowSearchList(status: boolean): void {
+        async setShowSearchList(status: boolean): Promise<void> {
             this.showSearchList = status
         },
 
         // 预设状态 文章列表
-        setHome(): void {
+        async setHome(): Promise<void> {
             this.showPostDetail = false
+            this.postId = ""
             this.showPostList = true
             this.showHomeCarousel = true
             this.showHomeAside = true
@@ -70,7 +78,7 @@ export const useStatusStore = defineStore("status", {
         },
 
         // 预设状态 文章详情
-        setPostDetail(): void {
+        async setPostDetail(): Promise<void> {
             this.showPostDetail = true
             this.showPostList = false
             this.showHomeCarousel = false
@@ -79,8 +87,9 @@ export const useStatusStore = defineStore("status", {
         },
 
         // 预设状态 搜索
-        setSearch(): void {
+        async setSearch(): Promise<void> {
             this.showPostDetail = false
+            this.postId = ""
             this.showPostList = false
             this.showHomeCarousel = false
             this.showHomeAside = false

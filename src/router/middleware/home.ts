@@ -8,29 +8,30 @@
 
 import { type RouteLocationNormalized } from "vue-router"
 
+import { type ViewPostByIDRequest } from "@/api/post/viewByID"
 import { useStatusStore } from "@/stores/status"
-import { parseRouteQueryStatus } from "@/utils/queryParam"
+import { parseRouteQuery } from "@/utils/queryParam"
 
 import { RouteNames } from "../types"
 
 /**
- * 当数据库已经安装时，访问设置页面时，重定向到404页面
+ * home 页面根据路由参数更新状态
  *
  * @param to - 即将进入的路由对象
  * @param from - 当前导航正要离开的路由对象
  */
 export const homeMiddleware = async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
     if (to.name === RouteNames.Home) {
-        console.log("============>路由中间件", to.name, to.query)
         const statusStore = useStatusStore()
-        const { hasKeyWord, hasPostDetail } = await parseRouteQueryStatus(to.query)
+        const { hasKeyWord, hasPostDetail, result } = await parseRouteQuery<ViewPostByIDRequest>(to.query)
 
         if (hasKeyWord) {
-            statusStore.setSearch()
+            await statusStore.setSearch()
         } else if (hasPostDetail) {
-            statusStore.setPostDetail()
+            await statusStore.setPostId(result.post_id)
+            await statusStore.setPostDetail()
         } else {
-            statusStore.setHome()
+            await statusStore.setHome()
         }
     }
 

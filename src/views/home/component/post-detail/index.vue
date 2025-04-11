@@ -30,7 +30,8 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, useTemplateRef } from "vue"
+import { storeToRefs } from "pinia"
+import { onBeforeMount, reactive, useTemplateRef } from "vue"
 
 import { type ViewPostByIDRequest } from "@/api/post/viewByID"
 import PostMeta from "@/components/common/post-meta"
@@ -38,20 +39,29 @@ import HtmlPreview from "@/components/editor/components/preview"
 import { usePreview } from "@/components/editor/hooks/usePreview"
 import { useHome } from "@/components/hooks/useHome"
 import { useWebFullscreen } from "@/components/hooks/useWebFullscreen"
+import { useStatusStore } from "@/stores/status"
 
 defineOptions({ name: "PostDetail" })
+
+const statusStore = useStatusStore()
+
+const { postId } = storeToRefs(statusStore)
 
 const postDetailRef = useTemplateRef("webFullscreenRef")
 const { toggle } = useWebFullscreen(postDetailRef)
 
-// 文章id
+// 请求参数
 const postIdReq = reactive<ViewPostByIDRequest>({} as ViewPostByIDRequest)
-console.log("============>组件加载次数")
 
-const { manager, state, postMeta, clickAuthorId, editPost } = useHome(postIdReq)
+const { manager, state, postMeta, clickAuthorId, editPost, updateByRoute, clickPost } = useHome(postIdReq)
 
 // preview
 const { showImageViewer, closeImageViewer, handleMouseInElement, handleHeadingShowCurrent } = usePreview(manager)
+
+onBeforeMount(async () => {
+    await clickPost(postId.value) // 文章详情
+    await updateByRoute()
+})
 </script>
 <style lang="scss" scoped>
 .web--fullscreen {

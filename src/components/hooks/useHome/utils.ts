@@ -39,8 +39,6 @@ export function useUtils(
             })
         }
 
-        console.log("============>路由更新计数")
-
         // 路由中不需要高亮字段和前后标签
         await routerPushByParams(router, RouteNames.Home, queryParams)
     }

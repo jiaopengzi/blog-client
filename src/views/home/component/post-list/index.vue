@@ -55,6 +55,7 @@ import { getEmptyPagination, type Pagination } from "@/api/response"
 import PostItemMain from "@/components/common/post-item-main"
 import PostItemSearch from "@/components/common/post-item-search"
 import { DeviceType, useDeviceStore } from "@/stores/device"
+import { useStatusStore } from "@/stores/status"
 
 defineOptions({ name: "PostList" })
 
@@ -81,6 +82,7 @@ const emit = defineEmits<{
     (event: "paginationBlockVisible", val: boolean): void
 }>()
 
+const statusStore = useStatusStore()
 const deviceStore = useDeviceStore()
 const { device } = storeToRefs(deviceStore)
 
@@ -112,8 +114,9 @@ const clickCategory = (val: PostCategory) => {
 }
 
 // 点击文章
-const postId = (val: string) => {
+const postId = async (val: string) => {
     emit("postId", val)
+    await statusStore.setPostId(val) // 文章详情状态
 }
 
 watch(
