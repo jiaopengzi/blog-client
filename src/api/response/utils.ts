@@ -64,5 +64,6 @@ export const getEmptyPagination = <T>(): Pagination<T> => {
         page_count: 0, // 默认总页数为0
         page_sizes: [10, 20, 30, 50], // 默认的每页显示个数选择器的选项设置
         records: [], // 默认数据为空数组
+        highlight: [], // 默认高亮内容为空数组
     }
 }

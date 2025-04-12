@@ -56,9 +56,11 @@ export function useGetData(manager: EditorStateManager, options?: QueryParamsOpt
         // 获取标签列表
         const res = await viewPostAPI(req)
         if (res.data.code === ResponseCode.PostViewSuccess) {
+            console.log("============>成功")
             return res.data.data
         }
 
+        console.log("============>空数据")
         return getEmptyPagination<PostResPagination>()
     }
 

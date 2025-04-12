@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 基础表格 table-layout="auto"
+ * @Description  : 基础表格
 -->
 
 <template>
@@ -115,7 +115,7 @@
 
         <!-- 宫格 -->
         <el-checkbox-group v-show="!showListOrGridStatus" v-model="checkedRows" @change="handleCheckedGridChange">
-            <el-empty v-if="!hasData" />
+            <el-empty v-if="!pagination.records || !(pagination.records.length > 0)" />
 
             <ul ref="gridRef" class="grid">
                 <li v-for="(row, index) in pagination.records" :key="row.id" class="thumbnail grid-item">
@@ -143,13 +143,14 @@
         </el-checkbox-group>
 
         <!-- 分页 -->
+        <!-- 注意这里使用 v-model 双向绑定, 会造成意外的触发在 update 中手动更新 -->
         <div ref="paginationBlockRef" class="pagination-block">
             <el-pagination
-                v-model:current-page="paginationAC.current_page"
-                v-model:page-size="paginationAC.page_size"
-                :page-sizes="paginationAC.page_sizes"
-                :page-count="paginationAC.page_count"
-                :total="paginationAC.total"
+                :current-page="pagination.current_page"
+                :page-size="pagination.page_size"
+                :page-sizes="pagination.page_sizes"
+                :page-count="pagination.page_count"
+                :total="pagination.total"
                 :background="true"
                 layout="total, prev, pager, next, jumper, sizes"
                 size="small"
@@ -190,14 +191,16 @@
 
 <script lang="ts" setup>
 import type { ElTable } from "element-plus"
+import { storeToRefs } from "pinia"
 import { reactive, type Ref, ref, useTemplateRef, watch } from "vue"
 
 import type { PostTag } from "@/api/postTag/view"
-import { getEmptyPagination, type Pagination } from "@/api/response"
+import { type Pagination } from "@/api/response"
 import type { User } from "@/api/user/getUsers"
 import { MsgType } from "@/components/common"
 import type { SwitchItem, SwitchItemColor, SwitchItemLabel } from "@/components/common/switch-group"
 import SwitchGroup from "@/components/common/switch-group"
+import { useStatusStore } from "@/stores/status"
 import { deleteConfirmCommon } from "@/utils/confirm"
 import { type SingleDblClickBinding } from "@/utils/singleDblClickDirective"
 import { iconStyle, imgStyle } from "@/utils/style"
@@ -275,32 +278,42 @@ const editItemDialogVisibleStatus = ref(false) // 对话框状态
 const isShowElImageViewer = ref(false)
 const imgUrls = ref<string[]>([])
 
-// 当前分页数据
-const paginationAC = reactive(getEmptyPagination<Pagination<TableData>>())
+const statusStore = useStatusStore()
+const { disablePagination } = storeToRefs(statusStore)
+
+watch(
+    () => [searchStr, pagination.total],
+    ([searchStr, total]) => {
+        // 如果是搜索列表，且没有数据，则禁用分页
+        // 临时禁用分页,避免触发分页事件，造成无异议的请求
+        if (searchStr && total === 0) {
+            statusStore.setDisablePagination(true)
+        }
+    },
+    { immediate: true },
+)
 
 // 更新当前页
 const updateCurrentPage = (val: number) => {
-    // TODO: 当没有数据的时候会触发当前页为 1,导致后续问题,暂时使用 if 来解决
-    if (paginationAC.total === 0) return
+    // 说明拦截到了分页事件, 需要恢复分页
+    if (disablePagination.value) {
+        statusStore.setDisablePagination(false) // 恢复分页
+        return
+    }
+
     emit("update-current-page", val)
 }
 
 // 更新每页显示数量
 const updatePageSize = (val: number) => {
+    // 说明拦截到了分页事件, 需要恢复分页
+    if (disablePagination.value) {
+        statusStore.setDisablePagination(false) // 恢复分页
+        return
+    }
+
     emit("update-page-size", val)
 }
-
-watch(
-    () => pagination,
-    (newVal) => {
-        Object.assign(paginationAC, newVal)
-        hasData.value = newVal.records.length > 0
-    },
-    { deep: true },
-)
-
-// 判断是否有数据
-const hasData = ref(false)
 
 const switchItemLabel: SwitchItemLabel = {
     active: "表格",

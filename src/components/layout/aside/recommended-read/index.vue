@@ -12,7 +12,7 @@
             <h2><j-icon :name="IconKeys.Recommended" custom-class="aside-icon" />推荐阅读</h2>
         </div>
         <div class="post-list">
-            <PostItem v-for="item in postData" :key="item.post_title" :post-data="item" />
+            <PostItem v-for="item in postData" :key="item.post_title" :post-data="item" @post-id="postId" />
         </div>
     </div>
 </template>
@@ -27,6 +27,16 @@ defineOptions({ name: "RecommendedRead" })
 const { postData } = defineProps<{
     postData: PostResCommon[]
 }>()
+
+// 事件
+const emit = defineEmits<{
+    (event: "postId", val: string): void
+}>()
+
+// 点击文章
+const postId = (val: string) => {
+    emit("postId", val)
+}
 </script>
 <style scoped lang="scss">
 .aside-item {

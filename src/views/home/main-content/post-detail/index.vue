@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\views\home\component\post-detail\index.vue
+ * FilePath    : blog-client\src\views\home\main-content\post-detail\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -31,7 +31,7 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from "pinia"
-import { onBeforeMount, reactive, useTemplateRef } from "vue"
+import { onBeforeMount, reactive, useTemplateRef, watch } from "vue"
 
 import { type ViewPostByIDRequest } from "@/api/post/viewByID"
 import PostMeta from "@/components/common/post-meta"
@@ -53,17 +53,26 @@ const { toggle } = useWebFullscreen(postDetailRef)
 // 请求参数
 const postIdReq = reactive<ViewPostByIDRequest>({} as ViewPostByIDRequest)
 
-const { manager, state, postMeta, clickAuthorId, editPost, updateByRoute, clickPost } = useHome(postIdReq)
+const { manager, state, postMeta, clickAuthorId, editPost, updatePostDetail } = useHome(postIdReq)
 
 // preview
 const { showImageViewer, closeImageViewer, handleMouseInElement, handleHeadingShowCurrent } = usePreview(manager)
 
+// 监听路由更新文章列表
+watch(
+    () => postId.value,
+    async (newVal) => {
+        if (!newVal) return
+        await updatePostDetail(postId.value)
+    },
+)
+
 onBeforeMount(async () => {
-    await clickPost(postId.value) // 文章详情
-    await updateByRoute()
+    await updatePostDetail(postId.value)
 })
 </script>
 <style lang="scss" scoped>
+// 网页全屏
 .web--fullscreen {
     @include webFullscreen();
     overflow-y: auto;
@@ -92,9 +101,9 @@ onBeforeMount(async () => {
     }
 }
 
-@include respond-to("pad") {
-}
+// @include respond-to("pad") {
+// }
 
-@include respond-to("phone") {
-}
+// @include respond-to("phone") {
+// }
 </style>

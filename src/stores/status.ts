@@ -15,6 +15,7 @@ export interface StatusStore {
     showHomeCarousel: boolean // 是否显示首页轮播图
     showHomeAside: boolean // 是否显示首页侧边栏
     showSearchList: boolean // 是否显示搜索列表
+    disablePagination: boolean // 是否禁用分页功能,主要是临时禁用，比如在搜索时，一段时间后自动解禁
 }
 
 function createStatusStore(): StatusStore {
@@ -25,6 +26,7 @@ function createStatusStore(): StatusStore {
         showHomeCarousel: true, // 默认显示首页轮播图
         showHomeAside: true, // 默认显示首页侧边栏
         showSearchList: false, // 默认不显示搜索列表
+        disablePagination: false, // 默认不禁用分页功能
     }
 }
 
@@ -65,6 +67,18 @@ export const useStatusStore = defineStore("status", {
         // 设置是否显示搜索列表
         async setShowSearchList(status: boolean): Promise<void> {
             this.showSearchList = status
+        },
+
+        // 设置是否禁用分页功能
+        async setDisablePagination(status: boolean): Promise<void> {
+            this.disablePagination = status
+
+            // 禁用分页功能 5 秒后自动解禁
+            if (status) {
+                setTimeout(() => {
+                    this.disablePagination = false
+                }, 5000)
+            }
         },
 
         // 预设状态 文章列表

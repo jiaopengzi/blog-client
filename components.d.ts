@@ -109,8 +109,6 @@ declare module 'vue' {
     LayoutHeader: typeof import('./src/components/layout/header/index.vue')['default']
     LayoutHeaderNav: typeof import('./src/components/layout/header-nav/index.vue')['default']
     LayoutLogo: typeof import('./src/components/layout/logo/index.vue')['default']
-    LayoutPage: typeof import('./src/components/layout/page/index.vue')['default']
-    LayoutPageMain: typeof import('./src/components/layout/page-main/index.vue')['default']
     LayoutSearch: typeof import('./src/components/layout/search/index.vue')['default']
     LayoutSearchSearchDialog: typeof import('./src/components/layout/search/search-dialog/index.vue')['default']
     Player: typeof import('./src/components/player/index.vue')['default']

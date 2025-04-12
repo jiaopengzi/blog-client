@@ -1,21 +1,30 @@
+<!--
+ * FilePath    : blog-client\src\views\test\index.vue
+ * Description : 测试父组件
+-->
 <template>
-    <JEditor :state-manager="stateManager" />
+    <button @click="handleClick">更新</button>
 </template>
 
 <script lang="ts" setup>
-import { onBeforeMount, ref } from "vue"
+import { type Reactive, reactive } from "vue"
 
-import JEditor, { EditorStateManager } from "@/components/editor"
-import { useEditor } from "@/components/hooks/useEditor"
-defineOptions({ name: "EditorAll" })
+import { type PostResPagination } from "@/api/post/common"
+import { type Pagination } from "@/api/response"
 
-const stateManager = new EditorStateManager({
-    mode: "comment",
+defineOptions({ name: "MyTest" })
+
+const data: Reactive<Pagination<PostResPagination>> = reactive({
+    total: 0,
+    current_page: 1,
+    page_size: 10,
+    page_count: 0,
+    page_sizes: [10, 20, 30, 50],
+    records: [],
+    highlight: [],
 })
-useEditor(stateManager)
 
-onBeforeMount(async () => {
-    await stateManager.getEditorContentFromUrl("src/assets/example/katex.md")
-})
+const handleClick = () => {
+    data.page_size = 20
+}
 </script>
-<style scoped lang="scss"></style>

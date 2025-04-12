@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\views\home\component\post-detail\index.ts
+ * FilePath    : blog-client\src\views\home\main-content\post-detail\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

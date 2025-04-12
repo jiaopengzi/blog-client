@@ -1,39 +1,40 @@
 <!--
- * @FilePath     : \blog-client\src\views\home\component\post-list\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 主文章列表
+ * FilePath    : blog-client\src\views\home\main-content\post-list\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 文章列表
 -->
 
 <template>
     <div class="post-list">
         <div v-if="showPostList">
-            <PostItemMain v-for="item in paginationAC.records" :key="item.id" :post-data="item" @click-category="clickCategory" @post-id="postId" />
+            <PostItemMain v-for="item in paginationData.records" :key="item.id" :post-data="item" @click-category="clickCategory" @post-id="postId" />
         </div>
         <div v-if="showSearchList">
             <PostItemSearch
-                v-for="(item, i) in paginationAC.records"
+                v-for="(item, i) in paginationData.records"
                 :key="item.id"
                 :post-data="item"
-                :highlight="paginationAC.highlight?.[i]"
+                :highlight="paginationData.highlight?.[i]"
                 :highlight-key="highlightKey"
                 @post-id="postId"
             />
         </div>
         <!-- 空 -->
-        <el-empty v-if="paginationAC.records.length === 0" class="empty" description="没有数据" />
+        <el-empty v-if="paginationData.records.length === 0" class="empty" description="没有数据" />
     </div>
     <!-- 分页 -->
     <div class="pagination-container">
         <div class="loader" v-show="isShowLoading"></div>
         <div class="pagination-block" ref="paginationBlockRef">
+            <!-- 注意这里使用 v-model 双向绑定, 会造成意外的触发在 update 中手动更新 -->
             <el-pagination
-                v-model:current-page="paginationAC.current_page"
-                v-model:page-size="paginationAC.page_size"
-                :page-sizes="paginationAC.page_sizes"
-                :page-count="paginationAC.page_count"
-                :total="paginationAC.total"
+                :current-page="paginationData.current_page"
+                :page-size="paginationData.page_size"
+                :page-sizes="paginationData.page_sizes"
+                :page-count="paginationData.page_count"
+                :total="paginationData.total"
                 :background="true"
                 :layout="paginationLayout"
                 size="small"
@@ -51,7 +52,7 @@ import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch 
 
 import { type PostResPagination } from "@/api/post/common"
 import { type PostCategory } from "@/api/postCategory/view"
-import { getEmptyPagination, type Pagination } from "@/api/response"
+import { type Pagination } from "@/api/response"
 import PostItemMain from "@/components/common/post-item-main"
 import PostItemSearch from "@/components/common/post-item-search"
 import { DeviceType, useDeviceStore } from "@/stores/device"
@@ -84,27 +85,46 @@ const emit = defineEmits<{
 
 const statusStore = useStatusStore()
 const deviceStore = useDeviceStore()
+
+const { disablePagination } = storeToRefs(statusStore)
 const { device } = storeToRefs(deviceStore)
 
 const paginationLayout = computed(() => {
     return device.value === DeviceType.PHONE ? "total, prev, pager, next, sizes" : "total, prev, pager, next, jumper, sizes"
 })
 
-// 当前分页数据
-const paginationAC = ref(getEmptyPagination<PostResPagination>())
-
 // 分页组件 ref
 const paginationBlockRef = useTemplateRef("paginationBlockRef")
 
+watch(
+    () => [showSearchList, paginationData.total],
+    ([showSearchList, total]) => {
+        // 如果是搜索列表，且没有数据，则禁用分页
+        // 临时禁用分页,避免触发分页事件，造成无异议的请求
+        if (showSearchList && total === 0) {
+            statusStore.setDisablePagination(true)
+        }
+    },
+    { immediate: true },
+)
+
 // 更新当前页
 const updateCurrentPage = (val: number) => {
-    // TODO: 当没有数据的时候会触发当前页为 1,导致后续问题,暂时使用 if 来解决
-    if (paginationAC.value.total === 0) return
+    if (disablePagination.value) {
+        // 说明拦截到了分页事件, 需要恢复分页
+        statusStore.setDisablePagination(false) // 恢复分页
+        return
+    }
     emit("updateCurrentPage", val)
 }
 
 // 更新每页显示数量
 const updatePageSize = (val: number) => {
+    if (disablePagination.value) {
+        // 说明拦截到了分页事件, 需要恢复分页
+        statusStore.setDisablePagination(false) // 恢复分页
+        return
+    }
     emit("updatePageSize", val)
 }
 
@@ -116,16 +136,7 @@ const clickCategory = (val: PostCategory) => {
 // 点击文章
 const postId = async (val: string) => {
     emit("postId", val)
-    await statusStore.setPostId(val) // 文章详情状态
 }
-
-watch(
-    () => paginationData,
-    (newVal) => {
-        paginationAC.value = newVal
-    },
-    { deep: true },
-)
 
 let stopIntersectionObserver: () => void // 停止监听函数
 const isInitialRender = ref(true) // 是否是初始渲染
@@ -197,6 +208,7 @@ onUnmounted(() => {
         margin-right: 10px;
     }
 }
+
 .pagination-container {
     display: flex;
     flex-direction: column;

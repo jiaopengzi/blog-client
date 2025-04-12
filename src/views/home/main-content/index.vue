@@ -1,9 +1,9 @@
 <!--
- * FilePath    : blog-client\src\components\layout\page-main\index.vue
+ * FilePath    : blog-client\src\views\home\main-content\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 主页面
+ * Description : 主内容区
 -->
 
 <template>
@@ -17,14 +17,27 @@
                 <!-- 轮播图 -->
                 <HomeCarousel v-show="showHomeCarousel" />
                 <!-- 文章列表 -->
-                <slot />
+                <PostList
+                    v-if="showPostList || showSearchList"
+                    :pagination-data="pagination"
+                    :is-show-loading="isShowPostListLoading"
+                    :highlight-key="highlightKey"
+                    :show-post-list="showPostList"
+                    :show-search-list="showSearchList"
+                    @post-id="handlePostId"
+                    @update-current-page="updateCurrentPage"
+                    @update-page-size="updatePageSize"
+                    @click-category="clickCategory"
+                    @pagination-block-visible="paginationBlockVisibleChange"
+                />
+                <PostDetail v-if="showPostDetail" />
             </el-main>
 
             <el-aside ref="asideRef" class="el-aside pc" v-show="showHomeAside">
                 <!-- 推荐阅读 -->
-                <RecommendedRead class="el-aside-item" :post-data="recommendedPost" />
+                <RecommendedRead class="el-aside-item" :post-data="recommendedPost" @post-id="handlePostId" />
                 <!-- 热门文章 -->
-                <HotPost class="el-aside-item" :post-data="hotPost" />
+                <HotPost class="el-aside-item" :post-data="hotPost" @post-id="handlePostId" />
                 <!-- 月度归档 -->
                 <MonthArchive class="el-aside-item" :post-list="monthArchiveProps" @post-by-month="clickMonthArchive" />
                 <!-- 文章标签 -->
@@ -40,21 +53,24 @@ import { useResizeObserver } from "@vueuse/core"
 import type { ElAside } from "element-plus"
 import { storeToRefs } from "pinia"
 import { onBeforeMount, onUnmounted, reactive, useTemplateRef, watch } from "vue"
+import { useRoute } from "vue-router"
 
-import { type ViewPostRequest } from "@/api/post/view"
 import JBreadcrumb from "@/components/common/breadcrumb"
 import MonthArchive from "@/components/common/month-archive"
-import { usePageMain } from "@/components/hooks/usePageMain"
+import { type ReqQuery, useHome } from "@/components/hooks/useHome"
 import HotPost from "@/components/layout/aside/hot-post"
 import PostTag from "@/components/layout/aside/post-tag"
 import RecommendedRead from "@/components/layout/aside/recommended-read"
+import HomeCarousel from "@/components/layout/carousel"
+import { type SearchData } from "@/components/layout/search"
 import { useStatusStore } from "@/stores/status"
 
-import HomeCarousel from "../carousel"
-import type { SearchData } from "../search"
+import PostDetail from "./post-detail"
+import PostList from "./post-list"
 
-defineOptions({ name: "LayoutPageMain" })
+defineOptions({ name: "MainContent" })
 
+const route = useRoute()
 const { searchData } = defineProps<{ searchData: SearchData }>()
 
 const asideRef = useTemplateRef<InstanceType<typeof ElAside>>("asideRef")
@@ -63,21 +79,30 @@ const statusStore = useStatusStore()
 const { showPostDetail, showPostList, showHomeCarousel, showHomeAside, showSearchList } = storeToRefs(statusStore)
 
 // 获取首页数据
-const mainReq = reactive<ViewPostRequest>({} as ViewPostRequest)
+const mainReq = reactive<ReqQuery>({} as ReqQuery)
 
 const {
+    pagination,
     updateRouterPush,
+    updateCurrentPage,
+    updatePageSize,
+    updateByRoute,
+    getHostPost,
+    getRecommendedPost,
+    getPostCountByMonth,
     hotPost,
     recommendedPost,
     monthArchiveProps,
-    getHostPost, // 热门文章
-    getRecommendedPost, // 推荐文章
-    getPostCountByMonth, // 月份归档
+    clickCategory,
     clickTag,
     clickMonthArchive,
+    paginationBlockVisibleChange,
+    isShowPostListLoading,
     clearParamsExcept,
-} = usePageMain(mainReq)
+    highlightKey,
+} = useHome(mainReq)
 
+// 监听搜索关键字变化，更新路由
 watch(
     () => searchData,
     async (val: SearchData) => {
@@ -97,6 +122,28 @@ watch(
     },
     { deep: true },
 )
+
+// 监听路由更新文章列表
+watch(
+    () => route.fullPath,
+    async (newVal, oldVal) => {
+        // **注意是非详情页**
+        if (!newVal || newVal === oldVal || showPostDetail.value) return
+        await updateByRoute()
+    },
+)
+
+// 点击文章
+const handlePostId = async (val: string) => {
+    await statusStore.setPostId(val)
+    await statusStore.setPostDetail()
+
+    // 滚动到顶部
+    window.scrollTo({
+        top: 0,
+        behavior: "auto",
+    })
+}
 
 // 侧边栏高度计算
 const reCalculateHeight = () => {
@@ -134,6 +181,9 @@ onUnmounted(() => {
 })
 
 onBeforeMount(async () => {
+    if (!showPostDetail.value) {
+        await updateByRoute()
+    }
     await getHostPost()
     await getRecommendedPost()
     await getPostCountByMonth()
@@ -143,6 +193,12 @@ onBeforeMount(async () => {
 :deep(.highlight-title) {
     color: var(--jpz-color-secondary);
     font-weight: 600;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--jpz-bg-color-page);
 }
 
 @include respond-to("pc") {
@@ -161,6 +217,7 @@ onBeforeMount(async () => {
         background-color: var(--jpz-bg-color-page);
         position: sticky; // 粘性定位 和 reCalculateHeight 配合使用
     }
+
     .el-aside-item {
         margin-bottom: 10px;
     }
@@ -170,9 +227,11 @@ onBeforeMount(async () => {
     .content {
         width: pad.$width-page;
     }
+
     .el-main {
         padding: 0px;
     }
+
     .el-aside {
         display: none;
     }
@@ -182,16 +241,11 @@ onBeforeMount(async () => {
     .content {
         width: 100vw;
     }
+
     .el-main {
         padding-left: 0;
         padding-top: 0;
         padding-right: 0;
     }
-}
-
-.content {
-    display: flex;
-    flex-direction: column;
-    background-color: var(--jpz-bg-color-page);
 }
 </style>

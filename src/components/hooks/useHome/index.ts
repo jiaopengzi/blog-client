@@ -132,11 +132,12 @@ export function useHome(
         await updateRouterPush()
     }
 
-    // 点击文章
-    const clickPost = async (id: string) => {
+    // 更新文章详情(不使用监控路由更新)
+    const updatePostDetail = async (id: string) => {
         clearParamsExcept(["post_id"])
         queryParams.post_id = id
         await updateRouterPush()
+        await updateByRoute()
     }
 
     // 点击作者
@@ -188,10 +189,7 @@ export function useHome(
 
     // 更新面包屑
     const updateBreadcrumb = () => {
-        const { key_word, current_page, page_size, post_tag_slug, post_category_slug, year, month, post_id } = queryParams
-        // 清空分页的 current_page 和 page_size 参数，保证生成面包屑路径正确
-        queryParams.current_page = undefined
-        queryParams.page_size = undefined
+        const { key_word, current_page, post_tag_slug, post_category_slug, year, month, post_id } = queryParams
 
         // 解析关键字
         if (key_word) {
@@ -225,7 +223,7 @@ export function useHome(
         // 解析年份和月份
         if (year) {
             // 先移除 month
-            queryParams.month = undefined
+            queryParams.month = void 0
             breadcrumbStore.updateItems(`${year}`, generateBreadcrumbPath())
         }
         if (month) {
@@ -244,10 +242,9 @@ export function useHome(
             breadcrumbStore.init()
         }
 
-        // 更新页码面包屑前设置回原来的值
-        queryParams.current_page = current_page
-        queryParams.page_size = page_size
-
+        if (current_page === undefined || current_page === null || current_page <= 0) {
+            return
+        }
         breadcrumbStore.updatePage(current_page)
     }
 
@@ -272,7 +269,7 @@ export function useHome(
         clearParamsExcept, // 清空除了指定参数的查询条件
 
         // 文章详情
-        clickPost, // 点击文章
+        updatePostDetail, // 更新文章详情
         manager, // 详情页状态管理器
         state, // 编辑器状态
         postMeta, // 文章元数据

@@ -1,9 +1,9 @@
 <!--
- * @FilePath     : \blog-client\src\views\home\component\carousel\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 首页轮播图
+ * FilePath    : blog-client\src\components\layout\carousel\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 轮播图
 -->
 
 <template>

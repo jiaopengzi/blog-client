@@ -168,7 +168,7 @@ const takeTime = computed(() => {
     line-height: 150%;
     color: var(--jpz-color-primary);
     font-weight: 700;
-    font-size: 2em;
+    font-size: 24px;
     display: table;
     border-bottom: 2px solid var(--jpz-color-primary);
     text-align: center;
@@ -200,17 +200,18 @@ const takeTime = computed(() => {
 .meta-item {
     margin-right: 10px;
     color: var(--jpz-text-color-placeholder);
-    font-size: 14px;
+    font-size: 13px;
     line-height: 150%;
 
-    // 图标居中
-    display: flex;
+    // 图标和文字水平居中
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
 }
 
 .meta-text {
     margin-left: 4px;
+    display: inline-block;
+    line-height: 1; // 确保文字垂直居中
 }
 
 :deep(.meta-icon) {

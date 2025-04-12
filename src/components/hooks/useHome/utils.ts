@@ -58,9 +58,15 @@ export function useUtils(
 
     // 生成面包屑路径
     const generateBreadcrumbPath = () => {
+        // 如果有分页参数,需要移除当前页码，保证生成面包屑路径正确
+        const breadcrumbQuery = queryParams
+        if (queryParams.current_page) {
+            delete breadcrumbQuery.current_page
+        }
+
         return router.resolve({
             name: RouteNames.Home,
-            query: queryParams,
+            query: breadcrumbQuery,
         }).href
     }
 
