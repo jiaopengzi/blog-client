@@ -30,10 +30,12 @@
                     @click-category="clickCategory"
                     @pagination-block-visible="paginationBlockVisibleChange"
                 />
-                <PostDetail v-if="showPostDetail" />
+                <PostDetail ref="postDetailRef" v-if="showPostDetail" @state="handleState" />
             </el-main>
 
             <el-aside ref="asideRef" class="el-aside pc" v-show="showHomeAside">
+                <!-- 导航栏 -->
+                <EditorToc :headings="state.tocHtml" :heading-show-current-index="state.headingShowCurrentIndex" @heading-clicked="tocHeadingClicked" />
                 <!-- 推荐阅读 -->
                 <RecommendedRead class="el-aside-item" :post-data="recommendedPost" @post-id="handlePostId" />
                 <!-- 热门文章 -->
@@ -52,11 +54,14 @@
 import { useResizeObserver } from "@vueuse/core"
 import type { ElAside } from "element-plus"
 import { storeToRefs } from "pinia"
-import { onBeforeMount, onUnmounted, reactive, useTemplateRef, watch } from "vue"
+import { computed, onBeforeMount, onUnmounted, type Reactive, reactive, useTemplateRef, watch } from "vue"
 import { useRoute } from "vue-router"
 
 import JBreadcrumb from "@/components/common/breadcrumb"
 import MonthArchive from "@/components/common/month-archive"
+import type { EditorState } from "@/components/editor"
+import EditorToc from "@/components/editor/components/toc"
+import { type TocScroll, useToc } from "@/components/editor/hooks"
 import { type ReqQuery, useHome } from "@/components/hooks/useHome"
 import HotPost from "@/components/layout/aside/hot-post"
 import PostTag from "@/components/layout/aside/post-tag"
@@ -74,6 +79,7 @@ const route = useRoute()
 const { searchData } = defineProps<{ searchData: SearchData }>()
 
 const asideRef = useTemplateRef<InstanceType<typeof ElAside>>("asideRef")
+const postDetailRef = useTemplateRef("postDetailRef")
 
 const statusStore = useStatusStore()
 const { showPostDetail, showPostList, showHomeCarousel, showHomeAside, showSearchList } = storeToRefs(statusStore)
@@ -102,6 +108,21 @@ const {
     highlightKey,
 } = useHome(mainReq)
 
+// 文章详情
+const state: Reactive<EditorState> = reactive({
+    tocHtml: [{}], // 当前高亮的目录索引
+    headingShowCurrentIndex: 0, // 当前高亮的目录索引
+} as EditorState)
+
+// 更新文章详情状态
+const handleState = (val: EditorState) => {
+    Object.assign(state, val)
+}
+// 使用 computed 包装 previewRef 保持响应性
+const previewRef = computed(() => postDetailRef.value?.previewRef)
+
+// 目录点击事件
+const { tocHeadingClicked } = useToc({ state, previewRef } as TocScroll)
 // 监听搜索关键字变化，更新路由
 watch(
     () => searchData,

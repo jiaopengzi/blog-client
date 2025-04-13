@@ -35,56 +35,44 @@ import { onBeforeMount, reactive, useTemplateRef, watch } from "vue"
 
 import { type ViewPostByIDRequest } from "@/api/post/viewByID"
 import PostMeta from "@/components/common/post-meta"
-import type { EditorState } from "@/components/editor"
 import HtmlPreview from "@/components/editor/components/preview"
 import { usePreview } from "@/components/editor/hooks/usePreview"
-import { usePostDetail } from "@/components/hooks/usePostDetail"
+import { useHome } from "@/components/hooks/useHome"
 import { useWebFullscreen } from "@/components/hooks/useWebFullscreen"
 import { useStatusStore } from "@/stores/status"
 
 defineOptions({ name: "PostDetail" })
-
-// 事件
-const emit = defineEmits<{
-    (event: "state", val: EditorState): void
-}>()
 
 const statusStore = useStatusStore()
 
 const { postId } = storeToRefs(statusStore)
 
 const postDetailRef = useTemplateRef("webFullscreenRef")
-const previewRef = useTemplateRef("previewRef")
-
 const { toggle } = useWebFullscreen(postDetailRef)
 
 // 请求参数
 const postIdReq = reactive<ViewPostByIDRequest>({} as ViewPostByIDRequest)
 
-const { manager, state, postMeta, clickAuthorId, editPost, updatePostDetail } = usePostDetail(postIdReq)
+const { manager, state, postMeta, clickAuthorId, editPost, updatePostDetail } = useHome(postIdReq)
 
 // preview
 const { showImageViewer, closeImageViewer, handleMouseInElement, handleHeadingShowCurrent } = usePreview(manager)
 
-
 // 更新文章详情
-const updatePostDetailAc = async (postId: string) => {
-    await updatePostDetail(postId)
-    emit("state", state)
-}
-
 watch(
     () => postId.value,
     async (newVal) => {
         if (!newVal) return
-        await updatePostDetailAc(postId.value)
+        await updatePostDetail(postId.value)
     },
 )
 
 onBeforeMount(async () => {
-    await updatePostDetailAc(postId.value)
+    await updatePostDetail(postId.value)
 })
 
+// 将 previewRef 暴露给父组件
+const previewRef = useTemplateRef("previewRef")
 defineExpose({
     previewRef,
 })

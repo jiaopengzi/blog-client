@@ -8,5 +8,5 @@
 
 export { useCodemirror } from "./useCodemirror"
 export { usePreview } from "./usePreview"
-export { useToc } from "./useToc"
+export { type TocScroll, useToc } from "./useToc"
 export { useToolbar } from "./useToolbar"

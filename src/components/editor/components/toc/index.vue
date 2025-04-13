@@ -7,39 +7,42 @@
 -->
 
 <template>
-    <nav id="toc">
-        <ul>
+    <nav id="toc" ref="tocRef">
+        <ul class="toc-list">
             <!-- 根据 heading.level 动态设置 li 的 id 和 class -->
             <li
-                v-for="(heading, index) in props.headings"
+                v-for="(heading, index) in headings"
                 :id="`toc-${heading.index}`"
                 :key="heading.index"
-                :class="`h-level-${heading.index}`"
+                :class="`h-level-${heading.index} toc-item`"
                 @click="emitHeadingClicked(index)"
             >
                 {{ heading.text }}
             </li>
         </ul>
+        <div class="active-marker" ref="activeMarkerRef"></div>
     </nav>
 </template>
 
 <script lang="ts" setup>
-import { watch } from "vue"
+import { useTemplateRef, watch } from "vue"
 
 import type { TocProps } from "./types"
 
 defineOptions({ name: "EditorToc" })
-// 定义 props 调用时候传递为 headings="headings"
-const props = defineProps<TocProps>()
 
-// 子组件 传参
+const { headings, headingShowCurrentIndex } = defineProps<TocProps>()
+
 const emit = defineEmits<{
     (e: "heading-clicked", index: number): void
 }>()
 
+const tocRef = useTemplateRef("tocRef")
+const activeMarkerRef = useTemplateRef("activeMarkerRef")
+
 // 点击标题触发事件
 const emitHeadingClicked = (index: number) => {
-    console.log("emitHeadingClicked", index)
+    // console.log("emitHeadingClicked", index)
     // 触发自定义事件 "heading-clicked"，将 index 和 heading 传递给父组件
     emit("heading-clicked", index)
 
@@ -48,17 +51,31 @@ const emitHeadingClicked = (index: number) => {
 
 // 高亮标题
 const highlightHeading = (index: number) => {
+    // 确保 tocRef 存在
+    if (!tocRef.value) return
+
     // 查找当前激活的目录项，移除激活状态
-    document.querySelectorAll("#toc li").forEach((li) => {
+    tocRef.value.querySelectorAll("li").forEach((li) => {
         li.classList.remove("toc-active")
     })
 
     // 添加激活状态
-    document.getElementById("toc-" + index)?.classList.add("toc-active")
+    const target: HTMLElement | null = tocRef.value.querySelector(`#toc-${index}`)
+    if (target && activeMarkerRef.value) {
+        target.classList.add("toc-active")
+
+        // 动态计算位置和高度
+        const top = target.offsetTop
+        const height = target.offsetHeight
+
+        // 设置激活标记的位置和高度
+        activeMarkerRef.value.style.top = `${top}px`
+        activeMarkerRef.value.style.height = `${height}px`
+    }
 }
 
 watch(
-    () => props.headingShowCurrentIndex,
+    () => headingShowCurrentIndex,
     (newVal) => {
         if (newVal >= 0) {
             highlightHeading(newVal)
@@ -69,12 +86,20 @@ watch(
 
 <style scoped lang="scss">
 #toc {
+    padding: 0 1em;
     // 添加不同缩进和样式
     background-color: var(--el-bg-color);
-    li {
+    position: relative;
+
+    .toc-list {
+        margin: 0;
+        padding: 0;
+        list-style: none; // 去除默认的列表样式
+    }
+
+    .toc-item {
         line-height: 2;
         font-weight: 500;
-        list-style: none; // 去除默认的列表样式
         color: var(--jpz-color-primary);
 
         &.toc-active {
@@ -93,23 +118,36 @@ watch(
     }
 
     .h-level-2 {
-        margin-left: 1em;
+        margin-left: 0.5em;
     }
 
     .h-level-3 {
-        margin-left: 2em;
+        margin-left: 1em;
     }
 
     .h-level-4 {
-        margin-left: 3em;
+        margin-left: 1.5em;
     }
 
     .level-5 {
-        margin-left: 4em;
+        margin-left: 2em;
     }
 
     .h-level-6 {
-        margin-left: 5em;
+        margin-left: 2.5em;
+    }
+
+    .active-marker {
+        position: absolute;
+        top: 0;
+        left: 4px;
+        border-radius: 4px;
+        width: 6px;
+        background-color: var(--jpz-color-secondary);
+        opacity: 0.9;
+        transition:
+            left 0.3s ease-in-out,
+            top 0.3s ease-in-out;
     }
 }
 </style>

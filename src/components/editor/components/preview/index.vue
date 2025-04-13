@@ -166,6 +166,7 @@ const closeElImageViewer = () => {
  * @return
  */
 const navigateToHeading = (index: number): void => {
+    console.log("============>nav", index)
     scrollToElement(previewRef.value, index, ScrollElementTagHeading)
 }
 

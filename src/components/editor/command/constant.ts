@@ -429,6 +429,7 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
 
 // 需要滚动的元素标签
 export const ScrollElementTag: string = "*"
+
 // 需要跳转的元素标题标签
 export const ScrollElementTagHeading: string = "h1, h2, h3, h4, h5, h6"
 

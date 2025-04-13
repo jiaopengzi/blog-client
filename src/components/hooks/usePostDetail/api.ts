@@ -1,9 +1,9 @@
-/*
- * FilePath    : blog-client\src\components\hooks\usePostDetail\api.ts
- * Author      : jiaopengzi
- * Blog        : https://jiaopengzi.com
- * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 数据获取
+/**
+ * @FilePath     : \blog-client\src\components\hooks\useHome\api.ts
+ * @Author       : jiaopengzi
+ * @Blog         : https://jiaopengzi.com
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * @Description  : 数据请求
  */
 
 import { ref } from "vue"
@@ -48,7 +48,7 @@ export function useGetData(manager: EditorStateManager) {
     }
 
     return {
-        postMeta,
-        getPostDetail,
+        postMeta, // 文章元数据
+        getPostDetail, // 获取文章详情
     }
 }

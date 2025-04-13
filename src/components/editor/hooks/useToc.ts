@@ -6,24 +6,37 @@
  * Description : toc 目录导航 hook
  */
 
-import type { Ref } from "vue"
+import type { ComputedRef, Reactive, Ref } from "vue"
 
 import type { CodemirrorRef } from "../components/codemirror"
 import type { PreviewRef } from "../components/preview"
-import { EditorStateManager } from "../state"
+import type { EditorState } from "../types"
 
-export function useToc(codemirrorRef: Ref<CodemirrorRef | null>, previewRef: Ref<PreviewRef | null>, editorStateManager: EditorStateManager) {
-    // 状态管理
-    const editorState = editorStateManager.getState()
+// @description: toc 目录导航点击事件
+export interface TocScroll {
+    state: Reactive<EditorState> // 状态
+    previewRef?: ComputedRef<PreviewRef | undefined> | Ref<PreviewRef | null> // 预览引用
+    codemirrorRef?: Ref<CodemirrorRef | null> // 编辑器引用
+}
 
+export function useToc(tocScroll: TocScroll) {
     /**
      * @description: 目录导航点击事件
      * @param index 点击的目录索引
      */
     const tocHeadingClicked = (index: number) => {
-        // isAsyncScroll.value = false // 点击目录时候关闭异步滚动
-        codemirrorRef.value?.scrollIntoViewLine(editorState.tocMarkdown[index].markdownLineNumber) // 跳转编辑器选中目标行
-        previewRef.value?.navigateToHeading(index) // 跳转预览选中目标行
+        const { state, previewRef, codemirrorRef } = tocScroll
+
+        // 跳转预览选中目标行
+        if (previewRef && previewRef.value) {
+            console.log("============>滚动", index)
+            previewRef.value?.navigateToHeading(index)
+        }
+
+        // 跳转编辑器选中目标行
+        if (codemirrorRef && codemirrorRef.value) {
+            codemirrorRef.value?.scrollIntoViewLine(state.tocMarkdown[index].markdownLineNumber)
+        }
     }
 
     return {

@@ -102,7 +102,7 @@ const { toolbarBtns, toolbarBtnClicked, iconNumberPerLine, emojiPickerSelected, 
 )
 
 // 目录点击事件
-const { tocHeadingClicked } = useToc(codemirrorRef, previewRef, stateManager)
+const { tocHeadingClicked } = useToc({ state, previewRef, codemirrorRef })
 
 // codemirror
 const { cmHeight, updateCmHeightNotIsFullScreen, handleScroll } = useCodemirror(mdContainerRef, codemirrorRef, previewRef, stateManager)
