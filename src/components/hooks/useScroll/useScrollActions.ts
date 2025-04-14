@@ -9,8 +9,7 @@
 import type { Ref } from "vue"
 import { ref } from "vue"
 
-import type { ScrollData } from "@/components/hooks/useScroll"
-
+import type { ScrollData } from "./types"
 import { useScroll } from "./useScroll"
 
 /**
@@ -19,7 +18,7 @@ import { useScroll } from "./useScroll"
  * @param actionDown 向下滚动事件
  * @return {Ref<ScrollData>} 滚动数据 ref 对象  position 滚动位置 direction 滚动方向
  */
-export function useScrollActions(actionUp: () => void, actionDown: () => void): Ref<ScrollData> {
+export function useScrollActions(actionUp: () => void, actionDown: () => void, container?: MaybeElementRef): Ref<ScrollData> {
     const scrollData = ref<ScrollData>({
         position: 0,
         direction: "up",
@@ -35,7 +34,8 @@ export function useScrollActions(actionUp: () => void, actionDown: () => void): 
             actionDown() // 向下滚动事件
         }
     }
-    useScroll(handleScroll) // 滚动事件
+
+    useScroll(handleScroll, container) // 滚动事件
 
     return scrollData
 }
