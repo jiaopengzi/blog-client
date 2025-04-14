@@ -6,11 +6,7 @@
  * Description : 网页全屏 hook
  */
 
-import type { MaybeRef } from "vue"
 import { onMounted, onUnmounted, ref, unref } from "vue"
-
-export type MaybeElement = HTMLElement | SVGElement | undefined | null
-export type MaybeElementRef<T extends MaybeElement = MaybeElement> = MaybeRef<T>
 
 // 全屏样式类名, 需要在全局样式设定样式
 const WEB_FULLSCREEN_CLASS = "web--fullscreen"
