@@ -7,10 +7,6 @@
  */
 
 import { type ViewPostRequest } from "@/api/post/view"
-import { type ViewPostByIDRequest } from "@/api/post/viewByID"
-
-// 请求参数联合类型
-export type ReqQuery = ViewPostRequest & ViewPostByIDRequest
 
 // 类型别名 ViewPostReqKey 为 queryParams 的 key
-export type ViewPostReqKey = keyof ReqQuery
+export type ViewPostReqKey = keyof ViewPostRequest

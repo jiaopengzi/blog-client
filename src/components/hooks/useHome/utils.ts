@@ -6,96 +6,11 @@
  * @Description  : 工具
  */
 
-import { type Reactive, ref } from "vue"
-import { useRoute, useRouter } from "vue-router"
+import { ref } from "vue"
 
-import { type QueryParamsOptions } from "@/api/request"
-import { routerPushByParams } from "@/router"
-import { RouteNames } from "@/router"
-import { parseRouteQuery } from "@/utils/queryParam"
-
-import type { ReqQuery, ViewPostReqKey } from "./types"
-
-export function useUtils(
-    queryParams: Reactive<ReqQuery>, // 查询参数
-    options?: QueryParamsOptions<ReqQuery>, // 请求参数选项
-) {
-    const route = useRoute()
-    const router = useRouter()
-
-    const hasPaginationInURL = ref(false) // URL 中是否有分页参数
-
+export function useUtils() {
     const paginationBlockVisibleCount = ref(1) // 分页块出现次数
     const pageSizeTemp = ref(10) // 临时每页显示条数
-
-    // 更新查询参数
-    const updateRouterPush = async () => {
-        // 遍历 options.noRouteKeys 中的参数, 如果 queryParams 存在该 key 则删除, 不参与路由
-        if (options?.noRouteKeys) {
-            options.noRouteKeys.forEach((key) => {
-                if (key in queryParams) {
-                    delete queryParams[key as ViewPostReqKey]
-                }
-            })
-        }
-
-        // 路由中不需要高亮字段和前后标签
-        await routerPushByParams(router, RouteNames.Home, queryParams)
-    }
-
-    // 更新查询参数
-    const updateQueryParams = async () => {
-        const { hasQuery, hasPagination, result } = await parseRouteQuery(route.query, options as QueryParamsOptions<ReqQuery>)
-
-        // 清空 queryParams
-        Object.keys(queryParams).forEach((key) => delete queryParams[key as keyof typeof queryParams])
-        if (hasQuery) {
-            Object.assign(queryParams, result)
-        }
-
-        hasPaginationInURL.value = hasPagination
-    }
-
-    // 生成面包屑路径
-    const generateBreadcrumbPath = () => {
-        // 如果有分页参数,需要移除当前页码，保证生成面包屑路径正确
-        const breadcrumbQuery = queryParams
-        if (queryParams.current_page) {
-            delete breadcrumbQuery.current_page
-        }
-
-        return router.resolve({
-            name: RouteNames.Home,
-            query: breadcrumbQuery,
-        }).href
-    }
-
-    const clearParamsExcept = (fieldsToKeep: ViewPostReqKey[]) => {
-        const keysToClear: ViewPostReqKey[] = [
-            "key_word",
-            "year",
-            "month",
-            "post_author",
-            "post_category_id",
-            "post_category_slug",
-            "post_tag_id",
-            "post_tag_slug",
-            "current_page",
-            "page_size",
-
-            "post_id",
-
-            // "highlight_fields",
-            // "pre_tags",
-            // "post_tags",
-        ]
-
-        keysToClear.forEach((key) => {
-            if (!fieldsToKeep.includes(key)) {
-                delete queryParams[key as ViewPostReqKey]
-            }
-        })
-    }
 
     // 重置分页配置
     const resetPaginationConf = () => {
@@ -104,13 +19,8 @@ export function useUtils(
     }
 
     return {
-        hasPaginationInURL,
-        updateRouterPush,
-        updateQueryParams,
-        clearParamsExcept,
         paginationBlockVisibleCount,
         pageSizeTemp,
         resetPaginationConf,
-        generateBreadcrumbPath,
     }
 }

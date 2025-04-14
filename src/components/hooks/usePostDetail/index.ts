@@ -13,7 +13,7 @@ import { type QueryParamsOptions } from "@/api/request"
 import { EditorStateManager } from "@/components/editor"
 import { useBreadcrumbStore } from "@/stores/breadcrumb"
 
-import { useUtils } from "../useHome/utils"
+import { useRootUtils } from "../useRootUtils"
 import { useGetData } from "./api"
 
 export function usePostDetail(
@@ -38,7 +38,7 @@ export function usePostDetail(
         updateQueryParams, // 从URL中解析参数
         clearParamsExcept, // 清空除了指定参数的查询条件
         generateBreadcrumbPath, // 生成面包屑路径
-    } = useUtils(queryParams, options)
+    } = useRootUtils(queryParams, options)
 
     // 通过路由更新数据
     const updateByRoute = async () => {

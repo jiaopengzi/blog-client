@@ -1,35 +1,29 @@
-/**
- * @FilePath     : \blog-client\src\components\hooks\useHome\utils.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 工具
+/*
+ * FilePath    : blog-client\src\components\hooks\useRootUtils\route.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 路由相关
  */
 
 import { type Reactive, ref } from "vue"
 import { useRoute, useRouter } from "vue-router"
 
-import { type ViewPostRequest } from "@/api/post/view"
 import { type QueryParamsOptions } from "@/api/request"
 import { routerPushByParams } from "@/router"
 import { RouteNames } from "@/router"
-import { useStatusStore } from "@/stores/status"
 import { parseRouteQuery } from "@/utils/queryParam"
 
-import type { ViewPostReqKey } from "./types"
+import type { QueryParams, QueryParamsKey } from "./types"
 
-export function useUtils(
-    queryParams: Reactive<ViewPostRequest>, // 查询参数
-    options?: QueryParamsOptions<ViewPostRequest>, // 请求参数选项
+export function useRootRoute<T extends QueryParams>(
+    queryParams: Reactive<T>, // 查询参数
+    options?: QueryParamsOptions<T>, // 请求参数选项
 ) {
     const route = useRoute()
     const router = useRouter()
-    const statusStore = useStatusStore()
 
     const hasPaginationInURL = ref(false) // URL 中是否有分页参数
-
-    const paginationBlockVisibleCount = ref(1) // 分页块出现次数
-    const pageSizeTemp = ref(10) // 临时每页显示条数
 
     // 更新查询参数
     const updateRouterPush = async () => {
@@ -37,7 +31,7 @@ export function useUtils(
         if (options?.noRouteKeys) {
             options.noRouteKeys.forEach((key) => {
                 if (key in queryParams) {
-                    delete queryParams[key as ViewPostReqKey]
+                    delete queryParams[key as QueryParamsKey]
                 }
             })
         }
@@ -48,11 +42,7 @@ export function useUtils(
 
     // 更新查询参数
     const updateQueryParams = async () => {
-        const { hasPagination, hasQuery, hasPostDetail, result } = await parseRouteQuery(route.query, options as QueryParamsOptions<ViewPostRequest>)
-        if (hasPostDetail) {
-            statusStore.setPostDetail()
-            // return
-        }
+        const { hasQuery, hasPagination, result } = await parseRouteQuery(route.query, options as QueryParamsOptions<T>)
 
         // 清空 queryParams
         Object.keys(queryParams).forEach((key) => delete queryParams[key as keyof typeof queryParams])
@@ -63,16 +53,8 @@ export function useUtils(
         hasPaginationInURL.value = hasPagination
     }
 
-    // 生成面包屑路径
-    const generateBreadcrumbPath = () => {
-        return router.resolve({
-            name: RouteNames.Home,
-            query: queryParams,
-        }).href
-    }
-
-    const clearParamsExcept = (fieldsToKeep: ViewPostReqKey[]) => {
-        const keysToClear: ViewPostReqKey[] = [
+    const clearParamsExcept = (fieldsToKeep: QueryParamsKey[]) => {
+        const keysToClear: QueryParamsKey[] = [
             "key_word",
             "year",
             "month",
@@ -84,6 +66,8 @@ export function useUtils(
             "current_page",
             "page_size",
 
+            "post_id",
+
             // "highlight_fields",
             // "pre_tags",
             // "post_tags",
@@ -91,15 +75,9 @@ export function useUtils(
 
         keysToClear.forEach((key) => {
             if (!fieldsToKeep.includes(key)) {
-                delete queryParams[key as ViewPostReqKey]
+                delete queryParams[key as QueryParamsKey]
             }
         })
-    }
-
-    // 重置分页配置
-    const resetPaginationConf = () => {
-        paginationBlockVisibleCount.value = 1
-        pageSizeTemp.value = 10
     }
 
     return {
@@ -107,9 +85,5 @@ export function useUtils(
         updateRouterPush,
         updateQueryParams,
         clearParamsExcept,
-        paginationBlockVisibleCount,
-        pageSizeTemp,
-        resetPaginationConf,
-        generateBreadcrumbPath,
     }
 }

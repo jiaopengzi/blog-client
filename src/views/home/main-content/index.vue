@@ -57,12 +57,13 @@ import { storeToRefs } from "pinia"
 import { computed, onBeforeMount, onUnmounted, type Reactive, reactive, useTemplateRef, watch } from "vue"
 import { useRoute } from "vue-router"
 
+import { type ViewPostRequest } from "@/api/post/view"
 import JBreadcrumb from "@/components/common/breadcrumb"
 import MonthArchive from "@/components/common/month-archive"
 import type { EditorState } from "@/components/editor"
 import EditorToc from "@/components/editor/components/toc"
 import { type TocScroll, useToc } from "@/components/editor/hooks"
-import { type ReqQuery, useHome } from "@/components/hooks/useHome"
+import { useHome } from "@/components/hooks/useHome"
 import HotPost from "@/components/layout/aside/hot-post"
 import PostTag from "@/components/layout/aside/post-tag"
 import RecommendedRead from "@/components/layout/aside/recommended-read"
@@ -85,7 +86,7 @@ const statusStore = useStatusStore()
 const { showPostDetail, showPostList, showHomeCarousel, showHomeAside, showSearchList } = storeToRefs(statusStore)
 
 // 获取首页数据
-const mainReq = reactive<ReqQuery>({} as ReqQuery)
+const mainReq = reactive<ViewPostRequest>({} as ViewPostRequest)
 
 const {
     pagination,

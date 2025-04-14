@@ -11,24 +11,24 @@ export * from "./types"
 import { storeToRefs } from "pinia"
 import { type Reactive, ref } from "vue"
 
+import { type ViewPostRequest } from "@/api/post/view"
 import { type PostCategory } from "@/api/postCategory/view"
 import { type PostTag } from "@/api/postTag/view"
 import { type QueryParamsOptions } from "@/api/request"
 import { type MonthArchiveData } from "@/components/common/month-archive"
-import { EditorStateManager } from "@/components/editor"
 import { usePagination } from "@/components/hooks/usePagination"
 import { useBreadcrumbStore } from "@/stores/breadcrumb"
 import { useStatusStore } from "@/stores/status"
 
+import { useRootUtils } from "../useRootUtils"
 import { useGetData } from "./api"
-import type { ReqQuery } from "./types"
 import { useUtils } from "./utils"
 
 export function useHome(
-    queryParams: Reactive<ReqQuery>, // 查询参数
+    queryParams: Reactive<ViewPostRequest>, // 查询参数
 ) {
     // 字符串类型的key
-    const stringKeys: StringKeys<ReqQuery>[] = [
+    const stringKeys: StringKeys<ViewPostRequest>[] = [
         "post_author",
         "post_category_id",
         "post_category_slug",
@@ -37,18 +37,17 @@ export function useHome(
         "key_word",
         "pre_tags",
         "post_tags",
-        "post_id",
     ]
 
     // 字符串类型的key
-    const numberKeys: NumberKeys<ReqQuery>[] = ["year", "month", "current_page", "page_size"]
+    const numberKeys: NumberKeys<ViewPostRequest>[] = ["year", "month", "current_page", "page_size"]
 
     // 不需要路由的key
-    const noRouteKeys: (keyof ReqQuery)[] = ["highlight_fields", "pre_tags", "post_tags"]
+    const noRouteKeys: (keyof ViewPostRequest)[] = ["highlight_fields", "pre_tags", "post_tags"]
 
     const highlightKey = "post_title" // 高亮的key
 
-    const options: QueryParamsOptions<ReqQuery> = {
+    const options: QueryParamsOptions<ViewPostRequest> = {
         stringKeys,
         numberKeys,
         noRouteKeys,
@@ -61,10 +60,7 @@ export function useHome(
     const breadcrumbStore = useBreadcrumbStore()
 
     const statusStore = useStatusStore()
-    const { showPostList, showSearchList, showPostDetail } = storeToRefs(statusStore)
-
-    const manager = new EditorStateManager({ isRemoveFirstH1: true })
-    const state = manager.getState()
+    const { showPostList, showSearchList } = storeToRefs(statusStore)
 
     const {
         pagination, // 分页数据
@@ -75,30 +71,27 @@ export function useHome(
         getRecommendedPost, // 推荐文章
         getPostCountByMonth, // 月份归档
         getPaginate, // 获取分页
-        postMeta,
-        getPostDetail,
-    } = useGetData(manager, options)
+    } = useGetData(options)
 
     const {
         hasPaginationInURL, // URL 中是否有分页参数
         updateRouterPush, // 更新查询参数和路由
         updateQueryParams, // 从URL中解析参数
         clearParamsExcept, // 清空除了指定参数的查询条件
+        generateBreadcrumbPath, // 生成面包屑路径
+    } = useRootUtils(queryParams, options)
+
+    const {
         paginationBlockVisibleCount, // 分页块出现次数
         pageSizeTemp, // 临时每页显示条数
         resetPaginationConf, // 重置分页配置
-        generateBreadcrumbPath, // 生成面包屑路径
-    } = useUtils(queryParams, options)
+    } = useUtils()
 
     // 通过路由更新数据
     const updateByRoute = async () => {
         resetPaginationConf()
 
         await updateQueryParams()
-
-        if (showPostDetail.value) {
-            await getPostDetail(queryParams)
-        }
 
         if (showPostList.value || showSearchList.value) {
             await updatePaginate()
@@ -130,24 +123,6 @@ export function useHome(
         queryParams.year = row.year
         queryParams.month = row.month
         await updateRouterPush()
-    }
-
-    // 更新文章详情(不使用监控路由更新)
-    const updatePostDetail = async (id: string) => {
-        clearParamsExcept(["post_id"])
-        queryParams.post_id = id
-        await updateRouterPush()
-        await updateByRoute()
-    }
-
-    // 点击作者
-    const clickAuthorId = (val: string) => {
-        console.log("============>author", val)
-    }
-
-    // 点击文章
-    const editPost = (val: string) => {
-        console.log("============>edit", val)
     }
 
     // 分页块显示次数变化
@@ -189,7 +164,7 @@ export function useHome(
 
     // 更新面包屑
     const updateBreadcrumb = () => {
-        const { key_word, current_page, post_tag_slug, post_category_slug, year, month, post_id } = queryParams
+        const { key_word, current_page, post_tag_slug, post_category_slug, year, month } = queryParams
 
         // 解析关键字
         if (key_word) {
@@ -232,13 +207,8 @@ export function useHome(
             breadcrumbStore.updateItems(`${month}`, generateBreadcrumbPath(), false)
         }
 
-        // 解析关键字
-        if (post_id) {
-            breadcrumbStore.updateItems(post_id, generateBreadcrumbPath())
-        }
-
         // 清空面包屑
-        if (!key_word && !post_category_slug && !post_tag_slug && !year && !month && !post_id) {
+        if (!key_word && !post_category_slug && !post_tag_slug && !year && !month) {
             breadcrumbStore.init()
         }
 
@@ -267,14 +237,6 @@ export function useHome(
         paginationBlockVisibleChange, // 分页块显示次数变化
         isShowPostListLoading, // 是否显示文章列表加载中
         clearParamsExcept, // 清空除了指定参数的查询条件
-
-        // 文章详情
-        updatePostDetail, // 更新文章详情
-        manager, // 详情页状态管理器
-        state, // 编辑器状态
-        postMeta, // 文章元数据
-        clickAuthorId, // 点击作者
-        editPost, // 编辑文章
         highlightKey, // 高亮的key
     }
 }
