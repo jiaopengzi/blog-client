@@ -11,6 +11,13 @@ import type { Ref } from "vue"
 import type { CodemirrorRef } from "../components/codemirror"
 import { EditorStateManager } from "../state"
 
+// // @description: toc 目录导航点击事件
+// export interface TocStatus {
+//     state: Reactive<EditorState> // 状态
+//     previewRef?: ComputedRef<PreviewRef | undefined> | Ref<PreviewRef | null> // 预览引用
+//     codemirrorRef?: Ref<CodemirrorRef | null> // 编辑器引用
+// }
+
 /**
  * @description: 阅览的 hook
  * @param {EditorStateManager} editorStateManager 编辑器状态管理

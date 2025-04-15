@@ -13,23 +13,22 @@ import type { PreviewRef } from "../components/preview"
 import type { EditorState } from "../types"
 
 // @description: toc 目录导航点击事件
-export interface TocScroll {
+export interface TocStatus {
     state: Reactive<EditorState> // 状态
     previewRef?: ComputedRef<PreviewRef | undefined> | Ref<PreviewRef | null> // 预览引用
     codemirrorRef?: Ref<CodemirrorRef | null> // 编辑器引用
 }
 
-export function useToc(tocScroll: TocScroll) {
+export function useToc(tocStatus: TocStatus) {
     /**
      * @description: 目录导航点击事件
      * @param index 点击的目录索引
      */
     const tocHeadingClicked = (index: number) => {
-        const { state, previewRef, codemirrorRef } = tocScroll
+        const { state, previewRef, codemirrorRef } = tocStatus
 
         // 跳转预览选中目标行
         if (previewRef && previewRef.value) {
-            console.log("============>滚动", index)
             previewRef.value?.navigateToHeading(index)
         }
 

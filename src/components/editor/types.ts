@@ -24,6 +24,7 @@ export interface EditorState {
     tocMarkdown: MarkdownHeadingLine[] // markdown 目录内容
     tocHtml: Heading[] // html 目录内容
     tocShow: boolean // 是否显示目录
+    headingShowCurrentIndex: number // 当前显示的 h 标签 index
     
     // 编辑器
     editor: string // 编辑器内容
@@ -33,7 +34,6 @@ export interface EditorState {
     isFullScreen: boolean // 是否全屏
     isShowEmojiPicker: boolean // 是否显示 emoji picker
     isShortcutKey: boolean // 是否开启快捷键
-    headingShowCurrentIndex: number // 当前显示的 h 标签 index
     vimMode: boolean // 是否开启 vim 模式
     commandKeys: CommandsKey[] // 工具栏按钮
     mode: EditorMode // 编辑器模式

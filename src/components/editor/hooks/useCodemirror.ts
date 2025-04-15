@@ -65,7 +65,6 @@ export function useCodemirror(
                 updateCmHeightNotIsFullScreen()
             })
         }
-        console.log("============>cm", cmHeight.value)
     })
 
     const handleScroll = debounce(200, (scrollHeight: number, clientHeight: number, scrollTop: number, hideDoc: string, showFirstLineNumber: number) => {

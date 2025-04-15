@@ -24,12 +24,12 @@ import { debounce } from "throttle-debounce"
 import { computed, nextTick, onMounted, ref, useTemplateRef, watch } from "vue"
 
 import { ScrollElementTag, ScrollElementTagHeading } from "@/components/editor/command"
+import { CustomElementVideoPlayer } from "@/customElements"
+import { mountVideoPlayerOnCustomElements } from "@/customElementsMount"
 import { shiftArray } from "@/utils/img"
 import { MessageUtil } from "@/utils/message"
 import { scrollToElement } from "@/utils/scroll"
 
-import { CustomElementVideoPlayer } from "../../customElements"
-import { mountVideoPlayerOnCustomElements } from "../../customElementsMount"
 import { htmlHandleWeChat, htmlRemoveFirstH1 } from "../../utils"
 import type { PreviewProps } from "./types"
 
@@ -166,7 +166,6 @@ const closeElImageViewer = () => {
  * @return
  */
 const navigateToHeading = (index: number): void => {
-    console.log("============>nav", index)
     scrollToElement(previewRef.value, index, ScrollElementTagHeading)
 }
 

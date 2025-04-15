@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\editor\customElementsMount\getComponentContainers.ts
+ * FilePath    : blog-client\src\customElementsMount\getComponentContainers.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

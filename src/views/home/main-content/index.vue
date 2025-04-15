@@ -62,7 +62,7 @@ import JBreadcrumb from "@/components/common/breadcrumb"
 import MonthArchive from "@/components/common/month-archive"
 import type { EditorState } from "@/components/editor"
 import EditorToc from "@/components/editor/components/toc"
-import { type TocScroll, useToc } from "@/components/editor/hooks"
+import { type TocStatus, useToc } from "@/components/editor/hooks"
 import { useHome } from "@/components/hooks/useHome"
 import HotPost from "@/components/layout/aside/hot-post"
 import PostTag from "@/components/layout/aside/post-tag"
@@ -123,7 +123,7 @@ const handleState = (val: EditorState) => {
 const previewRef = computed(() => postDetailRef.value?.previewRef)
 
 // 目录点击事件
-const { tocHeadingClicked } = useToc({ state, previewRef } as TocScroll)
+const { tocHeadingClicked } = useToc({ state, previewRef } as TocStatus)
 // 监听搜索关键字变化，更新路由
 watch(
     () => searchData,

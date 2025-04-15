@@ -9,13 +9,13 @@
 import DOMPurify, { type Config } from "dompurify"
 import html2canvas from "html2canvas"
 
+import { CustomElementAttributes, CustomElementVideoPlayer } from "@/customElements"
 import createMarked from "@/pkg/marked/new-marked"
 import { HasParentByClass } from "@/utils/getParentByClass"
 import { MessageUtil } from "@/utils/message"
 
 import { defaultCommandKeys } from "./command"
 import type { Heading } from "./components/toc"
-import { CustomElementAttributes, CustomElementVideoPlayer } from "./customElements"
 import type { EditorState, EditorStateOptions, MarkdownHeadingLine } from "./types"
 
 /**
@@ -108,7 +108,6 @@ export const createRegexCache = (): RegexCache => {
 
     const getCustomElementHeadingTagNameRegex = () => {
         const videoPlayer = new CustomElementVideoPlayer()
-        // console.log("videoPlayer.tagName", videoPlayer.tagName.toLocaleLowerCase())
         return new RegExp(`^${videoPlayer.tagName.toLocaleLowerCase()}|^video-test`) // 动态生成正则表达式  DOMPurify 允许的 自定义元素的标签名
     }
 

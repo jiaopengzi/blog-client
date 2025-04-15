@@ -6,7 +6,66 @@
         <p>滚动条速度：{{ scrollData.speed.toFixed(2) }} px/s</p>
         <p>滚动条方向：{{ scrollData.direction }}</p>
         <div class="main" ref="mainRef">
-            <div class="content" style="height: 2000px; background: linear-gradient(to bottom, #fff, #000)"></div>
+            <div class="content" style="height: 2000px">
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部1</div>
+                <div>底部2</div>
+            </div>
         </div>
     </div>
 </template>
