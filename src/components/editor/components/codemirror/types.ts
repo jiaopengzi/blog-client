@@ -10,9 +10,21 @@ import type { CommandsKey, MarkdownEditorCommandItem } from "../../command"
 
 export interface CodemirrorRef extends HTMLElement {
     root: HTMLElement
-    runCommand: (commandName: CommandsKey, customContent?: MarkdownEditorCommandItem) => void
     insertContent: (content: string) => void
-    scrollIntoViewLine: (line: number) => void
+}
+
+// codemirror 编辑器命令
+export interface CmCommand {
+    commandName: CommandsKey
+    customContent?: MarkdownEditorCommandItem
+    time: Date | null
+}
+
+// markdown 标题行号类型
+export interface MarkdownHeadingLine {
+    index: number // markdown 标题索引
+    markdownHeading: string // markdown 标题
+    markdownLineNumber: number // markdown行号
 }
 
 export interface CodeEditorProps {
@@ -20,4 +32,10 @@ export interface CodeEditorProps {
     width?: string // 宽度
     height?: string // 高度
     vimMode?: boolean // 是否开启 vim 模式
+    isWatchMouse?: boolean // 是否监听鼠标事件
+
+    headingShowCurrentIndex?: number // 当前展示的标题的索引
+    tocMarkdown?: MarkdownHeadingLine[] // markdown 目录内容
+    cmCommand: CmCommand // 命令
+    isUserScrollCmEditor?: boolean // 是否用户滚动编辑器
 }

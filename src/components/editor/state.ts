@@ -12,7 +12,9 @@ import { request } from "@/api/request"
 import { extractImageUrlsFromHtml } from "@/utils/img"
 
 import { CommandsKey } from "./command"
-import type { EditorMode, EditorState, EditorStateOptions } from "./types"
+import type { CmCommand } from "./components/codemirror"
+import type { ViewCommand } from "./components/preview"
+import type { EditorMode, EditorState, EditorStateOptions, MouseStatus, ScrollStatus } from "./types"
 import { createDefaultEditorState, getMarkdownHeadingLines, htmlHandleUtf8BOM, markdownToHtml, matchAllHeadingToList } from "./utils"
 
 /**
@@ -28,13 +30,13 @@ export class EditorStateManager {
 
     // 获取滚动条隐藏的 html 字符串
     get getScrollHideHtmlStr(): string {
-        return markdownToHtml(this.state.scrollHideViewStr)
+        return markdownToHtml(this.state.scrollHideViewStr, this.state.isRemoveFirstH1) // markdown 转 html
     }
 
     // 更新编辑器 store
     updateState(markdownSrc: string): void {
         this.state.editor = htmlHandleUtf8BOM(markdownSrc) // 去除 BOM 头 和 windows 换行符)
-        this.state.html = markdownToHtml(this.state.editor) // markdown 转 html
+        this.state.html = markdownToHtml(this.state.editor, this.state.isRemoveFirstH1) // markdown 转 html
         this.state.tocMarkdown = getMarkdownHeadingLines(this.state.editor) // 通过正则获取 markdown 文件的目录
         this.state.tocHtml = matchAllHeadingToList(this.state.html) // 获取 html 目录
         this.state.imgUrls = extractImageUrlsFromHtml(this.state.html) // 获取图片链接
@@ -81,14 +83,14 @@ export class EditorStateManager {
         this.state.previewShow = !this.state.previewShow
     }
 
-    // 设置是否显示目录
-    setIsAsyncScroll(): void {
-        this.state.isAsyncScroll = !this.state.isAsyncScroll
+    // 设置同步滚动状态
+    setIsSyncScroll(): void {
+        this.state.isSyncScroll = !this.state.isSyncScroll
     }
 
-    // 切换是否异步滚动
-    toggleAsyncScroll(): void {
-        this.state.isAsyncScroll = !this.state.isAsyncScroll
+    // 切换是否同步滚动
+    toggleSyncScroll(): void {
+        this.state.isSyncScroll = !this.state.isSyncScroll
     }
 
     // 设置是否显示目录
@@ -152,9 +154,14 @@ export class EditorStateManager {
         this.state.width = width
     }
 
+    // 设置用户手动滚动编辑器
+    setIsUserScrollCmEditor(flag: boolean): void {
+        this.state.isUserScrollCmEditor = flag
+    }
+
     // 设置用户是否滚动预览
-    setIsUserScrollPreview(isUserScrollPreview: boolean): void {
-        this.state.isUserScrollPreview = isUserScrollPreview
+    setIsUserScrollPreview(flag: boolean): void {
+        this.state.isUserScrollPreview = flag
     }
 
     // 设置目录显示当前索引
@@ -162,9 +169,29 @@ export class EditorStateManager {
         this.state.headingShowCurrentIndex = index
     }
 
+    // 设置滚动条状态
+    setScrollStatus(status: ScrollStatus): void {
+        this.state.scrollStatus = status
+    }
+
+    // 设置命令
+    setCmCommand(command: CmCommand): void {
+        this.state.cmCommand = command
+    }
+
+    // 设置预览命令
+    setViewCommand(command: ViewCommand): void {
+        this.state.viewCommand = command
+    }
+
     // 切换 vim 模式
     toggleVimMode(): void {
         this.state.vimMode = !this.state.vimMode
+    }
+
+    // 设置鼠标状态
+    setMouseStatus(status: MouseStatus): void {
+        this.state.mouseStatus = status
     }
 
     // 设置工具栏按钮

@@ -44,7 +44,6 @@ const activeMarkerRef = useTemplateRef("activeMarkerRef")
 const emitHeadingClicked = (index: number) => {
     // console.log("emitHeadingClicked", index)
     // 触发自定义事件 "heading-clicked"，将 index 和 heading 传递给父组件
-    console.log("============>headings", headings)
     emit("heading-clicked", index)
 
     highlightHeading(index)
@@ -75,6 +74,7 @@ const highlightHeading = (index: number) => {
     }
 }
 
+// 监听 headingShowCurrentIndex 的变化, 高亮对应的标题
 watch(
     () => headingShowCurrentIndex,
     (newVal) => {

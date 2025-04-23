@@ -8,7 +8,7 @@
 
 <template>
     <div ref="toolbarRef" id="toolbar">
-        <button v-for="btn in props.toolbarBtns" type="button" :key="btn.name" class="toolbar-btn" @click="emitToolbarBtnClicked(btn.name)">
+        <button v-for="btn in toolbarBtns" type="button" :key="btn.name" class="toolbar-btn" @click="emitToolbarBtnClicked(btn.name)">
             <el-popover
                 v-if="btn.name === CommandsKey.Emoji"
                 placement="bottom"
@@ -62,25 +62,28 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, useTemplateRef, watch } from "vue"
+import { useResizeObserver } from "@vueuse/core"
+import { onMounted, onUnmounted, ref, useTemplateRef } from "vue"
 import EmojiPicker, { type EmojiExt } from "vue3-emoji-picker"
 
+import type { IconKeys } from "@/components/common/icons"
+
 import { CommandsKey } from "../../command"
-import type { TableRowCol, ToolbarProps } from "./types"
+import type { TableRowCol } from "./types"
 
 defineOptions({ name: "EditorToolbar" })
 
 // 定义 props
-const props = defineProps<ToolbarProps>()
-
-// 设置 iconNumberPerLine 默认值为 20
-// const iconNumberPerLine = ref<number>(props.iconNumberPerLine || 20);
+const { toolbarBtns } = defineProps<{
+    toolbarBtns: Array<{ name: CommandsKey; display: string; icon: IconKeys }> // 预览内容
+}>()
 
 // 子组件 传参
 const emit = defineEmits<{
     (e: "toolbar-btn-clicked", name: CommandsKey): void
     (e: "emoji-picker-selected", emoji: EmojiExt): void
     (e: "table-row-col", tableRowCol: TableRowCol): void
+    (e: "toolbar-height", height: string): void
 }>()
 
 const toolbarRef = useTemplateRef<HTMLElement | null>("toolbarRef") // 工具栏
@@ -110,15 +113,6 @@ const handleTableRowCol = () => {
     emit("table-row-col", { row: row.value, col: col.value })
 }
 
-// 监听工具栏高度变化
-watch(
-    toolbarRef,
-    () => {
-        updateToolbarHeight()
-    },
-    { deep: true },
-)
-
 /**
  * @description: 更新工具栏高度
  */
@@ -126,29 +120,27 @@ const updateToolbarHeight = () => {
     if (toolbarRef.value) {
         toolbarHeight.value = toolbarRef.value.clientHeight
         document.documentElement.style.setProperty("--toolbar-height", `${toolbarHeight.value}px`)
+        emit("toolbar-height", `${toolbarHeight.value}px`)
     }
 }
 
-// const toolbarClass = computed(() => getClassName('toolbar', 'toolbar-fs', false));
-// const toolbarBtnClass = computed(() => getClassName('toolbar-btn', 'toolbar-btn-fs', false));
-
-// const setToolbarIconNumberPerLine = () => {
-//     // 初始化编辑器宽度和高度
-//     if (toolbarRef.value) {
-//         toolbarRef.value.style.setProperty('--icon-number-per-line', `${iconNumberPerLine.value}`);
-//     }
-// }
+// 监听窗口变化
+const { stop } = useResizeObserver(toolbarRef, () => {
+    updateToolbarHeight()
+})
 
 // emoji 选择
 const onSelectEmoji = (emoji: EmojiExt) => {
     emit("emoji-picker-selected", emoji)
-    // console.log(emoji)
 }
 
 onMounted(async () => {
     // 初始化 CodeMirror
-    // setToolbarIconNumberPerLine() // 初始化工具栏每行显示的按钮个数
     updateToolbarHeight() // 初始化工具栏高度
+})
+
+onUnmounted(() => {
+    stop() // 停止监听窗口变化
 })
 
 defineExpose({

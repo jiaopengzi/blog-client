@@ -1,118 +1,67 @@
 <template>
-    <div class="container">
-        <h1>测试页面</h1>
-        <p>滚动条事件</p>
-        <p>滚动条位置：{{ scrollData.position.toFixed(2) }} px</p>
-        <p>滚动条速度：{{ scrollData.speed.toFixed(2) }} px/s</p>
-        <p>滚动条方向：{{ scrollData.direction }}</p>
-        <div class="main" ref="mainRef">
-            <div class="content" style="height: 2000px">
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部1</div>
-                <div>底部2</div>
-            </div>
+    <div class="scroll-container" @scroll="onScroll">
+        <div class="content">
+            <!-- 模拟多行文本，使得容器内有滚动条可演示 -->
+            <p v-for="item in 100" :key="item">这是第 {{ item }} 行，用于测试滚动...</p>
         </div>
+    </div>
+    <div class="info">
+        <p>当前状态： {{ isScrolling ? "正在滚动" : "停止滚动" }}</p>
+        <p v-if="!isScrolling && scrollElapsedTime > 0">本次滚动耗时：{{ scrollElapsedTime }} ms</p>
     </div>
 </template>
 
-<script setup lang="ts">
-import { type Ref, useTemplateRef } from "vue"
+<script lang="ts" setup>
+import { ref } from "vue"
 
-import type { ScrollData } from "@/components/hooks/useScroll"
-import { useScrollActions } from "@/components/hooks/useScroll"
+// 是否正在滚动
+const isScrolling = ref(false)
+// 记录滚动开始的时间戳
+let startTime = 0
+// 记录滚动总耗时
+const scrollElapsedTime = ref(0)
+// 计时器ID，用于清除上一次的延时
+let timerId: number | undefined
 
-defineOptions({ name: "MyTest" })
-
-const mainRef = useTemplateRef("mainRef")
-
-const scrollUpAction = () => {
-    if (scrollData.value.speed > 100 || scrollData.value.position < 200) {
-        // 速度大于100px/s 或者 滚动条位置小于200px
+/**
+ * 监听滚动事件
+ */
+function onScroll() {
+    // 若当前不在滚动状态，则记录滚动开始时间，并更新滚动状态
+    if (!isScrolling.value) {
+        isScrolling.value = true
+        startTime = Date.now()
     }
-}
 
-const scrollDownAction = () => {
-    if (scrollData.value.speed > 100 && scrollData.value.position > 400) {
-        // console.log(`===>Down, 位置：${scrollData.value.position.toFixed(2)}, 速度：${scrollData.value.speed.toFixed(2)} px/s`);
+    // 每次触发滚动事件，都要清除上一次的定时器
+    if (timerId) {
+        clearTimeout(timerId)
     }
-}
 
-const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownAction, mainRef)
+    // 延时 200ms 以判断是否停止滚动
+    timerId = window.setTimeout(() => {
+        // 计算从开始到停止的耗时
+        scrollElapsedTime.value = Date.now() - startTime
+        // 状态设为停止，并清空定时器
+        isScrolling.value = false
+        timerId = undefined
+    }, 200)
+}
 </script>
 
 <style scoped lang="scss">
-// 容器宽高 500px
-.container {
-    width: 500px;
-    height: 500px;
-    margin: 0 auto;
-    background-color: #fff;
+.scroll-container {
+    width: 400px;
+    height: 200px;
+    overflow-y: auto;
     border: 1px solid #ccc;
-    border-radius: 10px;
-    overflow: hidden;
-    position: relative;
+    padding: 8px;
+    margin-bottom: 16px;
 }
 
-.main {
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    position: relative;
-    background-color: #f0f0f0;
+.info {
+    p {
+        margin: 4px 0;
+    }
 }
 </style>

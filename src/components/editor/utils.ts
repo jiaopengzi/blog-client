@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\components\editor\core\utils.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 编辑器工具函数
+/*
+ * FilePath    : blog-client\src\components\editor\utils.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 编辑器工具函数
  */
 
 import DOMPurify, { type Config } from "dompurify"
@@ -14,6 +14,7 @@ import createMarked from "@/pkg/marked/new-marked"
 import { HasParentByClass } from "@/utils/getParentByClass"
 import { MessageUtil } from "@/utils/message"
 
+import { CommandsKey } from "./command"
 import { defaultCommandKeys } from "./command"
 import type { Heading } from "./components/toc"
 import type { EditorState, EditorStateOptions, MarkdownHeadingLine } from "./types"
@@ -31,11 +32,15 @@ export function createDefaultEditorState(options: EditorStateOptions = {}): Edit
         editor: "", // 编辑器内容
         editorShow: true, // 是否显示编辑器
         scrollHideViewStr: "", // 滚动条隐藏的编辑器 markdown 字符串
-        isAsyncScroll: true, // 是否异步滚动
+        isSyncScroll: true, // 是否同步滚动
+        isUserScrollCmEditor: true, // 是否用户滚动编辑器
         isFullScreen: false, // 是否全屏
         isShowEmojiPicker: false, // 是否显示 emoji picker
         isShortcutKey: true, // 默认开启快捷键
         headingShowCurrentIndex: 0, // 目录显示当前索引
+        scrollStatus: void 0, // 滚动条状态 start 开始 end 结束
+        mouseStatus: void 0, // 鼠标状态 cmEditor 编辑器 preview 预览
+        cmCommand: { commandName: "" as CommandsKey, time: new Date() }, // 命令
         vimMode: false, // 是否开启 vim 模式
         commandKeys: defaultCommandKeys.postPc, // 默认使用 postPc 模式的快捷键
         mode: "post", // 默认模式为文章模式
@@ -50,6 +55,7 @@ export function createDefaultEditorState(options: EditorStateOptions = {}): Edit
         isShowPreviewWechat: false, // 是否显示微信预览
         isUserScrollPreview: true, // 是否用户滚动预览
         isRemoveFirstH1: false, // 是否移除第一个 H1 标签
+        viewCommand: { commandName: "" as CommandsKey, time: new Date() }, // 命令
     }
     return { ...defaultState, ...options }
 }
@@ -57,7 +63,7 @@ export function createDefaultEditorState(options: EditorStateOptions = {}): Edit
 // 使用闭包缓存正则表达式
 interface RegexCache {
     hTagRegex: RegExp // 匹配 h 标签
-    hTagStartRegex: RegExp // 匹配 h 标
+    hTagStartRegex: RegExp // 匹配 h 标签的开始
     hTagLevelRegex: RegExp // 匹配 h 标签的等级
     hTagAnchorRegex: RegExp // 匹配 h 标签的锚点
     htmlTagRegex: RegExp // 匹配所有 HTML 标签
@@ -97,7 +103,6 @@ const updateAttributeNames = (tarAttributeNames: Array<string>, srcAttributeName
 export const createRegexCache = (): RegexCache => {
     const hTagRegex = /<h\d.*?>.*?<\/h\d>/g // 匹配 h 标签 注意需要 g 全局匹配
     const hTagStartRegex = /<h(\d)/ // 匹配 h 标签的开始
-
     const hTagLevelRegex = /<h(\d).*?>/ // 匹配 h 标签的等级
     const hTagAnchorRegex = /id="(.*)"/ // 匹配 h 标签的锚点
     const htmlTagRegex = /<.*?>/g // 匹配所有 HTML 标签
@@ -166,8 +171,9 @@ export const anchorGenerator = (text: string | undefined): string => {
  * @return {String} 生成的锚点
  */
 export const anchorGeneratorWithIndex = (text: string | undefined, index: number | undefined): string => {
-    if (!text || index === undefined) return ""
-    return `${anchorGenerator(text)}-${index.toString()}`
+    if (!text || index === void 0) return ""
+    // 为了不然锚点中出现数字开头的情况, 将索引index简写为 idx
+    return `idx${index.toString()}-${anchorGenerator(text)}`
 }
 
 /**
@@ -202,15 +208,25 @@ export function getMarkdownHeadingLines(markdownStr: string): MarkdownHeadingLin
  * @return {String} 生成锚点和 href 的后 html 字符串
  */
 export function generateAllHeadingAnchor(html: string): string {
-    const { hTagRegex, hTagStartRegex, htmlTagRegex } = regexCache
+    const { hTagRegex, hTagStartRegex, htmlTagRegex, hTagAnchorRegex } = regexCache
     let headingIndex = 0 // 标题索引
 
     // 使用 replace 的回调函数处理每个匹配的标题
     return html.replace(hTagRegex, (match) => {
+        // 判断是否已经有锚点, 如果已经有锚点，则不进行处理
+        const existingAnchor = match.match(hTagAnchorRegex)
+        if (existingAnchor) {
+            return match
+        }
+
         const text = match.replace(htmlTagRegex, "") // h 标签的文本
         const anchor = anchorGeneratorWithIndex(text, headingIndex++) // h 标签的锚点,标题+索引
         const anchorAndHref = `id="${anchor}"` // 锚点
-        return match.replace(hTagStartRegex, `<h$1 ${anchorAndHref}`) // 向 h 标签中添加锚点
+
+        // 向 h 标签中添加锚点
+        // $1 是正则表达式替换中的占位符, 用于插入第一个捕获组的内容。
+        // 在当前的代码中, 它的作用是将正则表达式中捕获的 h 标签的数字(如 1, 2, 3) 动态插入到替换结果中。
+        return match.replace(hTagStartRegex, `<h$1 ${anchorAndHref}`)
     })
 }
 
@@ -227,9 +243,9 @@ export function matchAllHeadingToList(html: string): Heading[] {
 
     matches.forEach((item) => {
         // 遍历匹配到的 h 标签数组
-        const level = Number(item.match(hTagLevelRegex)?.[1]) || 0 // h 标签的等级
+        const level = Number(item.match(hTagLevelRegex)?.[1]) || 1 // h 标签的等级
         const text = item.replace(htmlTagRegex, "") // h 标签的文本
-        const anchor = item.match(hTagAnchorRegex)?.[1] // h 标签的锚点
+        const anchor = item.match(hTagAnchorRegex)?.[1] || "" // h 标签的锚点
         headingList.push({
             index: headingIndex++,
             level,
@@ -244,9 +260,10 @@ export function matchAllHeadingToList(html: string): Heading[] {
 /**
  * @description: 通过 markdown 字符串生成 html 字符串
  * @param markdownSrc markdown 字符串
+ * @param isRemoveFirstH1 是否移除第一个 H1 标签
  * @return {String} html 字符串
  */
-export function markdownToHtml(markdownSrc: string): string {
+export function markdownToHtml(markdownSrc: string, isRemoveFirstH1: boolean): string {
     const markdownParse = createMarked().parse(markdownSrc).toString() // markdown 转 html
     const htmlHandleUtf8 = htmlHandleUtf8BOM(markdownParse) // 处理 utf-8 编码问题
 
@@ -259,7 +276,12 @@ export function markdownToHtml(markdownSrc: string): string {
         },
     } as Config)
 
-    const purifyHtml = DOMPurify.sanitize(htmlHandleUtf8) // 过滤 html,防止 xss 攻击
+    const purifyHtml = DOMPurify.sanitize(htmlHandleUtf8) // 过滤 html, 防止 xss 攻击
+
+    if (isRemoveFirstH1) {
+        return generateAllHeadingAnchor(htmlRemoveFirstH1(purifyHtml)) // 移除第一个 h1 标签
+    }
+
     return generateAllHeadingAnchor(purifyHtml) // 生成锚点
 }
 
@@ -516,21 +538,21 @@ export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
             textArea.select()
             try {
                 const successful = document.execCommand("copy")
-                const msg = successful ? "内容已复制到剪贴板" : "无法复制内容"
+                const msg = successful ? "内容已复制到剪贴板" : "无法复制内容0"
                 if (successful) {
                     MessageUtil.success(msg)
                 } else {
                     MessageUtil.error(msg)
                 }
             } catch (err) {
-                console.error("无法复制内容", err)
-                MessageUtil.error("无法复制内容")
+                console.error("无法复制内容1", err)
+                MessageUtil.error("无法复制内容1")
             } finally {
                 document.body.removeChild(textArea)
             }
         }
     } catch (err) {
-        console.error("无法复制内容", err)
-        MessageUtil.error("无法复制内容")
+        console.error("无法复制内容2", err)
+        MessageUtil.error("无法复制内容2")
     }
 }

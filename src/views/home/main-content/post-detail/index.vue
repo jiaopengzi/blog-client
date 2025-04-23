@@ -18,11 +18,11 @@
                     :is-show-el-image-viewer="state.isShowElImageViewer"
                     :is-show-preview-wechat="state.isShowPreviewWechat"
                     :is-user-scroll-preview="state.isUserScrollPreview"
-                    :is-remove-first-h1="state.isRemoveFirstH1"
+                    :heading-show-current-index="headingShowCurrentIndex"
                     @show-image-viewer="showImageViewer"
                     @close-image-viewer="closeImageViewer"
-                    @is-mouse-in-element="handleMouseInElement"
-                    @heading-show-current="handleHeadingShowCurrent"
+                    @heading-show-current="handleHeadingShowCurrentAc"
+                    @update-is-user-scroll="handleUpdateIsUserScrollPreview"
                 />
             </div>
         </section>
@@ -44,6 +44,15 @@ import { useStatusStore } from "@/stores/status"
 
 defineOptions({ name: "PostDetail" })
 
+// 定义 props
+const {
+    headingShowCurrentIndex, // 当前展示的标题的索引
+    time,
+} = defineProps<{
+    headingShowCurrentIndex: number // 当前展示的标题的索引
+    time: Date | null
+}>()
+
 // 事件
 const emit = defineEmits<{
     (event: "state", val: EditorState): void
@@ -64,8 +73,13 @@ const postIdReq = reactive<ViewPostByIDRequest>({} as ViewPostByIDRequest)
 const { manager, state, postMeta, clickAuthorId, editPost, updatePostDetail } = usePostDetail(postIdReq)
 
 // preview
-const { showImageViewer, closeImageViewer, handleMouseInElement, handleHeadingShowCurrent } = usePreview(manager)
+const { showImageViewer, closeImageViewer, handleHeadingShowCurrent, handleUpdateIsUserScrollPreview } = usePreview(manager)
 
+// 更新文章详情状态
+const handleHeadingShowCurrentAc = (val: number) => {
+    handleHeadingShowCurrent(val)
+    emit("state", state)
+}
 
 // 更新文章详情
 const updatePostDetailAc = async (postId: string) => {
@@ -78,6 +92,14 @@ watch(
     async (newVal) => {
         if (!newVal) return
         await updatePostDetailAc(postId.value)
+    },
+)
+
+watch(
+    () => time,
+    (newTime, oldTime) => {
+        if (newTime === oldTime) return // 如果时间没有变化, 不更新
+        handleUpdateIsUserScrollPreview(false)
     },
 )
 

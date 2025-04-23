@@ -11,10 +11,10 @@ export interface Heading {
     index: number
     level: number
     text: string
-    anchor?: string // 锚点
+    anchor: string // 锚点
 }
 
 export interface TocProps {
     headingShowCurrentIndex: number // 当前显示的 heading 索引
-    headings: Array<Heading> // 预览内容
+    headings: Heading[] // 预览内容
 }

@@ -30,9 +30,14 @@
                     @click-category="clickCategory"
                     @pagination-block-visible="paginationBlockVisibleChange"
                 />
-                <PostDetail ref="postDetailRef" v-if="showPostDetail" @state="handleState" />
+                <PostDetail
+                    ref="postDetailRef"
+                    v-if="showPostDetail"
+                    :heading-show-current-index="state.headingShowCurrentIndex"
+                    :time="clickTocTime"
+                    @state="handleState"
+                />
             </el-main>
-
             <el-aside ref="asideRef" class="el-aside pc" v-show="showHomeAside">
                 <!-- 导航栏 -->
                 <EditorToc :headings="state.tocHtml" :heading-show-current-index="state.headingShowCurrentIndex" @heading-clicked="tocHeadingClicked" />
@@ -44,17 +49,14 @@
                 <MonthArchive class="el-aside-item" :post-list="monthArchiveProps" @post-by-month="clickMonthArchive" />
                 <!-- 文章标签 -->
                 <PostTag class="el-aside-item" @click="clickTag" />
-                <!-- 观察点 -->
-                <div ref="asideEndRef"></div>
             </el-aside>
         </el-container>
     </div>
 </template>
 <script setup lang="ts">
-import { useResizeObserver } from "@vueuse/core"
 import type { ElAside } from "element-plus"
 import { storeToRefs } from "pinia"
-import { computed, onBeforeMount, onUnmounted, type Reactive, reactive, useTemplateRef, watch } from "vue"
+import { onBeforeMount, type Reactive, reactive, ref, useTemplateRef, watch } from "vue"
 import { useRoute } from "vue-router"
 
 import { type ViewPostRequest } from "@/api/post/view"
@@ -62,7 +64,6 @@ import JBreadcrumb from "@/components/common/breadcrumb"
 import MonthArchive from "@/components/common/month-archive"
 import type { EditorState } from "@/components/editor"
 import EditorToc from "@/components/editor/components/toc"
-import { type TocStatus, useToc } from "@/components/editor/hooks"
 import { useHome } from "@/components/hooks/useHome"
 import HotPost from "@/components/layout/aside/hot-post"
 import PostTag from "@/components/layout/aside/post-tag"
@@ -80,7 +81,6 @@ const route = useRoute()
 const { searchData } = defineProps<{ searchData: SearchData }>()
 
 const asideRef = useTemplateRef<InstanceType<typeof ElAside>>("asideRef")
-const postDetailRef = useTemplateRef("postDetailRef")
 
 const statusStore = useStatusStore()
 const { showPostDetail, showPostList, showHomeCarousel, showHomeAside, showSearchList } = storeToRefs(statusStore)
@@ -117,13 +117,21 @@ const state: Reactive<EditorState> = reactive({
 
 // 更新文章详情状态
 const handleState = (val: EditorState) => {
-    Object.assign(state, val)
+    state.tocHtml = val.tocHtml
+    state.headingShowCurrentIndex = val.headingShowCurrentIndex
 }
-// 使用 computed 包装 previewRef 保持响应性
-const previewRef = computed(() => postDetailRef.value?.previewRef)
 
-// 目录点击事件
-const { tocHeadingClicked } = useToc({ state, previewRef } as TocStatus)
+const clickTocTime = ref(new Date())
+
+/**
+ * @description: 目录导航点击事件
+ * @param index 点击的目录索引
+ */
+const tocHeadingClicked = (index: number) => {
+    state.headingShowCurrentIndex = index // 设置当前目录索引
+    clickTocTime.value = new Date() // 保证相同关键字搜索时, 重新渲染
+}
+
 // 监听搜索关键字变化，更新路由
 watch(
     () => searchData,
@@ -167,41 +175,6 @@ const handlePostId = async (val: string) => {
     })
 }
 
-// 侧边栏高度计算
-const reCalculateHeight = () => {
-    if (asideRef.value) {
-        const height = Array.from(asideRef.value.$el.children as HTMLCollectionOf<HTMLElement>).reduce<number>((totalHeight, child: HTMLElement) => {
-            const htmlChild = child as HTMLElement
-            if (htmlChild.classList.contains("el-aside-item")) {
-                const style = getComputedStyle(htmlChild)
-                // 高度 = 之前的高度 + 当前元素的高度 + 当前元素的 marginTop + 当前元素的 marginBottom
-                return totalHeight + htmlChild.offsetHeight + parseFloat(style.marginTop) + parseFloat(style.marginBottom)
-            }
-            return totalHeight
-        }, 0)
-
-        // 设置侧边栏高度
-        asideRef.value.$el.style.height = `${height}px`
-
-        // 设置侧边栏距离顶部的距离 = 侧边栏高度 - 视口高度
-        asideRef.value.$el.style.top = `-${height - window.innerHeight}px`
-    }
-}
-
-// 监控 asideRef 元素的变化 重新计算高度
-const { stop } = useResizeObserver(asideRef, (entries) => {
-    // const entry = entries[0]
-    // const { x, y, left, top, width, height } = entry.contentRect
-    // console.log(
-    //     `尺寸变化了  x: ${x},y: ${y},left: ${left},top: ${top},width: ${width}, height: ${height}`,
-    // )
-    reCalculateHeight()
-})
-
-onUnmounted(() => {
-    stop()
-})
-
 onBeforeMount(async () => {
     if (!showPostDetail.value) {
         await updateByRoute()
@@ -228,6 +201,12 @@ onBeforeMount(async () => {
         width: pc.$width-page-main;
     }
 
+    .container-main {
+        // 确保子元素可以自行决定高度, 配合 el-aside 的 sticky 定位
+        display: flex;
+        align-items: flex-start;
+    }
+
     .el-main {
         // background-color: var(--jpz-bg-color);
         padding-left: 0px;
@@ -235,9 +214,10 @@ onBeforeMount(async () => {
     }
 
     .el-aside {
+        position: sticky; // 使侧边栏固定在页面顶部, 粘性定位
+        top: 0;
         width: pc.$width-aside;
         background-color: var(--jpz-bg-color-page);
-        position: sticky; // 粘性定位 和 reCalculateHeight 配合使用
     }
 
     .el-aside-item {

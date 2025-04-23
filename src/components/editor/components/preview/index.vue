@@ -17,21 +17,21 @@ import "@/assets/scss/preview.scss"
 import "@/assets/scss/highlight.js.jpz.scss"
 import "katex/dist/katex.min.css" // katex 样式
 
-import { useScroll } from "@vueuse/core"
+import { useIntersectionObserver } from "@vueuse/core"
 import type { ClipboardEvent } from "clipboard"
 import ClipboardJS from "clipboard" //代码块复制
 import { debounce } from "throttle-debounce"
-import { computed, nextTick, onMounted, ref, useTemplateRef, watch } from "vue"
+import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from "vue"
 
-import { ScrollElementTag, ScrollElementTagHeading } from "@/components/editor/command"
+import { ScrollElementTagHeading } from "@/components/editor/command"
 import { CustomElementVideoPlayer } from "@/customElements"
 import { mountVideoPlayerOnCustomElements } from "@/customElementsMount"
 import { shiftArray } from "@/utils/img"
 import { MessageUtil } from "@/utils/message"
-import { scrollToElement } from "@/utils/scroll"
+import { myScrollTo } from "@/utils/scrollTo"
 
-import { htmlHandleWeChat, htmlRemoveFirstH1 } from "../../utils"
-import type { PreviewProps } from "./types"
+import { copyWithCustomStyle, htmlHandleWeChat } from "../../utils"
+import type { HeadingObject, PreviewProps } from "./types"
 
 defineOptions({ name: "HtmlPreview" })
 
@@ -43,8 +43,15 @@ const {
     width, // 宽度
     height, // 高度
     isShowPreviewWechat, // 是否显示微信预览
-    isUserScrollPreview, // 是否用户滚动预览
-    isRemoveFirstH1, // 是否移除第一个 H1 标签
+    isUserScrollPreview, // 是否用户手动滚动预览
+    viewCommand, // 预览命令
+    headingShowCurrentIndex, // 当前展示的标题的索引
+    isWatchMouse = false, // 是否监听鼠标进入元素
+
+    scrollMethod = "scrollIntoView", // 滚动方法
+    root, // 交叉观察器的根元素
+    rootMargin = "", // 交叉观察器的根元素的边距
+    threshold = 1, // 交叉观察器的阈值
 } = defineProps<PreviewProps>()
 
 // 定义 emits 子组件 传参
@@ -54,17 +61,14 @@ const emit = defineEmits<{
     (event: "is-mouse-in-element", isMouseInElement: boolean): void
     (event: "is-mouse-in-element", isMouseInElement: boolean): void
     (event: "heading-show-current", headingIndex: number): void // 当前标题索引
+    (event: "update-is-user-scroll", val: boolean): void // 更新是否用户手动滚动预览
 }>()
 
-// const previewRef = ref<HTMLElement | null>(null) // 预览容器
 const previewRef = useTemplateRef<HTMLElement | null>("previewRef")
 
 const htmlData = computed(() => {
     // 获取预览内容
     let htmlStr = html || "" // 预览内容
-    if (isRemoveFirstH1) {
-        htmlStr = htmlRemoveFirstH1(htmlStr) // 移除第一个 h1 标签
-    }
 
     if (isShowPreviewWechat) {
         // 微信公众号预览
@@ -74,18 +78,36 @@ const htmlData = computed(() => {
     return htmlStr
 })
 
-// 鼠标是否在元素内
-const isMouseInElement = ref(false) // 鼠标是否在元素内
+// 所有的 h 标签响应式变量
+const allHeadings = ref<NodeListOf<HTMLHeadingElement> | null>(null)
+const allHeadingMap: Map<string, HeadingObject> = new Map() // 所有的 h 标签 map
+
+// 获取所有的 h 标签函数
+const getAllHeadings = () => {
+    if (previewRef.value) {
+        const headings = previewRef.value.querySelectorAll(ScrollElementTagHeading) as NodeListOf<HTMLHeadingElement>
+        allHeadings.value = headings
+        allHeadingMap.clear() // 清空 map
+        headings.forEach((heading, index) => {
+            const obj: HeadingObject = {
+                id: heading.id,
+                index: index,
+                element: heading as HTMLHeadingElement,
+            }
+            allHeadingMap.set(heading.id, obj)
+        })
+    }
+}
 
 // 鼠标进入
 const onMouseEnter = () => {
-    isMouseInElement.value = true
+    if (!isWatchMouse) return
     emit("is-mouse-in-element", true)
 }
 
 // 鼠标离开
 const onMouseLeave = () => {
-    isMouseInElement.value = false
+    if (!isWatchMouse) return
     emit("is-mouse-in-element", false)
 }
 
@@ -108,6 +130,19 @@ watch(
         } else {
             previewRef.value?.removeAttribute("data-preview")
         }
+    },
+)
+
+// 防抖处理 copyWithCustomStyle
+const debounceCopyWithCustomStyle = debounce(500, copyWithCustomStyle)
+
+// 监听 viewCommand, 执行对应命令
+watch(
+    () => viewCommand,
+    (newVal, oldVal) => {
+        // 如果没有命令或者时间相同则不执行
+        if (!newVal || !oldVal || !newVal.commandName || newVal.time === oldVal.time || !previewRef.value) return
+        debounceCopyWithCustomStyle(previewRef.value)
     },
 )
 
@@ -160,48 +195,38 @@ const closeElImageViewer = () => {
     document.body.style.overflow = "auto"
 }
 
-/**
- * @description: 暴露给父组件的方法，用于点击目录时候跳转到对应的标题
- * @param index 目录索引
- * @return
- */
+// 跳转到对应的标题
 const navigateToHeading = (index: number): void => {
-    scrollToElement(previewRef.value, index, ScrollElementTagHeading)
+    if (!allHeadings.value) return
+
+    // 获取目标标题元素
+    const target = allHeadings.value[index] as HTMLHeadingElement
+
+    // 如果目标元素不存在或者是用户手动滚动预览，则不执行跳转
+    if (!target || isUserScrollPreview) return
+
+    // 使用不同的方法滚动到目标元素
+    if (scrollMethod === "scrollIntoView") {
+        myScrollTo(target, null, () => {
+            emit("update-is-user-scroll", true)
+        })
+    } else {
+        myScrollTo(target, previewRef.value, () => {
+            emit("update-is-user-scroll", true)
+        })
+    }
 }
 
-/**
- * @description: 暴露给父组件的方法,跳转到对应的元素
- * @param index 目录索引
- * @return
- */
-const navigateToElement = (index: number, callback?: () => void): void => {
-    // console.log('navigateToElement=====>>>>', index)
-    scrollToElement(previewRef.value, index, ScrollElementTag, "smooth", callback)
-}
-
-/**
- * @description: 暴露给父组件的方法,跳转到顶部
- * @param behavior 滚动行为
- * @return
- */
-const navigateGoHome = (behavior: ScrollBehavior = "smooth"): void => {
-    previewRef.value?.scrollTo({
-        top: 0,
-        behavior: behavior,
-    })
-}
-
-/**
- * @description: 暴露给父组件的方法,跳转到底部
- * @param behavior 滚动行为
- * @return
- */
-const navigateGoEnd = (behavior: ScrollBehavior = "smooth"): void => {
-    previewRef.value?.scrollTo({
-        top: previewRef.value.scrollHeight - previewRef.value.clientHeight,
-        behavior: behavior,
-    })
-}
+// 标题跳转
+watch(
+    () => headingShowCurrentIndex,
+    (newIndex) => {
+        // 如果没有目录或者索引小于0则不执行
+        if (newIndex === void 0 || newIndex < 0) return
+        // 跳转目标标题
+        navigateToHeading(newIndex)
+    },
+)
 
 // 初始化 ClipboardJS 的复制代码函数
 const initializeClipboard = () => {
@@ -238,14 +263,6 @@ const initializeClipboard = () => {
     })
 }
 
-// 所有的 h 标签响应式变量
-const allHeadings = ref<NodeListOf<HTMLHeadingElement> | null>(null)
-
-// 获取所有的 h 标签函数
-const getAllHeadings = (): NodeListOf<HTMLHeadingElement> | null => {
-    return previewRef.value?.querySelectorAll(ScrollElementTagHeading) || null
-}
-
 // 预览容器的 top clientHeight scrollHeight
 const previewRefRectTop = ref(0)
 const previewRefClientHeight = ref(0)
@@ -260,62 +277,81 @@ const getPreviewRefRect = () => {
     }
 }
 
-// 处理滚动事件，节流
-const handleScroll = debounce(200, () => {
-    if (!allHeadings.value) return
+const stopFuncs: Array<() => void> = [] // 停止监听函数
+const isIntersectingHeadings = ref<string[]>([]) // 交叉观察者的标题数组
+const isBestMatchHeading = ref<string>("") // 最佳匹配的标题
 
-    // 历遍所有的 h 标签 判断是否在设定的区域内
-    for (let i = 0; i < allHeadings.value.length; i++) {
-        const rect = allHeadings.value[i].getBoundingClientRect() // 获取标题的矩形区域
-        const { top } = rect // 标题的 top 值
-
-        // 当前标题在可视区域内
-        if (
-            top >= previewRefRectTop.value && // 标题在 preview 顶部以下
-            top <= previewRefRectTop.value + (previewRefClientHeight.value / 3) * 2 // 标题在 preview 可视区域 2/3 上方
-        ) {
-            emit("heading-show-current", i)
-            break
-        }
-
-        // 当前标题在 preview 可视区域上方,下一个标题不在 preview 可视区域内
-        else if (
-            top < previewRefRectTop.value &&
-            allHeadings.value[i + 1] &&
-            allHeadings.value[i + 1].getBoundingClientRect().top > previewRefClientHeight.value
-        ) {
-            emit("heading-show-current", i)
-            break
-        }
-    }
-})
-
-// 监听滚动事件
-const { y, isScrolling } = useScroll(previewRef)
-
-watch([isMouseInElement, isScrolling], ([isMouseInElementVal, isScrollingVal]) => {
-    if (isMouseInElementVal && isScrollingVal) {
-        // 当鼠标在 preview 元素内并且正在滚动时
-        handleScroll()
-    }
-})
-
-watch([y, isMouseInElement], ([yVal, isMouseInElementVal]) => {
-    if (yVal === 0 && isMouseInElementVal) {
-        // 滚动到顶部 且 鼠标在元素内,高亮第一个标题
-        emit("heading-show-current", 0)
-    }
-})
-
-// 监控 html 变化,获取所有的 h 标签 并挂载视频播放器
+// 监控 html 变化, 获取所有的 h 标签 并挂载视频播放器
 watch(
     () => htmlData.value,
     (newHtml) => {
         if (newHtml) {
             // 注意：这里使用 nextTick，确保 html 已经渲染完成
             nextTick(() => {
-                allHeadings.value = getAllHeadings()
+                getAllHeadings()
 
+                // 历遍 allHeadings 监控每个标题的可见性
+                allHeadings.value?.forEach((headingEl) => {
+                    // 使用 useIntersectionObserver 对单个 heading 进行监听
+                    const { stop } = useIntersectionObserver(
+                        headingEl,
+                        ([entry]) => {
+                            // 从 isIntersectingHeadings 中移除当前标题
+                            let isFromTopShow = false // 是否从上方出现
+                            // console.log("============>i", rootEl)
+                            // console.log("============>i", entry.intersectionRect)
+                            // console.log("============>b", entry.boundingClientRect)
+                            if (entry.isIntersecting) {
+                                if (entry.intersectionRect.top === 0) {
+                                    // console.log("============>从上出现")
+                                    isFromTopShow = true
+                                } else {
+                                    isFromTopShow = false
+                                    // console.log("============>从下出现")
+                                }
+                                // 如果标题在视口内，设置当前标题索引
+                                if (isFromTopShow) {
+                                    // 将元素插入到数组的开头
+                                    isIntersectingHeadings.value.unshift(entry.target.id)
+                                } else {
+                                    // 将元素插入到数组的末尾
+                                    isIntersectingHeadings.value.push(entry.target.id)
+                                }
+                                isBestMatchHeading.value = isIntersectingHeadings.value[isIntersectingHeadings.value.length - 1]
+                            } else {
+                                // let isFromTopHidden = false // 是否从上方隐藏
+                                // if (entry.intersectionRect.top > entry.boundingClientRect.bottom) {
+                                //     console.log("============>从上隐藏")
+                                //     isFromTopHidden = true
+                                // }
+                                // if (entry.intersectionRect.bottom < entry.boundingClientRect.top) {
+                                //     isFromTopHidden = false
+                                //     console.log("============>从下隐藏")
+                                // }
+                                if (isIntersectingHeadings.value.length === 1) {
+                                    isBestMatchHeading.value = isIntersectingHeadings.value[0]
+                                    isIntersectingHeadings.value = isIntersectingHeadings.value.filter((id) => id !== entry.target.id)
+                                } else {
+                                    isIntersectingHeadings.value = isIntersectingHeadings.value.filter((id) => id !== entry.target.id)
+                                    // 等于数组最后一个
+                                    isBestMatchHeading.value = isIntersectingHeadings.value[isIntersectingHeadings.value.length - 1]
+                                    // isBestMatchHeading.value = isIntersectingHeadings.value[0]
+                                }
+                            }
+
+                            if (isUserScrollPreview) {
+                                const index = allHeadingMap.get(isBestMatchHeading.value)?.index || 0 // 获取当前标题的索引
+                                emit("heading-show-current", index)
+                            }
+                        },
+                        {
+                            root, // 监听的根元素
+                            rootMargin, // 例如: 让在距顶部 88px 时视为未进入
+                            threshold, // 交叉比例阈值，表示多少比例的元素可见时触发回调
+                        },
+                    )
+                    stopFuncs.push(stop) // 将停止函数存储到数组中
+                })
                 // 挂载视频播放器到自定义元素 CustomElementVideoPlayer
                 mountVideoPlayerOnCustomElements(previewRef.value as HTMLElement, CustomElementVideoPlayer)
             })
@@ -324,68 +360,29 @@ watch(
 )
 
 // 初始化
-onMounted(() => {
+onMounted(async () => {
     initializeCssVariable() // 初始化 css 变量
     initializeClipboard() // 初始化剪切板
 
-    nextTick(() => {
+    await nextTick(() => {
         // 获取预览容器的 top 值
         getPreviewRefRect()
     })
 })
 
-// 导出方法
+onUnmounted(() => {
+    // 停止所有的 IntersectionObserver 监听
+    stopFuncs.forEach((stop) => {
+        stop()
+    })
+})
+
+// 导出
 defineExpose({
     root: previewRef,
-    navigateToHeading,
-    navigateToElement,
-    navigateGoHome,
-    navigateGoEnd,
 })
 </script>
 
 <style scoped lang="scss">
-#preview {
-    overflow: auto;
-    padding: 0 20px;
-    box-sizing: border-box;
-    font-size: 16px;
-    line-height: 1.5;
-    color: var(--jpz-color-primary);
-    background-color: var(--jpz-bg-color);
-    height: var(--my-codemirror-height, 100%);
-}
-
-@include respond-to("pc") {
-    #preview {
-        max-width: pc.$width-page-main;
-        width: 100%;
-    }
-
-    #preview[data-preview="wechat"] {
-        width: 390px;
-    }
-}
-
-@include respond-to("pad") {
-    #preview {
-        max-width: 100%;
-    }
-
-    #preview[data-preview="wechat"] {
-        max-width: 390px;
-        width: 100%;
-    }
-}
-
-@include respond-to("phone") {
-    #preview {
-        max-width: 100%;
-    }
-
-    #preview[data-preview="wechat"] {
-        max-width: 390px;
-        width: 100%;
-    }
-}
+@use "./style.module.scss";
 </style>

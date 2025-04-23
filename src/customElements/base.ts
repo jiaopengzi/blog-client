@@ -27,8 +27,9 @@ export class BaseCustomElement extends HTMLElement {
         if (!BaseCustomElement.observedAttributes.includes(name)) {
             console.warn(`Attribute "${name}" is not allowed.`)
             this.removeAttribute(name)
-        } else {
-            console.info(`Attribute "${name}" changed from ${oldValue} to ${newValue}`)
         }
+        // else {
+        //     console.info(`Attribute "${name}" changed from ${oldValue} to ${newValue}`)
+        // }
     }
 }

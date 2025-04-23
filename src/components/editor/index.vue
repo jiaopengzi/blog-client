@@ -13,10 +13,10 @@
             <Toolbar
                 ref="toolbarRef"
                 :toolbar-btns="toolbarBtns"
-                :icon-number-per-line="iconNumberPerLine()"
                 @toolbar-btn-clicked="toolbarBtnClicked"
                 @emoji-picker-selected="emojiPickerSelected"
                 @table-row-col="insertTableRowCol"
+                @toolbar-height="updateMdContainerStyle"
             />
         </div>
 
@@ -34,8 +34,16 @@
                     :doc="state.editor"
                     :height="cmHeight"
                     :vim-mode="state.vimMode"
+                    :is-user-scroll-cm-editor="state.isUserScrollCmEditor"
+                    :heading-show-current-index="state.headingShowCurrentIndex"
+                    :toc-markdown="state.tocMarkdown"
+                    :cm-command="state.cmCommand"
+                    :is-watch-mouse="true"
+                    :is-full-screen="state.isFullScreen"
                     @handle-scroll="handleScroll"
+                    @is-mouse-in-element="handleMouseInCmEditor"
                     @update-editor-doc="updateEditorDoc"
+                    @update-is-user-scroll="handleUpdateIsUserScrollCmEditor"
                 />
             </div>
 
@@ -49,10 +57,15 @@
                     :is-show-preview-wechat="state.isShowPreviewWechat"
                     :is-user-scroll-preview="state.isUserScrollPreview"
                     :height="cmHeight"
+                    :heading-show-current-index="state.headingShowCurrentIndex"
+                    :is-watch-mouse="true"
+                    scroll-method="scrollTo"
+                    :view-command="state.viewCommand"
                     @show-image-viewer="showImageViewer"
                     @close-image-viewer="closeImageViewer"
-                    @is-mouse-in-element="handleMouseInElement"
+                    @is-mouse-in-element="handleMouseInPreview"
                     @heading-show-current="handleHeadingShowCurrent"
+                    @update-is-user-scroll="handleUpdateIsUserScrollPreview"
                 />
             </div>
         </div>
@@ -62,13 +75,13 @@
 <script lang="ts" setup>
 import "vue3-emoji-picker/css"
 
-import { onMounted, useTemplateRef, watch } from "vue"
+import { useTemplateRef, watch } from "vue"
 
 import EditorCodemirror, { type CodemirrorRef } from "./components/codemirror"
 import HtmlPreview, { type PreviewRef } from "./components/preview"
 import EditorToc from "./components/toc"
-import Toolbar, { type ToolbarRef } from "./components/toolbar"
-import { useCodemirror, usePreview, useToc, useToolbar } from "./hooks"
+import Toolbar from "./components/toolbar"
+import { useCodemirror, usePreview, useToolbar } from "./hooks"
 import { EditorStateManager } from "./state"
 
 // 文章编辑器命名
@@ -87,25 +100,25 @@ const state = stateManager.getState()
 // ref
 const mdLayoutRef = useTemplateRef<HTMLElement | null>("mdLayoutRef") //编辑器布局
 const mdContainerRef = useTemplateRef<HTMLElement | null>("mdContainerRef") //编辑器容器
-const toolbarRef = useTemplateRef<ToolbarRef | null>("toolbarRef") //编辑器容器
 const codemirrorRef = useTemplateRef<CodemirrorRef | null>("codemirrorRef") //编辑器
-const previewRef = useTemplateRef<PreviewRef | null>("previewRef") // 预览容器
+const previewRef = useTemplateRef<PreviewRef | null>("previewRef") // 预览
 
 // 工具栏点击事件
-const { toolbarBtns, toolbarBtnClicked, iconNumberPerLine, emojiPickerSelected, insertTableRowCol } = useToolbar(
-    mdLayoutRef,
-    mdContainerRef,
-    toolbarRef,
-    codemirrorRef,
-    previewRef,
-    stateManager,
-)
+const { toolbarBtns, toolbarBtnClicked, updateMdContainerStyle, emojiPickerSelected, insertTableRowCol } = useToolbar(mdLayoutRef, mdContainerRef, stateManager)
 
-// 目录点击事件
-const { tocHeadingClicked } = useToc({ state, previewRef, codemirrorRef })
+/**
+ * @description: 目录导航点击事件
+ * @param index 点击的目录索引
+ */
+const tocHeadingClicked = (index: number) => {
+    // 将用户手动滚动的状态设置为 false
+    stateManager.setIsUserScrollPreview(false)
+    stateManager.setIsUserScrollCmEditor(false)
+    stateManager.setHeadingShowCurrentIndex(index) // 设置当前目录索引
+}
 
 // codemirror
-const { cmHeight, updateCmHeightNotIsFullScreen, handleScroll } = useCodemirror(mdContainerRef, codemirrorRef, previewRef, stateManager)
+const { cmHeight, handleScroll, handleUpdateIsUserScrollCmEditor, handleMouseInCmEditor } = useCodemirror(mdContainerRef, codemirrorRef, stateManager)
 
 const updateEditorDoc = (editorDoc: string) => {
     stateManager.updateState(editorDoc) // 更新 store 中的 editor
@@ -113,7 +126,7 @@ const updateEditorDoc = (editorDoc: string) => {
 }
 
 // preview
-const { showImageViewer, closeImageViewer, handleMouseInElement, handleHeadingShowCurrent } = usePreview(stateManager, codemirrorRef)
+const { showImageViewer, closeImageViewer, handleMouseInPreview, handleHeadingShowCurrent, handleUpdateIsUserScrollPreview } = usePreview(stateManager)
 
 // 监听编辑器宽度变化
 watch(
@@ -122,12 +135,6 @@ watch(
         document.documentElement.style.setProperty("--md-editor-width", `${newWidth}px`)
     },
 )
-
-// 初始化
-onMounted(() => {
-    updateCmHeightNotIsFullScreen() // 初始化编辑器实例高度
-    // console.log('editorCore onMounted', previewRef.value?.$el)
-})
 
 // 暴露给父组件的属性
 defineExpose({

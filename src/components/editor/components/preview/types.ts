@@ -6,12 +6,23 @@
  * Description : 类型
  */
 
+import { CommandsKey } from "../../command"
+
 export interface PreviewRef extends HTMLElement {
     root: HTMLElement
-    navigateToHeading: (index: number) => void
-    navigateToElement: (index: number, callback?: () => void) => void
     navigateGoHome: (behavior: ScrollBehavior) => void
     navigateGoEnd: (behavior: ScrollBehavior) => void
+}
+
+export type HeadingObject = {
+    id: string // 标题 id
+    index: number // 标题索引
+    element: HTMLHeadingElement // 标题元素
+}
+
+export interface ViewCommand {
+    commandName: CommandsKey
+    time: Date | null
 }
 
 export interface PreviewProps {
@@ -22,5 +33,15 @@ export interface PreviewProps {
     height?: string // 高度
     isShowPreviewWechat?: boolean // 是否显示微信预览
     isUserScrollPreview?: boolean // 是否用户滚动预览
+    isEmit?: boolean // 是否触发事件
     isRemoveFirstH1?: boolean // 是否移除第一个 H1 标签
+    viewCommand?: ViewCommand // 命令
+    headingShowCurrentIndex?: number // 当前展示的标题的索引
+    isWatchMouse?: boolean // 是否监听鼠标事件
+
+    scrollMethod?: "scrollIntoView" | "scrollTo" // 滚动方法;
+
+    root?: ScrollContainer
+    rootMargin?: string
+    threshold?: number | number[]
 }

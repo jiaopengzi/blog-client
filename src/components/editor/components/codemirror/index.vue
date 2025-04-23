@@ -7,7 +7,7 @@
 -->
 
 <template>
-    <div ref="codemirrorRef" id="my-codemirror"></div>
+    <div ref="codemirrorRef" id="my-codemirror" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave"></div>
 </template>
 
 <script lang="ts" setup>
@@ -26,7 +26,17 @@ import type { CodeEditorProps } from "./types"
 
 defineOptions({ name: "EditorCodemirror" })
 
-const props = defineProps<CodeEditorProps>() // 定义 props
+const {
+    doc, // 编辑器内容
+    height, // 编辑器高度
+    width, // 编辑器宽度
+    vimMode, // 是否开启 vim 模式
+    headingShowCurrentIndex, // 当前展示的标题的索引
+    tocMarkdown, // markdown 目录内容
+    isWatchMouse, // 是否监听鼠标进入编辑器
+    cmCommand, // 编辑器命令
+    isUserScrollCmEditor, // 是否开启用户滚动编辑器
+} = defineProps<CodeEditorProps>() // 定义 props
 const codemirrorRef = useTemplateRef<HTMLElement | null>("codemirrorRef") // 编辑器 dom 节点
 
 // 定义 emits 子组件 传参
@@ -40,23 +50,37 @@ const emit = defineEmits<{
         hideDoc: string, // 隐藏部分的 markdown
         showFirstLineNumber: number, // 显示的第一行行号
     ): void
+    (event: "is-mouse-in-element", isMouseInElement: boolean): void
+    (event: "update-is-user-scroll", val: boolean): void // 更新是否用户手动滚动预览
 }>()
 
+// 鼠标进入
+const onMouseEnter = () => {
+    if (!isWatchMouse) return
+    emit("is-mouse-in-element", true)
+}
+
+// 鼠标离开
+const onMouseLeave = () => {
+    if (!isWatchMouse) return
+    emit("is-mouse-in-element", false)
+}
+
+// 初始化编辑器宽度和高度
 const initializeCssVariable = () => {
-    // 初始化编辑器宽度和高度
-    if (codemirrorRef.value && props.width) {
-        codemirrorRef.value.style.setProperty("--my-codemirror-width", `${props.width}`)
+    if (codemirrorRef.value && width) {
+        codemirrorRef.value.style.setProperty("--my-codemirror-width", `${width}`)
     }
-    if (codemirrorRef.value && props.height) {
-        codemirrorRef.value.style.setProperty("--my-codemirror-height", `${props.height}`)
+    if (codemirrorRef.value && height) {
+        codemirrorRef.value.style.setProperty("--my-codemirror-height", `${height}`)
     }
 }
 
 // 监听 props 宽高 变化
 watch(
-    () => [props.height, props.width],
+    () => [height, width],
     () => {
-        if (codemirrorRef.value && (props.height || props.width)) {
+        if (codemirrorRef.value && (height || width)) {
             initializeCssVariable() // 初始化 css 变量
         }
     },
@@ -66,7 +90,7 @@ watch(
 let cmView: EditorView = null! // 编辑器实例 null后的感叹号表示不为空
 
 const options: Ref<CustomSetupOptions> = ref({
-    vimMode: props.vimMode || false, // 是否开启 vim 模式
+    vimMode: vimMode || false, // 是否开启 vim 模式
 })
 
 // 更新编辑器内容
@@ -74,8 +98,7 @@ const updateDocInfo: Extension = EditorView.updateListener.of((viewUpdate: ViewU
     if (viewUpdate.docChanged) {
         const { state } = viewUpdate.view
         const newDoc = state.doc.toString()
-        if (newDoc !== props.doc) {
-            // console.log('newDoc-子组件', newDoc)
+        if (newDoc !== doc) {
             emit("update-editor-doc", newDoc) // 更新编辑器内容 提交给父组件
         }
     }
@@ -85,7 +108,7 @@ const updateDocInfo: Extension = EditorView.updateListener.of((viewUpdate: ViewU
 const initializeCodeMirror = (options: CustomSetupOptions) => {
     // 初始化编辑器
     const state = EditorState.create({
-        doc: props.doc || "",
+        doc: doc || "",
         extensions: [createCustomSetup(options), updateDocInfo],
     })
 
@@ -121,6 +144,10 @@ const insertContent = (content: string): void => {
 
 // 滚动到指定行
 const scrollIntoViewLine = (lineNumber: number): void => {
+    let yMargin = 5 // 默认值 5
+    if (lineNumber === 1) {
+        yMargin = 350 // 当第一行的时候设置为 350，不会出现滚动到顶部的情况
+    }
     const line = cmView.state.doc.line(lineNumber) // 获取当前元素在编辑器中的行数
 
     // 滑动到指定行有一些问题 内容较多时会出现滑动不到指定行的情况,因为没有渲染完全
@@ -137,12 +164,25 @@ const scrollIntoViewLine = (lineNumber: number): void => {
             // 滚动到当前行
             line.from,
             {
-                y: "nearest", // "nearest" | "start" | "end" | "center"
-                yMargin: 350, // 默认值 5
+                y: "start", // "nearest" | "start" | "end" | "center"
+                yMargin, // 默认值 5
             },
         ),
     })
 }
+
+// 标题跳转
+watch(
+    () => headingShowCurrentIndex,
+    (newIndex) => {
+        // 如果没有目录或者索引小于0则不执行
+        if (!tocMarkdown || newIndex === void 0 || newIndex < 0 || isUserScrollCmEditor) return
+
+        // 跳转编辑器选中目标行
+        scrollIntoViewLine(tocMarkdown[newIndex].markdownLineNumber)
+        emit("update-is-user-scroll", true)
+    },
+)
 
 /**
  * @description: 处理编辑器滚动事件
@@ -162,7 +202,7 @@ const handleScroll = () => {
 
 // 监听 props.codemirrorDoc 变化 更新编辑器内容 只有第一次加载的时候才更新
 const stopWatch = watch(
-    () => props.doc,
+    () => doc,
     (newDoc) => {
         if (newDoc && cmView) {
             cmView.dispatch({
@@ -179,7 +219,7 @@ const stopWatch = watch(
 )
 
 watch(
-    () => props.vimMode,
+    () => vimMode,
     (newVal) => {
         // 更新 vim 模式
         options.value.vimMode = newVal
@@ -188,6 +228,15 @@ watch(
         cmView.dispatch({
             effects: vimModeCompartment.reconfigure(newVal ? vim({ status: true }) : []),
         })
+    },
+)
+
+// 执行命令
+watch(
+    () => cmCommand,
+    (newVal, oldVal) => {
+        if (!newVal.commandName || newVal.time === oldVal.time) return // 如果没有命令或者时间相同则不执行
+        runCommand(newVal.commandName, newVal.customContent) // 执行命令
     },
 )
 
@@ -205,9 +254,7 @@ onUnmounted(() => {
 // 导出函数
 defineExpose({
     root: codemirrorRef,
-    runCommand,
     insertContent,
-    scrollIntoViewLine,
 })
 </script>
 

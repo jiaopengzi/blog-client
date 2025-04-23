@@ -7,32 +7,19 @@
  */
 
 import { useMagicKeys } from "@vueuse/core"
-import { useResizeObserver } from "@vueuse/core"
-import { debounce } from "throttle-debounce"
-import { computed, nextTick, onBeforeUnmount, onMounted, type Ref, ref, watch } from "vue"
+import { computed, onMounted, type Ref, watch } from "vue"
 import { type EmojiExt } from "vue3-emoji-picker"
 
 import type { IconKeys } from "@/components/common/icons"
 import { useWebFullscreen } from "@/components/hooks/useWebFullscreen"
 import { MessageUtil } from "@/utils/message"
-import { getComputedStyleValue, getCSSVariableValue, setCSSVariable } from "@/utils/style"
+import { setCSSVariable } from "@/utils/style"
 
 import { CommandsKey, markdownEditorCommands } from "../command"
-import type { CodemirrorRef } from "../components/codemirror"
-import type { PreviewRef } from "../components/preview"
-import type { ToolbarRef } from "../components/toolbar"
 import { type TableRowCol } from "../components/toolbar"
 import { EditorStateManager } from "../state"
-import { copyWithCustomStyle } from "../utils"
 
-export function useToolbar(
-    mdLayoutRef: Ref<HTMLElement | null>,
-    mdContainerRef: Ref<HTMLElement | null>,
-    toolbarRef: Ref<ToolbarRef | null>,
-    codemirrorRef: Ref<CodemirrorRef | null>,
-    previewRef: Ref<PreviewRef | null>,
-    stateManager: EditorStateManager,
-) {
+export function useToolbar(mdLayoutRef: Ref<HTMLElement | null>, mdContainerRef: Ref<HTMLElement | null>, stateManager: EditorStateManager) {
     const { isWebFullscreen, toggle } = useWebFullscreen(mdLayoutRef)
 
     // 状态管理
@@ -49,9 +36,6 @@ export function useToolbar(
             }
         })
     })
-
-    // 防抖处理 copyWithCustomStyle
-    const debounceCopyWithCustomStyle = debounce(500, copyWithCustomStyle)
 
     /**
      * @description: 处理工具栏按钮点击事件
@@ -81,8 +65,8 @@ export function useToolbar(
             return
         }
         if (name === CommandsKey.Scroll) {
-            stateManager.toggleAsyncScroll()
-            MessageUtil.success(editorState.isAsyncScroll ? "同步滚动" : "异步滚动")
+            stateManager.toggleSyncScroll()
+            MessageUtil.success(editorState.isSyncScroll ? "同步滚动" : "独立滚动")
             return
         }
         if (name === CommandsKey.Fullscreen) {
@@ -97,9 +81,9 @@ export function useToolbar(
             stateManager.toggleShowPreviewWechat()
         }
         if (name === CommandsKey.Copy) {
-            await nextTick(() => {
-                if (!previewRef.value) return
-                debounceCopyWithCustomStyle(previewRef.value.root)
+            stateManager.setViewCommand({
+                commandName: CommandsKey.Copy,
+                time: new Date(),
             })
         }
 
@@ -113,7 +97,11 @@ export function useToolbar(
         // }
 
         // 调用 codemirrorRef 中的 runCommand 函数
-        codemirrorRef.value?.runCommand(name)
+
+        stateManager.setCmCommand({
+            commandName: name,
+            time: new Date(),
+        })
     }
 
     /**
@@ -128,58 +116,32 @@ export function useToolbar(
                     // v 为 true 时表示按下了快捷键 v 为 false 时释放了快捷键
                     // console.log('hotKey', hotKey, v)
                     // console.log('item[0]', item)
-                    if (v) toolbarBtnClicked(item)
+                    if (v) {
+                        toolbarBtnClicked(item)
+                    }
                 })
             }
         })
     }
 
-    const toolbarHight = ref(0)
-
-    // 计算工具栏高度
-    const updateToolbarHeight = (): void => {
-        if (!toolbarRef.value) return
-
-        const toolbarEl = toolbarRef.value.root
-        const height = toolbarEl.offsetHeight
-        const marginTop = getComputedStyleValue(toolbarEl, "margin-top")
-        const marginBottom = getComputedStyleValue(toolbarEl, "margin-bottom")
-
-        toolbarHight.value = height + marginTop + marginBottom
-    }
-
     // 更新 mdContainerRef 中 css 变量 --md-editor-container-height 的值
-    const updateMdContainerStyle = (): void => {
-        if (!mdContainerRef.value || !toolbarHight.value) return
+    const updateMdContainerStyle = (toolbarHight: string): void => {
+        if (!mdContainerRef.value) return
 
         // 设置 cmContainerRef 中 css 变量 --md-editor-container-height 的值为 100vh - toolbar 高度 - toolbar margin
-        setCSSVariable(mdContainerRef.value, "--md-editor-container-height", `calc(100vh - ${toolbarHight.value}px)`)
-    }
-
-    const calcToolbarHight = (): void => {
-        updateToolbarHeight()
-        updateMdContainerStyle()
-    }
-
-    // 监听窗口变化
-    const { stop } = useResizeObserver(mdLayoutRef, () => {
-        calcToolbarHight()
-    })
-
-    // 每行 icon 个数
-    const iconNumberPerLine = () => {
-        if (!toolbarRef.value) return
-        const icons = getCSSVariableValue(toolbarRef.value.root, "--icon-number-per-line")
-        if (!icons) return 10
-        return parseInt(icons)
+        setCSSVariable(mdContainerRef.value, "--md-editor-container-height", `calc(100vh - ${toolbarHight})`)
     }
 
     // 选择 emoji
     const emojiPickerSelected = (emoji: EmojiExt) => {
-        codemirrorRef.value?.runCommand(CommandsKey.Emoji, {
-            prefix: "",
-            content: emoji.i,
-            suffix: "",
+        stateManager.setCmCommand({
+            commandName: CommandsKey.Emoji,
+            customContent: {
+                prefix: "",
+                content: emoji.i,
+                suffix: "",
+            },
+            time: new Date(),
         })
         stateManager.setIsShowEmojiPicker(false)
     }
@@ -209,10 +171,14 @@ export function useToolbar(
         }
 
         // 插入表格
-        codemirrorRef.value?.runCommand(CommandsKey.Table, {
-            prefix: "",
-            content,
-            suffix: "",
+        stateManager.setCmCommand({
+            commandName: CommandsKey.Table,
+            customContent: {
+                prefix: "",
+                content,
+                suffix: "",
+            },
+            time: new Date(),
         })
     }
 
@@ -220,16 +186,10 @@ export function useToolbar(
         registerHotKeys() // 注册快捷键
     })
 
-    onBeforeUnmount(() => {
-        stop()
-    })
-
     return {
         toolbarBtns,
         toolbarBtnClicked,
-        calcToolbarHight,
-        toolbarHight,
-        iconNumberPerLine,
+        updateMdContainerStyle,
         emojiPickerSelected,
         insertTableRowCol,
     }

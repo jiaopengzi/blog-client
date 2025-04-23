@@ -11,7 +11,13 @@ import type { MaybeRef } from "vue"
 declare global {
     // 扩展 Vue 的类型
     type MaybeElement = HTMLElement | SVGElement | undefined | null
-    type MaybeElementRef<T extends MaybeElement = MaybeElement> = MaybeRef<T>
+    type MaybeElementRef<T extends MaybeElement = MaybeElement> = MaybeRef<T> | ComputedRef<T> | (() => T)
+    // type MaybeRefOrGetter<T = unknown> = MaybeRef<T> | ComputedRef<T> | (() => T)
+
+    /**
+     * @description: 滚动容器 Window 或者 MaybeElementRef
+     */
+    type ScrollContainer = Window | Document | MaybeElementRef
 
     // document 全屏属性
     interface Document {

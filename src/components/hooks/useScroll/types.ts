@@ -26,8 +26,3 @@ export interface ScrollData {
 export interface ScrollHandler {
     (data: ScrollData): void // 滚动事件回调函数
 }
-
-/**
- * @description: 滚动容器 Window 或者 HTMLElement
- */
-export type ScrollContainer = Window | MaybeElementRef

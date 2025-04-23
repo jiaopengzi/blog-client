@@ -8,7 +8,7 @@
 
 import { onMounted, onUnmounted, unref } from "vue"
 
-import type { Direction, ScrollContainer, ScrollHandler } from "./types"
+import type { Direction, ScrollHandler } from "./types"
 
 /**
  * @description 获取滚动位置
@@ -30,7 +30,6 @@ const getScrollPosition = (container: ScrollContainer): number => {
 const validContainer = (container: ScrollContainer): Window | HTMLElement => {
     // 如果容器是 null 或 undefined，则返回 window
     if (!container) {
-        console.warn("Container is null or undefined")
         return window
     }
 
