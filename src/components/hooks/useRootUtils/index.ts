@@ -18,7 +18,7 @@ import type { QueryParams } from "./types"
 
 export function useRootUtils<T extends QueryParams>(
     queryParams: Reactive<T>, // 查询参数
-    options?: QueryParamsOptions<T>, // 请求参数选项
+    options?: Reactive<QueryParamsOptions<T>>, // 请求参数选项
 ) {
     const {
         generateBreadcrumbPath, // 生成面包屑路径

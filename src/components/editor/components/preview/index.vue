@@ -62,6 +62,7 @@ const emit = defineEmits<{
     (event: "is-mouse-in-element", isMouseInElement: boolean): void
     (event: "heading-show-current", headingIndex: number): void // 当前标题索引
     (event: "update-is-user-scroll", val: boolean): void // 更新是否用户手动滚动预览
+    (event: "commit-heading-map", val: Map<string, HeadingObject>): void // 提交标题 map
 }>()
 
 const previewRef = useTemplateRef<HTMLElement | null>("previewRef")
@@ -192,6 +193,9 @@ const getAllHeadings = () => {
             }
             allHeadingMap.set(heading.id, obj)
         })
+
+        // 触发提交标题 map 事件
+        emit("commit-heading-map", allHeadingMap)
     }
 }
 

@@ -11,6 +11,7 @@ import { acceptHMRUpdate, defineStore } from "pinia"
 export interface StatusStore {
     showPostDetail: boolean // 是否显示文章详情
     postId: string // 文章 ID
+    anchorHash: string // 锚点
     showPostList: boolean // 是否显示文章列表
     showHomeCarousel: boolean // 是否显示首页轮播图
     showHomeAside: boolean // 是否显示首页侧边栏
@@ -22,6 +23,7 @@ function createStatusStore(): StatusStore {
     return {
         showPostDetail: false, // 默认不显示文章详情
         postId: "", // 文章 ID
+        anchorHash: "", // 锚点
         showPostList: true, // 默认显示文章列表
         showHomeCarousel: true, // 默认显示首页轮播图
         showHomeAside: true, // 默认显示首页侧边栏
@@ -47,6 +49,11 @@ export const useStatusStore = defineStore("status", {
         // 设置文章 ID
         async setPostId(id: string): Promise<void> {
             this.postId = id
+        },
+
+        // 设置锚点
+        async setAnchorHash(hash: string): Promise<void> {
+            this.anchorHash = hash
         },
 
         // 设置是否显示文章列表

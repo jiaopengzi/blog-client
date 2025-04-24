@@ -47,4 +47,5 @@ export interface QueryParamsOptions<K> {
     highlight_fields?: string[] // 高亮字段 可以为空
     pre_tags?: string // 高亮前缀 可以为空
     post_tags?: string // 高亮后缀 可以为空
+    hash?: string // hash 值 可以为空
 }

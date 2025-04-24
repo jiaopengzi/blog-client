@@ -6,7 +6,7 @@
  * @Description  : 首页 hooks
  */
 
-import { type Reactive } from "vue"
+import { type Reactive, type Ref, watch } from "vue"
 
 import { type ViewPostByIDRequest } from "@/api/post/viewByID"
 import { type QueryParamsOptions } from "@/api/request"
@@ -18,13 +18,23 @@ import { useGetData } from "./api"
 
 export function usePostDetail(
     queryParams: Reactive<ViewPostByIDRequest>, // 查询参数
+    hash: Ref<string>, // hash值
 ) {
     // 字符串类型的key
     const stringKeys: StringKeys<ViewPostByIDRequest>[] = ["post_id"]
 
-    const options: QueryParamsOptions<ViewPostByIDRequest> = {
+    const options: Reactive<QueryParamsOptions<ViewPostByIDRequest>> = {
         stringKeys,
+        hash: hash.value, // hash值
     }
+
+    watch(
+        () => hash.value,
+        (newHash) => {
+            options.hash = newHash
+        },
+        { immediate: true },
+    )
 
     const breadcrumbStore = useBreadcrumbStore()
 

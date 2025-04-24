@@ -29,6 +29,7 @@ export const homeMiddleware = async (to: RouteLocationNormalized, from: RouteLoc
             await statusStore.setSearch()
         } else if (hasPostDetail) {
             await statusStore.setPostId(result.post_id)
+            await statusStore.setAnchorHash(to.hash)
             await statusStore.setPostDetail()
         } else {
             await statusStore.setHome()

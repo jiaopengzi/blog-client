@@ -18,7 +18,7 @@ import type { QueryParams, QueryParamsKey } from "./types"
 
 export function useRootRoute<T extends QueryParams>(
     queryParams: Reactive<T>, // 查询参数
-    options?: QueryParamsOptions<T>, // 请求参数选项
+    options?: Reactive<QueryParamsOptions<T>>, // 请求参数选项
 ) {
     const route = useRoute()
     const router = useRouter()
@@ -37,7 +37,7 @@ export function useRootRoute<T extends QueryParams>(
         }
 
         // 路由中不需要高亮字段和前后标签
-        await routerPushByParams(router, RouteNames.Home, queryParams)
+        await routerPushByParams(router, RouteNames.Home, queryParams, options?.hash)
     }
 
     // 更新查询参数

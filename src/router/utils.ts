@@ -13,9 +13,9 @@ import type { LocationQueryRaw, Router } from "vue-router"
  * @param router 路由实例
  * @param routeName 路由名称
  * @param queryParams 查询参数
- * @example routerPushByParams('PostAll', { 'file-type': 'pdf', 'search': 'example' })
+ * @param hash 路由 hash,默认值为空字符串
  */
-export async function routerPushByParams(router: Router, routeName: string, queryParams: LocationQueryRaw): Promise<void> {
+export async function routerPushByParams(router: Router, routeName: string, queryParams: LocationQueryRaw, hash: string = ""): Promise<void> {
     const query: LocationQueryRaw = {}
 
     // 过滤掉值为空字符串的参数
@@ -28,6 +28,7 @@ export async function routerPushByParams(router: Router, routeName: string, quer
 
     await router.push({
         name: routeName,
-        query: query,
+        query,
+        hash,
     })
 }

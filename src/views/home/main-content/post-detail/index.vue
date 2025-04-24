@@ -23,6 +23,7 @@
                     @close-image-viewer="closeImageViewer"
                     @heading-show-current="handleHeadingShowCurrentAc"
                     @update-is-user-scroll="handleUpdateIsUserScrollPreview"
+                    @commit-heading-map="updateHeadingMap"
                 />
             </div>
         </section>
@@ -31,12 +32,12 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from "pinia"
-import { onBeforeMount, reactive, useTemplateRef, watch } from "vue"
+import { nextTick, onBeforeMount, onMounted, reactive, ref, useTemplateRef, watch } from "vue"
 
 import { type ViewPostByIDRequest } from "@/api/post/viewByID"
 import PostMeta from "@/components/common/post-meta"
 import type { EditorState } from "@/components/editor"
-import HtmlPreview from "@/components/editor/components/preview"
+import HtmlPreview, { type HeadingObject } from "@/components/editor/components/preview"
 import { usePreview } from "@/components/editor/hooks/usePreview"
 import { usePostDetail } from "@/components/hooks/usePostDetail"
 import { useWebFullscreen } from "@/components/hooks/useWebFullscreen"
@@ -56,21 +57,21 @@ const {
 // 事件
 const emit = defineEmits<{
     (event: "state", val: EditorState): void
+    (event: "commit-anchor-hash-index", val: number): void
 }>()
 
 const statusStore = useStatusStore()
 
-const { postId } = storeToRefs(statusStore)
+const { postId, anchorHash } = storeToRefs(statusStore)
 
 const postDetailRef = useTemplateRef("webFullscreenRef")
-const previewRef = useTemplateRef("previewRef")
 
 const { toggle } = useWebFullscreen(postDetailRef)
 
 // 请求参数
 const postIdReq = reactive<ViewPostByIDRequest>({} as ViewPostByIDRequest)
 
-const { manager, state, postMeta, clickAuthorId, editPost, updatePostDetail } = usePostDetail(postIdReq)
+const { manager, state, postMeta, clickAuthorId, editPost, updatePostDetail, updateRouterPush } = usePostDetail(postIdReq, anchorHash)
 
 // preview
 const { showImageViewer, closeImageViewer, handleHeadingShowCurrent, handleUpdateIsUserScrollPreview } = usePreview(manager)
@@ -87,6 +88,15 @@ const updatePostDetailAc = async (postId: string) => {
     emit("state", state)
 }
 
+// 监听锚点
+watch(
+    () => anchorHash.value,
+    async () => {
+        await updateRouterPush()
+    },
+)
+
+// 监听文章详情
 watch(
     () => postId.value,
     async (newVal) => {
@@ -95,20 +105,57 @@ watch(
     },
 )
 
+// 是否首次加载
+const isFirstLoad = ref(true) // 是否首次加载
+
+// 监听目录点击时间, 保证相同关键字搜索时, 重新渲染
 watch(
     () => time,
     (newTime, oldTime) => {
         if (newTime === oldTime) return // 如果时间没有变化, 不更新
+
+        // 如果是首次加载, 且当前目录索引为0, 则不执行
+        if (isFirstLoad.value && headingShowCurrentIndex === 0) {
+            isFirstLoad.value = false // 首次加载完成
+            return
+        }
+
         handleUpdateIsUserScrollPreview(false)
     },
 )
 
-onBeforeMount(async () => {
-    await updatePostDetailAc(postId.value)
+const updateHeadingFlag = ref(false) // 是否更新目录
+
+const allHeadingMap: Map<string, HeadingObject> = new Map() // 所有的 h 标签 map
+const updateHeadingMap = (val: Map<string, HeadingObject>) => {
+    allHeadingMap.clear()
+    val.forEach((item) => {
+        allHeadingMap.set(item.id, item)
+    })
+    updateHeadingFlag.value = true // 更新目录
+}
+
+// 监听如果有目录锚点, 则更新当前目录索引
+watch(
+    () => updateHeadingFlag.value,
+    async (flag) => {
+        if (!flag) return
+        await nextTick(() => {
+            const index = allHeadingMap.get(anchorHash.value.replace("#", ""))?.index || 0 // 获取当前目录索引
+            emit("commit-anchor-hash-index", index) // 提交当前目录索引
+        })
+    },
+)
+
+onMounted(() => {
+    // 处理默认选中第一个标题
+    if (headingShowCurrentIndex === 0) {
+        handleUpdateIsUserScrollPreview(true)
+    }
 })
 
-defineExpose({
-    previewRef,
+onBeforeMount(async () => {
+    await updatePostDetailAc(postId.value)
 })
 </script>
 <style lang="scss" scoped>

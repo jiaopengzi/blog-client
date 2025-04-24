@@ -134,8 +134,7 @@ const onSelectEmoji = (emoji: EmojiExt) => {
     emit("emoji-picker-selected", emoji)
 }
 
-onMounted(async () => {
-    // 初始化 CodeMirror
+onMounted(() => {
     updateToolbarHeight() // 初始化工具栏高度
 })
 

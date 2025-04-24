@@ -36,6 +36,7 @@
                     :heading-show-current-index="state.headingShowCurrentIndex"
                     :time="clickTocTime"
                     @state="handleState"
+                    @commit-anchor-hash-index="handleAnchorHashIndex"
                 />
             </el-main>
             <el-aside ref="asideRef" class="el-aside pc" v-show="showHomeAside">
@@ -56,7 +57,7 @@
 <script setup lang="ts">
 import type { ElAside } from "element-plus"
 import { storeToRefs } from "pinia"
-import { onBeforeMount, type Reactive, reactive, ref, useTemplateRef, watch } from "vue"
+import { nextTick, onBeforeMount, type Reactive, reactive, ref, useTemplateRef, watch } from "vue"
 import { useRoute } from "vue-router"
 
 import { type ViewPostRequest } from "@/api/post/view"
@@ -78,6 +79,7 @@ import PostList from "./post-list"
 defineOptions({ name: "MainContent" })
 
 const route = useRoute()
+
 const { searchData } = defineProps<{ searchData: SearchData }>()
 
 const asideRef = useTemplateRef<InstanceType<typeof ElAside>>("asideRef")
@@ -123,13 +125,26 @@ const handleState = (val: EditorState) => {
 
 const clickTocTime = ref(new Date())
 
+// 更新当前的标题索引
+const updateHeadingShowCurrentIndex = (index: number) => {
+    state.headingShowCurrentIndex = index // 设置当前目录索引
+    clickTocTime.value = new Date() // 保证相同关键字搜索时, 重新渲染
+}
+
 /**
  * @description: 目录导航点击事件
  * @param index 点击的目录索引
  */
 const tocHeadingClicked = (index: number) => {
-    state.headingShowCurrentIndex = index // 设置当前目录索引
-    clickTocTime.value = new Date() // 保证相同关键字搜索时, 重新渲染
+    statusStore.setAnchorHash(`#${state.tocHtml[index].anchor}`) // 设置锚点
+    updateHeadingShowCurrentIndex(index)
+}
+
+// 处理标题锚点
+const handleAnchorHashIndex = async (index: number) => {
+    await nextTick(() => {
+        updateHeadingShowCurrentIndex(index)
+    })
 }
 
 // 监听搜索关键字变化，更新路由

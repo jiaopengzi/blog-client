@@ -1,8 +1,5 @@
 <!--
  * FilePath    : blog-client\src\components\editor\components\toc\index.vue
- * Author      : jiaopengzi
- * Blog        : https://jiaopengzi.com
- * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * Description : 目录组件
 -->
 
@@ -12,9 +9,9 @@
             <!-- 根据 heading.level 动态设置 li 的 id 和 class -->
             <li
                 v-for="(heading, index) in headings"
-                :id="`toc-${heading.index}`"
-                :key="heading.index"
-                :class="`h-level-${heading.index} toc-item`"
+                :id="`toc-${index}`"
+                :key="index"
+                :class="`h-level-${heading.level} toc-item`"
                 @click="emitHeadingClicked(index)"
             >
                 {{ heading.text }}
@@ -25,7 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useTemplateRef, watch } from "vue"
+import { onMounted, useTemplateRef, watch } from "vue"
 
 import type { TocProps } from "./types"
 
@@ -42,8 +39,6 @@ const activeMarkerRef = useTemplateRef("activeMarkerRef")
 
 // 点击标题触发事件
 const emitHeadingClicked = (index: number) => {
-    // console.log("emitHeadingClicked", index)
-    // 触发自定义事件 "heading-clicked"，将 index 和 heading 传递给父组件
     emit("heading-clicked", index)
 
     highlightHeading(index)
@@ -52,7 +47,7 @@ const emitHeadingClicked = (index: number) => {
 // 高亮标题
 const highlightHeading = (index: number) => {
     // 确保 tocRef 存在
-    if (!tocRef.value) return
+    if (!tocRef.value || !activeMarkerRef.value) return
 
     // 查找当前激活的目录项，移除激活状态
     tocRef.value.querySelectorAll("li").forEach((li) => {
@@ -61,9 +56,7 @@ const highlightHeading = (index: number) => {
 
     // 添加激活状态
     const target: HTMLElement | null = tocRef.value.querySelector(`#toc-${index}`)
-    if (target && activeMarkerRef.value) {
-        target.classList.add("toc-active")
-
+    if (target) {
         // 动态计算位置和高度
         const top = target.offsetTop
         const height = target.offsetHeight
@@ -71,18 +64,27 @@ const highlightHeading = (index: number) => {
         // 设置激活标记的位置和高度
         activeMarkerRef.value.style.top = `${top}px`
         activeMarkerRef.value.style.height = `${height}px`
+        target.classList.add("toc-active")
     }
 }
 
 // 监听 headingShowCurrentIndex 的变化, 高亮对应的标题
 watch(
     () => headingShowCurrentIndex,
-    (newVal) => {
+    async (newVal) => {
         if (newVal >= 0) {
             highlightHeading(newVal)
         }
     },
 )
+
+onMounted(async () => {
+    // 使用 promise 等待 50ms, 确保 DOM 渲染完成
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    if (headings.length > 0 && headingShowCurrentIndex === 0) {
+        highlightHeading(0)
+    }
+})
 </script>
 
 <style scoped lang="scss">
@@ -113,7 +115,6 @@ watch(
             text-decoration: underline;
         }
     }
-
     .h-level-1 {
         margin-left: 0;
     }
@@ -130,7 +131,7 @@ watch(
         margin-left: 1.5em;
     }
 
-    .level-5 {
+    .h-level-5 {
         margin-left: 2em;
     }
 
