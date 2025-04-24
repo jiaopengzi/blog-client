@@ -11,7 +11,6 @@
         <!-- 工具栏 -->
         <div class="md-toolbar">
             <Toolbar
-                ref="toolbarRef"
                 :toolbar-btns="toolbarBtns"
                 @toolbar-btn-clicked="toolbarBtnClicked"
                 @emoji-picker-selected="emojiPickerSelected"
@@ -50,7 +49,6 @@
             <!-- 预览 -->
             <div class="md-preview md-container-item" v-show="state.previewShow">
                 <HtmlPreview
-                    ref="previewRef"
                     :html="state.html"
                     :img-urls="state.imgUrls"
                     :is-show-el-image-viewer="state.isShowElImageViewer"
@@ -78,7 +76,7 @@ import "vue3-emoji-picker/css"
 import { useTemplateRef, watch } from "vue"
 
 import EditorCodemirror, { type CodemirrorRef } from "./components/codemirror"
-import HtmlPreview, { type PreviewRef } from "./components/preview"
+import HtmlPreview from "./components/preview"
 import EditorToc from "./components/toc"
 import Toolbar from "./components/toolbar"
 import { useCodemirror, usePreview, useToolbar } from "./hooks"
@@ -101,7 +99,6 @@ const state = stateManager.getState()
 const mdLayoutRef = useTemplateRef<HTMLElement | null>("mdLayoutRef") //编辑器布局
 const mdContainerRef = useTemplateRef<HTMLElement | null>("mdContainerRef") //编辑器容器
 const codemirrorRef = useTemplateRef<CodemirrorRef | null>("codemirrorRef") //编辑器
-const previewRef = useTemplateRef<PreviewRef | null>("previewRef") // 预览
 
 // 工具栏点击事件
 const { toolbarBtns, toolbarBtnClicked, updateMdContainerStyle, emojiPickerSelected, insertTableRowCol } = useToolbar(mdLayoutRef, mdContainerRef, stateManager)

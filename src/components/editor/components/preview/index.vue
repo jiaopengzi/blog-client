@@ -78,27 +78,6 @@ const htmlData = computed(() => {
     return htmlStr
 })
 
-// 所有的 h 标签响应式变量
-const allHeadings = ref<NodeListOf<HTMLHeadingElement> | null>(null)
-const allHeadingMap: Map<string, HeadingObject> = new Map() // 所有的 h 标签 map
-
-// 获取所有的 h 标签函数
-const getAllHeadings = () => {
-    if (previewRef.value) {
-        const headings = previewRef.value.querySelectorAll(ScrollElementTagHeading) as NodeListOf<HTMLHeadingElement>
-        allHeadings.value = headings
-        allHeadingMap.clear() // 清空 map
-        headings.forEach((heading, index) => {
-            const obj: HeadingObject = {
-                id: heading.id,
-                index: index,
-                element: heading as HTMLHeadingElement,
-            }
-            allHeadingMap.set(heading.id, obj)
-        })
-    }
-}
-
 // 鼠标进入
 const onMouseEnter = () => {
     if (!isWatchMouse) return
@@ -195,6 +174,27 @@ const closeElImageViewer = () => {
     document.body.style.overflow = "auto"
 }
 
+// 所有的 h 标签响应式变量
+const allHeadings = ref<NodeListOf<HTMLHeadingElement> | null>(null)
+const allHeadingMap: Map<string, HeadingObject> = new Map() // 所有的 h 标签 map
+
+// 获取所有的 h 标签函数
+const getAllHeadings = () => {
+    if (previewRef.value) {
+        const headings = previewRef.value.querySelectorAll(ScrollElementTagHeading) as NodeListOf<HTMLHeadingElement>
+        allHeadings.value = headings
+        allHeadingMap.clear() // 清空 map
+        headings.forEach((heading, index) => {
+            const obj: HeadingObject = {
+                id: heading.id,
+                index: index,
+                element: heading as HTMLHeadingElement,
+            }
+            allHeadingMap.set(heading.id, obj)
+        })
+    }
+}
+
 // 跳转到对应的标题
 const navigateToHeading = (index: number): void => {
     if (!allHeadings.value) return
@@ -281,6 +281,68 @@ const stopFuncs: Array<() => void> = [] // 停止监听函数
 const isIntersectingHeadings = ref<string[]>([]) // 交叉观察者的标题数组
 const isBestMatchHeading = ref<string>("") // 最佳匹配的标题
 
+// 历遍 allHeadings 观察每个标题的可见性
+const observeHeadings = () => {
+    allHeadings.value?.forEach((headingEl) => {
+        // 使用 useIntersectionObserver 对单个 heading 进行监听
+        const { stop } = useIntersectionObserver(
+            headingEl,
+            ([entry]) => {
+                // 从 isIntersectingHeadings 中移除当前标题
+                let isFromTopShow = false // 是否从上方出现
+                if (entry.isIntersecting) {
+                    if (entry.intersectionRect.top === 0) {
+                        // console.log("============>从上出现")
+                        isFromTopShow = true
+                    } else {
+                        isFromTopShow = false
+                        // console.log("============>从下出现")
+                    }
+                    // 如果标题在视口内，设置当前标题索引
+                    if (isFromTopShow) {
+                        // 将元素插入到数组的开头
+                        isIntersectingHeadings.value.unshift(entry.target.id)
+                    } else {
+                        // 将元素插入到数组的末尾
+                        isIntersectingHeadings.value.push(entry.target.id)
+                    }
+                    isBestMatchHeading.value = isIntersectingHeadings.value[isIntersectingHeadings.value.length - 1]
+                } else {
+                    // let isFromTopHidden = false // 是否从上方隐藏
+                    // if (entry.intersectionRect.top > entry.boundingClientRect.bottom) {
+                    //     console.log("============>从上隐藏")
+                    //     isFromTopHidden = true
+                    // }
+                    // if (entry.intersectionRect.bottom < entry.boundingClientRect.top) {
+                    //     isFromTopHidden = false
+                    //     console.log("============>从下隐藏")
+                    // }
+                    if (isIntersectingHeadings.value.length === 1) {
+                        isBestMatchHeading.value = isIntersectingHeadings.value[0]
+                        isIntersectingHeadings.value = isIntersectingHeadings.value.filter((id) => id !== entry.target.id)
+                    } else {
+                        isIntersectingHeadings.value = isIntersectingHeadings.value.filter((id) => id !== entry.target.id)
+                        // 等于数组最后一个
+                        isBestMatchHeading.value = isIntersectingHeadings.value[isIntersectingHeadings.value.length - 1]
+                        // isBestMatchHeading.value = isIntersectingHeadings.value[0]
+                    }
+                }
+
+                if (isUserScrollPreview) {
+                    const index = allHeadingMap.get(isBestMatchHeading.value)?.index || 0 // 获取当前标题的索引
+                    emit("heading-show-current", index)
+                }
+            },
+            {
+                root, // 监听的根元素
+                rootMargin, // 例如: 让在距顶部 88px 时视为未进入
+                threshold, // 交叉比例阈值，表示多少比例的元素可见时触发回调
+            },
+        )
+        stopFuncs.push(stop) // 将停止函数存储到数组中
+    })
+}
+
 // 监控 html 变化, 获取所有的 h 标签 并挂载视频播放器
 watch(
     () => htmlData.value,
@@ -288,70 +350,12 @@ watch(
         if (newHtml) {
             // 注意：这里使用 nextTick，确保 html 已经渲染完成
             nextTick(() => {
+                // 获取标题
                 getAllHeadings()
 
-                // 历遍 allHeadings 监控每个标题的可见性
-                allHeadings.value?.forEach((headingEl) => {
-                    // 使用 useIntersectionObserver 对单个 heading 进行监听
-                    const { stop } = useIntersectionObserver(
-                        headingEl,
-                        ([entry]) => {
-                            // 从 isIntersectingHeadings 中移除当前标题
-                            let isFromTopShow = false // 是否从上方出现
-                            // console.log("============>i", rootEl)
-                            // console.log("============>i", entry.intersectionRect)
-                            // console.log("============>b", entry.boundingClientRect)
-                            if (entry.isIntersecting) {
-                                if (entry.intersectionRect.top === 0) {
-                                    // console.log("============>从上出现")
-                                    isFromTopShow = true
-                                } else {
-                                    isFromTopShow = false
-                                    // console.log("============>从下出现")
-                                }
-                                // 如果标题在视口内，设置当前标题索引
-                                if (isFromTopShow) {
-                                    // 将元素插入到数组的开头
-                                    isIntersectingHeadings.value.unshift(entry.target.id)
-                                } else {
-                                    // 将元素插入到数组的末尾
-                                    isIntersectingHeadings.value.push(entry.target.id)
-                                }
-                                isBestMatchHeading.value = isIntersectingHeadings.value[isIntersectingHeadings.value.length - 1]
-                            } else {
-                                // let isFromTopHidden = false // 是否从上方隐藏
-                                // if (entry.intersectionRect.top > entry.boundingClientRect.bottom) {
-                                //     console.log("============>从上隐藏")
-                                //     isFromTopHidden = true
-                                // }
-                                // if (entry.intersectionRect.bottom < entry.boundingClientRect.top) {
-                                //     isFromTopHidden = false
-                                //     console.log("============>从下隐藏")
-                                // }
-                                if (isIntersectingHeadings.value.length === 1) {
-                                    isBestMatchHeading.value = isIntersectingHeadings.value[0]
-                                    isIntersectingHeadings.value = isIntersectingHeadings.value.filter((id) => id !== entry.target.id)
-                                } else {
-                                    isIntersectingHeadings.value = isIntersectingHeadings.value.filter((id) => id !== entry.target.id)
-                                    // 等于数组最后一个
-                                    isBestMatchHeading.value = isIntersectingHeadings.value[isIntersectingHeadings.value.length - 1]
-                                    // isBestMatchHeading.value = isIntersectingHeadings.value[0]
-                                }
-                            }
+                // 监听标题的可见性变化
+                observeHeadings()
 
-                            if (isUserScrollPreview) {
-                                const index = allHeadingMap.get(isBestMatchHeading.value)?.index || 0 // 获取当前标题的索引
-                                emit("heading-show-current", index)
-                            }
-                        },
-                        {
-                            root, // 监听的根元素
-                            rootMargin, // 例如: 让在距顶部 88px 时视为未进入
-                            threshold, // 交叉比例阈值，表示多少比例的元素可见时触发回调
-                        },
-                    )
-                    stopFuncs.push(stop) // 将停止函数存储到数组中
-                })
                 // 挂载视频播放器到自定义元素 CustomElementVideoPlayer
                 mountVideoPlayerOnCustomElements(previewRef.value as HTMLElement, CustomElementVideoPlayer)
             })

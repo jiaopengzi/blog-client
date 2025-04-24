@@ -8,12 +8,6 @@
 
 import { CommandsKey } from "../../command"
 
-export interface PreviewRef extends HTMLElement {
-    root: HTMLElement
-    navigateGoHome: (behavior: ScrollBehavior) => void
-    navigateGoEnd: (behavior: ScrollBehavior) => void
-}
-
 export type HeadingObject = {
     id: string // 标题 id
     index: number // 标题索引
@@ -24,6 +18,8 @@ export interface ViewCommand {
     commandName: CommandsKey
     time: Date | null
 }
+
+export type ScrollMethod = "scrollIntoView" | "scrollTo" // 滚动方法
 
 export interface PreviewProps {
     html: string // html 内容
@@ -39,7 +35,7 @@ export interface PreviewProps {
     headingShowCurrentIndex?: number // 当前展示的标题的索引
     isWatchMouse?: boolean // 是否监听鼠标事件
 
-    scrollMethod?: "scrollIntoView" | "scrollTo" // 滚动方法;
+    scrollMethod?: ScrollMethod // 滚动方法;
 
     root?: ScrollContainer
     rootMargin?: string
