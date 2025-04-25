@@ -13,7 +13,6 @@
 // ========================================== live sass compiler 插件使用 结束 ==========================================
 
 code.hljs {
-    font-family: "JBMonoNerdFont", "Microsoft YaHei", Arial, sans-serif;
     padding: 3px 5px;
     // background-color: var(--jpz-bg-color);
 }
@@ -223,6 +222,7 @@ code.hljs {
 }
 
 .pre-code {
+    font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
     position: relative;
     pre {
         background-color: var(--jpz-bg-color-page);
@@ -231,6 +231,7 @@ code.hljs {
 }
 
 .copy-button {
+    font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
     position: absolute;
     top: 4px;
     right: 8px;
@@ -253,6 +254,7 @@ code.hljs {
 }
 
 code {
+    font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
     margin: 0 0.2em;
     background-color: var(--code-bg-color);
     border-radius: 4px;

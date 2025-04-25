@@ -179,6 +179,7 @@ watch(
     async (newVal, oldVal) => {
         // **注意是非详情页**
         if (!newVal || newVal === oldVal || showPostDetail.value) return
+        await statusStore.setAnchorHash("") // 清空锚点
         await updateByRoute()
     },
 )
@@ -186,7 +187,6 @@ watch(
 // 点击文章
 const handlePostId = async (val: string) => {
     await statusStore.setPostId(val)
-    // await statusStore.setAnchorHash("") // 清空锚点
     await statusStore.setPostDetail()
 
     // 滚动到顶部

@@ -187,6 +187,10 @@ const takeTime = computed(() => {
     align-items: center;
 }
 
+.immersion-read {
+    font-weight: 400;
+}
+
 .meta-avatar,
 .immersion-read,
 .author-edit {
@@ -200,7 +204,7 @@ const takeTime = computed(() => {
 .meta-item {
     margin-right: 10px;
     color: var(--jpz-text-color-placeholder);
-    font-size: 13px;
+    font-size: 14px;
     line-height: 150%;
 
     // 图标和文字水平居中

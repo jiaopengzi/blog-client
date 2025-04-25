@@ -13,7 +13,7 @@
 // ========================================== live sass compiler 插件使用 结束 ==========================================
 
 #preview {
-    font-family: "JBMonoNerdFont", "Microsoft YaHei", Arial, sans-serif;
+    font-family: "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
     h1 {
         font-size: 2em;
         display: table;
@@ -49,6 +49,7 @@
     h4,
     h5,
     h6 {
+        font-family: "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
         color: var(--jpz-color-primary);
         font-weight: 700;
         padding-bottom: 2px;
@@ -117,6 +118,7 @@
 
     // 链接 继承上述 a 样式
     a {
+        font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
         color: var(--jpz-color-primary);
         text-decoration: none;
         cursor: pointer;

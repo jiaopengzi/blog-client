@@ -10,9 +10,8 @@
         // width: 100%;
         height: var(--my-codemirror-height, 100%);
     }
-
     .cm-content {
-        font-family: "JBMonoNerdFont", "Microsoft YaHei", Arial, sans-serif;
+        font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
         font-size: 16px;
         // width: 100%;
         // height: calc(var(--my-codemirror-height, 100%) - pc.$editor-panels-bottom-height - pc.$editor-panels-bottom-border);
@@ -20,14 +19,14 @@
 
     .cm-gutters {
         // width: 100%;
-        font-family: "JBMonoNerdFont", "Microsoft YaHei", Arial, sans-serif;
+        font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
         font-size: 12px;
         background-color: var(--jpz-bg-color);
         border-right: 1px solid var(--jpz-border-color);
     }
 
     .cm-panels-bottom {
-        font-family: "JBMonoNerdFont", "Microsoft YaHei", Arial, sans-serif;
+        font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
         height: pc.$editor-panels-bottom-height;
         // 文字垂直居中
         display: flex;
@@ -41,7 +40,7 @@
 
     .cm-vim-panel {
         // 参考: https://github.com/replit/codemirror-vim/issues/227#issuecomment-2771472344
-        font-family: "JBMonoNerdFont", "Microsoft YaHei", Arial, sans-serif;
+        font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
         align-items: center;
         font-size: 0.8em;
         color: var(--jpz-text-color-placeholder);
@@ -49,11 +48,11 @@
     }
 
     .cm-vim-panel span {
-        font-family: "JBMonoNerdFont", "Microsoft YaHei", Arial, sans-serif !important;
+        font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
         display: flex;
         align-items: center;
     }
     .cm-vim-panel input {
-        font-family: "JBMonoNerdFont", "Microsoft YaHei", Arial, sans-serif !important;
+        font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
     }
 }

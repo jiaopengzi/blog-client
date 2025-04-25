@@ -115,46 +115,4 @@ watch(
 
 <style scoped lang="scss">
 @use "./style.module.scss";
-
-// .header-nav {
-//     background-color: var(--jpz-bg-color-header);
-//     @include respond-to("pc") {
-//         // max-width: 720px;
-//     }
-
-//     @include respond-to("pad") {
-//         // max-width: 720px;
-//     }
-
-//     @include respond-to("phone") {
-//         // 绝对定位，避免占据整个屏幕
-//         position: absolute;
-//         top: phone.$height-header;
-//         height: 100%;
-//         width: 100%;
-
-//         .account {
-//             margin: 10px 0;
-//             // 居中
-//             display: flex;
-//             justify-content: center;
-//         }
-
-//         .switch {
-//             margin-top: 20px;
-//             margin-bottom: 8px;
-//             padding-bottom: 10px;
-//             // 居中
-//             display: flex;
-//             justify-content: center;
-//             border-bottom: var(--jpz-border-color) 1px solid;
-//         }
-
-//         // 参考官方文档：https://element-plus.org/zh-CN/component/menu.html#collapse-%E6%8A%98%E5%8F%A0%E9%9D%A2%E6%9D%BF
-//         .el-menu--vertical:not(.el-menu--collapse) {
-//             width: 240px;
-//             height: calc(100vh - phone.$height-header - 170px);
-//         }
-//     }
-// }
 </style>

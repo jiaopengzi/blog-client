@@ -97,7 +97,7 @@ const clickBreadcrumb = (item: BreadcrumbItem) => {
 .breadcrumb-last {
     margin-right: 4px;
     color: var(--jpz-text-color-secondary);
-    font-weight: 500;
+    // font-weight: 500;
 }
 
 .breadcrumb-home,

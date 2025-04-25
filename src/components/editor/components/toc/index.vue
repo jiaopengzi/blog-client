@@ -102,7 +102,7 @@ onMounted(async () => {
 
     .toc-item {
         line-height: 2;
-        font-weight: 500;
+        // font-weight: 500;
         color: var(--jpz-color-primary);
 
         &.toc-active {

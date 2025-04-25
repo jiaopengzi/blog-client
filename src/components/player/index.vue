@@ -803,7 +803,7 @@ video::-webkit-media-controls-enclosure {
 ::cue {
     color: rgba(230, 230, 230);
     background: rgba(0, 0, 0, 0.4);
-    font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "SmileySans", "Noto Sans SC", "Microsoft YaHei", "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
     line-height: 2em;
 }
 
