@@ -8,8 +8,13 @@
 
 <template>
     <section ref="webFullscreenRef">
+        <!-- 新增的固定占位内容 -->
+        <div class="affix-interaction">
+            <DetailInteraction direction="vertical" />
+        </div>
         <section class="post-detail-bg">
             <div class="post-detail">
+                <DetailInteraction direction="horizontal" />
                 <PostMeta :meta="postMeta" @immersion-read="toggle" @author-id="clickAuthorId" @post-id="editPost" />
                 <HtmlPreview
                     ref="previewRef"
@@ -41,8 +46,10 @@ import HtmlPreview, { type HeadingObject } from "@/components/editor/components/
 import { usePreview } from "@/components/editor/hooks/usePreview"
 import { usePostDetail } from "@/components/hooks/usePostDetail"
 import { useWebFullscreen } from "@/components/hooks/useWebFullscreen"
+import { useDeviceStore } from "@/stores/device"
 import { useStatusStore } from "@/stores/status"
 
+import DetailInteraction from "./component/interaction"
 defineOptions({ name: "PostDetail" })
 
 // 定义 props
@@ -61,8 +68,10 @@ const emit = defineEmits<{
 }>()
 
 const statusStore = useStatusStore()
+const deviceStore = useDeviceStore()
 
 const { postId, anchorHash } = storeToRefs(statusStore)
+const { windowWidth } = storeToRefs(deviceStore)
 
 const postDetailRef = useTemplateRef("webFullscreenRef")
 
@@ -150,11 +159,28 @@ watch(
     },
 )
 
+const setAffixLeft = () => {
+    if (postDetailRef.value) {
+        const left = postDetailRef.value.offsetLeft // 获取当前元素的 left 值
+        const affix = left - 50 > 0 ? left - 50 : -100 // 如果 left 值小于0, 则设置为-100,即隐藏
+        postDetailRef.value.style.setProperty("--affix-left", `${affix}px`)
+    }
+}
+
+// 宽度变化时
+watch(
+    () => windowWidth.value,
+    () => {
+        setAffixLeft() // 设置左侧偏移量
+    },
+)
+
 onMounted(() => {
     // 处理默认选中第一个标题
     if (headingShowCurrentIndex === 0) {
         handleUpdateIsUserScrollPreview(true)
     }
+    setAffixLeft() // 设置左侧偏移量
 })
 
 onBeforeMount(async () => {
@@ -166,6 +192,15 @@ onBeforeMount(async () => {
 .web--fullscreen {
     @include webFullscreen();
     overflow-y: auto;
+}
+
+// 固定定位占位
+.affix-interaction {
+    position: fixed;
+    width: 40px;
+    top: 300px;
+    left: var(--affix-left);
+    z-index: 9999;
 }
 
 .post-detail {

@@ -43,7 +43,7 @@ useDark({
 })
 
 // 监听窗口变化
-const { stop } = useResizeObserver(appRef, (entries) => {
+const { stop } = useResizeObserver(appRef, () => {
     deviceStore.updateDevice()
     deviceStore.updateWindowWidth()
 })

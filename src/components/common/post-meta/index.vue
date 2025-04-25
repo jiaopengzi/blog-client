@@ -207,15 +207,14 @@ const takeTime = computed(() => {
     font-size: 14px;
     line-height: 150%;
 
-    // 图标和文字水平居中
-    display: inline-flex;
+    display: flex;
     align-items: center;
 }
 
 .meta-text {
     margin-left: 4px;
-    display: inline-block;
-    line-height: 1; // 确保文字垂直居中
+    line-height: 150%; // 确保文字垂直居中
+    font-family: "Microsoft YaHei", Helvetica, Arial, sans-serif;
 }
 
 :deep(.meta-icon) {

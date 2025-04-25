@@ -43,6 +43,7 @@
                 <!-- 导航栏 -->
                 <EditorToc
                     v-if="showPostDetail && state.tocHtml.length > 0"
+                    class="el-aside-item"
                     :headings="state.tocHtml"
                     :heading-show-current-index="state.headingShowCurrentIndex"
                     @heading-clicked="tocHeadingClicked"
