@@ -91,7 +91,8 @@ const updatePostDetailAc = async (postId: string) => {
 // 监听锚点
 watch(
     () => anchorHash.value,
-    async () => {
+    async (newVal) => {
+        if (!newVal) return
         await updateRouterPush()
     },
 )
@@ -101,6 +102,8 @@ watch(
     () => postId.value,
     async (newVal) => {
         if (!newVal) return
+        // 新文章清空锚点
+        await statusStore.setAnchorHash("")
         await updatePostDetailAc(postId.value)
     },
 )

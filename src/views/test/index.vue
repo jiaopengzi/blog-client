@@ -14,6 +14,7 @@
 <script lang="ts" setup>
 import { ref } from "vue"
 
+defineOptions({ name: "MyTest" })
 // 是否正在滚动
 const isScrolling = ref(false)
 // 记录滚动开始的时间戳

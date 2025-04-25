@@ -41,7 +41,12 @@
             </el-main>
             <el-aside ref="asideRef" class="el-aside pc" v-show="showHomeAside">
                 <!-- 导航栏 -->
-                <EditorToc :headings="state.tocHtml" :heading-show-current-index="state.headingShowCurrentIndex" @heading-clicked="tocHeadingClicked" />
+                <EditorToc
+                    v-if="showPostDetail && state.tocHtml.length > 0"
+                    :headings="state.tocHtml"
+                    :heading-show-current-index="state.headingShowCurrentIndex"
+                    @heading-clicked="tocHeadingClicked"
+                />
                 <!-- 推荐阅读 -->
                 <RecommendedRead class="el-aside-item" :post-data="recommendedPost" @post-id="handlePostId" />
                 <!-- 热门文章 -->
@@ -181,6 +186,7 @@ watch(
 // 点击文章
 const handlePostId = async (val: string) => {
     await statusStore.setPostId(val)
+    // await statusStore.setAnchorHash("") // 清空锚点
     await statusStore.setPostDetail()
 
     // 滚动到顶部
