@@ -50,7 +50,7 @@ export enum CustomFields {
     ViewCount = "view_count", // 浏览次数
     CommentCount = "comment_count", // 评论次数
     LikeCount = "like_count", // 点赞次数
-    CollectCount = "collect_count", // 收藏次数
+    StarCount = "star_count", // 收藏次数
     WordsCount = "words_count", // 字数
 }
 
@@ -60,7 +60,7 @@ export const CustomFieldsDisplay: Record<CustomFields, string> = {
     [CustomFields.ViewCount]: "浏览",
     [CustomFields.CommentCount]: "评论",
     [CustomFields.LikeCount]: "点赞",
-    [CustomFields.CollectCount]: "收藏",
+    [CustomFields.StarCount]: "收藏",
     [CustomFields.WordsCount]: "字数",
 }
 
@@ -127,7 +127,7 @@ export interface PostResCommon extends DataWithImg {
     comment_count: string // 评论数量
     view_count: string // 查看数量
     like_count: string // 喜欢数量
-    collect_count: string // 收藏数量
+    star_count: string // 收藏数量
     post_status: number // 文章状态
     post_title: string // 文章标题
     slug: string // 别名
@@ -230,6 +230,6 @@ export enum PostCustomFieldKey {
     ViewCount = "view_count",
     CommentCount = "comment_count",
     LikeCount = "like_count",
-    CollectCount = "collect_count",
+    StarCount = "star_count",
     WordsCount = "words_count",
 }

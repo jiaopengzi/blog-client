@@ -207,7 +207,7 @@ const cols: TableColumn[] = reactive([
         align: "center",
     },
     {
-        prop: "collect_count",
+        prop: "star_count",
         label: "收藏",
         sortable: true,
         minWidth: 80,

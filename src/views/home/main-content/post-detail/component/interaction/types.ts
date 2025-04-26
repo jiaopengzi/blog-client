@@ -6,7 +6,7 @@
  * Description : 类型
  */
 
-export type InteractionIcon = "like" | "collect" | "share" | "link" // 互动类型
+export type InteractionIcon = "like" | "star" | "share" | "link" // 互动类型
 
 export interface InteractionItemProps {
     icon: InteractionIcon // 图标

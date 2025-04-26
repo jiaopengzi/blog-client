@@ -30,7 +30,7 @@ export function useGetData(manager: EditorStateManager) {
                     comment_count: postData.comment_count,
                     view_count: postData.view_count,
                     like_count: postData.like_count,
-                    collect_count: postData.collect_count,
+                    star_count: postData.star_count,
                     words_count: postData.words_count,
                     post_title: postData.post_title,
                     author_avatar: postData.author_info.user_avatar,

@@ -42,11 +42,11 @@ const initItems: InteractionItem[] = [
         tip: 6,
     },
     {
-        icon: "collect",
+        icon: "star",
         text: "收藏",
         isActive: true,
         onClick: () => {
-            emit("click-item", "collect")
+            emit("click-item", "star")
         },
     },
     {
@@ -145,13 +145,13 @@ const tipPlacement = computed(() => {
     }
 }
 
-// 媒体查询
-@include respond-to("pc") {
-}
+// // 媒体查询
+// @include respond-to("pc") {
+// }
 
-@include respond-to("pad") {
-}
+// @include respond-to("pad") {
+// }
 
-@include respond-to("phone") {
-}
+// @include respond-to("phone") {
+// }
 </style>

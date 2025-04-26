@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4152487 */
-  src: url('iconfont.woff2?t=1744200720311') format('woff2'),
-       url('iconfont.woff?t=1744200720311') format('woff'),
-       url('iconfont.ttf?t=1744200720311') format('truetype');
+  src: url('iconfont.woff2?t=1745659544142') format('woff2'),
+       url('iconfont.woff?t=1745659544142') format('woff'),
+       url('iconfont.ttf?t=1745659544142') format('truetype');
 }
 
 .iconfont {
@@ -13,12 +13,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-comment:before {
-  content: "\e689";
+.icon-time:before {
+  content: "\e65f";
 }
 
-.icon-time:before {
-  content: "\e61d";
+.icon-comment:before {
+  content: "\e689";
 }
 
 .icon-hourglass:before {
@@ -29,7 +29,7 @@
   content: "\e616";
 }
 
-.icon-collect:before {
+.icon-star:before {
   content: "\e605";
 }
 

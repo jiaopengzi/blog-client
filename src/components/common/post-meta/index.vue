@@ -44,9 +44,9 @@
             </span>
 
             <!-- 收藏 -->
-            <span v-if="!isZero(meta.collect_count)" class="meta-collect meta-item">
-                <j-icon name="collect" customClass="meta-icon" />
-                <span class="meta-text">{{ unit(metaData.collect_count) }}</span>
+            <span v-if="!isZero(meta.star_count)" class="meta-star meta-item">
+                <j-icon name="star" customClass="meta-icon" />
+                <span class="meta-text">{{ unit(metaData.star_count) }}</span>
             </span>
 
             <!-- 文章字数 -->

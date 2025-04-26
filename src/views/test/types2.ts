@@ -4,7 +4,7 @@ export enum CustomFields {
     ViewCount = "view_count", // 浏览次数
     CommentCount = "comment_count", // 评论次数
     LikeCount = "like_count", // 点赞次数
-    CollectCount = "collect_count", // 收藏次数
+    StarCount = "star_count", // 收藏次数
     WordsCount = "words_count", // 字数
 }
 

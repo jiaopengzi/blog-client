@@ -141,7 +141,7 @@ export enum IconKeys {
     Social = "social",
     Upload = "upload",
     Like = "like",
-    Collect = "collect",
+    Star = "star",
     Words = "words",
     Share = "share",
     View = "view",

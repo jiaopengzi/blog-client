@@ -14,7 +14,7 @@ export interface PostMetaProps {
     comment_count?: string // 评论数量
     view_count?: string // 查看数量
     like_count?: string // 喜欢数量
-    collect_count?: string // 收藏数量
+    star_count?: string // 收藏数量
     words_count?: string // 文章字数
     post_title?: string // 文章标题
     author_avatar?: string // 文章作者头像

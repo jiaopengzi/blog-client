@@ -226,9 +226,15 @@ onBeforeMount(async () => {
     }
 }
 
-// @include respond-to("pad") {
-// }
+@include respond-to("pad") {
+    .affix-interaction {
+        display: none;
+    }
+}
 
-// @include respond-to("phone") {
-// }
+@include respond-to("phone") {
+    .affix-interaction {
+        display: none;
+    }
+}
 </style>
