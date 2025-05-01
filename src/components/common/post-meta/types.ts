@@ -24,4 +24,8 @@ export interface PostMetaProps {
     is_show_read_time?: boolean // 是否显示阅读时间
     is_immersion_read?: boolean // 是否沉浸式阅读
     is_author_edit?: boolean // 是否作者编辑
+    interactionStatus?: {
+        is_like: boolean // 是否点赞
+        is_star: boolean // 是否收藏
+    }
 }

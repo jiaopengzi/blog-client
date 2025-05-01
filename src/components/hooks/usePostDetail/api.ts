@@ -8,6 +8,9 @@
 
 import { ref } from "vue"
 
+import { type InteractionRequest, postInteractionAPI } from "@/api/post/interaction"
+import { type PostLikeRequest, setPostLikeAPI } from "@/api/post/like"
+import { type PostStarRequest, setPostStarAPI } from "@/api/post/star"
 import { viewPostByIDAPI, type ViewPostByIDRequest } from "@/api/post/viewByID"
 import { ResponseCode } from "@/api/response"
 import { type PostMetaProps } from "@/components/common/post-meta"
@@ -18,6 +21,7 @@ export function useGetData(manager: EditorStateManager) {
 
     const getPostDetail = async (req: ViewPostByIDRequest) => {
         const res = await viewPostByIDAPI(req)
+
         if (res.data.code === ResponseCode.PostViewByIDSuccess) {
             const postData = res.data.data
             if (postData) {
@@ -41,14 +45,59 @@ export function useGetData(manager: EditorStateManager) {
                     // TODO: 判断是否启用作者
                     is_author_edit: true,
                     is_immersion_read: true,
+                    interactionStatus: {
+                        is_like: false,
+                        is_star: false,
+                    },
                 }
             }
-            return res
+        }
+    }
+
+    // 更新文章交互状态
+    const updatePostInteraction = async (req: InteractionRequest) => {
+        const res = await postInteractionAPI(req)
+        if (res.data.code === ResponseCode.PostInteractionStatusSuccess) {
+            const interactionData = res.data.data
+            if (interactionData && postMeta.value.interactionStatus) {
+                // 更新交互状态
+                postMeta.value.interactionStatus.is_like = interactionData.like
+                postMeta.value.interactionStatus.is_star = interactionData.star
+            }
+        }
+    }
+
+    // 设置文章点赞
+    const setPostLike = async (req: PostLikeRequest) => {
+        const res = await setPostLikeAPI(req)
+        if (res.data.code === ResponseCode.PostLikeSuccess || res.data.code === ResponseCode.PostLikeCancelSuccess) {
+            const data = res.data.data
+            if (data && postMeta.value.interactionStatus) {
+                // 更新交互状态
+                postMeta.value.interactionStatus.is_like = req.like
+                postMeta.value.like_count = data.count
+            }
+        }
+    }
+
+    // 设置文章收藏
+    const setPostStar = async (req: PostStarRequest) => {
+        const res = await setPostStarAPI(req)
+        if (res.data.code === ResponseCode.PostStarSuccess || res.data.code === ResponseCode.PostStarCancelSuccess) {
+            const data = res.data.data
+            if (data && postMeta.value.interactionStatus) {
+                // 更新交互状态
+                postMeta.value.interactionStatus.is_star = req.star
+                postMeta.value.star_count = data.count
+            }
         }
     }
 
     return {
         postMeta, // 文章元数据
         getPostDetail, // 获取文章详情
+        updatePostInteraction, // 更新文章交互状态
+        setPostLike, // 设置文章点赞
+        setPostStar, // 设置文章收藏
     }
 }

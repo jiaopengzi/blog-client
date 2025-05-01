@@ -12,12 +12,12 @@ export interface InteractionItemProps {
     icon: InteractionIcon // 图标
     text: string // 文本
     tip?: string | number // 提示信息
-    isActive: boolean // 是否激活
+    isActive?: boolean // 是否激活
 }
 
 export interface InteractionProps {
     direction: "horizontal" | "vertical" // 方向
-    items?: InteractionItem[] // 互动列表
+    items?: InteractionItemProps[] // 互动列表
 }
 
 export interface InteractionItem extends InteractionItemProps {

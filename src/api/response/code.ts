@@ -54,7 +54,7 @@ export enum ResponseCode {
     UserLogoutByAdminSuccess = 1040, //管理员登出用户成功
     UserForbidden = 1041, //用户禁用
 
-    // 文章标签相关
+    // 文章相关
     PostInsertSuccess = 2000, // 插入文章标签成功
     PostDeleteSuccess = 2001, // 插入文章标签成功
     PostUpdateSuccess = 2002, // 更新文章标签成功
@@ -75,6 +75,13 @@ export enum ResponseCode {
     PostViewRecommendedSuccess = 2022, // 查看推荐文章成功
     PostCountByIsPinnedSuccess = 2024, // 按照是否置顶统计文章数量成功
     PostCountByIsRecommendedSuccess = 2026, // 按照是否推荐统计文章数量成功
+    PostLikeSuccess = 2027, // 文章点赞成功
+    PostLikeCancelSuccess = 2028, // 文章取消点赞成功
+    PostLikeRepeat = 2029, // 文章点赞或者取消点赞重复操作
+    PostStarSuccess = 2030, // 文章收藏成功
+    PostStarRepeat = 2031, // 文章收藏或者取消收藏重复操作
+    PostStarCancelSuccess = 2032, // 文章取消收藏成功
+    PostInteractionStatusSuccess = 2033, // 获取文章交互状态成功
 
     // 文章标签相关
     PostTagInsertSuccess = 2100, // 插入文章标签成功

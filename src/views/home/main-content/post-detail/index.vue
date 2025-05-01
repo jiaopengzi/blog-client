@@ -10,11 +10,11 @@
     <section ref="webFullscreenRef">
         <!-- 新增的固定占位内容 -->
         <div class="affix-interaction">
-            <DetailInteraction direction="vertical" />
+            <DetailInteraction direction="vertical" :items="interactionItems" @click-item="handleClickInteraction"/>
         </div>
         <section class="post-detail-bg">
             <div class="post-detail">
-                <DetailInteraction direction="horizontal" />
+                <DetailInteraction direction="horizontal" :items="interactionItems" @click-item="handleClickInteraction" />
                 <PostMeta :meta="postMeta" @immersion-read="toggle" @author-id="clickAuthorId" @post-id="editPost" />
                 <HtmlPreview
                     ref="previewRef"
@@ -37,7 +37,7 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from "pinia"
-import { nextTick, onBeforeMount, onMounted, reactive, ref, useTemplateRef, watch } from "vue"
+import { computed, type ComputedRef, nextTick, onBeforeMount, onMounted, reactive, ref, useTemplateRef, watch } from "vue"
 
 import { type ViewPostByIDRequest } from "@/api/post/viewByID"
 import PostMeta from "@/components/common/post-meta"
@@ -49,7 +49,8 @@ import { useWebFullscreen } from "@/components/hooks/useWebFullscreen"
 import { useDeviceStore } from "@/stores/device"
 import { useStatusStore } from "@/stores/status"
 
-import DetailInteraction from "./component/interaction"
+import DetailInteraction, { type InteractionIcon, type InteractionItemProps } from "./component/interaction"
+
 defineOptions({ name: "PostDetail" })
 
 // 定义 props
@@ -80,7 +81,44 @@ const { toggle } = useWebFullscreen(postDetailRef)
 // 请求参数
 const postIdReq = reactive<ViewPostByIDRequest>({} as ViewPostByIDRequest)
 
-const { manager, state, postMeta, clickAuthorId, editPost, updatePostDetail, updateRouterPush } = usePostDetail(postIdReq, anchorHash)
+const { manager, state, postMeta, clickAuthorId, editPost, updatePostDetail, updateRouterPush, setPostLike, setPostStar } = usePostDetail(postIdReq, anchorHash)
+
+// 初始状态
+const interactionItems: ComputedRef<InteractionItemProps[]> = computed(() => {
+    return [
+        {
+            icon: "like",
+            text: "点赞",
+            isActive: postMeta.value.interactionStatus?.is_like ?? false,
+            tip: postMeta.value.like_count,
+        },
+        {
+            icon: "star",
+            text: "收藏",
+            isActive: postMeta.value.interactionStatus?.is_star ?? false,
+            tip: postMeta.value.star_count,
+        },
+        {
+            icon: "share",
+            text: "分享",
+        },
+        {
+            icon: "link",
+            text: "复制链接",
+        },
+    ]
+})
+
+const handleClickInteraction = (val: InteractionIcon) => {
+    switch (val) {
+        case "like":
+            setPostLike({ post_id: postId.value, like: !postMeta.value.interactionStatus?.is_like })
+            break
+        case "star":
+            setPostStar({ post_id: postId.value, star: !postMeta.value.interactionStatus?.is_star })
+            break
+    }
+}
 
 // preview
 const { showImageViewer, closeImageViewer, handleHeadingShowCurrent, handleUpdateIsUserScrollPreview } = usePreview(manager)

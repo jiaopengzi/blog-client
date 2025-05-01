@@ -77,13 +77,10 @@ const interactionItems = computed(() => {
     // 根据传入的 items 生成交互项
     return items.map((item) => {
         const initItem = initItems.find((i) => i.icon === item.icon)
-        if (initItem) {
-            return {
-                ...initItem,
-                count: item.tip,
-            }
+        return {
+            ...initItem,
+            ...item,
         }
-        return item
     })
 })
 

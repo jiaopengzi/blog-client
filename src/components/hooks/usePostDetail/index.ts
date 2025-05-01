@@ -6,12 +6,14 @@
  * @Description  : 首页 hooks
  */
 
+import { storeToRefs } from "pinia"
 import { type Reactive, type Ref, watch } from "vue"
 
 import { type ViewPostByIDRequest } from "@/api/post/viewByID"
 import { type QueryParamsOptions } from "@/api/request"
 import { EditorStateManager } from "@/components/editor"
 import { useBreadcrumbStore } from "@/stores/breadcrumb"
+import { useUserStore } from "@/stores/user"
 
 import { useRootUtils } from "../useRootUtils"
 import { useGetData } from "./api"
@@ -20,12 +22,15 @@ export function usePostDetail(
     queryParams: Reactive<ViewPostByIDRequest>, // 查询参数
     hash: Ref<string>, // hash值
 ) {
+    const userStore = useUserStore()
+    const { isLogin } = storeToRefs(userStore)
+
     // 字符串类型的key
     const stringKeys: StringKeys<ViewPostByIDRequest>[] = ["post_id"]
 
     const options: Reactive<QueryParamsOptions<ViewPostByIDRequest>> = {
         stringKeys,
-        hash: hash.value, // hash值
+        hash: hash.value, // 文章标题 hash 值
     }
 
     watch(
@@ -41,7 +46,13 @@ export function usePostDetail(
     const manager = new EditorStateManager({ isRemoveFirstH1: true })
     const state = manager.getState()
 
-    const { postMeta, getPostDetail } = useGetData(manager)
+    const {
+        postMeta, // 文章元数据
+        getPostDetail, // 获取文章详情
+        updatePostInteraction, // 更新文章交互状态
+        setPostLike, // 设置文章点赞
+        setPostStar, // 设置文章收藏
+    } = useGetData(manager)
 
     const {
         updateRouterPush, // 更新查询参数和路由
@@ -54,6 +65,9 @@ export function usePostDetail(
     const updateByRoute = async () => {
         await updateQueryParams()
         await getPostDetail(queryParams)
+        if (isLogin.value) {
+            await updatePostInteraction(queryParams)
+        }
         updateBreadcrumb()
     }
 
@@ -100,5 +114,7 @@ export function usePostDetail(
         postMeta, // 文章元数据
         clickAuthorId, // 点击作者
         editPost, // 编辑文章
+        setPostLike, // 设置文章点赞
+        setPostStar, // 设置文章收藏
     }
 }
