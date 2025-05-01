@@ -10,7 +10,7 @@
     <section ref="webFullscreenRef">
         <!-- 新增的固定占位内容 -->
         <div class="affix-interaction">
-            <DetailInteraction direction="vertical" :items="interactionItems" @click-item="handleClickInteraction"/>
+            <DetailInteraction direction="vertical" :items="interactionItems" @click-item="handleClickInteraction" />
         </div>
         <section class="post-detail-bg">
             <div class="post-detail">
@@ -48,6 +48,8 @@ import { usePostDetail } from "@/components/hooks/usePostDetail"
 import { useWebFullscreen } from "@/components/hooks/useWebFullscreen"
 import { useDeviceStore } from "@/stores/device"
 import { useStatusStore } from "@/stores/status"
+import { useUserStore } from "@/stores/user"
+import { MessageUtil } from "@/utils/message"
 
 import DetailInteraction, { type InteractionIcon, type InteractionItemProps } from "./component/interaction"
 
@@ -70,6 +72,7 @@ const emit = defineEmits<{
 
 const statusStore = useStatusStore()
 const deviceStore = useDeviceStore()
+const userStore = useUserStore()
 
 const { postId, anchorHash } = storeToRefs(statusStore)
 const { windowWidth } = storeToRefs(deviceStore)
@@ -77,6 +80,8 @@ const { windowWidth } = storeToRefs(deviceStore)
 const postDetailRef = useTemplateRef("webFullscreenRef")
 
 const { toggle } = useWebFullscreen(postDetailRef)
+
+const { isLogin } = storeToRefs(userStore)
 
 // 请求参数
 const postIdReq = reactive<ViewPostByIDRequest>({} as ViewPostByIDRequest)
@@ -110,6 +115,11 @@ const interactionItems: ComputedRef<InteractionItemProps[]> = computed(() => {
 })
 
 const handleClickInteraction = (val: InteractionIcon) => {
+    if (!isLogin.value && (val === "like" || val === "star")) {
+        MessageUtil.warning("【点赞】和【收藏】 需要登录")
+        return
+    }
+
     switch (val) {
         case "like":
             setPostLike({ post_id: postId.value, like: !postMeta.value.interactionStatus?.is_like })
