@@ -56,45 +56,69 @@ const dataAc = computed(() => {
     return { ...defaultOptions, ...data } // 合并默认配置和用户配置
 })
 
-onMounted(async () => {
-    await nextTick(async () => {
-        // 使用 html2canvas 生成图片
-        const el = document.querySelector(".poster-container") as HTMLElement
-        // 使用 canvas 生成图片
-        const canvas = await html2canvas(el, {
-            scale: 3,
-            logging: false,
-            width: el.offsetWidth,
-            height: el.offsetHeight,
-        })
+// 等待 HTMLImageElement 全部加载
+function waitForImagesLoaded(container: HTMLElement) {
+    const imgs = container.querySelectorAll("img")
+    const promises: Promise<void>[] = []
 
-        // 将图片转换为 Blob 对象并复制到剪贴板
-        canvas.toBlob((blob) => {
-            if (blob) {
-                if (typeof ClipboardItem !== "undefined") {
-                    // 新API
-                    console.log("新API")
-                    const item = new ClipboardItem({
-                        [blob.type]: blob,
-                    })
-                    navigator.clipboard.write([item]).then(() => {
-                        console.log("图片已复制到剪贴板")
-                    })
-                } else {
-                    // 旧API
-                    console.log("旧API")
-                    const reader = new FileReader()
-                    reader.onload = (e) => {
-                        const base64 = e.target?.result as string
-                        const link = document.createElement("a")
-                        link.href = base64
-                        link.download = "poster.png"
-                        link.click()
-                    }
-                    reader.readAsDataURL(blob)
+    imgs.forEach((img) => {
+        console.log("============>img", img.src)
+        // 已经加载完的直接跳过
+        if (img.complete) return
+        // 未加载完的加入加载监听
+        promises.push(
+            new Promise((resolve, reject) => {
+                img.onload = () => resolve()
+                img.onerror = () => reject()
+            }),
+        )
+    })
+    return Promise.all(promises)
+}
+
+onMounted(async () => {
+    await nextTick()
+
+    // 使用 html2canvas 生成图片
+    // 等待图片加载完成
+    const el = document.querySelector(".poster-container") as HTMLElement
+    await waitForImagesLoaded(el)
+
+    // 使用 canvas 生成图片
+    const canvas = await html2canvas(el, {
+        scale: 3,
+        logging: false,
+        width: el.offsetWidth,
+        height: el.offsetHeight,
+        useCORS: true, // 允许跨域图片
+    })
+
+    // 将图片转换为 Blob 对象并复制到剪贴板
+    canvas.toBlob((blob) => {
+        if (blob) {
+            if (typeof ClipboardItem !== "undefined") {
+                // 新API
+                console.log("新API")
+                const item = new ClipboardItem({
+                    [blob.type]: blob,
+                })
+                navigator.clipboard.write([item]).then(() => {
+                    console.log("图片已复制到剪贴板")
+                })
+            } else {
+                // 旧API
+                console.log("旧API")
+                const reader = new FileReader()
+                reader.onload = (e) => {
+                    const base64 = e.target?.result as string
+                    const link = document.createElement("a")
+                    link.href = base64
+                    link.download = "poster.png"
+                    link.click()
                 }
+                reader.readAsDataURL(blob)
             }
-        })
+        }
     })
 })
 </script>
@@ -141,10 +165,10 @@ onMounted(async () => {
 
 .title {
     font-family: "SmileySans", "Microsoft YaHei", sans-serif;
-    font-size: 22px; // 稍微减小字体
-    color: #333; // 深灰色文字，更加柔和
+    font-size: 24px;
+    color: #333;
     text-align: center;
-    margin-bottom: 15px; // 减少间距
+    margin-bottom: 10px; // 减少间距
     line-height: 1.6;
 }
 
