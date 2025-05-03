@@ -154,6 +154,7 @@ const handleClickInteraction = (val: InteractionIcon) => {
             setPostStar({ post_id: postId.value, star: !postMeta.value.interactionStatus?.is_star })
             break
         case "share":
+            MessageUtil.success("海报正在生成中, 请稍等...")
             isShowPosterShare.value = true // 显示分享海报
             break
     }
