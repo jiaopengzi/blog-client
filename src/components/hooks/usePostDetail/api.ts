@@ -13,11 +13,14 @@ import { type PostLikeRequest, setPostLikeAPI } from "@/api/post/like"
 import { type PostStarRequest, setPostStarAPI } from "@/api/post/star"
 import { viewPostByIDAPI, type ViewPostByIDRequest } from "@/api/post/viewByID"
 import { ResponseCode } from "@/api/response"
+import { type HeadProps } from "@/components/common/head-tag"
 import { type PostMetaProps } from "@/components/common/post-meta"
 import { EditorStateManager } from "@/components/editor"
+import { updateHead } from "@/utils/updateHead"
 
 export function useGetData(manager: EditorStateManager) {
     const postMeta = ref<PostMetaProps>({}) // 文章元数据
+    const headMeta = ref<HeadProps>({}) // 文章头部信息
 
     const getPostDetail = async (req: ViewPostByIDRequest) => {
         const res = await viewPostByIDAPI(req)
@@ -49,6 +52,20 @@ export function useGetData(manager: EditorStateManager) {
                         is_like: false,
                         is_star: false,
                     },
+                }
+
+                // 文章头部信息
+                headMeta.value = {
+                    title: postData.post_title,
+                    description: postData.seo_description,
+                    keywords: postData.seo_keywords,
+                    type: "article",
+                    locale: "zh-CN",
+                    author: postData.author_info.user_display_name,
+                    image: postData.thumbnail,
+                    siteName: postData.post_title,
+                    // url 已经在路由中间件中自动设置
+                    releaseDate: postData.updated_at,
                 }
             }
         }
@@ -93,11 +110,16 @@ export function useGetData(manager: EditorStateManager) {
         }
     }
 
+    const updateHeadInfo = async () => {
+        await updateHead(headMeta.value)
+    }
+
     return {
         postMeta, // 文章元数据
         getPostDetail, // 获取文章详情
         updatePostInteraction, // 更新文章交互状态
         setPostLike, // 设置文章点赞
         setPostStar, // 设置文章收藏
+        updateHeadInfo, // 更新头部信息
     }
 }

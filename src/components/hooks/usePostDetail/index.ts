@@ -7,7 +7,7 @@
  */
 
 import { storeToRefs } from "pinia"
-import { type Reactive, type Ref, watch } from "vue"
+import { h, type Reactive, type Ref, watch } from "vue"
 
 import { type ViewPostByIDRequest } from "@/api/post/viewByID"
 import { type QueryParamsOptions } from "@/api/request"
@@ -52,6 +52,7 @@ export function usePostDetail(
         updatePostInteraction, // 更新文章交互状态
         setPostLike, // 设置文章点赞
         setPostStar, // 设置文章收藏
+        updateHeadInfo, // 更新头部信息
     } = useGetData(manager)
 
     const {
@@ -77,6 +78,7 @@ export function usePostDetail(
         queryParams.post_id = id
         await updateRouterPush()
         await updateByRoute()
+        await updateHeadInfo()
     }
 
     // 点击作者

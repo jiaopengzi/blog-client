@@ -7,6 +7,7 @@
 -->
 
 <template>
+    <head-tag :head-data="head" />
     <section ref="webFullscreenRef">
         <!-- 新增的固定占位内容 -->
         <div class="affix-interaction">
@@ -40,6 +41,7 @@ import { storeToRefs } from "pinia"
 import { computed, type ComputedRef, nextTick, onBeforeMount, onMounted, reactive, ref, useTemplateRef, watch } from "vue"
 
 import { type ViewPostByIDRequest } from "@/api/post/viewByID"
+import HeadTag from "@/components/common/head-tag"
 import PostMeta from "@/components/common/post-meta"
 import type { EditorState } from "@/components/editor"
 import HtmlPreview, { type HeadingObject } from "@/components/editor/components/preview"
@@ -47,6 +49,7 @@ import { usePreview } from "@/components/editor/hooks/usePreview"
 import { usePostDetail } from "@/components/hooks/usePostDetail"
 import { useWebFullscreen } from "@/components/hooks/useWebFullscreen"
 import { useDeviceStore } from "@/stores/device"
+import { useOptionsStore } from "@/stores/options"
 import { useStatusStore } from "@/stores/status"
 import { useUserStore } from "@/stores/user"
 import { MessageUtil } from "@/utils/message"
@@ -73,7 +76,9 @@ const emit = defineEmits<{
 const statusStore = useStatusStore()
 const deviceStore = useDeviceStore()
 const userStore = useUserStore()
+const optionsStore = useOptionsStore()
 
+const { head } = storeToRefs(optionsStore)
 const { postId, anchorHash } = storeToRefs(statusStore)
 const { windowWidth } = storeToRefs(deviceStore)
 
@@ -87,6 +92,8 @@ const { isLogin } = storeToRefs(userStore)
 const postIdReq = reactive<ViewPostByIDRequest>({} as ViewPostByIDRequest)
 
 const { manager, state, postMeta, clickAuthorId, editPost, updatePostDetail, updateRouterPush, setPostLike, setPostStar } = usePostDetail(postIdReq, anchorHash)
+
+
 
 // 初始状态
 const interactionItems: ComputedRef<InteractionItemProps[]> = computed(() => {
@@ -207,6 +214,7 @@ watch(
     },
 )
 
+// 设置交互项的左侧偏移量, 保障在不同屏幕下, 交互项的左侧偏移量一致
 const setAffixLeft = () => {
     if (postDetailRef.value) {
         const left = postDetailRef.value.offsetLeft // 获取当前元素的 left 值

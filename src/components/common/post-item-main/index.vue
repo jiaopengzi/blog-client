@@ -43,11 +43,13 @@
 </template>
 
 <script lang="ts" setup>
+import { storeToRefs } from "pinia"
 import { computed } from "vue"
 
 import { type PostResPagination, PostStatusCode } from "@/api/post/common"
 import { type PostCategory } from "@/api/postCategory/view"
 import PostMeta, { type PostMetaProps } from "@/components/common/post-meta"
+import { DeviceType, useDeviceStore } from "@/stores/device"
 
 defineOptions({ name: "PostItemMain" })
 
@@ -55,19 +57,26 @@ const { postData } = defineProps<{
     postData: PostResPagination
 }>()
 
+// 设备类型
+const deviceStore = useDeviceStore()
+const { device } = storeToRefs(deviceStore)
 // 文章元数据
 const postMeta = computed(() => {
     const data: PostMetaProps = {
         created_at: postData.created_at,
         formatStr: "YYYY-MM-DD",
-        comment_count: postData.comment_count,
         view_count: postData.view_count,
-        like_count: postData.like_count,
         author_avatar: postData.author_info.user_avatar,
         author_display_name: postData.author_info.user_display_name,
         avatar_size: 24, // 头像大小，默认 24px
         author_id: postData.author_info.id,
         is_show_read_time: false, // 是否显示阅读时间
+    }
+
+    if (device.value === DeviceType.PC || device.value === DeviceType.PAD) {
+        data.comment_count = postData.comment_count
+        data.like_count = postData.like_count
+        data.star_count = postData.star_count
     }
     return data
 })

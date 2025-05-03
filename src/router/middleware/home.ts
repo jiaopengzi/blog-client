@@ -9,6 +9,7 @@
 import { type RouteLocationNormalized } from "vue-router"
 
 import { type ViewPostByIDRequest } from "@/api/post/viewByID"
+import { useOptionsStore } from "@/stores/options"
 import { useStatusStore } from "@/stores/status"
 import { parseRouteQuery } from "@/utils/queryParam"
 
@@ -23,6 +24,8 @@ import { RouteNames } from "../types"
 export const homeMiddleware = async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
     if (to.name === RouteNames.Home) {
         const statusStore = useStatusStore()
+        const optionsStore = useOptionsStore()
+
         const { hasKeyWord, hasPostDetail, result } = await parseRouteQuery<ViewPostByIDRequest>(to.query)
 
         if (hasKeyWord) {
@@ -33,6 +36,11 @@ export const homeMiddleware = async (to: RouteLocationNormalized, from: RouteLoc
             await statusStore.setPostDetail()
         } else {
             await statusStore.setHome()
+        }
+
+        // 如果没有文章详情参数，则初始化头部信息
+        if (!hasPostDetail) {
+            await optionsStore.initHead()
         }
     }
 

@@ -12,4 +12,9 @@ export enum LocalStorageKey {
     IsShowListOrGridAtMedia = "is_show_list_or_grid_at_media", // 媒体列表是否显示为列表或网格
     IsShowSeoAtPostWrite = "is_show_seo_at_post_write", // 文章写作是否显示SEO设置
     SearchHistory = "search_history", // 搜索历史
+    OptionsApp = "options_app", // 应用配置
+    OptionsHeadInfo = "options_head_info", // 头部信息
+    OptionsNavList = "options_nav_list", // 导航列表
+    OptionsNavObj = "options_nav_obj", // 导航object
+    OptionsFooterInfo = "options_footer_info", // 底部信息
 }

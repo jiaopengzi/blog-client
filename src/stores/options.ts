@@ -13,6 +13,8 @@ import { getAPPOptionAPI, type GetAPPOptionResponse } from "@/api/setting/getAPP
 import { type HeadProps } from "@/components/common/head-tag"
 import { type NavItemProps } from "@/views/admin/component/main/app-nav/nav-item"
 
+import { LocalStorageKey } from "./local"
+
 export interface FooterLeftInfo {
     title?: string
     content?: string
@@ -119,6 +121,37 @@ export const useOptionsStore = defineStore("options", {
         async update(is_get_from_server: boolean = false): Promise<void> {
             if (is_get_from_server) {
                 await this.updateFromServer()
+                return
+            }
+
+            // 从本地获取网站配置
+            const app_options = localStorage.getItem(LocalStorageKey.OptionsApp)
+            if (app_options) {
+                this.app_options = JSON.parse(app_options) as GetAPPOptionResponse
+            }
+
+            // 从本地获取头部信息
+            const head = localStorage.getItem(LocalStorageKey.OptionsHeadInfo)
+            if (head) {
+                this.head = JSON.parse(head) as HeadProps
+            }
+
+            // 从本地获取导航列表
+            const navList = localStorage.getItem(LocalStorageKey.OptionsNavList)
+            if (navList) {
+                this.navList = JSON.parse(navList) as NavItemProps[]
+            }
+
+            // 从本地获取导航对象
+            const navObj = localStorage.getItem(LocalStorageKey.OptionsNavObj)
+            if (navObj) {
+                this.navObj = JSON.parse(navObj) as Record<string, NavItemProps>
+            }
+
+            // 从本地获取底部信息
+            const footer = localStorage.getItem(LocalStorageKey.OptionsFooterInfo)
+            if (footer) {
+                this.footer = JSON.parse(footer) as FooterInfo
             }
         },
 
@@ -128,12 +161,10 @@ export const useOptionsStore = defineStore("options", {
             if (res.data.code === ResponseCode.GetAPPOptionSuccess) {
                 this.app_options = res.data.data
 
-                // footer格式化后存储本地
-                this.footer = await formatFooterInfo(this.app_options)
+                // 存入本地
+                localStorage.setItem(LocalStorageKey.OptionsApp, JSON.stringify(this.app_options))
 
-                this.isLoadedOptions = true
-
-                // head格式化后存储本地
+                // head 格式化后存储本地
                 this.head = await formatHeadInfo(this.app_options)
 
                 // navList 格式化后存储本地
@@ -141,6 +172,25 @@ export const useOptionsStore = defineStore("options", {
 
                 // navObg 格式化后存储本地
                 this.navObj = await formatNavObj(this.navList)
+
+                // footer格式化后存储本地
+                this.footer = await formatFooterInfo(this.app_options)
+
+                this.isLoadedOptions = true
+            }
+        },
+
+        // 初始化头部信息
+        async initHead(is_get_from_server: boolean = false): Promise<void> {
+            if (is_get_from_server) {
+                await this.updateFromServer()
+                return
+            }
+
+            // 从本地获取头部信息
+            const head = localStorage.getItem(LocalStorageKey.OptionsHeadInfo)
+            if (head) {
+                this.head = JSON.parse(head) as HeadProps
             }
         },
 
@@ -214,6 +264,9 @@ export const formatFooterInfo = async (data: GetAPPOptionResponse): Promise<Foot
         beian_miit_link: data.beian_miit_link?.value,
     }
 
+    // 存入本地
+    localStorage.setItem(LocalStorageKey.OptionsFooterInfo, JSON.stringify({ left, middle, right }))
+
     return {
         left,
         middle,
@@ -223,7 +276,7 @@ export const formatFooterInfo = async (data: GetAPPOptionResponse): Promise<Foot
 
 const formatHeadInfo = async (data: GetAPPOptionResponse): Promise<HeadProps> => {
     const title = data.custom_home_title?.value + data.separator?.value + data.custom_home_subtitle?.value
-    return {
+    const headInfo: HeadProps = {
         title: title,
         description: data.seo_description?.value,
         keywords: data.seo_keywords?.value,
@@ -234,6 +287,11 @@ const formatHeadInfo = async (data: GetAPPOptionResponse): Promise<HeadProps> =>
         url: "https://jiaopengzi.com",
         releaseDate: new Date().toISOString(),
     }
+
+    // 存入本地
+    localStorage.setItem(LocalStorageKey.OptionsHeadInfo, JSON.stringify(headInfo))
+
+    return headInfo
 }
 
 // 将导航字符串转换为数组
@@ -251,6 +309,9 @@ const formatNavList = async (navStr: string | undefined | null): Promise<NavItem
         const indexB = parseInt(b.index) || 1
         return indexA - indexB
     })
+
+    // 存入本地
+    localStorage.setItem(LocalStorageKey.OptionsNavList, JSON.stringify(navListOrder))
 
     return navListOrder
 }
@@ -271,6 +332,10 @@ const formatNavObj = async (navList: NavItemProps[]): Promise<Record<string, Nav
 
         navObj[nav.index] = nav
     })
+
+    // 存入本地
+    localStorage.setItem(LocalStorageKey.OptionsNavObj, JSON.stringify(navObj))
+
     return navObj
 }
 
