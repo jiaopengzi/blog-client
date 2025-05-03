@@ -1,68 +1,30 @@
+<!--
+ * FilePath    : blog-client\src\views\test\index.vue
+ * Description : 测试页面
+-->
 <template>
-    <div class="scroll-container" @scroll="onScroll">
-        <div class="content">
-            <!-- 模拟多行文本，使得容器内有滚动条可演示 -->
-            <p v-for="item in 100" :key="item">这是第 {{ item }} 行，用于测试滚动...</p>
-        </div>
-    </div>
-    <div class="info">
-        <p>当前状态： {{ isScrolling ? "正在滚动" : "停止滚动" }}</p>
-        <p v-if="!isScrolling && scrollElapsedTime > 0">本次滚动耗时：{{ scrollElapsedTime }} ms</p>
-    </div>
+    <PosterShare :data="data" :is-show="isShow" />
+    <button @click="clickBtn">分享</button>
 </template>
 
 <script lang="ts" setup>
 import { ref } from "vue"
 
+import PosterShare from "@/components/common/poster-share"
+
 defineOptions({ name: "MyTest" })
-// 是否正在滚动
-const isScrolling = ref(false)
-// 记录滚动开始的时间戳
-let startTime = 0
-// 记录滚动总耗时
-const scrollElapsedTime = ref(0)
-// 计时器ID，用于清除上一次的延时
-let timerId: number | undefined
+const isShow = ref(false)
 
-/**
- * 监听滚动事件
- */
-function onScroll() {
-    // 若当前不在滚动状态，则记录滚动开始时间，并更新滚动状态
-    if (!isScrolling.value) {
-        isScrolling.value = true
-        startTime = Date.now()
-    }
-
-    // 每次触发滚动事件，都要清除上一次的定时器
-    if (timerId) {
-        clearTimeout(timerId)
-    }
-
-    // 延时 200ms 以判断是否停止滚动
-    timerId = window.setTimeout(() => {
-        // 计算从开始到停止的耗时
-        scrollElapsedTime.value = Date.now() - startTime
-        // 状态设为停止，并清空定时器
-        isScrolling.value = false
-        timerId = undefined
-    }, 200)
+const clickBtn = () => {
+    isShow.value = !isShow.value
+}
+const data = {
+    logoSrc: "https://image.jiaopengzi.com/blog/uploads/logo/logo-108.ico",
+    imgSrc: "https://image.jiaopengzi.com/blog/202310161114143.png",
+    titleText: "185_技巧_Power Query(M)语言快捷输入之搜狗输入法设置自定义短语",
+    urlText: "https://jiaopengzi.com/?post_id=81355993295946462",
+    qrCodeSrc: "https://jiaopengzi.com/wp-content/uploads/2021/11/weixingongzhonghao.png",
 }
 </script>
 
-<style scoped lang="scss">
-.scroll-container {
-    width: 400px;
-    height: 200px;
-    overflow-y: auto;
-    border: 1px solid #ccc;
-    padding: 8px;
-    margin-bottom: 16px;
-}
-
-.info {
-    p {
-        margin: 4px 0;
-    }
-}
-</style>
+<style scoped lang="scss"></style>
