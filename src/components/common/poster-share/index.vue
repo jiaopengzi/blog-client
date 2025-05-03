@@ -27,12 +27,19 @@
 import html2canvas from "html2canvas"
 import { computed, nextTick, onMounted } from "vue"
 
+import { MessageUtil } from "@/utils/message"
+
 import { type PosterPropsOptions } from "./types"
 
 defineOptions({ name: "PosterShare" })
 
 const { data } = defineProps<{
     data: PosterPropsOptions
+}>()
+
+// 事件
+const emit = defineEmits<{
+    (event: "poster-complete"): void // 生成海报完成
 }>()
 
 const dataAc = computed(() => {
@@ -62,7 +69,6 @@ function waitForImagesLoaded(container: HTMLElement) {
     const promises: Promise<void>[] = []
 
     imgs.forEach((img) => {
-        console.log("============>img", img.src)
         // 已经加载完的直接跳过
         if (img.complete) return
         // 未加载完的加入加载监听
@@ -79,12 +85,11 @@ function waitForImagesLoaded(container: HTMLElement) {
 onMounted(async () => {
     await nextTick()
 
-    // 使用 html2canvas 生成图片
     // 等待图片加载完成
     const el = document.querySelector(".poster-container") as HTMLElement
     await waitForImagesLoaded(el)
 
-    // 使用 canvas 生成图片
+    // 使用 html2canvas 生成图片
     const canvas = await html2canvas(el, {
         scale: 3,
         logging: false,
@@ -103,20 +108,21 @@ onMounted(async () => {
                     [blob.type]: blob,
                 })
                 navigator.clipboard.write([item]).then(() => {
-                    console.log("图片已复制到剪贴板")
+                    emit("poster-complete")
+                    MessageUtil.success("分享海报已复制到剪贴板")
                 })
             } else {
                 // 旧API
                 console.log("旧API")
-                const reader = new FileReader()
-                reader.onload = (e) => {
-                    const base64 = e.target?.result as string
-                    const link = document.createElement("a")
-                    link.href = base64
-                    link.download = "poster.png"
-                    link.click()
-                }
-                reader.readAsDataURL(blob)
+                const link = document.createElement("a")
+                link.href = URL.createObjectURL(blob)
+                link.download = "poster.png"
+                link.click()
+                MessageUtil.success("请将分享海报下载到本地")
+                setTimeout(() => {
+                    emit("poster-complete")
+                    URL.revokeObjectURL(link.href)
+                }, 1000)
             }
         }
     })

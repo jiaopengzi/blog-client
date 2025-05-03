@@ -48,6 +48,7 @@ export function usePostDetail(
 
     const {
         postMeta, // 文章元数据
+        headMeta, // 文章头部信息
         getPostDetail, // 获取文章详情
         updatePostInteraction, // 更新文章交互状态
         setPostLike, // 设置文章点赞
@@ -114,6 +115,7 @@ export function usePostDetail(
         manager, // 详情页状态管理器
         state, // 编辑器状态
         postMeta, // 文章元数据
+        headMeta, // 文章头部信息
         clickAuthorId, // 点击作者
         editPost, // 编辑文章
         setPostLike, // 设置文章点赞

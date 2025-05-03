@@ -116,6 +116,7 @@ export function useGetData(manager: EditorStateManager) {
 
     return {
         postMeta, // 文章元数据
+        headMeta, // 文章头部信息
         getPostDetail, // 获取文章详情
         updatePostInteraction, // 更新文章交互状态
         setPostLike, // 设置文章点赞

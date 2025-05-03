@@ -34,6 +34,7 @@
             </div>
         </section>
     </section>
+    <PosterShare class="poster-share" v-if="isShowPosterShare" :data="dataPosterShare" @poster-complete="handPosterComplete" />
 </template>
 
 <script lang="ts" setup>
@@ -43,6 +44,7 @@ import { computed, type ComputedRef, nextTick, onBeforeMount, onMounted, reactiv
 import { type ViewPostByIDRequest } from "@/api/post/viewByID"
 import HeadTag from "@/components/common/head-tag"
 import PostMeta from "@/components/common/post-meta"
+import PosterShare from "@/components/common/poster-share"
 import type { EditorState } from "@/components/editor"
 import HtmlPreview, { type HeadingObject } from "@/components/editor/components/preview"
 import { usePreview } from "@/components/editor/hooks/usePreview"
@@ -78,7 +80,7 @@ const deviceStore = useDeviceStore()
 const userStore = useUserStore()
 const optionsStore = useOptionsStore()
 
-const { head } = storeToRefs(optionsStore)
+const { head, app_options } = storeToRefs(optionsStore)
 const { postId, anchorHash } = storeToRefs(statusStore)
 const { windowWidth } = storeToRefs(deviceStore)
 
@@ -91,9 +93,10 @@ const { isLogin } = storeToRefs(userStore)
 // 请求参数
 const postIdReq = reactive<ViewPostByIDRequest>({} as ViewPostByIDRequest)
 
-const { manager, state, postMeta, clickAuthorId, editPost, updatePostDetail, updateRouterPush, setPostLike, setPostStar } = usePostDetail(postIdReq, anchorHash)
-
-
+const { manager, state, postMeta, headMeta, clickAuthorId, editPost, updatePostDetail, updateRouterPush, setPostLike, setPostStar } = usePostDetail(
+    postIdReq,
+    anchorHash,
+)
 
 // 初始状态
 const interactionItems: ComputedRef<InteractionItemProps[]> = computed(() => {
@@ -121,6 +124,22 @@ const interactionItems: ComputedRef<InteractionItemProps[]> = computed(() => {
     ]
 })
 
+const isShowPosterShare = ref(false) // 是否显示分享海报
+
+const handPosterComplete = () => {
+    isShowPosterShare.value = false // 关闭分享海报
+}
+
+const dataPosterShare = computed(() => {
+    return {
+        logoSrc: app_options.value.favicon.value,
+        imgSrc: headMeta.value.image,
+        titleText: postMeta.value.post_title,
+        urlText: head.value.url,
+        qrCodeSrc: "https://image.jiaopengzi.com/blog/202310161114143.png",
+    }
+})
+
 const handleClickInteraction = (val: InteractionIcon) => {
     if (!isLogin.value && (val === "like" || val === "star")) {
         MessageUtil.warning("【点赞】和【收藏】 需要登录")
@@ -133,6 +152,9 @@ const handleClickInteraction = (val: InteractionIcon) => {
             break
         case "star":
             setPostStar({ post_id: postId.value, star: !postMeta.value.interactionStatus?.is_star })
+            break
+        case "share":
+            isShowPosterShare.value = true // 显示分享海报
             break
     }
 }
@@ -266,6 +288,13 @@ onBeforeMount(async () => {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.poster-share {
+    // 不要显示在这页面
+    position: fixed;
+    top: -1000px;
+    left: -1000px;
 }
 
 @include respond-to("pc") {
