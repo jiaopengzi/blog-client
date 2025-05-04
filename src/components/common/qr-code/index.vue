@@ -38,13 +38,13 @@ const defaultOptions: QRCodeOptions = {
     height: 100,
     data: "https://jiaopengzi.com",
     margin: 0,
-    qrOptions: { typeNumber: 0, mode: "Byte", errorCorrectionLevel: "M" },
-    image: "https://image.jiaopengzi.com/blog/uploads/logo/logo-108.ico",
-    imageOptions: { saveAsBlob: true, hideBackgroundDots: true, imageSize: 1, margin: 1, crossOrigin: "anonymous" },
-    dotsOptions: { type: "square", color: "#333333", roundSize: true, gradient: void 0 },
+    qrOptions: { typeNumber: 0, mode: "Byte", errorCorrectionLevel: "H" },
+    // 注意logo遮挡的部分不能太大，否则会导致二维码无法识别
+    imageOptions: { saveAsBlob: true, hideBackgroundDots: true, imageSize: 0.4, margin: 1 },
+    dotsOptions: { type: "square", color: "#000000", roundSize: true, gradient: void 0 },
     backgroundOptions: { round: 0, color: "#ffffff00", gradient: void 0 },
-    cornersSquareOptions: { type: "square", color: "#333333", gradient: void 0 },
-    cornersDotOptions: { type: "square", color: "#333333" },
+    cornersSquareOptions: { type: "square", color: "#000000", gradient: void 0 },
+    cornersDotOptions: { type: "square", color: "#000000" },
 }
 
 // 使用 props 传入的配置覆盖默认配置

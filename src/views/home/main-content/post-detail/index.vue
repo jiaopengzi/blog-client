@@ -127,7 +127,7 @@ const interactionItems: ComputedRef<InteractionItemProps[]> = computed(() => {
 const isShowPosterShare = ref(false) // 是否显示分享海报
 
 const handPosterComplete = () => {
-    // isShowPosterShare.value = false // 关闭分享海报
+    isShowPosterShare.value = false // 关闭分享海报
 }
 
 const dataPosterShare = computed(() => {
@@ -291,10 +291,10 @@ onBeforeMount(async () => {
 }
 
 .poster-share {
-    // 不要显示在这页面
-    // position: fixed;
-    // top: -1000px;
-    // left: -1000px;
+    // 不展示出来
+    position: fixed;
+    top: -1000px;
+    left: -1000px;
 }
 
 @include respond-to("pc") {

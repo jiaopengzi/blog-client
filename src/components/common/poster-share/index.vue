@@ -14,6 +14,7 @@
         <h1 class="title">{{ dataAc.titleText }}</h1>
         <div class="url">{{ dataAc.urlText }}</div>
         <div class="qrcode">
+            <!-- <QrCode :options="{ data: dataAc.urlText }" @qr-code-complete="draw" /> -->
             <QrCode :options="{ data: dataAc.urlText, image: dataAc.logoSrc }" @qr-code-complete="draw" />
             <p class="qrcode-text">长按识别</p>
         </div>
