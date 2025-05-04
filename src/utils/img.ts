@@ -47,3 +47,28 @@ export function shiftArray(srcList: string[] | undefined, item: string): string[
 
     return [...srcList.slice(index), ...srcList.slice(0, index)]
 }
+
+/**
+ * @description: 等待图片加载完成
+ * @param container  容器元素
+ * @return           Promise
+ * @example         waitForImagesLoaded(container).then(() => { console.log("所有图片加载完成") })
+ * @example         waitForImagesLoaded(container).catch(() => { console.log("图片加载失败") })
+ */
+export function waitForImagesLoaded(container: HTMLElement) {
+    const imgs = container.querySelectorAll("img")
+    const promises: Promise<void>[] = []
+
+    imgs.forEach((img) => {
+        // 已经加载完的直接跳过
+        if (img.complete) return
+        // 未加载完的加入加载监听
+        promises.push(
+            new Promise((resolve, reject) => {
+                img.onload = () => resolve()
+                img.onerror = () => reject()
+            }),
+        )
+    })
+    return Promise.all(promises)
+}

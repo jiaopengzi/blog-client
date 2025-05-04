@@ -17,7 +17,6 @@
 </template>
 
 <script lang="ts" setup>
-import html2canvas from "html2canvas"
 import { computed } from "vue"
 
 import type { InteractionIcon, InteractionItem, InteractionProps } from "./types"
@@ -56,30 +55,6 @@ const initItems: InteractionItem[] = [
         isActive: false,
         onClick: () => {
             emit("click-item", "share")
-            // 测试一个html元素生成图片 然后下载
-            const element = document.querySelector(".container") as HTMLElement
-            if (element) {
-                html2canvas(element, {
-                    scale: 2,
-                }).then((canvas) => {
-                    // const link = document.createElement("a")
-                    // link.href = canvas.toDataURL("image/png")
-                    // link.download = "image.png"
-                    // link.click()
-
-                    // 将图片复制到剪贴板
-                    canvas.toBlob((blob) => {
-                        if (blob) {
-                            const item = new ClipboardItem({
-                                "image/png": blob,
-                            })
-                            navigator.clipboard.write([item]).then(() => {
-                                console.log("复制成功")
-                            })
-                        }
-                    })
-                })
-            }
         },
     },
     {

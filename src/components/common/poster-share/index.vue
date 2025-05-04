@@ -8,16 +8,13 @@
 
 <template>
     <div class="poster-container">
-        <div class="logo">
-            <img :src="dataAc.logoSrc" />
-        </div>
         <div class="main-img">
             <img :src="dataAc.imgSrc" />
         </div>
         <h1 class="title">{{ dataAc.titleText }}</h1>
         <div class="url">{{ dataAc.urlText }}</div>
         <div class="qrcode">
-            <img :src="dataAc.qrCodeSrc" />
+            <QrCode :options="{ data: dataAc.urlText, image: dataAc.logoSrc }" @qr-code-complete="draw" />
             <p class="qrcode-text">长按识别</p>
         </div>
     </div>
@@ -25,8 +22,10 @@
 
 <script lang="ts" setup>
 import html2canvas from "html2canvas"
-import { computed, nextTick, onMounted } from "vue"
+import { computed, type ComputedRef, nextTick } from "vue"
 
+import QrCode from "@/components/common/qr-code"
+import { waitForImagesLoaded } from "@/utils/img"
 import { MessageUtil } from "@/utils/message"
 
 import { type PosterPropsOptions } from "./types"
@@ -42,8 +41,8 @@ const emit = defineEmits<{
     (event: "poster-complete"): void // 生成海报完成
 }>()
 
-const dataAc = computed(() => {
-    const defaultOptions = {
+const dataAc: ComputedRef<PosterPropsOptions> = computed(() => {
+    const defaultOptions: PosterPropsOptions = {
         // logo
         logoSrc: "https://jiaopengzi.com/favicon.ico",
 
@@ -55,34 +54,13 @@ const dataAc = computed(() => {
 
         // 分享的链接
         urlText: "https://jiaopengzi.com",
-
-        // 链接对应的二维码
-        qrCodeSrc: "https://jiaopengzi.com/favicon.ico",
     }
 
     return { ...defaultOptions, ...data } // 合并默认配置和用户配置
 })
 
-// 等待 HTMLImageElement 全部加载
-function waitForImagesLoaded(container: HTMLElement) {
-    const imgs = container.querySelectorAll("img")
-    const promises: Promise<void>[] = []
-
-    imgs.forEach((img) => {
-        // 已经加载完的直接跳过
-        if (img.complete) return
-        // 未加载完的加入加载监听
-        promises.push(
-            new Promise((resolve, reject) => {
-                img.onload = () => resolve()
-                img.onerror = () => reject()
-            }),
-        )
-    })
-    return Promise.all(promises)
-}
-
-onMounted(async () => {
+// 绘制海报
+const draw = async () => {
     await nextTick()
 
     // 等待图片加载完成
@@ -93,8 +71,6 @@ onMounted(async () => {
     const canvas = await html2canvas(el, {
         scale: 3,
         logging: false,
-        width: el.offsetWidth,
-        height: el.offsetHeight,
         useCORS: true, // 允许跨域图片
     })
 
@@ -126,7 +102,7 @@ onMounted(async () => {
             }
         }
     })
-})
+}
 </script>
 <style lang="scss" scoped>
 .poster-container {
@@ -135,75 +111,48 @@ onMounted(async () => {
     background-color: #f9f9f9; // 浅灰色背景，更加通用
     border-radius: 8px; // 圆角稍微加大，显得更友好
     padding: 15px;
-    position: relative;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); // 更柔和的阴影
-}
-
-.logo {
-    width: 100%;
-    height: auto;
-    margin-bottom: 15px;
-    display: flex;
-    justify-content: left;
-    align-items: center;
-
-    img {
-        max-height: 40px;
-        height: auto;
-        width: auto;
-    }
 }
 
 .main-img {
     width: 100%;
-    height: auto;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
 
     img {
         max-height: 200px;
-        height: auto;
-        width: auto;
     }
 }
 
 .title {
     font-family: "SmileySans", "Microsoft YaHei", sans-serif;
-    font-size: 24px;
+    font-size: 20px;
     color: #333;
     text-align: center;
-    margin-bottom: 10px; // 减少间距
+    margin-bottom: 20px;
     line-height: 1.6;
 }
 
 .url {
     font-family: "JBMonoWOFF2", "Microsoft YaHei", sans-serif;
     font-size: 14px;
-    color: #555; // 中灰色文字，区分层次
+    color: #555;
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     line-height: 1.5;
 }
 
 .qrcode {
     display: flex;
-    flex-direction: column; // 设置为列方向排列
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: auto;
-
-    img {
-        max-height: 80px; // 稍微增大二维码尺寸
-        height: auto;
-        width: auto;
-    }
 
     .qrcode-text {
         font-family: "Microsoft YaHei", sans-serif;
-        font-size: 12px; // 稍微增大字体
-        color: #333; // 深灰色文字
+        font-size: 12px;
+        color: #555;
         text-align: center;
     }
 }

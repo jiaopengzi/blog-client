@@ -39,6 +39,7 @@ declare module 'vue' {
     CommonPostItemMain: typeof import('./src/components/common/post-item-main/index.vue')['default']
     CommonPostItemSearch: typeof import('./src/components/common/post-item-search/index.vue')['default']
     CommonPostMeta: typeof import('./src/components/common/post-meta/index.vue')['default']
+    CommonQrCode: typeof import('./src/components/common/qr-code/index.vue')['default']
     CommonRecursiveMenuItem: typeof import('./src/components/common/recursive-menu-item/index.vue')['default']
     CommonRestartDialog: typeof import('./src/components/common/restart-dialog/index.vue')['default']
     CommonSendTestEmail: typeof import('./src/components/common/send-test-email/index.vue')['default']

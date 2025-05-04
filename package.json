@@ -69,6 +69,7 @@
         "marked-mangle": "^1.1.10",
         "marked-xhtml": "^1.0.12",
         "pinia": "^3.0.2",
+        "qr-code-styling": "^1.9.2",
         "reset-css": "^5.0.2",
         "screenfull": "^6.0.2",
         "throttle-debounce": "^5.0.2",

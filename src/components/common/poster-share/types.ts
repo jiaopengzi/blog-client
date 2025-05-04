@@ -12,7 +12,6 @@ export type PosterProps = {
     imgSrc: string // 图片地址
     titleText: string // 标题文字
     urlText: string // 链接文字
-    qrCodeSrc: string // 二维码图片地址
 }
 
 // 海报配置项
