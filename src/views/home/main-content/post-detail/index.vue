@@ -54,6 +54,7 @@ import { useDeviceStore } from "@/stores/device"
 import { useOptionsStore } from "@/stores/options"
 import { useStatusStore } from "@/stores/status"
 import { useUserStore } from "@/stores/user"
+import { copyText } from "@/utils/clipboard"
 import { MessageUtil } from "@/utils/message"
 
 import DetailInteraction, { type InteractionIcon, type InteractionItemProps } from "./component/interaction"
@@ -155,6 +156,20 @@ const handleClickInteraction = (val: InteractionIcon) => {
         case "share":
             MessageUtil.success("海报正在生成中, 请稍等...")
             isShowPosterShare.value = true // 显示分享海报
+            break
+        case "link":
+            if (!head.value.url) {
+                MessageUtil.warning("链接不存在")
+                return
+            }
+            // 复制链接到剪贴板
+            copyText(head.value.url)
+                .then(() => {
+                    MessageUtil.success("复制成功")
+                })
+                .catch(() => {
+                    MessageUtil.error("复制失败")
+                })
             break
     }
 }

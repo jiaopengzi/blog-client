@@ -259,7 +259,7 @@ const emit = defineEmits<{
     (event: "update-search", value: string): void // 更新搜索关键字
     (event: "run-search"): void // 执行搜索
     (event: "update-selection", rows: TableData[]): void // 更新选择
-    (event: "double-click-row-by-picture", rows: TableData): void // 点击行中的图片
+    (event: "double-click-row-by-picture", rows: TableData): void // 双击击行中的图片
     (event: "add-item-update-dialog-visible", value: boolean): void // 更新添加元素对话框状态
     (event: "edit-item-update-dialog-visible", value: boolean): void // 更新编辑元素对话框状态
     (event: "update-show-list-or-grid-status", value: boolean): void // 更新列表或宫格状态
@@ -372,7 +372,7 @@ const handleDoubleClick = (row: TableData) => {
 
 // **注意这两个 clickHandler 函数不要写到 template 标签中, 会造成递归循环**
 
-// 表格行双击事件
+// 表格行点击事件
 const clickHandler = (row: TableData): SingleDblClickBinding => {
     return {
         single: (e: MouseEvent) => handleSingleClick(e),
@@ -381,7 +381,7 @@ const clickHandler = (row: TableData): SingleDblClickBinding => {
     }
 }
 
-// 宫格行双击事件
+// 宫格行点击事件
 const clickInGridHandler = (row: TableData): SingleDblClickBinding => {
     return {
         single: () => handleSingleClickInGrid(row),

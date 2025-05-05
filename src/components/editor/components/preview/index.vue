@@ -18,7 +18,7 @@ import "@/assets/scss/highlight.js.jpz.scss"
 import "katex/dist/katex.min.css" // katex 样式
 
 import { useIntersectionObserver } from "@vueuse/core"
-import type { ClipboardEvent } from "clipboard"
+import type { Event } from "clipboard"
 import ClipboardJS from "clipboard" //代码块复制
 import { debounce } from "throttle-debounce"
 import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from "vue"
@@ -248,7 +248,7 @@ const initializeClipboard = () => {
         },
     })
 
-    clipboard.on("success", (e: ClipboardEvent) => {
+    clipboard.on("success", (e: Event) => {
         // 处理成功的反馈（例如显示提示信息）
         MessageUtil.success("已复制到剪贴板！")
         // console.log('已复制到剪贴板！')

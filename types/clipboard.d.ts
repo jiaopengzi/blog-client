@@ -1,33 +1,93 @@
 /**
  * @FilePath     : \blog-client\types\clipboard.d.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 粘贴板类型定义
+ * @Description  : 摘抄源码 https://github.com/zenorocha/clipboard.js/blob/master/src/clipboard.d.ts
  */
 
 declare module "clipboard" {
-    export interface ClipboardOptions {
-        text?: (trigger: Element) => string
+    type Action = "cut" | "copy"
+    type Response = "success" | "error"
+    type CopyActionOptions = {
+        container?: Element
     }
 
-    export interface ClipboardEvent extends Event {
-        action: string
-        text: string
-        trigger: Element
-        clearSelection(): void
-    }
+    /**
+     * Base class which takes one or more elements, adds event listeners to them,
+     * and instantiates a new `ClipboardAction` on each click.
+     */
+    declare class ClipboardJS {
+        constructor(selector: string | Element | NodeListOf<Element>, options?: ClipboardJS.Options)
 
-    export interface ClipboardStatic {
-        new (selector: string | Element, options?: ClipboardOptions): ClipboardJS
-    }
+        /**
+         * Subscribes to events that indicate the result of a copy/cut operation.
+         * @param type Event type ('success' or 'error').
+         * @param handler Callback function.
+         */
+        on(type: Response, handler: (e: ClipboardJS.Event) => void): this
 
-    export interface ClipboardJS {
-        on(type: "success" | "error", listener: (e: ClipboardEvent) => void): this
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        on(type: string, handler: (...args: any[]) => void): this
+
+        /**
+         * Clears all event bindings.
+         */
         destroy(): void
+
+        /**
+         * Checks if clipboard.js is supported
+         */
+        static isSupported(): boolean
+
+        /**
+         * Fires a copy action
+         */
+        static copy(target: string | Element, options?: CopyActionOptions): string
+
+        /**
+         * Fires a cut action
+         */
+        static cut(target: string | Element): string
     }
 
-    const Clipboard: ClipboardStatic
+    declare namespace ClipboardJS {
+        interface Options {
+            /**
+             * Overwrites default command ('cut' or 'copy').
+             * @param elem Current element
+             */
+            action?(elem: Element): Action
 
-    export default Clipboard
+            /**
+             * Overwrites default target input element.
+             * @param elem Current element
+             * @returns <input> element to use.
+             */
+            target?(elem: Element): Element
+
+            /**
+             * Returns the explicit text to copy.
+             * @param elem Current element
+             * @returns Text to be copied.
+             */
+            text?(elem: Element): string
+
+            /**
+             * For use in Bootstrap Modals or with any
+             * other library that changes the focus
+             * you'll want to set the focused element
+             * as the container value.
+             */
+            container?: Element
+        }
+
+        interface Event {
+            action: Action
+            text: string
+            trigger: Element
+            clearSelection(): void
+        }
+    }
+
+    export = ClipboardJS
+
+    export as namespace ClipboardJS
 }
