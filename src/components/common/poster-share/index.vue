@@ -26,6 +26,7 @@ import html2canvas from "html2canvas"
 import { computed, type ComputedRef, nextTick } from "vue"
 
 import QrCode from "@/components/common/qr-code"
+import { copyImg } from "@/utils/clipboard"
 import { waitForImagesLoaded } from "@/utils/img"
 import { MessageUtil } from "@/utils/message"
 
@@ -78,29 +79,11 @@ const draw = async () => {
     // 将图片转换为 Blob 对象并复制到剪贴板
     canvas.toBlob((blob) => {
         if (blob) {
-            if (typeof ClipboardItem !== "undefined") {
-                // 新API
-                console.log("新API")
-                const item = new ClipboardItem({
-                    [blob.type]: blob,
-                })
-                navigator.clipboard.write([item]).then(() => {
-                    emit("poster-complete")
-                    MessageUtil.success("分享海报已复制到剪贴板")
-                })
-            } else {
-                // 旧API
-                console.log("旧API")
-                const link = document.createElement("a")
-                link.href = URL.createObjectURL(blob)
-                link.download = "poster.png"
-                link.click()
-                MessageUtil.success("请将分享海报下载到本地")
-                setTimeout(() => {
-                    emit("poster-complete")
-                    URL.revokeObjectURL(link.href)
-                }, 1000)
-            }
+            // 复制到剪贴板
+            copyImg(blob, "poster.png").then(() => {
+                emit("poster-complete")
+                MessageUtil.success("分享海报已复制到剪贴板")
+            })
         }
     })
 }

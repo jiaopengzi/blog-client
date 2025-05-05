@@ -6,4 +6,6 @@
  * Description : 剪贴板
  */
 
+export * from "./copy-html"
+export * from "./copy-img"
 export * from "./copy-text"

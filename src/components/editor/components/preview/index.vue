@@ -18,14 +18,13 @@ import "@/assets/scss/highlight.js.jpz.scss"
 import "katex/dist/katex.min.css" // katex 样式
 
 import { useIntersectionObserver } from "@vueuse/core"
-import type { Event } from "clipboard"
-import ClipboardJS from "clipboard" //代码块复制
 import { debounce } from "throttle-debounce"
 import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from "vue"
 
 import { ScrollElementTagHeading } from "@/components/editor/command"
 import { CustomElementVideoPlayer } from "@/customElements"
 import { mountVideoPlayerOnCustomElements } from "@/customElementsMount"
+import { copyText } from "@/utils/clipboard"
 import { shiftArray } from "@/utils/img"
 import { MessageUtil } from "@/utils/message"
 import { myScrollTo } from "@/utils/scrollTo"
@@ -137,15 +136,14 @@ watch(
 )
 
 // 点击事件委托 用于处理 pre 按钮和图片点击事件
-const handleDelegateClick = (event: MouseEvent) => {
+const handleDelegateClick = async (event: MouseEvent) => {
     const target = event.target as HTMLElement
-    // const previewContainer = getParentWithClass(target, 'md-preview')
 
     if (previewRef.value) {
-        if (target.tagName.toLowerCase() === "button") {
+        if (target.tagName.toLowerCase() === "button" && target.classList.contains("copy-button")) {
             // pre 按钮
-            const preElement = target.nextElementSibling as HTMLElement
-            handlePreClick(preElement)
+            const preElement = target.nextElementSibling as HTMLPreElement
+            await handlePreCopy(preElement)
         } else if (target.tagName.toLowerCase() === "img" && "src" in target) {
             // img 图片
             const imgElement = target as HTMLImageElement
@@ -154,10 +152,16 @@ const handleDelegateClick = (event: MouseEvent) => {
     }
 }
 
-// pre 按钮 点击
-const handlePreClick = (preElement: HTMLElement) => {
-    if (preElement) {
-        preElement.click()
+// 复制代码
+const handlePreCopy = async (preElement: HTMLPreElement) => {
+    if (!preElement) return
+    const textContent = preElement.textContent
+    if (textContent) {
+        // 复制文本到剪贴板
+        await copyText(textContent.trim())
+        MessageUtil.success("已复制到剪贴板！")
+    } else {
+        MessageUtil.error("复制失败，内容为空！")
     }
 }
 
@@ -231,41 +235,6 @@ watch(
         navigateToHeading(newIndex)
     },
 )
-
-// 初始化 ClipboardJS 的复制代码函数
-const initializeClipboard = () => {
-    const clipboard = new ClipboardJS(".copy-button", {
-        text: (trigger: Element) => {
-            // 获取对应 pre 元素的文本内容
-            const preElement = trigger.nextElementSibling
-
-            // 添加条件检查，确保 preElement 和 preElement.textContent 不为 null
-            if (preElement && preElement.textContent !== null) {
-                return preElement.textContent.trim()
-            } else {
-                return ""
-            }
-        },
-    })
-
-    clipboard.on("success", (e: Event) => {
-        // 处理成功的反馈（例如显示提示信息）
-        MessageUtil.success("已复制到剪贴板！")
-        // console.log('已复制到剪贴板！')
-        // console.info('Action:', e.action)
-        // console.info('Text:', e.text)
-        // console.info('Trigger:', e.trigger)
-        e.clearSelection()
-    })
-
-    clipboard.on("error", (e: ClipboardEvent) => {
-        // 处理错误的反馈
-        MessageUtil.error("复制到剪贴板失败！")
-        console.error("复制到剪贴板失败:", e)
-        // console.error('Action:', e.action)
-        // console.error('Trigger:', e.trigger)
-    })
-}
 
 // 预览容器的 top clientHeight scrollHeight
 const previewRefRectTop = ref(0)
@@ -370,7 +339,6 @@ watch(
 // 初始化
 onMounted(async () => {
     initializeCssVariable() // 初始化 css 变量
-    initializeClipboard() // 初始化剪切板
 
     await nextTick(() => {
         // 获取预览容器的 top 值

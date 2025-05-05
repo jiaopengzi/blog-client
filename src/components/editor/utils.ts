@@ -11,6 +11,7 @@ import html2canvas from "html2canvas"
 
 import { CustomElementAttributes, CustomElementVideoPlayer } from "@/customElements"
 import createMarked from "@/pkg/marked/new-marked"
+import { copyHtml } from "@/utils/clipboard"
 import { HasParentByClass } from "@/utils/getParentByClass"
 import { MessageUtil } from "@/utils/message"
 
@@ -462,44 +463,72 @@ function applyInlineStyles(el: HTMLElement | SVGElement) {
     })
 }
 
+// /**
+//  * @description: 复制带有自定义样式的内容
+//  * @param element 要复制的元素
+//  */
+// export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
+//     try {
+//         // 将 katex 公式转成图片
+//         await katexToImage(element)
+//         // 将外部样式应用为内联样式
+//         applyInlineStyles(element)
+
+//         // 获取带有内联样式的 HTML 字符串
+//         const html = element.innerHTML
+//         console.log("============>html", html)
+
+//         // if (window.location.protocol === 'https:' && typeof ClipboardItem !== 'undefined') {
+//         if (typeof ClipboardItem !== "undefined") {
+//             // 创建一个包含要复制 HTML 的 blob
+//             console.log("新复制api")
+//             const contentNoStyle = new Blob([html], { type: "text/plain" })
+//             const contentWithStyle = new Blob([html], { type: "text/html" })
+
+//             // 使用 clipboardItem 设置格式和数据
+//             const clipboardItemInput = new ClipboardItem({
+//                 "text/plain": contentNoStyle,
+//                 "text/html": contentWithStyle,
+//             })
+
+//             // 写入剪贴板
+//             await navigator.clipboard.write([clipboardItemInput])
+//             MessageUtil.success("内容已复制到剪贴板")
+//         } else {
+//             console.log("老复制api")
+//             const textArea = document.createElement("textarea")
+//             textArea.style.position = "fixed"
+//             textArea.style.top = "0"
+//             textArea.style.left = "0"
+//             textArea.value = html
+//             document.body.appendChild(textArea)
+//             textArea.focus()
+//             textArea.select()
+//             try {
+//                 const successful = document.execCommand("copy")
+//                 const msg = successful ? "内容已复制到剪贴板" : "无法复制内容0"
+//                 if (successful) {
+//                     MessageUtil.success(msg)
+//                 } else {
+//                     MessageUtil.error(msg)
+//                 }
+//             } catch (err) {
+//                 console.error("无法复制内容1", err)
+//                 MessageUtil.error("无法复制内容1")
+//             } finally {
+//                 document.body.removeChild(textArea)
+//             }
+//         }
+//     } catch (err) {
+//         console.error("无法复制内容2", err)
+//         MessageUtil.error("无法复制内容2")
+//     }
+// }
+
 /**
  * @description: 复制带有自定义样式的内容
  * @param element 要复制的元素
  */
-// export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
-//   try {
-//     // 将 katex 公式转成图片
-//     await katexToImage(element)
-//     // 将外部样式应用为内联样式
-//     applyInlineStyles(element)
-
-//     // 获取带有内联样式的 HTML 字符串
-//     const html = element.innerHTML
-//     // console.log('html', html)
-
-//     if (typeof ClipboardItem !== 'undefined') {
-//       // 创建一个包含要复制 HTML 的 blob
-//       const contentNoStyle = new Blob([html], { type: 'text/plain' })
-//       const contentWithStyle = new Blob([html], { type: 'text/html' })
-
-//       // 使用 clipboardItem 设置格式和数据
-//       const clipboardItemInput = new ClipboardItem({
-//         'text/plain': contentNoStyle,
-//         'text/html': contentWithStyle,
-//       })
-
-//       // 写入剪贴板
-//       await navigator.clipboard.write([clipboardItemInput])
-//       MessageUtil.success( '内容已复制到剪贴板')
-//     } else {
-//       MessageUtil.warning( '请升级你的浏览器以获得更好的复制功能支持')
-//     }
-//   } catch (err) {
-//     console.error('无法复制内容', err)
-//     MessageUtil.error( '无法复制内容')
-//   }
-// }
-
 export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
     try {
         // 将 katex 公式转成图片
@@ -509,48 +538,10 @@ export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
 
         // 获取带有内联样式的 HTML 字符串
         const html = element.innerHTML
+        // console.log("============>html", html)
 
-        // if (window.location.protocol === 'https:' && typeof ClipboardItem !== 'undefined') {
-        if (typeof ClipboardItem !== "undefined") {
-            // 创建一个包含要复制 HTML 的 blob
-            console.log("新复制api")
-            const contentNoStyle = new Blob([html], { type: "text/plain" })
-            const contentWithStyle = new Blob([html], { type: "text/html" })
-
-            // 使用 clipboardItem 设置格式和数据
-            const clipboardItemInput = new ClipboardItem({
-                "text/plain": contentNoStyle,
-                "text/html": contentWithStyle,
-            })
-
-            // 写入剪贴板
-            await navigator.clipboard.write([clipboardItemInput])
-            MessageUtil.success("内容已复制到剪贴板")
-        } else {
-            console.log("老复制api")
-            const textArea = document.createElement("textarea")
-            textArea.style.position = "fixed"
-            textArea.style.top = "0"
-            textArea.style.left = "0"
-            textArea.value = html
-            document.body.appendChild(textArea)
-            textArea.focus()
-            textArea.select()
-            try {
-                const successful = document.execCommand("copy")
-                const msg = successful ? "内容已复制到剪贴板" : "无法复制内容0"
-                if (successful) {
-                    MessageUtil.success(msg)
-                } else {
-                    MessageUtil.error(msg)
-                }
-            } catch (err) {
-                console.error("无法复制内容1", err)
-                MessageUtil.error("无法复制内容1")
-            } finally {
-                document.body.removeChild(textArea)
-            }
-        }
+        await copyHtml(html) // 使用 clipboard 复制 html 内容
+        MessageUtil.success("内容已复制到剪贴板")
     } catch (err) {
         console.error("无法复制内容2", err)
         MessageUtil.error("无法复制内容2")

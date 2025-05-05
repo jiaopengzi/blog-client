@@ -19,6 +19,7 @@ import { queryKey } from "@/components/hooks/useMedia/types"
 import { useParams } from "@/components/hooks/useParams"
 import { RouteNames } from "@/router"
 import { LocalStorageKey } from "@/stores/local"
+import { copyText } from "@/utils/clipboard"
 import { isVideo } from "@/utils/isVideo"
 import { MessageUtil } from "@/utils/message"
 
@@ -133,29 +134,13 @@ export function useMedia() {
     }
 
     // 点击图片复制链接
-    const clickRowByPicture = (row: TableData) => {
+    const clickRowByPicture = async (row: TableData) => {
         if ("url_belong" in row && "path" in row && row.url_belong && row.path) {
             const url = row.url_belong + row.path
-            if (typeof ClipboardItem !== "undefined") {
-                console.info("新版复制API")
-                navigator.clipboard.writeText(url).then(() => {
-                    MessageUtil.success("复制成功", 3000)
-                })
-            } else {
-                console.info("旧版复制API")
-                // 使用 execCommand
-                const input = document.createElement("input")
-                input.style.position = "fixed"
-                input.style.top = "0"
-                input.style.left = "0"
-                input.style.opacity = "0"
-                input.value = url
-                document.body.appendChild(input)
-                input.select()
-                document.execCommand("copy")
-                document.body.removeChild(input)
+            // 复制链接到剪贴板
+            await copyText(url).then(() => {
                 MessageUtil.success("复制成功", 3000)
-            }
+            })
         }
     }
 
