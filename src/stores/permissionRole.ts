@@ -14,6 +14,8 @@ import { getRolesAPI, type RoleWithLimit } from "@/api/permissionRole/role"
 import { ResponseCode } from "@/api/response"
 import { kebabToPascalCase } from "@/utils/namingConversion"
 
+import { LocalStorageKey } from "./local"
+
 // 权限枚举
 export enum PermissionNames {
     AddMediaByPost = "AddMediaByPost",
@@ -114,6 +116,26 @@ export const usePermissionRoleStore = defineStore("permissionRole", {
         async hasPermissionByServer(permission: PermissionNames): Promise<boolean> {
             const res = await hasPermissionAPI({ permission_name: permission })
             return res.data.code === ResponseCode.HasPermission
+        },
+
+        // 判断是否有权限
+        async postDetailEditEnable(isFromServer = false): Promise<boolean> {
+            if (!isFromServer) {
+                // 首先检查本地是否有权限
+                const localStorageData = localStorage.getItem(LocalStorageKey.PostDetailEditEnable)
+                if (localStorageData) {
+                    const flag = JSON.parse(localStorageData)
+                    if (typeof flag === "boolean") {
+                        return flag
+                    }
+                }
+            }
+
+            // 如果没有, 则从服务器获取权限, 并存入本地
+            const flag = await this.hasPermissionByServer(PermissionNames.LoginAdmin)
+            localStorage.setItem(LocalStorageKey.PostDetailEditEnable, JSON.stringify(flag))
+
+            return flag
         },
 
         // 开发环境下检查权限枚举是否有遗漏

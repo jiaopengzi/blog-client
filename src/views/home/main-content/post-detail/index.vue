@@ -15,7 +15,6 @@
         </div>
         <section class="post-detail-bg">
             <div class="post-detail">
-                <DetailInteraction direction="horizontal" :items="interactionItems" @click-item="handleClickInteraction" />
                 <PostMeta :meta="postMeta" @immersion-read="toggle" @author-id="clickAuthorId" @post-id="editPost" />
                 <HtmlPreview
                     ref="previewRef"
@@ -31,6 +30,7 @@
                     @update-is-user-scroll="handleUpdateIsUserScrollPreview"
                     @commit-heading-map="updateHeadingMap"
                 />
+                <DetailInteraction class="interaction-bottom" direction="horizontal" :items="interactionItems" @click-item="handleClickInteraction" />
             </div>
         </section>
     </section>
@@ -158,12 +158,14 @@ const handleClickInteraction = (val: InteractionIcon) => {
             isShowPosterShare.value = true // 显示分享海报
             break
         case "link":
-            if (!head.value.url) {
+            if (!head.value.url || head.value.url === "") {
                 MessageUtil.warning("链接不存在")
                 return
             }
+            // 构造需要复制的text
+            const text = `${headMeta.value.title}\n${head.value.url}`
             // 复制链接到剪贴板
-            copyText(head.value.url)
+            copyText(text)
                 .then(() => {
                     MessageUtil.success("复制成功")
                 })
@@ -310,6 +312,11 @@ onBeforeMount(async () => {
     position: fixed;
     top: -1000px;
     left: -1000px;
+}
+
+.interaction-bottom {
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 @include respond-to("pc") {

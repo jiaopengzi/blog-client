@@ -22,13 +22,12 @@ export interface APPOptionForm {
     post_text_truncate: number // 文章文字截断 100字
     post_summary_truncate: number // 文章摘要截断 80字
     history_today_enable: boolean // 历史上今天
-    reading_mode_enable: boolean // 阅读模式
+    immersion_read_enable: boolean // 阅读模式
+    read_time_enable: boolean // 阅读时间
     word_count_enable: boolean // 文章字数
-    reading_time_enable: boolean // 阅读时间
-    show_create_time_enable: boolean // 显示创建时间
     show_category_enable: boolean // 显示分类
     show_like_enable: boolean // 显示点赞
-    show_favorite_enable: boolean // 显示收藏
+    show_star_enable: boolean // 显示收藏
     show_tags_enable: boolean // 显示标签
     show_copyright_enable: boolean // 版权信息开启
     show_copyright_info: string // 版权信息
@@ -37,10 +36,9 @@ export interface APPOptionForm {
 
     // 互动相关
     like_enable: boolean // 点赞
-    favorite_enable: boolean // 收藏
-    share_enable: boolean // 分享
-    poster_enable: boolean // 海报
-    link_enable: boolean // 链接
+    star_enable: boolean // 收藏
+    share_poster_enable: boolean // 海报分享
+    link_enable: boolean // 链接分享
 
     // seo 相关
     seo_title: string // seo title

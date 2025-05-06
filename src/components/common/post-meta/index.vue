@@ -38,31 +38,31 @@
             </span>
 
             <!-- 点赞 -->
-            <span v-if="!isZero(metaData.like_count)" class="meta-like meta-item">
+            <span v-if="!isZero(metaData.like_count) && convert(opt.show_like_enable)" class="meta-like meta-item">
                 <j-icon name="like" customClass="meta-icon" />
                 <span class="meta-text">{{ unit(metaData.like_count) }}</span>
             </span>
 
             <!-- 收藏 -->
-            <span v-if="!isZero(meta.star_count)" class="meta-star meta-item">
+            <span v-if="!isZero(meta.star_count) && convert(opt.show_star_enable)" class="meta-star meta-item">
                 <j-icon name="star" customClass="meta-icon" />
                 <span class="meta-text">{{ unit(metaData.star_count) }}</span>
             </span>
 
             <!-- 文章字数 -->
-            <span v-if="!isZero(metaData.words_count)" class="meta-words meta-item">
+            <span v-if="!isZero(metaData.words_count) && convert(opt.word_count_enable)" class="meta-words meta-item">
                 <j-icon name="words" customClass="meta-icon" />
                 <span class="meta-text">{{ unit(metaData.words_count) }}</span>
             </span>
 
             <!-- 阅读时间 -->
-            <span v-if="!isZero(metaData.words_count) && metaData.is_show_read_time" class="meta-read-time meta-item">
+            <span v-if="!isZero(metaData.words_count) && convert(opt.word_count_enable)" class="meta-read-time meta-item">
                 <j-icon name="hourglass" customClass="meta-icon" />
                 <span class="meta-text">{{ takeTime }}</span>
             </span>
 
             <!-- 阅读模式 -->
-            <span class="meta-item" v-if="metaData.is_immersion_read">
+            <span class="meta-item" v-if="metaData.is_immersion_read && convert(opt.immersion_read_enable)">
                 <el-button class="immersion-read" plain @click="immersionRead">沉浸阅读</el-button>
             </span>
 
@@ -77,9 +77,12 @@
 </template>
 
 <script lang="ts" setup>
+import { storeToRefs } from "pinia"
 import { computed } from "vue"
 
+import { convert } from "@/api/setting/getAPPOption"
 import AvatarInitials from "@/components/common/avatar-initials"
+import { useOptionsStore } from "@/stores/options"
 import { formatTime } from "@/utils/dateTime"
 import { isZero, unit } from "@/utils/unit"
 
@@ -97,6 +100,10 @@ const emit = defineEmits<{
     (event: "author-id", val: string): void
     (event: "immersion-read"): void
 }>()
+
+// 获取全局配置
+const optionsStore = useOptionsStore()
+const { app_options: opt } = storeToRefs(optionsStore)
 
 // 处理默认值
 const metaData = computed(() => {

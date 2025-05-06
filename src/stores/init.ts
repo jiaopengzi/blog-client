@@ -25,5 +25,6 @@ export const initStores = async (): Promise<void> => {
     deviceStore.updateDevice()
     await optionsStore.update(!isLoadedOptions)
     await permissionRoleStore.update(!isLoadedPermissionRole)
+    await permissionRoleStore.postDetailEditEnable(true)
     await userStore.getUserInfoByToken(!isLogin)
 }

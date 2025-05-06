@@ -16,11 +16,13 @@ import { ResponseCode } from "@/api/response"
 import { type HeadProps } from "@/components/common/head-tag"
 import { type PostMetaProps } from "@/components/common/post-meta"
 import { EditorStateManager } from "@/components/editor"
+import { usePermissionRoleStore } from "@/stores/permissionRole"
 import { updateHead } from "@/utils/updateHead"
 
 export function useGetData(manager: EditorStateManager) {
     const postMeta = ref<PostMetaProps>({}) // 文章元数据
     const headMeta = ref<HeadProps>({}) // 文章头部信息
+    const permissionRoleStore = usePermissionRoleStore()
 
     const getPostDetail = async (req: ViewPostByIDRequest) => {
         const res = await viewPostByIDAPI(req)
@@ -45,8 +47,7 @@ export function useGetData(manager: EditorStateManager) {
                     avatar_size: 20, // 头像大小，默认 24px
                     author_id: postData.author_info.id,
                     is_show_read_time: true,
-                    // TODO: 判断是否启用作者
-                    is_author_edit: true,
+                    is_author_edit: await permissionRoleStore.postDetailEditEnable(),
                     is_immersion_read: true,
                     interactionStatus: {
                         is_like: false,

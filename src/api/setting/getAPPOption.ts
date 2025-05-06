@@ -9,11 +9,33 @@
 import { OptionType } from "@/api/common"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
+
 // 配置项
 export interface APPOptionItem {
     key: string
     value: string
     type: OptionType
+}
+
+// 根据 APPOptionItem 中的 type 将 value 转换为对应的类型
+export const convert = (item: APPOptionItem): string | number | boolean | object => {
+    switch (item.type) {
+        case OptionType.String:
+            return item.value
+        case OptionType.Number:
+            return parseFloat(item.value)
+        case OptionType.Boolean:
+            return item.value === "true"
+        case OptionType.JSON:
+            try {
+                return JSON.parse(item.value)
+            } catch (e) {
+                console.error("JSON parse error:", e)
+                return {}
+            }
+        default:
+            return item.value
+    }
 }
 
 export interface GetAPPOptionResponse {
@@ -26,13 +48,12 @@ export interface GetAPPOptionResponse {
     post_text_truncate: APPOptionItem // 文章文字截断 100字
     post_summary_truncate: APPOptionItem // 文章摘要截断 80字
     history_today_enable: APPOptionItem // 历史上今天
-    reading_mode_enable: APPOptionItem // 阅读模式
+    immersion_read_enable: APPOptionItem // 沉浸阅读
+    read_time_enable: APPOptionItem // 阅读时间
     word_count_enable: APPOptionItem // 文章字数
-    reading_time_enable: APPOptionItem // 阅读时间
-    show_create_time_enable: APPOptionItem // 显示创建时间
     show_category_enable: APPOptionItem // 显示分类
     show_like_enable: APPOptionItem // 显示点赞
-    show_favorite_enable: APPOptionItem // 显示收藏
+    show_star_enable: APPOptionItem // 显示收藏
     show_tags_enable: APPOptionItem // 显示标签
     show_copyright_enable: APPOptionItem // 版权信息开启
     show_copyright_info: APPOptionItem // 版权信息
@@ -41,9 +62,8 @@ export interface GetAPPOptionResponse {
 
     // 互动相关
     like_enable: APPOptionItem // 点赞
-    favorite_enable: APPOptionItem // 收藏
-    share_enable: APPOptionItem // 分享
-    poster_enable: APPOptionItem // 海报
+    star_enable: APPOptionItem // 收藏
+    share_poster_enable: APPOptionItem // 海报分享
     link_enable: APPOptionItem // 链接
 
     // seo 相关

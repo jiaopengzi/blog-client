@@ -7,13 +7,16 @@
  */
 
 import { storeToRefs } from "pinia"
-import { h, type Reactive, type Ref, watch } from "vue"
+import { type Reactive, type Ref, watch } from "vue"
+import { useRouter } from "vue-router"
 
 import { type ViewPostByIDRequest } from "@/api/post/viewByID"
 import { type QueryParamsOptions } from "@/api/request"
 import { EditorStateManager } from "@/components/editor"
+import { RouteNames } from "@/router"
 import { useBreadcrumbStore } from "@/stores/breadcrumb"
 import { useUserStore } from "@/stores/user"
+import { queryKey as queryKeyWrite } from "@/views/admin/component/main/post-write"
 
 import { useRootUtils } from "../useRootUtils"
 import { useGetData } from "./api"
@@ -24,6 +27,7 @@ export function usePostDetail(
 ) {
     const userStore = useUserStore()
     const { isLogin } = storeToRefs(userStore)
+    const router = useRouter()
 
     // 字符串类型的key
     const stringKeys: StringKeys<ViewPostByIDRequest>[] = ["post_id"]
@@ -87,9 +91,13 @@ export function usePostDetail(
         console.log("============>author", val)
     }
 
-    // 点击文章
+    // 编辑文章
     const editPost = (val: string) => {
-        console.log("============>edit", val)
+        // 编辑文章
+        router.push({
+            name: RouteNames.PostWrite,
+            query: { [queryKeyWrite.ID]: val },
+        })
     }
 
     // 更新面包屑

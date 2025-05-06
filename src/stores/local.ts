@@ -17,4 +17,5 @@ export enum LocalStorageKey {
     OptionsNavList = "options_nav_list", // 导航列表
     OptionsNavObj = "options_nav_obj", // 导航object
     OptionsFooterInfo = "options_footer_info", // 底部信息
+    PostDetailEditEnable = "post_detail_edit_enable", // 文章详情编辑是否启用
 }
