@@ -15,7 +15,7 @@ interface Props {
     badgeType: "hot" | "new" | ""
 }
 
-const props = defineProps<Props>()
+const { title, content, badgeType } = defineProps<Props>()
 </script>
 
 <style scoped lang="scss">

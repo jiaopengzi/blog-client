@@ -21,7 +21,7 @@ import { RouteNames } from "../types"
  * @param to - 即将进入的路由对象
  * @param from - 当前导航正要离开的路由对象
  */
-export const homeMiddleware = async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
+export const homeMiddleware = async (to: RouteLocationNormalized) => {
     if (to.name === RouteNames.Home) {
         const statusStore = useStatusStore()
         const optionsStore = useOptionsStore()

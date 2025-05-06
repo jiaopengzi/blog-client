@@ -5,7 +5,6 @@
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * @Description  : 认证中间件
  */
-
 import { type RouteLocationNormalized } from "vue-router"
 
 import { initStores } from "@/stores/init"
@@ -20,10 +19,9 @@ import { RouteNames } from "../types"
  * 如果已经登录，且访问的页面是登录页，则跳转到首页
  *
  * @param to - 即将进入的路由对象
- * @param from - 当前导航正要离开的路由对象
  * @returns 如果用户没有登录，且访问的页面需要登录，则返回登录页路径；
  */
-export const authMiddleware = async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
+export const authMiddleware = async (to: RouteLocationNormalized) => {
     await initStores() // 初始化所有 store
     const userStore = useUserStore()
 

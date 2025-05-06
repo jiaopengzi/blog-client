@@ -23,13 +23,19 @@ export class BaseCustomElement extends HTMLElement {
     }
 
     // 当属性变化时被调用
-    attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
+    attributeChangedCallback(name: string) {
         if (!BaseCustomElement.observedAttributes.includes(name)) {
             console.warn(`Attribute "${name}" is not allowed.`)
             this.removeAttribute(name)
         }
-        // else {
-        //     console.info(`Attribute "${name}" changed from ${oldValue} to ${newValue}`)
-        // }
     }
+    // // 当属性变化时被调用
+    // attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
+    //     if (!BaseCustomElement.observedAttributes.includes(name)) {
+    //         console.warn(`Attribute "${name}" is not allowed.`)
+    //         this.removeAttribute(name)
+    //     } else {
+    //         console.info(`Attribute "${name}" changed from ${oldValue} to ${newValue}`)
+    //     }
+    // }
 }

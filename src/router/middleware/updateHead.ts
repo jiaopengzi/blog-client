@@ -11,7 +11,7 @@ import { type RouteLocationNormalized } from "vue-router"
 import { type HeadProps } from "@/components/common/head-tag"
 import { updateHead } from "@/utils/updateHead"
 
-export const updateHeadMiddleware = async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
+export const updateHeadMiddleware = async (to: RouteLocationNormalized) => {
     // 获取协议（例如 "http:" 或 "https:"）
     const protocol = window.location.protocol
 

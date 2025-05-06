@@ -6,8 +6,6 @@
  * @Description  : 页面关闭事件
  */
 
-import { type RouteLocationNormalized } from "vue-router"
-
 import { LocalStorageKey } from "@/stores/local"
 import { useUserStore } from "@/stores/user"
 
@@ -16,7 +14,7 @@ import { useUserStore } from "@/stores/user"
  *
  * 参考：https://developer.mozilla.org/zh-CN/docs/Web/API/Window/beforeunload_event
  */
-export const beforeunloadMiddleware = async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
+export const beforeunloadMiddleware = async () => {
     const userStore = useUserStore()
 
     // 监听页面关闭事件,即用户手动修改ULR或关闭页面

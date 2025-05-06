@@ -347,7 +347,7 @@ watch(
 
 // 监控 seo 描述是否是否出现在视口
 const seoDescriptionVisible = ref(false)
-const { stop: stopIntersectionObserver } = useIntersectionObserver(seoDescriptionRef, ([entry], observerElement) => {
+const { stop: stopIntersectionObserver } = useIntersectionObserver(seoDescriptionRef, ([entry]) => {
     seoDescriptionVisible.value = entry?.isIntersecting || false
 })
 
@@ -363,7 +363,7 @@ watch(
 // 更新 slug
 watch(
     () => postInfoForm.id,
-    (newVal, oldVal) => {
+    (newVal) => {
         // 如果 slug 为空，且 id 不为空，则更新 slug
         if (!postInfoForm.slug && newVal) {
             postInfoForm.slug = newVal
@@ -374,7 +374,7 @@ watch(
 // 更新 slug
 watch(
     () => postInfoForm.post_status,
-    (newVal, oldVal) => {
+    (newVal) => {
         // 如果文章状态不为密码，则清空文章密码
         if (newVal !== PostStatusCode.Password) {
             postInfoForm.post_password = ""

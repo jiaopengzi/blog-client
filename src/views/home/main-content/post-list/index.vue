@@ -144,7 +144,7 @@ const isInitialRender = ref(true) // 是否是初始渲染
 onMounted(async () => {
     await nextTick()
 
-    const { stop } = useIntersectionObserver(paginationBlockRef, ([entry], observerElement) => {
+    const { stop } = useIntersectionObserver(paginationBlockRef, ([entry]) => {
         if (isInitialRender.value) {
             // 初次加载时不emit
             isInitialRender.value = false

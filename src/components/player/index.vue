@@ -324,7 +324,7 @@ const updateCueFontSize = () => {
 }
 
 // 监控 video 元素的宽度,设置 ::cue 的字体大小
-useResizeObserver(videoContainerRef, (entries) => {
+useResizeObserver(videoContainerRef, () => {
     // const entry = entries[0]
     // const { width, height } = entry.contentRect
     // console.log(`尺寸变化了 width: ${width}, height: ${height}`)

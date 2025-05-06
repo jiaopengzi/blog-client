@@ -6,8 +6,6 @@
  * @Description  : 编辑器中间件
  */
 
-import { type RouteLocationNormalized } from "vue-router"
-
 import { useUserStore } from "@/stores/user"
 import { confirmCommon } from "@/utils/confirm"
 
@@ -18,7 +16,7 @@ import { confirmCommon } from "@/utils/confirm"
  * @param from - 当前导航正要离开的路由对象
  * @returns 如果用户正在编辑，且点击确认离开编辑页面，则返回 true；否则返回 false
  */
-export const editorMiddleware = async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
+export const editorMiddleware = async () => {
     const userStore = useUserStore()
 
     if (userStore.isEditing) {
@@ -38,6 +36,7 @@ export const editorMiddleware = async (to: RouteLocationNormalized, from: RouteL
             )
             return true
         } catch (e) {
+            console.error("用户取消了离开编辑页面的操作", e)
             return false
         }
     } else {

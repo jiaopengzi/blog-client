@@ -299,4 +299,4 @@ export function generateAdminMenuItemMapWithIndex(menuItemMap: AdminMenuItemMap,
 export const adminMenuItemMapWithIndex = generateAdminMenuItemMapWithIndex(adminMenuItemMap as AdminMenuItemMap, "admin")
 
 // 根据 adminMenuItemMapWithIndex 将 index 作为 key 内容作为 value 生成菜单项映射表
-export const adminMenuItemMapWithIndexMap = Object.fromEntries(Object.entries(adminMenuItemMapWithIndex).map(([key, value]) => [value.index, value]))
+export const adminMenuItemMapWithIndexMap = Object.fromEntries(Object.entries(adminMenuItemMapWithIndex).map(([, value]) => [value.index, value]))
