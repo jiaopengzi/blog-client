@@ -32,6 +32,8 @@
                 />
                 <DetailInteraction class="interaction-bottom" direction="horizontal" :items="interactionItems" @click-item="handleClickInteraction" />
             </div>
+            <DetailCopyright class="copyright-bottom" :data="copyright" />
+            <DetailPrevNext class="prev-next" :data="prevNext" @post-id="handlePostId" />
         </section>
     </section>
     <PosterShare class="poster-share" v-if="isShowPosterShare" :data="dataPosterShare" @poster-complete="handPosterComplete" />
@@ -57,7 +59,9 @@ import { useUserStore } from "@/stores/user"
 import { copyText } from "@/utils/clipboard"
 import { MessageUtil } from "@/utils/message"
 
+import DetailCopyright from "./component/copyright"
 import DetailInteraction, { type InteractionIcon, type InteractionItemProps } from "./component/interaction"
+import DetailPrevNext from "./component/prev-next"
 
 defineOptions({ name: "PostDetail" })
 
@@ -94,7 +98,7 @@ const { isLogin } = storeToRefs(userStore)
 // 请求参数
 const postIdReq = reactive<ViewPostByIDRequest>({} as ViewPostByIDRequest)
 
-const { manager, state, postMeta, headMeta, clickAuthorId, editPost, updatePostDetail, updateRouterPush, setPostLike, setPostStar } = usePostDetail(
+const { manager, state, postMeta, copyright, prevNext, clickAuthorId, editPost, updatePostDetail, updateRouterPush, setPostLike, setPostStar } = usePostDetail(
     postIdReq,
     anchorHash,
 )
@@ -134,7 +138,7 @@ const handPosterComplete = () => {
 const dataPosterShare = computed(() => {
     return {
         logoSrc: app_options.value.favicon.value,
-        imgSrc: headMeta.value.image,
+        imgSrc: head.value.image,
         titleText: postMeta.value.post_title,
         urlText: head.value.url,
     }
@@ -163,7 +167,7 @@ const handleClickInteraction = (val: InteractionIcon) => {
                 return
             }
             // 构造需要复制的text
-            const text = `${headMeta.value.title}\n${head.value.url}`
+            const text = `${head.value.title}\n${head.value.url}`
             // 复制链接到剪贴板
             copyText(text)
                 .then(() => {
@@ -199,6 +203,11 @@ watch(
         await updateRouterPush()
     },
 )
+
+const handlePostId = async (postId: string) => {
+    await statusStore.setAnchorHash("") // 清空锚点
+    await statusStore.setPostId(postId) // 设置文章id
+}
 
 // 监听文章详情
 watch(

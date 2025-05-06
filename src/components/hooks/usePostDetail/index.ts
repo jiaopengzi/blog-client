@@ -52,12 +52,14 @@ export function usePostDetail(
 
     const {
         postMeta, // 文章元数据
-        headMeta, // 文章头部信息
+        copyright, // 版权信息
+        prevNext, // 上一篇和下一篇文章信息
         getPostDetail, // 获取文章详情
         updatePostInteraction, // 更新文章交互状态
         setPostLike, // 设置文章点赞
         setPostStar, // 设置文章收藏
         updateHeadInfo, // 更新头部信息
+        getPrevNext, // 获取上一篇和下一篇文章信息
     } = useGetData(manager)
 
     const {
@@ -71,6 +73,7 @@ export function usePostDetail(
     const updateByRoute = async () => {
         await updateQueryParams()
         await getPostDetail(queryParams)
+        await getPrevNext({ post_id: queryParams.post_id })
         if (isLogin.value) {
             await updatePostInteraction(queryParams)
         }
@@ -123,7 +126,8 @@ export function usePostDetail(
         manager, // 详情页状态管理器
         state, // 编辑器状态
         postMeta, // 文章元数据
-        headMeta, // 文章头部信息
+        copyright, // 版权信息
+        prevNext, // 上一篇和下一篇文章信息
         clickAuthorId, // 点击作者
         editPost, // 编辑文章
         setPostLike, // 设置文章点赞

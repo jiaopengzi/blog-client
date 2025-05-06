@@ -6,9 +6,9 @@
  * @Description  : 页面关闭事件
  */
 
+import { watch } from "vue"
 import { type RouteLocationNormalized } from "vue-router"
 
-import { LocalStorageKey } from "@/stores/local"
 import { useUserStore } from "@/stores/user"
 
 /**
@@ -21,23 +21,22 @@ export const beforeunloadMiddleware = async (to: RouteLocationNormalized, from: 
 
     // 监听页面关闭事件,即用户手动修改ULR或关闭页面
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-        if (userStore.isEditing) {
-            event.preventDefault()
-            event.returnValue = "确认离开当前未保存编辑页面吗？"
-        }
-
-        // 清除需要处理的本地存储
-        localStorage.removeItem(LocalStorageKey.OptionsApp)
-        localStorage.removeItem(LocalStorageKey.OptionsHeadInfo)
-        localStorage.removeItem(LocalStorageKey.OptionsNavList)
-        localStorage.removeItem(LocalStorageKey.OptionsNavObj)
-        localStorage.removeItem(LocalStorageKey.OptionsFooterInfo)
-        localStorage.removeItem(LocalStorageKey.PostDetailEditEnable)
+        event.preventDefault()
+        event.returnValue = ""
     }
 
     // 监听是否编辑状态, 如果用户正在编辑, 跳转到其他页面时, 提示是否离开编辑页面
     // 根据状态添加或移除 beforeunload 事件监听
-    window.addEventListener("beforeunload", handleBeforeUnload)
+    watch(
+        () => userStore.isEditing,
+        (newVal) => {
+            if (newVal) {
+                window.addEventListener("beforeunload", handleBeforeUnload)
+            } else {
+                window.removeEventListener("beforeunload", handleBeforeUnload)
+            }
+        },
+    )
 
     return true
 }

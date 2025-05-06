@@ -253,7 +253,10 @@ onBeforeMount(async () => {
     }
 
     .el-main {
-        padding: 0px;
+        padding-left: 0;
+        padding-top: 0;
+        padding-right: 0;
+        padding-bottom: 10px;
     }
 
     .el-aside {
@@ -270,6 +273,7 @@ onBeforeMount(async () => {
         padding-left: 0;
         padding-top: 0;
         padding-right: 0;
+        padding-bottom: 10px;
     }
 }
 </style>

@@ -82,6 +82,7 @@ export enum ResponseCode {
     PostStarRepeat = 2031, // 文章收藏或者取消收藏重复操作
     PostStarCancelSuccess = 2032, // 文章取消收藏成功
     PostInteractionStatusSuccess = 2033, // 获取文章交互状态成功
+    PostPrevNextSuccess = 2034, // 获取文章上一篇下一篇成功
 
     // 文章标签相关
     PostTagInsertSuccess = 2100, // 插入文章标签成功

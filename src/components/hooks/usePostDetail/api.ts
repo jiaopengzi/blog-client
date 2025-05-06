@@ -6,22 +6,40 @@
  * @Description  : 数据请求
  */
 
-import { ref } from "vue"
+import { storeToRefs } from "pinia"
+import { ref, watch } from "vue"
 
 import { type InteractionRequest, postInteractionAPI } from "@/api/post/interaction"
 import { type PostLikeRequest, setPostLikeAPI } from "@/api/post/like"
+import { prevNextPostAPI, type PrevNextRequest, type PrevNextResponse } from "@/api/post/prevNext"
 import { type PostStarRequest, setPostStarAPI } from "@/api/post/star"
 import { viewPostByIDAPI, type ViewPostByIDRequest } from "@/api/post/viewByID"
 import { ResponseCode } from "@/api/response"
-import { type HeadProps } from "@/components/common/head-tag"
 import { type PostMetaProps } from "@/components/common/post-meta"
 import { EditorStateManager } from "@/components/editor"
+import { useOptionsStore } from "@/stores/options"
 import { usePermissionRoleStore } from "@/stores/permissionRole"
 import { updateHead } from "@/utils/updateHead"
+import { type CopyrightProps } from "@/views/home/main-content/post-detail/component/copyright"
 
 export function useGetData(manager: EditorStateManager) {
     const postMeta = ref<PostMetaProps>({}) // 文章元数据
-    const headMeta = ref<HeadProps>({}) // 文章头部信息
+
+    const optionsStore = useOptionsStore()
+    const { head } = storeToRefs(optionsStore)
+
+    const copyright = ref<CopyrightProps>({
+        title: "",
+        url: "",
+        author: {
+            name: "",
+            avatar: "",
+            size: 40, // 头像大小
+        },
+    }) // 版权信息
+
+    const prevNext = ref<PrevNextResponse>({} as PrevNextResponse) // 上一篇和下一篇文章信息
+
     const permissionRoleStore = usePermissionRoleStore()
 
     const getPostDetail = async (req: ViewPostByIDRequest) => {
@@ -56,21 +74,34 @@ export function useGetData(manager: EditorStateManager) {
                 }
 
                 // 文章头部信息
-                headMeta.value = {
-                    title: postData.post_title,
-                    description: postData.seo_description,
-                    keywords: postData.seo_keywords,
-                    type: "article",
-                    locale: "zh-CN",
-                    author: postData.author_info.user_display_name,
-                    image: postData.thumbnail,
-                    siteName: postData.post_title,
-                    // url 已经在路由中间件中自动设置
-                    releaseDate: postData.updated_at,
-                }
+                head.value.title = postData.post_title
+                head.value.description = postData.seo_description
+                head.value.keywords = postData.seo_keywords
+                head.value.type = "article"
+                head.value.locale = "zh-CN"
+                head.value.author = postData.author_info.user_display_name
+                head.value.image = postData.thumbnail
+                head.value.siteName = postData.post_title
+                // url 已经在路由中间件 head 组件 中自动设置
+                head.value.releaseDate = postData.updated_at
+
+                // 版权信息
+                copyright.value.title = postData.post_title
+                copyright.value.author.name = postData.author_info.user_display_name
+                copyright.value.author.avatar = postData.author_info.user_avatar
             }
         }
     }
+
+    // 更新 copyright 信息中的 url
+    watch(
+        () => head.value,
+        (newVal) => {
+            if (newVal.url) {
+                copyright.value.url = newVal.url
+            }
+        },
+    )
 
     // 更新文章交互状态
     const updatePostInteraction = async (req: InteractionRequest) => {
@@ -112,16 +143,26 @@ export function useGetData(manager: EditorStateManager) {
     }
 
     const updateHeadInfo = async () => {
-        await updateHead(headMeta.value)
+        await updateHead(head.value)
+    }
+
+    // 获取上一篇和下一篇文章信息
+    const getPrevNext = async (req: PrevNextRequest) => {
+        const res = await prevNextPostAPI(req)
+        if (res.data.code === ResponseCode.PostPrevNextSuccess) {
+            prevNext.value = res.data.data
+        }
     }
 
     return {
         postMeta, // 文章元数据
-        headMeta, // 文章头部信息
+        copyright, // 版权信息
+        prevNext, // 上一篇和下一篇文章信息
         getPostDetail, // 获取文章详情
         updatePostInteraction, // 更新文章交互状态
         setPostLike, // 设置文章点赞
         setPostStar, // 设置文章收藏
         updateHeadInfo, // 更新头部信息
+        getPrevNext, // 获取上一篇和下一篇文章信息
     }
 }

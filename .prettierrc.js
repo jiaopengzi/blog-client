@@ -8,7 +8,7 @@ export default {
     semi: false, // 不使用分号
     tabWidth: 4, // 使用4个空格缩进
     singleQuote: false, // 使用单引号
-    printWidth: 160, // 每行最大长度为100个字符
+    printWidth: 160, // 每行最大长度为160个字符
     trailingComma: "all", // 保留尾随逗号
     useTabs: false, // 制表符使用空格
     endOfLine: "auto", // 结尾换行符
