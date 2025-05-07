@@ -30,6 +30,7 @@
                     @update-is-user-scroll="handleUpdateIsUserScrollPreview"
                     @commit-heading-map="updateHeadingMap"
                 />
+                <DetailBottomSame class="bottom-same" />
                 <DetailInteraction class="interaction-bottom" direction="horizontal" :items="interactionItems" @click-item="handleClickInteraction" />
                 <DetailUpdatedAt :data="updatedAt" />
             </div>
@@ -63,6 +64,7 @@ import { useUserStore } from "@/stores/user"
 import { copyText } from "@/utils/clipboard"
 import { MessageUtil } from "@/utils/message"
 
+import DetailBottomSame from "./component/bottom-same"
 import DetailCategoryTag from "./component/category-tag"
 import DetailCopyright from "./component/copyright"
 import DetailInteraction, { type InteractionIcon, type InteractionItemProps } from "./component/interaction"
