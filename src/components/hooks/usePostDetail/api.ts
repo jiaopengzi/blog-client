@@ -20,7 +20,9 @@ import { EditorStateManager } from "@/components/editor"
 import { useOptionsStore } from "@/stores/options"
 import { usePermissionRoleStore } from "@/stores/permissionRole"
 import { updateHead } from "@/utils/updateHead"
+import { type CategoryTagProps } from "@/views/home/main-content/post-detail/component/category-tag"
 import { type CopyrightProps } from "@/views/home/main-content/post-detail/component/copyright"
+import { type UpdatedAtProps } from "@/views/home/main-content/post-detail/component/updated-at"
 
 export function useGetData(manager: EditorStateManager) {
     const postMeta = ref<PostMetaProps>({}) // 文章元数据
@@ -39,6 +41,16 @@ export function useGetData(manager: EditorStateManager) {
     }) // 版权信息
 
     const prevNext = ref<PrevNextResponse>({} as PrevNextResponse) // 上一篇和下一篇文章信息
+    const updatedAt = ref<UpdatedAtProps>({
+        time: "",
+        timeZone: "Asia/Shanghai",
+        formatStr: "YYYY-MM-DD HH:mm:ss",
+    }) // 更新时间
+
+    const categoryTag = ref<CategoryTagProps>({
+        categories: [], // 文章分类
+        tags: [], // 文章标签
+    })
 
     const permissionRoleStore = usePermissionRoleStore()
 
@@ -89,6 +101,15 @@ export function useGetData(manager: EditorStateManager) {
                 copyright.value.title = postData.post_title
                 copyright.value.author.name = postData.author_info.user_display_name
                 copyright.value.author.avatar = postData.author_info.user_avatar
+
+                // 如果更新时间和创建时间不一致，则更新时间显示为更新时间
+                if (postData.created_at !== postData.updated_at) {
+                    updatedAt.value.time = postData.updated_at
+                }
+
+                // 更新分类和标签
+                categoryTag.value.categories = postData.categories
+                categoryTag.value.tags = postData.tags
             }
         }
     }
@@ -158,6 +179,8 @@ export function useGetData(manager: EditorStateManager) {
         postMeta, // 文章元数据
         copyright, // 版权信息
         prevNext, // 上一篇和下一篇文章信息
+        updatedAt, // 更新时间
+        categoryTag, // 分类和标签
         getPostDetail, // 获取文章详情
         updatePostInteraction, // 更新文章交互状态
         setPostLike, // 设置文章点赞

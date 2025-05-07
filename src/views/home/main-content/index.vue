@@ -36,6 +36,8 @@
                     :heading-show-current-index="state.headingShowCurrentIndex"
                     :time="clickTocTime"
                     @state="handleState"
+                    @click-category="clickCategory"
+                    @click-tag="clickTag"
                     @commit-anchor-hash-index="handleAnchorHashIndex"
                 />
             </el-main>

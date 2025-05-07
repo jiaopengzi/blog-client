@@ -31,7 +31,9 @@
                     @commit-heading-map="updateHeadingMap"
                 />
                 <DetailInteraction class="interaction-bottom" direction="horizontal" :items="interactionItems" @click-item="handleClickInteraction" />
+                <DetailUpdatedAt :data="updatedAt" />
             </div>
+            <DetailCategoryTag class="category-tag-bottom" :data="categoryTag" @click-category="clickCategory" @click-tag="clickTag" />
             <DetailCopyright class="copyright-bottom" :data="copyright" />
             <DetailPrevNext class="prev-next" :data="prevNext" @post-id="handlePostId" />
         </section>
@@ -44,6 +46,8 @@ import { storeToRefs } from "pinia"
 import { computed, type ComputedRef, nextTick, onBeforeMount, onMounted, reactive, ref, useTemplateRef, watch } from "vue"
 
 import { type ViewPostByIDRequest } from "@/api/post/viewByID"
+import { type PostCategory } from "@/api/postCategory/view"
+import { type PostTag } from "@/api/postTag/view"
 import HeadTag from "@/components/common/head-tag"
 import PostMeta from "@/components/common/post-meta"
 import PosterShare from "@/components/common/poster-share"
@@ -59,9 +63,11 @@ import { useUserStore } from "@/stores/user"
 import { copyText } from "@/utils/clipboard"
 import { MessageUtil } from "@/utils/message"
 
+import DetailCategoryTag from "./component/category-tag"
 import DetailCopyright from "./component/copyright"
 import DetailInteraction, { type InteractionIcon, type InteractionItemProps } from "./component/interaction"
 import DetailPrevNext from "./component/prev-next"
+import DetailUpdatedAt from "./component/updated-at"
 
 defineOptions({ name: "PostDetail" })
 
@@ -78,6 +84,8 @@ const {
 const emit = defineEmits<{
     (event: "state", val: EditorState): void
     (event: "commit-anchor-hash-index", val: number): void
+    (event: "click-category", val: PostCategory): void
+    (event: "click-tag", val: PostTag): void
 }>()
 
 const statusStore = useStatusStore()
@@ -98,10 +106,21 @@ const { isLogin } = storeToRefs(userStore)
 // 请求参数
 const postIdReq = reactive<ViewPostByIDRequest>({} as ViewPostByIDRequest)
 
-const { manager, state, postMeta, copyright, prevNext, clickAuthorId, editPost, updatePostDetail, updateRouterPush, setPostLike, setPostStar } = usePostDetail(
-    postIdReq,
-    anchorHash,
-)
+const {
+    manager,
+    state,
+    postMeta,
+    copyright,
+    prevNext,
+    updatedAt,
+    categoryTag,
+    clickAuthorId,
+    editPost,
+    updatePostDetail,
+    updateRouterPush,
+    setPostLike,
+    setPostStar,
+} = usePostDetail(postIdReq, anchorHash)
 
 // 初始状态
 const interactionItems: ComputedRef<InteractionItemProps[]> = computed(() => {
@@ -261,6 +280,14 @@ watch(
         })
     },
 )
+
+const clickCategory = (val: PostCategory) => {
+    emit("click-category", val) // 点击分类
+}
+
+const clickTag = (val: PostTag) => {
+    emit("click-tag", val) // 点击标签
+}
 
 // 设置交互项的左侧偏移量, 保障在不同屏幕下, 交互项的左侧偏移量一致
 const setAffixLeft = () => {

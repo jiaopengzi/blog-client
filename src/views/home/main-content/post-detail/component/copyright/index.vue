@@ -67,7 +67,7 @@ const copyrightPost = computed(() => {
     grid-template-rows: 1fr; // 头像和文字的高度相同
     grid-gap: 10px;
     align-items: center;
-    margin: 10px 0;
+    margin-top: 10px;
     background-color: var(--jpz-bg-color);
     width: 100%;
     border-radius: 3px;

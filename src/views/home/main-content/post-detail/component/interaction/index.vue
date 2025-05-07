@@ -109,7 +109,7 @@ const tipPlacement = computed(() => {
 }
 
 %icon {
-    font-size: 28px;
+    font-size: 24px;
     transition: fill 0.3s ease;
     cursor: pointer;
 }

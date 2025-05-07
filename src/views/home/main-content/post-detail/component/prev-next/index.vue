@@ -80,6 +80,7 @@ const handleClick = (id: string) => {
     width: 100%;
     height: 100px;
     background-color: var(--jpz-bg-color);
+    margin-top: 10px;
 }
 
 .prev {
