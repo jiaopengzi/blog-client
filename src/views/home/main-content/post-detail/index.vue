@@ -44,7 +44,7 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from "pinia"
-import { computed, type ComputedRef, nextTick, onBeforeMount, onMounted, reactive, ref, useTemplateRef, watch } from "vue"
+import { nextTick, onBeforeMount, onMounted, reactive, ref, useTemplateRef, watch } from "vue"
 
 import { type ViewPostByIDRequest } from "@/api/post/viewByID"
 import { type PostCategory } from "@/api/postCategory/view"
@@ -53,23 +53,20 @@ import HeadTag from "@/components/common/head-tag"
 import PostMeta from "@/components/common/post-meta"
 import PosterShare from "@/components/common/poster-share"
 import type { EditorState } from "@/components/editor"
-import HtmlPreview, { type HeadingObject } from "@/components/editor/components/preview"
+import HtmlPreview from "@/components/editor/components/preview"
 import { usePreview } from "@/components/editor/hooks/usePreview"
 import { usePostDetail } from "@/components/hooks/usePostDetail"
 import { useWebFullscreen } from "@/components/hooks/useWebFullscreen"
-import { useDeviceStore } from "@/stores/device"
 import { useOptionsStore } from "@/stores/options"
 import { useStatusStore } from "@/stores/status"
-import { useUserStore } from "@/stores/user"
-import { copyText } from "@/utils/clipboard"
-import { MessageUtil } from "@/utils/message"
 
 import DetailBottomSame from "./component/bottom-same"
 import DetailCategoryTag from "./component/category-tag"
 import DetailCopyright from "./component/copyright"
-import DetailInteraction, { type InteractionIcon, type InteractionItemProps } from "./component/interaction"
+import DetailInteraction from "./component/interaction"
 import DetailPrevNext from "./component/prev-next"
 import DetailUpdatedAt from "./component/updated-at"
+import { useHeading, useInteraction } from "./hooks"
 
 defineOptions({ name: "PostDetail" })
 
@@ -91,19 +88,14 @@ const emit = defineEmits<{
 }>()
 
 const statusStore = useStatusStore()
-const deviceStore = useDeviceStore()
-const userStore = useUserStore()
 const optionsStore = useOptionsStore()
 
-const { head, app_options } = storeToRefs(optionsStore)
+const { head } = storeToRefs(optionsStore)
 const { postId, anchorHash } = storeToRefs(statusStore)
-const { windowWidth } = storeToRefs(deviceStore)
 
 const postDetailRef = useTemplateRef("webFullscreenRef")
 
 const { toggle } = useWebFullscreen(postDetailRef)
-
-const { isLogin } = storeToRefs(userStore)
 
 // 请求参数
 const postIdReq = reactive<ViewPostByIDRequest>({} as ViewPostByIDRequest)
@@ -124,82 +116,15 @@ const {
     setPostStar,
 } = usePostDetail(postIdReq, anchorHash)
 
-// 初始状态
-const interactionItems: ComputedRef<InteractionItemProps[]> = computed(() => {
-    return [
-        {
-            icon: "like",
-            text: "点赞",
-            isActive: postMeta.value.interactionStatus?.is_like ?? false,
-            tip: postMeta.value.like_count,
-        },
-        {
-            icon: "star",
-            text: "收藏",
-            isActive: postMeta.value.interactionStatus?.is_star ?? false,
-            tip: postMeta.value.star_count,
-        },
-        {
-            icon: "share",
-            text: "分享",
-        },
-        {
-            icon: "link",
-            text: "复制链接",
-        },
-    ]
-})
-
-const isShowPosterShare = ref(false) // 是否显示分享海报
-
-const handPosterComplete = () => {
-    isShowPosterShare.value = false // 关闭分享海报
-}
-
-const dataPosterShare = computed(() => {
-    return {
-        logoSrc: app_options.value.favicon.value,
-        imgSrc: head.value.image,
-        titleText: postMeta.value.post_title,
-        urlText: head.value.url,
-    }
-})
-
-const handleClickInteraction = (val: InteractionIcon) => {
-    if (!isLogin.value && (val === "like" || val === "star")) {
-        MessageUtil.warning("【点赞】和【收藏】 需要登录")
-        return
-    }
-
-    switch (val) {
-        case "like":
-            setPostLike({ post_id: postId.value, like: !postMeta.value.interactionStatus?.is_like })
-            break
-        case "star":
-            setPostStar({ post_id: postId.value, star: !postMeta.value.interactionStatus?.is_star })
-            break
-        case "share":
-            MessageUtil.success("海报正在生成中, 请稍等...")
-            isShowPosterShare.value = true // 显示分享海报
-            break
-        case "link":
-            if (!head.value.url || head.value.url === "") {
-                MessageUtil.warning("链接不存在")
-                return
-            }
-            // 构造需要复制的text
-            const text = `${head.value.title}\n${head.value.url}`
-            // 复制链接到剪贴板
-            copyText(text)
-                .then(() => {
-                    MessageUtil.success("复制成功")
-                })
-                .catch(() => {
-                    MessageUtil.error("复制失败")
-                })
-            break
-    }
-}
+// 交互hook
+const {
+    interactionItems, // 交互项
+    isShowPosterShare, // 是否显示分享海报
+    handPosterComplete, // 处理分享海报完成事件
+    dataPosterShare, // 生成分享海报需要的数据
+    handleClickInteraction, // 处理交互点击事件
+    setAffixLeft, // 设置交互项的左侧偏移量
+} = useInteraction(postMeta, postId, setPostLike, setPostStar, postDetailRef)
 
 // preview
 const { showImageViewer, closeImageViewer, handleHeadingShowCurrent, handleUpdateIsUserScrollPreview } = usePreview(manager)
@@ -213,6 +138,7 @@ const handleHeadingShowCurrentAc = (val: number) => {
 // 更新文章详情
 const updatePostDetailAc = async (postId: string) => {
     await updatePostDetail(postId)
+    manager.setHeadingShowCurrentIndex(headingShowCurrentIndex)
     emit("state", state)
 }
 
@@ -225,6 +151,7 @@ watch(
     },
 )
 
+// 处理文章id
 const handlePostId = async (postId: string) => {
     await statusStore.setAnchorHash("") // 清空锚点
     await statusStore.setPostId(postId) // 设置文章id
@@ -244,7 +171,7 @@ watch(
 // 是否首次加载
 const isFirstLoad = ref(true) // 是否首次加载
 
-// 监听目录点击时间, 保证相同关键字搜索时, 重新渲染
+// 监听点击时间, 保证相同关键字搜索时, 重新渲染
 watch(
     () => time,
     (newTime, oldTime) => {
@@ -260,16 +187,7 @@ watch(
     },
 )
 
-const updateHeadingFlag = ref(false) // 是否更新目录
-
-const allHeadingMap: Map<string, HeadingObject> = new Map() // 所有的 h 标签 map
-const updateHeadingMap = (val: Map<string, HeadingObject>) => {
-    allHeadingMap.clear()
-    val.forEach((item) => {
-        allHeadingMap.set(item.id, item)
-    })
-    updateHeadingFlag.value = true // 更新目录
-}
+const { allHeadingMap, updateHeadingFlag, updateHeadingMap } = useHeading()
 
 // 监听如果有目录锚点, 则更新当前目录索引
 watch(
@@ -281,6 +199,7 @@ watch(
             emit("commit-anchor-hash-index", index) // 提交当前目录索引
         })
     },
+    { flush: "post" }, // 确保在 DOM 更新后执行
 )
 
 const clickCategory = (val: PostCategory) => {
@@ -290,23 +209,6 @@ const clickCategory = (val: PostCategory) => {
 const clickTag = (val: PostTag) => {
     emit("click-tag", val) // 点击标签
 }
-
-// 设置交互项的左侧偏移量, 保障在不同屏幕下, 交互项的左侧偏移量一致
-const setAffixLeft = () => {
-    if (postDetailRef.value) {
-        const left = postDetailRef.value.offsetLeft // 获取当前元素的 left 值
-        const affix = left - 50 > 0 ? left - 50 : -100 // 如果 left 值小于0, 则设置为-100,即隐藏
-        postDetailRef.value.style.setProperty("--affix-left", `${affix}px`)
-    }
-}
-
-// 宽度变化时
-watch(
-    () => windowWidth.value,
-    () => {
-        setAffixLeft() // 设置左侧偏移量
-    },
-)
 
 onMounted(() => {
     // 处理默认选中第一个标题

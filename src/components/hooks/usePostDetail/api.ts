@@ -7,7 +7,7 @@
  */
 
 import { storeToRefs } from "pinia"
-import { ref, watch } from "vue"
+import { type Ref, ref, watch } from "vue"
 
 import { type InteractionRequest, postInteractionAPI } from "@/api/post/interaction"
 import { type PostLikeRequest, setPostLikeAPI } from "@/api/post/like"
@@ -24,7 +24,10 @@ import { type CategoryTagProps } from "@/views/home/main-content/post-detail/com
 import { type CopyrightProps } from "@/views/home/main-content/post-detail/component/copyright"
 import { type UpdatedAtProps } from "@/views/home/main-content/post-detail/component/updated-at"
 
-export function useGetData(manager: EditorStateManager) {
+export function useGetData(
+    manager: EditorStateManager,
+    hash: Ref<string>, // hash值
+) {
     const postMeta = ref<PostMetaProps>({}) // 文章元数据
 
     const optionsStore = useOptionsStore()
@@ -119,7 +122,16 @@ export function useGetData(manager: EditorStateManager) {
         () => head.value,
         (newVal) => {
             if (newVal.url) {
-                copyright.value.url = newVal.url
+                // 去掉 hash.value 的第一个字符(即#,不能使用替换万一后续还有#)
+                const rawHash = hash.value.slice(1)
+
+                // 重新编码
+                const encodedHash = encodeURIComponent(rawHash)
+
+                // 替换掉 url 中的已经编码的 hash 值
+                const replacedUrl = newVal.url.replace(`#${encodedHash}`, "")
+
+                copyright.value.url = replacedUrl
             }
         },
     )

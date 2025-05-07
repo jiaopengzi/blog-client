@@ -1,10 +1,14 @@
 <!--
  * FilePath    : blog-client\src\components\editor\components\toc\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * Description : 目录组件
 -->
 
 <template>
     <nav id="toc" ref="tocRef">
+        <h2 class="toc-title">目录</h2>
         <ul class="toc-list">
             <!-- 根据 heading.level 动态设置 li 的 id 和 class -->
             <li
@@ -22,7 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, useTemplateRef, watch } from "vue"
+import { nextTick, useTemplateRef, watch } from "vue"
 
 import type { TocProps } from "./types"
 
@@ -70,21 +74,15 @@ const highlightHeading = (index: number) => {
 
 // 监听 headingShowCurrentIndex 的变化, 高亮对应的标题
 watch(
-    () => headingShowCurrentIndex,
-    async (newVal) => {
-        if (newVal >= 0) {
-            highlightHeading(newVal)
+    [() => headings, () => headingShowCurrentIndex],
+    async ([newHeadings, newIndex]) => {
+        if (newHeadings.length > 0 && newIndex >= 0) {
+            await nextTick()
+            highlightHeading(newIndex)
         }
     },
+    { flush: "post" }, // 确保在 DOM 更新后执行
 )
-
-onMounted(async () => {
-    // 使用 promise 等待 50ms, 确保 DOM 渲染完成
-    await new Promise((resolve) => setTimeout(resolve, 50))
-    if (headings.length > 0 && headingShowCurrentIndex === 0) {
-        highlightHeading(0)
-    }
-})
 </script>
 
 <style scoped lang="scss">
@@ -93,6 +91,14 @@ onMounted(async () => {
     // 添加不同缩进和样式
     background-color: var(--el-bg-color);
     position: relative;
+
+    .toc-title {
+        font-size: 1.2em;
+        font-weight: 600;
+        color: var(--jpz-color-primary);
+        margin-bottom: 0.5em;
+        padding-top: 0.5em;
+    }
 
     .toc-list {
         margin: 0;

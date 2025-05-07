@@ -62,7 +62,7 @@ export function usePostDetail(
         setPostStar, // 设置文章收藏
         updateHeadInfo, // 更新头部信息
         getPrevNext, // 获取上一篇和下一篇文章信息
-    } = useGetData(manager)
+    } = useGetData(manager, hash)
 
     const {
         updateRouterPush, // 更新查询参数和路由
