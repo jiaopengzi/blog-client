@@ -33,6 +33,7 @@
                     :doc="state.editor"
                     :height="cmHeight"
                     :vim-mode="state.vimMode"
+                    :mentions="state.mentions"
                     :is-user-scroll-cm-editor="state.isUserScrollCmEditor"
                     :heading-show-current-index="state.headingShowCurrentIndex"
                     :toc-markdown="state.tocMarkdown"

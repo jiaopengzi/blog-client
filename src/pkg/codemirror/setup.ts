@@ -6,7 +6,7 @@
  * @Description  : 重新封装 codemirror 参考: codemirror 包源码 https://www.npmjs.com/package/codemirror
  */
 
-import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from "@codemirror/autocomplete"
+import { autocompletion, closeBrackets, closeBracketsKeymap, type Completion, completionKeymap } from "@codemirror/autocomplete"
 import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands"
 import { markdown } from "@codemirror/lang-markdown"
 import { bracketMatching, defaultHighlightStyle, foldGutter, foldKeymap, indentOnInput, syntaxHighlighting } from "@codemirror/language"
@@ -29,9 +29,10 @@ import {
 import { vim } from "@replit/codemirror-vim"
 
 import { bottomPanelExt } from "./extension/bottomPanel"
-import { emojiCompletions } from "./extension/emoji"
+import { emojiOverride } from "./extension/emoji"
 import { customKeymap } from "./extension/hotkey"
 import { handleDropImage, handlePasteImage } from "./extension/imgUpload"
+import { mentionOverride } from "./extension/mention"
 
 const vimModeCompartment = new Compartment()
 const themeCompartment = new Compartment()
@@ -44,11 +45,13 @@ const themeCompartment = new Compartment()
 type CustomSetupOptions = {
     vimMode?: boolean // 是否开启 vim 模式
     // theme?: ThemeName // 主题名称
+    mention?: Completion[] // @提及补全
 }
 
 const defaultOptions: CustomSetupOptions = {
     vimMode: false, // 默认不开启 vim 模式
     // theme: ThemeName.Dracula, // 默认主题
+    mention: [], // 默认不开启 @ 提及补全
 }
 
 // 自定义 codemirror setup 工厂函数
@@ -69,7 +72,7 @@ const createCustomSetup = (options: CustomSetupOptions = defaultOptions) => {
         syntaxHighlighting(defaultHighlightStyle, { fallback: true }), // 语法高亮
         bracketMatching(), // 匹配
         closeBrackets(), // 关闭括号
-        autocompletion({ override: [emojiCompletions] }), // 自动完成
+        autocompletion({ override: [mentionOverride(options.mention), emojiOverride] }), // 自动补全
         rectangularSelection(), // 矩形选择
         crosshairCursor(), // 十字光标
         highlightActiveLine(), // 高亮当前行

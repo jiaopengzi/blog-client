@@ -6,6 +6,7 @@
  * @Description  : 编辑器状态管理
  */
 
+import type { Completion } from "@codemirror/autocomplete"
 import { reactive } from "vue"
 
 import { request } from "@/api/request"
@@ -202,6 +203,11 @@ export class EditorStateManager {
     // 设置编辑器模式
     setEditorMode(mode: EditorMode): void {
         this.state.mode = mode
+    }
+
+    // set mentions
+    setMentions(mentions: Completion[]): void {
+        this.state.mentions = mentions
     }
 
     // 获取编辑器状态

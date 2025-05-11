@@ -6,6 +6,8 @@
  * Description : 类型
  */
 
+import type { Completion } from "@codemirror/autocomplete"
+
 import type { CommandsKey, MarkdownEditorCommandItem } from "../../command"
 
 export interface CodemirrorRef extends HTMLElement {
@@ -32,6 +34,7 @@ export interface CodeEditorProps {
     width?: string // 宽度
     height?: string // 高度
     vimMode?: boolean // 是否开启 vim 模式
+    mentions?: Completion[] // @ 提及补全
     isWatchMouse?: boolean // 是否监听鼠标事件
 
     headingShowCurrentIndex?: number // 当前展示的标题的索引

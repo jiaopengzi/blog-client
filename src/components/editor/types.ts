@@ -6,6 +6,8 @@
  * @Description  : 编辑器类型
  */
 
+import type { Completion } from "@codemirror/autocomplete"
+
 import { CommandsKey } from "./command"
 import type { CmCommand } from "./components/codemirror"
 import type { ViewCommand } from "./components/preview"
@@ -42,6 +44,7 @@ export interface EditorState {
     isShowEmojiPicker: boolean // 是否显示 emoji picker
     isShortcutKey: boolean // 是否开启快捷键
     vimMode: boolean // 是否开启 vim 模式
+    mentions: Completion[] // @ 提及补全
     commandKeys: CommandsKey[] // 工具栏按钮
     mode: EditorMode // 编辑器模式
     mouseStatus: MouseStatus // 鼠标状态 cmEditor 编辑器 preview 预览
