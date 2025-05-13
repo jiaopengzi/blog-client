@@ -57,8 +57,8 @@ export interface GetAPPOptionResponse {
     show_tags_enable: APPOptionItem // 显示标签
     show_copyright_enable: APPOptionItem // 版权信息开启
     show_copyright_info: APPOptionItem // 版权信息
-    article_footer_info_enable: APPOptionItem // 文末固定信息开启
-    article_footer_info: APPOptionItem // 文末固定信息
+    post_footer_info_enable: APPOptionItem // 文末固定信息开启
+    post_footer_info: APPOptionItem // 文末固定信息
 
     // 互动相关
     like_enable: APPOptionItem // 点赞

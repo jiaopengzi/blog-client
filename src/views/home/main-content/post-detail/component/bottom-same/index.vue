@@ -25,7 +25,7 @@ const { app_options: opt } = storeToRefs(optionsStore)
 
 const isShow = computed(() => {
     if (opt.value) {
-        return convert(opt.value.article_footer_info_enable)
+        return convert(opt.value.post_footer_info_enable)
     } else {
         return false
     }
@@ -33,7 +33,7 @@ const isShow = computed(() => {
 
 const content = computed(() => {
     if (opt.value) {
-        return convert(opt.value.article_footer_info)
+        return convert(opt.value.post_footer_info)
     } else {
         return ""
     }

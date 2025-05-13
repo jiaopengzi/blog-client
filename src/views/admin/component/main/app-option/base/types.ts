@@ -31,8 +31,8 @@ export interface APPOptionForm {
     show_tags_enable: boolean // 显示标签
     show_copyright_enable: boolean // 版权信息开启
     show_copyright_info: string // 版权信息
-    article_footer_info_enable: boolean // 文末固定信息开启
-    article_footer_info: string // 文末固定信息
+    post_footer_info_enable: boolean // 文末固定信息开启
+    post_footer_info: string // 文末固定信息
 
     // 互动相关
     like_enable: boolean // 点赞

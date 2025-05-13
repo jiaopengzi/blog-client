@@ -148,8 +148,8 @@ const formItems = [
     { label: "显示标签", prop: "show_tags_enable", isCheckbox: true },
     { label: "显示版权信息", prop: "show_copyright_enable", isCheckbox: true },
     { label: "版权信息", prop: "show_copyright_info", type: "textarea" },
-    { label: "显示文末固定信息", prop: "article_footer_info_enable", isCheckbox: true },
-    { label: "文末固定信息", prop: "article_footer_info", type: "textarea", placeholder: "支持html" },
+    { label: "显示文末固定信息", prop: "post_footer_info_enable", isCheckbox: true },
+    { label: "文末固定信息", prop: "post_footer_info", type: "textarea", placeholder: "支持html" },
 
     // 互动相关
     { label: "互动", isCategoryTitle: true },
