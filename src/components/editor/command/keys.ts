@@ -104,11 +104,8 @@ const postPhone = [
 
 // pc端评论区工具栏按钮
 const commentPc = [
-    CommandsKey.Vim,
-    CommandsKey.Undo,
-    CommandsKey.Redo,
     CommandsKey.Clear,
-    CommandsKey.H1,
+    CommandsKey.H2,
     CommandsKey.Bold,
     CommandsKey.Italic,
     CommandsKey.Quote,
@@ -129,10 +126,8 @@ const commentPc = [
 
 // pad端评论区工具栏按钮
 const commentPad = [
-    CommandsKey.Undo,
-    CommandsKey.Redo,
     CommandsKey.Clear,
-    CommandsKey.H1,
+    CommandsKey.H2,
     CommandsKey.Bold,
     CommandsKey.Ol,
     CommandsKey.Ul,
@@ -149,10 +144,8 @@ const commentPad = [
 
 // 手机端评论区工具栏按钮
 const commentPhone = [
-    CommandsKey.Undo,
-    CommandsKey.Redo,
     CommandsKey.Clear,
-    CommandsKey.H1,
+    CommandsKey.H2,
     CommandsKey.Bold,
     CommandsKey.Ol,
     CommandsKey.Ul,

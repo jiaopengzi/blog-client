@@ -168,7 +168,7 @@ import type { FormInstance } from "element-plus"
 import { onBeforeMount, onUnmounted, reactive, ref, toRefs, useTemplateRef, watch } from "vue"
 import { useRouter } from "vue-router"
 
-import { gegPostStatusOptions, type InsertPostRequest, PostStatusCode } from "@/api/post/common"
+import { getPostStatusOptions, type InsertPostRequest, PostStatusCode } from "@/api/post/common"
 import { type PostCategory, viewListPostCategoryAPI } from "@/api/postCategory/view"
 import { ResponseCode } from "@/api/response"
 import AddTag from "@/components/common/add-tag"
@@ -408,7 +408,7 @@ watch(
 )
 
 const radioOptions = () => {
-    const Options = gegPostStatusOptions()
+    const Options = getPostStatusOptions()
     // 判断是否有编辑文章的权限
     if (!userStore.hasPermission(PermissionNames.EditPost)) {
         // 只保留草稿状态

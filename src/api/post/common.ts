@@ -33,7 +33,7 @@ export const PostStatusDisplay: Record<PostStatusCode, string> = {
 }
 
 // 获取文章状态选项
-export const gegPostStatusOptions = () => {
+export const getPostStatusOptions = () => {
     return [
         { label: PostStatusDisplay[PostStatusCode.Draft], value: PostStatusCode.Draft },
         { label: PostStatusDisplay[PostStatusCode.Private], value: PostStatusCode.Private },

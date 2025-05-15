@@ -37,6 +37,7 @@
             <DetailCategoryTag class="category-tag-bottom" :data="categoryTag" @click-category="clickCategory" @click-tag="clickTag" />
             <DetailCopyright class="copyright-bottom" :data="copyright" />
             <DetailPrevNext class="prev-next" :data="prevNext" @post-id="handlePostId" />
+            <CommentEditor class="comment-editor" />
         </section>
     </section>
     <PosterShare class="poster-share" v-if="isShowPosterShare" :data="dataPosterShare" @poster-complete="handPosterComplete" />
@@ -62,6 +63,7 @@ import { useStatusStore } from "@/stores/status"
 
 import DetailBottomSame from "./component/bottom-same"
 import DetailCategoryTag from "./component/category-tag"
+import CommentEditor from "./component/comment-editor"
 import DetailCopyright from "./component/copyright"
 import DetailInteraction from "./component/interaction"
 import DetailPrevNext from "./component/prev-next"

@@ -127,6 +127,19 @@ export enum ResponseCode {
     GetAPPOptionSuccess = 2317, // 获取网站配置成功
     UpdateAPPOptionSuccess = 2318, // 更新网站配置成功
 
+    // 评论相关
+    CommentStatusClose = 2400, // 评论关闭
+    CommentInsertSuccess = 2401, // 插入评论成功
+    CommentDeleteSuccess = 2402, // 删除评论成功
+    CommentUpdateSuccess = 2403, // 更新评论成功
+    CommentViewSuccess = 2404, // 查看评论成功
+    CommentNotOwn = 2405, // 非本人评论
+    CommentNotExist = 2406, // 评论不存在
+    CommentStatusBatchOperationSuccess = 2407, // 批量操作评论状态成功
+    CommentViewIsNone = 2408, // 查看评论无数据
+    CommentCountByStatusIsNone = 2409, // 获取按照评论状态统计评论数量无数据
+    CommentCountByStatusSuccess = 2410, // 获取按照评论状态统计评论数量成功
+
     // 验证码相关
     CaptchaSendSuccess = 8000, //验证码发送成功
     CaptchaCheckSuccess = 8002, //验证码发送成功

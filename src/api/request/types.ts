@@ -14,9 +14,13 @@ export type QueryParamsRecord<T extends string | number | symbol> = {
 }
 
 // 分页请求参数
-export interface PaginationRequest {
+export interface PaginationWithoutKeyWord {
     current_page?: number // 当前页
     page_size?: number // 每页显示条数
+}
+
+// 分页请求参数
+export interface PaginationRequest extends PaginationWithoutKeyWord {
     key_word?: string // 关键字
 }
 
@@ -26,7 +30,7 @@ export enum PaginationParamsInURL {
     page_size = "page_size",
 }
 
-// url 中是文章明细参数键名 PostDetailParamsInURL 的对象 
+// url 中是文章明细参数键名 PostDetailParamsInURL 的对象
 export enum PostDetailParamsInURL {
     post_id = "post_id",
 }
