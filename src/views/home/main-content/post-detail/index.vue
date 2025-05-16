@@ -37,7 +37,7 @@
             <DetailCategoryTag class="category-tag-bottom" :data="categoryTag" @click-category="clickCategory" @click-tag="clickTag" />
             <DetailCopyright class="copyright-bottom" :data="copyright" />
             <DetailPrevNext class="prev-next" :data="prevNext" @post-id="handlePostId" />
-            <CommentEditor class="comment-editor" />
+            <CommentEditor class="comment-editor" :post-id="postId" />
         </section>
     </section>
     <PosterShare class="poster-share" v-if="isShowPosterShare" :data="dataPosterShare" @poster-complete="handPosterComplete" />
@@ -237,7 +237,7 @@ onBeforeMount(async () => {
     width: 40px;
     top: 300px;
     left: var(--affix-left);
-    z-index: 9999;
+    z-index: 999;
 }
 
 .post-detail {

@@ -30,7 +30,7 @@ export function createDefaultEditorState(options: EditorStateOptions = {}): Edit
         tocHtml: [], // html 目录内容
         tocShow: false, // 是否显示目录
 
-        editor: "", // 编辑器内容
+        editorContent: "", // 编辑器内容
         editorShow: true, // 是否显示编辑器
         scrollHideViewStr: "", // 滚动条隐藏的编辑器 markdown 字符串
         isSyncScroll: true, // 是否同步滚动

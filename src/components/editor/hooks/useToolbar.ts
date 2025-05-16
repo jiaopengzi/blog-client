@@ -16,7 +16,7 @@ import { MessageUtil } from "@/utils/message"
 import { setCSSVariable } from "@/utils/style"
 
 import { CommandsKey, markdownEditorCommands } from "../command"
-import { type TableRowCol } from "../components/toolbar"
+import { Alerts, type TableRowCol } from "../components/toolbar"
 import { EditorStateManager } from "../state"
 
 export function useToolbar(mdLayoutRef: Ref<HTMLElement | null>, mdContainerRef: Ref<HTMLElement | null>, stateManager: EditorStateManager) {
@@ -124,12 +124,12 @@ export function useToolbar(mdLayoutRef: Ref<HTMLElement | null>, mdContainerRef:
         })
     }
 
-    // 更新 mdContainerRef 中 css 变量 --md-editor-container-height 的值
+    // 更新 mdContainerRef 中 css 变量 --md-editor-container-height-fullscreen 的值
     const updateMdContainerStyle = (toolbarHight: string): void => {
         if (!mdContainerRef.value) return
 
-        // 设置 cmContainerRef 中 css 变量 --md-editor-container-height 的值为 100vh - toolbar 高度 - toolbar margin
-        setCSSVariable(mdContainerRef.value, "--md-editor-container-height", `calc(100vh - ${toolbarHight})`)
+        // 设置 cmContainerRef 中 css 变量 --md-editor-container-height-fullscreen 的值为 100vh - toolbar 高度 - toolbar margin
+        setCSSVariable(mdContainerRef.value, "--md-editor-container-height-fullscreen", `calc(100vh - ${toolbarHight})`)
     }
 
     // 选择 emoji
@@ -182,6 +182,20 @@ export function useToolbar(mdLayoutRef: Ref<HTMLElement | null>, mdContainerRef:
         })
     }
 
+    // 插入提醒
+    const insertAlert = (val: Alerts) => {
+        const content = val
+        stateManager.setCmCommand({
+            commandName: CommandsKey.Alert,
+            customContent: {
+                prefix: "",
+                content,
+                suffix: "",
+            },
+            time: new Date(),
+        })
+    }
+
     onMounted(() => {
         registerHotKeys() // 注册快捷键
     })
@@ -192,5 +206,6 @@ export function useToolbar(mdLayoutRef: Ref<HTMLElement | null>, mdContainerRef:
         updateMdContainerStyle,
         emojiPickerSelected,
         insertTableRowCol,
+        insertAlert,
     }
 }

@@ -35,6 +35,8 @@ const postPc = [
     CommandsKey.Footnote,
     CommandsKey.Superscript,
     CommandsKey.Subscript,
+    CommandsKey.Details,
+    CommandsKey.Alert,
     CommandsKey.PayContent,
     CommandsKey.Video,
     CommandsKey.Toc,
@@ -56,7 +58,7 @@ const postPad = [
     CommandsKey.Undo,
     CommandsKey.Redo,
     CommandsKey.Clear,
-    CommandsKey.H1,
+    CommandsKey.Heading,
     CommandsKey.Bold,
     CommandsKey.Italic,
     CommandsKey.Quote,
@@ -73,6 +75,8 @@ const postPad = [
     CommandsKey.Footnote,
     CommandsKey.Superscript,
     CommandsKey.Subscript,
+    CommandsKey.Details,
+    CommandsKey.Alert,
     CommandsKey.Toc,
     CommandsKey.Edit,
     CommandsKey.Preview,
@@ -87,7 +91,7 @@ const postPhone = [
     CommandsKey.Undo,
     CommandsKey.Redo,
     CommandsKey.Clear,
-    CommandsKey.H1,
+    CommandsKey.Heading,
     CommandsKey.Bold,
     CommandsKey.Ol,
     CommandsKey.Ul,
@@ -105,7 +109,7 @@ const postPhone = [
 // pc端评论区工具栏按钮
 const commentPc = [
     CommandsKey.Clear,
-    CommandsKey.H2,
+    CommandsKey.Heading,
     CommandsKey.Bold,
     CommandsKey.Italic,
     CommandsKey.Quote,
@@ -119,7 +123,6 @@ const commentPc = [
     CommandsKey.Fullscreen,
     CommandsKey.Edit,
     CommandsKey.Preview,
-    CommandsKey.Publish,
     CommandsKey.Help,
     CommandsKey.Info,
 ]
@@ -127,7 +130,7 @@ const commentPc = [
 // pad端评论区工具栏按钮
 const commentPad = [
     CommandsKey.Clear,
-    CommandsKey.H2,
+    CommandsKey.Heading,
     CommandsKey.Bold,
     CommandsKey.Ol,
     CommandsKey.Ul,
@@ -137,7 +140,6 @@ const commentPad = [
     CommandsKey.Fullscreen,
     CommandsKey.Edit,
     CommandsKey.Preview,
-    CommandsKey.Publish,
     CommandsKey.Help,
     CommandsKey.Info,
 ]
@@ -145,14 +147,13 @@ const commentPad = [
 // 手机端评论区工具栏按钮
 const commentPhone = [
     CommandsKey.Clear,
-    CommandsKey.H2,
+    CommandsKey.Heading,
     CommandsKey.Bold,
     CommandsKey.Ol,
     CommandsKey.Ul,
     CommandsKey.Mark,
     CommandsKey.Emoji,
     CommandsKey.Fullscreen,
-    CommandsKey.Publish,
     CommandsKey.Edit,
     CommandsKey.Preview,
     CommandsKey.Help,

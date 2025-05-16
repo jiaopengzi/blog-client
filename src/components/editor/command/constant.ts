@@ -20,6 +20,7 @@ export enum CommandsKey {
     Strikethrough = "strikethrough",
     Mark = "mark",
     Emoji = "emoji",
+    Heading = "heading",
     H1 = "h1",
     H2 = "h2",
     H3 = "h3",
@@ -59,6 +60,8 @@ export enum CommandsKey {
     Help = "help",
     Info = "info",
     Vim = "vim",
+    Details = "details",
+    Alert = "alert",
 }
 
 // markdown 编辑器 单个命令对象 的类型
@@ -110,7 +113,7 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         // 清空
         [CommandsKey.Clear]: {
             tip: "清空",
-            hotKey: "Ctrl+Shift+K",
+            hotKey: "Ctrl+Shift+C",
             action: (view: EditorView) => {
                 view.dispatch({
                     changes: { from: 0, to: view.state.doc.length, insert: "" },
@@ -140,7 +143,6 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
             tip: "删除线",
             prefix: "~~",
             suffix: "~~",
-            hotKey: "Ctrl+Shift+S",
             icon: IconKeys.Strikethrough,
         },
         // mark标记
@@ -148,7 +150,6 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
             tip: "mark标记",
             prefix: "==",
             suffix: "==",
-            hotKey: "Ctrl+Shift+M",
             icon: IconKeys.Mark,
         },
         //   emoji
@@ -157,8 +158,14 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
             prefix: ":",
             content: "smile",
             suffix: ":",
-            hotKey: "Ctrl+Shift+E",
             icon: IconKeys.Emoji,
+        },
+        // 标题
+        [CommandsKey.Heading]: {
+            tip: "标题",
+            prefix: "### ",
+            hotKey: "Ctrl+H",
+            icon: IconKeys.Heading,
         },
         // 标题1
         [CommandsKey.H1]: {
@@ -206,21 +213,18 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         [CommandsKey.Ol]: {
             tip: "有序列表",
             prefix: "1. ",
-            hotKey: "Ctrl+Shift+O",
             icon: IconKeys.Ol,
         },
         // 无序列表
         [CommandsKey.Ul]: {
             tip: "无序列表",
             prefix: "- ",
-            hotKey: "Ctrl+Shift+U",
             icon: IconKeys.Ul,
         },
         // 引用
         [CommandsKey.Quote]: {
             tip: "引用",
             prefix: "> ",
-            hotKey: "Ctrl+Shift+Q",
             icon: IconKeys.Quote,
         },
         // 代码块
@@ -245,7 +249,6 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
             tip: "链接",
             prefix: "[",
             suffix: "](url)",
-            hotKey: "Ctrl+Shift+L",
             icon: IconKeys.Link,
         },
         // 图片
@@ -267,7 +270,6 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         [CommandsKey.Hr]: {
             tip: "分割线",
             content: "---",
-            hotKey: "Ctrl+Shift+H",
             icon: IconKeys.Hr,
         },
         // 任务列表
@@ -307,7 +309,6 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
             tip: "上标",
             prefix: "^",
             suffix: "^",
-            hotKey: "Ctrl+Shift+U",
             icon: IconKeys.Superscript,
         },
         // 下标
@@ -315,14 +316,12 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
             tip: "下标",
             prefix: "~",
             suffix: "~",
-            hotKey: "Ctrl+Shift+D",
             icon: IconKeys.Subscript,
         },
         // 付费内容
         [CommandsKey.PayContent]: {
             tip: "付费内容",
             prefix: "<!--more-->",
-            hotKey: "Ctrl+Alt+M",
             icon: IconKeys.PayContent,
         },
         // 视频
@@ -336,7 +335,6 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         // 复制
         [CommandsKey.Copy]: {
             tip: "复制",
-            hotKey: "Alt+C",
             icon: IconKeys.Copy,
         },
 
@@ -355,7 +353,6 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         // 预览
         [CommandsKey.Preview]: {
             tip: "预览",
-            hotKey: "Ctrl+Shift+V",
             icon: IconKeys.Preview,
         },
         // 目录
@@ -367,7 +364,6 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         // 同步滚动条
         [CommandsKey.Scroll]: {
             tip: "同步滚动条",
-            hotKey: "Ctrl+Shift+S",
             icon: IconKeys.Scroll,
         },
         // 全屏
@@ -385,44 +381,53 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         // 桌面端
         [CommandsKey.Edit]: {
             tip: "编辑模式",
-            hotKey: "Ctrl+Shift+D",
             icon: IconKeys.Edit,
         },
         // 移动端
         [CommandsKey.WechatOfficialAccount]: {
             tip: "微信公众号",
-            hotKey: "Ctrl+Shift+M",
             icon: IconKeys.WechatOfficialAccount,
         },
         // 导出 markdown
         [CommandsKey.Markdown]: {
             tip: "导出 markdown",
-            hotKey: "Ctrl+Alt+M",
             icon: IconKeys.Markdown,
         },
         // 导出 html
         [CommandsKey.Html]: {
             tip: "导出 html",
-            hotKey: "Ctrl+Alt+H",
             icon: IconKeys.Html,
         },
         // 导出 pdf
         [CommandsKey.Pdf]: {
             tip: "导出 PDF",
-            hotKey: "Ctrl+Alt+P",
             icon: IconKeys.Pdf,
         },
         // 帮助
         [CommandsKey.Help]: {
             tip: "帮助",
-            hotKey: "Ctrl+Shift+P",
             icon: IconKeys.Help,
         },
         // 关于
         [CommandsKey.Info]: {
             tip: "关于",
-            hotKey: "Ctrl+Shift+I",
             icon: IconKeys.Info,
+        },
+        // 详情
+        [CommandsKey.Details]: {
+            tip: "详情",
+            prefix: "<details><summary>Details</summary>\n<p>\n",
+            content: "\n\n\n",
+            suffix: "</p>\n</details>",
+            hotKey: "Ctrl+Shift+D",
+            icon: IconKeys.Details,
+        },
+        // 提醒
+        [CommandsKey.Alert]: {
+            tip: "提醒",
+            content: "\n> [!NOTE]\n> ",
+            hotKey: "Ctrl+Shift+A",
+            icon: IconKeys.Alert,
         },
     }
 }

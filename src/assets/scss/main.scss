@@ -74,40 +74,41 @@ html {
     --btn-hover-bg-color: #f2f2f2;
     --footnote-sup-color: #0969da; // 脚注上标颜色 深色 #2F81F7
 
-    // note
-    --markdown-alert-note-bg-color: #fffbe6;
-    --markdown-alert-note-border-color: #ffe58f;
-    --markdown-alert-note-color: #ffaa00;
-    --markdown-alert-note-title-color: #ffaa00;
-    --markdown-alert-note-svg-fill-color: #ffaa00;
+    // 参考 github markdown 主题
+    // note: 主色 rgb(68, 147, 248) => #4493f8
+    --markdown-alert-note-bg-color: #edf4fe; // 浅化背景
+    --markdown-alert-note-border-color: #d0e4fd; // 浅化边框
+    --markdown-alert-note-color: #4493f8; // 主色 (文字)
+    --markdown-alert-note-title-color: #4493f8; // 主色 (标题)
+    --markdown-alert-note-svg-fill-color: #4493f8; // 主色 (图标)
 
-    // tip
-    --markdown-alert-tip-bg-color: #f0f9eb;
-    --markdown-alert-tip-border-color: #b7eb8f;
-    --markdown-alert-tip-color: #409eff;
-    --markdown-alert-tip-title-color: #409eff;
-    --markdown-alert-tip-svg-fill-color: #409eff;
+    // tip: 主色 rgb(63, 185, 80) => #3fb950
+    --markdown-alert-tip-bg-color: #ebf8ed;
+    --markdown-alert-tip-border-color: #cfedd3;
+    --markdown-alert-tip-color: #3fb950;
+    --markdown-alert-tip-title-color: #3fb950;
+    --markdown-alert-tip-svg-fill-color: #3fb950;
 
-    // warning
-    --markdown-alert-warning-bg-color: #fff7cd;
-    --markdown-alert-warning-border-color: #ffe58f;
-    --markdown-alert-warning-color: #e6a23c;
-    --markdown-alert-warning-title-color: #e6a23c;
-    --markdown-alert-warning-svg-fill-color: #e6a23c;
+    // important: 主色 rgb(171, 125, 248) => #ab7df8
+    --markdown-alert-important-bg-color: #f6f2fe;
+    --markdown-alert-important-border-color: #eadefd;
+    --markdown-alert-important-color: #ab7df8;
+    --markdown-alert-important-title-color: #ab7df8;
+    --markdown-alert-important-svg-fill-color: #ab7df8;
 
-    // important
-    --markdown-alert-important-bg-color: #fff0f0;
-    --markdown-alert-important-border-color: #ffa39e;
-    --markdown-alert-important-color: #f56c6c;
-    --markdown-alert-important-title-color: #f56c6c;
-    --markdown-alert-important-svg-fill-color: #f56c6c;
+    // warning: 主色 rgb(210, 153, 34) => #d29922
+    --markdown-alert-warning-bg-color: #faf5e8;
+    --markdown-alert-warning-border-color: #f3e5c7;
+    --markdown-alert-warning-color: #d29922;
+    --markdown-alert-warning-title-color: #d29922;
+    --markdown-alert-warning-svg-fill-color: #d29922;
 
-    // caution
-    --markdown-alert-caution-bg-color: #fffbe6;
-    --markdown-alert-caution-border-color: #ffe58f;
-    --markdown-alert-caution-color: #ffaa00;
-    --markdown-alert-caution-title-color: #ffaa00;
-    --markdown-alert-caution-svg-fill-color: #ffaa00;
+    // caution: 主色 rgb(248, 81, 73) => #f85149
+    --markdown-alert-caution-bg-color: #feedec;
+    --markdown-alert-caution-border-color: #fdd3d1;
+    --markdown-alert-caution-color: #f85149;
+    --markdown-alert-caution-title-color: #f85149;
+    --markdown-alert-caution-svg-fill-color: #f85149;
 
     // 滚动条
     --scrollbar-y-width: 6px; // Y轴滚动条宽度

@@ -9,6 +9,8 @@
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
+import { CommentReviewCode } from "./common"
+
 // 插入评论请求
 export interface InsertCommentRequest {
     post_id: string
@@ -20,6 +22,7 @@ export interface InsertCommentResData {
     id: string
     created_at: string
     updated_at: string
+    status: CommentReviewCode
 }
 
 // 插入评论

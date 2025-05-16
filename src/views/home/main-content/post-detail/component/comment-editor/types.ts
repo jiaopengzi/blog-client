@@ -5,3 +5,10 @@
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * Description : 类型
  */
+
+import type { Completion } from "@codemirror/autocomplete"
+
+export interface CommentEditorProps {
+    postId: string
+    mentions?: Completion[]
+}

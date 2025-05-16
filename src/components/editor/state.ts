@@ -36,9 +36,9 @@ export class EditorStateManager {
 
     // 更新编辑器 store
     updateState(markdownSrc: string): void {
-        this.state.editor = htmlHandleUtf8BOM(markdownSrc) // 去除 BOM 头 和 windows 换行符)
-        this.state.html = markdownToHtml(this.state.editor, this.state.isRemoveFirstH1) // markdown 转 html
-        this.state.tocMarkdown = getMarkdownHeadingLines(this.state.editor) // 通过正则获取 markdown 文件的目录
+        this.state.editorContent = htmlHandleUtf8BOM(markdownSrc) // 去除 BOM 头 和 windows 换行符)
+        this.state.html = markdownToHtml(this.state.editorContent, this.state.isRemoveFirstH1) // markdown 转 html
+        this.state.tocMarkdown = getMarkdownHeadingLines(this.state.editorContent) // 通过正则获取 markdown 文件的目录
         this.state.tocHtml = matchAllHeadingToList(this.state.html) // 获取 html 目录
         this.state.imgUrls = extractImageUrlsFromHtml(this.state.html) // 获取图片链接
     }

@@ -35,7 +35,7 @@ export interface EditorState {
     cmCommand: CmCommand // 命令
 
     // 编辑器
-    editor: string // 编辑器内容
+    editorContent: string // 编辑器内容
     editorShow: boolean // 是否显示编辑器
     scrollHideViewStr: string // 滚动条隐藏的编辑器 view markdown 字符串
     isSyncScroll: boolean // 是否异步滚动

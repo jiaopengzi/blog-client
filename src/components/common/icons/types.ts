@@ -61,6 +61,7 @@ export enum IconKeys {
     Follow = "follow",
     Footnote = "footnote",
     Fullscreen = "fullscreen",
+    Heading = "heading",
     H1 = "h1",
     H2 = "h2",
     H3 = "h3",
@@ -147,4 +148,6 @@ export enum IconKeys {
     View = "view",
     Time = "time",
     Hourglass = "hourglass",
+    Alert = "alert",
+    Details = "details",
 }

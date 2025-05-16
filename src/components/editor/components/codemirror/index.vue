@@ -179,7 +179,7 @@ watch(
     () => headingShowCurrentIndex,
     (newIndex) => {
         // 如果没有目录或者索引小于0则不执行
-        if (!tocMarkdown || newIndex === void 0 || newIndex < 0 || isUserScrollCmEditor) return
+        if (!tocMarkdown || tocMarkdown.length === 0 || newIndex === void 0 || newIndex < 0 || isUserScrollCmEditor || tocMarkdown.length < newIndex) return
 
         // 跳转编辑器选中目标行
         scrollIntoViewLine(tocMarkdown[newIndex].markdownLineNumber)

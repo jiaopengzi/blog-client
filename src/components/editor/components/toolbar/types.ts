@@ -17,3 +17,12 @@ export interface TableRowCol {
     row: number
     col: number
 }
+
+// 提醒
+export enum Alerts {
+    NOTE = "> [!NOTE]\n> ",
+    TIP = "> [!TIP]\n> ",
+    IMPORTANT = "> [!IMPORTANT]\n> ",
+    WARNING = "> [!WARNING]\n> ",
+    CAUTION = "> [!CAUTION]\n> ",
+}

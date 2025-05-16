@@ -6,6 +6,27 @@
   "description": "vue 重写项目",
   "glyphs": [
     {
+      "icon_id": "702176",
+      "name": "alert",
+      "font_class": "alert",
+      "unicode": "e773",
+      "unicode_decimal": 59251
+    },
+    {
+      "icon_id": "38440168",
+      "name": "details",
+      "font_class": "details",
+      "unicode": "e61f",
+      "unicode_decimal": 58911
+    },
+    {
+      "icon_id": "20112668",
+      "name": "heading",
+      "font_class": "heading",
+      "unicode": "e64b",
+      "unicode_decimal": 58955
+    },
+    {
       "icon_id": "9745468",
       "name": "time",
       "font_class": "time",

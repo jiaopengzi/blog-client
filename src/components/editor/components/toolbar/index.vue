@@ -9,6 +9,7 @@
 <template>
     <div ref="toolbarRef" id="toolbar">
         <button v-for="btn in toolbarBtns" type="button" :key="btn.name" class="toolbar-btn" @click="emitToolbarBtnClicked(btn.name)">
+            <!-- emoji表情 -->
             <el-popover
                 v-if="btn.name === CommandsKey.Emoji"
                 placement="bottom"
@@ -26,6 +27,7 @@
                 <EmojiPicker :native="true" @select="onSelectEmoji" />
             </el-popover>
 
+            <!-- 表格 -->
             <el-popover
                 v-else-if="btn.name === CommandsKey.Table"
                 placement="bottom"
@@ -54,6 +56,30 @@
                 </div>
             </el-popover>
 
+            <!-- 提示 -->
+            <el-popover
+                v-else-if="btn.name === CommandsKey.Alert"
+                placement="bottom"
+                width="100"
+                trigger="hover"
+                popper-class="popper-class"
+                popper-style="background-color: transparent; border: none; box-shadow: none;"
+                :show-arrow="false"
+                :offset="0"
+            >
+                <template #reference>
+                    <j-icon :name="btn.icon" custom-class="iconfont" />
+                </template>
+
+                <div class="alerts">
+                    <el-button class="alert-item alert-note" type="default" @click="handleAlertSelect(Alerts.NOTE)">Note</el-button>
+                    <el-button class="alert-item alert-tip" type="default" @click="handleAlertSelect(Alerts.TIP)">Tip</el-button>
+                    <el-button class="alert-item alert-important" type="default" @click="handleAlertSelect(Alerts.IMPORTANT)">Important</el-button>
+                    <el-button class="alert-item alert-warning" type="default" @click="handleAlertSelect(Alerts.WARNING)">Warning</el-button>
+                    <el-button class="alert-item alert-caution" type="default" @click="handleAlertSelect(Alerts.CAUTION)">Caution</el-button>
+                </div>
+            </el-popover>
+
             <el-tooltip v-else effect="dark" :content="btn.display" :hide-after="0" :show-after="300">
                 <j-icon :name="btn.icon" custom-class="iconfont" />
             </el-tooltip>
@@ -69,7 +95,7 @@ import EmojiPicker, { type EmojiExt } from "vue3-emoji-picker"
 import type { IconKeys } from "@/components/common/icons"
 
 import { CommandsKey } from "../../command"
-import type { TableRowCol } from "./types"
+import { Alerts, type TableRowCol } from "./types"
 
 defineOptions({ name: "EditorToolbar" })
 
@@ -83,6 +109,7 @@ const emit = defineEmits<{
     (e: "toolbar-btn-clicked", name: CommandsKey): void
     (e: "emoji-picker-selected", emoji: EmojiExt): void
     (e: "table-row-col", tableRowCol: TableRowCol): void
+    (e: "alert-select", val: Alerts): void
     (e: "toolbar-height", height: string): void
 }>()
 
@@ -113,12 +140,22 @@ const handleTableRowCol = () => {
     emit("table-row-col", { row: row.value, col: col.value })
 }
 
+// 插入提示
+const handleAlertSelect = (val: Alerts) => {
+    emit("alert-select", val)
+}
+
 /**
  * @description: 更新工具栏高度
  */
 const updateToolbarHeight = () => {
     if (toolbarRef.value) {
-        toolbarHeight.value = toolbarRef.value.clientHeight
+        // 获取包含 margin 和 border 的高度
+        const style = getComputedStyle(toolbarRef.value)
+        const marginTop = parseFloat(style.marginTop) || 0
+        const marginBottom = parseFloat(style.marginBottom) || 0
+        const totalHeight = toolbarRef.value.offsetHeight + marginTop + marginBottom
+        toolbarHeight.value = totalHeight
         document.documentElement.style.setProperty("--toolbar-height", `${toolbarHeight.value}px`)
         emit("toolbar-height", `${toolbarHeight.value}px`)
     }
@@ -153,7 +190,7 @@ defineExpose({
     flex-wrap: wrap; // 自动换行
     align-items: center;
     // justify-content: left;
-    border-bottom: 1px solid var(--jpz-border-color);
+    // border-bottom: 1px solid var(--jpz-border-color);
     min-height: pc.$editor-toolbar-height;
     margin-top: pc.$editor-toolbar-margin-top;
     margin-bottom: pc.$editor-toolbar-margin-top;
@@ -189,6 +226,52 @@ defineExpose({
         span {
             margin-right: 10px;
         }
+    }
+}
+
+.alerts {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 8px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: var(--jpz-bg-color-page);
+
+    .alert-item {
+        margin: 5px;
+        width: 80px;
+        border-radius: 4px;
+    }
+
+    .alert-note {
+        color: var(--markdown-alert-note-title-color);
+        background-color: var(--markdown-alert-note-bg-color);
+        border: 1px solid var(--markdown-alert-note-border-color);
+    }
+
+    .alert-tip {
+        color: var(--markdown-alert-tip-title-color);
+        background-color: var(--markdown-alert-tip-bg-color);
+        border: 1px solid var(--markdown-alert-tip-border-color);
+    }
+
+    .alert-important {
+        color: var(--markdown-alert-important-title-color);
+        background-color: var(--markdown-alert-important-bg-color);
+        border: 1px solid var(--markdown-alert-important-border-color);
+    }
+
+    .alert-warning {
+        color: var(--markdown-alert-warning-title-color);
+        background-color: var(--markdown-alert-warning-bg-color);
+        border: 1px solid var(--markdown-alert-warning-border-color);
+    }
+
+    .alert-caution {
+        color: var(--markdown-alert-caution-title-color);
+        background-color: var(--markdown-alert-caution-bg-color);
+        border: 1px solid var(--markdown-alert-caution-border-color);
     }
 }
 

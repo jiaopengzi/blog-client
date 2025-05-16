@@ -356,7 +356,7 @@ watch(
     () => seoDescriptionVisible.value,
     () => {
         // 将编辑器内容赋值给 post_content
-        postInfoForm.post_content = editorState.editor
+        postInfoForm.post_content = editorState.editorContent
     },
 )
 
@@ -449,7 +449,7 @@ const { isUpdate, updatedFields, updateSnapshot } = useSnapshot(postInfoForm)
 // 更新编辑器状态
 const updateEditorStatus = () => {
     // 将编辑器内容赋值给 post_content
-    postInfoForm.post_content = editorState.editor
+    postInfoForm.post_content = editorState.editorContent
     // 将作者赋值给 post_author
     postInfoForm.post_author = userStore.data.user.id.toString()
 }

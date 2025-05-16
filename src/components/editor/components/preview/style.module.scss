@@ -35,7 +35,7 @@
 
 @include respond-to("pad") {
     #preview {
-        max-width: 100%;
+        width: 100%;
     }
 
     #preview[data-preview="wechat"] {
@@ -46,7 +46,7 @@
 
 @include respond-to("phone") {
     #preview {
-        max-width: 100%;
+        width: 100%;
     }
 
     #preview[data-preview="wechat"] {

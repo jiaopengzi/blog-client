@@ -25,8 +25,8 @@ export function useCodemirror(mdContainerRef: Ref<HTMLElement | null>, codemirro
     // 更新 cmView 编辑器实例高度
     const updateCmHeightIsFullScreen = (): void => {
         if (mdContainerRef.value) {
-            // 读取 mdContainerRef 容器中的 css 变量 --md-editor-container-height 的值
-            const mdContainerHeight = getCSSVariableValue(mdContainerRef.value, "--md-editor-container-height")
+            // 读取 mdContainerRef 容器中的 css 变量 --md-editor-container-height-fullscreen 的值
+            const mdContainerHeight = getCSSVariableValue(mdContainerRef.value, "--md-editor-container-height-fullscreen")
             if (mdContainerHeight && editorState.isFullScreen) {
                 cmHeight.value = mdContainerHeight
             }
