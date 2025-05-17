@@ -6,6 +6,27 @@
   "description": "vue 重写项目",
   "glyphs": [
     {
+      "icon_id": "256462",
+      "name": "delete",
+      "font_class": "delete",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "774534",
+      "name": "pinned",
+      "font_class": "pinned",
+      "unicode": "e6b6",
+      "unicode_decimal": 59062
+    },
+    {
+      "icon_id": "11399224",
+      "name": "reply",
+      "font_class": "reply",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
       "icon_id": "702176",
       "name": "alert",
       "font_class": "alert",

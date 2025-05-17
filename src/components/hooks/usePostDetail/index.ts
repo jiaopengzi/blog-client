@@ -56,6 +56,7 @@ export function usePostDetail(
         prevNext, // 上一篇和下一篇文章信息
         updatedAt, // 更新时间
         categoryTag, // 分类和标签
+        commentStatus, // 评论状态
         getPostDetail, // 获取文章详情
         updatePostInteraction, // 更新文章交互状态
         setPostLike, // 设置文章点赞
@@ -132,6 +133,7 @@ export function usePostDetail(
         prevNext, // 上一篇和下一篇文章信息
         updatedAt, // 更新时间
         categoryTag, // 分类和标签
+        commentStatus, // 评论状态
         clickAuthorId, // 点击作者
         editPost, // 编辑文章
         setPostLike, // 设置文章点赞

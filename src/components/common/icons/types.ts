@@ -150,4 +150,7 @@ export enum IconKeys {
     Hourglass = "hourglass",
     Alert = "alert",
     Details = "details",
+    Delete = "delete",
+    Pinned = "pinned",
+    Reply = "reply",
 }

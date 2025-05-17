@@ -18,7 +18,7 @@ import { useUserStore } from "@/stores/user"
 import { copyText } from "@/utils/clipboard"
 import { MessageUtil } from "@/utils/message"
 
-import { type InteractionIcon, type InteractionItemProps } from "../component/interaction"
+import { type InteractionIcon, type InteractionItemProps } from "../components/interaction"
 
 /**
  * @param postMeta 文章元数据

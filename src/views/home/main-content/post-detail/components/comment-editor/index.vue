@@ -24,14 +24,14 @@ import { MessageUtil } from "@/utils/message"
 
 import type { CommentEditorProps } from "./types"
 
-defineOptions({ name: "EditorAll" })
+defineOptions({ name: "CommentEditor" })
 
 // 定义 props
 const { postId, mentions } = defineProps<CommentEditorProps>()
 
 // 事件
 const emit = defineEmits<{
-    (event: "comment-update"): void
+    (event: "comment-insert"): void
 }>()
 
 const manager = new EditorStateManager({
@@ -92,7 +92,7 @@ const insertComment = async () => {
             MessageUtil.error("评论失败，已被管理员拒绝")
         }
 
-        emit("comment-update")
+        emit("comment-insert")
     } else {
         MessageUtil.error(handleResErr(res))
     }
@@ -109,8 +109,8 @@ const insertComment = async () => {
     gap: 5px;
 
     .comment-btn {
-        width: 65px;
-        height: 40px;
+        width: 100px;
+        height: 38px;
         font-size: 16px;
         font-weight: 700;
         border-radius: 5px;

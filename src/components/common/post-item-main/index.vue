@@ -10,6 +10,8 @@
     <div class="post-item">
         <!-- 左上角提示符 -->
         <div class="top-left-tip"></div>
+
+        <!-- 右上角提示符 -->
         <div class="top-right-tip" v-if="topRightTip">{{ topRightTip }}</div>
 
         <!-- 左上角分类 -->

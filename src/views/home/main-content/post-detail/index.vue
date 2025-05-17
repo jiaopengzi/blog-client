@@ -37,7 +37,8 @@
             <DetailCategoryTag class="category-tag-bottom" :data="categoryTag" @click-category="clickCategory" @click-tag="clickTag" />
             <DetailCopyright class="copyright-bottom" :data="copyright" />
             <DetailPrevNext class="prev-next" :data="prevNext" @post-id="handlePostId" />
-            <CommentEditor class="comment-editor" :post-id="postId" />
+            <CommentList class="comment-list" :post-id="postId" :status="commentStatus" :update-time="commentListUpdateTime" />
+            <CommentEditor class="comment-editor" :post-id="postId" @comment-insert="handleInsert" />
         </section>
     </section>
     <PosterShare class="poster-share" v-if="isShowPosterShare" :data="dataPosterShare" @poster-complete="handPosterComplete" />
@@ -61,13 +62,14 @@ import { useWebFullscreen } from "@/components/hooks/useWebFullscreen"
 import { useOptionsStore } from "@/stores/options"
 import { useStatusStore } from "@/stores/status"
 
-import DetailBottomSame from "./component/bottom-same"
-import DetailCategoryTag from "./component/category-tag"
-import CommentEditor from "./component/comment-editor"
-import DetailCopyright from "./component/copyright"
-import DetailInteraction from "./component/interaction"
-import DetailPrevNext from "./component/prev-next"
-import DetailUpdatedAt from "./component/updated-at"
+import DetailBottomSame from "./components/bottom-same"
+import DetailCategoryTag from "./components/category-tag"
+import CommentEditor from "./components/comment-editor"
+import CommentList from "./components/comment-list"
+import DetailCopyright from "./components/copyright"
+import DetailInteraction from "./components/interaction"
+import DetailPrevNext from "./components/prev-next"
+import DetailUpdatedAt from "./components/updated-at"
 import { useHeading, useInteraction } from "./hooks"
 
 defineOptions({ name: "PostDetail" })
@@ -110,6 +112,7 @@ const {
     prevNext,
     updatedAt,
     categoryTag,
+    commentStatus,
     clickAuthorId,
     editPost,
     updatePostDetail,
@@ -210,6 +213,13 @@ const clickCategory = (val: PostCategory) => {
 
 const clickTag = (val: PostTag) => {
     emit("click-tag", val) // 点击标签
+}
+
+// 处理评论列表更新时间
+const commentListUpdateTime = ref(new Date()) // 评论列表更新时间
+
+const handleInsert = () => {
+    commentListUpdateTime.value = new Date() // 更新评论列表时间
 }
 
 onMounted(() => {

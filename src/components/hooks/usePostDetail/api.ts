@@ -9,6 +9,7 @@
 import { storeToRefs } from "pinia"
 import { type Ref, ref, watch } from "vue"
 
+import { CommentStatusCode } from "@/api/post/common"
 import { type InteractionRequest, postInteractionAPI } from "@/api/post/interaction"
 import { type PostLikeRequest, setPostLikeAPI } from "@/api/post/like"
 import { prevNextPostAPI, type PrevNextRequest, type PrevNextResponse } from "@/api/post/prevNext"
@@ -20,9 +21,9 @@ import { EditorStateManager } from "@/components/editor"
 import { useOptionsStore } from "@/stores/options"
 import { usePermissionRoleStore } from "@/stores/permissionRole"
 import { updateHead } from "@/utils/updateHead"
-import { type CategoryTagProps } from "@/views/home/main-content/post-detail/component/category-tag"
-import { type CopyrightProps } from "@/views/home/main-content/post-detail/component/copyright"
-import { type UpdatedAtProps } from "@/views/home/main-content/post-detail/component/updated-at"
+import { type CategoryTagProps } from "@/views/home/main-content/post-detail/components/category-tag"
+import { type CopyrightProps } from "@/views/home/main-content/post-detail/components/copyright"
+import { type UpdatedAtProps } from "@/views/home/main-content/post-detail/components/updated-at"
 
 export function useGetData(
     manager: EditorStateManager,
@@ -54,6 +55,8 @@ export function useGetData(
         categories: [], // 文章分类
         tags: [], // 文章标签
     })
+
+    const commentStatus = ref<CommentStatusCode>(CommentStatusCode.Close) // 评论状态
 
     const permissionRoleStore = usePermissionRoleStore()
 
@@ -113,6 +116,9 @@ export function useGetData(
                 // 更新分类和标签
                 categoryTag.value.categories = postData.categories
                 categoryTag.value.tags = postData.tags
+
+                // 更新评论状态
+                commentStatus.value = postData.comment_status
             }
         }
     }
@@ -193,6 +199,7 @@ export function useGetData(
         prevNext, // 上一篇和下一篇文章信息
         updatedAt, // 更新时间
         categoryTag, // 分类和标签
+        commentStatus, // 评论状态
         getPostDetail, // 获取文章详情
         updatePostInteraction, // 更新文章交互状态
         setPostLike, // 设置文章点赞

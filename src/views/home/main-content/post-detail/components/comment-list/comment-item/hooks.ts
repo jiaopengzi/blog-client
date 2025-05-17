@@ -1,0 +1,57 @@
+/*
+ * FilePath    : blog-client\src\views\home\main-content\post-detail\components\comment-list\comment-item\hooks.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 评论列表的单条评论的hooks
+ */
+
+import { ref } from "vue"
+
+import { deleteCommentAPI, type DeleteCommentRequest } from "@/api/comment/delete"
+import { updateCommentAPI, type UpdateCommentRequest } from "@/api/comment/update"
+import { handleResErr, ResponseCode } from "@/api/response"
+import { MessageUtil } from "@/utils/message"
+
+export function useCommentItem() {
+    const isShowLoading = ref<boolean>(false) // 是否显示加载动画
+
+    // 删除评论
+    async function deleteComment(id: string): Promise<void> {
+        isShowLoading.value = true // 显示加载动画
+        const req: DeleteCommentRequest = {
+            id_list: [id], // 删除的评论ID列表
+        }
+        // 删除评论
+        const res = await deleteCommentAPI(req)
+        if (res.data.code === ResponseCode.CommentDeleteSuccess) {
+            MessageUtil.success("删除成功") // 显示成功信息
+            isShowLoading.value = false // 隐藏加载动画
+            return
+        }
+
+        MessageUtil.error(handleResErr(res)) // 显示错误信息
+        isShowLoading.value = false // 隐藏加载动画
+    }
+
+    // 更新评论
+    async function updateComment(req: UpdateCommentRequest): Promise<void> {
+        isShowLoading.value = true // 显示加载动画
+        // 获取标签列表
+        const res = await updateCommentAPI(req)
+        if (res.data.code === ResponseCode.CommentUpdateSuccess) {
+            MessageUtil.success("更新成功")
+            isShowLoading.value = false // 隐藏加载动画
+            return
+        }
+
+        MessageUtil.error(handleResErr(res)) // 显示错误信息
+        isShowLoading.value = false // 隐藏加载动画
+    }
+
+    return {
+        isShowLoading, // 是否显示加载动画
+        deleteComment, // 删除评论
+        updateComment, // 更新评论
+    }
+}

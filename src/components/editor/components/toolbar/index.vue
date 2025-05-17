@@ -195,6 +195,7 @@ defineExpose({
     margin-top: pc.$editor-toolbar-margin-top;
     margin-bottom: pc.$editor-toolbar-margin-top;
     background-color: var(--jpz-bg-color);
+    border-radius: 4px;
 
     .toolbar-btn {
         border: none;

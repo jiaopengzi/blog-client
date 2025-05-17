@@ -14,9 +14,9 @@ import { CommentPinnedCode, CommentReviewCode } from "./common"
 // 更新审核评论请求
 export interface UpdateCommentRequest {
     id: string
-    content: string
-    status: CommentReviewCode
-    is_pinned: CommentPinnedCode
+    content?: string
+    status?: CommentReviewCode
+    is_pinned?: CommentPinnedCode
 }
 
 // 更新审核评论

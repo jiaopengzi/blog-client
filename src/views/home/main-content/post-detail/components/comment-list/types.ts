@@ -1,0 +1,15 @@
+/*
+ * FilePath    : blog-client\src\views\home\main-content\post-detail\components\comment-list\types.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 类型
+ */
+
+import type { CommentStatusCode } from "@/api/post/common"
+
+export interface CommentListProps {
+    postId: string
+    status: CommentStatusCode
+    updateTime: Date | null
+}
