@@ -6,6 +6,7 @@
  * Description : 更新审核评论
  */
 
+import type { StreamIdStatusResWithId } from "@/api/helper/getStreamIDStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -19,8 +20,11 @@ export interface UpdateCommentRequest {
     is_pinned?: CommentPinnedCode
 }
 
+// 更新评论响应
+export type UpdateCommentRes = StreamIdStatusResWithId
+
 // 更新审核评论
-export function updateCommentAPI(requestData: UpdateCommentRequest): ResPromise<Res<void>> {
+export function updateCommentAPI(requestData: UpdateCommentRequest): ResPromise<Res<UpdateCommentRes>> {
     const urlStr = routerGroup + "/comment/update"
     return request({
         url: urlStr,

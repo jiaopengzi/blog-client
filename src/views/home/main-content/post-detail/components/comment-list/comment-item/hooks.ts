@@ -11,46 +11,55 @@ import { ref } from "vue"
 import { deleteCommentAPI, type DeleteCommentRequest } from "@/api/comment/delete"
 import { updateCommentAPI, type UpdateCommentRequest } from "@/api/comment/update"
 import { handleResErr, ResponseCode } from "@/api/response"
+import { pollingGetStreamIDStatus } from "@/utils/getStreamIDStatus"
 import { MessageUtil } from "@/utils/message"
 
 export function useCommentItem() {
-    const isShowLoading = ref<boolean>(false) // 是否显示加载动画
+    const loadingDelete = ref<boolean>(false)
+    const loadingUpdate = ref<boolean>(false)
 
     // 删除评论
     async function deleteComment(id: string): Promise<void> {
-        isShowLoading.value = true // 显示加载动画
+        loadingDelete.value = true // 显示加载动画
         const req: DeleteCommentRequest = {
             id_list: [id], // 删除的评论ID列表
         }
         // 删除评论
         const res = await deleteCommentAPI(req)
         if (res.data.code === ResponseCode.CommentDeleteSuccess) {
+            // 轮询后端是否完成
+            await pollingGetStreamIDStatus(res.data.data.stream_id)
+
             MessageUtil.success("删除成功") // 显示成功信息
-            isShowLoading.value = false // 隐藏加载动画
+            loadingDelete.value = false // 隐藏加载动画
             return
         }
 
         MessageUtil.error(handleResErr(res)) // 显示错误信息
-        isShowLoading.value = false // 隐藏加载动画
+        loadingDelete.value = false // 隐藏加载动画
     }
 
     // 更新评论
     async function updateComment(req: UpdateCommentRequest): Promise<void> {
-        isShowLoading.value = true // 显示加载动画
+        loadingUpdate.value = true // 显示加载动画
         // 获取标签列表
         const res = await updateCommentAPI(req)
         if (res.data.code === ResponseCode.CommentUpdateSuccess) {
+            // 轮询后端是否完成
+            await pollingGetStreamIDStatus(res.data.data.stream_id)
+
             MessageUtil.success("更新成功")
-            isShowLoading.value = false // 隐藏加载动画
+            loadingUpdate.value = false // 隐藏加载动画
             return
         }
 
         MessageUtil.error(handleResErr(res)) // 显示错误信息
-        isShowLoading.value = false // 隐藏加载动画
+        loadingUpdate.value = false // 隐藏加载动画
     }
 
     return {
-        isShowLoading, // 是否显示加载动画
+        loadingDelete, // 删除评论加载状态
+        loadingUpdate, // 更新评论加载状态
         deleteComment, // 删除评论
         updateComment, // 更新评论
     }

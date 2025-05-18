@@ -58,6 +58,7 @@ export function useEdit(
                 if (res.data.code === ResponseCode.PostViewByIDSuccess) {
                     const data = res.data.data
                     // 更新编辑器内容
+                    stateManager.setInitDocIsEmpty(false)
                     stateManager.updateState(data.post_content)
                     postInfoForm.id = data.id
                     postInfoForm.post_author = data.author_info.id

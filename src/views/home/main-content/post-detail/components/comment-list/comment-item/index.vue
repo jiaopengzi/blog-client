@@ -29,13 +29,13 @@
                 </el-tooltip>
 
                 <el-tooltip v-if="isShowDeleteBtn" effect="dark" content="删除" :hide-after="0" :show-after="300">
-                    <el-button type="default" class="header-action-item" @click="handleDelete">
+                    <el-button type="default" class="header-action-item" :loading="loadingDelete" @click="handleDelete">
                         <j-icon :name="IconKeys.Delete" custom-class="iconfont" />
                     </el-button>
                 </el-tooltip>
 
                 <el-tooltip v-if="isShowPinnedBtn" effect="dark" :content="pinnedText" :hide-after="0" :show-after="300">
-                    <el-button type="default" class="header-action-item" @click="handlePinned">
+                    <el-button type="default" class="header-action-item" :loading="loadingUpdate" @click="handlePinned">
                         <j-icon :name="IconKeys.Pinned" custom-class="iconfont" />
                     </el-button>
                 </el-tooltip>
@@ -95,6 +95,8 @@ const state = manager.getState()
 // preview
 const { showImageViewer, closeImageViewer } = usePreview(manager)
 const {
+    loadingDelete, // 删除评论加载状态
+    loadingUpdate, // 更新评论加载状态
     deleteComment, // 删除评论
     updateComment, // 更新评论
 } = useCommentItem()

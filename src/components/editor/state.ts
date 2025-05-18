@@ -7,7 +7,7 @@
  */
 
 import type { Completion } from "@codemirror/autocomplete"
-import { reactive } from "vue"
+import { type Reactive, reactive } from "vue"
 
 import { request } from "@/api/request"
 import { extractImageUrlsFromHtml } from "@/utils/img"
@@ -22,7 +22,7 @@ import { createDefaultEditorState, getMarkdownHeadingLines, htmlHandleUtf8BOM, m
  * @description: 编辑器状态管理
  */
 export class EditorStateManager {
-    private state: EditorState
+    private state: Reactive<EditorState>
 
     // 初始化为默认状态
     constructor(options: EditorStateOptions = {}) {
@@ -30,7 +30,7 @@ export class EditorStateManager {
     }
 
     // 获取滚动条隐藏的 html 字符串
-    get getScrollHideHtmlStr(): string {
+    getScrollHideHtmlStr(): string {
         return markdownToHtml(this.state.scrollHideViewStr, this.state.isRemoveFirstH1) // markdown 转 html
     }
 
@@ -62,6 +62,11 @@ export class EditorStateManager {
     showImageViewer = (imgUrls: string[], isShowElImageViewer: boolean): void => {
         this.setImgUrls(imgUrls)
         this.setIsShowElImageViewer(isShowElImageViewer)
+    }
+
+    // 设置初始化文档是否为空
+    setInitDocIsEmpty(initDocIsEmpty: boolean): void {
+        this.state.initDocIsEmpty = initDocIsEmpty
     }
 
     // 设置是否显示目录

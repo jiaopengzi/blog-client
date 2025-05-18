@@ -80,6 +80,14 @@ export type MarkdownEditorCommands = {
     [key in CommandsKey]: MarkdownEditorCommandItem
 }
 
+// 清空编辑器
+export const clearEditorView = (view: EditorView) => {
+    view.dispatch({
+        changes: { from: 0, to: view.state.doc.length, insert: "" },
+        selection: { anchor: 0, head: 0 }, // 将光标移至文档起始位置
+    })
+}
+
 /**
  * @description: 创建 markdown 编辑器 所有 排序 命令 集合对象
  * @param editorStateManager 编辑器状态管理器
@@ -114,12 +122,7 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         [CommandsKey.Clear]: {
             tip: "清空",
             hotKey: "Ctrl+Shift+C",
-            action: (view: EditorView) => {
-                view.dispatch({
-                    changes: { from: 0, to: view.state.doc.length, insert: "" },
-                    selection: { anchor: 0, head: 0 }, // 将光标移至文档起始位置
-                })
-            },
+            action: clearEditorView,
             icon: IconKeys.Clear,
         },
         // 粗体

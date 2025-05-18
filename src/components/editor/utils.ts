@@ -31,6 +31,7 @@ export function createDefaultEditorState(options: EditorStateOptions = {}): Edit
         tocShow: false, // 是否显示目录
 
         editorContent: "", // 编辑器内容
+        initDocIsEmpty: true, // 初始内容是否为空, 默认为 true 即默认为空
         editorShow: true, // 是否显示编辑器
         scrollHideViewStr: "", // 滚动条隐藏的编辑器 markdown 字符串
         isSyncScroll: true, // 是否同步滚动

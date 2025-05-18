@@ -205,4 +205,5 @@ export enum ResponseCode {
     ConnectionESError = 9018, // 连接 ES 失败
     HasAdmin = 9019, // 已经存在管理员
     NoAdmin = 9020, // 不存在管理员
+    GetStreamIDStatusSuccess = 9021, // 获取streamID状态成功
 }

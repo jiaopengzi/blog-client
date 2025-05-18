@@ -20,6 +20,7 @@ import { insertCommentAPI, type InsertCommentRequest } from "@/api/comment/inser
 import { handleResErr, ResponseCode } from "@/api/response"
 import JEditor, { EditorStateManager } from "@/components/editor"
 import { useEditor } from "@/components/hooks/useEditor"
+import { pollingGetStreamIDStatus } from "@/utils/getStreamIDStatus"
 import { MessageUtil } from "@/utils/message"
 
 import type { CommentEditorProps } from "./types"
@@ -45,11 +46,11 @@ useEditor(manager)
 watch(
     () => mentions,
     (newMentions) => {
-        // // @提及示例
-        // manager.setMentions([
-        //     { label: "@jiaopengzi", apply: "[@jiaopengzi](id123)" },
-        //     { label: "@焦棚子", apply: "[@焦棚子](id122)" },
-        // ])
+        // @提及示例
+        manager.setMentions([
+            { label: "@jiaopengzi", apply: "[@jiaopengzi](id123)" },
+            { label: "@焦棚子", apply: "[@焦棚子](id122)" },
+        ])
         if (!newMentions) return
         manager.setMentions(newMentions)
     },
@@ -87,11 +88,16 @@ const insertComment = async () => {
         if (data.status === CommentReviewCode.Pending) {
             MessageUtil.warning("评论成功，等待审核", 6000)
         } else if (data.status === CommentReviewCode.Approved) {
+            // 轮询后端是否完成
+            await pollingGetStreamIDStatus(data.stream_id)
+            // 提示成功
             MessageUtil.success("评论成功", 6000)
         } else if (data.status === CommentReviewCode.Rejected) {
             MessageUtil.error("评论失败，已被管理员拒绝")
         }
 
+        // 清空编辑器
+        manager.updateState("")
         emit("comment-insert")
     } else {
         MessageUtil.error(handleResErr(res))

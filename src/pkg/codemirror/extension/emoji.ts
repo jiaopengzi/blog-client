@@ -18,6 +18,7 @@ import emojiCompletionList from "@/utils/emoji"
  */
 export function emojiOverride(context: CompletionContext): CompletionResult | null {
     const keyword = context.matchBefore(/:[-_0-9a-zA-Z\s]+/) // 正字匹配 :开始的内容包括空格 - _ 数字 字母
+
     if (!keyword) return null // 如果没有匹配到则不补全
     if (keyword.from === keyword.to && !context.explicit) return null // 如果没有输入内容则不补全
 

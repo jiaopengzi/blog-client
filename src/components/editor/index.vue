@@ -41,6 +41,7 @@
                     :cm-command="state.cmCommand"
                     :is-watch-mouse="true"
                     :is-full-screen="state.isFullScreen"
+                    :init-doc-is-empty="state.initDocIsEmpty"
                     @handle-scroll="handleScroll"
                     @is-mouse-in-element="handleMouseInCmEditor"
                     @update-editor-doc="updateEditorDoc"

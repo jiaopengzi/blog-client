@@ -36,6 +36,7 @@ export interface EditorState {
 
     // 编辑器
     editorContent: string // 编辑器内容
+    initDocIsEmpty: boolean // 初始内容是否为空, 默认为 true 即默认为空
     editorShow: boolean // 是否显示编辑器
     scrollHideViewStr: string // 滚动条隐藏的编辑器 view markdown 字符串
     isSyncScroll: boolean // 是否异步滚动

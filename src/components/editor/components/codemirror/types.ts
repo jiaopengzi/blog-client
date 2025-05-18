@@ -31,6 +31,7 @@ export interface MarkdownHeadingLine {
 
 export interface CodeEditorProps {
     doc: string // 编辑器内容
+    initDocIsEmpty?: boolean // 初始内容是否为空, 默认为 true 即默认为空
     width?: string // 宽度
     height?: string // 高度
     vimMode?: boolean // 是否开启 vim 模式

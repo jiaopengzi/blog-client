@@ -22,16 +22,17 @@ import type { MarkdownEditorCommandItem } from "@/components/editor/command"
 import { CommandsKey, editorInsertContent, editorInsertFormatContent, markdownEditorCommands } from "@/components/editor/command"
 import { createCustomSetup, type CustomSetupOptions, EditorState, EditorView, vimModeCompartment } from "@/pkg/codemirror/setup"
 
+import { clearEditorView } from "../../command/constant"
 import type { CodeEditorProps } from "./types"
 
 defineOptions({ name: "EditorCodemirror" })
 
 const {
     doc, // 编辑器内容
+    initDocIsEmpty = true, // 初始文档是否为空,默认为空
     height, // 编辑器高度
     width, // 编辑器宽度
     vimMode, // 是否开启 vim 模式
-
     mentions, // @ 提及补全
     headingShowCurrentIndex, // 当前展示的标题的索引
     tocMarkdown, // markdown 目录内容
@@ -39,6 +40,7 @@ const {
     cmCommand, // 编辑器命令
     isUserScrollCmEditor, // 是否开启用户滚动编辑器
 } = defineProps<CodeEditorProps>() // 定义 props
+
 const codemirrorRef = useTemplateRef<HTMLElement | null>("codemirrorRef") // 编辑器 dom 节点
 
 // 定义 emits 子组件 传参
@@ -89,7 +91,7 @@ watch(
 )
 
 // 编辑器实例
-let cmView: EditorView = null! // 编辑器实例 null后的感叹号表示不为空
+let cmView: EditorView
 
 const options: Ref<CustomSetupOptions> = ref({
     vimMode: vimMode || false, // 是否开启 vim 模式
@@ -100,28 +102,27 @@ const options: Ref<CustomSetupOptions> = ref({
 const updateDocInfo: Extension = EditorView.updateListener.of((viewUpdate: ViewUpdate) => {
     if (viewUpdate.docChanged) {
         const { state } = viewUpdate.view
-        const newDoc = state.doc.toString()
-        if (newDoc !== doc) {
-            emit("update-editor-doc", newDoc) // 更新编辑器内容 提交给父组件
-        }
+        emit("update-editor-doc", state.doc.toString()) // 更新编辑器内容 提交给父组件
     }
 })
 
 // 初始化 CodeMirror
-const initializeCodeMirror = (options: CustomSetupOptions) => {
-    // 初始化编辑器
-    const state = EditorState.create({
-        doc: doc || "",
-        extensions: [createCustomSetup(options), updateDocInfo],
-    })
+const initCodeMirror = (options: CustomSetupOptions) => {
+    if (codemirrorRef.value) {
+        // 初始化编辑器
+        const state = EditorState.create({
+            doc: doc || "",
+            extensions: [createCustomSetup(options), updateDocInfo],
+        })
 
-    // 创建编辑器实例
-    cmView = new EditorView({
-        state,
-        parent: codemirrorRef.value!,
-    })
+        // 创建编辑器实例
+        cmView = new EditorView({
+            state,
+            parent: codemirrorRef.value,
+        })
 
-    cmView.scrollDOM.addEventListener("scroll", handleScroll) // 监听滚动事件
+        cmView.scrollDOM.addEventListener("scroll", handleScroll) // 监听滚动事件
+    }
 }
 
 // 执行按钮命令
@@ -203,11 +204,16 @@ const handleScroll = () => {
     )
 }
 
-// 监听 props.codemirrorDoc 变化 更新编辑器内容 只有第一次加载的时候才更新
-const stopWatch = watch(
+// 初始化计数器
+let initCount = 0
+
+// 监听 props.doc 变化 更新编辑器内容
+watch(
     () => doc,
     (newDoc) => {
-        if (newDoc && cmView) {
+        // 当 doc 初始值不为空时, 设置编辑器初始内容为 newDoc, 只在第一次加载时执行
+        if (!initDocIsEmpty && initCount === 0 && newDoc && cmView) {
+            initCount++ // 初始化计数器加1
             cmView.dispatch({
                 changes: {
                     from: 0,
@@ -215,12 +221,16 @@ const stopWatch = watch(
                     insert: newDoc,
                 },
             })
-            stopWatch() // 只执行一次
+        }
+
+        // 当 doc 为空时, 清空编辑器
+        if (newDoc === "") {
+            clearEditorView(cmView) // 清空编辑器
         }
     },
-    { immediate: true },
 )
 
+// 监听 props.vimMode 变化 更改 vim 模式
 watch(
     () => vimMode,
     (newVal) => {
@@ -234,12 +244,12 @@ watch(
     },
 )
 
+// 监听 props.mentions 变化 更新编辑器内容
 watch(
     () => mentions,
     (newVal) => {
         // 更新 mentions
         options.value.mention = newVal
-        initializeCodeMirror(options.value) // 重新初始化编辑器
     },
     { immediate: true, deep: true },
 )
@@ -256,7 +266,7 @@ watch(
 // 初始化
 onMounted(() => {
     initializeCssVariable() // 初始化 css 变量
-    initializeCodeMirror(options.value) // 初始化 CodeMirror
+    initCodeMirror(options.value) // 初始化 CodeMirror
 })
 
 onUnmounted(() => {
