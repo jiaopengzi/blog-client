@@ -8,6 +8,13 @@
 
 import type { Completion } from "@codemirror/autocomplete"
 
+import type { JEditorRef } from "@/components/editor"
+
+export interface CommentEditorRef extends HTMLElement {
+    root: HTMLElement
+    editor: JEditorRef
+}
+
 export interface CommentEditorProps {
     postId: string
     mentions?: Completion[]

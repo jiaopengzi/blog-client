@@ -9,9 +9,13 @@
 import type { Completion } from "@codemirror/autocomplete"
 
 import { CommandsKey } from "./command"
-import type { CmCommand } from "./components/codemirror"
+import type { CmCommand, CodemirrorRef } from "./components/codemirror"
 import type { ViewCommand } from "./components/preview"
 import type { Heading } from "./components/toc"
+
+export interface JEditorRef extends HTMLElement {
+    codemirror: CodemirrorRef
+}
 
 // markdown 标题行号类型
 export interface MarkdownHeadingLine {

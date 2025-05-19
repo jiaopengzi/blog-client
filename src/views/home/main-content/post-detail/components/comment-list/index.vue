@@ -7,14 +7,14 @@
 -->
 
 <template>
-    <div class="comment-list-container">
+    <div class="comment-list-container" v-if="pagination.total > 0">
         <div class="comment-list">
             <div v-for="item in pagination.records" :key="item.id" class="comment-item">
-                <CommentItem :data="item" :status="status" @pinned="handlePinned" @delete="handleDelete" />
+                <CommentItem :data="item" :status="status" @reply="handleReply" @delete="handleDelete" @pinned="handlePinned" />
             </div>
         </div>
         <!-- 分页 -->
-        <div class="pagination-container">
+        <div class="pagination-container" v-if="pagination.page_count > 1">
             <div class="loader" v-show="isShowLoading"></div>
             <div class="pagination-block" ref="paginationBlockRef">
                 <!-- 注意这里使用 v-model 双向绑定, 会造成意外的触发在 update 中手动更新 -->
@@ -36,10 +36,12 @@
 </template>
 
 <script lang="ts" setup>
-import { useIntersectionObserver } from "@vueuse/core"
+import type { Completion } from "@codemirror/autocomplete"
 import { storeToRefs } from "pinia"
-import { computed, nextTick, onBeforeMount, onMounted, onUnmounted, ref, useTemplateRef, watch } from "vue"
+import { computed, onBeforeMount, reactive, watch } from "vue"
 
+import { type CommentRes } from "@/api/comment/common"
+import { type ViewCommentRequest } from "@/api/comment/viewByPostID"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 
 import CommentItem from "./comment-item"
@@ -48,63 +50,68 @@ import type { CommentListProps } from "./types"
 
 defineOptions({ name: "CommentList" })
 
+// 事件
+const emit = defineEmits<{
+    (event: "reply", comment: CommentRes): void
+    (event: "mentions", mentions: Completion[]): void
+}>()
+
 // 定义 props
 const { postId, status, updateTime } = defineProps<CommentListProps>()
 
-const deviceStore = useDeviceStore()
+const req = reactive<ViewCommentRequest>({ post_id: postId })
 
+// 分页组件的layout
+const deviceStore = useDeviceStore()
 const { device } = storeToRefs(deviceStore)
+const paginationLayout = computed(() => {
+    return device.value === DeviceType.PHONE ? "total, prev, pager, next, sizes" : "total, prev, pager, next, jumper, sizes"
+})
 
 const {
     pagination, // 分页数据
     updateCurrentPage, // 更新当前页
     updatePageSize, // 更新每页显示条数
     updatePaginate, // 更新分页
+    mentions, // @ 提及数据
     isShowLoading, // 是否显示加载动画
     handleDelete, // 处理删除
     handlePinned, // 处理置顶
-} = useCommentList(postId)
+} = useCommentList(req)
 
-const paginationLayout = computed(() => {
-    return device.value === DeviceType.PHONE ? "total, prev, pager, next, sizes" : "total, prev, pager, next, jumper, sizes"
-})
+// 处理回复
+const handleReply = (commentID: string) => {
+    // 从评论列表中获取评论
+    const comment = pagination.records.find((item) => item.id === commentID)
+    if (!comment) return
+    emit("reply", comment)
+}
+
+// 更新数据
+const updateData = async () => {
+    await updatePaginate()
+    emit("mentions", mentions.value)
+}
 
 // 根据时间戳更新分页
 watch(
     () => updateTime,
     async () => {
-        await updatePaginate()
+        await updateData()
     },
 )
 
-// 分页组件 ref
-const paginationBlockRef = useTemplateRef("paginationBlockRef")
-
-let stopIntersectionObserver: () => void // 停止监听函数
-const isInitialRender = ref(true) // 是否是初始渲染
-
-onMounted(async () => {
-    await nextTick()
-
-    const { stop } = useIntersectionObserver(paginationBlockRef, ([entry]) => {
-        if (isInitialRender.value) {
-            // 初次加载时不emit
-            isInitialRender.value = false
-        } else {
-            // 非初次加载时，根据intersection情况emit
-            // emit("paginationBlockVisible", entry?.isIntersecting || false)
-        }
-    })
-
-    stopIntersectionObserver = stop
-})
-
-onUnmounted(() => {
-    stopIntersectionObserver()
-})
+// 文章变化时更新分页
+watch(
+    () => postId,
+    async (newVal) => {
+        req.post_id = newVal
+        await updateData()
+    },
+)
 
 onBeforeMount(async () => {
-    await updatePaginate()
+    await updateData()
 })
 </script>
 <style lang="scss" scoped>

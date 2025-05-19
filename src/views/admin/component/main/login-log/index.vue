@@ -90,27 +90,6 @@ const cols: TableColumn[] = reactive([
         align: "center",
     },
     {
-        prop: "ip_country",
-        label: "国家",
-        sortable: true,
-        minWidth: 180,
-        align: "center",
-    },
-    {
-        prop: "ip_region_name",
-        label: "地区",
-        sortable: true,
-        minWidth: 140,
-        align: "center",
-    },
-    {
-        prop: "ip_city",
-        label: "城市",
-        sortable: true,
-        minWidth: 140,
-        align: "center",
-    },
-    {
         prop: "platform",
         label: "平台",
         sortable: true,

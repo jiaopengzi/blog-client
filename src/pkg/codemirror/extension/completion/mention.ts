@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\pkg\codemirror\extension\mention.ts
+ * FilePath    : blog-client\src\pkg\codemirror\extension\completion\mention.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

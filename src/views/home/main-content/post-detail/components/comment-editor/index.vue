@@ -6,19 +6,19 @@
  * Description : 评论编辑器
 -->
 <template>
-    <div class="comment-editor">
-        <JEditor class="comment-main" :state-manager="manager" />
+    <div ref="rootRef" class="comment-editor">
+        <JEditor ref="jEditorRef" class="comment-main" :state-manager="manager" />
         <el-button class="comment-btn" type="default" @click="insertComment" :loading="loading">{{ btnTextInner }}</el-button>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from "vue"
+import { ref, useTemplateRef, watch } from "vue"
 
 import { CommentReviewCode } from "@/api/comment/common"
 import { insertCommentAPI, type InsertCommentRequest } from "@/api/comment/insert"
 import { handleResErr, ResponseCode } from "@/api/response"
-import JEditor, { EditorStateManager } from "@/components/editor"
+import JEditor, { EditorStateManager, type JEditorRef } from "@/components/editor"
 import { useEditor } from "@/components/hooks/useEditor"
 import { pollingGetStreamIDStatus } from "@/utils/getStreamIDStatus"
 import { MessageUtil } from "@/utils/message"
@@ -35,6 +35,9 @@ const emit = defineEmits<{
     (event: "comment-insert"): void
 }>()
 
+const rootRef = useTemplateRef<HTMLElement>("rootRef")
+const jEditorRef = useTemplateRef<JEditorRef>("jEditorRef")
+
 const manager = new EditorStateManager({
     mode: "comment",
     previewShow: false,
@@ -43,18 +46,14 @@ const manager = new EditorStateManager({
 
 useEditor(manager)
 
+// 更新 mentions
 watch(
     () => mentions,
     (newMentions) => {
-        // @提及示例
-        manager.setMentions([
-            { label: "@jiaopengzi", apply: "[@jiaopengzi](id123)" },
-            { label: "@焦棚子", apply: "[@焦棚子](id122)" },
-        ])
         if (!newMentions) return
         manager.setMentions(newMentions)
     },
-    { immediate: true },
+    { deep: true },
 )
 
 // 是否加载中
@@ -106,6 +105,11 @@ const insertComment = async () => {
     btnTextInner.value = "提交"
     loading.value = false
 }
+
+defineExpose({
+    root: rootRef,
+    editor: jEditorRef,
+})
 </script>
 
 <style scoped lang="scss">

@@ -8,6 +8,7 @@
 
 import { acceptHMRUpdate, defineStore } from "pinia"
 
+import { getIpInfoAPI, type IpInfoRes } from "@/api/helper/ipInfo"
 import { ResponseCode } from "@/api/response"
 import { getAPPOptionAPI, type GetAPPOptionResponse } from "@/api/setting/getAPPOption"
 import { type HeadProps } from "@/components/common/head-tag"
@@ -52,6 +53,7 @@ export interface OptionsStore {
     navList: NavItemProps[]
     navObj: Record<string, NavItemProps>
     navActiveIndex: string
+    ipInfo: IpInfoRes
 }
 
 // 创建一个空的选项存储
@@ -64,6 +66,7 @@ function createEmptyOptionsStore(): OptionsStore {
         navList: [],
         navObj: {},
         navActiveIndex: "",
+        ipInfo: {} as IpInfoRes,
     }
 }
 
@@ -113,6 +116,11 @@ export const useOptionsStore = defineStore("options", {
         // 获取当前激活的导航索引
         getNavActiveIndex(): string {
             return this.navActiveIndex
+        },
+
+        // 获取ip信息
+        getIpInfo(): IpInfoRes {
+            return this.ipInfo
         },
     },
 
@@ -222,6 +230,14 @@ export const useOptionsStore = defineStore("options", {
         // 设置导航激活索引
         setNavActiveIndex(index: string): void {
             this.navActiveIndex = index
+        },
+
+        // 更新ip信息
+        async updateIpInfo(): Promise<void> {
+            const res = await getIpInfoAPI()
+            if (res.status === 200 && res.data.status === "success") {
+                this.ipInfo = res.data
+            }
         },
     },
 })

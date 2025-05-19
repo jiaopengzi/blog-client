@@ -43,9 +43,6 @@ export interface LoginLog extends DataWithImg {
     user_id: string // 用户id
     user_name: string // 用户名
     ip_address: string // ip地址
-    ip_country: string // 国家
-    ip_region_name: string // 地区
-    ip_city: string // 城市
     platform: string // 平台
     login_type: string // 登录方式
 }

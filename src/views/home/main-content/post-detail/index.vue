@@ -37,17 +37,26 @@
             <DetailCategoryTag class="category-tag-bottom" :data="categoryTag" @click-category="clickCategory" @click-tag="clickTag" />
             <DetailCopyright class="copyright-bottom" :data="copyright" />
             <DetailPrevNext class="prev-next" :data="prevNext" @post-id="handlePostId" />
-            <CommentList class="comment-list" :post-id="postId" :status="commentStatus" :update-time="commentListUpdateTime" />
-            <CommentEditor class="comment-editor" :post-id="postId" @comment-insert="handleInsert" />
+            <CommentList
+                class="comment-list"
+                :post-id="postId"
+                :status="commentStatus"
+                :update-time="commentListUpdateTime"
+                @reply="handleReply"
+                @mentions="handleMentions"
+            />
+            <CommentEditor ref="commentEditorRef" class="comment-editor" :post-id="postId" :mentions="mentions" @comment-insert="handleInsert" />
         </section>
     </section>
     <PosterShare class="poster-share" v-if="isShowPosterShare" :data="dataPosterShare" @poster-complete="handPosterComplete" />
 </template>
 
 <script lang="ts" setup>
+import type { Completion } from "@codemirror/autocomplete"
 import { storeToRefs } from "pinia"
 import { nextTick, onBeforeMount, onMounted, reactive, ref, useTemplateRef, watch } from "vue"
 
+import { type CommentRes } from "@/api/comment/common"
 import { type ViewPostByIDRequest } from "@/api/post/viewByID"
 import { type PostCategory } from "@/api/postCategory/view"
 import { type PostTag } from "@/api/postTag/view"
@@ -64,7 +73,7 @@ import { useStatusStore } from "@/stores/status"
 
 import DetailBottomSame from "./components/bottom-same"
 import DetailCategoryTag from "./components/category-tag"
-import CommentEditor from "./components/comment-editor"
+import CommentEditor, { type CommentEditorRef } from "./components/comment-editor"
 import CommentList from "./components/comment-list"
 import DetailCopyright from "./components/copyright"
 import DetailInteraction from "./components/interaction"
@@ -98,6 +107,7 @@ const { head } = storeToRefs(optionsStore)
 const { postId, anchorHash } = storeToRefs(statusStore)
 
 const postDetailRef = useTemplateRef("webFullscreenRef")
+const commentEditorRef = useTemplateRef<CommentEditorRef>("commentEditorRef")
 
 const { toggle } = useWebFullscreen(postDetailRef)
 
@@ -160,6 +170,27 @@ watch(
 const handlePostId = async (postId: string) => {
     await statusStore.setAnchorHash("") // 清空锚点
     await statusStore.setPostId(postId) // 设置文章id
+}
+
+// 处理@提及数据
+const mentions = ref<Completion[]>([]) // @提及数据
+const handleMentions = (val: Completion[]) => {
+    mentions.value = val // 设置@提及数据
+}
+
+// 处理回复具体评论
+const handleReply = (comment: CommentRes) => {
+    if (!commentEditorRef.value) return
+    // TODO 后续考虑是否构造用户页面
+
+    // 构造@提及数据
+    const content = `[@${comment.user_info.user_display_name}](${comment.user_info.user_name}) `
+
+    // 插入@提及数据
+    commentEditorRef.value.editor.codemirror.insertContent(content)
+
+    // 平滑滚动到评论编辑器
+    commentEditorRef.value.root.scrollIntoView({ behavior: "smooth", block: "center" })
 }
 
 // 监听文章详情

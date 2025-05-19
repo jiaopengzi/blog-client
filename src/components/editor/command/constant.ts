@@ -9,7 +9,7 @@
 import { redo, undo } from "@codemirror/commands"
 
 import { IconKeys } from "@/components/common/icons"
-import { EditorView } from "@/pkg/codemirror/setup"
+import { EditorView } from "@/pkg/codemirror"
 
 export enum CommandsKey {
     Undo = "undo",

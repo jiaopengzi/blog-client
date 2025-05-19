@@ -7,7 +7,7 @@
  */
 
 import type { MarkdownEditorCommandItem } from "@/components/editor/command"
-import { EditorView } from "@/pkg/codemirror/setup"
+import { EditorView } from "@/pkg/codemirror"
 
 // 从当前光标位置开始插入内容
 const insert = (view: EditorView, position: number, content: string) => {

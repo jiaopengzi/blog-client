@@ -37,7 +37,7 @@ export function socialBind(loginType: SocialLoginType): ResPromise<Res<string>> 
     })
 }
 
-// QQ绑定回调
+// 绑定回调
 export function socialBindCallback(code: string, loginType: SocialLoginType): ResPromise<Res<unknown>> {
     const urlStr = `${routerGroup}/social/bind/callback?code=${code}&login-type=${loginType}`
     return request({

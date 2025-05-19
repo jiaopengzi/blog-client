@@ -6,13 +6,13 @@
  * @Description  : 重新封装 codemirror 参考: codemirror 包源码 https://www.npmjs.com/package/codemirror
  */
 
-import { autocompletion, closeBrackets, closeBracketsKeymap, type Completion, completionKeymap } from "@codemirror/autocomplete"
+import { closeBrackets, closeBracketsKeymap, completionKeymap } from "@codemirror/autocomplete"
 import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands"
 import { markdown } from "@codemirror/lang-markdown"
 import { bracketMatching, defaultHighlightStyle, foldGutter, foldKeymap, indentOnInput, syntaxHighlighting } from "@codemirror/language"
 import { lintKeymap } from "@codemirror/lint"
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search"
-import { Compartment, EditorState, type Extension } from "@codemirror/state"
+import { EditorState, type Extension } from "@codemirror/state"
 import {
     crosshairCursor,
     drawSelection,
@@ -26,39 +26,20 @@ import {
     lineNumbers,
     rectangularSelection,
 } from "@codemirror/view"
-import { vim } from "@replit/codemirror-vim"
 
 import { bottomPanelExt } from "./extension/bottomPanel"
-import { emojiOverride } from "./extension/emoji"
+import { completionCompartment, unifiedCompletion } from "./extension/completion"
 import { customKeymap } from "./extension/hotkey"
 import { handleDropImage, handlePasteImage } from "./extension/imgUpload"
-import { mentionOverride } from "./extension/mention"
-
-const vimModeCompartment = new Compartment()
-const themeCompartment = new Compartment()
-
-// 主题名称枚举
-// export enum ThemeName {
-// }
-
-// createCustomSetup 定义options 类型， 首先是是否开启 vim 模式， 其次是是否开启 markdown 语法高亮
-type CustomSetupOptions = {
-    vimMode?: boolean // 是否开启 vim 模式
-    // theme?: ThemeName // 主题名称
-    mention?: Completion[] // @提及补全
-}
-
-const defaultOptions: CustomSetupOptions = {
-    vimMode: false, // 默认不开启 vim 模式
-    // theme: ThemeName.Dracula, // 默认主题
-    mention: [], // 默认不开启 @ 提及补全
-}
+import { vim, vimModeCompartment } from "./extension/vim"
+import { type CustomSetupOptions, defaultOptions } from "./options"
 
 // 自定义 codemirror setup 工厂函数
-const createCustomSetup = (options: CustomSetupOptions = defaultOptions) => {
+export const createCustomSetup = (options: CustomSetupOptions = defaultOptions) => {
     const baseExtension: Extension[] = [
         // 参考 https://github.com/replit/codemirror-vim/issues/227
-        vimModeCompartment.of(options.vimMode ? vim({ status: true }) : []),
+        vimModeCompartment.of(options.vimMode ? vim({ status: true }) : []), // vim 模式
+        completionCompartment.of(unifiedCompletion(options.mention)), // 补全
         EditorView.lineWrapping, // 自动换行
         lineNumbers(), // 行号
         highlightActiveLineGutter(), // 高亮当前行 gutter
@@ -72,7 +53,6 @@ const createCustomSetup = (options: CustomSetupOptions = defaultOptions) => {
         syntaxHighlighting(defaultHighlightStyle, { fallback: true }), // 语法高亮
         bracketMatching(), // 匹配
         closeBrackets(), // 关闭括号
-        autocompletion({ override: [mentionOverride(options.mention), emojiOverride] }), // 自动补全
         rectangularSelection(), // 矩形选择
         crosshairCursor(), // 十字光标
         highlightActiveLine(), // 高亮当前行
@@ -96,8 +76,3 @@ const createCustomSetup = (options: CustomSetupOptions = defaultOptions) => {
     ]
     return baseExtension
 }
-
-export { EditorState } from "@codemirror/state"
-export { EditorView } from "@codemirror/view"
-export { createCustomSetup, themeCompartment, vimModeCompartment }
-export type { CustomSetupOptions }

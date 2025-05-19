@@ -157,6 +157,7 @@
             </div>
         </el-container>
     </section>
+
     <!-- 媒体文件选择弹窗 -->
     <SelectMedia v-if="mediaDialogVisible" v-model="mediaDialogVisible" @insert-data="insertData" />
 </template>
@@ -492,11 +493,13 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 const insertData = (data: TableData[]) => {
     // 不满足条件直接返回
     if (!editorPostRef.value || data.length === 0) return
+
     // 遍历数据插入到编辑器
     for (const item of data) {
         // 判断 file_type 是否在 item 中, 即为 Media 类型
         if (!("file_type" in item)) return
         let content = ""
+
         // 视频 hls
         if (item.file_type.startsWith("video") && item.is_generate_hls) {
             const videoID = item.file_name.split(".")[0]

@@ -15,12 +15,13 @@ import "@/assets/scss/codemirror.scss"
 
 import { type Extension } from "@codemirror/state"
 import type { ViewUpdate } from "@codemirror/view"
-import { vim } from "@replit/codemirror-vim"
 import { onMounted, onUnmounted, type Ref, ref, useTemplateRef, watch } from "vue"
 
 import type { MarkdownEditorCommandItem } from "@/components/editor/command"
 import { CommandsKey, editorInsertContent, editorInsertFormatContent, markdownEditorCommands } from "@/components/editor/command"
-import { createCustomSetup, type CustomSetupOptions, EditorState, EditorView, vimModeCompartment } from "@/pkg/codemirror/setup"
+import { createCustomSetup, type CustomSetupOptions, EditorState, EditorView } from "@/pkg/codemirror"
+import { completionCompartment, unifiedCompletion } from "@/pkg/codemirror/extension/completion"
+import { vim, vimModeCompartment } from "@/pkg/codemirror/extension/vim"
 
 import { clearEditorView } from "../../command/constant"
 import type { CodeEditorProps } from "./types"
@@ -237,7 +238,7 @@ watch(
         // 更新 vim 模式
         options.value.vimMode = newVal
 
-        // 重新配置 vim 模式
+        // 重新加载 vim 模式
         cmView.dispatch({
             effects: vimModeCompartment.reconfigure(newVal ? vim({ status: true }) : []),
         })
@@ -248,10 +249,14 @@ watch(
 watch(
     () => mentions,
     (newVal) => {
+        if (!newVal) return // 如果没有 mentions 则不执行
         // 更新 mentions
         options.value.mention = newVal
+        cmView.dispatch({
+            effects: completionCompartment.reconfigure(unifiedCompletion(newVal)),
+        })
     },
-    { immediate: true, deep: true },
+    { deep: true },
 )
 
 // 执行命令
