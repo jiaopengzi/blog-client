@@ -11,16 +11,7 @@
         <!-- 右上角提示符 -->
         <div class="top-right-tip" v-if="data.is_pinned === CommentPinnedCode.IsPinned">置顶</div>
         <div class="header-container">
-            <div class="header-avatar">
-                <AvatarInitials :avatar="data.user_info.user_avatar" :name="data.user_info.user_display_name" :size="40" />
-            </div>
-            <div class="header-info">
-                <div class="header-info-item header-title">
-                    <span class="header-title-item header-name">{{ data.user_info.user_display_name }}</span>
-                    <span class="header-title-item header-is-post-author" v-if="data.is_post_author === CommentIsPostAuthorCode.IsPostAuthor">作者</span>
-                </div>
-                <span class="header-info-item header-time">{{ data.created_at }}</span>
-            </div>
+            <UserItem class="header-user" :user="data.user_info" :comment-is-post-author-code="data.is_post_author" :created-at="data.created_at" />
             <div class="header-action">
                 <el-tooltip v-if="isShowReplyBtn" effect="dark" content="回复" :hide-after="0" :show-after="300">
                     <el-button type="default" class="header-action-item" @click="handleReply">
@@ -39,17 +30,15 @@
                         <j-icon :name="IconKeys.Pinned" custom-class="iconfont" />
                     </el-button>
                 </el-tooltip>
+                <el-tooltip v-if="isShowEditBtn" effect="dark" content="编辑" :hide-after="0" :show-after="300">
+                    <el-button type="default" class="header-action-item" @click="handleEdit(data)">
+                        <j-icon :name="IconKeys.Edit" custom-class="iconfont" />
+                    </el-button>
+                </el-tooltip>
             </div>
         </div>
         <div class="content">
-            <HtmlPreview
-                ref="previewRef"
-                :html="state.html"
-                :img-urls="state.imgUrls"
-                :is-show-el-image-viewer="state.isShowElImageViewer"
-                @show-image-viewer="showImageViewer"
-                @close-image-viewer="closeImageViewer"
-            />
+            <CommentMarkdownPreview :markdown-content="data.content" />
         </div>
     </div>
 </template>
@@ -60,12 +49,11 @@ import { computed } from "vue"
 
 import { CommentIsPostAuthorCode, CommentPinnedCode } from "@/api/comment/common"
 import { type UpdateCommentRequest } from "@/api/comment/update"
+import { RoleName } from "@/api/permissionRole/role"
 import { CommentStatusCode } from "@/api/post/common"
-import AvatarInitials from "@/components/common/avatar-initials"
+import CommentMarkdownPreview from "@/components/common/comment-markdown-preview"
 import { IconKeys } from "@/components/common/icons"
-import { EditorStateManager } from "@/components/editor"
-import HtmlPreview from "@/components/editor/components/preview"
-import { usePreview } from "@/components/editor/hooks/usePreview"
+import UserItem from "@/components/common/user-item"
 import { useUserStore } from "@/stores/user"
 
 import { useCommentItem } from "./hooks"
@@ -74,32 +62,25 @@ import type { CommentItemProps } from "./types"
 defineOptions({ name: "CommentItem" })
 
 // 定义 props
-const { data, status } = defineProps<CommentItemProps>()
+const { data, status, postAuthor, isShowEditBtn = false, isAdmin = false } = defineProps<CommentItemProps>()
 
 // 事件
 const emit = defineEmits<{
     (event: "reply", commentID: string): void
     (event: "delete", commentID: string): void
     (event: "pinned", commentID: string, isPinned: CommentPinnedCode): void
+    (event: "edit", comment: CommentItemProps["data"]): void
 }>()
 
 const userStore = useUserStore()
 const { data: userData, isLogin } = storeToRefs(userStore)
 
-const manager = new EditorStateManager({ mode: "comment" })
-
-manager.updateState(data.content)
-
-const state = manager.getState()
-
-// preview
-const { showImageViewer, closeImageViewer } = usePreview(manager)
 const {
     loadingDelete, // 删除评论加载状态
     loadingUpdate, // 更新评论加载状态
     deleteComment, // 删除评论
     updateComment, // 更新评论
-} = useCommentItem()
+} = useCommentItem(isAdmin)
 
 // 是否显示回复按钮
 const isShowReplyBtn = computed(() => {
@@ -123,7 +104,12 @@ const isShowDeleteBtn = computed(() => {
     }
 
     // 是否为文章作者
-    if (data.is_pinned === CommentPinnedCode.IsPinned) {
+    if (postAuthor === userData.value.user.id && isLogin.value) {
+        return true
+    }
+
+    // 是否为管理员
+    if (isLogin.value && userData.value.user.role === RoleName.Administrator) {
         return true
     }
 
@@ -141,7 +127,12 @@ const handleDelete = async () => {
 // 是否显示置顶按钮
 const isShowPinnedBtn = computed(() => {
     // 是否为文章作者
-    if (isLogin.value && userData.value.user.id === data.user_info.id) {
+    if (isLogin.value && postAuthor === userData.value.user.id) {
+        return true
+    }
+
+    // 是否为管理员
+    if (isLogin.value && userData.value.user.role === RoleName.Administrator) {
         return true
     }
 
@@ -171,6 +162,10 @@ const handlePinned = async () => {
     // 置顶成功
     emit("pinned", data.id, req.is_pinned!)
 }
+
+const handleEdit = (comment: CommentItemProps["data"]) => {
+    emit("edit", comment)
+}
 </script>
 <style lang="scss" scoped>
 .comment-detail {
@@ -191,37 +186,8 @@ const handlePinned = async () => {
     margin: 4px;
 }
 
-.header-avatar {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    margin-right: 10px;
-}
-
-.header-info {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-
-    .header-title {
-        .header-title-item {
-            color: var(--jpz-color-primary);
-        }
-
-        .header-name {
-            margin-right: 5px;
-            font-size: 14px;
-            font-weight: 700;
-        }
-    }
-
-    .header-time {
-        color: var(--jpz-text-color-secondary);
-        font-size: 12px;
-        line-height: 1.5em;
-    }
+.header-user {
+    min-width: 180px;
 }
 
 .header-action {
@@ -240,17 +206,6 @@ const handlePinned = async () => {
             }
         }
     }
-}
-
-.header-is-post-author {
-    padding: 0 4px;
-    background-color: var(--jpz-color-secondary);
-    color: var(--jpz-text-color-primary);
-    border-radius: 4px;
-    font-size: 12px;
-    line-height: 1.5em;
-    display: inline-block;
-    font-weight: 700;
 }
 
 .top-right-tip {

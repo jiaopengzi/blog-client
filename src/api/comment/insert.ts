@@ -35,3 +35,13 @@ export function insertCommentAPI(requestData: InsertCommentRequest): ResPromise<
         data: requestData,
     })
 }
+
+// 插入评论(管理员)
+export function insertCommentAdminAPI(requestData: InsertCommentRequest): ResPromise<Res<InsertCommentResData>> {
+    const urlStr = routerGroup + "/comment/insert-admin"
+    return request({
+        url: urlStr,
+        method: "post",
+        data: requestData,
+    })
+}

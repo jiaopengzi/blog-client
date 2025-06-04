@@ -193,6 +193,7 @@ defineExpose({
             justify-content: center;
             align-items: center;
             border-left: 1px solid var(--jpz-border-color); // 子元素居中
+            background-color: var(--jpz-bg-color);
         }
     }
 }

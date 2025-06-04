@@ -68,36 +68,12 @@ export function useCommentList(req: Reactive<ViewCommentRequest>) {
 
     // 删除评论
     const handleDelete = async (commentID: string): Promise<void> => {
-        // // 在pagination中删除评论
-        // const index = pagination.records.findIndex((item) => item.id === commentID)
-        // if (index !== -1) {
-        //     pagination.records.splice(index, 1)
-        //     // 总数减一
-        //     pagination.total -= 1
-        // }
-
         // 更新分页数据
         await updatePaginate()
     }
 
     // 处理置顶
     const handlePinned = async (commentID: string, isPinned: CommentPinnedCode): Promise<void> => {
-        // // 处理置顶
-        // const comment = pagination.records.find((item) => item.id === commentID)
-        // if (comment) {
-        //     comment.is_pinned = isPinned
-        // }
-
-        // // 将置顶的评论放到最前面
-        // pagination.records.sort((a, b) => {
-        //     if (a.is_pinned === CommentPinnedCode.IsPinned && b.is_pinned === CommentPinnedCode.NotIsPinned) {
-        //         return -1
-        //     } else if (a.is_pinned === CommentPinnedCode.NotIsPinned && b.is_pinned === CommentPinnedCode.IsPinned) {
-        //         return 1
-        //     }
-        //     return 0
-        // })
-
         // 更新分页数据
         await updatePaginate()
     }

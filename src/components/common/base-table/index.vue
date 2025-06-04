@@ -84,7 +84,29 @@
                 <CustomCol v-else-if="col.isHeading" :key="`heading-${index}`" :col="col" />
 
                 <!-- 作者 -->
-                <CustomCol v-else-if="col.isAuthor" :key="`author-${index}`" :col="col" @click-author="handleAuthorClick" />
+                <CustomCol
+                    v-else-if="col.isAuthor"
+                    :key="`author-${index}`"
+                    :col="col"
+                    @click-author="handleAuthorClick"
+                    :is-show-cursor-pointer="isShowCursorPointer"
+                    :is-show-user-name="isShowUserName"
+                    :avatar-width="avatarWidth"
+                    :is-show-user-email="isShowUserEmail"
+                    :is-show-user-display-name="isShowUserDisplayName"
+                />
+
+                <!-- 评论文章信息 -->
+                <CustomCol
+                    v-else-if="col.isCommentWithPost"
+                    :key="`comment-post-${index}`"
+                    :col="col"
+                    @post-click="handlePostClick"
+                    @view-post="handleViewPost"
+                />
+
+                <!-- 评论文章信息 -->
+                <CustomCol v-else-if="col.isMarkdownPreview" :key="`markdown-${index}`" :col="col" :markdown-preview-max-height="markdownPreviewMaxHeight" />
 
                 <!-- 格式化文本 -->
                 <CustomCol v-else-if="col.formatter" :key="`format-${index}`" :col="col" :tags-item-max-height="tagsItemMaxHeight" />
@@ -101,6 +123,7 @@
                     :align="col.align"
                 />
             </template>
+            
             <!-- 编辑按钮 -->
             <el-table-column v-if="isShowEdit" width="80" align="center">
                 <template #header>
@@ -228,7 +251,14 @@ const {
     editWidth,
     editTop,
     tagsItemMaxHeight,
+    markdownPreviewMaxHeight,
     height,
+
+    avatarWidth = 30,
+    isShowUserName = false,
+    isShowUserEmail = false,
+    isShowUserDisplayName = true,
+    isShowCursorPointer = false,
 } = defineProps<{
     pagination: Pagination<TableData> // 分页配置
     tableColumn: TableColumn[] // 表格列配置
@@ -246,7 +276,14 @@ const {
     editWidth?: string // 编辑对话框宽度
     editTop?: string // 编辑对话框距离顶部距离
     tagsItemMaxHeight?: string // 标签项目最大高度
+    markdownPreviewMaxHeight?: string // markdown 预览最大高度
     height?: string | number
+
+    avatarWidth?: number // 用户头像宽度
+    isShowUserName?: boolean // 是否显示用户名
+    isShowUserEmail?: boolean // 是否显示用户邮箱
+    isShowUserDisplayName?: boolean // 是否显示用户昵称
+    isShowCursorPointer?: boolean // 是否显示鼠标指针为手型
 }>()
 
 // 事件
@@ -266,6 +303,8 @@ const emit = defineEmits<{
     (event: "click-category", tagItemData: PostTag): void // 点击分类
     (event: "click-tag", tagItemData: PostTag): void // 点击标签
     (event: "click-author", author: User): void // 点击作者
+    (event: "post-click", postID: string): void // 点击文章
+    (event: "view-post", postID: string): void // 查看文章
 }>()
 
 const tableRef: Ref<InstanceType<typeof ElTable> | null> = useTemplateRef<InstanceType<typeof ElTable>>("tableRef") //表格实例
@@ -459,6 +498,16 @@ const handleTagClick = (tagItemData: PostTag) => {
 // 处理作者点击
 const handleAuthorClick = (author: User) => {
     emit("click-author", author)
+}
+
+// 处理文章点击事件
+const handlePostClick = (postID: string) => {
+    emit("post-click", postID)
+}
+
+// 处理查看文章事件
+const handleViewPost = (postID: string) => {
+    emit("view-post", postID)
 }
 
 // // 处理单个删除

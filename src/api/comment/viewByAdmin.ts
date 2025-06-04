@@ -14,11 +14,12 @@ import type { CommentResAdmin, CommentReviewCode } from "./common"
 // 管理员查看文章评论请求
 export interface ViewCommentByAdminRequest extends PaginationRequest {
     post_id?: string // 文章ID
+    user_id?: string // 用户ID
     status?: CommentReviewCode // 评论状态
 }
 
 // 查看文章
-export function viewByAdminAPI(requestData: ViewCommentByAdminRequest): ResPromise<Res<Pagination<CommentResAdmin>>> {
+export function viewCommentByAdminAPI(requestData: ViewCommentByAdminRequest): ResPromise<Res<Pagination<CommentResAdmin>>> {
     const urlStr = routerGroup + "/comment/view-by-admin"
     return request({
         url: urlStr,

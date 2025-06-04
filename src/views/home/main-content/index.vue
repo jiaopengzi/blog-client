@@ -81,6 +81,7 @@ import HomeCarousel from "@/components/layout/carousel"
 import { type SearchData } from "@/components/layout/search"
 import { useStatusStore } from "@/stores/status"
 
+import { usePostDetail } from "./hooks"
 import PostDetail from "./post-detail"
 import PostList from "./post-list"
 
@@ -188,16 +189,7 @@ watch(
 )
 
 // 点击文章
-const handlePostId = async (val: string) => {
-    await statusStore.setPostId(val)
-    await statusStore.setPostDetail()
-
-    // 滚动到顶部
-    window.scrollTo({
-        top: 0,
-        behavior: "auto",
-    })
-}
+const { handlePostId } = usePostDetail()
 
 onBeforeMount(async () => {
     if (!showPostDetail.value) {

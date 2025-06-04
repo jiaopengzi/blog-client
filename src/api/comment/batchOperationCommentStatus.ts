@@ -14,7 +14,7 @@ import type { CommentReviewCode } from "./common"
 
 export interface CommentStatusOperation {
     id: string // 评论ID
-    post_status: CommentReviewCode // 评论状态
+    status: CommentReviewCode // 评论状态
 }
 
 export interface BatchOperationCommentStatusRequest {

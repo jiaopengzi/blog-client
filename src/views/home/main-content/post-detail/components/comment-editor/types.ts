@@ -8,7 +8,13 @@
 
 import type { Completion } from "@codemirror/autocomplete"
 
+import { CommentPinnedCode, CommentReviewCode } from "@/api/comment/common"
 import type { JEditorRef } from "@/components/editor"
+
+export enum CommentEditorMode {
+    REPLY = "reply",
+    EDIT = "edit",
+}
 
 export interface CommentEditorRef extends HTMLElement {
     root: HTMLElement
@@ -18,4 +24,10 @@ export interface CommentEditorRef extends HTMLElement {
 export interface CommentEditorProps {
     postId: string
     mentions?: Completion[]
+    mode?: CommentEditorMode
+    content?: string
+    isAdmin?: boolean
+    commentId?: string
+    isPinned?: CommentPinnedCode
+    reviewCode?: CommentReviewCode
 }

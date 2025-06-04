@@ -128,7 +128,7 @@ export interface PostResCommon extends DataWithImg {
     view_count: string // 查看数量
     like_count: string // 喜欢数量
     star_count: string // 收藏数量
-    post_status: number // 文章状态
+    post_status: PostStatusCode // 文章状态
     post_title: string // 文章标题
     slug: string // 别名
     thumbnail: string // 缩略图

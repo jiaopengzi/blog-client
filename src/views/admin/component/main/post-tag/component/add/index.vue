@@ -6,7 +6,6 @@
  * @Description  : 添加标签 
 -->
 
-
 <template>
     <View :view-data="addForm" :is-show-id="false" btn-submit-display="新增" @submit-data="submitData" />
 </template>
@@ -52,6 +51,6 @@ const submitData = async (form: ViewForm) => {
         // 添加失败提示
         MessageUtil.error(data.msg, 0)
     }
-    console.log("submit!")
+    // console.log("submit!")
 }
 </script>

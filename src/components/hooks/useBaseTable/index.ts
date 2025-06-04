@@ -9,6 +9,7 @@
 import { onBeforeMount, type Reactive, reactive, ref, watch } from "vue"
 import { useRoute, useRouter } from "vue-router"
 
+import type { StreamIdStatusResWithId } from "@/api/helper/getStreamIDStatus"
 import { type PaginationRequest, type QueryParamsOptions } from "@/api/request"
 import { getEmptyPagination, handleResErr, type Pagination, type Res, ResponseCode, type ResPromise } from "@/api/response"
 import type { TableImg } from "@/components/common"
@@ -36,7 +37,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     routeName: string,
     viewAPI: (params: K) => ResPromise<Res<Pagination<T>>>,
     viewResCode: ResponseCode,
-    deleteAPI: (params: Q) => ResPromise<Res<void>>,
+    deleteAPI: (params: Q) => ResPromise<Res<StreamIdStatusResWithId | void>>,
     deleteResCode: ResponseCode,
     queryParams: Reactive<K>, // 查询参数
     options?: Options<K>,

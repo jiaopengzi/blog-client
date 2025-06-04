@@ -11,5 +11,9 @@ import { CommentStatusCode } from "@/api/post/common"
 
 export interface CommentItemProps {
     data: CommentRes
-    status: CommentStatusCode
+    postId: string
+    status?: CommentStatusCode
+    postAuthor?: string
+    isShowEditBtn?: boolean
+    isAdmin?: boolean
 }

@@ -13,10 +13,28 @@
             <h4 v-if="col.isHeading">{{ scope.row[col.prop] }}</h4>
 
             <!-- 作者 -->
-            <el-button v-if="col.isAuthor" class="is-author" @click="handleAuthorClick(scope.row[col.prop])">{{ scope.row[col.prop].user_name }}</el-button>
+            <UserItem
+                v-if="col.isAuthor"
+                :user="scope.row[col.prop]"
+                :is-show-cursor-pointer="isShowCursorPointer"
+                :is-show-user-name="isShowUserName"
+                :size="avatarWidth"
+                :is-show-user-email="isShowUserEmail"
+                :is-show-user-display-name="isShowUserDisplayName"
+                :comment-is-post-author-code="scope.row['is_post_author']"
+                @user-click="(userID: string) => handleUserClick(userID, scope.row[col.prop])"
+            />
+
+            <!-- markdown渲染 -->
+            <div class="markdown-preview" v-if="col.isMarkdownPreview" :style="{ maxHeight: markdownPreviewMaxHeight }">
+                <CommentMarkdownPreview :markdown-content="scope.row[col.prop]" />
+            </div>
+
+            <!-- 评论文章信息 -->
+            <CommentPostItem v-if="col.isCommentWithPost" :post="scope.row[col.prop]" @post-click="handlePostClick" @view-post="handleViewPost" />
 
             <!-- 可点击标签 -->
-            <el-scrollbar v-if="col.isTags || col.isCategories" :max-height="tagsItemMaxHeight ? tagsItemMaxHeight : '100px'">
+            <el-scrollbar v-if="col.isTags || col.isCategories" :style="{ maxHeight: tagsItemMaxHeight }">
                 <!-- 注意 key 需要使用 id + 文章数量 -->
                 <TagItem
                     v-for="item in scope.row[col.prop]"
@@ -36,40 +54,72 @@
 <script lang="ts" setup>
 import type { PostTag } from "@/api/postTag/view"
 import type { User } from "@/api/user/getUsers"
+import CommentMarkdownPreview from "@/components/common/comment-markdown-preview"
+import CommentPostItem from "@/components/common/comment-post-item"
 import TagItem from "@/components/common/tag-item"
+import UserItem from "@/components/common/user-item"
 
 import type { TableColumn } from "../types"
 
 defineOptions({ name: "CustomCol" })
 
-const { col, tagsItemMaxHeight } = defineProps<{
+const {
+    col,
+    tagsItemMaxHeight = "100px", // 标签项目最大高度
+    markdownPreviewMaxHeight = "200px", // markdown 预览最大高度
+
+    avatarWidth = 30,
+    isShowUserName = false,
+    isShowUserEmail = false,
+    isShowUserDisplayName = true,
+    isShowCursorPointer = false,
+} = defineProps<{
     col: TableColumn
     tagsItemMaxHeight?: string // 标签项目最大高度
+
+    avatarWidth?: number // 用户头像宽度
+    isShowUserName?: boolean // 是否显示用户名
+    isShowUserEmail?: boolean // 是否显示用户邮箱
+    isShowUserDisplayName?: boolean // 是否显示用户昵称
+    isShowCursorPointer?: boolean // 是否显示鼠标指针为手型
+
+    markdownPreviewMaxHeight?: string // markdown 预览最大高度
 }>()
 
 const emit = defineEmits<{
     (event: "click-item", item: PostTag): void
-    (event: "click-author", author: User): void
+    (event: "click-author", user: User): void
+    (event: "post-click", postID: string): void
+    (event: "view-post", postID: string): void
 }>()
 
 const handleTagClick = (item: PostTag) => {
     emit("click-item", item)
 }
 
-const handleAuthorClick = (author: User) => {
-    emit("click-author", author)
+// 处理作者点击事件
+const handleUserClick = (userID: string, user: User) => {
+    if (!col.isAuthor || userID !== user.id.toString()) {
+        return
+    }
+
+    emit("click-author", user)
+}
+
+// 处理文章点击事件
+const handlePostClick = (postID: string) => {
+    emit("post-click", postID)
+}
+
+// 处理查看文章事件
+const handleViewPost = (postID: string) => {
+    emit("view-post", postID)
 }
 </script>
 
 <style lang="scss" scoped>
-.is-author {
-    padding: 0;
-    margin: 0;
-    border: none;
-    background-color: transparent;
-}
-
-.is-author:hover {
-    font-weight: 700;
+.markdown-preview {
+    overflow: auto;
+    padding: 4px;
 }
 </style>

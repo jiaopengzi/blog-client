@@ -8,13 +8,16 @@
 
 import { ref } from "vue"
 
-import { deleteCommentAPI, type DeleteCommentRequest } from "@/api/comment/delete"
+import { deleteCommentAdminAPI, deleteCommentAPI, type DeleteCommentRequest } from "@/api/comment/delete"
 import { updateCommentAPI, type UpdateCommentRequest } from "@/api/comment/update"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { pollingGetStreamIDStatus } from "@/utils/getStreamIDStatus"
 import { MessageUtil } from "@/utils/message"
 
-export function useCommentItem() {
+/**
+ * @param isAdmin 是否是管理员, 默认为 false
+ */
+export function useCommentItem(isAdmin: boolean = false) {
     const loadingDelete = ref<boolean>(false)
     const loadingUpdate = ref<boolean>(false)
 
@@ -24,8 +27,15 @@ export function useCommentItem() {
         const req: DeleteCommentRequest = {
             id_list: [id], // 删除的评论ID列表
         }
+
         // 删除评论
-        const res = await deleteCommentAPI(req)
+        let res
+        if (isAdmin) {
+            res = await deleteCommentAdminAPI(req)
+        } else {
+            res = await deleteCommentAPI(req)
+        }
+
         if (res.data.code === ResponseCode.CommentDeleteSuccess) {
             // 轮询后端是否完成
             await pollingGetStreamIDStatus(res.data.data.stream_id)

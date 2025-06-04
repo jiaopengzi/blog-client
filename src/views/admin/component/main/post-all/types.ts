@@ -1,9 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\views\admin\component\main\post-all\types.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 文章统计数据
+/*
+ * FilePath    : blog-client\src\views\admin\component\main\post-all\types.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 类型
  */
 
 // url query key

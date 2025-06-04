@@ -34,29 +34,32 @@
                 <DetailInteraction class="interaction-bottom" direction="horizontal" :items="interactionItems" @click-item="handleClickInteraction" />
                 <DetailUpdatedAt :data="updatedAt" />
             </div>
-            <DetailCategoryTag class="category-tag-bottom" :data="categoryTag" @click-category="clickCategory" @click-tag="clickTag" />
-            <DetailCopyright class="copyright-bottom" :data="copyright" />
-            <DetailPrevNext class="prev-next" :data="prevNext" @post-id="handlePostId" />
-            <CommentList
-                class="comment-list"
-                :post-id="postId"
-                :status="commentStatus"
-                :update-time="commentListUpdateTime"
-                @reply="handleReply"
-                @mentions="handleMentions"
-            />
-            <CommentEditor ref="commentEditorRef" class="comment-editor" :post-id="postId" :mentions="mentions" @comment-insert="handleInsert" />
         </section>
     </section>
+
+    <DetailCategoryTag class="category-tag-bottom" :data="categoryTag" @click-category="clickCategory" @click-tag="clickTag" />
+    <DetailCopyright class="copyright-bottom" :data="copyright" />
+    <DetailPrevNext class="prev-next" :data="prevNext" @post-id="handlePostId" />
+    <CommentList
+        class="comment-list"
+        :post-id="postId"
+        :post-author="postMeta.author_id || ''"
+        :status="commentStatus"
+        :update-time="commentListUpdateTime"
+        @reply="handleReply"
+        @mentions="handleMentions"
+    />
+    <CommentEditor ref="commentEditorRef" class="comment-editor" :post-id="postId" :mentions="mentions" :is-admin="isAdmin" @comment-insert="handleInsert" />
     <PosterShare class="poster-share" v-if="isShowPosterShare" :data="dataPosterShare" @poster-complete="handPosterComplete" />
 </template>
 
 <script lang="ts" setup>
 import type { Completion } from "@codemirror/autocomplete"
 import { storeToRefs } from "pinia"
-import { nextTick, onBeforeMount, onMounted, reactive, ref, useTemplateRef, watch } from "vue"
+import { computed, nextTick, onBeforeMount, onMounted, reactive, ref, useTemplateRef, watch } from "vue"
 
 import { type CommentRes } from "@/api/comment/common"
+import { RoleName } from "@/api/permissionRole/role"
 import { type ViewPostByIDRequest } from "@/api/post/viewByID"
 import { type PostCategory } from "@/api/postCategory/view"
 import { type PostTag } from "@/api/postTag/view"
@@ -70,6 +73,7 @@ import { usePostDetail } from "@/components/hooks/usePostDetail"
 import { useWebFullscreen } from "@/components/hooks/useWebFullscreen"
 import { useOptionsStore } from "@/stores/options"
 import { useStatusStore } from "@/stores/status"
+import { useUserStore } from "@/stores/user"
 
 import DetailBottomSame from "./components/bottom-same"
 import DetailCategoryTag from "./components/category-tag"
@@ -102,9 +106,15 @@ const emit = defineEmits<{
 
 const statusStore = useStatusStore()
 const optionsStore = useOptionsStore()
+const userStore = useUserStore()
 
 const { head } = storeToRefs(optionsStore)
 const { postId, anchorHash } = storeToRefs(statusStore)
+const { data: userInfo } = storeToRefs(userStore)
+
+const isAdmin = computed(() => {
+    return userInfo.value.user.role === RoleName.Administrator
+})
 
 const postDetailRef = useTemplateRef("webFullscreenRef")
 const commentEditorRef = useTemplateRef<CommentEditorRef>("commentEditorRef")

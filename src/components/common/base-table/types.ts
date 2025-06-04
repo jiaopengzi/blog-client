@@ -6,6 +6,7 @@
  * @Description  : 类型定义
  */
 
+import { type CommentResAdmin } from "@/api/comment/common"
 import { type LoginLog } from "@/api/loginLog/getLoginLogs"
 import { type PostResPaginationByAdmin } from "@/api/post/common"
 import { type PostCategory } from "@/api/postCategory/view"
@@ -26,12 +27,16 @@ export interface TableColumn {
     isCategories?: boolean // 是否为分类
     isTags?: boolean // 是否为标签
     isHeading?: boolean // 是否为标题
+    isHeadingWithComment?: boolean // 是否为标题带有评论信息
     isAuthor?: boolean // 是否为作者
+    isUserWithAvatar?: boolean // 是否使用用户头像
+    isCommentWithPost?: boolean // 是否为评论带有文章信息
+    isMarkdownPreview?: boolean // 是否为Markdown预览
     formatter?: (row: TableData) => void // 格式化函数
 }
 
 // 表格数据类型
-export type TableData = PostResPaginationByAdmin | PostTag | PostCategory | MediaFile | User | LoginLog
+export type TableData = PostResPaginationByAdmin | PostTag | PostCategory | MediaFile | User | LoginLog | CommentResAdmin
 
 export interface FormatTableData {
     thumbnail?: string // 缩略图

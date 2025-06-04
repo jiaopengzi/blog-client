@@ -10,7 +10,15 @@
     <div class="comment-list-container" v-if="pagination.total > 0">
         <div class="comment-list">
             <div v-for="item in pagination.records" :key="item.id" class="comment-item">
-                <CommentItem :data="item" :status="status" @reply="handleReply" @delete="handleDelete" @pinned="handlePinned" />
+                <CommentItem
+                    :data="item"
+                    :status="status"
+                    :post-id="postId"
+                    :post-author="postAuthor"
+                    @reply="handleReply"
+                    @delete="handleDelete"
+                    @pinned="handlePinned"
+                />
             </div>
         </div>
         <!-- 分页 -->
@@ -50,14 +58,14 @@ import type { CommentListProps } from "./types"
 
 defineOptions({ name: "CommentList" })
 
+// 定义 props
+const { postId, postAuthor, status, updateTime } = defineProps<CommentListProps>()
+
 // 事件
 const emit = defineEmits<{
     (event: "reply", comment: CommentRes): void
     (event: "mentions", mentions: Completion[]): void
 }>()
-
-// 定义 props
-const { postId, status, updateTime } = defineProps<CommentListProps>()
 
 const req = reactive<ViewCommentRequest>({ post_id: postId })
 

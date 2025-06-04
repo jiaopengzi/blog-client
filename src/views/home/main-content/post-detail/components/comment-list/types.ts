@@ -10,6 +10,7 @@ import type { CommentStatusCode } from "@/api/post/common"
 
 export interface CommentListProps {
     postId: string
+    postAuthor: string
     status: CommentStatusCode
     updateTime: Date | null
 }
