@@ -11,7 +11,6 @@
         <BaseTable
             :pagination="pagination"
             :table-column="cols"
-            :add-item-dialog-visible="addItemDialogVisible"
             :edit-item-dialog-visible="editItemDialogVisible"
             :is-show-delete-all="true"
             :is-show-search="true"
@@ -226,7 +225,6 @@ const clickAuthor = ref<string>("")
 
 // useBaseTable hooks 使用
 const {
-    addItemDialogVisible, // 添加对话框是否可见
     editItemDialogVisible, // 编辑对话框是否可见
     search, // 搜索关键字
     pagination, // 分页数据
@@ -360,7 +358,9 @@ const runSearch = async () => {
 // 编辑回复评论完成
 const handleEditReply = async () => {
     // 重新加载数据
+    await getCommentCountStatus()
     await updatePaginate()
+    editItemDialogVisible.value = false
 }
 
 // 批量操作
@@ -443,7 +443,7 @@ const editRow = (index: number, row: TableData) => {
         data.value.content = row.content
         data.value.user_id = row.user_info.id.toString()
         data.value.is_pinned = row.is_pinned
-        data.value.is_post_author = row.is_post_author
+        data.value.post_author = row.post_author
         data.value.user_info = row.user_info
 
         data.value.updated_at = row.updated_at

@@ -53,7 +53,7 @@ export interface CommentRes extends DataWithImg {
     content: string // 评论内容
     user_id: string // 用户ID
     is_pinned: CommentPinnedCode // 是否置顶
-    is_post_author: CommentIsPostAuthorCode // 是否为文章作者
+    post_author: string // 文章作者
     user_info: User // 用户信息
 }
 

@@ -15,6 +15,7 @@
                     :status="status"
                     :post-id="postId"
                     :post-author="postAuthor"
+                    :is-admin="isAdmin"
                     @reply="handleReply"
                     @delete="handleDelete"
                     @pinned="handlePinned"
@@ -59,7 +60,7 @@ import type { CommentListProps } from "./types"
 defineOptions({ name: "CommentList" })
 
 // 定义 props
-const { postId, postAuthor, status, updateTime } = defineProps<CommentListProps>()
+const { postId, postAuthor, status, updateTime, isAdmin = false } = defineProps<CommentListProps>()
 
 // 事件
 const emit = defineEmits<{

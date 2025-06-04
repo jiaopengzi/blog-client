@@ -11,7 +11,7 @@
         <!-- 右上角提示符 -->
         <div class="top-right-tip" v-if="data.is_pinned === CommentPinnedCode.IsPinned">置顶</div>
         <div class="header-container">
-            <UserItem class="header-user" :user="data.user_info" :comment-is-post-author-code="data.is_post_author" :created-at="data.created_at" />
+            <UserItem class="header-user" :user="data.user_info" :comment-is-post-author-code="isPostAuthorCode" :created-at="data.created_at" />
             <div class="header-action">
                 <el-tooltip v-if="isShowReplyBtn" effect="dark" content="回复" :hide-after="0" :show-after="300">
                     <el-button type="default" class="header-action-item" @click="handleReply">
@@ -139,10 +139,16 @@ const isShowPinnedBtn = computed(() => {
     return false
 })
 
+// 评论作者是否为文章作者
+const isPostAuthorCode = computed(() => {
+    // 是否为文章作者
+    return data.post_author === data.user_id ? CommentIsPostAuthorCode.IsPostAuthor : CommentIsPostAuthorCode.NotIsPostAuthor
+})
+
 // 是否显示置顶按钮
 const pinnedText = computed(() => {
     // 是否为文章作者
-    if (data.is_post_author === CommentIsPostAuthorCode.IsPostAuthor) {
+    if (isPostAuthorCode.value === CommentIsPostAuthorCode.IsPostAuthor) {
         return data.is_pinned === CommentPinnedCode.IsPinned ? "取消置顶" : "置顶"
     }
 

@@ -9,7 +9,7 @@
 import { ref } from "vue"
 
 import { deleteCommentAdminAPI, deleteCommentAPI, type DeleteCommentRequest } from "@/api/comment/delete"
-import { updateCommentAPI, type UpdateCommentRequest } from "@/api/comment/update"
+import { updateCommentAdminAPI, updateCommentAPI, type UpdateCommentRequest } from "@/api/comment/update"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { pollingGetStreamIDStatus } from "@/utils/getStreamIDStatus"
 import { MessageUtil } from "@/utils/message"
@@ -52,8 +52,15 @@ export function useCommentItem(isAdmin: boolean = false) {
     // 更新评论
     async function updateComment(req: UpdateCommentRequest): Promise<void> {
         loadingUpdate.value = true // 显示加载动画
+
         // 获取标签列表
-        const res = await updateCommentAPI(req)
+        let res
+        if (isAdmin) {
+            res = await updateCommentAdminAPI(req)
+        } else {
+            res = await updateCommentAPI(req)
+        }
+
         if (res.data.code === ResponseCode.CommentUpdateSuccess) {
             // 轮询后端是否完成
             await pollingGetStreamIDStatus(res.data.data.stream_id)

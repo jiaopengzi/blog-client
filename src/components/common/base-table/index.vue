@@ -123,7 +123,7 @@
                     :align="col.align"
                 />
             </template>
-            
+
             <!-- 编辑按钮 -->
             <el-table-column v-if="isShowEdit" width="80" align="center">
                 <template #header>

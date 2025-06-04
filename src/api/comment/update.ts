@@ -32,3 +32,13 @@ export function updateCommentAPI(requestData: UpdateCommentRequest): ResPromise<
         data: requestData,
     })
 }
+
+// 更新审核评论(管理员)
+export function updateCommentAdminAPI(requestData: UpdateCommentRequest): ResPromise<Res<UpdateCommentRes>> {
+    const urlStr = routerGroup + "/comment/update-admin"
+    return request({
+        url: urlStr,
+        method: "post",
+        data: requestData,
+    })
+}

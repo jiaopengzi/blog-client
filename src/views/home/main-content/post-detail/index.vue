@@ -46,6 +46,7 @@
         :post-author="postMeta.author_id || ''"
         :status="commentStatus"
         :update-time="commentListUpdateTime"
+        :is-admin="isAdmin"
         @reply="handleReply"
         @mentions="handleMentions"
     />

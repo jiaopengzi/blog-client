@@ -117,9 +117,9 @@ watch(
 const insertComment = async () => {
     loading.value = true
     btnTextInner.value = computedBtnText(mode, true)
-    const content = manager.getState().editorContent
+    const contentNew = manager.getState().editorContent
 
-    if (!content) {
+    if (!contentNew) {
         MessageUtil.error("请输入评论内容")
         loading.value = false
         btnTextInner.value = computedBtnText(mode)
@@ -128,7 +128,7 @@ const insertComment = async () => {
 
     const req: InsertCommentRequest = {
         post_id: postId,
-        content,
+        content: contentNew,
     }
 
     let res
@@ -146,6 +146,7 @@ const insertComment = async () => {
         } else if (data.status === CommentReviewCode.Approved) {
             // 轮询后端是否完成
             await pollingGetStreamIDStatus(data.stream_id)
+
             // 提示成功
             MessageUtil.success("评论成功", 6000)
         } else if (data.status === CommentReviewCode.Rejected) {
@@ -154,6 +155,7 @@ const insertComment = async () => {
 
         // 清空编辑器
         manager.updateState("")
+
         emit("comment-insert")
     } else {
         MessageUtil.error(handleResErr(res))
@@ -169,9 +171,9 @@ const insertComment = async () => {
 const updateComment = async (isAdminReply: boolean = false) => {
     loading.value = true
     btnTextInner.value = computedBtnText(mode, true)
-    const content = manager.getState().editorContent
+    const contentNew = manager.getState().editorContent
 
-    if (!content) {
+    if (!contentNew) {
         MessageUtil.error("请输入评论内容")
         loading.value = false
         btnTextInner.value = computedBtnText(mode)
@@ -181,8 +183,12 @@ const updateComment = async (isAdminReply: boolean = false) => {
     let req: UpdateCommentRequest = {
         id: commentId!,
         is_pinned: isPinned,
-        content,
         status: reviewCode,
+    }
+
+    // 判断内容是否有变化
+    if (content !== contentNew) {
+        req.content = content
     }
 
     // 管理员回复时，直接设置为已审核
@@ -205,9 +211,9 @@ const updateComment = async (isAdminReply: boolean = false) => {
             MessageUtil.success("评论更新成功", 6000)
             // 清空编辑器
             manager.updateState("")
-        }
 
-        emit("comment-update")
+            emit("comment-update")
+        }
     } else {
         MessageUtil.error(handleResErr(res))
     }
@@ -216,7 +222,7 @@ const updateComment = async (isAdminReply: boolean = false) => {
     loading.value = false
 }
 
-const run = () => {
+const run = async () => {
     if (!isLogin.value) {
         MessageUtil.warning("评论，请先登录。", 6000)
         return
@@ -224,11 +230,12 @@ const run = () => {
 
     if (mode === CommentEditorMode.REPLY) {
         if (isAdmin && commentId) {
-            updateComment(true)
+            await updateComment(true)
         }
-        insertComment()
+
+        await insertComment()
     } else {
-        updateComment()
+        await updateComment()
     }
 }
 

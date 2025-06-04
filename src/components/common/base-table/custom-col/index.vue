@@ -15,6 +15,7 @@
             <!-- 作者 -->
             <UserItem
                 v-if="col.isAuthor"
+                :key="scope.row[col.prop].id"
                 :user="scope.row[col.prop]"
                 :is-show-cursor-pointer="isShowCursorPointer"
                 :is-show-user-name="isShowUserName"
@@ -27,11 +28,17 @@
 
             <!-- markdown渲染 -->
             <div class="markdown-preview" v-if="col.isMarkdownPreview" :style="{ maxHeight: markdownPreviewMaxHeight }">
-                <CommentMarkdownPreview :markdown-content="scope.row[col.prop]" />
+                <CommentMarkdownPreview :markdown-content="scope.row[col.prop]" :key="`${scope.row['id']}-${scope.row[col.prop]}`" />
             </div>
 
             <!-- 评论文章信息 -->
-            <CommentPostItem v-if="col.isCommentWithPost" :post="scope.row[col.prop]" @post-click="handlePostClick" @view-post="handleViewPost" />
+            <CommentPostItem
+                v-if="col.isCommentWithPost"
+                :key="`${scope.row[col.prop]}`"
+                :post="scope.row[col.prop]"
+                @post-click="handlePostClick"
+                @view-post="handleViewPost"
+            />
 
             <!-- 可点击标签 -->
             <el-scrollbar v-if="col.isTags || col.isCategories" :style="{ maxHeight: tagsItemMaxHeight }">

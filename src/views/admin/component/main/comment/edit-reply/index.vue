@@ -26,8 +26,6 @@
     </el-radio-group>
 
     <CommentEditor
-        ref="commentEditorRef"
-        class="comment-editor"
         :mode="editorMode"
         :post-id="postId"
         :mentions="mentionsAc"

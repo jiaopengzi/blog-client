@@ -13,4 +13,5 @@ export interface CommentListProps {
     postAuthor: string
     status: CommentStatusCode
     updateTime: Date | null
+    isAdmin?: boolean
 }
