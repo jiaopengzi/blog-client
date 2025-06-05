@@ -6,6 +6,7 @@
  * @Description  : 删除文章
  */
 
+import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -14,7 +15,7 @@ export interface DeletePostRequest {
 }
 
 // 删除文章
-export function deletePostAPI(requestData: DeletePostRequest): ResPromise<Res<void>> {
+export function deletePostAPI(requestData: DeletePostRequest): ResPromise<Res<StreamIdsStatusResWithId>> {
     const urlStr = routerGroup + "/post/delete"
     return request({
         url: urlStr,

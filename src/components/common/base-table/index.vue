@@ -13,7 +13,7 @@
         <div class="btns">
             <!-- 按钮 -->
             <slot name="btns"></slot>
-            <el-button v-if="isShowDeleteAll" type="danger" @click="handleBatchDelete"> 删除 </el-button>
+            <el-button v-if="isShowDeleteAll" type="danger" @click="handleBatchDelete" :loading="loadingDelete"> 删除 </el-button>
 
             <span v-if="isShowListOrGrid">
                 <SwitchGroup :switch-items="switchItemList" @update-status="updateStatus" />
@@ -259,6 +259,7 @@ const {
     isShowUserEmail = false,
     isShowUserDisplayName = true,
     isShowCursorPointer = false,
+    loadingDelete = false,
 } = defineProps<{
     pagination: Pagination<TableData> // 分页配置
     tableColumn: TableColumn[] // 表格列配置
@@ -284,6 +285,7 @@ const {
     isShowUserEmail?: boolean // 是否显示用户邮箱
     isShowUserDisplayName?: boolean // 是否显示用户昵称
     isShowCursorPointer?: boolean // 是否显示鼠标指针为手型
+    loadingDelete?: boolean // 删除加载状态
 }>()
 
 // 事件

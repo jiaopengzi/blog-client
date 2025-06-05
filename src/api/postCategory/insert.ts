@@ -7,6 +7,7 @@
  */
 
 
+import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -20,7 +21,7 @@ export interface InsertPostCategoryRequest {
 }
 
 // 插入文章分类
-export function insertPostCategoryAPI(requestData: InsertPostCategoryRequest): ResPromise<Res<unknown>> {
+export function insertPostCategoryAPI(requestData: InsertPostCategoryRequest): ResPromise<Res<StreamIdsStatusResWithId>> {
     const urlStr = routerGroup + "/post-category/insert"
     return request({
         url: urlStr,

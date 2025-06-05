@@ -6,6 +6,7 @@
  * @Description  : 批量操作文章状态
  */
 
+import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -21,7 +22,7 @@ export interface BatchOperationPostStatusRequest {
 }
 
 // 批量操作文章状态
-export function batchOperationPostStatusAPI(requestData: BatchOperationPostStatusRequest): ResPromise<Res<void>> {
+export function batchOperationPostStatusAPI(requestData: BatchOperationPostStatusRequest): ResPromise<Res<StreamIdsStatusResWithId>> {
     const urlStr = routerGroup + "/post/batch-operation-status"
     return request({
         url: urlStr,

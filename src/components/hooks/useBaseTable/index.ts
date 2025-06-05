@@ -9,13 +9,14 @@
 import { onBeforeMount, type Reactive, reactive, ref, watch } from "vue"
 import { useRoute, useRouter } from "vue-router"
 
-import type { StreamIdStatusResWithId } from "@/api/helper/getStreamIDStatus"
+import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
 import { type PaginationRequest, type QueryParamsOptions } from "@/api/request"
 import { getEmptyPagination, handleResErr, type Pagination, type Res, ResponseCode, type ResPromise } from "@/api/response"
 import type { TableImg } from "@/components/common"
 import { type FormatTableData, formatTableData, type TableData } from "@/components/common/base-table"
 import { usePagination } from "@/components/hooks/usePagination"
 import { routerPushByParams } from "@/router"
+import { pollingGetStreamIDsStatus } from "@/utils/getStreamIDsStatus"
 import { MessageUtil } from "@/utils/message"
 import { parseRouteQuery } from "@/utils/queryParam"
 
@@ -37,7 +38,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     routeName: string,
     viewAPI: (params: K) => ResPromise<Res<Pagination<T>>>,
     viewResCode: ResponseCode,
-    deleteAPI: (params: Q) => ResPromise<Res<StreamIdStatusResWithId | void>>,
+    deleteAPI: (params: Q) => ResPromise<Res<StreamIdsStatusResWithId | void>>,
     deleteResCode: ResponseCode,
     queryParams: Reactive<K>, // 查询参数
     options?: Options<K>,
@@ -50,6 +51,9 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     const addItemDialogVisible = ref(false) // 添加对话框是否可见
     const editItemDialogVisible = ref(false) // 编辑对话框是否可见
     const search = ref("") // 搜索关键字
+
+    const loadingDelete = ref<boolean>(false)
+
     /**
      * @description: 更新和路由
      */
@@ -147,6 +151,8 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     }
 
     const deleteRows = async (rows: TableData[]) => {
+        loadingDelete.value = true // 显示加载动画
+
         // 将 rows 中的id 组成新的 list
         const ids = rows.flatMap((item) => ("id" in item ? item.id.toString() : []))
 
@@ -156,10 +162,17 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         const res = await deleteAPI(deleteUserRequest)
 
         if (res.data.code === deleteResCode) {
+            if (res.data.data && "stream_ids" in res.data.data) {
+                // 如果响应中包含 stream_ids，则轮询获取状态
+                await pollingGetStreamIDsStatus(res.data.data.stream_ids)
+                loadingDelete.value = false // 隐藏加载动画
+            }
+
             // 删除成功后重新获取列表
             await updatePaginate()
             MessageUtil.success(res.data.msg, 3000)
         } else {
+            loadingDelete.value = false // 隐藏加载动画
             // 显示错误信息
             MessageUtil.error(res.data.msg, 3000)
         }
@@ -196,5 +209,6 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         updatePaginate, // 更新分页数据
         deleteRows, // 删除行
         updateRouterPush, // 更新路由
+        loadingDelete, // 删除加载状态
     }
 }

@@ -44,7 +44,7 @@
         </el-form>
 
         <div class="btn-submit">
-            <el-button type="primary" @click="submitForm(viewFormRef as FormInstance)">{{ btnSubmitDisplay }}</el-button>
+            <el-button type="primary" :loading="btnLoading" @click="submitForm(viewFormRef as FormInstance)">{{ btnSubmitDisplay }}</el-button>
         </div>
     </div>
 </template>
@@ -63,10 +63,12 @@ const {
     viewData,
     btnSubmitDisplay = "提交",
     isShowId = false,
+    btnLoading = false,
 } = defineProps<{
     viewData: ViewForm // 展示信息
     btnSubmitDisplay?: string // 提交按钮显示文字
     isShowId?: boolean // 是否显示ID
+    btnLoading?: boolean // 提交按钮加载状态
 }>()
 
 // emits

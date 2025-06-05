@@ -24,10 +24,11 @@
             :avatar-width="40"
             :is-show-user-email="true"
             :is-show-user-display-name="true"
+            :loading-delete="loadingDelete"
             @update-current-page="updateCurrentPage"
             @update-page-size="updatePageSize"
             @edit-row="editRow"
-            @delete-rows="deleteRows"
+            @delete-rows="handleDeleteRows"
             @update-search="updateSearch"
             @run-search="runSearch"
             @update-selection="handleSelection"
@@ -68,7 +69,14 @@
                     <el-select class="operation-item" v-model="commentOperationSelect" placeholder="批量更改" clearable style="width: 140px">
                         <el-option v-for="item in commentBatchOperations" :key="item" :label="`更改为：${CommentStatusDisplay[item] || item}`" :value="item" />
                     </el-select>
-                    <el-button class="operation-item" type="primary" @click="handleCommentStatusOperation" v-show="commentOperationSelect">更改</el-button>
+                    <el-button
+                        class="operation-item"
+                        type="primary"
+                        :loading="loadingBatchOperation"
+                        @click="handleCommentStatusOperation"
+                        v-show="commentOperationSelect"
+                        >更改</el-button
+                    >
                 </div>
             </template>
 
@@ -101,7 +109,7 @@ import { useRouter } from "vue-router"
 
 import { batchOperationCommentStatusAPI, type BatchOperationCommentStatusRequest, type CommentStatusOperation } from "@/api/comment/batchOperationCommentStatus"
 import { type CommentResAdmin, CommentReviewCode, CommentStatusDisplay } from "@/api/comment/common"
-import { deleteCommentAPI, type DeleteCommentRequest } from "@/api/comment/delete"
+import { deleteCommentAdminAPI, type DeleteCommentRequest } from "@/api/comment/delete"
 import { viewCommentByAdminAPI, type ViewCommentByAdminRequest } from "@/api/comment/viewByAdmin"
 import { CommentStatusCode } from "@/api/post/common"
 import { type QueryParamsRecord } from "@/api/request"
@@ -115,7 +123,7 @@ import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { useParams } from "@/components/hooks/useParams"
 import { RouteNames } from "@/router"
 import { confirmCommon } from "@/utils/confirm"
-import { pollingGetStreamIDStatus } from "@/utils/getStreamIDStatus"
+import { pollingGetStreamIDsStatus } from "@/utils/getStreamIDsStatus"
 import { MessageUtil } from "@/utils/message"
 import { adminMenuItemMap } from "@/views/admin/component/aside"
 
@@ -235,15 +243,21 @@ const {
     updatePaginate, // 更新分页
     updateRouterPush, // 更新查询参数和路由
     editItemUpdateDialogVisible, // 编辑对话框
+    loadingDelete, // 删除加载状态
 } = useBaseTable<CommentResAdmin, ViewCommentByAdminRequest, DeleteCommentRequest>(
     RouteNames.Comment,
     viewCommentByAdminAPI,
     ResponseCode.CommentViewSuccess,
-    deleteCommentAPI,
+    deleteCommentAdminAPI,
     ResponseCode.CommentDeleteSuccess,
     queryParams,
     { stringKeys, numberKeys, noRequestKeys, tableImg },
 )
+
+const handleDeleteRows = async (rows: TableData[]) => {
+    await deleteRows(rows)
+    await getCommentCountStatus()
+}
 
 // 处理 commentCountGroup 点击事件
 const handleCommentCountByGroup = async (item: CommentCountGroupItem) => {
@@ -364,6 +378,7 @@ const handleEditReply = async () => {
 }
 
 // 批量操作
+const loadingBatchOperation = ref(false)
 const handleCommentStatusOperation = async () => {
     if (commentStatusOperationList.value.length > 0) {
         confirmCommon(
@@ -371,6 +386,7 @@ const handleCommentStatusOperation = async () => {
 
             // 确认后的操作
             () => {
+                loadingBatchOperation.value = true
                 // 构造请求参数
                 const req: BatchOperationCommentStatusRequest = {
                     operation_list: commentStatusOperationList.value,
@@ -382,11 +398,13 @@ const handleCommentStatusOperation = async () => {
                         MessageUtil.success(msg, 3000)
 
                         // 轮询后端是否完成
-                        await pollingGetStreamIDStatus(res.data.data.stream_id)
+                        await pollingGetStreamIDsStatus(res.data.data.stream_ids)
 
                         await updatePaginate()
                         await getCommentCountStatus()
+                        loadingBatchOperation.value = false
                     } else {
+                        loadingBatchOperation.value = false
                         MessageUtil.error(res.data.msg, 3000)
                     }
                 })

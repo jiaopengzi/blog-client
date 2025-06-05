@@ -6,6 +6,7 @@
  * @Description  : 删除文章标签
  */
 
+import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -14,7 +15,7 @@ export interface DeletePostTagRequest {
 }
 
 // 删除文章标签
-export function deletePostTagAPI(requestData: DeletePostTagRequest): ResPromise<Res<void>> {
+export function deletePostTagAPI(requestData: DeletePostTagRequest): ResPromise<Res<StreamIdsStatusResWithId>> {
     const urlStr = routerGroup + "/post-tag/delete"
     return request({
         url: urlStr,

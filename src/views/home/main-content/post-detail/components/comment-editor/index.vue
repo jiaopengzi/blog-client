@@ -23,7 +23,7 @@ import { handleResErr, ResponseCode } from "@/api/response"
 import JEditor, { EditorStateManager, type JEditorRef } from "@/components/editor"
 import { useEditor } from "@/components/hooks/useEditor"
 import { useUserStore } from "@/stores/user"
-import { pollingGetStreamIDStatus } from "@/utils/getStreamIDStatus"
+import { pollingGetStreamIDsStatus } from "@/utils/getStreamIDsStatus"
 import { MessageUtil } from "@/utils/message"
 
 import { CommentEditorMode, type CommentEditorProps } from "./types"
@@ -145,7 +145,7 @@ const insertComment = async () => {
             MessageUtil.warning("评论成功，等待审核", 6000)
         } else if (data.status === CommentReviewCode.Approved) {
             // 轮询后端是否完成
-            await pollingGetStreamIDStatus(data.stream_id)
+            await pollingGetStreamIDsStatus(data.stream_ids)
 
             // 提示成功
             MessageUtil.success("评论成功", 6000)
@@ -204,7 +204,7 @@ const updateComment = async (isAdminReply: boolean = false) => {
     if (res.data.code === ResponseCode.CommentUpdateSuccess) {
         const data = res.data.data
         // 轮询后端是否完成
-        await pollingGetStreamIDStatus(data.stream_id)
+        await pollingGetStreamIDsStatus(data.stream_ids)
 
         if (!isAdminReply) {
             // 提示成功

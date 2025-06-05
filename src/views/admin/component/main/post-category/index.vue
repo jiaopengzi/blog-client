@@ -18,6 +18,7 @@
             :search-str="search"
             :is-show-edit="true"
             height="calc(100vh - 228px)"
+            :loading-delete="loadingDelete"
             @update-current-page="updateCurrentPage"
             @update-page-size="updatePageSize"
             @edit-row="editRow"
@@ -176,6 +177,7 @@ const {
     editItemUpdateDialogVisible, // 编辑对话框
     deleteRows, // 删除行
     updateRouterPush, // 更新路由
+    loadingDelete, // 删除时的加载状态
 } = useBaseTable<PostCategory, PaginationRequest, DeletePostCategoryRequest>(
     RouteNames.PostCategory,
     viewPostCategoryAPI,

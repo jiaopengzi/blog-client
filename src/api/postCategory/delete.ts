@@ -6,6 +6,7 @@
  * @Description  : 删除文章分类
  */
 
+import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -14,7 +15,7 @@ export interface DeletePostCategoryRequest {
 }
 
 // 删除文章分类
-export function deletePostCategoryAPI(requestData: DeletePostCategoryRequest): ResPromise<Res<void>> {
+export function deletePostCategoryAPI(requestData: DeletePostCategoryRequest): ResPromise<Res<StreamIdsStatusResWithId>> {
     const urlStr = routerGroup + "/post-category/delete"
     return request({
         url: urlStr,

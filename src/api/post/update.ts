@@ -6,12 +6,13 @@
  * @Description  : 更新文章
  */
 
+import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
 import { type UpdatePostRequest } from "./common"
 
-export interface UpdatePostResData {
+export interface UpdatePostResData extends StreamIdsStatusResWithId {
     updated_at: string
 }
 
