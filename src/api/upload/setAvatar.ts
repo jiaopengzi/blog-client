@@ -6,6 +6,7 @@
  * @Description  : 上传头像
  */
 
+import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -14,7 +15,7 @@ export interface SetAvatarRequest {
     avatar_url: string // 头像URL
 }
 
-export function setAvatarAPI(req: SetAvatarRequest): ResPromise<Res<unknown>> {
+export function setAvatarAPI(req: SetAvatarRequest): ResPromise<Res<StreamIdsStatusResWithId >> {
     return request({
         url: routerGroup + "/upload/avatar/set",
         method: "post",

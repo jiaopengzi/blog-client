@@ -6,6 +6,7 @@
  * @Description  : 删除登录日志
  */
 
+import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -14,7 +15,7 @@ export interface DeleteLoginLogByIDsRequest {
 }
 
 // 通过 ID 删除登录日志
-export function deleteLoginLogByIDsAPI(requestData: DeleteLoginLogByIDsRequest): ResPromise<Res<void>> {
+export function deleteLoginLogByIDsAPI(requestData: DeleteLoginLogByIDsRequest): ResPromise<Res<StreamIdsStatusResWithId >> {
     const urlStr = routerGroup + "/login-log/delete-by-ids"
     return request({
         url: urlStr,

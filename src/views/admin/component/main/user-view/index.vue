@@ -17,11 +17,12 @@
             :is-show-search="true"
             :search-str="search"
             :is-show-edit="true"
+            :loading-delete="loadingDelete"
             height="calc(100vh - 270px)"
             @update-current-page="updateCurrentPage"
             @update-page-size="updatePageSize"
             @edit-row="editRow"
-            @delete-rows="deleteRows"
+            @delete-rows="handleDeleteRows"
             @update-search="updateSearch"
             @run-search="runSearch"
             @add-item-update-dialog-visible="addItemUpdateDialogVisible"
@@ -51,7 +52,7 @@
 
             <template #add-item>
                 <div class="dialog-add">
-                    <AddUser :roles="roles" @add-user-status="addStatus" />
+                    <AddUser :roles="roles" @add-user-status="handleAddStatus" />
                 </div>
             </template>
 
@@ -62,7 +63,7 @@
 
             <template #edit-item>
                 <div class="dialog-edit">
-                    <EditUser :roles="roles" :edit-user-data="editUserByAdminForm" @edit-user-status="editStatus" />
+                    <EditUser :roles="roles" :edit-user-data="editUserByAdminForm" @edit-user-status="handleEditStatus" />
                 </div>
             </template>
         </BaseTable>
@@ -331,6 +332,7 @@ const {
     editItemUpdateDialogVisible, // 编辑对话框
     deleteRows, // 删除行
     updateRouterPush, // 更新查询参数和路由
+    loadingDelete, // 删除加载状态
 } = useBaseTable<User, GetUsersRequest, DeleteUserRequest>(
     RouteNames.UserView,
     getUsersAPI,
@@ -340,6 +342,21 @@ const {
     queryParams,
     { stringKeys, numberKeys, noRequestKeys },
 )
+
+const handleDeleteRows = async (rows: TableData[]) => {
+    await deleteRows(rows)
+    await getUserCountGroupByRole()
+}
+
+const handleAddStatus = async (status: boolean) => {
+    await addStatus(status)
+    await getUserCountGroupByRole()
+}
+
+const handleEditStatus = async (status: boolean) => {
+    await editStatus(status)
+    await getUserCountGroupByRole()
+}
 
 // 更新数据
 const updateData = async () => {

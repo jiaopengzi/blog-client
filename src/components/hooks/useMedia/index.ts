@@ -68,9 +68,10 @@ export function useMedia() {
         editStatus, // 编辑状态
         addItemUpdateDialogVisible, // 新增对话框
         editItemUpdateDialogVisible, // 编辑对话框
-        deleteRows, // 删除行
+        deleteRows: deleteRowsBase, // 删除行
         updateRouterPush, // 更新查询参数和路由
         updatePaginate, // 更新分页
+        loadingDelete, // 删除加载状态
     } = useBaseTable<MediaFile, GetMediaFilesRequest, DeleteFileRequest>(
         RouteNames.Media,
         getMediaFilesAPI,
@@ -98,6 +99,7 @@ export function useMedia() {
         () => addItemDialogVisible.value,
         async (newVal, oldVal) => {
             if (hasUpload.value && oldVal === true && newVal === false) {
+                await getFileCountGroupByFileType()
                 await updatePaginate()
             }
         },
@@ -226,6 +228,11 @@ export function useMedia() {
         }
     })
 
+    const deleteRows = async (rows: TableData[]) => {
+        await deleteRowsBase(rows)
+        await getFileCountGroupByFileType()
+    }
+
     return {
         cols, // 列配置
         showListOrGridStatus, // 显示列表或网格状态
@@ -260,5 +267,6 @@ export function useMedia() {
         handleFileCountByFileType, // 根据文件类型统计文件数量
         updateSubtitles, // 更新字幕
         deleteSubtitles, // 删除字幕
+        loadingDelete, // 删除加载状态
     }
 }

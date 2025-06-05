@@ -7,6 +7,7 @@
  */
 
 import { type PgSqlDateTime } from "@/api/common"
+import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -22,7 +23,7 @@ export interface EditUserInfoByAdminRequest {
     description: string // 描述
 }
 
-export function editUserInfoByAdminAPI(requestData: EditUserInfoByAdminRequest): ResPromise<Res<unknown>> {
+export function editUserInfoByAdminAPI(requestData: EditUserInfoByAdminRequest): ResPromise<Res<StreamIdsStatusResWithId>> {
     const urlStr = routerGroup + "/user/edit"
     return request({
         url: urlStr,

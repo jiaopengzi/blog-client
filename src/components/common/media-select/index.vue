@@ -30,6 +30,7 @@
             :file-count-group-by-file-type="fileCountGroupByFileType"
             :active-file-type="activeFileType"
             :handle-file-count-by-file-type="handleFileCountByFileTypeAc"
+            :loading-delete="loadingDelete"
             @update-current-page="updateCurrentPage"
             @update-page-size="updatePageSize"
             @update-search="updateSearchAc"
@@ -120,6 +121,7 @@ const {
     handleFileCountByFileType, // 根据文件类型统计文件数量
     updateSubtitles, // 更新字幕
     deleteSubtitles, // 删除字幕
+    loadingDelete,
 } = useMedia()
 
 // 更新搜索关键字

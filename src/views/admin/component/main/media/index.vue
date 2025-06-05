@@ -26,6 +26,7 @@
             :file-count-group-by-file-type="fileCountGroupByFileType"
             :active-file-type="activeFileType"
             :handle-file-count-by-file-type="handleFileCountByFileType"
+            :loading-delete="loadingDelete"
             @update-current-page="updateCurrentPage"
             @update-page-size="updatePageSize"
             @edit-row="editRow"
@@ -41,8 +42,7 @@
             @has-upload="handleHasUpload"
             @update-subtitles="updateSubtitles"
             @delete-subtitles="deleteSubtitles"
-        >
-        </MediaBase>
+        />
     </section>
 </template>
 
@@ -90,5 +90,6 @@ const {
     handleFileCountByFileType, // 根据文件类型统计文件数量
     updateSubtitles, // 更新字幕
     deleteSubtitles, // 删除字幕
+    loadingDelete, // 删除加载状态
 } = useMedia()
 </script>

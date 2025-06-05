@@ -15,6 +15,7 @@
             :is-show-search="true"
             :search-str="search"
             :is-show-edit="false"
+            :loading-delete="loadingDelete"
             height="calc(100vh - 228px)"
             @update-current-page="updateCurrentPage"
             @update-page-size="updatePageSize"
@@ -24,7 +25,7 @@
         >
             <template #btns>
                 <el-input-number class="delete-num" v-model="deleteNum" :min="1" :max="10000000" />
-                <el-button type="danger" @click="handleDeleteN"> 删除N天前记录 </el-button>
+                <el-button type="danger" :loading="loadingDeleteN" @click="handleDeleteN"> 删除N天前记录 </el-button>
             </template>
         </BaseTable>
     </section>
@@ -44,6 +45,7 @@ import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { useParams } from "@/components/hooks/useParams"
 import { RouteNames } from "@/router"
 import { deleteConfirmCommon } from "@/utils/confirm"
+import { pollingGetStreamIDsStatus } from "@/utils/getStreamIDsStatus"
 import { MessageUtil } from "@/utils/message"
 import { adminMenuItemMap } from "@/views/admin/component/aside"
 
@@ -123,6 +125,7 @@ const {
     deleteRows, // 删除行
     updateRouterPush,
     updatePaginate,
+    loadingDelete,
 } = useBaseTable<LoginLog, GetLoginLogsRequest, DeleteLoginLogByIDsRequest>(
     RouteNames.LoginLog,
     getLoginLogsAPI,
@@ -141,18 +144,26 @@ const runSearch = async () => {
 
 const deleteNum = ref(1)
 
+const loadingDeleteN = ref(false)
+
 const handleDeleteN = () => {
     deleteConfirmCommon(async () => {
+        loadingDeleteN.value = true
         // 删除用户
         const deleteLoginLogByDayRequest: DeleteLoginLogByDayRequest = {
             days_before: deleteNum.value,
         }
-        await deleteLoginLogByDayAPI(deleteLoginLogByDayRequest).then((res) => {
+        await deleteLoginLogByDayAPI(deleteLoginLogByDayRequest).then(async (res) => {
             if (res.data.code === ResponseCode.LoginLogDeleteByDaySuccess) {
+                // 轮询后端是否完成
+                await pollingGetStreamIDsStatus(res.data.data.stream_ids)
+                loadingDeleteN.value = false
+
                 // 删除成功后重新获取用户列表
                 runSearch()
                 MessageUtil.success(res.data.msg, 3000)
             } else {
+                loadingDeleteN.value = false
                 // 显示错误信息
                 const msg = handleResErr(res)
                 MessageUtil.error(msg, 3000)

@@ -42,7 +42,7 @@
 
             <div class="btn-submit">
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm(addUserFormRef as FormInstance)">新增用户</el-button>
+                    <el-button type="primary" :loading="btnLoading" @click="submitForm(addUserFormRef as FormInstance)">新增用户</el-button>
                 </el-form-item>
             </div>
         </el-form>
@@ -58,6 +58,7 @@ import { ResponseCode } from "@/api/response"
 import type { AddUserRequest } from "@/api/user/addUser"
 import { AddUserAPI } from "@/api/user/addUser"
 import { useAccountFormValidation } from "@/components/hooks/useAccountFormValidation"
+import { pollingGetStreamIDsStatus } from "@/utils/getStreamIDsStatus"
 import { MessageUtil } from "@/utils/message"
 import { generatePassword } from "@/utils/password"
 
@@ -113,6 +114,8 @@ const rules = reactive<FormRules<AddUserForm>>({
     password: createPasswordRules(),
 })
 
+const btnLoading = ref(false)
+
 /**
  * @description: 提交表单
  * @param formEl 表单实例
@@ -121,6 +124,8 @@ const rules = reactive<FormRules<AddUserForm>>({
  */
 const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
+
+    btnLoading.value = true
 
     await formEl.validate(async (valid) => {
         if (valid) {
@@ -132,18 +137,22 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                 role_name: addUserForm.roleName,
                 is_send_email: addUserForm.isSendEmail,
             }
-            console.log("req:", req)
+
             const { data } = await AddUserAPI(req)
 
             if (data.code === ResponseCode.UserAddUserSuccess) {
+                // 轮询后端是否完成
+                await pollingGetStreamIDsStatus(data.data.stream_ids)
+                btnLoading.value = false
+
                 // 添加成功提示
                 emit("add-user-status", true)
                 MessageUtil.success(data.msg, 6000)
             } else {
+                btnLoading.value = false
                 // 添加失败提示
                 MessageUtil.error(data.msg, 0)
             }
-            console.log("submit!")
         }
     })
 }
