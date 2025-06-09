@@ -94,7 +94,7 @@ export function usePostDetail(
 
     // 点击作者
     const clickAuthorId = (val: string) => {
-        console.log("============>author", val)
+        // console.log("============>author", val)
     }
 
     // 编辑文章
@@ -112,7 +112,7 @@ export function usePostDetail(
 
         // 解析关键字
         if (post_id) {
-            breadcrumbStore.updateItems(post_id, generateBreadcrumbPath())
+            breadcrumbStore.updateItems(postMeta.value.post_title!, generateBreadcrumbPath())
         }
 
         // 清空面包屑

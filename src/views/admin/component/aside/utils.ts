@@ -93,25 +93,25 @@ export const adminMenuItemMap: AdminMenuItemMap = {
             class: "icon-menu",
         },
     },
-    [RouteNamesAdmin.Announcement]: {
-        text: "公告",
-        icon: {
-            name: IconKeys.Announcement,
-            class: "icon-menu",
-        },
-    },
-    [RouteNamesAdmin.AnnouncementAll]: {
-        text: "所有公告",
-        parentIndex: RouteNamesAdmin.Announcement,
-    },
-    [RouteNamesAdmin.AnnouncementPublish]: {
-        text: "发布公告",
-        parentIndex: RouteNamesAdmin.Announcement,
-    },
-    [RouteNamesAdmin.AnnouncementCategory]: {
-        text: "公告分类",
-        parentIndex: RouteNamesAdmin.Announcement,
-    },
+    // [RouteNamesAdmin.Announcement]: {
+    //     text: "公告",
+    //     icon: {
+    //         name: IconKeys.Announcement,
+    //         class: "icon-menu",
+    //     },
+    // },
+    // [RouteNamesAdmin.AnnouncementAll]: {
+    //     text: "所有公告",
+    //     parentIndex: RouteNamesAdmin.Announcement,
+    // },
+    // [RouteNamesAdmin.AnnouncementPublish]: {
+    //     text: "发布公告",
+    //     parentIndex: RouteNamesAdmin.Announcement,
+    // },
+    // [RouteNamesAdmin.AnnouncementCategory]: {
+    //     text: "公告分类",
+    //     parentIndex: RouteNamesAdmin.Announcement,
+    // },
     [RouteNamesAdmin.Video]: {
         text: "视频",
         icon: {
@@ -150,21 +150,21 @@ export const adminMenuItemMap: AdminMenuItemMap = {
         text: "会员管理",
         parentIndex: RouteNamesAdmin.Shop,
     },
-    [RouteNamesAdmin.ShortLink]: {
-        text: "短连接",
-        icon: {
-            name: IconKeys.ShortLink,
-            class: "icon-menu",
-        },
-    },
-    [RouteNamesAdmin.ShortLinkAll]: {
-        text: "所有短连接",
-        parentIndex: RouteNamesAdmin.ShortLink,
-    },
-    [RouteNamesAdmin.ShortLinkAdd]: {
-        text: "新增短连接",
-        parentIndex: RouteNamesAdmin.ShortLink,
-    },
+    // [RouteNamesAdmin.ShortLink]: {
+    //     text: "短连接",
+    //     icon: {
+    //         name: IconKeys.ShortLink,
+    //         class: "icon-menu",
+    //     },
+    // },
+    // [RouteNamesAdmin.ShortLinkAll]: {
+    //     text: "所有短连接",
+    //     parentIndex: RouteNamesAdmin.ShortLink,
+    // },
+    // [RouteNamesAdmin.ShortLinkAdd]: {
+    //     text: "新增短连接",
+    //     parentIndex: RouteNamesAdmin.ShortLink,
+    // },
     [RouteNamesAdmin.User]: {
         text: "用户",
         icon: {

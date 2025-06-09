@@ -140,6 +140,18 @@ export enum ResponseCode {
     CommentCountByStatusIsNone = 2409, // 获取按照评论状态统计评论数量无数据
     CommentCountByStatusSuccess = 2410, // 获取按照评论状态统计评论数量成功
 
+    // 链接相关
+    LinkInsertSuccess = 2500, // 插入链接成功
+    LinkDeleteSuccess = 2501, // 删除链接成功
+    LinkUpdateSuccess = 2502, // 更新链接成功
+    LinkViewSuccess = 2503, // 查看链接成功
+    LinkCheckURLExist = 2504, // 链接已经存在
+    LinkCheckURLNotExist = 2505, // 链接不存在
+    LinkCheckURLTooLong = 2506, // 链接过长
+    LinkCheckURLExistExcludingID = 2507, // 链接已经存在(排除ID)
+    LinkCheckURLNotExistExcludingID = 2508, // 链接不存在(排除ID)
+    LinkViewNoData = 2509, // 查看链接无数据
+
     // 验证码相关
     CaptchaSendSuccess = 8000, //验证码发送成功
     CaptchaCheckSuccess = 8002, //验证码发送成功

@@ -11,7 +11,7 @@ import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
 export interface DeletePostTagRequest {
-    id_list: string[] // tag名称
+    id_list: string[]
 }
 
 // 删除文章标签
