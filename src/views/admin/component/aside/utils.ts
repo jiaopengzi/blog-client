@@ -52,25 +52,25 @@ export const adminMenuItemMap: AdminMenuItemMap = {
             class: "icon-menu",
         },
     },
-    [RouteNamesAdmin.Link]: {
+    [RouteNamesAdmin.Links]: {
         text: "链接",
         icon: {
             name: IconKeys.Link,
             class: "icon-menu",
         },
     },
-    [RouteNamesAdmin.LinkAll]: {
-        text: "所有链接",
-        parentIndex: RouteNamesAdmin.Link,
-    },
-    [RouteNamesAdmin.LinkAdd]: {
-        text: "新增链接",
-        parentIndex: RouteNamesAdmin.Link,
-    },
-    [RouteNamesAdmin.LinkCategory]: {
-        text: "链接分类",
-        parentIndex: RouteNamesAdmin.Link,
-    },
+    // [RouteNamesAdmin.LinkAll]: {
+    //     text: "所有链接",
+    //     parentIndex: RouteNamesAdmin.Link,
+    // },
+    // [RouteNamesAdmin.LinkAdd]: {
+    //     text: "新增链接",
+    //     parentIndex: RouteNamesAdmin.Link,
+    // },
+    // [RouteNamesAdmin.LinkCategory]: {
+    //     text: "链接分类",
+    //     parentIndex: RouteNamesAdmin.Link,
+    // },
     [RouteNamesAdmin.Page]: {
         text: "页面",
         icon: {

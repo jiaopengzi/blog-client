@@ -31,7 +31,7 @@ export const getLinkStatusOptions = () => {
 export interface InsertLinkRequest {
     name: string // 名称
     url: string // 链接地址
-    image: string // 图片地址
+    thumbnail: string // 图片地址
     description: string // 描述
     status?: LinkStatusCode // 状态
     order?: string // 排序
@@ -48,7 +48,7 @@ export interface LinkRes extends DataWithImg {
     updated_at: string // 更新时间
     name: string // 评论者名称
     url: string // 评论者链接
-    image: string // 评论者头像
+    thumbnail: string // 评论者头像
     description: string // 评论内容
     status: LinkStatusCode // 评论状态
     order: string // 排序

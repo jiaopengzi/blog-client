@@ -19,7 +19,9 @@ export const RegexPatterns = {
     Slug: /^(?:[a-zA-Z0-9-._~+]|%[0-9A-Fa-f]{2})+$/, // slug
     SeoKeyWords: /^([a-zA-Z0-9\u4e00-\u9fa5]+( [a-zA-Z0-9\u4e00-\u9fa5]+)*)(,([a-zA-Z0-9\u4e00-\u9fa5]+( [a-zA-Z0-9\u4e00-\u9fa5]+)*))*$/, // SEO关键字
 
-    ImgURL: /^https?:\/\/(.+\/)+.+(\.(gif|png|jpg|jpeg|webp|svg|psd|bmp|tif))([?!=!].*)?$/i, // 图片URL
+    ImgURL: /^https?:\/\/(.+\/)+.+(\.(gif|png|jpg|jpeg|webp|svg|psd|bmp|tif|ico))([?!=!].*)?$/i, // 图片URL
+
+    URL: /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/, // URL
 
     IsTrim: /^\s+|\s+$/, // 匹配首尾是否有空格
 } as const

@@ -10,12 +10,12 @@ import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
-export interface DeletePostTagRequest {
+export interface DeleteLinkRequest {
     id_list: string[]
 }
 
 // 删除链接
-export function deleteLinkAPI(requestData: DeletePostTagRequest): ResPromise<Res<StreamIdsStatusResWithId>> {
+export function deleteLinkAPI(requestData: DeleteLinkRequest): ResPromise<Res<StreamIdsStatusResWithId>> {
     const urlStr = routerGroup + "/link/delete"
     return request({
         url: urlStr,

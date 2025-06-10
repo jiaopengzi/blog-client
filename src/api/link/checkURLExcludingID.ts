@@ -16,7 +16,7 @@ export interface CheckURLExcludingIDRequest {
 
 // 检查 url 是否存在
 export function checkURLExcludingIDAPI(requestData: CheckURLExcludingIDRequest): ResPromise<Res<void>> {
-    const urlStr = routerGroup + "/link/check-ulr-excluding-id"
+    const urlStr = routerGroup + "/link/check-url-excluding-id"
     return request({
         url: urlStr,
         method: "post",
