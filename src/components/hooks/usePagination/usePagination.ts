@@ -24,6 +24,7 @@ export function usePagination<T, K extends PaginationRequest>(
     paginateAPI: (params: K) => Promise<Pagination<T>>,
     queryParams: Reactive<K>,
     updateRouterPush: () => Promise<void>,
+    isAutoUpdate = false, // 是否自动更新分页数据
 ) {
     /**
      * 更新当前页
@@ -33,6 +34,11 @@ export function usePagination<T, K extends PaginationRequest>(
         queryParams.current_page = val
 
         await updateRouterPush()
+
+        // 如果是自动更新分页数据，则调用更新分页数据方法
+        if (isAutoUpdate) {
+            await updatePaginate()
+        }
     }
 
     /**
@@ -43,6 +49,11 @@ export function usePagination<T, K extends PaginationRequest>(
         queryParams.page_size = val
 
         await updateRouterPush()
+
+        // 如果是自动更新分页数据，则调用更新分页数据方法
+        if (isAutoUpdate) {
+            await updatePaginate()
+        }
     }
 
     //  更新分页数据

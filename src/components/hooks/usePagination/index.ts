@@ -7,4 +7,4 @@
  */
 
 export * from "./usePagination"
-export * from "./usePaginationComment"
+export * from "./usePaginationNoRouter"

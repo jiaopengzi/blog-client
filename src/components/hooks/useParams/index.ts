@@ -6,7 +6,7 @@
  * @Description  : 路由参数解析回响应式变量
  */
 
-import { onBeforeMount, type Reactive, type Ref, watch } from "vue"
+import { onBeforeMount, type Reactive, type Ref, ref, watch } from "vue"
 
 import type { PaginationRequest } from "@/api/request"
 import type { Pagination } from "@/api/response"
@@ -14,10 +14,10 @@ import type { Pagination } from "@/api/response"
 /**
  * @description: 解析路由参数回响应式变量
  * @param params 路由参数
- * @param search 搜索关键字
  * @param pagination 分页信息
+ * @param search 搜索关键字
  */
-export function useParams<T, K extends PaginationRequest>(params: Reactive<K>, search: Ref<string>, pagination: Reactive<Pagination<T>>) {
+export function useParams<T, K extends PaginationRequest>(params: Reactive<K>, pagination: Reactive<Pagination<T>>, search: Ref<string> = ref("")): void {
     // 监听搜索关键字
     const update = (p: Reactive<K>) => {
         const { key_word, page_size, current_page } = p

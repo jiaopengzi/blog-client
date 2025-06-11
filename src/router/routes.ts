@@ -33,6 +33,15 @@ export const routes: RouteRecordRaw[] = [
     },
 
     {
+        path: "/link-list",
+        name: RouteNames.LinkList,
+        component: () => import("@/views/link-list"),
+        meta: {
+            requiresAuth: false,
+        },
+    },
+
+    {
         path: "/test",
         name: RouteNames.Test,
         component: () => import("@/views/test"),

@@ -11,8 +11,11 @@ import type { Pagination, Res, ResPromise } from "@/api/response"
 
 import type { LinkRes } from "./common"
 
+// 查看链接请求参数
+export type ViewLinkRequest = PaginationRequest
+
 // 查看链接
-export function viewLinkAPI(requestData: PaginationRequest): ResPromise<Res<Pagination<LinkRes>>> {
+export function viewLinkAPI(requestData: ViewLinkRequest): ResPromise<Res<Pagination<LinkRes>>> {
     const urlStr = routerGroup + "/link/view"
     return request({
         url: urlStr,
@@ -22,7 +25,7 @@ export function viewLinkAPI(requestData: PaginationRequest): ResPromise<Res<Pagi
 }
 
 // 查看链接(管理员)
-export function viewLinkAdminAPI(requestData: PaginationRequest): ResPromise<Res<Pagination<LinkRes>>> {
+export function viewLinkAdminAPI(requestData: ViewLinkRequest): ResPromise<Res<Pagination<LinkRes>>> {
     const urlStr = routerGroup + "/link/view-admin"
     return request({
         url: urlStr,

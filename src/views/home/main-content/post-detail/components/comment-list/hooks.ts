@@ -12,7 +12,7 @@ import { type Reactive, reactive, ref } from "vue"
 import { CommentPinnedCode, type CommentRes } from "@/api/comment/common"
 import { viewByPostIDAPI, type ViewCommentRequest } from "@/api/comment/viewByPostID"
 import { getEmptyPagination, type Pagination, ResponseCode } from "@/api/response"
-import { usePaginationComment } from "@/components/hooks/usePagination"
+import { usePaginationNoRouter } from "@/components/hooks/usePagination"
 
 export function useCommentList(req: Reactive<ViewCommentRequest>) {
     const isShowLoading = ref<boolean>(false) // 是否显示加载动画
@@ -64,7 +64,7 @@ export function useCommentList(req: Reactive<ViewCommentRequest>) {
     }
 
     // 分页 hooks
-    const { updateCurrentPage, updatePageSize, updatePaginate } = usePaginationComment(pagination, getPaginate, req)
+    const { updateCurrentPage, updatePageSize, updatePaginate } = usePaginationNoRouter(pagination, getPaginate, req)
 
     // 删除评论
     const handleDelete = async (commentID: string): Promise<void> => {

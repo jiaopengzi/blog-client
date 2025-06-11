@@ -16,6 +16,7 @@ export enum RouteNamesDefault {
     Test1 = "test1",
     NotFound = "not-found",
     Login = "login",
+    LinkList = "link-list",
     Register = "register",
     RegisterAdmin = "register-admin",
     ResetPassword = "reset-password",

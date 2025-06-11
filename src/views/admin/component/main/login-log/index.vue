@@ -173,7 +173,7 @@ const handleDeleteN = () => {
 }
 
 // 在加载前将 params 解析回对应的响应式变量中
-useParams(queryParams, search, pagination)
+useParams(queryParams, pagination, search)
 </script>
 
 <style scoped lang="scss">

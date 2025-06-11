@@ -581,7 +581,7 @@ const editRow = (index: number, row: TableData) => {
 }
 
 // 通用将 params 解析回对应的响应式变量中
-useParams(queryParams, search, pagination)
+useParams(queryParams, pagination, search)
 
 // 将 params 解析回对应的响应式变量中(不需要请求)
 const parseParamsNotLoaded = () => {

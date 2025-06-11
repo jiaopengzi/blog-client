@@ -1,5 +1,5 @@
 /*
- * FilePath    : blog-client\src\components\hooks\usePagination\usePaginationComment.ts
+ * FilePath    : blog-client\src\components\hooks\usePagination\usePaginationNoRouter.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -18,7 +18,7 @@ import { type Pagination } from "@/api/response"
  * @param paginateAPI 分页 API
  * @param queryParams 查询参数
  */
-export function usePaginationComment<T, K extends PaginationWithoutKeyWord>(
+export function usePaginationNoRouter<T, K extends PaginationWithoutKeyWord>(
     pagination: Reactive<Pagination<T>>,
     paginateAPI: (params: K) => Promise<Pagination<T>>,
     queryParams: Reactive<K>,

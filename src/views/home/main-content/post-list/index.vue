@@ -43,6 +43,9 @@
             />
         </div>
     </div>
+
+    <!-- 链接列表 -->
+    <LinkList />
 </template>
 
 <script lang="ts" setup>
@@ -57,6 +60,7 @@ import PostItemMain from "@/components/common/post-item-main"
 import PostItemSearch from "@/components/common/post-item-search"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 import { useStatusStore } from "@/stores/status"
+import LinkList from "@/views/link-list/main-content/components"
 
 defineOptions({ name: "PostList" })
 
