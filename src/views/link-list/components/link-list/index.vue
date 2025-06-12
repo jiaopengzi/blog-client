@@ -7,7 +7,7 @@
 -->
 
 <template>
-    <div class="link-list-container" v-if="pagination.total > 0">
+    <div class="link-list-container" v-if="pagination.total > 0" :style="{ width: isShowDescription ? '100%' : 'auto' }">
         <div class="link-list">
             <div v-for="item in pagination.records" :key="item.id" class="link-item">
                 <LinkItem :data="item" :size="size" :is-show-description="isShowDescription" :truncated-count="truncatedCount" />
@@ -32,7 +32,9 @@
                 />
             </div>
         </div>
-        <el-button v-if="!isShowDescription" class="link-list-more" type="default" @click="handleMoreClick">更多</el-button>
+        <div v-if="!isShowDescription" class="link-list-more-container">
+            <el-button class="link-list-more" type="default" @click="handleMoreClick">更多</el-button>
+        </div>
     </div>
 </template>
 
@@ -102,17 +104,22 @@ useParams(req, pagination)
 .link-list-container {
     border-radius: 4px;
     background-color: var(--jpz-bg-color);
-    width: 100%;
 }
 
-.link-list-more {
-    color: var(--jpz-text-color-placeholder);
-    border: none;
-    margin: 4px;
+.link-list-more-container {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    padding-right: 10px;
+    padding-bottom: 10px;
+
+    .link-list-more {
+        color: var(--jpz-text-color-placeholder);
+        border: none;
+    }
 }
 
 .link-list {
-    padding: 15px;
     display: flex;
     flex-wrap: wrap;
     justify-content: left;
@@ -131,13 +138,22 @@ useParams(req, pagination)
     margin: 10px;
 }
 
-// @include respond-to("pc") {
-// }
+@include respond-to("pc") {
+    .link-list {
+        padding: 15px;
+        padding-top: 20px;
+    }
+}
 
 @include respond-to("pad") {
     .link-list-container {
         margin-left: 10px;
         margin-right: 10px;
+    }
+
+    .link-list {
+        padding: 15px;
+        padding-top: 20px;
     }
 }
 
@@ -145,6 +161,10 @@ useParams(req, pagination)
     .link-list-container {
         margin-left: 10px;
         margin-right: 10px;
+    }
+
+    .link-list {
+        padding: 10px;
     }
 }
 </style>

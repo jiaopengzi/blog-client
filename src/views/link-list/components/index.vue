@@ -46,10 +46,10 @@ breadcrumbStore.updateItems("友情链接", `/${RouteNames.LinkList}`)
     align-items: center;
     justify-content: center;
 }
+
 .title-container {
     // 坐上和右上圆角
     border-radius: 4px 4px 0 0;
-
     margin-top: 20px;
     width: 100%;
     background-color: var(--jpz-bg-color);

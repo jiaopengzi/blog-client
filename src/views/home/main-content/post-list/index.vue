@@ -45,7 +45,7 @@
     </div>
 
     <!-- 链接列表 -->
-    <LinkList />
+    <LinkList class="links" />
 </template>
 
 <script lang="ts" setup>
@@ -186,6 +186,11 @@ onUnmounted(() => {
             border-radius: 0 0 5px 5px;
         }
     }
+}
+
+.links {
+    margin-top: 10px;
+    width: 100%;
 }
 
 @include respond-to("pc") {

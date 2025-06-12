@@ -76,7 +76,6 @@ const truncatedDescription = computed(() => {
 
 .btn-no-description {
     @extend %common-link-style;
-    min-width: 100px;
     height: 24px;
 }
 
@@ -90,7 +89,7 @@ const truncatedDescription = computed(() => {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: 8px;
+    gap: 10px;
     color: var(--jpz-text-color-primary);
     font-size: 14px;
     font-weight: 700;
