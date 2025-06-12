@@ -1,15 +1,15 @@
 <!--
- * @FilePath     : \blog-client\src\views\user-info\index.vue
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 用户信息页面
+ * FilePath    : blog-client\src\views\link-list\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 友情链接
 -->
 
 <template>
     <div class="page">
-        <LayoutHeader />
-        <LinkList />
+        <LayoutHeader :is-show-search="false" />
+        <LinkListDetail />
         <LayoutFooter />
     </div>
 </template>
@@ -20,7 +20,8 @@ import { useHead } from "@unhead/vue"
 import LayoutFooter from "@/components/layout/footer"
 import LayoutHeader from "@/components/layout/header"
 
-import LinkList from "./main-content"
+import LinkListDetail from "./components"
+
 defineOptions({ name: "PageLinkList" })
 
 useHead({

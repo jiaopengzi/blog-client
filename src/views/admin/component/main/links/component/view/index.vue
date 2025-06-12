@@ -21,7 +21,7 @@
             <el-form-item v-if="isShowId" label="ID" prop="id">
                 <el-input v-model="viewDataAc.id" disabled />
             </el-form-item>
-            <el-form-item label="链接名称" prop="name">
+            <el-form-item label="名称" prop="name">
                 <el-input v-model="viewDataAc.name" placeholder="请输入链接名称-必填" />
             </el-form-item>
 
@@ -29,18 +29,18 @@
                 <el-input v-model="viewDataAc.url" placeholder="请输入链接地址-必填" />
             </el-form-item>
             <el-form-item label="图片" prop="thumbnail">
-                <el-input v-model="viewDataAc.thumbnail" placeholder="请输入链接的图片URL-选填" />
+                <el-input v-model="viewDataAc.thumbnail" placeholder="请输入链接的图片URL-必填" />
             </el-form-item>
             <el-form-item label="描述" prop="description">
-                <el-input v-model="viewDataAc.description" type="textarea" placeholder="请输入标签描信息-选填" :rows="5" />
+                <el-input v-model="viewDataAc.description" type="textarea" placeholder="请输入链接描信息（建议80字以内）- 必填" :rows="5" />
             </el-form-item>
-            <el-form-item label="状态" prop="status">
+            <el-form-item v-if="isAdmin" label="状态" prop="status">
                 <el-radio-group v-model="viewDataAc.status">
                     <el-radio :value="LinkStatusCode.Hidden">{{ LinkStatusDisplay[LinkStatusCode.Hidden] }}</el-radio>
                     <el-radio :value="LinkStatusCode.Show">{{ LinkStatusDisplay[LinkStatusCode.Show] }}</el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="排序" prop="order">
+            <el-form-item v-if="isAdmin" label="排序" prop="order">
                 <el-input v-model="viewDataAc.order" type="number" placeholder="请输入链接排序数字-选填" min="0" />
             </el-form-item>
         </el-form>
@@ -68,11 +68,13 @@ const {
     btnSubmitDisplay = "提交",
     isShowId = false,
     btnLoading = false,
+    isAdmin = false, // 是否是管理员添加链接
 } = defineProps<{
     viewData: ViewForm // 展示信息
     btnSubmitDisplay?: string // 提交按钮显示文字
     isShowId?: boolean // 是否显示ID
     btnLoading?: boolean // 提交按钮加载状态
+    isAdmin?: boolean // 是否是管理员添加链接
 }>()
 
 // emits
@@ -117,8 +119,22 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     align-items: center;
 }
 
-.view-form {
-    width: 400px;
+@include respond-to("pc") {
+    .view-form {
+        width: 600px;
+    }
+}
+
+@include respond-to("pad") {
+    .view-form {
+        width: 600px;
+    }
+}
+
+@include respond-to("phone") {
+    .view-form {
+        width: 400px;
+    }
 }
 
 .btn-submit {

@@ -39,7 +39,7 @@
 
             <template #add-item>
                 <div class="dialog-add">
-                    <AddLink @add-status="addStatus" />
+                    <AddLink :is-admin="true" @add-status="addStatus" />
                 </div>
             </template>
 
@@ -50,7 +50,7 @@
 
             <template #edit-item>
                 <div class="dialog-edit">
-                    <EditLink :edit-data="editData" @edit-status="editStatus" />
+                    <EditLink :edit-data="editData" :is-admin="true" @edit-status="editStatus" />
                 </div>
             </template>
         </BaseTable>

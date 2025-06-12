@@ -60,7 +60,7 @@ import PostItemMain from "@/components/common/post-item-main"
 import PostItemSearch from "@/components/common/post-item-search"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 import { useStatusStore } from "@/stores/status"
-import LinkList from "@/views/link-list/main-content/components"
+import LinkList from "@/views/link-list/components/link-list"
 
 defineOptions({ name: "PostList" })
 

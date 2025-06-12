@@ -7,7 +7,7 @@
 -->
 
 <template>
-    <View :view-data="editData" :is-show-id="true" :btn-loading="btnLoading" btn-submit-display="提交修改" @submit-data="submitData" />
+    <View :view-data="editData" :is-show-id="true" :is-admin="isAdmin" :btn-loading="btnLoading" btn-submit-display="提交修改" @submit-data="submitData" />
 </template>
 
 <script lang="ts" setup>
@@ -24,13 +24,14 @@ import { type ViewForm } from "../view"
 
 defineOptions({ name: "EditLink" })
 
-const emit = defineEmits<{
-    (event: "edit-status", value: boolean): void // 编辑状态
+// props
+const { editData, isAdmin = true } = defineProps<{
+    isAdmin?: boolean // 是否是管理员添加链接
+    editData: ViewForm // 需要编辑的用户ID
 }>()
 
-// props
-const { editData } = defineProps<{
-    editData: ViewForm // 需要编辑的用户ID
+const emit = defineEmits<{
+    (event: "edit-status", value: boolean): void // 编辑状态
 }>()
 
 const btnLoading = ref(false)

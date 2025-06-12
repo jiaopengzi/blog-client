@@ -1,9 +1,10 @@
 /*
- * FilePath    : blog-client\src\views\home\main-content\index.ts
+ * FilePath    : blog-client\src\views\link-list\components\link-item\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 主内容区
+ * Description : 单个链接
  */
 
 export { default } from "./index.vue"
+export * from "./types"

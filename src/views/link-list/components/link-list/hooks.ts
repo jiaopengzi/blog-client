@@ -1,9 +1,9 @@
 /*
- * FilePath    : blog-client\src\views\home\main-content\post-detail\components\link-list\hooks.ts
+ * FilePath    : blog-client\src\views\link-list\components\link-list\hooks.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 链接列表
+ * Description : 链接列表 hooks
  */
 
 import { type Reactive, reactive, ref } from "vue"

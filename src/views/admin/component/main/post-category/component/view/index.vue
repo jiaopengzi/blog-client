@@ -115,7 +115,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 }
 
 .view-form {
-    width: 400px;
+    width: 600px;
 }
 
 .btn-submit {

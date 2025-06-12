@@ -13,7 +13,7 @@
             <div class="header-main-common">
                 <Logo />
                 <HeaderNav />
-                <Search @handle-search="handleSearch" />
+                <Search v-if="isShowSearch" @handle-search="handleSearch" />
                 <SwitchGroup :switch-items="themeSwitch" @update-status="updateStatus" />
                 <Account />
             </div>
@@ -22,7 +22,7 @@
                     <j-icon :name="IconKeys.Menu" custom-class="menu-icon" />
                 </button>
                 <Logo class="phone-item" />
-                <Search class="phone-item" @handle-search="handleSearch" />
+                <Search v-if="isShowSearch" class="phone-item" @handle-search="handleSearch" />
             </div>
         </header>
     </transition>
@@ -50,6 +50,15 @@ import Search from "../search"
 
 defineOptions({ name: "HeaderBar" })
 
+const { isShowSearch = true } = defineProps<{
+    isShowSearch?: boolean // 是否显示搜索框
+}>()
+
+// 事件
+const emit = defineEmits<{
+    (event: "handle-search", val: string): void
+}>()
+
 // 主题切换
 const { themeSwitch, updateStatus } = useTheme()
 
@@ -60,11 +69,6 @@ const phoneNavVisible = ref(false) // 侧边导航栏是否可见
 const phoneToggleNav = () => {
     phoneNavVisible.value = !phoneNavVisible.value
 }
-
-// 事件
-const emit = defineEmits<{
-    (event: "handle-search", val: string): void
-}>()
 
 const handleSearch = (val: string) => {
     emit("handle-search", val)

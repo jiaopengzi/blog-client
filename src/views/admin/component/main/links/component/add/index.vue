@@ -7,14 +7,21 @@
 -->
 
 <template>
-    <View :view-data="addForm" :is-show-id="false" :btn-loading="btnLoading" btn-submit-display="新增" @submit-data="submitData" />
+    <View
+        :view-data="addForm"
+        :is-show-id="false"
+        :is-admin="isAdmin"
+        :btn-loading="btnLoading"
+        :btn-submit-display="btnSubmitDisplay"
+        @submit-data="submitData"
+    />
 </template>
 
 <script lang="ts" setup>
 import { reactive, ref } from "vue"
 
 import { type InsertLinkRequest, LinkStatusCode } from "@/api/link/common"
-import { insertLinkAdminAPI } from "@/api/link/insert"
+import { insertLinkAdminAPI, insertLinkAPI } from "@/api/link/insert"
 import { ResponseCode } from "@/api/response"
 import { pollingGetStreamIDsStatus } from "@/utils/getStreamIDsStatus"
 import { MessageUtil } from "@/utils/message"
@@ -23,6 +30,11 @@ import View from "../view"
 import { type ViewForm } from "../view"
 
 defineOptions({ name: "AddLink" })
+
+// props
+const { isAdmin = false } = defineProps<{
+    isAdmin?: boolean // 是否是管理员添加链接
+}>()
 
 const emit = defineEmits<{
     (event: "add-status", value: boolean): void // 添加用户状态
@@ -39,6 +51,9 @@ const addForm = reactive<ViewForm>({
 
 const btnLoading = ref(false)
 
+const insertAPI = isAdmin ? insertLinkAdminAPI : insertLinkAPI
+const btnSubmitDisplay = isAdmin ? "新增" : "提交申请"
+
 const submitData = async (form: ViewForm) => {
     btnLoading.value = true
     const req: InsertLinkRequest = {
@@ -49,7 +64,8 @@ const submitData = async (form: ViewForm) => {
         status: form.status,
         order: form.order ? form.order.toString() : "0",
     }
-    const { data } = await insertLinkAdminAPI(req)
+
+    const { data } = await insertAPI(req)
 
     if (data.code === ResponseCode.LinkInsertSuccess) {
         // 轮询后端是否完成

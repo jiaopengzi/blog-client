@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\views\home\main-content\post-detail\components\link-list\index.vue
+ * FilePath    : blog-client\src\views\link-list\components\link-list\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -46,8 +46,8 @@ import { useParams } from "@/components/hooks/useParams"
 import { RouteNames } from "@/router"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 
+import LinkItem from "../link-item"
 import { useLinkList } from "./hooks"
-import LinkItem from "./link-item"
 
 defineOptions({ name: "LinkList" })
 
@@ -100,12 +100,12 @@ useParams(req, pagination)
 </script>
 <style lang="scss" scoped>
 .link-list-container {
-    margin-top: 10px;
     border-radius: 4px;
     position: relative;
-    padding: 10px;
-    padding-top: 32px;
+    padding-bottom: 10px;
+    padding-top: 36px;
     background-color: var(--jpz-bg-color);
+    width: 100%;
 }
 
 .link-list-more {
@@ -118,6 +118,7 @@ useParams(req, pagination)
 }
 
 .link-list {
+    padding-left: 15px;
     display: flex;
     flex-wrap: wrap;
     justify-content: left;

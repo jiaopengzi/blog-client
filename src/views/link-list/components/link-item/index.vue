@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\views\home\main-content\post-detail\components\link-list\link-item\index.vue
+ * FilePath    : blog-client\src\views\link-list\components\link-item\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -7,7 +7,7 @@
 -->
 
 <template>
-    <el-button type="default" :class="isShowDescription ? 'btn-has-description' : 'btn-no-description'" @click="handleClick">
+    <div :class="isShowDescription ? 'btn-has-description' : 'btn-no-description'" @click="handleClick">
         <div class="link-container">
             <div class="link-main">
                 <AvatarInitials :avatar="data.thumbnail" :name="data.name" :size="size" />
@@ -17,7 +17,7 @@
                 {{ truncatedDescription }}
             </div>
         </div>
-    </el-button>
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -54,36 +54,50 @@ const truncatedDescription = computed(() => {
 })
 </script>
 <style lang="scss" scoped>
+// link共用样式占位
+%common-link-style {
+    padding: 10px;
+    border-radius: 8px;
+
+    // 鼠标悬停样式
+    &:hover {
+        cursor: pointer;
+        box-shadow: var(--jpz-box-shadow-light);
+    }
+}
+
 .btn-has-description {
+    @extend %common-link-style;
     width: 200px;
     height: 124px;
-    border: none;
+    border: 1px solid var(--jpz-border-color);
+    padding-top: 16px;
 }
 
 .btn-no-description {
-    height: 40px;
-    border: none;
+    @extend %common-link-style;
+    height: 24px;
 }
 
 .link-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
 }
 
 .link-main {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 8px;
     color: var(--jpz-text-color-primary);
     font-size: 14px;
     font-weight: 700;
+    width: 100%;
+    overflow: hidden;
 }
 
 .link-description {
-    margin-top: 4px;
     text-align: left;
     font-size: 12px;
     color: var(--jpz-text-color-secondary);
@@ -91,6 +105,8 @@ const truncatedDescription = computed(() => {
     word-break: break-all;
     white-space: pre-line;
     overflow: hidden;
-    line-height: 1.2;
+    line-height: 1.5;
+    margin-top: 8px; // 添加间距
+    flex-grow: 1; // 让描述部分占据剩余空间
 }
 </style>
