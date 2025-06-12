@@ -57,7 +57,8 @@ const truncatedDescription = computed(() => {
 // link共用样式占位
 %common-link-style {
     padding: 10px;
-    border-radius: 8px;
+    border-radius: 6px;
+    border: 1px solid var(--jpz-border-color);
 
     // 鼠标悬停样式
     &:hover {
@@ -70,12 +71,12 @@ const truncatedDescription = computed(() => {
     @extend %common-link-style;
     width: 200px;
     height: 124px;
-    border: 1px solid var(--jpz-border-color);
     padding-top: 16px;
 }
 
 .btn-no-description {
     @extend %common-link-style;
+    min-width: 100px;
     height: 24px;
 }
 

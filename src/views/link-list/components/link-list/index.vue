@@ -8,7 +8,6 @@
 
 <template>
     <div class="link-list-container" v-if="pagination.total > 0">
-        <el-button v-if="!isShowDescription" class="link-list-more" type="default" @click="handleMoreClick">更多</el-button>
         <div class="link-list">
             <div v-for="item in pagination.records" :key="item.id" class="link-item">
                 <LinkItem :data="item" :size="size" :is-show-description="isShowDescription" :truncated-count="truncatedCount" />
@@ -33,6 +32,7 @@
                 />
             </div>
         </div>
+        <el-button v-if="!isShowDescription" class="link-list-more" type="default" @click="handleMoreClick">更多</el-button>
     </div>
 </template>
 
@@ -101,24 +101,18 @@ useParams(req, pagination)
 <style lang="scss" scoped>
 .link-list-container {
     border-radius: 4px;
-    position: relative;
-    padding-bottom: 10px;
-    padding-top: 36px;
     background-color: var(--jpz-bg-color);
     width: 100%;
 }
 
 .link-list-more {
-    position: absolute;
-    top: 0;
-    right: 0;
     color: var(--jpz-text-color-placeholder);
     border: none;
     margin: 4px;
 }
 
 .link-list {
-    padding-left: 15px;
+    padding: 15px;
     display: flex;
     flex-wrap: wrap;
     justify-content: left;
