@@ -50,7 +50,15 @@
         @reply="handleReply"
         @mentions="handleMentions"
     />
-    <CommentEditor ref="commentEditorRef" class="comment-editor" :post-id="postId" :mentions="mentions" :is-admin="isAdmin" @comment-insert="handleInsert" />
+    <CommentEditor
+        ref="commentEditorRef"
+        class="comment-editor"
+        :post-id="postId"
+        :mentions="mentions"
+        :is-admin="isAdmin"
+        :reply-to-id="replyToId"
+        @comment-insert="handleInsert"
+    />
     <PosterShare class="poster-share" v-if="isShowPosterShare" :data="dataPosterShare" @poster-complete="handPosterComplete" />
 </template>
 
@@ -189,10 +197,15 @@ const handleMentions = (val: Completion[]) => {
     mentions.value = val // 设置@提及数据
 }
 
+const replyToId = ref<string | undefined>(void 0) // 回复的评论id
+
 // 处理回复具体评论
 const handleReply = (comment: CommentRes) => {
     if (!commentEditorRef.value) return
     // TODO 后续考虑是否构造用户页面
+
+    // 设置回复的评论id
+    replyToId.value = comment.id
 
     // 构造@提及数据
     const content = `[@${comment.user_info.user_display_name}](${comment.user_info.user_name}) `
@@ -261,6 +274,8 @@ const clickTag = (val: PostTag) => {
 const commentListUpdateTime = ref(new Date()) // 评论列表更新时间
 
 const handleInsert = () => {
+    replyToId.value = void 0 // 清空回复的评论id
+
     commentListUpdateTime.value = new Date() // 更新评论列表时间
 }
 

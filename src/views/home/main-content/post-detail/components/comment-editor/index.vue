@@ -38,6 +38,7 @@ const {
     content,
     isAdmin = false,
     commentId,
+    replyToId,
     isPinned = CommentPinnedCode.NotIsPinned,
     reviewCode = CommentReviewCode.Pending,
 } = defineProps<CommentEditorProps>()
@@ -129,6 +130,9 @@ const insertComment = async () => {
     const req: InsertCommentRequest = {
         post_id: postId,
         content: contentNew,
+    }
+    if (replyToId) {
+        req.reply_to_id = replyToId
     }
 
     let res

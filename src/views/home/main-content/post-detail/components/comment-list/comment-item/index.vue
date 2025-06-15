@@ -7,7 +7,7 @@
 -->
 
 <template>
-    <div class="comment-detail">
+    <div class="comment-detail" :id="data.id">
         <!-- 右上角提示符 -->
         <div class="top-right-tip" v-if="data.is_pinned === CommentPinnedCode.IsPinned">置顶</div>
         <div class="header-container">
@@ -36,6 +36,7 @@
                     </el-button>
                 </el-tooltip>
             </div>
+            <div class="header-id">{{ `#${data.id}` }}</div>
         </div>
         <div class="content">
             <CommentMarkdownPreview :markdown-content="data.content" />
@@ -214,6 +215,14 @@ const handleEdit = (comment: CommentItemProps["data"]) => {
     }
 }
 
+.header-id {
+    color: var(--jpz-text-color-secondary);
+    font-size: 12px;
+    text-align: right;
+    line-height: 1.5em;
+    margin-right: 20px;
+}
+
 .top-right-tip {
     background-color: var(--jpz-color-primary);
     color: var(--jpz-color-secondary);
@@ -236,6 +245,9 @@ const handleEdit = (comment: CommentItemProps["data"]) => {
 // @include respond-to("pad") {
 // }
 
-// @include respond-to("phone") {
-// }
+@include respond-to("phone") {
+    .header-id {
+        display: none;
+    }
+}
 </style>

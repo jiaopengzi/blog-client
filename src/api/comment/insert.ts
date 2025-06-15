@@ -14,6 +14,7 @@ import { CommentReviewCode } from "./common"
 
 // 插入评论请求
 export interface InsertCommentRequest {
+    reply_to_id?: string // 回复的评论ID
     post_id: string
     content: string
 }

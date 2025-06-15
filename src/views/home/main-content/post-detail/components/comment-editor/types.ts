@@ -28,6 +28,7 @@ export interface CommentEditorProps {
     content?: string
     isAdmin?: boolean
     commentId?: string
+    replyToId?: string
     isPinned?: CommentPinnedCode
     reviewCode?: CommentReviewCode
 }
