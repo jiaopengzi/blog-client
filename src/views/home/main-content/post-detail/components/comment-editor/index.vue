@@ -18,7 +18,7 @@ import { onMounted, ref, useTemplateRef, watch } from "vue"
 
 import { CommentPinnedCode, CommentReviewCode } from "@/api/comment/common"
 import { insertCommentAdminAPI, insertCommentAPI, type InsertCommentRequest } from "@/api/comment/insert"
-import { updateCommentAPI, type UpdateCommentRequest } from "@/api/comment/update"
+import { updateCommentAdminAPI, updateCommentAPI, type UpdateCommentRequest } from "@/api/comment/update"
 import { handleResErr, ResponseCode } from "@/api/response"
 import JEditor, { EditorStateManager, type JEditorRef } from "@/components/editor"
 import { useEditor } from "@/components/hooks/useEditor"
@@ -203,7 +203,12 @@ const updateComment = async (isAdminReply: boolean = false) => {
         }
     }
 
-    const res = await updateCommentAPI(req)
+    let res
+    if (isAdmin) {
+        res = await updateCommentAdminAPI(req)
+    } else {
+        res = await updateCommentAPI(req)
+    }
 
     if (res.data.code === ResponseCode.CommentUpdateSuccess) {
         const data = res.data.data
