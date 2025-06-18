@@ -9,7 +9,7 @@
 <template>
     <div class="components">
         <el-button class="head" type="primary" @click="submitForm">保存</el-button>
-        <BaseForm ref="formRef" title="网站选项" :form-data="optionData" :rules="rules" :form-items="formItems" :label-width="160" :form-width="800" />
+        <BaseForm ref="formRef" title="网站选项" :form-data="optionData" :rules="rules" :form-items="formItems" :label-width="200" :form-width="800" />
         <el-button class="foot" type="primary" @click="submitForm">保存</el-button>
     </div>
 </template>
@@ -209,6 +209,24 @@ const formItems = [
     // 样式相关
     { label: "样式相关", isCategoryTitle: true },
     { label: "自定义 CSS", prop: "custom_style_css", type: "textarea" },
+
+    // 邮件通知管理
+    { label: "邮件通知管理", isCategoryTitle: true },
+    { label: "用户注册通知管理员", prop: "subscribe_user_register_to_admin", isCheckbox: true },
+    { label: "用户注册通知用户", prop: "subscribe_user_register_to_user", isCheckbox: true },
+    { label: "文章发布通知用户", prop: "subscribe_post_published_to_user", isCheckbox: true },
+    { label: "评论通知管理员", prop: "subscribe_comment_to_admin", isCheckbox: true },
+    { label: "评论通知作者", prop: "subscribe_comment_to_author", isCheckbox: true },
+    { label: "评论通知文章作者", prop: "subscribe_comment_to_post_author", isCheckbox: true },
+    { label: "评论回复通知被回复用户", prop: "subscribe_comment_to_reply_to", isCheckbox: true },
+    { label: "订单通知管理员", prop: "subscribe_order_to_admin", isCheckbox: true },
+    { label: "订单通知用户", prop: "subscribe_order_to_user", isCheckbox: true },
+    { label: "会员升级通知管理员", prop: "subscribe_member_upgrade_to_admin", isCheckbox: true },
+    { label: "会员升级通知用户", prop: "subscribe_member_upgrade_to_user", isCheckbox: true },
+    { label: "会员即将到期通知管理员", prop: "subscribe_member_expire_to_admin", isCheckbox: true },
+    { label: "会员即将到期通知用户", prop: "subscribe_member_expire_to_user", isCheckbox: true },
+    { label: "会员已到期通知管理员", prop: "subscribe_member_expired_to_admin", isCheckbox: true },
+    { label: "会员已到期通知用户", prop: "subscribe_member_expired_to_user", isCheckbox: true },
 ]
 
 onBeforeMount(async () => {

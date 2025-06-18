@@ -112,6 +112,23 @@ export interface GetAPPOptionResponse {
 
     // 样式相关
     nav: APPOptionItem // 导航栏
+
+    // 邮件通知管理
+    subscribe_user_register_to_admin: APPOptionItem // 用户注册通知管理员
+    subscribe_user_register_to_user: APPOptionItem // 用户注册通知用户
+    subscribe_post_published_to_user: APPOptionItem // 文章发布通知用户
+    subscribe_comment_to_admin: APPOptionItem // 评论通知管理员
+    subscribe_comment_to_author: APPOptionItem // 评论通知作者
+    subscribe_comment_to_post_author: APPOptionItem // 评论通知文章作者
+    subscribe_comment_to_reply_to: APPOptionItem // 评论回复通知被回复用户
+    subscribe_order_to_admin: APPOptionItem // 订单通知管理员
+    subscribe_order_to_user: APPOptionItem // 订单通知用户
+    subscribe_member_upgrade_to_admin: APPOptionItem // 会员升级通知管理员
+    subscribe_member_upgrade_to_user: APPOptionItem // 会员升级通知用户
+    subscribe_member_expire_to_admin: APPOptionItem // 会员即将到期通知管理员
+    subscribe_member_expire_to_user: APPOptionItem // 会员即将到期通知用户
+    subscribe_member_expired_to_admin: APPOptionItem // 会员已到期通知管理员
+    subscribe_member_expired_to_user: APPOptionItem // 会员已到期通知用户
 }
 
 // 获取网站配置
