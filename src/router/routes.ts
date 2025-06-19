@@ -42,6 +42,15 @@ export const routes: RouteRecordRaw[] = [
     },
 
     {
+        path: "/unsubscribe",
+        name: RouteNames.Unsubscribe,
+        component: () => import("@/views/unsubscribe"),
+        meta: {
+            requiresAuth: false,
+        },
+    },
+
+    {
         path: "/test",
         name: RouteNames.Test,
         component: () => import("@/views/test"),

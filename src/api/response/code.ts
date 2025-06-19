@@ -53,6 +53,10 @@ export enum ResponseCode {
     EditUserInfoByAdminSuccess = 1039, //管理员编辑用户成功
     UserLogoutByAdminSuccess = 1040, //管理员登出用户成功
     UserForbidden = 1041, //用户禁用
+    UserNotForbidden = 1042, // 用户正常
+    UserUnSubscribeSuccess = 1043, // 用户取消订阅成功
+    UserUnSubscribeInvalid = 1044, // 用户取消订阅失败，token 无效
+    UserUnSubscribeTypeWrong = 1045, // 用户取消订阅失败，token 类型错误
 
     // 文章相关
     PostInsertSuccess = 2000, // 插入文章标签成功
