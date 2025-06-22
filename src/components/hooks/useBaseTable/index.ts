@@ -9,7 +9,7 @@
 import { onBeforeMount, type Reactive, reactive, ref, watch } from "vue"
 import { useRoute, useRouter } from "vue-router"
 
-import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
+import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"
 import { type PaginationRequest, type QueryParamsOptions } from "@/api/request"
 import { getEmptyPagination, handleResErr, type Pagination, type Res, ResponseCode, type ResPromise } from "@/api/response"
 import type { TableImg } from "@/components/common"
@@ -38,7 +38,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     routeName: string,
     viewAPI: (params: K) => ResPromise<Res<Pagination<T>>>,
     viewResCode: ResponseCode,
-    deleteAPI: (params: Q) => ResPromise<Res<StreamIdsStatusResWithId | void>>,
+    deleteAPI: (params: Q) => ResPromise<Res<StreamsStatusRes | void>>,
     deleteResCode: ResponseCode,
     queryParams: Reactive<K>, // 查询参数
     options?: Options<K>,
@@ -164,7 +164,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         if (res.data.code === deleteResCode) {
             if (res.data.data && "stream_ids" in res.data.data) {
                 // 如果响应中包含 stream_ids，则轮询获取状态
-                await pollingGetStreamIDsStatus(res.data.data.stream_ids)
+                await pollingGetStreamIDsStatus(res.data.data.items)
                 loadingDelete.value = false // 隐藏加载动画
             }
 

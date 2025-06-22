@@ -397,11 +397,11 @@ export function useFormValidation(options: FormValidationOptions): {
             return
         }
 
-        // 状态不为过期且过期时间不为空
-        if (form.post_status?.value !== PostStatusCode.Expired && value.Time) {
-            callback(new Error("状态不为过期时，过期时间必须为空"))
-            return
-        }
+        // // 状态不为过期且过期时间不为
+        // if (form.post_status?.value !== PostStatusCode.Expired && value.Time) {
+        //     callback(new Error("状态不为过期时，过期时间必须为空"))
+        //     return
+        // }
 
         // 校验过期时间
         if (value.Time) {

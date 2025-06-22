@@ -398,7 +398,7 @@ const handleCommentStatusOperation = async () => {
                         MessageUtil.success(msg, 3000)
 
                         // 轮询后端是否完成
-                        await pollingGetStreamIDsStatus(res.data.data.stream_ids)
+                        await pollingGetStreamIDsStatus(res.data.data.items)
 
                         await updatePaginate()
                         await getCommentCountStatus()

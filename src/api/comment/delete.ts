@@ -6,7 +6,7 @@
  * Description : 删除评论
  */
 
-import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
+import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -15,7 +15,7 @@ export interface DeleteCommentRequest {
 }
 
 // 删除评论响应
-export type DeleteCommentRes = StreamIdsStatusResWithId
+export type DeleteCommentRes = StreamsStatusRes
 
 // 删除评论
 export function deleteCommentAPI(requestData: DeleteCommentRequest): ResPromise<Res<DeleteCommentRes>> {

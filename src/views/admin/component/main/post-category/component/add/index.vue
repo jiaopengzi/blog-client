@@ -51,7 +51,7 @@ const submitData = async (form: ViewForm) => {
 
     if (data.code === ResponseCode.PostCategoryInsertSuccess) {
         // 轮询后端是否完成
-        await pollingGetStreamIDsStatus(data.data.stream_ids)
+        await pollingGetStreamIDsStatus(data.data.items)
         btnLoading.value = false
 
         // 添加成功提示

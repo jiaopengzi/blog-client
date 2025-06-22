@@ -6,7 +6,7 @@
  * Description : 批量操作评论状态
  */
 
-import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
+import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -22,7 +22,7 @@ export interface BatchOperationCommentStatusRequest {
 }
 
 // 批量操作评论响应
-export type BatchOperationCommentStatusRes = StreamIdsStatusResWithId
+export type BatchOperationCommentStatusRes = StreamsStatusRes
 
 // 批量操作评论状态
 export function batchOperationCommentStatusAPI(requestData: BatchOperationCommentStatusRequest): ResPromise<Res<BatchOperationCommentStatusRes>> {

@@ -10,28 +10,33 @@ import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
 // StreamIds 请求参数
-export interface StreamIdsStatusRequest {
-    stream_ids: string[]
+export interface StreamInfo {
+    name: string
+    id: string
+}
+// StreamIds 请求参数
+export interface StreamsStatusRequest {
+    items: StreamInfo[]
 }
 
-// StreamIdsStatusResWithId 包含 stream_id 的响应
-export interface StreamIdsStatusResWithId {
-    stream_ids: string[]
+// StreamsStatusRes 包含 stream_id 的响应
+export interface StreamsStatusRes {
+    items: StreamInfo[]
 }
 
 // StreamIds 状态
-export enum StreamIdsStatus {
+export enum StreamsStatus {
     UnHandle = "UnHandle", // 未处理
     Handle = "Handle", // 已处理
 }
 
 // StreamId 响应
-export interface StreamIdsStatusRes {
-    status: StreamIdsStatus
+export interface StreamsStatusRes {
+    status: StreamsStatus
 }
 
-export function getStreamIDsStatusAPI(requestData: StreamIdsStatusRequest): ResPromise<Res<StreamIdsStatusRes>> {
-    const urlStr = routerGroup + "/helper/stream-ids-status"
+export function getStreamIDsStatusAPI(requestData: StreamsStatusRequest): ResPromise<Res<StreamsStatusRes>> {
+    const urlStr = routerGroup + "/helper/streams-status"
     return request({
         url: urlStr,
         method: "post",

@@ -6,7 +6,7 @@
  * Description : 更新审核评论
  */
 
-import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
+import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -21,7 +21,7 @@ export interface UpdateCommentRequest {
 }
 
 // 更新评论响应
-export type UpdateCommentRes = StreamIdsStatusResWithId
+export type UpdateCommentRes = StreamsStatusRes
 
 // 更新审核评论
 export function updateCommentAPI(requestData: UpdateCommentRequest): ResPromise<Res<UpdateCommentRes>> {

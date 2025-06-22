@@ -6,7 +6,7 @@
  * @Description  : 更新文章分类
  */
 
-import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
+import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -21,7 +21,7 @@ export interface UpdatePostCategoryRequest {
 }
 
 // 更新文章分类
-export function updatePostCategoryAPI(requestData: UpdatePostCategoryRequest): ResPromise<Res<StreamIdsStatusResWithId>> {
+export function updatePostCategoryAPI(requestData: UpdatePostCategoryRequest): ResPromise<Res<StreamsStatusRes>> {
     const urlStr = routerGroup + "/post-category/update"
     return request({
         url: urlStr,

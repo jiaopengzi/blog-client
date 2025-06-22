@@ -6,7 +6,7 @@
  * @Description  : 添加用户
  */
 
-import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
+import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -19,7 +19,7 @@ export interface AddUserRequest {
 }
 
 // 注册
-export function AddUserAPI(requestData: AddUserRequest): ResPromise<Res<StreamIdsStatusResWithId >> {
+export function AddUserAPI(requestData: AddUserRequest): ResPromise<Res<StreamsStatusRes>> {
     const urlStr = routerGroup + "/user/add"
     return request({
         url: urlStr,

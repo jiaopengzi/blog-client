@@ -6,7 +6,7 @@
  * Description : 删除链接
  */
 
-import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
+import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -15,7 +15,7 @@ export interface DeleteLinkRequest {
 }
 
 // 删除链接
-export function deleteLinkAPI(requestData: DeleteLinkRequest): ResPromise<Res<StreamIdsStatusResWithId>> {
+export function deleteLinkAPI(requestData: DeleteLinkRequest): ResPromise<Res<StreamsStatusRes>> {
     const urlStr = routerGroup + "/link/delete"
     return request({
         url: urlStr,

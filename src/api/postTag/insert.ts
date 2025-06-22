@@ -6,7 +6,7 @@
  * @Description  : 插入文章标签
  */
 
-import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
+import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -19,7 +19,7 @@ export interface InsertPostTagRequest {
 }
 
 // 插入文章标签
-export function insertPostTagAPI(requestData: InsertPostTagRequest): ResPromise<Res<StreamIdsStatusResWithId>> {
+export function insertPostTagAPI(requestData: InsertPostTagRequest): ResPromise<Res<StreamsStatusRes>> {
     const urlStr = routerGroup + "/post-tag/insert"
     return request({
         url: urlStr,

@@ -6,19 +6,20 @@
  * Description : 获取streamID状态
  */
 
-import { getStreamIDsStatusAPI, StreamIdsStatus, type StreamIdsStatusRequest } from "@/api/helper/getStreamIDsStatus"
+import { getStreamIDsStatusAPI, StreamsStatus, type StreamsStatusRequest } from "@/api/helper/getStreamIDsStatus"
+import { type StreamInfo } from "@/api/helper/getStreamIDsStatus"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { MessageUtil } from "@/utils/message"
 
 /**
- * 递归轮询获取streamID状态(内部使用)
- * @param streamIds streamID 列表
+ * 递归轮询获取stream状态(内部使用)
+ * @param streams stream 列表
  * @param startTime 开始时间
  * @param pollingTime 轮询间隔时间
  * @param timeOut 超时时间
  * @returns Promise<void>
  */
-async function poll(streamIds: string[], startTime: number, pollingTime: number, timeOut: number): Promise<void> {
+async function poll(streams: StreamInfo[], startTime: number, pollingTime: number, timeOut: number): Promise<void> {
     // 超时判断
     if (Date.now() - startTime >= timeOut) {
         return
@@ -28,8 +29,8 @@ async function poll(streamIds: string[], startTime: number, pollingTime: number,
     await new Promise((resolve) => setTimeout(resolve, pollingTime))
 
     // 构造请求参数
-    const req: StreamIdsStatusRequest = {
-        stream_ids: streamIds,
+    const req: StreamsStatusRequest = {
+        items: streams,
     }
 
     // 发送请求
@@ -38,9 +39,9 @@ async function poll(streamIds: string[], startTime: number, pollingTime: number,
     // 处理响应
     const info = res.data
     if (info.code === ResponseCode.GetStreamIDStatusSuccess) {
-        if (info.data.status === StreamIdsStatus.UnHandle) {
+        if (info.data.status === StreamsStatus.UnHandle) {
             // 未处理，继续轮询
-            await poll(streamIds, startTime, pollingTime, timeOut)
+            await poll(streams, startTime, pollingTime, timeOut)
             return
         } else {
             return
@@ -52,13 +53,13 @@ async function poll(streamIds: string[], startTime: number, pollingTime: number,
 }
 
 /**
- * 轮询获取streamID状态
- * @param streamIds streamID 列表
+ * 轮询获取stream状态
+ * @param streams stream 列表
  * @param pollingTime 轮询间隔时间，默认1000ms
  * @param timeOut 超时时间，默认10000ms
  * @returns Promise<void>
  */
-export async function pollingGetStreamIDsStatus(streamIds: string[], pollingTime: number = 1000, timeOut: number = 10000): Promise<void> {
+export async function pollingGetStreamIDsStatus(streams: StreamInfo[], pollingTime: number = 1000, timeOut: number = 10000): Promise<void> {
     const startTime = Date.now()
-    await poll(streamIds, startTime, pollingTime, timeOut)
+    await poll(streams, startTime, pollingTime, timeOut)
 }

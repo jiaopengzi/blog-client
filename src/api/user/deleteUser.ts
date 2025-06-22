@@ -6,7 +6,7 @@
  * @Description  : 删除用户
  */
 
-import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
+import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -15,7 +15,7 @@ export interface DeleteUserRequest {
 }
 
 // 注册
-export function deleteUserAPI(requestData: DeleteUserRequest): ResPromise<Res<StreamIdsStatusResWithId>> {
+export function deleteUserAPI(requestData: DeleteUserRequest): ResPromise<Res<StreamsStatusRes>> {
     const urlStr = routerGroup + "/user/delete"
     return request({
         url: urlStr,

@@ -6,7 +6,7 @@
  * @Description  : 删除文件
  */
 
-import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
+import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -15,7 +15,7 @@ export interface DeleteFileRequest {
 }
 
 // 删除文件
-export function deleteFileAPI(requestData: DeleteFileRequest): ResPromise<Res<StreamIdsStatusResWithId >> {
+export function deleteFileAPI(requestData: DeleteFileRequest): ResPromise<Res<StreamsStatusRes>> {
     const urlStr = routerGroup + "/upload/delete"
     return request({
         url: urlStr,

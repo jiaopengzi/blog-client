@@ -6,14 +6,14 @@
  * Description : 插入链接
  */
 
-import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
+import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
 import type { InsertLinkRequest } from "./common"
 
 // 插入链接
-export function insertLinkAPI(requestData: InsertLinkRequest): ResPromise<Res<StreamIdsStatusResWithId>> {
+export function insertLinkAPI(requestData: InsertLinkRequest): ResPromise<Res<StreamsStatusRes>> {
     const urlStr = routerGroup + "/link/insert"
     return request({
         url: urlStr,
@@ -23,7 +23,7 @@ export function insertLinkAPI(requestData: InsertLinkRequest): ResPromise<Res<St
 }
 
 // 插入链接
-export function insertLinkAdminAPI(requestData: InsertLinkRequest): ResPromise<Res<StreamIdsStatusResWithId>> {
+export function insertLinkAdminAPI(requestData: InsertLinkRequest): ResPromise<Res<StreamsStatusRes>> {
     const urlStr = routerGroup + "/link/insert-admin"
     return request({
         url: urlStr,

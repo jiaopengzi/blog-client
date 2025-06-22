@@ -6,7 +6,7 @@
  * Description : 插入评论
  */
 
-import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
+import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -20,7 +20,7 @@ export interface InsertCommentRequest {
 }
 
 // 插入评论响应
-export interface InsertCommentResData extends StreamIdsStatusResWithId {
+export interface InsertCommentResData extends StreamsStatusRes {
     id: string
     created_at: string
     updated_at: string

@@ -6,7 +6,7 @@
  * @Description  : 更新文件
  */
 
-import type { StreamIdsStatusResWithId } from "@/api/helper/getStreamIDsStatus"
+import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -19,7 +19,7 @@ export interface UpdateFileRequest {
     is_video: boolean // 是否为视频
 }
 
-export function updateFileAPI(req: UpdateFileRequest): ResPromise<Res<StreamIdsStatusResWithId>> {
+export function updateFileAPI(req: UpdateFileRequest): ResPromise<Res<StreamsStatusRes>> {
     return request({
         url: routerGroup + "/upload/update",
         method: "post",
