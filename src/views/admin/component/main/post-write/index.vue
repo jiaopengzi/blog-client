@@ -183,6 +183,7 @@ import { RouteNames } from "@/router"
 import { PermissionNames } from "@/stores/permissionRole"
 import { useUserStore } from "@/stores/user"
 import { formatTime } from "@/utils/dateTime"
+import { generateShortcuts } from "@/utils/dateTime"
 import { MessageUtil } from "@/utils/message"
 import { adminMenuItemMap } from "@/views/admin/component/aside"
 
@@ -192,7 +193,7 @@ import { useEdit } from "./useEdit"
 import { useFormValidation } from "./useFormValidation"
 import { useSnapshot } from "./useSnapshot"
 import { useSwitchItem } from "./useSwitchItem"
-import { createEmptyUpsertPostForm, generateShortcuts } from "./utils"
+import { createEmptyUpsertPostForm } from "./utils"
 
 defineOptions({ name: RouteNames.PostWrite })
 

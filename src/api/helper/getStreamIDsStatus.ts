@@ -25,14 +25,14 @@ export interface StreamsStatusRes {
 }
 
 // StreamIds 状态
-export enum StreamsStatus {
+export enum StreamStatus {
     UnHandle = "UnHandle", // 未处理
     Handle = "Handle", // 已处理
 }
 
 // StreamId 响应
 export interface StreamsStatusRes {
-    status: StreamsStatus
+    status_all: StreamStatus
 }
 
 export function getStreamIDsStatusAPI(requestData: StreamsStatusRequest): ResPromise<Res<StreamsStatusRes>> {

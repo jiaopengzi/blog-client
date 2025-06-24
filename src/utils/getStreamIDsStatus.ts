@@ -6,7 +6,7 @@
  * Description : 获取streamID状态
  */
 
-import { getStreamIDsStatusAPI, StreamsStatus, type StreamsStatusRequest } from "@/api/helper/getStreamIDsStatus"
+import { getStreamIDsStatusAPI, type StreamsStatusRequest, StreamStatus } from "@/api/helper/getStreamIDsStatus"
 import { type StreamInfo } from "@/api/helper/getStreamIDsStatus"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { MessageUtil } from "@/utils/message"
@@ -39,7 +39,7 @@ async function poll(streams: StreamInfo[], startTime: number, pollingTime: numbe
     // 处理响应
     const info = res.data
     if (info.code === ResponseCode.GetStreamIDStatusSuccess) {
-        if (info.data.status === StreamsStatus.UnHandle) {
+        if (info.data.status_all === StreamStatus.UnHandle) {
             // 未处理，继续轮询
             await poll(streams, startTime, pollingTime, timeOut)
             return

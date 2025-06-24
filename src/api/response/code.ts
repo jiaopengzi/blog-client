@@ -156,6 +156,19 @@ export enum ResponseCode {
     LinkCheckURLNotExistExcludingID = 2508, // 链接不存在(排除ID)
     LinkViewNoData = 2509, // 查看链接无数据
 
+    // 通知相关
+    NotificationInsertSuccess = 2600, // 插入通知成功
+    NotificationDeleteSuccess = 2601, // 删除通知成功
+    NotificationUpdateSuccess = 2602, // 更新通知成功
+    NotificationViewSuccess = 2603, // 查看通知成功
+    NotificationStatusBatchOperationSuccess = 2604, // 批量操作通知状态成功
+    NotificationViewIsNone = 2605, // 查看通知无数据
+    NotificationCountByStatusIsNone = 2606, // 获取按照通知状态统计通知数量无数据
+    NotificationCountByStatusSuccess = 2607, // 获取按照通知状态统计通知数量成功
+    NotificationSendTestFailed = 2608, // 发送测试通知失败
+    NotificationSendTestSuccess = 2609, // 发送测试通知成功
+    NotificationSendTestIsNone = 2610, // 发送测试通知无数据
+
     // 验证码相关
     CaptchaSendSuccess = 8000, //验证码发送成功
     CaptchaCheckSuccess = 8002, //验证码发送成功

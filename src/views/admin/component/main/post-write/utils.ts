@@ -10,52 +10,6 @@ import { CommentStatusCode, PostStatusCode } from "@/api/post/common"
 
 import { type UpsertPostForm } from "./types"
 
-// 时间快捷选项
-export const generateShortcuts = (useDisplay: string) => {
-    return [
-        {
-            text: `5分钟后${useDisplay}`,
-            value: () => {
-                const date = new Date()
-                date.setMinutes(date.getMinutes() + 5)
-                return date
-            },
-        },
-        {
-            text: `1小时后${useDisplay}`,
-            value: () => {
-                const date = new Date()
-                date.setHours(date.getHours() + 1)
-                return date
-            },
-        },
-        {
-            text: `1天后${useDisplay}`,
-            value: () => {
-                const date = new Date()
-                date.setDate(date.getDate() + 1)
-                return date
-            },
-        },
-        {
-            text: `7天后${useDisplay}`,
-            value: () => {
-                const date = new Date()
-                date.setDate(date.getDate() + 7)
-                return date
-            },
-        },
-        {
-            text: `30天后${useDisplay}`,
-            value: () => {
-                const date = new Date()
-                date.setDate(date.getDate() + 30)
-                return date
-            },
-        },
-    ]
-}
-
 // 创建 empty InsertPostRequest
 export function createEmptyUpsertPostForm(): UpsertPostForm {
     return {

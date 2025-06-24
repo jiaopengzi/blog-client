@@ -16,7 +16,7 @@ import { checkTagSlugExcludingIDAPI, type CheckTagSlugExcludingIDRequest } from 
 import { handleResErr, ResponseCode } from "@/api/response"
 import { RegexPatterns } from "@/utils/regexPatterns"
 
-import type { ViewForm } from "./index"
+import type { ViewForm } from "./types"
 
 // 表单验证选项
 interface FormValidationOptions {

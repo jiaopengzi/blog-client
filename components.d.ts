@@ -44,6 +44,7 @@ declare module 'vue' {
     CommonQrCode: typeof import('./src/components/common/qr-code/index.vue')['default']
     CommonRecursiveMenuItem: typeof import('./src/components/common/recursive-menu-item/index.vue')['default']
     CommonRestartDialog: typeof import('./src/components/common/restart-dialog/index.vue')['default']
+    CommonRolesTag: typeof import('./src/components/common/roles-tag/index.vue')['default']
     CommonSendTestEmail: typeof import('./src/components/common/send-test-email/index.vue')['default']
     CommonSlideVerify: typeof import('./src/components/common/slide-verify/index.vue')['default']
     CommonSwitchGroup: typeof import('./src/components/common/switch-group/index.vue')['default']

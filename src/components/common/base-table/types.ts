@@ -9,6 +9,7 @@
 import { type CommentResAdmin } from "@/api/comment/common"
 import { type LinkRes } from "@/api/link/common"
 import { type LoginLog } from "@/api/loginLog/getLoginLogs"
+import { type NotificationRes } from "@/api/notification/common"
 import { type PostResPaginationByAdmin } from "@/api/post/common"
 import { type PostCategory } from "@/api/postCategory/view"
 import { type PostTag } from "@/api/postTag/view"
@@ -37,7 +38,7 @@ export interface TableColumn {
 }
 
 // 表格数据类型
-export type TableData = PostResPaginationByAdmin | PostTag | PostCategory | MediaFile | User | LoginLog | CommentResAdmin | LinkRes
+export type TableData = PostResPaginationByAdmin | PostTag | PostCategory | MediaFile | User | LoginLog | CommentResAdmin | LinkRes | NotificationRes
 
 export interface FormatTableData {
     thumbnail?: string // 缩略图

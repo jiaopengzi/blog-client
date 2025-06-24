@@ -129,8 +129,7 @@ import { adminMenuItemMap } from "@/views/admin/component/aside"
 
 import EditReply from "./edit-reply"
 import { useHeader } from "./hooks"
-import { queryKey } from "./index"
-import { type CommentCountGroupItem, groupList, type GroupType } from "./types"
+import { type CommentCountGroupItem, groupList, type GroupType, queryKey } from "./types"
 
 defineOptions({ name: RouteNames.Comment })
 

@@ -13,7 +13,7 @@ import { type CommentCountByStatus, getCommentCountByStatusAPI } from "@/api/com
 import { handleResErr, ResponseCode } from "@/api/response"
 import { MessageUtil } from "@/utils/message"
 
-import { type CommentCountGroupItem, queryKey } from "./index"
+import { type CommentCountGroupItem, queryKey } from "./types"
 
 // 获取评论统计数据
 export function useHeader() {
