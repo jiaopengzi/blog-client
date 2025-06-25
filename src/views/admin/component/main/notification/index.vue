@@ -17,7 +17,7 @@
             :is-show-search="true"
             :search-str="search"
             :is-show-edit="true"
-            height="calc(100vh - 228px)"
+            height="calc(100vh - 270px)"
             :loading-delete="loadingDelete"
             @update-current-page="updateCurrentPage"
             @update-page-size="updatePageSize"

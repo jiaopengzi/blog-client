@@ -168,6 +168,7 @@ export enum ResponseCode {
     NotificationSendTestFailed = 2608, // 发送测试通知失败
     NotificationSendTestSuccess = 2609, // 发送测试通知成功
     NotificationSendTestIsNone = 2610, // 发送测试通知无数据
+    NotificationShortCodeSuccess = 2611, // 获取短码成功
 
     // 验证码相关
     CaptchaSendSuccess = 8000, //验证码发送成功

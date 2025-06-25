@@ -78,7 +78,7 @@ export function useFormValidation(options: FormValidationOptions): {
     const addRules = reactive<FormRules<ViewForm>>({
         category: [{ required: true, message: "请选择分类", trigger: "blur" }],
         subject: [{ required: true, message: "请输入主题", trigger: "blur" }],
-        content: [{ required: true, message: "请输入通知内容", trigger: "blur" }],
+        content: [{ required: true, message: "请输入通知内容", trigger: "change" }],
         to_list: [
             { required: true, message: "接收者不能为空", trigger: "blur" },
             { validator: checkToListValidator, trigger: "change" },
@@ -95,7 +95,7 @@ export function useFormValidation(options: FormValidationOptions): {
         id: [{ required: true, message: "id 不能为空", trigger: "blur" }],
         category: [{ required: true, message: "请选择分类", trigger: "blur" }],
         subject: [{ required: true, message: "请输入主题", trigger: "blur" }],
-        content: [{ required: true, message: "请输入通知内容", trigger: "blur" }],
+        content: [{ required: true, message: "请输入通知内容", trigger: "change" }],
         to_list: [
             { required: true, message: "接收者不能为空", trigger: "blur" },
             { validator: checkToListValidator, trigger: "change" },

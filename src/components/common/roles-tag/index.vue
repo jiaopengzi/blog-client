@@ -9,9 +9,9 @@
 <template>
     <el-scrollbar max-height="300px">
         <div class="tag-box">
-            <el-tag v-for="item in items" :tag-data="item" :key="item.role_name" @click="handleClick(item)" class="tag-item" size="default" :round="false">
+            <el-button v-for="item in items" :tag-data="item" :key="item.role_name" @click="handleClick(item)" size="small">
                 {{ item.role_name }} ({{ item.user_count }})
-            </el-tag>
+            </el-button>
         </div>
     </el-scrollbar>
 </template>
@@ -38,10 +38,5 @@ const handleClick = (tagItemData: UserCountGroupByRole) => {
     flex-wrap: wrap;
     gap: 10px;
     margin: 10px 0;
-}
-
-.tag-item {
-    cursor: pointer;
-    border: none;
 }
 </style>

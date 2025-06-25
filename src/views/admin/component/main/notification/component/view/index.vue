@@ -28,18 +28,21 @@
             </el-form-item>
 
             <el-form-item v-if="isShowMore" label="接收者" prop="to_list">
-                <el-input-tag clearable v-model="toList" placeholder="请输入接收者信息-选填" />
+                <el-input-tag clearable v-model="toList" placeholder="请输入接收者信息" />
                 <RolesTag :items="userCountItems" @click="toListRolesTagClick" />
             </el-form-item>
             <el-form-item v-if="isShowMore" label="排除接受者" prop="exclude_to_list">
-                <el-input-tag clearable v-model="excludeToList" placeholder="请输入排除接受者信息-必填" />
+                <el-input-tag clearable v-model="excludeToList" placeholder="请输入排除接受者信息-选填" />
                 <RolesTag :items="userCountItems" @click="excludeToListRolesTagClick" />
             </el-form-item>
             <el-form-item label="主题" prop="subject">
-                <el-input v-model="viewDataAc.subject" placeholder="请输通知主题-必填" />
+                <el-input v-model="viewDataAc.subject" placeholder="请输通知主题" />
             </el-form-item>
             <el-form-item label="内容" prop="content">
-                <el-input v-model="viewDataAc.content" type="textarea" placeholder="请输入通知内容-选填" :rows="5" />
+                <el-input v-model="viewDataAc.content" class="content" type="textarea" placeholder="请输入通知内容" :rows="5" />
+                <div class="shot-codes">
+                    <el-button size="small" type="default" v-for="code in shotCodes" :key="code" @click="handleShortCodeClick(code)">{{ code }}</el-button>
+                </div>
             </el-form-item>
             <el-form-item label="格式" prop="format">
                 <el-select v-model="viewDataAc.format" clearable placeholder="请选择通知格式">
@@ -55,14 +58,14 @@
                     :default-time="defaultTime"
                 />
             </el-form-item>
-            <el-form-item v-if="isShowMore" label="推送" prop="push_status">
+            <el-form-item v-if="isShowMore && isShowId" label="推送" prop="push_status">
                 <el-radio-group disabled v-model="viewDataAc.push_status">
                     <el-radio v-for="item in optionsPushStatus" :key="item.value" :value="item.value">
                         {{ NotificationPushStatusDisplay[item.value] }}
                     </el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="启用" prop="status">
+            <el-form-item label="是否启用" prop="status">
                 <el-radio-group v-model="viewDataAc.status">
                     <el-radio v-for="item in optionsStatus" :key="item.value" :value="item.value">
                         {{ NotificationStatusDisplay[item.value] }}
@@ -92,6 +95,7 @@ import {
     NotificationPushStatusDisplay,
     NotificationStatusDisplay,
 } from "@/api/notification/common"
+import { getNotificationShortCodesAPI } from "@/api/notification/getShortCodes"
 import { notificationSendTestAPI, type NotificationSendTestRequest } from "@/api/notification/sendTest"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { getUserCountGroupByRoleAPI, type UserCountGroupByRole } from "@/api/user/getUserCountGroupByRole"
@@ -157,6 +161,30 @@ const getUserCountItems = async () => {
         }
     })
 }
+
+// 获取通知短代码
+const shotCodes = reactive<string[]>([])
+const getShortCodes = async () => {
+    await getNotificationShortCodesAPI().then((res) => {
+        if (res.data.code === ResponseCode.NotificationShortCodeSuccess) {
+            Object.assign(shotCodes, res.data.data.codes)
+        }
+    })
+}
+
+const handleShortCodeClick = (code: string) => {
+    const inputElement = viewFormRef.value?.$el.querySelector("textarea") as HTMLTextAreaElement | null
+    // 在光标位置插入短代码
+    if (inputElement) {
+        const start = inputElement.selectionStart
+        const end = inputElement.selectionEnd
+        const value = inputElement.value
+        inputElement.value = value.substring(0, start) + code + value.substring(end)
+        inputElement.setSelectionRange(start + code.length, start + code.length)
+        inputElement.focus()
+    }
+}
+
 /**
  * 对字符串数组进行去重，并返回去重前后的长度
  */
@@ -359,6 +387,7 @@ const sendTest = async () => {
 
 // 初始化获取用户数量分组信息
 onBeforeMount(async () => {
+    await getShortCodes()
     await getUserCountItems()
 })
 </script>
@@ -378,7 +407,15 @@ onBeforeMount(async () => {
     text-align: center;
 }
 
-.btn-submit .el-form-item {
-    display: inline-block;
+.shot-codes {
+    margin-top: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.content {
+    font-size: 13px;
+    font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
 }
 </style>
