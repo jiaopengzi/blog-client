@@ -26,7 +26,6 @@
                     <el-option v-for="item in optionsCategory" :key="item.value" :label="item.label" :value="item.value" />
                 </el-select>
             </el-form-item>
-
             <el-form-item v-if="isShowMore" label="接收者" prop="to_list">
                 <el-input-tag clearable v-model="toList" placeholder="请输入接收者信息" />
                 <RolesTag :items="userCountItems" @click="toListRolesTagClick" />

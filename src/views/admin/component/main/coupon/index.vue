@@ -1,9 +1,9 @@
 <!--
- * FilePath    : blog-client\src\views\admin\component\main\membership\index.vue
+ * FilePath    : blog-client\src\views\admin\component\main\coupon\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 会员管理
+ * Description : 优惠卷管理
 -->
 
 <template>
@@ -33,13 +33,13 @@
             </template>
 
             <template #category>
-                <!-- v-for 循环 membershipCountGroup生成 按钮 -->
+                <!-- v-for 循环 couponCountGroup生成 按钮 -->
                 <div ref="categoryRef" class="category-group">
                     <el-button
-                        v-for="item in membershipCountGroup"
+                        v-for="item in couponCountGroup"
                         :key="item.key"
                         :class="{ active: item.key === activeGroup }"
-                        @click="handleMembershipCountByGroup(item)"
+                        @click="handleCouponCountByGroup(item)"
                     >
                         {{ item.display }} ({{ item.count }})
                     </el-button>
@@ -47,23 +47,23 @@
             </template>
             <!-- 新增弹窗 -->
             <template #add-item-title>
-                <span class="dialog-title">新增会员</span>
+                <span class="dialog-title">新增优惠卷</span>
             </template>
 
             <template #add-item>
                 <div class="dialog-add">
-                    <AddMembership @add-status="addStatus" />
+                    <AddCoupon @add-status="addStatus" />
                 </div>
             </template>
 
             <!-- 编辑弹窗 -->
             <template #edit-item-title>
-                <span class="dialog-title">编辑会员</span>
+                <span class="dialog-title">编辑优惠卷</span>
             </template>
 
             <template #edit-item>
                 <div class="dialog-edit">
-                    <EditMembership :edit-data="editData" @edit-status="editStatus" />
+                    <EditCoupon :edit-data="editData" @edit-status="editStatus" />
                 </div>
             </template>
         </BaseTable>
@@ -74,9 +74,9 @@
 import { useHead } from "@unhead/vue"
 import { reactive, watch } from "vue"
 
-import { type MembershipRes, MembershipStatus, MembershipStatusDisplay } from "@/api/membership/common"
-import { deleteMembershipAPI, type DeleteMembershipRequest } from "@/api/membership/delete"
-import { viewMembershipAPI, type ViewMembershipRequest } from "@/api/membership/view"
+import { CouponDiscountType, CouponDiscountTypeDisplay, type CouponRes, CouponStatus, CouponStatusDisplay } from "@/api/coupon/common"
+import { deleteCouponAPI, type DeleteCouponRequest } from "@/api/coupon/delete"
+import { viewCouponAPI, type ViewCouponRequest } from "@/api/coupon/view"
 import { type QueryParamsRecord } from "@/api/request"
 import { ResponseCode } from "@/api/response"
 import type { TableColumn, TableData } from "@/components/common/base-table"
@@ -86,16 +86,16 @@ import { useParams } from "@/components/hooks/useParams"
 import { RouteNames } from "@/router"
 import { adminMenuItemMap } from "@/views/admin/component/aside"
 
-import AddMembership from "./component/add"
-import EditMembership from "./component/edit"
+import AddCoupon from "./component/add"
+import EditCoupon from "./component/edit"
 import { type ViewForm } from "./component/view"
 import { useHeader } from "./hooks"
-import { groupList, type GroupType, type MembershipCountGroupItem, queryKey } from "./types"
+import { type CouponCountGroupItem, groupList, type GroupType, queryKey } from "./types"
 
-defineOptions({ name: RouteNames.Membership })
+defineOptions({ name: RouteNames.Coupon })
 
 useHead({
-    title: adminMenuItemMap[RouteNames.Membership].text,
+    title: adminMenuItemMap[RouteNames.Coupon].text,
 })
 
 const cols: TableColumn[] = reactive([
@@ -107,8 +107,8 @@ const cols: TableColumn[] = reactive([
         align: "center",
     },
     {
-        prop: "role",
-        label: "会员角色",
+        prop: "code",
+        label: "优惠卷",
         sortable: true,
         minWidth: 150,
         align: "center",
@@ -128,37 +128,9 @@ const cols: TableColumn[] = reactive([
         align: "center",
         formatter: (row: TableData) => {
             if ("status" in row) {
-                return MembershipStatusDisplay[row.status as MembershipStatus]
+                return CouponStatusDisplay[row.status as CouponStatus]
             }
         },
-    },
-    {
-        prop: "duration_time",
-        label: "有效时间(秒)",
-        sortable: true,
-        minWidth: 150,
-        align: "center",
-    },
-    {
-        prop: "purchase_discount",
-        label: "购买折扣(0-100)",
-        sortable: true,
-        minWidth: 150,
-        align: "center",
-    },
-    {
-        prop: "download_count",
-        label: "下载次数",
-        sortable: true,
-        minWidth: 150,
-        align: "center",
-    },
-    {
-        prop: "watch_count",
-        label: "观看次数",
-        sortable: true,
-        minWidth: 150,
-        align: "center",
     },
     {
         prop: "description",
@@ -166,18 +138,66 @@ const cols: TableColumn[] = reactive([
         minWidth: 200,
         align: "center",
     },
+    {
+        prop: "expire_time",
+        label: "过期时间",
+        sortable: true,
+        minWidth: 120,
+        align: "center",
+        formatter: (row: TableData) => {
+            if ("expire_time" in row) {
+                return row.expire_time ? row.expire_time.Time : "-"
+            }
+        },
+    },
+    {
+        prop: "discount_type",
+        label: "优惠类型",
+        sortable: true,
+        minWidth: 150,
+        align: "center",
+        formatter: (row: TableData) => {
+            if ("discount_type" in row) {
+                return CouponDiscountTypeDisplay[row.discount_type as CouponDiscountType]
+            }
+        },
+    },
+    {
+        prop: "used_count",
+        label: "使用次数",
+        sortable: true,
+        minWidth: 150,
+        align: "center",
+        formatter: (row: TableData) => {
+            if ("used_count" in row && "use_limit" in row) {
+                return `${row.used_count} / ${row.use_limit || "无限制"}`
+            }
+        },
+    },
+    {
+        prop: "used_count_per_user",
+        label: "每用户限制",
+        sortable: true,
+        minWidth: 150,
+        align: "center",
+        formatter: (row: TableData) => {
+            if ("used_count_per_user" in row) {
+                return row.used_count_per_user || "无限制"
+            }
+        },
+    },
 ])
 
 // 获取头部数据
-const { membershipCountGroup, allGroup, activeGroup, getMembershipCountStatus } = useHeader()
+const { couponCountGroup, allGroup, activeGroup, getCouponCountStatus } = useHeader()
 
-const queryParams = reactive<ViewMembershipRequest>({} as ViewMembershipRequest)
+const queryParams = reactive<ViewCouponRequest>({} as ViewCouponRequest)
 
 // 字符串类型的 key
-const stringKeys: StringKeys<ViewMembershipRequest>[] = ["key_word"]
+const stringKeys: StringKeys<ViewCouponRequest>[] = ["key_word"]
 
 // 数字类型的 key
-const numberKeys: NumberKeys<ViewMembershipRequest>[] = ["current_page", "page_size", "status"]
+const numberKeys: NumberKeys<ViewCouponRequest>[] = ["current_page", "page_size", "status"]
 
 // 不需要请求的参数
 const noRequestKeys: QueryParamsRecord<queryKey> = { [queryKey.Group]: allGroup }
@@ -200,14 +220,14 @@ const {
     deleteRows, // 删除行
     updateRouterPush,
     loadingDelete, // 删除时的加载状态
-} = useBaseTable<MembershipRes, ViewMembershipRequest, DeleteMembershipRequest>(
-    RouteNames.Membership,
-    viewMembershipAPI,
-    ResponseCode.MembershipViewSuccess,
-    deleteMembershipAPI,
-    ResponseCode.MembershipDeleteSuccess,
+} = useBaseTable<CouponRes, ViewCouponRequest, DeleteCouponRequest>(
+    RouteNames.Coupon,
+    viewCouponAPI,
+    ResponseCode.CouponViewSuccess,
+    deleteCouponAPI,
+    ResponseCode.CouponDeleteSuccess,
     queryParams,
-    { stringKeys, numberKeys, noRequestKeys, refreshPromiseFns: [getMembershipCountStatus] },
+    { stringKeys, numberKeys, noRequestKeys, refreshPromiseFns: [getCouponCountStatus] },
 )
 
 // 执行搜索
@@ -215,13 +235,13 @@ const runSearch = async () => {
     await updateRouterPush()
 }
 
-// 处理 membershipCountGroup 点击事件
-const handleMembershipCountByGroup = async (item: MembershipCountGroupItem) => {
+// 处理 couponCountGroup 点击事件
+const handleCouponCountByGroup = async (item: CouponCountGroupItem) => {
     activeGroup.value = item.key
     // 清空重置
     Object.keys(queryParams).forEach((key) => {
         if (groupList.includes(key as GroupType)) {
-            delete queryParams[key as keyof ViewMembershipRequest]
+            delete queryParams[key as keyof ViewCouponRequest]
         }
     })
 
@@ -244,34 +264,55 @@ const handleMembershipCountByGroup = async (item: MembershipCountGroupItem) => {
 // 需要编辑的用户ID
 const editData = reactive<ViewForm>({
     id: "",
-    role: "",
-    status: MembershipStatus.Disabled,
+    code: "",
+    discount_type: CouponDiscountType.FixedAmount,
+    expire_time: {
+        Time: new Date(),
+        Valid: false,
+    },
+    status: CouponStatus.Disabled,
+    amount: "",
 })
 
 const editRow = (index: number, row: TableData) => {
     if ("id" in row) {
         editData.id = row.id.toString()
     }
-    if ("role" in row) {
-        editData.role = row.role
-    }
-    if ("duration_time" in row) {
-        editData.duration_time = row.duration_time
-    }
-    if ("purchase_discount" in row) {
-        editData.purchase_discount = row.purchase_discount
-    }
-    if ("download_count" in row) {
-        editData.download_count = row.download_count
-    }
-    if ("watch_count" in row) {
-        editData.watch_count = row.watch_count
-    }
-    if ("status" in row) {
-        editData.status = row.status as MembershipStatus
+    if ("code" in row) {
+        editData.code = row.code
     }
     if ("description" in row) {
-        editData.description = row.description
+        editData.description = row.description || ""
+    }
+    if ("discount_type" in row) {
+        editData.discount_type = row.discount_type as CouponDiscountType
+    }
+    if ("amount" in row) {
+        editData.amount = row.amount.toString()
+    }
+    if ("expire_time" in row) {
+        editData.expire_time = row.expire_time
+    }
+    if ("min_spend" in row) {
+        editData.min_spend = row.min_spend.toString()
+    }
+    if ("max_spend" in row) {
+        editData.max_spend = row.max_spend.toString()
+    }
+    if ("is_stackable" in row) {
+        editData.is_stackable = row.is_stackable
+    }
+    if ("use_limit" in row) {
+        editData.use_limit = row.use_limit.toString()
+    }
+    if ("used_count" in row) {
+        editData.used_count = row.used_count.toString()
+    }
+    if ("use_limit_per_user" in row) {
+        editData.use_limit_per_user = row.use_limit_per_user.toString()
+    }
+    if ("status" in row) {
+        editData.status = row.status as CouponStatus
     }
 
     toggleEditDialog()

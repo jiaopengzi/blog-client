@@ -62,7 +62,7 @@ const submitData = async (form: ViewForm) => {
         req.push_time.Valid = true
     }
 
-    // 如果推送时间不存在且有值，则设置为无效
+    // 如果推送时间不存在，则设置为无效
     if (!form.push_time.Time && req.push_time) {
         req.push_time.Valid = false
     }
