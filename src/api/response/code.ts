@@ -170,6 +170,32 @@ export enum ResponseCode {
     NotificationSendTestIsNone = 2610, // 发送测试通知无数据
     NotificationShortCodeSuccess = 2611, // 获取短码成功
 
+    // 会员角色相关
+    MembershipInsertSuccess = 2700, // 插入会员成功
+    MembershipDeleteSuccess = 2701, // 删除会员成功
+    MembershipUpdateSuccess = 2702, // 更新会员成功
+    MembershipViewSuccess = 2703, // 查看会员成功
+    MembershipViewIsNone = 2704, // 查看会员无数据
+    MembershipCountByStatusIsNone = 2705, // 获取按照会员状态统计会员数量无数据
+    MembershipCountByStatusSuccess = 2706, // 获取按照会员状态统计会员数量成功
+    MembershipRoleExist = 2707, // 会员角色已存在
+    MembershipRoleNotExist = 2708, // 会员角色不存在
+    MembershipRoleExistExcludingID = 2709, // 会员角色已存在，排除指定ID
+    MembershipRoleNotExistExcludingID = 2710, // 会员角色不存在，排除指定ID
+
+    // 优惠卷相关
+    CouponInsertSuccess = 2800, // 插入优惠卷成功
+    CouponDeleteSuccess = 2801, // 删除优惠卷成功
+    CouponUpdateSuccess = 2802, // 更新优惠卷成功
+    CouponViewSuccess = 2803, // 查看优惠卷成功
+    CouponViewIsNone = 2804, // 查看优惠卷无数据
+    CouponCountByStatusIsNone = 2805, // 获取按照优惠卷状态统计优惠卷数量无数据
+    CouponCountByStatusSuccess = 2806, // 获取按照优惠卷状态统计优惠卷数量成功
+    CouponCodeExist = 2807, // 优惠卷已存在
+    CouponCodeNotExist = 2808, // 优惠卷不存在
+    CouponCodeExistExcludingID = 2809, // 优惠卷已存在，排除指定ID
+    CouponCodeNotExistExcludingID = 2810, // 优惠卷不存在，排除指定ID
+
     // 验证码相关
     CaptchaSendSuccess = 8000, //验证码发送成功
     CaptchaCheckSuccess = 8002, //验证码发送成功

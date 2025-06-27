@@ -257,7 +257,7 @@ const {
     deleteNotificationAPI,
     ResponseCode.NotificationDeleteSuccess,
     queryParams,
-    { stringKeys, numberKeys, noRequestKeys },
+    { stringKeys, numberKeys, noRequestKeys, refreshPromiseFns: [getNotificationCountStatus] },
 )
 
 // 执行搜索

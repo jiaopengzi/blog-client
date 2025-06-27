@@ -14,7 +14,7 @@ export interface CheckEmailRequest {
 }
 
 // 检测用户名是否存在
-export function CheckEmailAPI(requestData: CheckEmailRequest): ResPromise<Res<unknown>> {
+export function checkEmailAPI(requestData: CheckEmailRequest): ResPromise<Res<unknown>> {
     const urlStr = routerGroup + "/user/check-email"
     return request({
         url: urlStr,

@@ -331,7 +331,7 @@ const {
     deletePostAPI,
     ResponseCode.PostDeleteSuccess,
     queryParams,
-    { stringKeys, numberKeys, noRequestKeys, tableImg },
+    { stringKeys, numberKeys, noRequestKeys, tableImg, refreshPromiseFns: [getPostCountStatus] },
 )
 
 const handleDeleteRows = async (rows: TableData[]) => {

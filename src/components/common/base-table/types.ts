@@ -7,8 +7,10 @@
  */
 
 import { type CommentResAdmin } from "@/api/comment/common"
+import { type CouponRes } from "@/api/coupon/common"
 import { type LinkRes } from "@/api/link/common"
 import { type LoginLog } from "@/api/loginLog/getLoginLogs"
+import { type MembershipRes } from "@/api/membership/common"
 import { type NotificationRes } from "@/api/notification/common"
 import { type PostResPaginationByAdmin } from "@/api/post/common"
 import { type PostCategory } from "@/api/postCategory/view"
@@ -38,7 +40,18 @@ export interface TableColumn {
 }
 
 // 表格数据类型
-export type TableData = PostResPaginationByAdmin | PostTag | PostCategory | MediaFile | User | LoginLog | CommentResAdmin | LinkRes | NotificationRes
+export type TableData =
+    | PostResPaginationByAdmin
+    | PostTag
+    | PostCategory
+    | MediaFile
+    | User
+    | LoginLog
+    | CommentResAdmin
+    | LinkRes
+    | NotificationRes
+    | CouponRes
+    | MembershipRes
 
 export interface FormatTableData {
     thumbnail?: string // 缩略图

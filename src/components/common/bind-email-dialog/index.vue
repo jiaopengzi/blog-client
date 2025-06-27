@@ -68,7 +68,7 @@ import { handleResErr, ResponseCode } from "@/api/response"
 import type { BindEmailRequest } from "@/api/user/bindEmail"
 import { bindEmailAPI } from "@/api/user/bindEmail"
 import type { CheckEmailRequest } from "@/api/user/checkEmail"
-import { CheckEmailAPI } from "@/api/user/checkEmail"
+import { checkEmailAPI } from "@/api/user/checkEmail"
 import SlideVerify from "@/components/common/slide-verify" // 引用滑块验证组件
 import { useUserStore } from "@/stores/user"
 import { MessageUtil } from "@/utils/message"
@@ -141,7 +141,7 @@ async function checkEmail(): Promise<void> {
     }
 
     try {
-        const { data } = await CheckEmailAPI(req)
+        const { data } = await checkEmailAPI(req)
 
         if (data.code === ResponseCode.UserEmailExist) {
             throw new Error(data.msg)

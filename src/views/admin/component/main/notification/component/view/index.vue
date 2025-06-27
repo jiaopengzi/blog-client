@@ -173,15 +173,17 @@ const getShortCodes = async () => {
 }
 
 const handleShortCodeClick = (code: string) => {
-    const inputElement = viewFormRef.value?.$el.querySelector("textarea") as HTMLTextAreaElement | null
     // 在光标位置插入短代码
-    if (inputElement) {
-        const start = inputElement.selectionStart
-        const end = inputElement.selectionEnd
-        const value = inputElement.value
-        inputElement.value = value.substring(0, start) + code + value.substring(end)
-        inputElement.setSelectionRange(start + code.length, start + code.length)
-        inputElement.focus()
+    if (viewFormRef.value) {
+        const inputElement = viewFormRef.value.$el.querySelector("textarea") as HTMLTextAreaElement | null
+        if (inputElement) {
+            const start = inputElement.selectionStart
+            const end = inputElement.selectionEnd
+            const value = inputElement.value
+            inputElement.value = value.substring(0, start) + code + value.substring(end)
+            inputElement.setSelectionRange(start + code.length, start + code.length)
+            inputElement.focus()
+        }
     }
 }
 

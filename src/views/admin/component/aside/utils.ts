@@ -146,8 +146,12 @@ export const adminMenuItemMap: AdminMenuItemMap = {
         text: "订单",
         parentIndex: RouteNamesAdmin.Shop,
     },
-    [RouteNamesAdmin.MemberManagement]: {
-        text: "会员管理",
+    [RouteNamesAdmin.Membership]: {
+        text: "会员",
+        parentIndex: RouteNamesAdmin.Shop,
+    },
+    [RouteNamesAdmin.Coupon]: {
+        text: "优惠券",
         parentIndex: RouteNamesAdmin.Shop,
     },
     // [RouteNamesAdmin.ShortLink]: {

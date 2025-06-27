@@ -24,13 +24,13 @@ export function useHeader() {
     const allGroup = "all"
     const activeGroup = ref(allGroup)
 
-    // 获取评论按照状态统计
+    // 按照状态统计
     const getNotificationCountStatus = async () => {
         const res = await getNotificationCountByStatusAPI()
         if (res.data.code === ResponseCode.NotificationCountByStatusSuccess) {
             notificationCountStatus.value = res.data.data
         } else {
-            MessageUtil.warning(handleResErr(res.data), 3000)
+            MessageUtil.warning(handleResErr(res), 3000)
         }
     }
 

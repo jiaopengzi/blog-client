@@ -162,12 +162,12 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         const res = await deleteAPI(deleteUserRequest)
 
         if (res.data.code === deleteResCode) {
-            if (res.data.data && "stream_ids" in res.data.data) {
-                // 如果响应中包含 stream_ids，则轮询获取状态
+            if (res.data.data && "items" in res.data.data) {
+                // 如果响应中包含 items，则轮询获取状态
                 await pollingGetStreamIDsStatus(res.data.data.items)
-                loadingDelete.value = false // 隐藏加载动画
             }
 
+            loadingDelete.value = false // 隐藏加载动画
             // 删除成功后重新获取列表
             await updatePaginate()
             MessageUtil.success(res.data.msg, 3000)
@@ -186,6 +186,27 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
             await updatePaginate()
         },
     )
+
+    // 监控对话框或加载状态变化
+    function watchDialogOrLoading(refValue: typeof addItemDialogVisible | typeof editItemDialogVisible | typeof loadingDelete) {
+        watch(
+            () => refValue.value,
+            async (newVal, oldVal) => {
+                if (oldVal && newVal === false) {
+                    if (options?.refreshFns?.length) {
+                        options.refreshFns.forEach((fn) => fn())
+                    }
+                    if (options?.refreshPromiseFns?.length) {
+                        await Promise.all(options.refreshPromiseFns.map((fn) => fn()))
+                    }
+                }
+            },
+        )
+    }
+
+    watchDialogOrLoading(loadingDelete)
+    watchDialogOrLoading(addItemDialogVisible)
+    watchDialogOrLoading(editItemDialogVisible)
 
     onBeforeMount(async () => {
         await updateQueryParams()

@@ -7,7 +7,7 @@
  */
 
 import { ResponseCode } from "@/api/response"
-import { CheckEmailAPI, type CheckEmailRequest } from "@/api/user/checkEmail"
+import { checkEmailAPI, type CheckEmailRequest } from "@/api/user/checkEmail"
 import { checkEmailExcludingUserIDAPI, type CheckEmailExcludingUserIDRequest } from "@/api/user/checkEmailExcludingUserID"
 import { checkUserNameAPI, type CheckUserNameRequest } from "@/api/user/checkUserName"
 import { checkUserNameExcludingUserIDAPI, type CheckUserNameExcludingUserIDRequest } from "@/api/user/checkUserNameExcludingUserID"
@@ -68,7 +68,7 @@ export async function checkEmail(email: string): Promise<void> {
     }
 
     try {
-        const { data } = await CheckEmailAPI(req)
+        const { data } = await checkEmailAPI(req)
         if (data.code === ResponseCode.UserEmailExist) {
             throw new Error(data.msg)
         }
