@@ -245,6 +245,8 @@ const handleMembershipCountByGroup = async (item: MembershipCountGroupItem) => {
 const editData = reactive<ViewForm>({
     id: "",
     role: "",
+    duration_time: "0", // 有效时间(0表示永久有效)
+    purchase_discount: 0, // 购买折扣(0-100)
     status: MembershipStatus.Disabled,
 })
 

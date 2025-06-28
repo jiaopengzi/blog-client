@@ -10,7 +10,7 @@
     <div class="view-page">
         <el-form
             :label-position="labelPosition"
-            label-width="120px"
+            label-width="160px"
             ref="viewFormRef"
             :model="viewData"
             :rules="rules"
@@ -18,61 +18,61 @@
             :size="formSize"
             status-icon
         >
-            <el-form-item v-if="isShowId" label="ID" prop="id">
+            <el-form-item v-if="isShowId" label="ID" prop="id" size="default">
                 <el-input v-model="viewDataAc.id" disabled />
             </el-form-item>
             <el-form-item label="优惠卷" prop="code">
-                <el-input v-model="viewDataAc.code" placeholder="请输入优惠卷" />
+                <el-input v-model="viewDataAc.code" placeholder="请输入优惠卷" class="coupon-code" />
             </el-form-item>
-            <el-form-item label="描述" prop="description">
+            <el-form-item label="描述" prop="description" size="default">
                 <el-input v-model="viewDataAc.description" type="textarea" placeholder="请输入描述信息" :rows="5" />
             </el-form-item>
-            <el-form-item label="优惠类型" prop="discount_type">
+            <el-form-item label="优惠类型" prop="discount_type" size="default">
                 <el-select v-model="viewDataAc.discount_type" clearable placeholder="请选择优惠类型">
                     <el-option v-for="item in optionsDiscountType" :key="item.value" :label="item.label" :value="item.value" />
                 </el-select>
             </el-form-item>
-            <el-form-item label="优惠(金额/折扣)" prop="amount">
-                <el-input-number v-model="viewDataAc.amount" :min="0" :max="amountMax">
+            <el-form-item label="优惠(金额/折扣)" prop="amount" size="default">
+                <el-input-number class="input-number" v-model="viewDataAc.amount" :min="0" :max="amountMax" :precision="amountPrecision" :step="amountStep">
                     <template #suffix>
                         <span>{{ amountUnit }}</span>
                     </template>
                 </el-input-number>
             </el-form-item>
-            <el-form-item label="过期时间" prop="expire_time">
+            <el-form-item label="过期时间" prop="expire_time" size="default">
                 <el-date-picker v-model="viewDataAc.expire_time.Time" type="datetime" placeholder="请选择过期时间" :shortcuts="generateShortcuts('过期')" />
             </el-form-item>
-            <el-form-item label="最小消费金额" prop="min_spend">
-                <el-input-number v-model="viewDataAc.min_spend" :min="0">
+            <el-form-item label="最小消费金额" prop="min_spend" size="default">
+                <el-input-number class="input-number" v-model="viewDataAc.min_spend" :min="0" :precision="2" :step="0.1">
                     <template #suffix>
-                        <span>分</span>
+                        <span>元</span>
                     </template>
                 </el-input-number>
             </el-form-item>
-            <el-form-item label="最大消费金额" prop="max_spend">
-                <el-input-number v-model="viewDataAc.max_spend" :min="0">
+            <el-form-item label="最大消费金额" prop="max_spend" size="default">
+                <el-input-number class="input-number" v-model="viewDataAc.max_spend" :min="0" :precision="2" :step="0.1">
                     <template #suffix>
-                        <span>分</span>
+                        <span>元</span>
                     </template>
                 </el-input-number>
             </el-form-item>
-            <el-form-item label="是否叠加使用" prop="is_stackable">
+            <el-form-item label="是否叠加使用" prop="is_stackable" size="default">
                 <el-radio-group v-model="viewDataAc.is_stackable">
                     <el-radio v-for="item in optionsStackable" :key="item.value" :value="item.value">
                         {{ CouponStackableDisplay[item.value] }}
                     </el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="次数限制" prop="use_limit">
-                <el-input-number v-model="viewDataAc.use_limit" :min="0" placeholder="请输入限制次数" />
+            <el-form-item label="总次数限制" prop="use_limit" size="default">
+                <el-input-number class="input-number" v-model="viewDataAc.use_limit" :min="0" />
             </el-form-item>
-            <el-form-item label="次数限制每用户" prop="use_limit_per_user">
-                <el-input-number v-model="viewDataAc.use_limit_per_user" :min="0" placeholder="请输入每用户限制次数" />
+            <el-form-item label="每用户次数限制" prop="use_limit_per_user" size="default">
+                <el-input-number class="input-number" v-model="viewDataAc.use_limit_per_user" :min="0" />
             </el-form-item>
-            <el-form-item label="已使用次数" prop="used_count">
-                <el-input-number v-model="viewDataAc.used_count" :min="0" disabled />
+            <el-form-item label="已使用次数" prop="used_count" size="default">
+                <el-input v-model="viewDataAc.used_count" disabled />
             </el-form-item>
-            <el-form-item label="是否启用" prop="status">
+            <el-form-item label="是否启用" prop="status" size="default">
                 <el-radio-group v-model="viewDataAc.status">
                     <el-radio v-for="item in optionsStatus" :key="item.value" :value="item.value">
                         {{ CouponStatusDisplay[item.value] }}
@@ -140,8 +140,10 @@ const optionsStatus = getCouponStatusOptions()
 const optionsStackable = getCouponStackableOptions()
 const optionsDiscountType = getDiscountTypeOptions()
 
-const amountMax = ref(999999) // 金额最大值
+const amountMax = ref(999999999) // 金额最大值
 const amountUnit = ref("分") // 金额单位
+const amountPrecision = ref(0) // 金额精度
+const amountStep = ref(1) // 金额步长
 
 // 监听优惠类型变化，更新金额单位和最大值
 watch(
@@ -149,12 +151,16 @@ watch(
     (newType) => {
         if (newType === CouponDiscountType.FixedAmount) {
             // 固定金额折扣
-            amountUnit.value = "分"
+            amountUnit.value = "元"
             amountMax.value = 999999 // 最大值为999999分
+            amountPrecision.value = 2 // 精度为0
+            amountStep.value = 0.1 // 步长为0.1元
         } else if (newType === CouponDiscountType.Percentage) {
             // 百分比折扣
             amountUnit.value = "%"
             amountMax.value = 100 // 最大值为100%
+            amountPrecision.value = 0 // 精度为0
+            amountStep.value = 1 // 步长为1%
         }
     },
     {
@@ -189,6 +195,15 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
 .view-form {
     width: 600px;
+}
+
+.coupon-code {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.input-number {
+    width: 100%;
 }
 
 .btn-submit {

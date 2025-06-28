@@ -31,6 +31,8 @@ const emit = defineEmits<{
 // 表单数据
 const addForm = reactive<ViewForm>({
     role: "", // 会员角色
+    duration_time: "0", // 有效时间(0表示永久有效)
+    purchase_discount: 0, // 购买折扣(0-100)
     status: MembershipStatus.Disabled, // 状态
 })
 

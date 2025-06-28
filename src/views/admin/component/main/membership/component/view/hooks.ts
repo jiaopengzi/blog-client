@@ -106,6 +106,9 @@ export function useFormValidation(options: FormValidationOptions): {
             { required: true, message: "请输入会员角色", trigger: "blur" },
             { validator: checkRoleValidator, trigger: "blur" },
         ],
+        duration_time: [{ required: true, message: "请输入有效时间", trigger: "blur" }],
+        purchase_discount: [{ required: true, message: "请输入购买折扣(0-100)", trigger: "blur" }],
+        status: [{ required: true, message: "请选择启用状态", trigger: "change" }],
     })
 
     /**
@@ -118,6 +121,9 @@ export function useFormValidation(options: FormValidationOptions): {
             { required: true, message: "请输入会员角色", trigger: "blur" },
             { validator: checkRoleExcludingIDValidator, trigger: "blur" },
         ],
+        duration_time: [{ required: true, message: "请输入有效时间", trigger: "blur" }],
+        purchase_discount: [{ required: true, message: "请输入购买折扣(0-100)", trigger: "blur" }],
+        status: [{ required: true, message: "请选择启用状态", trigger: "change" }],
     })
 
     return {

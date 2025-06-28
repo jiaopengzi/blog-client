@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 import { ref } from "vue"
 
-import { type UpdateCouponRequest } from "@/api/coupon/common"
+import { CouponDiscountType, type UpdateCouponRequest } from "@/api/coupon/common"
 import { updateCouponAPI } from "@/api/coupon/update"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { MessageUtil } from "@/utils/message"
@@ -36,14 +36,19 @@ const btnLoading = ref(false)
 
 const submitData = async (form: ViewForm) => {
     btnLoading.value = true
+    const amount =
+        form.discount_type === CouponDiscountType.FixedAmount
+            ? (Number(form.amount) * 100).toString() // 将金额转换为分
+            : form.amount // 折扣类型不需要转换
+
     const req: UpdateCouponRequest = {
         id: form.id ? form.id.toString() : "",
         code: form.code,
         description: form.description,
         discount_type: form.discount_type,
-        amount: form.amount.toString(),
-        min_spend: form.min_spend ? form.min_spend.toString() : "0",
-        max_spend: form.max_spend ? form.max_spend.toString() : "0",
+        amount: amount,
+        min_spend: form.min_spend ? (Number(form.min_spend) * 100).toString() : "0",
+        max_spend: form.max_spend ? (Number(form.max_spend) * 100).toString() : "0",
         is_stackable: form.is_stackable,
         use_limit: form.use_limit ? form.use_limit.toString() : "0",
         used_count: form.used_count ? form.used_count.toString() : "0",

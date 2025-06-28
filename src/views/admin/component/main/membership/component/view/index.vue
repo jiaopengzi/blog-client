@@ -22,23 +22,37 @@
                 <el-input v-model="viewDataAc.id" disabled />
             </el-form-item>
             <el-form-item label="会员角色" prop="role">
-                <el-input v-model="viewDataAc.role" placeholder="请输入会员角色" />
+                <el-input v-model="viewDataAc.role" placeholder="请输入会员角色" class="role" />
             </el-form-item>
             <el-form-item label="有效时间" prop="duration_time">
-                <el-input-number v-model="viewDataAc.duration_time" :min="0">
+                <el-input-number class="input-number" v-model="viewDataAc.duration_time" :min="0">
                     <template #suffix>
                         <span>秒</span>
                     </template>
                 </el-input-number>
+                <div class="btn-time-items">
+                    <el-button v-for="item in timeItems" :key="item.value" @click="handleClickTimeItem(item)" class="btn-time-item" size="small">{{
+                        item.display
+                    }}</el-button>
+                </div>
             </el-form-item>
             <el-form-item label="购买折扣" prop="purchase_discount">
-                <el-input-number v-model="viewDataAc.purchase_discount" :min="0" :max="100" placeholder="请输入购买折扣(0-100)" />
+                <el-input-number class="input-number" v-model="viewDataAc.purchase_discount" :min="0" :max="100" placeholder="请输入购买折扣(0-100)">
+                    <template #suffix>
+                        <span>%</span>
+                    </template>
+                </el-input-number>
+                <div class="discount-description">
+                    <p class="discount-description-item">会员购物价格 = 原价 * 购买折扣。</p>
+                    <p class="discount-description-item">示例1：原价100，购买折扣：20%，会员购买价格 = 100 * 20% = 20。</p>
+                    <p class="discount-description-item">示例2：原价100，购买折扣：0%，会员购买价格 = 100 * 0% = 0；即免费。</p>
+                </div>
             </el-form-item>
             <el-form-item label="下载次数" prop="download_count">
-                <el-input-number v-model="viewDataAc.download_count" :min="0" placeholder="请输入下载次数" />
+                <el-input-number class="input-number" v-model="viewDataAc.download_count" :min="0" placeholder="请输入下载次数" />
             </el-form-item>
             <el-form-item label="观看次数" prop="watch_count">
-                <el-input-number v-model="viewDataAc.watch_count" :min="0" placeholder="请输入观看次数" />
+                <el-input-number class="input-number" v-model="viewDataAc.watch_count" :min="0" placeholder="请输入观看次数" />
             </el-form-item>
             <el-form-item label="是否启用" prop="status">
                 <el-radio-group v-model="viewDataAc.status">
@@ -60,14 +74,12 @@
 
 <script lang="ts" setup>
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { onBeforeMount, reactive, ref, toRefs, useTemplateRef } from "vue"
+import { reactive, ref, toRefs, useTemplateRef } from "vue"
 
 import { getMembershipStatusOptions, MembershipStatusDisplay } from "@/api/membership/common"
-import { getMembershipCountByStatusAPI, type MembershipCountByStatus } from "@/api/membership/getCountByStatus"
-import { ResponseCode } from "@/api/response"
 
 import { useFormValidation } from "./hooks"
-import type { ViewForm } from "./types"
+import type { TimeItem, ViewForm } from "./types"
 
 defineOptions({ name: "CommonView" })
 
@@ -103,14 +115,17 @@ const viewDataAc = reactive<ViewForm>(viewData)
 
 const optionsStatus = getMembershipStatusOptions()
 
-// 获取会员角色数量分组信息
-const roleCountItems = reactive<MembershipCountByStatus[]>([])
-const getRoleCountItems = async () => {
-    await getMembershipCountByStatusAPI().then((res) => {
-        if (res.data.code === ResponseCode.MembershipCountByStatusSuccess) {
-            Object.assign(roleCountItems, res.data.data)
-        }
-    })
+// 定义时间按钮
+const timeItems: TimeItem[] = [
+    { value: 0, display: "0 为永久有效" },
+    { value: 60 * 60 * 24 * 30, display: "30天" }, // 30天
+    { value: 60 * 60 * 24 * 90, display: "90天" }, // 90天
+    { value: 60 * 60 * 24 * 180, display: "180天" }, // 180天
+    { value: 60 * 60 * 24 * 365, display: "365天" }, // 365天
+]
+// 点击时间按钮
+const handleClickTimeItem = (item: TimeItem) => {
+    viewDataAc.duration_time = item.value.toString() // 设置有效时间
 }
 
 // hooks
@@ -129,11 +144,6 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         }
     })
 }
-
-// 初始化获取用户数量分组信息
-onBeforeMount(async () => {
-    await getRoleCountItems()
-})
 </script>
 
 <style lang="scss" scoped>
@@ -145,6 +155,33 @@ onBeforeMount(async () => {
 
 .view-form {
     width: 600px;
+}
+
+.role {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.input-number {
+    width: 100%;
+}
+
+.btn-time-items {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 5px;
+
+    .btn-time-item {
+        margin-right: 5px;
+        margin-bottom: 5px;
+    }
+}
+
+.discount-description {
+    font-size: 12px;
+    color: var(--jpz-text-color-secondary);
+    margin-top: 5px;
+    line-height: 1.8;
 }
 
 .btn-submit {

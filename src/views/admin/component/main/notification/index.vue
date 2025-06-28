@@ -192,7 +192,7 @@ const cols: TableColumn[] = reactive([
         align: "center",
         formatter: (row: TableData) => {
             if ("push_time" in row) {
-                return row.category === NotificationCategory.ScheduledTask && row.push_time ? row.push_time.Time : "-"
+                return row.category === NotificationCategory.ScheduledTask && row.push_time.Valid ? row.push_time.Time : "-"
             }
         },
     },

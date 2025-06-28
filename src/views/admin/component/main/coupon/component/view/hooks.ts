@@ -9,9 +9,10 @@
 import type { FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { reactive, type Ref } from "vue"
 
+import { type PgSqlDateTime } from "@/api/common"
 import { checkCouponCodeAPI, type CheckCouponCodeRequest } from "@/api/coupon/checkCouponCode"
 import { checkCouponCodeExcludingIDAPI, type CheckCouponCodeExcludingIDRequest } from "@/api/coupon/checkCouponCodeExcludingID"
-import { CouponStatus } from "@/api/coupon/common"
+import { CouponDiscountType, CouponStackable, CouponStatus } from "@/api/coupon/common"
 import { handleResErr, ResponseCode } from "@/api/response"
 
 import type { ViewForm } from "./types"
@@ -20,13 +21,18 @@ import type { ViewForm } from "./types"
 interface FormValidationOptions {
     form: {
         id?: Ref<string | undefined> // ID
-        role?: Ref<string> // 优惠卷角色
-        duration_time?: Ref<string | undefined> // 有效时间(秒), 0表示永久有效
-        purchase_discount?: Ref<number | undefined> // 购买折扣 0-100
-        download_count?: Ref<number | undefined> // 下载次数
-        watch_count?: Ref<number | undefined> // 观看次数
-        status?: Ref<CouponStatus> // 状态 1禁用, 2启用
-        description?: Ref<string | undefined> // 描述
+        code?: Ref<string> // 优惠码
+        description?: Ref<string | undefined> // 优惠券描述
+        discount_type?: Ref<CouponDiscountType> // 优惠类型 1 固定金额折扣, 2 百分比折扣
+        amount?: Ref<string> // 优惠数量(金额/百分比) 单位分
+        expire_time?: Ref<PgSqlDateTime | undefined> // 过期时间
+        min_spend?: Ref<string | undefined> // 最小消费金额(分)
+        max_spend?: Ref<string | undefined> // 最大消费金额(分)
+        is_stackable: Ref<CouponStackable> // 是否允许叠加使用,默认 1 禁用 2 启用
+        use_limit?: Ref<string | undefined> // 使用次数限制
+        used_count?: Ref<string | undefined> // 已使用次数
+        use_limit_per_user?: Ref<string | undefined> // 单人使用次数限制
+        status: Ref<CouponStatus> // 状态 1禁用, 2启用
     }
 }
 
@@ -101,11 +107,37 @@ export function useFormValidation(options: FormValidationOptions): {
         })
     }
 
+    // 检查优惠数量是否为数字且大于0
+    function checkAmountValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
+        if (!value || isNaN(Number(value)) || Number(value) <= 0) {
+            callback(new Error("请输入大于0的优惠数量"))
+            return
+        }
+
+        // 如果是百分比折扣类型，检查是否在0-100之间
+        if (form.discount_type && form.discount_type.value === CouponDiscountType.Percentage) {
+            const amount = Number(value)
+            if (amount < 0 || amount > 100) {
+                callback(new Error("百分比折扣必须在0-100之间"))
+                return
+            }
+        }
+
+        callback()
+    }
+
     const addRules = reactive<FormRules<ViewForm>>({
         code: [
             { required: true, message: "请输入优惠卷", trigger: "blur" },
             { validator: checkCodeValidator, trigger: "blur" },
         ],
+        discount_type: [{ required: true, message: "请选择优惠类型", trigger: "change" }],
+        amount: [
+            { required: true, message: "请输入优惠数量", trigger: "blur" },
+            { validator: checkAmountValidator, trigger: "blur" },
+        ],
+        is_stackable: [{ required: true, message: "请选择是否允许叠加使用", trigger: "change" }],
+        status: [{ required: true, message: "请选择启用状态", trigger: "change" }],
     })
 
     /**
@@ -118,6 +150,13 @@ export function useFormValidation(options: FormValidationOptions): {
             { required: true, message: "请输入优惠卷", trigger: "blur" },
             { validator: checkCodeExcludingIDValidator, trigger: "blur" },
         ],
+        discount_type: [{ required: true, message: "请选择优惠类型", trigger: "change" }],
+        amount: [
+            { required: true, message: "请输入优惠数量", trigger: "blur" },
+            { validator: checkAmountValidator, trigger: "blur" },
+        ],
+        is_stackable: [{ required: true, message: "请选择是否允许叠加使用", trigger: "change" }],
+        status: [{ required: true, message: "请选择启用状态", trigger: "change" }],
     })
 
     return {

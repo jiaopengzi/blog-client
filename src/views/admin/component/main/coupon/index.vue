@@ -74,7 +74,7 @@
 import { useHead } from "@unhead/vue"
 import { reactive, watch } from "vue"
 
-import { CouponDiscountType, CouponDiscountTypeDisplay, type CouponRes, CouponStatus, CouponStatusDisplay } from "@/api/coupon/common"
+import { CouponDiscountType, CouponDiscountTypeDisplay, type CouponRes, CouponStackable, CouponStatus, CouponStatusDisplay } from "@/api/coupon/common"
 import { deleteCouponAPI, type DeleteCouponRequest } from "@/api/coupon/delete"
 import { viewCouponAPI, type ViewCouponRequest } from "@/api/coupon/view"
 import { type QueryParamsRecord } from "@/api/request"
@@ -114,11 +114,28 @@ const cols: TableColumn[] = reactive([
         align: "center",
     },
     {
-        prop: "created_at",
-        label: "创建时间",
+        prop: "discount_type",
+        label: "优惠类型",
         sortable: true,
-        minWidth: 180,
+        minWidth: 150,
         align: "center",
+        formatter: (row: TableData) => {
+            if ("discount_type" in row) {
+                return CouponDiscountTypeDisplay[row.discount_type as CouponDiscountType]
+            }
+        },
+    },
+    {
+        prop: "amount",
+        label: "优惠数量",
+        sortable: true,
+        minWidth: 150,
+        align: "center",
+        formatter: (row: TableData) => {
+            if ("discount_type" in row && "amount" in row) {
+                return row.discount_type === CouponDiscountType.FixedAmount ? `${(row.amount / 100).toFixed(2)} 元` : `${row.amount} %`
+            }
+        },
     },
     {
         prop: "status",
@@ -129,6 +146,18 @@ const cols: TableColumn[] = reactive([
         formatter: (row: TableData) => {
             if ("status" in row) {
                 return CouponStatusDisplay[row.status as CouponStatus]
+            }
+        },
+    },
+    {
+        prop: "used_count",
+        label: "使用次数",
+        sortable: true,
+        minWidth: 150,
+        align: "center",
+        formatter: (row: TableData) => {
+            if ("used_count" in row && "use_limit" in row) {
+                return `${row.used_count} / ${row.use_limit || "无限制"}`
             }
         },
     },
@@ -146,43 +175,7 @@ const cols: TableColumn[] = reactive([
         align: "center",
         formatter: (row: TableData) => {
             if ("expire_time" in row) {
-                return row.expire_time ? row.expire_time.Time : "-"
-            }
-        },
-    },
-    {
-        prop: "discount_type",
-        label: "优惠类型",
-        sortable: true,
-        minWidth: 150,
-        align: "center",
-        formatter: (row: TableData) => {
-            if ("discount_type" in row) {
-                return CouponDiscountTypeDisplay[row.discount_type as CouponDiscountType]
-            }
-        },
-    },
-    {
-        prop: "used_count",
-        label: "使用次数",
-        sortable: true,
-        minWidth: 150,
-        align: "center",
-        formatter: (row: TableData) => {
-            if ("used_count" in row && "use_limit" in row) {
-                return `${row.used_count} / ${row.use_limit || "无限制"}`
-            }
-        },
-    },
-    {
-        prop: "used_count_per_user",
-        label: "每用户限制",
-        sortable: true,
-        minWidth: 150,
-        align: "center",
-        formatter: (row: TableData) => {
-            if ("used_count_per_user" in row) {
-                return row.used_count_per_user || "无限制"
+                return row.expire_time.Valid ? row.expire_time.Time : "-"
             }
         },
     },
@@ -272,6 +265,7 @@ const editData = reactive<ViewForm>({
     },
     status: CouponStatus.Disabled,
     amount: "",
+    is_stackable: CouponStackable.Disabled, // 默认禁用叠加
 })
 
 const editRow = (index: number, row: TableData) => {
@@ -288,16 +282,25 @@ const editRow = (index: number, row: TableData) => {
         editData.discount_type = row.discount_type as CouponDiscountType
     }
     if ("amount" in row) {
-        editData.amount = row.amount.toString()
+        const amount =
+            row.discount_type === CouponDiscountType.FixedAmount
+                ? (Number(row.amount) / 100).toString() // 将金额转换为元
+                : row.amount.toString() // 折扣类型不需要转换
+        editData.amount = amount
     }
-    if ("expire_time" in row) {
+    if ("expire_time" in row && row.expire_time.Valid) {
         editData.expire_time = row.expire_time
+    } else if ("expire_time" in row && !row.expire_time.Valid) {
+        editData.expire_time = {
+            Time: null,
+            Valid: false,
+        }
     }
     if ("min_spend" in row) {
-        editData.min_spend = row.min_spend.toString()
+        editData.min_spend = (Number(row.min_spend) / 100).toString()
     }
     if ("max_spend" in row) {
-        editData.max_spend = row.max_spend.toString()
+        editData.max_spend = (Number(row.max_spend) / 100).toString()
     }
     if ("is_stackable" in row) {
         editData.is_stackable = row.is_stackable

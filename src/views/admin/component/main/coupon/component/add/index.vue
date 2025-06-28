@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 import { reactive, ref } from "vue"
 
-import { CouponDiscountType, CouponStatus } from "@/api/coupon/common"
+import { CouponDiscountType, CouponStackable, CouponStatus } from "@/api/coupon/common"
 import { type InsertCouponRequest } from "@/api/coupon/common"
 import { insertCouponAPI } from "@/api/coupon/insert"
 import { handleResErr, ResponseCode } from "@/api/response"
@@ -33,24 +33,31 @@ const addForm = reactive<ViewForm>({
     code: "",
     discount_type: CouponDiscountType.FixedAmount,
     expire_time: {
-        Time: new Date(),
+        Time: null,
         Valid: false,
     },
     status: CouponStatus.Disabled,
     amount: "",
+    is_stackable: CouponStackable.Disabled, // 默认禁用叠加
 })
 
 const btnLoading = ref(false)
 
 const submitData = async (form: ViewForm) => {
     btnLoading.value = true
+
+    const amount =
+        form.discount_type === CouponDiscountType.FixedAmount
+            ? (Number(form.amount) * 100).toString() // 将金额转换为分
+            : form.amount // 折扣类型不需要转换
+
     const req: InsertCouponRequest = {
         code: form.code,
         description: form.description,
         discount_type: form.discount_type,
-        amount: form.amount.toString(),
-        min_spend: form.min_spend ? form.min_spend.toString() : "0",
-        max_spend: form.max_spend ? form.max_spend.toString() : "0",
+        amount: amount,
+        min_spend: form.min_spend ? (Number(form.min_spend) * 100).toString() : "0",
+        max_spend: form.max_spend ? (Number(form.max_spend) * 100).toString() : "0",
         is_stackable: form.is_stackable,
         use_limit: form.use_limit ? form.use_limit.toString() : "0",
         used_count: form.used_count ? form.used_count.toString() : "0",
