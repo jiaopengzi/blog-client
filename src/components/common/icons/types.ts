@@ -153,4 +153,5 @@ export enum IconKeys {
     Delete = "delete",
     Pinned = "pinned",
     Reply = "reply",
+    Lock = "lock",
 }

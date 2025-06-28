@@ -7,4 +7,5 @@
  */
 
 export * from "./base"
+export * from "./CustomElementPayRead"
 export * from "./CustomElementVideoPlayer"

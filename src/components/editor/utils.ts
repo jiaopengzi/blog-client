@@ -116,7 +116,7 @@ export const createRegexCache = (): RegexCache => {
 
     const getCustomElementHeadingTagNameRegex = () => {
         const videoPlayer = new CustomElementVideoPlayer()
-        return new RegExp(`^${videoPlayer.tagName.toLocaleLowerCase()}|^video-test`) // 动态生成正则表达式  DOMPurify 允许的 自定义元素的标签名
+        return new RegExp(`^${videoPlayer.tagName.toLocaleLowerCase()}|^video-|^pay-`) // 动态生成正则表达式  DOMPurify 允许的 自定义元素的标签名
     }
 
     const getCustomElementHeadingAttributeNameRegex = () => {

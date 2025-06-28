@@ -22,8 +22,8 @@ import { debounce } from "throttle-debounce"
 import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from "vue"
 
 import { ScrollElementTagHeading } from "@/components/editor/command"
-import { CustomElementVideoPlayer } from "@/customElements"
-import { mountVideoPlayerOnCustomElements } from "@/customElementsMount"
+import { CustomElementPayRead, CustomElementVideoPlayer } from "@/customElements"
+import { mountPayReadOnCustomElements, mountVideoPlayerOnCustomElements } from "@/customElementsMount"
 import { copyText } from "@/utils/clipboard"
 import { shiftArray } from "@/utils/img"
 import { MessageUtil } from "@/utils/message"
@@ -329,8 +329,9 @@ watch(
                 // 监听标题的可见性变化
                 observeHeadings()
 
-                // 挂载视频播放器到自定义元素 CustomElementVideoPlayer
+                // 挂载自定义元素
                 mountVideoPlayerOnCustomElements(previewRef.value as HTMLElement, CustomElementVideoPlayer)
+                mountPayReadOnCustomElements(previewRef.value as HTMLElement, CustomElementPayRead)
             })
         }
     },

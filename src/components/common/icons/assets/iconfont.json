@@ -6,6 +6,13 @@
   "description": "vue 重写项目",
   "glyphs": [
     {
+      "icon_id": "1898871",
+      "name": "lock",
+      "font_class": "lock",
+      "unicode": "e6d1",
+      "unicode_decimal": 59089
+    },
+    {
       "icon_id": "256462",
       "name": "delete",
       "font_class": "delete",

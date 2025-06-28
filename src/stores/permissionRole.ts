@@ -48,6 +48,8 @@ export enum PermissionNames {
     UserDelete = "UserDelete",
     UserEdit = "UserEdit",
     UserView = "UserView",
+    Shop = "Shop",
+    Notification = "Notification",
     LoginLogView = "LoginLogView",
     LoginLogDelete = "LoginLogDelete",
 }

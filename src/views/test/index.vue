@@ -1,18 +1,11 @@
 <template>
-    <div class="friendly-links">
-        <ul>
-            <li v-for="(link, index) in links" :key="index">
-                <!-- 自动获取favicon -->
-                <img :src="`https://www.google.com/s2/favicons?sz=64&domain_url=${trimProtocol(link)}`" alt="favicon" class="favicon" />
-                <a :href="link" target="_blank" rel="noopener noreferrer">{{ link }}</a>
-            </li>
-        </ul>
-    </div>
+    <div class="friendly-links">test</div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from "vue"
 
+import PayRead from "@/components/common/pay-read"
 defineOptions({ name: "EditorCodemirror" })
 /**
  * 将 https:// 或 http:// 这些协议部分去除
