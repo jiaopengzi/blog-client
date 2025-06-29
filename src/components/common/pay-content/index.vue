@@ -1,19 +1,24 @@
 <!--
- * FilePath    : blog-client\src\components\common\pay-read\index.vue
+ * FilePath    : blog-client\src\components\common\pay-content\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 付费阅读
+ * Description : 付费内容
 -->
 
 <template>
     <div v-if="!isPaid">
         <div class="no-pay">
             <JIcon :name="IconKeys.Lock" :custom-class="`my-icon`" class="lock" />
-            <p class="text">
-                隐藏内容，需要付费<span class="price">{{ price }}</span
+            <div class="text" v-if="payType === PayType.Read">
+                隐藏内容，付费<span class="price">{{ price }}</span
                 >元查看。
-            </p>
+            </div>
+            <div class="text" v-if="payType === PayType.Download">
+                附件内容，付费<span class="price">{{ price }}</span
+                >元下载。
+            </div>
+            <div class="text-vip">升级为 VIP 可免费查看(除特定内容外)所有内容。</div>
             <div>
                 <el-button class="pay-single" @click="paySingle">立即支付</el-button>
                 <el-button class="pay-vip" @click="payVIP">升级VIP</el-button>
@@ -27,33 +32,27 @@
 <script lang="ts" setup>
 import JIcon, { IconKeys } from "@/components/common/icons"
 import { EditorStateManager } from "@/components/editor"
-defineOptions({ name: "PayRead" })
+
+import { type PayContentProps, PayType } from "./types.ts"
+defineOptions({ name: "PayContent" })
 
 // 定义 props
-const {
-    isPaid = false,
-    price = 3,
-    markdown,
-} = defineProps<{
-    isPaid?: boolean // 是否付费阅读
-    price?: number // 价格
-    markdown: string
-}>()
+const { payType = PayType.Read, isPaid = false, price = 99, markdown } = defineProps<PayContentProps>()
 
 // 事件
 const emit = defineEmits<{
-    (event: "pay-single"): void
-    (event: "pay-vip"): void
+    (event: "pay-single", val: PayType): void
+    (event: "pay-vip", val: PayType): void
 }>()
 
 // 支付单篇文章
 const paySingle = () => {
-    emit("pay-single")
+    emit("pay-single", payType)
 }
 
 // 支付成为 VIP
 const payVIP = () => {
-    emit("pay-vip")
+    emit("pay-vip", payType)
 }
 
 const stateManager = new EditorStateManager()
@@ -80,10 +79,12 @@ stateManager.updateState(markdown)
         left: 8px;
     }
 
-    .text {
-        font-size: 16px;
+    .text,
+    .text-vip {
+        font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+        font-size: 14px;
         color: var(--jpz-text-color-secondary);
-        margin: 20px 0;
+        margin: 4px 0;
     }
 
     .my-icon {
@@ -92,6 +93,7 @@ stateManager.updateState(markdown)
     }
 
     .price {
+        font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
         color: #c1401f;
         font-weight: 700;
         font-size: 1.2em;

@@ -7,5 +7,5 @@
  */
 
 export * from "./getComponentContainers"
-export * from "./PayRead"
+export * from "./PayContent"
 export * from "./VideoPlayer"

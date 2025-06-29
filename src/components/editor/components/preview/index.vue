@@ -21,9 +21,10 @@ import { useIntersectionObserver } from "@vueuse/core"
 import { debounce } from "throttle-debounce"
 import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from "vue"
 
+import { PayType } from "@/components/common/pay-content"
 import { ScrollElementTagHeading } from "@/components/editor/command"
-import { CustomElementPayRead, CustomElementVideoPlayer } from "@/customElements"
-import { mountPayReadOnCustomElements, mountVideoPlayerOnCustomElements } from "@/customElementsMount"
+import { CustomElementPayDownload, CustomElementPayRead, CustomElementVideoPlayer } from "@/customElements"
+import { mountPayContentOnCustomElements, mountVideoPlayerOnCustomElements } from "@/customElementsMount"
 import { copyText } from "@/utils/clipboard"
 import { shiftArray } from "@/utils/img"
 import { MessageUtil } from "@/utils/message"
@@ -331,7 +332,8 @@ watch(
 
                 // 挂载自定义元素
                 mountVideoPlayerOnCustomElements(previewRef.value as HTMLElement, CustomElementVideoPlayer)
-                mountPayReadOnCustomElements(previewRef.value as HTMLElement, CustomElementPayRead)
+                mountPayContentOnCustomElements(previewRef.value as HTMLElement, CustomElementPayDownload, PayType.Download)
+                mountPayContentOnCustomElements(previewRef.value as HTMLElement, CustomElementPayRead, PayType.Read)
             })
         }
     },
