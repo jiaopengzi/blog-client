@@ -20,7 +20,7 @@
             </div>
             <div class="text-vip">升级为 VIP 可免费查看(除特定内容外)所有内容。</div>
             <div>
-                <el-button class="pay-single" @click="paySingle">立即支付</el-button>
+                <el-button class="pay-single" @click="paySingle">立即购买</el-button>
                 <el-button class="pay-vip" @click="payVIP">升级VIP</el-button>
             </div>
         </div>
@@ -73,10 +73,13 @@ stateManager.updateState(markdown)
     margin: 20px 0;
 
     .lock {
-        font-size: 14px;
         position: absolute;
         top: 8px;
         left: 8px;
+    }
+    .my-icon {
+        fill: #c1401f;
+        font-size: 14px;
     }
 
     .text,
@@ -87,17 +90,12 @@ stateManager.updateState(markdown)
         margin: 4px 0;
     }
 
-    .my-icon {
-        fill: #c1401f;
-        font-size: 16px;
-    }
-
     .price {
         font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
         color: #c1401f;
         font-weight: 700;
         font-size: 1.2em;
-        margin: 0 2px;
+        margin: 0 4px;
     }
 
     .pay-single,
