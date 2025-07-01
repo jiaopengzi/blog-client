@@ -79,7 +79,7 @@ import "vue3-emoji-picker/css"
 import { useTemplateRef, watch } from "vue"
 
 import EditorCodemirror, { type CodemirrorRef } from "./components/codemirror"
-import HtmlPreview from "./components/preview"
+import HtmlPreview from "./components/preview/index.vue" // 避免编译报错
 import EditorToc from "./components/toc"
 import Toolbar from "./components/toolbar"
 import { useCodemirror, usePreview, useToolbar } from "./hooks"

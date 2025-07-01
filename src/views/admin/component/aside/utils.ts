@@ -154,6 +154,10 @@ export const adminMenuItemMap: AdminMenuItemMap = {
         text: "优惠券",
         parentIndex: RouteNamesAdmin.Shop,
     },
+    [RouteNamesAdmin.PayConfig]: {
+        text: "支付配置",
+        parentIndex: RouteNamesAdmin.Shop,
+    },
     // [RouteNamesAdmin.ShortLink]: {
     //     text: "短连接",
     //     icon: {

@@ -44,6 +44,29 @@ export interface FooterInfo {
     right?: FooterRightInfo
 }
 
+// 微信支付配置
+export interface WeChatPayConf {
+    mch_id: string // 商户号
+    mch_certificate_serial_number: string // 商户证书序列号
+    mch_private_key: string // 商户私钥
+    app_id: string // 应用ID
+    api_v3_key: string // APIv3密钥
+    notify_url: string // 支付结果通知地址
+    refund_notify_url: string // 退款结果通知地址
+    enabled: boolean // 是否启用微信支付
+}
+
+// 支付宝支付配置
+export interface AliPayConf {
+    app_id: string // 支付宝应用ID
+    pid: string // 支付宝商户ID
+    private_key: string // 支付宝商户私钥
+    public_key: string // 支付宝公钥
+    notify_url: string // 支付结果通知地址
+    refund_url: string // 退款结果通知地址
+    enabled: boolean // 是否启用支付宝支付
+}
+
 // 网站配置选项
 export interface OptionsStore {
     app_options: GetAPPOptionResponse
@@ -54,6 +77,8 @@ export interface OptionsStore {
     navObj: Record<string, NavItemProps>
     navActiveIndex: string
     ipInfo: IpInfoRes
+    wechatPayData: WeChatPayConf
+    alipayData: AliPayConf
 }
 
 // 创建一个空的选项存储
@@ -67,6 +92,8 @@ function createEmptyOptionsStore(): OptionsStore {
         navObj: {},
         navActiveIndex: "",
         ipInfo: {} as IpInfoRes,
+        wechatPayData: {} as WeChatPayConf,
+        alipayData: {} as AliPayConf,
     }
 }
 
@@ -183,6 +210,12 @@ export const useOptionsStore = defineStore("options", {
 
                 // footer格式化后存储本地
                 this.footer = await formatFooterInfo(this.app_options)
+
+                // 更新微信支付配置
+                this.wechatPayData = await formatPayInfo(this.app_options.pay_wechat_config?.value)
+
+                // 更新支付宝支付配置
+                this.alipayData = await formatPayInfo(this.app_options.pay_alipay_config?.value)
 
                 this.isLoadedOptions = true
             }
@@ -353,6 +386,12 @@ const formatNavObj = async (navList: NavItemProps[]): Promise<Record<string, Nav
     localStorage.setItem(LocalStorageKey.OptionsNavObj, JSON.stringify(navObj))
 
     return navObj
+}
+
+// 将支付配置信息字符串转换为对象（泛型版本）
+const formatPayInfo = async <T>(str: string | undefined | null): Promise<T> => {
+    if (!str) return {} as T
+    return JSON.parse(str) as T
 }
 
 // 允许开发环境下进行热更新 HMR(Hot Module Replacement)

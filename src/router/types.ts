@@ -68,6 +68,7 @@ export enum RouteNamesAdmin {
     Order = "order",
     Membership = "membership",
     Coupon = "coupon",
+    PayConfig = "pay-config",
     // ShortLink = "short-link",
     // ShortLinkAll = "short-link-all",
     // ShortLinkAdd = "short-link-add",

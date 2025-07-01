@@ -129,6 +129,10 @@ export interface GetAPPOptionResponse {
     subscribe_member_expire_to_user: APPOptionItem // 会员即将到期通知用户
     subscribe_member_expired_to_admin: APPOptionItem // 会员已到期通知管理员
     subscribe_member_expired_to_user: APPOptionItem // 会员已到期通知用户
+
+    // 支付相关
+    pay_wechat_config: APPOptionItem // 支付配置
+    pay_alipay_config: APPOptionItem // 支付宝支付配置
 }
 
 // 获取网站配置

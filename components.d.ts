@@ -37,7 +37,6 @@ declare module 'vue' {
     CommonMonthArchive: typeof import('./src/components/common/month-archive/index.vue')['default']
     CommonNavItem: typeof import('./src/components/common/nav-item/index.vue')['default']
     CommonPayContent: typeof import('./src/components/common/pay-content/index.vue')['default']
-    CommonPayRead: typeof import('./src/components/common/pay-read/index.vue')['default']
     CommonPosterShare: typeof import('./src/components/common/poster-share/index.vue')['default']
     CommonPostItemAside: typeof import('./src/components/common/post-item-aside/index.vue')['default']
     CommonPostItemMain: typeof import('./src/components/common/post-item-main/index.vue')['default']
