@@ -1,9 +1,9 @@
 <!--
- * FilePath    : blog-client\src\views\admin\component\main\app-option\index.vue
+ * FilePath    : blog-client\src\views\admin\component\main\pay-config\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 网站选项
+ * Description : 支付配置
 -->
 
 <template>
@@ -14,7 +14,7 @@
             ref="wechatPayFormRef"
             title="微信支付配置"
             :form-data="wechatPayData"
-            :rules="rules"
+            :rules="wechatRules"
             :form-items="wechatPayFormItems"
             :label-width="200"
             :form-width="800"
@@ -24,7 +24,7 @@
             ref="alipayFormRef"
             title="支付宝配置"
             :form-data="alipayData"
-            :rules="rules"
+            :rules="alipayRules"
             :form-items="alipayFormItems"
             :label-width="200"
             :form-width="800"
@@ -36,18 +36,17 @@
 <script lang="ts" setup>
 import { useHead } from "@unhead/vue"
 import type { FormRules } from "element-plus"
-import { storeToRefs } from "pinia"
-import { reactive, useTemplateRef } from "vue"
+import { computed, type ComputedRef, onBeforeMount, ref, useTemplateRef } from "vue"
 
-import { OptionType } from "@/api/common"
 import { handleResErr, ResponseCode } from "@/api/response"
-import { type UpdateAPPOption, updateAPPOptionAPI, type UpdateAPPOptionRequest } from "@/api/setting/updateAPPOption"
+import { type AliPayConf, getPayConfigAPI, type GetPayConfigResponse, type WeChatPayConf } from "@/api/setting/getPayConfig"
+import { updatePayConfigAPI, type UpdatePayConfigRequest } from "@/api/setting/updatePayConfig"
 import { RouteNames } from "@/router"
 import { useOptionsStore } from "@/stores/options" // 网站配置选项
 import { MessageUtil } from "@/utils/message"
 import { adminMenuItemMap } from "@/views/admin/component/aside"
 
-import BaseForm, { type FormRef, type FormView, type KeyofFormView } from "./base"
+import BaseForm, { type FormRef } from "./base"
 
 defineOptions({ name: RouteNames.PayConfig })
 
@@ -61,68 +60,109 @@ const optionsStore = useOptionsStore()
 const wechatPayFormRef = useTemplateRef<FormRef>("wechatPayFormRef")
 const alipayFormRef = useTemplateRef<FormRef>("alipayFormRef")
 
-const { wechatPayData, alipayData } = storeToRefs(optionsStore)
+const wechatPayData = ref<WeChatPayConf>({} as WeChatPayConf)
+const alipayData = ref<AliPayConf>({} as AliPayConf)
 
+// 微信支付表单项
 const wechatPayFormItems = [
+    { label: "启用微信支付", prop: "enabled", isCheckbox: true },
     { label: "商户号", prop: "mch_id", type: "text", placeholder: "请输入商户号" },
     { label: "商户证书序列号", prop: "mch_certificate_serial_number", type: "text", placeholder: "请输入商户证书序列号" },
     { label: "商户私钥", prop: "mch_private_key", type: "textarea", placeholder: "请输入商户私钥" },
     { label: "应用ID", prop: "app_id", type: "text", placeholder: "请输入应用ID" },
-    { label: "APIv3密钥", prop: "api_v3_key", type: "text", placeholder: "请输入APIv3密钥" },
+    { label: "APIv3密钥", prop: "api_v3_key", type: "password", placeholder: "请输入APIv3密钥" },
     { label: "支付结果通知地址", prop: "notify_url", type: "text", placeholder: "请输入支付结果通知地址" },
-    { label: "退款结果通知地址", prop: "refund_notify_url", type: "text", placeholder: "请输入退款结果通知地址" },
-    { label: "启用微信支付", prop: "enabled", isCheckbox: true },
+    { label: "退款结果通知地址", prop: "refund_url", type: "text", placeholder: "请输入退款结果通知地址" },
 ]
 
+// 支付宝表单项
 const alipayFormItems = [
+    { label: "启用支付宝支付", prop: "enabled", isCheckbox: true },
     { label: "支付宝应用ID", prop: "app_id", type: "text", placeholder: "请输入支付宝应用ID" },
     { label: "支付宝商户ID", prop: "pid", type: "text", placeholder: "请输入支付宝商户ID" },
     { label: "支付宝商户私钥", prop: "private_key", type: "textarea", placeholder: "请输入支付宝商户私钥" },
     { label: "支付宝公钥", prop: "public_key", type: "textarea", placeholder: "请输入支付宝公钥" },
     { label: "支付结果通知地址", prop: "notify_url", type: "text", placeholder: "请输入支付结果通知地址" },
     { label: "退款结果通知地址", prop: "refund_url", type: "text", placeholder: "请输入退款结果通知地址" },
-    { label: "启用支付宝支付", prop: "enabled", isCheckbox: true },
 ]
 
+// 表单验证规则（根据 enabled 状态动态设置必填项）
+
+// 动态生成微信支付规则
+const wechatRules: ComputedRef<FormRules> = computed(() => {
+    if (!wechatPayFormRef.value) {
+        return {}
+    }
+    const enabled = wechatPayFormRef.value.formDataResult.enabled
+    return {
+        mch_id: [{ required: !!enabled, message: "请输入商户号", trigger: "change" }],
+        mch_certificate_serial_number: [{ required: !!enabled, message: "请输入商户证书序列号", trigger: "change" }],
+        mch_private_key: [{ required: !!enabled, message: "请输入商户私钥", trigger: "change" }],
+        app_id: [{ required: !!enabled, message: "请输入应用ID", trigger: "change" }],
+        api_v3_key: [{ required: !!enabled, message: "请输入APIv3密钥", trigger: "change" }],
+        notify_url: [{ required: !!enabled, message: "请输入支付结果通知地址", trigger: "change" }],
+        refund_url: [{ required: !!enabled, message: "请输入退款结果通知地址", trigger: "change" }],
+    }
+})
+
+// 动态生成支付宝规则
+const alipayRules: ComputedRef<FormRules> = computed(() => {
+    if (!alipayFormRef.value) {
+        return {}
+    }
+    const enabled = alipayFormRef.value.formDataResult.enabled
+    return {
+        app_id: [{ required: !!enabled, message: "请输入支付宝应用ID", trigger: "change" }],
+        pid: [{ required: !!enabled, message: "请输入支付宝商户ID", trigger: "change" }],
+        private_key: [{ required: !!enabled, message: "请输入支付宝商户私钥", trigger: "change" }],
+        public_key: [{ required: !!enabled, message: "请输入支付宝公钥", trigger: "change" }],
+        notify_url: [{ required: !!enabled, message: "请输入支付结果通知地址", trigger: "change" }],
+        refund_url: [{ required: !!enabled, message: "请输入退款结果通知地址", trigger: "change" }],
+    }
+})
+
+// 提交表单
 const submitForm = async () => {
-    // 校验表单
-    if (wechatPayFormRef.value) {
-        if (!(await wechatPayFormRef.value.validateForm())) {
-            return
-        }
+    if (!wechatPayFormRef.value || !alipayFormRef.value) {
+        return
     }
+
     // 校验表单
-    if (alipayFormRef.value) {
-        if (!(await alipayFormRef.value.validateForm())) {
-            return
-        }
+    if (!(await wechatPayFormRef.value.validateForm())) {
+        return
     }
-    const reqList: UpdateAPPOption[] = []
-    const wechatPayDataTar = JSON.stringify(wechatPayFormRef.value?.formDataResult)
-    const aliPayDataTar = JSON.stringify(alipayFormRef.value?.formDataResult)
+    if (!(await alipayFormRef.value.validateForm())) {
+        return
+    }
 
-    reqList.push({
-        key: "pay_wechat_config",
-        value: wechatPayDataTar ? wechatPayDataTar.toString() : "",
-        type: OptionType.JSON,
-    })
-    reqList.push({
-        key: "pay_alipay_config",
-        value: aliPayDataTar ? aliPayDataTar.toString() : "",
-        type: OptionType.JSON,
-    })
+    // 构造请求数据
+    const req: UpdatePayConfigRequest = {
+        wechat_pay: wechatPayFormRef.value.formDataResult as WeChatPayConf,
+        alipay: alipayFormRef.value.formDataResult as AliPayConf,
+    }
 
-    const req = { options: reqList } as UpdateAPPOptionRequest
-    const res = await updateAPPOptionAPI(req)
-    if (res.data.code === ResponseCode.UpdateAPPOptionSuccess) {
+    const res = await updatePayConfigAPI(req)
+    if (res.data.code === ResponseCode.PayConfigUpdateSuccess) {
         optionsStore.update(true) // 强制刷新
         MessageUtil.success("更新成功")
+    } else if (res.data.code === ResponseCode.PayConfigNoUpdate) {
+        MessageUtil.warning("当前支付配置未修改，无需更新")
     } else {
         MessageUtil.error(handleResErr(res), 10000)
     }
 }
 
-const rules = reactive<FormRules<FormView>>({})
+onBeforeMount(async () => {
+    // 获取支付配置
+    const res = await getPayConfigAPI()
+    if (res.data.code === ResponseCode.GetPayConfigSuccess) {
+        const data = res.data.data as GetPayConfigResponse
+        wechatPayData.value = data.wechat_pay as WeChatPayConf
+        alipayData.value = data.alipay as AliPayConf
+    } else {
+        MessageUtil.error(handleResErr(res), 10000)
+    }
+})
 </script>
 
 <style lang="scss" scoped>

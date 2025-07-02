@@ -130,6 +130,10 @@ export enum ResponseCode {
     UploadConfigError = 2316, // 上传配置错误
     GetAPPOptionSuccess = 2317, // 获取网站配置成功
     UpdateAPPOptionSuccess = 2318, // 更新网站配置成功
+    PayConfigNoUpdate = 2319, // 支付配置未更新
+    PayConfigUpdateSuccess = 2320, // 更新支付配置成功
+    GetPayConfigSuccess = 2321, // 获取支付配置成功
+    GetPayConfigStatusSuccess = 2322, // 获取支付配置状态成功
 
     // 评论相关
     CommentStatusClose = 2400, // 评论关闭

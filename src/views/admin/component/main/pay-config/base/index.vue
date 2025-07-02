@@ -1,9 +1,9 @@
 <!--
- * FilePath    : blog-client\src\views\admin\component\main\app-option\base\index.vue
+ * FilePath    : blog-client\src\views\admin\component\main\pay-config\base\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 网站选项基础组件
+ * Description : 支付配置基础组件
 -->
 
 <template>
@@ -24,6 +24,14 @@
         <template v-for="(item, index) in formItems" :key="index">
             <el-form-item :label="item.label" :prop="item.prop">
                 <el-checkbox v-if="item.isCheckbox" v-model="formDataResult[item.prop as KeyofFormView]" />
+                <el-input
+                    v-else-if="item.type === 'password'"
+                    v-model="formDataResult[item.prop as KeyofFormView]"
+                    :type="item.type"
+                    :placeholder="item.placeholder"
+                    show-password
+                    clearable
+                />
                 <el-input v-else v-model="formDataResult[item.prop as KeyofFormView]" :type="item.type" :placeholder="item.placeholder" clearable />
             </el-form-item>
         </template>

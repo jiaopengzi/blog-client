@@ -17,7 +17,7 @@ export interface GetEmailResponse {
     password: string
 }
 
-// 获取数据库信息
+// 获取邮箱信息
 export function getEmailAPI(): ResPromise<Res<GetEmailResponse>> {
     const urlStr = routerGroup + "/setting/get-email"
     return request({
