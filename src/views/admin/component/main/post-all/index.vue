@@ -190,9 +190,9 @@ const cols: TableColumn[] = reactive([
     },
     {
         prop: "price",
-        label: "价格",
+        label: "价格(元)",
         sortable: true,
-        minWidth: 80,
+        minWidth: 100,
         align: "center",
     },
     {

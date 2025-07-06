@@ -68,7 +68,7 @@ export function useEdit(
                     postInfoForm.seo_description = data.seo_description
                     postInfoForm.seo_keywords = data.seo_keywords
                     postInfoForm.thumbnail = data.thumbnail
-                    postInfoForm.price = (Number(data.price) / 100).toString()
+                    postInfoForm.price = parseFloat((parseFloat(data.price) / 100).toFixed(2))
                     postInfoForm.slug = data.slug
                     postInfoForm.pay_roles = data.pay_roles
                     postInfoForm.comment_status = data.comment_status

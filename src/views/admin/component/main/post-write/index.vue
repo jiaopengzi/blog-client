@@ -86,7 +86,11 @@
                 </el-form-item>
 
                 <el-form-item label="销售价格 为空则为免费。" prop="price">
-                    <el-input v-model="postInfoForm.price" />
+                    <el-input-number class="input-number" v-model="postInfoForm.price" :min="0" :precision="2" :step="0.01" placeholder="请输入价格(元)">
+                        <template #suffix>
+                            <span>元</span>
+                        </template>
+                    </el-input-number>
                 </el-form-item>
 
                 <el-form-item label="分类管理" prop="category_ids">
@@ -634,5 +638,9 @@ h4 {
     height: 100%;
     overflow: auto;
     position: relative;
+}
+
+.input-number {
+    width: 100%;
 }
 </style>

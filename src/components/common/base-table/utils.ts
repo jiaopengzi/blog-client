@@ -30,9 +30,9 @@ export function formatTableData<T extends FormatTableData>(
     const formatTableData = {
         ...tableData,
         // 使用 formatTime 进行格式化
-        created_at: created_at ? formatTime(created_at) : "",
-        updated_at: updated_at ? formatTime(updated_at) : "",
-        price: price ? Number(price) / 100 + "元" : "",
+        created_at: created_at ? formatTime(created_at) : "-",
+        updated_at: updated_at ? formatTime(updated_at) : "-",
+        price: price ? (parseFloat(price) / 100.0).toFixed(2) : "-", //分转成元
     } as T
 
     // 如果 thumbnail 不为空，添加 img 属性

@@ -28,12 +28,13 @@ export async function handleSubmit<T extends InsertPostRequest | UpdatePostReque
 
     await formEl.validate((valid, fields) => {
         if (valid) {
-            // 将 postInfoForm 解析到 InsertPostRequest
-            Object.assign(req, postInfoForm)
+            // 将 postInfoForm 解析到 InsertPostRequest，排除 price 字段
+            const { price, ...rest } = postInfoForm
+            Object.assign(req, rest)
 
-            // 价格需要乘以 100 以适应后端整数
-            if (req.price) {
-                req.price = (Number(req.price) * 100).toString()
+            // 价格需要乘以 100 以适应后端整数，并转换为 string
+            if (typeof price !== "undefined" && price !== null) {
+                req.price = (price * 100).toFixed(0).toString()
             }
 
             // 如果有时间则设置为有效
@@ -72,9 +73,6 @@ export async function handleSubmit<T extends InsertPostRequest | UpdatePostReque
             }
             if (req.comment_status === void 0) {
                 delete req.comment_status
-            }
-            if (req.price === "") {
-                delete req.price
             }
             if (req.seo_title === "") {
                 delete req.seo_title

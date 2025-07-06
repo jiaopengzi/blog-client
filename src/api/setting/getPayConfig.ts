@@ -25,8 +25,9 @@ export interface WeChatPayConf {
 export interface AliPayConf {
     app_id: string // 支付宝应用ID
     pid: string // 支付宝商户ID
-    private_key: string // 支付宝商户私钥
-    public_key: string // 支付宝公钥
+    merchant_private_key: string // 支付宝商户私钥
+    alipay_public_key: string // 支付宝公钥
+    gateway_url: string // 支付宝网关地址
     notify_url: string // 支付结果通知地址
     refund_url: string // 退款结果通知地址
     enabled: boolean // 是否启用支付宝支付

@@ -28,7 +28,7 @@ interface FormValidationOptions {
         post_status?: Ref<PostStatusCode> // 文章状态 0 草稿 1 待审核 2 私密 3 定时发布 4 已发布 5 过期 6 回收站
         post_password?: Ref<string | undefined> // 文章密码
         comment_status?: Ref<CommentStatusCode> // 评论是否开启 0 关闭 1 开启
-        price?: Ref<string | undefined> // 价格
+        price?: Ref<number | undefined> // 价格
         seo_title?: Ref<string | undefined> // SEO标题
         seo_keywords?: Ref<string | undefined> // SEO关键词
         seo_description?: Ref<string | undefined> // SEO描述

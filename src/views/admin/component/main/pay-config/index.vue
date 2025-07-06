@@ -78,10 +78,11 @@ const wechatPayFormItems = [
 // 支付宝表单项
 const alipayFormItems = [
     { label: "启用支付宝支付", prop: "enabled", isCheckbox: true },
-    { label: "支付宝应用ID", prop: "app_id", type: "text", placeholder: "请输入支付宝应用ID" },
-    { label: "支付宝商户ID", prop: "pid", type: "text", placeholder: "请输入支付宝商户ID" },
-    { label: "支付宝商户私钥", prop: "private_key", type: "textarea", placeholder: "请输入支付宝商户私钥" },
-    { label: "支付宝公钥", prop: "public_key", type: "textarea", placeholder: "请输入支付宝公钥" },
+    { label: "AppID", prop: "app_id", type: "text", placeholder: "请输入AppID" },
+    { label: "商户ID", prop: "pid", type: "text", placeholder: "请输入商户ID" },
+    { label: "商户私钥", prop: "merchant_private_key", type: "textarea", placeholder: "请输入商户私钥" },
+    { label: "支付宝公钥", prop: "alipay_public_key", type: "textarea", placeholder: "请输入支付宝公钥" },
+    { label: "网关地址", prop: "gateway_url", type: "text", placeholder: "请输入支付宝网关地址" },
     { label: "支付结果通知地址", prop: "notify_url", type: "text", placeholder: "请输入支付结果通知地址" },
     { label: "退款结果通知地址", prop: "refund_url", type: "text", placeholder: "请输入退款结果通知地址" },
 ]
@@ -112,10 +113,11 @@ const alipayRules: ComputedRef<FormRules> = computed(() => {
     }
     const enabled = alipayFormRef.value.formDataResult.enabled
     return {
-        app_id: [{ required: !!enabled, message: "请输入支付宝应用ID", trigger: "change" }],
-        pid: [{ required: !!enabled, message: "请输入支付宝商户ID", trigger: "change" }],
-        private_key: [{ required: !!enabled, message: "请输入支付宝商户私钥", trigger: "change" }],
-        public_key: [{ required: !!enabled, message: "请输入支付宝公钥", trigger: "change" }],
+        app_id: [{ required: !!enabled, message: "请输入AppID", trigger: "change" }],
+        pid: [{ required: !!enabled, message: "请输入商户ID", trigger: "change" }],
+        merchant_private_key: [{ required: !!enabled, message: "请输入商户私钥", trigger: "change" }],
+        alipay_public_key: [{ required: !!enabled, message: "请输入支付宝公钥", trigger: "change" }],
+        gateway_url: [{ required: !!enabled, message: "请输入支付宝网关地址", trigger: "change" }],
         notify_url: [{ required: !!enabled, message: "请输入支付结果通知地址", trigger: "change" }],
         refund_url: [{ required: !!enabled, message: "请输入退款结果通知地址", trigger: "change" }],
     }

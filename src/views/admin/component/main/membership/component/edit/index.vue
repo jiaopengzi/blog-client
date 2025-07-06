@@ -39,6 +39,7 @@ const submitData = async (form: ViewForm) => {
     const req: UpdateMembershipRequest = {
         id: form.id ? form.id.toString() : "",
         role: form.role, // 会员角色
+        price: (parseFloat(form.price) * 100).toFixed(0), // 价格(分)
         duration_time: form.duration_time?.toString(), // 有效时间
         purchase_discount: form.purchase_discount, // 购买折扣
         download_count: form.download_count, // 下载次数

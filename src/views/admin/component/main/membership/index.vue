@@ -133,6 +133,13 @@ const cols: TableColumn[] = reactive([
         },
     },
     {
+        prop: "price",
+        label: "价格(元)",
+        sortable: true,
+        minWidth: 120,
+        align: "center",
+    },
+    {
         prop: "duration_time",
         label: "有效时间(秒)",
         sortable: true,
@@ -244,6 +251,7 @@ const handleMembershipCountByGroup = async (item: MembershipCountGroupItem) => {
 // 需要编辑的用户ID
 const editData = reactive<ViewForm>({
     id: "",
+    price: "", // 价格(元)
     role: "",
     duration_time: "0", // 有效时间(0表示永久有效)
     purchase_discount: 0, // 购买折扣(0-100)
@@ -256,6 +264,9 @@ const editRow = (index: number, row: TableData) => {
     }
     if ("role" in row) {
         editData.role = row.role
+    }
+    if ("price" in row) {
+        editData.price = row.price
     }
     if ("duration_time" in row) {
         editData.duration_time = row.duration_time

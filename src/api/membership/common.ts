@@ -30,6 +30,7 @@ export const getMembershipStatusOptions = () => {
 
 export interface InsertMembershipRequest {
     role: string // 会员角色
+    price?: string // 价格(分)
     duration_time?: string // 有效时间(秒), 0表示永久有效
     purchase_discount?: number // 购买折扣 0-100
     download_count?: number // 下载次数
@@ -48,6 +49,7 @@ export interface MembershipRes extends DataWithImg {
     created_at: string // 创建时间
     updated_at: string // 更新时间
     role: string // 会员角色
+    price: string // 价格(分)
     duration_time: string // 有效时间(秒), 0表示永久有效
     purchase_discount: number // 购买折扣 0-100
     download_count: number // 下载次数

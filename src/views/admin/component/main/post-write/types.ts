@@ -22,7 +22,7 @@ export interface UpsertPostForm {
     post_status: PostStatusCode // 文章状态 0 草稿 1 待审核 2 私密 3 定时发布 4 已发布 5 过期 6 回收站
     post_password: string // 文章密码
     comment_status: CommentStatusCode // 评论是否开启 0 关闭 1 开启
-    price: string // 价格
+    price: number // 价格
     seo_title: string // SEO标题
     seo_keywords: string // SEO关键词
     seo_description: string // SEO描述

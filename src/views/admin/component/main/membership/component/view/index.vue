@@ -18,13 +18,13 @@
             :size="formSize"
             status-icon
         >
-            <el-form-item v-if="isShowId" label="ID" prop="id">
+            <el-form-item v-if="isShowId" label="ID" prop="id" size="default">
                 <el-input v-model="viewDataAc.id" disabled />
             </el-form-item>
             <el-form-item label="会员角色" prop="role">
                 <el-input v-model="viewDataAc.role" placeholder="请输入会员角色" class="role" />
             </el-form-item>
-            <el-form-item label="有效时间" prop="duration_time">
+            <el-form-item label="有效时间" prop="duration_time" size="default">
                 <el-input-number class="input-number" v-model="viewDataAc.duration_time" :min="0">
                     <template #suffix>
                         <span>秒</span>
@@ -36,7 +36,14 @@
                     }}</el-button>
                 </div>
             </el-form-item>
-            <el-form-item label="购买折扣" prop="purchase_discount">
+            <el-form-item label="价格" prop="price" size="default">
+                <el-input-number class="input-number" v-model="viewDataAc.price" :min="0" :precision="2" :step="0.01" placeholder="请输入价格(元)">
+                    <template #suffix>
+                        <span>元</span>
+                    </template>
+                </el-input-number>
+            </el-form-item>
+            <el-form-item label="购买折扣" prop="purchase_discount" size="default">
                 <el-input-number class="input-number" v-model="viewDataAc.purchase_discount" :min="0" :max="100" placeholder="请输入购买折扣(0-100)">
                     <template #suffix>
                         <span>%</span>
@@ -48,20 +55,20 @@
                     <p class="discount-description-item">示例2：原价100，购买折扣：0%，会员购买价格 = 100 * 0% = 0；即免费。</p>
                 </div>
             </el-form-item>
-            <el-form-item label="下载次数" prop="download_count">
+            <el-form-item label="下载次数" prop="download_count" size="default">
                 <el-input-number class="input-number" v-model="viewDataAc.download_count" :min="0" placeholder="请输入下载次数" />
             </el-form-item>
-            <el-form-item label="观看次数" prop="watch_count">
+            <el-form-item label="观看次数" prop="watch_count" size="default">
                 <el-input-number class="input-number" v-model="viewDataAc.watch_count" :min="0" placeholder="请输入观看次数" />
             </el-form-item>
-            <el-form-item label="是否启用" prop="status">
+            <el-form-item label="是否启用" prop="status" size="default">
                 <el-radio-group v-model="viewDataAc.status">
                     <el-radio v-for="item in optionsStatus" :key="item.value" :value="item.value">
                         {{ MembershipStatusDisplay[item.value] }}
                     </el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="描述" prop="description">
+            <el-form-item label="描述" prop="description" size="default">
                 <el-input v-model="viewDataAc.description" type="textarea" placeholder="请输入描述信息" :rows="5" />
             </el-form-item>
         </el-form>

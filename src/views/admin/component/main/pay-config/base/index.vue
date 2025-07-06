@@ -40,7 +40,7 @@
 
 <script lang="ts" setup>
 import type { FormInstance, FormRules } from "element-plus"
-import { reactive, useTemplateRef } from "vue"
+import { reactive, useTemplateRef, watch } from "vue"
 
 import type { FormView, KeyofFormView } from "./types"
 
@@ -64,6 +64,15 @@ const { title, formData, rules, formItems, formWidth, labelWidth } = defineProps
 const formRef = useTemplateRef<FormInstance>("formRef")
 
 const formDataResult = reactive<FormView>(formData)
+
+// 监听 formData 的变化，更新 formDataResult
+watch(
+    () => formData,
+    (newData) => {
+        Object.assign(formDataResult, newData)
+    },
+    { deep: true, immediate: true },
+)
 
 defineExpose({
     formDataResult,
