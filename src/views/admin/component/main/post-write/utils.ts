@@ -20,7 +20,7 @@ export function createEmptyUpsertPostForm(): UpsertPostForm {
         post_status: PostStatusCode.Draft,
         post_password: "",
         comment_status: CommentStatusCode.Open,
-        price: "",
+        price: 0,
         seo_title: "",
         seo_keywords: "",
         seo_description: "",

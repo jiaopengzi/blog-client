@@ -21,7 +21,8 @@ interface FormValidationOptions {
     form: {
         id?: Ref<string | undefined> // ID
         role?: Ref<string> // 会员角色
-        duration_time?: Ref<string | undefined> // 有效时间(秒), 0表示永久有效
+        price?: Ref<number | undefined> // 价格
+        duration_time?: Ref<number | undefined> // 有效时间(秒), 0表示永久有效
         purchase_discount?: Ref<number | undefined> // 购买折扣 0-100
         download_count?: Ref<number | undefined> // 下载次数
         watch_count?: Ref<number | undefined> // 观看次数

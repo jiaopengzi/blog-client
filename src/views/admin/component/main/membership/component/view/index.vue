@@ -132,7 +132,7 @@ const timeItems: TimeItem[] = [
 ]
 // 点击时间按钮
 const handleClickTimeItem = (item: TimeItem) => {
-    viewDataAc.duration_time = item.value.toString() // 设置有效时间
+    viewDataAc.duration_time = item.value // 设置有效时间
 }
 
 // hooks

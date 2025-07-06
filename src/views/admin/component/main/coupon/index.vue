@@ -112,6 +112,7 @@ const cols: TableColumn[] = reactive([
         sortable: true,
         minWidth: 150,
         align: "center",
+        isHeading: true,
     },
     {
         prop: "discount_type",
@@ -264,7 +265,7 @@ const editData = reactive<ViewForm>({
         Valid: false,
     },
     status: CouponStatus.Disabled,
-    amount: "",
+    amount: 0,
     is_stackable: CouponStackable.Disabled, // 默认禁用叠加
 })
 
@@ -284,8 +285,8 @@ const editRow = (index: number, row: TableData) => {
     if ("amount" in row) {
         const amount =
             row.discount_type === CouponDiscountType.FixedAmount
-                ? (Number(row.amount) / 100).toString() // 将金额转换为元
-                : row.amount.toString() // 折扣类型不需要转换
+                ? row.amount / 100 // 将金额转换为元
+                : row.amount // 折扣类型不需要转换
         editData.amount = amount
     }
     if ("expire_time" in row && row.expire_time.Valid) {
@@ -297,22 +298,22 @@ const editRow = (index: number, row: TableData) => {
         }
     }
     if ("min_spend" in row) {
-        editData.min_spend = (Number(row.min_spend) / 100).toString()
+        editData.min_spend = row.min_spend / 100
     }
     if ("max_spend" in row) {
-        editData.max_spend = (Number(row.max_spend) / 100).toString()
+        editData.max_spend = row.max_spend / 100
     }
     if ("is_stackable" in row) {
         editData.is_stackable = row.is_stackable
     }
     if ("use_limit" in row) {
-        editData.use_limit = row.use_limit.toString()
+        editData.use_limit = row.use_limit
     }
     if ("used_count" in row) {
-        editData.used_count = row.used_count.toString()
+        editData.used_count = row.used_count
     }
     if ("use_limit_per_user" in row) {
-        editData.use_limit_per_user = row.use_limit_per_user.toString()
+        editData.use_limit_per_user = row.use_limit_per_user
     }
     if ("status" in row) {
         editData.status = row.status as CouponStatus

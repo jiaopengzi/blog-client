@@ -31,8 +31,8 @@ const emit = defineEmits<{
 // 表单数据
 const addForm = reactive<ViewForm>({
     role: "", // 会员角色
-    price: "", // 价格(元)
-    duration_time: "0", // 有效时间(0表示永久有效)
+    price: 0, // 价格(元)
+    duration_time: 0, // 有效时间(0表示永久有效)
     purchase_discount: 0, // 购买折扣(0-100)
     status: MembershipStatus.Disabled, // 状态
 })
@@ -45,7 +45,7 @@ const submitData = async (form: ViewForm) => {
     // 将价格从元转换为分
     const req: InsertMembershipRequest = {
         role: form.role, // 会员角色
-        price: (parseFloat(form.price) * 100).toFixed(0), // 价格(分)
+        price: (form.price * 100).toFixed(0), // 价格(分)
         duration_time: form.duration_time?.toString(), // 有效时间
         purchase_discount: form.purchase_discount, // 购买折扣
         download_count: form.download_count, // 下载次数

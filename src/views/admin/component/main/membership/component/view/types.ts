@@ -11,8 +11,8 @@ import { MembershipStatus } from "@/api/membership/common"
 export interface ViewForm {
     id?: string // ID
     role: string // 会员角色
-    price: string // 价格
-    duration_time: string // 有效时间(秒), 0表示永久有效
+    price: number // 价格
+    duration_time: number // 有效时间(秒), 0表示永久有效
     purchase_discount: number // 购买折扣 0-100
     download_count?: number // 下载次数
     watch_count?: number // 观看次数

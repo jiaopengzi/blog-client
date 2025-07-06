@@ -112,6 +112,7 @@ const cols: TableColumn[] = reactive([
         sortable: true,
         minWidth: 150,
         align: "center",
+        isHeading: true,
     },
     {
         prop: "created_at",
@@ -251,9 +252,9 @@ const handleMembershipCountByGroup = async (item: MembershipCountGroupItem) => {
 // 需要编辑的用户ID
 const editData = reactive<ViewForm>({
     id: "",
-    price: "", // 价格(元)
+    price: 0, // 价格(元)
     role: "",
-    duration_time: "0", // 有效时间(0表示永久有效)
+    duration_time: 0, // 有效时间(0表示永久有效)
     purchase_discount: 0, // 购买折扣(0-100)
     status: MembershipStatus.Disabled,
 })
@@ -266,10 +267,10 @@ const editRow = (index: number, row: TableData) => {
         editData.role = row.role
     }
     if ("price" in row) {
-        editData.price = row.price
+        editData.price = parseFloat(row.price) // 价格(元)
     }
     if ("duration_time" in row) {
-        editData.duration_time = row.duration_time
+        editData.duration_time = parseInt(row.duration_time)
     }
     if ("purchase_discount" in row) {
         editData.purchase_discount = row.purchase_discount
