@@ -30,7 +30,7 @@ async function poll(streams: StreamInfo[], startTime: number, pollingTime: numbe
 
     // 构造请求参数
     const req: StreamsStatusRequest = {
-        items: streams,
+        stream_items: streams,
     }
 
     // 发送请求

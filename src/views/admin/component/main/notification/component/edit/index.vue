@@ -71,7 +71,7 @@ const submitData = async (form: ViewForm) => {
 
     if (res.data.code === ResponseCode.NotificationUpdateSuccess) {
         // 轮询后端是否完成
-        await pollingGetStreamIDsStatus(res.data.data.items)
+        await pollingGetStreamIDsStatus(res.data.data.stream_items)
         btnLoading.value = false
 
         // 添加成功提示

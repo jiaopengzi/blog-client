@@ -16,12 +16,12 @@ export interface StreamInfo {
 }
 // StreamIds 请求参数
 export interface StreamsStatusRequest {
-    items: StreamInfo[]
+    stream_items: StreamInfo[]
 }
 
 // StreamsStatusRes 包含 stream_id 的响应
 export interface StreamsStatusRes {
-    items: StreamInfo[]
+    stream_items: StreamInfo[]
 }
 
 // StreamIds 状态

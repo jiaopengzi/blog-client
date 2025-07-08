@@ -164,7 +164,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         if (res.data.code === deleteResCode) {
             if (res.data.data && "items" in res.data.data) {
                 // 如果响应中包含 items，则轮询获取状态
-                await pollingGetStreamIDsStatus(res.data.data.items)
+                await pollingGetStreamIDsStatus(res.data.data.stream_items)
             }
 
             loadingDelete.value = false // 隐藏加载动画

@@ -515,7 +515,7 @@ const handlePostStatusOperation = async () => {
                     if (res.data.code === ResponseCode.PostStatusBatchOperationSuccess) {
                         const msg = res.data.msg + "，请稍后刷新页面查看最新数据"
                         // 轮询后端是否完成
-                        await pollingGetStreamIDsStatus(res.data.data.items)
+                        await pollingGetStreamIDsStatus(res.data.data.stream_items)
 
                         MessageUtil.success(msg, 3000)
                         await updatePaginate()

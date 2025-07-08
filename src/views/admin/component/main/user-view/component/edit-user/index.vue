@@ -308,7 +308,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
             if (data.code === ResponseCode.EditUserInfoByAdminSuccess) {
                 // 轮询后端是否完成
-                await pollingGetStreamIDsStatus(data.data.items)
+                await pollingGetStreamIDsStatus(data.data.stream_items)
                 btnLoading.value = false
 
                 // 添加成功提示
@@ -333,7 +333,7 @@ const updateAvatarToDB = async (avatarUrl: string) => {
     await setAvatarAPI(req).then(async (res) => {
         if (res.data.code === ResponseCode.SetAvatarSuccess) {
             // 轮询后端是否完成
-            await pollingGetStreamIDsStatus(res.data.data.items)
+            await pollingGetStreamIDsStatus(res.data.data.stream_items)
 
             // 更新用户信息
             await getUserInfo()

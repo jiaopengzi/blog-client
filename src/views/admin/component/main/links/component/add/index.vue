@@ -69,7 +69,7 @@ const submitData = async (form: ViewForm) => {
 
     if (data.code === ResponseCode.LinkInsertSuccess) {
         // 轮询后端是否完成
-        await pollingGetStreamIDsStatus(data.data.items)
+        await pollingGetStreamIDsStatus(data.data.stream_items)
         btnLoading.value = false
 
         // 添加成功提示

@@ -142,7 +142,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
             if (data.code === ResponseCode.UserAddUserSuccess) {
                 // 轮询后端是否完成
-                await pollingGetStreamIDsStatus(data.data.items)
+                await pollingGetStreamIDsStatus(data.data.stream_items)
                 btnLoading.value = false
 
                 // 添加成功提示
