@@ -29,6 +29,8 @@
                     @heading-show-current="handleHeadingShowCurrentAc"
                     @update-is-user-scroll="handleUpdateIsUserScrollPreview"
                     @commit-heading-map="updateHeadingMap"
+                    @pay-single="handlePaySingle"
+                    @pay-vip="handlePayVip"
                 />
                 <DetailBottomSame class="bottom-same" />
                 <DetailInteraction class="interaction-bottom" direction="horizontal" :items="interactionItems" @click-item="handleClickInteraction" />
@@ -73,6 +75,7 @@ import { type ViewPostByIDRequest } from "@/api/post/viewByID"
 import { type PostCategory } from "@/api/postCategory/view"
 import { type PostTag } from "@/api/postTag/view"
 import HeadTag from "@/components/common/head-tag"
+import { ContentPayType } from "@/components/common/pay-content"
 import PostMeta from "@/components/common/post-meta"
 import PosterShare from "@/components/common/poster-share"
 import type { EditorState } from "@/components/editor"
@@ -227,6 +230,16 @@ watch(
         await updatePostDetailAc(postId.value)
     },
 )
+
+// 处理支付单篇文章
+const handlePaySingle = (val: ContentPayType) => {
+    console.log("============>val", val)
+}
+
+// 处理支付成为 VIP
+const handlePayVip = (val: ContentPayType) => {
+    console.log("============>val", val)
+}
 
 // 是否首次加载
 const isFirstLoad = ref(true) // 是否首次加载

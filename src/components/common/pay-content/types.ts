@@ -6,14 +6,14 @@
  * Description : 付费内容类型
  */
 
-export enum PayType {
+export enum ContentPayType {
     Read = "read", // 付费阅读
     Download = "download", // 付费下载
 }
 
 export interface PayContentProps {
-    payType?: PayType // 支付类型
-    isPaid?: boolean // 是否付费阅读
+    content_pay_type?: ContentPayType // 内容费类型
+    is_paid?: boolean // 是否付费阅读
     price?: number // 价格
     markdown: string
 }

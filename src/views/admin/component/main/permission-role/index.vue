@@ -388,7 +388,7 @@ function getPermissionDescription(permissionName: PermissionNames) {
 
 // 初始化权限表格
 const initPermissionTable = () => {
-    const { roles, permission_role } = permissionRoleStore.getRoleList
+    const { roles, permission_role } = permissionRoleStore.getSystemRoles
     permissionRole.value = permission_role
     rolesList.value = roles.map((role: Role) => ({
         ...role,

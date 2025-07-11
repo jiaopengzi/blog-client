@@ -8,6 +8,7 @@
 
 import { acceptHMRUpdate, defineStore } from "pinia"
 
+import { getMembershipRolesAPI } from "@/api/membership/getRoles"
 import { getPermissionsAPI } from "@/api/permissionRole/getPermissions"
 import { hasPermissionAPI } from "@/api/permissionRole/hasPermission"
 import { getRolesAPI, type RoleWithLimit } from "@/api/permissionRole/role"
@@ -63,6 +64,7 @@ export interface Permission {
 export interface PermissionRoleStore {
     roles: RoleWithLimit
     permissionList: Permission[]
+    membershipRoles: string[] // 会员角色列表
     isLoadedPermissionRole: boolean
 }
 
@@ -71,6 +73,7 @@ function createEmptyPermissionRoleStore(): PermissionRoleStore {
     return {
         roles: {} as RoleWithLimit,
         permissionList: [],
+        membershipRoles: [],
         isLoadedPermissionRole: false,
     }
 }
@@ -79,14 +82,19 @@ export const usePermissionRoleStore = defineStore("permissionRole", {
     state: () => createEmptyPermissionRoleStore(),
 
     getters: {
-        // 获取网站配置
-        getRoleList(): RoleWithLimit {
+        // 获取系统角色列表
+        getSystemRoles(): RoleWithLimit {
             return this.roles
         },
 
         // 权限列表
         getPermissionList(): Permission[] {
             return this.permissionList
+        },
+
+        // 获取会员角色列表
+        getMembershipRoles(): string[] {
+            return this.membershipRoles
         },
 
         // 是否已加载
@@ -96,7 +104,7 @@ export const usePermissionRoleStore = defineStore("permissionRole", {
     },
 
     actions: {
-        // 获取网站配置, 参数为是否强制从服务器获取, 默认为false
+        // 参数为是否强制从服务器获取, 默认为false
         async update(is_get_from_server: boolean = false): Promise<void> {
             if (is_get_from_server) {
                 await this.updateFromServer()
@@ -107,12 +115,21 @@ export const usePermissionRoleStore = defineStore("permissionRole", {
         async updateFromServer(): Promise<void> {
             // 获取角色列表
             const resRole = await getRolesAPI()
+
             // 获取权限列表
             const resPermission = await getPermissionsAPI()
 
-            if (resRole.data.code === ResponseCode.GetRoleSuccess && resPermission.data.code === ResponseCode.GetPermissionSuccess) {
+            // 获取会员角色列表
+            const resRoleMembership = await getMembershipRolesAPI()
+
+            if (
+                resRole.data.code === ResponseCode.GetRoleSuccess &&
+                resPermission.data.code === ResponseCode.GetPermissionSuccess &&
+                resRoleMembership.data.code === ResponseCode.MembershipGetRolesSuccess
+            ) {
                 this.roles = resRole.data.data
                 this.permissionList = resPermission.data.data
+                this.membershipRoles = resRoleMembership.data.data
 
                 this.isLoadedPermissionRole = true
             }

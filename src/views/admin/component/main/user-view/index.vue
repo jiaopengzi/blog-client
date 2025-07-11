@@ -289,7 +289,7 @@ const rolesALL = ref<Role[]>([]) // 包含全部角色
 
 function getRoles() {
     const permissionRoleStore = usePermissionRoleStore()
-    const res = permissionRoleStore.getRoleList
+    const res = permissionRoleStore.getSystemRoles
     const newRole = { role_name: AllRoleName, permission_names: [], description: "全部" }
     roles.value = res.roles
     rolesALL.value = [newRole, ...res.roles]

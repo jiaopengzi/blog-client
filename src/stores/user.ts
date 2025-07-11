@@ -221,7 +221,7 @@ async function apiGetUserInfoByToken(): Promise<UserInfoStore> {
 
         // 获取角色列表
         const permissionRoleStore = usePermissionRoleStore()
-        const dataRole = permissionRoleStore.getRoleList
+        const dataRole = permissionRoleStore.getSystemRoles
 
         // 判断是否获取成功
         if (resUser.data.code === ResponseCode.UserGetInfoSuccess && dataRole.roles.length > 0) {

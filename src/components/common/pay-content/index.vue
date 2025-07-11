@@ -7,14 +7,14 @@
 -->
 
 <template>
-    <div v-if="!isPaid">
+    <div v-if="!is_paid">
         <div class="no-pay">
             <JIcon :name="IconKeys.Lock" :custom-class="`my-icon`" class="lock" />
-            <div class="text" v-if="payType === PayType.Read">
+            <div class="text" v-if="content_pay_type === ContentPayType.Read">
                 隐藏内容，付费<span class="price">{{ price }}</span
                 >元查看。
             </div>
-            <div class="text" v-if="payType === PayType.Download">
+            <div class="text" v-if="content_pay_type === ContentPayType.Download">
                 附件内容，付费<span class="price">{{ price }}</span
                 >元下载。
             </div>
@@ -26,33 +26,33 @@
         </div>
     </div>
     <div class="pay">
-        <div v-if="isPaid" v-html="stateManager.getState().html"></div>
+        <div v-if="is_paid" v-html="stateManager.getState().html"></div>
     </div>
 </template>
 <script lang="ts" setup>
 import JIcon, { IconKeys } from "@/components/common/icons"
 import { EditorStateManager } from "@/components/editor"
 
-import { type PayContentProps, PayType } from "./types.ts"
+import { ContentPayType, type PayContentProps } from "./types.ts"
 defineOptions({ name: "PayContent" })
 
 // 定义 props
-const { payType = PayType.Read, isPaid = false, price = 99, markdown } = defineProps<PayContentProps>()
+const { content_pay_type = ContentPayType.Read, is_paid = false, price = 99, markdown } = defineProps<PayContentProps>()
 
 // 事件
 const emit = defineEmits<{
-    (event: "pay-single", val: PayType): void
-    (event: "pay-vip", val: PayType): void
+    (event: "pay-single", val: ContentPayType): void
+    (event: "pay-vip", val: ContentPayType): void
 }>()
 
 // 支付单篇文章
 const paySingle = () => {
-    emit("pay-single", payType)
+    emit("pay-single", content_pay_type)
 }
 
 // 支付成为 VIP
 const payVIP = () => {
-    emit("pay-vip", payType)
+    emit("pay-vip", content_pay_type)
 }
 
 const stateManager = new EditorStateManager()

@@ -21,7 +21,7 @@ import { useIntersectionObserver } from "@vueuse/core"
 import { debounce } from "throttle-debounce"
 import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from "vue"
 
-import { PayType } from "@/components/common/pay-content"
+import { ContentPayType } from "@/components/common/pay-content"
 import { ScrollElementTagHeading } from "@/components/editor/command"
 import { CustomElementPayDownload, CustomElementPayRead, CustomElementVideoPlayer } from "@/customElements"
 import { mountPayContentOnCustomElements, mountVideoPlayerOnCustomElements } from "@/customElementsMount"
@@ -63,6 +63,8 @@ const emit = defineEmits<{
     (event: "heading-show-current", headingIndex: number): void // 当前标题索引
     (event: "update-is-user-scroll", val: boolean): void // 更新是否用户手动滚动预览
     (event: "commit-heading-map", val: Map<string, HeadingObject>): void // 提交标题 map
+    (event: "pay-vip", val: ContentPayType): void // vip 购买
+    (event: "pay-single", val: ContentPayType): void // 立即购买
 }>()
 
 const previewRef = useTemplateRef<HTMLElement | null>("previewRef")
@@ -317,6 +319,16 @@ const observeHeadings = () => {
     })
 }
 
+// 定义 payContent 组件的事件
+const payContentEmits = {
+    onPayVip: (val: ContentPayType) => {
+        emit("pay-vip", val)
+    },
+    onPaySingle: (val: ContentPayType) => {
+        emit("pay-single", val)
+    },
+}
+
 // 监控 html 变化, 获取所有的 h 标签 并挂载视频播放器
 watch(
     () => htmlData.value,
@@ -332,8 +344,8 @@ watch(
 
                 // 挂载自定义元素
                 mountVideoPlayerOnCustomElements(previewRef.value as HTMLElement, CustomElementVideoPlayer)
-                mountPayContentOnCustomElements(previewRef.value as HTMLElement, CustomElementPayDownload, PayType.Download)
-                mountPayContentOnCustomElements(previewRef.value as HTMLElement, CustomElementPayRead, PayType.Read)
+                mountPayContentOnCustomElements(previewRef.value as HTMLElement, CustomElementPayDownload, ContentPayType.Download, payContentEmits)
+                mountPayContentOnCustomElements(previewRef.value as HTMLElement, CustomElementPayRead, ContentPayType.Read, payContentEmits)
             })
         }
     },

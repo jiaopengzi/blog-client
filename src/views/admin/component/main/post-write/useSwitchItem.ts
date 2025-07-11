@@ -58,8 +58,10 @@ export function useSwitchItem(postInfoForm: UpsertPostForm) {
     // 初始化角色付费管理都为付费状态，后续根据后端数据进行修改
     const initRolePaidManagement = () => {
         const permissionRoleStore = usePermissionRoleStore()
+        permissionRoleStore.update(true) // 确保获取最新的角色数据
+
         // 首先从 系统角色列表 获取角色列表
-        const { roles: rolesSystem } = permissionRoleStore.getRoleList
+        const { roles: rolesSystem } = permissionRoleStore.getSystemRoles
         // 历遍 rolesSystem 构造 rolePaidList
         rolesSystem.forEach((role) => {
             const switchItem: SwitchItem = {
@@ -73,7 +75,22 @@ export function useSwitchItem(postInfoForm: UpsertPostForm) {
             rolePaidList.push(switchItem)
         })
 
-        // TODO 从商城角色列表获取角色列表
+        // 会员角色列表
+        const membershipRoles = permissionRoleStore.getMembershipRoles
+        // 如果有会员角色，则将其添加到 rolePaidList
+        if (membershipRoles.length > 0) {
+            membershipRoles.forEach((roleName) => {
+                const switchItem: SwitchItem = {
+                    name: roleName,
+                    display: roleName,
+                    namePosition: "left",
+                    status: false,
+                    label: rolePaidLabel,
+                    minWidth: 180,
+                }
+                rolePaidList.push(switchItem)
+            })
+        }
     }
 
     // 更新角色付费管理
