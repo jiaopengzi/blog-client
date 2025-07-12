@@ -115,24 +115,23 @@ export const usePermissionRoleStore = defineStore("permissionRole", {
         async updateFromServer(): Promise<void> {
             // 获取角色列表
             const resRole = await getRolesAPI()
+            if (resRole.data.code === ResponseCode.GetRoleSuccess) {
+                this.roles = resRole.data.data
+            }
 
             // 获取权限列表
             const resPermission = await getPermissionsAPI()
+            if (resPermission.data.code === ResponseCode.GetPermissionSuccess) {
+                this.permissionList = resPermission.data.data
+            }
 
             // 获取会员角色列表
             const resRoleMembership = await getMembershipRolesAPI()
-
-            if (
-                resRole.data.code === ResponseCode.GetRoleSuccess &&
-                resPermission.data.code === ResponseCode.GetPermissionSuccess &&
-                resRoleMembership.data.code === ResponseCode.MembershipGetRolesSuccess
-            ) {
-                this.roles = resRole.data.data
-                this.permissionList = resPermission.data.data
+            if (resRoleMembership.data.code === ResponseCode.MembershipGetRolesSuccess) {
                 this.membershipRoles = resRoleMembership.data.data
-
-                this.isLoadedPermissionRole = true
             }
+
+            this.isLoadedPermissionRole = true
         },
 
         // 判断是否有权限

@@ -42,6 +42,15 @@ export const routes: RouteRecordRaw[] = [
     },
 
     {
+        path: "/checkout",
+        name: RouteNames.Checkout,
+        component: () => import("@/views/checkout"),
+        meta: {
+            requiresAuth: true,
+        },
+    },
+
+    {
         path: "/unsubscribe",
         name: RouteNames.Unsubscribe,
         component: () => import("@/views/unsubscribe"),

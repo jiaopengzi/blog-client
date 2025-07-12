@@ -34,12 +34,12 @@
                 </el-form-item>
             </div>
             <div class="social">
-                <button v-if="socialLoginStatus.qq" type="button" class="social-btn" @click="loginByWeChat">
+                <el-button v-if="socialLoginStatus.qq" type="default" class="social-btn" @click="loginByWeChat">
                     <j-icon :name="IconKeys.Wechat" custom-class="iconfont icon-wechat" />
-                </button>
-                <button v-if="socialLoginStatus.wechat" type="button" class="social-btn" @click="loginByQQ">
+                </el-button>
+                <el-button v-if="socialLoginStatus.wechat" type="default" class="social-btn" @click="loginByQQ">
                     <j-icon :name="IconKeys.Qq" custom-class="iconfont icon-qq" />
-                </button>
+                </el-button>
             </div>
             <AccountFormFooter :to="['home', 'register', 'resetPassword']" />
         </el-form>
@@ -154,13 +154,11 @@ const login = () => {
     submitForm(loginFormRef.value as FormInstance)
 }
 
-const loginByWeChat = async (event: Event) => {
-    event.preventDefault() // 阻止默认行为
+const loginByWeChat = async () => {
     await userStore.socialLogin(SocialLoginType.WeChat)
 }
 
-const loginByQQ = async (event: Event) => {
-    event.preventDefault() // 阻止默认行为
+const loginByQQ = async () => {
     await userStore.socialLogin(SocialLoginType.QQ)
 }
 

@@ -540,13 +540,13 @@ onUnmounted(() => {
 
 onBeforeMount(async () => {
     // 生成角色付费管理
-    initRolePaidManagement()
+    await initRolePaidManagement()
     await getCategoryList()
-    getValueFromQuery()
+    await getValueFromQuery()
     if (postInfoForm.id) {
         await getDataOnBeforeMount()
     }
-    updateSnapshot()
+    await updateSnapshot()
 })
 </script>
 

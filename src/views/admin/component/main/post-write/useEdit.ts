@@ -35,7 +35,7 @@ export function useEdit(
     const route = useRoute()
 
     // 从路由中query中获取值
-    const getValueFromQuery = () => {
+    const getValueFromQuery = async () => {
         postInfoForm.id = route.query[queryKey.ID] as string
     }
 

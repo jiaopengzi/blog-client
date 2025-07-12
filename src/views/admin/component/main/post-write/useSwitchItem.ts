@@ -56,9 +56,9 @@ export function useSwitchItem(postInfoForm: UpsertPostForm) {
     }
 
     // 初始化角色付费管理都为付费状态，后续根据后端数据进行修改
-    const initRolePaidManagement = () => {
+    const initRolePaidManagement = async () => {
         const permissionRoleStore = usePermissionRoleStore()
-        permissionRoleStore.update(true) // 确保获取最新的角色数据
+        await permissionRoleStore.update(true) // 确保获取最新的角色数据
 
         // 首先从 系统角色列表 获取角色列表
         const { roles: rolesSystem } = permissionRoleStore.getSystemRoles

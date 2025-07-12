@@ -47,7 +47,7 @@ export function useSnapshot(postInfoForm: UpsertPostForm) {
     }
 
     // 更新快照
-    const updateSnapshot = () => {
+    const updateSnapshot = async () => {
         Object.assign(postInfoSnapshot, deepClone(postInfoForm))
         updateStatus()
     }

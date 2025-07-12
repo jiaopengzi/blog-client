@@ -217,6 +217,8 @@ export enum ResponseCode {
     OrderUpdateRemarkSuccess = 5010, // 更新订单备注成功
     OrderCountByStatusIsNone = 5011, // 获取按照订单状态统计订单数量无数据
     OrderCountByStatusSuccess = 5012, // 获取按照订单状态统计订单数量成功
+    GetOrderCheckoutSuccess = 5013, // 获取订单结算信息成功
+    GetOrderCheckoutNotFound = 5014, // 没有需要结算的订单
 
     // 支付相关
     PayOrderURLSuccess = 6000, // 订单支付 URL 生成成功

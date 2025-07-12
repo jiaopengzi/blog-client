@@ -21,6 +21,7 @@ export enum RouteNamesDefault {
     RegisterAdmin = "register-admin",
     ResetPassword = "reset-password",
     UserInfo = "user-info",
+    Checkout = "checkout",
     Unsubscribe = "unsubscribe",
     // PostPublic = "post-public",
     // VideoPublic = "video-public",
