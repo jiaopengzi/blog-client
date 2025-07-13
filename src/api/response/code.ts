@@ -219,6 +219,13 @@ export enum ResponseCode {
     OrderCountByStatusSuccess = 5012, // 获取按照订单状态统计订单数量成功
     GetOrderCheckoutSuccess = 5013, // 获取订单结算信息成功
     GetOrderCheckoutNotFound = 5014, // 没有需要结算的订单
+    OrderCouponInvalid = 5015, // 优惠卷无效
+    OrderCouponExpired = 5016, // 优惠卷已过期
+    OrderCouponNotMeetConditions = 5017, // 优惠卷未达到使用条件
+    OrderCouponNotStackable = 5018, // 优惠卷不可叠加使用
+    OrderCouponLimitReached = 5019, // 优惠卷使用次数已达上限
+    OrderCouponApplySuccess = 5020, // 优惠卷使用成功
+    OrderExpired = 5021, // 订单过期请重新下单
 
     // 支付相关
     PayOrderURLSuccess = 6000, // 订单支付 URL 生成成功

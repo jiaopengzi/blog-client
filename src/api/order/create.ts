@@ -36,7 +36,7 @@ export interface OrderItemCreate {
 }
 
 // 创建订单响应数据
-export interface OrderCreateResData extends StreamsStatusRes {
+export interface OrderCreateRes extends StreamsStatusRes {
     id: string
     created_at: string
     updated_at: string
@@ -49,7 +49,7 @@ export interface OrderCreateResData extends StreamsStatusRes {
 }
 
 // 创建订单
-export function orderCreateAPI(requestData: OrderCreateRequest): ResPromise<Res<OrderCreateResData>> {
+export function orderCreateAPI(requestData: OrderCreateRequest): ResPromise<Res<OrderCreateRes>> {
     const urlStr = routerGroup + "/order/create"
     return request({
         url: urlStr,

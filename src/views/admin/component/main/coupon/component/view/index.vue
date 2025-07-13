@@ -56,8 +56,8 @@
                     </template>
                 </el-input-number>
             </el-form-item>
-            <el-form-item label="是否叠加使用" prop="is_stackable" size="default">
-                <el-radio-group v-model="viewDataAc.is_stackable">
+            <el-form-item label="是否叠加使用" prop="stackable" size="default">
+                <el-radio-group v-model="viewDataAc.stackable">
                     <el-radio v-for="item in optionsStackable" :key="item.value" :value="item.value">
                         {{ CouponStackableDisplay[item.value] }}
                     </el-radio>

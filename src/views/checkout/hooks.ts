@@ -6,11 +6,9 @@
  * Description : 结算hooks
  */
 
-import type { FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { reactive, type Ref, ref } from "vue"
 
-import { checkMembershipRoleAPI, type CheckMembershipRoleRequest } from "@/api/membership/checkMembershipRole"
-import { checkMembershipRoleExcludingIDAPI, type CheckMembershipRoleExcludingIDRequest } from "@/api/membership/checkMembershipRoleExcludingID"
+import { orderCouponApplyAPI, type OrderCouponApplyRequest, type OrderCouponApplyRes } from "@/api/order/couponApply"
 import { getOrderCheckoutAPI, type OrderCheckoutRes } from "@/api/order/getCheckout"
 import { getPayTypeOptions, PayType, PayTypeDisplay } from "@/api/pay/common"
 import { handleResErr, ResponseCode } from "@/api/response"
@@ -29,9 +27,10 @@ export function useOrderCheckout() {
     const getCheckout = async () => {
         const res = await getOrderCheckoutAPI()
         if (res.data.code === ResponseCode.GetOrderCheckoutSuccess) {
-            checkoutData.value = res.data.data
-            payAmount.value = res.data.data.total_amount // 更新支付金额
-            detailsHeight.value = `${Math.min(300, res.data.data.order_items.length * 40 + detailsHeaderHeight.value)}px` // 动态设置表格高度
+            const data = res.data.data
+            checkoutData.value = data
+            payAmount.value = data.order.total_amount // 更新支付金额
+            detailsHeight.value = `${Math.min(300, data.order.order_items.length * 40 + detailsHeaderHeight.value)}px` // 动态设置表格高度
         } else if (res.data.code === ResponseCode.GetOrderCheckoutNotFound) {
             checkoutData.value = null
             const msg = handleResErr(res)
@@ -43,13 +42,27 @@ export function useOrderCheckout() {
         }
     }
 
-    const checkoutCoupon = async () => {
+    const couponApply = async () => {
         // 检查优惠码是否为空
         if (couponCodes.value.length === 0) {
             MessageUtil.warning("请输入优惠码")
             return
         }
         // 调用API检查优惠码
+        const requestData: OrderCouponApplyRequest = {
+            id: checkoutData.value?.order.id || "",
+            coupon_codes: couponCodes.value,
+        }
+        const res = await orderCouponApplyAPI(requestData)
+        if (res.data.code === ResponseCode.OrderCouponApplySuccess) {
+            const data: OrderCouponApplyRes = res.data.data
+            checkoutData.value!.coupon = data // 更新结算数据中的优惠券信息
+            payAmount.value = data.final_amount // 更新支付金额
+            MessageUtil.success("优惠码应用成功")
+        } else {
+            const msg = handleResErr(res)
+            MessageUtil.error(msg)
+        }
 
         // 得到最终的支付金额
     }
@@ -64,7 +77,7 @@ export function useOrderCheckout() {
         payAmount,
         detailsHeight,
         getCheckout,
-        checkoutCoupon,
+        couponApply,
         runCheckout,
     }
 }

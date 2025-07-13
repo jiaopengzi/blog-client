@@ -49,7 +49,7 @@ const submitData = async (form: ViewForm) => {
         amount: amount,
         min_spend: form.min_spend ? (form.min_spend * 100).toString() : "0",
         max_spend: form.max_spend ? (form.max_spend * 100).toString() : "0",
-        is_stackable: form.is_stackable,
+        stackable: form.stackable,
         use_limit: form.use_limit ? form.use_limit.toString() : "0",
         used_count: form.used_count ? form.used_count.toString() : "0",
         use_limit_per_user: form.use_limit_per_user ? form.use_limit_per_user.toString() : "0",

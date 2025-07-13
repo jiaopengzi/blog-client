@@ -28,7 +28,7 @@ interface FormValidationOptions {
         expire_time?: Ref<PgSqlDateTime | undefined> // 过期时间
         min_spend?: Ref<number | undefined> // 最小消费金额(分)
         max_spend?: Ref<number | undefined> // 最大消费金额(分)
-        is_stackable: Ref<CouponStackable> // 是否允许叠加使用,默认 1 禁用 2 启用
+        stackable: Ref<CouponStackable> // 是否允许叠加使用,默认 1 禁用 2 启用
         use_limit?: Ref<number | undefined> // 使用次数限制
         used_count?: Ref<number | undefined> // 已使用次数
         use_limit_per_user?: Ref<number | undefined> // 单人使用次数限制
@@ -136,7 +136,7 @@ export function useFormValidation(options: FormValidationOptions): {
             { required: true, message: "请输入优惠数量", trigger: "blur" },
             { validator: checkAmountValidator, trigger: "blur" },
         ],
-        is_stackable: [{ required: true, message: "请选择是否允许叠加使用", trigger: "change" }],
+        stackable: [{ required: true, message: "请选择是否允许叠加使用", trigger: "change" }],
         status: [{ required: true, message: "请选择启用状态", trigger: "change" }],
     })
 
@@ -155,7 +155,7 @@ export function useFormValidation(options: FormValidationOptions): {
             { required: true, message: "请输入优惠数量", trigger: "blur" },
             { validator: checkAmountValidator, trigger: "blur" },
         ],
-        is_stackable: [{ required: true, message: "请选择是否允许叠加使用", trigger: "change" }],
+        stackable: [{ required: true, message: "请选择是否允许叠加使用", trigger: "change" }],
         status: [{ required: true, message: "请选择启用状态", trigger: "change" }],
     })
 

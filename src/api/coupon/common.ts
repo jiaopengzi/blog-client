@@ -77,7 +77,7 @@ export interface InsertCouponRequest {
     expire_time?: PgSqlDateTime // 过期时间
     min_spend?: string // 最小消费金额(分)
     max_spend?: string // 最大消费金额(分)
-    is_stackable?: CouponStackable // 是否允许叠加使用,默认 1 禁用 2 启用
+    stackable?: CouponStackable // 是否允许叠加使用,默认 1 禁用 2 启用
     use_limit?: string // 使用次数限制
     used_count?: string // 已使用次数
     use_limit_per_user?: string // 单人使用次数限制
@@ -100,7 +100,7 @@ export interface CouponRes extends DataWithImg {
     expire_time: PgSqlDateTime // 过期时间
     min_spend: number // 最小消费金额(分)
     max_spend: number // 最大消费金额(分)
-    is_stackable: CouponStackable // 是否允许叠加使用,默认 1 禁用 2 启用
+    stackable: CouponStackable // 是否允许叠加使用,默认 1 禁用 2 启用
     use_limit: number // 使用次数限制
     used_count: number // 已使用次数
     use_limit_per_user: number // 单人使用次数限制

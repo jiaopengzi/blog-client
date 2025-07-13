@@ -266,7 +266,7 @@ const editData = reactive<ViewForm>({
     },
     status: CouponStatus.Disabled,
     amount: 0,
-    is_stackable: CouponStackable.Disabled, // 默认禁用叠加
+    stackable: CouponStackable.Disabled, // 默认禁用叠加
 })
 
 const editRow = (index: number, row: TableData) => {
@@ -303,8 +303,8 @@ const editRow = (index: number, row: TableData) => {
     if ("max_spend" in row) {
         editData.max_spend = row.max_spend / 100
     }
-    if ("is_stackable" in row) {
-        editData.is_stackable = row.is_stackable
+    if ("stackable" in row) {
+        editData.stackable = row.stackable
     }
     if ("use_limit" in row) {
         editData.use_limit = row.use_limit

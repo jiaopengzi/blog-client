@@ -9,9 +9,14 @@
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
-import type { OrderCreateResData } from "./create"
+import type { OrderCouponApplyRes } from "./couponApply"
+import type { OrderCreateRes } from "./create"
 
-export type OrderCheckoutRes = OrderCreateResData
+// OrderCheckoutRes 结算响应模型
+export interface OrderCheckoutRes {
+    order: OrderCreateRes
+    coupon: OrderCouponApplyRes | null // 优惠券应用信息
+}
 
 export function getOrderCheckoutAPI(): ResPromise<Res<OrderCheckoutRes>> {
     const urlStr = routerGroup + "/order/checkout"
