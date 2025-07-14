@@ -16,8 +16,8 @@ export enum MembershipStatus {
 
 // 会员状态显示
 export const MembershipStatusDisplay: Record<MembershipStatus, string> = {
-    [MembershipStatus.Disabled]: "禁用",
-    [MembershipStatus.Enabled]: "启用",
+    [MembershipStatus.Disabled]: "❌禁用",
+    [MembershipStatus.Enabled]: "✅启用",
 }
 
 // 获取会员状态选项

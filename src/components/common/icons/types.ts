@@ -154,4 +154,6 @@ export enum IconKeys {
     Pinned = "pinned",
     Reply = "reply",
     Lock = "lock",
+    PayWechat = "pay-wechat",
+    PayAlipay = "pay-alipay",
 }

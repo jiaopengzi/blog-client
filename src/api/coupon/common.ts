@@ -57,8 +57,8 @@ export enum CouponStatus {
 
 // 优惠卷状态显示
 export const CouponStatusDisplay: Record<CouponStatus, string> = {
-    [CouponStatus.Disabled]: "禁用",
-    [CouponStatus.Enabled]: "启用",
+    [CouponStatus.Disabled]: "❌禁用",
+    [CouponStatus.Enabled]: "✅启用",
 }
 
 // 获取优惠卷状态选项

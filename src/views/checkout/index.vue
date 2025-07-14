@@ -15,16 +15,24 @@
             <h4 class="title">产品详情</h4>
             <el-table :data="checkoutData?.order.order_items" style="width: 100%" border stripe :height="detailsHeight">
                 <el-table-column prop="title" label="产品" :width="widthTitle" />
-                <el-table-column prop="price" label="价格" width="100" align="center" />
+                <el-table-column prop="price" label="价格" width="100" align="center">
+                    <template #default="{ row }">{{ fenToYuan(row.price) }}元</template>
+                </el-table-column>
                 <el-table-column prop="quantity" label="数量" align="center" />
             </el-table>
         </div>
 
         <!-- 支付金额 -->
-        <div class="pay-amount">
-            <h4 class="title amount">
-                合计支付：<span class="amount-number">{{ payAmount }}</span>
-            </h4>
+        <div class="payment">
+            <p class="discount" v-if="isShowDiscount">
+                订单金额<span class="total-number">{{ fenToYuan(totalAmount) }}</span
+                >元，优惠金额<span class="discount-number">{{ fenToYuan(discountAmount) }}</span
+                >元。
+            </p>
+            <p class="final-amount">
+                支付<span class="final-number">{{ fenToYuan(finalAmount) }}</span
+                >元。
+            </p>
         </div>
 
         <!-- 优惠卷 -->
@@ -49,7 +57,9 @@
             <h4 class="title">选择支付方式</h4>
             <el-radio-group v-model="payTypeResult">
                 <el-radio v-for="item in payTypeOptions" :key="item.value" :value="item.value">
-                    {{ PayTypeDisplay[item.value] }}
+                    <span class="pay-type-name">
+                        {{ PayTypeDisplay[item.value] }}
+                    </span>
                 </el-radio>
             </el-radio-group>
         </div>
@@ -57,6 +67,11 @@
         <!-- 提交按钮 -->
         <el-button class="btn-submit" type="default" @click="runCheckout">立即支付</el-button>
     </div>
+
+    <!-- 二维码 -->
+    <el-dialog v-model="isPayQRCodeShow" width="370px" @close="handleClose">
+        <PayQRCode :qr-code-url="qrCodeUrl" :pay-type="payTypeResult" :amount="fenToYuan(finalAmount)" />
+    </el-dialog>
 </template>
 
 <script lang="ts" setup>
@@ -65,12 +80,14 @@ import { storeToRefs } from "pinia"
 import { computed, h, onBeforeMount, reactive, ref, toRefs, useTemplateRef } from "vue"
 import { useRouter } from "vue-router"
 
-import { PayTypeDisplay } from "@/api/pay/common"
+import { PayType, PayTypeDisplay } from "@/api/pay/common"
+import { IconKeys } from "@/components/common/icons"
 import { RouteNames } from "@/router"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 import { MessageUtil } from "@/utils/message"
 
 import { useOrderCheckout } from "./hooks"
+import PayQRCode from "./pay-qr-code"
 import type { ViewForm } from "./types"
 
 defineOptions({ name: RouteNames.Checkout })
@@ -109,7 +126,31 @@ const widthTitle = computed(() => {
 
 const trigger = ref<"Enter" | "Space">("Enter") // 输入触发方式
 
-const { checkoutData, couponCodes, payTypeOptions, payTypeResult, payAmount, detailsHeight, getCheckout, couponApply, runCheckout } = useOrderCheckout()
+// 将分转换为元
+const fenToYuan = (amount: number) => {
+    return (amount / 100).toFixed(2) // 将分转换为元
+}
+
+const handleClose = () => {
+    isPayQRCodeShow.value = false
+}
+
+const {
+    checkoutData,
+    couponCodes,
+    payTypeOptions,
+    payTypeResult,
+    totalAmount,
+    discountAmount,
+    isShowDiscount,
+    finalAmount,
+    detailsHeight,
+    isPayQRCodeShow,
+    qrCodeUrl,
+    getCheckout,
+    couponApply,
+    runCheckout,
+} = useOrderCheckout()
 
 onBeforeMount(async () => {
     await getCheckout()
@@ -133,28 +174,50 @@ h4 {
     color: var(--jpz-text-color-primary);
 }
 
-.amount {
-    font-size: 20px;
-    font-weight: 700;
-    text-align: right;
-    color: #c1401f;
-    margin-right: 20px;
-}
+.payment {
+    margin: 20px 0 40px 0;
+    line-height: 1.5;
 
-.amount-number {
-    font-size: 24px;
-    font-weight: 700;
+    .discount {
+        font-size: 16px;
+        color: var(--jpz-text-color-secondary);
+        text-align: right;
+        font-weight: 500;
+
+        .total-number,
+        .discount-number {
+            margin: 0 5px;
+        }
+    }
+
+    .final-amount {
+        color: #c1401f;
+        font-size: 18px;
+        font-weight: 700;
+        text-align: right;
+        .final-number {
+            margin: 0 5px;
+            font-weight: 700;
+            font-size: 24px;
+        }
+    }
 }
 
 .product-details,
 .coupon,
-.pay-type,
 .pay-amount {
     margin-bottom: 20px;
 }
 
 .pay-type {
-    margin-top: 40px;
+    margin: 40px 0 20px 0;
+
+    .pay-type-name {
+        font-size: 14px;
+        font-weight: 500;
+        margin-top: 4px;
+        color: var(--jpz-text-color-primary);
+    }
 }
 
 .coupon-code {

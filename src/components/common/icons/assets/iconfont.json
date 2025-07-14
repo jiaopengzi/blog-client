@@ -6,6 +6,20 @@
   "description": "vue 重写项目",
   "glyphs": [
     {
+      "icon_id": "1486848",
+      "name": "pay-alipay",
+      "font_class": "pay-alipay",
+      "unicode": "e634",
+      "unicode_decimal": 58932
+    },
+    {
+      "icon_id": "1487626",
+      "name": "pay-wechat",
+      "font_class": "pay-wechat",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
+    {
       "icon_id": "1898871",
       "name": "lock",
       "font_class": "lock",

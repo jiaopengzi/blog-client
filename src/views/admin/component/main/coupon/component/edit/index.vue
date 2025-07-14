@@ -54,17 +54,16 @@ const submitData = async (form: ViewForm) => {
         used_count: form.used_count ? form.used_count.toString() : "0",
         use_limit_per_user: form.use_limit_per_user ? form.use_limit_per_user.toString() : "0",
         status: form.status,
+        expire_time: {
+            Time: new Date(),
+            Valid: false,
+        },
     }
 
     // 如果过期时间存在且是有效的，则设置为有效
     if (form.expire_time.Time && req.expire_time) {
         req.expire_time.Time = new Date(form.expire_time.Time) // 将字符串时间转换为有效的日期对象
         req.expire_time.Valid = true
-    }
-
-    // 如果过期时间不存在，则设置为无效
-    if (!form.expire_time.Time && req.expire_time) {
-        req.expire_time.Valid = false
     }
 
     const res = await updateCouponAPI(req)

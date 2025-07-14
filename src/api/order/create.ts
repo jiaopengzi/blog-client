@@ -23,6 +23,7 @@ export interface Product {
 export interface OrderCreateRequest {
     products: Product[] // 产品列表
     remark?: string // 订单备注
+    return_url?: string // 支付完成后返回的URL
 }
 
 // 订单子表
