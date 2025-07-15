@@ -14,6 +14,7 @@ export interface StreamInfo {
     name: string
     id: string
 }
+
 // StreamIds 请求参数
 export interface StreamsStatusRequest {
     stream_items: StreamInfo[]
@@ -30,12 +31,12 @@ export enum StreamStatus {
     Handle = "Handle", // 已处理
 }
 
-// StreamId 响应
-export interface StreamsStatusRes {
+// 所有 stream_id 的状态响应
+export interface StreamAllStatusRes {
     status_all: StreamStatus
 }
 
-export function getStreamIDsStatusAPI(requestData: StreamsStatusRequest): ResPromise<Res<StreamsStatusRes>> {
+export function getStreamIDsStatusAPI(requestData: StreamsStatusRequest): ResPromise<Res<StreamAllStatusRes>> {
     const urlStr = routerGroup + "/helper/streams-status"
     return request({
         url: urlStr,

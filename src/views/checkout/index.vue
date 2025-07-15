@@ -13,7 +13,7 @@
         <!-- 产品详情 -->
         <div class="product-details">
             <h4 class="title">产品详情</h4>
-            <el-table :data="checkoutData?.order.order_items" style="width: 100%" border stripe :height="detailsHeight">
+            <el-table :data="checkoutData.order.order_items" style="width: 100%" border stripe :height="detailsHeight">
                 <el-table-column prop="title" label="产品" :width="widthTitle" />
                 <el-table-column prop="price" label="价格" width="100" align="center">
                     <template #default="{ row }">{{ fenToYuan(row.price) }}元</template>
@@ -43,12 +43,15 @@
                     class="coupon-code-input"
                     v-model="couponCodes"
                     :trigger="trigger"
-                    placeholder="请输入优惠码, Enter 确认输入"
+                    :placeholder="couponInputPlaceholder"
                     size="large"
-                    :max="100"
+                    :max="5"
                     clearable
+                    :disabled="isCouponBtnDisabled"
                 />
-                <el-button class="coupon-code-btn" type="default" @click="couponApply">应用</el-button>
+                <el-button :loading="isCouponBtnLoading" :disabled="isCouponBtnDisabled" class="coupon-code-btn" type="default" @click="couponApply"
+                    >应用</el-button
+                >
             </div>
         </div>
 
@@ -65,30 +68,27 @@
         </div>
 
         <!-- 提交按钮 -->
-        <el-button class="btn-submit" type="default" @click="runCheckout">立即支付</el-button>
+        <el-button :loading="isPayBtnLoading" class="btn-submit" type="default" @click="runCheckout">立即支付</el-button>
     </div>
 
     <!-- 二维码 -->
     <el-dialog v-model="isPayQRCodeShow" width="370px" @close="handleClose">
-        <PayQRCode :qr-code-url="qrCodeUrl" :pay-type="payTypeResult" :amount="fenToYuan(finalAmount)" />
+        <PayQRCode v-if="isPayQRCodeShow" :qr-code-url="qrCodeUrl" :pay-type="payTypeResult" :amount="fenToYuan(finalAmount)" />
     </el-dialog>
 </template>
 
 <script lang="ts" setup>
 import { useHead } from "@unhead/vue"
 import { storeToRefs } from "pinia"
-import { computed, h, onBeforeMount, reactive, ref, toRefs, useTemplateRef } from "vue"
+import { computed, onBeforeMount, ref, watch } from "vue"
 import { useRouter } from "vue-router"
 
-import { PayType, PayTypeDisplay } from "@/api/pay/common"
-import { IconKeys } from "@/components/common/icons"
+import { PayTypeDisplay, TradeState } from "@/api/pay/common"
 import { RouteNames } from "@/router"
 import { DeviceType, useDeviceStore } from "@/stores/device"
-import { MessageUtil } from "@/utils/message"
 
 import { useOrderCheckout } from "./hooks"
 import PayQRCode from "./pay-qr-code"
-import type { ViewForm } from "./types"
 
 defineOptions({ name: RouteNames.Checkout })
 
@@ -96,15 +96,7 @@ useHead({
     title: "订单结算",
 })
 
-// props
-const { viewData } = defineProps<{
-    viewData: ViewForm // 展示信息
-}>()
-
-// emits
-const emit = defineEmits<{
-    (event: "submit-data", value: ViewForm): void // 提交数据
-}>()
+const router = useRouter()
 
 // 设备类型
 const deviceStore = useDeviceStore()
@@ -146,14 +138,43 @@ const {
     finalAmount,
     detailsHeight,
     isPayQRCodeShow,
+    isCouponBtnLoading,
+    isCouponBtnDisabled,
+    isPayBtnLoading,
     qrCodeUrl,
+    couponInputPlaceholder,
     getCheckout,
     couponApply,
     runCheckout,
+    pollingGetOrderStatus,
 } = useOrderCheckout()
 
+// 监听支付信息变化
+watch(
+    () => checkoutData.value.payment,
+    async (newVal) => {
+        if (newVal && newVal.order_id) {
+            // 如果有支付信息，显示二维码
+            isPayQRCodeShow.value = true
+            // 计算过期时间用于轮训的超时时间
+            const timeExpire = new Date(newVal.time_expire).getTime()
+            const currentTime = Date.now()
+            const timeOut = timeExpire - currentTime
+
+            // 开始轮询获取订单状态
+            await pollingGetOrderStatus(newVal.order_id, newVal.pay_type, 5000, timeOut)
+        }
+    },
+)
+
 onBeforeMount(async () => {
+    // 获取结算数据
     await getCheckout()
+
+    // 如果数据为空直接跳转到首页
+    if (!checkoutData.value.order.order_items.length) {
+        router.push({ name: RouteNames.Home })
+    }
 })
 </script>
 

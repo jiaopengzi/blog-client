@@ -17,19 +17,20 @@ export interface PayOrderRequest {
     pay_type: PayType // 支付类型
     order_id: string // 订单ID
     description: string // 支付订单描述
-    amount: number // 支付金额（单位：分）
+    amount: string // 支付金额（单位：分）
     return_url: string // 支付完成后的回调地址
 }
 
 // 支付订单响应数据
-export interface PayOrderResData {
+export interface PayOrderRes {
     order_id: string // 订单ID
     pay_type: PayType // 支付类型
     pay_url: string // 支付二维码链接
+    time_expire: string // 订单失效时间
 }
 
 // 支付订单
-export function payOrderAPI(requestData: PayOrderRequest): ResPromise<Res<PayOrderResData>> {
+export function payOrderAPI(requestData: PayOrderRequest): ResPromise<Res<PayOrderRes>> {
     const urlStr = routerGroup + "/pay/order"
     return request({
         url: urlStr,

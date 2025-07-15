@@ -9,8 +9,9 @@
     <div class="container-pay-qr-code">
         <h1 class="title">支付二维码</h1>
         <p class="description">请使用手机扫描二维码进行支付</p>
-        <iframe v-if="payType === PayType.Alipay" :src="qrCodeUrl" width="200" height="200"></iframe>
-        <QrCode v-if="payType === PayType.WechatPay" :options="{ data: qrCodeUrl, width: 200, height: 200 }" />
+        <div class="loader" v-if="isLoading && payType === PayType.Alipay"></div>
+        <iframe class="qr-code" v-if="payType === PayType.Alipay" :src="qrCodeUrl" width="200" height="204" @load="onIframeLoaded"></iframe>
+        <QrCode class="qr-code" v-if="payType === PayType.WechatPay" :options="{ data: qrCodeUrl, width: 200, height: 200 }" />
 
         <p class="final-amount">
             支付<span class="final-number">{{ amount }}</span
@@ -27,6 +28,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ref } from "vue"
+
 import { PayType, PayTypeDisplay } from "@/api/pay/common"
 import { IconKeys } from "@/components/common/icons"
 import QrCode from "@/components/common/qr-code"
@@ -46,6 +49,11 @@ const payIconName = (val: PayType) => {
         default:
             return IconKeys.PayWechat // 默认使用微信支付图标
     }
+}
+
+const isLoading = ref(true)
+const onIframeLoaded = () => {
+    isLoading.value = false
 }
 </script>
 
@@ -76,6 +84,10 @@ const payIconName = (val: PayType) => {
     font-weight: 500;
 }
 
+.qr-code {
+    margin-bottom: 10px;
+}
+
 .pay-type {
     display: flex;
     align-items: center;
@@ -99,6 +111,27 @@ const payIconName = (val: PayType) => {
     font-weight: 700;
     .final-number {
         margin: 0 5px;
+    }
+}
+
+/* 参考：https://css-loaders.com/classic/ */
+// HTML: <div class="loader"></div>
+.loader {
+    margin: 40px auto;
+    width: fit-content;
+    font-weight: bold;
+    font-family: sans-serif;
+    font-size: 30px;
+    padding-bottom: 8px;
+    background: linear-gradient(currentColor 0 0) 0 100%/0% 3px no-repeat;
+    animation: l2 2s linear infinite;
+}
+.loader:before {
+    content: "加载中...";
+}
+@keyframes l2 {
+    to {
+        background-size: 100% 3px;
     }
 }
 </style>

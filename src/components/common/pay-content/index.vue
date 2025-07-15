@@ -37,7 +37,7 @@ import { ContentPayType, type PayContentProps } from "./types.ts"
 defineOptions({ name: "PayContent" })
 
 // 定义 props
-const { content_pay_type = ContentPayType.Read, is_paid = false, price = 99, markdown } = defineProps<PayContentProps>()
+const { content_pay_type = ContentPayType.Read, is_paid = false, price = 0, markdown } = defineProps<PayContentProps>()
 
 // 事件
 const emit = defineEmits<{

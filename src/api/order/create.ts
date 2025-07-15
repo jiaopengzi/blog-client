@@ -47,6 +47,7 @@ export interface OrderCreateRes extends StreamsStatusRes {
     user_id: string // 用户ID
     order_items: OrderItemCreate[] // 订单子表
     description: string // 描述
+    return_url: string // 支付完成后返回的URL
 }
 
 // 创建订单

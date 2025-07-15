@@ -6,17 +6,19 @@
  * Description : 结算hooks
  */
 
-import { reactive, type Ref, ref } from "vue"
+import { computed, type ComputedRef, type Ref, ref } from "vue"
 
 import { orderCouponApplyAPI, type OrderCouponApplyRequest, type OrderCouponApplyRes } from "@/api/order/couponApply"
-import { getOrderCheckoutAPI, type OrderCheckoutRes } from "@/api/order/getCheckout"
-import { getPayTypeOptions, PayType, PayTypeDisplay } from "@/api/pay/common"
+import { generateEmptyResponse, getOrderCheckoutAPI, type OrderCheckoutRes } from "@/api/order/getCheckout"
+import { getPayTypeOptions, PayType, TradeState } from "@/api/pay/common"
+import { payOrderAPI, type PayOrderRequest } from "@/api/pay/order"
+import { payQueryAPI, type PayQueryRequest } from "@/api/pay/query"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { MessageUtil } from "@/utils/message"
 
 // 表单验证
 export function useOrderCheckout() {
-    const checkoutData: Ref<OrderCheckoutRes | null> = ref(null) // 结算数据
+    const checkoutData: Ref<OrderCheckoutRes> = ref(generateEmptyResponse()) // 结算数据
     const couponCodes = ref<string[]>([]) // 优惠码
     const payTypeOptions = getPayTypeOptions() // 支付方式选项
     const payTypeResult = ref<PayType>(PayType.WechatPay) // 默认支付方式
@@ -27,8 +29,23 @@ export function useOrderCheckout() {
     const detailsHeaderHeight = ref(40) // 产品详情表头高度
     const detailsHeight = ref("100px") // 产品详情表格高度
     const isPayQRCodeShow = ref(false) // 二维码对话框是否可见
+    const isCouponBtnLoading = ref(false) // 优惠卷按钮加载状态
+    const isPayBtnLoading = ref(false) // 支付按钮加载状态
     const qrCodeUrl = ref("https://jiaopengzi.com") // 二维码图片URL
 
+    // 优惠卷按钮是否可用
+    const isCouponBtnDisabled: ComputedRef<boolean> = computed(() => {
+        // 当生成了支付二维码后，优惠码按钮不可用
+        return checkoutData.value.payment !== null || isCouponBtnLoading.value
+    })
+
+    // 优惠码输入框的占位符
+    const couponInputPlaceholder: ComputedRef<string> = computed(() => {
+        // 当生成了支付二维码后，优惠码输入框不可用
+        return checkoutData.value.payment !== null ? "支付二维码已生成，无法修改优惠码" : "请输入优惠码, Enter 确认输入"
+    })
+
+    // 获取结算数据
     const getCheckout = async () => {
         const res = await getOrderCheckoutAPI()
         if (res.data.code === ResponseCode.GetOrderCheckoutSuccess) {
@@ -45,24 +62,32 @@ export function useOrderCheckout() {
                 finalAmount.value = data.order.total_amount // 如果没有优惠券，最终支付金额等于总金额
                 isShowDiscount.value = false // 不显示优惠金额
             }
+            if (data.payment) {
+                payTypeResult.value = data.payment.pay_type // 设置支付类型
+                qrCodeUrl.value = data.payment.pay_url // 设置二维码链接
+                isPayQRCodeShow.value = true // 显示二维码对话框
+            }
             detailsHeight.value = `${Math.min(300, data.order.order_items.length * 40 + detailsHeaderHeight.value)}px` // 动态设置表格高度
         } else if (res.data.code === ResponseCode.GetOrderCheckoutNotFound) {
-            checkoutData.value = null
             const msg = handleResErr(res)
             MessageUtil.warning(msg)
         } else {
-            checkoutData.value = null
             const msg = handleResErr(res)
             MessageUtil.error(msg)
         }
     }
 
+    // 应用优惠码
     const couponApply = async () => {
         // 检查优惠码是否为空
         if (couponCodes.value.length === 0) {
             MessageUtil.warning("请输入优惠码")
             return
         }
+
+        // 设置优惠码按钮为加载状态
+        isCouponBtnLoading.value = true
+
         // 调用API检查优惠码
         const requestData: OrderCouponApplyRequest = {
             id: checkoutData.value?.order.id || "",
@@ -82,10 +107,79 @@ export function useOrderCheckout() {
             const msg = handleResErr(res)
             MessageUtil.error(msg)
         }
+
+        isCouponBtnLoading.value = false // 重置优惠码按钮状态
     }
 
+    // 执行支付
     const runCheckout = async () => {
-        isPayQRCodeShow.value = true // 显示支付二维码对话框
+        isPayBtnLoading.value = true // 设置支付按钮为加载状态
+
+        // 构建支付请求数据
+        const req: PayOrderRequest = {
+            is_re_pay: false, // 首次支付
+            pay_type: payTypeResult.value, // 选择的支付方式
+            order_id: checkoutData.value.order.id, // 订单ID
+            description: `${checkoutData.value.order.description}`, // 支付描述
+            amount: finalAmount.value.toString(), // 最终支付金额
+            return_url: checkoutData.value.order.return_url, // 支付完成后的回调地址
+        }
+
+        // 调用支付API
+        const res = await payOrderAPI(req)
+        if (res.data.code === ResponseCode.PayOrderURLSuccess || res.data.code === ResponseCode.RePayOrderURLSuccess) {
+            const data = res.data.data
+            checkoutData.value.payment = data // 更新结算数据中的支付信息
+            qrCodeUrl.value = data.pay_url // 设置二维码链接
+            isPayQRCodeShow.value = true // 显示二维码对话框
+        } else {
+            const msg = handleResErr(res)
+            MessageUtil.error(msg)
+        }
+
+        isPayBtnLoading.value = false // 重置支付按钮状态
+    }
+
+    /**
+     * 轮询查询支付状态
+     * @param orderID 订单ID
+     * @param payType 支付类型
+     * @param pollingTime 轮询间隔时间，默认5秒
+     * @param timeOut 超时时间，默认5分钟
+     * @returns Promise<TradeState | null> 支付状态，或超时/异常时为null
+     */
+    async function pollingGetOrderStatus(orderID: string, payType: PayType, pollingTime: number = 5000, timeOut: number = 300000): Promise<void> {
+        const startTime = Date.now()
+        let isPaid = false
+
+        while (Date.now() - startTime < timeOut && !isPaid && isPayQRCodeShow.value) {
+            const req: PayQueryRequest = {
+                order_id: orderID,
+                pay_type: payType,
+            }
+            const res = await payQueryAPI(req)
+            const info = res.data
+
+            if (info.code === ResponseCode.PayQuerySuccess) {
+                if (info.data.pay_status === TradeState.Paid) {
+                    isPayQRCodeShow.value = false
+                    MessageUtil.success("支付成功")
+                    const url = checkoutData.value.order.return_url
+                    if (url) {
+                        window.location.href = url
+                    }
+                    isPaid = true
+                    break // 立即退出轮询
+                }
+                if (info.data.pay_status === TradeState.Unpaid) {
+                    await new Promise((resolve) => setTimeout(resolve, pollingTime))
+                    continue
+                }
+            } else {
+                MessageUtil.error(handleResErr(res))
+                break // 出错时退出轮询
+            }
+        }
     }
 
     return {
@@ -100,9 +194,14 @@ export function useOrderCheckout() {
         detailsHeaderHeight,
         detailsHeight,
         isPayQRCodeShow,
+        isCouponBtnLoading,
+        isCouponBtnDisabled,
+        isPayBtnLoading,
         qrCodeUrl,
+        couponInputPlaceholder,
         getCheckout,
         couponApply,
         runCheckout,
+        pollingGetOrderStatus,
     }
 }

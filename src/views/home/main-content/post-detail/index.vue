@@ -75,7 +75,6 @@ import { type ViewPostByIDRequest } from "@/api/post/viewByID"
 import { type PostCategory } from "@/api/postCategory/view"
 import { type PostTag } from "@/api/postTag/view"
 import HeadTag from "@/components/common/head-tag"
-import { ContentPayType } from "@/components/common/pay-content"
 import PostMeta from "@/components/common/post-meta"
 import PosterShare from "@/components/common/poster-share"
 import type { EditorState } from "@/components/editor"
@@ -95,7 +94,7 @@ import DetailCopyright from "./components/copyright"
 import DetailInteraction from "./components/interaction"
 import DetailPrevNext from "./components/prev-next"
 import DetailUpdatedAt from "./components/updated-at"
-import { useHeading, useInteraction } from "./hooks"
+import { useHeading, useInteraction, useOrder } from "./hooks"
 
 defineOptions({ name: "PostDetail" })
 
@@ -166,6 +165,8 @@ const {
 // preview
 const { showImageViewer, closeImageViewer, handleHeadingShowCurrent, handleUpdateIsUserScrollPreview } = usePreview(manager)
 
+const { handlePaySingle, handlePayVip, isPayLoading } = useOrder(postId)
+
 // 更新文章详情状态
 const handleHeadingShowCurrentAc = (val: number) => {
     handleHeadingShowCurrent(val)
@@ -230,16 +231,6 @@ watch(
         await updatePostDetailAc(postId.value)
     },
 )
-
-// 处理支付单篇文章
-const handlePaySingle = (val: ContentPayType) => {
-    console.log("============>val", val)
-}
-
-// 处理支付成为 VIP
-const handlePayVip = (val: ContentPayType) => {
-    console.log("============>val", val)
-}
 
 // 是否首次加载
 const isFirstLoad = ref(true) // 是否首次加载

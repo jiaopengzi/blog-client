@@ -18,13 +18,13 @@ export interface PayQueryRequest {
 }
 
 // 查询订单支付响应数据
-export interface PayQueryResData {
+export interface PayQueryRes {
     order_id: string // 订单ID
     pay_status: TradeState // 支付状态
 }
 
 // 查询订单支付状态
-export function payQueryAPI(requestData: PayQueryRequest): ResPromise<Res<PayQueryResData>> {
+export function payQueryAPI(requestData: PayQueryRequest): ResPromise<Res<PayQueryRes>> {
     const urlStr = routerGroup + "/pay/query"
     return request({
         url: urlStr,

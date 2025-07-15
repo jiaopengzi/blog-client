@@ -48,6 +48,7 @@ export const routes: RouteRecordRaw[] = [
         meta: {
             requiresAuth: true,
         },
+        props: true, // 允许传递props
     },
 
     {

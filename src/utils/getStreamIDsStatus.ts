@@ -42,10 +42,9 @@ async function poll(streams: StreamInfo[], startTime: number, pollingTime: numbe
         if (info.data.status_all === StreamStatus.UnHandle) {
             // 未处理，继续轮询
             await poll(streams, startTime, pollingTime, timeOut)
-            return
-        } else {
-            return
         }
+
+        return
     }
 
     // 处理错误
