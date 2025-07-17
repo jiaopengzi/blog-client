@@ -8,6 +8,7 @@
 
 import { computed, type ComputedRef, type Ref, ref } from "vue"
 
+import { getCouponHasAvailableAPI } from "@/api/coupon/hasAvailable"
 import { orderCouponApplyAPI, type OrderCouponApplyRequest, type OrderCouponApplyRes } from "@/api/order/couponApply"
 import { generateEmptyResponse, getOrderCheckoutAPI, type OrderCheckoutRes } from "@/api/order/getCheckout"
 import { getPayTypeOptions, PayType, TradeState } from "@/api/pay/common"
@@ -19,6 +20,7 @@ import { MessageUtil } from "@/utils/message"
 // 表单验证
 export function useOrderCheckout() {
     const checkoutData: Ref<OrderCheckoutRes> = ref(generateEmptyResponse()) // 结算数据
+    const hasAvailableCoupons: Ref<boolean> = ref(false) // 是否有可用的优惠卷
     const couponCodes = ref<string[]>([]) // 优惠码
     const payTypeOptions = getPayTypeOptions() // 支付方式选项
     const payTypeResult = ref<PayType>(PayType.WechatPay) // 默认支付方式
@@ -71,6 +73,17 @@ export function useOrderCheckout() {
         } else if (res.data.code === ResponseCode.GetOrderCheckoutNotFound) {
             const msg = handleResErr(res)
             MessageUtil.warning(msg)
+        } else {
+            const msg = handleResErr(res)
+            MessageUtil.error(msg)
+        }
+    }
+
+    // 检查是否有可用的优惠卷
+    const checkHasAvailableCoupons = async () => {
+        const res = await getCouponHasAvailableAPI()
+        if (res.data.code === ResponseCode.CouponHasAvailableSuccess) {
+            hasAvailableCoupons.value = res.data.data
         } else {
             const msg = handleResErr(res)
             MessageUtil.error(msg)
@@ -184,6 +197,7 @@ export function useOrderCheckout() {
 
     return {
         checkoutData,
+        hasAvailableCoupons,
         couponCodes,
         payTypeOptions,
         payTypeResult,
@@ -200,6 +214,7 @@ export function useOrderCheckout() {
         qrCodeUrl,
         couponInputPlaceholder,
         getCheckout,
+        checkHasAvailableCoupons,
         couponApply,
         runCheckout,
         pollingGetOrderStatus,

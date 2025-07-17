@@ -18,7 +18,7 @@ export interface OrderPaginationRequest extends PaginationRequest {
 }
 
 // 获取订单分页数据响应
-export function getPaginateAPI(requestData: OrderPaginationRequest): ResPromise<Res<Pagination<OrderGetByIDRes>>> {
+export function getOrderPaginateAPI(requestData: OrderPaginationRequest): ResPromise<Res<Pagination<OrderGetByIDRes>>> {
     const urlStr = routerGroup + "/order/get-paginate"
     return request({
         url: urlStr,
@@ -28,7 +28,7 @@ export function getPaginateAPI(requestData: OrderPaginationRequest): ResPromise<
 }
 
 // 获取订单分页数据响应(管理员)
-export function getPaginateAdminAPI(requestData: OrderPaginationRequest): ResPromise<Res<Pagination<OrderGetByIDRes>>> {
+export function getOrderPaginateAdminAPI(requestData: OrderPaginationRequest): ResPromise<Res<Pagination<OrderGetByIDRes>>> {
     const urlStr = routerGroup + "/order/get-paginate-admin"
     return request({
         url: urlStr,

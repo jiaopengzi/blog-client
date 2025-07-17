@@ -36,7 +36,7 @@
         </div>
 
         <!-- 优惠卷 -->
-        <div class="coupon">
+        <div v-if="hasAvailableCoupons" class="coupon">
             <h4 class="title">优惠卷码</h4>
             <div class="coupon-code">
                 <el-input-tag
@@ -83,7 +83,7 @@ import { storeToRefs } from "pinia"
 import { computed, onBeforeMount, ref, watch } from "vue"
 import { useRouter } from "vue-router"
 
-import { PayTypeDisplay, TradeState } from "@/api/pay/common"
+import { PayTypeDisplay } from "@/api/pay/common"
 import { RouteNames } from "@/router"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 
@@ -129,6 +129,7 @@ const handleClose = () => {
 
 const {
     checkoutData,
+    hasAvailableCoupons,
     couponCodes,
     payTypeOptions,
     payTypeResult,
@@ -144,6 +145,7 @@ const {
     qrCodeUrl,
     couponInputPlaceholder,
     getCheckout,
+    checkHasAvailableCoupons,
     couponApply,
     runCheckout,
     pollingGetOrderStatus,
@@ -170,6 +172,8 @@ watch(
 onBeforeMount(async () => {
     // 获取结算数据
     await getCheckout()
+    // 检查是否有可用的优惠卷
+    await checkHasAvailableCoupons()
 
     // 如果数据为空直接跳转到首页
     if (!checkoutData.value.order.order_items.length) {

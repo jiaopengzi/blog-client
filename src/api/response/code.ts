@@ -202,6 +202,7 @@ export enum ResponseCode {
     CouponCodeNotExist = 2808, // 优惠卷不存在
     CouponCodeExistExcludingID = 2809, // 优惠卷已存在，排除指定ID
     CouponCodeNotExistExcludingID = 2810, // 优惠卷不存在，排除指定ID
+    CouponHasAvailableSuccess = 2811, // 获取是否有可用优惠卷成功
 
     // 订单相关
     OrderCreateSuccess = 5000, // 订单创建成功

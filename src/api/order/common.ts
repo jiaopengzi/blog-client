@@ -6,28 +6,30 @@
  * Description : 订单共用内容
  */
 
-import { type PgSqlDateTime } from "@/api/common"
 import { CouponDiscountType } from "@/api/coupon/common"
 import { PayType, RefundStatus, TradeState } from "@/api/pay/common"
+import { type User } from "@/api/user/getUserInfo"
 import type { DataWithImg } from "@/components/common"
 
 // 订单状态
 export enum OrderStatus {
+    AllStatus = 0, // 0 全部状态
     PendingPay = 1, // 1 待支付
-    Processing, // 2 处理中
-    Shipped, // 3 已发货
-    InTransit, // 4 运输中
-    Delivered, // 5 已送达
-    Canceled, // 6 已取消
-    Returning, // 7 退货中
-    Returned, // 8 已退货
-    Refunded, // 9 已退款
-    Complete, // 10 已完成
-    Closed, // 11 已关闭
+    Processing = 2, // 2 处理中
+    Shipped = 3, // 3 已发货
+    InTransit = 4, // 4 运输中
+    Delivered = 5, // 5 已送达
+    Canceled = 6, // 6 已取消
+    Returning = 7, // 7 退货中
+    Returned = 8, // 8 已退货
+    Refunded = 9, // 9 已退款
+    Complete = 10, // 10 已完成
+    Closed = 11, // 11 已关闭
 }
 
 // 订单状态显示
 export const OrderStatusDisplay: Record<OrderStatus, string> = {
+    [OrderStatus.AllStatus]: "全部",
     [OrderStatus.PendingPay]: "待支付",
     [OrderStatus.Processing]: "处理中",
     [OrderStatus.Shipped]: "已发货",
@@ -148,8 +150,8 @@ export interface RefundRes {
 // 订单详情响应
 export interface OrderGetByIDRes extends DataWithImg {
     id: string // 订单ID
-    created_at: PgSqlDateTime // 创建时间
-    updated_at: PgSqlDateTime // 更新时间
+    created_at: string // 创建时间
+    updated_at: string // 更新时间
     status: OrderStatus // 订单状态
     currency: Currency // 货币类型
     total_amount: number // 总金额(分)
@@ -162,4 +164,5 @@ export interface OrderGetByIDRes extends DataWithImg {
     coupon_items: CouponItemRes[] // 优惠券项
     payment: PaymentRes // 支付信息
     refund: RefundRes[] // 退款信息
+    user_info: User // 用户信息
 }
