@@ -214,15 +214,15 @@ const {
     deleteRows, // 删除行
     updateRouterPush,
     loadingDelete, // 删除时的加载状态
-} = useBaseTable<CouponRes, ViewCouponRequest, DeleteCouponRequest>(
-    RouteNames.Coupon,
-    viewCouponAPI,
-    ResponseCode.CouponViewSuccess,
-    deleteCouponAPI,
-    ResponseCode.CouponDeleteSuccess,
+} = useBaseTable<CouponRes, ViewCouponRequest, DeleteCouponRequest>({
+    routeName: RouteNames.Coupon,
+    viewAPI: viewCouponAPI,
+    viewResCode: ResponseCode.CouponViewSuccess,
     queryParams,
-    { stringKeys, numberKeys, noRequestKeys, refreshPromiseFns: [getCouponCountStatus] },
-)
+    deleteAPI: deleteCouponAPI,
+    deleteResCode: ResponseCode.CouponDeleteSuccess,
+    options: { stringKeys, numberKeys, noRequestKeys, refreshPromiseFns: [getCouponCountStatus] },
+})
 
 // 执行搜索
 const runSearch = async () => {

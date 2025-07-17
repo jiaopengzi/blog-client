@@ -177,15 +177,15 @@ const {
     deleteRows, // 删除行
     updateRouterPush,
     loadingDelete, // 删除时的加载状态
-} = useBaseTable<LinkRes, PaginationRequest, DeleteLinkRequest>(
-    RouteNames.Links,
-    viewLinkAdminAPI,
-    ResponseCode.LinkViewSuccess,
-    deleteLinkAPI,
-    ResponseCode.LinkDeleteSuccess,
+} = useBaseTable<LinkRes, PaginationRequest, DeleteLinkRequest>({
+    routeName: RouteNames.Links,
+    viewAPI: viewLinkAdminAPI,
+    viewResCode: ResponseCode.LinkViewSuccess,
     queryParams,
-    { stringKeys, numberKeys },
-)
+    deleteAPI: deleteLinkAPI,
+    deleteResCode: ResponseCode.LinkDeleteSuccess,
+    options: { stringKeys, numberKeys },
+})
 
 // 执行搜索
 const runSearch = async () => {

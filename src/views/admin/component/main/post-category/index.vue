@@ -178,15 +178,15 @@ const {
     deleteRows, // 删除行
     updateRouterPush, // 更新路由
     loadingDelete, // 删除时的加载状态
-} = useBaseTable<PostCategory, PaginationRequest, DeletePostCategoryRequest>(
-    RouteNames.PostCategory,
-    viewPostCategoryAPI,
-    ResponseCode.PostCategoryViewSuccess,
-    deletePostCategoryAPI,
-    ResponseCode.PostCategoryDeleteSuccess,
+} = useBaseTable<PostCategory, PaginationRequest, DeletePostCategoryRequest>({
+    routeName: RouteNames.PostCategory,
+    viewAPI: viewPostCategoryAPI,
+    viewResCode: ResponseCode.PostCategoryViewSuccess,
     queryParams,
-    { stringKeys, numberKeys },
-)
+    deleteAPI: deletePostCategoryAPI,
+    deleteResCode: ResponseCode.PostCategoryDeleteSuccess,
+    options: { stringKeys, numberKeys },
+})
 
 // 执行搜索
 const runSearch = async () => {

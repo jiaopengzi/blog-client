@@ -208,15 +208,15 @@ const {
     deleteRows, // 删除行
     updateRouterPush,
     loadingDelete, // 删除时的加载状态
-} = useBaseTable<MembershipRes, ViewMembershipRequest, DeleteMembershipRequest>(
-    RouteNames.Membership,
-    viewMembershipAPI,
-    ResponseCode.MembershipViewSuccess,
-    deleteMembershipAPI,
-    ResponseCode.MembershipDeleteSuccess,
+} = useBaseTable<MembershipRes, ViewMembershipRequest, DeleteMembershipRequest>({
+    routeName: RouteNames.Membership,
+    viewAPI: viewMembershipAPI,
+    viewResCode: ResponseCode.MembershipViewSuccess,
     queryParams,
-    { stringKeys, numberKeys, noRequestKeys, refreshPromiseFns: [getMembershipCountStatus] },
-)
+    deleteAPI: deleteMembershipAPI,
+    deleteResCode: ResponseCode.MembershipDeleteSuccess,
+    options: { stringKeys, numberKeys, noRequestKeys, refreshPromiseFns: [getMembershipCountStatus] },
+})
 
 // 执行搜索
 const runSearch = async () => {

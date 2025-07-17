@@ -251,15 +251,15 @@ const {
     updatePaginate, // 更新分页
     updateRouterPush,
     loadingDelete, // 删除时的加载状态
-} = useBaseTable<NotificationRes, ViewNotificationRequest, DeleteNotificationRequest>(
-    RouteNames.Notification,
-    viewNotificationAPI,
-    ResponseCode.NotificationViewSuccess,
-    deleteNotificationAPI,
-    ResponseCode.NotificationDeleteSuccess,
+} = useBaseTable<NotificationRes, ViewNotificationRequest, DeleteNotificationRequest>({
+    routeName: RouteNames.Notification,
+    viewAPI: viewNotificationAPI,
+    viewResCode: ResponseCode.NotificationViewSuccess,
     queryParams,
-    { stringKeys, numberKeys, noRequestKeys, refreshPromiseFns: [getNotificationCountStatus] },
-)
+    deleteAPI: deleteNotificationAPI,
+    deleteResCode: ResponseCode.NotificationDeleteSuccess,
+    options: { stringKeys, numberKeys, noRequestKeys, refreshPromiseFns: [getNotificationCountStatus] },
+})
 
 // 执行搜索
 const runSearch = async () => {

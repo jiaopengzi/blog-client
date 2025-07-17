@@ -150,7 +150,7 @@ const cols: TableColumn[] = reactive([
         label: "评论作者",
         minWidth: 120,
         align: "center",
-        isAuthor: true,
+        isUser: true,
     },
     {
         prop: "content",
@@ -243,15 +243,15 @@ const {
     updateRouterPush, // 更新查询参数和路由
     editItemUpdateDialogVisible, // 编辑对话框
     loadingDelete, // 删除加载状态
-} = useBaseTable<CommentResAdmin, ViewCommentByAdminRequest, DeleteCommentRequest>(
-    RouteNames.Comment,
-    viewCommentByAdminAPI,
-    ResponseCode.CommentViewSuccess,
-    deleteCommentAdminAPI,
-    ResponseCode.CommentDeleteSuccess,
+} = useBaseTable<CommentResAdmin, ViewCommentByAdminRequest, DeleteCommentRequest>({
+    routeName: RouteNames.Comment,
+    viewAPI: viewCommentByAdminAPI,
+    viewResCode: ResponseCode.CommentViewSuccess,
     queryParams,
-    { stringKeys, numberKeys, noRequestKeys, tableImg },
-)
+    deleteAPI: deleteCommentAdminAPI,
+    deleteResCode: ResponseCode.CommentDeleteSuccess,
+    options: { stringKeys, numberKeys, noRequestKeys, tableImg },
+})
 
 const handleDeleteRows = async (rows: TableData[]) => {
     await deleteRows(rows)

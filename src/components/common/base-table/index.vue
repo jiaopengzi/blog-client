@@ -85,7 +85,7 @@
 
                 <!-- 作者 -->
                 <CustomCol
-                    v-else-if="col.isAuthor"
+                    v-else-if="col.isUser"
                     :key="`author-${index}`"
                     :col="col"
                     @click-author="handleAuthorClick"

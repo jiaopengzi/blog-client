@@ -14,7 +14,7 @@
 
             <!-- 作者 -->
             <UserItem
-                v-if="col.isAuthor"
+                v-if="col.isUser"
                 :key="scope.row[col.prop].id"
                 :user="scope.row[col.prop]"
                 :is-show-cursor-pointer="isShowCursorPointer"
@@ -106,7 +106,7 @@ const handleTagClick = (item: PostTag) => {
 
 // 处理作者点击事件
 const handleUserClick = (userID: string, user: User) => {
-    if (!col.isAuthor || userID !== user.id.toString()) {
+    if (!col.isUser || userID !== user.id.toString()) {
         return
     }
 

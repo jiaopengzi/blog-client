@@ -79,8 +79,7 @@ import { type QueryParamsRecord } from "@/api/request"
 import { ResponseCode } from "@/api/response"
 import { deleteUserAPI, type DeleteUserRequest } from "@/api/user/deleteUser"
 import { getUserCountGroupByRoleAPI, type UserCountGroupByRole } from "@/api/user/getUserCountGroupByRole"
-import { type User } from "@/api/user/getUsers"
-import { getUsersAPI, type GetUsersRequest } from "@/api/user/getUsers"
+import { getUsersAPI, type GetUsersRequest, type User } from "@/api/user/getUsers"
 import type { TableColumn, TableData } from "@/components/common/base-table"
 import BaseTable from "@/components/common/base-table"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
@@ -333,15 +332,15 @@ const {
     deleteRows, // 删除行
     updateRouterPush, // 更新查询参数和路由
     loadingDelete, // 删除加载状态
-} = useBaseTable<User, GetUsersRequest, DeleteUserRequest>(
-    RouteNames.UserView,
-    getUsersAPI,
-    ResponseCode.UserGetAllSuccess,
-    deleteUserAPI,
-    ResponseCode.DeleteUserSuccess,
+} = useBaseTable<User, GetUsersRequest, DeleteUserRequest>({
+    routeName: RouteNames.UserView,
+    viewAPI: getUsersAPI,
+    viewResCode: ResponseCode.UserGetAllSuccess,
     queryParams,
-    { stringKeys, numberKeys, noRequestKeys },
-)
+    deleteAPI: deleteUserAPI,
+    deleteResCode: ResponseCode.DeleteUserSuccess,
+    options: { stringKeys, numberKeys, noRequestKeys },
+})
 
 const handleDeleteRows = async (rows: TableData[]) => {
     await deleteRows(rows)

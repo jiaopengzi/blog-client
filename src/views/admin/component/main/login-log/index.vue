@@ -126,15 +126,15 @@ const {
     updateRouterPush,
     updatePaginate,
     loadingDelete,
-} = useBaseTable<LoginLog, GetLoginLogsRequest, DeleteLoginLogByIDsRequest>(
-    RouteNames.LoginLog,
-    getLoginLogsAPI,
-    ResponseCode.GetLoginLogsSuccess,
-    deleteLoginLogByIDsAPI,
-    ResponseCode.LoginLogDeleteByIDsSuccess,
+} = useBaseTable<LoginLog, GetLoginLogsRequest, DeleteLoginLogByIDsRequest>({
+    routeName: RouteNames.LoginLog,
+    viewAPI: getLoginLogsAPI,
+    viewResCode: ResponseCode.GetLoginLogsSuccess,
+    deleteAPI: deleteLoginLogByIDsAPI,
+    deleteResCode: ResponseCode.LoginLogDeleteByIDsSuccess,
     queryParams,
-    { stringKeys, numberKeys },
-)
+    options: { stringKeys, numberKeys },
+})
 
 // 执行搜索
 const runSearch = async () => {

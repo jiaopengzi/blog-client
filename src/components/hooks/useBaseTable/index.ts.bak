@@ -20,29 +20,38 @@ import { pollingGetStreamIDsStatus } from "@/utils/getStreamIDsStatus"
 import { MessageUtil } from "@/utils/message"
 import { parseRouteQuery } from "@/utils/queryParam"
 
-// 可选参数类型定义
 export interface Options<T> extends QueryParamsOptions<T> {
     tableImg?: TableImg // 表格图片配置
 }
 
-// 基础表格钩子选项
 export interface BaseTableOptions<T extends FormatTableData, K extends PaginationRequest, Q> {
-    routeName: string // 路由名称
-    viewAPI: (params: K) => ResPromise<Res<Pagination<T>>> // 获取数据的 API
-    viewResCode: ResponseCode // 获取数据的响应码
+    routeName: string
+    viewAPI: (params: K) => ResPromise<Res<Pagination<T>>>
+    viewResCode: ResponseCode
     queryParams: Reactive<K> // 查询参数
-    deleteAPI?: (params: Q) => ResPromise<Res<StreamsStatusRes | void>> // 删除数据的 API
-    deleteResCode?: ResponseCode // 删除数据的响应码
-    options?: Options<K> // 可选参数
+    deleteAPI?: (params: Q) => ResPromise<Res<StreamsStatusRes | void>>
+    deleteResCode?: ResponseCode
+    options?: Options<K>
 }
-
 /**
  * @description: 基础表格钩子
- * @param ctx 上下文对象，包含路由名称、获取数据的 API、响应码、查询参数、删除 API 和可选参数等
+ * @param routeName 路由名称
+ * @param viewAPI 获取数据的 API
+ * @param viewResCode 获取数据的响应码
+ * @param deleteAPI 删除数据的 API
+ * @param deleteResCode 删除数据的响应码
+ * @param queryParams 查询参数
+ * @param options 可选参数
  */
-export function useBaseTable<T extends FormatTableData, K extends PaginationRequest, Q>(ctx: BaseTableOptions<T, K, Q>) {
-    const { routeName, viewAPI, viewResCode, queryParams, deleteAPI, deleteResCode, options } = ctx
-
+export function useBaseTable<T extends FormatTableData, K extends PaginationRequest, Q>(
+    routeName: string,
+    viewAPI: (params: K) => ResPromise<Res<Pagination<T>>>,
+    viewResCode: ResponseCode,
+    queryParams: Reactive<K>, // 查询参数
+    deleteAPI?: (params: Q) => ResPromise<Res<StreamsStatusRes | void>>,
+    deleteResCode?: ResponseCode,
+    options?: Options<K>,
+) {
     const route = useRoute()
     const router = useRouter()
 

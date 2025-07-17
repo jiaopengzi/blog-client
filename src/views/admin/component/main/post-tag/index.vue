@@ -171,15 +171,15 @@ const {
     deleteRows, // 删除行
     updateRouterPush,
     loadingDelete, // 删除时的加载状态
-} = useBaseTable<PostTag, PaginationRequest, DeletePostTagRequest>(
-    RouteNames.PostTag,
-    viewPostTagAPI,
-    ResponseCode.PostTagViewSuccess,
-    deletePostTagAPI,
-    ResponseCode.PostTagDeleteSuccess,
+} = useBaseTable<PostTag, PaginationRequest, DeletePostTagRequest>({
+    routeName: RouteNames.PostTag,
+    viewAPI: viewPostTagAPI,
+    viewResCode: ResponseCode.PostTagViewSuccess,
     queryParams,
-    { stringKeys, numberKeys },
-)
+    deleteAPI: deletePostTagAPI,
+    deleteResCode: ResponseCode.PostTagDeleteSuccess,
+    options: { stringKeys, numberKeys },
+})
 
 // 执行搜索
 const runSearch = async () => {

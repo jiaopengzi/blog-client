@@ -229,7 +229,7 @@ const cols: TableColumn[] = reactive([
         sortable: true,
         minWidth: 120,
         align: "center",
-        isAuthor: true,
+        isUser: true,
     },
     {
         prop: "post_status",
@@ -324,15 +324,15 @@ const {
     updatePaginate, // 更新分页
     updateRouterPush, // 更新查询参数和路由
     loadingDelete, // 删除加载状态
-} = useBaseTable<PostResPaginationByAdmin, ViewPostByAdminRequest, DeletePostRequest>(
-    RouteNames.PostAll,
-    viewPostByAdminAPI,
-    ResponseCode.PostViewByAdminSuccess,
-    deletePostAPI,
-    ResponseCode.PostDeleteSuccess,
+} = useBaseTable<PostResPaginationByAdmin, ViewPostByAdminRequest, DeletePostRequest>({
+    routeName: RouteNames.PostAll,
+    viewAPI: viewPostByAdminAPI,
+    viewResCode: ResponseCode.PostViewByAdminSuccess,
     queryParams,
-    { stringKeys, numberKeys, noRequestKeys, tableImg, refreshPromiseFns: [getPostCountStatus] },
-)
+    deleteAPI: deletePostAPI,
+    deleteResCode: ResponseCode.PostDeleteSuccess,
+    options: { stringKeys, numberKeys, noRequestKeys, tableImg, refreshPromiseFns: [getPostCountStatus] },
+})
 
 const handleDeleteRows = async (rows: TableData[]) => {
     await deleteRows(rows)

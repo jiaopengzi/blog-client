@@ -220,7 +220,7 @@ const cols: TableColumn[] = reactive([
         sortable: true,
         minWidth: 120,
         align: "center",
-        isAuthor: true,
+        isUser: true,
     },
     {
         prop: "post_status",

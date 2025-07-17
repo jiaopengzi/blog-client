@@ -12,6 +12,7 @@ import { type LinkRes } from "@/api/link/common"
 import { type LoginLog } from "@/api/loginLog/getLoginLogs"
 import { type MembershipRes } from "@/api/membership/common"
 import { type NotificationRes } from "@/api/notification/common"
+import { type OrderGetByIDRes } from "@/api/order/common"
 import { type PostResPaginationByAdmin } from "@/api/post/common"
 import { type PostCategory } from "@/api/postCategory/view"
 import { type PostTag } from "@/api/postTag/view"
@@ -32,7 +33,7 @@ export interface TableColumn {
     isTags?: boolean // 是否为标签
     isHeading?: boolean // 是否为标题
     isHeadingWithComment?: boolean // 是否为标题带有评论信息
-    isAuthor?: boolean // 是否为作者
+    isUser?: boolean // 是否为用户
     isUserWithAvatar?: boolean // 是否使用用户头像
     isCommentWithPost?: boolean // 是否为评论带有文章信息
     isMarkdownPreview?: boolean // 是否为Markdown预览
@@ -52,6 +53,7 @@ export type TableData =
     | NotificationRes
     | CouponRes
     | MembershipRes
+    | OrderGetByIDRes
 
 export interface FormatTableData {
     thumbnail?: string // 缩略图

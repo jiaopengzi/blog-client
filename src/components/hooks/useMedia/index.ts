@@ -72,15 +72,15 @@ export function useMedia() {
         updateRouterPush, // 更新查询参数和路由
         updatePaginate, // 更新分页
         loadingDelete, // 删除加载状态
-    } = useBaseTable<MediaFile, GetMediaFilesRequest, DeleteFileRequest>(
-        RouteNames.Media,
-        getMediaFilesAPI,
-        ResponseCode.GetFilesSuccess,
-        deleteFileAPI,
-        ResponseCode.FileDeleteSuccess,
+    } = useBaseTable<MediaFile, GetMediaFilesRequest, DeleteFileRequest>({
+        routeName: RouteNames.Media,
+        viewAPI: getMediaFilesAPI,
+        viewResCode: ResponseCode.GetFilesSuccess,
+        deleteAPI: deleteFileAPI,
+        deleteResCode: ResponseCode.FileDeleteSuccess,
         queryParams,
-        { stringKeys, numberKeys, noRequestKeys, tableImg },
-    )
+        options: { stringKeys, numberKeys, noRequestKeys, tableImg },
+    })
 
     // 更新数据
     const updateData = async (isUpdateRouter: boolean = true) => {
