@@ -24,7 +24,7 @@ import { RegexPatterns } from "@/utils/regexPatterns"
 defineOptions({ name: "TestSendEmail" })
 
 const { sendApi, successCode, width, btnText, placeholder } = defineProps<{
-    sendApi: (requestData: SendTestEmailRequest) => ResPromise<Res<unknown>>
+    sendApi: (requestData: SendTestEmailRequest) => ResPromise<Res<void>>
     successCode: ResponseCode
     width?: string | number
     btnText?: string

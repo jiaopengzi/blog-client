@@ -10,7 +10,7 @@ import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
 // 检测验证码是否正确
-export function isSetupAPI(): ResPromise<Res<unknown>> {
+export function isSetupAPI(): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/is-setup"
     return request({
         url: urlStr,

@@ -22,7 +22,7 @@ export interface UpdateRoleRequest {
 }
 
 // 更新列表角色权限
-export function updateRolesAPI(requestData: UpdateRolesRequest): ResPromise<Res<unknown>> {
+export function updateRolesAPI(requestData: UpdateRolesRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/role/update-roles"
     return request({
         url: urlStr,

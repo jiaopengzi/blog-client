@@ -14,7 +14,7 @@ export interface LogoutByAdminRequest {
 }
 
 // 管理员登出用户
-export function logoutByAdminAPI(logoutByAdminRequest: LogoutByAdminRequest): ResPromise<Res<unknown>> {
+export function logoutByAdminAPI(logoutByAdminRequest: LogoutByAdminRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/user/logout-by-admin"
     return request({
         url: urlStr,

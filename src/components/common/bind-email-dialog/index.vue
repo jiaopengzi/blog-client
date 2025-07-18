@@ -110,19 +110,11 @@ async function checkSendCaptcha(): Promise<void> {
             email: bindEmailForm.email,
             purpose: CaptchaPurpose.BindEmail,
         }
-        const { data } = await captchaSendAPI(req) // 将 resStr 转换为对象
+        const res = await captchaSendAPI(req) // 将 resStr 转换为对象
 
-        if (data.code !== ResponseCode.CaptchaSendSuccess && data.data !== null) {
-            // 历遍 data 中的错误信息 并抛出第一个key错误信息 停止循环
-            const errorData = data.data as Record<string, string>
-            for (const key in errorData) {
-                if (Object.prototype.hasOwnProperty.call(errorData, key)) {
-                    throw new Error(errorData[key]) // 抛出错误信息
-                }
-            }
-        }
-        if (data.code !== ResponseCode.CaptchaSendSuccess && data.data === null) {
-            throw new Error(data.msg) // 抛出错误信息
+        if (res.data.code !== ResponseCode.CaptchaSendSuccess) {
+            const msg = handleResErr(res) // 处理错误信息
+            throw new Error(msg) // 抛出错误信息
         }
     } catch (err: unknown) {
         console.log(err)
@@ -178,10 +170,11 @@ async function checkCaptcha(): Promise<void> {
             purpose: CaptchaPurpose.BindEmail,
         }
 
-        const { data } = await captchaCheckAPI(req)
+        const res = await captchaCheckAPI(req)
 
-        if (data.code !== ResponseCode.CaptchaCheckSuccess) {
-            throw new Error(data.msg)
+        if (res.data.code !== ResponseCode.CaptchaCheckSuccess) {
+            const msg = handleResErr(res) // 处理错误信息
+            throw new Error(msg)
         }
     } catch (err: unknown) {
         console.log(err)

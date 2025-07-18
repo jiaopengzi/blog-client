@@ -10,21 +10,22 @@
     <div class="refund-details">
         <h4 class="title">退款</h4>
         <el-table :data="items" style="width: 100%" border stripe :height="detailsHeight">
-            <el-table-column prop="transaction_id" label="退款交易ID" />
+            <el-table-column prop="refund_transaction_id" label="退款交易ID" />
+            <el-table-column prop="reason" label="退款原因" />
             <el-table-column prop="total_amount" label="已退款金额" width="150" align="center">
-                <template #default="{ row }">{{ fenToYuan(row.total_amount, true) }}</template>
+                <template #default="{ row }">{{ fenToYuan(row.refund_amount, true) }}</template>
             </el-table-column>
         </el-table>
         <p class="amount-info" v-if="isAllRefunded">
-            订单总金额：<span class="amount">{{ fenToYuan(totalAmount, true) }}</span
-            >，已退款金额：<span class="discount">{{ fenToYuan(computedFinal(totalAmount, items), true) }}</span
+            支付总金额：<span class="amount">{{ fenToYuan(totalPaidAmount, true) }}</span
+            >，已退款金额：<span class="refund">{{ fenToYuan(totalPaidAmount - computedFinal(totalPaidAmount, items), true) }}</span
             >，已全部退款。
         </p>
 
         <p class="amount-info" v-else>
-            订单总金额：<span class="amount">{{ fenToYuan(totalAmount, true) }}</span
-            >，已退款金额：<span class="discount">{{ fenToYuan(computedFinal(totalAmount, items), true) }}</span
-            >，剩余可退款金额：<span class="final-amount">{{ fenToYuan(totalAmount - computedFinal(totalAmount, items), true) }}</span
+            支付总金额：<span class="amount">{{ fenToYuan(totalPaidAmount, true) }}</span
+            >，已退款金额：<span class="refund">{{ fenToYuan(totalPaidAmount - computedFinal(totalPaidAmount, items), true) }}</span
+            >，剩余可退款金额：<span class="final-amount">{{ fenToYuan(computedFinal(totalPaidAmount, items), true) }}</span
             >。
         </p>
     </div>
@@ -38,8 +39,8 @@ import { fenToYuan } from "@/utils/amount"
 
 defineOptions({ name: "RefundList" })
 
-const { totalAmount, items } = defineProps<{
-    totalAmount: number // 订单总金额
+const { totalPaidAmount, items } = defineProps<{
+    totalPaidAmount: number // 订单总金额
     items: RefundRes[]
 }>()
 
@@ -56,7 +57,7 @@ const computedFinal = (total: number, couponList: RefundRes[]) => {
     if (couponList.length === 0) return total
     // 循环计算优惠金额
     const final = couponList.reduce((acc, item) => {
-        return acc - (item.total_amount || 0)
+        return acc - (item.refund_amount || 0)
     }, total)
 
     // 如果最终金额小于0，则返回0
@@ -64,7 +65,7 @@ const computedFinal = (total: number, couponList: RefundRes[]) => {
 }
 
 const isAllRefunded = computed(() => {
-    return computedFinal(totalAmount, items) === 0
+    return computedFinal(totalPaidAmount, items) === 0
 })
 </script>
 
@@ -90,7 +91,7 @@ h4 {
     margin-top: 10px;
 
     .amount,
-    .discount,
+    .refund,
     .final-amount {
         margin: 0 5px;
         font-weight: 700;

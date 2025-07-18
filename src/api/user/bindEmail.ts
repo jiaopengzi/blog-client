@@ -16,7 +16,7 @@ export interface BindEmailRequest {
 }
 
 // 注册
-export function bindEmailAPI(requestData: BindEmailRequest): ResPromise<Res<unknown>> {
+export function bindEmailAPI(requestData: BindEmailRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/user/bind-email"
     return request({
         url: urlStr,

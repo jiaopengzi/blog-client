@@ -40,7 +40,7 @@ export interface SetupRequest {
 }
 
 // 检测验证码是否正确
-export function setupAPI(requestData: SetupRequest): ResPromise<Res<unknown>> {
+export function setupAPI(requestData: SetupRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/setup"
     return request({
         url: urlStr,

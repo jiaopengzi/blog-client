@@ -16,7 +16,7 @@ export interface CaptchaCheckRequest {
 }
 
 // 检测验证码是否正确
-export function captchaCheckAPI(requestData: CaptchaCheckRequest): ResPromise<Res<unknown>> {
+export function captchaCheckAPI(requestData: CaptchaCheckRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/captcha/check"
     return request({
         url: urlStr,

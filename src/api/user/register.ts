@@ -18,7 +18,7 @@ export interface RegisterRequest {
 }
 
 // 注册
-export function registerAPI(requestData: RegisterRequest): ResPromise<Res<unknown>> {
+export function registerAPI(requestData: RegisterRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/user/register"
     return request({
         url: urlStr,

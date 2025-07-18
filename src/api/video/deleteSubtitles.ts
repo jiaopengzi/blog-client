@@ -16,7 +16,7 @@ export interface DeleteSubtitlesRequest {
 }
 
 // 更新字幕
-export function deleteSubtitlesAPI(requestData: DeleteSubtitlesRequest): ResPromise<Res<unknown>> {
+export function deleteSubtitlesAPI(requestData: DeleteSubtitlesRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/subtitles/delete"
     return request({
         url: urlStr,

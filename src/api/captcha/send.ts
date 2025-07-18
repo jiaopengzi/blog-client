@@ -14,8 +14,8 @@ export interface CaptchaSendRequest {
     purpose: string // 验证码用途
 }
 
-// 检测验证码是否正确
-export function captchaSendAPI(requestData: CaptchaSendRequest): ResPromise<Res<unknown>> {
+// 验证码发送接口
+export function captchaSendAPI(requestData: CaptchaSendRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/captcha/send"
     return request({
         url: urlStr,

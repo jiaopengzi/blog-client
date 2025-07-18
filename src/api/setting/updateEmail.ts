@@ -14,7 +14,7 @@ import type { GetEmailResponse } from "./getEmail" // 复用类型
 export type UpdateEmailRequest = GetEmailResponse
 
 // 更新邮箱信息
-export function updateEmailAPI(requestData: UpdateEmailRequest): ResPromise<Res<unknown>> {
+export function updateEmailAPI(requestData: UpdateEmailRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/setting/update-email"
     return request({
         url: urlStr,

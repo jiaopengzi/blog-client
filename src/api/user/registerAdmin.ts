@@ -17,7 +17,7 @@ export interface RegisterAdminRequest {
 }
 
 // 注册管理员
-export function registerAdminAPI(requestData: RegisterAdminRequest): ResPromise<Res<unknown>> {
+export function registerAdminAPI(requestData: RegisterAdminRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/user/register-admin"
     return request({
         url: urlStr,

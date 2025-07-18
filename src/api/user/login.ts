@@ -15,7 +15,7 @@ export interface LoginRequest {
 }
 
 // 默认账号登录
-export function loginAPI(loginRequest: LoginRequest): ResPromise<Res<unknown>> {
+export function loginAPI(loginRequest: LoginRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/user/login"
     return request({
         url: urlStr,

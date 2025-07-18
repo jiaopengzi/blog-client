@@ -18,7 +18,7 @@ export interface UpsertSubtitlesRequest {
 }
 
 // 更新字幕
-export function upsertSubtitlesAPI(requestData: UpsertSubtitlesRequest): ResPromise<Res<unknown>> {
+export function upsertSubtitlesAPI(requestData: UpsertSubtitlesRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/subtitles/upsert"
     return request({
         url: urlStr,

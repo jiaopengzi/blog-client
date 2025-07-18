@@ -124,7 +124,7 @@ export const useUserStore = defineStore("user", {
 
         // 社交登录回调
         async socialLoginCallback(code: string, loginType: SocialLoginType) {
-            const resObj = await handleResponse<Res<unknown>>(socialLoginCallback(code, loginType))
+            const resObj = await handleResponse<Res<void>>(socialLoginCallback(code, loginType))
             const userInfoStore = await handleLoginResult(resObj, ResponseCode.SocialLoginCallbackSuccess)
 
             this.$patch(userInfoStore)
@@ -137,7 +137,7 @@ export const useUserStore = defineStore("user", {
 
         // 社交绑定回调
         async socialBindCallback(code: string, loginType: SocialLoginType) {
-            const resObj = await handleResponse<Res<unknown>>(socialBindCallback(code, loginType))
+            const resObj = await handleResponse<Res<void>>(socialBindCallback(code, loginType))
             const userInfoStore = await handleBindResult(resObj, ResponseCode.SocialBindCallbackSuccess)
 
             this.$patch(userInfoStore)
@@ -145,7 +145,7 @@ export const useUserStore = defineStore("user", {
 
         // 社交解绑
         async socialUnBind(loginType: SocialLoginType) {
-            const resObj = await handleResponse<Res<unknown>>(socialUnBind(loginType))
+            const resObj = await handleResponse<Res<void>>(socialUnBind(loginType))
 
             const userInfoStore = await handleBindResult(resObj, ResponseCode.SocialUnBindSuccess)
 
@@ -201,7 +201,7 @@ async function apiLogin(loginName: string, password: string): Promise<UserInfoSt
         password: password,
     }
 
-    const resObj = await handleResponse<Res<unknown>>(loginAPI(req)) // 使用辅助函数处理请求
+    const resObj = await handleResponse<Res<void>>(loginAPI(req)) // 使用辅助函数处理请求
 
     return await handleLoginResult(resObj, ResponseCode.UserLoginSuccess)
 }
@@ -311,7 +311,7 @@ async function handleLoginResult(resObj: Res<unknown>, successCode: ResponseCode
 /**
  * @description: 辅助函数：处理绑定结果
  */
-async function handleBindResult(resObj: Res<unknown>, successCode: ResponseCode): Promise<UserInfoStore> {
+async function handleBindResult(resObj: Res<void>, successCode: ResponseCode): Promise<UserInfoStore> {
     if (resObj.code === successCode) {
         // 显示登录成功提示
         MessageUtil.success(resObj.msg, 3000)

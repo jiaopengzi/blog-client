@@ -14,7 +14,7 @@ import type { GetSocialLoginResponse } from "./getSocialLogin" // 复用类型
 export type UpdateSocialLoginRequest = GetSocialLoginResponse
 
 // 更新社交登录信息
-export function updateSocialLoginAPI(requestData: UpdateSocialLoginRequest): ResPromise<Res<unknown>> {
+export function updateSocialLoginAPI(requestData: UpdateSocialLoginRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/setting/update-social-login"
     return request({
         url: urlStr,

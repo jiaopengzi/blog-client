@@ -19,7 +19,7 @@ export interface UpsertPermissionRoleRequest {
 }
 
 // 更新列表角色权限
-export function upsertPermissionRoleAPI(requestData: UpsertPermissionRoleRequest): ResPromise<Res<unknown>> {
+export function upsertPermissionRoleAPI(requestData: UpsertPermissionRoleRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/role/upsert-permission-role"
     return request({
         url: urlStr,

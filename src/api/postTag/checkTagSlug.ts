@@ -14,7 +14,7 @@ export interface CheckTagSlugRequest {
 }
 
 // 检查 tag 名称是否存在
-export function checkTagSlugAPI(requestData: CheckTagSlugRequest): ResPromise<Res<unknown>> {
+export function checkTagSlugAPI(requestData: CheckTagSlugRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/post-tag/check-tag-slug"
     return request({
         url: urlStr,

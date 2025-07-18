@@ -11,7 +11,7 @@ import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
 // 发送测试邮件
-export function testEmailAPI(requestData: SendTestEmailRequest): ResPromise<Res<unknown>> {
+export function testEmailAPI(requestData: SendTestEmailRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/setting/test-email"
     return request({
         url: urlStr,

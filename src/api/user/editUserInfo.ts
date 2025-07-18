@@ -17,7 +17,7 @@ export interface EditUserInfoRequest {
 }
 
 // 注册
-export function editUserInfoAPI(requestData: EditUserInfoRequest): ResPromise<Res<unknown>> {
+export function editUserInfoAPI(requestData: EditUserInfoRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/user/info-edit"
     return request({
         url: urlStr,

@@ -15,7 +15,7 @@ export interface CheckSlugRequest {
 }
 
 // 检验 slug 是否可用
-export function checkSlugAPI(requestData: CheckSlugRequest): ResPromise<Res<unknown>> {
+export function checkSlugAPI(requestData: CheckSlugRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/upload/check-slug"
     return request({
         url: urlStr,

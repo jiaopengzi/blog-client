@@ -9,7 +9,7 @@
 import { type ReqProgressEvent, request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
-export function uploadFileAPI(formData: FormData, progressCallback: (progressEvent: ReqProgressEvent) => void): ResPromise<Res<unknown>> {
+export function uploadFileAPI(formData: FormData, progressCallback: (progressEvent: ReqProgressEvent) => void): ResPromise<Res<void>> {
     return request({
         url: routerGroup + "/upload/file",
         method: "post",

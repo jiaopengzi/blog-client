@@ -14,7 +14,7 @@ import type { GetUploadResponse } from "./getUpload" // 复用类型
 export type UpdateUploadRequest = GetUploadResponse
 
 // 更新上传信息
-export function updateUploadAPI(requestData: UpdateUploadRequest): ResPromise<Res<unknown>> {
+export function updateUploadAPI(requestData: UpdateUploadRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/setting/update-upload"
     return request({
         url: urlStr,

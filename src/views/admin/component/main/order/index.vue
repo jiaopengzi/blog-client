@@ -25,7 +25,6 @@
             @update-current-page="updateCurrentPage"
             @update-page-size="updatePageSize"
             @edit-row="editRow"
-            @delete-rows="handleDeleteRows"
             @update-search="updateSearch"
             @run-search="runSearch"
             @add-item-update-dialog-visible="addItemUpdateDialogVisible"
@@ -52,7 +51,7 @@
 
             <template #edit-item>
                 <div class="dialog-edit">
-                    <EditOrder :data="editData" @edit-status="handleEditStatus" />
+                    <OrderDetail :data="editData" @edit-status="handleEditStatus" />
                 </div>
             </template>
         </BaseTable>
@@ -75,15 +74,15 @@ import { useParams } from "@/components/hooks/useParams"
 import { RouteNames } from "@/router"
 import { adminMenuItemMap } from "@/views/admin/component/aside"
 
-import EditOrder from "./edit-order"
 import { useOrder } from "./hooks"
+import OrderDetail from "./order-detail"
 defineOptions({ name: RouteNames.Order })
 
 useHead({
     title: adminMenuItemMap[RouteNames.Order].text,
 })
 
-const { formatOrderItems, formatCouponItems, formatPayment } = useOrder()
+const { formatCouponItems, formatPayment } = useOrder()
 
 const cols: TableColumn[] = reactive([
     {
@@ -101,12 +100,12 @@ const cols: TableColumn[] = reactive([
         isUser: true,
     },
     {
-        prop: "items",
+        prop: "description",
         label: "产品",
         sortable: true,
         minWidth: 180,
         align: "center",
-        formatter: formatOrderItems,
+        isHeading: true,
     },
     {
         prop: "total_amount",
@@ -185,13 +184,6 @@ const numberKeys: NumberKeys<OrderPaginationRequest>[] = ["current_page", "page_
 // 不需要请求的参数
 const noRequestKeys: QueryParamsRecord<queryKey> = { [queryKey.Status]: allStatus }
 
-const editData = ref<OrderGetByIDRes>({} as OrderGetByIDRes)
-const editRow = (index: number, row: OrderGetByIDRes) => {
-    console.log("============>row", row)
-    editData.value = row
-    toggleEditDialog()
-}
-
 // 订单状态
 const orderCountGroupByStatus = ref<OrderCountByStatus[]>([])
 
@@ -221,7 +213,6 @@ const {
     editStatus, // 编辑状态
     addItemUpdateDialogVisible, // 新增对话框
     editItemUpdateDialogVisible, // 编辑对话框
-    deleteRows, // 删除行
     updateRouterPush, // 更新查询参数和路由
     loadingDelete, // 删除加载状态
 } = useBaseTable<OrderGetByIDRes, OrderPaginationRequest, never>({
@@ -232,9 +223,10 @@ const {
     options: { stringKeys, numberKeys, noRequestKeys },
 })
 
-const handleDeleteRows = async (rows: TableData[]) => {
-    await deleteRows(rows)
-    await getOrderCountByStatus()
+const editData = ref<OrderGetByIDRes>({} as OrderGetByIDRes)
+const editRow = (index: number, row: OrderGetByIDRes) => {
+    editData.value = row
+    toggleEditDialog()
 }
 
 const handleEditStatus = async (status: boolean) => {

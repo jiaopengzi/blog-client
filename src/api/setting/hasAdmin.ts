@@ -10,7 +10,7 @@ import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
 // 检测验证码是否正确
-export function hasAdminAPI(): ResPromise<Res<unknown>> {
+export function hasAdminAPI(): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/setting/has-admin"
     return request({
         url: urlStr,

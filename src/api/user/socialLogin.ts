@@ -20,7 +20,7 @@ export function socialLogin(loginType: SocialLoginType): ResPromise<Res<string>>
 }
 
 // 社交登录回调
-export function socialLoginCallback(code: string, loginType: SocialLoginType): ResPromise<Res<unknown>> {
+export function socialLoginCallback(code: string, loginType: SocialLoginType): ResPromise<Res<void>> {
     const urlStr = `${routerGroup}/social/login/callback?code=${code}&login-type=${loginType}`
     return request({
         url: urlStr,
@@ -38,7 +38,7 @@ export function socialBind(loginType: SocialLoginType): ResPromise<Res<string>> 
 }
 
 // 绑定回调
-export function socialBindCallback(code: string, loginType: SocialLoginType): ResPromise<Res<unknown>> {
+export function socialBindCallback(code: string, loginType: SocialLoginType): ResPromise<Res<void>> {
     const urlStr = `${routerGroup}/social/bind/callback?code=${code}&login-type=${loginType}`
     return request({
         url: urlStr,
@@ -47,7 +47,7 @@ export function socialBindCallback(code: string, loginType: SocialLoginType): Re
 }
 
 // 社交解绑
-export function socialUnBind(loginType: SocialLoginType): ResPromise<Res<unknown>> {
+export function socialUnBind(loginType: SocialLoginType): ResPromise<Res<void>> {
     const urlStr = `${routerGroup}/social/unbind?login-type=${loginType}`
     return request({
         url: urlStr,

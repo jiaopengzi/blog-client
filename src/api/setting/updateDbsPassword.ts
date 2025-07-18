@@ -14,7 +14,7 @@ import type { SetupRequest } from "./setup" // 复用类型
 type UpdateDbsPasswordRequest = SetupRequest
 
 // 更新数据库密码
-export function updateDbsPasswordAPI(requestData: UpdateDbsPasswordRequest): ResPromise<Res<unknown>> {
+export function updateDbsPasswordAPI(requestData: UpdateDbsPasswordRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/setting/update-dbs-password"
     return request({
         url: urlStr,

@@ -17,7 +17,7 @@ export interface ResetPasswordRequest {
 }
 
 // 注册
-export function resetPasswordAPI(requestData: ResetPasswordRequest): ResPromise<Res<unknown>> {
+export function resetPasswordAPI(requestData: ResetPasswordRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/user/reset-password"
     return request({
         url: urlStr,

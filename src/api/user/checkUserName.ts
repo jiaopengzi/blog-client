@@ -14,7 +14,7 @@ export interface CheckUserNameRequest {
 }
 
 // 检测用户名是否存在
-export function checkUserNameAPI(requestData: CheckUserNameRequest): ResPromise<Res<unknown>> {
+export function checkUserNameAPI(requestData: CheckUserNameRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/user/check-username"
     return request({
         url: urlStr,

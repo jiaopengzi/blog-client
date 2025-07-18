@@ -15,7 +15,7 @@ export interface CheckTagSlugExcludingIDRequest {
 }
 
 // 检查 tag 名称是否存在
-export function checkTagSlugExcludingIDAPI(requestData: CheckTagSlugExcludingIDRequest): ResPromise<Res<unknown>> {
+export function checkTagSlugExcludingIDAPI(requestData: CheckTagSlugExcludingIDRequest): ResPromise<Res<void>> {
     const urlStr = routerGroup + "/post-tag/check-tag-slug-excluding-id"
     return request({
         url: urlStr,
