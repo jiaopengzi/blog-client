@@ -50,8 +50,6 @@ declare module 'vue' {
     CommonRecursiveMenuItem: typeof import('./src/components/common/recursive-menu-item/index.vue')['default']
     CommonRefundList: typeof import('./src/components/common/refund-list/index.vue')['default']
     CommonRestartDialog: typeof import('./src/components/common/restart-dialog/index.vue')['default']
-    CommonRestartDialogbak: typeof import('./src/components/common/restart-dialog.bak/index.vue')['default']
-    CommonRestartDialogcopy: typeof import('./src/components/common/restart-dialog copy/index.vue')['default']
     CommonRolesTag: typeof import('./src/components/common/roles-tag/index.vue')['default']
     CommonSendTestEmail: typeof import('./src/components/common/send-test-email/index.vue')['default']
     CommonSlideVerify: typeof import('./src/components/common/slide-verify/index.vue')['default']

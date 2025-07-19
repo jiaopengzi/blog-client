@@ -66,8 +66,6 @@ const onIframeLoaded = () => {
     padding: 20px;
     width: 300px;
     height: 400px;
-    // background-color: var(--jpz-bg-color-page);
-    // border-radius: 16px;
 }
 
 .title {

@@ -85,8 +85,8 @@ const submitForm = async () => {
     const res = await updateSocialLoginAPI(req)
 
     if (res.data.code === ResponseCode.SocialLoginUpdateSuccess) {
+        MessageUtil.success("更新成功，等待重启服务")
         await showRestart()
-        MessageUtil.success("更新成功")
     } else {
         MessageUtil.error(handleResErr(res), 10000)
     }

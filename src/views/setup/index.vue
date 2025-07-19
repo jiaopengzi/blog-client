@@ -88,8 +88,6 @@ const { submit, waitSeconds, isShowTimer } = useDatabase(
     esFormRef,
     setupAPI,
     ResponseCode.SetupSuccess,
-    isSetupAPI,
-    ResponseCode.SetupAlready,
     confirmFunc,
 )
 </script>

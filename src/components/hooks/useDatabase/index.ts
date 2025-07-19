@@ -24,6 +24,7 @@ import { MessageUtil } from "@/utils/message"
  * @param esFormRef es 表单
  * @param submitAPI 提交请求
  * @param submitResCode 提交请求返回码
+ * @param confirmFunc 确认函数
  * @param maxWaitSeconds 最大等待秒数 默认 60 秒
  */
 export function useDatabase<K extends SetupRequest>(
@@ -32,6 +33,7 @@ export function useDatabase<K extends SetupRequest>(
     esFormRef: Ref<ElasticsearchFormRef | null>,
     submitAPI: (params: K) => ResPromise<Res<void>>,
     submitResCode: ResponseCode,
+    confirmFunc: () => void,
     maxWaitSeconds: number = 60,
 ) {
     const { showRestart, waitSeconds, isShowTimer, hasShowSuccessMsg } = useRestart(maxWaitSeconds)
@@ -117,7 +119,9 @@ export function useDatabase<K extends SetupRequest>(
                 const res = await submitAPI(req as K)
 
                 if (res.data.code === submitResCode) {
-                    await showRestart()
+                    await showRestart().then(() => {
+                        confirmFunc()
+                    })
                 } else {
                     MessageUtil.error(handleResErr(res), 10000)
                 }

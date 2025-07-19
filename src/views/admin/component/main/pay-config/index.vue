@@ -127,7 +127,20 @@ const wechatRules: ComputedRef<FormRules> = computed(() => {
         mch_private_key: [{ required: !!enabled, message: "请输入商户私钥", trigger: "change" }],
         app_id: [{ required: !!enabled, message: "请输入应用ID", trigger: "change" }],
         api_v3_key: [{ required: !!enabled, message: "请输入APIv3密钥", trigger: "change" }],
-        notify_host: [{ required: !!enabled, message: "请输入通知回调主机地址", trigger: "change" }],
+        notify_host: [
+            { required: !!enabled, message: "请输入通知回调主机地址", trigger: "change" },
+            {
+                validator: (rule, value, callback) => {
+                    // 结尾不能有斜杠
+                    if (value.endsWith("/")) {
+                        callback(new Error("通知回调主机不能以斜杠 '/' 结尾"))
+                    } else {
+                        callback()
+                    }
+                },
+                trigger: "blur",
+            },
+        ],
         notify_path: [{ required: !!enabled, message: "请输入支付结果通知路由", trigger: "change" }],
         refund_path: [{ required: !!enabled, message: "请输入退款结果通知路由", trigger: "change" }],
     }
@@ -145,7 +158,20 @@ const alipayRules: ComputedRef<FormRules> = computed(() => {
         app_private_key: [{ required: !!enabled, message: "请输入商户私钥", trigger: "change" }],
         alipay_public_key: [{ required: !!enabled, message: "请输入支付宝公钥", trigger: "change" }],
         encrypt_key: [{ required: false, message: "选填，接口内容加密密钥", trigger: "change" }],
-        notify_host: [{ required: !!enabled, message: "请输入通知回调主机地址", trigger: "change" }],
+        notify_host: [
+            { required: !!enabled, message: "请输入通知回调主机地址", trigger: "change" },
+            {
+                validator: (rule, value, callback) => {
+                    // 结尾不能有斜杠
+                    if (value.endsWith("/")) {
+                        callback(new Error("通知回调主机不能以斜杠 '/' 结尾"))
+                    } else {
+                        callback()
+                    }
+                },
+                trigger: "blur",
+            },
+        ],
         notify_path: [{ required: !!enabled, message: "请输入支付结果通知路由", trigger: "change" }],
         refund_path: [{ required: !!enabled, message: "请输入退款结果通知路由", trigger: "change" }],
         is_production: [{ required: false, message: "是否为生产环境", trigger: "change" }],

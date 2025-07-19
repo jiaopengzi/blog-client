@@ -6,7 +6,9 @@
  * Description : 二维码组件
 -->
 <template>
-    <img ref="imgRef" :src="qrCodeUrl" v-if="qrCodeUrl" />
+    <div class="qr-code">
+        <img ref="imgRef" :src="qrCodeUrl" v-if="qrCodeUrl" />
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -85,3 +87,8 @@ watch(
     { deep: true, flush: "post" },
 )
 </script>
+<style scoped lang="scss">
+.qr-code {
+    background-color: #ffffff;
+}
+</style>

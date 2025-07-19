@@ -122,13 +122,13 @@ const rules: FormRules<LoginConfig> = reactive<FormRules<LoginConfig>>({
         {
             validator: (rule, value, callback) => {
                 if (formData.value.is_enabled && !value) {
-                    callback(new Error("app_key 是必填项"))
+                    callback(new Error("根 URL 是必填项"))
                     return
                 }
 
                 // 结尾不能有斜杠
                 if (value.endsWith("/")) {
-                    callback(new Error("根URL不能以斜杠 '/' 结尾"))
+                    callback(new Error("根 URL 不能以斜杠 '/' 结尾"))
                 } else {
                     callback()
                 }

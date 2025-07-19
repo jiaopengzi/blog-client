@@ -80,8 +80,8 @@ const formWidth = computed(() => {
     return 660
 })
 
-// hooks
-const { submit, waitSeconds, isShowTimer } = useDatabase(pgsqlFormRef, redisFormRefs, esFormRef, updateDbsPasswordAPI, ResponseCode.DBsUpdateSuccess)
+// hooks 使用一个空函数作为 confirmFunc
+const { submit, waitSeconds, isShowTimer } = useDatabase(pgsqlFormRef, redisFormRefs, esFormRef, updateDbsPasswordAPI, ResponseCode.DBsUpdateSuccess, () => {})
 
 // 获取数据库配置
 onBeforeMount(async () => {
