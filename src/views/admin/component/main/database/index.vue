@@ -39,7 +39,6 @@ import { computed, onBeforeMount, reactive, ref, useTemplateRef } from "vue"
 
 import { handleResErr, ResponseCode } from "@/api/response"
 import { getDBsAPI } from "@/api/setting/getDBs"
-import { isSetupAPI } from "@/api/setting/isSetup"
 import type { PgsqlSetupRequest, RedisNodeSetupRequest } from "@/api/setting/setup"
 import { updateDbsPasswordAPI } from "@/api/setting/updateDbsPassword"
 import ElasticsearchForm, { type ElasticsearchFormRef, type ESForm } from "@/components/common/db-es"
@@ -81,22 +80,8 @@ const formWidth = computed(() => {
     return 660
 })
 
-// 确认函数
-const confirmFunc = () => {
-    MessageUtil.success("服务端重启完成！", 5000)
-}
-
 // hooks
-const { submit, waitSeconds, isShowTimer } = useDatabase(
-    pgsqlFormRef,
-    redisFormRefs,
-    esFormRef,
-    updateDbsPasswordAPI,
-    ResponseCode.DBsUpdateSuccess,
-    isSetupAPI,
-    ResponseCode.SetupAlready,
-    confirmFunc,
-)
+const { submit, waitSeconds, isShowTimer } = useDatabase(pgsqlFormRef, redisFormRefs, esFormRef, updateDbsPasswordAPI, ResponseCode.DBsUpdateSuccess)
 
 // 获取数据库配置
 onBeforeMount(async () => {
@@ -108,7 +93,7 @@ onBeforeMount(async () => {
         const esData = res.data.data.es
         dbES.value = {
             addresses: esData.addresses.join(","), // 转为字符串,使用逗号分隔便于展示
-            user_name: esData.user_name,
+            user: esData.user,
             password: esData.password,
             index_prefix: esData.index_prefix,
         }

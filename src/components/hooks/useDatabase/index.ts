@@ -6,13 +6,14 @@
  * @Description  : 数据库 hooks
  */
 
-import { type Reactive, type Ref, ref } from "vue"
+import { type Reactive, type Ref } from "vue"
 
 import { handleResErr, type Res, ResponseCode, type ResPromise } from "@/api/response"
 import type { ESSetupRequest, PgsqlSetupRequest, SetupRequest } from "@/api/setting/setup"
 import type { ElasticsearchFormRef, ESForm } from "@/components/common/db-es"
 import { type PgsqlDatabaseFormRef } from "@/components/common/db-pgsql"
 import { type RedisDatabaseFormRef } from "@/components/common/db-redis"
+import { useRestart } from "@/components/hooks/useRestart"
 import { MessageUtil } from "@/utils/message"
 
 /**
@@ -23,9 +24,6 @@ import { MessageUtil } from "@/utils/message"
  * @param esFormRef es 表单
  * @param submitAPI 提交请求
  * @param submitResCode 提交请求返回码
- * @param confirmAPI 确认请求
- * @param confirmResCode 确认请求返回码
- * @param confirmFunc 确认成功后的回调函数
  * @param maxWaitSeconds 最大等待秒数 默认 60 秒
  */
 export function useDatabase<K extends SetupRequest>(
@@ -34,15 +32,9 @@ export function useDatabase<K extends SetupRequest>(
     esFormRef: Ref<ElasticsearchFormRef | null>,
     submitAPI: (params: K) => ResPromise<Res<void>>,
     submitResCode: ResponseCode,
-    confirmAPI: () => ResPromise<Res<void>>,
-    confirmResCode: ResponseCode,
-    confirmFunc: () => void,
     maxWaitSeconds: number = 60,
 ) {
-    const waitSeconds = ref(0) // 等待秒数
-    const isShowTimer = ref(false) // 是否显示计时器
-    const hasShowSuccessMsg = ref(false) // 是否已经显示成功消息
-
+    const { showRestart, waitSeconds, isShowTimer, hasShowSuccessMsg } = useRestart(maxWaitSeconds)
     // 验证所有表单
     const validateForms = async (): Promise<boolean[]> => {
         const promises: Promise<boolean>[] = []
@@ -102,7 +94,7 @@ export function useDatabase<K extends SetupRequest>(
             const esData = esFormRef.value?.formRef?.configFormData as ESForm
             const esDataRequest: ESSetupRequest = {
                 addresses: esData.addresses.split(","), // 将地址字符串转换为数组
-                user_name: esData.user_name,
+                user: esData.user,
                 password: esData.password,
                 index_prefix: esData.index_prefix,
             }
@@ -125,41 +117,8 @@ export function useDatabase<K extends SetupRequest>(
                 const res = await submitAPI(req as K)
 
                 if (res.data.code === submitResCode) {
-                    // 安装成功后，服务端开始重启,同时开始轮训检查是否重启成功 间隔 5 秒重试
-                    const interval = setInterval(async () => {
-                        // 首先判断是否超时,默认60秒
-                        if (waitSeconds.value >= maxWaitSeconds) {
-                            isShowTimer.value = false
-                            clearInterval(interval)
-                            clearInterval(timer)
-                            MessageUtil.error("服务端重启超时，请检查网络和后台数据是否正常！", 10000)
-                        }
-
-                        const res = await confirmAPI()
-                        if (res.data.code === confirmResCode) {
-                            if (!hasShowSuccessMsg.value) {
-                                isShowTimer.value = false
-                                clearInterval(interval)
-                                clearInterval(timer)
-                                hasShowSuccessMsg.value = true
-
-                                // 确认成功后，执行回调函数
-                                confirmFunc()
-                            }
-                        }
-                    }, 5000)
+                    await showRestart()
                 } else {
-                    isShowTimer.value = false
-                    clearInterval(timer)
-
-                    // 警告提示
-                    const warnCodes = [ResponseCode.DBsNoUpdated, ResponseCode.DBsUpdateOnlyPassword]
-                    if (warnCodes.includes(res.data.code)) {
-                        MessageUtil.warning(handleResErr(res), 10000)
-                        return
-                    }
-
-                    // 错误提示
                     MessageUtil.error(handleResErr(res), 10000)
                 }
             } catch (error) {

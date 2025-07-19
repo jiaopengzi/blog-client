@@ -10,7 +10,7 @@ import { type BaseConfigFormRef } from "@/components/common/base-config-form"
 
 export interface ESForm {
     addresses: string // 地址列表转成字符串使用逗号分隔
-    user_name: string // 用户名
+    user: string // 用户名
     password: string // 密码
     index_prefix: string // 表前缀
 }

@@ -7,6 +7,7 @@
 -->
 
 <template>
+    <RestartDialog :is-show-timer="isShowTimer" :wait-seconds="waitSeconds" />
     <div class="components">
         <el-button class="head" type="primary" @click="submitForm">保存</el-button>
         <BaseForm
@@ -41,8 +42,9 @@ import { computed, type ComputedRef, onBeforeMount, ref, useTemplateRef } from "
 import { handleResErr, ResponseCode } from "@/api/response"
 import { type AliPayConf, getPayConfigAPI, type GetPayConfigResponse, type WeChatPayConf } from "@/api/setting/getPayConfig"
 import { updatePayConfigAPI, type UpdatePayConfigRequest } from "@/api/setting/updatePayConfig"
+import RestartDialog from "@/components/common/restart-dialog"
+import { useRestart } from "@/components/hooks/useRestart"
 import { RouteNames } from "@/router"
-import { useOptionsStore } from "@/stores/options" // 网站配置选项
 import { MessageUtil } from "@/utils/message"
 import { adminMenuItemMap } from "@/views/admin/component/aside"
 
@@ -53,9 +55,6 @@ defineOptions({ name: RouteNames.PayConfig })
 useHead({
     title: adminMenuItemMap[RouteNames.PayConfig].text,
 })
-
-// 获取网站配置选项
-const optionsStore = useOptionsStore()
 
 const wechatPayFormRef = useTemplateRef<FormRef>("wechatPayFormRef")
 const alipayFormRef = useTemplateRef<FormRef>("alipayFormRef")
@@ -69,22 +68,49 @@ const wechatPayFormItems = [
     { label: "商户号", prop: "mch_id", type: "text", placeholder: "请输入商户号" },
     { label: "商户证书序列号", prop: "mch_certificate_serial_number", type: "text", placeholder: "请输入商户证书序列号" },
     { label: "商户私钥", prop: "mch_private_key", type: "textarea", placeholder: "请输入商户私钥" },
-    { label: "应用ID", prop: "app_id", type: "text", placeholder: "请输入应用ID" },
+    { label: "AppID", prop: "app_id", type: "text", placeholder: "请输入应用ID" },
     { label: "APIv3密钥", prop: "api_v3_key", type: "password", placeholder: "请输入APIv3密钥" },
-    { label: "支付结果通知地址", prop: "notify_url", type: "text", placeholder: "请输入支付结果通知地址" },
-    { label: "退款结果通知地址", prop: "refund_url", type: "text", placeholder: "请输入退款结果通知地址" },
+    { label: "支付通知主机", prop: "notify_host", type: "text", placeholder: "请输支付通知主机地址，包含协议端口，末尾不包含 /" },
+    {
+        label: "支付结果通知地址",
+        prop: "notify_path",
+        type: "text",
+        placeholder: "请输入支付结果通知路由",
+        description: "用于接收微信支付结果的通知，原则上保持默认值，如果需要修改，前提是你知道你在做什么。",
+    },
+    {
+        label: "退款结果通知地址",
+        prop: "refund_path",
+        type: "text",
+        placeholder: "请输入退款结果通知路由",
+        description: "用于接收微信退款结果的通知，原则上保持默认值，如果需要修改，前提是你知道你在做什么。",
+    },
 ]
 
 // 支付宝表单项
 const alipayFormItems = [
     { label: "启用支付宝支付", prop: "enabled", isCheckbox: true },
     { label: "AppID", prop: "app_id", type: "text", placeholder: "请输入AppID" },
-    { label: "商户ID", prop: "pid", type: "text", placeholder: "请输入商户ID" },
-    { label: "商户私钥", prop: "merchant_private_key", type: "textarea", placeholder: "请输入商户私钥" },
+    { label: "商户ID", prop: "seller_id", type: "text", placeholder: "请输入商户ID" },
+    { label: "商户私钥", prop: "app_private_key", type: "textarea", placeholder: "请输入商户私钥" },
     { label: "支付宝公钥", prop: "alipay_public_key", type: "textarea", placeholder: "请输入支付宝公钥" },
-    { label: "网关地址", prop: "gateway_url", type: "text", placeholder: "请输入支付宝网关地址" },
-    { label: "支付结果通知地址", prop: "notify_url", type: "text", placeholder: "请输入支付结果通知地址" },
-    { label: "退款结果通知地址", prop: "refund_url", type: "text", placeholder: "请输入退款结果通知地址" },
+    { label: "接口内容加密密钥", prop: "encrypt_key", type: "text", placeholder: "请输入接口内容加密密钥" },
+    { label: "支付通知主机", prop: "notify_host", type: "text", placeholder: "请输支付通知主机地址，包含协议端口，末尾不包含 /" },
+    {
+        label: "支付结果通知地址",
+        prop: "notify_path",
+        type: "text",
+        placeholder: "请输入支付结果通知路由",
+        description: "用于接收支付宝支付结果的通知，原则上保持默认值，如果需要修改，前提是你知道你在做什么。",
+    },
+    {
+        label: "退款结果通知地址",
+        prop: "refund_path",
+        type: "text",
+        placeholder: "请输入退款结果通知路由",
+        description: "用于接收支付宝退款结果的通知，原则上保持默认值，如果需要修改，前提是你知道你在做什么。",
+    },
+    { label: "是否为生产环境", prop: "is_production", isCheckbox: true, description: "未勾选生产环境则为沙箱测试模式" },
 ]
 
 // 表单验证规则（根据 enabled 状态动态设置必填项）
@@ -101,8 +127,9 @@ const wechatRules: ComputedRef<FormRules> = computed(() => {
         mch_private_key: [{ required: !!enabled, message: "请输入商户私钥", trigger: "change" }],
         app_id: [{ required: !!enabled, message: "请输入应用ID", trigger: "change" }],
         api_v3_key: [{ required: !!enabled, message: "请输入APIv3密钥", trigger: "change" }],
-        notify_url: [{ required: !!enabled, message: "请输入支付结果通知地址", trigger: "change" }],
-        refund_url: [{ required: !!enabled, message: "请输入退款结果通知地址", trigger: "change" }],
+        notify_host: [{ required: !!enabled, message: "请输入通知回调主机地址", trigger: "change" }],
+        notify_path: [{ required: !!enabled, message: "请输入支付结果通知路由", trigger: "change" }],
+        refund_path: [{ required: !!enabled, message: "请输入退款结果通知路由", trigger: "change" }],
     }
 })
 
@@ -114,14 +141,19 @@ const alipayRules: ComputedRef<FormRules> = computed(() => {
     const enabled = alipayFormRef.value.formDataResult.enabled
     return {
         app_id: [{ required: !!enabled, message: "请输入AppID", trigger: "change" }],
-        pid: [{ required: !!enabled, message: "请输入商户ID", trigger: "change" }],
-        merchant_private_key: [{ required: !!enabled, message: "请输入商户私钥", trigger: "change" }],
+        seller_id: [{ required: !!enabled, message: "请输入商户ID", trigger: "change" }],
+        app_private_key: [{ required: !!enabled, message: "请输入商户私钥", trigger: "change" }],
         alipay_public_key: [{ required: !!enabled, message: "请输入支付宝公钥", trigger: "change" }],
-        gateway_url: [{ required: !!enabled, message: "请输入支付宝网关地址", trigger: "change" }],
-        notify_url: [{ required: !!enabled, message: "请输入支付结果通知地址", trigger: "change" }],
-        refund_url: [{ required: !!enabled, message: "请输入退款结果通知地址", trigger: "change" }],
+        encrypt_key: [{ required: false, message: "选填，接口内容加密密钥", trigger: "change" }],
+        notify_host: [{ required: !!enabled, message: "请输入通知回调主机地址", trigger: "change" }],
+        notify_path: [{ required: !!enabled, message: "请输入支付结果通知路由", trigger: "change" }],
+        refund_path: [{ required: !!enabled, message: "请输入退款结果通知路由", trigger: "change" }],
+        is_production: [{ required: false, message: "是否为生产环境", trigger: "change" }],
     }
 })
+
+// hooks
+const { showRestart, waitSeconds, isShowTimer } = useRestart()
 
 // 提交表单
 const submitForm = async () => {
@@ -145,8 +177,8 @@ const submitForm = async () => {
 
     const res = await updatePayConfigAPI(req)
     if (res.data.code === ResponseCode.PayConfigUpdateSuccess) {
-        optionsStore.update(true) // 强制刷新
-        MessageUtil.success("更新成功")
+        MessageUtil.success("更新成功，等待重启服务")
+        await showRestart() // 显示重启提示
     } else if (res.data.code === ResponseCode.PayConfigNoUpdate) {
         MessageUtil.warning("当前支付配置未修改，无需更新")
     } else {

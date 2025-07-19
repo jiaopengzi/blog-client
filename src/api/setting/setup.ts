@@ -20,7 +20,7 @@ export interface PgsqlSetupRequest {
 
 export interface ESSetupRequest {
     addresses: string[] // 地址列表
-    user_name: string // 用户名
+    user: string // 用户名
     password: string // 密码
     index_prefix: string // 表前缀
 }

@@ -25,7 +25,7 @@ const formRef = useTemplateRef<BaseConfigFormRef>("formRef")
 const {
     db = {
         addresses: "",
-        user_name: "",
+        user: "",
         password: "",
         index_prefix: "",
     },
@@ -59,7 +59,7 @@ const rules = reactive<FormRules<ESForm>>({
 
 const formItems = [
     { label: "主机地址", prop: "addresses" },
-    { label: "用户名", prop: "user_name" },
+    { label: "用户名", prop: "user" },
     { label: "密码", prop: "password", type: "password", showPassword: true },
     { label: "索引前缀", prop: "index_prefix", placeholder: "例如:blog_" },
 ]

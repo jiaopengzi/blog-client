@@ -23,16 +23,22 @@
         <h2 class="title">{{ title }}</h2>
         <template v-for="(item, index) in formItems" :key="index">
             <el-form-item :label="item.label" :prop="item.prop">
-                <el-checkbox v-if="item.isCheckbox" v-model="formDataResult[item.prop as KeyofFormView]" />
-                <el-input
-                    v-else-if="item.type === 'password'"
-                    v-model="formDataResult[item.prop as KeyofFormView]"
-                    :type="item.type"
-                    :placeholder="item.placeholder"
-                    show-password
-                    clearable
-                />
-                <el-input v-else v-model="formDataResult[item.prop as KeyofFormView]" :type="item.type" :placeholder="item.placeholder" clearable />
+                <div class="form-item">
+                    <div class="input-wrapper">
+                        <el-checkbox v-if="item.isCheckbox" v-model="formDataResult[item.prop as KeyofFormView]" />
+                        <el-input
+                            v-else-if="item.type === 'password'"
+                            v-model="formDataResult[item.prop as KeyofFormView]"
+                            :type="item.type"
+                            :placeholder="item.placeholder"
+                            show-password
+                            clearable
+                        />
+                        <el-input v-else v-model="formDataResult[item.prop as KeyofFormView]" :type="item.type" :placeholder="item.placeholder" clearable />
+                    </div>
+                    <!-- 说明文字 -->
+                    <div v-if="item.description" class="description">{{ item.description }}</div>
+                </div>
             </el-form-item>
         </template>
     </el-form>
@@ -56,6 +62,7 @@ const { title, formData, rules, formItems, formWidth, labelWidth } = defineProps
         type?: string
         placeholder?: string
         isCheckbox?: boolean
+        description?: string
     }>
     formWidth?: number
     labelWidth?: number
@@ -109,5 +116,22 @@ defineExpose({
     font-weight: 700;
     margin-bottom: 20px;
     color: var(--jpz-text-color-regular);
+}
+
+.form-item {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    .input-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .description {
+        font-size: 12px;
+        color: var(--jpz-text-color-placeholder);
+    }
 }
 </style>
