@@ -126,6 +126,12 @@ export function useOrderCheckout() {
 
     // 执行支付
     const runCheckout = async () => {
+        // 如果优惠卷填写了但是没有应用，则提示用户
+        if (couponCodes.value.length > 0 && !checkoutData.value.coupon) {
+            MessageUtil.warning("请先应用优惠码")
+            return
+        }
+
         isPayBtnLoading.value = true // 设置支付按钮为加载状态
 
         // 构建支付请求数据

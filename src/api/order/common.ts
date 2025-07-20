@@ -13,18 +13,19 @@ import type { DataWithImg } from "@/components/common"
 
 // 订单状态
 export enum OrderStatus {
-    AllStatus = 0, // 0 全部状态
-    PendingPay = 1, // 1 待支付
-    Processing = 2, // 2 处理中
-    Shipped = 3, // 3 已发货
-    InTransit = 4, // 4 运输中
-    Delivered = 5, // 5 已送达
-    Canceled = 6, // 6 已取消
-    Returning = 7, // 7 退货中
-    Returned = 8, // 8 已退货
-    Refunded = 9, // 9 已退款
-    Complete = 10, // 10 已完成
-    Closed = 11, // 11 已关闭
+    AllStatus = 0, // 全部状态
+    PendingPay = 1, // 待支付
+    Processing = 2, // 处理中
+    Shipped = 3, // 已发货
+    InTransit = 4, // 运输中
+    Delivered = 5, // 已送达
+    Canceled = 6, // 已取消
+    Returning = 7, // 退货中
+    Returned = 8, // 已退货
+    RefundedPartially = 9, // 部分退款
+    RefundedAll = 10, // 全额退款
+    Complete = 11, // 已完成
+    Closed = 12, // 已关闭
 }
 
 // 订单状态显示
@@ -38,7 +39,8 @@ export const OrderStatusDisplay: Record<OrderStatus, string> = {
     [OrderStatus.Canceled]: "已取消",
     [OrderStatus.Returning]: "退货中",
     [OrderStatus.Returned]: "已退货",
-    [OrderStatus.Refunded]: "已退款",
+    [OrderStatus.RefundedPartially]: "部分退款",
+    [OrderStatus.RefundedAll]: "全额退款",
     [OrderStatus.Complete]: "已完成",
     [OrderStatus.Closed]: "已关闭",
 }

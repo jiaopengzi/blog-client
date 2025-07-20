@@ -11,8 +11,9 @@
         <el-descriptions class="order-main" title="订单信息" :column="3" border>
             <el-descriptions-item label="订单ID">{{ data.id }}</el-descriptions-item>
             <el-descriptions-item label="创建时间">{{ data.created_at }}</el-descriptions-item>
-            <el-descriptions-item label="更新时间">{{ data.updated_at }}</el-descriptions-item>
+            <el-descriptions-item label="更新时间">{{ dataAc.updated_at }}</el-descriptions-item>
             <el-descriptions-item label="客户信息">
+                <!-- 用户信息就使用 data 不需要更新 -->
                 <UserItem
                     :user="data.user_info"
                     :is-show-cursor-pointer="false"
@@ -24,19 +25,20 @@
             </el-descriptions-item>
             <el-descriptions-item label="描述">{{ data.description }}</el-descriptions-item>
             <el-descriptions-item label="IP地址">{{ data.ip }}</el-descriptions-item>
+            <el-descriptions-item label="状态">{{ OrderStatusDisplay[dataAc.status] }}</el-descriptions-item>
             <el-descriptions-item label="支付信息">
-                <span v-if="data.payment && data.payment.pay_type"
-                    >{{ PayTypeDisplay[data.payment.pay_type] }} - {{ TradeStateDisplay[data.payment.trade_state] }}</span
+                <span v-if="dataAc.payment && dataAc.payment.pay_type"
+                    >{{ PayTypeDisplay[dataAc.payment.pay_type] }} - {{ TradeStateDisplay[dataAc.payment.trade_state] }}</span
                 >
                 <span v-else>无支付信息</span>
             </el-descriptions-item>
-            <el-descriptions-item label="状态">{{ OrderStatusDisplay[data.status] }}</el-descriptions-item>
             <el-descriptions-item label="订单总金额">{{ `${(data.total_amount / 100).toFixed(2)} 元` }}</el-descriptions-item>
         </el-descriptions>
 
+        <!-- 产品 优惠卷 都不会变 -->
         <ProductList class="product-list" :items="data.items" />
         <CouponList class="coupon-list" v-if="data.coupon_items" :total-amount="data.total_amount" :items="data.coupon_items" />
-        <RefundList class="refund-list" v-if="refundList.length" :total-paid-amount="data.payment.total_amount" :items="refundList" />
+        <RefundList class="refund-list" v-if="refundList.length" :total-paid-amount="dataAc.payment.total_amount" :items="refundList" />
         <OrderRefund
             v-if="availableRefundAmount > 0"
             class="order-refund"
@@ -46,9 +48,9 @@
         />
         <OrderRemark
             class="order-remark"
-            :order-id="data.id"
-            :remark="data.remark"
-            :remark-admin="data.remark_admin"
+            :order-id="dataAc.id"
+            :remark="dataAc.remark"
+            :remark-admin="dataAc.remark_admin"
             @remark-submit-success="handleRemarkSubmit"
         />
     </div>
@@ -80,27 +82,29 @@ const { data } = defineProps<{
     data: OrderGetByIDRes // 需要编辑的用户ID
 }>()
 
+const dataAc = ref<OrderGetByIDRes>(data) // 实际数据
+
 const refundList = ref<RefundRes[]>(data.refund || [])
 
 const availableRefundAmount = computed(() => {
     // 如果没有支付信息，或者未支付，或者关闭，则可退款金额为0
     if (
-        !data.payment.trade_state ||
-        data.payment.trade_state === TradeState.Unpaid ||
-        data.payment.trade_state === TradeState.Closed ||
-        data.total_amount <= 0
+        !dataAc.value.payment.trade_state ||
+        dataAc.value.payment.trade_state === TradeState.Unpaid ||
+        dataAc.value.payment.trade_state === TradeState.Closed ||
+        dataAc.value.total_amount <= 0
     ) {
         return 0
     }
 
     // 如果没有退款信息，可退款金额就是订单总金额
     if (refundList.value.length === 0) {
-        return data.payment.total_amount / 100
+        return dataAc.value.payment.total_amount / 100
     }
 
     // 根据退款信息计算可退款金额
     const totalRefunded = refundList.value.reduce((acc, item) => acc + (item.refund_amount || 0), 0)
-    return Math.max(0, data.payment.total_amount - totalRefunded) / 100 // 确保不小于0
+    return Math.max(0, dataAc.value.payment.total_amount - totalRefunded) / 100 // 确保不小于0
 })
 
 // 退款成功后触发事件
@@ -108,11 +112,12 @@ const handleRefundSubmit = async () => {
     emit("edit-status", true)
     // 重新获取订单详情
     const req: OrderGetByIDRequest = {
-        id: data.id,
+        id: dataAc.value.id,
     }
     const res = await getByIDAPI(req)
     if (res.data.code === ResponseCode.OrderGetByIDSuccess) {
         refundList.value = res.data.data.refund
+        dataAc.value = res.data.data // 更新实际数据
         MessageUtil.success("退款提交成功")
     } else {
         const msg = handleResErr(res)
