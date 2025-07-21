@@ -6,7 +6,7 @@
  * @Description  : 工具
  */
 
-import { CommentStatusCode, PostStatusCode } from "@/api/post/common"
+import { CommentStatusCode, PostStatusCode, PostType } from "@/api/post/common"
 
 import { type UpsertPostForm } from "./types"
 
@@ -39,5 +39,6 @@ export function createEmptyUpsertPostForm(): UpsertPostForm {
         },
         is_pinned: 0,
         is_recommended: 0,
+        post_type: PostType.Post,
     }
 }

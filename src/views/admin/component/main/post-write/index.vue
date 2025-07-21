@@ -151,6 +151,14 @@
                         :default-time="defaultTime"
                     />
                 </el-form-item>
+
+                <el-form-item label="类型" prop="post_type">
+                    <el-radio-group v-model="postInfoForm.post_type">
+                        <el-radio v-for="item in optionsPostType" :key="item.value" :value="item.value">
+                            {{ PostTypeDisplay[item.value] }}
+                        </el-radio>
+                    </el-radio-group>
+                </el-form-item>
             </el-form>
 
             <div class="btns-footer">
@@ -173,7 +181,7 @@ import type { FormInstance } from "element-plus"
 import { onBeforeMount, onUnmounted, reactive, ref, toRefs, useTemplateRef, watch } from "vue"
 import { useRouter } from "vue-router"
 
-import { getPostStatusOptions, type InsertPostRequest, PostStatusCode } from "@/api/post/common"
+import { getPostStatusOptions, getPostTypeOptions, type InsertPostRequest, PostStatusCode, PostTypeDisplay } from "@/api/post/common"
 import { type PostCategory, viewListPostCategoryAPI } from "@/api/postCategory/view"
 import { ResponseCode } from "@/api/response"
 import AddTag from "@/components/common/add-tag"
@@ -232,6 +240,8 @@ const { stop: stopResizeObserver } = useResizeObserver(editorContainerRef, (entr
     const { width } = entry.contentRect
     stateManager.setEditorWidth(width)
 })
+
+const optionsPostType = getPostTypeOptions()
 
 // 所有分类列表
 const allCategories = ref<PostCategory[]>([])

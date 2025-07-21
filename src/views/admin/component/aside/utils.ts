@@ -71,7 +71,7 @@ export const adminMenuItemMap: AdminMenuItemMap = {
     //     text: "链接分类",
     //     parentIndex: RouteNamesAdmin.Link,
     // },
-    [RouteNamesAdmin.Page]: {
+    [RouteNamesAdmin.PageAdmin]: {
         text: "页面",
         icon: {
             name: IconKeys.Page,
@@ -80,11 +80,11 @@ export const adminMenuItemMap: AdminMenuItemMap = {
     },
     [RouteNamesAdmin.PageAll]: {
         text: "所有页面",
-        parentIndex: RouteNamesAdmin.Page,
+        parentIndex: RouteNamesAdmin.PageAdmin,
     },
-    [RouteNamesAdmin.PageAdd]: {
+    [RouteNamesAdmin.PageWrite]: {
         text: "新增页面",
-        parentIndex: RouteNamesAdmin.Page,
+        parentIndex: RouteNamesAdmin.PageAdmin,
     },
     [RouteNamesAdmin.Comment]: {
         text: "评论",

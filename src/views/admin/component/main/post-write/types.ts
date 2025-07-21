@@ -7,7 +7,7 @@
  */
 
 import { type PgSqlDateTime } from "@/api/common"
-import { CommentStatusCode, PostStatusCode, type UpdateFields } from "@/api/post/common"
+import { CommentStatusCode, PostStatusCode, PostType, type UpdateFields } from "@/api/post/common"
 
 // 查询参数
 export const queryKey = {
@@ -35,6 +35,7 @@ export interface UpsertPostForm {
     post_expired_time: PgSqlDateTime // 过期时间
     is_pinned: number // 是否置顶
     is_recommended: number // 是否推荐阅读
+    post_type: PostType // 文章类型
 }
 
 export interface UpdatePostForm extends UpsertPostForm {

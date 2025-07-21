@@ -31,6 +31,8 @@ export async function handleSubmit<T extends InsertPostRequest | UpdatePostReque
             // 将 postInfoForm 解析到 InsertPostRequest，排除 price 字段
             const { price, ...rest } = postInfoForm
             Object.assign(req, rest)
+            console.log("============>postInfoForm", postInfoForm)
+            console.log("============>req", req)
 
             // 价格需要乘以 100 以适应后端整数，并转换为 string
             if (typeof price !== "undefined" && price !== null) {

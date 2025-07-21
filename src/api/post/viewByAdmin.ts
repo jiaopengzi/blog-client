@@ -9,12 +9,13 @@
 import { type PaginationRequest, request, routerGroup } from "@/api/request"
 import type { Pagination, Res, ResPromise } from "@/api/response"
 
-import { CustomFields, type PostResPaginationByAdmin } from "./common"
+import { CustomFields, type PostResPaginationByAdmin, type PostType } from "./common"
 
 // 管理员查看文章请求
 export interface ViewPostByAdminRequest extends PaginationRequest {
     post_author?: string // 文章作者
     post_status?: number // 文章状态
+    post_type?: PostType // 文章类型
     year?: number // 文章年份
     month?: number // 文章月份
     post_category_id?: string // 文章分类ID

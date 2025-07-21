@@ -76,6 +76,7 @@ export function useEdit(
                     postInfoForm.post_password = data.post_password
                     postInfoForm.is_pinned = data.is_pinned
                     postInfoForm.is_recommended = data.is_recommended
+                    postInfoForm.post_type = data.post_type
 
                     if (data.post_push_time) {
                         postInfoForm.post_push_time = data.post_push_time

@@ -12,6 +12,28 @@ import { type PostTag } from "@/api/postTag/view"
 import { type User } from "@/api/user/getUserInfo"
 import { type DataWithImg } from "@/components/common" // 图片填充方式
 
+export enum PostType {
+    Post = "post", // 文章
+    Page = "page", // 页面
+    Video = "video", // 视频
+}
+
+export const PostTypeDisplay: Record<PostType, string> = {
+    [PostType.Post]: "文章",
+    [PostType.Page]: "页面",
+    [PostType.Video]: "视频",
+}
+
+// 获取订单状态选项
+export const getPostTypeOptions = () => {
+    return Object.values(PostType)
+        .filter((value) => typeof value === "string")
+        .map((value) => ({
+            label: PostTypeDisplay[value as PostType],
+            value: value as PostType,
+        }))
+}
+
 // 文章状态
 export enum PostStatusCode {
     Draft = 1, // 草稿
@@ -91,6 +113,7 @@ export interface InsertPostRequest {
     post_expired_time?: PgSqlDateTime // 过期时间
     is_pinned?: number // 是否置顶
     is_recommended?: number // 是否推荐阅读
+    post_type?: PostType // 文章类型
 }
 
 export type UpdateFields = keyof InsertPostRequest
@@ -117,6 +140,7 @@ export interface UpdatePostRequest {
     post_expired_time?: PgSqlDateTime // 过期时间
     is_pinned?: number // 是否置顶
     is_recommended?: number // 是否推荐阅读
+    post_type?: PostType // 文章类型
     update_fields: UpdateFields[] // 显示指出需要更新的字段便于后端处理零值
 }
 
@@ -149,7 +173,7 @@ export interface PostResPagination extends PostResCommon {
 export interface PostResPaginationByAdmin extends PostResCommon {
     updated_at: string // 更新时间
     price: string // 价格
-    post_type: number // 文章类型
+    post_type: PostType // 文章类型
     comment_status: number // 评论状态
     post_title: string // 文章标题
     post_push_time: PgSqlDateTime // 发布时间
@@ -167,7 +191,7 @@ export interface PostResByAdmin extends PostResCommon {
     updated_at: string // 更新时间
     price: string // 价格
     words_count: string // 字数
-    post_type: number // 文章类型
+    post_type: PostType // 文章类型
     comment_status: number // 评论状态
     post_content: string // 文章内容
     post_title: string // 文章标题
@@ -190,7 +214,7 @@ export interface PostResByID extends PostResCommon {
     updated_at: string // 更新时间
     price: string // 价格
     words_count: string // 字数
-    post_type: number // 文章类型
+    post_type: PostType // 文章类型
     comment_status: number // 评论状态
     post_content: string // 文章内容
     post_title: string // 文章标题
@@ -207,22 +231,6 @@ export interface PostResByID extends PostResCommon {
     tags: PostTag[] // 文章标签
     pay_roles: string[] // 付费角色
 }
-
-// // 文章
-// export interface PostResByAdmin extends PostRes {
-//     updated_at: string // 更新时间
-//     price: string // 价格
-//     words_count: string // 字数
-//     post_type: number // 文章类型
-//     comment_status: number // 评论状态
-//     post_content: string // 文章内容
-//     post_title: string // 文章标题
-//     post_password: string // 文章密码
-//     seo_title: string // SEO标题
-//     seo_keywords: string // SEO关键字
-//     post_push_time: PgSqlDateTime // 发布时间
-//     post_expired_time: PgSqlDateTime // 过期时间
-// }
 
 // 文章自定义字段
 export enum PostCustomFieldKey {
