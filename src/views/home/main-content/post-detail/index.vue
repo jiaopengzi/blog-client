@@ -53,6 +53,7 @@
         @mentions="handleMentions"
     />
     <CommentEditor
+        v-if="postMeta.is_comment_status_open"
         ref="commentEditorRef"
         class="comment-editor"
         :post-id="postId"

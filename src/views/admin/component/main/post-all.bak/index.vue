@@ -20,10 +20,11 @@
             :row-style="{ height: '96px' }"
             tags-item-max-height="96px"
             height="calc(100vh - 270px)"
+            :loading-delete="loadingDelete"
             @update-current-page="updateCurrentPage"
             @update-page-size="updatePageSize"
             @edit-row="editRow"
-            @delete-rows="deleteRows"
+            @delete-rows="handleDeleteRows"
             @update-search="updateSearch"
             @run-search="runSearch"
             @update-selection="handleSelection"
@@ -95,7 +96,14 @@
                     <el-select class="operation-item" v-model="postOperationSelect" placeholder="批量更改" clearable style="width: 140px">
                         <el-option v-for="item in postBatchOperations" :key="item" :label="`更改为：${PostStatusDisplay[item] || item}`" :value="item" />
                     </el-select>
-                    <el-button class="operation-item" type="primary" @click="handlePostStatusOperation" v-show="postOperationSelect">更改</el-button>
+                    <el-button
+                        class="operation-item"
+                        type="primary"
+                        :loading="loadingBatchOperation"
+                        @click="handlePostStatusOperation"
+                        v-show="postOperationSelect"
+                        >更改</el-button
+                    >
                 </div>
             </template>
         </BaseTable>
@@ -120,15 +128,16 @@ import type { TableImg } from "@/components/common"
 import { MsgType } from "@/components/common"
 import type { TableColumn, TableData } from "@/components/common/base-table"
 import BaseTable from "@/components/common/base-table"
+import { queryKey as queryKeyUpsert } from "@/components/common/post-upsert"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { useParams } from "@/components/hooks/useParams"
 import { RouteNames } from "@/router"
 import { useUserStore } from "@/stores/user"
 import { confirmCommon } from "@/utils/confirm"
 import { formatTime } from "@/utils/dateTime"
+import { pollingGetStreamIDsStatus } from "@/utils/getStreamIDsStatus"
 import { MessageUtil } from "@/utils/message"
 import { adminMenuItemMap } from "@/views/admin/component/aside"
-import { queryKey as queryKeyWrite } from "@/views/admin/component/main/post-write"
 
 import { useHeader } from "./hooks"
 import { queryKey } from "./index"
@@ -181,9 +190,9 @@ const cols: TableColumn[] = reactive([
     },
     {
         prop: "price",
-        label: "价格",
+        label: "价格(元)",
         sortable: true,
-        minWidth: 80,
+        minWidth: 100,
         align: "center",
     },
     {
@@ -314,15 +323,21 @@ const {
     deleteRows, // 删除行
     updatePaginate, // 更新分页
     updateRouterPush, // 更新查询参数和路由
-} = useBaseTable<PostResPaginationByAdmin, ViewPostByAdminRequest, DeletePostRequest>(
-    RouteNames.PostAll,
-    viewPostByAdminAPI,
-    ResponseCode.PostViewByAdminSuccess,
-    deletePostAPI,
-    ResponseCode.PostDeleteSuccess,
+    loadingDelete, // 删除加载状态
+} = useBaseTable<PostResPaginationByAdmin, ViewPostByAdminRequest, DeletePostRequest>({
+    routeName: RouteNames.PostAll,
+    viewAPI: viewPostByAdminAPI,
+    viewResCode: ResponseCode.PostViewByAdminSuccess,
     queryParams,
-    { stringKeys, numberKeys, noRequestKeys, tableImg },
-)
+    deleteAPI: deletePostAPI,
+    deleteResCode: ResponseCode.PostDeleteSuccess,
+    options: { stringKeys, numberKeys, noRequestKeys, tableImg, refreshPromiseFns: [getPostCountStatus] },
+})
+
+const handleDeleteRows = async (rows: TableData[]) => {
+    await deleteRows(rows)
+    await getPostCountStatus()
+}
 
 // 更新查询参数
 
@@ -482,6 +497,7 @@ const runSearch = async () => {
 }
 
 // 批量操作
+const loadingBatchOperation = ref(false)
 const handlePostStatusOperation = async () => {
     if (postStatusOperationList.value.length > 0) {
         confirmCommon(
@@ -489,6 +505,7 @@ const handlePostStatusOperation = async () => {
 
             // 确认后的操作
             () => {
+                loadingBatchOperation.value = true
                 // 构造请求参数
                 const req: BatchOperationPostStatusRequest = {
                     operation_list: postStatusOperationList.value,
@@ -497,13 +514,16 @@ const handlePostStatusOperation = async () => {
                 batchOperationPostStatusAPI(req).then(async (res) => {
                     if (res.data.code === ResponseCode.PostStatusBatchOperationSuccess) {
                         const msg = res.data.msg + "，请稍后刷新页面查看最新数据"
-                        MessageUtil.success(msg, 3000)
-                        // 引入延迟，确保后端更新完成
-                        await new Promise((resolve) => setTimeout(resolve, 1000))
+                        // 轮询后端是否完成
+                        await pollingGetStreamIDsStatus(res.data.data.stream_items)
 
+                        MessageUtil.success(msg, 3000)
                         await updatePaginate()
                         await getPostCountStatus()
+
+                        loadingBatchOperation.value = false
                     } else {
+                        loadingBatchOperation.value = false
                         MessageUtil.error(res.data.msg, 3000)
                     }
                 })
@@ -556,12 +576,12 @@ const editRow = (index: number, row: TableData) => {
     // 编辑文章
     router.push({
         name: RouteNames.PostWrite,
-        query: { [queryKeyWrite.ID]: row.id },
+        query: { [queryKeyUpsert.ID]: row.id },
     })
 }
 
 // 通用将 params 解析回对应的响应式变量中
-useParams(queryParams, search, pagination)
+useParams(queryParams, pagination, search)
 
 // 将 params 解析回对应的响应式变量中(不需要请求)
 const parseParamsNotLoaded = () => {

@@ -73,6 +73,7 @@ export function useGetData(
                     post_id: postData.id,
                     created_at: postData.created_at,
                     comment_count: postData.comment_count,
+                    is_comment_status_open: postData.comment_status === CommentStatusCode.Open,
                     view_count: postData.view_count,
                     like_count: postData.like_count,
                     star_count: postData.star_count,

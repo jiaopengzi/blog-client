@@ -21,6 +21,7 @@ export enum queryKey {
     KeyWord = "key_word",
     IsPinned = "is_pinned",
     IsRecommended = "is_recommended",
+    PostType = "post_type",
 }
 
 export const groupList = [queryKey.Group, queryKey.PostAuthor, queryKey.PostStatus, queryKey.IsPinned, queryKey.IsRecommended] as const

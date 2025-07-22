@@ -12,11 +12,11 @@ import { useRouter } from "vue-router"
 
 import { type ViewPostByIDRequest } from "@/api/post/viewByID"
 import { type QueryParamsOptions } from "@/api/request"
+import { queryKey as queryKeyUpsert } from "@/components/common/post-upsert"
 import { EditorStateManager } from "@/components/editor"
 import { RouteNames } from "@/router"
 import { useBreadcrumbStore } from "@/stores/breadcrumb"
 import { useUserStore } from "@/stores/user"
-import { queryKey as queryKeyWrite } from "@/views/admin/component/main/post-write"
 
 import { useRootUtils } from "../useRootUtils"
 import { useGetData } from "./api"
@@ -102,7 +102,7 @@ export function usePostDetail(
         // 编辑文章
         router.push({
             name: RouteNames.PostWrite,
-            query: { [queryKeyWrite.ID]: val },
+            query: { [queryKeyUpsert.ID]: val },
         })
     }
 

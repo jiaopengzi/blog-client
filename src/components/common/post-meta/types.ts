@@ -12,6 +12,7 @@ export interface PostMetaProps {
     timeZone?: string // 时区，默认 Asia/Shanghai
     formatStr?: string // 格式化字符串，默认 YYYY-MM-DD HH:mm:ss
     comment_count?: string // 评论数量
+    is_comment_status_open?: boolean // 是否开启评论状态
     view_count?: string // 查看数量
     like_count?: string // 喜欢数量
     star_count?: string // 收藏数量

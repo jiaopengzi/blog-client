@@ -58,6 +58,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
      * @description: 更新和路由
      */
     const updateRouterPush = async () => {
+        console.log("============>queryParams-push", queryParams)
         await routerPushByParams(router, routeName, queryParams)
     }
 
@@ -68,12 +69,15 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     const updateQueryParams = async () => {
         const { hasQuery, result } = await parseRouteQuery(route.query, options as QueryParamsOptions<K>)
 
+        console.log("============>queryParams-解析1", queryParams)
         // 清空 queryParams
         Object.keys(queryParams).forEach((key) => delete queryParams[key as keyof typeof queryParams])
 
         if (hasQuery) {
             Object.assign(queryParams, result)
         }
+
+        console.log("============>queryParams-解析2", queryParams)
     }
 
     // 切换是否添加对话框
