@@ -27,7 +27,7 @@ export function useRootUtils<T extends QueryParams>(
     const {
         hasPaginationInURL, // URL 中是否有分页参数
         updateRouterPush, // 更新查询参数和路由
-        updateQueryParams, // 从URL中解析参数
+        updateQueryParams, // 从 URL 中解析参数
         clearParamsExcept, // 清空除了指定参数的查询条件
     } = useRootRoute(queryParams, options)
 

@@ -9,25 +9,25 @@
 import { acceptHMRUpdate, defineStore } from "pinia"
 
 export interface StatusStore {
-    showPostDetail: boolean // 是否显示文章详情
+    isShowPostDetail: boolean // 是否显示文章详情
     postId: string // 文章 ID
     anchorHash: string // 锚点
-    showPostList: boolean // 是否显示文章列表
-    showHomeCarousel: boolean // 是否显示首页轮播图
-    showHomeAside: boolean // 是否显示首页侧边栏
-    showSearchList: boolean // 是否显示搜索列表
+    isShowPostList: boolean // 是否显示文章列表
+    isShowHomeCarousel: boolean // 是否显示首页轮播图
+    isShowHomeAside: boolean // 是否显示首页侧边栏
+    isShowSearchList: boolean // 是否显示搜索列表
     disablePagination: boolean // 是否禁用分页功能,主要是临时禁用，比如在搜索时，一段时间后自动解禁
 }
 
 function createStatusStore(): StatusStore {
     return {
-        showPostDetail: false, // 默认不显示文章详情
+        isShowPostDetail: false, // 默认不显示文章详情
         postId: "", // 文章 ID
         anchorHash: "", // 锚点
-        showPostList: true, // 默认显示文章列表
-        showHomeCarousel: true, // 默认显示首页轮播图
-        showHomeAside: true, // 默认显示首页侧边栏
-        showSearchList: false, // 默认不显示搜索列表
+        isShowPostList: true, // 默认显示文章列表
+        isShowHomeCarousel: true, // 默认显示首页轮播图
+        isShowHomeAside: true, // 默认显示首页侧边栏
+        isShowSearchList: false, // 默认不显示搜索列表
         disablePagination: false, // 默认不禁用分页功能
     }
 }
@@ -43,7 +43,7 @@ export const useStatusStore = defineStore("status", {
 
         // 设置是否显示文章详情
         async setShowPostDetail(status: boolean): Promise<void> {
-            this.showPostDetail = status
+            this.isShowPostDetail = status
         },
 
         // 设置文章 ID
@@ -58,22 +58,22 @@ export const useStatusStore = defineStore("status", {
 
         // 设置是否显示文章列表
         async setShowPostList(status: boolean): Promise<void> {
-            this.showPostList = status
+            this.isShowPostList = status
         },
 
         // 设置是否显示首页轮播图
         async setShowHomeCarousel(status: boolean): Promise<void> {
-            this.showHomeCarousel = status
+            this.isShowHomeCarousel = status
         },
 
         // 设置是否显示首页侧边栏
         async setShowHomeAside(status: boolean): Promise<void> {
-            this.showHomeAside = status
+            this.isShowHomeAside = status
         },
 
         // 设置是否显示搜索列表
         async setShowSearchList(status: boolean): Promise<void> {
-            this.showSearchList = status
+            this.isShowSearchList = status
         },
 
         // 设置是否禁用分页功能
@@ -90,31 +90,31 @@ export const useStatusStore = defineStore("status", {
 
         // 预设状态 文章列表
         async setHome(): Promise<void> {
-            this.showPostDetail = false
+            this.isShowPostDetail = false
             this.postId = ""
-            this.showPostList = true
-            this.showHomeCarousel = true
-            this.showHomeAside = true
-            this.showSearchList = false
+            this.isShowPostList = true
+            this.isShowHomeCarousel = true
+            this.isShowHomeAside = true
+            this.isShowSearchList = false
         },
 
         // 预设状态 文章详情
         async setPostDetail(): Promise<void> {
-            this.showPostDetail = true
-            this.showPostList = false
-            this.showHomeCarousel = false
-            this.showHomeAside = true
-            this.showSearchList = false
+            this.isShowPostDetail = true
+            this.isShowPostList = false
+            this.isShowHomeCarousel = false
+            this.isShowHomeAside = true
+            this.isShowSearchList = false
         },
 
         // 预设状态 搜索
         async setSearch(): Promise<void> {
-            this.showPostDetail = false
+            this.isShowPostDetail = false
             this.postId = ""
-            this.showPostList = false
-            this.showHomeCarousel = false
-            this.showHomeAside = false
-            this.showSearchList = true
+            this.isShowPostList = false
+            this.isShowHomeCarousel = false
+            this.isShowHomeAside = false
+            this.isShowSearchList = true
         },
     },
 })

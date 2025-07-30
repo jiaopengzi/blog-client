@@ -8,6 +8,7 @@
 
 import { storeToRefs } from "pinia"
 import { type Ref, ref, watch } from "vue"
+import { useRouter } from "vue-router"
 
 import { CommentStatusCode } from "@/api/post/common"
 import { type InteractionRequest, postInteractionAPI } from "@/api/post/interaction"
@@ -16,24 +17,28 @@ import { prevNextPostAPI, type PrevNextRequest, type PrevNextResponse } from "@/
 import { type PostStarRequest, setPostStarAPI } from "@/api/post/star"
 import { viewPostByIDAPI, type ViewPostByIDRequest } from "@/api/post/viewByID"
 import { ResponseCode } from "@/api/response"
+import { type CategoryTagProps } from "@/components/common/post-detail/components/category-tag"
+import { type CopyrightProps } from "@/components/common/post-detail/components/copyright"
+import { type UpdatedAtProps } from "@/components/common/post-detail/components/updated-at"
 import { type PostMetaProps } from "@/components/common/post-meta"
 import { EditorStateManager } from "@/components/editor"
+import { RouteNames } from "@/router"
 import { useOptionsStore } from "@/stores/options"
 import { usePermissionRoleStore } from "@/stores/permissionRole"
 import { updateHead } from "@/utils/updateHead"
-import { type CategoryTagProps } from "@/views/home/main-content/post-detail/components/category-tag"
-import { type CopyrightProps } from "@/views/home/main-content/post-detail/components/copyright"
-import { type UpdatedAtProps } from "@/views/home/main-content/post-detail/components/updated-at"
 
 export function useGetData(
     manager: EditorStateManager,
     hash: Ref<string>, // hash值
 ) {
+    // 跳转到 404 页面
+    const router = useRouter()
     const postMeta = ref<PostMetaProps>({}) // 文章元数据
 
     const optionsStore = useOptionsStore()
     const { head } = storeToRefs(optionsStore)
 
+    // 版权信息
     const copyright = ref<CopyrightProps>({
         title: "",
         url: "",
@@ -42,21 +47,25 @@ export function useGetData(
             avatar: "",
             size: 40, // 头像大小
         },
-    }) // 版权信息
+    })
 
-    const prevNext = ref<PrevNextResponse>({} as PrevNextResponse) // 上一篇和下一篇文章信息
+    // 上一篇和下一篇文章信息
+    const prevNext = ref<PrevNextResponse>({} as PrevNextResponse)
+
+    // 更新时间
     const updatedAt = ref<UpdatedAtProps>({
         time: "",
         timeZone: "Asia/Shanghai",
         formatStr: "YYYY-MM-DD HH:mm:ss",
-    }) // 更新时间
+    })
 
     const categoryTag = ref<CategoryTagProps>({
         categories: [], // 文章分类
         tags: [], // 文章标签
     })
 
-    const commentStatus = ref<CommentStatusCode>(CommentStatusCode.Close) // 评论状态
+    // 评论状态
+    const commentStatus = ref<CommentStatusCode>(CommentStatusCode.Close)
 
     const permissionRoleStore = usePermissionRoleStore()
 
@@ -68,6 +77,7 @@ export function useGetData(
             if (postData) {
                 // 文章数据
                 manager.updateState(postData.post_content)
+
                 // 文章元数据
                 postMeta.value = {
                     post_id: postData.id,
@@ -101,8 +111,7 @@ export function useGetData(
                 head.value.author = postData.author_info.user_display_name
                 head.value.image = postData.thumbnail
                 head.value.siteName = postData.post_title
-                // url 已经在路由中间件 head 组件 中自动设置
-                head.value.releaseDate = postData.updated_at
+                head.value.releaseDate = postData.updated_at // url 已经在路由中间件 head 组件 中自动设置
 
                 // 版权信息
                 copyright.value.title = postData.post_title
@@ -121,6 +130,8 @@ export function useGetData(
                 // 更新评论状态
                 commentStatus.value = postData.comment_status
             }
+        } else {
+            router.push({ name: RouteNames.NotFound })
         }
     }
 

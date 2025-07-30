@@ -2,10 +2,9 @@
  * @FilePath     : \blog-client\src\version.ts
  * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * @Description  : 版本信息
  */
-
 
 import pkg from "../package.json"
 

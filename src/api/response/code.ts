@@ -87,6 +87,8 @@ export enum ResponseCode {
     PostStarCancelSuccess = 2032, // 文章取消收藏成功
     PostInteractionStatusSuccess = 2033, // 获取文章交互状态成功
     PostPrevNextSuccess = 2034, // 获取文章上一篇下一篇成功
+    PageIDNotFound = 2035, // 页面 ID 未找到
+    PageIDSuccess = 2036, // 页面 ID 成功
 
     // 文章标签相关
     PostTagInsertSuccess = 2100, // 插入文章标签成功

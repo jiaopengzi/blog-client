@@ -8,50 +8,24 @@
 
 <template>
     <div class="page">
-        <LayoutHeader @handle-search="handleSearch" />
-        <MainContent :search-data="searchData" />
-        <LayoutFooter />
+        <BaseLayout
+            :is-show-post-detail="isShowPostDetail"
+            :is-show-post-list="isShowPostList"
+            :is-show-home-carousel="isShowHomeCarousel"
+            :is-show-home-aside="isShowHomeAside"
+            :is-show-search-list="isShowSearchList"
+        />
     </div>
-
-    <el-backtop :bottom="100" class="backtop-container">
-        <div class="backtop">UP</div>
-    </el-backtop>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { storeToRefs } from "pinia"
 
-import LayoutFooter from "@/components/layout/footer"
-import LayoutHeader from "@/components/layout/header"
-import { type SearchData } from "@/components/layout/search"
+import BaseLayout from "@/components/layout/base-layout"
+import { RouteNames } from "@/router"
+import { useStatusStore } from "@/stores/status"
 
-import MainContent from "./main-content"
-
-defineOptions({ name: "HomePage" })
-
-const searchData = ref<SearchData>({
-    keyword: "",
-    time: new Date(),
-})
-
-const handleSearch = (val: string) => {
-    searchData.value.keyword = val
-    searchData.value.time = new Date() // 保证相同关键字搜索时, 重新渲染
-}
+const statusStore = useStatusStore()
+const { isShowPostDetail, isShowPostList, isShowHomeCarousel, isShowHomeAside, isShowSearchList } = storeToRefs(statusStore)
+defineOptions({ name: RouteNames.Home })
 </script>
-
-<style scoped lang="scss">
-// 返回顶部容器
-.backtop-container {
-    // 位置参考 main.scss中的 z-index 管理
-    z-index: 1000;
-
-    .backtop {
-        height: 100%;
-        width: 100%;
-        text-align: center;
-        line-height: 40px;
-        color: var(--jpz-color-primary);
-    }
-}
-</style>

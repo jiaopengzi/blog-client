@@ -12,6 +12,7 @@ import { useRouter } from "vue-router"
 
 import { type ViewPostByIDRequest } from "@/api/post/viewByID"
 import { type QueryParamsOptions } from "@/api/request"
+import { PostDetailType } from "@/components/common/post-detail"
 import { queryKey as queryKeyUpsert } from "@/components/common/post-upsert"
 import { EditorStateManager } from "@/components/editor"
 import { RouteNames } from "@/router"
@@ -22,6 +23,7 @@ import { useRootUtils } from "../useRootUtils"
 import { useGetData } from "./api"
 
 export function usePostDetail(
+    detailType: PostDetailType, // 页面类型
     queryParams: Reactive<ViewPostByIDRequest>, // 查询参数
     hash: Ref<string>, // hash值
 ) {
@@ -74,20 +76,24 @@ export function usePostDetail(
 
     // 通过路由更新数据
     const updateByRoute = async () => {
-        await updateQueryParams()
-        await getPostDetail(queryParams)
-        await getPrevNext({ post_id: queryParams.post_id })
-        if (isLogin.value) {
-            await updatePostInteraction(queryParams)
+        if (detailType === PostDetailType.Post) {
+            await updateQueryParams()
+            await getPrevNext({ post_id: queryParams.post_id })
+            if (isLogin.value) {
+                await updatePostInteraction(queryParams)
+            }
         }
+        await getPostDetail(queryParams)
         updateBreadcrumb()
     }
 
     // 更新文章详情(不使用监控路由更新)
     const updatePostDetail = async (id: string) => {
-        clearParamsExcept(["post_id"])
         queryParams.post_id = id
-        await updateRouterPush()
+        if (detailType === PostDetailType.Post) {
+            clearParamsExcept(["post_id"])
+            await updateRouterPush()
+        }
         await updateByRoute()
         await updateHeadInfo()
     }
@@ -99,9 +105,20 @@ export function usePostDetail(
 
     // 编辑文章
     const editPost = (val: string) => {
+        let routeName
+        switch (detailType) {
+            case PostDetailType.Post:
+                routeName = RouteNames.PostWrite
+                break
+            case PostDetailType.Page:
+                routeName = RouteNames.PageWrite
+                break
+            default:
+                routeName = RouteNames.PostWrite
+        }
         // 编辑文章
         router.push({
-            name: RouteNames.PostWrite,
+            name: routeName,
             query: { [queryKeyUpsert.ID]: val },
         })
     }

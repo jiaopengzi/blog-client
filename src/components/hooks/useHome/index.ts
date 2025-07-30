@@ -60,7 +60,7 @@ export function useHome(
     const breadcrumbStore = useBreadcrumbStore()
 
     const statusStore = useStatusStore()
-    const { showPostList, showSearchList } = storeToRefs(statusStore)
+    const { isShowPostList, isShowSearchList } = storeToRefs(statusStore)
 
     const {
         pagination, // 分页数据
@@ -93,7 +93,7 @@ export function useHome(
 
         await updateQueryParams()
 
-        if (showPostList.value || showSearchList.value) {
+        if (isShowPostList.value || isShowSearchList.value) {
             await updatePaginate()
         }
 
