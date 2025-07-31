@@ -21,6 +21,7 @@ export interface NavItemProps extends MenuItemWithIndex {
 
         style?: string // 图标样式
     }
+
     text_style?: string // 文本样式
 }
 

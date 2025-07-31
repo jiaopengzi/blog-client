@@ -130,6 +130,7 @@ const timeItems: TimeItem[] = [
     { value: 60 * 60 * 24 * 180, display: "180天" }, // 180天
     { value: 60 * 60 * 24 * 365, display: "365天" }, // 365天
 ]
+
 // 点击时间按钮
 const handleClickTimeItem = (item: TimeItem) => {
     viewDataAc.duration_time = item.value // 设置有效时间

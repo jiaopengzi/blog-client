@@ -100,6 +100,9 @@ export function useGetData(
                         is_like: false,
                         is_star: false,
                     },
+
+                    // TODO is_paid: postData.is_paid,
+                    price: postData.price,
                 }
 
                 // 文章头部信息

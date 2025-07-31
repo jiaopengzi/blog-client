@@ -21,10 +21,11 @@ import { useIntersectionObserver } from "@vueuse/core"
 import { debounce } from "throttle-debounce"
 import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from "vue"
 
+import { type MembershipRes } from "@/api/membership/common"
 import { ContentPayType } from "@/components/common/pay-content"
 import { ScrollElementTagHeading } from "@/components/editor/command"
-import { CustomElementPayDownload, CustomElementPayRead, CustomElementVideoPlayer } from "@/customElements"
-import { mountPayContentOnCustomElements, mountVideoPlayerOnCustomElements } from "@/customElementsMount"
+import { CustomElementPayDownload, CustomElementPayMembership, CustomElementPayRead, CustomElementVideoPlayer } from "@/customElements"
+import { mountPayContentOnCustomElements, mountPayMembershipOnCustomElements, mountVideoPlayerOnCustomElements } from "@/customElementsMount"
 import { copyText } from "@/utils/clipboard"
 import { shiftArray } from "@/utils/img"
 import { MessageUtil } from "@/utils/message"
@@ -52,6 +53,9 @@ const {
     root, // 交叉观察器的根元素
     rootMargin = "", // 交叉观察器的根元素的边距
     threshold = 1, // 交叉观察器的阈值
+
+    is_paid = false, // 是否付费阅读
+    price = "0", // 价格(单位：分)
 } = defineProps<PreviewProps>()
 
 // 定义 emits 子组件 传参
@@ -65,6 +69,7 @@ const emit = defineEmits<{
     (event: "commit-heading-map", val: Map<string, HeadingObject>): void // 提交标题 map
     (event: "pay-vip", val: ContentPayType): void // vip 购买
     (event: "pay-single", val: ContentPayType): void // 立即购买
+    (event: "pay-membership", val: MembershipRes): void // 付费会员
 }>()
 
 const previewRef = useTemplateRef<HTMLElement | null>("previewRef")
@@ -329,6 +334,16 @@ const payContentEmits = {
     },
 }
 
+// 定义 payMembership 组件的事件
+const payMembershipEmits = {
+    onPayMembership: (val: MembershipRes) => {
+        emit("pay-membership", val)
+    },
+}
+
+const isPaidAc = computed(() => is_paid) // 是否付费阅读
+const priceAc = computed(() => price) // 价格(单位：分)
+
 // 监控 html 变化, 获取所有的 h 标签 并挂载视频播放器
 watch(
     () => htmlData.value,
@@ -344,8 +359,16 @@ watch(
 
                 // 挂载自定义元素
                 mountVideoPlayerOnCustomElements(previewRef.value as HTMLElement, CustomElementVideoPlayer)
-                mountPayContentOnCustomElements(previewRef.value as HTMLElement, CustomElementPayDownload, ContentPayType.Download, payContentEmits)
-                mountPayContentOnCustomElements(previewRef.value as HTMLElement, CustomElementPayRead, ContentPayType.Read, payContentEmits)
+                mountPayContentOnCustomElements(
+                    previewRef.value as HTMLElement,
+                    CustomElementPayDownload,
+                    ContentPayType.Download,
+                    payContentEmits,
+                    isPaidAc,
+                    priceAc,
+                )
+                mountPayContentOnCustomElements(previewRef.value as HTMLElement, CustomElementPayRead, ContentPayType.Read, payContentEmits, isPaidAc, priceAc)
+                mountPayMembershipOnCustomElements(previewRef.value as HTMLElement, CustomElementPayMembership, payMembershipEmits)
             })
         }
     },

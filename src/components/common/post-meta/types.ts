@@ -29,4 +29,7 @@ export interface PostMetaProps {
         is_like: boolean // 是否点赞
         is_star: boolean // 是否收藏
     }
+
+    is_paid?: boolean // 是否付费阅读
+    price?: string // 价格(单位：分)
 }

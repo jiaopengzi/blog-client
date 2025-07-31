@@ -40,4 +40,7 @@ export interface PreviewProps {
     root?: ScrollContainer
     rootMargin?: string
     threshold?: number | number[]
+
+    is_paid?: boolean // 是否付费阅读
+    price?: string // 价格(单位：分)
 }

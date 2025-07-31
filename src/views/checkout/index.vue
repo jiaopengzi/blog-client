@@ -73,7 +73,7 @@
 
     <!-- 二维码 -->
     <el-dialog v-model="isPayQRCodeShow" width="370px" @close="handleClose">
-        <PayQRCode v-if="isPayQRCodeShow" :qr-code-url="qrCodeUrl" :pay-type="payTypeResult" :amount="fenToYuan(finalAmount)" />
+        <PayQRCode v-if="isPayQRCodeShow" :qr-code-url="qrCodeUrl" :pay-type="payTypeResult" :amount="String(fenToYuan(finalAmount))" />
     </el-dialog>
 </template>
 
@@ -86,6 +86,7 @@ import { useRouter } from "vue-router"
 import { PayTypeDisplay } from "@/api/pay/common"
 import { RouteNames } from "@/router"
 import { DeviceType, useDeviceStore } from "@/stores/device"
+import { fenToYuan } from "@/utils/amount"
 
 import { useOrderCheckout } from "./hooks"
 import PayQRCode from "./pay-qr-code"
@@ -117,11 +118,6 @@ const widthTitle = computed(() => {
 })
 
 const trigger = ref<"Enter" | "Space">("Enter") // 输入触发方式
-
-// 将分转换为元
-const fenToYuan = (amount: number) => {
-    return (amount / 100).toFixed(2) // 将分转换为元
-}
 
 const handleClose = () => {
     isPayQRCodeShow.value = false

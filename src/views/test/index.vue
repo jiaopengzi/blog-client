@@ -1,9 +1,9 @@
 <template>
-    <PayQRCode />
+    <PayMembership />
 </template>
 
 <script lang="ts" setup>
-import PayQRCode from "@/views/checkout/pay-qr-code/index.vue"
+import PayMembership from "@/components/common/pay-membership"
 defineOptions({ name: "TestTest" })
 </script>
 

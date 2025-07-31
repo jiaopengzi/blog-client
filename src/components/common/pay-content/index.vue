@@ -11,11 +11,11 @@
         <div class="no-pay">
             <JIcon :name="IconKeys.Lock" :custom-class="`my-icon`" class="lock" />
             <div class="text" v-if="content_pay_type === ContentPayType.Read">
-                隐藏内容，付费<span class="price">{{ price }}</span
+                隐藏内容，付费<span class="price">{{ fenToYuan(price) }}</span
                 >元查看。
             </div>
             <div class="text" v-if="content_pay_type === ContentPayType.Download">
-                附件内容，付费<span class="price">{{ price }}</span
+                附件内容，付费<span class="price">{{ fenToYuan(price) }}</span
                 >元下载。
             </div>
             <div class="text-vip">升级为 VIP 可免费查看(除特定内容外)所有内容。</div>
@@ -32,12 +32,13 @@
 <script lang="ts" setup>
 import JIcon, { IconKeys } from "@/components/common/icons"
 import { EditorStateManager } from "@/components/editor"
+import { fenToYuan } from "@/utils/amount"
 
 import { ContentPayType, type PayContentProps } from "./types.ts"
 defineOptions({ name: "PayContent" })
 
 // 定义 props
-const { content_pay_type = ContentPayType.Read, is_paid = false, price = 0, markdown } = defineProps<PayContentProps>()
+const { content_pay_type = ContentPayType.Read, is_paid = false, price = "0", markdown } = defineProps<PayContentProps>()
 
 // 事件
 const emit = defineEmits<{

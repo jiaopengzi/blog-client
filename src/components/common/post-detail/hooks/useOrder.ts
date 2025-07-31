@@ -9,7 +9,9 @@
 import { type Ref, ref } from "vue"
 import { useRouter } from "vue-router"
 
+import { type MembershipRes } from "@/api/membership/common"
 import { ProductType } from "@/api/order/common"
+import { type Product } from "@/api/order/create"
 import { orderCreateAPI, type OrderCreateRequest } from "@/api/order/create"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { ContentPayType } from "@/components/common/pay-content"
@@ -26,7 +28,7 @@ export function useOrder(postId: Ref<string>) {
             {
                 related_id: postId.value,
                 product_type: ProductType.Post, // 产品类型为文章
-                quantity: "1", // 文章名称
+                quantity: "1", // 数量
             },
         ],
         remark: "",
@@ -70,7 +72,6 @@ export function useOrder(postId: Ref<string>) {
 
     // 处理支付单篇文章
     const handlePaySingle = async (val: ContentPayType) => {
-        console.log("============>val", val)
         // 更新返回URL
         await updateUrl()
         await createOrder()
@@ -78,14 +79,29 @@ export function useOrder(postId: Ref<string>) {
 
     // 处理支付成为 VIP
     const handlePayVip = async (val: ContentPayType) => {
-        console.log("============>val", val)
         // 更新返回URL
         await updateUrl()
+    }
+
+    // 处理支付成为会员
+    const handlePayMembership = async (val: MembershipRes) => {
+        const product: Product = {
+            related_id: val.id,
+            product_type: ProductType.Membership, // 产品类型为会员
+            quantity: "1", // 数量
+        }
+
+        orderReq.value.products = [product] // 更新订单请求数据中的产品列表
+
+        // 更新返回URL
+        await updateUrl()
+        await createOrder()
     }
 
     return {
         handlePaySingle,
         handlePayVip,
+        handlePayMembership,
         isPayLoading,
     }
 }

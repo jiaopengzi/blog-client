@@ -8,4 +8,5 @@
 
 export * from "./getComponentContainers"
 export * from "./PayContent"
+export * from "./PayMembership"
 export * from "./VideoPlayer"

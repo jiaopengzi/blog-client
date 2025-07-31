@@ -24,6 +24,7 @@
                     :is-show-preview-wechat="state.isShowPreviewWechat"
                     :is-user-scroll-preview="state.isUserScrollPreview"
                     :heading-show-current-index="headingShowCurrentIndex"
+                    :price="postMeta.price"
                     @show-image-viewer="showImageViewer"
                     @close-image-viewer="closeImageViewer"
                     @heading-show-current="handleHeadingShowCurrentAc"
@@ -31,6 +32,7 @@
                     @commit-heading-map="updateHeadingMap"
                     @pay-single="handlePaySingle"
                     @pay-vip="handlePayVip"
+                    @pay-membership="handlePayMembership"
                 />
                 <DetailBottomSame v-if="isShowDetailBottomSame" class="bottom-same" />
                 <DetailInteraction
@@ -90,7 +92,6 @@ import HtmlPreview from "@/components/editor/components/preview"
 import { usePreview } from "@/components/editor/hooks/usePreview"
 import { usePostDetail } from "@/components/hooks/usePostDetail"
 import { useWebFullscreen } from "@/components/hooks/useWebFullscreen"
-import { RouteNames } from "@/router"
 import { useOptionsStore } from "@/stores/options"
 import { useStatusStore } from "@/stores/status"
 import { useUserStore } from "@/stores/user"
@@ -178,7 +179,7 @@ const {
 // preview
 const { showImageViewer, closeImageViewer, handleHeadingShowCurrent, handleUpdateIsUserScrollPreview } = usePreview(manager)
 
-const { handlePaySingle, handlePayVip, isPayLoading } = useOrder(postId)
+const { handlePaySingle, handlePayVip, handlePayMembership, isPayLoading } = useOrder(postId)
 
 // 更新文章详情状态
 const handleHeadingShowCurrentAc = (val: number) => {

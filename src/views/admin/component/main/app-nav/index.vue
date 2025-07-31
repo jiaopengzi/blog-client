@@ -14,7 +14,7 @@
         <div class="description" v-if="isShowDrag">导航项可以拖拽排序，在输入的时候无法选中文字，请关闭拖拽排序</div>
         <el-collapse v-model="activeNames">
             <VueDraggable v-model="navList" :animation="150" @end="onEnd" :disabled="isDisabledDrag">
-                <el-collapse-item v-for="(item, i) in navList" :key="`${item.index}-${item.href}`" :name="item.index">
+                <el-collapse-item v-for="(item, i) in navList" :key="item.index" :name="item.index">
                     <template #title>
                         <h4 class="collapse-title">{{ item.text }}</h4>
                     </template>

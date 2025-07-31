@@ -21,7 +21,7 @@
         :style="{ width: formWidth ? `${formWidth}px` : '100%' }"
     >
         <el-form-item label="索引" prop="index">
-            <el-input v-model="formDataResult.index" placeholder="导航按钮唯一索引，不可重复！" clearable />
+            <el-input v-model="formDataResult.index" placeholder="导航按钮唯一索引，不可重复！" clearable disabled />
         </el-form-item>
         <el-form-item label="文字" prop="text">
             <el-input v-model="formDataResult.text" placeholder="导航按钮显示文字。" clearable />
@@ -58,7 +58,7 @@
         </el-form-item>
         <el-form-item label="预览">
             <el-menu>
-                <el-menu-item>
+                <el-menu-item :index="formData.index">
                     <img
                         v-if="!isInnerIcon && formData.icon.src"
                         :src="formData.icon.src"
