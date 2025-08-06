@@ -68,7 +68,7 @@ import { getOrderPaginateAdminAPI, type OrderPaginationRequest } from "@/api/ord
 import { type QueryParamsRecord } from "@/api/request"
 import { ResponseCode } from "@/api/response"
 import type { TableColumn, TableData } from "@/components/common/base-table"
-import BaseTable from "@/components/common/base-table"
+import BaseTable from "@/components/common/base-table/index.vue"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { useParams } from "@/components/hooks/useParams"
 import { RouteNames } from "@/router"

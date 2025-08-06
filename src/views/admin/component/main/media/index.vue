@@ -49,7 +49,7 @@
 <script lang="ts" setup>
 import { useHead } from "@unhead/vue"
 
-import MediaBase from "@/components/common/media-base"
+import MediaBase from "@/components/common/media-base/index.vue"
 import { useMedia } from "@/components/hooks/useMedia"
 import { RouteNames } from "@/router"
 import { adminMenuItemMap } from "@/views/admin/component/aside"

@@ -13,7 +13,7 @@
 </template>
 <script lang="ts" setup>
 import { PostType } from "@/api/post/common"
-import PostUpsert from "@/components/common/post-upsert"
+import PostUpsert from "@/components/common/post-upsert/index.vue"
 import { RouteNames } from "@/router"
 import { adminMenuItemMap } from "@/views/admin/component/aside"
 

@@ -31,18 +31,13 @@
                     @click-category="clickCategory"
                     @pagination-block-visible="paginationBlockVisibleChange"
                 />
+
                 <!-- 文章详情 -->
                 <PostDetail
                     ref="postDetailRef"
                     v-if="isShowPostDetail"
-                    :detail-type="detailType"
                     :heading-show-current-index="state.headingShowCurrentIndex"
                     :time="clickTocTime"
-                    :is-show-detail-interaction="isShowDetailInteraction"
-                    :is-show-detail-bottom-same="isShowDetailBottomSame"
-                    :is-show-detail-category-tag="isShowDetailCategoryTag"
-                    :is-show-detail-copyright="isShowDetailCopyright"
-                    :is-show-detail-prev-next="isShowDetailPrevNext"
                     @state="handleState"
                     @click-category="clickCategory"
                     @click-tag="clickTag"
@@ -76,13 +71,14 @@
 </template>
 <script setup lang="ts">
 import type { ElAside } from "element-plus"
+import { storeToRefs } from "pinia"
 import { nextTick, onBeforeMount, type Reactive, reactive, ref, useTemplateRef, watch } from "vue"
 import { useRoute } from "vue-router"
 
 import { type ViewPostRequest } from "@/api/post/view"
 import JBreadcrumb from "@/components/common/breadcrumb"
 import MonthArchive from "@/components/common/month-archive"
-import PostDetail, { PostDetailType } from "@/components/common/post-detail"
+import PostDetail from "@/components/common/post-detail"
 import PostList from "@/components/common/post-list"
 import type { EditorState } from "@/components/editor"
 import Toc from "@/components/editor/components/toc"
@@ -101,29 +97,24 @@ defineOptions({ name: "MainContent" })
 
 const route = useRoute()
 
-const {
-    searchData,
-    isShowHomeCarousel = true,
-    isShowHomeAside = true,
-    isShowToc = true,
-    isShowRecommendedRead = true,
-    isShowHotPost = true,
-    isShowMonthArchive = true,
-    isShowPostTag = true,
-    isShowPostList = true,
-    isShowSearchList = false,
-    isShowPostDetail = false,
-    detailType = PostDetailType.Post,
-    isShowDetailInteraction = true, // 是否显示详情交互
-    isShowDetailBottomSame = true, // 是否显示详情底部相同内容
-    isShowDetailCategoryTag = true, // 是否显示详情分类标签
-    isShowDetailCopyright = true, // 是否显示详情版权信息
-    isShowDetailPrevNext = true, // 是否显示详情上一篇下一篇
-} = defineProps<MainContentProps>()
+const { searchData } = defineProps<MainContentProps>()
 
 const asideRef = useTemplateRef<InstanceType<typeof ElAside>>("asideRef")
 
 const statusStore = useStatusStore()
+
+const {
+    isShowSearchList,
+    isShowPostDetail,
+    isShowPostList,
+    isShowHomeCarousel,
+    isShowHomeAside,
+    isShowToc,
+    isShowRecommendedRead,
+    isShowHotPost,
+    isShowMonthArchive,
+    isShowPostTag,
+} = storeToRefs(statusStore)
 
 // 获取首页数据
 const mainReq = reactive<ViewPostRequest>({} as ViewPostRequest)
@@ -211,7 +202,7 @@ watch(
     () => route.fullPath,
     async (newVal, oldVal) => {
         // **注意是非详情页**
-        if (!newVal || newVal === oldVal || isShowPostDetail) return
+        if (!newVal || newVal === oldVal || isShowPostDetail.value) return
         await statusStore.setAnchorHash("") // 清空锚点
         await updateByRoute()
     },
@@ -221,16 +212,16 @@ watch(
 const { handlePostId } = usePostDetail()
 
 onBeforeMount(async () => {
-    if (!isShowPostDetail) {
+    if (!isShowPostDetail.value) {
         await updateByRoute()
     }
-    if (isShowHotPost) {
+    if (isShowHotPost.value) {
         await getHostPost()
     }
-    if (isShowRecommendedRead) {
+    if (isShowRecommendedRead.value) {
         await getRecommendedPost()
     }
-    if (isShowMonthArchive) {
+    if (isShowMonthArchive.value) {
         await getPostCountByMonth()
     }
 })

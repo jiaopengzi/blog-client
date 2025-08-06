@@ -62,7 +62,7 @@
 import { computed, ref } from "vue"
 
 import type { TableData } from "@/components/common/base-table"
-import MediaBase from "@/components/common/media-base"
+import MediaBase from "@/components/common/media-base/index.vue"
 import { useMedia } from "@/components/hooks/useMedia"
 import { MessageUtil } from "@/utils/message"
 

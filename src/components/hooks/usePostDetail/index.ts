@@ -23,7 +23,7 @@ import { useRootUtils } from "../useRootUtils"
 import { useGetData } from "./api"
 
 export function usePostDetail(
-    detailType: PostDetailType, // 页面类型
+    detailType: Ref<PostDetailType>, // 页面类型
     queryParams: Reactive<ViewPostByIDRequest>, // 查询参数
     hash: Ref<string>, // hash值
 ) {
@@ -76,7 +76,7 @@ export function usePostDetail(
 
     // 通过路由更新数据
     const updateByRoute = async () => {
-        if (detailType === PostDetailType.Post) {
+        if (detailType.value === PostDetailType.Post) {
             await updateQueryParams()
             await getPrevNext({ post_id: queryParams.post_id })
             if (isLogin.value) {
@@ -90,7 +90,7 @@ export function usePostDetail(
     // 更新文章详情(不使用监控路由更新)
     const updatePostDetail = async (id: string) => {
         queryParams.post_id = id
-        if (detailType === PostDetailType.Post) {
+        if (detailType.value === PostDetailType.Post) {
             clearParamsExcept(["post_id"])
             await updateRouterPush()
         }
@@ -106,7 +106,7 @@ export function usePostDetail(
     // 编辑文章
     const editPost = (val: string) => {
         let routeName
-        switch (detailType) {
+        switch (detailType.value) {
             case PostDetailType.Post:
                 routeName = RouteNames.PostWrite
                 break

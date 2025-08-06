@@ -40,7 +40,7 @@ import { deleteLoginLogByIDsAPI, type DeleteLoginLogByIDsRequest } from "@/api/l
 import { getLoginLogsAPI, type GetLoginLogsRequest, type LoginLog } from "@/api/loginLog/getLoginLogs"
 import { handleResErr, ResponseCode } from "@/api/response"
 import type { TableColumn } from "@/components/common/base-table"
-import BaseTable from "@/components/common/base-table"
+import BaseTable from "@/components/common/base-table/index.vue"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { useParams } from "@/components/hooks/useParams"
 import { RouteNames } from "@/router"

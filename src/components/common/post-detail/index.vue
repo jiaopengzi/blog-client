@@ -88,7 +88,7 @@ import HeadTag from "@/components/common/head-tag"
 import PostMeta from "@/components/common/post-meta"
 import PosterShare from "@/components/common/poster-share"
 import type { EditorState } from "@/components/editor"
-import HtmlPreview from "@/components/editor/components/preview"
+import HtmlPreview from "@/components/editor/components/preview/index.vue"
 import { usePreview } from "@/components/editor/hooks/usePreview"
 import { usePostDetail } from "@/components/hooks/usePostDetail"
 import { useWebFullscreen } from "@/components/hooks/useWebFullscreen"
@@ -98,27 +98,22 @@ import { useUserStore } from "@/stores/user"
 
 import DetailBottomSame from "./components/bottom-same"
 import DetailCategoryTag from "./components/category-tag"
-import CommentEditor, { type CommentEditorRef } from "./components/comment-editor"
+import { type CommentEditorRef } from "./components/comment-editor"
+import CommentEditor from "./components/comment-editor/index.vue"
 import CommentList from "./components/comment-list"
 import DetailCopyright from "./components/copyright"
 import DetailInteraction from "./components/interaction"
 import DetailPrevNext from "./components/prev-next"
 import DetailUpdatedAt from "./components/updated-at"
 import { useHeading, useInteraction, useOrder } from "./hooks"
-import { type PostDetailProps, PostDetailType } from "./types"
+import { type PostDetailProps } from "./types"
 
 defineOptions({ name: "PostDetail" })
 
 // 定义 props
 const {
-    detailType = PostDetailType.Post, // 默认页面类型为文章
     headingShowCurrentIndex, // 当前展示的标题的索引
     time,
-    isShowDetailInteraction = true, // 是否显示详情交互
-    isShowDetailBottomSame = true, // 是否显示详情底部相同内容
-    isShowDetailCategoryTag = true, // 是否显示详情分类标签
-    isShowDetailCopyright = true, // 是否显示详情版权信息
-    isShowDetailPrevNext = true, // 是否显示详情上一篇下一篇
 } = defineProps<PostDetailProps>()
 
 // 事件
@@ -134,7 +129,19 @@ const optionsStore = useOptionsStore()
 const userStore = useUserStore()
 
 const { head } = storeToRefs(optionsStore)
-const { postId, anchorHash } = storeToRefs(statusStore)
+
+const {
+    postId,
+    anchorHash,
+    detailType,
+    // 文章详情相关属性
+    isShowDetailInteraction,
+    isShowDetailBottomSame,
+    isShowDetailCategoryTag,
+    isShowDetailCopyright,
+    isShowDetailPrevNext,
+} = storeToRefs(statusStore)
+
 const { data: userInfo } = storeToRefs(userStore)
 
 const isAdmin = computed(() => {

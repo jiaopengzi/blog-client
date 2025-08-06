@@ -60,8 +60,6 @@ export function useOrder(postId: Ref<string>) {
         const res = await orderCreateAPI(orderReq.value)
         if (res.data.code === ResponseCode.OrderCreateSuccess) {
             isPayLoading.value = false
-
-            // 已知 orderRes.value 就是 页面 RouteNames.Checkout 的props 如何跳转
             router.push({ name: RouteNames.Checkout })
         } else {
             isPayLoading.value = false
@@ -79,8 +77,8 @@ export function useOrder(postId: Ref<string>) {
 
     // 处理支付成为 VIP
     const handlePayVip = async (val: ContentPayType) => {
-        // 更新返回URL
-        await updateUrl()
+        // 更新路由
+        await router.push({ name: RouteNames.Page, params: { customPath: "vip" } })
     }
 
     // 处理支付成为会员

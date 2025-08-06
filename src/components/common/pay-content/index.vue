@@ -7,7 +7,7 @@
 -->
 
 <template>
-    <div v-if="!is_paid">
+    <div v-if="!isShowContent">
         <div class="no-pay">
             <JIcon :name="IconKeys.Lock" :custom-class="`my-icon`" class="lock" />
             <div class="text" v-if="content_pay_type === ContentPayType.Read">
@@ -25,11 +25,13 @@
             </div>
         </div>
     </div>
-    <div class="pay">
-        <div v-if="is_paid" v-html="stateManager.getState().html"></div>
+    <div class="pay" v-if="isShowContent">
+        <div v-html="stateManager.getState().html"></div>
     </div>
 </template>
 <script lang="ts" setup>
+import { computed } from "vue"
+
 import JIcon, { IconKeys } from "@/components/common/icons"
 import { EditorStateManager } from "@/components/editor"
 import { fenToYuan } from "@/utils/amount"
@@ -52,13 +54,16 @@ const paySingle = () => {
 }
 
 // 支付成为 VIP
-const payVIP = () => {
+const payVIP = async () => {
     emit("pay-vip", content_pay_type)
 }
 
 const stateManager = new EditorStateManager()
-
 stateManager.updateState(markdown)
+
+const isShowContent = computed(() => {
+    return is_paid || price === "0"
+})
 </script>
 <style scoped lang="scss">
 .no-pay {

@@ -40,6 +40,7 @@ export const pageMiddleware = async (to: RouteLocationNormalized) => {
         const res = await pagePathToIDAPI(requestData)
         if (res.data.code === ResponseCode.PageIDSuccess) {
             await statusStore.setPostId(res.data.data)
+            await statusStore.setCustomPage()
             return true
         }
     }

@@ -9,25 +9,7 @@
 <template>
     <div class="page">
         <LayoutHeader :is-show-search="isShowSearch" @handle-search="handleSearch" />
-        <MainContent
-            :search-data="searchData"
-            :is-show-home-carousel="isShowHomeCarousel"
-            :is-show-home-aside="isShowHomeAside"
-            :is-show-toc="isShowToc"
-            :is-show-recommended-read="isShowRecommendedRead"
-            :is-show-hot-post="isShowHotPost"
-            :is-show-month-archive="isShowMonthArchive"
-            :is-show-post-tag="isShowPostTag"
-            :is-show-post-list="isShowPostList"
-            :is-show-search-list="isShowSearchList"
-            :is-show-post-detail="isShowPostDetail"
-            :detail-type="detailType"
-            :is-show-detail-interaction="isShowDetailInteraction"
-            :is-show-detail-bottom-same="isShowDetailBottomSame"
-            :is-show-detail-category-tag="isShowDetailCategoryTag"
-            :is-show-detail-copyright="isShowDetailCopyright"
-            :is-show-detail-prev-next="isShowDetailPrevNext"
-        />
+        <MainContent :search-data="searchData" />
         <LayoutFooter />
     </div>
 
@@ -37,37 +19,21 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from "pinia"
 import { ref } from "vue"
 
-import { PostDetailType } from "@/components/common/post-detail"
 import LayoutFooter from "@/components/layout/footer"
 import LayoutHeader from "@/components/layout/header"
 import { type SearchData } from "@/components/layout/search"
+import { useStatusStore } from "@/stores/status"
 
 import MainContent from "../main-content"
-import { type BaseLayoutProps } from "./types"
 
 defineOptions({ name: "BaseLayout" })
 
-const {
-    isShowSearch = true,
-    isShowHomeCarousel = true,
-    isShowHomeAside = true,
-    isShowToc = true,
-    isShowRecommendedRead = true,
-    isShowHotPost = true,
-    isShowMonthArchive = true,
-    isShowPostTag = true,
-    isShowPostList = true,
-    isShowSearchList = false,
-    isShowPostDetail = false,
-    detailType = PostDetailType.Post, // 默认是文章详情
-    isShowDetailInteraction = true, // 是否显示详情交互
-    isShowDetailBottomSame = true, // 是否显示详情底部相同内容
-    isShowDetailCategoryTag = true, // 是否显示详情分类标签
-    isShowDetailCopyright = true, // 是否显示详情版权信息
-    isShowDetailPrevNext = true, // 是否显示详情上一篇下一篇
-} = defineProps<BaseLayoutProps>()
+const statusStore = useStatusStore()
+
+const { isShowSearch } = storeToRefs(statusStore)
 
 // // 事件
 // const emit = defineEmits<{

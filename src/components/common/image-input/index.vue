@@ -27,7 +27,7 @@
 import { ref } from "vue"
 
 import type { TableData } from "@/components/common/base-table"
-import SelectMedia from "@/components/common/media-select"
+import SelectMedia from "@/components/common/media-select/index.vue"
 import { MessageUtil } from "@/utils/message"
 
 // 定义组件名称

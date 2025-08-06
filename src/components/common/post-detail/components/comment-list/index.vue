@@ -53,7 +53,7 @@ import { type CommentRes } from "@/api/comment/common"
 import { type ViewCommentRequest } from "@/api/comment/viewByPostID"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 
-import CommentItem from "./comment-item"
+import CommentItem from "./comment-item/index.vue"
 import { useCommentList } from "./hooks"
 import type { CommentListProps } from "./types"
 

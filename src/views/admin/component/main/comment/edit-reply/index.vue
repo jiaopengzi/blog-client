@@ -44,8 +44,9 @@ import type { Completion } from "@codemirror/autocomplete"
 import { onMounted, ref } from "vue"
 
 import { type CommentRes, CommentReviewCode, CommentStatusDisplay } from "@/api/comment/common"
-import CommentEditor, { CommentEditorMode } from "@/components/common/post-detail/components/comment-editor"
-import CommentItem from "@/components/common/post-detail/components/comment-list/comment-item"
+import { CommentEditorMode } from "@/components/common/post-detail/components/comment-editor"
+import CommentEditor from "@/components/common/post-detail/components/comment-editor/index.vue"
+import CommentItem from "@/components/common/post-detail/components/comment-list/comment-item/index.vue"
 
 import { type EditReplyProps } from "./types"
 

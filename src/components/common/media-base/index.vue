@@ -57,8 +57,8 @@
 <script lang="ts" setup>
 import { type Pagination } from "@/api/response"
 import { type FileCountGroupByFileType } from "@/api/upload/getFileCountGroupByFileType"
-import type { TableColumn, TableData } from "@/components/common/base-table"
-import BaseTable from "@/components/common/base-table"
+import { type TableColumn, type TableData } from "@/components/common/base-table"
+import BaseTable from "@/components/common/base-table/index.vue"
 import AddMedia from "@/components/common/media-add"
 import EditMedia, { type EditMediaProps } from "@/components/common/media-edit"
 
