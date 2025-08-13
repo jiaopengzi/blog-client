@@ -224,8 +224,8 @@ const {
 })
 
 const editData = ref<OrderGetByIDRes>({} as OrderGetByIDRes)
-const editRow = (index: number, row: OrderGetByIDRes) => {
-    editData.value = row
+const editRow = (index: number, row: TableData) => {
+    editData.value = row as OrderGetByIDRes
     toggleEditDialog()
 }
 

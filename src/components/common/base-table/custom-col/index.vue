@@ -59,6 +59,7 @@
 </template>
 
 <script lang="ts" setup>
+import type { PostCategory } from "@/api/postCategory/view"
 import type { PostTag } from "@/api/postTag/view"
 import type { User } from "@/api/user/getUsers"
 import CommentMarkdownPreview from "@/components/common/comment-markdown-preview"
@@ -94,13 +95,13 @@ const {
 }>()
 
 const emit = defineEmits<{
-    (event: "click-item", item: PostTag): void
+    (event: "click-item", item: PostCategory | PostTag): void
     (event: "click-author", user: User): void
     (event: "post-click", postID: string): void
     (event: "view-post", postID: string): void
 }>()
 
-const handleTagClick = (item: PostTag) => {
+const handleTagClick = (item: PostCategory | PostTag) => {
     emit("click-item", item)
 }
 

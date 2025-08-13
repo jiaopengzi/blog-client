@@ -275,7 +275,7 @@ const handlePostCountByGroup = async (item: PostCountGroupItem) => {
     await updateRouterPush()
 }
 
-const handleClickCategory = async (item: PostCategory) => {
+const handleClickCategory = async (item: PostCategory | PostTag) => {
     // 配置查询参数
     Object.assign(queryParams, {
         [queryKey.PostCategoryID]: item.id,
@@ -285,7 +285,7 @@ const handleClickCategory = async (item: PostCategory) => {
     await updateRouterPush()
 }
 
-const handleClickTag = async (item: PostTag) => {
+const handleClickTag = async (item: PostCategory | PostTag) => {
     // 配置查询参数
     Object.assign(queryParams, {
         [queryKey.PostTagID]: item.id,

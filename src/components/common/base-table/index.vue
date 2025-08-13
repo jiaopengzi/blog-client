@@ -217,6 +217,7 @@ import type { ElTable } from "element-plus"
 import { storeToRefs } from "pinia"
 import { reactive, type Ref, ref, useTemplateRef, watch } from "vue"
 
+import type { PostCategory } from "@/api/postCategory/view"
 import type { PostTag } from "@/api/postTag/view"
 import { type Pagination } from "@/api/response"
 import type { User } from "@/api/user/getUsers"
@@ -302,8 +303,8 @@ const emit = defineEmits<{
     (event: "add-item-update-dialog-visible", value: boolean): void // 更新添加元素对话框状态
     (event: "edit-item-update-dialog-visible", value: boolean): void // 更新编辑元素对话框状态
     (event: "update-show-list-or-grid-status", value: boolean): void // 更新列表或宫格状态
-    (event: "click-category", tagItemData: PostTag): void // 点击分类
-    (event: "click-tag", tagItemData: PostTag): void // 点击标签
+    (event: "click-category", tagItemData: PostCategory | PostTag): void // 点击分类
+    (event: "click-tag", tagItemData: PostCategory | PostTag): void // 点击标签
     (event: "click-author", author: User): void // 点击作者
     (event: "post-click", postID: string): void // 点击文章
     (event: "view-post", postID: string): void // 查看文章
@@ -488,12 +489,12 @@ const handleEdit = (index: number, row: TableData) => {
 }
 
 // 处理分类点击
-const handleCategoryClick = (tagItemData: PostTag) => {
+const handleCategoryClick = (tagItemData: PostCategory | PostTag) => {
     emit("click-category", tagItemData)
 }
 
 // 处理标签点击
-const handleTagClick = (tagItemData: PostTag) => {
+const handleTagClick = (tagItemData: PostCategory | PostTag) => {
     emit("click-tag", tagItemData)
 }
 

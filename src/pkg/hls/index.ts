@@ -139,7 +139,7 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
     }
 
     // 解密播放密钥
-    decryptKey(encryptedKey: string): Uint8Array {
+    decryptKey(encryptedKey: string): Uint8Array<ArrayBuffer> {
         return playKeyDecryptAES2Bin(encryptedKey)
     }
 }
@@ -151,7 +151,7 @@ export class CustomLoader extends Hls.DefaultConfig.loader {
     const playKeyEncrypt = "51e8bdb7f5bed6d7c8149e0c0767ecefeFJcNUsjmwT2ZQKjS+e5pV/oz0OGyxB9HKX0LsB7/LL1mB9BFXoCV4sRcHVXD8sr56fbdd4fd665d8fa"
     const expectedOutput = new Uint8Array([63, 219, 19, 240, 217, 90, 85, 53, 28, 66, 214, 119, 240, 84, 89, 53])
  */
-export function playKeyDecryptAES2Bin(playKeyEncrypt: string): Uint8Array {
+export function playKeyDecryptAES2Bin(playKeyEncrypt: string): Uint8Array<ArrayBuffer> {
     // 获取 playKeyEncrypt 字符长度
     const playKeyEncryptLen = playKeyEncrypt.length
 
