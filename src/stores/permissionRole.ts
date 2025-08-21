@@ -165,7 +165,7 @@ export const usePermissionRoleStore = defineStore("permissionRole", {
             let newPermissionNames = ""
             const permissions = this.permissionList
             for (let i = 0; i < permissions.length; i++) {
-                const keyPascalCase = kebabToPascalCase(permissions[i].permission_name)
+                const keyPascalCase = kebabToPascalCase(permissions[i]!.permission_name)
                 if (!(keyPascalCase in PermissionNames)) {
                     // 如果 key 中包含 - 则添加
                     const _enum = `${keyPascalCase} = '${keyPascalCase}',`

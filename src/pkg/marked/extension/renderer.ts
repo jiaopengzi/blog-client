@@ -17,10 +17,10 @@ export const renderer = {
         if (item.task) {
             const checkbox = this.checkbox({ checked: !!item.checked })
             if (item.loose) {
-                if (item.tokens.length > 0 && item.tokens[0].type === "paragraph") {
-                    item.tokens[0].text = checkbox + " " + item.tokens[0].text
-                    if (item.tokens[0].tokens && item.tokens[0].tokens.length > 0 && item.tokens[0].tokens[0].type === "text") {
-                        item.tokens[0].tokens[0].text = checkbox + " " + item.tokens[0].tokens[0].text
+                if (item.tokens.length > 0 && item.tokens[0]!.type === "paragraph") {
+                    item.tokens[0]!.text = checkbox + " " + item.tokens[0]!.text
+                    if (item.tokens[0]!.tokens && item.tokens[0]!.tokens.length > 0 && item.tokens[0]!.tokens[0]!.type === "text") {
+                        item.tokens[0]!.tokens[0]!.text = checkbox + " " + item.tokens[0]!.tokens[0]!.text
                     }
                 } else {
                     item.tokens.unshift({
@@ -189,7 +189,7 @@ const escapeReplacements: { [index: string]: string } = {
     '"': "&quot;",
     "'": "&#39;",
 }
-const getEscapeReplacement = (ch: string) => escapeReplacements[ch]
+const getEscapeReplacement = (ch: string) => escapeReplacements[ch]!
 
 export function escape(html: string, encode?: boolean) {
     if (encode) {

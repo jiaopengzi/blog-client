@@ -17,11 +17,11 @@ function countWords(doc: Text): string {
         let inWord = false
         for (let i = 0; i < iter.value.length; i++) {
             // 匹配英文单词、中文字符以及中文标点
-            const charOrWord: boolean = /[\w\u4e00-\u9fa5]/.test(iter.value[i])
+            const charOrWord: boolean = /[\w\u4e00-\u9fa5]/.test(iter.value[i]!)
 
             if (charOrWord && !inWord) {
                 // 如果当前字符是中文，则直接增加计数
-                if (/[\u4e00-\u9fa5]/.test(iter.value[i])) {
+                if (/[\u4e00-\u9fa5]/.test(iter.value[i]!)) {
                     count++
                 } else {
                     count++

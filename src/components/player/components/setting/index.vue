@@ -145,7 +145,7 @@ const handleIsLoopChange = (value: boolean) => {
 }
 
 // 保持只展开一个
-const handleChange = (activeNames: string[]) => (localActiveNames.value = activeNames.length > 0 ? [activeNames[activeNames.length - 1]] : [])
+const handleChange = (activeNames: string[]) => (localActiveNames.value = activeNames.length > 0 ? [activeNames[activeNames.length - 1]!] : [])
 
 // 监控 isShow 的变化,如果 isShow 为 false,则清空选中状态
 watch(

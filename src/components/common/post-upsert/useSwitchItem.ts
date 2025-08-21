@@ -43,8 +43,8 @@ export function useSwitchItem(postInfoForm: UpsertPostForm) {
 
     // 更新常规设置是否展示
     const updateDefaultStatus = (items: SwitchItem[]) => {
-        defaultStatusIsShow.value = items[0].status
-        localStorage.setItem(LocalStorageKey.IsShowSeoAtPostWrite, items[0].status.toString())
+        defaultStatusIsShow.value = items[0]!.status
+        localStorage.setItem(LocalStorageKey.IsShowSeoAtPostWrite, items[0]!.status.toString())
     }
 
     // 角色付费管理
@@ -115,7 +115,7 @@ export function useSwitchItem(postInfoForm: UpsertPostForm) {
     // 更新评论状态
     const updateCommentStatus = (items: SwitchItem[]) => {
         // 更新 postInfoForm.comment_status
-        postInfoForm.comment_status = items[0].status ? CommentStatusCode.Open : CommentStatusCode.Close
+        postInfoForm.comment_status = items[0]!.status ? CommentStatusCode.Open : CommentStatusCode.Close
     }
 
     // 文章显示方式

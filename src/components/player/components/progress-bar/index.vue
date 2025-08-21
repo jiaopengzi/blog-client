@@ -212,7 +212,7 @@ const onSliderDown = () => {
 // 获取滑块 slider 的 clientX
 const getClientX = (event: MouseEvent | TouchEvent) => {
     if (event.type.startsWith("touch")) {
-        return (event as TouchEvent).touches[0].clientX
+        return (event as TouchEvent).touches[0]!.clientX
     } else {
         return (event as MouseEvent).clientX
     }

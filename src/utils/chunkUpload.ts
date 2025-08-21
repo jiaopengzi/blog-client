@@ -157,7 +157,7 @@ export class MultiThreadSplitter extends ChunkSplitter {
         const workerSize = Math.ceil(chunks.length / this.workers.length) // 计算每个 Worker 处理的分片数量
         const promises: Promise<void>[] = [] // 用于保存每个 Worker 的 Promise
         for (let i = 0; i < this.workers.length; i++) {
-            const worker = this.workers[i] // 获取 Worker
+            const worker = this.workers[i]! // 获取 Worker
             const start = i * workerSize // 计算开始位置
             const end = Math.min((i + 1) * workerSize, chunks.length) // 计算结束位置
             const workerChunks = chunks.slice(start, end) // 获取当前 Worker 需要处理的分片

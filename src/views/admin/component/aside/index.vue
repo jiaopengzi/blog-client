@@ -66,7 +66,7 @@ const isCollapseItem: SwitchItem[] = reactive([
 
 // 更新菜单折叠状态
 const updateStatus = (items: SwitchItem[]) => {
-    emit("collapse-status", items[0].status)
+    emit("collapse-status", items[0]!.status)
 }
 
 // 生成菜单项索引

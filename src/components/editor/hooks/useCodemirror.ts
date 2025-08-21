@@ -56,7 +56,7 @@ export function useCodemirror(mdContainerRef: Ref<HTMLElement | null>, codemirro
     const handleScroll = debounce(200, (scrollHeight: number, clientHeight: number, scrollTop: number, hideDoc: string, showFirstLineNumber: number) => {
         // 高亮当前标题
         for (let i = 0; i < editorState.tocMarkdown.length; i++) {
-            const item = editorState.tocMarkdown[i]
+            const item = editorState.tocMarkdown[i]!
             if (showFirstLineNumber <= item.markdownLineNumber) {
                 editorStateManager.setHeadingShowCurrentIndex(item.index)
                 break

@@ -196,7 +196,7 @@ const updateForm = (data: EditMediaProps) => {
     subtitlesForm.file_id = data.file_id
 
     isVideoFile.value = isVideo(data.file_type)
-    hashID.value = editMediaData.file_name.split(".")[0]
+    hashID.value = editMediaData.file_name.split(".")[0]!
 }
 
 // 是否是视频文件

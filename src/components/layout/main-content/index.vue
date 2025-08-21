@@ -165,7 +165,7 @@ const updateHeadingShowCurrentIndex = (index: number) => {
  * @param index 点击的目录索引
  */
 const tocHeadingClicked = (index: number) => {
-    statusStore.setAnchorHash(`#${state.tocHtml[index].anchor}`) // 设置锚点
+    statusStore.setAnchorHash(`#${state.tocHtml[index]!.anchor}`) // 设置锚点
     updateHeadingShowCurrentIndex(index)
 }
 

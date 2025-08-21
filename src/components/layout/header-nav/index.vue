@@ -82,7 +82,7 @@ const topLevelMenuItems = computed(() => {
 
 // 处理菜单项选中事件
 const handleSelect = async (index: string) => {
-    const href = navObj.value[index].href || "/"
+    const href = navObj.value[index]!.href || "/"
     // 判断 href 是否为外部链接
     if (href && href.startsWith("http")) {
         window.open(href, "_blank")
@@ -102,7 +102,7 @@ const handleSelect = async (index: string) => {
 watch(
     () => route.fullPath,
     (newVal: string) => {
-        const index = Object.keys(navObj.value).find((key) => navObj.value[key].href === newVal)
+        const index = Object.keys(navObj.value).find((key) => navObj.value[key]!.href === newVal)
         if (index) {
             navActiveIndex.value = index
         } else {

@@ -97,10 +97,10 @@ const updateHistory = (val: string) => {
     } else {
         // 如果有,更新的时间,重新添加到最后面
         const index = searchHistory.value.findIndex((item) => item.value === val)
-        searchHistory.value[index].time = new Date().getTime()
+        searchHistory.value[index]!.time = new Date().getTime()
         const item = searchHistory.value[index]
         searchHistory.value.splice(index, 1) // 删除这个值
-        searchHistory.value.unshift(item)
+        searchHistory.value.unshift(item!)
     }
 
     // 限制搜索历史的长度, 只保留 20 条

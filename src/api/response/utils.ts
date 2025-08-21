@@ -42,7 +42,7 @@ export const handleResErr = <T>(res: ResResponse<Res<T>, unknown> | Res<T>, msgT
 
         // 非空对象，取出错误信息
         for (const key in data) {
-            errData.push(data[key])
+            errData.push(data[key]!)
         }
 
         // 拼接错误信息

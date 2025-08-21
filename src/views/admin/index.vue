@@ -114,7 +114,7 @@ const handleCollapseStatus = (isCollapse: boolean) => {
 // 选择菜单项
 const handleSelect = (index: string) => {
     // 判断是否有权限
-    const permission = adminMenuItemMapWithIndexMap[index].permissionName
+    const permission = adminMenuItemMapWithIndexMap[index]!.permissionName
     if (permission && !userStore.hasPermission(permission)) {
         MessageUtil.warning("没有权限")
         return

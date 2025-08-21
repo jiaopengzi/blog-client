@@ -106,7 +106,7 @@ export const createSubtitlesByVideoHashId = async (videoHashId: string | null | 
     // 遍历字幕语言列表构造字幕对象
     for (const subtitlesLanguage of languages) {
         // 构造本地 URL
-        const subtitlesBlob = new Blob([subtitlesRes[subtitlesLanguage].subtitles], {
+        const subtitlesBlob = new Blob([subtitlesRes[subtitlesLanguage]!.subtitles], {
             type: "text/vtt",
         })
 
@@ -154,8 +154,8 @@ export const getVideoQualityLabel = (height: number): string => {
     for (const h of heights) {
         if (h - height >= 0) {
             closest = h
-            return VideoQualityLabels[closest]
+            return VideoQualityLabels[closest]!
         }
     }
-    return VideoQualityLabels[closest]
+    return VideoQualityLabels[closest!]!
 }

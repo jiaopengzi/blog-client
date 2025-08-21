@@ -16,7 +16,7 @@ export function extractImageUrlsFromHtml(input: string): string[] {
     const matches = input.match(regex) || []
     return matches.map((match) => {
         const urlMatch = /<img[^>]*src="([^"]*)"[^>]*>/.exec(match)
-        return urlMatch ? urlMatch[1] : ""
+        return urlMatch ? urlMatch[1]! : ""
     })
 }
 

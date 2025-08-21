@@ -95,7 +95,7 @@ export function useEdit(
                     if (data.pay_roles) {
                         data.pay_roles.forEach((role: string) => {
                             const index = rolePaidList.findIndex((i) => i.name === role)
-                            rolePaidList[index].status = true
+                            rolePaidList[index]!.status = true
                         })
                         postInfoForm.pay_roles = data.pay_roles
                     }

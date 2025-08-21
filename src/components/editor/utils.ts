@@ -90,9 +90,9 @@ interface RegexCache {
 const updateAttributeNames = (tarAttributeNames: Array<string>, srcAttributeNamesList: Array<Array<string>>) => {
     // /id|class/ DOMPurify 允许的 自定义元素的属性名
     for (let i = 0; i < srcAttributeNamesList.length; i++) {
-        const srcAttributeNames = srcAttributeNamesList[i]
+        const srcAttributeNames = srcAttributeNamesList[i]!
         for (let j = 0; j < srcAttributeNames.length; j++) {
-            tarAttributeNames.push(srcAttributeNames[j]) // 添加属性名
+            tarAttributeNames.push(srcAttributeNames[j]!) // 添加属性名
         }
     }
 
@@ -191,12 +191,12 @@ export function getMarkdownHeadingLines(markdownStr: string): MarkdownHeadingLin
     let headingIndex = 0 // 标题索引
 
     for (let i = 0; i < lines.length; i++) {
-        const matchArray = lines[i].match(markdownHeadingRegex)
+        const matchArray = lines[i]!.match(markdownHeadingRegex)
 
         if (matchArray) {
             targetLines.push({
                 index: headingIndex++,
-                markdownHeading: lines[i],
+                markdownHeading: lines[i]!,
                 markdownLineNumber: i + 1,
             })
         }
@@ -438,14 +438,14 @@ function applyInlineStyles(el: HTMLElement | SVGElement) {
                             for (let i = 0; i < rule.style.length; i++) {
                                 const property = rule.style[i] // 属性名
 
-                                const cssStyleValue = rule.style.getPropertyValue(property) // 样式表的属性值
+                                const cssStyleValue = rule.style.getPropertyValue(property!) // 样式表的属性值
 
                                 // 如果属性值不为空且不为默认值 或者 不是 katex 的 span 元素
                                 if (cssStyleValue.startsWith("var(--")) {
                                     // 如果值为 CSS 变量，获取计算后的具体值
-                                    el.style.setProperty(property, getComputedStyle(el).getPropertyValue(property))
+                                    el.style.setProperty(property!, getComputedStyle(el).getPropertyValue(property!))
                                 } else {
-                                    el.style.setProperty(property, cssStyleValue)
+                                    el.style.setProperty(property!, cssStyleValue)
                                 }
                             }
                         }

@@ -236,7 +236,7 @@ const router = useRouter()
 
 // 监听编辑器宽度变化
 const { stop: stopResizeObserver } = useResizeObserver(editorContainerRef, (entries) => {
-    const entry = entries[0]
+    const entry = entries[0]!
     const { width } = entry.contentRect
     stateManager.setEditorWidth(width)
 })

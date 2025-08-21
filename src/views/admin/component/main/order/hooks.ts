@@ -19,7 +19,7 @@ export function useOrder() {
             const items = row.items as OrderItemRes[]
             // 如果只有一个产品，则直接返回产品名称，否则返回产品名称和数量
             if (items.length === 1) {
-                return items[0].title
+                return items[0]!.title
             } else {
                 return items.map((item) => `${item.title} (${item.quantity})`).join(", ")
             }

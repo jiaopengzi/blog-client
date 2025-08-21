@@ -25,9 +25,9 @@ export const parseVTT = (function () {
         let match
         while ((match = regex.exec(vttText)) !== null) {
             cues.push({
-                start: parseTimeSegments(match[1], match[2], match[3], match[4]),
-                end: parseTimeSegments(match[5], match[6], match[7], match[8]),
-                text: match[9].trim(),
+                start: parseTimeSegments(match[1]!, match[2]!, match[3]!, match[4]!),
+                end: parseTimeSegments(match[5]!, match[6]!, match[7]!, match[8]!),
+                text: match[9]!.trim(),
             })
         }
 
@@ -95,8 +95,8 @@ export const isWebvtt = (function () {
             if (time.length !== 2) {
                 return [false, "时间表达式中需要 --> 分隔符"]
             }
-            const startTime = time[0].trim()
-            const endTime = time[1].trim()
+            const startTime = time[0]!.trim()
+            const endTime = time[1]!.trim()
 
             // 判断时间是否符合 hh:mm:ss.mmm, mm:ss.mmm, ss.mmm
             if (!reTimeFormat.test(startTime) || !reTimeFormat.test(endTime)) {
@@ -107,10 +107,10 @@ export const isWebvtt = (function () {
         // 对空字幕的校验
         const lines = content.split("\n")
         for (let i = 0; i < lines.length; i++) {
-            const line = lines[i]
+            const line = lines[i]!
             if (reTimeExpression.test(line)) {
                 // 检查时间表达式后是否有字幕内容
-                if (i + 1 < lines.length && lines[i + 1].trim() === "") {
+                if (i + 1 < lines.length && lines[i + 1]!.trim() === "") {
                     return [false, "时间表达式后需要有字幕内容,不能为空"]
                 }
             }

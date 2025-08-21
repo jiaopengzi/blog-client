@@ -15,7 +15,7 @@
         <div class="top-right-tip" v-if="topRightTip">{{ topRightTip }}</div>
 
         <!-- 左上角分类 -->
-        <el-button class="category" plain @click="clickCategory(postData.categories[0])">{{ postData.categories[0].name }}</el-button>
+        <el-button class="category" plain @click="clickCategory(postData.categories[0]!)">{{ postData.categories[0]!.name }}</el-button>
 
         <!-- 缩略图 -->
         <div class="thumbnail">

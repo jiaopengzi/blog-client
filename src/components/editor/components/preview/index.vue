@@ -271,8 +271,8 @@ const observeHeadings = () => {
             ([entry]) => {
                 // 从 isIntersectingHeadings 中移除当前标题
                 let isFromTopShow = false // 是否从上方出现
-                if (entry.isIntersecting) {
-                    if (entry.intersectionRect.top === 0) {
+                if (entry!.isIntersecting) {
+                    if (entry!.intersectionRect.top === 0) {
                         // console.log("============>从上出现")
                         isFromTopShow = true
                     } else {
@@ -282,12 +282,12 @@ const observeHeadings = () => {
                     // 如果标题在视口内，设置当前标题索引
                     if (isFromTopShow) {
                         // 将元素插入到数组的开头
-                        isIntersectingHeadings.value.unshift(entry.target.id)
+                        isIntersectingHeadings.value.unshift(entry!.target.id)
                     } else {
                         // 将元素插入到数组的末尾
-                        isIntersectingHeadings.value.push(entry.target.id)
+                        isIntersectingHeadings.value.push(entry!.target.id)
                     }
-                    isBestMatchHeading.value = isIntersectingHeadings.value[isIntersectingHeadings.value.length - 1]
+                    isBestMatchHeading.value = isIntersectingHeadings.value[isIntersectingHeadings.value.length - 1]!
                 } else {
                     // let isFromTopHidden = false // 是否从上方隐藏
                     // if (entry.intersectionRect.top > entry.boundingClientRect.bottom) {
@@ -299,12 +299,12 @@ const observeHeadings = () => {
                     //     console.log("============>从下隐藏")
                     // }
                     if (isIntersectingHeadings.value.length === 1) {
-                        isBestMatchHeading.value = isIntersectingHeadings.value[0]
-                        isIntersectingHeadings.value = isIntersectingHeadings.value.filter((id) => id !== entry.target.id)
+                        isBestMatchHeading.value = isIntersectingHeadings.value[0]!
+                        isIntersectingHeadings.value = isIntersectingHeadings.value.filter((id) => id !== entry!.target.id)
                     } else {
-                        isIntersectingHeadings.value = isIntersectingHeadings.value.filter((id) => id !== entry.target.id)
+                        isIntersectingHeadings.value = isIntersectingHeadings.value.filter((id) => id !== entry!.target.id)
                         // 等于数组最后一个
-                        isBestMatchHeading.value = isIntersectingHeadings.value[isIntersectingHeadings.value.length - 1]
+                        isBestMatchHeading.value = isIntersectingHeadings.value[isIntersectingHeadings.value.length - 1]!
                         // isBestMatchHeading.value = isIntersectingHeadings.value[0]
                     }
                 }

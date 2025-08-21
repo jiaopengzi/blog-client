@@ -184,7 +184,7 @@ watch(
         if (!tocMarkdown || tocMarkdown.length === 0 || newIndex === void 0 || newIndex < 0 || isUserScrollCmEditor || tocMarkdown.length < newIndex) return
 
         // 跳转编辑器选中目标行
-        scrollIntoViewLine(tocMarkdown[newIndex].markdownLineNumber)
+        scrollIntoViewLine(tocMarkdown[newIndex]!.markdownLineNumber)
         emit("update-is-user-scroll", true)
     },
 )

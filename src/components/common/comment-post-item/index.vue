@@ -40,8 +40,8 @@ const emit = defineEmits<{
 // 待处理
 const pendingCount = computed(() => {
     for (const key in post.comment_count_by_status) {
-        if (post.comment_count_by_status[key].status === CommentReviewCode.Pending) {
-            return post.comment_count_by_status[key].count || 0
+        if (post.comment_count_by_status[key]!.status === CommentReviewCode.Pending) {
+            return post.comment_count_by_status[key]!.count || 0
         }
     }
     return 0
@@ -50,8 +50,8 @@ const pendingCount = computed(() => {
 // 已审核
 const approvedCount = computed(() => {
     for (const key in post.comment_count_by_status) {
-        if (post.comment_count_by_status[key].status === CommentReviewCode.Approved) {
-            return post.comment_count_by_status[key].count || 0
+        if (post.comment_count_by_status[key]!.status === CommentReviewCode.Approved) {
+            return post.comment_count_by_status[key]!.count || 0
         }
     }
     return 0
@@ -60,8 +60,8 @@ const approvedCount = computed(() => {
 // 已拒绝
 const rejectedCount = computed(() => {
     for (const key in post.comment_count_by_status) {
-        if (post.comment_count_by_status[key].status === CommentReviewCode.Rejected) {
-            return post.comment_count_by_status[key].count || 0
+        if (post.comment_count_by_status[key]!.status === CommentReviewCode.Rejected) {
+            return post.comment_count_by_status[key]!.count || 0
         }
     }
     return 0

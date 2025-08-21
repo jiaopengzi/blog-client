@@ -377,7 +377,7 @@ const switchItemList: SwitchItem[] = reactive([
 ])
 
 const updateStatus = (items: SwitchItem[]) => {
-    emit("update-show-list-or-grid-status", items[0].status)
+    emit("update-show-list-or-grid-status", items[0]!.status)
 }
 
 // 单击事件
@@ -442,8 +442,8 @@ const closeElImageViewer = () => {
 watch(
     () => [addItemDialogVisible, editItemDialogVisible],
     ([addItemDialogVisible, editItemDialogVisible]) => {
-        addItemDialogVisibleStatus.value = addItemDialogVisible
-        editItemDialogVisibleStatus.value = editItemDialogVisible
+        addItemDialogVisibleStatus.value = addItemDialogVisible!
+        editItemDialogVisibleStatus.value = editItemDialogVisible!
     },
 )
 

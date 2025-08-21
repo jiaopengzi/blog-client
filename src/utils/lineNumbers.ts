@@ -24,10 +24,10 @@ export function getMarkdownHeadingLines(markdownStr: string): MarkdownHeadingLin
 
     for (let i = 0; i < lines.length; i++) {
         // const matchArray = lines[i].match(/^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)/)
-        const matchArray = lines[i].match(/^ {0,3}(#{1,6})\s+(.*)(?:\n+|$)/)
+        const matchArray = lines[i]!.match(/^ {0,3}(#{1,6})\s+(.*)(?:\n+|$)/)
         if (matchArray) {
             targetLines.push({
-                markdownHeading: lines[i],
+                markdownHeading: lines[i]!,
                 markdownLineNumber: i + 1,
             })
         }

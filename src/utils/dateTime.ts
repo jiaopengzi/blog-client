@@ -85,7 +85,7 @@ export function formatDurationTime(duration: number): string {
  */
 export function parseTime(time: string): number {
     const [hours, minutes, seconds] = time.split(":")
-    return parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseFloat(seconds)
+    return parseInt(hours!) * 3600 + parseInt(minutes!) * 60 + parseFloat(seconds!)
 }
 
 /**

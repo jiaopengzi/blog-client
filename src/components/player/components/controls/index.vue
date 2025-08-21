@@ -163,7 +163,7 @@ const registerHotKeys = () => {
         if (hotKey) {
             let intervalId: number | null = null // 用于存储长按的定时器 id
 
-            watch(keys[hotKey], (v) => {
+            watch(keys[hotKey]!, (v) => {
                 // v 为 true 时表示按下了快捷键 v 为 false 时释放了快捷键
                 // console.log('hotKey', hotKey, v)
                 // console.log('item[0]', item)
