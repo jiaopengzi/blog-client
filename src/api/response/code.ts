@@ -206,6 +206,14 @@ export enum ResponseCode {
     CouponCodeNotExistExcludingID = 2810, // 优惠卷不存在，排除指定ID
     CouponHasAvailableSuccess = 2811, // 获取是否有可用优惠卷成功
 
+    // 账号密钥相关
+    AccountKeyInsertSuccess = 2900, // 插入账号密钥成功
+    AccountKeyIsNone = 2901, // 账号密钥产品不存在
+    AccountKeyDeleteSuccess = 2902, // 插入账号密钥成功
+    AccountKeyUpdateSuccess = 2903, // 更新账号密钥成功
+    AccountKeyItemIsRepeat = 2904, // 追加账号密钥与已有内容重复
+    AccountKeyPaginateSuccess = 2905, // 查看账号密钥分页成功
+
     // 订单相关
     OrderCreateSuccess = 5000, // 订单创建成功
     OrderProductNotFound = 5001, // 订单产品未找到
