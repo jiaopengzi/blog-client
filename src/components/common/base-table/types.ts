@@ -6,6 +6,7 @@
  * @Description  : 类型定义
  */
 
+import { type AccountKeyRes } from "@/api/accountKey/common"
 import { type CommentResAdmin } from "@/api/comment/common"
 import { type CouponRes } from "@/api/coupon/common"
 import { type LinkRes } from "@/api/link/common"
@@ -42,6 +43,7 @@ export interface TableColumn {
 
 // 表格数据类型
 export type TableData =
+    | AccountKeyRes
     | PostResPaginationByAdmin
     | PostTag
     | PostCategory

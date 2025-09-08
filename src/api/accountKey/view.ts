@@ -16,7 +16,7 @@ export type ViewAccountKeyRequest = PaginationRequest
 
 // 查看账号密钥
 export function viewAccountKeyAPI(requestData: ViewAccountKeyRequest): ResPromise<Res<Pagination<AccountKeyRes>>> {
-    const urlStr = routerGroup + "/account-key/view"
+    const urlStr = routerGroup + "/account-key/get-paginate-admin"
     return request({
         url: urlStr,
         method: "post",

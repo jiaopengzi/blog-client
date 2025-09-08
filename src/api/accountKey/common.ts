@@ -14,7 +14,7 @@ export interface InsertAccountKeyRequest {
     title?: string // 产品标题
     description?: string // 描述
     items?: string[] // 卡密内容
-    price?: number // 价格
+    price?: string // 价格
     purchase_min?: number // 最少购买数量
     purchase_max?: number // 最多购买数量
     user_max?: number // 同一用户最多购买数量
@@ -36,7 +36,7 @@ export interface AccountKeyRes extends DataWithImg {
     related_id: string // 关联ID
     inventory: number // 库存
     sale_quantity: number // 销售数量
-    price: number // 价格
+    price: string // 价格
     purchase_min: number // 最少购买数量
     purchase_max: number // 最多购买数量
     user_max: number // 同一用户最多购买数量

@@ -138,9 +138,21 @@ export const adminMenuItemMap: AdminMenuItemMap = {
             class: "icon-menu",
         },
     },
-    [RouteNamesAdmin.Product]: {
-        text: "产品",
+    // [RouteNamesAdmin.Product]: {
+    //     text: "产品",
+    //     parentIndex: RouteNamesAdmin.Shop,
+    // },
+    [RouteNamesAdmin.AccountKey]: {
+        text: "账号密钥",
         parentIndex: RouteNamesAdmin.Shop,
+    },
+    [RouteNamesAdmin.AccountKeyAll]: {
+        text: "产品",
+        parentIndex: RouteNamesAdmin.AccountKey,
+    },
+    [RouteNamesAdmin.AccountKeyItem]: {
+        text: "明细",
+        parentIndex: RouteNamesAdmin.AccountKey,
     },
     [RouteNamesAdmin.Order]: {
         text: "订单",

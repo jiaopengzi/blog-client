@@ -12,6 +12,14 @@ export interface PgSqlDateTime {
     Valid: boolean
 }
 
+// 默认空时间
+export function nullPgSqlDateTime(): PgSqlDateTime {
+    return {
+        Time: null,
+        Valid: false,
+    }
+}
+
 // 使用ID列表删除请求参数
 export interface DeleteByIDsRequest {
     id_list: string[]
@@ -57,4 +65,3 @@ export enum Target {
     Parent = "_parent",
     Top = "_top",
 }
-
