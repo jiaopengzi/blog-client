@@ -45,13 +45,14 @@ export function usePayRolesSwitchItem<T extends PayRolesForm>(form: T, defaultAc
                 namePosition: "left",
                 status: defaultActive,
                 label: rolePaidLabel,
-                minWidth: 180,
+                minWidth: 120,
             }
             rolePaidList.push(switchItem)
         })
 
         // 会员角色列表
         const membershipRoles = permissionRoleStore.getMembershipRoles
+
         // 如果有会员角色，则将其添加到 rolePaidList
         if (membershipRoles.length > 0) {
             membershipRoles.forEach((roleName) => {

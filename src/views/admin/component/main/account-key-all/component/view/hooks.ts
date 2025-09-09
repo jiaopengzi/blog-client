@@ -40,11 +40,6 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 校验标题
     function checkTitleValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
-        // 去除前后空格
-        if (!form.title?.value) {
-            callback("请输入标题")
-            return
-        }
         // 首尾不能包含空格
         if (value.match(RegexPatterns.IsTrim)) {
             callback(new Error("首尾不能包含空格"))
@@ -55,12 +50,7 @@ export function useFormValidation(options: FormValidationOptions): {
     }
 
     // 检查账号密钥明细
-    function checkItemStrValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
-        // 去除前后空格
-        if (!form.title?.value) {
-            callback("请输入账号密钥明细")
-            return
-        }
+    function checkItemStrInsertValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 首尾不能包含空格
         if (value.match(RegexPatterns.IsTrim)) {
             callback(new Error("首尾不能包含空格"))
@@ -70,6 +60,21 @@ export function useFormValidation(options: FormValidationOptions): {
         callback()
     }
 
+    // 检查账号密钥明细
+    function checkItemStrEditValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
+        if (!form.itemStr?.value) {
+            callback()
+            return
+        }
+
+        // 首尾不能包含空格
+        if (value.match(RegexPatterns.IsTrim)) {
+            callback(new Error("首尾不能包含空格"))
+            return
+        }
+
+        callback()
+    }
     // 校验最小购买数量，不能大于最大购买数量
     function checkPurchaseMinValidator(rule: unknown, value: number, callback: (error?: string | Error | undefined) => void): void {
         if (form.purchase_max?.value && value > form.purchase_max.value) {
@@ -108,7 +113,7 @@ export function useFormValidation(options: FormValidationOptions): {
         ],
         itemStr: [
             { required: true, message: "请输入账号密钥明细", trigger: "blur" },
-            { validator: checkItemStrValidator, trigger: "blur" },
+            { validator: checkItemStrInsertValidator, trigger: "blur" },
         ],
         price: [{ required: true, message: "请输入价格", trigger: "blur" }],
         purchase_min: [
@@ -128,10 +133,7 @@ export function useFormValidation(options: FormValidationOptions): {
             { required: true, message: "请输入标题", trigger: "blur" },
             { validator: checkTitleValidator, trigger: "blur" },
         ],
-        itemStr: [
-            { required: true, message: "请输入账号密钥明细", trigger: "blur" },
-            { validator: checkItemStrValidator, trigger: "blur" },
-        ],
+        itemStr: [{ validator: checkItemStrEditValidator, trigger: "blur" }],
         price: [{ required: true, message: "请输入价格", trigger: "blur" }],
         purchase_min: [
             { required: true, message: "请输最小购买数量", trigger: "blur" },
@@ -151,10 +153,12 @@ export function useFormValidation(options: FormValidationOptions): {
 export const formatTime = (form: ViewForm) => {
     // 如果有时间则设置为有效
     if (form.purchase_start && form.purchase_start.Time !== null) {
+        form.purchase_start.Time = new Date(form.purchase_start.Time)
         form.purchase_start.Valid = true
     }
 
     if (form.purchase_end && form.purchase_end.Time !== null) {
+        form.purchase_end.Time = new Date(form.purchase_end.Time)
         form.purchase_end.Valid = true
     }
 

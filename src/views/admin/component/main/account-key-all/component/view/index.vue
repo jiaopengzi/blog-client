@@ -82,7 +82,7 @@
 
 <script lang="ts" setup>
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { reactive, ref, toRefs, useTemplateRef } from "vue"
+import { onBeforeMount, reactive, ref, toRefs, useTemplateRef } from "vue"
 
 import SwitchGroup from "@/components/common/switch-group"
 import { usePayRolesSwitchItem } from "@/components/hooks/usePayRolesSwitchItem"
@@ -91,7 +91,7 @@ import { generateShortcuts } from "@/utils/dateTime"
 import { useFormValidation } from "./hooks"
 import type { ViewForm } from "./types"
 
-defineOptions({ name: "CommonView" })
+defineOptions({ name: "AccountKeyCommonView" })
 
 // props
 const {
@@ -127,7 +127,7 @@ const viewDataAc = reactive<ViewForm>(viewData)
 const defaultTime = new Date()
 
 // 付费角色开关项
-const { rolePaidList, updateRolePaidList } = usePayRolesSwitchItem(viewDataAc)
+const { rolePaidList, initRolePaidManagement, updateRolePaidList } = usePayRolesSwitchItem(viewDataAc)
 
 // hooks
 const { addRules, editRules } = useFormValidation({
@@ -146,6 +146,18 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         }
     })
 }
+
+onBeforeMount(async () => {
+    // 生成角色付费管理
+    await initRolePaidManagement()
+    // 更新角色付费管理
+    if (viewDataAc.pay_roles && viewDataAc.pay_roles.length > 0 && rolePaidList.length > 0) {
+        viewDataAc.pay_roles.forEach((role: string) => {
+            const index = rolePaidList.findIndex((i) => i.name === role)
+            rolePaidList[index]!.status = true
+        })
+    }
+})
 </script>
 
 <style lang="scss" scoped>

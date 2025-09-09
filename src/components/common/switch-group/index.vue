@@ -9,7 +9,7 @@
 <template>
     <ul class="switch-group">
         <li v-for="item in switchItems" :key="item.name" class="switch-item" :style="getLiStyle(item)">
-            <span v-if="item.namePosition === 'left'" class="display span-left">{{ item.display }} </span>
+            <span v-if="item.namePosition === 'left'" class="display">{{ item.display }} </span>
             <el-switch
                 v-model="item.status"
                 :style="getSwitchStyle(item)"
@@ -26,7 +26,7 @@
                     <j-icon :name="item.icon?.inactive" :custom-class="item.icon.inactiveClassName" />
                 </template>
             </el-switch>
-            <span v-if="item.namePosition === 'right'" class="display span-right">{{ item.display }}</span>
+            <span v-if="item.namePosition === 'right'" class="display">{{ item.display }}</span>
         </li>
     </ul>
 </template>
@@ -74,22 +74,10 @@ const getLiStyle = (item: SwitchItem) => {
 .switch-item {
     display: flex;
     align-items: center;
-    // justify-content: center;
-}
-
-.my-el-switch {
-    margin: 0 10px;
 }
 
 .display {
+    margin-right: 4px;
     color: var(--jpz-text-color-regular);
 }
-
-// .span-left,
-// .span-right {
-//     display: inline-block;
-//     text-align: left;
-//     width: 100px;
-//     padding: 0 4px;
-// }
 </style>

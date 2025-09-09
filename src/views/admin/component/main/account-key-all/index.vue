@@ -77,10 +77,10 @@ import AddTag from "./component/add"
 import EditTag from "./component/edit"
 import { type ViewForm } from "./component/view"
 
-defineOptions({ name: RouteNames.PostTag })
+defineOptions({ name: RouteNames.AccountKeyAll })
 
 useHead({
-    title: adminMenuItemMap[RouteNames.PostTag].text,
+    title: adminMenuItemMap[RouteNames.AccountKeyAll].text,
 })
 
 const cols: TableColumn[] = reactive([
@@ -213,6 +213,10 @@ const editRow = (index: number, row: TableData) => {
     if ("purchase_end" in row) {
         editData.purchase_end = row.purchase_end?.Valid ? row.purchase_end : nullPgSqlDateTime()
     }
+    if ("pay_roles" in row) {
+        editData.pay_roles = row.pay_roles || []
+    }
+
     toggleEditDialog()
 }
 

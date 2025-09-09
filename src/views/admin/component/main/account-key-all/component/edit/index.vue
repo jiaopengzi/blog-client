@@ -24,7 +24,7 @@ import View from "../view"
 import { type ViewForm } from "../view"
 import { formatTime } from "../view/hooks"
 
-defineOptions({ name: "EditTag" })
+defineOptions({ name: "EditAccountKey" })
 
 const emit = defineEmits<{
     (event: "edit-status", value: boolean): void // 编辑状态
@@ -55,8 +55,12 @@ const submitData = async (form: ViewForm) => {
         purchase_start: form.purchase_start,
         purchase_end: form.purchase_end,
         pay_roles: form.pay_roles,
-        items: items,
     }
+
+    if (items.length > 0) {
+        req.items = items
+    }
+
     const { data } = await updateAccountKeyAPI(req)
 
     if (data.code === ResponseCode.AccountKeyUpdateSuccess) {
