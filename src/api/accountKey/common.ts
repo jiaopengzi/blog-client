@@ -44,3 +44,16 @@ export interface AccountKeyRes extends DataWithImg {
     purchase_end: PgSqlDateTime | null // 结束购买时间
     description: string // 描述
 }
+
+// 账号密钥子表响应
+export interface AccountKeyItemRes extends DataWithImg {
+    id: string // id
+    created_at: string // 创建时间
+    updated_at: string // 更新时间
+    product_id: string // 产品ID
+    content: string // 卡密内容
+    email: string // 购买者邮箱
+    purchase_user_id: string // 购买用户ID
+    purchase_order_id: string // 购买订单ID
+    purchase_time: PgSqlDateTime | null // 购买时间
+}

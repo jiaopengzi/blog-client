@@ -45,7 +45,7 @@
 
             <!-- 编辑弹窗 -->
             <template #edit-item-title>
-                <span class="dialog-title">编辑标签</span>
+                <span class="dialog-title">编辑账号密钥</span>
             </template>
 
             <template #edit-item>
@@ -201,10 +201,10 @@ const editRow = (index: number, row: TableData) => {
     if ("purchase_min" in row) {
         editData.purchase_min = row.purchase_min
     }
-    if ("purchase_max" in row) {
+    if ("purchase_max" in row && row.purchase_max > 0) {
         editData.purchase_max = row.purchase_max
     }
-    if ("user_max" in row) {
+    if ("user_max" in row && row.user_max > 0) {
         editData.user_max = row.user_max
     }
     if ("purchase_start" in row) {

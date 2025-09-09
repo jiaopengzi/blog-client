@@ -75,32 +75,81 @@ export function useFormValidation(options: FormValidationOptions): {
 
         callback()
     }
+
     // 校验最小购买数量，不能大于最大购买数量
     function checkPurchaseMinValidator(rule: unknown, value: number, callback: (error?: string | Error | undefined) => void): void {
-        if (form.purchase_max?.value && value > form.purchase_max.value) {
+        if (form.purchase_max?.value !== undefined && form.purchase_max.value !== null && value > form.purchase_max.value) {
             callback(new Error("最小购买数量不能大于最大购买数量"))
             return
         }
         callback()
     }
 
-    // 校验最大购买数量，不能小于最小购买数量
-    function checkPurchaseMaxValidator(rule: unknown, value: number, callback: (error?: string | Error | undefined) => void): void {
-        if (form.purchase_min?.value && value < form.purchase_min.value) {
+    // 校验最大购买数量，不能小于最小购买数量，可以为空
+    function checkPurchaseMaxValidator(rule: unknown, value: number | undefined, callback: (error?: string | Error | undefined) => void): void {
+        if (value === undefined || value === null) {
+            callback()
+            return
+        }
+
+        // 不能小于等于0
+        if (value <= 0) {
+            callback(new Error("最大购买数量必须大于0"))
+            return
+        }
+
+        if (form.purchase_min?.value !== undefined && form.purchase_min.value !== null && value < form.purchase_min.value) {
             callback(new Error("最大购买数量不能小于最小购买数量"))
             return
         }
         callback()
     }
 
-    // 校验同一用户最多购买数量，不能小于最小购买数量，不能大于最大购买数量
-    function checkUserMaxValidator(rule: unknown, value: number, callback: (error?: string | Error | undefined) => void): void {
-        if (form.purchase_min?.value && value < form.purchase_min.value) {
+    // 校验同一用户最多购买数量，不能小于最小购买数量，不能大于最大购买数量，可以为空
+    function checkUserMaxValidator(rule: unknown, value: number | undefined, callback: (error?: string | Error | undefined) => void): void {
+        if (value === undefined || value === null) {
+            callback()
+            return
+        }
+
+        // 不能小于等于0
+        if (value <= 0) {
+            callback(new Error("最大购买数量必须大于0"))
+            return
+        }
+
+        if (form.purchase_min?.value !== undefined && form.purchase_min.value !== null && value < form.purchase_min.value) {
             callback(new Error("同一用户最多购买数量不能小于最小购买数量"))
             return
         }
-        if (form.purchase_max?.value && value > form.purchase_max.value) {
+        if (form.purchase_max?.value !== undefined && form.purchase_max.value !== null && value > form.purchase_max.value) {
             callback(new Error("同一用户最多购买数量不能大于最大购买数量"))
+            return
+        }
+        callback()
+    }
+
+    // 开始购买时间不能大于结束购买时间 可以为空
+    function checkPurchaseStartValidator(rule: unknown, value: PgSqlDateTime, callback: (error?: string | Error | undefined) => void): void {
+        if (value.Time === null || form.purchase_end?.value.Time === null) {
+            callback()
+            return
+        }
+        if (new Date(value.Time) > new Date(form.purchase_end!.value.Time)) {
+            callback(new Error("开始购买时间不能大于结束购买时间"))
+            return
+        }
+        callback()
+    }
+
+    // 结束购买时间不能小于开始购买时间 可以为空
+    function checkPurchaseEndValidator(rule: unknown, value: PgSqlDateTime, callback: (error?: string | Error | undefined) => void): void {
+        if (value.Time === null || form.purchase_start?.value.Time === null) {
+            callback()
+            return
+        }
+        if (new Date(value.Time) < new Date(form.purchase_start!.value.Time)) {
+            callback(new Error("结束购买时间不能小于开始购买时间"))
             return
         }
         callback()
@@ -122,6 +171,8 @@ export function useFormValidation(options: FormValidationOptions): {
         ],
         purchase_max: [{ validator: checkPurchaseMaxValidator, trigger: "blur" }],
         user_max: [{ validator: checkUserMaxValidator, trigger: "blur" }],
+        purchase_start: [{ validator: checkPurchaseStartValidator, trigger: "blur" }],
+        purchase_end: [{ validator: checkPurchaseEndValidator, trigger: "blur" }],
     })
 
     /**
@@ -141,6 +192,8 @@ export function useFormValidation(options: FormValidationOptions): {
         ],
         purchase_max: [{ validator: checkPurchaseMaxValidator, trigger: "blur" }],
         user_max: [{ validator: checkUserMaxValidator, trigger: "blur" }],
+        purchase_start: [{ validator: checkPurchaseStartValidator, trigger: "blur" }],
+        purchase_end: [{ validator: checkPurchaseEndValidator, trigger: "blur" }],
     })
 
     return {

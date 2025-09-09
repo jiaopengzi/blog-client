@@ -213,6 +213,8 @@ export enum ResponseCode {
     AccountKeyUpdateSuccess = 2903, // 更新账号密钥成功
     AccountKeyItemIsRepeat = 2904, // 追加账号密钥与已有内容重复
     AccountKeyPaginateSuccess = 2905, // 查看账号密钥分页成功
+    AccountKeyItemDeleteSuccess = 2906, // 插入账号密钥子表成功
+    AccountKeyItemPaginateSuccess = 2907, // 查看账号密钥子表分页成功
 
     // 订单相关
     OrderCreateSuccess = 5000, // 订单创建成功
