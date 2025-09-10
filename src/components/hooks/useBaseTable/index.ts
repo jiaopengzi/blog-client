@@ -161,10 +161,10 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         // 将 rows 中的id 组成新的 list
         const ids = rows.flatMap((item) => ("id" in item ? item.id.toString() : []))
 
-        const deleteUserRequest = { id_list: ids } as Q
+        const deleteRequest = { id_list: ids } as Q
 
         // 删除
-        const res = await deleteAPI(deleteUserRequest)
+        const res = await deleteAPI(deleteRequest)
 
         if (res.data.code === deleteResCode) {
             if (res.data.data && "items" in res.data.data) {

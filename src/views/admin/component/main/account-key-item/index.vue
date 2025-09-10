@@ -5,7 +5,6 @@
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * Description : 账号密钥子表管理
 -->
-
 <template>
     <section>
         <BaseTable
@@ -16,7 +15,7 @@
             :is-show-delete-all="true"
             :is-show-search="true"
             :search-str="search"
-            :is-show-edit="true"
+            :is-show-edit="false"
             height="calc(100vh - 228px)"
             :loading-delete="loadingDelete"
             @update-current-page="updateCurrentPage"
@@ -55,7 +54,7 @@ const cols: TableColumn[] = reactive([
         prop: "id",
         label: "ID",
         sortable: true,
-        width: 100,
+        width: 80,
         align: "center",
     },
     {
@@ -91,12 +90,22 @@ const cols: TableColumn[] = reactive([
         label: "用户ID",
         sortable: true,
         align: "center",
+        formatter: (row: TableData) => {
+            if ("purchase_user_id" in row && row.purchase_user_id === "0") {
+                return ""
+            }
+        },
     },
     {
         prop: "purchase_order_id",
         label: "订单ID",
         sortable: true,
         align: "center",
+        formatter: (row: TableData) => {
+            if ("purchase_order_id" in row && row.purchase_order_id === "0") {
+                return ""
+            }
+        },
     },
     {
         prop: "purchase_time",
