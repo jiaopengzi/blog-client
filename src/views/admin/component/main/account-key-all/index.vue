@@ -115,7 +115,7 @@ const cols: TableColumn[] = reactive([
     },
     {
         prop: "sale_quantity",
-        label: "库存",
+        label: "售出",
         sortable: true,
         width: 120,
         align: "center",

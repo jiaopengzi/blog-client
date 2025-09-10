@@ -65,11 +65,18 @@ const cols: TableColumn[] = reactive([
         align: "center",
         isHeading: true,
     },
+    // {
+    //     prop: "product_id",
+    //     label: "产品ID",
+    //     sortable: true,
+    //     width: 100,
+    //     align: "center",
+    // },
     {
-        prop: "product_id",
-        label: "产品ID",
+        prop: "product_title",
+        label: "产品标题",
         sortable: true,
-        width: 100,
+        width: 180,
         align: "center",
     },
     {

@@ -51,6 +51,7 @@ export interface AccountKeyItemRes extends DataWithImg {
     created_at: string // 创建时间
     updated_at: string // 更新时间
     product_id: string // 产品ID
+    product_title: string // 产品标题
     content: string // 卡密内容
     email: string // 购买者邮箱
     purchase_user_id: string // 购买用户ID

@@ -57,6 +57,19 @@ export function useFormValidation(options: FormValidationOptions): {
             return
         }
 
+        // 按照换行符\n分割,不能有空行且行数不能超过1000行
+        const lines = value.split("\n")
+        if (lines.length > 1000) {
+            callback(new Error("账号密钥明细不能超过1000行，当前行数：" + lines.length))
+            return
+        }
+        for (const line of lines) {
+            if (line.trim() === "") {
+                callback(new Error("账号密钥明细不能有空行"))
+                return
+            }
+        }
+
         callback()
     }
 
