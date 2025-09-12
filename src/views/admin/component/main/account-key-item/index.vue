@@ -98,8 +98,11 @@ const cols: TableColumn[] = reactive([
         sortable: true,
         align: "center",
         formatter: (row: TableData) => {
-            if ("purchase_user_id" in row && row.purchase_user_id === "0") {
-                return ""
+            if ("purchase_user_id" in row) {
+                if (row.purchase_user_id === "0") {
+                    return ""
+                }
+                return row.purchase_user_id
             }
         },
     },
@@ -109,8 +112,11 @@ const cols: TableColumn[] = reactive([
         sortable: true,
         align: "center",
         formatter: (row: TableData) => {
-            if ("purchase_order_id" in row && row.purchase_order_id === "0") {
-                return ""
+            if ("purchase_order_id" in row) {
+                if (row.purchase_order_id === "0") {
+                    return ""
+                }
+                return row.purchase_order_id
             }
         },
     },

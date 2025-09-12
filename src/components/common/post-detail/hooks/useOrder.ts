@@ -92,6 +92,7 @@ export function useOrder(postId: Ref<string>) {
             await router.push({ name: RouteNames.Login, query: { redirect: orderReq.value.return_url } }) // 重定向到登录页带上当前页面路径参数
             return
         }
+
         // 更新路由
         await router.push({ name: RouteNames.Page, params: { customPath: "vip" } })
     }

@@ -10,7 +10,7 @@
     <div class="view-page">
         <el-form
             :label-position="labelPosition"
-            label-width="120px"
+            label-width="160px"
             ref="viewFormRef"
             :model="viewData"
             :rules="rules"
@@ -41,7 +41,7 @@
             <el-form-item label="最多购买数量" prop="purchase_max">
                 <el-input-number class="input-number" v-model="viewDataAc.purchase_max" placeholder="请输入最多购买数量"> </el-input-number>
             </el-form-item>
-            <el-form-item label="最多购买数量" prop="user_max">
+            <el-form-item label="单用户最多购买数量" prop="user_max">
                 <el-input-number class="input-number" v-model="viewDataAc.user_max" placeholder="请输入同一用户最多购买数量"> </el-input-number>
             </el-form-item>
 

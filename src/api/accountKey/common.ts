@@ -34,7 +34,7 @@ export interface AccountKeyRes extends DataWithImg {
     updated_at: string // 更新时间
     title: string // 产品标题
     related_id: string // 关联ID
-    inventory: number // 库存
+    all_quantity: number // 库存
     sale_quantity: number // 销售数量
     price: string // 价格
     purchase_min: number // 最少购买数量

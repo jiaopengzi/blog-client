@@ -106,9 +106,10 @@ const cols: TableColumn[] = reactive([
         minWidth: 120,
         align: "center",
     },
+
     {
-        prop: "inventory",
-        label: "库存",
+        prop: "all_quantity",
+        label: "总数量",
         sortable: true,
         width: 120,
         align: "center",
@@ -119,6 +120,16 @@ const cols: TableColumn[] = reactive([
         sortable: true,
         width: 120,
         align: "center",
+    },
+    {
+        prop: "inventory",
+        label: "库存",
+        sortable: true,
+        width: 120,
+        align: "center",
+        formatter: (row: TableData) => {
+            return "sale_quantity" in row && "all_quantity" in row ? row.all_quantity - row.sale_quantity : "-"
+        },
     },
     {
         prop: "created_at",
@@ -217,6 +228,8 @@ const editRow = (index: number, row: TableData) => {
         editData.pay_roles = row.pay_roles || []
     }
 
+    // 清空明细
+    editData.itemStr = ""
     toggleEditDialog()
 }
 
