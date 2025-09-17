@@ -24,6 +24,7 @@
                     :is-show-preview-wechat="state.isShowPreviewWechat"
                     :is-user-scroll-preview="state.isUserScrollPreview"
                     :heading-show-current-index="headingShowCurrentIndex"
+                    :create-order-loading="isPayLoading"
                     :price="postMeta.price"
                     @show-image-viewer="showImageViewer"
                     @close-image-viewer="closeImageViewer"
@@ -32,6 +33,7 @@
                     @commit-heading-map="updateHeadingMap"
                     @pay-single="handlePaySingle"
                     @pay-vip="handlePayVip"
+                    @pay-key="handlePayKey"
                     @pay-membership="handlePayMembership"
                 />
                 <DetailBottomSame v-if="isShowDetailBottomSame" class="bottom-same" />
@@ -186,7 +188,7 @@ const {
 // preview
 const { showImageViewer, closeImageViewer, handleHeadingShowCurrent, handleUpdateIsUserScrollPreview } = usePreview(manager)
 
-const { handlePaySingle, handlePayVip, handlePayMembership, isPayLoading } = useOrder(postId)
+const { handlePaySingle, handlePayVip, handlePayKey, handlePayMembership, isPayLoading } = useOrder(postId)
 
 // 更新文章详情状态
 const handleHeadingShowCurrentAc = (val: number) => {

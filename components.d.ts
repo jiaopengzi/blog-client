@@ -40,6 +40,7 @@ declare module 'vue' {
     CommonOrderRefund: typeof import('./src/components/common/order-refund/index.vue')['default']
     CommonOrderRemark: typeof import('./src/components/common/order-remark/index.vue')['default']
     CommonPayContent: typeof import('./src/components/common/pay-content/index.vue')['default']
+    CommonPayKey: typeof import('./src/components/common/pay-key/index.vue')['default']
     CommonPayMembership: typeof import('./src/components/common/pay-membership/index.vue')['default']
     CommonPostDetail: typeof import('./src/components/common/post-detail/index.vue')['default']
     CommonPostDetailComponentsBottomSame: typeof import('./src/components/common/post-detail/components/bottom-same/index.vue')['default']

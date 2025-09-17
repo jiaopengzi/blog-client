@@ -22,10 +22,16 @@ import { debounce } from "throttle-debounce"
 import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from "vue"
 
 import { type MembershipRes } from "@/api/membership/common"
+import { type Product as KeyRes } from "@/api/order/create"
 import { ContentPayType } from "@/components/common/pay-content"
 import { ScrollElementTagHeading } from "@/components/editor/command"
-import { CustomElementPayDownload, CustomElementPayMembership, CustomElementPayRead, CustomElementVideoPlayer } from "@/customElements"
-import { mountPayContentOnCustomElements, mountPayMembershipOnCustomElements, mountVideoPlayerOnCustomElements } from "@/customElementsMount"
+import { CustomElementPayDownload, CustomElementPayKey, CustomElementPayMembership, CustomElementPayRead, CustomElementVideoPlayer } from "@/customElements"
+import {
+    mountPayContentOnCustomElements,
+    mountPayKeyOnCustomElements,
+    mountPayMembershipOnCustomElements,
+    mountVideoPlayerOnCustomElements,
+} from "@/customElementsMount"
 import { copyText } from "@/utils/clipboard"
 import { shiftArray } from "@/utils/img"
 import { MessageUtil } from "@/utils/message"
@@ -54,7 +60,8 @@ const {
     rootMargin = "", // 交叉观察器的根元素的边距
     threshold = 1, // 交叉观察器的阈值
 
-    is_paid = false, // 是否付费阅读
+    createOrderLoading = false, // 创建订单加载状态
+    isPaid = false, // 是否付费阅读
     price = "0", // 价格(单位：分)
 } = defineProps<PreviewProps>()
 
@@ -69,6 +76,7 @@ const emit = defineEmits<{
     (event: "commit-heading-map", val: Map<string, HeadingObject>): void // 提交标题 map
     (event: "pay-vip", val: ContentPayType): void // vip 购买
     (event: "pay-single", val: ContentPayType): void // 立即购买
+    (event: "pay-key", val: KeyRes): void // 账号密钥
     (event: "pay-membership", val: MembershipRes): void // 付费会员
 }>()
 
@@ -334,6 +342,13 @@ const payContentEmits = {
     },
 }
 
+// 定义 payKey 组件的事件
+const payKeyEmits = {
+    onPayKey: (val: KeyRes) => {
+        emit("pay-key", val)
+    },
+}
+
 // 定义 payMembership 组件的事件
 const payMembershipEmits = {
     onPayMembership: (val: MembershipRes) => {
@@ -341,7 +356,8 @@ const payMembershipEmits = {
     },
 }
 
-const isPaidAc = computed(() => is_paid) // 是否付费阅读
+const createOrderLoadingAc = computed(() => createOrderLoading) // 创建订单加载状态
+const isPaidAc = computed(() => isPaid) // 是否付费阅读
 const priceAc = computed(() => price) // 价格(单位：分)
 
 // 监控 html 变化, 获取所有的 h 标签 并挂载视频播放器
@@ -358,17 +374,36 @@ watch(
                 observeHeadings()
 
                 // 挂载自定义元素
+                // 视频播放器
                 mountVideoPlayerOnCustomElements(previewRef.value as HTMLElement, CustomElementVideoPlayer)
+
+                // 付费下载
                 mountPayContentOnCustomElements(
                     previewRef.value as HTMLElement,
                     CustomElementPayDownload,
                     ContentPayType.Download,
+                    createOrderLoadingAc,
                     payContentEmits,
                     isPaidAc,
                     priceAc,
                 )
-                mountPayContentOnCustomElements(previewRef.value as HTMLElement, CustomElementPayRead, ContentPayType.Read, payContentEmits, isPaidAc, priceAc)
-                mountPayMembershipOnCustomElements(previewRef.value as HTMLElement, CustomElementPayMembership, payMembershipEmits)
+
+                // 付费阅读
+                mountPayContentOnCustomElements(
+                    previewRef.value as HTMLElement,
+                    CustomElementPayRead,
+                    ContentPayType.Read,
+                    createOrderLoadingAc,
+                    payContentEmits,
+                    isPaidAc,
+                    priceAc,
+                )
+
+                // 账号密钥
+                mountPayKeyOnCustomElements(previewRef.value as HTMLElement, CustomElementPayKey, createOrderLoadingAc, payKeyEmits)
+
+                // 付费会员
+                mountPayMembershipOnCustomElements(previewRef.value as HTMLElement, CustomElementPayMembership, createOrderLoadingAc, payMembershipEmits)
             })
         }
     },

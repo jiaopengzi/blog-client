@@ -215,6 +215,7 @@ export enum ResponseCode {
     AccountKeyPaginateSuccess = 2905, // 查看账号密钥分页成功
     AccountKeyItemDeleteSuccess = 2906, // 插入账号密钥子表成功
     AccountKeyItemPaginateSuccess = 2907, // 查看账号密钥子表分页成功
+    AccountKeyGetProductSuccess = 2908, // 获取账号密钥产品成功
 
     // 订单相关
     OrderCreateSuccess = 5000, // 订单创建成功
@@ -239,6 +240,12 @@ export enum ResponseCode {
     OrderCouponLimitReached = 5019, // 优惠卷使用次数已达上限
     OrderCouponApplySuccess = 5020, // 优惠卷使用成功
     OrderExpired = 5021, // 订单过期请重新下单
+    OrderCouponAlreadyApplied = 5022, // 已使用过优惠卷，如更换优惠卷，请重新下单
+    OrderProductStackNotEnough = 5023, // 订单产品库存不足
+    OrderProductQuantityLessThanMin = 5024, // 订单产品购买数量小于最小购买数量
+    OrderProductQuantityMoreThanMax = 5025, // 订单产品购买数量大于最大购买数量
+    OrderProductQuantityMoreThanUserMax = 5026, // 订单产品购买数量大于用户最大购买数量
+    OrderProductTimeNotAvailable = 5027, // 订单产品购买时间不在允许范围内
 
     // 支付相关
     PayOrderURLSuccess = 6000, // 订单支付 URL 生成成功

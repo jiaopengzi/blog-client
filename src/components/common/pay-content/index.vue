@@ -10,18 +10,18 @@
     <div v-if="!isShowContent">
         <div class="no-pay">
             <JIcon :name="IconKeys.Lock" :custom-class="`my-icon`" class="lock" />
-            <div class="text" v-if="content_pay_type === ContentPayType.Read">
+            <div class="text" v-if="contentPayType === ContentPayType.Read">
                 隐藏内容，付费<span class="price">{{ fenToYuan(price) }}</span
                 >元查看。
             </div>
-            <div class="text" v-if="content_pay_type === ContentPayType.Download">
+            <div class="text" v-if="contentPayType === ContentPayType.Download">
                 附件内容，付费<span class="price">{{ fenToYuan(price) }}</span
                 >元下载。
             </div>
             <div class="text-vip">升级为 VIP 可免费查看(除特定内容外)所有内容。</div>
             <div>
-                <el-button class="pay-single" @click="paySingle">立即购买</el-button>
-                <el-button class="pay-vip" @click="payVIP">升级VIP</el-button>
+                <el-button class="pay-single" :loading="loading" @click="paySingle">立即购买</el-button>
+                <el-button class="pay-vip" @click="payVip">升级VIP</el-button>
             </div>
         </div>
     </div>
@@ -40,7 +40,7 @@ import { ContentPayType, type PayContentProps } from "./types.ts"
 defineOptions({ name: "PayContent" })
 
 // 定义 props
-const { content_pay_type = ContentPayType.Read, is_paid = false, price = "0", markdown } = defineProps<PayContentProps>()
+const { contentPayType = ContentPayType.Read, isPaid = false, price = "0", loading = false, markdown } = defineProps<PayContentProps>()
 
 // 事件
 const emit = defineEmits<{
@@ -50,19 +50,19 @@ const emit = defineEmits<{
 
 // 支付单篇文章
 const paySingle = () => {
-    emit("pay-single", content_pay_type)
+    emit("pay-single", contentPayType)
 }
 
 // 支付成为 VIP
-const payVIP = async () => {
-    emit("pay-vip", content_pay_type)
+const payVip = async () => {
+    emit("pay-vip", contentPayType)
 }
 
 const stateManager = new EditorStateManager()
 stateManager.updateState(markdown)
 
 const isShowContent = computed(() => {
-    return is_paid || price === "0"
+    return isPaid || price === "0"
 })
 </script>
 <style scoped lang="scss">

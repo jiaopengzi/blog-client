@@ -10,11 +10,15 @@
     <!-- 注意挂载元素的样式不要和 #preview 的样式冲突重叠了 -->
     <div class="no-roles" v-if="roles.length === 0">暂无可购买的会员角色，请联系管理员。</div>
     <section class="role-list">
-        <div v-for="item in roles" :key="item.id" class="role-item" @click="handleClick(item)">
-            <div class="role">{{ item.role }}</div>
-            <div class="price">￥{{ fenToYuan(item.price) }}</div>
-            <div class="duration-time">有效期{{ durationTimeDisplay(item.duration_time) }}</div>
-        </div>
+        <el-button v-for="item in roles" :key="item.id" class="role-item" :loading="loadingAc(item.id)" @click="handleClick(item)">
+            <template #default>
+                <div>
+                    <div class="role">{{ item.role }}</div>
+                    <div class="price">￥{{ fenToYuan(item.price) }}</div>
+                    <div class="duration-time">有效期{{ durationTimeDisplay(item.duration_time) }}</div>
+                </div>
+            </template>
+        </el-button>
     </section>
 </template>
 <script lang="ts" setup>
@@ -25,14 +29,24 @@ import { getMembershipPayRolesAPI } from "@/api/membership/getPayRoles"
 import { ResponseCode } from "@/api/response"
 import { fenToYuan } from "@/utils/amount"
 
+import { type PayMembershipProps } from "./types"
+
 defineOptions({ name: "PayMembership" })
+
+// 定义 props
+const { loading = false } = defineProps<PayMembershipProps>()
 
 // 事件
 const emit = defineEmits<{
     (event: "pay-membership", val: MembershipRes): void
 }>()
 
+// 加载状态根据点击对应的按钮，只保证一个按钮加载
+const loadingAcId = ref<string | null>(null)
+const loadingAc = (id: string) => loading && loadingAcId.value === id
+
 const handleClick = (item: MembershipRes) => {
+    loadingAcId.value = item.id
     emit("pay-membership", item)
 }
 
@@ -88,8 +102,8 @@ onBeforeMount(async () => {
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 194px;
-        height: 120px;
+        width: 138px;
+        height: 138px;
         border: 1px solid var(--jpz-border-color);
         border-radius: 8px;
         cursor: pointer;
@@ -128,6 +142,7 @@ onBeforeMount(async () => {
             font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
             font-size: 20px;
             font-weight: 700;
+            margin-top: 20px;
             margin-bottom: 8px;
             color: var(--jpz-text-color-regular);
             text-align: center;

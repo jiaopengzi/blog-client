@@ -41,6 +41,7 @@ export interface PreviewProps {
     rootMargin?: string
     threshold?: number | number[]
 
-    is_paid?: boolean // 是否付费阅读
+    createOrderLoading?: boolean // 创建订单加载状态
+    isPaid?: boolean // 是否付费阅读
     price?: string // 价格(单位：分)
 }

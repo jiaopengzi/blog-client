@@ -93,12 +93,14 @@ export const getCurrencyOptions = () => {
 export enum ProductType {
     Post = "post", // 文章产品
     Membership = "membership", // 会员等级产品
+    AccountKey = "account-key", // 账号密钥产品
 }
 
 // 产品类型显示
 export const ProductTypeDisplay: Record<ProductType, string> = {
     [ProductType.Post]: "文章",
     [ProductType.Membership]: "会员升级",
+    [ProductType.AccountKey]: "账号密钥",
 }
 
 // 获取产品类型选项

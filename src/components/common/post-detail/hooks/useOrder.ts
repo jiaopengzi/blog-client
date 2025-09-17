@@ -65,7 +65,6 @@ export function useOrder(postId: Ref<string>) {
             router.push({ name: RouteNames.Checkout })
         } else {
             isPayLoading.value = false
-            handleResErr(res.data)
             MessageUtil.error(handleResErr(res))
         }
     }
@@ -74,6 +73,7 @@ export function useOrder(postId: Ref<string>) {
     const handlePaySingle = async (val: ContentPayType) => {
         // 更新返回URL
         await updateUrl()
+
         // 如果用户没有登录，且访问的页面需要登录，则跳转到登录页
         if (!userStore.isLogin) {
             await router.push({ name: RouteNames.Login, query: { redirect: orderReq.value.return_url } }) // 重定向到登录页带上当前页面路径参数
@@ -87,6 +87,7 @@ export function useOrder(postId: Ref<string>) {
     const handlePayVip = async (val: ContentPayType) => {
         // 更新返回URL
         await updateUrl()
+
         // 如果用户没有登录，且访问的页面需要登录，则跳转到登录页
         if (!userStore.isLogin) {
             await router.push({ name: RouteNames.Login, query: { redirect: orderReq.value.return_url } }) // 重定向到登录页带上当前页面路径参数
@@ -95,6 +96,22 @@ export function useOrder(postId: Ref<string>) {
 
         // 更新路由
         await router.push({ name: RouteNames.Page, params: { customPath: "vip" } })
+    }
+
+    // 处理支付账号密钥
+    const handlePayKey = async (val: Product) => {
+        orderReq.value.products = [val]
+
+        // 更新返回URL
+        await updateUrl()
+
+        // 如果用户没有登录，且访问的页面需要登录，则跳转到登录页
+        if (!userStore.isLogin) {
+            await router.push({ name: RouteNames.Login, query: { redirect: orderReq.value.return_url } }) // 重定向到登录页带上当前页面路径参数
+            return
+        }
+
+        await createOrder()
     }
 
     // 处理支付成为会员
@@ -122,6 +139,7 @@ export function useOrder(postId: Ref<string>) {
     return {
         handlePaySingle,
         handlePayVip,
+        handlePayKey,
         handlePayMembership,
         isPayLoading,
     }

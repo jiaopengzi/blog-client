@@ -12,8 +12,9 @@ export enum ContentPayType {
 }
 
 export interface PayContentProps {
-    content_pay_type?: ContentPayType // 内容费类型
-    is_paid?: boolean // 是否付费阅读
+    contentPayType?: ContentPayType // 内容费类型
+    isPaid?: boolean // 是否付费阅读
     price?: string // 价格(单位：分)
+    loading?: boolean // 加载状态
     markdown: string
 }

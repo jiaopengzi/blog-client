@@ -7,7 +7,7 @@
  */
 
 // 自定义元素开放属性
-export const CustomElementAttributes: string[] = ["id", "class", "video-type", "src"]
+export const CustomElementAttributes: string[] = ["id", "class", "video-type", "src", "title", "description"]
 
 // 自定义元素 参考:https://developer.mozilla.org/zh-CN/docs/Web/API/Web_components/Using_custom_elements
 
