@@ -34,6 +34,7 @@ import { ProductType } from "@/api/order/common"
 import { type Product as KeyRes } from "@/api/order/create"
 import { ResponseCode } from "@/api/response"
 import { fenToYuan } from "@/utils/amount"
+import { MessageUtil } from "@/utils/message"
 
 import { type PayKeyProps } from "./types"
 
@@ -76,6 +77,12 @@ const quantityMax = computed(() => {
 const quantity = ref(1)
 
 const handleClick = (key: KeyRes) => {
+    // 库存不足
+    if (quantityMax.value === 0) {
+        MessageUtil.error("库存不足，无法购买")
+        return
+    }
+
     // 数量校验
     if (quantity.value < 1) {
         quantity.value = 1
@@ -83,6 +90,7 @@ const handleClick = (key: KeyRes) => {
     if (quantity.value > quantityMax.value) {
         quantity.value = quantityMax.value
     }
+
     key.quantity = quantity.value.toString()
 
     emit("pay-key", key)

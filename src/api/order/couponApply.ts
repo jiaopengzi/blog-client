@@ -6,6 +6,7 @@
  * Description : 优惠卷应用
  */
 
+import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -16,8 +17,8 @@ export interface OrderCouponApplyRequest {
 }
 
 // OrderCouponApply 优惠券应用响应模型
-export interface OrderCouponApplyRes {
-    id: string // 订单ID
+export interface OrderCouponApplyRes extends StreamsStatusRes {
+    order_id: string // 订单ID
     coupon_codes: string[] // 优惠券码列表
     total_amount: number // 总金额(分)
     discount_amount: number // 优惠金额(分)

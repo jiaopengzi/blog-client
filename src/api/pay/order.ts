@@ -17,7 +17,6 @@ export interface PayOrderRequest {
     pay_type: PayType // 支付类型
     order_id: string // 订单ID
     description: string // 支付订单描述
-    amount: string // 支付金额（单位：分）
     return_url: string // 支付完成后的回调地址
 }
 

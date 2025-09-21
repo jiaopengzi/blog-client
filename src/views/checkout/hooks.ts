@@ -15,6 +15,7 @@ import { getPayTypeOptions, PayType, TradeState } from "@/api/pay/common"
 import { payOrderAPI, type PayOrderRequest } from "@/api/pay/order"
 import { payQueryAPI, type PayQueryRequest } from "@/api/pay/query"
 import { handleResErr, ResponseCode } from "@/api/response"
+import { pollingGetStreamIDsStatus } from "@/utils/getStreamIDsStatus"
 import { MessageUtil } from "@/utils/message"
 
 // 表单验证
@@ -106,7 +107,9 @@ export function useOrderCheckout() {
             id: checkoutData.value?.order.id || "",
             coupon_codes: couponCodes.value,
         }
+
         const res = await orderCouponApplyAPI(requestData)
+
         if (res.data.code === ResponseCode.OrderCouponApplySuccess) {
             const data: OrderCouponApplyRes = res.data.data
             checkoutData.value!.coupon = data // 更新结算数据中的优惠券信息
@@ -115,10 +118,13 @@ export function useOrderCheckout() {
             finalAmount.value = data.final_amount // 更新最终支付金额
             couponCodes.value = data.coupon_codes // 更新优惠码列表
             isShowDiscount.value = true // 显示优惠金额
+            // 轮询后端是否完成
+            if (data.stream_items && data.stream_items.length > 0) {
+                await pollingGetStreamIDsStatus(data.stream_items)
+            }
             MessageUtil.success("优惠码应用成功")
         } else {
-            const msg = handleResErr(res)
-            MessageUtil.error(msg)
+            MessageUtil.error(handleResErr(res))
         }
 
         isCouponBtnLoading.value = false // 重置优惠码按钮状态
@@ -132,15 +138,21 @@ export function useOrderCheckout() {
             return
         }
 
-        isPayBtnLoading.value = true // 设置支付按钮为加载状态
+        // 如果最终支付金额为0，并且有回调地址，则直接跳转
+        if (checkoutData.value.order.return_url !== "" && checkoutData.value.coupon && checkoutData.value.coupon.final_amount === 0) {
+            window.location.href = checkoutData.value.order.return_url
+            return
+        }
+
+        // 设置支付按钮为加载状态
+        isPayBtnLoading.value = true
 
         // 构建支付请求数据
         const req: PayOrderRequest = {
             is_re_pay: false, // 首次支付
             pay_type: payTypeResult.value, // 选择的支付方式
             order_id: checkoutData.value.order.id, // 订单ID
-            description: `${checkoutData.value.order.description}`, // 支付描述
-            amount: finalAmount.value.toString(), // 最终支付金额
+            description: checkoutData.value.order.description, // 支付描述
             return_url: checkoutData.value.order.return_url, // 支付完成后的回调地址
         }
 

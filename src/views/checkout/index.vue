@@ -14,7 +14,7 @@
         <div class="product-details">
             <h4 class="title">产品详情</h4>
             <el-table :data="checkoutData.order.order_items" style="width: 100%" border stripe :height="detailsHeight">
-                <el-table-column prop="title" label="产品" :width="widthTitle" />
+                <el-table-column prop="title" label="产品" :width="titleWidth" />
                 <el-table-column prop="price" label="价格" width="100" align="center">
                     <template #default="{ row }">{{ fenToYuan(row.price) }}元</template>
                 </el-table-column>
@@ -56,7 +56,7 @@
         </div>
 
         <!-- 支付方式 -->
-        <div class="pay-type">
+        <div class="pay-type" v-if="isShowPayType">
             <h4 class="title">选择支付方式</h4>
             <el-radio-group v-model="payTypeResult">
                 <el-radio v-for="item in payTypeOptions" :key="item.value" :value="item.value">
@@ -68,7 +68,7 @@
         </div>
 
         <!-- 提交按钮 -->
-        <el-button :loading="isPayBtnLoading" class="btn-submit" type="default" @click="runCheckout">立即支付</el-button>
+        <el-button :loading="isPayBtnLoading" class="btn-submit" type="default" @click="runCheckout">{{ btnSubmitText }}</el-button>
     </div>
 
     <!-- 二维码 -->
@@ -83,7 +83,7 @@ import { storeToRefs } from "pinia"
 import { computed, onBeforeMount, ref, watch } from "vue"
 import { useRouter } from "vue-router"
 
-import { PayTypeDisplay } from "@/api/pay/common"
+import { PayType, PayTypeDisplay } from "@/api/pay/common"
 import { RouteNames } from "@/router"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 import { fenToYuan } from "@/utils/amount"
@@ -104,21 +104,10 @@ const deviceStore = useDeviceStore()
 
 const { device } = storeToRefs(deviceStore)
 
-const widthTitle = computed(() => {
-    switch (device.value) {
-        case DeviceType.PC:
-            return "400"
-        case DeviceType.PAD:
-            return "300"
-        case DeviceType.PHONE:
-            return "200"
-        default:
-            return "400"
-    }
-})
+// 输入触发方式
+const trigger = ref<"Enter" | "Space">("Enter")
 
-const trigger = ref<"Enter" | "Space">("Enter") // 输入触发方式
-
+// 控制二维码弹窗显示
 const handleClose = () => {
     isPayQRCodeShow.value = false
 }
@@ -147,11 +136,43 @@ const {
     pollingGetOrderStatus,
 } = useOrderCheckout()
 
+// 标题宽度
+const titleWidth = computed(() => {
+    switch (device.value) {
+        case DeviceType.PC:
+            return "400"
+        case DeviceType.PAD:
+            return "300"
+        case DeviceType.PHONE:
+            return "200"
+        default:
+            return "400"
+    }
+})
+
+// 按钮文字
+const btnSubmitText = computed(() => {
+    if (finalAmount.value > 0) {
+        return "立即支付"
+    } else {
+        return "完成订单"
+    }
+})
+
+// 是否显示支付方式
+const isShowPayType = computed(() => {
+    if (finalAmount.value > 0) {
+        return true
+    } else {
+        return false
+    }
+})
+
 // 监听支付信息变化
 watch(
     () => checkoutData.value.payment,
     async (newVal) => {
-        if (newVal && newVal.order_id) {
+        if (newVal && newVal.order_id && newVal.pay_type !== PayType.Zero) {
             // 如果有支付信息，显示二维码
             isPayQRCodeShow.value = true
             // 计算过期时间用于轮训的超时时间
@@ -168,6 +189,7 @@ watch(
 onBeforeMount(async () => {
     // 获取结算数据
     await getCheckout()
+
     // 检查是否有可用的优惠卷
     await checkHasAvailableCoupons()
 

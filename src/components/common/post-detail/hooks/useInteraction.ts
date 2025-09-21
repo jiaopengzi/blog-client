@@ -49,13 +49,13 @@ export function useInteraction(
             {
                 icon: "like",
                 text: "点赞",
-                isActive: postMeta.value.interactionStatus?.is_like ?? false,
+                isActive: postMeta.value.interactionStatus?.is_like,
                 tip: postMeta.value.like_count,
             },
             {
                 icon: "star",
                 text: "收藏",
-                isActive: postMeta.value.interactionStatus?.is_star ?? false,
+                isActive: postMeta.value.interactionStatus?.is_star,
                 tip: postMeta.value.star_count,
             },
             {

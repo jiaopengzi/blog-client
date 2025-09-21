@@ -20,7 +20,7 @@ import { ResponseCode } from "@/api/response"
 import { type CategoryTagProps } from "@/components/common/post-detail/components/category-tag"
 import { type CopyrightProps } from "@/components/common/post-detail/components/copyright"
 import { type UpdatedAtProps } from "@/components/common/post-detail/components/updated-at"
-import { type PostMetaProps } from "@/components/common/post-meta"
+import { emptyPostMetaProps, type PostMetaProps } from "@/components/common/post-meta"
 import { EditorStateManager } from "@/components/editor"
 import { RouteNames } from "@/router"
 import { useOptionsStore } from "@/stores/options"
@@ -33,7 +33,7 @@ export function useGetData(
 ) {
     // 跳转到 404 页面
     const router = useRouter()
-    const postMeta = ref<PostMetaProps>({}) // 文章元数据
+    const postMeta = ref<PostMetaProps>(emptyPostMetaProps()) // 文章元数据
 
     const optionsStore = useOptionsStore()
     const { head } = storeToRefs(optionsStore)
@@ -79,31 +79,24 @@ export function useGetData(
                 manager.updateState(postData.post_content)
 
                 // 文章元数据
-                postMeta.value = {
-                    post_id: postData.id,
-                    created_at: postData.created_at,
-                    comment_count: postData.comment_count,
-                    is_comment_status_open: postData.comment_status === CommentStatusCode.Open,
-                    view_count: postData.view_count,
-                    like_count: postData.like_count,
-                    star_count: postData.star_count,
-                    words_count: postData.words_count,
-                    post_title: postData.post_title,
-                    author_avatar: postData.author_info.user_avatar,
-                    author_display_name: postData.author_info.user_display_name,
-                    avatar_size: 20, // 头像大小，默认 24px
-                    author_id: postData.author_info.id,
-                    is_show_read_time: true,
-                    is_author_edit: await permissionRoleStore.postDetailEditEnable(),
-                    is_immersion_read: true,
-                    interactionStatus: {
-                        is_like: false,
-                        is_star: false,
-                    },
-
-                    // TODO is_paid: postData.is_paid,
-                    price: postData.price,
-                }
+                postMeta.value.post_id = postData.id
+                postMeta.value.created_at = postData.created_at
+                postMeta.value.comment_count = postData.comment_count
+                postMeta.value.is_comment_status_open = postData.comment_status === CommentStatusCode.Open
+                postMeta.value.view_count = postData.view_count
+                postMeta.value.like_count = postData.like_count
+                postMeta.value.star_count = postData.star_count
+                postMeta.value.words_count = postData.words_count
+                postMeta.value.post_title = postData.post_title
+                postMeta.value.author_avatar = postData.author_info.user_avatar
+                postMeta.value.author_display_name = postData.author_info.user_display_name
+                postMeta.value.avatar_size = 20 // 头像大小，默认 24px
+                postMeta.value.author_id = postData.author_info.id
+                postMeta.value.is_show_read_time = true
+                postMeta.value.is_author_edit = await permissionRoleStore.postDetailEditEnable()
+                postMeta.value.is_immersion_read = true
+                postMeta.value.is_paid = postData.is_paid
+                postMeta.value.price = postData.price
 
                 // 文章头部信息
                 head.value.title = postData.post_title

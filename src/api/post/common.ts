@@ -193,7 +193,7 @@ export interface PostResByAdmin extends PostResCommon {
     words_count: string // 字数
     post_type: PostType // 文章类型
     comment_status: number // 评论状态
-    post_content: string // 文章内容
+    post_content_paid: string // 文章内容
     post_title: string // 文章标题
     post_password: string // 文章密码
     seo_title: string // SEO标题
@@ -224,6 +224,7 @@ export interface PostResByID extends PostResCommon {
     seo_description: string // SEO描述
     post_push_time: PgSqlDateTime // 发布时间
     post_expired_time: PgSqlDateTime // 过期时间
+    is_paid: boolean // 是否已付费
 
     // 引用类型
     author_info: User // 作者

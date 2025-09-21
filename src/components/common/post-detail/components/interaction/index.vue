@@ -35,19 +35,20 @@ const initItems: InteractionItem[] = [
     {
         icon: "like",
         text: "点赞",
-        isActive: true,
+        isActive: false,
         onClick: () => {
             emit("click-item", "like")
         },
-        tip: 6,
+        tip: 0,
     },
     {
         icon: "star",
         text: "收藏",
-        isActive: true,
+        isActive: false,
         onClick: () => {
             emit("click-item", "star")
         },
+        tip: 0,
     },
     {
         icon: "share",

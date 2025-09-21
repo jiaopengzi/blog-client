@@ -8,12 +8,14 @@
 
 // 支付方式
 export enum PayType {
+    Zero = "zero", // 零支付
     Alipay = "alipay", // 支付宝
     WechatPay = "wechat_pay", // 微信支付
 }
 
 // 支付方式显示
 export const PayTypeDisplay: Record<PayType, string> = {
+    [PayType.Zero]: "零支付",
     [PayType.Alipay]: "支付宝",
     [PayType.WechatPay]: "微信支付",
 }

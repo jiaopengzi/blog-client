@@ -25,7 +25,7 @@
             </div>
         </div>
     </div>
-    <div class="pay" v-if="isShowContent">
+    <div class="paid" v-if="isShowContent">
         <div v-html="stateManager.getState().html"></div>
     </div>
 </template>
@@ -37,6 +37,7 @@ import { EditorStateManager } from "@/components/editor"
 import { fenToYuan } from "@/utils/amount"
 
 import { ContentPayType, type PayContentProps } from "./types.ts"
+
 defineOptions({ name: "PayContent" })
 
 // 定义 props
@@ -58,9 +59,11 @@ const payVip = async () => {
     emit("pay-vip", contentPayType)
 }
 
+// 内容渲染
 const stateManager = new EditorStateManager()
 stateManager.updateState(markdown)
 
+// 是否显示内容
 const isShowContent = computed(() => {
     return isPaid || price === "0"
 })

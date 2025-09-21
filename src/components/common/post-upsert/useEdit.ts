@@ -59,11 +59,11 @@ export function useEdit(
                     const data = res.data.data
                     // 更新编辑器内容
                     stateManager.setInitDocIsEmpty(false)
-                    stateManager.updateState(data.post_content)
+                    stateManager.updateState(data.post_content_paid)
                     postInfoForm.id = data.id
                     postInfoForm.post_author = data.author_info.id
                     postInfoForm.post_title = data.post_title
-                    postInfoForm.post_content = data.post_content
+                    postInfoForm.post_content = data.post_content_paid
                     postInfoForm.seo_title = data.seo_title
                     postInfoForm.seo_description = data.seo_description
                     postInfoForm.seo_keywords = data.seo_keywords

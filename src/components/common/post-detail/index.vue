@@ -26,6 +26,7 @@
                     :heading-show-current-index="headingShowCurrentIndex"
                     :create-order-loading="isPayLoading"
                     :price="postMeta.price"
+                    :is-paid="postMeta.is_paid"
                     @show-image-viewer="showImageViewer"
                     @close-image-viewer="closeImageViewer"
                     @heading-show-current="handleHeadingShowCurrentAc"
