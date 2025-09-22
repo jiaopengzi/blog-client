@@ -65,6 +65,10 @@
                 />
             </el-form-item>
 
+            <el-form-item label="付费管理" prop="pay_roles">
+                <SwitchGroup :switch-items="rolePaidList" @update-status="updateRolePaidList" />
+            </el-form-item>
+
             <el-form-item label="账号密钥明细" prop="itemStr">
                 <el-input v-model="viewDataAc.itemStr" type="textarea" placeholder="按照换行分割为独立账号密钥明细" :rows="5" />
             </el-form-item>
@@ -78,8 +82,10 @@
 
 <script lang="ts" setup>
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { reactive, ref, toRefs, useTemplateRef } from "vue"
+import { onBeforeMount, reactive, ref, toRefs, useTemplateRef } from "vue"
 
+import SwitchGroup from "@/components/common/switch-group"
+import { usePayRolesSwitchItem } from "@/components/hooks/usePayRolesSwitchItem"
 import { generateShortcuts } from "@/utils/dateTime"
 
 import { useFormValidation } from "./hooks"
@@ -120,6 +126,9 @@ const viewDataAc = reactive<ViewForm>(viewData)
 // 默认时间为当前日期
 const defaultTime = new Date()
 
+// 付费角色开关项
+const { rolePaidList, initRolePaidManagement, updateRolePaidList } = usePayRolesSwitchItem(viewDataAc)
+
 // hooks
 const { addRules, editRules } = useFormValidation({
     form: toRefs(viewDataAc),
@@ -137,6 +146,18 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         }
     })
 }
+
+onBeforeMount(async () => {
+    // 生成角色付费管理
+    await initRolePaidManagement()
+    // 更新角色付费管理
+    if (viewDataAc.pay_roles && viewDataAc.pay_roles.length > 0 && rolePaidList.length > 0) {
+        viewDataAc.pay_roles.forEach((role: string) => {
+            const index = rolePaidList.findIndex((i) => i.name === role)
+            rolePaidList[index]!.status = true
+        })
+    }
+})
 </script>
 
 <style lang="scss" scoped>

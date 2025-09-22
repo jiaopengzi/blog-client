@@ -27,7 +27,7 @@ interface FormValidationOptions {
         user_max?: Ref<number | undefined>
         purchase_start?: Ref<PgSqlDateTime>
         purchase_end?: Ref<PgSqlDateTime>
-        pay_roles?: Ref<string[] | undefined>
+        // pay_roles?: Ref<string[] | undefined>
     }
 }
 

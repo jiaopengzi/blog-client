@@ -11,9 +11,10 @@ import { reactive } from "vue"
 import type { UpsertPostForm } from "@/components/common/post-upsert/types"
 import type { SwitchItem, SwitchItemLabel } from "@/components/common/switch-group"
 import { usePermissionRoleStore } from "@/stores/permissionRole"
-import type { ViewForm as AccountKeyForm } from "@/views/admin/component/main/account-key-all/component/view/types"
+// import type { ViewForm as AccountKeyForm } from "@/views/admin/component/main/account-key-all/component/view/types"
 
-type PayRolesForm = UpsertPostForm | AccountKeyForm
+// type PayRolesForm = UpsertPostForm | AccountKeyForm
+type PayRolesForm = UpsertPostForm
 
 /**
  * 付费角色开关项

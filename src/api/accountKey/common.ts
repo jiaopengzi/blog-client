@@ -20,7 +20,7 @@ export interface InsertAccountKeyRequest {
     user_max?: number // 同一用户最多购买数量
     purchase_start?: PgSqlDateTime // 开始购买时间
     purchase_end?: PgSqlDateTime // 结束购买时间
-    pay_roles?: string[] // 付费角色
+    // pay_roles?: string[] // 付费角色
 }
 
 export interface UpdateAccountKeyRequest extends InsertAccountKeyRequest {

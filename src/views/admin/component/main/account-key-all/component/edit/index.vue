@@ -54,7 +54,7 @@ const submitData = async (form: ViewForm) => {
         user_max: form.user_max,
         purchase_start: form.purchase_start,
         purchase_end: form.purchase_end,
-        pay_roles: form.pay_roles,
+        // pay_roles: form.pay_roles,
     }
 
     if (items.length > 0) {
