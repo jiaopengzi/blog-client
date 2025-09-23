@@ -57,6 +57,7 @@ export enum ResponseCode {
     UserUnSubscribeSuccess = 1043, // 用户取消订阅成功
     UserUnSubscribeInvalid = 1044, // 用户取消订阅失败，token 无效
     UserUnSubscribeTypeWrong = 1045, // 用户取消订阅失败，token 类型错误
+    UserLogoutSuccess = 1046, //用户登出成功
 
     // 文章相关
     PostInsertSuccess = 2000, // 插入文章标签成功

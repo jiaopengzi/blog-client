@@ -12,6 +12,7 @@ import { SocialLoginType } from "@/api/common"
 import { type Res, ResponseCode, type ResResponse } from "@/api/response"
 import { emptyUserInfo, getUserInfoAPI, type UserInfo } from "@/api/user/getUserInfo"
 import { loginAPI, type LoginRequest } from "@/api/user/login"
+import { logoutAPI } from "@/api/user/logout"
 import { socialBind, socialBindCallback, socialLogin, socialLoginCallback, socialUnBind } from "@/api/user/socialLogin"
 import { LocalStorageKey } from "@/stores/local"
 import { PermissionNames } from "@/stores/permissionRole"
@@ -105,7 +106,7 @@ export const useUserStore = defineStore("user", {
 
         // 退出登录
         async logout() {
-            localStorageClearByLogout()
+            await localStorageClearByLogout()
             this.$patch(createEmptyUserInfoStore())
             // 重定向到登录页
             window.location.href = "/"
@@ -299,7 +300,7 @@ async function handleLoginResult(resObj: Res<unknown>, successCode: ResponseCode
     }
 
     // 显示登录失败提示
-    localStorageClearByLogout()
+    await localStorageClearByLogout()
 
     const msg = getUserForbiddenMsg(resObj as Res<number>)
 
@@ -321,12 +322,16 @@ async function handleBindResult(resObj: Res<void>, successCode: ResponseCode): P
     // 显示登录失败提示
     MessageUtil.error(resObj.msg, 3000)
 
-    localStorageClearByLogout()
+    await localStorageClearByLogout()
     return createEmptyUserInfoStore() // 获取用户信息
 }
 
 // 退出登录的时候清除对应 localStorage
-function localStorageClearByLogout() {
+async function localStorageClearByLogout() {
+    const res = await logoutAPI()
+    if (res.data.code === ResponseCode.UserLogoutSuccess) {
+        MessageUtil.success(res.data.msg, 3000)
+    }
     localStorage.removeItem(LocalStorageKey.AccessToken)
 }
 
