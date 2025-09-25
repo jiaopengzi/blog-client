@@ -142,6 +142,7 @@ const runSearchAc = async () => {
 // 处理文件类型统计
 const handleFileCountByFileTypeAc = async (fileType: string) => {
     await handleFileCountByFileType(fileType, false)
+    await updateDataAc()
 }
 
 // 更新字幕

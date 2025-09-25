@@ -15,7 +15,7 @@
             <slot name="btns"></slot>
             <el-button v-if="isShowDeleteAll" type="danger" @click="handleBatchDelete" :loading="loadingDelete"> 删除 </el-button>
 
-            <span v-if="isShowListOrGrid">
+            <span v-if="isShowListOrGrid" class="is-show-list-or-grid">
                 <SwitchGroup :switch-items="switchItemList" @update-status="updateStatus" />
             </span>
         </div>
@@ -565,6 +565,11 @@ const isSelected = (row: TableData) => {
 .container {
     margin: 10px;
 }
+
+.is-show-list-or-grid {
+    margin-left: 10px;
+}
+
 .btns {
     display: flex;
     margin: 10px 0;

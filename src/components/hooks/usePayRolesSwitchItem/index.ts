@@ -26,9 +26,24 @@ export function usePayRolesSwitchItem<T extends PayRolesForm>(form: T, defaultAc
     // 角色付费管理
     const rolePaidList: SwitchItem[] = reactive([])
 
-    const rolePaidLabel: SwitchItemLabel = {
-        active: "免费",
-        inactive: "付费",
+    // 角色付费标签
+    const rolePaidLabel = (): SwitchItemLabel => {
+        return {
+            active: "免费",
+            inactive: "付费",
+        }
+    }
+
+    // 默认开关项
+    const defaultSwitchItem = (): SwitchItem => {
+        return {
+            name: "",
+            display: "",
+            namePosition: "left",
+            status: defaultActive,
+            label: rolePaidLabel(),
+            minWidth: 150,
+        }
     }
 
     // 初始化角色付费管理都为付费状态，后续根据后端数据进行修改
@@ -38,16 +53,13 @@ export function usePayRolesSwitchItem<T extends PayRolesForm>(form: T, defaultAc
 
         // 首先从 系统角色列表 获取角色列表
         const { roles: rolesSystem } = permissionRoleStore.getSystemRoles
+
         // 历遍 rolesSystem 构造 rolePaidList
         rolesSystem.forEach((role) => {
-            const switchItem: SwitchItem = {
-                name: role.role_name,
-                display: role.description,
-                namePosition: "left",
-                status: defaultActive,
-                label: rolePaidLabel,
-                minWidth: 120,
-            }
+            const switchItem: SwitchItem = defaultSwitchItem()
+            switchItem.name = role.role_name
+            switchItem.display = role.description
+
             rolePaidList.push(switchItem)
         })
 
@@ -57,14 +69,10 @@ export function usePayRolesSwitchItem<T extends PayRolesForm>(form: T, defaultAc
         // 如果有会员角色，则将其添加到 rolePaidList
         if (membershipRoles.length > 0) {
             membershipRoles.forEach((roleName) => {
-                const switchItem: SwitchItem = {
-                    name: roleName,
-                    display: roleName,
-                    namePosition: "left",
-                    status: false,
-                    label: rolePaidLabel,
-                    minWidth: 180,
-                }
+                const switchItem = defaultSwitchItem()
+                switchItem.name = roleName
+                switchItem.display = roleName
+
                 rolePaidList.push(switchItem)
             })
         }
