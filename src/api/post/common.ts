@@ -92,6 +92,15 @@ export enum CommentStatusCode {
     Open = 2, // 开启
 }
 
+// 文章视频合集目录
+export interface PostVideoTocItem {
+    video_id: string // 目录ID
+    text: string // 目录文本
+    order: number // 排序 越小越靠前
+    parent_id?: string // 父级目录ID
+    is_free?: boolean // 是否免费
+}
+
 // 插入文章请求
 export interface InsertPostRequest {
     post_author: string // 文章作者

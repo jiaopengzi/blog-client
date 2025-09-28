@@ -1,16 +1,19 @@
 <template>
-    <MyTest01 :is-show="isShow" />
-    <button @click="toggleShow">Toggle MyTest01</button>
+    <div>
+        <VideoTocItem />
+    </div>
 </template>
 
-<script lang="ts" setup>
-import MyTest01 from "./MyTest01.vue"
-defineOptions({ name: "TestTest" })
+<script setup lang="ts">
+import { ref } from "vue"
 
-let isShow = true
-const toggleShow = () => {
-    isShow = !isShow
-}
+import VideoTocItem from "@/components/common/video-toc-chapter"
+
+defineOptions({ name: "MyTest" })
+
+const items = ref([
+    { order: 1, text: "介绍", orderTotal: 3 },
+    { order: 2, text: "安装", orderTotal: 3 },
+    { order: 3, text: "使用", orderTotal: 3 },
+])
 </script>
-
-<style scoped lang="scss"></style>
