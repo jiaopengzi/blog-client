@@ -8,12 +8,12 @@
 <template>
     <div class="editable-text">
         <!-- 默认显示文本 -->
-        <span v-if="!isEditing" @dblclick="startEdit" class="text-display">
+        <p v-if="!isEditing" @dblclick="startEdit" class="text-display">
             {{ text }}
-        </span>
+        </p>
 
         <!-- 双击后显示输入框 -->
-        <el-input v-else v-model="textAc" @blur="finishEdit" @keyup.enter="finishEdit" @keyup.esc="cancelEdit" autofocus />
+        <el-input class="text-edit" v-else v-model="textAc" @blur="finishEdit" @keyup.enter="finishEdit" @keyup.esc="cancelEdit" autofocus />
     </div>
 </template>
 
@@ -21,8 +21,9 @@
 import { nextTick, ref } from "vue"
 defineOptions({ name: "EditableText" })
 
-const { text = "" } = defineProps<{
+const { text = "", isEdit = true } = defineProps<{
     text?: string
+    isEdit?: boolean // 是否可编辑，默认可编辑
 }>()
 
 // 事件
@@ -35,6 +36,7 @@ const textAc = ref(text)
 
 // 开始编辑
 const startEdit = async () => {
+    if (!isEdit) return
     if (isEditing.value) return
     isEditing.value = true
     textAc.value = text // 确保编辑时是最新值
@@ -55,15 +57,21 @@ const cancelEdit = () => {
 </script>
 <style lang="scss" scoped>
 .editable-text {
-    display: inline-block;
+    width: 100%;
 }
+
 .text-display {
     cursor: pointer;
     padding: 4px;
     border-radius: 4px;
     transition: background-color 0.3s;
+    max-width: 400px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-.text-display:hover {
-    background-color: #f0f0f0;
+
+.text-edit {
+    width: 100%;
 }
 </style>

@@ -11,7 +11,7 @@ import type { Pagination, Res, ResPromise } from "@/api/response"
 import type { DataWithImg } from "@/components/common"
 
 export interface GetMediaFilesRequest extends PaginationRequest {
-    file_type?: string // 角色
+    file_type?: string // 文件类型
 }
 
 // 每行媒体文件信息

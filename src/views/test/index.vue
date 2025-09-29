@@ -1,19 +1,23 @@
 <template>
     <div>
-        <VideoTocItem />
+        <VideoTocTreeEdit :tree-list="dataSource" />
     </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref } from "vue"
 
-import VideoTocItem from "@/components/common/video-toc-chapter"
+import VideoTocTreeEdit, { type Tree } from "@/components/common/video-toc-tree-edit"
 
 defineOptions({ name: "MyTest" })
 
-const items = ref([
-    { order: 1, text: "介绍", orderTotal: 3 },
-    { order: 2, text: "安装", orderTotal: 3 },
-    { order: 3, text: "使用", orderTotal: 3 },
+const dataSource = ref<Tree[]>([
+    {
+        id: 1,
+        label: "目录",
+        isChapter: true,
+    },
 ])
 </script>
+
+<style></style>

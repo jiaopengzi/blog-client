@@ -7,13 +7,13 @@
 -->
 <template>
     <div class="video-toc-item">
-        <span class="order">{{ orderDisplay }}. </span>
-        <EditableText class="text" :text="textAc" @finishEdit="finishEdit" />
+        <span class="order" v-if="isShowOrder">{{ orderDisplay }}. </span>
+        <EditableText class="text" :is-edit="isEdit" :text="text" @finishEdit="finishEdit" />
     </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue"
+import { computed } from "vue"
 
 import EditableText from "@/components/common/editable-text"
 
@@ -23,10 +23,14 @@ const {
     order = 1,
     orderTotal = 1,
     text = "",
+    isShowOrder = true,
+    isEdit = true,
 } = defineProps<{
     order?: number // 序号
     orderTotal?: number // 总数
     text?: string // 文本
+    isShowOrder?: boolean // 是否显示序号，默认显示
+    isEdit?: boolean // 是否可编辑，默认可编辑
 }>()
 
 // 事件
@@ -34,8 +38,6 @@ const emit = defineEmits<{
     (event: "finishEdit", val: string): void
 }>()
 
-const isEditing = ref(false)
-const textAc = ref(text)
 const orderDisplay = computed(() => {
     // 根据总数决定前面补0的位数
     const totalDigits = orderTotal ? orderTotal.toString().length : 1
@@ -43,9 +45,8 @@ const orderDisplay = computed(() => {
 })
 
 // 完成编辑(失焦或按回车)
-const finishEdit = () => {
-    isEditing.value = false
-    emit("finishEdit", textAc.value)
+const finishEdit = (val: string) => {
+    emit("finishEdit", val)
 }
 </script>
 <style lang="scss" scoped>
