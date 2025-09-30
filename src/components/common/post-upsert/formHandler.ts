@@ -7,6 +7,7 @@
  */
 
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
+import { type Reactive } from "vue"
 
 import { type InsertPostRequest, PostType, type UpdatePostRequest } from "@/api/post/common"
 
@@ -20,7 +21,7 @@ import type { UpsertPostForm } from "./types"
  */
 export async function handleSubmit<T extends InsertPostRequest | UpdatePostRequest>(
     formEl: FormInstance | undefined,
-    postInfoForm: UpsertPostForm,
+    postInfoForm: Reactive<UpsertPostForm>,
 ): Promise<T> {
     const req = {} as T
 

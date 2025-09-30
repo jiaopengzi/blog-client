@@ -93,12 +93,31 @@ export enum CommentStatusCode {
 }
 
 // 文章视频合集目录
-export interface PostVideoTocItem {
-    video_id: string // 目录ID
-    text: string // 目录文本
-    order: number // 排序 越小越靠前
-    parent_id?: string // 父级目录ID
+export interface SimplePostVideoTocTree {
+    id: number // 目录ID
+    label: string // 目录文本
+    is_chapter: boolean // 是否是章节
+    video_order?: number // 视频顺序
+    video_type?: string // 视频类型
+    video_id?: string // 关联的视频id
+    video_src?: string // 关联的视频地址
     is_free?: boolean // 是否免费
+}
+
+// 文章视频合集目录
+export interface PostVideoTocTree extends SimplePostVideoTocTree {
+    children?: PostVideoTocTree[]
+}
+
+// 文章视频合集目录更新
+export interface PostVideoTocUpdate {
+    id: string // 目录ID
+    toc: PostVideoTocTree[] // 目录
+}
+
+// 文章视频合集目录响应
+export interface PostVideoTocRes extends PostVideoTocUpdate {
+    props_id: string // 目录ID对应的字段
 }
 
 // 插入文章请求
@@ -123,6 +142,7 @@ export interface InsertPostRequest {
     is_pinned?: number // 是否置顶
     is_recommended?: number // 是否推荐阅读
     post_type?: PostType // 文章类型
+    video_toc?: PostVideoTocTree[] // 文章视频目录
 }
 
 export type UpdateFields = keyof InsertPostRequest
@@ -150,6 +170,7 @@ export interface UpdatePostRequest {
     is_pinned?: number // 是否置顶
     is_recommended?: number // 是否推荐阅读
     post_type?: PostType // 文章类型
+    video_toc?: PostVideoTocUpdate // 文章视频目录
     update_fields: UpdateFields[] // 显示指出需要更新的字段便于后端处理零值
 }
 
@@ -216,6 +237,7 @@ export interface PostResByAdmin extends PostResCommon {
     categories: PostCategory[] // 文章分类
     tags: PostTag[] // 文章标签
     pay_roles: string[] // 付费角色
+    video_toc: PostVideoTocRes // 文章视频目录
 }
 
 // 文章
@@ -240,6 +262,7 @@ export interface PostResByID extends PostResCommon {
     categories: PostCategory[] // 文章分类
     tags: PostTag[] // 文章标签
     pay_roles: string[] // 付费角色
+    video_toc: PostVideoTocRes // 文章视频目录
 }
 
 // 文章自定义字段

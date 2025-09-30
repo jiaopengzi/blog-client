@@ -12,7 +12,7 @@ import { reactive, type Ref } from "vue"
 import { type PgSqlDateTime } from "@/api/common"
 import { checkPostSlugAPI, type CheckPostSlugRequest } from "@/api/post/checkPostSlug"
 import { checkPostSlugExcludingIDAPI, type CheckPostSlugExcludingIDRequest } from "@/api/post/checkPostSlugExcludingID"
-import { CommentStatusCode, PostStatusCode } from "@/api/post/common"
+import { CommentStatusCode, PostStatusCode, type SimplePostVideoTocTree } from "@/api/post/common"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { RegexPatterns } from "@/utils/regexPatterns"
 
@@ -39,6 +39,7 @@ interface FormValidationOptions {
         pay_roles?: Ref<string[] | undefined> // 付费角色
         post_push_time?: Ref<PgSqlDateTime | undefined> // 发布时间
         post_expired_time?: Ref<PgSqlDateTime | undefined> // 过期时间
+        video_toc?: Ref<SimplePostVideoTocTree[] | undefined> // 文章视频目录
     }
 }
 

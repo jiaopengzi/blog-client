@@ -85,6 +85,12 @@
                     <el-input v-model="postInfoForm.thumbnail" />
                 </el-form-item>
 
+                <el-form-item label="视频合集" prop="video_toc">
+                    <div class="video-toc-tree">
+                        <VideoTocTreeEdit :tree-list="postInfoForm.video_toc" @tree-update="handleUpdate" />
+                    </div>
+                </el-form-item>
+
                 <el-form-item label="销售价格 为空则为免费。" prop="price">
                     <el-input-number class="input-number" v-model="postInfoForm.price" :min="0" :precision="2" :step="0.01" placeholder="请输入价格(元)">
                         <template #suffix>
@@ -181,6 +187,7 @@ import type { TableData } from "@/components/common/base-table"
 import { IconKeys } from "@/components/common/icons"
 import SelectMedia from "@/components/common/media-select/index.vue"
 import SwitchGroup from "@/components/common/switch-group"
+import VideoTocTreeEdit from "@/components/common/video-toc-tree-edit"
 import { EditorStateManager } from "@/components/editor"
 import JEditor from "@/components/editor/index.vue"
 import { useEditor } from "@/components/hooks/useEditor"
@@ -194,6 +201,7 @@ import { type PostInfoAboutTime, type PostUpsertProps, queryKey, type UpdatePost
 import { useAdd } from "./useAdd"
 import { useEdit } from "./useEdit"
 import { useFormValidation } from "./useFormValidation"
+import { usePostVideoToc } from "./usePostVideoToc"
 import { useSnapshot } from "./useSnapshot"
 import { useSwitchItem } from "./useSwitchItem"
 import { createEmptyUpsertPostForm } from "./utils"
@@ -277,6 +285,9 @@ const {
     postShowMethod,
     updatePostShowMethod,
 } = useSwitchItem(postInfoForm)
+
+// 视频目录
+const { handleUpdate } = usePostVideoToc(postInfoForm)
 
 // 监控标题变化,更新 seo 标题
 watch(
@@ -451,12 +462,14 @@ watch(
 // 需要更新的数据
 const dataOfUpdate: UpdatePostForm = reactive({}) as UpdatePostForm
 
-const { submitForm: addSubmitForm } = useAdd(postInfoForm, queryKey, postInfoAboutTime, router, routeName)
 const {
     getValueFromQuery,
     getDataOnBeforeMount,
     submitForm: editSubmitForm,
+    videoTocId,
 } = useEdit(postInfoForm, rolePaidList, commentStatus, queryKey, stateManager, dataOfUpdate, postInfoAboutTime, postShowMethod)
+
+const { submitForm: addSubmitForm } = useAdd(postInfoForm, queryKey, postInfoAboutTime, router, routeName, videoTocId)
 
 // 数据快照
 const { isUpdate, updatedFields, updateSnapshot } = useSnapshot(postInfoForm)
@@ -649,6 +662,10 @@ h4 {
 }
 
 .input-number {
+    width: 100%;
+}
+
+.video-toc-tree {
     width: 100%;
 }
 </style>

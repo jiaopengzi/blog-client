@@ -6,109 +6,41 @@
  * Description : 目录树展示
 -->
 <template>
-    <div class="custom-tree-container">
-        <el-tree
-            :props="{ class: customNodeClass }"
-            style="width: 600px"
-            :data="localTreeList"
-            node-key="id"
-            default-expand-all
-            highlight-current
-            :expand-on-click-node="false"
-        >
-            <template #default="{ data }">
-                <div class="custom-tree-node-content">
-                    <VideoTocItem
-                        :class="data.isChapter ? 'tree-chapter' : 'tree-video'"
-                        :is-show-order="!data.isChapter"
-                        :order-total="videoTotal"
-                        :order="data.videoOrder"
-                        :text="data.label"
-                        :is-edit="false"
-                        @dblclick="handleDblClick(data)"
-                    />
-                </div>
-            </template>
-        </el-tree>
-    </div>
+    <VideoTocTreeBase :key="key" :tree-list="treeList" :draggable="false" :show-btns="false" :is-edit="false" @video-select="handleTreeSelect" />
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue"
+import { ref, watch } from "vue"
 
-import VideoTocItem from "../video-toc-item"
-import type { Data, Tree, TreeProps } from "../video-toc-tree-edit"
+import VideoTocTreeBase, { type Data, type Tree } from "../video-toc-tree-base"
 
-defineOptions({ name: "VideoTocTreeDisplay" })
+defineOptions({ name: "VideoTocTree" })
 
 // 定义 props
 const {
     treeList = [], // 目录树数据
-} = defineProps<TreeProps>()
+} = defineProps<{
+    treeList?: Tree[]
+}>()
 
 // 事件
 const emit = defineEmits<{
     (event: "video-select", val: Data): void
 }>()
 
-const customNodeClass = "custom-tree-node" // 自定义节点类名
-const localTreeList = ref<Tree[]>(treeList) // 本地目录树数据
+// 强制刷新 key
+const key = ref("initial-key")
 
-// 计算视频总数
-const videoTotal = computed(() => {
-    let total = 0
-    const countVideos = (nodes: Tree[]) => {
-        for (const node of nodes) {
-            if (node.isChapter && node.children && node.children.length > 0) {
-                countVideos(node.children)
-            } else if (!node.isChapter) {
-                total++
-            }
-        }
-    }
-    countVideos(localTreeList.value)
-    return total
-})
+// 监听 treeList 变化, 更新 key 以强制刷新组件
+watch(
+    () => treeList,
+    () => {
+        key.value = Math.random().toString(36).substring(2, 15)
+    },
+)
 
-// 双击处理
-const handleDblClick = (data: Data) => {
-    if (!data.isChapter) {
-        emit("video-select", data)
-    }
+// 目录选择
+const handleTreeSelect = (val: Data) => {
+    emit("video-select", val)
 }
 </script>
-
-<style lang="scss" scoped>
-:deep(.custom-tree-node) {
-    width: 100%;
-    margin: 12px 0;
-}
-
-.custom-tree-node-content {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.btns {
-    display: flex;
-
-    .btn-chapter,
-    .btn-video,
-    .btn-delete {
-        padding: 2px 8px;
-        font-size: 12px;
-        font-weight: 400;
-    }
-}
-
-.tree-chapter {
-    font-weight: bold;
-    color: var(--jpz-text-color-primary);
-}
-
-.tree-video {
-    color: var(--jpz-text-color-secondary);
-}
-</style>

@@ -40,6 +40,13 @@ export function createEmptyUpsertPostForm(postType: PostType): UpsertPostForm {
         is_pinned: 0,
         is_recommended: 0,
         post_type: PostType.Post,
+        video_toc: [
+            {
+                id: 1,
+                label: "目录",
+                is_chapter: true,
+            },
+        ],
     }
 
     emptyForm.post_type = postType

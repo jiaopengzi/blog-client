@@ -51,10 +51,11 @@ const finishEdit = (val: string) => {
 </script>
 <style lang="scss" scoped>
 .video-toc-item {
+    width: 100%;
     display: flex;
     align-items: center;
-    margin: 8px 0;
     font-size: 14px;
+    margin: 4px 0;
 
     .order {
         font-weight: bold;

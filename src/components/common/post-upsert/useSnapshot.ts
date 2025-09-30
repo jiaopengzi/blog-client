@@ -6,7 +6,7 @@
  * Description : 数据快照，用于跟踪文章编辑状态
  */
 
-import { reactive, ref, watch } from "vue"
+import { type Reactive, reactive, ref, watch } from "vue"
 
 import { useUserStore } from "@/stores/user"
 import { deepClone, getUpdatedFields } from "@/utils/obj"
@@ -17,7 +17,7 @@ import type { UpsertPostForm } from "./types"
  * 数据快照
  * @param postInfoForm 文章表单
  */
-export function useSnapshot(postInfoForm: UpsertPostForm) {
+export function useSnapshot(postInfoForm: Reactive<UpsertPostForm>) {
     // 是否编辑状态
     const userStore = useUserStore()
     userStore.setIsEditing(true)

@@ -6,7 +6,7 @@
  * Description : 开关组件逻辑
  */
 
-import { reactive, ref } from "vue"
+import { type Reactive, reactive, ref } from "vue"
 
 import { CommentStatusCode, PostType } from "@/api/post/common"
 import type { SwitchItem, SwitchItemLabel } from "@/components/common/switch-group"
@@ -19,7 +19,7 @@ import type { UpsertPostForm } from "./types"
  * 使用开关项
  * @param postInfoForm 文章表单
  */
-export function useSwitchItem(postInfoForm: UpsertPostForm) {
+export function useSwitchItem(postInfoForm: Reactive<UpsertPostForm>) {
     // 公用开关项标签
     const commonSwitchItemLabel: SwitchItemLabel = {
         active: "开启",

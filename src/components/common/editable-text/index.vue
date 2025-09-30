@@ -13,7 +13,7 @@
         </p>
 
         <!-- 双击后显示输入框 -->
-        <el-input class="text-edit" v-else v-model="textAc" @blur="finishEdit" @keyup.enter="finishEdit" @keyup.esc="cancelEdit" autofocus />
+        <el-input v-else v-model="textAc" class="text-edit" @blur="finishEdit" @keyup.enter="finishEdit" @keyup.esc="cancelEdit" autofocus />
     </div>
 </template>
 
@@ -65,7 +65,7 @@ const cancelEdit = () => {
     padding: 4px;
     border-radius: 4px;
     transition: background-color 0.3s;
-    max-width: 400px;
+    // max-width: 400px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

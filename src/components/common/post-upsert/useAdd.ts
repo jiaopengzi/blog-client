@@ -7,6 +7,7 @@
  */
 
 import type { FormInstance } from "element-plus"
+import { type Reactive, type Ref } from "vue"
 import { type Router } from "vue-router"
 
 import { type InsertPostRequest } from "@/api/post/common"
@@ -18,7 +19,14 @@ import { MessageUtil } from "@/utils/message"
 import { handleSubmit } from "./formHandler"
 import type { PostInfoAboutTime, UpsertPostForm } from "./types"
 
-export function useAdd(postInfoForm: UpsertPostForm, queryKey: { ID: string }, postInfoAboutTime: PostInfoAboutTime, router: Router, routeName: RouteNames) {
+export function useAdd(
+    postInfoForm: Reactive<UpsertPostForm>,
+    queryKey: { ID: string },
+    postInfoAboutTime: PostInfoAboutTime,
+    router: Router,
+    routeName: RouteNames,
+    videoTocId: Ref<string>,
+) {
     // 提交表单
     const submitForm = async (formEl: FormInstance | undefined): Promise<boolean> => {
         // 表单校验及值转换
@@ -36,6 +44,9 @@ export function useAdd(postInfoForm: UpsertPostForm, queryKey: { ID: string }, p
                 // 更新创建时间
                 postInfoAboutTime.created_at = new Date(res.data.data.created_at)
                 postInfoAboutTime.updated_at = new Date(res.data.data.updated_at)
+
+                // 更新视频目录 ID
+                videoTocId.value = res.data.data.video_toc_id
 
                 MessageUtil.success(res.data.msg, 6000)
 

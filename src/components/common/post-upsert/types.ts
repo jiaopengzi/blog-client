@@ -7,7 +7,7 @@
  */
 
 import { type PgSqlDateTime } from "@/api/common"
-import { CommentStatusCode, PostStatusCode, PostType, type UpdateFields } from "@/api/post/common"
+import { CommentStatusCode, PostStatusCode, PostType, type SimplePostVideoTocTree, type UpdateFields } from "@/api/post/common"
 import { RouteNames } from "@/router"
 
 // 查询参数
@@ -37,6 +37,7 @@ export interface UpsertPostForm {
     is_pinned: number // 是否置顶
     is_recommended: number // 是否推荐阅读
     post_type: PostType // 文章类型
+    video_toc: SimplePostVideoTocTree[] // 文章视频目录
 }
 
 export interface UpdatePostForm extends UpsertPostForm {
