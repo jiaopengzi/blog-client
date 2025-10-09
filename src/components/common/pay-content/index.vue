@@ -19,8 +19,7 @@
                 >元下载。
             </div>
             <div class="text" v-if="contentPayType === ContentPayType.Video">
-                视频内容，付费<span class="price">{{ fenToYuan(price) }}</span
-                >元观看。
+                <PostVideo :post-id="postId" :toc="videoToc" />
             </div>
             <div class="text-vip">升级为 VIP 可免费查看(除特定内容外)所有内容。</div>
             <div>
@@ -40,12 +39,21 @@ import JIcon, { IconKeys } from "@/components/common/icons"
 import { EditorStateManager } from "@/components/editor"
 import { fenToYuan } from "@/utils/amount"
 
+import PostVideo from "../pay-video"
 import { ContentPayType, type PayContentProps } from "./types.ts"
 
 defineOptions({ name: "PayContent" })
 
 // 定义 props
-const { contentPayType = ContentPayType.Read, isPaid = false, price = "0", loading = false, markdown } = defineProps<PayContentProps>()
+const {
+    postId = "",
+    videoToc = [],
+    contentPayType = ContentPayType.Read,
+    isPaid = false,
+    price = "0",
+    loading = false,
+    markdown,
+} = defineProps<PayContentProps>()
 
 // 事件
 const emit = defineEmits<{

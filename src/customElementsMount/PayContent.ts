@@ -8,6 +8,7 @@
 
 import { type ComputedRef, createApp, h } from "vue"
 
+import { type PostVideoTocTree } from "@/api/post/common"
 import PayContent, { ContentPayType, type PayContentProps } from "@/components/common/pay-content"
 
 import { Names } from "../customElements"
@@ -23,6 +24,8 @@ import { convertEmits } from "./utils"
  * @param emits 组件事件
  * @param isPaid 是否付费阅读
  * @param price 价格
+ * @param postId 文章ID
+ * @param videoToc 付费视频目录
  */
 export const mountPayContentOnCustomElements = (
     container: HTMLElement,
@@ -32,12 +35,14 @@ export const mountPayContentOnCustomElements = (
 
     // **注意这里函数的写法必须是on开头的后续跟驼峰格式的事件名**
     emits: {
-        onPayVip?: (val: ContentPayType) => void // 付费阅读事件
-        onPaySingle?: (val: ContentPayType) => void // 付费下载事件
+        onPayVip?: (val: ContentPayType) => void // vip
+        onPaySingle?: (val: ContentPayType) => void // 单独购买
     } = {},
 
     isPaid?: ComputedRef<boolean>, // 是否已经付费
     price?: ComputedRef<string>, // 价格(单位：分)
+    postId?: ComputedRef<string>, // 文章ID
+    videoToc?: ComputedRef<PostVideoTocTree[]>, // 付费视频目录
 ) => {
     const componentContainers = getComponentContainersFromCustomElements(container, tagName)
     if (!componentContainers) return
@@ -59,6 +64,8 @@ export const mountPayContentOnCustomElements = (
                     loading: createOrderLoading.value,
                     isPaid: isPaid?.value || false, // 是否已经付费
                     price: price?.value || "0", // 价格(单位：分)
+                    postId: postId?.value || "", // 文章ID
+                    videoToc: videoToc?.value || [], // 付费视频目录
                     ...vueEmits, // 将转换后的事件传递给组件
                 })
             },

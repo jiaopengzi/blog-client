@@ -6,7 +6,6 @@
  * Description : 获取自定义组件容器
  */
 
-import { BaseCustomElement } from "../customElements"
 import { Names } from "../customElements"
 
 /**
@@ -20,7 +19,7 @@ export const getComponentContainersFromCustomElements = (container: HTMLElement,
     if (!container) return null
 
     // 创建一个实例来获取 tagName
-    const instance = document.createElement(tagName) as BaseCustomElement
+    const instance = document.createElement(tagName)
 
     // 获取标签名并转为小写
     const childElementTagName = instance.tagName.toLowerCase()

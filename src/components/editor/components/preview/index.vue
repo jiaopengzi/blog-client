@@ -63,6 +63,8 @@ const {
     createOrderLoading = false, // 创建订单加载状态
     isPaid = false, // 是否付费阅读
     price = "0", // 价格(单位：分)
+    postId = "", // 文章ID
+    videoToc = [], // 付费视频目录
 } = defineProps<PreviewProps>()
 
 // 定义 emits 子组件 传参
@@ -359,6 +361,8 @@ const payMembershipEmits = {
 const createOrderLoadingAc = computed(() => createOrderLoading) // 创建订单加载状态
 const isPaidAc = computed(() => isPaid) // 是否付费阅读
 const priceAc = computed(() => price) // 价格(单位：分)
+const postIdAc = computed(() => postId) // 文章ID
+const videoTocAc = computed(() => videoToc) // 付费视频目录
 
 // 监控 html 变化, 获取所有的 h 标签 并挂载自定义元素
 watch(
@@ -409,6 +413,8 @@ watch(
                     payContentEmits,
                     isPaidAc,
                     priceAc,
+                    postIdAc,
+                    videoTocAc,
                 )
 
                 // 账号密钥

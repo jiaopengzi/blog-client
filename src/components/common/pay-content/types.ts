@@ -6,6 +6,8 @@
  * Description : 付费内容类型
  */
 
+import { type PostVideoTocTree } from "@/api/post/common"
+
 export enum ContentPayType {
     Read = "read", // 付费阅读
     Download = "download", // 付费下载
@@ -13,6 +15,8 @@ export enum ContentPayType {
 }
 
 export interface PayContentProps {
+    postId?: string // 文章ID
+    videoToc?: PostVideoTocTree[] // 付费视频目录
     contentPayType?: ContentPayType // 内容费类型
     isPaid?: boolean // 是否付费阅读
     price?: string // 价格(单位：分)

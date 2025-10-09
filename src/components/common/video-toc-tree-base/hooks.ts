@@ -139,17 +139,19 @@ export function useVideoTocTree(localTreeList: Ref<Tree[]>) {
         return maxId
     }
 
-    // 将 localTreeList 转成 map (键为 videoOrder)
-    const covertToMap = (list: Tree[]): VideoTocMap => {
-        // 初始化 map
+    // 将 localTreeList 转成 map (键为 videoOrder), 同时返回所有视频的 videoOrder 列表(已去重且升序)
+    const covertToMap = (list: Tree[]): { map: VideoTocMap; videoOrders: number[] } => {
+        // 初始化结果
         const map: VideoTocMap = {}
+        const videoOrders: number[] = []
 
-        // 定义递归函数
+        // 递归遍历节点
         const traverse = (nodes: Tree[]) => {
             for (const node of nodes) {
                 // 只处理视频节点
                 if (!node.is_chapter && node.video_order !== undefined) {
                     map[node.video_order] = node
+                    videoOrders.push(node.video_order)
                 }
 
                 // 递归子节点
@@ -162,8 +164,10 @@ export function useVideoTocTree(localTreeList: Ref<Tree[]>) {
         // 开始递归
         traverse(list)
 
-        // 返回结果
-        return map
+        // 去重并排序，方便后续按顺序处理
+        const uniqueOrders = Array.from(new Set(videoOrders)).sort((a, b) => a - b)
+
+        return { map, videoOrders: uniqueOrders }
     }
 
     return {

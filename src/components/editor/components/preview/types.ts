@@ -6,6 +6,8 @@
  * Description : 类型
  */
 
+import { type PostVideoTocTree } from "@/api/post/common"
+
 import { CommandsKey } from "../../command"
 
 export type HeadingObject = {
@@ -44,4 +46,6 @@ export interface PreviewProps {
     createOrderLoading?: boolean // 创建订单加载状态
     isPaid?: boolean // 是否付费阅读
     price?: string // 价格(单位：分)
+    postId?: string // 文章ID
+    videoToc?: PostVideoTocTree[] // 付费视频目录
 }

@@ -27,6 +27,8 @@
                     :create-order-loading="isPayLoading"
                     :price="postMeta.price"
                     :is-paid="postMeta.is_paid"
+                    :post-id="postId"
+                    :video-toc="postMeta.videoToc"
                     @show-image-viewer="showImageViewer"
                     @close-image-viewer="closeImageViewer"
                     @heading-show-current="handleHeadingShowCurrentAc"

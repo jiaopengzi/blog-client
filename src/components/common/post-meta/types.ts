@@ -6,6 +6,8 @@
  * Description : 文章元数据类型
  */
 
+import { type PostVideoTocTree } from "@/api/post/common"
+
 export interface PostMetaProps {
     post_id?: string // 文章ID
     created_at?: string // 创建时间
@@ -32,6 +34,7 @@ export interface PostMetaProps {
 
     is_paid?: boolean // 是否付费阅读
     price?: string // 价格(单位：分)
+    videoToc?: PostVideoTocTree[] // 付费视频目录
 }
 
 // 返回一个空的 PostMetaProps 对象
@@ -61,5 +64,6 @@ export const emptyPostMetaProps = (): PostMetaProps => {
         },
         is_paid: false, // 是否付费阅读
         price: "0", // 价格(单位：分)
+        videoToc: [], // 付费视频目录
     }
 }

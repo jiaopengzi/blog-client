@@ -117,7 +117,7 @@ export interface PostVideoTocUpdate {
 
 // 文章视频合集目录响应
 export interface PostVideoTocRes extends PostVideoTocUpdate {
-    props_id: string // 目录ID对应的字段
+    post_id: string // 目录ID对应的字段
 }
 
 // 插入文章请求

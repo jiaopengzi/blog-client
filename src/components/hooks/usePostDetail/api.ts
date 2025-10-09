@@ -125,6 +125,9 @@ export function useGetData(
 
                 // 更新评论状态
                 commentStatus.value = postData.comment_status
+
+                // 付费视频目录
+                postMeta.value.videoToc = postData.video_toc && postData.video_toc.toc.length > 0 ? postData.video_toc.toc : []
             }
         } else {
             router.push({ name: RouteNames.NotFound })
