@@ -7,6 +7,7 @@
  */
 
 import { BaseCustomElement } from "./base"
+import { Names } from "./types"
 
 /**
  * @description:自定义元素 VideoPlayer 视频播放器,用于挂载视频播放器vue组件
@@ -18,4 +19,4 @@ export class CustomElementVideoPlayer extends BaseCustomElement {
 }
 
 // 注册自定义元素
-customElements.define("video-player", CustomElementVideoPlayer)
+customElements.define(Names.VideoPlayer, CustomElementVideoPlayer)

@@ -18,6 +18,10 @@
                 附件内容，付费<span class="price">{{ fenToYuan(price) }}</span
                 >元下载。
             </div>
+            <div class="text" v-if="contentPayType === ContentPayType.Video">
+                视频内容，付费<span class="price">{{ fenToYuan(price) }}</span
+                >元观看。
+            </div>
             <div class="text-vip">升级为 VIP 可免费查看(除特定内容外)所有内容。</div>
             <div>
                 <el-button class="pay-single" :loading="loading" @click="paySingle">立即购买</el-button>

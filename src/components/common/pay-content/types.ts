@@ -9,6 +9,7 @@
 export enum ContentPayType {
     Read = "read", // 付费阅读
     Download = "download", // 付费下载
+    Video = "video", // 付费视频
 }
 
 export interface PayContentProps {

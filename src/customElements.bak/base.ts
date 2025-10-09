@@ -6,15 +6,7 @@
  * Description : 自定义元素基类
  */
 
-// 自定义元素属性
-export enum Attributes {
-    Id = "id", // 元素 id
-    Class = "class", // 元素 class
-    VideoType = "video-type", // 视频类型
-    Src = "src", // 视频地址
-    Title = "title", // 标题
-    Description = "description", // 描述
-}
+import { Attributes } from "./types"
 
 // 自定义元素开放属性
 export const CustomElementAttributes: string[] = Object.values(Attributes)

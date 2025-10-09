@@ -9,7 +9,7 @@
 import DOMPurify, { type Config } from "dompurify"
 import html2canvas from "html2canvas"
 
-import { CustomElementAttributes, CustomElementVideoPlayer } from "@/customElements"
+import { CustomElementAttributes, Names } from "@/customElements"
 import createMarked from "@/pkg/marked/new-marked"
 import { copyHtml } from "@/utils/clipboard"
 import { HasParentByClass } from "@/utils/getParentByClass"
@@ -115,8 +115,12 @@ export const createRegexCache = (): RegexCache => {
     const leadingTrailingDashRegex = /^-|-$/g // 匹配首尾的 -
 
     const getCustomElementHeadingTagNameRegex = () => {
-        const videoPlayer = new CustomElementVideoPlayer()
-        return new RegExp(`^${videoPlayer.tagName.toLocaleLowerCase()}|^video-|^pay-`) // 动态生成正则表达式  DOMPurify 允许的 自定义元素的标签名
+        // 根据 Names 动态生成正则表达式
+        const tagNames = Object.values(Names) // 获取所有标签名
+        if (tagNames.length === 0) return /^$/ // 如果没有标签名则返回一个匹配不到任何内容的正则表达式
+        return new RegExp(`^(${tagNames.join("|")})$`) // 动态生成正则表达式  DOMPurify 允许的 自定义元素的标签名
+
+        // return new RegExp(`^video-|^pay-`) // 动态生成正则表达式  DOMPurify 允许的 自定义元素的标签名
     }
 
     const getCustomElementHeadingAttributeNameRegex = () => {

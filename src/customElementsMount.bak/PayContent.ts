@@ -10,23 +10,22 @@ import { type ComputedRef, createApp, h } from "vue"
 
 import PayContent, { ContentPayType, type PayContentProps } from "@/components/common/pay-content"
 
-import { Names } from "../customElements"
+import { BaseCustomElement } from "../customElements"
 import { getComponentContainersFromCustomElements } from "./getComponentContainers"
 import { convertEmits } from "./utils"
 
 /**
  * @description: 挂载付费内容组件到自定义元素
  * @param container 自定义元素父容器
- * @param tagName 自定义元素标签名
+ * @param childElement 自定义元素类即组件挂载容器的类
  * @param contentPayType 付费内容类型
- * @param createOrderLoading 创建订单加载状态
  * @param emits 组件事件
  * @param isPaid 是否付费阅读
  * @param price 价格
  */
 export const mountPayContentOnCustomElements = (
     container: HTMLElement,
-    tagName: Names,
+    childElement: typeof BaseCustomElement,
     contentPayType: ContentPayType,
     createOrderLoading: ComputedRef<boolean>,
 
@@ -39,7 +38,7 @@ export const mountPayContentOnCustomElements = (
     isPaid?: ComputedRef<boolean>, // 是否已经付费
     price?: ComputedRef<string>, // 价格(单位：分)
 ) => {
-    const componentContainers = getComponentContainersFromCustomElements(container, tagName)
+    const componentContainers = getComponentContainersFromCustomElements(container, childElement)
     if (!componentContainers) return
     componentContainers.forEach((el) => {
         const content = el.innerHTML

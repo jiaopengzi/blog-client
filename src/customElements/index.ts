@@ -7,8 +7,4 @@
  */
 
 export * from "./base"
-export * from "./CustomElementPayDownload"
-export * from "./CustomElementPayKey"
-export * from "./CustomElementPayMembership"
-export * from "./CustomElementPayRead"
-export * from "./CustomElementVideoPlayer"
+export * from "./registerCustomElements"

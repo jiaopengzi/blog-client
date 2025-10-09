@@ -25,7 +25,7 @@ import { type MembershipRes } from "@/api/membership/common"
 import { type Product as KeyRes } from "@/api/order/create"
 import { ContentPayType } from "@/components/common/pay-content"
 import { ScrollElementTagHeading } from "@/components/editor/command"
-import { CustomElementPayDownload, CustomElementPayKey, CustomElementPayMembership, CustomElementPayRead, CustomElementVideoPlayer } from "@/customElements"
+import { Names } from "@/customElements"
 import {
     mountPayContentOnCustomElements,
     mountPayKeyOnCustomElements,
@@ -360,7 +360,7 @@ const createOrderLoadingAc = computed(() => createOrderLoading) // 创建订单�
 const isPaidAc = computed(() => isPaid) // 是否付费阅读
 const priceAc = computed(() => price) // 价格(单位：分)
 
-// 监控 html 变化, 获取所有的 h 标签 并挂载视频播放器
+// 监控 html 变化, 获取所有的 h 标签 并挂载自定义元素
 watch(
     () => htmlData.value,
     (newHtml) => {
@@ -374,13 +374,14 @@ watch(
                 observeHeadings()
 
                 // 挂载自定义元素
+
                 // 视频播放器
-                mountVideoPlayerOnCustomElements(previewRef.value as HTMLElement, CustomElementVideoPlayer)
+                mountVideoPlayerOnCustomElements(previewRef.value as HTMLElement, Names.VideoPlayer)
 
                 // 付费下载
                 mountPayContentOnCustomElements(
                     previewRef.value as HTMLElement,
-                    CustomElementPayDownload,
+                    Names.PayDownload,
                     ContentPayType.Download,
                     createOrderLoadingAc,
                     payContentEmits,
@@ -391,7 +392,7 @@ watch(
                 // 付费阅读
                 mountPayContentOnCustomElements(
                     previewRef.value as HTMLElement,
-                    CustomElementPayRead,
+                    Names.PayRead,
                     ContentPayType.Read,
                     createOrderLoadingAc,
                     payContentEmits,
@@ -399,11 +400,22 @@ watch(
                     priceAc,
                 )
 
+                // 付费视频
+                mountPayContentOnCustomElements(
+                    previewRef.value as HTMLElement,
+                    Names.PayVideo,
+                    ContentPayType.Video,
+                    createOrderLoadingAc,
+                    payContentEmits,
+                    isPaidAc,
+                    priceAc,
+                )
+
                 // 账号密钥
-                mountPayKeyOnCustomElements(previewRef.value as HTMLElement, CustomElementPayKey, createOrderLoadingAc, payKeyEmits)
+                mountPayKeyOnCustomElements(previewRef.value as HTMLElement, Names.PayKey, createOrderLoadingAc, payKeyEmits)
 
                 // 付费会员
-                mountPayMembershipOnCustomElements(previewRef.value as HTMLElement, CustomElementPayMembership, createOrderLoadingAc, payMembershipEmits)
+                mountPayMembershipOnCustomElements(previewRef.value as HTMLElement, Names.PayMembership, createOrderLoadingAc, payMembershipEmits)
             })
         }
     },

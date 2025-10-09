@@ -120,8 +120,8 @@ export function useGetData(
                 }
 
                 // 更新分类和标签
-                categoryTag.value.categories = postData.categories
-                categoryTag.value.tags = postData.tags
+                categoryTag.value.categories = postData.categories && postData.categories.length > 0 ? postData.categories : []
+                categoryTag.value.tags = postData.tags && postData.tags.length > 0 ? postData.tags : []
 
                 // 更新评论状态
                 commentStatus.value = postData.comment_status

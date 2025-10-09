@@ -11,20 +11,19 @@ import { type ComputedRef, createApp, h } from "vue"
 import { type Product as KeyRes } from "@/api/order/create"
 import PayKey from "@/components/common/pay-key"
 
-import { Attributes, Names } from "../customElements"
+import { Attributes, BaseCustomElement } from "../customElements"
 import { getComponentContainersFromCustomElements } from "./getComponentContainers"
 import { convertEmits } from "./utils"
 
 /**
  * @description: 挂载付费账号密钥组件到自定义元素
  * @param container 自定义元素父容器
- * @param tagName 自定义元素标签名
- * @param createOrderLoading 创建订单加载状态
+ * @param childElement 自定义元素类即组件挂载容器的类
  * @param emits 组件事件
  */
 export const mountPayKeyOnCustomElements = (
     container: HTMLElement,
-    tagName: Names,
+    childElement: typeof BaseCustomElement,
     createOrderLoading: ComputedRef<boolean>,
 
     // **注意这里函数的写法必须是on开头的后续跟驼峰格式的事件名**
@@ -32,7 +31,7 @@ export const mountPayKeyOnCustomElements = (
         onPayKey?: (val: KeyRes) => void // 付费账号密钥事件
     } = {},
 ) => {
-    const componentContainers = getComponentContainersFromCustomElements(container, tagName)
+    const componentContainers = getComponentContainersFromCustomElements(container, childElement)
     if (!componentContainers) return
     componentContainers.forEach((el) => {
         // 自动将 emits 的事件转为组件事件(示例: onClick -> onClick)

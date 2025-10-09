@@ -11,16 +11,16 @@ import { createApp, h } from "vue"
 import { MediaTypes, PlayerStateManager } from "@/components/player"
 import VideoPlayer from "@/components/player"
 
-import { Attributes, Names } from "../customElements"
+import { Attributes, BaseCustomElement } from "../customElements"
 import { getComponentContainersFromCustomElements } from "./getComponentContainers"
 
 /**
  * @description: 挂载视频播放器到自定义元素
  * @param container 自定义元素父容器
- * @param tagName 自定义元素标签名
+ * @param childElement 自定义元素类即组件挂载容器的类
  */
-export const mountVideoPlayerOnCustomElements = (container: HTMLElement, tagName: Names) => {
-    const componentContainers = getComponentContainersFromCustomElements(container, tagName)
+export const mountVideoPlayerOnCustomElements = (container: HTMLElement, childElement: typeof BaseCustomElement) => {
+    const componentContainers = getComponentContainersFromCustomElements(container, childElement)
     if (!componentContainers) return
 
     componentContainers.forEach((el) => {

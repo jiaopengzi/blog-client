@@ -24,7 +24,7 @@ import { useOptionsStore } from "@/stores/options"
 
 import type { CategoryTagItem, CategoryTagProps } from "./types"
 
-defineOptions({ name: "DetailPrevNext" })
+defineOptions({ name: "DetailCategoryTag" })
 
 // 定义 props
 const { data } = defineProps<{ data: CategoryTagProps }>()

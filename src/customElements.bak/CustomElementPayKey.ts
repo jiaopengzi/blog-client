@@ -7,6 +7,7 @@
  */
 
 import { BaseCustomElement } from "./base"
+import { Names } from "./types"
 
 /**
  * @description:自定义元素 PayKey 付费账号密钥模块用于挂载 vue 组件
@@ -18,4 +19,4 @@ export class CustomElementPayKey extends BaseCustomElement {
 }
 
 // 注册自定义元素
-customElements.define("pay-key", CustomElementPayKey)
+customElements.define(Names.PayKey, CustomElementPayKey)

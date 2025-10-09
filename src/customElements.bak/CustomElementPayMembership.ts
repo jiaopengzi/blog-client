@@ -7,6 +7,7 @@
  */
 
 import { BaseCustomElement } from "./base"
+import { Names } from "./types"
 
 /**
  * @description:自定义元素 PayMembership 付费会员模块用于挂载 vue 组件
@@ -18,4 +19,4 @@ export class CustomElementPayMembership extends BaseCustomElement {
 }
 
 // 注册自定义元素
-customElements.define("pay-membership", CustomElementPayMembership)
+customElements.define(Names.PayMembership, CustomElementPayMembership)
