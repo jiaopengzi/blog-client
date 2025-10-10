@@ -12,7 +12,8 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue"
 
-import VideoTocTreeBase, { type Data, type Tree } from "../video-toc-tree-base"
+import { type Data, type Tree } from "../video-toc-tree-base"
+import VideoTocTreeBase from "../video-toc-tree-base/index.vue"
 
 defineOptions({ name: "VideoTocTree" })
 

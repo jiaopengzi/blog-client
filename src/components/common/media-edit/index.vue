@@ -145,7 +145,6 @@ const emit = defineEmits<{
 const playerStateManager = new PlayerStateManager()
 
 // 设置播放器状态
-
 playerStateManager.setShortcutKey(false) // 禁用快捷键
 
 let playerState: PlayerState = playerStateManager.getState()

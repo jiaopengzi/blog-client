@@ -9,6 +9,7 @@
 import { computed, type Ref, ref } from "vue"
 
 import type { TableData } from "@/components/common/base-table"
+import { MediaTypes } from "@/components/player"
 
 import type { Node, Tree, VideoTocMap } from "./types"
 
@@ -38,8 +39,9 @@ export function useVideoTocTree(localTreeList: Ref<Tree[]>) {
             const baseNode: Tree = {
                 id,
                 label: item.file_name_display,
-                video_type: item.is_generate_hls ? "hls" : type,
+                video_type: item.is_generate_hls ? MediaTypes.HLS : type,
                 is_chapter: false,
+                is_free: item.is_free,
             }
 
             if (item.is_generate_hls) {

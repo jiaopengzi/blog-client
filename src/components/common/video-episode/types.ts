@@ -11,4 +11,5 @@ import { type PostVideoTocTree } from "@/api/post/common"
 export interface VideoEpisodeProps {
     isPaid: boolean // 是否付费
     episodeList: PostVideoTocTree[]
+    currentVideoId?: number
 }

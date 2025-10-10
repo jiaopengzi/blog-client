@@ -10,7 +10,8 @@
 </template>
 
 <script lang="ts" setup>
-import VideoTocTreeBase, { type Tree } from "../video-toc-tree-base"
+import { type Tree } from "../video-toc-tree-base"
+import VideoTocTreeBase from "../video-toc-tree-base/index.vue"
 
 defineOptions({ name: "VideoTocTree" })
 

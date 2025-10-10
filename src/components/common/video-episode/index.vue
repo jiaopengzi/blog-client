@@ -8,9 +8,15 @@
 
 <template>
     <div class="episode-list">
-        <div class="episode-item" v-for="i in treeVideoOrders" :key="i" @click="handleSelect(treeMap[i]!)">
+        <div
+            :class="[isPaid ? 'episode-item-paid' : 'episode-item', { 'episode-item-active': isCurrentEpisode(treeMap[i]!) }]"
+            v-for="i in treeVideoOrders"
+            :key="i"
+            @click="handleSelect(treeMap[i]!)"
+        >
+            <JIcon v-if="isShowLock(isPaid, treeMap[i]?.is_free!)" :name="IconKeys.Lock" :custom-class="`icon-lock`" class="icon" />
+            <JIcon v-if="!isShowLock(isPaid, treeMap[i]?.is_free!)" :name="IconKeys.Play" :custom-class="`icon-unlock`" class="icon" />
             <span class="episode-index">{{ orderDisplay(treeMap[i]?.video_order!) }}</span>
-            <div class="top-right-tip" v-if="true">🔒</div>
         </div>
     </div>
 </template>
@@ -18,14 +24,15 @@
 import { ref, watch } from "vue"
 
 import { type PostVideoTocTree } from "@/api/post/common"
+import JIcon, { IconKeys } from "@/components/common/icons"
 
-import { useVideoTocTree } from "../video-toc-tree-base/hooks"
+import { useVideoTocTree } from "../video-toc-tree-base"
 import { type VideoEpisodeProps } from "./types.ts"
 
 defineOptions({ name: "VideoEpisode" })
 
 // 定义 props
-const { isPaid, episodeList } = defineProps<VideoEpisodeProps>()
+const { isPaid, episodeList, currentVideoId = 1 } = defineProps<VideoEpisodeProps>()
 
 // 事件
 const emit = defineEmits<{
@@ -33,6 +40,7 @@ const emit = defineEmits<{
 }>()
 
 const localTreeList = ref<PostVideoTocTree[]>(episodeList)
+const localCurrentVideoId = ref<number>(currentVideoId)
 
 const treeMap = ref<{ [key: number]: PostVideoTocTree }>({})
 const treeVideoOrders = ref<number[]>([])
@@ -59,7 +67,23 @@ const orderDisplay = (order: number) => {
 }
 
 const handleSelect = (val: PostVideoTocTree) => {
-    console.log("选择了视频章节：", val)
+    if (val.video_order === localCurrentVideoId.value) {
+        return
+    }
+    localCurrentVideoId.value = val.video_order || 1
+    emit("video-select", val)
+}
+
+// 是否显示锁
+const isShowLock = (isPaid: boolean, isFree: boolean) => {
+    // 已付费 或 免费 则不显示锁
+    return !(isPaid || isFree)
+}
+
+// 判断当前视频项是否为当前选中项
+const isCurrentEpisode = (item?: PostVideoTocTree) => {
+    if (!item) return false
+    return item.video_order === localCurrentVideoId.value
 }
 </script>
 <style scoped lang="scss">
@@ -70,12 +94,11 @@ const handleSelect = (val: PostVideoTocTree) => {
     margin-top: 12px;
 }
 
-.episode-item {
+// 公共样式
+%common-episode-item {
     position: relative;
-    overflow: hidden;
     display: flex;
     align-items: center;
-    padding: 6px 12px;
     border: 1px solid var(--jpz-border-color);
     border-radius: 4px;
     cursor: pointer;
@@ -83,28 +106,56 @@ const handleSelect = (val: PostVideoTocTree) => {
 
     &:hover {
         border-color: var(--jpz-border-color-hover);
+        box-shadow: var(--jpz-box-shadow-light);
     }
 
     .episode-index {
         font-size: 14px;
         color: var(--jpz-text-color-secondary);
     }
+}
 
-    .top-right-tip {
-        background-color: var(--jpz-color-primary);
-        color: var(--jpz-color-secondary);
-        height: 12px;
-        line-height: 12px;
-        text-align: center;
+.episode-item-active {
+    background-color: var(--jpz-bg-color-page); // 可根据你的主题色调整
+    border-color: var(--jpz-color-primary);
+
+    .episode-index {
+        color: var(--jpz-color-primary);
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+
+    // 整体容器的过渡效果
+    transition: all 0.3s ease;
+}
+
+.episode-item {
+    @extend %common-episode-item;
+    padding: 10px 12px 0 12px;
+
+    .icon {
         position: absolute;
-        width: 32px;
-        transform-origin: bottom right; // 以右下角为旋转中心, 只需要计算 top 值, right 等于0
-        transform: rotate(45deg);
-        // top 等于 width 乘以 sin(45deg) 再减去 height 的高度
-        top: 10px;
-        right: 0px;
-        font-size: 8px;
-        font-weight: 500;
+        top: 3px;
+        left: 2px;
+    }
+
+    .icon-lock {
+        fill: #c1401f;
+        font-size: 12px;
+    }
+
+    .icon-unlock {
+        fill: #188838;
+        font-size: 12px;
+    }
+}
+
+.episode-item-paid {
+    @extend %common-episode-item;
+    padding: 6px 12px 4px 12px;
+
+    .icon {
+        display: none;
     }
 }
 </style>

@@ -24,10 +24,12 @@ html {
     // 使用 element-plus 的颜色
     --jpz-bg-color: var(--el-bg-color);
     --jpz-bg-color-page: var(--el-bg-color-page);
+
     // --jpz-bg-color-footer: var(--el-color-primary-light-9);
     --jpz-bg-color-footer: var(--el-bg-color);
     --jpz-color-overlay: var(--el-bg-color-overlay);
     --jpz-border-color: var(--el-border-color);
+    --jpz-border-color-hover: var(--el-border-color-hover);
 
     // 阴影
     --jpz-box-shadow-lighter: var(--el-box-shadow-lighter);
@@ -35,7 +37,7 @@ html {
     --jpz-box-shadow-dark: var(--el-box-shadow-dark);
     --jpz-post-item-main-hover-shadow: 0 0 5px #ccc, 0 0 10px #ccc; // 主文章 hover 阴影
 
-    // 文字颜色
+    // 文字颜i色
     --jpz-text-color-primary: var(--el-text-color-primary);
     --jpz-text-color-regular: var(--el-text-color-regular);
     --jpz-text-color-secondary: var(--el-text-color-secondary);
