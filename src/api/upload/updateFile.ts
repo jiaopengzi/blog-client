@@ -14,7 +14,6 @@ export interface UpdateFileRequest {
     file_id: string // 文件 ID
     file_name_display: string // 文件名
     description: string // 描述
-    slug: string // 别名
     is_free: boolean // 是否免费
     is_video: boolean // 是否为视频
 }

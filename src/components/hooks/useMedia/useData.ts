@@ -58,8 +58,8 @@ export function useData() {
             align: "center",
         },
         {
-            prop: "slug",
-            label: "别名",
+            prop: "file_id_hash",
+            label: "文件ID哈希",
             sortable: true,
             minWidth: 150,
             align: "center",
@@ -131,7 +131,7 @@ export function useData() {
         thumbnail: "", // 缩略图
         file_name_display: "", // 显示名称
         description: "", // 描述
-        slug: "", // 文件别名
+        file_id_hash: "", // 文件别名
         is_free: false, // 是否免费
         subtitles_language_list: [], // 字幕
         editDialogVisible: false, // 编辑对话框是否显示

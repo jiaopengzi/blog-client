@@ -16,7 +16,7 @@ export interface EditMediaProps {
     thumbnail: string // 缩略图
     file_name_display: string // 显示名称
     description: string // 描述
-    slug: string // 文件别名
+    file_id_hash: string // 文件id哈希
     is_free: boolean // 是否免费
     is_generate_hls: boolean // 是否生成HLS
     subtitles_language_list: string[] // 字幕
@@ -28,7 +28,7 @@ export interface EditMediaForm {
     file_id: string // 文件ID
     file_name_display: string // 显示名称
     description: string // 描述
-    slug: string // 文件别名
+    file_id_hash: string // 文件id哈希
     file_url: string // 文件地址
     is_free: boolean // 是否免费
 }

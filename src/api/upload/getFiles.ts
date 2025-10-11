@@ -28,7 +28,7 @@ export interface MediaFile extends DataWithImg {
     url_belong: string // 所属网址
     path: string // 路径
     description: string // 描述
-    slug: string // 别名
+    file_id_hash: string // 文件ID哈希
     thumbnail: string // 缩略图
     is_free: boolean // 是否免费
     is_encrypt: boolean // 是否加密

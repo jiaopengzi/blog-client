@@ -15,7 +15,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { computed, ref, watch } from "vue"
+import { onBeforeMount, ref, watch } from "vue"
 
 import { type PostVideoTocTree } from "@/api/post/common"
 import VideoPlayer from "@/components/player"
@@ -24,7 +24,7 @@ import { fenToYuan } from "@/utils/amount"
 
 import VideoEpisode from "../video-episode"
 import VideoTocTreeBase, { type Data } from "../video-toc-tree-base"
-import { useVideoTocTree } from "../video-toc-tree-base"
+import { usePayVideo } from "./hooks"
 import { type PayVideoProps } from "./types.ts"
 
 defineOptions({ name: "PayVideo" })
@@ -34,25 +34,22 @@ const { postId, toc } = defineProps<PayVideoProps>()
 const localTreeList = ref<PostVideoTocTree[]>(toc || [])
 
 // hooks
-const { videoTotal, covertToMap } = useVideoTocTree(localTreeList)
-const manager = new PlayerStateManager()
-
-const state = manager.getState()
-
-const treeMap = ref<{ [key: number]: PostVideoTocTree }>({})
-const treeVideoOrders = ref<number[]>([])
+const { treeMap, treeVideoOrders, videoTotal, covertToMap, manager, state, updateVideosIsFree } = usePayVideo(localTreeList)
 
 // 监听 episodeList 变化
 watch(
     () => toc,
-    (newVal) => {
-        const val = newVal || []
-        localTreeList.value = val
-        const { map, videoOrders } = covertToMap(val)
+    async (newVal) => {
+        if (!(newVal && newVal.length > 0)) return
+        localTreeList.value = newVal
+        const { map, videoOrders } = covertToMap(newVal)
         treeMap.value = map
         treeVideoOrders.value = videoOrders
+        await updateVideosIsFree()
         if (videoOrders.length > 0 && videoOrders[0] && treeMap.value && treeMap.value[videoOrders[0]]) {
-            manager.setVideoID(treeMap.value[videoOrders[0]]?.video_id || "")
+            manager.setVideoID(treeMap.value[videoOrders[0]]?.file_id_hash || "")
+            manager.setMediaType(treeMap.value[videoOrders[0]]?.video_type || MediaTypes.HLS)
+            manager.setSrc(treeMap.value[videoOrders[0]]?.video_src || "")
         }
     },
     { immediate: true },

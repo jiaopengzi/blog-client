@@ -30,7 +30,7 @@ export function useVideoTocTree(localTreeList: Ref<Tree[]>) {
             if (!("file_type" in item) || !item.file_type.startsWith("video")) continue
 
             // 视频类型
-            const type = item.file_type.split("/")[1]
+            const type = item.file_type.split("/")[1] as MediaTypes
 
             // 动态计算id
             const id = calcMaxId(localTreeList.value) + 1
@@ -42,13 +42,11 @@ export function useVideoTocTree(localTreeList: Ref<Tree[]>) {
                 video_type: item.is_generate_hls ? MediaTypes.HLS : type,
                 is_chapter: false,
                 is_free: item.is_free,
+                file_id_hash: item.file_id_hash,
             }
 
-            if (item.is_generate_hls) {
-                // HLS 视频
-                baseNode.video_id = item.file_name.split(".")[0]
-            } else {
-                // 非 HLS 视频
+            // 非 HLS 视频, 则设置视频地址
+            if (!item.is_generate_hls) {
                 baseNode.video_src = item.url_belong + item.path
             }
 

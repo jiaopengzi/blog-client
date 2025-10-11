@@ -11,6 +11,7 @@ import { type PostCategory } from "@/api/postCategory/view"
 import { type PostTag } from "@/api/postTag/view"
 import { type User } from "@/api/user/getUserInfo"
 import { type DataWithImg } from "@/components/common" // 图片填充方式
+import { type MediaTypes } from "@/components/player"
 
 export enum PostType {
     Post = "post", // 文章
@@ -98,8 +99,8 @@ export interface SimplePostVideoTocTree {
     label: string // 目录文本
     is_chapter: boolean // 是否是章节
     video_order?: number // 视频顺序
-    video_type?: string // 视频类型
-    video_id?: string // 关联的视频id
+    video_type?: MediaTypes // 视频类型
+    file_id_hash?: string // 视频文件ID哈希
     video_src?: string // 关联的视频地址
     is_free?: boolean // 是否免费
 }

@@ -270,8 +270,7 @@ export enum ResponseCode {
     FileDeleteSuccess = 8111, // 删除文件成功
     GetUploadFileUrlSuccess = 8113, // 获取上传文件URL成功
     SetAvatarSuccess = 8114, // 设置头像成功
-    CheckSlugAvailable = 8115, // 检查别名是否可用
-    UpdateFileSuccess = 8117, // 更新文件成功
+    UpdateFileSuccess = 8115, // 更新文件成功
 
     // 社交登录相关
     SocialLoginNoLoginType = 8200, // 未传递社交登录登录方式,请传递正确的登录方式
@@ -305,6 +304,13 @@ export enum ResponseCode {
     SubtitlesUpsertSuccess = 8607, // 更新字幕成功
     SubtitlesDeleteSuccess = 8608, // 删除字幕成功
     GetVideoSubtitlesLanguagesSuccess = 8609, // 获取视频字幕语言列表成功
+    GetVideosIsFreeSuccess = 8610, // 批量获取视频是否免费成功
+    UpsertUserPostVideoProgressSuccess = 8611, // 保存用户视频合集播放进度成功
+    GetUserPostVideoProgressSuccess = 8612, // 获取用户视频合集播放进度成功
+    GetUserPostVideoProgressNoData = 8613, // 获取用户视频合集播放进度无数据
+    UpsertUserVideoProgressSuccess = 8614, // 保存用户单一视频播放进度成功
+    GetUserVideoProgressSuccess = 8615, // 获取用户单一视频播放进度成功
+    GetUserVideoProgressNoData = 8616, // 获取用户视频合集播放进度无数据
 
     // 系统相关
     ClientIPTooManyRequests = 9006, //客户端IP请求次数过多

@@ -115,7 +115,7 @@ export function useMedia() {
             editMediaData.file_name = row.file_name
             editMediaData.file_name_display = row.file_name_display
             editMediaData.description = row.description
-            editMediaData.slug = row.slug
+            editMediaData.file_id_hash = row.file_id_hash
             editMediaData.is_free = row.is_free
             editMediaData.subtitles_language_list = row.subtitles_language_list || []
             editMediaData.img = row.img
