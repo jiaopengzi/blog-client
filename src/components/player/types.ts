@@ -151,6 +151,8 @@ export interface PlayerSize {
 }
 
 export interface PlayerState {
+    // 定时器 ID
+    timerId: number | null
     // 媒体类型
     mediaType: MediaTypes
     // 视频 ID

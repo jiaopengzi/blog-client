@@ -7,10 +7,12 @@
 -->
 
 <template>
+    <!-- 设置 key 确保视频切换的时候能正常切换 -->
     <div
         ref="videoContainerRef"
         class="video-container"
         :class="{ 'web-full-screen': localPlayerState.isWebFullScreen }"
+        :key="localPlayerState.videoID"
         @fullscreenchange="handleFullscreenChange"
         @mousemove="handleMousemove"
         @mouseenter="handleMouseenter"
@@ -100,7 +102,7 @@ const updatePlayerByControls = (playerProps: PlayerState) => {
 // 根据当前环境更新 isMobile
 localManager.setIsMobile(/mobile|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
 
-// 判断是否是 Iphone
+// 判断是否是 iphone
 localManager.setIsIphone(/iPhone/i.test(navigator.userAgent))
 
 // 定义 video 元素的 ref
@@ -460,11 +462,23 @@ watch(
     },
 )
 
+// 根据 video 元素更新 state 中的数据
+const updateStateByVideo = () => {
+    if (videoRef.value) {
+        localManager.setCurrentTime(videoRef.value.currentTime)
+        localManager.setDuration(videoRef.value.duration)
+        localManager.setIsDragging(false)
+        localManager.setPlaybackRate(videoRef.value.playbackRate)
+        videoRef.value.loop = localPlayerState.isLoop
+        videoRef.value.volume = localPlayerState.volume.volume / 100
+    }
+}
+
 // 视频加载完成
 const handleLoadedmetadata = () => {
     if (videoRef.value) {
         handleProgressBuffered()
-        updateStore()
+        updateStateByVideo()
     }
 }
 
@@ -518,18 +532,6 @@ watch(
     },
 )
 
-// 根据video元素更新 store 中的数据
-const updateStore = () => {
-    if (videoRef.value) {
-        localManager.setCurrentTime(videoRef.value.currentTime)
-        localManager.setDuration(videoRef.value.duration)
-        localManager.setIsDragging(false)
-        localManager.setPlaybackRate(videoRef.value.playbackRate)
-        videoRef.value.loop = localPlayerState.isLoop
-        videoRef.value.volume = localPlayerState.volume.volume / 100
-    }
-}
-
 // 将 hls 实例提到外部, 以便销毁
 let hls: Hls | null = null
 
@@ -551,7 +553,7 @@ const loadHls = () => {
         // 绑定 video 元素
         hls.attachMedia(videoRef.value!)
 
-        // 当清单解析完成时
+        // 当解析完成时
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
             // 历遍 hls.levels 获取清晰度信息, 保存到 state 中
             const localLevels: Record<string, number> = {}
@@ -594,22 +596,22 @@ const loadHls = () => {
                 switch (data.type) {
                     case Hls.ErrorTypes.NETWORK_ERROR:
                         // 尝试恢复网络错误
-                        console.warn("fatal network error encountered, try to recover")
+                        // console.warn("fatal network error encountered, try to recover")
                         hls?.startLoad()
                         break
                     case Hls.ErrorTypes.MEDIA_ERROR:
-                        console.warn("fatal media error encountered, try to recover")
+                        // console.warn("fatal media error encountered, try to recover")
                         hls?.recoverMediaError()
                         break
                     default:
                         // 无法恢复的错误
-                        console.warn("fatal error encountered, destroy hls instance")
+                        // console.warn("fatal error encountered, destroy hls instance")
                         hls?.destroy()
                         MessageUtil.error(`播放错误: ${data.details}`, 0)
                         break
                 }
-            } else {
-                console.warn("non-fatal error encountered:", data)
+                // } else {
+                //     console.warn("non-fatal error encountered:", data)
             }
 
             // 处理自定义 loader 中的错误
@@ -634,7 +636,7 @@ const loadHls = () => {
     }
 }
 
-// 监听是否为 Iphone,如果是 Iphone 则将poster设置为空
+// 监听是否为 iphone, 如果是 iphone 则将 poster 设置为空
 watch(
     () => localPlayerState.isIphone,
     (isIphone) => {
@@ -656,6 +658,8 @@ const updateVideo = () => {
 
         loadHls()
     }
+
+    // 非 hls
     if (localPlayerState.mediaType in [MediaTypes.MP4, MediaTypes.WEBM]) {
         handleLoadedmetadata()
     }

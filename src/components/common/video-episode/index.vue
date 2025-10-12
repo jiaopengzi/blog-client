@@ -32,7 +32,7 @@ import { type VideoEpisodeProps } from "./types.ts"
 defineOptions({ name: "VideoEpisode" })
 
 // 定义 props
-const { isPaid, episodeList, currentVideoId = 1 } = defineProps<VideoEpisodeProps>()
+const { isPaid, episodeList, currentVideoOrder = 1 } = defineProps<VideoEpisodeProps>()
 
 // 事件
 const emit = defineEmits<{
@@ -40,7 +40,7 @@ const emit = defineEmits<{
 }>()
 
 const localTreeList = ref<PostVideoTocTree[]>(episodeList)
-const localCurrentVideoId = ref<number>(currentVideoId)
+const localCurrentVideoOrder = ref<number>(currentVideoOrder)
 
 const treeMap = ref<{ [key: number]: PostVideoTocTree }>({})
 const treeVideoOrders = ref<number[]>([])
@@ -53,9 +53,18 @@ watch(
     () => episodeList,
     (newVal) => {
         localTreeList.value = newVal
-        const { map, videoOrders } = covertToMap(newVal)
-        treeMap.value = map
+        const { mapByOrder, videoOrders } = covertToMap(newVal)
+        treeMap.value = mapByOrder
         treeVideoOrders.value = videoOrders
+    },
+    { immediate: true },
+)
+
+// 监听 currentVideoOrder 变化
+watch(
+    () => currentVideoOrder,
+    (newVal) => {
+        localCurrentVideoOrder.value = newVal
     },
     { immediate: true },
 )
@@ -67,10 +76,10 @@ const orderDisplay = (order: number) => {
 }
 
 const handleSelect = (val: PostVideoTocTree) => {
-    if (val.video_order === localCurrentVideoId.value) {
+    if (val.video_order === localCurrentVideoOrder.value) {
         return
     }
-    localCurrentVideoId.value = val.video_order || 1
+    localCurrentVideoOrder.value = val.video_order || 1
     emit("video-select", val)
 }
 
@@ -83,7 +92,7 @@ const isShowLock = (isPaid: boolean, isFree: boolean) => {
 // 判断当前视频项是否为当前选中项
 const isCurrentEpisode = (item?: PostVideoTocTree) => {
     if (!item) return false
-    return item.video_order === localCurrentVideoId.value
+    return item.video_order === localCurrentVideoOrder.value
 }
 </script>
 <style scoped lang="scss">

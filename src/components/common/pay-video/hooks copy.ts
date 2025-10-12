@@ -99,7 +99,7 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
             }
 
             //**注意这里需要设置用户输入, 保证进度有效设置**
-            manager.setUserInput(true)
+            manager.setUserInput(false)
 
             // 等待下一个 DOM 更新周期后设置播放进度，确保视频元素已加载
             await nextTick(() => {

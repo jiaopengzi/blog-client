@@ -18,6 +18,7 @@ import { Language, MediaTypes, PlaybackRate, PlayLevelLabel, PlayStatus } from "
  * @returns {PlayerState} - 返回默认播放器属性。
  */
 export const createDefaultPlayerState = (): PlayerState => ({
+    timerId: null,
     mediaType: MediaTypes.HLS,
     videoID: "",
     src: "",

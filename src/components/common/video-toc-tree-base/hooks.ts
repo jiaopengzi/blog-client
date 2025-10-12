@@ -11,7 +11,7 @@ import { computed, type Ref, ref } from "vue"
 import type { TableData } from "@/components/common/base-table"
 import { MediaTypes } from "@/components/player"
 
-import type { Node, Tree, VideoTocMap } from "./types"
+import type { Node, Tree, VideoTocMapByFileIdHash, VideoTocMapByOrder } from "./types"
 
 export function useVideoTocTree(localTreeList: Ref<Tree[]>) {
     const customNodeClass = "custom-tree-node" // 自定义节点类名
@@ -140,18 +140,24 @@ export function useVideoTocTree(localTreeList: Ref<Tree[]>) {
     }
 
     // 将 localTreeList 转成 map (键为 videoOrder), 同时返回所有视频的 videoOrder 列表(已去重且升序)
-    const covertToMap = (list: Tree[]): { map: VideoTocMap; videoOrders: number[] } => {
+    const covertToMap = (
+        list: Tree[],
+    ): { mapByFileIdHash: VideoTocMapByOrder; mapByOrder: VideoTocMapByOrder; videoOrders: number[]; fileIdHashList: string[] } => {
         // 初始化结果
-        const map: VideoTocMap = {}
+        const mapByFileIdHash: VideoTocMapByFileIdHash = {}
+        const mapByOrder: VideoTocMapByOrder = {}
         const videoOrders: number[] = []
+        const fileIdHashLList: string[] = []
 
         // 递归遍历节点
         const traverse = (nodes: Tree[]) => {
             for (const node of nodes) {
                 // 只处理视频节点
-                if (!node.is_chapter && node.video_order !== undefined) {
-                    map[node.video_order] = node
+                if (!node.is_chapter && node.file_id_hash && node.video_order !== undefined && node.video_order !== null) {
+                    mapByFileIdHash[node.file_id_hash] = node
+                    mapByOrder[node.video_order] = node
                     videoOrders.push(node.video_order)
+                    fileIdHashLList.push(node.file_id_hash)
                 }
 
                 // 递归子节点
@@ -167,7 +173,10 @@ export function useVideoTocTree(localTreeList: Ref<Tree[]>) {
         // 去重并排序，方便后续按顺序处理
         const uniqueOrders = Array.from(new Set(videoOrders)).sort((a, b) => a - b)
 
-        return { map, videoOrders: uniqueOrders }
+        // 去重 fileIdHash 列表
+        const uniqueFileIdHashList = Array.from(new Set(fileIdHashLList))
+
+        return { mapByFileIdHash, mapByOrder, videoOrders: uniqueOrders, fileIdHashList: uniqueFileIdHashList }
     }
 
     return {
