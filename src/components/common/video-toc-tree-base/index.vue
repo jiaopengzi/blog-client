@@ -8,14 +8,16 @@
 <template>
     <div class="custom-tree-container">
         <el-tree
+            ref="treeRef"
             :props="{ class: customNodeClass }"
             style="width: 100%"
             :data="localTreeList"
             node-key="id"
-            default-expand-all
+            :default-expand-all="isExpandAll"
             highlight-current
             :draggable="draggable"
-            :expand-on-click-node="false"
+            :expand-on-click-node="true"
+            :current-node-key="currentNodeKey"
             @node-drop="handleDrop"
         >
             <template #default="{ node, data }">
@@ -45,7 +47,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from "vue"
+import { ref, useTemplateRef, watch } from "vue"
 
 import SelectMedia from "@/components/common/media-select/index.vue"
 
@@ -53,7 +55,7 @@ import VideoTocItem from "../video-toc-item"
 import { useVideoTocTree } from "./hooks"
 import type { Data, Node, Tree, TreeProps } from "./types"
 
-defineOptions({ name: "VideoTocTree" })
+defineOptions({ name: "VideoTocTreeBase" })
 
 // 定义 props
 const {
@@ -61,6 +63,8 @@ const {
     draggable = true, // 是否可拖拽
     showBtns = true, // 是否显示操作按钮
     isEdit = true, // 是否可编辑
+    isExpandAll = true, // 是否默认展开所有节点
+    currentNodeKey, // 当前选中节点的 key
 } = defineProps<TreeProps>()
 
 // 事件
@@ -69,6 +73,8 @@ const emit = defineEmits<{
     (event: "video-select", val: Data): void
 }>()
 
+// 拿到 el-tree 实例
+const treeRef = useTemplateRef("treeRef")
 const localTreeList = ref<Tree[]>(treeList) // 本地目录树数据
 
 // hooks
@@ -151,6 +157,13 @@ const handleClick = (data: Data) => {
 
 :deep(.el-tree-node__content) {
     height: 100%;
+}
+
+.custom-tree-container {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 8px;
 }
 
 .custom-tree-node-content {

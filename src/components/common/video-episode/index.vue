@@ -17,6 +17,7 @@
             <JIcon v-if="isShowLock(isPaid, treeMap[i]?.is_free!)" :name="IconKeys.Lock" :custom-class="`icon-lock`" class="icon" />
             <JIcon v-if="!isShowLock(isPaid, treeMap[i]?.is_free!)" :name="IconKeys.Play" :custom-class="`icon-unlock`" class="icon" />
             <span class="episode-index">{{ orderDisplay(treeMap[i]?.video_order!) }}</span>
+            <div class="active-animation" v-if="isCurrentEpisode(treeMap[i]!)"></div>
         </div>
     </div>
 </template>
@@ -100,18 +101,18 @@ const isCurrentEpisode = (item?: PostVideoTocTree) => {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
-    margin-top: 12px;
 }
 
 // 公共样式
 %common-episode-item {
     position: relative;
-    display: flex;
     align-items: center;
     border: 1px solid var(--jpz-border-color);
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s;
+    min-width: 20px;
+    height: 32px;
 
     &:hover {
         border-color: var(--jpz-border-color-hover);
@@ -121,21 +122,9 @@ const isCurrentEpisode = (item?: PostVideoTocTree) => {
     .episode-index {
         font-size: 14px;
         color: var(--jpz-text-color-secondary);
+        text-align: center;
+        width: 100%;
     }
-}
-
-.episode-item-active {
-    background-color: var(--jpz-bg-color-page); // 可根据你的主题色调整
-    border-color: var(--jpz-color-primary);
-
-    .episode-index {
-        color: var(--jpz-color-primary);
-        font-weight: 600;
-        transition: color 0.3s ease;
-    }
-
-    // 整体容器的过渡效果
-    transition: all 0.3s ease;
 }
 
 .episode-item {
@@ -161,10 +150,81 @@ const isCurrentEpisode = (item?: PostVideoTocTree) => {
 
 .episode-item-paid {
     @extend %common-episode-item;
-    padding: 6px 12px 4px 12px;
+    padding: 8px 12px 2px 12px;
 
     .icon {
         display: none;
+    }
+}
+
+.episode-item-active {
+    background-color: var(--jpz-bg-color-page);
+    border-color: var(--jpz-color-primary);
+
+    .episode-index {
+        color: var(--jpz-color-primary);
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+
+    // 整体容器的过渡效果
+    transition: all 0.3s ease;
+}
+
+/* 
+参考：https://css-loaders.com/bars/
+HTML: <div class="active-animation"></div> 
+*/
+.active-animation {
+    position: absolute;
+    top: 3px;
+    right: 2px;
+    width: 12px;
+    height: 12px;
+    aspect-ratio: 0.75;
+    --c: no-repeat linear-gradient(var(--jpz-text-color-secondary) 0 0);
+    background:
+        var(--c) 0% 50%,
+        var(--c) 50% 50%,
+        var(--c) 100% 50%;
+    animation: l7 1s infinite linear alternate;
+}
+@keyframes l7 {
+    0% {
+        background-size:
+            20% 50%,
+            20% 50%,
+            20% 50%;
+    }
+    20% {
+        background-size:
+            20% 20%,
+            20% 50%,
+            20% 50%;
+    }
+    40% {
+        background-size:
+            20% 100%,
+            20% 20%,
+            20% 50%;
+    }
+    60% {
+        background-size:
+            20% 50%,
+            20% 100%,
+            20% 20%;
+    }
+    80% {
+        background-size:
+            20% 50%,
+            20% 50%,
+            20% 100%;
+    }
+    100% {
+        background-size:
+            20% 50%,
+            20% 50%,
+            20% 50%;
     }
 }
 </style>

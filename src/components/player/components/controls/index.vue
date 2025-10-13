@@ -271,6 +271,7 @@ watch(
             IconNamePlayPause.value = IconKeys.Play
         }
     },
+    { immediate: true },
 )
 
 // 监控快捷键开关

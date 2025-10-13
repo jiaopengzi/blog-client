@@ -199,7 +199,6 @@ export class PlayerStateManager {
      * 设置当前播放时间。
      */
     setCurrentTime(currentTime: number): void {
-        console.log("============>设置时间", currentTime)
         this.state.playProgress.currentTime = currentTime
     }
 

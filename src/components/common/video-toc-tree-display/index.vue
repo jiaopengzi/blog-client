@@ -6,22 +6,32 @@
  * Description : 目录树展示
 -->
 <template>
-    <VideoTocTreeBase :key="key" :tree-list="treeList" :draggable="false" :show-btns="false" :is-edit="false" @video-select="handleTreeSelect" />
+    <VideoTocTreeBase
+        :key="key"
+        :tree-list="treeList"
+        :draggable="false"
+        :show-btns="false"
+        :is-edit="false"
+        :is-expand-all="true"
+        :current-node-key="currentNodeKey"
+        @video-select="handleTreeSelect"
+    />
 </template>
 
 <script lang="ts" setup>
 import { ref, watch } from "vue"
 
-import { type Data, type Tree } from "../video-toc-tree-base"
-import VideoTocTreeBase from "../video-toc-tree-base/index.vue"
+import VideoTocTreeBase, { type Data, type Tree } from "../video-toc-tree-base"
 
-defineOptions({ name: "VideoTocTree" })
+defineOptions({ name: "VideoTocTreeDisplay" })
 
 // 定义 props
 const {
     treeList = [], // 目录树数据
+    currentNodeKey, // 当前选中节点的 key
 } = defineProps<{
     treeList?: Tree[]
+    currentNodeKey?: string | number
 }>()
 
 // 事件

@@ -6,14 +6,14 @@
  * Description : 目录树编辑
 -->
 <template>
-    <VideoTocTreeBase :tree-list="treeList" :draggable="true" :show-btns="true" :is-edit="true" @tree-update="handleTreeUpdate" />
+    <VideoTocTreeBase :tree-list="treeList" :draggable="true" :show-btns="true" :is-edit="true" :is-expand-all="true" @tree-update="handleTreeUpdate" />
 </template>
 
 <script lang="ts" setup>
 import { type Tree } from "../video-toc-tree-base"
 import VideoTocTreeBase from "../video-toc-tree-base/index.vue"
 
-defineOptions({ name: "VideoTocTree" })
+defineOptions({ name: "VideoTocTreeEdit" })
 
 // 定义 props
 const {

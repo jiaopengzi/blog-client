@@ -7,12 +7,10 @@
 -->
 
 <template>
-    <!-- 设置 key 确保视频切换的时候能正常切换 -->
     <div
         ref="videoContainerRef"
         class="video-container"
         :class="{ 'web-full-screen': localPlayerState.isWebFullScreen }"
-        :key="localPlayerState.videoID"
         @fullscreenchange="handleFullscreenChange"
         @mousemove="handleMousemove"
         @mouseenter="handleMouseenter"
@@ -81,7 +79,7 @@ import { CustomLoader } from "@/pkg/hls"
 import { MessageUtil } from "@/utils/message"
 
 import { PlayerStateManager } from "./state"
-import { DisabledSubtitles, type LanguageKey, MediaTypes, type PlayerState, type PlayLevelLabel, PlayStatus } from "./types"
+import { DisabledSubtitles, type LanguageKey, MediaTypes, type PlayerSize, type PlayerState, type PlayLevelLabel, PlayStatus } from "./types"
 import { getVideoQualityLabel } from "./utils"
 
 defineOptions({ name: "VideoPlayer" })
@@ -261,16 +259,20 @@ const handleMouseleave = (event: MouseEvent) => {
     controlsHidden.value = true
 }
 
+// 进入全屏 调整 video 元素的宽高
+const initSize = (size: PlayerSize) => {
+    if (videoContainerRef.value) {
+        videoContainerRef.value.style.width = size.width + "px"
+        videoContainerRef.value.style.height = size.height + "px"
+    }
+}
+
 // 根据 size 设置 video 容器的宽高
 watch(
     () => localPlayerState.size,
     (newSize) => {
-        if (videoContainerRef.value) {
-            videoContainerRef.value.style.width = newSize.width + "px"
-            videoContainerRef.value.style.height = newSize.height + "px"
-        }
+        initSize(newSize)
     },
-    { immediate: true },
 )
 
 // 进入全屏 调整 video 元素的宽高
@@ -465,12 +467,14 @@ watch(
 // 根据 video 元素更新 state 中的数据
 const updateStateByVideo = () => {
     if (videoRef.value) {
-        localManager.setCurrentTime(videoRef.value.currentTime)
+        videoRef.value.currentTime = localPlayerState.playProgress.currentTime
         localManager.setDuration(videoRef.value.duration)
-        localManager.setIsDragging(false)
         localManager.setPlaybackRate(videoRef.value.playbackRate)
         videoRef.value.loop = localPlayerState.isLoop
         videoRef.value.volume = localPlayerState.volume.volume / 100
+
+        localManager.setUserInput(false)
+        localManager.setIsDragging(false)
     }
 }
 
@@ -687,6 +691,8 @@ watch(
 )
 
 onMounted(() => {
+    // 初始化尺寸
+    initSize(localPlayerState.size)
     // 初始化字幕字体大小
     updateCueFontSize()
 })
@@ -727,7 +733,7 @@ video::-webkit-media-controls-enclosure {
     }
 
     video {
-        background-color: #000;
+        background-color: #ddd;
         object-fit: contain;
         width: 100%;
         height: 100%;

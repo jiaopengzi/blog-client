@@ -15,6 +15,8 @@ export interface TreeProps {
     draggable?: boolean // 是否可拖拽
     showBtns?: boolean // 是否显示操作按钮
     isEdit?: boolean // 是否可编辑
+    isExpandAll?: boolean // 是否默认展开所有节点
+    currentNodeKey?: string | number
 }
 
 // 目录树

@@ -69,6 +69,8 @@ const cancelEdit = () => {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    // 文字居左对齐
+    text-align: left;
 }
 
 .text-edit {

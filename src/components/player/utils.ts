@@ -33,9 +33,9 @@ export const createDefaultPlayerState = (): PlayerState => ({
     },
     playbackRate: PlaybackRate.NORMAL,
     volume: {
-        volume: 20, // 默认音量
+        volume: 50, // 默认音量
         muted: false, // 是否静音
-        lastVolume: 50, // 静
+        lastVolume: 50, // 上次音量
     }, // 默认音量
     showControlBar: true,
     useVideoControls: false,
@@ -47,7 +47,7 @@ export const createDefaultPlayerState = (): PlayerState => ({
         content: "jiaopengzi.com",
         style: {
             color: "red",
-            fontSize: "14px",
+            fontSize: "12px",
         },
     },
     logoWatermark: {

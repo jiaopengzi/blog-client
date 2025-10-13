@@ -6,7 +6,8 @@
  * Description : hooks
  */
 
-import { nextTick, type Ref, ref } from "vue"
+import { storeToRefs } from "pinia"
+import { computed, type Ref, ref } from "vue"
 
 import { type PostVideoTocTree } from "@/api/post/common"
 import { handleResErr, ResponseCode } from "@/api/response"
@@ -14,23 +15,50 @@ import { getUserPostVideoProgressAPI, type GetUserPostVideoProgressRequest, type
 import { getUserVideoProgressAPI, type GetUserVideoProgressRequest, type GetUserVideoProgressResponse } from "@/api/video/getUserVideoProgress"
 import { getVideosIsFreeAPI, type GetVideosIsFreeRequest, type GetVideosIsFreeResponse } from "@/api/video/getVideosIsFree"
 import { upsertUserPostVideoProgressAPI, type UpsertUserPostVideoProgressRequest } from "@/api/video/upsertUserPostVideoProgress"
-import { MediaTypes, PlayerStateManager } from "@/components/player"
+import { MediaTypes, PlayerStateManager, type TextWatermark } from "@/components/player"
 import { useUserStore } from "@/stores/user"
 
 import type { VideoTocMapByFileIdHash, VideoTocMapByOrder } from "../video-toc-tree-base"
 import { useVideoTocTree } from "../video-toc-tree-base"
 
 export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<string>) {
+    const userStore = useUserStore()
+
     const localMapByFileIdHash = ref<VideoTocMapByFileIdHash>({}) // 目录树映射, key 为节点 fileIdHash
     const localMapByOrder = ref<VideoTocMapByOrder>({}) // 目录树映射, key 为节点 videoOrder
     const localVideoOrders = ref<number[]>([]) // 当前目录树中所有视频的 videoOrder 列表
     const localFileIdHashList = ref<string[]>([]) // 当前目录树中所有视频的 fileIdHash 列表
     const currentVideoOrder = ref<number>(0) // 当前视频的集数序号
+    const currentTreeId = ref<number>(0) // 当前选中节点的 ID
 
     // hooks
     const { videoTotal, covertToMap } = useVideoTocTree(localTreeList)
 
+    // 是否显示集数列表
+    const isShowEpisode = computed(() => {
+        return videoTotal.value > 1
+    })
+
+    // 是否显示目录树
+    const isShowToc = computed(() => {
+        return videoTotal.value > 1
+    })
+
+    // 实例化播放器状态管理器
     const manager = new PlayerStateManager()
+
+    // 拿到用户名, 设置文字水印
+    const { data: userInfo } = storeToRefs(userStore)
+    const textWatermark: TextWatermark = {
+        content: userInfo.value?.user.user_name || "jiaopengzi.com",
+        style: {
+            color: "red",
+            fontSize: "12px",
+        },
+    }
+    manager.setTextWatermark(textWatermark)
+
+    // 获取播放器状态
     const state = manager.getState()
 
     // 更新视频是否免费
@@ -84,6 +112,7 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
 
         // 更新当前视频集数
         currentVideoOrder.value = localMapByFileIdHash.value[fileIdHash]?.video_order || 1
+        currentTreeId.value = localMapByFileIdHash.value[fileIdHash]?.id || 0
 
         // 设置播放器状态
         if (video && video.file_id_hash) {
@@ -101,12 +130,11 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
             //**注意这里需要设置用户输入, 保证进度有效设置**
             manager.setUserInput(true)
 
-            // 等待下一个 DOM 更新周期后设置播放进度，确保视频元素已加载
-            await nextTick(() => {
-                manager.setCurrentTime(currentTime)
-                console.log("============>order", video.video_order)
-                console.log("============>currentTime", currentTime)
-            })
+            // 设置播放进度
+            manager.setCurrentTime(currentTime)
+
+            // 状态设置为暂停播放
+            manager.pause()
         }
     }
 
@@ -131,6 +159,13 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
         // 处理响应
         if (res.data.code === ResponseCode.GetUserPostVideoProgressSuccess) {
             const data: GetUserPostVideoProgressResponse = res.data.data
+
+            // 如果当前视频在当前目录树中则设置, 否则设置默认视频
+            if (!localMapByFileIdHash.value[data.last_watch_file_id_hash]) {
+                await setDefaultVideoAndProgress()
+                return
+            }
+
             // 设置视频集的当前视频和进度
             await setVideoAndProgress(data.last_watch_file_id_hash, data.last_watch_time_at)
         } else {
@@ -149,16 +184,17 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
         // 请求接口
         const res = await getUserVideoProgressAPI(reqData)
 
-        // 处理响应
+        // 处理响应, 取出上次记录的播放时间
+        let startTime = 0
         if (res.data.code === ResponseCode.GetUserVideoProgressSuccess) {
             const data: GetUserVideoProgressResponse = res.data.data
-
-            // 设置当前视频和进度
-            await setVideoAndProgress(data.file_id_hash, data.last_watch_time_at)
-        } else {
-            // 设置开始位置
-            await setVideoAndProgress(fileIdHash, 0)
+            if (data && data.file_id_hash === fileIdHash) {
+                startTime = data.last_watch_time_at
+            }
         }
+
+        // 设置当前视频和进度（成功取到则使用记录时间，否则从0开始）
+        await setVideoAndProgress(fileIdHash, startTime)
     }
 
     // 上一次记录的播放时间, 用于节流防止频繁更新
@@ -200,7 +236,6 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
         }
     }
 
-    const userStore = useUserStore()
     // 当前用户登录则启动定时器, 记录用户观看进度
     if (userStore.isLogin) {
         manager.startTimer(updateProgress)
@@ -213,6 +248,8 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
         localFileIdHashList,
         videoTotal,
         covertToMap,
+        isShowEpisode,
+        isShowToc,
         manager,
         state,
         updateVideosIsFree,
@@ -220,5 +257,6 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
         setCurrentVideoProgress,
         switchVideoProgress,
         currentVideoOrder,
+        currentTreeId,
     }
 }

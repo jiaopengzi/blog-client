@@ -89,7 +89,18 @@ const removeDocumentEventListeners = () => {
 }
 
 // 公共逻辑:获取进度条的相关数据
-const getProgressBarData = (event: MouseEvent | TouchEvent) => {
+/**
+ * @description: 获取进度条的相关数据
+ * @param event
+ * @return { rect, offsetX, totalWidth, currentTime, adjustedOffsetX }
+ * - rect: 进度条的 DOMRect 对象
+ * - offsetX: 进度条上相对于左侧的偏移量
+ * - totalWidth: 进度条的总宽度
+ * - currentTime: 根据 offsetX 计算出的当前时间（秒）
+ */
+const getProgressBarData = (
+    event: MouseEvent | TouchEvent,
+): { rect: DOMRect; offsetX: number; totalWidth: number; currentTime: number; adjustedOffsetX: number } | null => {
     if (progressBarRef.value && sliderRef.value && playedRef.value) {
         const rect = progressBarRef.value.getBoundingClientRect()
         let offsetX = getClientX(event) - rect.left
@@ -315,10 +326,19 @@ $bar-height: 6px; // 进度条高度
         bottom: 40px;
         background: rgba(0, 0, 0, 0.7);
         color: white;
-        padding: 5px;
         border-radius: 3px;
         font-size: 12px;
         display: none;
+        margin: 0;
+        padding: 5px;
+
+        // 内容水平和垂直居中
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: max-content;
+        height: 20px;
+        line-height: 20px;
     }
 
     .slider {

@@ -71,20 +71,29 @@ const setWatermarkStyle = (watermark: HTMLElement | undefined, style: Partial<CS
         // 首先设置基础样式
         Object.assign(watermark.style, style)
 
+        // 确保定位属性存在
+        if (!watermark.style.position) {
+            watermark.style.position = "absolute"
+        }
+
         // 获取容器的宽高
         const { clientWidth: containerWidth, clientHeight: containerHeight } = container
 
-        // 获取水印的宽高
-        const { clientWidth: watermarkWidth, clientHeight: watermarkHeight } = watermark
+        // 使用 getBoundingClientRect 获取水印实际占用的宽高(考虑样式和渲染结果)
+        const rect = watermark.getBoundingClientRect()
+        const watermarkWidth = rect.width || watermark.clientWidth || watermark.offsetWidth || 0
+        const watermarkHeight = rect.height || watermark.clientHeight || watermark.offsetHeight || 0
 
-        // width 和 height 为水印的可移动范围,即容器的宽高减去水印的宽高,保证水印不会超出容器
-        const width = containerWidth - watermarkWidth
-        const height = containerHeight - watermarkHeight
+        // 可移动范围，保证水印不会超出容器
+        const maxLeft = Math.max(0, containerWidth - watermarkWidth)
+        const maxTop = Math.max(0, containerHeight - watermarkHeight)
 
-        // 如果 isRandomPosition 为 true,则随机生成水印的位置
+        // 如果 isRandomPosition 为 true, 则随机生成水印的位置, 且考虑元素自身宽高
         if (isRandomPosition) {
-            style.left = `${Math.random() * width}px`
-            style.top = `${Math.random() * height}px`
+            const left = Math.random() * maxLeft
+            const top = Math.random() * maxTop
+            style.left = `${left}px`
+            style.top = `${top}px`
             // 再次设置样式主要是为了设置 left 和 top
             Object.assign(watermark.style, style)
         }
@@ -105,6 +114,9 @@ const appendTextWatermark = () => {
         stopObservation.value = true // 停止观察
         const textWatermark = document.createElement("span") // 创建 span 元素
         textWatermark.style.position = "absolute" // 设置绝对定位
+        textWatermark.style.width = "max-content" // 设置宽度为内容宽度
+        textWatermark.style.padding = "4px" // 设置内边距
+        textWatermark.style.boxSizing = "border-box" // 设置 box-sizing, 防止 padding 导致宽度变化
         textWatermark.style.zIndex = textWatermarkZindex.value // 设置 z-index
         textWatermark.style.userSelect = "none" // 禁止选中
         textWatermark.innerText = textWatermarkContent.value // 设置水印内容
@@ -231,7 +243,7 @@ onBeforeUnmount(() => {
 
 <style scoped lang="scss">
 .watermark-container {
-    position: relative;
+    // position: relative;
     width: 100%;
     height: 100%;
     overflow: hidden;
