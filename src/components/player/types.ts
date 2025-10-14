@@ -189,8 +189,9 @@ export interface PlayerState {
     isPictureInPicture: boolean
     // 是否为移动端
     isMobile: boolean
-    // 水印
+    // 文字水印
     textWatermark: TextWatermark
+    // logo 水印
     logoWatermark: LogoWatermark
     // 是否循环播放
     isLoop: boolean

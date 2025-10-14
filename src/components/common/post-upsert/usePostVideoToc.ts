@@ -16,8 +16,9 @@ import type { UpsertPostForm } from "./types"
  * @param postInfoForm 文章表单
  */
 export function usePostVideoToc(postInfoForm: Reactive<UpsertPostForm>) {
-    const handleUpdate = (val: PostVideoTocTree[]) => {
+    const handleUpdate = (val: PostVideoTocTree[], videoFileIdHashList: string[]) => {
         postInfoForm.video_toc = val
+        postInfoForm.video_file_id_hash_list = videoFileIdHashList
     }
 
     return {

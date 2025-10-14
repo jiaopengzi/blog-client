@@ -17,10 +17,10 @@ export type Subtitles = Record<
     }
 >
 
-// 根据 videoHashId 和 subtitlesLanguage 获取字幕
-export function getSubtitlesAPI(videoHashId: string): ResPromise<Res<Subtitles>> {
+// 根据 fileIdHash 和 subtitlesLanguage 获取字幕
+export function getSubtitlesAPI(fileIdHash: string): ResPromise<Res<Subtitles>> {
     return request({
-        url: `${routerGroup}/subtitles/webvtt/${videoHashId}`,
+        url: `${routerGroup}/subtitles/webvtt/${fileIdHash}`,
         method: "get",
     })
 }

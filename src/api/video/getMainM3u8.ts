@@ -9,9 +9,9 @@
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
-export function getMainM3u8API(videoId: string): ResPromise<Res<string>> {
+export function getMainM3u8API(fileIdHash: string): ResPromise<Res<string>> {
     return request({
-        url: `${routerGroup}/video/${videoId}`,
+        url: `${routerGroup}/video/${fileIdHash}`,
         method: "get",
     })
 }

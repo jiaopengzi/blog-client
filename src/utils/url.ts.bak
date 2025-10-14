@@ -1,0 +1,49 @@
+/*
+ * FilePath    : blog-client\src\utils\url.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : URL 相关工具
+ */
+
+/**
+ * 将 URL 或路径中的 Path 部分解析为字符串数组(按 '/' 分割并过滤空段)
+ *
+ * 详细说明：
+ * - 支持完整的绝对 URL(例如 "https://example.com/a/b?x=1#y")，以及相对路径(例如 "/a/b", "a/b/")。
+ * - 对于绝对 URL，优先使用原生 URL 构造函数以准确获取 pathname(可正确处理编码、主机、端口等)。
+ * - 对于无法作为绝对 URL 解析的输入(如相对路径或 protocol-relative URL)，使用字符串处理回退，
+ *   先去除查询(?)与哈希(#)部分，再按 '/' 分割。
+ *
+ * 示例：
+ * parseUrlPath("https://example.com/a/b?x=1#y") -> ["a", "b"]
+ * parseUrlPath("/a/b/")                         -> ["a", "b"]
+ * parseUrlPath("a/b")                           -> ["a", "b"]
+ *
+ * 注意：
+ * - 返回数组中不包含空字符串(会过滤首尾或连续多个 '/' 产生的空段)。
+ * - 对于 protocol-relative URL(以 "//" 开头)，URL 构造函数在没有基准时会抛错，此时会走回退逻辑。
+ *
+ * @param url - 要解析的 URL 字符串，既可为绝对 URL，也可为相对路径
+ * @returns 解析后的路径段数组(按 '/' 分割并过滤空项)
+ */
+export function parseUrlPath(url: string): string[] {
+    // 尝试将输入作为绝对 URL 解析(处理带 scheme 的完整 URL，如 http:, https:, file: 等)
+    try {
+        // 使用 URL 可正确解析 pathname，包括对编码字符和特殊主机名的处理
+        const parsed = new URL(url)
+
+        // parsed.pathname 通常以 '/' 开头；若为空则视为根路径 "/"
+        const pathname = parsed.pathname || "/"
+
+        // 将 pathname 按 '/' 分割，并过滤掉空字符串(去除首尾或连续 '/' 导致的空段)
+        return pathname.split("/").filter(Boolean)
+    } catch {
+        // 如果不是合法的绝对 URL(例如 "a/b" 或 "/a/b")，则使用简单字符串回退处理：
+        // 1. 先去除查询字符串和哈希('?...' 或 '#...')，以免它们成为路径段的一部分
+        const path = url.split(/[?#]/)[0] || ""
+
+        // 2. 按 '/' 分割并过滤空段，得到最终的路径段数组
+        return path.split("/").filter(Boolean)
+    }
+}

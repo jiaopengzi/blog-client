@@ -1,0 +1,53 @@
+/*
+ * FilePath    : blog-client\src\utils\url.test.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 单测
+ */
+
+import { describe, expect, it } from "vitest"
+
+import { parseUrlPath } from "./url"
+describe("parseUrlPath 函数", () => {
+    it("1、根 URL 返回空数组", () => {
+        expect(parseUrlPath("http://example.com/")).toEqual([])
+        expect(parseUrlPath("http://example.com")).toEqual([])
+    })
+
+    it("2、解析单个段并忽略末尾斜杠", () => {
+        expect(parseUrlPath("https://example.com/foo/")).toEqual(["foo"])
+    })
+
+    it("3、解析多个段", () => {
+        expect(parseUrlPath("https://example.com/a/b/c")).toEqual(["a", "b", "c"])
+    })
+
+    it("4、忽略查询字符串和哈希片段", () => {
+        expect(parseUrlPath("https://example.com/a/b?x=1#frag")).toEqual(["a", "b"])
+    })
+
+    it("5、合并连续斜杠产生的空段", () => {
+        expect(parseUrlPath("https://example.com/a//b///c")).toEqual(["a", "b", "c"])
+    })
+
+    it("6、保留百分号编码的路径段", () => {
+        expect(parseUrlPath("https://example.com/a%20b/c%2Fd")).toEqual(["a%20b", "c%2Fd"])
+    })
+
+    it("7、针对相对 URL", () => {
+        expect(parseUrlPath("/a/b")).toEqual(["a", "b"])
+    })
+
+    it("8、针对相对 URL 没有以 / 开头", () => {
+        expect(parseUrlPath("a/b")).toEqual(["a", "b"])
+    })
+
+    it("9、针对相对 URL 以 / 结尾", () => {
+        expect(parseUrlPath("/a/b/")).toEqual(["a", "b"])
+    })
+
+    it("10、处理像 file: 这样的非 HTTP 协议", () => {
+        expect(parseUrlPath("file:///C:/path/to/file")).toEqual(["C:", "path", "to", "file"])
+    })
+})

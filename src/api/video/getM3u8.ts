@@ -14,9 +14,9 @@ export interface M3u8ResData {
     m3u8: string
 }
 
-export function getM3u8API(videoIdLevel: string): ResPromise<Res<M3u8ResData>> {
+export function getM3u8API(fileIdHashResolution: string): ResPromise<Res<M3u8ResData>> {
     return request({
-        url: `${routerGroup}/video/${videoIdLevel}`,
+        url: `${routerGroup}/video/${fileIdHashResolution}`,
         method: "get",
     })
 }

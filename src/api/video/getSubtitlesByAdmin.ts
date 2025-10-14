@@ -14,10 +14,10 @@ export interface SubtitlesByAdminResData {
     label: string
 }
 
-// 根据 videoHashId 和 subtitlesLanguage 获取字幕(用于管理员)
-export function getSubtitlesByAdminAPI(videoHashId: string, subtitlesLanguage: string): ResPromise<Res<SubtitlesByAdminResData>> {
+// 根据 fileIdHash 和 subtitlesLanguage 获取字幕(用于管理员)
+export function getSubtitlesByAdminAPI(fileIdHash: string, subtitlesLanguage: string): ResPromise<Res<SubtitlesByAdminResData>> {
     return request({
-        url: `${routerGroup}/subtitles/${videoHashId}/${subtitlesLanguage}`,
+        url: `${routerGroup}/subtitles/${fileIdHash}/${subtitlesLanguage}`,
         method: "get",
     })
 }

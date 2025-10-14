@@ -69,7 +69,7 @@ const {
 
 // 事件
 const emit = defineEmits<{
-    (event: "tree-update", val: Tree[]): void
+    (event: "tree-update", val: Tree[], videoFileIdHashList: string[]): void
     (event: "video-select", val: Data): void
 }>()
 
@@ -78,7 +78,7 @@ const treeRef = useTemplateRef("treeRef")
 const localTreeList = ref<Tree[]>(treeList) // 本地目录树数据
 
 // hooks
-const { customNodeClass, mediaDialogVisible, selectData, appendVideo, orderLocalTreeList, videoTotal, calcMaxId } = useVideoTocTree(localTreeList)
+const { customNodeClass, mediaDialogVisible, selectData, appendVideo, orderLocalTreeList, videoTotal, calcMaxId, covertToMap } = useVideoTocTree(localTreeList)
 
 // 监听 treeList 变化, 更新组件
 watch(
@@ -101,8 +101,9 @@ const appendChapter = (data: Data) => {
     data.children.push(newChild)
     localTreeList.value = [...localTreeList.value]
     orderLocalTreeList()
+    const { fileIdHashList } = covertToMap(localTreeList.value)
 
-    emit("tree-update", localTreeList.value)
+    emit("tree-update", localTreeList.value, fileIdHashList)
 }
 
 // 删除节点
@@ -120,8 +121,9 @@ const removeNode = (node: Node, data: Data) => {
     children.splice(index, 1)
     localTreeList.value = [...localTreeList.value]
     orderLocalTreeList()
+    const { fileIdHashList } = covertToMap(localTreeList.value)
 
-    emit("tree-update", localTreeList.value)
+    emit("tree-update", localTreeList.value, fileIdHashList)
 }
 
 // 完成编辑(失焦或按回车)
@@ -129,7 +131,8 @@ const finishEdit = (val: string, node: Node, data: Data) => {
     if (val && val.trim() !== data.label) {
         data.label = val.trim()
         localTreeList.value = [...localTreeList.value]
-        emit("tree-update", localTreeList.value)
+        const { fileIdHashList } = covertToMap(localTreeList.value)
+        emit("tree-update", localTreeList.value, fileIdHashList)
     }
 }
 
@@ -137,8 +140,9 @@ const finishEdit = (val: string, node: Node, data: Data) => {
 const handleDrop = () => {
     localTreeList.value = [...localTreeList.value]
     orderLocalTreeList()
+    const { fileIdHashList } = covertToMap(localTreeList.value)
 
-    emit("tree-update", localTreeList.value)
+    emit("tree-update", localTreeList.value, fileIdHashList)
 }
 
 // 双击处理

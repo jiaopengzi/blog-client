@@ -24,12 +24,12 @@ const {
 
 // 事件
 const emit = defineEmits<{
-    (event: "tree-update", val: Tree[]): void
+    (event: "tree-update", val: Tree[], videoFileIdHashList: string[]): void
 }>()
 
 // 监听目录树变化
-const handleTreeUpdate = (val: Tree[]) => {
-    emit("tree-update", val)
+const handleTreeUpdate = (val: Tree[], videoFileIdHashList: string[]) => {
+    emit("tree-update", val, videoFileIdHashList)
 }
 </script>
 

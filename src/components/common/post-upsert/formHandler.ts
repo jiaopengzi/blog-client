@@ -99,6 +99,9 @@ export async function handleSubmit<T extends InsertPostRequest | UpdatePostReque
             if (req.pay_roles?.length === 0) {
                 delete req.pay_roles
             }
+            if (req.video_file_id_hash_list?.length === 0) {
+                delete req.video_file_id_hash_list
+            }
         } else {
             console.error("表单校验失败", fields)
             return

@@ -38,6 +38,7 @@ export interface UpsertPostForm {
     is_recommended: number // 是否推荐阅读
     post_type: PostType // 文章类型
     video_toc: SimplePostVideoTocTree[] // 文章视频目录
+    video_file_id_hash_list: string[] // 文章封面视频文件ID哈希
 }
 
 export interface UpdatePostForm extends UpsertPostForm {

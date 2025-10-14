@@ -47,6 +47,7 @@ export function createEmptyUpsertPostForm(postType: PostType): UpsertPostForm {
                 is_chapter: true,
             },
         ],
+        video_file_id_hash_list: [],
     }
 
     emptyForm.post_type = postType

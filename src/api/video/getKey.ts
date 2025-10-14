@@ -9,9 +9,9 @@
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
-export function getKeyAPI(videoId: string): ResPromise<Res<string>> {
+export function getKeyAPI(fileIdHash: string): ResPromise<Res<string>> {
     return request({
-        url: `${routerGroup}/video/key/${videoId}`,
+        url: `${routerGroup}/video/key/${fileIdHash}`,
         method: "get",
     })
 }
