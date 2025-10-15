@@ -19,7 +19,7 @@
                 >元下载。
             </div>
             <div class="text" v-if="contentPayType === ContentPayType.Video">
-                <PostVideo :post-id="postId" :toc="videoToc" />
+                <PostVideo :post-id="postId" :toc="videoToc" :is-paid="isPaid" />
             </div>
             <div class="text-vip">升级为 VIP 可免费查看(除特定内容外)所有内容。</div>
             <div>
@@ -29,6 +29,7 @@
         </div>
     </div>
     <div class="paid" v-if="isShowContent">
+        <PostVideo :post-id="postId" :toc="videoToc" :is-paid="isPaid" />
         <div v-html="stateManager.getState().html"></div>
     </div>
 </template>

@@ -15,3 +15,11 @@ export function getMainM3u8API(fileIdHash: string): ResPromise<Res<string>> {
         method: "get",
     })
 }
+
+// 管理员获取
+export function getMainM3u8AdminAPI(fileIdHash: string): ResPromise<Res<string>> {
+    return request({
+        url: `${routerGroup}/video/admin/${fileIdHash}`,
+        method: "get",
+    })
+}

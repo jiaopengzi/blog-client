@@ -103,6 +103,7 @@ export interface SimplePostVideoTocTree {
     file_id_hash?: string // 视频文件ID哈希
     video_src?: string // 关联的视频地址
     is_free?: boolean // 是否免费
+    poster?: string // 视频封面
 }
 
 // 文章视频合集目录

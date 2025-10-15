@@ -9,10 +9,10 @@
 <template>
     <div class="pay-video-container">
         <div class="pay-video-player">
-            <VideoPlayer :player-state="state" :key="state.videoID" />
+            <VideoPlayer :player-state="state" />
         </div>
         <div class="pay-video-episode" v-if="isShowEpisode">
-            <VideoEpisode :is-paid="false" :episode-list="toc!" :current-video-order="currentVideoOrder" @video-select="handleSelect" />
+            <VideoEpisode :is-paid="localIsPaid" :episode-list="toc!" :current-video-order="currentVideoOrder" @video-select="handleSelect" />
         </div>
         <div class="pay-video-toc" v-if="isShowToc">
             <VideoTocTreeDisplay :tree-list="localTreeList" :current-node-key="currentTreeId" @video-select="handleSelect" />
@@ -20,7 +20,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { onMounted, ref } from "vue"
+import { onMounted, ref, watch } from "vue"
 
 import { type PostVideoTocTree } from "@/api/post/common"
 import VideoPlayer from "@/components/player"
@@ -34,49 +34,49 @@ import { type PayVideoProps } from "./types.ts"
 defineOptions({ name: "PayVideo" })
 
 // 定义 props
-const { postId, toc } = defineProps<PayVideoProps>()
+const { postId, toc, isPaid } = defineProps<PayVideoProps>()
 const localPostId = ref<string>(postId)
 const localTreeList = ref<PostVideoTocTree[]>(toc || [])
+const localIsPaid = ref<boolean>(isPaid)
 
 // hooks
-const {
-    localMapByFileIdHash,
-    localMapByOrder,
-    localVideoOrders,
-    localFileIdHashList,
-    covertToMap,
-    isShowEpisode,
-    isShowToc,
-    state,
-    updateVideosIsFree,
-    setCurrentVideoProgress,
-    switchVideoProgress,
-    currentVideoOrder,
-    currentTreeId,
-} = usePayVideo(localTreeList, localPostId)
+const { isShowEpisode, isShowToc, state, switchVideoProgress, currentVideoOrder, currentTreeId, fetchData } = usePayVideo(localTreeList, localPostId)
 
 // 用户选择视频
 const handleSelect = (val: Data) => {
     switchVideoProgress(val.file_id_hash)
 }
 
+// 监听 props 变化
+watch(
+    () => postId,
+    (newVal) => {
+        localPostId.value = newVal
+    },
+    { immediate: true },
+)
+
+watch(
+    () => toc,
+    async (newVal) => {
+        localTreeList.value = newVal || []
+
+        // 获取数据
+        await fetchData()
+    },
+)
+
+watch(
+    () => isPaid,
+    (newVal) => {
+        localIsPaid.value = newVal
+    },
+    { immediate: true },
+)
+
 onMounted(async () => {
-    if (!((toc && toc.length > 0) || !postId)) return
-
-    // 转换为 map 结构
-    const { mapByFileIdHash, mapByOrder, videoOrders, fileIdHashList } = covertToMap(localTreeList.value)
-
-    // 设置本地数据
-    localMapByFileIdHash.value = mapByFileIdHash
-    localMapByOrder.value = mapByOrder
-    localVideoOrders.value = videoOrders
-    localFileIdHashList.value = fileIdHashList
-
-    // 更新视频是否免费
-    await updateVideosIsFree()
-
-    // 设置视频和进度
-    await setCurrentVideoProgress(postId)
+    // 获取数据
+    await fetchData()
 })
 </script>
 <style scoped lang="scss">

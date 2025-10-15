@@ -33,31 +33,53 @@ export enum ResponseCode {
     NETWORK_AUTHENTICATION_REQUIRED = 511,
 
     // 用户相关
-    UserRegisterSuccess = 1000, //用户注册成功
-    UserNameExist = 1001, //用户名已存在
-    UserEmailExist = 1002, //用户邮箱已存在
-    UserLoginSuccess = 1008, //用户登录成功
-    UserLoginNameExist = 1010, //用户登录名已存在
-    UserResetPasswordFailed = 1022, //重置密码失败
-    UserResetPasswordSuccess = 1023, //重置密码成功
-    UserGetInfoSuccess = 1024, //获取用户信息成功
-    UserBindEmailSuccess = 1026, //绑定邮箱成功
-    UserEditUserInfoSuccess = 1027, //修改用户信息成功
-    UserGetAllSuccess = 1029, //查询所有用户成功
-    NoUsersFound = 1030, //查询所有用户成功
-    GetUserCountGroupByRolesSuccess = 1031, //查询用户统计成功
-    DeleteUserSuccess = 1032, //删除用户成功
-    UserAddUserSuccess = 1034, //添加用户成功
-    UserNameExistExcludingUserID = 1035, //用户名已存在，排除指定用户ID
-    EmailExistExcludingUserID = 1037, //用户邮箱已存在，排除指定用户ID
-    EditUserInfoByAdminSuccess = 1039, //管理员编辑用户成功
-    UserLogoutByAdminSuccess = 1040, //管理员登出用户成功
-    UserForbidden = 1041, //用户禁用
+    UserRegisterSuccess = 1000, // 用户注册成功
+    UserNameExist = 1001, // 用户名已存在
+    UserEmailExist = 1002, // 邮箱已存在
+    UserCreateFailed = 1003, // 用户创建失败
+    UserValidatorError = 1004, // 用户提交数据校验失败
+    UserInvalidParam = 1005, // 非法参数
+    UserNotExist = 1006, // 用户不存在
+    UserPasswordWrong = 1007, // 密码错误
+    UserLoginSuccess = 1008, // 登录成功
+    UserGenerateTokenFailed = 1009, // 生成token失败
+    UserLoginFailed = 1010, // 登录失败
+    UserAuthorizationEmpty = 1011, // 用户请求头 Authorization 为空
+    UserAuthorizationFormatWrong = 1012, // 用户请求头 Authorization 格式错误
+    UserTokenInvalid = 1013, // 用户token无效
+    UserTokenTypeWrong = 1014, // 用户token类型错误
+    UserTokenExpired = 1015, // 用户token过期
+    UserNameNotExist = 1016, // 用户名不存在
+    EmailNotExist = 1017, // 邮箱不存在
+    RedisCheckUserNameFailed = 1018, // redis 检查用户名失败
+    RedisCheckUserEmailFailed = 1019, // redis 检查用户邮箱失败
+    RedisSAddUserNameFailed = 1020, // redis 写入用户名集合邮箱失败
+    RedisSAddUserEmailFailed = 1021, // redis 写入用户名集合邮箱失败
+    UserResetPasswordFailed = 1022, // 重置密码失败
+    UserResetPasswordSuccess = 1023, // 重置密码成功
+    UserGetInfoSuccess = 1024, // 查询用户信息成功
+    UserUnLogin = 1025, // 用户未登录
+    BindEmailSuccess = 1026, // 用户绑定邮箱成功
+    EditUserInfoSuccess = 1027, // 用户编辑信息成功
+    UserGetInfoError = 1028, // 查询用户信息失败
+    UserGetAllSuccess = 1029, // 查询所有用户信息成功
+    NoUsersFound = 1030, // 没有找到用户
+    GetUserCountGroupByRolesSuccess = 1031, // 按角色分组的用户数量查询成功
+    UserDeleteSuccess = 1032, // 删除用户成功
+    UserNotDeleteItself = 1033, // 不能删除自己
+    UserAddSuccess = 1034, // 添加用户成功
+    UserNameExistExcludingUserID = 1035, // 用户名已存在，排除指定用户ID
+    UserNameNotExistExcludingUserID = 1036, // 用户名不存在，排除指定用户ID
+    EmailExistExcludingUserID = 1037, // 邮箱已存在，排除指定用户ID
+    EmailNotExistExcludingUserID = 1038, // 邮箱不存在，排除指定用户ID
+    EditUserInfoByAdminSuccess = 1039, // 管理员编辑用户信息成功
+    UserLogoutByAdminSuccess = 1040, // 管理员登出用户成功
+    UserForbidden = 1041, // 用户被禁用
     UserNotForbidden = 1042, // 用户正常
     UserUnSubscribeSuccess = 1043, // 用户取消订阅成功
     UserUnSubscribeInvalid = 1044, // 用户取消订阅失败，token 无效
     UserUnSubscribeTypeWrong = 1045, // 用户取消订阅失败，token 类型错误
-    UserLogoutSuccess = 1046, //用户登出成功
+    UserLogoutSuccess = 1046, // 用户登出成功
 
     // 文章相关
     PostInsertSuccess = 2000, // 插入文章标签成功
@@ -311,6 +333,7 @@ export enum ResponseCode {
     UpsertUserVideoProgressSuccess = 8614, // 保存用户单一视频播放进度成功
     GetUserVideoProgressSuccess = 8615, // 获取用户单一视频播放进度成功
     GetUserVideoProgressNoData = 8616, // 获取用户视频合集播放进度无数据
+    VideoHasNoPay = 8617, // 视频未购买
 
     // 系统相关
     ClientIPTooManyRequests = 9006, //客户端IP请求次数过多

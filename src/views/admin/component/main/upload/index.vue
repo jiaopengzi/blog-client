@@ -19,14 +19,14 @@
 
 <script lang="ts" setup>
 import { useHead } from "@unhead/vue"
-import { onBeforeMount, ref, useTemplateRef } from "vue"
+import { onBeforeMount, useTemplateRef } from "vue"
 
 import { handleResErr, ResponseCode } from "@/api/response"
-import type { FFmpeg as FFmpegType, FileAllowed as FileAllowedType, Local as LocalType, OSS as OSSType } from "@/api/setting/getUpload"
-import { getUploadAPI } from "@/api/setting/getUpload"
+import type { FFmpeg as FFmpegType, Local as LocalType, OSS as OSSType } from "@/api/setting/getUpload"
 import { updateUploadAPI, type UpdateUploadRequest } from "@/api/setting/updateUpload"
 import RestartDialog from "@/components/common/restart-dialog"
 import { useRestart } from "@/components/hooks/useRestart"
+import { useSettingUpload } from "@/components/hooks/useSettingUpload"
 import { RouteNames } from "@/router"
 import { MessageUtil } from "@/utils/message"
 import { adminMenuItemMap } from "@/views/admin/component/aside"
@@ -42,18 +42,16 @@ useHead({
     title: adminMenuItemMap[RouteNames.SettingUpload].text,
 })
 
-const fileAllowedList = ref<FileAllowedType[]>([])
-const ffmpegData = ref<FFmpegType>({} as FFmpegType)
-const localData = ref<LocalType>({} as LocalType)
-const ossData = ref<OSSType>({} as OSSType)
-
 // 表单实例
 const fileAllowedRef = useTemplateRef<FileAllowedRef>("fileAllowedRef")
 const ffmpegRef = useTemplateRef<UploadFFmpegFormRef>("ffmpegRef")
 const localRef = useTemplateRef<UploadLocalFormRef>("localRef")
 const ossRef = useTemplateRef<UploadOSSFormRef>("ossRef")
 
-// hooks
+// 配置的 hooks
+const { fileAllowedList, ffmpegData, localData, ossData, fetchData } = useSettingUpload()
+
+// 重启的 hooks
 const { showRestart, waitSeconds, isShowTimer } = useRestart()
 
 const submitForm = async () => {
@@ -101,16 +99,8 @@ const submitForm = async () => {
 }
 
 onBeforeMount(async () => {
-    const res = await getUploadAPI()
-    if (res.data.code === ResponseCode.GetUploadSuccess) {
-        fileAllowedList.value = res.data.data.file_allowed
-        ffmpegData.value = res.data.data.ffmpeg
-        localData.value = res.data.data.local
-        ossData.value = res.data.data.oss
-    } else {
-        handleResErr(res.data)
-        MessageUtil.error(handleResErr(res), 10000)
-    }
+    // 获取数据
+    await fetchData()
 })
 </script>
 

@@ -7,10 +7,21 @@
 -->
 
 <template>
-    <div>
-        <div class="switch-all">
-            <span class="switch">视频文件选项:</span>
+    <div class="media-add-container">
+        <div class="description">
+            <p>
+                HLS 选项开启时，才能设置加密和收费；当前HLS状态为<span class="hls-status">{{ isShowSwitch ? "开启" : "关闭" }}</span
+                >。
+            </p>
+            <p>在【网站配置】>【文件上传配置】>【FFmpeg 上传配置】可设置 HLS 的启用的选项。</p>
+            <p>建议：收费视频加密，免费视频不加密。</p>
+        </div>
+
+        <!-- 视频选项 -->
+        <div class="switch-group">
+            <span v-if="isShowSwitch" class="switch">视频选项:</span>
             <el-switch
+                v-if="isShowSwitch"
                 class="switch"
                 v-model="isEncrypt"
                 inline-prompt
@@ -19,6 +30,7 @@
                 style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
             />
             <el-switch
+                v-if="isShowSwitch"
                 class="switch"
                 v-model="isNoFree"
                 inline-prompt
@@ -28,7 +40,7 @@
             />
         </div>
 
-        <div class="row2">建议:收费视频加密,免费视频不加密."</div>
+        <!-- 上传交互 -->
         <el-upload ref="uploadRef" class="upload" drag multiple :http-request="httpRequest">
             <j-icon :name="IconKeys.Upload" custom-class="icon-upload-filled" />
             <div class="el-upload__text">将文件拖放到此处 或 <em>点击上传</em></div>
@@ -44,11 +56,12 @@
 
 <script lang="ts" setup>
 import { type ElUpload, type UploadRequestOptions } from "element-plus"
-import { onBeforeMount, ref, useTemplateRef } from "vue"
+import { onBeforeMount, ref, useTemplateRef, watch } from "vue"
 
 import { ResponseCode } from "@/api/response"
 import { getUploadFileRequirementsAPI } from "@/api/upload/getUploadFileRequirements"
 import { IconKeys } from "@/components/common/icons"
+import { useSettingUpload } from "@/components/hooks/useSettingUpload"
 import { HashAlgorithm } from "@/utils/hash"
 
 import { uploadByEl } from "./uploadByEl.ts"
@@ -61,13 +74,29 @@ const emit = defineEmits<{
 
 const uploadRef = useTemplateRef<typeof ElUpload>("uploadRef")
 
-const allowedInfo = ref("")
-const chunkSizeServer = ref(1024 * 1024 * 10)
-let hashAlgorithmServer: HashAlgorithm = HashAlgorithm.SHA256
+// 配置的 hooks
+const { ffmpegData, fetchData } = useSettingUpload()
 
 // 上传视频是否加密
 const isEncrypt = ref(true)
 const isNoFree = ref(true)
+
+// 是否显示加密和收费选项
+const isShowSwitch = ref(false)
+
+watch(
+    () => ffmpegData.value.is_generate_hls,
+    (newVal) => {
+        isShowSwitch.value = newVal
+        isEncrypt.value = newVal
+        isNoFree.value = newVal
+    },
+    { immediate: true },
+)
+
+const allowedInfo = ref("")
+const chunkSizeServer = ref(1024 * 1024 * 10)
+let hashAlgorithmServer: HashAlgorithm = HashAlgorithm.SHA256
 
 const httpRequest = async (options: UploadRequestOptions) => {
     try {
@@ -108,11 +137,12 @@ const getAllowedInfo = async () => {
 
 onBeforeMount(async () => {
     await getAllowedInfo()
+    await fetchData()
 })
 </script>
 
 <style lang="scss" scoped>
-.switch-all {
+.switch-group {
     display: flex;
     align-items: center;
 }
@@ -121,10 +151,22 @@ onBeforeMount(async () => {
     margin-right: 10px;
 }
 
-.row2 {
-    margin: 10px 0;
+.description {
+    margin-bottom: 10px;
     font-size: 14px;
-    font-weight: 500;
+
+    p {
+        font-weight: 500;
+        margin: 4px 0;
+        // 行高
+        line-height: 1.5;
+    }
+
+    .hls-status {
+        font-weight: 700;
+        color: var(--jpz-color-primary);
+        margin: 0 4px;
+    }
 }
 
 .icon-upload-filled {

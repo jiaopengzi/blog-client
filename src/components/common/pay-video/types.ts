@@ -11,4 +11,5 @@ import { type PostVideoTocTree } from "@/api/post/common"
 export interface PayVideoProps {
     postId: string // 文章ID
     toc?: PostVideoTocTree[] // 目录
+    isPaid: boolean // 是否付费
 }

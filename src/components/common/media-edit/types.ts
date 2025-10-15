@@ -26,6 +26,7 @@ export interface EditMediaProps {
 
 export interface EditMediaForm {
     file_id: string // 文件ID
+    is_generate_hls: boolean // 是否生成 HLS
     file_name_display: string // 显示名称
     description: string // 描述
     file_id_hash: string // 文件id哈希

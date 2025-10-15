@@ -43,6 +43,7 @@ export function useVideoTocTree(localTreeList: Ref<Tree[]>) {
                 is_chapter: false,
                 is_free: item.is_free,
                 file_id_hash: item.file_id_hash,
+                poster: item.img?.url || "", // 视频封面
             }
 
             // 非 HLS 视频, 则设置视频地址

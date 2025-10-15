@@ -68,6 +68,9 @@ export const createDefaultPlayerState = (): PlayerState => ({
     localVideoSubtitlesURLs: [],
     isIphone: false,
     isShortcutKey: true,
+    showError: false,
+    errMsg: "",
+    isAdmin: false,
 })
 
 /**
@@ -117,7 +120,7 @@ export const createSubtitlesByVideoHashId = async (videoHashId: string | null | 
 
         // 构造字幕项
         const item: SubtitlesItem = {
-            label: Language[subtitlesLanguage as LanguageKey], // 字幕标签，例如 'English', '中文', 'Español' 等
+            label: Language[subtitlesLanguage as LanguageKey], // 字幕标签，例如 'English', '中文' 等
             src: subtitlesURL, // 字幕文件的URL
         }
 

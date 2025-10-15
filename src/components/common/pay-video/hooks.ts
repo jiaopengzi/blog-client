@@ -116,6 +116,11 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
 
         // 设置播放器状态
         if (video && video.file_id_hash) {
+            // 设置封面
+            if (video.poster) {
+                manager.setPoster(video.poster)
+            }
+
             // 设置视频 ID
             manager.setVideoID(video.file_id_hash)
 
@@ -135,6 +140,9 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
 
             // 状态设置为暂停播放
             manager.pause()
+
+            // 将错误展示隐藏
+            manager.setShowError(false)
         }
     }
 
@@ -241,6 +249,26 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
         manager.startTimer(updateProgress)
     }
 
+    // 获取当前视频和进度
+    const fetchData = async () => {
+        if (!((localTreeList.value && localTreeList.value.length > 0) || !postId.value)) return
+
+        // 转换为 map 结构
+        const { mapByFileIdHash, mapByOrder, videoOrders, fileIdHashList } = covertToMap(localTreeList.value)
+
+        // 设置本地数据
+        localMapByFileIdHash.value = mapByFileIdHash
+        localMapByOrder.value = mapByOrder
+        localVideoOrders.value = videoOrders
+        localFileIdHashList.value = fileIdHashList
+
+        // 更新视频是否免费
+        await updateVideosIsFree()
+
+        // 设置视频和进度
+        await setCurrentVideoProgress(postId.value)
+    }
+
     return {
         localMapByFileIdHash,
         localMapByOrder,
@@ -258,5 +286,6 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
         switchVideoProgress,
         currentVideoOrder,
         currentTreeId,
+        fetchData,
     }
 }

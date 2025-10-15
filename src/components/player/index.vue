@@ -20,6 +20,7 @@
             <!-- video元素不使用默认的  controls-->
             <video
                 ref="videoRef"
+                :key="localPlayerState.videoID"
                 :src="localPlayerState.src"
                 :poster="localPlayerState.poster"
                 @timeupdate="handleTimeupdate"
@@ -38,6 +39,7 @@
 
                 您的浏览器不支持 video 标签。请使用最新版本的 Chrome 浏览器观看视频。
             </video>
+
             <!-- 视频控制器 -->
             <div
                 ref="controlsContainerRef"
@@ -53,20 +55,27 @@
                     @update-status="updatePlayerByControls"
                 />
             </div>
-
-            <!-- 播放按钮 -->
         </VideoWatermark>
+
+        <!-- 播放按钮遮罩 -->
         <div v-if="showPlayButton" class="play-button-page" @click="togglePlayPause" @dblclick="handleDblclick">
             <j-icon v-show="!showLoader" :name="IconKeys.Play" custom-class="iconfont" />
             <div v-show="showLoader" class="loader"></div>
         </div>
+
+        <!-- 从播放状态到暂停的透明遮罩 -->
         <div v-if="!showPlayButton" class="play-to-paused-page" :class="{ hidden: controlsHidden }" @click="togglePlayPause" @dblclick="handleDblclick"></div>
+
+        <!-- 错误信息遮罩 -->
+        <div v-if="localPlayerState.showError" class="show-error">
+            <span class="show-error-text">{{ localPlayerState.errMsg }}</span>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { useResizeObserver } from "@vueuse/core"
-import Hls from "hls.js"
+import Hls, { type ErrorData } from "hls.js"
 import screenfull from "screenfull"
 import { computed, onBeforeUnmount, onMounted, reactive, ref, useTemplateRef, watch } from "vue"
 
@@ -75,8 +84,7 @@ import { IconKeys } from "@/components/common/icons"
 import JIcon from "@/components/common/icons"
 import Controls from "@/components/player/components/controls"
 import VideoWatermark from "@/components/player/components/watermark"
-import { CustomLoader } from "@/pkg/hls"
-import { MessageUtil } from "@/utils/message"
+import { createCustomLoaderClass } from "@/pkg/hls"
 
 import { PlayerStateManager } from "./state"
 import { DisabledSubtitles, type LanguageKey, MediaTypes, type PlayerSize, type PlayerState, type PlayLevelLabel, PlayStatus } from "./types"
@@ -148,19 +156,22 @@ const handleEnded = () => {
 // 视频缓冲事件
 const handleWaiting = () => {
     // 如果是播放状态, 则缓冲,否则保持原状态
-    if (localPlayerState.playStatus === PlayStatus.PLAYING) localManager.buffering()
+    if (localPlayerState.playStatus === PlayStatus.PLAYING) {
+        localManager.buffering()
+    }
 }
 
 // 处理可以播放事件
 const handleCanplay = () => {
     // 如果是缓冲状态, 则播放,否则保持原状态
-    if (localPlayerState.playStatus === PlayStatus.BUFFERING) localManager.play()
+    if (localPlayerState.playStatus === PlayStatus.BUFFERING) {
+        localManager.play()
+    }
 }
 
 // 处理缓存进度
 const handleProgressBuffered = () => {
     if (videoRef.value) {
-        // 更新缓存进度
         const buffered = videoRef.value.buffered
         if (buffered.length > 0) {
             const bufferedEnd = buffered.end(buffered.length - 1)
@@ -472,7 +483,6 @@ const updateStateByVideo = () => {
         localManager.setPlaybackRate(videoRef.value.playbackRate)
         videoRef.value.loop = localPlayerState.isLoop
         videoRef.value.volume = localPlayerState.volume.volume / 100
-
         localManager.setUserInput(false)
         localManager.setIsDragging(false)
     }
@@ -536,19 +546,18 @@ watch(
     },
 )
 
-// 将 hls 实例提到外部, 以便销毁
-let hls: Hls | null = null
+let hls: Hls | null = null // 将 hls 实例提到外部, 以便销毁
 
-// load hls
+// 加载 hls
 const loadHls = () => {
     if (Hls.isSupported()) {
         // 创建 hls 实例及配置
         hls = new Hls({
-            loader: CustomLoader,
-            maxMaxBufferLength: 10, // 最大缓冲时间（秒）
-            maxBufferLength: 10, // 缓冲时间（秒）
-            maxBufferSize: 2 * 1024 * 1024, // 缓冲大小（字节），假设每个分片大小约为1MB
-            maxBufferHole: 0.5, // 最大缓冲空洞（秒）
+            loader: createCustomLoaderClass(localPlayerState.isAdmin),
+            maxMaxBufferLength: 10, // 最大缓冲时间(秒)
+            maxBufferLength: 10, // 缓冲时间(秒)
+            maxBufferSize: 2 * 1024 * 1024, // 缓冲大小(字节), 假设每个分片大小约为1MB
+            maxBufferHole: 0.5, // 最大缓冲空洞(秒)
         })
 
         // 加载视频源
@@ -577,68 +586,113 @@ const loadHls = () => {
             // TODO 切换清晰度时, 显示提示信息
         })
 
-        // 监听用户选择清晰度的变化
-        watch(
-            () => localPlayerState.playLevel.level,
-            (newVal) => {
-                const levels = hls?.levels
-                if (levels) {
-                    const levelIndex = levels.findIndex((level) => {
-                        return getVideoQualityLabel(level.height) === newVal
-                    })
-
-                    if (levelIndex !== -1 && hls) {
-                        hls.currentLevel = levelIndex
-                    }
-                }
-            },
-        )
-
         // 处理 HLS 错误
         hls.on(Hls.Events.ERROR, function (event, data) {
             if (data.fatal) {
-                switch (data.type) {
-                    case Hls.ErrorTypes.NETWORK_ERROR:
-                        // 尝试恢复网络错误
-                        // console.warn("fatal network error encountered, try to recover")
-                        hls?.startLoad()
-                        break
-                    case Hls.ErrorTypes.MEDIA_ERROR:
-                        // console.warn("fatal media error encountered, try to recover")
-                        hls?.recoverMediaError()
-                        break
-                    default:
-                        // 无法恢复的错误
-                        // console.warn("fatal error encountered, destroy hls instance")
-                        hls?.destroy()
-                        MessageUtil.error(`播放错误: ${data.details}`, 0)
-                        break
-                }
-                // } else {
-                //     console.warn("non-fatal error encountered:", data)
-            }
-
-            // 处理自定义 loader 中的错误
-            if (data.type === Hls.ErrorTypes.NETWORK_ERROR && data.response && data.response.code) {
-                // 成功的 code
-                const successCodes = [ResponseCode.GetVideoM3u8Success, ResponseCode.GetVideoMainM3u8Success, ResponseCode.GetVideoKeySuccess]
-                // 將 data.response.code 转换为 number 类型
-                const resCode = parseInt(data.response.code.toString())
-                // 如果 code 不在 successCodes 中, 则提示错误信息
-                if (resCode === ResponseCode.VideoNotFound) {
-                    MessageUtil.error("视频不存在", 0)
-                    return
-                }
-
-                if (!successCodes.includes(resCode)) {
-                    MessageUtil.error(`错误代码: ${data.response.code},${data.response.text}`, 0)
-                }
+                handleHlsError(hls, data)
+            } else {
+                hls?.destroy()
+                console.warn("non-fatal error encountered:", data)
             }
         })
     } else {
-        MessageUtil.error("HLS 不支持当前浏览器, 请使用最新版本的 Chrome 浏览器观看视频", 0)
+        localManager.setShowError(true)
+        localManager.setErrMsg("HLS 不支持当前浏览器, 请使用最新版本的 Chrome 浏览器观看视频")
     }
 }
+
+// 处理 hls 错误
+const handleHlsError = (hls: Hls | null, data: ErrorData) => {
+    // 确保 hls 实例和 data.response.code 存在
+    if (!hls || !data.response || !data.response.code) {
+        return
+    }
+
+    // 处理自定义 loader 中的错误
+
+    // 將 data.response.code 转换为 number 类型
+    const resCode = parseInt(data.response.code.toString())
+
+    // 成功的 code
+    const successCodes = [ResponseCode.GetVideoM3u8Success, ResponseCode.GetVideoMainM3u8Success, ResponseCode.GetVideoKeySuccess]
+
+    // 如果是成功的 code, 则直接返回
+    if (successCodes.includes(resCode)) {
+        return
+    }
+
+    // 根据错误码展示不同的错误信息
+    const errMsgMap: Record<number, string> = {
+        [ResponseCode.VideoNotFound]: "视频不存在。",
+        [ResponseCode.VideoHasNoPay]: "付费视频未购买；请购买后观看。",
+        [ResponseCode.UserAuthorizationEmpty]: "请登录后观看视频。",
+        [ResponseCode.UserAuthorizationFormatWrong]: "登录状态异常，请重新登录后观看视频。",
+        [ResponseCode.UserTokenInvalid]: "登录状态异常，请重新登录后观看视频。",
+        [ResponseCode.UserTokenTypeWrong]: "登录状态异常，请重新登录后观看视频。",
+        [ResponseCode.UserTokenExpired]: "登录状态异常，请重新登录后观看视频。",
+    }
+
+    // 如果错误码在 errMsgMap 中，直接展示对应的错误信息
+    if (errMsgMap.hasOwnProperty(resCode)) {
+        const errMsg = errMsgMap[resCode as keyof typeof errMsgMap] || `请求视频资源失败，错误代码: ${data.response.code}，错误信息：${data.response.text}`
+        // 展示错误信息
+        managerShowError(localManager, errMsg)
+
+        // 销毁 hls 实例
+        hls.destroy()
+        return
+    }
+
+    // 其他错误类型，并根据错误类型尝试恢复
+    let errMsg = `请求视频资源失败，错误代码: ${data.response.code}，错误信息：${data.response.text}`
+
+    // 展示错误信息
+    managerShowError(localManager, errMsg)
+
+    switch (data.type) {
+        case Hls.ErrorTypes.NETWORK_ERROR:
+            // 尝试恢复网络错误
+            // console.warn("fatal network error encountered, try to recover")
+            hls.startLoad()
+            break
+        case Hls.ErrorTypes.MEDIA_ERROR:
+            // 尝试恢复媒体错误
+            // console.warn("fatal media error encountered, try to recover")
+            hls.recoverMediaError()
+            break
+        default:
+            // 无法恢复的错误
+            // console.warn("fatal error encountered, destroy hls instance")
+            errMsg = errMsg + ` 播放错误: ${data.details}`
+            localManager.setErrMsg(errMsg)
+            hls.destroy()
+    }
+}
+
+// 展示错误在播放器上
+const managerShowError = (manager: PlayerStateManager, msg: string) => {
+    manager.setShowError(true)
+    manager.setErrMsg(msg)
+}
+
+// 监听用户选择清晰度的变化
+watch(
+    () => localPlayerState.playLevel.level,
+    (newVal) => {
+        if (!hls) return
+        const levels = hls.levels
+        if (levels) {
+            const levelIndex = levels.findIndex((level) => {
+                return getVideoQualityLabel(level.height) === newVal
+            })
+
+            if (levelIndex !== -1 && hls) {
+                hls.currentLevel = levelIndex
+            }
+        }
+    },
+    { immediate: true },
+)
 
 // 监听是否为 iphone, 如果是 iphone 则将 poster 设置为空
 watch(
@@ -654,12 +708,6 @@ watch(
 const updateVideo = () => {
     // 判断视频类型
     if (localPlayerState.mediaType === MediaTypes.HLS) {
-        // 先销毁 hls 实例再加载
-        // if (hls) {
-        //     console.log('存在 销毁 destroy hls instance')
-        //     hls.destroy()
-        // }
-
         loadHls()
     }
 
@@ -767,8 +815,8 @@ video::-webkit-media-controls-enclosure {
         background-color: rgba(0, 0, 0, 0);
     }
 
-    // 播放暂停页面占位元素
-    %play-paused-page {
+    // 绝对定位
+    %absolute-all {
         position: absolute;
         top: 0;
         left: 0;
@@ -779,7 +827,11 @@ video::-webkit-media-controls-enclosure {
         display: flex;
         justify-content: center;
         align-items: center;
-        cursor: pointer;
+    }
+
+    // 播放暂停页面占位元素
+    %play-paused-page {
+        @extend %absolute-all;
         z-index: 2;
 
         .iconfont {
@@ -806,6 +858,22 @@ video::-webkit-media-controls-enclosure {
     // 播放状态下隐藏鼠标
     .play-to-paused-page.hidden {
         cursor: none;
+    }
+
+    // 错误信息显示
+    .show-error {
+        @extend %absolute-all;
+        z-index: 3;
+
+        // 错误文字
+        .show-error-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: red;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
     }
 }
 

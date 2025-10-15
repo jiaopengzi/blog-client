@@ -512,13 +512,27 @@ export class PlayerStateManager {
     }
 
     /**
-     * 销毁播放器状态管理器实例，清理资源并重置状态。
-     * 调用此方法后，播放器状态将恢复为默认状态。
+     * 设置是否展示错误信息。
+     * @param {boolean} flag - 如果为 true，则展示错误信息；如果为 false，则隐藏错误信息。
      */
-    destroy(): void {
-        this.clearLocalVideoSubtitlesURLs()
-        this.state = createDefaultPlayerState()
-        this.stopTimer()
+    setShowError(flag: boolean): void {
+        this.state.showError = flag
+    }
+
+    /**
+     * 设置错误信息内容。
+     * @param {string} msg - 错误信息内容字符串。
+     */
+    setErrMsg(msg: string): void {
+        this.state.errMsg = msg
+    }
+
+    /**
+     * 设置是否为管理员。
+     * @param {boolean} flag - 如果为 true，则表示当前用户为管理员，否则为非管理员。
+     */
+    setIsAdmin(flag: boolean): void {
+        this.state.isAdmin = flag
     }
 
     /**
@@ -535,5 +549,15 @@ export class PlayerStateManager {
      */
     updateState(state: PlayerState): void {
         this.state = state
+    }
+
+    /**
+     * 销毁播放器状态管理器实例，清理资源并重置状态。
+     * 调用此方法后，播放器状态将恢复为默认状态。
+     */
+    destroy(): void {
+        this.clearLocalVideoSubtitlesURLs()
+        this.state = createDefaultPlayerState()
+        this.stopTimer()
     }
 }

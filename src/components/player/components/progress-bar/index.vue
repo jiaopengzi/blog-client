@@ -328,17 +328,16 @@ $bar-height: 6px; // 进度条高度
         color: white;
         border-radius: 3px;
         font-size: 12px;
-        display: none;
         margin: 0;
         padding: 5px;
 
         // 内容水平和垂直居中
-        display: flex;
-        justify-content: center;
-        align-items: center;
         width: max-content;
         height: 20px;
         line-height: 20px;
+
+        // 默认隐藏
+        display: none;
     }
 
     .slider {

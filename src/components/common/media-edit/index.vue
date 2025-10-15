@@ -31,6 +31,10 @@
                     <el-input v-model="editMediaForm.file_id" disabled />
                 </el-form-item>
 
+                <el-form-item label="是否为HLS" prop="is_generate_hls">
+                    <el-input v-model="editMediaForm.is_generate_hls" disabled />
+                </el-form-item>
+
                 <el-form-item label="文件名" prop="file_name_display">
                     <el-input v-model="editMediaForm.file_name_display" :rows="5" type="textarea" />
                 </el-form-item>
@@ -39,6 +43,7 @@
                     <el-switch
                         class="switch"
                         v-model="editMediaForm.is_free"
+                        :disabled="!editMediaForm.is_generate_hls"
                         inline-prompt
                         active-text="免费"
                         inactive-text="收费"
@@ -144,6 +149,7 @@ const playerStateManager = new PlayerStateManager()
 
 // 设置播放器状态
 playerStateManager.setShortcutKey(false) // 禁用快捷键
+playerStateManager.setIsAdmin(true) // 管理员模式
 
 let playerState: PlayerState = playerStateManager.getState()
 
@@ -166,6 +172,7 @@ const hashID = ref("")
 // 表单数据
 const editMediaForm = reactive<EditMediaForm>({
     file_id: "", // 文件ID
+    is_generate_hls: false, // 是否生成 HLS
     file_name_display: "", // 显示名称
     description: "", // 描述
     file_id_hash: "", // 文件id哈希
@@ -184,13 +191,12 @@ const subtitlesForm = reactive<SubtitlesForm>({
 // 更新表单数据
 const updateForm = (data: EditMediaProps) => {
     editMediaForm.file_id = data.file_id
+    editMediaForm.is_generate_hls = data.is_generate_hls
     editMediaForm.file_name_display = data.file_name_display
     editMediaForm.description = data.description
     editMediaForm.file_id_hash = data.file_id_hash
     editMediaForm.file_url = data.file_url
     editMediaForm.is_free = data.is_free
-
-    subtitlesForm.file_id = data.file_id
 
     isVideoFile.value = isVideo(data.file_type)
     hashID.value = editMediaData.file_name.split(".")[0]!

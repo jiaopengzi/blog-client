@@ -115,7 +115,7 @@ export function useInfo(): UseInfoReturnType {
 
                 const res = await editUserInfoAPI(req)
 
-                if (res.data.code === ResponseCode.UserEditUserInfoSuccess) {
+                if (res.data.code === ResponseCode.EditUserInfoSuccess) {
                     await userStore.getUserInfoByToken(true)
                     changeUserNameDisabled()
                     // 显示成功提示

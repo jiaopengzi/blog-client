@@ -140,7 +140,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
             const { data } = await AddUserAPI(req)
 
-            if (data.code === ResponseCode.UserAddUserSuccess) {
+            if (data.code === ResponseCode.UserAddSuccess) {
                 // 轮询后端是否完成
                 await pollingGetStreamIDsStatus(data.data.stream_items)
                 btnLoading.value = false

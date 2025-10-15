@@ -120,7 +120,7 @@ const isCurrentEpisode = (item?: PostVideoTocTree) => {
     }
 
     .episode-index {
-        font-size: 14px;
+        font-size: 16px;
         color: var(--jpz-text-color-secondary);
         text-align: center;
         width: 100%;
@@ -150,7 +150,11 @@ const isCurrentEpisode = (item?: PostVideoTocTree) => {
 
 .episode-item-paid {
     @extend %common-episode-item;
-    padding: 8px 12px 2px 12px;
+    padding: 6px 12px 2px 12px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     .icon {
         display: none;

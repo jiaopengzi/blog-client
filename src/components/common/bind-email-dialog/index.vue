@@ -232,7 +232,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
             const res = await bindEmailAPI(req)
 
-            if (res.data.code === ResponseCode.UserBindEmailSuccess) {
+            if (res.data.code === ResponseCode.BindEmailSuccess) {
                 // 显示注册成功提示
                 userStore.getUserInfoByToken(true) // 强制更新用户信息
                 MessageUtil.success(res.data.msg, 6000)

@@ -15,3 +15,11 @@ export function getKeyAPI(fileIdHash: string): ResPromise<Res<string>> {
         method: "get",
     })
 }
+
+// 管理员获取
+export function getKeyAdminAPI(fileIdHash: string): ResPromise<Res<string>> {
+    return request({
+        url: `${routerGroup}/video/admin/key/${fileIdHash}`,
+        method: "get",
+    })
+}

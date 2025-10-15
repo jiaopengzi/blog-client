@@ -338,7 +338,7 @@ const {
     viewResCode: ResponseCode.UserGetAllSuccess,
     queryParams,
     deleteAPI: deleteUserAPI,
-    deleteResCode: ResponseCode.DeleteUserSuccess,
+    deleteResCode: ResponseCode.UserDeleteSuccess,
     options: { stringKeys, numberKeys, noRequestKeys },
 })
 
