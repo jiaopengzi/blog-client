@@ -333,6 +333,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     // 请求参数
     const params: UpdateFileRequest = {
         file_id: editMediaData.file_id,
+        is_generate_hls: editMediaForm.is_generate_hls,
         file_name_display: editMediaForm.file_name_display,
         description: editMediaForm.description,
         is_free: editMediaForm.is_free,

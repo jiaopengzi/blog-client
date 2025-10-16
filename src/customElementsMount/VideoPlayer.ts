@@ -27,6 +27,7 @@ export const mountVideoPlayerOnCustomElements = (container: HTMLElement, tagName
         const videoType = (el.getAttribute(Attributes.VideoType) || MediaTypes.HLS) as MediaTypes // 未设置默认为 hls
         const videoID = el.getAttribute(Attributes.Id) // hls 设置 videoID
         const videoSrc = el.getAttribute(Attributes.Src) // 非 hls 设置 videoSrc
+        const videoPoster = el.getAttribute(Attributes.Poster) // 视频封面
 
         const videoState = new PlayerStateManager()
         videoState.setMediaType(videoType)
@@ -39,6 +40,11 @@ export const mountVideoPlayerOnCustomElements = (container: HTMLElement, tagName
         // 非 hls 设置 videoSrc
         if (videoSrc) {
             videoState.setSrc(videoSrc)
+        }
+
+        // 设置视频封面
+        if (videoPoster) {
+            videoState.setPoster(videoPoster)
         }
 
         const state = videoState.getState()

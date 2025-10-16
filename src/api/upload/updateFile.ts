@@ -16,6 +16,7 @@ export interface UpdateFileRequest {
     description: string // 描述
     is_free: boolean // 是否免费
     is_video: boolean // 是否为视频
+    is_generate_hls: boolean // 是否生成HLS
 }
 
 export function updateFileAPI(req: UpdateFileRequest): ResPromise<Res<StreamsStatusRes>> {

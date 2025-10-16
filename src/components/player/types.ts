@@ -203,13 +203,14 @@ export interface PlayerState {
     isIphone: boolean
     // 是否开启快捷键
     isShortcutKey: boolean
-
     // 是否展示错误信息
     showError: boolean
-
     // 错误信息
     errMsg: string
-
     // 是否为管理员
     isAdmin: boolean
+    // 是否有目录
+    hasToc: boolean
+    // 是否显示目录
+    isShowToc: boolean
 }

@@ -7,7 +7,7 @@
  */
 
 import { storeToRefs } from "pinia"
-import { computed, type Ref, ref } from "vue"
+import { computed, type Ref, ref, watch } from "vue"
 
 import { type PostVideoTocTree } from "@/api/post/common"
 import { handleResErr, ResponseCode } from "@/api/response"
@@ -57,6 +57,15 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
         },
     }
     manager.setTextWatermark(textWatermark)
+
+    // 设置是否在播放器中显示目录的按钮
+    watch(
+        () => isShowToc.value,
+        (newVal) => {
+            manager.setHasToc(newVal)
+        },
+        { immediate: true },
+    )
 
     // 获取播放器状态
     const state = manager.getState()

@@ -112,25 +112,25 @@ export const adminMenuItemMap: AdminMenuItemMap = {
     //     text: "公告分类",
     //     parentIndex: RouteNamesAdmin.Announcement,
     // },
-    [RouteNamesAdmin.Video]: {
-        text: "视频",
-        icon: {
-            name: IconKeys.Video,
-            class: "icon-menu",
-        },
-    },
-    [RouteNamesAdmin.VideoAll]: {
-        text: "所有视频",
-        parentIndex: RouteNamesAdmin.Video,
-    },
-    [RouteNamesAdmin.VideoPublish]: {
-        text: "发布视频",
-        parentIndex: RouteNamesAdmin.Video,
-    },
-    [RouteNamesAdmin.VideoCategory]: {
-        text: "视频分类",
-        parentIndex: RouteNamesAdmin.Video,
-    },
+    // [RouteNamesAdmin.Video]: {
+    //     text: "视频",
+    //     icon: {
+    //         name: IconKeys.Video,
+    //         class: "icon-menu",
+    //     },
+    // },
+    // [RouteNamesAdmin.VideoAll]: {
+    //     text: "所有视频",
+    //     parentIndex: RouteNamesAdmin.Video,
+    // },
+    // [RouteNamesAdmin.VideoPublish]: {
+    //     text: "发布视频",
+    //     parentIndex: RouteNamesAdmin.Video,
+    // },
+    // [RouteNamesAdmin.VideoCategory]: {
+    //     text: "视频分类",
+    //     parentIndex: RouteNamesAdmin.Video,
+    // },
     [RouteNamesAdmin.Shop]: {
         text: "商城",
         icon: {

@@ -11,6 +11,7 @@ export enum Attributes {
     Id = "id", // 元素 id
     Class = "class", // 元素 class
     VideoType = "video-type", // 视频类型
+    Poster = "poster", // 视频封面
     Src = "src", // 视频地址
     Title = "title", // 标题
     Description = "description", // 描述

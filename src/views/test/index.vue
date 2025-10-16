@@ -11,8 +11,8 @@ import VideoPlayer from "@/components/player"
 defineOptions({ name: "MyTest" })
 
 const videoState = new PlayerStateManager()
-videoState.setVideoID("m-5-c19424aa")
-videoState.setPoster("http://10.10.2.222:7364/api/v1/uploads/2025/10/12/m-9-31df6df9/thumbnail.png")
+videoState.setVideoID("m-26-7f9d0d9c")
+videoState.setPoster("http://10.10.2.222:7364/api/v1/uploads/2025/10/15/j-25-d6eac413.jpg")
 const state = videoState.getState()
 </script>
 

@@ -71,6 +71,8 @@ export const createDefaultPlayerState = (): PlayerState => ({
     showError: false,
     errMsg: "",
     isAdmin: false,
+    hasToc: false,
+    isShowToc: false,
 })
 
 /**

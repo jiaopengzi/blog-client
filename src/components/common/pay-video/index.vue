@@ -9,13 +9,16 @@
 <template>
     <div class="pay-video-container">
         <div class="pay-video-player">
-            <VideoPlayer :player-state="state" />
+            <VideoPlayer :player-state="state">
+                <template #toc>
+                    <div class="video-toc" v-if="isShowToc && state.isShowToc">
+                        <VideoTocTreeDisplay :tree-list="localTreeList" :current-node-key="currentTreeId" @video-select="handleSelect" />
+                    </div>
+                </template>
+            </VideoPlayer>
         </div>
         <div class="pay-video-episode" v-if="isShowEpisode">
             <VideoEpisode :is-paid="localIsPaid" :episode-list="toc!" :current-video-order="currentVideoOrder" @video-select="handleSelect" />
-        </div>
-        <div class="pay-video-toc" v-if="isShowToc">
-            <VideoTocTreeDisplay :tree-list="localTreeList" :current-node-key="currentTreeId" @video-select="handleSelect" />
         </div>
     </div>
 </template>
@@ -40,12 +43,7 @@ const localTreeList = ref<PostVideoTocTree[]>(toc || [])
 const localIsPaid = ref<boolean>(isPaid)
 
 // hooks
-const { isShowEpisode, isShowToc, state, switchVideoProgress, currentVideoOrder, currentTreeId, fetchData } = usePayVideo(localTreeList, localPostId)
-
-// 用户选择视频
-const handleSelect = (val: Data) => {
-    switchVideoProgress(val.file_id_hash)
-}
+const { isShowEpisode, isShowToc, manager, state, switchVideoProgress, currentVideoOrder, currentTreeId, fetchData } = usePayVideo(localTreeList, localPostId)
 
 // 监听 props 变化
 watch(
@@ -74,6 +72,12 @@ watch(
     { immediate: true },
 )
 
+// 用户选择视频
+const handleSelect = (val: Data) => {
+    switchVideoProgress(val.file_id_hash)
+    manager.setIsShowToc(false)
+}
+
 onMounted(async () => {
     // 获取数据
     await fetchData()
@@ -88,10 +92,9 @@ onMounted(async () => {
     box-sizing: border-box;
 
     .pay-video-player,
-    .pay-video-episode,
-    .pay-video-toc {
-        width: 100%;
+    .pay-video-episode {
         display: flex;
+        width: 100%;
         justify-content: center;
         align-items: center;
     }
@@ -101,9 +104,24 @@ onMounted(async () => {
         box-sizing: border-box;
     }
 
-    .pay-video-toc {
-        max-height: 400px;
-        overflow: auto;
+    .pay-video-player {
+        // 相对定位
+        position: relative;
+        width: 100%;
+
+        .video-toc {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            border: 1px solid var(--jpz-border-color);
+            border-radius: 8px;
+            background-color: var(--jpz-bg-color);
+            overflow: auto;
+            // 要比全屏播放的 z-index 高
+            z-index: 1001;
+        }
     }
 }
 </style>

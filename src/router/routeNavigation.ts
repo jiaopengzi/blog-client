@@ -19,14 +19,6 @@ export const navigationRoutes: RouteRecordRaw[] = [
             requiresAuth: false,
         },
     },
-    {
-        path: "/video",
-        name: RouteNames.Video,
-        component: () => import("@/views/test"),
-        meta: {
-            requiresAuth: false,
-        },
-    },
     // {
     //     path: "/doc",
     //     name: RouteNames.Doc,

@@ -55,6 +55,9 @@
                     @update-status="updatePlayerByControls"
                 />
             </div>
+
+            <!-- 用户自定义的目录插槽 -->
+            <slot name="toc"></slot>
         </VideoWatermark>
 
         <!-- 播放按钮遮罩 -->
@@ -799,7 +802,7 @@ video::-webkit-media-controls-enclosure {
         background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3));
         transition: opacity 0.8s;
         opacity: 1;
-        z-index: 3;
+        z-index: 4;
     }
 
     // 控制器隐藏

@@ -374,6 +374,27 @@ export class PlayerStateManager {
     }
 
     /**
+     * 设置是否有目录
+     */
+    setHasToc(flag: boolean): void {
+        this.state.hasToc = flag
+    }
+
+    /**
+     * 设置是否显示目录
+     */
+    setIsShowToc(flag: boolean): void {
+        this.state.isShowToc = flag
+    }
+
+    /**
+     * 切换目录显示状态。
+     */
+    toggleIsShowToc(): void {
+        this.state.isShowToc = !this.state.isShowToc
+    }
+
+    /**
      * 切换画中画模式。
      */
     togglePictureInPicture(): void {

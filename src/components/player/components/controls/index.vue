@@ -35,6 +35,11 @@
                 <!-- 音量控制 -->
                 <el-slider class="volume" v-model="localVolume" size="small" @input="seekVolume" />
 
+                <!-- 目录显示切换 -->
+                <button v-if="localPlayerState.hasToc" type="button" class="controls-btn toc" @click="handleButtonClick(toggleIsShowToc)">
+                    <j-icon :name="IconKeys.Toc" custom-class="iconfont" />
+                </button>
+
                 <!-- 设置 播放速度 清晰度 字幕 -->
                 <!-- 使用 append-to 到对应元素才能保证全屏显示 -->
                 <!-- 参考文档：https://element-plus.org/zh-CN/component/tooltip.html -->
@@ -219,6 +224,9 @@ const handelPlaybackRate = (playbackRate: PlaybackRate) => localManager.setPlayb
 
 // 处理是否循环播放
 const handelIsLoop = () => localManager.toggleLoop()
+
+// 切换目录显示
+const toggleIsShowToc = () => localManager.toggleIsShowToc()
 
 // 切换画中画
 const togglePIP = () => localManager.togglePictureInPicture()

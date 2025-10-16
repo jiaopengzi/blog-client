@@ -330,7 +330,7 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         // 视频
         [CommandsKey.Video]: {
             tip: "视频",
-            prefix: '<video-player video-type="hls" src="" id="',
+            prefix: '<video-player video-type="hls" src="" poster="" id="',
             suffix: '"></video-player>',
             hotKey: "Ctrl+Shift+V",
             icon: IconKeys.Video,
