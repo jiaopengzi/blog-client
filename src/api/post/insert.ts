@@ -16,7 +16,6 @@ export interface InsertPostResData {
     id: string
     created_at: string
     updated_at: string
-    video_toc_id: string
 }
 
 // 插入文章

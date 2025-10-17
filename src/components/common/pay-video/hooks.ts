@@ -44,6 +44,11 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
         return videoTotal.value > 1
     })
 
+    // 是否有视频
+    const hasVideo = computed(() => {
+        return videoTotal.value > 0
+    })
+
     // 实例化播放器状态管理器
     const manager = new PlayerStateManager()
 
@@ -287,6 +292,7 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
         covertToMap,
         isShowEpisode,
         isShowToc,
+        hasVideo,
         manager,
         state,
         updateVideosIsFree,

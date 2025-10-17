@@ -7,7 +7,7 @@
  */
 
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { type Reactive, ref } from "vue"
+import { type Reactive, type Ref, ref } from "vue"
 import { useRoute } from "vue-router"
 
 import { CommentStatusCode, type UpdatePostRequest } from "@/api/post/common"
@@ -34,8 +34,6 @@ export function useEdit(
     postShowMethod: SwitchItem[],
 ) {
     const route = useRoute()
-
-    const videoTocId = ref<string>("")
 
     // 从路由中query中获取值
     const getValueFromQuery = async () => {
@@ -82,8 +80,8 @@ export function useEdit(
                     postInfoForm.post_type = data.post_type
 
                     // 更新视频目录
-                    postInfoForm.video_toc = data.video_toc.toc
-                    videoTocId.value = data.video_toc.id
+                    postInfoForm.video_toc = data.video_toc?.toc || []
+                    postInfoForm.video_file_id_hash_list = []
 
                     if (data.post_push_time) {
                         postInfoForm.post_push_time = data.post_push_time
@@ -127,11 +125,6 @@ export function useEdit(
         // 如果 req 是空对象，则表示表单验证失败
         if (Object.keys(req).length === 0) return false
 
-        // 将视频目录 ID 传给后端
-        if (videoTocId.value) {
-            req.video_toc = { id: videoTocId.value, toc: dataOfUpdate.video_toc }
-        }
-
         return await updatePostAPI(req).then(async (res): Promise<boolean> => {
             if (res.data.code === ResponseCode.PostUpdateSuccess) {
                 postInfoAboutTime.updated_at = new Date(res.data.data.updated_at)
@@ -144,5 +137,5 @@ export function useEdit(
         })
     }
 
-    return { getValueFromQuery, getDataOnBeforeMount, submitForm, videoTocId }
+    return { getValueFromQuery, getDataOnBeforeMount, submitForm }
 }

@@ -87,6 +87,7 @@
 
                 <el-form-item label="视频合集" prop="video_toc">
                     <div class="video-toc-tree">
+                        <el-button v-if="isShowAddTocBtn" type="primary" @click="addDefaultToc">添加合集</el-button>
                         <VideoTocTreeEdit :tree-list="postInfoForm.video_toc" @tree-update="handleUpdate" />
                     </div>
                 </el-form-item>
@@ -287,7 +288,7 @@ const {
 } = useSwitchItem(postInfoForm)
 
 // 视频目录
-const { handleUpdate } = usePostVideoToc(postInfoForm)
+const { defaultToc, handleUpdate, isShowAddTocBtn, addDefaultToc } = usePostVideoToc(postInfoForm)
 
 // 监控标题变化,更新 seo 标题
 watch(
@@ -466,10 +467,9 @@ const {
     getValueFromQuery,
     getDataOnBeforeMount,
     submitForm: editSubmitForm,
-    videoTocId,
 } = useEdit(postInfoForm, rolePaidList, commentStatus, queryKey, stateManager, dataOfUpdate, postInfoAboutTime, postShowMethod)
 
-const { submitForm: addSubmitForm } = useAdd(postInfoForm, queryKey, postInfoAboutTime, router, routeName, videoTocId)
+const { submitForm: addSubmitForm } = useAdd(postInfoForm, queryKey, postInfoAboutTime, router, routeName)
 
 // 数据快照
 const { isUpdate, updatedFields, updateSnapshot } = useSnapshot(postInfoForm)

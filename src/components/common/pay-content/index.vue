@@ -21,7 +21,7 @@
             <div class="text" v-if="contentPayType === ContentPayType.Video">
                 <PostVideo :post-id="postId" :toc="videoToc" :is-paid="isPaid" />
                 <div class="text">
-                    视频内容，付费<span class="price">{{ fenToYuan(price) }}</span
+                    付费内容，付费<span class="price">{{ fenToYuan(price) }}</span
                     >元观看。
                 </div>
             </div>

@@ -18,6 +18,13 @@ export function useVideoTocTree(localTreeList: Ref<Tree[]>) {
     const mediaDialogVisible = ref(false) // 视频文件选择弹窗
     const targetNode = ref<Node | null>(null) // 目标节点(添加视频时用到)
 
+    // 添加视频
+    const appendVideo = (node: Node) => {
+        // 打开媒体文件选择弹窗
+        mediaDialogVisible.value = true
+        targetNode.value = node
+    }
+
     // 选择媒体文件后的回调
     const selectData = (data: TableData[]) => {
         // 如果目标节点不存在, 则插入到根节点
@@ -57,18 +64,10 @@ export function useVideoTocTree(localTreeList: Ref<Tree[]>) {
             }
 
             targetNode.value.data.children.push(baseNode)
-
-            orderLocalTreeList()
         }
 
+        localTreeList.value = [targetNode.value.data] as Tree[]
         mediaDialogVisible.value = false
-    }
-
-    // 添加视频
-    const appendVideo = (node: Node) => {
-        // 打开媒体文件选择弹窗
-        mediaDialogVisible.value = true
-        targetNode.value = node
     }
 
     // 给目录树重新排序

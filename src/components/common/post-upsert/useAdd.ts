@@ -7,7 +7,7 @@
  */
 
 import type { FormInstance } from "element-plus"
-import { type Reactive, type Ref } from "vue"
+import { type Reactive } from "vue"
 import { type Router } from "vue-router"
 
 import { type InsertPostRequest } from "@/api/post/common"
@@ -25,7 +25,6 @@ export function useAdd(
     postInfoAboutTime: PostInfoAboutTime,
     router: Router,
     routeName: RouteNames,
-    videoTocId: Ref<string>,
 ) {
     // 提交表单
     const submitForm = async (formEl: FormInstance | undefined): Promise<boolean> => {
@@ -44,9 +43,6 @@ export function useAdd(
                 // 更新创建时间
                 postInfoAboutTime.created_at = new Date(res.data.data.created_at)
                 postInfoAboutTime.updated_at = new Date(res.data.data.updated_at)
-
-                // 更新视频目录 ID
-                videoTocId.value = res.data.data.video_toc_id
 
                 MessageUtil.success(res.data.msg, 6000)
 

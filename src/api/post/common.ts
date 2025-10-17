@@ -111,15 +111,10 @@ export interface PostVideoTocTree extends SimplePostVideoTocTree {
     children?: PostVideoTocTree[]
 }
 
-// 文章视频合集目录更新
-export interface PostVideoTocUpdate {
-    id: string // 目录ID
-    toc: PostVideoTocTree[] // 目录
-}
-
 // 文章视频合集目录响应
-export interface PostVideoTocRes extends PostVideoTocUpdate {
+export interface PostVideoTocRes {
     post_id: string // 目录ID对应的字段
+    toc: PostVideoTocTree[] // 目录
 }
 
 // 插入文章请求
@@ -173,7 +168,7 @@ export interface UpdatePostRequest {
     is_pinned?: number // 是否置顶
     is_recommended?: number // 是否推荐阅读
     post_type?: PostType // 文章类型
-    video_toc?: PostVideoTocUpdate // 文章视频目录
+    video_toc?: PostVideoTocTree[] // 文章视频目录
     video_file_id_hash_list?: string[] // 文章封面视频文件ID哈希
     update_fields: UpdateFields[] // 显示指出需要更新的字段便于后端处理零值
 }

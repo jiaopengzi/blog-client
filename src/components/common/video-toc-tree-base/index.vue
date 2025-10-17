@@ -43,12 +43,13 @@
     </div>
 
     <!-- 媒体文件选择弹窗 -->
-    <SelectMedia v-if="mediaDialogVisible && showBtns" v-model="mediaDialogVisible" @insert-data="selectData" />
+    <SelectMedia v-if="mediaDialogVisible && showBtns" v-model="mediaDialogVisible" @insert-data="updateNode" />
 </template>
 
 <script lang="ts" setup>
-import { ref, useTemplateRef, watch } from "vue"
+import { ref, watch } from "vue"
 
+import type { TableData } from "@/components/common/base-table"
 import SelectMedia from "@/components/common/media-select/index.vue"
 
 import VideoTocItem from "../video-toc-item"
@@ -69,12 +70,11 @@ const {
 
 // 事件
 const emit = defineEmits<{
-    (event: "tree-update", val: Tree[], videoFileIdHashList: string[]): void
-    (event: "video-select", val: Data): void
+    (event: "tree-update", val: Tree[], videoFileIdHashList: string[]): void // 目录树更新
+    (event: "video-select", val: Data): void // 选择视频文件
+    (event: "delete-root"): void // 删除根节点
 }>()
 
-// 拿到 el-tree 实例
-const treeRef = useTemplateRef("treeRef")
 const localTreeList = ref<Tree[]>(treeList) // 本地目录树数据
 
 // hooks
@@ -89,6 +89,14 @@ watch(
     },
 )
 
+// 提交目录树变化
+const emitTreeUpdate = () => {
+    localTreeList.value = [...localTreeList.value]
+    orderLocalTreeList()
+    const { fileIdHashList } = covertToMap(localTreeList.value)
+    emit("tree-update", localTreeList.value, fileIdHashList)
+}
+
 // 添加章节
 const appendChapter = (data: Data) => {
     // 动态计算id
@@ -99,53 +107,48 @@ const appendChapter = (data: Data) => {
         data.children = []
     }
     data.children.push(newChild)
-    localTreeList.value = [...localTreeList.value]
-    orderLocalTreeList()
-    const { fileIdHashList } = covertToMap(localTreeList.value)
 
-    emit("tree-update", localTreeList.value, fileIdHashList)
+    emitTreeUpdate()
 }
 
 // 删除节点
 const removeNode = (node: Node, data: Data) => {
     const parent = node.parent
 
-    // 如果是根节点, 不能删除
+    // 如果是根节点，且只有一个节点，触发删除根节点事件
     if (parent?.data.length === 1 && localTreeList.value.length === 1) {
-        return
+        emit("delete-root")
     }
 
     const children: Tree[] = parent?.data.children || parent?.data
 
     const index = children.findIndex((d) => d.id === data.id)
     children.splice(index, 1)
-    localTreeList.value = [...localTreeList.value]
-    orderLocalTreeList()
-    const { fileIdHashList } = covertToMap(localTreeList.value)
 
-    emit("tree-update", localTreeList.value, fileIdHashList)
+    emitTreeUpdate()
 }
 
 // 完成编辑(失焦或按回车)
 const finishEdit = (val: string, node: Node, data: Data) => {
     if (val && val.trim() !== data.label) {
         data.label = val.trim()
-        localTreeList.value = [...localTreeList.value]
-        const { fileIdHashList } = covertToMap(localTreeList.value)
-        emit("tree-update", localTreeList.value, fileIdHashList)
+
+        emitTreeUpdate()
     }
+}
+
+// 更新并插入数据
+const updateNode = (data: TableData[]) => {
+    selectData(data)
+    emitTreeUpdate()
 }
 
 // 处理节点拖拽
 const handleDrop = () => {
-    localTreeList.value = [...localTreeList.value]
-    orderLocalTreeList()
-    const { fileIdHashList } = covertToMap(localTreeList.value)
-
-    emit("tree-update", localTreeList.value, fileIdHashList)
+    emitTreeUpdate()
 }
 
-// 双击处理
+// 点击处理
 const handleClick = (data: Data) => {
     if (!data.isChapter) {
         emit("video-select", data)

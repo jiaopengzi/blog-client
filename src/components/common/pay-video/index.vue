@@ -7,7 +7,7 @@
 -->
 
 <template>
-    <div class="pay-video-container">
+    <div class="pay-video-container" v-if="hasVideo">
         <div class="pay-video-player">
             <VideoPlayer :player-state="state">
                 <template #toc>
@@ -43,7 +43,10 @@ const localTreeList = ref<PostVideoTocTree[]>(toc || [])
 const localIsPaid = ref<boolean>(isPaid)
 
 // hooks
-const { isShowEpisode, isShowToc, manager, state, switchVideoProgress, currentVideoOrder, currentTreeId, fetchData } = usePayVideo(localTreeList, localPostId)
+const { isShowEpisode, isShowToc, hasVideo, manager, state, switchVideoProgress, currentVideoOrder, currentTreeId, fetchData } = usePayVideo(
+    localTreeList,
+    localPostId,
+)
 
 // 监听 props 变化
 watch(
