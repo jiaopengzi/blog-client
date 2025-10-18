@@ -1,10 +1,9 @@
-/**
- * @FilePath     : \blog-client\src\views\404\index.ts
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 404 页面
+/*
+ * FilePath    : blog-client\src\views\404\index.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 404 页面
  */
-
 
 export { default } from "./index.vue"

@@ -5,7 +5,7 @@
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * Description : 视频目录逻辑
  */
-import { computed, type Reactive, ref } from "vue"
+import { computed, type Reactive } from "vue"
 
 import type { PostVideoTocTree } from "@/api/post/common"
 
@@ -41,7 +41,6 @@ export function usePostVideoToc(postInfoForm: Reactive<UpsertPostForm>) {
     const handleUpdate = (val: PostVideoTocTree[], fileIdHashList: string[]) => {
         postInfoForm.video_toc = val
         postInfoForm.video_file_id_hash_list = fileIdHashList
-        console.log("============>videoFileIdHashList", fileIdHashList)
     }
 
     return {

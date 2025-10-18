@@ -19,7 +19,7 @@
             status-icon
         >
             <el-form-item>
-                <div class="edit-avatar-div">
+                <div class="edit-avatar-info">
                     <div class="edit-avatar">
                         <AvatarInitials :name="editUserForm.userName" :avatar="avatar" />
                     </div>
@@ -388,7 +388,7 @@ onBeforeMount(() => {
     width: 400px;
 }
 
-.edit-avatar-div {
+.edit-avatar-info {
     // border-top: 2px solid #ebebeb;
     display: flex;
     justify-content: flex-start;

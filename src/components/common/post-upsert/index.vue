@@ -288,7 +288,7 @@ const {
 } = useSwitchItem(postInfoForm)
 
 // 视频目录
-const { defaultToc, handleUpdate, isShowAddTocBtn, addDefaultToc } = usePostVideoToc(postInfoForm)
+const { handleUpdate, isShowAddTocBtn, addDefaultToc } = usePostVideoToc(postInfoForm)
 
 // 监控标题变化,更新 seo 标题
 watch(

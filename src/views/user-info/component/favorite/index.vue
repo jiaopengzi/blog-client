@@ -7,17 +7,9 @@
 -->
 
 <template>
-    <div class="pc">
-        <UserInfoFavoritePC />
-    </div>
-    <div class="phone">
-        <UserInfoFavoritePhone />
-    </div>
+    <div>收藏</div>
 </template>
 <script setup lang="ts">
-import UserInfoFavoritePC from "./pc.vue"
-import UserInfoFavoritePhone from "./phone.vue"
-
 defineOptions({ name: "UserInfoFavorite" })
 </script>
 <style scoped lang="scss"></style>
