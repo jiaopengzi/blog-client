@@ -38,6 +38,7 @@ declare module 'vue' {
     CommonMediaSelect: typeof import('./src/components/common/media-select/index.vue')['default']
     CommonMonthArchive: typeof import('./src/components/common/month-archive/index.vue')['default']
     CommonNavItem: typeof import('./src/components/common/nav-item/index.vue')['default']
+    CommonOrderDetail: typeof import('./src/components/common/order-detail/index.vue')['default']
     CommonOrderRefund: typeof import('./src/components/common/order-refund/index.vue')['default']
     CommonOrderRemark: typeof import('./src/components/common/order-remark/index.vue')['default']
     CommonPayContent: typeof import('./src/components/common/pay-content/index.vue')['default']

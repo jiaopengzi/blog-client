@@ -41,6 +41,7 @@ export interface BaseTableOptions<T extends FormatTableData, K extends Paginatio
  * @param ctx 上下文对象，包含路由名称、获取数据的 API、响应码、查询参数、删除 API 和可选参数等
  */
 export function useBaseTable<T extends FormatTableData, K extends PaginationRequest, Q>(ctx: BaseTableOptions<T, K, Q>) {
+    let isInit = false // 是否初始化
     const { routeName, viewAPI, viewResCode, queryParams, deleteAPI, deleteResCode, options } = ctx
 
     const route = useRoute()
@@ -58,7 +59,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
      * @description: 更新和路由
      */
     const updateRouterPush = async () => {
-        await routerPushByParams(router, routeName, queryParams)
+        await routerPushByParams(router, routeName, queryParams, options?.hash)
     }
 
     // 是否请求
@@ -187,6 +188,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     watch(
         () => route.fullPath,
         async () => {
+            if (!isInit) return
             await updateQueryParams()
             await updatePaginate()
         },
@@ -214,8 +216,11 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     watchDialogOrLoading(editItemDialogVisible)
 
     onBeforeMount(async () => {
-        await updateQueryParams()
-        await updatePaginate()
+        if (!isInit) {
+            await updateQueryParams()
+            await updatePaginate()
+            isInit = true
+        }
     })
 
     return {

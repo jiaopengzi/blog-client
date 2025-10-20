@@ -29,11 +29,13 @@
             <el-input v-if="isShowSearch" class="search filter-operation-item" v-model="search" placeholder="关键字搜索" clearable />
 
             <!-- 其他筛选插槽 -->
-            <slot class="filter-operation-item" name="custom-filter"></slot>
-            <el-button class="filter-operation-item" type="primary" @click="runSearch">搜索</el-button>
+            <!-- <slot class="filter-operation-item" name="custom-filter"></slot> -->
+            <slot name="custom-filter"></slot>
+            <el-button v-if="isShowSearch" class="filter-operation-item" type="primary" @click="runSearch">搜索</el-button>
 
             <!-- 操作插槽 -->
-            <slot class="filter-operation-item operation" name="operation"></slot>
+            <!-- <slot class="filter-operation-item operation" name="operation"></slot> -->
+            <slot name="operation"></slot>
         </div>
 
         <!-- 表格内容 -->
@@ -48,7 +50,7 @@
             :height="height"
         >
             <!-- 选择框 -->
-            <el-table-column type="selection" width="50" align="center" />
+            <el-table-column v-if="isShowDeleteAll" type="selection" width="50" align="center" />
 
             <template v-for="(col, index) in tableColumn">
                 <!-- 图片 -->
@@ -130,7 +132,7 @@
                     <span>操作</span>
                 </template>
                 <template #default="scope">
-                    <el-button size="small" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                    <el-button size="small" type="primary" @click="handleEdit(scope.$index, scope.row)">{{ rowOperationText }}</el-button>
                     <!-- <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button> -->
                 </template>
             </el-table-column>
@@ -261,6 +263,7 @@ const {
     isShowUserDisplayName = true,
     isShowCursorPointer = false,
     loadingDelete = false,
+    rowOperationText = "编辑",
 } = defineProps<{
     pagination: Pagination<TableData> // 分页配置
     tableColumn: TableColumn[] // 表格列配置
@@ -287,6 +290,7 @@ const {
     isShowUserDisplayName?: boolean // 是否显示用户昵称
     isShowCursorPointer?: boolean // 是否显示鼠标指针为手型
     loadingDelete?: boolean // 删除加载状态
+    rowOperationText?: string // 行操作文本
 }>()
 
 // 事件

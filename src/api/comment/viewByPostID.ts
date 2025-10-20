@@ -16,7 +16,7 @@ export interface ViewCommentRequest extends PaginationWithoutKeyWord {
     post_id: string // 文章ID
 }
 
-// 查看文章
+// 查看文章评论
 export function viewByPostIDAPI(requestData: ViewCommentRequest): ResPromise<Res<Pagination<CommentRes>>> {
     const urlStr = routerGroup + "/comment/view-by-post-id"
     return request({

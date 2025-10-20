@@ -42,7 +42,7 @@
 import type { FormInstance, FormRules } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { ref, useTemplateRef } from "vue"
 
-import { type UpdateOrderAdminRequest } from "@/api/order/update_admin"
+import { type UpdateOrderAdminRequest } from "@/api/order/updateAdmin"
 
 import { useOrderRemark } from "./hooks"
 

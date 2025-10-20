@@ -23,17 +23,17 @@
                         <span>{{ tab.label }}</span>
                     </span>
                 </template>
-                <!-- 动态渲染对应的组件 -->
-                <component :is="tab.component" />
+                <!-- 使用 v-if 控制组件的挂载 -->
+                <component v-if="activeTab === tab.hash" :is="tab.component" />
             </el-tab-pane>
         </el-tabs>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ChatLineSquare, Document, Goods, Star, Tickets, View } from "@element-plus/icons-vue"
+import { ChatLineSquare, Goods, Star, Tickets, View } from "@element-plus/icons-vue"
 import { storeToRefs } from "pinia"
-import { computed, ref, watch } from "vue"
+import { computed, type Ref, ref, watch } from "vue"
 import { useRoute, useRouter } from "vue-router"
 
 import BindEmailDialog from "@/components/common/bind-email-dialog"
@@ -43,7 +43,7 @@ import UserInfoComment from "./comment"
 import UserInfoFavorite from "./favorite"
 import UserInfoInfo from "./info"
 import UserInfoOrder from "./order"
-import UserInfoPost from "./post"
+import { UserInfoHash } from "./types"
 import UserInfoVip from "./vip"
 
 defineOptions({ name: "UserInfo" })
@@ -56,7 +56,7 @@ const { device } = storeToRefs(deviceStore)
 const tabPosition = computed(() => (device.value === DeviceType.PHONE ? "top" : "left"))
 
 // 当前激活的 tab
-const activeTab = ref("#info")
+const activeTab: Ref<UserInfoHash> = ref(UserInfoHash.Info)
 
 const router = useRouter()
 const route = useRoute()
@@ -64,37 +64,31 @@ const route = useRoute()
 // tab 配置, 集中管理所有 tab 信息
 const tabsConfig = [
     {
-        hash: "#info",
+        hash: UserInfoHash.Info,
         label: "我的信息",
         icon: View,
         component: UserInfoInfo,
     },
     {
-        hash: "#order",
+        hash: UserInfoHash.Order,
         label: "我的订单",
         icon: Tickets,
         component: UserInfoOrder,
     },
     {
-        hash: "#vip",
+        hash: UserInfoHash.Vip,
         label: "购买会员",
         icon: Goods,
         component: UserInfoVip,
     },
     {
-        hash: "#post",
-        label: "我的文章",
-        icon: Document,
-        component: UserInfoPost,
-    },
-    {
-        hash: "#comment",
+        hash: UserInfoHash.Comment,
         label: "我的评论",
         icon: ChatLineSquare,
         component: UserInfoComment,
     },
     {
-        hash: "#favorite",
+        hash: UserInfoHash.Favorite,
         label: "我的收藏",
         icon: Star,
         component: UserInfoFavorite,
@@ -111,12 +105,12 @@ watch(
     () => route.hash,
     (newHash) => {
         if (newHash === "") {
-            activeTab.value = "#info"
+            activeTab.value = UserInfoHash.Info
             return
         }
 
         if (tabsConfig.some((tab) => tab.hash === newHash)) {
-            activeTab.value = newHash
+            activeTab.value = newHash as UserInfoHash
         }
     },
     { immediate: true },

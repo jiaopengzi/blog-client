@@ -9,7 +9,7 @@
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { type Ref, ref } from "vue"
 
-import { updateOrderAdminAPI, type UpdateOrderAdminRequest } from "@/api/order/update_admin"
+import { updateOrderAdminAPI, type UpdateOrderAdminRequest } from "@/api/order/updateAdmin"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { pollingGetStreamIDsStatus } from "@/utils/getStreamIDsStatus"
 import { MessageUtil } from "@/utils/message"

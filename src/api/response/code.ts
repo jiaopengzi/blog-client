@@ -112,6 +112,11 @@ export enum ResponseCode {
     PostPrevNextSuccess = 2034, // 获取文章上一篇下一篇成功
     PageIDNotFound = 2035, // 页面 ID 未找到
     PageIDSuccess = 2036, // 页面 ID 成功
+    PostIDNotFound = 2037, // 文章 ID 未找到
+    PostViewOwnSuccess = 2038, // 查看文章(自己的)成功
+    PostViewOwnIsNone = 2039, // 查看文章(自己的)无数据
+    PostStarGetOwnIsNone = 2040, // 获取自己收藏的文章无数据
+    PostStarGetOwnSuccess = 2041, // 获取自己收藏的文章成功
 
     // 文章标签相关
     PostTagInsertSuccess = 2100, // 插入文章标签成功

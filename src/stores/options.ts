@@ -47,16 +47,16 @@ export interface FooterInfo {
 
 // 网站配置选项
 export interface OptionsStore {
-    app_options: GetAPPOptionResponse
-    footer: FooterInfo
-    isLoadedOptions: boolean
-    head: HeadProps
-    navList: NavItemProps[]
-    navObj: Record<string, NavItemProps>
-    navActiveIndex: string
-    ipInfo: IpInfoRes
-    wechatPayStatus: boolean
-    alipayStatus: boolean
+    app_options: GetAPPOptionResponse // 网站配置选项数据
+    footer: FooterInfo // 底部信息
+    isLoadedOptions: boolean // 是否加载完成网站配置选项
+    head: HeadProps // 头部信息
+    navList: NavItemProps[] // 导航列表
+    navObj: Record<string, NavItemProps> // 导航对象
+    navActiveIndex: string // 当前激活的导航索引
+    ipInfo: IpInfoRes // ip 信息
+    wechatPayStatus: boolean // 微信支付状态
+    alipayStatus: boolean // 支付宝支付状态
 }
 
 // 创建一个空的选项存储
@@ -177,8 +177,13 @@ export const useOptionsStore = defineStore("options", {
                 this.footer = JSON.parse(footer) as FooterInfo
             }
 
-            // 支付状态必须从服务器获取
-            await this.updatePayConfig()
+            // 从本地获取支付状态
+            const payStatus = localStorage.getItem(LocalStorageKey.PayStatus)
+            if (payStatus) {
+                const payStatusObj = JSON.parse(payStatus) as { wechatPayStatus: boolean; alipayStatus: boolean }
+                this.wechatPayStatus = payStatusObj.wechatPayStatus
+                this.alipayStatus = payStatusObj.alipayStatus
+            }
         },
 
         // 从服务器获取网站配置
@@ -221,6 +226,9 @@ export const useOptionsStore = defineStore("options", {
                 this.wechatPayStatus = false
                 this.alipayStatus = false
             }
+
+            // 存入本地
+            localStorage.setItem(LocalStorageKey.PayStatus, JSON.stringify({ wechatPayStatus: this.wechatPayStatus, alipayStatus: this.alipayStatus }))
         },
 
         // 初始化头部信息

@@ -69,13 +69,13 @@ import { type QueryParamsRecord } from "@/api/request"
 import { ResponseCode } from "@/api/response"
 import type { TableColumn, TableData } from "@/components/common/base-table"
 import BaseTable from "@/components/common/base-table/index.vue"
+import OrderDetail from "@/components/common/order-detail"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { useParams } from "@/components/hooks/useParams"
 import { RouteNames } from "@/router"
 import { adminMenuItemMap } from "@/views/admin/component/aside"
 
 import { useOrder } from "./hooks"
-import OrderDetail from "./order-detail"
 defineOptions({ name: RouteNames.Order })
 
 useHead({

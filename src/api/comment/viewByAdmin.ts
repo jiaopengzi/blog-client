@@ -18,7 +18,7 @@ export interface ViewCommentByAdminRequest extends PaginationRequest {
     status?: CommentReviewCode // 评论状态
 }
 
-// 查看文章
+// 查看文章评论
 export function viewCommentByAdminAPI(requestData: ViewCommentByAdminRequest): ResPromise<Res<Pagination<CommentResAdmin>>> {
     const urlStr = routerGroup + "/comment/view-by-admin"
     return request({

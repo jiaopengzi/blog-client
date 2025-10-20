@@ -15,6 +15,7 @@ import { type MembershipRes } from "@/api/membership/common"
 import { type NotificationRes } from "@/api/notification/common"
 import { type OrderGetByIDRes } from "@/api/order/common"
 import { type PostResPaginationByAdmin } from "@/api/post/common"
+import { type PostStarRes } from "@/api/post/starGetOwn"
 import { type PostCategory } from "@/api/postCategory/view"
 import { type PostTag } from "@/api/postTag/view"
 import { type MediaFile } from "@/api/upload/getFiles"
@@ -46,6 +47,7 @@ export type TableData =
     | AccountKeyItemRes
     | AccountKeyRes
     | PostResPaginationByAdmin
+    | PostStarRes
     | PostTag
     | PostCategory
     | MediaFile
