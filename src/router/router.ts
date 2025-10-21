@@ -11,6 +11,7 @@ import { createRouter, createWebHistory } from "vue-router"
 import {
     authMiddleware,
     beforeunloadMiddleware,
+    checkoutMiddleware,
     editorMiddleware,
     handleMiddleware,
     homeMiddleware,
@@ -32,6 +33,7 @@ router.beforeEach(async (to, from) => {
     const middlewares = [
         authMiddleware,
         beforeunloadMiddleware,
+        checkoutMiddleware,
         editorMiddleware,
         homeMiddleware,
         pageMiddleware,

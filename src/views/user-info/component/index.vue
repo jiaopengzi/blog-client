@@ -25,6 +25,7 @@
                 </template>
                 <!-- 使用 v-if 控制组件的挂载 -->
                 <component v-if="activeTab === tab.hash" :is="tab.component" />
+                <!-- <component :is="tab.component" /> -->
             </el-tab-pane>
         </el-tabs>
     </div>

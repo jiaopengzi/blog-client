@@ -8,6 +8,7 @@
 
 export * from "./auth"
 export * from "./beforeunload"
+export * from "./checkout"
 export * from "./editor"
 export * from "./home"
 export * from "./page"
