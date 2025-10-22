@@ -2,10 +2,9 @@
  * @FilePath     : \blog-client\src\pkg\codemirror\extension\imgUpload.ts
  * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
+ * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * @Description  : 图片上传
  */
-
 
 import type { Extension } from "@codemirror/state"
 import { EditorView } from "@codemirror/view"
@@ -19,7 +18,7 @@ const handlePasteImage: Extension = EditorView.domEventHandlers({
     paste: (event, view) => {
         if (!event.clipboardData || !event.clipboardData.items) return
         // 获取剪切板中的图片文件
-        console.log("剪贴板", event.clipboardData.files)
+        // console.log("剪贴板", event.clipboardData.files)
         let file = null
         for (const item of event.clipboardData.items) {
             if (item.type.indexOf("image") === 0) {

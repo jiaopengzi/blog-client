@@ -10,7 +10,6 @@
 export enum UserInfoHash {
     Info = "#info",
     Order = "#order",
-    Vip = "#vip",
     Comment = "#comment",
     Favorite = "#favorite",
 }

@@ -12,6 +12,11 @@
             <!-- 标题 -->
             <h4 v-if="col.isHeading">{{ scope.row[col.prop] }}</h4>
 
+            <!-- 标题包含标题ID -->
+            <el-button v-if="col.isHeadingWithId" @click="handleViewWithID(scope.row)" class="title-with-id" type="default">{{
+                scope.row[col.prop]
+            }}</el-button>
+
             <!-- 作者 -->
             <UserItem
                 v-if="col.isUser"
@@ -36,6 +41,7 @@
                 v-if="col.isCommentWithPost"
                 :key="`${scope.row[col.prop]}`"
                 :post="scope.row[col.prop]"
+                :is-admin="col.isCommentWithAdmin"
                 @post-click="handlePostClick"
                 @view-post="handleViewPost"
             />
@@ -67,7 +73,7 @@ import CommentPostItem from "@/components/common/comment-post-item"
 import TagItem from "@/components/common/tag-item"
 import UserItem from "@/components/common/user-item"
 
-import type { TableColumn } from "../types"
+import type { TableColumn, TableData } from "../types"
 
 defineOptions({ name: "CustomCol" })
 
@@ -123,11 +129,26 @@ const handlePostClick = (postID: string) => {
 const handleViewPost = (postID: string) => {
     emit("view-post", postID)
 }
+
+// 处理带有 ID 的查看文章事件
+const handleViewWithID = (row: TableData) => {
+    if (!row || !row.id) {
+        return
+    }
+    emit("view-post", row.id)
+}
 </script>
 
 <style lang="scss" scoped>
 .markdown-preview {
     overflow: auto;
     padding: 4px;
+}
+
+.title-with-id {
+    font-weight: bold;
+    text-align: center;
+    border: none;
+    background-color: transparent;
 }
 </style>

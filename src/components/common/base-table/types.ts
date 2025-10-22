@@ -34,10 +34,12 @@ export interface TableColumn {
     isCategories?: boolean // 是否为分类
     isTags?: boolean // 是否为标签
     isHeading?: boolean // 是否为标题
+    isHeadingWithId?: boolean // 是否为标题带有ID
     isHeadingWithComment?: boolean // 是否为标题带有评论信息
     isUser?: boolean // 是否为用户
     isUserWithAvatar?: boolean // 是否使用用户头像
     isCommentWithPost?: boolean // 是否为评论带有文章信息
+    isCommentWithAdmin?: boolean // 是否为管理员查看评论
     isMarkdownPreview?: boolean // 是否为Markdown预览
     formatter?: (row: TableData) => void // 格式化函数
 }

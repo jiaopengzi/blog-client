@@ -13,6 +13,7 @@
             @update-current-page="updateCurrentPage"
             @update-page-size="updatePageSize"
             @edit-item-update-dialog-visible="editItemUpdateDialogVisible"
+            @view-post="handleViewPost"
         >
         </BaseTable>
     </section>
@@ -29,6 +30,7 @@ import type { TableColumn } from "@/components/common/base-table"
 import BaseTable from "@/components/common/base-table/index.vue"
 import { generateColsUserInfoFavorite } from "@/components/common/post-list-admin/cols"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
+import { usePostView } from "@/components/hooks/usePostView"
 import { RouteNames } from "@/router"
 
 import { UserInfoHash } from "../types"
@@ -60,4 +62,6 @@ const {
     queryParams,
     options: { numberKeys, hash: UserInfoHash.Favorite },
 })
+
+const { handleViewPost } = usePostView()
 </script>

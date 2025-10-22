@@ -6,6 +6,7 @@
  * @Description  : 获取用户信息
  */
 
+import type { PgSqlDateTime } from "@/api/common"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -32,57 +33,78 @@ export interface User {
     role: string
 }
 
+// 用户元信息
+export interface UserMeta {
+    // id: number
+    // created_at: string
+    // updated_at: string
+    // deleted_at: string
+    user_id: string
+    meta_key: string
+    meta_value: string
+}
+
+// 用户手机号信息
+export interface UserMobile {
+    // id: number
+    // created_at: string
+    // updated_at: string
+    // deleted_at: string
+    user_id: string
+    mobile: string
+    region: string
+}
+
+// 用户qq信息
+export interface UserQQ {
+    // id: number
+    // created_at: string
+    // updated_at: string
+    // deleted_at: string
+    user_id: string
+    openid: string
+    nickname: string
+    sex: string
+    province: string
+    city: string
+    avatar: string
+}
+
+// 用户微信信息
+export interface UserWechat {
+    // id: number
+    // created_at: string
+    // updated_at: string
+    // deleted_at: string
+    user_id: string
+    openid: string
+    unionid: string
+    nickname: string
+    sex: string
+    country: string
+    province: string
+    city: string
+    avatar: string
+}
+
+// 会员信息
+export interface membership {
+    id: string
+    created_at: string
+    user_id: string
+    membership_id: string
+    role: string
+    expire_time: PgSqlDateTime
+}
+
 // 用户信息
 export interface UserInfo {
     user: User
-    user_meta: [
-        {
-            // id: number
-            // created_at: string
-            // updated_at: string
-            // deleted_at: string
-            user_id: number
-            meta_key: string
-            meta_value: string
-        },
-    ]
-    user_mobile: {
-        // id: number
-        // created_at: string
-        // updated_at: string
-        // deleted_at: string
-        user_id: number
-        mobile: string
-        region: string
-    }
-    user_qq: {
-        // id: number
-        // created_at: string
-        // updated_at: string
-        // deleted_at: string
-        user_id: number
-        openid: string
-        nickname: string
-        sex: string
-        province: string
-        city: string
-        avatar: string
-    }
-    user_wechat: {
-        // id: number
-        // created_at: string
-        // updated_at: string
-        // deleted_at: string
-        user_id: number
-        openid: string
-        unionid: string
-        nickname: string
-        sex: string
-        country: string
-        province: string
-        city: string
-        avatar: string
-    }
+    user_meta: UserMeta[]
+    user_mobile: UserMobile
+    user_qq: UserQQ
+    user_wechat: UserWechat
+    membership_items: membership[]
 }
 
 // 默认的 UserInfo 空对象
@@ -106,7 +128,7 @@ export function emptyUserInfo(): UserInfo {
                 // created_at: '',
                 // updated_at: '',
                 // deleted_at: '',
-                user_id: 0,
+                user_id: "",
                 meta_key: "",
                 meta_value: "",
             },
@@ -116,7 +138,7 @@ export function emptyUserInfo(): UserInfo {
             // created_at: '',
             // updated_at: '',
             // deleted_at: '',
-            user_id: 0,
+            user_id: "",
             mobile: "",
             region: "",
         },
@@ -125,7 +147,7 @@ export function emptyUserInfo(): UserInfo {
             // created_at: '',
             // updated_at: '',
             // deleted_at: '',
-            user_id: 0,
+            user_id: "",
             openid: "",
             nickname: "",
             sex: "",
@@ -138,7 +160,7 @@ export function emptyUserInfo(): UserInfo {
             // created_at: '',
             // updated_at: '',
             // deleted_at: '',
-            user_id: 0,
+            user_id: "",
             openid: "",
             unionid: "",
             nickname: "",
@@ -148,5 +170,18 @@ export function emptyUserInfo(): UserInfo {
             city: "",
             avatar: "",
         },
+        membership_items: [
+            {
+                id: "",
+                created_at: "",
+                user_id: "",
+                membership_id: "",
+                role: "",
+                expire_time: {
+                    Time: null,
+                    Valid: false,
+                },
+            },
+        ],
     }
 }

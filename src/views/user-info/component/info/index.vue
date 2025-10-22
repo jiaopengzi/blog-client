@@ -8,11 +8,10 @@
 <template>
     <div class="container">
         <div class="my-info">
-            <el-descriptions title="我的信息" :column="3" size="large" border>
-                <el-descriptions-item label="文章">86</el-descriptions-item>
-                <el-descriptions-item label="评论">53</el-descriptions-item>
+            <el-descriptions title="基础信息" :column="3" size="large" border>
                 <el-descriptions-item label="注册时间">{{ formatRegisterTime }}</el-descriptions-item>
-                <el-descriptions-item label="最后登录">53</el-descriptions-item>
+                <el-descriptions-item label="角色">{{ userSysRole }}</el-descriptions-item>
+                <el-descriptions-item label="会员" v-if="userMembershipRole">{{ userMembershipRole }}</el-descriptions-item>
             </el-descriptions>
         </div>
 
@@ -116,6 +115,8 @@ const {
     userNameDisabled,
     email,
     updateAvatarToDB,
+    userSysRole,
+    userMembershipRole,
 } = useInfo()
 </script>
 <style scoped lang="scss">

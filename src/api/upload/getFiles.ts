@@ -16,7 +16,7 @@ export interface GetMediaFilesRequest extends PaginationRequest {
 
 // 每行媒体文件信息
 export interface MediaFile extends DataWithImg {
-    id: number // 媒体文件 ID
+    id: string // 媒体文件 ID
     created_at: string // 注册时间
     file_name: string // 文件名 id 和 hash组成
     file_name_display: string // 文件显示名

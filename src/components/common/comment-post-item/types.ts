@@ -10,4 +10,5 @@ import { type CommentPostRes } from "@/api/comment/common"
 
 export interface PostProps {
     post: CommentPostRes // 用户信息
+    isAdmin?: boolean // 是否为管理员查看
 }

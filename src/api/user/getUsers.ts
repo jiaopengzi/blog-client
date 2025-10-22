@@ -42,7 +42,7 @@ export async function getUsersAPI(
 
 // 每行用户信息
 export interface User extends DataWithImg {
-    id: number // 用户 ID
+    id: string // 用户 ID
     user_name: string // 用户名
     user_display_name: string // 昵称
     user_email: string // 邮箱

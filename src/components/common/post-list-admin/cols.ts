@@ -165,13 +165,13 @@ export function generateCols(postType: PostType) {
 // 获取用户中心收藏字段
 export function generateColsUserInfoFavorite() {
     const baseColumns: TableColumn[] = [
-        {
-            prop: "id",
-            label: "ID",
-            sortable: true,
-            width: 200,
-            align: "center",
-        },
+        // {
+        //     prop: "id",
+        //     label: "ID",
+        //     sortable: true,
+        //     width: 200,
+        //     align: "center",
+        // },
         {
             prop: "thumbnail",
             label: "图片",
@@ -184,7 +184,7 @@ export function generateColsUserInfoFavorite() {
             label: "标题",
             sortable: true,
             align: "center",
-            isHeading: true,
+            isHeadingWithId: true,
         },
     ]
 

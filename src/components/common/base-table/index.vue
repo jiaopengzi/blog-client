@@ -85,6 +85,9 @@
                 <!-- 标题 -->
                 <CustomCol v-else-if="col.isHeading" :key="`heading-${index}`" :col="col" />
 
+                <!-- 包含 id 信息的 标题 -->
+                <CustomCol v-else-if="col.isHeadingWithId" :key="`heading-with-id-${index}`" :col="col" @view-post="handleViewPost" />
+
                 <!-- 作者 -->
                 <CustomCol
                     v-else-if="col.isUser"

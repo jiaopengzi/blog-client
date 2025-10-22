@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { ChatLineSquare, Goods, Star, Tickets, View } from "@element-plus/icons-vue"
+import { ChatLineSquare, Star, Tickets, View } from "@element-plus/icons-vue"
 import { storeToRefs } from "pinia"
 import { computed, type Ref, ref, watch } from "vue"
 import { useRoute, useRouter } from "vue-router"
@@ -45,7 +45,6 @@ import UserInfoFavorite from "./favorite"
 import UserInfoInfo from "./info"
 import UserInfoOrder from "./order"
 import { UserInfoHash } from "./types"
-import UserInfoVip from "./vip"
 
 defineOptions({ name: "UserInfo" })
 
@@ -75,12 +74,6 @@ const tabsConfig = [
         label: "我的订单",
         icon: Tickets,
         component: UserInfoOrder,
-    },
-    {
-        hash: UserInfoHash.Vip,
-        label: "购买会员",
-        icon: Goods,
-        component: UserInfoVip,
     },
     {
         hash: UserInfoHash.Comment,

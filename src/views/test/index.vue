@@ -1,27 +1,25 @@
+<!--
+ * FilePath    : blog-client\src\views\user-info\component\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 用户信息组件
+-->
+
 <template>
-    <div class="container">
-        <VideoPlayer :player-state="state" :key="state.videoID" />
+    <!-- 内容页 -->
+    <div class="content">
+        <el-tabs type="border-card" tab-position="left" v-model="activeTab">
+            <el-tab-pane> test </el-tab-pane>
+        </el-tabs>
     </div>
 </template>
 
 <script setup lang="ts">
-import { PlayerStateManager } from "@/components/player"
-import VideoPlayer from "@/components/player"
+import { ref } from "vue"
 
-defineOptions({ name: "MyTest" })
-
-const videoState = new PlayerStateManager()
-videoState.setVideoID("m-26-7f9d0d9c")
-videoState.setPoster("http://10.10.2.222:7364/api/v1/uploads/2025/10/15/j-25-d6eac413.jpg")
-const state = videoState.getState()
+defineOptions({ name: "UserInfo" })
+// 当前激活的 tab
+const activeTab = ref("test")
 </script>
-
-<style scoped lang="scss">
-// 让视频播放器水平垂直居中
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-</style>
+<style scoped lang="scss"></style>

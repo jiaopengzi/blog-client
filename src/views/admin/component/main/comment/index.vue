@@ -105,7 +105,6 @@
 import type { Completion } from "@codemirror/autocomplete"
 import { useHead } from "@unhead/vue"
 import { computed, reactive, type Ref, ref, watch } from "vue"
-import { useRouter } from "vue-router"
 
 import { batchOperationCommentStatusAPI, type BatchOperationCommentStatusRequest, type CommentStatusOperation } from "@/api/comment/batchOperationCommentStatus"
 import { type CommentResAdmin, CommentReviewCode, CommentStatusDisplay } from "@/api/comment/common"
@@ -121,6 +120,7 @@ import type { TableColumn, TableData } from "@/components/common/base-table"
 import BaseTable from "@/components/common/base-table/index.vue"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { useParams } from "@/components/hooks/useParams"
+import { usePostView } from "@/components/hooks/usePostView"
 import { RouteNames } from "@/router"
 import { confirmCommon } from "@/utils/confirm"
 import { pollingGetStreamIDsStatus } from "@/utils/getStreamIDsStatus"
@@ -179,6 +179,7 @@ const cols: TableColumn[] = reactive([
         minWidth: 120,
         align: "center",
         isCommentWithPost: true,
+        isCommentWithAdmin: true,
     },
     {
         prop: "created_at",
@@ -202,7 +203,7 @@ const commentStatusOperationList = ref<CommentStatusOperation[]>([])
 
 const commentOperationSelect = ref<CommentReviewCode>()
 
-const router = useRouter()
+const { handleViewPost } = usePostView()
 
 // 获取头部数据
 const { commentCountGroup, allGroup, activeGroup, getCommentCountStatus } = useHeader()
@@ -301,14 +302,6 @@ const handleClickPostTitle = async (postID: string) => {
     }
 
     await updateRouterPush()
-}
-
-// 处理查看文章详情
-const handleViewPost = (postID: string) => {
-    router.push({
-        name: RouteNames.Home,
-        query: { [queryKey.PostID]: postID },
-    })
 }
 
 // 处理作者点击事件

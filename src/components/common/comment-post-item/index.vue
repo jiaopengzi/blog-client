@@ -8,13 +8,16 @@
 
 <template>
     <div class="post-container">
-        <el-badge v-if="pendingCount > 0" :value="pendingCount" class="badge-item title-container" :max="99" :offset="[9, 8]">
+        <el-badge v-if="pendingCount > 0 && isAdmin" :value="pendingCount" class="badge-item title-container" :max="99" :offset="[9, 8]">
             <el-button class="post-title" type="default" @click="handlePostClick">{{ `${post.post_title} (${allCount})` }}</el-button>
             <el-button class="post-view" type="default" @click="handleViewPostClick">查看文章</el-button>
         </el-badge>
-        <div v-else class="title-container">
+        <div v-if="pendingCount === 0 && isAdmin" class="title-container">
             <el-button class="post-title post-title-without-badge" type="default" @click="handlePostClick">{{ `${post.post_title} (${allCount})` }}</el-button>
             <el-button class="post-view" type="default" @click="handleViewPostClick">查看文章</el-button>
+        </div>
+        <div v-if="!isAdmin" class="title-container">
+            <el-button class="post-title post-title-without-badge" type="default" @click="handleViewPostClick">{{ `${post.post_title}` }}</el-button>
         </div>
     </div>
 </template>
@@ -29,7 +32,7 @@ import type { PostProps } from "./types"
 defineOptions({ name: "CommentPostItem" })
 
 // 定义 props
-const { post } = defineProps<PostProps>()
+const { post, isAdmin = false } = defineProps<PostProps>()
 
 // 事件
 const emit = defineEmits<{

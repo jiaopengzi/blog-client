@@ -44,6 +44,8 @@ export interface UseInfoReturnType {
     userNameDisabled: Ref<boolean>
     email: ComputedRef<string>
     updateAvatarToDB(avatarUrl: string): void
+    userSysRole: ComputedRef<string>
+    userMembershipRole: ComputedRef<string>
 }
 
 export function useInfo(): UseInfoReturnType {
@@ -81,6 +83,34 @@ export function useInfo(): UseInfoReturnType {
         return userData.value.user.id.toString() === userData.value.user.user_email ? "" : userData.value.user.user_email
     })
 
+    // 获取用户系统角色
+    const userSysRole = computed(() => {
+        if (userData.value.user_meta) {
+            for (const meta of userData.value.user_meta) {
+                if (meta.meta_key === "role_name") {
+                    return meta.meta_value
+                }
+            }
+        }
+        return ""
+    })
+
+    // 获取用户系统角色
+    const userMembershipRole = computed(() => {
+        const membershipItems = []
+        if (userData.value.membership_items) {
+            for (const item of userData.value.membership_items) {
+                if (!item.expire_time.Valid || (item.expire_time.Time && new Date(item.expire_time.Time) > new Date())) {
+                    membershipItems.push(item)
+                }
+            }
+        }
+
+        // 对会员角色去重并返回逗号分隔字符串
+        const uniqueRoles = new Set<string>()
+        membershipItems.forEach((item) => uniqueRoles.add(item.role))
+        return Array.from(uniqueRoles).join(", ")
+    })
     const userNameRef = toRef(editForm, "userName")
     const excludingUserIDRef = toRef(userData.value.user.id.toString())
 
@@ -232,5 +262,7 @@ export function useInfo(): UseInfoReturnType {
         userNameDisabled,
         email,
         updateAvatarToDB,
+        userSysRole,
+        userMembershipRole,
     }
 }
