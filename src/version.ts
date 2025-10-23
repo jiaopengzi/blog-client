@@ -8,28 +8,51 @@
 
 import pkg from "../package.json"
 
-// 项目信息
-const INFO = {
-    name: pkg.name,
-    version: pkg.version,
-    description: pkg.description,
-    author: pkg.author,
-    license: pkg.license,
-    homepage: pkg.homepage,
-    repository: pkg.repository.url,
+// 版本信息类型接口
+export interface VersionInfo {
+    name: string
+    version: string
+    description: string
+    author: string
+    license: string
+    homepage: string
+    repository: string
+    commit: string
+    buildTime: string
 }
 
-// 获取项目信息
-export function getInfo() {
-    return INFO
+// 获取版本信息函数
+export function getVersionInfo(): VersionInfo {
+    // 版本信息对象
+    const versionInfo: VersionInfo = {
+        name: pkg.name,
+        version: import.meta.env.VITE_GIT_TAG,
+        description: pkg.description,
+        author: pkg.author,
+        license: pkg.license,
+        homepage: pkg.homepage,
+        repository: pkg.repository.url,
+        commit: import.meta.env.VITE_GIT_COMMIT,
+        buildTime: import.meta.env.VITE_BUILD_TIME,
+    }
+
+    return versionInfo
 }
 
-// 控制台输出项目信息
+// 控制台输出项目信息函数
 export function consoleInfoFormat() {
-    const info = getInfo() // 获取项目信息
+    // 获取版本信息
+    const info = getVersionInfo()
+
+    // 定义样式
     const styleName = ["color: #1E2858; background-color:#c89828; font-size: 24px; font-weight: bold; border-radius: 4px;"] // name 样式
-    const styleOther = Array(6).fill("font-size: 14px;") // 其他字段样式
-    const styleList = [...styleName, ...styleOther] // 样式列表
+
+    // 根据 info 有多少字段 定义多少 style
+    const count = Object.keys(info).length - 1 // 减去 name 字段
+    const styleOther = Array(count).fill("font-size: 14px;")
+
+    // 样式列表
+    const styleList = [...styleName, ...styleOther]
 
     // 将 info 对象转换为数组 计算最长的字段名
     const infoList = Object.entries(info)

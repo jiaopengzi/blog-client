@@ -1,6 +1,5 @@
 {
     "name": "blog-client",
-    "version": "0.0.1",
     "description": "一个博客系统前端项目",
     "author": "焦棚子 <jiaopengzi@outlook.com>",
     "license": "MIT",
@@ -20,10 +19,10 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "node ./scripts/openDocument.js && vite --host 0.0.0.0",
+        "dev": "node ./scripts/set-env-version.js && node ./scripts/open-document.js && vite --host 0.0.0.0",
         "build": "run-p type-check build-only",
         "preview": "vite preview",
-        "build-only": "vite build && node ./scripts/dns-prefetch.js",
+        "build-only": "node ./scripts/set-env-version.js && vite build && node ./scripts/dns-prefetch.js",
         "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
         "lint": "eslint . --fix",
         "format": "prettier --write src/",
