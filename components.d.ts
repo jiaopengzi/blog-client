@@ -19,6 +19,7 @@ declare module 'vue' {
     CommonBaseTableCustomCol: typeof import('./src/components/common/base-table/custom-col/index.vue')['default']
     CommonBindEmailDialog: typeof import('./src/components/common/bind-email-dialog/index.vue')['default']
     CommonBreadcrumb: typeof import('./src/components/common/breadcrumb/index.vue')['default']
+    CommonChartBarBasic: typeof import('./src/components/common/chart-bar-basic/index.vue')['default']
     CommonCommentMarkdownPreview: typeof import('./src/components/common/comment-markdown-preview/index.vue')['default']
     CommonCommentPostItem: typeof import('./src/components/common/comment-post-item/index.vue')['default']
     CommonCountdown: typeof import('./src/components/common/countdown/index.vue')['default']
@@ -101,6 +102,8 @@ declare module 'vue' {
     ElConfigProvider: typeof import('element-plus/es')['ElConfigProvider']
     ElContainer: typeof import('element-plus/es')['ElContainer']
     ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
+    ElDescriptions: typeof import('element-plus/es')['ElDescriptions']
+    ElDescriptionsItem: typeof import('element-plus/es')['ElDescriptionsItem']
     ElDialog: typeof import('element-plus/es')['ElDialog']
     ElDropdown: typeof import('element-plus/es')['ElDropdown']
     ElDropdownItem: typeof import('element-plus/es')['ElDropdownItem']
@@ -108,6 +111,7 @@ declare module 'vue' {
     ElEmpty: typeof import('element-plus/es')['ElEmpty']
     ElForm: typeof import('element-plus/es')['ElForm']
     ElFormItem: typeof import('element-plus/es')['ElFormItem']
+    ElHeader: typeof import('element-plus/es')['ElHeader']
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElImage: typeof import('element-plus/es')['ElImage']
     ElImageViewer: typeof import('element-plus/es')['ElImageViewer']
@@ -154,5 +158,8 @@ declare module 'vue' {
     PlayerComponentsWatermark: typeof import('./src/components/player/components/watermark/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+  }
+  export interface GlobalDirectives {
+    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
   }
 }

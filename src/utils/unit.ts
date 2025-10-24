@@ -58,3 +58,28 @@ export function isZero(src: string | number | null | undefined): boolean {
 
     return temp === 0
 }
+
+/**
+ * 将数字或数字字符串格式化为带中文计数单位(万/亿)的可读字符串。
+ * @param src - 要格式化的值, 支持 number 或表示数字的字符串。
+ * @returns 格式化后的字符串(带单位或原始数值字符串), 或在无法解析时返回空字符串 ""。
+ */
+export function unitNumber(src: string | number, toFixed: number = 2): string {
+    const num = typeof src === "string" ? parseFloat(src) : src
+
+    // 判断 num 是否为有效数字
+    if (isNaN(num)) {
+        return ""
+    }
+
+    const sign = num < 0 ? "-" : "" // 处理负数情况
+    const abs = Math.abs(num) // 取绝对值进行单位转换
+
+    if (abs >= 1e8) {
+        return `${sign}${(abs / 1e8).toFixed(toFixed)}亿`
+    } else if (abs >= 1e4) {
+        return `${sign}${(abs / 1e4).toFixed(toFixed)}万`
+    } else {
+        return `${sign}${abs.toString()}`
+    }
+}
