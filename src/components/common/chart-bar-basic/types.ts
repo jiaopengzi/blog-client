@@ -6,10 +6,10 @@
  * Description : 类型
  */
 
+import type { Row } from "@/api/dashboard/common"
+
 // 每个柱子的数据项
-export interface BarItem {
-    label: string // 标签
-    value: number // 数值
+export interface BarItem extends Row {
     order?: number // 排序
     color?: string // 颜色
 }

@@ -103,6 +103,7 @@ const isShowContent = computed(() => {
         top: 8px;
         left: 8px;
     }
+    
     .my-icon {
         fill: #c1401f;
         font-size: 14px;

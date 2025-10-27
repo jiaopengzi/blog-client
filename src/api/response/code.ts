@@ -281,6 +281,11 @@ export enum ResponseCode {
     PayQuerySuccess = 6002, // 支付查询成功
     PayQueryNotFound = 6003, // 支付查询订单不存在
 
+    // 面板相关
+    DashboardGetVersionSuccess = 6100, // 获取版本信息成功
+    DashboardGetStatsSuccess = 6101, // 获取面板统计数据成功
+    DashboardGetTrendSuccess = 6102, // 获取面板按维度统计数据成功
+
     // 验证码相关
     CaptchaSendSuccess = 8000, //验证码发送成功
     CaptchaCheckSuccess = 8002, //验证码发送成功

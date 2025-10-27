@@ -15,7 +15,6 @@ import { MessageUtil } from "@/utils/message"
 
 import { type CouponCountGroupItem, queryKey } from "./types"
 
-// 获取评论统计数据
 export function useHeader() {
     const allCoupons = ref<CouponCountGroupItem>({} as CouponCountGroupItem)
     const couponCountStatus = ref<CouponCountByStatus[]>([])

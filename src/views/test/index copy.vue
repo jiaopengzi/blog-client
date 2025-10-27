@@ -1,8 +1,8 @@
 <template>
-    <chart-card />
+    <chart-bar-basic :title="title" :data="data" :width="width" :height="height" />
 </template>
 <script setup lang="ts">
-import ChartCard from "@/components/common/chart-card"
+import ChartBarBasic from "@/components/common/chart-bar-basic"
 defineOptions({ name: "MyTest" })
 
 const title = "当月"

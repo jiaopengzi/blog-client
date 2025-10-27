@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, nextTick, onMounted, reactive, ref, useTemplateRef } from "vue"
+import { computed, nextTick, onMounted, reactive, ref, useTemplateRef, watch } from "vue"
 
 import { unitNumber } from "@/utils/unit"
 
@@ -63,7 +63,7 @@ const {
         { label: "8月", value: 80 },
         { label: "9月", value: 90 },
         { label: "10月", value: 99 },
-        { label: "11月", value: 1000 },
+        { label: "11月", value: 100 },
         { label: "12月", value: 75 },
     ],
     width = 600,
@@ -144,7 +144,7 @@ const calcCssVars = () => {
     bars.value.style.height = `${height}px`
 
     // 在 chartContainer 上设置高度和宽度的 css 变量
-    chartContainer.value.style.setProperty("--bars-width", `${width}px`)
+    chartContainer.value.style.setProperty("--bars-width", `${widthLocal}px`)
     chartContainer.value.style.setProperty("--bars-height", `${height}px`)
 
     // 在 bars 上设置 bar 的宽度的 css 变量
@@ -152,19 +152,35 @@ const calcCssVars = () => {
     bars.value.style.setProperty("--bar-width", `${barWidth}px`)
 }
 
-onMounted(async () => {
+// 绘制图表
+const draw = async () => {
     await nextTick()
     calcCssVars()
     animateBars()
+}
+
+// 监听 data 变化
+watch(
+    () => data,
+    async (newData) => {
+        localData.value = [...newData]
+        await draw()
+    },
+    { deep: true },
+)
+
+onMounted(async () => {
+    await draw()
 })
 </script>
 
 <style lang="scss" scoped>
 .chart-container {
     background-color: var(--jpz-bg-color);
-    padding: 20px;
+    padding: 20px 40px 30px 20px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: var(--bars-width);
 }
 
 h1 {
