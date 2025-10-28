@@ -10,6 +10,7 @@
 export enum TrendCategory {
     OrderCount = "order_count", // 订单数量
     OrderAmount = "order_amount", // 订单金额
+    OrderPaidAmount = "order_paid_amount", // 支付金额
     UserCount = "user_count", // 用户数量
     MembershipCount = "membership_count", // 会员数量
 }
@@ -18,6 +19,7 @@ export enum TrendCategory {
 export const TrendCategoryDisplay: Record<TrendCategory, string> = {
     [TrendCategory.OrderCount]: "订单数量",
     [TrendCategory.OrderAmount]: "订单金额",
+    [TrendCategory.OrderPaidAmount]: "支付金额",
     [TrendCategory.UserCount]: "用户数量",
     [TrendCategory.MembershipCount]: "会员数量",
 }

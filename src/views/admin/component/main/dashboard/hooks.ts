@@ -1,20 +1,19 @@
 /*
- * FilePath    : blog-client\src\views\admin\component\main\coupon\hooks.ts
+ * FilePath    : blog-client\src\views\admin\component\main\dashboard\hooks.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 优惠卷统计数据
+ * Description : hooks
  */
 
-import { computed, onBeforeMount, type Ref, ref, watch } from "vue"
+import { ref } from "vue"
 
 import { TimeDimension, TrendCategory } from "@/api/dashboard/common"
 import { getStatsAPI, type StatsRes } from "@/api/dashboard/stats"
 import { getTrendAPI, type TrendDimensionRequest, type TrendDimensionRes } from "@/api/dashboard/trend"
 import { getVersionAPI, type VersionRes } from "@/api/dashboard/version"
-import { handleResErr, ResponseCode } from "@/api/response"
-import { MessageUtil } from "@/utils/message"
-import { getVersionInfo, type VersionInfo } from "@/version"
+import { ResponseCode } from "@/api/response"
+import { getVersionInfo } from "@/version"
 
 export function useDashboard() {
     const versionClient = getVersionInfo()
@@ -66,10 +65,20 @@ export function useDashboard() {
         }
     }
 
+    // 金额类统计类别列表
+    const amountList = [TrendCategory.OrderAmount, TrendCategory.OrderPaidAmount]
+
     // 获取面板按维度统计数据
     const getTrend = async () => {
         const res = await getTrendAPI(trendReq.value)
         if (res.data.code === ResponseCode.DashboardGetTrendSuccess) {
+            // 如果是金额类数据, 则将分转换为元
+            if (amountList.includes(trendReq.value.category)) {
+                res.data.data.rows = res.data.data.rows.map((item) => ({
+                    ...item,
+                    value: item.value / 100,
+                }))
+            }
             trendData.value = res.data.data
         }
     }

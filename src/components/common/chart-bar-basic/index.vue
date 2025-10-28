@@ -9,7 +9,7 @@
     <div class="chart-container" ref="chartContainer">
         <h1>{{ title }}</h1>
 
-        <div class="chart">
+        <div class="chart" v-if="hasData">
             <!-- Y轴刻度 -->
             <div class="y-axis">
                 <span class="y-axis-item" v-for="(tick, index) in yTicks" :key="'y-tick-' + index">{{ unitNumber(tick, 0) }}</span>
@@ -37,6 +37,7 @@
                 </div>
             </div>
         </div>
+        <div v-if="!hasData" class="no-data">no data</div>
     </div>
 </template>
 
@@ -81,23 +82,57 @@ const defaultColors = ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7", "#
 
 // 柱状图数据
 const localData = ref<BarItem[]>([...data])
+const hasData = computed(() => {
+    // 如果每个数据的 value 都为 0, 则认为无数据
+    return localData.value.some((item) => item.value > 0)
+})
 
 // 元素引用
 const chartContainer = useTemplateRef<HTMLDivElement>("chartContainer")
 const bars = useTemplateRef<HTMLDivElement>("bars")
 const barRefs = reactive<{ [key: number]: HTMLDivElement | undefined }>({})
 
+/**
+ * 根据数字的位数, 向上取整到最近的 整十 / 整百 / 整千 ...
+ */
+function roundUpByDigitCount(num: number): number {
+    const numStr = Math.abs(num).toString() // 支持负数, 取绝对值计算位数
+    const digitCount = numStr.length // 计算位数
+
+    // 特殊情况：如果 num 是 0，直接返回 0
+    if (num === 0) return 0
+
+    // 计算单位：10^digitCount
+    const unit = Math.pow(10, digitCount)
+
+    // 如果 digitCount 大于 1, 则将 num 从左到右取出两位
+    if (digitCount > 1) {
+        const firstTwoDigits = parseInt(numStr.slice(0, 2))
+        const roundedFirstTwoDigits = Math.ceil(firstTwoDigits / 10) * 10
+        const roundedNumStr = roundedFirstTwoDigits.toString() + "0".repeat(digitCount - 2)
+        return parseInt(roundedNumStr)
+    }
+
+    // 向上取整到该单位
+    return Math.ceil(num / unit) * unit
+}
+
 // 计算最大值
 const maxValue = computed(() => {
-    return Math.max(...localData.value.map((item) => item.value))
+    // 默认最小值10, 防止全部数据为 0 时无法显示
+    const maxVal = Math.max(...localData.value.map((item) => item.value))
+
+    // 向上取整最近的 整十 / 整百 / 整千 ...
+    return roundUpByDigitCount(maxVal)
 })
 
 // 计算Y轴刻度
 const yTicks = computed(() => {
     const ticks = []
-    const step = Math.ceil(maxValue.value / 5)
-    for (let i = 0; i <= maxValue.value; i += step) {
-        ticks.push(i)
+    const maxTicks = 5
+    const step = Math.ceil(maxValue.value / maxTicks)
+    for (let i = 0; i <= maxTicks; i += 1) {
+        ticks.push(i * step)
     }
     return ticks
 })
@@ -106,7 +141,7 @@ const yTicks = computed(() => {
 const animateBars = () => {
     if (!bars.value || !barRefs) return
 
-    // 遍历每个柱子, 设置初始高度为0, 然后逐个设置为目标高度, 形成动画效果
+    // 遍历每个柱子, 设置初始高度为 0, 然后逐个设置为目标高度, 形成动画效果
     Object.keys(barRefs).forEach((key) => {
         const index = Number(key)
         const bar = barRefs[index]
@@ -116,10 +151,16 @@ const animateBars = () => {
         bar.style.height = "0%"
 
         // 延时设置目标高度, 形成动画效果
-        setTimeout(() => {
-            bar.style.transition = "height 1s ease-out"
-            bar.style.height = `${(localData.value[index]!.value / maxValue.value) * 100}%`
-        }, index * 20)
+        if (localData.value && localData.value[index]) {
+            // 立即获取值, 避免在 setTimeout 回调中引用可能为 undefined 的值
+            const value = localData.value[index].value ?? 0
+            const percent = maxValue.value ? (value / maxValue.value) * 100 : 0
+
+            setTimeout(() => {
+                bar.style.transition = "height 1s ease-out"
+                bar.style.height = `${percent}%`
+            }, index * 20)
+        }
     })
 }
 
@@ -128,15 +169,30 @@ const handleBarClick = (item: BarItem) => {
     emit("bar-click", item)
 }
 
+// 设置图表容器的宽高 CSS 变量
+const setChartContainerCssVars = (width: number, height: number) => {
+    if (chartContainer.value) {
+        // 在 chartContainer 上设置高度和宽度的 css 变量
+        chartContainer.value.style.setProperty("--bars-width", `${width}px`)
+        chartContainer.value.style.setProperty("--bars-height", `${height}px`)
+    }
+}
+
 // 计算并设置 CSS 变量
 const calcCssVars = () => {
-    if (!chartContainer.value || !bars.value) return
+    // 设置默认宽高
+    setChartContainerCssVars(width, height)
+
+    if (!chartContainer.value || !bars.value) {
+        return
+    }
+
     let widthLocal = width
     const initBarWidth = 20 // 柱子初始宽度
     const barMargin = 20 // 柱子间距
 
     // 判断 with 是否足够显示所有柱子, 如果不够, 则根据柱子数量动态计算宽度
-    if (width < localData.value.length * (initBarWidth + barMargin)) {
+    if (hasData.value && width < localData.value.length * (initBarWidth + barMargin)) {
         widthLocal = localData.value.length * (initBarWidth + barMargin)
     }
 
@@ -144,8 +200,7 @@ const calcCssVars = () => {
     bars.value.style.height = `${height}px`
 
     // 在 chartContainer 上设置高度和宽度的 css 变量
-    chartContainer.value.style.setProperty("--bars-width", `${widthLocal}px`)
-    chartContainer.value.style.setProperty("--bars-height", `${height}px`)
+    setChartContainerCssVars(widthLocal, height)
 
     // 在 bars 上设置 bar 的宽度的 css 变量
     const barWidth = Math.max(initBarWidth, (width - localData.value.length * barMargin) / localData.value.length - barMargin)
@@ -270,5 +325,13 @@ h1 {
     font-size: 12px;
     color: var(--jpz-text-color-secondary);
     white-space: nowrap;
+}
+
+.no-data {
+    text-align: center;
+    font-size: 24px;
+    color: var(--jpz-text-color-secondary);
+    height: var(--bars-height);
+    line-height: var(--bars-height);
 }
 </style>

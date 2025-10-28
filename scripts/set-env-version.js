@@ -15,7 +15,7 @@ const getGitTag = () => {
     try {
         // 执行 shell 命令获取所有 tag, 并按版本排序(最近的在前)
         const out = execSync("git tag --list --sort=-v:refname", { encoding: "utf-8" }).trim()
-        if (!out) return "dev-no-tag"
+        if (!out) return "dev"
 
         // 将输出按行分割、去空并寻找符合 ^v\d+\.\d+\.\d+$ 的 tag(形如 v1.2.3)
         const tags = out
@@ -25,10 +25,10 @@ const getGitTag = () => {
         const semverTag = tags.find((t) => /^v\d+\.\d+\.\d+$/.test(t))
 
         // 若找到符合的 tag 则返回, 否则返回默认标识
-        return semverTag ?? "dev-no-tag"
+        return semverTag ?? "dev"
     } catch {
         // 出错(如不在 git 仓库)时返回默认标识
-        return "dev-no-tag"
+        return "dev"
     }
 }
 
@@ -39,7 +39,7 @@ const getGitCommit = () => {
         // git rev-parse HEAD 返回当前提交的完整 hash
         return execSync("git rev-parse HEAD", { encoding: "utf-8" }).trim()
     } catch {
-        return "dev-no-commit"
+        return "dev"
     }
 }
 

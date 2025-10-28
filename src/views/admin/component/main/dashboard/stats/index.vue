@@ -8,15 +8,18 @@
 
 <template>
     <div class="stats-container">
-        <div class="stats-item" v-for="item in localStats" :key="item.key">
-            <ChartCard
-                :name="item.key"
-                :label="item.label"
-                :value="item.value"
-                :is-amount-fen="item.isAmountFen"
-                :is-click="item.isClick"
-                @card-click="handleCardClick"
-            />
+        <h4>统计信息</h4>
+        <div class="cards-container">
+            <div class="cards-item" v-for="item in localStats" :key="item.key">
+                <ChartCard
+                    :name="item.key"
+                    :label="item.label"
+                    :value="item.value"
+                    :is-amount-fen="item.isAmountFen"
+                    :is-click="item.isClick"
+                    @card-click="handleCardClick"
+                />
+            </div>
         </div>
     </div>
 </template>
@@ -84,12 +87,17 @@ onBeforeMount(async () => {
 </script>
 <style scoped lang="scss">
 .stats-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+    h4 {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--jpz-text-color-primary);
+        margin-bottom: 10px;
+    }
 
-    .stats-item {
-        flex: none;
+    .cards-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
     }
 }
 </style>

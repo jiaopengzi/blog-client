@@ -5,10 +5,10 @@
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * Description : 版本信息
 -->
-
 <template>
     <div class="version-container">
-        <div class="version-client">
+        <h4>版本信息</h4>
+        <!-- <div class="version-client">
             <span class="version">client version：{{ versionClient.version }} |</span>
             <span class="commit">commit：{{ versionClient.commit.slice(0, 7) }} |</span>
             <span class="build-time">build time：{{ formatTime(versionClient.buildTime) }}</span>
@@ -17,6 +17,16 @@
             <span class="version">server version：{{ versionServer.version }} |</span>
             <span class="commit">commit：{{ versionServer.commit.slice(0, 7) }} |</span>
             <span class="build-time">build time：{{ formatTime(versionServer.build_time) }}</span>
+        </div> -->
+        <div class="version-client">
+            <span class="version">客户端版本：{{ versionClient.version }} |</span>
+            <span class="commit">提交哈希：{{ versionClient.commit.slice(0, 7) }} |</span>
+            <span class="build-time">构建时间：{{ formatTime(versionClient.buildTime) }}</span>
+        </div>
+        <div class="version-server">
+            <span class="version">服务端版本：{{ versionServer.version }} |</span>
+            <span class="commit">提交哈希：{{ versionServer.commit.slice(0, 7) }} |</span>
+            <span class="build-time">构建时间：{{ formatTime(versionServer.build_time) }}</span>
         </div>
     </div>
 </template>
@@ -37,7 +47,15 @@ onBeforeMount(async () => {
 </script>
 <style scoped lang="scss">
 .version-container {
+    margin-top: 40px;
     font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+
+    h4 {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--jpz-text-color-primary);
+        margin-bottom: 10px;
+    }
 
     .version-client,
     .version-server {

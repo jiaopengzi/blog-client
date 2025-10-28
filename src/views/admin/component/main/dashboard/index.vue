@@ -8,7 +8,6 @@
 
 <template>
     <div class="container">
-        <h1>仪表板</h1>
         <DashboardStats />
         <DashboardTrend />
         <DashboardVersion />
@@ -33,12 +32,5 @@ useHead({
 <style scoped lang="scss">
 .container {
     padding: 20px;
-
-    h1 {
-        font-size: 24px;
-        font-weight: 700;
-        color: var(--jpz-text-color-primary);
-        margin-bottom: 20px;
-    }
 }
 </style>
