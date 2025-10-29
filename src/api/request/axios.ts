@@ -58,11 +58,9 @@ axiosInstance.interceptors.response.use(
         const { status } = response
 
         // 需要请求 isSetupAPI 接口的状态码
-        // const needSetupStatus = [404, 502]
-        // console.log("status==============>1", status)
+        const needSetupStatus = [404, 502]
 
-        // if (needSetupStatus.includes(status) && !isSetupAPIRequested) {
-        if (status === 404 && !isSetupAPIRequested) {
+        if (needSetupStatus.includes(status) && !isSetupAPIRequested) {
             isSetupAPIRequested = true // 避免重复请求
 
             isSetupAPI().then((res) => {

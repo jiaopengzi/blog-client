@@ -46,7 +46,6 @@ import { reactive, ref, useTemplateRef } from "vue"
 import { useRouter } from "vue-router"
 
 import { ResponseCode } from "@/api/response"
-import { isSetupAPI } from "@/api/setting/isSetup"
 import { setupAPI } from "@/api/setting/setup"
 import AccountFormHeader from "@/components/common/account-form-header"
 import ElasticsearchForm, { type ElasticsearchFormRef } from "@/components/common/db-es"
@@ -57,7 +56,7 @@ import { useDatabase } from "@/components/hooks/useDatabase"
 import { RouteNames } from "@/router"
 import { MessageUtil } from "@/utils/message"
 
-defineOptions({ name: "SetupForm" })
+defineOptions({ name: RouteNames.Setup })
 
 useHead({
     title: "数据库配置",
@@ -82,14 +81,7 @@ const setupSubmit = async () => {
     await submit()
 }
 
-const { submit, waitSeconds, isShowTimer } = useDatabase(
-    pgsqlFormRef,
-    redisFormRefs,
-    esFormRef,
-    setupAPI,
-    ResponseCode.SetupSuccess,
-    confirmFunc,
-)
+const { submit, waitSeconds, isShowTimer } = useDatabase(pgsqlFormRef, redisFormRefs, esFormRef, setupAPI, ResponseCode.SetupSuccess, confirmFunc)
 </script>
 
 <style scoped lang="scss">

@@ -22,6 +22,11 @@ import { RouteNames } from "../types"
  * @returns 如果用户没有登录，且访问的页面需要登录，则返回登录页路径；
  */
 export const authMiddleware = async (to: RouteLocationNormalized) => {
+    // 判断如果是 setup 页面，则直接放行
+    if (to.name === RouteNames.Setup) {
+        return true
+    }
+
     await initStores() // 初始化所有 store
     const userStore = useUserStore()
 
