@@ -21,7 +21,7 @@ RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo "Asia/Shanghai" > /etc/timezone
 ENV TZ=Asia/Shanghai
 
-# 更改 Nginx 缓存目录的所有权（修复问题使用非 root 用户来启动容器）
+# 更改 Nginx 缓存目录的所有权(修复问题使用非 root 用户来启动容器)
 RUN chown -R nginx:nginx /var/cache/nginx
 
 # 更改 /var/run/ 目录的权限 (open() "/var/run/nginx.pid" failed (13: Permission denied))

@@ -118,6 +118,16 @@ VITE_BUILD_TIME=${buildTime}
     }
 }
 
+// 生成产物版本文件
+const generateVersionFile = (envPath) => {
+    const gitTag = getGitTag()
+    // 将 gitTag 写入指定文件
+    fs.writeFileSync(envPath, gitTag, "utf-8")
+}
+
 // 保存到 .env.development 和 .env.production 文件
 saveEnvFile(".env.development")
 saveEnvFile(".env.production")
+
+// 生成版本文件到 public/version.txt
+generateVersionFile("public/VERSION")
