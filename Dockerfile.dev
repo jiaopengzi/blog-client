@@ -1,6 +1,6 @@
 # Dockerfile.dev
-# 从 blog-client:env 镜像中构建，这个镜像是在 blog-client 项目的 Dockerfile.env 中构建
-# 它包含了 Node.js 和 pnpm 环境及项目的依赖项，可以直接 build
+# 从 blog-client:env 镜像中构建, 这个镜像是在 blog-client 项目的 Dockerfile.env 中构建
+# 它包含了 Node.js 和 pnpm 环境及项目的依赖项, 可以直接 build
 FROM blog-client:env AS builder
 
 # 设置工作目录
