@@ -1,0 +1,41 @@
+# **注意 文件名称要和 gitlab 文本页面下对应项目的 设置->CI/CD->通用设置中的 CI/CD 配置文件对齐 其他名称无法生效**
+stages:
+  - docker-build-client-env
+  - docker-build-client
+  - docker-deploy
+
+# 编译环境
+build-env:
+  tags:
+    - pve109
+  stage: docker-build-client-env
+  script:
+    - sudo bash /home/jiaopengzi/blog-tool-dev.sh docker_build_client_env
+  rules:
+    # 当 package.json 或 Dockerfile 文件变化时自动触发
+    - changes:
+        - package.json
+        - Dockerfile
+      when: on_success
+    # 没有变化时手动触发
+    - when: manual
+  allow_failure: true # 保证不影响后续流程
+
+# 编译 docker 镜像
+build:
+  tags:
+    - pve109
+  stage: docker-build-client
+  script:
+    - sudo bash /home/jiaopengzi/blog-tool-dev.sh docker_build_push_client
+
+# 部署到生产环境
+deploy:
+  tags:
+    - pve109
+  stage: docker-deploy
+  script:
+    # 拉取镜像
+    - ssh -p 2222 jiaopengzi@47.108.231.48 'sudo bash /home/jiaopengzi/blog-tool-dev.sh docker_pull_client'
+    # 启动容器
+    - ssh -p 2222 jiaopengzi@47.108.231.48 'sudo bash /home/jiaopengzi/blog-tool-dev.sh docker_client_start'
