@@ -14,7 +14,10 @@ import fs from "fs"
 const getGitTag = () => {
     try {
         // 执行 shell 命令获取所有 tag, 并按版本排序(最近的在前)
-        const out = execSync("git tag --list --sort=-v:refname", { encoding: "utf-8" }).trim()
+        const out = execSync("git describe --tags --abbrev=0", { encoding: "utf-8" }).trim()
+
+        // console.log("============>out", out)
+
         if (!out) return "dev"
 
         // 参考: https://semver.org/lang/zh-CN/
@@ -29,6 +32,8 @@ const getGitTag = () => {
                 t,
             ),
         )
+
+        // console.log("semver 版本号===>", semverTag)
 
         // 若找到符合的 tag 则返回, 否则返回默认标识
         return semverTag ?? "dev"
