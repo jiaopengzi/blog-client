@@ -17,12 +17,12 @@ const getGitTag = () => {
         const out = execSync("git tag --list --sort=-v:refname", { encoding: "utf-8" }).trim()
         if (!out) return "dev"
 
-        // 将输出按行分割、去空并寻找符合 ^v\d+\.\d+\.\d+$ 的 tag(形如 v1.2.3)
+        // 将输出按行分割、去空并寻找符合 ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$$ 的 tag(形如 v1.2.3 v0.1.2-beta+251113)
         const tags = out
             .split(/\r?\n/)
             .map((s) => s.trim())
             .filter(Boolean)
-        const semverTag = tags.find((t) => /^v\d+\.\d+\.\d+$/.test(t))
+        const semverTag = tags.find((t) => /v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$$/.test(t))
 
         // 若找到符合的 tag 则返回, 否则返回默认标识
         return semverTag ?? "dev"
