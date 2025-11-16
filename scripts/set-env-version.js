@@ -10,19 +10,25 @@ import { execSync } from "child_process"
 import fs from "fs"
 
 // 获取 git tag
-// 关键步骤：执行 git 命令读取 tag 列表、按语义化版本号筛选最近的 vX.Y.Z 格式的 tag
+// 关键步骤：执行 git 命令读取 tag 列表、按语义化版本号筛选最近形如 1.2.3 0.1.2-beta+251113 格式的 tag
 const getGitTag = () => {
     try {
         // 执行 shell 命令获取所有 tag, 并按版本排序(最近的在前)
         const out = execSync("git tag --list --sort=-v:refname", { encoding: "utf-8" }).trim()
         if (!out) return "dev"
 
-        // 将输出按行分割、去空并寻找符合 ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$$ 的 tag(形如 v1.2.3 v0.1.2-beta+251113)
+        // 参考: https://semver.org/lang/zh-CN/
+        // 语义化版本号正则 tag(形如 1.2.3 0.1.2-beta+251113)
+        // 将输出按行分割、去空并寻找符合语义化版本号格式的 tag
         const tags = out
             .split(/\r?\n/)
             .map((s) => s.trim())
             .filter(Boolean)
-        const semverTag = tags.find((t) => /v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$$/.test(t))
+        const semverTag = tags.find((t) =>
+            /(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/.test(
+                t,
+            ),
+        )
 
         // 若找到符合的 tag 则返回, 否则返回默认标识
         return semverTag ?? "dev"

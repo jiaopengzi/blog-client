@@ -28,6 +28,15 @@ if [ -z "$VERSION" ]; then
     echo "❌ 错误: 无法从 CHANGELOG.md 中提取版本号。"
     exit 1
 fi
+
+# 参考: https://semver.org/lang/zh-CN/ 获取最近的符合 1.2.3 0.1.2-beta+251113
+# 判断版本号是否符合语义化版本规范 (使用 POSIX ERE via grep -E)
+SEMVER_RE='^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-(0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(\.(0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$'
+if ! printf '%s' "$VERSION" | grep -E -q "$SEMVER_RE"; then
+    echo "❌ 错误: 提取的版本号 '$VERSION' 不符合语义化版本规范(SemVer)。"
+    exit 1
+fi
+
 echo "✅ 检测到版本号:  $VERSION"
 
 # # 检查 Git 仓库是否有未提交的更改
