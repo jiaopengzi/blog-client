@@ -11,8 +11,9 @@ import { ref } from "vue"
 import { TimeDimension, TrendCategory } from "@/api/dashboard/common"
 import { getStatsAPI, type StatsRes } from "@/api/dashboard/stats"
 import { getTrendAPI, type TrendDimensionRequest, type TrendDimensionRes } from "@/api/dashboard/trend"
-import { getVersionAPI, type VersionRes } from "@/api/dashboard/version"
+import { getVersionAPI, getVersionsAPI, Project, Source, type VersionRes } from "@/api/dashboard/version"
 import { ResponseCode } from "@/api/response"
+import { extractLatestChangelogVersionDate, type VersionInfo } from "@/utils/version"
 import { getVersionInfo } from "@/version"
 
 export function useDashboard() {
@@ -54,6 +55,47 @@ export function useDashboard() {
         const res = await getVersionAPI()
         if (res.data.code === ResponseCode.DashboardGetVersionSuccess) {
             versionServer.value = res.data.data
+        }
+    }
+
+    // 根据不同来源获取 changelog 内容, 判断是否有更新
+    const hasUpdateServer = ref<boolean>(false)
+    const hasUpdateClient = ref<boolean>(false)
+    const updateVersionServer = ref<VersionInfo | null>(null)
+    const updateVersionClient = ref<VersionInfo | null>(null)
+
+    // 获取 changelog 内容
+    const fetchChangelog = async () => {
+        const serverPromises = [getVersionsAPI(Project.Server, Source.GitHub), getVersionsAPI(Project.Server, Source.Gitee)]
+        const clientPromises = [getVersionsAPI(Project.Client, Source.GitHub), getVersionsAPI(Project.Client, Source.Gitee)]
+        try {
+            // 使用 Promise.race 等待第一个完成的 Promise
+
+            // 服务器端
+            await Promise.race(serverPromises).then((res) => {
+                // 拿到innerText
+                res.text().then((text) => {
+                    updateVersionServer.value = extractLatestChangelogVersionDate(text)
+                    if (updateVersionServer.value) {
+                        // 比较版本号，判断是否有更新
+                        hasUpdateServer.value = updateVersionServer.value.version !== versionServer.value.version
+                    }
+                })
+            })
+
+            // 客户端
+            await Promise.race(clientPromises).then((res) => {
+                // 拿到innerText
+                res.text().then((text) => {
+                    updateVersionClient.value = extractLatestChangelogVersionDate(text)
+                    if (updateVersionClient.value) {
+                        // 比较版本号，判断是否有更新
+                        hasUpdateClient.value = updateVersionClient.value.version !== versionClient.version
+                    }
+                })
+            })
+        } catch (error) {
+            console.error("Failed to fetch changelog:", error)
         }
     }
 
@@ -103,6 +145,11 @@ export function useDashboard() {
         trendReq,
         trendData,
         getVersion,
+        hasUpdateServer,
+        hasUpdateClient,
+        updateVersionServer,
+        updateVersionClient,
+        fetchChangelog,
         getStats,
         getTrend,
         updateTrendReq,

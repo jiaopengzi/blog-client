@@ -67,7 +67,7 @@ export default defineConfig({
     // ------------------------------ scss全局变量生效 结束
     // ------------------------------ 设置代理 开始
     server: {
-        host: "localhost",
+        host: "10.10.2.222",
         port: 7364, // 项目运行端口(九宫格 peng 的拼音键数字)
         proxy: {
             // dev Server.proxy 可以是一个指向开发环境 API 服务器的字符串
@@ -75,6 +75,16 @@ export default defineConfig({
                 target: "http://10.10.2.222:5426",
                 changeOrigin: true,
                 // rewrite: (path) => path.replace(/^\/api/, 'my-admin'),
+            },
+            "/admin/raw-github": {
+                target: "https://raw.githubusercontent.com",
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/admin\/raw-github/, ""),
+            },
+            "/admin/raw-gitee": {
+                target: "https://gitee.com",
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/admin\/raw-gitee/, ""),
             },
         },
     },

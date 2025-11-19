@@ -8,41 +8,35 @@
 <template>
     <div class="version-container">
         <h4>版本信息</h4>
-        <!-- <div class="version-client">
-            <span class="version">client version：{{ versionClient.version }} |</span>
-            <span class="commit">commit：{{ versionClient.commit.slice(0, 7) }} |</span>
-            <span class="build-time">build time：{{ formatTime(versionClient.buildTime) }}</span>
-        </div>
-        <div class="version-server">
-            <span class="version">server version：{{ versionServer.version }} |</span>
-            <span class="commit">commit：{{ versionServer.commit.slice(0, 7) }} |</span>
-            <span class="build-time">build time：{{ formatTime(versionServer.build_time) }}</span>
-        </div> -->
         <div class="version-client">
-            <span class="version">客户端版本：{{ versionClient.version }} |</span>
-            <span class="commit">提交哈希：{{ versionClient.commit.slice(0, 7) }} |</span>
-            <span class="build-time">构建时间：{{ formatTime(versionClient.buildTime) }}</span>
+            <span class="version">客户端版本：{{ versionClient.version }}</span>
+            <!-- <span class="commit">提交哈希：{{ versionClient.commit.slice(0, 7) }} |</span> -->
+            <!-- <span class="build-time">构建时间：{{ formatTime(versionClient.buildTime) }}</span> -->
+            <span class="version-update" v-if="hasUpdateClient">新版本 {{ updateVersionClient!.version }} 现已可用！</span>
+            <!-- <span class="version-update" v-if="hasUpdateClient">{{ updateVersionClient!.date }}</span> -->
         </div>
         <div class="version-server">
-            <span class="version">服务端版本：{{ versionServer.version }} |</span>
-            <span class="commit">提交哈希：{{ versionServer.commit.slice(0, 7) }} |</span>
-            <span class="build-time">构建时间：{{ formatTime(versionServer.build_time) }}</span>
+            <span class="version">服务端版本：{{ versionServer.version }}</span>
+            <!-- <span class="commit">提交哈希：{{ versionServer.commit.slice(0, 7) }} |</span> -->
+            <!-- <span class="build-time">构建时间：{{ formatTime(versionServer.build_time) }}</span> -->
+            <span class="version-update" v-if="hasUpdateServer">新版本 {{ updateVersionServer!.version }} 现已可用！</span>
+            <!-- <span class="version-update" v-if="hasUpdateServer">{{ updateVersionServer!.date }}</span> -->
         </div>
     </div>
 </template>
 <script setup lang="ts">
 import { onBeforeMount } from "vue"
 
-import { formatTime } from "@/utils/dateTime"
-
+// import { formatTime } from "@/utils/dateTime"
 import { useDashboard } from "../hooks"
 
 defineOptions({ name: "DashboardVersion" })
 
-const { versionClient, versionServer, getVersion } = useDashboard()
+const { versionClient, versionServer, getVersion, hasUpdateServer, hasUpdateClient, updateVersionServer, updateVersionClient, fetchChangelog } = useDashboard()
 
 onBeforeMount(async () => {
     await getVersion()
+    await fetchChangelog()
 })
 </script>
 <style scoped lang="scss">
@@ -69,6 +63,10 @@ onBeforeMount(async () => {
             font-size: 14px;
             color: var(--jpz-text-color-secondary);
         }
+    }
+    .version-update {
+        font-size: 14px;
+        color: var(--jpz-text-color-primary);
     }
 }
 </style>

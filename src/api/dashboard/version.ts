@@ -24,3 +24,29 @@ export function getVersionAPI(): ResPromise<Res<VersionRes>> {
         method: "get",
     })
 }
+
+// https://raw.githubusercontent.com/jiaopengzi/blog-server/refs/heads/main/CHANGELOG.md
+// https://gitee.com/jiaopengzi/blog-server/raw/main/CHANGELOG.md
+
+export enum Source {
+    GitHub = "github",
+    Gitee = "gitee",
+}
+
+export enum Project {
+    Server = "blog-server",
+    Client = "blog-client",
+}
+
+// 获取版本更新日志
+export function getVersionsAPI(project: Project, source: Source): Promise<Response> {
+    let group = "raw-github"
+    let urlStr = `${group}/jiaopengzi/${project}/refs/heads/main/CHANGELOG.md`
+
+    if (source === Source.Gitee) {
+        group = "raw-gitee"
+        urlStr = `${group}/jiaopengzi/${project}/raw/main/CHANGELOG.md`
+    }
+
+    return fetch(urlStr)
+}
