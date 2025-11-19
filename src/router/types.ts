@@ -89,7 +89,7 @@ export enum RouteNamesAdmin {
     SettingSocial = "social",
     SettingUpload = "upload",
     Notification = "notification",
-    Backup = "backup",
+    // Backup = "backup",
 }
 
 // 枚举转换为对象

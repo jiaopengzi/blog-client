@@ -251,14 +251,14 @@ export const adminMenuItemMap: AdminMenuItemMap = {
             class: "icon-menu",
         },
     },
-    [RouteNamesAdmin.Backup]: {
-        text: "备份",
-        icon: {
-            name: IconKeys.Backup,
-            class: "icon-menu",
-        },
-        permissionName: PermissionNames.Backup,
-    },
+    // [RouteNamesAdmin.Backup]: {
+    //     text: "备份",
+    //     icon: {
+    //         name: IconKeys.Backup,
+    //         class: "icon-menu",
+    //     },
+    //     permissionName: PermissionNames.Backup,
+    // },
 }
 
 // 获取菜单数据
