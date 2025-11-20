@@ -77,6 +77,12 @@ export function useGetData(options?: QueryParamsOptions<ViewPostRequest>) {
         if (res.data.code === ResponseCode.PostCountByMonthSuccess) {
             // 清空现有的 monthArchiveProps
             monthArchiveProps.length = 0
+
+            // 当没有数据时直接返回
+            if (!res.data.data || !Array.isArray(res.data.data) || res.data.data.length === 0) {
+                return
+            }
+
             // 遍历 res.data.data 并更新 monthArchiveProps
             res.data.data.forEach((item) => {
                 // 创建新的对象并添加 year_month 字段
