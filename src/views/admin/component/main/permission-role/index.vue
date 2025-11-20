@@ -328,8 +328,7 @@ const submitUpsertForm = debounce(100, async (formEl: FormInstance | undefined) 
             const { data } = await upsertPermissionRoleAPI(req)
 
             if (data.code === ResponseCode.UpsertPermissionRoleSuccess) {
-                updatePermission()
-                // 添加成功提示
+                await refreshPage()
                 MessageUtil.success(data.msg, 6000)
             } else {
                 MessageUtil.error(handleResErr(data), 0)
@@ -362,10 +361,8 @@ const submitDeleteForm = debounce(100, async (formEl: FormInstance | undefined) 
                 // 将 limit_count 和 limit_period 设置为 0
                 permissionRoleForm.limit_count = 0
                 permissionRoleForm.limit_period = 0
-
                 // 添加成功提示
-                updatePermission()
-                initPermissionTable()
+                await refreshPage()
                 MessageUtil.success(data.msg, 6000)
             } else {
                 // 添加失败提示
@@ -459,15 +456,20 @@ const updatePermission = debounce(100, async () => {
     const res = await updateRolesAPI(updateRolesRequest)
     if (res.data.code === ResponseCode.UpdateRoleSuccess) {
         // 强制刷新, 注意先后顺序
-        permissionRoleStore.update(true)
-        userStore.getUserInfoByToken(true)
-
-        initPermissionTable()
+        await refreshPage()
+        await userStore.getUserInfoByToken(true)
         MessageUtil.success(res.data.msg, 3000)
     } else {
         MessageUtil.warning(res.data.msg, 6000)
     }
 })
+
+// 刷新页面函数
+const refreshPage = async () => {
+    await permissionRoleStore.update(true)
+    getPermissions()
+    initPermissionTable()
+}
 
 // 组件挂载后获取权限列表和初始化权限表格
 onBeforeMount(() => {
