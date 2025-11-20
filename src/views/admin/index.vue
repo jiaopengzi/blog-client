@@ -28,7 +28,7 @@
                 <el-main class="main">
                     <!-- 控制台警告：Component inside <Transition> renders non-element root node that cannot be animated. -->
                     <!-- 参考:https://stackoverflow.com/questions/65553121/vue-3-transition-renders-non-element-root-node-that-cannot-be-animated -->
-                    <!-- 在组件外包裹一层 div,需要单独包括在子组件中，才能缓存,不能在这里包裹 -->
+                    <!-- 在组件外包裹一层 div, 需要单独包括在子组件中, 才能缓存, 不能在这里包裹 -->
 
                     <router-view />
 

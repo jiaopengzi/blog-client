@@ -20,16 +20,11 @@ function generateAdminRoutes() {
             path: "/admin",
             name: RouteNames.Admin,
             component: () => import("@/views/admin"),
+            redirect: { name: RouteNamesAdmin.Dashboard }, // 显式重定向到默认子路由
             meta: {
                 requiresAuth: true,
             },
             children: [
-                // 默认子路由 dashboard
-                {
-                    path: "",
-                    name: RouteNamesAdmin.Dashboard,
-                    component: () => import("@/views/admin/component/main/dashboard"),
-                },
                 // 其他子路由
                 ...Object.keys(adminMenuItemMapWithIndex).map((key) => {
                     const menuItem = adminMenuItemMapWithIndex[key as RouteNamesAdmin]
