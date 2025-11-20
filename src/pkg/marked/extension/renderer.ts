@@ -34,7 +34,8 @@ export const renderer = {
             }
         }
 
-        itemBody += this.parser.parse(item.tokens, !!item.loose)
+        // itemBody += this.parser.parse(item.tokens, !!item.loose)
+        itemBody += this.parser.parse(item.tokens)
 
         // 选中状态和未选中状态添加类名
         if (item.task) {
@@ -49,10 +50,11 @@ export const renderer = {
     },
 
     // checkbox 函数重写
-    checkbox({ checked }: Tokens.Checkbox) {
+    checkbox({ checked }: Partial<Tokens.Checkbox>) {
+        const isChecked = !!checked
         return (
             "<input class='task-list-item-checkbox' " + // 添加类名
-            (checked ? 'checked="" ' : "") +
+            (isChecked ? 'checked="" ' : "") +
             'disabled="" type="checkbox">'
         )
     },
