@@ -10,8 +10,7 @@ import { computed, onBeforeMount, ref, watch } from "vue"
 
 import { MembershipStatusDisplay } from "@/api/membership/common"
 import { getMembershipCountByStatusAPI, type MembershipCountByStatus } from "@/api/membership/getCountByStatus"
-import { handleResErr, ResponseCode } from "@/api/response"
-import { MessageUtil } from "@/utils/message"
+import { ResponseCode } from "@/api/response"
 
 import { type MembershipCountGroupItem, queryKey } from "./types"
 
@@ -29,8 +28,8 @@ export function useHeader() {
         const res = await getMembershipCountByStatusAPI()
         if (res.data.code === ResponseCode.MembershipCountByStatusSuccess) {
             membershipCountStatus.value = res.data.data
-        } else {
-            MessageUtil.warning(handleResErr(res), 3000)
+            // } else {
+            //     MessageUtil.warning(handleResErr(res), 3000)
         }
     }
 

@@ -10,8 +10,7 @@ import { computed, onBeforeMount, ref, watch } from "vue"
 
 import { NotificationStatusDisplay } from "@/api/notification/common"
 import { getNotificationCountByStatusAPI, type NotificationCountByStatus } from "@/api/notification/getCountByStatus"
-import { handleResErr, ResponseCode } from "@/api/response"
-import { MessageUtil } from "@/utils/message"
+import { ResponseCode } from "@/api/response"
 
 import { type NotificationCountGroupItem, queryKey } from "./types"
 
@@ -29,8 +28,8 @@ export function useHeader() {
         const res = await getNotificationCountByStatusAPI()
         if (res.data.code === ResponseCode.NotificationCountByStatusSuccess) {
             notificationCountStatus.value = res.data.data
-        } else {
-            MessageUtil.warning(handleResErr(res), 3000)
+            // } else {
+            //     MessageUtil.warning(handleResErr(res), 3000)
         }
     }
 

@@ -10,8 +10,7 @@ import { computed, onBeforeMount, ref, watch } from "vue"
 
 import { CouponStatusDisplay } from "@/api/coupon/common"
 import { type CouponCountByStatus, getCouponCountByStatusAPI } from "@/api/coupon/getCountByStatus"
-import { handleResErr, ResponseCode } from "@/api/response"
-import { MessageUtil } from "@/utils/message"
+import { ResponseCode } from "@/api/response"
 
 import { type CouponCountGroupItem, queryKey } from "./types"
 
@@ -28,8 +27,8 @@ export function useHeader() {
         const res = await getCouponCountByStatusAPI()
         if (res.data.code === ResponseCode.CouponCountByStatusSuccess) {
             couponCountStatus.value = res.data.data
-        } else {
-            MessageUtil.warning(handleResErr(res), 3000)
+            // } else {
+            //     MessageUtil.warning(handleResErr(res), 3000)
         }
     }
 
