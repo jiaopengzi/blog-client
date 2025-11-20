@@ -12,7 +12,6 @@ import { Marked } from "marked"
 import markedAlert from "marked-alert" // 引用不同主题的警报
 import customHeadingId from "marked-custom-heading-id" // 自定义标题id
 import { markedEmoji } from "marked-emoji" // 表情
-import markedExtendedTables from "marked-extended-tables" // 表格扩展
 import markedFootnote from "marked-footnote" // 脚注
 import { markedHighlight } from "marked-highlight" // 代码高亮
 import markedKatex from "marked-katex-extension" // 公式
@@ -35,7 +34,6 @@ const createMarked = () => {
     marked.use(
         markedKatex(optionKatex),
         markedHighlight(optionHighlight),
-        markedExtendedTables(),
         markedFootnote(optionFootnote),
         markedEmoji(optionEmojis),
         customHeadingId(),

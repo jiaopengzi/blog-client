@@ -150,6 +150,7 @@ const formItems = [
     { label: "版权信息", prop: "show_copyright_info", type: "textarea" },
     { label: "显示文末固定信息", prop: "post_footer_info_enable", isCheckbox: true },
     { label: "文末固定信息", prop: "post_footer_info", type: "textarea", placeholder: "支持html" },
+    { label: "展示文章移除 h1 标题", prop: "is_remove_first_h1", isCheckbox: true },
 
     // 互动相关
     { label: "互动", isCategoryTitle: true },

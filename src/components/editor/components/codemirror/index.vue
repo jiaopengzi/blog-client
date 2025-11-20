@@ -7,7 +7,7 @@
 -->
 
 <template>
-    <div ref="codemirrorRef" id="my-codemirror" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave"></div>
+    <div ref="codemirrorRef" id="jpz-codemirror" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave"></div>
 </template>
 
 <script lang="ts" setup>
@@ -74,10 +74,10 @@ const onMouseLeave = () => {
 // 初始化编辑器宽度和高度
 const initializeCssVariable = () => {
     if (codemirrorRef.value && width) {
-        codemirrorRef.value.style.setProperty("--my-codemirror-width", `${width}`)
+        codemirrorRef.value.style.setProperty("--jpz-codemirror-width", `${width}`)
     }
     if (codemirrorRef.value && height) {
-        codemirrorRef.value.style.setProperty("--my-codemirror-height", `${height}`)
+        codemirrorRef.value.style.setProperty("--jpz-codemirror-height", `${height}`)
     }
 }
 
@@ -287,7 +287,7 @@ defineExpose({
 </script>
 
 <style scoped lang="scss">
-#my-codemirror {
+#jpz-codemirror {
     background-color: var(--jpz-bg-color);
     color: var(--jpz-text-color-primary);
     font-size: 1.1em;

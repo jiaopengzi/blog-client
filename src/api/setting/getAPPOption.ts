@@ -59,6 +59,7 @@ export interface GetAPPOptionResponse {
     show_copyright_info: APPOptionItem // 版权信息
     post_footer_info_enable: APPOptionItem // 文末固定信息开启
     post_footer_info: APPOptionItem // 文末固定信息
+    is_remove_first_h1: APPOptionItem // 是否移除文章内容中的第一个 h1 标签
 
     // 互动相关
     like_enable: APPOptionItem // 点赞

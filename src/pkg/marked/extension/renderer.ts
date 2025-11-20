@@ -71,6 +71,48 @@ export const renderer = {
         const result = '<pre><code class="language-' + escape(langString, true) + '">' + (escaped ? code : escape(code, true)) + "</code></pre>\n" // marked 源码默认代码块
         return constructWeChatPreCode(replaceAllHljsStringSpanTag(result)) // 自定义代码块
     },
+
+    // 将源码中 table 相关函数 copy 过来并添加类名
+
+    tablerow({ text }: Tokens.TableRow) {
+        return `<tr>\n${text}</tr>\n`
+    },
+
+    tablecell(token: Tokens.TableCell) {
+        const content = this.parser.parseInline(token.tokens)
+        const type = token.header ? "th" : "td"
+        const tag = token.align ? `<${type} align="${token.align}">` : `<${type}>`
+        return tag + content + `</${type}>\n`
+    },
+
+    table(token: Tokens.Table) {
+        let header = ""
+
+        // header
+        let cell = ""
+        for (let j = 0; j < token.header.length; j++) {
+            cell += this.tablecell(token.header[j]!)
+        }
+        header += this.tablerow({ text: cell })
+
+        let body = ""
+        for (let j = 0; j < token.rows.length; j++) {
+            const row = token.rows[j]
+
+            cell = ""
+            for (let k = 0; k < row!.length; k++) {
+                cell += this.tablecell(row![k]!)
+            }
+
+            body += this.tablerow({ text: cell })
+        }
+        if (body) body = `<tbody>${body}</tbody>`
+
+        // return "<table>\n" + "<thead>\n" + header + "</thead>\n" + body + "</table>\n"
+        const _table = "<table>\n" + "<thead>\n" + header + "</thead>\n" + body + "</table>\n"
+        // 在 table 外套一个 div 添加类名 以便于样式控制
+        return `<div class="jpz-marked-table-container">${_table}</div>\n`
+    },
 }
 
 /**

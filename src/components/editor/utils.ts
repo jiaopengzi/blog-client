@@ -65,6 +65,7 @@ export function createDefaultEditorState(options: EditorStateOptions = {}): Edit
 
 // 使用闭包缓存正则表达式
 interface RegexCache {
+    h1TagRegex: RegExp // 匹配 h1 标签
     hTagRegex: RegExp // 匹配 h 标签
     hTagStartRegex: RegExp // 匹配 h 标签的开始
     hTagLevelRegex: RegExp // 匹配 h 标签的等级
@@ -104,6 +105,7 @@ const updateAttributeNames = (tarAttributeNames: Array<string>, srcAttributeName
  * @return {Object} 正则表达式缓存
  */
 export const createRegexCache = (): RegexCache => {
+    const h1TagRegex = /<h1.*?>.*?<\/h1>/ // 匹配 h1 标签 注意需要 g 全局匹配
     const hTagRegex = /<h\d.*?>.*?<\/h\d>/g // 匹配 h 标签 注意需要 g 全局匹配
     const hTagStartRegex = /<h(\d)/ // 匹配 h 标签的开始
     const hTagLevelRegex = /<h(\d).*?>/ // 匹配 h 标签的等级
@@ -137,6 +139,7 @@ export const createRegexCache = (): RegexCache => {
     const copyButtonRegex = /<button\s+class="[^"]*\bcopy-button\b[^"]*">([^<]*)<\/button>/g // 匹配所有 class 中有 copy-button 的按钮元素
 
     return {
+        h1TagRegex,
         hTagRegex,
         hTagStartRegex,
         hTagLevelRegex,
@@ -283,13 +286,16 @@ export function markdownToHtml(markdownSrc: string, isRemoveFirstH1: boolean): s
         },
     } as Config)
 
-    const purifyHtml = DOMPurify.sanitize(htmlHandleUtf8) // 过滤 html, 防止 xss 攻击
+    // 过滤 html, 防止 xss 攻击
+    let purifyHtml = DOMPurify.sanitize(htmlHandleUtf8)
 
     if (isRemoveFirstH1) {
-        return generateAllHeadingAnchor(htmlRemoveFirstH1(purifyHtml)) // 移除第一个 h1 标签
+        // 移除第一个 h1 标签
+        purifyHtml = htmlRemoveFirstH1(purifyHtml)
     }
 
-    return generateAllHeadingAnchor(purifyHtml) // 生成锚点
+    // 生成锚点
+    return generateAllHeadingAnchor(purifyHtml)
 }
 
 /**
@@ -389,7 +395,7 @@ export function htmlHandleWeChat(htmlSrc: string) {
  */
 export function htmlRemoveFirstH1(htmlSrc: string) {
     // 移除第一个 h1 标签
-    const h1Match = htmlSrc.match(regexCache.hTagRegex)
+    const h1Match = htmlSrc.match(regexCache.h1TagRegex)
     if (h1Match) {
         const h1Tag = h1Match[0] // 获取第一个 h1 标签
         htmlSrc = htmlSrc.replace(h1Tag, "") // 移除第一个 h1 标签
@@ -549,7 +555,7 @@ export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
         await copyHtml(html) // 使用 clipboard 复制 html 内容
         MessageUtil.success("内容已复制到剪贴板")
     } catch (err) {
-        console.error("无法复制内容2", err)
-        MessageUtil.error("无法复制内容2")
+        console.error("无法复制内容", err)
+        MessageUtil.error("无法复制内容")
     }
 }

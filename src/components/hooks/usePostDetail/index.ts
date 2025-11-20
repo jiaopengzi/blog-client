@@ -17,6 +17,7 @@ import { queryKey as queryKeyUpsert } from "@/components/common/post-upsert"
 import { EditorStateManager } from "@/components/editor"
 import { RouteNames } from "@/router"
 import { useBreadcrumbStore } from "@/stores/breadcrumb"
+import { useOptionsStore } from "@/stores/options"
 import { useUserStore } from "@/stores/user"
 
 import { useRootUtils } from "../useRootUtils"
@@ -28,7 +29,11 @@ export function usePostDetail(
     hash: Ref<string>, // hash值
 ) {
     const userStore = useUserStore()
+    const optionsStore = useOptionsStore()
+
     const { isLogin } = storeToRefs(userStore)
+    const { is_remove_first_h1 } = storeToRefs(optionsStore)
+
     const router = useRouter()
 
     // 字符串类型的key
@@ -49,7 +54,15 @@ export function usePostDetail(
 
     const breadcrumbStore = useBreadcrumbStore()
 
-    const manager = new EditorStateManager({ isRemoveFirstH1: true })
+    watch(
+        () => is_remove_first_h1.value,
+        (newHash) => {
+            console.log("============>is_remove_first_h1.value", newHash)
+        },
+        { immediate: true },
+    )
+
+    const manager = new EditorStateManager({ isRemoveFirstH1: is_remove_first_h1.value })
     const state = manager.getState()
 
     const {

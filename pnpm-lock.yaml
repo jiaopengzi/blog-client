@@ -101,9 +101,6 @@ importers:
       marked-emoji:
         specifier: ^2.0.2
         version: 2.0.2(marked@17.0.0)
-      marked-extended-tables:
-        specifier: ^2.0.1
-        version: 2.0.1(marked@17.0.0)
       marked-footnote:
         specifier: ^1.4.0
         version: 1.4.0(marked@17.0.0)
@@ -3095,11 +3092,6 @@ packages:
     resolution: {integrity: sha512-EFnLQn4wTyf+6pXfptkm83Z2mt3VbdEYedHBAsDpwUas5n5satsj42RGqAijBpmetgGerI1EzUuzf7NIccINUQ==}
     peerDependencies:
       marked: '>=4 <18'
-
-  marked-extended-tables@2.0.1:
-    resolution: {integrity: sha512-DV4Si978ZdaFbycIxzG4TdaNMtC0J8QfIKj1UOCejgJHwVjVJse8DNdJriWDeo/n74DWVYpRC6S56AdgWDPrPA==}
-    peerDependencies:
-      marked: '>=3 <16'
 
   marked-footnote@1.4.0:
     resolution: {integrity: sha512-fZTxAhI1TcLEs5UOjCfYfTHpyKGaWQevbxaGTEA68B51l7i87SctPFtHETYqPkEN0ka5opvy4Dy1l/yXVC+hmg==}
@@ -7378,10 +7370,6 @@ snapshots:
       marked: 17.0.0
 
   marked-emoji@2.0.2(marked@17.0.0):
-    dependencies:
-      marked: 17.0.0
-
-  marked-extended-tables@2.0.1(marked@17.0.0):
     dependencies:
       marked: 17.0.0
 

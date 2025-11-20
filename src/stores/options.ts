@@ -57,6 +57,7 @@ export interface OptionsStore {
     ipInfo: IpInfoRes // ip 信息
     wechatPayStatus: boolean // 微信支付状态
     alipayStatus: boolean // 支付宝支付状态
+    is_remove_first_h1: boolean // 是否移除文章内容中的第一个 h1 标签
 }
 
 // 创建一个空的选项存储
@@ -72,6 +73,7 @@ function createEmptyOptionsStore(): OptionsStore {
         ipInfo: {} as IpInfoRes,
         wechatPayStatus: false,
         alipayStatus: false,
+        is_remove_first_h1: false,
     }
 }
 
@@ -137,6 +139,11 @@ export const useOptionsStore = defineStore("options", {
         getAlipayStatus(): boolean {
             return this.alipayStatus
         },
+
+        // 获取是否移除文章内容中的第一个 h1 标签
+        getIsRemoveFirstH1(): boolean {
+            return this.is_remove_first_h1
+        },
     },
 
     actions: {
@@ -151,6 +158,8 @@ export const useOptionsStore = defineStore("options", {
             const app_options = localStorage.getItem(LocalStorageKey.OptionsApp)
             if (app_options) {
                 this.app_options = JSON.parse(app_options) as GetAPPOptionResponse
+                this.isLoadedOptions = true
+                this.is_remove_first_h1 = this.app_options.is_remove_first_h1.value === "true"
             }
 
             // 从本地获取头部信息
@@ -208,6 +217,8 @@ export const useOptionsStore = defineStore("options", {
                 this.footer = await formatFooterInfo(this.app_options)
 
                 this.isLoadedOptions = true
+
+                this.is_remove_first_h1 = this.app_options.is_remove_first_h1.value === "true"
             }
 
             // 更新支付配置状态

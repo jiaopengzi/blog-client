@@ -61,7 +61,6 @@
         "marked-code-format": "^1.1.6",
         "marked-custom-heading-id": "^2.0.16",
         "marked-emoji": "^2.0.2",
-        "marked-extended-tables": "^2.0.1",
         "marked-footnote": "^1.4.0",
         "marked-highlight": "^2.2.3",
         "marked-katex-extension": "^5.1.6",

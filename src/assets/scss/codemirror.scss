@@ -5,16 +5,16 @@
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * Description : 编辑器全局样式
  */
-#my-codemirror {
+#jpz-codemirror {
     .cm-editor {
         // width: 100%;
-        height: var(--my-codemirror-height, 100%);
+        height: var(--jpz-codemirror-height, 100%);
     }
     .cm-content {
         font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
         font-size: 16px;
         // width: 100%;
-        // height: calc(var(--my-codemirror-height, 100%) - pc.$editor-panels-bottom-height - pc.$editor-panels-bottom-border);
+        // height: calc(var(--jpz-codemirror-height, 100%) - pc.$editor-panels-bottom-height - pc.$editor-panels-bottom-border);
     }
 
     .cm-gutters {

@@ -200,10 +200,10 @@
         color: var(--jpz-text-color-primary);
     }
 
-    // 表格容器
-    .table-container {
+    // 自定义类名见 marked table 函数重写
+    .jpz-marked-table-container {
         width: 100%;
-        max-height: 300px;
+        max-height: 400px;
 
         // 添加横向和纵向滚动条
         overflow-x: auto;
@@ -211,8 +211,11 @@
 
         // 表格
         table {
+            // 合并边框
             border-collapse: collapse;
+            // 边框间距
             border-spacing: 0;
+
             margin: 1em auto;
             color: var(--jpz-text-color-primary);
         }
@@ -221,14 +224,22 @@
         th {
             border: 1px solid var(--jpz-table-border-color);
             background-color: var(--jpz-table-header-bg-color);
-            line-height: 2em; // 行高
+            // 行高
+            line-height: 2em;
             font-weight: 700;
             color: var(--jpz-text-color-primary);
+
+            // 单元格内边距
+            padding: 0.5em 0.5em;
         }
 
         // 表格单元格
         td {
             border: 1px solid var(--jpz-table-border-color);
+            // 单元格内边距
+            padding: 0.5em 0.5em;
+            // 行高
+            line-height: 1em;
         }
 
         // 表格偶数行
@@ -239,7 +250,7 @@
 
         // 为表格的奇数行设置背景颜色
         table tr:nth-child(2n + 1) {
-            background-color: var(--jpz-bg-color-page);
+            background-color: var(--jpz-table-n2-1-bg-color);
         }
     }
 
