@@ -5,6 +5,12 @@
 该格式基于 [Keep a Changelog](https://keepachangelog.com),
 本项目遵循 [语义化版本控制](https://semver.org/spec/v2.0.0.html)。
 
+## [0.1.9-beta] - 2025-11-20
+
+### Fix
+
+- 镜像无法启动的问题 pid 无权 去掉 777
+
 ## [0.1.8-beta] - 2025-11-20
 
 ### Fix
