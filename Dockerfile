@@ -24,16 +24,14 @@ RUN pnpm build
 FROM nginx:1.29.0-alpine
 
 # 安装 tzdata 包 设置时区
-RUN apk add --no-cache tzdata
-RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+RUN apk add --no-cache tzdata && \
+    cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo "Asia/Shanghai" > /etc/timezone
 ENV TZ=Asia/Shanghai
 
 # 更改 Nginx 缓存目录的所有权(修复问题使用非 root 用户来启动容器)
-RUN chown -R nginx:nginx /var/cache/nginx
-
-# 更改 /var/run/ 目录的权限 open() "/var/run/nginx.pid" failed (13: Permission denied)
-RUN chmod 777 /var/run/
+RUN mkdir -p /var/cache/nginx && \
+    chown -R nginx:nginx /var/cache/nginx
 
 # 将构建产物从 builder 镜像中复制到当前镜像中的 Nginx 的静态文件目录
 COPY --from=builder /app/dist /usr/share/nginx/html
