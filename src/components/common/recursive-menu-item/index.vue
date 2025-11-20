@@ -35,7 +35,7 @@ import type { MenuItemMapWithIndex, MenuItemWithIndex } from "./types"
 
 defineOptions({ name: "RecursiveMenuItem" })
 
-// 定义组件属性（props）
+// 定义组件属性(props)
 const { menuItemMap, menuItem } = defineProps<{
     menuItemMap: MenuItemMapWithIndex<string>
     menuItem: MenuItemWithIndex

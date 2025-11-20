@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive } from "vue"
+import { computed, reactive, ref } from "vue"
 
 import RecursiveMenuItem from "@/components/common/recursive-menu-item" // 引入递归菜单组件
 import type { SwitchItem, SwitchItemColor, SwitchItemLabel } from "@/components/common/switch-group"
@@ -119,11 +119,10 @@ const handleSelect = (index: string, keyPath: string[]) => {
         fill: var(--jpz-color-secondary);
     }
 
-    :deep(.el-sub-menu.is-active) {
-        .el-sub-menu__title {
-            fill: var(--jpz-color-secondary);
-            color: var(--jpz-color-secondary);
-        }
+    // 只选择当前激活的子菜单
+    :deep(.el-sub-menu.is-active > .el-sub-menu__title) {
+        fill: var(--jpz-color-secondary);
+        color: var(--jpz-color-secondary);
     }
 }
 
