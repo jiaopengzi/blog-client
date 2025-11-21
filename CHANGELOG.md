@@ -5,6 +5,12 @@
 该格式基于 [Keep a Changelog](https://keepachangelog.com),
 本项目遵循 [语义化版本控制](https://semver.org/spec/v2.0.0.html)。
 
+## [0.2.0] - 2025-11-21
+
+### Add
+
+- 产物增加 License
+
 ## [0.1.9-beta] - 2025-11-20
 
 ### Fix
