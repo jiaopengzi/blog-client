@@ -37,7 +37,7 @@ RUN mkdir -p /var/cache/nginx && \
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # 从源码中添加 License 到 html 目录
-COPY --from=builder /app/License /usr/share/nginx/html/License
+COPY License /usr/share/nginx/html/License
 
 # 复制自定义 Nginx 配置文件到当前镜像的 Nginx 配置文件目录
 COPY nginx.conf /etc/nginx/nginx.conf
