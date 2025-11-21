@@ -36,8 +36,8 @@ RUN mkdir -p /var/cache/nginx && \
 # 将构建产物从 builder 镜像中复制到当前镜像中的 Nginx 的静态文件目录
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# 从源码中添加 License 到 html 目录
-COPY License /usr/share/nginx/html/License
+# 从源码中添加 LICENSE 到 html 目录
+COPY LICENSE /usr/share/nginx/html/LICENSE
 
 # 复制自定义 Nginx 配置文件到当前镜像的 Nginx 配置文件目录
 COPY nginx.conf /etc/nginx/nginx.conf
