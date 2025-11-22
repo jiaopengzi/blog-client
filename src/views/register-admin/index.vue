@@ -20,25 +20,20 @@
         >
             <AccountFormHeader :a-tag="{ href: 'https://www.jiaopengzi.com', target: '_blank' }" title="注册管理员" />
 
-            <el-form-item label="用户名" prop="userName">
-                <el-input v-model="registerForm.userName" clearable />
+            <el-form-item label="管理员用户名" prop="userName">
+                <el-input v-model="registerForm.userName" clearable placeholder="请输入管理员用户名" />
             </el-form-item>
 
             <el-form-item label="邮箱" prop="email">
-                <el-input v-model="registerForm.email" clearable />
+                <el-input v-model="registerForm.email" clearable placeholder="请输入邮箱" />
             </el-form-item>
 
             <el-form-item label="密码" prop="password">
-                <el-input type="password" show-password v-model="registerForm.password" clearable />
+                <el-input type="password" show-password v-model="registerForm.password" clearable placeholder="请输入密码" />
             </el-form-item>
 
             <el-form-item label="确认密码" prop="rePassword">
-                <el-input type="password" show-password v-model="registerForm.rePassword" clearable />
-            </el-form-item>
-
-            <el-form-item prop="acceptedTerms">
-                <el-checkbox v-model="registerForm.acceptedTerms" value="同意条款" name="acceptedTerms" /><span class="i-agree">我已同意并接受：</span
-                ><a class="i-agree-link" href="/">《服务条款》</a>
+                <el-input type="password" show-password v-model="registerForm.rePassword" clearable placeholder="再次输入密码" />
             </el-form-item>
 
             <div class="btn-submit">
@@ -85,50 +80,35 @@ const registerFormRef = useTemplateRef<FormInstance>("registerFormRef")
 
 // 表单数据
 const registerForm = reactive<RegisterForm>({
-    // userName: '',
-    // email: '',
-    // password: '',
-    // rePassword: '',
-    // acceptedTerms: [],
-    userName: "jiaopengzi",
-    email: "jiaopengzi@qq.com",
-    password: "123QWEasd",
-    rePassword: "123QWEasd",
-    acceptedTerms: false,
+    userName: "",
+    email: "",
+    password: "",
+    rePassword: "",
+    // userName: "jiaopengzi",
+    // email: "jiaopengzi@qq.com",
+    // password: "123QWEasd",
+    // rePassword: "123QWEasd",
 })
 
 const userNameRef = toRef(registerForm, "userName")
 const emailRef = toRef(registerForm, "email")
 const passwordRef = toRef(registerForm, "password")
 const rePasswordRef = toRef(registerForm, "rePassword")
-const acceptedTermsRef = toRef(registerForm, "acceptedTerms")
 
 // hook 函数
-const {
-    checkUserNameValidator,
-    checkEmailValidator,
-    rePasswordValidator,
-    acceptedTermsValidator,
-
-    createAcceptedTermsRules,
-    createEmailRules,
-    createPasswordRules,
-    createRePasswordRules,
-    createUserNameRules,
-} = useAccountFormValidation({
-    FormUserName: userNameRef,
-    FormEmail: emailRef,
-    FormPassword: passwordRef,
-    FormRePassword: rePasswordRef,
-    FormAcceptedTerms: acceptedTermsRef,
-})
+const { checkUserNameValidator, checkEmailValidator, rePasswordValidator, createEmailRules, createPasswordRules, createRePasswordRules, createUserNameRules } =
+    useAccountFormValidation({
+        FormUserName: userNameRef,
+        FormEmail: emailRef,
+        FormPassword: passwordRef,
+        FormRePassword: rePasswordRef,
+    })
 
 const rules = reactive<FormRules<RegisterForm>>({
     userName: createUserNameRules(checkUserNameValidator),
     email: createEmailRules(checkEmailValidator),
     password: createPasswordRules(),
     rePassword: createRePasswordRules(rePasswordValidator),
-    acceptedTerms: createAcceptedTermsRules(acceptedTermsValidator),
 })
 
 const submitForm = async (formEl: FormInstance | undefined) => {

@@ -36,7 +36,8 @@ export function useDatabase<K extends SetupRequest>(
     confirmFunc: () => void,
     maxWaitSeconds: number = 60,
 ) {
-    const { showRestart, waitSeconds, isShowTimer, hasShowSuccessMsg } = useRestart(maxWaitSeconds)
+    const { showRestart, waitSeconds, isShowTimer, hasShowSuccessMsg } = useRestart(maxWaitSeconds, confirmFunc)
+
     // 验证所有表单
     const validateForms = async (): Promise<boolean[]> => {
         const promises: Promise<boolean>[] = []
@@ -99,6 +100,8 @@ export function useDatabase<K extends SetupRequest>(
                 user: esData.user,
                 password: esData.password,
                 index_prefix: esData.index_prefix,
+                ca_cert: esData.ca_cert,
+                use_ca_cert: esData.use_ca_cert,
             }
 
             // 构造请求参数
@@ -119,10 +122,11 @@ export function useDatabase<K extends SetupRequest>(
                 const res = await submitAPI(req as K)
 
                 if (res.data.code === submitResCode) {
-                    await showRestart().then(() => {
-                        confirmFunc()
-                    })
+                    clearInterval(timer)
+                    await showRestart()
                 } else {
+                    isShowTimer.value = false
+                    clearInterval(timer)
                     MessageUtil.error(handleResErr(res), 10000)
                 }
             } catch (error) {

@@ -23,22 +23,22 @@
             <AccountFormHeader :router-link-to="{ name: RouteNames.Home }" title="密码重置" />
 
             <el-form-item label="邮箱" prop="email">
-                <el-input v-model="forgotPasswordForm.email" clearable />
+                <el-input v-model="forgotPasswordForm.email" clearable placeholder="请输入邮箱" />
             </el-form-item>
 
             <el-form-item label="验证码" prop="captcha">
-                <el-input class="email-code" v-model="forgotPasswordForm.captcha" clearable />
+                <el-input class="email-code" v-model="forgotPasswordForm.captcha" clearable placeholder="请点击发送验证码后，输入验证码" />
                 <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="btnCaptchaState.disabled">
                     {{ captcha }}
                 </button>
             </el-form-item>
 
             <el-form-item label="新密码" prop="password">
-                <el-input type="password" show-password v-model="forgotPasswordForm.password" clearable />
+                <el-input type="password" show-password v-model="forgotPasswordForm.password" clearable placeholder="请输入新密码" />
             </el-form-item>
 
             <el-form-item label="确认密码" prop="rePassword">
-                <el-input type="password" show-password v-model="forgotPasswordForm.rePassword" clearable />
+                <el-input type="password" show-password v-model="forgotPasswordForm.rePassword" clearable placeholder="请再次输入新密码" />
             </el-form-item>
 
             <div class="btn-submit">
@@ -89,10 +89,14 @@ const forgotPasswordFormRef = useTemplateRef<FormInstance>("forgotPasswordFormRe
 
 // 表单数据
 const forgotPasswordForm = reactive<ResetPasswordForm>({
-    email: "jiaopengzi@qq.com",
-    captcha: "123456",
-    password: "123QWEasd123",
-    rePassword: "123QWEasd123",
+    email: "",
+    captcha: "",
+    password: "",
+    rePassword: "",
+    // email: "jiaopengzi@qq.com",
+    // captcha: "123456",
+    // password: "123QWEasd123",
+    // rePassword: "123QWEasd123",
 })
 
 const emailRef = toRef(forgotPasswordForm, "email")
@@ -259,7 +263,7 @@ const closeSlideVerify = () => {
 }
 
 .email-code {
-    flex: 5;
+    flex: 6;
 }
 
 .btn-captcha {

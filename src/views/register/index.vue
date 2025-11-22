@@ -23,26 +23,26 @@
             <AccountFormHeader :router-link-to="{ name: RouteNames.Home }" title="账号注册" />
 
             <el-form-item label="用户名" prop="userName">
-                <el-input v-model="registerForm.userName" clearable />
+                <el-input v-model="registerForm.userName" clearable placeholder="请输入用户名" />
             </el-form-item>
 
             <el-form-item label="邮箱" prop="email">
-                <el-input v-model="registerForm.email" clearable />
+                <el-input v-model="registerForm.email" clearable placeholder="请输入邮箱" />
             </el-form-item>
 
             <el-form-item label="验证码" prop="captcha">
-                <el-input class="email-code" v-model="registerForm.captcha" clearable />
+                <el-input class="email-code" v-model="registerForm.captcha" clearable placeholder="请点击发送验证码后，输入验证码" />
                 <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="btnCaptchaState.disabled">
                     {{ captcha }}
                 </button>
             </el-form-item>
 
             <el-form-item label="密码" prop="password">
-                <el-input type="password" show-password v-model="registerForm.password" clearable />
+                <el-input type="password" show-password v-model="registerForm.password" clearable placeholder="请输入密码" />
             </el-form-item>
 
             <el-form-item label="确认密码" prop="rePassword">
-                <el-input type="password" show-password v-model="registerForm.rePassword" clearable />
+                <el-input type="password" show-password v-model="registerForm.rePassword" clearable placeholder="请再次输入密码" />
             </el-form-item>
 
             <el-form-item prop="acceptedTerms">
@@ -99,18 +99,18 @@ const registerFormRef = useTemplateRef<FormInstance>("registerFormRef")
 
 // 表单数据
 const registerForm = reactive<RegisterForm>({
-    // userName: '',
-    // email: '',
-    // captcha: '',
-    // password: '',
-    // rePassword: '',
-    // acceptedTerms: [],
-    userName: "jiaopengzi",
-    email: "jiaopengzi@qq.com",
-    captcha: "123456",
-    password: "123QWEasd",
-    rePassword: "123QWEasd",
+    userName: "",
+    email: "",
+    captcha: "",
+    password: "",
+    rePassword: "",
     acceptedTerms: false,
+    // userName: "jiaopengzi",
+    // email: "jiaopengzi@qq.com",
+    // captcha: "123456",
+    // password: "123QWEasd",
+    // rePassword: "123QWEasd",
+    // acceptedTerms: false,
 })
 
 const userNameRef = toRef(registerForm, "userName")
@@ -303,7 +303,7 @@ const closeSlideVerify = () => {
 }
 
 .email-code {
-    flex: 5;
+    flex: 6;
 }
 
 .btn-captcha {

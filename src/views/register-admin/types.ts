@@ -11,5 +11,4 @@ export interface RegisterForm {
     email: string
     password: string
     rePassword: string
-    acceptedTerms: boolean
 }

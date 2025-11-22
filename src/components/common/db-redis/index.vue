@@ -7,7 +7,7 @@
 -->
 
 <template>
-    <BaseConfigForm ref="formRef" :title="nodeName" :form-data="db" :rules="rules" :form-items="formItems" :form-width="formWidth" />
+    <BaseConfigForm ref="formRef" :title="nodeName" :form-data="db" :rules="rules" :form-items="formItems" :form-width="formWidth" :label-width="labelWidth" />
 </template>
 
 <script lang="ts" setup>
@@ -31,10 +31,12 @@ const {
         password: "",
     },
     formWidth,
+    labelWidth,
 } = defineProps<{
     node?: number
     db?: RedisNodeSetupRequest
     formWidth?: number
+    labelWidth?: number
 }>()
 
 const nodeName = node ? `redis节点${node}` : "redis数据库"
@@ -58,11 +60,11 @@ const rules = reactive<FormRules<RedisNodeSetupRequest>>({
 })
 
 const formItems = [
-    { label: "主机地址", prop: "host" },
-    { label: "端口", prop: "port" },
-    { label: "数据库名", prop: "database" },
-    { label: "用户名", prop: "user" },
-    { label: "密码", prop: "password", type: "password", showPassword: true },
+    { label: "主机地址", prop: "host", placeholder: "例如:localhost" },
+    { label: "端口", prop: "port", placeholder: "例如:6379" },
+    { label: "数据库索引", prop: "database", placeholder: "例如:0 (范围0-15)" },
+    { label: "用户名", prop: "user", placeholder: "例如:default" },
+    { label: "密码", prop: "password", type: "password", showPassword: true, placeholder: "请输入密码" },
 ]
 
 defineExpose({

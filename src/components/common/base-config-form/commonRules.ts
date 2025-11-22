@@ -50,7 +50,7 @@ export const prefixValidatorFunc = (rule: any, value: any, callback: any) => {
     }
 }
 
-// urlList校验 以逗号分隔的url列表,每个url必须以http或https开头
+// urlList 校验 以逗号分隔的 url 列表, 每个 url 必须以 http 或 https 开头
 // 例如: http://localhost:9200,https://localhost:9200
 // 同时判断逗号是否合法,不能有空格
 export const urlListValidatorFunc = (rule: any, value: any, callback: any) => {

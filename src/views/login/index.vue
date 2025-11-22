@@ -85,8 +85,10 @@ const loginFormRef = useTemplateRef<FormInstance>("loginFormRef")
 
 // 表单数据
 const loginForm = reactive<LoginForm>({
-    loginName: "jiaopengzi@qq.com",
-    password: "123QWEasd",
+    loginName: "",
+    password: "",
+    // loginName: "jiaopengzi@qq.com",
+    // password: "123QWEasd",
 })
 
 // 获取社交登录状态

@@ -14,9 +14,11 @@ import { MessageUtil } from "@/utils/message"
 
 /**
  * 重启服务端
- * @param maxWaitSeconds 最大等待秒数 默认 60 秒
+ * @param maxWaitSeconds 最大等待秒数 默认 120 秒
+ * @param successFunc 重启成功回调函数
+ * @param failedFunc 重启失败回调函数
  */
-export function useRestart(maxWaitSeconds: number = 60) {
+export function useRestart(maxWaitSeconds: number = 120, successFunc: () => void = () => void 0, failedFunc: () => void = () => void 0) {
     const waitSeconds = ref(0) // 等待秒数
     const isShowTimer = ref(false) // 是否显示计时器
     const hasShowSuccessMsg = ref(false) // 是否已经显示成功消息
@@ -34,12 +36,13 @@ export function useRestart(maxWaitSeconds: number = 60) {
 
         // 安装成功后，服务端开始重启,同时开始轮训检查是否重启成功 间隔 5 秒重试
         const interval = setInterval(async () => {
-            // 首先判断是否超时,默认60秒
+            // 首先判断是否超时,默120秒
             if (waitSeconds.value >= maxWaitSeconds) {
                 isShowTimer.value = false
                 clearInterval(interval)
                 clearInterval(timer)
                 MessageUtil.error("服务端重启超时，请检查网络和后台数据是否正常！", 10000)
+                failedFunc()
             }
 
             // 轮训检查是否重启成功
@@ -53,6 +56,7 @@ export function useRestart(maxWaitSeconds: number = 60) {
 
                     // 确认成功后，执行回调函数
                     MessageUtil.success("服务端重启完成！", 5000)
+                    successFunc()
                 }
             }
         }, 5000)

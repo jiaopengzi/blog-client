@@ -23,6 +23,8 @@ export interface ESSetupRequest {
     user: string // 用户名
     password: string // 密码
     index_prefix: string // 表前缀
+    ca_cert: string // CA 证书(可选)
+    use_ca_cert: boolean // 是否使用CA认证(可选)
 }
 
 export interface RedisNodeSetupRequest {

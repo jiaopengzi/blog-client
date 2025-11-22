@@ -12,7 +12,7 @@
         <div class="setup">
             <AccountFormHeader :a-tag="{ href: 'https://www.jiaopengzi.com', target: '_blank' }" title="数据库配置" />
 
-            <PgsqlForm class="data-form" ref="pgsqlFormRef" :form-width="330" />
+            <PgsqlForm class="data-form" ref="pgsqlFormRef" :form-width="formWidth" :label-width="labelWidth" />
             <div class="redis-forms">
                 <div class="redis-header">
                     <span class="redis-count">redis数量：</span>
@@ -29,11 +29,12 @@
                         }
                     "
                     :node="i"
-                    :form-width="330"
+                    :form-width="formWidth"
+                    :label-width="labelWidth"
                 />
             </div>
 
-            <ElasticsearchForm class="data-form" ref="esFormRef" :form-width="330" />
+            <ElasticsearchForm class="data-form" ref="esFormRef" :form-width="formWidth" :label-width="labelWidth" />
 
             <el-button class="submit-btn" type="primary" @click="setupSubmit">提交</el-button>
         </div>
@@ -70,6 +71,9 @@ const redisFormRefs = reactive<{ [key: number]: RedisDatabaseFormRef | undefined
 const esFormRef = useTemplateRef<ElasticsearchFormRef>("esFormRef")
 
 const router = useRouter()
+
+const formWidth = 500
+const labelWidth = 150
 
 const confirmFunc = () => {
     MessageUtil.success("服务端重启完成,及时完成管理员注册！", 10000)

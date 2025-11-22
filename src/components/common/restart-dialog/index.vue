@@ -36,7 +36,7 @@ import { ref, watch } from "vue"
 defineOptions({ name: "RestartDialog" })
 
 const {
-    maxWaitSeconds = 60,
+    maxWaitSeconds = 120,
     waitSeconds,
     isShowTimer = false,
 } = defineProps<{
