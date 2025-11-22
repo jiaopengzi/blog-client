@@ -19,12 +19,15 @@ import { LocalStorageKey } from "./local"
 
 // 权限枚举
 export enum PermissionNames {
+    LoginAdmin = "LoginAdmin",
+    ViewDashboard = "ViewDashboard",
     AddMediaByPost = "AddMediaByPost",
     AddAvatar = "AddAvatar",
-    AddMedia = "AddMedia",
-    EditMedia = "EditMedia",
-    DeleteMedia = "DeleteMedia",
-    ViewMedia = "ViewMedia",
+    PermissionRole = "PermissionRole",
+    AddPost = "AddPost",
+    EditPost = "EditPost",
+    DeletePost = "DeletePost",
+    ViewPost = "ViewPost",
     AddCategory = "AddCategory",
     EditCategory = "EditCategory",
     DeleteCategory = "DeleteCategory",
@@ -33,26 +36,27 @@ export enum PermissionNames {
     EditTag = "EditTag",
     DeleteTag = "DeleteTag",
     ViewTag = "ViewTag",
-    AddPost = "AddPost",
-    EditPost = "EditPost",
-    DeletePost = "DeletePost",
-    ViewPost = "ViewPost",
+    AddMedia = "AddMedia",
+    EditMedia = "EditMedia",
+    DeleteMedia = "DeleteMedia",
+    ViewMedia = "ViewMedia",
     AddLink = "AddLink",
     EditLink = "EditLink",
     DeleteLink = "DeleteLink",
     ViewLink = "ViewLink",
-    LoginAdmin = "LoginAdmin",
-    Backup = "Backup",
-    PermissionRole = "PermissionRole",
-    AppOption = "AppOption",
+    AddComment = "AddComment",
+    EditComment = "EditComment",
+    DeleteComment = "DeleteComment",
+    ViewComment = "ViewComment",
     UserAdd = "UserAdd",
     UserDelete = "UserDelete",
     UserEdit = "UserEdit",
     UserView = "UserView",
-    Shop = "Shop",
-    Notification = "Notification",
     LoginLogView = "LoginLogView",
     LoginLogDelete = "LoginLogDelete",
+    Shop = "Shop",
+    AppOption = "AppOption",
+    Notification = "Notification",
 }
 
 // 定义权限接口
@@ -161,7 +165,8 @@ export const usePermissionRoleStore = defineStore("permissionRole", {
         },
 
         // 开发环境下检查权限枚举是否有遗漏
-        devCheckPermissionNames(): void {
+        async devCheckPermissionNames(): Promise<void> {
+            await this.updateFromServer()
             let newPermissionNames = ""
             const permissions = this.permissionList
             for (let i = 0; i < permissions.length; i++) {

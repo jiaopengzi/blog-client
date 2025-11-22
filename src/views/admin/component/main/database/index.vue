@@ -12,7 +12,7 @@
     <div class="content">
         <el-button class="submit-btn" type="primary" @click="submit">保存</el-button>
         <div :class="[isMultiRedisNode ? 'forms-multi' : 'forms']">
-            <PgsqlForm class="forms-item" ref="pgsqlFormRef" :db="dbPgsql" :formWidth="formWidth" />
+            <PgsqlForm class="forms-item" ref="pgsqlFormRef" :db="dbPgsql" :formWidth="formWidth" :label-width="labelWidth" />
 
             <RedisForm
                 class="forms-item"
@@ -26,9 +26,10 @@
                 :node="isShowRedisNodeNumber ? index + 1 : void 0"
                 :db="item"
                 :formWidth="formWidth"
+                :label-width="labelWidth"
             />
 
-            <ElasticsearchForm class="forms-item" ref="esFormRef" :db="dbES" :formWidth="formWidth" />
+            <ElasticsearchForm class="forms-item" ref="esFormRef" :db="dbES" :formWidth="formWidth" :label-width="labelWidth" />
         </div>
     </div>
 </template>
@@ -79,6 +80,7 @@ const formWidth = computed(() => {
 
     return 660
 })
+const labelWidth = 150
 
 // hooks 使用一个空函数作为 confirmFunc
 const { submit, waitSeconds, isShowTimer } = useDatabase(pgsqlFormRef, redisFormRefs, esFormRef, updateDbsPasswordAPI, ResponseCode.DBsUpdateSuccess, () => {})
@@ -96,6 +98,8 @@ onBeforeMount(async () => {
             user: esData.user,
             password: esData.password,
             index_prefix: esData.index_prefix,
+            ca_cert: esData.ca_cert,
+            use_ca_cert: esData.use_ca_cert,
         }
     } else {
         MessageUtil.error(handleResErr(res), 10000)

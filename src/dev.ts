@@ -13,8 +13,8 @@ import { usePermissionRoleStore } from "@/stores/permissionRole"
  * @description: 开发环境运行的函数，主要在控制台输出一些信息便于开发调试
  * @return
  */
-export function devRun() {
+export async function devRun() {
     devCheckIconKeys(iconMap) // 校验 iconMap
     const permissionRoleStore = usePermissionRoleStore()
-    permissionRoleStore.devCheckPermissionNames() // 校验权限枚举
+    await permissionRoleStore.devCheckPermissionNames() // 校验权限枚举
 }
