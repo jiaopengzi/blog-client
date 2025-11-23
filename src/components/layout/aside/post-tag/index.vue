@@ -14,7 +14,7 @@
                 文章标签
             </h2>
         </div>
-        <div v-if="noData" class="tag-box">
+        <div v-if="noData" class="no-data-box">
             <el-empty description="暂无数据" />
         </div>
         <div v-else class="tag-box">
@@ -89,11 +89,16 @@ onBeforeMount(() => {
     }
 }
 
-.tag-box {
-    // border: 1px solid #000;
-    overflow-y: auto;
-    padding-bottom: 5px;
-    padding-left: 5px;
+.no-data-box {
+    width: 100%;
+    height: 160px;
+    .el-empty {
+        padding: 10px;
+        :deep(.el-empty__image) {
+            width: 80px;
+            height: 80px;
+        }
+    }
 }
 
 .my-icon {

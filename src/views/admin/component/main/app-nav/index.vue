@@ -32,7 +32,9 @@
                 </el-collapse-item>
             </VueDraggable>
         </el-collapse>
-        <el-empty v-if="isEmpty" description="暂无导航" />
+    </div>
+    <div v-if="isEmpty" class="no-data">
+        <el-empty description="暂无导航" />
     </div>
 </template>
 
@@ -201,5 +203,12 @@ const submitForm = async () => {
     font-weight: 700;
     color: var(--jpz-text-color-regular);
     padding-left: 10px;
+}
+.no-data {
+    width: 100%;
+    height: calc(100% - pc.$height-header);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 </style>

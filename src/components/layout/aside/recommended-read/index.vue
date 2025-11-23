@@ -11,13 +11,18 @@
         <div class="title">
             <h2><j-icon :name="IconKeys.Recommended" custom-class="aside-icon" />推荐阅读</h2>
         </div>
-        <div class="post-list">
+        <div v-if="noData" class="no-data-box">
+            <el-empty description="暂无数据" />
+        </div>
+        <div v-else class="post-list">
             <PostItem v-for="item in postData" :key="item.post_title" :post-data="item" @post-id="postId" />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue"
+
 import { type PostResCommon } from "@/api/post/common"
 import { IconKeys } from "@/components/common/icons"
 import PostItem from "@/components/common/post-item-aside"
@@ -37,6 +42,9 @@ const emit = defineEmits<{
 const postId = (val: string) => {
     emit("postId", val)
 }
+
+// 是否没有数据
+const noData = computed(() => postData.length === 0)
 </script>
 <style scoped lang="scss">
 .aside-item {
@@ -75,5 +83,17 @@ const postId = (val: string) => {
     font-size: 20px;
     margin-right: 5px;
     fill: var(--jpz-color-secondary);
+}
+
+.no-data-box {
+    width: 100%;
+    height: 160px;
+    .el-empty {
+        padding: 10px;
+        :deep(.el-empty__image) {
+            width: 80px;
+            height: 80px;
+        }
+    }
 }
 </style>

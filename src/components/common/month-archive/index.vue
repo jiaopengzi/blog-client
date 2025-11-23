@@ -11,7 +11,10 @@
         <div class="title">
             <h2><j-icon :name="IconKeys.Archive" custom-class="aside-icon" />文章归档</h2>
         </div>
-        <div class="table">
+        <div v-if="noData" class="no-data-box">
+            <el-empty description="暂无数据" />
+        </div>
+        <div v-else class="table">
             <el-table :max-height="400" :data="postList" :show-header="true" row-class-name="month-archive-row-class" @row-click="handleRowClick">
                 <el-table-column prop="year_month" label="年月" align="center" />
                 <el-table-column prop="count" label="文章" align="center" />
@@ -20,6 +23,8 @@
     </div>
 </template>
 <script setup lang="ts">
+import { computed } from "vue"
+
 import { IconKeys } from "@/components/common/icons"
 
 import { type MonthArchiveData } from "./types"
@@ -34,6 +39,9 @@ const { postList } = defineProps<{
 const emit = defineEmits<{
     (event: "PostByMonth", val: MonthArchiveData): void
 }>()
+
+// 是否没有数据
+const noData = computed(() => postList.length === 0)
 
 // 参考官方文档 https://element-plus.org/zh-CN/component/table.html#table-%E4%BA%8B%E4%BB%B6
 
@@ -69,5 +77,17 @@ h2 {
 
 :deep(.month-archive-row-class) {
     cursor: pointer;
+}
+
+.no-data-box {
+    width: 100%;
+    height: 160px;
+    .el-empty {
+        padding: 10px;
+        :deep(.el-empty__image) {
+            width: 80px;
+            height: 80px;
+        }
+    }
 }
 </style>
