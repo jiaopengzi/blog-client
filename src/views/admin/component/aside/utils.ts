@@ -16,6 +16,7 @@ import { type AdminMenuItemMap, type AdminMenuItemMapWithIndex } from "./types"
 export const adminMenuItemMap: AdminMenuItemMap = {
     [RouteNamesAdmin.Dashboard]: {
         text: "仪表板",
+        permissionName: PermissionNames.ViewDashboard,
         icon: {
             name: IconKeys.Dashboard,
             class: "icon-menu",
@@ -23,6 +24,7 @@ export const adminMenuItemMap: AdminMenuItemMap = {
     },
     [RouteNamesAdmin.Post]: {
         text: "文章",
+        permissionName: PermissionNames.ViewPost,
         icon: {
             name: IconKeys.Post,
             class: "icon-menu",
@@ -31,22 +33,27 @@ export const adminMenuItemMap: AdminMenuItemMap = {
     },
     [RouteNamesAdmin.PostAll]: {
         text: "所有文章",
+        permissionName: PermissionNames.ViewPost,
         parentIndex: RouteNamesAdmin.Post,
     },
     [RouteNamesAdmin.PostWrite]: {
         text: "写文章",
+        permissionName: PermissionNames.AddPost,
         parentIndex: RouteNamesAdmin.Post,
     },
     [RouteNamesAdmin.PostTag]: {
         text: "标签",
+        permissionName: PermissionNames.ViewTag,
         parentIndex: RouteNamesAdmin.Post,
     },
     [RouteNamesAdmin.PostCategory]: {
         text: "分类",
+        permissionName: PermissionNames.ViewCategory,
         parentIndex: RouteNamesAdmin.Post,
     },
     [RouteNamesAdmin.Media]: {
         text: "媒体",
+        permissionName: PermissionNames.ViewMedia,
         icon: {
             name: IconKeys.Media,
             class: "icon-menu",
@@ -54,6 +61,7 @@ export const adminMenuItemMap: AdminMenuItemMap = {
     },
     [RouteNamesAdmin.Links]: {
         text: "链接",
+        permissionName: PermissionNames.ViewLink,
         icon: {
             name: IconKeys.Link,
             class: "icon-menu",
@@ -73,6 +81,7 @@ export const adminMenuItemMap: AdminMenuItemMap = {
     // },
     [RouteNamesAdmin.PageAdmin]: {
         text: "页面",
+        permissionName: PermissionNames.ViewPost,
         icon: {
             name: IconKeys.Page,
             class: "icon-menu",
@@ -80,14 +89,17 @@ export const adminMenuItemMap: AdminMenuItemMap = {
     },
     [RouteNamesAdmin.PageAll]: {
         text: "所有页面",
+        permissionName: PermissionNames.ViewPost,
         parentIndex: RouteNamesAdmin.PageAdmin,
     },
     [RouteNamesAdmin.PageWrite]: {
         text: "新增页面",
+        permissionName: PermissionNames.AddPost,
         parentIndex: RouteNamesAdmin.PageAdmin,
     },
     [RouteNamesAdmin.Comment]: {
         text: "评论",
+        permissionName: PermissionNames.ViewComment,
         icon: {
             name: IconKeys.Comment,
             class: "icon-menu",
@@ -133,6 +145,7 @@ export const adminMenuItemMap: AdminMenuItemMap = {
     // },
     [RouteNamesAdmin.Shop]: {
         text: "商城",
+        permissionName: PermissionNames.Shop,
         icon: {
             name: IconKeys.Shop,
             class: "icon-menu",
@@ -144,30 +157,37 @@ export const adminMenuItemMap: AdminMenuItemMap = {
     // },
     [RouteNamesAdmin.AccountKey]: {
         text: "账号密钥",
+        permissionName: PermissionNames.Shop,
         parentIndex: RouteNamesAdmin.Shop,
     },
     [RouteNamesAdmin.AccountKeyAll]: {
         text: "产品",
+        permissionName: PermissionNames.Shop,
         parentIndex: RouteNamesAdmin.AccountKey,
     },
     [RouteNamesAdmin.AccountKeyItem]: {
         text: "明细",
+        permissionName: PermissionNames.Shop,
         parentIndex: RouteNamesAdmin.AccountKey,
     },
     [RouteNamesAdmin.Order]: {
         text: "订单",
+        permissionName: PermissionNames.Shop,
         parentIndex: RouteNamesAdmin.Shop,
     },
     [RouteNamesAdmin.Membership]: {
         text: "会员",
+        permissionName: PermissionNames.Shop,
         parentIndex: RouteNamesAdmin.Shop,
     },
     [RouteNamesAdmin.Coupon]: {
         text: "优惠券",
+        permissionName: PermissionNames.Shop,
         parentIndex: RouteNamesAdmin.Shop,
     },
     [RouteNamesAdmin.PayConfig]: {
         text: "支付配置",
+        permissionName: PermissionNames.Shop,
         parentIndex: RouteNamesAdmin.Shop,
     },
     // [RouteNamesAdmin.ShortLink]: {
@@ -187,6 +207,7 @@ export const adminMenuItemMap: AdminMenuItemMap = {
     // },
     [RouteNamesAdmin.User]: {
         text: "用户",
+        permissionName: PermissionNames.UserView,
         icon: {
             name: IconKeys.User,
             class: "icon-menu",
@@ -206,15 +227,17 @@ export const adminMenuItemMap: AdminMenuItemMap = {
     },
     [RouteNamesAdmin.LoginLog]: {
         text: "登录日志",
+        permissionName: PermissionNames.LoginLogView,
         parentIndex: RouteNamesAdmin.User,
     },
     [RouteNamesAdmin.PermissionRole]: {
         text: "权限角色",
-        parentIndex: RouteNamesAdmin.User,
         permissionName: PermissionNames.PermissionRole,
+        parentIndex: RouteNamesAdmin.User,
     },
     [RouteNamesAdmin.Setting]: {
         text: "网站配置",
+        permissionName: PermissionNames.AppOption,
         icon: {
             name: IconKeys.Setting,
             class: "icon-menu",
@@ -222,30 +245,37 @@ export const adminMenuItemMap: AdminMenuItemMap = {
     },
     [RouteNamesAdmin.SettingAPPNav]: {
         text: "导航",
+        permissionName: PermissionNames.AppOption,
         parentIndex: RouteNamesAdmin.Setting,
     },
     [RouteNamesAdmin.SettingAPPOption]: {
         text: "选项",
+        permissionName: PermissionNames.AppOption,
         parentIndex: RouteNamesAdmin.Setting,
     },
     [RouteNamesAdmin.SettingDatabase]: {
         text: "数据库",
+        permissionName: PermissionNames.AppOption,
         parentIndex: RouteNamesAdmin.Setting,
     },
     [RouteNamesAdmin.SettingEmail]: {
         text: "邮箱",
+        permissionName: PermissionNames.AppOption,
         parentIndex: RouteNamesAdmin.Setting,
     },
     [RouteNamesAdmin.SettingSocial]: {
         text: "社交登录",
+        permissionName: PermissionNames.AppOption,
         parentIndex: RouteNamesAdmin.Setting,
     },
     [RouteNamesAdmin.SettingUpload]: {
         text: "文件上传",
+        permissionName: PermissionNames.AppOption,
         parentIndex: RouteNamesAdmin.Setting,
     },
     [RouteNamesAdmin.Notification]: {
         text: "通知",
+        permissionName: PermissionNames.Notification,
         icon: {
             name: IconKeys.Notification,
             class: "icon-menu",

@@ -25,6 +25,15 @@ function generateAdminRoutes() {
                 requiresAuth: true,
             },
             children: [
+                // // 无权限页面
+                // {
+                //     path: "/admin/no-permission",
+                //     name: RouteNames.NoPermission,
+                //     component: () => import("@/views/admin/component/main/no-permission/index.vue"),
+                //     meta: {
+                //         requiresAuth: true,
+                //     },
+                // },
                 // 其他子路由
                 ...Object.keys(adminMenuItemMapWithIndex).map((key) => {
                     const menuItem = adminMenuItemMapWithIndex[key as RouteNamesAdmin]
@@ -33,7 +42,6 @@ function generateAdminRoutes() {
                     if (menuItem.components) {
                         component = toKebabCase(menuItem.components)
                     }
-
                     return {
                         path: menuItem.index,
                         name: key,

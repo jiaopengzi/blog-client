@@ -30,6 +30,7 @@ export enum RouteNamesDefault {
     // Tool = "tool",
     // Vip = "vip",
     Admin = "admin",
+    NoPermission = "no-permission",
 }
 
 // public 路由名称

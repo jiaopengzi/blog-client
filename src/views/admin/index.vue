@@ -30,7 +30,8 @@
                     <!-- 参考:https://stackoverflow.com/questions/65553121/vue-3-transition-renders-non-element-root-node-that-cannot-be-animated -->
                     <!-- 在组件外包裹一层 div, 需要单独包括在子组件中, 才能缓存, 不能在这里包裹 -->
 
-                    <router-view />
+                    <router-view v-if="hasPermissionContent" />
+                    <NoPermission v-if="!hasPermissionContent" :head-title="noPermissionHeadTitle" :path-display="noPermissionDisplay" />
 
                     <!-- TODO 是否启用 KeepAlive 待后续思考 -->
                     <!-- <router-view v-slot="{ Component, route }">
@@ -68,6 +69,7 @@ import { MessageUtil } from "@/utils/message"
 import Page404 from "@/views/404"
 import AdminAside from "@/views/admin/component/aside"
 import AdminHeader from "@/views/admin/component/header"
+import NoPermission from "@/views/admin/component/main/no-permission"
 
 import { adminMenuItemMapWithIndexMap } from "./component/aside"
 
@@ -80,6 +82,9 @@ useHead({
 const router = useRouter()
 
 const hasPermissionLoginAdmin = ref(false)
+const hasPermissionContent = ref(false)
+const noPermissionHeadTitle = ref("")
+const noPermissionDisplay = ref("")
 
 // 定义 HTMLElementRef 类型
 interface HTMLElementRef extends HTMLElement {
@@ -111,20 +116,39 @@ const handleCollapseStatus = (isCollapse: boolean) => {
     localStorage.setItem(LocalStorageKey.IsCollapse, isCollapse.toString())
 }
 
-// 选择菜单项
-const handleSelect = (index: string) => {
+// 更新权限并跳转
+const updatePermission = (index: string) => {
     // 判断是否有权限
     const permission = adminMenuItemMapWithIndexMap[index]!.permissionName
+    noPermissionHeadTitle.value = adminMenuItemMapWithIndexMap[index]!.text
+    noPermissionDisplay.value = adminMenuItemMapWithIndexMap[index]!.text
+
+    // 开发环境下提示未配置权限名称
+    if (!permission) {
+        console.warn(`菜单项 ${index} 未配置权限名称`)
+        hasPermissionContent.value = false
+    }
+
+    // 跳转到没有权限页面
     if (permission && !userStore.hasPermission(permission)) {
         MessageUtil.warning("没有权限")
-        return
+        hasPermissionContent.value = false
+    } else {
+        hasPermissionContent.value = true
     }
 
     router.push({ path: index })
 }
 
+// 选择菜单项
+const handleSelect = (index: string) => {
+    updatePermission(index)
+}
+
 onBeforeMount(() => {
     updatePermissionLoginAdmin()
+    // 拿到当前路由, 更新权限
+    updatePermission(router.currentRoute.value.path)
 })
 </script>
 

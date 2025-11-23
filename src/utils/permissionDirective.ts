@@ -11,7 +11,7 @@ import type { Directive, DirectiveBinding } from "vue"
 import { PermissionNames } from "@/stores/permissionRole"
 import { useUserStore } from "@/stores/user"
 
-// 权限指令,如果没有权限则移除元素.
+// 权限指令, 如果没有权限则移除元素.
 export const permissionDirective: Directive = {
     mounted(el: HTMLElement, binding: DirectiveBinding<PermissionNames>) {
         // 获取用户信息

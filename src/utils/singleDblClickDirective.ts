@@ -1,9 +1,9 @@
-/*
- * FilePath    : blog-client\src\utils\permissionDirective.ts
+/**
+ * FilePath    : blog-client-dev\src\utils\singleDblClickDirective.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 权限指令
+ * Description : 全局单击/双击指令
  */
 
 import type { Directive, DirectiveBinding } from "vue"
