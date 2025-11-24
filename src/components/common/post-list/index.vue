@@ -168,7 +168,6 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .post-list {
     font-size: 14px;
-    margin-top: 10px;
 
     // 只有最后一个元素显示下边框
     .post-item {

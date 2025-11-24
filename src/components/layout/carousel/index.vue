@@ -7,17 +7,39 @@
 -->
 
 <template>
-    <div class="carousel-container">
-        <el-carousel>
-            <el-carousel-item v-for="item in 4" :key="item">
-                <h3 class="small justify-center" text="2xl">{{ item }}</h3>
+    <div class="carousel-container" v-if="enable && items && items.length > 0">
+        <el-carousel :height="height" :interval="interval" :loop="items.length > 1">
+            <el-carousel-item v-for="item in items" :key="item.imageUrl">
+                <a :href="item.linkUrl || '/'" target="_blank" rel="noopener noreferrer">
+                    <el-image
+                        :src="item.imageUrl"
+                        :alt="item.altText || 'Carousel Image'"
+                        fit="contain"
+                        :style="{ height: height, width: '100%' }"
+                        @error="console.log('Image load error:', item.imageUrl)"
+                    />
+                </a>
             </el-carousel-item>
         </el-carousel>
     </div>
 </template>
 
 <script lang="ts" setup>
+import { storeToRefs } from "pinia"
+import { computed } from "vue"
+
+import { useOptionsStore } from "@/stores/options"
+
 defineOptions({ name: "HomeCarousel" })
+
+const optionsStore = useOptionsStore()
+
+const { carousel } = storeToRefs(optionsStore)
+
+const enable = computed(() => carousel.value.enable)
+const interval = computed(() => carousel.value.interval)
+const items = computed(() => carousel.value.items)
+const height = "300px"
 </script>
 
 <style scoped lang="scss">

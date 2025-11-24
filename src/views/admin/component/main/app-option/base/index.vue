@@ -25,9 +25,21 @@
             <!-- 如果是分类标题，则使用 h4 显示在表单项外 -->
             <h4 v-if="item.isCategoryTitle" class="category-title">{{ item.label }}</h4>
 
+            <!-- 在 v-for 中不能直接使用 useTemplateRef  -->
+            <CarouselManage
+                v-else-if="item.isCarouselManage"
+                :ref="
+                    (el) => {
+                        if (el) setCarouselRef(el as CarouselFormRef)
+                    }
+                "
+                :data="carouselManageData"
+            />
+
             <!-- 否则就是普通表单项 -->
             <el-form-item v-else :label="item.label" :prop="item.prop">
                 <el-checkbox v-if="item.isCheckbox" v-model="formDataResult[item.prop as keyof APPOptionForm]" />
+
                 <ImageInput
                     v-else-if="item.isImageInput"
                     v-model="formDataResult[item.prop as keyof APPOptionForm] as string"
@@ -43,8 +55,9 @@
 
 <script lang="ts" setup>
 import type { FormInstance, FormRules } from "element-plus"
-import { reactive, useTemplateRef } from "vue"
+import { computed, reactive, ref, useTemplateRef } from "vue"
 
+import CarouselManage, { type CarouselFormRef } from "@/components/common/carousel-manage"
 import ImageInput from "@/components/common/image-input"
 
 import { type APPOptionForm } from "./types"
@@ -63,6 +76,7 @@ const { title, formData, rules, formItems, formWidth, labelWidth } = defineProps
         isImageInput?: boolean
         isCheckbox?: boolean
         isCategoryTitle?: boolean
+        isCarouselManage?: boolean
     }>
     formWidth?: number
     labelWidth?: number
@@ -70,20 +84,59 @@ const { title, formData, rules, formItems, formWidth, labelWidth } = defineProps
 
 const formRef = useTemplateRef<FormInstance>("formRef")
 
+// 轮播图组件引用
+const carouselManageRef = ref<CarouselFormRef | null>(null)
+
+// 由于在 v-for 中不能直接使用 useTemplateRef, 所以通过函数赋值
+const setCarouselRef = (el: CarouselFormRef | null) => {
+    carouselManageRef.value = el
+}
+
+// 结果数据
 const formDataResult = reactive<APPOptionForm>(formData)
+
+// 轮播图数据
+const carouselManageData = computed(() => {
+    if (formDataResult.carousel_manage) {
+        try {
+            return JSON.parse(formDataResult.carousel_manage)
+        } catch {
+            return []
+        }
+    }
+    return []
+})
 
 defineExpose({
     formDataResult,
     validateForm: async (): Promise<boolean> => {
+        let carouselValid = true
+        let formValid = true
+
+        // 如果 carouselManage 存在, 则校验
+        if (carouselManageRef.value && carouselManageRef.value.formDataResult && carouselManageRef.value.formDataResult.length > 0) {
+            const flag = await carouselManageRef.value.validateForm()
+            if (flag) {
+                // 将结果数据同步到 formDataResult 中
+                formDataResult.carousel_manage = JSON.stringify(carouselManageRef.value.formDataResult)
+            } else {
+                carouselValid = false
+            }
+        } else {
+            formDataResult.carousel_manage = "[]"
+        }
+
+        // 校验 el-form
         if (formRef.value) {
             try {
                 await formRef.value.validate()
-                return true
             } catch {
-                return false
+                formValid = false
             }
         }
-        return false
+
+        // 只有两者都通过才返回 true
+        return carouselValid && formValid
     },
 })
 </script>

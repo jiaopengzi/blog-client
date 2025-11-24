@@ -40,7 +40,7 @@ import { computed, reactive, ref, useTemplateRef, watch } from "vue"
 import { type FileAllowed } from "@/api/setting/getUpload"
 import { MessageUtil } from "@/utils/message"
 
-defineOptions({ name: "SocialLoginConfig" })
+defineOptions({ name: "FileAllowed" })
 
 const { data } = defineProps<{
     data: FileAllowed[]

@@ -12,6 +12,7 @@ import { getIpInfoAPI, type IpInfoRes } from "@/api/helper/ipInfo"
 import { ResponseCode } from "@/api/response"
 import { getAPPOptionAPI, type GetAPPOptionResponse } from "@/api/setting/getAPPOption"
 import { getPayConfigStatusAPI, type GetPayConfigStatusResponse } from "@/api/setting/getPayConfigStatus"
+import { type CarouselItem } from "@/components/common/carousel-manage"
 import { type HeadProps } from "@/components/common/head-tag"
 import { type NavItemProps } from "@/views/admin/component/main/app-nav/nav-item"
 
@@ -45,6 +46,13 @@ export interface FooterInfo {
     right?: FooterRightInfo
 }
 
+// 轮播图信息
+export interface CarouselInfo {
+    enable: boolean // 是否启用轮播图
+    interval: number // 轮播间隔时间, 默认 3000 单位 毫秒
+    items: CarouselItem[] // 轮播图项目
+}
+
 // 网站配置选项
 export interface OptionsStore {
     app_options: GetAPPOptionResponse // 网站配置选项数据
@@ -58,6 +66,7 @@ export interface OptionsStore {
     wechatPayStatus: boolean // 微信支付状态
     alipayStatus: boolean // 支付宝支付状态
     is_remove_first_h1: boolean // 是否移除文章内容中的第一个 h1 标签
+    carousel: CarouselInfo // 轮播图信息
 }
 
 // 创建一个空的选项存储
@@ -74,6 +83,11 @@ function createEmptyOptionsStore(): OptionsStore {
         wechatPayStatus: false,
         alipayStatus: false,
         is_remove_first_h1: false,
+        carousel: {
+            enable: false,
+            interval: 3000,
+            items: [],
+        },
     }
 }
 
@@ -144,6 +158,11 @@ export const useOptionsStore = defineStore("options", {
         getIsRemoveFirstH1(): boolean {
             return this.is_remove_first_h1
         },
+
+        // 获取轮播图信息
+        getCarousel(): CarouselInfo {
+            return this.carousel
+        },
     },
 
     actions: {
@@ -193,6 +212,12 @@ export const useOptionsStore = defineStore("options", {
                 this.wechatPayStatus = payStatusObj.wechatPayStatus
                 this.alipayStatus = payStatusObj.alipayStatus
             }
+
+            // 从本地获取轮播图信息
+            const carousel = localStorage.getItem(LocalStorageKey.OptionsCarousel)
+            if (carousel) {
+                this.carousel = JSON.parse(carousel) as CarouselInfo
+            }
         },
 
         // 从服务器获取网站配置
@@ -219,6 +244,9 @@ export const useOptionsStore = defineStore("options", {
                 this.isLoadedOptions = true
 
                 this.is_remove_first_h1 = this.app_options.is_remove_first_h1.value === "true"
+
+                // 轮播图项目格式化后存储本地
+                this.carousel = await formatCarouselInfo(this.app_options)
             }
 
             // 更新支付配置状态
@@ -407,6 +435,38 @@ const formatNavObj = async (navList: NavItemProps[]): Promise<Record<string, Nav
     localStorage.setItem(LocalStorageKey.OptionsNavObj, JSON.stringify(navObj))
 
     return navObj
+}
+
+// 格式化轮播图信息
+const formatCarouselInfo = async (data: GetAPPOptionResponse): Promise<CarouselInfo> => {
+    // 是否启用轮播图
+    const carouselEnable = data.carousel_enable?.value === "true"
+
+    // 轮播图间隔
+    const carouselInterval = parseInt(data.carousel_interval?.value) || 3
+
+    // 轮播图具体项目
+    let carouselItems: CarouselItem[] = []
+
+    // 解析轮播图项目 JSON 字符串
+    try {
+        carouselItems = JSON.parse(data.carousel_manage?.value) as CarouselItem[]
+    } catch (e) {
+        console.error("JSON parse error:", e)
+        carouselItems = []
+    }
+
+    // 构建轮播图信息对象
+    const carouselInfo: CarouselInfo = {
+        enable: carouselEnable,
+        interval: carouselInterval,
+        items: carouselItems,
+    }
+
+    // 存入本地
+    localStorage.setItem(LocalStorageKey.OptionsCarousel, JSON.stringify(carouselInfo))
+
+    return carouselInfo
 }
 
 // 允许开发环境下进行热更新 HMR(Hot Module Replacement)

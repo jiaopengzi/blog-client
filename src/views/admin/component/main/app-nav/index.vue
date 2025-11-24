@@ -204,6 +204,7 @@ const submitForm = async () => {
     color: var(--jpz-text-color-regular);
     padding-left: 10px;
 }
+
 .no-data {
     width: 100%;
     height: calc(100% - pc.$height-header);

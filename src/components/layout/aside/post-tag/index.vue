@@ -89,6 +89,10 @@ onBeforeMount(() => {
     }
 }
 
+.tag-box {
+    padding: 8px;
+}
+
 .no-data-box {
     width: 100%;
     height: 160px;

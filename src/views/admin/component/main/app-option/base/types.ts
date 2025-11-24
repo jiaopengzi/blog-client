@@ -17,10 +17,13 @@ export interface APPOptionForm {
     logo: string // logo
     favicon: string // favicon
 
+    // 轮播图相关
+    carousel_enable: boolean // 轮播图开启
+    carousel_interval: number // 轮播图间隔 默认 3000 单位 毫秒
+    carousel_manage: string // 轮播图管理
+
     // 文章相关
-    carousel_interval: number // 轮播图间隔 默认 5秒
-    post_text_truncate: number // 文章文字截断 100字
-    post_summary_truncate: number // 文章摘要截断 80字
+    post_list_summary_truncate: number // 文章列表摘要截断 默认 100 字
     history_today_enable: boolean // 历史上今天
     immersion_read_enable: boolean // 阅读模式
     read_time_enable: boolean // 阅读时间

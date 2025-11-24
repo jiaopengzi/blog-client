@@ -16,7 +16,12 @@
         </div>
         <div v-else class="table">
             <el-table :max-height="400" :data="postList" :show-header="true" row-class-name="month-archive-row-class" @row-click="handleRowClick">
-                <el-table-column prop="year_month" label="年月" align="center" />
+                <el-table-column prop="year_month" label="年月" align="center">
+                    <template #default="scope">
+                        <!-- 将月份补全为两位数 -->
+                        <span>{{ scope.row.year }}-{{ String(scope.row.month).padStart(2, "0") }}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="count" label="文章" align="center" />
             </el-table>
         </div>

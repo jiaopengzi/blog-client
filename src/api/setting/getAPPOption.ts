@@ -43,10 +43,13 @@ export interface GetAPPOptionResponse {
     logo: APPOptionItem // logo
     favicon: APPOptionItem // favicon
 
+    // 轮播图相关
+    carousel_enable: APPOptionItem // 轮播图开启
+    carousel_interval: APPOptionItem // 轮播图间隔 默认 3000 单位 毫秒
+    carousel_manage: APPOptionItem // 轮播图管理
+
     // 文章相关
-    carousel_interval: APPOptionItem // 轮播图间隔 默认 5秒
-    post_text_truncate: APPOptionItem // 文章文字截断 100字
-    post_summary_truncate: APPOptionItem // 文章摘要截断 80字
+    post_list_summary_truncate: APPOptionItem // 文章列表摘要截断 默认 100 字
     history_today_enable: APPOptionItem // 历史上今天
     immersion_read_enable: APPOptionItem // 沉浸阅读
     read_time_enable: APPOptionItem // 阅读时间

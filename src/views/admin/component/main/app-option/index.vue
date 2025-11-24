@@ -9,7 +9,7 @@
 <template>
     <div class="components">
         <el-button class="head" type="primary" @click="submitForm">保存</el-button>
-        <BaseForm ref="formRef" title="网站选项" :form-data="optionData" :rules="rules" :form-items="formItems" :label-width="200" :form-width="800" />
+        <BaseForm ref="formRef" title="网站选项" :form-data="optionData" :rules="rules" :form-items="formItems" :label-width="200" :form-width="960" />
         <el-button class="foot" type="primary" @click="submitForm">保存</el-button>
     </div>
 </template>
@@ -60,6 +60,7 @@ const submitForm = async () => {
         if (Object.prototype.hasOwnProperty.call(optionDataTar, key)) {
             const valTar = optionDataTar[key as keyof APPOptionForm]
             const itemSrc = optionDataSrc.value[key as keyof GetAPPOptionResponse]
+
             // 判断是否更新
             const valSrc = optionDataSrc.value[key as keyof GetAPPOptionResponse].value
             if (valTar.toString() !== valSrc) {
@@ -71,6 +72,13 @@ const submitForm = async () => {
             }
         }
     }
+
+    // 如果没有需要更新的选项，则直接返回
+    if (reqList.length === 0) {
+        MessageUtil.warning("没有需要更新的选项")
+        return
+    }
+
     const req = { options: reqList } as UpdateAPPOptionRequest
     const res = await updateAPPOptionAPI(req)
     if (res.data.code === ResponseCode.UpdateAPPOptionSuccess) {
@@ -81,6 +89,7 @@ const submitForm = async () => {
     }
 }
 
+// 表单校验规则
 const rules = reactive<FormRules<APPOptionForm>>({
     logo: [
         {
@@ -127,18 +136,24 @@ const rules = reactive<FormRules<APPOptionForm>>({
     ],
 })
 
+// 表单项配置显示
 const formItems = [
     // logo 相关
     { label: "logo", isCategoryTitle: true },
     { label: "logo", prop: "logo", isImageInput: true },
     { label: "favicon", prop: "favicon", isImageInput: true },
 
+    // 轮播图相关
+    { label: "轮播图", isCategoryTitle: true },
+    { label: "轮播图启用", prop: "carousel_enable", isCheckbox: true },
+    { label: "轮播图间隔(毫秒)", prop: "carousel_interval" },
+    { label: "轮播图管理", prop: "carousel_manage", isCarouselManage: true },
+
     // 文章相关
     { label: "文章", isCategoryTitle: true },
-    { label: "轮播图间隔(秒)", prop: "carousel_interval" },
-    { label: "文章文字截断(字数)", prop: "post_text_truncate" },
-    { label: "文章摘要截断(字数)", prop: "post_summary_truncate" },
-    { label: "显示历史上今天", prop: "history_today_enable", isCheckbox: true },
+    { label: "文章列表摘要截断(字数)", prop: "post_list_summary_truncate" },
+    // TODO 历史上的今天功能待完善
+    // { label: "显示历史上今天", prop: "history_today_enable", isCheckbox: true },
     { label: "显示沉浸阅读", prop: "immersion_read_enable", isCheckbox: true },
     { label: "显示阅读时间", prop: "read_time_enable", isCheckbox: true },
     { label: "显示文章字数", prop: "word_count_enable", isCheckbox: true },
