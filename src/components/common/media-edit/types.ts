@@ -6,37 +6,8 @@
  * @Description  : 类型
  */
 
-import { type TableImg } from "@/components/common"
+import { type MediaShowProps } from "./media-show"
 
-export interface EditMediaProps {
-    file_id: string // 文件ID
-    file_name: string // 文件名称
-    file_type: string // 文件类型
-    file_url: string // 文件地址
-    thumbnail: string // 缩略图
-    file_name_display: string // 显示名称
-    description: string // 描述
-    file_id_hash: string // 文件id哈希
-    is_free: boolean // 是否免费
-    is_generate_hls: boolean // 是否生成HLS
-    subtitles_language_list: string[] // 字幕
-    img?: TableImg // 图片
+export interface EditMediaProps extends MediaShowProps {
     editDialogVisible?: boolean // 编辑弹窗是否显示
-}
-
-export interface EditMediaForm {
-    file_id: string // 文件ID
-    is_generate_hls: boolean // 是否生成 HLS
-    file_name_display: string // 显示名称
-    description: string // 描述
-    file_id_hash: string // 文件id哈希
-    file_url: string // 文件地址
-    is_free: boolean // 是否免费
-}
-
-export interface SubtitlesForm {
-    file_id: string // 视频文件id
-    language: string // 字幕语言
-    label: string // 字幕标签
-    subtitles: string // 字幕
 }
