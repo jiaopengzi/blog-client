@@ -155,8 +155,10 @@ const handleDeleteN = () => {
         }
         await deleteLoginLogByDayAPI(deleteLoginLogByDayRequest).then(async (res) => {
             if (res.data.code === ResponseCode.LoginLogDeleteByDaySuccess) {
-                // 轮询后端是否完成
-                await pollingGetStreamIDsStatus(res.data.data.stream_items)
+                // 保证有数据且包含 stream_items 字段才进行轮询
+                if (res.data.data && res.data.data.stream_items) {
+                    await pollingGetStreamIDsStatus(res.data.data.stream_items)
+                }
                 loadingDeleteN.value = false
 
                 // 删除成功后重新获取用户列表

@@ -37,8 +37,11 @@ export function useOrderRemark(formRef: Ref<FormInstance | null>, formRemark: Re
                 const res = await updateOrderAdminAPI(req)
                 if (res.data.code === ResponseCode.OrderUpdateRemarkSuccess) {
                     MessageUtil.success("备注已保存，请耐心等待后端处理。", 3000)
-                    // 轮询后端是否完成
-                    await pollingGetStreamIDsStatus(res.data.data.stream_items)
+
+                    // 保证有数据且包含 stream_items 字段才进行轮询
+                    if (res.data.data && res.data.data.stream_items) {
+                        await pollingGetStreamIDsStatus(res.data.data.stream_items)
+                    }
                 } else {
                     const msg = handleResErr(res)
                     MessageUtil.error(msg, 3000)

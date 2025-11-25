@@ -389,8 +389,10 @@ const handleCommentStatusOperation = async () => {
                         const msg = res.data.msg
                         MessageUtil.success(msg, 3000)
 
-                        // 轮询后端是否完成
-                        await pollingGetStreamIDsStatus(res.data.data.stream_items)
+                        // 保证有数据且包含 stream_items 字段才进行轮询
+                        if (res.data.data && res.data.data.stream_items) {
+                            await pollingGetStreamIDsStatus(res.data.data.stream_items)
+                        }
 
                         await updatePaginate()
                         await getCommentCountStatus()

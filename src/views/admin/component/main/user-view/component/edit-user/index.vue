@@ -307,8 +307,10 @@ const submitForm = async (formEl: FormInstance | undefined) => {
             const { data } = await editUserInfoByAdminAPI(req)
 
             if (data.code === ResponseCode.EditUserInfoByAdminSuccess) {
-                // 轮询后端是否完成
-                await pollingGetStreamIDsStatus(data.data.stream_items)
+                // 保证有数据且包含 stream_items 字段才进行轮询
+                if (data.data && data.data.stream_items) {
+                    await pollingGetStreamIDsStatus(data.data.stream_items)
+                }
                 btnLoading.value = false
 
                 // 添加成功提示

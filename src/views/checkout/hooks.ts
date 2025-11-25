@@ -118,10 +118,12 @@ export function useOrderCheckout() {
             finalAmount.value = data.final_amount // 更新最终支付金额
             couponCodes.value = data.coupon_codes // 更新优惠码列表
             isShowDiscount.value = true // 显示优惠金额
-            // 轮询后端是否完成
-            if (data.stream_items && data.stream_items.length > 0) {
+
+            // 保证有数据且包含 stream_items 字段才进行轮询
+            if (data && data.stream_items) {
                 await pollingGetStreamIDsStatus(data.stream_items)
             }
+
             MessageUtil.success("优惠码应用成功")
         } else {
             MessageUtil.error(handleResErr(res))

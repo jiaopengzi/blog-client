@@ -77,8 +77,10 @@ export function useOrderRefund(formRef: Ref<FormInstance | null>, formRefund: Re
                 const res = await orderRefundAPI(req)
                 if (res.data.code === ResponseCode.OrderRefundSuccess) {
                     MessageUtil.success("退款申请已提交，请耐心等待后端处理。", 3000)
-                    // 轮询后端是否完成
-                    await pollingGetStreamIDsStatus(res.data.data.stream_items)
+                    // 保证有数据且包含 stream_items 字段才进行轮询
+                    if (res.data.data && res.data.data.stream_items) {
+                        await pollingGetStreamIDsStatus(res.data.data.stream_items)
+                    }
                     formRefund.value.captcha = "" // 清空验证码
                 } else {
                     const msg = handleResErr(res)

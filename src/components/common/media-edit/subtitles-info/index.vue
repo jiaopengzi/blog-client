@@ -35,8 +35,8 @@
 
         <div class="btn-submit">
             <el-form-item>
-                <el-button type="primary" size="default" @click="saveSubtitles(subtitlesFormRef as FormInstance)">保存</el-button>
-                <el-button type="danger" size="default" @click="delSubtitles">删除</el-button>
+                <el-button type="primary" size="default" :loading="loading" @click="saveSubtitles(subtitlesFormRef as FormInstance)">保存</el-button>
+                <el-button type="danger" size="default" :loading="loading" @click="delSubtitles">删除</el-button>
             </el-form-item>
         </div>
     </el-form>
@@ -51,6 +51,7 @@ import { deleteSubtitlesAPI, type DeleteSubtitlesRequest } from "@/api/video/del
 import { getSubtitlesByAdminAPI } from "@/api/video/getSubtitlesByAdmin"
 import { upsertSubtitlesAPI, type UpsertSubtitlesRequest } from "@/api/video/upsertSubtitles"
 import { Language } from "@/components/player"
+import { pollingGetStreamIDsStatus } from "@/utils/getStreamIDsStatus"
 import { MessageUtil } from "@/utils/message"
 import { isWebvtt } from "@/utils/vttParse"
 
@@ -80,6 +81,8 @@ const formSize = ref("default")
 
 // ref
 const subtitlesFormRef = useTemplateRef<FormInstance>("subtitlesFormRef")
+
+const loading = ref(false)
 
 // 语言keys
 const languageKeys = Object.keys(Language)
@@ -137,6 +140,8 @@ const saveSubtitles = async (formEl: FormInstance | undefined) => {
     // 如果校验不通过直接返回
     if (!(await formEl.validate())) return
 
+    loading.value = true
+
     // 请求参数
     const params: UpsertSubtitlesRequest = {
         file_id: fileId,
@@ -147,9 +152,16 @@ const saveSubtitles = async (formEl: FormInstance | undefined) => {
 
     const res = await upsertSubtitlesAPI(params)
     if (res.data.code === ResponseCode.SubtitlesUpsertSuccess) {
+        // 如果响应中包含 items，则轮询获取状态
+        if (res.data.data && res.data.data.stream_items) {
+            await pollingGetStreamIDsStatus(res.data.data.stream_items)
+        }
+        loading.value = false
+
         emit("update-subtitles", subtitlesForm.language)
         MessageUtil.success("保存成功", 3000)
     } else {
+        loading.value = false
         const errMsg = handleResErr(res, "保存失败")
         MessageUtil.error(errMsg)
     }
@@ -163,19 +175,26 @@ const delSubtitles = async () => {
         return
     }
 
+    loading.value = true
+
     // 请求参数
     const params: DeleteSubtitlesRequest = {
         file_id: fileId,
         language: subtitlesForm.language,
     }
 
-    await deleteSubtitlesAPI(params).then((res) => {
+    await deleteSubtitlesAPI(params).then(async (res) => {
         if (res.data.code === ResponseCode.SubtitlesDeleteSuccess) {
+            // 如果响应中包含 items，则轮询获取状态
+            await pollingGetStreamIDsStatus(res.data.data.stream_items)
+            loading.value = false
+
             emit("delete-subtitles", subtitlesForm.language)
             // 重置表单，不会触发校验
             subtitlesFormRef.value?.resetFields()
             MessageUtil.success("删除成功", 3000)
         } else {
+            loading.value = false
             const errMsg = handleResErr(res, "删除失败")
             MessageUtil.error(errMsg)
         }

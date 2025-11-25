@@ -37,8 +37,10 @@ export function useCommentItem(isAdmin: boolean = false) {
         }
 
         if (res.data.code === ResponseCode.CommentDeleteSuccess) {
-            // 轮询后端是否完成
-            await pollingGetStreamIDsStatus(res.data.data.stream_items)
+            // 保证有数据且包含 stream_items 字段才进行轮询
+            if (res.data.data && res.data.data.stream_items) {
+                await pollingGetStreamIDsStatus(res.data.data.stream_items)
+            }
 
             MessageUtil.success("删除成功") // 显示成功信息
             loadingDelete.value = false // 隐藏加载动画
@@ -62,8 +64,10 @@ export function useCommentItem(isAdmin: boolean = false) {
         }
 
         if (res.data.code === ResponseCode.CommentUpdateSuccess) {
-            // 轮询后端是否完成
-            await pollingGetStreamIDsStatus(res.data.data.stream_items)
+            // 保证有数据且包含 stream_items 字段才进行轮询
+            if (res.data.data && res.data.data.stream_items) {
+                await pollingGetStreamIDsStatus(res.data.data.stream_items)
+            }
 
             MessageUtil.success("更新成功")
             loadingUpdate.value = false // 隐藏加载动画

@@ -63,11 +63,13 @@ const updateSubtitlesTimestamp = ref(0)
 const handleUpdateSubtitles = (value: string) => {
     emit("update-subtitles", value)
     updateSubtitlesTimestamp.value = Date.now()
+    emit("edit-media-status", true)
 }
 
 const handleDeleteSubtitles = (value: string) => {
     emit("delete-subtitles", value)
     updateSubtitlesTimestamp.value = Date.now()
+    emit("edit-media-status", true)
 }
 
 const hashId = ref("")
@@ -106,7 +108,6 @@ const updateForm = (data: EditMediaProps) => {
         delete (rest as EditMediaProps).editDialogVisible
     }
     Object.assign(mediaShow, rest)
-    console.log("============>", mediaShow)
 }
 
 // 监控 props.editUserData 变化 更新页面数据

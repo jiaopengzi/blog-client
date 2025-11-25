@@ -168,8 +168,8 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         const res = await deleteAPI(deleteRequest)
 
         if (res.data.code === deleteResCode) {
-            if (res.data.data && "stream_items" in res.data.data) {
-                // 如果响应中包含 items，则轮询获取状态
+            // 保证有数据且包含 stream_items 字段才进行轮询
+            if (res.data.data && res.data.data.stream_items) {
                 await pollingGetStreamIDsStatus(res.data.data.stream_items)
             }
 

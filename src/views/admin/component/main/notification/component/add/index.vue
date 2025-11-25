@@ -76,8 +76,10 @@ const submitData = async (form: ViewForm) => {
     const res = await insertNotificationAPI(req)
 
     if (res.data.code === ResponseCode.NotificationInsertSuccess) {
-        // 轮询后端是否完成
-        await pollingGetStreamIDsStatus(res.data.data.stream_items)
+        // 保证有数据且包含 stream_items 字段才进行轮询
+        if (res.data.data && res.data.data.stream_items) {
+            await pollingGetStreamIDsStatus(res.data.data.stream_items)
+        }
         btnLoading.value = false
 
         // 添加成功提示

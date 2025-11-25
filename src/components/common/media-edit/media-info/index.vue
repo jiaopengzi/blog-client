@@ -118,8 +118,10 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     // 调用后端接口
     await updateFileAPI(params).then(async (res) => {
         if (res.data.code === ResponseCode.UpdateFileSuccess) {
-            // 如果响应中包含 items，则轮询获取状态
-            await pollingGetStreamIDsStatus(res.data.data.stream_items)
+            // 保证有数据且包含 stream_items 字段才进行轮询
+            if (res.data.data && res.data.data.stream_items) {
+                await pollingGetStreamIDsStatus(res.data.data.stream_items)
+            }
 
             loadingEditMedia.value = false
             emit("edit-media-status", true)

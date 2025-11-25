@@ -405,8 +405,11 @@ const handlePostStatusOperation = async () => {
                 batchOperationPostStatusAPI(req).then(async (res) => {
                     if (res.data.code === ResponseCode.PostStatusBatchOperationSuccess) {
                         const msg = res.data.msg + "，请稍后刷新页面查看最新数据"
-                        // 轮询后端是否完成
-                        await pollingGetStreamIDsStatus(res.data.data.stream_items)
+
+                        // 保证有数据且包含 stream_items 字段才进行轮询
+                        if (res.data.data && res.data.data.stream_items) {
+                            await pollingGetStreamIDsStatus(res.data.data.stream_items)
+                        }
 
                         MessageUtil.success(msg, 3000)
                         await updatePaginate()

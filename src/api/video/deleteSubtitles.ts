@@ -6,6 +6,7 @@
  * @Description  : 删除字幕
  */
 
+import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -15,8 +16,11 @@ export interface DeleteSubtitlesRequest {
     language: string // 字幕语言
 }
 
+// 删除字幕响应
+export type DeleteSubtitlesRes = StreamsStatusRes
+
 // 更新字幕
-export function deleteSubtitlesAPI(requestData: DeleteSubtitlesRequest): ResPromise<Res<void>> {
+export function deleteSubtitlesAPI(requestData: DeleteSubtitlesRequest): ResPromise<Res<DeleteSubtitlesRes>> {
     const urlStr = routerGroup + "/subtitles/delete"
     return request({
         url: urlStr,

@@ -6,6 +6,7 @@
  * @Description  : 视频字幕上传
  */
 
+import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
@@ -17,8 +18,13 @@ export interface UpsertSubtitlesRequest {
     subtitles: string // 字幕内容
 }
 
+// 插入响应
+export interface UpsertSubtitlesResData extends StreamsStatusRes {
+    msg: string
+}
+
 // 更新字幕
-export function upsertSubtitlesAPI(requestData: UpsertSubtitlesRequest): ResPromise<Res<void>> {
+export function upsertSubtitlesAPI(requestData: UpsertSubtitlesRequest): ResPromise<Res<UpsertSubtitlesResData>> {
     const urlStr = routerGroup + "/subtitles/upsert"
     return request({
         url: urlStr,
