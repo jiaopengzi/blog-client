@@ -116,7 +116,8 @@ export function useToolbar(mdLayoutRef: Ref<HTMLElement | null>, mdContainerRef:
                     // v 为 true 时表示按下了快捷键 v 为 false 时释放了快捷键
                     // console.log('hotKey', hotKey, v)
                     // console.log('item[0]', item)
-                    if (v) {
+                    // 当开启快捷键功能时才响应
+                    if (v && editorState.isShortcutKey) {
                         toolbarBtnClicked(item)
                     }
                 })

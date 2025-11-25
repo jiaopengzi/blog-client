@@ -251,6 +251,9 @@ const handleMousemove = (event: MouseEvent) => {
 
 // 鼠标进入事件
 const handleMouseenter = (event: MouseEvent) => {
+    // 开启快捷键监听
+    localManager.setShortcutKey(true)
+
     // 鼠标在控制器上时不隐藏控制器
     if (controlsContainerRef.value && controlsContainerRef.value.contains(event.target as Node)) {
         controlsHidden.value = false
@@ -262,6 +265,9 @@ const handleMouseenter = (event: MouseEvent) => {
 
 // 鼠标离开事件
 const handleMouseleave = (event: MouseEvent) => {
+    // 关闭快捷键监听
+    localManager.setShortcutKey(false)
+
     // 鼠标在控制器上时不隐藏控制器
     if (controlsContainerRef.value && controlsContainerRef.value.contains(event.target as Node)) {
         controlsHidden.value = false

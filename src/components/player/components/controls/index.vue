@@ -92,7 +92,7 @@
 
 <script setup lang="ts">
 import { useMagicKeys } from "@vueuse/core"
-import { computed, onUnmounted, reactive, ref, watch } from "vue"
+import { computed, onMounted, onUnmounted, reactive, ref, watch } from "vue"
 
 import { IconKeys } from "@/components/common/icons"
 import JIcon from "@/components/common/icons"
@@ -160,7 +160,7 @@ const playerCommands = createPlayerCommands(localManager)
 
 // 注册快捷键
 const registerHotKeys = () => {
-    // 注册前先注销所有已注册的监听器
+    // 注册前先注销之前的快捷键监听
     unRegisterHotKeys()
 
     Object.values(PlayerCommandsKey).forEach((item) => {
@@ -172,7 +172,8 @@ const registerHotKeys = () => {
                 // v 为 true 时表示按下了快捷键 v 为 false 时释放了快捷键
                 // console.log('hotKey', hotKey, v)
                 // console.log('item[0]', item)
-                if (v) {
+                // 只有当快捷键功能开启时才响应
+                if (v && localPlayerState.isShortcutKey) {
                     // 执行普通按键逻辑
                     if (playerCommands[item].action) playerCommands[item].action()
 
@@ -282,19 +283,6 @@ watch(
     { immediate: true },
 )
 
-// 监控快捷键开关
-watch(
-    () => localPlayerState.isShortcutKey,
-    (newVal) => {
-        if (newVal) {
-            registerHotKeys()
-        } else {
-            unRegisterHotKeys()
-        }
-    },
-    { immediate: true },
-)
-
 // 监控播放器状态,有变化就 emit
 watch(
     () => localPlayerState,
@@ -304,9 +292,9 @@ watch(
     { deep: true },
 )
 
-// onMounted(() => {
-//     registerHotKeys() // 注册快捷键
-// })
+onMounted(() => {
+    registerHotKeys() // 注册快捷键
+})
 
 onUnmounted(() => {
     unRegisterHotKeys() // 注销快捷键

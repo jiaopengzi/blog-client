@@ -78,9 +78,7 @@ export function createPlayerCommands(playerStateManager: PlayerStateManager): Pl
         [PlayerCommandsKey.Fullscreen]: {
             tip: "全屏",
             hotKey: "F",
-            action: () => {
-                playerStateManager.toggleFullScreen()
-            },
+            action: () => playerStateManager.toggleFullScreen(),
         },
         [PlayerCommandsKey.WebFullscreen]: {
             tip: "网页全屏",
