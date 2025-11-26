@@ -8,13 +8,15 @@
         "qrcode",
         "replit",
         "skewable",
+        "snapdom",
         "Stackable",
         "svgs",
         "thememirror",
         "tzdata",
         "URLAPI",
         "Vite",
-        "zoneinfo"
+        "zoneinfo",
+        "zumer"
     ],
     "workbench.colorCustomizations": {
         "terminal.background": "#1D1F21",

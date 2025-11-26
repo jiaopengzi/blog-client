@@ -22,14 +22,15 @@
 </template>
 
 <script lang="ts" setup>
-import html2canvas from "html2canvas"
+import { snapdom } from "@zumer/snapdom"
+// import html2canvas from "html2canvas"
 import { computed, type ComputedRef, nextTick } from "vue"
 
 import QrCode from "@/components/common/qr-code"
-import { copyImg } from "@/utils/clipboard"
+// import { copyImg } from "@/utils/clipboard"
 import { waitForImagesLoaded } from "@/utils/img"
-import { MessageUtil } from "@/utils/message"
 
+// import { MessageUtil } from "@/utils/message"
 import { type PosterPropsOptions } from "./types"
 
 defineOptions({ name: "PosterShare" })
@@ -69,23 +70,35 @@ const draw = async () => {
     const el = document.querySelector(".poster-container") as HTMLElement
     await waitForImagesLoaded(el)
 
-    // 使用 html2canvas 生成图片
-    const canvas = await html2canvas(el, {
+    // // 使用 html2canvas 生成图片
+    // const canvas = await html2canvas(el, {
+    //     scale: 3,
+    //     logging: false,
+    //     useCORS: true, // 允许跨域图片
+    // })
+
+    // // 将图片转换为 Blob 对象并复制到剪贴板
+    // canvas.toBlob((blob) => {
+    //     if (blob) {
+    //         // 复制到剪贴板
+    //         copyImg(blob, "poster.png").then(() => {
+    //             emit("poster-complete")
+    //             MessageUtil.success("分享海报已复制到剪贴板")
+    //         })
+    //     }
+    // })
+
+    // 使用 snapdom 生成图片 (替代 html2canvas)
+    const result = await snapdom(el)
+    await result.download({
+        filename: "poster.png",
+        type: "png",
         scale: 3,
-        logging: false,
-        useCORS: true, // 允许跨域图片
     })
 
-    // 将图片转换为 Blob 对象并复制到剪贴板
-    canvas.toBlob((blob) => {
-        if (blob) {
-            // 复制到剪贴板
-            copyImg(blob, "poster.png").then(() => {
-                emit("poster-complete")
-                MessageUtil.success("分享海报已复制到剪贴板")
-            })
-        }
-    })
+    // 下载完成回调
+    emit("poster-complete")
+    // MessageUtil.success("分享海报已复制到剪贴板")
 }
 </script>
 <style lang="scss" scoped>

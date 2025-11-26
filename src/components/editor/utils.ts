@@ -6,9 +6,10 @@
  * Description : 编辑器工具函数
  */
 
+import { snapdom } from "@zumer/snapdom"
 import DOMPurify, { type Config } from "dompurify"
-import html2canvas from "html2canvas"
 
+// import html2canvas from "html2canvas"
 import { CustomElementAttributes, Names } from "@/customElements"
 import createMarked from "@/pkg/marked/new-marked"
 import { copyHtml } from "@/utils/clipboard"
@@ -346,34 +347,54 @@ export async function katexToImage(container: HTMLElement, className: string = "
             // 获取 katex 滚动宽度
             const katexScrollWidth = katex.scrollWidth // katex 滚动宽度
             const katexOffsetWidth = katex.offsetWidth * 1 // katex 宽度
-            const katexOffsetHeight = katex.offsetHeight * 1.05 // katex 高度
+            const katexOffsetHeight = katex.offsetHeight * 1 // katex 高度
 
             // 获取 canvas 宽度 如果是行内公式则使用 katex 的宽度 如果是行间公式则使用 katex 的滚动宽度
             const getCanvasWidth = () => (isKatexDisplay ? katexScrollWidth : katexOffsetWidth)
 
-            // 使用 canvas 将 katex 转成图片 scale 为 3 是为了提高图片清晰度
-            const canvas = await html2canvas(katex, {
+            // // 使用 canvas 将 katex 转成图片 scale 为 3 是为了提高图片清晰度
+            // const canvas = await html2canvas(katex, {
+            //     scale: 3,
+            //     backgroundColor: "#ffffff80",
+            //     logging: false,
+            //     width: getCanvasWidth(),
+            //     height: katexOffsetHeight,
+            // })
+            // const imageDataURL = canvas.toDataURL("image/png") // 转成图片的 base64
+            // const img = document.createElement("img") // 创建 img 元素
+            // img.src = imageDataURL // 设置图片的 src
+
+            // // 根据是否行内公式设置 img 元素的属性
+            // if (isKatexDisplay) {
+            //     img.style.width = `100%` // 设置图片的宽度
+            // } else {
+            //     // 需要单独一个添加 不能用 setAttribute 会被覆盖
+            //     img.style.width = `${getCanvasWidth()}px` // 设置图片的宽度
+            //     img.style.display = "inline-block" // 设置 img 元素的 display 为 inline-block 行内显示
+            //     img.style.verticalAlign = "text-top" // 设置 img 元素的 vertical-align 为 text-top 使其与文字对齐
+            // }
+            // katex.parentNode?.replaceChild(img, katex) // 替换 katex 公式
+
+            // 使用 snapdom 将 katex 转成图片
+            const snap = await snapdom(katex)
+            const svg = await snap.toSvg({
                 scale: 3,
                 backgroundColor: "#ffffff80",
-                logging: false,
                 width: getCanvasWidth(),
                 height: katexOffsetHeight,
             })
-            const imageDataURL = canvas.toDataURL("image/png") // 转成图片的 base64
-            const img = document.createElement("img") // 创建 img 元素
-            img.src = imageDataURL // 设置图片的 src
 
-            // 根据是否行内公式设置 img 元素的属性
+            // 根据是否行内公式设置 svt 元素的属性
             if (isKatexDisplay) {
-                img.style.width = `100%` // 设置图片的宽度
+                svg.style.width = `100%` // 设置图片的宽度
             } else {
                 // 需要单独一个添加 不能用 setAttribute 会被覆盖
-                img.style.width = `${getCanvasWidth()}px` // 设置图片的宽度
-                img.style.display = "inline-block" // 设置 img 元素的 display 为 inline-block 行内显示
-                img.style.verticalAlign = "text-top" // 设置 img 元素的 vertical-align 为 text-top 使其与文字对齐
+                svg.style.width = `${getCanvasWidth()}px` // 设置图片的宽度
+                svg.style.display = "inline-block" // 设置 img 元素的 display 为 inline-block 行内显示
+                svg.style.verticalAlign = "text-top" // 设置 img 元素的 vertical-align 为 text-top 使其与文字对齐
             }
 
-            katex.parentNode?.replaceChild(img, katex) // 替换 katex 公式
+            katex.parentNode?.replaceChild(svg, katex) // 替换 katex 公式
         }
     }
 }
