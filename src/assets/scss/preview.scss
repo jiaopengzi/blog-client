@@ -14,6 +14,7 @@
 
 #preview {
     font-family: "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+
     h1 {
         font-size: 2em;
         display: table;
@@ -94,14 +95,20 @@
         > li {
             // 一级实心圆
             list-style-type: disc;
+            // 行高
+            line-height: 2em;
 
             > ul > li {
                 // 二级空心圆
                 list-style-type: circle;
+                // 行高
+                line-height: 2em;
 
                 > ul > li {
                     // 三级实心方块
                     list-style-type: square;
+                    // 行高
+                    line-height: 2em;
                 }
             }
         }
