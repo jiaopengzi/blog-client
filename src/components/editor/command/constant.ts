@@ -54,11 +54,11 @@ export enum CommandsKey {
     ExitFullscreen = "exitFullscreen",
     Edit = "edit",
     WechatOfficialAccount = "WechatOfficialAccount",
-    Markdown = "markdown",
-    Html = "html",
-    Pdf = "pdf",
+    // Markdown = "markdown",
+    // Html = "html",
+    // Pdf = "pdf",
     Help = "help",
-    Info = "info",
+    // Info = "info",
     Vim = "vim",
     Details = "details",
     Alert = "alert",
@@ -391,31 +391,31 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
             tip: "微信公众号",
             icon: IconKeys.WechatOfficialAccount,
         },
-        // 导出 markdown
-        [CommandsKey.Markdown]: {
-            tip: "导出 markdown",
-            icon: IconKeys.Markdown,
-        },
-        // 导出 html
-        [CommandsKey.Html]: {
-            tip: "导出 html",
-            icon: IconKeys.Html,
-        },
-        // 导出 pdf
-        [CommandsKey.Pdf]: {
-            tip: "导出 PDF",
-            icon: IconKeys.Pdf,
-        },
+        // // 导出 markdown
+        // [CommandsKey.Markdown]: {
+        //     tip: "导出 markdown",
+        //     icon: IconKeys.Markdown,
+        // },
+        // // 导出 html
+        // [CommandsKey.Html]: {
+        //     tip: "导出 html",
+        //     icon: IconKeys.Html,
+        // },
+        // // 导出 pdf
+        // [CommandsKey.Pdf]: {
+        //     tip: "导出 PDF",
+        //     icon: IconKeys.Pdf,
+        // },
         // 帮助
         [CommandsKey.Help]: {
             tip: "帮助",
             icon: IconKeys.Help,
         },
-        // 关于
-        [CommandsKey.Info]: {
-            tip: "关于",
-            icon: IconKeys.Info,
-        },
+        // // 关于
+        // [CommandsKey.Info]: {
+        //     tip: "关于",
+        //     icon: IconKeys.Info,
+        // },
         // 详情
         [CommandsKey.Details]: {
             tip: "详情",

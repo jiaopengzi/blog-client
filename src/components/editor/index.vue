@@ -13,6 +13,7 @@
             <Toolbar
                 :toolbar-btns="toolbarBtns"
                 @toolbar-btn-clicked="toolbarBtnClicked"
+                @pay-select="insertPay"
                 @emoji-picker-selected="emojiPickerSelected"
                 @table-row-col="insertTableRowCol"
                 @alert-select="insertAlert"
@@ -104,7 +105,7 @@ const mdContainerRef = useTemplateRef<HTMLElement | null>("mdContainerRef") //�
 const codemirrorRef = useTemplateRef<CodemirrorRef | null>("codemirrorRef") //编辑器
 
 // 工具栏点击事件
-const { toolbarBtns, toolbarBtnClicked, updateMdContainerStyle, emojiPickerSelected, insertTableRowCol, insertAlert } = useToolbar(
+const { toolbarBtns, toolbarBtnClicked, updateMdContainerStyle, insertPay, emojiPickerSelected, insertTableRowCol, insertAlert } = useToolbar(
     mdLayoutRef,
     mdContainerRef,
     stateManager,

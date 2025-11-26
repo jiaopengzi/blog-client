@@ -16,7 +16,7 @@ import { MessageUtil } from "@/utils/message"
 import { setCSSVariable } from "@/utils/style"
 
 import { CommandsKey, markdownEditorCommands } from "../command"
-import { Alerts, type TableRowCol } from "../components/toolbar"
+import { Alerts, Pay, type TableRowCol } from "../components/toolbar"
 import { EditorStateManager } from "../state"
 
 export function useToolbar(mdLayoutRef: Ref<HTMLElement | null>, mdContainerRef: Ref<HTMLElement | null>, stateManager: EditorStateManager) {
@@ -46,6 +46,7 @@ export function useToolbar(mdLayoutRef: Ref<HTMLElement | null>, mdContainerRef:
             stateManager.toggleVimMode()
             return
         }
+
         if (name === CommandsKey.Preview) {
             stateManager.toggleEditorShow()
             if (!editorState.editorShow) {
@@ -53,6 +54,7 @@ export function useToolbar(mdLayoutRef: Ref<HTMLElement | null>, mdContainerRef:
             }
             return
         }
+
         if (name === CommandsKey.Edit) {
             stateManager.togglePreviewShow()
             if (!editorState.previewShow) {
@@ -60,31 +62,43 @@ export function useToolbar(mdLayoutRef: Ref<HTMLElement | null>, mdContainerRef:
             }
             return
         }
+
         if (name === CommandsKey.Toc) {
             stateManager.toggleTocShow()
             return
         }
+
         if (name === CommandsKey.Scroll) {
             stateManager.toggleSyncScroll()
             MessageUtil.success(editorState.isSyncScroll ? "同步滚动" : "独立滚动")
             return
         }
+
         if (name === CommandsKey.Fullscreen) {
             toggle()
             stateManager.setIsFullScreen(isWebFullscreen.value)
             return
         }
+
         if (name === CommandsKey.Emoji) {
             return
         }
+
         if (name === CommandsKey.WechatOfficialAccount) {
             stateManager.toggleShowPreviewWechat()
         }
+
         if (name === CommandsKey.Copy) {
             stateManager.setViewCommand({
                 commandName: CommandsKey.Copy,
                 time: new Date(),
             })
+        }
+
+        if (name === CommandsKey.Help) {
+            // 跳转到指定链接
+            window.open("https://jiaopengzi.com", "_blank")
+            return
         }
 
         // if (name === CommandsKey.save) {
@@ -131,6 +145,20 @@ export function useToolbar(mdLayoutRef: Ref<HTMLElement | null>, mdContainerRef:
 
         // 设置 cmContainerRef 中 css 变量 --md-editor-container-height-fullscreen 的值为 100vh - toolbar 高度 - toolbar margin
         setCSSVariable(mdContainerRef.value, "--md-editor-container-height-fullscreen", `calc(100vh - ${toolbarHight})`)
+    }
+
+    // 插入付费组件
+    const insertPay = (val: Pay) => {
+        const content = val
+        stateManager.setCmCommand({
+            commandName: CommandsKey.PayContent,
+            customContent: {
+                prefix: "\n",
+                content,
+                suffix: "",
+            },
+            time: new Date(),
+        })
     }
 
     // 选择 emoji
@@ -205,6 +233,7 @@ export function useToolbar(mdLayoutRef: Ref<HTMLElement | null>, mdContainerRef:
         toolbarBtns,
         toolbarBtnClicked,
         updateMdContainerStyle,
+        insertPay,
         emojiPickerSelected,
         insertTableRowCol,
         insertAlert,

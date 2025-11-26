@@ -1,5 +1,5 @@
-/*
- * FilePath    : blog-client\src\components\editor\components\toolbar\index.ts
+/**
+ * FilePath    : blog-client-dev\src\components\editor\components\toolbar\components\pay\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

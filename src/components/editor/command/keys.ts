@@ -46,11 +46,11 @@ const postPc = [
     CommandsKey.WechatOfficialAccount,
     CommandsKey.Fullscreen,
     CommandsKey.Copy,
-    CommandsKey.Markdown,
-    CommandsKey.Html,
-    CommandsKey.Pdf,
+    // CommandsKey.Markdown,
+    // CommandsKey.Html,
+    // CommandsKey.Pdf,
     CommandsKey.Help,
-    CommandsKey.Info,
+    // CommandsKey.Info,
 ]
 
 // pad端文章编辑器工具栏按钮
@@ -83,7 +83,7 @@ const postPad = [
     CommandsKey.Fullscreen,
     CommandsKey.Copy,
     CommandsKey.Help,
-    CommandsKey.Info,
+    // CommandsKey.Info,
 ]
 
 // 手机端文章编辑器工具栏按钮
@@ -103,7 +103,7 @@ const postPhone = [
     CommandsKey.Fullscreen,
     CommandsKey.Copy,
     CommandsKey.Help,
-    CommandsKey.Info,
+    // CommandsKey.Info,
 ]
 
 // pc端评论区工具栏按钮
@@ -124,7 +124,7 @@ const commentPc = [
     CommandsKey.Edit,
     CommandsKey.Preview,
     CommandsKey.Help,
-    CommandsKey.Info,
+    // CommandsKey.Info,
 ]
 
 // pad端评论区工具栏按钮
@@ -141,7 +141,7 @@ const commentPad = [
     CommandsKey.Edit,
     CommandsKey.Preview,
     CommandsKey.Help,
-    CommandsKey.Info,
+    // CommandsKey.Info,
 ]
 
 // 手机端评论区工具栏按钮
@@ -157,7 +157,7 @@ const commentPhone = [
     CommandsKey.Edit,
     CommandsKey.Preview,
     CommandsKey.Help,
-    CommandsKey.Info,
+    // CommandsKey.Info,
 ]
 
 // 各平台工具栏预设按钮常量
