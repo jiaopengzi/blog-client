@@ -21,6 +21,7 @@
         :style="{ width: formWidth ? `${formWidth}px` : '100%' }"
     >
         <h2 class="title">{{ title }}</h2>
+        <div class="attention" v-if="attention !== ''">{{ attention }}</div>
 
         <el-form-item v-for="item in formItems" :key="item.prop" :label="item.label" :prop="item.prop">
             <el-input
@@ -45,20 +46,29 @@ import { type BaseConfigFormType } from "./types"
 
 defineOptions({ name: "BaseConfigForm" })
 
-const { title, formData, rules, formItems, formWidth, labelWidth } = defineProps<{
-    title: string
-    formData: BaseConfigFormType
-    rules: FormRules
+const {
+    title,
+    formData,
+    rules,
+    formItems,
+    formWidth,
+    labelWidth,
+    attention = "",
+} = defineProps<{
+    title: string // 表单标题
+    attention?: string // 注意事项
+    formData: BaseConfigFormType // 表单数据
+    rules: FormRules // 表单验证规则
     formItems: Array<{
-        label: string
-        prop: string
-        type?: string
-        placeholder?: string
-        showPassword?: boolean
-        isCheckbox?: boolean
+        label: string // 标签
+        prop: string // 字段名
+        type?: string // 输入框类型
+        placeholder?: string // 输入框占位符
+        showPassword?: boolean // 是否显示密码切换按钮
+        isCheckbox?: boolean // 是否为复选框
     }>
-    formWidth?: number
-    labelWidth?: number
+    formWidth?: number // 表单宽度
+    labelWidth?: number // 标签宽度
 }>()
 
 const formRef = useTemplateRef<FormInstance>("formRef")
@@ -100,5 +110,12 @@ defineExpose({
     font-weight: 700;
     margin-bottom: 20px;
     color: var(--jpz-text-color-regular);
+}
+
+.attention {
+    color: var(--jpz-color-primary);
+    font-size: 14px;
+    font-weight: 700;
+    margin: 20px 0;
 }
 </style>

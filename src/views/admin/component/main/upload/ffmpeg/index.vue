@@ -15,6 +15,7 @@
         :form-items="formItems"
         :form-width="formWidth"
         :label-width="labelWidth"
+        :attention="attention"
     />
 </template>
 
@@ -29,10 +30,16 @@ defineOptions({ name: "FFmpegForm" })
 
 const formRef = useTemplateRef<BaseConfigFormRef>("formRef")
 
-const { config, formWidth } = defineProps<{
+const {
+    config,
+    formWidth,
+    labelWidth,
+    attention = "",
+} = defineProps<{
     config: FFmpeg
     formWidth?: number
     labelWidth?: number
+    attention?: string // 注意事项
 }>()
 
 const formData = reactive<FFmpeg>(config)

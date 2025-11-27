@@ -10,10 +10,30 @@
     <div class="components">
         <el-button class="component-item" type="primary" @click="submitForm">保存</el-button>
         <FileAllowed ref="fileAllowedRef" class="component-item" :data="fileAllowedList" />
-        <FFmpegForm ref="ffmpegRef" class="component-item" :config="ffmpegData" :form-width="1080" :label-width="140" />
-        <div class="attention">注意：【URL归属】在多个上传配置都开启的情况下，只能开启其中之一，否则会导致配置冲突。</div>
-        <UploadLocal ref="localRef" class="component-item" :config="localData" :form-width="1080" :label-width="140" />
-        <UploadOSS ref="ossRef" class="component-item" :config="ossData" :form-width="1080" :label-width="140" />
+        <FFmpegForm
+            ref="ffmpegRef"
+            class="component-item"
+            :config="ffmpegData"
+            :form-width="1080"
+            :label-width="140"
+            attention="注意：HLS 多分辨率对小机器 CPU 不友好，建议小于4核不开启；若开启上传视频等待时间明显变长，大概率会对主业务有影响。"
+        />
+        <UploadLocal
+            ref="localRef"
+            class="component-item"
+            :config="localData"
+            :form-width="1080"
+            :label-width="140"
+            attention="注意：【URL归属】在多个上传配置都开启的情况下，只能开启其中之一，否则会导致配置冲突。"
+        />
+        <UploadOSS
+            ref="ossRef"
+            class="component-item"
+            :config="ossData"
+            :form-width="1080"
+            :label-width="140"
+            attention="注意：【URL归属】在多个上传配置都开启的情况下，只能开启其中之一，否则会导致配置冲突。"
+        />
     </div>
     <RestartDialog :is-show-timer="isShowTimer" :wait-seconds="waitSeconds" />
 </template>
@@ -113,13 +133,6 @@ onBeforeMount(async () => {
 
 .component-item {
     margin-bottom: 10px;
-}
-
-.attention {
-    color: var(--jpz-color-primary);
-    font-size: 14px;
-    font-weight: 700;
-    margin: 20px 10px;
 }
 
 .btn-submit {
