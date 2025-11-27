@@ -20,7 +20,9 @@ import type { UpsertPostForm } from "./types"
 export function useSnapshot(postInfoForm: Reactive<UpsertPostForm>) {
     // 是否编辑状态
     const userStore = useUserStore()
+
     userStore.setIsEditing(true)
+    console.log("============>01", userStore.isEditing)
 
     // 快照
     const postInfoSnapshot = reactive<UpsertPostForm>(deepClone(postInfoForm))
@@ -43,6 +45,7 @@ export function useSnapshot(postInfoForm: Reactive<UpsertPostForm>) {
 
         // 更新是否编辑状态
         isUpdate.value = Object.keys(updatedFields).length > 0
+        console.log("============>02", isUpdate.value)
         userStore.setIsEditing(isUpdate.value)
     }
 
