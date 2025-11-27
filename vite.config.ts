@@ -12,6 +12,7 @@ import AutoImport from "unplugin-auto-import/vite"
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers"
 import Components from "unplugin-vue-components/vite"
 import { defineConfig } from "vite"
+import compression from "vite-plugin-compression"
 import Inspect from "vite-plugin-inspect"
 import tsconfigPaths from "vite-tsconfig-paths"
 
@@ -41,7 +42,20 @@ export default defineConfig({
             directoryAsNamespace: true, // 解决组件名称重复问题 `component xxx has naming conflicts with other components, ignored.`
         }),
         // ------------------------------element-plus 自动导入 结束
-        Inspect(), // vite-plugin-inspect 查看编译后的文件
+
+        // vite-plugin-inspect 查看编译后的文件
+        Inspect(),
+
+        // ------------------------------ gzip压缩 开始
+        compression({
+            verbose: true, // 是否在控制台输出压缩结果
+            disable: false, // 是否禁用压缩
+            threshold: 10240, // 体积大于 threshold 才会被压缩 (单位 byte)，默认 0
+            algorithm: "gzip", // 压缩算法, 可选 ['gzip', 'brotliCompress', 'deflate', 'deflateRaw']
+            ext: ".gz", // 生成的压缩文件后缀
+            deleteOriginFile: false, // 是否删除原文件
+        }),
+        // ------------------------------ gzip压缩 结束
     ],
 
     resolve: {
