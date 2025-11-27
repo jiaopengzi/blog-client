@@ -50,7 +50,7 @@ export default defineConfig({
         compression({
             verbose: true, // 是否在控制台输出压缩结果
             disable: false, // 是否禁用压缩
-            threshold: 10240, // 体积大于 threshold 才会被压缩 (单位 byte)，默认 0
+            threshold: 1024, // 只有大于该值的文件会被压缩 (单位：字节)
             algorithm: "gzip", // 压缩算法, 可选 ['gzip', 'brotliCompress', 'deflate', 'deflateRaw']
             ext: ".gz", // 生成的压缩文件后缀
             deleteOriginFile: false, // 是否删除原文件
