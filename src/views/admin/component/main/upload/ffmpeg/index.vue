@@ -50,7 +50,7 @@ const rules = reactive<FormRules<FFmpeg>>({
 
 const formItems = [
     { label: "生成 HLS", prop: "is_generate_hls", isCheckbox: true },
-    { label: "HlS 多分辨率", prop: "is_generate_multi_resolution", isCheckbox: true },
+    { label: "HLS 多分辨率", prop: "is_generate_multi_resolution", isCheckbox: true },
     { label: "删除源视频", prop: "is_delete_original", isCheckbox: true },
 ]
 

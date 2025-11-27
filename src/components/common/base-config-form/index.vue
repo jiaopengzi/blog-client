@@ -113,7 +113,7 @@ defineExpose({
 }
 
 .attention {
-    color: var(--jpz-color-primary);
+    color: var(--jpz-text-color-regular);
     font-size: 14px;
     font-weight: 700;
     margin: 20px 0;

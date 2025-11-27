@@ -59,6 +59,11 @@ export function usePagination<T, K extends PaginationRequest>(
     //  更新分页数据
     const updatePaginate = async (): Promise<void> => {
         const data = await paginateAPI(queryParams as K)
+        if (!data || data.total === 0) {
+            pagination.total = 0
+            pagination.records = []
+            return
+        }
         Object.assign(pagination, data)
     }
 

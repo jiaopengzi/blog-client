@@ -43,6 +43,12 @@ const postId = (val: string) => {
 
 // 根据 highlightKey 获取高亮内容
 const highlightText = computed(() => {
+    // 如果没有高亮内容，返回空字符串
+    if (!highlight || Object.keys(highlight).length === 0) {
+        return ""
+    }
+
+    // 获取高亮内容
     const key = highlightKey || "post_title"
     const highlights = highlight[key] || []
     return highlights.length > 0 ? highlights[0] : ""
