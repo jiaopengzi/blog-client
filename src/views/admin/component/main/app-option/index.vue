@@ -143,6 +143,12 @@ const formItems = [
     { label: "logo", prop: "logo", isImageInput: true },
     { label: "favicon", prop: "favicon", isImageInput: true },
 
+    // 滑动验证相关
+
+    { label: "滑动验证", isCategoryTitle: true },
+    { label: "滑动验证启用", prop: "slide_verify_enable", isCheckbox: true },
+    { label: "滑动验证图片", prop: "slide_verify_imgs", isSlideVerifyManage: true },
+
     // 轮播图相关
     { label: "轮播图", isCategoryTitle: true },
     { label: "轮播图启用", prop: "carousel_enable", isCheckbox: true },

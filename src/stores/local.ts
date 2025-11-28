@@ -18,6 +18,7 @@ export enum LocalStorageKey {
     OptionsCarousel = "options_carousel", // 轮播图
     OptionsNavObj = "options_nav_obj", // 导航object
     OptionsFooterInfo = "options_footer_info", // 底部信息
+    OptionsSlideVerify = "options_slide_verify", // 滑动验证
     PostDetailEditEnable = "post_detail_edit_enable", // 文章详情编辑是否启用
     PayStatus = "pay_status", // 支付状态
 }

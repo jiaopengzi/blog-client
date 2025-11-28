@@ -26,6 +26,17 @@
             <h4 v-if="item.isCategoryTitle" class="category-title">{{ item.label }}</h4>
 
             <!-- 在 v-for 中不能直接使用 useTemplateRef  -->
+            <SlideVerifyManage
+                v-else-if="item.isSlideVerifyManage"
+                :ref="
+                    (el) => {
+                        if (el) setSlideVerifyManageRef(el as SlideVerifyManageFormRef)
+                    }
+                "
+                :data="slideVerifyManageData"
+            />
+
+            <!-- 在 v-for 中不能直接使用 useTemplateRef  -->
             <CarouselManage
                 v-else-if="item.isCarouselManage"
                 :ref="
@@ -55,10 +66,11 @@
 
 <script lang="ts" setup>
 import type { FormInstance, FormRules } from "element-plus"
-import { computed, reactive, ref, useTemplateRef } from "vue"
+import { computed, reactive, type Ref, ref, useTemplateRef } from "vue"
 
 import CarouselManage, { type CarouselFormRef } from "@/components/common/carousel-manage"
 import ImageInput from "@/components/common/image-input"
+import SlideVerifyManage, { type SlideVerifyManageFormRef } from "@/components/common/slide-verify-manage"
 
 import { type APPOptionForm } from "./types"
 
@@ -77,6 +89,7 @@ const { title, formData, rules, formItems, formWidth, labelWidth } = defineProps
         isCheckbox?: boolean
         isCategoryTitle?: boolean
         isCarouselManage?: boolean
+        isSlideVerifyManage?: boolean
     }>
     formWidth?: number
     labelWidth?: number
@@ -84,16 +97,36 @@ const { title, formData, rules, formItems, formWidth, labelWidth } = defineProps
 
 const formRef = useTemplateRef<FormInstance>("formRef")
 
+// 通用的 ref 设置函数工厂
+// 由于在 v-for 中不能直接使用 useTemplateRef, 所以通过函数赋值
+function createRefSetter<T>(targetRef: Ref<T | null>) {
+    return (el: T | null) => {
+        targetRef.value = el
+    }
+}
+
 // 轮播图组件引用
 const carouselManageRef = ref<CarouselFormRef | null>(null)
+const setCarouselRef = createRefSetter(carouselManageRef)
 
-// 由于在 v-for 中不能直接使用 useTemplateRef, 所以通过函数赋值
-const setCarouselRef = (el: CarouselFormRef | null) => {
-    carouselManageRef.value = el
-}
+// 滑动验证组件引用
+const slideVerifyManageRef = ref<SlideVerifyManageFormRef | null>(null)
+const setSlideVerifyManageRef = createRefSetter(slideVerifyManageRef)
 
 // 结果数据
 const formDataResult = reactive<APPOptionForm>(formData)
+
+// 滑动验证数据
+const slideVerifyManageData = computed(() => {
+    if (formDataResult.slide_verify_imgs) {
+        try {
+            return JSON.parse(formDataResult.slide_verify_imgs)
+        } catch {
+            return []
+        }
+    }
+    return []
+})
 
 // 轮播图数据
 const carouselManageData = computed(() => {
@@ -112,6 +145,19 @@ defineExpose({
     validateForm: async (): Promise<boolean> => {
         let carouselValid = true
         let formValid = true
+
+        // 如果 slideVerifyManage 存在, 则校验
+        if (slideVerifyManageRef.value && slideVerifyManageRef.value.formDataResult && slideVerifyManageRef.value.formDataResult.length > 0) {
+            const flag = await slideVerifyManageRef.value.validateForm()
+            if (flag) {
+                // 将结果数据同步到 formDataResult 中
+                formDataResult.slide_verify_imgs = JSON.stringify(slideVerifyManageRef.value.formDataResult)
+            } else {
+                carouselValid = false
+            }
+        } else {
+            formDataResult.slide_verify_imgs = "[]"
+        }
 
         // 如果 carouselManage 存在, 则校验
         if (carouselManageRef.value && carouselManageRef.value.formDataResult && carouselManageRef.value.formDataResult.length > 0) {

@@ -9,7 +9,7 @@
 <template>
     <div class="login-page">
         <!-- 添加滑动验证组件：SlideVerify -->
-        <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="login"></SlideVerify>
+        <SlideVerify @on-success="login" />
         <el-form
             :label-position="labelPosition"
             label-width="100px"
@@ -62,6 +62,7 @@ import { IconKeys } from "@/components/common/icons"
 import SlideVerify from "@/components/common/slide-verify"
 import { useAccountFormValidation } from "@/components/hooks/useAccountFormValidation"
 import { RouteNames } from "@/router"
+import { useOptionsStore } from "@/stores/options"
 import { useUserStore } from "@/stores/user"
 import { MessageUtil } from "@/utils/message"
 
@@ -74,11 +75,26 @@ useHead({
 })
 
 const router = useRouter()
+const userStore = useUserStore()
+const optionsStore = useOptionsStore()
+
 // 表单label位置 top | left | right
 const labelPosition = ref("top")
 
 // 表单大小 '' | 'large' | 'default' | 'small'
 const formSize = ref("default")
+
+// 打开滑动验证
+const openSlideVerify = async () => {
+    // 如果没有开启滑动验证, 直接调用成功回调
+    if (!optionsStore.slide_verify_enable) {
+        await login()
+        return
+    }
+
+    // 开启滑动验证
+    optionsStore.openSlideVerify()
+}
 
 // 表单实例
 const loginFormRef = useTemplateRef<FormInstance>("loginFormRef")
@@ -107,8 +123,6 @@ const rules = reactive<FormRules<LoginForm>>({
     loginName: createLoginNameRules(checkLoginNameValidator),
     password: createPasswordRules(),
 })
-
-const userStore = useUserStore()
 
 const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
@@ -139,21 +153,8 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     })
 }
 
-// 添加 showSlideVerify 响应式变量
-const showSlideVerify = ref(false)
-
-const openSlideVerify = () => {
-    showSlideVerify.value = true // 显示滑块验证
-}
-
-const closeSlideVerify = () => {
-    showSlideVerify.value = false // 关闭滑块验证
-}
-
-const login = () => {
-    // 关闭滑块验证
-    showSlideVerify.value = false
-    submitForm(loginFormRef.value as FormInstance)
+const login = async () => {
+    await submitForm(loginFormRef.value as FormInstance)
 }
 
 const loginByWeChat = async () => {

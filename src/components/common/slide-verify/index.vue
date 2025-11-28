@@ -7,7 +7,7 @@
 -->
 
 <template>
-    <div class="page">
+    <div class="page" v-if="show_slide_verify">
         <!-- @touchmove.prevent.stop 阻止触摸事件传播并阻止默认行为。确保滑动验证码不会导致页面滑动。 -->
         <div class="verify-main" @touchmove.prevent.stop>
             <h4>
@@ -39,21 +39,31 @@
 </template>
 
 <script setup lang="ts">
-// 引用图标
 import "vue3-slide-verify/dist/style.css"
 
-import { ref, useTemplateRef } from "vue"
+import { storeToRefs } from "pinia"
+import { computed, ref, useTemplateRef } from "vue"
 import type { SlideVerifyInstance } from "vue3-slide-verify"
 import SlideVerify from "vue3-slide-verify"
 
 import { IconKeys } from "@/components/common/icons"
+import { useOptionsStore } from "@/stores/options"
 
 defineOptions({ name: "SlideVerify" })
+
+// 拿到华东解锁图片列表
+const optionsStore = useOptionsStore()
+const { show_slide_verify, slide_verify_imgs } = storeToRefs(optionsStore)
 
 const block = useTemplateRef<SlideVerifyInstance>("block") // 滑块实例
 const msg = ref("") // 提示信息
 const text = "请向右滑动->" // 滑块提示文字
 const accuracy = 1 // 误差值
+
+// 滑块图片列表
+const imgs = computed(() => {
+    return slide_verify_imgs.value.map((item) => item.imageUrl)
+})
 
 // 子组件 传参
 const emit = defineEmits<{
@@ -69,9 +79,10 @@ const onAgain = () => {
 }
 
 // 验证成功
-const onSuccess = (times: number) => {
+const onSuccess = async (times: number) => {
     msg.value = `验证通过, 用时${(times / 1000).toFixed(1)}s`
     emit("on-success", true)
+    await optionsStore.closeSlideVerify()
 }
 
 // 验证失败
@@ -91,16 +102,10 @@ const onRefresh = () => {
 //     msg.value = "";
 // };
 
-// 构造图片地址
-const baseUrl = "https://image.jiaopengzi.com/slide-verify-images/"
-const totalImages = 8 // 图片总数
-const imgs = Array.from({ length: totalImages }, (_, index) => {
-    return `${baseUrl}${index}.jpg`
-})
-
 // 关闭滑块验证 传参
 const closeMe = () => {
     emit("on-close", false)
+    optionsStore.closeSlideVerify()
 }
 </script>
 

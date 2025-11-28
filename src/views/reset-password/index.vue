@@ -9,7 +9,7 @@
 <template>
     <div class="reset-password-page">
         <!-- 添加滑动验证组件：SlideVerify -->
-        <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="sendCaptcha"></SlideVerify>
+        <SlideVerify @on-success="sendCaptcha" />
         <el-form
             :label-position="labelPosition"
             label-width="100px"
@@ -66,6 +66,7 @@ import AccountFormHeader from "@/components/common/account-form-header"
 import SlideVerify from "@/components/common/slide-verify"
 import { useAccountFormValidation } from "@/components/hooks/useAccountFormValidation"
 import { RouteNames } from "@/router"
+import { useOptionsStore } from "@/stores/options"
 import { MessageUtil } from "@/utils/message"
 
 import type { ResetPasswordForm } from "./types"
@@ -77,12 +78,25 @@ useHead({
 })
 
 const router = useRouter()
+const optionsStore = useOptionsStore()
 
 // 表单label位置 top | left | right
 const labelPosition = ref("top")
 
 // 表单大小 '' | 'large' | 'default' | 'small'
 const formSize = ref("default")
+
+// 打开滑动验证
+const openSlideVerify = async () => {
+    // 如果没有开启滑动验证, 直接调用成功回调
+    if (!optionsStore.slide_verify_enable) {
+        await sendCaptcha()
+        return
+    }
+
+    // 开启滑动验证
+    optionsStore.openSlideVerify()
+}
 
 // 表单实例
 const forgotPasswordFormRef = useTemplateRef<FormInstance>("forgotPasswordFormRef")
@@ -159,25 +173,12 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     })
 }
 
-// 添加 showSlideVerify 响应式变量
-const showSlideVerify = ref(false)
-
-// 显示滑块验证
-const openSlideVerify = () => {
-    // 显示滑块验证
-    console.log("打开滑块验证")
-    showSlideVerify.value = true
-}
-
 const captcha = ref("发送验证码")
 const btnCaptchaState = reactive({ disabled: false })
 
 // 发送邮箱验证码
 
 const sendCaptcha = async () => {
-    // 关闭滑块验证
-    showSlideVerify.value = false
-
     const emailResult = await forgotPasswordFormRef.value?.validateField("email").catch(() => false)
     if (!emailResult) {
         MessageUtil.error("请输入正确的邮箱地址。", 0)
@@ -213,11 +214,6 @@ const sendCaptcha = async () => {
             }
         }, 1000)
     }
-}
-
-// 关闭滑块验证
-const closeSlideVerify = () => {
-    showSlideVerify.value = false
 }
 </script>
 

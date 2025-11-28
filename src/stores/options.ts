@@ -14,6 +14,7 @@ import { getAPPOptionAPI, type GetAPPOptionResponse } from "@/api/setting/getAPP
 import { getPayConfigStatusAPI, type GetPayConfigStatusResponse } from "@/api/setting/getPayConfigStatus"
 import { type CarouselItem } from "@/components/common/carousel-manage"
 import { type HeadProps } from "@/components/common/head-tag"
+import { type SlideVerifyImgItem } from "@/components/common/slide-verify-manage"
 import { type NavItemProps } from "@/views/admin/component/main/app-nav/nav-item"
 
 import { LocalStorageKey } from "./local"
@@ -53,6 +54,12 @@ export interface CarouselInfo {
     items: CarouselItem[] // 轮播图项目
 }
 
+// 滑动验证信息
+export interface SlideVerifyInfo {
+    enable: boolean // 是否启用滑动验证
+    imgs: SlideVerifyImgItem[] // 滑动验证图片列表
+}
+
 // 网站配置选项
 export interface OptionsStore {
     app_options: GetAPPOptionResponse // 网站配置选项数据
@@ -67,6 +74,9 @@ export interface OptionsStore {
     alipayStatus: boolean // 支付宝支付状态
     is_remove_first_h1: boolean // 是否移除文章内容中的第一个 h1 标签
     carousel: CarouselInfo // 轮播图信息
+    slide_verify_enable: boolean // 滑动验证是否启用
+    show_slide_verify: boolean // 是否显示滑动验证
+    slide_verify_imgs: SlideVerifyImgItem[] // 滑动验证图片列表
 }
 
 // 创建一个空的选项存储
@@ -88,6 +98,9 @@ function createEmptyOptionsStore(): OptionsStore {
             interval: 3000,
             items: [],
         },
+        slide_verify_enable: false,
+        show_slide_verify: false,
+        slide_verify_imgs: [],
     }
 }
 
@@ -163,6 +176,30 @@ export const useOptionsStore = defineStore("options", {
         getCarousel(): CarouselInfo {
             return this.carousel
         },
+
+        // 获取滑动验证是否启用
+        getSlideVerifyEnable(): boolean {
+            return this.slide_verify_enable
+        },
+
+        // 获取是否显示滑动验证
+        getShowSlideVerify(): boolean {
+            // 是否启用滑动验证
+            if (!this.slide_verify_enable) {
+                return false
+            }
+
+            // 判断是否有滑动验证图片
+            if (!this.slide_verify_imgs || this.slide_verify_imgs.length === 0) {
+                return false
+            }
+            return this.show_slide_verify
+        },
+
+        // 获取滑动验证图片列表
+        getSlideVerifyImgs(): SlideVerifyImgItem[] {
+            return this.slide_verify_imgs
+        },
     },
 
     actions: {
@@ -218,6 +255,14 @@ export const useOptionsStore = defineStore("options", {
             if (carousel) {
                 this.carousel = JSON.parse(carousel) as CarouselInfo
             }
+
+            // 从本地获取滑动验证信息
+            const slideVerify = localStorage.getItem(LocalStorageKey.OptionsSlideVerify)
+            if (slideVerify) {
+                const slideVerifyInfo = JSON.parse(slideVerify) as SlideVerifyInfo
+                this.slide_verify_enable = slideVerifyInfo.enable
+                this.slide_verify_imgs = slideVerifyInfo.imgs
+            }
         },
 
         // 从服务器获取网站配置
@@ -247,6 +292,11 @@ export const useOptionsStore = defineStore("options", {
 
                 // 轮播图项目格式化后存储本地
                 this.carousel = await formatCarouselInfo(this.app_options)
+
+                // 滑动验证格式化后存储本地
+                const slideVerifyInfo = await formatSlideVerify(this.app_options)
+                this.slide_verify_enable = slideVerifyInfo.enable
+                this.slide_verify_imgs = slideVerifyInfo.imgs
             }
 
             // 更新支付配置状态
@@ -320,6 +370,28 @@ export const useOptionsStore = defineStore("options", {
             if (res.status === 200 && res.data.status === "success") {
                 this.ipInfo = res.data
             }
+        },
+
+        // 开启滑动验证
+        async openSlideVerify(): Promise<void> {
+            // 判断是否启用滑动验证
+            if (!this.slide_verify_enable) {
+                this.show_slide_verify = false
+                return
+            }
+
+            // 如果没有滑动验证图片, 则不允许开启
+            if (!this.slide_verify_imgs || this.slide_verify_imgs.length === 0) {
+                this.show_slide_verify = false
+                return
+            }
+
+            this.show_slide_verify = true
+        },
+
+        // 关闭滑动验证
+        async closeSlideVerify(): Promise<void> {
+            this.show_slide_verify = false
         },
     },
 })
@@ -467,6 +539,34 @@ const formatCarouselInfo = async (data: GetAPPOptionResponse): Promise<CarouselI
     localStorage.setItem(LocalStorageKey.OptionsCarousel, JSON.stringify(carouselInfo))
 
     return carouselInfo
+}
+
+// 格式化滑动验证信息
+const formatSlideVerify = async (data: GetAPPOptionResponse): Promise<SlideVerifyInfo> => {
+    // 滑动验证图片列表
+    let slideVerifyImgs: SlideVerifyImgItem[] = []
+    let slideVerifyEnable = false
+
+    // 解析滑动验证图片列表 JSON 字符串
+    try {
+        slideVerifyEnable = JSON.parse(data.slide_verify_enable?.value) as boolean
+        slideVerifyImgs = JSON.parse(data.slide_verify_imgs?.value) as SlideVerifyImgItem[]
+    } catch (e) {
+        console.error("JSON parse error:", e)
+        slideVerifyEnable = false
+        slideVerifyImgs = []
+    }
+
+    // 构造 SlideVerifyInfo
+    const slideVerifyInfo: SlideVerifyInfo = {
+        enable: slideVerifyEnable,
+        imgs: slideVerifyImgs,
+    }
+
+    // 存入本地
+    localStorage.setItem(LocalStorageKey.OptionsSlideVerify, JSON.stringify(slideVerifyInfo))
+
+    return slideVerifyInfo
 }
 
 // 允许开发环境下进行热更新 HMR(Hot Module Replacement)

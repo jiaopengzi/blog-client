@@ -1,9 +1,9 @@
 <!--
- * FilePath    : blog-client-dev\src\components\common\carousel-manage\index.vue
+ * FilePath    : blog-client-dev\src\components\common\slide-verify-manage\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 轮播图管理
+ * Description : 滑动验证图片管理
 -->
 
 <template>
@@ -15,15 +15,9 @@
                     <!-- 预览效果 -->
                     <el-image class="img-preview" v-if="fItem.imageUrl" :src="fItem.imageUrl" alt="预览" fit="contain" />
                 </el-form-item>
-                <el-form-item label="跳转链接" :prop="`[${index}].linkUrl`" :rules="rules.linkUrl" class="form-cell">
-                    <el-input v-model="fItem.linkUrl" placeholder="跳转链接" clearable />
-                </el-form-item>
-                <el-form-item label="图片替代文本" :prop="`[${index}].altText`" :rules="rules.altText" class="form-cell">
-                    <el-input v-model="fItem.altText" placeholder="图片替代文字" clearable />
-                </el-form-item>
                 <el-button type="danger" @click="remove(index)" size="small" class="form-cell">删除</el-button>
             </el-form-item>
-            <el-button type="primary" @click="add" size="small" class="form-row-add">增加轮播图</el-button>
+            <el-button type="primary" @click="add" size="small" class="form-row-add">增加滑动验证图片</el-button>
         </el-form>
     </div>
 </template>
@@ -32,12 +26,12 @@
 import type { FormInstance, FormRules } from "element-plus"
 import { reactive, ref, toRaw, useTemplateRef, watch } from "vue"
 
-import { type CarouselItem } from "./types"
+import { type SlideVerifyImgItem } from "./types"
 
-defineOptions({ name: "CarouselManage" })
+defineOptions({ name: "SlideVerifyManage" })
 
 const { data = [] } = defineProps<{
-    data?: CarouselItem[]
+    data?: SlideVerifyImgItem[]
 }>()
 
 // 表单label位置 top | left | right
@@ -50,14 +44,12 @@ const formSize = ref("default")
 const formRef = useTemplateRef<FormInstance>("formRef")
 
 // 表单数据
-const formData = ref<CarouselItem[]>(data)
+const formData = ref<SlideVerifyImgItem[]>(data)
 
 // 添加
 const add = () => {
     formData.value.push({
         imageUrl: "",
-        linkUrl: "",
-        altText: "",
     })
 }
 
@@ -77,13 +69,11 @@ watch(
 )
 
 // 验证规则
-const rules = reactive<FormRules<CarouselItem>>({
+const rules = reactive<FormRules<SlideVerifyImgItem>>({
     imageUrl: [
-        { required: true, message: "请输入轮播图链接", trigger: "blur" },
-        { type: "url", message: "请输入正确的链接地址", trigger: "blur" },
+        { required: true, message: "请输入图片链接", trigger: "blur" },
+        { type: "url", message: "请输入正确图片链接", trigger: "blur" },
     ],
-    linkUrl: [{ type: "url", message: "请输入正确的跳转链接地址", trigger: "blur" }],
-    altText: [{ max: 100, message: "图片替代文本不能超过100个字符", trigger: "blur" }],
 })
 
 defineExpose({

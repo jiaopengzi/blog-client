@@ -9,7 +9,7 @@
 <template>
     <div class="register-page">
         <!-- 添加滑动验证组件：SlideVerify -->
-        <SlideVerify v-if="showSlideVerify" @on-close="closeSlideVerify" @on-success="sendCaptcha"></SlideVerify>
+        <SlideVerify @on-success="sendCaptcha" />
         <el-form
             :label-position="labelPosition"
             label-width="100px"
@@ -76,6 +76,7 @@ import AccountFormHeader from "@/components/common/account-form-header"
 import SlideVerify from "@/components/common/slide-verify"
 import { useAccountFormValidation } from "@/components/hooks/useAccountFormValidation"
 import { RouteNames } from "@/router"
+import { useOptionsStore } from "@/stores/options"
 import { MessageUtil } from "@/utils/message"
 
 import type { RegisterForm } from "./types"
@@ -87,6 +88,19 @@ useHead({
 })
 
 const router = useRouter()
+const optionsStore = useOptionsStore()
+
+// 打开滑动验证
+const openSlideVerify = async () => {
+    // 如果没有开启滑动验证, 直接调用成功回调
+    if (!optionsStore.slide_verify_enable) {
+        await sendCaptcha()
+        return
+    }
+
+    // 开启滑动验证
+    optionsStore.openSlideVerify()
+}
 
 // 表单label位置 top | left | right
 const labelPosition = ref("top")
@@ -193,24 +207,11 @@ const resetForm = (formEl: FormInstance | undefined) => {
     formEl.resetFields()
 }
 
-// 显示滑块验证 状态
-const showSlideVerify = ref(false)
-
-// 显示滑块验证
-const openSlideVerify = () => {
-    // 显示滑块验证
-    console.log("打开滑块验证")
-    showSlideVerify.value = true
-}
-
 const captcha = ref("发送验证码")
 const btnCaptchaState = reactive({ disabled: false })
 
 // 发送邮箱验证码
 const sendCaptcha = async () => {
-    // 关闭滑块验证
-    showSlideVerify.value = false
-
     // 手动触发 FormInstance 的校验，校验 userName 和 email 字段
     const userNameResult = await registerFormRef.value?.validateField("userName").catch(() => false)
     if (!userNameResult) {
@@ -253,11 +254,6 @@ const sendCaptcha = async () => {
             }
         }, 1000)
     }
-}
-
-// 关闭滑块验证
-const closeSlideVerify = () => {
-    showSlideVerify.value = false
 }
 </script>
 

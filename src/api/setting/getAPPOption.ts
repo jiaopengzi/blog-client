@@ -43,6 +43,10 @@ export interface GetAPPOptionResponse {
     logo: APPOptionItem // logo
     favicon: APPOptionItem // favicon
 
+    // 滑动验证相关
+    slide_verify_enable: APPOptionItem // 滑动验证开启
+    slide_verify_imgs: APPOptionItem // 滑动验证图片列表
+
     // 轮播图相关
     carousel_enable: APPOptionItem // 轮播图开启
     carousel_interval: APPOptionItem // 轮播图间隔 默认 3000 单位 毫秒
