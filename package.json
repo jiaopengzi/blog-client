@@ -19,9 +19,9 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "node ./scripts/set-env-version.js && node ./scripts/open-document.js && vite --host 0.0.0.0",
+        "dev": "node ./scripts/set-env-version.js && node ./scripts/open-document.js && vite",
         "build": "run-p type-check build-only",
-        "preview": "vite preview",
+        "preview": "node ./scripts/open-document.js && vite preview",
         "build-only": "node ./scripts/set-env-version.js && vite build && node ./scripts/dns-prefetch.js",
         "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
         "lint": "eslint . --fix",

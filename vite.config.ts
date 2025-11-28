@@ -11,10 +11,37 @@ import vueJsx from "@vitejs/plugin-vue-jsx"
 import AutoImport from "unplugin-auto-import/vite"
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers"
 import Components from "unplugin-vue-components/vite"
-import { defineConfig } from "vite"
+import { type CommonServerOptions, defineConfig } from "vite"
 import compression from "vite-plugin-compression"
 import Inspect from "vite-plugin-inspect"
 import tsconfigPaths from "vite-tsconfig-paths"
+
+// 共享 dev server 和 preview server 配置
+const commonServerOptions: CommonServerOptions = {
+    host: "10.10.2.222",
+    strictPort: true, // 端口被占用时直接退出，而不是尝试下一个可用端口
+    port: 7364, // 项目运行端口(九宫格 peng 的拼音键数字)
+
+    // 设置代理
+    proxy: {
+        // dev Server.proxy 可以是一个指向开发环境 API 服务器的字符串
+        "/api": {
+            target: "http://10.10.2.222:5426",
+            changeOrigin: true,
+            // rewrite: (path) => path.replace(/^\/api/, 'my-admin'),
+        },
+        "/admin/raw-github": {
+            target: "https://raw.githubusercontent.com",
+            changeOrigin: true,
+            rewrite: (path) => path.replace(/^\/admin\/raw-github/, ""),
+        },
+        "/admin/raw-gitee": {
+            target: "https://gitee.com",
+            changeOrigin: true,
+            rewrite: (path) => path.replace(/^\/admin\/raw-gitee/, ""),
+        },
+    },
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -81,31 +108,13 @@ export default defineConfig({
             // devSourceMap: true, // 开发环境下是否生成 sourceMap
         },
     },
-    // ------------------------------ scss全局变量生效 结束
-    // ------------------------------ 设置代理 开始
-    server: {
-        host: "10.10.2.222",
-        port: 7364, // 项目运行端口(九宫格 peng 的拼音键数字)
-        proxy: {
-            // dev Server.proxy 可以是一个指向开发环境 API 服务器的字符串
-            "/api": {
-                target: "http://10.10.2.222:5426",
-                changeOrigin: true,
-                // rewrite: (path) => path.replace(/^\/api/, 'my-admin'),
-            },
-            "/admin/raw-github": {
-                target: "https://raw.githubusercontent.com",
-                changeOrigin: true,
-                rewrite: (path) => path.replace(/^\/admin\/raw-github/, ""),
-            },
-            "/admin/raw-gitee": {
-                target: "https://gitee.com",
-                changeOrigin: true,
-                rewrite: (path) => path.replace(/^\/admin\/raw-gitee/, ""),
-            },
-        },
-    },
-    // ------------------------------ 设置代理 结束
+
+    // 开发服务器配置
+    server: commonServerOptions,
+
+    // 预览服务器配置
+    preview: commonServerOptions,
+
     // ------------------------------ 设置打包分块 开始
     build: {
         minify: true, //是否压缩编译后结果。
@@ -148,7 +157,7 @@ export default defineConfig({
                 terser({
                     maxWorkers: 2, // 开启多进程压缩
                     compress: {
-                        // pure_funcs: ["console.log"], // 去除console.log,保留其他console
+                        pure_funcs: ["console.log"], // 去除console.log, 保留其他 console
                         drop_debugger: true, // 去除debugger
                     },
                     format: {
