@@ -17,30 +17,32 @@ import Inspect from "vite-plugin-inspect"
 import tsconfigPaths from "vite-tsconfig-paths"
 
 // 共享 dev server 和 preview server 配置
-const commonServerOptions: CommonServerOptions = {
-    host: "10.10.2.222",
-    strictPort: true, // 端口被占用时直接退出，而不是尝试下一个可用端口
-    port: 7364, // 项目运行端口(九宫格 peng 的拼音键数字)
+const commonServerOptions = (): CommonServerOptions => {
+    return {
+        host: "10.10.2.222",
+        strictPort: true, // 端口被占用时直接退出，而不是尝试下一个可用端口
+        port: 7364, // 项目运行端口(九宫格 peng 的拼音键数字)
 
-    // 设置代理
-    proxy: {
-        // dev Server.proxy 可以是一个指向开发环境 API 服务器的字符串
-        "/api": {
-            target: "http://10.10.2.222:5426",
-            changeOrigin: true,
-            // rewrite: (path) => path.replace(/^\/api/, 'my-admin'),
+        // 设置代理
+        proxy: {
+            // dev Server.proxy 可以是一个指向开发环境 API 服务器的字符串
+            "/api": {
+                target: "http://10.10.2.222:5426",
+                changeOrigin: true,
+                // rewrite: (path:string) => path.replace(/^\/api/, 'my-admin'),
+            },
+            "/admin/raw-github": {
+                target: "https://raw.githubusercontent.com",
+                changeOrigin: true,
+                rewrite: (path: string) => path.replace(/^\/admin\/raw-github/, ""),
+            },
+            "/admin/raw-gitee": {
+                target: "https://gitee.com",
+                changeOrigin: true,
+                rewrite: (path: string) => path.replace(/^\/admin\/raw-gitee/, ""),
+            },
         },
-        "/admin/raw-github": {
-            target: "https://raw.githubusercontent.com",
-            changeOrigin: true,
-            rewrite: (path) => path.replace(/^\/admin\/raw-github/, ""),
-        },
-        "/admin/raw-gitee": {
-            target: "https://gitee.com",
-            changeOrigin: true,
-            rewrite: (path) => path.replace(/^\/admin\/raw-gitee/, ""),
-        },
-    },
+    }
 }
 
 // https://vitejs.dev/config/
@@ -82,7 +84,7 @@ export default defineConfig({
             ext: ".gz", // 生成的压缩文件后缀
             deleteOriginFile: false, // 是否删除原文件
             filter: (file) => {
-                return /\.(js|mjs|json|css|html|svg)$/.test(file)
+                return /\.(js|mjs|json|css|svg)$/.test(file)
             },
         }),
         // ------------------------------ gzip压缩 结束
@@ -110,10 +112,10 @@ export default defineConfig({
     },
 
     // 开发服务器配置
-    server: commonServerOptions,
+    server: commonServerOptions(),
 
     // 预览服务器配置
-    preview: commonServerOptions,
+    preview: commonServerOptions(),
 
     // ------------------------------ 设置打包分块 开始
     build: {
@@ -159,6 +161,7 @@ export default defineConfig({
                     compress: {
                         pure_funcs: ["console.log"], // 去除console.log, 保留其他 console
                         drop_debugger: true, // 去除debugger
+                        passes: 3, // 压缩次数，默认为1，设置更高的值可以获得更好的压缩效果，但会增加构建时间
                     },
                     format: {
                         // 取消代码注释
