@@ -24,6 +24,7 @@
         "tzdata",
         "URLAPI",
         "Vite",
+        "webp",
         "zoneinfo",
         "zumer"
     ],
