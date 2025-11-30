@@ -166,49 +166,56 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         // 标题
         [CommandsKey.Heading]: {
             tip: "标题",
-            prefix: "### ",
+            prefix: "\n### ",
+            suffix: "\n",
             hotKey: "Ctrl+H",
             icon: IconKeys.Heading,
         },
         // 标题1
         [CommandsKey.H1]: {
             tip: "标题1",
-            prefix: "# ",
+            prefix: "\n# ",
+            suffix: "\n",
             hotKey: "Ctrl+1",
             icon: IconKeys.H1,
         },
         // 标题2
         [CommandsKey.H2]: {
             tip: "标题2",
-            prefix: "## ",
+            prefix: "\n## ",
+            suffix: "\n",
             hotKey: "Ctrl+2",
             icon: IconKeys.H2,
         },
         // 标题3
         [CommandsKey.H3]: {
             tip: "标题3",
-            prefix: "### ",
+            prefix: "\n### ",
+            suffix: "\n",
             hotKey: "Ctrl+3",
             icon: IconKeys.H3,
         },
         // 标题4
         [CommandsKey.H4]: {
             tip: "标题4",
-            prefix: "#### ",
+            prefix: "\n#### ",
+            suffix: "\n",
             hotKey: "Ctrl+4",
             icon: IconKeys.H4,
         },
         // 标题5
         [CommandsKey.H5]: {
             tip: "标题5",
-            prefix: "##### ",
+            prefix: "\n##### ",
+            suffix: "\n",
             hotKey: "Ctrl+5",
             icon: IconKeys.H5,
         },
         // 标题6
         [CommandsKey.H6]: {
             tip: "标题6",
-            prefix: "###### ",
+            prefix: "\n###### ",
+            suffix: "\n",
             hotKey: "Ctrl+6",
             icon: IconKeys.H6,
         },
@@ -227,15 +234,15 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         // 引用
         [CommandsKey.Quote]: {
             tip: "引用",
-            prefix: "> ",
+            prefix: "\n> ",
             icon: IconKeys.Quote,
         },
         // 代码块
         [CommandsKey.CodeBlock]: {
             tip: "代码块",
-            prefix: "``` language\n",
-            content: "\n",
-            suffix: "```",
+            prefix: "\n```language\n",
+            content: "",
+            suffix: "\n```\n",
             hotKey: "Ctrl+Shift+C",
             icon: IconKeys.CodeBlock,
         },
@@ -265,14 +272,14 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         // 表格
         [CommandsKey.Table]: {
             tip: "表格",
-            content: "|column1|column2|column3|\n|:---:|:---:|:---:|\n|content1|content2|content3|",
+            content: "\n|column1|column2|column3|\n|:---:|:---:|:---:|\n|content1|content2|content3|\n",
             hotKey: "Ctrl+Shift+T",
             icon: IconKeys.Table,
         },
         // 分割线
         [CommandsKey.Hr]: {
             tip: "分割线",
-            content: "---",
+            content: "\n---\n",
             icon: IconKeys.Hr,
         },
         // 任务列表
@@ -285,9 +292,9 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         // 块级数学公式
         [CommandsKey.MathBlock]: {
             tip: "块级数学公式",
-            prefix: "$$\n",
+            prefix: "\n$$\n",
             content: "\n",
-            suffix: "$$",
+            suffix: "\n$$\n",
             hotKey: "Ctrl+Shift+M",
             icon: IconKeys.MathBlock,
         },
@@ -324,14 +331,14 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         // 付费内容
         [CommandsKey.PayContent]: {
             tip: "付费内容",
-            prefix: "<!--more-->",
+            // prefix: "<!--more-->",
             icon: IconKeys.PayContent,
         },
         // 视频
         [CommandsKey.Video]: {
             tip: "视频",
-            prefix: '<video-player video-type="hls" src="" poster="" id="',
-            suffix: '"></video-player>',
+            prefix: '\n<video-player video-type="hls" src="" poster="" id="',
+            suffix: '"></video-player>\n',
             hotKey: "Ctrl+Shift+V",
             icon: IconKeys.Video,
         },

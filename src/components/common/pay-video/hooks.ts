@@ -280,7 +280,9 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
         await updateVideosIsFree()
 
         // 设置视频和进度
-        await setCurrentVideoProgress(postId.value)
+        if (postId.value) {
+            await setCurrentVideoProgress(postId.value)
+        }
     }
 
     return {

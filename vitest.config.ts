@@ -22,6 +22,7 @@ export default mergeConfig(
                 "**/.vscode/**",
                 "**/.VSCodeCounter/**",
                 "**/vite-plugin-inspect/**",
+                "**/assets/**",
             ],
             root: fileURLToPath(new URL("./", import.meta.url)),
             server: {

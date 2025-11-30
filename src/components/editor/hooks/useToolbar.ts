@@ -16,7 +16,7 @@ import { MessageUtil } from "@/utils/message"
 import { setCSSVariable } from "@/utils/style"
 
 import { CommandsKey, markdownEditorCommands } from "../command"
-import { Alerts, Pay, type TableRowCol } from "../components/toolbar"
+import { Alerts, type PayTagItem, type TableRowCol } from "../components/toolbar"
 import { EditorStateManager } from "../state"
 
 export function useToolbar(mdLayoutRef: Ref<HTMLElement | null>, mdContainerRef: Ref<HTMLElement | null>, stateManager: EditorStateManager) {
@@ -148,14 +148,14 @@ export function useToolbar(mdLayoutRef: Ref<HTMLElement | null>, mdContainerRef:
     }
 
     // 插入付费组件
-    const insertPay = (val: Pay) => {
+    const insertPay = (val: PayTagItem) => {
         const content = val
         stateManager.setCmCommand({
             commandName: CommandsKey.PayContent,
             customContent: {
-                prefix: "\n",
-                content,
-                suffix: "",
+                prefix: `${content.prefix}`,
+                content: `${content.content}`,
+                suffix: `${content.suffix}`,
             },
             time: new Date(),
         })

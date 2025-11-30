@@ -7,4 +7,5 @@
  */
 
 export * from "./base"
+export * from "./parseHtml"
 export * from "./registerCustomElements"

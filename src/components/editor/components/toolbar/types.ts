@@ -7,5 +7,5 @@
  */
 
 export { Alerts } from "./components/alert"
-export { Pay } from "./components/pay"
+export { type PayTagItem } from "./components/pay"
 export { type TableRowCol } from "./components/table"

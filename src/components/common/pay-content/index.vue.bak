@@ -38,7 +38,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { computed, watch } from "vue"
+import { computed } from "vue"
 
 import JIcon, { IconKeys } from "@/components/common/icons"
 import { EditorStateManager } from "@/components/editor"
@@ -78,16 +78,7 @@ const payVip = async () => {
 
 // 内容渲染
 const stateManager = new EditorStateManager()
-
-watch(
-    () => markdown,
-    (newVal) => {
-        if (newVal) {
-            stateManager.updateState(newVal)
-        }
-    },
-    { immediate: true },
-)
+stateManager.updateState(markdown)
 
 // 是否显示内容
 const isShowContent = computed(() => {
@@ -112,7 +103,7 @@ const isShowContent = computed(() => {
         top: 8px;
         left: 8px;
     }
-
+    
     .my-icon {
         fill: #c1401f;
         font-size: 14px;

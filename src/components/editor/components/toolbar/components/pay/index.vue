@@ -22,19 +22,20 @@
 
         <div class="pays">
             <div>付费项目</div>
-            <el-button class="pay-item" type="default" @click="handlePaySelect(Pay.PayVideo)">视频</el-button>
-            <el-button class="pay-item" type="default" @click="handlePaySelect(Pay.PayMembership)">会员</el-button>
-            <el-button class="pay-item" type="default" @click="handlePaySelect(Pay.PayRead)">阅读</el-button>
-            <el-button class="pay-item" type="default" @click="handlePaySelect(Pay.PayDownload)">下载</el-button>
-            <el-button class="pay-item" type="default" @click="handlePaySelect(Pay.PayKey)">卡密</el-button>
+            <el-button class="pay-item" type="default" @click="handlePaySelect(payTags[Names.PayVideo])">视频</el-button>
+            <el-button class="pay-item" type="default" @click="handlePaySelect(payTags[Names.PayMembership])">会员</el-button>
+            <el-button class="pay-item" type="default" @click="handlePaySelect(payTags[Names.PayRead])">阅读</el-button>
+            <el-button class="pay-item" type="default" @click="handlePaySelect(payTags[Names.PayDownload])">下载</el-button>
+            <el-button class="pay-item" type="default" @click="handlePaySelect(payTags[Names.PayKey])">卡密</el-button>
         </div>
     </el-popover>
 </template>
 
 <script lang="ts" setup>
 import type { IconKeys } from "@/components/common/icons"
+import { Names } from "@/customElements"
 
-import { Pay } from "./types"
+import { type PayTagItem, payTags } from "./types"
 
 defineOptions({ name: "BarPay" })
 
@@ -45,11 +46,11 @@ const { icon } = defineProps<{
 
 // 子组件 传参
 const emit = defineEmits<{
-    (e: "pay-select", val: Pay): void
+    (e: "pay-select", val: PayTagItem): void
 }>()
 
 // 插入付费组件
-const handlePaySelect = (val: Pay) => {
+const handlePaySelect = (val: PayTagItem) => {
     emit("pay-select", val)
 }
 </script>

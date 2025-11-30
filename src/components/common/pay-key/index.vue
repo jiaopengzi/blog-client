@@ -33,6 +33,8 @@ import { accountKeyGetProductAPI } from "@/api/accountKey/getProduct"
 import { ProductType } from "@/api/order/common"
 import { type Product as KeyRes } from "@/api/order/create"
 import { ResponseCode } from "@/api/response"
+import { Names } from "@/customElements"
+import { useCustomElementsDataCacheStore } from "@/stores/customElementsDataCache"
 import { fenToYuan } from "@/utils/amount"
 import { MessageUtil } from "@/utils/message"
 
@@ -96,12 +98,33 @@ const handleClick = (key: KeyRes) => {
     emit("pay-key", key)
 }
 
+// 自定义元素数据缓存 Store
+const customElementsDataCacheStore = useCustomElementsDataCacheStore()
+
 onBeforeMount(async () => {
     if (!productId) return
+
+    // 优先从缓存中获取数据, 避免重复请求
+    if (customElementsDataCacheStore.hasDataCacheByKey(Names.PayKey, productId)) {
+        const cache = customElementsDataCacheStore.getDataCacheByKey(Names.PayKey, productId)
+        if (cache) {
+            accountKeyProduct.value = cache.data as AccountKeyRes
+            return
+        }
+    }
+
+    // 请求数据
     const res = await accountKeyGetProductAPI({ id: productId })
     if (res.data.code === ResponseCode.AccountKeyGetProductSuccess) {
         accountKeyProduct.value = res.data.data
     }
+
+    // 无论是否有数据都更新到缓存中
+    customElementsDataCacheStore.setDataCache({
+        name: Names.PayKey,
+        key: productId,
+        data: accountKeyProduct.value,
+    })
 })
 </script>
 <style scoped lang="scss">

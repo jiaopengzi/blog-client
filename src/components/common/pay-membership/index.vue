@@ -27,6 +27,8 @@ import { onBeforeMount, ref } from "vue"
 import { type MembershipRes } from "@/api/membership/common"
 import { getMembershipPayRolesAPI } from "@/api/membership/getPayRoles"
 import { ResponseCode } from "@/api/response"
+import { Names } from "@/customElements"
+import { useCustomElementsDataCacheStore } from "@/stores/customElementsDataCache"
 import { fenToYuan } from "@/utils/amount"
 
 import { type PayMembershipProps } from "./types"
@@ -73,11 +75,31 @@ const durationTimeDisplay = (duration: string) => {
     }
 }
 
+// 自定义元素数据缓存 Store
+const customElementsDataCacheStore = useCustomElementsDataCacheStore()
+
 onBeforeMount(async () => {
+    // 优先从缓存中获取数据, 避免重复请求
+    if (customElementsDataCacheStore.hasDataCacheByKey(Names.PayMembership, Names.PayMembership)) {
+        const cache = customElementsDataCacheStore.getDataCacheByKey(Names.PayMembership, Names.PayMembership)
+        if (cache) {
+            roles.value = cache.data as MembershipRes[]
+            return
+        }
+    }
+
+    // 请求数据
     const res = await getMembershipPayRolesAPI()
     if (res.data.code === ResponseCode.MembershipGetRolesSuccess) {
         roles.value = res.data.data
     }
+
+    // 无论是否有数据都更新到缓存中
+    customElementsDataCacheStore.setDataCache({
+        name: Names.PayMembership,
+        key: Names.PayMembership,
+        data: roles.value,
+    })
 })
 </script>
 <style scoped lang="scss">

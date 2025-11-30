@@ -67,7 +67,7 @@ export const createDefaultPlayerState = (): PlayerState => ({
     },
     localVideoSubtitlesURLs: [],
     isIphone: false,
-    isShortcutKey: true,
+    isShortcutKey: false,
     showError: false,
     errMsg: "",
     isAdmin: false,

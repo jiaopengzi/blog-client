@@ -7,66 +7,7 @@
 -->
 
 <template>
-    <div ref="previewRef" id="preview" @click="handleDelegateClick" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave">
-        <div v-for="(item, index) in htmlData" :key="index">
-            <div v-if="item.type === 'html'" v-html="item.content"></div>
-            <div v-if="item.type === Names.VideoPlayer" :key="(item.content as PlayerState).videoID" class="video-player-box">
-                <VideoPlayer :player-state="item.content as PlayerState" />
-            </div>
-            <PayKey
-                v-else-if="item.type === Names.PayKey"
-                :key="(item.content as PayKeyProps).productId"
-                :product-id="(item.content as PayKeyProps).productId"
-                :title="(item.content as PayKeyProps).title"
-                :description="(item.content as PayKeyProps).description"
-                :loading="createOrderLoadingAc"
-                @pay-key="emitPayKey"
-            />
-            <PayMembership
-                v-else-if="item.type === Names.PayMembership"
-                :key="Names.PayMembership"
-                :loading="createOrderLoadingAc"
-                @pay-membership="emitPayMembership"
-            />
-            <PayContent
-                v-else-if="item.type === Names.PayRead"
-                :key="Names.PayRead"
-                :post-id="postIdAc"
-                :markdown="item.content as string"
-                :content-pay-type="ContentPayType.Read"
-                :loading="createOrderLoadingAc"
-                :is-paid="isPaidAc"
-                :price="priceAc"
-                @pay-vip="emitPayVip"
-                @pay-single="emitPaySingle"
-            />
-            <PayContent
-                v-else-if="item.type === Names.PayDownload"
-                :key="Names.PayDownload"
-                :post-id="postIdAc"
-                :markdown="item.content as string"
-                :content-pay-type="ContentPayType.Download"
-                :loading="createOrderLoadingAc"
-                :is-paid="isPaidAc"
-                :price="priceAc"
-                @pay-vip="emitPayVip"
-                @pay-single="emitPaySingle"
-            />
-            <PayContent
-                v-else-if="item.type === Names.PayVideo"
-                :key="Names.PayVideo"
-                :post-id="postIdAc"
-                :markdown="item.content as string"
-                :content-pay-type="ContentPayType.Video"
-                :loading="createOrderLoadingAc"
-                :is-paid="isPaidAc"
-                :price="priceAc"
-                :video-toc="videoTocAc"
-                @pay-vip="emitPayVip"
-                @pay-single="emitPaySingle"
-            />
-        </div>
-    </div>
+    <div ref="previewRef" id="preview" v-html="htmlData" @click="handleDelegateClick" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave"></div>
     <!-- 参考:https://github.com/element-plus/element-plus/blob/dev/packages/components/image/src/image.vue -->
     <el-image-viewer v-if="isShowElImageViewer" @close="closeElImageViewer" :url-list="imgUrls" />
 </template>
@@ -82,12 +23,15 @@ import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch 
 
 import { type MembershipRes } from "@/api/membership/common"
 import { type Product as KeyRes } from "@/api/order/create"
-import PayContent, { ContentPayType } from "@/components/common/pay-content"
-import PayKey, { type PayKeyProps } from "@/components/common/pay-key"
-import PayMembership from "@/components/common/pay-membership"
+import { ContentPayType } from "@/components/common/pay-content"
 import { ScrollElementTagHeading } from "@/components/editor/command"
-import VideoPlayer, { type PlayerState } from "@/components/player"
-import { Names, parseHtmlToContentParts } from "@/customElements"
+import { Names } from "@/customElements"
+import {
+    mountPayContentOnCustomElements,
+    mountPayKeyOnCustomElements,
+    mountPayMembershipOnCustomElements,
+    mountVideoPlayerOnCustomElements,
+} from "@/customElementsMount"
 import { copyText } from "@/utils/clipboard"
 import { shiftArray } from "@/utils/img"
 import { MessageUtil } from "@/utils/message"
@@ -142,15 +86,14 @@ const previewRef = useTemplateRef<HTMLElement | null>("previewRef")
 
 const htmlData = computed(() => {
     // 获取预览内容
-    let htmlStr = html || ""
+    let htmlStr = html || "" // 预览内容
 
-    // 历遍htmlStr
     if (isShowPreviewWechat) {
         // 微信公众号预览
         htmlStr = htmlHandleWeChat(html)
     }
 
-    return parseHtmlToContentParts(htmlStr)
+    return htmlStr
 })
 
 // 鼠标进入
@@ -391,22 +334,28 @@ const observeHeadings = () => {
     })
 }
 
-const emitPayVip = (val: ContentPayType) => {
-    emit("pay-vip", val)
-}
-
-const emitPaySingle = (val: ContentPayType) => {
-    emit("pay-single", val)
+// 定义 payContent 组件的事件
+const payContentEmits = {
+    onPayVip: (val: ContentPayType) => {
+        emit("pay-vip", val)
+    },
+    onPaySingle: (val: ContentPayType) => {
+        emit("pay-single", val)
+    },
 }
 
 // 定义 payKey 组件的事件
-const emitPayKey = (val: KeyRes) => {
-    emit("pay-key", val)
+const payKeyEmits = {
+    onPayKey: (val: KeyRes) => {
+        emit("pay-key", val)
+    },
 }
 
 // 定义 payMembership 组件的事件
-const emitPayMembership = (val: MembershipRes) => {
-    emit("pay-membership", val)
+const payMembershipEmits = {
+    onPayMembership: (val: MembershipRes) => {
+        emit("pay-membership", val)
+    },
 }
 
 const createOrderLoadingAc = computed(() => createOrderLoading) // 创建订单加载状态
@@ -427,6 +376,52 @@ watch(
 
                 // 监听标题的可见性变化
                 observeHeadings()
+
+                // 挂载自定义元素
+
+                // 视频播放器
+                mountVideoPlayerOnCustomElements(previewRef.value as HTMLElement, Names.VideoPlayer)
+
+                // 付费下载
+                mountPayContentOnCustomElements(
+                    previewRef.value as HTMLElement,
+                    Names.PayDownload,
+                    ContentPayType.Download,
+                    createOrderLoadingAc,
+                    payContentEmits,
+                    isPaidAc,
+                    priceAc,
+                )
+
+                // 付费阅读
+                mountPayContentOnCustomElements(
+                    previewRef.value as HTMLElement,
+                    Names.PayRead,
+                    ContentPayType.Read,
+                    createOrderLoadingAc,
+                    payContentEmits,
+                    isPaidAc,
+                    priceAc,
+                )
+
+                // 付费视频
+                mountPayContentOnCustomElements(
+                    previewRef.value as HTMLElement,
+                    Names.PayVideo,
+                    ContentPayType.Video,
+                    createOrderLoadingAc,
+                    payContentEmits,
+                    isPaidAc,
+                    priceAc,
+                    postIdAc,
+                    videoTocAc,
+                )
+
+                // 账号密钥
+                mountPayKeyOnCustomElements(previewRef.value as HTMLElement, Names.PayKey, createOrderLoadingAc, payKeyEmits)
+
+                // 付费会员
+                mountPayMembershipOnCustomElements(previewRef.value as HTMLElement, Names.PayMembership, createOrderLoadingAc, payMembershipEmits)
             })
         }
     },
@@ -457,10 +452,4 @@ defineExpose({
 
 <style scoped lang="scss">
 @use "./style.module.scss";
-.video-player-box {
-    margin: 16px 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 </style>

@@ -39,7 +39,7 @@ import type { IconKeys } from "@/components/common/icons"
 import { CommandsKey } from "../../command"
 import BarAlert, { Alerts } from "./components/alert"
 import BarEmoji from "./components/emoji"
-import BarPay, { Pay } from "./components/pay"
+import BarPay, { type PayTagItem } from "./components/pay"
 import BarTable, { type TableRowCol } from "./components/table"
 
 defineOptions({ name: "EditorToolbar" })
@@ -52,7 +52,7 @@ const { toolbarBtns } = defineProps<{
 // 子组件 传参
 const emit = defineEmits<{
     (e: "toolbar-btn-clicked", name: CommandsKey): void
-    (e: "pay-select", val: Pay): void
+    (e: "pay-select", val: PayTagItem): void
     (e: "emoji-picker-selected", emoji: EmojiExt): void
     (e: "table-row-col", tableRowCol: TableRowCol): void
     (e: "alert-select", val: Alerts): void
@@ -68,7 +68,7 @@ const emitToolbarBtnClicked = (name: CommandsKey) => {
 }
 
 // 插入付费组件
-const handlePaySelect = (val: Pay) => {
+const handlePaySelect = (val: PayTagItem) => {
     emit("pay-select", val)
 }
 

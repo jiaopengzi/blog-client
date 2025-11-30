@@ -35,7 +35,7 @@ export function createDefaultEditorState(options: EditorStateOptions = {}): Edit
         initDocIsEmpty: true, // 初始内容是否为空, 默认为 true 即默认为空
         editorShow: true, // 是否显示编辑器
         scrollHideViewStr: "", // 滚动条隐藏的编辑器 markdown 字符串
-        isSyncScroll: true, // 是否同步滚动
+        isSyncScroll: false, // 是否同步滚动
         isUserScrollCmEditor: true, // 是否用户滚动编辑器
         isFullScreen: false, // 是否全屏
         isShowEmojiPicker: false, // 是否显示 emoji picker
@@ -413,6 +413,7 @@ export function htmlHandleWeChat(htmlSrc: string) {
     htmlSrc = htmlHandleDivToSection(htmlSrc)
     return htmlSrc
 }
+
 /**
  * @description: html 移除第一个 h1 标签
  * @param htmlSrc html 源码

@@ -1,44 +1,44 @@
-<template>
-    <chart-card />
-</template>
+<template>MyTest</template>
 <script setup lang="ts">
-import ChartCard from "@/components/common/chart-card"
+import { parseHtmlToContentParts } from "@/customElements/parseHtml"
 defineOptions({ name: "MyTest" })
 
-const title = "当月"
-const data = [
-    { label: "01", value: 80 },
-    { label: "02", value: 65 },
-    { label: "03", value: 90 },
-    { label: "04", value: 45 },
-    { label: "05", value: 70 },
-    { label: "06", value: 100 },
-    { label: "07", value: 55 },
-    // { label: "08", value: 75 },
-    // { label: "09", value: 85 },
-    // { label: "10", value: 60 },
-    // { label: "11", value: 95 },
-    // { label: "12", value: 50 },
-    // { label: "13", value: 50 },
-    // { label: "14", value: 80 },
-    // { label: "15", value: 40 },
-    // { label: "16", value: 70 },
-    // { label: "17", value: 90 },
-    // { label: "18", value: 60 },
-    // { label: "19", value: 100 },
-    // { label: "20", value: 55 },
-    // { label: "21", value: 75 },
-    // { label: "22", value: 85 },
-    // { label: "23", value: 60 },
-    // { label: "24", value: 95 },
-    // { label: "25", value: 50 },
-    // { label: "26", value: 80 },
-    // { label: "27", value: 65 },
-    // { label: "28", value: 90 },
-    // { label: "29", value: 45 },
-    // { label: "30", value: 70 },
-    // { label: "31", value: 100 },
-]
-const width = 1000
-const height = 200
+const htmlString = `
+<h1 id="idx0-content-of-the-first-post3">Content of the first post3</h1>
+<p>普通内容</p>
+<pay-read>
+付费阅读 1
+测试内容很多
+</pay-read>
+
+<pay-read>
+  付费阅读  2
+
+  测试很多内容
+</pay-read>
+
+<pay-download>
+付费下载  1
+测试内容很多
+</pay-download>
+
+<p>普通内容1</p>
+<p>普通内容2</p>
+<p>普通内容3</p>
+<p>普通内容4</p>
+<p>普通内容5</p>
+
+<pay-video>
+包含内容  
+</pay-video>
+
+<p>测试内</p>
+<p><pay-membership></pay-membership></p>
+<p><video-player video-type="hls" id="m-1-c19424aa"></video-player></p>
+<p><video-player video-type="hls" id="m-1-c19424aa"></video-player></p>
+<p><pay-key id="27" title="账号密钥2" description="测试说明"></pay-key></p>
+`
+
+const result = parseHtmlToContentParts(htmlString)
+console.log(result)
 </script>
