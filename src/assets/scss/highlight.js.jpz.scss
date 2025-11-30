@@ -190,10 +190,17 @@ code.hljs {
     position: relative;
     background-color: #fafafa;
     border: 1px solid #f0f0f0;
-    border-radius: 2px;
+    border-radius: 4px;
     counter-reset: line;
     // white-space: normal;
     -webkit-overflow-scrolling: touch;
+
+    max-height: 600px;
+
+    // 滚动条样式
+    &::-webkit-scrollbar {
+        height: 6px;
+    }
 }
 
 .code-snippet code {
@@ -209,9 +216,11 @@ code.hljs {
 
 .code-snippet code::before {
     position: absolute;
-    min-width: 1.5em;
+    // width: 1.5em;
+    width: var(--line-number-width);
     text-align: right;
-    left: -2.5em;
+    // left: -2.5em;
+    left: var(--line-number-left);
     counter-increment: line;
     content: counter(line);
     display: inline;

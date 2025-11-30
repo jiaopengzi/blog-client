@@ -10,9 +10,11 @@
     <div ref="previewRef" id="preview" @click="handleDelegateClick" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave">
         <div v-for="(item, index) in htmlData" :key="index">
             <div v-if="item.type === 'html'" v-html="item.content"></div>
+
             <div v-if="item.type === Names.VideoPlayer" :key="(item.content as PlayerState).videoID" class="video-player-box">
                 <VideoPlayer :player-state="item.content as PlayerState" />
             </div>
+
             <PayKey
                 v-else-if="item.type === Names.PayKey"
                 :key="(item.content as PayKeyProps).productId"
@@ -22,46 +24,24 @@
                 :loading="createOrderLoadingAc"
                 @pay-key="emitPayKey"
             />
+
             <PayMembership
                 v-else-if="item.type === Names.PayMembership"
                 :key="Names.PayMembership"
                 :loading="createOrderLoadingAc"
                 @pay-membership="emitPayMembership"
             />
+
             <PayContent
-                v-else-if="item.type === Names.PayRead"
-                :key="Names.PayRead"
+                v-else-if="isPayContentItem(item.type as Names)"
+                :key="item.type"
                 :post-id="postIdAc"
                 :markdown="item.content as string"
-                :content-pay-type="ContentPayType.Read"
+                :content-pay-type="getPayContentType(item.type)"
                 :loading="createOrderLoadingAc"
                 :is-paid="isPaidAc"
                 :price="priceAc"
-                @pay-vip="emitPayVip"
-                @pay-single="emitPaySingle"
-            />
-            <PayContent
-                v-else-if="item.type === Names.PayDownload"
-                :key="Names.PayDownload"
-                :post-id="postIdAc"
-                :markdown="item.content as string"
-                :content-pay-type="ContentPayType.Download"
-                :loading="createOrderLoadingAc"
-                :is-paid="isPaidAc"
-                :price="priceAc"
-                @pay-vip="emitPayVip"
-                @pay-single="emitPaySingle"
-            />
-            <PayContent
-                v-else-if="item.type === Names.PayVideo"
-                :key="Names.PayVideo"
-                :post-id="postIdAc"
-                :markdown="item.content as string"
-                :content-pay-type="ContentPayType.Video"
-                :loading="createOrderLoadingAc"
-                :is-paid="isPaidAc"
-                :price="priceAc"
-                :video-toc="videoTocAc"
+                :video-toc="item.type === Names.PayVideo ? videoTocAc : void 0"
                 @pay-vip="emitPayVip"
                 @pay-single="emitPaySingle"
             />
@@ -152,6 +132,23 @@ const htmlData = computed(() => {
 
     return parseHtmlToContentParts(htmlStr)
 })
+
+// 判断是否为付费内容组件
+const isPayContentItem = (type: Names) => [Names.PayRead, Names.PayDownload, Names.PayVideo].includes(type)
+
+// 获取付费内容类型
+const getPayContentType = (type: string): ContentPayType => {
+    switch (type) {
+        case Names.PayRead:
+            return ContentPayType.Read
+        case Names.PayDownload:
+            return ContentPayType.Download
+        case Names.PayVideo:
+            return ContentPayType.Video
+        default:
+            return ContentPayType.Read
+    }
+}
 
 // 鼠标进入
 const onMouseEnter = () => {

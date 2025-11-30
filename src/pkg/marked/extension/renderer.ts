@@ -128,6 +128,7 @@ function constructWeChatPreCode(htmlStr: string): string {
     // 正则匹配出 `<pre><code class="language-???">` 或 `<pre><code>` 问号是占位符
     const regexStart = /<pre><code(?: class="language-(\w+)")?>/
     const regexEnd = /<\/code><\/pre>/ // 正则匹配 pre 结束标签
+    let lineNumber = 0 // 行号计数器
 
     lines.forEach((item) => {
         if (item) {
@@ -143,17 +144,25 @@ function constructWeChatPreCode(htmlStr: string): string {
 
             if (matchEnd) {
                 item = item.replace(matchEnd[0], "") // 删除 pre 结束标签
+
                 if (item === "") {
                     return // 保证最后一行不是多余的空行
                 }
             }
+
             item = "<code>" + item + "</code>\n" // 拼接 code 标签
             wechatPreCode = wechatPreCode + item
+            lineNumber += 1
         }
     })
 
+    // 计算行号宽度，最小宽度 2em
+    const lineNumberWidth = lineNumber.toString().length * 1 || 2
+    // 行号 left 位置计算
+    const lineNumberLeft = (lineNumberWidth + 1) * -1
+
     // 微信代码块行号类名 code-snippet code-snippet_nowrap code-snippet__js
-    const divStart = '<div class="pre-code">'
+    const divStart = `<div class="pre-code" style="--line-number-width: ${lineNumberWidth}em;--line-number-left: ${lineNumberLeft}em;">`
     const divEnd = "</div>"
     const copyBtnStart = '<button type="button" class="copy-button">'
     const copyBtnEnd = "</button>"
