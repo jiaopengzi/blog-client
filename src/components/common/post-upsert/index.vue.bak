@@ -5,6 +5,7 @@
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
  * Description : 文章新增和编辑组件
 -->
+
 <template>
     <section>
         <el-container ref="elContainerRef" direction="vertical">
@@ -51,6 +52,54 @@
                     </div>
                 </div>
 
+                <div class="seo-switch">
+                    <SwitchGroup :switch-items="defaultStatus" @update-status="updateDefaultStatus" />
+                </div>
+
+                <el-form-item v-show="defaultStatusIsShow" label="SEO自定义文章标题，留空则为文章标题。" prop="seo_title">
+                    <el-input v-model="postInfoForm.seo_title" />
+                </el-form-item>
+
+                <el-form-item
+                    ref="seoDescriptionRef"
+                    v-show="defaultStatusIsShow"
+                    label="SEO文章描述，留空则自动截取首段一定字数作为文章描。"
+                    prop="seo_description"
+                >
+                    <el-input v-model="postInfoForm.seo_description" :rows="5" type="textarea" />
+                </el-form-item>
+
+                <el-form-item
+                    v-show="defaultStatusIsShow"
+                    label="SEO文章关键词，多个关键词用英文半角逗号隔开，留空则自动将文章标签做为关键词。"
+                    prop="seo_keywords"
+                >
+                    <el-input v-model="postInfoForm.seo_keywords" />
+                </el-form-item>
+
+                <el-form-item v-show="defaultStatusIsShow" label="别名，留空则使用默认ID值。" prop="slug">
+                    <el-input v-model="postInfoForm.slug" />
+                </el-form-item>
+
+                <el-form-item label="手动设置缩略图,如果没有则随机显示一张图片。" prop="thumbnail">
+                    <el-input v-model="postInfoForm.thumbnail" />
+                </el-form-item>
+
+                <el-form-item label="视频合集" prop="video_toc">
+                    <div class="video-toc-tree">
+                        <el-button v-if="isShowAddTocBtn" type="primary" @click="addDefaultToc">添加合集</el-button>
+                        <VideoTocTreeEdit :tree-list="postInfoForm.video_toc" @tree-update="handleUpdate" />
+                    </div>
+                </el-form-item>
+
+                <el-form-item label="销售价格 为空则为免费。" prop="price">
+                    <el-input-number class="input-number" v-model="postInfoForm.price" :min="0" :precision="2" :step="0.01" placeholder="请输入价格(元)">
+                        <template #suffix>
+                            <span>元</span>
+                        </template>
+                    </el-input-number>
+                </el-form-item>
+
                 <el-form-item label="分类管理" prop="category_ids" v-if="isShowCategory">
                     <div class="category">
                         <el-checkbox-group v-model="postInfoForm.category_ids">
@@ -67,59 +116,6 @@
                     </div>
                 </el-form-item>
 
-                <el-form-item label="手动设置缩略图,如果没有则随机显示一张图片。" prop="thumbnail">
-                    <el-input v-model="postInfoForm.thumbnail" />
-                </el-form-item>
-
-                <el-form-item label="视频合集" prop="video_toc">
-                    <div class="video-toc-tree">
-                        <el-button v-if="isShowAddTocBtn" type="primary" @click="addDefaultToc">添加合集</el-button>
-                        <VideoTocTreeEdit :tree-list="postInfoForm.video_toc" @tree-update="handleUpdate" />
-                    </div>
-                </el-form-item>
-
-                <div class="seo-switch">
-                    <SwitchGroup :switch-items="defaultStatus" @update-status="updateDefaultStatus" />
-                </div>
-
-                <el-form-item v-show="defaultStatusIsShow" label="SEO 自定义文章标题，留空则为文章标题。" prop="seo_title">
-                    <el-input v-model="postInfoForm.seo_title" />
-                </el-form-item>
-
-                <el-form-item
-                    ref="seoDescriptionRef"
-                    v-show="defaultStatusIsShow"
-                    :label="`SEO文章描述，留空则自动截取内容前 ${post_list_summary_truncate} 字。`"
-                    prop="seo_description"
-                >
-                    <div class="seo-description-extract">
-                        <el-button size="small" class="seo-description-extract-btn" @click="seoDescriptionExtract">提取内容前</el-button>
-                        <el-input-number size="small" v-model="seoDescriptionExtractWords" class="seo-description-extract-input" :min="1" :max="500" :step="1">
-                            <template #suffix>字</template>
-                        </el-input-number>
-                    </div>
-                    <el-input v-model="postInfoForm.seo_description" :rows="5" type="textarea" />
-                </el-form-item>
-
-                <el-form-item
-                    v-show="defaultStatusIsShow"
-                    label="SEO文章关键词，多个关键词用英文半角逗号隔开，留空则自动将文章标签做为关键词。"
-                    prop="seo_keywords"
-                >
-                    <el-input v-model="postInfoForm.seo_keywords" />
-                </el-form-item>
-
-                <el-form-item v-show="defaultStatusIsShow" label="别名，留空则使用默认ID值。" prop="slug">
-                    <el-input v-model="postInfoForm.slug" />
-                </el-form-item>
-
-                <el-form-item label="销售价格，留空或者为 0 则为免费。" prop="price">
-                    <el-input-number class="input-number" v-model="postInfoForm.price" :min="0" :precision="2" :step="0.01" placeholder="请输入价格(元)">
-                        <template #suffix>
-                            <span>元</span>
-                        </template>
-                    </el-input-number>
-                </el-form-item>
                 <el-form-item label="付费管理" prop="pay_roles">
                     <SwitchGroup :switch-items="rolePaidList" @update-status="updateRolePaidList" />
                 </el-form-item>
@@ -178,10 +174,9 @@
 </template>
 <script lang="ts" setup>
 import { useHead } from "@unhead/vue"
-import { useResizeObserver } from "@vueuse/core"
+import { useIntersectionObserver, useResizeObserver } from "@vueuse/core"
 import type { ElContainer, ElFormItem } from "element-plus"
 import type { FormInstance } from "element-plus"
-import { storeToRefs } from "pinia"
 import { computed, onBeforeMount, onUnmounted, reactive, ref, toRefs, useTemplateRef, watch } from "vue"
 import { useRouter } from "vue-router"
 
@@ -197,7 +192,6 @@ import VideoTocTreeEdit from "@/components/common/video-toc-tree-edit"
 import { EditorStateManager } from "@/components/editor"
 import JEditor from "@/components/editor/index.vue"
 import { useEditor } from "@/components/hooks/useEditor"
-import { useOptionsStore } from "@/stores/options"
 import { PermissionNames } from "@/stores/permissionRole"
 import { useUserStore } from "@/stores/user"
 import { formatTime } from "@/utils/dateTime"
@@ -245,15 +239,9 @@ useEditor(stateManager)
 const editorState = stateManager.getState()
 const mediaDialogVisible = ref(false)
 
-const router = useRouter()
-
 const userStore = useUserStore()
-const optionsStore = useOptionsStore()
 
-// 文章列表摘要截断
-const { post_list_summary_truncate } = storeToRefs(optionsStore)
-
-const seoDescriptionExtractWords = ref(post_list_summary_truncate.value)
+const router = useRouter()
 
 // 监听编辑器宽度变化
 const { stop: stopResizeObserver } = useResizeObserver(editorContainerRef, (entries) => {
@@ -323,19 +311,26 @@ watch(
     },
 )
 
-// 提取 seo 描述
-const seoDescriptionExtract = () => {
-    const content = editorState.html || ""
-    // 解析html拿到innerText
-    const div = document.createElement("div")
-    div.innerHTML = content
-    const text = div.innerText || div.textContent || ""
-    postInfoForm.seo_description = text.slice(0, seoDescriptionExtractWords.value)
-    // 去除首尾空格
-    postInfoForm.seo_description = postInfoForm.seo_description.trim()
-    // 销毁div
-    div.remove()
-}
+// 监控文章内容变化,更新 seo 描述
+watch(
+    () => postInfoForm.post_content,
+    (newVal, oldVal) => {
+        // 如果 seo 描述为空，则更新 seo 描述
+        if (!postInfoForm.seo_description && newVal) {
+            postInfoForm.seo_description = newVal.slice(0, 200)
+        }
+
+        // 如果 seo 描述不为空，且和文章内容oldVal不相等，则不更新 seo 描述
+        if (postInfoForm.seo_description && postInfoForm.seo_description !== oldVal.slice(0, 200)) {
+            return
+        }
+
+        // 如果 seo 描述不为空，且和文章内容oldVal相等，则更新 seo 描述
+        if (postInfoForm.seo_description && postInfoForm.seo_description === oldVal.slice(0, 200) && newVal) {
+            postInfoForm.seo_description = newVal.slice(0, 200)
+        }
+    },
+)
 
 // 监控文章标签变化,更新 seo 关键词
 watch(
@@ -374,6 +369,21 @@ watch(
 
         // 更新 seo 关键词
         postInfoForm.seo_keywords = Array.from(keywordSet).join(",")
+    },
+)
+
+// 监控 seo 描述是否出现在视口
+const seoDescriptionVisible = ref(false)
+const { stop: stopIntersectionObserver } = useIntersectionObserver(seoDescriptionRef, ([entry]) => {
+    seoDescriptionVisible.value = entry?.isIntersecting || false
+})
+
+// 监控 seo 描述显示状态变化,更新 seo 描述
+watch(
+    () => seoDescriptionVisible.value,
+    () => {
+        // 将编辑器内容赋值给 post_content
+        postInfoForm.post_content = editorState.editorContent
     },
 )
 
@@ -457,9 +467,9 @@ const {
     getValueFromQuery,
     getDataOnBeforeMount,
     submitForm: editSubmitForm,
-} = useEdit(postInfoForm, rolePaidList, commentStatus, queryKey, stateManager, dataOfUpdate, postInfoAboutTime, postShowMethod, defaultStatusIsShow)
+} = useEdit(postInfoForm, rolePaidList, commentStatus, queryKey, stateManager, dataOfUpdate, postInfoAboutTime, postShowMethod)
 
-const { submitForm: addSubmitForm } = useAdd(postInfoForm, queryKey, postInfoAboutTime, router, routeName, defaultStatusIsShow)
+const { submitForm: addSubmitForm } = useAdd(postInfoForm, queryKey, postInfoAboutTime, router, routeName)
 
 // 数据快照
 const { isUpdate, updatedFields, updateSnapshot } = useSnapshot(postInfoForm)
@@ -473,12 +483,6 @@ const updateEditorStatus = () => {
 }
 
 const submitForm = async (formEl: FormInstance | undefined) => {
-    // 判断 seo 描述是否为空
-    if (!postInfoForm.seo_description) {
-        // 如果 seo 描述为空，则自动截取内容前 post_list_summary_truncate 字
-        seoDescriptionExtract()
-    }
-
     // 判断走新增还是更新
     if (!postInfoForm.id) {
         await addSubmitForm(formEl).then((isFinish) => {
@@ -552,6 +556,7 @@ const insertData = (data: TableData[]) => {
 
 onUnmounted(() => {
     stopResizeObserver()
+    stopIntersectionObserver()
 })
 
 onBeforeMount(async () => {
@@ -634,16 +639,6 @@ onBeforeMount(async () => {
     margin: 16px 0;
     font-size: 14px;
     color: var(--jpz-text-color-primary);
-}
-
-.seo-description-extract {
-    display: flex;
-    align-items: center;
-    margin-bottom: 4px;
-
-    .seo-description-extract-btn {
-        margin-right: 4px;
-    }
 }
 
 h4 {

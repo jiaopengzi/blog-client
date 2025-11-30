@@ -7,7 +7,7 @@
  */
 
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { type Reactive } from "vue"
+import { type Reactive, type Ref } from "vue"
 
 import { type InsertPostRequest, PostType, type UpdatePostRequest } from "@/api/post/common"
 
@@ -22,6 +22,7 @@ import type { UpsertPostForm } from "./types"
 export async function handleSubmit<T extends InsertPostRequest | UpdatePostRequest>(
     formEl: FormInstance | undefined,
     postInfoForm: Reactive<UpsertPostForm>,
+    defaultStatusIsShow: Ref<boolean>,
 ): Promise<T> {
     const req = {} as T
 
@@ -103,6 +104,8 @@ export async function handleSubmit<T extends InsertPostRequest | UpdatePostReque
                 delete req.video_file_id_hash_list
             }
         } else {
+            // 展开折叠状态, 方便用户查看错误
+            defaultStatusIsShow.value = true
             console.error("表单校验失败", fields)
             return
         }

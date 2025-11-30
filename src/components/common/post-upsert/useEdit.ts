@@ -7,7 +7,7 @@
  */
 
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { type Reactive, type Ref, ref } from "vue"
+import { type Reactive, type Ref } from "vue"
 import { useRoute } from "vue-router"
 
 import { CommentStatusCode, type UpdatePostRequest } from "@/api/post/common"
@@ -32,6 +32,7 @@ export function useEdit(
     dataOfUpdate: UpsertPostForm,
     postInfoAboutTime: PostInfoAboutTime,
     postShowMethod: SwitchItem[],
+    defaultStatusIsShow: Ref<boolean>,
 ) {
     const route = useRoute()
 
@@ -121,7 +122,7 @@ export function useEdit(
 
     // 提交表单
     const submitForm = async (formEl: FormInstance | undefined): Promise<boolean> => {
-        const req = await handleSubmit<UpdatePostRequest>(formEl, dataOfUpdate)
+        const req = await handleSubmit<UpdatePostRequest>(formEl, dataOfUpdate, defaultStatusIsShow)
         // 如果 req 是空对象，则表示表单验证失败
         if (Object.keys(req).length === 0) return false
 

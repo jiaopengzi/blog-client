@@ -77,6 +77,7 @@ export interface OptionsStore {
     slide_verify_enable: boolean // 滑动验证是否启用
     show_slide_verify: boolean // 是否显示滑动验证
     slide_verify_imgs: SlideVerifyImgItem[] // 滑动验证图片列表
+    post_list_summary_truncate: number // 文章列表摘要截断 默认 100 字
 }
 
 // 创建一个空的选项存储
@@ -101,6 +102,7 @@ function createEmptyOptionsStore(): OptionsStore {
         slide_verify_enable: false,
         show_slide_verify: false,
         slide_verify_imgs: [],
+        post_list_summary_truncate: 100,
     }
 }
 
@@ -200,6 +202,11 @@ export const useOptionsStore = defineStore("options", {
         getSlideVerifyImgs(): SlideVerifyImgItem[] {
             return this.slide_verify_imgs
         },
+
+        // 获取文章列表摘要截断
+        getPostListSummaryTruncate(): number {
+            return this.post_list_summary_truncate
+        },
     },
 
     actions: {
@@ -216,6 +223,7 @@ export const useOptionsStore = defineStore("options", {
                 this.app_options = JSON.parse(app_options) as GetAPPOptionResponse
                 this.isLoadedOptions = true
                 this.is_remove_first_h1 = this.app_options.is_remove_first_h1.value === "true"
+                this.post_list_summary_truncate = parseInt(this.app_options.post_list_summary_truncate?.value) || 100
             }
 
             // 从本地获取头部信息
@@ -297,6 +305,8 @@ export const useOptionsStore = defineStore("options", {
                 const slideVerifyInfo = await formatSlideVerify(this.app_options)
                 this.slide_verify_enable = slideVerifyInfo.enable
                 this.slide_verify_imgs = slideVerifyInfo.imgs
+
+                this.post_list_summary_truncate = parseInt(this.app_options.post_list_summary_truncate?.value) || 100
             }
 
             // 更新支付配置状态
