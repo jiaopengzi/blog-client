@@ -32,7 +32,7 @@ export function useEdit(
     dataOfUpdate: UpsertPostForm,
     postInfoAboutTime: PostInfoAboutTime,
     postShowMethod: SwitchItem[],
-    defaultStatusIsShow: Ref<boolean>,
+    unfoldDefaultStatus: () => void,
     isPaid: Ref<boolean>,
 ) {
     const route = useRoute()
@@ -125,7 +125,7 @@ export function useEdit(
 
     // 提交表单
     const submitForm = async (formEl: FormInstance | undefined): Promise<boolean> => {
-        const req = await handleSubmit<UpdatePostRequest>(formEl, dataOfUpdate, defaultStatusIsShow)
+        const req = await handleSubmit<UpdatePostRequest>(formEl, dataOfUpdate, unfoldDefaultStatus)
         // 如果 req 是空对象，则表示表单验证失败
         if (Object.keys(req).length === 0) return false
 

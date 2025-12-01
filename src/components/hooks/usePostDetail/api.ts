@@ -10,7 +10,7 @@ import { storeToRefs } from "pinia"
 import { type Ref, ref, watch } from "vue"
 import { useRouter } from "vue-router"
 
-import { CommentStatusCode } from "@/api/post/common"
+import { CommentStatusCode, type PostResByID } from "@/api/post/common"
 import { type InteractionRequest, postInteractionAPI } from "@/api/post/interaction"
 import { type PostLikeRequest, setPostLikeAPI } from "@/api/post/like"
 import { prevNextPostAPI, type PrevNextRequest, type PrevNextResponse } from "@/api/post/prevNext"
@@ -25,6 +25,7 @@ import { EditorStateManager } from "@/components/editor"
 import { RouteNames } from "@/router"
 import { useOptionsStore } from "@/stores/options"
 import { usePermissionRoleStore } from "@/stores/permissionRole"
+import { MessageUtil } from "@/utils/message"
 import { updateHead } from "@/utils/updateHead"
 
 export function useGetData(
@@ -34,6 +35,7 @@ export function useGetData(
     // 跳转到 404 页面
     const router = useRouter()
     const postMeta = ref<PostMetaProps>(emptyPostMetaProps()) // 文章元数据
+    const isPasswordPost = ref<boolean>(false) // 是否是密码保护文章
 
     const optionsStore = useOptionsStore()
     const { head } = storeToRefs(optionsStore)
@@ -69,66 +71,83 @@ export function useGetData(
 
     const permissionRoleStore = usePermissionRoleStore()
 
+    // 更新文章详情
+    const updatePostDetail = async (postData: PostResByID) => {
+        if (!postData) {
+            return
+        }
+
+        // 文章数据
+        manager.updateState(postData.post_content)
+
+        // 文章元数据
+        postMeta.value.post_id = postData.id
+        postMeta.value.created_at = postData.created_at
+        postMeta.value.comment_count = postData.comment_count
+        postMeta.value.is_comment_status_open = postData.comment_status === CommentStatusCode.Open
+        postMeta.value.view_count = postData.view_count
+        postMeta.value.like_count = postData.like_count
+        postMeta.value.star_count = postData.star_count
+        postMeta.value.words_count = postData.words_count
+        postMeta.value.post_title = postData.post_title
+        postMeta.value.author_avatar = postData.author_info.user_avatar
+        postMeta.value.author_display_name = postData.author_info.user_display_name
+        postMeta.value.avatar_size = 20 // 头像大小，默认 24px
+        postMeta.value.author_id = postData.author_info.id
+        postMeta.value.is_show_read_time = true
+        postMeta.value.is_author_edit = await permissionRoleStore.postDetailEditEnable()
+        postMeta.value.is_immersion_read = true
+        postMeta.value.is_paid = postData.is_paid
+        postMeta.value.price = postData.price
+
+        // 文章头部信息
+        head.value.title = postData.post_title
+        head.value.description = postData.seo_description
+        head.value.keywords = postData.seo_keywords
+        head.value.type = "article"
+        head.value.locale = "zh-CN"
+        head.value.author = postData.author_info.user_display_name
+        head.value.image = postData.thumbnail
+        head.value.siteName = postData.post_title
+        head.value.releaseDate = postData.updated_at // url 已经在路由中间件 head 组件 中自动设置
+
+        // 版权信息
+        copyright.value.title = postData.post_title
+        copyright.value.author.name = postData.author_info.user_display_name
+        copyright.value.author.avatar = postData.author_info.user_avatar
+
+        // 如果更新时间和创建时间不一致，则更新时间显示为更新时间
+        if (postData.created_at !== postData.updated_at) {
+            updatedAt.value.time = postData.updated_at
+        }
+
+        // 更新分类和标签
+        categoryTag.value.categories = postData.categories && postData.categories.length > 0 ? postData.categories : []
+        categoryTag.value.tags = postData.tags && postData.tags.length > 0 ? postData.tags : []
+
+        // 更新评论状态
+        commentStatus.value = postData.comment_status
+
+        // 付费视频目录
+        postMeta.value.videoToc = postData.video_toc && postData.video_toc.toc.length > 0 ? postData.video_toc.toc : []
+    }
+
     const getPostDetail = async (req: ViewPostByIDRequest) => {
         const res = await viewPostByIDAPI(req)
 
         if (res.data.code === ResponseCode.PostViewByIDSuccess) {
-            const postData = res.data.data
-            if (postData) {
-                // 文章数据
-                manager.updateState(postData.post_content)
-
-                // 文章元数据
-                postMeta.value.post_id = postData.id
-                postMeta.value.created_at = postData.created_at
-                postMeta.value.comment_count = postData.comment_count
-                postMeta.value.is_comment_status_open = postData.comment_status === CommentStatusCode.Open
-                postMeta.value.view_count = postData.view_count
-                postMeta.value.like_count = postData.like_count
-                postMeta.value.star_count = postData.star_count
-                postMeta.value.words_count = postData.words_count
-                postMeta.value.post_title = postData.post_title
-                postMeta.value.author_avatar = postData.author_info.user_avatar
-                postMeta.value.author_display_name = postData.author_info.user_display_name
-                postMeta.value.avatar_size = 20 // 头像大小，默认 24px
-                postMeta.value.author_id = postData.author_info.id
-                postMeta.value.is_show_read_time = true
-                postMeta.value.is_author_edit = await permissionRoleStore.postDetailEditEnable()
-                postMeta.value.is_immersion_read = true
-                postMeta.value.is_paid = postData.is_paid
-                postMeta.value.price = postData.price
-
-                // 文章头部信息
-                head.value.title = postData.post_title
-                head.value.description = postData.seo_description
-                head.value.keywords = postData.seo_keywords
-                head.value.type = "article"
-                head.value.locale = "zh-CN"
-                head.value.author = postData.author_info.user_display_name
-                head.value.image = postData.thumbnail
-                head.value.siteName = postData.post_title
-                head.value.releaseDate = postData.updated_at // url 已经在路由中间件 head 组件 中自动设置
-
-                // 版权信息
-                copyright.value.title = postData.post_title
-                copyright.value.author.name = postData.author_info.user_display_name
-                copyright.value.author.avatar = postData.author_info.user_avatar
-
-                // 如果更新时间和创建时间不一致，则更新时间显示为更新时间
-                if (postData.created_at !== postData.updated_at) {
-                    updatedAt.value.time = postData.updated_at
-                }
-
-                // 更新分类和标签
-                categoryTag.value.categories = postData.categories && postData.categories.length > 0 ? postData.categories : []
-                categoryTag.value.tags = postData.tags && postData.tags.length > 0 ? postData.tags : []
-
-                // 更新评论状态
-                commentStatus.value = postData.comment_status
-
-                // 付费视频目录
-                postMeta.value.videoToc = postData.video_toc && postData.video_toc.toc.length > 0 ? postData.video_toc.toc : []
-            }
+            // 密码保护设置为 false
+            isPasswordPost.value = false
+            await updatePostDetail(res.data.data)
+        } else if (res.data.code === ResponseCode.PostViewPasswordIsEmpty) {
+            // 密码保护文章
+            isPasswordPost.value = true
+            await updatePostDetail(res.data.data)
+        } else if (res.data.code === ResponseCode.PostViewPasswordIsError) {
+            // 密码保护文章
+            isPasswordPost.value = true
+            await updatePostDetail(res.data.data)
+            MessageUtil.warning("请输入正确文章密码访问")
         } else {
             router.push({ name: RouteNames.NotFound })
         }
@@ -206,6 +225,7 @@ export function useGetData(
 
     return {
         postMeta, // 文章元数据
+        isPasswordPost, // 是否是密码保护文章
         copyright, // 版权信息
         prevNext, // 上一篇和下一篇文章信息
         updatedAt, // 更新时间

@@ -26,6 +26,11 @@ export async function routerPushByParams(router: Router, routeName: string, quer
         }
     })
 
+    // 如果query中有 password 参数, 则删除
+    if ("password" in query) {
+        delete query.password
+    }
+
     await router.push({
         name: routeName,
         query,

@@ -47,6 +47,20 @@ export function useSwitchItem(postInfoForm: Reactive<UpsertPostForm>) {
         localStorage.setItem(LocalStorageKey.IsShowSeoAtPostWrite, items[0]!.status.toString())
     }
 
+    // 展开常规设置
+    const unfoldDefaultStatus = () => {
+        defaultStatus[0]!.status = true
+        defaultStatusIsShow.value = true
+        localStorage.setItem(LocalStorageKey.IsShowSeoAtPostWrite, "true")
+    }
+
+    // 折叠常规设置
+    const foldDefaultStatus = () => {
+        defaultStatus[0]!.status = false
+        defaultStatusIsShow.value = false
+        localStorage.setItem(LocalStorageKey.IsShowSeoAtPostWrite, "false")
+    }
+
     // 评论状态
     const commentStatus: SwitchItem[] = reactive([
         {
@@ -99,6 +113,8 @@ export function useSwitchItem(postInfoForm: Reactive<UpsertPostForm>) {
         defaultStatusIsShow,
         updateDefaultStatus,
         defaultStatus,
+        unfoldDefaultStatus,
+        foldDefaultStatus,
         commentStatus,
         updateCommentStatus,
         postShowMethod,

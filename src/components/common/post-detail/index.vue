@@ -16,7 +16,14 @@
         <section class="post-detail-bg">
             <div class="post-detail">
                 <PostMeta :meta="postMeta" @immersion-read="toggle" @author-id="clickAuthorId" @post-id="editPost" />
+
+                <!-- 密码保护 -->
+                <div v-if="isPasswordPost">
+                    <PostPassword @password="submitPassword" />
+                </div>
+
                 <HtmlPreview
+                    v-if="!isPasswordPost"
                     ref="previewRef"
                     :html="state.html"
                     :img-urls="state.imgUrls"
@@ -91,6 +98,7 @@ import { type PostCategory } from "@/api/postCategory/view"
 import { type PostTag } from "@/api/postTag/view"
 import HeadTag from "@/components/common/head-tag"
 import PostMeta from "@/components/common/post-meta"
+import PostPassword from "@/components/common/post-password"
 import PosterShare from "@/components/common/poster-share"
 import type { EditorState } from "@/components/editor"
 import HtmlPreview from "@/components/editor/components/preview/index.vue"
@@ -165,6 +173,7 @@ const {
     manager,
     state,
     postMeta,
+    isPasswordPost, // 是否是密码保护文章
     copyright,
     prevNext,
     updatedAt,
@@ -200,10 +209,16 @@ const handleHeadingShowCurrentAc = (val: number) => {
 }
 
 // 更新文章详情
-const updatePostDetailAc = async (postId: string) => {
-    await updatePostDetail(postId)
+const updatePostDetailAc = async (postId: string, password: string = "") => {
+    await updatePostDetail(postId, password)
     manager.setHeadingShowCurrentIndex(headingShowCurrentIndex)
     emit("state", state)
+}
+
+// 提交密码
+const submitPassword = async (password: string) => {
+    postIdReq.password = password
+    await updatePostDetailAc(postId.value, password)
 }
 
 // 监听锚点

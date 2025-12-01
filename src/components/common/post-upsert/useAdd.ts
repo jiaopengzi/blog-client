@@ -25,13 +25,13 @@ export function useAdd(
     postInfoAboutTime: PostInfoAboutTime,
     router: Router,
     routeName: RouteNames,
-    defaultStatusIsShow: Ref<boolean>,
+    unfoldDefaultStatus: () => void,
     isPaid: Ref<boolean>,
 ) {
     // 提交表单
     const submitForm = async (formEl: FormInstance | undefined): Promise<boolean> => {
         // 表单校验及值转换
-        const req = await handleSubmit<InsertPostRequest>(formEl, postInfoForm, defaultStatusIsShow)
+        const req = await handleSubmit<InsertPostRequest>(formEl, postInfoForm, unfoldDefaultStatus)
 
         // 如果 req 是空对象，则表示表单验证失败
         if (Object.keys(req).length === 0) return false

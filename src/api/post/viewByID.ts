@@ -13,6 +13,7 @@ import { type PostResByID } from "./common"
 
 export interface ViewPostByIDRequest {
     post_id: string // 文章ID
+    password?: string // 文章密码
 }
 
 // 查看文章

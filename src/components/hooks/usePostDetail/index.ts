@@ -59,6 +59,7 @@ export function usePostDetail(
 
     const {
         postMeta, // 文章元数据
+        isPasswordPost, // 是否是密码保护文章
         copyright, // 版权信息
         prevNext, // 上一篇和下一篇文章信息
         updatedAt, // 更新时间
@@ -80,7 +81,7 @@ export function usePostDetail(
     } = useRootUtils(queryParams, options)
 
     // 通过路由更新数据
-    const updateByRoute = async () => {
+    const updateByRoute = async (password: string = "") => {
         if (detailType.value === PostDetailType.Post) {
             await updateQueryParams()
             await getPrevNext({ post_id: queryParams.post_id })
@@ -88,18 +89,24 @@ export function usePostDetail(
                 await updatePostInteraction(queryParams)
             }
         }
+
+        // 如果是密码保护文章, 则传递密码
+        if (password) {
+            queryParams.password = password
+        }
+
         await getPostDetail(queryParams)
         updateBreadcrumb()
     }
 
     // 更新文章详情(不使用监控路由更新)
-    const updatePostDetail = async (id: string) => {
+    const updatePostDetail = async (id: string, password: string = "") => {
         queryParams.post_id = id
         if (detailType.value === PostDetailType.Post) {
             clearParamsExcept(["post_id"])
             await updateRouterPush()
         }
-        await updateByRoute()
+        await updateByRoute(password)
         await updateHeadInfo()
     }
 
@@ -151,6 +158,7 @@ export function usePostDetail(
         manager, // 详情页状态管理器
         state, // 编辑器状态
         postMeta, // 文章元数据
+        isPasswordPost, // 是否是密码保护文章
         copyright, // 版权信息
         prevNext, // 上一篇和下一篇文章信息
         updatedAt, // 更新时间

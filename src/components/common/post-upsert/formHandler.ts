@@ -22,7 +22,7 @@ import type { UpsertPostForm } from "./types"
 export async function handleSubmit<T extends InsertPostRequest | UpdatePostRequest>(
     formEl: FormInstance | undefined,
     postInfoForm: Reactive<UpsertPostForm>,
-    defaultStatusIsShow: Ref<boolean>,
+    unfoldDefaultStatus: () => void,
 ): Promise<T> {
     const req = {} as T
 
@@ -105,7 +105,7 @@ export async function handleSubmit<T extends InsertPostRequest | UpdatePostReque
             }
         } else {
             // 展开折叠状态, 方便用户查看错误
-            defaultStatusIsShow.value = true
+            unfoldDefaultStatus()
             console.error("表单校验失败", fields)
             return
         }

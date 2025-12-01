@@ -117,6 +117,8 @@ export enum ResponseCode {
     PostViewOwnIsNone = 2039, // 查看文章(自己的)无数据
     PostStarGetOwnIsNone = 2040, // 获取自己收藏的文章无数据
     PostStarGetOwnSuccess = 2041, // 获取自己收藏的文章成功
+    PostViewPasswordIsEmpty = 2042, // 查看文章密码为空
+    PostViewPasswordIsError = 2043, // 查看文章密码错误
 
     // 文章标签相关
     PostTagInsertSuccess = 2100, // 插入文章标签成功

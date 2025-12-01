@@ -16,6 +16,10 @@
                     </el-button>
                 </div>
                 <div class="btns-header-right">
+                    <el-button type="primary" class="save-post btns-header-item" @click="viewPost">
+                        <j-icon :name="IconKeys.View" custom-class="btns-header-item-icon" />
+                        <span>前台查看</span>
+                    </el-button>
                     <el-button type="primary" class="save-post btns-header-item" @click="submitForm(formRef as FormInstance)">
                         <j-icon :name="IconKeys.Save" custom-class="btns-header-item-icon" />
                         <span>保存</span>
@@ -299,6 +303,7 @@ const {
     defaultStatusIsShow,
     updateDefaultStatus,
     defaultStatus,
+    unfoldDefaultStatus,
     rolePaidList,
     initRolePaidManagement,
     updateRolePaidList,
@@ -466,9 +471,9 @@ const {
     getValueFromQuery,
     getDataOnBeforeMount,
     submitForm: editSubmitForm,
-} = useEdit(postInfoForm, rolePaidList, commentStatus, queryKey, stateManager, dataOfUpdate, postInfoAboutTime, postShowMethod, defaultStatusIsShow, isPaid)
+} = useEdit(postInfoForm, rolePaidList, commentStatus, queryKey, stateManager, dataOfUpdate, postInfoAboutTime, postShowMethod, unfoldDefaultStatus, isPaid)
 
-const { submitForm: addSubmitForm } = useAdd(postInfoForm, queryKey, postInfoAboutTime, router, routeName, defaultStatusIsShow, isPaid)
+const { submitForm: addSubmitForm } = useAdd(postInfoForm, queryKey, postInfoAboutTime, router, routeName, unfoldDefaultStatus, isPaid)
 
 // 数据快照
 const { isUpdate, updatedFields, updateSnapshot } = useSnapshot(postInfoForm)
@@ -477,8 +482,10 @@ const { isUpdate, updatedFields, updateSnapshot } = useSnapshot(postInfoForm)
 const updateEditorStatus = () => {
     // 将编辑器内容赋值给 post_content
     postInfoForm.post_content = editorState.editorContent
-    // 将作者赋值给 post_author
-    postInfoForm.post_author = userStore.data.user.id.toString()
+    // 判断文章作者是否为空,如果为空则赋值当前用户id
+    if (!postInfoForm.post_author) {
+        postInfoForm.post_author = userStore.data.user.id.toString()
+    }
 }
 
 const submitForm = async (formEl: FormInstance | undefined) => {
@@ -558,6 +565,33 @@ const insertMedia = (data: TableData[]) => {
 
     // 关闭弹窗
     mediaDialogVisible.value = false
+}
+
+// 前台查看文章
+const viewPost = () => {
+    if (!postInfoForm.id) {
+        MessageUtil.warning("请先保存文章")
+        return
+    }
+
+    // 如果是草稿、定时发布、过期 则不能前台查看
+    if (
+        postInfoForm.post_status === PostStatusCode.Draft ||
+        postInfoForm.post_status === PostStatusCode.Future ||
+        postInfoForm.post_status === PostStatusCode.Expired
+    ) {
+        MessageUtil.warning("草稿、定时发布、过期 状态的文章不能前台查看")
+        return
+    }
+
+    // 如果是私密文章且当前用户不是作者，则不能前台查看
+    if (postInfoForm.post_status === PostStatusCode.Private && postInfoForm.post_author !== userStore.data.user.id.toString()) {
+        MessageUtil.warning("他人的私密文章不能前台查看")
+        return
+    }
+
+    const postUrl = `/?post_id=${postInfoForm.id}`
+    window.open(postUrl, "_blank")
 }
 
 onUnmounted(() => {
