@@ -42,7 +42,14 @@
                 <el-form-item prop="post_content"> </el-form-item>
                 <!-- 编辑器 -->
                 <div ref="editorContainerRef" class="editor md-layout-fs">
-                    <JEditor ref="editorPostRef" :state-manager="stateManager" @update-editor-status="updateEditorStatus" />
+                    <JEditor
+                        ref="editorPostRef"
+                        :state-manager="stateManager"
+                        :post-id="postInfoForm.id"
+                        :is-paid="isPaid"
+                        :price="(postInfoForm.price * 100).toString()"
+                        @update-editor-status="updateEditorStatus"
+                    />
 
                     <!-- 创建时间和更新时间 -->
                     <div v-if="postInfoAboutTime.created_at" class="about-time">
@@ -174,7 +181,7 @@
     </section>
 
     <!-- 媒体文件选择弹窗 -->
-    <SelectMedia v-if="mediaDialogVisible" v-model="mediaDialogVisible" @insert-data="insertData" />
+    <SelectMedia v-if="mediaDialogVisible" v-model="mediaDialogVisible" @insert-data="insertMedia" />
 </template>
 <script lang="ts" setup>
 import { useHead } from "@unhead/vue"
@@ -254,6 +261,8 @@ const optionsStore = useOptionsStore()
 const { post_list_summary_truncate } = storeToRefs(optionsStore)
 
 const seoDescriptionExtractWords = ref(post_list_summary_truncate.value)
+
+const isPaid = ref(false)
 
 // 监听编辑器宽度变化
 const { stop: stopResizeObserver } = useResizeObserver(editorContainerRef, (entries) => {
@@ -457,9 +466,9 @@ const {
     getValueFromQuery,
     getDataOnBeforeMount,
     submitForm: editSubmitForm,
-} = useEdit(postInfoForm, rolePaidList, commentStatus, queryKey, stateManager, dataOfUpdate, postInfoAboutTime, postShowMethod, defaultStatusIsShow)
+} = useEdit(postInfoForm, rolePaidList, commentStatus, queryKey, stateManager, dataOfUpdate, postInfoAboutTime, postShowMethod, defaultStatusIsShow, isPaid)
 
-const { submitForm: addSubmitForm } = useAdd(postInfoForm, queryKey, postInfoAboutTime, router, routeName, defaultStatusIsShow)
+const { submitForm: addSubmitForm } = useAdd(postInfoForm, queryKey, postInfoAboutTime, router, routeName, defaultStatusIsShow, isPaid)
 
 // 数据快照
 const { isUpdate, updatedFields, updateSnapshot } = useSnapshot(postInfoForm)
@@ -513,7 +522,8 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     }
 }
 
-const insertData = (data: TableData[]) => {
+// 插入媒体文件到编辑器
+const insertMedia = (data: TableData[]) => {
     // 不满足条件直接返回
     if (!editorPostRef.value || data.length === 0) return
 

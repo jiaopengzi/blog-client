@@ -63,6 +63,9 @@
                     :is-watch-mouse="true"
                     scroll-method="scrollTo"
                     :view-command="state.viewCommand"
+                    :post-id="localPostId"
+                    :is-paid="localIsPaid"
+                    :price="localPrice"
                     @show-image-viewer="showImageViewer"
                     @close-image-viewer="closeImageViewer"
                     @is-mouse-in-element="handleMouseInPreview"
@@ -77,7 +80,7 @@
 <script lang="ts" setup>
 import "vue3-emoji-picker/css"
 
-import { useTemplateRef, watch } from "vue"
+import { computed, useTemplateRef, watch } from "vue"
 
 import EditorCodemirror, { type CodemirrorRef } from "./components/codemirror"
 import HtmlPreview from "./components/preview/index.vue" // 避免编译报错
@@ -89,8 +92,16 @@ import { EditorStateManager } from "./state"
 // 文章编辑器命名
 defineOptions({ name: "JEditor" })
 
-const { stateManager } = defineProps<{
+const {
+    stateManager,
+    postId = "",
+    isPaid = false,
+    price = "",
+} = defineProps<{
     stateManager: EditorStateManager
+    postId?: string // 文章ID
+    isPaid?: boolean // 是否付费阅读
+    price?: string // 价格(单位：分)
 }>()
 
 const emit = defineEmits<{
@@ -98,6 +109,10 @@ const emit = defineEmits<{
 }>()
 
 const state = stateManager.getState()
+
+const localPostId = computed(() => postId)
+const localIsPaid = computed(() => isPaid)
+const localPrice = computed(() => price)
 
 // ref
 const mdLayoutRef = useTemplateRef<HTMLElement | null>("mdLayoutRef") //编辑器布局

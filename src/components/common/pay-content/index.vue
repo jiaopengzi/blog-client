@@ -91,7 +91,7 @@ watch(
 
 // 是否显示内容
 const isShowContent = computed(() => {
-    return isPaid || price === "0"
+    return isPaid || price === "0" || price === "0.00"
 })
 </script>
 <style scoped lang="scss">

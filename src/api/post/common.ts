@@ -230,6 +230,7 @@ export interface PostResByAdmin extends PostResCommon {
     seo_description: string // SEO描述
     post_push_time: PgSqlDateTime // 发布时间
     post_expired_time: PgSqlDateTime // 过期时间
+    is_paid: boolean // 是否已付费
 
     // 引用类型
     author_info: User // 作者

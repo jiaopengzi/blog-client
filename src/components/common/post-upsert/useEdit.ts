@@ -33,6 +33,7 @@ export function useEdit(
     postInfoAboutTime: PostInfoAboutTime,
     postShowMethod: SwitchItem[],
     defaultStatusIsShow: Ref<boolean>,
+    isPaid: Ref<boolean>,
 ) {
     const route = useRoute()
 
@@ -106,6 +107,8 @@ export function useEdit(
                         postInfoForm.pay_roles = data.pay_roles
                     }
 
+                    isPaid.value = data.is_paid
+
                     postInfoAboutTime.created_at = new Date(data.created_at)
                     postInfoAboutTime.updated_at = new Date(data.updated_at)
 
@@ -129,6 +132,7 @@ export function useEdit(
         return await updatePostAPI(req).then(async (res): Promise<boolean> => {
             if (res.data.code === ResponseCode.PostUpdateSuccess) {
                 postInfoAboutTime.updated_at = new Date(res.data.data.updated_at)
+                isPaid.value = res.data.data.is_paid
                 MessageUtil.success(res.data.msg, 6000)
                 return true
             } else {

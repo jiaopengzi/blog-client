@@ -26,6 +26,7 @@ export function useAdd(
     router: Router,
     routeName: RouteNames,
     defaultStatusIsShow: Ref<boolean>,
+    isPaid: Ref<boolean>,
 ) {
     // 提交表单
     const submitForm = async (formEl: FormInstance | undefined): Promise<boolean> => {
@@ -40,6 +41,7 @@ export function useAdd(
             if (res.data.code === ResponseCode.PostInsertSuccess) {
                 // 将 data 中的 id 更新到 postInfoForm
                 postInfoForm.id = res.data.data.id
+                isPaid.value = res.data.data.is_paid
 
                 // 更新创建时间
                 postInfoAboutTime.created_at = new Date(res.data.data.created_at)

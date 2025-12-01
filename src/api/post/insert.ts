@@ -16,6 +16,7 @@ export interface InsertPostResData {
     id: string
     created_at: string
     updated_at: string
+    is_paid: boolean // 是否已付费
 }
 
 // 插入文章

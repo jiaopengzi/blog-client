@@ -54,14 +54,6 @@ export function usePostDetail(
 
     const breadcrumbStore = useBreadcrumbStore()
 
-    watch(
-        () => is_remove_first_h1.value,
-        (newHash) => {
-            console.log("============>is_remove_first_h1.value", newHash)
-        },
-        { immediate: true },
-    )
-
     const manager = new EditorStateManager({ isRemoveFirstH1: is_remove_first_h1.value })
     const state = manager.getState()
 
