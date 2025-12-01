@@ -9,7 +9,14 @@
 <template>
     <div class="post-list">
         <div v-if="showPostList">
-            <PostItemMain v-for="item in paginationData.records" :key="item.id" :post-data="item" @click-category="clickCategory" @post-id="postId" />
+            <PostItemMain
+                v-for="item in paginationData.records"
+                :key="item.id"
+                :post-data="item"
+                :post-list-summary-truncate="postListSummaryTruncate"
+                @click-category="clickCategory"
+                @post-id="postId"
+            />
         </div>
         <div v-if="showSearchList">
             <PostItemSearch
@@ -70,12 +77,14 @@ const {
     highlightKey,
     showPostList,
     showSearchList,
+    postListSummaryTruncate = 100,
 } = defineProps<{
     paginationData: Pagination<PostResPagination>
     isShowLoading?: boolean // 是否显示loading
     highlightKey?: string // 高亮的key
     showPostList?: boolean // 默认文章列表
     showSearchList?: boolean // 搜索列表
+    postListSummaryTruncate?: number
 }>()
 
 // 事件

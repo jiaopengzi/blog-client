@@ -32,7 +32,7 @@
 
             <!-- 摘要文字 -->
             <div class="summary">
-                <p>{{ postData.seo_description }}</p>
+                <p>{{ postData.seo_description.slice(0, postListSummaryTruncate) }} ...</p>
             </div>
 
             <!-- 作者 日志 访问量 -->
@@ -55,8 +55,9 @@ import { DeviceType, useDeviceStore } from "@/stores/device"
 
 defineOptions({ name: "PostItemMain" })
 
-const { postData } = defineProps<{
+const { postData, postListSummaryTruncate = 100 } = defineProps<{
     postData: PostResPagination
+    postListSummaryTruncate?: number
 }>()
 
 // 设备类型

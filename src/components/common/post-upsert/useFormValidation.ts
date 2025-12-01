@@ -151,9 +151,9 @@ export function useFormValidation(options: FormValidationOptions): {
             return
         }
 
-        // 长度不能超过 500
-        if (value.length > 500) {
-            callback(new Error("SEO 关键词长度不能超过 500"))
+        // 长度不能超过 1000
+        if (value.length > 1000) {
+            callback(new Error("SEO 描述长度不能超过 1000"))
             return
         }
 
