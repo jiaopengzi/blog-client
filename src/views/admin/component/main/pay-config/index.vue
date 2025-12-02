@@ -132,7 +132,7 @@ const wechatRules: ComputedRef<FormRules> = computed(() => {
             {
                 validator: (rule, value, callback) => {
                     // 结尾不能有斜杠
-                    if (value.endsWith("/")) {
+                    if (value && value.endsWith("/")) {
                         callback(new Error("通知回调主机不能以斜杠 '/' 结尾"))
                     } else {
                         callback()
@@ -163,7 +163,7 @@ const alipayRules: ComputedRef<FormRules> = computed(() => {
             {
                 validator: (rule, value, callback) => {
                     // 结尾不能有斜杠
-                    if (value.endsWith("/")) {
+                    if (value && value.endsWith("/")) {
                         callback(new Error("通知回调主机不能以斜杠 '/' 结尾"))
                     } else {
                         callback()
