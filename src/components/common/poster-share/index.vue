@@ -59,7 +59,16 @@ const dataAc: ComputedRef<PosterPropsOptions> = computed(() => {
         urlText: "https://jiaopengzi.com",
     }
 
-    return { ...defaultOptions, ...data } // 合并默认配置和用户配置
+    const incoming = (data ?? {}) as PosterPropsOptions
+
+    // 处理标题长度
+    let titleText = incoming.titleText ?? defaultOptions.titleText
+    if (titleText && titleText.length > 30) {
+        titleText = titleText.slice(0, 30) + "..."
+    }
+
+    // 合并默认配置和用户配置，并使用处理后的标题
+    return { ...defaultOptions, ...incoming, titleText }
 })
 
 // 绘制海报
@@ -89,7 +98,9 @@ const draw = async () => {
     // })
 
     // 使用 snapdom 生成图片 (替代 html2canvas)
-    const result = await snapdom(el)
+    const result = await snapdom(el, {
+        embedFonts: true,
+    })
     await result.download({
         filename: "poster.png",
         type: "png",
@@ -127,8 +138,9 @@ const draw = async () => {
     font-size: 20px;
     color: #333;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     line-height: 1.6;
+    font-weight: 500;
 }
 
 .url {
@@ -138,6 +150,7 @@ const draw = async () => {
     text-align: center;
     margin-bottom: 20px;
     line-height: 1.5;
+    font-weight: 500;
 }
 
 .qrcode {

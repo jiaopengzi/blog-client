@@ -110,7 +110,7 @@ export function useInteraction(
                     return
                 }
                 // 构造需要复制的text
-                const text = `${head.value.title}\n${head.value.url}`
+                const text = `[${head.value.title}](${head.value.url})`
                 // 复制链接到剪贴板
                 copyText(text)
                     .then(() => {

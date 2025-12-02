@@ -44,7 +44,10 @@ const postId = (val: string) => {
 }
 
 // 是否没有数据
-const noData = computed(() => postData.length === 0)
+const noData = computed(() => {
+    const flag = postData.length === 0
+    return flag
+})
 </script>
 <style scoped lang="scss">
 .aside-item {

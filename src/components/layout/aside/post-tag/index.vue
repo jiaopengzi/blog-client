@@ -34,6 +34,7 @@ import { viewPostTagTopNAdminAPI } from "@/api/postTag/viewPostTagTopNAdmin"
 import { ResponseCode } from "@/api/response"
 import { IconKeys } from "@/components/common/icons"
 import TagItem from "@/components/common/tag-item"
+import { useStatusStore } from "@/stores/status"
 
 defineOptions({ name: "PostTag" })
 
@@ -45,10 +46,15 @@ const emit = defineEmits<{
     (event: "click", tagItemData: PostTag): void
 }>()
 
+const statusStore = useStatusStore()
+
 const items = reactive<PostTag[]>([])
 
 // 是否没有数据
-const noData = computed(() => items.length === 0)
+const noData = computed(() => {
+    const flag = items.length === 0
+    return flag
+})
 
 const topNAPI = isAdmin ? viewPostTagTopNAdminAPI : viewPostTagTopNAPI
 
@@ -58,6 +64,9 @@ const getTagTopN = async () => {
     await topNAPI().then((res) => {
         if (res.data.code === ResponseCode.PostTagViewTopNSuccess) {
             Object.assign(items, res.data.data)
+
+            // 设置状态
+            statusStore.setShowPostTag(items.length > 0)
         }
     })
 }

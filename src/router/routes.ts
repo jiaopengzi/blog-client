@@ -98,15 +98,6 @@ export const routes: RouteRecordRaw[] = [
         ],
     },
 
-    {
-        path: "/test1",
-        name: RouteNames.Test1,
-        component: () => import("@/views/test/index1.vue"),
-        meta: {
-            requiresAuth: false,
-        },
-    },
-
     // 用户相关路由
     ...userRoutes,
     // 导航相关路由

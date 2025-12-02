@@ -56,16 +56,26 @@
                 />
 
                 <!-- 推荐阅读 -->
-                <RecommendedRead v-if="isShowRecommendedRead" class="el-aside-item" :post-data="recommendedPost" @post-id="handlePostId" />
+                <RecommendedRead
+                    v-if="isShowRecommendedRead && recommendedPost.length > 0"
+                    class="el-aside-item"
+                    :post-data="recommendedPost"
+                    @post-id="handlePostId"
+                />
 
                 <!-- 热门文章 -->
-                <HotPost v-if="isShowHotPost" class="el-aside-item" :post-data="hotPost" @post-id="handlePostId" />
-
-                <!-- 月度归档 -->
-                <MonthArchive v-if="isShowMonthArchive" class="el-aside-item" :post-list="monthArchiveProps" @post-by-month="clickMonthArchive" />
+                <HotPost v-if="isShowHotPost && hotPost.length > 0" class="el-aside-item" :post-data="hotPost" @post-id="handlePostId" />
 
                 <!-- 文章标签 -->
                 <PostTag v-if="isShowPostTag" class="el-aside-item" @click="clickTag" />
+
+                <!-- 月度归档 -->
+                <MonthArchive
+                    v-if="isShowMonthArchive && monthArchiveProps.length > 0"
+                    class="el-aside-item"
+                    :post-list="monthArchiveProps"
+                    @post-by-month="clickMonthArchive"
+                />
             </el-aside>
         </el-container>
     </div>
@@ -133,8 +143,8 @@ const {
     getHostPost,
     getRecommendedPost,
     getPostCountByMonth,
-    hotPost,
     recommendedPost,
+    hotPost,
     monthArchiveProps,
     clickCategory,
     clickTag,
@@ -155,6 +165,9 @@ const state: Reactive<EditorState> = reactive({
 const handleState = (val: EditorState) => {
     state.tocHtml = val.tocHtml
     state.headingShowCurrentIndex = val.headingShowCurrentIndex
+
+    // 判断是否显示目录
+    statusStore.setShowToc(state.tocHtml.length > 0)
 }
 
 const clickTocTime = ref(new Date())

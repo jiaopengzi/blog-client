@@ -46,7 +46,10 @@ const emit = defineEmits<{
 }>()
 
 // 是否没有数据
-const noData = computed(() => postList.length === 0)
+const noData = computed(() => {
+    const flag = postList.length === 0
+    return flag
+})
 
 // 参考官方文档 https://element-plus.org/zh-CN/component/table.html#table-%E4%BA%8B%E4%BB%B6
 

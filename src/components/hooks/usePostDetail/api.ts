@@ -81,7 +81,6 @@ export function useGetData(
         manager.updateState(postData.post_content)
 
         const isAuthorEdit = await permissionRoleStore.postDetailEditEnable()
-        console.log("============>isAuthorEdit", isAuthorEdit)
 
         // 文章元数据
         postMeta.value.post_id = postData.id

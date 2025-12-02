@@ -76,14 +76,14 @@ const wechatPayFormItems = [
         prop: "notify_path",
         type: "text",
         placeholder: "请输入支付结果通知路由",
-        description: "用于接收微信支付结果的通知，原则上保持默认值，如果需要修改，前提是你知道你在做什么。",
+        description: "用于接收微信支付结果的通知，原则上保持默认值，如果需要修改，前提是您知道您在做什么。",
     },
     {
         label: "退款结果通知地址",
         prop: "refund_path",
         type: "text",
         placeholder: "请输入退款结果通知路由",
-        description: "用于接收微信退款结果的通知，原则上保持默认值，如果需要修改，前提是你知道你在做什么。",
+        description: "用于接收微信退款结果的通知，原则上保持默认值，如果需要修改，前提是您知道您在做什么。",
     },
 ]
 
@@ -101,14 +101,14 @@ const alipayFormItems = [
         prop: "notify_path",
         type: "text",
         placeholder: "请输入支付结果通知路由",
-        description: "用于接收支付宝支付结果的通知，原则上保持默认值，如果需要修改，前提是你知道你在做什么。",
+        description: "用于接收支付宝支付结果的通知，原则上保持默认值，如果需要修改，前提是您知道您在做什么。",
     },
     {
         label: "退款结果通知地址",
         prop: "refund_path",
         type: "text",
         placeholder: "请输入退款结果通知路由",
-        description: "用于接收支付宝退款结果的通知，原则上保持默认值，如果需要修改，前提是你知道你在做什么。",
+        description: "用于接收支付宝退款结果的通知，原则上保持默认值，如果需要修改，前提是您知道您在做什么。",
     },
     { label: "是否为生产环境", prop: "is_production", isCheckbox: true, description: "未勾选生产环境则为沙箱测试模式" },
 ]

@@ -11,7 +11,7 @@
 <!-- src/components/MyVideo.vue -->
 <template>
     <div class="my-video">
-        <!-- 这里假设你有一个视频播放器组件或者直接使用 video 标签 -->
+        <!-- 这里假设您有一个视频播放器组件或者直接使用 video 标签 -->
         <video :src="videoSrc" controls></video>
     </div>
 </template>

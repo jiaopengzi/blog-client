@@ -14,7 +14,7 @@
             {{ isFullScreen ? "Exit Full Screen" : "Enter Full Screen" }}
         </button>
         <div class="content">
-            <!-- 你的内容在这里 -->
+            <!-- 您的内容在这里 -->
             <p>这里是网页内容...</p>
         </div>
     </div>

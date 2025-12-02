@@ -26,8 +26,9 @@
         <div class="content">
             <!-- 标题 -->
             <h2 class="title-row">
-                <span class="pinned" v-if="postData.is_pinned">置顶</span><span class="pinned" v-if="postData.post_status === PostStatusCode.Private">私密</span
-                ><span class="title" @click="postId(postData.id)">{{ postData.post_title }}</span>
+                <span class="pinned" v-if="postData.is_pinned">置顶</span>
+                <span class="pinned" v-if="postData.post_status === PostStatusCode.Private">私密</span>
+                <span class="title" @click="postId(postData.id)">{{ postData.post_title }}</span>
             </h2>
 
             <!-- 摘要文字 -->
@@ -175,6 +176,7 @@ const topRightTip = computed(() => {
     font-size: 14px;
     color: var(--jpz-bg-color);
     border-radius: 5%;
+    font-weight: 500;
 }
 
 .thumbnail {
@@ -208,28 +210,35 @@ const topRightTip = computed(() => {
 
 .title-row {
     display: flex;
-    align-items: center; // 垂直居中
+    align-items: center;
     margin: 0;
     font-size: 14px;
     font-weight: 500;
-    color: var(--jpz-text-color-primary);
     border: 0;
     padding: 0;
-    line-height: 2em;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .title {
     cursor: pointer;
-    flex: 1; // 使标题占据剩余空间
-    display: flex;
-    align-items: center; // 垂直居中
-}
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    // 让 flex 子项能真正被截断
+    min-width: 0;
+    color: var(--jpz-text-color-primary);
 
-// 当鼠标移动到 .title 上时, .title 的颜色变为 var(--jpz-color-primary)
-.title:hover {
-    color: var(--jpz-color-primary);
+    // 添加下划线渐变效果
+    background: linear-gradient(to right, var(--jpz-text-color-primary), var(--jpz-color-primary)) no-repeat;
+    background-position: right bottom;
+    transition: background-size 0.3s ease;
+    background-size: 0 2px;
+
+    // 当鼠标移动到 .title 上时, .title 的颜色变为 var(--jpz-color-primary)
+    &:hover {
+        color: var(--jpz-color-primary);
+        background-position: left bottom;
+        background-size: 100% 2px;
+    }
 }
 
 .pinned {
@@ -239,9 +248,11 @@ const topRightTip = computed(() => {
     color: var(--jpz-text-color-primary);
     border-radius: 2px;
     font-size: 0.9em;
-    line-height: 1.5em;
-    display: inline-block;
     font-weight: 700;
+    line-height: 1.6em;
+    height: 1.6em;
+    // 添加 flex-shrink: 0，防止被压缩
+    flex-shrink: 0;
 }
 
 .top-right-tip {
@@ -310,6 +321,7 @@ const topRightTip = computed(() => {
     .title {
         font-size: 16px;
         font-weight: 700;
+        line-height: 2em;
         height: 2em;
         -webkit-line-clamp: 1; // 限制行数为1
     }

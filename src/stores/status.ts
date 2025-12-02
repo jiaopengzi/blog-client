@@ -104,6 +104,11 @@ export const useStatusStore = defineStore("status", {
             this.isShowHomeAside = status
         },
 
+        // 计算 ShowHomeAside
+        async calculateShowHomeAside(): Promise<void> {
+            this.isShowHomeAside = this.isShowToc || this.isShowRecommendedRead || this.isShowHotPost || this.isShowPostTag || this.isShowMonthArchive
+        },
+
         // 设置是否显示搜索列表
         async setShowSearchList(status: boolean): Promise<void> {
             this.isShowSearchList = status
@@ -134,26 +139,31 @@ export const useStatusStore = defineStore("status", {
         // 设置是否显示目录
         async setShowToc(status: boolean): Promise<void> {
             this.isShowToc = status
+            await this.calculateShowHomeAside()
         },
 
         // 设置是否显示推荐文章
         async setShowRecommendedRead(status: boolean): Promise<void> {
             this.isShowRecommendedRead = status
+            await this.calculateShowHomeAside()
         },
 
         // 设置是否显示热门文章
         async setShowHotPost(status: boolean): Promise<void> {
             this.isShowHotPost = status
-        },
-
-        // 设置是否显示归档
-        async setShowMonthArchive(status: boolean): Promise<void> {
-            this.isShowMonthArchive = status
+            await this.calculateShowHomeAside()
         },
 
         // 设置是否显示标签
         async setShowPostTag(status: boolean): Promise<void> {
             this.isShowPostTag = status
+            await this.calculateShowHomeAside()
+        },
+
+        // 设置是否显示归档
+        async setShowMonthArchive(status: boolean): Promise<void> {
+            this.isShowMonthArchive = status
+            await this.calculateShowHomeAside()
         },
 
         // 设置文章详情相关属性
@@ -182,14 +192,14 @@ export const useStatusStore = defineStore("status", {
             this.isShowPostDetail = false
             this.postId = ""
             this.isShowPostList = true
-            this.isShowHomeAside = true
             this.isShowHomeCarousel = true
             this.isShowSearchList = false
             this.isShowSearch = true
+            this.isShowHomeAside = true
             this.isShowRecommendedRead = true
             this.isShowHotPost = true
-            this.isShowMonthArchive = true
             this.isShowPostTag = true
+            this.isShowMonthArchive = true
         },
 
         // 预设状态 文章详情
@@ -197,14 +207,14 @@ export const useStatusStore = defineStore("status", {
             this.isShowPostDetail = true
             this.isShowPostList = false
             this.isShowHomeCarousel = false
-            this.isShowHomeAside = true
             this.isShowSearchList = false
             this.isShowSearch = false
+            this.isShowHomeAside = true
             this.isShowToc = true
             this.isShowRecommendedRead = true
             this.isShowHotPost = true
-            this.isShowMonthArchive = true
             this.isShowPostTag = true
+            this.isShowMonthArchive = true
             this.detailType = PostDetailType.Post
             this.isShowDetailInteraction = true
             this.isShowDetailBottomSame = true
@@ -228,10 +238,10 @@ export const useStatusStore = defineStore("status", {
             this.isShowPostDetail = true
             this.isShowPostList = false
             this.isShowHomeCarousel = false
-            this.isShowHomeAside = false
             this.isShowSearchList = false
             this.detailType = PostDetailType.Page
             this.isShowSearch = false
+            this.isShowHomeAside = false
             this.isShowToc = false
             this.isShowRecommendedRead = false
             this.isShowHotPost = false

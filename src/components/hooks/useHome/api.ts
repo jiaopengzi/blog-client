@@ -15,25 +15,20 @@ import { type ViewPostRequest } from "@/api/post/view"
 import { viewHotPostAPI } from "@/api/post/viewHotPost"
 import { viewRecommendedPostAPI } from "@/api/post/viewRecommendedPost"
 import { type QueryParamsOptions } from "@/api/request"
-import { getEmptyPagination, type Pagination, type Res, ResponseCode, type ResPromise } from "@/api/response"
+import { getEmptyPagination, type Pagination, ResponseCode } from "@/api/response"
 import { type MonthArchiveData } from "@/components/common/month-archive"
+import { useStatusStore } from "@/stores/status"
 
 import type { ViewPostReqKey } from "./types"
 
 export function useGetData(options?: QueryParamsOptions<ViewPostRequest>) {
     const pagination = reactive<Pagination<PostResPagination>>(getEmptyPagination<PostResPagination>()) // 分页数据
 
-    const hotPost = reactive<PostResCommon[]>([]) // 热门文章
     const recommendedPost = reactive<PostResCommon[]>([]) // 推荐文章
+    const hotPost = reactive<PostResCommon[]>([]) // 热门文章
     const monthArchiveProps = reactive<MonthArchiveData[]>([]) // 月份归档
 
-    // 通用返回为 PostResCommon[] 的 API
-    const getPostResCommons = async (apiFunc: () => ResPromise<Res<PostResCommon[]>>, targetArray: PostResCommon[], successCode: number) => {
-        const res = await apiFunc()
-        if (res.data.code === successCode) {
-            Object.assign(targetArray, res.data.data)
-        }
-    }
+    const statusStore = useStatusStore()
 
     // 获取分页
     async function getPaginate(req: ViewPostRequest): Promise<Pagination<PostResPagination>> {
@@ -60,14 +55,26 @@ export function useGetData(options?: QueryParamsOptions<ViewPostRequest>) {
         return getEmptyPagination<PostResPagination>()
     }
 
-    // 热门文章
-    const getHostPost = async () => {
-        await getPostResCommons(viewHotPostAPI, hotPost, ResponseCode.PostViewHotSuccess)
-    }
-
     // 推荐文章
     const getRecommendedPost = async () => {
-        await getPostResCommons(viewRecommendedPostAPI, recommendedPost, ResponseCode.PostViewRecommendedSuccess)
+        const res = await viewRecommendedPostAPI()
+        if (res.data.code === ResponseCode.PostViewRecommendedSuccess) {
+            Object.assign(recommendedPost, res.data.data)
+
+            // 设置状态
+            statusStore.setShowRecommendedRead(recommendedPost.length > 0)
+        }
+    }
+
+    // 热门文章
+    const getHostPost = async () => {
+        const res = await viewHotPostAPI()
+        if (res.data.code === ResponseCode.PostViewHotSuccess) {
+            Object.assign(hotPost, res.data.data)
+
+            // 设置状态
+            statusStore.setShowHotPost(hotPost.length > 0)
+        }
     }
 
     // 推荐文章
@@ -80,6 +87,8 @@ export function useGetData(options?: QueryParamsOptions<ViewPostRequest>) {
 
             // 当没有数据时直接返回
             if (!res.data.data || !Array.isArray(res.data.data) || res.data.data.length === 0) {
+                // 设置状态
+                statusStore.setShowMonthArchive(false)
                 return
             }
 
@@ -101,6 +110,9 @@ export function useGetData(options?: QueryParamsOptions<ViewPostRequest>) {
                 }
                 return a.month - b.month // 月份降序
             })
+
+            // 设置状态
+            statusStore.setShowMonthArchive(monthArchiveProps.length > 0)
         }
     }
 
