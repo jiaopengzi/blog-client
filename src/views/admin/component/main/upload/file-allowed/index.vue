@@ -10,6 +10,7 @@
     <div class="form-page">
         <el-form :label-position="labelPosition" ref="formRef" :model="formData" :rules="rules" class="form-content" :size="formSize" status-icon>
             <h2 class="title">文件上传限制</h2>
+            <div class="attention">原则上文件上传限制按照默认即可，修改可能造成后端服务不稳定，除非您知道是在做什么。</div>
             <el-form-item v-for="(fItem, index) in formData" :key="index" class="form-row">
                 <el-form-item label="类型" :prop="`[${index}].type`" :rules="rules.type">
                     <el-input v-model="fItem.type" placeholder="文件类型" clearable class="form-cell" />
@@ -17,8 +18,12 @@
                 <el-form-item label="拓展名" :prop="`[${index}].extension`" :rules="rules.extension" class="form-cell">
                     <el-input v-model="fItem.extension" placeholder="文件拓展名" clearable />
                 </el-form-item>
-                <el-form-item label="文件大小(Byte)" :prop="`[${index}].max_size`" :rules="rules.max_size" class="form-cell">
-                    <el-input v-model="fItem.max_size" placeholder="文件大小(Byte)" clearable />
+                <el-form-item label="文件大小" :prop="`[${index}].max_size`" :rules="rules.max_size" class="form-cell">
+                    <el-input-number v-model="fItem.max_size" :min="1" controls-position="right" clearable placeholder="文件大小(MB)">
+                        <template #suffix>
+                            <span>MB</span>
+                        </template>
+                    </el-input-number>
                 </el-form-item>
                 <el-form-item label="后端处理" :prop="`[${index}].is_server_process`" class="form-cell">
                     <el-checkbox v-model="fItem.is_server_process" />
@@ -38,6 +43,7 @@ import type { FormInstance, FormRules } from "element-plus"
 import { computed, reactive, ref, useTemplateRef, watch } from "vue"
 
 import { type FileAllowed } from "@/api/setting/getUpload"
+import { ByteUnit, convertBytes } from "@/utils/byte"
 import { MessageUtil } from "@/utils/message"
 
 defineOptions({ name: "FileAllowed" })
@@ -55,8 +61,18 @@ const formSize = ref("default")
 // 表单实例
 const formRef = useTemplateRef<FormInstance>("formRef")
 
+// 转换 data 数据的 max_size 单位
+const dataConvert = (data: FileAllowed[], fromUnit: ByteUnit, toUnit: ByteUnit): FileAllowed[] => {
+    return data.map((item) => {
+        return {
+            ...item,
+            max_size: convertBytes(item.max_size, fromUnit, toUnit),
+        }
+    })
+}
+
 // 表单数据
-const formData = ref<FileAllowed[]>(data)
+const formData = ref<FileAllowed[]>(dataConvert(data, ByteUnit.B, ByteUnit.MB))
 
 // 添加规则
 const addRule = () => {
@@ -83,7 +99,7 @@ const removeRule = (index: number) => {
 watch(
     () => data,
     (newVal) => {
-        formData.value = newVal
+        formData.value = dataConvert(newVal, ByteUnit.B, ByteUnit.MB)
     },
     {
         deep: true,
@@ -91,7 +107,7 @@ watch(
 )
 
 // 结果数据
-const formDataResult = computed<FileAllowed[]>(() => [...formData.value])
+const formDataResult = computed<FileAllowed[]>(() => dataConvert(formData.value, ByteUnit.MB, ByteUnit.B))
 
 // 验证规则
 const rules = reactive<FormRules<FileAllowed>>({
@@ -160,6 +176,12 @@ defineExpose({
     color: var(--jpz-text-color-regular);
 }
 
+.attention {
+    color: var(--jpz-text-color-regular);
+    font-size: 14px;
+    font-weight: 700;
+    margin: 20px 0;
+}
 .form-content {
     width: 1080px;
     border: 1px solid var(--jpz-border-color);
