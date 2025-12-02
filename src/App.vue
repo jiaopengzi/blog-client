@@ -19,7 +19,7 @@ import { useDark } from "@vueuse/core"
 import { useResizeObserver } from "@vueuse/core"
 import zhCn from "element-plus/es/locale/lang/zh-cn"
 import { storeToRefs } from "pinia"
-import { onBeforeUnmount, useTemplateRef } from "vue"
+import { nextTick, onBeforeUnmount, onMounted, useTemplateRef } from "vue"
 
 import HeadTag from "@/components/common/head-tag"
 import { useDeviceStore } from "@/stores/device"
@@ -48,6 +48,17 @@ const { stop } = useResizeObserver(appRef, () => {
     deviceStore.updateWindowWidth()
 })
 
+// 挂载成功后移除首屏加载动画
+onMounted(() => {
+    nextTick(() => {
+        const loaderContainer = document.querySelector(".first-screen-loader-container")
+        if (loaderContainer) {
+            loaderContainer.remove()
+        }
+    })
+})
+
+// 停止监听窗口变化
 onBeforeUnmount(() => {
     stop()
 })
