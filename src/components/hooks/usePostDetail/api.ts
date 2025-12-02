@@ -80,6 +80,9 @@ export function useGetData(
         // 文章数据
         manager.updateState(postData.post_content)
 
+        const isAuthorEdit = await permissionRoleStore.postDetailEditEnable()
+        console.log("============>isAuthorEdit", isAuthorEdit)
+
         // 文章元数据
         postMeta.value.post_id = postData.id
         postMeta.value.created_at = postData.created_at
@@ -95,7 +98,7 @@ export function useGetData(
         postMeta.value.avatar_size = 20 // 头像大小，默认 24px
         postMeta.value.author_id = postData.author_info.id
         postMeta.value.is_show_read_time = true
-        postMeta.value.is_author_edit = await permissionRoleStore.postDetailEditEnable()
+        postMeta.value.is_author_edit = isAuthorEdit
         postMeta.value.is_immersion_read = true
         postMeta.value.is_paid = postData.is_paid
         postMeta.value.price = postData.price

@@ -18,7 +18,7 @@
             <el-breadcrumb-item @click="clickBreadcrumbHome"><span class="breadcrumb-home">首页</span></el-breadcrumb-item>
             <el-breadcrumb-item v-for="(item, index) in items" :key="item.to" @click="index === items.length - 1 ? null : clickBreadcrumb(item)">
                 <span :class="index === items.length - 1 ? 'breadcrumb-last' : 'breadcrumb-item'">
-                    {{ item.display }}
+                    {{ truncateText(item.display) }}
                 </span>
             </el-breadcrumb-item>
         </el-breadcrumb>
@@ -52,6 +52,14 @@ const clickBreadcrumb = (item: BreadcrumbItem) => {
     statusStore.setHome()
     breadcrumbStore.click(item)
     router.push(item.to)
+}
+
+// 对长文本进行截断显示
+const truncateText = (text: string, maxLength: number = 15): string => {
+    if (text.length <= maxLength) {
+        return text
+    }
+    return text.slice(0, maxLength) + "..."
 }
 </script>
 

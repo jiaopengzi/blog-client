@@ -88,6 +88,9 @@
                 <!-- 包含 id 信息的 标题 -->
                 <CustomCol v-else-if="col.isHeadingWithId" :key="`heading-with-id-${index}`" :col="col" @view-post="handleViewPost" />
 
+                <!-- 需要复制的文本 -->
+                <CustomCol v-else-if="col.isCopyText" :key="`copy-text-${index}`" :col="col" />
+
                 <!-- 作者 -->
                 <CustomCol
                     v-else-if="col.isUser"

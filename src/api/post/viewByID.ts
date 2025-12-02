@@ -25,3 +25,13 @@ export function viewPostByIDAPI(requestData: ViewPostByIDRequest): ResPromise<Re
         data: requestData,
     })
 }
+
+// 查看文章(不含内容)
+export function viewPostByIDWithoutContentAPI(requestData: ViewPostByIDRequest): ResPromise<Res<PostResByID>> {
+    const urlStr = routerGroup + "/post/view-by-id-without-content"
+    return request({
+        url: urlStr,
+        method: "post",
+        data: requestData,
+    })
+}

@@ -17,6 +17,7 @@ const baseColumns: TableColumn[] = [
         sortable: true,
         width: 100,
         align: "center",
+        isCopyText: true,
     },
     {
         prop: "thumbnail",
@@ -31,7 +32,7 @@ const baseColumns: TableColumn[] = [
         sortable: true,
         width: 180,
         align: "center",
-        isHeading: true,
+        isHeadingWithId: true,
     },
 ]
 

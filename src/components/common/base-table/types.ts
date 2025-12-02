@@ -41,6 +41,7 @@ export interface TableColumn {
     isCommentWithPost?: boolean // 是否为评论带有文章信息
     isCommentWithAdmin?: boolean // 是否为管理员查看评论
     isMarkdownPreview?: boolean // 是否为Markdown预览
+    isCopyText?: boolean // 是否为可复制文本
     formatter?: (row: TableData) => void // 格式化函数
 }
 

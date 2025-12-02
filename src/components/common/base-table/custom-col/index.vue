@@ -13,9 +13,7 @@
             <h4 v-if="col.isHeading">{{ scope.row[col.prop] }}</h4>
 
             <!-- 标题包含标题ID -->
-            <el-button v-if="col.isHeadingWithId" @click="handleViewWithID(scope.row)" class="title-with-id" type="default">{{
-                scope.row[col.prop]
-            }}</el-button>
+            <el-button v-if="col.isHeadingWithId" @click="handleViewWithID(scope.row)" class="title-with-id" type="text">{{ scope.row[col.prop] }}</el-button>
 
             <!-- 作者 -->
             <UserItem
@@ -30,6 +28,9 @@
                 :comment-is-post-author-code="scope.row['is_post_author']"
                 @user-click="(userID: string) => handleUserClick(userID, scope.row[col.prop])"
             />
+
+            <!-- 需要复制的文本 -->
+            <CopyText v-if="col.isCopyText" :key="scope.row[col.prop]" :text="scope.row[col.prop]" />
 
             <!-- markdown渲染 -->
             <div class="markdown-preview" v-if="col.isMarkdownPreview" :style="{ maxHeight: markdownPreviewMaxHeight }">
@@ -70,6 +71,7 @@ import type { PostTag } from "@/api/postTag/view"
 import type { User } from "@/api/user/getUsers"
 import CommentMarkdownPreview from "@/components/common/comment-markdown-preview"
 import CommentPostItem from "@/components/common/comment-post-item"
+import CopyText from "@/components/common/copy-text"
 import TagItem from "@/components/common/tag-item"
 import UserItem from "@/components/common/user-item"
 
@@ -150,5 +152,19 @@ const handleViewWithID = (row: TableData) => {
     text-align: center;
     border: none;
     background-color: transparent;
+    line-height: 1.5;
+    width: 100%;
+    max-height: 100px;
+    min-height: 50px;
+    overflow-y: auto;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    // 防止按钮拉伸到整行
+    display: inline-block;
+    // 自动换行
+    white-space: normal;
+    // 长文本换行
+    word-break: break-all;
 }
 </style>

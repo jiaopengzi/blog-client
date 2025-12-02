@@ -1,9 +1,9 @@
 <template>
     <div class="my-test">
-        <PostPassword />
+        <CopyText text="ceshi" />
     </div>
 </template>
 <script setup lang="ts">
-import PostPassword from "@/components/common/post-password"
+import CopyText from "@/components/common/copy-text"
 defineOptions({ name: "MyTest" })
 </script>

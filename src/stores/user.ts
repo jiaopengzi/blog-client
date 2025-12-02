@@ -294,6 +294,9 @@ async function handleLoginResult(resObj: Res<unknown>, successCode: ResponseCode
         // 登录成功 存入token
         if (typeof resObj.data === "object" && resObj.data !== null && "access_token" in resObj.data) {
             localStorage.setItem(LocalStorageKey.AccessToken, (resObj.data as { access_token: string }).access_token)
+
+            // 删除旧的编辑权限缓存
+            localStorage.removeItem(LocalStorageKey.PostDetailEditEnable)
         }
 
         return await apiGetUserInfoByToken() // 获取用户信息

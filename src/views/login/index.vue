@@ -19,6 +19,7 @@
             class="login-form"
             :size="formSize"
             status-icon
+            @submit.prevent="openSlideVerify"
         >
             <AccountFormHeader :router-link-to="{ name: RouteNames.Home }" title="账号登录" />
 

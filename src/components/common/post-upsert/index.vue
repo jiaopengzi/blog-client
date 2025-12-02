@@ -196,6 +196,7 @@ import { storeToRefs } from "pinia"
 import { computed, onBeforeMount, onUnmounted, reactive, ref, toRefs, useTemplateRef, watch } from "vue"
 import { useRouter } from "vue-router"
 
+import { Target } from "@/api/common"
 import { getPostStatusOptions, type InsertPostRequest, PostStatusCode, PostType } from "@/api/post/common"
 import { type PostCategory, viewListPostCategoryAPI } from "@/api/postCategory/view"
 import { ResponseCode } from "@/api/response"
@@ -208,6 +209,7 @@ import VideoTocTreeEdit from "@/components/common/video-toc-tree-edit"
 import { EditorStateManager } from "@/components/editor"
 import JEditor from "@/components/editor/index.vue"
 import { useEditor } from "@/components/hooks/useEditor"
+import { usePostView } from "@/components/hooks/usePostView"
 import { useOptionsStore } from "@/stores/options"
 import { PermissionNames } from "@/stores/permissionRole"
 import { useUserStore } from "@/stores/user"
@@ -568,30 +570,15 @@ const insertMedia = (data: TableData[]) => {
 }
 
 // 前台查看文章
+const { handleViewPost } = usePostView()
 const viewPost = () => {
     if (!postInfoForm.id) {
         MessageUtil.warning("请先保存文章")
         return
     }
 
-    // 如果是草稿、定时发布、过期 则不能前台查看
-    if (
-        postInfoForm.post_status === PostStatusCode.Draft ||
-        postInfoForm.post_status === PostStatusCode.Future ||
-        postInfoForm.post_status === PostStatusCode.Expired
-    ) {
-        MessageUtil.warning("草稿、定时发布、过期 状态的文章不能前台查看")
-        return
-    }
-
-    // 如果是私密文章且当前用户不是作者，则不能前台查看
-    if (postInfoForm.post_status === PostStatusCode.Private && postInfoForm.post_author !== userStore.data.user.id.toString()) {
-        MessageUtil.warning("他人的私密文章不能前台查看")
-        return
-    }
-
-    const postUrl = `/?post_id=${postInfoForm.id}`
-    window.open(postUrl, "_blank")
+    // 新开窗口查看文章
+    handleViewPost(postInfoForm.id, Target.Blank)
 }
 
 onUnmounted(() => {

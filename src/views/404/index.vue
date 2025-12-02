@@ -20,7 +20,7 @@
                         <h1>404</h1>
                         <p>抱歉，您访问的页面不存在。</p>
                         <p>
-                            将在 <span class="countdown">{{ countdown }}</span> 秒后，返回首页。
+                            将在 <span class="countdown">{{ countdown }}</span> 秒后，<span class="go-home" @click="goHome">返回首页</span>。
                         </p>
                     </el-empty>
                 </div>
@@ -47,6 +47,12 @@ let intervalId: number | undefined // 定时器id
 
 const breadcrumbStore = useBreadcrumbStore()
 breadcrumbStore.updateItems("404", `/${RouteNames.NotFound}`)
+
+// 返回首页
+const goHome = () => {
+    router.push({ name: RouteNames.Home })
+}
+
 onMounted(() => {
     // 倒计时
     intervalId = window.setInterval(() => {
@@ -70,6 +76,15 @@ onUnmounted(() => {
 .content {
     display: flex;
     flex-direction: column;
+}
+
+.go-home {
+    color: var(--jpz-color-primary);
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: currentColor;
+    text-underline-offset: 6px;
+    text-decoration-thickness: 2px;
 }
 
 @include respond-to("pc") {

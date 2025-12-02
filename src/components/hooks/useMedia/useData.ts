@@ -42,6 +42,7 @@ export function useData() {
             sortable: true,
             minWidth: 150,
             align: "center",
+            isCopyText: true,
         },
         {
             prop: "author",
@@ -63,6 +64,7 @@ export function useData() {
             sortable: true,
             minWidth: 150,
             align: "center",
+            isCopyText: true,
         },
         {
             prop: "created_at",

@@ -31,6 +31,7 @@
             @click-category="handleClickCategory"
             @click-tag="handleClickTag"
             @click-author="handleClickAuthor"
+            @view-post="handleViewPost"
         >
             <template #btns>
                 <el-button ref="addBtnRef" type="primary" @click="write"> {{ writeText }} </el-button>
@@ -131,6 +132,7 @@ import BaseTable from "@/components/common/base-table/index.vue"
 import { queryKey as queryKeyUpsert } from "@/components/common/post-upsert"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { useParams } from "@/components/hooks/useParams"
+import { usePostView } from "@/components/hooks/usePostView"
 import { useUserStore } from "@/stores/user"
 import { confirmCommon } from "@/utils/confirm"
 import { pollingGetStreamIDsStatus } from "@/utils/getStreamIDsStatus"
@@ -585,6 +587,8 @@ watch(
     },
     { deep: true },
 )
+
+const { handleViewPost } = usePostView()
 </script>
 
 <style scoped lang="scss">
