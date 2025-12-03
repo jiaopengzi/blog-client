@@ -16,15 +16,15 @@
         <el-button type="primary" class="show-all-tag" @click="changeIsShowAllTag">选择标签</el-button>
     </div>
 
-    <PostTag v-if="isShowAllTag" :is-admin="true" class="el-aside-item" @click="handleTagClick" />
+    <PostTag v-if="isShowAllTag" :is-admin="true" :items="postTags" class="el-aside-item" @click="handleTagClick" />
 </template>
 
 <script lang="ts" setup>
 import type { ElInput } from "element-plus"
-import { computed, nextTick, ref, useTemplateRef } from "vue"
+import { computed, nextTick, onBeforeMount, ref, useTemplateRef } from "vue"
 
 import { type PostTag as PostTagType } from "@/api/postTag/view"
-import PostTag from "@/components/layout/aside/post-tag/index.vue"
+import PostTag, { usePostTagData } from "@/components/layout/aside/post-tag"
 
 defineOptions({ name: "AddTag" })
 
@@ -90,6 +90,12 @@ const handleTagClick = (tagItemData: PostTagType) => {
 const changeIsShowAllTag = () => {
     isShowAllTag.value = !isShowAllTag.value
 }
+
+// 获取文章标签数据
+const { items: postTags, getTagTopN } = usePostTagData(false)
+onBeforeMount(async () => {
+    await getTagTopN()
+})
 </script>
 
 <style scoped lang="scss">

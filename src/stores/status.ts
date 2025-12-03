@@ -17,6 +17,7 @@ export interface StatusStore {
     isShowPostList: boolean // 是否显示文章列表
     isShowHomeCarousel: boolean // 是否显示首页轮播图
     isShowHomeAside: boolean // 是否显示首页侧边栏
+    hasDataHomeAside: boolean // 首页侧边栏是否有数据
     isShowSearchList: boolean // 是否显示搜索列表
     disablePagination: boolean // 是否禁用分页功能,主要是临时禁用，比如在搜索时，一段时间后自动解禁
 
@@ -26,8 +27,14 @@ export interface StatusStore {
     isShowToc: boolean // 是否显示目录
     isShowRecommendedRead: boolean // 是否显示推荐文章
     isShowHotPost: boolean // 是否显示热门文章
-    isShowMonthArchive: boolean // 是否显示归档
     isShowPostTag: boolean // 是否显示标签
+    isShowMonthArchive: boolean // 是否显示归档
+
+    hasDataToc: boolean // 目录是否有数据
+    hasDataRecommendedRead: boolean // 推荐文章是否有数据
+    hasDataHotPost: boolean // 热门文章是否有数据
+    hasDataPostTag: boolean // 标签是否有数据
+    hasDataMonthArchive: boolean // 归档是否有数据
 
     // 文章详情相关属性
     isShowDetailInteraction: boolean // 是否显示详情交互
@@ -45,6 +52,7 @@ function createStatusStore(): StatusStore {
         isShowPostList: true, // 默认显示文章列表
         isShowHomeCarousel: true, // 默认显示首页轮播图
         isShowHomeAside: true, // 默认显示首页侧边栏
+        hasDataHomeAside: false, // 默认首页侧边栏没有数据
         isShowSearchList: false, // 默认不显示搜索列表
         disablePagination: false, // 默认不禁用分页功能
 
@@ -54,8 +62,14 @@ function createStatusStore(): StatusStore {
         isShowToc: true, // 默认显示目录
         isShowRecommendedRead: true, // 默认显示推荐文章
         isShowHotPost: true, // 默认显示热门文章
-        isShowMonthArchive: true, // 默认显示归档
         isShowPostTag: true, // 默认显示标签
+        isShowMonthArchive: true, // 默认显示归档
+
+        hasDataToc: false, // 默认目录没有数据
+        hasDataRecommendedRead: false, // 默认推荐文章没有数据
+        hasDataHotPost: false, // 默认热门文章没有数据
+        hasDataPostTag: false, // 默认标签没有数据
+        hasDataMonthArchive: false, // 默认归档没有数据
 
         isShowDetailInteraction: true, // 默认显示详情交互
         isShowDetailBottomSame: true, // 默认显示详情底部相同内容
@@ -104,9 +118,14 @@ export const useStatusStore = defineStore("status", {
             this.isShowHomeAside = status
         },
 
-        // 计算 ShowHomeAside
-        async calculateShowHomeAside(): Promise<void> {
-            this.isShowHomeAside = this.isShowToc || this.isShowRecommendedRead || this.isShowHotPost || this.isShowPostTag || this.isShowMonthArchive
+        // 设置首页侧边栏是否有数据
+        async setHasDataHomeAside(status: boolean): Promise<void> {
+            this.hasDataHomeAside = status
+        },
+
+        // 计算首页侧边栏是否有数据
+        async calculateHasDataHomeAside(): Promise<void> {
+            this.hasDataHomeAside = this.hasDataToc || this.hasDataRecommendedRead || this.hasDataHotPost || this.hasDataPostTag || this.hasDataMonthArchive
         },
 
         // 设置是否显示搜索列表
@@ -139,31 +158,56 @@ export const useStatusStore = defineStore("status", {
         // 设置是否显示目录
         async setShowToc(status: boolean): Promise<void> {
             this.isShowToc = status
-            await this.calculateShowHomeAside()
+        },
+
+        // 设置目录是否有数据
+        async setHasDataToc(status: boolean): Promise<void> {
+            this.hasDataToc = status
+            await this.calculateHasDataHomeAside()
         },
 
         // 设置是否显示推荐文章
         async setShowRecommendedRead(status: boolean): Promise<void> {
             this.isShowRecommendedRead = status
-            await this.calculateShowHomeAside()
+        },
+
+        // 设置推荐文章是否有数据
+        async setHasDataRecommendedRead(status: boolean): Promise<void> {
+            this.hasDataRecommendedRead = status
+            await this.calculateHasDataHomeAside()
         },
 
         // 设置是否显示热门文章
         async setShowHotPost(status: boolean): Promise<void> {
             this.isShowHotPost = status
-            await this.calculateShowHomeAside()
+        },
+
+        // 设置热门文章是否有数据
+        async setHasDataHotPost(status: boolean): Promise<void> {
+            this.hasDataHotPost = status
+            await this.calculateHasDataHomeAside()
         },
 
         // 设置是否显示标签
         async setShowPostTag(status: boolean): Promise<void> {
             this.isShowPostTag = status
-            await this.calculateShowHomeAside()
+        },
+
+        // 设置标签是否有数据
+        async setHasDataPostTag(status: boolean): Promise<void> {
+            this.hasDataPostTag = status
+            await this.calculateHasDataHomeAside()
         },
 
         // 设置是否显示归档
         async setShowMonthArchive(status: boolean): Promise<void> {
             this.isShowMonthArchive = status
-            await this.calculateShowHomeAside()
+        },
+
+        // 设置归档是否有数据
+        async setHasDataMonthArchive(status: boolean): Promise<void> {
+            this.hasDataMonthArchive = status
+            await this.calculateHasDataHomeAside()
         },
 
         // 设置文章详情相关属性

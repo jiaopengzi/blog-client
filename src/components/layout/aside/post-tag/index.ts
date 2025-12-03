@@ -6,4 +6,5 @@
  * @Description  : 文章标签
  */
 
+export * from "./hooks"
 export { default } from "./index.vue"

@@ -9,15 +9,8 @@
 <template>
     <div class="components">
         <el-button class="component-item" type="primary" @click="submitForm">保存</el-button>
-        <FileAllowed ref="fileAllowedRef" class="component-item" :data="fileAllowedList" />
-        <FFmpegForm
-            ref="ffmpegRef"
-            class="component-item"
-            :config="ffmpegData"
-            :form-width="1080"
-            :label-width="140"
-            attention="注意：HLS 多分辨率对小机器 CPU 不友好，建议小于4核不开启；若开启上传视频等待时间明显变长，大概率会对主业务有影响。"
-        />
+
+        <!-- 本地上传 -->
         <UploadLocal
             ref="localRef"
             class="component-item"
@@ -26,6 +19,8 @@
             :label-width="140"
             attention="注意：【URL归属】在多个上传配置都开启的情况下，只能开启其中之一，否则会导致配置冲突。"
         />
+
+        <!-- 阿里云 OSS -->
         <UploadOSS
             ref="ossRef"
             class="component-item"
@@ -34,6 +29,18 @@
             :label-width="140"
             attention="注意：【URL归属】在多个上传配置都开启的情况下，只能开启其中之一，否则会导致配置冲突。"
         />
+
+        <!-- ffmpeg配置 -->
+        <FFmpegForm
+            ref="ffmpegRef"
+            class="component-item"
+            :config="ffmpegData"
+            :form-width="1080"
+            :label-width="140"
+            attention="注意：HLS 多分辨率对小机器 CPU 不友好，建议小于4核不开启；若开启上传视频等待时间明显变长，大概率会对主业务有影响。"
+        />
+        <!-- 上传限制 -->
+        <FileAllowed ref="fileAllowedRef" class="component-item" :data="fileAllowedList" />
     </div>
     <RestartDialog :is-show-timer="isShowTimer" :wait-seconds="waitSeconds" />
 </template>

@@ -62,7 +62,7 @@ export function useGetData(options?: QueryParamsOptions<ViewPostRequest>) {
             Object.assign(recommendedPost, res.data.data)
 
             // 设置状态
-            statusStore.setShowRecommendedRead(recommendedPost.length > 0)
+            statusStore.setHasDataRecommendedRead(recommendedPost.length > 0)
         }
     }
 
@@ -73,7 +73,7 @@ export function useGetData(options?: QueryParamsOptions<ViewPostRequest>) {
             Object.assign(hotPost, res.data.data)
 
             // 设置状态
-            statusStore.setShowHotPost(hotPost.length > 0)
+            statusStore.setHasDataHotPost(hotPost.length > 0)
         }
     }
 
@@ -88,7 +88,7 @@ export function useGetData(options?: QueryParamsOptions<ViewPostRequest>) {
             // 当没有数据时直接返回
             if (!res.data.data || !Array.isArray(res.data.data) || res.data.data.length === 0) {
                 // 设置状态
-                statusStore.setShowMonthArchive(false)
+                statusStore.setHasDataMonthArchive(false)
                 return
             }
 
@@ -112,7 +112,7 @@ export function useGetData(options?: QueryParamsOptions<ViewPostRequest>) {
             })
 
             // 设置状态
-            statusStore.setShowMonthArchive(monthArchiveProps.length > 0)
+            statusStore.setHasDataMonthArchive(monthArchiveProps.length > 0)
         }
     }
 

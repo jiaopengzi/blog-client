@@ -45,7 +45,7 @@
                     @commit-anchor-hash-index="handleAnchorHashIndex"
                 />
             </el-main>
-            <el-aside ref="asideRef" class="el-aside" v-show="isShowHomeAside">
+            <el-aside ref="asideRef" class="el-aside" v-show="isShowHomeAside && hasDataHomeAside">
                 <!-- 导航栏 -->
                 <Toc
                     v-if="isShowPostDetail && isShowToc && state.tocHtml.length > 0"
@@ -57,21 +57,21 @@
 
                 <!-- 推荐阅读 -->
                 <RecommendedRead
-                    v-if="isShowRecommendedRead && recommendedPost.length > 0"
+                    v-if="isShowRecommendedRead && hasDataRecommendedRead"
                     class="el-aside-item"
                     :post-data="recommendedPost"
                     @post-id="handlePostId"
                 />
 
                 <!-- 热门文章 -->
-                <HotPost v-if="isShowHotPost && hotPost.length > 0" class="el-aside-item" :post-data="hotPost" @post-id="handlePostId" />
+                <HotPost v-if="isShowHotPost && hasDataHotPost" class="el-aside-item" :post-data="hotPost" @post-id="handlePostId" />
 
                 <!-- 文章标签 -->
-                <PostTag v-if="isShowPostTag" class="el-aside-item" @click="clickTag" />
+                <PostTag v-if="isShowPostTag && hasDataPostTag" :items="postTags" class="el-aside-item" @click="clickTag" />
 
                 <!-- 月度归档 -->
                 <MonthArchive
-                    v-if="isShowMonthArchive && monthArchiveProps.length > 0"
+                    v-if="isShowMonthArchive && hasDataMonthArchive"
                     class="el-aside-item"
                     :post-list="monthArchiveProps"
                     @post-by-month="clickMonthArchive"
@@ -95,7 +95,7 @@ import type { EditorState } from "@/components/editor"
 import Toc from "@/components/editor/components/toc"
 import { useHome } from "@/components/hooks/useHome"
 import HotPost from "@/components/layout/aside/hot-post"
-import PostTag from "@/components/layout/aside/post-tag"
+import PostTag, { usePostTagData } from "@/components/layout/aside/post-tag"
 import RecommendedRead from "@/components/layout/aside/recommended-read"
 import HomeCarousel from "@/components/layout/carousel"
 import { type SearchData } from "@/components/layout/search"
@@ -123,12 +123,20 @@ const {
     isShowPostDetail,
     isShowPostList,
     isShowHomeCarousel,
+
     isShowHomeAside,
     isShowToc,
     isShowRecommendedRead,
     isShowHotPost,
-    isShowMonthArchive,
     isShowPostTag,
+    isShowMonthArchive,
+
+    hasDataHomeAside,
+    hasDataToc,
+    hasDataRecommendedRead,
+    hasDataHotPost,
+    hasDataPostTag,
+    hasDataMonthArchive,
 } = storeToRefs(statusStore)
 
 // 获取首页数据
@@ -154,6 +162,9 @@ const {
     clearParamsExcept,
     highlightKey,
 } = useHome(mainReq)
+
+// 获取文章标签数据
+const { items: postTags, getTagTopN } = usePostTagData(false)
 
 // 文章详情
 const state: Reactive<EditorState> = reactive({
@@ -233,14 +244,17 @@ onBeforeMount(async () => {
     if (!isShowPostDetail.value) {
         await updateByRoute()
     }
-    if (isShowHotPost.value) {
-        await getHostPost()
-    }
     if (isShowRecommendedRead.value) {
         await getRecommendedPost()
     }
+    if (isShowHotPost.value) {
+        await getHostPost()
+    }
     if (isShowMonthArchive.value) {
         await getPostCountByMonth()
+    }
+    if (isShowPostTag.value) {
+        await getTagTopN()
     }
 })
 </script>

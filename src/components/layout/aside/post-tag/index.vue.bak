@@ -26,22 +26,29 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue"
+import { computed, onBeforeMount, reactive } from "vue"
 
 import { type PostTag } from "@/api/postTag/view"
+import { viewPostTagTopNAPI } from "@/api/postTag/viewPostTagTopN"
+import { viewPostTagTopNAdminAPI } from "@/api/postTag/viewPostTagTopNAdmin"
+import { ResponseCode } from "@/api/response"
 import { IconKeys } from "@/components/common/icons"
 import TagItem from "@/components/common/tag-item"
+import { useStatusStore } from "@/stores/status"
 
 defineOptions({ name: "PostTag" })
 
-const { isAdmin = false, items = [] } = defineProps<{
+const { isAdmin = false } = defineProps<{
     isAdmin?: boolean
-    items?: PostTag[]
 }>()
 
 const emit = defineEmits<{
     (event: "click", tagItemData: PostTag): void
 }>()
+
+const statusStore = useStatusStore()
+
+const items = reactive<PostTag[]>([])
 
 // 是否没有数据
 const noData = computed(() => {
@@ -49,9 +56,28 @@ const noData = computed(() => {
     return flag
 })
 
+const topNAPI = isAdmin ? viewPostTagTopNAdminAPI : viewPostTagTopNAPI
+
+// 获取分页用户
+const getTagTopN = async () => {
+    // 获取标签列表
+    await topNAPI().then((res) => {
+        if (res.data.code === ResponseCode.PostTagViewTopNSuccess) {
+            Object.assign(items, res.data.data)
+
+            // 设置状态
+            statusStore.setHasDataPostTag(items.length > 0)
+        }
+    })
+}
+
 const handleClick = (tagItemData: PostTag) => {
     emit("click", tagItemData)
 }
+
+onBeforeMount(() => {
+    getTagTopN()
+})
 </script>
 <style scoped lang="scss">
 .aside-item {
