@@ -12,7 +12,7 @@
         <div v-if="aTag" class="header-main">
             <a :href="aTag.href" :target="aTag.target">
                 <div class="logo">
-                    <img v-if="imgSrcAc" :src="imgSrcAc" :alt="alt" />
+                    <img :src="imgSrcAc" :alt="alt" />
                 </div>
             </a>
             <h2 v-if="title" class="title">{{ title }}</h2>
@@ -22,7 +22,7 @@
         <div v-if="routerLinkTo" class="header-main">
             <router-link v-if="routerLinkTo" :to="routerLinkTo" class="link">
                 <div class="logo">
-                    <img v-if="imgSrcAc" :src="imgSrcAc" :alt="alt" />
+                    <img :src="imgSrcAc" :alt="alt" />
                 </div>
             </router-link>
             <h2 v-if="title" class="title">{{ title }}</h2>
@@ -35,6 +35,7 @@ import { computed } from "vue"
 import type { RouteLocationAsPathGeneric, RouteLocationAsRelativeGeneric } from "vue-router"
 
 import { useOptionsStore } from "@/stores/options"
+
 defineOptions({ name: "AccountFormHeader" })
 
 const {
@@ -60,7 +61,8 @@ const {
 
 const optionsStore = useOptionsStore()
 const logo = optionsStore.getLogo
-const imgSrcAc = computed(() => imgSrc || logo)
+// const imgSrcAc = computed(() => imgSrc || logo || new URL("@/assets/img/logo-jiaopengzi-162-50.png", import.meta.url).href)
+const imgSrcAc = computed(() => imgSrc || logo || "./demo-logo.svg")
 </script>
 
 <style lang="scss" scoped>
