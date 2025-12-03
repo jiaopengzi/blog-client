@@ -15,6 +15,7 @@ $jpz-color-primary-dark: #c89828;
 html.#{$theme-name-dark} {
     --jpz-color-primary: #{$jpz-color-primary-dark}; // 主要颜色
     --jpz-color-secondary: #bb1818; // 次要颜色
+    border-radius: 4px;
 }
 
 // ============================================================ element-plus 的颜色设置 开始

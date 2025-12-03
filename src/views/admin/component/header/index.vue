@@ -9,7 +9,9 @@
 <template>
     <header>
         <div class="left">
-            <el-button class="btn-logo" @click="goHome"> <img v-if="logo" :src="logo" alt="routeObj.home.path" /></el-button>
+            <el-button class="btn-logo" @click="goHome">
+                <img :src="logo || '../demo-logo.svg'" alt="logo" />
+            </el-button>
         </div>
 
         <div class="right">

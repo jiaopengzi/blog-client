@@ -9,7 +9,7 @@
 <template>
     <div class="logo-container">
         <router-link :to="{ name: RouteNames.Home }" @click="clickLogo">
-            <img class="logo" v-if="logo" :src="logo" :alt="RouteNames.Home" />
+            <img class="logo" :src="logo || './demo-logo.svg'" alt="logo" />
         </router-link>
     </div>
 </template>
