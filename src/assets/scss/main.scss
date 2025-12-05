@@ -21,6 +21,11 @@
 // ========================================== live sass compiler 插件使用 结束 ==========================================
 
 html {
+    // 在开发环境中添加这个来识别问题元素
+    // * {
+    //     outline: 1px solid rgba(255, 0, 0, 0.1) !important;
+    // }
+
     // 使用 element-plus 的颜色
     --jpz-bg-color: var(--el-bg-color);
     --jpz-bg-color-page: var(--el-bg-color-page);
@@ -113,22 +118,48 @@ html {
     --markdown-alert-caution-title-color: #f85149;
     --markdown-alert-caution-svg-fill-color: #f85149;
 
-    // 滚动条
-    --scrollbar-y-width: 6px; // Y轴滚动条宽度
-    --scrollbar-x-height: 12px; // x轴滚动条高度
-
-    ::-webkit-scrollbar {
-        width: pc.$scrollbar-y-width;
-        height: pc.$scrollbar-x-height;
-    }
-
+    // 全局滚动条样式
     ::-webkit-scrollbar-thumb {
         background-color: #cccccc;
-        border-radius: 10px;
     }
 
-    ::-webkit-scrollbar-track {
-        border-radius: 6px;
+    @include respond-to("pc") {
+        ::-webkit-scrollbar {
+            width: pc.$scrollbar-y-width;
+            height: pc.$scrollbar-x-height;
+        }
+        ::-webkit-scrollbar-thumb {
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            border-radius: 3px;
+        }
+    }
+
+    @include respond-to("pad") {
+        ::-webkit-scrollbar {
+            width: pad.$scrollbar-y-width;
+            height: pad.$scrollbar-x-height;
+        }
+        ::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            border-radius: 3px;
+        }
+    }
+
+    @include respond-to("phone") {
+        ::-webkit-scrollbar {
+            width: phone.$scrollbar-y-width;
+            height: phone.$scrollbar-x-height;
+        }
+        ::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            border-radius: 3px;
+        }
     }
 
     // todo list 复选框样式

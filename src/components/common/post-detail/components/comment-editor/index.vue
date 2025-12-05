@@ -8,7 +8,9 @@
 <template>
     <div ref="rootRef" class="comment-editor">
         <JEditor ref="jEditorRef" class="comment-main" :state-manager="manager" />
-        <el-button class="comment-btn" type="default" @click="run" :loading="loading">{{ btnTextInner }}</el-button>
+        <div class="comment-btn-container">
+            <el-button class="comment-btn" type="default" @click="run" :loading="loading">{{ btnTextInner }}</el-button>
+        </div>
     </div>
 </template>
 
@@ -278,6 +280,21 @@ defineExpose({
         font-weight: 700;
         border-radius: 5px;
         color: var(--jpz-text-color-secondary);
+    }
+
+    // @include respond-to("pc") {
+    // }
+
+    // @include respond-to("pad") {
+    // }
+
+    @include respond-to("phone") {
+        .comment-btn-container {
+            padding: 0 4px;
+        }
+        .comment-btn {
+            width: 100%;
+        }
     }
 }
 </style>

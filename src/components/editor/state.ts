@@ -156,7 +156,7 @@ export class EditorStateManager {
     }
 
     // 设置编辑器宽度
-    setEditorWidth(width: number): void {
+    setEditorWidth(width: string): void {
         this.state.width = width
     }
 

@@ -19,6 +19,7 @@
         <VideoWatermark :text-watermark="localPlayerState.textWatermark" :logo-watermark="localPlayerState.logoWatermark">
             <!-- video元素不使用默认的  controls-->
             <video
+                class="my-video"
                 ref="videoRef"
                 :key="localPlayerState.videoID"
                 :src="localPlayerState.src"
@@ -789,8 +790,9 @@ video::-webkit-media-controls-enclosure {
         background-color: #fff;
     }
 
-    video {
-        background-color: #ddd;
+    .my-video {
+        // background-color: #ddd;
+        background-color: transparent;
         object-fit: contain;
         width: 100%;
         height: 100%;
@@ -847,6 +849,18 @@ video::-webkit-media-controls-enclosure {
             font-size: 100px;
             fill: rgba(0, 0, 0, 0.5);
             transition: fill 0.3s ease;
+        }
+
+        // @include respond-to("pc") {
+        // }
+
+        // @include respond-to("pad") {
+        // }
+
+        @include respond-to("phone") {
+            .iconfont {
+                font-size: 50px;
+            }
         }
     }
 
@@ -933,13 +947,13 @@ HTML: <div class="loader"></div>
     // }
 
     .video-container {
-        max-width: phone.$width-video-main;
-        max-height: phone.$height-video-main;
+        max-width: pad.$width-video-main;
+        max-height: pad.$height-video-main;
     }
 
     .video-container[data-preview="wechat"] {
-        max-width: phone.$width-video-main;
-        max-height: phone.$height-video-main;
+        max-width: pad.$width-video-main;
+        max-height: pad.$height-video-main;
         width: 100%;
     }
 }
@@ -954,7 +968,7 @@ HTML: <div class="loader"></div>
         max-height: phone.$height-video-main;
     }
 
-    video {
+    .my-video {
         max-width: phone.$width-video-main;
         max-height: phone.$height-video-main;
     }

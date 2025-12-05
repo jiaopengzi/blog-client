@@ -48,7 +48,7 @@
             <el-aside ref="asideRef" class="el-aside" v-show="isShowHomeAside && hasDataHomeAside">
                 <!-- 导航栏 -->
                 <Toc
-                    v-if="isShowPostDetail && isShowToc && state.tocHtml.length > 0"
+                    v-if="isShowPostDetail && isShowToc && hasDataToc"
                     class="el-aside-item"
                     :headings="state.tocHtml"
                     :heading-show-current-index="state.headingShowCurrentIndex"
@@ -177,8 +177,8 @@ const handleState = (val: EditorState) => {
     state.tocHtml = val.tocHtml
     state.headingShowCurrentIndex = val.headingShowCurrentIndex
 
-    // 判断是否显示目录
-    statusStore.setShowToc(state.tocHtml.length > 0)
+    // 设置是否有目录数据
+    statusStore.setHasDataToc(state.tocHtml.length > 0)
 }
 
 const clickTocTime = ref(new Date())
@@ -326,6 +326,10 @@ onBeforeMount(async () => {
         padding-top: 0;
         padding-right: 0;
         padding-bottom: 10px;
+    }
+
+    .el-aside {
+        display: none;
     }
 }
 </style>

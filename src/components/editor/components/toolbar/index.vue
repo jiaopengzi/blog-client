@@ -130,6 +130,9 @@ onUnmounted(() => {
     background-color: var(--jpz-bg-color);
     border-radius: 4px;
 
+    // // 两端对齐
+    // justify-content: space-between;
+
     .toolbar-btn {
         border: none;
         background-color: transparent;
@@ -139,6 +142,19 @@ onUnmounted(() => {
         // 通过计算每个按钮的 margin-left 和 margin-right 来实现每行显示的按钮个数
         margin: 0 calc((100% - 24px * var(--icon-number-per-line)) / var(--icon-number-per-line) / 2);
         padding: 0;
+    }
+
+    // @include respond-to("pc") {
+    // }
+
+    // @include respond-to("pad") {
+    // }
+
+    @include respond-to("phone") {
+        .toolbar-btn {
+            // 通过计算每个按钮的 margin-left 和 margin-right 来实现每行显示的按钮个数
+            margin: 0 calc((100% - 20px * var(--icon-number-per-line)) / var(--icon-number-per-line) / 2);
+        }
     }
 }
 

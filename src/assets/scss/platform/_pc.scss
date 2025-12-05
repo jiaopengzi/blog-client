@@ -6,8 +6,8 @@
  * @Description  : pc 相关样式
  */
 
-$scrollbar-y-width: var(--scrollbar-y-width); // Y轴滚动条宽度
-$scrollbar-x-height: var(--scrollbar-x-height); // Y轴滚动条宽度
+$scrollbar-y-width: 10px; // Y 轴滚动条宽度
+$scrollbar-x-height: 12px; // X 轴滚动条宽度
 $min-width: "1220px";
 
 $width-page: 100vw;

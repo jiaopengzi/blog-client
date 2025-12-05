@@ -18,7 +18,7 @@
             <el-breadcrumb-item @click="clickBreadcrumbHome"><span class="breadcrumb-home">首页</span></el-breadcrumb-item>
             <el-breadcrumb-item v-for="(item, index) in items" :key="item.to" @click="index === items.length - 1 ? null : clickBreadcrumb(item)">
                 <span :class="index === items.length - 1 ? 'breadcrumb-last' : 'breadcrumb-item'">
-                    {{ truncateText(item.display) }}
+                    {{ deviceStore.truncateText(item.display) }}
                 </span>
             </el-breadcrumb-item>
         </el-breadcrumb>
@@ -31,14 +31,17 @@ import { useRouter } from "vue-router"
 
 import { RouteNames } from "@/router"
 import { type BreadcrumbItem, useBreadcrumbStore } from "@/stores/breadcrumb"
+import { useDeviceStore } from "@/stores/device"
 import { useStatusStore } from "@/stores/status"
 
 defineOptions({ name: "JBreadcrumb" })
 const router = useRouter()
 
 const breadcrumbStore = useBreadcrumbStore()
-const { items } = storeToRefs(breadcrumbStore)
 const statusStore = useStatusStore()
+const deviceStore = useDeviceStore()
+
+const { items } = storeToRefs(breadcrumbStore)
 
 // 点击面包屑
 const clickBreadcrumbHome = () => {
@@ -52,14 +55,6 @@ const clickBreadcrumb = (item: BreadcrumbItem) => {
     statusStore.setHome()
     breadcrumbStore.click(item)
     router.push(item.to)
-}
-
-// 对长文本进行截断显示
-const truncateText = (text: string, maxLength: number = 15): string => {
-    if (text.length <= maxLength) {
-        return text
-    }
-    return text.slice(0, maxLength) + "..."
 }
 </script>
 

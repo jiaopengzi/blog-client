@@ -71,6 +71,31 @@ export const useDeviceStore = defineStore("device", {
         updateWindowWidth() {
             this.windowWidth = window.innerWidth
         },
+
+        /**
+         * 根据设备类型截断文本
+         * @param text 文本内容
+         * @param pcLength PC 端最大长度，默认18
+         * @param padLength PAD 端最大长度，默认15
+         * @param phoneLength PHONE 端最大长度，默认12
+         * @param suffix 后缀，默认"..."
+         * @returns 截断后的文本
+         */
+        truncateText(text: string, pcLength: number = 18, padLength: number = 15, phoneLength: number = 12, suffix: string = "..."): string {
+            let maxLength = pcLength
+            if (this.device === DeviceType.PAD) {
+                maxLength = padLength
+            } else if (this.device === DeviceType.PHONE) {
+                maxLength = phoneLength
+            }
+            if (text.length <= maxLength) {
+                return text
+            }
+            if (suffix) {
+                return text.slice(0, maxLength) + suffix
+            }
+            return text.slice(0, maxLength)
+        },
     },
 })
 

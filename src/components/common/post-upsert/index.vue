@@ -272,9 +272,10 @@ const isPaid = ref(false)
 
 // 监听编辑器宽度变化
 const { stop: stopResizeObserver } = useResizeObserver(editorContainerRef, (entries) => {
-    const entry = entries[0]!
+    const entry = entries[0]
+    if (!entry) return
     const { width } = entry.contentRect
-    stateManager.setEditorWidth(width)
+    stateManager.setEditorWidth(width.toString())
 })
 
 // 所有分类列表

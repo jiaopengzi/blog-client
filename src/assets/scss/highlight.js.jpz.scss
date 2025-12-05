@@ -197,9 +197,28 @@ code.hljs {
 
     max-height: 600px;
 
-    // 滚动条样式
-    &::-webkit-scrollbar {
-        height: 6px;
+    @include respond-to("pc") {
+        // 滚动条样式
+        &::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+    }
+
+    @include respond-to("pad") {
+        // 滚动条样式
+        &::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+    }
+
+    @include respond-to("phone") {
+        // 滚动条样式
+        &::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
     }
 }
 

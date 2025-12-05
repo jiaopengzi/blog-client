@@ -41,6 +41,8 @@
         />
         <!-- 上传限制 -->
         <FileAllowed ref="fileAllowedRef" class="component-item" :data="fileAllowedList" />
+
+        <el-button class="component-item" type="primary" @click="submitForm">保存</el-button>
     </div>
     <RestartDialog :is-show-timer="isShowTimer" :wait-seconds="waitSeconds" />
 </template>

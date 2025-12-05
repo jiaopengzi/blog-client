@@ -6,8 +6,8 @@
  * @Description  : phone 相关样式
  */
 
-$scrollbar-y-width: var(--scrollbar-y-width); // Y轴滚动条宽度
-$scrollbar-x-height: var(--scrollbar-x-height); // Y轴滚动条宽度
+$scrollbar-y-width: 6px; // Y 轴滚动条宽度
+$scrollbar-x-height: 6px; // X 轴滚动条宽度
 $min-width: "320px";
 $max-width: "767px";
 
@@ -33,6 +33,6 @@ $editor-panels-bottom-border: 1px; // 编辑器底部面板边框
 // 评论编辑器
 $editor-md-container-height-comment: 30vh; // 评论编辑器md容器高度
 
-// 播放器
-$width-video-main: 96vw; // 视频播放器宽度
-$height-video-main: 54vw; // 视频播放器高度
+// 播放器 16:9
+$width-video-main: 84vw; // 视频播放器宽度
+$height-video-main: 47.25vw; // 视频播放器高度

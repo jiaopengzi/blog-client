@@ -91,6 +91,12 @@ const displayText = computed(() => {
     line-height: 1.5em; // 行高
     margin-bottom: 0px;
     margin-top: 0px;
+
+    // 过长文本省略号
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; // 限制行数为2
+    transition: color 0.3s ease;
 }
 
 .title:hover {

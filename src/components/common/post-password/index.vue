@@ -112,6 +112,9 @@ const submitPassword = () => {
 // @include respond-to("pad") {
 // }
 
-// @include respond-to("phone") {
-// }
+@include respond-to("phone") {
+    .post-password-card {
+        margin: 20px;
+    }
+}
 </style>

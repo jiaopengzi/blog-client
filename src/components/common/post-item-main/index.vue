@@ -304,7 +304,6 @@ const topRightTip = computed(() => {
         height: 150px;
         padding: 20px;
 
-        .tip,
         .read-more {
             opacity: 0;
         }
@@ -336,7 +335,6 @@ const topRightTip = computed(() => {
     .post-item {
         height: 75px;
 
-        .tip,
         .category,
         .summary,
         .read-more {
@@ -353,7 +351,8 @@ const topRightTip = computed(() => {
     }
 
     .title {
-        height: 4em;
+        line-height: 2em;
+        height: 2em;
         -webkit-line-clamp: 2; // 限制行数为2
     }
 }
@@ -362,7 +361,6 @@ const topRightTip = computed(() => {
     .post-item {
         height: 75px;
 
-        .tip,
         .category,
         .summary,
         .read-more {
@@ -379,7 +377,8 @@ const topRightTip = computed(() => {
     }
 
     .title {
-        height: 4em;
+        line-height: 2em;
+        height: 2em;
         -webkit-line-clamp: 2; // 限制行数为2
     }
 }

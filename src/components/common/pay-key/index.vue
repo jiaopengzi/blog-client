@@ -188,6 +188,19 @@ onBeforeMount(async () => {
         }
     }
 
+    // @include respond-to("pc") {
+    // }
+
+    // @include respond-to("pad") {
+    // }
+
+    @include respond-to("phone") {
+        .key-item {
+            grid-template-columns: 3fr 2fr 2fr;
+            padding: 10px 0;
+        }
+    }
+
     .description {
         color: var(--jpz-text-color-secondary);
         text-align: left;

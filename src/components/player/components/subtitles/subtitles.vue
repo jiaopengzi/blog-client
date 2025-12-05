@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved. 
- * @Description  : 自定义字幕组件-待完善
+ * @Description  : todo 自定义字幕组件
 -->
 
 <template>

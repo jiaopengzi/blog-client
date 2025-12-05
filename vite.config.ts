@@ -21,7 +21,7 @@ const commonServerOptions = (): CommonServerOptions => {
     return {
         host: "10.10.2.222",
         strictPort: true, // 端口被占用时直接退出，而不是尝试下一个可用端口
-        port: 7364, // 项目运行端口(九宫格 peng 的拼音键数字)
+        port: 7364, // 项目运行端口(九宫格 peng 7364 的拼音键数字)
 
         // 设置代理
         proxy: {
@@ -112,7 +112,37 @@ export default defineConfig({
     },
 
     // 开发服务器配置
-    server: commonServerOptions(),
+    server: {
+        host: "10.10.2.222",
+        strictPort: true, // 端口被占用时直接退出，而不是尝试下一个可用端口
+        port: 7364, // 项目运行端口(九宫格 peng 7364 的拼音键数字)
+
+        hmr: {
+            protocol: "ws",
+            host: "10.10.2.222",
+            port: 7364,
+        },
+
+        // 设置代理
+        proxy: {
+            // dev Server.proxy 可以是一个指向开发环境 API 服务器的字符串
+            "/api": {
+                target: "http://10.10.2.222:5426",
+                changeOrigin: true,
+                // rewrite: (path:string) => path.replace(/^\/api/, 'my-admin'),
+            },
+            "/admin/raw-github": {
+                target: "https://raw.githubusercontent.com",
+                changeOrigin: true,
+                rewrite: (path: string) => path.replace(/^\/admin\/raw-github/, ""),
+            },
+            "/admin/raw-gitee": {
+                target: "https://gitee.com",
+                changeOrigin: true,
+                rewrite: (path: string) => path.replace(/^\/admin\/raw-gitee/, ""),
+            },
+        },
+    },
 
     // 预览服务器配置
     preview: commonServerOptions(),

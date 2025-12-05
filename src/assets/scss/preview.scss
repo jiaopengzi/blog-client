@@ -15,6 +15,9 @@
 #preview {
     font-family: "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
 
+    // 不要滚动条
+    overflow: hidden;
+
     h1 {
         font-size: 2em;
         display: table;
@@ -211,6 +214,30 @@
     .jpz-marked-table-container {
         width: 100%;
         max-height: 400px;
+
+        @include respond-to("pc") {
+            // 滚动条样式
+            &::-webkit-scrollbar {
+                height: 8px;
+                width: 8px;
+            }
+        }
+
+        @include respond-to("pad") {
+            // 滚动条样式
+            &::-webkit-scrollbar {
+                height: 8px;
+                width: 8px;
+            }
+        }
+
+        @include respond-to("phone") {
+            // 滚动条样式
+            &::-webkit-scrollbar {
+                height: 6px;
+                width: 6px;
+            }
+        }
 
         // 添加横向和纵向滚动条
         overflow-x: auto;

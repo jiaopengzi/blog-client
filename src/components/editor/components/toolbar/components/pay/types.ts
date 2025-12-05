@@ -22,7 +22,7 @@ export type PayTag = Record<Names.PayVideo | Names.PayMembership | Names.PayRead
 export const payTags: Readonly<PayTag> = {
     [Names.PayVideo]: {
         prefix: `\n<${Names.PayVideo}>\n`,
-        content: `您的除视频外隐藏内容，若没有则将标签设置为一行`,
+        content: `除视频外的其他隐藏内容，如附件下载等；若没有则将标签设置为一行`,
         suffix: `\n</${Names.PayVideo}>\n`,
     },
     [Names.PayMembership]: {

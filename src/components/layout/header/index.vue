@@ -14,6 +14,8 @@
                 <Logo />
                 <HeaderNav />
                 <Search v-if="isShowSearch" @handle-search="handleSearch" />
+                <!-- 占位 -->
+                <div v-if="!isShowSearch" class="layout-search-placeholder"></div>
                 <SwitchGroup :switch-items="themeSwitch" @update-status="updateStatus" />
                 <Account />
             </div>
@@ -23,6 +25,8 @@
                 </button>
                 <Logo class="phone-item" />
                 <Search v-if="isShowSearch" class="phone-item" @handle-search="handleSearch" />
+                <!-- 占位 -->
+                <div v-if="!isShowSearch" class="phone-item layout-search-placeholder"></div>
             </div>
         </header>
     </transition>
@@ -124,6 +128,11 @@ const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownA
     grid-template-columns: auto 1fr auto auto auto; // 5列布局
     align-items: center;
     gap: 20px;
+}
+
+.layout-search-placeholder {
+    width: 40px;
+    height: 40px;
 }
 
 @include respond-to("pc") {

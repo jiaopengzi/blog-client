@@ -249,5 +249,11 @@ const handleEdit = (comment: CommentItemProps["data"]) => {
     .header-id {
         display: none;
     }
+
+    .header-action {
+        .header-action-item {
+            margin-left: 5px;
+        }
+    }
 }
 </style>

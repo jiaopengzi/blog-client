@@ -54,7 +54,7 @@ export function createDefaultEditorState(options: EditorStateOptions = {}): Edit
         html: "", // html 内容
         imgUrls: [], // 图片地址 list
         isShowElImageViewer: false, // 是否显示图片预览
-        width: 1200, // 宽度
+        width: "1200", // 宽度
         height: "600", // 高度
         isShowPreviewWechat: false, // 是否显示微信预览
         isUserScrollPreview: true, // 是否用户滚动预览

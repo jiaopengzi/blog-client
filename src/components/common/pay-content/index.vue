@@ -19,7 +19,7 @@
                 >元下载。
             </div>
             <div class="text" v-if="contentPayType === ContentPayType.Video">
-                <PostVideo :post-id="postId" :toc="videoToc" :is-paid="isPaid" />
+                <PostVideo class="no-pay-video" :post-id="postId" :toc="videoToc" :is-paid="isPaid" />
                 <div class="text">
                     付费内容，付费<span class="price">{{ fenToYuan(price) }}</span
                     >元观看。
@@ -116,6 +116,21 @@ const isShowContent = computed(() => {
     .my-icon {
         fill: #c1401f;
         font-size: 14px;
+    }
+
+    // @include respond-to("pc") {
+    // }
+
+    @include respond-to("pad") {
+        .no-pay-video {
+            margin-top: 12px;
+        }
+    }
+
+    @include respond-to("phone") {
+        .no-pay-video {
+            margin-top: 12px;
+        }
     }
 
     .text,

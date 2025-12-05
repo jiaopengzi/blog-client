@@ -240,6 +240,7 @@ const takeTime = computed(() => {
 }
 
 @include respond-to("phone") {
+    .meta-read-time,
     .meta-words,
     .immersion-read,
     .author-edit {

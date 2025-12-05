@@ -23,6 +23,7 @@ import { type UpdatedAtProps } from "@/components/common/post-detail/components/
 import { emptyPostMetaProps, type PostMetaProps } from "@/components/common/post-meta"
 import { EditorStateManager } from "@/components/editor"
 import { RouteNames } from "@/router"
+import { DeviceType, useDeviceStore } from "@/stores/device"
 import { useOptionsStore } from "@/stores/options"
 import { usePermissionRoleStore } from "@/stores/permissionRole"
 import { MessageUtil } from "@/utils/message"
@@ -38,7 +39,10 @@ export function useGetData(
     const isPasswordPost = ref<boolean>(false) // 是否是密码保护文章
 
     const optionsStore = useOptionsStore()
+    const deviceStore = useDeviceStore()
+
     const { head } = storeToRefs(optionsStore)
+    const { device } = storeToRefs(deviceStore)
 
     // 版权信息
     const copyright = ref<CopyrightProps>({
@@ -172,6 +176,19 @@ export function useGetData(
                 copyright.value.url = replacedUrl
             }
         },
+    )
+
+    watch(
+        () => device.value,
+        (newVal) => {
+            // 如果是手机设备，则不显示版权信息中的头像
+            if (newVal === DeviceType.PHONE) {
+                postMeta.value.formatStr = "YYYY-MM-DD"
+            } else {
+                postMeta.value.formatStr = "YYYY-MM-DD HH:mm:ss"
+            }
+        },
+        { immediate: true },
     )
 
     // 更新文章交互状态

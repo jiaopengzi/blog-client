@@ -59,7 +59,7 @@ export interface EditorState {
     html: string // html 内容
     imgUrls: string[] // 图片地址 list
     isShowElImageViewer: boolean // 是否显示图片预览
-    width: number // 宽度
+    width: string // 宽度
     height: string // 高度
     isShowPreviewWechat: boolean // 是否显示微信预览
     isUserScrollPreview: boolean // 是否用户滚动预览
