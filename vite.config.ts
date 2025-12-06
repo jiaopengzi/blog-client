@@ -13,7 +13,7 @@ import { ElementPlusResolver } from "unplugin-vue-components/resolvers"
 import Components from "unplugin-vue-components/vite"
 import { type CommonServerOptions, defineConfig } from "vite"
 import compression from "vite-plugin-compression"
-import Inspect from "vite-plugin-inspect"
+// import Inspect from "vite-plugin-inspect"
 import tsconfigPaths from "vite-tsconfig-paths"
 
 // 共享 dev server 和 preview server 配置
@@ -21,7 +21,7 @@ const commonServerOptions = (): CommonServerOptions => {
     return {
         host: "10.10.2.222",
         strictPort: true, // 端口被占用时直接退出，而不是尝试下一个可用端口
-        port: 7364, // 项目运行端口(九宫格 peng 7364 的拼音键数字)
+        port: 7364, // 项目运行端口(九宫格 peng 的拼音键数字)
 
         // 设置代理
         proxy: {
@@ -72,8 +72,8 @@ export default defineConfig({
         }),
         // ------------------------------element-plus 自动导入 结束
 
-        // vite-plugin-inspect 查看编译后的文件
-        Inspect(),
+        // // vite-plugin-inspect 查看编译后的文件
+        // Inspect(),
 
         // ------------------------------ gzip压缩 开始
         compression({
@@ -113,35 +113,8 @@ export default defineConfig({
 
     // 开发服务器配置
     server: {
-        host: "10.10.2.222",
-        strictPort: true, // 端口被占用时直接退出，而不是尝试下一个可用端口
-        port: 7364, // 项目运行端口(九宫格 peng 7364 的拼音键数字)
-
-        hmr: {
-            protocol: "ws",
-            host: "10.10.2.222",
-            port: 7364,
-        },
-
-        // 设置代理
-        proxy: {
-            // dev Server.proxy 可以是一个指向开发环境 API 服务器的字符串
-            "/api": {
-                target: "http://10.10.2.222:5426",
-                changeOrigin: true,
-                // rewrite: (path:string) => path.replace(/^\/api/, 'my-admin'),
-            },
-            "/admin/raw-github": {
-                target: "https://raw.githubusercontent.com",
-                changeOrigin: true,
-                rewrite: (path: string) => path.replace(/^\/admin\/raw-github/, ""),
-            },
-            "/admin/raw-gitee": {
-                target: "https://gitee.com",
-                changeOrigin: true,
-                rewrite: (path: string) => path.replace(/^\/admin\/raw-gitee/, ""),
-            },
-        },
+        ...commonServerOptions(),
+        hmr: false,
     },
 
     // 预览服务器配置
@@ -154,7 +127,7 @@ export default defineConfig({
 
         rollupOptions: {
             output: {
-                manualChunks(id) {
+                manualChunks(id: string) {
                     // 打包策略
                     if (id.includes("node_modules")) {
                         // 将 'node_modules' 分割为名为 'vendor' 的代码块

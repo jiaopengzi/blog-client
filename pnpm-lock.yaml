@@ -268,7 +268,7 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0
       vite:
-        specifier: v7.2.6
+        specifier: ^v7.2.6
         version: 7.2.6(@types/node@22.19.1)(lightningcss@1.30.2)(sass@1.94.2)(terser@5.39.0)
       vite-plugin-compression:
         specifier: ^0.5.1

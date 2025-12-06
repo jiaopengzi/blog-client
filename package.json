@@ -118,7 +118,7 @@
         "unplugin-auto-import": "^20.3.0",
         "unplugin-vue-components": "^30.0.0",
         "url-regex": "^5.0.0",
-        "vite": "v7.2.6",
+        "vite": "^v7.2.6",
         "vite-plugin-compression": "^0.5.1",
         "vite-plugin-inspect": "^11.3.3",
         "vite-plugin-style-import": "^2.0.0",

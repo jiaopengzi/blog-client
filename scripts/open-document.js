@@ -9,19 +9,19 @@
 import child_process from "child_process"
 
 // const url = 'https://jiaopengzi.com'
-const url1 = "http://10.10.2.222:7364"
+const urlDev = "http://10.10.2.222:7364"
 let cmd = ""
 // console.log(process.platform)
 switch (process.platform) {
     case "win32":
         cmd = "start"
         // child_process.exec(cmd + ' ' + url)
-        child_process.exec(cmd + " " + url1)
+        child_process.exec(cmd + " " + urlDev)
         break
 
     case "darwin":
         cmd = "open"
         // child_process.exec(cmd + ' ' + url)
-        child_process.exec(cmd + " " + url1)
+        child_process.exec(cmd + " " + urlDev)
         break
 }
