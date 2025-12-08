@@ -10,19 +10,23 @@
         <el-container ref="elContainerRef" direction="vertical">
             <div class="btns-header">
                 <div class="btns-header-left">
+                    <el-button type="primary" class="new-post-write btns-header-item" @click="newPostWrite">
+                        <j-icon :name="IconKeys.Edit" custom-class="btns-header-item-icon" />
+                        <span>新文章</span>
+                    </el-button>
                     <el-button type="primary" class="add-media btns-header-item" @click="mediaDialogVisible = true">
                         <j-icon :name="IconKeys.Media" custom-class="btns-header-item-icon" />
                         <span>添加媒体</span>
                     </el-button>
                 </div>
                 <div class="btns-header-right">
-                    <el-button type="primary" class="save-post btns-header-item" @click="viewPost">
-                        <j-icon :name="IconKeys.View" custom-class="btns-header-item-icon" />
-                        <span>前台查看</span>
-                    </el-button>
                     <el-button type="primary" class="save-post btns-header-item" @click="submitForm(formRef as FormInstance)">
                         <j-icon :name="IconKeys.Save" custom-class="btns-header-item-icon" />
                         <span>保存</span>
+                    </el-button>
+                    <el-button type="primary" class="save-post btns-header-item" @click="viewPost">
+                        <j-icon :name="IconKeys.View" custom-class="btns-header-item-icon" />
+                        <span>前台查看</span>
                     </el-button>
                 </div>
             </div>
@@ -180,6 +184,11 @@
                     <j-icon :name="IconKeys.Save" custom-class="btns-footer-item-icon" />
                     <span>保存</span>
                 </el-button>
+
+                <el-button type="primary" class="save-post btns-footer-item" @click="viewPost">
+                    <j-icon :name="IconKeys.View" custom-class="btns-header-item-icon" />
+                    <span>前台查看</span>
+                </el-button>
             </div>
         </el-container>
     </section>
@@ -210,6 +219,7 @@ import { EditorStateManager } from "@/components/editor"
 import JEditor from "@/components/editor/index.vue"
 import { useEditor } from "@/components/hooks/useEditor"
 import { usePostView } from "@/components/hooks/usePostView"
+import { RouteNames } from "@/router"
 import { useOptionsStore } from "@/stores/options"
 import { PermissionNames } from "@/stores/permissionRole"
 import { useUserStore } from "@/stores/user"
@@ -580,6 +590,13 @@ const viewPost = () => {
 
     // 新开窗口查看文章
     handleViewPost(postInfoForm.id, Target.Blank)
+}
+
+// 新文章
+const newPostWrite = async () => {
+    // 先跳转到文章列表再跳转到写文章页面, 以便重置组件状态
+    await router.push({ name: RouteNames.PostAll })
+    await router.push({ name: RouteNames.PostWrite })
 }
 
 onUnmounted(() => {

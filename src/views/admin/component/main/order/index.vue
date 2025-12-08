@@ -91,6 +91,7 @@ const cols: TableColumn[] = reactive([
         sortable: true,
         minWidth: 80,
         align: "center",
+        isCopyText: true,
     },
     {
         prop: "user_info",

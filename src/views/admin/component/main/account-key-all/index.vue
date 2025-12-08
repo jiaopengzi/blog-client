@@ -90,6 +90,7 @@ const cols: TableColumn[] = reactive([
         sortable: true,
         width: 100,
         align: "center",
+        isCopyText: true,
     },
     {
         prop: "title",
@@ -106,7 +107,6 @@ const cols: TableColumn[] = reactive([
         minWidth: 120,
         align: "center",
     },
-
     {
         prop: "all_quantity",
         label: "总数量",

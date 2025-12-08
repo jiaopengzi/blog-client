@@ -17,8 +17,8 @@ export enum NotificationStatus {
 
 // 通知状态显示
 export const NotificationStatusDisplay: Record<NotificationStatus, string> = {
-    [NotificationStatus.Disabled]: "禁用",
-    [NotificationStatus.Enabled]: "启用",
+    [NotificationStatus.Disabled]: "❌禁用",
+    [NotificationStatus.Enabled]: "✅启用",
 }
 
 // 获取通知状态选项

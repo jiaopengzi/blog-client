@@ -105,6 +105,7 @@ const cols: TableColumn[] = reactive([
         sortable: true,
         minWidth: 180,
         align: "center",
+        isCopyText: true,
     },
     {
         prop: "img",
@@ -119,6 +120,7 @@ const cols: TableColumn[] = reactive([
         sortable: true,
         minWidth: 150,
         align: "center",
+        isCopyText: true,
     },
     {
         prop: "user_display_name",
@@ -133,6 +135,7 @@ const cols: TableColumn[] = reactive([
         sortable: true,
         minWidth: 180,
         align: "center",
+        isCopyText: true,
     },
     {
         prop: "role",

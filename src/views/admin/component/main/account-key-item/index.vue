@@ -63,7 +63,7 @@ const cols: TableColumn[] = reactive([
         sortable: true,
         minWidth: 180,
         align: "center",
-        isHeading: true,
+        isCopyText: true,
     },
     // {
     //     prop: "product_id",
@@ -78,6 +78,7 @@ const cols: TableColumn[] = reactive([
         sortable: true,
         width: 180,
         align: "center",
+        isHeading: true,
     },
     {
         prop: "created_at",

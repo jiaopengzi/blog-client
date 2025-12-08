@@ -112,7 +112,7 @@ const cols: TableColumn[] = reactive([
         sortable: true,
         minWidth: 150,
         align: "center",
-        isHeading: true,
+        isCopyText: true,
     },
     {
         prop: "discount_type",
