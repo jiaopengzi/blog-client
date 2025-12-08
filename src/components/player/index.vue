@@ -21,7 +21,7 @@
             <video
                 class="my-video"
                 ref="videoRef"
-                :key="localPlayerState.videoID"
+                :key="`${localPlayerState.postId}-${localPlayerState.videoID}`"
                 :src="localPlayerState.src"
                 :poster="localPlayerState.poster"
                 @timeupdate="handleTimeupdate"
@@ -558,12 +558,25 @@ watch(
 
 let hls: Hls | null = null // 将 hls 实例提到外部, 以便销毁
 
+// 显示销毁 hls 实例
+const destroyHls = () => {
+    if (hls) {
+        hls.stopLoad()
+        hls.detachMedia()
+        hls.destroy()
+        hls = null
+    }
+}
+
 // 加载 hls
 const loadHls = () => {
+    // 销毁旧的 hls 实例
+    destroyHls()
+
     if (Hls.isSupported()) {
         // 创建 hls 实例及配置
         hls = new Hls({
-            loader: createCustomLoaderClass(localPlayerState.isAdmin),
+            loader: createCustomLoaderClass(localPlayerState.isAdmin, localPlayerState.postId),
             maxMaxBufferLength: 10, // 最大缓冲时间(秒)
             maxBufferLength: 10, // 缓冲时间(秒)
             maxBufferSize: 2 * 1024 * 1024, // 缓冲大小(字节), 假设每个分片大小约为1MB
@@ -598,11 +611,12 @@ const loadHls = () => {
 
         // 处理 HLS 错误
         hls.on(Hls.Events.ERROR, function (event, data) {
-            if (data.fatal) {
-                handleHlsError(hls, data)
-            } else {
-                hls?.destroy()
-                console.warn("non-fatal error encountered:", data)
+            // 处理 hls 错误，并判断是否为预期错误
+            const isExpectedError = handleHlsError(hls, data)
+            if (data.fatal && !isExpectedError) {
+                console.error("non-fatal error encountered:", data)
+                // 销毁 hls 实例
+                destroyHls()
             }
         })
     } else {
@@ -612,10 +626,13 @@ const loadHls = () => {
 }
 
 // 处理 hls 错误
-const handleHlsError = (hls: Hls | null, data: ErrorData) => {
+const handleHlsError = (hls: Hls | null, data: ErrorData): boolean => {
+    // 返回是否为预期错误
+    let isExpectedError = false
+
     // 确保 hls 实例和 data.response.code 存在
     if (!hls || !data.response || !data.response.code) {
-        return
+        return isExpectedError
     }
 
     // 处理自定义 loader 中的错误
@@ -628,7 +645,8 @@ const handleHlsError = (hls: Hls | null, data: ErrorData) => {
 
     // 如果是成功的 code, 则直接返回
     if (successCodes.includes(resCode)) {
-        return
+        isExpectedError = true
+        return isExpectedError
     }
 
     // 根据错误码展示不同的错误信息
@@ -649,8 +667,9 @@ const handleHlsError = (hls: Hls | null, data: ErrorData) => {
         managerShowError(localManager, errMsg)
 
         // 销毁 hls 实例
-        hls.destroy()
-        return
+        destroyHls()
+        isExpectedError = true
+        return isExpectedError
     }
 
     // 其他错误类型，并根据错误类型尝试恢复
@@ -664,19 +683,23 @@ const handleHlsError = (hls: Hls | null, data: ErrorData) => {
             // 尝试恢复网络错误
             // console.warn("fatal network error encountered, try to recover")
             hls.startLoad()
+            isExpectedError = true
             break
         case Hls.ErrorTypes.MEDIA_ERROR:
             // 尝试恢复媒体错误
             // console.warn("fatal media error encountered, try to recover")
             hls.recoverMediaError()
+            isExpectedError = true
             break
         default:
             // 无法恢复的错误
             // console.warn("fatal error encountered, destroy hls instance")
             errMsg = errMsg + ` 播放错误: ${data.details}`
             localManager.setErrMsg(errMsg)
-            hls.destroy()
+            destroyHls()
+            isExpectedError = false
     }
+    return isExpectedError
 }
 
 // 展示错误在播放器上
@@ -760,8 +783,11 @@ onBeforeUnmount(() => {
     const mediaQueryList = window.matchMedia("(orientation: landscape)")
     mediaQueryList.removeEventListener("change", handleOrientationChange)
 
-    // 销毁 hls 实例 destroy
+    // 销毁 state 管理器
     localManager.destroy()
+
+    // 显式销毁 hls
+    destroyHls()
 })
 </script>
 

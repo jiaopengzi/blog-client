@@ -9,11 +9,7 @@
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
-export function getMainM3u8API(fileIdHash: string, postId: string = ""): ResPromise<Res<string>> {
-    if (postId) {
-        fileIdHash += `/post-id/${postId}`
-    }
-
+export function getMainM3u8API(fileIdHash: string): ResPromise<Res<string>> {
     return request({
         url: `${routerGroup}/video/${fileIdHash}`,
         method: "get",
@@ -21,10 +17,7 @@ export function getMainM3u8API(fileIdHash: string, postId: string = ""): ResProm
 }
 
 // 管理员获取
-export function getMainM3u8AdminAPI(fileIdHash: string, postId: string = ""): ResPromise<Res<string>> {
-    if (postId) {
-        fileIdHash += `/post-id/${postId}`
-    }
+export function getMainM3u8AdminAPI(fileIdHash: string): ResPromise<Res<string>> {
     return request({
         url: `${routerGroup}/video/admin/${fileIdHash}`,
         method: "get",

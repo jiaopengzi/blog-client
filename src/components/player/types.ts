@@ -213,4 +213,7 @@ export interface PlayerState {
     hasToc: boolean
     // 是否显示目录
     isShowToc: boolean
+
+    // postId 视频所属的文章 ID
+    postId: string
 }

@@ -14,11 +14,7 @@ export interface M3u8ResData {
     m3u8: string
 }
 
-export function getM3u8API(fileIdHashResolution: string, postId: string = ""): ResPromise<Res<M3u8ResData>> {
-    if (postId) {
-        fileIdHashResolution += `/post-id/${postId}`
-    }
-
+export function getM3u8API(fileIdHashResolution: string): ResPromise<Res<M3u8ResData>> {
     return request({
         url: `${routerGroup}/video/${fileIdHashResolution}`,
         method: "get",
@@ -26,10 +22,7 @@ export function getM3u8API(fileIdHashResolution: string, postId: string = ""): R
 }
 
 // 管理员获取
-export function getM3u8AdminAPI(fileIdHashResolution: string, postId: string = ""): ResPromise<Res<M3u8ResData>> {
-    if (postId) {
-        fileIdHashResolution += `/post-id/${postId}`
-    }
+export function getM3u8AdminAPI(fileIdHashResolution: string): ResPromise<Res<M3u8ResData>> {
     return request({
         url: `${routerGroup}/video/admin/${fileIdHashResolution}`,
         method: "get",

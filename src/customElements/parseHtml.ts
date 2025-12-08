@@ -51,7 +51,7 @@ export function parseHtml(html: string): HTMLElement {
 }
 
 // 解析 HTML 字符串为内容片段数组
-export function parseHtmlToContentParts(html: string): ContentPart[] {
+export function parseHtmlToContentParts(html: string, postId: string): ContentPart[] {
     // 先预处理
     const cleanedHtml = preprocessHtml(html)
 
@@ -76,7 +76,7 @@ export function parseHtmlToContentParts(html: string): ContentPart[] {
             }
 
             if (tagName === Names.VideoPlayer) {
-                const content = getVideoPlayerState(child as HTMLElement).state
+                const content = getVideoPlayerState(child as HTMLElement, postId).state
                 parts.push({ type: tagName as Names, content })
                 continue
             }

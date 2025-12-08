@@ -130,7 +130,7 @@ const htmlData = computed(() => {
         htmlStr = htmlHandleWeChat(html)
     }
 
-    return parseHtmlToContentParts(htmlStr)
+    return parseHtmlToContentParts(htmlStr, postId)
 })
 
 // 判断是否为付费内容组件

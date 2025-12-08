@@ -111,6 +111,14 @@ export class PlayerStateManager {
     }
 
     /**
+     * 设置视频所属文章 ID
+     * @param {string} postID - 文章 ID
+     */
+    setPostID(postID: string): void {
+        this.state.postId = postID
+    }
+
+    /**
      * 设置音量
      * @param {number} newVolume - 新的音量值，范围为 0 到 100
      */

@@ -72,6 +72,15 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
         { immediate: true },
     )
 
+    // 监听 postId 变化
+    watch(
+        () => postId.value,
+        (newVal) => {
+            manager.setPostID(newVal)
+        },
+        { immediate: true },
+    )
+
     // 获取播放器状态
     const state = manager.getState()
 

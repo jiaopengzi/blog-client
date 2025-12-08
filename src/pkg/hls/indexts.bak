@@ -39,7 +39,7 @@ enum CustomLoaderError {
  * const CustomLoader = createCustomLoaderClass(true);
  * const hls = new Hls({ loader: CustomLoader });
  */
-export function createCustomLoaderClass(isAdmin: boolean, postId: string = ""): new (config: HlsConfig) => Loader<LoaderContext> {
+export function createCustomLoaderClass(isAdmin: boolean): new (config: HlsConfig) => Loader<LoaderContext> {
     /**
      * 自定义 Loader 类：扩展并覆盖默认的 HLS Loader 行为以支持通过后端接口获取 m3u8 与解密密钥。
      *
@@ -57,14 +57,12 @@ export function createCustomLoaderClass(isAdmin: boolean, postId: string = ""): 
     return class CustomLoader extends Hls.DefaultConfig.loader {
         // 用于区分是否是管理员模式
         private isAdmin: boolean
-        private postId: string
 
         constructor(config: HlsConfig) {
             super(config)
 
             // 默认为 false
             this.isAdmin = isAdmin || false
-            this.postId = postId || ""
         }
 
         /**
@@ -145,7 +143,7 @@ export function createCustomLoaderClass(isAdmin: boolean, postId: string = ""): 
             // 获取 main m3u8
             const getMainM3u8 = this.isAdmin ? getMainM3u8AdminAPI : getMainM3u8API
 
-            await getMainM3u8(context.url, this.postId)
+            await getMainM3u8(context.url)
                 .then((response) => {
                     stats.loading.end = window.performance.now()
 
@@ -173,8 +171,8 @@ export function createCustomLoaderClass(isAdmin: boolean, postId: string = ""): 
         ): Promise<void> {
             // 获取 m3u8
             const getM3u8 = this.isAdmin ? getM3u8AdminAPI : getM3u8API
-            const url = convertResolutionParam(context.url)
-            await getM3u8(url, this.postId)
+
+            await getM3u8(context.url)
                 .then((response) => {
                     stats.loading.end = window.performance.now()
 
@@ -213,7 +211,7 @@ export function createCustomLoaderClass(isAdmin: boolean, postId: string = ""): 
 
             // 获取解密密钥
             const getKey = this.isAdmin ? getKeyAdminAPI : getKeyAPI
-            await getKey(videoId, this.postId)
+            await getKey(videoId)
                 .then((response) => {
                     stats.loading.first = window.performance.now() // 记录首次请求时间
                     return response.data
@@ -278,16 +276,4 @@ export function playKeyDecryptAES2Bin(playKeyEncrypt: string): Uint8Array<ArrayB
         }),
     )
     return playKeyDecryptBin
-}
-
-/**
- * @description: 将 url 转换为 fileIdHash/resolution/分辨率格式
- * @param url 原始 url，格式为 fileIdHash/分辨率，例如 m-5-8e72860c/1080p
- * @return 转换后的字符串，格式为 fileIdHash/resolution/分辨率，例如 m-5-8e72860c/resolution/1080p
- */
-const convertResolutionParam = (url: string) => {
-    const parts = url.split("/")
-    const fileIdHash = parts[0] // m-5-8e72860c
-    const resolution = parts[1] // 1080p
-    return `${fileIdHash}/resolution/${resolution}`
 }

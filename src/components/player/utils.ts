@@ -73,6 +73,7 @@ export const createDefaultPlayerState = (): PlayerState => ({
     isAdmin: false,
     hasToc: false,
     isShowToc: false,
+    postId: "",
 })
 
 /**

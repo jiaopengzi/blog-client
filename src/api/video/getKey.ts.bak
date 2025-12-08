@@ -9,11 +9,7 @@
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
-export function getKeyAPI(fileIdHash: string, postId: string = ""): ResPromise<Res<string>> {
-    if (postId) {
-        fileIdHash += `/post-id/${postId}`
-    }
-
+export function getKeyAPI(fileIdHash: string): ResPromise<Res<string>> {
     return request({
         url: `${routerGroup}/video/key/${fileIdHash}`,
         method: "get",
@@ -21,11 +17,7 @@ export function getKeyAPI(fileIdHash: string, postId: string = ""): ResPromise<R
 }
 
 // 管理员获取
-export function getKeyAdminAPI(fileIdHash: string, postId: string = ""): ResPromise<Res<string>> {
-    if (postId) {
-        fileIdHash += `/post-id/${postId}`
-    }
-
+export function getKeyAdminAPI(fileIdHash: string): ResPromise<Res<string>> {
     return request({
         url: `${routerGroup}/video/admin/key/${fileIdHash}`,
         method: "get",
