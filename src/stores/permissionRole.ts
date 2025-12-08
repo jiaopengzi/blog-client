@@ -159,6 +159,7 @@ export const usePermissionRoleStore = defineStore("permissionRole", {
 
             // 如果没有, 则从服务器获取权限, 并存入本地
             const flag = await this.hasPermissionByServer(PermissionNames.LoginAdmin)
+
             localStorage.setItem(LocalStorageKey.PostDetailEditEnable, JSON.stringify(flag))
 
             return flag

@@ -1,0 +1,11 @@
+/*
+ * FilePath    : blog-client-dev\src\views\test\style.module.scss
+ */
+
+#preview-test {
+    background-color: red;
+
+    :deep(.test) {
+        background-color: blue;
+    }
+}

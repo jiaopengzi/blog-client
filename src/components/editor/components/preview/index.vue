@@ -8,7 +8,7 @@
 
 <template>
     <div ref="previewRef" id="preview" @click="handleDelegateClick" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave">
-        <div v-for="(item, index) in htmlData" :key="index">
+        <template v-for="(item, index) in htmlData" :key="index">
             <div v-if="item.type === 'html'" v-html="item.content"></div>
 
             <div v-if="item.type === Names.VideoPlayer" :key="(item.content as PlayerState).videoID" class="video-player-box">
@@ -45,7 +45,7 @@
                 @pay-vip="emitPayVip"
                 @pay-single="emitPaySingle"
             />
-        </div>
+        </template>
     </div>
     <!-- 参考:https://github.com/element-plus/element-plus/blob/dev/packages/components/image/src/image.vue -->
     <el-image-viewer v-if="isShowElImageViewer" @close="closeElImageViewer" :url-list="imgUrls" />
@@ -452,12 +452,6 @@ defineExpose({
 })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 @use "./style.module.scss";
-.video-player-box {
-    margin: 16px 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 </style>

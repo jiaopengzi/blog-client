@@ -173,7 +173,15 @@ export function createCustomLoaderClass(isAdmin: boolean, postId: string = ""): 
         ): Promise<void> {
             // 获取 m3u8
             const getM3u8 = this.isAdmin ? getM3u8AdminAPI : getM3u8API
-            const url = convertResolutionParam(context.url)
+            let url = context.url
+
+            // 普通用户需要转换 resolution 参数
+            if (!this.isAdmin) {
+                url = convertResolutionParam(context.url)
+            }
+            console.log("============>context.url", context.url)
+            console.log("============>url", url)
+
             await getM3u8(url, this.postId)
                 .then((response) => {
                     stats.loading.end = window.performance.now()

@@ -916,7 +916,6 @@ video::-webkit-media-controls-enclosure {
 
         // 错误文字
         .show-error-text {
-            font-size: 20px;
             font-weight: bold;
             color: red;
             background-color: rgba(0, 0, 0, 0.8);
@@ -960,10 +959,18 @@ HTML: <div class="loader"></div>
 
     .video-container {
         width: pc.$width-video-main;
+
+        // 错误信息显示
+        .show-error {
+            // 错误文字
+            .show-error-text {
+                font-size: 20px;
+            }
+        }
     }
 
     .video-container[data-preview="wechat"] {
-        width: 390px;
+        width: 373px;
     }
 }
 
@@ -975,6 +982,13 @@ HTML: <div class="loader"></div>
     .video-container {
         max-width: pad.$width-video-main;
         max-height: pad.$height-video-main;
+        // 错误信息显示
+        .show-error {
+            // 错误文字
+            .show-error-text {
+                font-size: 20px;
+            }
+        }
     }
 
     .video-container[data-preview="wechat"] {
@@ -992,6 +1006,13 @@ HTML: <div class="loader"></div>
     .video-container {
         max-width: phone.$width-video-main;
         max-height: phone.$height-video-main;
+        // 错误信息显示
+        .show-error {
+            // 错误文字
+            .show-error-text {
+                font-size: 16px;
+            }
+        }
     }
 
     .my-video {

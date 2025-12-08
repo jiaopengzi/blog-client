@@ -114,7 +114,7 @@ export default defineConfig({
     // 开发服务器配置
     server: {
         ...commonServerOptions(),
-        hmr: false,
+        hmr: true, // 热模块替换
     },
 
     // 预览服务器配置

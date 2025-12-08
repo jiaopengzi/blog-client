@@ -14,9 +14,14 @@
 
 #preview {
     font-family: "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
-
-    // 不要滚动条
-    overflow: hidden;
+    overflow-x: hidden;
+    padding: 0 20px;
+    box-sizing: border-box;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--jpz-color-primary);
+    // background-color: var(--jpz-bg-color);
+    height: var(--jpz-codemirror-height, 100%);
 
     h1 {
         font-size: 2em;
@@ -57,6 +62,15 @@
         color: var(--jpz-color-primary);
         font-weight: 700;
         padding-bottom: 2px;
+    }
+
+    @include respond-to("phone") {
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-size: 18px;
+        }
     }
 
     /* =====================================标题 结束*/
@@ -420,5 +434,38 @@
         p {
             color: var(--markdown-alert-caution-color);
         }
+    }
+}
+
+@include respond-to("pc") {
+    #preview {
+        max-width: pc.$width-page-main;
+        width: 100%;
+    }
+
+    #preview[data-preview="wechat"] {
+        width: 373px;
+    }
+}
+
+@include respond-to("pad") {
+    #preview {
+        width: 100%;
+    }
+
+    #preview[data-preview="wechat"] {
+        max-width: 373px;
+        width: 100%;
+    }
+}
+
+@include respond-to("phone") {
+    #preview {
+        width: 100%;
+    }
+
+    #preview[data-preview="wechat"] {
+        max-width: 373px;
+        width: 100%;
     }
 }

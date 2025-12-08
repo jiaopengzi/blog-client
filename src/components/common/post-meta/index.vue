@@ -246,5 +246,10 @@ const takeTime = computed(() => {
     .author-edit {
         display: none;
     }
+
+    .title {
+        font-weight: 700;
+        font-size: 18px;
+    }
 }
 </style>
