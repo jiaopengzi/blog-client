@@ -27,14 +27,20 @@
 
             <!-- 第二行右侧 -->
             <div class="right-controls">
-                <div class="volume-wrapper" @mouseenter="showVolumeBarWithWrapper" @mouseleave="hideVolumeBar">
+                <div class="volume-wrapper">
                     <!-- 静音按钮 -->
                     <button type="button" class="controls-btn volume-mute" @click="handleButtonClick(toggleMute)" @mouseenter="showVolumeBar">
                         <j-icon :name="IconNameMute" custom-class="iconfont" />
                     </button>
 
                     <!-- 音量控制 -->
-                    <VolumeBar class="volume-bar" :class="{ visible: isVolumeBarVisible }" :volume="localVolume" @update-volume="seekVolume" />
+                    <VolumeBar
+                        class="volume-bar"
+                        :class="{ visible: isVolumeBarVisible }"
+                        :volume="localVolume"
+                        @update-volume="seekVolume"
+                        @mouseleave="hideVolumeBar"
+                    />
                 </div>
 
                 <!-- 目录显示切换 -->
@@ -43,7 +49,7 @@
                 </button>
 
                 <!-- 设置 播放速度 清晰度 字幕 -->
-                <div class="setting-wrapper" @mouseenter="showSettingWithWrapper" @mouseleave="hideSetting">
+                <div class="setting-wrapper">
                     <button type="button" class="controls-btn" @mouseenter="showSetting">
                         <j-icon :name="IconKeys.Setting" custom-class="iconfont" />
                     </button>
@@ -60,6 +66,7 @@
                         @get-is-loop="handelIsLoop"
                         @get-play-level="handelPlayLevel"
                         @get-playback-rate="handelPlaybackRate"
+                        @mouseleave="hideSetting"
                     />
                 </div>
 
@@ -214,13 +221,6 @@ const hideVolumeBar = () => {
     }, 150)
 }
 
-// 在 volume-wrapper 上鼠标进入时显示音量条
-const showVolumeBarWithWrapper = () => {
-    if (isVolumeBarVisible.value) {
-        showVolumeBar()
-    }
-}
-
 // 设置音量
 const seekVolume = (volume: number) => {
     localManager.setVolume(volume)
@@ -271,13 +271,6 @@ const hideSetting = () => {
     hideTimer = window.setTimeout(() => {
         isShowVideoSetting.value = false
     }, 150)
-}
-
-// 在 setting-wrapper 上鼠标进入时显示设置菜单
-const showSettingWithWrapper = () => {
-    if (isShowVideoSetting.value) {
-        showSetting()
-    }
 }
 
 // 切换网页全屏
@@ -359,12 +352,12 @@ onUnmounted(() => {
 
         .iconfont {
             font-size: 20px;
-            fill: rgba(255, 255, 255, 0.9);
+            fill: #ffffffe6;
             transition: fill 0.3s ease;
         }
 
         .iconfont:hover {
-            fill: rgba(255, 255, 255, 1);
+            fill: #ffffffff;
         }
 
         .left-controls {
@@ -374,6 +367,22 @@ onUnmounted(() => {
             .timeDisplay {
                 white-space: nowrap;
                 margin: 0 10px;
+            }
+        }
+
+        // 公共样式占位
+        %top-show {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 8px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            z-index: 10;
+
+            &.visible {
+                opacity: 1;
             }
         }
 
@@ -387,18 +396,7 @@ onUnmounted(() => {
                 align-items: center;
 
                 .volume-bar {
-                    position: absolute;
-                    bottom: 100%;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    margin-bottom: 8px;
-                    opacity: 0;
-                    transition: opacity 0.2s ease;
-                    z-index: 10;
-
-                    &.visible {
-                        opacity: 1;
-                    }
+                    @extend %top-show;
                 }
             }
 
@@ -408,17 +406,7 @@ onUnmounted(() => {
                 align-items: center;
 
                 .settings {
-                    position: absolute;
-                    bottom: 100%;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    margin-bottom: 8px;
-                    z-index: 10;
-                    opacity: 0;
-
-                    &.visible {
-                        opacity: 1;
-                    }
+                    @extend %top-show;
                 }
             }
         }
@@ -437,12 +425,12 @@ onUnmounted(() => {
 
     &:hover {
         transform: scale(1.2);
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: #ffffff1a;
     }
 
     &:active {
         transform: scale(1.1);
-        background-color: rgba(255, 255, 255, 0.2);
+        background-color: #ffffff33;
     }
 }
 @include respond-to("pad") {

@@ -57,7 +57,7 @@ watch(
     width: 100%;
     text-align: center;
     color: white;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    text-shadow: 2px 2px 4px #000000b3;
     font-size: 1.5rem;
 }
 </style>

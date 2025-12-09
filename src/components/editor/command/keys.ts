@@ -43,8 +43,8 @@ const postPc = [
     CommandsKey.Edit,
     CommandsKey.Scroll,
     CommandsKey.Preview,
-    CommandsKey.WechatOfficialAccount,
     CommandsKey.Fullscreen,
+    CommandsKey.WechatOfficialAccount,
     CommandsKey.Copy,
     // CommandsKey.Markdown,
     // CommandsKey.Html,
@@ -81,7 +81,6 @@ const postPad = [
     CommandsKey.Edit,
     CommandsKey.Preview,
     CommandsKey.Fullscreen,
-    CommandsKey.Copy,
     CommandsKey.Help,
     // CommandsKey.Info,
 ]
@@ -101,7 +100,6 @@ const postPhone = [
     CommandsKey.Edit,
     CommandsKey.Preview,
     CommandsKey.Fullscreen,
-    CommandsKey.Copy,
     CommandsKey.Help,
     // CommandsKey.Info,
 ]
@@ -137,9 +135,9 @@ const commentPad = [
     CommandsKey.TaskList,
     CommandsKey.Mark,
     CommandsKey.Emoji,
-    CommandsKey.Fullscreen,
     CommandsKey.Edit,
     CommandsKey.Preview,
+    CommandsKey.Fullscreen,
     CommandsKey.Help,
     // CommandsKey.Info,
 ]
@@ -153,9 +151,9 @@ const commentPhone = [
     CommandsKey.Ul,
     CommandsKey.Mark,
     CommandsKey.Emoji,
-    CommandsKey.Fullscreen,
     CommandsKey.Edit,
     CommandsKey.Preview,
+    CommandsKey.Fullscreen,
     CommandsKey.Help,
     // CommandsKey.Info,
 ]

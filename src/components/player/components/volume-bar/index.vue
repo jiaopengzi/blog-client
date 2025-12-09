@@ -248,7 +248,7 @@ $slider-size: 16px;
     align-items: center;
     justify-content: center;
     // 半透明背景色
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: #0000001a;
     border-radius: 4px;
 
     .tooltip {
@@ -256,7 +256,7 @@ $slider-size: 16px;
         left: 50%;
         top: 10px;
         transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.7);
+        background-color: #000000b3;
         color: white;
         border-radius: 3px;
         font-size: 12px;

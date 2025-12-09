@@ -26,7 +26,7 @@
     --item-hover-bg-color: #e5e5e596;
     --active-file-bg-color: var(--item-hover-bg-color);
 
-    --blur-text-color: rgba(48, 68, 85, 0.5);
+    --blur-text-color: #30445580;
     --drake-accent: #31a062;
     --drake-highlight: #d63200;
     --a-color: var(--drake-accent);
@@ -147,7 +147,7 @@ tspan {
 }
 
 [id^="mermaidChart"] rect.rect {
-    fill: rgba(175, 255, 212, 0.3) !important;
+    fill: #afffd44d !important;
 }
 
 .md-diagram-panel-preview text.actor > tspan {
@@ -648,7 +648,7 @@ kbd {
     font-size: 0.95rem;
     padding: 0.3em 0.4em;
     border-radius: 0.4em;
-    box-shadow: 0.1em 0.1em 0.2em rgba(0, 0, 0, 0.3);
+    box-shadow: 0.1em 0.1em 0.2em #0000004d;
 }
 
 #write del {
@@ -825,7 +825,7 @@ kbd {
 
 /** focus mode */
 .on-focus-mode blockquote {
-    border-left-color: rgba(85, 85, 85, 0.12);
+    border-left-color: #5555551f;
 }
 
 header,
@@ -1261,7 +1261,7 @@ a.ty-link {
 }
 
 .cm-s-inner .CodeMirror-gutters {
-    border-right: 1px solid rgba(120, 120, 120, 0.3);
+    border-right: 1px solid #7878784d;
     background: var(--jpz-code-block-bg-color);
 }
 

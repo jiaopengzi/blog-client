@@ -688,7 +688,7 @@ img {
     width: auto; // 根据图片的实际尺寸进行缩放
     margin: 4px auto;
     border-radius: 4px;
-    // box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);     // 阴影
+    // box-shadow: 0 0 10px #00000033;
 }
 
 :deep(h4) {

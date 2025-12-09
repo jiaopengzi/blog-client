@@ -834,7 +834,7 @@ video::-webkit-media-controls-enclosure {
         display: flex;
         flex-direction: column;
         justify-content: center;
-        background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3));
+        background: linear-gradient(180deg, #0000, #0000004d);
         transition: opacity 0.8s;
         opacity: 1;
         z-index: 4;
@@ -850,7 +850,7 @@ video::-webkit-media-controls-enclosure {
         bottom: 0;
         left: 10px;
         width: calc(100% - 20px);
-        background-color: rgba(0, 0, 0, 0);
+        background-color: #00000000;
     }
 
     // 绝对定位
@@ -874,7 +874,7 @@ video::-webkit-media-controls-enclosure {
 
         .iconfont {
             font-size: 100px;
-            fill: rgba(0, 0, 0, 0.5);
+            fill: #00000080;
             transition: fill 0.3s ease;
         }
 
@@ -894,14 +894,14 @@ video::-webkit-media-controls-enclosure {
     .play-button-page {
         @extend %play-paused-page;
         // 背景颜色从中心向四周扩散
-        background-image: radial-gradient(circle, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+        background-image: radial-gradient(circle, #0000001a, #00000000);
         z-index: 2;
     }
 
     .play-to-paused-page {
         @extend %play-paused-page;
         // 透明背景
-        background-color: rgba(0, 0, 0, 0);
+        background-color: #00000000;
         z-index: 2;
     }
 
@@ -919,7 +919,7 @@ video::-webkit-media-controls-enclosure {
         .show-error-text {
             font-weight: bold;
             color: red;
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: #000000cc;
             padding: 10px 20px;
             border-radius: 10px;
         }
@@ -928,8 +928,8 @@ video::-webkit-media-controls-enclosure {
 
 // 字幕样式
 ::cue {
-    color: rgba(230, 230, 230);
-    background: rgba(0, 0, 0, 0.4);
+    color: #e6e6e6ff;
+    background: #00000066;
     font-family: "SmileySans", "Microsoft YaHei", Arial, sans-serif;
     line-height: 2em;
 }

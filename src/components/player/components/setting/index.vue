@@ -60,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue"
+import { computed, ref } from "vue"
 
 import {
     DisabledSubtitles,
@@ -76,7 +76,6 @@ defineOptions({ name: "VideoSetting" })
 
 // 定义props
 const props = defineProps<{
-    isShow: boolean
     subtitles: Subtitles | undefined
     playLevel: PlayLevel
     playbackRate: PlaybackRate
@@ -146,16 +145,6 @@ const handleIsLoopChange = (value: boolean) => {
 
 // 保持只展开一个
 const handleChange = (activeNames: string[]) => (localActiveNames.value = activeNames.length > 0 ? [activeNames[activeNames.length - 1]!] : [])
-
-// 监控 isShow 的变化,如果 isShow 为 false,则清空选中状态
-watch(
-    () => props.isShow,
-    (newVal) => {
-        if (!newVal) {
-            localActiveNames.value = []
-        }
-    },
-)
 </script>
 
 <style scoped lang="scss">

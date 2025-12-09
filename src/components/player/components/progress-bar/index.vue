@@ -324,7 +324,7 @@ $bar-height: 6px; // 进度条高度
     .tooltip {
         position: absolute;
         bottom: 40px;
-        background: rgba(0, 0, 0, 0.7);
+        background-color: #000000b3;
         color: white;
         border-radius: 3px;
         font-size: 12px;

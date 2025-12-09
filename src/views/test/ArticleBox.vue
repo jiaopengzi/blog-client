@@ -25,8 +25,7 @@ const { title, content, badgeType } = defineProps<Props>()
     border: 1px solid #ccc;
     border-radius: 8px;
     background-color: #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-
+    box-shadow: 0 2px 8px #0000001a;
     .badge {
         position: absolute;
         top: 0;

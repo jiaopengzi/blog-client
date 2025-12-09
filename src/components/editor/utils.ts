@@ -571,6 +571,7 @@ export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
     try {
         // 将 katex 公式转成图片
         await katexToImage(element)
+
         // 将外部样式应用为内联样式
         applyInlineStyles(element)
 

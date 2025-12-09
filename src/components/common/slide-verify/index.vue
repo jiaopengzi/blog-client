@@ -157,6 +157,6 @@ const closeMe = () => {
     top: 0;
     left: 0;
     z-index: 897;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: #00000099;
 }
 </style>

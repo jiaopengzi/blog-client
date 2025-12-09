@@ -234,7 +234,7 @@ onMounted(async () => {
     background-color: var(--jpz-bg-color);
     padding: 20px 40px 30px 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px #0000001a;
     width: var(--bars-width);
 }
 
@@ -288,12 +288,12 @@ h1 {
     position: relative;
     transition: all 0.3s ease;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 5px #00000033;
 }
 
 .bar:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 8px #0000004d;
     opacity: 0.9;
 }
 
@@ -307,7 +307,7 @@ h1 {
     color: var(--jpz-text-color-primary);
     padding: 2px 6px;
     border-radius: 3px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 3px #00000033;
     opacity: 0;
     transition: opacity 0.3s ease;
     width: max-content;

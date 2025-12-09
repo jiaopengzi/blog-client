@@ -27,26 +27,51 @@
 
             <!-- 第二行右侧 -->
             <div class="right-controls">
-                <div class="volume-wrapper">
+                <div class="volume-wrapper" @mouseenter="showVolumeBarWithWrapper" @mouseleave="hideVolumeBar">
                     <!-- 静音按钮 -->
                     <button type="button" class="controls-btn volume-mute" @click="handleButtonClick(toggleMute)" @mouseenter="showVolumeBar">
                         <j-icon :name="IconNameMute" custom-class="iconfont" />
                     </button>
 
                     <!-- 音量控制 -->
-                    <VolumeBar
-                        class="volume-bar"
-                        :class="{ visible: isVolumeBarVisible }"
-                        :volume="localVolume"
-                        @update-volume="seekVolume"
-                        @mouseleave="hideVolumeBar"
-                    />
+                    <VolumeBar class="volume-bar" :class="{ visible: isVolumeBarVisible }" :volume="localVolume" @update-volume="seekVolume" />
                 </div>
 
                 <!-- 目录显示切换 -->
                 <button v-if="localPlayerState.hasToc" type="button" class="controls-btn toc" @click="handleButtonClick(toggleIsShowToc)">
                     <j-icon :name="IconKeys.Toc" custom-class="iconfont" />
                 </button>
+
+                <!-- 设置 播放速度 清晰度 字幕 -->
+                <!-- 使用 append-to 到对应元素才能保证全屏显示 -->
+                <!-- 参考文档：https://element-plus.org/zh-CN/component/tooltip.html -->
+                <el-popover
+                    :width="100"
+                    placement="top"
+                    :append-to="elPopoverAppendToElement"
+                    :teleported="true"
+                    popper-class="video-el-popover"
+                    @hide="handleHideSetting"
+                    @show="handleShowSetting"
+                >
+                    <template #reference>
+                        <button type="button" class="controls-btn">
+                            <j-icon :name="IconKeys.Setting" custom-class="iconfont" />
+                        </button>
+                    </template>
+                    <VideoSetting
+                        class="setting"
+                        :is-show="isShowVideoSetting"
+                        :subtitles="localPlayerState.subtitles"
+                        :play-level="localPlayerState.playLevel"
+                        :playback-rate="localPlayerState.playbackRate"
+                        :is-loop="localPlayerState.isLoop"
+                        @selected-subtitles-language="handleSelectedSubtitleLanguage"
+                        @get-is-loop="handelIsLoop"
+                        @get-play-level="handelPlayLevel"
+                        @get-playback-rate="handelPlaybackRate"
+                    />
+                </el-popover>
 
                 <!-- 画中画 -->
                 <button type="button" class="controls-btn pip" @click="handleButtonClick(togglePIP)">
@@ -62,27 +87,6 @@
                 <button type="button" class="controls-btn fullscreen" @click="handleButtonClick(toggleFullscreen)">
                     <j-icon :name="IconKeys.Fullscreen" custom-class="iconfont" />
                 </button>
-
-                <!-- 设置 播放速度 清晰度 字幕 -->
-                <div class="setting-wrapper">
-                    <button type="button" class="controls-btn" @click="toggleSetting" @mouseenter="showSetting">
-                        <j-icon :name="IconKeys.Setting" custom-class="iconfont" />
-                    </button>
-
-                    <VideoSetting
-                        class="settings"
-                        :class="{ visible: isShowVideoSetting }"
-                        :subtitles="localPlayerState.subtitles"
-                        :play-level="localPlayerState.playLevel"
-                        :playback-rate="localPlayerState.playbackRate"
-                        :is-loop="localPlayerState.isLoop"
-                        @selected-subtitles-language="handleSelectedSubtitleLanguage"
-                        @get-is-loop="handelIsLoop"
-                        @get-play-level="handelPlayLevel"
-                        @get-playback-rate="handelPlaybackRate"
-                        @mouseleave="hideSetting"
-                    />
-                </div>
             </div>
         </div>
     </div>
@@ -94,7 +98,6 @@ import { computed, onMounted, onUnmounted, reactive, ref, watch } from "vue"
 
 import { IconKeys } from "@/components/common/icons"
 import JIcon from "@/components/common/icons"
-import { useDelayedToggle } from "@/components/hooks/useDelayedToggle"
 import { createPlayerCommands, PlayerCommandsKey } from "@/components/player/command"
 import ProgressBar from "@/components/player/components/progress-bar"
 import VideoSetting from "@/components/player/components/setting"
@@ -107,7 +110,8 @@ import { formatDurationTime } from "@/utils/dateTime"
 defineOptions({ name: "VideoControls" })
 
 // 定义 props
-const { playerState } = defineProps<{
+const { elPopoverAppendToElement, playerState } = defineProps<{
+    elPopoverAppendToElement: HTMLElement | null // el-popover 的 append-to 属性
     playerState: PlayerState // 播放器状态
 }>()
 
@@ -138,6 +142,39 @@ const seekVideo = (currentTime: number) => {
 
 // 是否正在拖拽进度条
 const handleIsDragging = (isDragging: boolean) => localManager.setIsDragging(isDragging)
+
+// 音量条显示状态
+const isVolumeBarVisible = ref(false)
+let hideTimer: number | null = null
+
+// 显示音量条
+const showVolumeBar = () => {
+    if (hideTimer) {
+        clearTimeout(hideTimer)
+        hideTimer = null
+    }
+    isVolumeBarVisible.value = true
+}
+
+// 隐藏音量条
+const hideVolumeBar = () => {
+    hideTimer = window.setTimeout(() => {
+        isVolumeBarVisible.value = false
+    }, 150)
+}
+
+// 在 volume-wrapper 上鼠标进入时显示音量条
+const showVolumeBarWithWrapper = () => {
+    if (isVolumeBarVisible.value) {
+        showVolumeBar()
+    }
+}
+
+// 设置音量
+const seekVolume = (volume: number) => {
+    localManager.setVolume(volume)
+    localVolume.value = volume
+}
 
 // 注册快捷键 使用 useMagicKeys() 之后，就可以通过 keys 来获取键盘按键的状态了
 const keys = useMagicKeys()
@@ -199,18 +236,7 @@ const registerHotKeys = () => {
 const togglePlayPause = () => localManager.togglePlayPause()
 
 // 切换静音
-const toggleMute = () => {
-    localManager.toggleMute()
-}
-
-// 设置音量
-const seekVolume = (volume: number) => {
-    localManager.setVolume(volume)
-    localVolume.value = volume
-}
-
-const { isVisible: isVolumeBarVisible, show: showVolumeBar, hide: hideVolumeBar, destroy: volumeDestroy } = useDelayedToggle(150, 3000)
-const { isVisible: isShowVideoSetting, show: showSetting, hide: hideSetting, toggle: toggleSetting, destroy: settingDestroy } = useDelayedToggle(150, 3000)
+const toggleMute = () => localManager.toggleMute()
 
 // 视频时间显示
 const formattedTimeDisplay = computed(() => {
@@ -238,6 +264,15 @@ const toggleIsShowToc = () => localManager.toggleIsShowToc()
 
 // 切换画中画
 const togglePIP = () => localManager.togglePictureInPicture()
+
+// 是否显示设置菜单
+const isShowVideoSetting = ref(false)
+
+// 隐藏设置菜单
+const handleHideSetting = () => (isShowVideoSetting.value = false)
+
+// 显示设置菜单
+const handleShowSetting = () => (isShowVideoSetting.value = true)
 
 // 切换网页全屏
 const toggleWebFullscreen = () => localManager.toggleWebFullScreen()
@@ -296,8 +331,6 @@ onMounted(() => {
 
 onUnmounted(() => {
     unRegisterHotKeys() // 注销快捷键
-    volumeDestroy() // 销毁音量条延时切换
-    settingDestroy() // 销毁设置菜单延时切换
 })
 </script>
 
@@ -305,7 +338,7 @@ onUnmounted(() => {
 .controls {
     width: 100%;
     height: 60px;
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: #0000001a;
 
     // 垂直居中
     display: flex;
@@ -338,22 +371,6 @@ onUnmounted(() => {
             }
         }
 
-        // 公共样式占位
-        %top-show {
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            margin-bottom: 8px;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-            z-index: 10;
-
-            &.visible {
-                opacity: 1;
-            }
-        }
-
         .right-controls {
             display: flex;
             align-items: center;
@@ -364,43 +381,45 @@ onUnmounted(() => {
                 align-items: center;
 
                 .volume-bar {
-                    @extend %top-show;
+                    position: absolute;
+                    bottom: 100%;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    margin-bottom: 8px;
+                    opacity: 0;
+                    transition: opacity 0.2s ease;
+                    z-index: 10;
+
+                    &.visible {
+                        opacity: 1;
+                    }
                 }
             }
+        }
 
-            .setting-wrapper {
-                position: relative;
-                display: inline-flex;
-                align-items: center;
+        .controls-btn {
+            background: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0 2px;
+            transition:
+                transform 0.2s ease,
+                background-color 0.2s ease;
 
-                .settings {
-                    @extend %top-show;
-                }
+            &:hover {
+                transform: scale(1.2);
+                background-color: #ffffff1a;
+            }
+
+            &:active {
+                transform: scale(1.1);
+                background-color: #ffffff33;
             }
         }
     }
 }
 
-.controls-btn {
-    background: transparent;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin: 0 2px;
-    transition:
-        transform 0.2s ease,
-        background-color 0.2s ease;
-
-    &:hover {
-        transform: scale(1.2);
-        background-color: #ffffff1a;
-    }
-
-    &:active {
-        transform: scale(1.1);
-        background-color: #ffffff33;
-    }
-}
 @include respond-to("pad") {
     // pad端隐藏如下按钮
     .pip,

@@ -212,7 +212,7 @@ const scrollData: Ref<ScrollData> = useScrollActions(scrollUpAction, scrollDownA
         left: 0;
         z-index: 998;
         transition: transform 300ms ease-in-out;
-        // box-shadow: 1px 0 5px rgba(0, 0, 0, 0.2);
+        box-shadow: 1px 0 5px #00000033;
         height: 100vh;
         width: 61.8vw;
     }

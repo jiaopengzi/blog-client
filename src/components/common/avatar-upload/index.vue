@@ -30,7 +30,7 @@
                 <cropper-selection ref="cropperSelectionRef" initial-coverage="0.5" movable resizable>
                     <cropper-grid role="grid" covered></cropper-grid>
                     <cropper-crosshair centered></cropper-crosshair>
-                    <cropper-handle action="move" theme-color="rgba(255, 255, 255, 0.35)"></cropper-handle>
+                    <cropper-handle action="move" theme-color="#ffffff50"></cropper-handle>
                     <cropper-handle action="n-resize"></cropper-handle>
                     <cropper-handle action="e-resize"></cropper-handle>
                     <cropper-handle action="s-resize"></cropper-handle>
