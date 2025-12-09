@@ -64,13 +64,22 @@ const cancelEdit = () => {
     cursor: pointer;
     padding: 4px;
     border-radius: 4px;
-    transition: background-color 0.3s;
+    // transition: background-color 0.3s;
     // max-width: 400px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    // white-space: nowrap;
+    // overflow: auto;
+    // text-overflow: ellipsis;
     // 文字居左对齐
-    text-align: left;
+    // text-align: left;
+    //自动换行
+    // white-space: pre-wrap; // 保留空白符序列,但允许换行
+    // word-wrap: break-word; // 长单词或 URL 地址换行到下一行
+    // word-break: break-word;
+
+    // 允许换行
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .text-edit {

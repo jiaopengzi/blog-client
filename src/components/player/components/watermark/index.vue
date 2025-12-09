@@ -8,7 +8,7 @@
 
 <template>
     <div class="watermark-container" ref="containerRef">
-        <slot />
+        <slot></slot>
     </div>
 </template>
 

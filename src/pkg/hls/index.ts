@@ -179,8 +179,6 @@ export function createCustomLoaderClass(isAdmin: boolean, postId: string = ""): 
             if (!this.isAdmin) {
                 url = convertResolutionParam(context.url)
             }
-            console.log("============>context.url", context.url)
-            console.log("============>url", url)
 
             await getM3u8(url, this.postId)
                 .then((response) => {

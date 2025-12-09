@@ -48,4 +48,17 @@ const isShow = computed(() => {
         margin-right: 10px;
     }
 }
+
+// @include respond-to("pc") {
+// }
+
+// @include respond-to("pad") {
+
+// }
+
+@include respond-to("phone") {
+    .updated-at-container {
+        justify-content: center;
+    }
+}
 </style>

@@ -20,6 +20,7 @@
             <!-- video元素不使用默认的  controls-->
             <video
                 class="my-video"
+                :class="{ 'my-video-full-screen': localPlayerState.isWebFullScreen }"
                 ref="videoRef"
                 :key="`${localPlayerState.postId}-${localPlayerState.videoID}`"
                 :src="localPlayerState.src"
@@ -820,8 +821,8 @@ video::-webkit-media-controls-enclosure {
         // background-color: #ddd;
         background-color: transparent;
         object-fit: contain;
-        width: 100%;
-        height: 100%;
+        // width: 100%;
+        // height: 100%;
     }
 
     .controls-Container {
@@ -959,6 +960,17 @@ HTML: <div class="loader"></div>
 
     .video-container {
         width: pc.$width-video-main;
+        height: pc.$height-video-main;
+
+        .my-video {
+            width: pc.$width-video-main;
+            height: pc.$height-video-main;
+
+            &.my-video-full-screen {
+                width: 100vw;
+                height: 100vh;
+            }
+        }
 
         // 错误信息显示
         .show-error {
@@ -967,10 +979,6 @@ HTML: <div class="loader"></div>
                 font-size: 20px;
             }
         }
-    }
-
-    .video-container[data-preview="wechat"] {
-        width: 373px;
     }
 }
 
@@ -980,8 +988,14 @@ HTML: <div class="loader"></div>
     // }
 
     .video-container {
-        max-width: pad.$width-video-main;
-        max-height: pad.$height-video-main;
+        width: pad.$width-video-main;
+        height: pad.$height-video-main;
+
+        &.my-video-full-screen {
+            width: 100vw;
+            height: 100vh;
+        }
+
         // 错误信息显示
         .show-error {
             // 错误文字
@@ -989,12 +1003,6 @@ HTML: <div class="loader"></div>
                 font-size: 20px;
             }
         }
-    }
-
-    .video-container[data-preview="wechat"] {
-        max-width: pad.$width-video-main;
-        max-height: pad.$height-video-main;
-        width: 100%;
     }
 }
 
@@ -1016,14 +1024,13 @@ HTML: <div class="loader"></div>
     }
 
     .my-video {
-        max-width: phone.$width-video-main;
-        max-height: phone.$height-video-main;
-    }
+        width: phone.$width-video-main;
+        height: phone.$height-video-main;
 
-    .video-container[data-preview="wechat"] {
-        max-width: phone.$width-video-main;
-        max-height: phone.$height-video-main;
-        width: 100%;
+        &.my-video-full-screen {
+            width: 100vw;
+            height: 100vh;
+        }
     }
 }
 </style>

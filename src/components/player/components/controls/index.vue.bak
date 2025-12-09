@@ -43,24 +43,14 @@
                 </button>
 
                 <!-- 设置 播放速度 清晰度 字幕 -->
-                <!-- 使用 append-to 到对应元素才能保证全屏显示 -->
-                <!-- 参考文档：https://element-plus.org/zh-CN/component/tooltip.html -->
-                <el-popover
-                    :width="100"
-                    placement="top"
-                    :append-to="elPopoverAppendToElement"
-                    :teleported="true"
-                    popper-class="video-el-popover"
-                    @hide="handleHideSetting"
-                    @show="handleShowSetting"
-                >
-                    <template #reference>
-                        <button type="button" class="controls-btn">
-                            <j-icon :name="IconKeys.Setting" custom-class="iconfont" />
-                        </button>
-                    </template>
+                <div class="setting-wrapper" @mouseenter="showSettingWithWrapper" @mouseleave="hideSetting">
+                    <button type="button" class="controls-btn" @mouseenter="showSetting">
+                        <j-icon :name="IconKeys.Setting" custom-class="iconfont" />
+                    </button>
+
                     <VideoSetting
-                        class="setting"
+                        class="settings"
+                        :class="{ visible: isShowVideoSetting }"
                         :is-show="isShowVideoSetting"
                         :subtitles="localPlayerState.subtitles"
                         :play-level="localPlayerState.playLevel"
@@ -71,7 +61,7 @@
                         @get-play-level="handelPlayLevel"
                         @get-playback-rate="handelPlaybackRate"
                     />
-                </el-popover>
+                </div>
 
                 <!-- 画中画 -->
                 <button type="button" class="controls-btn pip" @click="handleButtonClick(togglePIP)">
@@ -110,8 +100,7 @@ import { formatDurationTime } from "@/utils/dateTime"
 defineOptions({ name: "VideoControls" })
 
 // 定义 props
-const { elPopoverAppendToElement, playerState } = defineProps<{
-    elPopoverAppendToElement: HTMLElement | null // el-popover 的 append-to 属性
+const { playerState } = defineProps<{
     playerState: PlayerState // 播放器状态
 }>()
 
@@ -142,39 +131,6 @@ const seekVideo = (currentTime: number) => {
 
 // 是否正在拖拽进度条
 const handleIsDragging = (isDragging: boolean) => localManager.setIsDragging(isDragging)
-
-// 音量条显示状态
-const isVolumeBarVisible = ref(false)
-let hideTimer: number | null = null
-
-// 显示音量条
-const showVolumeBar = () => {
-    if (hideTimer) {
-        clearTimeout(hideTimer)
-        hideTimer = null
-    }
-    isVolumeBarVisible.value = true
-}
-
-// 隐藏音量条
-const hideVolumeBar = () => {
-    hideTimer = window.setTimeout(() => {
-        isVolumeBarVisible.value = false
-    }, 150)
-}
-
-// 在 volume-wrapper 上鼠标进入时显示音量条
-const showVolumeBarWithWrapper = () => {
-    if (isVolumeBarVisible.value) {
-        showVolumeBar()
-    }
-}
-
-// 设置音量
-const seekVolume = (volume: number) => {
-    localManager.setVolume(volume)
-    localVolume.value = volume
-}
 
 // 注册快捷键 使用 useMagicKeys() 之后，就可以通过 keys 来获取键盘按键的状态了
 const keys = useMagicKeys()
@@ -238,6 +194,39 @@ const togglePlayPause = () => localManager.togglePlayPause()
 // 切换静音
 const toggleMute = () => localManager.toggleMute()
 
+// 音量条显示状态
+const isVolumeBarVisible = ref(false)
+let hideTimer: number | null = null
+
+// 显示音量条
+const showVolumeBar = () => {
+    if (hideTimer) {
+        clearTimeout(hideTimer)
+        hideTimer = null
+    }
+    isVolumeBarVisible.value = true
+}
+
+// 隐藏音量条
+const hideVolumeBar = () => {
+    hideTimer = window.setTimeout(() => {
+        isVolumeBarVisible.value = false
+    }, 150)
+}
+
+// 在 volume-wrapper 上鼠标进入时显示音量条
+const showVolumeBarWithWrapper = () => {
+    if (isVolumeBarVisible.value) {
+        showVolumeBar()
+    }
+}
+
+// 设置音量
+const seekVolume = (volume: number) => {
+    localManager.setVolume(volume)
+    localVolume.value = volume
+}
+
 // 视频时间显示
 const formattedTimeDisplay = computed(() => {
     const currentFormatted = formatDurationTime(localPlayerState.playProgress.currentTime)
@@ -268,11 +257,28 @@ const togglePIP = () => localManager.togglePictureInPicture()
 // 是否显示设置菜单
 const isShowVideoSetting = ref(false)
 
-// 隐藏设置菜单
-const handleHideSetting = () => (isShowVideoSetting.value = false)
-
 // 显示设置菜单
-const handleShowSetting = () => (isShowVideoSetting.value = true)
+const showSetting = () => {
+    if (hideTimer) {
+        clearTimeout(hideTimer)
+        hideTimer = null
+    }
+    isShowVideoSetting.value = true
+}
+
+// 隐藏设置菜单
+const hideSetting = () => {
+    hideTimer = window.setTimeout(() => {
+        isShowVideoSetting.value = false
+    }, 150)
+}
+
+// 在 setting-wrapper 上鼠标进入时显示设置菜单
+const showSettingWithWrapper = () => {
+    if (isShowVideoSetting.value) {
+        showSetting()
+    }
+}
 
 // 切换网页全屏
 const toggleWebFullscreen = () => localManager.toggleWebFullScreen()
@@ -395,31 +401,50 @@ onUnmounted(() => {
                     }
                 }
             }
-        }
 
-        .controls-btn {
-            background: transparent;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 0 2px;
-            transition:
-                transform 0.2s ease,
-                background-color 0.2s ease;
+            .setting-wrapper {
+                position: relative;
+                display: inline-flex;
+                align-items: center;
 
-            &:hover {
-                transform: scale(1.2);
-                background-color: rgba(255, 255, 255, 0.1);
-            }
+                .settings {
+                    position: absolute;
+                    bottom: 100%;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    margin-bottom: 8px;
+                    z-index: 10;
+                    opacity: 0;
 
-            &:active {
-                transform: scale(1.1);
-                background-color: rgba(255, 255, 255, 0.2);
+                    &.visible {
+                        opacity: 1;
+                    }
+                }
             }
         }
     }
 }
 
+.controls-btn {
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 0 2px;
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease;
+
+    &:hover {
+        transform: scale(1.2);
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    &:active {
+        transform: scale(1.1);
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+}
 @include respond-to("pad") {
     // pad端隐藏如下按钮
     .pip,

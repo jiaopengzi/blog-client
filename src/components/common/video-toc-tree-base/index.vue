@@ -179,7 +179,7 @@ const handleClick = (data: Data) => {
     align-items: center;
     justify-content: space-between;
     margin-right: 4px;
-    height: 32px;
+    min-height: 32px;
 }
 
 .btns {
