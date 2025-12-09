@@ -141,7 +141,7 @@ onBeforeMount(async () => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100%;
+    // height: 100%;
     text-align: center;
     position: relative;
     border: 1px dashed #c1401f; // 虚线边框

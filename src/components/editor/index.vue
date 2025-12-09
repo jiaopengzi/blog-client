@@ -66,6 +66,7 @@
                     :post-id="localPostId"
                     :is-paid="localIsPaid"
                     :price="localPrice"
+                    :video-toc="videoToc"
                     @show-image-viewer="showImageViewer"
                     @close-image-viewer="closeImageViewer"
                     @is-mouse-in-element="handleMouseInPreview"
@@ -82,6 +83,8 @@ import "vue3-emoji-picker/css"
 
 import { computed, useTemplateRef, watch } from "vue"
 
+import { type PostVideoTocTree } from "@/api/post/common"
+
 import EditorCodemirror, { type CodemirrorRef } from "./components/codemirror"
 import HtmlPreview from "./components/preview/index.vue" // 避免编译报错
 import EditorToc from "./components/toc"
@@ -97,11 +100,13 @@ const {
     postId = "",
     isPaid = false,
     price = "",
+    videoToc = [],
 } = defineProps<{
     stateManager: EditorStateManager
     postId?: string // 文章ID
     isPaid?: boolean // 是否付费阅读
     price?: string // 价格(单位：分)
+    videoToc?: PostVideoTocTree[] // 付费视频目录
 }>()
 
 const emit = defineEmits<{

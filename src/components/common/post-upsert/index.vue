@@ -56,6 +56,7 @@
                         :post-id="postInfoForm.id"
                         :is-paid="isPaid"
                         :price="(postInfoForm.price * 100).toString()"
+                        :video-toc="postInfoForm.video_toc"
                         @update-editor-status="updateEditorStatus"
                     />
 
