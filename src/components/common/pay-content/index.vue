@@ -33,8 +33,8 @@
         </div>
     </div>
     <div class="paid" v-if="isShowContent">
+        <PostVideo v-if="!onlyMarkdown" :post-id="postId" :toc="videoToc" :is-paid="isPaid" />
         <div v-html="stateManager.getState().html"></div>
-        <PostVideo :post-id="postId" :toc="videoToc" :is-paid="isPaid" />
     </div>
 </template>
 <script lang="ts" setup>
@@ -58,6 +58,7 @@ const {
     price = "0",
     loading = false,
     markdown,
+    onlyMarkdown = false,
 } = defineProps<PayContentProps>()
 
 // 事件

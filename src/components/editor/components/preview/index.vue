@@ -7,8 +7,20 @@
 -->
 
 <template>
-    <div ref="previewRef" id="preview" @click="handleDelegateClick" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave">
-        <template v-for="(item, index) in htmlData" :key="index">
+    <!-- web 预览 -->
+    <div
+        v-if="!isShowPreviewWechat"
+        :ref="
+            (el) => {
+                if (el) setPreviewRef(el as HTMLElement)
+            }
+        "
+        id="preview"
+        @click="handleDelegateClick"
+        @mouseenter="onMouseEnter"
+        @mouseleave="onMouseLeave"
+    >
+        <template v-for="(item, index) in contentParts" :key="index">
             <div v-if="item.type === 'html'" v-html="item.content"></div>
 
             <div v-if="item.type === Names.VideoPlayer" :key="(item.content as PlayerState).videoID" class="video-player-box">
@@ -47,6 +59,22 @@
             />
         </template>
     </div>
+
+    <!-- 微信 预览 -->
+    <div
+        v-if="isShowPreviewWechat"
+        :ref="
+            (el) => {
+                if (el) setPreviewRef(el as HTMLElement)
+            }
+        "
+        id="preview"
+        v-html="wechatHtml"
+        @click="handleDelegateClick"
+        @mouseenter="onMouseEnter"
+        @mouseleave="onMouseLeave"
+    ></div>
+
     <!-- 参考:https://github.com/element-plus/element-plus/blob/dev/packages/components/image/src/image.vue -->
     <el-image-viewer v-if="isShowElImageViewer" @close="closeElImageViewer" :url-list="imgUrls" />
 </template>
@@ -58,7 +86,7 @@ import "katex/dist/katex.min.css" // katex 样式
 
 import { useIntersectionObserver } from "@vueuse/core"
 import { debounce } from "throttle-debounce"
-import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from "vue"
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue"
 
 import { type MembershipRes } from "@/api/membership/common"
 import { type Product as KeyRes } from "@/api/order/create"
@@ -68,11 +96,13 @@ import PayMembership from "@/components/common/pay-membership"
 import { ScrollElementTagHeading } from "@/components/editor/command"
 import VideoPlayer, { type PlayerState } from "@/components/player"
 import { Names, parseHtmlToContentParts } from "@/customElements"
+import { mountPayContentOnCustomElements } from "@/customElementsMount"
 import { copyText } from "@/utils/clipboard"
 import { shiftArray } from "@/utils/img"
 import { MessageUtil } from "@/utils/message"
 import { myScrollTo } from "@/utils/scrollTo"
 
+import { CommandsKey } from "../../command"
 import { copyWithCustomStyle, htmlHandleWeChat } from "../../utils"
 import type { HeadingObject, PreviewProps } from "./types"
 
@@ -118,19 +148,18 @@ const emit = defineEmits<{
     (event: "pay-membership", val: MembershipRes): void // 付费会员
 }>()
 
-const previewRef = useTemplateRef<HTMLElement | null>("previewRef")
+const previewRef = ref<HTMLElement | null>(null)
+const setPreviewRef = (el: HTMLElement | null) => {
+    previewRef.value = el
+}
 
-const htmlData = computed(() => {
-    // 获取预览内容
-    let htmlStr = html || ""
+// 分别为非微信预览(内容片段)和微信预览(html 字符串)提供独立的计算属性, 避免 string | ContentPart 的联合类型在模板中导致错误
+const contentParts = computed(() => {
+    return parseHtmlToContentParts(html, postId)
+})
 
-    // 历遍htmlStr
-    if (isShowPreviewWechat) {
-        // 微信公众号预览
-        htmlStr = htmlHandleWeChat(html)
-    }
-
-    return parseHtmlToContentParts(htmlStr, postId)
+const wechatHtml = computed(() => {
+    return htmlHandleWeChat(html)
 })
 
 // 判断是否为付费内容组件
@@ -175,13 +204,21 @@ const initializeCssVariable = () => {
 // 监听 props isShowPreviewWechat 变化 添加自定义属性
 watch(
     () => isShowPreviewWechat,
-    (newVal) => {
-        if (previewRef.value && newVal) {
-            previewRef.value.setAttribute("data-preview", "wechat")
+    async (newVal) => {
+        if (newVal) {
+            // 等待 DOM 更新
+            await nextTick()
+            if (previewRef.value) {
+                previewRef.value.setAttribute("data-preview", "wechat")
+                // // 验证属性是否设置成功
+                // console.log("属性值:", previewRef.value.getAttribute("data-preview"))
+            }
         } else {
+            await nextTick()
             previewRef.value?.removeAttribute("data-preview")
         }
     },
+    { flush: "post" }, // 确保在 DOM 更新后执行
 )
 
 // 防抖处理 copyWithCustomStyle
@@ -192,7 +229,10 @@ watch(
     () => viewCommand,
     (newVal, oldVal) => {
         // 如果没有命令或者时间相同则不执行
-        if (!newVal || !oldVal || !newVal.commandName || newVal.time === oldVal.time || !previewRef.value) return
+        if (!newVal || !oldVal || !newVal.commandName || newVal.time === oldVal.time || newVal.commandName !== CommandsKey.Copy || !previewRef.value) {
+            return
+        }
+
         debounceCopyWithCustomStyle(previewRef.value)
     },
 )
@@ -396,6 +436,12 @@ const emitPaySingle = (val: ContentPayType) => {
     emit("pay-single", val)
 }
 
+// 定义 payContent 组件的事件
+const payContentEmits = {
+    onPayVip: emitPayVip,
+    onPaySingle: emitPaySingle,
+}
+
 // 定义 payKey 组件的事件
 const emitPayKey = (val: KeyRes) => {
     emit("pay-key", val)
@@ -407,14 +453,25 @@ const emitPayMembership = (val: MembershipRes) => {
 }
 
 const createOrderLoadingAc = computed(() => createOrderLoading) // 创建订单加载状态
-const isPaidAc = computed(() => isPaid) // 是否付费阅读
-const priceAc = computed(() => price) // 价格(单位：分)
+
+// 是否付费阅读
+const isPaidAc = computed(() => {
+    if (isShowPreviewWechat) return true // 微信预览默认已付费
+    return isPaid
+})
+
+// 价格(单位：分)
+const priceAc = computed(() => {
+    if (isShowPreviewWechat) return "0" // 微信预览默认价格为0
+    return price
+})
+
 const postIdAc = computed(() => postId) // 文章ID
 const videoTocAc = computed(() => videoToc) // 付费视频目录
 
 // 监控 html 变化, 获取所有的 h 标签 并挂载自定义元素
 watch(
-    () => htmlData.value,
+    () => contentParts.value,
     (newHtml) => {
         if (newHtml) {
             // 注意：这里使用 nextTick，确保 html 已经渲染完成
@@ -424,6 +481,63 @@ watch(
 
                 // 监听标题的可见性变化
                 observeHeadings()
+            })
+        }
+    },
+)
+
+// 监控 html 变化, 获取所有的 h 标签 并挂载自定义元素
+watch(
+    () => isShowPreviewWechat,
+    (newVal) => {
+        if (newVal) {
+            // 注意：这里使用 nextTick，确保 html 已经渲染完成
+            nextTick(() => {
+                // 获取标题
+                getAllHeadings()
+
+                // 监听标题的可见性变化
+                observeHeadings()
+
+                // 挂载自定义元素
+
+                // 付费下载
+                mountPayContentOnCustomElements(
+                    previewRef.value as HTMLElement,
+                    Names.PayDownload,
+                    ContentPayType.Download,
+                    createOrderLoadingAc,
+                    payContentEmits,
+                    isPaidAc,
+                    priceAc,
+                    true, // 仅渲染 markdown 内容
+                )
+
+                // 付费阅读
+                mountPayContentOnCustomElements(
+                    previewRef.value as HTMLElement,
+                    Names.PayRead,
+                    ContentPayType.Read,
+                    createOrderLoadingAc,
+                    payContentEmits,
+                    isPaidAc,
+                    priceAc,
+                    true, // 仅渲染 markdown 内容
+                )
+
+                // 付费视频
+                mountPayContentOnCustomElements(
+                    previewRef.value as HTMLElement,
+                    Names.PayVideo,
+                    ContentPayType.Video,
+                    createOrderLoadingAc,
+                    payContentEmits,
+                    isPaidAc,
+                    priceAc,
+                    true, // 仅渲染 markdown 内容
+                    postIdAc,
+                    videoTocAc,
+                )
             })
         }
     },

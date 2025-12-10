@@ -3,10 +3,8 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 文字复制 优先使用现代 clipboard API，如果不支持则回退到 clipboard.js
+ * Description : 文字复制 优先使用现代 clipboard API，如果不支持则回退到 execCommand 方式
  */
-
-import ClipboardJS, { type Options } from "clipboard"
 
 /**
  * 尝试使用现代 API 写入到系统剪贴板
@@ -21,46 +19,56 @@ async function tryWriteTextWithModernAPI(text: string): Promise<void> {
 }
 
 /**
- * 使用 clipboard.js 的方式写入到系统剪贴板
- * 由于 clipboard.js 的 API 是基于事件触发, 采用一个临时按钮触发的方式
+ * 使用 document.execCommand 的方式写入纯文本到剪贴板
+ * 兼容 HTTP 环境，效果接近现代 API
+ * 返回 Promise<void>，成功 resolve，失败 reject
  */
-function writeTextWithClipboardJS(text: string): void {
-    // 创建一个隐藏的按钮触发复制
-    const tempButton = document.createElement("button")
-    tempButton.style.display = "none"
+function writeTextWithExecCommand(text: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+        // 创建临时文本域
+        const textArea = document.createElement("textarea")
+        textArea.value = text
+        // 定位到屏幕外
+        textArea.style.position = "fixed"
+        textArea.style.left = "-9999px"
+        textArea.style.top = "-9999px"
+        document.body.appendChild(textArea)
 
-    // 设置复制的文本
-    const options: Options = {
-        action: () => {
-            return "copy"
-        },
-        text: () => {
-            return text
-        },
-    }
+        // 选中文本
+        textArea.focus()
+        textArea.select()
 
-    // 将按钮暂时加到页面中
-    document.body.appendChild(tempButton)
+        let success = false
+        try {
+            success = document.execCommand("copy")
+        } catch (err) {
+            console.error("execCommand copy failed:", err)
+            document.body.removeChild(textArea)
+            return reject(err)
+        }
 
-    // 实例化 clipboard.js
-    const clipboard = new ClipboardJS(tempButton, options)
+        // 清理
+        document.body.removeChild(textArea)
 
-    // 手动触发点击，并在事件结束后清理
-    tempButton.click()
-    clipboard.destroy()
-    document.body.removeChild(tempButton)
+        if (success) {
+            console.log("Text has been copied using execCommand!")
+            resolve()
+        } else {
+            reject(new Error("execCommand copy command was unsuccessful"))
+        }
+    })
 }
 
 /**
  * 对外暴露的拷贝函数：优先尝试使用现代 API，
- * 如果不支持或失败则回退到 clipboard.js
+ * 如果不支持或失败则回退到 execCommand 方式
  */
 export async function copyText(text: string): Promise<void> {
     try {
         await tryWriteTextWithModernAPI(text)
         console.log("Text has been copied using navigator.clipboard!")
     } catch (err) {
-        console.log("Falling back to clipboard.js: ", err)
-        writeTextWithClipboardJS(text)
+        console.warn("Falling back to execCommand method, please use HTTPS or localhost or 127.0.0.1 for better clipboard support,", err)
+        await writeTextWithExecCommand(text)
     }
 }

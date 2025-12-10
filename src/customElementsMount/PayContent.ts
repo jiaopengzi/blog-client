@@ -41,6 +41,7 @@ export const mountPayContentOnCustomElements = (
 
     isPaid?: ComputedRef<boolean>, // 是否已经付费
     price?: ComputedRef<string>, // 价格(单位：分)
+    onlyMarkdown?: boolean, // 仅渲染 markdown 内容
     postId?: ComputedRef<string>, // 文章ID
     videoToc?: ComputedRef<PostVideoTocTree[]>, // 付费视频目录
 ) => {
@@ -66,6 +67,7 @@ export const mountPayContentOnCustomElements = (
                     price: price?.value || "0", // 价格(单位：分)
                     postId: postId?.value || "", // 文章ID
                     videoToc: videoToc?.value || [], // 付费视频目录
+                    onlyMarkdown,
                     ...vueEmits, // 将转换后的事件传递给组件
                 })
             },

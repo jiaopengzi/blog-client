@@ -226,7 +226,7 @@ export function generateAllHeadingAnchor(html: string): string {
 
     // 使用 replace 的回调函数处理每个匹配的标题
     return html.replace(hTagRegex, (match) => {
-        // 判断是否已经有锚点, 如果已经有锚点, 则不进行处理
+        // 判断是否已经有锚点, 如果已经有锚点，则不进行处理
         const existingAnchor = match.match(hTagAnchorRegex)
         if (existingAnchor) {
             return match
@@ -329,7 +329,7 @@ export function htmlHandleCopyBtns(htmlSrc: string) {
 export function htmlHandleDivToSection(htmlSrc: string) {
     return htmlSrc
         .replace(/<div(\s[^>]*)?>/g, (match, attributes) => {
-            // 保留原有的属性, 只替换标签名
+            // 保留原有的属性，只替换标签名
             return `<section${attributes || ""}>`
         })
         .replace(/<\/div>/g, "</section>")
@@ -441,123 +441,135 @@ export function htmlRemoveFirstH1(htmlSrc: string) {
  * @return 已排序的外部样式表列表和索引
  */
 function getSortedStyleSheets(): [CSSStyleSheet, number][] {
-    return Array.from(document.styleSheets)
-        .map((sheet, index) => [sheet, index] as [CSSStyleSheet, number])
-        .filter(([sheet]) => {
-            try {
-                return !!sheet.cssRules
-            } catch {
-                // 跨域或 CSP 阻止访问
-                return false
-            }
-        })
+    const styleSheets = Array.from(document.styleSheets).map((styleSheet, index) => [styleSheet as CSSStyleSheet, index]) as [CSSStyleSheet, number][]
+
+    // 对样式表按照它们在 document.styleSheets 中的位置进行排序
+    return styleSheets.sort((a, b) => a[1] - b[1])
 }
 
 /**
- * @description 检查元素自身或其任意祖先是否包含指定类名
- * @param element 起始元素
- * @param className 要检查的 CSS 类名
- * @returns 若找到匹配元素则返回 true, 否则 false
+ * @description: 指定类名的 span 元素是否应该保留其行内样式
+ * @param spanElement span元素
+ * @param className 类名
+ * @return boolean 是否应该保留其行内样式
  */
 export function shouldPreserveInlineStyles(element: HTMLElement | SVGElement, className: string): boolean {
-    let current: Element | null = element
-    while (current) {
-        // 检查当前元素是否包含该类名(兼容 SVGElement 无 classList 的情况)
-        if ("classList" in current && current.classList instanceof DOMTokenList && current.classList.contains(className)) {
+    let currentElement: Element | null = element
+    while (currentElement) {
+        if (currentElement instanceof HTMLSpanElement && currentElement.classList.contains(className)) {
             return true
         }
-        current = current.parentElement
+        currentElement = currentElement.parentElement
     }
     return false
-}
-
-/**
- * 微信公众平台编辑器明确不支持或会被过滤的 CSS 属性黑名单
- * 这些属性在内联样式中会被移除或忽略，即使写在 style 里也无效
- */
-const WECHAT_CSS_BLACKLIST: string[] = []
-
-/**
- * @description: 检查 CSS 属性和值是否在微信公众平台编辑器中有效
- * @param property CSS属性名
- * @returns 是否有效
- */
-function isValidWechatCSSProperty(property: string, value: string): boolean {
-    if (!property || !value) {
-        return false
-    }
-    // 检查值是否为一些预设非用户定义值
-    const invalidValues = ["initial", "inherit", "unset"]
-    if (invalidValues.includes(value.trim().toLowerCase())) {
-        return false
-    }
-
-    // 检查属性是否在黑名单中
-    if (WECHAT_CSS_BLACKLIST.length > 0) {
-        return !WECHAT_CSS_BLACKLIST.includes(property)
-    }
-
-    return true
 }
 
 /**
  * @description: 递归处理元素将外部样式应用为内联样式
  * @param el 元素
  */
-function applyInlineStyles(el: HTMLElement | SVGElement, cssStyleSheets: [CSSStyleSheet, number][]) {
-    // 如果是 katex 公式 则跳过
+function applyInlineStyles(el: HTMLElement | SVGElement) {
+    const cssStyleSheets = getSortedStyleSheets() // 样式表列表
     const isKatex = shouldPreserveInlineStyles(el, "katex") // 是否为 katex 的 span 元素
-    if (isKatex) return
+    if (!isKatex) {
+        cssStyleSheets.forEach(([styleSheet]) => {
+            try {
+                Array.from(styleSheet.cssRules).forEach((rule: CSSRule) => {
+                    if (rule instanceof CSSStyleRule) {
+                        // 检查选择器是否匹配当前元素
+                        if (el.matches(rule.selectorText)) {
+                            for (let i = 0; i < rule.style.length; i++) {
+                                const property = rule.style[i] // 属性名
 
-    // 遍历所有样式表
-    cssStyleSheets.forEach(([styleSheet]) => {
-        try {
-            Array.from(styleSheet.cssRules).forEach((rule: CSSRule) => {
-                // 如果不是样式规则则跳过 或 选择器不匹配则跳过
-                if (!(rule instanceof CSSStyleRule) || !el.matches(rule.selectorText)) return
+                                // 样式表的属性值
+                                const cssStyleValue = rule.style.getPropertyValue(property!)
 
-                // 遍历样式表的所有属性
-                for (let i = 0; i < rule.style.length; i++) {
-                    // 属性名
-                    const property = rule.style[i]
-
-                    // 如果属性名为空或不在微信支持的 CSS 属性列表中则跳过
-                    if (!property) continue
-
-                    // 样式表的属性值
-                    let cssStyleValue = rule.style.getPropertyValue(property)
-
-                    // 如果值为 CSS 变量，获取计算后的具体值
-                    if (cssStyleValue.startsWith("var(--")) {
-                        cssStyleValue = getComputedStyle(el).getPropertyValue(property)
+                                // 如果属性值不为空且不为默认值 或者 不是 katex 的 span 元素
+                                if (cssStyleValue.startsWith("var(--")) {
+                                    // 如果值为 CSS 变量，获取计算后的具体值
+                                    el.style.setProperty(property!, getComputedStyle(el).getPropertyValue(property!))
+                                } else {
+                                    el.style.setProperty(property!, cssStyleValue)
+                                }
+                            }
+                        }
                     }
-
-                    // // 检查属性和值在微信公众平台编辑器中是否有效
-                    // if (!isValidWechatCSSProperty(property, cssStyleValue)) {
-                    //     continue
-                    // }
-
-                    // 打印出包含 border 属性的样式应用日志
-                    if (property.includes("border-bottom")) {
-                        console.log(`Applying style: ${property}: ${cssStyleValue}`)
-                    }
-
-                    // 设置对应的内联属性
-                    el.style.setProperty(property, cssStyleValue)
-                }
-            })
-        } catch (error) {
-            console.warn("Error accessing rules in stylesheet:", styleSheet, error)
-        }
-    })
+                })
+            } catch (error) {
+                console.warn("Error accessing rules in stylesheet:", styleSheet, error)
+            }
+        })
+    }
 
     // 递归处理子元素
     Array.from(el.children).forEach((child) => {
         if (child instanceof HTMLElement || child instanceof SVGElement) {
-            applyInlineStyles(child as HTMLElement | SVGElement, cssStyleSheets)
+            applyInlineStyles(child as HTMLElement | SVGElement)
         }
     })
 }
+
+// /**
+//  * @description: 复制带有自定义样式的内容
+//  * @param element 要复制的元素
+//  */
+// export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
+//     try {
+//         // 将 katex 公式转成图片
+//         await katexToImage(element)
+//         // 将外部样式应用为内联样式
+//         applyInlineStyles(element)
+
+//         // 获取带有内联样式的 HTML 字符串
+//         const html = element.innerHTML
+//         console.log("============>html", html)
+
+//         // if (window.location.protocol === 'https:' && typeof ClipboardItem !== 'undefined') {
+//         if (typeof ClipboardItem !== "undefined") {
+//             // 创建一个包含要复制 HTML 的 blob
+//             console.log("新复制api")
+//             const contentNoStyle = new Blob([html], { type: "text/plain" })
+//             const contentWithStyle = new Blob([html], { type: "text/html" })
+
+//             // 使用 clipboardItem 设置格式和数据
+//             const clipboardItemInput = new ClipboardItem({
+//                 "text/plain": contentNoStyle,
+//                 "text/html": contentWithStyle,
+//             })
+
+//             // 写入剪贴板
+//             await navigator.clipboard.write([clipboardItemInput])
+//             MessageUtil.success("内容已复制到剪贴板")
+//         } else {
+//             console.log("老复制api")
+//             const textArea = document.createElement("textarea")
+//             textArea.style.position = "fixed"
+//             textArea.style.top = "0"
+//             textArea.style.left = "0"
+//             textArea.value = html
+//             document.body.appendChild(textArea)
+//             textArea.focus()
+//             textArea.select()
+//             try {
+//                 const successful = document.execCommand("copy")
+//                 const msg = successful ? "内容已复制到剪贴板" : "无法复制内容0"
+//                 if (successful) {
+//                     MessageUtil.success(msg)
+//                 } else {
+//                     MessageUtil.error(msg)
+//                 }
+//             } catch (err) {
+//                 console.error("无法复制内容1", err)
+//                 MessageUtil.error("无法复制内容1")
+//             } finally {
+//                 document.body.removeChild(textArea)
+//             }
+//         }
+//     } catch (err) {
+//         console.error("无法复制内容2", err)
+//         MessageUtil.error("无法复制内容2")
+//     }
+// }
 
 /**
  * @description: 复制带有自定义样式的内容
@@ -569,11 +581,8 @@ export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
         // 将 katex 公式转成图片
         await katexToImage(element)
 
-        // 样式表列表
-        const cssStyleSheets = getSortedStyleSheets()
-
         // 将外部样式应用为内联样式
-        applyInlineStyles(element, cssStyleSheets)
+        applyInlineStyles(element)
 
         // 获取带有内联样式的 HTML 字符串
         const html = element.innerHTML

@@ -86,7 +86,7 @@ import { computed, useTemplateRef, watch } from "vue"
 import { type PostVideoTocTree } from "@/api/post/common"
 
 import EditorCodemirror, { type CodemirrorRef } from "./components/codemirror"
-import HtmlPreview from "./components/preview/index.vue" // 避免编译报错
+import HtmlPreview from "./components/preview/index.vue"
 import EditorToc from "./components/toc"
 import Toolbar from "./components/toolbar"
 import { useCodemirror, usePreview, useToolbar } from "./hooks"

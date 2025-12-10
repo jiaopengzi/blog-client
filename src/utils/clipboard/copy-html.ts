@@ -3,10 +3,8 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : html复制 优先使用现代 clipboard API，如果不支持则回退到 clipboard.js
+ * Description : html复制 优先使用现代 clipboard API，如果不支持则回退到 execCommand 方式
  */
-
-import ClipboardJS, { type Options } from "clipboard"
 
 /**
  * 尝试使用现代 API 写入到系统剪贴板
@@ -23,46 +21,63 @@ async function tryWriteHtmlWithModernAPI(html: string): Promise<void> {
 }
 
 /**
- * 使用 clipboard.js 的方式写入到系统剪贴板
- * 由于 clipboard.js 的 API 是基于事件触发, 采用一个临时按钮触发的方式
+ * 使用 document.execCommand 的方式写入富文本 HTML 到剪贴板
+ * 兼容 HTTP 环境，效果接近现代 API
+ * 返回 Promise<void>，成功 resolve，失败 reject
  */
-function writeHtmlWithClipboardJS(html: string): void {
-    // 创建一个隐藏的按钮触发复制
-    const tempButton = document.createElement("button")
-    tempButton.style.display = "none"
+function writeHtmlWithExecCommand(html: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+        // 创建临时容器
+        const container = document.createElement("div")
+        container.style.position = "absolute"
+        container.style.left = "-9999px"
+        container.innerHTML = html
+        document.body.appendChild(container)
 
-    // 设置复制的文本
-    const options: Options = {
-        action: () => {
-            return "copy"
-        },
-        text: () => {
-            return html
-        },
-    }
+        // 选中容器内的 HTML
+        const selection = window.getSelection()
+        if (!selection) {
+            document.body.removeChild(container)
+            return reject(new Error("Unable to get window selection"))
+        }
+        const range = document.createRange()
+        range.selectNodeContents(container)
+        selection.removeAllRanges()
+        selection.addRange(range)
 
-    // 将按钮暂时加到页面中
-    document.body.appendChild(tempButton)
+        let success = false
+        try {
+            success = document.execCommand("copy")
+        } catch (err) {
+            console.error("execCommand copy failed:", err)
+            selection.removeAllRanges()
+            document.body.removeChild(container)
+            return reject(err)
+        }
 
-    // 实例化 clipboard.js
-    const clipboard = new ClipboardJS(tempButton, options)
+        // 清理
+        selection.removeAllRanges()
+        document.body.removeChild(container)
 
-    // 手动触发点击，并在事件结束后清理
-    tempButton.click()
-    clipboard.destroy()
-    document.body.removeChild(tempButton)
+        if (success) {
+            console.log("Text has been copied using execCommand!")
+            resolve()
+        } else {
+            reject(new Error("execCommand copy command was unsuccessful"))
+        }
+    })
 }
 
 /**
  * 对外暴露的拷贝函数：优先尝试使用现代 API，
- * 如果不支持或失败则回退到 clipboard.js
+ * 如果不支持或失败则回退到 execCommand 方式
  */
 export async function copyHtml(html: string): Promise<void> {
     try {
         await tryWriteHtmlWithModernAPI(html)
         console.log("Text has been copied using navigator.clipboard!")
     } catch (err) {
-        console.log("Falling back to clipboard.js: ", err)
-        writeHtmlWithClipboardJS(html)
+        console.warn("Falling back to execCommand method, please use HTTPS or localhost or 127.0.0.1 for better clipboard support,", err)
+        await writeHtmlWithExecCommand(html)
     }
 }

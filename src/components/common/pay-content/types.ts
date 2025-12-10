@@ -22,4 +22,5 @@ export interface PayContentProps {
     price?: string // 价格(单位：分)
     loading?: boolean // 加载状态
     markdown: string
+    onlyMarkdown?: boolean // 仅渲染 markdown 内容
 }
