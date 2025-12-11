@@ -328,11 +328,12 @@ export function htmlHandleCopyBtns(htmlSrc: string) {
  */
 export function htmlHandleDivToSection(htmlSrc: string) {
     return htmlSrc
-        .replace(/<div(\s[^>]*)?>/g, (match, attributes) => {
-            // 保留原有的属性, 只替换标签名
-            return `<section${attributes || ""}>`
-        })
-        .replace(/<\/div>/g, "</section>")
+    // return htmlSrc
+    //     .replace(/<div(\s[^>]*)?>/g, (match, attributes) => {
+    //         // 保留原有的属性, 只替换标签名
+    //         return `<section${attributes || ""}>`
+    //     })
+    //     .replace(/<\/div>/g, "</section>")
 }
 
 /**
@@ -448,6 +449,7 @@ function getSortedStyleSheets(): [CSSStyleSheet, number][] {
                 return !!sheet.cssRules
             } catch {
                 // 跨域或 CSP 阻止访问
+                console.warn("无法访问样式表规则, 可能是跨域或 CSP 阻止访问:", sheet)
                 return false
             }
         })
@@ -473,77 +475,143 @@ export function shouldPreserveInlineStyles(element: HTMLElement | SVGElement, cl
 
 /**
  * 微信公众平台编辑器明确不支持或会被过滤的 CSS 属性黑名单
- * 这些属性在内联样式中会被移除或忽略，即使写在 style 里也无效
+ * 这些属性在内联样式中会被移除或忽略, 即使写在 style 里也无效
  */
-const WECHAT_CSS_BLACKLIST: string[] = []
+const WECHAT_CSS_BLACKLIST: readonly string[] = [
+    "position",
+    "border-image",
+    "font-family",
+    "font-style",
+    "font-variant",
+    "font-kerning",
+    "font-stretch",
+    "font-language-override",
+    "font-language-override",
+    "font-size-adjust",
+    "font-optical-sizing",
+]
+
+// 需要单独支持的 CSS 属性白名单
+const WECHAT_CSS_WHITELIST: readonly string[] = []
 
 /**
- * @description: 检查 CSS 属性和值是否在微信公众平台编辑器中有效
+ * @description: 检查 CSS 属性和值在是否在微信公众平台编辑器中的黑名单中
  * @param property CSS属性名
- * @returns 是否有效
+ * @param value CSS属性值
+ * @returns 若属性在黑名单中则返回 true, 否则 false
  */
-function isValidWechatCSSProperty(property: string, value: string): boolean {
+function isWechatCssBlackListProperty(property: string, value: string): boolean {
     if (!property || !value) {
-        return false
-    }
-    // 检查值是否为一些预设非用户定义值
-    const invalidValues = ["initial", "inherit", "unset"]
-    if (invalidValues.includes(value.trim().toLowerCase())) {
-        return false
+        return true
     }
 
     // 检查属性是否在黑名单中
     if (WECHAT_CSS_BLACKLIST.length > 0) {
-        return !WECHAT_CSS_BLACKLIST.includes(property)
+        for (let i = 0; i < WECHAT_CSS_BLACKLIST.length; i++) {
+            // 属性名开头匹配黑名单
+            if (property.startsWith(WECHAT_CSS_BLACKLIST[i]!)) {
+                return true
+            }
+        }
     }
 
-    return true
+    return false
+}
+
+// 自定义的过滤后的样式接口
+interface FilteredStyles {
+    [key: string]: string
+}
+
+// 需要过滤的预设样式值
+const WideKeywords: readonly string[] = ["initial", "inherit", "revert", "revert-layer", "unset"]
+
+/**
+ * @description: 过滤计算样式中非用户定义的样式
+ * @param el 元素
+ * @return 过滤后的样式对象
+ */
+function filterInvalidComputedStyles(el: HTMLElement | SVGElement): FilteredStyles {
+    const computedStyle = getComputedStyle(el)
+
+    const filteredStyles: FilteredStyles = {}
+
+    // 遍历所有计算样式属性
+    for (let i = 0; i < computedStyle.length; i++) {
+        const property = computedStyle[i]
+        if (!property) continue
+        const value = computedStyle.getPropertyValue(property)
+
+        // 过滤掉非用户定义的样式值
+        if (!WideKeywords.includes(value.toLowerCase())) {
+            filteredStyles[property] = value
+        }
+    }
+
+    return filteredStyles
 }
 
 /**
- * @description: 递归处理元素将外部样式应用为内联样式
- * @param el 元素
+ * @description: 递归将原始元素的计算样式应用为克隆元素的内联样式
+ * @param originalEl 原始元素(用于读取 computedStyle)
+ * @param clonedEl   克隆元素(用于写入 inline style)
+ * @param cssStyleSheets 已排序的样式表列表和索引
+ * @param computedStyle 过滤后的计算样式对象
  */
-function applyInlineStyles(el: HTMLElement | SVGElement, cssStyleSheets: [CSSStyleSheet, number][]) {
-    // 如果是 katex 公式 则跳过
-    const isKatex = shouldPreserveInlineStyles(el, "katex") // 是否为 katex 的 span 元素
+function applyInlineStyles(
+    originalEl: HTMLElement | SVGElement,
+    clonedEl: HTMLElement | SVGElement,
+    cssStyleSheets: [CSSStyleSheet, number][],
+    computedStyle: FilteredStyles,
+) {
+    // 如果没有计算样式则直接返回
+    if (!computedStyle || Object.keys(computedStyle).length === 0) return
+
+    // 特殊处理 katex 元素, 保留其内联样式
+    const isKatex = shouldPreserveInlineStyles(originalEl, "katex")
     if (isKatex) return
 
-    // 遍历所有样式表
+    // 收集已经引用内联样式的 record, 后续和计算样式对比使用
+    const inlineStyleRecord: Record<string, string> = {}
+
+    // 收集所有匹配的 CSS 属性名(基于选择器匹配 clonedEl, 因为结构相同)
     cssStyleSheets.forEach(([styleSheet]) => {
         try {
             Array.from(styleSheet.cssRules).forEach((rule: CSSRule) => {
-                // 如果不是样式规则则跳过 或 选择器不匹配则跳过
-                if (!(rule instanceof CSSStyleRule) || !el.matches(rule.selectorText)) return
+                // 如果不是样式规则则跳过
+                if (!(rule instanceof CSSStyleRule)) return
 
-                // 遍历样式表的所有属性
+                // 用 clonedEl 来匹配选择器(结构相同, class/id 相同)
+                if (!clonedEl.matches(rule.selectorText)) return
+
+                // 历遍样式规则的所有属性
                 for (let i = 0; i < rule.style.length; i++) {
-                    // 属性名
                     const property = rule.style[i]
 
-                    // 如果属性名为空或不在微信支持的 CSS 属性列表中则跳过
+                    // 跳过空属性
                     if (!property) continue
 
                     // 样式表的属性值
-                    let cssStyleValue = rule.style.getPropertyValue(property)
+                    const cssStyleValue = rule.style.getPropertyValue(property)
 
-                    // 如果值为 CSS 变量，获取计算后的具体值
-                    if (cssStyleValue.startsWith("var(--")) {
-                        cssStyleValue = getComputedStyle(el).getPropertyValue(property)
+                    // 跳过空值
+                    if (!cssStyleValue) continue
+
+                    // if (property === "width") {
+                    //     console.log("============>width", property, cssStyleValue)
+                    // }
+
+                    // 跳过微信黑名单中的属性
+                    if (isWechatCssBlackListProperty(property, cssStyleValue)) {
+                        continue
                     }
 
-                    // // 检查属性和值在微信公众平台编辑器中是否有效
-                    // if (!isValidWechatCSSProperty(property, cssStyleValue)) {
+                    // if (property !== "color") {
                     //     continue
                     // }
 
-                    // 打印出包含 border 属性的样式应用日志
-                    if (property.includes("border-bottom")) {
-                        console.log(`Applying style: ${property}: ${cssStyleValue}`)
-                    }
-
-                    // 设置对应的内联属性
-                    el.style.setProperty(property, cssStyleValue)
+                    // 记录内联样式
+                    inlineStyleRecord[property] = cssStyleValue
                 }
             })
         } catch (error) {
@@ -551,36 +619,107 @@ function applyInlineStyles(el: HTMLElement | SVGElement, cssStyleSheets: [CSSSty
         }
     })
 
-    // 递归处理子元素
-    Array.from(el.children).forEach((child) => {
-        if (child instanceof HTMLElement || child instanceof SVGElement) {
-            applyInlineStyles(child as HTMLElement | SVGElement, cssStyleSheets)
+    // 应用内联样式, 覆盖样式表中的样式
+    Object.keys(inlineStyleRecord).forEach((property) => {
+        // 收集的内联样式值
+        const cssStyleValue = inlineStyleRecord[property]
+
+        // 计算样式表中的样式值
+        const computedStyleValue = computedStyle[property]
+
+        if (!cssStyleValue || !computedStyleValue) return
+
+        // 一些不适合使用计算样式值覆盖的样式值
+        const notUseComputedStyleValues = [
+            "auto", // 自动
+            "100%", // 百分比
+            "100vw", // 视口宽度
+            "100vh", // 视口高度
+            "normal", // 正常
+            "none", // 无
+        ]
+
+        // 判断是否一致, 不一致则使用计算样式表中的样式值覆盖
+        if (cssStyleValue !== computedStyleValue && !notUseComputedStyleValues.includes(cssStyleValue)) {
+            clonedEl.style.setProperty(property, computedStyleValue)
+        } else {
+            clonedEl.style.setProperty(property, cssStyleValue)
         }
     })
+
+    // 单独添加微信白名单中的属性
+    if (WECHAT_CSS_WHITELIST.length > 0) {
+        WECHAT_CSS_WHITELIST.forEach((property) => {
+            const cssStyleValue = computedStyle[property]
+            if (cssStyleValue) {
+                clonedEl.style.setProperty(property, cssStyleValue)
+            }
+        })
+    }
+
+    // 递归处理子元素：需同步遍历 originalEl.children 和 clonedEl.children
+    const originalChildren = Array.from(originalEl.children)
+    const clonedChildren = Array.from(clonedEl.children)
+
+    // 确保数量一致, 正常情况下应一致
+    if (originalChildren.length !== clonedChildren.length) {
+        console.warn("Original and cloned element child count mismatch", originalEl, clonedEl)
+        return
+    }
+
+    // 递归遍历子元素
+    for (let i = 0; i < originalChildren.length; i++) {
+        // 获取原始子元素和克隆子元素
+        const origChild = originalChildren[i]
+        const cloneChild = clonedChildren[i]
+
+        // 执行递归应用内联样式
+        if ((origChild instanceof HTMLElement || origChild instanceof SVGElement) && (cloneChild instanceof HTMLElement || cloneChild instanceof SVGElement)) {
+            const childComputedStyle = filterInvalidComputedStyles(origChild)
+            applyInlineStyles(origChild, cloneChild, cssStyleSheets, childComputedStyle)
+        }
+    }
 }
 
 /**
- * @description: 复制带有自定义样式的内容
+ * @description: 复制带有自定义样式的内容(不修改原元素)
  * @param element 要复制的元素
  */
 export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
     MessageUtil.success("复制中...")
     try {
-        // 将 katex 公式转成图片
+        // 1、将 katex 转图片
         await katexToImage(element)
 
-        // 样式表列表
+        // 2、获取原始元素的计算样式
+        const computedStyle = filterInvalidComputedStyles(element)
+
+        // 3、克隆元素(深拷贝), 保证不修改原元素
+        const clonedElement = element.cloneNode(true) as HTMLElement
+
+        // 4、创建临时容器, 仅用于确保 clonedElement 在 DOM 中以正确应用样式, 但不显示
+        const container = document.createElement("div")
+        container.style.display = "none"
+        container.appendChild(clonedElement)
+        document.body.appendChild(container)
+
+        // 5、获取用户样式表
         const cssStyleSheets = getSortedStyleSheets()
 
-        // 将外部样式应用为内联样式
-        applyInlineStyles(element, cssStyleSheets)
+        // 6、应用内联样式
+        applyInlineStyles(element, clonedElement, cssStyleSheets, computedStyle)
 
-        // 获取带有内联样式的 HTML 字符串
-        const html = element.innerHTML
-        console.log("============>html", html)
+        // 7、提取 HTML
+        const html = clonedElement.innerHTML
 
-        // 复制 html 到剪贴板
-        await copyHtml(html)
+        // 8、移除临时容器
+        document.body.removeChild(container)
+
+        // html中类名包含 `code-snippet` 替换为 `code-snippet-wechat` 适应微信编辑器
+        const finalHtml = html.replace(/class="([^"]*?)code-snippet([^"]*?)"/g, 'class="$1code-snippet-wechat$2"')
+        console.log("============>html", finalHtml)
+        // 9、复制到剪贴板
+        await copyHtml(finalHtml)
         MessageUtil.success("内容已复制到剪贴板")
     } catch (err) {
         console.error("无法复制内容", err)

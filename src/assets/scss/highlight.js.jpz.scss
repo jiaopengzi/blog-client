@@ -177,15 +177,14 @@ code.hljs {
     width: 100%;
 }
 
-// 如下是微信公众号的样式
-.code-snippet {
+// 公共样式占位
+%code-snippet-common {
     margin: 20px 0;
     display: flex;
     flex-direction: column;
     overflow-x: auto;
-    // font-size: 14px;
-    // max-height: 500px;
-    padding: 1em 1em 1em 3em;
+    font-size: 16px;
+    max-height: 400px;
     color: var(--jpz-text-color-regular);
     position: relative;
     background-color: #fafafa;
@@ -194,8 +193,6 @@ code.hljs {
     counter-reset: line;
     // white-space: normal;
     -webkit-overflow-scrolling: touch;
-
-    max-height: 600px;
 
     @include respond-to("pc") {
         // 滚动条样式
@@ -222,31 +219,50 @@ code.hljs {
     }
 }
 
-.code-snippet code {
-    color: var(--jpz-text-color-regular);
-    margin: 0 0.2em;
-    background-color: transparent;
-    text-align: left;
-    font-size: 14px;
-    display: block;
-    // white-space: pre-wrap;
-    position: relative;
+// 主站代码块样式
+.code-snippet {
+    @extend %code-snippet-common;
+    padding: 1em 1em 1em var(--line-number-width, 3em);
 }
 
+// 微信公众号的样式
+.code-snippet-wechat {
+    @extend %code-snippet-common;
+    padding: 1em 1em 1em 1em;
+}
+
+%code-snippet-code {
+    color: var(--jpz-text-color-regular);
+    margin: 0;
+    background-color: transparent;
+    text-align: left;
+    padding-left: 1em;
+}
+
+// 主站代码块内代码样式
+.code-snippet code {
+    @extend %code-snippet-code;
+    padding-left: 1em;
+}
+
+// 微信公众号代码块内代码样式
+.code-snippet-wechat code {
+    @extend %code-snippet-code;
+    padding-left: 0;
+}
+
+// 主站代码块行号样式, 微信公众号由于行号限制则不使用
 .code-snippet code::before {
     position: absolute;
-    // width: 1.5em;
-    width: var(--line-number-width);
+    left: 0;
+    width: var(--line-number-width, 1.5em);
     text-align: right;
-    // left: -2.5em;
-    left: var(--line-number-left);
     counter-increment: line;
     content: counter(line);
     display: inline;
-    margin-right: 12px;
     color: var(--jpz-text-color-placeholder);
-    padding-right: 0.5em;
     border-right: 1px solid var(--jpz-text-color-placeholder);
+    padding-right: 0.5em;
 }
 
 .pre-code {

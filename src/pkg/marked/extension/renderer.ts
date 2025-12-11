@@ -158,12 +158,10 @@ function constructWeChatPreCode(htmlStr: string): string {
 
     // 计算行号宽度，最小宽度 2em
     const lineNumberWidth = lineNumber.toString().length * 1 || 2
-    // 行号 left 位置计算
-    const lineNumberLeft = (lineNumberWidth + 1) * -1
 
-    // 微信代码块行号类名 code-snippet code-snippet_nowrap code-snippet__js
-    const divStart = `<div class="pre-code" style="--line-number-width: ${lineNumberWidth}em;--line-number-left: ${lineNumberLeft}em;">`
-    const divEnd = "</div>"
+    // 微信代码块行号类名 code-snippet__js code-snippet code-snippet_nowrap
+    const tagStart = `<section class="pre-code code-snippet__js" style="--line-number-width: ${lineNumberWidth}em;">`
+    const tagEnd = "</section>"
     const copyBtnStart = '<button type="button" class="copy-button">'
     const copyBtnEnd = "</button>"
     let copyBtn = ""
@@ -174,10 +172,17 @@ function constructWeChatPreCode(htmlStr: string): string {
     } else {
         copyBtn = copyBtnStart + "TEXT" + copyBtnEnd
     }
-    const wechatPreCodeStart = '<pre class="code-snippet code-snippet_nowrap code-snippet__js' + wechatPreCodeLang + '">' // 微信 pre 代码块开始标签添 加类名和语言
+
+    // 微信 pre 代码块开始标签添 加类名和语言
+    // const lang = wechatPreCodeLang.replace("language-", "").toLowerCase()
+    // const wechatPreCodeStart = '<pre class="code-snippet__js code-snippet code-snippet_nowrap' + wechatPreCodeLang + '" data-lang="' + lang + '">'
+    const wechatPreCodeStart = '<pre class="code-snippet__js code-snippet code-snippet_nowrap' + wechatPreCodeLang + '">'
     const wechatPreCodeEnd = "</pre>"
-    const preBlock = divStart + copyBtn + wechatPreCodeStart + wechatPreCode + wechatPreCodeEnd + divEnd // 拼接微信代码块
-    return preBlock // 拼接微信代码块
+
+    // 拼接微信代码块
+    const preBlock = tagStart + copyBtn + wechatPreCodeStart + wechatPreCode + wechatPreCodeEnd + tagEnd
+
+    return preBlock
 }
 
 /**
