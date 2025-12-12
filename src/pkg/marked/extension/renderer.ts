@@ -9,54 +9,30 @@
 import type { Tokens } from "marked"
 import { Parser } from "marked"
 
+import { escapeWhitespaceInHtmlContent } from "@/utils/escape"
+
+import { taskListIcon, TaskListStatus } from "./todo-list"
+
 export const renderer = {
     parser: new Parser(),
+
     // listitem 函数重写
     listitem(item: Tokens.ListItem): string {
-        let itemBody = ""
-        if (item.task) {
-            const checkbox = this.checkbox({ checked: !!item.checked })
-            if (item.loose) {
-                if (item.tokens.length > 0 && item.tokens[0]!.type === "paragraph") {
-                    item.tokens[0]!.text = checkbox + " " + item.tokens[0]!.text
-                    if (item.tokens[0]!.tokens && item.tokens[0]!.tokens.length > 0 && item.tokens[0]!.tokens[0]!.type === "text") {
-                        item.tokens[0]!.tokens[0]!.text = checkbox + " " + item.tokens[0]!.tokens[0]!.text
-                    }
-                } else {
-                    item.tokens.unshift({
-                        type: "text",
-                        raw: checkbox + " ",
-                        text: checkbox + " ",
-                    })
-                }
-            } else {
-                itemBody += checkbox + " "
-            }
-        }
-
-        // itemBody += this.parser.parse(item.tokens, !!item.loose)
-        itemBody += this.parser.parse(item.tokens)
+        // 解析 listitem 内部内容
+        let itemContent = this.parser.parse(item.tokens)
 
         // 选中状态和未选中状态添加类名
         if (item.task) {
+            // 替换掉 itemContent 中的 checkbox 输入框 `<input checked="" disabled="" type="checkbox"/>` 或 `<input disabled="" type="checkbox"/>`
+            itemContent = itemContent.replace(/<input checked="" disabled="" type="checkbox"\/?>|<input disabled="" type="checkbox"\/?>/, "")
             if (item.checked) {
-                return `<li class="task-list-item task-list-item-checked">${itemBody}</li>\n` // 选中状态
+                return `<li class="task-list-item task-list-item-checked">${taskListIcon[TaskListStatus.Checked]}${itemContent}</li>\n` // 选中状态
             }
-            return `<li class="task-list-item task-list-item-unchecked">${itemBody}</li>\n` // 未选中状态
+            return `<li class="task-list-item task-list-item-unchecked">${taskListIcon[TaskListStatus.Unchecked]}${itemContent}</li>\n` // 未选中状态
         }
 
         // 非 checkbox 项
-        return `<li>${itemBody}</li>\n`
-    },
-
-    // checkbox 函数重写
-    checkbox({ checked }: Partial<Tokens.Checkbox>) {
-        const isChecked = !!checked
-        return (
-            "<input class='task-list-item-checkbox' " + // 添加类名
-            (isChecked ? 'checked="" ' : "") +
-            'disabled="" type="checkbox">'
-        )
+        return `<li>${itemContent}</li>\n`
     },
 
     // code 函数重写
@@ -109,7 +85,7 @@ export const renderer = {
         if (body) body = `<tbody>${body}</tbody>`
 
         // return "<table>\n" + "<thead>\n" + header + "</thead>\n" + body + "</table>\n"
-        const _table = "<table>\n" + "<thead>\n" + header + "</thead>\n" + body + "</table>\n"
+        const _table = `<table>\n<thead>\n${header}</thead>\n${body}</table>\n`
         // 在 table 外套一个 div 添加类名 以便于样式控制
         return `<div class="jpz-marked-table-container">${_table}</div>\n`
     },
@@ -150,7 +126,10 @@ function constructWeChatPreCode(htmlStr: string): string {
                 }
             }
 
-            item = "<code>" + item + "</code>\n" // 拼接 code 标签
+            // 转义代码行中的内容部分的空白字符, 保证在主站和微信中显示一致
+            item = escapeWhitespaceInHtmlContent(item)
+
+            item = `<code>${item}</code>\n` // 拼接 code 标签
             wechatPreCode = wechatPreCode + item
             lineNumber += 1
         }
@@ -159,11 +138,11 @@ function constructWeChatPreCode(htmlStr: string): string {
     // 计算行号宽度，最小宽度 2em
     const lineNumberWidth = lineNumber.toString().length * 1 || 2
 
-    // 微信代码块行号类名 code-snippet__js code-snippet code-snippet_nowrap
-    const tagStart = `<section class="pre-code code-snippet__js" style="--line-number-width: ${lineNumberWidth}em;">`
-    const tagEnd = "</section>"
-    const copyBtnStart = '<button type="button" class="copy-button">'
-    const copyBtnEnd = "</button>"
+    // 微信代码块行号类名 code-snippet code-snippet_nowrap; 不要添加 code-snippet__js, 会操作样式丢失
+    const tagStart = `<section class="pre-code-container" style="--line-number-width: ${lineNumberWidth}em;">`
+    const tagEnd = `</section>`
+    const copyBtnStart = `<button type="button" class="copy-button">`
+    const copyBtnEnd = `</button>`
     let copyBtn = ""
     if (wechatPreCodeLang) {
         wechatPreCodeLang = " " + wechatPreCodeLang
@@ -174,10 +153,9 @@ function constructWeChatPreCode(htmlStr: string): string {
     }
 
     // 微信 pre 代码块开始标签添 加类名和语言
-    // const lang = wechatPreCodeLang.replace("language-", "").toLowerCase()
-    // const wechatPreCodeStart = '<pre class="code-snippet__js code-snippet code-snippet_nowrap' + wechatPreCodeLang + '" data-lang="' + lang + '">'
-    const wechatPreCodeStart = '<pre class="code-snippet__js code-snippet code-snippet_nowrap' + wechatPreCodeLang + '">'
-    const wechatPreCodeEnd = "</pre>"
+    const lang = wechatPreCodeLang.replace("language-", "").toLowerCase()
+    const wechatPreCodeStart = `<pre class="pre-code pre-code_nowrap ${wechatPreCodeLang}" data-lang="${lang}">`
+    const wechatPreCodeEnd = `</pre>`
 
     // 拼接微信代码块
     const preBlock = tagStart + copyBtn + wechatPreCodeStart + wechatPreCode + wechatPreCodeEnd + tagEnd

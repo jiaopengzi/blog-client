@@ -13,6 +13,7 @@ import DOMPurify, { type Config } from "dompurify"
 import { CustomElementAttributes, Names } from "@/customElements"
 import createMarked from "@/pkg/marked/new-marked"
 import { copyHtml } from "@/utils/clipboard"
+import { escapeWhitespaceInHtmlContent } from "@/utils/escape"
 import { HasParentByClass } from "@/utils/getParentByClass"
 import { MessageUtil } from "@/utils/message"
 
@@ -327,13 +328,13 @@ export function htmlHandleCopyBtns(htmlSrc: string) {
  * @return  替换后的 html 源码
  */
 export function htmlHandleDivToSection(htmlSrc: string) {
-    return htmlSrc
     // return htmlSrc
-    //     .replace(/<div(\s[^>]*)?>/g, (match, attributes) => {
-    //         // 保留原有的属性, 只替换标签名
-    //         return `<section${attributes || ""}>`
-    //     })
-    //     .replace(/<\/div>/g, "</section>")
+    return htmlSrc
+        .replace(/<div(\s[^>]*)?>/g, (match, attributes) => {
+            // 保留原有的属性, 只替换标签名
+            return `<section${attributes || ""}>`
+        })
+        .replace(/<\/div>/g, "</section>")
 }
 
 /**
@@ -355,11 +356,13 @@ export async function katexToImage(container: HTMLElement, className: string = "
 
             // 获取 katex 滚动宽度
             const katexScrollWidth = katex.scrollWidth // katex 滚动宽度
-            const katexOffsetWidth = katex.offsetWidth * 1 // katex 宽度
-            const katexOffsetHeight = katex.offsetHeight * 1 // katex 高度
+            const katexOffsetWidth = katex.offsetWidth * 0.88 // katex 宽度
+            const katexScrollHeight = katex.scrollHeight // katex 滚动高度
+            const katexOffsetHeight = katex.offsetHeight * 0.88 // katex 高度
 
             // 获取宽度 如果是行内公式则使用 katex 的宽度 如果是行间公式则使用 katex 的滚动宽度
             const getWidth = () => (isKatexDisplay ? katexScrollWidth : katexOffsetWidth)
+            const getHeight = () => (isKatexDisplay ? katexScrollHeight : katexOffsetHeight)
 
             // // 使用 canvas 将 katex 转成图片 scale 为 3 是为了提高图片清晰度
             // const canvas = await html2canvas(katex, {
@@ -386,24 +389,28 @@ export async function katexToImage(container: HTMLElement, className: string = "
 
             // 使用 snapdom 将 katex 转成图片
             const snap = await snapdom(katex)
-            const svg = await snap.toSvg({
+            const img = await snap.toPng({
                 scale: 3,
                 backgroundColor: "#ffffff80",
                 width: getWidth(),
-                height: katexOffsetHeight,
+                height: getHeight(),
             })
 
-            // 根据是否行内公式设置 svt 元素的属性
-            if (isKatexDisplay) {
-                svg.style.width = `100%` // 设置图片的宽度
-            } else {
-                // 需要单独一个添加 不能用 setAttribute 会被覆盖
-                svg.style.width = `${getWidth()}px` // 设置图片的宽度
-                svg.style.display = "inline-block" // 设置 img 元素的 display 为 inline-block 行内显示
-                svg.style.verticalAlign = "text-top" // 设置 img 元素的 vertical-align 为 text-top 使其与文字对齐
-            }
+            // // 根据是否行内公式设置 img 元素的属性
+            // if (isKatexDisplay) {
+            //     img.style.width = `100%` // 设置图片的宽度
+            // } else {
+            // 需要单独一个添加 不能用 setAttribute 会被覆盖
+            img.style.width = `${getWidth()}px` // 设置图片的宽度
+            img.style.height = `${getHeight()}px` // 设置图片的高度
+            img.style.display = "inline-block" // 设置 img 元素的 display 为 inline-block 行内显示
+            img.style.verticalAlign = "text-top" // 设置 img 元素的 vertical-align 为 text-top 使其与文字对齐
+            img.style.objectFit = "contain" // 设置 img 元素的 object-fit 为 contain 保持比例
+            img.style.margin = "0"
+            img.style.padding = "0"
+            // }
 
-            katex.parentNode?.replaceChild(svg, katex) // 替换 katex 公式
+            katex.parentNode?.replaceChild(img, katex) // 替换 katex 公式
         }
     }
 }
@@ -461,7 +468,7 @@ function getSortedStyleSheets(): [CSSStyleSheet, number][] {
  * @param className 要检查的 CSS 类名
  * @returns 若找到匹配元素则返回 true, 否则 false
  */
-export function shouldPreserveInlineStyles(element: HTMLElement | SVGElement, className: string): boolean {
+export function hasClassName(element: HTMLElement | SVGElement, className: string): boolean {
     let current: Element | null = element
     while (current) {
         // 检查当前元素是否包含该类名(兼容 SVGElement 无 classList 的情况)
@@ -473,14 +480,26 @@ export function shouldPreserveInlineStyles(element: HTMLElement | SVGElement, cl
     return false
 }
 
+// 判断当前元素或其任意祖先是否为 code 标签
+export function isCodeTag(element: HTMLElement | SVGElement): boolean {
+    let current: Element | null = element
+    while (current) {
+        if (current.tagName.toLowerCase() === "code") {
+            return true
+        }
+        current = current.parentElement
+    }
+    return false
+}
+
 /**
  * 微信公众平台编辑器明确不支持或会被过滤的 CSS 属性黑名单
  * 这些属性在内联样式中会被移除或忽略, 即使写在 style 里也无效
  */
-const WECHAT_CSS_BLACKLIST: readonly string[] = [
+const WechatCssBlackList: readonly string[] = [
     "position",
     "border-image",
-    "font-family",
+    // "font-family",
     "font-style",
     "font-variant",
     "font-kerning",
@@ -491,8 +510,14 @@ const WECHAT_CSS_BLACKLIST: readonly string[] = [
     "font-optical-sizing",
 ]
 
-// 需要单独支持的 CSS 属性白名单
-const WECHAT_CSS_WHITELIST: readonly string[] = []
+// 全局白名单(暂时为空)
+const WechatCssAllWhiteList: readonly string[] = []
+
+// 代码块容器白名单
+const WechatCssPreCodeWhiteList: readonly string[] = ["font-family", "font-size", "line-height", "color"]
+
+// // 行内代码白名单
+// const WechatCsInlineCodeWhiteList: readonly string[] = ["font-family", "font-size", "line-height", "color", "background-color", "padding", "margin"]
 
 /**
  * @description: 检查 CSS 属性和值在是否在微信公众平台编辑器中的黑名单中
@@ -506,10 +531,10 @@ function isWechatCssBlackListProperty(property: string, value: string): boolean 
     }
 
     // 检查属性是否在黑名单中
-    if (WECHAT_CSS_BLACKLIST.length > 0) {
-        for (let i = 0; i < WECHAT_CSS_BLACKLIST.length; i++) {
+    if (WechatCssBlackList.length > 0) {
+        for (let i = 0; i < WechatCssBlackList.length; i++) {
             // 属性名开头匹配黑名单
-            if (property.startsWith(WECHAT_CSS_BLACKLIST[i]!)) {
+            if (property.startsWith(WechatCssBlackList[i]!)) {
                 return true
             }
         }
@@ -567,9 +592,15 @@ function applyInlineStyles(
     // 如果没有计算样式则直接返回
     if (!computedStyle || Object.keys(computedStyle).length === 0) return
 
-    // 特殊处理 katex 元素, 保留其内联样式
-    const isKatex = shouldPreserveInlineStyles(originalEl, "katex")
+    // 跳过 katex 公式元素
+    const isKatex = hasClassName(originalEl, "katex")
     if (isKatex) return
+
+    // 对代码块容器特殊处理, 只保颜色和字体相关样式
+    const isPreCode = hasClassName(originalEl, "pre-code-container")
+
+    // // 行内代码即不在代码块容器内的 code 标签
+    // const isCode = isCodeTag(originalEl)
 
     // 收集已经引用内联样式的 record, 后续和计算样式对比使用
     const inlineStyleRecord: Record<string, string> = {}
@@ -606,7 +637,13 @@ function applyInlineStyles(
                         continue
                     }
 
-                    // if (property !== "color") {
+                    // 代码块容器只保留白名单中的属性
+                    if (isPreCode && WechatCssPreCodeWhiteList.length > 0 && !WechatCssPreCodeWhiteList.includes(property)) {
+                        continue
+                    }
+
+                    // // 行内代码只保留白名单中的属性
+                    // if (isCode && !isPreCode && WechatCsInlineCodeWhiteList.length > 0 && !WechatCsInlineCodeWhiteList.includes(property)) {
                     //     continue
                     // }
 
@@ -629,7 +666,7 @@ function applyInlineStyles(
 
         if (!cssStyleValue || !computedStyleValue) return
 
-        // 一些不适合使用计算样式值覆盖的样式值
+        // 自适应的样式值不使用计算样式覆盖
         const notUseComputedStyleValues = [
             "auto", // 自动
             "100%", // 百分比
@@ -648,8 +685,8 @@ function applyInlineStyles(
     })
 
     // 单独添加微信白名单中的属性
-    if (WECHAT_CSS_WHITELIST.length > 0) {
-        WECHAT_CSS_WHITELIST.forEach((property) => {
+    if (WechatCssAllWhiteList.length > 0) {
+        WechatCssAllWhiteList.forEach((property) => {
             const cssStyleValue = computedStyle[property]
             if (cssStyleValue) {
                 clonedEl.style.setProperty(property, cssStyleValue)
@@ -710,16 +747,20 @@ export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
         applyInlineStyles(element, clonedElement, cssStyleSheets, computedStyle)
 
         // 7、提取 HTML
-        const html = clonedElement.innerHTML
+        let html = clonedElement.innerHTML
 
         // 8、移除临时容器
         document.body.removeChild(container)
 
-        // html中类名包含 `code-snippet` 替换为 `code-snippet-wechat` 适应微信编辑器
-        const finalHtml = html.replace(/class="([^"]*?)code-snippet([^"]*?)"/g, 'class="$1code-snippet-wechat$2"')
-        console.log("============>html", finalHtml)
+        // html 中 `<pre class="pre-code pre-code_nowrap` 替换为 `<pre class="code-snippet code-snippet_nowrap`
+        // 兼容微信微信公众号编辑器代码块和代码片段样式
+        html = html.replace(/<pre class="pre-code pre-code_nowrap/g, '<pre class="code-snippet code-snippet_nowrap')
+        html = escapeWhitespaceInHtmlContent(html)
+
+        // console.log("============>html", html)
+
         // 9、复制到剪贴板
-        await copyHtml(finalHtml)
+        await copyHtml(html)
         MessageUtil.success("内容已复制到剪贴板")
     } catch (err) {
         console.error("无法复制内容", err)

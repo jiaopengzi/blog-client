@@ -177,22 +177,48 @@ code.hljs {
     width: 100%;
 }
 
-// 公共样式占位
+// 微信公众号默认代码块样式作为公共样式
 %code-snippet-common {
-    margin: 20px 0;
-    display: flex;
-    flex-direction: column;
+    margin: 10px 0;
+    display: block;
     overflow-x: auto;
-    font-size: 16px;
-    max-height: 400px;
-    color: var(--jpz-text-color-regular);
+    font-size: 14px;
+    padding: 1em 1em 1em 3em;
+    color: #333;
     position: relative;
     background-color: #fafafa;
     border: 1px solid #f0f0f0;
-    border-radius: 4px;
+    border-radius: 2px;
     counter-reset: line;
-    // white-space: normal;
+    white-space: normal;
     -webkit-overflow-scrolling: touch;
+}
+
+// 微信代码块样式
+.code-snippet {
+    @extend %code-snippet-common;
+}
+
+// 主站代码块样式继承微信公众号代码块样式
+// 调整左侧行号宽度和内边距
+.pre-code {
+    @extend %code-snippet-common;
+    --pre-code-code-before-padding-right: 0.5em;
+
+    // 代码块内不换行
+    white-space-collapse: preserve;
+    text-wrap-mode: nowrap;
+
+    // 根据行号宽度调整内边距
+    padding: 1em 1em 1em calc(var(--line-number-width, 3em) + var(--pre-code-code-before-padding-right, 0.5em) * 2);
+    display: flex;
+    flex-direction: column;
+    color: var(--jpz-text-color-regular);
+
+    font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+    margin: 20px 0;
+    font-size: 14px;
+    max-height: 400px;
 
     @include respond-to("pc") {
         // 滚动条样式
@@ -219,93 +245,96 @@ code.hljs {
     }
 }
 
-// 主站代码块样式
-.code-snippet {
-    @extend %code-snippet-common;
-    padding: 1em 1em 1em var(--line-number-width, 3em);
-}
-
-// 微信公众号的样式
-.code-snippet-wechat {
-    @extend %code-snippet-common;
-    padding: 1em 1em 1em 1em;
-}
-
-%code-snippet-code {
+// 微信代码块内不换行代码样式
+// 这里将不换行的注释掉, 避免写入内联样式和微信外部样式冲突
+%code-snippet_nowrap_common {
+    // white-space-collapse: preserve;
+    // text-wrap-mode: nowrap;
+    // display: flex;
+    background-color: transparent;
     color: var(--jpz-text-color-regular);
     margin: 0;
-    background-color: transparent;
-    text-align: left;
-    padding-left: 1em;
 }
 
-// 主站代码块内代码样式
-.code-snippet code {
-    @extend %code-snippet-code;
-    padding-left: 1em;
+// 主站代码块内不换行代码样式
+.pre-code_nowrap code {
+    @extend %code-snippet_nowrap_common;
+    padding: 0;
+    line-height: 1.6em;
 }
 
-// 微信公众号代码块内代码样式
-.code-snippet-wechat code {
-    @extend %code-snippet-code;
-    padding-left: 0;
+// 微信代码块内不换行代码样式
+.code-snippet_nowrap code {
+    @extend %code-snippet_nowrap_common;
 }
 
-// 主站代码块行号样式, 微信公众号由于行号限制则不使用
-.code-snippet code::before {
+// 微信公众号代码块行号样式
+%code-snippet-code-before {
     position: absolute;
-    left: 0;
-    width: var(--line-number-width, 1.5em);
     text-align: right;
     counter-increment: line;
     content: counter(line);
     display: inline;
+    color: rgba(0, 0, 0, 0.15);
+    margin-right: 12px;
+    left: -2.5em;
+}
+
+// 主站代码块行号样式
+.pre-code code::before {
+    @extend %code-snippet-code-before;
+
     color: var(--jpz-text-color-placeholder);
+    width: var(--line-number-width, 1.5em);
+    left: 0;
+    margin: 0;
     border-right: 1px solid var(--jpz-text-color-placeholder);
-    padding-right: 0.5em;
+    padding-right: var(--pre-code-code-before-padding-right, 0.5em);
 }
 
-.pre-code {
-    font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+// 微信公众号代码块行号样式
+.code-snippet code::before {
+    @extend %code-snippet-code-before;
+    min-width: 1.5em;
+}
+
+// 代码块复制按钮样式
+.pre-code-container {
     position: relative;
-    pre {
-        background-color: var(--jpz-bg-color-page);
-        border: 1px solid var(--jpz-border-color);
+
+    .copy-button {
+        font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+        position: absolute;
+        top: 4px;
+        right: 8px;
+        cursor: pointer;
+        background-color: var(--jpz-bg-color);
+        border: none;
+        border-radius: 4px;
+        padding: 2px 5px;
+        z-index: 999;
+        color: var(--jpz-text-color-placeholder);
+        min-width: 4em;
+        text-align: center;
+        font-size: 12px;
+        outline: none;
+        height: 2em;
     }
-}
 
-.copy-button {
-    font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
-    position: absolute;
-    top: 4px;
-    right: 8px;
-    cursor: pointer;
-    background-color: var(--jpz-bg-color);
-    border: none;
-    border-radius: 4px;
-    padding: 2px 5px;
-    z-index: 999;
-    color: var(--jpz-text-color-placeholder);
-    min-width: 4em;
-    text-align: center;
-    font-size: 12px;
-    outline: none;
-    height: 2em;
-}
-
-.copy-button:hover {
-    background-color: #e0e0e0;
+    .copy-button:hover {
+        background-color: #e0e0e0;
+    }
 }
 
 code {
     font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
-    margin: 0 0.2em;
+    // margin: 0 0.2em;
     background-color: var(--code-bg-color);
     border-radius: 4px;
     color: var(--code-color);
     padding: 0 5px 0 5px;
 }
 
-code + code {
-    margin-left: -0.2em;
-}
+// code + code {
+//     margin-left: -0.2em;
+// }

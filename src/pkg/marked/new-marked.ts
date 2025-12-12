@@ -9,7 +9,7 @@
 import "katex/dist/contrib/mhchem.mjs"
 
 import { Marked } from "marked"
-import markedAlert from "marked-alert" // 引用不同主题的警报
+import markedAlert from "marked-alert" // 引用不同主题提醒效果
 import customHeadingId from "marked-custom-heading-id" // 自定义标题id
 import { markedEmoji } from "marked-emoji" // 表情
 import markedFootnote from "marked-footnote" // 脚注
