@@ -184,10 +184,13 @@ code.hljs {
     overflow-x: auto;
     font-size: 14px;
     padding: 1em 1em 1em 3em;
-    color: #333;
+    // color: #333;
+    color: var(--jpz-text-color-primary);
     position: relative;
-    background-color: #fafafa;
-    border: 1px solid #f0f0f0;
+    // background-color: #fafafa;
+    // border: 1px solid #f0f0f0;
+    background-color: var(--jpz-bg-color-page);
+    border: 1px solid var(--jpz-border-color);
     border-radius: 2px;
     counter-reset: line;
     white-space: normal;
@@ -245,6 +248,15 @@ code.hljs {
     }
 }
 
+// 为了在复制到微信编辑器的时候兼容微信的样式
+#preview[data-preview="wechat"] {
+    .pre-code {
+        color: #333;
+        background-color: #fafafa;
+        border: 1px solid #f0f0f0;
+    }
+}
+
 // 微信代码块内不换行代码样式
 // 这里将不换行的注释掉, 避免写入内联样式和微信外部样式冲突
 %code-snippet_nowrap_common {
@@ -254,13 +266,13 @@ code.hljs {
     background-color: transparent;
     color: var(--jpz-text-color-regular);
     margin: 0;
+    line-height: 1.6em;
 }
 
 // 主站代码块内不换行代码样式
 .pre-code_nowrap code {
     @extend %code-snippet_nowrap_common;
     padding: 0;
-    line-height: 1.6em;
 }
 
 // 微信代码块内不换行代码样式
@@ -275,7 +287,8 @@ code.hljs {
     counter-increment: line;
     content: counter(line);
     display: inline;
-    color: rgba(0, 0, 0, 0.15);
+    // color: rgba(0, 0, 0, 0.15);
+    color: var(--jpz-text-color-placeholder);
     margin-right: 12px;
     left: -2.5em;
 }
@@ -284,7 +297,6 @@ code.hljs {
 .pre-code code::before {
     @extend %code-snippet-code-before;
 
-    color: var(--jpz-text-color-placeholder);
     width: var(--line-number-width, 1.5em);
     left: 0;
     margin: 0;

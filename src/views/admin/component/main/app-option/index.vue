@@ -24,7 +24,7 @@ import { OptionType } from "@/api/common"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { type GetAPPOptionResponse } from "@/api/setting/getAPPOption"
 import { type UpdateAPPOption, updateAPPOptionAPI, type UpdateAPPOptionRequest } from "@/api/setting/updateAPPOption"
-import { imageURLRequiredValidatorFunc } from "@/components/common/base-config-form"
+import { cssValidatorFunc, imageURLRequiredValidatorFunc } from "@/components/common/base-config-form"
 import { RouteNames } from "@/router"
 import { useOptionsStore } from "@/stores/options" // 网站配置选项
 import { MessageUtil } from "@/utils/message"
@@ -134,6 +134,12 @@ const rules = reactive<FormRules<APPOptionForm>>({
             trigger: "blur",
         },
     ],
+    custom_style_css: [
+        {
+            validator: cssValidatorFunc,
+            trigger: "blur",
+        },
+    ],
 })
 
 // 表单项配置显示
@@ -230,7 +236,7 @@ const formItems = [
 
     // 样式相关
     { label: "样式相关", isCategoryTitle: true },
-    { label: "自定义 CSS", prop: "custom_style_css", type: "textarea" },
+    { label: "自定义 CSS", prop: "custom_style_css", type: "textarea", textareaRows: 12 },
 
     // 邮件通知管理
     { label: "邮件通知管理", isCategoryTitle: true },

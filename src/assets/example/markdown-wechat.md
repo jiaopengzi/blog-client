@@ -90,7 +90,7 @@ $$c = \sqrt{a^2 + b^2}$$
 
 通过三张图，就让各大区领着各自团队回去开会，制定一个空白市场开发的计划及相应的配套预算。
 
-Power BI 公共 web 效果：<https://demo.jiaopengzi.com/pbi/159-full.html>
+Power BI 公共 web 效果[^1]
 
 ![159-1](https://image.jiaopengzi.com/wp-content/uploads/2022/07/159-1.png)
 
@@ -118,3 +118,5 @@ Power BI 公共 web 效果：<https://demo.jiaopengzi.com/pbi/159-full.html>
 ## 视频课
 
 **<https://jiaopengzi.com/all-course>**
+
+[^1]:demo链接：<https://demo.jiaopengzi.com/pbi/159-full.html>

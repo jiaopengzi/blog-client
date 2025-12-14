@@ -11,6 +11,7 @@
 import type { FormRules } from "element-plus"
 
 import { useFormItemRule } from "@/components/hooks/useFormItemRule"
+import { isValidCSS } from "@/utils/cssValidator"
 
 export const dbRules: FormRules = {
     host: [{ required: true, message: "请输入数据库主机地址", trigger: "blur" }],
@@ -108,5 +109,20 @@ export const imageURLRequiredValidatorFunc = (rule: any, value: any, callback: a
         callback(new Error("url必须为图片"))
     } else {
         callback()
+    }
+}
+
+// 校验 css
+export const cssValidatorFunc = (rule: any, value: any, callback: any) => {
+    const { isValid, errors } = isValidCSS(value)
+    if (isValid) {
+        callback()
+    } else {
+        // 只显示errors的最后一条信息
+        if (errors.length === 0) {
+            callback(new Error("意外的 CSS 语法错误"))
+            return
+        }
+        callback(new Error("CSS 语法错误:\n" + errors[errors.length - 1]))
     }
 }

@@ -38,6 +38,19 @@ app.use(createHead()) // 参考官方文档:https://unhead.unjs.io/docs/vue/head
 app.component("j-icon", JIcon) //  'j-icon' 作为全局组件
 app.mount("#app")
 
+// /* 用户自定义 CSS */
+// const userCSSString = `
+// html {
+//   --title-color: #ff0000;           /* 覆盖标题颜色 */
+//   --jpz-bg-color: #121212;          /* 覆盖背景色 */
+//   --code-color: limegreen;          /* 覆盖行内代码颜色 */
+// }
+// `
+// const style = document.createElement("style")
+
+// style.textContent = userCSSString
+// document.head.appendChild(style)
+
 // 开发模式下
 if (import.meta.env.MODE === "development") {
     devRun() // 开发环境运行的函数

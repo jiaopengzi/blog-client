@@ -24,7 +24,8 @@ export const renderer = {
         // 选中状态和未选中状态添加类名
         if (item.task) {
             // 替换掉 itemContent 中的 checkbox 输入框 `<input checked="" disabled="" type="checkbox"/>` 或 `<input disabled="" type="checkbox"/>`
-            itemContent = itemContent.replace(/<input checked="" disabled="" type="checkbox"\/?>|<input disabled="" type="checkbox"\/?>/, "")
+            // 注意 input 标签后面有空格
+            itemContent = itemContent.replace(/<input (?:checked="" )?disabled="" type="checkbox"\/?> /, "")
             if (item.checked) {
                 return `<li class="task-list-item task-list-item-checked">${taskListIcon[TaskListStatus.Checked]}${itemContent}</li>\n` // 选中状态
             }

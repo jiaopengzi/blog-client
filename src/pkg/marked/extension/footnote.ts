@@ -27,7 +27,7 @@ const optionFootnote: Options = {
      *
      * @default false
      */
-    refMarkers: false, // 脚注标记;
+    refMarkers: true, // 脚注标记;
 }
 
 export default optionFootnote

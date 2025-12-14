@@ -1,0 +1,9 @@
+/*
+ * FilePath    : blog-client-dev\src\views\test\style.module.scss
+ */
+#preview-test {
+  background-color: red;
+}
+#preview-test :deep(.test) {
+  background-color: blue;
+}/*# sourceMappingURL=style.module.css.map */

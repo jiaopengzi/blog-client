@@ -58,7 +58,14 @@
                     :placeholder="item.placeholder"
                     clearable
                 />
-                <el-input v-else v-model="formDataResult[item.prop as keyof APPOptionForm]" :type="item.type" :placeholder="item.placeholder" clearable />
+                <el-input
+                    v-else
+                    v-model="formDataResult[item.prop as keyof APPOptionForm]"
+                    :type="item.type"
+                    :placeholder="item.placeholder"
+                    :rows="item.textareaRows"
+                    clearable
+                />
             </el-form-item>
         </template>
     </el-form>
@@ -90,6 +97,7 @@ const { title, formData, rules, formItems, formWidth, labelWidth } = defineProps
         isCategoryTitle?: boolean
         isCarouselManage?: boolean
         isSlideVerifyManage?: boolean
+        textareaRows?: number
     }>
     formWidth?: number
     labelWidth?: number

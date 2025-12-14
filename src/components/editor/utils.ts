@@ -16,6 +16,7 @@ import { copyHtml } from "@/utils/clipboard"
 import { escapeWhitespaceInHtmlContent } from "@/utils/escape"
 import { HasParentByClass } from "@/utils/getParentByClass"
 import { MessageUtil } from "@/utils/message"
+import { htmlTagReplace } from "@/utils/tagReplace"
 
 import { CommandsKey } from "./command"
 import { defaultCommandKeys } from "./command"
@@ -82,6 +83,8 @@ interface RegexCache {
     utf8BomRegex: RegExp // 匹配 utf-8 bom 头
     windowsNewLineRegex: RegExp // 匹配 windows 换行符
     copyButtonRegex: RegExp // 匹配所有 class 中有 copy-button 的按钮元素
+    detailsTagRegex: RegExp // 匹配 details 标签
+    detailsTagToRemoveRegex: RegExp // 需要去掉 details 标签
 }
 
 /**
@@ -142,6 +145,11 @@ export const createRegexCache = (): RegexCache => {
     // <button type="button" class="copy-button"> CSS</button>
     // 匹配所有 class 中有 copy-button 的按钮元素, gi 表示全局匹配且不区分大小写
     const copyButtonRegex = /<button[^>]*\bcopy-button\b[^>]*>.*?<\/button>/gi
+
+    // 匹配 details 标签
+    const detailsTagRegex = /<details[\s\S]*?<\/details>/gi
+    // 需要去掉 details 标签
+    const detailsTagToRemoveRegex = /<\/?details[^>]*>/g
     return {
         h1TagRegex,
         hTagRegex,
@@ -158,6 +166,8 @@ export const createRegexCache = (): RegexCache => {
         utf8BomRegex,
         windowsNewLineRegex,
         copyButtonRegex,
+        detailsTagRegex,
+        detailsTagToRemoveRegex,
     }
 }
 
@@ -323,18 +333,15 @@ export function htmlHandleCopyBtns(htmlSrc: string) {
 }
 
 /**
- * @description: 将 div 替换为 section
+ * @description: 将 details 标签去掉直接内容保留
  * @param htmlSrc html 源码
- * @return  替换后的 html 源码
+ * @return 替换后的 html 源码
  */
-export function htmlHandleDivToSection(htmlSrc: string) {
-    // return htmlSrc
-    return htmlSrc
-        .replace(/<div(\s[^>]*)?>/g, (match, attributes) => {
-            // 保留原有的属性, 只替换标签名
-            return `<section${attributes || ""}>`
-        })
-        .replace(/<\/div>/g, "</section>")
+export function htmlHandleDetailsTag(htmlSrc: string) {
+    return htmlSrc.replace(regexCache.detailsTagRegex, (match) => {
+        // 去掉 details 标签
+        return match.replace(regexCache.detailsTagToRemoveRegex, "")
+    })
 }
 
 /**
@@ -391,7 +398,7 @@ export async function katexToImage(container: HTMLElement, className: string = "
             const snap = await snapdom(katex)
             const img = await snap.toPng({
                 scale: 3,
-                backgroundColor: "#ffffff80",
+                backgroundColor: "#ffffff00", // 透明背景
                 width: getWidth(),
                 height: getHeight(),
             })
@@ -425,7 +432,11 @@ export function htmlHandleWeChat(htmlSrc: string) {
     htmlSrc = htmlHandleCopyBtns(htmlSrc)
 
     // 将 div 替换为 section
-    htmlSrc = htmlHandleDivToSection(htmlSrc)
+    htmlSrc = htmlTagReplace(htmlSrc, "div", "section")
+
+    // 处理 details 标签
+    htmlSrc = htmlHandleDetailsTag(htmlSrc)
+
     return htmlSrc
 }
 
@@ -497,24 +508,24 @@ export function isCodeTag(element: HTMLElement | SVGElement): boolean {
  * 这些属性在内联样式中会被移除或忽略, 即使写在 style 里也无效
  */
 const WechatCssBlackList: readonly string[] = [
-    "position",
+    // "position",
     "border-image",
     // "font-family",
-    "font-style",
-    "font-variant",
-    "font-kerning",
-    "font-stretch",
-    "font-language-override",
-    "font-language-override",
-    "font-size-adjust",
-    "font-optical-sizing",
+    // "font-style",
+    // "font-variant",
+    // "font-kerning",
+    // "font-stretch",
+    // "font-language-override",
+    // "font-language-override",
+    // "font-size-adjust",
+    // "font-optical-sizing",
 ]
 
 // 全局白名单(暂时为空)
 const WechatCssAllWhiteList: readonly string[] = []
 
 // 代码块容器白名单
-const WechatCssPreCodeWhiteList: readonly string[] = ["font-family", "font-size", "line-height", "color"]
+const WechatCssPreCodeWhiteList: readonly string[] = ["font-family", "font-size", "line-height", "color", "background-color", "padding", "margin"]
 
 // // 行内代码白名单
 // const WechatCsInlineCodeWhiteList: readonly string[] = ["font-family", "font-size", "line-height", "color", "background-color", "padding", "margin"]
@@ -756,6 +767,9 @@ export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
         // 兼容微信微信公众号编辑器代码块和代码片段样式
         html = html.replace(/<pre class="pre-code pre-code_nowrap/g, '<pre class="code-snippet code-snippet_nowrap')
         html = escapeWhitespaceInHtmlContent(html)
+
+        // 将 a 标签替换为 span 标签 防止微信编辑器自动添加链接, 保证样式不变同时不影响内容
+        html = htmlTagReplace(html, "a", "span")
 
         // console.log("============>html", html)
 

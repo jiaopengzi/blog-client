@@ -6,12 +6,6 @@
  * @Description  : preview样式
  */
 
-// ========================================== live sass compiler 插件使用 开始 ==========================================
-// 当使用 live sass compiler 插件时查看编译结果需要使用相对路径,不能使用别名 scss目录下的注释都要检查一遍.
-// 如下注释解开即可
-// @use './themes/index.scss' as *;
-// ========================================== live sass compiler 插件使用 结束 ==========================================
-
 #preview {
     font-family: "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
     overflow-x: hidden;
@@ -98,15 +92,20 @@
     // 有序列表
     ol {
         list-style: decimal;
-        // padding-left: 2em;
+        padding-left: 2em;
+
+        li {
+            // 行高
+            line-height: 2em;
+            color: var(--jpz-text-color-primary);
+        }
     }
 
     // 无序列表样式
     ul {
-        // padding-left: 2em;
-        // padding-left: 0;
-
+        padding-left: 2em;
         position: relative;
+        word-break: break-all;
 
         color: var(--jpz-text-color-primary);
 
@@ -117,14 +116,14 @@
             line-height: 2em;
 
             > ul > li {
-                // 二级空心圆
-                list-style-type: circle;
+                // 二级方块
+                list-style-type: square;
                 // 行高
                 line-height: 2em;
 
                 > ul > li {
-                    // 三级实心方块
-                    list-style-type: square;
+                    // 三级空心圆
+                    list-style-type: circle;
                     // 行高
                     line-height: 2em;
                 }
@@ -137,15 +136,15 @@
         list-style-type: none;
         display: flex;
         align-items: center;
-        gap: 0.2em;
         word-break: break-all;
+        margin-left: -1.5em;
 
         .task-list-icon {
-            height: 1.3em;
-            width: 1.3em;
+            height: 1em;
+            width: 1em;
             flex-shrink: 0;
             vertical-align: middle;
-            margin-right: 0.2em;
+            margin-right: 0.5em;
             display: inline-block;
         }
 
@@ -336,16 +335,16 @@
         font-size: 1.5em;
         margin: 0.5em 0 0.5em 0;
         display: block;
-        border-top: 1px solid var(--horizontal-divider-color);
+        // border-top: 1px solid var(--horizontal-divider-color);
         padding-top: 0.5em;
     }
 
     a[data-footnote-ref] {
-        color: var(--jpz-color-primary);
         color: var(--footnote-sup-color);
         // 下划线
         text-decoration: underline;
         text-underline-offset: 0.2rem;
+        font-size: 10.5px;
     }
 
     // alert警报提示
@@ -454,6 +453,13 @@
         p {
             color: var(--markdown-alert-caution-color);
         }
+    }
+
+    // details 中 summary
+    summary {
+        cursor: pointer;
+        font-weight: 500;
+        color: var(--jpz-text-color-primary);
     }
 }
 

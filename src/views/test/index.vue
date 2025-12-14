@@ -2,13 +2,38 @@
  * FilePath    : blog-client-dev\src\views\test\index.vue
 -->
 <template>
-    <div id="preview-test">
-        <VolumeBar :volume="50" />
-    </div>
+    <div id="preview-test"></div>
 </template>
 <script setup lang="ts">
 defineOptions({ name: "MyTest" })
-import VolumeBar from "@/components/player/components/volume-bar"
+import { isValidCSS } from "@/utils/cssValidator"
+
+/* 用户自定义 CSS */
+const userCSSString = `
+html ::-webkit-scrollbar-thumb {
+  background-color: #cccccc;
+}
+
+@media (min-width: 1220px) {
+  html ::-webkit-scrollbar {
+    width: 10px;
+    height: 12px;
+  }
+}
+
+.md-toc h4:hover,
+.md-toc h5:hover,
+.md-toc h6:hover {
+  text-decoration: underline;
+}
+`
+
+const { isValid, errors } = isValidCSS(userCSSString)
+if (isValid) {
+    console.info("good css")
+} else {
+    console.error("Errors:", "\n" + errors.join("\n"))
+}
 </script>
 
 <style scoped lang="scss">
