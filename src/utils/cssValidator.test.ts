@@ -11,7 +11,6 @@ describe("isValidCSS", () => {
     it("0、普通字符串", () => {
         const res = isValidCSS("abcefghijklmnopqrstuvwxyz")
         expect(res.isValid).toBe(false)
-        expect(res.errors.join("\n")).toContain("无效的 CSS 内容，请确保包含有效的选择器和样式。")
     })
 
     it("1、空字符串校验为合法", () => {
@@ -187,9 +186,9 @@ describe("isValidCSS", () => {
         expect(res.errors.join("\n")).toContain("左花括号前缺少选择器")
     })
 
-    it("33、左花括号在下一行且上一行为选择器视为合法", () => {
+    it("33、左花括号在下一行且上一行为选择器视为非法", () => {
         const res = isValidCSS("p\n{ color: red; }")
-        expect(res.isValid).toBe(true)
+        expect(res.isValid).toBe(false)
     })
 
     it("32、带有属性选择器", () => {

@@ -60,7 +60,13 @@
                 />
 
                 <div class="editor" v-else-if="item.isEditor">
+                    <el-button @click="insertCssExample(item.prop as keyof APPOptionForm)">插入 CSS 示例</el-button>
                     <EditorCodemirror
+                        :ref="
+                            (el) => {
+                                if (el) setEditorRef(el as CodemirrorRef)
+                            }
+                        "
                         :create-setup="item.isEditor.createSetup"
                         :doc="formDataResult[item.prop as keyof APPOptionForm] as string"
                         height="400"
@@ -89,8 +95,9 @@ import { computed, reactive, type Ref, ref, useTemplateRef } from "vue"
 import CarouselManage, { type CarouselFormRef } from "@/components/common/carousel-manage"
 import ImageInput from "@/components/common/image-input"
 import SlideVerifyManage, { type SlideVerifyManageFormRef } from "@/components/common/slide-verify-manage"
-import EditorCodemirror from "@/components/editor/components/codemirror"
+import EditorCodemirror, { type CodemirrorRef } from "@/components/editor/components/codemirror"
 import { type CreateSetupType } from "@/pkg/codemirror"
+import { cssExample } from "@/utils/cssExample"
 
 import { type APPOptionForm } from "./types"
 
@@ -137,6 +144,11 @@ const setCarouselRef = createRefSetter(carouselManageRef)
 // 滑动验证组件引用
 const slideVerifyManageRef = ref<SlideVerifyManageFormRef | null>(null)
 const setSlideVerifyManageRef = createRefSetter(slideVerifyManageRef)
+// 编辑器组件引用列表
+
+// 编辑器组件引用
+const editorRefs = ref<CodemirrorRef | null>(null)
+const setEditorRef = createRefSetter(editorRefs)
 
 // 结果数据
 const formDataResult = reactive<APPOptionForm>(formData)
@@ -169,6 +181,18 @@ const carouselManageData = computed(() => {
 const handleEditorUpdate = (prop: keyof APPOptionForm | undefined, editorDoc: string) => {
     if (prop) {
         ;(formDataResult[prop as keyof APPOptionForm] as unknown as string) = editorDoc
+    }
+}
+
+// 插入 CSS 示例
+const insertCssExample = (prop: keyof APPOptionForm | undefined) => {
+    if (prop) {
+        const oldDoc = (formDataResult[prop as keyof APPOptionForm] as string) || ""
+        const newDoc = oldDoc + cssExample()
+        // 同步到编辑器
+        if (editorRefs.value) {
+            editorRefs.value.insertContent(newDoc)
+        }
     }
 }
 
@@ -251,6 +275,8 @@ defineExpose({
 }
 
 .editor {
+    display: grid;
+    grid-template-columns: 1fr;
     border: 1px solid var(--jpz-border-color);
     border-radius: 2px;
     width: 100%;

@@ -25,6 +25,7 @@ import {
     highlightSpecialChars,
     keymap,
     lineNumbers,
+    placeholder,
     rectangularSelection,
 } from "@codemirror/view"
 
@@ -80,6 +81,7 @@ export const createDefaultSetup = (options: DefaultSetupOptions = defaultOptions
         // 参考 https://github.com/replit/codemirror-vim/issues/227
         vimModeCompartment.of(options.vimMode ? vim({ status: true }) : []), // vim 模式
         completionCompartment.of(unifiedCompletion(options.mention)), // 补全
+        placeholder("请开始创作..."), // 占位符文本
         markdown(), // markdown 语法
         bottomPanelExt, // 底部面板
         customKeymap, // 自定义快捷键
@@ -95,6 +97,7 @@ export const createCssSetup = () => {
     const extension: Extension[] = [
         ...baseExtension(), // 基础 extension
         css(), // css 语法
+        placeholder("请输入自定义的 CSS..."), // 占位符文本
     ]
 
     return extension

@@ -48,19 +48,13 @@ export function isValidCSS(css: string): CSSValidationResult {
     // 使用安全移除注释以免影响后续解析
     const withoutComments = removeCommentsSafe(css)
 
-    // 如果整体文本不为空 且没有任何花括号 也不是 @ 规则 且不包含分号或冒号
-    // 则很可能不是有效的 CSS 内容 返回非法
-    const trimmedWhole = withoutComments.trim()
-    if (
-        trimmedWhole &&
-        !trimmedWhole.includes("{") &&
-        !trimmedWhole.includes("}") &&
-        !trimmedWhole.startsWith("@") &&
-        !trimmedWhole.includes(":") &&
-        !trimmedWhole.includes(";")
-    ) {
+    // 检测逐行中是否存在普通字符串行(非空行但不是 CSS 行)
+    const notCssLines = checkNotCssLines(withoutComments)
+    if (notCssLines.length > 0) {
         result.isValid = false
-        result.errors.push("无效的 CSS 内容，请确保包含有效的选择器和样式。")
+        for (const ln of notCssLines) {
+            result.errors.push(`无效的 CSS 内容: 第 ${ln.lineNo} 行 -> "${ln.text}"`)
+        }
         return result
     }
 
@@ -169,7 +163,7 @@ export function isValidCSS(css: string): CSSValidationResult {
                 // 声明的属性名通常不包含空格、逗号、选择器符号或伪元素/伪类标记
                 const looksLikePropOutside = /^[a-zA-Z_-][a-zA-Z0-9_-]*$/.test(before) || /^--[A-Za-z0-9\-]+$/.test(before)
                 if (!looksLikePropOutside) {
-                    // 很可能是选择器包含伪类/伪元素，忽略
+                    // 很可能是选择器包含伪类/伪元素, 忽略
                     continue
                 }
             }
@@ -198,7 +192,7 @@ export function isValidCSS(css: string): CSSValidationResult {
         }
 
         // 对块内的样式进行基本校验要求形式为 属性名 : 值 ;
-        // 排除选择器行（通常包含花括号或选择器语法），只在不含花括号的行里检查声明
+        // 排除选择器行(通常包含花括号或选择器语法), 只在不含花括号的行里检查声明
         if (depthBefore > 0 && line.includes(":") && !line.includes("{") && !line.includes("}")) {
             const colonPos = findFirstOutsideString(line, ":")
             if (colonPos === -1) continue
@@ -207,7 +201,7 @@ export function isValidCSS(css: string): CSSValidationResult {
             const possibleLeft = line.slice(0, colonPos).trim()
             const looksLikeProp = /^[a-zA-Z_-][a-zA-Z0-9_-]*$/.test(possibleLeft) || /^--[A-Za-z0-9\-]+$/.test(possibleLeft)
             if (!looksLikeProp) {
-                // 不是属性声明(可能是选择器或伪类/伪元素)，跳过
+                // 不是属性声明(可能是选择器或伪类/伪元素), 跳过
                 continue
             }
 
@@ -310,7 +304,7 @@ function checkPairedMarkers(css: string, open: string, close: string): string[] 
 }
 
 /**
- * 安全移除注释(忽略字符串内的注释样式)
+ * 安全移除注释(忽略字符串内的注释样式), 并保证行数和原始字符对齐
  * @param css 要处理的 CSS 字符串
  * @return 去掉注释后的 CSS 字符串
  */
@@ -319,6 +313,7 @@ function removeCommentsSafe(css: string): string {
     let out = ""
     let inString: '"' | "'" | null = null
     let escapeNext = false
+
     // 遍历输入字符串处理注释和字符串字面量
     for (let i = 0; i < css.length; i++) {
         const ch = css[i]
@@ -354,19 +349,45 @@ function removeCommentsSafe(css: string): string {
 
         // 如果不在字符串内且遇到注释起始符則跳过注释内容
         if (inString === null && css.startsWith("/*", i)) {
-            // 跳过到注释结束符或到字符串末尾
-            i += 2
-            while (i < css.length && !css.startsWith("*/", i)) {
-                i++
+            // 支持嵌套式注释: 找到注释结束位置，同时统计注释内的换行数以保留行号
+            let depth = 1
+            let j = i + 2
+            let newlineCount = 0
+            while (j < css.length && depth > 0) {
+                if (css[j] === "\n") newlineCount++
+
+                if (css.startsWith("/*", j)) {
+                    depth++
+                    j += 2
+                    continue
+                }
+
+                if (css.startsWith("*/", j)) {
+                    depth--
+                    j += 2
+                    continue
+                }
+
+                if (css[j] === "\\") {
+                    // 跳过被转义的字符
+                    j += 2
+                    continue
+                }
+
+                j++
             }
 
-            // 跳过结束符位置
-            i += 1
+            // 将注释区域替换为同样数量的换行符以保留原始行号对齐
+            if (newlineCount > 0) out += "\n".repeat(newlineCount)
+
+            // 将主索引移动到注释末尾位置（j 已指向结束后的位置）
+            i = Math.max(j - 1, i)
             continue
         }
 
         out += ch
     }
+
     return out
 }
 
@@ -421,6 +442,42 @@ function findFirstOutsideByPredicate(text: string, predicate: (ch: string) => bo
 
     // 未找到匹配字符则返回 -1
     return -1
+}
+
+/**
+ * @description: 检测传入 CSS 文本中哪些行看起来不是 CSS(非空但不具有 CSS 行特征)
+ * @param css 完整 CSS 文本, 已移除注释
+ * @return 非法行数组, 包含行号(1-based)及行文本(已 trim)
+ */
+export function checkNotCssLines(css: string): Array<{ lineNo: number; text: string }> {
+    // 需要返回的结果数组
+    const res: Array<{ lineNo: number; text: string }> = []
+
+    // 按照行拆分并逐行检查
+    const lines = css.split(/\r?\n/)
+
+    // 将正则提到循环外以提高效率, 判断是否像 CSS 行：@ 规则、包含花括号/分号、包含冒号、常见选择器符号
+    const cssLinePattern = /^@|[{};]|:|[.#\[]/
+
+    // 遍历每一行进行检测
+    for (let i = 0; i < lines.length; i++) {
+        const raw = lines[i]
+        const line = (raw ?? "").trim()
+
+        // 空行有效, 忽略
+        if (line === "") continue
+
+        // 判断是否像 CSS 行：@ 规则、包含花括号/分号、包含冒号、常见选择器符号或逗号分隔
+        if (cssLinePattern.test(line)) continue
+
+        // 若都不满足则视为普通字符串行
+        res.push({ lineNo: i + 1, text: line })
+
+        // 有错误直接返回不用继续检测, 提高效率
+        break
+    }
+
+    return res
 }
 
 /**
