@@ -8,6 +8,7 @@
 
 @use "sass:map";
 @use "sass:color";
+@use "sass:meta";
 // 定义模式 light dark
 $mode-light: "light";
 $mode-dark: "dark";
@@ -20,11 +21,15 @@ $mode-dark: "dark";
 
     // 根据模式设置初始混合颜色
     // dark模式混合颜色参考：https://github.com/element-plus/element-plus/blob/dev/packages/theme-chalk/src/dark/var.scss 中 map.get($bg-color, '')
-    $mix-color: if($mode == $mode-light, $color-white, #141414);
+    $mix-color: if(
+        sass($mode == $mode-light): $color-white; else: #141414
+    );
 
     // 处理特殊情况 --el-color-primary-dark-2
     @if $number == 20 {
-        $mix-color: if($mode == $mode-light, $color-black, $color-white);
+        $mix-color: if(
+            sass($mode == $mode-light): $color-black; else: $color-white
+        );
     }
 
     // 返回混合后的颜色
@@ -51,7 +56,9 @@ $mode-dark: "dark";
 
     // 遍历每个混合比例
     @each $level in $mix-levels {
-        $suffix: if($level == 2, $mode-dark, $mode-light);
+        $suffix: if(
+            sass($level == 2): $mode-dark; else: $mode-light
+        );
 
         // 生成颜色变量
         --el-color-#{$color-name}-#{$suffix}-#{$level}: #{set-color-mix-level($base-color, $level * 10, $mode)};
