@@ -19,7 +19,7 @@ import { useDark } from "@vueuse/core"
 import { useResizeObserver } from "@vueuse/core"
 import zhCn from "element-plus/es/locale/lang/zh-cn"
 import { storeToRefs } from "pinia"
-import { nextTick, onBeforeUnmount, onMounted, useTemplateRef } from "vue"
+import { nextTick, onBeforeUnmount, onMounted, useTemplateRef, watch } from "vue"
 
 import HeadTag from "@/components/common/head-tag"
 import { useDeviceStore } from "@/stores/device"
@@ -27,7 +27,7 @@ import { useOptionsStore } from "@/stores/options"
 
 // 网站配置选项
 const optionsStore = useOptionsStore()
-const { head } = storeToRefs(optionsStore)
+const { head, custom_style_css } = storeToRefs(optionsStore)
 
 // 设备类型
 const deviceStore = useDeviceStore()
@@ -41,6 +41,36 @@ useDark({
     valueDark: "dark",
     valueLight: "light",
 })
+
+// 设置自定义样式
+const setCustomStyle = (cssContent: string) => {
+    // 移除旧的自定义样式
+    const id = "custom-style-css"
+    const oldStyle = document.getElementById(id)
+    if (oldStyle) {
+        oldStyle.remove()
+    }
+
+    // 如果为空则不添加
+    if (!cssContent) return
+
+    // 添加新的自定义样式
+    const style = document.createElement("style")
+    style.id = id
+    style.textContent = cssContent
+    document.head.appendChild(style)
+}
+
+// 监听自定义样式变化
+watch(
+    custom_style_css,
+    (newVal) => {
+        setCustomStyle(newVal)
+    },
+    {
+        immediate: true,
+    },
+)
 
 // 监听窗口变化
 const { stop } = useResizeObserver(appRef, () => {

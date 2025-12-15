@@ -78,6 +78,7 @@ export interface OptionsStore {
     show_slide_verify: boolean // 是否显示滑动验证
     slide_verify_imgs: SlideVerifyImgItem[] // 滑动验证图片列表
     post_list_summary_truncate: number // 文章列表摘要截断 默认 100 字
+    custom_style_css: string // 自定义样式 CSS
 }
 
 // 创建一个空的选项存储
@@ -103,6 +104,7 @@ function createEmptyOptionsStore(): OptionsStore {
         show_slide_verify: false,
         slide_verify_imgs: [],
         post_list_summary_truncate: 100,
+        custom_style_css: "",
     }
 }
 
@@ -207,6 +209,11 @@ export const useOptionsStore = defineStore("options", {
         getPostListSummaryTruncate(): number {
             return this.post_list_summary_truncate
         },
+
+        // 获取自定义样式 CSS
+        getCustomStyleCss(): string {
+            return this.custom_style_css
+        },
     },
 
     actions: {
@@ -224,6 +231,7 @@ export const useOptionsStore = defineStore("options", {
                 this.isLoadedOptions = true
                 this.is_remove_first_h1 = this.app_options.is_remove_first_h1.value === "true"
                 this.post_list_summary_truncate = parseInt(this.app_options.post_list_summary_truncate?.value) || 100
+                this.custom_style_css = this.app_options.custom_style_css?.value || ""
             }
 
             // 从本地获取头部信息
@@ -297,6 +305,9 @@ export const useOptionsStore = defineStore("options", {
                 this.isLoadedOptions = true
 
                 this.is_remove_first_h1 = this.app_options.is_remove_first_h1.value === "true"
+
+                // 自定义样式 CSS
+                this.custom_style_css = this.app_options.custom_style_css?.value || ""
 
                 // 轮播图项目格式化后存储本地
                 this.carousel = await formatCarouselInfo(this.app_options)

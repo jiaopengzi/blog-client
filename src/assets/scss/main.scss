@@ -25,16 +25,15 @@ html {
     --jpz-bg-color: var(--el-bg-color);
     --jpz-bg-color-page: var(--el-bg-color-page);
 
-    // --jpz-bg-color-footer: var(--el-color-primary-light-9);
     --jpz-bg-color-footer: var(--el-bg-color);
-    --jpz-color-overlay: var(--el-bg-color-overlay);
+    // --jpz-color-overlay: var(--el-bg-color-overlay);
     --jpz-border-color: var(--el-border-color);
     --jpz-border-color-hover: var(--el-border-color-hover);
 
     // 阴影
     --jpz-box-shadow-lighter: var(--el-box-shadow-lighter);
     --jpz-box-shadow-light: var(--el-box-shadow-light);
-    --jpz-box-shadow-dark: var(--el-box-shadow-dark);
+    // --jpz-box-shadow-dark: var(--el-box-shadow-dark);
     --jpz-post-item-main-hover-shadow: 0 0 5px #ccc, 0 0 10px #ccc; // 主文章 hover 阴影
 
     // 文字颜色
@@ -43,7 +42,7 @@ html {
     --jpz-text-color-secondary: var(--el-text-color-secondary);
     --jpz-text-color-placeholder: var(--el-text-color-placeholder);
     --jpz-text-color-disabled: var(--el-text-color-disabled);
-    --title-color: var(--jpz-color-primary);
+    // --title-color: var(--jpz-color-primary);
 
     // 代码块样式
     --jpz-code-block-bg-color: var(--el-bg-color-page);
@@ -58,23 +57,22 @@ html {
     --jpz-blockquote-color: var(--el-text-color-primary);
     --jpz-blockquote-bg-color: var(--el-bg-color-page);
 
-    --strong-color: var(--title-color);
-    --h2-underline-color: var(--title-color);
-    --horizontal-divider-color: var(--title-color);
-    --height-light-color: var(--drake-highlight);
-    --height-light-border-color: var(--drake-highlight);
-    --yaml-color: #777777;
-    --yaml-bg-color: #f7f7f7;
-    --footnotes-bg-color: #3c3d3e;
-    --footnotes-highlight: #ffd760;
+    // --strong-color: var(--jpz-color-primary);
+    // --h2-underline-color: var(--jpz-color-primary);
+    --horizontal-divider-color: var(--jpz-color-primary);
+    // --height-light-color: var(--drake-highlight);
+    // --height-light-border-color: var(--drake-highlight);
+
+    // --footnotes-bg-color: #3c3d3e;
+    // --footnotes-highlight: #ffd760;
     --jpz-table-border-color: var(--el-border-color);
     --jpz-table-header-bg-color: var(--el-bg-color-page);
     --jpz-table-bg-color: var(--el-bg-color);
     --jpz-table-n2-bg-color: var(--el-bg-color-page);
     --jpz-table-n2-1-bg-color: var(--el-bg-color);
 
-    --input-bg-color: #f2f2f2;
-    --btn-hover-bg-color: #f2f2f2;
+    // --input-bg-color: #f2f2f2;
+    // --btn-hover-bg-color: #f2f2f2;
     --footnote-sup-color: #0969da; // 脚注上标颜色 深色 #2F81F7
 
     // 参考 github markdown 主题
