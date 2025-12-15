@@ -25,7 +25,7 @@ const { isWebFullscreen, toggle } = useWebFullscreen(el)
     transition: all 0.3s ease;
 }
 
-.web--fullscreen {
+.web__fullscreen {
     @include webFullscreen();
 }
 </style>

@@ -44,13 +44,13 @@ export function useCodemirror(mdContainerRef: Ref<HTMLElement | null>, codemirro
 
     // 监听窗口变化
     const { stop } = useResizeObserver(mdContainerRef, () => {
-        if (editorState.isFullScreen) {
-            updateCmHeightIsFullScreen()
-        } else {
-            nextTick(() => {
+        nextTick(() => {
+            if (editorState.isFullScreen) {
+                updateCmHeightIsFullScreen()
+            } else {
                 updateCmHeightNotIsFullScreen()
-            })
-        }
+            }
+        })
     })
 
     const handleScroll = debounce(200, (scrollHeight: number, clientHeight: number, scrollTop: number, hideDoc: string, showFirstLineNumber: number) => {

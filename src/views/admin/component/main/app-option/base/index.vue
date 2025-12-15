@@ -58,12 +58,23 @@
                     :placeholder="item.placeholder"
                     clearable
                 />
+
+                <div class="editor" v-else-if="item.isEditor">
+                    <EditorCodemirror
+                        :create-setup="item.isEditor.createSetup"
+                        :doc="formDataResult[item.prop as keyof APPOptionForm] as string"
+                        height="400"
+                        @update-editor-doc="(doc) => handleEditorUpdate(item.prop as keyof APPOptionForm, doc)"
+                    />
+                </div>
+
                 <el-input
                     v-else
                     v-model="formDataResult[item.prop as keyof APPOptionForm]"
                     :type="item.type"
                     :placeholder="item.placeholder"
                     :rows="item.textareaRows"
+                    :class="item.customClass"
                     clearable
                 />
             </el-form-item>
@@ -78,6 +89,8 @@ import { computed, reactive, type Ref, ref, useTemplateRef } from "vue"
 import CarouselManage, { type CarouselFormRef } from "@/components/common/carousel-manage"
 import ImageInput from "@/components/common/image-input"
 import SlideVerifyManage, { type SlideVerifyManageFormRef } from "@/components/common/slide-verify-manage"
+import EditorCodemirror from "@/components/editor/components/codemirror"
+import { type CreateSetupType } from "@/pkg/codemirror"
 
 import { type APPOptionForm } from "./types"
 
@@ -98,6 +111,10 @@ const { title, formData, rules, formItems, formWidth, labelWidth } = defineProps
         isCarouselManage?: boolean
         isSlideVerifyManage?: boolean
         textareaRows?: number
+        customClass?: string
+        isEditor?: {
+            createSetup: CreateSetupType
+        }
     }>
     formWidth?: number
     labelWidth?: number
@@ -147,6 +164,13 @@ const carouselManageData = computed(() => {
     }
     return []
 })
+
+// 处理编辑器内容更新
+const handleEditorUpdate = (prop: keyof APPOptionForm | undefined, editorDoc: string) => {
+    if (prop) {
+        ;(formDataResult[prop as keyof APPOptionForm] as unknown as string) = editorDoc
+    }
+}
 
 defineExpose({
     formDataResult,
@@ -215,6 +239,7 @@ defineExpose({
     margin-bottom: 20px;
     color: var(--jpz-text-color-regular);
 }
+
 .category-title {
     font-size: 14px;
     font-weight: 700;
@@ -223,5 +248,12 @@ defineExpose({
     color: var(--jpz-text-color-regular);
     // padding-bottom: 4px;
     // border-bottom: 1px solid var(--jpz-border-color);
+}
+
+.editor {
+    border: 1px solid var(--jpz-border-color);
+    border-radius: 2px;
+    width: 100%;
+    height: 100%;
 }
 </style>

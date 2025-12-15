@@ -12,15 +12,15 @@ import { type Completion } from "@codemirror/autocomplete"
 // export enum ThemeName {
 // }
 
-// createCustomSetup 定义options 类型
-export type CustomSetupOptions = {
+// createDefaultSetup 定义options 类型
+export type DefaultSetupOptions = {
     vimMode?: boolean // 是否开启 vim 模式
     // theme?: ThemeName // 主题名称
     mention?: Completion[] // @提及补全
 }
 
 // 默认选项
-export const defaultOptions: CustomSetupOptions = {
+export const defaultOptions: DefaultSetupOptions = {
     vimMode: false, // 默认不开启 vim 模式
     // theme: ThemeName.Dracula, // 默认主题
     mention: [], // 默认不开启 @ 提及补全

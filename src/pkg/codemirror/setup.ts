@@ -8,6 +8,7 @@
 
 import { closeBrackets, closeBracketsKeymap, completionKeymap } from "@codemirror/autocomplete"
 import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands"
+import { css } from "@codemirror/lang-css"
 import { markdown } from "@codemirror/lang-markdown"
 import { bracketMatching, defaultHighlightStyle, foldGutter, foldKeymap, indentOnInput, syntaxHighlighting } from "@codemirror/language"
 import { lintKeymap } from "@codemirror/lint"
@@ -32,14 +33,11 @@ import { completionCompartment, unifiedCompletion } from "./extension/completion
 import { customKeymap } from "./extension/hotkey"
 import { handleDropImage, handlePasteImage } from "./extension/imgUpload"
 import { vim, vimModeCompartment } from "./extension/vim"
-import { type CustomSetupOptions, defaultOptions } from "./options"
+import { defaultOptions, type DefaultSetupOptions } from "./options"
 
-// 自定义 codemirror setup 工厂函数
-export const createCustomSetup = (options: CustomSetupOptions = defaultOptions) => {
-    const baseExtension: Extension[] = [
-        // 参考 https://github.com/replit/codemirror-vim/issues/227
-        vimModeCompartment.of(options.vimMode ? vim({ status: true }) : []), // vim 模式
-        completionCompartment.of(unifiedCompletion(options.mention)), // 补全
+// 基础 extension 集合
+const baseExtension = (): Extension[] => {
+    return [
         EditorView.lineWrapping, // 自动换行
         lineNumbers(), // 行号
         highlightActiveLineGutter(), // 高亮当前行 gutter
@@ -68,11 +66,36 @@ export const createCustomSetup = (options: CustomSetupOptions = defaultOptions) 
             ...lintKeymap, // 代码检查
         ]),
         gutter({ class: "gutter-custom" }), // 为 gutter 添加 class
+    ]
+}
+
+// 创建 codemirror setup 类型
+export type CreateSetupType = (options?: DefaultSetupOptions) => Extension[]
+
+// 默认的 codemirror setup 工厂函数 markdown 语法
+export const createDefaultSetup = (options: DefaultSetupOptions = defaultOptions) => {
+    const extension: Extension[] = [
+        ...baseExtension(), // 基础 extension
+
+        // 参考 https://github.com/replit/codemirror-vim/issues/227
+        vimModeCompartment.of(options.vimMode ? vim({ status: true }) : []), // vim 模式
+        completionCompartment.of(unifiedCompletion(options.mention)), // 补全
         markdown(), // markdown 语法
         bottomPanelExt, // 底部面板
         customKeymap, // 自定义快捷键
         handlePasteImage, // 自定义键盘事件
         handleDropImage, // 自定义拖拽事件
     ]
-    return baseExtension
+
+    return extension
+}
+
+// css 语法 setup 工厂函数
+export const createCssSetup = () => {
+    const extension: Extension[] = [
+        ...baseExtension(), // 基础 extension
+        css(), // css 语法
+    ]
+
+    return extension
 }

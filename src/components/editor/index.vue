@@ -41,7 +41,6 @@
                     :toc-markdown="state.tocMarkdown"
                     :cm-command="state.cmCommand"
                     :is-watch-mouse="true"
-                    :is-full-screen="state.isFullScreen"
                     :init-doc-is-empty="state.initDocIsEmpty"
                     @handle-scroll="handleScroll"
                     @is-mouse-in-element="handleMouseInCmEditor"
@@ -169,7 +168,7 @@ defineExpose({
 
 <style scoped lang="scss">
 // 全屏样式
-.web--fullscreen {
+.web__fullscreen {
     @include webFullscreen();
 }
 
@@ -255,7 +254,7 @@ defineExpose({
         }
     }
 
-    .web--fullscreen {
+    .web__fullscreen {
         .md-toolbar {
             --icon-number-per-line: 30;
         }
@@ -308,7 +307,7 @@ defineExpose({
         }
     }
 
-    .web--fullscreen {
+    .web__fullscreen {
         .md-toolbar {
             --icon-number-per-line: 20;
         }
@@ -359,7 +358,7 @@ defineExpose({
         }
     }
 
-    .web--fullscreen {
+    .web__fullscreen {
         .md-toolbar {
             --icon-number-per-line: 15;
         }

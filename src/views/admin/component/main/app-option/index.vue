@@ -25,6 +25,7 @@ import { handleResErr, ResponseCode } from "@/api/response"
 import { type GetAPPOptionResponse } from "@/api/setting/getAPPOption"
 import { type UpdateAPPOption, updateAPPOptionAPI, type UpdateAPPOptionRequest } from "@/api/setting/updateAPPOption"
 import { cssValidatorFunc, imageURLRequiredValidatorFunc } from "@/components/common/base-config-form"
+import { createCssSetup } from "@/pkg/codemirror"
 import { RouteNames } from "@/router"
 import { useOptionsStore } from "@/stores/options" // 网站配置选项
 import { MessageUtil } from "@/utils/message"
@@ -236,7 +237,7 @@ const formItems = [
 
     // 样式相关
     { label: "样式相关", isCategoryTitle: true },
-    { label: "自定义 CSS", prop: "custom_style_css", type: "textarea", textareaRows: 12 },
+    { label: "自定义 CSS", prop: "custom_style_css", isEditor: { createSetup: createCssSetup } },
 
     // 邮件通知管理
     { label: "邮件通知管理", isCategoryTitle: true },

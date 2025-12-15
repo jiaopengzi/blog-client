@@ -15,11 +15,11 @@ import "@/assets/scss/codemirror.scss"
 
 import { type Extension } from "@codemirror/state"
 import type { ViewUpdate } from "@codemirror/view"
-import { onMounted, onUnmounted, type Ref, ref, useTemplateRef, watch } from "vue"
+import { nextTick, onMounted, onUnmounted, type Ref, ref, useTemplateRef, watch } from "vue"
 
 import type { MarkdownEditorCommandItem } from "@/components/editor/command"
 import { CommandsKey, editorInsertContent, editorInsertFormatContent, markdownEditorCommands } from "@/components/editor/command"
-import { createCustomSetup, type CustomSetupOptions, EditorState, EditorView } from "@/pkg/codemirror"
+import { createDefaultSetup, type DefaultSetupOptions, EditorState, EditorView } from "@/pkg/codemirror"
 import { completionCompartment, unifiedCompletion } from "@/pkg/codemirror/extension/completion"
 import { vim, vimModeCompartment } from "@/pkg/codemirror/extension/vim"
 
@@ -30,16 +30,17 @@ defineOptions({ name: "EditorCodemirror" })
 
 const {
     doc, // 编辑器内容
+    cmCommand = undefined, // 编辑器命令
+    vimMode = false, // 是否开启 vim 模式
     initDocIsEmpty = true, // 初始文档是否为空,默认为空
-    height, // 编辑器高度
-    width, // 编辑器宽度
-    vimMode, // 是否开启 vim 模式
-    mentions, // @ 提及补全
-    headingShowCurrentIndex, // 当前展示的标题的索引
-    tocMarkdown, // markdown 目录内容
-    isWatchMouse, // 是否监听鼠标进入编辑器
-    cmCommand, // 编辑器命令
-    isUserScrollCmEditor, // 是否开启用户滚动编辑器
+    height = "100%", // 编辑器高度
+    width = "100%", // 编辑器宽度
+    mentions = [], // @ 提及补全
+    headingShowCurrentIndex = 0, // 当前展示的标题的索引
+    tocMarkdown = [], // markdown 目录内容
+    isWatchMouse = false, // 是否监听鼠标进入编辑器
+    isUserScrollCmEditor = false, // 是否开启用户滚动编辑器
+    createSetup = createDefaultSetup, // 编辑器配置项
 } = defineProps<CodeEditorProps>() // 定义 props
 
 const codemirrorRef = useTemplateRef<HTMLElement | null>("codemirrorRef") // 编辑器 dom 节点
@@ -72,29 +73,50 @@ const onMouseLeave = () => {
 }
 
 // 初始化编辑器宽度和高度
-const initializeCssVariable = () => {
-    if (codemirrorRef.value && width) {
-        codemirrorRef.value.style.setProperty("--jpz-codemirror-width", `${width}`)
+const initializeCssVariable = (w: string | undefined, h: string | undefined) => {
+    // 设置默认值
+    if (!w) {
+        w = "100%"
     }
-    if (codemirrorRef.value && height) {
-        codemirrorRef.value.style.setProperty("--jpz-codemirror-height", `${height}`)
+    if (!h) {
+        h = "100%"
     }
+
+    // 如果 w 或 h 为纯数字就加上 px 单位
+    const numberReg = /^\d+$/
+
+    if (numberReg.test(w)) {
+        w = `${w}px`
+    }
+
+    if (numberReg.test(h)) {
+        h = `${h}px`
+    }
+
+    if (!codemirrorRef.value) return
+
+    // console.log("============>w,h", w, h)
+    codemirrorRef.value.style.setProperty("--jpz-codemirror-width", `${w}`)
+    codemirrorRef.value.style.setProperty("--jpz-codemirror-height", `${h}`)
 }
 
 // 监听 props 宽高 变化
 watch(
     () => [height, width],
-    () => {
-        if (codemirrorRef.value && (height || width)) {
-            initializeCssVariable() // 初始化 css 变量
-        }
+    ([newHeight, newWidth]) => {
+        nextTick(() => {
+            initializeCssVariable(newWidth, newHeight)
+        })
+    },
+    {
+        immediate: true,
     },
 )
 
 // 编辑器实例
 let cmView: EditorView
 
-const options: Ref<CustomSetupOptions> = ref({
+const options: Ref<DefaultSetupOptions> = ref({
     vimMode: vimMode || false, // 是否开启 vim 模式
     mentions: mentions || [], // @ 提及补全
 })
@@ -108,12 +130,12 @@ const updateDocInfo: Extension = EditorView.updateListener.of((viewUpdate: ViewU
 })
 
 // 初始化 CodeMirror
-const initCodeMirror = (options: CustomSetupOptions) => {
+const initCodeMirror = (options: DefaultSetupOptions) => {
     if (codemirrorRef.value) {
         // 初始化编辑器
         const state = EditorState.create({
             doc: doc || "",
-            extensions: [createCustomSetup(options), updateDocInfo],
+            extensions: [createSetup(options), updateDocInfo],
         })
 
         // 创建编辑器实例
@@ -256,6 +278,7 @@ watch(
             effects: completionCompartment.reconfigure(unifiedCompletion(newVal)),
         })
     },
+
     { deep: true },
 )
 
@@ -263,14 +286,21 @@ watch(
 watch(
     () => cmCommand,
     (newVal, oldVal) => {
-        if (!newVal.commandName || newVal.time === oldVal.time) return // 如果没有命令或者时间相同则不执行
+        // 如果没有命令或者编辑器实例不存在则不执行
+        if (!newVal || !cmView) return
+
+        // 如果没有命令或者时间相同则不执行
+        if (!newVal.commandName || (oldVal && newVal.time === oldVal.time)) return
+
         runCommand(newVal.commandName, newVal.customContent) // 执行命令
+    },
+    {
+        deep: true,
     },
 )
 
 // 初始化
 onMounted(() => {
-    initializeCssVariable() // 初始化 css 变量
     initCodeMirror(options.value) // 初始化 CodeMirror
 })
 
@@ -291,5 +321,7 @@ defineExpose({
     background-color: var(--jpz-bg-color);
     color: var(--jpz-text-color-primary);
     font-size: 1.1em;
+    width: var(--jpz-codemirror-width);
+    height: var(--jpz-codemirror-height);
 }
 </style>

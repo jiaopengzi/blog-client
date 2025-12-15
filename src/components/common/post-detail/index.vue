@@ -338,7 +338,7 @@ onBeforeMount(async () => {
 </script>
 <style lang="scss" scoped>
 // 网页全屏
-.web--fullscreen {
+.web__fullscreen {
     @include webFullscreen();
     overflow-y: auto;
 }
@@ -374,7 +374,7 @@ onBeforeMount(async () => {
 }
 
 @include respond-to("pc") {
-    .web--fullscreen {
+    .web__fullscreen {
         .post-detail-bg {
             width: 100%;
             height: 100%;

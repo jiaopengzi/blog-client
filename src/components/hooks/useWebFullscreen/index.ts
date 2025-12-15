@@ -9,7 +9,7 @@
 import { onMounted, onUnmounted, ref, unref } from "vue"
 
 // 全屏样式类名, 需要在全局样式设定样式
-const WEB_FULLSCREEN_CLASS = "web--fullscreen"
+const WEB_FULLSCREEN_CLASS = "web__fullscreen"
 
 /**
  * @description: 全屏处理函数

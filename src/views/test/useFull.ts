@@ -5,7 +5,7 @@ import { onMounted, onUnmounted, ref, unref } from "vue"
 export type MaybeElement = HTMLElement | SVGElement | undefined | null
 export type MaybeElementRef<T extends MaybeElement = MaybeElement> = MaybeRef<T>
 
-const WEB_FULLSCREEN_CLASS = "web--fullscreen"
+const WEB_FULLSCREEN_CLASS = "web__fullscreen"
 
 /**
  * @description: 全屏处理函数
