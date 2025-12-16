@@ -31,6 +31,21 @@ const commonServerOptions = (): CommonServerOptions => {
                 changeOrigin: true,
                 // rewrite: (path:string) => path.replace(/^\/api/, 'my-admin'),
             },
+
+            "/sitemap.xml": {
+                target: "http://10.10.2.222:5426",
+                changeOrigin: true,
+                rewrite: () => "/api/v1/sitemap.xml",
+            },
+
+            "/sitemap/": {
+                target: "http://10.10.2.222:5426",
+                changeOrigin: true,
+                rewrite: (path) => {
+                    return `/api/v1${path}`
+                },
+            },
+
             "/admin/raw-github": {
                 target: "https://raw.githubusercontent.com",
                 changeOrigin: true,
