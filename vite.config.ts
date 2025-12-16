@@ -32,17 +32,14 @@ const commonServerOptions = (): CommonServerOptions => {
                 // rewrite: (path:string) => path.replace(/^\/api/, 'my-admin'),
             },
 
-            "/sitemap.xml": {
-                target: "http://10.10.2.222:5426",
-                changeOrigin: true,
-                rewrite: () => "/api/v1/sitemap.xml",
-            },
-
-            "/sitemap/": {
+            "/sitemap": {
                 target: "http://10.10.2.222:5426",
                 changeOrigin: true,
                 rewrite: (path) => {
-                    return `/api/v1${path}`
+                    // 将 `.xml` 替换掉
+                    const pathWithoutExt = path.replace(/\.xml$/, "")
+
+                    return `/api/v1${pathWithoutExt}`
                 },
             },
 
