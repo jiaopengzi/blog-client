@@ -10,6 +10,7 @@
 export enum TrendCategory {
     OrderCount = "order_count", // 订单数量
     OrderAmount = "order_amount", // 订单金额
+    OrderPaidCount = "order_paid_count", // 支付订单
     OrderPaidAmount = "order_paid_amount", // 支付金额
     UserCount = "user_count", // 用户数量
     MembershipCount = "membership_count", // 会员数量
@@ -19,6 +20,7 @@ export enum TrendCategory {
 export const TrendCategoryDisplay: Record<TrendCategory, string> = {
     [TrendCategory.OrderCount]: "订单数量",
     [TrendCategory.OrderAmount]: "订单金额",
+    [TrendCategory.OrderPaidCount]: "支付订单",
     [TrendCategory.OrderPaidAmount]: "支付金额",
     [TrendCategory.UserCount]: "用户数量",
     [TrendCategory.MembershipCount]: "会员数量",
@@ -65,6 +67,7 @@ export enum StatsResKey {
     CommentCountPending = "comment_count_pending", // 待审核评论数量
     OrderCount = "order_count", // 订单数量
     OrderTotalAmount = "order_total_amount", // 订单总金额(分)
+    OrderPaidCount = "order_paid_count", // 支付订单数量
     OrderPaidTotalAmount = "order_paid_total_amount", // 订单总支付金额(分)
     UserCount = "user_count", // 用户数量
 }
@@ -76,6 +79,7 @@ export const StatsResKeyDisplay: Record<StatsResKey, string> = {
     [StatsResKey.CommentCountPending]: "待审评论",
     [StatsResKey.OrderCount]: "订单数量",
     [StatsResKey.OrderTotalAmount]: "订单金额(元)",
+    [StatsResKey.OrderPaidCount]: "支付订单数量",
     [StatsResKey.OrderPaidTotalAmount]: "支付金额(元)",
     [StatsResKey.UserCount]: "用户数量",
 }

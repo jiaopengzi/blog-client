@@ -22,9 +22,9 @@ export enum OrderStatus {
     Canceled = 6, // 已取消
     Returning = 7, // 退货中
     Returned = 8, // 已退货
-    RefundedPartially = 9, // 部分退款
-    RefundedAll = 10, // 全额退款
-    Complete = 11, // 已完成
+    Complete = 9, // 已完成
+    RefundedPartially = 10, // 部分退款
+    RefundedAll = 11, // 全额退款
     Closed = 12, // 已关闭
 }
 
@@ -39,9 +39,9 @@ export const OrderStatusDisplay: Record<OrderStatus, string> = {
     [OrderStatus.Canceled]: "已取消",
     [OrderStatus.Returning]: "退货中",
     [OrderStatus.Returned]: "已退货",
+    [OrderStatus.Complete]: "已完成",
     [OrderStatus.RefundedPartially]: "部分退款",
     [OrderStatus.RefundedAll]: "全额退款",
-    [OrderStatus.Complete]: "已完成",
     [OrderStatus.Closed]: "已关闭",
 }
 
