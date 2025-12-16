@@ -33,6 +33,7 @@ export function useDashboard() {
         comment_count_pending: 0,
         order_count: 0,
         order_total_amount: 0,
+        order_paid_count: 0,
         order_paid_total_amount: 0,
         user_count: 0,
     })
