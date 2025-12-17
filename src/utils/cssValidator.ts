@@ -308,7 +308,7 @@ function checkPairedMarkers(css: string, open: string, close: string): string[] 
  * @param css 要处理的 CSS 字符串
  * @return 去掉注释后的 CSS 字符串
  */
-function removeCommentsSafe(css: string): string {
+export function removeCommentsSafe(css: string): string {
     // 输出结果字符串
     let out = ""
     let inString: '"' | "'" | null = null

@@ -27,13 +27,13 @@ const commonServerOptions = (): CommonServerOptions => {
         proxy: {
             // dev Server.proxy 可以是一个指向开发环境 API 服务器的字符串
             "/api": {
-                target: "http://10.10.2.222:5426",
+                target: "http://10.10.10.113:5426",
                 changeOrigin: true,
                 // rewrite: (path:string) => path.replace(/^\/api/, 'my-admin'),
             },
 
             "/sitemap": {
-                target: "http://10.10.2.222:5426",
+                target: "http://10.10.10.113:5426",
                 changeOrigin: true,
                 rewrite: (path) => {
                     return `/api/v1${path}`

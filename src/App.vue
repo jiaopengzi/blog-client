@@ -24,6 +24,7 @@ import { nextTick, onBeforeUnmount, onMounted, useTemplateRef, watch } from "vue
 import HeadTag from "@/components/common/head-tag"
 import { useDeviceStore } from "@/stores/device"
 import { useOptionsStore } from "@/stores/options"
+import { removeCommentsSafe } from "@/utils/cssValidator"
 
 // 网站配置选项
 const optionsStore = useOptionsStore()
@@ -50,6 +51,9 @@ const setCustomStyle = (cssContent: string) => {
     if (oldStyle) {
         oldStyle.remove()
     }
+
+    // 移除注释并修剪空白
+    cssContent = removeCommentsSafe(cssContent).trim()
 
     // 如果为空则不添加
     if (!cssContent) return
