@@ -57,6 +57,7 @@
                         :is-paid="isPaid"
                         :price="(postInfoForm.price * 100).toString()"
                         :video-toc="postInfoForm.video_toc"
+                        placeholder-text="请开始创作..."
                         @update-editor-status="updateEditorStatus"
                     />
 

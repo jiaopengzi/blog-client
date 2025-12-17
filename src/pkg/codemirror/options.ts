@@ -17,6 +17,7 @@ export type DefaultSetupOptions = {
     vimMode?: boolean // 是否开启 vim 模式
     // theme?: ThemeName // 主题名称
     mention?: Completion[] // @提及补全
+    placeholderText?: string // 占位符文本
 }
 
 // 默认选项
@@ -24,4 +25,5 @@ export const defaultOptions: DefaultSetupOptions = {
     vimMode: false, // 默认不开启 vim 模式
     // theme: ThemeName.Dracula, // 默认主题
     mention: [], // 默认不开启 @ 提及补全
+    placeholderText: "请开始创作...", // 默认占位符文本
 }

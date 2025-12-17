@@ -46,4 +46,5 @@ export interface CodeEditorProps {
     tocMarkdown?: MarkdownHeadingLine[] // markdown 目录内容
     isUserScrollCmEditor?: boolean // 是否用户滚动编辑器
     createSetup?: CreateSetupType // 编辑器配置项
+    placeholderText?: string // 占位符文本
 }

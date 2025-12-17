@@ -37,10 +37,6 @@ const commonServerOptions = (): CommonServerOptions => {
                 changeOrigin: true,
                 rewrite: (path) => {
                     return `/api/v1${path}`
-
-                    // 将 `.xml` 替换掉
-                    // const pathWithoutExt = path.replace(/\.xml$/, "")
-                    // return `/api/v1${pathWithoutExt}`
                 },
             },
 

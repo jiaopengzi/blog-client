@@ -42,6 +42,7 @@
                     :cm-command="state.cmCommand"
                     :is-watch-mouse="true"
                     :init-doc-is-empty="state.initDocIsEmpty"
+                    :placeholder-text="placeholderText"
                     @handle-scroll="handleScroll"
                     @is-mouse-in-element="handleMouseInCmEditor"
                     @update-editor-doc="updateEditorDoc"
@@ -100,12 +101,14 @@ const {
     isPaid = false,
     price = "",
     videoToc = [],
+    placeholderText = "",
 } = defineProps<{
     stateManager: EditorStateManager
     postId?: string // 文章ID
     isPaid?: boolean // 是否付费阅读
     price?: string // 价格(单位：分)
     videoToc?: PostVideoTocTree[] // 付费视频目录
+    placeholderText?: string // 占位符文本
 }>()
 
 const emit = defineEmits<{

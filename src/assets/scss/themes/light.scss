@@ -6,7 +6,6 @@
  * @Description  : 亮色主题
  */
 
-
 @use "../_element.scss" as el;
 
 $theme-name-light: "light";
@@ -28,8 +27,8 @@ $el-theme: (
         "warning": #e6a23c,
         "danger": #f56c6c,
         "error": #f56c6c,
-        "info": #909399,
-    ),
+        "info": #909399
+    )
 );
 
 // 生成 element 主题样式  ($el-theme,) 逗号不能省略

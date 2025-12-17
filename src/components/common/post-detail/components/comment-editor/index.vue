@@ -7,7 +7,7 @@
 -->
 <template>
     <div ref="rootRef" class="comment-editor">
-        <JEditor ref="jEditorRef" class="comment-main" :state-manager="manager" />
+        <JEditor ref="jEditorRef" class="comment-main" :state-manager="manager" placeholder-text="请输入评论内容..." />
         <div class="comment-btn-container">
             <el-button class="comment-btn" type="default" @click="run" :loading="loading">{{ btnTextInner }}</el-button>
         </div>

@@ -41,6 +41,7 @@ const {
     isWatchMouse = false, // 是否监听鼠标进入编辑器
     isUserScrollCmEditor = false, // 是否开启用户滚动编辑器
     createSetup = createDefaultSetup, // 编辑器配置项
+    placeholderText = "", // 占位符文本
 } = defineProps<CodeEditorProps>() // 定义 props
 
 const codemirrorRef = useTemplateRef<HTMLElement | null>("codemirrorRef") // 编辑器 dom 节点
@@ -119,6 +120,7 @@ let cmView: EditorView
 const options: Ref<DefaultSetupOptions> = ref({
     vimMode: vimMode || false, // 是否开启 vim 模式
     mentions: mentions || [], // @ 提及补全
+    placeholderText: placeholderText || "", // 占位符文本
 })
 
 // 更新编辑器内容
