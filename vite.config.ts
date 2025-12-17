@@ -36,10 +36,11 @@ const commonServerOptions = (): CommonServerOptions => {
                 target: "http://10.10.2.222:5426",
                 changeOrigin: true,
                 rewrite: (path) => {
-                    // 将 `.xml` 替换掉
-                    const pathWithoutExt = path.replace(/\.xml$/, "")
+                    return `/api/v1${path}`
 
-                    return `/api/v1${pathWithoutExt}`
+                    // 将 `.xml` 替换掉
+                    // const pathWithoutExt = path.replace(/\.xml$/, "")
+                    // return `/api/v1${pathWithoutExt}`
                 },
             },
 

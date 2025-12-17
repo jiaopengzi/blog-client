@@ -195,7 +195,7 @@ const formItems = [
     { label: "首页主标题", prop: "custom_home_title" },
     { label: "首页副标题", prop: "custom_home_subtitle" },
     { label: "标题分隔符", prop: "separator" },
-    { label: "站点地图", prop: "sitemap", type: "textarea" },
+    { label: "站点地图", prop: "sitemap_enable", isCheckbox: true },
     { label: "页脚统计代码", prop: "footer_statistics_code", type: "textarea" },
 
     // 二维码相关
