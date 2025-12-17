@@ -25,10 +25,11 @@ import HeadTag from "@/components/common/head-tag"
 import { useDeviceStore } from "@/stores/device"
 import { useOptionsStore } from "@/stores/options"
 import { removeCommentsSafe } from "@/utils/cssValidator"
+import { loadScriptFromString } from "@/utils/script"
 
 // 网站配置选项
 const optionsStore = useOptionsStore()
-const { head, custom_style_css } = storeToRefs(optionsStore)
+const { head, custom_style_css, footer_statistics_code } = storeToRefs(optionsStore)
 
 // 设备类型
 const deviceStore = useDeviceStore()
@@ -70,6 +71,24 @@ watch(
     custom_style_css,
     (newVal) => {
         setCustomStyle(newVal)
+    },
+    {
+        immediate: true,
+    },
+)
+
+// 加载统计脚本
+const loadScript = async (scriptStr: string | undefined) => {
+    if (scriptStr) {
+        const ok = await loadScriptFromString(scriptStr)
+        console.info("加载统计脚本:", ok ? "成功" : "失败")
+    }
+}
+
+watch(
+    () => footer_statistics_code.value,
+    (newVal) => {
+        loadScript(newVal)
     },
     {
         immediate: true,

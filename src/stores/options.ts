@@ -79,6 +79,7 @@ export interface OptionsStore {
     slide_verify_imgs: SlideVerifyImgItem[] // 滑动验证图片列表
     post_list_summary_truncate: number // 文章列表摘要截断 默认 100 字
     custom_style_css: string // 自定义样式 CSS
+    footer_statistics_code: string // 底部统计代码
 }
 
 // 创建一个空的选项存储
@@ -105,6 +106,7 @@ function createEmptyOptionsStore(): OptionsStore {
         slide_verify_imgs: [],
         post_list_summary_truncate: 100,
         custom_style_css: "",
+        footer_statistics_code: "",
     }
 }
 
@@ -214,6 +216,11 @@ export const useOptionsStore = defineStore("options", {
         getCustomStyleCss(): string {
             return this.custom_style_css
         },
+
+        // 获取底部统计代码
+        getFooterStatisticsCode(): string {
+            return this.footer_statistics_code
+        },
     },
 
     actions: {
@@ -232,6 +239,7 @@ export const useOptionsStore = defineStore("options", {
                 this.is_remove_first_h1 = this.app_options.is_remove_first_h1.value === "true"
                 this.post_list_summary_truncate = parseInt(this.app_options.post_list_summary_truncate?.value) || 100
                 this.custom_style_css = this.app_options.custom_style_css?.value || ""
+                this.footer_statistics_code = this.app_options.footer_statistics_code?.value || ""
             }
 
             // 从本地获取头部信息
@@ -308,6 +316,9 @@ export const useOptionsStore = defineStore("options", {
 
                 // 自定义样式 CSS
                 this.custom_style_css = this.app_options.custom_style_css?.value || ""
+
+                // 底部统计代码
+                this.footer_statistics_code = this.app_options.footer_statistics_code?.value || ""
 
                 // 轮播图项目格式化后存储本地
                 this.carousel = await formatCarouselInfo(this.app_options)

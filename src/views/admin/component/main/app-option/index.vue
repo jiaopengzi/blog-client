@@ -196,7 +196,14 @@ const formItems = [
     { label: "首页副标题", prop: "custom_home_subtitle" },
     { label: "标题分隔符", prop: "separator" },
     { label: "站点地图", prop: "sitemap_enable", isCheckbox: true },
-    { label: "页脚统计代码", prop: "footer_statistics_code", type: "textarea" },
+    {
+        label: "页脚统计代码",
+        prop: "footer_statistics_code",
+        type: "textarea",
+        textareaRows: 8,
+        customClass: "textarea-script",
+        placeholder: "支持 HTML/JS 代码",
+    },
 
     // 二维码相关
     { label: "二维码", isCategoryTitle: true },
@@ -307,5 +314,10 @@ onBeforeMount(async () => {
         color: var(--jpz-text-color-regular);
         font-weight: 700;
     }
+}
+
+:deep(.textarea-script) {
+    font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", "Courier New", Courier, monospace, Helvetica, Arial, sans-serif;
+    font-size: 13px;
 }
 </style>
