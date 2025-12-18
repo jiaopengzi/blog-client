@@ -9,7 +9,9 @@
 import { captchaCheckAPI, type CaptchaCheckRequest } from "@/api/captcha/check"
 import { captchaSendAPI, type CaptchaSendRequest } from "@/api/captcha/send"
 import { CaptchaPurpose } from "@/api/common"
+import { StreamStatus } from "@/api/helper/getStreamIDsStatus"
 import { handleResErr, ResponseCode } from "@/api/response"
+import { pollingGetStreamIDsStatus } from "@/utils/getStreamIDsStatus"
 
 /**
  * @description: 校验发送验证码
@@ -25,6 +27,16 @@ export async function checkSendCaptcha(email: string, purpose: CaptchaPurpose): 
         }
 
         const { data } = await captchaSendAPI(req)
+
+        if (data.code === ResponseCode.CaptchaSendSuccess) {
+            // 保证有数据且包含 stream_items 字段才进行轮询
+            if (data.data && data.data.stream_items) {
+                const status = await pollingGetStreamIDsStatus(data.data.stream_items)
+                if (status === StreamStatus.HandleFailed) {
+                    throw new Error("发送验证码过程中出现错误，请稍后重试")
+                }
+            }
+        }
 
         if (data.code !== ResponseCode.CaptchaSendSuccess) {
             const errMsg = handleResErr(data)

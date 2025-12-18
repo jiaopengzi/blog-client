@@ -290,7 +290,7 @@ const sendCaptcha = async () => {
             })
 
         // 按钮设置不能点击状态
-        let timer = 5
+        let timer = 60
         captcha.value = `${timer}s后重新发送`
         const interval = setInterval(() => {
             timer--

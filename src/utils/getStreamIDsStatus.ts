@@ -17,12 +17,12 @@ import { MessageUtil } from "@/utils/message"
  * @param startTime 开始时间
  * @param pollingTime 轮询间隔时间
  * @param timeOut 超时时间
- * @returns Promise<void>
+ * @returns Promise<StreamStatus>
  */
-async function poll(streams: StreamInfo[], startTime: number, pollingTime: number, timeOut: number): Promise<void> {
+async function poll(streams: StreamInfo[], startTime: number, pollingTime: number, timeOut: number): Promise<StreamStatus> {
     // 超时判断
     if (Date.now() - startTime >= timeOut) {
-        return
+        return StreamStatus.UnHandle
     }
 
     // 轮询间隔时间
@@ -41,14 +41,17 @@ async function poll(streams: StreamInfo[], startTime: number, pollingTime: numbe
     if (info.code === ResponseCode.GetStreamIDStatusSuccess) {
         if (info.data.status_all === StreamStatus.UnHandle) {
             // 未处理，继续轮询
-            await poll(streams, startTime, pollingTime, timeOut)
+            const status = await poll(streams, startTime, pollingTime, timeOut)
+            return status
         }
 
-        return
+        return info.data.status_all as StreamStatus
     }
 
     // 处理错误
     MessageUtil.error(handleResErr(res))
+
+    return StreamStatus.UnHandle
 }
 
 /**
@@ -56,9 +59,9 @@ async function poll(streams: StreamInfo[], startTime: number, pollingTime: numbe
  * @param streams stream 列表
  * @param pollingTime 轮询间隔时间，默认1000ms
  * @param timeOut 超时时间，默认10000ms
- * @returns Promise<void>
+ * @returns Promise<StreamStatus>
  */
-export async function pollingGetStreamIDsStatus(streams: StreamInfo[], pollingTime: number = 1000, timeOut: number = 10000): Promise<void> {
+export async function pollingGetStreamIDsStatus(streams: StreamInfo[], pollingTime: number = 1000, timeOut: number = 10000): Promise<StreamStatus> {
     const startTime = Date.now()
-    await poll(streams, startTime, pollingTime, timeOut)
+    return await poll(streams, startTime, pollingTime, timeOut)
 }

@@ -10,6 +10,7 @@ import type { FormInstance } from "element-plus" // 需要全部安装 npm i ele
 import { type Ref, ref } from "vue"
 
 import { captchaSendRefundAPI, type CaptchaSendRefundRequest } from "@/api/captcha/sendRefund"
+import { StreamStatus } from "@/api/helper/getStreamIDsStatus"
 import { orderRefundAPI, type OrderRefundRequest } from "@/api/order/refund"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { yuanToFen } from "@/utils/amount"
@@ -33,6 +34,15 @@ export function useOrderRefund(formRef: Ref<FormInstance | null>, formRefund: Re
         // 发送验证码
         const res = await captchaSendRefundAPI(req)
         if (res.data.code === ResponseCode.CaptchaSendSuccess) {
+            // 保证有数据且包含 stream_items 字段才进行轮询
+            if (res.data.data && res.data.data.stream_items) {
+                const status = await pollingGetStreamIDsStatus(res.data.data.stream_items)
+                if (status === StreamStatus.HandleFailed) {
+                    MessageUtil.error("发送验证码过程中出现错误，请稍后重试", 3000)
+                    return
+                }
+            }
+
             // 成功发送验证码
             MessageUtil.success("验证码已发送到邮箱。", 6000)
         } else {

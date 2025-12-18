@@ -28,7 +28,8 @@ export interface StreamsStatusRes {
 // StreamIds 状态
 export enum StreamStatus {
     UnHandle = "UnHandle", // 未处理
-    Handle = "Handle", // 已处理
+    HandleSuccess = "HandleSuccess", // 已处理 成功
+    HandleFailed = "HandleFailed", // 已处理 失败
 }
 
 // 所有 stream_id 的状态响应
