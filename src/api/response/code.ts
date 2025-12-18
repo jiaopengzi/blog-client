@@ -279,10 +279,11 @@ export enum ResponseCode {
     OrderProductTimeNotAvailable = 5027, // 订单产品购买时间不在允许范围内
 
     // 支付相关
-    PayOrderURLSuccess = 6000, // 订单支付 URL 生成成功
-    RePayOrderURLSuccess = 6001, // 订单重新支付获取 URL 成功
-    PayQuerySuccess = 6002, // 支付查询成功
-    PayQueryNotFound = 6003, // 支付查询订单不存在
+    PayNewPayerError = 6000, // 新支付者错误
+    PayOrderURLSuccess = 6001, // 订单支付 URL 生成成功
+    RePayOrderURLSuccess = 6002, // 订单重新支付获取 URL 成功
+    PayQuerySuccess = 6003, // 支付查询成功
+    PayQueryNotFound = 6004, // 支付查询订单不存在
 
     // 面板相关
     DashboardGetVersionSuccess = 6100, // 获取版本信息成功

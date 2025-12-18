@@ -165,6 +165,8 @@ export function useOrderCheckout() {
             checkoutData.value.payment = data // 更新结算数据中的支付信息
             qrCodeUrl.value = data.pay_url // 设置二维码链接
             isPayQRCodeShow.value = true // 显示二维码对话框
+        } else if (res.data.code === ResponseCode.PayNewPayerError) {
+            MessageUtil.error("支付遇到了一些问题，请稍后重试或联系网站管理员。")
         } else {
             const msg = handleResErr(res)
             MessageUtil.error(msg)
