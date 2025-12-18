@@ -64,11 +64,11 @@ const isHorizontal = computed(() => device.value !== DeviceType.PHONE)
 
 const horizontalMenuStyle = computed(() => {
     let maxWidth = "750px"
-    if (device.value === DeviceType.PC) {
-        maxWidth = "750px"
-    }
     if (device.value === DeviceType.PAD) {
         maxWidth = `${windowWidth.value - 420}px`
+    }
+    if (device.value === DeviceType.PHONE) {
+        maxWidth = `232px`
     }
     return {
         "max-width": maxWidth,

@@ -23,6 +23,11 @@
     fill: var(--jpz-color-primary);
 
     // 精确匹配第一层父级激活的标题
+    :deep(.el-sub-menu__title) {
+        padding: 0;
+    }
+
+    // 精确匹配第一层父级激活的标题
     :deep(.el-sub-menu.is-active) {
         // 直接子级标题
         > .el-sub-menu__title {

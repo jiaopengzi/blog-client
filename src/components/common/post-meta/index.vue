@@ -221,6 +221,7 @@ const takeTime = computed(() => {
 .meta-text {
     margin-left: 4px;
     line-height: 150%; // 确保文字垂直居中
+
     font-family: "Microsoft YaHei", Helvetica, Arial, sans-serif;
 }
 
@@ -237,6 +238,11 @@ const takeTime = computed(() => {
     .author-edit {
         display: none;
     }
+
+    // 使用等宽字体
+    .meta-text {
+        font-family: monospace;
+    }
 }
 
 @include respond-to("phone") {
@@ -250,6 +256,10 @@ const takeTime = computed(() => {
     .title {
         font-weight: 700;
         font-size: 18px;
+    }
+    // 使用等宽字体
+    .meta-text {
+        font-family: monospace;
     }
 }
 </style>
