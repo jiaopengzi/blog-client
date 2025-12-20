@@ -659,6 +659,7 @@ const handleHlsError = (hls: Hls | null, data: ErrorData): boolean => {
         [ResponseCode.UserTokenInvalid]: "登录状态异常，请重新登录后观看视频。",
         [ResponseCode.UserTokenTypeWrong]: "登录状态异常，请重新登录后观看视频。",
         [ResponseCode.UserTokenExpired]: "登录状态异常，请重新登录后观看视频。",
+        [ResponseCode.UserLoggedInElsewhere]: "您的账号已在其他设备登录，如非本人操作，请及时修改密码。",
     }
 
     // 如果错误码在 errMsgMap 中，直接展示对应的错误信息

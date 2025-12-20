@@ -10,6 +10,8 @@ import type { SocialLoginType } from "@/api/common"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
+import { type AccessTokenResponse } from "./common"
+
 // 社交登录
 export function socialLogin(loginType: SocialLoginType): ResPromise<Res<string>> {
     const urlStr = `${routerGroup}/social/login?state=login&login-type=${loginType}`
@@ -20,7 +22,7 @@ export function socialLogin(loginType: SocialLoginType): ResPromise<Res<string>>
 }
 
 // 社交登录回调
-export function socialLoginCallback(code: string, loginType: SocialLoginType): ResPromise<Res<void>> {
+export function socialLoginCallback(code: string, loginType: SocialLoginType): ResPromise<Res<AccessTokenResponse>> {
     const urlStr = `${routerGroup}/social/login/callback?code=${code}&login-type=${loginType}`
     return request({
         url: urlStr,

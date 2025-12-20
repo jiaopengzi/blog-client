@@ -9,7 +9,9 @@
 import { acceptHMRUpdate, defineStore } from "pinia"
 
 import { SocialLoginType } from "@/api/common"
-import { type Res, ResponseCode, type ResResponse } from "@/api/response"
+import { handleResErr, type Res, ResponseCode, type ResResponse } from "@/api/response"
+import { accessTokenRefreshAPI } from "@/api/user/accessTokenRefresh"
+import { type AccessTokenResponse } from "@/api/user/common"
 import { emptyUserInfo, getUserInfoAPI, type UserInfo } from "@/api/user/getUserInfo"
 import { loginAPI, type LoginRequest } from "@/api/user/login"
 import { logoutAPI } from "@/api/user/logout"
@@ -32,6 +34,7 @@ export interface UserInfoStore {
     permissions?: PermissionNames[] // 权限列表
     isEditing?: boolean // 是否正在编辑
     isSetupDB: boolean // 是否已经设置数据库
+    accessToken: string // 访问令牌
 }
 
 // 创建空值用户信息
@@ -45,6 +48,7 @@ function createEmptyUserInfoStore(): UserInfoStore {
         permissions: [],
         isEditing: false,
         isSetupDB: true,
+        accessToken: "",
     }
 }
 
@@ -96,25 +100,60 @@ export const useUserStore = defineStore("user", {
         getIsSetupDB(): boolean {
             return this.isSetupDB
         },
+
+        // 获取访问令牌
+        getAccessToken(): string {
+            return this.accessToken
+        },
     },
 
     actions: {
+        // 刷新access token
+        async accessTokenRefresh(isRefreshPage: boolean = true): Promise<boolean> {
+            const res = await accessTokenRefreshAPI()
+
+            if (res.data.code === ResponseCode.UserAccessTokenRefreshSuccess) {
+                // 成功刷新访问令牌
+                this.accessToken = res.data.data.access_token
+                // localStorage.setItem(LocalStorageKey.AccessToken, res.data.data.access_token)
+                return true
+            } else if (res.data.code === ResponseCode.UserLoggedInElsewhere) {
+                // 用户在其他设备登录
+
+                MessageUtil.error(handleResErr(res))
+
+                // 使用 false 说明当前的token 已经失效，不需要再请求后端接口
+                await this.logout(false, isRefreshPage)
+                return false
+            } else {
+                await this.logout(false, isRefreshPage)
+                return false
+            }
+        },
+
+        // 设置访问令牌
+        setAccessToken(accessToken: string) {
+            this.accessToken = accessToken
+        },
+
         // 设置头像
         setAvatar(avatar: string) {
             this.avatar = avatar
         },
 
         // 退出登录
-        async logout() {
-            await localStorageClearByLogout()
+        async logout(isRemote: boolean = true, isRefreshPage: boolean = true) {
+            await tokenClearByLogout(isRemote)
             this.$patch(createEmptyUserInfoStore())
-            // 重定向到登录页
+
+            // 刷新首页
+            if (!isRefreshPage) return
             window.location.href = "/"
         },
 
         // 登录
         async login(loginName: string, password: string) {
-            const userInfoStore: UserInfoStore = await apiLogin(loginName, password)
+            const userInfoStore = await apiLogin(loginName, password)
             this.$patch(userInfoStore)
         },
 
@@ -125,7 +164,7 @@ export const useUserStore = defineStore("user", {
 
         // 社交登录回调
         async socialLoginCallback(code: string, loginType: SocialLoginType) {
-            const resObj = await handleResponse<Res<void>>(socialLoginCallback(code, loginType))
+            const resObj = await handleResponse<Res<AccessTokenResponse>>(socialLoginCallback(code, loginType))
             const userInfoStore = await handleLoginResult(resObj, ResponseCode.SocialLoginCallbackSuccess)
 
             this.$patch(userInfoStore)
@@ -139,7 +178,7 @@ export const useUserStore = defineStore("user", {
         // 社交绑定回调
         async socialBindCallback(code: string, loginType: SocialLoginType) {
             const resObj = await handleResponse<Res<void>>(socialBindCallback(code, loginType))
-            const userInfoStore = await handleBindResult(resObj, ResponseCode.SocialBindCallbackSuccess)
+            const userInfoStore = await handleBindResult(resObj, ResponseCode.SocialBindCallbackSuccess, this.accessToken)
 
             this.$patch(userInfoStore)
         },
@@ -148,22 +187,21 @@ export const useUserStore = defineStore("user", {
         async socialUnBind(loginType: SocialLoginType) {
             const resObj = await handleResponse<Res<void>>(socialUnBind(loginType))
 
-            const userInfoStore = await handleBindResult(resObj, ResponseCode.SocialUnBindSuccess)
+            const userInfoStore = await handleBindResult(resObj, ResponseCode.SocialUnBindSuccess, this.accessToken)
 
             this.$patch(userInfoStore)
         },
 
-        // 从token中获取用户信息
         /**
          * @description: 通过 token 获取用户信息
-         * @param IsUpdate 是否强制从服务器获取用户信息 默认为 false
+         * @param isUpdate 是否强制从服务器获取用户信息 默认为 false
          * @return
          */
-        async getUserInfoByToken(IsUpdate: boolean = false) {
-            if (this.isLogin && !IsUpdate) {
+        async getUserInfoByToken(isUpdate: boolean = false) {
+            if (this.isLogin && !isUpdate) {
                 return
             }
-            const userInfoStore: UserInfoStore = await apiGetUserInfoByToken()
+            const userInfoStore: UserInfoStore = await apiGetUserInfoByToken(this.accessToken)
 
             this.$patch(userInfoStore)
         },
@@ -202,17 +240,17 @@ async function apiLogin(loginName: string, password: string): Promise<UserInfoSt
         password: password,
     }
 
-    const resObj = await handleResponse<Res<void>>(loginAPI(req)) // 使用辅助函数处理请求
+    // 使用辅助函数处理请求
+    const resObj = await handleResponse<Res<AccessTokenResponse>>(loginAPI(req))
 
     return await handleLoginResult(resObj, ResponseCode.UserLoginSuccess)
 }
 
 // 从token中获取用户信息
-async function apiGetUserInfoByToken(): Promise<UserInfoStore> {
+async function apiGetUserInfoByToken(accessToken: string): Promise<UserInfoStore> {
     try {
-        const access_token = localStorage.getItem(LocalStorageKey.AccessToken)
         // 如果没有token 则返回空值用户信息
-        if (!access_token) {
+        if (!accessToken) {
             return createEmptyUserInfoStore()
         }
 
@@ -248,6 +286,7 @@ async function apiGetUserInfoByToken(): Promise<UserInfoStore> {
                 showDialogBindEmail: !dataUser?.user?.user_email,
                 permissions,
                 isSetupDB: true,
+                accessToken,
             }
         }
     } catch (err: unknown) {
@@ -286,26 +325,28 @@ async function redirectToSocialLogin(requestPromise: Promise<ResResponse<Res<str
  * @param successCode 请求成功的状态码
  * @return {UserInfoStore} 用户信息
  */
-async function handleLoginResult(resObj: Res<unknown>, successCode: ResponseCode): Promise<UserInfoStore> {
+async function handleLoginResult(resObj: Res<AccessTokenResponse>, successCode: ResponseCode): Promise<UserInfoStore> {
     if (resObj.code === successCode) {
         // 显示登录成功提示
         MessageUtil.success(resObj.msg, 3000)
 
         // 登录成功 存入token
-        if (typeof resObj.data === "object" && resObj.data !== null && "access_token" in resObj.data) {
-            localStorage.setItem(LocalStorageKey.AccessToken, (resObj.data as { access_token: string }).access_token)
+        if (resObj.data.access_token) {
+            // localStorage.setItem(LocalStorageKey.AccessToken, resObj.data.access_token)
+            useUserStore().setAccessToken(resObj.data.access_token)
 
             // 删除旧的编辑权限缓存
             localStorage.removeItem(LocalStorageKey.PostDetailEditEnable)
         }
 
-        return await apiGetUserInfoByToken() // 获取用户信息
+        // 获取用户信息
+        return await apiGetUserInfoByToken(resObj.data.access_token)
     }
 
     // 显示登录失败提示
-    await localStorageClearByLogout()
+    await tokenClearByLogout()
 
-    const msg = getUserForbiddenMsg(resObj as Res<number>)
+    const msg = getUserForbiddenMsg(resObj)
 
     MessageUtil.error(msg, 10000)
 
@@ -315,27 +356,34 @@ async function handleLoginResult(resObj: Res<unknown>, successCode: ResponseCode
 /**
  * @description: 辅助函数：处理绑定结果
  */
-async function handleBindResult(resObj: Res<void>, successCode: ResponseCode): Promise<UserInfoStore> {
+async function handleBindResult(resObj: Res<void>, successCode: ResponseCode, token: string): Promise<UserInfoStore> {
     if (resObj.code === successCode) {
         // 显示登录成功提示
         MessageUtil.success(resObj.msg, 3000)
-        return await apiGetUserInfoByToken() // 获取用户信息
+
+        // 获取用户信息
+        return await apiGetUserInfoByToken(token)
     }
 
     // 显示登录失败提示
     MessageUtil.error(resObj.msg, 3000)
 
-    await localStorageClearByLogout()
-    return createEmptyUserInfoStore() // 获取用户信息
+    await tokenClearByLogout()
+
+    // 置空用户信息
+    return createEmptyUserInfoStore()
 }
 
-// 退出登录的时候清除对应 localStorage
-async function localStorageClearByLogout() {
-    const res = await logoutAPI()
-    if (res.data.code === ResponseCode.UserLogoutSuccess) {
-        MessageUtil.success(res.data.msg, 3000)
+// 退出登录并清除 token
+async function tokenClearByLogout(isRemote: boolean = true) {
+    if (isRemote) {
+        const res = await logoutAPI()
+        if (res.data.code === ResponseCode.UserLogoutSuccess) {
+            MessageUtil.success(res.data.msg, 3000)
+        }
     }
-    localStorage.removeItem(LocalStorageKey.AccessToken)
+    // localStorage.removeItem(LocalStorageKey.AccessToken)
+    useUserStore().setAccessToken("")
 }
 
 // 允许开发环境下进行热更新 HMR(Hot Module Replacement)

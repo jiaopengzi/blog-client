@@ -237,7 +237,6 @@ const getUserInfo = async () => {
         editUserForm.description = getUserMetaValue("description", userInfo) || ""
         avatar.value = getAvatarUrl(userInfo)
     }
-    console.log("editUserForm:", editUserForm)
 }
 
 const userNameRef = toRef(editUserForm, "userName")

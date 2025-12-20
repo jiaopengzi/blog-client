@@ -9,13 +9,15 @@
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
+import { type AccessTokenResponse } from "./common"
+
 export interface LoginRequest {
     login_name: string
     password: string
 }
 
 // 默认账号登录
-export function loginAPI(loginRequest: LoginRequest): ResPromise<Res<void>> {
+export function loginAPI(loginRequest: LoginRequest): ResPromise<Res<AccessTokenResponse>> {
     const urlStr = routerGroup + "/user/login"
     return request({
         url: urlStr,

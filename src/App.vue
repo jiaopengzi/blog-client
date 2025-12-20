@@ -19,11 +19,12 @@ import { useDark } from "@vueuse/core"
 import { useResizeObserver } from "@vueuse/core"
 import zhCn from "element-plus/es/locale/lang/zh-cn"
 import { storeToRefs } from "pinia"
-import { nextTick, onBeforeUnmount, onMounted, useTemplateRef, watch } from "vue"
+import { nextTick, onBeforeMount, onBeforeUnmount, onMounted, useTemplateRef, watch } from "vue"
 
 import HeadTag from "@/components/common/head-tag"
 import { useDeviceStore } from "@/stores/device"
 import { useOptionsStore } from "@/stores/options"
+import { useUserStore } from "@/stores/user"
 import { removeCommentsSafe } from "@/utils/cssValidator"
 import { loadScriptFromString } from "@/utils/script"
 
@@ -33,6 +34,9 @@ const { head, custom_style_css, footer_statistics_code } = storeToRefs(optionsSt
 
 // 设备类型
 const deviceStore = useDeviceStore()
+
+// 用户信息
+const userStore = useUserStore()
 
 const appRef = useTemplateRef<HTMLElement>("appRef")
 
@@ -94,6 +98,12 @@ watch(
         immediate: true,
     },
 )
+
+// 刷新访问令牌
+onBeforeMount(async () => {
+    // false 表示不刷新页面, 避免循环刷新
+    await userStore.accessTokenRefresh(false)
+})
 
 // 监听窗口变化
 const { stop } = useResizeObserver(appRef, () => {
