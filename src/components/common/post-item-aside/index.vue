@@ -19,7 +19,7 @@
             <h2 class="title" @click="postId(postData.id)">{{ postData.post_title }}</h2>
 
             <!-- 作者 日志 访问量 -->
-            <PostMeta :meta="postMeta" />
+            <PostMeta :meta="postMeta" :is-hide-time-icon="true" :is-set-time-margin="true" />
         </div>
     </div>
 </template>

@@ -37,7 +37,7 @@
             </div>
 
             <!-- 作者 日志 访问量 -->
-            <PostMeta :meta="postMeta" @author-id="clickAuthorId" />
+            <PostMeta :meta="postMeta" :is-hide-time-icon="isHideTimeIcon" :is-set-time-margin="isSetTimeMargin" @author-id="clickAuthorId" />
         </div>
 
         <!-- 阅读跳转 -->
@@ -56,9 +56,16 @@ import { DeviceType, useDeviceStore } from "@/stores/device"
 
 defineOptions({ name: "PostItemMain" })
 
-const { postData, postListSummaryTruncate = 100 } = defineProps<{
+const {
+    postData,
+    postListSummaryTruncate = 100,
+    isHideTimeIcon = false,
+    isSetTimeMargin = false,
+} = defineProps<{
     postData: PostResPagination
     postListSummaryTruncate?: number
+    isHideTimeIcon?: boolean
+    isSetTimeMargin?: boolean
 }>()
 
 // 设备类型

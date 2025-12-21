@@ -15,7 +15,13 @@
         </div>
         <section class="post-detail-bg">
             <div class="post-detail">
-                <PostMeta :meta="postMeta" @immersion-read="toggle" @author-id="clickAuthorId" @post-id="editPost" />
+                <PostMeta
+                    :meta="postMeta"
+                    :is-hide-time-icon="deviceStore.device === DeviceType.PHONE"
+                    @immersion-read="toggle"
+                    @author-id="clickAuthorId"
+                    @post-id="editPost"
+                />
 
                 <!-- 密码保护 -->
                 <div v-if="isPasswordPost">
@@ -105,6 +111,7 @@ import HtmlPreview from "@/components/editor/components/preview/index.vue"
 import { usePreview } from "@/components/editor/hooks/usePreview"
 import { usePostDetail } from "@/components/hooks/usePostDetail"
 import { useWebFullscreen } from "@/components/hooks/useWebFullscreen"
+import { DeviceType, useDeviceStore } from "@/stores/device"
 import { useOptionsStore } from "@/stores/options"
 import { useStatusStore } from "@/stores/status"
 import { useUserStore } from "@/stores/user"
@@ -137,6 +144,7 @@ const emit = defineEmits<{
     (event: "click-tag", val: PostTag): void
 }>()
 
+const deviceStore = useDeviceStore()
 const statusStore = useStatusStore()
 const optionsStore = useOptionsStore()
 const userStore = useUserStore()

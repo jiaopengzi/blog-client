@@ -20,8 +20,8 @@
             </el-button>
 
             <!-- 创建时间 -->
-            <span class="meta-date meta-item" v-if="metaData.created_at">
-                <j-icon name="time" customClass="meta-icon" />
+            <span :class="`meta-date meta-item ${customClass}`" v-if="metaData.created_at">
+                <j-icon name="time" customClass="meta-icon meta-icon-time" />
                 <span class="meta-text">{{ formatTime(metaData.created_at, metaData.timeZone, metaData.formatStr) }}</span>
             </span>
 
@@ -62,12 +62,12 @@
             </span>
 
             <!-- 阅读模式 -->
-            <span class="meta-item" v-if="metaData.is_immersion_read && convert(opt.immersion_read_enable)">
+            <span class="meta-immersion-read meta-item" v-if="metaData.is_immersion_read && convert(opt.immersion_read_enable)">
                 <el-button class="immersion-read" plain @click="immersionRead">沉浸阅读</el-button>
             </span>
 
             <!-- 作者编辑 -->
-            <span class="meta-item" v-if="metaData.is_author_edit">
+            <span class="meta-author-edit meta-item" v-if="metaData.is_author_edit">
                 <el-button class="author-edit" plain @click="postId(metaData.post_id)">
                     <j-icon name="edit" customClass="meta-icon" />
                 </el-button>
@@ -90,8 +90,14 @@ import { type PostMetaProps } from "./types"
 
 defineOptions({ name: "PostMeta" })
 
-const { meta } = defineProps<{
+const {
+    meta,
+    isHideTimeIcon = false,
+    isSetTimeMargin = false,
+} = defineProps<{
     meta: PostMetaProps
+    isHideTimeIcon?: boolean // 是否隐藏时间图标，默认 false
+    isSetTimeMargin?: boolean // 是否设置时间边距，默认 false
 }>()
 
 // 事件
@@ -113,6 +119,21 @@ const metaData = computed(() => {
         avatar_size: meta.avatar_size || 24, // 头像大小，默认 24px
         post_id: meta.post_id || "",
         author_id: meta.author_id || "",
+    }
+})
+
+// 计算自定义 class
+const customClass = computed(() => {
+    const hideIcon = "meta-date-hide-icon"
+    const setMargin = "meta-date-set-margin"
+    if (isHideTimeIcon && isSetTimeMargin) {
+        return `${hideIcon} ${setMargin}`
+    } else if (isHideTimeIcon) {
+        return hideIcon
+    } else if (isSetTimeMargin) {
+        return setMargin
+    } else {
+        return ""
     }
 })
 
@@ -172,7 +193,7 @@ const takeTime = computed(() => {
 }
 
 .title {
-    line-height: 150%;
+    line-height: 1.5;
     color: var(--jpz-color-primary);
     font-weight: 700;
     font-size: 24px;
@@ -184,13 +205,29 @@ const takeTime = computed(() => {
 }
 
 .meta-container {
+    // width: 100%;
+    // 靠左显示
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 .meta {
-    display: flex;
+    // width: 100%;
+    // 只显示一行, 每个子元素宽度自适应
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: auto;
+    justify-content: left;
+    align-items: center;
+}
+
+.meta-item {
+    // 这里不设置字体大小，使用媒体查询设置
+    color: var(--jpz-text-color-placeholder);
+    line-height: 1.5;
+    display: grid;
+    grid-template-columns: 14px auto;
+    grid-gap: 4px;
     align-items: center;
 }
 
@@ -208,20 +245,14 @@ const takeTime = computed(() => {
     background: transparent;
 }
 
-.meta-item {
-    margin-right: 10px;
-    color: var(--jpz-text-color-placeholder);
-    font-size: 14px;
-    line-height: 150%;
-
-    display: flex;
-    align-items: center;
+// 覆盖头像和沉浸阅读固定宽度，让内容自适应
+.meta-avatar,
+.meta-immersion-read {
+    grid-template-columns: auto;
 }
 
 .meta-text {
-    margin-left: 4px;
-    line-height: 150%; // 确保文字垂直居中
-
+    line-height: 1.5; // 确保文字垂直居中
     font-family: "Microsoft YaHei", Helvetica, Arial, sans-serif;
 }
 
@@ -230,8 +261,23 @@ const takeTime = computed(() => {
 }
 
 // 媒体查询
-// @include respond-to("pc") {
-// }
+@include respond-to("pc") {
+    .meta-item {
+        font-size: 14px;
+    }
+
+    .meta-avatar,
+    .meta-date,
+    .meta-view,
+    .meta-comment,
+    .meta-like,
+    .meta-star,
+    .meta-words,
+    .meta-read-time,
+    .meta-immersion-read {
+        margin-right: 12px;
+    }
+}
 
 @include respond-to("pad") {
     .immersion-read,
@@ -242,6 +288,18 @@ const takeTime = computed(() => {
     // 使用等宽字体
     .meta-text {
         font-family: monospace;
+    }
+
+    .meta-avatar,
+    .meta-date,
+    .meta-view,
+    .meta-comment,
+    .meta-like,
+    .meta-star,
+    .meta-words,
+    .meta-read-time,
+    .meta-immersion-read {
+        margin-right: 12px;
     }
 }
 
@@ -257,9 +315,37 @@ const takeTime = computed(() => {
         font-weight: 700;
         font-size: 18px;
     }
+
     // 使用等宽字体
     .meta-text {
         font-family: monospace;
+    }
+
+    .meta-avatar,
+    .meta-date,
+    .meta-view,
+    .meta-comment,
+    .meta-like {
+        margin-right: 6px;
+    }
+}
+
+// **注意 meta-date-set-margin 和 meta-date-hide-icon 要放在最后面，避免被覆盖**
+
+// 隐藏时间图标样式
+.meta-date-set-margin {
+    // 在文章列表时间, 将 margin-right 加大, 让间距更明显
+    margin-right: 32px;
+}
+
+// 隐藏时间图标样式
+.meta-date-hide-icon {
+    // 让 date 自适应宽度
+    grid-template-columns: auto;
+
+    // 不显示时间的icon
+    :deep(.meta-icon-time) {
+        display: none;
     }
 }
 </style>

@@ -14,6 +14,8 @@
                 :key="item.id"
                 :post-data="item"
                 :post-list-summary-truncate="postListSummaryTruncate"
+                :is-hide-time-icon="isHideTimeIcon"
+                :is-set-time-margin="isSetTimeMargin"
                 @click-category="clickCategory"
                 @post-id="postId"
             />
@@ -78,6 +80,8 @@ const {
     showPostList,
     showSearchList,
     postListSummaryTruncate = 100,
+    isHideTimeIcon = false,
+    isSetTimeMargin = false,
 } = defineProps<{
     paginationData: Pagination<PostResPagination>
     isShowLoading?: boolean // 是否显示loading
@@ -85,6 +89,8 @@ const {
     showPostList?: boolean // 默认文章列表
     showSearchList?: boolean // 搜索列表
     postListSummaryTruncate?: number
+    isHideTimeIcon?: boolean
+    isSetTimeMargin?: boolean
 }>()
 
 // 事件

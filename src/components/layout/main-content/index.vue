@@ -26,6 +26,8 @@
                     :show-post-list="isShowPostList"
                     :show-search-list="isShowSearchList"
                     :post-list-summary-truncate="post_list_summary_truncate"
+                    :is-hide-time-icon="device === DeviceType.PHONE"
+                    :is-set-time-margin="device === DeviceType.PHONE"
                     @post-id="handlePostId"
                     @update-current-page="updateCurrentPage"
                     @update-page-size="updatePageSize"
@@ -99,6 +101,7 @@ import PostTag, { usePostTagData } from "@/components/layout/aside/post-tag"
 import RecommendedRead from "@/components/layout/aside/recommended-read"
 import HomeCarousel from "@/components/layout/carousel"
 import { type SearchData } from "@/components/layout/search"
+import { DeviceType, useDeviceStore } from "@/stores/device"
 import { useOptionsStore } from "@/stores/options"
 import { useStatusStore } from "@/stores/status"
 
@@ -113,10 +116,12 @@ const { searchData } = defineProps<MainContentProps>()
 
 const asideRef = useTemplateRef<InstanceType<typeof ElAside>>("asideRef")
 
+const deviceStore = useDeviceStore()
 const optionsStore = useOptionsStore()
 const statusStore = useStatusStore()
 
 const { post_list_summary_truncate } = storeToRefs(optionsStore)
+const { device } = storeToRefs(deviceStore)
 
 const {
     isShowSearchList,
