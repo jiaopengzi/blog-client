@@ -358,6 +358,8 @@ async function handleLoginResult(resObj: Res<AccessTokenResponse>, successCode: 
  */
 async function handleBindResult(resObj: Res<void>, successCode: ResponseCode, token: string): Promise<UserInfoStore> {
     if (resObj.code === successCode) {
+        useUserStore().setAccessToken(token)
+
         // 显示登录成功提示
         MessageUtil.success(resObj.msg, 3000)
 
