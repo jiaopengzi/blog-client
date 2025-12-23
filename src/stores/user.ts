@@ -115,11 +115,11 @@ export const useUserStore = defineStore("user", {
             if (res.data.code === ResponseCode.UserAccessTokenRefreshSuccess) {
                 // 成功刷新访问令牌
                 this.accessToken = res.data.data.access_token
+
                 // localStorage.setItem(LocalStorageKey.AccessToken, res.data.data.access_token)
                 return true
             } else if (res.data.code === ResponseCode.UserLoggedInElsewhere) {
                 // 用户在其他设备登录
-
                 MessageUtil.error(handleResErr(res))
 
                 // 使用 false 说明当前的token 已经失效，不需要再请求后端接口
@@ -148,7 +148,7 @@ export const useUserStore = defineStore("user", {
 
             // 刷新首页
             if (!isRefreshPage) return
-            window.location.href = "/"
+            // window.location.href = "/"
         },
 
         // 登录
