@@ -209,8 +209,8 @@ const seekVolume = (volume: number) => {
     localVolume.value = volume
 }
 
-const { isVisible: isVolumeBarVisible, show: showVolumeBar, hide: hideVolumeBar, destroy: volumeDestroy } = useDelayedToggle(150, 10000)
-const { isVisible: isShowVideoSetting, show: showSetting, hide: hideSetting, toggle: toggleSetting, destroy: settingDestroy } = useDelayedToggle(150, 15000)
+const { isVisible: isVolumeBarVisible, show: showVolumeBar, hide: hideVolumeBar, destroy: volumeDestroy } = useDelayedToggle(150, 6000)
+const { isVisible: isShowVideoSetting, show: showSetting, hide: hideSetting, toggle: toggleSetting, destroy: settingDestroy } = useDelayedToggle(150, 12000)
 
 // 视频时间显示
 const formattedTimeDisplay = computed(() => {

@@ -113,8 +113,10 @@ export function useHls(videoRef: Ref<HTMLVideoElement | null>, localManager: Pla
         // 成功的 code
         const successCodes = [ResponseCode.GetVideoM3u8Success, ResponseCode.GetVideoMainM3u8Success, ResponseCode.GetVideoKeySuccess]
 
-        // 如果是成功的 code, 则直接返回
+        // 如果是成功的 code, 则清除可能存在的错误提示并直接返回
         if (successCodes.includes(resCode)) {
+            // 清除之前展示的错误信息
+            managerClearError(localManager)
             isExpectedError = true
             return isExpectedError
         }
@@ -151,15 +153,15 @@ export function useHls(videoRef: Ref<HTMLVideoElement | null>, localManager: Pla
 
         switch (data.type) {
             case Hls.ErrorTypes.NETWORK_ERROR:
-                // 尝试恢复网络错误
-                // console.warn("fatal network error encountered, try to recover")
+                // 尝试恢复网络错误, 清除错误提示, 等待恢复成功后不再显示
                 hls.startLoad()
+                managerClearError(localManager)
                 isExpectedError = true
                 break
             case Hls.ErrorTypes.MEDIA_ERROR:
-                // 尝试恢复媒体错误
-                // console.warn("fatal media error encountered, try to recover")
+                // 尝试恢复媒体错误, 清除错误提示, 等待恢复成功后不再显示
                 hls.recoverMediaError()
+                managerClearError(localManager)
                 isExpectedError = true
                 break
             default:
@@ -177,6 +179,12 @@ export function useHls(videoRef: Ref<HTMLVideoElement | null>, localManager: Pla
     const managerShowError = (manager: PlayerStateManager, msg: string) => {
         manager.setShowError(true)
         manager.setErrMsg(msg)
+    }
+
+    // 清除播放器上的错误提示
+    const managerClearError = (manager: PlayerStateManager) => {
+        manager.setShowError(false)
+        manager.setErrMsg("")
     }
 
     return {
