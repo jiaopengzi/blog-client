@@ -15,7 +15,8 @@ import { getUserPostVideoProgressAPI, type GetUserPostVideoProgressRequest, type
 import { getUserVideoProgressAPI, type GetUserVideoProgressRequest, type GetUserVideoProgressResponse } from "@/api/video/getUserVideoProgress"
 import { getVideosIsFreeAPI, type GetVideosIsFreeRequest, type GetVideosIsFreeResponse } from "@/api/video/getVideosIsFree"
 import { upsertUserPostVideoProgressAPI, type UpsertUserPostVideoProgressRequest } from "@/api/video/upsertUserPostVideoProgress"
-import { MediaTypes, PlayerStateManager, type TextWatermark } from "@/components/player"
+import { defaultLogoWatermark, MediaTypes, PlayerStateManager, type TextWatermark } from "@/components/player"
+import { useOptionsStore } from "@/stores/options"
 import { useUserStore } from "@/stores/user"
 
 import type { VideoTocMapByFileIdHash, VideoTocMapByOrder } from "../video-toc-tree-base"
@@ -23,6 +24,8 @@ import { useVideoTocTree } from "../video-toc-tree-base"
 
 export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<string>) {
     const userStore = useUserStore()
+    const optionsStore = useOptionsStore()
+    const logo = optionsStore.getLogo
 
     const localMapByFileIdHash = ref<VideoTocMapByFileIdHash>({}) // 目录树映射, key 为节点 fileIdHash
     const localMapByOrder = ref<VideoTocMapByOrder>({}) // 目录树映射, key 为节点 videoOrder
@@ -62,6 +65,8 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
         },
     }
     manager.setTextWatermark(textWatermark)
+
+    manager.setLogoWatermark(defaultLogoWatermark(logo))
 
     // 设置是否在播放器中显示目录的按钮
     watch(

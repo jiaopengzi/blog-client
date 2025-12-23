@@ -9,7 +9,7 @@
 import { ResponseCode } from "@/api/response"
 import { getSubtitlesAPI, type Subtitles as SubtitlesRes } from "@/api/video/getSubtitles"
 
-import type { LanguageKey, PlayerState, Subtitles, SubtitlesItem } from "./types"
+import type { LanguageKey, LogoWatermark, PlayerState, Subtitles, SubtitlesItem } from "./types"
 import { Language, MediaTypes, PlaybackRate, PlayLevelLabel, PlayStatus } from "./types"
 
 /**
@@ -165,4 +165,22 @@ export const getVideoQualityLabel = (height: number): string => {
         }
     }
     return VideoQualityLabels[closest!]!
+}
+
+/**
+ * @description: 默认图片水印配置
+ * @param imgUrl 图片地址
+ * @return  返回图片水印对象
+ */
+export const defaultLogoWatermark = (imgUrl: string): LogoWatermark => {
+    const logoWatermark: LogoWatermark = {
+        imgUrl: imgUrl,
+
+        style: {
+            height: "32px",
+            top: "16px",
+            right: "24px",
+        },
+    }
+    return logoWatermark
 }

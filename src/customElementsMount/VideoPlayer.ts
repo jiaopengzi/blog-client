@@ -8,8 +8,9 @@
 
 import { createApp, h } from "vue"
 
-import { MediaTypes, type PlayerState, PlayerStateManager } from "@/components/player"
+import { defaultLogoWatermark, MediaTypes, type PlayerState, PlayerStateManager } from "@/components/player"
 import VideoPlayer from "@/components/player"
+import { useOptionsStore } from "@/stores/options"
 
 import { Attributes, Names } from "../customElements"
 import { getComponentContainersFromCustomElements } from "./getComponentContainers"
@@ -27,27 +28,32 @@ export const getVideoPlayerState = (el: Element, postID: string = ""): { elTarge
     const videoSrc = el.getAttribute(Attributes.Src) // 非 hls 设置 videoSrc
     const videoPoster = el.getAttribute(Attributes.Poster) // 视频封面
 
-    const videoState = new PlayerStateManager()
-    videoState.setMediaType(videoType)
-    videoState.setPostID(postID)
+    const manager = new PlayerStateManager()
+
+    const optionsStore = useOptionsStore()
+    const logo = optionsStore.getLogo
+    manager.setLogoWatermark(defaultLogoWatermark(logo)) // 设置 logo 水印
+
+    manager.setMediaType(videoType)
+    manager.setPostID(postID)
 
     // hls 设置 videoID
     if (videoID) {
-        videoState.setVideoID(videoID)
+        manager.setVideoID(videoID)
     }
 
     // 非 hls 设置 videoSrc
     if (videoSrc) {
-        videoState.setSrc(videoSrc)
+        manager.setSrc(videoSrc)
     }
 
     // 设置视频封面
     if (videoPoster) {
-        videoState.setPoster(videoPoster)
+        manager.setPoster(videoPoster)
     }
 
     elTarget = el
-    state = videoState.getState()
+    state = manager.getState()
 
     return { elTarget, state }
 }

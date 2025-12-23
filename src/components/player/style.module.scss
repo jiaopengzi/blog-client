@@ -64,6 +64,8 @@ video::cue {
     }
 
     .my-video {
+        width: var(--video-container-width);
+        height: var(--video-container-height);
         // background-color: #ddd;
         background-color: transparent;
         object-fit: contain;
@@ -176,12 +178,14 @@ video::cue {
 
 @include respond-to("pc") {
     .video-container {
-        width: pc.$width-video-main;
-        height: pc.$height-video-main;
+        // pc端不设置, 使用默认的变量, 保证 setSize 生效
+        // width: pc.$width-video-main;
+        // height: pc.$height-video-main;
 
         .my-video {
-            width: pc.$width-video-main;
-            height: pc.$height-video-main;
+            // pc端不设置, 使用默认的变量, 保证 setSize 生效
+            // width: pc.$width-video-main;
+            // height: pc.$height-video-main;
 
             &.my-video-web-full-screen {
                 width: 100vw;
@@ -193,12 +197,14 @@ video::cue {
 
 @include respond-to("pad") {
     .video-container {
-        width: pad.$width-video-main;
-        height: pad.$height-video-main;
+        // pad 端不设置, 使用默认的变量, 保证 setSize 生效
+        // width: pad.$width-video-main;
+        // height: pad.$height-video-main;
 
         .my-video {
-            width: pad.$width-video-main;
-            height: pad.$height-video-main;
+            // pad 端不设置, 使用默认的变量, 保证 setSize 生效
+            // width: pad.$width-video-main;
+            // height: pad.$height-video-main;
 
             &.my-video-web-full-screen {
                 width: 100vw;
