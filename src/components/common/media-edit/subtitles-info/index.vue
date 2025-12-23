@@ -29,14 +29,19 @@
                 <el-option v-for="item in languageKeys" :key="item" :label="Language[item as keyof typeof Language]" :value="item" />
             </el-select>
         </el-form-item>
+
+        <el-form-item>
+            <el-button type="primary" size="small" @click="insertDemo">插入示例</el-button>
+        </el-form-item>
+
         <el-form-item label="字幕内容" prop="subtitles">
             <el-input v-model="subtitlesForm.subtitles" type="textarea" :rows="28" :placeholder="subtitlesPlaceholder" />
         </el-form-item>
 
         <div class="btn-submit">
             <el-form-item>
-                <el-button type="primary" size="default" :loading="loading" @click="saveSubtitles(subtitlesFormRef as FormInstance)">保存</el-button>
-                <el-button type="danger" size="default" :loading="loading" @click="delSubtitles">删除</el-button>
+                <el-button type="primary" size="small" :loading="loading" @click="saveSubtitles(subtitlesFormRef as FormInstance)">保存</el-button>
+                <el-button type="danger" size="small" :loading="loading" @click="delSubtitles">删除</el-button>
             </el-form-item>
         </div>
     </el-form>
@@ -95,19 +100,33 @@ const subtitlesForm = reactive<SubtitlesForm>({
     subtitles: "", // 字幕
 })
 
-const subtitlesPlaceholder = ref(`支持的字幕格式：.webvtt
-示例如下：
-
+const subtitlesDemo = ref(`
 WEBVTT
 
 1
-00:00:00.000 --> 00:00:03.000
+00:00:00.000 --> 00:00:03.000 line:88% position:50% align:center
 这是一个字幕示例。
 
 2
-00:00:03.000 --> 00:00:06.000
-请按照上面的格式输入字幕内容。
+00:00:03.000 --> 00:00:06.000 line:88% position:50% align:center
+这是另一个字幕示例。
 `)
+
+const subtitlesPlaceholder = ref(`支持的字幕格式：.webvtt
+示例如下：
+${subtitlesDemo.value}
+
+注意事项：
+- 每个字幕块以数字编号开始，后跟时间戳和字幕文本。
+- 时间格式为小时:分钟:秒.毫秒
+- 时间戳后，可以使用 line、position 和 align 属性来调整字幕显示位置，最佳实践是使用 line:88% position:50% align:center。
+- 字幕块之间需要空行分隔。
+`)
+
+// 插入示例
+const insertDemo = () => {
+    subtitlesForm.subtitles = subtitlesDemo.value.trim()
+}
 
 // 检查别名是否可用
 function isWebvttValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {

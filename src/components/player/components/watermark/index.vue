@@ -94,6 +94,7 @@ const setWatermarkStyle = (watermark: HTMLElement | undefined, style: Partial<CS
             const top = Math.random() * maxTop
             style.left = `${left}px`
             style.top = `${top}px`
+
             // 再次设置样式主要是为了设置 left 和 top
             Object.assign(watermark.style, style)
         }

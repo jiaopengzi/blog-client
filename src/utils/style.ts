@@ -8,6 +8,8 @@
 
 import { type ImgFit } from "@/components/common"
 
+import { removeCommentsSafe } from "./cssValidator"
+
 /**
  * @description: 设置主题
  * @param theme  主题名称
@@ -70,4 +72,29 @@ export function iconStyle(fontSize: number | undefined): Record<string, string> 
     return {
         "font-size": fontSize ? `${fontSize}px` : "40px", // 字体大小
     }
+}
+
+/**
+ * @description: 设置自定义样式
+ * @param cssId 样式ID
+ * @param cssContent 样式内容
+ */
+export const setCustomStyle = (cssId: string, cssContent: string) => {
+    // 移除旧的自定义样式
+    const oldStyle = document.getElementById(cssId)
+    if (oldStyle) {
+        oldStyle.remove()
+    }
+
+    // 移除注释并修剪空白
+    cssContent = removeCommentsSafe(cssContent).trim()
+
+    // 如果为空则不添加
+    if (!cssContent) return
+
+    // 添加新的自定义样式
+    const style = document.createElement("style")
+    style.id = cssId
+    style.textContent = cssContent
+    document.head.appendChild(style)
 }

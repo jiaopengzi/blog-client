@@ -20,7 +20,7 @@
 import { ref } from "vue"
 
 const props = defineProps<{ videoID: string }>()
-const videoSrc = ref(`http://10.10.2.222:8081/api/v1/uploads/${props.videoID}.mp4`)
+const videoSrc = ref(`http://10.10.2.222:5426/api/v1/uploads/${props.videoID}.mp4`)
 </script>
 
 <style scoped>

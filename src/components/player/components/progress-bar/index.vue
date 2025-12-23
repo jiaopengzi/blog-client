@@ -295,11 +295,13 @@ $bar-height: 6px; // 进度条高度
 
 .progress-bar {
     position: relative;
-    width: 100%;
+    // width: 100%;
     height: $bar-height;
     background: #ccc;
     cursor: pointer;
     border-radius: 3px;
+    user-select: none; // 禁止选中
+    margin: 0 16px;
 
     .buffered {
         position: absolute;

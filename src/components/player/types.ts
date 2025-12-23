@@ -45,9 +45,10 @@ export enum PlaybackRate {
     SLOW = 0.5,
     MEDIUM_SLOW = 0.75,
     NORMAL = 1,
+    MEDIUM_FAST = 1.25,
     FAST = 1.5,
     FASTER = 2,
-    VERY_FAST = 4,
+    // VERY_FAST = 4,
 }
 
 export interface PlayLevel {
@@ -213,7 +214,6 @@ export interface PlayerState {
     hasToc: boolean
     // 是否显示目录
     isShowToc: boolean
-
     // postId 视频所属的文章 ID
     postId: string
 }

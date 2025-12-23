@@ -209,14 +209,14 @@ const seekVolume = (volume: number) => {
     localVolume.value = volume
 }
 
-const { isVisible: isVolumeBarVisible, show: showVolumeBar, hide: hideVolumeBar, destroy: volumeDestroy } = useDelayedToggle(150, 3000)
-const { isVisible: isShowVideoSetting, show: showSetting, hide: hideSetting, toggle: toggleSetting, destroy: settingDestroy } = useDelayedToggle(150, 3000)
+const { isVisible: isVolumeBarVisible, show: showVolumeBar, hide: hideVolumeBar, destroy: volumeDestroy } = useDelayedToggle(150, 10000)
+const { isVisible: isShowVideoSetting, show: showSetting, hide: hideSetting, toggle: toggleSetting, destroy: settingDestroy } = useDelayedToggle(150, 15000)
 
 // 视频时间显示
 const formattedTimeDisplay = computed(() => {
     const currentFormatted = formatDurationTime(localPlayerState.playProgress.currentTime)
     const durationFormatted = formatDurationTime(localPlayerState.playProgress.duration)
-    return `${currentFormatted} / ${durationFormatted}`
+    return `${currentFormatted}/${durationFormatted}`
 })
 
 // 处理选择字幕语言
@@ -301,7 +301,7 @@ onUnmounted(() => {
 })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .controls {
     width: 100%;
     height: 60px;
@@ -317,6 +317,7 @@ onUnmounted(() => {
         justify-content: space-between;
         align-items: center;
         padding-top: 10px;
+        margin: 0 16px;
 
         .iconfont {
             font-size: 20px;
@@ -333,24 +334,10 @@ onUnmounted(() => {
             align-items: center;
 
             .timeDisplay {
+                // 等宽字体
+                font-family: "JBMonoWOFF2", monospace;
                 white-space: nowrap;
                 margin: 0 10px;
-            }
-        }
-
-        // 公共样式占位
-        %top-show {
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            margin-bottom: 8px;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-            z-index: 10;
-
-            &.visible {
-                opacity: 1;
             }
         }
 
@@ -364,7 +351,24 @@ onUnmounted(() => {
                 align-items: center;
 
                 .volume-bar {
-                    @extend %top-show;
+                    position: absolute;
+                    bottom: 40px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    margin-bottom: 8px;
+                    display: none;
+                    z-index: 10;
+
+                    &.visible {
+                        display: block;
+                    }
+                }
+            }
+
+            // 手机端隐藏音量调节
+            @include respond-to("phone") {
+                .volume-wrapper {
+                    display: none;
                 }
             }
 
@@ -374,7 +378,16 @@ onUnmounted(() => {
                 align-items: center;
 
                 .settings {
-                    @extend %top-show;
+                    position: absolute;
+                    bottom: 40px;
+                    right: 0%;
+                    margin-bottom: 8px;
+                    display: none;
+                    z-index: 10;
+
+                    &.visible {
+                        display: block;
+                    }
                 }
             }
         }
@@ -401,6 +414,13 @@ onUnmounted(() => {
         background-color: #ffffff33;
     }
 }
+
+// 取消播放暂停按钮的默认内外边距, 和进度条对齐
+.play-pause {
+    margin: 0;
+    padding: 0;
+}
+
 @include respond-to("pad") {
     // pad端隐藏如下按钮
     .pip,
@@ -414,6 +434,10 @@ onUnmounted(() => {
     .pip,
     .web-fullscreen {
         display: none;
+    }
+
+    .timeDisplay {
+        font-size: 13px;
     }
 }
 </style>

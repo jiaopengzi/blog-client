@@ -12,7 +12,10 @@
             <VideoPlayer :player-state="state">
                 <template #toc>
                     <div class="video-toc" v-if="isShowToc && state.isShowToc">
-                        <VideoTocTreeDisplay :tree-list="localTreeList" :current-node-key="currentTreeId" @video-select="handleSelect" />
+                        <el-button type="default" class="close-toc-button" @click="manager.setIsShowToc(false)">关闭目录</el-button>
+                        <div class="toc-content">
+                            <VideoTocTreeDisplay :tree-list="localTreeList" :current-node-key="currentTreeId" @video-select="handleSelect" />
+                        </div>
                     </div>
                 </template>
             </VideoPlayer>
@@ -124,6 +127,15 @@ onMounted(async () => {
             overflow: auto;
             // 要比全屏播放的 z-index 高
             z-index: 1001;
+
+            .close-toc-button {
+                z-index: 1002;
+                margin: 8px;
+            }
+
+            .toc-content {
+                border-top: 1px solid var(--jpz-border-color);
+            }
         }
     }
 }

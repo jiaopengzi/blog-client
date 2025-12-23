@@ -213,7 +213,7 @@ export function createCustomLoaderClass(isAdmin: boolean, postId: string = ""): 
             stats: LoaderStats,
         ): Promise<void> {
             // context.keyInfo.decryptdata.uri 在后端使用的是相对路径，hls在这里会自动拼接成绝url路径
-            // 例如:http://10.10.2.222:8081/api/v1/uploads/2024/10/17/2-7f9d0d9c/2-7f9d0d9c
+            // 例如:http://10.10.2.222:5426/api/v1/uploads/2024/10/17/2-7f9d0d9c/2-7f9d0d9c
             // 但是这个路径在后端是无法访问的，所以需要将这个路径截取出来，拿到 path 中最后一个 / 后面的字符串就是 videoId
             const videoId = context.keyInfo.decryptdata.uri.substring(context.keyInfo.decryptdata.uri.lastIndexOf("/") + 1)
 

@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client-dev\src\components\player\components\volume-bar\index.vue
+ * FilePath    : blog-client-dev\src\components\player\components\volume-bar-inner\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -9,10 +9,9 @@
 <template>
     <div class="bar-container">
         <div
-            ref="volumeBar"
-            class="volume-bar"
+            ref="volumeBarInnerRef"
+            class="volume-bar-inner"
             @mousedown="onVolumeBarClick"
-            @mouseleave="onVolumeBarMouseleave"
             @mousemove="onVolumeBarMousemove"
             @touchstart.passive="onVolumeBarClick"
         >
@@ -20,18 +19,20 @@
             <div ref="currentVolumeRef" class="current-volume"></div>
 
             <!-- 滑块(竖向拖动) -->
-            <div ref="slider" class="slider" @mousedown="onSliderDown" @touchstart.passive="onSliderDown"></div>
+            <div ref="sliderRef" class="slider" @mousedown="onSliderDown" @touchstart.passive="onSliderDown"></div>
 
             <!-- 透明点击区域(扩大热区) -->
             <div ref="clickAreaRef" class="click-area"></div>
         </div>
+
         <!-- 鼠标滑动提示(显示音量值) -->
-        <div ref="tooltip" class="tooltip"></div>
+        <div ref="tipRef" class="tip">{{ localVolume }}</div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, useTemplateRef, watch } from "vue"
+import { useResizeObserver } from "@vueuse/core"
+import { onBeforeUnmount, ref, useTemplateRef } from "vue"
 
 defineOptions({ name: "VideoVolumeBar" })
 
@@ -45,11 +46,12 @@ const emit = defineEmits<{
 }>()
 
 // 定义所有元素的 ref
-const volumeBarRef = useTemplateRef<HTMLDivElement | null>("volumeBar")
+const volumeBarInnerRef = useTemplateRef<HTMLDivElement | null>("volumeBarInnerRef")
 const currentVolumeRef = useTemplateRef<HTMLDivElement | null>("currentVolumeRef")
-const tooltipRef = useTemplateRef<HTMLDivElement | null>("tooltip")
-const sliderRef = useTemplateRef<HTMLDivElement | null>("slider")
-const clickAreaRef = useTemplateRef<HTMLDivElement | null>("clickAreaRef")
+const sliderRef = useTemplateRef<HTMLDivElement | null>("sliderRef")
+// const clickAreaRef = useTemplateRef<HTMLDivElement | null>("clickAreaRef")
+
+const localVolume = ref(volume)
 
 // 设置 currentVolume 的高度, 可选是否启用 transition
 const setCurrentVolumeHeight = (heightPercent: number, enableTransition = true) => {
@@ -93,8 +95,8 @@ const removeDocumentEventListeners = () => {
 
 // 获取音量条数据(Y 方向)
 const getVolumeBarData = (event: MouseEvent | TouchEvent): { rect: DOMRect; offsetY: number; totalHeight: number; volume: number } | null => {
-    if (volumeBarRef.value) {
-        const rect = volumeBarRef.value.getBoundingClientRect()
+    if (volumeBarInnerRef.value) {
+        const rect = volumeBarInnerRef.value.getBoundingClientRect()
         const clientY = getClientY(event)
         let offsetY = clientY - rect.top
         const totalHeight = rect.height
@@ -129,26 +131,12 @@ const onVolumeBarClick = (event: MouseEvent | TouchEvent) => {
     }
 }
 
-// 显示 tooltip
-const showTooltip = (vol: number) => {
-    if (tooltipRef.value) {
-        tooltipRef.value.textContent = vol.toString()
-        tooltipRef.value.style.display = "block"
-    }
-}
-
-// 鼠标移动时显示 tooltip
+// 鼠标移动时显示 tip
 const onVolumeBarMousemove = (event: MouseEvent) => {
     const data = getVolumeBarData(event)
-    if (data && !isDragging) {
-        showTooltip(data.volume)
-    }
-}
-
-// 鼠标离开时隐藏 tooltip
-const onVolumeBarMouseleave = () => {
-    if (!isDragging && tooltipRef.value) {
-        tooltipRef.value.style.display = "none"
+    if (data) {
+        const { volume: newVol } = data
+        localVolume.value = newVol
     }
 }
 
@@ -158,6 +146,7 @@ const updateSliderAndVolume = (offsetY: number, totalHeight: number, isDragging 
         // 填充条：从底部向上(高度 = 音量比例)
         const ratio = 1 - offsetY / totalHeight
         const heightPercent = ratio * 100
+
         // 根据是否拖拽决定是否禁用 transition
         setCurrentVolumeHeight(heightPercent, !isDragging)
 
@@ -182,7 +171,7 @@ const onSliderPointerMove = (event: MouseEvent | TouchEvent) => {
         const { offsetY, totalHeight, volume: newVol } = data
         // 标记正在拖拽, 禁用 transition
         updateSliderAndVolume(offsetY, totalHeight, true)
-        showTooltip(newVol)
+        localVolume.value = newVol
     }
 }
 
@@ -192,8 +181,8 @@ const onSliderPointerUp = () => {
     emit("is-dragging", isDragging)
     removeDocumentEventListeners()
 
-    if (volumeBarRef.value && sliderRef.value) {
-        const rect = volumeBarRef.value.getBoundingClientRect()
+    if (volumeBarInnerRef.value && sliderRef.value) {
+        const rect = volumeBarInnerRef.value.getBoundingClientRect()
         const sliderRect = sliderRef.value.getBoundingClientRect()
         const centerY = sliderRect.top + sliderRect.height / 2
         const offsetY = Math.max(0, Math.min(centerY - rect.top, rect.height))
@@ -205,28 +194,23 @@ const onSliderPointerUp = () => {
             emit("update-volume", newVol)
         }
     }
+}
 
-    if (tooltipRef.value) {
-        tooltipRef.value.style.display = "none"
+// 更新 UI
+const updateUI = () => {
+    if (volumeBarInnerRef.value && sliderRef.value) {
+        const rect = volumeBarInnerRef.value.getBoundingClientRect()
+        const totalHeight = rect.height
+        const offsetY = totalHeight * (1 - volume / 100)
+        updateSliderAndVolume(offsetY, totalHeight, false)
     }
 }
 
-// 监听外部 volume 变化, 同步 UI
-watch(
-    () => volume,
-    (newVal) => {
-        if (volumeBarRef.value && currentVolumeRef.value && sliderRef.value) {
-            const clamped = Math.max(0, Math.min(100, newVal))
-            const ratio = clamped / 100
-            // 外部更新, 启用 transition
-            setCurrentVolumeHeight(ratio * 100, true)
-            // 滑块位置：音量100 → top=0%，音量0 → top=100%
-            const positionPercent = (1 - ratio) * 100
-            sliderRef.value.style.top = `${positionPercent}%`
-        }
-    },
-    { immediate: true },
-)
+// 当元素尺寸变化时更新 UI
+// 主要解决音量调初始化时，元素通常为 none 导致获取高度为 0 的问题
+useResizeObserver(volumeBarInnerRef, () => {
+    updateUI()
+})
 
 // 组件销毁时清理
 onBeforeUnmount(() => {
@@ -243,32 +227,32 @@ $slider-size: 16px;
 .bar-container {
     position: relative;
     width: 50px;
-    height: 150px;
+    height: 156px;
     display: flex;
     align-items: center;
     justify-content: center;
     // 半透明背景色
-    background-color: #0000001a;
+    background-color: #00000022;
     border-radius: 4px;
+    user-select: none; // 禁止选中
 
-    .tooltip {
+    .tip {
         position: absolute;
         left: 50%;
-        top: 10px;
+        top: 8px;
         transform: translateX(-50%);
         background-color: #000000b3;
         color: white;
         border-radius: 3px;
         font-size: 12px;
-        padding: 5px;
+        padding: 4px;
         min-width: 20px;
         text-align: center;
-        display: none;
         white-space: nowrap;
         z-index: 10;
     }
 
-    .volume-bar {
+    .volume-bar-inner {
         position: absolute;
         left: 50%;
         bottom: 10px;
@@ -305,15 +289,13 @@ $slider-size: 16px;
             border: 2px solid var(--jpz-color-primary);
             transform: translateX(-50%) translateY(-50%);
 
-            &:hover {
-                border: 2px solid var(--jpz-color-primary);
-                transform: translateX(-50%) translateY(-50%);
-            }
+            // &:hover {
+            //     transform: translateX(-50%) translateY(-50%);
+            // }
 
             &:active {
                 cursor: grabbing;
-                border: 2px solid var(--jpz-color-primary);
-                transform: translateX(-50%) translateY(-50%);
+                // transform: translateX(-50%) translateY(-50%);
             }
         }
 

@@ -25,8 +25,8 @@ import HeadTag from "@/components/common/head-tag"
 import { useDeviceStore } from "@/stores/device"
 import { useOptionsStore } from "@/stores/options"
 import { useUserStore } from "@/stores/user"
-import { removeCommentsSafe } from "@/utils/cssValidator"
 import { loadScriptFromString } from "@/utils/script"
+import { setCustomStyle } from "@/utils/style"
 
 // 网站配置选项
 const optionsStore = useOptionsStore()
@@ -48,33 +48,11 @@ useDark({
     valueLight: "light",
 })
 
-// 设置自定义样式
-const setCustomStyle = (cssContent: string) => {
-    // 移除旧的自定义样式
-    const id = "custom-style-css"
-    const oldStyle = document.getElementById(id)
-    if (oldStyle) {
-        oldStyle.remove()
-    }
-
-    // 移除注释并修剪空白
-    cssContent = removeCommentsSafe(cssContent).trim()
-
-    // 如果为空则不添加
-    if (!cssContent) return
-
-    // 添加新的自定义样式
-    const style = document.createElement("style")
-    style.id = id
-    style.textContent = cssContent
-    document.head.appendChild(style)
-}
-
 // 监听自定义样式变化
 watch(
     custom_style_css,
     (newVal) => {
-        setCustomStyle(newVal)
+        setCustomStyle("custom-style-css", newVal)
     },
     {
         immediate: true,

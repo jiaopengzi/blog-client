@@ -7,75 +7,24 @@
 -->
 
 <template>
-    <el-collapse class="video-settings" v-model="localActiveNames" @change="handleChange">
-        <!-- 字幕选择 -->
-        <el-collapse-item v-if="isShowSubtitlesSelect" name="1">
-            <template #title>
-                <div class="title-content">字幕</div>
-            </template>
-            <el-radio-group class="radio-group" v-model="selectedSubtitlesLanguage" @change="handleSubtitlesChange">
-                <el-radio class="radio-item" v-for="(item, key) in availableSubtitles" :key="key" :value="key">
-                    {{ item.label }}
-                </el-radio>
-            </el-radio-group>
-        </el-collapse-item>
-
-        <!-- 播放清晰度选择 -->
-        <el-collapse-item v-if="isShowPlayLevel" name="2">
-            <template #title>
-                <div class="title-content">清晰度</div>
-            </template>
-            <el-radio-group class="radio-group" v-model="selectedPlayLevel" @change="handlePlayLevelChange">
-                <el-radio class="radio-item" v-for="level in Object.keys(props.playLevel.allLevels)" :key="level" :value="level">
-                    {{ level }}
-                </el-radio>
-            </el-radio-group>
-        </el-collapse-item>
-
-        <!-- 播放速度选择 -->
-        <el-collapse-item name="3">
-            <template #title>
-                <div class="title-content">播放速度</div>
-            </template>
-            <el-radio-group class="radio-group" v-model="selectedPlaybackRate" @change="handlePlaySpeedChange">
-                <el-radio
-                    class="radio-item"
-                    v-for="speed in Object.values(PlaybackRate).filter((value) => typeof value === 'number')"
-                    :key="speed"
-                    :value="speed"
-                >
-                    {{ speed }}
-                </el-radio>
-            </el-radio-group>
-        </el-collapse-item>
-
-        <!-- 循环播放 -->
-        <el-collapse-item name="4">
-            <template #title>
-                <div class="title-content">循环播放</div>
-            </template>
-            <el-switch class="switch" v-model="isLoop" inline-prompt active-text="on" inactive-text="off" @change="handleIsLoopChange" />
-        </el-collapse-item>
-    </el-collapse>
+    <div class="video-settings">
+        <RadioGroup v-if="isShowSubtitlesSelect" v-model="selectedSubtitlesLanguage" :options="subtitlesOptions" title="字幕" @change="handleSubtitlesChange" />
+        <RadioGroup v-if="isShowPlayLevel" v-model="selectedPlayLevel" :options="levelOptions" title="清晰度" @change="handlePlayLevelChange" />
+        <RadioGroup v-model="selectedPlaybackRate" :options="ratesOptions" title="播放速度" @change="handlePlaySpeedChange" />
+        <RadioGroup v-model="localIsLoop" :options="loopOptions" title="播放" @change="handleIsLoopChange" />
+    </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from "vue"
 
-import {
-    DisabledSubtitles,
-    type LanguageKey,
-    PlaybackRate,
-    type PlayLevel,
-    PlayLevelLabel,
-    type Subtitles,
-    type SubtitlesItem,
-} from "@/components/player/types"
+import { Language, type LanguageKey, PlaybackRate, type PlayLevel, PlayLevelLabel, type Subtitles } from "../../types"
+import RadioGroup, { type RadioOption } from "./radio-group"
 
 defineOptions({ name: "VideoSetting" })
 
 // 定义props
-const props = defineProps<{
+const { subtitles, playLevel, playbackRate, isLoop } = defineProps<{
     subtitles: Subtitles | undefined
     playLevel: PlayLevel
     playbackRate: PlaybackRate
@@ -90,37 +39,61 @@ const emit = defineEmits<{
     (e: "get-is-loop", value: boolean): void // 是否循环播放
 }>()
 
-// 默认不展开
-const localActiveNames = ref<string[]>([])
-
 // 是否显示字幕选择组件
 const isShowSubtitlesSelect = computed(() => {
-    // 判断 props.subtitles?.availableSubtitles 是否存在或者为空对象
-    return props.subtitles?.availableSubtitles && Object.keys(props.subtitles.availableSubtitles).length > 0
+    // 判断 subtitles?.availableSubtitles 是否存在或者为空对象
+    return subtitles?.availableSubtitles && Object.keys(subtitles.availableSubtitles).length > 0
 })
 
 // 可用字幕
-const availableSubtitles = computed<{ [key: string]: SubtitlesItem }>(() => {
+const subtitlesOptions = computed<RadioOption<LanguageKey>[]>(() => {
     // 增加一个禁用的选项 ,key：disabled，label：disabled
-    if (!props.subtitles) return {}
-    return {
-        // 展开再合并
-        ...DisabledSubtitles,
-        ...props.subtitles.availableSubtitles,
+    if (!subtitles || !subtitles.availableSubtitles) return []
+    const options: RadioOption<LanguageKey>[] = []
+
+    options.push({ label: Language.disabled, value: "disabled" })
+
+    for (const [key, item] of Object.entries(subtitles.availableSubtitles)) {
+        options.push({ label: item.label, value: key as LanguageKey })
     }
+    return options
 })
 
-// 只有一个清晰度选项时不显示 props.playLevel.allLevels 是 Record<string, number> 类型
-const isShowPlayLevel = computed(() => Object.keys(props.playLevel.allLevels).length > 1)
+// 只有一个清晰度选项时不显示 playLevel.allLevels 是 Record<string, number> 类型
+const isShowPlayLevel = computed(() => Object.keys(playLevel.allLevels).length > 1)
+
+// 播放速度选项
+const levelOptions = computed(() => {
+    const options: RadioOption<PlayLevelLabel>[] = []
+    for (const [key] of Object.entries(playLevel.allLevels)) {
+        options.push({ label: key, value: key as PlayLevelLabel })
+    }
+    return options
+})
+
+const ratesOptions = computed(() => {
+    const options: RadioOption<PlaybackRate>[] = []
+    const speeds = Object.values(PlaybackRate).filter((value) => typeof value === "number") as PlaybackRate[]
+    for (const speed of speeds) {
+        options.push({ label: speed.toString(), value: speed })
+    }
+    return options
+})
+
+const loopOptions: RadioOption<boolean>[] = [
+    { label: "单次", value: false },
+    { label: "循环", value: true },
+]
 
 // 本地状态
-const selectedSubtitlesLanguage = ref(props.subtitles?.selectedSubtitlesLanguage)
-const selectedPlayLevel = ref(props.playLevel.level)
-const selectedPlaybackRate = ref(props.playbackRate)
-const isLoop = ref(props.isLoop)
+const selectedSubtitlesLanguage = ref(subtitles?.selectedSubtitlesLanguage)
+const selectedPlayLevel = ref(playLevel.level)
+const selectedPlaybackRate = ref(playbackRate)
+const localIsLoop = ref(isLoop)
 
 // 处理字幕选择变化
-const handleSubtitlesChange = (language: LanguageKey) => {
+const handleSubtitlesChange = (language: LanguageKey | undefined) => {
+    if (!language) return
     selectedSubtitlesLanguage.value = language
     emit("selected-subtitles-language", language)
 }
@@ -139,53 +112,31 @@ const handlePlayLevelChange = (level: PlayLevelLabel) => {
 
 // 处理是否循环播放变化
 const handleIsLoopChange = (value: boolean) => {
-    isLoop.value = value
+    localIsLoop.value = value
     emit("get-is-loop", value)
 }
-
-// 保持只展开一个
-const handleChange = (activeNames: string[]) => (localActiveNames.value = activeNames.length > 0 ? [activeNames[activeNames.length - 1]!] : [])
 </script>
 
 <style scoped lang="scss">
 .video-settings {
-    width: 100px;
-}
+    padding: 8px;
+    width: 240px;
+    height: 160px;
+    overflow: auto;
 
-.title-content {
-    padding-left: 8px;
-    color: #333;
-}
+    // 半透明背景色
+    background-color: #00000022;
+    // background-color: var(--jpz-bg-color);
+    // border: 1px solid var(--jpz-border-color);
+    border-radius: 4px;
 
-.el-radio-group {
-    display: flex;
-    flex-wrap: wrap;
-}
+    // 滚动条样式宽度
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
 
-.el-radio {
-    width: 60px;
-    padding-left: 5px;
-}
-
-.switch {
-    width: 60px;
-    padding-left: 5px;
-}
-
-// 视频设置折叠面板样式
-:deep(.el-collapse) {
-    background-color: #eee;
-}
-
-:deep(.el-collapse, .el-collapse-item__wrap) {
-    background-color: #eee;
-}
-
-:deep(.el-collapse-item__header) {
-    background-color: #eee;
-}
-
-:deep(.el-collapse-item__content) {
-    background-color: #fff;
+    @include respond-to("phone") {
+        height: 100px;
+    }
 }
 </style>

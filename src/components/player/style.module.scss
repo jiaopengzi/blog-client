@@ -1,0 +1,238 @@
+/*
+ * FilePath    : blog-client-dev\src\components\player\style.module.scss
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 播放器样式
+ */
+
+@use "@/assets/scss/platform/_phone.scss" as phone;
+@use "@/assets/scss/platform/_pad.scss" as pad;
+@use "@/assets/scss/platform/_pc.scss" as pc;
+@use "@/assets/scss/mixin.scss" as *;
+
+/* 
+HTML: <div class="loader"></div> 
+参考: https://css-loaders.com/infinity/ 
+*/
+.loader {
+    width: calc(80px / cos(45deg));
+    height: 14px;
+    background: repeating-linear-gradient(-45deg, var(--jpz-color-primary) 0 15px, #0000 0 20px) left/200% 100%;
+    animation: l3 2s infinite linear;
+    border-radius: 7px;
+    z-index: 2;
+}
+
+@keyframes l3 {
+    100% {
+        background-position: right;
+    }
+}
+
+// 禁用 video 默认控制器
+video::-webkit-media-controls {
+    display: none !important;
+}
+
+video::-webkit-media-controls-enclosure {
+    display: none !important;
+}
+
+// 字幕样式
+video::cue {
+    color: #00000099;
+    background: #00000033;
+    font-family: "SmileySans", "Microsoft YaHei", Arial, sans-serif;
+}
+
+.video-container {
+    width: var(--video-container-width);
+    height: var(--video-container-height);
+    position: relative;
+    background-color: transparent;
+
+    &.web-full-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        padding: 0;
+        z-index: 1000;
+        background-color: #fff;
+    }
+
+    .my-video {
+        // background-color: #ddd;
+        background-color: transparent;
+        object-fit: contain;
+        // width: 100%;
+        // height: 100%;
+    }
+
+    .controls-container {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background: linear-gradient(180deg, #0000, #0000004d);
+        transition: opacity 0.8s;
+        opacity: 1;
+        z-index: 4;
+    }
+
+    // 控制器隐藏
+    .controls-container.hidden {
+        opacity: 0;
+    }
+
+    .controls {
+        position: absolute;
+        bottom: 0;
+        left: 10px;
+        width: calc(100% - 20px);
+        background-color: #00000000;
+    }
+
+    // 绝对定位
+    %absolute-all {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        // 内部元素垂直水平居中
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    // 播放暂停页面占位元素
+    %play-paused-page {
+        @extend %absolute-all;
+        z-index: 2;
+
+        .iconfont {
+            font-size: 100px;
+            fill: #00000080;
+            transition: fill 0.3s ease;
+        }
+
+        // @include respond-to("pc") {
+        // }
+
+        // @include respond-to("pad") {
+        // }
+
+        @include respond-to("phone") {
+            .iconfont {
+                font-size: 50px;
+                margin-bottom: 30px;
+            }
+        }
+    }
+
+    .play-button-page {
+        @extend %play-paused-page;
+        // 背景颜色从中心向四周扩散
+        background-image: radial-gradient(circle, #0000001a, #00000000);
+        z-index: 2;
+    }
+
+    .play-to-paused-page {
+        @extend %play-paused-page;
+        // 透明背景
+        background-color: #00000000;
+        z-index: 2;
+    }
+
+    // 播放状态下隐藏鼠标
+    .play-to-paused-page.hidden {
+        cursor: none;
+    }
+
+    // 错误信息显示
+    .show-error {
+        @extend %absolute-all;
+        z-index: 3;
+
+        // 错误文字
+        .show-error-text {
+            font-weight: bold;
+            color: red;
+            background-color: #000000cc;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 20px;
+        }
+    }
+}
+
+@include respond-to("pc") {
+    .video-container {
+        width: pc.$width-video-main;
+        height: pc.$height-video-main;
+
+        .my-video {
+            width: pc.$width-video-main;
+            height: pc.$height-video-main;
+
+            &.my-video-web-full-screen {
+                width: 100vw;
+                height: 100vh;
+            }
+        }
+    }
+}
+
+@include respond-to("pad") {
+    .video-container {
+        width: pad.$width-video-main;
+        height: pad.$height-video-main;
+
+        .my-video {
+            width: pad.$width-video-main;
+            height: pad.$height-video-main;
+
+            &.my-video-web-full-screen {
+                width: 100vw;
+                height: 100vh;
+            }
+        }
+    }
+}
+
+@include respond-to("phone") {
+    .video-container {
+        width: phone.$width-video-main;
+        height: phone.$height-video-main;
+
+        .my-video {
+            width: phone.$width-video-main;
+            height: phone.$height-video-main;
+
+            &.my-video-web-full-screen {
+                width: 100vw;
+                height: 100vh;
+            }
+        }
+
+        .controls-container {
+            height: 60px;
+        }
+
+        // 错误信息显示
+        .show-error {
+            // 错误文字
+            .show-error-text {
+                font-size: 16px;
+            }
+        }
+    }
+}

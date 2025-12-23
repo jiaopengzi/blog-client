@@ -9,7 +9,7 @@
 <template>
     <div class="video-container">
         <video ref="video" controls>
-            <source src="http://10.10.2.222:8081/api/v1/uploads/test.mp4" type="video/mp4" />
+            <source src="http://10.10.2.222:5426/api/v1/uploads/test.mp4" type="video/mp4" />
         </video>
         <CustomSubtitles :current-time="currentTime" :vtt-url="vttUrl" />
     </div>
@@ -27,7 +27,7 @@ defineOptions({ name: "VideoSubtitles" })
 const videoElement = ref<HTMLVideoElement | null>(null)
 const currentTime = ref(0)
 
-const vttUrl = ref("http://10.10.2.222:8081/api/v1/uploads/cn.vtt")
+const vttUrl = ref("http://10.10.2.222:5426/api/v1/uploads/cn.vtt")
 
 onMounted(() => {
     videoElement.value = document.querySelector("video")
