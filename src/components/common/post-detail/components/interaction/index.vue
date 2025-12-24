@@ -8,11 +8,11 @@
 
 <template>
     <div class="container" :class="`container-${direction}`">
-        <span v-for="item in interactionItems" :key="item.icon" :class="`item ${item.icon}`" @click="item.onClick">
+        <el-button class="btn-item" v-for="item in interactionItems" :key="item.icon" :class="`item ${item.icon}`" @click="item.onClick">
             <el-tooltip effect="dark" :placement="tipPlacement" :content="item.tip ? `${item.text}：${item.tip}` : item.text" :hide-after="0" :show-after="300">
                 <j-icon :name="item.icon" :customClass="item.isActive ? 'my-icon-active' : 'my-icon'" />
             </el-tooltip>
-        </span>
+        </el-button>
     </div>
 </template>
 
@@ -112,7 +112,6 @@ const tipPlacement = computed(() => {
 %icon {
     font-size: 24px;
     transition: fill 0.3s ease;
-    cursor: pointer;
 }
 
 :deep(.my-icon) {
@@ -141,6 +140,13 @@ const tipPlacement = computed(() => {
     &:active {
         fill: var(--jpz-text-color-secondary);
     }
+}
+
+.btn-item {
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    border: none;
 }
 
 // // 媒体查询
