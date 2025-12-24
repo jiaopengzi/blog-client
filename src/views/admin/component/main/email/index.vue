@@ -11,7 +11,7 @@
         <el-button class="submit-btn" type="primary" @click="submitForm">保存</el-button>
         <el-form
             :label-position="labelPosition"
-            label-width="120px"
+            label-width="150px"
             ref="formRef"
             :model="form"
             :rules="rules"
@@ -34,6 +34,12 @@
             </el-form-item>
             <el-form-item label="密码" prop="password">
                 <el-input type="password" v-model="form.password" placeholder="邮箱密码或授权码" show-password clearable />
+            </el-form-item>
+            <el-form-item label="单次最大发送数量" prop="max_send_count">
+                <el-input-number class="input-number" v-model="form.max_send_count" :min="1" :precision="0" placeholder="请输入最大发送数量" />
+            </el-form-item>
+            <el-form-item label="发送间隔(秒)" prop="send_interval">
+                <el-input-number class="input-number" v-model="form.send_interval" :min="1" :precision="0" placeholder="请输入发送间隔(秒)" />
             </el-form-item>
             <el-form-item label="测试邮件" v-if="isSendTestEmail">
                 <SendTestEmail
@@ -108,11 +114,15 @@ const submitForm = async () => {
                 port: Number(form.value.port),
                 from: form.value.from,
                 password: form.value.password,
+                max_send_count: form.value.max_send_count,
+                send_interval: form.value.send_interval,
             }
 
             const res = await updateEmailAPI(req)
             if (res.data.code === ResponseCode.EmailUpdateSuccess) {
                 MessageUtil.success("更新成功！")
+            } else if (res.data.code === ResponseCode.EmailNoUpdate) {
+                MessageUtil.warning("未做任何更新！")
             } else {
                 MessageUtil.error(handleResErr(res), 10000)
             }
@@ -159,5 +169,8 @@ onBeforeMount(async () => {
 
 .submit-btn {
     margin-bottom: 10px;
+}
+.input-number {
+    width: 100%;
 }
 </style>

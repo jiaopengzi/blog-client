@@ -15,6 +15,8 @@ export interface GetEmailResponse {
     user_name: string
     from: string
     password: string
+    max_send_count: number
+    send_interval: number
 }
 
 // 获取邮箱信息
