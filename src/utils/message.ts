@@ -43,12 +43,7 @@ export class MessageUtil {
         const now = Date.now()
 
         // 检查是否在防抖时间窗口内且内容相同
-        if (
-            this.lastMessage &&
-            this.lastMessage.content === msgStr &&
-            this.lastMessage.type === msgType &&
-            now - this.lastMessage.timestamp < this.DEBOUNCE_WINDOW
-        ) {
+        if (this.lastMessage && this.lastMessage.content === msgStr && now - this.lastMessage.timestamp < this.DEBOUNCE_WINDOW) {
             console.log("跳过重复消息:", msgStr)
             return
         }
