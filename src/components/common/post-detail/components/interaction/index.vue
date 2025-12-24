@@ -8,7 +8,7 @@
 
 <template>
     <div class="container" :class="`container-${direction}`">
-        <el-button class="btn-item" v-for="item in interactionItems" :key="item.icon" :class="`item ${item.icon}`" @click="item.onClick">
+        <el-button v-for="item in interactionItems" :key="item.icon" :class="`btn-item ${item.icon}`" @click="item.onClick">
             <el-tooltip effect="dark" :placement="tipPlacement" :content="item.tip ? `${item.text}：${item.tip}` : item.text" :hide-after="0" :show-after="300">
                 <j-icon :name="item.icon" :customClass="item.isActive ? 'my-icon-active' : 'my-icon'" />
             </el-tooltip>
