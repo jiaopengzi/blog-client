@@ -13,6 +13,7 @@ import { captchaSendRefundAPI, type CaptchaSendRefundRequest } from "@/api/captc
 import { StreamStatus } from "@/api/helper/getStreamIDsStatus"
 import { orderRefundAPI, type OrderRefundRequest } from "@/api/order/refund"
 import { handleResErr, ResponseCode } from "@/api/response"
+import { useCaptchaBtnStatus } from "@/components/hooks/useCaptchaBtnStatus"
 import { yuanToFen } from "@/utils/amount"
 import { pollingGetStreamIDsStatus } from "@/utils/getStreamIDsStatus"
 import { MessageUtil } from "@/utils/message"
@@ -20,9 +21,10 @@ import { MessageUtil } from "@/utils/message"
 import type { OrderRefundForm } from "./types"
 
 export function useOrderRefund(formRef: Ref<FormInstance | null>, formRefund: Ref<OrderRefundForm>) {
-    const isCaptchaBtnDisabled = ref(false)
     const isRefundBtnLoading = ref(false)
-    const captchaBtnText = ref("获取验证码")
+
+    // 验证码按钮状态
+    const { captchaBtnText, isCaptchaBtnDisabled, countdown } = useCaptchaBtnStatus()
 
     // 发送邮箱验证码
     const sendCaptcha = async (orderId: string) => {
@@ -51,19 +53,8 @@ export function useOrderRefund(formRef: Ref<FormInstance | null>, formRefund: Re
             MessageUtil.error(msg, 3000)
         }
 
-        // 按钮设置不能点击状态
-        let timer = 60
-        captchaBtnText.value = `${timer}s后重新发送`
-        const interval = setInterval(() => {
-            timer--
-            if (timer === 0) {
-                clearInterval(interval)
-                captchaBtnText.value = "发送验证码"
-                isCaptchaBtnDisabled.value = false // 启用按钮
-            } else {
-                captchaBtnText.value = `${timer}s后重新发送`
-            }
-        }, 1000)
+        // 开始倒计时
+        countdown()
     }
 
     // 执行退款

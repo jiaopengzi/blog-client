@@ -26,8 +26,8 @@ export async function checkUserName(userName: string): Promise<void> {
 
         const { data } = await checkUserNameAPI(req)
 
-        if (data.code === ResponseCode.UserNameExist) {
-            throw new Error(data.msg)
+        if (data.code !== ResponseCode.UserNameNotExist) {
+            throw new Error(data.msg || "用户名已存在")
         }
     } catch (err: unknown) {
         console.error(err)
@@ -49,8 +49,8 @@ export async function checkUserNameExcludingUserID(excludingUserID: string, user
 
         const { data } = await checkUserNameExcludingUserIDAPI(req)
 
-        if (data.code === ResponseCode.UserNameExistExcludingUserID) {
-            throw new Error(data.msg)
+        if (data.code !== ResponseCode.UserNameNotExistExcludingUserID) {
+            throw new Error(data.msg || "用户名已存在")
         }
     } catch (err: unknown) {
         console.error(err)
@@ -69,8 +69,8 @@ export async function checkEmail(email: string): Promise<void> {
 
     try {
         const { data } = await checkEmailAPI(req)
-        if (data.code === ResponseCode.UserEmailExist) {
-            throw new Error(data.msg)
+        if (data.code !== ResponseCode.EmailNotExist) {
+            throw new Error(data.msg || "邮箱已存在")
         }
     } catch (err: unknown) {
         console.error(err)
@@ -92,8 +92,8 @@ export async function checkEmailExcludingUserID(excludingUserID: string, email: 
     try {
         const { data } = await checkEmailExcludingUserIDAPI(req)
 
-        if (data.code === ResponseCode.EmailExistExcludingUserID) {
-            throw new Error(data.msg)
+        if (data.code !== ResponseCode.EmailNotExistExcludingUserID) {
+            throw new Error(data.msg || "邮箱已存在")
         }
     } catch (err: unknown) {
         console.error(err)

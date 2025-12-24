@@ -8,7 +8,7 @@
 
 <template>
     <div class="container">
-        <div class="loader">{{ platformDisplay }}{{ loginOrBind }}, 请稍后!</div>
+        <div class="loader-social">{{ platformDisplay }}{{ loginOrBind }}, 请稍后!</div>
     </div>
 </template>
 
@@ -97,7 +97,7 @@ onMounted(async () => {
 }
 
 // 参考 https://css-loaders.com/classic/
-.loader {
+.loader-social {
     width: fit-content;
     font-weight: bold;
     // font-family: sans-serif;
@@ -107,7 +107,7 @@ onMounted(async () => {
     animation: l2 2s linear infinite;
     color: var(--jpz-color-primary);
 }
-.loader::after {
+.loader-social::after {
     content: "";
 }
 @keyframes l2 {

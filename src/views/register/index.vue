@@ -32,8 +32,8 @@
 
             <el-form-item label="验证码" prop="captcha">
                 <el-input class="email-code" v-model="registerForm.captcha" clearable placeholder="请点击发送验证码后，输入验证码" />
-                <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="btnCaptchaState.disabled">
-                    {{ captcha }}
+                <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="isCaptchaBtnDisabled">
+                    {{ captchaBtnText }}
                 </button>
             </el-form-item>
 
@@ -75,6 +75,7 @@ import AccountFormFooter from "@/components/common/account-form-footer"
 import AccountFormHeader from "@/components/common/account-form-header"
 import SlideVerify from "@/components/common/slide-verify"
 import { useAccountFormValidation } from "@/components/hooks/useAccountFormValidation"
+import { useCaptchaBtnStatus } from "@/components/hooks/useCaptchaBtnStatus"
 import { RouteNames } from "@/router"
 import { useOptionsStore } from "@/stores/options"
 import { MessageUtil } from "@/utils/message"
@@ -207,8 +208,8 @@ const resetForm = (formEl: FormInstance | undefined) => {
     formEl.resetFields()
 }
 
-const captcha = ref("发送验证码")
-const btnCaptchaState = reactive({ disabled: false })
+// 验证码按钮状态
+const { captchaBtnText, isCaptchaBtnDisabled, countdown } = useCaptchaBtnStatus()
 
 // 发送邮箱验证码
 const sendCaptcha = async () => {
@@ -227,7 +228,7 @@ const sendCaptcha = async () => {
     }
 
     if (userNameResult && emailResult) {
-        btnCaptchaState.disabled = true // 按钮设置不能点击状态
+        isCaptchaBtnDisabled.value = true // 按钮设置不能点击状态
 
         // 发送验证码
         checkSendCaptcha(registerForm.email, CaptchaPurpose.Register)
@@ -240,19 +241,8 @@ const sendCaptcha = async () => {
                 MessageUtil.error(err.message, 0)
             })
 
-        // 按钮设置不能点击状态
-        let timer = 5
-        captcha.value = `${timer}s后重新发送`
-        const interval = setInterval(() => {
-            timer--
-            if (timer === 0) {
-                clearInterval(interval)
-                captcha.value = "发送验证码"
-                btnCaptchaState.disabled = false // 启用按钮
-            } else {
-                captcha.value = `${timer}s后重新发送`
-            }
-        }, 1000)
+        // 开始倒计时
+        countdown()
     }
 }
 </script>
@@ -299,11 +289,7 @@ const sendCaptcha = async () => {
 }
 
 .email-code {
-    flex: 6;
-}
-
-.btn-captcha {
-    flex: 2;
+    flex: 1;
 }
 
 .btn-captcha {

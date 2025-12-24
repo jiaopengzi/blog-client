@@ -37,6 +37,12 @@ export interface UserInfoStore {
     accessToken: string // 访问令牌
 }
 
+// 用户信息及请求是否成功
+interface IsSuccessStore {
+    data?: UserInfoStore
+    isSuccess: boolean
+}
+
 // 创建空值用户信息
 function createEmptyUserInfoStore(): UserInfoStore {
     return {
@@ -178,18 +184,19 @@ export const useUserStore = defineStore("user", {
         // 社交绑定回调
         async socialBindCallback(code: string, loginType: SocialLoginType) {
             const resObj = await handleResponse<Res<void>>(socialBindCallback(code, loginType))
-            const userInfoStore = await handleBindResult(resObj, ResponseCode.SocialBindCallbackSuccess, this.accessToken)
-
-            this.$patch(userInfoStore)
+            const result = await handleBindResult(resObj, ResponseCode.SocialBindCallbackSuccess, this.accessToken)
+            if (result.isSuccess && result.data) {
+                this.$patch(result.data)
+            }
         },
 
         // 社交解绑
         async socialUnBind(loginType: SocialLoginType) {
             const resObj = await handleResponse<Res<void>>(socialUnBind(loginType))
-
-            const userInfoStore = await handleBindResult(resObj, ResponseCode.SocialUnBindSuccess, this.accessToken)
-
-            this.$patch(userInfoStore)
+            const result = await handleBindResult(resObj, ResponseCode.SocialUnBindSuccess, this.accessToken)
+            if (result.isSuccess && result.data) {
+                this.$patch(result.data)
+            }
         },
 
         /**
@@ -356,24 +363,27 @@ async function handleLoginResult(resObj: Res<AccessTokenResponse>, successCode: 
 /**
  * @description: 辅助函数：处理绑定结果
  */
-async function handleBindResult(resObj: Res<void>, successCode: ResponseCode, token: string): Promise<UserInfoStore> {
-    if (resObj.code === successCode) {
-        useUserStore().setAccessToken(token)
+async function handleBindResult(resObj: Res<void>, successCode: ResponseCode, token: string): Promise<IsSuccessStore> {
+    // 初始化结果
+    const result: IsSuccessStore = {
+        isSuccess: false,
+    }
 
-        // 显示登录成功提示
+    // 成功的结果
+    if (resObj.code === successCode) {
         MessageUtil.success(resObj.msg, 3000)
 
         // 获取用户信息
-        return await apiGetUserInfoByToken(token)
+        const userInfo = await apiGetUserInfoByToken(token)
+        result.data = userInfo
+        result.isSuccess = true
+        return result
     }
 
     // 显示登录失败提示
     MessageUtil.error(resObj.msg, 3000)
 
-    await tokenClearByLogout()
-
-    // 置空用户信息
-    return createEmptyUserInfoStore()
+    return result
 }
 
 // 退出登录并清除 token

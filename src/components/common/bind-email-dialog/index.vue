@@ -7,7 +7,6 @@
 -->
 
 <template>
-    <!-- 添加滑动验证组件：SlideVerify -->
     <el-dialog
         v-model="showDialogBindEmail"
         :lock-scroll="false"
@@ -17,6 +16,7 @@
         class="bind-email-dialog"
     >
         <div class="bind-email-wrapper">
+            <!-- 添加滑动验证组件：SlideVerify -->
             <SlideVerify @on-success="sendCaptcha" />
             <el-form
                 :label-position="labelPosition"
@@ -39,8 +39,8 @@
 
                 <el-form-item label="验证码" prop="captcha">
                     <el-input class="email-code" v-model="bindEmailForm.captcha" />
-                    <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="btnCaptchaState.disabled">
-                        {{ captcha }}
+                    <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="isCaptchaBtnDisabled">
+                        {{ captchaBtnText }}
                     </button>
                 </el-form-item>
 
@@ -59,17 +59,14 @@ import type { FormInstance, FormRules } from "element-plus" // 需要全部安�
 import { storeToRefs } from "pinia"
 import { reactive, ref, useTemplateRef } from "vue"
 
-import type { CaptchaCheckRequest } from "@/api/captcha/check"
-import { captchaCheckAPI } from "@/api/captcha/check"
-import type { CaptchaSendRequest } from "@/api/captcha/send"
-import { captchaSendAPI } from "@/api/captcha/send"
+import { captchaCheckAPI, type CaptchaCheckRequest } from "@/api/captcha/check"
+import { captchaSendAPI, type CaptchaSendRequest } from "@/api/captcha/send"
 import { CaptchaPurpose } from "@/api/common"
 import { handleResErr, ResponseCode } from "@/api/response"
-import type { BindEmailRequest } from "@/api/user/bindEmail"
-import { bindEmailAPI } from "@/api/user/bindEmail"
-import type { CheckEmailRequest } from "@/api/user/checkEmail"
-import { checkEmailAPI } from "@/api/user/checkEmail"
+import { bindEmailAPI, type BindEmailRequest } from "@/api/user/bindEmail"
+import { checkEmailAPI, type CheckEmailRequest } from "@/api/user/checkEmail"
 import SlideVerify from "@/components/common/slide-verify" // 引用滑块验证组件
+import { useCaptchaBtnStatus } from "@/components/hooks/useCaptchaBtnStatus"
 import { useOptionsStore } from "@/stores/options"
 import { useUserStore } from "@/stores/user"
 import { MessageUtil } from "@/utils/message"
@@ -260,14 +257,12 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     })
 }
 
-const captcha = ref("发送验证码")
-const btnCaptchaState = reactive({ disabled: false })
+// 验证码按钮状态
+const { captchaBtnText, isCaptchaBtnDisabled, countdown } = useCaptchaBtnStatus()
 
 // 发送邮箱验证码
-
 const sendCaptcha = async () => {
     // 手动触发 FormInstance 的校验，校验 userName 和 email 字段
-
     const emailResult = await bindEmailFormRef.value?.validateField("email").catch(() => false)
     if (!emailResult) {
         MessageUtil.error("请输入正确的邮箱地址。", 0)
@@ -276,7 +271,7 @@ const sendCaptcha = async () => {
     }
 
     if (emailResult) {
-        btnCaptchaState.disabled = true // 按钮设置不能点击状态
+        isCaptchaBtnDisabled.value = true // 按钮设置不能点击状态
 
         // 发送验证码
         checkSendCaptcha()
@@ -289,19 +284,8 @@ const sendCaptcha = async () => {
                 MessageUtil.error(err.message, 0)
             })
 
-        // 按钮设置不能点击状态
-        let timer = 60
-        captcha.value = `${timer}s后重新发送`
-        const interval = setInterval(() => {
-            timer--
-            if (timer === 0) {
-                clearInterval(interval)
-                captcha.value = "发送验证码"
-                btnCaptchaState.disabled = false // 启用按钮
-            } else {
-                captcha.value = `${timer}s后重新发送`
-            }
-        }, 1000)
+        // 倒计时
+        countdown()
     }
 }
 </script>
@@ -335,11 +319,7 @@ const sendCaptcha = async () => {
 }
 
 .email-code {
-    flex: 5;
-}
-
-.btn-captcha {
-    flex: 2;
+    flex: 1;
 }
 
 .btn-captcha {

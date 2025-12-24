@@ -293,8 +293,14 @@ export enum ResponseCode {
     DashboardGetTrendSuccess = 6102, // 获取面板按维度统计数据成功
 
     // 验证码相关
-    CaptchaSendSuccess = 8000, //验证码发送成功
-    CaptchaCheckSuccess = 8002, //验证码发送成功
+    CaptchaSendSuccess = 8000, // 验证码发送成功
+    CaptchaSendError = 8001, // 验证码发送失败
+    CaptchaCheckSuccess = 8002, // 验证码验证成功
+    CaptchaCheckError = 8003, // 验证码验证失败
+    CaptchaInvalidParam = 8004, // 验证码错误或已过期
+    CaptchaSendValidator = 8005, // 验证码发送前检验错误
+    CaptchaSendMaxIP = 8006, // 验证码 IP 发送次数超过限制
+    CaptchaSendMaxID = 8007, // 验证码 ID 发送次数超过限制
 
     // 上传相关
     UploadFileSuccess = 8100, // 上传文件成功

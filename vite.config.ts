@@ -19,9 +19,10 @@ import tsconfigPaths from "vite-tsconfig-paths"
 // 共享 dev server 和 preview server 配置
 const commonServerOptions = (): CommonServerOptions => {
     return {
+        allowedHosts: true, // 允许任何主机通过域名访问 dev server
         host: "0.0.0.0",
         strictPort: true, // 端口被占用时直接退出，而不是尝试下一个可用端口
-        port: 7364, // 项目运行端口(九宫格 peng 的拼音键数字)
+        port: 7364, // 项目运行端口
 
         // 设置代理
         proxy: {
