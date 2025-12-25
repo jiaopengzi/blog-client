@@ -154,7 +154,7 @@ export const useUserStore = defineStore("user", {
 
             // 刷新首页
             if (!isRefreshPage) return
-            // window.location.href = "/"
+            window.location.href = "/"
         },
 
         // 登录

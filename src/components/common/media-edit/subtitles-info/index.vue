@@ -31,7 +31,7 @@
         </el-form-item>
 
         <el-form-item>
-            <el-button type="primary" size="small" @click="insertDemo">插入示例</el-button>
+            <el-button type="primary" @click="insertDemo">插入示例</el-button>
         </el-form-item>
 
         <el-form-item label="字幕内容" prop="subtitles">
@@ -40,8 +40,8 @@
 
         <div class="btn-submit">
             <el-form-item>
-                <el-button type="primary" size="small" :loading="loading" @click="saveSubtitles(subtitlesFormRef as FormInstance)">保存</el-button>
-                <el-button type="danger" size="small" :loading="loading" @click="delSubtitles">删除</el-button>
+                <el-button type="primary" :loading="loading" @click="saveSubtitles(subtitlesFormRef as FormInstance)">保存</el-button>
+                <el-button type="danger" :loading="loading" @click="delSubtitles">删除</el-button>
             </el-form-item>
         </div>
     </el-form>
