@@ -21,7 +21,7 @@ import type { LogoWatermark, TextWatermark } from "@/components/player/types"
 defineOptions({ name: "VideoWatermark" })
 
 // 定义props
-const props = defineProps<{
+const { textWatermark, logoWatermark } = defineProps<{
     textWatermark?: TextWatermark // 文字水印 可选
     logoWatermark?: LogoWatermark // logo 水印 可选
 }>()
@@ -40,23 +40,23 @@ const stopObservation = ref(false)
 // 是否自动刷新水印
 const isWatermarkAutoRefresh = ref(false)
 
-// 检查是否是文字水印
-const isShowTextWatermark = computed(() => props.textWatermark?.content)
+// 是否显示文字水印
+const isShowTextWatermark = computed(() => !!textWatermark?.content)
 
-// 检查是否是 logo 水印
-const isShowLogoWatermark = computed(() => props.logoWatermark?.imgUrl)
+// 是否显示 logo 水印
+const isShowLogoWatermark = computed(() => !!logoWatermark?.imgUrl)
 
 // 获取文字水印内容
-const textWatermarkContent = computed(() => props.textWatermark?.content || "")
+const textWatermarkContent = computed(() => textWatermark?.content || "")
 
-// 获取 logo 水印 logo
-const logoWatermarkLogoSrc = computed(() => props.logoWatermark?.imgUrl || "")
+// 获取 logo 水印地址
+const logoWatermarkLogoSrc = computed(() => logoWatermark?.imgUrl || "")
 
 // 获取文字水印的 z-index
-const textWatermarkZindex = computed(() => props.textWatermark?.style?.zIndex || "1998")
+const textWatermarkZindex = computed(() => textWatermark?.style?.zIndex || "1998")
 
 // 获取 logo 水印的 z-index
-const logoWatermarkZindex = computed(() => props.logoWatermark?.style?.zIndex || "1999")
+const logoWatermarkZindex = computed(() => logoWatermark?.style?.zIndex || "1999")
 
 /**
  * @description: 设置水印的样式
@@ -113,27 +113,27 @@ const destroyWatermark = (watermark: HTMLElement | undefined) => {
 const appendTextWatermark = () => {
     if (isShowTextWatermark.value) {
         stopObservation.value = true // 停止观察
-        const textWatermark = document.createElement("span") // 创建 span 元素
-        textWatermark.style.position = "absolute" // 设置绝对定位
-        textWatermark.style.width = "max-content" // 设置宽度为内容宽度
-        textWatermark.style.padding = "4px" // 设置内边距
-        textWatermark.style.boxSizing = "border-box" // 设置 box-sizing, 防止 padding 导致宽度变化
-        textWatermark.style.zIndex = textWatermarkZindex.value // 设置 z-index
-        textWatermark.style.userSelect = "none" // 禁止选中
-        textWatermark.innerText = textWatermarkContent.value // 设置水印内容
-        containerRef.value?.appendChild(textWatermark) // 添加到容器中
-        textWatermarkRef.value = textWatermark // 设置水印 ref
+        const el = document.createElement("span") // 创建 span 元素
+        el.style.position = "absolute" // 设置绝对定位
+        el.style.width = "max-content" // 设置宽度为内容宽度
+        el.style.padding = "4px" // 设置内边距
+        el.style.boxSizing = "border-box" // 设置 box-sizing, 防止 padding 导致宽度变化
+        el.style.zIndex = textWatermarkZindex.value // 设置 z-index
+        el.style.userSelect = "none" // 禁止选中
+        el.innerText = textWatermarkContent.value // 设置水印内容
+        containerRef.value?.appendChild(el) // 添加到容器中
+        textWatermarkRef.value = el // 设置水印 ref
 
         // 设置水印样式
-        if (props.textWatermark?.style) {
-            setWatermarkStyle(textWatermarkRef.value, props.textWatermark.style, true)
+        if (textWatermark?.style) {
+            setWatermarkStyle(textWatermarkRef.value, textWatermark.style, true)
             intervalId = setInterval(() => {
-                if (textWatermarkRef.value && props.textWatermark?.style) {
+                if (textWatermarkRef.value && textWatermark?.style) {
                     // 设置自动刷新水印为 true
                     isWatermarkAutoRefresh.value = true
 
                     // 刷新水印
-                    setWatermarkStyle(textWatermarkRef.value, props.textWatermark.style, true)
+                    setWatermarkStyle(textWatermarkRef.value, textWatermark.style, true)
 
                     // 异步设置自动刷新水印为 false
                     setTimeout(() => {
@@ -154,17 +154,17 @@ const appendTextWatermark = () => {
 const appendLogoWatermark = () => {
     if (isShowLogoWatermark.value) {
         stopObservation.value = true // 停止观察
-        const logoWatermark = document.createElement("img") // 创建 img 元素
-        logoWatermark.style.position = "absolute" // 设置绝对定位
-        logoWatermark.style.zIndex = logoWatermarkZindex.value // 设置 z-index
-        logoWatermark.style.userSelect = "none" // 禁止选中
-        logoWatermark.src = logoWatermarkLogoSrc.value // 设置图片地址
-        containerRef.value?.appendChild(logoWatermark) // 添加到容器中
-        logoWatermarkRef.value = logoWatermark // 设置水印 ref
+        const el = document.createElement("img") // 创建 img 元素
+        el.style.position = "absolute" // 设置绝对定位
+        el.style.zIndex = logoWatermarkZindex.value // 设置 z-index
+        el.style.userSelect = "none" // 禁止选中
+        el.src = logoWatermarkLogoSrc.value // 设置图片地址
+        containerRef.value?.appendChild(el) // 添加到容器中
+        logoWatermarkRef.value = el // 设置水印 ref
 
         // 设置水印样式
-        if (props.logoWatermark?.style) {
-            setWatermarkStyle(logoWatermarkRef.value, props.logoWatermark.style, false)
+        if (logoWatermark?.style) {
+            setWatermarkStyle(logoWatermarkRef.value, logoWatermark.style, false)
         }
 
         // 异步设置停止观察为 false

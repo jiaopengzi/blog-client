@@ -68,8 +68,8 @@
                             }
                         "
                         :create-setup="item.editor.createSetup"
-                        :doc="formDataResult[item.prop as keyof APPOptionForm] as string"
-                        height="400"
+                        :doc="(formDataResult[item.prop as keyof APPOptionForm] as string) || ''"
+                        :height="editorHeightCalc(item)"
                         @update-editor-doc="(doc) => handleEditorUpdate(item.prop as keyof APPOptionForm, doc)"
                     />
                 </div>
@@ -178,6 +178,17 @@ const insertCssExample = (prop: keyof APPOptionForm | undefined) => {
             editorRefs.value.insertContent(newDoc)
         }
     }
+}
+
+// 根据编辑器类型计算高度
+const editorHeightCalc = (item: FormItems): string => {
+    if (item.editor && item.editor.type === "css") {
+        return "400"
+    }
+    if (item.editor && item.editor.type === "json") {
+        return "160"
+    }
+    return "400"
 }
 
 defineExpose({
