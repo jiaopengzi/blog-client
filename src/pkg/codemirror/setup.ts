@@ -9,6 +9,7 @@
 import { closeBrackets, closeBracketsKeymap, completionKeymap } from "@codemirror/autocomplete"
 import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands"
 import { css } from "@codemirror/lang-css"
+import { json } from "@codemirror/lang-json"
 import { markdown } from "@codemirror/lang-markdown"
 import { bracketMatching, defaultHighlightStyle, foldGutter, foldKeymap, indentOnInput, syntaxHighlighting } from "@codemirror/language"
 import { lintKeymap } from "@codemirror/lint"
@@ -98,6 +99,17 @@ export const createCssSetup = () => {
         ...baseExtension(), // 基础 extension
         css(), // css 语法
         placeholder("请输入自定义的 CSS..."), // 占位符文本
+    ]
+
+    return extension
+}
+
+// json 语法 setup 工厂函数
+export const createJsonSetup = () => {
+    const extension: Extension[] = [
+        ...baseExtension(), // 基础 extension
+        json(), // json 语法
+        placeholder("请输入自定义的 JSON..."), // 占位符文本
     ]
 
     return extension

@@ -60,6 +60,16 @@ export interface SlideVerifyInfo {
     imgs: SlideVerifyImgItem[] // 滑动验证图片列表
 }
 
+// 视频水印信息
+export interface VideoWatermark {
+    logo_enable: boolean // 视频水印 logo 是否开启
+    logo_url: string // 视频水印 logo url
+    logo_style: object // 视频水印 logo 样式
+    text_enable: boolean // 视频水印文字是否开启
+    text_default: string // 视频水印文字默认内容
+    text_style: object // 视频水印文字样式
+}
+
 // 网站配置选项
 export interface OptionsStore {
     app_options: GetAPPOptionResponse // 网站配置选项数据
@@ -80,6 +90,7 @@ export interface OptionsStore {
     post_list_summary_truncate: number // 文章列表摘要截断 默认 100 字
     custom_style_css: string // 自定义样式 CSS
     footer_statistics_code: string // 底部统计代码
+    video_watermark: VideoWatermark // 视频水印信息
 }
 
 // 创建一个空的选项存储
@@ -107,6 +118,14 @@ function createEmptyOptionsStore(): OptionsStore {
         post_list_summary_truncate: 100,
         custom_style_css: "",
         footer_statistics_code: "",
+        video_watermark: {
+            logo_enable: false,
+            logo_url: "",
+            logo_style: {},
+            text_enable: false,
+            text_default: "",
+            text_style: {},
+        },
     }
 }
 
@@ -221,6 +240,11 @@ export const useOptionsStore = defineStore("options", {
         getFooterStatisticsCode(): string {
             return this.footer_statistics_code
         },
+
+        // 获取视频水印信息
+        getVideoWatermark(): VideoWatermark {
+            return this.video_watermark
+        },
     },
 
     actions: {
@@ -287,6 +311,12 @@ export const useOptionsStore = defineStore("options", {
                 this.slide_verify_enable = slideVerifyInfo.enable
                 this.slide_verify_imgs = slideVerifyInfo.imgs
             }
+
+            // 从本地获取视频水印信息
+            const videoWatermark = localStorage.getItem(LocalStorageKey.OptionsVideoWatermark)
+            if (videoWatermark) {
+                this.video_watermark = JSON.parse(videoWatermark) as VideoWatermark
+            }
         },
 
         // 从服务器获取网站配置
@@ -327,6 +357,9 @@ export const useOptionsStore = defineStore("options", {
                 const slideVerifyInfo = await formatSlideVerify(this.app_options)
                 this.slide_verify_enable = slideVerifyInfo.enable
                 this.slide_verify_imgs = slideVerifyInfo.imgs
+
+                // 视频水印信息格式化后存储本地
+                this.video_watermark = await formatVideoWatermark(this.app_options)
 
                 this.post_list_summary_truncate = parseInt(this.app_options.post_list_summary_truncate?.value) || 100
             }
@@ -599,6 +632,40 @@ const formatSlideVerify = async (data: GetAPPOptionResponse): Promise<SlideVerif
     localStorage.setItem(LocalStorageKey.OptionsSlideVerify, JSON.stringify(slideVerifyInfo))
 
     return slideVerifyInfo
+}
+
+// 格式化滑动验证信息
+const formatVideoWatermark = async (data: GetAPPOptionResponse): Promise<VideoWatermark> => {
+    // 构造 VideoWatermark
+    const videoWatermark: VideoWatermark = {
+        logo_enable: data.video_watermark_logo_enable?.value === "true",
+        logo_url: data.video_watermark_logo_url?.value,
+        logo_style: {},
+        text_enable: data.video_watermark_text_enable?.value === "true",
+        text_default: data.video_watermark_text_default?.value,
+        text_style: {},
+    }
+
+    // 将 logo_style JSON 字符串转换为对象
+    try {
+        videoWatermark.logo_style = JSON.parse(data.video_watermark_logo_style?.value || "{}")
+    } catch (e) {
+        console.error("JSON parse error:", e)
+        videoWatermark.logo_style = {}
+    }
+
+    // 将 text_style JSON 字符串转换为对象
+    try {
+        videoWatermark.text_style = JSON.parse(data.video_watermark_text_style?.value || "{}")
+    } catch (e) {
+        console.error("JSON parse error:", e)
+        videoWatermark.text_style = {}
+    }
+
+    // 存入本地
+    localStorage.setItem(LocalStorageKey.OptionsVideoWatermark, JSON.stringify(videoWatermark))
+
+    return videoWatermark
 }
 
 // 允许开发环境下进行热更新 HMR(Hot Module Replacement)

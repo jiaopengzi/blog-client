@@ -6,10 +6,31 @@
  * Description : 网站选项表单类型
  */
 
+import { type CreateSetupType } from "@/pkg/codemirror"
+
 export interface APPOptionFormRef extends HTMLElement {
     root: HTMLElement
     validateForm: () => Promise<boolean>
     formDataResult: APPOptionForm
+}
+
+// FormItems 每行表单项类型
+export interface FormItems {
+    label: string
+    prop?: string
+    type?: string
+    placeholder?: string
+    isImageInput?: boolean
+    isCheckbox?: boolean
+    isCategoryTitle?: boolean
+    isCarouselManage?: boolean
+    isSlideVerifyManage?: boolean
+    textareaRows?: number
+    customClass?: string
+    editor?: {
+        type: "javascript" | "css" | "html" | "markdown" | "json"
+        createSetup: CreateSetupType
+    }
 }
 
 export interface APPOptionForm {
@@ -40,6 +61,14 @@ export interface APPOptionForm {
     show_copyright_info: string // 版权信息
     post_footer_info_enable: boolean // 文末固定信息开启
     post_footer_info: string // 文末固定信息
+
+    // 视频水印
+    video_watermark_logo_enable: boolean // 视频水印 logo 是否开启
+    video_watermark_logo_url: string // 视频水印 logo url
+    video_watermark_logo_style: string // 视频水印文字样式
+    video_watermark_text_enable: boolean // 视频水印文字是否开启
+    video_watermark_text_default: string // 视频水印文字默认内容
+    video_watermark_text_style: string // 视频水印文字样式
 
     // 互动相关
     like_enable: boolean // 点赞

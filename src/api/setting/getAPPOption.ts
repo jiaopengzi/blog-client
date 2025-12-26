@@ -68,6 +68,14 @@ export interface GetAPPOptionResponse {
     post_footer_info: APPOptionItem // 文末固定信息
     is_remove_first_h1: APPOptionItem // 是否移除文章内容中的第一个 h1 标签
 
+    // 视频水印
+    video_watermark_logo_enable: APPOptionItem // 视频水印 logo 是否开启
+    video_watermark_logo_url: APPOptionItem // 视频水印 logo url
+    video_watermark_logo_style: APPOptionItem // 视频水印文字样式
+    video_watermark_text_enable: APPOptionItem // 视频水印文字是否开启
+    video_watermark_text_default: APPOptionItem // 视频水印文字默认内容
+    video_watermark_text_style: APPOptionItem // 视频水印文字样式
+
     // 互动相关
     like_enable: APPOptionItem // 点赞
     star_enable: APPOptionItem // 收藏

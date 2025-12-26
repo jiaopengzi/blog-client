@@ -424,7 +424,6 @@ export class PlayerStateManager {
      * @param {TextWatermark} textWatermark - 包含水印内容和样式的对象。
      */
     setTextWatermark(textWatermark: TextWatermark): void {
-        if (!textWatermark.content) return
         this.state.textWatermark = textWatermark
     }
 
@@ -433,7 +432,6 @@ export class PlayerStateManager {
      * @param {LogoWatermark} logoWatermark - 包含 logo URL 和样式的对象。
      */
     setLogoWatermark(logoWatermark: LogoWatermark): void {
-        if (!logoWatermark.imgUrl) return
         this.state.logoWatermark = logoWatermark
     }
 

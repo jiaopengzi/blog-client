@@ -12,6 +12,7 @@ import type { FormRules } from "element-plus"
 
 import { useFormItemRule } from "@/components/hooks/useFormItemRule"
 import { isValidCSS } from "@/utils/cssValidator"
+import { isValidJSON } from "@/utils/jsonValidator"
 
 export const dbRules: FormRules = {
     host: [{ required: true, message: "请输入数据库主机地址", trigger: "blur" }],
@@ -124,5 +125,20 @@ export const cssValidatorFunc = (rule: any, value: any, callback: any) => {
             return
         }
         callback(new Error("CSS 语法错误:\n" + errors[errors.length - 1]))
+    }
+}
+
+// 校验 json
+export const jsonValidatorFunc = (rule: any, value: any, callback: any) => {
+    const { isValid, errors } = isValidJSON(value)
+    if (isValid) {
+        callback()
+    } else {
+        // 只显示errors的最后一条信息
+        if (errors.length === 0) {
+            callback(new Error("意外的 JSON 语法错误"))
+            return
+        }
+        callback(new Error(errors[errors.length - 1]))
     }
 }

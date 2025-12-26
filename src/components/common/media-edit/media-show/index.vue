@@ -21,9 +21,9 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue"
 
+import { useVideoWatermark } from "@/components/hooks/useVideoWatermark"
 import VideoPlayer from "@/components/player"
-import { defaultLogoWatermark, MediaTypes, type PlayerState, PlayerStateManager } from "@/components/player"
-import { useOptionsStore } from "@/stores/options"
+import { MediaTypes, type PlayerState, PlayerStateManager } from "@/components/player"
 import { isVideo } from "@/utils/isVideo"
 
 import type { MediaShowProps } from "./types"
@@ -38,15 +38,12 @@ const { hashId, data, updateSubtitlesTimestamp } = defineProps<{
     updateSubtitlesTimestamp: number // 更新字幕时间戳
 }>()
 
-const optionsStore = useOptionsStore()
-const logo = optionsStore.getLogo
-
 const playerStateManager = new PlayerStateManager()
 
 // 设置播放器状态
 playerStateManager.setShortcutKey(false) // 禁用快捷键
 playerStateManager.setIsAdmin(true) // 管理员模式
-playerStateManager.setLogoWatermark(defaultLogoWatermark(logo)) // 设置logo
+useVideoWatermark(playerStateManager) // 使用视频水印 hooks
 
 let playerState: PlayerState = playerStateManager.getState()
 

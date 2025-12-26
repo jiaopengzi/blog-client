@@ -9,7 +9,7 @@
 import { ResponseCode } from "@/api/response"
 import { getSubtitlesAPI, type Subtitles as SubtitlesRes } from "@/api/video/getSubtitles"
 
-import type { LanguageKey, LogoWatermark, PlayerState, Subtitles, SubtitlesItem } from "./types"
+import type { LanguageKey, LogoWatermark, PlayerState, Subtitles, SubtitlesItem, TextWatermark } from "./types"
 import { Language, MediaTypes, PlaybackRate, PlayLevelLabel, PlayStatus } from "./types"
 
 /**
@@ -53,11 +53,9 @@ export const createDefaultPlayerState = (): PlayerState => ({
     logoWatermark: {
         imgUrl: "",
         style: {
-            width: "131px",
-            height: "30px",
-            right: "0",
-            top: "20px",
-            opacity: "1",
+            height: "32px",
+            top: "16px",
+            right: "24px",
         },
     },
     autoPlay: false,
@@ -172,15 +170,38 @@ export const getVideoQualityLabel = (height: number): string => {
  * @param imgUrl 图片地址
  * @return  返回图片水印对象
  */
-export const defaultLogoWatermark = (imgUrl: string): LogoWatermark => {
+export const defaultLogoWatermark = (
+    imgUrl: string,
+    style: Partial<CSSStyleDeclaration> = {
+        height: "32px",
+        top: "16px",
+        right: "24px",
+    },
+): LogoWatermark => {
     const logoWatermark: LogoWatermark = {
         imgUrl: imgUrl,
-
-        style: {
-            height: "32px",
-            top: "16px",
-            right: "24px",
-        },
+        style,
     }
+
     return logoWatermark
+}
+
+/**
+ * @description: 默认文字水印配置
+ * @param text 文字内容
+ * @return  返回文字水印对象
+ */
+export const defaultTextWatermark = (
+    text: string,
+    style: Partial<CSSStyleDeclaration> = {
+        color: "red",
+        fontSize: "12px",
+    },
+): TextWatermark => {
+    const textWatermark: TextWatermark = {
+        content: text,
+        style,
+    }
+
+    return textWatermark
 }

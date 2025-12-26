@@ -6,7 +6,6 @@
  * Description : hooks
  */
 
-import { storeToRefs } from "pinia"
 import { computed, type Ref, ref, watch } from "vue"
 
 import { type PostVideoTocTree } from "@/api/post/common"
@@ -15,8 +14,8 @@ import { getUserPostVideoProgressAPI, type GetUserPostVideoProgressRequest, type
 import { getUserVideoProgressAPI, type GetUserVideoProgressRequest, type GetUserVideoProgressResponse } from "@/api/video/getUserVideoProgress"
 import { getVideosIsFreeAPI, type GetVideosIsFreeRequest, type GetVideosIsFreeResponse } from "@/api/video/getVideosIsFree"
 import { upsertUserPostVideoProgressAPI, type UpsertUserPostVideoProgressRequest } from "@/api/video/upsertUserPostVideoProgress"
-import { defaultLogoWatermark, MediaTypes, PlayerStateManager, type TextWatermark } from "@/components/player"
-import { useOptionsStore } from "@/stores/options"
+import { useVideoWatermark } from "@/components/hooks/useVideoWatermark"
+import { MediaTypes, PlayerStateManager } from "@/components/player"
 import { useUserStore } from "@/stores/user"
 
 import type { VideoTocMapByFileIdHash, VideoTocMapByOrder } from "../video-toc-tree-base"
@@ -24,8 +23,6 @@ import { useVideoTocTree } from "../video-toc-tree-base"
 
 export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<string>) {
     const userStore = useUserStore()
-    const optionsStore = useOptionsStore()
-    const logo = optionsStore.getLogo
 
     const localMapByFileIdHash = ref<VideoTocMapByFileIdHash>({}) // 目录树映射, key 为节点 fileIdHash
     const localMapByOrder = ref<VideoTocMapByOrder>({}) // 目录树映射, key 为节点 videoOrder
@@ -54,19 +51,8 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
 
     // 实例化播放器状态管理器
     const manager = new PlayerStateManager()
-
-    // 拿到用户名, 设置文字水印
-    const { data: userInfo } = storeToRefs(userStore)
-    const textWatermark: TextWatermark = {
-        content: userInfo.value?.user.user_name || "jiaopengzi.com",
-        style: {
-            color: "red",
-            fontSize: "12px",
-        },
-    }
-    manager.setTextWatermark(textWatermark)
-
-    manager.setLogoWatermark(defaultLogoWatermark(logo))
+    // 使用视频水印 hooks
+    useVideoWatermark(manager)
 
     // 设置是否在播放器中显示目录的按钮
     watch(

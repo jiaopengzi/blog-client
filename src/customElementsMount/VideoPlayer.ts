@@ -8,9 +8,9 @@
 
 import { createApp, h } from "vue"
 
-import { defaultLogoWatermark, MediaTypes, type PlayerState, PlayerStateManager } from "@/components/player"
+import { useVideoWatermark } from "@/components/hooks/useVideoWatermark"
+import { MediaTypes, type PlayerState, PlayerStateManager } from "@/components/player"
 import VideoPlayer from "@/components/player"
-import { useOptionsStore } from "@/stores/options"
 
 import { Attributes, Names } from "../customElements"
 import { getComponentContainersFromCustomElements } from "./getComponentContainers"
@@ -30,9 +30,8 @@ export const getVideoPlayerState = (el: Element, postID: string = ""): { elTarge
 
     const manager = new PlayerStateManager()
 
-    const optionsStore = useOptionsStore()
-    const logo = optionsStore.getLogo
-    manager.setLogoWatermark(defaultLogoWatermark(logo)) // 设置 logo 水印
+    // 设置水印
+    useVideoWatermark(manager)
 
     manager.setMediaType(videoType)
     manager.setPostID(postID)

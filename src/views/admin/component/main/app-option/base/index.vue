@@ -59,15 +59,15 @@
                     clearable
                 />
 
-                <div class="editor" v-else-if="item.isEditor">
-                    <el-button @click="insertCssExample(item.prop as keyof APPOptionForm)">插入 CSS 示例</el-button>
+                <div class="editor" v-else-if="item.editor">
+                    <el-button v-if="item.editor.type === 'css'" @click="insertCssExample(item.prop as keyof APPOptionForm)">插入 CSS 示例</el-button>
                     <EditorCodemirror
                         :ref="
                             (el) => {
                                 if (el) setEditorRef(el as CodemirrorRef)
                             }
                         "
-                        :create-setup="item.isEditor.createSetup"
+                        :create-setup="item.editor.createSetup"
                         :doc="formDataResult[item.prop as keyof APPOptionForm] as string"
                         height="400"
                         @update-editor-doc="(doc) => handleEditorUpdate(item.prop as keyof APPOptionForm, doc)"
@@ -96,10 +96,9 @@ import CarouselManage, { type CarouselFormRef } from "@/components/common/carous
 import ImageInput from "@/components/common/image-input"
 import SlideVerifyManage, { type SlideVerifyManageFormRef } from "@/components/common/slide-verify-manage"
 import EditorCodemirror, { type CodemirrorRef } from "@/components/editor/components/codemirror"
-import { type CreateSetupType } from "@/pkg/codemirror"
 import { cssExample } from "@/utils/cssExample"
 
-import { type APPOptionForm } from "./types"
+import type { APPOptionForm, FormItems } from "./types"
 
 defineOptions({ name: "BaseForm" })
 
@@ -107,22 +106,7 @@ const { title, formData, rules, formItems, formWidth, labelWidth } = defineProps
     title: string
     formData: APPOptionForm
     rules: FormRules
-    formItems: Array<{
-        label: string
-        prop?: string
-        type?: string
-        placeholder?: string
-        isImageInput?: boolean
-        isCheckbox?: boolean
-        isCategoryTitle?: boolean
-        isCarouselManage?: boolean
-        isSlideVerifyManage?: boolean
-        textareaRows?: number
-        customClass?: string
-        isEditor?: {
-            createSetup: CreateSetupType
-        }
-    }>
+    formItems: Array<FormItems>
     formWidth?: number
     labelWidth?: number
 }>()

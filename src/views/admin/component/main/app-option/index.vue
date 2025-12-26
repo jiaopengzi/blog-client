@@ -24,14 +24,14 @@ import { OptionType } from "@/api/common"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { type GetAPPOptionResponse } from "@/api/setting/getAPPOption"
 import { type UpdateAPPOption, updateAPPOptionAPI, type UpdateAPPOptionRequest } from "@/api/setting/updateAPPOption"
-import { cssValidatorFunc, imageURLRequiredValidatorFunc } from "@/components/common/base-config-form"
-import { createCssSetup } from "@/pkg/codemirror"
+import { cssValidatorFunc, imageURLRequiredValidatorFunc, jsonValidatorFunc } from "@/components/common/base-config-form"
+import { createCssSetup, createJsonSetup } from "@/pkg/codemirror"
 import { RouteNames } from "@/router"
 import { useOptionsStore } from "@/stores/options" // 网站配置选项
 import { MessageUtil } from "@/utils/message"
 import { adminMenuItemMap } from "@/views/admin/component/aside"
 
-import BaseForm, { type APPOptionForm, type APPOptionFormRef } from "./base"
+import BaseForm, { type APPOptionForm, type APPOptionFormRef, type FormItems } from "./base"
 
 defineOptions({ name: RouteNames.SettingAPPOption })
 
@@ -141,10 +141,22 @@ const rules = reactive<FormRules<APPOptionForm>>({
             trigger: "blur",
         },
     ],
+    video_watermark_logo_style: [
+        {
+            validator: jsonValidatorFunc,
+            trigger: "blur",
+        },
+    ],
+    video_watermark_text_style: [
+        {
+            validator: jsonValidatorFunc,
+            trigger: "blur",
+        },
+    ],
 })
 
 // 表单项配置显示
-const formItems = [
+const formItems: Array<FormItems> = [
     // logo 相关
     { label: "logo", isCategoryTitle: true },
     { label: "logo", prop: "logo", isImageInput: true },
@@ -179,6 +191,23 @@ const formItems = [
     { label: "显示文末固定信息", prop: "post_footer_info_enable", isCheckbox: true },
     { label: "文末固定信息", prop: "post_footer_info", type: "textarea", placeholder: "支持html" },
     { label: "展示文章移除 h1 标题", prop: "is_remove_first_h1", isCheckbox: true },
+
+    // 视频水印
+    { label: "视频水印", isCategoryTitle: true },
+    { label: "logo 启用", prop: "video_watermark_logo_enable", isCheckbox: true },
+    { label: "logo url", prop: "video_watermark_logo_url", isImageInput: true },
+    {
+        label: "logo 样式(JSON)",
+        prop: "video_watermark_logo_style",
+        editor: { type: "json", createSetup: createJsonSetup },
+    },
+    { label: "文字启用", prop: "video_watermark_text_enable", isCheckbox: true },
+    { label: "文字默认内容", prop: "video_watermark_text_default" },
+    {
+        label: "文字样式(JSON)",
+        prop: "video_watermark_text_style",
+        editor: { type: "json", createSetup: createJsonSetup },
+    },
 
     // 互动相关
     { label: "互动", isCategoryTitle: true },
@@ -244,8 +273,7 @@ const formItems = [
 
     // 样式相关
     { label: "样式相关", isCategoryTitle: true },
-    { label: "自定义 CSS", prop: "custom_style_css", isEditor: { createSetup: createCssSetup } },
-
+    { label: "自定义 CSS", prop: "custom_style_css", editor: { type: "css", createSetup: createCssSetup } },
     // 邮件通知管理
     { label: "邮件通知管理", isCategoryTitle: true },
     { label: "用户注册通知管理员", prop: "subscribe_user_register_to_admin", isCheckbox: true },
