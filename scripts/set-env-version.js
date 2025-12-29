@@ -1,5 +1,5 @@
-/*
- * FilePath    : blog-client\scripts\set-env.js
+/**
+ * FilePath    : blog-client-dev\scripts\set-env-version.js
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

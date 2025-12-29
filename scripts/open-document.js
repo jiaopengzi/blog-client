@@ -1,9 +1,9 @@
 /**
- * @FilePath     : \blog-client\scripts\openDocument.js
- * @Author       : jiaopengzi
- * @Blog         : https://jiaopengzi.com
- * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 打开指定URL
+ * FilePath    : blog-client-dev\scripts\open-document.js
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 打开指定URL
  */
 
 import child_process from "child_process"

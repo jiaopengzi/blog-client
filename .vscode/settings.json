@@ -7,6 +7,7 @@
         "epoll",
         "keepalive",
         "localtime",
+        "mdlint",
         "NAPI",
         "nodelay",
         "nopush",

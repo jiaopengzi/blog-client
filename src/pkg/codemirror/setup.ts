@@ -34,6 +34,7 @@ import { bottomPanelExt } from "./extension/bottomPanel"
 import { completionCompartment, unifiedCompletion } from "./extension/completion"
 import { customKeymap } from "./extension/hotkey"
 import { handleDropImage, handlePasteImage } from "./extension/imgUpload"
+import { createMarkdownLinter } from "./extension/mdlint"
 import { vim, vimModeCompartment } from "./extension/vim"
 import { defaultOptions, type DefaultSetupOptions } from "./options"
 
@@ -84,6 +85,9 @@ export const createDefaultSetup = (options: DefaultSetupOptions = defaultOptions
         completionCompartment.of(unifiedCompletion(options.mention)), // 补全
         placeholder(options.placeholderText || ""), // 占位符文本
         markdown(), // markdown 语法
+        createMarkdownLinter({
+            useWorker: true,
+        }),
         bottomPanelExt, // 底部面板
         customKeymap, // 自定义快捷键
         handlePasteImage, // 自定义键盘事件

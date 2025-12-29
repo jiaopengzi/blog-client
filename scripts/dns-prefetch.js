@@ -1,11 +1,13 @@
 /**
- * @FilePath     : \blog-client\scripts\dns-prefetch.js
- * @Description  : 用于预取链接 package.json 中配置 新增 build-dns
+ * FilePath    : blog-client-dev\scripts\dns-prefetch.js
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Description : 用于预取链接 package.json 中配置 新增 build-dns
  */
 
 import fs from "fs"
 import { glob } from "glob"
-// import path from 'path';
 import { parse } from "node-html-parser"
 import urlRegex from "url-regex"
 import { gzipSync } from "zlib"
