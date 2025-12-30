@@ -7,6 +7,7 @@
  */
 
 import type { RuleDefinition } from "./types"
+import type { PairContext, SingleLineContext, SurroundingContext } from "./types"
 
 // 在主线程同步加载模块并同时保留延迟加载器的占位映射
 // 规则文件已统一放入本目录下的 "rule" 子目录, 文件名不再包含前缀, 例如 "001.ts", "002.ts"
@@ -55,4 +56,116 @@ export function getLazyRuleLoaders() {
     return map
 }
 
-export default { loadEagerRules, getLazyRuleLoaders }
+/**
+ * 校验标签前后不应有其它内容
+ * @param ctx - 上下文对象
+ * @return void
+ */
+export function validateNoSurroundingContent(ctx: SurroundingContext) {
+    const { doc, lineText, lineNum, matchIndex, fullLength, tagOrFullMatch, isClosing, diagnostics, sourceId } = ctx
+    const ln = doc.line(lineNum)
+    if (isClosing) {
+        const after = lineText.slice(matchIndex + fullLength)
+        if (after.trim() !== "") {
+            diagnostics.push({
+                from: ln.from + matchIndex + fullLength,
+                to: ln.from + lineText.length,
+                severity: "error",
+                message: `标签后不应有内容: ${tagOrFullMatch}`,
+                source: sourceId,
+            })
+        }
+    } else {
+        const before = lineText.slice(0, matchIndex)
+        if (before.trim() !== "") {
+            diagnostics.push({
+                from: ln.from,
+                to: ln.from + matchIndex,
+                severity: "error",
+                message: `标签前不应有内容: <${tagOrFullMatch}>`,
+                source: sourceId,
+            })
+        }
+    }
+}
+
+/**
+ * 校验标签中内容应为空
+ * @param ctx - 上下文对象
+ * @return void
+ */
+export function validateEmptyContent(ctx: SingleLineContext) {
+    // 解构参数
+    const { doc, openLine, openFromIndex, openLength, closeMatchIndex, tagName, diagnostics, sourceId } = ctx
+
+    // 提取标签内内容
+    const lineText = doc.line(openLine).text
+    const innerStart = openFromIndex + openLength
+    const innerEnd = closeMatchIndex
+    const inner = lineText.slice(innerStart, innerEnd)
+
+    // 检查内容是否为空
+    if (inner.trim() !== "") {
+        diagnostics.push({
+            from: doc.line(openLine).from + innerStart,
+            to: doc.line(openLine).from + innerEnd,
+            severity: "error",
+            message: `${tagName} 标签内不应包含内容: ${inner.trim()}`,
+            source: sourceId,
+        })
+    }
+}
+
+/**
+ * 校验成对标签前后应有空行
+ * @param ctx - 上下文对象
+ * @return void
+ */
+export function validateBlankLinesForPair(ctx: PairContext) {
+    // 解构参数
+    const { doc, lineCount, openLine, closeLine, tagName, openFrom, openTo, closeFrom, closeTo, diagnostics, sourceId } = ctx
+
+    // 检查开始标签前一行
+    if (openLine > 1) {
+        const prev = doc.line(openLine - 1).text
+        if (prev.trim() !== "") {
+            diagnostics.push({ from: openFrom, to: openTo, severity: "error", message: `标签前应有空行: <${tagName}>`, source: sourceId })
+        }
+    }
+
+    // 检查结束标签后一行
+    if (closeLine < lineCount) {
+        const next = doc.line(closeLine + 1).text
+        if (next.trim() !== "") {
+            diagnostics.push({ from: closeFrom, to: closeTo, severity: "error", message: `标签后应有空行: </${tagName}>`, source: sourceId })
+        }
+    }
+}
+
+/**
+ * 校验成对标签应为单行
+ * @param ctx - 上下文对象
+ * @return void
+ */
+export function validateSingleLineForPair(ctx: PairContext) {
+    const { openLine, closeLine, tagName, openFrom, closeTo, diagnostics, sourceId } = ctx
+    // 调用方负责判断该 tag 是否属于单行要求，此处仅检查是否为单行
+    if (openLine !== closeLine) {
+        diagnostics.push({
+            from: openFrom,
+            to: closeTo,
+            severity: "error",
+            message: `${tagName} 标签内容应为单行: <${tagName} ...></${tagName}>`,
+            source: sourceId,
+        })
+    }
+}
+
+export default {
+    loadEagerRules,
+    getLazyRuleLoaders,
+    validateNoSurroundingContent,
+    validateEmptyContent,
+    validateBlankLinesForPair,
+    validateSingleLineForPair,
+}

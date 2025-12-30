@@ -39,7 +39,7 @@ export function run(doc: DocLike): Diagnostic[] {
                     from: from,
                     to: from + grp.length,
                     severity: "warning",
-                    message: `标题级别跳跃：上一个标题为 ${prevHeadingLevel}，当前为 ${level}`,
+                    message: `标题级跳跃：上一个标题为 ${prevHeadingLevel}, 当前为 ${level}`,
                     source: id,
                 })
             }

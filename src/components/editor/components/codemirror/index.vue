@@ -42,6 +42,11 @@ const {
     isUserScrollCmEditor = false, // 是否开启用户滚动编辑器
     createSetup = createDefaultSetup, // 编辑器配置项
     placeholderText = "", // 占位符文本
+    mdlintUseWorker = true, // 是否使用 web worker 进行 lint 检查
+    mdlintRules = {
+        rule002: false, // 默认不启用规则 002
+        rule003: false, // 默认不启用规则 003
+    }, // Markdown 规则配置
 } = defineProps<CodeEditorProps>() // 定义 props
 
 const codemirrorRef = useTemplateRef<HTMLElement | null>("codemirrorRef") // 编辑器 dom 节点
@@ -121,6 +126,10 @@ const options: Ref<DefaultSetupOptions> = ref({
     vimMode: vimMode || false, // 是否开启 vim 模式
     mentions: mentions || [], // @ 提及补全
     placeholderText: placeholderText || "", // 占位符文本
+    mdlintOptions: {
+        useWorker: mdlintUseWorker, // 是否使用 web worker 进行 lint 检查
+        rules: mdlintRules || { rule002: false, rule003: false }, // Markdown 规则配置
+    },
 })
 
 // 更新编辑器内容
@@ -132,12 +141,12 @@ const updateDocInfo: Extension = EditorView.updateListener.of((viewUpdate: ViewU
 })
 
 // 初始化 CodeMirror
-const initCodeMirror = (options: DefaultSetupOptions) => {
+const initCodeMirror = (opts: DefaultSetupOptions) => {
     if (codemirrorRef.value) {
         // 初始化编辑器
         const state = EditorState.create({
             doc: doc || "",
-            extensions: [createSetup(options), updateDocInfo],
+            extensions: [createSetup(opts), updateDocInfo],
         })
 
         // 创建编辑器实例

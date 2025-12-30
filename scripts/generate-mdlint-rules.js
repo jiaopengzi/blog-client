@@ -144,12 +144,12 @@ function main() {
 
     // 读取目标 types 文件的当前内容, 以便在标记区间内替换生成块
     const typesContent = fs.readFileSync(typesFile, "utf8")
-    const startMarker = "// @generated-known-rules-start"
-    const endMarker = "// @generated-known-rules-end"
+    const startMarker = "// @generated-mdlint-rules-start"
+    const endMarker = "// @generated-mdlint-rules-end"
 
     // 使用正则替换, 确保替换的是两个 marker 之间的全部内容
     // 匹配可能带缩进的两条 marker 行, 使用多行模式 (^ 和 $ 匹配行首/行尾)
-    // 逐行查找 marker, 避免匹配注释中的示例(例如 `// @generated-known-rules-start`)
+    // 逐行查找 marker, 避免匹配注释中的示例(例如 `// @generated-mdlint-rules-start`)
     const eol = typesContent.indexOf("\r\n") !== -1 ? "\r\n" : "\n"
     const lines = typesContent.split(eol)
     const startLine = lines.findIndex((l) => l.trim() === startMarker)

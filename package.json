@@ -28,7 +28,7 @@
         "format": "prettier --write src/",
         "testOnline": "vitest",
         "test": "vitest run",
-        "generate:mdlint-rules": "node ./scripts/generate-mdlint-rules.js"
+        "gen:mdlint-rules": "node ./scripts/generate-mdlint-rules.js"
     },
     "dependencies": {
         "@codemirror/autocomplete": "^6.20.0",

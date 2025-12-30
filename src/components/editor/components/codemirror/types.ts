@@ -8,7 +8,7 @@
 
 import type { Completion } from "@codemirror/autocomplete"
 
-import { type CreateSetupType } from "@/pkg/codemirror"
+import type { CreateSetupType, MarkdownRulesConfig } from "@/pkg/codemirror"
 
 import type { CommandsKey, MarkdownEditorCommandItem } from "../../command"
 
@@ -47,4 +47,6 @@ export interface CodeEditorProps {
     isUserScrollCmEditor?: boolean // 是否用户滚动编辑器
     createSetup?: CreateSetupType // 编辑器配置项
     placeholderText?: string // 占位符文本
+    mdlintUseWorker?: boolean // 是否使用 web worker 进行 lint 检查
+    mdlintRules?: MarkdownRulesConfig // Markdown 规则配置
 }

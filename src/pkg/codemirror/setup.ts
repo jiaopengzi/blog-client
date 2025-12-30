@@ -76,18 +76,16 @@ const baseExtension = (): Extension[] => {
 export type CreateSetupType = (options?: DefaultSetupOptions) => Extension[]
 
 // 默认的 codemirror setup 工厂函数 markdown 语法
-export const createDefaultSetup = (options: DefaultSetupOptions = defaultOptions) => {
+export const createDefaultSetup = (opts: DefaultSetupOptions = defaultOptions()) => {
     const extension: Extension[] = [
         ...baseExtension(), // 基础 extension
 
         // 参考 https://github.com/replit/codemirror-vim/issues/227
-        vimModeCompartment.of(options.vimMode ? vim({ status: true }) : []), // vim 模式
-        completionCompartment.of(unifiedCompletion(options.mention)), // 补全
-        placeholder(options.placeholderText || ""), // 占位符文本
+        vimModeCompartment.of(opts.vimMode ? vim({ status: true }) : []), // vim 模式
+        completionCompartment.of(unifiedCompletion(opts.mention)), // 补全
+        placeholder(opts.placeholderText || ""), // 占位符文本
         markdown(), // markdown 语法
-        createMarkdownLinter({
-            useWorker: true,
-        }),
+        createMarkdownLinter(opts.mdlintOptions), // markdown 代码检查
         bottomPanelExt, // 底部面板
         customKeymap, // 自定义快捷键
         handlePasteImage, // 自定义键盘事件

@@ -46,8 +46,16 @@ function makeLinterCallback(options: MarkdownLinterOptions = {}, worker?: Worker
                 }
 
                 worker.addEventListener("message", onMessage)
+
                 // 发送文本到 worker, worker 会处理并返回 diagnostics
-                worker.postMessage({ id, text, options })
+                // 仅发送可序列化的字段, 避免将 Vue 响应式对象或函数传入 worker 导致 DataCloneError
+                try {
+                    const safeOptions = { useWorker: options?.useWorker, rules: options?.rules }
+                    worker.postMessage({ id, text, options: safeOptions })
+                } catch {
+                    // 最后兜底：若仍然失败, 发送最小负载以保证不阻塞编辑器
+                    worker.postMessage({ id, text, options: { useWorker: false } })
+                }
             })
         }
     }
@@ -65,9 +73,8 @@ function makeLinterCallback(options: MarkdownLinterOptions = {}, worker?: Worker
             const enabled = cfg === undefined ? true : typeof cfg === "object" ? cfg.enabled !== false : Boolean(cfg)
             if (!enabled) continue
 
-            // 合并默认配置与用户传入配置
-            let ruleOpts = { ...(r.defaultOptions || {}) }
-            if (typeof cfg === "object") ruleOpts = { ...ruleOpts, ...cfg }
+            // 使用用户配置覆盖默认配置：若用户提供对象配置则直接采用用户配置, 否则使用默认配置
+            const ruleOpts = typeof cfg === "object" ? { ...cfg } : { ...(r.defaultOptions || {}) }
 
             // 执行规则并收集返回的 Diagnostic
             const res = r.run(doc, ruleOpts)

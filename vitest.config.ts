@@ -12,6 +12,7 @@ export default mergeConfig(
     viteConfig,
     defineConfig({
         test: {
+            setupFiles: [fileURLToPath(new URL("./vitest.setup.ts", import.meta.url))],
             environment: "jsdom",
             exclude: [
                 ...configDefaults.exclude,
@@ -22,7 +23,7 @@ export default mergeConfig(
                 "**/.vscode/**",
                 "**/.VSCodeCounter/**",
                 "**/vite-plugin-inspect/**",
-                "**/assets/**",
+                "**/icons/**",
             ],
             root: fileURLToPath(new URL("./", import.meta.url)),
             server: {

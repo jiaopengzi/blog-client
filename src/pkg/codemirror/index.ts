@@ -6,6 +6,7 @@
  * Description : 统一导出
  */
 
+export * from "./extension/mdlint/types"
 export * from "./options"
 export * from "./setup"
 export { EditorState } from "@codemirror/state"
