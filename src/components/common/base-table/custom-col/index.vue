@@ -13,7 +13,7 @@
             <h4 v-if="col.isHeading">{{ scope.row[col.prop] }}</h4>
 
             <!-- 标题包含标题ID -->
-            <el-button v-if="col.isHeadingWithId" @click="handleViewWithID(scope.row)" class="title-with-id" type="text">{{ scope.row[col.prop] }}</el-button>
+            <el-button v-if="col.isHeadingWithId" @click="handleViewWithID(scope.row)" class="title-with-id" type="">{{ scope.row[col.prop] }}</el-button>
 
             <!-- 作者 -->
             <UserItem

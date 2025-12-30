@@ -10,7 +10,7 @@
     <span @dblclick="handleCopyText">
         {{ text }}
     </span>
-    <el-button class="copy-text-btn" @click="handleCopyText" type="text">
+    <el-button class="copy-text-btn" @click="handleCopyText" type="">
         <el-icon class="copy-text-icon">
             <CopyDocument />
         </el-icon>

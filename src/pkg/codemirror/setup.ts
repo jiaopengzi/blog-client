@@ -35,14 +35,13 @@ import { completionCompartment, unifiedCompletion } from "./extension/completion
 import { customKeymap } from "./extension/hotkey"
 import { handleDropImage, handlePasteImage } from "./extension/imgUpload"
 import { createMarkdownLinter } from "./extension/mdlint"
-// import { vscodeDark, vscodeLight } from "./extension/theme"
+import { Theme, themeMap } from "./extension/theme"
 import { vim, vimModeCompartment } from "./extension/vim"
 import { defaultOptions, type DefaultSetupOptions } from "./options"
 
 // 基础 extension 集合
 const baseExtension = (): Extension[] => {
     return [
-        // vscodeLight, // 主题
         EditorView.lineWrapping, // 自动换行
         lineNumbers(), // 行号
         highlightActiveLineGutter(), // 高亮当前行 gutter
@@ -91,6 +90,7 @@ export const createDefaultSetup = (opts: DefaultSetupOptions = defaultOptions())
         customKeymap, // 自定义快捷键
         handlePasteImage, // 自定义键盘事件
         handleDropImage, // 自定义拖拽事件
+        opts.theme || themeMap[Theme.vscodeLight], // 主题
     ]
 
     return extension
