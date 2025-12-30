@@ -6,6 +6,7 @@
         "doctag",
         "epoll",
         "keepalive",
+        "lezer",
         "localtime",
         "lopt",
         "mdlint",

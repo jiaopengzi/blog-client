@@ -35,12 +35,14 @@ import { completionCompartment, unifiedCompletion } from "./extension/completion
 import { customKeymap } from "./extension/hotkey"
 import { handleDropImage, handlePasteImage } from "./extension/imgUpload"
 import { createMarkdownLinter } from "./extension/mdlint"
+// import { vscodeDark, vscodeLight } from "./extension/theme"
 import { vim, vimModeCompartment } from "./extension/vim"
 import { defaultOptions, type DefaultSetupOptions } from "./options"
 
 // 基础 extension 集合
 const baseExtension = (): Extension[] => {
     return [
+        // vscodeLight, // 主题
         EditorView.lineWrapping, // 自动换行
         lineNumbers(), // 行号
         highlightActiveLineGutter(), // 高亮当前行 gutter
@@ -79,7 +81,6 @@ export type CreateSetupType = (options?: DefaultSetupOptions) => Extension[]
 export const createDefaultSetup = (opts: DefaultSetupOptions = defaultOptions()) => {
     const extension: Extension[] = [
         ...baseExtension(), // 基础 extension
-
         // 参考 https://github.com/replit/codemirror-vim/issues/227
         vimModeCompartment.of(opts.vimMode ? vim({ status: true }) : []), // vim 模式
         completionCompartment.of(unifiedCompletion(opts.mention)), // 补全

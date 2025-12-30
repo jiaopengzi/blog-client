@@ -6,7 +6,7 @@
  * Description : Markdown Linter 核心实现
  */
 
-import { type Diagnostic, linter } from "@codemirror/lint"
+import { type Diagnostic, linter, type LintSource } from "@codemirror/lint"
 import type { Extension } from "@codemirror/state"
 import type { Text } from "@codemirror/state"
 import { type EditorView, ViewPlugin } from "@codemirror/view"
@@ -93,7 +93,7 @@ function makeLinterCallback(options: MarkdownLinterOptions = {}, worker?: Worker
 export function createMarkdownLinter(options: MarkdownLinterOptions = {}): Extension {
     if (options.useWorker) {
         const worker = new Worker(new URL("./worker.ts", import.meta.url), { type: "module" })
-        const linterExt = linter(makeLinterCallback(options, worker))
+        const linterExt = linter(makeLinterCallback(options, worker) as unknown as LintSource)
 
         const plugin = ViewPlugin.fromClass(
             class {
@@ -111,7 +111,7 @@ export function createMarkdownLinter(options: MarkdownLinterOptions = {}): Exten
         return [linterExt, plugin]
     }
 
-    return linter(makeLinterCallback(options))
+    return linter(makeLinterCallback(options) as unknown as LintSource)
 }
 
 export default createMarkdownLinter
