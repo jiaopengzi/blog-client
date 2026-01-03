@@ -7,10 +7,11 @@
  */
 
 import { useDark, useToggle } from "@vueuse/core"
-import { reactive } from "vue"
+import { computed, reactive } from "vue"
 
 import { IconKeys } from "@/components/common/icons"
 import type { SwitchItem, SwitchItemColor, SwitchItemIcon } from "@/components/common/switch-group"
+import { getTheme, Theme, ThemeMode } from "@/pkg/codemirror"
 
 // 主题切换
 export function useTheme() {
@@ -45,9 +46,16 @@ export function useTheme() {
         toggleDark()
     }
 
+    // 计算主题
+    const theme = computed(() => {
+        const mode = isDark.value ? ThemeMode.Dark : ThemeMode.Light
+        return getTheme(Theme.MD, mode)
+    })
+
     return {
         isDark,
         themeSwitch,
         updateStatus,
+        theme,
     }
 }

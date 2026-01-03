@@ -71,11 +71,8 @@ export function run(doc: DocLike): Diagnostic[] {
                 sourceId: id,
             })
             if (isClosing) {
-                // 提取 tagName, 与栈顶匹配
-                const tagName = fullMatch
-                    .replace(/^<\/(pay-)?/, "")
-                    .replace(/>$/, "")
-                    .replace(/^pay-/, "")
+                // 提取 tagName(保留 pay- 前缀), 与栈顶匹配
+                const tagName = fullMatch.replace(/^<\//, "").replace(/>$/, "")
 
                 // 获取栈顶开始标签
                 const top = tagStack[tagStack.length - 1]
@@ -99,13 +96,13 @@ export function run(doc: DocLike): Diagnostic[] {
                     const closeFrom = doc.line(closeLn).from + match.index
                     const closeTo = closeFrom + fullMatch.length
 
-                    // 如果是 pay-key, 校验属性
-                    if (open.tag === "key") {
+                    // 如果是 pay-key, 校验属性(open.tag 现在为完整标签名, 如 pay-key)
+                    if (open.tag === "pay-key") {
                         validateAttributesForKey({ doc, attrsText: open.attrs, openFrom, openTo, diagnostics, sourceId: id })
                     }
 
                     // 对于 pay-key 和 pay-membership 要求标签内不能有内容(必须为空)
-                    if (open.tag === "key" || open.tag === "membership") {
+                    if (open.tag === "pay-key" || open.tag === "pay-membership") {
                         validateEmptyContent({
                             doc,
                             openLine: openLn,
@@ -137,14 +134,14 @@ export function run(doc: DocLike): Diagnostic[] {
                     validateBlankLinesForPair(opts)
 
                     // 单行要求, 当 tag 属于 singleLineTags 时调用
-                    const singleLineTags = new Set(["key", "membership"])
+                    const singleLineTags = new Set(["pay-key", "pay-membership"])
                     if (singleLineTags.has(open.tag)) {
                         validateSingleLineForPair(opts)
                     }
                 }
             } else {
-                // 开始标签, 记录位置与属性
-                const tagName = match[1] as string
+                // 开始标签, 记录位置与属性。保存完整标签名(包含 pay- 前缀)
+                const tagName = `pay-${match[1] as string}`
                 const attrsText = match[2] ? match[2] : ""
                 tagStack.push({ tag: tagName, line: i, fromIndex: match.index, length: fullMatch.length, attrs: attrsText })
             }
@@ -158,7 +155,7 @@ export function run(doc: DocLike): Diagnostic[] {
             from: ln.from + unclosedTag.fromIndex,
             to: ln.from + unclosedTag.fromIndex + unclosedTag.length,
             severity: "error",
-            message: `标签未闭合：<pay-${unclosedTag.tag}>`,
+            message: `标签未闭合：<${unclosedTag.tag}>`,
             source: id,
         })
     }

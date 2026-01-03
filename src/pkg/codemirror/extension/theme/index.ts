@@ -5,6 +5,9 @@
 
 import { Compartment, type Extension } from "@codemirror/state"
 
+import { getLintTheme } from "./lint"
+import { mdDark } from "./md/dark"
+import { mdLight } from "./md/light"
 import { vscodeDark } from "./vscode/dark"
 import { vscodeLight } from "./vscode/light"
 
@@ -19,7 +22,8 @@ export enum ThemeMode {
 
 // 导出枚举, 方便后续按枚举调用
 export enum Theme {
-    vscode = "vscode",
+    MD = "md",
+    Vscode = "vscode",
 }
 
 // 定义主题键的类型
@@ -32,8 +36,10 @@ export type ThemeMapType = {
 
 // 主题映射表 - 使用直接拼接方式
 export const themeMap: ThemeMapType = {
-    [`${Theme.vscode}${ThemeMode.Dark}`]: vscodeDark,
-    [`${Theme.vscode}${ThemeMode.Light}`]: vscodeLight,
+    [`${Theme.MD}${ThemeMode.Dark}`]: [mdDark, getLintTheme(true)],
+    [`${Theme.MD}${ThemeMode.Light}`]: [mdLight, getLintTheme(false)],
+    [`${Theme.Vscode}${ThemeMode.Dark}`]: [vscodeDark, getLintTheme(true)],
+    [`${Theme.Vscode}${ThemeMode.Light}`]: [vscodeLight, getLintTheme(false)],
 } as const
 
 /**

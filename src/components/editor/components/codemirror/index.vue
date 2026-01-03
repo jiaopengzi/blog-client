@@ -48,7 +48,7 @@ const {
         rule002: false, // 默认不启用规则 002
         rule003: false, // 默认不启用规则 003
     }, // Markdown 规则配置
-    theme = getTheme(Theme.vscode, ThemeMode.Dark), // 主题
+    theme = getTheme(Theme.MD, ThemeMode.Dark), // 主题
 } = defineProps<CodeEditorProps>() // 定义 props
 
 const codemirrorRef = useTemplateRef<HTMLElement | null>("codemirrorRef") // 编辑器 dom 节点
@@ -125,7 +125,6 @@ watch(
 let cmView: EditorView
 
 const options: ComputedRef<DefaultSetupOptions> = computed(() => {
-    console.log("============>theme-codemirror", theme)
     return {
         vimMode: vimMode || false, // 是否开启 vim 模式
         mention: mentions || [], // @ 提及补全
@@ -134,7 +133,7 @@ const options: ComputedRef<DefaultSetupOptions> = computed(() => {
             useWorker: mdlintUseWorker, // 是否使用 web worker 进行 lint 检查
             rules: mdlintRules || { rule002: false, rule003: false }, // Markdown 规则配置
         },
-        theme: theme || getTheme(Theme.vscode, ThemeMode.Dark), // 主题
+        theme: theme || getTheme(Theme.MD, ThemeMode.Dark), // 主题
     }
 })
 

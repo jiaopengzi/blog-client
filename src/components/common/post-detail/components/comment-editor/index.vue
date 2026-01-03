@@ -7,7 +7,7 @@
 -->
 <template>
     <div ref="rootRef" class="comment-editor">
-        <JEditor ref="jEditorRef" class="comment-main" :state-manager="manager" placeholder-text="请输入评论内容..." />
+        <JEditor ref="jEditorRef" class="comment-main" :state-manager="manager" placeholder-text="请输入评论内容..." :theme="theme" />
         <div class="comment-btn-container">
             <el-button class="comment-btn" type="default" @click="run" :loading="loading">{{ btnTextInner }}</el-button>
         </div>
@@ -25,6 +25,7 @@ import { handleResErr, ResponseCode } from "@/api/response"
 import { EditorStateManager, type JEditorRef } from "@/components/editor"
 import JEditor from "@/components/editor/index.vue"
 import { useEditor } from "@/components/hooks/useEditor"
+import { useTheme } from "@/components/hooks/useTheme"
 import { useUserStore } from "@/stores/user"
 import { pollingGetStreamIDsStatus } from "@/utils/getStreamIDsStatus"
 import { MessageUtil } from "@/utils/message"
@@ -65,6 +66,8 @@ const manager = new EditorStateManager({
 })
 
 useEditor(manager)
+
+const { theme } = useTheme()
 
 // 更新 mentions
 watch(

@@ -112,7 +112,7 @@ const {
         rule002: false, // 默认不启用规则 002
         rule003: false, // 默认不启用规则 003
     },
-    theme = getTheme(Theme.vscode, ThemeMode.Light),
+    theme = getTheme(Theme.MD, ThemeMode.Light),
 } = defineProps<{
     stateManager: EditorStateManager
     postId?: string // 文章ID

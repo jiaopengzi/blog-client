@@ -90,7 +90,7 @@ export const createDefaultSetup = (opts: DefaultSetupOptions = defaultOptions())
         customKeymap, // 自定义快捷键
         handlePasteImage, // 自定义键盘事件
         handleDropImage, // 自定义拖拽事件
-        themeCompartment.of(opts.theme || getTheme(Theme.vscode, ThemeMode.Light)), // 主题
+        themeCompartment.of(opts.theme || getTheme(Theme.MD, ThemeMode.Light)), // 主题
     ]
 
     return extension

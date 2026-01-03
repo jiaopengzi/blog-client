@@ -28,7 +28,7 @@ export type DefaultSetupOptions = {
 export const defaultOptions = (): DefaultSetupOptions => {
     return {
         vimMode: false, // 默认不开启 vim 模式
-        theme: getTheme(Theme.vscode, ThemeMode.Light), // 默认主题 vscode light
+        theme: getTheme(Theme.MD, ThemeMode.Light), // 默认主题 vscode light
         mention: [], // 默认不开启 @ 提及补全
         placeholderText: "请开始创作...", // 默认占位符文本
         mdlintOptions: {
