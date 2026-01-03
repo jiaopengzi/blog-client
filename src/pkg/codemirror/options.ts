@@ -10,7 +10,7 @@ import { type Completion } from "@codemirror/autocomplete"
 import { type Extension } from "@codemirror/state"
 
 import type { MarkdownRulesConfig } from "./extension/mdlint/types"
-import { Theme, themeMap } from "./extension/theme"
+import { getTheme, Theme, ThemeMode } from "./extension/theme"
 
 // createDefaultSetup 定义options 类型
 export type DefaultSetupOptions = {
@@ -28,7 +28,7 @@ export type DefaultSetupOptions = {
 export const defaultOptions = (): DefaultSetupOptions => {
     return {
         vimMode: false, // 默认不开启 vim 模式
-        theme: themeMap[Theme.vscodeLight], // 默认主题 vscode light
+        theme: getTheme(Theme.vscode, ThemeMode.Light), // 默认主题 vscode light
         mention: [], // 默认不开启 @ 提及补全
         placeholderText: "请开始创作...", // 默认占位符文本
         mdlintOptions: {

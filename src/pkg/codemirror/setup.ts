@@ -35,7 +35,7 @@ import { completionCompartment, unifiedCompletion } from "./extension/completion
 import { customKeymap } from "./extension/hotkey"
 import { handleDropImage, handlePasteImage } from "./extension/imgUpload"
 import { createMarkdownLinter } from "./extension/mdlint"
-import { Theme, themeMap } from "./extension/theme"
+import { getTheme, Theme, themeCompartment, ThemeMode } from "./extension/theme"
 import { vim, vimModeCompartment } from "./extension/vim"
 import { defaultOptions, type DefaultSetupOptions } from "./options"
 
@@ -90,7 +90,7 @@ export const createDefaultSetup = (opts: DefaultSetupOptions = defaultOptions())
         customKeymap, // 自定义快捷键
         handlePasteImage, // 自定义键盘事件
         handleDropImage, // 自定义拖拽事件
-        opts.theme || themeMap[Theme.vscodeLight], // 主题
+        themeCompartment.of(opts.theme || getTheme(Theme.vscode, ThemeMode.Light)), // 主题
     ]
 
     return extension

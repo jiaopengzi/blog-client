@@ -46,6 +46,7 @@ export function useTheme() {
     }
 
     return {
+        isDark,
         themeSwitch,
         updateStatus,
     }

@@ -15,12 +15,13 @@ import "@/assets/scss/codemirror.scss"
 
 import { type Extension } from "@codemirror/state"
 import type { ViewUpdate } from "@codemirror/view"
-import { nextTick, onMounted, onUnmounted, type Ref, ref, useTemplateRef, watch } from "vue"
+import { computed, type ComputedRef, nextTick, onMounted, onUnmounted, useTemplateRef, watch } from "vue"
 
 import type { MarkdownEditorCommandItem } from "@/components/editor/command"
 import { CommandsKey, editorInsertContent, editorInsertFormatContent, markdownEditorCommands } from "@/components/editor/command"
 import { createDefaultSetup, type DefaultSetupOptions, EditorState, EditorView } from "@/pkg/codemirror"
 import { completionCompartment, unifiedCompletion } from "@/pkg/codemirror/extension/completion"
+import { getTheme, Theme, themeCompartment, ThemeMode } from "@/pkg/codemirror/extension/theme"
 import { vim, vimModeCompartment } from "@/pkg/codemirror/extension/vim"
 
 import { clearEditorView } from "../../command/constant"
@@ -47,6 +48,7 @@ const {
         rule002: false, // 默认不启用规则 002
         rule003: false, // 默认不启用规则 003
     }, // Markdown 规则配置
+    theme = getTheme(Theme.vscode, ThemeMode.Dark), // 主题
 } = defineProps<CodeEditorProps>() // 定义 props
 
 const codemirrorRef = useTemplateRef<HTMLElement | null>("codemirrorRef") // 编辑器 dom 节点
@@ -122,14 +124,18 @@ watch(
 // 编辑器实例
 let cmView: EditorView
 
-const options: Ref<DefaultSetupOptions> = ref({
-    vimMode: vimMode || false, // 是否开启 vim 模式
-    mentions: mentions || [], // @ 提及补全
-    placeholderText: placeholderText || "", // 占位符文本
-    mdlintOptions: {
-        useWorker: mdlintUseWorker, // 是否使用 web worker 进行 lint 检查
-        rules: mdlintRules || { rule002: false, rule003: false }, // Markdown 规则配置
-    },
+const options: ComputedRef<DefaultSetupOptions> = computed(() => {
+    console.log("============>theme-codemirror", theme)
+    return {
+        vimMode: vimMode || false, // 是否开启 vim 模式
+        mention: mentions || [], // @ 提及补全
+        placeholderText: placeholderText || "", // 占位符文本
+        mdlintOptions: {
+            useWorker: mdlintUseWorker, // 是否使用 web worker 进行 lint 检查
+            rules: mdlintRules || { rule002: false, rule003: false }, // Markdown 规则配置
+        },
+        theme: theme || getTheme(Theme.vscode, ThemeMode.Dark), // 主题
+    }
 })
 
 // 更新编辑器内容
@@ -241,7 +247,7 @@ const handleScroll = () => {
 // 初始化计数器
 let initCount = 0
 
-// 监听 props.doc 变化 更新编辑器内容
+// 监听 doc 变化 更新编辑器内容
 watch(
     () => doc,
     (newDoc) => {
@@ -264,7 +270,7 @@ watch(
     },
 )
 
-// 监听 props.vimMode 变化 更改 vim 模式
+// 监听 vimMode 变化 更改 vim 模式
 watch(
     () => vimMode,
     (newVal) => {
@@ -278,7 +284,7 @@ watch(
     },
 )
 
-// 监听 props.mentions 变化 更新编辑器内容
+// 监听 mentions 变化 更新编辑器内容
 watch(
     () => mentions,
     (newVal) => {
@@ -287,6 +293,19 @@ watch(
         options.value.mention = newVal
         cmView.dispatch({
             effects: completionCompartment.reconfigure(unifiedCompletion(newVal)),
+        })
+    },
+
+    { deep: true },
+)
+
+// 监听 theme 变化 更改主题
+watch(
+    () => theme,
+    (newTheme) => {
+        if (!newTheme) return // 如果没有主题则不执行
+        cmView.dispatch({
+            effects: themeCompartment.reconfigure(newTheme),
         })
     },
 

@@ -7,6 +7,7 @@
  */
 
 import type { Completion } from "@codemirror/autocomplete"
+import { type Extension } from "@codemirror/state"
 
 import type { CreateSetupType, MarkdownRulesConfig } from "@/pkg/codemirror"
 
@@ -49,4 +50,5 @@ export interface CodeEditorProps {
     placeholderText?: string // 占位符文本
     mdlintUseWorker?: boolean // 是否使用 web worker 进行 lint 检查
     mdlintRules?: MarkdownRulesConfig // Markdown 规则配置
+    theme?: Extension // 主题
 }

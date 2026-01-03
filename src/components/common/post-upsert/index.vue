@@ -58,6 +58,7 @@
                         :price="(postInfoForm.price * 100).toString()"
                         :video-toc="postInfoForm.video_toc"
                         placeholder-text="请开始创作..."
+                        :theme="localTheme"
                         @update-editor-status="updateEditorStatus"
                     />
 
@@ -221,6 +222,8 @@ import { EditorStateManager } from "@/components/editor"
 import JEditor from "@/components/editor/index.vue"
 import { useEditor } from "@/components/hooks/useEditor"
 import { usePostView } from "@/components/hooks/usePostView"
+import { useTheme } from "@/components/hooks/useTheme"
+import { getTheme, Theme, ThemeMode } from "@/pkg/codemirror"
 import { RouteNames } from "@/router"
 import { useOptionsStore } from "@/stores/options"
 import { PermissionNames } from "@/stores/permissionRole"
@@ -281,6 +284,13 @@ const { post_list_summary_truncate } = storeToRefs(optionsStore)
 const seoDescriptionExtractWords = ref(post_list_summary_truncate.value)
 
 const isPaid = ref(false)
+
+const { isDark } = useTheme()
+
+const localTheme = computed(() => {
+    const mode = isDark.value ? ThemeMode.Dark : ThemeMode.Light
+    return getTheme(Theme.vscode, mode)
+})
 
 // 监听编辑器宽度变化
 const { stop: stopResizeObserver } = useResizeObserver(editorContainerRef, (entries) => {

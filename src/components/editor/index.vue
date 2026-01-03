@@ -43,6 +43,9 @@
                     :is-watch-mouse="true"
                     :init-doc-is-empty="state.initDocIsEmpty"
                     :placeholder-text="placeholderText"
+                    :mdlint-use-worker="mdlintUseWorker"
+                    :mdlint-rules="rules"
+                    :theme="theme"
                     @handle-scroll="handleScroll"
                     @is-mouse-in-element="handleMouseInCmEditor"
                     @update-editor-doc="updateEditorDoc"
@@ -81,9 +84,11 @@
 <script lang="ts" setup>
 import "vue3-emoji-picker/css"
 
+import { type Extension } from "@codemirror/state"
 import { computed, useTemplateRef, watch } from "vue"
 
 import { type PostVideoTocTree } from "@/api/post/common"
+import { getTheme, type MarkdownRulesConfig, Theme, ThemeMode } from "@/pkg/codemirror"
 
 import EditorCodemirror, { type CodemirrorRef } from "./components/codemirror"
 import HtmlPreview from "./components/preview/index.vue"
@@ -102,6 +107,12 @@ const {
     price = "",
     videoToc = [],
     placeholderText = "",
+    mdlintUseWorker = true,
+    mdlintRules: rules = {
+        rule002: false, // 默认不启用规则 002
+        rule003: false, // 默认不启用规则 003
+    },
+    theme = getTheme(Theme.vscode, ThemeMode.Light),
 } = defineProps<{
     stateManager: EditorStateManager
     postId?: string // 文章ID
@@ -109,6 +120,9 @@ const {
     price?: string // 价格(单位：分)
     videoToc?: PostVideoTocTree[] // 付费视频目录
     placeholderText?: string // 占位符文本
+    mdlintUseWorker?: boolean // 是否使用 web worker 进行 lint 检查
+    mdlintRules?: MarkdownRulesConfig // Markdown 规则配置
+    theme?: Extension // 主题
 }>()
 
 const emit = defineEmits<{
