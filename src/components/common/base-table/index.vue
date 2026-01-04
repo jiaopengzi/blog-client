@@ -193,6 +193,7 @@
 
     <!-- 弹窗 add -->
     <el-dialog
+        class="add-item-dialog"
         v-if="addItemDialogVisibleStatus"
         v-model="addItemDialogVisibleStatus"
         @close="addItemHandleDialogClose"
@@ -207,6 +208,7 @@
 
     <!-- 弹窗 edit -->
     <el-dialog
+        class="edit-item-dialog"
         v-if="editItemDialogVisibleStatus"
         v-model="editItemDialogVisibleStatus"
         @close="editItemHandleDialogClose"

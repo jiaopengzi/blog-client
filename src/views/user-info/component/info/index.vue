@@ -8,7 +8,7 @@
 <template>
     <div class="container">
         <div class="my-info">
-            <el-descriptions title="基础信息" :column="3" size="large" border>
+            <el-descriptions title="基础信息" :column="descriptionCols" size="large" border>
                 <el-descriptions-item label="注册时间">{{ formatRegisterTime }}</el-descriptions-item>
                 <el-descriptions-item label="角色">{{ userSysRole }}</el-descriptions-item>
                 <el-descriptions-item label="会员" v-if="userMembershipRole">{{ userMembershipRole }}</el-descriptions-item>
@@ -16,7 +16,7 @@
         </div>
 
         <div class="social-info">
-            <el-descriptions title="社交信息" :column="3" size="large" border>
+            <el-descriptions title="社交信息" :column="descriptionCols" size="large" border>
                 <el-descriptions-item :label="SocialLoginDisplay.QQ">
                     <el-button class="btns" type="primary" plain size="small" v-if="!showQQ" @click="bindSocial(SocialLoginType.QQ)">
                         绑定{{ SocialLoginDisplay.QQ }}
@@ -94,7 +94,11 @@ import AvatarInitials from "@/components/common/avatar-initials"
 import AvatarUpload from "@/components/common/avatar-upload"
 import { useInfo } from "@/views/user-info/component/info/hooks"
 
+import { useUserInfo } from "../hook"
+
 defineOptions({ name: "UserInfoInfo" })
+
+const { descriptionCols } = useUserInfo()
 
 const {
     editFormRef,

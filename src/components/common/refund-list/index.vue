@@ -9,10 +9,10 @@
 <template>
     <div class="refund-details">
         <h4 class="title">退款</h4>
-        <el-table :data="items" style="width: 100%" border stripe :height="detailsHeight">
+        <el-table :data="items" style="width: 100%" border stripe :max-height="detailsHeight" row-class-name="refund-details-row">
             <el-table-column prop="refund_transaction_id" label="退款交易ID" />
             <el-table-column prop="reason" label="退款原因" />
-            <el-table-column prop="total_amount" label="已退款金额" width="150" align="center">
+            <el-table-column prop="total_amount" label="已退款金额" align="center">
                 <template #default="{ row }">{{ fenToYuan(row.refund_amount, true) }}</template>
             </el-table-column>
         </el-table>
@@ -95,6 +95,12 @@ h4 {
     .final-amount {
         margin: 0 5px;
         font-weight: 700;
+    }
+}
+
+@include respond-to("phone") {
+    :deep(.refund-details-row) {
+        font-size: 13px;
     }
 }
 </style>

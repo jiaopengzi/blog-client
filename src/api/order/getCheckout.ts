@@ -6,6 +6,7 @@
  * Description : 获取订单结算信息
  */
 
+import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"
 import type { PayOrderRes } from "@/api/pay/order"
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
@@ -15,17 +16,33 @@ import type { OrderCouponApplyRes } from "./couponApply"
 import type { OrderCreateRes } from "./create"
 
 // OrderCheckoutRes 结算响应模型
-export interface OrderCheckoutRes {
+export interface OrderCheckoutRes extends StreamsStatusRes {
     order: OrderCreateRes
     coupon: OrderCouponApplyRes | null // 优惠券应用信息
     payment: PayOrderRes | null // 支付信息
 }
 
+// 获取订单结算信息
 export function getOrderCheckoutAPI(): ResPromise<Res<OrderCheckoutRes>> {
     const urlStr = routerGroup + "/order/checkout"
     return request({
         url: urlStr,
         method: "get",
+    })
+}
+
+// 按照订单id获取订单详情请求参数
+export interface GetCheckoutByOrderIdRequest {
+    id: string // 订单ID
+}
+
+// 获取订单结算信息
+export function getOrderCheckoutByOrderIdAPI(req: GetCheckoutByOrderIdRequest): ResPromise<Res<OrderCheckoutRes>> {
+    const urlStr = routerGroup + "/order/checkout-by-order-id"
+    return request({
+        url: urlStr,
+        method: "post",
+        data: req,
     })
 }
 
@@ -47,5 +64,6 @@ export function generateEmptyResponse(): OrderCheckoutRes {
         },
         coupon: null,
         payment: null,
+        stream_items: [],
     }
 }

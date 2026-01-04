@@ -448,3 +448,18 @@ header {
         }
     }
 }
+
+// 全局设置添加/编辑项目弹窗宽度
+@include respond-to("pad") {
+    .add-item-dialog,
+    .edit-item-dialog {
+        width: 96% !important;
+    }
+}
+
+@include respond-to("phone") {
+    .add-item-dialog,
+    .edit-item-dialog {
+        width: 96% !important;
+    }
+}

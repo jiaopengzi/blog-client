@@ -253,7 +253,7 @@ export enum ResponseCode {
     // 订单相关
     OrderCreateSuccess = 5000, // 订单创建成功
     OrderProductNotFound = 5001, // 订单产品未找到
-    OrderCancelSuccess = 5002, // 取消创建成功
+    OrderCancelSuccess = 5002, // 取消成功
     OrderNotFound = 5003, // 订单未找到
     OrderCanNotCancel = 5004, // 订单无法取消，可能是订单状态不正确
     OrderRefundSuccess = 5005, // 订单退款成功
@@ -279,6 +279,11 @@ export enum ResponseCode {
     OrderProductQuantityMoreThanMax = 5025, // 订单产品购买数量大于最大购买数量
     OrderProductQuantityMoreThanUserMax = 5026, // 订单产品购买数量大于用户最大购买数量
     OrderProductTimeNotAvailable = 5027, // 订单产品购买时间不在允许范围内
+    OrderIsNotOwn = 5028, // 订单不属于当前用户
+    OrderRefundNotEnough = 5029, // 退款余额不足
+    OrderCheckoutOrderIDMismatch = 5030, // 订单结算订单ID不匹配，请重新下单。
+    OrderCloseSuccess = 5031, // 订单关闭成功
+    OrderCanNotClose = 5032, // 订单无法关闭，可能是订单状态不正确
 
     // 支付相关
     PayNewPayerError = 6000, // 新支付者错误

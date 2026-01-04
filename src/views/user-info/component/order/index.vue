@@ -26,7 +26,7 @@
 
             <template #edit-item>
                 <div class="dialog-edit">
-                    <OrderDetail :data="editData" :is-admin="false" @edit-status="handleEditStatus" />
+                    <OrderDetail :data="editData" :is-admin="false" :column="descriptionCols" @edit-status="handleEditStatus" />
                 </div>
             </template>
         </BaseTable>
@@ -46,9 +46,12 @@ import OrderDetail from "@/components/common/order-detail"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { RouteNames } from "@/router"
 
+import { useUserInfo } from "../hook"
 import { UserInfoHash } from "../types"
 
 defineOptions({ name: "UserInfoOrder" })
+
+const { descriptionCols } = useUserInfo()
 
 useHead({
     title: "用户信息-订单",

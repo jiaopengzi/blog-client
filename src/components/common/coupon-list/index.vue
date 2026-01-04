@@ -10,12 +10,12 @@
     <!-- 产品详情 -->
     <div class="coupon-details">
         <h4 class="title">优惠卷</h4>
-        <el-table :data="items" style="width: 100%" border stripe :height="detailsHeight">
+        <el-table :data="items" style="width: 100%" border stripe :max-height="detailsHeight" row-class-name="coupon-details-row">
             <el-table-column prop="code" label="优惠卷" />
-            <el-table-column prop="amount" label="优惠金额" width="150" align="center">
+            <el-table-column prop="amount" label="优惠金额" align="center">
                 <template #default="{ row }">{{ fenToYuan(computedDiscount(totalAmount, row.discount_type, row.amount), true) }}</template>
             </el-table-column>
-            <el-table-column prop="discount_type" label="优惠方式" width="150" align="center">
+            <el-table-column prop="discount_type" label="优惠方式" align="center">
                 <template #default="{ row }">{{ CouponDiscountTypeDisplay[row.discount_type as CouponDiscountType] }}</template>
             </el-table-column>
         </el-table>
@@ -92,7 +92,8 @@ h4 {
 .amount-info {
     font-size: 14px;
     color: var(--jpz-text-color-secondary);
-    text-align: right;
+    line-height: 1.5;
+    // text-align: right;
     margin-top: 10px;
 
     .amount,
@@ -100,6 +101,12 @@ h4 {
     .final-amount {
         margin: 0 5px;
         font-weight: 700;
+    }
+}
+
+@include respond-to("phone") {
+    :deep(.coupon-details-row) {
+        font-size: 13px;
     }
 }
 </style>

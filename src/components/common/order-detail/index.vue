@@ -8,7 +8,7 @@
 
 <template>
     <div class="edit-page">
-        <el-descriptions class="order-main" title="订单信息" :column="3" border>
+        <el-descriptions class="order-main" title="订单信息" :column="column" border>
             <el-descriptions-item label="订单ID">{{ data.id }}</el-descriptions-item>
             <el-descriptions-item label="创建时间">{{ data.created_at }}</el-descriptions-item>
             <el-descriptions-item label="更新时间" v-if="isAdmin">{{ dataAc.updated_at }}</el-descriptions-item>
@@ -25,7 +25,7 @@
             </el-descriptions-item>
             <el-descriptions-item label="描述">{{ data.description }}</el-descriptions-item>
             <el-descriptions-item label="IP地址" v-if="isAdmin">{{ data.ip }}</el-descriptions-item>
-            <el-descriptions-item label="状态">{{ OrderStatusDisplay[dataAc.status] }}</el-descriptions-item>
+            <el-descriptions-item label="状态">{{ OrderStatusDisplay[dataAc.status] }} </el-descriptions-item>
             <el-descriptions-item label="支付信息">
                 <span v-if="dataAc.payment && dataAc.payment.pay_type"
                     >{{ PayTypeDisplay[dataAc.payment.pay_type] }} - {{ TradeStateDisplay[dataAc.payment.trade_state] }}</span
@@ -46,6 +46,11 @@
             :available-refund-amount="availableRefundAmount"
             @refund-submit-success="handleRefundSubmit"
         />
+        <!-- 取消订单 -->
+        <div class="order-operation" v-if="dataAc.status === OrderStatus.PendingPay">
+            <el-button type="primary" :loading="isOrderReCheckoutLoading" @click="handleReCheckout">重新支付</el-button>
+            <el-button type="primary" :loading="isOrderCancelLoading" @click="handleCancel">取消订单</el-button>
+        </div>
         <OrderRemark
             v-if="isAdmin"
             class="order-remark"
@@ -59,11 +64,16 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue"
+import { useRouter } from "vue-router"
 
-import { type OrderGetByIDRes, OrderStatusDisplay, type RefundRes } from "@/api/order/common"
+import { orderCancelAPI, type OrderCancelRequest } from "@/api/order/cancel"
+import { type OrderGetByIDRes, OrderStatus, OrderStatusDisplay, type RefundRes } from "@/api/order/common"
 import { getByIDAPI, type OrderGetByIDRequest } from "@/api/order/getByID"
+import { type GetCheckoutByOrderIdRequest, getOrderCheckoutByOrderIdAPI } from "@/api/order/getCheckout"
 import { PayTypeDisplay, TradeState, TradeStateDisplay } from "@/api/pay/common"
 import { handleResErr, ResponseCode } from "@/api/response"
+import { RouteNames } from "@/router"
+import { pollingGetStreamIDsStatus } from "@/utils/getStreamIDsStatus"
 import { MessageUtil } from "@/utils/message"
 
 import CouponList from "../coupon-list"
@@ -80,11 +90,17 @@ const emit = defineEmits<{
 }>()
 
 // props
-const { data, isAdmin = true } = defineProps<{
+const {
+    data,
+    isAdmin = true,
+    column = 1,
+} = defineProps<{
     data: OrderGetByIDRes // 需要编辑的用户ID
     isAdmin?: boolean // 是否显示用户信息
+    column?: number // 信息列数
 }>()
 
+const router = useRouter()
 const dataAc = ref<OrderGetByIDRes>(data) // 实际数据
 
 const refundList = ref<RefundRes[]>(data.refund || [])
@@ -114,6 +130,7 @@ const availableRefundAmount = computed(() => {
 // 退款成功后触发事件
 const handleRefundSubmit = async () => {
     emit("edit-status", true)
+
     // 重新获取订单详情
     const req: OrderGetByIDRequest = {
         id: dataAc.value.id,
@@ -133,6 +150,72 @@ const handleRefundSubmit = async () => {
 const handleRemarkSubmit = async () => {
     emit("edit-status", true)
 }
+
+// 取消订单的加载状态
+const isOrderCancelLoading = ref(false)
+
+// 取消订单
+const handleCancel = async () => {
+    isOrderCancelLoading.value = true
+    try {
+        const req: OrderCancelRequest = {
+            id: dataAc.value.id,
+        }
+        const res = await orderCancelAPI(req)
+        if (res.data.code === ResponseCode.OrderCancelSuccess) {
+            // 保证有数据且包含 stream_items 字段才进行轮询
+            if (res.data.data && res.data.data.stream_items) {
+                await pollingGetStreamIDsStatus(res.data.data.stream_items)
+            }
+
+            // 取消成功，更新订单状态
+            dataAc.value.status = OrderStatus.Canceled
+            emit("edit-status", true)
+            MessageUtil.success("订单取消成功")
+        } else {
+            const msg = handleResErr(res)
+            MessageUtil.error(msg)
+        }
+    } catch (error) {
+        MessageUtil.error("订单取消失败，请稍后重试")
+    } finally {
+        isOrderCancelLoading.value = false
+    }
+}
+
+// 重新结算的加载状态
+const isOrderReCheckoutLoading = ref(false)
+
+// 重新结算订单
+const handleReCheckout = async () => {
+    isOrderReCheckoutLoading.value = true
+    try {
+        const req: GetCheckoutByOrderIdRequest = {
+            id: dataAc.value.id,
+        }
+        const res = await getOrderCheckoutByOrderIdAPI(req)
+        if (res.data.code === ResponseCode.GetOrderCheckoutSuccess) {
+            router.push({ name: RouteNames.Checkout })
+        } else if (res.data.code === ResponseCode.OrderCheckoutOrderIDMismatch) {
+            // 保证有数据且包含 stream_items 字段才进行轮询
+            if (res.data.data && res.data.data.stream_items) {
+                await pollingGetStreamIDsStatus(res.data.data.stream_items)
+            }
+
+            // 关闭订单
+            dataAc.value.status = OrderStatus.Closed
+            emit("edit-status", true)
+            MessageUtil.error("订单信息已过期，请重新下单")
+        } else {
+            const msg = handleResErr(res)
+            MessageUtil.error(msg)
+        }
+    } catch (error) {
+        MessageUtil.error("订单结算失败，请稍后重试")
+    } finally {
+        isOrderReCheckoutLoading.value = false
+    }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -141,5 +224,10 @@ const handleRemarkSubmit = async () => {
 .coupon-list,
 .refund-list {
     margin-bottom: 40px;
+}
+
+.order-operation {
+    text-align: center;
+    margin: 20px 0;
 }
 </style>
