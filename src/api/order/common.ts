@@ -30,19 +30,19 @@ export enum OrderStatus {
 
 // 订单状态显示
 export const OrderStatusDisplay: Record<OrderStatus, string> = {
-    [OrderStatus.AllStatus]: "全部",
-    [OrderStatus.PendingPay]: "待支付",
-    [OrderStatus.Processing]: "处理中",
-    [OrderStatus.Shipped]: "已发货",
-    [OrderStatus.InTransit]: "运输中",
-    [OrderStatus.Delivered]: "已送达",
-    [OrderStatus.Canceled]: "已取消",
-    [OrderStatus.Returning]: "退货中",
-    [OrderStatus.Returned]: "已退货",
-    [OrderStatus.Complete]: "已完成",
-    [OrderStatus.RefundedPartially]: "部分退款",
-    [OrderStatus.RefundedAll]: "全额退款",
-    [OrderStatus.Closed]: "已关闭",
+    [OrderStatus.AllStatus]: "📋全部",
+    [OrderStatus.PendingPay]: "🕒待支付",
+    [OrderStatus.Processing]: "🔄处理中",
+    [OrderStatus.Shipped]: "📦已发货",
+    [OrderStatus.InTransit]: "🚚运输中",
+    [OrderStatus.Delivered]: "📬已送达",
+    [OrderStatus.Canceled]: "❌已取消",
+    [OrderStatus.Returning]: "↩️退货中",
+    [OrderStatus.Returned]: "↩️已退货",
+    [OrderStatus.Complete]: "✅已完成",
+    [OrderStatus.RefundedPartially]: "🔁部分退款",
+    [OrderStatus.RefundedAll]: "♻️全额退款",
+    [OrderStatus.Closed]: "🚫已关闭",
 }
 
 // 获取订单状态选项
