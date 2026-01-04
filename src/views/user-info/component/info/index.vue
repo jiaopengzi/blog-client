@@ -92,13 +92,12 @@
 import { SocialLoginDisplay, SocialLoginType } from "@/api/common"
 import AvatarInitials from "@/components/common/avatar-initials"
 import AvatarUpload from "@/components/common/avatar-upload"
+import { useDevice } from "@/components/hooks/useDevice"
 import { useInfo } from "@/views/user-info/component/info/hooks"
-
-import { useUserInfo } from "../hook"
 
 defineOptions({ name: "UserInfoInfo" })
 
-const { descriptionCols } = useUserInfo()
+const { descriptionCols } = useDevice()
 
 const {
     editFormRef,

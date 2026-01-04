@@ -53,7 +53,7 @@ const cols: TableColumn[] = reactive([
         prop: "status",
         label: "状态",
         sortable: true,
-        minWidth: 80,
+        minWidth: 100,
         align: "center",
         formatter: (row: TableData) => {
             if ("status" in row) {
@@ -74,7 +74,7 @@ const cols: TableColumn[] = reactive([
         prop: "created_at",
         label: "创建时间",
         sortable: true,
-        minWidth: 100,
+        minWidth: 120,
         align: "center",
     },
 ])

@@ -176,7 +176,7 @@ export function generateColsUserInfoFavorite() {
         {
             prop: "thumbnail",
             label: "图片",
-            width: 200,
+            width: 120,
             align: "center",
             isImg: true,
         },

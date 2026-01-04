@@ -39,110 +39,117 @@
         </div>
 
         <!-- 表格内容 -->
-        <el-table
-            v-show="showListOrGridStatus"
-            ref="tableRef"
-            :data="pagination.records"
-            stripe
-            @selection-change="handleSelectionChange"
-            :row-style="rowStyle"
-            style="width: 100%"
-            :height="height"
-        >
-            <!-- 选择框 -->
-            <el-table-column v-if="isShowDeleteAll" type="selection" width="50" align="center" />
+        <div class="table-container" style="overflow-x: auto">
+            <el-table
+                v-show="showListOrGridStatus"
+                ref="tableRef"
+                :data="pagination.records"
+                stripe
+                @selection-change="handleSelectionChange"
+                :row-style="rowStyle"
+                style="width: 100%; min-width: 800px"
+                :height="height"
+            >
+                <!-- 选择框 -->
+                <el-table-column v-if="isShowDeleteAll" type="selection" width="50" align="center" />
 
-            <template v-for="(col, index) in tableColumn">
-                <!-- 图片 -->
-                <el-table-column v-if="col.isImg" :key="`img-${index}`" :width="col.width" :min-width="col.minWidth" :align="col.align">
+                <template v-for="(col, index) in tableColumn">
+                    <!-- 图片 -->
+                    <el-table-column v-if="col.isImg" :key="`img-${index}`" :width="col.width" :min-width="col.minWidth" :align="col.align">
+                        <template #header>
+                            <span>{{ col.label }}</span>
+                        </template>
+                        <template #default="scope">
+                            <div class="thumbnail" v-single-dbl-click="clickHandler(scope.row)">
+                                <img
+                                    v-if="scope.row.img?.url"
+                                    class="thumbnail-img"
+                                    :src="scope.row.img?.url"
+                                    :style="imgStyle(scope.row.img?.width, scope.row.img?.height, scope.row.img?.imgFit)"
+                                />
+                                <j-icon
+                                    v-else-if="scope.row.img?.iconKeyName"
+                                    class="thumbnail-img"
+                                    :name="scope.row.img?.iconKeyName"
+                                    :style="iconStyle(scope.row.img?.fontSize)"
+                                />
+                            </div>
+                        </template>
+                    </el-table-column>
+
+                    <!-- 分类信息 -->
+                    <CustomCol v-else-if="col.isCategories" :key="`category-${index}`" :col="col" @click-item="handleCategoryClick" />
+
+                    <!-- 标签信息 -->
+                    <CustomCol v-else-if="col.isTags" :key="`tag-${index}`" :col="col" @click-item="handleTagClick" />
+
+                    <!-- 标题 -->
+                    <CustomCol v-else-if="col.isHeading" :key="`heading-${index}`" :col="col" />
+
+                    <!-- 包含 id 信息的 标题 -->
+                    <CustomCol v-else-if="col.isHeadingWithId" :key="`heading-with-id-${index}`" :col="col" @view-post="handleViewPost" />
+
+                    <!-- 需要复制的文本 -->
+                    <CustomCol v-else-if="col.isCopyText" :key="`copy-text-${index}`" :col="col" />
+
+                    <!-- 作者 -->
+                    <CustomCol
+                        v-else-if="col.isUser"
+                        :key="`author-${index}`"
+                        :col="col"
+                        @click-author="handleAuthorClick"
+                        :is-show-cursor-pointer="isShowCursorPointer"
+                        :is-show-user-name="isShowUserName"
+                        :avatar-width="avatarWidth"
+                        :is-show-user-email="isShowUserEmail"
+                        :is-show-user-display-name="isShowUserDisplayName"
+                    />
+
+                    <!-- 评论文章信息 -->
+                    <CustomCol
+                        v-else-if="col.isCommentWithPost"
+                        :key="`comment-post-${index}`"
+                        :col="col"
+                        @post-click="handlePostClick"
+                        @view-post="handleViewPost"
+                    />
+
+                    <!-- 评论文章信息 -->
+                    <CustomCol
+                        v-else-if="col.isMarkdownPreview"
+                        :key="`markdown-${index}`"
+                        :col="col"
+                        :markdown-preview-max-height="markdownPreviewMaxHeight"
+                    />
+
+                    <!-- 格式化文本 -->
+                    <CustomCol v-else-if="col.formatter" :key="`format-${index}`" :col="col" :tags-item-max-height="tagsItemMaxHeight" />
+
+                    <!-- 不需要处理，显示原值 -->
+                    <el-table-column
+                        v-else
+                        :key="col.prop"
+                        :prop="col.prop"
+                        :label="col.label"
+                        :sortable="col.sortable"
+                        :width="col.width"
+                        :min-width="col.minWidth"
+                        :align="col.align"
+                    />
+                </template>
+
+                <!-- 编辑按钮 -->
+                <el-table-column v-if="isShowEdit" width="80" align="center">
                     <template #header>
-                        <span>{{ col.label }}</span>
+                        <span>操作</span>
                     </template>
                     <template #default="scope">
-                        <div class="thumbnail" v-single-dbl-click="clickHandler(scope.row)">
-                            <img
-                                v-if="scope.row.img?.url"
-                                class="thumbnail-img"
-                                :src="scope.row.img?.url"
-                                :style="imgStyle(scope.row.img?.width, scope.row.img?.height, scope.row.img?.imgFit)"
-                            />
-                            <j-icon
-                                v-else-if="scope.row.img?.iconKeyName"
-                                class="thumbnail-img"
-                                :name="scope.row.img?.iconKeyName"
-                                :style="iconStyle(scope.row.img?.fontSize)"
-                            />
-                        </div>
+                        <el-button size="small" type="primary" @click="handleEdit(scope.$index, scope.row)">{{ rowOperationText }}</el-button>
+                        <!-- <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button> -->
                     </template>
                 </el-table-column>
-
-                <!-- 分类信息 -->
-                <CustomCol v-else-if="col.isCategories" :key="`category-${index}`" :col="col" @click-item="handleCategoryClick" />
-
-                <!-- 标签信息 -->
-                <CustomCol v-else-if="col.isTags" :key="`tag-${index}`" :col="col" @click-item="handleTagClick" />
-
-                <!-- 标题 -->
-                <CustomCol v-else-if="col.isHeading" :key="`heading-${index}`" :col="col" />
-
-                <!-- 包含 id 信息的 标题 -->
-                <CustomCol v-else-if="col.isHeadingWithId" :key="`heading-with-id-${index}`" :col="col" @view-post="handleViewPost" />
-
-                <!-- 需要复制的文本 -->
-                <CustomCol v-else-if="col.isCopyText" :key="`copy-text-${index}`" :col="col" />
-
-                <!-- 作者 -->
-                <CustomCol
-                    v-else-if="col.isUser"
-                    :key="`author-${index}`"
-                    :col="col"
-                    @click-author="handleAuthorClick"
-                    :is-show-cursor-pointer="isShowCursorPointer"
-                    :is-show-user-name="isShowUserName"
-                    :avatar-width="avatarWidth"
-                    :is-show-user-email="isShowUserEmail"
-                    :is-show-user-display-name="isShowUserDisplayName"
-                />
-
-                <!-- 评论文章信息 -->
-                <CustomCol
-                    v-else-if="col.isCommentWithPost"
-                    :key="`comment-post-${index}`"
-                    :col="col"
-                    @post-click="handlePostClick"
-                    @view-post="handleViewPost"
-                />
-
-                <!-- 评论文章信息 -->
-                <CustomCol v-else-if="col.isMarkdownPreview" :key="`markdown-${index}`" :col="col" :markdown-preview-max-height="markdownPreviewMaxHeight" />
-
-                <!-- 格式化文本 -->
-                <CustomCol v-else-if="col.formatter" :key="`format-${index}`" :col="col" :tags-item-max-height="tagsItemMaxHeight" />
-
-                <!-- 不需要处理，显示原值 -->
-                <el-table-column
-                    v-else
-                    :key="col.prop"
-                    :prop="col.prop"
-                    :label="col.label"
-                    :sortable="col.sortable"
-                    :width="col.width"
-                    :min-width="col.minWidth"
-                    :align="col.align"
-                />
-            </template>
-
-            <!-- 编辑按钮 -->
-            <el-table-column v-if="isShowEdit" width="80" align="center">
-                <template #header>
-                    <span>操作</span>
-                </template>
-                <template #default="scope">
-                    <el-button size="small" type="primary" @click="handleEdit(scope.$index, scope.row)">{{ rowOperationText }}</el-button>
-                    <!-- <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button> -->
-                </template>
-            </el-table-column>
-        </el-table>
+            </el-table>
+        </div>
 
         <!-- 宫格 -->
         <el-checkbox-group v-show="!showListOrGridStatus" v-model="checkedRows" @change="handleCheckedGridChange">
@@ -183,7 +190,7 @@
                 :page-count="pagination.page_count"
                 :total="pagination.total"
                 :background="true"
-                layout="total, prev, pager, next, jumper, sizes"
+                :layout="paginationLayout"
                 size="small"
                 @update:current-page="updateCurrentPage"
                 @update:page-size="updatePageSize"
@@ -234,6 +241,7 @@ import type { User } from "@/api/user/getUsers"
 import { MsgType } from "@/components/common"
 import type { SwitchItem, SwitchItemColor, SwitchItemLabel } from "@/components/common/switch-group"
 import SwitchGroup from "@/components/common/switch-group"
+import { useDevice } from "@/components/hooks/useDevice"
 import { useStatusStore } from "@/stores/status"
 import { deleteConfirmCommon } from "@/utils/confirm"
 import { type SingleDblClickBinding } from "@/utils/singleDblClickDirective"
@@ -321,6 +329,8 @@ const emit = defineEmits<{
     (event: "post-click", postID: string): void // 点击文章
     (event: "view-post", postID: string): void // 查看文章
 }>()
+
+const { paginationLayout } = useDevice()
 
 const tableRef: Ref<InstanceType<typeof ElTable> | null> = useTemplateRef<InstanceType<typeof ElTable>>("tableRef") //表格实例
 

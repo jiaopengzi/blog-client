@@ -44,14 +44,14 @@ import type { TableColumn, TableData } from "@/components/common/base-table"
 import BaseTable from "@/components/common/base-table/index.vue"
 import OrderDetail from "@/components/common/order-detail"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
+import { useDevice } from "@/components/hooks/useDevice"
 import { RouteNames } from "@/router"
 
-import { useUserInfo } from "../hook"
 import { UserInfoHash } from "../types"
 
 defineOptions({ name: "UserInfoOrder" })
 
-const { descriptionCols } = useUserInfo()
+const { descriptionCols } = useDevice()
 
 useHead({
     title: "用户信息-订单",
@@ -94,7 +94,7 @@ const cols: TableColumn[] = reactive([
         prop: "created_at",
         label: "下单时间",
         sortable: true,
-        minWidth: 80,
+        minWidth: 120,
         align: "center",
     },
 ])
