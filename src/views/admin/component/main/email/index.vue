@@ -35,6 +35,9 @@
             <el-form-item label="密码" prop="password">
                 <el-input type="password" v-model="form.password" placeholder="邮箱密码或授权码" show-password clearable />
             </el-form-item>
+            <el-form-item label="连接池" prop="pool_size">
+                <el-input-number class="input-number" v-model="form.pool_size" :min="1" :precision="0" placeholder="请输入连接池大小" />
+            </el-form-item>
             <el-form-item label="单次最大发送数量" prop="max_send_count">
                 <el-input-number class="input-number" v-model="form.max_send_count" :min="1" :precision="0" placeholder="请输入最大发送数量" />
             </el-form-item>
@@ -116,6 +119,7 @@ const submitForm = async () => {
                 password: form.value.password,
                 max_send_count: form.value.max_send_count,
                 send_interval: form.value.send_interval,
+                pool_size: form.value.pool_size,
             }
 
             const res = await updateEmailAPI(req)

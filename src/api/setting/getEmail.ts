@@ -10,13 +10,14 @@ import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
 
 export interface GetEmailResponse {
-    port: number
     host: string
     user_name: string
     from: string
     password: string
+    port: number
     max_send_count: number
     send_interval: number
+    pool_size: number
 }
 
 // 获取邮箱信息
