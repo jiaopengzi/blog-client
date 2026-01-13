@@ -21,14 +21,14 @@ const getGitTag = () => {
         if (!out) return "dev"
 
         // 参考: https://semver.org/lang/zh-CN/
-        // 语义化版本号正则 tag(形如 1.2.3 0.1.2-beta+251113)
+        // 语义化版本号正则 tag(形如 1.2.3 0.1.2-beta+251113), 同时兼容带小写v前缀
         // 将输出按行分割、去空并寻找符合语义化版本号格式的 tag
         const tags = out
             .split(/\r?\n/)
             .map((s) => s.trim())
             .filter(Boolean)
         const semverTag = tags.find((t) =>
-            /(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/.test(
+            /^v?(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/.test(
                 t,
             ),
         )

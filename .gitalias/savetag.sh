@@ -1,8 +1,8 @@
 #!/bin/bash
-# FilePath    : blog-client-dev\.gitalias\savetag.sh
+# FilePath    : go-utils\.gitalias\savetag.sh
 # Author      : jiaopengzi
 # Blog        : https://jiaopengzi.com
-# Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+# Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
 # Description : 根据 CHANGELOG.md 提交变更并打 Git 标签
 
 # 设置 Git 别名命令:
@@ -29,11 +29,11 @@ if [ -z "$VERSION" ]; then
     exit 1
 fi
 
-# 参考: https://semver.org/lang/zh-CN/ 获取最近的符合 1.2.3 0.1.2-beta+251113
-# 判断版本号是否符合语义化版本规范 (使用 POSIX ERE via grep -E)
-SEMVER_RE='^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-(0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(\.(0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$'
+# 参考: https://semver.org/lang/zh-CN/ 要求示例 v1.2.3
+# 判断版本号是否符合语义化版本规范并且必须以小写 v 开头 (使用 POSIX ERE via grep -E)
+SEMVER_RE='^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-(0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(\.(0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$'
 if ! printf '%s' "$VERSION" | grep -E -q "$SEMVER_RE"; then
-    echo "❌ 错误: 提取的版本号 '$VERSION' 不符合语义化版本规范(SemVer)。"
+    echo "❌ 错误: 提取的版本号 '$VERSION' 不符合要求; 必须以小写字母 v 开头(例如 v1.2.3), 且遵循语义化版本规范(SemVer)."
     exit 1
 fi
 
