@@ -116,7 +116,6 @@ export default defineConfig({
                     @use '@/assets/scss/platform/_pc.scss' as pc;
                     @use '@/assets/scss/mixin.scss' as *;
                     `,
-                silenceDeprecations: ["if-function"],
             },
             // devSourceMap: true, // 开发环境下是否生成 sourceMap
         },
