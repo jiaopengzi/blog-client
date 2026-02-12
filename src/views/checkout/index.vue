@@ -89,7 +89,7 @@ import { DeviceType, useDeviceStore } from "@/stores/device"
 import { fenToYuan } from "@/utils/amount"
 
 import { useOrderCheckout } from "./hooks"
-import PayQRCode from "./pay-qr-code"
+import PayQRCode from "@/components/common/pay-qr-code"
 
 defineOptions({ name: RouteNames.Checkout })
 

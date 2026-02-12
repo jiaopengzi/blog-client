@@ -1,0 +1,45 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "perf": "warn"
+  },
+  "rules": {
+    "no-unused-vars": "warn",
+    "no-console": "off",
+    "no-debugger": "error",
+    "eqeqeq": "error",
+    "no-var": "error",
+    "no-empty": "warn",
+    "no-constant-condition": "error",
+    "no-duplicate-case": "error",
+    "no-fallthrough": "error",
+    "no-self-compare": "error",
+    "no-template-curly-in-string": "warn",
+    "no-unreachable": "error",
+    "no-unsafe-negation": "error",
+    "use-isnan": "error",
+    "valid-typeof": "error"
+  },
+  "env": {
+    "builtin": true
+  },
+  "globals": {
+    "window": "readonly",
+    "document": "readonly",
+    "fetch": "readonly",
+    "localStorage": "readonly",
+    "sessionStorage": "readonly",
+    "FormData": "readonly",
+    "URLSearchParams": "readonly",
+    "alert": "readonly",
+    "confirm": "readonly"
+  },
+  "ignorePatterns": [
+    "node_modules/",
+    "dist/",
+    "*.min.js"
+  ]
+}

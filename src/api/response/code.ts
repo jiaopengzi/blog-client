@@ -297,6 +297,28 @@ export enum ResponseCode {
     DashboardGetStatsSuccess = 6101, // 获取面板统计数据成功
     DashboardGetTrendSuccess = 6102, // 获取面板按维度统计数据成功
 
+    // 计费中心相关
+    BillingCenterRequestTimeout = 6200, // 请求超时
+    BillingCenterCaptchaSendSuccess = 6201, // 发送验证码成功
+    BillingCenterCaptchaSendFailed = 6202, // 发送验证码失败
+    BillingCenterRegisterSuccess = 6203, // 注册成功
+    BillingCenterAccountExists = 6204, // 账号已存在
+    BillingCenterAccountNotExists = 6205, // 账号不存在
+    BillingCenterRegisterFailed = 6206, // 注册失败
+    BillingCenterResetCertSuccess = 6207, // 重置证书成功
+    BillingCenterResetCertFailed = 6208, // 重置证书失败
+    BillingCenterGetAccountSuccess = 6209, // 获取账号成功
+    BillingCenterGetAccountFailed = 6210, // 获取账号失败
+    BillingCenterGetAccountBusy = 6211, // 获取账号繁忙
+    BillingCenterRechargeOrderFailed = 6212, // 充值下单失败
+    BillingCenterRechargeOrderSuccess = 6213, // 充值下单成功
+    BillingCenterRechargeOrderPayQueryFailed = 6214, // 充值查询失败
+    BillingCenterRechargeOrderPayQuerySuccess = 6215, // 充值查询成功
+    BillingCenterNotifyThresholdSuccess = 6216, // 设置阈值成功
+    BillingCenterNotifyThresholdFailed = 6217, // 设置阈值失败
+    BillingCenterTransactionFlowListFailed = 6218, // 获取流水失败
+    BillingCenterTransactionFlowListSuccess = 6219, // 获取流水成功
+
     // 验证码相关
     CaptchaSendSuccess = 8000, // 验证码发送成功
     CaptchaSendError = 8001, // 验证码发送失败

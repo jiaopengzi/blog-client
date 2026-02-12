@@ -7,6 +7,7 @@
  */
 
 import type { AccountKeyItemRes, AccountKeyRes } from "@/api/accountKey/common"
+import { type TransactionFlowRes } from "@/api/billingCenter/common"
 import { type CommentResAdmin } from "@/api/comment/common"
 import { type CouponRes } from "@/api/coupon/common"
 import { type LinkRes } from "@/api/link/common"
@@ -62,6 +63,7 @@ export type TableData =
     | CouponRes
     | MembershipRes
     | OrderGetByIDRes
+    | TransactionFlowRes
 
 export interface FormatTableData {
     thumbnail?: string // 缩略图

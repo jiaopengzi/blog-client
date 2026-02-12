@@ -190,6 +190,11 @@ export const adminMenuItemMap: AdminMenuItemMap = {
         permissionName: PermissionNames.Shop,
         parentIndex: RouteNamesAdmin.Shop,
     },
+    [RouteNamesAdmin.BillingCenter]: {
+        text: "计费中心",
+        permissionName: PermissionNames.Shop,
+        parentIndex: RouteNamesAdmin.Shop,
+    },
     // [RouteNamesAdmin.ShortLink]: {
     //     text: "短连接",
     //     icon: {

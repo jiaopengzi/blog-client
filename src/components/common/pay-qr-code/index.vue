@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\views\checkout\pay-qr-code\index.vue
+ * FilePath    : blog-client\src\components\common\pay-qr-code\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

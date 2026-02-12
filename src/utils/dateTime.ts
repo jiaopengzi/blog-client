@@ -100,6 +100,19 @@ export function parseTimeSegments(hours: string, minutes: string, seconds: strin
     return parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseInt(seconds) + parseInt(milliseconds) / 1000
 }
 
+/**
+ * 格式化 Date 为本地 ISO 字符串
+ * 输出格式: YYYY-MM-DDTHH:mm:ss±HH:MM (匹配 el-date-picker value-format="YYYY-MM-DDTHH:mm:ssZ")
+ */
+export const formatLocalISO = (date: Date): string => {
+    const pad = (n: number) => String(n).padStart(2, "0")
+    const offset = -date.getTimezoneOffset()
+    const sign = offset >= 0 ? "+" : "-"
+    const oh = pad(Math.floor(Math.abs(offset) / 60))
+    const om = pad(Math.abs(offset) % 60)
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}${sign}${oh}:${om}`
+}
+
 // 时间快捷选项
 export const generateShortcuts = (useDisplay: string) => {
     return [

@@ -1,17 +1,9 @@
 <template>
-    <j-icon name="upload" />
+    <DateRangeShortcuts />
 </template>
-
 <script setup lang="ts">
 defineOptions({ name: "MyTest" })
+import DateRangeShortcuts from "@/components/common/date-range-shortcuts/index.vue"
 </script>
 
-<style scoped lang="scss">
-.my-test {
-    padding: 20px;
-    width: 200px;
-    height: 200px;
-    // 自动显示滚动条
-    overflow: auto;
-}
-</style>
+<style scoped lang="scss"></style>
