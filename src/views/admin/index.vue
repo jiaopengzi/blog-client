@@ -136,13 +136,12 @@ const updatePermission = (index: string) => {
     } else {
         hasPermissionContent.value = true
     }
-
-    router.push({ path: index })
 }
 
 // 选择菜单项
 const handleSelect = (index: string) => {
     updatePermission(index)
+    router.push({ path: index })
 }
 
 onBeforeMount(() => {

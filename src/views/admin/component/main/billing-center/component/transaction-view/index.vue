@@ -316,7 +316,9 @@ const handleSearch = debounce(300, async () => {
     delete queryParams.type
 
     Object.assign(queryParams, params)
+    // 先更新路由参数, 再强制刷新列表(即使参数未变也重新请求)
     await updateRouterPush()
+    await updatePaginate()
 })
 
 // 重置
@@ -331,6 +333,8 @@ const handleReset = debounce(300, async () => {
     delete queryParams.date_start
     delete queryParams.date_end
     delete queryParams.type
+    delete queryParams.current_page
+    delete queryParams.page_size
 
     await updateRouterPush()
 })
