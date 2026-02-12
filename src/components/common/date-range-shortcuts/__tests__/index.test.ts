@@ -10,7 +10,6 @@ import ElementPlus from "element-plus"
 
 import DateRangeShortcuts from "../index.vue"
 import type { DateShortcut } from "../types"
-import { formatLocalISO } from "@/utils/dateTime"
 
 // 固定当前时间
 const NOW = new Date(2026, 1, 12, 14, 30, 0, 0)

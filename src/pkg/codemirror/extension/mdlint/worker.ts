@@ -86,10 +86,12 @@ self.addEventListener("message", async (ev) => {
         const loader = loaders[p]
         if (options?.devHotReload) {
             // devHotReload 开启时, 强制重新加载并更新缓存
+            // eslint-disable-next-line no-await-in-loop
             r = await loadModuleAndCache(p, loader, true)
         } else {
             // 正常模式下, 仅在缓存缺失时加载
             if (!r) {
+                // eslint-disable-next-line no-await-in-loop
                 r = await loadModuleAndCache(p, loader, false)
             }
         }
@@ -106,7 +108,7 @@ self.addEventListener("message", async (ev) => {
         // 合并默认配置与用户传入配置
         let ruleOpts = { ...(r.defaultOptions || {}) }
         if (typeof cfg === "object") ruleOpts = { ...ruleOpts, ...cfg }
-        if (options?.maxLineLength != null && r.id === "rule002") {
+        if (options?.maxLineLength !== null && options?.maxLineLength !== undefined && r.id === "rule002") {
             ruleOpts = { ...ruleOpts, maxLineLength: options.maxLineLength }
         }
 

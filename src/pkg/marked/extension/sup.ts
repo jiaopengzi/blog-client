@@ -12,10 +12,10 @@ export const supExtensionInline: TokenizerAndRendererExtension = {
     name: "sup",
     level: "inline",
     start(src: string): number | undefined {
-        return src.match(/\^([^\^\n]+)\^/)?.index
+        return src.match(/\^([^\n^]+)\^/)?.index
     },
     tokenizer(src: string): Token | undefined {
-        const rule = /^\^([^\^\n]+)\^/
+        const rule = /^\^([^\n^]+)\^/
         const match = rule.exec(src)
         if (match) {
             const token: Token = {

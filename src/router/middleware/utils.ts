@@ -22,6 +22,7 @@ export const handleMiddleware = async (middlewares: MiddlewareFunction[], to: Ro
     // 遍历所有中间件函数
     for (const middleware of middlewares) {
         // 执行中间件函数并等待其结果
+        // eslint-disable-next-line no-await-in-loop
         const result = await middleware(to, from)
 
         // 如果中间件函数的返回值不是 true，则停止执行后续中间件并返回该结果

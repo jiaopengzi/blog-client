@@ -24,10 +24,6 @@ export const CustomElementAttributes: string[] = Object.values(Attributes)
 
 // 通用自定义元素基类
 export class BaseCustomElement extends HTMLElement {
-    constructor() {
-        super()
-    }
-
     // 限定属性
     static get observedAttributes() {
         return CustomElementAttributes

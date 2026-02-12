@@ -27,13 +27,13 @@ export function useSwitchItem(postInfoForm: Reactive<UpsertPostForm>) {
     }
 
     // 常规设置是否展示
-    const defaultStatusIsShow = ref(localStorage.getItem(LocalStorageKey.IsShowSeoAtPostWrite) == "true")
+    const defaultStatusIsShow = ref(localStorage.getItem(LocalStorageKey.IsShowSeoAtPostWrite) === "true")
     const defaultStatus: SwitchItem[] = reactive([
         {
             name: "defaultStatus",
             display: "常规设置",
             namePosition: "left",
-            status: localStorage.getItem(LocalStorageKey.IsShowSeoAtPostWrite) == "true",
+            status: localStorage.getItem(LocalStorageKey.IsShowSeoAtPostWrite) === "true",
             label: {
                 active: "展开",
                 inactive: "折叠",
@@ -106,7 +106,7 @@ export function useSwitchItem(postInfoForm: Reactive<UpsertPostForm>) {
     // 付费角色开关项
     const { rolePaidList, initRolePaidManagement, updateRolePaidList } = usePayRolesSwitchItem(
         postInfoForm,
-        postInfoForm.post_type === PostType.Page ? true : false, // 如果是页面类型，则默认开启
+        postInfoForm.post_type === PostType.Page, // 如果是页面类型，则默认开启
     )
 
     return {

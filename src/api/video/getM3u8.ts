@@ -28,7 +28,7 @@ export function getM3u8API(fileIdHashResolution: string, postId: string = ""): R
 }
 
 // 管理员获取， postId 作为占位符无实际意义，保证接口统一
-export function getM3u8AdminAPI(fileIdHashResolution: string, postId: string = ""): ResPromise<Res<M3u8ResData>> {
+export function getM3u8AdminAPI(fileIdHashResolution: string, _postId: string = ""): ResPromise<Res<M3u8ResData>> {
     return request({
         url: `${routerGroup}/video/admin/${fileIdHashResolution}`,
         method: "get",

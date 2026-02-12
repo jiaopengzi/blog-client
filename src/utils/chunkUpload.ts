@@ -283,6 +283,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
             this.emit(UploadControllerEvents.CHECK_WHOLE_HASH, this.uploadFileInfo.file_name) // 检查整个文件的hash
             this.emit(UploadControllerEvents.PROGRESS, 0) // 检查整个文件的hash
             for (const chunk of this.chunkSplitter.chunks) {
+                // eslint-disable-next-line no-await-in-loop
                 await this.chunkSplitter.hashCalculator.updateIncrementalHash(chunk.blob)
             }
 

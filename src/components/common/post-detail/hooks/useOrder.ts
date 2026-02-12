@@ -70,7 +70,7 @@ export function useOrder(postId: Ref<string>) {
     }
 
     // 处理支付单篇文章
-    const handlePaySingle = async (val: ContentPayType) => {
+    const handlePaySingle = async (_val: ContentPayType) => {
         // 更新返回URL
         await updateUrl()
 
@@ -84,7 +84,7 @@ export function useOrder(postId: Ref<string>) {
     }
 
     // 处理支付成为 VIP
-    const handlePayVip = async (val: ContentPayType) => {
+    const handlePayVip = async (_val: ContentPayType) => {
         // 更新返回URL
         await updateUrl()
 

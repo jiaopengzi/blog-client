@@ -35,13 +35,13 @@ function extractInfo(fileContent) {
     let description = ""
     const commentBlockMatch = fileContent.match(/\/\*[\s\S]*?\*\//)
     if (commentBlockMatch) {
-        const descMatch = commentBlockMatch[0].match(/Description\s*:\s*([^\r\n\*]+)/i)
+        const descMatch = commentBlockMatch[0].match(/Description\s*:\s*([^\r\n*]+)/i)
         if (descMatch) description = descMatch[1].trim()
     }
 
     // fallback: 尝试读取文件中任意位置的 Description 注释
     if (!description) {
-        const anyDesc = fileContent.match(/Description\s*:\s*([^\r\n\*]+)/i)
+        const anyDesc = fileContent.match(/Description\s*:\s*([^\r\n*]+)/i)
         if (anyDesc) description = anyDesc[1].trim()
     }
 
@@ -73,9 +73,9 @@ function detectOptionsType(fileContent) {
     if (runNamedMatch) {
         const typeName = runNamedMatch[1]
         // 查找同文件中对应的 type/interface 定义
-        const typeDefMatch = fileContent.match(new RegExp(`(?:export\s+)?type\\s+${typeName}\\s*=\\s*({[\\s\\S]*?})`, "m"))
+        const typeDefMatch = fileContent.match(new RegExp(`(?:export\\s+)?type\\s+${typeName}\\s*=\\s*({[\\s\\S]*?})`, "m"))
         if (typeDefMatch) return typeDefMatch[1].replace(/\r?\n/gs, " ").replace(/\s+/g, " ").trim()
-        const ifaceDefMatch = fileContent.match(new RegExp(`(?:export\s+)?interface\\s+${typeName}\\s*({[\\s\\S]*?})`, "m"))
+        const ifaceDefMatch = fileContent.match(new RegExp(`(?:export\\s+)?interface\\s+${typeName}\\s*({[\\s\\S]*?})`, "m"))
         if (ifaceDefMatch) return ifaceDefMatch[1].replace(/\r?\n/gs, " ").replace(/\s+/g, " ").trim()
     }
 

@@ -35,7 +35,7 @@ export async function loadScriptFromString(htmlString: string): Promise<boolean>
 
             if (src) {
                 // 避免重复加载同一 src
-                if (document.querySelector(`script[src=\"${src}\"]`)) continue
+                if (document.querySelector(`script[src="${src}"]`)) continue
 
                 // 外链脚本：创建新的脚本元素加载
                 const p = new Promise<boolean>((resolve, reject) => {
@@ -63,6 +63,7 @@ export async function loadScriptFromString(htmlString: string): Promise<boolean>
                     loadPromises.push(p)
                 } else {
                     // 同步等待（按顺序执行）
+                    // eslint-disable-next-line no-await-in-loop
                     await p
                 }
             } else {
@@ -81,6 +82,7 @@ export async function loadScriptFromString(htmlString: string): Promise<boolean>
                 document.body.appendChild(s)
 
                 // 如果是 module 则等待其完成
+                // eslint-disable-next-line no-await-in-loop
                 if (isModule) await Promise.resolve()
             }
         }
@@ -103,7 +105,9 @@ export async function loadScriptFromString(htmlString: string): Promise<boolean>
         // 清理临时容器
         try {
             container.remove()
-        } catch {}
+        } catch {
+            // 忽略容器清理异常.
+        }
         return false
     }
 }
@@ -112,9 +116,10 @@ export async function loadScriptFromString(htmlString: string): Promise<boolean>
 function isValidJavaScript(code: string): boolean {
     try {
         // 使用 new Function 而非 eval 来验证语法，避免执行代码
-        new Function(code)
+        const fn = new Function(code)
+        void fn
         return true
-    } catch (e) {
+    } catch {
         return false
     }
 }

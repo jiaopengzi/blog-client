@@ -122,7 +122,7 @@ export function useData() {
     const noRequestKeys: QueryParamsRecord<queryKey> = { [queryKey.FileType]: AllFileType }
 
     // 显示列表或网格状态
-    const showListOrGridStatus = ref(localStorage.getItem(LocalStorageKey.IsShowListOrGridAtMedia) == "true")
+    const showListOrGridStatus = ref(localStorage.getItem(LocalStorageKey.IsShowListOrGridAtMedia) === "true")
 
     // 编辑数据
     const editMediaData: EditMediaProps = reactive({

@@ -161,7 +161,7 @@ export function isValidCSS(css: string): CSSValidationResult {
             if (colonPosOutside !== -1) {
                 const before = line.slice(0, colonPosOutside).trim()
                 // 声明的属性名通常不包含空格、逗号、选择器符号或伪元素/伪类标记
-                const looksLikePropOutside = /^[a-zA-Z_-][a-zA-Z0-9_-]*$/.test(before) || /^--[A-Za-z0-9\-]+$/.test(before)
+                const looksLikePropOutside = /^[a-zA-Z_-][a-zA-Z0-9_-]*$/.test(before) || /^--[A-Za-z0-9-]+$/.test(before)
                 if (!looksLikePropOutside) {
                     // 很可能是选择器包含伪类/伪元素, 忽略
                     continue
@@ -199,7 +199,7 @@ export function isValidCSS(css: string): CSSValidationResult {
 
             // 识别冒号左侧是否像属性名 (排除选择器/伪类/伪元素)
             const possibleLeft = line.slice(0, colonPos).trim()
-            const looksLikeProp = /^[a-zA-Z_-][a-zA-Z0-9_-]*$/.test(possibleLeft) || /^--[A-Za-z0-9\-]+$/.test(possibleLeft)
+            const looksLikeProp = /^[a-zA-Z_-][a-zA-Z0-9_-]*$/.test(possibleLeft) || /^--[A-Za-z0-9-]+$/.test(possibleLeft)
             if (!looksLikeProp) {
                 // 不是属性声明(可能是选择器或伪类/伪元素), 跳过
                 continue
@@ -457,7 +457,7 @@ export function checkNotCssLines(css: string): Array<{ lineNo: number; text: str
     const lines = css.split(/\r?\n/)
 
     // 将正则提到循环外以提高效率, 判断是否像 CSS 行：@ 规则、包含花括号/分号、包含冒号、常见选择器符号
-    const cssLinePattern = /^@|[{};]|:|[.#\[]/
+    const cssLinePattern = /^@|[{};]|:|[.#[]/
 
     // 遍历每一行进行检测
     for (let i = 0; i < lines.length; i++) {
@@ -565,7 +565,7 @@ function splitDeclarationsOutsideStrings(text: string): string[] {
  */
 function validatePropName(prop: string, lineNo: number, result: CSSValidationResult): boolean {
     // 允许以 -- 开头的 CSS 变量
-    if (!/^--[A-Za-z0-9\-]+$/.test(prop)) {
+    if (!/^--[A-Za-z0-9-]+$/.test(prop)) {
         // 普通属性名必须以字母或下划线开头, 后续字符可以是字母、数字、下划线或连字符
         if (!/^[a-zA-Z_-][a-zA-Z0-9_-]*$/.test(prop)) {
             result.isValid = false

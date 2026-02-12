@@ -328,7 +328,7 @@ const handleRolesTagClick = (item: UserCountGroupByRole, list: string[]): string
 // 处理 to_list 和 exclude_to_list 的角色标签点击事件
 const toListRolesTagClick = async (item: UserCountGroupByRole) => {
     // 当清空的时, toList.value 可能为 undefined 或 null, 将其初始化为空数组
-    if (toList.value == undefined || toList.value == null) {
+    if (toList.value === undefined || toList.value === null) {
         toList.value = []
     }
 
@@ -339,7 +339,7 @@ const toListRolesTagClick = async (item: UserCountGroupByRole) => {
 
 const excludeToListRolesTagClick = async (item: UserCountGroupByRole) => {
     // 当清空的时, excludeToList.value 可能为 undefined 或 null, 将其初始化为空数组
-    if (excludeToList.value == undefined || excludeToList.value == null) {
+    if (excludeToList.value === undefined || excludeToList.value === null) {
         excludeToList.value = []
     }
 

@@ -51,12 +51,7 @@ function createCustomElementClass(elementName: string): typeof BaseCustomElement
         console.warn(`Creating custom element with non-standard name: "${elementName}". Proceeding anyway.`)
     }
 
-    class DynamicCustomElement extends BaseCustomElement {
-        constructor() {
-            super()
-            // 自定义扩展, 比如根据 elementName 做不同的初始化
-        }
-    }
+    class DynamicCustomElement extends BaseCustomElement {}
 
     // // 可以给类加一个静态名称, 便于调试
     // Object.defineProperty(DynamicCustomElement, "name", {
@@ -92,7 +87,7 @@ function checkCustomElementTagName(elementName: string): boolean {
     }
     // 不能包含大写字母
     if (/[A-Z]/.test(elementName)) {
-        console.warn(`⚠️ Warning: Custom element name "${elementName}" contains uppercase letters. ` + `It's recommended to use lowercase letters only.`)
+        console.warn(`⚠️ Warning: Custom element name "${elementName}" contains uppercase letters. It's recommended to use lowercase letters only.`)
         return false
     }
 

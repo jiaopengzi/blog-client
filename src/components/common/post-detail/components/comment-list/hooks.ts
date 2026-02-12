@@ -67,13 +67,13 @@ export function useCommentList(req: Reactive<ViewCommentRequest>) {
     const { updateCurrentPage, updatePageSize, updatePaginate } = usePaginationNoRouter(pagination, getPaginate, req)
 
     // 删除评论
-    const handleDelete = async (commentID: string): Promise<void> => {
+    const handleDelete = async (_commentID: string): Promise<void> => {
         // 更新分页数据
         await updatePaginate()
     }
 
     // 处理置顶
-    const handlePinned = async (commentID: string, isPinned: CommentPinnedCode): Promise<void> => {
+    const handlePinned = async (_commentID: string, _isPinned: CommentPinnedCode): Promise<void> => {
         // 更新分页数据
         await updatePaginate()
     }

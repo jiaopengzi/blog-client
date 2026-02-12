@@ -111,8 +111,8 @@ export function usePostDetail(
     }
 
     // 点击作者
-    const clickAuthorId = (val: string) => {
-        // console.log("============>author", val)
+    const clickAuthorId = (_val: string) => {
+        // console.log("============>author", _val)
     }
 
     // 编辑文章

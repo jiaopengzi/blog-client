@@ -61,7 +61,7 @@ export function useFormValidation(options: FormValidationOptions): {
         // 历遍 toListArray 检查每个接收人, 是否符合邮箱或者角色
         for (const item of toListArray) {
             // 如果是空,则是清空操作
-            if (item == "") {
+            if (item === "") {
                 callback()
                 return
             }

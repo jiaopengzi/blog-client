@@ -7,7 +7,7 @@
  */
 
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
-import { type Reactive, type Ref } from "vue"
+import { type Reactive } from "vue"
 
 import { type InsertPostRequest, PostType, type UpdatePostRequest } from "@/api/post/common"
 

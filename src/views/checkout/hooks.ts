@@ -192,6 +192,7 @@ export function useOrderCheckout() {
                 order_id: orderID,
                 pay_type: payType,
             }
+            // eslint-disable-next-line no-await-in-loop
             const res = await payQueryAPI(req)
             const info = res.data
 
@@ -207,6 +208,7 @@ export function useOrderCheckout() {
                     break // 立即退出轮询
                 }
                 if (info.data.pay_status === TradeState.Unpaid) {
+                    // eslint-disable-next-line no-await-in-loop
                     await new Promise((resolve) => setTimeout(resolve, pollingTime))
                     continue
                 }

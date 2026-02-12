@@ -48,7 +48,7 @@ export const formatterVideoIsHLS = (row: TableData) => {
 // 格式化视频分辨率
 export const formatterVideoQuality = (row: TableData) => {
     if ("video_quality_name" in row && "is_server_process" in row) {
-        if (row.is_server_process && row.video_quality_name == "") {
+        if (row.is_server_process && row.video_quality_name === "") {
             return "服务器处理中..."
         }
         if (!row.is_server_process) {

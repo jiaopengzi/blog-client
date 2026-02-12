@@ -395,7 +395,9 @@ export async function katexToImage(container: HTMLElement, className: string = "
             // katex.parentNode?.replaceChild(img, katex) // 替换 katex 公式
 
             // 使用 snapdom 将 katex 转成图片
+            // eslint-disable-next-line no-await-in-loop
             const snap = await snapdom(katex)
+            // eslint-disable-next-line no-await-in-loop
             const img = await snap.toPng({
                 scale: 3,
                 backgroundColor: "#ffffff00", // 透明背景

@@ -97,7 +97,6 @@ export function createMarkdownLinter(options: MarkdownLinterOptions = {}): Exten
 
         const plugin = ViewPlugin.fromClass(
             class {
-                constructor() {}
                 destroy() {
                     try {
                         worker.terminate()
