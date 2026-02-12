@@ -10,10 +10,21 @@
 
 $theme-name-dark: "dark";
 $jpz-color-primary-dark: #c89828;
+$jpz-color-secondary-dark: #bb1818;
+$jpz-color-success-dark: #67c23a;
+$jpz-color-warning-dark: #e6a23c;
+$jpz-color-danger-dark: #f56c6c;
+$jpz-color-error-dark: #f56c6c;
+$jpz-color-info-dark: #909399;
 
 html.#{$theme-name-dark} {
     --jpz-color-primary: #{$jpz-color-primary-dark}; // 主要颜色
-    --jpz-color-secondary: #bb1818; // 次要颜色
+    --jpz-color-secondary: #{$jpz-color-secondary-dark}; // 次要颜色
+    --jpz-color-success: #{$jpz-color-success-dark}; // 成功颜色
+    --jpz-color-warning: #{$jpz-color-warning-dark}; // 警告颜色
+    --jpz-color-danger: #{$jpz-color-danger-dark}; // 危险颜色
+    --jpz-color-error: #{$jpz-color-error-dark}; // 错误颜色
+    --jpz-color-info: #{$jpz-color-info-dark}; // 信息颜色
 }
 
 // ============================================================ element-plus 的颜色设置 开始
@@ -22,11 +33,11 @@ $el-theme: (
     "theme-name": #{$theme-name-dark},
     "colors": (
         "primary": $jpz-color-primary-dark,
-        "success": #67c23a,
-        "warning": #e6a23c,
-        "danger": #f56c6c,
-        "error": #f56c6c,
-        "info": #909399
+        "success": $jpz-color-success-dark,
+        "warning": $jpz-color-warning-dark,
+        "danger": $jpz-color-danger-dark,
+        "error": $jpz-color-error-dark,
+        "info": $jpz-color-info-dark
     )
 );
 

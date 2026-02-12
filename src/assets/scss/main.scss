@@ -29,12 +29,15 @@ html {
     // --jpz-color-overlay: var(--el-bg-color-overlay);
     --jpz-border-color: var(--el-border-color);
     --jpz-border-color-hover: var(--el-border-color-hover);
+    --jpz-border-color-lighter: var(--el-border-color-lighter);
 
     // 阴影
     --jpz-box-shadow-lighter: var(--el-box-shadow-lighter);
     --jpz-box-shadow-light: var(--el-box-shadow-light);
     // --jpz-box-shadow-dark: var(--el-box-shadow-dark);
     --jpz-post-item-main-hover-shadow: 0 0 5px #ccc, 0 0 10px #ccc; // 主文章 hover 阴影
+
+    --jpz-fill-color-lighter: var(--el-fill-color-lighter);
 
     // 文字颜色
     --jpz-text-color-primary: var(--el-text-color-primary);

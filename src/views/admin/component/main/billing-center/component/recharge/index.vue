@@ -215,11 +215,10 @@ const handleReset = () => {
     gap: 8px;
     padding: 12px 16px;
     margin-bottom: 20px;
-    background: var(--el-color-info-light-9);
     border-radius: 8px;
     font-size: 13px;
-    color: var(--el-text-color-secondary);
-    border: 1px solid var(--el-border-color-lighter);
+    color: var(--jpz-text-color-secondary);
+    border: 1px solid var(--jpz-border-color-lighter);
 
     .el-icon {
         color: var(--jpz-color-primary);
@@ -230,7 +229,7 @@ const handleReset = () => {
 .pay-type-name {
     font-size: 14px;
     font-weight: 500;
-    color: var(--el-text-color-primary);
+    color: var(--jpz-text-color-primary);
 }
 
 .quick-amount {

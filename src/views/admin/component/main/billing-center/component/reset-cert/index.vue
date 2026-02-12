@@ -10,7 +10,9 @@
     <div class="reset-cert-form">
         <el-form ref="formRef" :model="form" :rules="rules" label-width="100px" label-position="top">
             <el-form-item label="域名" prop="domain_name">
-                <el-input v-model="form.domain_name" placeholder="请输入域名(可选)" clearable />
+                <el-input v-model="form.domain_name" placeholder="请输入域名" clearable />
+                <!-- 域名提示信息 -->
+                <div class="domain-hint">{{ domainHint }}</div>
             </el-form-item>
 
             <el-form-item label="验证码" prop="captcha">
@@ -53,6 +55,7 @@ import { handleResErr, ResponseCode } from "@/api/response"
 import { useCaptchaBtnStatus } from "@/components/hooks/useCaptchaBtnStatus"
 import { confirmCommon } from "@/utils/confirm"
 import { MessageUtil } from "@/utils/message"
+import { domainHint } from "../../hooks"
 
 // 定义事件
 const emit = defineEmits<{
@@ -62,10 +65,13 @@ const emit = defineEmits<{
 // 表单引用
 const formRef = ref<FormInstance>()
 
+// 当前页面域名, 默认填写
+const currentDomain = window.location.hostname
+
 // 表单数据
 const form = reactive<BillingCenterResetCertRequest>({
     captcha: "",
-    domain_name: "",
+    domain_name: currentDomain,
 })
 
 // 新证书
@@ -73,6 +79,7 @@ const newCert = ref("")
 
 // 表单校验规则
 const rules = reactive<FormRules>({
+    domain_name: [{ required: true, message: "请输入域名", trigger: "blur" }],
     captcha: [{ required: true, message: "请输入验证码", trigger: "blur" }],
 })
 
@@ -130,6 +137,14 @@ const handleSubmit = debounce(300, async () => {
 </script>
 
 <style scoped lang="scss">
+.domain-hint {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--jpz-color-warning);
+    line-height: 1.6;
+    white-space: pre-line;
+}
+
 .captcha-row {
     display: flex;
     gap: 12px;
@@ -142,7 +157,7 @@ const handleSubmit = debounce(300, async () => {
     p {
         margin: 4px 0 8px;
         font-size: 13px;
-        color: var(--el-text-color-secondary);
+        color: var(--jpz-text-color-secondary);
     }
 }
 </style>
