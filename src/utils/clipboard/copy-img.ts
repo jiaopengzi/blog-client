@@ -19,7 +19,9 @@ async function tryWriteImgWithModernAPI(blob: Blob): Promise<void> {
             await navigator.clipboard.write([clipboardItem])
         } catch (err) {
             // 即使对象存在，也可能因非安全上下文或权限失败
-            throw new Error(`Modern clipboard API failed: ${err}`, { cause: err })
+            const wrappedError = new Error(`Modern clipboard API failed: ${err}`)
+            ;(wrappedError as Error & { cause?: unknown }).cause = err
+            throw wrappedError
         }
     } else {
         throw new Error("Modern clipboard API not supported for writing Blob.")

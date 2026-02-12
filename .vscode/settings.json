@@ -5,6 +5,7 @@
         "demi",
         "doctag",
         "epoll",
+        "isnan",
         "keepalive",
         "lezer",
         "localtime",

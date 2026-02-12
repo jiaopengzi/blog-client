@@ -269,6 +269,10 @@ const editData = reactive<ViewForm>({
     stackable: CouponStackable.Disabled, // 默认禁用叠加
 })
 
+const isCouponTableData = (row: TableData): row is CouponRes => {
+    return "discount_type" in row && "amount" in row && typeof row.amount === "number"
+}
+
 const editRow = (index: number, row: TableData) => {
     if ("id" in row) {
         editData.id = row.id.toString()
@@ -279,10 +283,10 @@ const editRow = (index: number, row: TableData) => {
     if ("description" in row) {
         editData.description = row.description || ""
     }
-    if ("discount_type" in row) {
+    if (isCouponTableData(row)) {
         editData.discount_type = row.discount_type as CouponDiscountType
     }
-    if ("amount" in row) {
+    if (isCouponTableData(row)) {
         const amount =
             row.discount_type === CouponDiscountType.FixedAmount
                 ? row.amount / 100 // 将金额转换为元

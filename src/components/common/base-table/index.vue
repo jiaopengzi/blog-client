@@ -62,16 +62,16 @@
                         <template #default="scope">
                             <div class="thumbnail" v-single-dbl-click="clickHandler(scope.row)">
                                 <img
-                                    v-if="scope.row.img?.url"
+                                    v-if="getRowImg(scope.row)?.url"
                                     class="thumbnail-img"
-                                    :src="scope.row.img?.url"
-                                    :style="imgStyle(scope.row.img?.width, scope.row.img?.height, scope.row.img?.imgFit)"
+                                    :src="getRowImg(scope.row)?.url"
+                                    :style="imgStyle(getRowImg(scope.row)?.width, getRowImg(scope.row)?.height, getRowImg(scope.row)?.imgFit)"
                                 />
                                 <j-icon
-                                    v-else-if="scope.row.img?.iconKeyName"
+                                    v-else-if="getRowImg(scope.row)?.iconKeyName"
                                     class="thumbnail-img"
-                                    :name="scope.row.img?.iconKeyName"
-                                    :style="iconStyle(scope.row.img?.fontSize)"
+                                    :name="getRowImg(scope.row)?.iconKeyName"
+                                    :style="iconStyle(getRowImg(scope.row)?.svgFontSize)"
                                 />
                             </div>
                         </template>
@@ -160,18 +160,18 @@
                     <el-checkbox v-if="isSelected(row)" class="grid-item-selection-status" :key="row" :value="row" size="large" />
 
                     <img
-                        v-if="row.img?.url"
+                        v-if="getRowImg(row)?.url"
                         class="thumbnail-img"
-                        :src="row.img.url"
-                        :style="imgStyle(row.img?.width, row.img?.height, row.img?.imgFit)"
+                        :src="getRowImg(row)?.url"
+                        :style="imgStyle(getRowImg(row)?.width, getRowImg(row)?.height, getRowImg(row)?.imgFit)"
                         v-single-dbl-click="clickInGridHandler(row)"
                     />
 
                     <j-icon
-                        v-else-if="row.img?.iconKeyName"
+                        v-else-if="getRowImg(row)?.iconKeyName"
                         class="thumbnail-img"
-                        :name="row.img?.iconKeyName"
-                        :style="iconStyle(row.img?.svgFontSize)"
+                        :name="getRowImg(row)?.iconKeyName"
+                        :style="iconStyle(getRowImg(row)?.svgFontSize)"
                         v-single-dbl-click="clickInGridHandler(row)"
                     />
 
@@ -238,7 +238,7 @@ import type { PostCategory } from "@/api/postCategory/view"
 import type { PostTag } from "@/api/postTag/view"
 import { type Pagination } from "@/api/response"
 import type { User } from "@/api/user/getUsers"
-import { MsgType } from "@/components/common"
+import { MsgType, type TableImg } from "@/components/common"
 import type { SwitchItem, SwitchItemColor, SwitchItemLabel } from "@/components/common/switch-group"
 import SwitchGroup from "@/components/common/switch-group"
 import { useDevice } from "@/components/hooks/useDevice"
@@ -400,6 +400,13 @@ const switchItemList: SwitchItem[] = reactive([
 
 const updateStatus = (items: SwitchItem[]) => {
     emit("update-show-list-or-grid-status", items[0]!.status)
+}
+
+const getRowImg = (row: TableData): TableImg | undefined => {
+    if ("img" in row) {
+        return row.img
+    }
+    return undefined
 }
 
 // 单击事件
