@@ -29,8 +29,14 @@
                 @user-click="(userID: string) => handleUserClick(userID, scope.row[col.prop])"
             />
 
-            <!-- 需要复制的文本 -->
-            <CopyText v-if="col.isCopyText" :key="scope.row[col.prop]" :text="scope.row[col.prop]" />
+            <!-- 需要复制的文本(支持 formatter 格式化显示) -->
+            <CopyText
+                v-if="col.isCopyText"
+                :key="scope.row[col.prop]"
+                :text="String(scope.row[col.prop] ?? '')"
+                :display-text="col.formatter ? String(col.formatter(scope.row) ?? '') : undefined"
+                :placeholder="col.copyPlaceholder"
+            />
 
             <!-- markdown渲染 -->
             <div class="markdown-preview" v-if="col.isMarkdownPreview" :style="{ maxHeight: markdownPreviewMaxHeight }">
@@ -59,8 +65,8 @@
                 />
             </el-scrollbar>
 
-            <!-- 格式化 -->
-            <span v-if="col.formatter">{{ col.formatter ? col.formatter(scope.row) : scope.row[col.prop] }}</span>
+            <!-- 格式化(isCopyText 时由 CopyText 组件负责显示, 此处不重复渲染) -->
+            <span v-if="col.formatter && !col.isCopyText">{{ col.formatter(scope.row) }}</span>
         </template>
     </el-table-column>
 </template>

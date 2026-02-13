@@ -226,6 +226,8 @@ const cols: TableColumn[] = reactive([
         label: "关联ID",
         minWidth: 80,
         align: "center",
+        isCopyText: true,
+        copyPlaceholder: "-", // 当 formatter 返回 "-" 时隐藏复制按钮
         formatter: formatRelatedId,
     },
     {
