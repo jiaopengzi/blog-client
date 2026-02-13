@@ -120,7 +120,7 @@ const onIframeLoaded = () => {
     font-weight: bold;
     font-family: sans-serif;
     font-size: 30px;
-    padding-bottom: 8px;
+    padding-bottom: 30px;
     background: linear-gradient(currentColor 0 0) 0 100%/0% 3px no-repeat;
     animation: l2 2s linear infinite;
 }
