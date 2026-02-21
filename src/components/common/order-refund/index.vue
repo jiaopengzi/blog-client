@@ -24,7 +24,7 @@
             <el-form-item label="验证码" prop="captcha">
                 <div class="captcha-section">
                     <el-input class="email-code" v-model="formRefund.captcha" maxlength="6" clearable placeholder="请填写验证码" />
-                    <el-button class="btn-captcha" type="default" :disabled="isCaptchaBtnDisabled" @click="sendCaptcha(orderId)">
+                    <el-button class="btn-captcha" type="default" :disabled="isCaptchaBtnDisabled" @click="sendCaptcha">
                         {{ captchaBtnText }}
                     </el-button>
                 </div>
@@ -92,8 +92,10 @@ const rules: FormRules<OrderRefundRequest> = {
 const { isCaptchaBtnDisabled, isRefundBtnLoading, captchaBtnText, sendCaptcha, runRefund } = useOrderRefund(formRef, formRefund)
 
 const handleRefund = async () => {
-    await runRefund()
-    emit("refund-submit-success")
+    const success = await runRefund()
+    if (success) {
+        emit("refund-submit-success")
+    }
 }
 </script>
 <style lang="scss" scoped>

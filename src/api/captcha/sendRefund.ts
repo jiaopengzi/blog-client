@@ -12,6 +12,8 @@ import type { Res, ResPromise } from "@/api/response"
 
 export interface CaptchaSendRefundRequest {
     order_id: string
+    refund_amount: string // 退款金额，单位为分
+    reason: string // 退款原因
 }
 
 // 验证码发送响应

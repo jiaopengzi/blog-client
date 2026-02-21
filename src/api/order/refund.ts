@@ -14,7 +14,7 @@ import type { Res, ResPromise } from "@/api/response"
 export interface OrderRefundRequest {
     id: string // 订单ID
     refund_amount: string // 退款金额，单位为分
-    reason: string // 退款原因，选填
+    reason: string // 退款原因
     captcha: string // 验证码
 }
 

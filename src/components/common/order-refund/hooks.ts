@@ -27,10 +27,22 @@ export function useOrderRefund(formRef: Ref<FormInstance | null>, formRefund: Re
     const { captchaBtnText, isCaptchaBtnDisabled, countdown } = useCaptchaBtnStatus()
 
     // 发送邮箱验证码
-    const sendCaptcha = async (orderId: string) => {
+    const sendCaptcha = async () => {
+        if (!formRef || !formRef.value) {
+            return
+        }
+
+        try {
+            await formRef.value.validateField(["reason", "refund_amount"])
+        } catch {
+            return
+        }
+
         isCaptchaBtnDisabled.value = true // 禁用按钮
         const req: CaptchaSendRefundRequest = {
-            order_id: orderId,
+            order_id: formRefund.value.id,
+            reason: formRefund.value.reason,
+            refund_amount: yuanToFen(formRefund.value.refund_amount, true) as string,
         }
 
         // 发送验证码
@@ -62,38 +74,39 @@ export function useOrderRefund(formRef: Ref<FormInstance | null>, formRefund: Re
         isRefundBtnLoading.value = true // 禁用按钮
         if (!formRef || !formRef.value) {
             isRefundBtnLoading.value = false // 启用按钮
-            return
+            return false
         }
 
-        await formRef.value.validate(async (valid) => {
-            if (valid) {
-                const req: OrderRefundRequest = {
-                    id: formRefund.value.id,
-                    refund_amount: yuanToFen(formRefund.value.refund_amount, true) as string,
-                    reason: formRefund.value.reason,
-                    captcha: formRefund.value.captcha,
-                }
+        try {
+            await formRef.value.validate()
+        } catch {
+            isRefundBtnLoading.value = false // 启用按钮
+            return false
+        }
 
-                // 调用退款API
-                const res = await orderRefundAPI(req)
-                if (res.data.code === ResponseCode.OrderRefundSuccess) {
-                    MessageUtil.success("退款申请已提交，请耐心等待后端处理。", 3000)
-                    // 保证有数据且包含 stream_items 字段才进行轮询
-                    if (res.data.data && res.data.data.stream_items) {
-                        await pollingGetStreamIDsStatus(res.data.data.stream_items)
-                    }
-                    formRefund.value.captcha = "" // 清空验证码
-                } else {
-                    const msg = handleResErr(res)
-                    MessageUtil.error(msg, 3000)
-                }
-
-                isRefundBtnLoading.value = false // 启用按钮
-            } else {
-                isRefundBtnLoading.value = false // 启用按钮
-                return
+        const req: OrderRefundRequest = {
+            id: formRefund.value.id,
+            refund_amount: yuanToFen(formRefund.value.refund_amount, true) as string,
+            reason: formRefund.value.reason,
+            captcha: formRefund.value.captcha,
+        }
+        // 调用退款API
+        const res = await orderRefundAPI(req)
+        if (res.data.code === ResponseCode.OrderRefundSuccess) {
+            MessageUtil.success("退款申请已提交，请耐心等待后端处理。", 3000)
+            // 保证有数据且包含 stream_items 字段才进行轮询
+            if (res.data.data && res.data.data.stream_items) {
+                await pollingGetStreamIDsStatus(res.data.data.stream_items)
             }
-        })
+            formRefund.value.captcha = "" // 清空验证码
+            isRefundBtnLoading.value = false // 启用按钮
+            return true
+        }
+
+        const msg = handleResErr(res)
+        MessageUtil.error(msg, 3000)
+        isRefundBtnLoading.value = false // 启用按钮
+        return false
     }
 
     return {
