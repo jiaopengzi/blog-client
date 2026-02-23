@@ -92,7 +92,7 @@ const changeIsShowAllTag = () => {
 }
 
 // 获取文章标签数据
-const { items: postTags, getTagTopN } = usePostTagData(false)
+const { items: postTags, getTagTopN } = usePostTagData(true)
 onBeforeMount(async () => {
     await getTagTopN()
 })
