@@ -193,25 +193,39 @@ const scrollIntoViewLine = (lineNumber: number): void => {
     }
     const line = cmView.state.doc.line(lineNumber) // 获取当前元素在编辑器中的行数
 
-    // 滑动到指定行有一些问题 内容较多时会出现滑动不到指定行的情况,因为没有渲染完全
-    // const { top } = cmView.lineBlockAt(line.from) // 获取当前元素在编辑器中的位置
-    // cmView.scrollDOM.scrollTo({ top, behavior: "smooth" }) // 滚动到当前行
+    // // 精准跳转选中目标行 但不能是平滑滚动
+    // cmView.dispatch({
+    //     selection: {
+    //         anchor: line.from,
+    //         head: line.from,
+    //     },
+    //     // 通过 effects 会影响到外部 DOM 树的 scroll 事件, 导致外部页面滚动
+    //     effects: EditorView.scrollIntoView(
+    //         // 滚动到当前行
+    //         line.from,
+    //         {
+    //             y: "start", // "nearest" | "start" | "end" | "center"
+    //             yMargin, // 默认值 5
+    //         },
+    //     ),
+    // })
 
-    // 精准跳转选中目标行 但不能是平滑滚动
+    // 第一步：只移动光标，不附带 scrollIntoView effect（CM6 不会自动滚动）
     cmView.dispatch({
         selection: {
             anchor: line.from,
             head: line.from,
         },
-        effects: EditorView.scrollIntoView(
-            // 滚动到当前行
-            line.from,
-            {
-                y: "start", // "nearest" | "start" | "end" | "center"
-                yMargin, // 默认值 5
-            },
-        ),
     })
+
+    const { top } = cmView.lineBlockAt(line.from) // 获取当前元素在编辑器中的位置
+
+    // // 滑动到指定行有一些问题 内容较多时会出现滑动不到指定行的情况,因为没有渲染完全
+    // cmView.scrollDOM.scrollTo({ top, behavior: "smooth" }) // 滚动到当前行
+
+    // 第二步：直接设置 scrollDOM.scrollTop，绕过 CodeMirror 内部的 scrollRectIntoView 逻辑
+    // scrollRectIntoView 会遍历整个 DOM 树向上滚动所有可滚动祖先容器(如 el-main), 导致外部页面滚动
+    cmView.scrollDOM.scrollTop = Math.max(0, top - yMargin)
 }
 
 // 标题跳转
