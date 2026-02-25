@@ -1,9 +1,9 @@
 <template>
-    <DateRangeShortcuts />
+    <License />
 </template>
 <script setup lang="ts">
 defineOptions({ name: "MyTest" })
-import DateRangeShortcuts from "@/components/common/date-range-shortcuts/index.vue"
+import License from "@/views/admin/component/main/billing-center/component/license/index.vue"
 </script>
 
 <style scoped lang="scss"></style>

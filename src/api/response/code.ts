@@ -318,6 +318,8 @@ export enum ResponseCode {
     BillingCenterNotifyThresholdFailed = 6217, // 设置阈值失败
     BillingCenterTransactionFlowListFailed = 6218, // 获取流水失败
     BillingCenterTransactionFlowListSuccess = 6219, // 获取流水成功
+    BillingCenterGetLicenseSuccess = 6220, // 获取许可证信息成功
+    BillingCenterGetLicenseFailed = 6221, // 获取许可证信息失败
 
     // 验证码相关
     CaptchaSendSuccess = 8000, // 验证码发送成功
