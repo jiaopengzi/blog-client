@@ -117,5 +117,8 @@ defineExpose({
     font-size: 14px;
     font-weight: 700;
     margin: 20px 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.5;
 }
 </style>

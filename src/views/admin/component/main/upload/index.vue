@@ -11,24 +11,13 @@
         <el-button class="component-item" type="primary" @click="submitForm">保存</el-button>
 
         <!-- 本地上传 -->
-        <UploadLocal
-            ref="localRef"
-            class="component-item"
-            :config="localData"
-            :form-width="1080"
-            :label-width="140"
-            attention="注意：【URL归属】在多个上传配置都开启的情况下，只能开启其中之一，否则会导致配置冲突。"
-        />
+        <UploadLocal ref="localRef" class="component-item" :config="localData" :form-width="1080" :label-width="140" :attention="attentionCloud(false)" />
 
         <!-- 阿里云 OSS -->
-        <UploadOSS
-            ref="ossRef"
-            class="component-item"
-            :config="ossData"
-            :form-width="1080"
-            :label-width="140"
-            attention="注意：【URL归属】在多个上传配置都开启的情况下，只能开启其中之一，否则会导致配置冲突。"
-        />
+        <UploadOSS ref="ossRef" class="component-item" :config="ossData" :form-width="1080" :label-width="140" :attention="attentionCloud(true)" />
+
+        <!-- 腾讯云 COS -->
+        <UploadCOS ref="cosRef" class="component-item" :config="cosData" :form-width="1080" :label-width="140" :attention="attentionCloud(true)" />
 
         <!-- ffmpeg配置 -->
         <FFmpegForm
@@ -52,7 +41,7 @@ import { useHead } from "@unhead/vue"
 import { onBeforeMount, useTemplateRef } from "vue"
 
 import { handleResErr, ResponseCode } from "@/api/response"
-import type { FFmpeg as FFmpegType, Local as LocalType, OSS as OSSType } from "@/api/setting/getUpload"
+import type { FFmpeg as FFmpegType, Local as LocalType, OSS as OSSType, COS as COSType } from "@/api/setting/getUpload"
 import { updateUploadAPI, type UpdateUploadRequest } from "@/api/setting/updateUpload"
 import RestartDialog from "@/components/common/restart-dialog"
 import { useRestart } from "@/components/hooks/useRestart"
@@ -65,6 +54,7 @@ import FFmpegForm, { type UploadFFmpegFormRef } from "./ffmpeg"
 import FileAllowed, { type FileAllowedRef } from "./file-allowed"
 import UploadLocal, { type UploadLocalFormRef } from "./local"
 import UploadOSS, { type UploadOSSFormRef } from "./oss"
+import UploadCOS, { type UploadCOSFormRef } from "./cos"
 
 defineOptions({ name: RouteNames.SettingUpload })
 
@@ -77,9 +67,21 @@ const fileAllowedRef = useTemplateRef<FileAllowedRef>("fileAllowedRef")
 const ffmpegRef = useTemplateRef<UploadFFmpegFormRef>("ffmpegRef")
 const localRef = useTemplateRef<UploadLocalFormRef>("localRef")
 const ossRef = useTemplateRef<UploadOSSFormRef>("ossRef")
+const cosRef = useTemplateRef<UploadCOSFormRef>("cosRef")
+
+/**
+ * 生成上传配置的注意事项提示信息
+ * @param isCloud - 是否为云存储配置, true表示云存储, false表示本地存储
+ * @returns 返回格式化的注意事项字符串, 包含配置冲突警告和 CORS 跨域访问说明
+ */
+const attentionCloud = (isCloud: boolean) => {
+    const msg: string = `注意：\nURL归属在多个上传配置都开启的情况下，只能开启其中之一，否则会导致配置冲突。`
+    const msgCloud = `\n云存储需要开启 CORS 跨域访问，允许前端访问存储资源，否则前端无法直接访问存储资源，导致无法上传图片等`
+    return isCloud ? msg + msgCloud : msg
+}
 
 // 配置的 hooks
-const { fileAllowedList, ffmpegData, localData, ossData, fetchData } = useSettingUpload()
+const { fileAllowedList, ffmpegData, localData, ossData, cosData, fetchData } = useSettingUpload()
 
 // 重启的 hooks
 const { showRestart, waitSeconds, isShowTimer } = useRestart()
@@ -115,6 +117,13 @@ const submitForm = async () => {
         }
     }
     req.oss = ossRef.value?.formRef.configFormData as OSSType
+
+    if (cosRef.value) {
+        if (!(await cosRef.value.formRef.validateForm())) {
+            return
+        }
+    }
+    req.cos = cosRef.value?.formRef.configFormData as COSType
 
     const res = await updateUploadAPI(req)
 

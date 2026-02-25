@@ -11,7 +11,7 @@ import type { DocLike } from "../../types"
 /**
  * 为测试构造一个简单的 DocLike 对象。
  *
- * 注意：此方法仅用于测试环境, 返回的 `from/to` 是基于每行字符串长度的累计偏移量, 
+ * 注意：此方法仅用于测试环境, 返回的 `from/to` 是基于每行字符串长度的累计偏移量,
  * 可用于模拟 `DocLike.line(i)` 的行为以便对 lint 规则进行单元测试。
  *
  * @param lines - 文本行数组

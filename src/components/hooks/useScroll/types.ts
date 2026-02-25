@@ -13,7 +13,7 @@ export type Direction = "up" | "down"
 
 /**
  * @description 滚动数据 position 位置 direction 滚动方向 speed 滚动速度
-*/
+ */
 export interface ScrollData {
     position: number
     direction: Direction

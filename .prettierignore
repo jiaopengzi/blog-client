@@ -3,3 +3,4 @@ node_modules/
 coverage/
 node_modules
 .prettierignore
+assets/

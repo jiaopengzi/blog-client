@@ -40,6 +40,19 @@ export interface OSS {
     is_internal: boolean
 }
 
+// 腾讯云 COS 配置
+export interface COS {
+    is_enabled: boolean
+    is_url_belong: boolean
+    parallel_num: number
+    secret_id: string
+    secret_key: string
+    region: string
+    bucket_name: string
+    path: string
+    domain: string
+}
+
 export interface FFmpeg {
     is_generate_hls: boolean // 是否生成 HLS
     is_generate_multi_resolution: boolean // 是否生成多分辨率视频
@@ -50,6 +63,7 @@ export interface GetUploadResponse {
     file_allowed: FileAllowed[]
     local: Local
     oss: OSS
+    cos: COS
     ffmpeg: FFmpeg
 }
 

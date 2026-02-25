@@ -119,4 +119,4 @@ Power BI 公共 web 效果[^1]
 
 **<https://jiaopengzi.com/all-course>**
 
-[^1]:demo链接：<https://demo.jiaopengzi.com/pbi/159-full.html>
+[^1]: demo链接：<https://demo.jiaopengzi.com/pbi/159-full.html>

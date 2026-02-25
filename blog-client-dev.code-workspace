@@ -30,7 +30,9 @@
 			"activityBar.background": "#2d0d8d",
 			"activityBar.foreground": "#cccccc",
 			"titleBar.activeBackground": "#2d0d8d",
-			"titleBar.activeForeground": "#cccccc"
+			"titleBar.activeForeground": "#cccccc",
+			"titleBar.inactiveBackground": "#2C0D8A",
+			"titleBar.inactiveForeground": "#FAF9FE"
 		}
 	}
 }

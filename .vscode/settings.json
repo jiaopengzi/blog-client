@@ -52,11 +52,11 @@
         "terminal.ansiRed": "#CC342B",
         "terminal.ansiWhite": "#C5C8C6",
         "terminal.ansiYellow": "#FBA922",
-          // ======= 窗口颜色用于区分多个vscode窗口 开始
-          "activityBar.background": "#2d0d8d",
-          "activityBar.foreground": "#cccccc",
-          "titleBar.activeBackground": "#2d0d8d",
-          "titleBar.activeForeground": "#cccccc"
-          // ======= 窗口颜色用于区分多个vscode窗口 结束
+        "activityBar.background": "#2d0d8d",
+        "activityBar.foreground": "#cccccc",
+        "titleBar.activeBackground": "#2d0d8d",
+        "titleBar.activeForeground": "#cccccc",
+        "titleBar.inactiveBackground": "#2C0D8A",
+        "titleBar.inactiveForeground": "#FAF9FE"
     }
 }
