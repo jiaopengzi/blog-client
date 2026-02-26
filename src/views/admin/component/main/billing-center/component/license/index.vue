@@ -123,7 +123,6 @@ onBeforeMount(async () => {
     padding: 0;
     background-color: transparent;
     border: none;
-    text-indent: 2em;
 }
 
 .license-content h1 {
@@ -137,22 +136,8 @@ onBeforeMount(async () => {
 
 .license-content h2 {
     font-size: 21px;
-    // margin: 28px 0 16px 0;
     margin-top: 28px;
     width: 100%;
-    // display: block;
-    // border-bottom: 2px solid #cc0000;
-    // position: relative;
-
-    // // 底部伪元素（延伸整行）
-    // &::after {
-    //     position: absolute;
-    //     left: 0;
-    //     right: 0;
-    //     bottom: -2px;
-    //     content: "";
-    //     border-bottom: 2px solid green;
-    // }
 }
 
 .license-content h3 {
@@ -190,154 +175,75 @@ onBeforeMount(async () => {
     margin: 14px 0;
     text-align: justify;
     line-height: 2;
+    // 仅对顶层段落应用首行缩进，避免影响列表内的段落
+    text-indent: 2em;
 }
 
-.license-content ul,
 .license-content ol {
-    margin: 14px 0;
-    padding-left: 3em;
-    line-height: 2;
+    padding-left: 1.5em;
 
     li {
-        margin: 8px 0;
-        text-indent: 0;
-
-        &::marker {
-            color: var(--jpz-color-primary);
-            font-weight: bold;
-        }
+        line-height: 2em;
+        color: var(--jpz-text-color-primary);
+        margin: 0 0 0.5em 0;
     }
+
+    li p {
+        margin: 0;
+        // li 内段落不缩进
+        text-indent: 0;
+    }
+}
+
+// 第一层用中文序号
+.license-content ol {
+    counter-reset: lvl1;
+    list-style: none;
+    /* 增加左侧内边距，给多字中文编号留出空间，避免错位 */
+    padding-left: 3.6em;
+}
+.license-content ol > li {
+    counter-increment: lvl1;
+    position: relative;
+    margin-bottom: 0.5em;
+}
+.license-content ol > li::before {
+    content: counter(lvl1, cjk-ideographic) "、";
+    position: absolute;
+    // 将编号区域移入左侧留白并扩大宽度，防止两字编号（如“十一”）换行
+    left: -3.6em;
+    width: 3em;
+    text-align: right;
+    white-space: nowrap;
+}
+
+// 第二层用阿拉伯数字带括号
+.license-content ol > li > ol {
+    counter-reset: lvl2;
+    margin-left: 1.5em;
+}
+.license-content ol > li > ol > li {
+    counter-increment: lvl2;
+}
+.license-content ol > li > ol > li::before {
+    content: "(" counter(lvl2, decimal) ")";
+}
+
+// 第三层可用小写字母带括号
+.license-content ol > li > ol > li > ol {
+    counter-reset: lvl3;
+    margin-left: 1.2em;
+}
+.license-content ol > li > ol > li > ol > li {
+    counter-increment: lvl3;
+}
+.license-content ol > li > ol > li > ol > li::before {
+    content: "(" counter(lvl3, lower-alpha) ")";
 }
 
 .license-content strong,
 .license-content b {
     font-weight: 700;
     color: var(--jpz-text-color-primary);
-}
-
-.license-content blockquote {
-    margin: 16px 0;
-    padding: 12px 20px;
-    background-color: var(--jpz-bg-color-page);
-    border-left: 4px solid var(--jpz-color-primary);
-    color: var(--jpz-text-color-secondary);
-    font-style: italic;
-}
-
-.license-content table {
-    width: 100%;
-    margin: 20px 0;
-    border-collapse: collapse;
-    font-size: 0.95rem;
-
-    th,
-    td {
-        padding: 12px 16px;
-        border: 1px solid var(--jpz-border-color);
-        text-align: left;
-        line-height: 1.8;
-    }
-
-    th {
-        background-color: var(--jpz-bg-color-page);
-        font-weight: 700;
-        color: var(--jpz-text-color-primary);
-    }
-
-    tr:nth-child(even) {
-        background-color: var(--jpz-bg-color-page);
-    }
-}
-
-.license-content a {
-    color: var(--jpz-color-primary);
-    text-decoration: none;
-    border-bottom: 1px dotted var(--jpz-color-primary);
-}
-
-.license-content .signature-area {
-    margin-top: 48px;
-    padding-top: 24px;
-    text-align: right;
-
-    .signer-name {
-        font-weight: 700;
-        margin-top: 40px;
-    }
-
-    .sign-date {
-        margin-top: 8px;
-        color: var(--jpz-text-color-secondary);
-    }
-}
-
-@media (max-width: 768px) {
-    .license-card {
-        margin: 12px;
-        padding: 32px 24px;
-
-        &::before {
-            height: 3px;
-        }
-    }
-    .license-content {
-        font-size: 0.95rem;
-    }
-
-    .license-content h1 {
-        font-size: 1.4rem;
-    }
-
-    .license-content h2 {
-        font-size: 1.2rem;
-        display: block;
-        height: auto;
-        line-height: 1.4;
-        border-bottom: 2px solid #cc0000;
-        padding-bottom: 8px;
-    }
-
-    .license-content h3 {
-        font-size: 1.1rem;
-    }
-
-    .card-footer {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-        padding-top: 20px;
-        margin-top: 24px;
-    }
-
-    .footer-version {
-        margin-top: 8px;
-    }
-}
-
-@media (max-width: 480px) {
-    .license-card {
-        padding: 24px 16px;
-    }
-    .license-content {
-        font-size: 0.9rem;
-        line-height: 1.9;
-    }
-
-    .license-content h1 {
-        font-size: 1.25rem;
-    }
-
-    .license-content h2 {
-        font-size: 1.1rem;
-        display: block;
-        height: auto;
-        line-height: 1.3;
-        border-bottom: 2px solid #cc0000;
-        padding-bottom: 6px;
-    }
-
-    .license-content p {
-        margin: 10px 0;
-    }
 }
 </style>
