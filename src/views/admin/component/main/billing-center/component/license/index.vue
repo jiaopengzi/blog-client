@@ -7,35 +7,28 @@
 -->
 
 <template>
-    <div class="license-page">
+    <section class="license-page">
         <section class="license-card">
-            <div class="card-decor"></div>
-            <header class="card-header">
-                <div class="license-hero">
-                    <div class="hero-inner">
-                        <div class="license-card-title"><span>许可证信息</span></div>
-                        <div class="license-card-sub">计费中心 · License</div>
-                    </div>
-                    <div class="license-card-version">{{ license.version }}</div>
-                </div>
-            </header>
-
             <div class="license-card-body">
                 <div class="license-content" v-html="license.content"></div>
-
-                <div class="license-meta license-meta-bottom">
-                    <div class="meta-item">
-                        <span class="label">签发时间</span>
-                        <span class="value">{{ license.issued_at || "—" }}</span>
-                    </div>
-                    <div class="meta-item">
-                        <span class="label">最后修改</span>
-                        <span class="value">{{ license.modified_at || "—" }}</span>
-                    </div>
-                </div>
             </div>
+            <footer class="card-footer">
+                <div class="meta-item">
+                    <span class="label">签发时间</span>
+                    <span class="value">{{ license.issued_at }}</span>
+                </div>
+
+                <div class="meta-item">
+                    <span class="label">最后修改</span>
+                    <span class="value">{{ license.modified_at }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="label">版本</span>
+                    <span class="value">{{ license.version }}</span>
+                </div>
+            </footer>
         </section>
-    </div>
+    </section>
 </template>
 
 <script lang="ts" setup>
@@ -74,158 +67,277 @@ onBeforeMount(async () => {
 </script>
 
 <style lang="scss">
-/* 计费中心 License 页面样式 */
 .license-page {
-    padding: 32px 16px;
+    padding: 28px 16px;
+    color: var(--jpz-text-color-regular);
+    background-color: var(--jpz-bg-color-page);
+    font-family: "SimSun", "Songti SC", "Source Serif Pro", "PingFang SC", serif;
 }
+
 .license-card {
     position: relative;
-    max-width: 820px;
-    margin: 24px auto;
-    border-radius: 20px;
-    overflow: visible;
-    background: linear-gradient(135deg, #f7fbff 40%, #eef6ff 100%);
-    box-shadow: 0 8px 30px rgba(58, 74, 107, 0.08);
-    padding: 20px;
-    transition:
-        box-shadow 0.25s ease,
-        transform 0.18s ease;
-}
-.license-card:hover {
-    box-shadow: 0 18px 50px rgba(58, 74, 107, 0.12);
-    transform: translateY(-4px);
-}
-.card-decor {
-    position: absolute;
-    inset: -30% -10% auto auto;
-    width: 280px;
-    height: 160px;
-    z-index: 0;
-    background:
-        radial-gradient(circle at 20% 20%, rgba(182, 227, 255, 0.45), transparent 30%),
-        radial-gradient(circle at 80% 80%, rgba(106, 141, 246, 0.12), transparent 25%);
-    filter: blur(18px);
-    pointer-events: none;
-}
-.card-header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    position: relative;
-    z-index: 1;
-    padding: 6px 0 2px 0;
-}
-.card-icon {
-    flex: 0 0 auto;
-    border-radius: 8px;
-    box-shadow: 0 6px 18px rgba(106, 141, 246, 0.08);
-}
-.title-wrap {
-    display: flex;
-    flex-direction: column;
-}
-.license-card-title {
-    font-size: 1.6rem;
-    color: #10203a;
-    font-weight: 800;
-    letter-spacing: -0.01em;
-    position: relative;
-    padding-left: 18px;
-}
-.license-card-title::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 4px;
-    height: 40%;
-    background: linear-gradient(180deg, #6a8df6, #b6e3ff);
-    border-radius: 2px;
-}
-.license-card-sub {
-    font-size: 0.85rem;
-    color: #7a8da6;
-    margin-top: 2px;
-}
-.license-card-version {
-    margin-left: auto;
-    font-weight: 700;
-    font-size: 0.95rem;
-    color: #fff;
-    background: linear-gradient(90deg, #6a8df6, #4fb3ff);
-    padding: 6px 10px;
-    border-radius: 999px;
-    box-shadow: 0 6px 18px rgba(106, 141, 246, 0.08);
+    max-width: 900px;
+    margin: 20px auto;
+    border-radius: 0;
+    overflow: hidden;
+    background-color: var(--jpz-bg-color);
+    border: none;
+    box-shadow: none;
+    padding: 48px 72px;
 }
 
 .license-card-body {
-    position: relative;
-    z-index: 1;
-    margin-top: 14px;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 18px;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(58, 74, 107, 0.04);
+    margin-top: 0;
+    background-color: transparent;
+    padding: 0;
 }
-.license-meta {
+
+.card-footer {
     display: flex;
-    gap: 18px;
-    flex-wrap: wrap;
-    margin-bottom: 12px;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 32px;
+    gap: 12px;
+    border-top: 1px solid var(--jpz-border-color-light);
+    margin-top: 40px;
 }
-.license-meta-bottom {
-    margin-top: 14px;
-    justify-content: flex-end;
-}
+
 .meta-item {
     display: flex;
     gap: 8px;
     align-items: center;
 }
-.meta-item .label {
-    color: #6a8df6;
-    font-weight: 600;
-    font-size: 0.92rem;
-}
+
+.meta-item .label,
 .meta-item .value {
-    color: #324165;
+    color: var(--jpz-text-color-secondary);
     font-weight: 500;
+    font-size: 0.88rem;
 }
 
 .license-content {
-    color: #2b3a5a;
-    line-height: 1.8;
+    color: var(--jpz-text-color-primary);
+    line-height: 2;
     font-size: 1rem;
-    font-family: "Source Serif Pro", "PingFang SC", serif;
     word-break: break-word;
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    text-indent: 2em;
+}
+
+.license-content h1 {
+    font-size: 1.6rem;
+    text-align: center;
+    margin: 36px 0 24px 0;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--jpz-color-primary);
+    letter-spacing: 0.08em;
+}
+
+.license-content h2 {
+    font-size: 21px;
+    // margin: 28px 0 16px 0;
+    margin-top: 28px;
+    width: 100%;
+    // display: block;
+    // border-bottom: 2px solid #cc0000;
+    // position: relative;
+
+    // // 底部伪元素（延伸整行）
+    // &::after {
+    //     position: absolute;
+    //     left: 0;
+    //     right: 0;
+    //     bottom: -2px;
+    //     content: "";
+    //     border-bottom: 2px solid green;
+    // }
+}
+
+.license-content h3 {
+    font-size: 1.15rem;
+    margin: 22px 0 12px 0;
+    padding-left: 10px;
+    border-left: 3px solid var(--jpz-color-primary-light-3);
+}
+
+.license-content h4 {
+    font-size: 1.05rem;
+    margin: 18px 0 10px 0;
+    padding-left: 8px;
+    border-left: 2px solid var(--jpz-border-color);
+}
+
+.license-content h5,
+.license-content h6 {
+    font-size: 1rem;
+    margin: 14px 0 8px 0;
 }
 
 .license-content h1,
 .license-content h2,
-.license-content h3 {
-    color: #22314a;
+.license-content h3,
+.license-content h4,
+.license-content h5,
+.license-content h6 {
+    color: var(--jpz-text-color-primary);
+    font-weight: 700;
+    page-break-after: avoid;
 }
 
 .license-content p {
-    margin: 8px 0;
+    margin: 14px 0;
+    text-align: justify;
+    line-height: 2;
+}
+
+.license-content ul,
+.license-content ol {
+    margin: 14px 0;
+    padding-left: 3em;
+    line-height: 2;
+
+    li {
+        margin: 8px 0;
+        text-indent: 0;
+
+        &::marker {
+            color: var(--jpz-color-primary);
+            font-weight: bold;
+        }
+    }
+}
+
+.license-content strong,
+.license-content b {
+    font-weight: 700;
+    color: var(--jpz-text-color-primary);
+}
+
+.license-content blockquote {
+    margin: 16px 0;
+    padding: 12px 20px;
+    background-color: var(--jpz-bg-color-page);
+    border-left: 4px solid var(--jpz-color-primary);
+    color: var(--jpz-text-color-secondary);
+    font-style: italic;
+}
+
+.license-content table {
+    width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+
+    th,
+    td {
+        padding: 12px 16px;
+        border: 1px solid var(--jpz-border-color);
+        text-align: left;
+        line-height: 1.8;
+    }
+
+    th {
+        background-color: var(--jpz-bg-color-page);
+        font-weight: 700;
+        color: var(--jpz-text-color-primary);
+    }
+
+    tr:nth-child(even) {
+        background-color: var(--jpz-bg-color-page);
+    }
 }
 
 .license-content a {
-    color: #2b6df6;
-    text-decoration: underline;
+    color: var(--jpz-color-primary);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--jpz-color-primary);
 }
 
-@media (max-width: 640px) {
+.license-content .signature-area {
+    margin-top: 48px;
+    padding-top: 24px;
+    text-align: right;
+
+    .signer-name {
+        font-weight: 700;
+        margin-top: 40px;
+    }
+
+    .sign-date {
+        margin-top: 8px;
+        color: var(--jpz-text-color-secondary);
+    }
+}
+
+@media (max-width: 768px) {
     .license-card {
         margin: 12px;
-        padding: 14px;
+        padding: 32px 24px;
+
+        &::before {
+            height: 3px;
+        }
     }
-    .license-card-body {
-        padding: 12px;
+    .license-content {
+        font-size: 0.95rem;
     }
-    .card-decor {
-        display: none;
+
+    .license-content h1 {
+        font-size: 1.4rem;
+    }
+
+    .license-content h2 {
+        font-size: 1.2rem;
+        display: block;
+        height: auto;
+        line-height: 1.4;
+        border-bottom: 2px solid #cc0000;
+        padding-bottom: 8px;
+    }
+
+    .license-content h3 {
+        font-size: 1.1rem;
+    }
+
+    .card-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding-top: 20px;
+        margin-top: 24px;
+    }
+
+    .footer-version {
+        margin-top: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .license-card {
+        padding: 24px 16px;
+    }
+    .license-content {
+        font-size: 0.9rem;
+        line-height: 1.9;
+    }
+
+    .license-content h1 {
+        font-size: 1.25rem;
+    }
+
+    .license-content h2 {
+        font-size: 1.1rem;
+        display: block;
+        height: auto;
+        line-height: 1.3;
+        border-bottom: 2px solid #cc0000;
+        padding-bottom: 6px;
+    }
+
+    .license-content p {
+        margin: 10px 0;
     }
 }
 </style>
