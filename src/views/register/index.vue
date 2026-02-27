@@ -46,8 +46,9 @@
             </el-form-item>
 
             <el-form-item prop="acceptedTerms">
+                <!-- 需要管理员提前创建页面 /page/terms 内容 -->
                 <el-checkbox v-model="registerForm.acceptedTerms" value="同意条款" name="acceptedTerms" /><span class="i-agree">我已同意并接受：</span
-                ><a class="i-agree-link" href="/">《服务条款》</a>
+                ><a class="i-agree-link" href="/page/terms" target="blank">《服务条款》</a>
             </el-form-item>
 
             <div class="btn-submit">

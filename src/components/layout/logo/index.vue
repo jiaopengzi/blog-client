@@ -9,7 +9,8 @@
 <template>
     <div class="logo-container">
         <router-link :to="{ name: RouteNames.Home }" @click="clickLogo">
-            <img class="logo" :src="logo || './demo-logo.svg'" alt="logo" />
+            <!-- 使用绝对路径来解析公共资源，以便在嵌套路由中正确解析 -->
+            <img class="logo" :src="logo || '/demo-logo.svg'" alt="logo" />
         </router-link>
     </div>
 </template>
