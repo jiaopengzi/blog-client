@@ -38,6 +38,9 @@
                 <el-button type="danger" :loading="submitting" :disabled="!!newCert" style="min-width: 120px; font-weight: 600" @click="handleSubmit">
                     重置证书
                 </el-button>
+                <el-button type="text" style="margin-left: 12px; color: var(--jpz-color-primary); font-weight: 600" @click="emit('view-agreement')">
+                    查看协议
+                </el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -57,10 +60,8 @@ import { confirmCommon } from "@/utils/confirm"
 import { MessageUtil } from "@/utils/message"
 import { domainHint } from "../../hooks"
 
-// 定义事件
-const emit = defineEmits<{
-    (event: "reset-cert-status", status: boolean): void
-}>()
+// 定义事件 (使用字符串数组以避免复杂的类型推断问题)
+const emit = defineEmits(["reset-cert-status", "view-agreement"])
 
 // 表单引用
 const formRef = ref<FormInstance>()

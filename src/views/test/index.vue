@@ -1,9 +1,9 @@
 <template>
-    <License />
+    <Agreement />
 </template>
 <script setup lang="ts">
 defineOptions({ name: "MyTest" })
-import License from "@/views/admin/component/main/billing-center/component/license/index.vue"
+import Agreement from "@/views/admin/component/main/billing-center/component/agreement/index.vue"
 </script>
 
 <style scoped lang="scss"></style>

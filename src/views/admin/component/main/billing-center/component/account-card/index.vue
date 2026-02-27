@@ -15,6 +15,7 @@
                     <el-button class="btn-recharge" @click="handleRecharge"> 充值 </el-button>
                     <el-button @click="handleNotify"> 通知设置 </el-button>
                     <el-button @click="handleResetCert"> 重置证书 </el-button>
+                    <el-button @click="handleViewAgreement"> 查看协议 </el-button>
                 </div>
             </div>
 
@@ -65,15 +66,13 @@ defineProps<{
     accountInfo: BillingCenterAccountRes
 }>()
 
-const emit = defineEmits<{
-    (e: "recharge"): void
-    (e: "notify"): void
-    (e: "reset-cert"): void
-}>()
+// 使用数组形式声明 emits，避免多重重载带来的 TS 问题
+const emit = defineEmits(["recharge", "notify", "reset-cert", "view-agreement"])
 
 const handleRecharge = debounce(300, () => emit("recharge"))
 const handleNotify = debounce(300, () => emit("notify"))
 const handleResetCert = debounce(300, () => emit("reset-cert"))
+const handleViewAgreement = debounce(300, () => emit("view-agreement"))
 
 const { formatAmount } = useBillingCenter()
 </script>

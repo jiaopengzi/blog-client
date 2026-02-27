@@ -84,12 +84,12 @@ export interface BillingCenterAccountRes {
     notify_enabled: boolean // 通知开关
 }
 
-// 计费中心授权信息响应
-export interface BillingCenterLicenseRes {
-    issued_at: string // 颁发/生效日期, RFC3339 格式
+// 计费中心协议信息响应
+export interface BillingCenterAgreementRes {
+    issued_at: string // 生效日期, RFC3339 格式
     modified_at: string // 最近修改时间, RFC3339 格式
-    version: string // 许可证版本
-    content: string // 许可证详细内容(markdown)
+    version: string // 协议版本
+    content: string // 协议详细内容(markdown)
 }
 
 // 计费中心注册响应

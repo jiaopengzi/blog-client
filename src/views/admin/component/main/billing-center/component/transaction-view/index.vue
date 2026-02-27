@@ -9,7 +9,13 @@
 <template>
     <div class="transaction-view">
         <!-- 账号信息卡片 -->
-        <AccountCard :account-info="accountInfo" @recharge="showRechargeDialog" @notify="showNotifyDialog" @reset-cert="showResetCertDialog" />
+        <AccountCard
+            :account-info="accountInfo"
+            @recharge="showRechargeDialog"
+            @notify="showNotifyDialog"
+            @reset-cert="showResetCertDialog"
+            @view-agreement="showAgreementDialog"
+        />
 
         <!-- 交易流水列表 -->
         <div class="transaction-section">
@@ -95,13 +101,24 @@
                     <span>重置证书</span>
                 </div>
             </template>
-            <ResetCertForm @reset-cert-status="handleResetCertStatus" />
+            <ResetCertForm @reset-cert-status="handleResetCertStatus" @view-agreement="showAgreementDialog" />
+        </el-dialog>
+
+        <!-- 查看协议弹窗 -->
+        <el-dialog v-model="agreementDialogVisible" width="960px" destroy-on-close class="billing-dialog billing-dialog--agreement">
+            <template #header>
+                <div class="billing-dialog-header">
+                    <el-icon :size="22"><Document /></el-icon>
+                    <span>查看协议</span>
+                </div>
+            </template>
+            <Agreement />
         </el-dialog>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { Bell, Key, Wallet } from "@element-plus/icons-vue"
+import { Bell, Key, Wallet, Document } from "@element-plus/icons-vue"
 import { debounce } from "throttle-debounce"
 import { reactive, ref, watch } from "vue"
 import type { ResPromise, Res, Pagination } from "@/api/response"
@@ -121,6 +138,7 @@ import DateRangeShortcuts from "@/components/common/date-range-shortcuts/index.v
 import NotifyForm from "../notify"
 import RechargeForm from "../recharge"
 import ResetCertForm from "../reset-cert"
+import Agreement from "../agreement"
 import AccountCard from "../account-card"
 import { useBillingCenter } from "../../hooks"
 import { queryKey } from "../../types"
@@ -143,6 +161,7 @@ const { formatTransactionType, formatRelatedId } = useBillingCenter()
 const rechargeDialogVisible = ref(false)
 const notifyDialogVisible = ref(false)
 const resetCertDialogVisible = ref(false)
+const agreementDialogVisible = ref(false)
 
 // 显示弹窗
 const showRechargeDialog = () => {
@@ -153,6 +172,9 @@ const showNotifyDialog = () => {
 }
 const showResetCertDialog = () => {
     resetCertDialogVisible.value = true
+}
+const showAgreementDialog = () => {
+    agreementDialogVisible.value = true
 }
 
 // 交易类型选项(含全部)
