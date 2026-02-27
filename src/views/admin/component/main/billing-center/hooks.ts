@@ -20,7 +20,7 @@ import type { TableData } from "@/components/common/base-table"
  */
 export const domainHint = `1、域名必须以 .com、.net、.org 等常见顶级域名结尾，且不包含协议部分（如 http:// 或 https://）例如：example.com。
 2、域名作为计费中心校验用户网站合法性的依据，请确保输入的域名正确且可访问。
-3、若输入的域名无法访问，计费中心将注销您的账号且不予退款（如有充值的情况）请谨慎输入。
+3、若输入的域名无法访问，计费中心将注销您的账号，请谨慎输入。
 `
 
 /**
