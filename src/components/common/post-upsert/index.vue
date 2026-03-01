@@ -12,7 +12,7 @@
                 <div class="btns-header-left">
                     <el-button type="primary" class="new-post-write btns-header-item" @click="newPostWrite">
                         <j-icon :name="IconKeys.Edit" custom-class="btns-header-item-icon" />
-                        <span>新文章</span>
+                        <span>{{ postType === PostType.Page ? "新页面" : "新文章" }}</span>
                     </el-button>
                     <el-button type="primary" class="add-media btns-header-item" @click="mediaDialogVisible = true">
                         <j-icon :name="IconKeys.Media" custom-class="btns-header-item-icon" />
@@ -586,7 +586,7 @@ const insertMedia = (data: TableData[]) => {
     mediaDialogVisible.value = false
 }
 
-// 前台查看文章
+// 前台查看文章/页面
 const { handleViewPost } = usePostView()
 const viewPost = () => {
     if (!postInfoForm.id) {
@@ -594,15 +594,15 @@ const viewPost = () => {
         return
     }
 
-    // 新开窗口查看文章
-    handleViewPost(postInfoForm.id, Target.Blank)
+    handleViewPost(postInfoForm.id, Target.Blank, { postType, slug: postInfoForm.slug })
 }
 
-// 新文章
+// 新文章/新页面
 const newPostWrite = async () => {
-    // 先跳转到文章列表再跳转到写文章页面, 以便重置组件状态
-    await router.push({ name: RouteNames.PostAll })
-    await router.push({ name: RouteNames.PostWrite })
+    // 先跳转到列表再跳转到编辑页面, 以便重置组件状态
+    const allRouteName = postType === PostType.Page ? RouteNames.PageAll : RouteNames.PostAll
+    await router.push({ name: allRouteName })
+    await router.push({ name: routeName })
 }
 
 onUnmounted(() => {

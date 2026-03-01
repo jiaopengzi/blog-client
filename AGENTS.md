@@ -1,162 +1,134 @@
 # AGENTS.md
 
-## Purpose
+> 说明：本文件将提供给自动化/Agent 编码助手使用。内容以“可执行命令 + 可验证约定”为主；命令/配置均来自仓库现有文件(package.json / vitest.config.ts / oxlint.config.ts / .prettierrc.js / tsconfig\*.json 等)。
 
-This repository-level guide is written for autonomous coding agents (and humans) that will operate on this project. It documents how to build, lint, test, and the coding-style expectations so agents can make safe, consistent changes.
+## 0. 初始化信息
 
-## How to run (quick)
+- 项目：`blog-client`(Vue 3 + TypeScript，ESM：`package.json#type=module`)
+- 包管理：`pnpm`(以 `pnpm run ...` 为准)
+- 构建：Vite(`vite.config.ts`)
+- 类型检查：`vue-tsc`(`pnpm run type-check`)
+- Lint：`oxlint`(`pnpm run lint`)
+- 格式化：Prettier(`pnpm run format`，仅写入 `src/`)
+- 测试：Vitest(`pnpm run test` / `pnpm run testOnline`)，环境 `jsdom`，全局 setup：`vitest.setup.ts`
+- 规则文件：未发现 `.cursor/`、`.cursorrules`、`.github/copilot-instructions.md`、`.editorconfig`、`CONTRIBUTING*`
 
-- Install dependencies:
-  - pnpm install
+## 1. 常用命令(以 package.json scripts 为准)
 
-- Development server:
-  - pnpm run dev
-    - runs: node ./scripts/set-env-version.js && node ./scripts/open-document.js && vite
+```bash
+pnpm install
 
-- Build / preview:
-  - pnpm run build # full build (runs type-check first)
-  - pnpm run build-only # build without type-check
-  - pnpm run preview # run vite preview
+# 开发：node ./scripts/set-env-version.js && node ./scripts/open-document.js && vite
+pnpm dev
 
-- Type checking:
-  - pnpm run type-check
-  - This runs: vue-tsc --noEmit -p tsconfig.app.json --composite false
+# 预览：node ./scripts/open-document.js && vite preview
+pnpm preview
 
-- Lint and formatting:
-  - pnpm run lint # run oxlint (fast linter used in this project)
-  - pnpm run lint:fix # run oxlint --fix
-  - pnpm run format # runs: prettier --write src/
+# 完整构建：并行执行 type-check 与 build-only(npm-run-all 的 run-p)
+pnpm build
 
-- Tests (vitest):
-  - pnpm run test # runs: vitest run
-  - pnpm run testOnline # runs vitest in watch/dev mode
+# 仅构建：node ./scripts/set-env-version.js && vite build && node ./scripts/dns-prefetch.js
+pnpm build-only
 
-## Run a single test file or test
+# vue-tsc --noEmit -p tsconfig.app.json --composite false
+pnpm type-check
 
-- Run a single test file (example):
-  - pnpm exec vitest run src/components/common/date-range-shortcuts/**tests**/index.test.ts
-  - or: pnpm exec vitest src/components/common/date-range-shortcuts/**tests**/index.test.ts
+pnpm lint
+pnpm lint:fix
 
-- Run a single test by name (match):
-  - pnpm exec vitest -t "renders 7 default" # partial/regex match of the test title
-  - or use pnpm scripts: pnpm run test -- -t "partial name"
+# prettier --write src/
+pnpm format
 
-## Notes about testing setup
+# 单次运行(CI 风格)
+pnpm test
 
-- The repo contains vitest.config.ts and vitest.setup.ts
-  - environment: jsdom
-  - setupFiles: ./vitest.setup.ts (contains common mocks)
-  - vitest excludes configDefaults.exclude plus custom excludes (e2e, node_modules, dist, .vscode, some packages)
-  - TypeScript config for tests: tsconfig.vitest.json (extends tsconfig.app.json)
+# 在线/监视模式
+pnpm testOnline
+```
 
-## Linting (oxlint)
+补充：`.prettierignore` 会忽略 `dist/`、`node_modules/`、`coverage/`、`assets/` 等。
 
-- This project uses oxlint (devDependency) for linting, configured in oxlint.config.ts.
-  - Run: npm run lint or npx oxlint path/to/file.ts
-  - Auto-fix: npm run lint:fix or npx oxlint --fix
+## 2. 运行单个测试(重点)
 
-- Key rules (project configuration summary):
-  - correctness: warn
-  - suspicious: warn
-  - perf: warn
-  - Specific rule overrides include:
-    - eslint/no-unused-vars: error
-    - no-console: off (console allowed during development)
-    - no-debugger: error
-    - eqeqeq: error (use ===)
-    - no-var: error (prefer let/const)
+运行单个测试文件：
 
-## Code style and conventions
+```bash
+pnpm exec vitest run src/utils/dateTime.test.ts
+pnpm exec vitest run src/components/common/date-range-shortcuts/__tests__/index.test.ts
+```
 
-This repository follows a Vue 3 + TypeScript style with Prettier, oxlint rules and conventional Vue patterns. Agents should obey the following conventions when modifying or creating files.
+按测试用例名运行(`-t` 为匹配模式，支持子串/正则)：
 
-Formatting (Prettier)
+```bash
+pnpm exec vitest -t "渲染 7 个默认快捷按钮"
+pnpm run test -- -t "格式化日期包含年月日时分秒和时区偏移"
+```
 
-- Source file: .prettierrc.js
-- Key settings:
-  - semi: false (no semicolons)
-  - tabWidth: 4
-  - useTabs: false (spaces)
-  - singleQuote: false (double quotes)
-  - printWidth: 160
-  - trailingComma: all
-  - arrowParens: always
+测试文件常见位置(仓库已存在)：
 
-Typescript / Types
+- `src/**/__tests__/**`(例：`src/components/common/date-range-shortcuts/__tests__/index.test.ts`)
+- `src/**/*.test.ts`(例：`src/utils/dateTime.test.ts`)
+- `src/**/__test__/**`(例：`src/pkg/codemirror/extension/mdlint/rule/__test__/007.test.ts`)
 
-- Use strict typings where practical. The project uses TypeScript 5.x and vue-tsc for checks.
-- Prefer explicit return types on exported functions and components.
-- When adding new types/interfaces, keep them colocated with the feature (e.g., in a types.ts or nearby module) unless shared widely.
-- Use tsconfig.app.json and tsconfig.vitest.json for test-specific typing rules.
+## 3. 测试环境与全局 mock
 
-Imports and module style
+- `vitest.config.ts`：`environment: "jsdom"`，并通过 `setupFiles` 引入 `vitest.setup.ts`
+- `vitest.setup.ts`：集中放置全局 `vi.mock(...)`(如 `vue3-emoji-picker`、`@/router/router.ts` 等)；新增测试时尽量复用/补充到该文件
 
-- The repo uses ESM (package.json: "type": "module").
-- Prefer absolute imports via configured paths where available (see tsconfig.app.json). Use relative imports for local siblings.
-- Keep import groups in this order: 1) builtin node modules, 2) external packages, 3) internal absolute imports, 4) relative imports (../ then ./). Insert one blank line between groups.
-- Avoid large default exports for utility collections; prefer named exports for clarity and tree-shaking.
+## 4. 代码风格与约定(以现有配置为准)
 
-Vue conventions
+### 4.1 Prettier(`.prettierrc.js`)
 
-- Single File Components (.vue) should follow the <script setup lang="ts"> pattern where possible.
-- Component props should be typed and validated; use defineProps with explicit types when feasible.
-- Expose emits with defineEmits and apply types to emitted payloads.
-- Keep template class names and CSS selectors stable; tests depend on certain class names (e.g., .shortcut-item).
+- `semi: false`(不写分号)
+- `tabWidth: 4`、`useTabs: false`(4 空格缩进)
+- `singleQuote: false`(使用双引号)
+- `printWidth: 160`、`trailingComma: "all"`、`arrowParens: "always"`
 
-Naming conventions
+### 4.2 TypeScript / Types
 
-- Files: kebab-case for vue components and utilities (e.g., date-range-shortcuts, my-component.vue).
-- Test files: place next to the code in **tests** or use \*.test.ts suffix. Existing examples: src/utils/dateTime.test.ts and **tests**/index.test.ts
-- Types: PascalCase for interfaces and types (e.g., DateShortcut)
-- Variables: camelCase
-- Components: PascalCase (component file names kebab-case is acceptable; registered components use PascalCase)
+- 路径别名：`@/* -> ./src/*`(见 `tsconfig.app.json`)，示例：`import { formatLocalISO } from "@/utils/dateTime"`
+- 导出 API(对外函数/组件/类型)尽量显式标注类型，避免隐式 any
+- 测试 tsconfig：`tsconfig.vitest.json`(`types: ["node", "jsdom"]`)
 
-Error handling and logging
+### 4.3 Import 顺序(建议)
 
-- Prefer returning Result-like values or throwing meaningful Error instances for unexpected failures.
-- Do not swallow errors silently. If catch is needed, handle the error or rethrow. Avoid empty catch blocks.
-- Use console.\* sparingly but allowed during development; production-critical code should avoid noisy logs. oxlint config currently allows console.
+保持分组清晰并组间空一行：
 
-Tests and mocks
+1. Node 内置模块(如 `node:url`)
+2. 第三方依赖(如 `vue` / `element-plus` / `vitest`)
+3. 项目内绝对路径(如 `@/utils/...`)
+4. 相对路径(`../` 再 `./`)
 
-- Tests use vitest + @vue/test-utils. Use describe/it/expect from vitest. See src/\*\*/**tests** examples.
-- The repo includes a vitest.setup.ts where common module mocks are declared. Reuse that file for global setup.
-- Mock external UI libraries or hard-to-init modules in tests (see vi.mock entries in vitest.setup.ts).
+### 4.4 Vue 约定
 
-Repository patterns to follow
+- SFC 优先 `<script setup lang="ts">`(不影响既有结构前提下)
+- `defineProps` / `defineEmits` 提供显式类型
+- 不随意改动 DOM 选择器/类名：测试依赖稳定选择器(例：`.shortcut-item`)
 
-- Keep features modular: small utilities under src/utils, packages under src/pkg, components under src/components
-- When adding new command scripts, add entries to package.json scripts with clear names and document them here.
+### 4.5 命名约定
 
-## Cursor / Copilot rules
+- 组件：`PascalCase`(文件名可 kebab-case)
+- 文件：优先 kebab-case(跟随同目录既有风格)
+- 变量/函数：`camelCase`；类型：`PascalCase`
 
-- Cursor rules (.cursor/) and Copilot instructions (.github/copilot-instructions.md) were searched for but not found in this repository. If you add those files, list them here so automated agents can read them.
+### 4.6 错误处理与日志
 
-## Files of note (examples)
+- 不吞异常：避免空 `catch {}`；需要捕获时要处理或重新抛出
+- `console` 允许(`no-console: off`)，但避免关键路径噪声输出
 
-- package.json (scripts): dev, build, preview, type-check, lint, lint:fix, format, test, testOnline
-- .prettierrc.js : formatting rules
-- oxlint.config.ts : lint rules and ignorePatterns
-- vitest.config.ts and vitest.setup.ts : test runtime and mocks
-- tsconfig.vitest.json : test TS config
-- Example test files:
-  - src/components/common/date-range-shortcuts/**tests**/index.test.ts
-  - src/utils/dateTime.test.ts
-  - many other src/\*_/**test**/_.test.ts files
+### 4.7 Lint(`oxlint.config.ts`)
 
-## Agent responsibilities
+- 分组：`correctness/suspicious/perf` 均为 `warn`
+- 关键规则：`eslint/no-unused-vars: error`、`no-debugger: error`、`eqeqeq: error`、`no-var: error`、`no-empty: warn`
 
-- Always run lints and tests locally after changes: npm run lint && npm run test (or target tests changed).
-- Respect Prettier formatting on write. Run npm run format if unsure.
-- For TypeScript changes run: npm run type-check
-- When adding new files, add relevant unit tests and update any tsconfig include/excludes if needed.
+## 5. Cursor / Copilot / 其他规则文件清单
 
-## If something is missing
+已确认不存在：`.cursor/rules/**`、`.cursorrules`、`.github/copilot-instructions.md`、`.editorconfig`。若未来新增，请在此补充路径与摘要。
 
-- If agents detect other configuration files or tooling (ESLint, .editorconfig, .cursorrules, Copilot rules), update this AGENTS.md and add a short summary entry.
+## 6. Agent 执行准则(给自动化编码助手)
 
-## Contact / Author
-
-- Author: 焦棚子 <jiaopengzi@outlook.com> (from package.json)
+- 改代码后至少跑：`pnpm run lint` +(相关)`pnpm run test`；涉及 TS 类型/对外 API 变更再跑 `pnpm run type-check`
+- 新增/修复：尽量补齐同目录 `*.test.ts` 或 `__tests__` 用例，并复用 `vitest.setup.ts` 的全局 mock
+- 不要提交/生成产物：`dist/`、`node_modules/`、`coverage/` 等保持忽略
 
 -- End of AGENTS.md --

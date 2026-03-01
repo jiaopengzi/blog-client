@@ -9,7 +9,7 @@
 import { useRouter } from "vue-router"
 
 import { Target } from "@/api/common"
-import { PostStatusCode } from "@/api/post/common"
+import { PostStatusCode, PostType } from "@/api/post/common"
 import { type ViewPostByIDRequest, viewPostByIDWithoutContentAPI } from "@/api/post/viewByID"
 import { ResponseCode } from "@/api/response"
 import { RouteNames } from "@/router"
@@ -53,13 +53,13 @@ export function usePostView() {
                 postData.post_status === PostStatusCode.Future ||
                 postData.post_status === PostStatusCode.Expired
             ) {
-                MessageUtil.warning("草稿、定时发布、过期 状态的文章不能前台查看")
+                MessageUtil.warning("草稿、定时发布、过期 状态不能前台查看")
                 return false
             }
 
             // 如果是私密文章且当前用户不是作者，则不能前台查看
             if (postData.post_status === PostStatusCode.Private && postData.author_info.id !== userStore.data.user.id.toString()) {
-                MessageUtil.warning("他人的私密文章不能前台查看")
+                MessageUtil.warning("非自己的私密状态不能前台查看")
                 return false
             }
         } else {
@@ -70,14 +70,25 @@ export function usePostView() {
         return true
     }
 
-    // 处理查看文章详情
-    const handleViewPost = async (postID: string, target: Target = Target.Self) => {
+    // 处理查看文章/页面详情
+    const handleViewPost = async (postID: string, target: Target = Target.Self, options?: { postType?: PostType; slug?: string }) => {
         // 先检查文章状态是否合法可查看
         if (!(await checkPostStatus(postID))) {
             return
         }
 
-        // 根据 target 进行跳转
+        // 页面类型导航到 /page/slug
+        if (options?.postType === PostType.Page) {
+            const pageUrl = `/page/${options.slug || postID}`
+            if (target === Target.Blank) {
+                window.open(pageUrl, "_blank")
+                return
+            }
+            router.push(pageUrl)
+            return
+        }
+
+        // 文章类型根据 target 进行跳转
         if (target === Target.Blank) {
             const postUrl = `/?${queryKey.PostID}=${postID}`
             window.open(postUrl, "_blank")
@@ -91,6 +102,6 @@ export function usePostView() {
     }
 
     return {
-        handleViewPost, // 处理查看文章详情
+        handleViewPost, // 处理查看文章/页面详情
     }
 }

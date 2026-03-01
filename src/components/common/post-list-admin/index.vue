@@ -31,7 +31,7 @@
             @click-category="handleClickCategory"
             @click-tag="handleClickTag"
             @click-author="handleClickAuthor"
-            @view-post="handleViewPost"
+            @view-post="onViewPost"
         >
             <template #btns>
                 <el-button ref="addBtnRef" type="primary" @click="write"> {{ writeText }} </el-button>
@@ -115,7 +115,7 @@
 import { useHead } from "@unhead/vue"
 import { computed, reactive, ref, watch } from "vue"
 import { useRouter } from "vue-router"
-
+import { Target } from "@/api/common"
 import { batchOperationPostStatusAPI, type BatchOperationPostStatusRequest, type PostStatusOperation } from "@/api/post/batchOperationPostStatus"
 import { CustomFields, CustomFieldsDisplay, type PostResPaginationByAdmin, PostStatusCode, PostStatusDisplay, PostType } from "@/api/post/common"
 import { deletePostAPI, type DeletePostRequest } from "@/api/post/delete"
@@ -589,6 +589,13 @@ watch(
 )
 
 const { handleViewPost } = usePostView()
+
+// 前台查看文章/页面
+const onViewPost = (postID: string) => {
+    const row = pagination.records.find((item) => item.id === postID)
+    const slug = row?.slug || postID
+    handleViewPost(postID, Target.Blank, { postType, slug })
+}
 </script>
 
 <style scoped lang="scss">
