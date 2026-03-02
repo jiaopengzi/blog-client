@@ -90,21 +90,21 @@ onUnmounted(() => {
 @include respond-to("pc") {
     .content {
         width: pc.$width-page-main;
-        height: calc(100vh - pc.$height-footer);
+        min-height: calc(100vh - pc.$height-footer);
     }
 }
 
 @include respond-to("pad") {
     .content {
         width: 94vw;
-        height: calc(100vh - pad.$height-footer);
+        min-height: calc(100vh - pad.$height-footer);
     }
 }
 
 @include respond-to("phone") {
     .content {
         width: 94vw;
-        height: calc(100vh - phone.$height-footer);
+        min-height: calc(100vh - phone.$height-footer);
     }
 }
 

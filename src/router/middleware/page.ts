@@ -43,6 +43,9 @@ export const pageMiddleware = async (to: RouteLocationNormalized) => {
             await statusStore.setCustomPage()
             return true
         }
+
+        // 页面不存在, 重定向到404, 保留原始 URL 路径
+        return { name: RouteNames.NotFound, params: { pathMatch: to.path.substring(1).split("/") } }
     }
 
     return true
