@@ -180,6 +180,7 @@ onBeforeMount(async () => {
 }
 
 .agreement-content ol {
+    margin: 14px 0;
     padding-left: 1.5em;
 
     li {
@@ -208,7 +209,11 @@ onBeforeMount(async () => {
     margin-bottom: 0.5em;
 }
 .agreement-content ol > li::before {
-    content: counter(lvl1, cjk-ideographic) "、";
+    // 中文编号
+    // content: counter(lvl1, cjk-ideographic) "、";
+
+    // 阿拉伯数编号
+    content: counter(lvl1, decimal) "、";
     position: absolute;
     // 将编号区域移入左侧留白并扩大宽度，防止两字编号（如“十一”）换行
     left: -3.6em;
