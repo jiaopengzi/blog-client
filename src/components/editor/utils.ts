@@ -85,6 +85,9 @@ interface RegexCache {
     copyButtonRegex: RegExp // 匹配所有 class 中有 copy-button 的按钮元素
     detailsTagRegex: RegExp // 匹配 details 标签
     detailsTagToRemoveRegex: RegExp // 需要去掉 details 标签
+    htmlNamedEntityRegex: RegExp // 匹配 HTML 命名实体（如 &lt; &gt; &amp; 等）
+    htmlDecimalEntityRegex: RegExp // 匹配 HTML 十进制数字实体（如 &#39; 等）
+    htmlHexEntityRegex: RegExp // 匹配 HTML 十六进制数字实体（如 &#x27; 等）
 }
 
 /**
@@ -150,6 +153,12 @@ export const createRegexCache = (): RegexCache => {
     const detailsTagRegex = /<details[\s\S]*?<\/details>/gi
     // 需要去掉 details 标签
     const detailsTagToRemoveRegex = /<\/?details[^>]*>/g
+    // 匹配 HTML 命名实体（如 &lt; &gt; &amp; &quot; &apos; 等）
+    const htmlNamedEntityRegex = /&(?:amp|lt|gt|quot|apos|#39|#x27|#x2F);/g
+    // 匹配 HTML 十进制数字实体（如 &#39; &#160; 等）
+    const htmlDecimalEntityRegex = /&#(\d+);/g
+    // 匹配 HTML 十六进制数字实体（如 &#x27; &#x2F; 等）
+    const htmlHexEntityRegex = /&#x([\da-fA-F]+);/g
     return {
         h1TagRegex,
         hTagRegex,
@@ -168,6 +177,9 @@ export const createRegexCache = (): RegexCache => {
         copyButtonRegex,
         detailsTagRegex,
         detailsTagToRemoveRegex,
+        htmlNamedEntityRegex,
+        htmlDecimalEntityRegex,
+        htmlHexEntityRegex,
     }
 }
 
@@ -254,13 +266,39 @@ export function generateAllHeadingAnchor(html: string): string {
     })
 }
 
+// HTML 命名实体映射表(模块级缓存，避免每次调用时重复创建)
+const HTML_ENTITY_MAP: Record<string, string> = {
+    "&amp;": "&",
+    "&lt;": "<",
+    "&gt;": ">",
+    "&quot;": '"',
+    "&#39;": "'",
+    "&#x27;": "'",
+    "&#x2F;": "/",
+    "&apos;": "'",
+}
+/**
+ * @description : 解码 HTML 实体字符（如 &lt; &gt; &amp; &quot; &#39; 及数字实体）
+ * @param str                  : 包含 HTML 实体的字符串
+ * @param htmlNamedEntityRegex : 匹配 HTML 命名实体的正则表达式（来自 regexCache，避免重复创建）
+ * @param htmlDecimalEntityRegex : 匹配 HTML 十进制数字实体的正则表达式（来自 regexCache，避免重复创建）
+ * @param htmlHexEntityRegex   : 匹配 HTML 十六进制数字实体的正则表达式（来自 regexCache，避免重复创建）
+ * @return                     : 解码后的字符串
+ */
+function decodeHtmlEntities(str: string, htmlNamedEntityRegex: RegExp, htmlDecimalEntityRegex: RegExp, htmlHexEntityRegex: RegExp): string {
+    return str
+        .replace(htmlNamedEntityRegex, (entity) => HTML_ENTITY_MAP[entity] ?? entity)
+        .replace(htmlDecimalEntityRegex, (_, dec) => String.fromCharCode(Number(dec)))
+        .replace(htmlHexEntityRegex, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
+}
+
 /**
  * @description : 通过正则表达式匹配 html 中所有的 h 标签 并转换为 HeadingType 数组
  * @param html  : html 字符串
  * @return      : 匹配到的 h 标签数组
  */
 export function matchAllHeadingToList(html: string): Heading[] {
-    const { hTagRegex, hTagLevelRegex, hTagAnchorRegex, htmlTagRegex } = regexCache
+    const { hTagRegex, hTagLevelRegex, hTagAnchorRegex, htmlTagRegex, htmlNamedEntityRegex, htmlDecimalEntityRegex, htmlHexEntityRegex } = regexCache
     const matches = html.match(hTagRegex) || [] // 匹配到的 h 标签数组
     const headingList: Heading[] = [] // h 标签数组
     let headingIndex = 0 // 标题索引
@@ -268,7 +306,7 @@ export function matchAllHeadingToList(html: string): Heading[] {
     matches.forEach((item) => {
         // 遍历匹配到的 h 标签数组
         const level = Number(item.match(hTagLevelRegex)?.[1]) || 1 // h 标签的等级
-        const text = item.replace(htmlTagRegex, "") // h 标签的文本
+        const text = decodeHtmlEntities(item.replace(htmlTagRegex, ""), htmlNamedEntityRegex, htmlDecimalEntityRegex, htmlHexEntityRegex) // h 标签的文本（解码 HTML 实体）
         const anchor = item.match(hTagAnchorRegex)?.[1] || "" // h 标签的锚点
         headingList.push({
             index: headingIndex++,
