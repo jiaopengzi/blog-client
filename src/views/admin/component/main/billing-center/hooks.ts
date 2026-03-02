@@ -35,6 +35,9 @@ export function useBillingCenter() {
     // 是否已注册
     const isRegistered = ref(false)
 
+    // 账户是否被禁用
+    const isForbidden = ref(false)
+
     // 加载状态
     const accountLoading = ref(false)
 
@@ -48,9 +51,15 @@ export function useBillingCenter() {
             if (res.data.code === ResponseCode.BillingCenterGetAccountSuccess) {
                 accountInfo.value = res.data.data
                 isRegistered.value = true
+                isForbidden.value = false
             } else if (res.data.code === ResponseCode.BillingCenterAccountNotExists) {
                 isRegistered.value = false
                 accountInfo.value = null
+                isForbidden.value = false
+            } else if (res.data.code === ResponseCode.BillingCenterAccountForbidden) {
+                isRegistered.value = false
+                accountInfo.value = null
+                isForbidden.value = true
             }
         } finally {
             accountLoading.value = false
@@ -109,6 +118,7 @@ export function useBillingCenter() {
     return {
         accountInfo,
         isRegistered,
+        isForbidden,
         accountLoading,
         getAccountInfo,
         formatAmount,

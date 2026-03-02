@@ -13,6 +13,9 @@
             <el-skeleton :rows="5" animated />
         </div>
 
+        <!-- 账户被禁用: 显示禁用状态 -->
+        <ForbiddenView v-else-if="isForbidden" />
+
         <!-- 未注册: 直接显示注册表单 -->
         <div v-else-if="!isRegistered" class="billing-register">
             <div class="billing-register-wrapper">
@@ -36,6 +39,7 @@ import { adminMenuItemMap } from "@/views/admin/component/aside"
 
 import RegisterForm from "./component/register"
 import TransactionView from "./component/transaction-view"
+import ForbiddenView from "./component/forbidden"
 import { useBillingCenter } from "./hooks"
 
 defineOptions({ name: RouteNames.BillingCenter })
@@ -44,7 +48,7 @@ useHead({
     title: adminMenuItemMap[RouteNames.BillingCenter].text,
 })
 
-const { accountInfo, isRegistered, accountLoading, getAccountInfo } = useBillingCenter()
+const { accountInfo, isRegistered, isForbidden, accountLoading, getAccountInfo } = useBillingCenter()
 
 /**
  * handleRegisterStatus 注册成功回调。

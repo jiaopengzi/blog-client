@@ -320,6 +320,8 @@ export enum ResponseCode {
     BillingCenterTransactionFlowListSuccess = 6219, // 获取流水成功
     BillingCenterGetAgreementSuccess = 6220, // 获取协议信息成功
     BillingCenterGetAgreementFailed = 6221, // 获取协议信息失败
+    BillingCenterBalanceInsufficient = 6222, // 计费中心余额不足，无法创建订单，请及时充值。
+    BillingCenterAccountForbidden = 6223, // 计费中心账户被禁用，请联系管理员。
 
     // 验证码相关
     CaptchaSendSuccess = 8000, // 验证码发送成功
