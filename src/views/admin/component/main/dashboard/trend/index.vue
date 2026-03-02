@@ -73,22 +73,33 @@ watch(
 </script>
 <style scoped lang="scss">
 .trend-container {
-    margin-top: 40px;
+    margin-top: 48px;
 
     h4 {
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 600;
         color: var(--jpz-text-color-primary);
-        margin-bottom: 10px;
+        margin-bottom: 24px;
+        padding-left: 12px;
+        border-left: 4px solid var(--jpz-text-color-primary);
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
     }
 
     .trend-select {
-        margin-top: 10px;
-        display: flex;
-        gap: 12px;
+        margin-bottom: 24px;
+        padding: 16px;
+        background-color: var(--jpz-bg-color);
+        border: 1px solid var(--jpz-border-color-lighter);
+        border-radius: 6px;
+        display: inline-flex;
+        gap: 16px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+        align-items: center;
     }
+
     .trend-chart {
-        margin-top: 10px;
+        margin-top: 0;
     }
 }
 </style>

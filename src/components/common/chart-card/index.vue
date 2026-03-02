@@ -71,27 +71,41 @@ onMounted(async () => {
 <style lang="scss" scoped>
 %card-container-common {
     width: var(--card-width);
-    height: var(--card-height);
+    min-height: var(--card-height);
     background-color: var(--bg-color, var(--jpz-bg-color));
-    border-radius: 8px;
-    box-shadow: var(--jpz-box-shadow-light);
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    padding: 5px;
+    padding: 20px 24px;
     font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+    border-top: 3px solid var(--jpz-border-color-lighter);
+    transition: all 0.2s ease-in-out;
+    box-sizing: border-box;
+
+    &:hover {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.04);
+        border-top-color: var(--jpz-text-color-placeholder);
+        transform: translateY(-2px);
+    }
 
     .value {
-        font-size: 24px;
+        font-size: 28px;
         font-weight: 700;
         color: var(--jpz-text-color-primary);
+        font-variant-numeric: tabular-nums;
+        line-height: 1.2;
     }
 
     .label {
-        font-size: 14px;
+        font-size: 13px;
+        font-weight: 500;
         color: var(--jpz-text-color-secondary);
-        margin-top: 4px;
+        margin-top: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 }
 .card-container {
@@ -103,7 +117,7 @@ onMounted(async () => {
     cursor: pointer;
 
     &:hover {
-        box-shadow: var(--jpz-box-shadow-lighter);
+        border-top-color: var(--jpz-text-color-primary);
     }
 }
 </style>

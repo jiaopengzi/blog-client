@@ -87,17 +87,33 @@ onBeforeMount(async () => {
 </script>
 <style scoped lang="scss">
 .stats-container {
+    margin-bottom: 40px;
+
     h4 {
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 600;
         color: var(--jpz-text-color-primary);
-        margin-bottom: 10px;
+        margin-bottom: 24px;
+        padding-left: 12px;
+        border-left: 4px solid var(--jpz-text-color-primary);
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
     }
 
     .cards-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 24px;
+    }
+
+    .cards-item {
         display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
+
+        :deep(.card-container),
+        :deep(.card-container-click) {
+            width: 100%;
+            min-height: 120px;
+        }
     }
 }
 </style>

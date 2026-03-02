@@ -32,7 +32,7 @@
                     }"
                     @click="handleBarClick(item)"
                 >
-                    <div class="bar-value">{{ unitNumber(item.value, 1) }}</div>
+                    <div class="bar-value" v-show="item.value > 0">{{ unitNumber(item.value, 1) }}</div>
                     <div class="bar-label">{{ item.label }}</div>
                 </div>
             </div>
@@ -180,19 +180,25 @@ const setChartContainerCssVars = (width: number, height: number) => {
 
 // 计算并设置 CSS 变量
 const calcCssVars = () => {
-    // 设置默认宽高
-    setChartContainerCssVars(width, height)
-
     if (!chartContainer.value || !bars.value) {
+        // 容器未就绪时设置默认值
+        setChartContainerCssVars(width, height)
         return
     }
 
-    let widthLocal = width
+    // 读取容器实际可用宽度(减去左右 padding), 取 prop 和实际宽度中较大的值
+    const containerStyle = getComputedStyle(chartContainer.value)
+    const paddingLeft = parseFloat(containerStyle.paddingLeft) || 0
+    const paddingRight = parseFloat(containerStyle.paddingRight) || 0
+    const availableWidth = chartContainer.value.clientWidth - paddingLeft - paddingRight
+    const effectiveWidth = Math.max(width, availableWidth)
+
+    let widthLocal = effectiveWidth
     const initBarWidth = 20 // 柱子初始宽度
     const barMargin = 20 // 柱子间距
 
-    // 判断 with 是否足够显示所有柱子, 如果不够, 则根据柱子数量动态计算宽度
-    if (hasData.value && width < localData.value.length * (initBarWidth + barMargin)) {
+    // 判断 width 是否足够显示所有柱子, 如果不够, 则根据柱子数量动态计算宽度
+    if (hasData.value && widthLocal < localData.value.length * (initBarWidth + barMargin)) {
         widthLocal = localData.value.length * (initBarWidth + barMargin)
     }
 
@@ -203,7 +209,7 @@ const calcCssVars = () => {
     setChartContainerCssVars(widthLocal, height)
 
     // 在 bars 上设置 bar 的宽度的 css 变量
-    const barWidth = Math.max(initBarWidth, (width - localData.value.length * barMargin) / localData.value.length - barMargin)
+    const barWidth = Math.max(initBarWidth, (widthLocal - localData.value.length * barMargin) / localData.value.length - barMargin)
     bars.value.style.setProperty("--bar-width", `${barWidth}px`)
 }
 
@@ -232,19 +238,23 @@ onMounted(async () => {
 <style lang="scss" scoped>
 .chart-container {
     background-color: var(--jpz-bg-color);
-    padding: 20px 40px 30px 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px #0000001a;
-    width: var(--bars-width);
+    padding: 32px 40px 40px 32px;
+    border-radius: 6px;
+    border: 1px solid var(--jpz-border-color-lighter);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+    width: 100%;
+    box-sizing: border-box;
 }
 
 h1 {
-    text-align: center;
+    text-align: left;
     font-family: "JBMonoWOFF2", "Microsoft YaHei", sans-serif;
-    color: var(--jpz-text-color-primary);
-    margin-bottom: 20px;
-    font-size: 20px;
-    font-weight: 700;
+    color: var(--jpz-text-color-secondary);
+    margin-bottom: 32px;
+    font-size: 15px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .chart {
@@ -258,14 +268,14 @@ h1 {
     display: flex;
     flex-direction: column-reverse;
     justify-content: space-between;
-    margin-right: 4px;
+    margin-right: 12px;
 
     .y-axis-item {
-        // 文字右对齐
         text-align: right;
         width: 100%;
         font-size: 12px;
-        color: var(--jpz-text-color-primary);
+        color: var(--jpz-text-color-secondary);
+        font-family: "JBMonoWOFF2", monospace;
     }
 }
 
@@ -274,9 +284,9 @@ h1 {
     align-items: flex-end;
     justify-content: space-around;
     height: var(--bars-height);
-    border-left: 2px solid var(--jpz-text-color-primary);
-    border-bottom: 2px solid var(--jpz-text-color-primary);
-    padding: 0 20px 0 20px;
+    border-left: 1px solid var(--jpz-border-color);
+    border-bottom: 1px solid var(--jpz-border-color);
+    padding: 0 20px;
     box-sizing: border-box;
     width: 100%;
 }
@@ -284,54 +294,71 @@ h1 {
 .bar {
     width: var(--bar-width);
     margin: 0 10px;
-    border-radius: 4px 4px 0 0;
+    border-radius: 2px 2px 0 0;
     position: relative;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     cursor: pointer;
-    box-shadow: 0 2px 5px #00000033;
+    background-color: var(--jpz-fill-color-lighter);
 }
 
 .bar:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px #0000004d;
-    opacity: 0.9;
+    opacity: 0.85;
 }
 
 .bar-value {
     position: absolute;
-    top: -25px;
+    top: -30px;
     left: 50%;
     transform: translateX(-50%);
     font-size: 12px;
-    font-weight: bold;
-    color: var(--jpz-text-color-primary);
-    padding: 2px 6px;
-    border-radius: 3px;
-    box-shadow: 0 1px 3px #00000033;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    font-weight: 600;
+    color: var(--jpz-bg-color);
+    background-color: var(--jpz-text-color-primary);
+    padding: 4px 8px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    opacity: 1;
+    transition: all 0.2s ease;
     width: max-content;
+    font-family: "JBMonoWOFF2", monospace;
+    pointer-events: none;
+
+    &::after {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 4px 4px 0;
+        border-style: solid;
+        border-color: var(--jpz-text-color-primary) transparent transparent transparent;
+    }
 }
 
 .bar:hover .bar-value {
-    opacity: 1;
+    transform: translateX(-50%) translateY(-2px);
 }
 
 .bar-label {
     position: absolute;
-    bottom: -20px;
+    bottom: -28px;
     left: 50%;
     transform: translateX(-50%);
     font-size: 12px;
     color: var(--jpz-text-color-secondary);
     white-space: nowrap;
+    font-weight: 500;
 }
 
 .no-data {
     text-align: center;
-    font-size: 24px;
-    color: var(--jpz-text-color-secondary);
+    font-size: 16px;
+    color: var(--jpz-text-color-disabled);
     height: var(--bars-height);
     line-height: var(--bars-height);
+    font-family: "JBMonoWOFF2", monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 </style>

@@ -41,21 +41,27 @@ onBeforeMount(async () => {
 </script>
 <style scoped lang="scss">
 .version-container {
-    margin-top: 40px;
+    margin-top: 48px;
+    margin-bottom: 48px;
     font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
 
     h4 {
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 600;
         color: var(--jpz-text-color-primary);
-        margin-bottom: 10px;
+        margin-bottom: 16px;
+        padding-left: 12px;
+        border-left: 4px solid var(--jpz-text-color-primary);
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
     }
 
     .version-client,
     .version-server {
-        margin: 10px 0;
+        margin: 6px 0;
         display: flex;
-        gap: 10px;
+        align-items: center;
+        gap: 16px;
 
         .version,
         .commit,
@@ -64,9 +70,12 @@ onBeforeMount(async () => {
             color: var(--jpz-text-color-secondary);
         }
     }
+
     .version-update {
-        font-size: 14px;
+        font-size: 12px;
+        font-weight: 600;
         color: var(--jpz-text-color-primary);
+        margin-left: 4px;
     }
 }
 </style>
