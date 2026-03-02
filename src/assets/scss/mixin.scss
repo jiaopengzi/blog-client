@@ -47,10 +47,11 @@ $platforms: (
 // 全屏样式
 @mixin webFullscreen {
     position: fixed;
-    z-index: 999;
+    z-index: 1000;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
+    background-color: var(--jpz-bg-color-page);
     transition: all 0.3s ease;
 }

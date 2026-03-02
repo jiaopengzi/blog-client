@@ -12,6 +12,7 @@ coverage
 ./src/coverage
 /src/coverage
 .DS_Store
+.demo
 dist
 dist-ssr
 coverage
