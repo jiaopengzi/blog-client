@@ -241,7 +241,9 @@ onMounted(async () => {
     padding: 32px 40px 40px 32px;
     border-radius: 6px;
     border: 1px solid var(--jpz-border-color-lighter);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+    box-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.08),
+        0 1px 2px rgba(0, 0, 0, 0.06);
     width: 100%;
     box-sizing: border-box;
 }

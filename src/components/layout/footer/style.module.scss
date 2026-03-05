@@ -53,8 +53,12 @@
     }
 
     @include respond-to("phone") {
-        // height: phone.$height-footer;
-        height: auto;
+        height: phone.$height-footer;
+        // height: auto;
+        width: 100vw;
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
     }
 }
 
@@ -84,6 +88,8 @@
         flex-direction: column;
         justify-content: center;
         margin: 0;
+        width: 100vw;
+        padding: 0;
     }
 }
 
@@ -125,7 +131,7 @@
         .content {
             text-align: left;
             line-height: 1.5;
-            padding: 10px 5%;
+            padding: 10px 6%;
         }
     }
 }
@@ -223,5 +229,8 @@
         .footer-r-item {
             margin: 10px 0;
         }
+        // .content {
+        //     padding: 10px 0;
+        // }
     }
 }

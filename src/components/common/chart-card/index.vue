@@ -74,7 +74,9 @@ onMounted(async () => {
     min-height: var(--card-height);
     background-color: var(--bg-color, var(--jpz-bg-color));
     border-radius: 6px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+    box-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.08),
+        0 1px 2px rgba(0, 0, 0, 0.06);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -86,7 +88,9 @@ onMounted(async () => {
     box-sizing: border-box;
 
     &:hover {
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.04);
+        box-shadow:
+            0 4px 6px rgba(0, 0, 0, 0.06),
+            0 2px 4px rgba(0, 0, 0, 0.04);
         border-top-color: var(--jpz-text-color-placeholder);
         transform: translateY(-2px);
     }
