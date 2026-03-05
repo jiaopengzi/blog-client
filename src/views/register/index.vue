@@ -141,7 +141,6 @@ const {
     checkSendCaptcha,
     checkUserNameValidator,
     checkEmailValidator,
-    checkCaptchaValidatorFactory,
     rePasswordValidator,
     acceptedTermsValidator,
 
@@ -163,7 +162,7 @@ const {
 const rules = reactive<FormRules<RegisterForm>>({
     userName: createUserNameRules(checkUserNameValidator),
     email: createEmailRules(checkEmailValidator),
-    captcha: createCaptchaRules(checkCaptchaValidatorFactory(CaptchaPurpose.Register)),
+    captcha: createCaptchaRules(),
     password: createPasswordRules(),
     rePassword: createRePasswordRules(rePasswordValidator),
     acceptedTerms: createAcceptedTermsRules(acceptedTermsValidator),

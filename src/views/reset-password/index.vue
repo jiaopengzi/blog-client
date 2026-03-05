@@ -120,15 +120,7 @@ const rePasswordRef = toRef(forgotPasswordForm, "rePassword")
 const captchaRef = toRef(forgotPasswordForm, "captcha")
 
 // hook 函数
-const {
-    checkSendCaptcha,
-    checkCaptchaValidatorFactory,
-    rePasswordValidator,
-    createCaptchaRules,
-    createEmailRules,
-    createPasswordRules,
-    createRePasswordRules,
-} = useAccountFormValidation({
+const { checkSendCaptcha, rePasswordValidator, createCaptchaRules, createEmailRules, createPasswordRules, createRePasswordRules } = useAccountFormValidation({
     FormEmail: emailRef,
     FormPassword: passwordRef,
     FormRePassword: rePasswordRef,
@@ -137,7 +129,7 @@ const {
 
 const rules = reactive<FormRules<ResetPasswordForm>>({
     email: createEmailRules(),
-    captcha: createCaptchaRules(checkCaptchaValidatorFactory(CaptchaPurpose.ResetPassword)),
+    captcha: createCaptchaRules(),
     password: createPasswordRules(),
     rePassword: createRePasswordRules(rePasswordValidator),
 })

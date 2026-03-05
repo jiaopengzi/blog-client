@@ -59,7 +59,6 @@ import type { FormInstance, FormRules } from "element-plus" // 需要全部安�
 import { storeToRefs } from "pinia"
 import { reactive, ref, useTemplateRef } from "vue"
 
-import { captchaCheckAPI, type CaptchaCheckRequest } from "@/api/captcha/check"
 import { captchaSendAPI, type CaptchaSendRequest } from "@/api/captcha/send"
 import { CaptchaPurpose } from "@/api/common"
 import { handleResErr, ResponseCode } from "@/api/response"
@@ -172,38 +171,6 @@ function checkEmailValidator(rule: unknown, value: string, callback: (error?: st
         })
 }
 
-async function checkCaptcha(): Promise<void> {
-    try {
-        // 创建请求对象 加密内容
-        const req: CaptchaCheckRequest = {
-            email: bindEmailForm.email,
-            captcha: bindEmailForm.captcha,
-            purpose: CaptchaPurpose.BindEmail,
-        }
-
-        const res = await captchaCheckAPI(req)
-
-        if (res.data.code !== ResponseCode.CaptchaCheckSuccess) {
-            const msg = handleResErr(res) // 处理错误信息
-            throw new Error(msg)
-        }
-    } catch (err: unknown) {
-        console.log(err)
-        throw err
-    }
-}
-
-function checkCaptchaValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
-    // 在这里处理异步验证逻辑
-    checkCaptcha()
-        .then(() => {
-            callback() // 校验成功
-        })
-        .catch((err: Error) => {
-            callback(err.message) // 如果失败（用户名已经存在），则传入错误提示字符串
-        })
-}
-
 /**
  * @description: 表单校验规则
  * @return  FormRules<BindEmailForm> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
@@ -222,7 +189,6 @@ const rules = reactive<FormRules<BindEmailForm>>({
     captcha: [
         { required: true, message: "请输入验证码", trigger: "blur" },
         { pattern: /^\d{6}$/, message: "验证码为6位的数字", trigger: "blur" },
-        { validator: checkCaptchaValidator, trigger: "blur" },
     ],
 })
 

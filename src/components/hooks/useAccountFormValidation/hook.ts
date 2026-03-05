@@ -6,7 +6,7 @@
  * @Description  : 用户表单校验
  */
 
-import { CaptchaPurpose } from "@/api/common"
+// import { CaptchaPurpose } from "@/api/common"
 
 import { checkCaptcha, checkSendCaptcha } from "./api/captcha"
 import { checkEmail, checkEmailExcludingUserID, checkLoginName, checkUserName, checkUserNameExcludingUserID } from "./api/user"
@@ -26,7 +26,7 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
     const {
         FormUserName = "",
         FormEmail = "",
-        FormCaptcha = "",
+        // FormCaptcha = "",
         FormPassword = "",
         FormRePassword = "",
         FormAcceptedTerms = false,
@@ -214,29 +214,30 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
             })
     }
 
-    const checkCaptchaValidatorFactory = (purpose: CaptchaPurpose) => {
-        return (rule: unknown, value: string, callback: (error?: string | Error | undefined) => void) => {
-            // 在这里处理异步验证逻辑
-            if (FormEmail === undefined) {
-                callback("请输入邮箱")
-                return
-            }
-            if (FormCaptcha === undefined) {
-                callback("请输入验证码")
-                return
-            }
+    // // 验证码仅在提交表单时校验，不在单独远端校验，当前函数废弃
+    // const checkCaptchaValidatorFactory = (purpose: CaptchaPurpose) => {
+    //     return (rule: unknown, value: string, callback: (error?: string | Error | undefined) => void) => {
+    //         // 在这里处理异步验证逻辑
+    //         if (FormEmail === undefined) {
+    //             callback("请输入邮箱")
+    //             return
+    //         }
+    //         if (FormCaptcha === undefined) {
+    //             callback("请输入验证码")
+    //             return
+    //         }
 
-            const formEmail = options.FormEmail?.value || ""
-            const formCaptcha = options.FormCaptcha?.value || ""
-            checkCaptcha(formEmail, formCaptcha, purpose)
-                .then(() => {
-                    callback() // 校验成功
-                })
-                .catch((err: Error) => {
-                    callback(err.message) // 如果失败（用户名已经存在），则传入错误提示字符串
-                })
-        }
-    }
+    //         const formEmail = options.FormEmail?.value || ""
+    //         const formCaptcha = options.FormCaptcha?.value || ""
+    //         checkCaptcha(formEmail, formCaptcha, purpose)
+    //             .then(() => {
+    //                 callback() // 校验成功
+    //             })
+    //             .catch((err: Error) => {
+    //                 callback(err.message) // 如果失败（用户名已经存在），则传入错误提示字符串
+    //             })
+    //     }
+    // }
 
     /**
      * @description: 用户名查重 Validator
@@ -271,7 +272,7 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
         checkEmailExcludingUserIDValidator,
         checkCaptcha,
         checkSendCaptcha,
-        checkCaptchaValidatorFactory,
+        // checkCaptchaValidatorFactory,
         checkRePassword,
         rePasswordValidator,
         checkAcceptedTerms,
