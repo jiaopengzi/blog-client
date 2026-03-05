@@ -86,7 +86,7 @@
                 </el-form-item>
 
                 <el-form-item label="手动设置缩略图,如果没有则随机显示一张图片。" prop="thumbnail">
-                    <el-input v-model="postInfoForm.thumbnail" />
+                    <ImageInput v-model="postInfoForm.thumbnail" clearable />
                 </el-form-item>
 
                 <el-form-item label="视频合集" prop="video_toc">
@@ -215,6 +215,7 @@ import { ResponseCode } from "@/api/response"
 import AddTag from "@/components/common/add-tag/index.vue"
 import type { TableData } from "@/components/common/base-table"
 import { IconKeys } from "@/components/common/icons"
+import ImageInput from "@/components/common/image-input"
 import SelectMedia from "@/components/common/media-select/index.vue"
 import SwitchGroup from "@/components/common/switch-group"
 import VideoTocTreeEdit from "@/components/common/video-toc-tree-edit"

@@ -32,7 +32,7 @@
                 <el-input v-model="viewDataAc.description" type="textarea" placeholder="请输入标签描信息-选填" :rows="5" />
             </el-form-item>
             <el-form-item label="图片" prop="thumbnail">
-                <el-input v-model="viewDataAc.thumbnail" placeholder="请输入标签的图片URL-选填" />
+                <ImageInput v-model="viewDataAc.thumbnail" placeholder="请输入标签的图片URL-选填" clearable />
             </el-form-item>
             <el-form-item label="排序" prop="order">
                 <el-input v-model="viewDataAc.order" type="number" placeholder="请输入标签排序数字-选填" min="0" />
@@ -49,6 +49,7 @@
 import type { FormInstance } from "element-plus" // 需要全部安装 npm i element-plus -S
 import { reactive, ref, toRefs, useTemplateRef } from "vue"
 
+import ImageInput from "@/components/common/image-input"
 import { useFormValidation } from "./hooks"
 import type { ViewForm } from "./types"
 

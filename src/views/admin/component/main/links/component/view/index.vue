@@ -24,12 +24,11 @@
             <el-form-item label="名称" prop="name">
                 <el-input v-model="viewDataAc.name" placeholder="请输入链接名称-必填" />
             </el-form-item>
-
             <el-form-item label="URL" prop="url">
                 <el-input v-model="viewDataAc.url" placeholder="请输入链接地址-必填" />
             </el-form-item>
             <el-form-item label="图片" prop="thumbnail">
-                <el-input v-model="viewDataAc.thumbnail" placeholder="请输入链接的图片URL-必填" />
+                <ImageInput v-model="viewDataAc.thumbnail" placeholder="请输入链接的图片URL-必填" clearable />
             </el-form-item>
             <el-form-item label="描述" prop="description">
                 <el-input v-model="viewDataAc.description" type="textarea" placeholder="请输入链接描信息（建议80字以内）- 必填" :rows="5" />
@@ -56,6 +55,7 @@ import type { FormInstance } from "element-plus" // 需要全部安装 npm i ele
 import { reactive, ref, toRefs, useTemplateRef } from "vue"
 
 import { LinkStatusCode, LinkStatusDisplay } from "@/api/link/common"
+import ImageInput from "@/components/common/image-input"
 
 import { useFormValidation } from "./hooks"
 import type { ViewForm } from "./types"

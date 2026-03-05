@@ -201,6 +201,9 @@ const editData = reactive<ViewForm>({
 })
 
 const editRow = (index: number, row: TableData) => {
+    // 先重置所有字段，避免切换行时残留旧数据
+    Object.assign(editData, { id: "", name: "", slug: "", description: "", thumbnail: "", order: "", parent: "" })
+
     if ("id" in row) {
         editData.id = row.id.toString()
     }

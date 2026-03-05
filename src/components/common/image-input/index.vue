@@ -24,7 +24,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue"
+import { useFormItem } from "element-plus"
+import { nextTick, ref } from "vue"
 
 import type { TableData } from "@/components/common/base-table"
 import SelectMedia from "@/components/common/media-select/index.vue"
@@ -43,6 +44,8 @@ const emit = defineEmits(["update:modelValue"])
 // const emit = defineEmits<{
 //     (event: "update:modelValue", val: string | null | undefined): boolean // 更新绑定值
 // }>()
+
+const { formItem } = useFormItem()
 
 const mediaDialogVisible = ref(false)
 const insertData = (data: TableData[]) => {
@@ -70,6 +73,11 @@ const insertData = (data: TableData[]) => {
 
     // 关闭弹窗
     mediaDialogVisible.value = false
+
+    // 触发表单校验
+    nextTick(() => {
+        formItem?.validate?.("")
+    })
 }
 </script>
 
