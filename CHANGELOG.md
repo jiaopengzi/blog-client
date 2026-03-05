@@ -5,6 +5,12 @@
 该格式基于 [Keep a Changelog](https://keepachangelog.com),
 本项目遵循 [语义化版本控制](https://semver.org/spec/v2.0.0.html)。
 
+## [v0.4.8] - 2026-03-05
+
+### Fix
+
+- 一大波 bug 修复
+
 ## [v0.4.7] - 2026-03-03
 
 ### Test
