@@ -11,6 +11,7 @@ import { acceptHMRUpdate, defineStore } from "pinia"
 import { getIpInfoAPI, type IpInfoRes } from "@/api/helper/ipInfo"
 import { ResponseCode } from "@/api/response"
 import { getAPPOptionAPI, type GetAPPOptionResponse } from "@/api/setting/getAPPOption"
+import { PayType, type PayTypeEnable } from "@/api/pay/common"
 import { getPayConfigStatusAPI, type GetPayConfigStatusResponse } from "@/api/setting/getPayConfigStatus"
 import { type CarouselItem } from "@/components/common/carousel-manage"
 import { type HeadProps } from "@/components/common/head-tag"
@@ -245,6 +246,14 @@ export const useOptionsStore = defineStore("options", {
         getVideoWatermark(): VideoWatermark {
             return this.video_watermark
         },
+
+        // 获取支付方式是否启用
+        getPayTypeEnable(): PayTypeEnable {
+            return {
+                [PayType.Alipay]: this.alipayStatus,
+                [PayType.WechatPay]: this.wechatPayStatus,
+            }
+        },
     },
 
     actions: {
@@ -290,12 +299,12 @@ export const useOptionsStore = defineStore("options", {
                 this.footer = JSON.parse(footer) as FooterInfo
             }
 
-            // 从本地获取支付状态
-            const payStatus = localStorage.getItem(LocalStorageKey.PayStatus)
-            if (payStatus) {
-                const payStatusObj = JSON.parse(payStatus) as { wechatPayStatus: boolean; alipayStatus: boolean }
-                this.wechatPayStatus = payStatusObj.wechatPayStatus
-                this.alipayStatus = payStatusObj.alipayStatus
+            // 从本地获取支付类型开启状态
+            const payTypeEnable = localStorage.getItem(LocalStorageKey.PayTypeEnable)
+            if (payTypeEnable) {
+                const enableObj = JSON.parse(payTypeEnable) as PayTypeEnable
+                this.wechatPayStatus = enableObj[PayType.WechatPay]
+                this.alipayStatus = enableObj[PayType.Alipay]
             }
 
             // 从本地获取轮播图信息
@@ -382,7 +391,10 @@ export const useOptionsStore = defineStore("options", {
             }
 
             // 存入本地
-            localStorage.setItem(LocalStorageKey.PayStatus, JSON.stringify({ wechatPayStatus: this.wechatPayStatus, alipayStatus: this.alipayStatus }))
+            localStorage.setItem(
+                LocalStorageKey.PayTypeEnable,
+                JSON.stringify({ [PayType.WechatPay]: this.wechatPayStatus, [PayType.Alipay]: this.alipayStatus }),
+            )
         },
 
         // 初始化头部信息

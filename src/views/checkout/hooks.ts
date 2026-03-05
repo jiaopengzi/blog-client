@@ -11,19 +11,22 @@ import { computed, type ComputedRef, type Ref, ref } from "vue"
 import { getCouponHasAvailableAPI } from "@/api/coupon/hasAvailable"
 import { orderCouponApplyAPI, type OrderCouponApplyRequest, type OrderCouponApplyRes } from "@/api/order/couponApply"
 import { generateEmptyResponse, getOrderCheckoutAPI, type OrderCheckoutRes } from "@/api/order/getCheckout"
-import { getPayTypeOptions, PayType, TradeState } from "@/api/pay/common"
+import { getPayTypeOptionsWithEnable, PayType, TradeState } from "@/api/pay/common"
 import { payOrderAPI, type PayOrderRequest } from "@/api/pay/order"
 import { payQueryAPI, type PayQueryRequest } from "@/api/pay/query"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { pollingGetStreamIDsStatus } from "@/utils/getStreamIDsStatus"
 import { MessageUtil } from "@/utils/message"
+import { useOptionsStore } from "@/stores/options"
 
 // 表单验证
 export function useOrderCheckout() {
+    const optionsStore = useOptionsStore()
+
     const checkoutData: Ref<OrderCheckoutRes> = ref(generateEmptyResponse()) // 结算数据
     const hasAvailableCoupons: Ref<boolean> = ref(false) // 是否有可用的优惠卷
     const couponCodes = ref<string[]>([]) // 优惠码
-    const payTypeOptions = getPayTypeOptions() // 支付方式选项
+    const payTypeOptions = getPayTypeOptionsWithEnable(optionsStore.getPayTypeEnable) // 支付方式选项
     const payTypeResult = ref<PayType>(PayType.WechatPay) // 默认支付方式
     const totalAmount = ref(0) // 订单总金额
     const discountAmount = ref(0) // 优惠金额

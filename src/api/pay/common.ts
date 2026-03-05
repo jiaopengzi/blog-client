@@ -26,6 +26,25 @@ export const getPayTypeOptions = () => [
     { label: PayTypeDisplay[PayType.WechatPay], value: PayType.WechatPay },
 ]
 
+// 支付方式是否可用
+export interface PayTypeEnable {
+    [PayType.Alipay]: boolean // 支付宝是否可用
+    [PayType.WechatPay]: boolean // 微信支付是否可用
+}
+
+// 支付方式选项
+export const getPayTypeOptionsWithEnable = (e: PayTypeEnable) => {
+    // 如果没有开启则不显示对应选项
+    const options = []
+    if (e[PayType.Alipay]) {
+        options.push({ label: PayTypeDisplay[PayType.Alipay], value: PayType.Alipay })
+    }
+    if (e[PayType.WechatPay]) {
+        options.push({ label: PayTypeDisplay[PayType.WechatPay], value: PayType.WechatPay })
+    }
+    return options
+}
+
 // 支付状态
 export enum TradeState {
     Unpaid = "unpaid", // 未支付

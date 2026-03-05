@@ -36,7 +36,7 @@
         </div>
 
         <!-- 优惠卷 -->
-        <div v-if="hasAvailableCoupons" class="coupon">
+        <div v-if="hasAvailableCoupons && isPayTypeEnable" class="coupon">
             <h4 class="title">优惠卷码</h4>
             <div class="coupon-code">
                 <el-input-tag
@@ -56,7 +56,7 @@
         </div>
 
         <!-- 支付方式 -->
-        <div class="pay-type" v-if="isShowPayType">
+        <div class="pay-type" v-if="isNeedPay && isPayTypeEnable">
             <h4 class="title">选择支付方式</h4>
             <el-radio-group v-model="payTypeResult">
                 <el-radio v-for="item in payTypeOptions" :key="item.value" :value="item.value">
@@ -66,9 +66,14 @@
                 </el-radio>
             </el-radio-group>
         </div>
+        <div class="pay-type" v-if="!isPayTypeEnable">
+            <p class="no-pay-type">未配置任何支付方式，无法订单结算，请联系管理员。</p>
+            <!-- 回到主页-->
+            <el-button class="btn-submit" type="default" @click="router.push({ name: RouteNames.Home })">回到主页</el-button>
+        </div>
 
         <!-- 提交按钮 -->
-        <el-button :loading="isPayBtnLoading" class="btn-submit" type="default" @click="runCheckout">{{ btnSubmitText }}</el-button>
+        <el-button v-if="isPayTypeEnable" :loading="isPayBtnLoading" class="btn-submit" type="default" @click="runCheckout">{{ btnSubmitText }}</el-button>
     </div>
 
     <!-- 二维码 -->
@@ -159,13 +164,23 @@ const btnSubmitText = computed(() => {
     }
 })
 
-// 是否显示支付方式
-const isShowPayType = computed(() => {
+// 是否需要支付
+const isNeedPay = computed(() => {
     if (finalAmount.value > 0) {
         return true
     } else {
         return false
     }
+})
+
+// 是否配置了支付方式
+const isPayTypeEnable = computed(() => {
+    // 边界判断是否为undefined
+    // 根据 payTypeOptions 数组长度判断是否有支付方式启用
+    if (payTypeOptions && payTypeOptions.length > 0) {
+        return true
+    }
+    return false
 })
 
 // 监听支付信息变化
@@ -260,6 +275,13 @@ h4 {
         font-weight: 500;
         margin-top: 4px;
         color: var(--jpz-text-color-primary);
+    }
+
+    .no-pay-type {
+        font-size: 18px;
+        color: red;
+        text-align: center;
+        font-weight: 700;
     }
 }
 
