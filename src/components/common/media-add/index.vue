@@ -59,6 +59,7 @@ import { type ElUpload, type UploadRequestOptions } from "element-plus"
 import { onBeforeMount, ref, useTemplateRef, watch } from "vue"
 
 import { ResponseCode } from "@/api/response"
+import type { FileAllowed } from "@/api/upload/getUploadFileRequirements"
 import { getUploadFileRequirementsAPI } from "@/api/upload/getUploadFileRequirements"
 import { IconKeys } from "@/components/common/icons"
 import { useSettingUpload } from "@/components/hooks/useSettingUpload"
@@ -95,12 +96,13 @@ watch(
 )
 
 const allowedInfo = ref("")
+const fileAllowedList = ref<FileAllowed[]>([])
 const chunkSizeServer = ref(1024 * 1024 * 10)
 let hashAlgorithmServer: HashAlgorithm = HashAlgorithm.SHA256
 
 const httpRequest = async (options: UploadRequestOptions) => {
     try {
-        const result = await uploadByEl(options, isEncrypt.value, isNoFree.value, chunkSizeServer.value, hashAlgorithmServer)
+        const result = await uploadByEl(options, isEncrypt.value, isNoFree.value, chunkSizeServer.value, hashAlgorithmServer, fileAllowedList.value)
         if (result) {
             emit("has-upload", true)
         }
@@ -115,6 +117,7 @@ const getAllowedInfo = async () => {
     await getUploadFileRequirementsAPI().then((response) => {
         if (response.data.code === ResponseCode.GetUploadFileRequirementsSuccess) {
             const allowedInfoList = response.data.data.file_allowed
+            fileAllowedList.value = allowedInfoList
             chunkSizeServer.value = response.data.data.chunk_size
             hashAlgorithmServer = response.data.data.hash_algorithm
             // for 循环遍历 allowedInfoList 数组 i 最大值为 allowedInfoList.length - 1

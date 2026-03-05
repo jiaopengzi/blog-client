@@ -33,20 +33,27 @@ export const handleResErr = <T>(res: ResResponse<Res<T>, unknown> | Res<T>, msgT
         // 历遍对象取出错误信息，不需要key
         const errData: string[] = []
 
-        const data = resData as Record<string, string>
+        const data = resData as Record<string, unknown>
 
         // 判断是否为空对象
         if (Object.keys(data).length === 0) {
             return errMsg
         }
 
-        // 非空对象，取出错误信息
+        // 非空对象，只取出非空字符串值作为错误信息，过滤数字、布尔、null、嵌套对象等无意义值
         for (const key in data) {
-            errData.push(data[key]!)
+            const val = data[key]
+            if (typeof val === "string" && val !== "") {
+                errData.push(val)
+            }
         }
 
-        // 拼接错误信息
-        return (errMsg += "：" + errData.join(","))
+        if (errData.length > 0) {
+            // 拼接错误信息
+            return (errMsg += "：" + errData.join(","))
+        }
+
+        return errMsg
     }
 
     return errMsg

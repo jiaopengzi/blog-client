@@ -8,6 +8,7 @@
 
 import { type UploadRequestOptions } from "element-plus"
 
+import type { FileAllowed } from "@/api/upload/getUploadFileRequirements"
 import { MultiThreadSplitter, UploadController, UploadControllerEvents, type UploadFileSuccessInfo } from "@/utils/chunkUpload"
 import { HashAlgorithm } from "@/utils/hash"
 import { MessageUtil } from "@/utils/message"
@@ -20,9 +21,11 @@ export const uploadByEl = async (
     isNoFree: boolean = true,
     chunkSizeServer = 1024 * 1024 * 10,
     hashAlgorithmServer: HashAlgorithm = HashAlgorithm.SHA256,
+    fileAllowedList: FileAllowed[] = [],
 ): Promise<string | undefined> => {
     const file: File = options.file
     const requestStrategy = new RequestStrategyEl(options)
+    requestStrategy.fileAllowedList = fileAllowedList
     const splitStrategy = new MultiThreadSplitter(file, chunkSizeServer, hashAlgorithmServer)
     const uploadController = new UploadController(file, requestStrategy, splitStrategy)
 
@@ -44,6 +47,12 @@ export const uploadByEl = async (
             const msg = `上传成功：${info.fileName}`
             MessageUtil.success(msg, 5000)
             resolve(info.fileUrl)
+        })
+
+        uploadController.on(UploadControllerEvents.ERROR, (error: Error) => {
+            MessageUtil.error(error.message, 6000)
+            options.onError(error as Parameters<typeof options.onError>[0])
+            reject(error)
         })
 
         // 初始化UploadController
