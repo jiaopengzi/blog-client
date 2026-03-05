@@ -12,7 +12,6 @@ export const markdownLightSettings: CreateThemeOptions["settings"] = {
     caret: "#24292e",
     selection: "#cfe8ff",
     selectionMatch: "#b6ddff",
-    lineHighlight: "#f6f8fa",
     gutterBackground: "#ffffff",
     gutterForeground: "#6a737d",
     gutterActiveForeground: "#24292e",
