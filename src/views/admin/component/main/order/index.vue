@@ -122,7 +122,7 @@ const cols: TableColumn[] = reactive([
     },
     {
         prop: "coupon_items",
-        label: "优惠卷",
+        label: "优惠券",
         sortable: true,
         minWidth: 100,
         align: "center",

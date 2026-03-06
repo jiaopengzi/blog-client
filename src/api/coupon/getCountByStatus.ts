@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 按照优惠卷状态统计优惠卷数量
+ * Description : 按照优惠券状态统计优惠券数量
  */
 
 import { request, routerGroup } from "@/api/request"

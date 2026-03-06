@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 是否有可用的优惠卷
+ * Description : 是否有可用的优惠券
  */
 
 import { request, routerGroup } from "@/api/request"

@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 优惠卷应用
+ * Description : 优惠券应用
  */
 
 import type { StreamsStatusRes } from "@/api/helper/getStreamIDsStatus"

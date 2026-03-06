@@ -224,19 +224,19 @@ export enum ResponseCode {
     MembershipGetRolesIsNone = 2712, // 获取会员角色无数据
     MembershipGetRolesSuccess = 2713, // 获取会员角色成功
 
-    // 优惠卷相关
-    CouponInsertSuccess = 2800, // 插入优惠卷成功
-    CouponDeleteSuccess = 2801, // 删除优惠卷成功
-    CouponUpdateSuccess = 2802, // 更新优惠卷成功
-    CouponViewSuccess = 2803, // 查看优惠卷成功
-    CouponViewIsNone = 2804, // 查看优惠卷无数据
-    CouponCountByStatusIsNone = 2805, // 获取按照优惠卷状态统计优惠卷数量无数据
-    CouponCountByStatusSuccess = 2806, // 获取按照优惠卷状态统计优惠卷数量成功
-    CouponCodeExist = 2807, // 优惠卷已存在
-    CouponCodeNotExist = 2808, // 优惠卷不存在
-    CouponCodeExistExcludingID = 2809, // 优惠卷已存在，排除指定ID
-    CouponCodeNotExistExcludingID = 2810, // 优惠卷不存在，排除指定ID
-    CouponHasAvailableSuccess = 2811, // 获取是否有可用优惠卷成功
+    // 优惠券相关
+    CouponInsertSuccess = 2800, // 插入优惠券成功
+    CouponDeleteSuccess = 2801, // 删除优惠券成功
+    CouponUpdateSuccess = 2802, // 更新优惠券成功
+    CouponViewSuccess = 2803, // 查看优惠券成功
+    CouponViewIsNone = 2804, // 查看优惠券无数据
+    CouponCountByStatusIsNone = 2805, // 获取按照优惠券状态统计优惠券数量无数据
+    CouponCountByStatusSuccess = 2806, // 获取按照优惠券状态统计优惠券数量成功
+    CouponCodeExist = 2807, // 优惠券已存在
+    CouponCodeNotExist = 2808, // 优惠券不存在
+    CouponCodeExistExcludingID = 2809, // 优惠券已存在，排除指定ID
+    CouponCodeNotExistExcludingID = 2810, // 优惠券不存在，排除指定ID
+    CouponHasAvailableSuccess = 2811, // 获取是否有可用优惠券成功
 
     // 账号密钥相关
     AccountKeyInsertSuccess = 2900, // 插入账号密钥成功
@@ -266,14 +266,14 @@ export enum ResponseCode {
     OrderCountByStatusSuccess = 5012, // 获取按照订单状态统计订单数量成功
     GetOrderCheckoutSuccess = 5013, // 获取订单结算信息成功
     GetOrderCheckoutNotFound = 5014, // 没有需要结算的订单
-    OrderCouponInvalid = 5015, // 优惠卷无效
-    OrderCouponExpired = 5016, // 优惠卷已过期
-    OrderCouponNotMeetConditions = 5017, // 优惠卷未达到使用条件
-    OrderCouponNotStackable = 5018, // 优惠卷不可叠加使用
-    OrderCouponLimitReached = 5019, // 优惠卷使用次数已达上限
-    OrderCouponApplySuccess = 5020, // 优惠卷使用成功
+    OrderCouponInvalid = 5015, // 优惠券无效
+    OrderCouponExpired = 5016, // 优惠券已过期
+    OrderCouponNotMeetConditions = 5017, // 优惠券未达到使用条件
+    OrderCouponNotStackable = 5018, // 优惠券不可叠加使用
+    OrderCouponLimitReached = 5019, // 优惠券使用次数已达上限
+    OrderCouponApplySuccess = 5020, // 优惠券使用成功
     OrderExpired = 5021, // 订单过期请重新下单
-    OrderCouponAlreadyApplied = 5022, // 已使用过优惠卷，如更换优惠卷，请重新下单
+    OrderCouponAlreadyApplied = 5022, // 已使用过优惠券，如更换优惠券，请重新下单
     OrderProductStackNotEnough = 5023, // 订单产品库存不足
     OrderProductQuantityLessThanMin = 5024, // 订单产品购买数量小于最小购买数量
     OrderProductQuantityMoreThanMax = 5025, // 订单产品购买数量大于最大购买数量

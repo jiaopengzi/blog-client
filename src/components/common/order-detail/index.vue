@@ -35,7 +35,7 @@
             <el-descriptions-item label="订单总金额">{{ `${(data.total_amount / 100).toFixed(2)} 元` }}</el-descriptions-item>
         </el-descriptions>
 
-        <!-- 产品 优惠卷 都不会变 -->
+        <!-- 产品 优惠券 都不会变 -->
         <ProductList class="product-list" :items="data.items" />
         <CouponList class="coupon-list" v-if="data.coupon_items" :total-amount="data.total_amount" :items="data.coupon_items" />
         <RefundList class="refund-list" v-if="refundList.length" :total-paid-amount="dataAc.payment.total_amount" :items="refundList" />

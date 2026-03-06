@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 优惠卷管理
+ * Description : 优惠券管理
 -->
 
 <template>
@@ -47,7 +47,7 @@
             </template>
             <!-- 新增弹窗 -->
             <template #add-item-title>
-                <span class="dialog-title">新增优惠卷</span>
+                <span class="dialog-title">新增优惠券</span>
             </template>
 
             <template #add-item>
@@ -58,7 +58,7 @@
 
             <!-- 编辑弹窗 -->
             <template #edit-item-title>
-                <span class="dialog-title">编辑优惠卷</span>
+                <span class="dialog-title">编辑优惠券</span>
             </template>
 
             <template #edit-item>
@@ -108,7 +108,7 @@ const cols: TableColumn[] = reactive([
     },
     {
         prop: "code",
-        label: "优惠卷",
+        label: "优惠券",
         sortable: true,
         minWidth: 150,
         align: "center",

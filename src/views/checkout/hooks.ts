@@ -24,7 +24,7 @@ export function useOrderCheckout() {
     const optionsStore = useOptionsStore()
 
     const checkoutData: Ref<OrderCheckoutRes> = ref(generateEmptyResponse()) // 结算数据
-    const hasAvailableCoupons: Ref<boolean> = ref(false) // 是否有可用的优惠卷
+    const hasAvailableCoupons: Ref<boolean> = ref(false) // 是否有可用的优惠券
     const couponCodes = ref<string[]>([]) // 优惠码
     const payTypeOptions = getPayTypeOptionsWithEnable(optionsStore.getPayTypeEnable) // 支付方式选项
     const payTypeResult = ref<PayType>(PayType.WechatPay) // 默认支付方式
@@ -35,11 +35,11 @@ export function useOrderCheckout() {
     const detailsHeaderHeight = ref(40) // 产品详情表头高度
     const detailsHeight = ref("100px") // 产品详情表格高度
     const isPayQRCodeShow = ref(false) // 二维码对话框是否可见
-    const isCouponBtnLoading = ref(false) // 优惠卷按钮加载状态
+    const isCouponBtnLoading = ref(false) // 优惠券按钮加载状态
     const isPayBtnLoading = ref(false) // 支付按钮加载状态
     const qrCodeUrl = ref("https://jiaopengzi.com") // 二维码图片URL
 
-    // 优惠卷按钮是否可用
+    // 优惠券按钮是否可用
     const isCouponBtnDisabled: ComputedRef<boolean> = computed(() => {
         // 当生成了支付二维码后，优惠码按钮不可用
         return checkoutData.value.payment !== null || isCouponBtnLoading.value
@@ -83,7 +83,7 @@ export function useOrderCheckout() {
         }
     }
 
-    // 检查是否有可用的优惠卷
+    // 检查是否有可用的优惠券
     const checkHasAvailableCoupons = async () => {
         const res = await getCouponHasAvailableAPI()
         if (res.data.code === ResponseCode.CouponHasAvailableSuccess) {
@@ -137,7 +137,7 @@ export function useOrderCheckout() {
 
     // 执行支付
     const runCheckout = async () => {
-        // 如果优惠卷填写了但是没有应用，则提示用户
+        // 如果优惠券填写了但是没有应用，则提示用户
         if (couponCodes.value.length > 0 && !checkoutData.value.coupon) {
             MessageUtil.warning("请先应用优惠码")
             return

@@ -184,6 +184,7 @@ const topRightTip = computed(() => {
     color: var(--jpz-bg-color);
     border-radius: 5%;
     font-weight: 500;
+    border: none;
 }
 
 .thumbnail {

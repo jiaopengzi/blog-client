@@ -3,15 +3,15 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 优惠卷列表
+ * Description : 优惠券列表
 -->
 
 <template>
     <!-- 产品详情 -->
     <div class="coupon-details">
-        <h4 class="title">优惠卷</h4>
+        <h4 class="title">优惠券</h4>
         <el-table :data="items" style="width: 100%" border stripe :max-height="detailsHeight" row-class-name="coupon-details-row">
-            <el-table-column prop="code" label="优惠卷" />
+            <el-table-column prop="code" label="优惠券" />
             <el-table-column prop="amount" label="优惠金额" align="center">
                 <template #default="{ row }">{{ fenToYuan(computedDiscount(totalAmount, row.discount_type, row.amount), true) }}</template>
             </el-table-column>

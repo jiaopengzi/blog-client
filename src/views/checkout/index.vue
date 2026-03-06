@@ -35,9 +35,9 @@
             </p>
         </div>
 
-        <!-- 优惠卷 -->
+        <!-- 优惠券 -->
         <div v-if="hasAvailableCoupons && isPayTypeEnable" class="coupon">
-            <h4 class="title">优惠卷码</h4>
+            <h4 class="title">优惠券码</h4>
             <div class="coupon-code">
                 <el-input-tag
                     class="coupon-code-input"
@@ -205,7 +205,7 @@ onBeforeMount(async () => {
     // 获取结算数据
     await getCheckout()
 
-    // 检查是否有可用的优惠卷
+    // 检查是否有可用的优惠券
     await checkHasAvailableCoupons()
 
     // 如果数据为空直接跳转到首页

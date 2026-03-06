@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 优惠卷共用内容
+ * Description : 优惠券共用内容
  */
 
 import { type PgSqlDateTime } from "@/api/common"
@@ -49,19 +49,19 @@ export const getDiscountTypeOptions = () => {
     ]
 }
 
-// 优惠卷状态
+// 优惠券状态
 export enum CouponStatus {
     Disabled = 1, // 禁用
     Enabled = 2, //
 }
 
-// 优惠卷状态显示
+// 优惠券状态显示
 export const CouponStatusDisplay: Record<CouponStatus, string> = {
     [CouponStatus.Disabled]: "❌禁用",
     [CouponStatus.Enabled]: "✅启用",
 }
 
-// 获取优惠卷状态选项
+// 获取优惠券状态选项
 export const getCouponStatusOptions = () => {
     return [
         { label: CouponStatusDisplay[CouponStatus.Disabled], value: CouponStatus.Disabled },
@@ -85,10 +85,10 @@ export interface InsertCouponRequest {
 }
 
 export interface UpdateCouponRequest extends InsertCouponRequest {
-    id: string // 优惠卷id
+    id: string // 优惠券id
 }
 
-// 优惠卷
+// 优惠券
 export interface CouponRes extends DataWithImg {
     id: string // id
     created_at: string // 创建时间

@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 优惠卷展示组件
+ * Description : 优惠券展示组件
 -->
 
 <template>
@@ -21,8 +21,8 @@
             <el-form-item v-if="isShowId" label="ID" prop="id" size="default">
                 <el-input v-model="viewDataAc.id" disabled />
             </el-form-item>
-            <el-form-item label="优惠卷" prop="code">
-                <el-input v-model="viewDataAc.code" placeholder="请输入优惠卷" class="coupon-code" />
+            <el-form-item label="优惠券" prop="code">
+                <el-input v-model="viewDataAc.code" placeholder="请输入优惠券" class="coupon-code" />
             </el-form-item>
             <el-form-item label="描述" prop="description" size="default">
                 <el-input v-model="viewDataAc.description" type="textarea" placeholder="请输入描述信息" :rows="5" />

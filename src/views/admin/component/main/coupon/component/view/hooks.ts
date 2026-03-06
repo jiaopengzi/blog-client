@@ -43,20 +43,20 @@ export function useFormValidation(options: FormValidationOptions): {
 } {
     const { form } = options
 
-    // 共用校验函数：检查优惠卷代码是否包含空格或为空
+    // 共用校验函数：检查优惠券代码是否包含空格或为空
     function checkCommon(value: string, callback: (error?: string | Error | undefined) => void): boolean {
         if (value.includes(" ")) {
-            callback(new Error("优惠卷不能包含空格"))
+            callback(new Error("优惠券不能包含空格"))
             return false
         }
         if (!value || value.trim() === "") {
-            callback("请输入优惠卷")
+            callback("请输入优惠券")
             return false
         }
         return true
     }
 
-    // 检查优惠卷代码是否可用
+    // 检查优惠券代码是否可用
     function checkCodeValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 调用共用校验函数
         if (!checkCommon(value, callback)) {
@@ -74,14 +74,14 @@ export function useFormValidation(options: FormValidationOptions): {
                 callback()
                 return
             } else {
-                const errMsg = handleResErr(res, "优惠卷不可用")
+                const errMsg = handleResErr(res, "优惠券不可用")
                 callback(new Error(errMsg))
                 return
             }
         })
     }
 
-    // 检查优惠卷码是否可用(排除ID)
+    // 检查优惠券码是否可用(排除ID)
     function checkCodeExcludingIDValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 调用共用校验函数
         if (!checkCommon(value, callback)) {
@@ -100,7 +100,7 @@ export function useFormValidation(options: FormValidationOptions): {
                 callback()
                 return
             } else {
-                const errMsg = handleResErr(res, "优惠卷角色不可用")
+                const errMsg = handleResErr(res, "优惠券角色不可用")
                 callback(new Error(errMsg))
                 return
             }
@@ -128,7 +128,7 @@ export function useFormValidation(options: FormValidationOptions): {
 
     const addRules = reactive<FormRules<ViewForm>>({
         code: [
-            { required: true, message: "请输入优惠卷", trigger: "blur" },
+            { required: true, message: "请输入优惠券", trigger: "blur" },
             { validator: checkCodeValidator, trigger: "blur" },
         ],
         discount_type: [{ required: true, message: "请选择优惠类型", trigger: "change" }],
@@ -147,7 +147,7 @@ export function useFormValidation(options: FormValidationOptions): {
     const editRules = reactive<FormRules<ViewForm>>({
         id: [{ required: true, message: "id 不能为空", trigger: "blur" }],
         code: [
-            { required: true, message: "请输入优惠卷", trigger: "blur" },
+            { required: true, message: "请输入优惠券", trigger: "blur" },
             { validator: checkCodeExcludingIDValidator, trigger: "blur" },
         ],
         discount_type: [{ required: true, message: "请选择优惠类型", trigger: "change" }],

@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * Description : 优惠卷统计数据
+ * Description : 优惠券统计数据
  */
 
 import { computed, onBeforeMount, ref, watch } from "vue"
