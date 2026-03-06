@@ -8,42 +8,52 @@
 
 <template>
     <div class="login-page">
-        <!-- 添加滑动验证组件：SlideVerify -->
+        <!-- 滑动验证组件 -->
         <SlideVerify @on-success="login" />
-        <el-form
-            :label-position="labelPosition"
-            label-width="100px"
-            ref="loginFormRef"
-            :model="loginForm"
-            :rules="rules"
-            class="login-form"
-            :size="formSize"
-            status-icon
-            @submit.prevent="openSlideVerify"
-        >
-            <AccountFormHeader :router-link-to="{ name: RouteNames.Home }" title="账号登录" />
+        <div class="login-card">
+            <el-form
+                :label-position="labelPosition"
+                label-width="100px"
+                ref="loginFormRef"
+                :model="loginForm"
+                :rules="rules"
+                class="login-form"
+                :size="formSize"
+                status-icon
+                @submit.prevent="openSlideVerify"
+            >
+                <AccountFormHeader :router-link-to="{ name: RouteNames.Home }" title="账号登录" />
 
-            <el-form-item label="用户名/邮箱" prop="loginName">
-                <el-input v-model="loginForm.loginName" placeholder="请输入用户名或邮箱" clearable />
-            </el-form-item>
-            <el-form-item label="密码" prop="password">
-                <el-input type="password" v-model="loginForm.password" placeholder="大小写字母 + 数字, 长度:6-64" show-password clearable />
-            </el-form-item>
-            <div class="btn-submit">
-                <el-form-item>
-                    <el-button type="primary" @click="openSlideVerify">登录</el-button>
+                <el-form-item label="用户名/邮箱" prop="loginName">
+                    <el-input v-model="loginForm.loginName" placeholder="请输入用户名或邮箱" clearable />
                 </el-form-item>
-            </div>
-            <div class="social">
-                <el-button v-if="socialLoginStatus.qq" type="default" class="social-btn" @click="loginByWeChat">
-                    <j-icon :name="IconKeys.Wechat" custom-class="iconfont icon-wechat" />
-                </el-button>
-                <el-button v-if="socialLoginStatus.wechat" type="default" class="social-btn" @click="loginByQQ">
-                    <j-icon :name="IconKeys.Qq" custom-class="iconfont icon-qq" />
-                </el-button>
-            </div>
-            <AccountFormFooter :to="['home', 'register', 'resetPassword']" />
-        </el-form>
+                <el-form-item label="密码" prop="password">
+                    <el-input type="password" v-model="loginForm.password" placeholder="大小写字母 + 数字, 长度:6-64" show-password clearable />
+                </el-form-item>
+
+                <!-- 登录按钮, native-type="submit" 兼容 Enter 键提交 -->
+                <el-form-item>
+                    <el-button type="primary" native-type="submit" class="login-btn">登录</el-button>
+                </el-form-item>
+
+                <!-- 社交登录 -->
+                <template v-if="socialLoginStatus.qq || socialLoginStatus.wechat">
+                    <div class="social-divider">
+                        <span class="divider-text">社交登录</span>
+                    </div>
+                    <div class="social">
+                        <el-button v-if="socialLoginStatus.qq" class="social-btn" @click="loginByWeChat">
+                            <j-icon :name="IconKeys.Wechat" custom-class="iconfont icon-wechat" />
+                        </el-button>
+                        <el-button v-if="socialLoginStatus.wechat" class="social-btn" @click="loginByQQ">
+                            <j-icon :name="IconKeys.Qq" custom-class="iconfont icon-qq" />
+                        </el-button>
+                    </div>
+                </template>
+
+                <AccountFormFooter :to="['home', 'register', 'resetPassword']" />
+            </el-form>
+        </div>
     </div>
 </template>
 
@@ -178,75 +188,132 @@ onBeforeMount(async () => {
 </script>
 
 <style lang="scss" scoped>
+// 登录页容器
 .login-page {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     width: 100vw;
     background-color: var(--jpz-bg-color-page);
 }
 
+// 卡片入场动画
+.login-card {
+    animation: fadeIn 0.35s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// PC 端
 @include respond-to("pc") {
     .login-form {
-        width: 360px;
-        border: 1px solid var(--jpz-border-color);
-        border-radius: 5px;
-        padding: 20px;
-        box-shadow: var(--jpz-box-shadow-light);
+        width: 380px;
+        border: 1px solid var(--jpz-border-color-lighter);
+        border-radius: 12px;
+        padding: 36px 32px 24px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
         background-color: var(--jpz-bg-color);
     }
 }
 
+// Pad 端
 @include respond-to("pad") {
     .login-form {
-        width: 360px;
-        border: 1px solid var(--jpz-border-color);
-        border-radius: 5px;
-        padding: 20px;
-        box-shadow: var(--jpz-box-shadow-light);
+        width: 380px;
+        border: 1px solid var(--jpz-border-color-lighter);
+        border-radius: 12px;
+        padding: 36px 32px 24px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
         background-color: var(--jpz-bg-color);
     }
 }
 
+// Phone 端
 @include respond-to("phone") {
     .login-form {
         width: 90vw;
-        box-shadow: none;
-        border: none;
+        max-width: 380px;
+        padding: 20px 16px;
         background-color: transparent;
+        border: none;
+        box-shadow: none;
     }
 }
 
-.email-code {
-    flex: 5;
+// 登录按钮: 全宽, 圆润
+.login-btn {
+    width: 100%;
+    height: 40px;
+    font-size: 15px;
+    border-radius: 8px;
+    letter-spacing: 2px;
 }
 
-.btn-submit {
-    text-align: center;
+// 社交登录分割线
+.social-divider {
+    display: flex;
+    align-items: center;
+    margin: 4px 0 16px;
+
+    &::before,
+    &::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background-color: var(--jpz-border-color-lighter);
+    }
+
+    .divider-text {
+        padding: 0 16px;
+        font-size: 12px;
+        color: var(--jpz-text-color-placeholder);
+        white-space: nowrap;
+    }
 }
 
-.btn-submit .el-form-item {
-    display: inline-block;
-}
-
+// 社交登录
 .social {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 10px;
+    gap: 16px;
 }
 
+// 社交按钮: 圆形图标按钮
 .social-btn {
-    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--jpz-border-color-lighter);
     background-color: transparent;
+    padding: 0;
     cursor: pointer;
-    outline: none;
-    margin-right: 10px;
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+
+    &:hover {
+        border-color: var(--jpz-border-color-hover);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
 }
 
+// 图标
 .iconfont {
-    font-size: 3em;
+    font-size: 1.5em;
 }
 
 .icon-wechat {

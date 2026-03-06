@@ -21,8 +21,8 @@
                     <el-button class="btns" type="primary" plain size="small" v-if="!showQQ" @click="bindSocial(SocialLoginType.QQ)">
                         绑定{{ SocialLoginDisplay.QQ }}
                     </el-button>
-                    <span class="social-nickname">{{ socialNickname("user_qq", "nickname") }}</span>
-                    <el-button class="btns" type="primary" plain size="small" v-if="showQQ && isBindEmail" @click="unBindSocial(SocialLoginType.QQ)">
+                    <span class="social-nickname" :class="{ 'is-bound': showQQ }">{{ socialNickname("user_qq", "nickname") }}</span>
+                    <el-button class="btns btn-unbind" type="primary" plain size="small" v-if="showQQ && isBindEmail" @click="unBindSocial(SocialLoginType.QQ)">
                         解绑{{ SocialLoginDisplay.QQ }}
                     </el-button>
                 </el-descriptions-item>
@@ -31,8 +31,15 @@
                     <el-button class="btns" type="primary" plain size="small" v-if="!showWeChat" @click="bindSocial(SocialLoginType.WeChat)">
                         绑定{{ SocialLoginDisplay.WeChat }}
                     </el-button>
-                    <span class="social-nickname">{{ socialNickname("user_wechat", "nickname") }}</span>
-                    <el-button class="btns" type="primary" plain size="small" v-if="showWeChat && isBindEmail" @click="unBindSocial(SocialLoginType.WeChat)">
+                    <span class="social-nickname" :class="{ 'is-bound': showWeChat }">{{ socialNickname("user_wechat", "nickname") }}</span>
+                    <el-button
+                        class="btns btn-unbind"
+                        type="primary"
+                        plain
+                        size="small"
+                        v-if="showWeChat && isBindEmail"
+                        @click="unBindSocial(SocialLoginType.WeChat)"
+                    >
                         解绑{{ SocialLoginDisplay.WeChat }}
                     </el-button>
                 </el-descriptions-item>
@@ -154,12 +161,61 @@ const {
 }
 
 .social-nickname {
-    margin-left: 5px;
-    margin-right: 10px;
+    margin-left: 8px;
+    margin-right: 12px;
+    color: var(--jpz-text-2, #606266);
+    font-size: 13px;
+}
+.social-nickname.is-bound {
+    color: var(--jpz-text-color-primary, #243444);
+    font-weight: 700;
+    font-size: 13.4px;
+    background: linear-gradient(90deg, rgba(64, 158, 255, 0.05), rgba(64, 158, 255, 0.02));
+    padding: 4px 8px;
+    border-radius: 10px;
+    border: 1px solid rgba(64, 158, 255, 0.08);
+    transition:
+        transform 0.12s ease,
+        box-shadow 0.12s ease,
+        background 0.12s ease;
+    box-shadow: 0 1px 4px rgba(64, 158, 255, 0.04);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.2px;
+}
+
+.social-nickname.is-bound::before {
+    content: "✔";
+    display: inline-flex;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--jpz-color-primary, #409eff);
+    color: #fff;
+    font-size: 9px;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.social-nickname.is-bound:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px rgba(64, 158, 255, 0.07);
 }
 
 .btns {
     width: 60px;
+}
+
+.btn-unbind {
+    color: var(--jpz-color-danger, #f56c6c) !important;
+    border: 1px solid rgba(245, 108, 108, 0.12) !important;
+    background: transparent !important;
+}
+
+.btn-unbind:hover {
+    background: rgba(245, 108, 108, 0.04) !important;
 }
 
 .btn-submit {

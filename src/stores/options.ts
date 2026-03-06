@@ -161,7 +161,7 @@ export const useOptionsStore = defineStore("options", {
 
         // 获取 logo
         getLogo(): string {
-            return this.app_options.logo.value
+            return this.app_options?.logo?.value ?? ""
         },
 
         // 获取导航信息

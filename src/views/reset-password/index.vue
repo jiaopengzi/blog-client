@@ -8,46 +8,49 @@
 
 <template>
     <div class="reset-password-page">
-        <!-- 添加滑动验证组件：SlideVerify -->
+        <!-- 滑动验证组件 -->
         <SlideVerify @on-success="sendCaptcha" />
-        <el-form
-            :label-position="labelPosition"
-            label-width="100px"
-            ref="forgotPasswordFormRef"
-            :model="forgotPasswordForm"
-            :rules="rules"
-            class="forgotPassword-form"
-            :size="formSize"
-            status-icon
-        >
-            <AccountFormHeader :router-link-to="{ name: RouteNames.Home }" title="密码重置" />
+        <div class="reset-card">
+            <el-form
+                :label-position="labelPosition"
+                label-width="100px"
+                ref="forgotPasswordFormRef"
+                :model="forgotPasswordForm"
+                :rules="rules"
+                class="reset-form"
+                :size="formSize"
+                status-icon
+                @submit.prevent="submitForm(forgotPasswordFormRef as FormInstance)"
+            >
+                <AccountFormHeader :router-link-to="{ name: RouteNames.Home }" title="密码重置" />
 
-            <el-form-item label="邮箱" prop="email">
-                <el-input v-model="forgotPasswordForm.email" clearable placeholder="请输入邮箱" />
-            </el-form-item>
-
-            <el-form-item label="验证码" prop="captcha">
-                <el-input class="email-code" v-model="forgotPasswordForm.captcha" clearable placeholder="请点击发送验证码后，输入验证码" />
-                <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="isCaptchaBtnDisabled">
-                    {{ captchaBtnText }}
-                </button>
-            </el-form-item>
-
-            <el-form-item label="新密码" prop="password">
-                <el-input type="password" show-password v-model="forgotPasswordForm.password" clearable placeholder="请输入新密码" />
-            </el-form-item>
-
-            <el-form-item label="确认密码" prop="rePassword">
-                <el-input type="password" show-password v-model="forgotPasswordForm.rePassword" clearable placeholder="请再次输入新密码" />
-            </el-form-item>
-
-            <div class="btn-submit">
-                <el-form-item>
-                    <el-button type="primary" @click="submitForm(forgotPasswordFormRef as FormInstance)">重置密码</el-button>
+                <el-form-item label="邮箱" prop="email">
+                    <el-input v-model="forgotPasswordForm.email" clearable placeholder="请输入邮箱" />
                 </el-form-item>
-            </div>
-            <AccountFormFooter :to="['home', 'login']" />
-        </el-form>
+
+                <el-form-item label="验证码" prop="captcha">
+                    <el-input class="email-code" v-model="forgotPasswordForm.captcha" clearable placeholder="请点击发送验证码后，输入验证码" />
+                    <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="isCaptchaBtnDisabled">
+                        {{ captchaBtnText }}
+                    </button>
+                </el-form-item>
+
+                <el-form-item label="新密码" prop="password">
+                    <el-input type="password" show-password v-model="forgotPasswordForm.password" clearable placeholder="请输入新密码" />
+                </el-form-item>
+
+                <el-form-item label="确认密码" prop="rePassword">
+                    <el-input type="password" show-password v-model="forgotPasswordForm.rePassword" clearable placeholder="请再次输入新密码" />
+                </el-form-item>
+
+                <!-- 重置密码按钮, native-type="submit" 兼容 Enter 键 -->
+                <el-form-item>
+                    <el-button type="primary" native-type="submit" class="submit-btn">重置密码</el-button>
+                </el-form-item>
+
+                <AccountFormFooter :to="['home', 'login']" />
+            </el-form>
+        </div>
     </div>
 </template>
 
@@ -199,61 +202,91 @@ const sendCaptcha = async () => {
 </script>
 
 <style lang="scss" scoped>
+// 重置密码页容器
 .reset-password-page {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     width: 100vw;
     background-color: var(--jpz-bg-color-page);
 }
 
+// 卡片入场动画
+.reset-card {
+    animation: fadeIn 0.35s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// PC 端
 @include respond-to("pc") {
-    .forgotPassword-form {
-        width: 360px;
-        border: 1px solid var(--jpz-border-color);
-        border-radius: 5px;
-        padding: 20px;
-        box-shadow: var(--jpz-box-shadow-light);
+    .reset-form {
+        width: 380px;
+        border: 1px solid var(--jpz-border-color-lighter);
+        border-radius: 12px;
+        padding: 36px 32px 24px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
         background-color: var(--jpz-bg-color);
     }
 }
 
+// Pad 端
 @include respond-to("pad") {
-    .forgotPassword-form {
-        width: 360px;
-        border: 1px solid var(--jpz-border-color);
-        border-radius: 5px;
-        padding: 20px;
-        box-shadow: var(--jpz-box-shadow-light);
+    .reset-form {
+        width: 380px;
+        border: 1px solid var(--jpz-border-color-lighter);
+        border-radius: 12px;
+        padding: 36px 32px 24px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
         background-color: var(--jpz-bg-color);
     }
 }
 
+// Phone 端
 @include respond-to("phone") {
-    .forgotPassword-form {
+    .reset-form {
         width: 90vw;
-        box-shadow: none;
-        border: none;
+        max-width: 380px;
+        padding: 20px 16px;
         background-color: transparent;
+        border: none;
+        box-shadow: none;
     }
 }
 
+// 验证码输入框
 .email-code {
     flex: 1;
 }
 
+// 验证码按钮
 .btn-captcha {
     width: 120px;
     margin-left: 10px;
     padding: 0 10px;
-    height: 30px;
-    line-height: 30px;
-    border: 1px solid var(--jpz-border-color);
-    border-radius: 4px;
+    height: 32px;
+    line-height: 32px;
+    font-size: 13px;
+    border: 1px solid var(--jpz-border-color-lighter);
+    border-radius: 8px;
     background-color: var(--jpz-bg-color);
     cursor: pointer;
     color: var(--jpz-text-color-regular);
+    transition: border-color 0.2s;
+
+    &:hover:not(:disabled) {
+        border-color: var(--jpz-border-color-hover);
+    }
 }
 
 .btn-captcha:disabled {
@@ -262,11 +295,12 @@ const sendCaptcha = async () => {
     cursor: not-allowed;
 }
 
-.btn-submit {
-    text-align: center;
-}
-
-.btn-submit .el-form-item {
-    display: inline-block;
+// 提交按钮: 全宽, 圆润
+.submit-btn {
+    width: 100%;
+    height: 40px;
+    font-size: 15px;
+    border-radius: 8px;
+    letter-spacing: 2px;
 }
 </style>

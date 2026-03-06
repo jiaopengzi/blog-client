@@ -40,7 +40,7 @@ app.mount("#app")
 
 // 开发模式下
 if (import.meta.env.MODE === "development") {
-    devRun() // 开发环境运行的函数
+    devRun().catch((err) => console.warn("devRun 执行异常(不影响运行):", err)) // 开发环境运行的函数
     console.info("开发环境：", import.meta.env.VITE_MAX_NAVIGATOR_HARDWARE_CONCURRENCY)
 }
 

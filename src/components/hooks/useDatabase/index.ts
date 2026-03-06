@@ -43,19 +43,19 @@ export function useDatabase<K extends SetupRequest>(
         const promises: Promise<boolean>[] = []
 
         // 添加 pgsqlForm 的验证
-        if (pgsqlFormRef.value) {
+        if (pgsqlFormRef.value?.formRef) {
             promises.push(pgsqlFormRef.value.formRef.validateForm())
         }
 
         // 添加每个 RedisForm 的验证
         for (const key in redisFormRefs) {
-            if (redisFormRefs[key]) {
+            if (redisFormRefs[key]?.formRef) {
                 promises.push(redisFormRefs[key].formRef.validateForm())
             }
         }
 
         // 添加 esFormRef 的验证
-        if (esFormRef.value) {
+        if (esFormRef.value?.formRef) {
             promises.push(esFormRef.value.formRef.validateForm())
         }
 

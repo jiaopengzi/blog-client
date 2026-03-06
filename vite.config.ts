@@ -4,6 +4,8 @@
  */
 
 import { fileURLToPath, URL } from "node:url"
+import fs from "node:fs"
+import path from "node:path"
 
 import terser from "@rollup/plugin-terser"
 import vue from "@vitejs/plugin-vue"
@@ -16,13 +18,31 @@ import compression from "vite-plugin-compression"
 // import Inspect from "vite-plugin-inspect"
 import tsconfigPaths from "vite-tsconfig-paths"
 
+// 读取运行时环境，支持自定义域名与 HTTPS 证书路径
+const DEV_DOMAIN = process.env.DEV_DOMAIN || "0.0.0.0"
+const DEV_HTTPS_KEY = process.env.DEV_HTTPS_KEY || ""
+const DEV_HTTPS_CERT = process.env.DEV_HTTPS_CERT || ""
+
+const httpsOptions =
+    DEV_HTTPS_KEY && DEV_HTTPS_CERT
+        ? {
+              key: fs.readFileSync(path.resolve(DEV_HTTPS_KEY)),
+              cert: fs.readFileSync(path.resolve(DEV_HTTPS_CERT)),
+          }
+        : undefined
+
+// 支持通过环境变量覆盖端口，未提供时默认使用 80 (HTTP) 或 443 (HTTPS)
+const DEV_HTTP_PORT = process.env.DEV_HTTP_PORT ? Number(process.env.DEV_HTTP_PORT) : undefined
+const DEV_HTTPS_PORT = process.env.DEV_HTTPS_PORT ? Number(process.env.DEV_HTTPS_PORT) : undefined
+const DEFAULT_HTTP_PORT = 80
+const DEFAULT_HTTPS_PORT = 443
+
 // 共享 dev server 和 preview server 配置
 const commonServerOptions = (): CommonServerOptions => {
     return {
         allowedHosts: true, // 允许任何主机通过域名访问 dev server
-        host: "0.0.0.0",
         strictPort: true, // 端口被占用时直接退出，而不是尝试下一个可用端口
-        port: 7364, // 项目运行端口
+        port: httpsOptions ? DEV_HTTPS_PORT || DEFAULT_HTTPS_PORT : DEV_HTTP_PORT || DEFAULT_HTTP_PORT, // 项目运行端口，默认 443/80
 
         // 设置代理
         proxy: {
@@ -56,6 +76,28 @@ const commonServerOptions = (): CommonServerOptions => {
 }
 
 // https://vitejs.dev/config/
+// 如果未在 .env 中显式设置 VITE_BASE_URL，则根据 DEV_DOMAIN/端口自动构造
+function computeBaseUrl() {
+    // 已显式设置则保留
+    if (process.env.VITE_BASE_URL && process.env.VITE_BASE_URL.trim() !== "") {
+        return process.env.VITE_BASE_URL
+    }
+
+    // 选择域名回退到 localhost（当 DEV_DOMAIN 为 0.0.0.0 时）
+    const domain = DEV_DOMAIN === "0.0.0.0" ? "localhost" : DEV_DOMAIN
+
+    if (httpsOptions) {
+        const port = DEV_HTTPS_PORT || DEFAULT_HTTPS_PORT
+        return port === 443 ? `https://${domain}` : `https://${domain}:${port}`
+    }
+
+    const port = DEV_HTTP_PORT || DEFAULT_HTTP_PORT
+    return port === 80 ? `http://${domain}` : `http://${domain}:${port}`
+}
+
+// 在 Vite 配置阶段设置环境变量，供应用通过 import.meta.env.VITE_BASE_URL 使用
+process.env.VITE_BASE_URL = computeBaseUrl()
+
 export default defineConfig({
     plugins: [
         tsconfigPaths(), // tsconfig 路径别名
@@ -124,10 +166,17 @@ export default defineConfig({
     // 开发服务器配置
     server: {
         ...commonServerOptions(),
+        host: DEV_DOMAIN,
+        // 如果提供了证书则启用 https
+        https: httpsOptions,
     },
 
     // 预览服务器配置
-    preview: commonServerOptions(),
+    preview: {
+        ...commonServerOptions(),
+        host: DEV_DOMAIN,
+        https: httpsOptions,
+    },
 
     // ------------------------------ 设置打包分块 开始
     build: {

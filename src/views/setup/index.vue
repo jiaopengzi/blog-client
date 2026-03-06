@@ -25,7 +25,11 @@
                     :key="i"
                     :ref="
                         (el) => {
-                            if (el) redisFormRefs[i] = el as RedisDatabaseFormRef
+                            if (el) {
+                                redisFormRefs[i] = el as RedisDatabaseFormRef
+                            } else {
+                                delete redisFormRefs[i]
+                            }
                         }
                     "
                     :node="i"
@@ -117,6 +121,8 @@ const { submit, waitSeconds, isShowTimer } = useDatabase(pgsqlFormRef, redisForm
 
 .data-form {
     box-shadow: var(--jpz-box-shadow-light);
+    border-radius: 12px;
+    overflow: hidden;
 }
 
 .redis-form {
@@ -124,6 +130,12 @@ const { submit, waitSeconds, isShowTimer } = useDatabase(pgsqlFormRef, redisForm
 }
 
 .submit-btn {
+    width: 100%;
+    max-width: 500px;
+    height: 40px;
+    font-size: 15px;
+    border-radius: 8px;
+    letter-spacing: 2px;
     margin: 20px 0;
 }
 </style>

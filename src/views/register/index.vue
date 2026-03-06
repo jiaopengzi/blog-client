@@ -8,57 +8,59 @@
 
 <template>
     <div class="register-page">
-        <!-- 添加滑动验证组件：SlideVerify -->
+        <!-- 滑动验证组件 -->
         <SlideVerify @on-success="sendCaptcha" />
-        <el-form
-            :label-position="labelPosition"
-            label-width="100px"
-            ref="registerFormRef"
-            :model="registerForm"
-            :rules="rules"
-            class="register-form"
-            :size="formSize"
-            status-icon
-        >
-            <AccountFormHeader :router-link-to="{ name: RouteNames.Home }" title="账号注册" />
+        <div class="register-card">
+            <el-form
+                :label-position="labelPosition"
+                label-width="100px"
+                ref="registerFormRef"
+                :model="registerForm"
+                :rules="rules"
+                class="register-form"
+                :size="formSize"
+                status-icon
+                @submit.prevent="submitForm(registerFormRef as FormInstance)"
+            >
+                <AccountFormHeader :router-link-to="{ name: RouteNames.Home }" title="账号注册" />
 
-            <el-form-item label="用户名" prop="userName">
-                <el-input v-model="registerForm.userName" clearable placeholder="请输入用户名" />
-            </el-form-item>
-
-            <el-form-item label="邮箱" prop="email">
-                <el-input v-model="registerForm.email" clearable placeholder="请输入邮箱" />
-            </el-form-item>
-
-            <el-form-item label="验证码" prop="captcha">
-                <el-input class="email-code" v-model="registerForm.captcha" clearable placeholder="请点击发送验证码后，输入验证码" />
-                <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="isCaptchaBtnDisabled">
-                    {{ captchaBtnText }}
-                </button>
-            </el-form-item>
-
-            <el-form-item label="密码" prop="password">
-                <el-input type="password" show-password v-model="registerForm.password" clearable placeholder="请输入密码" />
-            </el-form-item>
-
-            <el-form-item label="确认密码" prop="rePassword">
-                <el-input type="password" show-password v-model="registerForm.rePassword" clearable placeholder="请再次输入密码" />
-            </el-form-item>
-
-            <el-form-item prop="acceptedTerms">
-                <!-- 需要管理员提前创建页面 /page/terms 内容 -->
-                <el-checkbox v-model="registerForm.acceptedTerms" value="同意条款" name="acceptedTerms" /><span class="i-agree">我已同意并接受：</span
-                ><a class="i-agree-link" href="/page/terms" target="blank">《服务条款》</a>
-            </el-form-item>
-
-            <div class="btn-submit">
-                <el-form-item>
-                    <el-button type="primary" @click="submitForm(registerFormRef as FormInstance)">注册</el-button>
-                    <el-button @click="resetForm(registerFormRef as FormInstance)">重置</el-button>
+                <el-form-item label="用户名" prop="userName">
+                    <el-input v-model="registerForm.userName" clearable placeholder="请输入用户名" />
                 </el-form-item>
-            </div>
-            <AccountFormFooter :to="['home', 'login']" />
-        </el-form>
+
+                <el-form-item label="邮箱" prop="email">
+                    <el-input v-model="registerForm.email" clearable placeholder="请输入邮箱" />
+                </el-form-item>
+
+                <el-form-item label="验证码" prop="captcha">
+                    <el-input class="email-code" v-model="registerForm.captcha" clearable placeholder="请点击发送验证码后，输入验证码" />
+                    <button class="btn-captcha" type="button" @click="openSlideVerify" :disabled="isCaptchaBtnDisabled">
+                        {{ captchaBtnText }}
+                    </button>
+                </el-form-item>
+
+                <el-form-item label="密码" prop="password">
+                    <el-input type="password" show-password v-model="registerForm.password" clearable placeholder="请输入密码" />
+                </el-form-item>
+
+                <el-form-item label="确认密码" prop="rePassword">
+                    <el-input type="password" show-password v-model="registerForm.rePassword" clearable placeholder="请再次输入密码" />
+                </el-form-item>
+
+                <el-form-item prop="acceptedTerms">
+                    <!-- 需要管理员提前创建页面 /page/terms 内容 -->
+                    <el-checkbox v-model="registerForm.acceptedTerms" value="同意条款" name="acceptedTerms" /><span class="i-agree">我已同意并接受：</span
+                    ><a class="i-agree-link" href="/page/terms" target="blank">《服务条款》</a>
+                </el-form-item>
+
+                <!-- 注册按钮, native-type="submit" 兼容 Enter 键提交 -->
+                <el-form-item>
+                    <el-button type="primary" native-type="submit" class="submit-btn">注册</el-button>
+                </el-form-item>
+
+                <AccountFormFooter :to="['home', 'login']" />
+            </el-form>
+        </div>
     </div>
 </template>
 
@@ -202,12 +204,6 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     })
 }
 
-// 重置表单
-const resetForm = (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    formEl.resetFields()
-}
-
 // 验证码按钮状态
 const { captchaBtnText, isCaptchaBtnDisabled, countdown } = useCaptchaBtnStatus()
 
@@ -248,61 +244,91 @@ const sendCaptcha = async () => {
 </script>
 
 <style lang="scss" scoped>
+// 注册页容器
 .register-page {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     width: 100vw;
     background-color: var(--jpz-bg-color-page);
 }
 
+// 卡片入场动画
+.register-card {
+    animation: fadeIn 0.35s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// PC 端
 @include respond-to("pc") {
     .register-form {
-        width: 360px;
-        border: 1px solid var(--jpz-border-color);
-        border-radius: 5px;
-        padding: 20px;
-        box-shadow: var(--jpz-box-shadow-light);
+        width: 380px;
+        border: 1px solid var(--jpz-border-color-lighter);
+        border-radius: 12px;
+        padding: 36px 32px 24px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
         background-color: var(--jpz-bg-color);
     }
 }
 
+// Pad 端
 @include respond-to("pad") {
     .register-form {
-        width: 360px;
-        border: 1px solid var(--jpz-border-color);
-        border-radius: 5px;
-        padding: 20px;
-        box-shadow: var(--jpz-box-shadow-light);
+        width: 380px;
+        border: 1px solid var(--jpz-border-color-lighter);
+        border-radius: 12px;
+        padding: 36px 32px 24px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
         background-color: var(--jpz-bg-color);
     }
 }
 
+// Phone 端
 @include respond-to("phone") {
     .register-form {
         width: 90vw;
-        box-shadow: none;
-        border: none;
+        max-width: 380px;
+        padding: 20px 16px;
         background-color: transparent;
+        border: none;
+        box-shadow: none;
     }
 }
 
+// 验证码输入框
 .email-code {
     flex: 1;
 }
 
+// 验证码按钮
 .btn-captcha {
     width: 120px;
     margin-left: 10px;
     padding: 0 10px;
-    height: 30px;
-    line-height: 30px;
-    border: 1px solid var(--jpz-border-color);
-    border-radius: 4px;
+    height: 32px;
+    line-height: 32px;
+    font-size: 13px;
+    border: 1px solid var(--jpz-border-color-lighter);
+    border-radius: 8px;
     background-color: var(--jpz-bg-color);
     cursor: pointer;
     color: var(--jpz-text-color-regular);
+    transition: border-color 0.2s;
+
+    &:hover:not(:disabled) {
+        border-color: var(--jpz-border-color-hover);
+    }
 }
 
 .btn-captcha:disabled {
@@ -311,6 +337,7 @@ const sendCaptcha = async () => {
     cursor: not-allowed;
 }
 
+// 条款
 .i-agree {
     color: var(--jpz-text-color-primary);
 }
@@ -320,14 +347,12 @@ const sendCaptcha = async () => {
     text-decoration: underline;
 }
 
-.btn-submit {
-    text-align: center;
-    .el-form-item {
-        display: inline-block;
-    }
-}
-
-.btn-submit .el-form-item {
-    display: inline-block;
+// 提交按钮: 全宽, 圆润
+.submit-btn {
+    width: 100%;
+    height: 40px;
+    font-size: 15px;
+    border-radius: 8px;
+    letter-spacing: 2px;
 }
 </style>

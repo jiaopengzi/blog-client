@@ -116,7 +116,13 @@ export const useUserStore = defineStore("user", {
     actions: {
         // 刷新access token
         async accessTokenRefresh(isRefreshPage: boolean = true): Promise<boolean> {
-            const res = await accessTokenRefreshAPI()
+            let res
+            try {
+                res = await accessTokenRefreshAPI()
+            } catch {
+                // 网络错误或服务端未就绪(如 setup 阶段), 视为未登录
+                return false
+            }
 
             if (res.data.code === ResponseCode.UserAccessTokenRefreshSuccess) {
                 // 成功刷新访问令牌
