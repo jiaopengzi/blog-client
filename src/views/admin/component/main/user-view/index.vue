@@ -18,6 +18,7 @@
             :search-str="search"
             :is-show-edit="true"
             :loading-delete="loadingDelete"
+            :delete-confirm-message="deleteConfirmMessage"
             height="calc(100vh - 270px)"
             @update-current-page="updateCurrentPage"
             @update-page-size="updatePageSize"
@@ -344,6 +345,9 @@ const {
     deleteResCode: ResponseCode.UserDeleteSuccess,
     options: { stringKeys, numberKeys, noRequestKeys },
 })
+
+// 用户删除确认提示信息
+const deleteConfirmMessage = "删除用户将同时删除该用户的所有文章、上传的文件、视频、评论、点赞、收藏、订单等关联数据, 且无法恢复, 是否确认删除?"
 
 const handleDeleteRows = async (rows: TableData[]) => {
     await deleteRows(rows)

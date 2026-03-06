@@ -67,21 +67,22 @@ export enum ResponseCode {
     GetUserCountGroupByRolesSuccess = 1031, // 按角色分组的用户数量查询成功
     UserDeleteSuccess = 1032, // 删除用户成功
     UserNotDeleteItself = 1033, // 不能删除自己
-    UserAddSuccess = 1034, // 添加用户成功
-    UserNameExistExcludingUserID = 1035, // 用户名已存在，排除指定用户ID
-    UserNameNotExistExcludingUserID = 1036, // 用户名不存在，排除指定用户ID
-    EmailExistExcludingUserID = 1037, // 邮箱已存在，排除指定用户ID
-    EmailNotExistExcludingUserID = 1038, // 邮箱不存在，排除指定用户ID
-    EditUserInfoByAdminSuccess = 1039, // 管理员编辑用户信息成功
-    UserLogoutByAdminSuccess = 1040, // 管理员登出用户成功
-    UserForbidden = 1041, // 用户被禁用
-    UserNotForbidden = 1042, // 用户正常
-    UserUnSubscribeSuccess = 1043, // 用户取消订阅成功
-    UserUnSubscribeInvalid = 1044, // 用户取消订阅失败，token 无效
-    UserUnSubscribeTypeWrong = 1045, // 用户取消订阅失败，token 类型错误
-    UserLogoutSuccess = 1046, // 用户登出成功
-    UserLoggedInElsewhere = 1047, // 用户在其他设备登录
-    UserAccessTokenRefreshSuccess = 1048, // 用户访问令牌刷新成功
+    UserNotDeleteFirstAdmin = 1034, // 不能删除第一个管理员
+    UserAddSuccess = 1035, // 添加用户成功
+    UserNameExistExcludingUserID = 1036, // 用户名已存在，排除指定用户ID
+    UserNameNotExistExcludingUserID = 1037, // 用户名不存在，排除指定用户ID
+    EmailExistExcludingUserID = 1038, // 邮箱已存在，排除指定用户ID
+    EmailNotExistExcludingUserID = 1039, // 邮箱不存在，排除指定用户ID
+    EditUserInfoByAdminSuccess = 1040, // 管理员编辑用户信息成功
+    UserLogoutByAdminSuccess = 1041, // 管理员登出用户成功
+    UserForbidden = 1042, // 用户被禁用
+    UserNotForbidden = 1043, // 用户正常
+    UserUnSubscribeSuccess = 1044, // 用户取消订阅成功
+    UserUnSubscribeInvalid = 1045, // 用户取消订阅失败，token 无效
+    UserUnSubscribeTypeWrong = 1046, // 用户取消订阅失败，token 类型错误
+    UserLogoutSuccess = 1047, // 用户登出成功
+    UserLoggedInElsewhere = 1048, // 用户在其他设备登录
+    UserAccessTokenRefreshSuccess = 1049, // 用户访问令牌刷新成功
 
     // 文章相关
     PostInsertSuccess = 2000, // 插入文章标签成功

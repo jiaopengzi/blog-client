@@ -243,7 +243,7 @@ import type { SwitchItem, SwitchItemColor, SwitchItemLabel } from "@/components/
 import SwitchGroup from "@/components/common/switch-group"
 import { useDevice } from "@/components/hooks/useDevice"
 import { useStatusStore } from "@/stores/status"
-import { deleteConfirmCommon } from "@/utils/confirm"
+import { deleteConfirmCommon, confirmCommon } from "@/utils/confirm"
 import { type SingleDblClickBinding } from "@/utils/singleDblClickDirective"
 import { iconStyle, imgStyle } from "@/utils/style"
 
@@ -280,6 +280,7 @@ const {
     isShowCursorPointer = false,
     loadingDelete = false,
     rowOperationText = "编辑",
+    deleteConfirmMessage,
 } = defineProps<{
     pagination: Pagination<TableData> // 分页配置
     tableColumn: TableColumn[] // 表格列配置
@@ -307,6 +308,7 @@ const {
     isShowCursorPointer?: boolean // 是否显示鼠标指针为手型
     loadingDelete?: boolean // 删除加载状态
     rowOperationText?: string // 行操作文本
+    deleteConfirmMessage?: string // 自定义删除确认提示信息
 }>()
 
 // 事件
@@ -553,9 +555,15 @@ const handleViewPost = (postID: string) => {
 const handleBatchDelete = () => {
     const selection = tableRef.value?.getSelectionRows()
     if (selection?.length) {
-        deleteConfirmCommon(() => {
-            emit("delete-rows", selection)
-        })
+        const doDelete = () => emit("delete-rows", selection)
+        if (deleteConfirmMessage) {
+            // 使用自定义删除确认提示信息
+            confirmCommon(deleteConfirmMessage, doDelete, () => {
+                ElMessage({ type: MsgType.info, message: "取消删除" })
+            })
+        } else {
+            deleteConfirmCommon(doDelete)
+        }
     } else {
         ElMessage({
             type: MsgType.info,
