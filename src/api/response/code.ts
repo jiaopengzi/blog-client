@@ -169,6 +169,8 @@ export enum ResponseCode {
     PayConfigUpdateSuccess = 2320, // 更新支付配置成功
     GetPayConfigSuccess = 2321, // 获取支付配置成功
     GetPayConfigStatusSuccess = 2322, // 获取支付配置状态成功
+    CheckCloudStorageConfigSuccess = 2323, // 校验云存储配置成功
+    CheckCloudStorageConfigFailed = 2324, // 校验云存储配置失败
 
     // 评论相关
     CommentStatusClose = 2400, // 评论关闭

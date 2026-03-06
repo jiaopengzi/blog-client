@@ -16,6 +16,7 @@
         :form-width="formWidth"
         :label-width="labelWidth"
         :attention="attention"
+        cloud-type="oss"
     />
 </template>
 

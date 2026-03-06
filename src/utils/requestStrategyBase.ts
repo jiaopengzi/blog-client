@@ -16,6 +16,7 @@ import { type ConfirmBeforeUploadRequest } from "@/api/upload/confirmBeforeUploa
 import { type GetUploadFileUrlRequest } from "@/api/upload/getUploadFileUrl"
 import { uploadFileBySignedUrlAPI } from "@/api/upload/uploadFileBySignedUrl"
 import type { Chunk, RequestStrategy, UploadFileInfo } from "@/utils/chunkUpload"
+import { MessageUtil } from "@/utils/message"
 
 export const MultipartFormFileKey = "file"
 
@@ -56,7 +57,12 @@ export abstract class RequestStrategyBase implements RequestStrategy {
         } else {
             const errorMessage = handleResErr(res)
 
-            this.handleConfirmBeforeUploadError(errorMessage)
+            // 云存储配置校验失败属于全局性错误, 在基类统一处理, 不下放到子类
+            if (res.data.code === ResponseCode.CheckCloudStorageConfigFailed) {
+                MessageUtil.error(errorMessage, 10000)
+            } else {
+                this.handleConfirmBeforeUploadError(errorMessage)
+            }
 
             const error: Error = new Error(res.data.msg)
             if (this.elUploadRequestOptions) {
