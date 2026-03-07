@@ -55,12 +55,7 @@
             <template #custom-filter v-if="postType === PostType.Post">
                 <div ref="customFilterRef" class="custom-filter">
                     <!-- 按照作者 分类 标签 -->
-                    <div v-if="tags.size" class="custom-filter-item author-category-tag">
-                        <el-button class="author-category-tag-item author-category-tag-btn" type="primary" size="small" @click="clearAuthorCategoryTag"
-                            >X</el-button
-                        >
-                        <el-input-tag class="author-category-tag-item" v-model="authorCategoryTag" disabled />
-                    </div>
+                    <FilterTagClear v-if="tags.size" class="custom-filter-item" :tags="authorCategoryTag" @clear="clearAuthorCategoryTag" />
 
                     <!-- 按照月份筛选 -->
                     <div class="custom-filter-item">
@@ -148,6 +143,7 @@ import type { TableImg } from "@/components/common"
 import { MsgType } from "@/components/common"
 import type { TableColumn, TableData } from "@/components/common/base-table"
 import BaseTable from "@/components/common/base-table/index.vue"
+import FilterTagClear from "@/components/common/filter-tag-clear"
 import { queryKey as queryKeyUpsert } from "@/components/common/post-upsert"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { useParams } from "@/components/hooks/useParams"
@@ -357,21 +353,19 @@ watch(tags, (newVal) => {
 })
 
 const clearAuthorCategoryTag = async () => {
+    const currentAuthor = queryParams.post_author
+
     clickCategory.value = ""
     clickTag.value = ""
     clickAuthor.value = ""
 
-    // 删除查询参数
-    Object.keys(queryParams).forEach((key) => {
-        if (key === queryKey.PostCategoryID || key === queryKey.PostTagID) {
-            delete queryParams[key as keyof ViewPostByAdminRequest]
-        }
+    delete queryParams.post_category_id
+    delete queryParams.post_tag_id
+    delete queryParams.post_author
 
-        // 如果分組中显示的不是当前用户的文章，删除
-        if (key === queryKey.PostAuthor && activeGroup.value !== queryParams[key as keyof ViewPostByAdminRequest]) {
-            delete queryParams[key as keyof ViewPostByAdminRequest]
-        }
-    })
+    if (currentAuthor && activeGroup.value === currentAuthor) {
+        activeGroup.value = allGroup
+    }
 
     await updateRouterPush()
 }
@@ -639,25 +633,6 @@ const onViewPost = (postID: string) => {
 
     .custom-filter-item {
         margin-right: 10px;
-    }
-}
-
-.author-category-tag {
-    display: flex;
-    align-items: center;
-    position: relative;
-
-    .author-category-tag-item {
-        margin-right: 10px;
-    }
-
-    // author-category-tag-btn 绝对定位到最右边垂直居中
-    .author-category-tag-btn {
-        position: absolute;
-        right: 4px;
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 1;
     }
 }
 

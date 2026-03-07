@@ -54,12 +54,7 @@
             <template #custom-filter>
                 <div ref="customFilterRef" class="custom-filter">
                     <!-- 按照作者-->
-                    <div v-if="tags.size" class="custom-filter-item author-category-tag">
-                        <el-button class="author-category-tag-item author-category-tag-btn" type="primary" size="small" @click="clearAuthorCategoryTag"
-                            >X</el-button
-                        >
-                        <el-input-tag class="author-category-tag-item" v-model="userPost" disabled />
-                    </div>
+                    <FilterTagClear v-if="tags.size" class="custom-filter-item" :tags="userPost" @clear="clearAuthorCategoryTag" />
                 </div>
             </template>
 
@@ -118,6 +113,7 @@ import type { TableImg } from "@/components/common"
 import { MsgType } from "@/components/common"
 import type { TableColumn, TableData } from "@/components/common/base-table"
 import BaseTable from "@/components/common/base-table/index.vue"
+import FilterTagClear from "@/components/common/filter-tag-clear"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { useParams } from "@/components/hooks/useParams"
 import { usePostView } from "@/components/hooks/usePostView"
@@ -339,20 +335,18 @@ watch(tags, (newVal) => {
 
 // 清除作者分类标签
 const clearAuthorCategoryTag = async () => {
+    const currentPostID = queryParams.post_id
+    const currentUserID = queryParams.user_id
+
     clickAuthor.value = ""
     clickPostTitle.value = ""
 
-    // 删除查询参数
-    Object.keys(queryParams).forEach((key) => {
-        // 如果是文章ID，删除
-        if (key === queryKey.PostID) {
-            delete queryParams[key as keyof ViewCommentByAdminRequest]
-        }
-        // 如果分組中显示的不是当前用户的文章，删除
-        if (key === queryKey.UserID && activeGroup.value !== queryParams[key as keyof ViewCommentByAdminRequest]) {
-            delete queryParams[key as keyof ViewCommentByAdminRequest]
-        }
-    })
+    delete queryParams.post_id
+    delete queryParams.user_id
+
+    if ((currentPostID && activeGroup.value === currentPostID) || (currentUserID && activeGroup.value === currentUserID)) {
+        activeGroup.value = allGroup
+    }
 
     await updateRouterPush()
 }
@@ -552,25 +546,6 @@ watch(
 
     .custom-filter-item {
         margin-right: 10px;
-    }
-}
-
-.author-category-tag {
-    display: flex;
-    align-items: center;
-    position: relative;
-
-    .author-category-tag-item {
-        margin-right: 10px;
-    }
-
-    // author-category-tag-btn 绝对定位到最右边垂直居中
-    .author-category-tag-btn {
-        position: absolute;
-        right: 4px;
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 1;
     }
 }
 
