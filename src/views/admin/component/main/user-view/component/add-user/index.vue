@@ -7,17 +7,25 @@
 -->
 
 <template>
-    <div class="add-user-page">
+    <div class="add-user-page user-form-page">
         <el-form
             :label-position="labelPosition"
             label-width="100px"
             ref="addUserFormRef"
             :model="addUserForm"
             :rules="rules"
-            class="add-user-form"
+            class="add-user-form user-form-shell"
             :size="formSize"
             status-icon
         >
+            <div class="form-intro">
+                <div>
+                    <p class="eyebrow">USER CREATE</p>
+                    <h2 class="form-title">新增用户</h2>
+                </div>
+                <div class="intro-mark">New</div>
+            </div>
+
             <el-form-item label="用户名" prop="userName">
                 <el-input v-model="addUserForm.userName" />
             </el-form-item>
@@ -27,8 +35,10 @@
             </el-form-item>
 
             <el-form-item label="密码" prop="password">
-                <el-input class="generate-password" type="text" v-model="addUserForm.password" />
-                <button type="button" class="btn-generate-password" @click="generatePasswordHandle">生成密码</button>
+                <div class="field-inline">
+                    <el-input class="generate-password" type="text" v-model="addUserForm.password" />
+                    <button type="button" class="btn-generate-password" @click="generatePasswordHandle">生成密码</button>
+                </div>
             </el-form-item>
 
             <el-form-item label="角色" prop="roleName">
@@ -36,11 +46,12 @@
                     <el-option v-for="item in props.roles" :key="item.role_name" :label="item.description" :value="item.role_name" />
                 </el-select>
             </el-form-item>
-            <el-form-item prop="isSendEmail">
+
+            <el-form-item prop="isSendEmail" class="form-checkbox-item">
                 <el-checkbox v-model="addUserForm.isSendEmail" value="发送邮件" name="send_email">是否发送邮件到用户邮箱。</el-checkbox>
             </el-form-item>
 
-            <div class="btn-submit">
+            <div class="form-actions">
                 <el-form-item>
                     <el-button type="primary" :loading="btnLoading" @click="submitForm(addUserFormRef as FormInstance)">新增用户</el-button>
                 </el-form-item>
@@ -86,8 +97,10 @@ const addUserFormRef = useTemplateRef<FormInstance>("addUserFormRef")
 
 // 表单数据
 const addUserForm = reactive<AddUserForm>({
-    userName: "jiaopengzi",
-    email: "jiaopengzi@qq.com",
+    // userName: "jiaopengzi",
+    // email: "jiaopengzi@qq.com",
+    userName: "username",
+    email: "user@example.com",
     password: generatePassword(),
     roleName: "Subscriber",
     isSendEmail: false,
@@ -172,41 +185,133 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 </script>
 
 <style lang="scss" scoped>
-.add-user-page {
+.user-form-page {
     display: flex;
-    align-items: center;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 8px 0;
 }
 
-.add-user-form {
-    width: 400px;
+.user-form-shell {
+    width: min(560px, 100%);
+    padding: 28px;
+    border-radius: 28px;
+    border: 1px solid color-mix(in srgb, var(--jpz-color-primary) 14%, var(--el-border-color));
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--jpz-color-primary) 5%, transparent), transparent 42%),
+        linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color-overlay) 96%, transparent), var(--el-bg-color));
+    box-shadow:
+        0 20px 48px rgb(15 23 42 / 8%),
+        inset 0 1px 0 rgb(255 255 255 / 18%);
 }
 
-.generate-password {
-    flex: 5;
+.form-intro {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
 }
 
-.btn-generate-password {
-    flex: 2;
+.eyebrow {
+    margin: 0 0 10px;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    color: var(--jpz-text-color-secondary);
 }
 
-.btn-generate-password {
-    width: 120px;
-    margin-left: 10px;
-    padding: 0 10px;
-    height: 40px;
-    line-height: 30px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #fff;
-    cursor: pointer;
-    color: #333;
+.form-title {
+    margin: 0 0 10px;
+    font-size: 32px;
+    line-height: 1.1;
+    color: var(--jpz-text-color-primary);
 }
 
-.btn-submit {
+.intro-mark {
+    flex: 0 0 auto;
+    min-width: 68px;
+    padding: 10px 14px;
+    border-radius: 16px;
+    border: 1px solid color-mix(in srgb, var(--jpz-color-primary) 18%, var(--el-border-color));
+    background: color-mix(in srgb, var(--jpz-color-primary) 8%, transparent);
+    color: var(--jpz-color-primary);
+    font-size: 13px;
+    font-weight: 700;
     text-align: center;
 }
 
-.btn-submit .el-form-item {
-    display: inline-block;
+.field-inline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.generate-password {
+    flex: 1;
+}
+
+.btn-generate-password {
+    flex: 0 0 auto;
+    min-width: 112px;
+    height: 40px;
+    padding: 0 14px;
+    border: 1px solid color-mix(in srgb, var(--jpz-color-primary) 18%, var(--el-border-color));
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--jpz-color-primary) 8%, var(--el-bg-color));
+    color: var(--jpz-color-primary);
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        background-color 0.2s ease;
+
+    &:hover {
+        transform: translateY(-1px);
+        border-color: color-mix(in srgb, var(--jpz-color-primary) 32%, var(--el-border-color));
+        background: color-mix(in srgb, var(--jpz-color-primary) 12%, var(--el-bg-color));
+    }
+}
+
+.form-checkbox-item {
+    margin-bottom: 8px;
+}
+
+.form-actions {
+    margin-top: 22px;
+    display: flex;
+    justify-content: center;
+}
+
+:deep(.el-form-item) {
+    margin-bottom: 18px;
+}
+
+:deep(.el-form-item__label) {
+    color: var(--jpz-text-color-primary);
+    font-weight: 600;
+}
+
+:deep(.el-input__wrapper),
+:deep(.el-select__wrapper),
+:deep(.el-textarea__inner) {
+    border-radius: 14px;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--el-border-color) 92%, transparent) inset;
+    background: color-mix(in srgb, var(--el-bg-color-overlay) 96%, transparent);
+}
+
+:deep(.el-checkbox) {
+    white-space: normal;
+    line-height: 1.7;
+}
+
+.form-actions :deep(.el-form-item) {
+    margin-bottom: 0;
+}
+
+.form-actions :deep(.el-form-item__content) {
+    margin-left: 0 !important;
+    width: 100%;
+    justify-content: center;
 }
 </style>

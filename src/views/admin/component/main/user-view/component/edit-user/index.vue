@@ -7,77 +7,102 @@
 -->
 
 <template>
-    <div class="edit-user-page">
+    <div class="edit-user-page user-form-page">
         <el-form
             :label-position="labelPosition"
             label-width="100px"
             ref="editUserFormRef"
             :model="editUserForm"
             :rules="rules"
-            class="edit-user-form"
+            class="edit-user-form user-form-shell"
             :size="formSize"
             status-icon
         >
-            <el-form-item>
-                <div class="edit-avatar-info">
-                    <div class="edit-avatar">
-                        <AvatarInitials :name="editUserForm.userName" :avatar="avatar" />
-                    </div>
-                    <div class="edit-avatar-btn">
-                        <AvatarUpload :avatar_user_id="editUserForm.editUserID" @avatar-upload-url="updateAvatarToDB" />
-                    </div>
+            <div class="form-intro">
+                <div>
+                    <p class="eyebrow">USER PROFILE</p>
+                    <h2 class="form-title">编辑用户</h2>
                 </div>
-            </el-form-item>
+                <div class="intro-meta">
+                    <span class="meta-chip">{{ editUserForm.roleName || "未设置角色" }}</span>
+                    <span class="meta-subtle">ID: {{ editUserForm.editUserID || "--" }}</span>
+                </div>
+            </div>
 
-            <el-form-item label="用户ID" prop="editUserID">
-                <el-input v-model="editUserForm.editUserID" disabled />
-            </el-form-item>
+            <section class="form-section profile-section">
+                <el-form-item class="avatar-form-item">
+                    <div class="edit-avatar-info">
+                        <div class="edit-avatar-panel">
+                            <AvatarInitials :name="editUserForm.userName" :avatar="avatar" />
+                            <div class="edit-avatar-copy">
+                                <h3>头像</h3>
+                                <p>头像更新会立即同步到当前用户资料。</p>
+                            </div>
+                        </div>
+                        <div class="edit-avatar-btn">
+                            <AvatarUpload :avatar_user_id="editUserForm.editUserID" @avatar-upload-url="updateAvatarToDB" />
+                        </div>
+                    </div>
+                </el-form-item>
+            </section>
 
-            <el-form-item label="用户名" prop="userName">
-                <el-input v-model="editUserForm.userName" />
-            </el-form-item>
+            <section class="form-section">
+                <div class="section-head">
+                    <h3>账号信息</h3>
+                </div>
 
-            <el-form-item label="邮箱" prop="email">
-                <el-input v-model="editUserForm.email" />
-            </el-form-item>
+                <!-- <el-form-item label="用户ID" prop="editUserID">
+                    <el-input v-model="editUserForm.editUserID" disabled />
+                </el-form-item> -->
 
-            <el-form-item label="禁用到期时间" prop="disableExpiresAt">
-                <el-date-picker
-                    v-model="editUserForm.disableExpiresAt.Time"
-                    type="datetime"
-                    placeholder="留空则为未禁用"
-                    :shortcuts="shortcuts"
-                    :default-time="defaultTime"
-                />
-            </el-form-item>
+                <el-form-item label="用户名" prop="userName">
+                    <el-input v-model="editUserForm.userName" />
+                </el-form-item>
 
-            <el-form-item label="密码" prop="password">
-                <el-input class="generate-password" type="text" v-model="editUserForm.password" />
-                <button type="button" class="btn-generate-password" @click="generatePasswordHandle">生成密码</button>
-            </el-form-item>
+                <el-form-item label="邮箱" prop="email">
+                    <el-input v-model="editUserForm.email" />
+                </el-form-item>
 
-            <el-form-item label="角色" prop="roleName">
-                <el-select v-model="editUserForm.roleName" placeholder="选择用户角色">
-                    <el-option v-for="item in props.roles" :key="item.role_name" :label="item.description" :value="item.role_name" />
-                </el-select>
-            </el-form-item>
+                <el-form-item label="禁用到期时间" prop="disableExpiresAt">
+                    <el-date-picker
+                        v-model="editUserForm.disableExpiresAt.Time"
+                        type="datetime"
+                        placeholder="留空则为未禁用"
+                        :shortcuts="shortcuts"
+                        :default-time="defaultTime"
+                    />
+                </el-form-item>
 
-            <el-form-item label="昵称" prop="nickName">
-                <el-input v-model="editUserForm.nickName" />
-            </el-form-item>
+                <el-form-item label="密码" prop="password">
+                    <div class="field-inline">
+                        <el-input class="generate-password" type="text" v-model="editUserForm.password" />
+                        <button type="button" class="btn-generate-password" @click="generatePasswordHandle">生成密码</button>
+                    </div>
+                </el-form-item>
 
-            <el-form-item label="性别" prop="sex">
-                <el-radio-group v-model="editUserForm.sex">
-                    <el-radio value="男">男</el-radio>
-                    <el-radio value="女">女</el-radio>
-                </el-radio-group>
-            </el-form-item>
+                <el-form-item label="角色" prop="roleName">
+                    <el-select v-model="editUserForm.roleName" placeholder="选择用户角色">
+                        <el-option v-for="item in props.roles" :key="item.role_name" :label="item.description" :value="item.role_name" />
+                    </el-select>
+                </el-form-item>
 
-            <el-form-item label="简介" prop="description">
-                <el-input v-model="editUserForm.description" type="textarea" placeholder="这个人很懒,什么也没有留下。" />
-            </el-form-item>
+                <el-form-item label="昵称" prop="nickName">
+                    <el-input v-model="editUserForm.nickName" />
+                </el-form-item>
 
-            <div class="btn-submit">
+                <el-form-item label="性别" prop="sex">
+                    <el-radio-group v-model="editUserForm.sex" class="sex-group">
+                        <el-radio value="男">男</el-radio>
+                        <el-radio value="女">女</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+
+                <el-form-item label="简介" prop="description">
+                    <el-input v-model="editUserForm.description" type="textarea" placeholder="这个人很懒,什么也没有留下。" />
+                </el-form-item>
+            </section>
+
+            <div class="form-actions dual-actions">
                 <el-form-item>
                     <el-button type="primary" :loading="btnLoading" @click="submitForm(editUserFormRef as FormInstance)">更新</el-button>
                 </el-form-item>
@@ -380,55 +405,237 @@ onBeforeMount(() => {
 </script>
 
 <style lang="scss" scoped>
-.edit-user-page {
+.user-form-page {
     display: flex;
-    align-items: center;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 8px 0;
 }
 
-.edit-user-form {
-    width: 400px;
+.user-form-shell {
+    width: min(620px, 100%);
+    padding: 28px;
+    border-radius: 28px;
+    border: 1px solid color-mix(in srgb, var(--jpz-color-primary) 14%, var(--el-border-color));
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--jpz-color-primary) 5%, transparent), transparent 42%),
+        linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color-overlay) 96%, transparent), var(--el-bg-color));
+    box-shadow:
+        0 20px 48px rgb(15 23 42 / 8%),
+        inset 0 1px 0 rgb(255 255 255 / 18%);
+}
+
+.form-intro {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.eyebrow {
+    margin: 0 0 10px;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    color: var(--jpz-text-color-secondary);
+}
+
+.form-title {
+    margin: 0 0 10px;
+    font-size: 32px;
+    line-height: 1.1;
+    color: var(--jpz-text-color-primary);
+}
+
+.intro-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.meta-chip {
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--jpz-color-primary) 18%, var(--el-border-color));
+    background: color-mix(in srgb, var(--jpz-color-primary) 8%, transparent);
+    color: var(--jpz-color-primary);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.meta-subtle {
+    font-size: 12px;
+    color: var(--jpz-text-color-secondary);
+}
+
+.form-section {
+    padding: 18px 18px 6px;
+    border-radius: 22px;
+    border: 1px solid var(--el-border-color-lighter);
+    background: color-mix(in srgb, var(--el-fill-color-light) 78%, transparent);
+
+    & + .form-section {
+        margin-top: 16px;
+    }
+}
+
+.profile-section {
+    padding-bottom: 18px;
+}
+
+.section-head {
+    margin-bottom: 16px;
+
+    h3 {
+        margin: 0 0 6px;
+        font-size: 18px;
+        color: var(--jpz-text-color-primary);
+    }
+
+    p {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.7;
+        color: var(--jpz-text-color-secondary);
+    }
+}
+
+.avatar-form-item {
+    margin-bottom: 0;
 }
 
 .edit-avatar-info {
-    // border-top: 2px solid #ebebeb;
     display: flex;
-    justify-content: flex-start;
     align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
 }
 
-.edit-avatar {
+.edit-avatar-panel {
     display: flex;
-    justify-content: center;
     align-items: center;
-    margin: 10px 30px 10px 0;
+    gap: 18px;
+}
+
+.edit-avatar-copy {
+    h3 {
+        margin: 0 0 6px;
+        font-size: 18px;
+        color: var(--jpz-text-color-primary);
+    }
+
+    p {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.7;
+        color: var(--jpz-text-color-secondary);
+    }
+}
+
+.field-inline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
 }
 
 .generate-password {
-    flex: 5;
+    flex: 1;
 }
 
 .btn-generate-password {
-    flex: 2;
-}
-
-.btn-generate-password {
-    width: 120px;
-    margin-left: 10px;
-    padding: 0 10px;
+    flex: 0 0 auto;
+    min-width: 112px;
     height: 40px;
-    line-height: 30px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #fff;
+    padding: 0 14px;
+    border: 1px solid color-mix(in srgb, var(--jpz-color-primary) 18%, var(--el-border-color));
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--jpz-color-primary) 8%, var(--el-bg-color));
+    color: var(--jpz-color-primary);
     cursor: pointer;
-    color: #333;
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        background-color 0.2s ease;
+
+    &:hover {
+        transform: translateY(-1px);
+        border-color: color-mix(in srgb, var(--jpz-color-primary) 32%, var(--el-border-color));
+        background: color-mix(in srgb, var(--jpz-color-primary) 12%, var(--el-bg-color));
+    }
 }
 
-.btn-submit {
-    text-align: center;
+.sex-group {
+    min-height: 40px;
+    display: flex;
+    align-items: center;
 }
 
-.btn-submit .el-form-item {
-    display: inline-block;
+.form-actions {
+    margin-top: 22px;
+}
+
+.dual-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+:deep(.el-form-item) {
+    margin-bottom: 18px;
+}
+
+:deep(.el-form-item__label) {
+    color: var(--jpz-text-color-primary);
+    font-weight: 600;
+}
+
+:deep(.el-input__wrapper),
+:deep(.el-select__wrapper),
+:deep(.el-textarea__inner),
+:deep(.el-date-editor.el-input__wrapper) {
+    border-radius: 14px;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--el-border-color) 92%, transparent) inset;
+    background: color-mix(in srgb, var(--el-bg-color-overlay) 96%, transparent);
+}
+
+.dual-actions :deep(.el-form-item) {
+    margin-bottom: 0;
+}
+
+.dual-actions :deep(.el-form-item__content) {
+    margin-left: 0 !important;
+    justify-content: center;
+}
+
+@include respond-to("phone") {
+    .user-form-shell {
+        padding: 20px;
+        border-radius: 22px;
+    }
+
+    .form-intro,
+    .edit-avatar-info,
+    .edit-avatar-panel {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .intro-meta {
+        align-items: flex-start;
+    }
+
+    .field-inline {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn-generate-password {
+        width: 100%;
+    }
 }
 </style>
