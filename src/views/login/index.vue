@@ -313,7 +313,7 @@ onBeforeMount(async () => {
 
 // 图标
 .iconfont {
-    font-size: 1.5em;
+    font-size: 32px;
 }
 
 .icon-wechat {
