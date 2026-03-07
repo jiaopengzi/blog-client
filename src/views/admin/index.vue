@@ -59,8 +59,8 @@
 
 <script lang="ts" setup>
 import { useHead } from "@unhead/vue"
-import { onBeforeMount, ref, useTemplateRef } from "vue"
-import { useRouter } from "vue-router"
+import { computed, onBeforeMount, ref, useTemplateRef, watch } from "vue"
+import { useRoute, useRouter } from "vue-router"
 
 import { LocalStorageKey } from "@/stores/local"
 import { PermissionNames } from "@/stores/permissionRole"
@@ -80,9 +80,9 @@ useHead({
 })
 
 const router = useRouter()
+const route = useRoute()
 
 const hasPermissionLoginAdmin = ref(false)
-const hasPermissionContent = ref(false)
 const noPermissionHeadTitle = ref("")
 const noPermissionDisplay = ref("")
 
@@ -118,30 +118,41 @@ const handleCollapseStatus = (isCollapse: boolean) => {
 
 // 更新权限并跳转
 const updatePermission = (index: string) => {
+    const menuItem = adminMenuItemMapWithIndexMap[index]
+    if (!menuItem) {
+        noPermissionHeadTitle.value = "后台管理"
+        noPermissionDisplay.value = index
+        return false
+    }
+
     // 判断是否有权限
-    const permission = adminMenuItemMapWithIndexMap[index]!.permissionName
-    noPermissionHeadTitle.value = adminMenuItemMapWithIndexMap[index]!.text
-    noPermissionDisplay.value = adminMenuItemMapWithIndexMap[index]!.text
+    const permission = menuItem.permissionName
+    noPermissionHeadTitle.value = menuItem.text
+    noPermissionDisplay.value = menuItem.text
 
     // 开发环境下提示未配置权限名称
     if (!permission) {
         console.warn(`菜单项 ${index} 未配置权限名称`)
-        hasPermissionContent.value = false
+        return false
     }
 
-    // 跳转到没有权限页面
     if (permission && !userStore.hasPermission(permission)) {
-        MessageUtil.warning("没有权限")
-        hasPermissionContent.value = false
-    } else {
-        hasPermissionContent.value = true
+        return false
     }
+
+    return true
 }
 
+const hasPermissionContent = computed(() => updatePermission(route.path))
+
 // 选择菜单项
-const handleSelect = (index: string) => {
-    updatePermission(index)
-    router.push({ path: index })
+const handleSelect = async (index: string) => {
+    const canAccessTarget = updatePermission(index)
+    if (!canAccessTarget) {
+        MessageUtil.warning("没有权限")
+    }
+
+    await router.push({ path: index })
 }
 
 onBeforeMount(() => {
@@ -149,6 +160,14 @@ onBeforeMount(() => {
     // 拿到当前路由, 更新权限
     updatePermission(router.currentRoute.value.path)
 })
+
+watch(
+    () => route.path,
+    (newPath) => {
+        updatePermission(newPath)
+    },
+    { immediate: true },
+)
 </script>
 
 <style scoped lang="scss">

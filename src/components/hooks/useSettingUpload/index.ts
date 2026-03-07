@@ -10,7 +10,7 @@ import { ref } from "vue"
 
 import { handleResErr, ResponseCode } from "@/api/response"
 import type { FFmpeg as FFmpegType, FileAllowed as FileAllowedType, Local as LocalType, OSS as OSSType, COS as COSType } from "@/api/setting/getUpload"
-import { getUploadAPI } from "@/api/setting/getUpload"
+import { getUploadAPI, getUploadNoCloudAPI } from "@/api/setting/getUpload"
 import { MessageUtil } from "@/utils/message"
 
 export function useSettingUpload() {
@@ -35,6 +35,19 @@ export function useSettingUpload() {
         }
     }
 
+    // 获取不包含云存储的上传配置
+    const fetchDataNoCloud = async () => {
+        const res = await getUploadNoCloudAPI()
+        if (res.data.code === ResponseCode.GetUploadSuccess) {
+            const data = res.data.data
+            fileAllowedList.value = data.file_allowed
+            ffmpegData.value = data.ffmpeg
+            localData.value = data.local
+        } else {
+            MessageUtil.error(handleResErr(res), 10000)
+        }
+    }
+
     return {
         fileAllowedList,
         ffmpegData,
@@ -42,5 +55,6 @@ export function useSettingUpload() {
         ossData,
         cosData,
         fetchData,
+        fetchDataNoCloud,
     }
 }

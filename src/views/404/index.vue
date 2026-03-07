@@ -15,14 +15,34 @@
 
             <!-- 正文内容 -->
             <div class="common-layout">
-                <div class="not-found">
-                    <el-empty description=" ">
-                        <h1>404</h1>
-                        <p>抱歉，您访问的页面不存在。</p>
-                        <p>
-                            将在 <span class="countdown">{{ countdown }}</span> 秒后，<span class="go-home" @click="goHome">返回首页</span>。
-                        </p>
-                    </el-empty>
+                <div class="not-found-shell">
+                    <section class="not-found-panel">
+                        <div class="status-line">
+                            <span class="status-chip">PAGE STATUS</span>
+                            <span class="status-divider"></span>
+                            <span class="status-code">404</span>
+                        </div>
+
+                        <div class="hero-code">404</div>
+
+                        <h1 class="title">页面未找到</h1>
+                        <p class="description">当前链接可能已失效, 被移动, 或暂时不可访问。请返回首页或检查访问地址是否正确。</p>
+
+                        <div class="meta-list">
+                            <div class="meta-item">
+                                <span class="meta-label">自动跳转</span>
+                                <span class="meta-value"
+                                    ><span class="countdown">{{ countdown }}</span> 秒后返回首页</span
+                                >
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">手动处理</span>
+                                <span class="go-home" @click="goHome">立即返回首页</span>
+                            </div>
+                        </div>
+
+                        <div class="footnote">建议检查 URL 是否完整, 或从站点导航重新进入目标页面。</div>
+                    </section>
                 </div>
             </div>
         </div>
@@ -42,7 +62,7 @@ import { useBreadcrumbStore } from "@/stores/breadcrumb"
 defineOptions({ name: "NotFound404" })
 
 const router = useRouter() // 路由
-const countdown = ref(5) // 倒计时
+const countdown = ref(10) // 倒计时
 let intervalId: number | undefined // 定时器id
 
 const breadcrumbStore = useBreadcrumbStore()
@@ -78,13 +98,138 @@ onUnmounted(() => {
     flex-direction: column;
 }
 
+.not-found-shell {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 0 72px;
+}
+
+.not-found-panel {
+    width: min(760px, 100%);
+    padding: 40px 36px;
+    border: 1px solid color-mix(in srgb, var(--jpz-color-primary) 16%, var(--el-border-color));
+    border-radius: 28px;
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--jpz-color-primary) 5%, transparent), transparent 48%),
+        linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color-overlay) 96%, transparent), var(--el-bg-color));
+    box-shadow:
+        0 24px 60px rgb(15 23 42 / 8%),
+        inset 0 1px 0 rgb(255 255 255 / 24%);
+}
+
+.status-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+.status-chip,
+.status-code {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    color: var(--jpz-text-color-secondary);
+}
+
+.status-chip {
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--el-border-color-lighter);
+    background: color-mix(in srgb, var(--el-fill-color-light) 84%, transparent);
+}
+
+.status-divider {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--jpz-color-primary) 30%, transparent), transparent);
+}
+
+.hero-code {
+    font-size: clamp(72px, 12vw, 132px);
+    line-height: 0.92;
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    color: var(--jpz-text-color-primary);
+    margin-bottom: 20px;
+}
+
+.title {
+    margin: 0 0 14px;
+    font-size: clamp(28px, 4vw, 40px);
+    line-height: 1.1;
+    color: var(--jpz-text-color-primary);
+}
+
+.description {
+    margin: 0;
+    max-width: 580px;
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--jpz-text-color-secondary);
+}
+
+.meta-list {
+    display: grid;
+    gap: 12px;
+    margin: 32px 0 24px;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 16px;
+    border-radius: 18px;
+    background: color-mix(in srgb, var(--el-fill-color-light) 82%, transparent);
+    border: 1px solid var(--el-border-color-lighter);
+}
+
+.meta-label {
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    color: var(--jpz-text-color-secondary);
+}
+
+.meta-value {
+    color: var(--jpz-text-color-primary);
+    font-weight: 600;
+}
+
 .go-home {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--jpz-color-primary) 24%, var(--el-border-color));
+    background: color-mix(in srgb, var(--jpz-color-primary) 8%, transparent);
     color: var(--jpz-color-primary);
     cursor: pointer;
-    text-decoration: underline;
-    text-decoration-color: currentColor;
-    text-underline-offset: 6px;
-    text-decoration-thickness: 2px;
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease,
+        border-color 0.2s ease;
+
+    &:hover {
+        transform: translateY(-1px);
+        border-color: color-mix(in srgb, var(--jpz-color-primary) 40%, var(--el-border-color));
+        background: color-mix(in srgb, var(--jpz-color-primary) 12%, transparent);
+    }
+}
+
+.countdown {
+    color: var(--jpz-color-primary);
+    font-weight: 700;
+}
+
+.footnote {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--jpz-text-color-secondary);
 }
 
 @include respond-to("pc") {
@@ -106,28 +251,20 @@ onUnmounted(() => {
         width: 94vw;
         min-height: calc(100vh - phone.$height-footer);
     }
-}
 
-.not-found {
-    text-align: center;
-    padding-top: 100px;
-    font-size: 24px;
-    color: var(--jpz-color-primary);
-
-    h1 {
-        font-size: 100px;
-        margin: 0;
-        font-weight: 700;
+    .not-found-shell {
+        min-height: 64vh;
+        padding: 24px 0 56px;
     }
 
-    p {
-        margin: 40px 0;
+    .not-found-panel {
+        padding: 28px 20px;
+        border-radius: 22px;
+    }
 
-        .countdown {
-            color: red;
-            font-size: 24px;
-            font-weight: 700;
-        }
+    .meta-item {
+        align-items: flex-start;
+        flex-direction: column;
     }
 }
 </style>

@@ -127,36 +127,47 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
     btnLoading.value = true
 
-    await formEl.validate(async (valid) => {
-        if (valid) {
-            // 创建请求对象 加密内容
-            const req: AddUserRequest = {
-                user_name: addUserForm.userName,
-                password: addUserForm.password,
-                email: addUserForm.email,
-                role_name: addUserForm.roleName,
-                is_send_email: addUserForm.isSendEmail,
-            }
+    const valid = await formEl
+        .validate()
+        .then(() => true)
+        .catch(() => false)
 
-            const { data } = await AddUserAPI(req)
+    if (!valid) {
+        btnLoading.value = false
+        return
+    }
 
-            if (data.code === ResponseCode.UserAddSuccess) {
-                // 保证有数据且包含 stream_items 字段才进行轮询
-                if (data.data && data.data.stream_items) {
-                    await pollingGetStreamIDsStatus(data.data.stream_items)
-                }
-                btnLoading.value = false
-
-                // 添加成功提示
-                emit("add-user-status", true)
-                MessageUtil.success(data.msg, 6000)
-            } else {
-                btnLoading.value = false
-                // 添加失败提示
-                MessageUtil.error(data.msg, 0)
-            }
+    try {
+        // 创建请求对象 加密内容
+        const req: AddUserRequest = {
+            user_name: addUserForm.userName,
+            password: addUserForm.password,
+            email: addUserForm.email,
+            role_name: addUserForm.roleName,
+            is_send_email: addUserForm.isSendEmail,
         }
-    })
+
+        const { data } = await AddUserAPI(req)
+
+        if (data.code === ResponseCode.UserAddSuccess) {
+            // 保证有数据且包含 stream_items 字段才进行轮询
+            if (data.data && data.data.stream_items) {
+                await pollingGetStreamIDsStatus(data.data.stream_items)
+            }
+
+            // 添加成功提示
+            emit("add-user-status", true)
+            MessageUtil.success(data.msg, 6000)
+            return
+        }
+
+        // 添加失败提示
+        MessageUtil.error(data.msg, 0)
+    } catch {
+        MessageUtil.error("新增用户失败, 请稍后重试", 3000)
+    } finally {
+        btnLoading.value = false
+    }
 }
 </script>
 

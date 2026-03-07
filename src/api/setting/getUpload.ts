@@ -67,9 +67,24 @@ export interface GetUploadResponse {
     ffmpeg: FFmpeg
 }
 
+export interface GetUploadNoCloudResponse {
+    file_allowed: FileAllowed[]
+    local: Local
+    ffmpeg: FFmpeg
+}
+
 // 获取上传配置
 export function getUploadAPI(): ResPromise<Res<GetUploadResponse>> {
     const urlStr = routerGroup + "/setting/get-upload"
+    return request({
+        url: urlStr,
+        method: "get",
+    })
+}
+
+// 获取不包含云存储的上传配置
+export function getUploadNoCloudAPI(): ResPromise<Res<GetUploadNoCloudResponse>> {
+    const urlStr = routerGroup + "/setting/get-upload-no-cloud"
     return request({
         url: urlStr,
         method: "get",

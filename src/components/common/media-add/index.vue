@@ -76,7 +76,7 @@ const emit = defineEmits<{
 const uploadRef = useTemplateRef<typeof ElUpload>("uploadRef")
 
 // 配置的 hooks
-const { ffmpegData, fetchData } = useSettingUpload()
+const { ffmpegData, fetchDataNoCloud } = useSettingUpload()
 
 // 上传视频是否加密
 const isEncrypt = ref(true)
@@ -140,7 +140,7 @@ const getAllowedInfo = async () => {
 
 onBeforeMount(async () => {
     await getAllowedInfo()
-    await fetchData()
+    await fetchDataNoCloud()
 })
 </script>
 
