@@ -27,6 +27,7 @@
             @edit-row="editRow"
             @update-search="updateSearch"
             @run-search="runSearch"
+            @click-author="handleClickAuthor"
             @add-item-update-dialog-visible="addItemUpdateDialogVisible"
             @edit-item-update-dialog-visible="editItemUpdateDialogVisible"
         >
@@ -41,6 +42,13 @@
                     >
                         {{ OrderStatusDisplay[item.status] }} ({{ item.count }})
                     </el-button>
+                </div>
+            </template>
+
+            <template #custom-filter>
+                <div ref="customFilterRef" class="custom-filter">
+                    <!-- 按照作者-->
+                    <FilterTagClear v-if="tags.size" class="custom-filter-item" :tags="userPost" @clear="clearAuthorCategoryTag" />
                 </div>
             </template>
 
@@ -60,15 +68,17 @@
 
 <script lang="ts" setup>
 import { useHead } from "@unhead/vue"
-import { onBeforeMount, reactive, ref, watch } from "vue"
+import { computed, onBeforeMount, reactive, ref, watch } from "vue"
 
 import { type OrderGetByIDRes, OrderStatus, OrderStatusDisplay } from "@/api/order/common"
 import { getOrderCountByStatusAPI, type OrderCountByStatus } from "@/api/order/getCountByStatus"
 import { getOrderPaginateAdminAPI, type OrderPaginationRequest } from "@/api/order/getPaginate"
 import { type QueryParamsRecord } from "@/api/request"
 import { ResponseCode } from "@/api/response"
+import type { User } from "@/api/user/getUsers"
 import type { TableColumn, TableData } from "@/components/common/base-table"
 import BaseTable from "@/components/common/base-table/index.vue"
+import FilterTagClear from "@/components/common/filter-tag-clear"
 import OrderDetail from "@/components/common/order-detail"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { useParams } from "@/components/hooks/useParams"
@@ -187,6 +197,22 @@ const noRequestKeys: QueryParamsRecord<queryKey> = { [queryKey.Status]: allStatu
 
 // 订单状态
 const orderCountGroupByStatus = ref<OrderCountByStatus[]>([])
+const clickAuthor = ref("")
+const userPost = ref<string[]>([])
+
+const tags = computed(() => {
+    const userOrderSet = new Set<string>()
+
+    if (clickAuthor.value) {
+        userOrderSet.add(clickAuthor.value)
+    }
+
+    return userOrderSet
+})
+
+watch(tags, (newVal) => {
+    userPost.value = Array.from(newVal)
+})
 
 // 获取订单状态统计
 async function getOrderCountByStatus() {
@@ -245,6 +271,22 @@ const runSearch = async () => {
     await updateData()
 }
 
+const handleClickAuthor = async (author: User) => {
+    Object.assign(queryParams, {
+        user_id: author.id,
+    })
+    clickAuthor.value = author.user_name
+
+    await updateData()
+}
+
+const clearAuthorCategoryTag = async () => {
+    clickAuthor.value = ""
+    delete queryParams.user_id
+
+    await updateData()
+}
+
 const handleOrderCountByStatus = async (status: OrderStatus) => {
     activeStatus.value = status
     // 添加路由跳转
@@ -278,12 +320,46 @@ watch(
 // 在加载前将 params 解析回对应的响应式变量中
 useParams(queryParams, pagination, search)
 
+const parseParamsHasLoaded = () => {
+    const { user_id } = queryParams
+
+    clickAuthor.value = ""
+
+    if (user_id) {
+        for (const item of pagination.records) {
+            if (item.user_info.id === user_id) {
+                clickAuthor.value = item.user_info.user_name || ""
+                break
+            }
+        }
+    }
+}
+
+watch(
+    () => pagination.records,
+    (newRecords) => {
+        if (newRecords.length > 0) {
+            parseParamsHasLoaded()
+        }
+    },
+    { deep: true },
+)
+
 onBeforeMount(async () => {
     await getOrderCountByStatus()
 })
 </script>
 
 <style scoped lang="scss">
+.custom-filter {
+    display: flex;
+    align-items: center;
+
+    .custom-filter-item {
+        margin-right: 10px;
+    }
+}
+
 .dialog-title {
     font-size: 20px;
     font-weight: 700;
