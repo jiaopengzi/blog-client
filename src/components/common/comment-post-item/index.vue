@@ -8,16 +8,20 @@
 
 <template>
     <div class="post-container">
-        <el-badge v-if="pendingCount > 0 && isAdmin" :value="pendingCount" class="badge-item title-container" :max="99" :offset="[9, 8]">
-            <el-button class="post-title" type="default" @click="handlePostClick">{{ `${post.post_title} (${allCount})` }}</el-button>
-            <el-button class="post-view" type="default" @click="handleViewPostClick">查看文章</el-button>
-        </el-badge>
-        <div v-if="pendingCount === 0 && isAdmin" class="title-container">
-            <el-button class="post-title post-title-without-badge" type="default" @click="handlePostClick">{{ `${post.post_title} (${allCount})` }}</el-button>
-            <el-button class="post-view" type="default" @click="handleViewPostClick">查看文章</el-button>
-        </div>
-        <div v-if="!isAdmin" class="title-container">
-            <el-button class="post-title post-title-without-badge" type="default" @click="handleViewPostClick">{{ `${post.post_title}` }}</el-button>
+        <div class="title-container">
+            <div v-if="isAdmin" class="title-header">
+                <span class="comment-summary">{{ totalCommentText }}</span>
+                <span v-if="pendingCount > 0" class="review-summary">{{ pendingCommentText }}</span>
+            </div>
+
+            <el-button v-if="isAdmin" class="post-title" type="default" @click="handlePostClick">
+                <span class="post-title-text">{{ post.post_title }}</span>
+            </el-button>
+            <el-button v-if="isAdmin" class="post-view" type="default" @click="handleViewPostClick">查看文章</el-button>
+
+            <el-button v-if="!isAdmin" class="post-title post-title-without-badge" type="default" @click="handleViewPostClick">
+                <span class="post-title-text">{{ post.post_title }}</span>
+            </el-button>
         </div>
     </div>
 </template>
@@ -75,6 +79,16 @@ const allCount = computed(() => {
     return pendingCount.value + approvedCount.value + rejectedCount.value
 })
 
+// 总评论数说明文案
+const totalCommentText = computed(() => {
+    return `共 ${allCount.value} 条`
+})
+
+// 待审评论数说明文案
+const pendingCommentText = computed(() => {
+    return `待审 ${pendingCount.value} 条`
+})
+
 // 处理文章点击事件
 const handlePostClick = () => {
     emit("post-click", post.id)
@@ -87,40 +101,95 @@ const handleViewPostClick = () => {
 </script>
 <style lang="scss" scoped>
 .post-container {
-    // 居中
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-// 右上角数字徽标
-.badge-item {
-    margin: 10px 30px;
+    width: 100%;
 }
 
 .title-container {
-    // 列表布局
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    width: 100%;
+    max-width: 100%;
+    padding: 2px 0;
+}
+
+.title-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.review-summary,
+.comment-summary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 20px;
+    padding: 0 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    line-height: 20px;
+}
+
+.comment-summary {
+    background: color-mix(in srgb, var(--el-fill-color) 86%, transparent);
+    border: 1px solid var(--el-border-color-lighter);
+    color: var(--el-text-color-secondary);
+    white-space: nowrap;
+}
+
+.review-summary {
+    background: color-mix(in srgb, var(--el-color-warning) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--el-color-warning) 28%, transparent);
+    color: var(--el-color-warning-dark-2);
+    white-space: nowrap;
 }
 
 .post-title {
-    // 清除默认样式
     color: var(--el-color-primary);
     font-weight: 700;
     padding: 0;
     border: none;
     background-color: transparent;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    min-height: 0;
+    margin-bottom: 4px;
+    justify-content: center;
+
+    :deep(.el-button__text) {
+        display: block;
+        width: 100%;
+    }
 }
 
 .post-view {
-    // 清除默认样式
     padding: 0;
     border: none;
     background-color: transparent;
     font-size: 12px;
+    align-self: center;
+}
+
+.post-title-text {
+    display: block;
+    width: 100%;
+    max-height: 72px;
+    overflow-y: auto;
+    line-height: 24px;
+    white-space: normal;
+    word-break: break-all;
+    text-align: center;
+    padding: 0 4px;
 }
 
 // @include respond-to("pc") {

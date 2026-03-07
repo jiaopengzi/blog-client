@@ -204,6 +204,9 @@ importers:
       axios:
         specifier: ^1.13.5
         version: 1.13.5
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       glob:
         specifier: ^13.0.2
         version: 13.0.2
@@ -2096,6 +2099,11 @@ packages:
 
   cropperjs@2.1.0:
     resolution: {integrity: sha512-SsSDqdVRl+mjbIBkGWlk1gCGcc+HzBqCbH5EQ+1tkAFUdxq2KUGukXF1RqhmvXrrdrX7PDwSUkWgXS7E36KvGQ==}
+
+  cross-env@7.0.3:
+    resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==}
+    engines: {node: '>=10.14', npm: '>=6', yarn: '>=1'}
+    hasBin: true
 
   cross-spawn@6.0.6:
     resolution: {integrity: sha512-VqCUuhcd1iB+dsv8gxPttb5iZh/D0iubSP21g36KXdEuf6I5JiioesUVjpCdHV9MZRUfVFlvwtIUyPfxo5trtw==}
@@ -5935,6 +5943,10 @@ snapshots:
     dependencies:
       '@cropper/elements': 2.1.0
       '@cropper/utils': 2.1.0
+
+  cross-env@7.0.3:
+    dependencies:
+      cross-spawn: 7.0.6
 
   cross-spawn@6.0.6:
     dependencies:
