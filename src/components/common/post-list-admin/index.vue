@@ -21,6 +21,7 @@
             tags-item-max-height="96px"
             height="calc(100vh - 270px)"
             :loading-delete="loadingDelete"
+            :is-show-cursor-pointer="true"
             @update-current-page="updateCurrentPage"
             @update-page-size="updatePageSize"
             @edit-row="editRow"
@@ -80,12 +81,30 @@
                         </el-select>
                         <div class="custom-fields-item" v-show="postCustomFieldsSelect">
                             <span>最小值:</span>
-                            <el-input-number v-model="postCustomFieldsMin" controls-position="right" :min="0" :max="9999999999999" style="width: 130px" />
+                            <el-input-number
+                                :key="`custom-field-min-${postCustomFieldsSelect || 'empty'}`"
+                                v-model="postCustomFieldsMin"
+                                controls-position="right"
+                                :min="0"
+                                :max="9999999999999"
+                                :precision="customFieldInputPrecision"
+                                :step="customFieldInputStep"
+                                style="width: 130px"
+                            />
                         </div>
 
                         <div class="custom-fields-item" v-show="postCustomFieldsSelect">
                             <span>最大值:</span>
-                            <el-input-number v-model="postCustomFieldsMax" controls-position="right" :min="1" :max="9999999999999" style="width: 130px" />
+                            <el-input-number
+                                :key="`custom-field-max-${postCustomFieldsSelect || 'empty'}`"
+                                v-model="postCustomFieldsMax"
+                                controls-position="right"
+                                :min="1"
+                                :max="9999999999999"
+                                :precision="customFieldInputPrecision"
+                                :step="customFieldInputStep"
+                                style="width: 130px"
+                            />
                         </div>
                     </div>
                 </div>
@@ -134,6 +153,7 @@ import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { useParams } from "@/components/hooks/useParams"
 import { usePostView } from "@/components/hooks/usePostView"
 import { useUserStore } from "@/stores/user"
+import { fenToYuan, yuanToFen } from "@/utils/amount"
 import { confirmCommon } from "@/utils/confirm"
 import { pollingGetStreamIDsStatus } from "@/utils/getStreamIDsStatus"
 import { MessageUtil } from "@/utils/message"
@@ -163,6 +183,16 @@ const postCountMonthSelect = ref("")
 const postCustomFieldsSelect = ref("")
 const postCustomFieldsMin = ref(0)
 const postCustomFieldsMax = ref(100)
+const isPriceCustomField = computed(() => postCustomFieldsSelect.value === CustomFields.Price)
+const customFieldInputPrecision = computed(() => (isPriceCustomField.value ? 2 : 0))
+const customFieldInputStep = computed(() => (isPriceCustomField.value ? 0.01 : 1))
+
+watch(postCustomFieldsSelect, (newVal, oldVal) => {
+    if (oldVal === CustomFields.Price && newVal !== CustomFields.Price) {
+        postCustomFieldsMin.value = Math.trunc(postCustomFieldsMin.value)
+        postCustomFieldsMax.value = Math.trunc(postCustomFieldsMax.value)
+    }
+})
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -361,19 +391,22 @@ watch(postCountMonthSelect, async (newVal) => {
 
 // 监控 postCustomFieldsSelect
 watch([postCustomFieldsSelect, postCustomFieldsMin, postCustomFieldsMax], async ([newSelect, newMin, newMax], [oldSelect, oldMin, oldMax]) => {
-    queryParams.custom_filed_min = oldMin.toString()
-    queryParams.custom_filed_max = oldMax.toString()
+    const minValue = newSelect === CustomFields.Price ? String(yuanToFen(newMin, true)) : newMin.toString()
+    const maxValue = newSelect === CustomFields.Price ? String(yuanToFen(newMax, true)) : newMax.toString()
+
+    queryParams.custom_filed_min = minValue
+    queryParams.custom_filed_max = maxValue
 
     if (newSelect !== oldSelect) {
         queryParams.custom_filed = newSelect as CustomFields
     }
 
     if (newMin !== oldMin) {
-        queryParams.custom_filed_min = newMin.toString()
+        queryParams.custom_filed_min = minValue
     }
 
     if (newMax !== oldMax) {
-        queryParams.custom_filed_max = newMax.toString()
+        queryParams.custom_filed_max = maxValue
     }
 
     if (newSelect === void 0) {
@@ -515,8 +548,8 @@ const parseParamsNotLoaded = () => {
 
     postCountMonthSelect.value = year && month ? `${year}-${month}` : ""
     postCustomFieldsSelect.value = custom_filed || ""
-    postCustomFieldsMin.value = custom_filed_min ? Number(custom_filed_min) : 0
-    postCustomFieldsMax.value = custom_filed_max ? Number(custom_filed_max) : 100
+    postCustomFieldsMin.value = custom_filed_min ? (custom_filed === CustomFields.Price ? Number(fenToYuan(custom_filed_min)) : Number(custom_filed_min)) : 0
+    postCustomFieldsMax.value = custom_filed_max ? (custom_filed === CustomFields.Price ? Number(fenToYuan(custom_filed_max)) : Number(custom_filed_max)) : 100
 }
 
 // 监控 queryParams
