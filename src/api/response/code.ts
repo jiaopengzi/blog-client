@@ -226,6 +226,8 @@ export enum ResponseCode {
     MembershipRoleConflict = 2711, // 会员角色冲突
     MembershipGetRolesIsNone = 2712, // 获取会员角色无数据
     MembershipGetRolesSuccess = 2713, // 获取会员角色成功
+    MembershipUserViewIsNone = 2714, // 查看会员用户无数据
+    MembershipUserViewSuccess = 2715, // 查看会员用户成功
 
     // 优惠券相关
     CouponInsertSuccess = 2800, // 插入优惠券成功

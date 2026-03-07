@@ -12,7 +12,7 @@ import { type CommentResAdmin } from "@/api/comment/common"
 import { type CouponRes } from "@/api/coupon/common"
 import { type LinkRes } from "@/api/link/common"
 import { type LoginLog } from "@/api/loginLog/getLoginLogs"
-import { type MembershipRes } from "@/api/membership/common"
+import { type MembershipRes, type MembershipUserRes } from "@/api/membership/common"
 import { type NotificationRes } from "@/api/notification/common"
 import { type OrderGetByIDRes } from "@/api/order/common"
 import { type PostResPaginationByAdmin } from "@/api/post/common"
@@ -63,6 +63,7 @@ export type TableData =
     | NotificationRes
     | CouponRes
     | MembershipRes
+    | MembershipUserRes
     | OrderGetByIDRes
     | TransactionFlowRes
 

@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client\src\views\admin\component\main\membership\index.vue
+ * FilePath    : blog-client\src\views\admin\component\main\membership-role\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
@@ -92,10 +92,10 @@ import { type ViewForm } from "./component/view"
 import { useHeader } from "./hooks"
 import { groupList, type GroupType, type MembershipCountGroupItem, queryKey } from "./types"
 
-defineOptions({ name: RouteNames.Membership })
+defineOptions({ name: RouteNames.MembershipRole })
 
 useHead({
-    title: adminMenuItemMap[RouteNames.Membership].text,
+    title: adminMenuItemMap[RouteNames.MembershipRole].text,
 })
 
 const cols: TableColumn[] = reactive([
@@ -209,7 +209,7 @@ const {
     updateRouterPush,
     loadingDelete, // 删除时的加载状态
 } = useBaseTable<MembershipRes, ViewMembershipRequest, DeleteMembershipRequest>({
-    routeName: RouteNames.Membership,
+    routeName: RouteNames.MembershipRole,
     viewAPI: viewMembershipAPI,
     viewResCode: ResponseCode.MembershipViewSuccess,
     queryParams,

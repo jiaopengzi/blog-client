@@ -6,6 +6,8 @@
  * Description : 会员共用内容
  */
 
+import type { PgSqlDateTime } from "@/api/common"
+import type { User } from "@/api/user/getUsers"
 import type { DataWithImg } from "@/components/common"
 
 // 会员状态
@@ -56,4 +58,19 @@ export interface MembershipRes extends DataWithImg {
     watch_count: number // 观看次数
     status: MembershipStatus // 状态 1禁用, 2启用
     description: string // 描述
+}
+
+export interface MembershipUserRes extends DataWithImg {
+    id: string
+    created_at: string
+    user_id: string
+    membership_id: string
+    order_id: string
+    role: string
+    expire_time: PgSqlDateTime
+    user_info: MembershipUserInfo
+}
+
+export interface MembershipUserInfo extends User, DataWithImg {
+    subscribe_status: number
 }

@@ -179,6 +179,17 @@ export const adminMenuItemMap: AdminMenuItemMap = {
         text: "会员",
         permissionName: PermissionNames.Shop,
         parentIndex: RouteNamesAdmin.Shop,
+        components: RouteNamesAdmin.MembershipRole,
+    },
+    [RouteNamesAdmin.MembershipRole]: {
+        text: "角色",
+        permissionName: PermissionNames.Shop,
+        parentIndex: RouteNamesAdmin.Membership,
+    },
+    [RouteNamesAdmin.MembershipUser]: {
+        text: "用户",
+        permissionName: PermissionNames.Shop,
+        parentIndex: RouteNamesAdmin.Membership,
     },
     [RouteNamesAdmin.Coupon]: {
         text: "优惠券",

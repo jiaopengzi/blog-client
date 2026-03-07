@@ -73,6 +73,8 @@ export enum RouteNamesAdmin {
     AccountKeyItem = "account-key-item",
     Order = "order",
     Membership = "membership",
+    MembershipRole = "membership-role",
+    MembershipUser = "membership-user",
     Coupon = "coupon",
     PayConfig = "pay-config",
     BillingCenter = "billing-center",
