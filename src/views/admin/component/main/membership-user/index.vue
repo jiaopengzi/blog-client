@@ -7,7 +7,7 @@
 -->
 
 <template>
-    <section>
+    <section class="membership-user-page">
         <BaseTable
             :pagination="pagination"
             :table-column="cols"
@@ -16,7 +16,7 @@
             :is-show-search="true"
             :search-str="search"
             :loading-delete="loadingDelete"
-            height="calc(100vh - 270px)"
+            height="calc(100vh - 230px)"
             :is-show-cursor-pointer="true"
             :is-show-user-name="true"
             :avatar-width="40"
@@ -68,7 +68,7 @@ enum queryKey {
 const cols: TableColumn[] = reactive([
     {
         prop: "id",
-        label: "明细ID",
+        label: "ID",
         sortable: true,
         minWidth: 180,
         align: "center",
@@ -82,20 +82,20 @@ const cols: TableColumn[] = reactive([
         isUser: true,
     },
     {
-        prop: "membership_id",
-        label: "会员ID",
-        sortable: true,
-        minWidth: 180,
-        align: "center",
-        isCopyText: true,
-    },
-    {
         prop: "role",
         label: "会员角色",
         sortable: true,
         minWidth: 140,
         align: "center",
         isHeading: true,
+    },
+    {
+        prop: "membership_id",
+        label: "会员ID",
+        sortable: true,
+        minWidth: 180,
+        align: "center",
+        isCopyText: true,
     },
     {
         prop: "order_id",
@@ -105,20 +105,20 @@ const cols: TableColumn[] = reactive([
         align: "center",
         isCopyText: true,
     },
-    {
-        prop: "user_info",
-        label: "订阅状态",
-        sortable: true,
-        minWidth: 120,
-        align: "center",
-        formatter: (row: TableData) => {
-            if ("user_info" in row) {
-                return "subscribe_status" in row.user_info && row.user_info.subscribe_status === 1 ? "已订阅" : "未订阅"
-            }
+    // {
+    //     prop: "user_info",
+    //     label: "订阅状态",
+    //     sortable: true,
+    //     minWidth: 120,
+    //     align: "center",
+    //     formatter: (row: TableData) => {
+    //         if ("user_info" in row) {
+    //             return "subscribe_status" in row.user_info && row.user_info.subscribe_status === 1 ? "已订阅" : "未订阅"
+    //         }
 
-            return "-"
-        },
-    },
+    //         return "-"
+    //     },
+    // },
     {
         prop: "created_at",
         label: "开通时间",
@@ -209,5 +209,9 @@ useParams(queryParams, pagination, search)
     .custom-filter-item {
         margin-right: 10px;
     }
+}
+
+.membership-user-page {
+    margin-top: 40px;
 }
 </style>
