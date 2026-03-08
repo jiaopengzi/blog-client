@@ -19,7 +19,6 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev-https": "cross-env DEV_DOMAIN=dev.jiaopengzi.com DEV_HTTPS_KEY=.cert/cert.key DEV_HTTPS_CERT=.cert/cert.pem pnpm dev",
         "dev": "node ./scripts/set-env-version.js && node ./scripts/open-document.js && vite",
         "build": "run-p type-check build-only",
         "preview": "node ./scripts/open-document.js && vite preview",

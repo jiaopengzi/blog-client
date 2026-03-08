@@ -9,8 +9,8 @@
 import child_process from "child_process"
 
 // const url = 'https://jiaopengzi.com'
-// const urlDev = "http://10.10.2.222:7364"
-const urlDev = "https://dev.jiaopengzi.com"
+const urlDev = "http://localhost:7364"
+// const urlDev = "https://dev.jiaopengzi.com"
 let cmd = ""
 // console.log(process.platform)
 switch (process.platform) {

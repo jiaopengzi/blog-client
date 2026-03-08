@@ -23,6 +23,7 @@ export const dbRules: FormRules = {
 }
 
 export const uploadRules: FormRules = {
+    domain: [{ required: true, message: "访问域名为必填项", trigger: "blur" }],
     path: [
         {
             required: true,

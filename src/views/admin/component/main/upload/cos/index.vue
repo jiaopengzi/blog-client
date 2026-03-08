@@ -51,7 +51,6 @@ const rules = reactive<FormRules<COS>>({
     secret_key: [{ required: true, message: "SecretKey 为必填项", trigger: "blur" }],
     region: [{ required: true, message: "地域为必填项", trigger: "blur" }],
     bucket_name: [{ required: true, message: "Bucket 名称为必填项", trigger: "blur" }],
-    domain: [{ required: true, message: "访问域名为必填项", trigger: "blur" }],
     parallel_num: [
         { required: true, message: "并行上传数量为必填项", trigger: "blur" },
         {
@@ -70,12 +69,12 @@ const rules = reactive<FormRules<COS>>({
 const formItems = [
     { label: "启用", prop: "is_enabled", isCheckbox: true },
     { label: "URL归属", prop: "is_url_belong", isCheckbox: true },
-    { label: "path", prop: "path", placeholder: "文件上传路径" },
+    { label: "访问域名", prop: "domain", placeholder: "访问域名" },
+    { label: "文件上传路径", prop: "path", placeholder: "文件上传路径" },
     { label: "SecretId", prop: "secret_id", placeholder: "腾讯云 SecretId" },
     { label: "SecretKey", prop: "secret_key", type: "password", showPassword: true, placeholder: "腾讯云 SecretKey" },
     { label: "地域", prop: "region", placeholder: "地域" },
     { label: "Bucket 名称", prop: "bucket_name", placeholder: "Bucket 名称 (含 APPID, 例: my-bucket-1250000000)" },
-    { label: "访问域名", prop: "domain", placeholder: "访问域名" },
     { label: "并行上传数量", prop: "parallel_num", placeholder: "根据网络带宽设置建议范围：1-10" },
 ]
 

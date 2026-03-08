@@ -50,9 +50,9 @@ const rules = reactive<FormRules<OSS>>({
     key_id: [{ required: true, message: "AccessKey ID 为必填项", trigger: "blur" }],
     key_secret: [{ required: true, message: "AccessKey Secret 为必填项", trigger: "blur" }],
     region: [{ required: true, message: "地域为必填项", trigger: "blur" }],
-    endpoint: [{ required: true, message: "外网域名为必填项", trigger: "blur" }],
     bucket_name: [{ required: true, message: "Bucket 名称为必填项", trigger: "blur" }],
-    endpoint_internal: [{ required: true, message: "内网域名为必填项", trigger: "blur" }],
+    endpoint: [{ required: true, message: "外网节点为必填项", trigger: "blur" }],
+    endpoint_internal: [{ required: true, message: "内网节点为必填项", trigger: "blur" }],
     parallel_num: [
         { required: true, message: "并行上传数量为必填项", trigger: "blur" },
         {
@@ -73,15 +73,16 @@ const rules = reactive<FormRules<OSS>>({
 const formItems = [
     { label: "启用", prop: "is_enabled", isCheckbox: true },
     { label: "URL归属", prop: "is_url_belong", isCheckbox: true },
-    { label: "path", prop: "path", placeholder: "文件上传路径" },
+    { label: "访问域名", prop: "domain", placeholder: "访问域名" },
+    { label: "文件上传路径", prop: "path", placeholder: "文件上传路径" },
     { label: "AccessKey ID", prop: "key_id", placeholder: "阿里云账号的AccessKey ID" },
     { label: "AccessKey Secret", prop: "key_secret", type: "password", showPassword: true, placeholder: "阿里云账号的AccessKey Secret" },
-    { label: "地域", prop: "region", placeholder: "地域" },
-    { label: "外网域名", prop: "endpoint", placeholder: "外网域名" },
     { label: "Bucket 名称", prop: "bucket_name", placeholder: "Bucket 名称" },
-    { label: "内网域名", prop: "endpoint_internal", placeholder: "内网域名" },
-    { label: "并行上传数量", prop: "parallel_num", placeholder: "根据网络带宽设置建议范围：1-10" },
+    { label: "地域", prop: "region", placeholder: "地域" },
+    { label: "外网节点", prop: "endpoint", placeholder: "外网域名" },
+    { label: "内网节点", prop: "endpoint_internal", placeholder: "内网域名" },
     { label: "内网传输", prop: "is_internal", isCheckbox: true },
+    { label: "并行上传数量", prop: "parallel_num", placeholder: "根据网络带宽设置建议范围：1-10" },
 ]
 
 watch(
