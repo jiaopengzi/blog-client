@@ -38,7 +38,7 @@ const postPc = [
     CommandsKey.Details,
     CommandsKey.Alert,
     CommandsKey.PayContent,
-    CommandsKey.Video,
+    // CommandsKey.Video,
     CommandsKey.Toc,
     CommandsKey.Edit,
     CommandsKey.Scroll,

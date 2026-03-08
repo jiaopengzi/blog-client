@@ -43,7 +43,7 @@ export enum CommandsKey {
     Superscript = "superscript",
     Subscript = "subscript",
     PayContent = "payContent",
-    Video = "video",
+    // Video = "video",
     Copy = "copy",
     Save = "save",
     Publish = "publish",
@@ -334,14 +334,14 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
             // prefix: "<!--more-->",
             icon: IconKeys.PayContent,
         },
-        // 视频
-        [CommandsKey.Video]: {
-            tip: "视频",
-            prefix: '\n<video-player video-type="hls" src="" poster="" id="',
-            suffix: '"></video-player>\n',
-            hotKey: "Ctrl+Shift+V",
-            icon: IconKeys.Video,
-        },
+        // // 视频
+        // [CommandsKey.Video]: {
+        //     tip: "视频",
+        //     prefix: '\n<video-player video-type="hls" src="" poster="" id="',
+        //     suffix: '"></video-player>\n',
+        //     hotKey: "Ctrl+Shift+V",
+        //     icon: IconKeys.Video,
+        // },
         // 复制
         [CommandsKey.Copy]: {
             tip: "复制",
