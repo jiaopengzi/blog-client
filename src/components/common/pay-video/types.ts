@@ -10,6 +10,7 @@ import { type PostVideoTocTree } from "@/api/post/common"
 
 export interface PayVideoProps {
     postId: string // 文章ID
+    isAdminVideo?: boolean // 是否使用管理员视频接口
     toc?: PostVideoTocTree[] // 目录
     isPaid: boolean // 是否付费
 }

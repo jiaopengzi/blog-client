@@ -67,6 +67,7 @@
                     scroll-method="scrollTo"
                     :view-command="state.viewCommand"
                     :post-id="localPostId"
+                    :is-admin-video="isAdminVideo"
                     :is-paid="localIsPaid"
                     :price="localPrice"
                     :video-toc="videoToc"
@@ -103,6 +104,7 @@ defineOptions({ name: "JEditor" })
 const {
     stateManager,
     postId = "",
+    isAdminVideo = false,
     isPaid = false,
     price = "",
     videoToc = [],
@@ -116,6 +118,7 @@ const {
 } = defineProps<{
     stateManager: EditorStateManager
     postId?: string // 文章ID
+    isAdminVideo?: boolean // 是否使用管理员视频接口
     isPaid?: boolean // 是否付费阅读
     price?: string // 价格(单位：分)
     videoToc?: PostVideoTocTree[] // 付费视频目录

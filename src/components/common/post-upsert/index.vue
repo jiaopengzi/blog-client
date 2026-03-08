@@ -54,6 +54,7 @@
                         ref="editorPostRef"
                         :state-manager="stateManager"
                         :post-id="postInfoForm.id"
+                        :is-admin-video="true"
                         :is-paid="isPaid"
                         :price="(postInfoForm.price * 100).toString()"
                         :video-toc="postInfoForm.video_toc"

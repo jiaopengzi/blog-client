@@ -48,6 +48,7 @@
                 v-else-if="isPayContentItem(item.type as Names)"
                 :key="item.type"
                 :post-id="postIdAc"
+                :is-admin-video="isAdminVideoAc"
                 :markdown="item.content as string"
                 :content-pay-type="getPayContentType(item.type)"
                 :loading="createOrderLoadingAc"
@@ -130,6 +131,7 @@ const {
     isPaid = false, // 是否付费阅读
     price = "0", // 价格(单位：分)
     postId = "", // 文章ID
+    isAdminVideo = false, // 是否使用管理员视频接口
     videoToc = [], // 付费视频目录
 } = defineProps<PreviewProps>()
 
@@ -155,7 +157,7 @@ const setPreviewRef = (el: HTMLElement | null) => {
 
 // 分别为非微信预览(内容片段)和微信预览(html 字符串)提供独立的计算属性, 避免 string | ContentPart 的联合类型在模板中导致错误
 const contentParts = computed(() => {
-    return parseHtmlToContentParts(html, postId)
+    return parseHtmlToContentParts(html, postId, isAdminVideo)
 })
 
 const wechatHtml = computed(() => {
@@ -453,6 +455,7 @@ const emitPayMembership = (val: MembershipRes) => {
 }
 
 const createOrderLoadingAc = computed(() => createOrderLoading) // 创建订单加载状态
+const isAdminVideoAc = computed(() => isAdminVideo) // 是否使用管理员视频接口
 
 // 是否付费阅读
 const isPaidAc = computed(() => {
@@ -511,6 +514,7 @@ watch(
                     isPaidAc,
                     priceAc,
                     true, // 仅渲染 markdown 内容
+                    isAdminVideoAc,
                 )
 
                 // 付费阅读
@@ -523,6 +527,7 @@ watch(
                     isPaidAc,
                     priceAc,
                     true, // 仅渲染 markdown 内容
+                    isAdminVideoAc,
                 )
 
                 // 付费视频
@@ -535,6 +540,7 @@ watch(
                     isPaidAc,
                     priceAc,
                     true, // 仅渲染 markdown 内容
+                    isAdminVideoAc,
                     postIdAc,
                     videoTocAc,
                 )

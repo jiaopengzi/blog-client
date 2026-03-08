@@ -47,5 +47,6 @@ export interface PreviewProps {
     isPaid?: boolean // 是否付费阅读
     price?: string // 价格(单位：分)
     postId?: string // 文章ID
+    isAdminVideo?: boolean // 是否使用管理员视频接口
     videoToc?: PostVideoTocTree[] // 付费视频目录
 }

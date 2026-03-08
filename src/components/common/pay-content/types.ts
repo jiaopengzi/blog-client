@@ -16,6 +16,7 @@ export enum ContentPayType {
 
 export interface PayContentProps {
     postId?: string // 文章ID
+    isAdminVideo?: boolean // 是否使用管理员视频接口
     videoToc?: PostVideoTocTree[] // 付费视频目录
     contentPayType?: ContentPayType // 内容费类型
     isPaid?: boolean // 是否付费阅读

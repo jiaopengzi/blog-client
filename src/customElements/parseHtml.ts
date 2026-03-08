@@ -50,8 +50,14 @@ export function parseHtml(html: string): HTMLElement {
     return doc.body
 }
 
-// 解析 HTML 字符串为内容片段数组
-export function parseHtmlToContentParts(html: string, postId: string): ContentPart[] {
+/**
+ * @description: 解析 HTML 字符串为内容片段数组, 并按上下文为视频节点补齐播放器状态。
+ * @param html HTML 字符串。
+ * @param postId 当前文章 ID。
+ * @param isAdminVideo 是否为管理员视频预览场景。
+ * @returns 返回解析后的内容片段数组。
+ */
+export function parseHtmlToContentParts(html: string, postId: string, isAdminVideo: boolean = false): ContentPart[] {
     // 先预处理
     const cleanedHtml = preprocessHtml(html)
 
@@ -76,7 +82,7 @@ export function parseHtmlToContentParts(html: string, postId: string): ContentPa
             }
 
             if (tagName === Names.VideoPlayer) {
-                const content = getVideoPlayerState(child as HTMLElement, postId).state
+                const content = getVideoPlayerState(child as HTMLElement, postId, isAdminVideo).state
                 parts.push({ type: tagName as Names, content })
                 continue
             }

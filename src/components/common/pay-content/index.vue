@@ -19,7 +19,7 @@
                 >元下载。
             </div>
             <div class="text" v-if="contentPayType === ContentPayType.Video">
-                <PostVideo class="no-pay-video" :post-id="postId" :toc="videoToc" :is-paid="isPaid" />
+                <PostVideo class="no-pay-video" :post-id="postId" :is-admin-video="isAdminVideo" :toc="videoToc" :is-paid="isPaid" />
                 <div class="text">
                     付费内容，付费<span class="price">{{ fenToYuan(price) }}</span
                     >元观看。
@@ -33,7 +33,7 @@
         </div>
     </div>
     <div class="paid" v-if="isShowContent">
-        <PostVideo v-if="!onlyMarkdown" :post-id="postId" :toc="videoToc" :is-paid="isPaid" />
+        <PostVideo v-if="!onlyMarkdown" :post-id="postId" :is-admin-video="isAdminVideo" :toc="videoToc" :is-paid="isPaid" />
         <div v-html="stateManager.getState().html"></div>
     </div>
 </template>
@@ -52,6 +52,7 @@ defineOptions({ name: "PayContent" })
 // 定义 props
 const {
     postId = "",
+    isAdminVideo = false,
     videoToc = [],
     contentPayType = ContentPayType.Read,
     isPaid = false,

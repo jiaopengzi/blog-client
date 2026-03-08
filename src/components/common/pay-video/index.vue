@@ -40,8 +40,9 @@ import { type PayVideoProps } from "./types.ts"
 defineOptions({ name: "PayVideo" })
 
 // 定义 props
-const { postId, toc, isPaid } = defineProps<PayVideoProps>()
+const { postId, isAdminVideo = false, toc, isPaid } = defineProps<PayVideoProps>()
 const localPostId = ref<string>(postId)
+const localIsAdminVideo = ref<boolean>(isAdminVideo)
 const localTreeList = ref<PostVideoTocTree[]>(toc || [])
 const localIsPaid = ref<boolean>(isPaid)
 
@@ -49,6 +50,7 @@ const localIsPaid = ref<boolean>(isPaid)
 const { isShowEpisode, isShowToc, hasVideo, manager, state, switchVideoProgress, currentVideoOrder, currentTreeId, fetchData } = usePayVideo(
     localTreeList,
     localPostId,
+    localIsAdminVideo,
 )
 
 // 监听 props 变化
@@ -56,6 +58,14 @@ watch(
     () => postId,
     (newVal) => {
         localPostId.value = newVal
+    },
+    { immediate: true },
+)
+
+watch(
+    () => isAdminVideo,
+    (newVal) => {
+        localIsAdminVideo.value = newVal
     },
     { immediate: true },
 )

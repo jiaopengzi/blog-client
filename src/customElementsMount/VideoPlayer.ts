@@ -15,8 +15,14 @@ import VideoPlayer from "@/components/player"
 import { Attributes, Names } from "../customElements"
 import { getComponentContainersFromCustomElements } from "./getComponentContainers"
 
-// 通过自定义元素获取视频播放器状态
-export const getVideoPlayerState = (el: Element, postID: string = ""): { elTarget: Element | null; state: PlayerState } => {
+/**
+ * @description: 通过自定义元素提取视频播放器状态, 并按需标记是否使用管理员视频接口。
+ * @param el 自定义元素节点。
+ * @param postID 当前文章 ID。
+ * @param isAdmin 是否为管理员预览场景。
+ * @returns 返回挂载目标元素与播放器状态。
+ */
+export const getVideoPlayerState = (el: Element, postID: string = "", isAdmin: boolean = false): { elTarget: Element | null; state: PlayerState } => {
     let elTarget: Element | null = null
     let state: PlayerState = {} as PlayerState
 
@@ -33,6 +39,7 @@ export const getVideoPlayerState = (el: Element, postID: string = ""): { elTarge
     // 设置水印
     useVideoWatermark(manager)
 
+    manager.setIsAdmin(isAdmin)
     manager.setMediaType(videoType)
     manager.setPostID(postID)
 

@@ -21,7 +21,14 @@ import { useUserStore } from "@/stores/user"
 import type { VideoTocMapByFileIdHash, VideoTocMapByOrder } from "../video-toc-tree-base"
 import { useVideoTocTree } from "../video-toc-tree-base"
 
-export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<string>) {
+/**
+ * @description: 付费视频播放 hooks, 根据预览场景决定是否使用管理员视频接口。
+ * @param localTreeList 视频目录树。
+ * @param postId 当前文章 ID。
+ * @param isAdminVideo 是否使用管理员视频接口。
+ * @returns 返回付费视频播放相关状态与操作。
+ */
+export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<string>, isAdminVideo: Ref<boolean>) {
     const userStore = useUserStore()
 
     const localMapByFileIdHash = ref<VideoTocMapByFileIdHash>({}) // 目录树映射, key 为节点 fileIdHash
@@ -54,6 +61,14 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
     // 使用视频水印 hooks
     useVideoWatermark(manager)
 
+    watch(
+        () => isAdminVideo.value,
+        (newVal) => {
+            manager.setIsAdmin(newVal)
+        },
+        { immediate: true },
+    )
+
     // 设置是否在播放器中显示目录的按钮
     watch(
         () => isShowToc.value,
@@ -66,8 +81,13 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
     // 监听 postId 变化
     watch(
         () => postId.value,
-        (newVal) => {
+        async (newVal, oldVal) => {
             manager.setPostID(newVal)
+
+            // 当文章 ID 在组件挂载后补齐时, 重新获取一次默认视频或历史进度, 保证首屏能及时渲染视频信息。
+            if (newVal && newVal !== oldVal && localVideoOrders.value.length > 0) {
+                await setCurrentVideoProgress(newVal)
+            }
         },
         { immediate: true },
     )
@@ -282,7 +302,10 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
         // 设置视频和进度
         if (postId.value) {
             await setCurrentVideoProgress(postId.value)
+            return
         }
+
+        await setDefaultVideoAndProgress()
     }
 
     return {
