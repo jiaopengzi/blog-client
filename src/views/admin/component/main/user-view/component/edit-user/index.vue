@@ -301,52 +301,60 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
     btnLoading.value = true
 
-    await formEl.validate(async (valid) => {
-        if (valid) {
-            // 当前时间
-            const now = new Date()
-            // 当前时间小于禁用时间 valid = true
-            if (editUserForm.disableExpiresAt.Time && now >= editUserForm.disableExpiresAt.Time) {
-                MessageUtil.error("禁用时间不能小于当前时间", 6000)
-                return
-            }
-            if (editUserForm.disableExpiresAt.Time && now < editUserForm.disableExpiresAt.Time) {
-                editUserForm.disableExpiresAt.Valid = true
-            }
-            if (!editUserForm.disableExpiresAt.Time) {
-                editUserForm.disableExpiresAt.Valid = false
-            }
+    try {
+        const valid = await formEl
+            .validate()
+            .then(() => true)
+            .catch(() => false)
 
-            const req: EditUserInfoByAdminRequest = {
-                edit_user_id: editUserForm.editUserID,
-                user_name: editUserForm.userName,
-                email: editUserForm.email,
-                disable_expires_at: editUserForm.disableExpiresAt,
-                password: editUserForm.password,
-                role_name: editUserForm.roleName,
-                nick_name: editUserForm.nickName,
-                sex: editUserForm.sex,
-                description: editUserForm.description,
-            }
-            const { data } = await editUserInfoByAdminAPI(req)
-
-            if (data.code === ResponseCode.EditUserInfoByAdminSuccess) {
-                // 保证有数据且包含 stream_items 字段才进行轮询
-                if (data.data && data.data.stream_items) {
-                    await pollingGetStreamIDsStatus(data.data.stream_items)
-                }
-                btnLoading.value = false
-
-                // 添加成功提示
-                emit("edit-user-status", true)
-                MessageUtil.success(data.msg, 6000)
-            } else {
-                btnLoading.value = false
-                // 添加失败提示
-                MessageUtil.error(data.msg, 0)
-            }
+        if (!valid) {
+            return
         }
-    })
+
+        // 当前时间
+        const now = new Date()
+        // 当前时间小于禁用时间 valid = true
+        if (editUserForm.disableExpiresAt.Time && now >= editUserForm.disableExpiresAt.Time) {
+            MessageUtil.error("禁用时间不能小于当前时间", 6000)
+            return
+        }
+        if (editUserForm.disableExpiresAt.Time && now < editUserForm.disableExpiresAt.Time) {
+            editUserForm.disableExpiresAt.Valid = true
+        }
+        if (!editUserForm.disableExpiresAt.Time) {
+            editUserForm.disableExpiresAt.Valid = false
+        }
+
+        const req: EditUserInfoByAdminRequest = {
+            edit_user_id: editUserForm.editUserID,
+            user_name: editUserForm.userName,
+            email: editUserForm.email,
+            disable_expires_at: editUserForm.disableExpiresAt,
+            password: editUserForm.password,
+            role_name: editUserForm.roleName,
+            nick_name: editUserForm.nickName,
+            sex: editUserForm.sex,
+            description: editUserForm.description,
+        }
+        const { data } = await editUserInfoByAdminAPI(req)
+
+        if (data.code === ResponseCode.EditUserInfoByAdminSuccess) {
+            // 保证有数据且包含 stream_items 字段才进行轮询
+            if (data.data && data.data.stream_items) {
+                await pollingGetStreamIDsStatus(data.data.stream_items)
+            }
+
+            // 添加成功提示
+            emit("edit-user-status", true)
+            MessageUtil.success(data.msg, 6000)
+            return
+        }
+
+        // 添加失败提示
+        MessageUtil.error(data.msg, 0)
+    } finally {
+        btnLoading.value = false
+    }
 }
 
 // 头像更新状态
