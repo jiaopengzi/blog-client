@@ -16,7 +16,7 @@
             :is-show-search="true"
             :search-str="search"
             :loading-delete="loadingDelete"
-            height="calc(100vh - 230px)"
+            height="calc(100vh - 270px)"
             :is-show-cursor-pointer="true"
             :is-show-user-name="true"
             :avatar-width="40"
@@ -28,6 +28,22 @@
             @run-search="runSearch"
             @click-author="handleClickAuthor"
         >
+            <template #category>
+                <div class="category-group">
+                    <el-button
+                        v-for="item in membershipUserCountGroup"
+                        :key="item.key"
+                        :class="{ active: item.key === activeGroup }"
+                        @click="handleExpireGroup(item)"
+                    >
+                        <span v-if="item.icon">
+                            {{ item.icon === "unexpired" ? "✅" : "❌" }}
+                        </span>
+                        {{ item.display }} ({{ item.count }})
+                    </el-button>
+                </div>
+            </template>
+
             <template #custom-filter>
                 <div class="custom-filter">
                     <FilterTagClear v-if="tags.size" class="custom-filter-item" :tags="userMembership" @clear="clearAuthorCategoryTag" />
@@ -38,10 +54,12 @@
 </template>
 
 <script lang="ts" setup>
+import { CircleCheckFilled, WarningFilled } from "@element-plus/icons-vue"
 import { useHead } from "@unhead/vue"
-import { computed, reactive, ref, watch } from "vue"
+import { computed, onBeforeMount, reactive, ref, watch } from "vue"
 
 import type { MembershipUserRes } from "@/api/membership/common"
+import { getMembershipUserCountByExpireAPI, type MembershipUserCountByExpire } from "@/api/membership/getUserCountByExpire"
 import { type ViewMembershipUserRequest, viewMembershipUserAPI } from "@/api/membership/userView"
 import type { QueryParamsRecord } from "@/api/request"
 import { ResponseCode } from "@/api/response"
@@ -62,7 +80,50 @@ useHead({
 })
 
 enum queryKey {
+    Group = "group",
     UserID = "user_id",
+    IsExpired = "is_expired",
+    KeyWord = "key_word",
+}
+
+interface MembershipUserCountGroupItem {
+    display: string
+    group: queryKey.Group | queryKey.IsExpired
+    icon?: "unexpired" | "expired"
+    key: string
+    count: number
+    index: number
+}
+
+const groupList = [queryKey.Group, queryKey.IsExpired] as const
+
+/**
+ * isMembershipExpired 判断会员是否已过期。
+ */
+const isMembershipExpired = (expireTime: MembershipUserRes["expire_time"]): boolean => {
+    if (!expireTime || expireTime.Valid === false || expireTime.Time === null) {
+        return false
+    }
+
+    return new Date(expireTime.Time).getTime() <= Date.now()
+}
+
+/**
+ * formatMembershipExpireTime 格式化会员到期时间展示。
+ */
+const formatMembershipExpireTime = (expireTime: MembershipUserRes["expire_time"]): string => {
+    if (!expireTime || expireTime.Valid === false || expireTime.Time === null) {
+        return "永久有效"
+    }
+
+    return formatTime(expireTime.Time)
+}
+
+/**
+ * getMembershipExpireDisplay 获取会员过期状态显示文案。
+ */
+const getMembershipExpireDisplay = (expireTime: MembershipUserRes["expire_time"]): string => {
+    return isMembershipExpired(expireTime) ? "❌已过期" : "✅未过期"
 }
 
 const cols: TableColumn[] = reactive([
@@ -134,11 +195,21 @@ const cols: TableColumn[] = reactive([
         align: "center",
         formatter: (row: TableData) => {
             if ("expire_time" in row) {
-                if (!row.expire_time || row.expire_time.Valid === false || row.expire_time.Time === null) {
-                    return "永久有效"
-                }
+                return formatMembershipExpireTime(row.expire_time as MembershipUserRes["expire_time"])
+            }
 
-                return formatTime(row.expire_time.Time)
+            return "-"
+        },
+    },
+    {
+        prop: "is_expired",
+        label: "是否过期",
+        sortable: true,
+        minWidth: 120,
+        align: "center",
+        formatter: (row: TableData) => {
+            if ("expire_time" in row) {
+                return getMembershipExpireDisplay(row.expire_time as MembershipUserRes["expire_time"])
             }
 
             return "-"
@@ -150,7 +221,23 @@ const queryParams = reactive<ViewMembershipUserRequest>({} as ViewMembershipUser
 
 const stringKeys: StringKeys<ViewMembershipUserRequest>[] = ["key_word", "user_id"]
 const numberKeys: NumberKeys<ViewMembershipUserRequest>[] = ["current_page", "page_size"]
-const noRequestKeys: QueryParamsRecord<queryKey> = {}
+const booleanKeys: BooleanKeys<ViewMembershipUserRequest>[] = ["is_expired"]
+const noRequestKeys: QueryParamsRecord<queryKey> = { [queryKey.Group]: "all" }
+
+const allGroup = "all"
+const activeGroup = ref(allGroup)
+const membershipUserCountExpire = ref<MembershipUserCountByExpire[]>([])
+
+const membershipUserCountGroup = computed<MembershipUserCountGroupItem[]>(() => {
+    const expiredCount = membershipUserCountExpire.value.find((item) => item.is_expired)?.count ?? 0
+    const unexpiredCount = membershipUserCountExpire.value.find((item) => !item.is_expired)?.count ?? 0
+
+    return [
+        { display: "全部", group: queryKey.Group, key: allGroup, count: expiredCount + unexpiredCount, index: 0 },
+        { display: "未过期", group: queryKey.IsExpired, icon: "unexpired", key: "false", count: unexpiredCount, index: 1 },
+        { display: "已过期", group: queryKey.IsExpired, icon: "expired", key: "true", count: expiredCount, index: 2 },
+    ]
+})
 
 const clickAuthor = ref("")
 const userMembership = ref<string[]>([])
@@ -169,16 +256,54 @@ watch(tags, (newVal) => {
     userMembership.value = Array.from(newVal)
 })
 
+/**
+ * getMembershipUserExpireCount 获取会员用户过期统计数据。
+ */
+const getMembershipUserExpireCount = async () => {
+    const res = await getMembershipUserCountByExpireAPI()
+    if (res.data.code === ResponseCode.MembershipUserCountByExpireSuccess) {
+        membershipUserCountExpire.value = res.data.data
+        return
+    }
+
+    membershipUserCountExpire.value = []
+}
+
 const { addItemDialogVisible, editItemDialogVisible, search, pagination, updateCurrentPage, updatePageSize, updateSearch, updateRouterPush, loadingDelete } =
     useBaseTable<MembershipUserRes, ViewMembershipUserRequest, never>({
         routeName: RouteNames.MembershipUser,
         viewAPI: viewMembershipUserAPI,
         viewResCode: ResponseCode.MembershipUserViewSuccess,
         queryParams,
-        options: { stringKeys, numberKeys, noRequestKeys },
+        options: { stringKeys, numberKeys, booleanKeys, noRequestKeys, refreshPromiseFns: [getMembershipUserExpireCount] },
     })
 
 const runSearch = async () => {
+    await updateRouterPush()
+}
+
+/**
+ * handleExpireGroup 处理按是否过期分组点击事件。
+ */
+const handleExpireGroup = async (item: MembershipUserCountGroupItem) => {
+    activeGroup.value = item.key
+
+    groupList.forEach((key) => {
+        delete queryParams[key as keyof ViewMembershipUserRequest]
+    })
+
+    if (item.group === queryKey.Group) {
+        Object.assign(queryParams, { [queryKey.Group]: item.key })
+    }
+
+    if (item.group === queryKey.IsExpired) {
+        queryParams.is_expired = item.key === "true"
+    }
+
+    Object.assign(queryParams, {
+        [queryKey.KeyWord]: search.value,
+    })
+
     await updateRouterPush()
 }
 
@@ -198,10 +323,42 @@ const clearAuthorCategoryTag = async () => {
     await updateRouterPush()
 }
 
+/**
+ * parseParamsNotLoaded 解析无需请求的分组参数。
+ */
+const parseParamsNotLoaded = () => {
+    if (queryParams.is_expired === true) {
+        activeGroup.value = "true"
+        return
+    }
+
+    if (queryParams.is_expired === false) {
+        activeGroup.value = "false"
+        return
+    }
+
+    activeGroup.value = allGroup
+}
+
 useParams(queryParams, pagination, search)
+
+watch(
+    () => queryParams,
+    () => {
+        parseParamsNotLoaded()
+    },
+    { deep: true },
+)
+
+onBeforeMount(async () => {
+    await getMembershipUserExpireCount()
+})
 </script>
 
 <style scoped lang="scss">
+.membership-user-page {
+    margin-top: 40px;
+}
 .custom-filter {
     display: flex;
     align-items: center;
@@ -209,9 +366,5 @@ useParams(queryParams, pagination, search)
     .custom-filter-item {
         margin-right: 10px;
     }
-}
-
-.membership-user-page {
-    margin-top: 40px;
 }
 </style>

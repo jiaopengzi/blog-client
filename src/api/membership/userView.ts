@@ -16,6 +16,7 @@ import type { MembershipUserInfo, MembershipUserRes } from "./common"
 
 export interface ViewMembershipUserRequest extends PaginationRequest {
     user_id?: string
+    is_expired?: boolean
 }
 
 function formatMembershipUserInfo(userInfo: MembershipUserInfo, width: number, height: number, imgFit: ImgFit): MembershipUserInfo {

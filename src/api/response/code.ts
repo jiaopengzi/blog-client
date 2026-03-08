@@ -228,6 +228,8 @@ export enum ResponseCode {
     MembershipGetRolesSuccess = 2713, // 获取会员角色成功
     MembershipUserViewIsNone = 2714, // 查看会员用户无数据
     MembershipUserViewSuccess = 2715, // 查看会员用户成功
+    MembershipUserCountByExpireIsNone = 2716, // 获取按照是否过期统计会员用户数量无数据
+    MembershipUserCountByExpireSuccess = 2717, // 获取按照是否过期统计会员用户数量成功
 
     // 优惠券相关
     CouponInsertSuccess = 2800, // 插入优惠券成功
