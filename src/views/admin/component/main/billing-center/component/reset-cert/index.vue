@@ -38,7 +38,7 @@
                 <el-button type="danger" :loading="submitting" :disabled="!!newCert" style="min-width: 120px; font-weight: 600" @click="handleSubmit">
                     重置证书
                 </el-button>
-                <el-button type="text" style="margin-left: 12px; color: var(--jpz-color-primary); font-weight: 600" @click="emit('view-agreement')">
+                <el-button link style="margin-left: 12px; color: var(--jpz-color-primary); font-weight: 600" @click="emit('view-agreement')">
                     查看协议
                 </el-button>
             </el-form-item>

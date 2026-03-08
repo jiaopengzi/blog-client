@@ -20,6 +20,13 @@ import { MessageUtil } from "@/utils/message"
 
 import { type PostCountGroupItem, queryKey } from "./types"
 
+/**
+ * normalizeCountList 归一化统计列表, 避免接口在无数据时返回 null 导致后续 reduce 或 forEach 报错。
+ */
+function normalizeCountList<T>(data: T[] | null | undefined): T[] {
+    return Array.isArray(data) ? data : []
+}
+
 // 获取文章统计数据
 export function useHeader(userID: string = "", postType: PostType) {
     const postCountAuthor = ref<PostCountByAuthor[]>([])
@@ -40,8 +47,9 @@ export function useHeader(userID: string = "", postType: PostType) {
     const getPostCountAuthor = async () => {
         const res = await getPostCountByAuthorAPI()
         if (res.data.code === ResponseCode.PostCountByAuthorSuccess) {
-            postCountAuthor.value = res.data.data
+            postCountAuthor.value = normalizeCountList(res.data.data)
         } else {
+            postCountAuthor.value = []
             MessageUtil.warning(handleResErr(res.data), 3000)
         }
     }
@@ -50,8 +58,9 @@ export function useHeader(userID: string = "", postType: PostType) {
     const getPostCountStatus = async () => {
         const res = await getPostCountByStatusAPI()
         if (res.data.code === ResponseCode.PostCountByStatusSuccess) {
-            postCountStatus.value = res.data.data
+            postCountStatus.value = normalizeCountList(res.data.data)
         } else {
+            postCountStatus.value = []
             MessageUtil.warning(handleResErr(res.data), 3000)
         }
     }
@@ -60,8 +69,9 @@ export function useHeader(userID: string = "", postType: PostType) {
     const getPostCountMonth = async () => {
         const res = await getPostCountByMonthAdminAPI()
         if (res.data.code === ResponseCode.PostCountByMonthSuccess) {
-            postCountMonth.value = res.data.data
+            postCountMonth.value = normalizeCountList(res.data.data)
         } else {
+            postCountMonth.value = []
             MessageUtil.warning(handleResErr(res.data), 3000)
         }
     }
@@ -69,9 +79,11 @@ export function useHeader(userID: string = "", postType: PostType) {
     // 获取 postCountPinned
     const getPostCountByIsPinned = async () => {
         const res = await getPostCountByIsPinnedAPI()
+        postCountPinned.value = {} as PostCountByIsPinned
+
         if (res.data.code === ResponseCode.PostCountByIsPinnedSuccess) {
             // 拿到置顶文章数量
-            res.data.data.forEach((item) => {
+            normalizeCountList(res.data.data).forEach((item) => {
                 if (item.is_pinned > 0) {
                     postCountPinned.value = item
                 }
@@ -84,10 +96,11 @@ export function useHeader(userID: string = "", postType: PostType) {
     // 获取 postCountRecommended
     const getPostCountByIsRecommended = async () => {
         const res = await getPostCountByIsRecommendedAPI()
+        postCountRecommended.value = {} as PostCountByIsRecommended
 
         if (res.data.code === ResponseCode.PostCountByIsRecommendedSuccess) {
             // 拿到推荐文章数量
-            res.data.data.forEach((item) => {
+            normalizeCountList(res.data.data).forEach((item) => {
                 if (item.is_recommended > 0) {
                     postCountRecommended.value = item
                 }
@@ -100,8 +113,10 @@ export function useHeader(userID: string = "", postType: PostType) {
     watch(
         postCountAuthor,
         () => {
+            const countAuthorList = normalizeCountList(postCountAuthor.value)
+
             // 从 postCountAuthor 文章数量累加拿到文章总数量
-            const allPostCount = postCountAuthor.value.reduce((prev, cur) => prev + cur.count, 0)
+            const allPostCount = countAuthorList.reduce((prev, cur) => prev + cur.count, 0)
             // 构造 全部
             allPosts.value = {
                 display: "全部",
@@ -112,8 +127,9 @@ export function useHeader(userID: string = "", postType: PostType) {
             }
 
             // 构造 我的
+            myPosts.value = {} as PostCountGroupItem
             if (userID) {
-                const myPost = postCountAuthor.value.find((item) => item.post_author === userID)
+                const myPost = countAuthorList.find((item) => item.post_author === userID)
                 if (myPost) {
                     myPosts.value = {
                         display: "我的",
@@ -131,12 +147,14 @@ export function useHeader(userID: string = "", postType: PostType) {
     watch(
         postCountStatus,
         () => {
+            const statusList = normalizeCountList(postCountStatus.value)
+
             // 构造按照状态统计的文章数量
 
             // 清空 statusPosts
             statusPosts.value = []
 
-            postCountStatus.value.forEach((item) => {
+            statusList.forEach((item) => {
                 const statusPost: PostCountGroupItem = {
                     display: PostStatusDisplay[item.post_status],
                     key: item.post_status.toString(),

@@ -32,7 +32,7 @@
 
             <el-form-item>
                 <el-button type="primary" :loading="submitting" style="min-width: 120px; font-weight: 600" @click="handleRegisterClick"> 注册 </el-button>
-                <el-button type="text" style="margin-left: 12px; color: var(--jpz-color-primary); font-weight: 600" @click="showAgreementDialog(false)">
+                <el-button link style="margin-left: 12px; color: var(--jpz-color-primary); font-weight: 600" @click="showAgreementDialog(false)">
                     查看协议
                 </el-button>
             </el-form-item>
