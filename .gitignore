@@ -13,6 +13,7 @@ coverage
 /src/coverage
 .DS_Store
 .demo
+.feat
 .bug
 .cert
 dist

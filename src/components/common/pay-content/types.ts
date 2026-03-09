@@ -6,7 +6,7 @@
  * Description : 付费内容类型
  */
 
-import { type PostVideoTocTree } from "@/api/post/common"
+import { PayStrategy, type PostVideoTocTree } from "@/api/post/common"
 
 export enum ContentPayType {
     Read = "read", // 付费阅读
@@ -20,6 +20,7 @@ export interface PayContentProps {
     videoToc?: PostVideoTocTree[] // 付费视频目录
     contentPayType?: ContentPayType // 内容费类型
     isPaid?: boolean // 是否付费阅读
+    payStrategy?: PayStrategy // 付费策略
     price?: string // 价格(单位：分)
     loading?: boolean // 加载状态
     markdown: string

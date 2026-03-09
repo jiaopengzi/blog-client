@@ -6,8 +6,9 @@
  * Description : 工具
  */
 
-import { CommentStatusCode, PostStatusCode, PostType } from "@/api/post/common"
-
+import { CommentStatusCode, PayStrategy, PostStatusCode, PostType } from "@/api/post/common"
+import { handleResErr, ResponseCode } from "@/api/response"
+import { MessageUtil } from "@/utils/message"
 import { type UpsertPostForm } from "./types"
 
 // 创建 empty InsertPostRequest
@@ -29,6 +30,7 @@ export function createEmptyUpsertPostForm(postType: PostType): UpsertPostForm {
         category_ids: [],
         tag_names: [],
         pay_roles: [],
+        pay_strategy: PayStrategy.Buy,
         post_push_time: {
             Time: null,
             Valid: false,
@@ -50,4 +52,21 @@ export function createEmptyUpsertPostForm(postType: PostType): UpsertPostForm {
     }
 
     return emptyForm
+}
+
+/**
+ * 统一处理文章新增和编辑时的错误提示.
+ * @param res 接口响应对象.
+ */
+export function handlePostUpsertError(res: { data: { code: number; msg: string; data?: { msg?: string } } }) {
+    if (res.data.code === ResponseCode.PayStrategyValidateFailed) {
+        if (res.data.data?.msg) {
+            MessageUtil.error(`${res.data.msg}，${res.data.data.msg}`, 0)
+            return
+        }
+        MessageUtil.error(res.data.msg, 0)
+        return
+    }
+
+    MessageUtil.error(handleResErr(res as never), 0)
 }

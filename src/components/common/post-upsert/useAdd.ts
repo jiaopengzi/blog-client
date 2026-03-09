@@ -12,12 +12,13 @@ import { type Router } from "vue-router"
 
 import { type InsertPostRequest } from "@/api/post/common"
 import { insertPostAPI } from "@/api/post/insert"
-import { handleResErr, ResponseCode } from "@/api/response"
+import { ResponseCode } from "@/api/response"
 import { RouteNames } from "@/router"
 import { MessageUtil } from "@/utils/message"
 
 import { handleSubmit } from "./formHandler"
 import type { PostInfoAboutTime, UpsertPostForm } from "./types"
+import { handlePostUpsertError } from "./utils"
 
 export function useAdd(
     postInfoForm: Reactive<UpsertPostForm>,
@@ -56,7 +57,7 @@ export function useAdd(
                 })
                 return true
             } else {
-                MessageUtil.error(handleResErr(res), 0)
+                handlePostUpsertError(res)
                 return false
             }
         })

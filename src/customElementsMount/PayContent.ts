@@ -8,7 +8,7 @@
 
 import { type ComputedRef, createApp, h } from "vue"
 
-import { type PostVideoTocTree } from "@/api/post/common"
+import { PayStrategy, type PostVideoTocTree } from "@/api/post/common"
 import PayContent, { ContentPayType, type PayContentProps } from "@/components/common/pay-content"
 
 import { Names } from "../customElements"
@@ -23,6 +23,7 @@ import { convertEmits } from "./utils"
  * @param createOrderLoading 创建订单加载状态
  * @param emits 组件事件
  * @param isPaid 是否付费阅读
+ * @param payStrategy 付费策略
  * @param price 价格
  * @param isAdminVideo 是否使用管理员视频接口
  * @param postId 文章ID
@@ -41,6 +42,7 @@ export const mountPayContentOnCustomElements = (
     } = {},
 
     isPaid?: ComputedRef<boolean>, // 是否已经付费
+    payStrategy?: ComputedRef<PayStrategy>, // 付费策略
     price?: ComputedRef<string>, // 价格(单位：分)
     onlyMarkdown?: boolean, // 仅渲染 markdown 内容
     isAdminVideo?: ComputedRef<boolean>, // 是否使用管理员视频接口
@@ -66,6 +68,7 @@ export const mountPayContentOnCustomElements = (
                     ...props,
                     loading: createOrderLoading.value,
                     isPaid: isPaid?.value || false, // 是否已经付费
+                    payStrategy: payStrategy?.value || PayStrategy.All, // 付费策略
                     price: price?.value || "0", // 价格(单位：分)
                     isAdminVideo: isAdminVideo?.value || false, // 是否使用管理员视频接口
                     postId: postId?.value || "", // 文章ID

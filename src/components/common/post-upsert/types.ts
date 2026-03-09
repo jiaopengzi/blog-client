@@ -7,7 +7,7 @@
  */
 
 import { type PgSqlDateTime } from "@/api/common"
-import { CommentStatusCode, PostStatusCode, PostType, type SimplePostVideoTocTree, type UpdateFields } from "@/api/post/common"
+import { CommentStatusCode, PayStrategy, PostStatusCode, PostType, type SimplePostVideoTocTree, type UpdateFields } from "@/api/post/common"
 import { RouteNames } from "@/router"
 
 // 查询参数
@@ -32,6 +32,7 @@ export interface UpsertPostForm {
     category_ids: string[] // 分类id
     tag_names: string[] // 标签
     pay_roles: string[] // 付费角色
+    pay_strategy: PayStrategy // 付费策略
     post_push_time: PgSqlDateTime // 发布时间
     post_expired_time: PgSqlDateTime // 过期时间
     is_pinned: number // 是否置顶

@@ -69,6 +69,7 @@
                     :post-id="localPostId"
                     :is-admin-video="isAdminVideo"
                     :is-paid="localIsPaid"
+                    :pay-strategy="localPayStrategy"
                     :price="localPrice"
                     :video-toc="videoToc"
                     @show-image-viewer="showImageViewer"
@@ -88,7 +89,7 @@ import "vue3-emoji-picker/css"
 import { type Extension } from "@codemirror/state"
 import { computed, useTemplateRef, watch } from "vue"
 
-import { type PostVideoTocTree } from "@/api/post/common"
+import { PayStrategy, type PostVideoTocTree } from "@/api/post/common"
 import { getTheme, type MarkdownRulesConfig, Theme, ThemeMode } from "@/pkg/codemirror"
 
 import EditorCodemirror, { type CodemirrorRef } from "./components/codemirror"
@@ -106,6 +107,7 @@ const {
     postId = "",
     isAdminVideo = false,
     isPaid = false,
+    payStrategy = PayStrategy.All,
     price = "",
     videoToc = [],
     placeholderText = "",
@@ -120,6 +122,7 @@ const {
     postId?: string // 文章ID
     isAdminVideo?: boolean // 是否使用管理员视频接口
     isPaid?: boolean // 是否付费阅读
+    payStrategy?: PayStrategy // 付费策略
     price?: string // 价格(单位：分)
     videoToc?: PostVideoTocTree[] // 付费视频目录
     placeholderText?: string // 占位符文本
@@ -136,6 +139,7 @@ const state = stateManager.getState()
 
 const localPostId = computed(() => postId)
 const localIsPaid = computed(() => isPaid)
+const localPayStrategy = computed(() => payStrategy)
 const localPrice = computed(() => price)
 
 // ref

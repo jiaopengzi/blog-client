@@ -27,8 +27,8 @@
             </div>
             <div class="text-vip">升级为 VIP 可免费查看(除特定内容外)所有内容。</div>
             <div>
-                <el-button class="pay-single" :loading="loading" @click="paySingle">立即购买</el-button>
-                <el-button class="pay-vip" @click="payVip">升级VIP</el-button>
+                <el-button v-if="isShowPaySingleBtn" class="pay-single" :loading="loading" @click="paySingle">立即购买</el-button>
+                <el-button v-if="isShowPayVipBtn" class="pay-vip" @click="payVip">升级VIP</el-button>
             </div>
         </div>
     </div>
@@ -40,6 +40,7 @@
 <script lang="ts" setup>
 import { computed, watch } from "vue"
 
+import { PayStrategy } from "@/api/post/common"
 import JIcon, { IconKeys } from "@/components/common/icons"
 import { EditorStateManager } from "@/components/editor"
 import { fenToYuan } from "@/utils/amount"
@@ -56,6 +57,7 @@ const {
     videoToc = [],
     contentPayType = ContentPayType.Read,
     isPaid = false,
+    payStrategy = PayStrategy.All,
     price = "0",
     loading = false,
     markdown,
@@ -94,6 +96,16 @@ watch(
 // 是否显示内容
 const isShowContent = computed(() => {
     return isPaid || price === "0" || price === "0.00"
+})
+
+const isShowPaySingleBtn = computed(() => {
+    if (isPaid) return false
+    return payStrategy === PayStrategy.Buy || payStrategy === PayStrategy.All
+})
+
+const isShowPayVipBtn = computed(() => {
+    if (isPaid) return false
+    return payStrategy === PayStrategy.VIP || payStrategy === PayStrategy.All
 })
 </script>
 <style scoped lang="scss">

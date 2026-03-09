@@ -93,6 +93,29 @@ export enum CommentStatusCode {
     Open = 2, // 开启
 }
 
+// 文章付费策略
+export enum PayStrategy {
+    Buy = 1, // 仅展示购买按钮
+    All = 2, // 展示购买按钮和VIP按钮
+    VIP = 3, // 仅展示VIP按钮
+}
+
+// 付费策略显示
+export const PayStrategyDisplay: Record<PayStrategy, string> = {
+    [PayStrategy.Buy]: "仅购买",
+    [PayStrategy.All]: "购买和VIP",
+    [PayStrategy.VIP]: "仅VIP",
+}
+
+// 获取付费策略选项
+export const getPayStrategyOptions = () => {
+    return [
+        { label: PayStrategyDisplay[PayStrategy.Buy], value: PayStrategy.Buy },
+        { label: PayStrategyDisplay[PayStrategy.All], value: PayStrategy.All },
+        { label: PayStrategyDisplay[PayStrategy.VIP], value: PayStrategy.VIP },
+    ]
+}
+
 // 文章视频合集目录
 export interface SimplePostVideoTocTree {
     id: number // 目录ID
@@ -139,6 +162,7 @@ export interface InsertPostRequest {
     is_pinned?: number // 是否置顶
     is_recommended?: number // 是否推荐阅读
     post_type?: PostType // 文章类型
+    pay_strategy?: PayStrategy // 付费策略
     video_toc?: PostVideoTocTree[] // 文章视频目录
     video_file_id_hash_list?: string[] // 文章封面视频文件ID哈希
 }
@@ -168,6 +192,7 @@ export interface UpdatePostRequest {
     is_pinned?: number // 是否置顶
     is_recommended?: number // 是否推荐阅读
     post_type?: PostType // 文章类型
+    pay_strategy?: PayStrategy // 付费策略
     video_toc?: PostVideoTocTree[] // 文章视频目录
     video_file_id_hash_list?: string[] // 文章封面视频文件ID哈希
     update_fields: UpdateFields[] // 显示指出需要更新的字段便于后端处理零值
@@ -221,6 +246,7 @@ export interface PostResByAdmin extends PostResCommon {
     price: string // 价格
     words_count: string // 字数
     post_type: PostType // 文章类型
+    pay_strategy: PayStrategy // 付费策略
     comment_status: number // 评论状态
     post_content_paid: string // 文章内容
     post_title: string // 文章标题
@@ -246,6 +272,7 @@ export interface PostResByID extends PostResCommon {
     price: string // 价格
     words_count: string // 字数
     post_type: PostType // 文章类型
+    pay_strategy: PayStrategy // 付费策略
     comment_status: number // 评论状态
     post_content: string // 文章内容
     post_title: string // 文章标题

@@ -17,6 +17,7 @@ export interface InsertPostResData {
     created_at: string
     updated_at: string
     is_paid: boolean // 是否已付费
+    msg?: string // 支付策略验证失败时的错误信息
 }
 
 // 插入文章

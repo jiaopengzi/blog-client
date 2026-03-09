@@ -105,6 +105,7 @@ export function useGetData(
         postMeta.value.is_immersion_read = true
         postMeta.value.is_paid = postData.is_paid
         postMeta.value.price = postData.price
+        postMeta.value.pay_strategy = postData.pay_strategy
 
         // 文章头部信息
         head.value.title = postData.post_title

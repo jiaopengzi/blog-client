@@ -40,6 +40,7 @@
                     :create-order-loading="isPayLoading"
                     :price="postMeta.price"
                     :is-paid="postMeta.is_paid"
+                    :pay-strategy="postMeta.pay_strategy"
                     :post-id="postId"
                     :video-toc="postMeta.videoToc"
                     @show-image-viewer="showImageViewer"

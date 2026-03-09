@@ -56,6 +56,7 @@
                         :post-id="postInfoForm.id"
                         :is-admin-video="true"
                         :is-paid="isPaid"
+                        :pay-strategy="postInfoForm.pay_strategy"
                         :price="(postInfoForm.price * 100).toString()"
                         :video-toc="postInfoForm.video_toc"
                         placeholder-text="请开始创作..."
@@ -139,6 +140,13 @@
                         </template>
                     </el-input-number>
                 </el-form-item>
+
+                <el-form-item label="支付策略" prop="pay_strategy">
+                    <el-radio-group v-model="postInfoForm.pay_strategy">
+                        <el-radio v-for="item in payStrategyOptions" :key="item.value" :value="item.value">{{ item.label }}</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+
                 <el-form-item label="付费管理" prop="pay_roles">
                     <SwitchGroup :switch-items="rolePaidList" @update-status="updateRolePaidList" />
                 </el-form-item>
@@ -210,7 +218,7 @@ import { computed, onBeforeMount, onUnmounted, reactive, ref, toRefs, useTemplat
 import { useRouter } from "vue-router"
 
 import { Target } from "@/api/common"
-import { getPostStatusOptions, type InsertPostRequest, PostStatusCode, PostType } from "@/api/post/common"
+import { getPayStrategyOptions, getPostStatusOptions, type InsertPostRequest, PostStatusCode, PostType } from "@/api/post/common"
 import { type PostCategory, viewListPostCategoryAPI } from "@/api/postCategory/view"
 import { ResponseCode } from "@/api/response"
 import AddTag from "@/components/common/add-tag/index.vue"
@@ -283,6 +291,7 @@ const optionsStore = useOptionsStore()
 const { post_list_summary_truncate } = storeToRefs(optionsStore)
 
 const seoDescriptionExtractWords = ref(post_list_summary_truncate.value)
+const payStrategyOptions = getPayStrategyOptions()
 
 const isPaid = ref(false)
 

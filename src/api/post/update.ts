@@ -15,6 +15,7 @@ import { type UpdatePostRequest } from "./common"
 export interface UpdatePostResData extends StreamsStatusRes {
     updated_at: string
     is_paid: boolean // 是否已付费
+    msg?: string // 支付策略验证失败时的错误信息
 }
 
 // 更新文章

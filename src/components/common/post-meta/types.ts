@@ -6,7 +6,7 @@
  * Description : 文章元数据类型
  */
 
-import { type PostVideoTocTree } from "@/api/post/common"
+import { PayStrategy, type PostVideoTocTree } from "@/api/post/common"
 
 export interface PostMetaProps {
     post_id?: string // 文章ID
@@ -33,6 +33,7 @@ export interface PostMetaProps {
     }
 
     is_paid?: boolean // 是否付费阅读
+    pay_strategy?: PayStrategy // 付费策略
     price?: string // 价格(单位：分)
     videoToc?: PostVideoTocTree[] // 付费视频目录
 }
@@ -63,6 +64,7 @@ export const emptyPostMetaProps = (): PostMetaProps => {
             is_star: false, // 是否收藏
         },
         is_paid: false, // 是否付费阅读
+        pay_strategy: PayStrategy.All, // 付费策略
         price: "0", // 价格(单位：分)
         videoToc: [], // 付费视频目录
     }

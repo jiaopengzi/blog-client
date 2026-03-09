@@ -15,13 +15,14 @@ import { updatePostAPI } from "@/api/post/update"
 import { viewPostByIDAdminAPI, type ViewPostByIDRequest } from "@/api/post/viewByIDAdmin"
 import { type PostCategory } from "@/api/postCategory/view"
 import { type PostTag } from "@/api/postTag/view"
-import { handleResErr, ResponseCode } from "@/api/response"
+import { ResponseCode } from "@/api/response"
 import type { SwitchItem } from "@/components/common/switch-group"
 import { EditorStateManager } from "@/components/editor"
 import { MessageUtil } from "@/utils/message"
 
 import { handleSubmit } from "./formHandler"
 import type { PostInfoAboutTime, UpsertPostForm } from "./types"
+import { handlePostUpsertError } from "./utils"
 
 export function useEdit(
     postInfoForm: Reactive<UpsertPostForm>,
@@ -80,6 +81,7 @@ export function useEdit(
                     postInfoForm.is_pinned = data.is_pinned
                     postInfoForm.is_recommended = data.is_recommended
                     postInfoForm.post_type = data.post_type
+                    postInfoForm.pay_strategy = data.pay_strategy
 
                     // 更新视频目录
                     postInfoForm.video_toc = data.video_toc?.toc || []
@@ -136,7 +138,7 @@ export function useEdit(
                 MessageUtil.success(res.data.msg, 6000)
                 return true
             } else {
-                MessageUtil.error(handleResErr(res), 0)
+                handlePostUpsertError(res)
                 return false
             }
         })

@@ -53,6 +53,7 @@
                 :content-pay-type="getPayContentType(item.type)"
                 :loading="createOrderLoadingAc"
                 :is-paid="isPaidAc"
+                :pay-strategy="payStrategyAc"
                 :price="priceAc"
                 :video-toc="item.type === Names.PayVideo ? videoTocAc : void 0"
                 @pay-vip="emitPayVip"
@@ -89,6 +90,7 @@ import { useIntersectionObserver } from "@vueuse/core"
 import { debounce } from "throttle-debounce"
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue"
 
+import { PayStrategy } from "@/api/post/common"
 import { type MembershipRes } from "@/api/membership/common"
 import { type Product as KeyRes } from "@/api/order/create"
 import PayContent, { ContentPayType } from "@/components/common/pay-content"
@@ -129,6 +131,7 @@ const {
 
     createOrderLoading = false, // 创建订单加载状态
     isPaid = false, // 是否付费阅读
+    payStrategy = PayStrategy.All, // 付费策略
     price = "0", // 价格(单位：分)
     postId = "", // 文章ID
     isAdminVideo = false, // 是否使用管理员视频接口
@@ -456,6 +459,7 @@ const emitPayMembership = (val: MembershipRes) => {
 
 const createOrderLoadingAc = computed(() => createOrderLoading) // 创建订单加载状态
 const isAdminVideoAc = computed(() => isAdminVideo) // 是否使用管理员视频接口
+const payStrategyAc = computed(() => payStrategy) // 付费策略
 
 // 是否付费阅读
 const isPaidAc = computed(() => {
@@ -512,6 +516,7 @@ watch(
                     createOrderLoadingAc,
                     payContentEmits,
                     isPaidAc,
+                    payStrategyAc,
                     priceAc,
                     true, // 仅渲染 markdown 内容
                     isAdminVideoAc,
@@ -525,6 +530,7 @@ watch(
                     createOrderLoadingAc,
                     payContentEmits,
                     isPaidAc,
+                    payStrategyAc,
                     priceAc,
                     true, // 仅渲染 markdown 内容
                     isAdminVideoAc,
@@ -538,6 +544,7 @@ watch(
                     createOrderLoadingAc,
                     payContentEmits,
                     isPaidAc,
+                    payStrategyAc,
                     priceAc,
                     true, // 仅渲染 markdown 内容
                     isAdminVideoAc,
