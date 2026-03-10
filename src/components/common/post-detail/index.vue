@@ -371,7 +371,7 @@ onBeforeMount(async () => {
 }
 
 .poster-share {
-    // 不展示出来
+    // 海报生成时挂载在离屏区域, 避免用户看到闪屏.
     position: fixed;
     top: -1000px;
     left: -1000px;

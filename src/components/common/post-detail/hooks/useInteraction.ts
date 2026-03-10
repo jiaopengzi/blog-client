@@ -21,6 +21,31 @@ import { MessageUtil } from "@/utils/message"
 import { type InteractionIcon, type InteractionItemProps } from "../components/interaction"
 
 /**
+ * 获取分享海报二维码中心 logo.
+ * 优先使用 favicon, 其次使用站点 logo.
+ * 仅允许常见图片格式, 其他情况返回空字符串, 避免移动端二维码渲染卡住.
+ */
+function getPosterQrLogoSrc(faviconSrc?: string, logoSrc?: string): string {
+    const candidates = [faviconSrc, logoSrc]
+
+    for (const candidate of candidates) {
+        const normalizedSrc = String(candidate || "").trim()
+        if (!normalizedSrc) {
+            continue
+        }
+
+        const normalizedPath = (normalizedSrc.split("?")[0] || "").toLowerCase()
+        const isSupportedImage = /\.(png|jpe?g|webp|gif|svg)$/.test(normalizedPath)
+
+        if (isSupportedImage) {
+            return normalizedSrc
+        }
+    }
+
+    return ""
+}
+
+/**
  * @param postMeta 文章元数据
  * @param postId 文章ID
  * @param setPostLike 设置点赞
@@ -79,7 +104,7 @@ export function useInteraction(
     // 生成分享海报需要的数据
     const dataPosterShare = computed(() => {
         return {
-            logoSrc: app_options.value.favicon.value,
+            logoSrc: getPosterQrLogoSrc(app_options.value.favicon.value, app_options.value.logo.value),
             imgSrc: head.value.image,
             titleText: postMeta.value.post_title,
             urlText: head.value.url,
