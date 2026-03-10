@@ -83,6 +83,8 @@ export enum ResponseCode {
     UserLogoutSuccess = 1047, // 用户登出成功
     UserLoggedInElsewhere = 1048, // 用户在其他设备登录
     UserAccessTokenRefreshSuccess = 1049, // 用户访问令牌刷新成功
+    UserPublicInfoGetSuccess = 1050, // 获取用户公开信息成功
+    UserPublicInfoGetError = 1051, // 获取用户公开信息失败
 
     // 文章相关
     PostInsertSuccess = 2000, // 插入文章标签成功
