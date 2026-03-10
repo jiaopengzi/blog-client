@@ -8,8 +8,15 @@
 
 <template>
     <div class="container" :class="`container-${direction}`">
-        <el-button v-for="item in interactionItems" :key="item.icon" :class="`btn-item ${item.icon}`" @click="item.onClick">
-            <el-tooltip effect="dark" :placement="tipPlacement" :content="item.tip ? `${item.text}：${item.tip}` : item.text" :hide-after="0" :show-after="300">
+        <el-button v-for="item in interactionItems" :key="item.icon" :class="`btn-item ${item.icon}`" @click="(e: MouseEvent) => handleItemClick(e, item)">
+            <el-tooltip
+                :disabled="isTouch"
+                effect="dark"
+                :placement="tipPlacement"
+                :content="item.tip ? `${item.text}：${item.tip}` : item.text"
+                :hide-after="0"
+                :show-after="300"
+            >
                 <j-icon :name="item.icon" :customClass="item.isActive ? 'my-icon-active' : 'my-icon'" />
             </el-tooltip>
         </el-button>
@@ -17,7 +24,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue"
+import { computed, onMounted, ref } from "vue"
 
 import type { InteractionIcon, InteractionItem, InteractionProps } from "./types"
 defineOptions({ name: "DetailInteraction" })
@@ -29,6 +36,30 @@ const { direction, items } = defineProps<InteractionProps>()
 const emit = defineEmits<{
     (event: "click-item", val: InteractionIcon): void
 }>()
+
+// 判断是否为触屏设备
+const isTouch = ref(false)
+
+onMounted(() => {
+    isTouch.value = "ontouchstart" in window || navigator.maxTouchPoints > 0
+})
+
+/**
+ * 处理项点击事件, 并在移动端移除焦点以闭合 tooltip
+ *
+ * @param e - 鼠标事件对象
+ * @param item - 被点击的交互项
+ */
+const handleItemClick = (e: MouseEvent, item: InteractionItem) => {
+    // 移除焦点，解决移动端点击后 tooltip 不消失和按钮状态残留的问题
+    const target = e.currentTarget as HTMLElement | null
+    if (target) {
+        target.blur()
+    }
+    if (item.onClick) {
+        item.onClick()
+    }
+}
 
 // 初始状态
 const initItems: InteractionItem[] = [
@@ -119,8 +150,10 @@ const tipPlacement = computed(() => {
 
     fill: var(--jpz-text-color-placeholder);
 
-    &:hover {
-        fill: var(--jpz-text-color-primary);
+    @media (any-hover: hover) {
+        &:hover {
+            fill: var(--jpz-text-color-primary);
+        }
     }
 
     &:active {
@@ -133,8 +166,10 @@ const tipPlacement = computed(() => {
 
     fill: var(--jpz-color-secondary);
 
-    &:hover {
-        fill: var(--jpz-text-color-primary);
+    @media (any-hover: hover) {
+        &:hover {
+            fill: var(--jpz-text-color-primary);
+        }
     }
 
     &:active {
@@ -147,6 +182,11 @@ const tipPlacement = computed(() => {
     margin: 0;
     background-color: transparent;
     border: none;
+
+    &:hover,
+    &:focus {
+        background-color: transparent;
+    }
 }
 
 // // 媒体查询

@@ -21,5 +21,5 @@ export interface InteractionProps {
 }
 
 export interface InteractionItem extends InteractionItemProps {
-    onClick: () => void // 点击事件
+    onClick?: () => void // 点击事件
 }
