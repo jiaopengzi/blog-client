@@ -463,7 +463,7 @@ const editRow = (index: number, row: TableData) => {
         mentions.value = []
         mentions.value.push({
             label: `@${row.user_info.user_display_name}`,
-            apply: `[@${row.user_info.user_display_name}](${row.user_info.user_name})`,
+            apply: `[@${row.user_info.user_display_name}](${window.location.origin}/${row.user_info.user_name}) `,
         })
         postId.value = row.post_info.id.toString()
         commentStatus.value = row.post_info.comment_status
