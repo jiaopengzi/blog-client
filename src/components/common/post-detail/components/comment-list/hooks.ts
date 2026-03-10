@@ -36,7 +36,7 @@ export function useCommentList(req: Reactive<ViewCommentRequest>) {
                     map.set(user_name, user_display_name)
                     mentions.push({
                         label: `@${user_display_name}`,
-                        apply: `[@${user_display_name}](${user_name})`,
+                        apply: `[@${user_display_name}](${window.location.origin}/${user_name})`,
                     })
                 }
             }

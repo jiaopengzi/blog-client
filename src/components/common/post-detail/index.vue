@@ -262,7 +262,7 @@ const handleReply = (comment: CommentRes) => {
     replyToId.value = comment.id
 
     // 构造@提及数据
-    const content = `[@${comment.user_info.user_display_name}](${comment.user_info.user_name}) `
+    const content = `[@${comment.user_info.user_display_name}](${window.location.origin}/${comment.user_info.user_name}) `
 
     // 插入@提及数据
     commentEditorRef.value.editor.codemirror.insertContent(content)
