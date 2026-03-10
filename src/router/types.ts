@@ -31,6 +31,7 @@ export enum RouteNamesDefault {
     // Vip = "vip",
     Admin = "admin",
     NoPermission = "no-permission",
+    UserPublicProfile = "user-public-profile",
 }
 
 // public 路由名称

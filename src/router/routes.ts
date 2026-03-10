@@ -106,6 +106,15 @@ export const routes: RouteRecordRaw[] = [
     ...adminRoutes,
 
     {
+        path: "/:username",
+        name: RouteNames.UserPublicProfile,
+        component: () => import("@/views/user-public-profile"),
+        meta: {
+            requiresAuth: false,
+        },
+    },
+
+    {
         path: "/:pathMatch(.*)*", // 当匹配不到路由时，跳转到404页面
         name: RouteNames.NotFound,
         component: () => import("@/views/404"),
