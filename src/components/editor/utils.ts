@@ -434,7 +434,9 @@ export async function katexToImage(container: HTMLElement, className: string = "
 
             // 使用 snapdom 将 katex 转成图片
             // eslint-disable-next-line no-await-in-loop
-            const snap = await snapdom(katex)
+            const snap = await snapdom(katex, {
+                embedFonts: true,
+            })
             // eslint-disable-next-line no-await-in-loop
             const img = await snap.toPng({
                 scale: 3,
