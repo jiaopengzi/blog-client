@@ -5,6 +5,12 @@
 该格式基于 [Keep a Changelog](https://keepachangelog.com),
 本项目遵循 [语义化版本控制](https://semver.org/spec/v2.0.0.html)。
 
+## [v0.7.1] - 2026-03-13
+
+### Build
+
+- 使用 vite8 rolldown 构建
+
 ## [v0.7.0] - 2026-03-10
 
 ### Feat
