@@ -7,7 +7,6 @@ import { fileURLToPath, URL } from "node:url"
 import fs from "node:fs"
 import path from "node:path"
 
-import terser from "@rollup/plugin-terser"
 import vue from "@vitejs/plugin-vue"
 import vueJsx from "@vitejs/plugin-vue-jsx"
 import AutoImport from "unplugin-auto-import/vite"
@@ -16,7 +15,6 @@ import Components from "unplugin-vue-components/vite"
 import { type CommonServerOptions, defineConfig, loadEnv } from "vite"
 import compression from "vite-plugin-compression"
 // import Inspect from "vite-plugin-inspect"
-import tsconfigPaths from "vite-tsconfig-paths"
 
 const DEFAULT_HTTP_PORT = 80
 const DEFAULT_HTTPS_PORT = 443
@@ -31,6 +29,27 @@ const parsePort = (value?: string): number | undefined => {
 
     const port = Number(value)
     return Number.isFinite(port) ? port : undefined
+}
+
+/**
+ * 分包策略: 将 node_modules 中的依赖按包名分组到 vendor 目录下, 例如 node_modules/lodash 会被分到 vendor/lodash.js
+ * 这样做的好处是:
+ * 1. 更清晰的包结构, 便于分析和调试
+ * 2. 依赖更新时只会影响对应的包, 而不是整个 vendor 文件, 可以更好地利用浏览器缓存
+ * 3. 避免单一 vendor 文件过大导致的性能问题
+ * 4. 与现代浏览器的 HTTP/2 多路复用特性更好地配合, 允许同时加载多个较小的文件而不是一个大的文件
+ * 5. 未来可以根据需要对特定包进行单独优化或处理, 而不影响其他依赖
+ */
+const resolveVendorChunkGroupName = (moduleId: string): string | null => {
+    if (!moduleId.includes("node_modules")) {
+        return null
+    }
+
+    const pathSegments = moduleId.split(/[\\/]/)
+    const nodeModulesIndex = pathSegments.lastIndexOf("node_modules")
+    const packageName = pathSegments[nodeModulesIndex + 1]
+
+    return packageName ? `vendor/${packageName}` : null
 }
 
 /**
@@ -83,20 +102,20 @@ const commonServerOptions = (runtimeEnv: ReturnType<typeof resolveRuntimeEnv>): 
             "/sitemap": {
                 target: "http://10.10.2.222:5426",
                 changeOrigin: true,
-                rewrite: (path) => {
-                    return `/api/v1${path}`
+                rewrite: (requestPath) => {
+                    return `/api/v1${requestPath}`
                 },
             },
 
             "/admin/raw-github": {
                 target: "https://raw.githubusercontent.com",
                 changeOrigin: true,
-                rewrite: (path: string) => path.replace(/^\/admin\/raw-github/, ""),
+                rewrite: (requestPath: string) => requestPath.replace(/^\/admin\/raw-github/, ""),
             },
             "/admin/raw-gitee": {
                 target: "https://gitee.com",
                 changeOrigin: true,
-                rewrite: (path: string) => path.replace(/^\/admin\/raw-gitee/, ""),
+                rewrite: (requestPath: string) => requestPath.replace(/^\/admin\/raw-gitee/, ""),
             },
         },
     }
@@ -133,7 +152,6 @@ export default defineConfig(({ mode }) => {
 
     return {
         plugins: [
-            tsconfigPaths(), // tsconfig 路径别名
             vue({
                 template: {
                     compilerOptions: {
@@ -162,7 +180,7 @@ export default defineConfig(({ mode }) => {
 
             // ------------------------------ gzip压缩 开始
             compression({
-                verbose: true, // 是否在控制台输出压缩结果
+                verbose: false, // 保留 .gz 预压缩产物, 但不输出逐文件压缩日志
                 disable: false, // 是否禁用压缩
                 threshold: 1024, // 只有大于该值的文件会被压缩 (单位：字节)
                 algorithm: "gzip", // 压缩算法, 可选 ['gzip', 'brotliCompress', 'deflate', 'deflateRaw']
@@ -176,6 +194,7 @@ export default defineConfig(({ mode }) => {
         ],
 
         resolve: {
+            tsconfigPaths: true,
             alias: {
                 "@": fileURLToPath(new URL("./src", import.meta.url)),
             },
@@ -213,26 +232,34 @@ export default defineConfig(({ mode }) => {
 
         // ------------------------------ 设置打包分块 开始
         build: {
-            minify: true, //是否压缩编译后结果。
+            minify: "oxc", // 使用 Vite 8 默认的 Oxc Minifier, 与 Rolldown 保持一致
             chunkSizeWarningLimit: 500, // 打包警告阈值 单位 KB
 
-            rollupOptions: {
+            rolldownOptions: {
+                checks: {
+                    pluginTimings: false,
+                },
                 output: {
-                    manualChunks(id: string) {
-                        // 打包策略
-                        if (id.includes("node_modules")) {
-                            // 将 'node_modules' 分割为名为 'vendor' 的代码块
-                            const dirs = id.split("/")
-                            const name = dirs[dirs.lastIndexOf("node_modules") + 1]
-
-                            // // 过滤掉空包
-                            // const emptyChunks = ["@floating-ui", "lodash-unified", "memoize-one", "vue"]
-                            // if (emptyChunks.includes(name)) {
-                            //     return
-                            // }
-
-                            return `vendor/${name}`
-                        }
+                    codeSplitting: {
+                        groups: [
+                            {
+                                test: /node_modules[\\/]/,
+                                name: resolveVendorChunkGroupName,
+                            },
+                        ],
+                    },
+                    comments: false, // 取消产物中的注释
+                    minify: {
+                        compress: {
+                            dropDebugger: true, // 去除 debugger
+                            treeshake: {
+                                manualPureFunctions: ["console.log"], // 将 console.log 视为纯函数, 以便在未使用返回值时移除
+                            },
+                        },
+                        mangle: true,
+                        codegen: {
+                            removeWhitespace: true,
+                        },
                     },
                     // ------------------------------ 将打包文件按照类型目录分类 开始
 
@@ -247,22 +274,7 @@ export default defineConfig(({ mode }) => {
                     // assetFileNames: 'static/[ext]/[hash].[ext]',
 
                     // ------------------------------ 将打包文件按照类型目录分类 结束
-                    inlineDynamicImports: false, // 将动态导入的模块内联到生成的代码中
                 },
-                plugins: [
-                    terser({
-                        maxWorkers: 2, // 开启多进程压缩
-                        compress: {
-                            pure_funcs: ["console.log"], // 去除console.log, 保留其他 console
-                            drop_debugger: true, // 去除debugger
-                            passes: 3, // 压缩次数，默认为1，设置更高的值可以获得更好的压缩效果，但会增加构建时间
-                        },
-                        format: {
-                            // 取消代码注释
-                            comments: false,
-                        },
-                    }),
-                ],
             },
         },
         // ------------------------------ 设置打包分块 结束

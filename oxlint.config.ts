@@ -42,6 +42,8 @@ export default defineConfig({
         "use-isnan": "error",
         // 强制 typeof 比较合法值, 避免拼写错误.
         "valid-typeof": "error",
+        // 关闭变量声明与外部作用域同名的规则, 允许合理的变量遮蔽.
+        "no-shadow": "off",
     },
     env: {
         // 启用内置全局环境变量集合.
