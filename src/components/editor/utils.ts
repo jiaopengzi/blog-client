@@ -904,7 +904,7 @@ function getClipboardFriendlyErrorMessage(err: unknown): string {
     const isSecureContextUnavailable = typeof window !== "undefined" && !window.isSecureContext && !isTrustedLocalHost(hostname)
 
     if (isSecureContextUnavailable) {
-        return "复制失败，当前页面不是安全环境。请改用 HTTPS, localhost 或 127.0.0.1 后重试。"
+        return "复制失败，当前页面不是安全环境。请改用 HTTPS，localhost 或 127.0.0.1 后重试。"
     }
 
     if (err instanceof DOMException && err.name === "NotAllowedError") {
@@ -915,7 +915,7 @@ function getClipboardFriendlyErrorMessage(err: unknown): string {
         return "复制失败，当前浏览器对富文本复制支持不足。建议更换 Chromium 内核浏览器后重试。"
     }
 
-    return "复制失败，请稍后重试。如仍失败，请改用 HTTPS, localhost 或 127.0.0.1 访问。"
+    return "复制失败，请稍后重试。如仍失败，请改用 HTTPS，localhost 或 127.0.0.1 访问。"
 }
 
 /**
@@ -923,15 +923,11 @@ function getClipboardFriendlyErrorMessage(err: unknown): string {
  * @param element 要复制的元素
  */
 export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
-    MessageUtil.success("正在复制内容，请稍后...")
     try {
-        // 1、获取原始元素的计算样式
-        const computedStyle = filterInvalidComputedStyles(element)
-
-        // 2、克隆元素(深拷贝), 保证不修改原元素
+        // 1、克隆元素(深拷贝), 保证不修改原元素
         const clonedElement = element.cloneNode(true) as HTMLElement
 
-        // 3、创建临时容器, 仅用于确保 clonedElement 在 DOM 中以正确应用样式, 但不显示
+        // 2、创建临时容器, 仅用于确保 clonedElement 在 DOM 中以正确应用样式, 但不显示
         const container = createDetachedCopyContainer(clonedElement)
 
         let html = ""
@@ -940,16 +936,19 @@ export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
             // 4、将克隆节点中的 katex 转图片, 避免修改原预览内容
             await katexToImage(clonedElement)
 
-            // 5、获取用户样式表
+            // 5、获取元素的计算样式
+            const computedStyle = filterInvalidComputedStyles(clonedElement)
+
+            // 6、获取用户样式表
             const cssStyleSheets = getSortedStyleSheets()
 
-            // 6、应用内联样式
+            // 7、应用内联样式
             applyInlineStyles(element, clonedElement, cssStyleSheets, computedStyle)
 
-            // 7、提取 HTML
+            // 8、提取 HTML
             html = clonedElement.innerHTML
         } finally {
-            // 8、移除临时容器
+            // 9、移除临时容器
             document.body.removeChild(container)
         }
 
