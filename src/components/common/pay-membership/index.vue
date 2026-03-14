@@ -12,10 +12,17 @@
     <section class="role-list">
         <el-button v-for="item in roles" :key="item.id" class="role-item" :loading="loadingAc(item.id)" @click="handleClick(item)">
             <template #default>
-                <div>
+                <div class="role-content">
                     <div class="role">{{ item.role }}</div>
-                    <div class="price">￥{{ fenToYuan(item.price) }}</div>
-                    <div class="duration-time">有效期{{ durationTimeDisplay(item.duration_time) }}</div>
+                    <div class="price-wrap">
+                        <span class="currency">￥</span>
+                        <span class="price">{{ fenToYuan(item.price) }}</span>
+                    </div>
+                    <div class="duration-time">
+                        <span class="label">有效期</span>
+                        <span class="value">{{ durationTimeDisplay(item.duration_time) }}</span>
+                    </div>
+                    <div class="action-text">立即开通</div>
                 </div>
             </template>
         </el-button>
@@ -108,95 +115,148 @@ onBeforeMount(async () => {
     font-size: 14px;
     font-weight: 700;
     text-align: center;
-    margin: 20px 0;
+    margin: 40px 0;
+    opacity: 0.8;
 }
 
 .role-list {
     width: 100%;
-    height: 100%;
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 24px;
     justify-content: center;
+    align-items: center;
+    padding: 20px 0;
 
     .role-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 138px;
-        height: 138px;
-        border: 1px solid var(--jpz-border-color);
-        border-radius: 8px;
-        cursor: pointer;
-        transition: background-color 0.3s;
+        margin: 0;
+        padding: 0;
+        border: 2px solid var(--jpz-border-color-lighter);
+        border-radius: 16px;
+        background: var(--jpz-bg-color);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        overflow: hidden;
         position: relative;
+        height: 240px;
+        width: 200px;
+        box-shadow: var(--jpz-box-shadow-light);
+
+        /* Reset el-button default styles to stretch fully */
+        :deep(> span) {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
 
         &:hover {
-            background-color: var(--jpz-bg-color-page);
+            border-color: var(--jpz-color-primary);
+            transform: translateY(-6px);
+            box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.15);
+
+            .action-text {
+                background: var(--jpz-color-primary);
+                color: var(--jpz-color-white);
+            }
         }
 
         // 伪元素提示
         &::after {
             content: "点击购买";
             position: absolute;
-            bottom: 2px;
-            margin: auto;
-            width: 68px;
-            height: 16px;
-            line-height: 16px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 28px;
+            line-height: 28px;
             text-align: center;
             color: #fff;
-            background: #c1401f;
-            border-radius: 4px;
-            padding: 4px;
-            font-size: 12px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 14px;
+            font-weight: bold;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.2s;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(4px);
+            z-index: 10;
         }
 
         &:hover::after {
             opacity: 1;
         }
+    }
 
-        .role {
-            font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
-            font-size: 20px;
-            font-weight: 700;
-            margin-top: 20px;
-            margin-bottom: 8px;
-            color: var(--jpz-text-color-regular);
-            text-align: center;
-            height: 24px;
+    .role-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        height: 100%;
+        padding-top: 36px;
+        position: relative;
+    }
+
+    .role {
+        font-family: var(--jpz-font-family-mono, "JBMonoWOFF2", "Microsoft YaHei", sans-serif);
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        color: var(--jpz-text-color-primary);
+        margin-bottom: 24px;
+        text-transform: uppercase;
+    }
+
+    .price-wrap {
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        color: #c1401f;
+        margin-bottom: 30px;
+
+        .currency {
+            font-size: 18px;
+            font-weight: 600;
+            margin-right: 2px;
         }
 
         .price {
-            font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
-            color: #c1401f;
-            font-weight: 700;
-            font-size: 20px;
-            margin-bottom: 8px;
-            text-align: center;
-            height: 24px;
+            font-family: var(--jpz-font-family-mono, "JBMonoWOFF2", sans-serif);
+            font-size: 40px;
+            font-weight: 800;
+            line-height: 1;
         }
+    }
 
-        .duration-time {
-            font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
-            font-size: 16px;
-            font-weight: 500;
-            color: var(--jpz-text-color-secondary);
-            margin-bottom: 20px;
-            text-align: center;
-            height: 20px;
-        }
+    .duration-time {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+        color: var(--jpz-text-color-regular);
+        background: var(--jpz-bg-color-page);
+        padding: 8px 18px;
+        border-radius: 20px;
+        margin-bottom: auto;
 
-        .description {
-            margin-top: 16px;
-            font-size: 14px;
-            color: var(--jpz-text-color-secondary);
-            line-height: 1.5;
+        .value {
+            font-weight: 600;
+            color: var(--jpz-text-color-primary);
         }
+    }
+
+    .action-text {
+        width: 100%;
+        height: 52px;
+        line-height: 52px;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--jpz-color-primary);
+        background: var(--jpz-bg-color-page);
+        transition: all 0.3s ease;
+        margin-top: 24px;
     }
 }
 </style>
