@@ -465,6 +465,42 @@ export async function katexToImage(container: HTMLElement, className: string = "
 }
 
 /**
+ * @description: 重置微信预览中行间公式的字号缩放, 便于重新测量实际宽度.
+ * @param formulaElement KaTeX 行间公式元素.
+ * @return void.
+ */
+function resetWechatDisplayKatexFontSize(formulaElement: HTMLElement): void {
+    formulaElement.style.removeProperty("font-size")
+}
+
+/**
+ * @description: 按父容器宽度缩放微信预览中的超长行间公式, 避免公式被截断.
+ * 参考:https://kexue.fm/archives/10474
+ * @param container 微信预览容器.
+ * @return void.
+ */
+export function scaleWechatDisplayKatexByFontSize(container: HTMLElement): void {
+    const formulaElements = container.querySelectorAll(".katex-display > .katex")
+
+    formulaElements.forEach((formulaElement) => {
+        if (!(formulaElement instanceof HTMLElement)) return
+
+        resetWechatDisplayKatexFontSize(formulaElement)
+
+        const displayElement = formulaElement.parentElement
+        const parentWidth = displayElement?.parentElement?.clientWidth || displayElement?.clientWidth || 0
+        const formulaWidth = formulaElement.offsetWidth
+
+        if (!parentWidth || !formulaWidth || formulaWidth <= parentWidth) {
+            return
+        }
+
+        const fontSizePercent = Number(((parentWidth * 100) / formulaWidth).toFixed(2))
+        formulaElement.style.setProperty("font-size", `${fontSizePercent}%`)
+    })
+}
+
+/**
  * @description: html 处理微信预览
  * @param htmlSrc html 源码
  * @return  替换后的 html 源码

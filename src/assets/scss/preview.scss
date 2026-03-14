@@ -469,6 +469,16 @@
         font-weight: 500;
         color: var(--jpz-text-color-primary);
     }
+
+    &[data-preview="wechat"] {
+        .katex-display {
+            overflow: hidden;
+
+            > .katex {
+                display: inline-block;
+            }
+        }
+    }
 }
 
 @include respond-to("pc") {

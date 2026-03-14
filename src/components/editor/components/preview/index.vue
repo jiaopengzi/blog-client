@@ -86,7 +86,7 @@ import "@/assets/scss/preview.scss"
 import "@/assets/scss/highlight.js.jpz.scss"
 import "katex/dist/katex.min.css" // katex 样式
 
-import { useIntersectionObserver } from "@vueuse/core"
+import { useIntersectionObserver, useResizeObserver } from "@vueuse/core"
 import { debounce } from "throttle-debounce"
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue"
 
@@ -106,7 +106,7 @@ import { MessageUtil } from "@/utils/message"
 import { myScrollTo } from "@/utils/scrollTo"
 
 import { CommandsKey } from "../../command"
-import { copyWithCustomStyle, htmlHandleWeChat } from "../../utils"
+import { copyWithCustomStyle, htmlHandleWeChat, scaleWechatDisplayKatexByFontSize } from "../../utils"
 import type { HeadingObject, PreviewProps } from "./types"
 
 defineOptions({ name: "HtmlPreview" })
@@ -158,6 +158,8 @@ const setPreviewRef = (el: HTMLElement | null) => {
     previewRef.value = el
 }
 
+let wechatKatexScaleAnimationFrameId = 0
+
 // 分别为非微信预览(内容片段)和微信预览(html 字符串)提供独立的计算属性, 避免 string | ContentPart 的联合类型在模板中导致错误
 const contentParts = computed(() => {
     return parseHtmlToContentParts(html, postId, isAdminVideo)
@@ -166,6 +168,27 @@ const contentParts = computed(() => {
 const wechatHtml = computed(() => {
     return htmlHandleWeChat(html)
 })
+
+/**
+ * @description: 在 DOM 更新后调度微信预览公式缩放, 避免重复重排.
+ * @return void.
+ */
+const scheduleWechatDisplayKatexScale = (): void => {
+    if (!isShowPreviewWechat) return
+
+    nextTick(() => {
+        if (wechatKatexScaleAnimationFrameId) {
+            cancelAnimationFrame(wechatKatexScaleAnimationFrameId)
+        }
+
+        wechatKatexScaleAnimationFrameId = requestAnimationFrame(() => {
+            if (previewRef.value) {
+                scaleWechatDisplayKatexByFontSize(previewRef.value)
+            }
+            wechatKatexScaleAnimationFrameId = 0
+        })
+    })
+}
 
 // 判断是否为付费内容组件
 const isPayContentItem = (type: Names) => [Names.PayRead, Names.PayDownload, Names.PayVideo].includes(type)
@@ -218,6 +241,8 @@ watch(
                 // // 验证属性是否设置成功
                 // console.log("属性值:", previewRef.value.getAttribute("data-preview"))
             }
+
+            scheduleWechatDisplayKatexScale()
         } else {
             await nextTick()
             previewRef.value?.removeAttribute("data-preview")
@@ -249,6 +274,8 @@ watch(
         if (previewRef.value && (newHeight || newWidth)) {
             initializeCssVariable() // 初始化 css 变量
         }
+
+        scheduleWechatDisplayKatexScale()
     },
 )
 
@@ -493,6 +520,14 @@ watch(
     },
 )
 
+// 监控微信预览 html 变化, 在内容更新后重新计算公式缩放.
+watch(
+    () => wechatHtml.value,
+    () => {
+        scheduleWechatDisplayKatexScale()
+    },
+)
+
 // 监控 html 变化, 获取所有的 h 标签 并挂载自定义元素
 watch(
     () => isShowPreviewWechat,
@@ -551,10 +586,16 @@ watch(
                     postIdAc,
                     videoTocAc,
                 )
+
+                scheduleWechatDisplayKatexScale()
             })
         }
     },
 )
+
+const { stop: stopPreviewResizeObserver } = useResizeObserver(previewRef, () => {
+    scheduleWechatDisplayKatexScale()
+})
 
 // 初始化
 onMounted(async () => {
@@ -563,6 +604,7 @@ onMounted(async () => {
     await nextTick(() => {
         // 获取预览容器的 top 值
         getPreviewRefRect()
+        scheduleWechatDisplayKatexScale()
     })
 })
 
@@ -571,6 +613,12 @@ onUnmounted(() => {
     stopFuncs.forEach((stop) => {
         stop()
     })
+
+    stopPreviewResizeObserver()
+
+    if (wechatKatexScaleAnimationFrameId) {
+        cancelAnimationFrame(wechatKatexScaleAnimationFrameId)
+    }
 })
 
 // 导出
