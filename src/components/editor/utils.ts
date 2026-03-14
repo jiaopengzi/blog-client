@@ -409,18 +409,21 @@ export function htmlHandleDetailsTag(htmlSrc: string) {
 export async function katexToImage(container: HTMLElement, className: string = "katex") {
     const katexElements = getKatexElements(container, className)
 
-    for (const katex of katexElements) {
+    // 创建所有截图任务的 Promise 数组
+    const screenshotPromises = katexElements.map(async (katex) => {
         const captureContext = createKatexCaptureContext(katex)
 
         try {
-            // eslint-disable-next-line no-await-in-loop
             const img = await createKatexImageFromCapture(captureContext)
             applyKatexImageStyle(img, captureContext)
             katex.parentNode?.replaceChild(img, katex)
         } finally {
             captureContext.wrapper.remove()
         }
-    }
+    })
+
+    // 并行执行所有截图任务
+    await Promise.all(screenshotPromises)
 }
 
 /**
@@ -883,11 +886,44 @@ function createDetachedCopyContainer(clonedElement: HTMLElement): HTMLDivElement
 }
 
 /**
+ * @description: 判断当前页面是否为浏览器认可的本地可信访问地址.
+ * @param hostname 当前页面主机名.
+ * @return 是否为 localhost 或本地回环地址.
+ */
+function isTrustedLocalHost(hostname: string): boolean {
+    return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1"
+}
+
+/**
+ * @description: 根据复制失败原因生成更友好的提示文案.
+ * @param err 复制流程抛出的错误.
+ * @return 面向用户的错误提示.
+ */
+function getClipboardFriendlyErrorMessage(err: unknown): string {
+    const hostname = typeof window !== "undefined" ? window.location.hostname : ""
+    const isSecureContextUnavailable = typeof window !== "undefined" && !window.isSecureContext && !isTrustedLocalHost(hostname)
+
+    if (isSecureContextUnavailable) {
+        return "复制失败，当前页面不是安全环境。请改用 HTTPS, localhost 或 127.0.0.1 后重试。"
+    }
+
+    if (err instanceof DOMException && err.name === "NotAllowedError") {
+        return "复制失败，浏览器拦截了剪贴板访问。请允许剪贴板权限后重试。"
+    }
+
+    if (err instanceof Error && err.message.includes("Modern clipboard API not supported")) {
+        return "复制失败，当前浏览器对富文本复制支持不足。建议更换 Chromium 内核浏览器后重试。"
+    }
+
+    return "复制失败，请稍后重试。如仍失败，请改用 HTTPS, localhost 或 127.0.0.1 访问。"
+}
+
+/**
  * @description: 复制带有自定义样式的内容(不修改原元素)
  * @param element 要复制的元素
  */
 export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
-    MessageUtil.success("复制中...")
+    MessageUtil.success("正在复制内容，请稍后...")
     try {
         // 1、获取原始元素的计算样式
         const computedStyle = filterInvalidComputedStyles(element)
@@ -932,6 +968,6 @@ export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
         MessageUtil.success("内容已复制到剪贴板")
     } catch (err) {
         console.error("无法复制内容", err)
-        MessageUtil.error("无法复制内容")
+        MessageUtil.error(getClipboardFriendlyErrorMessage(err), 8000)
     }
 }
