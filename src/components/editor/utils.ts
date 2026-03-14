@@ -186,6 +186,25 @@ export const createRegexCache = (): RegexCache => {
 // 正则表达式缓存
 const regexCache = createRegexCache()
 
+// katex 锚点上下内边距配置(单位: px, 根据实际情况调整, 主要是为了避免部分字形被 snapdom 裁掉)
+const KATEX_CAPTURE_PADDING = {
+    inline: {
+        top: 6,
+        bottom: 6,
+    },
+    display: {
+        top: 8,
+        bottom: 8,
+    },
+} as const
+
+// katex 截图上下文接口
+interface KatexCaptureContext {
+    wrapper: HTMLDivElement // 锚点容器
+    width: number // 锚点宽度
+    height: number // 锚点高度
+}
+
 /**
  * @description: 标题锚点生成器
  * @return {String} 生成的锚点
@@ -385,83 +404,119 @@ export function htmlHandleDetailsTag(htmlSrc: string) {
 /**
  * @description: 将 katex 公式转成图片 为了微信预览
  * @param container 预览容器
- * @param className katex 公式的类名
+ * @param className katex 公式根节点的类名
  */
-export async function katexToImage(container: HTMLElement, className: string = "katex-html") {
-    // 获取所有 katex 公式
-    const katexArray = Array.from(container.getElementsByClassName(className))
-    if (katexArray) {
-        // 遍历所有 katex 公式
-        for (let i = 0; i < katexArray.length; i++) {
-            // 当前 katex 公式
-            const katex = katexArray[i] as HTMLElement
+export async function katexToImage(container: HTMLElement, className: string = "katex") {
+    const katexElements = getKatexElements(container, className)
 
-            // 判断 katex 是否有父元素 的类名为 katex-display
-            const isKatexDisplay = HasParentByClass(katex, "katex-display")
+    for (const katex of katexElements) {
+        const captureContext = createKatexCaptureContext(katex)
 
-            // 获取 katex 滚动宽度
-            const katexScrollWidth = katex.scrollWidth // katex 滚动宽度
-            const katexOffsetWidth = katex.offsetWidth * 0.88 // katex 宽度
-            const katexScrollHeight = katex.scrollHeight // katex 滚动高度
-            const katexOffsetHeight = katex.offsetHeight * 0.88 // katex 高度
-
-            // 获取宽度 如果是行内公式则使用 katex 的宽度 如果是行间公式则使用 katex 的滚动宽度
-            const getWidth = () => (isKatexDisplay ? katexScrollWidth : katexOffsetWidth)
-            const getHeight = () => (isKatexDisplay ? katexScrollHeight : katexOffsetHeight)
-
-            // // 使用 canvas 将 katex 转成图片 scale 为 3 是为了提高图片清晰度
-            // const canvas = await html2canvas(katex, {
-            //     scale: 3,
-            //     backgroundColor: "#ffffff80",
-            //     logging: false,
-            //     width: getWidth(),
-            //     height: katexOffsetHeight,
-            // })
-            // const imageDataURL = canvas.toDataURL("image/png") // 转成图片的 base64
-            // const img = document.createElement("img") // 创建 img 元素
-            // img.src = imageDataURL // 设置图片的 src
-
-            // // 根据是否行内公式设置 img 元素的属性
-            // if (isKatexDisplay) {
-            //     img.style.width = `100%` // 设置图片的宽度
-            // } else {
-            //     // 需要单独一个添加 不能用 setAttribute 会被覆盖
-            //     img.style.width = `${getWidth()}px` // 设置图片的宽度
-            //     img.style.display = "inline-block" // 设置 img 元素的 display 为 inline-block 行内显示
-            //     img.style.verticalAlign = "text-top" // 设置 img 元素的 vertical-align 为 text-top 使其与文字对齐
-            // }
-            // katex.parentNode?.replaceChild(img, katex) // 替换 katex 公式
-
-            // 使用 snapdom 将 katex 转成图片
+        try {
             // eslint-disable-next-line no-await-in-loop
-            const snap = await snapdom(katex, {
-                embedFonts: true,
-            })
-            // eslint-disable-next-line no-await-in-loop
-            const img = await snap.toPng({
-                scale: 3,
-                backgroundColor: "#ffffff00", // 透明背景
-                width: getWidth(),
-                height: getHeight(),
-            })
-
-            // // 根据是否行内公式设置 img 元素的属性
-            // if (isKatexDisplay) {
-            //     img.style.width = `100%` // 设置图片的宽度
-            // } else {
-            // 需要单独一个添加 不能用 setAttribute 会被覆盖
-            img.style.width = `${getWidth()}px` // 设置图片的宽度
-            img.style.height = `${getHeight()}px` // 设置图片的高度
-            img.style.display = "inline-block" // 设置 img 元素的 display 为 inline-block 行内显示
-            img.style.verticalAlign = "text-top" // 设置 img 元素的 vertical-align 为 text-top 使其与文字对齐
-            img.style.objectFit = "contain" // 设置 img 元素的 object-fit 为 contain 保持比例
-            img.style.margin = "0"
-            img.style.padding = "0"
-            // }
-
-            katex.parentNode?.replaceChild(img, katex) // 替换 katex 公式
+            const img = await createKatexImageFromCapture(captureContext)
+            applyKatexImageStyle(img, captureContext)
+            katex.parentNode?.replaceChild(img, katex)
+        } finally {
+            captureContext.wrapper.remove()
         }
     }
+}
+
+/**
+ * @description: 获取容器中的所有 KaTeX 根节点.
+ * @param container 预览容器.
+ * @param className KaTeX 根节点类名.
+ * @return KaTeX 根节点数组.
+ */
+function getKatexElements(container: HTMLElement, className: string): HTMLElement[] {
+    return Array.from(container.getElementsByClassName(className)).filter((element): element is HTMLElement => element instanceof HTMLElement)
+}
+
+/**
+ * @description: 构建 KaTeX 截图所需的离屏包裹容器, 并计算最终截图尺寸.
+ * @param katex KaTeX 根节点.
+ * @return 截图上下文.
+ */
+function createKatexCaptureContext(katex: HTMLElement): KatexCaptureContext {
+    const capturePadding = getKatexCapturePadding(HasParentByClass(katex, "katex-display"))
+
+    /**
+     * KaTeX 的部分字形会在视觉上超出元素本身的高度.
+     * 直接按原节点尺寸截图时, snapdom 会把这些超出的部分裁掉.
+     * 这里通过临时包裹容器补一层上下安全边距, 再对包裹容器截图.
+     */
+    const wrapper = document.createElement("div")
+    const captureClone = katex.cloneNode(true) as HTMLElement
+
+    wrapper.style.position = "fixed"
+    wrapper.style.left = "-99999px"
+    wrapper.style.top = "0"
+    wrapper.style.display = "inline-block"
+    wrapper.style.boxSizing = "content-box"
+    wrapper.style.paddingTop = `${capturePadding.top}px`
+    wrapper.style.paddingBottom = `${capturePadding.bottom}px`
+    wrapper.style.margin = "0"
+    wrapper.style.border = "0"
+    wrapper.style.background = "transparent"
+    wrapper.style.overflow = "visible"
+    wrapper.style.pointerEvents = "none"
+
+    captureClone.style.margin = "0"
+    captureClone.style.overflow = "visible"
+    wrapper.appendChild(captureClone)
+    document.body.appendChild(wrapper)
+
+    const captureRect = wrapper.getBoundingClientRect()
+
+    return {
+        wrapper,
+        width: Math.max(1, Math.ceil(captureRect.width)),
+        height: Math.max(1, Math.ceil(captureRect.height)),
+    }
+}
+
+/**
+ * @description: 基于离屏截图上下文生成 KaTeX 图片.
+ * @param captureContext KaTeX 截图上下文.
+ * @return 截图生成的图片元素.
+ */
+async function createKatexImageFromCapture(captureContext: KatexCaptureContext): Promise<HTMLImageElement> {
+    const snap = await snapdom(captureContext.wrapper, {
+        embedFonts: true,
+    })
+
+    return snap.toPng({
+        scale: 3,
+        backgroundColor: "#ffffff00",
+        width: captureContext.width,
+        height: captureContext.height,
+    })
+}
+
+/**
+ * @description: 应用 KaTeX 截图图片的展示样式.
+ * @param img 截图得到的图片元素.
+ * @param captureContext KaTeX 截图上下文.
+ * @return void.
+ */
+function applyKatexImageStyle(img: HTMLImageElement, captureContext: KatexCaptureContext): void {
+    img.style.width = `${captureContext.width}px`
+    img.style.height = `${captureContext.height}px`
+    img.style.display = "inline-block"
+    img.style.verticalAlign = "bottom"
+    img.style.objectFit = "contain"
+    img.style.margin = "0"
+    img.style.padding = "0"
+}
+
+/**
+ * @description: 获取 KaTeX 截图时使用的上下安全边距配置.
+ * @param isKatexDisplay 是否为行间公式.
+ * @return 上下安全边距.
+ */
+function getKatexCapturePadding(isKatexDisplay: boolean): { top: number; bottom: number } {
+    return isKatexDisplay ? KATEX_CAPTURE_PADDING.display : KATEX_CAPTURE_PADDING.inline
 }
 
 /**
@@ -808,38 +863,59 @@ function applyInlineStyles(
 }
 
 /**
+ * @description: 创建承载克隆节点的离屏临时容器, 用于应用样式与执行截图转换.
+ * @param clonedElement 克隆后的预览节点.
+ * @return 离屏临时容器.
+ */
+function createDetachedCopyContainer(clonedElement: HTMLElement): HTMLDivElement {
+    const container = document.createElement("div")
+
+    container.style.position = "fixed"
+    container.style.left = "-99999px"
+    container.style.top = "0"
+    container.style.opacity = "0"
+    container.style.pointerEvents = "none"
+    container.style.overflow = "hidden"
+    container.appendChild(clonedElement)
+    document.body.appendChild(container)
+
+    return container
+}
+
+/**
  * @description: 复制带有自定义样式的内容(不修改原元素)
  * @param element 要复制的元素
  */
 export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
     MessageUtil.success("复制中...")
     try {
-        // 1、将 katex 转图片
-        await katexToImage(element)
-
-        // 2、获取原始元素的计算样式
+        // 1、获取原始元素的计算样式
         const computedStyle = filterInvalidComputedStyles(element)
 
-        // 3、克隆元素(深拷贝), 保证不修改原元素
+        // 2、克隆元素(深拷贝), 保证不修改原元素
         const clonedElement = element.cloneNode(true) as HTMLElement
 
-        // 4、创建临时容器, 仅用于确保 clonedElement 在 DOM 中以正确应用样式, 但不显示
-        const container = document.createElement("div")
-        container.style.display = "none"
-        container.appendChild(clonedElement)
-        document.body.appendChild(container)
+        // 3、创建临时容器, 仅用于确保 clonedElement 在 DOM 中以正确应用样式, 但不显示
+        const container = createDetachedCopyContainer(clonedElement)
 
-        // 5、获取用户样式表
-        const cssStyleSheets = getSortedStyleSheets()
+        let html = ""
 
-        // 6、应用内联样式
-        applyInlineStyles(element, clonedElement, cssStyleSheets, computedStyle)
+        try {
+            // 4、将克隆节点中的 katex 转图片, 避免修改原预览内容
+            await katexToImage(clonedElement)
 
-        // 7、提取 HTML
-        let html = clonedElement.innerHTML
+            // 5、获取用户样式表
+            const cssStyleSheets = getSortedStyleSheets()
 
-        // 8、移除临时容器
-        document.body.removeChild(container)
+            // 6、应用内联样式
+            applyInlineStyles(element, clonedElement, cssStyleSheets, computedStyle)
+
+            // 7、提取 HTML
+            html = clonedElement.innerHTML
+        } finally {
+            // 8、移除临时容器
+            document.body.removeChild(container)
+        }
 
         // html 中 `<pre class="pre-code pre-code_nowrap` 替换为 `<pre class="code-snippet code-snippet_nowrap`
         // 兼容微信微信公众号编辑器代码块和代码片段样式
