@@ -43,6 +43,7 @@ export const mountPayContentOnCustomElements = (
 
     isPaid?: ComputedRef<boolean>, // 是否已经付费
     payStrategy?: ComputedRef<PayStrategy>, // 付费策略
+    payRoles?: ComputedRef<string[]>, // 付费角色
     price?: ComputedRef<string>, // 价格(单位：分)
     onlyMarkdown?: boolean, // 仅渲染 markdown 内容
     isAdminVideo?: ComputedRef<boolean>, // 是否使用管理员视频接口
@@ -69,6 +70,7 @@ export const mountPayContentOnCustomElements = (
                     loading: createOrderLoading.value,
                     isPaid: isPaid?.value || false, // 是否已经付费
                     payStrategy: payStrategy?.value || PayStrategy.All, // 付费策略
+                    payRoles: payRoles?.value || [], // 付费角色
                     price: price?.value || "0", // 价格(单位：分)
                     isAdminVideo: isAdminVideo?.value || false, // 是否使用管理员视频接口
                     postId: postId?.value || "", // 文章ID

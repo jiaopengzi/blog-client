@@ -46,6 +46,7 @@ export interface PreviewProps {
     createOrderLoading?: boolean // 创建订单加载状态
     isPaid?: boolean // 是否付费阅读
     payStrategy?: PayStrategy // 付费策略
+    payRoles?: string[] // 付费角色
     price?: string // 价格(单位：分)
     postId?: string // 文章ID
     isAdminVideo?: boolean // 是否使用管理员视频接口

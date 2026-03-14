@@ -106,6 +106,7 @@ export function useGetData(
         postMeta.value.is_paid = postData.is_paid
         postMeta.value.price = postData.price
         postMeta.value.pay_strategy = postData.pay_strategy
+        postMeta.value.pay_roles = postData.pay_roles || []
 
         // 文章头部信息
         head.value.title = postData.post_title

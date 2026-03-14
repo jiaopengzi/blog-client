@@ -65,11 +65,11 @@ const showInput = () => {
  */
 interface TagValidationResult {
     /** 是否验证通过 */
-    valid: boolean;
+    valid: boolean
     /** 错误信息（验证失败时） */
-    error?: string;
+    error?: string
     /** 解析后的标签数组（验证成功时） */
-    tags?: string[];
+    tags?: string[]
 }
 
 /**
@@ -111,7 +111,7 @@ const validateAndParseTags = (raw: string): TagValidationResult => {
 
 const handleInputConfirm = () => {
     const rawValue = inputValue.value
-    
+
     // 若为空输入则直接关闭输入框
     if (!rawValue) {
         inputVisible.value = false
@@ -121,7 +121,7 @@ const handleInputConfirm = () => {
 
     // 验证并解析标签
     const result = validateAndParseTags(rawValue)
-    
+
     // 验证失败，显示错误信息并保持输入框聚焦
     if (!result.valid) {
         MessageUtil.warning(result.error!)
@@ -144,7 +144,7 @@ const handleInputConfirm = () => {
     parsedTags.forEach((tag) => {
         newTags.push(tag)
     })
-    
+
     // 对 dynamicTags 进行去重
     newTags = Array.from(new Set(newTags))
     emit("update-tag-list", newTags)

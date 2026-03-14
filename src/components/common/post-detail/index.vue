@@ -41,6 +41,7 @@
                     :price="postMeta.price"
                     :is-paid="postMeta.is_paid"
                     :pay-strategy="postMeta.pay_strategy"
+                    :pay-roles="postMeta.pay_roles"
                     :post-id="postId"
                     :video-toc="postMeta.videoToc"
                     @show-image-viewer="showImageViewer"

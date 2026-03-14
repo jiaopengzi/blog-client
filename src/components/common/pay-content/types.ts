@@ -21,6 +21,7 @@ export interface PayContentProps {
     contentPayType?: ContentPayType // 内容费类型
     isPaid?: boolean // 是否付费阅读
     payStrategy?: PayStrategy // 付费策略
+    payRoles?: string[] // 付费角色
     price?: string // 价格(单位：分)
     loading?: boolean // 加载状态
     markdown: string
