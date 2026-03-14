@@ -107,7 +107,7 @@ import { MessageUtil } from "@/utils/message"
 import { myScrollTo } from "@/utils/scrollTo"
 
 import { CommandsKey } from "../../command"
-import { copyWithCustomStyle, htmlHandleWeChat, scaleWechatDisplayKatexByFontSize } from "../../utils"
+import { copyWithCustomStyle, htmlHandleWeChat, scaleDisplayKatexByFontSize } from "../../utils"
 import type { HeadingObject, PreviewProps } from "./types"
 
 defineOptions({ name: "HtmlPreview" })
@@ -160,7 +160,7 @@ const setPreviewRef = (el: HTMLElement | null) => {
     previewRef.value = el
 }
 
-let wechatKatexScaleAnimationFrameId = 0
+let displayKatexScaleAnimationFrameId = 0
 
 // 分别为非微信预览(内容片段)和微信预览(html 字符串)提供独立的计算属性, 避免 string | ContentPart 的联合类型在模板中导致错误
 const contentParts = computed(() => {
@@ -172,22 +172,20 @@ const wechatHtml = computed(() => {
 })
 
 /**
- * @description: 在 DOM 更新后调度微信预览公式缩放, 避免重复重排.
+ * @description: 在 DOM 更新后调度行间公式缩放, 避免重复重排.
  * @return void.
  */
-const scheduleWechatDisplayKatexScale = (): void => {
-    if (!isShowPreviewWechat) return
-
+const scheduleDisplayKatexScale = (): void => {
     nextTick(() => {
-        if (wechatKatexScaleAnimationFrameId) {
-            cancelAnimationFrame(wechatKatexScaleAnimationFrameId)
+        if (displayKatexScaleAnimationFrameId) {
+            cancelAnimationFrame(displayKatexScaleAnimationFrameId)
         }
 
-        wechatKatexScaleAnimationFrameId = requestAnimationFrame(() => {
+        displayKatexScaleAnimationFrameId = requestAnimationFrame(() => {
             if (previewRef.value) {
-                scaleWechatDisplayKatexByFontSize(previewRef.value)
+                scaleDisplayKatexByFontSize(previewRef.value)
             }
-            wechatKatexScaleAnimationFrameId = 0
+            displayKatexScaleAnimationFrameId = 0
         })
     })
 }
@@ -244,10 +242,11 @@ watch(
                 // console.log("属性值:", previewRef.value.getAttribute("data-preview"))
             }
 
-            scheduleWechatDisplayKatexScale()
+            scheduleDisplayKatexScale()
         } else {
             await nextTick()
             previewRef.value?.removeAttribute("data-preview")
+            scheduleDisplayKatexScale()
         }
     },
     { flush: "post" }, // 确保在 DOM 更新后执行
@@ -278,7 +277,7 @@ watch(
             initializeCssVariable() // 初始化 css 变量
         }
 
-        scheduleWechatDisplayKatexScale()
+        scheduleDisplayKatexScale()
     },
 )
 
@@ -519,6 +518,7 @@ watch(
 
                 // 监听标题的可见性变化
                 observeHeadings()
+                scheduleDisplayKatexScale()
             })
         }
     },
@@ -528,7 +528,7 @@ watch(
 watch(
     () => wechatHtml.value,
     () => {
-        scheduleWechatDisplayKatexScale()
+        scheduleDisplayKatexScale()
     },
 )
 
@@ -594,14 +594,14 @@ watch(
                     videoTocAc,
                 )
 
-                scheduleWechatDisplayKatexScale()
+                scheduleDisplayKatexScale()
             })
         }
     },
 )
 
 const { stop: stopPreviewResizeObserver } = useResizeObserver(previewRef, () => {
-    scheduleWechatDisplayKatexScale()
+    scheduleDisplayKatexScale()
 })
 
 // 初始化
@@ -611,7 +611,7 @@ onMounted(async () => {
     await nextTick(() => {
         // 获取预览容器的 top 值
         getPreviewRefRect()
-        scheduleWechatDisplayKatexScale()
+        scheduleDisplayKatexScale()
     })
 })
 
@@ -623,8 +623,8 @@ onUnmounted(() => {
 
     stopPreviewResizeObserver()
 
-    if (wechatKatexScaleAnimationFrameId) {
-        cancelAnimationFrame(wechatKatexScaleAnimationFrameId)
+    if (displayKatexScaleAnimationFrameId) {
+        cancelAnimationFrame(displayKatexScaleAnimationFrameId)
     }
 })
 

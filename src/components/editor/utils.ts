@@ -523,27 +523,27 @@ function getKatexCapturePadding(isKatexDisplay: boolean): { top: number; bottom:
 }
 
 /**
- * @description: 重置微信预览中行间公式的字号缩放, 便于重新测量实际宽度.
+ * @description: 重置行间公式的字号缩放, 便于重新测量实际宽度.
  * @param formulaElement KaTeX 行间公式元素.
  * @return void.
  */
-function resetWechatDisplayKatexFontSize(formulaElement: HTMLElement): void {
+function resetDisplayKatexFontSize(formulaElement: HTMLElement): void {
     formulaElement.style.removeProperty("font-size")
 }
 
 /**
- * @description: 按父容器宽度缩放微信预览中的超长行间公式, 避免公式被截断.
+ * @description: 按父容器宽度缩放超长行间公式, 避免在任意窄容器中被截断.
  * 参考:https://kexue.fm/archives/10474
- * @param container 微信预览容器.
+ * @param container 预览容器.
  * @return void.
  */
-export function scaleWechatDisplayKatexByFontSize(container: HTMLElement): void {
+export function scaleDisplayKatexByFontSize(container: HTMLElement): void {
     const formulaElements = container.querySelectorAll(".katex-display > .katex")
 
     formulaElements.forEach((formulaElement) => {
         if (!(formulaElement instanceof HTMLElement)) return
 
-        resetWechatDisplayKatexFontSize(formulaElement)
+        resetDisplayKatexFontSize(formulaElement)
 
         const displayElement = formulaElement.parentElement
         const parentWidth = displayElement?.parentElement?.clientWidth || displayElement?.clientWidth || 0

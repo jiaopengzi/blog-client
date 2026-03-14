@@ -8,7 +8,7 @@
 
 import { describe, expect, it } from "vitest"
 
-import { anchorGenerator, createRegexCache, generateAllHeadingAnchor } from "./utils"
+import { anchorGenerator, createRegexCache, generateAllHeadingAnchor, scaleDisplayKatexByFontSize } from "./utils"
 
 describe("createRegexCache", () => {
     it("缓存中的正则匹配", () => {
@@ -133,6 +133,63 @@ describe("anchorGenerator", () => {
     it("去除首尾的 - 符号", () => {
         expect(anchorGenerator("-Hello-World-")).toEqual("hello-world")
         expect(anchorGenerator("--Multiple-Dashes--")).toEqual("multiple-dashes")
+    })
+})
+
+describe("scaleDisplayKatexByFontSize", () => {
+    it("在容器宽度不足时缩放行间公式", () => {
+        const container = document.createElement("div")
+        const wrapper = document.createElement("div")
+        const displayElement = document.createElement("div")
+        const formulaElement = document.createElement("span")
+
+        displayElement.className = "katex-display"
+        formulaElement.className = "katex"
+
+        displayElement.appendChild(formulaElement)
+        wrapper.appendChild(displayElement)
+        container.appendChild(wrapper)
+
+        Object.defineProperty(wrapper, "clientWidth", {
+            configurable: true,
+            value: 200,
+        })
+        Object.defineProperty(formulaElement, "offsetWidth", {
+            configurable: true,
+            value: 400,
+        })
+
+        scaleDisplayKatexByFontSize(container)
+
+        expect(formulaElement.style.fontSize).toBe("50%")
+    })
+
+    it("在容器宽度充足时清除旧的缩放样式", () => {
+        const container = document.createElement("div")
+        const wrapper = document.createElement("div")
+        const displayElement = document.createElement("div")
+        const formulaElement = document.createElement("span")
+
+        displayElement.className = "katex-display"
+        formulaElement.className = "katex"
+        formulaElement.style.fontSize = "50%"
+
+        displayElement.appendChild(formulaElement)
+        wrapper.appendChild(displayElement)
+        container.appendChild(wrapper)
+
+        Object.defineProperty(wrapper, "clientWidth", {
+            configurable: true,
+            value: 400,
+        })
+        Object.defineProperty(formulaElement, "offsetWidth", {
+            configurable: true,
+            value: 200,
+        })
+
+        scaleDisplayKatexByFontSize(container)
+
+        expect(formulaElement.style.fontSize).toBe("")
     })
 })
 
