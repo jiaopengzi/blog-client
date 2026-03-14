@@ -263,7 +263,7 @@ watch(
             return
         }
 
-        MessageUtil.success("正在复制内容，请稍后...")
+        MessageUtil.infoWaitNext("正在复制内容，请稍后...")
         debounceCopyWithCustomStyle(previewRef.value)
     },
 )
