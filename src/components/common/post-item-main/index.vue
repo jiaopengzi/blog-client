@@ -19,7 +19,7 @@
 
         <!-- 缩略图 -->
         <div class="thumbnail">
-            <el-image :src="postData.thumbnail" class="thumbnail-img" loading="lazy" @click="postId(postData.id)"> </el-image>
+            <PostThumbnail :src="postData.thumbnail" class="thumbnail-img" :initial="fallbackInitial" theme="main" @click="postId(postData.id)" />
         </div>
 
         <!-- 文章摘要内容 -->
@@ -52,6 +52,7 @@ import { computed } from "vue"
 import { type PostResPagination, PostStatusCode } from "@/api/post/common"
 import { type PostCategory } from "@/api/postCategory/view"
 import PostMeta, { type PostMetaProps } from "@/components/common/post-meta"
+import PostThumbnail from "@/components/common/post-thumbnail"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 
 defineOptions({ name: "PostItemMain" })
@@ -67,6 +68,8 @@ const {
     isHideTimeIcon?: boolean
     isSetTimeMargin?: boolean
 }>()
+
+const fallbackInitial = computed(() => postData.post_title?.trim().slice(0, 1).toUpperCase() || "P")
 
 // 设备类型
 const deviceStore = useDeviceStore()
@@ -330,11 +333,13 @@ const topRightTip = computed(() => {
         font-weight: 700;
         line-height: 2em;
         height: 2em;
+        line-clamp: 1;
         -webkit-line-clamp: 1; // 限制行数为1
     }
 
     .summary {
         height: 2em;
+        line-clamp: 4;
         -webkit-line-clamp: 4; // 限制行数为4
     }
 }
@@ -361,6 +366,7 @@ const topRightTip = computed(() => {
     .title {
         line-height: 2em;
         height: 2em;
+        line-clamp: 2;
         -webkit-line-clamp: 2; // 限制行数为2
     }
 }
@@ -387,6 +393,7 @@ const topRightTip = computed(() => {
     .title {
         line-height: 2em;
         height: 2em;
+        line-clamp: 2;
         -webkit-line-clamp: 2; // 限制行数为2
     }
 }

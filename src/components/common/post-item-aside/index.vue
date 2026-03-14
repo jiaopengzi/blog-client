@@ -10,7 +10,7 @@
     <div class="post-item">
         <!-- 缩略图 -->
         <div class="thumbnail">
-            <el-image :src="postData.thumbnail" class="thumbnail-img" loading="lazy" @click="postId(postData.id)"> </el-image>
+            <PostThumbnail :src="postData.thumbnail" class="thumbnail-img" :initial="fallbackInitial" theme="aside" @click="postId(postData.id)" />
         </div>
 
         <!-- 文章摘要内容 -->
@@ -29,12 +29,15 @@ import { computed } from "vue"
 
 import type { PostResCommon } from "@/api/post/common"
 import PostMeta, { type PostMetaProps } from "@/components/common/post-meta"
+import PostThumbnail from "@/components/common/post-thumbnail"
 
 defineOptions({ name: "PostItemAside" })
 
 const { postData } = defineProps<{
     postData: PostResCommon
 }>()
+
+const fallbackInitial = computed(() => postData.post_title?.trim().slice(0, 1).toUpperCase() || "P")
 
 // 文章元数据
 const postMeta = computed(() => {
@@ -103,6 +106,7 @@ const postId = (val: string) => {
     height: 4em;
     line-height: 2em;
     display: -webkit-box;
+    line-clamp: 2;
     -webkit-line-clamp: 2; // 限制行数为2
     -webkit-box-orient: vertical;
     overflow: hidden;

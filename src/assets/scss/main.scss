@@ -39,6 +39,12 @@ html {
 
     --jpz-fill-color-lighter: var(--el-fill-color-lighter);
 
+    // 文章缩略图占位背景
+    --jpz-post-thumbnail-main-bg-start: color-mix(in srgb, var(--jpz-color-primary) 70%, #0f172a);
+    --jpz-post-thumbnail-main-bg-end: color-mix(in srgb, var(--jpz-bg-color-page) 26%, #0f172a);
+    --jpz-post-thumbnail-aside-bg-start: color-mix(in srgb, var(--jpz-color-primary) 58%, #111827);
+    --jpz-post-thumbnail-aside-bg-end: color-mix(in srgb, var(--jpz-bg-color-page) 18%, #1f2937);
+
     // 文字颜色
     --jpz-text-color-primary: var(--el-text-color-primary);
     --jpz-text-color-regular: var(--el-text-color-regular);
