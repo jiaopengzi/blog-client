@@ -98,6 +98,15 @@ export const routes: RouteRecordRaw[] = [
         ],
     },
 
+    {
+        path: "/t404", // 当匹配不到路由时，跳转到404页面
+        name: RouteNames.NotFound,
+        component: () => import("@/views/404"),
+        meta: {
+            requiresAuth: false,
+        },
+    },
+
     // 用户相关路由
     ...userRoutes,
     // 导航相关路由

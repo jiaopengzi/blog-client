@@ -14,6 +14,7 @@ import { ElementPlusResolver } from "unplugin-vue-components/resolvers"
 import Components from "unplugin-vue-components/vite"
 import { type CommonServerOptions, defineConfig, loadEnv } from "vite"
 import compression from "vite-plugin-compression"
+// import { DevTools } from "@vitejs/devtools"
 // import Inspect from "vite-plugin-inspect"
 
 const DEFAULT_HTTP_PORT = 80
@@ -177,6 +178,7 @@ export default defineConfig(({ mode }) => {
 
             // // vite-plugin-inspect 查看编译后的文件
             // Inspect(),
+            // DevTools(),
 
             // ------------------------------ gzip压缩 开始
             compression({
@@ -236,6 +238,7 @@ export default defineConfig(({ mode }) => {
             chunkSizeWarningLimit: 500, // 打包警告阈值 单位 KB
 
             rolldownOptions: {
+                // devtools: {}, // enable devtools mode
                 checks: {
                     pluginTimings: false,
                 },

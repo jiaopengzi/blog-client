@@ -11,7 +11,6 @@
         <section class="no-permission-panel">
             <div class="panel-head">
                 <span class="status-chip">ACCESS CONTROL</span>
-                <span class="status-line"></span>
                 <span class="status-code">403</span>
             </div>
 
@@ -19,19 +18,17 @@
 
             <h1 class="title">无权限访问</h1>
 
-            <div class="message">
+            <p class="description">
                 当前账号没有访问
                 <strong>{{ pathDisplay || path || "该页面" }}</strong>
                 的权限。
-            </div>
+            </p>
 
             <div class="detail-list">
-                <div class="detail-item">
-                    <span class="detail-label">访问状态</span>
+                <div class="detail-item detail-item-status">
                     <span class="detail-value">已拒绝</span>
                 </div>
-                <div class="detail-item">
-                    <span class="detail-label">处理建议</span>
+                <div class="detail-item detail-item-action">
                     <span class="detail-value">联系管理员申请权限或切换可访问账号</span>
                 </div>
             </div>
@@ -71,16 +68,16 @@ useHead({
 }
 
 .no-permission-panel {
-    width: min(680px, 100%);
-    padding: 36px 32px;
+    width: min(760px, 100%);
+    padding: 40px 36px;
     border-radius: 28px;
     border: 1px solid color-mix(in srgb, var(--jpz-color-secondary) 16%, var(--el-border-color));
     background:
         linear-gradient(145deg, color-mix(in srgb, var(--jpz-color-secondary) 6%, transparent), transparent 42%),
         linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color-overlay) 96%, transparent), var(--el-bg-color));
     box-shadow:
-        0 24px 60px rgb(15 23 42 / 10%),
-        inset 0 1px 0 rgb(255 255 255 / 18%);
+        0 24px 60px rgb(15 23 42 / 8%),
+        inset 0 1px 0 rgb(255 255 255 / 24%);
 }
 
 .panel-head {
@@ -104,12 +101,6 @@ useHead({
     border: 1px solid var(--el-border-color-lighter);
 }
 
-.status-line {
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, color-mix(in srgb, var(--jpz-color-secondary) 30%, transparent), transparent);
-}
-
 .hero-mark {
     font-size: clamp(32px, 6vw, 64px);
     line-height: 1;
@@ -126,10 +117,11 @@ useHead({
     color: var(--jpz-text-color-primary);
 }
 
-.message {
+.description {
+    margin: 0;
+    max-width: 580px;
     font-size: 16px;
-    line-height: 1.85;
-    margin-bottom: 26px;
+    line-height: 1.8;
     color: var(--jpz-text-color-secondary);
 
     strong {
@@ -141,24 +133,20 @@ useHead({
 .detail-list {
     display: grid;
     gap: 12px;
-    margin-bottom: 24px;
+    margin: 32px 0 24px;
 }
 
 .detail-item {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 16px;
-    padding: 14px 16px;
-    border-radius: 18px;
-    background: color-mix(in srgb, var(--el-fill-color-light) 82%, transparent);
-    border: 1px solid var(--el-border-color-lighter);
+    min-height: 56px;
+    padding: 12px 0;
 }
 
-.detail-label {
-    font-size: 13px;
-    letter-spacing: 0.08em;
-    color: var(--jpz-text-color-secondary);
+.detail-item-status {
+    padding-top: 0;
 }
 
 .detail-value {
@@ -179,17 +167,16 @@ useHead({
     }
 
     .no-permission-panel {
-        padding: 26px 20px;
+        padding: 28px 20px;
         border-radius: 22px;
+    }
 
-        .detail-item {
-            align-items: flex-start;
-            flex-direction: column;
-        }
+    .detail-item {
+        justify-content: flex-start;
+    }
 
-        .detail-value {
-            text-align: left;
-        }
+    .detail-value {
+        text-align: left;
     }
 }
 </style>

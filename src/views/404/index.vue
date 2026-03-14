@@ -19,25 +19,24 @@
                     <section class="not-found-panel">
                         <div class="status-line">
                             <span class="status-chip">PAGE STATUS</span>
-                            <span class="status-divider"></span>
                             <span class="status-code">404</span>
                         </div>
 
                         <div class="hero-code">404</div>
 
                         <h1 class="title">页面未找到</h1>
-                        <p class="description">当前链接可能已失效, 被移动, 或暂时不可访问。请返回首页或检查访问地址是否正确。</p>
+                        <p class="description">当前链接可能已失效, 被移动, 或暂时不可访问。</p>
+                        <p class="description">请返回首页或检查访问地址是否正确。</p>
 
                         <div class="meta-list">
-                            <div class="meta-item">
-                                <span class="meta-label">自动跳转</span>
+                            <div class="meta-item meta-item-countdown">
                                 <span class="meta-value"
-                                    ><span class="countdown">{{ countdown }}</span> 秒后返回首页</span
+                                    ><span class="countdown">{{ countdown }}</span
+                                    ><span class="countdown-unit">s</span></span
                                 >
                             </div>
-                            <div class="meta-item">
-                                <span class="meta-label">手动处理</span>
-                                <span class="go-home" @click="goHome">立即返回首页</span>
+                            <div class="meta-item meta-item-action">
+                                <span class="go-home" @click="goHome">返回首页</span>
                             </div>
                         </div>
 
@@ -140,12 +139,6 @@ onUnmounted(() => {
     background: color-mix(in srgb, var(--el-fill-color-light) 84%, transparent);
 }
 
-.status-divider {
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, color-mix(in srgb, var(--jpz-color-primary) 30%, transparent), transparent);
-}
-
 .hero-code {
     font-size: clamp(72px, 12vw, 132px);
     line-height: 0.92;
@@ -179,23 +172,27 @@ onUnmounted(() => {
 .meta-item {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 16px;
-    padding: 14px 16px;
-    border-radius: 18px;
-    background: color-mix(in srgb, var(--el-fill-color-light) 82%, transparent);
-    border: 1px solid var(--el-border-color-lighter);
+    min-height: 56px;
+    padding: 12px 0;
 }
 
-.meta-label {
-    font-size: 13px;
-    letter-spacing: 0.08em;
-    color: var(--jpz-text-color-secondary);
+.meta-item-countdown {
+    padding-top: 0;
 }
 
 .meta-value {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
     color: var(--jpz-text-color-primary);
     font-weight: 600;
+}
+
+.countdown-unit {
+    font-size: 15px;
+    color: var(--jpz-text-color-secondary);
 }
 
 .go-home {
@@ -203,25 +200,25 @@ onUnmounted(() => {
     align-items: center;
     justify-content: center;
     min-height: 40px;
-    padding: 0 16px;
-    border-radius: 999px;
-    border: 1px solid color-mix(in srgb, var(--jpz-color-primary) 24%, var(--el-border-color));
-    background: color-mix(in srgb, var(--jpz-color-primary) 8%, transparent);
+    padding: 0 2px;
     color: var(--jpz-color-primary);
     cursor: pointer;
     transition:
         transform 0.2s ease,
-        background-color 0.2s ease,
-        border-color 0.2s ease;
+        color 0.2s ease,
+        opacity 0.2s ease;
 
     &:hover {
         transform: translateY(-1px);
-        border-color: color-mix(in srgb, var(--jpz-color-primary) 40%, var(--el-border-color));
-        background: color-mix(in srgb, var(--jpz-color-primary) 12%, transparent);
+        color: color-mix(in srgb, var(--jpz-color-primary) 76%, black);
+        opacity: 0.88;
     }
 }
 
 .countdown {
+    font-size: clamp(28px, 4vw, 38px);
+    line-height: 1;
+    letter-spacing: -0.04em;
     color: var(--jpz-color-primary);
     font-weight: 700;
 }
@@ -264,7 +261,7 @@ onUnmounted(() => {
 
     .meta-item {
         align-items: flex-start;
-        flex-direction: column;
+        justify-content: flex-start;
     }
 }
 </style>
