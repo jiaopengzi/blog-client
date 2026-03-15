@@ -193,10 +193,11 @@ const takeTime = computed(() => {
 }
 
 .title {
+    --post-meta-title-font-family: #{pc.$font-family-title};
+
+    font-family: var(--post-meta-title-font-family);
     line-height: 1.5;
     color: var(--jpz-color-primary);
-    font-weight: 700;
-    font-size: 24px;
     display: table;
     border-bottom: 2px solid var(--jpz-color-primary);
     text-align: center;
@@ -262,6 +263,10 @@ const takeTime = computed(() => {
 
 // 媒体查询
 @include respond-to("pc") {
+    .title {
+        --post-meta-title-font-family: #{pc.$font-family-title};
+    }
+
     .meta-item {
         font-size: 14px;
     }
@@ -277,9 +282,20 @@ const takeTime = computed(() => {
     .meta-immersion-read {
         margin-right: 12px;
     }
+
+    .title-container {
+        .title {
+            font-weight: 700;
+            font-size: 24px;
+        }
+    }
 }
 
 @include respond-to("pad") {
+    .title {
+        --post-meta-title-font-family: #{pad.$font-family-title};
+    }
+
     .immersion-read,
     .author-edit {
         display: none;
@@ -301,19 +317,25 @@ const takeTime = computed(() => {
     .meta-immersion-read {
         margin-right: 12px;
     }
+
+    .title-container {
+        .title {
+            font-weight: 700;
+            font-size: 24px;
+        }
+    }
 }
 
 @include respond-to("phone") {
+    .title {
+        --post-meta-title-font-family: #{phone.$font-family-title};
+    }
+
     .meta-read-time,
     .meta-words,
     .immersion-read,
     .author-edit {
         display: none;
-    }
-
-    .title {
-        font-weight: 700;
-        font-size: 18px;
     }
 
     // 使用等宽字体
@@ -327,6 +349,13 @@ const takeTime = computed(() => {
     .meta-comment,
     .meta-like {
         margin-right: 6px;
+    }
+
+    .title-container {
+        .title {
+            font-weight: 700;
+            font-size: 24px;
+        }
     }
 }
 

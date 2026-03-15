@@ -16,7 +16,10 @@
 // ========================================== live sass compiler 插件使用 结束 ==========================================
 
 #preview {
-    font-family: "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+    --preview-font-family-text: #{pc.$font-family-text};
+    --preview-font-family-title: #{pc.$font-family-title};
+
+    font-family: var(--preview-font-family-text);
     overflow-x: hidden;
     // overscroll-behavior: contain;
     padding: 0 20px;
@@ -62,18 +65,25 @@
     h4,
     h5,
     h6 {
-        font-family: "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+        font-family: var(--preview-font-family-title);
         color: var(--jpz-color-primary);
         font-weight: 700;
         padding-bottom: 2px;
     }
 
     @include respond-to("phone") {
-        h1,
-        h2,
+        h1 {
+            font-size: 22px;
+        }
+
+        h2 {
+            font-size: 20px;
+        }
+
         h3,
         h4 {
             font-size: 18px;
+            font-weight: 700;
         }
     }
 
@@ -479,6 +489,8 @@
 
 @include respond-to("pc") {
     #preview {
+        --preview-font-family-text: #{pc.$font-family-text};
+        --preview-font-family-title: #{pc.$font-family-title};
         max-width: pc.$width-page-main;
         width: 100%;
     }
@@ -490,6 +502,8 @@
 
 @include respond-to("pad") {
     #preview {
+        --preview-font-family-text: #{pad.$font-family-text};
+        --preview-font-family-title: #{pad.$font-family-title};
         width: 100%;
     }
 
@@ -501,6 +515,8 @@
 
 @include respond-to("phone") {
     #preview {
+        --preview-font-family-text: #{phone.$font-family-text};
+        --preview-font-family-title: #{phone.$font-family-title};
         width: 100%;
     }
 
