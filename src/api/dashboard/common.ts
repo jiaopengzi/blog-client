@@ -70,6 +70,7 @@ export enum StatsResKey {
     OrderPaidCount = "order_paid_count", // 支付订单数量
     OrderPaidTotalAmount = "order_paid_total_amount", // 订单总支付金额(分)
     UserCount = "user_count", // 用户数量
+    MembershipCount = "membership_count", // 有效会员数量
 }
 
 // 统计数据响应键显示
@@ -82,6 +83,7 @@ export const StatsResKeyDisplay: Record<StatsResKey, string> = {
     [StatsResKey.OrderPaidCount]: "支付订单数量",
     [StatsResKey.OrderPaidTotalAmount]: "支付金额(元)",
     [StatsResKey.UserCount]: "用户数量",
+    [StatsResKey.MembershipCount]: "有效会员数量",
 }
 
 // 统计数据响应键选项

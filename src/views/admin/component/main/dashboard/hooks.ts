@@ -36,6 +36,7 @@ export function useDashboard() {
         order_paid_count: 0,
         order_paid_total_amount: 0,
         user_count: 0,
+        membership_count: 0,
     })
 
     // 趋势统计请求参数

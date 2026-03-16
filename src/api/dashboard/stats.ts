@@ -19,6 +19,7 @@ export interface StatsRes {
     order_paid_count: number // 支付订单数量
     order_paid_total_amount: number // 订单总支付金额(分)
     user_count: number // 用户数量
+    membership_count: number // 有效会员数量
 }
 
 // 获取面板统计数据
