@@ -33,10 +33,13 @@
 <script setup lang="ts">
 import { Hide, View } from "@element-plus/icons-vue"
 import { computed, onBeforeMount, ref } from "vue"
+import { useRouter } from "vue-router"
 
+import { CommentReviewCode } from "@/api/comment/common"
 import { StatsResKey, StatsResKeyDisplay } from "@/api/dashboard/common"
 import { type StatsRes } from "@/api/dashboard/stats"
 import ChartCard from "@/components/common/chart-card"
+import { RouteNames } from "@/router"
 import { LocalStorageKey } from "@/stores/local"
 
 import { useDashboard } from "../hooks"
@@ -44,6 +47,7 @@ import { useDashboard } from "../hooks"
 defineOptions({ name: "DashboardStats" })
 
 const { stats, getStats } = useDashboard()
+const router = useRouter()
 
 const savedIsShowStatsValue = localStorage.getItem(LocalStorageKey.IsShowDashboardStats)
 const isShowStatsValue = ref(savedIsShowStatsValue !== null ? savedIsShowStatsValue === "true" : true)
@@ -77,7 +81,7 @@ const localStats = computed(() => {
             if (isAmountFenList.includes(key)) {
                 isAmountFen = true
             }
-            if (isClickList.includes(key)) {
+            if (isClickList.includes(key) && (stats.value as StatsRes)[key] > 0) {
                 isClick = true
             }
 
@@ -102,7 +106,17 @@ const toggleStatsVisibility = () => {
 }
 
 // 处理卡片点击事件
-const handleCardClick = (name: string) => {
+const handleCardClick = async (name: string) => {
+    if (name === StatsResKey.CommentCountPending) {
+        await router.push({
+            name: RouteNames.Comment,
+            query: {
+                status: CommentReviewCode.Pending.toString(),
+            },
+        })
+        return
+    }
+
     emit("card-click", name)
 }
 
