@@ -7,14 +7,13 @@
 -->
 <template>
     <div :class="isClick ? `card-container-click` : `card-container`" ref="cardRef" @click="handleClick">
-        <div class="value" v-if="isAmountFen">{{ unitNumber(fenToYuan(value), 1) }}</div>
-        <div class="value" v-if="!isAmountFen">{{ unitNumber(value, 1) }}</div>
+        <div class="value">{{ renderedValue }}</div>
         <div class="label">{{ label }}</div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, useTemplateRef } from "vue"
+import { computed, nextTick, onMounted, useTemplateRef } from "vue"
 
 import { fenToYuan } from "@/utils/amount"
 import { unitNumber } from "@/utils/unit"
@@ -33,6 +32,7 @@ const {
     name = "card",
     label = "卡片图",
     value = 123456,
+    displayValue = "",
     width = 100,
     height = 62,
     bgColor = "",
@@ -42,6 +42,19 @@ const {
 
 // 元素引用
 const cardRef = useTemplateRef<HTMLDivElement>("cardRef")
+
+// renderedValue 统一处理卡片显示值, 优先使用外部传入的遮罩文本.
+const renderedValue = computed(() => {
+    if (displayValue) {
+        return displayValue
+    }
+
+    if (isAmountFen) {
+        return unitNumber(fenToYuan(value), 1)
+    }
+
+    return unitNumber(value, 1)
+})
 
 // 计算并设置 CSS 变量
 const calcCssVars = () => {

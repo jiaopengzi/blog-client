@@ -17,6 +17,9 @@ export interface ChartCardProps {
     /** 数值 */
     value?: number
 
+    /** 自定义展示文本 */
+    displayValue?: string
+
     /** 宽度 */
     width?: number
 
