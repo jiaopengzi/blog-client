@@ -14,8 +14,10 @@
             :add-item-dialog-visible="addItemDialogVisible"
             :edit-item-dialog-visible="editItemDialogVisible"
             :is-show-search="true"
+            :is-show-edit="true"
             :search-str="search"
             :loading-delete="loadingDelete"
+            tags-item-max-height="96px"
             height="calc(100vh - 270px)"
             :is-show-cursor-pointer="true"
             :is-show-user-name="true"
@@ -27,6 +29,8 @@
             @update-search="updateSearch"
             @run-search="runSearch"
             @click-author="handleClickAuthor"
+            @edit-row="editRow"
+            @edit-item-update-dialog-visible="editItemUpdateDialogVisible"
         >
             <template #category>
                 <div class="category-group">
@@ -49,16 +53,25 @@
                     <FilterTagClear v-if="tags.size" class="custom-filter-item" :tags="userMembership" @clear="clearAuthorCategoryTag" />
                 </div>
             </template>
+
+            <template #edit-item-title>
+                <span class="dialog-title">编辑</span>
+            </template>
+
+            <template #edit-item>
+                <div class="dialog-edit">
+                    <EditMembershipUserAdjust :edit-data="editData" @edit-status="handleEditStatus" />
+                </div>
+            </template>
         </BaseTable>
     </section>
 </template>
 
 <script lang="ts" setup>
-import { CircleCheckFilled, WarningFilled } from "@element-plus/icons-vue"
 import { useHead } from "@unhead/vue"
 import { computed, onBeforeMount, reactive, ref, watch } from "vue"
 
-import type { MembershipUserRes } from "@/api/membership/common"
+import { MembershipUserAdjustAction, type MembershipUserRes } from "@/api/membership/common"
 import { getMembershipUserCountByExpireAPI, type MembershipUserCountByExpire } from "@/api/membership/getUserCountByExpire"
 import { type ViewMembershipUserRequest, viewMembershipUserAPI } from "@/api/membership/userView"
 import type { QueryParamsRecord } from "@/api/request"
@@ -73,29 +86,15 @@ import { RouteNames } from "@/router"
 import { formatTime } from "@/utils/dateTime"
 import { adminMenuItemMap } from "@/views/admin/component/aside"
 
+import EditMembershipUserAdjust from "./component/edit"
+import { groupList, queryKey } from "./types"
+import type { EditMembershipUserForm, MembershipUserCountGroupItem } from "./types"
+
 defineOptions({ name: RouteNames.MembershipUser })
 
 useHead({
     title: adminMenuItemMap[RouteNames.MembershipUser].text,
 })
-
-enum queryKey {
-    Group = "group",
-    UserID = "user_id",
-    IsExpired = "is_expired",
-    KeyWord = "key_word",
-}
-
-interface MembershipUserCountGroupItem {
-    display: string
-    group: queryKey.Group | queryKey.IsExpired
-    icon?: "unexpired" | "expired"
-    key: string
-    count: number
-    index: number
-}
-
-const groupList = [queryKey.Group, queryKey.IsExpired] as const
 
 /**
  * isMembershipExpired 判断会员是否已过期。
@@ -227,6 +226,7 @@ const cols: TableColumn[] = reactive([
         label: "备注",
         minWidth: 200,
         align: "center",
+        isScrollFormatter: true,
         formatter: (row: TableData) => {
             if ("remark" in row) {
                 return formatMembershipRemark(row.remark as MembershipUserRes["remark"])
@@ -261,6 +261,17 @@ const membershipUserCountGroup = computed<MembershipUserCountGroupItem[]>(() => 
 
 const clickAuthor = ref("")
 const userMembership = ref<string[]>([])
+const editData = reactive<EditMembershipUserForm>({
+    id: "",
+    role: "",
+    userName: "",
+    expireTimeDisplay: "永久有效",
+    expireStatus: "✅未过期",
+    historyRemark: "",
+    action: MembershipUserAdjustAction.Extend,
+    durationDays: 7,
+    remark: "",
+})
 
 const tags = computed(() => {
     const userMembershipSet = new Set<string>()
@@ -289,14 +300,26 @@ const getMembershipUserExpireCount = async () => {
     membershipUserCountExpire.value = []
 }
 
-const { addItemDialogVisible, editItemDialogVisible, search, pagination, updateCurrentPage, updatePageSize, updateSearch, updateRouterPush, loadingDelete } =
-    useBaseTable<MembershipUserRes, ViewMembershipUserRequest, never>({
-        routeName: RouteNames.MembershipUser,
-        viewAPI: viewMembershipUserAPI,
-        viewResCode: ResponseCode.MembershipUserViewSuccess,
-        queryParams,
-        options: { stringKeys, numberKeys, booleanKeys, noRequestKeys, refreshPromiseFns: [getMembershipUserExpireCount] },
-    })
+const {
+    addItemDialogVisible,
+    editItemDialogVisible,
+    search,
+    pagination,
+    updateCurrentPage,
+    updatePageSize,
+    updateSearch,
+    updateRouterPush,
+    loadingDelete,
+    toggleEditDialog,
+    editStatus,
+    editItemUpdateDialogVisible,
+} = useBaseTable<MembershipUserRes, ViewMembershipUserRequest, never>({
+    routeName: RouteNames.MembershipUser,
+    viewAPI: viewMembershipUserAPI,
+    viewResCode: ResponseCode.MembershipUserViewSuccess,
+    queryParams,
+    options: { stringKeys, numberKeys, booleanKeys, noRequestKeys, refreshPromiseFns: [getMembershipUserExpireCount] },
+})
 
 const runSearch = async () => {
     await updateRouterPush()
@@ -344,6 +367,38 @@ const clearAuthorCategoryTag = async () => {
 }
 
 /**
+ * editRow 打开会员人工处理弹窗.
+ */
+const editRow = (_index: number, row: TableData) => {
+    if (!("id" in row) || !("role" in row) || !("user_info" in row)) {
+        return
+    }
+
+    editData.id = row.id.toString()
+    editData.role = row.role
+    editData.userName = row.user_info.user_name
+    editData.expireTimeDisplay = formatMembershipExpireTime(row.expire_time as MembershipUserRes["expire_time"])
+    editData.expireStatus = getMembershipExpireDisplay(row.expire_time as MembershipUserRes["expire_time"])
+    editData.historyRemark = formatMembershipRemark((row.remark as MembershipUserRes["remark"]) || "")
+    editData.action = MembershipUserAdjustAction.Extend
+    editData.durationDays = 7
+    editData.remark = ""
+
+    toggleEditDialog()
+}
+
+/**
+ * handleEditStatus 处理会员人工处理成功状态.
+ */
+const handleEditStatus = async (status: boolean) => {
+    await editStatus(status)
+    if (status) {
+        editItemUpdateDialogVisible(false)
+        await getMembershipUserExpireCount()
+    }
+}
+
+/**
  * parseParamsNotLoaded 解析无需请求的分组参数。
  */
 const parseParamsNotLoaded = () => {
@@ -379,6 +434,18 @@ onBeforeMount(async () => {
 .membership-user-page {
     margin-top: 40px;
 }
+
+.dialog-title {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.dialog-edit {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
 .custom-filter {
     display: flex;
     align-items: center;

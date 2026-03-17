@@ -30,6 +30,29 @@ export const getMembershipStatusOptions = () => {
     ]
 }
 
+// 会员人工处理动作
+export enum MembershipUserAdjustAction {
+    Extend = "extend",
+    ExpireNow = "expire_now",
+    AppendRemark = "append_remark",
+}
+
+// 会员人工处理动作显示
+export const MembershipUserAdjustActionDisplay: Record<MembershipUserAdjustAction, string> = {
+    [MembershipUserAdjustAction.Extend]: "延长有效期",
+    [MembershipUserAdjustAction.ExpireNow]: "立即失效",
+    [MembershipUserAdjustAction.AppendRemark]: "追加备注",
+}
+
+// 获取会员人工处理动作选项
+export const getMembershipUserAdjustActionOptions = () => {
+    return [
+        { label: MembershipUserAdjustActionDisplay[MembershipUserAdjustAction.Extend], value: MembershipUserAdjustAction.Extend },
+        { label: MembershipUserAdjustActionDisplay[MembershipUserAdjustAction.ExpireNow], value: MembershipUserAdjustAction.ExpireNow },
+        { label: MembershipUserAdjustActionDisplay[MembershipUserAdjustAction.AppendRemark], value: MembershipUserAdjustAction.AppendRemark },
+    ]
+}
+
 export interface InsertMembershipRequest {
     role: string // 会员角色
     price?: string // 价格(分)

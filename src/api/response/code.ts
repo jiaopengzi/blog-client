@@ -233,6 +233,9 @@ export enum ResponseCode {
     MembershipUserViewSuccess = 2715, // 查看会员用户成功
     MembershipUserCountByExpireIsNone = 2716, // 获取按照是否过期统计会员用户数量无数据
     MembershipUserCountByExpireSuccess = 2717, // 获取按照是否过期统计会员用户数量成功
+    MembershipUserAdjustSuccess = 2718, // 管理员人工处理会员成功
+    MembershipUserAdjustItemNotFound = 2719, // 会员明细不存在
+    MembershipUserAdjustPermanentNotSupportExtend = 2720, // 永久有效会员不支持延长
 
     // 优惠券相关
     CouponInsertSuccess = 2800, // 插入优惠券成功
