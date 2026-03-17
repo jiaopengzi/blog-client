@@ -55,6 +55,7 @@ const btnLoading = ref(false)
 
 const insertAPI = isAdmin ? insertLinkAdminAPI : insertLinkAPI
 const btnSubmitDisplay = isAdmin ? "新增" : "提交申请"
+const submitSuccessMessage = isAdmin ? undefined : "申请已提交，请等待管理员审核。"
 
 const submitData = async (form: ViewForm) => {
     btnLoading.value = true
@@ -79,7 +80,7 @@ const submitData = async (form: ViewForm) => {
 
         // 添加成功提示
         emit("add-status", true)
-        MessageUtil.success(data.msg, 6000)
+        MessageUtil.success(submitSuccessMessage ?? data.msg, 6000)
     } else {
         btnLoading.value = false
         // 添加失败提示
