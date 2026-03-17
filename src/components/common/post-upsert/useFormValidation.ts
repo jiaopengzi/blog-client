@@ -41,6 +41,7 @@ interface FormValidationOptions {
         post_expired_time?: Ref<PgSqlDateTime | undefined> // 过期时间
         video_toc?: Ref<SimplePostVideoTocTree[] | undefined> // 文章视频目录
     }
+    postContentError?: Ref<string>
 }
 
 const titleLength = 255
@@ -49,7 +50,7 @@ const titleLength = 255
 export function useFormValidation(options: FormValidationOptions): {
     rules: FormRules<UpsertPostForm>
 } {
-    const { form } = options
+    const { form, postContentError } = options
 
     // 检查文章标题是否可用
     function checkPostTitleValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
@@ -79,6 +80,11 @@ export function useFormValidation(options: FormValidationOptions): {
         // 不能为空
         if (!value) {
             callback(new Error("文章内容不能为空"))
+            return
+        }
+
+        if (postContentError?.value) {
+            callback(new Error(postContentError.value))
             return
         }
 

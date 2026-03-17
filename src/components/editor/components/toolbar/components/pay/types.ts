@@ -21,9 +21,9 @@ export type PayTag = Record<Names.PayVideo | Names.PayMembership | Names.PayRead
 
 export const payTags: Readonly<PayTag> = {
     [Names.PayVideo]: {
-        prefix: `\n<${Names.PayVideo}>\n`,
+        prefix: `\n<${Names.PayVideo}>\n\n`,
         content: `除视频外的其他隐藏内容，如附件下载等；若没有则将标签设置为一行`,
-        suffix: `\n</${Names.PayVideo}>\n`,
+        suffix: `\n\n</${Names.PayVideo}>\n`,
     },
     [Names.PayMembership]: {
         prefix: `\n`,
@@ -31,14 +31,14 @@ export const payTags: Readonly<PayTag> = {
         suffix: `\n`,
     },
     [Names.PayRead]: {
-        prefix: `\n<${Names.PayRead}>\n`,
+        prefix: `\n<${Names.PayRead}>\n\n`,
         content: `您付费阅读的内容`,
-        suffix: `\n</${Names.PayRead}>\n`,
+        suffix: `\n\n</${Names.PayRead}>\n`,
     },
     [Names.PayDownload]: {
-        prefix: `\n<${Names.PayDownload}>\n`,
+        prefix: `\n<${Names.PayDownload}>\n\n`,
         content: `您的付费下载内容`,
-        suffix: `\n</${Names.PayDownload}>\n`,
+        suffix: `\n\n</${Names.PayDownload}>\n`,
     },
     [Names.PayKey]: {
         prefix: `\n`,

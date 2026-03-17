@@ -60,6 +60,7 @@
                         :price="(postInfoForm.price * 100).toString()"
                         :video-toc="postInfoForm.video_toc"
                         placeholder-text="请开始创作..."
+                        :mdlint-rules="editorMarkdownRules"
                         :theme="theme"
                         @update-editor-status="updateEditorStatus"
                     />
@@ -233,6 +234,8 @@ import JEditor from "@/components/editor/index.vue"
 import { useEditor } from "@/components/hooks/useEditor"
 import { usePostView } from "@/components/hooks/usePostView"
 import { useTheme } from "@/components/hooks/useTheme"
+import { type MarkdownRulesConfig } from "@/pkg/codemirror"
+import { autoFixMarkdownText } from "@/pkg/codemirror/extension/mdlint/service"
 import { RouteNames } from "@/router"
 import { useOptionsStore } from "@/stores/options"
 import { PermissionNames } from "@/stores/permissionRole"
@@ -294,6 +297,11 @@ const seoDescriptionExtractWords = ref(post_list_summary_truncate.value)
 const payStrategyOptions = getPayStrategyOptions()
 
 const isPaid = ref(false)
+const postContentError = ref("")
+const editorMarkdownRules: MarkdownRulesConfig = {
+    rule002: false,
+    rule003: false,
+}
 
 const { theme } = useTheme()
 
@@ -484,6 +492,7 @@ const defaultTime = new Date()
 // hooks
 const { rules } = useFormValidation({
     form: toRefs(postInfoForm),
+    postContentError,
 })
 
 // 监控 category_ids 变化,手动执行校验
@@ -508,17 +517,73 @@ const { submitForm: addSubmitForm } = useAdd(postInfoForm, queryKey, postInfoAbo
 // 数据快照
 const { isUpdate, updatedFields, updateSnapshot } = useSnapshot(postInfoForm)
 
-// 更新编辑器状态
+/**
+ * 同步编辑器内容到表单, 并在用户继续编辑时清空上一次 lint 阻断提示.
+ * @returns void.
+ */
 const updateEditorStatus = () => {
     // 将编辑器内容赋值给 post_content
     postInfoForm.post_content = editorState.editorContent
+    postContentError.value = ""
+    formRef.value?.clearValidate("post_content")
     // 判断文章作者是否为空,如果为空则赋值当前用户id
     if (!postInfoForm.post_author) {
         postInfoForm.post_author = userStore.data.user.id.toString()
     }
 }
 
+/**
+ * 汇总 lint 诊断信息, 用于在表单校验中提示用户未自动修复的问题.
+ * @param diagnostics lint 诊断列表.
+ * @returns 适合表单错误展示的简短提示文本.
+ */
+const formatLintErrorMessage = (diagnostics: { message: string }[]) => {
+    const uniqueMessages = Array.from(new Set(diagnostics.map((item) => item.message))).slice(0, 3)
+    const extraCount = diagnostics.length - uniqueMessages.length
+    const suffix = extraCount > 0 ? ` 等 ${diagnostics.length} 个问题` : ""
+    return `Markdown lint 未通过：${uniqueMessages.join("；")}${suffix}`
+}
+
+/**
+ * 保存前执行 Markdown lint 自动修复, 剩余问题会挂到 post_content 表单校验中并阻止提交.
+ * @param formEl 文章表单实例.
+ * @returns 是否通过保存前的编辑器校验.
+ */
+const validateEditorBeforeSubmit = async (formEl: FormInstance | undefined) => {
+    updateEditorStatus()
+    postContentError.value = ""
+
+    const result = autoFixMarkdownText(editorState.editorContent, {
+        rules: editorMarkdownRules,
+    })
+
+    if (result.changed) {
+        editorPostRef.value?.replaceContent(result.fixedText)
+        postInfoForm.post_content = result.fixedText
+    }
+
+    if (result.diagnostics.length === 0) {
+        formEl?.clearValidate("post_content")
+        return true
+    }
+
+    postContentError.value = formatLintErrorMessage(result.diagnostics)
+
+    try {
+        await formEl?.validateField("post_content")
+    } catch {
+        // 表单错误提示由 Element Plus 展示, 这里无需额外处理.
+    }
+
+    return false
+}
+
 const submitForm = async (formEl: FormInstance | undefined) => {
+    const isEditorValid = await validateEditorBeforeSubmit(formEl)
+    if (!isEditorValid) {
+        return
+    }
+
     // 判断 seo 描述是否为空
     if (!postInfoForm.seo_description) {
         // 如果 seo 描述为空，则自动截取内容前 post_list_summary_truncate 字

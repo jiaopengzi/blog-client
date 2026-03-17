@@ -9,7 +9,7 @@
 import type { Diagnostic } from "@codemirror/lint"
 
 import type { RuleDefinition } from "./types"
-import { getLazyRuleLoaders } from "./utils"
+import { buildDocFromText, getLazyRuleLoaders } from "./utils"
 
 // 延迟加载器集合, 以及模块缓存用于避免重复加载
 const loaders = getLazyRuleLoaders()
@@ -24,32 +24,6 @@ async function loadModuleAndCache(key: string, loader: (() => Promise<RuleDefini
         return mod
     } catch {
         return undefined
-    }
-}
-
-/**
- * 将纯文本构建为与编辑器文档兼容的 doc 对象
- * @param text - 文本内容
- * @returns doc 对象, 含 lines 和 line(i) 方法, 用于规则函数读取行信息
- */
-function buildDocFromText(text: string) {
-    // 按照行拆分文本并计算每行的起始偏移量
-    const lines = text.split(/\r?\n/)
-    const offsets: number[] = [0]
-    for (let i = 0; i < lines.length; i++) {
-        offsets.push((offsets[i] ?? 0) + (lines[i] ?? "").length + 1)
-    }
-
-    // 返回符合 DocLike 接口的对象
-    return {
-        lines: lines.length,
-        line(i: number) {
-            const idx = i - 1
-            const t = lines[idx] ?? ""
-            const from = offsets[idx] ?? 0
-            const to = from + t.length
-            return { from, to, text: t }
-        },
     }
 }
 

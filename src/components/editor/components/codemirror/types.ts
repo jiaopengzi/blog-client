@@ -16,6 +16,7 @@ import type { CommandsKey, MarkdownEditorCommandItem } from "../../command"
 export interface CodemirrorRef extends HTMLElement {
     root: HTMLElement
     insertContent: (content: string) => void
+    replaceContent: (content: string) => void
 }
 
 // codemirror 编辑器命令

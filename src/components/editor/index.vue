@@ -173,6 +173,17 @@ const updateEditorDoc = (editorDoc: string) => {
     emit("updateEditorStatus", true) // 更新编辑器状态
 }
 
+/**
+ * 将外部修复后的完整内容回写到编辑器与预览状态.
+ * @param editorDoc 修复后的 Markdown 内容.
+ * @returns void.
+ */
+const replaceContent = (editorDoc: string) => {
+    codemirrorRef.value?.replaceContent(editorDoc)
+    stateManager.updateState(editorDoc)
+    emit("updateEditorStatus", true)
+}
+
 // preview
 const { showImageViewer, closeImageViewer, handleMouseInPreview, handleHeadingShowCurrent, handleUpdateIsUserScrollPreview } = usePreview(stateManager)
 
@@ -187,6 +198,7 @@ watch(
 // 暴露给父组件的属性
 defineExpose({
     codemirror: codemirrorRef,
+    replaceContent,
 })
 </script>
 

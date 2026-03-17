@@ -185,6 +185,25 @@ const insertContent = (content: string): void => {
     editorInsertContent(cmView, content)
 }
 
+/**
+ * 用新的完整内容替换编辑器文档, 供保存前自动修复结果回写使用.
+ * @param content 修复后的完整 Markdown 内容.
+ * @returns void.
+ */
+const replaceContent = (content: string): void => {
+    if (!cmView || cmView.state.doc.toString() === content) {
+        return
+    }
+
+    cmView.dispatch({
+        changes: {
+            from: 0,
+            to: cmView.state.doc.length,
+            insert: content,
+        },
+    })
+}
+
 // 滚动到指定行
 const scrollIntoViewLine = (lineNumber: number): void => {
     let yMargin = 5 // 默认值 5
@@ -356,6 +375,7 @@ onUnmounted(() => {
 defineExpose({
     root: codemirrorRef,
     insertContent,
+    replaceContent,
 })
 </script>
 

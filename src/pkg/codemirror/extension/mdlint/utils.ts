@@ -6,7 +6,7 @@
  * Description : 工具函数
  */
 
-import type { RuleDefinition } from "./types"
+import type { DocLike, RuleDefinition } from "./types"
 import type { PairContext, SingleLineContext, SurroundingContext } from "./types"
 
 // 在主线程同步加载模块并同时保留延迟加载器的占位映射
@@ -19,6 +19,31 @@ const lazyLoaders = Object.fromEntries(Object.keys(_eagerModules).map((p) => [p,
 
 // eagerModules 供同步加载使用, 直接引用已加载的模块映射
 const eagerModules = _eagerModules
+
+/**
+ * 将纯文本构建为规则可消费的 DocLike 对象.
+ * @param text Markdown 原始文本.
+ * @returns 兼容规则执行的文档对象.
+ */
+export function buildDocFromText(text: string): DocLike {
+    const lines = text.split(/\r?\n/)
+    const offsets: number[] = [0]
+
+    for (let i = 0; i < lines.length; i++) {
+        offsets.push((offsets[i] ?? 0) + (lines[i] ?? "").length + 1)
+    }
+
+    return {
+        lines: lines.length,
+        line(i: number) {
+            const idx = i - 1
+            const lineText = lines[idx] ?? ""
+            const from = offsets[idx] ?? 0
+            const to = from + lineText.length
+            return { from, to, text: lineText }
+        },
+    }
+}
 
 /**
  * 在主线程同步加载规则模块, 并按文件名排序返回 RuleModule 数组
@@ -162,6 +187,7 @@ export function validateSingleLineForPair(ctx: PairContext) {
 }
 
 export default {
+    buildDocFromText,
     loadEagerRules,
     getLazyRuleLoaders,
     validateNoSurroundingContent,
