@@ -205,7 +205,7 @@ const {
     dataPosterShare, // 生成分享海报需要的数据
     handleClickInteraction, // 处理交互点击事件
     setAffixLeft, // 设置交互项的左侧偏移量
-} = useInteraction(postMeta, postId, setPostLike, setPostStar, postDetailRef)
+} = useInteraction(postMeta, postId, detailType, setPostLike, setPostStar, postDetailRef)
 
 // preview
 const { showImageViewer, closeImageViewer, handleHeadingShowCurrent, handleUpdateIsUserScrollPreview } = usePreview(manager)

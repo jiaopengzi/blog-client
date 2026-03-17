@@ -19,6 +19,7 @@ import { copyText } from "@/utils/clipboard"
 import { MessageUtil } from "@/utils/message"
 
 import { type InteractionIcon, type InteractionItemProps } from "../components/interaction"
+import { PostDetailType } from "../types"
 
 /**
  * 获取分享海报二维码中心 logo.
@@ -55,6 +56,7 @@ function getPosterQrLogoSrc(faviconSrc?: string, logoSrc?: string): string {
 export function useInteraction(
     postMeta: Ref<PostMetaProps>,
     postId: Ref<string>,
+    detailType: Ref<PostDetailType>,
     setPostLike: (req: PostLikeRequest) => Promise<void>,
     setPostStar: (req: PostStarRequest) => Promise<void>,
     postDetailRef: Ref<HTMLElement | null>,
@@ -107,8 +109,21 @@ export function useInteraction(
             logoSrc: getPosterQrLogoSrc(app_options.value.favicon.value, app_options.value.logo.value),
             imgSrc: head.value.image,
             titleText: postMeta.value.post_title,
-            urlText: head.value.url,
+            urlText: shareUrl.value,
         }
+    })
+
+    /**
+     * 生成可对外分享的稳定链接.
+     * 文章详情优先使用 `/post/:postId`, 避免复制内部查询串 `/?post_id=...` 导致外部打开时不稳定.
+     * 页面和其他场景继续回退到当前 head.url.
+     */
+    const shareUrl = computed(() => {
+        if (detailType.value === PostDetailType.Post && postId.value) {
+            return new URL(`/post/${postId.value}`, window.location.origin).toString()
+        }
+
+        return head.value.url || window.location.href
     })
 
     // 处理交互点击事件
@@ -130,12 +145,13 @@ export function useInteraction(
                 isShowPosterShare.value = true // 显示分享海报
                 break
             case "link":
-                if (!head.value.url || head.value.url === "") {
+                if (!shareUrl.value || shareUrl.value === "") {
                     MessageUtil.warning("链接不存在")
                     return
                 }
                 // 构造需要复制的text
-                const text = `[${head.value.title}](${head.value.url})`
+                // const text = `[${head.value.title}](${shareUrl.value})`
+                const text = `${shareUrl.value}`
                 // 复制链接到剪贴板
                 copyText(text)
                     .then(() => {
