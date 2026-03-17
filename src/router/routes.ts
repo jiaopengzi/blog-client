@@ -78,6 +78,16 @@ export const routes: RouteRecordRaw[] = [
     },
 
     {
+        // 文章 slug 导航路由
+        path: "/ps/:postSlug",
+        name: RouteNames.PostSlug,
+        component: () => import("@/views/home"),
+        meta: {
+            requiresAuth: false,
+        },
+    },
+
+    {
         path: "/test",
         name: RouteNames.Test,
         component: () => import("@/views/test"),

@@ -11,6 +11,7 @@ export enum RouteNamesDefault {
     Home = "home",
     Search = "search",
     Detail = "detail",
+    PostSlug = "post-slug",
     Setup = "setup",
     Test = "test",
     Test1 = "test1",
