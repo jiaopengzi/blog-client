@@ -126,6 +126,13 @@ const getMembershipExpireDisplay = (expireTime: MembershipUserRes["expire_time"]
     return isMembershipExpired(expireTime) ? "❌已过期" : "✅未过期"
 }
 
+/**
+ * formatMembershipRemark 格式化会员生命周期备注展示.
+ */
+const formatMembershipRemark = (remark: MembershipUserRes["remark"]): string => {
+    return remark?.trim() || "-"
+}
+
 const cols: TableColumn[] = reactive([
     {
         prop: "id",
@@ -210,6 +217,19 @@ const cols: TableColumn[] = reactive([
         formatter: (row: TableData) => {
             if ("expire_time" in row) {
                 return getMembershipExpireDisplay(row.expire_time as MembershipUserRes["expire_time"])
+            }
+
+            return "-"
+        },
+    },
+    {
+        prop: "remark",
+        label: "备注",
+        minWidth: 200,
+        align: "center",
+        formatter: (row: TableData) => {
+            if ("remark" in row) {
+                return formatMembershipRemark(row.remark as MembershipUserRes["remark"])
             }
 
             return "-"

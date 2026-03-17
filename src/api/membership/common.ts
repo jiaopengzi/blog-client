@@ -68,6 +68,7 @@ export interface MembershipUserRes extends DataWithImg {
     order_id: string
     role: string
     expire_time: PgSqlDateTime
+    remark: string
     user_info: MembershipUserInfo
 }
 
