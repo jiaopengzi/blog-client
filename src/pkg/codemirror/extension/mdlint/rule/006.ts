@@ -13,7 +13,14 @@ import { MediaTypes } from "@/components/player/types"
 import { parseAttributes } from "@/utils/attribute"
 
 import type { AttrContext, DocLike, VideoPlayerAttrs } from "../types"
-import { validateBlankLinesForPair, validateEmptyContent, validateNoSurroundingContent, validateSingleLineForPair } from "../utils"
+import {
+    collectFencedCodeLineNumbers,
+    validateBlankLinesForPair,
+    validateEmptyContent,
+    validateNoNestedCustomTags,
+    validateNoSurroundingContent,
+    validateSingleLineForPair,
+} from "../utils"
 
 export const id = "rule006"
 export const defaultOptions = {}
@@ -29,6 +36,7 @@ export const defaultOptions = {}
 export function run(doc: DocLike): Diagnostic[] {
     const diagnostics: Diagnostic[] = []
     const lineCount = doc.lines
+    const fencedLineNumbers = collectFencedCodeLineNumbers(doc)
 
     // 匹配开始和结束标签, 捕获开始标签的属性部分
     const tagRegex = /<video-player(\s+[^>]*)?>|<\/video-player>/g
@@ -36,6 +44,10 @@ export function run(doc: DocLike): Diagnostic[] {
     const stack: Array<{ line: number; fromIndex: number; length: number; attrs: string }> = []
 
     for (let i = 1; i <= lineCount; i++) {
+        if (fencedLineNumbers.has(i)) {
+            continue
+        }
+
         const lineText = doc.line(i).text
         let match: RegExpExecArray | null
         tagRegex.lastIndex = 0
@@ -79,8 +91,8 @@ export function run(doc: DocLike): Diagnostic[] {
                     // 校验属性: 必须有 video-type, 且 id 或 src 至少其一
                     validateAttributesForVideoPlayer({ doc, attrsText: open.attrs, openFrom, openTo, diagnostics, sourceId: id })
 
-                    // 要求标签内容为空
-                    validateEmptyContent({
+                    // video-player 内部不允许出现任何项目自定义标签.
+                    const hasNestedCustomTags = validateNoNestedCustomTags({
                         doc,
                         openLine: openLn,
                         closeLine: closeLn,
@@ -88,9 +100,25 @@ export function run(doc: DocLike): Diagnostic[] {
                         openLength: open.length,
                         closeMatchIndex: match.index,
                         tagName: "video-player",
+                        ignoredLineNumbers: fencedLineNumbers,
                         diagnostics,
                         sourceId: id,
                     })
+
+                    // 要求标签内容为空
+                    if (!hasNestedCustomTags) {
+                        validateEmptyContent({
+                            doc,
+                            openLine: openLn,
+                            closeLine: closeLn,
+                            openFromIndex: open.fromIndex,
+                            openLength: open.length,
+                            closeMatchIndex: match.index,
+                            tagName: "video-player",
+                            diagnostics,
+                            sourceId: id,
+                        })
+                    }
 
                     // 校验前后空行
                     const opts = {

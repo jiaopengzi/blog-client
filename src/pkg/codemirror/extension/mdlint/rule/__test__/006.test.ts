@@ -74,4 +74,16 @@ describe("rule006 - video-player 标签合法性检测", () => {
         expect(diags.some((d) => d.message.includes("前应有空行"))).toBe(true)
         expect(diags.some((d) => d.message.includes("后应有空行"))).toBe(true)
     })
+
+    it("video-player 内嵌套自定义标签应报错", () => {
+        const doc = makeDoc(['<video-player video-type="hls" id="x">', "<pay-read>", "</pay-read>", "</video-player>"])
+        const diags = run(doc as unknown as DocLike)
+        expect(diags.some((d) => d.message.includes("不允许嵌套自定义标签"))).toBe(true)
+    })
+
+    it("fenced code block 内的 video-player 示例不应触发 lint", () => {
+        const doc = makeDoc(["```html", '<video-player video-type="hls" id="m-2-7f9d0d9c"></video-player>', "```"])
+        const diags = run(doc as unknown as DocLike)
+        expect(diags).toHaveLength(0)
+    })
 })

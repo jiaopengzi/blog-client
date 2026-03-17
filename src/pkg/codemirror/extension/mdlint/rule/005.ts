@@ -11,7 +11,14 @@ import type { Diagnostic } from "@codemirror/lint"
 import { parseAttributes } from "@/utils/attribute"
 
 import type { AttrContext, DocLike } from "../types"
-import { validateBlankLinesForPair, validateEmptyContent, validateNoSurroundingContent, validateSingleLineForPair } from "../utils"
+import {
+    collectFencedCodeLineNumbers,
+    validateBlankLinesForPair,
+    validateEmptyContent,
+    validateNoNestedCustomTags,
+    validateNoSurroundingContent,
+    validateSingleLineForPair,
+} from "../utils"
 
 export const id = "rule005"
 export const defaultOptions = {}
@@ -41,6 +48,7 @@ export const defaultOptions = {}
 export function run(doc: DocLike): Diagnostic[] {
     const diagnostics: Diagnostic[] = []
     const lineCount = doc.lines
+    const fencedLineNumbers = collectFencedCodeLineNumbers(doc)
 
     // 正则同时匹配开始和结束标签, 并捕获开始标签的属性部分
     const payTagRegex = /<pay-(video|membership|read|download|key)(\s+[^>]*)?>|<\/pay-(video|membership|read|download|key)>/g
@@ -50,6 +58,10 @@ export function run(doc: DocLike): Diagnostic[] {
 
     // 遍历每一行, 识别标签并进行配对与校验
     for (let i = 1; i <= lineCount; i++) {
+        if (fencedLineNumbers.has(i)) {
+            continue
+        }
+
         const lineText = doc.line(i).text
         let match: RegExpExecArray | null
         payTagRegex.lastIndex = 0 // 重置正则状态
@@ -101,8 +113,22 @@ export function run(doc: DocLike): Diagnostic[] {
                         validateAttributesForKey({ doc, attrsText: open.attrs, openFrom, openTo, diagnostics, sourceId: id })
                     }
 
+                    // 自定义标签内部不允许再嵌套任何项目自定义标签。
+                    const hasNestedCustomTags = validateNoNestedCustomTags({
+                        doc,
+                        openLine: openLn,
+                        closeLine: closeLn,
+                        openFromIndex: open.fromIndex,
+                        openLength: open.length,
+                        closeMatchIndex: match.index,
+                        tagName: open.tag,
+                        ignoredLineNumbers: fencedLineNumbers,
+                        diagnostics,
+                        sourceId: id,
+                    })
+
                     // 对于 pay-key 和 pay-membership 要求标签内不能有内容(必须为空)
-                    if (open.tag === "pay-key" || open.tag === "pay-membership") {
+                    if ((open.tag === "pay-key" || open.tag === "pay-membership") && !hasNestedCustomTags) {
                         validateEmptyContent({
                             doc,
                             openLine: openLn,

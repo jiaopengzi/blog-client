@@ -44,4 +44,13 @@ describe("mdlint service", () => {
         expect(result.diagnostics).toHaveLength(1)
         expect(result.diagnostics[0]?.message).toBe("标签缺少属性: id")
     })
+
+    it("不会通过自动修复消除自定义标签嵌套问题", () => {
+        const result = autoFixMarkdownText(["", "<pay-read>", '<video-player video-type="hls" id="m-1"></video-player>', "</pay-read>", ""].join("\n"), {
+            rules: markdownRules,
+        })
+
+        expect(result.fixedText).toContain('<video-player video-type="hls" id="m-1"></video-player>')
+        expect(result.diagnostics.some((item) => item.message.includes("不允许嵌套自定义标签"))).toBe(true)
+    })
 })

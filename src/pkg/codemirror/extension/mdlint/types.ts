@@ -159,6 +159,26 @@ export interface SingleLineContext extends BaseContext {
 }
 
 /**
+ * 标签内部内容校验上下文, 用于禁止自定义标签嵌套.
+ */
+export interface InnerContentContext extends BaseContext {
+    /** 开始标签所在行号 */
+    openLine: number
+    /** 结束标签所在行号 */
+    closeLine: number
+    /** 开始标签在行内的起始索引 */
+    openFromIndex: number
+    /** 开始标签长度 */
+    openLength: number
+    /** 结束标签在行内的起始索引 */
+    closeMatchIndex: number
+    /** 当前外层标签名称 */
+    tagName: string
+    /** 需要忽略的行号集合, 例如 fenced code block 内的行 */
+    ignoredLineNumbers?: Set<number>
+}
+
+/**
  * 标签前后内容验证上下文, 用于 validateNoSurroundingContent
  */
 export interface SurroundingContext extends BaseContext {

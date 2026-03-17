@@ -7,7 +7,7 @@
  */
 
 import type { DocLike, RuleDefinition } from "./types"
-import type { PairContext, SingleLineContext, SurroundingContext } from "./types"
+import type { InnerContentContext, PairContext, SingleLineContext, SurroundingContext } from "./types"
 
 // 在主线程同步加载模块并同时保留延迟加载器的占位映射
 // 规则文件已统一放入本目录下的 "rule" 子目录, 文件名不再包含前缀, 例如 "001.ts", "002.ts"
@@ -19,6 +19,8 @@ const lazyLoaders = Object.fromEntries(Object.keys(_eagerModules).map((p) => [p,
 
 // eagerModules 供同步加载使用, 直接引用已加载的模块映射
 const eagerModules = _eagerModules
+const CUSTOM_TAG_REGEX = /<\/?(?:pay-(?:video|membership|read|download|key)|video-player)(?:\s+[^>]*)?>/g
+const FENCE_REGEX = /^```/
 
 /**
  * 将纯文本构建为规则可消费的 DocLike 对象.
@@ -79,6 +81,31 @@ export function getLazyRuleLoaders() {
         }
     }
     return map
+}
+
+/**
+ * 收集 fenced code block 中的所有行号, 供规则跳过代码示例内容.
+ * @param doc 文档对象.
+ * @returns 代码块内行号集合.
+ */
+export function collectFencedCodeLineNumbers(doc: DocLike): Set<number> {
+    const fencedLineNumbers = new Set<number>()
+    let isInsideFence = false
+
+    for (let lineNum = 1; lineNum <= doc.lines; lineNum++) {
+        const lineText = doc.line(lineNum).text
+        if (FENCE_REGEX.test(lineText)) {
+            fencedLineNumbers.add(lineNum)
+            isInsideFence = !isInsideFence
+            continue
+        }
+
+        if (isInsideFence) {
+            fencedLineNumbers.add(lineNum)
+        }
+    }
+
+    return fencedLineNumbers
 }
 
 /**
@@ -186,12 +213,55 @@ export function validateSingleLineForPair(ctx: PairContext) {
     }
 }
 
+/**
+ * 校验标签内部不允许嵌套项目自定义标签.
+ * @param ctx - 上下文对象.
+ * @returns boolean 是否检测到嵌套的自定义标签.
+ */
+export function validateNoNestedCustomTags(ctx: InnerContentContext): boolean {
+    const { doc, openLine, closeLine, openFromIndex, openLength, closeMatchIndex, tagName, diagnostics, sourceId, ignoredLineNumbers } = ctx
+    let hasNestedTag = false
+
+    for (let lineNum = openLine; lineNum <= closeLine; lineNum++) {
+        if (ignoredLineNumbers?.has(lineNum)) {
+            continue
+        }
+
+        const line = doc.line(lineNum)
+        const start = lineNum === openLine ? openFromIndex + openLength : 0
+        const end = lineNum === closeLine ? closeMatchIndex : line.text.length
+        const segment = line.text.slice(start, end)
+
+        if (!segment) {
+            continue
+        }
+
+        CUSTOM_TAG_REGEX.lastIndex = 0
+        let match: RegExpExecArray | null
+
+        while ((match = CUSTOM_TAG_REGEX.exec(segment)) !== null) {
+            hasNestedTag = true
+            diagnostics.push({
+                from: line.from + start + match.index,
+                to: line.from + start + match.index + match[0].length,
+                severity: "error",
+                message: `${tagName} 标签内不允许嵌套自定义标签: ${match[0]}`,
+                source: sourceId,
+            })
+        }
+    }
+
+    return hasNestedTag
+}
+
 export default {
     buildDocFromText,
     loadEagerRules,
     getLazyRuleLoaders,
+    collectFencedCodeLineNumbers,
     validateNoSurroundingContent,
     validateEmptyContent,
     validateBlankLinesForPair,
     validateSingleLineForPair,
+    validateNoNestedCustomTags,
 }
