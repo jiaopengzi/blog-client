@@ -15,7 +15,7 @@
             <div class="container-main-item title-container">
                 <h3 class="title">友情链接申请</h3>
             </div>
-            <AddLink class="container-main-item add" />
+            <AddLink class="container-main-item add" :is-show-image-selector="false" />
         </el-container>
     </div>
 </template>

@@ -11,6 +11,7 @@
         :view-data="addForm"
         :is-show-id="false"
         :is-admin="isAdmin"
+        :is-show-image-selector="isShowImageSelector"
         :btn-loading="btnLoading"
         :btn-submit-display="btnSubmitDisplay"
         @submit-data="submitData"
@@ -32,8 +33,9 @@ import { type ViewForm } from "../view"
 defineOptions({ name: "AddLink" })
 
 // props
-const { isAdmin = false } = defineProps<{
+const { isAdmin = false, isShowImageSelector = true } = defineProps<{
     isAdmin?: boolean // 是否是管理员添加链接
+    isShowImageSelector?: boolean // 是否显示图片选择按钮
 }>()
 
 const emit = defineEmits<{

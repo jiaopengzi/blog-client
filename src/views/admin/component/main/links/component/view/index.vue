@@ -28,7 +28,8 @@
                 <el-input v-model="viewDataAc.url" placeholder="请输入链接地址-必填" />
             </el-form-item>
             <el-form-item label="图片" prop="thumbnail">
-                <ImageInput v-model="viewDataAc.thumbnail" placeholder="请输入链接的图片URL-必填" clearable />
+                <ImageInput v-if="isShowImageSelector" v-model="viewDataAc.thumbnail" placeholder="请输入链接的图片URL-必填" clearable />
+                <el-input v-else v-model="viewDataAc.thumbnail" placeholder="请输入链接的图片URL-必填" clearable />
             </el-form-item>
             <el-form-item label="描述" prop="description">
                 <el-input v-model="viewDataAc.description" type="textarea" placeholder="请输入链接描信息（建议80字以内）- 必填" :rows="5" />
@@ -69,12 +70,14 @@ const {
     isShowId = false,
     btnLoading = false,
     isAdmin = false, // 是否是管理员添加链接
+    isShowImageSelector = true, // 是否显示图片选择按钮
 } = defineProps<{
     viewData: ViewForm // 展示信息
     btnSubmitDisplay?: string // 提交按钮显示文字
     isShowId?: boolean // 是否显示ID
     btnLoading?: boolean // 提交按钮加载状态
     isAdmin?: boolean // 是否是管理员添加链接
+    isShowImageSelector?: boolean // 是否显示图片选择按钮
 }>()
 
 // emits
