@@ -37,12 +37,14 @@ describe("LinkView 组件", () => {
         const wrapper = mountComponent()
 
         expect(wrapper.findComponent({ name: "ImageInput" }).exists()).toBe(true)
+        expect(wrapper.find(".media-input .btn").exists()).toBe(true)
     })
 
-    it("关闭图片选择按钮时回退为普通输入框", () => {
+    it("关闭图片选择按钮时仍保留图片输入和展示组件", () => {
         const wrapper = mountComponent({ isShowImageSelector: false })
 
-        expect(wrapper.findComponent({ name: "ImageInput" }).exists()).toBe(false)
+        expect(wrapper.findComponent({ name: "ImageInput" }).exists()).toBe(true)
+        expect(wrapper.find(".media-input .btn").exists()).toBe(false)
         expect(wrapper.find('input[placeholder="请输入链接的图片URL-必填"]').exists()).toBe(true)
     })
 })

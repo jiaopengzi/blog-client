@@ -10,7 +10,7 @@
     <div :class="modelValue ? 'media-container-show-image' : 'media-container'">
         <div class="media-input">
             <el-input class="media-input-item in" :model-value="modelValue" @update:modelValue="$emit('update:modelValue', $event)" v-bind="$attrs" />
-            <el-button class="media-input-item btn" type="primary" @click="mediaDialogVisible = true">
+            <el-button v-if="isShowSelectBtn" class="media-input-item btn" type="primary" @click="mediaDialogVisible = true">
                 <span>选择</span>
             </el-button>
         </div>
@@ -34,9 +34,14 @@ import { MessageUtil } from "@/utils/message"
 // 定义组件名称
 defineOptions({ name: "ImageInput" })
 
-const { modelValue = "", isShowImg = true } = defineProps<{
+const {
+    modelValue = "",
+    isShowImg = true,
+    isShowSelectBtn = true,
+} = defineProps<{
     modelValue: string | undefined | null // 绑定值
     isShowImg?: boolean // 是否显示图片,默认显示
+    isShowSelectBtn?: boolean // 是否显示选择按钮, 默认显示
 }>()
 
 // // 定义 emits 事件
