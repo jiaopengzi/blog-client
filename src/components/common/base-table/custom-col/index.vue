@@ -65,8 +65,13 @@
                 />
             </el-scrollbar>
 
+            <!-- 可滚动的格式化文本 -->
+            <div v-if="col.isScrollFormatter && col.formatter && !col.isCopyText" class="scroll-formatter-box" :style="{ maxHeight: tagsItemMaxHeight }">
+                <div class="scroll-formatter-text">{{ col.formatter(scope.row) }}</div>
+            </div>
+
             <!-- 格式化(isCopyText 时由 CopyText 组件负责显示, 此处不重复渲染) -->
-            <span v-if="col.formatter && !col.isCopyText">{{ col.formatter(scope.row) }}</span>
+            <span v-if="col.formatter && !col.isCopyText && !col.isScrollFormatter">{{ col.formatter(scope.row) }}</span>
         </template>
     </el-table-column>
 </template>
@@ -172,5 +177,37 @@ const handleViewWithID = (row: TableData) => {
     white-space: normal;
     // 长文本换行
     word-break: break-all;
+}
+
+.scroll-formatter-text {
+    white-space: pre-wrap;
+    word-break: break-all;
+    line-height: 1.65;
+    text-align: left;
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: 8px;
+}
+
+.scroll-formatter-box {
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    scrollbar-gutter: stable;
+}
+
+.scroll-formatter-box::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scroll-formatter-box::-webkit-scrollbar-thumb {
+    background-color: rgba(24, 39, 75, 0.28);
+    border-radius: 999px;
+}
+
+.scroll-formatter-box::-webkit-scrollbar-track {
+    background-color: rgba(24, 39, 75, 0.08);
+    border-radius: 999px;
 }
 </style>
