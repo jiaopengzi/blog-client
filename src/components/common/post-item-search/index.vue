@@ -95,6 +95,7 @@ const displayText = computed(() => {
     // 过长文本省略号
     display: -webkit-box;
     -webkit-box-orient: vertical;
+    line-clamp: 2;
     -webkit-line-clamp: 2; // 限制行数为2
     transition: color 0.3s ease;
 }
@@ -106,18 +107,21 @@ const displayText = computed(() => {
 // 媒体查询
 @include respond-to("pc") {
     .title {
+        line-clamp: 1;
         -webkit-line-clamp: 1; // 限制行数为1
     }
 }
 
 @include respond-to("pad") {
     .title {
+        line-clamp: 2;
         -webkit-line-clamp: 2; // 限制行数为2
     }
 }
 
 @include respond-to("phone") {
     .title {
+        line-clamp: 2;
         -webkit-line-clamp: 2; // 限制行数为2
     }
 }

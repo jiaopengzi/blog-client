@@ -7,7 +7,7 @@
 -->
 
 <template>
-    <div class="post-item">
+    <div class="post-item" @click="handlePostItemClick">
         <!-- 左上角提示符 -->
         <div class="top-left-tip"></div>
 
@@ -19,7 +19,7 @@
 
         <!-- 缩略图 -->
         <div class="thumbnail">
-            <PostThumbnail :src="postData.thumbnail" class="thumbnail-img" :initial="fallbackInitial" theme="main" @click="postId(postData.id)" />
+            <PostThumbnail :src="postData.thumbnail" class="thumbnail-img" :initial="fallbackInitial" theme="main" @click="handleThumbnailClick" />
         </div>
 
         <!-- 文章摘要内容 -->
@@ -28,7 +28,7 @@
             <h2 class="title-row">
                 <span class="pinned" v-if="postData.is_pinned">置顶</span>
                 <span class="pinned" v-if="postData.post_status === PostStatusCode.Private">私密</span>
-                <span class="title" @click="postId(postData.id)">{{ postData.post_title }}</span>
+                <span class="title" @click="handleTitleClick">{{ postData.post_title }}</span>
             </h2>
 
             <!-- 摘要文字 -->
@@ -41,7 +41,7 @@
         </div>
 
         <!-- 阅读跳转 -->
-        <el-button class="read-more" plain @click="postId(postData.id)">阅读全文</el-button>
+        <el-button class="read-more" plain @click="handleReadMoreClick">阅读全文</el-button>
     </div>
 </template>
 
@@ -110,6 +110,46 @@ const clickCategory = (val: PostCategory) => {
 // 点击文章
 const postId = (val: string) => {
     emit("postId", val)
+}
+
+/**
+ * 处理文章卡片点击, 仅在 phone 和 pad 端触发文章跳转.
+ * 若点击目标位于 button 内, 则保留该按钮原有交互.
+ */
+const handlePostItemClick = (event: MouseEvent) => {
+    if (device.value !== DeviceType.PHONE && device.value !== DeviceType.PAD) {
+        return
+    }
+
+    const target = event.target
+    if (target instanceof HTMLElement && target.closest("button")) {
+        return
+    }
+
+    postId(postData.id)
+}
+
+/**
+ * 处理缩略图点击, 保持 PC, pad, phone 三端行为一致.
+ */
+const handleThumbnailClick = () => {
+    postId(postData.id)
+}
+
+/**
+ * 处理标题点击, PC 端保持原有直接跳转行为.
+ */
+const handleTitleClick = () => {
+    if (device.value === DeviceType.PC) {
+        postId(postData.id)
+    }
+}
+
+/**
+ * 处理阅读全文按钮点击, 保持原有直接跳转行为.
+ */
+const handleReadMoreClick = () => {
+    postId(postData.id)
 }
 
 // 点击作者
