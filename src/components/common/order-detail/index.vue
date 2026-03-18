@@ -68,7 +68,7 @@ import { useRouter } from "vue-router"
 
 import { orderCancelAPI, type OrderCancelRequest } from "@/api/order/cancel"
 import { type OrderGetByIDRes, OrderStatus, OrderStatusDisplay, type RefundRes } from "@/api/order/common"
-import { getByIDAPI, type OrderGetByIDRequest } from "@/api/order/getByID"
+import { getByIDAdminAPI, type OrderGetByIDRequest } from "@/api/order/getByID"
 import { type GetCheckoutByOrderIdRequest, getOrderCheckoutByOrderIdAPI } from "@/api/order/getCheckout"
 import { PayTypeDisplay, TradeState, TradeStateDisplay } from "@/api/pay/common"
 import { handleResErr, ResponseCode } from "@/api/response"
@@ -135,7 +135,7 @@ const handleRefundSubmit = async () => {
     const req: OrderGetByIDRequest = {
         id: dataAc.value.id,
     }
-    const res = await getByIDAPI(req)
+    const res = await getByIDAdminAPI(req)
     if (res.data.code === ResponseCode.OrderGetByIDSuccess) {
         refundList.value = res.data.data.refund
         dataAc.value = res.data.data // 更新实际数据
