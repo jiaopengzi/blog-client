@@ -8,7 +8,7 @@
 
 <template>
     <div class="page">
-        <LayoutHeader />
+        <LayoutHeader :is-show-search="false" />
         <JBreadcrumb />
         <UserInfo />
         <LayoutFooter />
