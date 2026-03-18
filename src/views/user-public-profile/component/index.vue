@@ -56,7 +56,6 @@ import { getUserPublicInfoByUserNameAPI, type UserPublicInfo } from "@/api/user/
 import AvatarInitials from "@/components/common/avatar-initials"
 import { RouteNames } from "@/router/types"
 import { formatTime } from "@/utils/dateTime"
-import { MessageUtil } from "@/utils/message"
 
 defineOptions({ name: "UserPublicProfileComponent" })
 
@@ -88,8 +87,6 @@ const loadUserPublicProfile = async (): Promise<void> => {
         if (res.data.code === ResponseCode.UserPublicInfoGetSuccess) {
             userInfo.value = res.data.data
         } else {
-            const msg = handleResErr(res)
-            MessageUtil.error(msg, 0)
             await router.push({ name: RouteNames.NotFound })
         }
     } catch {
