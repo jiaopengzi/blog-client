@@ -27,11 +27,18 @@ const username = route.params.username as string
 const isValidUsername = RegexPatterns.UserName.test(username)
 
 /**
+ * 跳转到 404 页面并保留当前访问路径, 避免地址栏丢失原始 URL.
+ */
+const redirectToNotFound = async (): Promise<void> => {
+    await router.replace({ name: RouteNames.NotFound, params: { pathMatch: route.path.substring(1).split("/") } })
+}
+
+/**
  * 校验公开用户页用户名格式, 非法时直接跳转到 404, 并避免进入后端请求流程.
  */
 const redirectIfInvalidUsername = async (): Promise<void> => {
     if (!isValidUsername) {
-        await router.replace({ name: RouteNames.NotFound })
+        await redirectToNotFound()
     }
 }
 

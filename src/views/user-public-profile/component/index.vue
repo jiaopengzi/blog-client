@@ -77,6 +77,14 @@ const userInfo = ref<UserPublicInfo>({
 })
 
 /**
+ * 跳转到 404 页面并保留当前访问路径, 避免地址栏丢失原始 URL.
+ * 返回值 Promise<void>, 仅用于复用统一的 404 跳转逻辑.
+ */
+const redirectToNotFound = async (): Promise<void> => {
+    await router.replace({ name: RouteNames.NotFound, params: { pathMatch: route.path.substring(1).split("/") } })
+}
+
+/**
  * loadUserPublicProfile 加载公开资料。
  * 根据用户名请求接口, 若用户不存在或请求失败则跳转到 404 页面。
  * 返回值 Promise<void>, 仅用于更新当前页面状态。
@@ -87,10 +95,10 @@ const loadUserPublicProfile = async (): Promise<void> => {
         if (res.data.code === ResponseCode.UserPublicInfoGetSuccess) {
             userInfo.value = res.data.data
         } else {
-            await router.push({ name: RouteNames.NotFound })
+            await redirectToNotFound()
         }
     } catch {
-        await router.push({ name: RouteNames.NotFound })
+        await redirectToNotFound()
     } finally {
         loading.value = false
     }
