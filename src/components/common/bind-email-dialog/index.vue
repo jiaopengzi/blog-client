@@ -66,9 +66,11 @@ import { bindEmailAPI, type BindEmailRequest } from "@/api/user/bindEmail"
 import { checkEmailAPI, type CheckEmailRequest } from "@/api/user/checkEmail"
 import SlideVerify from "@/components/common/slide-verify" // 引用滑块验证组件
 import { useCaptchaBtnStatus } from "@/components/hooks/useCaptchaBtnStatus"
+import { createCaptchaRules, createEmailRules } from "@/components/hooks/useAccountFormValidation/rules"
 import { useOptionsStore } from "@/stores/options"
 import { useUserStore } from "@/stores/user"
 import { MessageUtil } from "@/utils/message"
+import { RegexPatterns } from "@/utils/regexPatterns"
 
 defineOptions({ name: "BindEmailDialog" })
 
@@ -136,10 +138,10 @@ async function checkSendCaptcha(): Promise<void> {
  * @description: 邮箱查重 异步函数
  * @return
  */
-async function checkEmail(): Promise<void> {
+async function checkEmail(email: string): Promise<void> {
     // 创建请求对象 加密内容
     const req: CheckEmailRequest = {
-        email: bindEmailForm.email,
+        email: email,
     }
 
     try {
@@ -161,8 +163,13 @@ async function checkEmail(): Promise<void> {
  * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
  */
 function checkEmailValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
+    if (value === "" || !RegexPatterns.Email.test(value)) {
+        callback()
+        return
+    }
+
     // 在这里处理异步验证逻辑
-    checkEmail()
+    checkEmail(value)
         .then(() => {
             callback() // 校验成功
         })
@@ -176,20 +183,8 @@ function checkEmailValidator(rule: unknown, value: string, callback: (error?: st
  * @return  FormRules<BindEmailForm> 表单校验规则 trigger: 'blur' 表示失去焦点时校验 'change' 表示值改变时校验
  */
 const rules = reactive<FormRules<BindEmailForm>>({
-    email: [
-        { required: true, message: "请输入邮箱地址", trigger: "blur" },
-        {
-            pattern: /^([a-z0-9._%+-]+)@[a-z0-9.-]+\.[a-z]{2,}$/,
-            message: "请输入有效的邮箱",
-            trigger: "blur",
-        },
-        // 邮箱查重
-        { validator: checkEmailValidator, trigger: "blur" },
-    ],
-    captcha: [
-        { required: true, message: "请输入验证码", trigger: "blur" },
-        { pattern: /^\d{6}$/, message: "验证码为6位的数字", trigger: "blur" },
-    ],
+    email: createEmailRules(checkEmailValidator),
+    captcha: createCaptchaRules(),
 })
 
 /**

@@ -24,11 +24,11 @@ import type { ValidatorFunc } from "./type"
  */
 export function createLoginNameRules(validatorFunc: ValidatorFunc): FormItemRule[] {
     return [
-        { required: true, message: "请输入用户名或邮箱！", trigger: "blur" },
+        { required: true, message: "请输入用户名或邮箱！", trigger: ["blur", "change"] },
         {
             pattern: RegexPatterns.LoginName,
             message: "6-20位小写字母或数字 | 邮箱",
-            trigger: "change",
+            trigger: ["blur", "change"],
         },
         { validator: validatorFunc, trigger: "blur" },
     ]
@@ -41,11 +41,11 @@ export function createLoginNameRules(validatorFunc: ValidatorFunc): FormItemRule
  */
 export function createUserNameRules(validatorFunc?: ValidatorFunc): FormItemRule[] {
     const rules: FormItemRule[] = [
-        { required: true, message: "请输入用户名！", trigger: "blur" },
+        { required: true, message: "请输入用户名！", trigger: ["blur", "change"] },
         {
             pattern: RegexPatterns.UserName,
             message: "用户名长度:6-20的小写字母或数字",
-            trigger: "change",
+            trigger: ["blur", "change"],
         },
     ]
 
@@ -66,7 +66,7 @@ export function createPasswordRules(isRequired: boolean = true): FormItemRule[] 
         {
             pattern: RegexPatterns.Password,
             message: "必须包含：大小写字母+数字,长度:6-64",
-            trigger: "change",
+            trigger: ["blur", "change"],
         },
     ]
 
@@ -74,7 +74,7 @@ export function createPasswordRules(isRequired: boolean = true): FormItemRule[] 
         return rules
     }
 
-    return [{ required: true, message: "请输入密码", trigger: "blur" }, ...rules]
+    return [{ required: true, message: "请输入密码", trigger: ["blur", "change"] }, ...rules]
 }
 
 /**
@@ -84,8 +84,8 @@ export function createPasswordRules(isRequired: boolean = true): FormItemRule[] 
  */
 export function createEmailRules(validatorFunc?: ValidatorFunc): FormItemRule[] {
     const rules: FormItemRule[] = [
-        { required: true, message: "请输入邮箱地址", trigger: "blur" },
-        { pattern: RegexPatterns.Email, message: "请输入有效的邮箱", trigger: "blur" },
+        { required: true, message: "请输入邮箱地址", trigger: ["blur", "change"] },
+        { pattern: RegexPatterns.Email, message: "请输入有效的邮箱", trigger: ["blur", "change"] },
     ]
 
     if (validatorFunc) {
@@ -102,8 +102,8 @@ export function createEmailRules(validatorFunc?: ValidatorFunc): FormItemRule[] 
  */
 export function createCaptchaRules(validatorFunc?: ValidatorFunc): FormItemRule[] {
     const rules: FormItemRule[] = [
-        { required: true, message: "请输入验证码", trigger: "blur" },
-        { pattern: RegexPatterns.Captcha, message: "验证码为6位的数字", trigger: "blur" },
+        { required: true, message: "请输入验证码", trigger: ["blur", "change"] },
+        { pattern: RegexPatterns.Captcha, message: "验证码为6位的数字", trigger: ["blur", "change"] },
     ]
 
     if (validatorFunc) {
@@ -119,7 +119,7 @@ export function createCaptchaRules(validatorFunc?: ValidatorFunc): FormItemRule[
  * @return {FormItemRule[]} 校验规则
  */
 export function createRePasswordRules(validatorFunc: ValidatorFunc): FormItemRule[] {
-    return [{ required: true, validator: validatorFunc, trigger: "blur" }]
+    return [{ required: true, validator: validatorFunc, trigger: ["blur", "change"] }]
 }
 
 /**
@@ -137,11 +137,11 @@ export function createAcceptedTermsRules(validatorFunc: ValidatorFunc): FormItem
  */
 export function createNickNameRules(): FormItemRule[] {
     return [
-        { required: true, message: "请输入昵称！", trigger: "blur" },
+        { required: true, message: "请输入昵称！", trigger: ["blur", "change"] },
         {
             pattern: RegexPatterns.NickName,
             message: "昵称长度1-20字符",
-            trigger: "change",
+            trigger: ["blur", "change"],
         },
     ]
 }

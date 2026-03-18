@@ -8,6 +8,8 @@
 
 // import { CaptchaPurpose } from "@/api/common"
 
+import { RegexPatterns } from "@/utils/regexPatterns"
+
 import { checkCaptcha, checkSendCaptcha } from "./api/captcha"
 import { checkEmail, checkEmailExcludingUserID, checkLoginName, checkUserName, checkUserNameExcludingUserID } from "./api/user"
 import {
@@ -32,6 +34,16 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
         FormAcceptedTerms = false,
         FormExcludingUserID = "",
     } = options
+
+    /**
+     * @description: 判断当前值是否已通过前端基础校验, 未通过时跳过远端请求.
+     * @param value 当前字段值.
+     * @param pattern 当前字段对应的前端正则规则.
+     * @return boolean true 表示仅执行前端校验, 不发起远端请求.
+     */
+    function shouldSkipRemoteValidation(value: string, pattern: RegExp): boolean {
+        return value === "" || !pattern.test(value)
+    }
 
     /**
      * @description:校验确认密码是否与密码一致
@@ -124,7 +136,13 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
             callback("请输入用户名")
             return
         }
-        const formUserName = options.FormUserName?.value || ""
+        const formUserName = value || options.FormUserName?.value || ""
+
+        if (shouldSkipRemoteValidation(formUserName, RegexPatterns.UserName)) {
+            callback()
+            return
+        }
+
         checkUserName(formUserName)
             .then(() => {
                 callback() // 校验成功
@@ -153,7 +171,12 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
         }
 
         const formExcludingUserID = options.FormExcludingUserID?.value || ""
-        const formUserName = options.FormUserName?.value || ""
+        const formUserName = value || options.FormUserName?.value || ""
+
+        if (shouldSkipRemoteValidation(formUserName, RegexPatterns.UserName)) {
+            callback()
+            return
+        }
 
         checkUserNameExcludingUserID(formExcludingUserID, formUserName)
             .then(() => {
@@ -171,17 +194,18 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
      * @param callback 回调函数，如果用户名存在，则传入错误提示字符串
      */
     function checkEmailValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
-        if (FormExcludingUserID === undefined) {
-            callback("请输入用户ID")
-            return
-        }
-
         // 在这里处理异步验证逻辑
         if (FormEmail === undefined) {
             callback("请输入邮箱")
             return
         }
-        const formEmail = options.FormEmail?.value || ""
+        const formEmail = value || options.FormEmail?.value || ""
+
+        if (shouldSkipRemoteValidation(formEmail, RegexPatterns.Email)) {
+            callback()
+            return
+        }
+
         checkEmail(formEmail)
             .then(() => {
                 callback() // 校验成功
@@ -204,7 +228,13 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
             return
         }
         const formExcludingUserID = options.FormExcludingUserID?.value || ""
-        const formEmail = options.FormEmail?.value || ""
+        const formEmail = value || options.FormEmail?.value || ""
+
+        if (shouldSkipRemoteValidation(formEmail, RegexPatterns.Email)) {
+            callback()
+            return
+        }
+
         checkEmailExcludingUserID(formExcludingUserID, formEmail)
             .then(() => {
                 callback() // 校验成功
@@ -251,7 +281,13 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
             callback("请输入用户名")
             return
         }
-        const formUserName = options.FormUserName?.value || ""
+        const formUserName = value || options.FormUserName?.value || ""
+
+        if (shouldSkipRemoteValidation(formUserName, RegexPatterns.LoginName)) {
+            callback()
+            return
+        }
+
         checkLoginName(formUserName)
             .then(() => {
                 callback() // 校验成功
