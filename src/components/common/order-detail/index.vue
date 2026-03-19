@@ -16,7 +16,7 @@
             <el-descriptions-item label="客户信息" v-if="isAdmin">
                 <!-- 用户信息就使用 data 不需要更新 -->
                 <UserItem
-                    :user="dataAc.user_info"
+                    :user="data.user_info"
                     :is-show-cursor-pointer="false"
                     :is-show-user-name="true"
                     :size="40"
