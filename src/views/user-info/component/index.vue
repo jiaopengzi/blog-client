@@ -12,7 +12,16 @@
 
     <!-- 内容页 -->
     <div class="content">
-        <el-tabs type="border-card" :tab-position="tabPosition" class="tabs" v-model="activeTab" @tab-change="tabChange">
+        <!-- phone 端分区导航 -->
+        <template v-if="isPhone">
+            <PhoneSectionNav :tabs="phoneTabs" :active-value="activeTab" aria-label="用户中心分区导航" @change="tabChange" />
+            <div class="phone-section-panel">
+                <component :is="activeTabConfig.component" />
+            </div>
+        </template>
+
+        <!-- pc/pad 端分区导航，使用原生 el-tabs -->
+        <el-tabs v-else type="border-card" :tab-position="tabPosition" class="tabs" v-model="activeTab" @tab-change="tabChange">
             <!-- 使用 v-for 动态生成 tab-pane -->
             <el-tab-pane v-for="tab in tabsConfig" :key="tab.hash" :name="tab.hash" class="tab-pane">
                 <template #label>
@@ -38,6 +47,7 @@ import { computed, type Ref, ref, watch } from "vue"
 import { useRoute, useRouter } from "vue-router"
 
 import BindEmailDialog from "@/components/common/bind-email-dialog"
+import PhoneSectionNav from "@/components/common/phone-section-nav"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 
 import UserInfoComment from "./comment"
@@ -54,6 +64,7 @@ const { device } = storeToRefs(deviceStore)
 
 // tab 位置，PC 端左侧，其他设备顶部
 const tabPosition = computed(() => (device.value === DeviceType.PHONE ? "top" : "left"))
+const isPhone = computed(() => device.value === DeviceType.PHONE)
 
 // 当前激活的 tab
 const activeTab: Ref<UserInfoHash> = ref(UserInfoHash.Info)
@@ -88,6 +99,18 @@ const tabsConfig = [
         component: UserInfoFavorite,
     },
 ]
+
+const phoneTabs = computed(() => {
+    return tabsConfig.map((tab) => ({
+        value: tab.hash,
+        label: tab.label,
+        icon: tab.icon,
+    }))
+})
+
+const activeTabConfig = computed(() => {
+    return tabsConfig.find((tab) => tab.hash === activeTab.value) || tabsConfig[0]
+})
 
 // 根据 hash 值来设置当前的 activeTab
 function tabChange(hash: string) {
@@ -150,11 +173,19 @@ watch(
     .content {
         width: 100vw;
         // height: calc(100vh - phone.$height-footer);
+        gap: 12px;
     }
 
     .tabs {
         width: 100vw;
         min-height: calc(100vh - phone.$height-footer - phone.$height-header);
+    }
+
+    .phone-section-panel {
+        width: 100%;
+        min-height: calc(100vh - phone.$height-footer - phone.$height-header - 64px);
+        padding: 0 12px 16px;
+        box-sizing: border-box;
     }
 }
 
