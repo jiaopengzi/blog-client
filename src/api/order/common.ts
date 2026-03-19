@@ -120,6 +120,7 @@ export interface OrderItemRes {
     quantity: number // 数量
     price: number // 单价(分)
     description: string // 产品描述
+    account_key_items?: string[]
 }
 
 // 优惠券子表响应

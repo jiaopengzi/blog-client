@@ -8,14 +8,15 @@
 
 <template>
     <div class="edit-page">
+        <div class="order-loading" v-loading="isLoading">
         <el-descriptions class="order-main" title="订单信息" :column="column" border>
-            <el-descriptions-item label="订单ID">{{ data.id }}</el-descriptions-item>
-            <el-descriptions-item label="创建时间">{{ data.created_at }}</el-descriptions-item>
+            <el-descriptions-item label="订单ID">{{ dataAc.id }}</el-descriptions-item>
+            <el-descriptions-item label="创建时间">{{ dataAc.created_at }}</el-descriptions-item>
             <el-descriptions-item label="更新时间" v-if="isAdmin">{{ dataAc.updated_at }}</el-descriptions-item>
             <el-descriptions-item label="客户信息" v-if="isAdmin">
                 <!-- 用户信息就使用 data 不需要更新 -->
                 <UserItem
-                    :user="data.user_info"
+                    :user="dataAc.user_info"
                     :is-show-cursor-pointer="false"
                     :is-show-user-name="true"
                     :size="40"
@@ -23,26 +24,26 @@
                     :is-show-user-display-name="true"
                 />
             </el-descriptions-item>
-            <el-descriptions-item label="描述">{{ data.description }}</el-descriptions-item>
-            <el-descriptions-item label="IP地址" v-if="isAdmin">{{ data.ip }}</el-descriptions-item>
+            <el-descriptions-item label="描述">{{ dataAc.description }}</el-descriptions-item>
+            <el-descriptions-item label="IP地址" v-if="isAdmin">{{ dataAc.ip }}</el-descriptions-item>
             <el-descriptions-item label="状态">{{ OrderStatusDisplay[dataAc.status] }} </el-descriptions-item>
             <el-descriptions-item label="支付信息">
                 <span v-if="dataAc.payment && dataAc.payment.pay_type"
                     >{{ PayTypeDisplay[dataAc.payment.pay_type] }} - {{ TradeStateDisplay[dataAc.payment.trade_state] }}</span
                 >
-                <span v-else>无支付信息</span>
+                    <span v-else>无支付信息</span>
             </el-descriptions-item>
-            <el-descriptions-item label="订单总金额">{{ `${(data.total_amount / 100).toFixed(2)} 元` }}</el-descriptions-item>
+            <el-descriptions-item label="订单总金额">{{ `${(dataAc.total_amount / 100).toFixed(2)} 元` }}</el-descriptions-item>
         </el-descriptions>
 
         <!-- 产品 优惠券 都不会变 -->
-        <ProductList class="product-list" :items="data.items" />
-        <CouponList class="coupon-list" v-if="data.coupon_items" :total-amount="data.total_amount" :items="data.coupon_items" />
+        <ProductList class="product-list" :items="dataAc.items" />
+        <CouponList class="coupon-list" v-if="dataAc.coupon_items" :total-amount="dataAc.total_amount" :items="dataAc.coupon_items" />
         <RefundList class="refund-list" v-if="refundList.length" :total-paid-amount="dataAc.payment.total_amount" :items="refundList" />
         <OrderRefund
             v-if="availableRefundAmount > 0 && isAdmin"
             class="order-refund"
-            :order-id="data.id"
+            :order-id="dataAc.id"
             :available-refund-amount="availableRefundAmount"
             @refund-submit-success="handleRefundSubmit"
         />
@@ -59,16 +60,17 @@
             :remark-admin="dataAc.remark_admin"
             @remark-submit-success="handleRemarkSubmit"
         />
+        </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue"
+import { computed, ref, watch } from "vue"
 import { useRouter } from "vue-router"
 
 import { orderCancelAPI, type OrderCancelRequest } from "@/api/order/cancel"
 import { type OrderGetByIDRes, OrderStatus, OrderStatusDisplay, type RefundRes } from "@/api/order/common"
-import { getByIDAdminAPI, type OrderGetByIDRequest } from "@/api/order/getByID"
+import { getByIDAdminAPI, getByIDAPI, type OrderGetByIDRequest } from "@/api/order/getByID"
 import { type GetCheckoutByOrderIdRequest, getOrderCheckoutByOrderIdAPI } from "@/api/order/getCheckout"
 import { PayTypeDisplay, TradeState, TradeStateDisplay } from "@/api/pay/common"
 import { handleResErr, ResponseCode } from "@/api/response"
@@ -104,6 +106,43 @@ const router = useRouter()
 const dataAc = ref<OrderGetByIDRes>(data) // 实际数据
 
 const refundList = ref<RefundRes[]>(data.refund || [])
+const isLoading = ref(false)
+
+const syncOrderData = (nextData: OrderGetByIDRes) => {
+    dataAc.value = nextData
+    refundList.value = nextData.refund || []
+}
+
+const loadOrderDetail = async () => {
+    if (!dataAc.value.id) return
+
+    isLoading.value = true
+    try {
+        const req: OrderGetByIDRequest = {
+            id: dataAc.value.id,
+        }
+
+        const res = isAdmin ? await getByIDAdminAPI(req) : await getByIDAPI(req)
+        if (res.data.code === ResponseCode.OrderGetByIDSuccess) {
+            syncOrderData(res.data.data)
+            return
+        }
+
+        const msg = handleResErr(res)
+        MessageUtil.error(msg)
+    } finally {
+        isLoading.value = false
+    }
+}
+
+watch(
+    () => data,
+    (newVal) => {
+        syncOrderData(newVal)
+        void loadOrderDetail()
+    },
+    { deep: true, immediate: true },
+)
 
 const availableRefundAmount = computed(() => {
     // 如果没有支付信息，或者未支付，或者关闭，则可退款金额为0
@@ -137,8 +176,7 @@ const handleRefundSubmit = async () => {
     }
     const res = await getByIDAdminAPI(req)
     if (res.data.code === ResponseCode.OrderGetByIDSuccess) {
-        refundList.value = res.data.data.refund
-        dataAc.value = res.data.data // 更新实际数据
+        syncOrderData(res.data.data)
         MessageUtil.success("退款提交成功")
     } else {
         const msg = handleResErr(res)
@@ -224,6 +262,10 @@ const handleReCheckout = async () => {
 .coupon-list,
 .refund-list {
     margin-bottom: 40px;
+}
+
+.order-loading {
+    min-height: 160px;
 }
 
 .order-operation {
