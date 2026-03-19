@@ -9,7 +9,7 @@
 <template>
     <div class="refund-details">
         <h4 class="title">退款</h4>
-        <el-table :data="items" style="width: 100%" border stripe :max-height="detailsHeight" row-class-name="refund-details-row">
+        <el-table :data="items" style="width: 100%" border stripe max-height="420" row-class-name="refund-details-row">
             <el-table-column prop="refund_transaction_id" label="退款交易ID" />
             <el-table-column prop="reason" label="退款原因" />
             <el-table-column prop="total_amount" label="已退款金额" align="center">
@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue"
+import { computed } from "vue"
 
 import { type RefundRes } from "@/api/order/common"
 import { fenToYuan } from "@/utils/amount"
@@ -43,14 +43,6 @@ const { totalPaidAmount, items } = defineProps<{
     totalPaidAmount: number // 订单总金额
     items: RefundRes[]
 }>()
-
-// 产品详情表头高度
-const detailsHeaderHeight = ref(40)
-
-// 产品详情表格高度, 最多 300px
-const detailsHeight = computed(() => {
-    return `${Math.min(300, items.length * 40 + detailsHeaderHeight.value)}px`
-})
 
 // 计算优惠金额
 const computedFinal = (total: number, couponList: RefundRes[]) => {
@@ -84,10 +76,14 @@ h4 {
     margin-bottom: 20px;
 }
 
+:deep(.el-table .el-table__cell) {
+    vertical-align: top;
+}
+
 .amount-info {
     font-size: 14px;
     color: var(--jpz-text-color-secondary);
-    text-align: right;
+    line-height: 1.5;
     margin-top: 10px;
 
     .amount,

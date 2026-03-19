@@ -10,7 +10,7 @@
     <!-- 产品详情 -->
     <div class="product-details">
         <h4 class="title">产品详情</h4>
-        <el-table :data="items" style="width: 100%" border stripe :max-height="detailsHeight" row-class-name="product-details-row">
+        <el-table :data="items" style="width: 100%" border stripe max-height="420" row-class-name="product-details-row">
             <el-table-column prop="title" label="产品">
                 <template #default="{ row }">
                     <div class="product-title-wrap">
@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue"
+import { computed } from "vue"
 
 import { ProductTypeDisplay, type OrderItemRes } from "@/api/order/common"
 import { fenToYuan } from "@/utils/amount"
@@ -54,14 +54,6 @@ defineOptions({ name: "ProductList" })
 const { items } = defineProps<{
     items: OrderItemRes[]
 }>()
-
-// 产品详情表头高度
-const detailsHeaderHeight = ref(40)
-
-// 产品详情表格高度, 最多 300px
-const detailsHeight = computed(() => {
-    return `${Math.min(420, items.length * 72 + detailsHeaderHeight.value)}px`
-})
 
 const shouldShowDetailColumn = computed(() => {
     return items.some((item) => Boolean(item.description) || hasAccountKeyItems(item))
@@ -89,6 +81,10 @@ h4 {
 
 .product-details {
     margin-bottom: 20px;
+}
+
+:deep(.el-table .el-table__cell) {
+    vertical-align: top;
 }
 
 .product-title-wrap {

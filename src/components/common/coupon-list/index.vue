@@ -10,7 +10,7 @@
     <!-- 产品详情 -->
     <div class="coupon-details">
         <h4 class="title">优惠券</h4>
-        <el-table :data="items" style="width: 100%" border stripe :max-height="detailsHeight" row-class-name="coupon-details-row">
+        <el-table :data="items" style="width: 100%" border stripe max-height="420" row-class-name="coupon-details-row">
             <el-table-column prop="code" label="优惠券" />
             <el-table-column prop="amount" label="优惠金额" align="center">
                 <template #default="{ row }">{{ fenToYuan(computedDiscount(totalAmount, row.discount_type, row.amount), true) }}</template>
@@ -28,7 +28,6 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue"
 
 import { CouponDiscountType, CouponDiscountTypeDisplay } from "@/api/coupon/common"
 import { type CouponItemRes } from "@/api/order/common"
@@ -40,14 +39,6 @@ const { totalAmount, items } = defineProps<{
     totalAmount: number // 订单总金额
     items: CouponItemRes[]
 }>()
-
-// 产品详情表头高度
-const detailsHeaderHeight = ref(40)
-
-// 产品详情表格高度, 最多 300px
-const detailsHeight = computed(() => {
-    return `${Math.min(300, items.length * 40 + detailsHeaderHeight.value)}px`
-})
 
 // 计算优惠金额
 const computedDiscount = (total: number, discountType: CouponDiscountType, amount: number) => {
@@ -87,6 +78,10 @@ h4 {
 
 .coupon-details {
     margin-bottom: 20px;
+}
+
+:deep(.el-table .el-table__cell) {
+    vertical-align: top;
 }
 
 .amount-info {
