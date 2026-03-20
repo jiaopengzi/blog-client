@@ -6,10 +6,76 @@
  * Description : hooks
  */
 
-import { TimeDimension } from "@/api/dashboard/common"
+import { TrendCategory, TimeDimension } from "@/api/dashboard/common"
+import { LocalStorageKey } from "@/stores/local"
 
-import { type DimensionItem, DimensionItemName, DimensionItemNameDisplay } from "./types"
+import { type DimensionItem, DimensionItemName, DimensionItemNameDisplay, type TrendSelectionStorage } from "./types"
 
+/**
+ * 判断值是否为合法的趋势分类.
+ * @param value 待校验的原始值.
+ * @returns 合法时返回 true, 否则返回 false.
+ */
+const isTrendCategory = (value: unknown): value is TrendCategory => {
+    return typeof value === "string" && Object.values(TrendCategory).includes(value as TrendCategory)
+}
+
+/**
+ * 判断值是否为合法的时间维度名称.
+ * @param value 待校验的原始值.
+ * @returns 合法时返回 true, 否则返回 false.
+ */
+const isDimensionItemName = (value: unknown): value is DimensionItemName => {
+    return typeof value === "string" && Object.values(DimensionItemName).includes(value as DimensionItemName)
+}
+
+/**
+ * 读取本地缓存的趋势筛选项.
+ * @returns 返回合法的筛选项, 无缓存或缓存非法时返回 null.
+ */
+export const getSavedTrendSelection = (): TrendSelectionStorage | null => {
+    const savedTrendSelection = localStorage.getItem(LocalStorageKey.DashboardTrendSelection)
+
+    if (!savedTrendSelection) {
+        return null
+    }
+
+    try {
+        const parsedSelection = JSON.parse(savedTrendSelection) as Partial<TrendSelectionStorage>
+
+        if (!isTrendCategory(parsedSelection.category) || !isDimensionItemName(parsedSelection.time)) {
+            return null
+        }
+
+        return {
+            category: parsedSelection.category,
+            time: parsedSelection.time,
+        }
+    } catch {
+        return null
+    }
+}
+
+/**
+ * 持久化当前趋势筛选项到本地缓存.
+ * @param category 当前选中的趋势分类.
+ * @param time 当前选中的时间维度名称.
+ * @returns 无返回值.
+ */
+export const persistTrendSelection = (category: TrendCategory, time: DimensionItemName): void => {
+    localStorage.setItem(
+        LocalStorageKey.DashboardTrendSelection,
+        JSON.stringify({
+            category,
+            time,
+        } satisfies TrendSelectionStorage),
+    )
+}
+
+/**
+ * 提供趋势图所需的维度选项与本地持久化辅助方法.
+ * @returns 返回趋势图维度映射与维度选项方法.
+ */
 export function useTrend() {
     // 获取所有维度选项
     const getAllDimension = () => {

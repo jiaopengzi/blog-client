@@ -6,7 +6,7 @@
  * Description : 类型
  */
 
-import { TimeDimension } from "@/api/dashboard/common"
+import { type TrendCategory, TimeDimension } from "@/api/dashboard/common"
 
 // 趋势维度选项
 export interface DimensionItem {
@@ -14,6 +14,12 @@ export interface DimensionItem {
     label: string
     dimension: TimeDimension
     is_current: boolean
+}
+
+// 趋势筛选本地存储结构
+export interface TrendSelectionStorage {
+    category: TrendCategory
+    time: DimensionItemName
 }
 
 // 维度名称枚举

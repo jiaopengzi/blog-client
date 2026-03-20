@@ -37,7 +37,7 @@ import { getTrendCategoryOptions, TrendCategory, TrendCategoryDisplay } from "@/
 import ChartBarBasic from "@/components/common/chart-bar-basic"
 
 import { useDashboard } from "../hooks"
-import { useTrend } from "./hooks"
+import { getSavedTrendSelection, persistTrendSelection, useTrend } from "./hooks"
 import { DimensionItemName, DimensionItemNameDisplay } from "./types"
 
 defineOptions({ name: "DashboardTrend" })
@@ -48,13 +48,15 @@ const { trendData, getTrend, updateTrendReq } = useDashboard()
 // 使用 trend hooks
 const { allDimensionMap, getAllDimension } = useTrend()
 
+const savedTrendSelection = getSavedTrendSelection()
+
 // 分类选择项和值
 const optionsCategory = ref(getTrendCategoryOptions())
-const valueCategory: Ref<TrendCategory> = ref(TrendCategory.UserCount)
+const valueCategory: Ref<TrendCategory> = ref(savedTrendSelection?.category ?? TrendCategory.UserCount)
 
 // 时间维度选择项和值
 const optionsTime = ref(getAllDimension())
-const valueTime: Ref<DimensionItemName> = ref(DimensionItemName.ThisMonth)
+const valueTime: Ref<DimensionItemName> = ref(savedTrendSelection?.time ?? DimensionItemName.ThisMonth)
 
 // 图表标题
 const title = computed(() => {
@@ -65,6 +67,7 @@ const title = computed(() => {
 watch(
     [valueCategory, valueTime],
     async ([newCategory, newTime]) => {
+        persistTrendSelection(newCategory, newTime)
         updateTrendReq(newCategory, allDimensionMap.get(newTime)!.dimension, allDimensionMap.get(newTime)!.is_current)
         await getTrend()
     },

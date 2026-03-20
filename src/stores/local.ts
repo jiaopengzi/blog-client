@@ -8,12 +8,13 @@
 
 export enum LocalStorageKey {
     AccessToken = "access_token", // token名称：访问令牌
+    DashboardTrendSelection = "dashboard_trend_selection", // 仪表盘趋势图筛选项
     IsCollapse = "is_collapse", // 侧边栏是否折叠
     IsShowDashboardStats = "is_show_dashboard_stats", // 仪表盘统计信息是否显示敏感数值
     IsShowListOrGridAtMedia = "is_show_list_or_grid_at_media", // 媒体列表是否显示为列表或网格
     IsShowSeoAtPostWrite = "is_show_seo_at_post_write", // 文章写作是否显示SEO设置
     SearchHistory = "search_history", // 搜索历史
-    ThemePreset = "theme_preset",
+    ThemePreset = "theme_preset", // 主题预设
     OptionsApp = "options_app", // 应用配置
     OptionsHeadInfo = "options_head_info", // 头部信息
     OptionsNavList = "options_nav_list", // 导航列表
