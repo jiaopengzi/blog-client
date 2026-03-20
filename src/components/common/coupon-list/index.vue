@@ -28,7 +28,6 @@
 </template>
 
 <script lang="ts" setup>
-
 import { CouponDiscountType, CouponDiscountTypeDisplay } from "@/api/coupon/common"
 import { type CouponItemRes } from "@/api/order/common"
 import { fenToYuan } from "@/utils/amount"

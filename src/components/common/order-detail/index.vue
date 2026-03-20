@@ -9,57 +9,57 @@
 <template>
     <div class="edit-page">
         <div class="order-loading" v-loading="isLoading">
-        <el-descriptions class="order-main" title="订单信息" :column="column" border>
-            <el-descriptions-item label="订单ID">{{ dataAc.id }}</el-descriptions-item>
-            <el-descriptions-item label="创建时间">{{ dataAc.created_at }}</el-descriptions-item>
-            <el-descriptions-item label="更新时间" v-if="isAdmin">{{ dataAc.updated_at }}</el-descriptions-item>
-            <el-descriptions-item label="客户信息" v-if="isAdmin">
-                <!-- 用户信息就使用 data 不需要更新 -->
-                <UserItem
-                    :user="data.user_info"
-                    :is-show-cursor-pointer="false"
-                    :is-show-user-name="true"
-                    :size="40"
-                    :is-show-user-email="true"
-                    :is-show-user-display-name="true"
-                />
-            </el-descriptions-item>
-            <el-descriptions-item label="描述">{{ dataAc.description }}</el-descriptions-item>
-            <el-descriptions-item label="IP地址" v-if="isAdmin">{{ dataAc.ip }}</el-descriptions-item>
-            <el-descriptions-item label="状态">{{ OrderStatusDisplay[dataAc.status] }} </el-descriptions-item>
-            <el-descriptions-item label="支付信息">
-                <span v-if="dataAc.payment && dataAc.payment.pay_type"
-                    >{{ PayTypeDisplay[dataAc.payment.pay_type] }} - {{ TradeStateDisplay[dataAc.payment.trade_state] }}</span
-                >
+            <el-descriptions class="order-main" title="订单信息" :column="column" border>
+                <el-descriptions-item label="订单ID">{{ dataAc.id }}</el-descriptions-item>
+                <el-descriptions-item label="创建时间">{{ dataAc.created_at }}</el-descriptions-item>
+                <el-descriptions-item label="更新时间" v-if="isAdmin">{{ dataAc.updated_at }}</el-descriptions-item>
+                <el-descriptions-item label="客户信息" v-if="isAdmin">
+                    <!-- 用户信息就使用 data 不需要更新 -->
+                    <UserItem
+                        :user="data.user_info"
+                        :is-show-cursor-pointer="false"
+                        :is-show-user-name="true"
+                        :size="40"
+                        :is-show-user-email="true"
+                        :is-show-user-display-name="true"
+                    />
+                </el-descriptions-item>
+                <el-descriptions-item label="描述">{{ dataAc.description }}</el-descriptions-item>
+                <el-descriptions-item label="IP地址" v-if="isAdmin">{{ dataAc.ip }}</el-descriptions-item>
+                <el-descriptions-item label="状态">{{ OrderStatusDisplay[dataAc.status] }} </el-descriptions-item>
+                <el-descriptions-item label="支付信息">
+                    <span v-if="dataAc.payment && dataAc.payment.pay_type"
+                        >{{ PayTypeDisplay[dataAc.payment.pay_type] }} - {{ TradeStateDisplay[dataAc.payment.trade_state] }}</span
+                    >
                     <span v-else>无支付信息</span>
-            </el-descriptions-item>
-            <el-descriptions-item label="订单总金额">{{ `${(dataAc.total_amount / 100).toFixed(2)} 元` }}</el-descriptions-item>
-        </el-descriptions>
+                </el-descriptions-item>
+                <el-descriptions-item label="订单总金额">{{ `${(dataAc.total_amount / 100).toFixed(2)} 元` }}</el-descriptions-item>
+            </el-descriptions>
 
-        <!-- 产品 优惠券 都不会变 -->
-        <ProductList class="product-list" :items="dataAc.items" />
-        <CouponList class="coupon-list" v-if="dataAc.coupon_items" :total-amount="dataAc.total_amount" :items="dataAc.coupon_items" />
-        <RefundList class="refund-list" v-if="refundList.length" :total-paid-amount="dataAc.payment.total_amount" :items="refundList" />
-        <OrderRefund
-            v-if="availableRefundAmount > 0 && isAdmin"
-            class="order-refund"
-            :order-id="dataAc.id"
-            :available-refund-amount="availableRefundAmount"
-            @refund-submit-success="handleRefundSubmit"
-        />
-        <!-- 取消订单 -->
-        <div class="order-operation" v-if="dataAc.status === OrderStatus.PendingPay">
-            <el-button type="primary" :loading="isOrderReCheckoutLoading" @click="handleReCheckout">重新支付</el-button>
-            <el-button type="primary" :loading="isOrderCancelLoading" @click="handleCancel">取消订单</el-button>
-        </div>
-        <OrderRemark
-            v-if="isAdmin"
-            class="order-remark"
-            :order-id="dataAc.id"
-            :remark="dataAc.remark"
-            :remark-admin="dataAc.remark_admin"
-            @remark-submit-success="handleRemarkSubmit"
-        />
+            <!-- 产品 优惠券 都不会变 -->
+            <ProductList class="product-list" :items="dataAc.items" />
+            <CouponList class="coupon-list" v-if="dataAc.coupon_items" :total-amount="dataAc.total_amount" :items="dataAc.coupon_items" />
+            <RefundList class="refund-list" v-if="refundList.length" :total-paid-amount="dataAc.payment.total_amount" :items="refundList" />
+            <OrderRefund
+                v-if="availableRefundAmount > 0 && isAdmin"
+                class="order-refund"
+                :order-id="dataAc.id"
+                :available-refund-amount="availableRefundAmount"
+                @refund-submit-success="handleRefundSubmit"
+            />
+            <!-- 取消订单 -->
+            <div class="order-operation" v-if="dataAc.status === OrderStatus.PendingPay">
+                <el-button type="primary" :loading="isOrderReCheckoutLoading" @click="handleReCheckout">重新支付</el-button>
+                <el-button type="primary" :loading="isOrderCancelLoading" @click="handleCancel">取消订单</el-button>
+            </div>
+            <OrderRemark
+                v-if="isAdmin"
+                class="order-remark"
+                :order-id="dataAc.id"
+                :remark="dataAc.remark"
+                :remark-admin="dataAc.remark_admin"
+                @remark-submit-success="handleRemarkSubmit"
+            />
         </div>
     </div>
 </template>
