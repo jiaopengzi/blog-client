@@ -92,7 +92,7 @@ useHead({
     title: adminMenuItemMap[RouteNames.Order].text,
 })
 
-const { formatCouponItems, formatPayment } = useOrder()
+const { formatCouponItems, formatPayment, formatFinalAmount, formatTotalAmount, formatStatus } = useOrder()
 
 const cols: TableColumn[] = reactive([
     {
@@ -120,15 +120,11 @@ const cols: TableColumn[] = reactive([
     },
     {
         prop: "total_amount",
-        label: "金额",
+        label: "订单金额",
         sortable: true,
         minWidth: 100,
         align: "center",
-        formatter: (row: TableData) => {
-            if ("total_amount" in row) {
-                return `${(row.total_amount / 100).toFixed(2)} 元`
-            }
-        },
+        formatter: formatTotalAmount,
     },
     {
         prop: "coupon_items",
@@ -147,16 +143,20 @@ const cols: TableColumn[] = reactive([
         formatter: formatPayment,
     },
     {
+        prop: "final_amount",
+        label: "支付金额",
+        sortable: true,
+        minWidth: 100,
+        align: "center",
+        formatter: formatFinalAmount,
+    },
+    {
         prop: "status",
         label: "订单状态",
         sortable: true,
         minWidth: 100,
         align: "center",
-        formatter: (row: TableData) => {
-            if ("status" in row) {
-                return OrderStatusDisplay[row.status as OrderStatus]
-            }
-        },
+        formatter: formatStatus,
     },
     {
         prop: "created_at",
