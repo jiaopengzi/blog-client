@@ -90,7 +90,8 @@ import { type Extension } from "@codemirror/state"
 import { computed, useTemplateRef, watch } from "vue"
 
 import { PayStrategy, type PostVideoTocTree } from "@/api/post/common"
-import { getTheme, type MarkdownRulesConfig, Theme, ThemeMode } from "@/pkg/codemirror"
+import type { MarkdownRulesConfig } from "@/pkg/codemirror/extension/mdlint/types"
+import { getTheme, Theme, ThemeMode } from "@/pkg/codemirror/extension/theme"
 
 import EditorCodemirror, { type CodemirrorRef } from "./components/codemirror"
 import HtmlPreview from "./components/preview/index.vue"

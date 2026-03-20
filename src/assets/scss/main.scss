@@ -8,8 +8,7 @@
 
 @use "reset-css"; // live sass compiler 插件使用时注释掉
 
-@use "./themes/light.scss";
-@use "./themes/dark.scss";
+@use "../../theme/schemes/index.scss";
 
 // ========================================== live sass compiler 插件使用 开始 ==========================================
 // 当使用 live sass compiler 插件时查看编译结果需要使用相对路径,不能使用别名 scss 目录下的注释都要检查一遍.

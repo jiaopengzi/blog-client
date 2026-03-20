@@ -16,7 +16,7 @@
                 <Search v-if="isShowSearch" @handle-search="handleSearch" />
                 <!-- 占位 -->
                 <div v-if="!isShowSearch" class="layout-search-placeholder"></div>
-                <SwitchGroup :switch-items="themeSwitch" @update-status="updateStatus" />
+                <ThemePresetSelector :model-value="activeThemePreset" :presets="themePresetOptions" @update:model-value="selectThemePreset" />
                 <Account />
             </div>
             <div class="header-main-phone">
@@ -42,10 +42,10 @@
 import { type Ref, ref } from "vue"
 
 import { IconKeys } from "@/components/common/icons"
-import SwitchGroup from "@/components/common/switch-group"
+import ThemePresetSelector from "@/theme/preset-selector"
 import type { ScrollData } from "@/components/hooks/useScroll"
 import { useScrollActions } from "@/components/hooks/useScroll"
-import { useTheme } from "@/components/hooks/useTheme"
+import { useTheme } from "@/theme/useTheme"
 import HeaderNav from "@/components/layout/header-nav"
 
 import Account from "../account"
@@ -63,8 +63,7 @@ const emit = defineEmits<{
     (event: "handle-search", val: string): void
 }>()
 
-// 主题切换
-const { themeSwitch, updateStatus } = useTheme()
+const { activeThemePreset, selectThemePreset, themePresetOptions } = useTheme()
 
 const headerVisible = ref(true) // 导航栏是否可见
 

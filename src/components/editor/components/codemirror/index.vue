@@ -19,10 +19,14 @@ import { computed, type ComputedRef, nextTick, onMounted, onUnmounted, useTempla
 
 import type { MarkdownEditorCommandItem } from "@/components/editor/command"
 import { CommandsKey, editorInsertContent, editorInsertFormatContent, markdownEditorCommands } from "@/components/editor/command"
-import { createDefaultSetup, type DefaultSetupOptions, EditorState, EditorView } from "@/pkg/codemirror"
+import { EditorState } from "@codemirror/state"
+import { EditorView } from "@codemirror/view"
+
 import { completionCompartment, unifiedCompletion } from "@/pkg/codemirror/extension/completion"
 import { getTheme, Theme, themeCompartment, ThemeMode } from "@/pkg/codemirror/extension/theme"
 import { vim, vimModeCompartment } from "@/pkg/codemirror/extension/vim"
+import { type DefaultSetupOptions } from "@/pkg/codemirror/options"
+import { createDefaultSetup } from "@/pkg/codemirror/setup"
 
 import { clearEditorView } from "../../command/constant"
 import type { CodeEditorProps } from "./types"

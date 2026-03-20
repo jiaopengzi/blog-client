@@ -16,7 +16,7 @@
 
         <div class="right">
             <div class="theme-switch">
-                <SwitchGroup :switch-items="themeSwitch" @update-status="updateStatus" />
+                <ThemePresetSelector :model-value="activeThemePreset" :presets="themePresetOptions" @update:model-value="selectThemePreset" />
             </div>
 
             <div class="avatar" v-if="isLogin">
@@ -29,9 +29,9 @@
 import { storeToRefs } from "pinia"
 import { useRouter } from "vue-router"
 
-import SwitchGroup from "@/components/common/switch-group"
+import ThemePresetSelector from "@/theme/preset-selector"
 import UserInfoDropdown from "@/components/common/user-info-dropdown"
-import { useTheme } from "@/components/hooks/useTheme"
+import { useTheme } from "@/theme/useTheme"
 import { RouteNames } from "@/router"
 import { useOptionsStore } from "@/stores/options"
 import { useUserStore } from "@/stores/user"
@@ -44,8 +44,7 @@ const optionsStore = useOptionsStore()
 const { isLogin } = storeToRefs(userStore)
 const logo = optionsStore.getLogo
 
-// 主题切换
-const { themeSwitch, updateStatus } = useTheme()
+const { activeThemePreset, selectThemePreset, themePresetOptions } = useTheme()
 const router = useRouter()
 
 // 跳转到用户中心

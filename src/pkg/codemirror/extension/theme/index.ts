@@ -10,6 +10,7 @@ import { mdDark } from "./md/dark"
 import { mdLight } from "./md/light"
 import { vscodeDark } from "./vscode/dark"
 import { vscodeLight } from "./vscode/light"
+import type { ThemePresetId } from "@/theme/presets"
 
 // 主题 compartment 用于动态切换主题
 export const themeCompartment = new Compartment()
@@ -24,6 +25,17 @@ export enum ThemeMode {
 export enum Theme {
     MD = "md",
     Vscode = "vscode",
+}
+
+export const presetThemeMap: Record<ThemePresetId, Theme> = {
+    light: Theme.MD,
+    dark: Theme.MD,
+    "github-light": Theme.MD,
+    "github-dark": Theme.MD,
+    "vue-light": Theme.Vscode,
+    "vue-dark": Theme.Vscode,
+    "tokyonight-day": Theme.Vscode,
+    "tokyonight-night": Theme.Vscode,
 }
 
 // 定义主题键的类型
@@ -51,4 +63,8 @@ export const themeMap: ThemeMapType = {
 export function getTheme(theme: Theme, mode: ThemeMode): Extension {
     const key = `${theme}${mode}` as ThemeKey
     return themeMap[key]
+}
+
+export function getThemeByPreset(presetId: ThemePresetId, mode: ThemeMode): Extension {
+    return getTheme(presetThemeMap[presetId], mode)
 }

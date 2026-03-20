@@ -15,7 +15,8 @@ import { removeCommentsSafe } from "./cssValidator"
  * @param theme  主题名称
  */
 export function setTheme(theme: string) {
-    document.documentElement.setAttribute("data-theme", theme)
+    const root = document.documentElement
+    root.setAttribute("data-theme", theme)
 }
 
 /**

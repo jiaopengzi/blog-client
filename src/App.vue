@@ -15,13 +15,13 @@
     </section>
 </template>
 <script lang="ts" setup>
-import { useDark } from "@vueuse/core"
 import { useResizeObserver } from "@vueuse/core"
 import zhCn from "element-plus/es/locale/lang/zh-cn"
 import { storeToRefs } from "pinia"
 import { nextTick, onBeforeMount, onBeforeUnmount, onMounted, useTemplateRef, watch } from "vue"
 
 import HeadTag from "@/components/common/head-tag"
+import { useTheme } from "@/theme/useTheme"
 import { useDeviceStore } from "@/stores/device"
 import { useOptionsStore } from "@/stores/options"
 import { useUserStore } from "@/stores/user"
@@ -40,13 +40,7 @@ const userStore = useUserStore()
 
 const appRef = useTemplateRef<HTMLElement>("appRef")
 
-// 黑暗模式
-useDark({
-    selector: "html",
-    // attribute: "data-theme",
-    valueDark: "dark",
-    valueLight: "light",
-})
+useTheme()
 
 // 监听自定义样式变化
 watch(

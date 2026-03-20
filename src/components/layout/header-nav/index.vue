@@ -10,7 +10,7 @@
     <nav class="header-nav">
         <Account class="header-nav-item account" v-if="!isHorizontal" />
         <div class="switch" v-if="!isHorizontal">
-            <SwitchGroup :switch-items="themeSwitch" @update-status="updateStatus" />
+            <ThemePresetSelector :model-value="activeThemePreset" :presets="themePresetOptions" @update:model-value="selectThemePreset" />
         </div>
         <!-- 
             jpz-header-menu-popover 样式在 main.scss
@@ -35,8 +35,8 @@ import { computed, watch } from "vue"
 import { useRoute, useRouter } from "vue-router"
 
 import RecursiveMenuItem from "@/components/common/recursive-menu-item" // 引入递归菜单组件
-import SwitchGroup from "@/components/common/switch-group"
-import { useTheme } from "@/components/hooks/useTheme"
+import ThemePresetSelector from "@/theme/preset-selector"
+import { useTheme } from "@/theme/useTheme"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 import { useOptionsStore } from "@/stores/options"
 import { useStatusStore } from "@/stores/status"
@@ -56,8 +56,7 @@ const { navObj, navActiveIndex } = storeToRefs(optionsStore)
 
 const statusStore = useStatusStore()
 
-// 主题切换
-const { themeSwitch, updateStatus } = useTheme()
+const { activeThemePreset, selectThemePreset, themePresetOptions } = useTheme()
 
 // 根据设备类型设置菜单横竖排列
 const isHorizontal = computed(() => device.value !== DeviceType.PHONE)
