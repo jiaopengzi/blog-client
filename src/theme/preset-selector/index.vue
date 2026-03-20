@@ -7,49 +7,63 @@
 -->
 
 <template>
-    <el-dropdown trigger="click" placement="bottom-end" popper-class="theme-preset-selector-popper" :hide-on-click="false">
-        <button type="button" class="theme-trigger" :aria-label="`切换主题, 当前为 ${activePreset?.label || 'Light'}`">
-            <span class="theme-trigger__swatches">
-                <span class="swatch swatch--primary" :style="{ backgroundColor: activePreset?.palette.primary }"></span>
-                <span class="swatch swatch--secondary" :style="{ backgroundColor: activePreset?.palette.secondary }"></span>
-            </span>
-            <span class="theme-trigger__label">{{ activePreset?.label || "Light" }}</span>
-            <j-icon :name="activePreset?.scheme === 'dark' ? IconKeys.ThemeDark : IconKeys.ThemeLight" custom-class="theme-trigger__icon" />
-        </button>
+    <button
+        type="button"
+        class="theme-trigger theme-trigger--icon-only"
+        :aria-label="`切换主题, 当前为 ${activePreset?.label || 'Light'}`"
+        @click="dialogVisible = true"
+    >
+        <j-icon :name="activePreset?.scheme === 'dark' ? IconKeys.ThemeDark : IconKeys.ThemeLight" custom-class="theme-trigger__icon" />
+    </button>
 
-        <template #dropdown>
-            <div class="theme-panel">
-                <div class="theme-panel__header">主题选择</div>
-                <div class="theme-panel__list">
-                    <button
-                        v-for="preset in presets"
-                        :key="preset.id"
-                        type="button"
-                        class="theme-option"
-                        :class="{ 'is-active': preset.id === modelValue }"
-                        @click="handleSelect(preset.id)"
-                    >
-                        <span class="theme-option__preview">
-                            <span class="swatch swatch--primary" :style="{ backgroundColor: preset.palette.primary }"></span>
-                            <span class="swatch swatch--secondary" :style="{ backgroundColor: preset.palette.secondary }"></span>
-                        </span>
-                        <span class="theme-option__meta">
-                            <span class="theme-option__label">{{ preset.label }}</span>
-                            <span class="theme-option__desc">{{ preset.description }}</span>
-                        </span>
-                        <span v-if="preset.id === modelValue" class="theme-option__status">当前</span>
-                    </button>
-                </div>
-            </div>
+    <el-dialog
+        v-model="dialogVisible"
+        class="theme-selector-dialog"
+        align-center
+        append-to-body
+        destroy-on-close
+        width="min(360px, calc(100vw - 24px))"
+        header-class="theme-selector-dialog__header"
+        body-class="theme-selector-dialog__body"
+        :modal-class="isPhone ? 'theme-selector-dialog-mask theme-selector-dialog-mask--phone' : 'theme-selector-dialog-mask'"
+        :show-close="false"
+        :z-index="2200"
+    >
+        <template #header>
+            <div class="theme-panel__header theme-panel__header--dialog">主题选择</div>
         </template>
-    </el-dropdown>
+
+        <div class="theme-panel theme-panel--dialog">
+            <div class="theme-panel__list">
+                <button
+                    v-for="preset in presets"
+                    :key="preset.id"
+                    type="button"
+                    class="theme-option"
+                    :class="{ 'is-active': preset.id === modelValue }"
+                    @click="handleSelect(preset.id)"
+                >
+                    <span class="theme-option__preview">
+                        <span class="swatch swatch--primary" :style="{ backgroundColor: preset.palette.primary }"></span>
+                        <span class="swatch swatch--secondary" :style="{ backgroundColor: preset.palette.secondary }"></span>
+                    </span>
+                    <span class="theme-option__meta">
+                        <span class="theme-option__label">{{ preset.label }}</span>
+                        <span class="theme-option__desc">{{ preset.description }}</span>
+                    </span>
+                    <span v-if="preset.id === modelValue" class="theme-option__status">当前</span>
+                </button>
+            </div>
+        </div>
+    </el-dialog>
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue"
+import { computed, ref } from "vue"
 
 import { IconKeys } from "@/components/common/icons"
 import type { ThemePreset, ThemePresetId } from "@/theme/presets"
+import { DeviceType, useDeviceStore } from "@/stores/device"
 
 defineOptions({ name: "ThemePresetSelector" })
 
@@ -62,9 +76,15 @@ const emit = defineEmits<{
     (event: "update:modelValue", value: ThemePresetId): void
 }>()
 
+const deviceStore = useDeviceStore()
+const dialogVisible = ref(false)
+
 const activePreset = computed(() => presets.find((preset) => preset.id === modelValue))
 
+const isPhone = computed(() => deviceStore.device === DeviceType.PHONE)
+
 const handleSelect = (presetId: ThemePresetId) => {
+    dialogVisible.value = false
     emit("update:modelValue", presetId)
 }
 </script>
@@ -73,9 +93,10 @@ const handleSelect = (presetId: ThemePresetId) => {
 .theme-trigger {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    min-width: 112px;
-    padding: 6px 10px;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
     border: 1px solid var(--jpz-border-color);
     border-radius: 999px;
     background: color-mix(in srgb, var(--jpz-bg-color) 88%, var(--jpz-color-primary) 12%);
@@ -91,6 +112,10 @@ const handleSelect = (presetId: ThemePresetId) => {
         background: color-mix(in srgb, var(--jpz-bg-color) 72%, var(--jpz-color-primary) 28%);
         transform: translateY(-1px);
     }
+}
+
+.theme-trigger--icon-only {
+    min-width: 38px;
 }
 
 .theme-trigger__swatches,
@@ -112,26 +137,9 @@ const handleSelect = (presetId: ThemePresetId) => {
     transform: translateX(-4px);
 }
 
-.theme-trigger__label {
-    max-width: 110px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 13px;
-    font-weight: 600;
-}
-
 .theme-trigger__icon {
-    font-size: 15px;
+    font-size: 16px;
     fill: var(--jpz-color-primary);
-}
-
-:global(.theme-preset-selector-popper) {
-    padding: 0 !important;
-    border: 1px solid var(--jpz-border-color) !important;
-    border-radius: 16px !important;
-    background: color-mix(in srgb, var(--jpz-bg-color) 94%, #000 6%) !important;
-    box-shadow: 0 18px 48px rgba(15, 23, 42, 0.16) !important;
 }
 
 .theme-panel {
@@ -139,17 +147,29 @@ const handleSelect = (presetId: ThemePresetId) => {
     padding: 12px;
 }
 
+.theme-panel--dialog {
+    width: 100%;
+    padding: 0;
+}
+
 .theme-panel__header {
     padding: 4px 6px 10px;
     color: var(--jpz-text-color-secondary);
     font-size: 12px;
+    line-height: 1.4;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+}
+
+.theme-panel__header--dialog {
+    padding: 0;
 }
 
 .theme-panel__list {
     display: grid;
     gap: 8px;
+    padding-top: 10px;
+    padding-bottom: 12px;
 }
 
 .theme-option {
@@ -204,20 +224,89 @@ const handleSelect = (presetId: ThemePresetId) => {
     font-weight: 700;
 }
 
+:global(.theme-selector-dialog) {
+    padding: 0;
+
+    .el-dialog {
+        border: 1px solid var(--jpz-border-color);
+        border-radius: 18px;
+        background: color-mix(in srgb, var(--jpz-bg-color) 96%, #000 4%);
+        box-shadow: 0 20px 48px rgba(15, 23, 42, 0.22);
+    }
+}
+
+:global(.theme-selector-dialog__header) {
+    margin-right: 0;
+    padding: 28px 18px 14px 16px;
+}
+
+:global(.theme-selector-dialog__body) {
+    padding: 0 18px 20px 16px;
+}
+
+:global(.theme-selector-dialog-mask) {
+    background-color: rgba(15, 23, 42, 0.42);
+}
+
+:global(.theme-selector-dialog-mask--phone) {
+    backdrop-filter: blur(4px);
+}
+
 @include respond-to("phone") {
     .theme-trigger {
-        width: 100%;
-        justify-content: space-between;
-    }
-
-    .theme-trigger__label {
-        max-width: none;
-        flex: 1;
-        text-align: left;
+        width: 36px;
+        height: 36px;
     }
 
     .theme-panel {
-        width: min(340px, calc(100vw - 16px));
+        width: 100%;
+    }
+
+    .theme-panel--dialog {
+        padding: 0;
+    }
+
+    .theme-panel__list {
+        padding-top: 2px;
+        padding-bottom: 2px;
+    }
+
+    .theme-panel__header {
+        font-size: 13px;
+        letter-spacing: 0.04em;
+    }
+
+    .theme-option {
+        padding: 9px 12px;
+        gap: 8px;
+        border-radius: 12px;
+    }
+
+    .theme-option__label {
+        font-size: 13px;
+    }
+
+    .theme-option__desc {
+        font-size: 11px;
+        line-height: 1.3;
+    }
+
+    .theme-option__status {
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+    :global(.theme-selector-dialog .el-dialog) {
+        width: calc(100vw - 40px) !important;
+        border-radius: 18px;
+    }
+
+    :global(.theme-selector-dialog__header) {
+        padding: 18px 14px 8px;
+    }
+
+    :global(.theme-selector-dialog__body) {
+        padding: 0 14px 12px;
     }
 }
 </style>
