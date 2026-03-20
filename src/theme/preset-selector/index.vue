@@ -22,6 +22,7 @@
         align-center
         append-to-body
         destroy-on-close
+        :lock-scroll="false"
         width="min(360px, calc(100vw - 24px))"
         header-class="theme-selector-dialog__header"
         body-class="theme-selector-dialog__body"
