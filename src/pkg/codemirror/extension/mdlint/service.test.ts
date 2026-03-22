@@ -35,6 +35,25 @@ describe("mdlint service", () => {
         expect(result.diagnostics).toHaveLength(0)
     })
 
+    it("会自动修复 power-bi 周围空行, 并折叠空内容单行标签", () => {
+        const source = [
+            "前置内容",
+            '<power-bi src="https://app.powerbi.com/reportEmbed?reportId=abc123" maskcolor="#ffffff">',
+            "",
+            "</power-bi>",
+            "后置内容",
+        ].join("\n")
+        const result = autoFixMarkdownText(source, {
+            rules: markdownRules,
+        })
+
+        expect(result.changed).toBe(true)
+        expect(result.fixedText).toBe(
+            ["前置内容", "", '<power-bi src="https://app.powerbi.com/reportEmbed?reportId=abc123" maskcolor="#ffffff"></power-bi>', "", "后置内容"].join("\n"),
+        )
+        expect(result.diagnostics).toHaveLength(0)
+    })
+
     it("无法自动修复缺少关键属性的问题", () => {
         const result = autoFixMarkdownText('<pay-key title="标题"></pay-key>', {
             rules: markdownRules,

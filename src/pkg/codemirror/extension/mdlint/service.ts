@@ -112,6 +112,7 @@ function collapseEmptySingleLineTags(text: string): string {
     return text
         .replace(/<(pay-membership|pay-key)(\s+[^>]*)?>\s*\n\s*<\/\1>/g, "<$1$2></$1>")
         .replace(/<video-player(\s+[^>]*)?>\s*\n\s*<\/video-player>/g, "<video-player$1></video-player>")
+        .replace(/<power-bi(\s+[^>]*)?>\s*\n\s*<\/power-bi>/g, "<power-bi$1></power-bi>")
 }
 
 /**
@@ -138,6 +139,9 @@ function ensureBlankLinesAroundTagLines(text: string): string {
             /^<video-player(\s+[^>]*)?><\/video-player>$/.test(trimmedLine),
             /^<video-player(\s+[^>]*)?>$/.test(trimmedLine),
             /^<\/video-player>$/.test(trimmedLine),
+            /^<power-bi(\s+[^>]*)?><\/power-bi>$/.test(trimmedLine),
+            /^<power-bi(\s+[^>]*)?>$/.test(trimmedLine),
+            /^<\/power-bi>$/.test(trimmedLine),
         ].some(Boolean)
     })
 }
