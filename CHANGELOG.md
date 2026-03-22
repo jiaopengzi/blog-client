@@ -5,6 +5,12 @@
 该格式基于 [Keep a Changelog](https://keepachangelog.com),
 本项目遵循 [语义化版本控制](https://semver.org/spec/v2.0.0.html)。
 
+## [v0.14.0] - 2026-03-22
+
+### Feat
+
+- 增加 PowerBI 组件
+
 ## [v0.13.2] - 2026-03-20
 
 ### Fix
