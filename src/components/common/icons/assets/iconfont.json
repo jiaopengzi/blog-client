@@ -6,6 +6,13 @@
   "description": "vue 重写项目",
   "glyphs": [
     {
+      "icon_id": "27253672",
+      "name": "captcha",
+      "font_class": "captcha",
+      "unicode": "e62a",
+      "unicode_decimal": 58922
+    },
+    {
       "icon_id": "47157478",
       "name": "power-bi-union",
       "font_class": "power-bi-union",

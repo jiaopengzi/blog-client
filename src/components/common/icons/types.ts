@@ -158,4 +158,5 @@ export enum IconKeys {
     PayAlipay = "pay-alipay",
     PowerBiUnion = "power-bi-union",
     PowerBi = "power-bi",
+    Captcha = "captcha",
 }
