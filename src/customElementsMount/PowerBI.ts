@@ -13,17 +13,20 @@ import PowerBiComponent from "@/components/common/power-bi"
 import { Attributes, Names } from "../customElements"
 import { getComponentContainersFromCustomElements } from "./getComponentContainers"
 
+// 定义 PowerBI 组件状态接口
 export interface PowerBIState {
     src: string
     maskcolor?: string
 }
 
+// 从元素属性获取 PowerBI 组件状态
 export const getPowerBIState = (el: Element): PowerBIState => {
     const src = el.getAttribute(Attributes.Src) || ""
     const maskcolor = el.getAttribute(Attributes.MaskColor) ?? undefined
     return { src, maskcolor }
 }
 
+// 挂载 PowerBI 组件到指定容器内的所有自定义元素
 export const mountPowerBIOnCustomElements = (container: HTMLElement, tagName: Names) => {
     const componentContainers = getComponentContainersFromCustomElements(container, tagName)
 

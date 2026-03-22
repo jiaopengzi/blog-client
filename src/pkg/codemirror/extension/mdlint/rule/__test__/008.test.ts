@@ -1,6 +1,8 @@
 /**
  * FilePath    : blog-client-dev\src\pkg\codemirror\extension\mdlint\rule\__test__\008.test.ts
  * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
  * Description : 测试 rule008 - 检测 power-bi 标签是否合法
  */
 

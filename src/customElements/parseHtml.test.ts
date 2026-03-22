@@ -1,3 +1,11 @@
+/**
+ * FilePath    : blog-client-dev\src\customElements\parseHtml.test.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : parseHtmlToContentParts 测试
+ */
+
 import { describe, expect, it, vi } from "vitest"
 
 vi.mock("@/components/hooks/useVideoWatermark", () => ({

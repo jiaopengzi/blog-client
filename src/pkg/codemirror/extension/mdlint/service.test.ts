@@ -1,6 +1,8 @@
 /**
  * FilePath    : blog-client-dev\src\pkg\codemirror\extension\mdlint\service.test.ts
  * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
  * Description : 测试 Markdown lint 保存前自动修复服务
  */
 

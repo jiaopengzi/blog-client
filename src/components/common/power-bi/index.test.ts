@@ -1,3 +1,11 @@
+/**
+ * FilePath    : blog-client-dev\src\components\common\power-bi\index.test.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : PowerBI 组件单元测试
+ */
+
 import { mount } from "@vue/test-utils"
 import { afterEach, describe, expect, it, vi } from "vitest"
 

@@ -1,3 +1,11 @@
+/**
+ * FilePath    : blog-client-dev\src\components\common\power-bi\url.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : PowerBI 组件 URL 处理逻辑
+ */
+
 export const resolvePowerBiUrl = (src?: string): { isValid: boolean; normalizedSrc: string; message: string } => {
     const trimmedSrc = src?.trim() || ""
 

@@ -1,3 +1,11 @@
+<!--
+ * FilePath    : blog-client-dev\src\components\common\power-bi\index.vue
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : PowerBI 组件
+-->
+
 <template>
     <div class="power-bi-card" ref="containerRef" :class="{ 'power-bi-card-fullscreen': isFullscreen }">
         <div v-if="isValid" class="power-bi-wrapper">
@@ -47,17 +55,33 @@ const syncFullscreenState = (): void => {
         !!(containerRef.value && document.fullscreenElement && containerRef.value.contains(document.fullscreenElement))
 }
 
+// 解析 URL 并计算相关状态
 const resolvedState = computed(() => resolvePowerBiUrl(props.src))
+
+// URL 是否有效
 const isValid = computed(() => resolvedState.value.isValid)
+
+// 正常化 URL
 const normalizedSrc = computed(() => resolvedState.value.normalizedSrc)
+
+// 反馈信息(如果 URL 无效)
 const feedbackMessage = computed(() => resolvedState.value.message)
+
+// 处理遮罩颜色和显示逻辑
 const normalizedMaskColor = computed(() => props.maskcolor?.trim() || "")
+
+// 是否显示遮罩
 const isShowMask = computed(() => normalizedMaskColor.value !== "")
+
+// 遮罩样式
 const maskStyle = computed(() => (normalizedMaskColor.value ? { backgroundColor: normalizedMaskColor.value } : undefined))
+
+// 监听全屏状态变化
 onMounted(() => {
     document.addEventListener("fullscreenchange", syncFullscreenState)
 })
 
+// 组件卸载时移除事件监听
 onBeforeUnmount(() => {
     document.removeEventListener("fullscreenchange", syncFullscreenState)
 })
