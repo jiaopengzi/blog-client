@@ -224,4 +224,5 @@ export interface VideoPlayerAttrs {
 // power-bi 标签属性接口
 export interface PowerBiAttrs {
     src?: string
+    maskcolor?: string
 }

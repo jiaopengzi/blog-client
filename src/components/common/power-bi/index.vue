@@ -2,7 +2,7 @@
     <div class="power-bi-card" ref="containerRef" :class="{ 'power-bi-card-fullscreen': isFullscreen }">
         <div v-if="isValid" class="power-bi-wrapper">
             <iframe :src="normalizedSrc" class="power-bi-iframe" frameborder="0" tabindex="-1"></iframe>
-            <div class="power-bi-mask"></div>
+            <div v-if="isShowMask" class="power-bi-mask" :style="maskStyle"></div>
             <button type="button" v-if="!isFullscreen" class="power-bi-fullscreen-btn" @click="enterFullscreen">
                 <svg
                     viewBox="0 0 24 24"
@@ -31,6 +31,7 @@ import { resolvePowerBiUrl } from "./url"
 
 const props = defineProps<{
     src?: string
+    maskcolor?: string
 }>()
 
 const containerRef = ref<HTMLElement | null>(null)
@@ -50,7 +51,9 @@ const resolvedState = computed(() => resolvePowerBiUrl(props.src))
 const isValid = computed(() => resolvedState.value.isValid)
 const normalizedSrc = computed(() => resolvedState.value.normalizedSrc)
 const feedbackMessage = computed(() => resolvedState.value.message)
-
+const normalizedMaskColor = computed(() => props.maskcolor?.trim() || "")
+const isShowMask = computed(() => normalizedMaskColor.value !== "")
+const maskStyle = computed(() => (normalizedMaskColor.value ? { backgroundColor: normalizedMaskColor.value } : undefined))
 onMounted(() => {
     document.addEventListener("fullscreenchange", syncFullscreenState)
 })

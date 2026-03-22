@@ -22,6 +22,7 @@ import {
 
 export const id = "rule008"
 export const defaultOptions = {}
+const HEX_COLOR_REGEX = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/
 
 /**
  * run: 检查文档中 power-bi 标签的合法性, 包括成对闭合、属性完整、标签前后空行等, 若存在不合法情况则返回 error 类型的 Diagnostic
@@ -171,11 +172,22 @@ function validateAttributesForPowerBi(ctx: AttrContext) {
     // 构造属性对象
     const attrs: PowerBiAttrs = {
         src: raw.src,
+        maskcolor: raw.maskcolor,
     }
 
     // src 不为空
     if (!attrs.src || attrs.src.trim() === "") {
         diagnostics.push({ from: openFrom, to: openTo, severity: "error", message: "power-bi 缺少属性或属性为空: src", source: sourceId })
+    }
+
+    if (attrs.maskcolor && attrs.maskcolor.trim() !== "" && !HEX_COLOR_REGEX.test(attrs.maskcolor.trim())) {
+        diagnostics.push({
+            from: openFrom,
+            to: openTo,
+            severity: "error",
+            message: "power-bi 属性 maskcolor 必须为 16 进制颜色值，如：#FFFFFF",
+            source: sourceId,
+        })
     }
 }
 

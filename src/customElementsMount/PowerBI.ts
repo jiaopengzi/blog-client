@@ -15,11 +15,13 @@ import { getComponentContainersFromCustomElements } from "./getComponentContaine
 
 export interface PowerBIState {
     src: string
+    maskcolor?: string
 }
 
 export const getPowerBIState = (el: Element): PowerBIState => {
     const src = el.getAttribute(Attributes.Src) || ""
-    return { src }
+    const maskcolor = el.getAttribute(Attributes.MaskColor) ?? undefined
+    return { src, maskcolor }
 }
 
 export const mountPowerBIOnCustomElements = (container: HTMLElement, tagName: Names) => {
@@ -37,7 +39,7 @@ export const mountPowerBIOnCustomElements = (container: HTMLElement, tagName: Na
 
         const app = createApp({
             render() {
-                return h(PowerBiComponent, { src: state.src })
+                return h(PowerBiComponent, { src: state.src, maskcolor: state.maskcolor })
             },
         })
 

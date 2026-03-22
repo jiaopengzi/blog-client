@@ -443,7 +443,7 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         // PowerBi
         [CommandsKey.PowerBi]: {
             tip: "PowerBi",
-            content: '<power-bi src="这里是占位链接"></power-bi>',
+            content: '<power-bi src="" maskcolor=""></power-bi>',
             icon: IconKeys.PowerBiUnion,
         },
     }

@@ -13,6 +13,7 @@ export enum Attributes {
     VideoType = "video-type", // 视频类型
     Poster = "poster", // 视频封面
     Src = "src", // 视频地址
+    MaskColor = "maskcolor",
     Title = "title", // 标题
     Description = "description", // 描述
 }

@@ -12,6 +12,7 @@
         "lezer",
         "localtime",
         "lopt",
+        "maskcolor",
         "mdlint",
         "NAPI",
         "nodelay",
