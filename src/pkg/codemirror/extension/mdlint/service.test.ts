@@ -83,4 +83,21 @@ describe("mdlint service", () => {
         expect(result.fixedText).toContain("作者内容")
         expect(result.diagnostics.some((item) => item.message.includes("标签内不应包含内容"))).toBe(true)
     })
+
+    it("会自动修复 wechat-captcha 前后空行，但不会删除隐藏内容", () => {
+        const source = [
+            "前置内容",
+            '<wechat-captcha name="焦棚子" codeurl="https://example.com/qrcode.png" key="1120" reply="demo148">',
+            "隐藏内容",
+            "</wechat-captcha>",
+            "后置内容",
+        ].join("\n")
+        const result = autoFixMarkdownText(source, {
+            rules: markdownRules,
+        })
+
+        expect(result.changed).toBe(true)
+        expect(result.fixedText).toContain("隐藏内容")
+        expect(result.fixedText).toContain("<wechat-captcha")
+    })
 })

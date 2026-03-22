@@ -8,7 +8,7 @@
 
 import { createApp, h } from "vue"
 
-import PowerBiComponent from "@/components/common/power-bi"
+import PowerBi from "@/components/common/power-bi"
 
 import { Attributes, Names } from "../customElements"
 import { getComponentContainersFromCustomElements } from "./getComponentContainers"
@@ -42,7 +42,7 @@ export const mountPowerBIOnCustomElements = (container: HTMLElement, tagName: Na
 
         const app = createApp({
             render() {
-                return h(PowerBiComponent, { src: state.src, maskcolor: state.maskcolor })
+                return h(PowerBi, { src: state.src, maskcolor: state.maskcolor })
             },
         })
 

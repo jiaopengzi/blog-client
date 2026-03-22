@@ -19,7 +19,7 @@ const lazyLoaders = Object.fromEntries(Object.keys(_eagerModules).map((p) => [p,
 
 // eagerModules 供同步加载使用, 直接引用已加载的模块映射
 const eagerModules = _eagerModules
-const CUSTOM_TAG_REGEX = /<\/?(?:pay-(?:video|membership|read|download|key)|video-player|power-bi)(?:\s+[^>]*)?>/g
+const CUSTOM_TAG_REGEX = /<\/?(?:pay-(?:video|membership|read|download|key)|video-player|power-bi|wechat-captcha)(?:\s+[^>]*)?>/g
 const FENCE_REGEX = /^```/
 
 /**

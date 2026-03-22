@@ -13,6 +13,7 @@ export enum Names {
     PayKey = "pay-key", // 付费密钥
     PayMembership = "pay-membership", // 付费会员
     PayVideo = "pay-video", // 付费视频
+    WechatCaptcha = "wechat-captcha",
     VideoPlayer = "video-player", // 视频播放器
     PowerBi = "power-bi", // Power BI 嵌入
 }

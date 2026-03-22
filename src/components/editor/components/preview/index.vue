@@ -28,11 +28,33 @@
             </div>
 
             <!-- Power BI 预览组件 -->
-            <PowerBiComponent
+            <PowerBi
                 v-else-if="item.type === Names.PowerBi"
                 :key="`${(item.content as PowerBIState).src}-${(item.content as PowerBIState).maskcolor}`"
                 :src="(item.content as PowerBIState).src"
                 :maskcolor="(item.content as PowerBIState).maskcolor"
+            />
+
+            <WechatCaptcha
+                v-else-if="item.type === Names.WechatCaptcha"
+                :key="`${postIdAc}-${(item.content as WechatCaptchaState).verifyKey}-${(item.content as WechatCaptchaState).reply}`"
+                :name="(item.content as WechatCaptchaState).name"
+                :codeurl="(item.content as WechatCaptchaState).codeurl"
+                :verify-key="(item.content as WechatCaptchaState).verifyKey"
+                :reply="(item.content as WechatCaptchaState).reply"
+                :hidden-html="(item.content as WechatCaptchaState).hiddenHtml"
+                :create-order-loading="createOrderLoadingAc"
+                :is-paid="isPaidAc"
+                :pay-strategy="payStrategyAc"
+                :pay-roles="payRolesAc"
+                :price="priceAc"
+                :post-id="postIdAc"
+                :is-admin-video="isAdminVideoAc"
+                :video-toc="videoTocAc"
+                @pay-vip="emitPayVip"
+                @pay-single="emitPaySingle"
+                @pay-key="emitPayKey"
+                @pay-membership="emitPayMembership"
             />
 
             <PayKey
@@ -105,12 +127,14 @@ import { type Product as KeyRes } from "@/api/order/create"
 import PayContent, { ContentPayType } from "@/components/common/pay-content"
 import PayKey, { type PayKeyProps } from "@/components/common/pay-key"
 import PayMembership from "@/components/common/pay-membership"
+import WechatCaptcha from "@/components/common/wechat-captcha"
 import { ScrollElementTagHeading } from "@/components/editor/command"
 import VideoPlayer, { type PlayerState } from "@/components/player"
-import PowerBiComponent from "@/components/common/power-bi/index.vue"
+import PowerBi from "@/components/common/power-bi/index.vue"
 import { Names, parseHtmlToContentParts } from "@/customElements"
 import { mountPayContentOnCustomElements } from "@/customElementsMount"
 import { type PowerBIState } from "@/customElementsMount/PowerBI"
+import { type WechatCaptchaState } from "@/customElementsMount/WechatCaptcha"
 import { copyText } from "@/utils/clipboard"
 import { shiftArray } from "@/utils/img"
 import { MessageUtil } from "@/utils/message"

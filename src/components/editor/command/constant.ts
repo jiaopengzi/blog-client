@@ -63,6 +63,7 @@ export enum CommandsKey {
     Details = "details",
     Alert = "alert",
     PowerBi = "powerBi",
+    WechatCaptcha = "wechatCaptcha",
 }
 
 // markdown 编辑器 单个命令对象 的类型
@@ -394,10 +395,18 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
             tip: "编辑模式",
             icon: IconKeys.Edit,
         },
-        // 移动端
+        // 微信公众号阅览模式
         [CommandsKey.WechatOfficialAccount]: {
             tip: "微信公众号",
             icon: IconKeys.WechatOfficialAccount,
+        },
+        // 公众号验证码
+        [CommandsKey.WechatCaptcha]: {
+            tip: "公众号验证码",
+            prefix: '\n<wechat-captcha name="您的公众号名称" codeurl="您的公众号二维码链接" key="您在公众号回复用户的验证码" reply="用户需要在公众号回复获取验证码的内容">\n\n',
+            content: "您的隐藏内容",
+            suffix: "\n\n</wechat-captcha>\n",
+            icon: IconKeys.Captcha,
         },
         // // 导出 markdown
         // [CommandsKey.Markdown]: {
@@ -442,7 +451,7 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         },
         // PowerBi
         [CommandsKey.PowerBi]: {
-            tip: "PowerBi",
+            tip: "PowerBI",
             content: '<power-bi src="" maskcolor=""></power-bi>',
             icon: IconKeys.PowerBiUnion,
         },

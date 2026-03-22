@@ -86,3 +86,43 @@ describe("power-bi 自定义元素解析", () => {
         expect(content?.maskcolor).toBeUndefined()
     })
 })
+
+describe("wechat-captcha 自定义元素解析", () => {
+    it("解析单个 wechat-captcha 元素，包含有效属性和隐藏内容", () => {
+        const html = '<wechat-captcha name="焦棚子" codeurl="https://example.com/qrcode.png" key="1120" reply="demo148"><p>隐藏内容</p></wechat-captcha>'
+        const parts = parseHtmlToContentParts(html, "post-1")
+
+        expect(parts).toHaveLength(1)
+        expect(parts[0]?.type).toBe(Names.WechatCaptcha)
+        expect(parts[0]?.content).toMatchObject({
+            name: "焦棚子",
+            codeurl: "https://example.com/qrcode.png",
+            verifyKey: "1120",
+            reply: "demo148",
+            hiddenHtml: "<p>隐藏内容</p>",
+        })
+    })
+
+    it("解析缺省属性时保持为空字符串并保留嵌套组件内容", () => {
+        const html =
+            '<wechat-captcha name="" codeurl="" key="" reply=""><power-bi src="https://app.powerbi.com/reportEmbed?reportId=abc123"></power-bi></wechat-captcha>'
+        const parts = parseHtmlToContentParts(html, "post-1")
+        const content = parts[0]?.content as
+            | {
+                  name: string
+                  codeurl: string
+                  verifyKey: string
+                  reply: string
+                  hiddenHtml: string
+              }
+            | undefined
+
+        expect(content).toMatchObject({
+            name: "",
+            codeurl: "",
+            verifyKey: "",
+            reply: "",
+        })
+        expect(content?.hiddenHtml).toContain("<power-bi")
+    })
+})

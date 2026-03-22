@@ -10,6 +10,10 @@
 export enum Attributes {
     Id = "id", // 元素 id
     Class = "class", // 元素 class
+    Name = "name", // 微信验证码等需要的名称
+    CodeUrl = "codeurl", // 微信验证码等需要的验证码
+    Key = "key", // 微信验证码等需要的 key
+    Reply = "reply", // 微信验证码等需要的回复内容
     VideoType = "video-type", // 视频类型
     Poster = "poster", // 视频封面
     Src = "src", // 视频地址

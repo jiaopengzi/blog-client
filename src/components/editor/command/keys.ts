@@ -39,6 +39,7 @@ const postPc = [
     CommandsKey.Alert,
     CommandsKey.PayContent,
     CommandsKey.PowerBi,
+    CommandsKey.WechatCaptcha,
     // CommandsKey.Video,
     CommandsKey.Toc,
     CommandsKey.Edit,

@@ -60,6 +60,11 @@ export interface MarkdownRules {
      */
     rule008: Record<string, unknown>
 
+    /**
+     * rule009: 规则 009 检测 wechat-captcha 标签是否合法(成对闭合、属性完整、标签前后空行)
+     */
+    rule009: Record<string, unknown>
+
     // @generated-mdlint-rules-end
 }
 
@@ -225,4 +230,11 @@ export interface VideoPlayerAttrs {
 export interface PowerBiAttrs {
     src?: string
     maskcolor?: string
+}
+
+export interface WechatCaptchaAttrs {
+    name?: string
+    codeurl?: string
+    key?: string
+    reply?: string
 }
