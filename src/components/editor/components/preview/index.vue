@@ -28,7 +28,7 @@
             </div>
 
             <!-- Power BI 预览组件 -->
-            <PowerBiComponent v-else-if="item.type === Names.PowerBi" :src="(item.content as PowerBIState).src" />
+            <PowerBiComponent v-else-if="item.type === Names.PowerBi" :key="(item.content as PowerBIState).src" :src="(item.content as PowerBIState).src" />
 
             <PayKey
                 v-else-if="item.type === Names.PayKey"

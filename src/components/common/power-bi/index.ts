@@ -1,3 +1,2 @@
-import PowerBI from "./index.vue"
-
-export default PowerBI
+export { default } from "./index.vue"
+export * from "./url"

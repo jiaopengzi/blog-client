@@ -29,6 +29,11 @@ export const mountPowerBIOnCustomElements = (container: HTMLElement, tagName: Na
 
     componentContainers.forEach((el) => {
         const state = getPowerBIState(el)
+        const host = el as HTMLElement
+
+        if (!host.style.display) {
+            host.style.display = "block"
+        }
 
         const app = createApp({
             render() {
@@ -36,6 +41,6 @@ export const mountPowerBIOnCustomElements = (container: HTMLElement, tagName: Na
             },
         })
 
-        app.mount(el)
+        app.mount(host)
     })
 }
