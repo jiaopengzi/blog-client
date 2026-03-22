@@ -99,7 +99,7 @@ const enterFullscreen = () => {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .power-bi-card {
     width: 100%;
     height: 600px;
