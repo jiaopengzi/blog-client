@@ -72,4 +72,13 @@ describe("mdlint service", () => {
         expect(result.fixedText).toContain('<video-player video-type="hls" id="m-1"></video-player>')
         expect(result.diagnostics.some((item) => item.message.includes("不允许嵌套自定义标签"))).toBe(true)
     })
+
+    it("不会通过自动修复删除 power-bi 中作者编写的内容", () => {
+        const result = autoFixMarkdownText(['<power-bi src="https://app.powerbi.com/reportEmbed?reportId=abc123">作者内容</power-bi>'].join("\n"), {
+            rules: markdownRules,
+        })
+
+        expect(result.fixedText).toContain("作者内容")
+        expect(result.diagnostics.some((item) => item.message.includes("标签内不应包含内容"))).toBe(true)
+    })
 })

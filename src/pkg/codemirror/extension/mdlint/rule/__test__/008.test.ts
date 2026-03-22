@@ -68,6 +68,22 @@ describe("rule008 - power-bi 标签合法性检测", () => {
         expect(diags.length).toBeGreaterThan(0)
     })
 
+    it("power-bi 标签对中包含普通内容时应返回 error", () => {
+        const doc = makeDoc(['<power-bi src="https://app.powerbi.com/reportEmbed?reportId=abc123">作者内容</power-bi>'])
+        const diags = run(doc as unknown as DocLike)
+
+        expect(diags.some((item) => item.message.includes("标签内不应包含内容"))).toBe(true)
+    })
+
+    it("power-bi 标签内嵌套自定义标签时应返回 error", () => {
+        const doc = makeDoc([
+            '<power-bi src="https://app.powerbi.com/reportEmbed?reportId=abc123"><video-player video-type="hls" id="m-1"></video-player></power-bi>',
+        ])
+        const diags = run(doc as unknown as DocLike)
+
+        expect(diags.some((item) => item.message.includes("不允许嵌套自定义标签"))).toBe(true)
+    })
+
     it("非 power-bi 标签不应触发此规则诊断", () => {
         const doc = makeDoc(['<video-player video-type="hls" id="m-1"></video-player>'])
         const diags = run(doc as unknown as DocLike)
