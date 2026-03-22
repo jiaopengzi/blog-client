@@ -70,5 +70,5 @@ export default defineConfig({
         confirm: "readonly",
     },
     // 忽略匹配路径, 避免对依赖与产物文件进行 lint.
-    ignorePatterns: ["node_modules/", "dist/", "*.min.js"],
+    ignorePatterns: ["node_modules/", "dist/", "*.min.js", "src/components/common/icons/assets/"],
 })

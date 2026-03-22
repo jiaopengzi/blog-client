@@ -156,4 +156,6 @@ export enum IconKeys {
     Lock = "lock",
     PayWechat = "pay-wechat",
     PayAlipay = "pay-alipay",
+    PowerBiUnion = "power-bi-union",
+    PowerBi = "power-bi",
 }
