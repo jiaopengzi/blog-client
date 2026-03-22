@@ -29,3 +29,38 @@ describe("parseHtmlToContentParts", () => {
         })
     })
 })
+
+describe("power-bi 自定义元素解析", () => {
+    it("解析单个 power-bi 元素，包含有效的 src 属性", () => {
+        const html = '<power-bi src="https://app.powerbi.com/reportEmbed?reportId=abc123"></power-bi>'
+        const parts = parseHtmlToContentParts(html, "post-1")
+
+        expect(parts).toHaveLength(1)
+        expect(parts[0]?.type).toBe("power-bi")
+        expect(parts[0]?.content).toMatchObject({
+            src: "https://app.powerbi.com/reportEmbed?reportId=abc123",
+        })
+    })
+
+    it("解析多个内容混合的 power-bi 元素", () => {
+        const html = '<p>前置文本</p><power-bi src="https://app.powerbi.com/reportEmbed?reportId=xyz789"></power-bi><p>后置文本</p>'
+        const parts = parseHtmlToContentParts(html, "post-1")
+
+        expect(parts).toHaveLength(3)
+        expect(parts[1]?.type).toBe("power-bi")
+        expect(parts[1]?.content).toMatchObject({
+            src: "https://app.powerbi.com/reportEmbed?reportId=xyz789",
+        })
+    })
+
+    it("解析 power-bi 元素，空 src 属性", () => {
+        const html = '<power-bi src=""></power-bi>'
+        const parts = parseHtmlToContentParts(html, "post-1")
+
+        expect(parts).toHaveLength(1)
+        expect(parts[0]?.type).toBe("power-bi")
+        expect(parts[0]?.content).toMatchObject({
+            src: "",
+        })
+    })
+})

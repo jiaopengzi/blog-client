@@ -37,6 +37,7 @@ const postPc = [
     CommandsKey.Subscript,
     CommandsKey.Details,
     CommandsKey.Alert,
+    CommandsKey.PowerBi,
     CommandsKey.PayContent,
     // CommandsKey.Video,
     CommandsKey.Toc,

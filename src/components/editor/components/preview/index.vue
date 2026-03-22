@@ -27,6 +27,9 @@
                 <VideoPlayer :player-state="item.content as PlayerState" />
             </div>
 
+            <!-- Power BI 预览组件 -->
+            <PowerBiComponent v-else-if="item.type === Names.PowerBi" :src="(item.content as PowerBIState).src" />
+
             <PayKey
                 v-else-if="item.type === Names.PayKey"
                 :key="(item.content as PayKeyProps).productId"
@@ -99,8 +102,10 @@ import PayKey, { type PayKeyProps } from "@/components/common/pay-key"
 import PayMembership from "@/components/common/pay-membership"
 import { ScrollElementTagHeading } from "@/components/editor/command"
 import VideoPlayer, { type PlayerState } from "@/components/player"
+import PowerBiComponent from "@/components/common/power-bi/index.vue"
 import { Names, parseHtmlToContentParts } from "@/customElements"
 import { mountPayContentOnCustomElements } from "@/customElementsMount"
+import { type PowerBIState } from "@/customElementsMount/PowerBI"
 import { copyText } from "@/utils/clipboard"
 import { shiftArray } from "@/utils/img"
 import { MessageUtil } from "@/utils/message"

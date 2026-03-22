@@ -55,6 +55,11 @@ export interface MarkdownRules {
      */
     rule007: Record<string, unknown>
 
+    /**
+     * rule008: 规则 008 检测 power-bi 标签是否合法(成对闭合、属性完整、标签前后空行)
+     */
+    rule008: Record<string, unknown>
+
     // @generated-mdlint-rules-end
 }
 
@@ -214,4 +219,9 @@ export interface VideoPlayerAttrs {
     id?: string
     src?: string
     poster?: string
+}
+
+// power-bi 标签属性接口
+export interface PowerBiAttrs {
+    src?: string
 }

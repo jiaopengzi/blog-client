@@ -62,6 +62,7 @@ export enum CommandsKey {
     Vim = "vim",
     Details = "details",
     Alert = "alert",
+    PowerBi = "powerBi",
 }
 
 // markdown 编辑器 单个命令对象 的类型
@@ -438,6 +439,12 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
             content: "\n> [!NOTE]\n> ",
             hotKey: "Ctrl+Shift+A",
             icon: IconKeys.Alert,
+        },
+        // PowerBi
+        [CommandsKey.PowerBi]: {
+            tip: "PowerBi",
+            content: '<power-bi src="这里是占位链接"></power-bi>',
+            icon: IconKeys.PowerBiUnion,
         },
     }
 }

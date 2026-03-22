@@ -9,12 +9,13 @@
 import { type PayKeyProps } from "@/components/common/pay-key"
 import { type PlayerState } from "@/components/player"
 import { getPayKeyState } from "@/customElementsMount/PayKey"
+import { getPowerBIState, type PowerBIState } from "@/customElementsMount/PowerBI"
 import { getVideoPlayerState } from "@/customElementsMount/VideoPlayer"
 
 import { Names } from "./registerCustomElements"
 
 // 内容片段类型
-export type Content = PlayerState | PayKeyProps | string
+export type Content = PlayerState | PayKeyProps | PowerBIState | string
 
 // 内容片段类型
 export type ContentPart = { type: "html"; content: string } | { type: Names; content: Content }
@@ -95,6 +96,12 @@ export function parseHtmlToContentParts(html: string, postId: string, isAdminVid
             if (tagName === Names.PayDownload || tagName === Names.PayRead || tagName === Names.PayVideo) {
                 const content = (child as HTMLElement).innerHTML
                 parts.push({ type: tagName as Names, content })
+                continue
+            }
+
+            if (tagName === Names.PowerBi) {
+                const state = getPowerBIState(child as HTMLElement)
+                parts.push({ type: tagName as Names, content: state })
                 continue
             }
 
