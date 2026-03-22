@@ -67,7 +67,35 @@ describe("rule009", () => {
         expect(diags.some((item) => item.message.includes("标签后应有空行"))).toBe(true)
     })
 
-    it("允许嵌套其他自定义组件", () => {
+    it("允许嵌套 video-player", () => {
+        const doc = makeDoc([
+            "",
+            '<wechat-captcha name="焦棚子" codeurl="https://example.com/qrcode.png" key="1120" reply="demo148">',
+            '<video-player video-type="hls" id="m-1"></video-player>',
+            "</wechat-captcha>",
+            "",
+        ])
+        const diags = run(doc)
+
+        expect(diags).toHaveLength(0)
+    })
+
+    it("不允许嵌套付费组件", () => {
+        const doc = makeDoc([
+            "",
+            '<wechat-captcha name="焦棚子" codeurl="https://example.com/qrcode.png" key="1120" reply="demo148">',
+            "<pay-read>",
+            "隐藏付费内容",
+            "</pay-read>",
+            "</wechat-captcha>",
+            "",
+        ])
+        const diags = run(doc)
+
+        expect(diags.some((item) => item.message.includes("不允许嵌套自定义标签"))).toBe(true)
+    })
+
+    it("不允许嵌套其他自定义组件", () => {
         const doc = makeDoc([
             "",
             '<wechat-captcha name="焦棚子" codeurl="https://example.com/qrcode.png" key="1120" reply="demo148">',
@@ -77,7 +105,7 @@ describe("rule009", () => {
         ])
         const diags = run(doc)
 
-        expect(diags.some((item) => item.message.includes("不允许嵌套同名标签"))).toBe(false)
+        expect(diags.some((item) => item.message.includes("不允许嵌套自定义标签"))).toBe(true)
     })
 
     it("不允许嵌套同名标签", () => {

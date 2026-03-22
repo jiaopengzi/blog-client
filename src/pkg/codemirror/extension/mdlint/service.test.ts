@@ -100,4 +100,22 @@ describe("mdlint service", () => {
         expect(result.fixedText).toContain("隐藏内容")
         expect(result.fixedText).toContain("<wechat-captcha")
     })
+
+    it("不会通过自动修复删除 wechat-captcha 中被禁止的付费组件", () => {
+        const result = autoFixMarkdownText(
+            [
+                '<wechat-captcha name="焦棚子" codeurl="https://example.com/qrcode.png" key="1120" reply="demo148">',
+                "<pay-read>",
+                "隐藏付费内容",
+                "</pay-read>",
+                "</wechat-captcha>",
+            ].join("\n"),
+            {
+                rules: markdownRules,
+            },
+        )
+
+        expect(result.fixedText).toContain("<pay-read>")
+        expect(result.diagnostics.some((item) => item.message.includes("不允许嵌套自定义标签"))).toBe(true)
+    })
 })

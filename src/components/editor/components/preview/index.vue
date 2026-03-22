@@ -43,18 +43,7 @@
                 :verify-key="(item.content as WechatCaptchaState).verifyKey"
                 :reply="(item.content as WechatCaptchaState).reply"
                 :hidden-html="(item.content as WechatCaptchaState).hiddenHtml"
-                :create-order-loading="createOrderLoadingAc"
-                :is-paid="isPaidAc"
-                :pay-strategy="payStrategyAc"
-                :pay-roles="payRolesAc"
-                :price="priceAc"
                 :post-id="postIdAc"
-                :is-admin-video="isAdminVideoAc"
-                :video-toc="videoTocAc"
-                @pay-vip="emitPayVip"
-                @pay-single="emitPaySingle"
-                @pay-key="emitPayKey"
-                @pay-membership="emitPayMembership"
             />
 
             <PayKey

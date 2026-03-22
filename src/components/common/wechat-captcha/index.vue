@@ -30,18 +30,10 @@
 </template>
 
 <script setup lang="ts">
-import { type MembershipRes } from "@/api/membership/common"
-import { type Product as KeyRes } from "@/api/order/create"
-import { PayStrategy, type PostVideoTocTree } from "@/api/post/common"
-import { ContentPayType } from "@/components/common/pay-content"
-import { mountPayContentOnCustomElements } from "@/customElementsMount/PayContent"
-import { mountPayKeyOnCustomElements } from "@/customElementsMount/PayKey"
-import { mountPayMembershipOnCustomElements } from "@/customElementsMount/PayMembership"
-import { mountPowerBIOnCustomElements } from "@/customElementsMount/PowerBI"
 import { mountVideoPlayerOnCustomElements } from "@/customElementsMount/VideoPlayer"
 import { Names } from "@/customElements/registerCustomElements"
 import { MessageUtil } from "@/utils/message"
-import { computed, nextTick, onMounted, ref, watch } from "vue"
+import { nextTick, onMounted, ref, watch } from "vue"
 
 defineOptions({ name: "WechatCaptcha" })
 
@@ -51,35 +43,14 @@ const {
     verifyKey = "",
     reply = "",
     hiddenHtml = "",
-    createOrderLoading = false,
-    isPaid = false,
-    payStrategy = PayStrategy.All,
-    payRoles = [],
-    price = "0",
     postId = "",
-    isAdminVideo = false,
-    videoToc = [],
 } = defineProps<{
     name?: string
     codeurl?: string
     verifyKey?: string
     reply?: string
     hiddenHtml?: string
-    createOrderLoading?: boolean
-    isPaid?: boolean
-    payStrategy?: PayStrategy
-    payRoles?: string[]
-    price?: string
     postId?: string
-    isAdminVideo?: boolean
-    videoToc?: PostVideoTocTree[]
-}>()
-
-const emit = defineEmits<{
-    (event: "pay-vip", val: ContentPayType): void
-    (event: "pay-single", val: ContentPayType): void
-    (event: "pay-key", val: KeyRes): void
-    (event: "pay-membership", val: MembershipRes): void
 }>()
 
 const inputCode = ref("")
@@ -89,15 +60,6 @@ const contentRef = ref<HTMLElement | null>(null)
 const setContentRef = (el: HTMLElement | null) => {
     contentRef.value = el
 }
-
-const createOrderLoadingAc = computed(() => createOrderLoading)
-const isPaidAc = computed(() => isPaid)
-const payStrategyAc = computed(() => payStrategy)
-const payRolesAc = computed(() => payRoles)
-const priceAc = computed(() => price)
-const postIdAc = computed(() => postId)
-const isAdminVideoAc = computed(() => isAdminVideo)
-const videoTocAc = computed(() => videoToc)
 
 /**
  * @description: 基于文章 ID 生成验证码缓存 key, 避免不同文章复用同一验证码时串数据.
@@ -132,67 +94,6 @@ const mountNestedCustomElements = (): void => {
     if (!contentRef.value) return
 
     mountVideoPlayerOnCustomElements(contentRef.value, Names.VideoPlayer)
-    mountPowerBIOnCustomElements(contentRef.value, Names.PowerBi)
-    mountPayKeyOnCustomElements(contentRef.value, Names.PayKey, createOrderLoadingAc, {
-        onPayKey: (val) => emit("pay-key", val),
-    })
-    mountPayMembershipOnCustomElements(contentRef.value, Names.PayMembership, createOrderLoadingAc, {
-        onPayMembership: (val) => emit("pay-membership", val),
-    })
-    mountPayContentOnCustomElements(
-        contentRef.value,
-        Names.PayRead,
-        ContentPayType.Read,
-        createOrderLoadingAc,
-        {
-            onPayVip: (val) => emit("pay-vip", val),
-            onPaySingle: (val) => emit("pay-single", val),
-        },
-        isPaidAc,
-        payStrategyAc,
-        payRolesAc,
-        priceAc,
-        true,
-        isAdminVideoAc,
-        postIdAc,
-        videoTocAc,
-    )
-    mountPayContentOnCustomElements(
-        contentRef.value,
-        Names.PayDownload,
-        ContentPayType.Download,
-        createOrderLoadingAc,
-        {
-            onPayVip: (val) => emit("pay-vip", val),
-            onPaySingle: (val) => emit("pay-single", val),
-        },
-        isPaidAc,
-        payStrategyAc,
-        payRolesAc,
-        priceAc,
-        true,
-        isAdminVideoAc,
-        postIdAc,
-        videoTocAc,
-    )
-    mountPayContentOnCustomElements(
-        contentRef.value,
-        Names.PayVideo,
-        ContentPayType.Video,
-        createOrderLoadingAc,
-        {
-            onPayVip: (val) => emit("pay-vip", val),
-            onPaySingle: (val) => emit("pay-single", val),
-        },
-        isPaidAc,
-        payStrategyAc,
-        payRolesAc,
-        priceAc,
-        true,
-        isAdminVideoAc,
-        postIdAc,
-        videoTocAc,
-    )
 }
 
 /**

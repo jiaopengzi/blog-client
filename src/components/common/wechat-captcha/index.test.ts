@@ -11,18 +11,6 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 
 import { MessageUtil } from "@/utils/message"
 
-vi.mock("@/customElementsMount/PayContent", () => ({
-    mountPayContentOnCustomElements: vi.fn(),
-}))
-
-vi.mock("@/customElementsMount/PayKey", () => ({
-    mountPayKeyOnCustomElements: vi.fn(),
-}))
-
-vi.mock("@/customElementsMount/PayMembership", () => ({
-    mountPayMembershipOnCustomElements: vi.fn(),
-}))
-
 vi.mock("@/customElementsMount/VideoPlayer", () => ({
     mountVideoPlayerOnCustomElements: vi.fn(),
 }))
@@ -100,14 +88,14 @@ describe("WechatCaptcha", () => {
         expect(localStorage.length).toBe(0)
     })
 
-    it("隐藏内容中的 power-bi 组件在验证后仍能挂载", async () => {
-        const wrapper = mountComponent('<power-bi src="https://app.powerbi.cn/view?r=123" maskcolor="#ffffff"></power-bi>')
+    it("隐藏内容中的 video-player 组件在验证后仍能挂载", async () => {
+        const wrapper = mountComponent('<video-player video-type="hls" id="m-1"></video-player>')
 
         await wrapper.find(".wechat-captcha-input").setValue("1120")
         await wrapper.find(".wechat-captcha-btn").trigger("click")
         await wrapper.vm.$nextTick()
         await wrapper.vm.$nextTick()
 
-        expect(wrapper.find(".power-bi-iframe").exists()).toBe(true)
+        expect(wrapper.find("video-player").exists()).toBe(true)
     })
 })

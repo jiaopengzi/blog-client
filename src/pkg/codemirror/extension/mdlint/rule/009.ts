@@ -15,6 +15,8 @@ import { collectFencedCodeLineNumbers, validateBlankLinesForPair, validateNoSurr
 export const id = "rule009"
 export const defaultOptions = {}
 
+const forbiddenNestedCustomTagRegex = /<\/?(?:pay-(?:video|membership|read|download|key)|power-bi|wechat-captcha)(?:\s+[^>]*)?>/g
+
 export function run(doc: DocLike): Diagnostic[] {
     const diagnostics: Diagnostic[] = []
     const lineCount = doc.lines
@@ -77,7 +79,7 @@ export function run(doc: DocLike): Diagnostic[] {
                     sourceId: id,
                 })
 
-                validateNoNestedWechatCaptcha({
+                validateWechatCaptchaInnerCustomTags({
                     doc,
                     openLine: openLn,
                     closeLine: closeLn,
@@ -147,7 +149,12 @@ function validateAttributesForWechatCaptcha(ctx: AttrContext) {
     })
 }
 
-function validateNoNestedWechatCaptcha(ctx: {
+/**
+ * @description: 校验 wechat-captcha 内部仅允许普通 HTML, Markdown 与 video-player, 禁止同名及其它项目自定义标签.
+ * @param ctx 校验上下文.
+ * @return {void}
+ */
+function validateWechatCaptchaInnerCustomTags(ctx: {
     doc: DocLike
     openLine: number
     closeLine: number
@@ -159,7 +166,6 @@ function validateNoNestedWechatCaptcha(ctx: {
     ignoredLineNumbers?: Set<number>
 }) {
     const { doc, openLine, closeLine, openFromIndex, openLength, closeMatchIndex, diagnostics, sourceId, ignoredLineNumbers } = ctx
-    const selfTagRegex = /<\/?wechat-captcha(?:\s+[^>]*)?>/g
 
     for (let lineNum = openLine; lineNum <= closeLine; lineNum++) {
         if (ignoredLineNumbers?.has(lineNum)) {
@@ -175,14 +181,18 @@ function validateNoNestedWechatCaptcha(ctx: {
             continue
         }
 
-        selfTagRegex.lastIndex = 0
+        forbiddenNestedCustomTagRegex.lastIndex = 0
         let match: RegExpExecArray | null
-        while ((match = selfTagRegex.exec(segment)) !== null) {
+        while ((match = forbiddenNestedCustomTagRegex.exec(segment)) !== null) {
+            const message = match[0].includes("wechat-captcha")
+                ? `wechat-captcha 标签内不允许嵌套同名标签: ${match[0]}`
+                : `wechat-captcha 标签内不允许嵌套自定义标签: ${match[0]}`
+
             diagnostics.push({
                 from: line.from + start + match.index,
                 to: line.from + start + match.index + match[0].length,
                 severity: "error",
-                message: `wechat-captcha 标签内不允许嵌套同名标签: ${match[0]}`,
+                message,
                 source: sourceId,
             })
         }
