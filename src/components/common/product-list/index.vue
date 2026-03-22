@@ -28,7 +28,7 @@
                     <div class="product-detail-cell">
                         <div class="product-description" v-if="row.description">{{ row.description }}</div>
                         <div class="account-key-items" v-if="hasAccountKeyItems(row)">
-                            <div class="account-key-title">卡密内容</div>
+                            <div class="account-key-title">账号密钥内容</div>
                             <ul class="account-key-list">
                                 <li v-for="(item, index) in row.account_key_items" :key="`${row.product_id}-${index}`">
                                     {{ item }}

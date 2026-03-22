@@ -12,7 +12,7 @@ export interface ViewForm {
     id?: string // ID
     title?: string // 产品标题
     description?: string // 描述
-    itemStr?: string // 卡密内容
+    itemStr?: string // 账号密钥内容
     price?: number // 价格
     purchase_min?: number // 最少购买数量
     purchase_max?: number // 最多购买数量

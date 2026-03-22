@@ -26,7 +26,7 @@
             <el-button class="pay-item" type="default" @click="handlePaySelect(payTags[Names.PayMembership])">会员</el-button>
             <el-button class="pay-item" type="default" @click="handlePaySelect(payTags[Names.PayRead])">阅读</el-button>
             <el-button class="pay-item" type="default" @click="handlePaySelect(payTags[Names.PayDownload])">下载</el-button>
-            <el-button class="pay-item" type="default" @click="handlePaySelect(payTags[Names.PayKey])">卡密</el-button>
+            <el-button class="pay-item" type="default" @click="handlePaySelect(payTags[Names.PayKey])">账号密钥</el-button>
         </div>
     </el-popover>
 </template>

@@ -22,6 +22,14 @@ export const adminMenuItemMap: AdminMenuItemMap = {
             class: "icon-menu",
         },
     },
+    [RouteNamesAdmin.Media]: {
+        text: "媒体",
+        permissionName: PermissionNames.ViewMedia,
+        icon: {
+            name: IconKeys.Media,
+            class: "icon-menu",
+        },
+    },
     [RouteNamesAdmin.Post]: {
         text: "文章",
         permissionName: PermissionNames.ViewPost,
@@ -41,44 +49,24 @@ export const adminMenuItemMap: AdminMenuItemMap = {
         permissionName: PermissionNames.AddPost,
         parentIndex: RouteNamesAdmin.Post,
     },
-    [RouteNamesAdmin.PostTag]: {
-        text: "标签",
-        permissionName: PermissionNames.ViewTag,
-        parentIndex: RouteNamesAdmin.Post,
-    },
     [RouteNamesAdmin.PostCategory]: {
         text: "分类",
         permissionName: PermissionNames.ViewCategory,
         parentIndex: RouteNamesAdmin.Post,
     },
-    [RouteNamesAdmin.Media]: {
-        text: "媒体",
-        permissionName: PermissionNames.ViewMedia,
+    [RouteNamesAdmin.PostTag]: {
+        text: "标签",
+        permissionName: PermissionNames.ViewTag,
+        parentIndex: RouteNamesAdmin.Post,
+    },
+    [RouteNamesAdmin.Comment]: {
+        text: "评论",
+        permissionName: PermissionNames.ViewComment,
         icon: {
-            name: IconKeys.Media,
+            name: IconKeys.Comment,
             class: "icon-menu",
         },
     },
-    [RouteNamesAdmin.Links]: {
-        text: "链接",
-        permissionName: PermissionNames.ViewLink,
-        icon: {
-            name: IconKeys.Link,
-            class: "icon-menu",
-        },
-    },
-    // [RouteNamesAdmin.LinkAll]: {
-    //     text: "所有链接",
-    //     parentIndex: RouteNamesAdmin.Link,
-    // },
-    // [RouteNamesAdmin.LinkAdd]: {
-    //     text: "新增链接",
-    //     parentIndex: RouteNamesAdmin.Link,
-    // },
-    // [RouteNamesAdmin.LinkCategory]: {
-    //     text: "链接分类",
-    //     parentIndex: RouteNamesAdmin.Link,
-    // },
     [RouteNamesAdmin.PageAdmin]: {
         text: "页面",
         permissionName: PermissionNames.ViewPost,
@@ -97,14 +85,18 @@ export const adminMenuItemMap: AdminMenuItemMap = {
         permissionName: PermissionNames.AddPost,
         parentIndex: RouteNamesAdmin.PageAdmin,
     },
-    [RouteNamesAdmin.Comment]: {
-        text: "评论",
-        permissionName: PermissionNames.ViewComment,
-        icon: {
-            name: IconKeys.Comment,
-            class: "icon-menu",
-        },
-    },
+    // [RouteNamesAdmin.LinkAll]: {
+    //     text: "所有链接",
+    //     parentIndex: RouteNamesAdmin.Link,
+    // },
+    // [RouteNamesAdmin.LinkAdd]: {
+    //     text: "新增链接",
+    //     parentIndex: RouteNamesAdmin.Link,
+    // },
+    // [RouteNamesAdmin.LinkCategory]: {
+    //     text: "链接分类",
+    //     parentIndex: RouteNamesAdmin.Link,
+    // },
     // [RouteNamesAdmin.Announcement]: {
     //     text: "公告",
     //     icon: {
@@ -143,69 +135,6 @@ export const adminMenuItemMap: AdminMenuItemMap = {
     //     text: "视频分类",
     //     parentIndex: RouteNamesAdmin.Video,
     // },
-    [RouteNamesAdmin.Shop]: {
-        text: "商城",
-        permissionName: PermissionNames.Shop,
-        icon: {
-            name: IconKeys.Shop,
-            class: "icon-menu",
-        },
-    },
-    // [RouteNamesAdmin.Product]: {
-    //     text: "产品",
-    //     parentIndex: RouteNamesAdmin.Shop,
-    // },
-    [RouteNamesAdmin.AccountKey]: {
-        text: "账号密钥",
-        permissionName: PermissionNames.Shop,
-        parentIndex: RouteNamesAdmin.Shop,
-    },
-    [RouteNamesAdmin.AccountKeyAll]: {
-        text: "产品",
-        permissionName: PermissionNames.Shop,
-        parentIndex: RouteNamesAdmin.AccountKey,
-    },
-    [RouteNamesAdmin.AccountKeyItem]: {
-        text: "明细",
-        permissionName: PermissionNames.Shop,
-        parentIndex: RouteNamesAdmin.AccountKey,
-    },
-    [RouteNamesAdmin.Order]: {
-        text: "订单",
-        permissionName: PermissionNames.Shop,
-        parentIndex: RouteNamesAdmin.Shop,
-    },
-    [RouteNamesAdmin.Membership]: {
-        text: "会员",
-        permissionName: PermissionNames.Shop,
-        parentIndex: RouteNamesAdmin.Shop,
-        components: RouteNamesAdmin.MembershipRole,
-    },
-    [RouteNamesAdmin.MembershipRole]: {
-        text: "角色",
-        permissionName: PermissionNames.Shop,
-        parentIndex: RouteNamesAdmin.Membership,
-    },
-    [RouteNamesAdmin.MembershipUser]: {
-        text: "用户",
-        permissionName: PermissionNames.Shop,
-        parentIndex: RouteNamesAdmin.Membership,
-    },
-    [RouteNamesAdmin.Coupon]: {
-        text: "优惠券",
-        permissionName: PermissionNames.Shop,
-        parentIndex: RouteNamesAdmin.Shop,
-    },
-    [RouteNamesAdmin.PayConfig]: {
-        text: "支付配置",
-        permissionName: PermissionNames.Shop,
-        parentIndex: RouteNamesAdmin.Shop,
-    },
-    [RouteNamesAdmin.BillingCenter]: {
-        text: "计费中心",
-        permissionName: PermissionNames.Shop,
-        parentIndex: RouteNamesAdmin.Shop,
-    },
     // [RouteNamesAdmin.ShortLink]: {
     //     text: "短连接",
     //     icon: {
@@ -289,6 +218,69 @@ export const adminMenuItemMap: AdminMenuItemMap = {
         permissionName: PermissionNames.AppOption,
         parentIndex: RouteNamesAdmin.Setting,
     },
+    [RouteNamesAdmin.Shop]: {
+        text: "商城",
+        permissionName: PermissionNames.Shop,
+        icon: {
+            name: IconKeys.Shop,
+            class: "icon-menu",
+        },
+    },
+    // [RouteNamesAdmin.Product]: {
+    //     text: "产品",
+    //     parentIndex: RouteNamesAdmin.Shop,
+    // },
+    [RouteNamesAdmin.AccountKey]: {
+        text: "账号密钥",
+        permissionName: PermissionNames.Shop,
+        parentIndex: RouteNamesAdmin.Shop,
+    },
+    [RouteNamesAdmin.AccountKeyAll]: {
+        text: "产品",
+        permissionName: PermissionNames.Shop,
+        parentIndex: RouteNamesAdmin.AccountKey,
+    },
+    [RouteNamesAdmin.AccountKeyItem]: {
+        text: "明细",
+        permissionName: PermissionNames.Shop,
+        parentIndex: RouteNamesAdmin.AccountKey,
+    },
+    [RouteNamesAdmin.Order]: {
+        text: "订单",
+        permissionName: PermissionNames.Shop,
+        parentIndex: RouteNamesAdmin.Shop,
+    },
+    [RouteNamesAdmin.Membership]: {
+        text: "会员",
+        permissionName: PermissionNames.Shop,
+        parentIndex: RouteNamesAdmin.Shop,
+        components: RouteNamesAdmin.MembershipRole,
+    },
+    [RouteNamesAdmin.MembershipRole]: {
+        text: "角色",
+        permissionName: PermissionNames.Shop,
+        parentIndex: RouteNamesAdmin.Membership,
+    },
+    [RouteNamesAdmin.MembershipUser]: {
+        text: "用户",
+        permissionName: PermissionNames.Shop,
+        parentIndex: RouteNamesAdmin.Membership,
+    },
+    [RouteNamesAdmin.Coupon]: {
+        text: "优惠券",
+        permissionName: PermissionNames.Shop,
+        parentIndex: RouteNamesAdmin.Shop,
+    },
+    [RouteNamesAdmin.PayConfig]: {
+        text: "支付配置",
+        permissionName: PermissionNames.Shop,
+        parentIndex: RouteNamesAdmin.Shop,
+    },
+    [RouteNamesAdmin.BillingCenter]: {
+        text: "计费中心",
+        permissionName: PermissionNames.Shop,
+        parentIndex: RouteNamesAdmin.Shop,
+    },
     [RouteNamesAdmin.Notification]: {
         text: "通知",
         permissionName: PermissionNames.Notification,
@@ -305,6 +297,15 @@ export const adminMenuItemMap: AdminMenuItemMap = {
     //     },
     //     permissionName: PermissionNames.Backup,
     // },
+
+    [RouteNamesAdmin.Links]: {
+        text: "链接",
+        permissionName: PermissionNames.ViewLink,
+        icon: {
+            name: IconKeys.Link,
+            class: "icon-menu",
+        },
+    },
 }
 
 // 获取菜单数据
