@@ -75,8 +75,7 @@ const enterFullscreen = () => {
 <style scoped>
 .power-bi-card {
     width: 100%;
-    height: 100%;
-    min-height: 320px;
+    height: 600px;
     background-color: #f3f4f6;
     border-radius: 8px;
     overflow: hidden;
@@ -109,15 +108,15 @@ const enterFullscreen = () => {
     left: 0;
     right: 0;
     bottom: 0;
-    height: 28px;
-    background: linear-gradient(180deg, rgba(204, 204, 204, 0), rgba(204, 204, 204, 0.6));
+    height: 60px;
+    background-color: #cccccc;
     pointer-events: none;
     z-index: 10;
 }
 
 .power-bi-fullscreen-btn {
     position: absolute;
-    bottom: 16px;
+    bottom: 12px;
     right: 16px;
     background-color: rgba(255, 255, 255, 0.8);
     border: none;
@@ -157,6 +156,8 @@ const enterFullscreen = () => {
 }
 
 .power-bi-card-fullscreen {
+    width: 100%;
+    height: 100%;
     background-color: #ffffff;
     border-radius: 0;
 }
