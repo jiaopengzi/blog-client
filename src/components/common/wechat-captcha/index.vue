@@ -8,13 +8,22 @@
 
 <template>
     <div v-if="!isVerified" class="wechat-captcha-lock">
-        <div class="wechat-captcha-title">关注微信公众号获取验证码</div>
-        <div class="wechat-captcha-name">公众号：{{ name }}</div>
-        <img v-if="codeurl" class="wechat-captcha-qrcode" :src="codeurl" :alt="`${name} 二维码`" />
-        <div class="wechat-captcha-tip">在公众号中回复“{{ reply }}”获取验证码后输入查看隐藏内容。</div>
-        <div class="wechat-captcha-form">
-            <input v-model="inputCode" class="wechat-captcha-input" type="text" placeholder="请输入验证码" @keydown.enter.prevent="handleVerify" />
-            <button type="button" class="wechat-captcha-btn" @click="handleVerify">验证</button>
+        <div class="wechat-captcha-info">
+            <div class="wechat-captcha-title">关注微信公众号获取验证码</div>
+            <div class="wechat-captcha-name">
+                公众号：<span class="wechat-captcha-name-highlight">{{ name }}</span>
+            </div>
+            <div class="wechat-captcha-tip">
+                在公众号中回复“<span class="reply-keyword">{{ reply }}</span
+                >”获取验证码后输入查看隐藏内容。
+            </div>
+            <div class="wechat-captcha-form">
+                <input v-model="inputCode" class="wechat-captcha-input" type="text" placeholder="请输入验证码" @keydown.enter.prevent="handleVerify" />
+                <button type="button" class="wechat-captcha-btn" @click="handleVerify">验证</button>
+            </div>
+        </div>
+        <div class="wechat-captcha-media">
+            <img v-if="codeurl" class="wechat-captcha-qrcode" :src="codeurl" :alt="`${name} 二维码`" />
         </div>
     </div>
     <div
@@ -129,61 +138,148 @@ onMounted(() => {
 <style scoped lang="scss">
 .wechat-captcha-lock {
     margin: 24px 0;
-    padding: 24px;
-    border: 1px dashed #67c23a;
-    border-radius: 12px;
-    background-color: #f6ffed;
-    text-align: center;
+    padding: 32px;
+    border: 1px solid var(--jpz-border-color);
+    border-radius: 8px;
+    background-color: var(--jpz-bg-color);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+}
+
+.wechat-captcha-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.wechat-captcha-media {
+    flex-shrink: 0;
 }
 
 .wechat-captcha-title {
     font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 12px;
-    color: #2f5d1b;
-}
-
-.wechat-captcha-name {
-    margin-bottom: 12px;
+    font-weight: 600;
+    margin-bottom: 8px;
     color: var(--jpz-text-color-primary);
 }
 
-.wechat-captcha-qrcode {
-    width: 180px;
-    height: 180px;
-    object-fit: cover;
+.wechat-captcha-name {
+    font-size: 14px;
     margin-bottom: 12px;
-    border-radius: 8px;
-    border: 1px solid #d9ecff;
+    color: var(--jpz-text-color-regular);
+
+    .wechat-captcha-name-highlight {
+        color: var(--jpz-color-primary);
+        font-weight: 600;
+    }
 }
 
 .wechat-captcha-tip {
-    margin-bottom: 16px;
+    font-size: 14px;
+    margin-bottom: 24px;
     color: var(--jpz-text-color-secondary);
     line-height: 1.6;
+
+    .reply-keyword {
+        color: var(--jpz-color-primary);
+        font-weight: 600;
+        margin: 0 4px;
+    }
+}
+
+.wechat-captcha-qrcode {
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--jpz-border-color-lighter);
+    box-shadow: var(--jpz-box-shadow-light);
 }
 
 .wechat-captcha-form {
     display: flex;
     gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
+    align-items: center;
+    max-width: 400px;
 }
 
 .wechat-captcha-input {
-    width: 260px;
-    padding: 10px 12px;
-    border: 1px solid #c8d4e3;
-    border-radius: 8px;
+    flex: 1;
+    padding: 10px 14px;
+    font-size: 14px;
+    border: 1px solid var(--jpz-border-color);
+    border-radius: 6px;
     outline: none;
+    color: var(--jpz-text-color-primary);
+    background-color: transparent;
+    transition: all 0.2s;
+
+    &::placeholder {
+        color: var(--jpz-text-color-placeholder);
+    }
+
+    &:focus {
+        border-color: var(--jpz-color-primary);
+    }
 }
 
 .wechat-captcha-btn {
+    flex-shrink: 0;
     border: none;
-    border-radius: 8px;
-    padding: 10px 18px;
-    background-color: #07c160;
+    border-radius: 6px;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: var(--jpz-color-primary);
     color: #ffffff;
     cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+        opacity: 0.9;
+    }
+
+    &:active {
+        opacity: 0.8;
+    }
+}
+
+@include respond-to("pad") {
+    .wechat-captcha-lock {
+        padding: 24px;
+        gap: 24px;
+    }
+}
+
+@include respond-to("phone") {
+    .wechat-captcha-lock {
+        flex-direction: column-reverse;
+        padding: 24px 16px;
+        text-align: center;
+        gap: 24px;
+    }
+
+    .wechat-captcha-info {
+        align-items: center;
+    }
+
+    .wechat-captcha-form {
+        flex-direction: column;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .wechat-captcha-input {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .wechat-captcha-btn {
+        width: 100%;
+        box-sizing: border-box;
+    }
 }
 </style>
