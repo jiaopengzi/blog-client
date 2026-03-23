@@ -15,7 +15,7 @@ export const vueLightPreset: ThemePreset = {
     scheme: "light",
     palette: {
         primary: "#42b883",
-        secondary: "#2c3e50",
+        secondary: "#f59e0b",
         success: "#42b883",
         warning: "#e7c000",
         danger: "#d9534f",

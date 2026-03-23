@@ -15,7 +15,7 @@ export const githubDarkPreset: ThemePreset = {
     scheme: "dark",
     palette: {
         primary: "#4493f8",
-        secondary: "#e3b341",
+        secondary: "#4a3c6b",
         success: "#3fb950",
         warning: "#d29922",
         danger: "#f85149",

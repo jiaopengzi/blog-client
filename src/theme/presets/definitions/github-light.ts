@@ -15,7 +15,7 @@ export const githubLightPreset: ThemePreset = {
     scheme: "light",
     palette: {
         primary: "#0969da",
-        secondary: "#bf8700",
+        secondary: "#d29922",
         success: "#1f883d",
         warning: "#9a6700",
         danger: "#cf222e",

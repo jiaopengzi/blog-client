@@ -15,7 +15,7 @@ export const vueDarkPreset: ThemePreset = {
     scheme: "dark",
     palette: {
         primary: "#42d392",
-        secondary: "#ebdd9a",
+        secondary: "#6366f1",
         success: "#42d392",
         warning: "#e7c000",
         danger: "#ff7875",

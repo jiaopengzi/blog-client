@@ -15,7 +15,7 @@ export const tokyonightDayPreset: ThemePreset = {
     scheme: "light",
     palette: {
         primary: "#34548a",
-        secondary: "#b04335",
+        secondary: "#e0af68",
         success: "#33635c",
         warning: "#8f5e15",
         danger: "#8c4351",
