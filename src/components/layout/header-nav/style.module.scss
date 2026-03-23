@@ -12,6 +12,10 @@
 @use "@/assets/scss/mixin.scss" as *;
 
 // 图标样式
+:deep(.el-menu) {
+    background-color: var(--jpz-bg-color-header);
+}
+// 图标样式
 :deep(.icon-menu) {
     font-size: 1.2em;
 }

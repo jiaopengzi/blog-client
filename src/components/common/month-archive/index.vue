@@ -15,7 +15,14 @@
             <el-empty description="暂无数据" />
         </div>
         <div v-else class="table">
-            <el-table :max-height="400" :data="postList" :show-header="true" row-class-name="month-archive-row-class" @row-click="handleRowClick">
+            <el-table
+                :max-height="400"
+                :data="postList"
+                :show-header="true"
+                header-row-class-name="header-month-archive-row"
+                row-class-name="month-archive-row"
+                @row-click="handleRowClick"
+            >
                 <el-table-column prop="year_month" label="年月" align="center">
                     <template #default="scope">
                         <!-- 将月份补全为两位数 -->
@@ -83,8 +90,15 @@ h2 {
     fill: var(--jpz-color-secondary);
 }
 
-:deep(.month-archive-row-class) {
+:deep(.header-month-archive-row) {
+    .el-table__cell {
+        background-color: var(--jpz-bg-color);
+    }
+}
+
+:deep(.month-archive-row) {
     cursor: pointer;
+    background-color: var(--jpz-bg-color);
 }
 
 .no-data-box {

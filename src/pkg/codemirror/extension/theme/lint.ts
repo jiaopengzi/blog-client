@@ -9,7 +9,7 @@
 import { type Extension } from "@codemirror/state"
 import { EditorView } from "@codemirror/view"
 
-// 亮色主题下的 Lint 样式调整
+// 暗色主题下的 Lint 样式调整
 export const lintDark: Extension = EditorView.theme(
     {
         // 提示框调整
@@ -33,7 +33,7 @@ export const lintDark: Extension = EditorView.theme(
     { dark: true },
 )
 
-// 暗色主题下的 Lint 样式调整
+// 亮色主题下的 Lint 样式调整
 export const lintLight: Extension = EditorView.theme(
     {
         // 提示框调整

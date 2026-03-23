@@ -23,6 +23,32 @@ export interface ThemePalette {
     codeText: string
     blockquoteBorder: string
     alertImportant: string
+    bg: string
+    bgPage: string
+    bgFooter: string
+    bgOverlay: string
+    border: string
+    borderHover: string
+    borderLighter: string
+    shadowLighter: string
+    shadowLight: string
+    shadow: string
+    fillLighter: string
+    textPrimary: string
+    textRegular: string
+    textSecondary: string
+    textPlaceholder: string
+    textDisabled: string
+    codeBlockBg: string
+    codeBlockColor: string
+    blockquoteColor: string
+    blockquoteBg: string
+    tableBorder: string
+    tableHeaderBg: string
+    tableBg: string
+    tableN2Bg: string
+    tableN21Bg: string
+    scrollbarThumb: string
 }
 
 export interface ThemePreset {
