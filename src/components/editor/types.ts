@@ -17,6 +17,52 @@ export interface JEditorRef extends HTMLElement {
     codemirror: CodemirrorRef
 }
 
+export interface RegexCache {
+    h1TagRegex: RegExp
+    hTagRegex: RegExp
+    hTagStartRegex: RegExp
+    hTagLevelRegex: RegExp
+    hTagAnchorRegex: RegExp
+    htmlTagRegex: RegExp
+    markdownHeadingRegex: RegExp
+    nonAlphaNumericRegex: RegExp
+    multipleDashRegex: RegExp
+    leadingTrailingDashRegex: RegExp
+    customElementHeadingTagNameRegex: RegExp
+    customElementHeadingAttributeNameRegex: RegExp
+    utf8BomRegex: RegExp
+    windowsNewLineRegex: RegExp
+    copyButtonRegex: RegExp
+    detailsTagRegex: RegExp
+    detailsTagToRemoveRegex: RegExp
+    htmlNamedEntityRegex: RegExp
+    htmlDecimalEntityRegex: RegExp
+    htmlHexEntityRegex: RegExp
+}
+
+// 公式图片缓存
+export interface KatexImageCacheEntry {
+    src: string
+    width: number
+    height: number
+}
+
+export interface KatexCaptureContext {
+    wrapper: HTMLDivElement
+    width: number
+    height: number
+}
+
+export interface FilteredStyles {
+    [key: string]: string
+}
+
+export interface InlineStyleApplyContext {
+    matchedRuleCache: Map<string, CSSStyleRule[]>
+    computedPropertyCache: Map<string, string[]>
+    inlineStyleRecordCache: Map<string, Record<string, string>>
+}
+
 // markdown 标题行号类型
 export interface MarkdownHeadingLine {
     index: number // markdown 标题索引

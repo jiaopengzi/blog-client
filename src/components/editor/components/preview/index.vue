@@ -131,7 +131,7 @@ import { myScrollTo } from "@/utils/scrollTo"
 
 import { CommandsKey } from "../../command"
 import { copyWithCustomStyle, htmlHandleWeChat, prepareCopyWithCustomStyle, scaleDisplayKatexByFontSize, writePreparedHtmlToClipboard } from "../../utils"
-import type { HeadingObject, PreviewProps } from "./types"
+import type { HeadingObject, PreparedCopyCache, PreviewProps } from "./types"
 
 defineOptions({ name: "HtmlPreview" })
 
@@ -183,22 +183,13 @@ const setPreviewRef = (el: HTMLElement | null) => {
     previewRef.value = el
 }
 
-let displayKatexScaleAnimationFrameId = 0
-const COPY_CACHE_DEBOUNCE_MS = 800
-const COPY_PROFILE_PREFIX = "[copy-profile]"
-let copyPreparationVersion = 0
-let copyPreparationInFlight: Promise<void> | null = null
+let displayKatexScaleAnimationFrameId = 0 // 缩放 katex 的动画帧 ID
+const COPY_CACHE_DEBOUNCE_MS = 800 // 复制缓存的防抖时间，单位毫秒
+let copyPreparationVersion = 0 // 当前准备复制的缓存版本
+let copyPreparationInFlight: Promise<void> | null = null // 当前正在进行的复制准备任务
 
-interface PreparedCopyCache {
-    html: string
-    version: number
-}
-
+// 缓存准备复制的 HTML
 const preparedCopyCache = ref<PreparedCopyCache | null>(null)
-
-const emitCopyProfile = (payload: Record<string, unknown>): void => {
-    console.log(`${COPY_PROFILE_PREFIX} ${JSON.stringify(payload)}`)
-}
 
 // 分别为非微信预览(内容片段)和微信预览(html 字符串)提供独立的计算属性, 避免 string | ContentPart 的联合类型在模板中导致错误
 const contentParts = computed(() => {
@@ -228,18 +219,28 @@ const scheduleDisplayKatexScale = (): void => {
     })
 }
 
+/**
+ * @description: 使当前复制缓存失效, 并返回新的缓存版本号.
+ * @return 新的复制缓存版本号.
+ */
 const invalidatePreparedCopyCache = (): number => {
     copyPreparationVersion += 1
     preparedCopyCache.value = null
     return copyPreparationVersion
 }
 
+/**
+ * @description: 在预览内容稳定后预生成复制 HTML, 为点击复制时复用缓存做准备.
+ * @param version 当前缓存版本号.
+ * @return void.
+ */
 const prepareCopyCacheIfNeeded = async (version: number): Promise<void> => {
     if (!previewRef.value || version !== copyPreparationVersion || preparedCopyCache.value?.version === version) {
         return
     }
 
-    const html = await prepareCopyWithCustomStyle(previewRef.value, `cache-prepare-v${version}`)
+    // 预生成复制内容时复用最终定稿后的复制链路, 用户点击复制时可直接命中缓存.
+    const html = await prepareCopyWithCustomStyle(previewRef.value)
     if (version !== copyPreparationVersion) {
         return
     }
@@ -250,6 +251,7 @@ const prepareCopyCacheIfNeeded = async (version: number): Promise<void> => {
     }
 }
 
+// 缓存预生成复制内容的调度函数, 避免频繁调用 invalidatePreparedCopyCache 导致重复预生成.
 const schedulePreparedCopyCache = debounce(COPY_CACHE_DEBOUNCE_MS, () => {
     const version = invalidatePreparedCopyCache()
     copyPreparationInFlight = prepareCopyCacheIfNeeded(version)
@@ -267,6 +269,10 @@ const schedulePreparedCopyCache = debounce(COPY_CACHE_DEBOUNCE_MS, () => {
         })
 })
 
+/**
+ * @description: 在 DOM 更新并完成一帧渲染后调度复制缓存预生成, 避免与当前渲染竞争.
+ * @return void.
+ */
 const schedulePreparedCopyAfterRender = (): void => {
     nextTick(() => {
         window.requestAnimationFrame(() => {
@@ -275,37 +281,26 @@ const schedulePreparedCopyAfterRender = (): void => {
     })
 }
 
+/**
+ * @description: 优先复用预生成缓存执行复制, 未命中缓存时回退到完整复制链路.
+ * @return void.
+ */
 const copyPreparedContent = async (): Promise<void> => {
     const currentVersion = copyPreparationVersion
     const cachedHtml = preparedCopyCache.value
 
+    // 缓存命中时只保留剪贴板写入, 避免把重的预处理工作放在用户点击瞬间执行.
     if (cachedHtml && cachedHtml.version === currentVersion) {
-        emitCopyProfile({
-            type: "copy-entry",
-            path: "cache-hit",
-            version: currentVersion,
-            htmlLength: cachedHtml.html.length,
-        })
-        await writePreparedHtmlToClipboard(cachedHtml.html, `cache-hit-v${currentVersion}`)
+        await writePreparedHtmlToClipboard(cachedHtml.html)
         return
     }
 
     if (copyPreparationInFlight) {
-        emitCopyProfile({
-            type: "copy-entry",
-            path: "await-inflight-cache",
-            version: currentVersion,
-        })
+        // 如果后台预生成尚未完成, 先等待同一轮任务结束, 避免重复启动一条完整复制链路.
         await copyPreparationInFlight
         const latestCache = preparedCopyCache.value
         if (latestCache && latestCache.version === copyPreparationVersion) {
-            emitCopyProfile({
-                type: "copy-entry",
-                path: "cache-hit-after-await",
-                version: copyPreparationVersion,
-                htmlLength: latestCache.html.length,
-            })
-            await writePreparedHtmlToClipboard(latestCache.html, `cache-hit-after-await-v${copyPreparationVersion}`)
+            await writePreparedHtmlToClipboard(latestCache.html)
             return
         }
     }
@@ -314,12 +309,7 @@ const copyPreparedContent = async (): Promise<void> => {
         return
     }
 
-    emitCopyProfile({
-        type: "copy-entry",
-        path: "fallback-direct-copy",
-        version: copyPreparationVersion,
-    })
-    await copyWithCustomStyle(previewRef.value, `fallback-direct-copy-v${copyPreparationVersion}`)
+    await copyWithCustomStyle(previewRef.value)
 }
 
 // 判断是否为付费内容组件

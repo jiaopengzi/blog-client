@@ -21,7 +21,16 @@ import { htmlTagReplace } from "@/utils/tagReplace"
 import { CommandsKey } from "./command"
 import { defaultCommandKeys } from "./command"
 import type { Heading } from "./components/toc"
-import type { EditorState, EditorStateOptions, MarkdownHeadingLine } from "./types"
+import type {
+    EditorState,
+    EditorStateOptions,
+    FilteredStyles,
+    InlineStyleApplyContext,
+    KatexCaptureContext,
+    KatexImageCacheEntry,
+    MarkdownHeadingLine,
+    RegexCache,
+} from "./types"
 
 /**
  * @description : 创建默认的编辑器状态
@@ -64,30 +73,6 @@ export function createDefaultEditorState(options: EditorStateOptions = {}): Edit
         viewCommand: { commandName: "" as CommandsKey, time: new Date() }, // 命令
     }
     return { ...defaultState, ...options }
-}
-
-// 使用闭包缓存正则表达式
-interface RegexCache {
-    h1TagRegex: RegExp // 匹配 h1 标签
-    hTagRegex: RegExp // 匹配 h 标签
-    hTagStartRegex: RegExp // 匹配 h 标签的开始
-    hTagLevelRegex: RegExp // 匹配 h 标签的等级
-    hTagAnchorRegex: RegExp // 匹配 h 标签的锚点
-    htmlTagRegex: RegExp // 匹配所有 HTML 标签
-    markdownHeadingRegex: RegExp // 匹配 markdown 标题
-    nonAlphaNumericRegex: RegExp // 匹配非中文、字母、数字的字符
-    multipleDashRegex: RegExp // 匹配多个连续的 -
-    leadingTrailingDashRegex: RegExp // 匹配首尾的 -
-    customElementHeadingTagNameRegex: RegExp // DOMPurify 允许的 自定义元素的标签名
-    customElementHeadingAttributeNameRegex: RegExp // DOMPurify 允许的 自定义元素的属性名
-    utf8BomRegex: RegExp // 匹配 utf-8 bom 头
-    windowsNewLineRegex: RegExp // 匹配 windows 换行符
-    copyButtonRegex: RegExp // 匹配所有 class 中有 copy-button 的按钮元素
-    detailsTagRegex: RegExp // 匹配 details 标签
-    detailsTagToRemoveRegex: RegExp // 需要去掉 details 标签
-    htmlNamedEntityRegex: RegExp // 匹配 HTML 命名实体（如 &lt; &gt; &amp; 等）
-    htmlDecimalEntityRegex: RegExp // 匹配 HTML 十进制数字实体（如 &#39; 等）
-    htmlHexEntityRegex: RegExp // 匹配 HTML 十六进制数字实体（如 &#x27; 等）
 }
 
 /**
@@ -198,46 +183,11 @@ const KATEX_CAPTURE_PADDING = {
     },
 } as const
 
+// 拷贝流水线每 yield 的间隔时间
 const COPY_PIPELINE_YIELD_INTERVAL = 20
-const COPY_PROFILE_PREFIX = "[copy-profile]"
 
-interface CopyProfileMark {
-    label: string
-    durationMs: number
-}
-
-interface CopyProfileSession {
-    id: string
-    source: string
-    start: number
-    marks: CopyProfileMark[]
-}
-
-interface KatexImageCacheEntry {
-    src: string
-    width: number
-    height: number
-}
-
-interface KatexToImageMetrics {
-    totalCount: number
-    cacheHitCount: number
-}
-
-interface KatexCaptureContext {
-    wrapper: HTMLDivElement
-    width: number
-    height: number
-}
-
+// katex 图片缓存，键为公式的 HTML 内容和截图尺寸的 JSON 字符串，值为包含图片 src 和尺寸信息的对象
 const katexImageCache = new Map<string, KatexImageCacheEntry>()
-
-// katex 截图上下文接口
-interface KatexCaptureContext {
-    wrapper: HTMLDivElement // 锚点容器
-    width: number // 锚点宽度
-    height: number // 锚点高度
-}
 
 /**
  * @description: 标题锚点生成器
@@ -440,12 +390,8 @@ export function htmlHandleDetailsTag(htmlSrc: string) {
  * @param container 预览容器
  * @param className katex 公式根节点的类名
  */
-export async function katexToImage(container: HTMLElement, className: string = "katex"): Promise<KatexToImageMetrics> {
+export async function katexToImage(container: HTMLElement, className: string = "katex"): Promise<void> {
     const katexElements = getKatexElements(container, className)
-    const metrics: KatexToImageMetrics = {
-        totalCount: katexElements.length,
-        cacheHitCount: 0,
-    }
 
     await waitForDocumentFontsReady()
 
@@ -462,9 +408,7 @@ export async function katexToImage(container: HTMLElement, className: string = "
                 const cachedImage = katexImageCache.get(cacheKey)
                 const img = cachedImage ? createKatexImageFromCache(cachedImage) : await createKatexImageFromCapture(captureContext)
 
-                if (cachedImage) {
-                    metrics.cacheHitCount += 1
-                } else {
+                if (!cachedImage) {
                     cacheKatexImage(cacheKey, img, captureContext)
                 }
 
@@ -475,8 +419,6 @@ export async function katexToImage(container: HTMLElement, className: string = "
             }
         })
     }, Promise.resolve())
-
-    return metrics
 }
 
 /**
@@ -491,44 +433,10 @@ async function waitForDocumentFontsReady(): Promise<void> {
     await document.fonts.ready
 }
 
-function getCopyProfileNow(): number {
-    if (typeof performance !== "undefined" && typeof performance.now === "function") {
-        return performance.now()
-    }
-
-    return Date.now()
-}
-
-function createCopyProfileSession(source: string): CopyProfileSession {
-    return {
-        id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-        source,
-        start: getCopyProfileNow(),
-        marks: [],
-    }
-}
-
-function markCopyProfile(session: CopyProfileSession, label: string, startTime: number): void {
-    session.marks.push({
-        label,
-        durationMs: Number((getCopyProfileNow() - startTime).toFixed(2)),
-    })
-}
-
-function flushCopyProfile(session: CopyProfileSession, status: "success" | "error", extra: Record<string, string | number | boolean> = {}): void {
-    const totalDurationMs = Number((getCopyProfileNow() - session.start).toFixed(2))
-    const payload = {
-        id: session.id,
-        source: session.source,
-        status,
-        totalDurationMs,
-        marks: session.marks,
-        ...extra,
-    }
-
-    console.log(`${COPY_PROFILE_PREFIX} ${JSON.stringify(payload)}`)
-}
-
+/**
+ * @description: 等待下一帧渲染时机, 用于在批量复制流程中主动让出主线程.
+ * @return 下一帧到来后结束的 Promise.
+ */
 function waitForNextRenderFrame(): Promise<void> {
     return new Promise((resolve) => {
         if (typeof window !== "undefined" && "requestAnimationFrame" in window) {
@@ -651,7 +559,14 @@ function applyKatexImageStyle(img: HTMLImageElement, captureContext: KatexCaptur
     img.style.padding = "0"
 }
 
+/**
+ * @description: 生成 KaTeX 图片缓存键, 复用相同公式与尺寸的截图结果.
+ * @param katex KaTeX 根节点.
+ * @param captureContext 当前截图上下文.
+ * @return 缓存键字符串.
+ */
 function getKatexImageCacheKey(katex: HTMLElement, captureContext: KatexCaptureContext): string {
+    // 使用公式 DOM 片段和最终截图尺寸作为缓存键, 避免同一公式在重复预生成时反复截图.
     return JSON.stringify({
         html: katex.innerHTML,
         className: katex.className,
@@ -660,6 +575,11 @@ function getKatexImageCacheKey(katex: HTMLElement, captureContext: KatexCaptureC
     })
 }
 
+/**
+ * @description: 根据缓存的截图结果恢复图片节点.
+ * @param cacheEntry 已缓存的 KaTeX 图片信息.
+ * @return 可直接替换公式节点的图片元素.
+ */
 function createKatexImageFromCache(cacheEntry: KatexImageCacheEntry): HTMLImageElement {
     const img = document.createElement("img")
     img.src = cacheEntry.src
@@ -668,6 +588,13 @@ function createKatexImageFromCache(cacheEntry: KatexImageCacheEntry): HTMLImageE
     return img
 }
 
+/**
+ * @description: 缓存 KaTeX 图片结果, 供后续复制预生成复用.
+ * @param cacheKey 当前公式的缓存键.
+ * @param img 已生成的图片节点.
+ * @param captureContext 当前截图上下文.
+ * @return void.
+ */
 function cacheKatexImage(cacheKey: string, img: HTMLImageElement, captureContext: KatexCaptureContext): void {
     if (!img.src) {
         return
@@ -776,6 +703,11 @@ function getSortedStyleSheets(): [CSSStyleSheet, number][] {
         })
 }
 
+/**
+ * @description: 获取 CSSStyleRule 列表
+ * @param cssStyleSheets 外部样式表列表和索引
+ * @return CSSStyleRule 列表
+ */
 function getCssStyleRules(cssStyleSheets: [CSSStyleSheet, number][]): CSSStyleRule[] {
     const cssStyleRules: CSSStyleRule[] = []
 
@@ -875,20 +807,6 @@ function isWechatCssBlackListProperty(property: string, value: string): boolean 
     return false
 }
 
-// 自定义的过滤后的样式接口
-interface FilteredStyles {
-    [key: string]: string
-}
-
-interface InlineStyleApplyContext {
-    matchedRuleCache: Map<string, CSSStyleRule[]>
-    computedPropertyCache: Map<string, string[]>
-    inlineStyleRecordCache: Map<string, Record<string, string>>
-    processedElementCount: number
-    appliedPropertyCount: number
-    relevantPropertyCount: number
-}
-
 // 需要过滤的预设样式值
 const WideKeywords: readonly string[] = ["initial", "inherit", "revert", "revert-layer", "unset"]
 
@@ -973,8 +891,6 @@ function applyInlineStylesToElement(
         } else {
             clonedEl.style.setProperty(property, cssStyleValue)
         }
-
-        applyContext.appliedPropertyCount += 1
     })
 
     // 单独添加微信白名单中的属性
@@ -983,18 +899,26 @@ function applyInlineStylesToElement(
             const cssStyleValue = computedStyle[property]
             if (cssStyleValue) {
                 clonedEl.style.setProperty(property, cssStyleValue)
-                applyContext.appliedPropertyCount += 1
             }
         })
     }
 }
 
+/**
+ * @description: 获取节点签名对应的内联样式字典, 命中缓存时避免重复展开样式规则.
+ * @param element 当前克隆节点.
+ * @param matchedRules 已匹配到的样式规则列表.
+ * @param isPreCode 是否为代码块容器.
+ * @param applyContext 内联样式应用过程中的缓存上下文.
+ * @return 内联样式属性字典.
+ */
 function getInlineStyleRecord(
     element: HTMLElement | SVGElement,
     matchedRules: CSSStyleRule[],
     isPreCode: boolean,
     applyContext: InlineStyleApplyContext,
 ): Record<string, string> {
+    // 同类节点会重复命中相同样式签名, 这里缓存展开后的属性字典, 降低批量复制时的规则遍历成本.
     const cacheKey = `${getInlineStyleRuleCacheKey(element)}::${isPreCode ? "pre" : "default"}`
     const cachedRecord = applyContext.inlineStyleRecordCache.get(cacheKey)
     if (cachedRecord) {
@@ -1032,6 +956,13 @@ function getInlineStyleRecord(
     return inlineStyleRecord
 }
 
+/**
+ * @description: 获取当前节点匹配到的样式规则, 并按节点签名缓存结果.
+ * @param element 当前节点.
+ * @param cssStyleRules 可用的样式规则列表.
+ * @param applyContext 内联样式应用过程中的缓存上下文.
+ * @return 当前节点命中的样式规则数组.
+ */
 function getMatchedCssStyleRules(element: HTMLElement | SVGElement, cssStyleRules: CSSStyleRule[], applyContext: InlineStyleApplyContext): CSSStyleRule[] {
     const cacheKey = getInlineStyleRuleCacheKey(element)
     const cachedRules = applyContext.matchedRuleCache.get(cacheKey)
@@ -1052,6 +983,13 @@ function getMatchedCssStyleRules(element: HTMLElement | SVGElement, cssStyleRule
     return matchedRules
 }
 
+/**
+ * @description: 收集当前节点真正需要读取的计算样式属性, 避免全量遍历 computedStyle.
+ * @param element 当前节点.
+ * @param matchedRules 当前节点命中的样式规则.
+ * @param applyContext 内联样式应用过程中的缓存上下文.
+ * @return 需要读取的属性名列表.
+ */
 function getRelevantComputedStyleProperties(element: HTMLElement | SVGElement, matchedRules: CSSStyleRule[], applyContext: InlineStyleApplyContext): string[] {
     const cacheKey = getInlineStyleRuleCacheKey(element)
     const cachedProperties = applyContext.computedPropertyCache.get(cacheKey)
@@ -1083,12 +1021,17 @@ function getRelevantComputedStyleProperties(element: HTMLElement | SVGElement, m
     }
 
     const relevantProperties = Array.from(propertySet)
-    applyContext.relevantPropertyCount += relevantProperties.length
     applyContext.computedPropertyCache.set(cacheKey, relevantProperties)
     return relevantProperties
 }
 
+/**
+ * @description: 为节点生成样式缓存签名, 用于复用规则匹配和属性展开结果.
+ * @param element 当前节点.
+ * @return 节点签名字符串.
+ */
 function getInlineStyleRuleCacheKey(element: HTMLElement | SVGElement): string {
+    // 复制链路里的缓存以标签名、id 和稳定排序后的 class 组合作为签名, 兼顾命中率与实现复杂度.
     const classNames = "classList" in element && element.classList instanceof DOMTokenList ? Array.from(element.classList).sort().join(".") : ""
     const tagName = "tagName" in element ? element.tagName.toLowerCase() : ""
     const id = "id" in element ? element.id : ""
@@ -1096,6 +1039,13 @@ function getInlineStyleRuleCacheKey(element: HTMLElement | SVGElement): string {
     return `${tagName}#${id}.${classNames}`
 }
 
+/**
+ * @description: 分批处理待复制节点队列, 在批次间让出一帧以减轻长任务阻塞.
+ * @param queue 待处理的原始节点与克隆节点配对队列.
+ * @param cssStyleRules 已展开的样式规则列表.
+ * @param applyContext 内联样式应用过程中的缓存上下文.
+ * @return void.
+ */
 async function processInlineStyleQueue(
     queue: Array<{ originalEl: HTMLElement | SVGElement; clonedEl: HTMLElement | SVGElement }>,
     cssStyleRules: CSSStyleRule[],
@@ -1110,10 +1060,11 @@ async function processInlineStyleQueue(
         }
 
         const { originalEl, clonedEl } = currentPair
+
+        // 按节点签名复用匹配规则、相关属性和展开后的样式字典, 把复制成本尽量收敛到真实 DOM 读写上.
         const matchedRules = getMatchedCssStyleRules(clonedEl, cssStyleRules, applyContext)
         const relevantProperties = getRelevantComputedStyleProperties(originalEl, matchedRules, applyContext)
         const computedStyle = filterInvalidComputedStyles(originalEl, relevantProperties)
-        applyContext.processedElementCount += 1
 
         if (!computedStyle || Object.keys(computedStyle).length === 0 || hasClassName(originalEl, "katex")) {
             continue
@@ -1152,23 +1103,27 @@ async function processInlineStyleQueue(
     await processInlineStyleQueue(queue, cssStyleRules, applyContext)
 }
 
+/**
+ * @description: 对整棵克隆树分批应用内联样式, 保留复制链路所需的缓存复用能力.
+ * @param originalRoot 原始预览根节点.
+ * @param clonedRoot 克隆后的预览根节点.
+ * @param cssStyleRules 已展开的样式规则列表.
+ * @return void.
+ */
 async function applyInlineStylesInBatches(
     originalRoot: HTMLElement | SVGElement,
     clonedRoot: HTMLElement | SVGElement,
     cssStyleRules: CSSStyleRule[],
-): Promise<InlineStyleApplyContext> {
+): Promise<void> {
     const queue: Array<{ originalEl: HTMLElement | SVGElement; clonedEl: HTMLElement | SVGElement }> = [{ originalEl: originalRoot, clonedEl: clonedRoot }]
     const applyContext: InlineStyleApplyContext = {
         matchedRuleCache: new Map<string, CSSStyleRule[]>(),
         computedPropertyCache: new Map<string, string[]>(),
         inlineStyleRecordCache: new Map<string, Record<string, string>>(),
-        processedElementCount: 0,
-        appliedPropertyCount: 0,
-        relevantPropertyCount: 0,
     }
 
+    // 分批处理并在批次间让出一帧, 避免大文档复制时长时间阻塞主线程.
     await processInlineStyleQueue(queue, cssStyleRules, applyContext)
-    return applyContext
 }
 
 /**
@@ -1228,10 +1183,10 @@ function getClipboardFriendlyErrorMessage(err: unknown): string {
  * @description: 复制带有自定义样式的内容(不修改原元素)
  * @param element 要复制的元素
  */
-export async function copyWithCustomStyle(element: HTMLElement, source: string = "direct-copy"): Promise<void> {
+export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
     try {
-        const html = await prepareCopyWithCustomStyle(element, source)
-        await writePreparedHtmlToClipboard(html, source)
+        const html = await prepareCopyWithCustomStyle(element)
+        await writePreparedHtmlToClipboard(html)
     } catch (err) {
         console.error("无法复制内容", err)
         MessageUtil.error(getClipboardFriendlyErrorMessage(err), 8000)
@@ -1243,68 +1198,34 @@ export async function copyWithCustomStyle(element: HTMLElement, source: string =
  * @param element 要复制的元素.
  * @return 处理后的 HTML 字符串.
  */
-export async function prepareCopyWithCustomStyle(element: HTMLElement, source: string = "prepare-only"): Promise<string> {
-    const session = createCopyProfileSession(source)
-
-    // 1、克隆元素(深拷贝), 保证不修改原元素
-    const cloneStart = getCopyProfileNow()
+export async function prepareCopyWithCustomStyle(element: HTMLElement): Promise<string> {
+    // 克隆元素(深拷贝), 保证不修改原元素
     const clonedElement = element.cloneNode(true) as HTMLElement
-    markCopyProfile(session, "clone-element", cloneStart)
 
-    // 2、创建临时容器, 仅用于确保 clonedElement 在 DOM 中以正确应用样式, 但不显示
-    const detachedContainerStart = getCopyProfileNow()
+    // 创建临时容器, 仅用于确保 clonedElement 在 DOM 中以正确应用样式, 但不显示
     const container = createDetachedCopyContainer(clonedElement)
-    markCopyProfile(session, "attach-detached-container", detachedContainerStart)
 
     let html = ""
-    let katexToImageMetrics: KatexToImageMetrics = {
-        totalCount: 0,
-        cacheHitCount: 0,
-    }
-    let inlineStyleMetrics: InlineStyleApplyContext | null = null
 
     try {
-        // 4、将克隆节点中的 katex 转图片, 避免修改原预览内容
-        const katexToImageStart = getCopyProfileNow()
-        katexToImageMetrics = await katexToImage(clonedElement)
-        markCopyProfile(session, "katex-to-image", katexToImageStart)
+        // 将 KaTeX 公式转换为图片, 避免脱离预览容器后样式失真
+        await katexToImage(clonedElement)
 
-        // 6、获取用户样式表
-        const cssRuleCollectionStart = getCopyProfileNow()
+        // 获取用户样式表
         const cssStyleSheets = getSortedStyleSheets()
         const cssStyleRules = getCssStyleRules(cssStyleSheets)
-        markCopyProfile(session, "collect-css-rules", cssRuleCollectionStart)
 
-        // 7、应用内联样式
-        const inlineStyleStart = getCopyProfileNow()
-        inlineStyleMetrics = await applyInlineStylesInBatches(element, clonedElement, cssStyleRules)
-        markCopyProfile(session, "apply-inline-styles", inlineStyleStart)
+        // 这里保留逐属性写入, 因为批量 setAttribute("style") 会明显放大最终 HTML 体积.
+        await applyInlineStylesInBatches(element, clonedElement, cssStyleRules)
 
-        // 8、提取 HTML
-        const extractHtmlStart = getCopyProfileNow()
+        // 提取 HTML
         html = clonedElement.innerHTML
-        markCopyProfile(session, "extract-html", extractHtmlStart)
     } finally {
-        // 9、移除临时容器
-        const detachContainerStart = getCopyProfileNow()
+        // 移除临时容器
         document.body.removeChild(container)
-        markCopyProfile(session, "detach-container", detachContainerStart)
     }
 
-    const normalizeHtmlStart = getCopyProfileNow()
     const normalizedHtml = normalizePreparedCopyHtml(html)
-    markCopyProfile(session, "normalize-html", normalizeHtmlStart)
-    flushCopyProfile(session, "success", {
-        htmlLength: normalizedHtml.length,
-        katexImageCount: katexToImageMetrics.totalCount,
-        katexCacheHitCount: katexToImageMetrics.cacheHitCount,
-        inlineProcessedElementCount: inlineStyleMetrics?.processedElementCount ?? 0,
-        inlineAppliedPropertyCount: inlineStyleMetrics?.appliedPropertyCount ?? 0,
-        inlineRelevantPropertyCount: inlineStyleMetrics?.relevantPropertyCount ?? 0,
-        inlineRuleCacheSize: inlineStyleMetrics?.matchedRuleCache.size ?? 0,
-        inlineComputedPropertyCacheSize: inlineStyleMetrics?.computedPropertyCache.size ?? 0,
-        inlineStyleRecordCacheSize: inlineStyleMetrics?.inlineStyleRecordCache.size ?? 0,
-    })
 
     return normalizedHtml
 }
@@ -1314,26 +1235,21 @@ export async function prepareCopyWithCustomStyle(element: HTMLElement, source: s
  * @param html 已处理完成的 HTML 内容.
  * @return void.
  */
-export async function writePreparedHtmlToClipboard(html: string, source: string = "clipboard-write"): Promise<void> {
-    const session = createCopyProfileSession(source)
-
+export async function writePreparedHtmlToClipboard(html: string): Promise<void> {
     try {
-        const clipboardWriteStart = getCopyProfileNow()
         await copyHtml(html)
-        markCopyProfile(session, "clipboard-write", clipboardWriteStart)
-        flushCopyProfile(session, "success", {
-            htmlLength: html.length,
-        })
         MessageUtil.success("内容已复制到剪贴板")
     } catch (err) {
-        flushCopyProfile(session, "error", {
-            htmlLength: html.length,
-        })
         console.error("无法复制内容", err)
         MessageUtil.error(getClipboardFriendlyErrorMessage(err), 8000)
     }
 }
 
+/**
+ * @description: 归一化复制前的 HTML 内容, 兼容微信编辑器对代码块和链接标签的要求.
+ * @param html 已准备好的原始 HTML.
+ * @return 归一化后的 HTML 字符串.
+ */
 function normalizePreparedCopyHtml(html: string): string {
     let normalizedHtml = html
 

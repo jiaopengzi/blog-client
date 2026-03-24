@@ -21,6 +21,12 @@ export interface ViewCommand {
     time: Date | null
 }
 
+// 空间换时间，缓存已处理的 HTML 内容和版本号，以避免重复处理相同版本的内容
+export interface PreparedCopyCache {
+    html: string
+    version: number
+}
+
 export type ScrollMethod = "scrollIntoView" | "scrollTo" // 滚动方法
 
 export interface PreviewProps {
