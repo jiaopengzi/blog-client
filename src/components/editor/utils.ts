@@ -198,6 +198,40 @@ const KATEX_CAPTURE_PADDING = {
     },
 } as const
 
+const COPY_PIPELINE_YIELD_INTERVAL = 20
+const COPY_PROFILE_PREFIX = "[copy-profile]"
+
+interface CopyProfileMark {
+    label: string
+    durationMs: number
+}
+
+interface CopyProfileSession {
+    id: string
+    source: string
+    start: number
+    marks: CopyProfileMark[]
+}
+
+interface KatexImageCacheEntry {
+    src: string
+    width: number
+    height: number
+}
+
+interface KatexToImageMetrics {
+    totalCount: number
+    cacheHitCount: number
+}
+
+interface KatexCaptureContext {
+    wrapper: HTMLDivElement
+    width: number
+    height: number
+}
+
+const katexImageCache = new Map<string, KatexImageCacheEntry>()
+
 // katex 截图上下文接口
 interface KatexCaptureContext {
     wrapper: HTMLDivElement // 锚点容器
@@ -406,17 +440,34 @@ export function htmlHandleDetailsTag(htmlSrc: string) {
  * @param container 预览容器
  * @param className katex 公式根节点的类名
  */
-export async function katexToImage(container: HTMLElement, className: string = "katex") {
+export async function katexToImage(container: HTMLElement, className: string = "katex"): Promise<KatexToImageMetrics> {
     const katexElements = getKatexElements(container, className)
+    const metrics: KatexToImageMetrics = {
+        totalCount: katexElements.length,
+        cacheHitCount: 0,
+    }
 
     await waitForDocumentFontsReady()
 
-    await katexElements.reduce<Promise<void>>((previousTask, katex) => {
+    await katexElements.reduce<Promise<void>>((previousTask, katex, index) => {
         return previousTask.then(async () => {
+            if (index > 0 && index % COPY_PIPELINE_YIELD_INTERVAL === 0) {
+                await waitForNextRenderFrame()
+            }
+
             const captureContext = createKatexCaptureContext(katex)
 
             try {
-                const img = await createKatexImageFromCapture(captureContext)
+                const cacheKey = getKatexImageCacheKey(katex, captureContext)
+                const cachedImage = katexImageCache.get(cacheKey)
+                const img = cachedImage ? createKatexImageFromCache(cachedImage) : await createKatexImageFromCapture(captureContext)
+
+                if (cachedImage) {
+                    metrics.cacheHitCount += 1
+                } else {
+                    cacheKatexImage(cacheKey, img, captureContext)
+                }
+
                 applyKatexImageStyle(img, captureContext)
                 katex.parentNode?.replaceChild(img, katex)
             } finally {
@@ -424,6 +475,8 @@ export async function katexToImage(container: HTMLElement, className: string = "
             }
         })
     }, Promise.resolve())
+
+    return metrics
 }
 
 /**
@@ -436,6 +489,55 @@ async function waitForDocumentFontsReady(): Promise<void> {
     }
 
     await document.fonts.ready
+}
+
+function getCopyProfileNow(): number {
+    if (typeof performance !== "undefined" && typeof performance.now === "function") {
+        return performance.now()
+    }
+
+    return Date.now()
+}
+
+function createCopyProfileSession(source: string): CopyProfileSession {
+    return {
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        source,
+        start: getCopyProfileNow(),
+        marks: [],
+    }
+}
+
+function markCopyProfile(session: CopyProfileSession, label: string, startTime: number): void {
+    session.marks.push({
+        label,
+        durationMs: Number((getCopyProfileNow() - startTime).toFixed(2)),
+    })
+}
+
+function flushCopyProfile(session: CopyProfileSession, status: "success" | "error", extra: Record<string, string | number | boolean> = {}): void {
+    const totalDurationMs = Number((getCopyProfileNow() - session.start).toFixed(2))
+    const payload = {
+        id: session.id,
+        source: session.source,
+        status,
+        totalDurationMs,
+        marks: session.marks,
+        ...extra,
+    }
+
+    console.log(`${COPY_PROFILE_PREFIX} ${JSON.stringify(payload)}`)
+}
+
+function waitForNextRenderFrame(): Promise<void> {
+    return new Promise((resolve) => {
+        if (typeof window !== "undefined" && "requestAnimationFrame" in window) {
+            window.requestAnimationFrame(() => resolve())
+            return
+        }
+
+        setTimeout(resolve, 0)
+    })
 }
 
 /**
@@ -549,6 +651,35 @@ function applyKatexImageStyle(img: HTMLImageElement, captureContext: KatexCaptur
     img.style.padding = "0"
 }
 
+function getKatexImageCacheKey(katex: HTMLElement, captureContext: KatexCaptureContext): string {
+    return JSON.stringify({
+        html: katex.innerHTML,
+        className: katex.className,
+        width: captureContext.width,
+        height: captureContext.height,
+    })
+}
+
+function createKatexImageFromCache(cacheEntry: KatexImageCacheEntry): HTMLImageElement {
+    const img = document.createElement("img")
+    img.src = cacheEntry.src
+    img.width = cacheEntry.width
+    img.height = cacheEntry.height
+    return img
+}
+
+function cacheKatexImage(cacheKey: string, img: HTMLImageElement, captureContext: KatexCaptureContext): void {
+    if (!img.src) {
+        return
+    }
+
+    katexImageCache.set(cacheKey, {
+        src: img.src,
+        width: captureContext.width,
+        height: captureContext.height,
+    })
+}
+
 /**
  * @description: 获取 KaTeX 截图时使用的上下安全边距配置.
  * @param isKatexDisplay 是否为行间公式.
@@ -645,6 +776,24 @@ function getSortedStyleSheets(): [CSSStyleSheet, number][] {
         })
 }
 
+function getCssStyleRules(cssStyleSheets: [CSSStyleSheet, number][]): CSSStyleRule[] {
+    const cssStyleRules: CSSStyleRule[] = []
+
+    cssStyleSheets.forEach(([styleSheet]) => {
+        try {
+            Array.from(styleSheet.cssRules).forEach((rule: CSSRule) => {
+                if (rule instanceof CSSStyleRule) {
+                    cssStyleRules.push(rule)
+                }
+            })
+        } catch (error) {
+            console.warn("Error accessing rules in stylesheet:", styleSheet, error)
+        }
+    })
+
+    return cssStyleRules
+}
+
 /**
  * @description 检查元素自身或其任意祖先是否包含指定类名
  * @param element 起始元素
@@ -731,6 +880,15 @@ interface FilteredStyles {
     [key: string]: string
 }
 
+interface InlineStyleApplyContext {
+    matchedRuleCache: Map<string, CSSStyleRule[]>
+    computedPropertyCache: Map<string, string[]>
+    inlineStyleRecordCache: Map<string, Record<string, string>>
+    processedElementCount: number
+    appliedPropertyCount: number
+    relevantPropertyCount: number
+}
+
 // 需要过滤的预设样式值
 const WideKeywords: readonly string[] = ["initial", "inherit", "revert", "revert-layer", "unset"]
 
@@ -739,14 +897,14 @@ const WideKeywords: readonly string[] = ["initial", "inherit", "revert", "revert
  * @param el 元素
  * @return 过滤后的样式对象
  */
-function filterInvalidComputedStyles(el: HTMLElement | SVGElement): FilteredStyles {
+function filterInvalidComputedStyles(el: HTMLElement | SVGElement, properties?: string[]): FilteredStyles {
     const computedStyle = getComputedStyle(el)
 
     const filteredStyles: FilteredStyles = {}
+    const targetProperties = properties && properties.length > 0 ? properties : Array.from(computedStyle)
 
-    // 遍历所有计算样式属性
-    for (let i = 0; i < computedStyle.length; i++) {
-        const property = computedStyle[i]
+    for (let i = 0; i < targetProperties.length; i++) {
+        const property = targetProperties[i]
         if (!property) continue
         const value = computedStyle.getPropertyValue(property)
 
@@ -766,11 +924,12 @@ function filterInvalidComputedStyles(el: HTMLElement | SVGElement): FilteredStyl
  * @param cssStyleSheets 已排序的样式表列表和索引
  * @param computedStyle 过滤后的计算样式对象
  */
-function applyInlineStyles(
+function applyInlineStylesToElement(
     originalEl: HTMLElement | SVGElement,
     clonedEl: HTMLElement | SVGElement,
-    cssStyleSheets: [CSSStyleSheet, number][],
+    matchedRules: CSSStyleRule[],
     computedStyle: FilteredStyles,
+    applyContext: InlineStyleApplyContext,
 ) {
     // 如果没有计算样式则直接返回
     if (!computedStyle || Object.keys(computedStyle).length === 0) return
@@ -786,58 +945,7 @@ function applyInlineStyles(
     // const isCode = isCodeTag(originalEl)
 
     // 收集已经引用内联样式的 record, 后续和计算样式对比使用
-    const inlineStyleRecord: Record<string, string> = {}
-
-    // 收集所有匹配的 CSS 属性名(基于选择器匹配 clonedEl, 因为结构相同)
-    cssStyleSheets.forEach(([styleSheet]) => {
-        try {
-            Array.from(styleSheet.cssRules).forEach((rule: CSSRule) => {
-                // 如果不是样式规则则跳过
-                if (!(rule instanceof CSSStyleRule)) return
-
-                // 用 clonedEl 来匹配选择器(结构相同, class/id 相同)
-                if (!clonedEl.matches(rule.selectorText)) return
-
-                // 历遍样式规则的所有属性
-                for (let i = 0; i < rule.style.length; i++) {
-                    const property = rule.style[i]
-
-                    // 跳过空属性
-                    if (!property) continue
-
-                    // 样式表的属性值
-                    const cssStyleValue = rule.style.getPropertyValue(property)
-
-                    // 跳过空值
-                    if (!cssStyleValue) continue
-
-                    // if (property === "width") {
-                    //     console.log("============>width", property, cssStyleValue)
-                    // }
-
-                    // 跳过微信黑名单中的属性
-                    if (isWechatCssBlackListProperty(property, cssStyleValue)) {
-                        continue
-                    }
-
-                    // 代码块容器只保留白名单中的属性
-                    if (isPreCode && WechatCssPreCodeWhiteList.length > 0 && !WechatCssPreCodeWhiteList.includes(property)) {
-                        continue
-                    }
-
-                    // // 行内代码只保留白名单中的属性
-                    // if (isCode && !isPreCode && WechatCsInlineCodeWhiteList.length > 0 && !WechatCsInlineCodeWhiteList.includes(property)) {
-                    //     continue
-                    // }
-
-                    // 记录内联样式
-                    inlineStyleRecord[property] = cssStyleValue
-                }
-            })
-        } catch (error) {
-            console.warn("Error accessing rules in stylesheet:", styleSheet, error)
-        }
-    })
+    const inlineStyleRecord = getInlineStyleRecord(clonedEl, matchedRules, isPreCode, applyContext)
 
     // 应用内联样式, 覆盖样式表中的样式
     Object.keys(inlineStyleRecord).forEach((property) => {
@@ -865,6 +973,8 @@ function applyInlineStyles(
         } else {
             clonedEl.style.setProperty(property, cssStyleValue)
         }
+
+        applyContext.appliedPropertyCount += 1
     })
 
     // 单独添加微信白名单中的属性
@@ -876,29 +986,188 @@ function applyInlineStyles(
             }
         })
     }
+}
 
-    // 递归处理子元素：需同步遍历 originalEl.children 和 clonedEl.children
-    const originalChildren = Array.from(originalEl.children)
-    const clonedChildren = Array.from(clonedEl.children)
+function getInlineStyleRecord(
+    element: HTMLElement | SVGElement,
+    matchedRules: CSSStyleRule[],
+    isPreCode: boolean,
+    applyContext: InlineStyleApplyContext,
+): Record<string, string> {
+    const cacheKey = `${getInlineStyleRuleCacheKey(element)}::${isPreCode ? "pre" : "default"}`
+    const cachedRecord = applyContext.inlineStyleRecordCache.get(cacheKey)
+    if (cachedRecord) {
+        return cachedRecord
+    }
 
-    // 确保数量一致, 正常情况下应一致
-    if (originalChildren.length !== clonedChildren.length) {
-        console.warn("Original and cloned element child count mismatch", originalEl, clonedEl)
+    const inlineStyleRecord: Record<string, string> = {}
+
+    matchedRules.forEach((rule) => {
+        try {
+            for (let i = 0; i < rule.style.length; i++) {
+                const property = rule.style[i]
+
+                if (!property) continue
+
+                const cssStyleValue = rule.style.getPropertyValue(property)
+                if (!cssStyleValue) continue
+
+                if (isWechatCssBlackListProperty(property, cssStyleValue)) {
+                    continue
+                }
+
+                if (isPreCode && WechatCssPreCodeWhiteList.length > 0 && !WechatCssPreCodeWhiteList.includes(property)) {
+                    continue
+                }
+
+                inlineStyleRecord[property] = cssStyleValue
+            }
+        } catch (error) {
+            console.warn("Error matching style rule:", rule.selectorText, error)
+        }
+    })
+
+    applyContext.inlineStyleRecordCache.set(cacheKey, inlineStyleRecord)
+    return inlineStyleRecord
+}
+
+function getMatchedCssStyleRules(element: HTMLElement | SVGElement, cssStyleRules: CSSStyleRule[], applyContext: InlineStyleApplyContext): CSSStyleRule[] {
+    const cacheKey = getInlineStyleRuleCacheKey(element)
+    const cachedRules = applyContext.matchedRuleCache.get(cacheKey)
+    if (cachedRules) {
+        return cachedRules
+    }
+
+    const matchedRules = cssStyleRules.filter((rule) => {
+        try {
+            return element.matches(rule.selectorText)
+        } catch (error) {
+            console.warn("Error matching style rule:", rule.selectorText, error)
+            return false
+        }
+    })
+
+    applyContext.matchedRuleCache.set(cacheKey, matchedRules)
+    return matchedRules
+}
+
+function getRelevantComputedStyleProperties(element: HTMLElement | SVGElement, matchedRules: CSSStyleRule[], applyContext: InlineStyleApplyContext): string[] {
+    const cacheKey = getInlineStyleRuleCacheKey(element)
+    const cachedProperties = applyContext.computedPropertyCache.get(cacheKey)
+    if (cachedProperties) {
+        return cachedProperties
+    }
+
+    const propertySet = new Set<string>()
+
+    matchedRules.forEach((rule) => {
+        for (let i = 0; i < rule.style.length; i++) {
+            const property = rule.style[i]
+            if (!property) {
+                continue
+            }
+
+            propertySet.add(property)
+        }
+    })
+
+    WechatCssAllWhiteList.forEach((property) => {
+        propertySet.add(property)
+    })
+
+    if (hasClassName(element, "pre-code-container")) {
+        WechatCssPreCodeWhiteList.forEach((property) => {
+            propertySet.add(property)
+        })
+    }
+
+    const relevantProperties = Array.from(propertySet)
+    applyContext.relevantPropertyCount += relevantProperties.length
+    applyContext.computedPropertyCache.set(cacheKey, relevantProperties)
+    return relevantProperties
+}
+
+function getInlineStyleRuleCacheKey(element: HTMLElement | SVGElement): string {
+    const classNames = "classList" in element && element.classList instanceof DOMTokenList ? Array.from(element.classList).sort().join(".") : ""
+    const tagName = "tagName" in element ? element.tagName.toLowerCase() : ""
+    const id = "id" in element ? element.id : ""
+
+    return `${tagName}#${id}.${classNames}`
+}
+
+async function processInlineStyleQueue(
+    queue: Array<{ originalEl: HTMLElement | SVGElement; clonedEl: HTMLElement | SVGElement }>,
+    cssStyleRules: CSSStyleRule[],
+    applyContext: InlineStyleApplyContext,
+): Promise<void> {
+    let processedCount = 0
+
+    while (queue.length > 0 && processedCount < COPY_PIPELINE_YIELD_INTERVAL) {
+        const currentPair = queue.shift()
+        if (!currentPair) {
+            continue
+        }
+
+        const { originalEl, clonedEl } = currentPair
+        const matchedRules = getMatchedCssStyleRules(clonedEl, cssStyleRules, applyContext)
+        const relevantProperties = getRelevantComputedStyleProperties(originalEl, matchedRules, applyContext)
+        const computedStyle = filterInvalidComputedStyles(originalEl, relevantProperties)
+        applyContext.processedElementCount += 1
+
+        if (!computedStyle || Object.keys(computedStyle).length === 0 || hasClassName(originalEl, "katex")) {
+            continue
+        }
+
+        applyInlineStylesToElement(originalEl, clonedEl, matchedRules, computedStyle, applyContext)
+
+        const originalChildren = Array.from(originalEl.children)
+        const clonedChildren = Array.from(clonedEl.children)
+
+        if (originalChildren.length !== clonedChildren.length) {
+            console.warn("Original and cloned element child count mismatch", originalEl, clonedEl)
+            continue
+        }
+
+        for (let i = 0; i < originalChildren.length; i++) {
+            const origChild = originalChildren[i]
+            const cloneChild = clonedChildren[i]
+
+            if (
+                (origChild instanceof HTMLElement || origChild instanceof SVGElement) &&
+                (cloneChild instanceof HTMLElement || cloneChild instanceof SVGElement)
+            ) {
+                queue.push({ originalEl: origChild, clonedEl: cloneChild })
+            }
+        }
+
+        processedCount += 1
+    }
+
+    if (queue.length === 0) {
         return
     }
 
-    // 递归遍历子元素
-    for (let i = 0; i < originalChildren.length; i++) {
-        // 获取原始子元素和克隆子元素
-        const origChild = originalChildren[i]
-        const cloneChild = clonedChildren[i]
+    await waitForNextRenderFrame()
+    await processInlineStyleQueue(queue, cssStyleRules, applyContext)
+}
 
-        // 执行递归应用内联样式
-        if ((origChild instanceof HTMLElement || origChild instanceof SVGElement) && (cloneChild instanceof HTMLElement || cloneChild instanceof SVGElement)) {
-            const childComputedStyle = filterInvalidComputedStyles(origChild)
-            applyInlineStyles(origChild, cloneChild, cssStyleSheets, childComputedStyle)
-        }
+async function applyInlineStylesInBatches(
+    originalRoot: HTMLElement | SVGElement,
+    clonedRoot: HTMLElement | SVGElement,
+    cssStyleRules: CSSStyleRule[],
+): Promise<InlineStyleApplyContext> {
+    const queue: Array<{ originalEl: HTMLElement | SVGElement; clonedEl: HTMLElement | SVGElement }> = [{ originalEl: originalRoot, clonedEl: clonedRoot }]
+    const applyContext: InlineStyleApplyContext = {
+        matchedRuleCache: new Map<string, CSSStyleRule[]>(),
+        computedPropertyCache: new Map<string, string[]>(),
+        inlineStyleRecordCache: new Map<string, Record<string, string>>(),
+        processedElementCount: 0,
+        appliedPropertyCount: 0,
+        relevantPropertyCount: 0,
     }
+
+    await processInlineStyleQueue(queue, cssStyleRules, applyContext)
+    return applyContext
 }
 
 /**
@@ -958,51 +1227,120 @@ function getClipboardFriendlyErrorMessage(err: unknown): string {
  * @description: 复制带有自定义样式的内容(不修改原元素)
  * @param element 要复制的元素
  */
-export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
+export async function copyWithCustomStyle(element: HTMLElement, source: string = "direct-copy"): Promise<void> {
     try {
-        // 1、克隆元素(深拷贝), 保证不修改原元素
-        const clonedElement = element.cloneNode(true) as HTMLElement
-
-        // 2、创建临时容器, 仅用于确保 clonedElement 在 DOM 中以正确应用样式, 但不显示
-        const container = createDetachedCopyContainer(clonedElement)
-
-        let html = ""
-
-        try {
-            // 4、将克隆节点中的 katex 转图片, 避免修改原预览内容
-            await katexToImage(clonedElement)
-
-            // 5、获取元素的计算样式
-            const computedStyle = filterInvalidComputedStyles(clonedElement)
-
-            // 6、获取用户样式表
-            const cssStyleSheets = getSortedStyleSheets()
-
-            // 7、应用内联样式
-            applyInlineStyles(element, clonedElement, cssStyleSheets, computedStyle)
-
-            // 8、提取 HTML
-            html = clonedElement.innerHTML
-        } finally {
-            // 9、移除临时容器
-            document.body.removeChild(container)
-        }
-
-        // html 中 `<pre class="pre-code pre-code_nowrap` 替换为 `<pre class="code-snippet code-snippet_nowrap`
-        // 兼容微信微信公众号编辑器代码块和代码片段样式
-        html = html.replace(/<pre class="pre-code pre-code_nowrap/g, '<pre class="code-snippet code-snippet_nowrap')
-        html = escapeWhitespaceInHtmlContent(html)
-
-        // 将 a 标签替换为 span 标签 防止微信编辑器自动添加链接, 保证样式不变同时不影响内容
-        html = htmlTagReplace(html, "a", "span")
-
-        // console.log("============>html", html)
-
-        // 9、复制到剪贴板
-        await copyHtml(html)
-        MessageUtil.success("内容已复制到剪贴板")
+        const html = await prepareCopyWithCustomStyle(element, source)
+        await writePreparedHtmlToClipboard(html, source)
     } catch (err) {
         console.error("无法复制内容", err)
         MessageUtil.error(getClipboardFriendlyErrorMessage(err), 8000)
     }
+}
+
+/**
+ * @description: 预先生成带有内联样式与 KaTeX 图片的 HTML, 便于缓存复制结果.
+ * @param element 要复制的元素.
+ * @return 处理后的 HTML 字符串.
+ */
+export async function prepareCopyWithCustomStyle(element: HTMLElement, source: string = "prepare-only"): Promise<string> {
+    const session = createCopyProfileSession(source)
+
+    // 1、克隆元素(深拷贝), 保证不修改原元素
+    const cloneStart = getCopyProfileNow()
+    const clonedElement = element.cloneNode(true) as HTMLElement
+    markCopyProfile(session, "clone-element", cloneStart)
+
+    // 2、创建临时容器, 仅用于确保 clonedElement 在 DOM 中以正确应用样式, 但不显示
+    const detachedContainerStart = getCopyProfileNow()
+    const container = createDetachedCopyContainer(clonedElement)
+    markCopyProfile(session, "attach-detached-container", detachedContainerStart)
+
+    let html = ""
+    let katexToImageMetrics: KatexToImageMetrics = {
+        totalCount: 0,
+        cacheHitCount: 0,
+    }
+    let inlineStyleMetrics: InlineStyleApplyContext | null = null
+
+    try {
+        // 4、将克隆节点中的 katex 转图片, 避免修改原预览内容
+        const katexToImageStart = getCopyProfileNow()
+        katexToImageMetrics = await katexToImage(clonedElement)
+        markCopyProfile(session, "katex-to-image", katexToImageStart)
+
+        // 6、获取用户样式表
+        const cssRuleCollectionStart = getCopyProfileNow()
+        const cssStyleSheets = getSortedStyleSheets()
+        const cssStyleRules = getCssStyleRules(cssStyleSheets)
+        markCopyProfile(session, "collect-css-rules", cssRuleCollectionStart)
+
+        // 7、应用内联样式
+        const inlineStyleStart = getCopyProfileNow()
+        inlineStyleMetrics = await applyInlineStylesInBatches(element, clonedElement, cssStyleRules)
+        markCopyProfile(session, "apply-inline-styles", inlineStyleStart)
+
+        // 8、提取 HTML
+        const extractHtmlStart = getCopyProfileNow()
+        html = clonedElement.innerHTML
+        markCopyProfile(session, "extract-html", extractHtmlStart)
+    } finally {
+        // 9、移除临时容器
+        const detachContainerStart = getCopyProfileNow()
+        document.body.removeChild(container)
+        markCopyProfile(session, "detach-container", detachContainerStart)
+    }
+
+    const normalizeHtmlStart = getCopyProfileNow()
+    const normalizedHtml = normalizePreparedCopyHtml(html)
+    markCopyProfile(session, "normalize-html", normalizeHtmlStart)
+    flushCopyProfile(session, "success", {
+        htmlLength: normalizedHtml.length,
+        katexImageCount: katexToImageMetrics.totalCount,
+        katexCacheHitCount: katexToImageMetrics.cacheHitCount,
+        inlineProcessedElementCount: inlineStyleMetrics?.processedElementCount ?? 0,
+        inlineAppliedPropertyCount: inlineStyleMetrics?.appliedPropertyCount ?? 0,
+        inlineRelevantPropertyCount: inlineStyleMetrics?.relevantPropertyCount ?? 0,
+        inlineRuleCacheSize: inlineStyleMetrics?.matchedRuleCache.size ?? 0,
+        inlineComputedPropertyCacheSize: inlineStyleMetrics?.computedPropertyCache.size ?? 0,
+        inlineStyleRecordCacheSize: inlineStyleMetrics?.inlineStyleRecordCache.size ?? 0,
+    })
+
+    return normalizedHtml
+}
+
+/**
+ * @description: 将已准备好的 HTML 写入剪贴板.
+ * @param html 已处理完成的 HTML 内容.
+ * @return void.
+ */
+export async function writePreparedHtmlToClipboard(html: string, source: string = "clipboard-write"): Promise<void> {
+    const session = createCopyProfileSession(source)
+
+    try {
+        const clipboardWriteStart = getCopyProfileNow()
+        await copyHtml(html)
+        markCopyProfile(session, "clipboard-write", clipboardWriteStart)
+        flushCopyProfile(session, "success", {
+            htmlLength: html.length,
+        })
+        MessageUtil.success("内容已复制到剪贴板")
+    } catch (err) {
+        flushCopyProfile(session, "error", {
+            htmlLength: html.length,
+        })
+        console.error("无法复制内容", err)
+        MessageUtil.error(getClipboardFriendlyErrorMessage(err), 8000)
+    }
+}
+
+function normalizePreparedCopyHtml(html: string): string {
+    let normalizedHtml = html
+
+    // html 中 `<pre class="pre-code pre-code_nowrap` 替换为 `<pre class="code-snippet code-snippet_nowrap`
+    // 兼容微信微信公众号编辑器代码块和代码片段样式
+    normalizedHtml = normalizedHtml.replace(/<pre class="pre-code pre-code_nowrap/g, '<pre class="code-snippet code-snippet_nowrap')
+    normalizedHtml = escapeWhitespaceInHtmlContent(normalizedHtml)
+
+    // 将 a 标签替换为 span 标签 防止微信编辑器自动添加链接, 保证样式不变同时不影响内容
+    return htmlTagReplace(normalizedHtml, "a", "span")
 }

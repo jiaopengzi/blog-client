@@ -130,7 +130,7 @@ import { MessageUtil } from "@/utils/message"
 import { myScrollTo } from "@/utils/scrollTo"
 
 import { CommandsKey } from "../../command"
-import { copyWithCustomStyle, htmlHandleWeChat, scaleDisplayKatexByFontSize } from "../../utils"
+import { copyWithCustomStyle, htmlHandleWeChat, prepareCopyWithCustomStyle, scaleDisplayKatexByFontSize, writePreparedHtmlToClipboard } from "../../utils"
 import type { HeadingObject, PreviewProps } from "./types"
 
 defineOptions({ name: "HtmlPreview" })
@@ -184,6 +184,21 @@ const setPreviewRef = (el: HTMLElement | null) => {
 }
 
 let displayKatexScaleAnimationFrameId = 0
+const COPY_CACHE_DEBOUNCE_MS = 800
+const COPY_PROFILE_PREFIX = "[copy-profile]"
+let copyPreparationVersion = 0
+let copyPreparationInFlight: Promise<void> | null = null
+
+interface PreparedCopyCache {
+    html: string
+    version: number
+}
+
+const preparedCopyCache = ref<PreparedCopyCache | null>(null)
+
+const emitCopyProfile = (payload: Record<string, unknown>): void => {
+    console.log(`${COPY_PROFILE_PREFIX} ${JSON.stringify(payload)}`)
+}
 
 // 分别为非微信预览(内容片段)和微信预览(html 字符串)提供独立的计算属性, 避免 string | ContentPart 的联合类型在模板中导致错误
 const contentParts = computed(() => {
@@ -211,6 +226,100 @@ const scheduleDisplayKatexScale = (): void => {
             displayKatexScaleAnimationFrameId = 0
         })
     })
+}
+
+const invalidatePreparedCopyCache = (): number => {
+    copyPreparationVersion += 1
+    preparedCopyCache.value = null
+    return copyPreparationVersion
+}
+
+const prepareCopyCacheIfNeeded = async (version: number): Promise<void> => {
+    if (!previewRef.value || version !== copyPreparationVersion || preparedCopyCache.value?.version === version) {
+        return
+    }
+
+    const html = await prepareCopyWithCustomStyle(previewRef.value, `cache-prepare-v${version}`)
+    if (version !== copyPreparationVersion) {
+        return
+    }
+
+    preparedCopyCache.value = {
+        html,
+        version,
+    }
+}
+
+const schedulePreparedCopyCache = debounce(COPY_CACHE_DEBOUNCE_MS, () => {
+    const version = invalidatePreparedCopyCache()
+    copyPreparationInFlight = prepareCopyCacheIfNeeded(version)
+        .catch((error: unknown) => {
+            if (version !== copyPreparationVersion) {
+                return
+            }
+
+            console.error("预生成复制内容失败", error)
+        })
+        .finally(() => {
+            if (copyPreparationInFlight) {
+                copyPreparationInFlight = null
+            }
+        })
+})
+
+const schedulePreparedCopyAfterRender = (): void => {
+    nextTick(() => {
+        window.requestAnimationFrame(() => {
+            schedulePreparedCopyCache()
+        })
+    })
+}
+
+const copyPreparedContent = async (): Promise<void> => {
+    const currentVersion = copyPreparationVersion
+    const cachedHtml = preparedCopyCache.value
+
+    if (cachedHtml && cachedHtml.version === currentVersion) {
+        emitCopyProfile({
+            type: "copy-entry",
+            path: "cache-hit",
+            version: currentVersion,
+            htmlLength: cachedHtml.html.length,
+        })
+        await writePreparedHtmlToClipboard(cachedHtml.html, `cache-hit-v${currentVersion}`)
+        return
+    }
+
+    if (copyPreparationInFlight) {
+        emitCopyProfile({
+            type: "copy-entry",
+            path: "await-inflight-cache",
+            version: currentVersion,
+        })
+        await copyPreparationInFlight
+        const latestCache = preparedCopyCache.value
+        if (latestCache && latestCache.version === copyPreparationVersion) {
+            emitCopyProfile({
+                type: "copy-entry",
+                path: "cache-hit-after-await",
+                version: copyPreparationVersion,
+                htmlLength: latestCache.html.length,
+            })
+            await writePreparedHtmlToClipboard(latestCache.html, `cache-hit-after-await-v${copyPreparationVersion}`)
+            return
+        }
+    }
+
+    if (!previewRef.value) {
+        return
+    }
+
+    emitCopyProfile({
+        type: "copy-entry",
+        path: "fallback-direct-copy",
+        version: copyPreparationVersion,
+    })
+    await copyWithCustomStyle(previewRef.value, `fallback-direct-copy-v${copyPreparationVersion}`)
 }
 
 // 判断是否为付费内容组件
@@ -276,7 +385,9 @@ watch(
 )
 
 // 防抖处理 copyWithCustomStyle
-const debounceCopyWithCustomStyle = debounce(500, copyWithCustomStyle)
+const debounceCopyWithCustomStyle = debounce(500, async () => {
+    await copyPreparedContent()
+})
 
 // 监听 viewCommand, 执行对应命令
 watch(
@@ -288,7 +399,7 @@ watch(
         }
 
         MessageUtil.infoWaitNext("正在复制内容，请稍后...")
-        debounceCopyWithCustomStyle(previewRef.value)
+        debounceCopyWithCustomStyle()
     },
 )
 
@@ -301,6 +412,7 @@ watch(
         }
 
         scheduleDisplayKatexScale()
+        schedulePreparedCopyAfterRender()
     },
 )
 
@@ -542,6 +654,7 @@ watch(
                 // 监听标题的可见性变化
                 observeHeadings()
                 scheduleDisplayKatexScale()
+                schedulePreparedCopyAfterRender()
             })
         }
     },
@@ -552,6 +665,7 @@ watch(
     () => wechatHtml.value,
     () => {
         scheduleDisplayKatexScale()
+        schedulePreparedCopyAfterRender()
     },
 )
 
@@ -618,6 +732,7 @@ watch(
                 )
 
                 scheduleDisplayKatexScale()
+                schedulePreparedCopyAfterRender()
             })
         }
     },
@@ -625,6 +740,7 @@ watch(
 
 const { stop: stopPreviewResizeObserver } = useResizeObserver(previewRef, () => {
     scheduleDisplayKatexScale()
+    schedulePreparedCopyAfterRender()
 })
 
 // 初始化
@@ -635,6 +751,7 @@ onMounted(async () => {
         // 获取预览容器的 top 值
         getPreviewRefRect()
         scheduleDisplayKatexScale()
+        schedulePreparedCopyAfterRender()
     })
 })
 
