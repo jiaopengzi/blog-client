@@ -45,25 +45,31 @@ import { toolMenuItems } from "./types"
 defineOptions({ name: "BarTool" })
 
 const { icon } = defineProps<{
-    icon: IconKeys
+    icon: IconKeys // 工具栏图标
 }>()
 
+// 子组件传参
 const emit = defineEmits<{
-    (e: "tool-select", name: CommandsKey): void
-    (e: "tool-settings", name: CommandsKey): void
+    (e: "tool-select", name: CommandsKey): void // 选择工具菜单项
+    (e: "tool-settings", name: CommandsKey): void // 点击齿轮设置按钮
 }>()
 
+// 每列最多显示行数
 const maxRowsPerColumn = 8
+// 每列宽度
 const columnWidth = 150
 
+// 根据菜单项数量计算列数
 const columnCount = computed(() => {
     return Math.max(1, Math.ceil(toolMenuItems.length / maxRowsPerColumn))
 })
 
+// 根据列数计算弹出层宽度
 const popoverWidth = computed(() => {
-    return columnCount.value === 1 ? 170 : columnCount.value * columnWidth + 20
+    return columnCount.value === 1 ? 200 : columnCount.value * columnWidth + 20
 })
 
+// grid 布局样式：按列优先排列
 const gridStyle = computed(() => {
     return {
         gridTemplateColumns: `repeat(${columnCount.value}, minmax(0, 1fr))`,
@@ -72,10 +78,12 @@ const gridStyle = computed(() => {
     }
 })
 
+// 选择工具菜单项
 const handleToolSelect = (name: CommandsKey) => {
     emit("tool-select", name)
 }
 
+// 点击齿轮设置按钮
 const handleToolSettings = (name: CommandsKey) => {
     emit("tool-settings", name)
 }
@@ -92,7 +100,7 @@ const handleToolSettings = (name: CommandsKey) => {
     .tool-item-wrapper {
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: 8px;
         min-width: 0;
 
         .tool-item {
