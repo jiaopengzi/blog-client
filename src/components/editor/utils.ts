@@ -409,21 +409,33 @@ export function htmlHandleDetailsTag(htmlSrc: string) {
 export async function katexToImage(container: HTMLElement, className: string = "katex") {
     const katexElements = getKatexElements(container, className)
 
-    // 创建所有截图任务的 Promise 数组
-    const screenshotPromises = katexElements.map(async (katex) => {
-        const captureContext = createKatexCaptureContext(katex)
+    await waitForDocumentFontsReady()
 
-        try {
-            const img = await createKatexImageFromCapture(captureContext)
-            applyKatexImageStyle(img, captureContext)
-            katex.parentNode?.replaceChild(img, katex)
-        } finally {
-            captureContext.wrapper.remove()
-        }
-    })
+    await katexElements.reduce<Promise<void>>((previousTask, katex) => {
+        return previousTask.then(async () => {
+            const captureContext = createKatexCaptureContext(katex)
 
-    // 并行执行所有截图任务
-    await Promise.all(screenshotPromises)
+            try {
+                const img = await createKatexImageFromCapture(captureContext)
+                applyKatexImageStyle(img, captureContext)
+                katex.parentNode?.replaceChild(img, katex)
+            } finally {
+                captureContext.wrapper.remove()
+            }
+        })
+    }, Promise.resolve())
+}
+
+/**
+ * @description: 等待当前文档字体资源进入稳定状态, 降低批量公式截图时的排版抖动.
+ * @return void.
+ */
+async function waitForDocumentFontsReady(): Promise<void> {
+    if (typeof document === "undefined" || !("fonts" in document)) {
+        return
+    }
+
+    await document.fonts.ready
 }
 
 /**
@@ -452,6 +464,8 @@ function createKatexCaptureContext(katex: HTMLElement): KatexCaptureContext {
     const wrapper = document.createElement("div")
     const captureClone = katex.cloneNode(true) as HTMLElement
 
+    applyKatexCaptureContextStyle(katex, wrapper, captureClone)
+
     wrapper.style.position = "fixed"
     wrapper.style.left = "-99999px"
     wrapper.style.top = "0"
@@ -477,6 +491,28 @@ function createKatexCaptureContext(katex: HTMLElement): KatexCaptureContext {
         width: Math.max(1, Math.ceil(captureRect.width)),
         height: Math.max(1, Math.ceil(captureRect.height)),
     }
+}
+
+/**
+ * @description: 将原始 KaTeX 根节点的关键计算样式冻结到离屏截图上下文中, 避免脱离预览容器后布局失真.
+ * @param katex 原始 KaTeX 根节点.
+ * @param wrapper 离屏截图包裹容器.
+ * @param captureClone 用于截图的 KaTeX 克隆节点.
+ * @return void.
+ */
+function applyKatexCaptureContextStyle(katex: HTMLElement, wrapper: HTMLDivElement, captureClone: HTMLElement): void {
+    const computedStyle = getComputedStyle(katex)
+    const inheritedProperties = ["font-size", "line-height", "font-family", "font-weight", "font-style", "letter-spacing", "color"]
+
+    inheritedProperties.forEach((property) => {
+        const value = computedStyle.getPropertyValue(property)
+        if (!value) {
+            return
+        }
+
+        wrapper.style.setProperty(property, value)
+        captureClone.style.setProperty(property, value)
+    })
 }
 
 /**
