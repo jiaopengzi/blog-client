@@ -51,6 +51,7 @@ export const tokyonightDayPreset: ThemePreset = {
         tableBg: "#e1e2e7",
         tableN2Bg: "#d5d6db",
         tableN21Bg: "#e1e2e7",
+        tableStriped: "#d5d6db",
         scrollbarThumb: "#8c94b6",
     },
 }

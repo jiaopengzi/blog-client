@@ -149,7 +149,11 @@ function buildThemeCssVariables(palette: ThemePalette, scheme: ThemePreset["sche
         `--jpz-table-bg-color: ${palette.tableBg};`,
         `--jpz-table-n2-bg-color: ${palette.tableN2Bg};`,
         `--jpz-table-n2-1-bg-color: ${palette.tableN21Bg};`,
+        `--jpz-table-striped-bg-color: ${palette.tableStriped};`,
         `--scrollbar-thumb-bg: ${palette.scrollbarThumb};`,
+
+        // 主题覆盖输入框的背景色,
+        `--el-fill-color-blank: ${palette.bg};`,
     ]
 
     vars.push(...buildElementColorGroup("primary", palette.primary, scheme))

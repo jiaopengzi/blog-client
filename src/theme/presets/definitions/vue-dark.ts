@@ -51,6 +51,7 @@ export const vueDarkPreset: ThemePreset = {
         tableBg: "#1a1a1a",
         tableN2Bg: "#242424",
         tableN21Bg: "#1a1a1a",
+        tableStriped: "#242424",
         scrollbarThumb: "#4a4a4a",
     },
 }

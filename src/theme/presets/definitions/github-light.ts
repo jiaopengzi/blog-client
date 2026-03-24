@@ -51,6 +51,7 @@ export const githubLightPreset: ThemePreset = {
         tableBg: "#ffffff",
         tableN2Bg: "#f6f8fa",
         tableN21Bg: "#ffffff",
+        tableStriped: "#f6f8fa",
         scrollbarThumb: "#afb8c1",
     },
 }

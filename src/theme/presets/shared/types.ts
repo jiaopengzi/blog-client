@@ -48,6 +48,7 @@ export interface ThemePalette {
     tableBg: string
     tableN2Bg: string
     tableN21Bg: string
+    tableStriped: string
     scrollbarThumb: string
 }
 

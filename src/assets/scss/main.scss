@@ -155,12 +155,16 @@ body {
 a {
     text-decoration: none;
     color: var(--jpz-text-color-primary); // 随主题切换的颜色
-    transition: color 0.4s, background-color 0.4s;
+    transition:
+        color 0.4s,
+        background-color 0.4s;
 }
 
 @media (hover: hover) {
     a {
-        transition: color 0.5s, background-color 0.5s;
+        transition:
+            color 0.5s,
+            background-color 0.5s;
     }
 
     a:hover {
@@ -411,5 +415,12 @@ header {
     .add-item-dialog,
     .edit-item-dialog {
         width: 96% !important;
+    }
+}
+
+// 重写 el-table 斑马纹的背景色以适配主题
+html[data-theme] {
+    .el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
+        background: var(--jpz-table-striped-bg-color) !important;
     }
 }

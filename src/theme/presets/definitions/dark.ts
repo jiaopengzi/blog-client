@@ -51,6 +51,7 @@ export const darkPreset: ThemePreset = {
         tableBg: "var(--el-bg-color)",
         tableN2Bg: "var(--el-bg-color-page)",
         tableN21Bg: "var(--el-bg-color)",
+        tableStriped: "var(--el-bg-color-page)",
         scrollbarThumb: "var(--el-border-color-darker)",
     },
 }
