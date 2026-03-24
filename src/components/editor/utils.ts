@@ -983,6 +983,7 @@ function applyInlineStylesToElement(
             const cssStyleValue = computedStyle[property]
             if (cssStyleValue) {
                 clonedEl.style.setProperty(property, cssStyleValue)
+                applyContext.appliedPropertyCount += 1
             }
         })
     }
