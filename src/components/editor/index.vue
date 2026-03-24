@@ -19,6 +19,7 @@
                 @table-row-col="insertTableRowCol"
                 @alert-select="insertAlert"
                 @tool-select="toolbarBtnClicked"
+                @tool-settings="openSettingsDialog"
                 @toolbar-height="updateMdContainerStyle"
             />
         </div>
@@ -82,6 +83,39 @@
                 />
             </div>
         </div>
+
+        <el-dialog
+            v-model="settingsDialogVisible"
+            :title="settingsDialogCommand === CommandsKey.PowerBi ? 'PowerBi 默认设置' : 'WechatCaptcha 默认设置'"
+            width="400px"
+            :close-on-click-modal="false"
+            @close="closeSettingsDialog"
+        >
+            <!-- PowerBi 默认设置 -->
+            <template v-if="settingsDialogCommand === CommandsKey.PowerBi">
+                <el-form label-position="top">
+                    <el-form-item label="遮罩颜色 (maskcolor)">
+                        <el-input v-model="powerBiForm.maskcolor" placeholder="例如 #ffffff" clearable />
+                    </el-form-item>
+                </el-form>
+            </template>
+            <!-- WechatCaptcha 默认设置 -->
+            <template v-else-if="settingsDialogCommand === CommandsKey.WechatCaptcha">
+                <el-form label-position="top">
+                    <el-form-item label="公众号名称 (name)">
+                        <el-input v-model="wechatCaptchaForm.name" placeholder="例如: 您的公众号名称" clearable />
+                    </el-form-item>
+                    <el-form-item label="二维码链接 (codeurl)">
+                        <el-input v-model="wechatCaptchaForm.codeurl" placeholder="例如: https://example.com/qr.png" clearable />
+                    </el-form-item>
+                </el-form>
+            </template>
+            <template #footer>
+                <el-button @click="closeSettingsDialog">取消</el-button>
+                <el-button v-if="settingsDialogCommand === CommandsKey.PowerBi" type="primary" @click="savePowerBiSettings">保存</el-button>
+                <el-button v-if="settingsDialogCommand === CommandsKey.WechatCaptcha" type="primary" @click="saveWechatCaptchaSettings">保存</el-button>
+            </template>
+        </el-dialog>
     </div>
 </template>
 
@@ -89,11 +123,22 @@
 import "vue3-emoji-picker/css"
 
 import { type Extension } from "@codemirror/state"
-import { computed, useTemplateRef, watch } from "vue"
+import { computed, useTemplateRef, watch, ref, reactive } from "vue"
 
 import { PayStrategy, type PostVideoTocTree } from "@/api/post/common"
 import type { MarkdownRulesConfig } from "@/pkg/codemirror/extension/mdlint/types"
 import { getTheme, Theme, ThemeMode } from "@/pkg/codemirror/extension/theme"
+
+import {
+    savePowerBiDefaults,
+    loadPowerBiDefaults,
+    clearPowerBiDefaults,
+    saveWechatCaptchaDefaults,
+    loadWechatCaptchaDefaults,
+    clearWechatCaptchaDefaults,
+} from "@/stores/editor-defaults"
+
+import { CommandsKey } from "./command"
 
 import EditorCodemirror, { type CodemirrorRef } from "./components/codemirror"
 import HtmlPreview from "./components/preview/index.vue"
@@ -144,6 +189,57 @@ const localPostId = computed(() => postId)
 const localIsPaid = computed(() => isPaid)
 const localPayStrategy = computed(() => payStrategy)
 const localPrice = computed(() => price)
+
+const settingsDialogVisible = ref(false)
+const settingsDialogCommand = ref<CommandsKey | null>(null)
+
+const openSettingsDialog = (name: CommandsKey) => {
+    settingsDialogCommand.value = name
+    settingsDialogVisible.value = true
+}
+
+const closeSettingsDialog = () => {
+    settingsDialogVisible.value = false
+    settingsDialogCommand.value = null
+}
+
+const powerBiForm = reactive({ maskcolor: "" })
+const wechatCaptchaForm = reactive({ name: "", codeurl: "" })
+
+watch([settingsDialogVisible, settingsDialogCommand], ([visible, command]) => {
+    if (visible && command === CommandsKey.PowerBi) {
+        const saved = loadPowerBiDefaults()
+        powerBiForm.maskcolor = saved?.maskcolor ?? ""
+    }
+    if (visible && command === CommandsKey.WechatCaptcha) {
+        const saved = loadWechatCaptchaDefaults()
+        wechatCaptchaForm.name = saved?.name ?? ""
+        wechatCaptchaForm.codeurl = saved?.codeurl ?? ""
+    }
+})
+
+const savePowerBiSettings = () => {
+    if (powerBiForm.maskcolor.trim()) {
+        savePowerBiDefaults({ maskcolor: powerBiForm.maskcolor.trim() })
+    } else {
+        clearPowerBiDefaults()
+    }
+    closeSettingsDialog()
+}
+
+const saveWechatCaptchaSettings = () => {
+    const hasName = wechatCaptchaForm.name.trim()
+    const hasCodeurl = wechatCaptchaForm.codeurl.trim()
+    if (hasName || hasCodeurl) {
+        saveWechatCaptchaDefaults({
+            name: wechatCaptchaForm.name.trim(),
+            codeurl: wechatCaptchaForm.codeurl.trim(),
+        })
+    } else {
+        clearWechatCaptchaDefaults()
+    }
+    closeSettingsDialog()
+}
 
 // ref
 const mdLayoutRef = useTemplateRef<HTMLElement | null>("mdLayoutRef") //编辑器布局

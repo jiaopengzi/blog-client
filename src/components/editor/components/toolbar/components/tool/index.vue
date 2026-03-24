@@ -21,10 +21,15 @@
         </template>
 
         <div class="tool-menu-grid" :style="gridStyle">
-            <el-button v-for="item in toolMenuItems" :key="item.command" class="tool-item" type="default" @click="handleToolSelect(item.command)">
-                <j-icon :name="item.icon" custom-class="menu-icon" />
-                <span>{{ item.label }}</span>
-            </el-button>
+            <div v-for="item in toolMenuItems" :key="item.command" class="tool-item-wrapper">
+                <el-button class="tool-item" type="default" @click="handleToolSelect(item.command)">
+                    <j-icon :name="item.icon" custom-class="menu-icon" />
+                    <span>{{ item.label }}</span>
+                </el-button>
+                <el-button class="tool-settings-btn" type="default" @click.stop="handleToolSettings(item.command)" title="设置">
+                    <j-icon :name="IconKeys.Setting" custom-class="menu-icon-setting" />
+                </el-button>
+            </div>
         </div>
     </el-popover>
 </template>
@@ -32,7 +37,7 @@
 <script lang="ts" setup>
 import { computed } from "vue"
 
-import type { IconKeys } from "@/components/common/icons"
+import { IconKeys } from "@/components/common/icons"
 import { CommandsKey } from "@/components/editor/command"
 
 import { toolMenuItems } from "./types"
@@ -45,6 +50,7 @@ const { icon } = defineProps<{
 
 const emit = defineEmits<{
     (e: "tool-select", name: CommandsKey): void
+    (e: "tool-settings", name: CommandsKey): void
 }>()
 
 const maxRowsPerColumn = 8
@@ -69,6 +75,10 @@ const gridStyle = computed(() => {
 const handleToolSelect = (name: CommandsKey) => {
     emit("tool-select", name)
 }
+
+const handleToolSettings = (name: CommandsKey) => {
+    emit("tool-settings", name)
+}
 </script>
 
 <style scoped lang="scss">
@@ -79,11 +89,31 @@ const handleToolSelect = (name: CommandsKey) => {
     padding: 10px;
     background-color: var(--jpz-bg-color-page);
 
-    .tool-item {
-        justify-content: flex-start;
-        margin: 0;
+    .tool-item-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 4px;
         min-width: 0;
-        border-radius: 4px;
+
+        .tool-item {
+            flex: 1;
+            justify-content: flex-start;
+            margin: 0;
+            min-width: 0;
+            border-radius: 4px;
+        }
+
+        .tool-settings-btn {
+            margin: 0;
+            padding: 8px;
+            border-radius: 4px;
+
+            .menu-icon-setting {
+                width: 14px;
+                height: 14px;
+                fill: currentColor;
+            }
+        }
     }
 }
 

@@ -25,7 +25,7 @@
             <BarAlert v-else-if="btn.name === CommandsKey.Alert" :icon="btn.icon" @alert-select="handleAlertSelect" />
 
             <!-- 工具 -->
-            <BarTool v-else-if="btn.name === CommandsKey.Tool" :icon="btn.icon" @tool-select="handleToolSelect" />
+            <BarTool v-else-if="btn.name === CommandsKey.Tool" :icon="btn.icon" @tool-select="handleToolSelect" @tool-settings="handleToolSettings" />
 
             <!-- 其他 bar -->
             <el-tooltip v-else effect="dark" :content="btn.display" :hide-after="0" :show-after="300">
@@ -66,6 +66,7 @@ const emit = defineEmits<{
     (e: "table-row-col", tableRowCol: TableRowCol): void
     (e: "alert-select", val: Alerts): void
     (e: "tool-select", name: CommandsKey): void
+    (e: "tool-settings", name: CommandsKey): void
     (e: "toolbar-height", height: string): void
 }>()
 
@@ -116,6 +117,10 @@ const handleAlertSelect = (val: Alerts) => {
 
 const handleToolSelect = (name: CommandsKey) => {
     emit("tool-select", name)
+}
+
+const handleToolSettings = (name: CommandsKey) => {
+    emit("tool-settings", name)
 }
 
 /**
