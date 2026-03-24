@@ -15,6 +15,8 @@ import { useWebFullscreen } from "@/components/hooks/useWebFullscreen"
 import { MessageUtil } from "@/utils/message"
 import { setCSSVariable } from "@/utils/style"
 
+import { buildPowerBiContent, buildWechatCaptchaPrefix, loadPowerBiDefaults, loadWechatCaptchaDefaults } from "@/stores/editor-defaults"
+
 import { CommandsKey, markdownEditorCommands } from "../command"
 import { Alerts, type PayTagItem, type TableRowCol } from "../components/toolbar"
 import { EditorStateManager } from "../state"
@@ -113,6 +115,20 @@ export function useToolbar(mdLayoutRef: Ref<HTMLElement | null>, mdContainerRef:
         //     copyToX(contentElement)
         //   }
         // }
+
+        if (name === CommandsKey.PowerBi) {
+            const defaults = loadPowerBiDefaults()
+            const customContent = { prefix: "", content: buildPowerBiContent(defaults), suffix: "" }
+            stateManager.setCmCommand({ commandName: name, customContent, time: new Date() })
+            return
+        }
+
+        if (name === CommandsKey.WechatCaptcha) {
+            const defaults = loadWechatCaptchaDefaults()
+            const customContent = { prefix: buildWechatCaptchaPrefix(defaults), content: "您的隐藏内容", suffix: "\n\n</wechat-captcha>\n" }
+            stateManager.setCmCommand({ commandName: name, customContent, time: new Date() })
+            return
+        }
 
         // 调用 codemirrorRef 中的 runCommand 函数
 
