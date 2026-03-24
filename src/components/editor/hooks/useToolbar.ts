@@ -42,6 +42,10 @@ export function useToolbar(mdLayoutRef: Ref<HTMLElement | null>, mdContainerRef:
      * @param name 工具栏按钮对应的常量
      */
     const toolbarBtnClicked = async (name: CommandsKey) => {
+        if (name === CommandsKey.Heading || name === CommandsKey.Tool) {
+            return
+        }
+
         if (name === CommandsKey.Vim) {
             stateManager.toggleVimMode()
             return

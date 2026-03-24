@@ -62,6 +62,7 @@ export enum CommandsKey {
     Vim = "vim",
     Details = "details",
     Alert = "alert",
+    Tool = "tool",
     PowerBi = "powerBi",
     WechatCaptcha = "wechatCaptcha",
 }
@@ -176,7 +177,7 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         // 标题1
         [CommandsKey.H1]: {
             tip: "标题1",
-            prefix: "\n# ",
+            prefix: "# ",
             suffix: "\n",
             hotKey: "Ctrl+1",
             icon: IconKeys.H1,
@@ -448,6 +449,10 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
             content: "\n> [!NOTE]\n> ",
             hotKey: "Ctrl+Shift+A",
             icon: IconKeys.Alert,
+        },
+        [CommandsKey.Tool]: {
+            tip: "工具",
+            icon: IconKeys.Tool,
         },
         // PowerBi
         [CommandsKey.PowerBi]: {

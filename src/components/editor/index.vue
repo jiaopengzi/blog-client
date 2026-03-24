@@ -13,10 +13,12 @@
             <Toolbar
                 :toolbar-btns="toolbarBtns"
                 @toolbar-btn-clicked="toolbarBtnClicked"
+                @heading-select="toolbarBtnClicked"
                 @pay-select="insertPay"
                 @emoji-picker-selected="emojiPickerSelected"
                 @table-row-col="insertTableRowCol"
                 @alert-select="insertAlert"
+                @tool-select="toolbarBtnClicked"
                 @toolbar-height="updateMdContainerStyle"
             />
         </div>

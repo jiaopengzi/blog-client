@@ -7,5 +7,7 @@
  */
 
 export { Alerts } from "./components/alert"
+export { type HeadingMenuItem } from "./components/heading"
 export { type PayTagItem } from "./components/pay"
 export { type TableRowCol } from "./components/table"
+export { type ToolMenuItem } from "./components/tool"

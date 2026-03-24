@@ -9,8 +9,11 @@
 <template>
     <div ref="toolbarRef" id="toolbar">
         <button v-for="btn in toolbarBtns" type="button" :key="btn.name" class="toolbar-btn" @click="emitToolbarBtnClicked(btn.name)">
-            <!-- 付费组件 -->
+            <!-- 付费 -->
             <BarPay v-if="btn.name === CommandsKey.PayContent" :icon="btn.icon" @pay-select="handlePaySelect" />
+
+            <!-- 标题 -->
+            <BarHeading v-else-if="btn.name === CommandsKey.Heading" :icon="btn.icon" @heading-select="handleHeadingSelect" />
 
             <!-- emoji表情 -->
             <BarEmoji v-else-if="btn.name === CommandsKey.Emoji" :icon="btn.icon" @emoji-picker-selected="handleEmojiPickerSelected" />
@@ -20,6 +23,9 @@
 
             <!-- 提示 -->
             <BarAlert v-else-if="btn.name === CommandsKey.Alert" :icon="btn.icon" @alert-select="handleAlertSelect" />
+
+            <!-- 工具 -->
+            <BarTool v-else-if="btn.name === CommandsKey.Tool" :icon="btn.icon" @tool-select="handleToolSelect" />
 
             <!-- 其他 bar -->
             <el-tooltip v-else effect="dark" :content="btn.display" :hide-after="0" :show-after="300">
@@ -39,8 +45,10 @@ import type { IconKeys } from "@/components/common/icons"
 import { CommandsKey } from "../../command"
 import BarAlert, { Alerts } from "./components/alert"
 import BarEmoji from "./components/emoji"
+import BarHeading from "./components/heading"
 import BarPay, { type PayTagItem } from "./components/pay"
 import BarTable, { type TableRowCol } from "./components/table"
+import BarTool from "./components/tool"
 
 defineOptions({ name: "EditorToolbar" })
 
@@ -52,19 +60,38 @@ const { toolbarBtns } = defineProps<{
 // 子组件 传参
 const emit = defineEmits<{
     (e: "toolbar-btn-clicked", name: CommandsKey): void
+    (e: "heading-select", name: CommandsKey): void
     (e: "pay-select", val: PayTagItem): void
     (e: "emoji-picker-selected", emoji: EmojiExt): void
     (e: "table-row-col", tableRowCol: TableRowCol): void
     (e: "alert-select", val: Alerts): void
+    (e: "tool-select", name: CommandsKey): void
     (e: "toolbar-height", height: string): void
 }>()
 
 const toolbarRef = useTemplateRef<HTMLElement | null>("toolbarRef") // 工具栏
 const toolbarHeight = ref(0) // 工具栏高度
 
+const toolbarMenuCommands = new Set<CommandsKey>([
+    CommandsKey.PayContent,
+    CommandsKey.Heading,
+    CommandsKey.Emoji,
+    CommandsKey.Table,
+    CommandsKey.Alert,
+    CommandsKey.Tool,
+])
+
 const emitToolbarBtnClicked = (name: CommandsKey) => {
+    if (toolbarMenuCommands.has(name)) {
+        return
+    }
+
     // 触发自定义事件 "onToolbarBtnClicked"，将 name 传递给父组件
     emit("toolbar-btn-clicked", name)
+}
+
+const handleHeadingSelect = (name: CommandsKey) => {
+    emit("heading-select", name)
 }
 
 // 插入付费组件
@@ -85,6 +112,10 @@ const handleTableRowCol = (rc: TableRowCol) => {
 // 插入提示
 const handleAlertSelect = (val: Alerts) => {
     emit("alert-select", val)
+}
+
+const handleToolSelect = (name: CommandsKey) => {
+    emit("tool-select", name)
 }
 
 /**
