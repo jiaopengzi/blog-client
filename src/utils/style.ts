@@ -8,7 +8,10 @@
 
 import { type ImgFit } from "@/components/common"
 
-import { removeCommentsSafe } from "./cssValidator"
+import { findFirstOutsideString, findMatchingBlockEnd, removeCommentsSafe } from "./cssValidator"
+
+const defaultLightThemeSelector = 'html[data-theme="light"]'
+const defaultDarkThemeSelector = 'html[data-theme="dark"]'
 
 /**
  * @description: 设置主题
@@ -76,6 +79,168 @@ export function iconStyle(fontSize: number | undefined): Record<string, string> 
 }
 
 /**
+ * @description: 按选择器列表拆分文本, 忽略字符串, 括号和属性选择器内部的逗号.
+ * @param selectorText 选择器文本.
+ * @return 拆分后的选择器数组.
+ */
+function splitSelectorList(selectorText: string): string[] {
+    const selectors: string[] = []
+    let current = ""
+    let roundDepth = 0
+    let squareDepth = 0
+    let inString: '"' | "'" | null = null
+    let escapeNext = false
+
+    for (const char of selectorText) {
+        if (escapeNext) {
+            current += char
+            escapeNext = false
+            continue
+        }
+
+        if (char === "\\") {
+            current += char
+            escapeNext = true
+            continue
+        }
+
+        if (char === '"' || char === "'") {
+            if (inString === null) {
+                inString = char
+            } else if (inString === char) {
+                inString = null
+            }
+
+            current += char
+            continue
+        }
+
+        if (inString) {
+            current += char
+            continue
+        }
+
+        if (char === "(") {
+            roundDepth++
+            current += char
+            continue
+        }
+
+        if (char === ")") {
+            roundDepth = Math.max(0, roundDepth - 1)
+            current += char
+            continue
+        }
+
+        if (char === "[") {
+            squareDepth++
+            current += char
+            continue
+        }
+
+        if (char === "]") {
+            squareDepth = Math.max(0, squareDepth - 1)
+            current += char
+            continue
+        }
+
+        if (char === "," && roundDepth === 0 && squareDepth === 0) {
+            if (current.trim()) {
+                selectors.push(current.trim())
+            }
+            current = ""
+            continue
+        }
+
+        current += char
+    }
+
+    if (current.trim()) {
+        selectors.push(current.trim())
+    }
+
+    return selectors
+}
+
+/**
+ * @description: 将默认主题根选择器改写为仅命中默认 light 和 dark 预设.
+ * @param selector 单个选择器文本.
+ * @return 改写后的选择器数组.
+ */
+function rewriteDefaultThemeRootSelector(selector: string): string[] {
+    const trimmedSelector = selector.trim()
+
+    if (trimmedSelector === "html" || trimmedSelector === ":root") {
+        return [defaultLightThemeSelector, defaultDarkThemeSelector]
+    }
+
+    if (trimmedSelector === "html.light") {
+        return [defaultLightThemeSelector]
+    }
+
+    if (trimmedSelector === "html.dark") {
+        return [defaultDarkThemeSelector]
+    }
+
+    return [trimmedSelector]
+}
+
+/**
+ * @description: 改写单段规则头部中的主题根选择器, 保留原有缩进与尾部空白.
+ * @param preludeSegment 规则头部文本.
+ * @return 改写后的规则头部文本.
+ */
+function rewriteThemePreludeSegment(preludeSegment: string): string {
+    const trimmedPrelude = preludeSegment.trim()
+
+    if (!trimmedPrelude || trimmedPrelude.startsWith("@")) {
+        return preludeSegment
+    }
+
+    const leadingWhitespaceLength = preludeSegment.length - preludeSegment.trimStart().length
+    const trailingWhitespaceLength = preludeSegment.length - preludeSegment.trimEnd().length
+    const leadingWhitespace = preludeSegment.slice(0, leadingWhitespaceLength)
+    const trailingWhitespace = trailingWhitespaceLength > 0 ? preludeSegment.slice(preludeSegment.length - trailingWhitespaceLength) : ""
+    const rewrittenSelectors = splitSelectorList(trimmedPrelude)
+        .flatMap((selector) => rewriteDefaultThemeRootSelector(selector))
+        .join(", ")
+
+    return `${leadingWhitespace}${rewrittenSelectors}${trailingWhitespace}`
+}
+
+/**
+ * @description: 将管理员自定义主题中的默认根选择器限制为 light 和 dark 默认预设.
+ * @param cssContent 自定义 CSS 文本.
+ * @return 改写后的 CSS 文本.
+ */
+export function scopeCustomThemeCss(cssContent: string): string {
+    let result = ""
+    let cursor = 0
+
+    while (cursor < cssContent.length) {
+        const nextBlockStartOffset = findFirstOutsideString(cssContent.slice(cursor), "{")
+        if (nextBlockStartOffset === -1) {
+            result += cssContent.slice(cursor)
+            break
+        }
+
+        const blockStart = cursor + nextBlockStartOffset
+        const blockEnd = findMatchingBlockEnd(cssContent, blockStart + 1)
+        if (blockEnd === -1) {
+            return cssContent
+        }
+
+        const preludeSegment = cssContent.slice(cursor, blockStart)
+        const blockContent = cssContent.slice(blockStart + 1, blockEnd)
+        result += `${rewriteThemePreludeSegment(preludeSegment)}{${scopeCustomThemeCss(blockContent)}}`
+
+        cursor = blockEnd + 1
+    }
+
+    return result
+}
+
+/**
  * @description: 设置自定义样式
  * @param cssId 样式ID
  * @param cssContent 样式内容
@@ -88,7 +253,7 @@ export const setCustomStyle = (cssId: string, cssContent: string) => {
     }
 
     // 移除注释并修剪空白
-    cssContent = removeCommentsSafe(cssContent).trim()
+    cssContent = scopeCustomThemeCss(removeCommentsSafe(cssContent)).trim()
 
     // 如果为空则不添加
     if (!cssContent) return

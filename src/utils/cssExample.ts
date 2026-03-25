@@ -17,23 +17,24 @@ export const cssExample = (): string => {
 /******************** 网站主题样式开始 ******************/
 
 /**
- * 浅色主题的主色调副色调
+ * 默认浅色主题的主色调副色调, 不影响 github, vue, tokyonight 等预设
  */
-html.light {
+html[data-theme="light"] {
   --jpz-color-primary: #1e2858;
   --jpz-color-secondary: #c89828;
 }
 
 /**
- * 暗色主题的主色调副色调
+ * 默认暗色主题的主色调副色调, 不影响 github, vue, tokyonight 等预设
  */
-html.dark {
+html[data-theme="dark"] {
   --jpz-color-primary: #c89828;
   --jpz-color-secondary: #bb1818;
 }
 
 
-html {
+html[data-theme="light"],
+html[data-theme="dark"] {
   /* 背景色 */
   --jpz-bg-color: var(--el-bg-color);
   --jpz-bg-color-page: var(--el-bg-color-page);

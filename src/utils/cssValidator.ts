@@ -397,7 +397,7 @@ export function removeCommentsSafe(css: string): string {
  * @param predicate 接受单个字符 返回是否匹配
  * @return 匹配字符索引 找不到返回 -1
  */
-function findFirstOutsideByPredicate(text: string, predicate: (ch: string) => boolean): number {
+export function findFirstOutsideByPredicate(text: string, predicate: (ch: string) => boolean): number {
     // 当前是否在字符串内 (记录使用的引号类型)
     let inString: '"' | "'" | null = null
 
@@ -486,9 +486,62 @@ export function checkNotCssLines(css: string): Array<{ lineNo: number; text: str
  * @param target 要查找的目标字符(如果冒号 ':')
  * @return 找到则返回索引, 否则返回 -1
  */
-function findFirstOutsideString(text: string, target: string): number {
+export function findFirstOutsideString(text: string, target: string): number {
     // 使用通用查找函数 查找不在字符串內的目标字符位置
     return findFirstOutsideByPredicate(text, (ch) => ch === target)
+}
+
+/**
+ * @description: 查找指定左花括号对应的右花括号位置, 忽略字符串中的花括号.
+ * @param text 完整 CSS 文本.
+ * @param blockStart 左花括号后第一个字符的位置.
+ * @return 对应右花括号索引, 未找到则返回 -1.
+ */
+export function findMatchingBlockEnd(text: string, blockStart: number): number {
+    let depth = 1
+    let inString: '"' | "'" | null = null
+    let escapeNext = false
+
+    for (let index = blockStart; index < text.length; index++) {
+        const char = text[index]
+
+        if (escapeNext) {
+            escapeNext = false
+            continue
+        }
+
+        if (char === "\\") {
+            escapeNext = true
+            continue
+        }
+
+        if (char === '"' || char === "'") {
+            if (inString === null) {
+                inString = char
+            } else if (inString === char) {
+                inString = null
+            }
+            continue
+        }
+
+        if (inString) {
+            continue
+        }
+
+        if (char === "{") {
+            depth++
+            continue
+        }
+
+        if (char === "}") {
+            depth--
+            if (depth === 0) {
+                return index
+            }
+        }
+    }
+
+    return -1
 }
 
 /**
