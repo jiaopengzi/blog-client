@@ -5,6 +5,12 @@
 该格式基于 [Keep a Changelog](https://keepachangelog.com),
 本项目遵循 [语义化版本控制](https://semver.org/spec/v2.0.0.html)。
 
+## [v0.15.3] - 2026-03-25
+
+### Fix
+
+- 管理员自定义主题只影响默认的light和dark其他预设主题不影响
+
 ## [v0.15.2] - 2026-03-25
 
 ### Fix
