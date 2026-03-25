@@ -139,6 +139,7 @@ defineOptions({ name: "HtmlPreview" })
 const {
     html, // html 内容
     imgUrls, // 图片地址 list
+    isEnableCopyCache = false, // 是否启用复制缓存预生成
     isShowElImageViewer, // 是否显示图片预览
     width, // 宽度
     height, // 高度
@@ -235,7 +236,7 @@ const invalidatePreparedCopyCache = (): number => {
  * @return void.
  */
 const prepareCopyCacheIfNeeded = async (version: number): Promise<void> => {
-    if (!previewRef.value || version !== copyPreparationVersion || preparedCopyCache.value?.version === version) {
+    if (!isEnableCopyCache || !previewRef.value || version !== copyPreparationVersion || preparedCopyCache.value?.version === version) {
         return
     }
 
@@ -274,6 +275,11 @@ const schedulePreparedCopyCache = debounce(COPY_CACHE_DEBOUNCE_MS, () => {
  * @return void.
  */
 const schedulePreparedCopyAfterRender = (): void => {
+    if (!isEnableCopyCache) {
+        invalidatePreparedCopyCache()
+        return
+    }
+
     nextTick(() => {
         window.requestAnimationFrame(() => {
             schedulePreparedCopyCache()

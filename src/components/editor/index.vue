@@ -61,6 +61,7 @@
                 <HtmlPreview
                     :html="state.html"
                     :img-urls="state.imgUrls"
+                    :is-enable-copy-cache="isEnableCopyCache"
                     :is-show-el-image-viewer="state.isShowElImageViewer"
                     :is-show-preview-wechat="state.isShowPreviewWechat"
                     :is-user-scroll-preview="state.isUserScrollPreview"
@@ -114,6 +115,7 @@ defineOptions({ name: "JEditor" })
 const {
     stateManager,
     postId = "",
+    isEnableCopyCache = false,
     isAdminVideo = false,
     isPaid = false,
     payStrategy = PayStrategy.All,
@@ -129,6 +131,7 @@ const {
 } = defineProps<{
     stateManager: EditorStateManager
     postId?: string // 文章ID
+    isEnableCopyCache?: boolean // 是否启用复制缓存预生成
     isAdminVideo?: boolean // 是否使用管理员视频接口
     isPaid?: boolean // 是否付费阅读
     payStrategy?: PayStrategy // 付费策略

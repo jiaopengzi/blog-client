@@ -53,6 +53,7 @@
                     <JEditor
                         ref="editorPostRef"
                         :state-manager="stateManager"
+                        :is-enable-copy-cache="true"
                         :post-id="postInfoForm.id"
                         :is-admin-video="true"
                         :is-paid="isPaid"
