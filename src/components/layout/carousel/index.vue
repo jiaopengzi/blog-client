@@ -69,17 +69,22 @@ const height = "300px"
 }
 
 @include respond-to("pc") {
+    .carousel-container {
+        margin-bottom: 16px;
+    }
 }
 
 @include respond-to("pad") {
     .carousel-container {
         padding: 0px 10px;
+        margin-bottom: 16px;
     }
 }
 
 @include respond-to("phone") {
     .carousel-container {
         padding: 0px 10px;
+        margin-bottom: 16px;
     }
 }
 </style>
