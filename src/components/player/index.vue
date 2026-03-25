@@ -81,7 +81,7 @@
 
 <script setup lang="ts">
 import { useResizeObserver } from "@vueuse/core"
-import { computed, onBeforeUnmount, onMounted, reactive, useTemplateRef, watch } from "vue"
+import { computed, nextTick, onBeforeUnmount, onMounted, reactive, useTemplateRef, watch } from "vue"
 
 import { IconKeys } from "@/components/common/icons"
 import JIcon from "@/components/common/icons"
@@ -92,6 +92,7 @@ import { setCustomStyle } from "@/utils/style"
 import { useFullscreen } from "./hooks/fullScreen"
 import { useHls } from "./hooks/hls"
 import { useMouse } from "./hooks/mouse"
+import { useProgress } from "./hooks/progress"
 import { useSubtitles } from "./hooks/subtitles"
 import { PlayerStateManager } from "./state"
 import { MediaTypes, type PlayerState, PlayStatus } from "./types"
@@ -127,6 +128,7 @@ const controlsContainerRef = useTemplateRef<HTMLElement | null>("controlsContain
 // 状态
 const showPlayButton = computed(() => localPlayerState.playStatus !== PlayStatus.PLAYING)
 const showLoader = computed(() => localPlayerState.playStatus === PlayStatus.BUFFERING)
+const { queueSeekTime, syncPendingSeekTime, updateStateByVideo } = useProgress(videoRef, localManager, localPlayerState)
 
 // 切换播放暂停
 const togglePlayPause = () => {
@@ -171,6 +173,8 @@ const handleWaiting = () => {
 
 // 处理可以播放事件
 const handleCanplay = () => {
+    syncPendingSeekTime()
+
     // 如果是缓冲状态, 则播放,否则保持原状态
     if (localPlayerState.playStatus === PlayStatus.BUFFERING) {
         localManager.play()
@@ -262,19 +266,6 @@ watch(
     },
 )
 
-// 根据 video 元素更新 state 中的数据
-const updateStateByVideo = () => {
-    if (videoRef.value) {
-        videoRef.value.currentTime = localPlayerState.playProgress.currentTime
-        localManager.setDuration(videoRef.value.duration)
-        localManager.setPlaybackRate(videoRef.value.playbackRate)
-        videoRef.value.loop = localPlayerState.isLoop
-        videoRef.value.volume = localPlayerState.volume.volume / 100
-        localManager.setUserInput(false)
-        localManager.setIsDragging(false)
-    }
-}
-
 // 视频加载完成
 const handleLoadedmetadata = () => {
     if (videoRef.value) {
@@ -297,14 +288,11 @@ watch(
     () => localPlayerState.isUserInput,
     (isUserInput) => {
         if (!isUserInput) return
-        if (videoRef.value) {
-            videoRef.value.currentTime = localPlayerState.playProgress.currentTime
 
-            // 更新缓存进度
-            if (!localPlayerState.playProgress.isDragging) {
-                handleProgressBuffered()
-            }
-            localManager.setUserInput(false)
+        queueSeekTime(localPlayerState.playProgress.currentTime)
+
+        if (syncPendingSeekTime() && !localPlayerState.playProgress.isDragging) {
+            handleProgressBuffered()
         }
     },
 )
@@ -389,11 +377,14 @@ const updateVideo = () => {
 // 监听 src 变化
 watch(
     () => [localPlayerState.videoID, videoRef.value],
-    ([videoID, videoEl]) => {
+    async ([videoID, videoEl]) => {
         // 只有在 videoID 和 videoRef 都准备好时才执行
         if (videoID && videoEl) {
+            queueSeekTime(localPlayerState.playProgress.currentTime)
             localManager.setSubtitlesByVideoHashIdAuto()
             updateVideo()
+            await nextTick()
+            syncPendingSeekTime()
         }
     },
     { immediate: true },
