@@ -38,6 +38,6 @@ const {
         url: "https://jiaopengzi.com/",
     },
 } = defineProps<{
-    headData: HeadProps
+    headData?: HeadProps
 }>()
 </script>

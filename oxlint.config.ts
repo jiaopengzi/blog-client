@@ -2,7 +2,7 @@ import { defineConfig } from "oxlint"
 
 export default defineConfig({
     // 启用的插件列表, 当前保持为空并使用内置规则集.
-    plugins: ["unicorn", "typescript", "oxc"],
+    plugins: ["unicorn", "typescript", "oxc", "vue"],
     categories: {
         // correctness: 正确性相关规则分组, 关注潜在逻辑错误.
         correctness: "warn",
@@ -46,6 +46,10 @@ export default defineConfig({
         "valid-typeof": "error",
         // 关闭变量声明与外部作用域同名的规则, 允许合理的变量遮蔽.
         "no-shadow": "off",
+        "vue/no-unused-refs": "warn",
+        "vue/no-unused-properties": "warn",
+        "vue/no-unused-components": "warn",
+        "vue/no-unused-vars": "warn",
     },
     env: {
         es6: true,

@@ -28,7 +28,7 @@ import { IconKeys } from "@/components/common/icons"
 defineOptions({ name: "ImageInput" })
 
 const { modelValue = "" } = defineProps<{
-    modelValue: IconKeys | string | undefined | null // 绑定值
+    modelValue?: IconKeys | string | null // 绑定值
 }>()
 
 // 定义 emits 事件

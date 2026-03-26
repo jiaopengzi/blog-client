@@ -292,9 +292,7 @@ const isShowTag = computed(() => postType === PostType.Post)
 
 const postInfoAboutTime = reactive<PostInfoAboutTime>({})
 
-const elContainerRef = useTemplateRef<InstanceType<typeof ElContainer> | null>("elContainerRef")
 const formRef = useTemplateRef<FormInstance>("formRef")
-const seoDescriptionRef = useTemplateRef<InstanceType<typeof ElFormItem> | null>("seoDescriptionRef")
 const editorContainerRef = useTemplateRef<HTMLDivElement | null>("editorContainerRef")
 const editorPostRef = useTemplateRef<InstanceType<typeof JEditor>>("editorPostRef")
 

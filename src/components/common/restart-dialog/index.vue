@@ -42,7 +42,7 @@ const {
 } = defineProps<{
     maxWaitSeconds?: number
     waitSeconds: number
-    isShowTimer: boolean
+    isShowTimer?: boolean
 }>()
 
 const isShowTimerAc = ref(isShowTimer)

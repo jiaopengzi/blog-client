@@ -39,7 +39,7 @@ const {
     isShowImg = true,
     isShowSelectBtn = true,
 } = defineProps<{
-    modelValue: string | undefined | null // 绑定值
+    modelValue?: string | null // 绑定值
     isShowImg?: boolean // 是否显示图片,默认显示
     isShowSelectBtn?: boolean // 是否显示选择按钮, 默认显示
 }>()
