@@ -71,6 +71,7 @@ function runRules(doc: DocLike, options: MarkdownLinterOptions): Diagnostic[] {
         const enabled = cfg === undefined ? true : typeof cfg === "object" ? cfg.enabled !== false : Boolean(cfg)
         if (!enabled) continue
 
+        // oxlint-disable-next-line unicorn/no-useless-fallback-in-spread
         const ruleOpts = typeof cfg === "object" ? { ...(rule.defaultOptions || {}), ...cfg } : { ...(rule.defaultOptions || {}) }
         const result = rule.run(doc, ruleOpts)
         if (Array.isArray(result) && result.length > 0) {

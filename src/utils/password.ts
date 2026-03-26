@@ -14,6 +14,23 @@ export interface GeneratePasswordOptions {
     specialCharCount?: number // 特殊字符个数
 }
 
+// 定义生成随机字符函数
+const generateChars = (length: number, asciiStart: number, asciiEnd: number) => {
+    let chars = ""
+    for (let i = 0; i < length; i++) {
+        chars += String.fromCharCode(Math.floor(Math.random() * (asciiEnd - asciiStart)) + asciiStart)
+    }
+    return chars
+}
+
+// 定义生成特殊字符函数
+const generateSpecialChars = (length: number, specialChar: string) => {
+    let chars = ""
+    for (let i = 0; i < length; i++) {
+        chars += specialChar[Math.floor(Math.random() * specialChar.length)]
+    }
+    return chars
+}
 // 生成密码
 export function generatePassword(options: GeneratePasswordOptions = {}) {
     const { upperCaseCount = 4, lowerCaseCount = 4, numberCount = 4, specialChar = '!@#$%^&*()_+{}|:"<>?', specialCharCount = 4 } = options
@@ -31,23 +48,6 @@ export function generatePassword(options: GeneratePasswordOptions = {}) {
      * @param asciiEnd 字符结束 即ASCII码结束
      * @return string 返回随机字符
      */
-    // 定义生成随机字符函数
-    const generateChars = (length: number, asciiStart: number, asciiEnd: number) => {
-        let chars = ""
-        for (let i = 0; i < length; i++) {
-            chars += String.fromCharCode(Math.floor(Math.random() * (asciiEnd - asciiStart)) + asciiStart)
-        }
-        return chars
-    }
-
-    // 定义生成特殊字符函数
-    const generateSpecialChars = (length: number, specialChar: string) => {
-        let chars = ""
-        for (let i = 0; i < length; i++) {
-            chars += specialChar[Math.floor(Math.random() * specialChar.length)]
-        }
-        return chars
-    }
 
     const upperCase = generateChars(upperCaseCount, 65, 90) // 大写字母 A-Z
     const lowerCase = generateChars(lowerCaseCount, 97, 122) // 小写字母 a-z
@@ -58,6 +58,7 @@ export function generatePassword(options: GeneratePasswordOptions = {}) {
 
     password = password
         .split("")
+        // oxlint-disable-next-line unicorn/no-array-sort
         .sort(() => Math.random() - 0.5)
         .join("") // 打乱顺序
 

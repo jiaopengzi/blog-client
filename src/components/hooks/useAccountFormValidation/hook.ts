@@ -24,6 +24,49 @@ import {
 } from "./rules"
 import type { FormValidationOptions } from "./type"
 
+/**
+ * @description: 判断当前值是否已通过前端基础校验, 未通过时跳过远端请求.
+ * @param value 当前字段值.
+ * @param pattern 当前字段对应的前端正则规则.
+ * @return boolean true 表示仅执行前端校验, 不发起远端请求.
+ */
+function shouldSkipRemoteValidation(value: string, pattern: RegExp): boolean {
+    return value === "" || !pattern.test(value)
+}
+
+/**
+ * @description:校验确认密码是否与密码一致
+ * @param password 密码
+ * @param rePassword 确认密码
+ * @return  void
+ */
+async function checkRePassword(password: string, rePassword: string): Promise<void> {
+    try {
+        if (rePassword === "") {
+            throw new Error("请再次输入密码")
+        } else if (rePassword !== password) {
+            throw new Error("两次输入的密码不一致")
+        }
+    } catch (err: unknown) {
+        console.log(err)
+        throw err
+    }
+}
+
+/**
+ * @description: 检查是否同意服务条款
+ */
+async function checkAcceptedTerms(acceptedTerms: boolean): Promise<void> {
+    try {
+        if (acceptedTerms === false) {
+            throw new Error("请勾选同意服务条款")
+        }
+    } catch (err: unknown) {
+        console.log(err)
+        throw err
+    }
+}
+
 export function useAccountFormValidation(options: FormValidationOptions = {}) {
     const {
         FormUserName = "",
@@ -34,35 +77,6 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
         FormAcceptedTerms = false,
         FormExcludingUserID = "",
     } = options
-
-    /**
-     * @description: 判断当前值是否已通过前端基础校验, 未通过时跳过远端请求.
-     * @param value 当前字段值.
-     * @param pattern 当前字段对应的前端正则规则.
-     * @return boolean true 表示仅执行前端校验, 不发起远端请求.
-     */
-    function shouldSkipRemoteValidation(value: string, pattern: RegExp): boolean {
-        return value === "" || !pattern.test(value)
-    }
-
-    /**
-     * @description:校验确认密码是否与密码一致
-     * @param password 密码
-     * @param rePassword 确认密码
-     * @return  void
-     */
-    async function checkRePassword(password: string, rePassword: string): Promise<void> {
-        try {
-            if (rePassword === "") {
-                throw new Error("请再次输入密码")
-            } else if (rePassword !== password) {
-                throw new Error("两次输入的密码不一致")
-            }
-        } catch (err: unknown) {
-            console.log(err)
-            throw err
-        }
-    }
 
     /**
      * @description: 确认密码 Validator
@@ -89,20 +103,6 @@ export function useAccountFormValidation(options: FormValidationOptions = {}) {
             .catch((err: Error) => {
                 callback(err.message)
             })
-    }
-
-    /**
-     * @description: 检查是否同意服务条款
-     */
-    async function checkAcceptedTerms(acceptedTerms: boolean): Promise<void> {
-        try {
-            if (acceptedTerms === false) {
-                throw new Error("请勾选同意服务条款")
-            }
-        } catch (err: unknown) {
-            console.log(err)
-            throw err
-        }
     }
 
     /**

@@ -80,6 +80,7 @@ export function useHeader() {
         // 按照 index 升序排序
         return Object.values(countGroup.value)
             .slice()
+            // oxlint-disable-next-line unicorn/no-array-sort
             .sort((a, b) => a.index - b.index)
     })
 

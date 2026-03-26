@@ -52,8 +52,8 @@ export async function loadScriptFromString(htmlString: string): Promise<boolean>
                     }
 
                     // 监听加载完成或错误
-                    s.onload = () => resolve(true)
-                    s.onerror = () => reject(new Error(`加载脚本失败: ${src}`))
+                    s.addEventListener("load", () => resolve(true), { once: true })
+                    s.addEventListener("error", () => reject(new Error(`加载脚本失败: ${src}`)), { once: true })
 
                     document.body.appendChild(s)
                 })

@@ -70,7 +70,7 @@ export abstract class ChunkSplitter extends EventEmitter<ChunkSplitterEvents> {
         const chunkCount = Math.ceil(this.file.size / this.chunkSize)
 
         // 创建分片不包含hash,能迅速的获取到分片的大小
-        this.chunks = new Array(chunkCount).fill(0).map((_, index) => this.createChunkWithoutHash(index))
+        this.chunks = Array.from({ length: chunkCount }, (_, index) => this.createChunkWithoutHash(index))
         this.uploadedPartIndexList = uploadedPartIndexList
     }
 
@@ -145,7 +145,8 @@ export class MultiThreadSplitter extends ChunkSplitter {
     concurrency = Math.min(Math.max(navigator.hardwareConcurrency - 2, 1), import.meta.env.VITE_MAX_NAVIGATOR_HARDWARE_CONCURRENCY)
 
     // 多线程Worker
-    private workers: Worker[] = new Array(this.concurrency).fill(0).map(
+    private workers: Worker[] = Array.from(
+        { length: this.concurrency },
         () =>
             new Worker(new URL("@/utils/splitWorker", import.meta.url), {
                 type: "module",
@@ -166,17 +167,24 @@ export class MultiThreadSplitter extends ChunkSplitter {
             worker.postMessage({
                 chunks: workerChunks,
                 algorithm: this.hashCalculator.getAlgorithm(), // 将算法名称传递给 Worker
+                // oxlint-disable-next-line unicorn/require-post-message-target-origin
             })
 
             // promise 用于保存 Worker 的处理结果
             const promise = new Promise<void>((resolve, reject) => {
-                worker.onmessage = (e) => {
+                const handleMessage = (e: MessageEvent<Chunk[]>) => {
+                    worker.removeEventListener("error", handleError)
                     emitter.emit(FileUploadEvents.CHUNKS, e.data)
                     resolve()
                 }
-                worker.onerror = (e) => {
+
+                const handleError = (e: ErrorEvent) => {
+                    worker.removeEventListener("message", handleMessage)
                     reject(e)
                 }
+
+                worker.addEventListener("message", handleMessage, { once: true })
+                worker.addEventListener("error", handleError, { once: true })
             })
 
             // 将 promise 添加到 promises 数组中

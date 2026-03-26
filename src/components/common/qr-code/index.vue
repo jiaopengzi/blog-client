@@ -184,13 +184,22 @@ watch(
                 window.clearTimeout(imageLoadTimer)
             }
 
-            imgRef.value.onload = () => {
-                completeQrCode()
-            }
+            const target = imgRef.value
+            target.addEventListener(
+                "load",
+                () => {
+                    completeQrCode()
+                },
+                { once: true },
+            )
 
-            imgRef.value.onerror = () => {
-                completeQrCode()
-            }
+            target.addEventListener(
+                "error",
+                () => {
+                    completeQrCode()
+                },
+                { once: true },
+            )
 
             imageLoadTimer = window.setTimeout(() => {
                 completeQrCode()

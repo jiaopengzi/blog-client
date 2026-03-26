@@ -52,16 +52,19 @@ export function buildDocFromText(text: string): DocLike {
  * @returns RuleModule[] 已加载并筛选后的规则模块数组
  */
 export function loadEagerRules(): RuleDefinition<unknown>[] {
-    return Object.keys(eagerModules)
-        .sort()
-        .map((p) => {
-            const m = eagerModules[p]
-            if (!m || typeof m !== "object") return undefined
-            const candidate = (m as { default?: unknown }).default ?? m
-            if (candidate && typeof (candidate as { run?: unknown }).run === "function") return candidate as RuleDefinition<unknown>
-            return undefined
-        })
-        .filter((x): x is RuleDefinition<unknown> => Boolean(x))
+    return (
+        Object.keys(eagerModules)
+            // oxlint-disable-next-line unicorn/no-array-sort
+            .sort()
+            .map((p) => {
+                const m = eagerModules[p]
+                if (!m || typeof m !== "object") return undefined
+                const candidate = (m as { default?: unknown }).default ?? m
+                if (candidate && typeof (candidate as { run?: unknown }).run === "function") return candidate as RuleDefinition<unknown>
+                return undefined
+            })
+            .filter((x): x is RuleDefinition<unknown> => Boolean(x))
+    )
 }
 
 /**
@@ -70,6 +73,7 @@ export function loadEagerRules(): RuleDefinition<unknown>[] {
  */
 export function getLazyRuleLoaders() {
     const map: Record<string, () => Promise<RuleDefinition<unknown> | undefined>> = {}
+    // oxlint-disable-next-line unicorn/no-array-sort
     for (const p of Object.keys(lazyLoaders).sort()) {
         const loader = lazyLoaders[p]
         map[p] = async () => {

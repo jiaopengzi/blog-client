@@ -16,6 +16,14 @@ import { usePermissionRoleStore } from "@/stores/permissionRole"
 // type PayRolesForm = UpsertPostForm | AccountKeyForm
 type PayRolesForm = UpsertPostForm
 
+// 角色付费标签
+const rolePaidLabel = (): SwitchItemLabel => {
+    return {
+        active: "免费",
+        inactive: "付费",
+    }
+}
+
 /**
  * 付费角色开关项
  * @param form - 包含 pay_roles 属性的表单对象
@@ -25,14 +33,6 @@ type PayRolesForm = UpsertPostForm
 export function usePayRolesSwitchItem<T extends PayRolesForm>(form: T, defaultActive: boolean = false) {
     // 角色付费管理
     const rolePaidList: SwitchItem[] = reactive([])
-
-    // 角色付费标签
-    const rolePaidLabel = (): SwitchItemLabel => {
-        return {
-            active: "免费",
-            inactive: "付费",
-        }
-    }
 
     // 默认开关项
     const defaultSwitchItem = (): SwitchItem => {

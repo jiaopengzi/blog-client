@@ -19,7 +19,7 @@
                     :meta="postMeta"
                     :is-hide-time-icon="deviceStore.device === DeviceType.PHONE"
                     @immersion-read="toggle"
-                    @author-id="clickAuthorId"
+                    @author-user-name="clickAuthorUserName"
                     @post-id="editPost"
                 />
 
@@ -189,7 +189,7 @@ const {
     updatedAt,
     categoryTag,
     commentStatus,
-    clickAuthorId,
+    clickAuthorUserName,
     editPost,
     updatePostDetail,
     updateRouterPush,

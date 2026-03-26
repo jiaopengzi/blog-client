@@ -24,34 +24,22 @@ function generateAdminRoutes() {
             meta: {
                 requiresAuth: true,
             },
-            children: [
-                // // 无权限页面
-                // {
-                //     path: "/admin/no-permission",
-                //     name: RouteNames.NoPermission,
-                //     component: () => import("@/views/admin/component/main/no-permission/index.vue"),
-                //     meta: {
-                //         requiresAuth: true,
-                //     },
-                // },
-                // 其他子路由
-                ...Object.keys(adminMenuItemMapWithIndex).map((key) => {
-                    const menuItem = adminMenuItemMapWithIndex[key as RouteNamesAdmin]
-                    // 判断是否单独设置父级菜单默认是显示子菜单的组件,
-                    let component = toKebabCase(key)
-                    if (menuItem.components) {
-                        component = toKebabCase(menuItem.components)
-                    }
-                    return {
-                        path: menuItem.index,
-                        name: key,
-                        component: () => import(`@/views/admin/component/main/${component}/index.vue`), // 需要具体到文件拓展名
-                        meta: {
-                            requiresAuth: true,
-                        },
-                    }
-                }),
-            ],
+            children: Object.keys(adminMenuItemMapWithIndex).map((key) => {
+                const menuItem = adminMenuItemMapWithIndex[key as RouteNamesAdmin]
+                // 判断是否单独设置父级菜单默认是显示子菜单的组件,
+                let component = toKebabCase(key)
+                if (menuItem.components) {
+                    component = toKebabCase(menuItem.components)
+                }
+                return {
+                    path: menuItem.index,
+                    name: key,
+                    component: () => import(`@/views/admin/component/main/${component}/index.vue`), // 需要具体到文件拓展名
+                    meta: {
+                        requiresAuth: true,
+                    },
+                }
+            }),
         },
     ]
 

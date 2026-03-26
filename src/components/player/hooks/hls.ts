@@ -16,6 +16,17 @@ import { PlayerStateManager } from "../state"
 import { type PlayerState, type PlayLevelLabel } from "../types"
 import { getVideoQualityLabel } from "../utils"
 
+// 展示错误在播放器上
+const managerShowError = (manager: PlayerStateManager, msg: string) => {
+    manager.setShowError(true)
+    manager.setErrMsg(msg)
+}
+
+// 清除播放器上的错误提示
+const managerClearError = (manager: PlayerStateManager) => {
+    manager.setShowError(false)
+    manager.setErrMsg("")
+}
 // hls hook
 export function useHls(videoRef: Ref<HTMLVideoElement | null>, localManager: PlayerStateManager, localPlayerState: Reactive<PlayerState>) {
     // 注意这里使用 shallowRef 来存储 hls 实例，避免响应式开销
@@ -173,18 +184,6 @@ export function useHls(videoRef: Ref<HTMLVideoElement | null>, localManager: Pla
                 isExpectedError = false
         }
         return isExpectedError
-    }
-
-    // 展示错误在播放器上
-    const managerShowError = (manager: PlayerStateManager, msg: string) => {
-        manager.setShowError(true)
-        manager.setErrMsg(msg)
-    }
-
-    // 清除播放器上的错误提示
-    const managerClearError = (manager: PlayerStateManager) => {
-        manager.setShowError(false)
-        manager.setErrMsg("")
     }
 
     return {

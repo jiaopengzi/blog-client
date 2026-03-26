@@ -65,5 +65,6 @@ export function decryptData(encryptedData: string, keyStr: string = keyStrBase, 
  * @return  反转后的字符串
  */
 export function reverseString(str: string): string {
+    // oxlint-disable-next-line unicorn/no-array-reverse
     return str.split("").reverse().join("")
 }

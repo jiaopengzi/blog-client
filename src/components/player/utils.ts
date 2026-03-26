@@ -156,6 +156,7 @@ export const getVideoQualityLabel = (height: number): string => {
     // 降序排列
     const heights = Object.keys(VideoQualityLabels)
         .map(Number)
+        // oxlint-disable-next-line unicorn/no-array-sort
         .sort((a, b) => a - b)
     // 高度小于最小值时，返回最小值，大于最大值时，返回最大值，否则返回小于等于当前高度的最大值
     let closest = heights[0]

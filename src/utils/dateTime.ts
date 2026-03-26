@@ -101,11 +101,15 @@ export function parseTimeSegments(hours: string, minutes: string, seconds: strin
 }
 
 /**
+ * 补零函数
+ */
+const pad = (n: number) => String(n).padStart(2, "0")
+
+/**
  * 格式化 Date 为本地 ISO 字符串
- * 输出格式: YYYY-MM-DDTHH:mm:ss±HH:MM (匹配 el-date-picker value-format="YYYY-MM-DDTHH:mm:ssZ")
+ * 输出格式：YYYY-MM-DDTHH:mm:ss±HH:MM (匹配 el-date-picker value-format="YYYY-MM-DDTHH:mm:ssZ")
  */
 export const formatLocalISO = (date: Date): string => {
-    const pad = (n: number) => String(n).padStart(2, "0")
     const offset = -date.getTimezoneOffset()
     const sign = offset >= 0 ? "+" : "-"
     const oh = pad(Math.floor(Math.abs(offset) / 60))

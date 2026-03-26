@@ -21,7 +21,8 @@ export interface PostMetaProps {
     words_count?: string // 文章字数
     post_title?: string // 文章标题
     author_avatar?: string // 文章作者头像
-    author_display_name?: string // 文章作者名称
+    author_user_name?: string // 文章作者用户名
+    author_display_name?: string // 文章作者显示名称
     avatar_size?: number // 头像大小，默认 24px
     author_id?: string // 文章作者ID
     is_show_read_time?: boolean // 是否显示阅读时间
@@ -54,7 +55,8 @@ export const emptyPostMetaProps = (): PostMetaProps => {
         words_count: "", // 文章字数
         post_title: "", // 文章标题
         author_avatar: "", // 文章作者头像
-        author_display_name: "", // 文章作者名称
+        author_user_name: "", // 文章作者用户名
+        author_display_name: "", // 文章作者显示名称
         avatar_size: 24, // 头像大小，默认 24px
         author_id: "", // 文章作者ID
         is_show_read_time: true, // 是否显示阅读时间

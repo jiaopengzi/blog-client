@@ -24,6 +24,14 @@ import { handleSubmit } from "./formHandler"
 import type { PostInfoAboutTime, UpsertPostForm } from "./types"
 import { handlePostUpsertError } from "./utils"
 
+// 更新 SwitchItem 列表中的状态
+const updateSwitchItem = (list: SwitchItem[], name: string, status: boolean) => {
+    const item = list.find((item) => item.name === name)
+    if (item) {
+        item.status = status
+    }
+}
+
 export function useEdit(
     postInfoForm: Reactive<UpsertPostForm>,
     rolePaidList: SwitchItem[],
@@ -41,14 +49,6 @@ export function useEdit(
     // 从路由中query中获取值
     const getValueFromQuery = async () => {
         postInfoForm.id = route.query[queryKey.ID] as string
-    }
-
-    // 更新 SwitchItem 列表中的状态
-    const updateSwitchItem = (list: SwitchItem[], name: string, status: boolean) => {
-        const item = list.find((item) => item.name === name)
-        if (item) {
-            item.status = status
-        }
     }
 
     // 初始化数据

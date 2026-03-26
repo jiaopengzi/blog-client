@@ -111,8 +111,11 @@ export function usePostDetail(
     }
 
     // 点击作者
-    const clickAuthorId = (_val: string) => {
-        // console.log("============>author", _val)
+    const clickAuthorUserName = (val: string) => {
+        router.push({
+            name: RouteNames.UserPublicProfile,
+            params: { username: val },
+        })
     }
 
     // 编辑文章
@@ -164,7 +167,7 @@ export function usePostDetail(
         updatedAt, // 更新时间
         categoryTag, // 分类和标签
         commentStatus, // 评论状态
-        clickAuthorId, // 点击作者
+        clickAuthorUserName, // 点击作者
         editPost, // 编辑文章
         setPostLike, // 设置文章点赞
         setPostStar, // 设置文章收藏

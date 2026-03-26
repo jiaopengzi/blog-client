@@ -46,6 +46,45 @@ interface FormValidationOptions {
 
 const titleLength = 255
 
+// 检查分类是否可用
+function checkCategoriesValidator(rule: unknown, value: number[], callback: (error?: string | Error | undefined) => void): void {
+    if (value.length === 0) {
+        callback(new Error("请选择分类"))
+        return
+    }
+    callback()
+}
+
+// 检查 price 是否可用
+function checkPriceValidator(rule: unknown, value: number, callback: (error?: string | Error | undefined) => void): void {
+    // 若为空，则直接返回
+    if (!value) {
+        callback()
+        return
+    }
+
+    // 若不为空，必须为数字
+    if (isNaN(value)) {
+        callback(new Error("价格必须为数字"))
+        return
+    }
+
+    // 价格不能小于 0
+    if (value < 0) {
+        callback(new Error("价格不能小于 0"))
+        return
+    }
+
+    // 小数位数不能超过 2 位
+    const decimal = value.toString().split(".")[1]
+    if (decimal && decimal.length > 2) {
+        callback(new Error("价格小数位数不能超过 2 位"))
+        return
+    }
+
+    callback()
+}
+
 // 表单验证
 export function useFormValidation(options: FormValidationOptions): {
     rules: FormRules<UpsertPostForm>
@@ -219,36 +258,6 @@ export function useFormValidation(options: FormValidationOptions): {
         callback()
     }
 
-    // 检查 price 是否可用
-    function checkPriceValidator(rule: unknown, value: number, callback: (error?: string | Error | undefined) => void): void {
-        // 若为空，则直接返回
-        if (!value) {
-            callback()
-            return
-        }
-
-        // 若不为空，必须为数字
-        if (isNaN(value)) {
-            callback(new Error("价格必须为数字"))
-            return
-        }
-
-        // 价格不能小于 0
-        if (value < 0) {
-            callback(new Error("价格不能小于 0"))
-            return
-        }
-
-        // 小数位数不能超过 2 位
-        const decimal = value.toString().split(".")[1]
-        if (decimal && decimal.length > 2) {
-            callback(new Error("价格小数位数不能超过 2 位"))
-            return
-        }
-
-        callback()
-    }
-
     // 检查别名是否可用
     function checkPostSlugValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 如果 id 不为空，则直接返回
@@ -344,15 +353,6 @@ export function useFormValidation(options: FormValidationOptions): {
                 callback(new Error(errMsg))
             }
         })
-    }
-
-    // 检查分类是否可用
-    function checkCategoriesValidator(rule: unknown, value: number[], callback: (error?: string | Error | undefined) => void): void {
-        if (value.length === 0) {
-            callback(new Error("请选择分类"))
-            return
-        }
-        callback()
     }
 
     // 检查发布时间是否可用

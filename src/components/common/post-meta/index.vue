@@ -15,7 +15,7 @@
     <div class="meta-container">
         <div class="meta">
             <!-- 作者头像 -->
-            <el-button class="meta-avatar meta-item" v-if="metaData.author_display_name" plain @click="authorId(metaData.author_id)">
+            <el-button class="meta-avatar meta-item" v-if="metaData.author_display_name" plain @click="authorUserName(metaData.author_user_name)">
                 <AvatarInitials :avatar="metaData.author_avatar" :name="metaData.author_display_name" :size="metaData.avatar_size" />
             </el-button>
 
@@ -103,7 +103,7 @@ const {
 // 事件
 const emit = defineEmits<{
     (event: "post-id", val: string): void
-    (event: "author-id", val: string): void
+    (event: "author-user-name", val: string): void
     (event: "immersion-read"): void
 }>()
 
@@ -143,8 +143,8 @@ const postId = (val: string) => {
 }
 
 // 点击作者
-const authorId = (val: string) => {
-    emit("author-id", val)
+const authorUserName = (val: string | undefined) => {
+    emit("author-user-name", val || "")
 }
 
 // 沉浸阅读

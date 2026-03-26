@@ -36,25 +36,25 @@ interface FormValidationOptions {
     }
 }
 
+// 共用校验函数：检查优惠券代码是否包含空格或为空
+function checkCommon(value: string, callback: (error?: string | Error | undefined) => void): boolean {
+    if (value.includes(" ")) {
+        callback(new Error("优惠券不能包含空格"))
+        return false
+    }
+    if (!value || value.trim() === "") {
+        callback("请输入优惠券")
+        return false
+    }
+    return true
+}
+
 // 表单验证
 export function useFormValidation(options: FormValidationOptions): {
     addRules: FormRules<ViewForm>
     editRules: FormRules<ViewForm>
 } {
     const { form } = options
-
-    // 共用校验函数：检查优惠券代码是否包含空格或为空
-    function checkCommon(value: string, callback: (error?: string | Error | undefined) => void): boolean {
-        if (value.includes(" ")) {
-            callback(new Error("优惠券不能包含空格"))
-            return false
-        }
-        if (!value || value.trim() === "") {
-            callback("请输入优惠券")
-            return false
-        }
-        return true
-    }
 
     // 检查优惠券代码是否可用
     function checkCodeValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {

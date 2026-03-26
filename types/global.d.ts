@@ -78,5 +78,3 @@ declare global {
         [K in keyof T]: T extends Record<K, T[K]> ? K : never
     }[keyof T]
 }
-// 需要加一个 export {} 表示这是一个模块，防止出现语法冲突
-export {}

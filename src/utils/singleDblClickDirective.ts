@@ -25,6 +25,9 @@ export interface SingleDblClickBinding {
     delay?: number
 }
 
+const clickHandlerMap = new WeakMap<HTMLElement, (event: MouseEvent) => void>()
+const clickTimerMap = new WeakMap<HTMLElement, ReturnType<typeof setTimeout> | null>()
+
 /**
  * 使用方式：
  * v-single-dbl-click="{ single: handleSingle, double: handleDouble, delay: 300 }"
@@ -34,27 +37,44 @@ export interface SingleDblClickBinding {
 export const singleDblClickDirective: Directive = {
     mounted(el: HTMLElement, binding: DirectiveBinding<SingleDblClickBinding>): void {
         const { single, double, delay = 300 } = binding.value || {}
-        let timer: ReturnType<typeof setTimeout> | null = null
 
-        // 监听原生 click 事件
-        el.addEventListener("click", (event: MouseEvent): void => {
+        const clickHandler = (event: MouseEvent): void => {
             // 如果已存在定时器, 说明再次点击了, 视为双击
+            const timer = clickTimerMap.get(el) ?? null
             if (timer) {
                 clearTimeout(timer)
-                timer = null
+                clickTimerMap.set(el, null)
                 double?.(event)
-            } else {
-                // 否则开启定时器，等待 delay 毫秒后认定为单击
-                timer = setTimeout((): void => {
-                    single?.(event)
-                    timer = null
-                }, delay)
+                return
             }
-        })
+
+            // 否则开启定时器，等待 delay 毫秒后认定为单击
+            const nextTimer = setTimeout((): void => {
+                single?.(event)
+                clickTimerMap.set(el, null)
+            }, delay)
+            clickTimerMap.set(el, nextTimer)
+        }
+
+        clickHandlerMap.set(el, clickHandler)
+        clickTimerMap.set(el, null)
+
+        // 监听原生 click 事件
+        el.addEventListener("click", clickHandler)
     },
 
     // 在 unmounted 时需要取消监听
-    unmounted(el: HTMLElement) {
-        el.removeEventListener("click", () => {})
+    unmounted(el: HTMLElement): void {
+        const clickHandler = clickHandlerMap.get(el)
+        if (clickHandler) {
+            el.removeEventListener("click", clickHandler)
+            clickHandlerMap.delete(el)
+        }
+
+        const timer = clickTimerMap.get(el)
+        if (timer) {
+            clearTimeout(timer)
+        }
+        clickTimerMap.delete(el)
     },
 }

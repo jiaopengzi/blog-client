@@ -1032,6 +1032,7 @@ function getRelevantComputedStyleProperties(element: HTMLElement | SVGElement, m
  */
 function getInlineStyleRuleCacheKey(element: HTMLElement | SVGElement): string {
     // 复制链路里的缓存以标签名、id 和稳定排序后的 class 组合作为签名, 兼顾命中率与实现复杂度.
+    // oxlint-disable-next-line unicorn/no-array-sort
     const classNames = "classList" in element && element.classList instanceof DOMTokenList ? Array.from(element.classList).sort().join(".") : ""
     const tagName = "tagName" in element ? element.tagName.toLowerCase() : ""
     const id = "id" in element ? element.id : ""

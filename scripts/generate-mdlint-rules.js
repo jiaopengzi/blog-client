@@ -127,6 +127,7 @@ function main() {
     const files = fs
         .readdirSync(ruleDir)
         .filter((f) => f.endsWith(".ts"))
+        // oxlint-disable-next-line unicorn/no-array-sort
         .sort()
     const entries = files
         .map((f) => {

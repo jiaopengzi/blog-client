@@ -65,8 +65,21 @@ export function waitForImagesLoaded(container: HTMLElement) {
         // 未加载完的加入加载监听
         promises.push(
             new Promise((resolve, reject) => {
-                img.onload = () => resolve()
-                img.onerror = () => reject()
+                const handleLoad = () => {
+                    cleanup()
+                    resolve()
+                }
+                const handleError = () => {
+                    cleanup()
+                    reject(new Error("Image failed to load"))
+                }
+                const cleanup = () => {
+                    img.removeEventListener("load", handleLoad)
+                    img.removeEventListener("error", handleError)
+                }
+
+                img.addEventListener("load", handleLoad, { once: true })
+                img.addEventListener("error", handleError, { once: true })
             }),
         )
     })

@@ -550,6 +550,7 @@ const formatNavList = async (navStr: string | undefined | null): Promise<NavItem
     const navList = JSON.parse(navStr)
 
     // 将 navList 按照 index 升序排序
+    // oxlint-disable-next-line unicorn/no-array-sort
     const navListOrder = navList.sort((a: NavItemProps, b: NavItemProps) => {
         // 将 index 转换为字符数字
         const indexA = parseInt(a.index) || 0

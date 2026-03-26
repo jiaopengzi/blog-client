@@ -18,6 +18,7 @@ export const getSortedLimitPeriodKeys = (() => {
         if (!cache) {
             const limitPeriodEntries = Object.entries(LimitPeriod)
                 .filter(([, value]) => typeof value === "number")
+                // oxlint-disable-next-line unicorn/no-array-sort
                 .sort(([, a], [, b]) => (a as number) - (b as number))
 
             cache = limitPeriodEntries.map(([key]) => key)

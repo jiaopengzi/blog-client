@@ -16,7 +16,7 @@ export function uploadFileBySignedUrlAPI(
     return new Promise((resolve, reject) => {
         const reader = new FileReader()
         reader.readAsArrayBuffer(file)
-        reader.onload = function (event) {
+        reader.addEventListener("load", function (event) {
             const arrayBuffer = event.target?.result as ArrayBuffer | null
 
             if (arrayBuffer) {
@@ -37,6 +37,6 @@ export function uploadFileBySignedUrlAPI(
                         reject(error)
                     })
             }
-        }
+        })
     })
 }

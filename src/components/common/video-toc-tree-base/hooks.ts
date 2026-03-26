@@ -13,6 +13,23 @@ import { MediaTypes } from "@/components/player"
 
 import type { Node, Tree, VideoTocMapByFileIdHash, VideoTocMapByOrder } from "./types"
 
+// 递归计算最大 id
+const calcMaxId = (list: Tree[]): number => {
+    let maxId = 0
+    list.forEach((item) => {
+        if (item.id > maxId) {
+            maxId = item.id
+        }
+        if (item.children && item.children.length > 0) {
+            const childMaxId = calcMaxId(item.children)
+            if (childMaxId > maxId) {
+                maxId = childMaxId
+            }
+        }
+    })
+    return maxId
+}
+
 export function useVideoTocTree(localTreeList: Ref<Tree[]>) {
     const customNodeClass = "custom-tree-node" // 自定义节点类名
     const mediaDialogVisible = ref(false) // 视频文件选择弹窗
@@ -122,23 +139,6 @@ export function useVideoTocTree(localTreeList: Ref<Tree[]>) {
         return calcVideoTotal(localTreeList.value)
     })
 
-    // 递归计算最大 id
-    const calcMaxId = (list: Tree[]): number => {
-        let maxId = 0
-        list.forEach((item) => {
-            if (item.id > maxId) {
-                maxId = item.id
-            }
-            if (item.children && item.children.length > 0) {
-                const childMaxId = calcMaxId(item.children)
-                if (childMaxId > maxId) {
-                    maxId = childMaxId
-                }
-            }
-        })
-        return maxId
-    }
-
     // 将 localTreeList 转成 map (键为 videoOrder), 同时返回所有视频的 videoOrder 列表(已去重且升序)
     const covertToMap = (
         list: Tree[],
@@ -171,6 +171,7 @@ export function useVideoTocTree(localTreeList: Ref<Tree[]>) {
         traverse(list)
 
         // 去重并排序，方便后续按顺序处理
+        // oxlint-disable-next-line unicorn/no-array-sort
         const uniqueOrders = Array.from(new Set(videoOrders)).sort((a, b) => a - b)
 
         // 去重 fileIdHash 列表

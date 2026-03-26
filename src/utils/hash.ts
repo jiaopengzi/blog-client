@@ -51,8 +51,20 @@ export class HashCalculator {
     protected readFileAsArrayBuffer = (data: Blob | File): Promise<ArrayBuffer> => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader() // 创建文件读取器
-            reader.onload = () => resolve(reader.result as ArrayBuffer) // 读取成功，返回结果
-            reader.onerror = reject // 读取失败，抛出错误
+            reader.addEventListener(
+                "load",
+                () => {
+                    resolve(reader.result as ArrayBuffer) // 读取成功，返回结果
+                },
+                { once: true },
+            )
+            reader.addEventListener(
+                "error",
+                () => {
+                    reject(reader.error ?? new Error("Failed to read file as ArrayBuffer")) // 读取失败，抛出错误
+                },
+                { once: true },
+            )
             reader.readAsArrayBuffer(data) // 读取data为ArrayBuffer
         })
     }

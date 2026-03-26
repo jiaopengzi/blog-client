@@ -37,7 +37,7 @@ function tryWriteImgWithExecCommand(blob: Blob): Promise<void> {
         const img = new Image()
         const url = URL.createObjectURL(blob)
 
-        img.onload = () => {
+        img.addEventListener("load", () => {
             // 直接使用 img 元素进行复制
             img.style.position = "fixed"
             img.style.left = "-9999px"
@@ -73,12 +73,12 @@ function tryWriteImgWithExecCommand(blob: Blob): Promise<void> {
             } else {
                 reject(new Error("execCommand copy image was unsuccessful"))
             }
-        }
+        })
 
-        img.onerror = () => {
+        img.addEventListener("error", () => {
             URL.revokeObjectURL(url)
             reject(new Error("Failed to load image from blob"))
-        }
+        })
 
         img.src = url
     })

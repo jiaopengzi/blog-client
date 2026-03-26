@@ -37,6 +37,7 @@ self.addEventListener("message", async (ev) => {
         if (typeof rulePath === "string") {
             delete moduleCache[rulePath]
             type LocalSelf = { postMessage: (data: unknown) => void }
+            // oxlint-disable-next-line unicorn/require-post-message-target-origin
             ;(self as unknown as LocalSelf).postMessage({ action: "clearCache", rulePath, ok: true })
             return
         }
@@ -44,6 +45,7 @@ self.addEventListener("message", async (ev) => {
         // 清空所有缓存
         for (const k of Object.keys(moduleCache)) delete moduleCache[k]
         type LocalSelf = { postMessage: (data: unknown) => void }
+        // oxlint-disable-next-line unicorn/require-post-message-target-origin
         ;(self as unknown as LocalSelf).postMessage({ action: "clearCache", ok: true })
         return
     }
@@ -80,8 +82,11 @@ self.addEventListener("message", async (ev) => {
         if (!enabled) continue
 
         // 合并默认配置与用户传入配置
-        let ruleOpts = { ...(r.defaultOptions || {}) }
-        if (typeof cfg === "object") ruleOpts = { ...ruleOpts, ...cfg }
+        const defaultOptions = typeof r.defaultOptions === "object" && r.defaultOptions !== null ? (r.defaultOptions as Record<string, unknown>) : {}
+        let ruleOpts: Record<string, unknown> = { ...defaultOptions }
+        if (typeof cfg === "object" && cfg !== null) {
+            ruleOpts = { ...ruleOpts, ...(cfg as Record<string, unknown>) }
+        }
         if (options?.maxLineLength !== null && options?.maxLineLength !== undefined && r.id === "rule002") {
             ruleOpts = { ...ruleOpts, maxLineLength: options.maxLineLength }
         }
@@ -98,5 +103,6 @@ self.addEventListener("message", async (ev) => {
 
     // 返回收集到的 diagnostics
     type LocalSelf = { postMessage: (data: unknown) => void }
+    // oxlint-disable-next-line unicorn/require-post-message-target-origin
     ;(self as unknown as LocalSelf).postMessage({ id, diagnostics })
 })

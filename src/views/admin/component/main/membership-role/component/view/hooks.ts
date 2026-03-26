@@ -16,6 +16,19 @@ import { handleResErr, ResponseCode } from "@/api/response"
 
 import type { ViewForm } from "./types"
 
+// 共用校验函数：检查角色格式
+function checkCommon(value: string, callback: (error?: string | Error | undefined) => void): boolean {
+    if (value.includes(" ")) {
+        callback(new Error("会员角色不能包含空格"))
+        return false
+    }
+    if (!value || value.trim() === "") {
+        callback("请输入会员角色")
+        return false
+    }
+    return true
+}
+
 // 表单验证选项
 interface FormValidationOptions {
     form: {
@@ -37,19 +50,6 @@ export function useFormValidation(options: FormValidationOptions): {
     editRules: FormRules<ViewForm>
 } {
     const { form } = options
-
-    // 共用校验函数：检查角色格式
-    function checkCommon(value: string, callback: (error?: string | Error | undefined) => void): boolean {
-        if (value.includes(" ")) {
-            callback(new Error("会员角色不能包含空格"))
-            return false
-        }
-        if (!value || value.trim() === "") {
-            callback("请输入会员角色")
-            return false
-        }
-        return true
-    }
 
     // 检查角色是否可用
     function checkRoleValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {

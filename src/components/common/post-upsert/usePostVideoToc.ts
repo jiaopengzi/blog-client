@@ -11,22 +11,22 @@ import type { PostVideoTocTree } from "@/api/post/common"
 
 import type { UpsertPostForm } from "./types"
 
+// 默认目录
+const defaultToc = (): PostVideoTocTree[] => {
+    return [
+        {
+            id: 1,
+            label: "目录",
+            is_chapter: true,
+        },
+    ]
+}
+
 /**
  * 使用开关项
  * @param postInfoForm 文章表单
  */
 export function usePostVideoToc(postInfoForm: Reactive<UpsertPostForm>) {
-    // 默认目录
-    const defaultToc = (): PostVideoTocTree[] => {
-        return [
-            {
-                id: 1,
-                label: "目录",
-                is_chapter: true,
-            },
-        ]
-    }
-
     // 是否显示添加目录按钮
     const isShowAddTocBtn = computed(() => postInfoForm.video_toc.length === 0 && postInfoForm.video_file_id_hash_list.length === 0)
 

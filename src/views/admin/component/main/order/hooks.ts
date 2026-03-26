@@ -11,6 +11,15 @@ import { type CouponItemRes, type OrderItemRes, type PaymentRes, OrderStatusDisp
 import { PayType, PayTypeDisplay } from "@/api/pay/common"
 import type { TableData } from "@/components/common/base-table"
 
+// 格式化总金额（后端以分为单位）
+// 原注释等价移植：将 `total_amount` 转换为元并保留两位小数
+// 返回示例："123.45 元"；若无该字段则返回 undefined（与原行为一致）
+const formatTotalAmount = (row: TableData) => {
+    if ("total_amount" in row) {
+        return `${(row.total_amount / 100).toFixed(2)} 元`
+    }
+}
+
 // 获取评论统计数据
 export function useOrder() {
     // 格式化订单子表
@@ -58,15 +67,6 @@ export function useOrder() {
         }
         // 如果没有支付方式，则返回 "-"
         return "-"
-    }
-
-    // 格式化总金额（后端以分为单位）
-    // 原注释等价移植：将 `total_amount` 转换为元并保留两位小数
-    // 返回示例："123.45 元"；若无该字段则返回 undefined（与原行为一致）
-    const formatTotalAmount = (row: TableData) => {
-        if ("total_amount" in row) {
-            return `${(row.total_amount / 100).toFixed(2)} 元`
-        }
     }
 
     // 格式化订单状态
