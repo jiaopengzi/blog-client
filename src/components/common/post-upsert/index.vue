@@ -89,28 +89,32 @@
                     </div>
                 </el-form-item>
 
-                <el-form-item label="手动设置缩略图。" prop="thumbnail">
+                <el-form-item label="设置文章缩略图。" prop="thumbnail">
                     <ImageInput v-model="postInfoForm.thumbnail" clearable />
                 </el-form-item>
 
-                <el-form-item label="视频合集" prop="video_toc">
+                <div class="seo-switch">
+                    <SwitchGroup :switch-items="moreSetting" @update-status="updateDefaultStatus" />
+                </div>
+
+                <el-form-item v-show="moreSettingIsShow" label="别名，留空则使用默认ID值。" prop="slug">
+                    <el-input v-model="postInfoForm.slug" />
+                </el-form-item>
+
+                <el-form-item label="视频合集" prop="video_toc" v-show="moreSettingIsShow">
                     <div class="video-toc-tree">
                         <el-button v-if="isShowAddTocBtn" type="primary" @click="addDefaultToc">添加合集</el-button>
                         <VideoTocTreeEdit :tree-list="postInfoForm.video_toc" @tree-update="handleUpdate" />
                     </div>
                 </el-form-item>
 
-                <div class="seo-switch">
-                    <SwitchGroup :switch-items="defaultStatus" @update-status="updateDefaultStatus" />
-                </div>
-
-                <el-form-item v-show="defaultStatusIsShow" label="SEO 自定义文章标题，留空则为文章标题。" prop="seo_title">
+                <el-form-item v-show="moreSettingIsShow" label="SEO 自定义文章标题，留空则为文章标题。" prop="seo_title">
                     <el-input v-model="postInfoForm.seo_title" />
                 </el-form-item>
 
                 <el-form-item
                     ref="seoDescriptionRef"
-                    v-show="defaultStatusIsShow"
+                    v-show="moreSettingIsShow"
                     :label="`SEO文章描述，留空则自动截取内容前 ${post_list_summary_truncate} 字。`"
                     prop="seo_description"
                 >
@@ -124,18 +128,18 @@
                 </el-form-item>
 
                 <el-form-item
-                    v-show="defaultStatusIsShow"
+                    v-show="moreSettingIsShow"
                     label="SEO文章关键词，多个关键词用英文半角逗号隔开，留空则自动将文章标签做为关键词。"
                     prop="seo_keywords"
                 >
                     <el-input v-model="postInfoForm.seo_keywords" />
                 </el-form-item>
 
-                <el-form-item v-show="defaultStatusIsShow" label="别名，留空则使用默认ID值。" prop="slug">
-                    <el-input v-model="postInfoForm.slug" />
+                <el-form-item label="付费管理" prop="pay_roles" v-show="moreSettingIsShow">
+                    <SwitchGroup :switch-items="rolePaidList" @update-status="updateRolePaidList" />
                 </el-form-item>
 
-                <el-form-item label="销售价格，留空或者为 0 则为免费。" prop="price">
+                <el-form-item label="销售价格，留空或者为 0 则为免费。" prop="price" v-show="moreSettingIsShow">
                     <el-input-number class="input-number" v-model="postInfoForm.price" :min="0" :precision="2" :step="0.01" placeholder="请输入价格(元)">
                         <template #suffix>
                             <span>元</span>
@@ -143,17 +147,13 @@
                     </el-input-number>
                 </el-form-item>
 
-                <el-form-item label="支付策略" prop="pay_strategy">
+                <el-form-item label="支付策略" prop="pay_strategy" v-show="moreSettingIsShow">
                     <el-radio-group v-model="postInfoForm.pay_strategy">
                         <el-radio v-for="item in payStrategyOptions" :key="item.value" :value="item.value">{{ item.label }}</el-radio>
                     </el-radio-group>
                 </el-form-item>
 
-                <el-form-item label="付费管理" prop="pay_roles">
-                    <SwitchGroup :switch-items="rolePaidList" @update-status="updateRolePaidList" />
-                </el-form-item>
-
-                <el-form-item label="评论管理" prop="comment_status">
+                <el-form-item label="评论管理" prop="comment_status" v-show="moreSettingIsShow">
                     <SwitchGroup :switch-items="commentStatus" @update-status="updateCommentStatus" />
                 </el-form-item>
 
@@ -339,9 +339,9 @@ const updateTagListIn = (tagList: string[]) => {
 
 // 开关hooks
 const {
-    defaultStatusIsShow,
+    moreSettingIsShow,
     updateDefaultStatus,
-    defaultStatus,
+    moreSetting,
     unfoldDefaultStatus,
     rolePaidList,
     initRolePaidManagement,

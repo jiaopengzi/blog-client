@@ -27,11 +27,11 @@ export function useSwitchItem(postInfoForm: Reactive<UpsertPostForm>) {
     }
 
     // 常规设置是否展示
-    const defaultStatusIsShow = ref(localStorage.getItem(LocalStorageKey.IsShowSeoAtPostWrite) === "true")
-    const defaultStatus: SwitchItem[] = reactive([
+    const moreSettingIsShow = ref(localStorage.getItem(LocalStorageKey.IsShowSeoAtPostWrite) === "true")
+    const moreSetting: SwitchItem[] = reactive([
         {
-            name: "defaultStatus",
-            display: "常规设置",
+            name: "moreSetting",
+            display: "更多设置",
             namePosition: "left",
             status: localStorage.getItem(LocalStorageKey.IsShowSeoAtPostWrite) === "true",
             label: {
@@ -43,21 +43,21 @@ export function useSwitchItem(postInfoForm: Reactive<UpsertPostForm>) {
 
     // 更新常规设置是否展示
     const updateDefaultStatus = (items: SwitchItem[]) => {
-        defaultStatusIsShow.value = items[0]!.status
+        moreSettingIsShow.value = items[0]!.status
         localStorage.setItem(LocalStorageKey.IsShowSeoAtPostWrite, items[0]!.status.toString())
     }
 
     // 展开常规设置
     const unfoldDefaultStatus = () => {
-        defaultStatus[0]!.status = true
-        defaultStatusIsShow.value = true
+        moreSetting[0]!.status = true
+        moreSettingIsShow.value = true
         localStorage.setItem(LocalStorageKey.IsShowSeoAtPostWrite, "true")
     }
 
     // 折叠常规设置
     const foldDefaultStatus = () => {
-        defaultStatus[0]!.status = false
-        defaultStatusIsShow.value = false
+        moreSetting[0]!.status = false
+        moreSettingIsShow.value = false
         localStorage.setItem(LocalStorageKey.IsShowSeoAtPostWrite, "false")
     }
 
@@ -110,9 +110,9 @@ export function useSwitchItem(postInfoForm: Reactive<UpsertPostForm>) {
     )
 
     return {
-        defaultStatusIsShow,
+        moreSettingIsShow,
         updateDefaultStatus,
-        defaultStatus,
+        moreSetting,
         unfoldDefaultStatus,
         foldDefaultStatus,
         commentStatus,

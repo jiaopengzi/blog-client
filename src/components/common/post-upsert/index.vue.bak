@@ -53,16 +53,16 @@
                 </div>
 
                 <div class="seo-switch">
-                    <SwitchGroup :switch-items="defaultStatus" @update-status="updateDefaultStatus" />
+                    <SwitchGroup :switch-items="moreSetting" @update-status="updateDefaultStatus" />
                 </div>
 
-                <el-form-item v-show="defaultStatusIsShow" label="SEO自定义文章标题，留空则为文章标题。" prop="seo_title">
+                <el-form-item v-show="moreSettingIsShow" label="SEO自定义文章标题，留空则为文章标题。" prop="seo_title">
                     <el-input v-model="postInfoForm.seo_title" />
                 </el-form-item>
 
                 <el-form-item
                     ref="seoDescriptionRef"
-                    v-show="defaultStatusIsShow"
+                    v-show="moreSettingIsShow"
                     label="SEO文章描述，留空则自动截取首段一定字数作为文章描。"
                     prop="seo_description"
                 >
@@ -70,14 +70,14 @@
                 </el-form-item>
 
                 <el-form-item
-                    v-show="defaultStatusIsShow"
+                    v-show="moreSettingIsShow"
                     label="SEO文章关键词，多个关键词用英文半角逗号隔开，留空则自动将文章标签做为关键词。"
                     prop="seo_keywords"
                 >
                     <el-input v-model="postInfoForm.seo_keywords" />
                 </el-form-item>
 
-                <el-form-item v-show="defaultStatusIsShow" label="别名，留空则使用默认ID值。" prop="slug">
+                <el-form-item v-show="moreSettingIsShow" label="别名，留空则使用默认ID值。" prop="slug">
                     <el-input v-model="postInfoForm.slug" />
                 </el-form-item>
 
@@ -275,9 +275,9 @@ const updateTagListIn = (tagList: string[]) => {
 
 // 开关hooks
 const {
-    defaultStatusIsShow,
+    moreSettingIsShow,
     updateDefaultStatus,
-    defaultStatus,
+    moreSetting,
     rolePaidList,
     initRolePaidManagement,
     updateRolePaidList,
