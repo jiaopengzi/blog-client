@@ -236,7 +236,7 @@ const formItems: Array<FormItems> = [
 
     // 二维码相关
     { label: "二维码", isCategoryTitle: true },
-    { label: "微信公用号", prop: "wechat_official_account_qrcode", isImageInput: true },
+    { label: "微信公众号", prop: "wechat_official_account_qrcode", isImageInput: true },
     { label: "微信", prop: "wechat_qrcode", isImageInput: true },
     { label: "QQ", prop: "qq_qrcode", isImageInput: true },
 
