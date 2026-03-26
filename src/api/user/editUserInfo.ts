@@ -8,10 +8,12 @@
 
 import { request, routerGroup } from "@/api/request"
 import type { Res, ResPromise } from "@/api/response"
+import type { SubscribeStatus } from "@/api/user/getUserInfo"
 
 export interface EditUserInfoRequest {
     user_name: string
     nick_name: string
+    subscribe_status: SubscribeStatus
     sex: string
     description: string
 }

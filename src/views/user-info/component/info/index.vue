@@ -66,20 +66,25 @@
                 :size="formSize"
                 status-icon
             >
-                <el-form-item label="用户名" prop="userName">
-                    <el-input v-model="editForm.userName" :disabled="userNameDisabled" />
-                </el-form-item>
-
                 <el-form-item label="邮箱" prop="email">
                     <el-input v-model="email" disabled />
+                </el-form-item>
+
+                <el-form-item label="用户名" prop="userName">
+                    <el-input v-model="editForm.userName" :disabled="userNameDisabled" />
                 </el-form-item>
 
                 <el-form-item label="昵称" prop="nickName">
                     <el-input v-model="editForm.nickName" />
                 </el-form-item>
 
+                <el-form-item label="接收通知" prop="subscribeStatus">
+                    <el-checkbox v-model="editForm.subscribeStatus" :true-value="SubscribeStatus.On" :false-value="SubscribeStatus.Off" />
+                </el-form-item>
+
                 <el-form-item label="性别" prop="sex">
                     <el-radio-group v-model="editForm.sex">
+                        <el-radio value="未知">未知</el-radio>
                         <el-radio value="男">男</el-radio>
                         <el-radio value="女">女</el-radio>
                     </el-radio-group>
@@ -97,6 +102,7 @@
 </template>
 <script setup lang="ts">
 import { SocialLoginDisplay, SocialLoginType } from "@/api/common"
+import { SubscribeStatus } from "@/api/user/getUserInfo"
 import AvatarInitials from "@/components/common/avatar-initials"
 import AvatarUpload from "@/components/common/avatar-upload"
 import { useDevice } from "@/components/hooks/useDevice"

@@ -9,10 +9,13 @@
  * @Copyright    : Copyright (c) 2024 by jiaopengzi, All Rights Reserved.
  */
 
+import { SubscribeStatus } from "@/api/user/getUserInfo"
+
 // info 表单数据
 export interface EditForm {
     userName: string
     nickName: string
+    subscribeStatus: SubscribeStatus
     sex: string
     description: string
 }

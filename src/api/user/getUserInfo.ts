@@ -19,6 +19,28 @@ export function getUserInfoAPI(): ResPromise<Res<UserInfo>> {
     })
 }
 
+// 订阅状态
+export enum SubscribeStatus {
+    On = 1, // 全部状态
+    Off = 2, // 待支付
+}
+
+// 订阅状态显示
+export const SubscribeStatusDisplay: Record<SubscribeStatus, string> = {
+    [SubscribeStatus.On]: "✅开启",
+    [SubscribeStatus.Off]: "❌关闭",
+}
+
+// 获取订阅状态选项
+export const getSubscribeStatusOptions = () => {
+    return Object.values(SubscribeStatus)
+        .filter((value) => typeof value === "number")
+        .map((value) => ({
+            label: SubscribeStatusDisplay[value as SubscribeStatus],
+            value: value as SubscribeStatus,
+        }))
+}
+
 // 用户信息
 export interface User {
     id: string
@@ -31,6 +53,7 @@ export interface User {
     disable_expires_at: string
     post: number
     role: string
+    subscribe_status: SubscribeStatus
 }
 
 // 用户元信息
@@ -121,6 +144,7 @@ export function emptyUserInfo(): UserInfo {
             disable_expires_at: "",
             post: 0,
             role: "",
+            subscribe_status: SubscribeStatus.On,
         },
         user_meta: [
             {

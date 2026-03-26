@@ -75,7 +75,8 @@ export function useInfo(): UseInfoReturnType {
     const editForm = reactive<EditForm>({
         userName: userData.value.user.user_name,
         nickName: userData.value.user.user_display_name,
-        sex: getUserMetaValue("sex", userData.value) || "男",
+        subscribeStatus: userData.value.user.subscribe_status,
+        sex: getUserMetaValue("sex", userData.value) || "未知",
         description: getUserMetaValue("description", userData.value) || "",
     })
 
@@ -139,6 +140,7 @@ export function useInfo(): UseInfoReturnType {
                 const req: EditUserInfoRequest = {
                     user_name: editForm.userName,
                     nick_name: editForm.nickName,
+                    subscribe_status: editForm.subscribeStatus,
                     sex: editForm.sex,
                     description: editForm.description,
                 }
