@@ -8,17 +8,17 @@
 
 <template>
     <div class="carousel-container" v-if="enable && items && items.length > 0">
-        <el-carousel :height="height" :interval="interval" :loop="items.length > 1">
+        <el-carousel :height="height" :interval="interval" :loop="items.length > 1" :motion-blur="true">
             <el-carousel-item v-for="item in items" :key="item.imageUrl">
-                <a :href="item.linkUrl || '/'" target="_blank" rel="noopener noreferrer">
+                <div class="carousel-link-wrapper" role="link" tabindex="0" @click="onClick(item.linkUrl)" @keydown.enter.prevent="onClick(item.linkUrl)">
                     <el-image
                         :src="item.imageUrl"
                         :alt="item.altText || 'Carousel Image'"
                         fit="contain"
                         :style="{ height: height, width: '100%' }"
-                        @error="console.log('Image load error:', item.imageUrl)"
+                        @error="console.error('Carousel Image load error:', item.imageUrl)"
                     />
-                </a>
+                </div>
             </el-carousel-item>
         </el-carousel>
     </div>
@@ -40,6 +40,12 @@ const enable = computed(() => carousel.value.enable)
 const interval = computed(() => carousel.value.interval)
 const items = computed(() => carousel.value.items)
 const height = "300px"
+
+const onClick = (url?: string) => {
+    const href = url || "/"
+    const w = window.open(href, "_blank")
+    if (w) w.opener = null
+}
 </script>
 
 <style scoped lang="scss">
@@ -66,6 +72,11 @@ const height = "300px"
 
 .el-carousel__item:nth-child(2n + 1) {
     background-color: #d3dce6;
+}
+
+.carousel-link-wrapper {
+    cursor: pointer;
+    display: block;
 }
 
 @include respond-to("pc") {
