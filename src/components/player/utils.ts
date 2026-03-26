@@ -87,8 +87,10 @@ export const createSubtitlesByVideoHashId = async (videoHashId: string | null | 
     // 初始化字幕对象
     let subtitlesRes: SubtitlesRes = {}
 
-    // 获取字幕语言信息
-    await getSubtitlesAPI(videoHashId).then((response) => {
+    try {
+        // 获取字幕语言信息
+        const response = await getSubtitlesAPI(videoHashId)
+
         // 如果请求失败，则返回空字幕对象
         if (response.data.code !== ResponseCode.GetVideoSubtitlesSuccess) return {}
 
@@ -97,7 +99,9 @@ export const createSubtitlesByVideoHashId = async (videoHashId: string | null | 
 
         // 保存字幕数据
         subtitlesRes = response.data.data
-    })
+    } catch {
+        return {}
+    }
 
     // 初始化 availableSubtitles
     const subtitles: Subtitles = {

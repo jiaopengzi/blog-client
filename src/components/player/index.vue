@@ -158,6 +158,18 @@ const handleProgress = () => {
     handleProgressBuffered()
 }
 
+/**
+ * 获取方向媒体查询列表
+ * @returns {MediaQueryList|null} 返回横屏方向的媒体查询列表，如果环境不支持则返回 null
+ */
+const getOrientationMediaQueryList = () => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+        return null
+    }
+
+    return window.matchMedia("(orientation: landscape)")
+}
+
 // 视频播放结束
 const handleEnded = () => {
     localManager.end()
@@ -361,13 +373,15 @@ const updateVideo = () => {
     }
 
     // 非 hls
-    if (localPlayerState.mediaType in [MediaTypes.MP4, MediaTypes.WEBM]) {
+    if ([MediaTypes.MP4, MediaTypes.WEBM].includes(localPlayerState.mediaType)) {
         handleLoadedmetadata()
     }
 
     // 监听屏幕方向变化
     if (videoRef.value) {
-        const mediaQueryList = window.matchMedia("(orientation: landscape)")
+        const mediaQueryList = getOrientationMediaQueryList()
+        if (!mediaQueryList) return
+
         mediaQueryList.addEventListener("change", handleOrientationChange)
     }
 }
@@ -397,8 +411,10 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
     // 移除屏幕方向变化监听
-    const mediaQueryList = window.matchMedia("(orientation: landscape)")
-    mediaQueryList.removeEventListener("change", handleOrientationChange)
+    const mediaQueryList = getOrientationMediaQueryList()
+    if (mediaQueryList) {
+        mediaQueryList.removeEventListener("change", handleOrientationChange)
+    }
 
     // 销毁 state 管理器
     localManager.destroy()
