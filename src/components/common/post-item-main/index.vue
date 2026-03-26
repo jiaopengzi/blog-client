@@ -37,7 +37,7 @@
             </div>
 
             <!-- 作者 日志 访问量 -->
-            <PostMeta :meta="postMeta" :is-hide-time-icon="isHideTimeIcon" :is-set-time-margin="isSetTimeMargin" @author-id="clickAuthorId" />
+            <PostMeta :meta="postMeta" :is-hide-time-icon="isHideTimeIcon" :is-set-time-margin="isSetTimeMargin" @author-user-name="clickAuthorUserName" />
         </div>
 
         <!-- 阅读跳转 -->
@@ -48,12 +48,14 @@
 <script lang="ts" setup>
 import { storeToRefs } from "pinia"
 import { computed } from "vue"
+import { useRouter } from "vue-router"
 
 import { type PostResPagination, PostStatusCode } from "@/api/post/common"
 import { type PostCategory } from "@/api/postCategory/view"
 import PostMeta, { type PostMetaProps } from "@/components/common/post-meta"
 import PostThumbnail from "@/components/common/post-thumbnail"
 import { DeviceType, useDeviceStore } from "@/stores/device"
+import { RouteNames } from "@/router"
 
 defineOptions({ name: "PostItemMain" })
 
@@ -74,6 +76,8 @@ const fallbackInitial = computed(() => postData.post_title?.trim().slice(0, 1).t
 // 设备类型
 const deviceStore = useDeviceStore()
 const { device } = storeToRefs(deviceStore)
+const router = useRouter()
+
 // 文章元数据
 const postMeta = computed(() => {
     const data: PostMetaProps = {
@@ -81,6 +85,7 @@ const postMeta = computed(() => {
         formatStr: "YYYY-MM-DD",
         view_count: postData.view_count,
         author_avatar: postData.author_info.user_avatar,
+        author_user_name: postData.author_info.user_name,
         author_display_name: postData.author_info.user_display_name,
         avatar_size: 24, // 头像大小，默认 24px
         author_id: postData.author_info.id,
@@ -99,7 +104,7 @@ const postMeta = computed(() => {
 const emit = defineEmits<{
     (event: "clickCategory", val: PostCategory): void
     (event: "postId", val: string): void
-    (event: "author-id", val: string): void
+    (event: "author-user-name", val: string): void
 }>()
 
 // 点击分类
@@ -153,8 +158,11 @@ const handleReadMoreClick = () => {
 }
 
 // 点击作者
-const clickAuthorId = (val: string) => {
-    emit("author-id", val)
+const clickAuthorUserName = (val: string) => {
+    router.push({
+        name: RouteNames.UserPublicProfile,
+        params: { username: val },
+    })
 }
 
 // 右上角提示符内容
