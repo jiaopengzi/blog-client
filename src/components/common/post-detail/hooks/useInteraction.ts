@@ -15,6 +15,7 @@ import { type PostMetaProps } from "@/components/common/post-meta"
 import { useDeviceStore } from "@/stores/device"
 import { useOptionsStore } from "@/stores/options"
 import { useUserStore } from "@/stores/user"
+import { useStatusStore } from "@/stores/status"
 import { copyText } from "@/utils/clipboard"
 import { MessageUtil } from "@/utils/message"
 
@@ -64,6 +65,7 @@ export function useInteraction(
     const userStore = useUserStore()
     const optionsStore = useOptionsStore()
     const deviceStore = useDeviceStore()
+    const statusStore = useStatusStore()
 
     const { windowWidth } = storeToRefs(deviceStore)
     const { head, app_options } = storeToRefs(optionsStore)
@@ -72,28 +74,39 @@ export function useInteraction(
 
     // 初始状态
     const interactionItems: ComputedRef<InteractionItemProps[]> = computed(() => {
-        return [
+        const result: InteractionItemProps[] = [
             {
                 icon: "like",
                 text: "点赞",
                 isActive: postMeta.value.interactionStatus?.is_like,
                 tip: postMeta.value.like_count,
+                isShow: app_options.value.like_enable.value === "true",
             },
             {
                 icon: "star",
                 text: "收藏",
                 isActive: postMeta.value.interactionStatus?.is_star,
                 tip: postMeta.value.star_count,
+                isShow: app_options.value.star_enable.value === "true",
             },
             {
                 icon: "share",
                 text: "分享",
+                isShow: app_options.value.share_poster_enable.value === "true",
             },
             {
                 icon: "link",
                 text: "复制链接",
+                isShow: app_options.value.link_enable.value === "true",
             },
         ]
+
+        // 判断是否为全部都不显示, statusStore 中设置为false
+        if (result.every((item) => !item.isShow)) {
+            statusStore.setShowDetailInteraction(false)
+        }
+
+        return result.filter((item) => item.isShow)
     })
 
     const isShowPosterShare = ref(false) // 是否显示分享海报

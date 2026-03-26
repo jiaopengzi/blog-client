@@ -13,6 +13,7 @@ export interface InteractionItemProps {
     text: string // 文本
     tip?: string | number // 提示信息
     isActive?: boolean // 是否激活
+    isShow?: boolean // 是否显示
 }
 
 export interface InteractionProps {

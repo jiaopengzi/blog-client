@@ -71,6 +71,7 @@ const initItems: InteractionItem[] = [
             emit("click-item", "like")
         },
         tip: 0,
+        isShow: false,
     },
     {
         icon: "star",
@@ -80,6 +81,7 @@ const initItems: InteractionItem[] = [
             emit("click-item", "star")
         },
         tip: 0,
+        isShow: false,
     },
     {
         icon: "share",
@@ -88,6 +90,7 @@ const initItems: InteractionItem[] = [
         onClick: () => {
             emit("click-item", "share")
         },
+        isShow: false,
     },
     {
         icon: "link",
@@ -96,24 +99,20 @@ const initItems: InteractionItem[] = [
         onClick: () => {
             emit("click-item", "link")
         },
+        isShow: false,
     },
 ]
 
 // 根据传入的 items 生成交互项
 const interactionItems = computed(() => {
-    // 如果没有传入 items，则使用默认的 initItems
-    if (!items) {
-        return initItems
-    }
+    const base = !items
+        ? initItems.slice()
+        : items.map((item) => {
+              const initItem = initItems.find((i) => i.icon === item.icon)
+              return { ...initItem, ...item }
+          })
 
-    // 根据传入的 items 生成交互项
-    return items.map((item) => {
-        const initItem = initItems.find((i) => i.icon === item.icon)
-        return {
-            ...initItem,
-            ...item,
-        }
-    })
+    return base.filter((item) => item.isShow !== false)
 })
 
 // 根据传入的 direction 设置 tip 的位置
