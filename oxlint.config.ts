@@ -2,7 +2,8 @@ import { defineConfig } from "oxlint"
 
 export default defineConfig({
     // 启用的插件列表, 当前保持为空并使用内置规则集.
-    plugins: ["unicorn", "typescript", "oxc", "vue"],
+    plugins: ["unicorn", "typescript", "oxc", "vue", "eslint", "eslint-plugin-vue"],
+
     categories: {
         // correctness: 正确性相关规则分组, 关注潜在逻辑错误.
         correctness: "warn",
@@ -50,6 +51,7 @@ export default defineConfig({
         "vue/no-unused-properties": "warn",
         "vue/no-unused-components": "warn",
         "vue/no-unused-vars": "warn",
+        "@typescript-eslint/no-unused-vars": "warn",
     },
     env: {
         es6: true,
