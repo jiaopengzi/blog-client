@@ -808,7 +808,7 @@ function isWechatCssBlackListProperty(property: string, value: string): boolean 
 }
 
 // 需要过滤的预设样式值
-const WideKeywords: readonly string[] = ["initial", "inherit", "revert", "revert-layer", "unset"]
+const WideKeywords: ReadonlySet<string> = new Set(["initial", "inherit", "revert", "revert-layer", "unset"])
 
 /**
  * @description: 过滤计算样式中非用户定义的样式
@@ -827,7 +827,7 @@ function filterInvalidComputedStyles(el: HTMLElement | SVGElement, properties?: 
         const value = computedStyle.getPropertyValue(property)
 
         // 过滤掉非用户定义的样式值
-        if (!WideKeywords.includes(value.toLowerCase())) {
+        if (!WideKeywords.has(value.toLowerCase())) {
             filteredStyles[property] = value
         }
     }

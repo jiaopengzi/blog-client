@@ -387,10 +387,7 @@ function getPermissionDescription(permissionName: PermissionNames) {
 const initPermissionTable = () => {
     const { roles, permission_role } = permissionRoleStore.getSystemRoles
     permissionRole.value = permission_role
-    rolesList.value = roles.map((role: Role) => ({
-        ...role,
-        allSelected: false, // 初始化全选状态为 false
-    }))
+    rolesList.value = roles.map((role: Role) => Object.assign({}, role, { allSelected: false }))
 
     // 初始化权限数据,不然会出现权限数据重复
     permissionsData.value = []

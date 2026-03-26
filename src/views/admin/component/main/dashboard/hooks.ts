@@ -110,14 +110,14 @@ export function useDashboard() {
     }
 
     // 金额类统计类别列表
-    const amountList = [TrendCategory.OrderAmount, TrendCategory.OrderPaidAmount]
+    const amountList = new Set<TrendCategory>([TrendCategory.OrderAmount, TrendCategory.OrderPaidAmount])
 
     // 获取面板按维度统计数据
     const getTrend = async () => {
         const res = await getTrendAPI(trendReq.value)
         if (res.data.code === ResponseCode.DashboardGetTrendSuccess) {
             // 如果是金额类数据, 则将分转换为元
-            if (amountList.includes(trendReq.value.category)) {
+            if (amountList.has(trendReq.value.category)) {
                 res.data.data.rows = res.data.data.rows.map((item) => ({
                     ...item,
                     value: item.value / 100,

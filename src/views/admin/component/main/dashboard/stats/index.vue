@@ -65,10 +65,10 @@ const localStats = computed(() => {
     if (!stats.value) return result
 
     // 以分记录的金额的 key 列表
-    const isAmountFenList = [StatsResKey.OrderPaidTotalAmount, StatsResKey.OrderTotalAmount]
+    const isAmountFenList = new Set([StatsResKey.OrderPaidTotalAmount, StatsResKey.OrderTotalAmount])
 
     // 可点击的 key 列表
-    const isClickList = [StatsResKey.CommentCountPending]
+    const isClickList = new Set([StatsResKey.CommentCountPending])
 
     // 遍历 StatsResKeyDisplay 构建结果
     for (const k in StatsResKeyDisplay) {
@@ -78,10 +78,10 @@ const localStats = computed(() => {
             let isAmountFen = false
             let isClick = false
 
-            if (isAmountFenList.includes(key)) {
+            if (isAmountFenList.has(key)) {
                 isAmountFen = true
             }
-            if (isClickList.includes(key) && (stats.value as StatsRes)[key] > 0) {
+            if (isClickList.has(key) && (stats.value as StatsRes)[key] > 0) {
                 isClick = true
             }
 

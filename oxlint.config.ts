@@ -2,17 +2,16 @@ import { defineConfig } from "oxlint"
 
 export default defineConfig({
     // 启用的插件列表, 当前保持为空并使用内置规则集.
-    // plugins: ["unicorn", "typescript", "oxc"],
-    plugins: ["unicorn", "typescript"],
+    plugins: ["unicorn", "typescript", "oxc"],
     categories: {
         // correctness: 正确性相关规则分组, 关注潜在逻辑错误.
         correctness: "warn",
         // suspicious: 可疑代码模式分组, 关注高风险写法.
         suspicious: "warn",
-        // // perf: 性能相关规则分组, 提醒可能的性能问题.
-        // perf: "warn",
-        // // pedantic: 细节相关规则分组, 提醒代码风格和最佳实践.
-        // pedantic: "warn",
+        // perf: 性能相关规则分组, 提醒可能的性能问题.
+        perf: "warn",
+        // pedantic: 细节相关规则分组, 提醒代码风格和最佳实践.
+        pedantic: "off",
     },
     rules: {
         // 禁止未使用变量, 用于及时发现无效参数或无效导入.
@@ -72,5 +71,5 @@ export default defineConfig({
         confirm: "readonly",
     },
     // 忽略匹配路径, 避免对依赖与产物文件进行 lint.
-    ignorePatterns: ["node_modules/", "dist/", "*.min.js", "*.test.ts", "src/components/common/icons/assets/"],
+    ignorePatterns: ["node_modules/", "dist/", "*.min.js", "src/components/common/icons/assets/"],
 })

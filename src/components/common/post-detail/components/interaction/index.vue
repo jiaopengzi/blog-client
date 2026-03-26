@@ -109,7 +109,7 @@ const interactionItems = computed(() => {
         ? initItems.slice()
         : items.map((item) => {
               const initItem = initItems.find((i) => i.icon === item.icon)
-              return { ...initItem, ...item }
+              return Object.assign({}, initItem, item)
           })
 
     return base.filter((item) => item.isShow !== false)
