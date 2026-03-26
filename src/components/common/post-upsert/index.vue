@@ -93,7 +93,7 @@
                     <ImageInput v-model="postInfoForm.thumbnail" clearable />
                 </el-form-item>
 
-                <div class="seo-switch">
+                <div class="more-setting-switch">
                     <SwitchGroup :switch-items="moreSetting" @update-status="updateDefaultStatus" />
                 </div>
 
@@ -745,7 +745,7 @@ onBeforeMount(async () => {
     color: var(--jpz-text-color-disabled);
 }
 
-.seo-switch {
+.more-setting-switch {
     display: flex;
     align-items: center;
     margin: 16px 0;
