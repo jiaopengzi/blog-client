@@ -153,7 +153,7 @@ export function isValidCSS(css: string): CSSValidationResult {
         }
 
         // 忽略以 @ 开始的规则如 @media 或 @import
-        if (/^@/.test(line)) continue
+        if (line.startsWith("@")) continue
 
         // 在块外遇到包含冒号的行但不含左花括号, 需区分是选择器(伪类/伪元素)还是声明
         if (depthBefore === 0 && line.includes(":") && !line.includes("{")) {

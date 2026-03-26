@@ -276,7 +276,7 @@ export function useFormValidation(options: FormValidationOptions): {
         }
 
         // 去除前后空格
-        if (!form.slug?.value || !form.slug.value) {
+        if (!form.slug || !form.slug.value) {
             callback("请输入别名")
             return
         }
@@ -324,7 +324,7 @@ export function useFormValidation(options: FormValidationOptions): {
         }
 
         // 去除前后空格
-        if (!form.slug?.value || !form.slug.value) {
+        if (!form.slug || !form.slug.value) {
             callback("请输入别名")
             return
         }
