@@ -8,7 +8,7 @@
 
 <template>
     <div class="carousel-container" v-if="enable && items && items.length > 0">
-        <el-carousel :height="height" :interval="interval" :loop="items.length > 1" :motion-blur="true">
+        <el-carousel :height="height" :interval="interval" :loop="items.length > 1">
             <el-carousel-item v-for="item in items" :key="item.imageUrl">
                 <div class="carousel-link-wrapper" role="link" tabindex="0" @click="onClick(item.linkUrl)" @keydown.enter.prevent="onClick(item.linkUrl)">
                     <el-image
