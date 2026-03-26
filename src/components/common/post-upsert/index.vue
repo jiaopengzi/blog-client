@@ -89,7 +89,7 @@
                     </div>
                 </el-form-item>
 
-                <el-form-item label="手动设置缩略图,如果没有则随机显示一张图片。" prop="thumbnail">
+                <el-form-item label="手动设置缩略图。" prop="thumbnail">
                     <ImageInput v-model="postInfoForm.thumbnail" clearable />
                 </el-form-item>
 
@@ -355,27 +355,6 @@ const {
 // 视频目录
 const { handleUpdate, isShowAddTocBtn, addDefaultToc } = usePostVideoToc(postInfoForm)
 
-// 监控标题变化,更新 seo 标题
-watch(
-    () => postInfoForm.post_title,
-    (newVal, oldVal) => {
-        // 如果 seo 标题为空，则更新 seo 标题
-        if (!postInfoForm.seo_title && newVal) {
-            postInfoForm.seo_title = newVal
-        }
-
-        // 如果 seo 标题不为空，且和标题oldVal不相等，则不更新 seo 标题
-        if (postInfoForm.seo_title && postInfoForm.seo_title !== oldVal) {
-            return
-        }
-
-        // 如果 seo 标题不为空，且和标题oldVal相等，则更新 seo 标题
-        if (postInfoForm.seo_title && postInfoForm.seo_title === oldVal && newVal) {
-            postInfoForm.seo_title = newVal
-        }
-    },
-)
-
 // 提取 seo 描述
 const seoDescriptionExtract = () => {
     const content = editorState.html || ""
@@ -583,6 +562,12 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     const isEditorValid = await validateEditorBeforeSubmit(formEl)
     if (!isEditorValid) {
         return
+    }
+
+    // 判断 seo 标题是否为空
+    if (!postInfoForm.seo_title) {
+        // 如果 seo 标题为空，则使用文章标题
+        postInfoForm.seo_title = postInfoForm.post_title
     }
 
     // 判断 seo 描述是否为空
