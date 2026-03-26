@@ -28,4 +28,3 @@ export type EventHandlerMap<Events extends Record<EventType, unknown>> = Map<
 export interface Options {
     enableTriggerSource?: boolean
 }
-export {}

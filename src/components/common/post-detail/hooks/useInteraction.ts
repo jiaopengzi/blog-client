@@ -74,7 +74,7 @@ export function useInteraction(
 
     // 初始状态
     const interactionItems: ComputedRef<InteractionItemProps[]> = computed(() => {
-        const result = [
+        const result: InteractionItemProps[] = [
             {
                 icon: "like",
                 text: "点赞",

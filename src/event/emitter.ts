@@ -99,5 +99,3 @@ export class Emitter<Events extends Record<EventType, unknown> = Record<string, 
         }
     }
 }
-
-export {}

@@ -8,4 +8,3 @@ export enum Events {
     SetupAlready = "setup-already", // 已经安装数据库
     SetupNotCompleted = "setup-not-completed", // 数据库未安装
 }
-export {}
