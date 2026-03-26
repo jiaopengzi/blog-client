@@ -89,6 +89,10 @@
                     </div>
                 </el-form-item>
 
+                <el-form-item label="评论管理" prop="comment_status">
+                    <SwitchGroup :switch-items="commentStatus" @update-status="updateCommentStatus" />
+                </el-form-item>
+
                 <el-form-item label="设置文章缩略图。" prop="thumbnail">
                     <ImageInput v-model="postInfoForm.thumbnail" clearable />
                 </el-form-item>
@@ -153,16 +157,21 @@
                     </el-radio-group>
                 </el-form-item>
 
-                <el-form-item label="评论管理" prop="comment_status" v-show="moreSettingIsShow">
-                    <SwitchGroup :switch-items="commentStatus" @update-status="updateCommentStatus" />
-                </el-form-item>
-
                 <el-form-item label="文章状态" prop="post_status">
                     <div class="post-status">
                         <el-radio-group v-model="postInfoForm.post_status">
                             <el-radio v-for="item in radioOptions()" :key="item.value" :value="item.value">{{ item.label }}</el-radio>
                         </el-radio-group>
-                        <div class="post-show-method" v-show="postInfoForm.post_status === PostStatusCode.Publish && postType === PostType.Post">
+                        <div
+                            class="post-show-method"
+                            v-show="
+                                (postInfoForm.post_status === PostStatusCode.Future ||
+                                    postInfoForm.post_status === PostStatusCode.Password ||
+                                    postInfoForm.post_status === PostStatusCode.Publish ||
+                                    postInfoForm.post_status === PostStatusCode.Expired) &&
+                                postType === PostType.Post
+                            "
+                        >
                             <SwitchGroup :switch-items="postShowMethod" @update-status="updatePostShowMethod" />
                         </div>
                     </div>
@@ -182,7 +191,16 @@
                     />
                 </el-form-item>
 
-                <el-form-item label="过期时间" prop="post_expired_time">
+                <el-form-item
+                    v-show="
+                        postInfoForm.post_status === PostStatusCode.Future ||
+                        postInfoForm.post_status === PostStatusCode.Password ||
+                        postInfoForm.post_status === PostStatusCode.Publish ||
+                        postInfoForm.post_status === PostStatusCode.Expired
+                    "
+                    label="过期时间"
+                    prop="post_expired_time"
+                >
                     <el-date-picker
                         v-model="postInfoForm.post_expired_time.Time"
                         type="datetime"
