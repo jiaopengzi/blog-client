@@ -162,7 +162,7 @@ const handleProgress = () => {
  * 获取方向媒体查询列表
  * @returns {MediaQueryList|null} 返回横屏方向的媒体查询列表，如果环境不支持则返回 null
  */
-const getOrientationMediaQueryList = () => {
+const getOrientationMediaQueryList = (): MediaQueryList | null => {
     if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
         return null
     }
