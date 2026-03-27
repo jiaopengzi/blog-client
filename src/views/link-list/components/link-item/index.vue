@@ -7,15 +7,13 @@
 -->
 
 <template>
-    <div :class="isShowDescription ? 'btn-has-description' : 'btn-no-description'" @click="handleClick">
-        <div class="link-container">
-            <div class="link-main">
-                <AvatarInitials :avatar="data.thumbnail" :name="data.name" :size="size" />
-                <span>{{ data.name }}</span>
-            </div>
-            <div class="link-description" v-if="isShowDescription">
-                {{ truncatedDescription }}
-            </div>
+    <div :class="['link-item-card', isShowDescription ? 'with-desc' : 'no-desc']" @click="handleClick">
+        <div class="link-header">
+            <AvatarInitials :avatar="data.thumbnail" :name="data.name" :size="size" class="link-avatar" />
+            <span class="link-name">{{ data.name }}</span>
+        </div>
+        <div v-if="isShowDescription" class="link-description">
+            {{ truncatedDescription }}
         </div>
     </div>
 </template>
@@ -53,60 +51,97 @@ const truncatedDescription = computed(() => {
     return data.description.length > truncatedCount ? data.description.slice(0, truncatedCount) + "..." : data.description
 })
 </script>
-<style lang="scss" scoped>
-// link共用样式占位
-%common-link-style {
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid var(--jpz-border-color);
 
-    // 鼠标悬停样式
+<style lang="scss" scoped>
+.link-item-card {
+    position: relative;
+    border-radius: 8px;
+    border: 1px solid var(--jpz-border-color-lighter);
+    background-color: var(--jpz-bg-color-overlay);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    overflow: hidden;
+    display: flex;
+    box-sizing: border-box;
+
     &:hover {
-        cursor: pointer;
+        transform: translateY(-2px);
         box-shadow: var(--jpz-box-shadow-light);
+        border-color: var(--jpz-color-primary-light-5);
+        background-color: var(--jpz-bg-color);
+
+        .link-name {
+            color: var(--jpz-color-primary);
+        }
+    }
+
+    &.no-desc {
+        height: 40px;
+        align-items: center;
+        padding: 0 8px;
+    }
+
+    &.with-desc {
+        flex-direction: column;
+        padding: 12px;
     }
 }
 
-.btn-has-description {
-    @extend %common-link-style;
-    width: 200px;
-    height: 124px;
-    padding-top: 16px;
-}
-
-.btn-no-description {
-    @extend %common-link-style;
-    height: 24px;
-}
-
-.link-container {
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-}
-
-.link-main {
+.link-header {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
     gap: 10px;
-    color: var(--jpz-text-color-primary);
-    font-size: 14px;
-    font-weight: 700;
     width: 100%;
     overflow: hidden;
+    flex-shrink: 0;
+}
+
+.link-avatar {
+    flex-shrink: 0;
+}
+
+.link-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--jpz-text-color-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .link-description {
-    text-align: left;
     font-size: 12px;
+    line-height: 1.6;
     color: var(--jpz-text-color-secondary);
-    width: 100%;
+    margin-top: 8px;
     word-break: break-all;
-    white-space: pre-line;
+    display: -webkit-box;
+    line-clamp: 4;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    line-height: 1.5;
-    margin-top: 8px; // 添加间距
-    flex-grow: 1; // 让描述部分占据剩余空间
+    flex-grow: 1;
+}
+
+// 响应式设计：确保三端 Item 大小一致且受控
+@include respond-to("pc") {
+    .link-item-card.with-desc {
+        width: 223px;
+        height: 138px;
+    }
+}
+
+@include respond-to("pad") {
+    .link-item-card.with-desc {
+        width: 223px;
+        height: 138px;
+    }
+}
+
+@include respond-to("phone") {
+    .link-item-card.with-desc {
+        width: 100%; // Phone端通常宽度撑满，但高度固定以保持一致性
+        height: 110px;
+    }
 }
 </style>

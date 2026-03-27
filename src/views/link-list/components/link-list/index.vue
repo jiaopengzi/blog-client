@@ -7,7 +7,7 @@
 -->
 
 <template>
-    <div class="link-list-container" v-if="pagination.total > 0" :style="{ width: isShowDescription ? '100%' : 'auto' }">
+    <div class="link-list-container" v-if="pagination.total > 0">
         <div class="link-list">
             <div v-for="item in pagination.records" :key="item.id" class="link-item">
                 <LinkItem :data="item" :size="size" :is-show-description="isShowDescription" :truncated-count="truncatedCount" />
@@ -104,6 +104,7 @@ useParams(req, pagination)
 .link-list-container {
     border-radius: 4px;
     background-color: var(--jpz-bg-color);
+    width: 100%;
 }
 
 .link-list-more-container {

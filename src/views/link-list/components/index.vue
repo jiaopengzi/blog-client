@@ -11,19 +11,23 @@
         <!-- 面包屑 -->
         <JBreadcrumb />
         <el-container class="container-main">
-            <LinkList class="container-main-item" :is-show-description="true" :size="24" :truncated-count="80" />
-            <div class="container-main-item title-container">
+            <LinkList :is-show-description="isShowDescription" :size="24" :truncated-count="80" />
+            <div class="title-container">
                 <h3 class="title">友情链接申请</h3>
             </div>
-            <AddLink class="container-main-item add" :is-show-image-selector="false" />
+            <AddLink class="add" :is-show-image-selector="false" />
         </el-container>
     </div>
 </template>
 <script setup lang="ts">
+import { computed } from "vue"
+import { storeToRefs } from "pinia"
+
 import JBreadcrumb from "@/components/common/breadcrumb"
 import { RouteNames } from "@/router"
 import { useBreadcrumbStore } from "@/stores/breadcrumb"
 import AddLink from "@/views/admin/component/main/links/component/add"
+import { DeviceType, useDeviceStore } from "@/stores/device"
 
 import LinkList from "./link-list"
 
@@ -31,6 +35,13 @@ defineOptions({ name: "LinkListDetail" })
 
 const breadcrumbStore = useBreadcrumbStore()
 breadcrumbStore.updateItems("友情链接", `/${RouteNames.LinkList}`)
+
+const deviceStore = useDeviceStore()
+const { device } = storeToRefs(deviceStore)
+
+const isShowDescription = computed(() => {
+    return device.value !== DeviceType.PHONE
+})
 </script>
 <style scoped lang="scss">
 .content {
@@ -91,11 +102,6 @@ breadcrumbStore.updateItems("友情链接", `/${RouteNames.LinkList}`)
 @include respond-to("phone") {
     .content {
         width: 100vw;
-
-        .container-main {
-            margin-left: 10px;
-            margin-right: 10px;
-        }
     }
 }
 </style>

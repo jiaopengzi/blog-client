@@ -129,13 +129,13 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
 @include respond-to("pad") {
     .view-form {
-        width: 600px;
+        width: 90%;
     }
 }
 
 @include respond-to("phone") {
     .view-form {
-        width: 400px;
+        width: 90%;
     }
 }
 
