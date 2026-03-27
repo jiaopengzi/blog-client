@@ -15,7 +15,7 @@
         </div>
 
         <!-- 分页 -->
-        <div class="pagination-container" v-if="pagination.page_count > 1 && isShowDescription">
+        <div class="pagination-container" v-if="pagination.page_count > 1 && isPagination">
             <div class="pagination-block" ref="paginationBlockRef">
                 <!-- 注意这里使用 v-model 双向绑定, 会造成意外的触发在 update 中手动更新 -->
                 <el-pagination
@@ -32,7 +32,7 @@
                 />
             </div>
         </div>
-        <div v-if="!isShowDescription" class="link-list-more-container">
+        <div v-if="!isPagination" class="link-list-more-container">
             <el-button class="link-list-more" type="default" @click="handleMoreClick">更多</el-button>
         </div>
     </div>
@@ -58,11 +58,13 @@ const {
     isShowDescription = false,
     truncatedCount = 50,
     isParseRouteQuery = false,
+    isPagination = false,
 } = defineProps<{
     size?: number // 图片大小
     isShowDescription?: boolean // 是否显示描述
     truncatedCount?: number // 截断的字符数
     isParseRouteQuery?: boolean // 是否解析路由查询参数
+    isPagination?: boolean // 是否分页
 }>()
 
 const req = reactive<ViewLinkRequest>({})
@@ -147,10 +149,10 @@ useParams(req, pagination)
 }
 
 @include respond-to("pad") {
-    .link-list-container {
-        margin-left: 10px;
-        margin-right: 10px;
-    }
+    // .link-list-container {
+    //     margin-left: 10px;
+    //     margin-right: 10px;
+    // }
 
     .link-list {
         padding: 15px;
@@ -159,10 +161,10 @@ useParams(req, pagination)
 }
 
 @include respond-to("phone") {
-    .link-list-container {
-        margin-left: 10px;
-        margin-right: 10px;
-    }
+    // .link-list-container {
+    //     margin-left: 10px;
+    //     margin-right: 10px;
+    // }
 
     .link-list {
         padding: 10px;

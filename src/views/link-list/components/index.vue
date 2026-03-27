@@ -11,7 +11,7 @@
         <!-- 面包屑 -->
         <JBreadcrumb />
         <el-container class="container-main">
-            <LinkList :is-show-description="isShowDescription" :size="24" :truncated-count="80" />
+            <LinkList :is-pagination="true" :is-show-description="isShowDescription" :size="24" :truncated-count="80" />
             <div class="title-container">
                 <h3 class="title">友情链接申请</h3>
             </div>
