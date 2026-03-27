@@ -21,7 +21,7 @@
         @mouseleave="onMouseLeave"
     >
         <template v-for="(item, index) in contentParts" :key="index">
-            <div v-if="item.type === 'html'" v-html="item.content"></div>
+            <div v-if="item.type === 'html'" v-stable-html="item.content"></div>
 
             <div v-if="item.type === Names.VideoPlayer" :key="(item.content as PlayerState).videoID" class="video-player-box">
                 <VideoPlayer :player-state="item.content as PlayerState" />
@@ -531,6 +531,16 @@ const stopFuncs: Array<() => void> = [] // 停止监听函数
 const isIntersectingHeadings = ref<string[]>([]) // 交叉观察者的标题数组
 const isBestMatchHeading = ref<string>("") // 最佳匹配的标题
 
+/**
+ * @description: 停止所有已注册的 IntersectionObserver 并清空缓存状态，防止多次调用 observeHeadings 时累积大量无效 observer。
+ * @return void.
+ */
+const stopAllHeadingObservers = (): void => {
+    stopFuncs.forEach((stop) => stop())
+    stopFuncs.length = 0
+    isIntersectingHeadings.value = []
+}
+
 // 历遍 allHeadings 观察每个标题的可见性
 const observeHeadings = () => {
     allHeadings.value?.forEach((headingEl) => {
@@ -647,6 +657,9 @@ watch(
                 // 获取标题
                 getAllHeadings()
 
+                // 停止旧的观察者再重新注册，避免每次内容变化都累积大量无效 observer
+                stopAllHeadingObservers()
+
                 // 监听标题的可见性变化
                 observeHeadings()
                 scheduleDisplayKatexScale()
@@ -674,6 +687,9 @@ watch(
             nextTick(() => {
                 // 获取标题
                 getAllHeadings()
+
+                // 停止旧的观察者再重新注册
+                stopAllHeadingObservers()
 
                 // 监听标题的可见性变化
                 observeHeadings()
@@ -753,9 +769,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
     // 停止所有的 IntersectionObserver 监听
-    stopFuncs.forEach((stop) => {
-        stop()
-    })
+    stopAllHeadingObservers()
 
     stopPreviewResizeObserver()
 

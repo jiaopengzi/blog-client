@@ -3,7 +3,7 @@
  * Description : 
 -->
 <template>
-    <JEditor :state-manager="stateManager" />
+    <JEditor :state-manager="stateManager" :is-enable-copy-cache="false" />
 </template>
 <script lang="ts" setup>
 import { EditorStateManager } from "@/components/editor"
