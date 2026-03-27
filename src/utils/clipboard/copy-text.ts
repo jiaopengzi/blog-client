@@ -51,7 +51,7 @@ function writeTextWithExecCommand(text: string): Promise<void> {
         document.body.removeChild(textArea)
 
         if (success) {
-            console.log("Text has been copied using execCommand!")
+            console.warn("Text has been copied using execCommand!")
             resolve()
         } else {
             reject(new Error("execCommand copy command was unsuccessful"))

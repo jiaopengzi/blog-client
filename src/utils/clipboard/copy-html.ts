@@ -60,7 +60,7 @@ function writeHtmlWithExecCommand(html: string): Promise<void> {
         document.body.removeChild(container)
 
         if (success) {
-            console.log("Text has been copied using execCommand!")
+            console.warn("Text has been copied using execCommand!")
             resolve()
         } else {
             reject(new Error("execCommand copy command was unsuccessful"))
