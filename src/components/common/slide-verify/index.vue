@@ -7,7 +7,7 @@
 -->
 
 <template>
-    <div class="page" v-if="show_slide_verify">
+    <div class="page" v-if="show_slide_verify && slide_verify_imgs.length > 0">
         <!-- @touchmove.prevent.stop 阻止触摸事件传播并阻止默认行为。确保滑动验证码不会导致页面滑动。 -->
         <div class="verify-main" @touchmove.prevent.stop>
             <h4>
