@@ -93,7 +93,7 @@ const formSize = ref("default")
 // 打开滑动验证
 const openSlideVerify = async () => {
     // 如果没有开启滑动验证, 直接调用成功回调
-    if (!optionsStore.slide_verify_enable) {
+    if (!optionsStore.slide_verify_enable || optionsStore.slide_verify_imgs.length === 0) {
         await sendCaptcha()
         return
     }
