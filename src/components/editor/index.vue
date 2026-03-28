@@ -104,6 +104,7 @@ import { CommandsKey } from "./command"
 
 import EditorCodemirror, { type CodemirrorRef } from "./components/codemirror"
 import HtmlPreview from "./components/preview/index.vue"
+import type { HtmlPreviewRef } from "./components/preview/types"
 import SettingsDialog from "./components/settings"
 import EditorToc from "./components/toc"
 import Toolbar from "./components/toolbar"
@@ -164,10 +165,10 @@ const openSettingsDialog = (name: CommandsKey) => {
 }
 
 // ref
-const mdLayoutRef = useTemplateRef<HTMLElement | null>("mdLayoutRef") //编辑器布局
-const mdContainerRef = useTemplateRef<HTMLElement | null>("mdContainerRef") //编辑器容器
-const codemirrorRef = useTemplateRef<CodemirrorRef | null>("codemirrorRef") //编辑器
-const htmlPreviewRef = useTemplateRef<InstanceType<typeof HtmlPreview> | null>("htmlPreviewRef")
+const mdLayoutRef = useTemplateRef<HTMLElement | null>("mdLayoutRef") // 编辑器布局
+const mdContainerRef = useTemplateRef<HTMLElement | null>("mdContainerRef") // 编辑器容器
+const codemirrorRef = useTemplateRef<CodemirrorRef | null>("codemirrorRef") // 编辑器
+const htmlPreviewRef = useTemplateRef<HtmlPreviewRef | null>("htmlPreviewRef") // 预览
 
 // 工具栏点击事件
 const { toolbarBtns, toolbarBtnClicked, updateMdContainerStyle, insertPay, emojiPickerSelected, insertTableRowCol, insertAlert } = useToolbar(
@@ -176,10 +177,8 @@ const { toolbarBtns, toolbarBtnClicked, updateMdContainerStyle, insertPay, emoji
     stateManager,
     isEnableCopyCache,
     () => ({
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        hasPreparedCopyCache: (htmlPreviewRef.value as any)?.hasPreparedCopyCache ?? false,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        copyPreparationInFlight: (htmlPreviewRef.value as any)?.copyPreparationInFlight ?? false,
+        hasPreparedCopyCache: htmlPreviewRef.value?.hasPreparedCopyCache ?? false,
+        copyPreparationInFlight: htmlPreviewRef.value?.copyPreparationInFlight ?? false,
     }),
 )
 

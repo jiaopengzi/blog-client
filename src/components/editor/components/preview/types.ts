@@ -10,6 +10,13 @@ import { PayStrategy, type PostVideoTocTree } from "@/api/post/common"
 
 import { CommandsKey } from "../../command"
 
+// defineExpose 导出的 ref 类型，供父组件通过 useTemplateRef 访问
+export interface HtmlPreviewRef {
+    root: HTMLElement | null // 当前可见的预览根节点
+    hasPreparedCopyCache: boolean // 是否存在有效的预复制缓存
+    copyPreparationInFlight: boolean // 后台预复制任务是否正在进行
+}
+
 export type HeadingObject = {
     id: string // 标题 id
     index: number // 标题索引
