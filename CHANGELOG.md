@@ -5,6 +5,12 @@
 该格式基于 [Keep a Changelog](https://keepachangelog.com),
 本项目遵循 [语义化版本控制](https://semver.org/spec/v2.0.0.html)。
 
+## [v0.16.9] - 2026-03-28
+
+### Fix
+
+- 滑动解锁需要有图片才开启2
+
 ## [v0.16.8] - 2026-03-28
 
 ### Fix
