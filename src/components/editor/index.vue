@@ -59,6 +59,7 @@
             <!-- 预览 -->
             <div class="md-preview md-container-item" v-show="state.previewShow">
                 <HtmlPreview
+                    ref="htmlPreviewRef"
                     :html="state.html"
                     :img-urls="state.imgUrls"
                     :is-enable-copy-cache="isEnableCopyCache"
@@ -166,12 +167,20 @@ const openSettingsDialog = (name: CommandsKey) => {
 const mdLayoutRef = useTemplateRef<HTMLElement | null>("mdLayoutRef") //编辑器布局
 const mdContainerRef = useTemplateRef<HTMLElement | null>("mdContainerRef") //编辑器容器
 const codemirrorRef = useTemplateRef<CodemirrorRef | null>("codemirrorRef") //编辑器
+const htmlPreviewRef = useTemplateRef<InstanceType<typeof HtmlPreview> | null>("htmlPreviewRef")
 
 // 工具栏点击事件
 const { toolbarBtns, toolbarBtnClicked, updateMdContainerStyle, insertPay, emojiPickerSelected, insertTableRowCol, insertAlert } = useToolbar(
     mdLayoutRef,
     mdContainerRef,
     stateManager,
+    isEnableCopyCache,
+    () => ({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        hasPreparedCopyCache: (htmlPreviewRef.value as any)?.hasPreparedCopyCache ?? false,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        copyPreparationInFlight: (htmlPreviewRef.value as any)?.copyPreparationInFlight ?? false,
+    }),
 )
 
 /**

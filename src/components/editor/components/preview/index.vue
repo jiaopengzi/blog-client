@@ -82,16 +82,23 @@
         </template>
     </div>
 
-    <!-- 微信 预览 -->
+    <!-- 微信预览 / 预复制 staging 节点：
+         isShowPreviewWechat=true  → 正常显示，作为可见预览
+         isShowPreviewWechat=false → v-show 隐藏（离屏），作为预复制数据源
+         v-if 保证仅 isEnableCopyCache 或微信模式时才挂载，普通读者页面零开销 -->
     <div
-        v-if="isShowPreviewWechat"
+        v-if="isShowPreviewWechat || isEnableCopyCache"
+        v-show="isShowPreviewWechat"
         :ref="
             (el) => {
-                if (el) setPreviewRef(el as HTMLElement)
+                setWechatRef(el as HTMLElement | null)
+                if (isShowPreviewWechat && el) setPreviewRef(el as HTMLElement)
             }
         "
-        id="preview"
+        id="preview-copy"
+        data-preview="wechat"
         v-html="wechatHtml"
+        :style="isShowPreviewWechat ? {} : { position: 'absolute', left: '-99999px', top: '0', width: '100%', pointerEvents: 'none', overflow: 'hidden' }"
         @click="handleDelegateClick"
         @mouseenter="onMouseEnter"
         @mouseleave="onMouseLeave"
@@ -184,8 +191,14 @@ const setPreviewRef = (el: HTMLElement | null) => {
     previewRef.value = el
 }
 
+// 微信预览节点引用：始终指向微信 div（无论可见还是离屏），供预复制使用
+const wechatRef = ref<HTMLElement | null>(null)
+const setWechatRef = (el: HTMLElement | null) => {
+    wechatRef.value = el
+}
+
 let displayKatexScaleAnimationFrameId = 0 // 缩放 katex 的动画帧 ID
-const COPY_CACHE_DEBOUNCE_MS = 800 // 复制缓存的防抖时间，单位毫秒
+const COPY_CACHE_DEBOUNCE_MS = 2000 // 复制缓存的防抖时间，单位毫秒
 let copyPreparationVersion = 0 // 当前准备复制的缓存版本
 let copyPreparationInFlight: Promise<void> | null = null // 当前正在进行的复制准备任务
 
@@ -236,12 +249,13 @@ const invalidatePreparedCopyCache = (): number => {
  * @return void.
  */
 const prepareCopyCacheIfNeeded = async (version: number): Promise<void> => {
-    if (!isEnableCopyCache || !previewRef.value || version !== copyPreparationVersion || preparedCopyCache.value?.version === version) {
+    const targetEl = wechatRef.value ?? previewRef.value
+    if (!isEnableCopyCache || !targetEl || version !== copyPreparationVersion || preparedCopyCache.value?.version === version) {
         return
     }
 
     // 预生成复制内容时复用最终定稿后的复制链路, 用户点击复制时可直接命中缓存.
-    const html = await prepareCopyWithCustomStyle(previewRef.value)
+    const html = await prepareCopyWithCustomStyle(targetEl)
     if (version !== copyPreparationVersion) {
         return
     }
@@ -311,11 +325,12 @@ const copyPreparedContent = async (): Promise<void> => {
         }
     }
 
-    if (!previewRef.value) {
+    const fallbackEl = wechatRef.value ?? previewRef.value
+    if (!fallbackEl) {
         return
     }
 
-    await copyWithCustomStyle(previewRef.value)
+    await copyWithCustomStyle(fallbackEl)
 }
 
 // 判断是否为付费内容组件
@@ -357,27 +372,20 @@ const initializeCssVariable = () => {
     }
 }
 
-// 监听 props isShowPreviewWechat 变化 添加自定义属性
+// 监听 props isShowPreviewWechat 变化
 watch(
     () => isShowPreviewWechat,
     async (newVal) => {
-        if (newVal) {
-            // 等待 DOM 更新
-            await nextTick()
-            if (previewRef.value) {
-                previewRef.value.setAttribute("data-preview", "wechat")
-                // // 验证属性是否设置成功
-                // console.log("属性值:", previewRef.value.getAttribute("data-preview"))
-            }
-
-            scheduleDisplayKatexScale()
-        } else {
-            await nextTick()
-            previewRef.value?.removeAttribute("data-preview")
-            scheduleDisplayKatexScale()
+        await nextTick()
+        // v-show 不触发 ref 回调，需要手动同步 previewRef
+        if (newVal && wechatRef.value) {
+            // 切换到微信预览：previewRef 指向微信 div
+            setPreviewRef(wechatRef.value)
         }
+        // 切换到 web 预览：web div 因 v-if 重新挂载，其 ref 回调会自动更新 previewRef
+        scheduleDisplayKatexScale()
     },
-    { flush: "post" }, // 确保在 DOM 更新后执行
+    { flush: "post" },
 )
 
 // 防抖处理 copyWithCustomStyle
@@ -779,8 +787,12 @@ onUnmounted(() => {
 })
 
 // 导出
+const hasPreparedCopyCache = computed(() => preparedCopyCache.value !== null && preparedCopyCache.value.version === copyPreparationVersion)
+
 defineExpose({
     root: previewRef,
+    hasPreparedCopyCache,
+    copyPreparationInFlight: computed(() => copyPreparationInFlight !== null),
 })
 </script>
 

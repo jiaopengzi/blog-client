@@ -21,7 +21,16 @@ import { CommandsKey, markdownEditorCommands } from "../command"
 import { Alerts, type PayTagItem, type TableRowCol } from "../components/toolbar"
 import { EditorStateManager } from "../state"
 
-export function useToolbar(mdLayoutRef: Ref<HTMLElement | null>, mdContainerRef: Ref<HTMLElement | null>, stateManager: EditorStateManager) {
+export function useToolbar(
+    mdLayoutRef: Ref<HTMLElement | null>,
+    mdContainerRef: Ref<HTMLElement | null>,
+    stateManager: EditorStateManager,
+    isEnableCopyCache: boolean = false,
+    getCopyState: () => { hasPreparedCopyCache: boolean; copyPreparationInFlight: boolean } = () => ({
+        hasPreparedCopyCache: false,
+        copyPreparationInFlight: false,
+    }),
+) {
     const { isWebFullscreen, toggle } = useWebFullscreen(mdLayoutRef)
 
     // 状态管理
@@ -95,6 +104,15 @@ export function useToolbar(mdLayoutRef: Ref<HTMLElement | null>, mdContainerRef:
         }
 
         if (name === CommandsKey.Copy) {
+            // 开启预复制缓存时，非微信模式且无有效缓存则拦截并提示，避免复制出 web 模式内容
+            if (isEnableCopyCache && !editorState.isShowPreviewWechat) {
+                const { hasPreparedCopyCache, copyPreparationInFlight } = getCopyState()
+                if (!hasPreparedCopyCache && !copyPreparationInFlight) {
+                    MessageUtil.warning("内容预处理尚未就绪，请编辑内容后稍候片刻再复制！")
+                    return
+                }
+            }
+
             stateManager.setViewCommand({
                 commandName: CommandsKey.Copy,
                 time: new Date(),

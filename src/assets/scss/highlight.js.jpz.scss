@@ -249,7 +249,8 @@ code.hljs {
 }
 
 // 为了在复制到微信编辑器的时候兼容微信的样式
-#preview[data-preview="wechat"] {
+#preview[data-preview="wechat"],
+#preview-copy[data-preview="wechat"] {
     .pre-code {
         color: #333;
         background-color: #fafafa;

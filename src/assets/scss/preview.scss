@@ -15,7 +15,8 @@
 // @use "./mixin.scss" as *;
 // ========================================== live sass compiler 插件使用 结束 ==========================================
 
-#preview {
+#preview,
+#preview-copy {
     --preview-font-family-text: #{pc.$font-family-text};
     --preview-font-family-title: #{pc.$font-family-title};
 
@@ -495,7 +496,8 @@
         width: 100%;
     }
 
-    #preview[data-preview="wechat"] {
+    #preview[data-preview="wechat"],
+    #preview-copy[data-preview="wechat"] {
         width: 373px;
     }
 }
@@ -507,7 +509,8 @@
         width: 100%;
     }
 
-    #preview[data-preview="wechat"] {
+    #preview[data-preview="wechat"],
+    #preview-copy[data-preview="wechat"] {
         max-width: 373px;
         width: 100%;
     }
@@ -520,7 +523,8 @@
         width: 100%;
     }
 
-    #preview[data-preview="wechat"] {
+    #preview[data-preview="wechat"],
+    #preview-copy[data-preview="wechat"] {
         max-width: 373px;
         width: 100%;
     }
