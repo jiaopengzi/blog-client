@@ -6,7 +6,7 @@
     "homepage": "https://jiaopengzi.com",
     "repository": {
         "type": "git",
-        "url": "https://gitee.com/jiaopengzi/blog-client"
+        "url": "https://github.com/jiaopengzi/blog-client"
     },
     "files": [
         "dist",

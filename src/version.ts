@@ -11,12 +11,12 @@ import pkg from "../package.json"
 // 版本信息类型接口
 export interface VersionInfo {
     name: string
-    version: string
     description: string
     author: string
     license: string
     homepage: string
     repository: string
+    version: string
     commit: string
     buildTime: string
 }
@@ -44,18 +44,21 @@ export function consoleInfoFormat() {
     // 获取版本信息
     const info = getVersionInfo()
 
+    // 控制台展示移除 version commit buildTime
+    const infoWithoutVersion = Object.fromEntries(Object.entries(info).filter(([key]) => key !== "version" && key !== "commit" && key !== "buildTime"))
+
     // 定义样式
     const styleName = ["color: #1E2858; background-color:#c89828; font-size: 24px; font-weight: bold; border-radius: 4px;"] // name 样式
 
     // 根据 info 有多少字段 定义多少 style
-    const count = Object.keys(info).length - 1 // 减去 name 字段
+    const count = Object.keys(infoWithoutVersion).length - 1 // 减去 name 字段
     const styleOther = Array(count).fill("font-size: 14px;")
 
     // 样式列表
     const styleList = [...styleName, ...styleOther]
 
     // 将 info 对象转换为数组 计算最长的字段名
-    const infoList = Object.entries(info)
+    const infoList = Object.entries(infoWithoutVersion)
 
     // 计算最长的字段名
     const longestKeyLength =
