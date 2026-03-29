@@ -336,6 +336,8 @@ export enum ResponseCode {
     BillingCenterGetAgreementFailed = 6221, // 获取协议信息失败
     BillingCenterBalanceInsufficient = 6222, // 计费中心余额不足，无法创建订单，请及时充值。
     BillingCenterAccountForbidden = 6223, // 计费中心账户被禁用，请联系管理员。
+    BillingCenterOrderMustThanZero = 6224, // 订单金额必须大于 0
+    BillingCenterBlogServerVersionTooLow = 6225, // blog-server 版本过旧，请升级最低要求版本
 
     // 验证码相关
     CaptchaSendSuccess = 8000, // 验证码发送成功

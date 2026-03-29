@@ -51,6 +51,9 @@ export function useBillingCenter() {
     // 账户是否被禁用
     const isForbidden = ref(false)
 
+    // 版本是否过低
+    const isVersionTooLow = ref(false)
+
     // 加载状态
     const accountLoading = ref(false)
 
@@ -65,14 +68,22 @@ export function useBillingCenter() {
                 accountInfo.value = res.data.data
                 isRegistered.value = true
                 isForbidden.value = false
+                isVersionTooLow.value = false
             } else if (res.data.code === ResponseCode.BillingCenterAccountNotExists) {
                 isRegistered.value = false
                 accountInfo.value = null
                 isForbidden.value = false
+                isVersionTooLow.value = false
             } else if (res.data.code === ResponseCode.BillingCenterAccountForbidden) {
                 isRegistered.value = false
                 accountInfo.value = null
                 isForbidden.value = true
+                isVersionTooLow.value = false
+            } else if (res.data.code === ResponseCode.BillingCenterBlogServerVersionTooLow) {
+                isRegistered.value = false
+                accountInfo.value = null
+                isForbidden.value = false
+                isVersionTooLow.value = true
             }
         } finally {
             accountLoading.value = false
@@ -119,6 +130,7 @@ export function useBillingCenter() {
         accountInfo,
         isRegistered,
         isForbidden,
+        isVersionTooLow,
         accountLoading,
         getAccountInfo,
         formatAmount,

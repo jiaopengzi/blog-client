@@ -14,7 +14,10 @@
         </div>
 
         <!-- 账户被禁用: 显示禁用状态 -->
-        <ForbiddenView v-else-if="isForbidden" />
+        <NoUseView v-else-if="isForbidden" type="forbidden" />
+
+        <!-- blog-server 版本过低 -->
+        <NoUseView v-else-if="isVersionTooLow" type="too-low" />
 
         <!-- 未注册: 直接显示注册表单 -->
         <div v-else-if="!isRegistered" class="billing-register">
@@ -39,7 +42,7 @@ import { adminMenuItemMap } from "@/views/admin/component/aside"
 
 import RegisterForm from "./component/register"
 import TransactionView from "./component/transaction-view"
-import ForbiddenView from "./component/forbidden"
+import NoUseView from "./component/no-use"
 import { useBillingCenter } from "./hooks"
 
 defineOptions({ name: RouteNames.BillingCenter })
@@ -48,7 +51,7 @@ useHead({
     title: adminMenuItemMap[RouteNames.BillingCenter].text,
 })
 
-const { accountInfo, isRegistered, isForbidden, accountLoading, getAccountInfo } = useBillingCenter()
+const { accountInfo, isRegistered, isForbidden, isVersionTooLow, accountLoading, getAccountInfo } = useBillingCenter()
 
 /**
  * handleRegisterStatus 注册成功回调。
