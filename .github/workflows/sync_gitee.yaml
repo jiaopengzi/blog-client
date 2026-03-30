@@ -57,8 +57,14 @@ jobs:
 
       - name: Push to Gitee
         run: |
+          set -x
           # 覆盖（先移除再添加），避免因已存在 remote 报错
           git remote remove gitee >/dev/null 2>&1 || true
           git remote add gitee git@gitee.com:jiaopengzi/blog-client.git
-          # 确保本地获取到远端 refs，这样 --force-with-lease 才能正确检测是否安全覆盖
+          # 启用 Git 跟踪和更详细的 SSH 日志，便于定位在 Runner 中是否阻塞
+          export GIT_TRACE=1
+          export GIT_CURL_VERBOSE=1
+          export GIT_SSH_COMMAND="ssh -vvv -o BatchMode=yes -oStrictHostKeyChecking=no"
+          # 执行推送并打印退出码
           git push --force-with-lease gitee main
+          echo "git push exit:$?"
