@@ -57,7 +57,7 @@ jobs:
       # 5a. PR：只构建，不推送
       - name: Build client image (PR check)
         if: github.event_name == 'pull_request'
-        run: sudo bash /home/runner/blog-tool-dev.sh docker_build_client Dockerfile
+        run: sudo GITHUB_ACTIONS=true GITHUB_WORKSPACE="$GITHUB_WORKSPACE" bash /home/runner/blog-tool-dev.sh docker_build_client Dockerfile
 
       # 5b. tag / 手动：构建并推送到 Docker Hub
       - name: Build and push client image
@@ -66,4 +66,4 @@ jobs:
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
           COSIGN_PRIVATE_KEY_PWD: ${{ secrets.COSIGN_PRIVATE_KEY_PWD }}
         run: |
-          sudo COSIGN_PRIVATE_KEY="$COSIGN_PRIVATE_KEY" COSIGN_PRIVATE_KEY_PWD="$COSIGN_PRIVATE_KEY_PWD" bash /home/runner/blog-tool-dev.sh docker_build_push_client Dockerfile
+          sudo GITHUB_ACTIONS=true GITHUB_WORKSPACE="$GITHUB_WORKSPACE" COSIGN_PRIVATE_KEY="$COSIGN_PRIVATE_KEY" COSIGN_PRIVATE_KEY_PWD="$COSIGN_PRIVATE_KEY_PWD" bash /home/runner/blog-tool-dev.sh docker_build_push_client Dockerfile
