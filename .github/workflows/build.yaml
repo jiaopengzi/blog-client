@@ -34,6 +34,7 @@ jobs:
           echo "dev"                                      > /home/runner/volume/blog_tool_env/run_mode
           echo "用户接受时间: $(date +"%Y-%m-%d %H:%M:%S")" > /home/runner/volume/blog_tool_env/disclaimer_accepted
           echo "127.0.0.1"                                > /home/runner/volume/blog_tool_env/public_ip_address
+          echo "127.0.0.1"                                > /home/runner/volume/blog_tool_env/domain_name
           echo "blog-client-build"                        > /home/runner/volume/blog_tool_env/project_name
           echo "$DOCKER_HUB_TOKEN"                        > /home/runner/volume/blog_tool_env/docker_hub_token
           echo "$BLOG_GITHUB_TOKEN"                       > /home/runner/volume/blog_tool_env/github_token
