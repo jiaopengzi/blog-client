@@ -65,5 +65,6 @@ jobs:
         env:
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
           COSIGN_PRIVATE_KEY_PWD: ${{ secrets.COSIGN_PRIVATE_KEY_PWD }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
-          sudo GITHUB_ACTIONS=true GITHUB_WORKSPACE="$GITHUB_WORKSPACE" COSIGN_PRIVATE_KEY="$COSIGN_PRIVATE_KEY" COSIGN_PRIVATE_KEY_PWD="$COSIGN_PRIVATE_KEY_PWD" bash /home/runner/blog-tool-dev.sh docker_build_push_client Dockerfile
+          sudo GITHUB_ACTIONS=true GITHUB_WORKSPACE="$GITHUB_WORKSPACE" COSIGN_PRIVATE_KEY="$COSIGN_PRIVATE_KEY" COSIGN_PRIVATE_KEY_PWD="$COSIGN_PRIVATE_KEY_PWD" GITHUB_TOKEN="$GITHUB_TOKEN" bash /home/runner/blog-tool-dev.sh docker_build_push_client Dockerfile
