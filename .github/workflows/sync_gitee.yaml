@@ -57,6 +57,8 @@ jobs:
 
       - name: Push to Gitee
         run: |
+          # 覆盖（先移除再添加），避免因已存在 remote 报错
+          git remote remove gitee >/dev/null 2>&1 || true
           git remote add gitee git@gitee.com:jiaopengzi/blog-client.git
           # 确保本地获取到远端 refs，这样 --force-with-lease 才能正确检测是否安全覆盖
           git push --force-with-lease gitee main
