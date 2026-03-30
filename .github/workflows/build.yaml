@@ -1,0 +1,66 @@
+# **注意 文件名称要和 GitHub 仓库 blog-client 的 .github/workflows 下对应文件名称一致**
+# Repository secrets 需要提前在 GitHub 仓库设置中配置:
+#   DOCKER_HUB_TOKEN, _GITHUB_TOKEN, GITEE_TOKEN, COSIGN_PRIVATE_KEY, COSIGN_PRIVATE_KEY_PWD
+
+name: Build and Push Client Docker Image
+
+on:
+  push:
+    tags:
+      - "v*"
+
+  # PR 时触发代码审核构建
+  pull_request:
+    branches:
+      - main
+
+  # 可以手动触发
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 前置：写入 secrets 到工具依赖的 volume 目录（工具首次使用需要确认，必须前置）
+      #    预写 disclaimer_accepted 跳过交互确认；PR 时只写 run_mode，不写 token
+      - name: Setup environment
+        env:
+          DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+          BLOG_GITHUB_TOKEN: ${{ secrets._GITHUB_TOKEN }}
+          GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
+        run: |
+          mkdir -p /home/runner/volume/blog_tool_env
+          echo "dev"                                        > /home/runner/volume/blog_tool_env/run_mode
+          echo "用户接受时间: $(date +"%Y-%m-%d %H:%M:%S")" > /home/runner/volume/blog_tool_env/disclaimer_accepted
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "$DOCKER_HUB_TOKEN"  > /home/runner/volume/blog_tool_env/docker_hub_token
+            echo "$BLOG_GITHUB_TOKEN" > /home/runner/volume/blog_tool_env/github_token
+            echo "$GITEE_TOKEN"       > /home/runner/volume/blog_tool_env/gitee_token
+          fi
+
+      # 2. Checkout 代码
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      # 3. 下载工具到 /home/runner/，使 ROOT_DIR=/home/runner 与 volume 路径一致
+      - name: Download blog-tool
+        run: curl -fsSL -o /home/runner/blog-tool-dev.sh https://raw.githubusercontent.com/jiaopengzi/blog-tool/main/dist/blog-tool-dev.sh
+
+      # 4. 安装必要依赖
+      - name: Install common software
+        run: bash /home/runner/blog-tool-dev.sh install_common_software
+
+      # 5a. PR：只构建，不推送
+      - name: Build client image (PR check)
+        if: github.event_name == 'pull_request'
+        run: bash /home/runner/blog-tool-dev.sh docker_build_client Dockerfile
+
+      # 5b. tag / 手动：构建并推送到 Docker Hub
+      - name: Build and push client image
+        if: github.event_name != 'pull_request'
+        env:
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PRIVATE_KEY_PWD: ${{ secrets.COSIGN_PRIVATE_KEY_PWD }}
+        run: |
+          sudo COSIGN_PRIVATE_KEY="$COSIGN_PRIVATE_KEY" COSIGN_PRIVATE_KEY_PWD="$COSIGN_PRIVATE_KEY_PWD" bash /home/runner/blog-tool-dev.sh docker_build_push_client Dockerfile
