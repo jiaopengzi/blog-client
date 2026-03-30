@@ -1,0 +1,48 @@
+# FilePath    : blog-client-dev\.github\workflows\build copy.yaml
+# Author      : jiaopengzi
+# Blog        : https://jiaopengzi.com
+# Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+# Description : CI/CD - 同步代码到 Gitee
+
+name: Sync Gitee
+
+on:
+  push:
+    branches:
+      - main
+
+  # 手动触发
+  workflow_dispatch:
+
+concurrency:
+  group: blog-client-ci
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.GITEE_SSH_PRIVATE_KEY }}
+
+      - name: Add Gitee host key
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H -t rsa gitee.com >> ~/.ssh/known_hosts
+
+      - name: Push to Gitee
+        run: |
+          # 直接覆盖 gitee remote（先移除再添加，保证覆盖）
+          git remote remove gitee >/dev/null 2>&1 || true
+          git remote add gitee git@gitee.com:jiaopengzi/blog-client.git
+          # 抓取所有 refs（不包含 tags），以实现分支全量同步
+          git fetch --all --prune
+          # 将所有分支推送到 Gitee（不推送 tags，tag 在 build.yaml 单独处理）
+          git push --all gitee

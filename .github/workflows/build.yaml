@@ -17,6 +17,16 @@ on:
   # 可以手动触发
   workflow_dispatch:
 
+  # 在 Sync Gitee 完成后触发（用于 main 分支代码变更的构建触发）
+  workflow_run:
+    workflows: ["Sync Gitee"]
+    types:
+      - completed
+
+concurrency:
+  group: blog-client-ci
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
