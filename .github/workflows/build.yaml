@@ -31,7 +31,7 @@ jobs:
           GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
         run: |
           mkdir -p /home/runner/volume/blog_tool_env
-          echo "dev"                                      > /home/runner/volume/blog_tool_env/run_mode
+          echo "pro"                                      > /home/runner/volume/blog_tool_env/run_mode
           echo "用户接受时间: $(date +"%Y-%m-%d %H:%M:%S")" > /home/runner/volume/blog_tool_env/disclaimer_accepted
           echo "127.0.0.1"                                > /home/runner/volume/blog_tool_env/public_ip_address
           echo "127.0.0.1"                                > /home/runner/volume/blog_tool_env/domain_name
