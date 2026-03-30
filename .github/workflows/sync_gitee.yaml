@@ -47,6 +47,11 @@ jobs:
           git remote -v || true
           echo '--- current branch ---'
           git branch --show-current || true
+          echo '--- ensure gitee remote exists (remove+add) ---'
+          git remote remove gitee >/dev/null 2>&1 || true
+          git remote add gitee git@gitee.com:jiaopengzi/blog-client.git || true
+          echo '--- git remote -v (after add) ---'
+          git remote -v || true
           echo '--- dry-run push via verbose SSH (no real push) ---'
           GIT_SSH_COMMAND="ssh -v -o BatchMode=yes -oStrictHostKeyChecking=no" git push --all gitee --dry-run || true
 
