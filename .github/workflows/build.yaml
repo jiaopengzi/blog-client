@@ -20,6 +20,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       # 1. 前置：写入 secrets 到工具依赖的 volume 目录（工具首次使用需要确认，必须前置）
