@@ -49,12 +49,12 @@ jobs:
 
       # 4. 安装必要依赖
       - name: Install common software
-        run: bash /home/runner/blog-tool-dev.sh install_common_software
+        run: sudo bash /home/runner/blog-tool-dev.sh install_common_software
 
       # 5a. PR：只构建，不推送
       - name: Build client image (PR check)
         if: github.event_name == 'pull_request'
-        run: bash /home/runner/blog-tool-dev.sh docker_build_client Dockerfile
+        run: sudo bash /home/runner/blog-tool-dev.sh docker_build_client Dockerfile
 
       # 5b. tag / 手动：构建并推送到 Docker Hub
       - name: Build and push client image
