@@ -35,11 +35,11 @@ jobs:
           echo "用户接受时间: $(date +"%Y-%m-%d %H:%M:%S")" > /home/runner/volume/blog_tool_env/disclaimer_accepted
           echo "127.0.0.1"                                > /home/runner/volume/blog_tool_env/public_ip_address
           echo "blog-client-build"                        > /home/runner/volume/blog_tool_env/project_name
-          if [ "${{ github.event_name }}" != "pull_request" ]; then
-            echo "$DOCKER_HUB_TOKEN"  > /home/runner/volume/blog_tool_env/docker_hub_token
-            echo "$BLOG_GITHUB_TOKEN" > /home/runner/volume/blog_tool_env/github_token
-            echo "$GITEE_TOKEN"       > /home/runner/volume/blog_tool_env/gitee_token
-          fi
+          echo "$DOCKER_HUB_TOKEN"                        > /home/runner/volume/blog_tool_env/docker_hub_token
+          echo "$BLOG_GITHUB_TOKEN"                       > /home/runner/volume/blog_tool_env/github_token
+          echo "$GITEE_TOKEN"                             > /home/runner/volume/blog_tool_env/gitee_token
+
+          ls -l /home/runner/volume/blog_tool_env
 
       # 2. Checkout 代码
       - name: Checkout code
