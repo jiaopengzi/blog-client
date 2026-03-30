@@ -39,6 +39,6 @@ jobs:
 
       - name: Push to Gitee
         run: |
-          git remote add gitee git@gitee.com:jiaopengzi/blog-tool.git
+          git remote add gitee git@gitee.com:jiaopengzi/blog-client.git
           # 确保本地获取到远端 refs，这样 --force-with-lease 才能正确检测是否安全覆盖
           git push --force-with-lease gitee main
