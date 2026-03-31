@@ -1,0 +1,73 @@
+# **注意 文件名称要和 gitlab 文本页面下对应项目的 设置->CI/CD->通用设置中的 CI/CD 配置文件对齐 其他名称无法生效**
+stages:
+  - docker-build-client-env
+  - docker-build-client
+  - docker-deploy
+
+# 编译环境(仅在 package.json 或 Dockerfile 变更时, 或手动触发)
+build-env:
+  tags:
+    - pve109
+  stage: docker-build-client-env
+  script:
+    - sudo bash /home/jiaopengzi/blog-tool-dev.sh docker_build_client_env
+  rules:
+    # 不在 tag 推送时执行
+    - if: "$CI_COMMIT_TAG"
+      when: never
+
+    # 自动触发条件：文件变更时立即执行(无论触发类型)
+    - changes:
+        - package.json
+        - Dockerfile
+      when: on_success
+
+    # 可以手动触发
+    - when: manual
+      allow_failure: false
+
+    # 其他情况不执行
+    - when: never
+
+# 编译 docker 镜像(仅当有 tag 时执行)
+build:
+  tags:
+    - pve109
+  stage: docker-build-client
+  script:
+    - sudo COSIGN_PRIVATE_KEY="$COSIGN_PRIVATE_KEY" COSIGN_PRIVATE_KEY_PWD="$COSIGN_PRIVATE_KEY_PWD" bash /home/jiaopengzi/blog-tool-dev.sh docker_build_push_client
+  rules:
+    # 仅在有 tag 推送时执行
+    - if: "$CI_COMMIT_TAG"
+      when: on_success
+
+    # 可以手动触发
+    - when: manual
+      allow_failure: false
+
+    # 其他情况不执行
+    - when: never
+
+# 部署到生产环境(仅当有 tag 时执行)
+deploy:
+  tags:
+    - pve109
+  stage: docker-deploy
+  script:
+    - echo "部署到生产环境"
+    # # 拉取镜像
+    # 示例 ssh -p 1234 user@127.0.0.1 'sudo bash /home/jiaopengzi/blog-tool-dev.sh docker_pull_client'
+    # - ssh -p 1234 "DEPLOY_INFO" 'sudo bash /home/jiaopengzi/blog-tool-dev.sh docker_pull_client'
+    # # 启动容器
+    # - ssh -p 1234 "DEPLOY_INFO" 'sudo bash /home/jiaopengzi/blog-tool-dev.sh docker_client_start'
+  rules:
+    # 仅在有 tag 推送时执行
+    - if: "$CI_COMMIT_TAG"
+      when: on_success
+
+    # 可以手动触发
+    - when: manual
+      allow_failure: false
+
+    # 其他情况不执行
+    - when: never
