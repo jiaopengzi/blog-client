@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev\src\stores\editor-defaults.test.ts
+ * FilePath    : blog-client\src\stores\editor-defaults.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

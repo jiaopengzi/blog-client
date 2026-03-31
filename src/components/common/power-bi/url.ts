@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev\src\components\common\power-bi\url.ts
+ * FilePath    : blog-client\src\components\common\power-bi\url.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

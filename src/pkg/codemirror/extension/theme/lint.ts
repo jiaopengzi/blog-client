@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev\src\pkg\codemirror\extension\theme\lint.ts
+ * FilePath    : blog-client\src\pkg\codemirror\extension\theme\lint.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

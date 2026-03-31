@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev\src\stores\customElementsDataCache.ts
+ * FilePath    : blog-client\src\stores\customElementsDataCache.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

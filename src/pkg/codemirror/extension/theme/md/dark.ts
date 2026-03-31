@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev\src\pkg\codemirror\extension\theme\md\dark.ts
+ * FilePath    : blog-client\src\pkg\codemirror\extension\theme\md\dark.ts
  * Description : markdown 暗黑主题
  */
 

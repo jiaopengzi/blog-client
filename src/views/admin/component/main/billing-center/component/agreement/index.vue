@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client-dev\src\views\admin\component\main\billing-center\component\agreement\index.vue
+ * FilePath    : blog-client\src\views\admin\component\main\billing-center\component\agreement\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

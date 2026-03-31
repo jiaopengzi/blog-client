@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev\src\utils\cssValidator.test.ts
+ * FilePath    : blog-client\src\utils\cssValidator.test.ts
  * Description : css 校验器单元测试
  */
 

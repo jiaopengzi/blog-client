@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev/src/pkg/codemirror/extension/theme/tokyonight/dark.ts
+ * FilePath    : blog-client/src/pkg/codemirror/extension/theme/tokyonight/dark.ts
  * Description : tokyonight dark 主题
  */
 

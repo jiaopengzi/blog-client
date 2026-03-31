@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev\src\components\common\date-range-shortcuts\types.ts
+ * FilePath    : blog-client\src\components\common\date-range-shortcuts\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

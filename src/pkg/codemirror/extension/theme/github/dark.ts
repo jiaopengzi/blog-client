@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev/src/pkg/codemirror/extension/theme/github/dark.ts
+ * FilePath    : blog-client/src/pkg/codemirror/extension/theme/github/dark.ts
  * Description : github dark 主题
  */
 

@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev/src/pkg/codemirror/extension/theme/vue/light.ts
+ * FilePath    : blog-client/src/pkg/codemirror/extension/theme/vue/light.ts
  * Description : vue light 主题
  */
 

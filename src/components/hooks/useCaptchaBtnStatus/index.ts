@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev\src\components\hooks\useCaptchaBtnStatus\index.ts
+ * FilePath    : blog-client\src\components\hooks\useCaptchaBtnStatus\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

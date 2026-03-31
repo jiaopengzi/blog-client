@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev\src\utils\tagReplace.ts
+ * FilePath    : blog-client\src\utils\tagReplace.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

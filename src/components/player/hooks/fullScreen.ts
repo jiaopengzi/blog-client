@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev\src\components\player\hooks\fullScreen.ts
+ * FilePath    : blog-client\src\components\player\hooks\fullScreen.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

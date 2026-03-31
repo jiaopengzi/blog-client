@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev\src\pkg\codemirror\extension\theme\md\light.ts
+ * FilePath    : blog-client\src\pkg\codemirror\extension\theme\md\light.ts
  * Description : markdown 明亮主题
  */
 

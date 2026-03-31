@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev\src\components\editor\components\settings\powerbi-settings\index.ts
+ * FilePath    : blog-client\src\components\editor\components\settings\powerbi-settings\index.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

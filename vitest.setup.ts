@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev\vitest.setup.ts
+ * FilePath    : blog-client\vitest.setup.ts
  * Description : vitest 全局配置文件
  */
 

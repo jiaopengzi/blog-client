@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev\src\theme\runtime.ts
+ * FilePath    : blog-client\src\theme\runtime.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

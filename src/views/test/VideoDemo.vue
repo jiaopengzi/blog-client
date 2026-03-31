@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client-dev\src\views\test\VideoDemo.vue
+ * FilePath    : blog-client\src\views\test\VideoDemo.vue
 -->
 <template>
     <div class="container">

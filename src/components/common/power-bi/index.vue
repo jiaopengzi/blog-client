@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client-dev\src\components\common\power-bi\index.vue
+ * FilePath    : blog-client\src\components\common\power-bi\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

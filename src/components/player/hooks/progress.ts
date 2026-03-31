@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev\src\components\player\hooks\progress.ts
+ * FilePath    : blog-client\src\components\player\hooks\progress.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

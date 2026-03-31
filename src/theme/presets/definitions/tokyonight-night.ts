@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev\src\theme\presets\definitions\tokyonight-night.ts
+ * FilePath    : blog-client\src\theme\presets\definitions\tokyonight-night.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client-dev\src\components\player\components\volume-bar-inner\index.vue
+ * FilePath    : blog-client\src\components\player\components\volume-bar-inner\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

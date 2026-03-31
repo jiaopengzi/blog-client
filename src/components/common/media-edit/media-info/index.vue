@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client-dev\src\components\common\media-edit\media-info\index.vue
+ * FilePath    : blog-client\src\components\common\media-edit\media-info\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

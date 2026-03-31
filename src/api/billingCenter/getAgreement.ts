@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev\src\api\billingCenter\getAgreement.ts
+ * FilePath    : blog-client\src\api\billingCenter\getAgreement.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

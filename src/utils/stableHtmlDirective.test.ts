@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev\src\utils\stableHtmlDirective.test.ts
+ * FilePath    : blog-client\src\utils\stableHtmlDirective.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

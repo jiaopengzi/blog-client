@@ -1,5 +1,5 @@
 <!--
- * FilePath    : blog-client-dev\src\components\common\post-password\index.vue
+ * FilePath    : blog-client\src\components\common\post-password\index.vue
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

@@ -1,5 +1,5 @@
 /**
- * FilePath    : bf\c:\Desktop\blog-client-dev\src\components\common\phone-section-nav\types.ts
+ * FilePath    : bf\c:\Desktop\blog-client\src\components\common\phone-section-nav\types.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.

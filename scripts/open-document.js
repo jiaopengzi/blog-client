@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev\scripts\open-document.js
+ * FilePath    : blog-client\scripts\open-document.js
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

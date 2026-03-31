@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev\src\pkg\codemirror\extension\theme\index.ts
+ * FilePath    : blog-client\src\pkg\codemirror\extension\theme\index.ts
  * Description : 统一导出主题
  */
 

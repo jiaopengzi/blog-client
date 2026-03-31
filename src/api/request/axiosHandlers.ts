@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev\src\api\request\handlers.ts
+ * FilePath    : blog-client\src\api\request\handlers.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.

@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev/src/pkg/codemirror/extension/theme/github/light.ts
+ * FilePath    : blog-client/src/pkg/codemirror/extension/theme/github/light.ts
  * Description : github light 主题
  */
 

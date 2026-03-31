@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev\src\pkg\codemirror\extension\mdlint\rule\__test__\006.test.ts
+ * FilePath    : blog-client\src\pkg\codemirror\extension\mdlint\rule\__test__\006.test.ts
  * Author      : jiaopengzi
  * Description : 测试 rule006 - 检测 video-player 标签是否合法
  */

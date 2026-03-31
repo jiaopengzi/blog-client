@@ -1,5 +1,5 @@
 /**
- * FilePath    : blog-client-dev/src/pkg/codemirror/extension/theme/vue/dark.ts
+ * FilePath    : blog-client/src/pkg/codemirror/extension/theme/vue/dark.ts
  * Description : vue dark 主题
  */
 
