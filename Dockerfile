@@ -17,8 +17,10 @@ RUN pnpm install
 # 将源代码复制到容器中
 COPY . .
 
-# 编译 Vue 项目
-RUN pnpm build
+# 运行 lint、测试和构建命令
+RUN pnpm lint && \
+    pnpm test && \
+    pnpm build
 
 # 使用一个较小的基础镜像以减小构建产物的体积
 FROM nginx:1.29.6-alpine
