@@ -74,3 +74,9 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           sudo GITHUB_ACTIONS=true GITHUB_WORKSPACE="$GITHUB_WORKSPACE" COSIGN_PRIVATE_KEY="$COSIGN_PRIVATE_KEY" COSIGN_PRIVATE_KEY_PWD="$COSIGN_PRIVATE_KEY_PWD" GITHUB_TOKEN="$GITHUB_TOKEN" bash /home/runner/blog-tool-dev.sh docker_build_push_client Dockerfile
+
+      # 6. 移除环境变量文件，避免泄露风险
+      - name: Remove environment variable files
+        run: rm -rf /home/runner/volume/blog_tool_env
+        if: always()
+        continue-on-error: true
