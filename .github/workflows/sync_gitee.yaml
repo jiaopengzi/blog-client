@@ -44,12 +44,17 @@ jobs:
           # 覆盖（先移除再添加），避免因已存在 remote 报错
           git remote remove gitee >/dev/null 2>&1 || true
           git remote add gitee git@gitee.com:jiaopengzi/blog-client.git
-          # 抓取远端 main 的 refs，增加 --force-with-lease 成功概率
-          git fetch gitee main --prune || true
-          # 优先使用 --force-with-lease 保守推送；若失败，则仅对 main 使用 --force 覆盖（避免强制推送所有 refs）
-          if git push --force-with-lease gitee main; then
-            echo "push succeeded with --force-with-lease"
+          # 先判断远端是否已经存在 main；首次同步空仓库时直接创建 main
+          if git ls-remote --exit-code --heads gitee main >/dev/null 2>&1; then
+            # 远端已有 main 时，先抓取再用 --force-with-lease 做保守覆盖
+            git fetch gitee main --prune || true
+            if git push --force-with-lease gitee HEAD:main; then
+              echo "push succeeded with --force-with-lease"
+            else
+              echo "--force-with-lease failed, falling back to --force for main"
+              git push --force gitee HEAD:main
+            fi
           else
-            echo "--force-with-lease failed, falling back to --force for main"
-            git push --force gitee main
+            # 空仓库首次同步，直接创建远端 main
+            git push -u gitee HEAD:main
           fi
