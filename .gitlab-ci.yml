@@ -5,10 +5,11 @@
 # Description : GitLab CI/CD 配置文件
 
 # **注意 文件名称要和 gitlab 文本页面下对应项目的 设置->CI/CD->通用设置中的 CI/CD 配置文件对齐 其他名称无法生效**
+
 stages:
   - docker-build-client-env
   - docker-build-client
-  - docker-deploy
+  # - docker-deploy
 
 # 编译环境(仅在 package.json 或 Dockerfile 变更时, 或手动触发)
 build-env:
@@ -28,57 +29,79 @@ build-env:
         - Dockerfile
       when: on_success
 
-    # 可以手动触发
+    # 默认保留手动触发入口；未命中 changes 时不会自动执行，只会显示为 manual
     - when: manual
       allow_failure: false
 
     # 其他情况不执行
     - when: never
 
-# 编译 docker 镜像(仅当有 tag 时执行)
-build:
+# 构建基础配置(共用 tag、stage 及签名参数)
+.build-client-base:
   tags:
     - pve109
   stage: docker-build-client
   script:
-    - sudo COSIGN_PRIVATE_KEY="$COSIGN_PRIVATE_KEY" COSIGN_PRIVATE_KEY_PWD="$COSIGN_PRIVATE_KEY_PWD" bash /home/jiaopengzi/blog-tool-dev.sh docker_build_push_client
-  rules:
-    # # 仅在有 tag 推送时执行, gitlab 作为内部仓库, 不需要 tag 推送
-    # - if: "$CI_COMMIT_BRANCH == 'master'"
-    #   when: on_success
+    - sudo COSIGN_PRIVATE_KEY="$COSIGN_PRIVATE_KEY" COSIGN_PRIVATE_KEY_PWD="$COSIGN_PRIVATE_KEY_PWD" bash /home/jiaopengzi/blog-tool-dev.sh ${BUILD_FUNCTION}
 
-    # dev 分支推送时也可以手动触发构建(不打 tag 的测试镜像)
+# 外部 PR 测试：使用开源 Dockerfile 构建, 仅推送到私有仓库, 不发布 Docker Hub
+build-pr-test:
+  extends: .build-client-base
+  needs: []
+  variables:
+    BUILD_FUNCTION: docker_build_push_client_pr_test
+  rules:
+    # test-pr-* 分支推送时自动触发
+    - if: "$CI_COMMIT_BRANCH =~ /^test-pr-/"
+      when: on_success
+
+    # 其他分支可手动触发(便于调试)
+    - when: manual
+      allow_failure: false
+    - when: never
+
+# 常规构建：推送到 Docker Hub 并发布 Releases(dev 分支手动触发, tag 推送自动不走此处)
+build:
+  extends: .build-client-base
+  needs: []
+  variables:
+    BUILD_FUNCTION: docker_build_push_client
+  rules:
+    # test-pr-* 由 build-pr-test 处理, 此处排除
+    - if: "$CI_COMMIT_BRANCH =~ /^test-pr-/"
+      when: never
+
+    # dev 分支可手动触发(构建开发镜像, 不会发布 Docker Hub 因为版本带 dev 前缀)
     - if: "$CI_COMMIT_BRANCH == 'dev'"
       when: manual
       allow_failure: false
 
-    # 可以手动触发
+    # 其他分支(含 main)可手动触发
     - when: manual
       allow_failure: false
 
-    # 其他情况不执行
     - when: never
 
-# 部署到生产环境(仅当有 tag 时执行)
-deploy:
-  tags:
-    - pve109
-  stage: docker-deploy
-  script:
-    - echo "部署到生产环境"
-    # # 拉取镜像
-    # 示例 ssh -p 1234 user@127.0.0.1 'sudo bash /home/jiaopengzi/blog-tool-dev.sh docker_pull_client'
-    # - ssh -p 1234 "DEPLOY_INFO" 'sudo bash /home/jiaopengzi/blog-tool-dev.sh docker_pull_client'
-    # # 启动容器
-    # - ssh -p 1234 "DEPLOY_INFO" 'sudo bash /home/jiaopengzi/blog-tool-dev.sh docker_client_start'
-  rules:
-    # 仅在有 tag 推送时执行
-    - if: "$CI_COMMIT_TAG"
-      when: on_success
+# # 部署到生产环境(仅当有 tag 时执行)
+# deploy:
+#   tags:
+#     - pve109
+#   stage: docker-deploy
+#   script:
+#     - echo "部署到生产环境"
+#     # # 拉取镜像
+#     # 示例 ssh -p 1234 user@127.0.0.1 'sudo bash /home/jiaopengzi/blog-tool-dev.sh docker_pull_client'
+#     # - ssh -p 1234 "DEPLOY_INFO" 'sudo bash /home/jiaopengzi/blog-tool-dev.sh docker_pull_client'
+#     # # 启动容器
+#     # - ssh -p 1234 "DEPLOY_INFO" 'sudo bash /home/jiaopengzi/blog-tool-dev.sh docker_client_start'
+#   rules:
+#     # 仅在有 tag 推送时执行
+#     - if: "$CI_COMMIT_TAG"
+#       when: on_success
 
-    # 可以手动触发
-    - when: manual
-      allow_failure: false
+#     # 可以手动触发
+#     - when: manual
+#       allow_failure: false
 
-    # 其他情况不执行
-    - when: never
+#     # 其他情况不执行
+#     - when: never
