@@ -1,3 +1,9 @@
+# FilePath    : blog-client\.gitlab-ci.yml
+# Author      : jiaopengzi
+# Blog        : https://jiaopengzi.com
+# Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+# Description : GitLab CI/CD 配置文件
+
 # **注意 文件名称要和 gitlab 文本页面下对应项目的 设置->CI/CD->通用设置中的 CI/CD 配置文件对齐 其他名称无法生效**
 stages:
   - docker-build-client-env
@@ -37,9 +43,14 @@ build:
   script:
     - sudo COSIGN_PRIVATE_KEY="$COSIGN_PRIVATE_KEY" COSIGN_PRIVATE_KEY_PWD="$COSIGN_PRIVATE_KEY_PWD" bash /home/jiaopengzi/blog-tool-dev.sh docker_build_push_client
   rules:
-    # 仅在有 tag 推送时执行
-    - if: "$CI_COMMIT_TAG"
-      when: on_success
+    # # 仅在有 tag 推送时执行, gitlab 作为内部仓库, 不需要 tag 推送
+    # - if: "$CI_COMMIT_BRANCH == 'master'"
+    #   when: on_success
+
+    # dev 分支推送时也可以手动触发构建(不打 tag 的测试镜像)
+    - if: "$CI_COMMIT_BRANCH == 'dev'"
+      when: manual
+      allow_failure: false
 
     # 可以手动触发
     - when: manual

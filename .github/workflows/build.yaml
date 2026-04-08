@@ -1,3 +1,9 @@
+# FilePath    : blog-client\.github\workflows\build.yaml
+# Author      : jiaopengzi
+# Blog        : https://jiaopengzi.com
+# Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+# Description : GitHub Actions CI/CD 配置文件
+
 # **注意 文件名称要和 GitHub 仓库 blog-client 的 .github/workflows 下对应文件名称一致**
 # Repository secrets 需要提前在 GitHub 仓库设置中配置:
 #   DOCKER_HUB_TOKEN, _GITHUB_TOKEN, GITEE_TOKEN, COSIGN_PRIVATE_KEY, COSIGN_PRIVATE_KEY_PWD
