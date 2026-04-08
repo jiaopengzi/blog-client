@@ -97,7 +97,7 @@
         "@vitejs/plugin-vue-jsx": "^5.1.5",
         "@vue/test-utils": "^2.4.6",
         "@vue/tsconfig": "^0.9.1",
-        "axios": "^1.13.6",
+        "axios": "1.13.6",
         "eslint": "^10.1.0",
         "eslint-plugin-vue": "^10.8.0",
         "glob": "^13.0.6",
