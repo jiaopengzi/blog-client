@@ -70,7 +70,7 @@ describe("VideoPlayer", () => {
             },
             global: {
                 stubs: {
-                    Controls: true,
+                    VideoControls: true,
                     VideoWatermark: {
                         template: '<div><slot></slot><slot name="toc"></slot></div>',
                     },

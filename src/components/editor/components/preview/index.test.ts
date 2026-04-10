@@ -3,6 +3,7 @@ import { nextTick } from "vue"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { CommandsKey } from "@/components/editor/command"
+import { stableHtmlDirective } from "@/utils/stableHtmlDirective"
 
 const {
     debounceMock,
@@ -91,6 +92,11 @@ describe("HtmlPreview", () => {
                     time: new Date(),
                 },
             },
+            global: {
+                directives: {
+                    "stable-html": stableHtmlDirective,
+                },
+            },
         })
 
         await waitForAsyncRender()
@@ -114,6 +120,11 @@ describe("HtmlPreview", () => {
                 viewCommand: {
                     commandName: "" as CommandsKey,
                     time: new Date(0),
+                },
+            },
+            global: {
+                directives: {
+                    "stable-html": stableHtmlDirective,
                 },
             },
         })
