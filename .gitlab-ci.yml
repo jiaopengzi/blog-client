@@ -19,6 +19,10 @@ build-env:
   script:
     - sudo bash /home/jiaopengzi/blog-tool-dev.sh docker_build_client_env
   rules:
+    # test-pr-* 分支只跑 build-pr-test，此处明确排除 build-env
+    - if: "$CI_COMMIT_BRANCH =~ /^test-pr-/"
+      when: never
+
     # 不在 tag 推送时执行
     - if: "$CI_COMMIT_TAG"
       when: never
