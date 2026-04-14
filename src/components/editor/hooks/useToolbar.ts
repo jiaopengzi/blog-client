@@ -121,7 +121,7 @@ export function useToolbar(
 
         if (name === CommandsKey.Help) {
             // 跳转到指定链接
-            window.open("https://jiaopengzi.com", "_blank")
+            window.open("https://jiaopengzi.com/page/editor-docs", "_blank")
             return
         }
 
