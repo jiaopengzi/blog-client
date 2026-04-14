@@ -42,6 +42,8 @@
     h2 {
         font-size: 1.6em;
         margin: 2em 0 0.75em 0;
+        padding-bottom: 0.4em;
+        border-bottom: 1px solid var(--jpz-border-color);
     }
 
     h3 {
@@ -69,7 +71,6 @@
         font-family: var(--preview-font-family-title);
         color: var(--jpz-color-primary);
         font-weight: 700;
-        padding-bottom: 2px;
     }
 
     // 第一个子元素不需要额外的顶部间距
