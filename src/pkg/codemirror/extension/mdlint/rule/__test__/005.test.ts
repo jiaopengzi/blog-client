@@ -92,4 +92,16 @@ describe("rule005 - 付费标签合法性检测", () => {
         const diags = run(doc as unknown as DocLike)
         expect(diags).toHaveLength(0)
     })
+
+    it("行内代码片段中的 pay 标签不应触发 lint", () => {
+        const doc = makeDoc(["pre", "", "- 内容（例如 `<pay-read>`、`<pay-download>`）", "", "post"])
+        const diags = run(doc as unknown as DocLike)
+        expect(diags).toHaveLength(0)
+    })
+
+    it("表格单元格中的行内代码不应触发 lint", () => {
+        const doc = makeDoc(["| 视频 | `<pay-video>...</pay-video>` | 付费视频文章 |"])
+        const diags = run(doc as unknown as DocLike)
+        expect(diags).toHaveLength(0)
+    })
 })

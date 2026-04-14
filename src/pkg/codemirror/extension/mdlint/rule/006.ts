@@ -15,6 +15,7 @@ import { parseAttributes } from "@/utils/attribute"
 import type { AttrContext, DocLike, VideoPlayerAttrs } from "../types"
 import {
     collectFencedCodeLineNumbers,
+    isInsideInlineCode,
     validateBlankLinesForPair,
     validateEmptyContent,
     validateNoNestedCustomTags,
@@ -53,6 +54,8 @@ export function run(doc: DocLike): Diagnostic[] {
         tagRegex.lastIndex = 0
 
         while ((match = tagRegex.exec(lineText)) !== null) {
+            // 跳过行内代码片段（单个反引号包裹）中的标签
+            if (isInsideInlineCode(lineText, match.index)) continue
             const fullMatch = match[0]
             const isClosing = fullMatch.startsWith("</")
 

@@ -218,6 +218,23 @@ export function validateSingleLineForPair(ctx: PairContext) {
 }
 
 /**
+ * 判断行中指定位置是否处于单个反引号包裹的行内代码片段内.
+ * @param lineText 当前行文本.
+ * @param matchIndex 待检测的字符起始位置.
+ * @returns 若该位置在行内代码片段内则返回 true.
+ */
+export function isInsideInlineCode(lineText: string, matchIndex: number): boolean {
+    const inlineCodeRegex = /`[^`\n]*`/g
+    let m: RegExpExecArray | null
+    while ((m = inlineCodeRegex.exec(lineText)) !== null) {
+        if (matchIndex > m.index && matchIndex < m.index + m[0].length) {
+            return true
+        }
+    }
+    return false
+}
+
+/**
  * 校验标签内部不允许嵌套项目自定义标签.
  * @param ctx - 上下文对象.
  * @returns boolean 是否检测到嵌套的自定义标签.
@@ -263,6 +280,7 @@ export default {
     loadEagerRules,
     getLazyRuleLoaders,
     collectFencedCodeLineNumbers,
+    isInsideInlineCode,
     validateNoSurroundingContent,
     validateEmptyContent,
     validateBlankLinesForPair,

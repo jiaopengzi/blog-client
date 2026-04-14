@@ -120,4 +120,10 @@ describe("rule009", () => {
 
         expect(diags.some((item) => item.message.includes("不允许嵌套同名标签"))).toBe(true)
     })
+
+    it("行内代码片段中的 wechat-captcha 标签不应触发 lint", () => {
+        const doc = makeDoc(["- 示例：`<wechat-captcha ...>...</wechat-captcha>`"])
+        const diags = run(doc)
+        expect(diags).toHaveLength(0)
+    })
 })

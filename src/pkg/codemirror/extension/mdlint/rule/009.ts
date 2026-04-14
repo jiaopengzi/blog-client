@@ -10,7 +10,7 @@ import type { Diagnostic } from "@codemirror/lint"
 import { parseAttributes } from "@/utils/attribute"
 
 import type { AttrContext, DocLike, WechatCaptchaAttrs } from "../types"
-import { collectFencedCodeLineNumbers, validateBlankLinesForPair, validateNoSurroundingContent } from "../utils"
+import { collectFencedCodeLineNumbers, isInsideInlineCode, validateBlankLinesForPair, validateNoSurroundingContent } from "../utils"
 
 export const id = "rule009"
 export const defaultOptions = {}
@@ -34,6 +34,8 @@ export function run(doc: DocLike): Diagnostic[] {
         tagRegex.lastIndex = 0
 
         while ((match = tagRegex.exec(lineText)) !== null) {
+            // 跳过行内代码片段（单个反引号包裹）中的标签
+            if (isInsideInlineCode(lineText, match.index)) continue
             const fullMatch = match[0]
             const isClosing = fullMatch.startsWith("</")
 

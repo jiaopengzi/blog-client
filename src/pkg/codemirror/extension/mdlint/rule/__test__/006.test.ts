@@ -86,4 +86,10 @@ describe("rule006 - video-player 标签合法性检测", () => {
         const diags = run(doc as unknown as DocLike)
         expect(diags).toHaveLength(0)
     })
+
+    it("行内代码片段中的 video-player 标签不应触发 lint", () => {
+        const doc = makeDoc(['- 示例：`<video-player video-type="hls" id="m-1"></video-player>`'])
+        const diags = run(doc as unknown as DocLike)
+        expect(diags).toHaveLength(0)
+    })
 })
