@@ -13,6 +13,7 @@ import { computed, onBeforeMount, onMounted, reactive, ref, toRef } from "vue"
 
 import { SocialLoginType } from "@/api/common"
 import { handleResErr, ResponseCode } from "@/api/response"
+import { getSocialLoginStatusAPI, type GetSocialLoginStatusResponse } from "@/api/setting/getSocialLoginStatus"
 import { setAvatarAPI, type SetAvatarRequest } from "@/api/upload/setAvatar"
 import type { EditUserInfoRequest } from "@/api/user/editUserInfo"
 import { editUserInfoAPI } from "@/api/user/editUserInfo"
@@ -38,6 +39,7 @@ export interface UseInfoReturnType {
     submitForm: (formEl: FormInstance | undefined) => void
     showQQ: Ref<boolean>
     showWeChat: Ref<boolean>
+    socialLoginStatus: Ref<GetSocialLoginStatusResponse>
     socialNickname: (platform: keyof UserInfo, field: string) => string
     bindSocial: (platform: SocialLoginType) => Promise<void>
     unBindSocial: (platform: SocialLoginType) => Promise<void>
@@ -164,6 +166,11 @@ export function useInfo(): UseInfoReturnType {
     const showQQ = ref(false)
     const showWeChat = ref(false)
 
+    const socialLoginStatus = ref<GetSocialLoginStatusResponse>({
+        qq: false,
+        wechat: false,
+    })
+
     /**
      * @description: 获取社交昵称
      * @param platform 平台
@@ -240,9 +247,12 @@ export function useInfo(): UseInfoReturnType {
         })
     }
 
-    onBeforeMount(() => {
-        // 组件挂载前
+    onBeforeMount(async () => {
         userStore.getUserInfoByToken()
+        const res = await getSocialLoginStatusAPI()
+        if (res.data.code === ResponseCode.GetSocialLoginStatusSuccess) {
+            socialLoginStatus.value = res.data.data
+        }
     })
 
     return {
@@ -258,6 +268,7 @@ export function useInfo(): UseInfoReturnType {
         submitForm,
         showQQ,
         showWeChat,
+        socialLoginStatus,
         socialNickname,
         bindSocial,
         unBindSocial,

@@ -15,9 +15,9 @@
             </el-descriptions>
         </div>
 
-        <div class="social-info">
+        <div class="social-info" v-if="socialLoginStatus.qq || socialLoginStatus.wechat">
             <el-descriptions title="社交信息" :column="descriptionCols" size="large" border>
-                <el-descriptions-item :label="SocialLoginDisplay.QQ">
+                <el-descriptions-item v-if="socialLoginStatus.qq" :label="SocialLoginDisplay.QQ">
                     <el-button class="btns" type="primary" plain size="small" v-if="!showQQ" @click="bindSocial(SocialLoginType.QQ)">
                         绑定{{ SocialLoginDisplay.QQ }}
                     </el-button>
@@ -27,7 +27,7 @@
                     </el-button>
                 </el-descriptions-item>
 
-                <el-descriptions-item :label="SocialLoginDisplay.WeChat">
+                <el-descriptions-item v-if="socialLoginStatus.wechat" :label="SocialLoginDisplay.WeChat">
                     <el-button class="btns" type="primary" plain size="small" v-if="!showWeChat" @click="bindSocial(SocialLoginType.WeChat)">
                         绑定{{ SocialLoginDisplay.WeChat }}
                     </el-button>
@@ -125,6 +125,7 @@ const {
     submitForm,
     showQQ,
     showWeChat,
+    socialLoginStatus,
     socialNickname,
     bindSocial,
     unBindSocial,
