@@ -148,7 +148,7 @@
     ul {
         padding-left: 2em;
         position: relative;
-        word-break: break-all;
+        overflow-wrap: break-word;
         margin: 0.75em 0;
 
         color: var(--jpz-text-color-primary);
@@ -173,6 +173,11 @@
                 }
             }
         }
+    }
+
+    // 嵌套列表不需要额外外间距
+    ol ol, ol ul, ul ol, ul ul {
+        margin: 0;
     }
 
     // task list 样式
@@ -283,7 +288,7 @@
         margin: 0.75em 0;
         line-height: 1.8em;
         // 自动换行
-        word-break: break-all;
+        overflow-wrap: break-word;
         color: var(--jpz-text-color-primary);
     }
 
