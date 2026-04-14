@@ -32,7 +32,7 @@
                 </el-form-item>
 
                 <!-- 登录按钮, native-type="submit" 兼容 Enter 键提交 -->
-                <el-form-item>
+                <el-form-item class="login-btn-item">
                     <el-button type="primary" native-type="submit" class="login-btn">登录</el-button>
                 </el-form-item>
 
@@ -42,11 +42,11 @@
                         <span class="divider-text">社交登录</span>
                     </div>
                     <div class="social">
-                        <el-button v-if="socialLoginStatus.qq" class="social-btn" @click="loginByWeChat">
-                            <j-icon :name="IconKeys.Wechat" custom-class="iconfont icon-wechat" />
-                        </el-button>
-                        <el-button v-if="socialLoginStatus.wechat" class="social-btn" @click="loginByQQ">
+                        <el-button v-if="socialLoginStatus.qq" class="social-btn" @click="loginByQQ">
                             <j-icon :name="IconKeys.Qq" custom-class="iconfont icon-qq" />
+                        </el-button>
+                        <el-button v-if="socialLoginStatus.wechat" class="social-btn" @click="loginByWeChat">
+                            <j-icon :name="IconKeys.Wechat" custom-class="iconfont icon-wechat" />
                         </el-button>
                     </div>
                 </template>
@@ -257,6 +257,11 @@ onBeforeMount(async () => {
     font-size: 15px;
     border-radius: 8px;
     letter-spacing: 2px;
+}
+
+.login-btn-item {
+    margin-top: 32px;
+    margin-bottom: 32px;
 }
 
 // 社交登录分割线
