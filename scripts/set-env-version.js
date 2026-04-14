@@ -14,7 +14,7 @@ import fs from "fs"
 const getGitTag = () => {
     try {
         // 执行 shell 命令获取所有 tag, 并按版本排序(最近的在前)
-        const out = execSync("git describe --tags --abbrev=0", { encoding: "utf-8" }).trim()
+        const out = execSync("git describe --tags --abbrev=0", { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).trim()
 
         // console.log("============>out", out)
 
@@ -48,7 +48,7 @@ const getGitTag = () => {
 const getGitCommit = () => {
     try {
         // git rev-parse HEAD 返回当前提交的完整 hash
-        return execSync("git rev-parse HEAD", { encoding: "utf-8" }).trim()
+        return execSync("git rev-parse HEAD", { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).trim()
     } catch {
         return "dev"
     }
