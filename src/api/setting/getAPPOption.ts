@@ -92,6 +92,10 @@ export interface GetAPPOptionResponse {
     sitemap: APPOptionItem // 站点地图
     footer_statistics_code: APPOptionItem // 页脚添加同步统计代码
 
+    // 微信公众号推送(占位保证ts类型安全, 实际单独请求接口获取)
+    wechat_official_account_app_id: APPOptionItem
+    wechat_official_account_app_secret: APPOptionItem
+
     // 二维码相关
     wechat_official_account_qrcode: APPOptionItem // 微信公众号二维码
     wechat_qrcode: APPOptionItem // 微信二维码
