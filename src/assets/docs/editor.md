@@ -1,12 +1,9 @@
-# 编辑器帮助文档
 
-> 本文对应当前 `blog-client` 项目的编辑器实现，适用于文章编辑器与评论编辑器。
->
 > 标准 Markdown 的通用写法可以参考：<https://www.markdownguide.org/>。
 
 ## 1. 先快速认识这个编辑器
 
-这个编辑器不是“只能写纯 Markdown”的简化版，而是一个 **Markdown + 实时预览 + 自定义标签 + 公众号复制优化** 的增强编辑器。
+这个编辑器不是 “只能写纯 Markdown” 的简化版，而是一个 **Markdown + 实时预览 + 自定义标签 + 公众号复制优化** 的增强编辑器。
 
 你可以把它理解成：
 
@@ -34,15 +31,15 @@
 第二行
 ```
 
-预览时通常会直接换行，不一定非要在行尾补两个空格。
+预览时通常会直接换行，不一定非要在行尾补两个空格，当然使用 markdown lint 规范是非常棒的。
 
 ### 2.2 支持这些增强语法
 
 - `==高亮==`
 - `^上标^`
 - `~下标~`
-- `> [!NOTE]` 这种提醒块
-- `:smile:` 这种 Emoji 语法
+- `> [!NOTE]` 提醒块
+- `:smile:` Emoji 语法
 - 行内公式 `$...$`、块级公式 `$$...$$`
 - 脚注 `[^1]`
 - 原生 HTML（例如 `<details>`）
@@ -140,11 +137,6 @@
 
 - 当前更建议直接使用标题菜单，或使用 `Ctrl+1` 到 `Ctrl+6`。
 - 编辑器会根据标题自动生成目录。
-
-补充提醒：
-
-- 当前命令表里，“清空”和“代码块”都定义了 `Ctrl+Shift+C`。
-- 为了避免误触，建议这两个功能优先使用工具栏按钮。
 
 ### 4.3 菜单按钮：Emoji
 
@@ -390,11 +382,13 @@ $\ce{H2O}$
 写法：
 
 ```html
+
 <pay-read>
 
 这里是付费后才能看到的正文内容。
 
 </pay-read>
+
 ```
 
 建议：
@@ -409,11 +403,13 @@ $\ce{H2O}$
 写法：
 
 ```html
+
 <pay-download>
 
 这里可以写下载说明、附件内容、资源介绍等。
 
 </pay-download>
+
 ```
 
 ### 7.3 `<pay-video>`：付费视频内容
@@ -423,11 +419,13 @@ $\ce{H2O}$
 写法：
 
 ```html
+
 <pay-video>
 
 这里通常放视频之外的补充隐藏内容，例如资料包、补充说明、课件下载说明等。
 
 </pay-video>
+
 ```
 
 说明：
@@ -437,7 +435,9 @@ $\ce{H2O}$
 - 如果你只想显示付费视频，不额外写补充内容，也可以写成单行空标签：
 
 ```html
+
 <pay-video></pay-video>
+
 ```
 
 ### 7.4 `<pay-membership></pay-membership>`：会员购买卡片
@@ -447,7 +447,9 @@ $\ce{H2O}$
 写法：
 
 ```html
+
 <pay-membership></pay-membership>
+
 ```
 
 注意：
@@ -462,7 +464,9 @@ $\ce{H2O}$
 推荐写法：
 
 ```html
+
 <pay-key id="产品ID" title="产品标题" description="补充说明"></pay-key>
+
 ```
 
 字段说明：
@@ -483,7 +487,9 @@ $\ce{H2O}$
 #### HLS 视频写法
 
 ```html
+
 <video-player video-type="hls" id="视频ID" poster="封面地址"></video-player>
+
 ```
 
 说明：
@@ -495,7 +501,9 @@ $\ce{H2O}$
 #### MP4 / WEBM 写法
 
 ```html
+
 <video-player video-type="mp4" src="https://example.com/demo.mp4" poster="https://example.com/poster.jpg"></video-player>
+
 ```
 
 说明：
@@ -509,7 +517,9 @@ $\ce{H2O}$
 写法：
 
 ```html
+
 <power-bi src="https://app.powerbi.com/reportEmbed?reportId=abc123" maskcolor="#ffffff"></power-bi>
+
 ```
 
 字段说明：
@@ -531,11 +541,13 @@ $\ce{H2O}$
 写法：
 
 ```html
+
 <wechat-captcha name="您的公众号名称" codeurl="您的二维码地址" key="验证码" reply="回复关键词">
 
 这里是验证成功后才能看到的隐藏内容。
 
 </wechat-captcha>
+
 ```
 
 字段说明：
@@ -573,9 +585,10 @@ $\ce{H2O}$
 隐藏内容
 
 </pay-read>
+
 ```
 
-### 8.2 标签前后尽量留空行
+### 8.2 标签前后必须留空行
 
 对于 `pay-*`、`power-bi`、`wechat-captcha`、`video-player` 这类标签，最好都遵守：
 
@@ -598,9 +611,13 @@ $\ce{H2O}$
 例如，不推荐这样写：
 
 ```html
+
 <pay-read>
+
 <power-bi src="..."></power-bi>
+
 </pay-read>
+
 ```
 
 ### 8.5 `wechat-captcha` 是少数例外，但也有限制
@@ -626,9 +643,13 @@ $\ce{H2O}$
 如果你只是想写教程、展示示例，请把自定义标签放进围栏代码块里。这样编辑器不会把它当成真实组件来校验或渲染。
 
 ```html
+
 <pay-read>
+
 示例内容
+
 </pay-read>
+
 ```
 
 ## 9. 复制到微信公众号的推荐流程
@@ -704,3 +725,5 @@ Ctrl+D
 - 先点工具栏按钮插入模板；
 - 再只改里面的文字和属性值；
 - 不要手动乱改标签结构。
+
+最后祝你玩得愉快。
