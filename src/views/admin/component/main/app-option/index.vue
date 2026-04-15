@@ -18,12 +18,11 @@
 import { useHead } from "@unhead/vue"
 import type { FormRules } from "element-plus"
 import { storeToRefs } from "pinia"
-import { onBeforeMount, reactive, ref, useTemplateRef } from "vue"
+import { onBeforeMount, reactive, useTemplateRef } from "vue"
 
 import { OptionType } from "@/api/common"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { type GetAPPOptionResponse } from "@/api/setting/getAPPOption"
-import { type WeChatOfficialAccountAppInfoResponse, getWeChatOfficialAccountAppInfoAPI } from "@/api/setting/getWeChatOfficialAccountAppInfo"
 import { type UpdateAPPOption, updateAPPOptionAPI, type UpdateAPPOptionRequest } from "@/api/setting/updateAPPOption"
 import { cssValidatorFunc, imageURLRequiredValidatorFunc, jsonValidatorFunc } from "@/components/common/base-config-form"
 import { createCssSetup, createJsonSetup } from "@/pkg/codemirror"
@@ -47,7 +46,6 @@ const formRef = useTemplateRef<APPOptionFormRef>("formRef")
 
 const { app_options: optionDataSrc } = storeToRefs(optionsStore)
 const optionData = reactive<APPOptionForm>({} as APPOptionForm)
-const wechatAppInfoSrc = ref<WeChatOfficialAccountAppInfoResponse | null>(null)
 
 const submitForm = async () => {
     // 校验表单
@@ -64,13 +62,13 @@ const submitForm = async () => {
             const valTar = optionDataTar[key as keyof APPOptionForm]
             const itemSrc = optionDataSrc.value[key as keyof GetAPPOptionResponse]
 
-            // 判断是否更新：优先从公开配置获取原始值，敏感字段从 wechatAppInfoSrc 获取
-            const valSrc = itemSrc?.value ?? wechatAppInfoSrc.value?.[key as keyof WeChatOfficialAccountAppInfoResponse] ?? ""
+            // 判断是否更新
+            const valSrc = optionDataSrc.value[key as keyof GetAPPOptionResponse].value
             if (valTar.toString() !== valSrc) {
                 reqList.push({
                     key: key as keyof APPOptionForm,
                     value: valTar.toString(),
-                    type: itemSrc?.type ?? OptionType.String,
+                    type: itemSrc.type,
                 })
             }
         }
@@ -236,15 +234,6 @@ const formItems: Array<FormItems> = [
         placeholder: "支持 HTML/JS 代码",
     },
 
-    // 微信公众号推送
-    { label: "微信公众号推送", isCategoryTitle: true },
-    {
-        label: "AppID",
-        prop: "wechat_official_account_app_id",
-        placeholder: "https://developers.weixin.qq.com/platform => 前往控制台 => 微信公众号 => 基础信息获取 AppID AppSecret",
-    },
-    { label: "AppSecret", prop: "wechat_official_account_app_secret" },
-
     // 二维码相关
     { label: "二维码", isCategoryTitle: true },
     { label: "微信公众号", prop: "wechat_official_account_qrcode", isImageInput: true },
@@ -317,15 +306,6 @@ onBeforeMount(async () => {
                 ;(optionData[key as keyof APPOptionForm] as string) = item.value
             }
         }
-    }
-
-    // 获取微信公众号应用信息（敏感数据，不在公开接口中返回）
-    const wechatRes = await getWeChatOfficialAccountAppInfoAPI()
-    if (wechatRes.data.code === ResponseCode.GetWeChatOfficialAccountAppInfoSuccess) {
-        const wechatData = wechatRes.data.data
-        wechatAppInfoSrc.value = wechatData
-        optionData.wechat_official_account_app_id = wechatData.wechat_official_account_app_id
-        optionData.wechat_official_account_app_secret = wechatData.wechat_official_account_app_secret
     }
 })
 </script>

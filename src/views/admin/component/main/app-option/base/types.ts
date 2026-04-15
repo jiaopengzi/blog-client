@@ -86,10 +86,6 @@ export interface APPOptionForm {
     sitemap: string // 站点地图
     footer_statistics_code: string // 页脚添加同步统计代码
 
-    // 微信公众号
-    wechat_official_account_app_id: string // 微信公众号 AppID
-    wechat_official_account_app_secret: string // 微信公众号 AppSecret
-
     // 二维码相关
     wechat_official_account_qrcode: string // 微信公众号二维码
     wechat_qrcode: string // 微信二维码
