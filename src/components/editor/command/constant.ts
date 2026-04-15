@@ -124,7 +124,6 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         // 清空
         [CommandsKey.Clear]: {
             tip: "清空",
-            hotKey: "Ctrl+Shift+C",
             action: clearEditorView,
             icon: IconKeys.Clear,
         },
