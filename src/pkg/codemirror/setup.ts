@@ -13,7 +13,7 @@ import { json } from "@codemirror/lang-json"
 import { markdown } from "@codemirror/lang-markdown"
 import { bracketMatching, defaultHighlightStyle, foldGutter, foldKeymap, indentOnInput, syntaxHighlighting } from "@codemirror/language"
 import { lintKeymap } from "@codemirror/lint"
-import { highlightSelectionMatches, searchKeymap } from "@codemirror/search"
+import { highlightSelectionMatches, search, searchKeymap } from "@codemirror/search"
 import { EditorState, type Extension } from "@codemirror/state"
 import {
     crosshairCursor,
@@ -59,6 +59,7 @@ const baseExtension = (): Extension[] => {
         crosshairCursor(), // 十字光标
         highlightActiveLine(), // 高亮当前行
         highlightSelectionMatches(), // 高亮选择匹配
+        search({ top: true }), // 搜索面板置顶，避免与底部面板冲突
         keymap.of([
             ...closeBracketsKeymap, // 关闭括号
             ...defaultKeymap, // 默认快捷键
