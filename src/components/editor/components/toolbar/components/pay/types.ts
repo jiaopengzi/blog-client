@@ -37,7 +37,7 @@ export const payTags: Readonly<PayTag> = {
     },
     [Names.PayDownload]: {
         prefix: `\n<${Names.PayDownload}>\n\n`,
-        content: `您的付费下载内容`,
+        content: `## 下载内容\n\n下载链接：[点击下载](替换为您的链接)\n\n提取码：您的提取码`,
         suffix: `\n\n</${Names.PayDownload}>\n`,
     },
     [Names.PayKey]: {
