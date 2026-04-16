@@ -58,6 +58,9 @@ function createEmptyUserInfoStore(): UserInfoStore {
     }
 }
 
+// 防并发锁：同一时刻只允许一个 getUserInfoByToken 请求在飞行中, 导致意外回到首页
+let _getUserInfoPromise: Promise<void> | null = null
+
 export const useUserStore = defineStore("user", {
     state: () => createEmptyUserInfoStore(),
 
@@ -220,9 +223,22 @@ export const useUserStore = defineStore("user", {
             if (this.isLogin && !isUpdate) {
                 return
             }
-            const userInfoStore: UserInfoStore = await apiGetUserInfoByToken(this.accessToken)
 
-            this.$patch(userInfoStore)
+            if (_getUserInfoPromise) {
+                return _getUserInfoPromise
+            }
+
+            _getUserInfoPromise = (async () => {
+                const userInfoStore: UserInfoStore = await apiGetUserInfoByToken(this.accessToken)
+                if (!userInfoStore.isLogin && this.isLogin) {
+                    return
+                }
+                this.$patch(userInfoStore)
+            })().finally(() => {
+                _getUserInfoPromise = null
+            })
+
+            return _getUserInfoPromise
         },
 
         // 修改是否显示绑定邮箱弹窗
