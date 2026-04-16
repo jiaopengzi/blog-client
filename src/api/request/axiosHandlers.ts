@@ -78,6 +78,11 @@ export async function handleAccessTokenRefresh(response: AxiosResponse, axiosIns
         } else {
             // 刷新失败, 通知所有等待的请求失败
             notifyRefreshed(null, false)
+
+            if (userStore.isEditing) {
+                MessageUtil.warning("登录已过期，请手动保存您的编辑内容后重新登录", 0)
+            }
+
             return Promise.reject(response)
         }
     } catch (err) {

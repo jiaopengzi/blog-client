@@ -138,6 +138,12 @@ export const useUserStore = defineStore("user", {
                 await this.logout(false, isRefreshPage)
                 return false
             } else {
+                // 若用户正在编辑，只清空 token，保留编辑状态（由 axiosHandlers 负责弹出提示）
+                // 避免 logout 清空 isEditing 导致编辑器保护失效、内容丢失
+                if (this.isEditing) {
+                    this.setAccessToken("")
+                    return false
+                }
                 await this.logout(false, isRefreshPage)
                 return false
             }

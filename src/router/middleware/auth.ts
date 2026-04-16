@@ -32,6 +32,10 @@ export const authMiddleware = async (to: RouteLocationNormalized) => {
 
     // 如果用户没有登录，且访问的页面需要登录，则跳转到登录页
     if (to.meta.requiresAuth && !userStore.isLogin) {
+        if (userStore.isEditing) {
+            MessageUtil.warning("登录已过期，请手动保存您的编辑内容后重新登录", 0)
+            return false
+        }
         return { name: RouteNames.Login, query: { redirect: to.fullPath } } // 重定向到登录页带上当前页面路径参数
     }
 
