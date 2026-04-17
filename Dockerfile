@@ -1,6 +1,6 @@
 # blog-client Dockerfile
 # 使用官方 Node.js 镜像作为构建环境
-FROM node:24.14.0 AS builder
+FROM node:24.15.0 AS builder
 
 # 设置工作目录
 WORKDIR /app
@@ -23,7 +23,7 @@ RUN pnpm lint && \
     pnpm build
 
 # 使用一个较小的基础镜像以减小构建产物的体积
-FROM nginx:1.29.6-alpine
+FROM nginx:1.30.0-alpine
 
 # 安装 tzdata 包 设置时区
 RUN apk add --no-cache tzdata && \
