@@ -105,7 +105,7 @@
         "
         id="preview-copy"
         data-preview="wechat"
-        v-html="wechatHtml"
+        v-stable-html="wechatHtml"
         :style="isShowPreviewWechat ? {} : { position: 'absolute', left: '-99999px', top: '0', width: '100%', pointerEvents: 'none', overflow: 'hidden' }"
         @click="handleDelegateClick"
         @mouseenter="onMouseEnter"

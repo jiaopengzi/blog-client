@@ -92,6 +92,9 @@ export abstract class RequestStrategyBase implements RequestStrategy {
     }
 
     async uploadChunk(chunk: Chunk): ResPromise<Res<string>> {
+        if (!chunk.blob) {
+            throw new Error(`uploadChunk: chunk.blob is missing (part_index=${chunk.part_index})`)
+        }
         const formData = new FormData()
         formData.append(MultipartFormFileKey, chunk.blob, chunk.part_index + this.fileName)
         const meta: ChunkMetadata = {

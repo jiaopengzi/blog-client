@@ -10,6 +10,7 @@ import { createApp, h } from "vue"
 import { createPinia } from "pinia"
 
 import LoginView from "@/components/common/login-view"
+import { stableHtmlDirective } from "@/utils/stableHtmlDirective"
 
 import { Names } from "../customElements"
 import { getComponentContainersFromCustomElements } from "./getComponentContainers"
@@ -42,6 +43,7 @@ export const mountLoginViewOnCustomElements = (container: HTMLElement, tagName: 
         })
 
         app.use(createPinia())
+        app.directive("stable-html", stableHtmlDirective)
         app.mount(el)
     })
 }

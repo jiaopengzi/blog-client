@@ -121,6 +121,52 @@ pnpm run test -- -t "格式化日期包含年月日时分秒和时区偏移"
 - 分组：`correctness/suspicious/perf` 均为 `warn`
 - 关键规则：`eslint/no-unused-vars: error`、`no-debugger: error`、`eqeqeq: error`、`no-var: error`、`no-empty: warn`
 
+### 4.8 `v-stable-html` 指令(禁止使用 `v-html`)
+
+项目已全局禁用 `v-html`，统一使用自定义指令 `v-stable-html` 替代。该指令在内容更新时保留已加载图片的尺寸，避免重排闪烁。
+
+- **指令定义**：`src/utils/stableHtmlDirective.ts`
+- **全局注册**：`src/main.ts` → `app.directive("stable-html", stableHtmlDirective)`
+
+#### 作用域注意事项
+
+`v-stable-html` 仅在注册了该指令的 Vue app 实例中生效。项目存在两种挂载方式：
+
+1. **主 app 树**（`src/main.ts` 创建的 app）— 已全局注册，所有路由页面和组件自动可用。
+2. **`customElementsMount/` 独立挂载**（通过 `createApp()` 创建独立 app 实例）— 必须手动注册指令。
+
+当组件同时被主 app 渲染（如 web 预览模式）和独立 `createApp` 挂载（如微信预览模式）时，**两侧都必须注册指令**，否则 `v-stable-html` 在独立 app 中静默失效。
+
+已注册指令的 `customElementsMount` 文件：
+
+- `LoginView.ts`
+- `PayContent.ts`
+- `WechatCaptcha.ts`
+
+新增使用 `v-stable-html` 的组件如果也在 `customElementsMount/` 中独立挂载，**必须**在对应的 `createApp()` 后追加：
+
+```ts
+import { stableHtmlDirective } from "@/utils/stableHtmlDirective"
+
+const app = createApp({ /* ... */ })
+app.directive("stable-html", stableHtmlDirective)
+app.mount(el)
+```
+
+#### 测试中注册
+
+单元测试使用 `@vue/test-utils` 的 `mount` 时，需通过 `global.directives` 注册：
+
+```ts
+import { stableHtmlDirective } from "@/utils/stableHtmlDirective"
+
+mount(MyComponent, {
+    global: {
+        directives: { "stable-html": stableHtmlDirective },
+    },
+})
+```
+
 ## 5. Cursor / Copilot / 其他规则文件清单
 
 已确认不存在：`.cursor/rules/**`、`.cursorrules`、`.github/copilot-instructions.md`、`.editorconfig`。若未来新增，请在此补充路径与摘要。

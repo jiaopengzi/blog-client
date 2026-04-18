@@ -10,6 +10,7 @@ import { mount } from "@vue/test-utils"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
 import { MessageUtil } from "@/utils/message"
+import { stableHtmlDirective } from "@/utils/stableHtmlDirective"
 
 vi.mock("@/customElementsMount/VideoPlayer", () => ({
     mountVideoPlayerOnCustomElements: vi.fn(),
@@ -26,6 +27,9 @@ const mountComponent = (hiddenHtml: string = "<p>隐藏内容</p>", postId: stri
             reply: "demo148",
             hiddenHtml,
             postId,
+        },
+        global: {
+            directives: { "stable-html": stableHtmlDirective },
         },
     })
 }

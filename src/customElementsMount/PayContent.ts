@@ -10,6 +10,7 @@ import { type ComputedRef, createApp, h } from "vue"
 
 import { PayStrategy, type PostVideoTocTree } from "@/api/post/common"
 import PayContent, { ContentPayType, type PayContentProps } from "@/components/common/pay-content"
+import { stableHtmlDirective } from "@/utils/stableHtmlDirective"
 
 import { Names } from "../customElements"
 import { getComponentContainersFromCustomElements } from "./getComponentContainers"
@@ -81,6 +82,7 @@ export const mountPayContentOnCustomElements = (
             },
         })
 
+        app.directive("stable-html", stableHtmlDirective)
         app.mount(el)
     })
 }

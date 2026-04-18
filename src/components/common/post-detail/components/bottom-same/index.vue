@@ -7,7 +7,7 @@
 -->
 
 <template>
-    <div class="container" v-if="isShow" v-html="content"></div>
+    <div class="container" v-if="isShow" v-stable-html="content"></div>
 </template>
 
 <script lang="ts" setup>

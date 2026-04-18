@@ -9,6 +9,7 @@
 import { createApp, h } from "vue"
 
 import WechatCaptcha from "@/components/common/wechat-captcha"
+import { stableHtmlDirective } from "@/utils/stableHtmlDirective"
 
 import { Attributes, Names } from "../customElements"
 import { getComponentContainersFromCustomElements } from "./getComponentContainers"
@@ -50,6 +51,7 @@ export const mountWechatCaptchaOnCustomElements = (container: HTMLElement, tagNa
             },
         })
 
+        app.directive("stable-html", stableHtmlDirective)
         app.mount(el)
     })
 }

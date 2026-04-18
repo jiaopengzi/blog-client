@@ -34,7 +34,7 @@
             }
         "
         class="wechat-captcha-content"
-        v-html="hiddenHtml"
+        v-stable-html="hiddenHtml"
     ></div>
 </template>
 

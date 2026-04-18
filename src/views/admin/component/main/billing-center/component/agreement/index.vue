@@ -10,7 +10,7 @@
     <section class="agreement-page">
         <section class="agreement-card">
             <div class="agreement-card-body">
-                <div class="agreement-content" v-html="agreement.content"></div>
+                <div class="agreement-content" v-stable-html="agreement.content"></div>
             </div>
             <footer class="card-footer">
                 <div class="meta-item">

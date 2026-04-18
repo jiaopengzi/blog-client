@@ -185,10 +185,9 @@ export class MultiThreadSplitter extends ChunkSplitter {
             }
             const start = i * workerSize // 计算开始位置
             const end = Math.min((i + 1) * workerSize, chunks.length) // 计算结束位置
-            const workerChunks = chunks.slice(start, end).map((chunk) => ({
-                ...chunk,
-                blob: this.file.slice(chunk.start, chunk.end),
-            })) // 获取当前 Worker 需要处理的分片
+            const workerChunks = chunks.slice(start, end).map((chunk) => {
+                return Object.assign(chunk, { blob: this.file.slice(chunk.start, chunk.end) })
+            }) // 获取当前 Worker 需要处理的分片
 
             // 向 Worker 发送消息
             worker.postMessage({

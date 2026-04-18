@@ -10,7 +10,7 @@
 -->
 <!-- src/components/MarkdownViewer.vue -->
 <template>
-    <div ref="markdownContainer" v-html="parsedContent"></div>
+    <div ref="markdownContainer" v-stable-html="parsedContent"></div>
 </template>
 
 <script lang="ts" setup>

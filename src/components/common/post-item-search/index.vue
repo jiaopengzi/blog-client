@@ -8,7 +8,7 @@
 
 <template>
     <div class="post-item">
-        <h4 class="title" @click="postId(postData.id)" v-html="displayText"></h4>
+        <h4 class="title" @click="postId(postData.id)" v-stable-html="displayText"></h4>
         <span class="meta">{{ formatTime(postData.created_at, "Asia/Shanghai", "YYYY-MM-DD") }}</span>
     </div>
 </template>
