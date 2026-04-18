@@ -197,20 +197,47 @@ export class MultiThreadSplitter extends ChunkSplitter {
                 // oxlint-disable-next-line unicorn/require-post-message-target-origin
             })
 
+            // 跳过没有分配到分片的空闲 Worker,避免 Promise 永远 pending
+            if (workerChunks.length === 0) {
+                continue
+            }
+
             // promise 用于保存 Worker 的处理结果
+            const expectedCount = workerChunks.length
             const promise = new Promise<void>((resolve, reject) => {
-                const handleMessage = (e: MessageEvent<Chunk[]>) => {
+                let receivedCount = 0
+
+                const cleanup = () => {
+                    worker.removeEventListener("message", handleMessage)
                     worker.removeEventListener("error", handleError)
-                    emitter.emit(FileUploadEvents.CHUNKS, e.data)
-                    resolve()
+                }
+
+                const handleMessage = (e: MessageEvent<Chunk[] | { error: string }>) => {
+                    const data = e.data
+
+                    // Worker 内 calcHash 失败时发送的错误消息
+                    if (!Array.isArray(data) && data.error) {
+                        cleanup()
+                        reject(new Error(data.error))
+                        return
+                    }
+
+                    emitter.emit(FileUploadEvents.CHUNKS, data as Chunk[])
+                    receivedCount += (data as Chunk[]).length
+
+                    if (receivedCount >= expectedCount) {
+                        cleanup()
+                        resolve()
+                    }
                 }
 
                 const handleError = (e: ErrorEvent) => {
-                    worker.removeEventListener("message", handleMessage)
+                    cleanup()
                     reject(e)
                 }
 
-                worker.addEventListener("message", handleMessage, { once: true })
+                // 不使用 { once: true }, 持续接收该 Worker 的所有分片结果, 保持流水线
+                worker.addEventListener("message", handleMessage)
                 worker.addEventListener("error", handleError, { once: true })
             })
 

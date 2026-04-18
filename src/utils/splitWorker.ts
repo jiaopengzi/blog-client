@@ -17,6 +17,8 @@ onmessage = function (e) {
             chunk.hash_key = hash
             chunk.hash_algorithm = algorithm
             postMessage([chunk])
+        }).catch((err) => {
+            postMessage({ error: err?.message || String(err) })
         })
     }
 }
