@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 import { createPinia, setActivePinia } from "pinia"
 
 import { PayStrategy } from "@/api/post/common"
+import { stableHtmlDirective } from "@/utils/stableHtmlDirective"
 
 import PayContent from "./index"
 import { ContentPayType, type PayContentProps } from "./types"
@@ -43,6 +44,41 @@ vi.mock("../pay-video", () => ({
     },
 }))
 
+vi.mock("@/components/common/power-bi/index.vue", () => ({
+    default: {
+        name: "PowerBi",
+        props: ["src", "maskcolor"],
+        template: '<div class="mock-power-bi"></div>',
+    },
+}))
+
+vi.mock("@/components/player", () => ({
+    default: {
+        name: "VideoPlayer",
+        props: ["playerState"],
+        template: '<div class="mock-video-player"></div>',
+    },
+}))
+
+vi.mock("@/customElements", () => ({
+    Names: {
+        VideoPlayer: "video-player",
+        PowerBi: "power-bi",
+        PayKey: "pay-key",
+        PayMembership: "pay-membership",
+        PayVideo: "pay-video",
+        PayRead: "pay-read",
+        PayDownload: "pay-download",
+        WechatCaptcha: "wechat-captcha",
+        LoginView: "login-view",
+    },
+    parseHtmlToContentParts: (html: string) => [{ type: "html" as const, content: html }],
+}))
+
+vi.mock("@/customElementsMount/PowerBI", () => ({
+    getPowerBIState: () => ({ src: "", maskcolor: "" }),
+}))
+
 vi.mock("@/components/editor", () => ({
     EditorStateManager: class {
         private state = { html: "" }
@@ -68,6 +104,7 @@ const mountComponent = (props: Partial<PayContentProps> = {}) => {
             ...props,
         },
         global: {
+            directives: { "stable-html": stableHtmlDirective },
             stubs: {
                 ElButton: {
                     props: ["loading"],

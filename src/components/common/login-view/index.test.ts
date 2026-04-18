@@ -10,6 +10,8 @@ import { mount } from "@vue/test-utils"
 import { afterEach, describe, expect, it, vi } from "vitest"
 import { defineComponent, ref } from "vue"
 
+import { stableHtmlDirective } from "@/utils/stableHtmlDirective"
+
 const isLoginRef = ref(false)
 const mockPush = vi.fn()
 
@@ -71,6 +73,9 @@ describe("LoginView", () => {
             props: {
                 hiddenHtml: "<p>隐藏内容</p>",
             },
+            global: {
+                directives: { "stable-html": stableHtmlDirective },
+            },
         })
 
         expect(wrapper.find(".login-view-lock").exists()).toBe(true)
@@ -85,6 +90,9 @@ describe("LoginView", () => {
             props: {
                 hiddenHtml: "<p>隐藏内容</p>",
             },
+            global: {
+                directives: { "stable-html": stableHtmlDirective },
+            },
         })
 
         expect(wrapper.find(".login-view-content").exists()).toBe(true)
@@ -96,6 +104,9 @@ describe("LoginView", () => {
         const wrapper = mount(LoginView, {
             props: {
                 hiddenHtml: "<p>隐藏内容</p>",
+            },
+            global: {
+                directives: { "stable-html": stableHtmlDirective },
             },
         })
 

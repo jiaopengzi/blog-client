@@ -43,7 +43,20 @@
     </div>
     <div class="paid" v-if="isShowContent">
         <PostVideo v-if="!onlyMarkdown" :post-id="postId" :is-admin-video="isAdminVideo" :toc="videoToc" :is-paid="isPaid" />
-        <div v-html="stateManager.getState().html"></div>
+        <template v-for="(item, index) in contentParts" :key="index">
+            <div v-if="item.type === 'html'" v-stable-html="item.content"></div>
+
+            <div v-else-if="item.type === Names.VideoPlayer" :key="(item.content as PlayerState).videoID" class="video-player-box">
+                <VideoPlayer :player-state="item.content as PlayerState" />
+            </div>
+
+            <PowerBi
+                v-else-if="item.type === Names.PowerBi"
+                :key="`${(item.content as PowerBIState).src}-${(item.content as PowerBIState).maskcolor}`"
+                :src="(item.content as PowerBIState).src"
+                :maskcolor="(item.content as PowerBIState).maskcolor"
+            />
+        </template>
     </div>
 </template>
 <script lang="ts" setup>
@@ -51,7 +64,11 @@ import { computed, onMounted, watch } from "vue"
 
 import { PayStrategy } from "@/api/post/common"
 import JIcon, { IconKeys } from "@/components/common/icons"
+import PowerBi from "@/components/common/power-bi/index.vue"
 import { EditorStateManager } from "@/components/editor"
+import VideoPlayer, { type PlayerState } from "@/components/player"
+import { Names, parseHtmlToContentParts } from "@/customElements"
+import { type PowerBIState } from "@/customElementsMount/PowerBI"
 import { usePermissionRoleStore } from "@/stores/permissionRole"
 import { fenToYuan } from "@/utils/amount"
 
@@ -111,6 +128,13 @@ watch(
     },
     { immediate: true },
 )
+
+// 将 stateManager 渲染的 HTML 解析为内容片段，以正确渲染 power-bi、video-player 等 Vue 组件
+const contentParts = computed(() => {
+    const html = stateManager.getState().html
+    if (!html) return []
+    return parseHtmlToContentParts(html, postId, isAdminVideo)
+})
 
 // 是否显示内容
 const isShowContent = computed(() => {

@@ -18,7 +18,7 @@
     </div>
     <div v-else class="login-view-content">
         <template v-for="(item, index) in contentParts" :key="index">
-            <div v-if="item.type === 'html'" v-html="item.content"></div>
+            <div v-if="item.type === 'html'" v-stable-html="item.content"></div>
 
             <div v-else-if="item.type === Names.VideoPlayer" :key="(item.content as PlayerState).videoID" class="video-player-box">
                 <VideoPlayer :player-state="item.content as PlayerState" />
