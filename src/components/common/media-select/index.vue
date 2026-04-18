@@ -31,8 +31,8 @@
             :active-file-type="activeFileType"
             :handle-file-count-by-file-type="handleFileCountByFileTypeAc"
             :loading-delete="loadingDelete"
-            @update-current-page="updateCurrentPage"
-            @update-page-size="updatePageSize"
+            @update-current-page="updateCurrentPageAc"
+            @update-page-size="updatePageSizeAc"
             @update-search="updateSearchAc"
             @run-search="runSearchAc"
             @edit-row="editRow"
@@ -103,8 +103,7 @@ const {
     editMediaData, // 编辑媒体数据
     fileCountGroupByFileType,
     activeFileType,
-    updateCurrentPage, // 更新当前页
-    updatePageSize, // 更新每页显示条数
+    queryParams, // 查询参数
     updateSearch, // 更新搜索关键字
     updatePaginate, // 更新分页
 
@@ -127,6 +126,18 @@ const {
 // 更新搜索关键字
 const updateSearchAc = async (val: string) => {
     updateSearch(val, false)
+}
+
+// 更新当前页（不更新路由）
+const updateCurrentPageAc = async (val: number) => {
+    queryParams.current_page = val
+    await updatePaginate()
+}
+
+// 更新每页显示条数（不更新路由）
+const updatePageSizeAc = async (val: number) => {
+    queryParams.page_size = val
+    await updatePaginate()
 }
 
 // 更新数据
