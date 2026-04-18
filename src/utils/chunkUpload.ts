@@ -6,16 +6,16 @@
  * @Description  : 文件分片上传
  */
 
-import { handleResErr, type Res, ResponseCode, type ResPromise } from "@/api/response"
-import { type ChunkMetadataWithoutFileId } from "@/api/upload/chunk"
-import { type ConfirmBeforeUploadRequest } from "@/api/upload/confirmBeforeUpload"
+import type { ChunkMetadataWithoutFileId } from "@/api/upload/chunk"
+import type { ConfirmBeforeUploadRequest } from "@/api/upload/confirmBeforeUpload"
+import { handleResErr, ResponseCode, type Res, type ResPromise } from "@/api/response"
 import { EventEmitter } from "@/utils/eventEmitter"
 import { HashAlgorithm, HashCalculator } from "@/utils/hash"
 import { Task, TaskQueue } from "@/utils/task"
 
 // 分片元数据,包含文件二进制数据
 export interface Chunk extends ChunkMetadataWithoutFileId {
-    blob: Blob // 分片的二进制数据
+    blob?: Blob // 分片的二进制数据,按需生成
 }
 
 // 分片文件类的相关事件
@@ -74,7 +74,12 @@ export abstract class ChunkSplitter extends EventEmitter<ChunkSplitterEvents> {
         this.uploadedPartIndexList = uploadedPartIndexList
     }
 
-    // 创建一个不带hash的分片
+    /**
+     * 创建一个不带 hash 的分片元数据.
+     * @param index 分片索引.
+     * @returns 仅包含范围与索引信息的分片元数据.
+     * @throws 当索引超出分片数量范围时抛出错误.
+     */
     private createChunkWithoutHash = (index: number): Chunk => {
         // 计算分片数量
         const partNumbers = Math.ceil(this.file.size / this.chunkSize)
@@ -85,9 +90,7 @@ export abstract class ChunkSplitter extends EventEmitter<ChunkSplitterEvents> {
 
         const start = index * this.chunkSize
         const end = Math.min((index + 1) * this.chunkSize, this.file.size)
-        const blob = this.file.slice(start, end)
         return {
-            blob,
             start,
             end,
             hash_key: "",
@@ -95,6 +98,18 @@ export abstract class ChunkSplitter extends EventEmitter<ChunkSplitterEvents> {
             hash_algorithm: "",
             part_numbers: partNumbers,
         }
+    }
+
+    /**
+     * 按需获取指定分片的 Blob 数据.
+     * @param index 分片索引.
+     * @returns 对应分片范围生成的 Blob.
+     * @throws 当索引超出分片数量范围时抛出错误.
+     */
+    getChunkBlob(index: number): Blob {
+        const chunk = this.chunks[index]
+        if (!chunk) throw new Error(`Chunk index ${index} out of range`)
+        return this.file.slice(chunk.start, chunk.end)
     }
 
     // 分片文件
@@ -153,15 +168,27 @@ export class MultiThreadSplitter extends ChunkSplitter {
             }),
     )
 
-    // 计算每一个分片的hash
+    /**
+     * 计算每一个分片的 hash.
+     * @param chunks 待计算 hash 的分片元数据列表.
+     * @param emitter 用于分发分片计算结果的事件触发器.
+     * @returns 当所有 Worker 完成处理后返回 Promise.
+     * @throws 当 Worker 执行失败时抛出错误.
+     */
     calcHash = async (chunks: Chunk[], emitter: EventEmitter<FileUploadEvents>): Promise<void> => {
         const workerSize = Math.ceil(chunks.length / this.workers.length) // 计算每个 Worker 处理的分片数量
         const promises: Promise<void>[] = [] // 用于保存每个 Worker 的 Promise
         for (let i = 0; i < this.workers.length; i++) {
-            const worker = this.workers[i]! // 获取 Worker
+            const worker = this.workers[i]
+            if (!worker) {
+                continue
+            }
             const start = i * workerSize // 计算开始位置
             const end = Math.min((i + 1) * workerSize, chunks.length) // 计算结束位置
-            const workerChunks = chunks.slice(start, end) // 获取当前 Worker 需要处理的分片
+            const workerChunks = chunks.slice(start, end).map((chunk) => ({
+                ...chunk,
+                blob: this.file.slice(chunk.start, chunk.end),
+            })) // 获取当前 Worker 需要处理的分片
 
             // 向 Worker 发送消息
             worker.postMessage({
@@ -197,7 +224,9 @@ export class MultiThreadSplitter extends ChunkSplitter {
 
     // 分片完成后一些需要销毁的工作
     dispose = (): void => {
-        this.workers.forEach((worker) => worker.terminate())
+        this.workers.forEach((worker) => {
+            worker.terminate()
+        })
     }
 }
 
@@ -262,7 +291,13 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
         this.taskQueue = new TaskQueue(this.chunkSplitter.concurrency)
     }
 
-    // 初始化
+    /**
+     * 初始化上传控制器并启动上传流程.
+     * @param isEncrypt 是否加密上传.
+     * @param isFree 是否使用免费上传策略.
+     * @returns 初始化完成后返回 Promise.
+     * @throws 当上传前确认未返回文件 ID 时抛出错误.
+     */
     init = async (isEncrypt: boolean, isFree: boolean) => {
         // 上传前确认
         const req: ConfirmBeforeUploadRequest = {
@@ -290,9 +325,10 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
             // 按顺序增量更新哈希函数,本来可以在 worker 中计算 hash 的顺序是不固定的，所以需要在按照顺序读取文件块，计算hash
             this.emit(UploadControllerEvents.CHECK_WHOLE_HASH, this.uploadFileInfo.file_name) // 检查整个文件的hash
             this.emit(UploadControllerEvents.PROGRESS, 0) // 检查整个文件的hash
-            for (const chunk of this.chunkSplitter.chunks) {
+            for (let i = 0; i < this.chunkSplitter.chunks.length; i++) {
+                const blob = this.chunkSplitter.getChunkBlob(i)
                 // eslint-disable-next-line no-await-in-loop
-                await this.chunkSplitter.hashCalculator.updateIncrementalHash(chunk.blob)
+                await this.chunkSplitter.hashCalculator.updateIncrementalHash(blob)
             }
 
             // 得到整个文件的hash
@@ -355,18 +391,31 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
         this.emit(UploadControllerEvents.START)
     }
 
-    // 处理分片
+    /**
+     * 处理一批待上传分片,并为每个分片创建上传任务.
+     * @param chunks 待上传的分片元数据列表.
+     * @returns 无返回值.
+     * @throws 错误由具体上传任务在执行时抛出并处理.
+     */
     private handleChunks = (chunks: Chunk[]) => {
         // 添加所有任务
         chunks.forEach((chunk) => {
-            this.taskQueue.add(new Task(() => this.uploadChunk(chunk)))
+            this.taskQueue.add(new Task(async () => {
+                const uploadChunk = { ...chunk, blob: this.chunkSplitter.getChunkBlob(chunk.part_index) }
+                await this.uploadChunk(uploadChunk)
+            }))
         })
 
         // 开始执行任务
         this.taskQueue.start()
     }
 
-    // 上传分片
+    /**
+     * 上传单个分片并更新整体上传进度.
+     * @param chunk 当前待上传的分片数据.
+     * @returns 上传处理完成后返回 Promise.
+     * @throws 错误会在内部捕获并通过事件抛出.
+     */
     uploadChunk = async (chunk: Chunk) => {
         // 不在 uploaded_part_number_list 中的分片才需要上传, 即已经上传的分片不再上传.
         if (!this.uploadFileInfo?.uploaded_part_number_list?.includes(chunk.part_index)) {
@@ -375,7 +424,7 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
                 const res = await this.requestStrategy.uploadChunk(chunk)
                 if (res.data.code === ResponseCode.UploadFileSuccess) {
                     // 当一个分片上传完成后，更新该分片在 Map 中的进度。分片的结束位置减去开始位置得到分片的大小。
-                    this.progressTrackers.set(chunk.part_index, chunk.blob.size)
+                    this.progressTrackers.set(chunk.part_index, chunk.end - chunk.start)
 
                     // 计算总的上传进度
                     const progress = this.calculateProgress()

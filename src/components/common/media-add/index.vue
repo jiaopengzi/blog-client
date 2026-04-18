@@ -41,7 +41,7 @@
         </div>
 
         <!-- 上传交互 -->
-        <el-upload ref="uploadRef" class="upload" drag multiple :http-request="httpRequest">
+        <el-upload ref="uploadRef" class="upload" drag multiple :limit="10" :before-upload="handleBeforeUpload" :on-exceed="handleExceed" :http-request="httpRequest">
             <j-icon :name="IconKeys.Upload" custom-class="icon-upload-filled" />
             <div class="el-upload__text">将文件拖放到此处 或 <em>点击上传</em></div>
             <template #tip>
@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts" setup>
-import { type ElUpload, type UploadRequestOptions } from "element-plus"
+import { ElMessage, type ElUpload, type UploadRawFile, type UploadRequestOptions, type UploadUserFile } from "element-plus"
 import { onBeforeMount, ref, useTemplateRef, watch } from "vue"
 
 import { ResponseCode } from "@/api/response"
@@ -109,6 +109,40 @@ const httpRequest = async (options: UploadRequestOptions) => {
     } catch (error) {
         console.error("Upload failed:", error)
     }
+}
+
+/**
+ * 校验待上传文件是否满足扩展名和大小要求。
+ *
+ * @param rawFile 待上传的原始文件。
+ * @returns 校验通过返回 true, 否则返回 false 中断上传。
+ */
+const handleBeforeUpload = (rawFile: UploadRawFile): boolean => {
+    const extension = rawFile.name.split(".").pop()?.toLowerCase() ?? ""
+    const matched = fileAllowedList.value.find((item) => item.extension === extension)
+
+    if (!matched) {
+        ElMessage.warning(`不支持上传 ${extension || "未知"} 格式文件。`)
+        return false
+    }
+
+    if (rawFile.size > matched.max_size) {
+        ElMessage.warning(`文件大小超过限制, 请上传不超过 ${matched.max_size} 字节的 ${extension.toUpperCase()} 文件。`)
+        return false
+    }
+
+    return true
+}
+
+/**
+ * 处理超出文件数量限制的提示。
+ *
+ * @param files 本次尝试新增的文件列表。
+ * @param uploadFiles 当前已选择的文件列表。
+ * @returns 无返回值。
+ */
+const handleExceed = (files: File[], uploadFiles: UploadUserFile[]): void => {
+    ElMessage.warning(`当前已选择 ${uploadFiles.length} 个文件, 本次尝试添加 ${files.length} 个文件, 已超过最大上传数量 10。`)
 }
 
 // 拿到上传文件的要求
