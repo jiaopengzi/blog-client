@@ -240,7 +240,7 @@ export function isInsideInlineCode(lineText: string, matchIndex: number): boolea
  * @returns boolean 是否检测到嵌套的自定义标签.
  */
 export function validateNoNestedCustomTags(ctx: InnerContentContext): boolean {
-    const { doc, openLine, closeLine, openFromIndex, openLength, closeMatchIndex, tagName, diagnostics, sourceId, ignoredLineNumbers } = ctx
+    const { doc, openLine, closeLine, openFromIndex, openLength, closeMatchIndex, tagName, diagnostics, sourceId, ignoredLineNumbers, allowedTags } = ctx
     let hasNestedTag = false
 
     for (let lineNum = openLine; lineNum <= closeLine; lineNum++) {
@@ -261,6 +261,9 @@ export function validateNoNestedCustomTags(ctx: InnerContentContext): boolean {
         let match: RegExpExecArray | null
 
         while ((match = CUSTOM_TAG_REGEX.exec(segment)) !== null) {
+            const nestedTagName = match[0].match(/<\/?([a-z][-a-z]*)/)?.[1] ?? ""
+            if (allowedTags?.has(nestedTagName)) continue
+
             hasNestedTag = true
             diagnostics.push({
                 from: line.from + start + match.index,

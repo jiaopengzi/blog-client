@@ -191,6 +191,8 @@ export interface InnerContentContext extends BaseContext {
     tagName: string
     /** 需要忽略的行号集合, 例如 fenced code block 内的行 */
     ignoredLineNumbers?: Set<number>
+    /** 允许嵌套的子标签名称集合, 匹配到这些标签时不报错 */
+    allowedTags?: Set<string>
 }
 
 /**

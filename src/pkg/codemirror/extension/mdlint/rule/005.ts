@@ -116,6 +116,10 @@ export function run(doc: DocLike): Diagnostic[] {
                         validateAttributesForKey({ doc, attrsText: open.attrs, openFrom, openTo, diagnostics, sourceId: id })
                     }
 
+                    // 容器型付费标签(pay-video/pay-read/pay-download)允许嵌套 video-player 和 power-bi
+                    const containerPayTags = new Set(["pay-video", "pay-read", "pay-download"])
+                    const allowedTags = containerPayTags.has(open.tag) ? new Set(["video-player", "power-bi"]) : undefined
+
                     // 自定义标签内部不允许再嵌套任何项目自定义标签。
                     const hasNestedCustomTags = validateNoNestedCustomTags({
                         doc,
@@ -128,6 +132,7 @@ export function run(doc: DocLike): Diagnostic[] {
                         ignoredLineNumbers: fencedLineNumbers,
                         diagnostics,
                         sourceId: id,
+                        allowedTags,
                     })
 
                     // 对于 pay-key 和 pay-membership 要求标签内不能有内容(必须为空)

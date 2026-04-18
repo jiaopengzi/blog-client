@@ -81,10 +81,28 @@ describe("rule005 - 付费标签合法性检测", () => {
         expect(diags.some((d) => d.message.includes("标签后不应有内容"))).toBe(true)
     })
 
-    it("pay 标签内嵌套自定义标签应报错", () => {
-        const doc = makeDoc(["", "<pay-read>", '<video-player video-type="hls" id="m-1"></video-player>', "</pay-read>", ""])
+    it("容器型 pay 标签内嵌套禁止的自定义标签应报错", () => {
+        const doc = makeDoc(["", "<pay-read>", "<login-view>嵌套内容</login-view>", "</pay-read>", ""])
         const diags = run(doc as unknown as DocLike)
         expect(diags.some((d) => d.message.includes("不允许嵌套自定义标签"))).toBe(true)
+    })
+
+    it("容器型 pay 标签内允许嵌套 video-player", () => {
+        const doc = makeDoc(["", "<pay-read>", '<video-player video-type="hls" id="m-1"></video-player>', "</pay-read>", ""])
+        const diags = run(doc as unknown as DocLike)
+        expect(diags).toHaveLength(0)
+    })
+
+    it("容器型 pay 标签内允许嵌套 power-bi", () => {
+        const doc = makeDoc(["", "<pay-video>", '<power-bi src="https://app.powerbi.com/reportEmbed?reportId=abc123"></power-bi>', "</pay-video>", ""])
+        const diags = run(doc as unknown as DocLike)
+        expect(diags).toHaveLength(0)
+    })
+
+    it("叶子型 pay 标签内嵌套 video-player 仍应报错", () => {
+        const doc = makeDoc(['<pay-key id="1"><video-player video-type="hls" id="m-1"></video-player></pay-key>'])
+        const diags = run(doc as unknown as DocLike)
+        expect(diags.some((d) => d.message.includes("内不应包含内容") || d.message.includes("不允许嵌套自定义标签"))).toBe(true)
     })
 
     it("fenced code block 内的 pay 标签示例不应触发 lint", () => {

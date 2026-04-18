@@ -15,7 +15,7 @@ import { collectFencedCodeLineNumbers, isInsideInlineCode, validateBlankLinesFor
 export const id = "rule009"
 export const defaultOptions = {}
 
-const forbiddenNestedCustomTagRegex = /<\/?(?:pay-(?:video|membership|read|download|key)|power-bi|wechat-captcha|login-view)(?:\s+[^>]*)?>/g
+const forbiddenNestedCustomTagRegex = /<\/?(?:pay-(?:video|membership|read|download|key)|wechat-captcha|login-view)(?:\s+[^>]*)?>/g
 
 export function run(doc: DocLike): Diagnostic[] {
     const diagnostics: Diagnostic[] = []

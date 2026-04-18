@@ -95,7 +95,20 @@ describe("rule009", () => {
         expect(diags.some((item) => item.message.includes("不允许嵌套自定义标签"))).toBe(true)
     })
 
-    it("不允许嵌套其他自定义组件", () => {
+    it("不允许嵌套其他自定义组件（如 login-view）", () => {
+        const doc = makeDoc([
+            "",
+            '<wechat-captcha name="焦棚子" codeurl="https://example.com/qrcode.png" key="1120" reply="demo148">',
+            "<login-view>嵌套内容</login-view>",
+            "</wechat-captcha>",
+            "",
+        ])
+        const diags = run(doc)
+
+        expect(diags.some((item) => item.message.includes("不允许嵌套自定义标签"))).toBe(true)
+    })
+
+    it("允许嵌套 power-bi", () => {
         const doc = makeDoc([
             "",
             '<wechat-captcha name="焦棚子" codeurl="https://example.com/qrcode.png" key="1120" reply="demo148">',
@@ -105,7 +118,7 @@ describe("rule009", () => {
         ])
         const diags = run(doc)
 
-        expect(diags.some((item) => item.message.includes("不允许嵌套自定义标签"))).toBe(true)
+        expect(diags).toHaveLength(0)
     })
 
     it("不允许嵌套同名标签", () => {
