@@ -12,6 +12,8 @@ export enum LocalStorageKey {
     IsCollapse = "is_collapse", // 侧边栏是否折叠
     IsShowDashboardStats = "is_show_dashboard_stats", // 仪表盘统计信息是否显示敏感数值
     IsShowListOrGridAtMedia = "is_show_list_or_grid_at_media", // 媒体列表是否显示为列表或网格
+    MediaAddIsEncrypt = "media_add_is_encrypt", // 新增媒体文件：视频是否加密
+    MediaAddIsNoFree = "media_add_is_no_free", // 新增媒体文件：视频是否收费
     IsShowSeoAtPostWrite = "is_show_seo_at_post_write", // 文章写作是否显示SEO设置
     SearchHistory = "search_history", // 搜索历史
     ThemePreset = "theme_preset", // 主题预设

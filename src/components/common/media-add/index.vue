@@ -63,6 +63,7 @@ import type { FileAllowed } from "@/api/upload/getUploadFileRequirements"
 import { getUploadFileRequirementsAPI } from "@/api/upload/getUploadFileRequirements"
 import { IconKeys } from "@/components/common/icons"
 import { useSettingUpload } from "@/components/hooks/useSettingUpload"
+import { LocalStorageKey } from "@/stores/local"
 import { HashAlgorithm } from "@/utils/hash"
 
 import { uploadByEl } from "./uploadByEl.ts"
@@ -78,6 +79,12 @@ const uploadRef = useTemplateRef<typeof ElUpload>("uploadRef")
 // 配置的 hooks
 const { ffmpegData, fetchDataNoCloud } = useSettingUpload()
 
+// 从 localStorage 读取视频选项，无记录时默认 true
+const readLocalBool = (key: LocalStorageKey, fallback: boolean): boolean => {
+    const stored = localStorage.getItem(key)
+    return stored !== null ? stored === "true" : fallback
+}
+
 // 上传视频是否加密
 const isEncrypt = ref(true)
 const isNoFree = ref(true)
@@ -89,11 +96,24 @@ watch(
     () => ffmpegData.value.is_generate_hls,
     (newVal) => {
         isShowSwitch.value = newVal
-        isEncrypt.value = newVal
-        isNoFree.value = newVal
+        if (newVal) {
+            isEncrypt.value = readLocalBool(LocalStorageKey.MediaAddIsEncrypt, true)
+            isNoFree.value = readLocalBool(LocalStorageKey.MediaAddIsNoFree, true)
+        } else {
+            isEncrypt.value = false
+            isNoFree.value = false
+        }
     },
     { immediate: true },
 )
+
+// 用户切换按钮时保存到本地
+watch(isEncrypt, (val) => {
+    localStorage.setItem(LocalStorageKey.MediaAddIsEncrypt, val.toString())
+})
+watch(isNoFree, (val) => {
+    localStorage.setItem(LocalStorageKey.MediaAddIsNoFree, val.toString())
+})
 
 const allowedInfo = ref("")
 const fileAllowedList = ref<FileAllowed[]>([])
