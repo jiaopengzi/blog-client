@@ -44,6 +44,9 @@ COPY LICENSE /usr/share/nginx/html/LICENSE
 # 复制自定义 Nginx 配置文件到当前镜像的 Nginx 配置文件目录
 COPY nginx.conf /etc/nginx/nginx.conf
 
+# 复制旧网址重定向映射文件(可选, 不需要时可删除此行及 redirects.map 文件)
+COPY redirects.map /etc/nginx/redirects.map
+
 # 挂载 Nginx 配置文件
 VOLUME ["/etc/nginx"]
 

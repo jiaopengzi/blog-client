@@ -1,0 +1,17 @@
+# 旧网址 → 新网址 重定向映射表
+# 被 nginx.conf 中的 map 指令 include 引用
+#
+# 格式: 旧路径  新路径;
+# 示例1: /old-page.html  /?post_id=1039808394690561;
+# 示例2: /video/video-101/  /page/video/101/;
+#
+# 注意:
+#   1. 每行末尾必须有分号
+#   2. 旧路径与新路径之间用空格分隔
+#   3. 修改此文件后需要 reload nginx: nginx -s reload
+#   4. 如果有查询参数, nginx 默认会附加原始请求的 query string;
+#      若不需要, 在新路径末尾加 ? 截断, 例如: /old.html  /new-path?;
+#   5. 此文件为可选文件, 不需要重定向时可删除, nginx 不会报错
+
+# === 在下方添加映射 ===
+
