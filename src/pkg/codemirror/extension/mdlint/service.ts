@@ -145,6 +145,8 @@ function ensureBlankLinesAroundTagLines(text: string): string {
             /^<\/power-bi>$/.test(trimmedLine),
             /^<wechat-captcha(\s+[^>]*)?>$/.test(trimmedLine),
             /^<\/wechat-captcha>$/.test(trimmedLine),
+            /^<login-view>$/.test(trimmedLine),
+            /^<\/login-view>$/.test(trimmedLine),
         ].some(Boolean)
     })
 }

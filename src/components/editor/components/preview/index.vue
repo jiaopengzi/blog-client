@@ -46,6 +46,14 @@
                 :post-id="postIdAc"
             />
 
+            <LoginView
+                v-else-if="item.type === Names.LoginView"
+                :key="`login-view-${index}`"
+                :hidden-html="(item.content as LoginViewState).hiddenHtml"
+                :post-id="postIdAc"
+                :is-admin-video="isAdminVideoAc"
+            />
+
             <PayKey
                 v-else-if="item.type === Names.PayKey"
                 :key="(item.content as PayKeyProps).productId"
@@ -124,11 +132,13 @@ import PayContent, { ContentPayType } from "@/components/common/pay-content"
 import PayKey, { type PayKeyProps } from "@/components/common/pay-key"
 import PayMembership from "@/components/common/pay-membership"
 import WechatCaptcha from "@/components/common/wechat-captcha"
+import LoginView from "@/components/common/login-view"
 import { ScrollElementTagHeading } from "@/components/editor/command"
 import VideoPlayer, { type PlayerState } from "@/components/player"
 import PowerBi from "@/components/common/power-bi/index.vue"
 import { Names, parseHtmlToContentParts } from "@/customElements"
-import { mountPayContentOnCustomElements } from "@/customElementsMount"
+import { mountLoginViewOnCustomElements, mountPayContentOnCustomElements } from "@/customElementsMount"
+import { type LoginViewState } from "@/customElementsMount/LoginView"
 import { type PowerBIState } from "@/customElementsMount/PowerBI"
 import { type WechatCaptchaState } from "@/customElementsMount/WechatCaptcha"
 import { copyText } from "@/utils/clipboard"
@@ -750,6 +760,9 @@ watch(
                     postIdAc,
                     videoTocAc,
                 )
+
+                // 登录查看
+                mountLoginViewOnCustomElements(previewRef.value as HTMLElement, Names.LoginView, postId, isAdminVideo)
 
                 scheduleDisplayKatexScale()
                 schedulePreparedCopyAfterRender()

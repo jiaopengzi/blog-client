@@ -65,6 +65,11 @@ export interface MarkdownRules {
      */
     rule009: Record<string, unknown>
 
+    /**
+     * rule010: 规则 010 检测 login-view 标签是否合法(成对闭合、标签前后空行)
+     */
+    rule010: Record<string, unknown>
+
     // @generated-mdlint-rules-end
 }
 

@@ -65,6 +65,7 @@ export enum CommandsKey {
     Tool = "tool",
     PowerBi = "powerBi",
     WechatCaptcha = "wechatCaptcha",
+    LoginView = "loginView",
 }
 
 // markdown 编辑器 单个命令对象 的类型
@@ -407,6 +408,14 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
             content: "您的隐藏内容",
             suffix: "\n\n</wechat-captcha>\n",
             icon: IconKeys.Captcha,
+        },
+        // 登录查看
+        [CommandsKey.LoginView]: {
+            tip: "登录查看",
+            prefix: "\n<login-view>\n\n",
+            content: "您的隐藏内容",
+            suffix: "\n\n</login-view>\n",
+            icon: IconKeys.Lock,
         },
         // // 导出 markdown
         // [CommandsKey.Markdown]: {

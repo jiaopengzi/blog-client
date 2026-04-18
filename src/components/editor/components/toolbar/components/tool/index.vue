@@ -26,7 +26,7 @@
                     <j-icon :name="item.icon" custom-class="menu-icon" />
                     <span>{{ item.label }}</span>
                 </el-button>
-                <el-button class="tool-settings-btn" type="default" @click.stop="handleToolSettings(item.command)" title="设置">
+                <el-button class="tool-settings-btn" :style="{ visibility: item.hasSettings ? 'visible' : 'hidden' }" type="default" @click.stop="handleToolSettings(item.command)" title="设置">
                     <j-icon :name="IconKeys.Setting" custom-class="menu-icon-setting" />
                 </el-button>
             </div>

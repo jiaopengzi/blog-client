@@ -7,6 +7,7 @@
  */
 
 export * from "./getComponentContainers"
+export * from "./LoginView"
 export * from "./PayContent"
 export * from "./PayKey"
 export * from "./PayMembership"

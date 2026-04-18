@@ -10,12 +10,14 @@ import { IconKeys } from "@/components/common/icons"
 import { CommandsKey } from "@/components/editor/command"
 
 export interface ToolMenuItem {
-    command: CommandsKey.PowerBi | CommandsKey.WechatCaptcha
+    command: CommandsKey.PowerBi | CommandsKey.WechatCaptcha | CommandsKey.LoginView
     label: string
     icon: IconKeys
+    hasSettings?: boolean
 }
 
 export const toolMenuItems: ReadonlyArray<ToolMenuItem> = [
-    { command: CommandsKey.PowerBi, label: "PowerBI", icon: IconKeys.PowerBiUnion },
-    { command: CommandsKey.WechatCaptcha, label: "微信验证码", icon: IconKeys.Captcha },
+    { command: CommandsKey.PowerBi, label: "PowerBI", icon: IconKeys.PowerBiUnion, hasSettings: true },
+    { command: CommandsKey.WechatCaptcha, label: "微信验证码", icon: IconKeys.Captcha, hasSettings: true },
+    { command: CommandsKey.LoginView, label: "登录查看", icon: IconKeys.Lock },
 ]

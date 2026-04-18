@@ -148,6 +148,12 @@ export function useToolbar(
             return
         }
 
+        if (name === CommandsKey.LoginView) {
+            const customContent = { prefix: "\n<login-view>\n\n", content: "您的隐藏内容", suffix: "\n\n</login-view>\n" }
+            stateManager.setCmCommand({ commandName: name, customContent, time: new Date() })
+            return
+        }
+
         // 调用 codemirrorRef 中的 runCommand 函数
 
         stateManager.setCmCommand({
