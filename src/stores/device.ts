@@ -81,7 +81,7 @@ export const useDeviceStore = defineStore("device", {
          * @param suffix 后缀，默认"..."
          * @returns 截断后的文本
          */
-        truncateText(text: string, pcLength: number = 18, padLength: number = 15, phoneLength: number = 12, suffix: string = "..."): string {
+        truncateText(text: string, pcLength: number = 40, padLength: number = 15, phoneLength: number = 12, suffix: string = "..."): string {
             let maxLength = pcLength
             if (this.device === DeviceType.PAD) {
                 maxLength = padLength

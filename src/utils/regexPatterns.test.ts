@@ -228,6 +228,14 @@ describe("RegexPatterns.SeoKeyWords", () => {
         expect(RegexPatterns.SeoKeyWords.test("abc test,关键字,abc defg")).toBe(true)
     })
 
+    it("正确示例关键字包含短横线", () => {
+        expect(RegexPatterns.SeoKeyWords.test("焦棚子,jiaopengzi,power bi,semi-additive")).toBe(true)
+    })
+
+    it("正确示例关键字包含分号", () => {
+        expect(RegexPatterns.SeoKeyWords.test("焦棚子,jiaopengzi,M语言;form登录,自定义登录")).toBe(true)
+    })
+
     it("中文逗号", () => {
         expect(RegexPatterns.SeoKeyWords.test("abc，关键字，ABC100")).toBe(false)
     })
