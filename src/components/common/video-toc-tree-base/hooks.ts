@@ -83,7 +83,7 @@ export function useVideoTocTree(localTreeList: Ref<Tree[]>) {
             targetNode.value.data.children.push(baseNode)
         }
 
-        localTreeList.value = [targetNode.value.data] as Tree[]
+        localTreeList.value = [...localTreeList.value]
         mediaDialogVisible.value = false
     }
 
