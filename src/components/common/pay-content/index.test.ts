@@ -256,6 +256,40 @@ describe("PayContent", () => {
         expect(wrapper.emitted("pay-vip")).toEqual([[ContentPayType.Download]])
     })
 
+    it("付费视频无资料内容时展示仅视频保护文案", async () => {
+        permissionRoleStoreState.getIsLoaded = true
+
+        const wrapper = mountComponent({
+            contentPayType: ContentPayType.Video,
+            price: "100",
+            payStrategy: PayStrategy.All,
+            markdown: "",
+        })
+
+        await flushPromises()
+
+        expect(wrapper.text()).toContain("该视频受保护")
+        expect(wrapper.text()).not.toContain("该视频和资料受保护")
+        expect(wrapper.text()).toContain("元解锁观看")
+        expect(wrapper.text()).not.toContain("观看和获取")
+    })
+
+    it("付费视频有资料内容时展示视频和资料保护文案", async () => {
+        permissionRoleStoreState.getIsLoaded = true
+
+        const wrapper = mountComponent({
+            contentPayType: ContentPayType.Video,
+            price: "100",
+            payStrategy: PayStrategy.All,
+            markdown: "<p>素材链接：https://pan.baidu.com/s/123?pwd=jiao</p>",
+        })
+
+        await flushPromises()
+
+        expect(wrapper.text()).toContain("该视频和资料受保护")
+        expect(wrapper.text()).toContain("元解锁观看和获取")
+    })
+
     it("store 未加载且无会员角色时会触发一次权限角色拉取", async () => {
         updateFromServerMock.mockImplementation(async () => {
             permissionRoleStoreState.membershipRoles = ["黄金会员"]

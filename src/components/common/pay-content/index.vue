@@ -146,6 +146,11 @@ const isVideoContent = computed(() => {
     return contentPayType === ContentPayType.Video
 })
 
+// 付费视频标签内是否携带资料内容
+const hasVideoMaterial = computed(() => {
+    return isVideoContent.value && markdown.trim() !== ""
+})
+
 // 支付策略状态计算，简化后续逻辑判断
 const payStrategyState = computed(() => {
     const canBuySingle = payStrategy === PayStrategy.Buy || payStrategy === PayStrategy.All
@@ -181,13 +186,13 @@ const priceText = computed(() => {
     return fenToYuan(price)
 })
 
-// 是否展示会员引导文案
+// 解锁动作文案
 const unlockActionText = computed(() => {
     switch (contentPayType) {
         case ContentPayType.Download:
             return "下载"
         case ContentPayType.Video:
-            return "观看"
+            return hasVideoMaterial.value ? "观看和获取" : "观看"
         default:
             return "阅读"
     }
@@ -197,9 +202,9 @@ const unlockActionText = computed(() => {
 const protectedTargetText = computed(() => {
     switch (contentPayType) {
         case ContentPayType.Download:
-            return "该附件受保护"
+            return "该资料受保护"
         case ContentPayType.Video:
-            return "该视频受保护"
+            return hasVideoMaterial.value ? "该视频和资料受保护" : "该视频受保护"
         default:
             return "该内容受保护"
     }
