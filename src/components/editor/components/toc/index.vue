@@ -89,7 +89,9 @@ watch(
 #toc {
     padding: 0 1em;
     // 添加不同缩进和样式
-    background-color: var(--el-bg-color);
+    // border: 1px solid var(--jpz-border-color);
+    background-color: var(--jpz-bg-color);
+    border-radius: 5px;
     position: relative;
 
     .toc-title {
@@ -148,7 +150,7 @@ watch(
     .active-marker {
         position: absolute;
         top: 0;
-        left: 4px;
+        left: 6px;
         border-radius: 4px;
         width: 6px;
         background-color: var(--jpz-color-secondary);
