@@ -53,5 +53,7 @@ export const githubDarkPreset: ThemePreset = {
         tableN21Bg: "#0d1117",
         tableStriped: "#161b22",
         scrollbarThumb: "#484f58",
+        markBg: "#3d2e00",
+        markColor: "#e3b341",
     },
 }

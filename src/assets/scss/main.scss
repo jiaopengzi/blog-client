@@ -62,6 +62,10 @@ html {
     --markdown-alert-caution-title-color: #f85149;
     --markdown-alert-caution-svg-fill-color: #f85149;
 
+    // mark 标记默认颜色
+    --jpz-mark-bg-color: #fff3b0;
+    --jpz-mark-color: #1e2858;
+
     // 全局滚动条样式
     ::-webkit-scrollbar-thumb {
         background-color: var(--scrollbar-thumb-bg);

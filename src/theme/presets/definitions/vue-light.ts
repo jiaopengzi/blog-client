@@ -53,5 +53,7 @@ export const vueLightPreset: ThemePreset = {
         tableN21Bg: "#ffffff",
         tableStriped: "#f9f9f9",
         scrollbarThumb: "#c8c8c8",
+        markBg: "#e8f5ef",
+        markColor: "#1f5f46",
     },
 }

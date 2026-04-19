@@ -53,5 +53,7 @@ export const githubLightPreset: ThemePreset = {
         tableN21Bg: "#ffffff",
         tableStriped: "#f6f8fa",
         scrollbarThumb: "#afb8c1",
+        markBg: "#fff8c5",
+        markColor: "#24292f",
     },
 }

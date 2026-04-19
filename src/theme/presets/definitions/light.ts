@@ -53,5 +53,7 @@ export const lightPreset: ThemePreset = {
         tableN21Bg: "var(--el-bg-color)",
         tableStriped: "var(--el-bg-color-page)",
         scrollbarThumb: "var(--el-border-color-darker)",
+        markBg: "#fff3b0",
+        markColor: "#1e2858",
     },
 }

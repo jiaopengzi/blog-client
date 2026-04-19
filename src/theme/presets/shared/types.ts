@@ -50,6 +50,8 @@ export interface ThemePalette {
     tableN21Bg: string
     tableStriped: string
     scrollbarThumb: string
+    markBg: string
+    markColor: string
 }
 
 export interface ThemePreset {

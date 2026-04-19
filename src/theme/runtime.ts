@@ -151,6 +151,8 @@ function buildThemeCssVariables(palette: ThemePalette, scheme: ThemePreset["sche
         `--jpz-table-n2-1-bg-color: ${palette.tableN21Bg};`,
         `--jpz-table-striped-bg-color: ${palette.tableStriped};`,
         `--scrollbar-thumb-bg: ${palette.scrollbarThumb};`,
+        `--jpz-mark-bg-color: ${palette.markBg};`,
+        `--jpz-mark-color: ${palette.markColor};`,
 
         // 主题覆盖输入框的背景色,
         `--el-fill-color-blank: ${palette.bg};`,

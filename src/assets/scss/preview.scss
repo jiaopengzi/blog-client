@@ -129,7 +129,13 @@
         text-decoration: line-through;
     }
 
-    // mark标记 默认的颜色是黄色
+    // mark 标记
+    mark {
+        background-color: var(--jpz-mark-bg-color);
+        color: var(--jpz-mark-color);
+        border-radius: 2px;
+        padding: 0 2px;
+    }
 
     // 有序列表
     ol {
