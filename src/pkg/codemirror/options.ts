@@ -8,6 +8,7 @@
 
 import { type Completion } from "@codemirror/autocomplete"
 import { type Extension } from "@codemirror/state"
+import type { EditorView } from "@codemirror/view"
 
 import type { MarkdownRulesConfig } from "./extension/mdlint/types"
 import { getTheme, Theme, ThemeMode } from "./extension/theme"
@@ -18,6 +19,7 @@ export type DefaultSetupOptions = {
     theme?: Extension // 主题名称
     mention?: Completion[] // @提及补全
     placeholderText?: string // 占位符文本
+    onSave?: (view: EditorView) => void // 保存回调, Mod-s 自动修复后触发
     mdlintOptions?: {
         useWorker?: boolean // 是否使用 web worker 进行 lint 检查
         rules?: MarkdownRulesConfig // Markdown 规则配置

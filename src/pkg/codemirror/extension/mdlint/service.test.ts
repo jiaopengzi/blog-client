@@ -118,4 +118,55 @@ describe("mdlint service", () => {
         expect(result.fixedText).toContain("<pay-read>")
         expect(result.diagnostics.some((item) => item.message.includes("不允许嵌套自定义标签"))).toBe(true)
     })
+
+    it("会自动修复 login-view 标签前后空行", () => {
+        const source = ["前置内容", "<login-view>", "</login-view>", "后置内容"].join("\n")
+        const result = autoFixMarkdownText(source, { rules: markdownRules })
+
+        expect(result.changed).toBe(true)
+        expect(result.fixedText).toBe(["前置内容", "", "<login-view>", "", "</login-view>", "", "后置内容"].join("\n"))
+        expect(result.diagnostics).toHaveLength(0)
+    })
+
+    it("仅移除行尾空格, 不影响其他内容", () => {
+        const source = "第一行   \n第二行\t\t\n第三行"
+        const result = autoFixMarkdownText(source, { rules: markdownRules })
+
+        expect(result.changed).toBe(true)
+        expect(result.fixedText).toBe("第一行\n第二行\n第三行")
+    })
+
+    it("已符合规范的文档不会产生变更", () => {
+        const source = ["# 标题", "", "正文内容", "", '<pay-read id="abc123">', "", "付费内容", "", "</pay-read>", "", "结尾"].join("\n")
+        const result = autoFixMarkdownText(source, { rules: markdownRules })
+
+        expect(result.changed).toBe(false)
+        expect(result.fixedText).toBe(source)
+    })
+
+    it("会折叠 pay-membership 空内容单行标签", () => {
+        const source = ["", '<pay-membership id="m-1">', "", "</pay-membership>", ""].join("\n")
+        const result = autoFixMarkdownText(source, { rules: markdownRules })
+
+        expect(result.changed).toBe(true)
+        expect(result.fixedText).toContain('<pay-membership id="m-1"></pay-membership>')
+    })
+
+    it("会折叠 pay-key 空内容单行标签", () => {
+        const source = ["", '<pay-key id="k-1" title="标题">', "", "</pay-key>", ""].join("\n")
+        const result = autoFixMarkdownText(source, { rules: markdownRules })
+
+        expect(result.changed).toBe(true)
+        expect(result.fixedText).toContain('<pay-key id="k-1" title="标题"></pay-key>')
+    })
+
+    it("会对复杂文档执行多轮修复", () => {
+        const source = ["# 标题  ", "正文", '<video-player video-type="hls" id="v-1">', "", "</video-player>", "结尾行   "].join("\n")
+        const result = autoFixMarkdownText(source, { rules: markdownRules })
+
+        expect(result.changed).toBe(true)
+        expect(result.fixedText).not.toMatch(/[ \t]+$/m)
+        expect(result.fixedText).toContain('<video-player video-type="hls" id="v-1"></video-player>')
+        expect(result.fixedText.includes("# 标题\n\n")).toBe(true)
+    })
 })

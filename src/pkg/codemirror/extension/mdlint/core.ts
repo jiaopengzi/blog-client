@@ -9,9 +9,10 @@
 import { type Diagnostic, linter, type LintSource } from "@codemirror/lint"
 import type { Extension } from "@codemirror/state"
 import type { Text } from "@codemirror/state"
-import { type EditorView, ViewPlugin } from "@codemirror/view"
+import { type EditorView, keymap, ViewPlugin } from "@codemirror/view"
 
-import type { MarkdownLinterOptions, RuleDefinition } from "./types"
+import { autoFixMarkdownText } from "./service"
+import type { MarkdownLinterOptions, MarkdownRulesConfig, RuleDefinition } from "./types"
 import { loadEagerRules } from "./utils"
 
 // 递归扫描当前目录及子目录下以 rule 开头的规则文件并按文件名排序加载, 使用 utils.loadEagerRules() 在主线程同步获取规则模块列表
@@ -114,6 +115,43 @@ export function createMarkdownLinter(options: MarkdownLinterOptions = {}): Exten
     }
 
     return linter(makeLinterCallback(options) as unknown as LintSource)
+}
+
+/**
+ * 创建保存时自动修复 Markdown lint 问题的扩展
+ * 绑定 Mod-s (Ctrl+S / Cmd+S) 快捷键, 执行 autoFixMarkdownText 并将修复后的文本写回编辑器
+ * @param options - 配置选项
+ * @param options.rules - Markdown 规则配置, 传入 autoFixMarkdownText 用于修复后复检
+ * @param options.onSave - 修复完成后的回调, 可用于触发外部保存逻辑
+ * @returns CodeMirror 扩展 (Extension)
+ */
+export function createAutoFixExtension(
+    options: {
+        rules?: MarkdownRulesConfig
+        onSave?: (view: EditorView) => void
+    } = {},
+): Extension {
+    return keymap.of([
+        {
+            key: "Mod-s",
+            run(view: EditorView) {
+                const currentText = view.state.doc.toString()
+                const { fixedText, changed } = autoFixMarkdownText(currentText, { rules: options.rules })
+
+                // 仅在文本有实际变化时才 dispatch 更新, 避免无意义的 undo 记录
+                if (changed) {
+                    view.dispatch({
+                        changes: { from: 0, to: view.state.doc.length, insert: fixedText },
+                    })
+                }
+
+                options.onSave?.(view)
+
+                // 返回 true 阻止浏览器默认的保存行为
+                return true
+            },
+        },
+    ])
 }
 
 export default createMarkdownLinter

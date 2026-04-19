@@ -6,5 +6,7 @@
  * Description : Markdown Linter 扩展主入口
  */
 
-export { default as createMarkdownLinter } from "./core"
+export { default as createMarkdownLinter, createAutoFixExtension } from "./core"
+export { autoFixMarkdownText, lintMarkdownText } from "./service"
+export type { MarkdownLintAutofixResult } from "./service"
 export * from "./types"

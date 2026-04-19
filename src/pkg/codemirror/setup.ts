@@ -34,7 +34,7 @@ import { bottomPanelExt } from "./extension/bottomPanel"
 import { completionCompartment, unifiedCompletion } from "./extension/completion"
 import { customKeymap } from "./extension/hotkey"
 import { handleDropImage, handlePasteImage } from "./extension/imgUpload"
-import { createMarkdownLinter } from "./extension/mdlint"
+import { createAutoFixExtension, createMarkdownLinter } from "./extension/mdlint"
 import { getTheme, Theme, themeCompartment, ThemeMode } from "./extension/theme"
 import { vim, vimModeCompartment } from "./extension/vim"
 import { defaultOptions, type DefaultSetupOptions } from "./options"
@@ -87,6 +87,7 @@ export const createDefaultSetup = (opts: DefaultSetupOptions = defaultOptions())
         placeholder(opts.placeholderText || ""), // 占位符文本
         markdown(), // markdown 语法
         createMarkdownLinter(opts.mdlintOptions), // markdown 代码检查
+        createAutoFixExtension({ rules: opts.mdlintOptions?.rules, onSave: opts.onSave }), // 保存时自动修复 markdown lint 问题
         bottomPanelExt, // 底部面板
         customKeymap, // 自定义快捷键
         handlePasteImage, // 自定义键盘事件
