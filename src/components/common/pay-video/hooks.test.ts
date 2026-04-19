@@ -61,7 +61,7 @@ describe("usePayVideo", () => {
         const treeList = ref([
             {
                 id: 1,
-                label: "目录",
+                label: "章节",
                 is_chapter: true,
                 children: [
                     {

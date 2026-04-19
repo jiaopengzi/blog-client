@@ -33,7 +33,8 @@
                         @click="handleClick(data)"
                     />
                     <div class="btns" v-if="showBtns" @click.stop>
-                        <el-button class="btn-chapter" v-if="data.is_chapter" type="primary" @click="appendChapter(data)"> 章节 </el-button>
+                        <el-button class="btn-sibling-chapter" v-if="data.is_chapter" type="primary" @click="appendSiblingChapter(node, data)"> 章节 </el-button>
+                        <el-button class="btn-chapter" v-if="data.is_chapter" type="primary" @click="appendChildChapter(data)"> 子章节 </el-button>
                         <el-button class="btn-video" v-if="data.is_chapter" type="primary" @click="appendVideo(node)"> 视频 </el-button>
                         <el-button class="btn-delete" type="danger" @click="removeNode(node, data)"> 删除 </el-button>
                     </div>
@@ -97,8 +98,8 @@ const emitTreeUpdate = () => {
     emit("tree-update", localTreeList.value, fileIdHashList)
 }
 
-// 添加章节
-const appendChapter = (data: Data) => {
+// 添加子章节（插入到当前章节的 children 中）
+const appendChildChapter = (data: Data) => {
     // 动态计算id
     const id = calcMaxId(localTreeList.value) + 1
 
@@ -107,6 +108,19 @@ const appendChapter = (data: Data) => {
         data.children = []
     }
     data.children.push(newChild)
+
+    emitTreeUpdate()
+}
+
+// 添加平行章节（同级章节，插入到当前节点之后）
+const appendSiblingChapter = (node: Node, data: Data) => {
+    const id = calcMaxId(localTreeList.value) + 1
+    const newSibling: Tree = { id, label: "章节", is_chapter: true, children: [] }
+
+    const parent = node.parent
+    const siblings: Tree[] = parent?.data.children || parent?.data
+    const index = siblings.findIndex((d: Tree) => d.id === data.id)
+    siblings.splice(index + 1, 0, newSibling)
 
     emitTreeUpdate()
 }
@@ -185,6 +199,7 @@ const handleClick = (data: Data) => {
 .btns {
     display: flex;
 
+    .btn-sibling-chapter,
     .btn-chapter,
     .btn-video,
     .btn-delete {

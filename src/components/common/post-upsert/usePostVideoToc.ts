@@ -16,7 +16,7 @@ const defaultToc = (): PostVideoTocTree[] => {
     return [
         {
             id: 1,
-            label: "目录",
+            label: "章节",
             is_chapter: true,
         },
     ]
