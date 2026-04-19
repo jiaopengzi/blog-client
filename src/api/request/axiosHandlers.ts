@@ -101,11 +101,12 @@ export async function handleUserLoggedInElsewhere(response: AxiosResponse) {
 
     const userStore = useUserStore()
 
-    // 使用 false 说明当前的token 已经失效, 不需要再请求后端接口
-    await userStore.logout(false)
+    // isRefreshPage=false: 仅清除登录态, 不执行 window.location.href="/" 硬刷新
+    // 由下方 router.push 负责 SPA 内跳转到登录页, 避免丢失客户端状态
+    await userStore.logout(false, false)
 
     // 跳转到登录页面, 并携带当前页面路径, 登录成功后跳转回来
-    router.push({ name: RouteNames.Login, query: { redirect: router.currentRoute.value.fullPath } })
+    await router.push({ name: RouteNames.Login, query: { redirect: router.currentRoute.value.fullPath } })
 
     // 提示用户
     MessageUtil.warning(handleResErr(response), 6000)
