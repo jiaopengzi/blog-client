@@ -25,5 +25,6 @@ export interface PayContentProps {
     price?: string // 价格(单位：分)
     loading?: boolean // 加载状态
     markdown: string
+    hasMaterial?: boolean // 付费视频标签内是否携带资料内容（由服务端 has-material 属性传递）
     onlyMarkdown?: boolean // 仅渲染 markdown 内容
 }

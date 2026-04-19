@@ -89,6 +89,7 @@ const {
     price = "0",
     loading = false,
     markdown,
+    hasMaterial = false,
     onlyMarkdown = false,
 } = defineProps<PayContentProps>()
 
@@ -148,7 +149,7 @@ const isVideoContent = computed(() => {
 
 // 付费视频标签内是否携带资料内容
 const hasVideoMaterial = computed(() => {
-    return isVideoContent.value && markdown.trim() !== ""
+    return isVideoContent.value && hasMaterial
 })
 
 // 支付策略状态计算，简化后续逻辑判断

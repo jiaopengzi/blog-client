@@ -55,10 +55,12 @@ export const mountPayContentOnCustomElements = (
     if (!componentContainers) return
     componentContainers.forEach((el) => {
         const content = el.innerHTML
+        const hasMaterial = contentPayType === ContentPayType.Video && el.hasAttribute("has-material")
 
         const props: PayContentProps = {
             contentPayType,
             markdown: content,
+            ...(hasMaterial ? { hasMaterial: true } : {}),
         }
 
         // 自动将 emits 的事件转为组件事件(示例: onPayVip -> onPay-vip)

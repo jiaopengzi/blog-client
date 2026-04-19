@@ -20,6 +20,7 @@ export enum Attributes {
     MaskColor = "maskcolor",
     Title = "title", // 标题
     Description = "description", // 描述
+    HasMaterial = "has-material", // 付费视频是否携带资料内容
 }
 
 // 自定义元素开放属性

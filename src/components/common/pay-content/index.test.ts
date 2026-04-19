@@ -264,6 +264,7 @@ describe("PayContent", () => {
             price: "100",
             payStrategy: PayStrategy.All,
             markdown: "",
+            hasMaterial: false,
         })
 
         await flushPromises()
@@ -281,7 +282,8 @@ describe("PayContent", () => {
             contentPayType: ContentPayType.Video,
             price: "100",
             payStrategy: PayStrategy.All,
-            markdown: "<p>素材链接：https://pan.baidu.com/s/123?pwd=jiao</p>",
+            markdown: "",
+            hasMaterial: true,
         })
 
         await flushPromises()

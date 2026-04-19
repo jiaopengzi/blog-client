@@ -20,7 +20,7 @@ import { Names } from "./registerCustomElements"
 export type Content = PlayerState | PayKeyProps | PowerBIState | WechatCaptchaState | LoginViewState | string
 
 // 内容片段类型
-export type ContentPart = { type: "html"; content: string } | { type: Names; content: Content }
+export type ContentPart = { type: "html"; content: string; hasMaterial?: boolean } | { type: Names; content: Content; hasMaterial?: boolean }
 
 // 检查标签名是否为自定义元素名
 function isCustomElement(tagName: string): tagName is Names {
@@ -97,7 +97,8 @@ export function parseHtmlToContentParts(html: string, postId: string, isAdminVid
             }
             if (tagName === Names.PayDownload || tagName === Names.PayRead || tagName === Names.PayVideo) {
                 const content = (child as HTMLElement).innerHTML
-                parts.push({ type: tagName as Names, content })
+                const hasMaterial = tagName === Names.PayVideo && (child as HTMLElement).hasAttribute("has-material")
+                parts.push({ type: tagName as Names, content, ...(hasMaterial ? { hasMaterial: true } : {}) })
                 continue
             }
 

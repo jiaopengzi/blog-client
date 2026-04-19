@@ -77,6 +77,7 @@
                 :post-id="postIdAc"
                 :is-admin-video="isAdminVideoAc"
                 :markdown="item.content as string"
+                :has-material="item.hasMaterial ?? false"
                 :content-pay-type="getPayContentType(item.type)"
                 :loading="createOrderLoadingAc"
                 :is-paid="isPaidAc"
