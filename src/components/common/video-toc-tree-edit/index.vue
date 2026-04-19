@@ -53,13 +53,7 @@
 
         <!-- 剪贴板导入对话框 -->
         <el-dialog v-model="pasteDialogVisible" title="从剪贴板导入" width="560" :close-on-click-modal="false" @opened="pasteInputRef?.focus()">
-            <el-input
-                ref="pasteInputRef"
-                v-model="pasteContent"
-                type="textarea"
-                :rows="12"
-                placeholder="请将 JSON 内容粘贴到此处（Ctrl+V）"
-            />
+            <el-input ref="pasteInputRef" v-model="pasteContent" type="textarea" :rows="12" placeholder="请将 JSON 内容粘贴到此处（Ctrl+V）" />
             <template #footer>
                 <el-button @click="pasteDialogVisible = false">取消</el-button>
                 <el-button type="primary" @click="confirmPasteImport">确认导入</el-button>

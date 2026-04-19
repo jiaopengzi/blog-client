@@ -41,7 +41,16 @@
         </div>
 
         <!-- 上传交互 -->
-        <el-upload ref="uploadRef" class="upload" drag multiple :limit="10" :before-upload="handleBeforeUpload" :on-exceed="handleExceed" :http-request="httpRequest">
+        <el-upload
+            ref="uploadRef"
+            class="upload"
+            drag
+            multiple
+            :limit="10"
+            :before-upload="handleBeforeUpload"
+            :on-exceed="handleExceed"
+            :http-request="httpRequest"
+        >
             <j-icon :name="IconKeys.Upload" custom-class="icon-upload-filled" />
             <div class="el-upload__text">将文件拖放到此处 或 <em>点击上传</em></div>
             <template #tip>

@@ -426,10 +426,12 @@ export class UploadController extends EventEmitter<UploadControllerEvents> {
     private handleChunks = (chunks: Chunk[]) => {
         // 添加所有任务
         chunks.forEach((chunk) => {
-            this.taskQueue.add(new Task(async () => {
-                const uploadChunk = { ...chunk, blob: this.chunkSplitter.getChunkBlob(chunk.part_index) }
-                await this.uploadChunk(uploadChunk)
-            }))
+            this.taskQueue.add(
+                new Task(async () => {
+                    const uploadChunk = { ...chunk, blob: this.chunkSplitter.getChunkBlob(chunk.part_index) }
+                    await this.uploadChunk(uploadChunk)
+                }),
+            )
         })
 
         // 开始执行任务

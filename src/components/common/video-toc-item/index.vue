@@ -6,7 +6,7 @@
  * Description : 视频目录项
 -->
 <template>
-    <div class="video-toc-item">
+    <div class="video-toc-item" :class="{ 'is-edit-mode': isEdit, 'is-display-mode': !isEdit }">
         <span class="order" v-if="isShowOrder">{{ orderDisplay }}. </span>
         <EditableText class="text" :is-edit="isEdit" :text="text" @finishEdit="finishEdit" />
     </div>
@@ -56,6 +56,24 @@ const finishEdit = (val: string) => {
     align-items: center;
     font-size: 14px;
     margin: 4px 0;
+    box-sizing: border-box;
+
+    &.is-display-mode {
+        padding: 8px 12px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+
+        .order {
+            font-weight: 500;
+            margin-right: 12px;
+            opacity: 0.8;
+            min-width: 32px;
+        }
+
+        .text {
+            transition: color 0.3s ease;
+        }
+    }
 
     .order {
         font-weight: bold;

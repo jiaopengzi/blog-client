@@ -76,13 +76,7 @@ describe("rule010", () => {
     })
 
     it("允许嵌套 power-bi", () => {
-        const doc = makeDoc([
-            "",
-            "<login-view>",
-            '<power-bi src="https://app.powerbi.com/reportEmbed?reportId=abc123"></power-bi>',
-            "</login-view>",
-            "",
-        ])
+        const doc = makeDoc(["", "<login-view>", '<power-bi src="https://app.powerbi.com/reportEmbed?reportId=abc123"></power-bi>', "</login-view>", ""])
         const diags = run(doc)
 
         expect(diags).toHaveLength(0)

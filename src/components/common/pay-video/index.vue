@@ -12,7 +12,10 @@
             <VideoPlayer :player-state="state">
                 <template #toc>
                     <div class="video-toc" v-if="isShowToc && state.isShowToc">
-                        <el-button type="default" class="close-toc-button" @click="manager.setIsShowToc(false)">关闭目录</el-button>
+                        <div class="toc-header">
+                            <span class="toc-title">视频目录</span>
+                            <el-button type="info" text class="close-toc-button" @click="manager.setIsShowToc(false)">关闭目录</el-button>
+                        </div>
                         <div class="toc-content">
                             <VideoTocTreeDisplay :tree-list="localTreeList" :current-node-key="currentTreeId" @video-select="handleSelect" />
                         </div>
@@ -131,20 +134,42 @@ onMounted(async () => {
             right: 0;
             width: 100%;
             height: 100%;
-            border: 1px solid var(--jpz-border-color);
-            border-radius: 8px;
-            background-color: var(--jpz-bg-color);
-            overflow: auto;
-            // 要比全屏播放的 z-index 高
+            // border-radius: 8px;
+            background-color: color-mix(in srgb, var(--jpz-bg-color) 90%, transparent);
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
             z-index: 1001;
 
-            .close-toc-button {
-                z-index: 1002;
-                margin: 8px;
+            .toc-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 12px 16px;
+                border-bottom: 1px solid var(--jpz-border-color);
+
+                .toc-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: var(--jpz-text-color-primary);
+                }
+
+                .close-toc-button {
+                    margin: 0;
+                    color: var(--jpz-text-color-secondary);
+
+                    &:hover {
+                        color: var(--jpz-text-color-primary);
+                        background-color: var(--jpz-bg-color-overlay);
+                    }
+                }
             }
 
             .toc-content {
-                border-top: 1px solid var(--jpz-border-color);
+                flex: 1;
+                overflow: auto;
+                padding: 0 8px 16px 8px;
             }
         }
     }
