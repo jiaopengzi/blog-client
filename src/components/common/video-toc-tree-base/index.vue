@@ -32,7 +32,7 @@
                         @finish-edit="(val: string) => finishEdit(val, node, data)"
                         @click="handleClick(data)"
                     />
-                    <div class="btns" v-if="showBtns">
+                    <div class="btns" v-if="showBtns" @click.stop>
                         <el-button class="btn-chapter" v-if="data.is_chapter" type="primary" @click="appendChapter(data)"> 章节 </el-button>
                         <el-button class="btn-video" v-if="data.is_chapter" type="primary" @click="appendVideo(node)"> 视频 </el-button>
                         <el-button class="btn-delete" type="danger" @click="removeNode(node, data)"> 删除 </el-button>
