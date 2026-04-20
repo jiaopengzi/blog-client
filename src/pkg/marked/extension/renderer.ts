@@ -101,9 +101,9 @@ function constructWeChatPreCode(htmlStr: string): string {
     const lines = htmlStr.split("\n") || []
     let wechatPreCode = "" // 微信 pre 代码块内容
     let wechatPreCodeLang = "" // 微信 pre 代码块语言
-    const regexLang = /language-(\w+)/ // 正则匹配 pre 代码块语言
+    const regexLang = /language-([^\s"]+)/ // 正则匹配 pre 代码块语言
     // 正则匹配出 `<pre><code class="language-???">` 或 `<pre><code>` 问号是占位符
-    const regexStart = /<pre><code(?: class="language-(\w+)")?>/
+    const regexStart = /<pre><code(?: class="language-([^\s"]+)")?>/
     const regexEnd = /<\/code><\/pre>/ // 正则匹配 pre 结束标签
     let lineNumber = 0 // 行号计数器
 
