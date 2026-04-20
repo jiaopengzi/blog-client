@@ -102,9 +102,8 @@ export function useEdit(
 
                     // 更新角色付费管理
                     if (data.pay_roles) {
-                        data.pay_roles.forEach((role: string) => {
-                            const index = rolePaidList.findIndex((i) => i.name === role)
-                            rolePaidList[index]!.status = true
+                        rolePaidList.forEach((item) => {
+                            item.status = data.pay_roles.includes(item.name)
                         })
                         postInfoForm.pay_roles = data.pay_roles
                     }
