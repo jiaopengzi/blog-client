@@ -94,7 +94,13 @@
                 </el-form-item>
 
                 <el-form-item label="设置文章缩略图。" prop="thumbnail">
-                    <ImageInput v-model="postInfoForm.thumbnail" clearable />
+                    <div class="thumbnail-row">
+                        <ImageInput v-model="postInfoForm.thumbnail" clearable />
+                        <div class="thumbnail-quick-insert">
+                            <el-input-number v-model="thumbnailImgIndex" :min="1" />
+                            <el-button type="primary" :disabled="!editorState.imgUrls.length" @click="insertThumbnailFromEditor">快速插入</el-button>
+                        </div>
+                    </div>
                 </el-form-item>
 
                 <div class="more-setting-switch">
@@ -231,7 +237,7 @@
 <script lang="ts" setup>
 import { useHead } from "@unhead/vue"
 import { useResizeObserver } from "@vueuse/core"
-import type { ElContainer, ElFormItem } from "element-plus"
+import { ElMessage } from "element-plus"
 import type { FormInstance } from "element-plus"
 import { storeToRefs } from "pinia"
 import { computed, onBeforeMount, onUnmounted, reactive, ref, toRefs, useTemplateRef, watch } from "vue"
@@ -301,6 +307,19 @@ useEditor(stateManager)
 
 const editorState = stateManager.getState()
 const mediaDialogVisible = ref(false)
+
+const thumbnailImgIndex = ref(1)
+
+const insertThumbnailFromEditor = () => {
+    const urls = editorState.imgUrls
+    if (!urls || urls.length === 0) return
+    const n = thumbnailImgIndex.value
+    if (n > urls.length) {
+        ElMessage.warning(`当前文章只有 ${urls.length} 张图片，无法插入第 ${n} 张`)
+        return
+    }
+    postInfoForm.thumbnail = urls[n - 1]
+}
 
 const router = useRouter()
 
@@ -805,5 +824,20 @@ h4 {
 
 .video-toc-tree {
     width: 100%;
+}
+
+.thumbnail-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+}
+
+.thumbnail-quick-insert {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    margin-left: 16px;
 }
 </style>
