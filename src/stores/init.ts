@@ -6,6 +6,8 @@
  * Description : store 初始化
  */
 
+import { tabSyncManager } from "@/api/request/tabSyncManager"
+
 import { useDeviceStore } from "./device"
 import { useOptionsStore } from "./options"
 import { usePermissionRoleStore } from "./permissionRole"
@@ -26,5 +28,13 @@ export const initStores = async (): Promise<void> => {
     await optionsStore.update(!isLoadedOptions)
     await permissionRoleStore.update(!isLoadedPermissionRole)
     await permissionRoleStore.postDetailEditEnable()
+
+    if (!userStore.accessToken) {
+        const syncedToken = await tabSyncManager.requestTokenFromOtherTabs(200)
+        if (syncedToken) {
+            await tabSyncManager.setTokenSilently(syncedToken)
+        }
+    }
+
     await userStore.getUserInfoByToken(!isLogin)
 }

@@ -9,6 +9,7 @@
 import { acceptHMRUpdate, defineStore } from "pinia"
 
 import { SocialLoginType } from "@/api/common"
+import { tabSyncManager } from "@/api/request/tabSyncManager"
 import { handleResErr, type Res, ResponseCode, type ResResponse } from "@/api/response"
 import { accessTokenRefreshAPI } from "@/api/user/accessTokenRefresh"
 import { type AccessTokenResponse } from "@/api/user/common"
@@ -119,6 +120,13 @@ export const useUserStore = defineStore("user", {
     actions: {
         // 刷新access token
         async accessTokenRefresh(isRefreshPage: boolean = true): Promise<boolean> {
+            // 尝试从其他标签获取 token, 避免触发 refresh 导致 JWI 轮换
+            const syncedToken = await tabSyncManager.requestTokenFromOtherTabs()
+            if (syncedToken) {
+                await tabSyncManager.setTokenSilently(syncedToken)
+                return true
+            }
+
             let res
             try {
                 res = await accessTokenRefreshAPI()
@@ -129,7 +137,7 @@ export const useUserStore = defineStore("user", {
 
             if (res.data.code === ResponseCode.UserAccessTokenRefreshSuccess) {
                 // 成功刷新访问令牌
-                this.accessToken = res.data.data.access_token
+                this.setAccessToken(res.data.data.access_token)
 
                 // localStorage.setItem(LocalStorageKey.AccessToken, res.data.data.access_token)
                 return true
@@ -152,9 +160,19 @@ export const useUserStore = defineStore("user", {
             }
         },
 
-        // 设置访问令牌
+        // 设置访问令牌, 并广播给其他标签
         setAccessToken(accessToken: string) {
+            if (this.accessToken === accessToken) return
+
             this.accessToken = accessToken
+
+            if (tabSyncManager.shouldSkipBroadcast()) return
+
+            if (accessToken) {
+                tabSyncManager.broadcastTokenUpdate(accessToken)
+            } else {
+                tabSyncManager.broadcastTokenClear()
+            }
         },
 
         // 设置头像

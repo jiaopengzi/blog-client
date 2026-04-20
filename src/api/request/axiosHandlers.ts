@@ -18,6 +18,7 @@ import {
     setIsRefreshing,
     subscribeTokenRefresh,
 } from "@/api/request/refreshTokenManager"
+import { tabSyncManager } from "@/api/request/tabSyncManager"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { isSetupAPI } from "@/api/setting/isSetup"
 import { RouteNames, router } from "@/router"
@@ -30,7 +31,7 @@ import { MessageUtil } from "@/utils/message"
  * @param axiosInstance axios 实例
  * @returns 刷新后的响应结果或 undefined
  */
-export async function handleAccessTokenRefresh(response: AxiosResponse, axiosInstance: AxiosInstance): Promise<any | void> {
+export async function handleAccessTokenRefresh(response: AxiosResponse, axiosInstance: AxiosInstance): Promise<AxiosResponse | undefined> {
     const code = response.data.code
 
     // 非刷新相关的响应码, 直接返回 void 0
@@ -62,6 +63,14 @@ export async function handleAccessTokenRefresh(response: AxiosResponse, axiosIns
                 }
             })
         })
+    }
+
+    const syncedToken = await tabSyncManager.requestTokenFromOtherTabs(200)
+    if (syncedToken) {
+        await tabSyncManager.setTokenSilently(syncedToken)
+        notifyRefreshed(syncedToken, true)
+        markRetriedRequest(originalRequest)
+        return axiosInstance(originalRequest)
     }
 
     // 开始刷新流程 **单例**, 防止重复刷新
