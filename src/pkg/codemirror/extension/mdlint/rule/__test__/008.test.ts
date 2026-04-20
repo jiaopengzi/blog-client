@@ -105,10 +105,23 @@ describe("rule008 - power-bi 标签合法性检测", () => {
         expect(diags).toHaveLength(0)
     })
 
+    it("HTML 注释行内的 power-bi 标签不应触发 lint", () => {
+        const doc = makeDoc(['<!-- <power-bi src="https://app.powerbi.cn/view?r=xxx" maskcolor="#ffffff"></power-bi> -->'])
+        const diags = run(doc as unknown as DocLike)
+        expect(diags).toHaveLength(0)
+    })
+
     it("行内代码片段中的 power-bi 标签不应触发 lint", () => {
         const doc = makeDoc(['- 示例：`<power-bi src="" maskcolor=""></power-bi>`'])
         const diags = run(doc as unknown as DocLike)
         expect(diags).toHaveLength(0)
+    })
+
+    it("diagnostic message 应包含行号", () => {
+        const doc = makeDoc(["<power-bi></power-bi>"])
+        const diags = run(doc as unknown as DocLike)
+        expect(diags.length).toBeGreaterThan(0)
+        expect(diags.every((d) => d.message.includes("行"))).toBe(true)
     })
 
     it("自闭合标签 power-bi 应返回错误", () => {

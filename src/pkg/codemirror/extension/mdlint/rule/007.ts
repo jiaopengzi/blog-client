@@ -9,6 +9,7 @@
 import type { Diagnostic } from "@codemirror/lint"
 
 import type { DocLike } from "../types"
+import { collectFencedCodeLineNumbers } from "../utils"
 
 export const id = "rule007"
 export const defaultOptions = {}
@@ -21,8 +22,13 @@ export const defaultOptions = {}
 export function run(doc: DocLike): Diagnostic[] {
     const diagnostics: Diagnostic[] = []
     const lineCount = doc.lines
+    const fencedLineNumbers = collectFencedCodeLineNumbers(doc)
 
     for (let i = 1; i <= lineCount; i++) {
+        if (fencedLineNumbers.has(i)) {
+            continue
+        }
+
         const line = doc.line(i)
         const text = line.text
         const from = line.from
@@ -40,7 +46,7 @@ export function run(doc: DocLike): Diagnostic[] {
                         from: from,
                         to: from + grp.length,
                         severity: "warning",
-                        message: `标题前应有空行：当前级别 ${level}`,
+                        message: `标题前应有空行：当前级别 ${level}（第 ${i} 行）`,
                         source: id,
                     })
                 }
@@ -54,7 +60,7 @@ export function run(doc: DocLike): Diagnostic[] {
                         from: from,
                         to: from + grp.length,
                         severity: "warning",
-                        message: `标题后应有空行：当前级别 ${level}`,
+                        message: `标题后应有空行：当前级别 ${level}（第 ${i} 行）`,
                         source: id,
                     })
                 }

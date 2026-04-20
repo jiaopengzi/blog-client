@@ -49,6 +49,11 @@ export function run(doc: DocLike): Diagnostic[] {
         }
 
         const lineText = doc.line(i).text
+        const trimmedLineText = lineText.trim()
+        if (trimmedLineText.startsWith("<!--") && trimmedLineText.endsWith("-->")) {
+            continue
+        }
+
         let match: RegExpExecArray | null
         tagRegex.lastIndex = 0
 
@@ -161,7 +166,41 @@ export function run(doc: DocLike): Diagnostic[] {
         })
     }
 
-    return diagnostics
+    return appendLineNumbersToDiagnostics(doc, diagnostics)
+}
+
+/**
+ * 为诊断信息追加行号, 便于在编辑器中快速定位问题.
+ * @param doc 文档对象, 用于根据偏移量反查行号.
+ * @param diagnostics 原始诊断列表.
+ * @returns 追加了行号信息的新诊断列表.
+ */
+function appendLineNumbersToDiagnostics(doc: DocLike, diagnostics: Diagnostic[]): Diagnostic[] {
+    return diagnostics.map((diagnostic) => {
+        const lineNumber = getLineNumberByPosition(doc, diagnostic.from)
+
+        return {
+            ...diagnostic,
+            message: `${diagnostic.message}（第 ${lineNumber} 行）`,
+        }
+    })
+}
+
+/**
+ * 根据文档偏移量反查对应行号.
+ * @param doc 文档对象, 提供按行访问能力.
+ * @param position Diagnostic 起始偏移量.
+ * @returns 匹配到的行号, 若未命中则回退为最后一行.
+ */
+function getLineNumberByPosition(doc: DocLike, position: number): number {
+    for (let lineNumber = 1; lineNumber <= doc.lines; lineNumber++) {
+        const line = doc.line(lineNumber)
+        if (line.from <= position && position <= line.to) {
+            return lineNumber
+        }
+    }
+
+    return doc.lines
 }
 
 // 校验 power-bi 属性要求

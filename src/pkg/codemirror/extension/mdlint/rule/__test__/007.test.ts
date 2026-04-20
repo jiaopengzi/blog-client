@@ -48,4 +48,17 @@ describe("rule007 - 标题行前后必须有空行", () => {
         expect(diags.every((x) => x.severity === "warning")).toBeTruthy()
         expect(diags.every((x) => x.source === id)).toBeTruthy()
     })
+
+    it("fenced code block 内的标题不应触发 lint", () => {
+        const doc = makeDoc(["```shell", "# node 版本：v16.17.0", "# npm  版本 9.5.0", "```"])
+        const diags = run(doc as unknown as DocLike)
+        expect(diags).toHaveLength(0)
+    })
+
+    it("diagnostic message 应包含行号", () => {
+        const doc = makeDoc(["A", "# B", "C"])
+        const diags = run(doc as unknown as DocLike)
+        expect(diags.length).toBeGreaterThan(0)
+        expect(diags.every((d) => d.message.includes("行"))).toBe(true)
+    })
 })
