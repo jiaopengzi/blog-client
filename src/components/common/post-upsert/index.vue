@@ -514,6 +514,7 @@ const { rules } = useFormValidation({
 watch(
     () => postInfoForm.category_ids,
     () => {
+        if (!isShowCategory.value) return
         formRef.value?.validateField("category_ids")
     },
 )
