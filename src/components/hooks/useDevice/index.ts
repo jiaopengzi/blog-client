@@ -27,7 +27,9 @@ export const useDevice = () => {
 
     // 分页布局
     const paginationLayout = computed(() => {
-        return device.value === DeviceType.PHONE ? "total, prev, pager, next" : "total, prev, pager, next, jumper, sizes"
+        // return device.value === DeviceType.PHONE ? "total, prev, pager, next" : "total, prev, pager, next, jumper, sizes"
+        // return device.value === DeviceType.PHONE ? "total, prev, pager, next, sizes" : "total, prev, pager, next, jumper, sizes"
+        return device.value === DeviceType.PHONE ? "prev, pager, next" : "total, prev, pager, next, jumper, sizes"
     })
 
     return {

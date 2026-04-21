@@ -46,12 +46,11 @@
 
 <script lang="ts" setup>
 import type { Completion } from "@codemirror/autocomplete"
-import { storeToRefs } from "pinia"
-import { computed, onBeforeMount, reactive, watch } from "vue"
+import { onBeforeMount, reactive, watch } from "vue"
 
 import { type CommentRes } from "@/api/comment/common"
 import { type ViewCommentRequest } from "@/api/comment/viewByPostID"
-import { DeviceType, useDeviceStore } from "@/stores/device"
+import { useDevice } from "@/components/hooks/useDevice"
 
 import CommentItem from "./comment-item/index.vue"
 import { useCommentList } from "./hooks"
@@ -70,12 +69,7 @@ const emit = defineEmits<{
 
 const req = reactive<ViewCommentRequest>({ post_id: postId })
 
-// 分页组件的layout
-const deviceStore = useDeviceStore()
-const { device } = storeToRefs(deviceStore)
-const paginationLayout = computed(() => {
-    return device.value === DeviceType.PHONE ? "total, prev, pager, next, sizes" : "total, prev, pager, next, jumper, sizes"
-})
+const { paginationLayout } = useDevice()
 
 const {
     pagination, // 分页数据

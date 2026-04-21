@@ -39,14 +39,13 @@
 </template>
 
 <script lang="ts" setup>
-import { storeToRefs } from "pinia"
-import { computed, onBeforeMount, reactive } from "vue"
+import { onBeforeMount, reactive } from "vue"
 import { useRouter } from "vue-router"
 
 import { type ViewLinkRequest } from "@/api/link/view"
 import { useParams } from "@/components/hooks/useParams"
 import { RouteNames } from "@/router"
-import { DeviceType, useDeviceStore } from "@/stores/device"
+import { useDevice } from "@/components/hooks/useDevice"
 
 import LinkItem from "../link-item"
 import { useLinkList } from "./hooks"
@@ -71,12 +70,7 @@ const req = reactive<ViewLinkRequest>({})
 
 const router = useRouter()
 
-// 分页组件的layout
-const deviceStore = useDeviceStore()
-const { device } = storeToRefs(deviceStore)
-const paginationLayout = computed(() => {
-    return device.value === DeviceType.PHONE ? "total, prev, pager, next, sizes" : "total, prev, pager, next, jumper, sizes"
-})
+const { paginationLayout } = useDevice()
 
 const {
     pagination, // 分页数据

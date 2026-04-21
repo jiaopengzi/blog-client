@@ -60,14 +60,14 @@
 <script lang="ts" setup>
 import { useIntersectionObserver } from "@vueuse/core"
 import { storeToRefs } from "pinia"
-import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from "vue"
+import { nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from "vue"
 
+import { useDevice } from "@/components/hooks/useDevice"
 import { type PostResPagination } from "@/api/post/common"
 import { type PostCategory } from "@/api/postCategory/view"
 import { type Pagination } from "@/api/response"
 import PostItemMain from "@/components/common/post-item-main"
 import PostItemSearch from "@/components/common/post-item-search"
-import { DeviceType, useDeviceStore } from "@/stores/device"
 import { useStatusStore } from "@/stores/status"
 import LinkList from "@/views/link-list/components/link-list"
 
@@ -103,15 +103,10 @@ const emit = defineEmits<{
 }>()
 
 const statusStore = useStatusStore()
-const deviceStore = useDeviceStore()
 
 const { disablePagination } = storeToRefs(statusStore)
-const { device } = storeToRefs(deviceStore)
 
-const paginationLayout = computed(() => {
-    // return device.value === DeviceType.PHONE ? "total, prev, pager, next, sizes" : "total, prev, pager, next, jumper, sizes"
-    return device.value === DeviceType.PHONE ? "prev, pager, next" : "total, prev, pager, next, jumper, sizes"
-})
+const { paginationLayout } = useDevice()
 
 // 分页组件 ref
 const paginationBlockRef = useTemplateRef("paginationBlockRef")
