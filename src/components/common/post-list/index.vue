@@ -109,7 +109,8 @@ const { disablePagination } = storeToRefs(statusStore)
 const { device } = storeToRefs(deviceStore)
 
 const paginationLayout = computed(() => {
-    return device.value === DeviceType.PHONE ? "total, prev, pager, next, sizes" : "total, prev, pager, next, jumper, sizes"
+    // return device.value === DeviceType.PHONE ? "total, prev, pager, next, sizes" : "total, prev, pager, next, jumper, sizes"
+    return device.value === DeviceType.PHONE ? "prev, pager, next" : "total, prev, pager, next, jumper, sizes"
 })
 
 // 分页组件 ref
@@ -242,6 +243,9 @@ onUnmounted(() => {
     display: flex;
     justify-content: center;
     margin: 10px;
+    // 防止分页组件在手机端溢出撑大页面产生横向滚动条
+    max-width: 100%;
+    overflow-x: auto;
 }
 
 /* 参考:https://css-loaders.com/dots/ */
