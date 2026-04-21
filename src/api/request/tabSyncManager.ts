@@ -6,6 +6,8 @@
  * Description : 跨标签 token 同步管理器
  */
 
+import { useUserStore } from "@/stores/user"
+
 /** BroadcastChannel 频道名称，同源下所有标签页共享同一频道 */
 const AUTH_SYNC_CHANNEL_NAME = "auth_sync"
 
@@ -147,8 +149,6 @@ class TabSyncManager {
         this.silentUpdateDepth += 1
 
         try {
-            // 动态导入避免 tabSyncManager ↔ userStore 循环依赖
-            const { useUserStore } = await import("@/stores/user")
             useUserStore().setAccessToken(token)
         } finally {
             this.silentUpdateDepth = Math.max(0, this.silentUpdateDepth - 1)
@@ -194,7 +194,7 @@ class TabSyncManager {
      * @throws {void} 无.
      */
     private async handleTokenRequest(message: TabSyncRequestMessage): Promise<void> {
-        const token = await this.getCurrentAccessToken()
+        const token = this.getCurrentAccessToken()
         if (!token || !this.channel) return
 
         /* oxlint-disable unicorn/require-post-message-target-origin -- BroadcastChannel.postMessage 无 targetOrigin 参数 */
@@ -222,8 +222,7 @@ class TabSyncManager {
      * @returns {Promise<string>} 当前 access token, 不存在时返回空字符串.
      * @throws {void} 无.
      */
-    private async getCurrentAccessToken(): Promise<string> {
-        const { useUserStore } = await import("@/stores/user")
+    private getCurrentAccessToken(): string {
         return useUserStore().accessToken || ""
     }
 
