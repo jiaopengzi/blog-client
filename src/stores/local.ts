@@ -29,4 +29,6 @@ export enum LocalStorageKey {
     PayTypeEnable = "pay_type_enable", // 支付类型是否启用
     EditorDefaultsPowerBi = "editor_defaults_power_bi", // 编辑器 PowerBI 插入默认值
     EditorDefaultsWechatCaptcha = "editor_defaults_wechat_captcha", // 编辑器 WechatCaptcha 插入默认值
+    ThumbnailAutoInsertEnable = "thumbnail_auto_insert_enable",
+    ThumbnailAutoInsertIndex = "thumbnail_auto_insert_index",
 }

@@ -62,5 +62,5 @@ export function useSnapshot(postInfoForm: Reactive<UpsertPostForm>) {
         { deep: true },
     )
 
-    return { isUpdate, updatedFields, updateSnapshot }
+    return { isUpdate, updatedFields, updateSnapshot, updateStatus }
 }

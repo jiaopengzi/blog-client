@@ -99,6 +99,7 @@
                         <div class="thumbnail-quick-insert">
                             <el-input-number v-model="thumbnailImgIndex" :min="1" />
                             <el-button type="primary" :disabled="!editorState.imgUrls.length" @click="insertThumbnailFromEditor">快速插入</el-button>
+                            <el-checkbox v-model="thumbnailAutoInsert">保存时自动插入</el-checkbox>
                         </div>
                     </div>
                 </el-form-item>
@@ -262,6 +263,7 @@ import { useTheme } from "@/theme/useTheme"
 import { type MarkdownRulesConfig } from "@/pkg/codemirror"
 import { autoFixMarkdownText } from "@/pkg/codemirror/extension/mdlint/service"
 import { RouteNames } from "@/router"
+import { LocalStorageKey } from "@/stores/local"
 import { useOptionsStore } from "@/stores/options"
 import { PermissionNames } from "@/stores/permissionRole"
 import { useUserStore } from "@/stores/user"
@@ -308,7 +310,16 @@ useEditor(stateManager)
 const editorState = stateManager.getState()
 const mediaDialogVisible = ref(false)
 
-const thumbnailImgIndex = ref(1)
+const thumbnailAutoInsert = ref(localStorage.getItem(LocalStorageKey.ThumbnailAutoInsertEnable) === "true")
+const thumbnailImgIndex = ref(Number(localStorage.getItem(LocalStorageKey.ThumbnailAutoInsertIndex)) || 1)
+
+watch(thumbnailAutoInsert, (val) => {
+    localStorage.setItem(LocalStorageKey.ThumbnailAutoInsertEnable, String(val))
+})
+
+watch(thumbnailImgIndex, (val) => {
+    localStorage.setItem(LocalStorageKey.ThumbnailAutoInsertIndex, String(val))
+})
 
 const insertThumbnailFromEditor = () => {
     const urls = editorState.imgUrls
@@ -531,7 +542,7 @@ const {
 const { submitForm: addSubmitForm } = useAdd(postInfoForm, queryKey, postInfoAboutTime, router, routeName, unfoldDefaultStatus, isPaid)
 
 // 数据快照
-const { isUpdate, updatedFields, updateSnapshot } = useSnapshot(postInfoForm)
+const { isUpdate, updatedFields, updateSnapshot, updateStatus } = useSnapshot(postInfoForm)
 
 /**
  * 同步编辑器内容到表单, 并在用户继续编辑时清空上一次 lint 阻断提示.
@@ -598,6 +609,12 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     const isEditorValid = await validateEditorBeforeSubmit(formEl)
     if (!isEditorValid) {
         return
+    }
+
+    // 保存时自动插入缩略图，插入后立即同步快照比对状态，避免 watch 异步导致 isUpdate 未更新
+    if (thumbnailAutoInsert.value) {
+        insertThumbnailFromEditor()
+        updateStatus()
     }
 
     // 判断 seo 标题是否为空
