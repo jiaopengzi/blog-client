@@ -2,6 +2,8 @@
 
 一个基于 Vue3, Vite 和 TypeScript 构建的博客系统前端. 它不仅包含公开博客站点, 还覆盖了登录注册, markdown 写作, 评论互动, **付费阅读** **付费下载** **付费视频** **视频播放**, 以及完整的后台管理能力.
 
+效果展示：[https://jiaopengzi.com](https://jiaopengzi.com)
+
 ## 功能概览
 
 ### 面向访客与普通用户
