@@ -213,6 +213,7 @@ const {
     editItemUpdateDialogVisible, // 编辑对话框
     deleteRows, // 删除行
     updateRouterPush,
+    updateRouterPushResetPage, // 重置页码后更新路由
     loadingDelete, // 删除时的加载状态
 } = useBaseTable<CouponRes, ViewCouponRequest, DeleteCouponRequest>({
     routeName: RouteNames.Coupon,
@@ -226,7 +227,7 @@ const {
 
 // 执行搜索
 const runSearch = async () => {
-    await updateRouterPush()
+    await updateRouterPushResetPage()
 }
 
 // 处理 couponCountGroup 点击事件
@@ -252,7 +253,7 @@ const handleCouponCountByGroup = async (item: CouponCountGroupItem) => {
         [queryKey.KeyWord]: search.value,
     })
 
-    await updateRouterPush()
+    await updateRouterPushResetPage()
 }
 
 // 需要编辑的用户ID

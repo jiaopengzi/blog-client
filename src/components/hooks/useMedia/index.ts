@@ -70,6 +70,7 @@ export function useMedia() {
         editItemUpdateDialogVisible, // 编辑对话框
         deleteRows: deleteRowsBase, // 删除行
         updateRouterPush, // 更新查询参数和路由
+        updateRouterPushResetPage, // 重置页码后更新路由
         updatePaginate, // 更新分页
         loadingDelete, // 删除加载状态
     } = useBaseTable<MediaFile, GetMediaFilesRequest, DeleteFileRequest>({
@@ -85,7 +86,7 @@ export function useMedia() {
     // 更新数据
     const updateData = async (isUpdateRouter: boolean = true) => {
         if (isUpdateRouter) {
-            await updateRouterPush()
+            await updateRouterPushResetPage()
         }
     }
 

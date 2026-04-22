@@ -250,6 +250,7 @@ const {
     deleteRows, // 删除行
     updatePaginate, // 更新分页
     updateRouterPush,
+    updateRouterPushResetPage, // 重置页码后更新路由
     loadingDelete, // 删除时的加载状态
 } = useBaseTable<NotificationRes, ViewNotificationRequest, DeleteNotificationRequest>({
     routeName: RouteNames.Notification,
@@ -263,7 +264,7 @@ const {
 
 // 执行搜索
 const runSearch = async () => {
-    await updateRouterPush()
+    await updateRouterPushResetPage()
 }
 
 // 处理 notificationCountGroup 点击事件
@@ -289,7 +290,7 @@ const handleNotificationCountByGroup = async (item: NotificationCountGroupItem) 
         [queryKey.KeyWord]: search.value,
     })
 
-    await updateRouterPush()
+    await updateRouterPushResetPage()
 }
 
 // 需要编辑的用户ID

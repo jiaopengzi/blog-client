@@ -62,6 +62,15 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         await routerPushByParams(router, routeName, queryParams, options?.hash)
     }
 
+    /**
+     * @description: 重置页码后更新路由（用于搜索、分类筛选等非分页操作，避免携带旧页码）
+     */
+    const updateRouterPushResetPage = async () => {
+        delete queryParams.current_page
+        delete queryParams.page_size
+        await routerPushByParams(router, routeName, queryParams, options?.hash)
+    }
+
     // 是否请求
     const { updateCurrentPage, updatePageSize, updatePaginate } = usePagination(pagination, getPaginate, queryParams, updateRouterPush)
 
@@ -240,6 +249,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         updatePaginate, // 更新分页数据
         deleteRows, // 删除行
         updateRouterPush, // 更新路由
+        updateRouterPushResetPage, // 重置页码后更新路由
         loadingDelete, // 删除加载状态
     }
 }

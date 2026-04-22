@@ -207,6 +207,7 @@ const {
     editItemUpdateDialogVisible, // 编辑对话框
     deleteRows, // 删除行
     updateRouterPush,
+    updateRouterPushResetPage, // 重置页码后更新路由
     loadingDelete, // 删除时的加载状态
 } = useBaseTable<MembershipRes, ViewMembershipRequest, DeleteMembershipRequest>({
     routeName: RouteNames.MembershipRole,
@@ -220,7 +221,7 @@ const {
 
 // 执行搜索
 const runSearch = async () => {
-    await updateRouterPush()
+    await updateRouterPushResetPage()
 }
 
 // 处理 membershipCountGroup 点击事件
@@ -246,7 +247,7 @@ const handleMembershipCountByGroup = async (item: MembershipCountGroupItem) => {
         [queryKey.KeyWord]: search.value,
     })
 
-    await updateRouterPush()
+    await updateRouterPushResetPage()
 }
 
 // 需要编辑的用户ID

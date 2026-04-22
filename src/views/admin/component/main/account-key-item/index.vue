@@ -153,6 +153,7 @@ const {
     updateSearch, // 更新搜索关键字
     deleteRows, // 删除行
     updateRouterPush,
+    updateRouterPushResetPage, // 重置页码后更新路由
     loadingDelete, // 删除时的加载状态
 } = useBaseTable<AccountKeyItemRes, ViewAccountKeyItemRequest, DeleteAccountKeyItemRequest>({
     routeName: RouteNames.AccountKeyItem,
@@ -166,7 +167,7 @@ const {
 
 // 执行搜索
 const runSearch = async () => {
-    await updateRouterPush()
+    await updateRouterPushResetPage()
 }
 
 // 在加载前将 params 解析回对应的响应式变量中

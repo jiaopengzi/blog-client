@@ -309,6 +309,7 @@ const {
     updatePageSize,
     updateSearch,
     updateRouterPush,
+    updateRouterPushResetPage, // 重置页码后更新路由
     loadingDelete,
     toggleEditDialog,
     editStatus,
@@ -322,7 +323,7 @@ const {
 })
 
 const runSearch = async () => {
-    await updateRouterPush()
+    await updateRouterPushResetPage()
 }
 
 /**
@@ -347,7 +348,7 @@ const handleExpireGroup = async (item: MembershipUserCountGroupItem) => {
         [queryKey.KeyWord]: search.value,
     })
 
-    await updateRouterPush()
+    await updateRouterPushResetPage()
 }
 
 const handleClickAuthor = async (author: User) => {
@@ -356,14 +357,14 @@ const handleClickAuthor = async (author: User) => {
     })
     clickAuthor.value = author.user_name
 
-    await updateRouterPush()
+    await updateRouterPushResetPage()
 }
 
 const clearAuthorCategoryTag = async () => {
     clickAuthor.value = ""
     delete queryParams.user_id
 
-    await updateRouterPush()
+    await updateRouterPushResetPage()
 }
 
 /**

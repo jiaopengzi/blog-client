@@ -124,6 +124,7 @@ const {
     updateSearch, // 更新搜索关键字
     deleteRows, // 删除行
     updateRouterPush,
+    updateRouterPushResetPage,
     updatePaginate,
     loadingDelete,
 } = useBaseTable<LoginLog, GetLoginLogsRequest, DeleteLoginLogByIDsRequest>({
@@ -138,7 +139,7 @@ const {
 
 // 执行搜索
 const runSearch = async () => {
-    updateRouterPush()
+    await updateRouterPushResetPage()
     await updatePaginate()
 }
 

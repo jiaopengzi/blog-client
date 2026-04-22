@@ -263,6 +263,8 @@ const handleEditStatus = async (status: boolean) => {
 
 // 更新数据
 const updateData = async () => {
+    delete queryParams.current_page
+    delete queryParams.page_size
     await updateRouterPush()
 }
 

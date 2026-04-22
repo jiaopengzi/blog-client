@@ -239,6 +239,7 @@ const {
     deleteRows, // 删除行
     updatePaginate, // 更新分页
     updateRouterPush, // 更新查询参数和路由
+    updateRouterPushResetPage, // 重置页码后更新路由
     editItemUpdateDialogVisible, // 编辑对话框
     loadingDelete, // 删除加载状态
 } = useBaseTable<CommentResAdmin, ViewCommentByAdminRequest, DeleteCommentRequest>({
@@ -279,7 +280,7 @@ const handleCommentCountByGroup = async (item: CommentCountGroupItem) => {
         [queryKey.KeyWord]: search.value,
     })
 
-    await updateRouterPush()
+    await updateRouterPushResetPage()
 }
 
 const handleClickPostTitle = async (postID: string) => {
@@ -298,7 +299,7 @@ const handleClickPostTitle = async (postID: string) => {
         clickPostTitle.value = ""
     }
 
-    await updateRouterPush()
+    await updateRouterPushResetPage()
 }
 
 // 处理作者点击事件
@@ -309,7 +310,7 @@ const handleClickAuthor = async (author: User) => {
     })
     clickAuthor.value = author.user_name
 
-    await updateRouterPush()
+    await updateRouterPushResetPage()
 }
 
 const tags = computed(() => {
@@ -348,12 +349,12 @@ const clearAuthorCategoryTag = async () => {
         activeGroup.value = allGroup
     }
 
-    await updateRouterPush()
+    await updateRouterPushResetPage()
 }
 
 // 执行搜索
 const runSearch = async () => {
-    await updateRouterPush()
+    await updateRouterPushResetPage()
 }
 
 // 编辑回复评论完成

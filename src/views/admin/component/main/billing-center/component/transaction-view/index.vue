@@ -290,6 +290,7 @@ const {
     addItemUpdateDialogVisible,
     editItemUpdateDialogVisible,
     updateRouterPush,
+    updateRouterPushResetPage,
     updatePaginate,
     loadingDelete,
 } = useBaseTable<TransactionFlowRes, TransactionFlowListRequest, never>({
@@ -306,7 +307,7 @@ const handleTypeFilter = debounce(300, async (type: TransactionType) => {
     Object.assign(queryParams, {
         [queryKey.Type]: type,
     })
-    await updateRouterPush()
+    await updateRouterPushResetPage()
 })
 
 // 日期组件 change 回调
@@ -341,7 +342,7 @@ const handleSearch = debounce(300, async () => {
 
     Object.assign(queryParams, params)
     // 先更新路由参数, 再强制刷新列表(即使参数未变也重新请求)
-    await updateRouterPush()
+    await updateRouterPushResetPage()
     await updatePaginate()
 })
 

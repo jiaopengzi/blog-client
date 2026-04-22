@@ -242,6 +242,7 @@ const {
     deleteRows, // 删除行
     updatePaginate, // 更新分页
     updateRouterPush, // 更新查询参数和路由
+    updateRouterPushResetPage, // 重置页码后更新路由
     loadingDelete, // 删除加载状态
 } = useBaseTable<PostResPaginationByAdmin, ViewPostByAdminRequest, DeletePostRequest>({
     routeName,
@@ -300,7 +301,7 @@ const handlePostCountByGroup = async (item: PostCountGroupItem) => {
         [queryKey.KeyWord]: search.value,
     })
 
-    await updateRouterPush()
+    await updateRouterPushResetPage()
 }
 
 const handleClickCategory = async (item: PostCategory | PostTag) => {
@@ -310,7 +311,7 @@ const handleClickCategory = async (item: PostCategory | PostTag) => {
     })
     clickCategory.value = item.name
 
-    await updateRouterPush()
+    await updateRouterPushResetPage()
 }
 
 const handleClickTag = async (item: PostCategory | PostTag) => {
@@ -320,7 +321,7 @@ const handleClickTag = async (item: PostCategory | PostTag) => {
     })
     clickTag.value = item.name
 
-    await updateRouterPush()
+    await updateRouterPushResetPage()
 }
 
 const handleClickAuthor = async (author: User) => {
@@ -330,7 +331,7 @@ const handleClickAuthor = async (author: User) => {
     })
     clickAuthor.value = author.user_name
 
-    await updateRouterPush()
+    await updateRouterPushResetPage()
 }
 
 const tags = computed(() => {
@@ -367,7 +368,7 @@ const clearAuthorCategoryTag = async () => {
         activeGroup.value = allGroup
     }
 
-    await updateRouterPush()
+    await updateRouterPushResetPage()
 }
 
 // 监控 postCountMonthSelect
@@ -379,7 +380,7 @@ watch(postCountMonthSelect, async (newVal) => {
     } else {
         delete queryParams.year
         delete queryParams.month
-        await updateRouterPush()
+        await updateRouterPushResetPage()
     }
 })
 
@@ -407,13 +408,13 @@ watch([postCustomFieldsSelect, postCustomFieldsMin, postCustomFieldsMax], async 
         delete queryParams.custom_filed
         delete queryParams.custom_filed_min
         delete queryParams.custom_filed_max
-        await updateRouterPush()
+        await updateRouterPushResetPage()
     }
 })
 
 // 执行搜索
 const runSearch = async () => {
-    await updateRouterPush()
+    await updateRouterPushResetPage()
 }
 
 // 批量操作
