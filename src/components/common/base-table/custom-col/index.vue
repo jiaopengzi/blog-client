@@ -148,6 +148,11 @@ const handleViewWithID = (row: TableData) => {
     if (!row || !row.id) {
         return
     }
+    // 有文字选中时不触发跳转，让用户可以复制
+    const selection = window.getSelection()
+    if (selection && selection.toString().length > 0) {
+        return
+    }
     emit("view-post", row.id)
 }
 </script>
@@ -161,6 +166,7 @@ const handleViewWithID = (row: TableData) => {
 .title-with-id {
     font-weight: bold;
     text-align: center;
+    user-select: text;
     border: none;
     background-color: transparent;
     line-height: 1.5;
