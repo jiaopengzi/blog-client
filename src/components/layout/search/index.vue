@@ -8,7 +8,7 @@
 
 <template>
     <div>
-        <el-button class="search-btn" type="primary" @click="searchDialogVisible = true">
+        <el-button class="search-btn" type="primary" @click="openSearch">
             <j-icon :name="IconKeys.Search" custom-class="search-icon" />
         </el-button>
 
@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue"
+import { ref, watch } from "vue"
 
 import { IconKeys } from "@/components/common/icons"
 
@@ -37,6 +37,19 @@ const handleSearch = (val: string) => {
 }
 
 const searchDialogVisible = ref(false)
+
+const openSearch = (e: MouseEvent) => {
+    // 弹窗打开前先失焦，避免关闭时出现失焦动画
+    ;(e.currentTarget as HTMLElement)?.blur()
+    searchDialogVisible.value = true
+}
+
+// 弹窗关闭后让搜索按钮失焦，避免焦点残留影响交互
+watch(searchDialogVisible, (val) => {
+    if (!val) {
+        ;(document.activeElement as HTMLElement)?.blur()
+    }
+})
 </script>
 
 <style scoped lang="scss">
