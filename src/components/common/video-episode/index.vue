@@ -9,20 +9,20 @@
 <template>
     <div class="episode-list">
         <div
-            :class="[isPaid ? 'episode-item-paid' : 'episode-item', { 'episode-item-active': isCurrentEpisode(treeMap[i]!) }]"
+            :class="[effectivePaid ? 'episode-item-paid' : 'episode-item', { 'episode-item-active': isCurrentEpisode(treeMap[i]!) }]"
             v-for="i in treeVideoOrders"
             :key="i"
             @click="handleSelect(treeMap[i]!)"
         >
-            <JIcon v-if="isShowLock(isPaid, treeMap[i]?.is_free!)" :name="IconKeys.Lock" :custom-class="`icon-lock`" class="icon" />
-            <JIcon v-if="!isShowLock(isPaid, treeMap[i]?.is_free!)" :name="IconKeys.Play" :custom-class="`icon-unlock`" class="icon" />
+            <JIcon v-if="isShowLock(effectivePaid, treeMap[i]?.is_free!)" :name="IconKeys.Lock" :custom-class="`icon-lock`" class="icon" />
+            <JIcon v-if="!isShowLock(effectivePaid, treeMap[i]?.is_free!)" :name="IconKeys.Play" :custom-class="`icon-unlock`" class="icon" />
             <span class="episode-index">{{ orderDisplay(treeMap[i]?.video_order!) }}</span>
             <div class="active-animation" v-if="isCurrentEpisode(treeMap[i]!)"></div>
         </div>
     </div>
 </template>
 <script lang="ts" setup>
-import { ref, watch } from "vue"
+import { computed, ref, watch } from "vue"
 
 import { type PostVideoTocTree } from "@/api/post/common"
 import JIcon, { IconKeys } from "@/components/common/icons"
@@ -48,6 +48,14 @@ const treeVideoOrders = ref<number[]>([])
 
 // hooks
 const { videoTotal, covertToMap } = useVideoTocTree(localTreeList)
+
+// 所有集数均为免费时，等同于已付费效果（不显示锁/解锁图标）
+// 基于 treeMap 中的真实视频节点判断（排除章节节点）
+const allFree = computed(() => {
+    const videoNodes = Object.values(treeMap.value)
+    return videoNodes.length > 0 && videoNodes.every((item) => item.is_free)
+})
+const effectivePaid = computed(() => isPaid || allFree.value)
 
 // 监听 episodeList 变化
 watch(
