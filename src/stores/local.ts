@@ -7,7 +7,6 @@
  */
 
 export enum LocalStorageKey {
-    AccessToken = "access_token", // token名称：访问令牌
     DashboardTrendSelection = "dashboard_trend_selection", // 仪表盘趋势图筛选项
     IsCollapse = "is_collapse", // 侧边栏是否折叠
     IsShowDashboardStats = "is_show_dashboard_stats", // 仪表盘统计信息是否显示敏感数值
@@ -29,6 +28,6 @@ export enum LocalStorageKey {
     PayTypeEnable = "pay_type_enable", // 支付类型是否启用
     EditorDefaultsPowerBi = "editor_defaults_power_bi", // 编辑器 PowerBI 插入默认值
     EditorDefaultsWechatCaptcha = "editor_defaults_wechat_captcha", // 编辑器 WechatCaptcha 插入默认值
-    ThumbnailAutoInsertEnable = "thumbnail_auto_insert_enable",
-    ThumbnailAutoInsertIndex = "thumbnail_auto_insert_index",
+    ThumbnailAutoInsertEnable = "thumbnail_auto_insert_enable", // 缩略图自动插入是否启用
+    ThumbnailAutoInsertIndex = "thumbnail_auto_insert_index", // 缩略图自动插入位置
 }
