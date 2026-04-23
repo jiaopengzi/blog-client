@@ -10,7 +10,13 @@
     <el-table-column :width="col.width" :min-width="col.minWidth" :align="col.align" :label="col.label">
         <template #default="scope">
             <!-- 标题 -->
-            <h4 v-if="col.isHeading">{{ scope.row[col.prop] }}</h4>
+            <h4
+                v-if="col.isHeading"
+                :class="{ 'heading-clickable': !!col.onHeadingClick }"
+                @click="col.onHeadingClick && col.onHeadingClick(scope.row)"
+            >
+                {{ scope.row[col.prop] }}
+            </h4>
 
             <!-- 标题包含标题ID -->
             <el-button v-if="col.isHeadingWithId" @click="handleViewWithID(scope.row)" class="title-with-id" type="">{{ scope.row[col.prop] }}</el-button>
@@ -183,6 +189,15 @@ const handleViewWithID = (row: TableData) => {
     white-space: normal;
     // 长文本换行
     word-break: break-all;
+}
+
+.heading-clickable {
+    color: var(--el-color-primary);
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+    }
 }
 
 .scroll-formatter-text {

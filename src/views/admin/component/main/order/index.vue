@@ -82,6 +82,7 @@ import FilterTagClear from "@/components/common/filter-tag-clear"
 import OrderDetail from "@/components/common/order-detail"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { useParams } from "@/components/hooks/useParams"
+import { useOrderHeadingClick } from "@/components/hooks/useOrderHeadingClick"
 import { RouteNames } from "@/router"
 import { adminMenuItemMap } from "@/views/admin/component/aside"
 
@@ -93,6 +94,7 @@ useHead({
 })
 
 const { formatCouponItems, formatPayment, formatFinalAmount, formatTotalAmount, formatStatus } = useOrder()
+const { handleHeadingClick } = useOrderHeadingClick()
 
 const cols: TableColumn[] = reactive([
     {
@@ -117,6 +119,7 @@ const cols: TableColumn[] = reactive([
         minWidth: 180,
         align: "center",
         isHeading: true,
+        onHeadingClick: handleHeadingClick,
     },
     {
         prop: "total_amount",
@@ -251,6 +254,7 @@ const {
 })
 
 const editData = ref<OrderGetByIDRes>({} as OrderGetByIDRes)
+
 const editRow = (index: number, row: TableData) => {
     editData.value = row as OrderGetByIDRes
     toggleEditDialog()

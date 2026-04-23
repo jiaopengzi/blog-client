@@ -44,6 +44,7 @@ export interface TableColumn {
     isMarkdownPreview?: boolean // 是否为Markdown预览
     isCopyText?: boolean // 是否为可复制文本
     isScrollFormatter?: boolean // 是否为可滚动的格式化文本
+    onHeadingClick?: (row: TableData) => void // 标题点击回调, isHeading 时生效
     copyPlaceholder?: string // 可复制文本的占位符, 默认 "-"; 显示内容等于占位符时隐藏复制按钮
     formatter?: (row: TableData) => void // 格式化函数
 }

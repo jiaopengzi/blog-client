@@ -14,7 +14,10 @@
             <el-table-column prop="title" label="产品">
                 <template #default="{ row }">
                     <div class="product-title-wrap">
-                        <div class="product-title">{{ row.title }}</div>
+                        <div v-if="row.product_type === ProductType.Post && row.related_id" class="product-title post-link" @click="handleTitleClick(row)">
+                            {{ row.title }}
+                        </div>
+                        <div v-else class="product-title">{{ row.title }}</div>
                         <div class="product-type" v-if="row.product_type">{{ getProductTypeLabel(row) }}</div>
                     </div>
                 </template>
@@ -46,14 +49,21 @@
 <script lang="ts" setup>
 import { computed } from "vue"
 
-import { ProductTypeDisplay, type OrderItemRes } from "@/api/order/common"
+import { ProductType, ProductTypeDisplay, type OrderItemRes } from "@/api/order/common"
+import { usePostView } from "@/components/hooks/usePostView"
 import { fenToYuan } from "@/utils/amount"
 
 defineOptions({ name: "ProductList" })
 
+const { handleViewPost } = usePostView()
+
 const { items } = defineProps<{
     items: OrderItemRes[]
 }>()
+
+const handleTitleClick = (row: OrderItemRes) => {
+    handleViewPost(row.related_id!)
+}
 
 const shouldShowDetailColumn = computed(() => {
     return items.some((item) => Boolean(item.description) || hasAccountKeyItems(item))
@@ -95,6 +105,16 @@ h4 {
     .product-title {
         color: var(--jpz-text-color-primary);
         font-weight: 600;
+
+        &.post-link {
+            color: var(--jpz-color-primary);
+            cursor: pointer;
+            transition: color 0.3s;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
     }
 
     .product-type {

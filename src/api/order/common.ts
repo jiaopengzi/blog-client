@@ -115,6 +115,7 @@ export const getProductTypeOptions = () => {
 export interface OrderItemRes {
     order_id: string // 订单ID
     product_id: string // 产品ID
+    related_id?: string // 关联文章ID, product_type 为 post 时有值
     product_type: ProductType // 产品类型
     title: string // 产品标题
     quantity: number // 数量

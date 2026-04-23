@@ -45,6 +45,7 @@ import BaseTable from "@/components/common/base-table/index.vue"
 import OrderDetail from "@/components/common/order-detail"
 import { useBaseTable } from "@/components/hooks/useBaseTable"
 import { useDevice } from "@/components/hooks/useDevice"
+import { useOrderHeadingClick } from "@/components/hooks/useOrderHeadingClick"
 import { RouteNames } from "@/router"
 
 import { UserInfoHash } from "../types"
@@ -52,6 +53,7 @@ import { UserInfoHash } from "../types"
 defineOptions({ name: "UserInfoOrder" })
 
 const { descriptionCols } = useDevice()
+const { handleHeadingClick } = useOrderHeadingClick()
 
 useHead({
     title: "用户信息-订单",
@@ -65,6 +67,7 @@ const cols: TableColumn[] = reactive([
         minWidth: 180,
         align: "center",
         isHeading: true,
+        onHeadingClick: handleHeadingClick,
     },
     {
         prop: "total_amount",

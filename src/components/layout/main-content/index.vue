@@ -83,7 +83,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import type { ElAside } from "element-plus"
+// import type { ElAside } from "element-plus"
 import { storeToRefs } from "pinia"
 import { nextTick, onBeforeMount, type Reactive, reactive, ref, useTemplateRef, watch } from "vue"
 import { useRoute } from "vue-router"
@@ -114,7 +114,7 @@ const route = useRoute()
 
 const { searchData } = defineProps<MainContentProps>()
 
-const asideRef = useTemplateRef<InstanceType<typeof ElAside>>("asideRef")
+// const asideRef = useTemplateRef<InstanceType<typeof ElAside>>("asideRef")
 
 const deviceStore = useDeviceStore()
 const optionsStore = useOptionsStore()
