@@ -102,6 +102,26 @@
                 </el-form-item>
             </section>
 
+            <section class="form-section" v-if="userQQ?.openid || userWechat?.openid">
+                <div class="section-head">
+                    <h3>社交登录</h3>
+                </div>
+                <!-- QQ 信息 -->
+                <div v-if="userQQ?.openid" class="social-item">
+                    <el-descriptions title="QQ" :column="1" border size="small">
+                        <el-descriptions-item label="昵称">{{ userQQ.nickname }}</el-descriptions-item>
+                        <el-descriptions-item label="OpenID">{{ userQQ.openid }}</el-descriptions-item>
+                    </el-descriptions>
+                </div>
+                <!-- 微信信息 -->
+                <div v-if="userWechat?.openid" class="social-item">
+                    <el-descriptions title="微信" :column="1" border size="small">
+                        <el-descriptions-item label="昵称">{{ userWechat.nickname }}</el-descriptions-item>
+                        <el-descriptions-item label="OpenID">{{ userWechat.openid }}</el-descriptions-item>
+                    </el-descriptions>
+                </div>
+            </section>
+
             <div class="form-actions dual-actions">
                 <el-form-item>
                     <el-button type="primary" :loading="btnLoading" @click="submitForm(editUserFormRef as FormInstance)">更新</el-button>
@@ -122,7 +142,7 @@ import { type Role } from "@/api/permissionRole/role"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { setAvatarAPI, type SetAvatarRequest } from "@/api/upload/setAvatar"
 import { editUserInfoByAdminAPI, type EditUserInfoByAdminRequest } from "@/api/user/editUserInfoByAdmin"
-import { type UserInfo } from "@/api/user/getUserInfo"
+import { type UserInfo, type UserQQ, type UserWechat } from "@/api/user/getUserInfo"
 import { getUserInfoByUserIDAPI, type GetUserInfoByUserIDRequest } from "@/api/user/getUserInfoByUserID"
 import { logoutByAdminAPI, type LogoutByAdminRequest } from "@/api/user/logoutByAdmin"
 import AvatarInitials from "@/components/common/avatar-initials"
@@ -239,6 +259,10 @@ const editUserForm = reactive<EditUserByAdminForm>({
 // 头像 url
 const avatar = ref("")
 
+// 社交登录信息
+const userQQ = ref<UserQQ>()
+const userWechat = ref<UserWechat>()
+
 const updateEditUserForm = (data: EditUserByAdminForm) => {
     editUserForm.editUserID = data.editUserID
     editUserForm.userName = data.userName
@@ -261,6 +285,8 @@ const getUserInfo = async () => {
         editUserForm.sex = getUserMetaValue("sex", userInfo) || "男"
         editUserForm.description = getUserMetaValue("description", userInfo) || ""
         avatar.value = getAvatarUrl(userInfo)
+        userQQ.value = userInfo.user_qq
+        userWechat.value = userInfo.user_wechat
     }
 }
 
@@ -551,6 +577,14 @@ onBeforeMount(() => {
 
 .generate-password {
     flex: 1;
+}
+
+.social-item {
+    margin-bottom: 16px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
 }
 
 .btn-generate-password {
