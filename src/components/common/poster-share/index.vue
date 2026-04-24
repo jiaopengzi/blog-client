@@ -292,7 +292,7 @@ const draw = async () => {
     .url-row {
         .url {
             font-family: var(--jpz-font-family-code, "JBMonoWOFF2", "Microsoft YaHei", sans-serif);
-            font-size: 10px;
+            font-size: 9px;
             color: #c0c0c0;
             line-height: 1.5;
             word-break: break-all;
