@@ -37,6 +37,38 @@ function serializeNode(node: Node): string {
     return ""
 }
 
+/**
+ * @description: 转义代码块中的自定义元素标签, 避免 DOMParser 将其识别为真实节点。
+ * @param html 原始 HTML 字符串。
+ * @returns 返回仅在 <code> 和 <pre> 内转义了自定义元素标签的 HTML 字符串。
+ */
+function escapeCustomElementsInCode(html: string): string {
+    const customElementNames = Object.values(Names)
+
+    if (customElementNames.length === 0) {
+        return html
+    }
+
+    const codeBlockRegex = /<pre\b[^>]*>[\s\S]*?<\/pre>|<code\b[^>]*>[\s\S]*?<\/code>/gi
+    const customElementTagRegex = new RegExp(`<\\/?(?:${customElementNames.join("|")})\\b[^>]*>`, "gi")
+
+    return html.replace(codeBlockRegex, (block) => {
+        const startTagMatch = block.match(/^<(pre|code)\b[^>]*>/i)
+        const endTagMatch = block.match(/<\/(pre|code)>$/i)
+
+        if (!startTagMatch || !endTagMatch) {
+            return block
+        }
+
+        const startTag = startTagMatch[0]
+        const endTag = endTagMatch[0]
+        const innerContent = block.slice(startTag.length, block.length - endTag.length)
+        const escapedContent = innerContent.replace(customElementTagRegex, (tag) => tag.replaceAll("<", "&lt;").replaceAll(">", "&gt;"))
+
+        return `${startTag}${escapedContent}${endTag}`
+    })
+}
+
 // 由于 marked 解析时会自动给自定义元素外层包裹 <p> 标签; 预处理 HTML, 剥离包裹自定义元素的 <p> 标签
 function preprocessHtml(html: string): string {
     const names = Object.values(Names).join("|")
@@ -61,8 +93,9 @@ export function parseHtml(html: string): HTMLElement {
  * @returns 返回解析后的内容片段数组。
  */
 export function parseHtmlToContentParts(html: string, postId: string, isAdminVideo: boolean = false): ContentPart[] {
-    // 先预处理
-    const cleanedHtml = preprocessHtml(html)
+    // 先转义代码块中的自定义元素, 再预处理
+    const escapedHtml = escapeCustomElementsInCode(html)
+    const cleanedHtml = preprocessHtml(escapedHtml)
 
     // 解析 HTML
     const body = parseHtml(cleanedHtml)
