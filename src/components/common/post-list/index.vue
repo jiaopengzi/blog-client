@@ -181,7 +181,8 @@ onUnmounted(() => {
     font-size: 14px;
 
     // 只有最后一个元素显示下边框
-    .post-item {
+    .post-item,
+    .search-item {
         border-left: 1px solid var(--jpz-border-color);
         border-right: 1px solid var(--jpz-border-color);
         border-top: 1px solid var(--jpz-border-color);

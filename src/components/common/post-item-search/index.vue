@@ -7,9 +7,44 @@
 -->
 
 <template>
-    <div class="post-item">
-        <h4 class="title" @click="postId(postData.id)" v-stable-html="displayText"></h4>
-        <span class="meta">{{ formatTime(postData.created_at, "Asia/Shanghai", "YYYY-MM-DD") }}</span>
+    <div class="search-item" @click="postId(postData.id)">
+        <!-- 左侧缩略图 -->
+        <div class="thumbnail-wrap" v-if="hasThumbnail">
+            <PostThumbnail :src="postData.thumbnail" :initial="fallbackInitial" theme="main" />
+        </div>
+
+        <!-- 右侧内容 -->
+        <div class="content">
+            <!-- 标题 -->
+            <h3 class="title" v-stable-html="displayText"></h3>
+
+            <!-- 描述 -->
+            <p class="description" v-if="postData.seo_description">{{ postData.seo_description }}</p>
+
+            <!-- 底部：分类 + 元信息 -->
+            <div class="footer">
+                <!-- 分类标签 -->
+                <div class="categories" v-if="postData.categories && postData.categories.length > 0">
+                    <span v-for="cat in postData.categories.slice(0, 2)" :key="cat.id" class="category-chip">{{ cat.name }}</span>
+                </div>
+
+                <!-- 元信息 -->
+                <div class="meta-row">
+                    <span class="meta-item">
+                        <j-icon name="time" custom-class="meta-icon" />
+                        <span>{{ formatTime(postData.created_at, "Asia/Shanghai", "YYYY-MM-DD") }}</span>
+                    </span>
+                    <span class="meta-item" v-if="postData.view_count && postData.view_count !== '0'">
+                        <j-icon name="view" custom-class="meta-icon" />
+                        <span>{{ unit(postData.view_count) }}</span>
+                    </span>
+                    <span class="meta-item" v-if="postData.comment_count && postData.comment_count !== '0'">
+                        <j-icon name="comment" custom-class="meta-icon" />
+                        <span>{{ unit(postData.comment_count) }}</span>
+                    </span>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -17,7 +52,9 @@
 import { computed } from "vue"
 
 import { type PostResPagination } from "@/api/post/common"
+import PostThumbnail from "@/components/common/post-thumbnail"
 import { formatTime } from "@/utils/dateTime"
+import { unit } from "@/utils/unit"
 
 defineOptions({ name: "PostItemSearch" })
 
@@ -41,6 +78,12 @@ const postId = (val: string) => {
     emit("postId", val)
 }
 
+// 是否有缩略图
+const hasThumbnail = computed(() => Boolean(postData.thumbnail?.trim()))
+
+// 标题首字母作为缩略图 fallback
+const fallbackInitial = computed(() => postData.post_title?.trim().slice(0, 1).toUpperCase() || "P")
+
 // 根据 highlightKey 获取高亮内容
 const highlightText = computed(() => {
     // 如果没有高亮内容，返回空字符串
@@ -63,66 +106,167 @@ const displayText = computed(() => {
 })
 </script>
 <style lang="scss" scoped>
-.post-item {
+.search-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
     padding: 15px;
     background-color: var(--jpz-bg-color);
-    // meta 信息居右,title 占用剩余空间
-    display: flex;
-    align-items: center;
+    cursor: pointer;
+    transition:
+        box-shadow 0.25s ease,
+        background-color 0.25s ease;
+
+    &:hover {
+        // 用 inset box-shadow 模拟左侧高亮描边，不影响外框 border
+        box-shadow: inset 3px 0 0 var(--jpz-color-primary);
+        background-color: var(--jpz-bg-color-hover, var(--jpz-bg-color));
+
+        .title {
+            color: var(--jpz-color-primary);
+        }
+    }
 }
 
-.meta {
-    color: var(--jpz-text-color-secondary);
-    margin-left: 10px; // 左边距
-    margin-bottom: 0px;
-    margin-top: 0px;
+.thumbnail-wrap {
+    flex-shrink: 0;
+    width: 72px;
+    height: 72px;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--jpz-border-color);
+}
+
+.content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .title {
-    flex: 1; // 使标题占据剩余空间
-    cursor: pointer;
-    // height: 1.5em;
-    // display: -webkit-box;
-    // -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: var(--jpz-text-color-secondary);
+    margin: 0;
+    font-size: 14px;
     font-weight: 600;
-    line-height: 1.5em; // 行高
-    margin-bottom: 0px;
-    margin-top: 0px;
-
-    // 过长文本省略号
+    line-height: 1.5;
+    color: var(--jpz-text-color-primary);
+    overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     line-clamp: 2;
-    -webkit-line-clamp: 2; // 限制行数为2
-    transition: color 0.3s ease;
+    -webkit-line-clamp: 2;
+    transition: color 0.25s ease;
 }
 
-.title:hover {
+.description {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--jpz-text-color-secondary);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    line-clamp: 1;
+    -webkit-line-clamp: 1;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 2px;
+}
+
+.categories {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.category-chip {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    line-height: 1.6;
     color: var(--jpz-color-primary);
+    background-color: var(--jpz-color-primary-light-9, rgba(64, 158, 255, 0.1));
+    white-space: nowrap;
+}
+
+.meta-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--jpz-text-color-placeholder, var(--jpz-text-color-secondary));
+    white-space: nowrap;
+}
+
+.meta-icon {
+    width: 13px;
+    height: 13px;
+    fill: currentColor;
 }
 
 // 媒体查询
 @include respond-to("pc") {
     .title {
         line-clamp: 1;
-        -webkit-line-clamp: 1; // 限制行数为1
+        -webkit-line-clamp: 1;
+    }
+
+    .description {
+        line-clamp: 1;
+        -webkit-line-clamp: 1;
+    }
+
+    .thumbnail-wrap {
+        width: 72px;
+        height: 72px;
     }
 }
 
 @include respond-to("pad") {
-    .title {
-        line-clamp: 2;
-        -webkit-line-clamp: 2; // 限制行数为2
+    .thumbnail-wrap {
+        width: 64px;
+        height: 64px;
     }
 }
 
 @include respond-to("phone") {
+    .thumbnail-wrap {
+        display: none;
+    }
+
     .title {
+        font-size: 14px;
         line-clamp: 2;
-        -webkit-line-clamp: 2; // 限制行数为2
+        -webkit-line-clamp: 2;
+    }
+
+    .description {
+        line-clamp: 2;
+        -webkit-line-clamp: 2;
+    }
+
+    .footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .meta-row {
+        align-self: flex-end;
     }
 }
 </style>
