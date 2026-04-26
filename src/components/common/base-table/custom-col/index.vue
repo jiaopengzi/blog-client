@@ -10,11 +10,7 @@
     <el-table-column :width="col.width" :min-width="col.minWidth" :align="col.align" :label="col.label">
         <template #default="scope">
             <!-- 标题 -->
-            <h4
-                v-if="col.isHeading"
-                :class="{ 'heading-clickable': !!col.onHeadingClick }"
-                @click="col.onHeadingClick && col.onHeadingClick(scope.row)"
-            >
+            <h4 v-if="col.isHeading" :class="{ 'heading-clickable': !!col.onHeadingClick }" @click="col.onHeadingClick && col.onHeadingClick(scope.row)">
                 {{ scope.row[col.prop] }}
             </h4>
 

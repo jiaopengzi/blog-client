@@ -23,6 +23,7 @@
         "nodelay",
         "nopush",
         "nosniff",
+        "oxfmt",
         "oxlint",
         "powerbi",
         "qrcode",

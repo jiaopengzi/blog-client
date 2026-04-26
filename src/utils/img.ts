@@ -20,7 +20,7 @@ export function extractImageUrlsFromHtml(input: string): string[] {
     })
 }
 
-/** 
+/**
  * @description:    循环移动数组元素，将item移动到数组头部 为了实现图片预览功能保证当前图片在第一位
  * @param srcList   原始数组
  * @param item      要移动的元素
