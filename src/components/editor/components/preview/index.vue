@@ -119,7 +119,6 @@
 
 <script lang="ts" setup>
 import "@/assets/scss/preview.scss"
-import "@/assets/scss/highlight.js.jpz.scss"
 import "katex/dist/katex.min.css" // katex 样式
 
 import { useIntersectionObserver, useResizeObserver } from "@vueuse/core"

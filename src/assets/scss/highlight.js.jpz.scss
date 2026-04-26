@@ -17,164 +17,76 @@ code.hljs {
     // background-color: var(--jpz-bg-color);
 }
 
-.hljs {
-    // background: var(--jpz-bg-color);
-    color: var(--jpz-text-color-regular);
-}
-
-.hljs-code {
-    // 占位
-    color: var(--jpz-text-color-regular);
-}
-
-.hljs-property {
-    // 占位
-    color: var(--jpz-text-color-regular);
-}
-
-.hljs-title.class_ {
-    // 占位
-    color: #3f3f3f;
-}
-
-.hljs-title.class_.inherited__ {
-    /* 占位 */
-    color: var(--jpz-text-color-regular);
-}
-
-.hljs-punctuation {
-    /* 占位 */
-    color: var(--jpz-text-color-regular);
-}
-
-.hljs-operator {
-    // 占位
-    color: var(--jpz-text-color-regular);
-}
-
-.hljs-title.function_ {
-    // 占位
-    color: var(--jpz-text-color-regular);
-}
-
-.hljs-char.escape_ {
-    // 占位
-    color: var(--jpz-text-color-regular);
-}
-
+.hljs,
+.hljs-code,
+.hljs-property,
+.hljs-title.class_,
+.hljs-title.class_.inherited__,
+.hljs-punctuation,
+.hljs-operator,
+.hljs-title.function_,
+.hljs-char.escape_,
 .hljs-variable.language_ {
     // 占位
     color: var(--jpz-text-color-regular);
 }
 
-.hljs-keyword,
-.hljs-literal,
-.hljs-name,
-.hljs-symbol {
-    color: #0000ff;
-    font-weight: 500;
+// 针对 DAX / M / PQ 语言代码块的项目级样式覆盖。
+// 重要：所有覆盖规则必须写在此作用域内，才能与主题 CSS 选择器优先级持平
+// （主题 CSS: [data-lang=dax] .hljs-xxx = 0,2,0；此处同级），
+// 再由导入顺序（本文件后于主题 CSS 加载）确保最终胜出。
+:is([data-lang="dax"], [data-lang="m"], [data-lang="pq"]) {
+    code.hljs {
+        padding: 3px 5px;
+        // background-color: var(--jpz-bg-color);
+    }
+
+    .hljs,
+    .hljs-code,
+    .hljs-property,
+    .hljs-title.class_,
+    .hljs-title.class_.inherited__,
+    .hljs-punctuation,
+    .hljs-operator,
+    .hljs-title.function_,
+    .hljs-char.escape_,
+    .hljs-variable.language_ {
+        // 占位
+        color: var(--jpz-text-color-regular);
+    }
+
+    // ---- 在此处添加其他 token 颜色覆盖 ----
+    // 示例：将注释颜色改为主题变量
+    // .hljs-comment,
+    // .hljs-quote {
+    //     color: var(--jpz-text-color-secondary);
+    // }
+    // ----------------------------------------
 }
 
-.hljs-link {
-    color: #569cd6;
-    // text-decoration: underline;
-    font-size: 12px;
-    font-style: italic;
-}
+// 暗色主题下的 hljs token 颜色覆盖
+// 使用 html.dark（scheme 类名）而非 data-theme="dark"，可覆盖所有暗色预设
+// （dark / github-dark / vue-dark / tokyonight-night 等）。
+// 选择器优先级 (0,3,1) > 主题 CSS (0,2,0)，天然胜出无需依赖加载顺序。
+html.dark {
+    :is([data-lang="dax"], [data-lang="m"], [data-lang="pq"]) {
+        .hljs-symbol,
+        .hljs-variable,
+        .hljs-attr {
+            // 占位
+            // `--jpz-text-color-regular: ${palette.textRegular};`,
+            // `--jpz-text-color-secondary: ${palette.textSecondary};`,
+            // `--jpz-text-color-placeholder: ${palette.textPlaceholder};`,
+            // `--jpz-text-color-disabled: ${palette.textDisabled};`,
+            color: var(--jpz-text-color-disabled);
+        }
 
-.hljs-link-text {
-    // color: #569cd6;
-    // text-decoration: underline;
-    font-size: 14px;
-    // font-weight: bold;
-}
-
-.hljs-built_in,
-.hljs-type {
-    color: #3165bb;
-}
-
-.hljs-class,
-.hljs-number {
-    color: #390000;
-}
-
-.hljs-meta .hljs-string,
-.hljs-string {
-    color: #a31515;
-}
-
-.hljs-regexp,
-.hljs-template-tag {
-    color: #9a5334;
-}
-
-.hljs-formula,
-.hljs-function,
-.hljs-params,
-.hljs-subst,
-.hljs-title {
-    color: #3165bb;
-}
-
-.hljs-comment,
-.hljs-quote {
-    color: #398e00;
-    // font-style: italic
-}
-
-.hljs-doctag {
-    color: #608b4e;
-}
-
-.hljs-meta,
-.hljs-meta .hljs-keyword,
-.hljs-tag {
-    color: #3165bb;
-}
-
-.hljs-template-variable,
-.hljs-variable {
-    color: #009999;
-}
-
-.hljs-attr,
-.hljs-attribute {
-    // color: #9cdcfe;
-    color: #16706b;
-}
-
-.hljs-section {
-    color: gold;
-}
-
-.hljs-emphasis {
-    font-style: italic;
-}
-
-.hljs-strong {
-    font-weight: 700;
-}
-
-.hljs-bullet,
-.hljs-selector-attr,
-.hljs-selector-class,
-.hljs-selector-id,
-.hljs-selector-pseudo,
-.hljs-selector-tag {
-    color: #d7ba7d;
-}
-
-.hljs-addition {
-    background-color: #144212;
-    display: inline-block;
-    width: 100%;
-}
-
-.hljs-deletion {
-    background-color: #600;
-    display: inline-block;
-    width: 100%;
+        .hljs-built_in,
+        .hljs-keyword {
+            // 暗色的蓝色淡一些
+            color: #0088bb;
+        }
+    }
 }
 
 // 微信公众号默认代码块样式作为公共样式

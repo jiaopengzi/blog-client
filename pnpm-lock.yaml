@@ -86,6 +86,12 @@ importers:
       highlight.js:
         specifier: 11.11.1
         version: 11.11.1
+      highlightjs-dax:
+        specifier: 1.0.1
+        version: 1.0.1
+      highlightjs-m:
+        specifier: 1.0.0
+        version: 1.0.0
       hls.js:
         specifier: 1.6.16
         version: 1.6.16
@@ -2641,6 +2647,12 @@ packages:
   highlight.js@11.11.1:
     resolution: {integrity: sha512-Xwwo44whKBVCYoliBQwaPvtd/2tYFkRQtXDWj1nackaV2JPXx3L0+Jvd8/qCJ2p+ML0/XVkJ2q+Mr+UVdpJK5w==}
     engines: {node: '>=12.0.0'}
+
+  highlightjs-dax@1.0.1:
+    resolution: {integrity: sha512-Q0fStkdvfrlCf3AXt1Ju/JkJJyFnNxz3vXQcqc2kv5rtgT7f809UW05eG0x8/Zi87ddCWf5NEuEq8+fKiy41bg==}
+
+  highlightjs-m@1.0.0:
+    resolution: {integrity: sha512-cfCPxdbx7Qbj1qRzex3ND68cgw6+rPBDeu+eOLu+0d8JhN76U5mT8o08Kg3VLekFYN9NmHZxfQlbMJVLeabLAQ==}
 
   hls.js@1.6.16:
     resolution: {integrity: sha512-VSIRpLfRwlAAdGL4wiTucx2ScRipo0ed1FBatWkyt832jC4CReKstga6yIhYVwGu9LOBjuX9wzmRMeQdBJtzEA==}
@@ -6744,6 +6756,10 @@ snapshots:
       tslib: 2.8.1
 
   highlight.js@11.11.1: {}
+
+  highlightjs-dax@1.0.1: {}
+
+  highlightjs-m@1.0.0: {}
 
   hls.js@1.6.16: {}
 

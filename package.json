@@ -58,6 +58,8 @@
         "element-plus": "2.13.7",
         "emoji.json": "16.0.0",
         "highlight.js": "11.11.1",
+        "highlightjs-dax": "1.0.1",
+        "highlightjs-m": "1.0.0",
         "hls.js": "1.6.16",
         "katex": "0.16.45",
         "marked": "18.0.2",
