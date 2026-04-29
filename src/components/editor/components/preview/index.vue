@@ -460,18 +460,56 @@ const handlePreCopy = async (preElement: HTMLPreElement) => {
     }
 }
 
+// 锁定/解锁页面滚动时使用的样式备份
+// 说明：直接将 body 的 overflow 改为 hidden 会让原本占位的纵向滚动条消失，导致主内容区宽度变大；
+// 关闭预览还原 overflow 时滚动条又会出现，主画面会发生一次明显的左右抖动。
+// 解决办法是在禁用滚动条的同时，给 body 增加与滚动条宽度相等的 padding-right 进行补偿，
+// 还原时再还原 overflow 与 padding-right。
+let bodyOverflowBackup: string | null = null
+let bodyPaddingRightBackup: string | null = null
+
+// 计算当前纵向滚动条宽度（无滚动条时返回 0）
+const getScrollbarWidth = () => Math.max(0, window.innerWidth - document.documentElement.clientWidth)
+
+// 锁定 body 滚动并补偿滚动条宽度，避免主画面抖动
+const lockBodyScroll = () => {
+    if (bodyOverflowBackup !== null) return // 已锁定，避免重复备份
+    const scrollbarWidth = getScrollbarWidth()
+    bodyOverflowBackup = document.body.style.overflow
+    bodyPaddingRightBackup = document.body.style.paddingRight
+    if (scrollbarWidth > 0) {
+        // 在原有 padding-right 基础上叠加滚动条宽度，避免覆盖业务自定义内边距
+        const computedPaddingRight = parseFloat(window.getComputedStyle(document.body).paddingRight) || 0
+        document.body.style.paddingRight = `${computedPaddingRight + scrollbarWidth}px`
+    }
+    document.body.style.overflow = "hidden"
+}
+
+// 解锁 body 滚动并还原 padding-right
+const unlockBodyScroll = () => {
+    if (bodyOverflowBackup === null) {
+        // 未通过 lockBodyScroll 锁定时，回退到默认行为，保持兼容
+        document.body.style.overflow = ""
+        return
+    }
+    document.body.style.overflow = bodyOverflowBackup
+    document.body.style.paddingRight = bodyPaddingRightBackup ?? ""
+    bodyOverflowBackup = null
+    bodyPaddingRightBackup = null
+}
+
 // 更新图片预览
 const updateImageViewer = (imgElement: HTMLImageElement) => {
     if (imgElement.src) {
         emit("show-image-viewer", shiftArray(imgUrls, imgElement.src) || [], true)
-        document.body.style.overflow = "hidden"
+        lockBodyScroll()
     }
 }
 
 // 关闭图片预览
 const closeElImageViewer = () => {
     emit("close-image-viewer", false)
-    document.body.style.overflow = "auto"
+    unlockBodyScroll()
 }
 
 // 所有的 h 标签响应式变量
