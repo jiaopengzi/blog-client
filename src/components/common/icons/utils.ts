@@ -85,8 +85,8 @@ export const devCheckIconKeys = (iconMap: IconMap): void => {
         const keyPascalCase = kebabToPascalCase(key)
         if (!(keyPascalCase in IconKeys)) {
             // 如果 key 中包含 - 则添加
-            const _enum = `${keyPascalCase} = '${key}',`
-            newIconKeys += _enum + "\n"
+            const enumEntry = `${keyPascalCase} = '${key}',`
+            newIconKeys += enumEntry + "\n"
         }
     })
     if (newIconKeys) {

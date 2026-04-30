@@ -10,14 +10,14 @@ import * as fs from "fs"
 import * as path from "path"
 import { fileURLToPath } from "url"
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+const currentFilePath = fileURLToPath(import.meta.url)
+const currentDirPath = path.dirname(currentFilePath)
 
 // 规则文件目录路径, 用于读取各 rule 文件
-const ruleDir = path.join(__dirname, "..", "src", "pkg", "codemirror", "extension", "mdlint", "rule")
+const ruleDir = path.join(currentDirPath, "..", "src", "pkg", "codemirror", "extension", "mdlint", "rule")
 
 // types 文件路径, 将在其中替换生成的已知规则类型块
-const typesFile = path.join(__dirname, "..", "src", "pkg", "codemirror", "extension", "mdlint", "types.ts")
+const typesFile = path.join(currentDirPath, "..", "src", "pkg", "codemirror", "extension", "mdlint", "types.ts")
 
 /**
  * 从规则文件内容中提取基本信息。

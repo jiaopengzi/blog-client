@@ -11,14 +11,14 @@ import type { InnerContentContext, PairContext, SingleLineContext, SurroundingCo
 
 // 在主线程同步加载模块并同时保留延迟加载器的占位映射
 // 规则文件已统一放入本目录下的 "rule" 子目录, 文件名不再包含前缀, 例如 "001.ts", "002.ts"
-const _eagerModules = import.meta.glob("./rule/*.ts", { eager: true }) as Record<string, unknown>
+const eagerRuleModules = import.meta.glob("./rule/*.ts", { eager: true }) as Record<string, unknown>
 
 // 从已加载的模块映射派生出 lazy loader 映射, loader 会返回已加载的模块
 // 这样保持导入路径一致, 并避免重复写 glob 模式
-const lazyLoaders = Object.fromEntries(Object.keys(_eagerModules).map((p) => [p, async () => _eagerModules[p]])) as Record<string, () => Promise<unknown>>
+const lazyLoaders = Object.fromEntries(Object.keys(eagerRuleModules).map((p) => [p, async () => eagerRuleModules[p]])) as Record<string, () => Promise<unknown>>
 
 // eagerModules 供同步加载使用, 直接引用已加载的模块映射
-const eagerModules = _eagerModules
+const eagerModules = eagerRuleModules
 const CUSTOM_TAG_REGEX = /<\/?(?:pay-(?:video|membership|read|download|key)|video-player|power-bi|wechat-captcha|login-view)(?:\s+[^>]*)?>/g
 const FENCE_REGEX = /^```/
 

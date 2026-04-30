@@ -186,14 +186,14 @@ const getAllowedInfo = async () => {
             // for 循环遍历 allowedInfoList 数组 i 最大值为 allowedInfoList.length - 1
             for (let i = 0; i < allowedInfoList.length; i++) {
                 // item的 Type按照'/'分割，取最后一个 例如：image/png => png
-                const _type = allowedInfoList[i]!.extension.toUpperCase()
+                const fileType = allowedInfoList[i]!.extension.toUpperCase()
                 // item的 MaxSize 是以字节为单位，转换为mb
                 const maxSize = allowedInfoList[i]!.max_size / 1024 / 1024
                 // 如果 maxSize 小于 1MB，保留两位小数 否则取整
                 if (maxSize < 1) {
-                    strList.push(`${_type}:${maxSize.toFixed(2)}MB`)
+                    strList.push(`${fileType}:${maxSize.toFixed(2)}MB`)
                 } else {
-                    strList.push(`${_type}:${Math.floor(maxSize)}MB`)
+                    strList.push(`${fileType}:${Math.floor(maxSize)}MB`)
                 }
             }
         }

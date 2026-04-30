@@ -86,9 +86,9 @@ export const renderer = {
         if (body) body = `<tbody>${body}</tbody>`
 
         // return "<table>\n" + "<thead>\n" + header + "</thead>\n" + body + "</table>\n"
-        const _table = `<table>\n<thead>\n${header}</thead>\n${body}</table>\n`
+        const tableHtml = `<table>\n<thead>\n${header}</thead>\n${body}</table>\n`
         // 在 table 外套一个 div 添加类名 以便于样式控制
-        return `<div class="jpz-marked-table-container">${_table}</div>\n`
+        return `<div class="jpz-marked-table-container">${tableHtml}</div>\n`
     },
 }
 
