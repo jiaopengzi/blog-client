@@ -461,41 +461,85 @@ const handlePreCopy = async (preElement: HTMLPreElement) => {
 }
 
 // 锁定/解锁页面滚动时使用的样式备份
-// 说明：直接将 body 的 overflow 改为 hidden 会让原本占位的纵向滚动条消失，导致主内容区宽度变大；
-// 关闭预览还原 overflow 时滚动条又会出现，主画面会发生一次明显的左右抖动。
-// 解决办法是在禁用滚动条的同时，给 body 增加与滚动条宽度相等的 padding-right 进行补偿，
-// 还原时再还原 overflow 与 padding-right。
+//
+// 说明：el-image-viewer 打开时，若直接设置 body { overflow: hidden }，viewport 滚动条消失，
+// window.innerWidth 变化，导致 position:fixed 元素和主内容区产生左右抖动。
+//
+// 解决：
+// 1. html { overflow-y: scroll } 强制滚动条始终可见 → innerWidth 不变 → 无偏移
+// 2. body { overflow: hidden } 阻止页面内容滚动
+// 3. 拦截 wheel/touchmove 事件阻止背景滚动，但不影响图片查看器的 JS 缩放逻辑
+// 4. 注入 CSS !important 规则覆盖 el-image-viewer 内部 useLockscreen 的 width 设置
+// 5. 关闭时延迟 250ms 还原，确保 useLockscreen 200ms cleanup 先完成
 let bodyOverflowBackup: string | null = null
-let bodyPaddingRightBackup: string | null = null
+let htmlOverflowYBackup: string | null = null
+let unlockTimer: ReturnType<typeof setTimeout> | null = null
+let widthOverrideStyle: HTMLStyleElement | null = null
+let wheelBlocker: ((e: WheelEvent) => void) | null = null
+let touchBlocker: ((e: TouchEvent) => void) | null = null
 
 // 计算当前纵向滚动条宽度（无滚动条时返回 0）
 const getScrollbarWidth = () => Math.max(0, window.innerWidth - document.documentElement.clientWidth)
 
-// 锁定 body 滚动并补偿滚动条宽度，避免主画面抖动
+// 锁定 body 滚动，保持滚动条可见
 const lockBodyScroll = () => {
-    if (bodyOverflowBackup !== null) return // 已锁定，避免重复备份
-    const scrollbarWidth = getScrollbarWidth()
+    if (unlockTimer !== null) {
+        clearTimeout(unlockTimer)
+        unlockTimer = null
+    }
+    if (bodyOverflowBackup !== null) return
+
     bodyOverflowBackup = document.body.style.overflow
-    bodyPaddingRightBackup = document.body.style.paddingRight
-    if (scrollbarWidth > 0) {
-        // 在原有 padding-right 基础上叠加滚动条宽度，避免覆盖业务自定义内边距
-        const computedPaddingRight = parseFloat(window.getComputedStyle(document.body).paddingRight) || 0
-        document.body.style.paddingRight = `${computedPaddingRight + scrollbarWidth}px`
+    htmlOverflowYBackup = document.documentElement.style.overflowY
+    // 仅当 viewport 原本就有滚动条时，强制 html 保持渲染（pad/PC 端）
+    if (getScrollbarWidth() > 0) {
+        document.documentElement.style.overflowY = "scroll"
     }
     document.body.style.overflow = "hidden"
+
+    // 阻止滚轮/touch 事件触发背景滚动，不影响图片查看器的 JS 缩放
+    wheelBlocker = (e: WheelEvent) => e.preventDefault()
+    touchBlocker = (e: TouchEvent) => e.preventDefault()
+    document.addEventListener("wheel", wheelBlocker, { passive: false })
+    document.addEventListener("touchmove", touchBlocker, { passive: false })
+
+    // 注入 CSS !important 规则覆盖 useLockscreen 的 inline width 设置
+    if (!widthOverrideStyle) {
+        widthOverrideStyle = document.createElement("style")
+        widthOverrideStyle.textContent = "body { width: auto !important }"
+        document.head.appendChild(widthOverrideStyle)
+    }
 }
 
-// 解锁 body 滚动并还原 padding-right
+// 解锁 body 滚动
 const unlockBodyScroll = () => {
+    // 移除滚动拦截
+    if (wheelBlocker) {
+        document.removeEventListener("wheel", wheelBlocker)
+        wheelBlocker = null
+    }
+    if (touchBlocker) {
+        document.removeEventListener("touchmove", touchBlocker)
+        touchBlocker = null
+    }
     if (bodyOverflowBackup === null) {
-        // 未通过 lockBodyScroll 锁定时，回退到默认行为，保持兼容
+        widthOverrideStyle?.remove()
+        widthOverrideStyle = null
         document.body.style.overflow = ""
+        document.documentElement.style.overflowY = ""
         return
     }
-    document.body.style.overflow = bodyOverflowBackup
-    document.body.style.paddingRight = bodyPaddingRightBackup ?? ""
+    const overflowToRestore = bodyOverflowBackup
+    const htmlOverflowToRestore = htmlOverflowYBackup ?? ""
     bodyOverflowBackup = null
-    bodyPaddingRightBackup = null
+    htmlOverflowYBackup = null
+    unlockTimer = setTimeout(() => {
+        unlockTimer = null
+        widthOverrideStyle?.remove()
+        widthOverrideStyle = null
+        document.body.style.overflow = overflowToRestore
+        document.documentElement.style.overflowY = htmlOverflowToRestore
+    }, 250)
 }
 
 // 更新图片预览
