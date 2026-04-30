@@ -26,9 +26,13 @@
         <div class="content">
             <!-- 标题 -->
             <h2 class="title-row">
-                <span class="pinned" v-if="postData.is_pinned">置顶</span>
-                <span class="pinned" v-if="postData.post_status === PostStatusCode.Private">私密</span>
-                <span class="title" @click="handleTitleClick">{{ postData.post_title }}</span>
+                <span class="title" @click="handleTitleClick">
+                    <!-- 置顶 / 私密 标识使用 float:left, 仅占用第一行宽度;
+                         标题第二、第三行的文字会左对齐贴边显示, 不再被标识左侧空白挤压. -->
+                    <span class="pinned" v-if="postData.is_pinned">置顶</span>
+                    <span class="pinned" v-if="postData.post_status === PostStatusCode.Private">私密</span>
+                    <span class="title-text">{{ postData.post_title }}</span>
+                </span>
             </h2>
 
             <!-- 摘要文字 -->
@@ -268,8 +272,9 @@ const topRightTip = computed(() => {
 }
 
 .title-row {
-    display: flex;
-    align-items: center;
+    // 不再使用 flex: 让 .title 成为正常块级容器, 内部的 .pinned (float:left)
+    // 才能让标题文本仅在第一行环绕, 后续行回到左对齐.
+    display: block;
     margin: 0;
     font-size: 14px;
     font-weight: 500;
@@ -279,39 +284,41 @@ const topRightTip = computed(() => {
 
 .title {
     cursor: pointer;
-    white-space: nowrap;
+    display: block;
     overflow: hidden;
-    text-overflow: ellipsis;
-    // 让 flex 子项能真正被截断
-    min-width: 0;
     color: var(--jpz-text-color-primary);
 
-    // 添加下划线渐变效果
+    // 当鼠标移动到 .title 上时, .title 的颜色变为 var(--jpz-color-primary)
+    &:hover {
+        color: var(--jpz-color-primary);
+    }
+}
+
+.title-text {
+    // 提供 hover 时的下划线渐变效果, 与原标题视觉一致
     background: linear-gradient(to right, var(--jpz-text-color-primary), var(--jpz-color-primary)) no-repeat;
     background-position: right bottom;
     transition: background-size 0.3s ease;
     background-size: 0 2px;
 
-    // 当鼠标移动到 .title 上时, .title 的颜色变为 var(--jpz-color-primary)
-    &:hover {
-        color: var(--jpz-color-primary);
+    .title:hover & {
         background-position: left bottom;
         background-size: 100% 2px;
     }
 }
 
 .pinned {
-    padding: 0 6px;
+    // 使用 float:left 让标识只占用第一行宽度, 第二、第三行文字回到左对齐
+    float: left;
+    padding: 0px 6px; //手动调整位置
+    margin-top: 2px;
     margin-right: 5px;
     background-color: var(--jpz-color-secondary);
     color: var(--jpz-text-color-primary);
     border-radius: 2px;
-    font-size: 0.9em;
+    font-size: 0.8em;
     font-weight: 700;
-    line-height: 1.6em;
-    height: 1.6em;
-    // 添加 flex-shrink: 0，防止被压缩
-    flex-shrink: 0;
+    line-height: 1.5;
 }
 
 .top-right-tip {
@@ -377,12 +384,13 @@ const topRightTip = computed(() => {
     }
 
     .title {
+        // 标题最多 2 行: 使用 max-height + overflow:hidden 简单截断,
+        // 与浮动的 .pinned (置顶/私密) 标识共存, 标识只占第一行, 后续行左对齐.
         font-size: 16px;
         font-weight: 700;
-        line-height: 2em;
-        height: 2em;
-        line-clamp: 1;
-        -webkit-line-clamp: 1; // 限制行数为1
+        line-height: 1.5em;
+        max-height: calc(1.5em * 2);
+        word-break: break-word;
     }
 
     .summary {
@@ -412,16 +420,25 @@ const topRightTip = computed(() => {
     }
 
     .title {
-        line-height: 2em;
-        height: 2em;
-        line-clamp: 2;
-        -webkit-line-clamp: 2; // 限制行数为2
+        // 标题最多 2 行: 使用 max-height + overflow:hidden 简单截断,
+        // 与浮动的 .pinned (置顶/私密) 标识共存, 标识只占第一行, 后续行左对齐.
+        font-weight: 700;
+        line-height: 1.5em;
+        max-height: calc(1.5em * 2);
+        word-break: break-word;
     }
 }
 
 @include respond-to("phone") {
+    // 手机端: 卡片高度自适应内容, 标题最少支持三行;
+    // 通过设置 align-items: stretch + 缩略图 align-self: stretch, 缩略图随内容高度自动伸缩.
     .post-item {
-        height: 75px;
+        height: auto;
+        min-height: 96px;
+        padding: 12px;
+        display: flex;
+        align-items: stretch;
+        gap: 12px;
 
         .category,
         .summary,
@@ -431,18 +448,38 @@ const topRightTip = computed(() => {
     }
 
     .thumbnail {
-        width: 100px;
+        float: none;
+        flex: 0 0 88px;
+        width: 88px;
+        height: auto;
+        min-height: 88px;
+        align-self: stretch;
+        border-radius: 6px;
+
+        .thumbnail-img {
+            height: 100%;
+        }
     }
 
     .content {
-        margin-left: 110px;
+        margin-left: 0;
+        flex: 1 1 auto;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 8px;
     }
 
     .title {
-        line-height: 2em;
-        height: 2em;
-        line-clamp: 2;
-        -webkit-line-clamp: 2; // 限制行数为2
+        // 手机端标题最少支持 3 行: 同样使用 max-height + overflow:hidden 简单截断,
+        // 浮动的 .pinned 仅占第一行, 后续行回到左对齐.
+        font-size: 15px;
+        font-weight: 500;
+        line-height: 1.45em;
+        max-height: calc(1.45em * 3);
+        word-break: break-word;
+        color: var(--jpz-text-color-primary);
     }
 }
 </style>
