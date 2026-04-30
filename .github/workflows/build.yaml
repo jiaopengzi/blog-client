@@ -6,7 +6,8 @@
 
 # **注意 文件名称要和 GitHub 仓库 blog-client 的 .github/workflows 下对应文件名称一致**
 # Repository secrets 需要提前在 GitHub 仓库设置中配置:
-#   DOCKER_HUB_TOKEN, _GITHUB_TOKEN, GITEE_TOKEN, COSIGN_PRIVATE_KEY, COSIGN_PRIVATE_KEY_PWD
+#   DOCKER_HUB_TOKEN, _GITHUB_TOKEN, GITEE_TOKEN, COSIGN_PRIVATE_KEY, COSIGN_PRIVATE_KEY_PWD,
+#   REGISTRY_USER_NAME_TENCENT, REGISTRY_PASSWORD_TENCENT
 
 name: Build and Push Client Docker Image
 
@@ -60,7 +61,8 @@ jobs:
 
       # 3. 下载工具到 /home/runner/，使 ROOT_DIR=/home/runner 与 volume 路径一致
       - name: Download blog-tool
-        run: curl -fsSL -o /home/runner/blog-tool-dev.sh https://raw.githubusercontent.com/jiaopengzi/blog-tool/main/dist/blog-tool-dev.sh
+        run: curl -fsSL -o /home/runner/blog-tool-dev.sh
+          https://raw.githubusercontent.com/jiaopengzi/blog-tool/main/dist/blog-tool-dev.sh
 
       # 4. 安装必要依赖
       - name: Install common software
@@ -69,7 +71,8 @@ jobs:
       # 5a. PR：只构建，不推送
       - name: Build client image (PR check)
         if: github.event_name == 'pull_request'
-        run: sudo GITHUB_ACTIONS=true GITHUB_WORKSPACE="$GITHUB_WORKSPACE" bash /home/runner/blog-tool-dev.sh docker_build_client Dockerfile
+        run: sudo GITHUB_ACTIONS=true GITHUB_WORKSPACE="$GITHUB_WORKSPACE" bash
+          /home/runner/blog-tool-dev.sh docker_build_client Dockerfile
 
       # 5b. tag / 手动：构建并推送到 Docker Hub
       - name: Build and push client image
@@ -78,8 +81,14 @@ jobs:
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
           COSIGN_PRIVATE_KEY_PWD: ${{ secrets.COSIGN_PRIVATE_KEY_PWD }}
           GITHUB_TOKEN: ${{ github.token }}
+          REGISTRY_USER_NAME_TENCENT: ${{ secrets.REGISTRY_USER_NAME_TENCENT }}
+          REGISTRY_PASSWORD_TENCENT: ${{ secrets.REGISTRY_PASSWORD_TENCENT }}
         run: |
-          sudo GITHUB_ACTIONS=true GITHUB_WORKSPACE="$GITHUB_WORKSPACE" COSIGN_PRIVATE_KEY="$COSIGN_PRIVATE_KEY" COSIGN_PRIVATE_KEY_PWD="$COSIGN_PRIVATE_KEY_PWD" GITHUB_TOKEN="$GITHUB_TOKEN" bash /home/runner/blog-tool-dev.sh docker_build_push_client Dockerfile
+          sudo GITHUB_ACTIONS=true GITHUB_WORKSPACE="$GITHUB_WORKSPACE" \
+            COSIGN_PRIVATE_KEY="$COSIGN_PRIVATE_KEY" COSIGN_PRIVATE_KEY_PWD="$COSIGN_PRIVATE_KEY_PWD" \
+            GITHUB_TOKEN="$GITHUB_TOKEN" \
+            REGISTRY_USER_NAME_TENCENT="$REGISTRY_USER_NAME_TENCENT" REGISTRY_PASSWORD_TENCENT="$REGISTRY_PASSWORD_TENCENT" \
+            bash /home/runner/blog-tool-dev.sh docker_build_push_client Dockerfile
 
       # 6. 移除环境变量文件，避免泄露风险
       - name: Remove environment variable files
