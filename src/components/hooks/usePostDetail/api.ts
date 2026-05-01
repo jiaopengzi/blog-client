@@ -98,7 +98,7 @@ export function useGetData(
         postMeta.value.post_title = postData.post_title
         postMeta.value.author_avatar = postData.author_info.user_avatar
         postMeta.value.author_display_name = postData.author_info.user_display_name
-        postMeta.value.avatar_size = 20 // 头像大小，默认 24px
+        postMeta.value.avatar_size = device.value === DeviceType.PHONE ? 18 : 24 // 头像大小: phone 端 18px, 其他 24px
         postMeta.value.author_id = postData.author_info.id
         postMeta.value.author_user_name = postData.author_info.user_name
         postMeta.value.is_show_read_time = true
