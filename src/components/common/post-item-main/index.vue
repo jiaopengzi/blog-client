@@ -91,7 +91,7 @@ const postMeta = computed(() => {
         author_avatar: postData.author_info.user_avatar,
         author_user_name: postData.author_info.user_name,
         author_display_name: postData.author_info.user_display_name,
-        avatar_size: 24, // 头像大小，默认 24px
+        avatar_size: device.value === DeviceType.PHONE ? 18 : 24, // 头像大小: phone 端 18px, 其他 24px
         author_id: postData.author_info.id,
         is_show_read_time: false, // 是否显示阅读时间
     }
@@ -430,16 +430,13 @@ const topRightTip = computed(() => {
 }
 
 @include respond-to("phone") {
-    // 手机端: 卡片高度自适应内容, 标题最少支持三行;
-    // 通过设置 align-items: stretch + 缩略图 align-self: stretch, 缩略图随内容高度自动伸缩.
+    // 手机端: 卡片高度由缩略图 (128x96px) 与内容区共同决定, 内容区拉伸填满卡片高度.
     .post-item {
         height: auto;
-        min-height: 96px;
-        padding: 12px;
+        padding: 10px 8px 9px 8px;
         display: flex;
         align-items: stretch;
         gap: 12px;
-
         .category,
         .summary,
         .read-more {
@@ -448,13 +445,15 @@ const topRightTip = computed(() => {
     }
 
     .thumbnail {
+        // 宽高比固定为 128x96px, align-self: center 使图片在卡片高度方向居中.
+        // 建议 2: 圆角收小至 4px, 加轻微阴影增强层次感.
         float: none;
-        flex: 0 0 88px;
-        width: 88px;
-        height: auto;
-        min-height: 88px;
-        align-self: stretch;
-        border-radius: 6px;
+        flex: 0 0 128px;
+        width: 128px;
+        height: 96px;
+        align-self: center;
+        border-radius: 4px;
+        box-shadow: var(--jpz-box-shadow-lighter);
 
         .thumbnail-img {
             height: 100%;
@@ -462,6 +461,9 @@ const topRightTip = computed(() => {
     }
 
     .content {
+        // 覆盖全局 height:100%, 依靠 flex stretch 撑满卡片高度,
+        // 使 justify-content:space-between 将 PostMeta 始终置于底部.
+        height: auto;
         margin-left: 0;
         flex: 1 1 auto;
         min-width: 0;
@@ -472,12 +474,17 @@ const topRightTip = computed(() => {
     }
 
     .title {
-        // 手机端标题最少支持 3 行: 同样使用 max-height + overflow:hidden 简单截断,
-        // 浮动的 .pinned 仅占第一行, 后续行回到左对齐.
-        font-size: 15px;
-        font-weight: 500;
-        line-height: 1.45em;
-        max-height: calc(1.45em * 3);
+        // 最多 3 行, 超出显示省略号; .pinned (float:left) 仅占首行,
+        // 第 2、3 行文字回到左对齐顶格显示.
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.5em;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        line-clamp: 3;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
+        text-overflow: ellipsis;
         word-break: break-word;
         color: var(--jpz-text-color-primary);
     }

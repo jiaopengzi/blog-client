@@ -338,9 +338,10 @@ const takeTime = computed(() => {
         display: none;
     }
 
-    // 使用等宽字体
+    // 使用等宽字体; 禁止断行, 保证 meta 始终在一行内显示.
     .meta-text {
         font-family: monospace;
+        white-space: nowrap;
     }
 
     .meta-avatar,
@@ -349,6 +350,11 @@ const takeTime = computed(() => {
     .meta-comment,
     .meta-like {
         margin-right: 6px;
+    }
+
+    // 建议 5: 固定 meta-container 最小高度, 防止头像降级为 initials 时行高抖动.
+    .meta-container {
+        min-height: 24px;
     }
 
     .title-container {
