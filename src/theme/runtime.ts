@@ -133,6 +133,7 @@ function buildThemeCssVariables(palette: ThemePalette, scheme: ThemePreset["sche
         `--jpz-border-color-lighter: ${palette.borderLighter};`,
         `--jpz-box-shadow-lighter: ${palette.shadowLighter};`,
         `--jpz-box-shadow-light: ${palette.shadowLight};`,
+        `--jpz-box-shadow: ${palette.shadow};`,
         `--jpz-post-item-main-hover-shadow: ${palette.shadow};`,
         `--jpz-fill-color-lighter: ${palette.fillLighter};`,
         `--jpz-text-color-primary: ${palette.textPrimary};`,
