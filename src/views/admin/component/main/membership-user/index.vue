@@ -158,7 +158,7 @@ const cols: TableColumn[] = reactive([
     },
     {
         prop: "membership_id",
-        label: "会员ID",
+        label: "会员角色ID",
         sortable: true,
         minWidth: 180,
         align: "center",
