@@ -473,9 +473,18 @@ const topRightTip = computed(() => {
         gap: 8px;
     }
 
+    .pinned {
+        // phone 端改为 inline-block, 取消 float, 使 -webkit-line-clamp 能正常截断含标识的标题,
+        // 同时避免 Safari 下 float 子元素在 -webkit-box 容器内撑满整行的问题.
+        float: none;
+        display: inline-block;
+        vertical-align: middle;
+        margin-top: 0;
+    }
+
     .title {
-        // 最多 3 行, 超出显示省略号; .pinned (float:left) 仅占首行,
-        // 第 2、3 行文字回到左对齐顶格显示.
+        // 最多 3 行, 超出显示省略号.
+        // phone 端 .pinned 已改为 inline-block, 可安全使用 -webkit-line-clamp.
         font-size: 14px;
         font-weight: 600;
         line-height: 1.5em;
