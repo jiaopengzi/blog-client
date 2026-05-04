@@ -120,6 +120,8 @@ html.dark {
     @extend %code-snippet-common;
     --pre-code-code-before-padding-right: 0.5em;
 
+    // 兼容旧版浏览器（华为自带浏览器等）的不换行写法
+    white-space: pre;
     // 代码块内不换行
     white-space-collapse: preserve;
     text-wrap-mode: nowrap;
