@@ -12,35 +12,13 @@
 // @use './themes/index.scss' as *;
 // ========================================== live sass compiler 插件使用 结束 ==========================================
 
-code.hljs {
+// ---- hljs 公共 default 样式 mixin（供 default 和 dax/m/pq 共用） ----
+@mixin hljs-default-code {
     padding: 3px 5px;
     // background-color: var(--jpz-bg-color);
 }
 
-.hljs,
-.hljs-code,
-.hljs-property,
-.hljs-title.class_,
-.hljs-title.class_.inherited__,
-.hljs-punctuation,
-.hljs-operator,
-.hljs-title.function_,
-.hljs-char.escape_,
-.hljs-variable.language_ {
-    // 占位
-    color: var(--jpz-text-color-regular);
-}
-
-// 针对 DAX / M / PQ 语言代码块的项目级样式覆盖。
-// 重要：所有覆盖规则必须写在此作用域内，才能与主题 CSS 选择器优先级持平
-// （主题 CSS: [data-lang=dax] .hljs-xxx = 0,2,0；此处同级），
-// 再由导入顺序（本文件后于主题 CSS 加载）确保最终胜出。
-:is([data-lang="dax"], [data-lang="m"], [data-lang="pq"]) {
-    code.hljs {
-        padding: 3px 5px;
-        // background-color: var(--jpz-bg-color);
-    }
-
+@mixin hljs-default-token-colors {
     .hljs,
     .hljs-code,
     .hljs-property,
@@ -54,6 +32,25 @@ code.hljs {
         // 占位
         color: var(--jpz-text-color-regular);
     }
+}
+// -----------------------------------------------------------------------
+
+code.hljs {
+    @include hljs-default-code;
+}
+
+@include hljs-default-token-colors;
+
+// 针对 DAX / M / PQ 语言代码块的项目级样式覆盖。
+// 重要：所有覆盖规则必须写在此作用域内，才能与主题 CSS 选择器优先级持平
+// （主题 CSS: [data-lang=dax] .hljs-xxx = 0,2,0；此处同级），
+// 再由导入顺序（本文件后于主题 CSS 加载）确保最终胜出。
+:is([data-lang="dax"], [data-lang="m"], [data-lang="pq"]) {
+    code.hljs {
+        @include hljs-default-code;
+    }
+
+    @include hljs-default-token-colors;
 
     // ---- 在此处添加其他 token 颜色覆盖 ----
     // 示例：将注释颜色改为主题变量
