@@ -381,13 +381,27 @@ onBeforeMount(async () => {
     align-items: center;
     justify-content: center;
     gap: 12px;
-    background-color: rgba(255, 255, 255, 0.9);
     pointer-events: auto;
+
+    // 半透明蒙层: 用 ::before 单独承担背景, 仅对蒙层降低不透明度,
+    // 不影响 spinner 与文本的清晰度. 颜色跟随主题预设 (src/theme/runtime.ts).
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-color: var(--jpz-bg-color-overlay, var(--jpz-bg-color, #ffffff));
+        opacity: 0.7;
+    }
+
+    &__spinner,
+    &__text {
+        position: relative; // 置于 ::before 之上, 不被半透明蒙层影响
+    }
 
     &__spinner {
         width: 42px;
         height: 42px;
-        border: 3px solid var(--el-color-primary, #409eff);
+        border: 3px solid var(--jpz-color-primary, var(--el-color-primary, #409eff));
         border-top-color: transparent;
         border-radius: 50%;
         // transform 动画走合成线程, 主线程长任务下仍可持续旋转.
@@ -396,7 +410,7 @@ onBeforeMount(async () => {
     }
 
     &__text {
-        color: var(--el-color-primary, #409eff);
+        color: var(--jpz-color-primary, var(--el-color-primary, #409eff));
         font-size: 14px;
     }
 }
