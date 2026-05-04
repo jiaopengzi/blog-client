@@ -8,7 +8,17 @@
 
 <template>
     <head-tag :head-data="head" />
-    <section ref="webFullscreenRef" v-loading="isLoading" element-loading-text="加载中...">
+    <section ref="webFullscreenRef">
+        <!--
+            自定义 loading 蒙层, 替换 element-plus v-loading 的 SVG spinner.
+            原因: el-loading 的 SVG stroke 动画在部分移动端浏览器内核 (如华为自带浏览器) 中由主线程驱动,
+                  当 markdownToHtml + Vue 同步 patch 大量 DOM 时主线程被阻塞, spinner 会冻结一帧直至重活完成.
+            方案: 改用 CSS transform: rotate 动画, 走合成线程, 主线程繁忙时仍能持续旋转.
+        -->
+        <div v-if="isLoading" class="jpz-loading-mask" role="status" aria-live="polite">
+            <div class="jpz-loading-mask__spinner" aria-hidden="true"></div>
+            <div class="jpz-loading-mask__text">加载中...</div>
+        </div>
         <!-- 新增的固定占位内容 -->
         <div class="affix-interaction">
             <DetailInteraction v-if="isShowDetailInteraction" direction="vertical" :items="interactionItems" @click-item="handleClickInteraction" />
@@ -358,6 +368,43 @@ onBeforeMount(async () => {
 .web__fullscreen {
     @include webFullscreen();
     overflow-y: auto;
+}
+
+// 自定义 loading 蒙层: 用 CSS transform 动画替换 el-loading 的 SVG spinner,
+// 避免主线程被同步渲染阻塞时 spinner 冻结.
+.jpz-loading-mask {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background-color: rgba(255, 255, 255, 0.9);
+    pointer-events: auto;
+
+    &__spinner {
+        width: 42px;
+        height: 42px;
+        border: 3px solid var(--el-color-primary, #409eff);
+        border-top-color: transparent;
+        border-radius: 50%;
+        // transform 动画走合成线程, 主线程长任务下仍可持续旋转.
+        animation: jpz-loading-mask-rotate 0.8s linear infinite;
+        will-change: transform;
+    }
+
+    &__text {
+        color: var(--el-color-primary, #409eff);
+        font-size: 14px;
+    }
+}
+
+@keyframes jpz-loading-mask-rotate {
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 // 固定定位占位
