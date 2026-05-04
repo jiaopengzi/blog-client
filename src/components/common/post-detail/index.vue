@@ -8,7 +8,7 @@
 
 <template>
     <head-tag :head-data="head" />
-    <section ref="webFullscreenRef">
+    <section ref="webFullscreenRef" v-loading="isLoading" element-loading-text="加载中...">
         <!-- 新增的固定占位内容 -->
         <div class="affix-interaction">
             <DetailInteraction v-if="isShowDetailInteraction" direction="vertical" :items="interactionItems" @click-item="handleClickInteraction" />
@@ -218,11 +218,18 @@ const handleHeadingShowCurrentAc = (val: number) => {
     emit("state", state)
 }
 
+const isLoading = ref(false) // 是否正在加载文章详情
+
 // 更新文章详情
 const updatePostDetailAc = async (postId: string, password: string = "") => {
-    await updatePostDetail(postId, password)
-    manager.setHeadingShowCurrentIndex(headingShowCurrentIndex)
-    emit("state", state)
+    isLoading.value = true
+    try {
+        await updatePostDetail(postId, password)
+        manager.setHeadingShowCurrentIndex(headingShowCurrentIndex)
+        emit("state", state)
+    } finally {
+        isLoading.value = false
+    }
 }
 
 // 提交密码
