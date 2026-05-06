@@ -269,6 +269,7 @@ import { PermissionNames } from "@/stores/permissionRole"
 import { useUserStore } from "@/stores/user"
 import { formatTime } from "@/utils/dateTime"
 import { generateShortcuts } from "@/utils/dateTime"
+import { extractSeoDescriptionFromMarkdown } from "@/utils/markdownSeo"
 import { MessageUtil } from "@/utils/message"
 
 import { type PostInfoAboutTime, type PostUpsertProps, queryKey, type UpdatePostForm, type UpsertPostForm } from "./types"
@@ -401,18 +402,12 @@ const {
 // 视频目录
 const { handleUpdate, isShowAddTocBtn, addDefaultToc } = usePostVideoToc(postInfoForm)
 
-// 提取 seo 描述
+/**
+ * seoDescriptionExtract 从 Markdown 源文本中提取 SEO 描述, 跳过代码块等不应进入摘要的内容.
+ * @returns void.
+ */
 const seoDescriptionExtract = () => {
-    const content = editorState.html || ""
-    // 解析html拿到innerText
-    const div = document.createElement("div")
-    div.innerHTML = content
-    const text = div.innerText || div.textContent || ""
-    postInfoForm.seo_description = text.slice(0, seoDescriptionExtractWords.value)
-    // 去除首尾空格
-    postInfoForm.seo_description = postInfoForm.seo_description.trim()
-    // 销毁div
-    div.remove()
+    postInfoForm.seo_description = extractSeoDescriptionFromMarkdown(editorState.editorContent || "", seoDescriptionExtractWords.value)
 }
 
 // 监控文章标签变化,更新 seo 关键词
