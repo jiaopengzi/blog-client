@@ -1,3 +1,11 @@
+/**
+ * FilePath    : blog-client\src\pkg\marked\extension\__tests__\renderer.test.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : renderer 渲染器测试
+ */
+
 import type { Tokens } from "marked"
 
 import { describe, expect, it } from "vitest"

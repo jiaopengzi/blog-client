@@ -1,11 +1,25 @@
 {
   "extends": "./tsconfig.app.json",
-  "include": ["src/**/__tests__/*", "env.d.ts"],
-  "exclude": [],
+  "include": [
+    "env.d.ts",
+    "auto-imports.d.ts",
+    "components.d.ts",
+    "types/**/*.d.ts",
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "coverage"
+  ],
   "compilerOptions": {
     "composite": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.vitest.tsbuildinfo",
-    "lib": [],
+    "lib": [
+      "ES2025",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "types": [
       "node",
       "jsdom"
