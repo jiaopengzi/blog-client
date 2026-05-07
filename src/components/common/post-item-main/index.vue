@@ -7,11 +7,11 @@
 -->
 
 <template>
-    <div class="post-item" @click="handlePostItemClick">
+    <div class="post-item" :class="{ 'has-top-right-tip': !!topRightTip }" @click="handlePostItemClick">
         <!-- 左上角提示符 -->
         <div class="top-left-tip"></div>
 
-        <!-- 右上角提示符 -->
+        <!-- 右上角斜角提示符-->
         <div class="top-right-tip" v-if="topRightTip">{{ topRightTip }}</div>
 
         <!-- 左上角分类 -->
@@ -329,7 +329,7 @@ const topRightTip = computed(() => {
     text-align: center;
     position: absolute;
     width: 70px;
-    transform-origin: bottom right; // 以右下角为旋转中心,只需要计算 top 值, right 等于0
+    transform-origin: bottom right; // 以右下角为旋转中心, 只需要计算 top 值, right 等于 0
     transform: rotate(45deg);
     // top 等于 width 乘以 sin(45deg) 再减去 height 的高度
     top: 28px;
@@ -398,6 +398,12 @@ const topRightTip = computed(() => {
         line-clamp: 4;
         -webkit-line-clamp: 4; // 限制行数为4
     }
+
+    .has-top-right-tip {
+        .title-row {
+            padding-right: 10px;
+        }
+    }
 }
 
 @include respond-to("pad") {
@@ -426,6 +432,19 @@ const topRightTip = computed(() => {
         line-height: 1.5em;
         max-height: calc(1.5em * 2);
         word-break: break-word;
+    }
+
+    .has-top-right-tip {
+        .title-row {
+            padding-right: 10px;
+        }
+    }
+
+    .top-right-tip {
+        // pad 端字号为 12px 时, top 按 width * sin(45deg) - height 重新计算.
+        width: 60px;
+        top: 24px;
+        font-size: 12px;
     }
 }
 
@@ -496,6 +515,19 @@ const topRightTip = computed(() => {
         text-overflow: ellipsis;
         word-break: break-word;
         color: var(--jpz-text-color-primary);
+    }
+
+    .has-top-right-tip {
+        .title-row {
+            padding-right: 10px;
+        }
+    }
+
+    .top-right-tip {
+        // phone 端同步缩小字号与徽标尺寸, 让斜角标志比例更协调.
+        width: 50px;
+        top: 20px;
+        font-size: 10px;
     }
 }
 </style>
