@@ -35,16 +35,14 @@
                 <EditorToc :headings="visibleTocHeadings" :heading-show-current-index="visibleHeadingShowCurrentIndex" @heading-clicked="tocHeadingClicked" />
             </div>
 
-            <button
+            <!-- 分隔条 -->
+            <EditorResizeHandle
                 v-if="state.tocShow && (state.editorShow || state.previewShow) && isPaneResizeEnabled"
-                type="button"
-                class="md-resize-handle"
-                :class="{ 'is-dragging': activeResize !== null }"
-                :aria-label="state.editorShow ? '调整目录与编辑区宽度' : '调整目录与预览区宽度'"
-                title="双击恢复默认宽度"
-                @pointerdown="startPaneResize($event, 'toc', state.editorShow ? 'editor' : 'preview')"
-                @dblclick.prevent="restoreDefaultPaneRatios"
-            ></button>
+                :is-dragging="activeResize !== null"
+                :label="state.editorShow ? '调整目录与编辑区宽度' : '调整目录与预览区宽度'"
+                @resize-start="startPaneResize($event, 'toc', state.editorShow ? 'editor' : 'preview')"
+                @restore-default="restoreDefaultPaneRatios"
+            />
 
             <!-- 编辑器 -->
             <div class="md-editor md-container-item" v-show="state.editorShow">
@@ -71,16 +69,14 @@
                 />
             </div>
 
-            <button
+            <!-- 分隔条 -->
+            <EditorResizeHandle
                 v-if="state.editorShow && state.previewShow && isPaneResizeEnabled"
-                type="button"
-                class="md-resize-handle"
-                :class="{ 'is-dragging': activeResize !== null }"
-                aria-label="调整编辑区与预览区宽度"
-                title="双击恢复默认宽度"
-                @pointerdown="startPaneResize($event, 'editor', 'preview')"
-                @dblclick.prevent="restoreDefaultPaneRatios"
-            ></button>
+                :is-dragging="activeResize !== null"
+                label="调整编辑区与预览区宽度"
+                @resize-start="startPaneResize($event, 'editor', 'preview')"
+                @restore-default="restoreDefaultPaneRatios"
+            />
 
             <!-- 预览 -->
             <div class="md-preview md-container-item" v-show="state.previewShow">
@@ -134,6 +130,7 @@ import { CommandsKey } from "./command"
 import EditorCodemirror, { type CodemirrorRef } from "./components/codemirror"
 import HtmlPreview from "./components/preview/index.vue"
 import type { HtmlPreviewRef } from "./components/preview/types"
+import EditorResizeHandle from "./components/resize-handle"
 import SettingsDialog from "./components/settings"
 import EditorToc from "./components/toc"
 import Toolbar from "./components/toolbar"
@@ -508,50 +505,6 @@ defineExpose({
             justify-content: center;
             align-items: center;
             background-color: var(--jpz-bg-color);
-        }
-
-        .md-resize-handle {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            padding: 0;
-            border: 0;
-            background-color: transparent;
-            cursor: col-resize;
-            touch-action: none;
-
-            &::before {
-                content: "";
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                left: 50%;
-                width: 1px;
-                transform: translateX(-50%);
-                background-color: var(--jpz-border-color);
-            }
-
-            &::after {
-                content: "";
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: 4px;
-                height: 42px;
-                transform: translate(-50%, -50%);
-                border-radius: 999px;
-                background-color: var(--jpz-border-color);
-                opacity: 0.35;
-                transition:
-                    opacity 0.2s ease,
-                    background-color 0.2s ease;
-            }
-
-            &:hover::after,
-            &.is-dragging::after {
-                opacity: 0.8;
-                background-color: var(--jpz-main-color);
-            }
         }
 
         &.is-resize-disabled {
