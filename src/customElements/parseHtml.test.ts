@@ -363,4 +363,12 @@ describe("pay-* 组件代码块防护 - 端到端 markdown 流水线", () => {
         const fullHtml = parts.map((p) => (typeof p.content === "string" ? p.content : "")).join("")
         expect(fullHtml).toContain("结尾")
     })
+
+    it("emoji 短码会转成真实表情, 未知短码保持原样", () => {
+        const md = ["支持已知 emoji: :rocket: :grinning_face:", "", "保留未知短码: :not-found-emoji:", ""].join("\n")
+        const html = markdownToHtml(md, false)
+
+        expect(html).toContain("支持已知 emoji: 🚀 😀")
+        expect(html).toContain("保留未知短码: :not-found-emoji:")
+    })
 })
