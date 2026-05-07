@@ -31,10 +31,31 @@ export function useToolbar(
         copyPreparationInFlight: false,
     }),
 ) {
-    const { isWebFullscreen, toggle } = useWebFullscreen(mdLayoutRef)
-
     // 状态管理
     const editorState = stateManager.getState()
+
+    /**
+     * shouldIgnoreFullscreenEscape 判断当前 Escape 是否应忽略网页全屏退出。
+     * 当开启 Vim 模式且焦点位于 CodeMirror 内部时, 应优先交给 Vim 自己退出当前模式。
+     * @param event - 当前键盘事件。
+     * @returns true 表示本次 Escape 不应退出网页全屏。
+     */
+    const shouldIgnoreFullscreenEscape = (event: KeyboardEvent): boolean => {
+        if (!editorState.vimMode) {
+            return false
+        }
+
+        const target = event.target
+        if (!(target instanceof HTMLElement)) {
+            return false
+        }
+
+        return !!target.closest("#jpz-codemirror")
+    }
+
+    const { isWebFullscreen, toggle } = useWebFullscreen(mdLayoutRef, {
+        shouldIgnoreEscape: shouldIgnoreFullscreenEscape,
+    })
 
     // 工具栏按钮
     const toolbarBtns = computed(() => {

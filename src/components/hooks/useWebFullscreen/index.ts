@@ -12,10 +12,19 @@ import { onMounted, onUnmounted, ref, unref } from "vue"
 const WEB_FULLSCREEN_CLASS = "web__fullscreen"
 
 /**
+ * UseWebFullscreenOptions 网页全屏 hook 的可选配置。
+ * 用于在特定键盘交互场景下忽略默认的 Escape 退出行为。
+ */
+export interface UseWebFullscreenOptions {
+    shouldIgnoreEscape?: (event: KeyboardEvent) => boolean
+}
+
+/**
  * @description: 全屏处理函数
  * @param {MaybeElementRef} target - 目标元素的引用
+ * @param {UseWebFullscreenOptions} options - 全屏行为的可选配置
  */
-export const useWebFullscreen = (target: MaybeElementRef) => {
+export const useWebFullscreen = (target: MaybeElementRef, options: UseWebFullscreenOptions = {}) => {
     const isWebFullscreen = ref(false)
     let targetElement: MaybeElement = null
 
@@ -66,9 +75,13 @@ export const useWebFullscreen = (target: MaybeElementRef) => {
 
     // ESC键监听
     const handleEscape = (e: KeyboardEvent) => {
-        if (e.key === "Escape" && isWebFullscreen.value) {
-            exit()
+        if (e.key !== "Escape" || !isWebFullscreen.value) return
+
+        if (e.defaultPrevented || options.shouldIgnoreEscape?.(e)) {
+            return
         }
+
+        exit()
     }
 
     // 生命周期管理
