@@ -25,11 +25,26 @@
         </div>
 
         <!-- 编辑器容器 -->
-        <div ref="mdContainerRef" :class="state.mode === 'post' ? 'md-container' : 'md-container-comment'">
+        <div
+            ref="mdContainerRef"
+            :class="[state.mode === 'post' ? 'md-container' : 'md-container-comment', { 'is-resize-disabled': !isPaneResizeEnabled }]"
+            :style="mdContainerStyle"
+        >
             <!-- 导航栏 -->
             <div class="md-toc md-container-item" v-show="state.tocShow">
                 <EditorToc :headings="visibleTocHeadings" :heading-show-current-index="visibleHeadingShowCurrentIndex" @heading-clicked="tocHeadingClicked" />
             </div>
+
+            <button
+                v-if="state.tocShow && (state.editorShow || state.previewShow) && isPaneResizeEnabled"
+                type="button"
+                class="md-resize-handle"
+                :class="{ 'is-dragging': activeResize !== null }"
+                :aria-label="state.editorShow ? '调整目录与编辑区宽度' : '调整目录与预览区宽度'"
+                title="双击恢复默认宽度"
+                @pointerdown="startPaneResize($event, 'toc', state.editorShow ? 'editor' : 'preview')"
+                @dblclick.prevent="restoreDefaultPaneRatios"
+            ></button>
 
             <!-- 编辑器 -->
             <div class="md-editor md-container-item" v-show="state.editorShow">
@@ -55,6 +70,17 @@
                     @update-is-user-scroll="handleUpdateIsUserScrollCmEditor"
                 />
             </div>
+
+            <button
+                v-if="state.editorShow && state.previewShow && isPaneResizeEnabled"
+                type="button"
+                class="md-resize-handle"
+                :class="{ 'is-dragging': activeResize !== null }"
+                aria-label="调整编辑区与预览区宽度"
+                title="双击恢复默认宽度"
+                @pointerdown="startPaneResize($event, 'editor', 'preview')"
+                @dblclick.prevent="restoreDefaultPaneRatios"
+            ></button>
 
             <!-- 预览 -->
             <div class="md-preview md-container-item" v-show="state.previewShow">
@@ -94,12 +120,14 @@
 import "vue3-emoji-picker/css"
 
 import { type Extension } from "@codemirror/state"
+import { storeToRefs } from "pinia"
 import { debounce } from "throttle-debounce"
 import { computed, onBeforeUnmount, ref, useTemplateRef, watch } from "vue"
 
 import { PayStrategy, type PostVideoTocTree } from "@/api/post/common"
 import type { MarkdownRulesConfig } from "@/pkg/codemirror/extension/mdlint/types"
 import { getTheme, Theme, ThemeMode } from "@/pkg/codemirror/extension/theme"
+import { DeviceType, useDeviceStore } from "@/stores/device"
 
 import { CommandsKey } from "./command"
 
@@ -110,6 +138,17 @@ import SettingsDialog from "./components/settings"
 import EditorToc from "./components/toc"
 import Toolbar from "./components/toolbar"
 import { useCodemirror, usePreview, useToolbar } from "./hooks"
+import {
+    buildEditorGridTemplate,
+    clearEditorPaneRatios,
+    DEFAULT_EDITOR_PANE_HANDLE_WIDTH,
+    DEFAULT_EDITOR_PANE_RATIOS,
+    type EditorPaneName,
+    type EditorPaneRatios,
+    loadEditorPaneRatios,
+    resizeEditorPaneRatios,
+    saveEditorPaneRatios,
+} from "./layout"
 import { EditorStateManager } from "./state"
 
 // 文章编辑器命名
@@ -154,6 +193,15 @@ const state = stateManager.getState()
 const visibleTocHeadings = ref([...state.tocHtml])
 const visibleHeadingShowCurrentIndex = ref(state.headingShowCurrentIndex)
 const isTocRefreshPaused = ref(false)
+const deviceStore = useDeviceStore()
+const { device } = storeToRefs(deviceStore)
+const paneRatios = ref<EditorPaneRatios>(loadEditorPaneRatios() ?? { ...DEFAULT_EDITOR_PANE_RATIOS })
+const activeResize = ref<{
+    startX: number
+    leftPane: EditorPaneName
+    rightPane: EditorPaneName
+    initialRatios: EditorPaneRatios
+} | null>(null)
 
 const localPostId = computed(() => postId)
 const localIsPaid = computed(() => isPaid)
@@ -162,6 +210,119 @@ const localPrice = computed(() => price)
 
 const settingsDialogVisible = ref(false)
 const settingsDialogCommand = ref<CommandsKey | null>(null)
+const isPaneResizeEnabled = computed(() => device.value !== DeviceType.PHONE)
+const visiblePanes = computed<EditorPaneName[]>(() => {
+    const panes: EditorPaneName[] = []
+
+    if (state.tocShow) {
+        panes.push("toc")
+    }
+    if (state.editorShow) {
+        panes.push("editor")
+    }
+    if (state.previewShow) {
+        panes.push("preview")
+    }
+
+    return panes
+})
+const mdContainerStyle = computed(() => {
+    return {
+        gridTemplateColumns: buildEditorGridTemplate(visiblePanes.value, paneRatios.value, isPaneResizeEnabled.value ? DEFAULT_EDITOR_PANE_HANDLE_WIDTH : 0),
+    }
+})
+
+/**
+ * persistPaneRatios 将当前三栏比例写入 localStorage。
+ * @returns 无返回值。
+ */
+const persistPaneRatios = (): void => {
+    saveEditorPaneRatios(paneRatios.value)
+}
+
+/**
+ * restoreDefaultPaneRatios 一键恢复默认三栏宽度。
+ * 恢复后直接清除本地缓存, 让后续进入编辑器时继续使用默认布局。
+ * @returns 无返回值。
+ */
+const restoreDefaultPaneRatios = (): void => {
+    paneRatios.value = { ...DEFAULT_EDITOR_PANE_RATIOS }
+    clearEditorPaneRatios()
+}
+
+/**
+ * syncPaneResizeInteraction 同步拖拽过程中的全局鼠标样式。
+ * @param isDragging - 当前是否处于拖拽中。
+ * @returns 无返回值。
+ */
+const syncPaneResizeInteraction = (isDragging: boolean): void => {
+    document.body.style.cursor = isDragging ? "col-resize" : ""
+    document.body.style.userSelect = isDragging ? "none" : ""
+}
+
+/**
+ * handlePaneResize 根据拖拽位移更新三栏布局比例。
+ * @param event - 当前 pointermove 事件。
+ * @returns 无返回值。
+ */
+const handlePaneResize = (event: PointerEvent): void => {
+    if (!activeResize.value || !mdContainerRef.value) {
+        return
+    }
+
+    const { leftPane, rightPane, startX, initialRatios } = activeResize.value
+    paneRatios.value = resizeEditorPaneRatios({
+        ratios: initialRatios,
+        visiblePanes: visiblePanes.value,
+        leftPane,
+        rightPane,
+        containerWidth: mdContainerRef.value.clientWidth,
+        deltaPx: event.clientX - startX,
+        handleWidthPx: DEFAULT_EDITOR_PANE_HANDLE_WIDTH,
+    })
+}
+
+/**
+ * stopPaneResize 结束拖拽并持久化最新比例。
+ * @returns 无返回值。
+ */
+const stopPaneResize = (): void => {
+    if (!activeResize.value) {
+        return
+    }
+
+    activeResize.value = null
+    persistPaneRatios()
+    syncPaneResizeInteraction(false)
+    window.removeEventListener("pointermove", handlePaneResize)
+    window.removeEventListener("pointerup", stopPaneResize)
+    window.removeEventListener("pointercancel", stopPaneResize)
+}
+
+/**
+ * startPaneResize 开始拖拽指定分隔条。
+ * @param event - 当前 pointerdown 事件。
+ * @param leftPane - 分隔条左侧栏位。
+ * @param rightPane - 分隔条右侧栏位。
+ * @returns 无返回值。
+ */
+const startPaneResize = (event: PointerEvent, leftPane: EditorPaneName, rightPane: EditorPaneName): void => {
+    if (event.button !== 0 || !isPaneResizeEnabled.value) {
+        return
+    }
+
+    activeResize.value = {
+        startX: event.clientX,
+        leftPane,
+        rightPane,
+        initialRatios: { ...paneRatios.value },
+    }
+    syncPaneResizeInteraction(true)
+    window.addEventListener("pointermove", handlePaneResize)
+    window.addEventListener("pointerup", stopPaneResize)
+    window.addEventListener("pointercancel", stopPaneResize)
+    event.preventDefault()
+}
 
 /**
  * syncVisibleTocState 同步目录的可视快照。
@@ -290,6 +451,7 @@ watch(
 )
 
 onBeforeUnmount(() => {
+    stopPaneResize()
     resumeTocRefresh.cancel()
 })
 
@@ -324,30 +486,78 @@ defineExpose({
 
     .md-container,
     .md-container-comment {
-        display: flex;
+        display: grid;
 
         .md-container-item {
             border-radius: 3px;
+            min-width: 0;
+            min-height: 0;
         }
 
         .md-toc {
             overflow: auto;
-            flex: 1 1 0; // 1 1 0 代表 flex-grow: 1; flex-shrink: 1; flex-basis: 0; 五分之一
         }
 
         .md-editor {
             overflow: hidden;
-            flex: 2 1 0; // 2 1 0 代表 flex-grow: 2; flex-shrink: 1; flex-basis: 0; 五分之二
         }
 
         .md-preview {
             overflow: hidden;
-            flex: 2 1 0; // 2 1 0 代表 flex-grow: 2; flex-shrink: 1; flex-basis: 0; 五分之二
             display: flex;
             justify-content: center;
             align-items: center;
-            border-left: 1px solid var(--jpz-border-color); // 子元素居中
             background-color: var(--jpz-bg-color);
+        }
+
+        .md-resize-handle {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            border: 0;
+            background-color: transparent;
+            cursor: col-resize;
+            touch-action: none;
+
+            &::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 50%;
+                width: 1px;
+                transform: translateX(-50%);
+                background-color: var(--jpz-border-color);
+            }
+
+            &::after {
+                content: "";
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 4px;
+                height: 42px;
+                transform: translate(-50%, -50%);
+                border-radius: 999px;
+                background-color: var(--jpz-border-color);
+                opacity: 0.35;
+                transition:
+                    opacity 0.2s ease,
+                    background-color 0.2s ease;
+            }
+
+            &:hover::after,
+            &.is-dragging::after {
+                opacity: 0.8;
+                background-color: var(--jpz-main-color);
+            }
+        }
+
+        &.is-resize-disabled {
+            .md-preview {
+                border-left: 1px solid var(--jpz-border-color);
+            }
         }
     }
 }

@@ -26,6 +26,7 @@ export enum LocalStorageKey {
     OptionsVideoWatermark = "options_video_watermark", // 视频水印
     PostDetailEditEnable = "post_detail_edit_enable", // 文章详情编辑是否启用
     PayTypeEnable = "pay_type_enable", // 支付类型是否启用
+    EditorPaneRatios = "editor_pane_ratios", // 编辑器目录/编辑区/预览区宽度比例
     EditorDefaultsPowerBi = "editor_defaults_power_bi", // 编辑器 PowerBI 插入默认值
     EditorDefaultsWechatCaptcha = "editor_defaults_wechat_captcha", // 编辑器 WechatCaptcha 插入默认值
     ThumbnailAutoInsertEnable = "thumbnail_auto_insert_enable", // 缩略图自动插入是否启用
