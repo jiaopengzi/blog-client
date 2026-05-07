@@ -28,7 +28,7 @@
         <div ref="mdContainerRef" :class="state.mode === 'post' ? 'md-container' : 'md-container-comment'">
             <!-- 导航栏 -->
             <div class="md-toc md-container-item" v-show="state.tocShow">
-                <EditorToc :headings="state.tocHtml" :heading-show-current-index="state.headingShowCurrentIndex" @heading-clicked="tocHeadingClicked" />
+                <EditorToc :headings="visibleTocHeadings" :heading-show-current-index="visibleHeadingShowCurrentIndex" @heading-clicked="tocHeadingClicked" />
             </div>
 
             <!-- 编辑器 -->
@@ -94,7 +94,8 @@
 import "vue3-emoji-picker/css"
 
 import { type Extension } from "@codemirror/state"
-import { computed, ref, useTemplateRef, watch } from "vue"
+import { debounce } from "throttle-debounce"
+import { computed, onBeforeUnmount, ref, useTemplateRef, watch } from "vue"
 
 import { PayStrategy, type PostVideoTocTree } from "@/api/post/common"
 import type { MarkdownRulesConfig } from "@/pkg/codemirror/extension/mdlint/types"
@@ -150,6 +151,9 @@ const emit = defineEmits<{
 }>()
 
 const state = stateManager.getState()
+const visibleTocHeadings = ref([...state.tocHtml])
+const visibleHeadingShowCurrentIndex = ref(state.headingShowCurrentIndex)
+const isTocRefreshPaused = ref(false)
 
 const localPostId = computed(() => postId)
 const localIsPaid = computed(() => isPaid)
@@ -158,6 +162,36 @@ const localPrice = computed(() => price)
 
 const settingsDialogVisible = ref(false)
 const settingsDialogCommand = ref<CommandsKey | null>(null)
+
+/**
+ * syncVisibleTocState 同步目录的可视快照。
+ * 将编辑器内部的实时目录状态回写到 TOC 展示层, 用于停止输入后恢复最新目录。
+ * @returns 无返回值。
+ */
+const syncVisibleTocState = (): void => {
+    visibleTocHeadings.value = [...state.tocHtml]
+    visibleHeadingShowCurrentIndex.value = state.headingShowCurrentIndex
+}
+
+/**
+ * resumeTocRefresh 在用户停止输入后恢复 TOC 展示刷新。
+ * 通过 debounce 合并连续输入, 避免 active-marker 在编辑期间频繁跳动。
+ * @returns 无返回值。
+ */
+const resumeTocRefresh = debounce(300, (): void => {
+    isTocRefreshPaused.value = false
+    syncVisibleTocState()
+})
+
+/**
+ * pauseTocRefreshDuringEditing 在编辑期间暂停 TOC 的可视刷新。
+ * 仅冻结目录展示层, 不影响内部 Markdown 解析和预览同步逻辑。
+ * @returns 无返回值。
+ */
+const pauseTocRefreshDuringEditing = (): void => {
+    isTocRefreshPaused.value = true
+    resumeTocRefresh()
+}
 
 const openSettingsDialog = (name: CommandsKey) => {
     settingsDialogCommand.value = name
@@ -190,14 +224,22 @@ const tocHeadingClicked = (index: number) => {
     // 将用户手动滚动的状态设置为 false
     stateManager.setIsUserScrollPreview(false)
     stateManager.setIsUserScrollCmEditor(false)
+    visibleHeadingShowCurrentIndex.value = index
     stateManager.setHeadingShowCurrentIndex(index) // 设置当前目录索引
 }
 
 // codemirror
 const { cmHeight, handleScroll, handleUpdateIsUserScrollCmEditor, handleMouseInCmEditor } = useCodemirror(mdContainerRef, codemirrorRef, stateManager)
 
+/**
+ * updateEditorDoc 处理编辑器内容变更。
+ * 在更新内部状态后暂时冻结 TOC 展示, 待用户停止输入后再统一同步目录。
+ * @param editorDoc - 编辑器最新 Markdown 内容。
+ * @returns 无返回值。
+ */
 const updateEditorDoc = (editorDoc: string) => {
     stateManager.updateState(editorDoc) // 更新 store 中的 editor
+    pauseTocRefreshDuringEditing()
     emit("updateEditorStatus", true) // 更新编辑器状态
 }
 
@@ -209,6 +251,8 @@ const updateEditorDoc = (editorDoc: string) => {
 const replaceContent = (editorDoc: string) => {
     codemirrorRef.value?.replaceContent(editorDoc)
     stateManager.updateState(editorDoc)
+    isTocRefreshPaused.value = false
+    syncVisibleTocState()
     emit("updateEditorStatus", true)
 }
 
@@ -222,6 +266,32 @@ watch(
         document.documentElement.style.setProperty("--md-editor-width", `${newWidth}px`)
     },
 )
+
+watch(
+    () => state.tocHtml,
+    () => {
+        if (isTocRefreshPaused.value) {
+            return
+        }
+
+        visibleTocHeadings.value = [...state.tocHtml]
+    },
+)
+
+watch(
+    () => state.headingShowCurrentIndex,
+    (newIndex) => {
+        if (isTocRefreshPaused.value) {
+            return
+        }
+
+        visibleHeadingShowCurrentIndex.value = newIndex
+    },
+)
+
+onBeforeUnmount(() => {
+    resumeTocRefresh.cancel()
+})
 
 // 暴露给父组件的属性
 defineExpose({
