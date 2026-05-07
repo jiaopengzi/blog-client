@@ -10,10 +10,14 @@ import { tabSyncManager } from "@/api/request/tabSyncManager"
 
 import { useDeviceStore } from "./device"
 import { useOptionsStore } from "./options"
-import { usePermissionRoleStore } from "./permissionRole"
+import { PostDetailEditCacheScope, usePermissionRoleStore } from "./permissionRole"
 import { useUserStore } from "./user"
 
-// 初始化所有 store, 注意顺序
+/**
+ * initStores 初始化应用运行期依赖的 store。
+ * 执行顺序需要保证 token 同步先于文章详情编辑权限预热, 避免匿名态缓存污染已登录态。
+ * @returns Promise 在全部 store 初始化完成后结束。
+ */
 export const initStores = async (): Promise<void> => {
     const deviceStore = useDeviceStore()
     const optionsStore = useOptionsStore()
@@ -26,8 +30,6 @@ export const initStores = async (): Promise<void> => {
 
     deviceStore.updateDevice()
     await optionsStore.update(!isLoadedOptions)
-    await permissionRoleStore.update(!isLoadedPermissionRole)
-    await permissionRoleStore.postDetailEditEnable()
 
     if (!userStore.accessToken) {
         const syncedToken = await tabSyncManager.requestTokenFromOtherTabs(200)
@@ -35,6 +37,9 @@ export const initStores = async (): Promise<void> => {
             await tabSyncManager.setTokenSilently(syncedToken)
         }
     }
+
+    await permissionRoleStore.update(!isLoadedPermissionRole)
+    await permissionRoleStore.postDetailEditEnable(userStore.accessToken ? PostDetailEditCacheScope.Authenticated : PostDetailEditCacheScope.Anonymous)
 
     await userStore.getUserInfoByToken(!isLogin)
 }

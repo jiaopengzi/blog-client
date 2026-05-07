@@ -25,24 +25,30 @@ import { EditorStateManager } from "@/components/editor"
 import { RouteNames } from "@/router"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 import { useOptionsStore } from "@/stores/options"
-import { usePermissionRoleStore } from "@/stores/permissionRole"
+import { PostDetailEditCacheScope, usePermissionRoleStore } from "@/stores/permissionRole"
+import { useUserStore } from "@/stores/user"
 import { MessageUtil } from "@/utils/message"
 import { updateHead } from "@/utils/updateHead"
 
-export function useGetData(
-    manager: EditorStateManager,
-    hash: Ref<string>, // hash值
-) {
-    // 跳转到 404 页面
+/**
+ * useGetData 管理文章详情页所需的数据拉取与状态同步。
+ * 包括文章详情, 交互状态, SEO 信息以及文章详情编辑权限的同步。
+ * @param manager - 编辑器状态管理器实例。
+ * @param hash - 当前路由 hash 的响应式引用。
+ * @returns 返回文章详情相关的状态与操作方法集合。
+ */
+export function useGetData(manager: EditorStateManager, hash: Ref<string>) {
     const router = useRouter()
     const postMeta = ref<PostMetaProps>(emptyPostMetaProps()) // 文章元数据
     const isPasswordPost = ref<boolean>(false) // 是否是密码保护文章
 
     const optionsStore = useOptionsStore()
     const deviceStore = useDeviceStore()
+    const userStore = useUserStore()
 
     const { head } = storeToRefs(optionsStore)
     const { device } = storeToRefs(deviceStore)
+    const { accessToken } = storeToRefs(userStore)
 
     // 版权信息
     const copyright = ref<CopyrightProps>({
@@ -75,6 +81,24 @@ export function useGetData(
 
     const permissionRoleStore = usePermissionRoleStore()
 
+    /**
+     * getPostDetailEditCacheScope 获取当前文章详情编辑权限缓存作用域。
+     * 登录用户使用已认证作用域, 未登录用户使用匿名作用域。
+     * @returns 当前登录态对应的权限缓存作用域。
+     */
+    const getPostDetailEditCacheScope = (): PostDetailEditCacheScope => {
+        return accessToken.value ? PostDetailEditCacheScope.Authenticated : PostDetailEditCacheScope.Anonymous
+    }
+
+    /**
+     * syncPostDetailEditEnable 同步文章详情页的编辑权限标记。
+     * 会根据当前登录态选择对应缓存作用域, 并回写到 postMeta.is_author_edit。
+     * @returns Promise 在权限同步完成后结束。
+     */
+    const syncPostDetailEditEnable = async () => {
+        postMeta.value.is_author_edit = await permissionRoleStore.postDetailEditEnable(getPostDetailEditCacheScope())
+    }
+
     // 更新文章详情
     const updatePostDetail = async (postData: PostResByID) => {
         if (!postData) {
@@ -84,7 +108,7 @@ export function useGetData(
         // 文章数据
         manager.updateState(postData.post_content)
 
-        const isAuthorEdit = await permissionRoleStore.postDetailEditEnable()
+        await syncPostDetailEditEnable()
 
         // 文章元数据
         postMeta.value.post_id = postData.id
@@ -102,14 +126,22 @@ export function useGetData(
         postMeta.value.author_id = postData.author_info.id
         postMeta.value.author_user_name = postData.author_info.user_name
         postMeta.value.is_show_read_time = true
-        postMeta.value.is_author_edit = isAuthorEdit
         postMeta.value.is_immersion_read = true
         postMeta.value.is_paid = postData.is_paid
         postMeta.value.price = postData.price
         postMeta.value.pay_strategy = postData.pay_strategy
         postMeta.value.pay_roles = postData.pay_roles || []
 
-        // 文章头部信息
+        watch(
+            () => accessToken.value,
+            async (newVal, oldVal) => {
+                if (newVal === oldVal || !postMeta.value.post_id) {
+                    return
+                }
+
+                await syncPostDetailEditEnable()
+            },
+        )
         head.value.title = postData.post_title
         head.value.description = postData.seo_description
         head.value.keywords = postData.seo_keywords
