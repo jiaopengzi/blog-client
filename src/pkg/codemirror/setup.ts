@@ -39,6 +39,10 @@ import { getTheme, Theme, themeCompartment, ThemeMode } from "./extension/theme"
 import { vim, vimModeCompartment } from "./extension/vim"
 import { defaultOptions, type DefaultSetupOptions } from "./options"
 
+const sharedMarkdownLanguage = markdown()
+const sharedCssLanguage = css()
+const sharedJsonLanguage = json()
+
 /**
  * createBaseExtensions 创建可被多个编辑器实例复用的基础扩展集合.
  * @returns 基础扩展数组.
@@ -79,6 +83,32 @@ const createBaseExtensions = (): Extension[] => {
 
 const sharedBaseExtensions = createBaseExtensions()
 
+/**
+ * createPlaceholderExtensions 在存在占位文本时才挂载 placeholder 扩展.
+ * @param placeholderText 占位文本.
+ * @returns placeholder 扩展数组.
+ */
+const createPlaceholderExtensions = (placeholderText?: string): Extension[] => {
+    if (!placeholderText) {
+        return []
+    }
+
+    return [placeholder(placeholderText)]
+}
+
+/**
+ * createMarkdownLintExtensions 在启用 lint 配置时挂载 Markdown lint 与自动修复扩展.
+ * @param opts 编辑器配置项.
+ * @returns Markdown lint 相关扩展数组.
+ */
+const createMarkdownLintExtensions = (opts: DefaultSetupOptions): Extension[] => {
+    if (opts.mdlintOptions === false) {
+        return []
+    }
+
+    return [createMarkdownLinter(opts.mdlintOptions), createAutoFixExtension({ rules: opts.mdlintOptions?.rules, onSave: opts.onSave })]
+}
+
 // 创建 codemirror setup 类型
 export type CreateSetupType = (options?: DefaultSetupOptions) => Extension[]
 
@@ -89,16 +119,16 @@ export type CreateSetupType = (options?: DefaultSetupOptions) => Extension[]
  */
 export const createDefaultSetup = (opts: DefaultSetupOptions = defaultOptions()) => {
     const { handlePasteImage, handleDropImage } = createImageUploadExtensions(opts.imageUploadHandler)
+    const enableMentionCompletion = Boolean(opts.mention?.length)
 
     const extension: Extension[] = [
         ...sharedBaseExtensions, // 基础 extension
         // 参考 https://github.com/replit/codemirror-vim/issues/227
         vimModeCompartment.of(opts.vimMode ? vim({ status: true }) : []), // vim 模式
-        completionCompartment.of(unifiedCompletion(opts.mention)), // 补全
-        placeholder(opts.placeholderText || ""), // 占位符文本
-        markdown(), // markdown 语法
-        createMarkdownLinter(opts.mdlintOptions), // markdown 代码检查
-        createAutoFixExtension({ rules: opts.mdlintOptions?.rules, onSave: opts.onSave }), // 保存时自动修复 markdown lint 问题
+        completionCompartment.of(unifiedCompletion(opts.mention, { enableMention: enableMentionCompletion, enableEmoji: true })), // 补全
+        ...createPlaceholderExtensions(opts.placeholderText), // 占位符文本
+        sharedMarkdownLanguage, // markdown 语法
+        ...createMarkdownLintExtensions(opts), // markdown 代码检查与自动修复
         bottomPanelExt, // 底部面板
         customKeymap, // 自定义快捷键
         handlePasteImage, // 自定义键盘事件
@@ -116,8 +146,8 @@ export const createDefaultSetup = (opts: DefaultSetupOptions = defaultOptions())
 export const createCssSetup = () => {
     const extension: Extension[] = [
         ...sharedBaseExtensions, // 基础 extension
-        css(), // css 语法
-        placeholder("请输入自定义的 CSS..."), // 占位符文本
+        sharedCssLanguage, // css 语法
+        ...createPlaceholderExtensions("请输入自定义的 CSS..."), // 占位符文本
     ]
 
     return extension
@@ -130,8 +160,8 @@ export const createCssSetup = () => {
 export const createJsonSetup = () => {
     const extension: Extension[] = [
         ...sharedBaseExtensions, // 基础 extension
-        json(), // json 语法
-        placeholder("请输入自定义的 JSON..."), // 占位符文本
+        sharedJsonLanguage, // json 语法
+        ...createPlaceholderExtensions("请输入自定义的 JSON..."), // 占位符文本
     ]
 
     return extension

@@ -15,6 +15,7 @@ import createMarked from "@/pkg/marked/new-marked"
 import { copyHtml } from "@/utils/clipboard"
 import { escapeWhitespaceInHtmlContent } from "@/utils/escape"
 import { HasParentByClass } from "@/utils/getParentByClass"
+import { extractImageUrlsFromHtml } from "@/utils/img"
 import { MessageUtil } from "@/utils/message"
 import { htmlTagReplace } from "@/utils/tagReplace"
 
@@ -31,6 +32,12 @@ import type {
     MarkdownHeadingLine,
     RegexCache,
 } from "./types"
+
+type MarkdownRenderResult = {
+    html: string
+    tocHtml: Heading[]
+    imgUrls: string[]
+}
 
 /**
  * @description : 创建默认的编辑器状态
@@ -188,6 +195,78 @@ const COPY_PIPELINE_YIELD_INTERVAL = 20
 
 // katex 图片缓存，键为公式的 HTML 内容和截图尺寸的 JSON 字符串，值为包含图片 src 和尺寸信息的对象
 const katexImageCache = new Map<string, KatexImageCacheEntry>()
+const MARKDOWN_RENDER_CACHE_LIMIT = 20
+const markdownRenderCache = new Map<string, MarkdownRenderResult>()
+const markdownSanitizeConfig: Config = {
+    CUSTOM_ELEMENT_HANDLING: {
+        tagNameCheck: (tagName) => !!tagName.match(regexCache.customElementHeadingTagNameRegex),
+        attributeNameCheck: (attr) => !!attr.match(regexCache.customElementHeadingAttributeNameRegex),
+        allowCustomizedBuiltInElements: true,
+    },
+}
+
+/**
+ * getCachedValue 从 LRU Map 中读取缓存, 并刷新当前项的最近使用顺序.
+ * @param cache 缓存 Map.
+ * @param key 缓存 key.
+ * @returns 命中的缓存值, 未命中时返回 undefined.
+ */
+function getCachedValue<T>(cache: Map<string, T>, key: string): T | undefined {
+    const cachedValue = cache.get(key)
+    if (cachedValue === undefined) {
+        return undefined
+    }
+
+    cache.delete(key)
+    cache.set(key, cachedValue)
+    return cachedValue
+}
+
+/**
+ * setCachedValue 将结果写入 LRU Map, 并按上限回收最旧缓存.
+ * @param cache 缓存 Map.
+ * @param key 缓存 key.
+ * @param value 缓存值.
+ * @param limit 缓存上限.
+ */
+function setCachedValue<T>(cache: Map<string, T>, key: string, value: T, limit: number): void {
+    if (cache.has(key)) {
+        cache.delete(key)
+    }
+
+    cache.set(key, value)
+
+    while (cache.size > limit) {
+        const oldestKey = cache.keys().next().value
+        if (!oldestKey) {
+            break
+        }
+        cache.delete(oldestKey)
+    }
+}
+
+/**
+ * cloneMarkdownRenderResult 克隆缓存中的 Markdown 渲染结果, 避免外部修改缓存对象.
+ * @param result 原始渲染结果.
+ * @returns 克隆后的渲染结果.
+ */
+function cloneMarkdownRenderResult(result: MarkdownRenderResult): MarkdownRenderResult {
+    return {
+        html: result.html,
+        tocHtml: result.tocHtml.map((heading) => ({ ...heading })),
+        imgUrls: [...result.imgUrls],
+    }
+}
+
+/**
+ * getMarkdownRenderCacheKey 为 Markdown 渲染结果生成缓存 key.
+ * @param markdownSrc Markdown 原文.
+ * @param isRemoveFirstH1 是否移除首个 H1.
+ * @returns 当前输入对应的缓存 key.
+ */
+function getMarkdownRenderCacheKey(markdownSrc: string, isRemoveFirstH1: boolean): string {
+    return `${Number(isRemoveFirstH1)}:${markdownSrc}`
+}
 
 /**
  * @description: 标题锚点生成器
@@ -329,28 +408,40 @@ export function matchAllHeadingToList(html: string): Heading[] {
  * @return {String} html 字符串
  */
 export function markdownToHtml(markdownSrc: string, isRemoveFirstH1: boolean): string {
-    const markdownParse = createMarked().parse(markdownSrc).toString() // markdown 转 html
-    const htmlHandleUtf8 = htmlHandleUtf8BOM(markdownParse) // 处理 utf-8 编码问题
+    return renderMarkdownDocument(markdownSrc, isRemoveFirstH1).html
+}
 
-    // 配置 DOMPurify 参考: https://www.npmjs.com/package/dompurify
-    DOMPurify.setConfig({
-        CUSTOM_ELEMENT_HANDLING: {
-            tagNameCheck: (tagName) => !!tagName.match(regexCache.customElementHeadingTagNameRegex),
-            attributeNameCheck: (attr) => !!attr.match(regexCache.customElementHeadingAttributeNameRegex),
-            allowCustomizedBuiltInElements: true, // 允许自定义内置函数
-        },
-    } as Config)
+/**
+ * renderMarkdownDocument 将 Markdown 一次性转换为预览所需的完整渲染产物, 并在相同输入下复用缓存.
+ * @param markdownSrc Markdown 字符串.
+ * @param isRemoveFirstH1 是否移除第一个 H1 标签.
+ * @returns 包含 html, tocHtml 和 imgUrls 的渲染结果.
+ */
+export function renderMarkdownDocument(markdownSrc: string, isRemoveFirstH1: boolean): MarkdownRenderResult {
+    const cacheKey = getMarkdownRenderCacheKey(markdownSrc, isRemoveFirstH1)
+    const cachedResult = getCachedValue(markdownRenderCache, cacheKey)
 
-    // 过滤 html, 防止 xss 攻击
-    let purifyHtml = DOMPurify.sanitize(htmlHandleUtf8)
-
-    if (isRemoveFirstH1) {
-        // 移除第一个 h1 标签
-        purifyHtml = htmlRemoveFirstH1(purifyHtml)
+    if (cachedResult) {
+        return cloneMarkdownRenderResult(cachedResult)
     }
 
-    // 生成锚点
-    return generateAllHeadingAnchor(purifyHtml)
+    const markdownParse = createMarked().parse(markdownSrc).toString()
+    const normalizedHtml = htmlHandleUtf8BOM(markdownParse)
+    let purifiedHtml = DOMPurify.sanitize(normalizedHtml, markdownSanitizeConfig) as string
+
+    if (isRemoveFirstH1) {
+        purifiedHtml = htmlRemoveFirstH1(purifiedHtml)
+    }
+
+    const html = generateAllHeadingAnchor(purifiedHtml)
+    const result: MarkdownRenderResult = {
+        html,
+        tocHtml: matchAllHeadingToList(html),
+        imgUrls: extractImageUrlsFromHtml(html),
+    }
+
+    setCachedValue(markdownRenderCache, cacheKey, result, MARKDOWN_RENDER_CACHE_LIMIT)
+    return cloneMarkdownRenderResult(result)
 }
 
 /**

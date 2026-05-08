@@ -10,13 +10,12 @@ import type { Completion } from "@codemirror/autocomplete"
 import { type Reactive, reactive } from "vue"
 
 import { request } from "@/api/request"
-import { extractImageUrlsFromHtml } from "@/utils/img"
 
 import { CommandsKey } from "./command"
 import type { CmCommand } from "./components/codemirror"
 import type { ViewCommand } from "./components/preview"
 import type { EditorMode, EditorState, EditorStateOptions, MouseStatus, ScrollStatus } from "./types"
-import { createDefaultEditorState, getMarkdownHeadingLines, htmlHandleUtf8BOM, markdownToHtml, matchAllHeadingToList } from "./utils"
+import { createDefaultEditorState, getMarkdownHeadingLines, htmlHandleUtf8BOM, renderMarkdownDocument } from "./utils"
 
 /**
  * @description: 编辑器状态管理
@@ -31,16 +30,18 @@ export class EditorStateManager {
 
     // 获取滚动条隐藏的 html 字符串
     getScrollHideHtmlStr(): string {
-        return markdownToHtml(this.state.scrollHideViewStr, this.state.isRemoveFirstH1) // markdown 转 html
+        return renderMarkdownDocument(this.state.scrollHideViewStr, this.state.isRemoveFirstH1).html // markdown 转 html
     }
 
     // 更新编辑器 store
     updateState(markdownSrc: string): void {
         this.state.editorContent = htmlHandleUtf8BOM(markdownSrc) // 去除 BOM 头 和 windows 换行符)
-        this.state.html = markdownToHtml(this.state.editorContent, this.state.isRemoveFirstH1) // markdown 转 html
+        const renderedDocument = renderMarkdownDocument(this.state.editorContent, this.state.isRemoveFirstH1)
+
+        this.state.html = renderedDocument.html // markdown 转 html
         this.state.tocMarkdown = getMarkdownHeadingLines(this.state.editorContent) // 通过正则获取 markdown 文件的目录
-        this.state.tocHtml = matchAllHeadingToList(this.state.html) // 获取 html 目录
-        this.state.imgUrls = extractImageUrlsFromHtml(this.state.html) // 获取图片链接
+        this.state.tocHtml = renderedDocument.tocHtml // 获取 html 目录
+        this.state.imgUrls = renderedDocument.imgUrls // 获取图片链接
     }
 
     // 设置滚动条隐藏的编辑器view 字符串

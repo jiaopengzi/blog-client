@@ -6,9 +6,10 @@
  * @Description  : 测试工具函数
  */
 
-import { describe, expect, it } from "vitest"
+import DOMPurify from "dompurify"
+import { describe, expect, it, vi } from "vitest"
 
-import { anchorGenerator, createRegexCache, generateAllHeadingAnchor, scaleDisplayKatexByFontSize } from "./utils"
+import { anchorGenerator, createRegexCache, generateAllHeadingAnchor, renderMarkdownDocument, scaleDisplayKatexByFontSize } from "./utils"
 
 describe("createRegexCache", () => {
     it("缓存中的正则匹配", () => {
@@ -359,5 +360,20 @@ describe("generateAllHeadingAnchorAndHref", () => {
         const html = "<h1>Hello@World!</h1>"
         const result = generateAllHeadingAnchor(html)
         expect(result).toContain('id="idx0-hello-world"')
+    })
+})
+
+describe("renderMarkdownDocument", () => {
+    it("相同 Markdown 输入应复用渲染缓存", () => {
+        const sanitizeSpy = vi.spyOn(DOMPurify, "sanitize")
+        const markdown = ["# 缓存标题-20260508", "", "![demo](https://example.com/cache-test.png)", "", "正文内容"].join("\n")
+
+        const firstRender = renderMarkdownDocument(markdown, false)
+        const secondRender = renderMarkdownDocument(markdown, false)
+
+        expect(firstRender.html).toBe(secondRender.html)
+        expect(firstRender.tocHtml).toEqual(secondRender.tocHtml)
+        expect(firstRender.imgUrls).toEqual(["https://example.com/cache-test.png"])
+        expect(sanitizeSpy).toHaveBeenCalledTimes(1)
     })
 })
