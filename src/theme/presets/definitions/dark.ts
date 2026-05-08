@@ -42,7 +42,7 @@ export const darkPreset: ThemePreset = {
         textSecondary: "var(--el-text-color-secondary)",
         textPlaceholder: "var(--el-text-color-placeholder)",
         textDisabled: "var(--el-text-color-disabled)",
-        codeBlockBg: "var(--el-bg-color-page)",
+        codeBlockBg: "#0a0a0a",
         codeBlockColor: "var(--el-bg-color-page)",
         blockquoteColor: "var(--el-text-color-primary)",
         blockquoteBg: "var(--el-bg-color-page)",
