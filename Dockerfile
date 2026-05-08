@@ -8,8 +8,8 @@ WORKDIR /app
 # 复制 package.json 和 pnpm-lock.yaml 到容器中
 COPY package.json pnpm-lock.yaml ./
 
-# 安装 pnpm
-RUN curl -fsSL https://get.pnpm.io/install.sh | env PNPM_VERSION=11.0.8 sh -
+# 安装 pnpm（显式指定 SHELL，避免安装脚本无法推断当前 shell）
+RUN curl -fsSL https://get.pnpm.io/install.sh | env PNPM_VERSION=11.0.8 SHELL=/bin/sh sh -
 
 # 安装依赖项
 RUN pnpm install
