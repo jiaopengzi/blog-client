@@ -62,6 +62,7 @@
                     :mdlint-use-worker="mdlintUseWorker"
                     :mdlint-rules="rules"
                     :theme="theme"
+                    :image-upload-handler="imageUploadHandler"
                     @handle-scroll="handleScroll"
                     @is-mouse-in-element="handleMouseInCmEditor"
                     @update-editor-doc="updateEditorDoc"
@@ -123,6 +124,7 @@ import { computed, onBeforeUnmount, ref, useTemplateRef, watch } from "vue"
 import { PayStrategy, type PostVideoTocTree } from "@/api/post/common"
 import type { MarkdownRulesConfig } from "@/pkg/codemirror/extension/mdlint/types"
 import { getTheme, Theme, ThemeMode } from "@/pkg/codemirror/extension/theme"
+import type { ImageUploadHandler } from "@/pkg/codemirror/options"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 
 import { CommandsKey } from "./command"
@@ -167,6 +169,7 @@ const {
         rule003: false, // 默认不启用规则 003
     },
     theme = getTheme(Theme.MD, ThemeMode.Light),
+    imageUploadHandler = void 0,
 } = defineProps<{
     stateManager: EditorStateManager
     postId?: string // 文章ID
@@ -180,6 +183,7 @@ const {
     mdlintUseWorker?: boolean // 是否使用 web worker 进行 lint 检查
     mdlintRules?: MarkdownRulesConfig // Markdown 规则配置
     theme?: Extension // 主题
+    imageUploadHandler?: ImageUploadHandler // 图片上传处理器
 }>()
 
 const emit = defineEmits<{

@@ -70,6 +70,15 @@ export const routes: RouteRecordRaw[] = [
     },
 
     {
+        path: "/md",
+        name: RouteNames.Md,
+        component: () => import("@/views/md"),
+        meta: {
+            requiresAuth: false,
+        },
+    },
+
+    {
         // 文章路由重定向
         path: "/post/:postId",
         redirect: (to) => {

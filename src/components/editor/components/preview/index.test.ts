@@ -143,4 +143,108 @@ describe("HtmlPreview", () => {
         expect(copyWithCustomStyleMock).toHaveBeenCalledTimes(1)
         expect(writePreparedHtmlToClipboardMock).not.toHaveBeenCalled()
     })
+
+    it("未传宽高时使用 100% 作为 CSS 变量默认值", async () => {
+        const wrapper = mount(HtmlPreview, {
+            props: {
+                html: "<p>preview content</p>",
+                imgUrls: [],
+                isShowElImageViewer: false,
+            },
+            global: {
+                directives: {
+                    "stable-html": stableHtmlDirective,
+                },
+            },
+        })
+
+        await waitForAsyncRender()
+
+        const previewElement = wrapper.get("#preview").element as HTMLElement
+
+        expect(previewElement.style.getPropertyValue("--jpz-codemirror-width")).toBe("100%")
+        expect(previewElement.style.getPropertyValue("--jpz-codemirror-height")).toBe("100%")
+    })
+
+    it("纯数字宽高会自动补齐 px 单位", async () => {
+        const wrapper = mount(HtmlPreview, {
+            props: {
+                html: "<p>preview content</p>",
+                imgUrls: [],
+                isShowElImageViewer: false,
+                width: "320",
+                height: "640",
+            },
+            global: {
+                directives: {
+                    "stable-html": stableHtmlDirective,
+                },
+            },
+        })
+
+        await waitForAsyncRender()
+
+        const previewElement = wrapper.get("#preview").element as HTMLElement
+
+        expect(previewElement.style.getPropertyValue("--jpz-codemirror-width")).toBe("320px")
+        expect(previewElement.style.getPropertyValue("--jpz-codemirror-height")).toBe("640px")
+    })
+
+    it("显式单位宽高会保持原值", async () => {
+        const wrapper = mount(HtmlPreview, {
+            props: {
+                html: "<p>preview content</p>",
+                imgUrls: [],
+                isShowElImageViewer: false,
+                width: "75%",
+                height: "50vh",
+            },
+            global: {
+                directives: {
+                    "stable-html": stableHtmlDirective,
+                },
+            },
+        })
+
+        await waitForAsyncRender()
+
+        const previewElement = wrapper.get("#preview").element as HTMLElement
+
+        expect(previewElement.style.getPropertyValue("--jpz-codemirror-width")).toBe("75%")
+        expect(previewElement.style.getPropertyValue("--jpz-codemirror-height")).toBe("50vh")
+    })
+
+    it("运行时 setProps 更新宽高后会同步刷新 CSS 变量", async () => {
+        const wrapper = mount(HtmlPreview, {
+            props: {
+                html: "<p>preview content</p>",
+                imgUrls: [],
+                isShowElImageViewer: false,
+                width: "320",
+                height: "640",
+            },
+            global: {
+                directives: {
+                    "stable-html": stableHtmlDirective,
+                },
+            },
+        })
+
+        await waitForAsyncRender()
+
+        const previewElement = wrapper.get("#preview").element as HTMLElement
+
+        expect(previewElement.style.getPropertyValue("--jpz-codemirror-width")).toBe("320px")
+        expect(previewElement.style.getPropertyValue("--jpz-codemirror-height")).toBe("640px")
+
+        await wrapper.setProps({
+            width: "75%",
+            height: "480px",
+        })
+
+        await waitForAsyncRender()
+
+        expect(previewElement.style.getPropertyValue("--jpz-codemirror-width")).toBe("75%")
+        expect(previewElement.style.getPropertyValue("--jpz-codemirror-height")).toBe("480px")
+    })
 })

@@ -13,72 +13,118 @@ import { MessageUtil } from "@/utils/message"
 
 import { uploadEditor } from "./uploadEditor"
 
-// 自定义键盘事件
-const handlePasteImage: Extension = EditorView.domEventHandlers({
-    paste: (event, view) => {
-        if (!event.clipboardData || !event.clipboardData.items) return
-        // 获取剪切板中的图片文件
-        // console.log("剪贴板", event.clipboardData.files)
-        let file = null
-        for (const item of event.clipboardData.items) {
-            if (item.type.indexOf("image") === 0) {
-                file = item.getAsFile()
-                break
-            }
+import type { ImageUploadHandler } from "../options"
+
+/**
+ * insertImageMarkdown 将图片地址插入到编辑器当前位置。
+ * @param imageUrl - 已处理完成的图片地址。
+ * @param view - 当前 CodeMirror 实例。
+ * @returns 无返回值。
+ */
+function insertImageMarkdown(imageUrl: string, view: EditorView): void {
+    const imageMarkdown = `![description](${imageUrl})\n`
+    view.dispatch({
+        changes: { from: view.state.selection.main.from, insert: imageMarkdown },
+    })
+}
+
+/**
+ * uploadImage 调用当前场景的图片处理器, 并将结果写回编辑器。
+ * @param file - 用户粘贴或拖拽的图片文件。
+ * @param view - 当前 CodeMirror 实例。
+ * @param imageUploadHandler - 当前场景使用的图片处理器。
+ * @returns 无返回值。
+ */
+async function uploadImage(file: File, view: EditorView, imageUploadHandler: Exclude<ImageUploadHandler, null>): Promise<void> {
+    try {
+        const imageUrl = await imageUploadHandler(file)
+        if (!imageUrl) {
+            MessageUtil.error("上传失败，请重试")
+            return
         }
 
-        // 没有找到图片，则不处理
-        if (!file) return
-        console.log("图片上传开始", new Date().toISOString())
-        uploadImage(file, view)
-        // 上传图片并插入编辑器
-
-        return true
-    },
-})
-
-// 上传图片
-async function uploadImage(file: File, view: EditorView) {
-    // 调用 uploadEditor 函数
-    const imageUrl = await uploadEditor(file)
-    if (imageUrl) {
-        // 处理返回数据，并更新头像等信息
-        const imageMarkdown = `![description](${imageUrl})\n`
-        view.dispatch({
-            changes: { from: view.state.selection.main.from, insert: imageMarkdown },
-        })
-
-        // 将光标移动指定位置 cursorPosMove 处 更新状态
+        insertImageMarkdown(imageUrl, view)
         MessageUtil.success("图片上传成功", 2000)
-    } else {
+    } catch (error) {
+        console.error("图片处理失败", error)
         MessageUtil.error("上传失败，请重试")
     }
 }
 
-// 自定义键盘事件
-const handleDropImage: Extension = EditorView.domEventHandlers({
-    drop: (event, view) => {
-        if (!event.dataTransfer || !event.dataTransfer.items) return
+/**
+ * createImageUploadExtensions 根据传入的处理器创建图片粘贴与拖拽扩展。
+ * 未传入时默认沿用后台编辑器的上传 API, 以保证现有行为不变; 传入 null 时仅提示当前页面不支持直接上传。
+ * @param imageUploadHandler - 当前场景的图片处理器。
+ * @returns 粘贴与拖拽图片扩展。
+ */
+export function createImageUploadExtensions(imageUploadHandler?: ImageUploadHandler): {
+    handlePasteImage: Extension
+    handleDropImage: Extension
+} {
+    /**
+     * warnImageUploadDisabled 提示当前页面不支持粘贴或拖拽上传图片。
+     * @returns 无返回值。
+     */
+    const warnImageUploadDisabled = (): void => {
+        MessageUtil.warning("当前页面不支持直接粘贴或拖拽上传图片, 请手动填写图片链接")
+    }
 
-        // 获取拖拽的图片文件
-        let file = null
-        for (const item of event.dataTransfer.items) {
-            if (item.kind === "file" && item.type.indexOf("image") === 0) {
-                file = item.getAsFile()
-                break
+    const handlePasteImage: Extension = EditorView.domEventHandlers({
+        paste: (event, view) => {
+            if (!event.clipboardData || !event.clipboardData.items) return
+
+            let file = null
+            for (const item of event.clipboardData.items) {
+                if (item.type.indexOf("image") === 0) {
+                    file = item.getAsFile()
+                    break
+                }
             }
-        }
 
-        // 没有找到图片，则使用默认拖拽行为
-        if (!file) return
+            if (!file) return
 
-        // 阻止默认事件以处理图片上传
-        event.preventDefault()
-        console.log("图片上传开始", new Date().toISOString())
-        uploadImage(file, view)
+            if (imageUploadHandler === null) {
+                warnImageUploadDisabled()
+                return true
+            }
 
-        return true
-    },
-})
+            console.log("图片上传开始", new Date().toISOString())
+            void uploadImage(file, view, imageUploadHandler ?? uploadEditor)
 
-export { handleDropImage, handlePasteImage }
+            return true
+        },
+    })
+
+    const handleDropImage: Extension = EditorView.domEventHandlers({
+        drop: (event, view) => {
+            if (!event.dataTransfer || !event.dataTransfer.items) return
+
+            let file = null
+            for (const item of event.dataTransfer.items) {
+                if (item.kind === "file" && item.type.indexOf("image") === 0) {
+                    file = item.getAsFile()
+                    break
+                }
+            }
+
+            if (!file) return
+
+            event.preventDefault()
+
+            if (imageUploadHandler === null) {
+                warnImageUploadDisabled()
+                return true
+            }
+
+            console.log("图片上传开始", new Date().toISOString())
+            void uploadImage(file, view, imageUploadHandler ?? uploadEditor)
+
+            return true
+        },
+    })
+
+    return {
+        handlePasteImage,
+        handleDropImage,
+    }
+}

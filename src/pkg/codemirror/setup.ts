@@ -33,7 +33,7 @@ import {
 import { bottomPanelExt } from "./extension/bottomPanel"
 import { completionCompartment, unifiedCompletion } from "./extension/completion"
 import { customKeymap } from "./extension/hotkey"
-import { handleDropImage, handlePasteImage } from "./extension/imgUpload"
+import { createImageUploadExtensions } from "./extension/imgUpload"
 import { createAutoFixExtension, createMarkdownLinter } from "./extension/mdlint"
 import { getTheme, Theme, themeCompartment, ThemeMode } from "./extension/theme"
 import { vim, vimModeCompartment } from "./extension/vim"
@@ -79,6 +79,8 @@ export type CreateSetupType = (options?: DefaultSetupOptions) => Extension[]
 
 // 默认的 codemirror setup 工厂函数 markdown 语法
 export const createDefaultSetup = (opts: DefaultSetupOptions = defaultOptions()) => {
+    const { handlePasteImage, handleDropImage } = createImageUploadExtensions(opts.imageUploadHandler)
+
     const extension: Extension[] = [
         ...baseExtension(), // 基础 extension
         // 参考 https://github.com/replit/codemirror-vim/issues/227

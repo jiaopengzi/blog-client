@@ -9,7 +9,7 @@
 import type { Completion } from "@codemirror/autocomplete"
 import { type Extension } from "@codemirror/state"
 
-import type { CreateSetupType, MarkdownRulesConfig } from "@/pkg/codemirror"
+import type { CreateSetupType, ImageUploadHandler, MarkdownRulesConfig } from "@/pkg/codemirror"
 
 import type { CommandsKey, MarkdownEditorCommandItem } from "../../command"
 
@@ -52,4 +52,5 @@ export interface CodeEditorProps {
     mdlintUseWorker?: boolean // 是否使用 web worker 进行 lint 检查
     mdlintRules?: MarkdownRulesConfig // Markdown 规则配置
     theme?: Extension // 主题
+    imageUploadHandler?: ImageUploadHandler // 图片上传处理器, null 表示禁用粘贴/拖拽上传
 }

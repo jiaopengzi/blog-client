@@ -157,6 +157,11 @@ const commentPhone = [
     // CommandsKey.Info,
 ]
 
+// 公用 Markdown 页面工具栏按钮, 与文章编辑器保持一致, 但去掉全屏按钮
+const publicMdPc = postPc.filter((key) => key !== CommandsKey.Fullscreen)
+const publicMdPad = postPad.filter((key) => key !== CommandsKey.Fullscreen)
+const publicMdPhone = postPhone.filter((key) => key !== CommandsKey.Fullscreen)
+
 // 各平台工具栏预设按钮常量
 export const defaultCommandKeys = {
     postPc,
@@ -165,4 +170,7 @@ export const defaultCommandKeys = {
     commentPc,
     commentPad,
     commentPhone,
+    publicMdPc,
+    publicMdPad,
+    publicMdPhone,
 }

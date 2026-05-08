@@ -25,6 +25,7 @@ export enum RouteNamesDefault {
     Checkout = "checkout",
     Unsubscribe = "unsubscribe",
     Page = "page",
+    Md = "md",
     // PostPublic = "post-public",
     // VideoPublic = "video-public",
     // Doc = "doc",

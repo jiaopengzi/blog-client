@@ -372,14 +372,35 @@ const onMouseLeave = () => {
     emit("is-mouse-in-element", false)
 }
 
-// 初始化 css 变量 编辑器宽度和高度
-const initializeCssVariable = () => {
-    if (previewRef.value && width) {
-        previewRef.value.style.setProperty("--my-preview-width", `${width}`)
+/**
+ * initializeCssVariable 初始化预览区域宽高 CSS 变量。
+ * 该实现与 CodeMirror 保持一致, 会为缺省值补 100%, 并为纯数字补齐 px 单位。
+ * @param w - 预览区域宽度。
+ * @param h - 预览区域高度。
+ * @returns 无返回值。
+ */
+const initializeCssVariable = (w: string | undefined, h: string | undefined) => {
+    if (!w) {
+        w = "100%"
     }
-    if (previewRef.value && height) {
-        previewRef.value.style.setProperty("--my-preview-height", `${height}`)
+    if (!h) {
+        h = "100%"
     }
+
+    const numberReg = /^\d+$/
+
+    if (numberReg.test(w)) {
+        w = `${w}px`
+    }
+
+    if (numberReg.test(h)) {
+        h = `${h}px`
+    }
+
+    if (!previewRef.value) return
+
+    previewRef.value.style.setProperty("--jpz-codemirror-width", `${w}`)
+    previewRef.value.style.setProperty("--jpz-codemirror-height", `${h}`)
 }
 
 // 监听 props isShowPreviewWechat 变化
@@ -422,7 +443,7 @@ watch(
     () => [height, width],
     ([newHeight, newWidth]) => {
         if (previewRef.value && (newHeight || newWidth)) {
-            initializeCssVariable() // 初始化 css 变量
+            initializeCssVariable(newWidth, newHeight) // 初始化 css 变量
         }
 
         scheduleDisplayKatexScale()
@@ -860,7 +881,7 @@ const { stop: stopPreviewResizeObserver } = useResizeObserver(previewRef, () => 
 
 // 初始化
 onMounted(async () => {
-    initializeCssVariable() // 初始化 css 变量
+    initializeCssVariable(width, height) // 初始化 css 变量
 
     await nextTick(() => {
         // 获取预览容器的 top 值
