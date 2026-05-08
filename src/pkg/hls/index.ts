@@ -23,6 +23,8 @@ enum CustomLoaderError {
     Key = 5003,
 }
 
+const loaderClassCache = new Map<string, new (config: HlsConfig) => Loader<LoaderContext>>()
+
 /**
  * 创建一个自定义的 HLS Loader 类。
  *
@@ -40,6 +42,13 @@ enum CustomLoaderError {
  * const hls = new Hls({ loader: CustomLoader });
  */
 export function createCustomLoaderClass(isAdmin: boolean, postId: string = ""): new (config: HlsConfig) => Loader<LoaderContext> {
+    const cacheKey = `${String(isAdmin)}:${postId}`
+    const cachedLoader = loaderClassCache.get(cacheKey)
+
+    if (cachedLoader) {
+        return cachedLoader
+    }
+
     /**
      * 自定义 Loader 类：扩展并覆盖默认的 HLS Loader 行为以支持通过后端接口获取 m3u8 与解密密钥。
      *
@@ -54,7 +63,7 @@ export function createCustomLoaderClass(isAdmin: boolean, postId: string = ""): 
      * - 对于未加密的视频或不需要特殊处理的请求，会调用 super.load 来保持默认行为；
      * - 在处理 m3u8 的时候，会将后端返回的占位符 _url_ 替换为真实 base_url(并保证以 '/' 结尾)，以便 HLS 正确解析片段 URL。
      */
-    return class CustomLoader extends Hls.DefaultConfig.loader {
+    const CustomLoader = class CustomLoader extends Hls.DefaultConfig.loader {
         // 用于区分是否是管理员模式
         private isAdmin: boolean
         private postId: string
@@ -253,6 +262,10 @@ export function createCustomLoaderClass(isAdmin: boolean, postId: string = ""): 
             return playKeyDecryptAES2Bin(encryptedKey)
         }
     }
+
+    loaderClassCache.set(cacheKey, CustomLoader)
+
+    return CustomLoader
 }
 
 /**

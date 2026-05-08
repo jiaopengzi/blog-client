@@ -2,8 +2,26 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 
 import * as encrypt from "@/utils/encrypt"
 
-import { playKeyDecryptAES2Bin } from "./index"
+import { createCustomLoaderClass, playKeyDecryptAES2Bin } from "./index"
 afterEach(() => vi.restoreAllMocks())
+
+describe("createCustomLoaderClass 函数", () => {
+    it("相同参数应返回同一个 Loader 类引用", () => {
+        const loaderA = createCustomLoaderClass(true, "post-1")
+        const loaderB = createCustomLoaderClass(true, "post-1")
+
+        expect(loaderA).toBe(loaderB)
+    })
+
+    it("不同参数应返回不同的 Loader 类引用", () => {
+        const loaderA = createCustomLoaderClass(true, "post-1")
+        const loaderB = createCustomLoaderClass(false, "post-1")
+        const loaderC = createCustomLoaderClass(true, "post-2")
+
+        expect(loaderA).not.toBe(loaderB)
+        expect(loaderA).not.toBe(loaderC)
+    })
+})
 
 describe("playKeyDecryptAES2Bin 函数", () => {
     it("应解密加密的播放密钥并返回 Uint8Array", () => {

@@ -39,8 +39,11 @@ import { getTheme, Theme, themeCompartment, ThemeMode } from "./extension/theme"
 import { vim, vimModeCompartment } from "./extension/vim"
 import { defaultOptions, type DefaultSetupOptions } from "./options"
 
-// 基础 extension 集合
-const baseExtension = (): Extension[] => {
+/**
+ * createBaseExtensions 创建可被多个编辑器实例复用的基础扩展集合.
+ * @returns 基础扩展数组.
+ */
+const createBaseExtensions = (): Extension[] => {
     return [
         EditorView.lineWrapping, // 自动换行
         lineNumbers(), // 行号
@@ -74,15 +77,21 @@ const baseExtension = (): Extension[] => {
     ]
 }
 
+const sharedBaseExtensions = createBaseExtensions()
+
 // 创建 codemirror setup 类型
 export type CreateSetupType = (options?: DefaultSetupOptions) => Extension[]
 
-// 默认的 codemirror setup 工厂函数 markdown 语法
+/**
+ * createDefaultSetup 创建 Markdown 编辑器的默认扩展集合.
+ * @param opts 编辑器配置项.
+ * @returns Markdown 编辑器扩展数组.
+ */
 export const createDefaultSetup = (opts: DefaultSetupOptions = defaultOptions()) => {
     const { handlePasteImage, handleDropImage } = createImageUploadExtensions(opts.imageUploadHandler)
 
     const extension: Extension[] = [
-        ...baseExtension(), // 基础 extension
+        ...sharedBaseExtensions, // 基础 extension
         // 参考 https://github.com/replit/codemirror-vim/issues/227
         vimModeCompartment.of(opts.vimMode ? vim({ status: true }) : []), // vim 模式
         completionCompartment.of(unifiedCompletion(opts.mention)), // 补全
@@ -100,10 +109,13 @@ export const createDefaultSetup = (opts: DefaultSetupOptions = defaultOptions())
     return extension
 }
 
-// css 语法 setup 工厂函数
+/**
+ * createCssSetup 创建 CSS 编辑器扩展集合.
+ * @returns CSS 编辑器扩展数组.
+ */
 export const createCssSetup = () => {
     const extension: Extension[] = [
-        ...baseExtension(), // 基础 extension
+        ...sharedBaseExtensions, // 基础 extension
         css(), // css 语法
         placeholder("请输入自定义的 CSS..."), // 占位符文本
     ]
@@ -111,10 +123,13 @@ export const createCssSetup = () => {
     return extension
 }
 
-// json 语法 setup 工厂函数
+/**
+ * createJsonSetup 创建 JSON 编辑器扩展集合.
+ * @returns JSON 编辑器扩展数组.
+ */
 export const createJsonSetup = () => {
     const extension: Extension[] = [
-        ...baseExtension(), // 基础 extension
+        ...sharedBaseExtensions, // 基础 extension
         json(), // json 语法
         placeholder("请输入自定义的 JSON..."), // 占位符文本
     ]

@@ -26,11 +26,13 @@ import { renderer } from "./extension/renderer" // 自定义renderer
 import { subExtensionInline } from "./extension/sub" // 自定义sub 下标
 import { supExtensionInline } from "./extension/sup" // 自定义sup 上标
 
+let markedInstance: Marked | null = null
+
 /**
- * createMarked 创建新的 Marked 实例, 并挂载项目所需的扩展.
- * @returns 配置完成的 Marked 实例; emoji 解析使用轻量 map 查表实现, 避免移动端浏览器因超长正则初始化而卡顿.
+ * setupMarked 创建并配置一个可复用的 Marked 实例.
+ * @returns 配置完成的 Marked 实例.
  */
-const createMarked = () => {
+const setupMarked = (): Marked => {
     const marked = new Marked()
 
     marked.use(
@@ -51,6 +53,15 @@ const createMarked = () => {
     )
 
     return marked
+}
+
+/**
+ * createMarked 返回按需初始化的共享 Marked 实例.
+ * @returns 配置完成的 Marked 实例; emoji 解析使用轻量 map 查表实现, 避免移动端浏览器因超长正则初始化而卡顿.
+ */
+const createMarked = (): Marked => {
+    markedInstance ??= setupMarked()
+    return markedInstance
 }
 
 // 将工厂函数作为默认导出
