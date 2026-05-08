@@ -80,6 +80,8 @@
     <el-dialog v-model="isPayQRCodeShow" width="370px" @close="handleClose">
         <PayQRCode v-if="isPayQRCodeShow" :qr-code-url="qrCodeUrl" :pay-type="payTypeResult" :amount="String(fenToYuan(finalAmount))" />
     </el-dialog>
+
+    <FooterStatistics v-if="optionsStore.isShowFooterStatistics" />
 </template>
 
 <script lang="ts" setup>
@@ -89,7 +91,9 @@ import { computed, onBeforeMount, ref, watch } from "vue"
 import { useRouter } from "vue-router"
 
 import { PayType, PayTypeDisplay } from "@/api/pay/common"
+import FooterStatistics from "@/components/layout/footer-statistics"
 import { RouteNames } from "@/router"
+import { useOptionsStore } from "@/stores/options"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 import { fenToYuan } from "@/utils/amount"
 
@@ -103,6 +107,7 @@ useHead({
 })
 
 const router = useRouter()
+const optionsStore = useOptionsStore()
 
 // 设备类型
 const deviceStore = useDeviceStore()

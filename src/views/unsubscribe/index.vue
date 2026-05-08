@@ -13,6 +13,8 @@
             将在 <span class="countdown">{{ countdown }}</span> 秒后，返回首页。
         </p>
     </div>
+
+    <FooterStatistics v-if="optionsStore.isShowFooterStatistics" />
 </template>
 
 <script lang="ts" setup>
@@ -22,7 +24,9 @@ import { useRoute, useRouter } from "vue-router"
 
 import { handleResErr, ResponseCode } from "@/api/response"
 import { unSubscribeAPI, type UnSubscribeRequest } from "@/api/user/unSubscribe"
+import FooterStatistics from "@/components/layout/footer-statistics"
 import { RouteNames } from "@/router"
+import { useOptionsStore } from "@/stores/options"
 import { MessageUtil } from "@/utils/message"
 import { parseRouteQuery } from "@/utils/queryParam"
 
@@ -35,6 +39,7 @@ useHead({
 // 路由
 const route = useRoute()
 const router = useRouter()
+const optionsStore = useOptionsStore()
 
 const textInfo = ref("正在取消订阅，请稍候...")
 const countdown = ref(5) // 倒计时

@@ -45,6 +45,8 @@
             </el-form>
         </div>
     </div>
+
+    <FooterStatistics v-if="optionsStore.isShowFooterStatistics" />
 </template>
 
 <script lang="ts" setup>
@@ -56,8 +58,10 @@ import { useRouter } from "vue-router"
 import { ResponseCode } from "@/api/response"
 import { registerAdminAPI, type RegisterAdminRequest } from "@/api/user/registerAdmin"
 import AccountFormHeader from "@/components/common/account-form-header"
+import FooterStatistics from "@/components/layout/footer-statistics"
 import { useAccountFormValidation } from "@/components/hooks/useAccountFormValidation"
 import { RouteNames } from "@/router"
+import { useOptionsStore } from "@/stores/options"
 import { MessageUtil } from "@/utils/message"
 
 import type { RegisterForm } from "./types"
@@ -69,6 +73,7 @@ useHead({
 })
 
 const router = useRouter()
+const optionsStore = useOptionsStore()
 
 // 表单label位置 top | left | right
 const labelPosition = ref("top")

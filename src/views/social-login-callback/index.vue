@@ -10,6 +10,8 @@
     <div class="container">
         <div class="loader-social">{{ platformDisplay }}{{ loginOrBind }}, 请稍后!</div>
     </div>
+
+    <FooterStatistics v-if="optionsStore.isShowFooterStatistics" />
 </template>
 
 <script lang="ts" setup>
@@ -18,7 +20,9 @@ import { onMounted, ref } from "vue"
 import { useRoute, useRouter } from "vue-router"
 
 import { SocialLoginDisplay, SocialLoginType } from "@/api/common"
+import FooterStatistics from "@/components/layout/footer-statistics"
 import { RouteNames, RouteNamesSocial } from "@/router"
+import { useOptionsStore } from "@/stores/options"
 import { useUserStore } from "@/stores/user"
 
 defineOptions({ name: "SocialLoginCallback" })
@@ -30,6 +34,7 @@ useHead({
 const userStore = useUserStore()
 const router = useRouter()
 const route = useRoute()
+const optionsStore = useOptionsStore()
 
 const platformDisplay = ref("")
 const loginOrBind = ref("登录中")

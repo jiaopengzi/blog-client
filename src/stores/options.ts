@@ -242,6 +242,11 @@ export const useOptionsStore = defineStore("options", {
             return this.footer_statistics_code
         },
 
+        // 是否显示底部统计组件
+        isShowFooterStatistics(): boolean {
+            return !!this.footer_statistics_code?.trim()
+        },
+
         // 获取视频水印信息
         getVideoWatermark(): VideoWatermark {
             return this.video_watermark

@@ -43,6 +43,8 @@
             <el-button class="submit-btn" type="primary" @click="setupSubmit">提交</el-button>
         </div>
     </div>
+
+    <FooterStatistics v-if="optionsStore.isShowFooterStatistics" />
 </template>
 
 <script lang="ts" setup>
@@ -56,9 +58,11 @@ import AccountFormHeader from "@/components/common/account-form-header"
 import ElasticsearchForm, { type ElasticsearchFormRef } from "@/components/common/db-es"
 import PgsqlForm, { type PgsqlDatabaseFormRef } from "@/components/common/db-pgsql"
 import RedisForm, { type RedisDatabaseFormRef } from "@/components/common/db-redis"
+import FooterStatistics from "@/components/layout/footer-statistics"
 import RestartDialog from "@/components/common/restart-dialog"
 import { useDatabase } from "@/components/hooks/useDatabase"
 import { RouteNames } from "@/router"
+import { useOptionsStore } from "@/stores/options"
 import { MessageUtil } from "@/utils/message"
 
 defineOptions({ name: RouteNames.Setup })
@@ -68,6 +72,7 @@ useHead({
 })
 
 const pgsqlFormRef = useTemplateRef<PgsqlDatabaseFormRef>("pgsqlFormRef")
+const optionsStore = useOptionsStore()
 
 const redisNodeCount = ref(1)
 // 使用一个对象来存储所有 RedisForm 的 refs

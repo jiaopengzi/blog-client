@@ -52,6 +52,8 @@
             </el-form>
         </div>
     </div>
+
+    <FooterStatistics v-if="optionsStore.isShowFooterStatistics" />
 </template>
 
 <script lang="ts" setup>
@@ -67,6 +69,7 @@ import { resetPasswordAPI } from "@/api/user/resetPassword"
 import AccountFormFooter from "@/components/common/account-form-footer"
 import AccountFormHeader from "@/components/common/account-form-header"
 import SlideVerify from "@/components/common/slide-verify"
+import FooterStatistics from "@/components/layout/footer-statistics"
 import { useAccountFormValidation } from "@/components/hooks/useAccountFormValidation"
 import { useCaptchaBtnStatus } from "@/components/hooks/useCaptchaBtnStatus"
 import { RouteNames } from "@/router"

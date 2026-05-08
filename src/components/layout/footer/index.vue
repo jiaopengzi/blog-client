@@ -39,8 +39,10 @@
             </div>
         </div>
     </footer>
+    <FooterStatistics v-if="optionsStore.isShowFooterStatistics" />
 </template>
 <script setup lang="ts">
+import FooterStatistics from "@/components/layout/footer-statistics"
 import { useOptionsStore } from "@/stores/options" // 网站配置选项
 
 defineOptions({ name: "LayoutFooter" })

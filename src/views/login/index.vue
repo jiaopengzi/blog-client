@@ -55,6 +55,8 @@
             </el-form>
         </div>
     </div>
+
+    <FooterStatistics v-if="optionsStore.isShowFooterStatistics" />
 </template>
 
 <script lang="ts" setup>
@@ -71,6 +73,7 @@ import AccountFormFooter from "@/components/common/account-form-footer"
 import AccountFormHeader from "@/components/common/account-form-header"
 import { IconKeys } from "@/components/common/icons"
 import SlideVerify from "@/components/common/slide-verify"
+import FooterStatistics from "@/components/layout/footer-statistics"
 import { useAccountFormValidation } from "@/components/hooks/useAccountFormValidation"
 import { RouteNames } from "@/router"
 import { useOptionsStore } from "@/stores/options"

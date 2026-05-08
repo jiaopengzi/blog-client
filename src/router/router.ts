@@ -8,6 +8,9 @@
 
 import { createRouter, createWebHistory } from "vue-router"
 
+import { useOptionsStore } from "@/stores/options"
+import { blockFooterStatisticsForPath } from "@/utils/footerStatistics"
+
 import {
     authMiddleware,
     beforeunloadMiddleware,
@@ -31,6 +34,11 @@ export const router = createRouter({
 
 // 路由守卫
 router.beforeEach(async (to, from) => {
+    const optionsStore = useOptionsStore()
+
+    // 进入 admin 前先禁用统计, 避免第三方统计 SDK 在 SPA 路由切换时自动上报.
+    blockFooterStatisticsForPath(optionsStore.footer_statistics_code, to.path)
+
     const middlewares = [
         authMiddleware,
         beforeunloadMiddleware,

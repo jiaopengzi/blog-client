@@ -25,12 +25,11 @@ import { useTheme } from "@/theme/useTheme"
 import { useDeviceStore } from "@/stores/device"
 import { useOptionsStore } from "@/stores/options"
 import { useUserStore } from "@/stores/user"
-import { loadScriptFromString } from "@/utils/script"
 import { setCustomStyle } from "@/utils/style"
 
 // 网站配置选项
 const optionsStore = useOptionsStore()
-const { head, custom_style_css, footer_statistics_code } = storeToRefs(optionsStore)
+const { head, custom_style_css } = storeToRefs(optionsStore)
 
 // 设备类型
 const deviceStore = useDeviceStore()
@@ -47,24 +46,6 @@ watch(
     custom_style_css,
     (newVal) => {
         setCustomStyle("custom-style-css", newVal)
-    },
-    {
-        immediate: true,
-    },
-)
-
-// 加载统计脚本
-const loadScript = async (scriptStr: string | undefined) => {
-    if (scriptStr) {
-        const ok = await loadScriptFromString(scriptStr)
-        console.info("加载统计脚本:", ok ? "成功" : "失败")
-    }
-}
-
-watch(
-    () => footer_statistics_code.value,
-    (newVal) => {
-        loadScript(newVal)
     },
     {
         immediate: true,
