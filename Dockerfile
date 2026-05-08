@@ -5,8 +5,8 @@ FROM node:24.15.0 AS builder
 # 设置工作目录
 WORKDIR /app
 
-# 复制 package.json 和 pnpm-lock.yaml 到容器中
-COPY package.json pnpm-lock.yaml ./
+# 复制依赖清单和 pnpm 配置到容器中, 确保 allowBuilds 在镜像内生效
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # 安装 pnpm
 RUN npm install -g pnpm@latest-11
