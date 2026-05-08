@@ -9,7 +9,7 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 
 # 安装 pnpm
-RUN npm install -g pnpm@11.0.8
+RUN curl -fsSL https://get.pnpm.io/install.sh | env PNPM_VERSION=11.0.8 sh -
 
 # 安装依赖项
 RUN pnpm install
