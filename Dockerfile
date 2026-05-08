@@ -12,7 +12,7 @@ COPY package.json pnpm-lock.yaml ./
 RUN npm install -g pnpm@latest-11
 
 # 安装依赖项
-RUN pnpm install
+RUN pnpm install --frozen-lockfile
 
 # 将源代码复制到容器中
 COPY . .
