@@ -38,6 +38,88 @@ describe("parseHtmlToContentParts", () => {
             postId: "post-1",
         })
     })
+
+    it("不含真实自定义元素时走快速路径, 不触发 DOMParser", () => {
+        const parseFromString = vi.fn()
+        const originalDOMParser = globalThis.DOMParser
+
+        class MockDOMParser {
+            parseFromString(): never {
+                parseFromString()
+                throw new Error("不应触发 DOMParser")
+            }
+        }
+
+        vi.stubGlobal("DOMParser", MockDOMParser)
+
+        try {
+            const html = "<p>plain html <code>&lt;pay-read&gt;</code></p>"
+            const parts = parseHtmlToContentParts(html, "post-1")
+
+            expect(parts).toEqual([{ type: "html", content: html }])
+            expect(parseFromString).not.toHaveBeenCalled()
+        } finally {
+            vi.stubGlobal("DOMParser", originalDOMParser)
+        }
+    })
+
+    describe.each(Object.values(Names))("hasCustomElementMarkup 快速路径覆盖 %s", (tagName) => {
+        it(`仅包含转义后的 <${tagName}> 时继续走快速路径`, () => {
+            const parseFromString = vi.fn()
+            const originalDOMParser = globalThis.DOMParser
+
+            class MockDOMParser {
+                parseFromString(): never {
+                    parseFromString()
+                    throw new Error(`转义标签 ${tagName} 不应触发 DOMParser`)
+                }
+            }
+
+            vi.stubGlobal("DOMParser", MockDOMParser)
+
+            try {
+                const html = `<p>prefix <code>&lt;${tagName}&gt;</code> suffix</p>`
+                const parts = parseHtmlToContentParts(html, "post-1")
+
+                expect(parts).toEqual([{ type: "html", content: html }])
+                expect(parseFromString).not.toHaveBeenCalled()
+            } finally {
+                vi.stubGlobal("DOMParser", originalDOMParser)
+            }
+        })
+
+        it(`包含真实 <${tagName}> 时会进入 DOMParser 解析分支`, () => {
+            const parseFromString = vi.fn<(html: string, mimeType: string) => { body: { childNodes: never[] } }>(() => ({
+                body: {
+                    childNodes: [],
+                },
+            }))
+            const originalDOMParser = globalThis.DOMParser
+
+            class MockDOMParser {
+                parseFromString(html: string, mimeType: string) {
+                    parseFromString(html, mimeType)
+                    return {
+                        body: {
+                            childNodes: [],
+                        },
+                    }
+                }
+            }
+
+            vi.stubGlobal("DOMParser", MockDOMParser)
+
+            try {
+                const html = `<${tagName}></${tagName}>`
+                parseHtmlToContentParts(html, "post-1")
+
+                expect(parseFromString).toHaveBeenCalledTimes(1)
+                expect(parseFromString).toHaveBeenCalledWith(html, "text/html")
+            } finally {
+                vi.stubGlobal("DOMParser", originalDOMParser)
+            }
+        })
+    })
 })
 
 describe("pay-* 组件在代码块中的防护", () => {

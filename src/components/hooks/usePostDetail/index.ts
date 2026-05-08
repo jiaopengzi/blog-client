@@ -23,6 +23,25 @@ import { useUserStore } from "@/stores/user"
 import { useRootUtils } from "../useRootUtils"
 import { useGetData } from "./api"
 
+/**
+ * @description: 在正文已经可展示后, 再异步执行非首屏关键副作用, 避免阻塞详情正文先出现。
+ * @param tasks 需要延后执行的任务列表。
+ * @return {void}
+ */
+const runPostDetailSideEffects = (tasks: Array<Promise<unknown>>): void => {
+    if (tasks.length === 0) {
+        return
+    }
+
+    void Promise.allSettled(tasks).then((results) => {
+        results.forEach((result) => {
+            if (result.status === "rejected") {
+                console.warn("文章详情副作用任务执行失败", result.reason)
+            }
+        })
+    })
+}
+
 export function usePostDetail(
     detailType: Ref<PostDetailType>, // 页面类型
     queryParams: Reactive<ViewPostByIDRequest>, // 查询参数
@@ -84,10 +103,6 @@ export function usePostDetail(
     const updateByRoute = async (password: string = "") => {
         if (detailType.value === PostDetailType.Post) {
             await updateQueryParams()
-            await getPrevNext({ post_id: queryParams.post_id })
-            if (isLogin.value) {
-                await updatePostInteraction(queryParams)
-            }
         }
 
         // 如果是密码保护文章, 则传递密码
@@ -97,6 +112,16 @@ export function usePostDetail(
 
         await getPostDetail(queryParams)
         updateBreadcrumb()
+
+        if (detailType.value === PostDetailType.Post && queryParams.post_id) {
+            const sideEffects: Array<Promise<unknown>> = [getPrevNext({ post_id: queryParams.post_id })]
+
+            if (isLogin.value) {
+                sideEffects.push(updatePostInteraction(queryParams))
+            }
+
+            runPostDetailSideEffects(sideEffects)
+        }
     }
 
     // 更新文章详情(不使用监控路由更新)
@@ -107,7 +132,9 @@ export function usePostDetail(
             await updateRouterPush()
         }
         await updateByRoute(password)
-        await updateHeadInfo()
+        void updateHeadInfo().catch((error) => {
+            console.warn("更新文章头部信息失败", error)
+        })
     }
 
     // 点击作者

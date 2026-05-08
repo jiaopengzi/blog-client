@@ -77,6 +77,22 @@ function preprocessHtml(html: string): string {
     return html.replace(regex, "$1") // 只保留内部的自定义元素
 }
 
+/**
+ * @description: 判断当前 HTML 是否仍然包含真实自定义元素标签, 用于决定是否可以跳过整棵 DOMParser 拆分。
+ * @param html 预处理后的 HTML 字符串。
+ * @returns {boolean} 是否包含真实自定义元素标签。
+ */
+function hasCustomElementMarkup(html: string): boolean {
+    const names = Object.values(Names)
+
+    if (names.length === 0) {
+        return false
+    }
+
+    const regex = new RegExp(`<(?:${names.join("|")})\\b`, "i")
+    return regex.test(html)
+}
+
 // 解析 HTML 字符串为 HTMLElement
 export function parseHtml(html: string): HTMLElement {
     // 解析 HTML
@@ -96,6 +112,11 @@ export function parseHtmlToContentParts(html: string, postId: string, isAdminVid
     // 先转义代码块中的自定义元素, 再预处理
     const escapedHtml = escapeCustomElementsInCode(html)
     const cleanedHtml = preprocessHtml(escapedHtml)
+
+    // 不含真实自定义元素时直接返回单段 html, 避免无收益的整棵 DOMParser 解析。
+    if (!hasCustomElementMarkup(cleanedHtml)) {
+        return cleanedHtml.trim() === "" ? [] : [{ type: "html", content: cleanedHtml }]
+    }
 
     // 解析 HTML
     const body = parseHtml(cleanedHtml)
