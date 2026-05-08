@@ -44,6 +44,8 @@
             </div>
         </div>
     </section>
+
+    <FooterStatistics v-if="optionsStore.isShowFooterStatistics" />
 </template>
 
 <script lang="ts" setup>
@@ -59,6 +61,7 @@ import { DeviceType, useDeviceStore } from "@/stores/device"
 import { loadPublicMdDraft, savePublicMdDraft } from "@/stores/md-draft"
 import { useTheme } from "@/theme/useTheme"
 import ThemePresetSelector from "@/theme/preset-selector"
+import { useOptionsStore } from "@/stores/options"
 
 defineOptions({ name: "PublicMarkdownPage" })
 
@@ -73,10 +76,14 @@ const router = useRouter()
 const deviceStore = useDeviceStore()
 const { device } = storeToRefs(deviceStore)
 const { activeThemePreset, selectThemePreset, theme, themePresetOptions } = useTheme()
+const optionsStore = useOptionsStore()
+
 const stateManager = new EditorStateManager({
     tocShow: true,
 })
+
 const editorState = stateManager.getState()
+
 const saveStatus = reactive<SaveStatus>({
     text: "本地草稿未修改",
     type: "idle",
