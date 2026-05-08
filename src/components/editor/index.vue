@@ -149,6 +149,7 @@ import {
     saveEditorPaneRatios,
 } from "./layout"
 import { EditorStateManager } from "./state"
+import { getSafeHeadingCurrentIndex } from "./utils"
 
 // 文章编辑器命名
 defineOptions({ name: "JEditor" })
@@ -332,7 +333,16 @@ const startPaneResize = (event: PointerEvent, leftPane: EditorPaneName, rightPan
  */
 const syncVisibleTocState = (): void => {
     visibleTocHeadings.value = [...state.tocHtml]
-    visibleHeadingShowCurrentIndex.value = state.headingShowCurrentIndex
+    visibleHeadingShowCurrentIndex.value = getSafeHeadingCurrentIndex(state.headingShowCurrentIndex, visibleTocHeadings.value.length)
+}
+
+/**
+ * shouldSyncTocImmediately 判断当前编辑是否需要立刻同步 TOC 展示层.
+ * 删除标题或当前高亮索引失效时, 不能继续冻结旧目录, 否则 active-marker 会残留在旧位置。
+ * @returns true 表示本次需要立即同步, false 表示可继续沿用 debounce 冻结策略.
+ */
+const shouldSyncTocImmediately = (): boolean => {
+    return state.tocHtml.length < visibleTocHeadings.value.length || state.headingShowCurrentIndex < 0
 }
 
 /**
@@ -401,7 +411,14 @@ const { cmHeight, handleScroll, handleUpdateIsUserScrollCmEditor, handleMouseInC
  */
 const updateEditorDoc = (editorDoc: string) => {
     stateManager.updateState(editorDoc) // 更新 store 中的 editor
-    pauseTocRefreshDuringEditing()
+
+    if (shouldSyncTocImmediately()) {
+        isTocRefreshPaused.value = false
+        syncVisibleTocState()
+    } else {
+        pauseTocRefreshDuringEditing()
+    }
+
     emit("updateEditorStatus", true) // 更新编辑器状态
 }
 
@@ -432,22 +449,22 @@ watch(
 watch(
     () => state.tocHtml,
     () => {
-        if (isTocRefreshPaused.value) {
+        if (isTocRefreshPaused.value && !shouldSyncTocImmediately()) {
             return
         }
 
-        visibleTocHeadings.value = [...state.tocHtml]
+        syncVisibleTocState()
     },
 )
 
 watch(
     () => state.headingShowCurrentIndex,
     (newIndex) => {
-        if (isTocRefreshPaused.value) {
+        if (isTocRefreshPaused.value && newIndex >= 0) {
             return
         }
 
-        visibleHeadingShowCurrentIndex.value = newIndex
+        visibleHeadingShowCurrentIndex.value = getSafeHeadingCurrentIndex(newIndex, visibleTocHeadings.value.length)
     },
 )
 

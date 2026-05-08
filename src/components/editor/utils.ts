@@ -321,6 +321,49 @@ export function getMarkdownHeadingLines(markdownStr: string): MarkdownHeadingLin
 }
 
 /**
+ * getFirstLevelOneMarkdownHeadingText 提取 Markdown 中首个一级标题文本.
+ * @param markdownStr Markdown 原文.
+ * @returns 首个一级标题文本, 未命中时返回空字符串.
+ */
+export function getFirstLevelOneMarkdownHeadingText(markdownStr: string): string {
+    const { markdownHeadingRegex } = regexCache
+    const matches = markdownStr.matchAll(markdownHeadingRegex)
+
+    for (const match of matches) {
+        const headingLevelToken = match[1]
+        const headingText = match[2]?.trim() ?? ""
+
+        if (headingLevelToken === "#" && headingText) {
+            return headingText
+        }
+    }
+
+    return ""
+}
+
+/**
+ * getSafeHeadingCurrentIndex 将当前目录高亮索引收敛到合法范围.
+ * @param currentIndex 当前高亮索引.
+ * @param headingsLength 当前目录长度.
+ * @returns 合法索引, 无目录时返回 -1.
+ */
+export function getSafeHeadingCurrentIndex(currentIndex: number, headingsLength: number): number {
+    if (headingsLength <= 0) {
+        return -1
+    }
+
+    if (currentIndex < 0) {
+        return 0
+    }
+
+    if (currentIndex >= headingsLength) {
+        return headingsLength - 1
+    }
+
+    return currentIndex
+}
+
+/**
  * @description: 为 html 中的所有 h 标签生成锚点
  * @param html
  * @return {String} 生成锚点和 href 的后 html 字符串

@@ -41,6 +41,21 @@ const emit = defineEmits<{
 const tocRef = useTemplateRef("tocRef")
 const activeMarkerRef = useTemplateRef("activeMarkerRef")
 
+/**
+ * resetHeadingHighlight 清理当前目录激活态和 marker 样式.
+ * @returns 无返回值.
+ */
+const resetHeadingHighlight = (): void => {
+    if (!tocRef.value || !activeMarkerRef.value) return
+
+    tocRef.value.querySelectorAll("li").forEach((li) => {
+        li.classList.remove("toc-active")
+    })
+
+    activeMarkerRef.value.style.top = "0px"
+    activeMarkerRef.value.style.height = "0px"
+}
+
 // 点击标题触发事件
 const emitHeadingClicked = (index: number) => {
     emit("heading-clicked", index)
@@ -53,10 +68,7 @@ const highlightHeading = (index: number) => {
     // 确保 tocRef 存在
     if (!tocRef.value || !activeMarkerRef.value) return
 
-    // 查找当前激活的目录项，移除激活状态
-    tocRef.value.querySelectorAll("li").forEach((li) => {
-        li.classList.remove("toc-active")
-    })
+    resetHeadingHighlight()
 
     // 添加激活状态
     const target: HTMLElement | null = tocRef.value.querySelector(`#toc-${index}`)
@@ -76,10 +88,13 @@ const highlightHeading = (index: number) => {
 watch(
     [() => headings, () => headingShowCurrentIndex],
     async ([newHeadings, newIndex]) => {
-        if (newHeadings.length > 0 && newIndex >= 0) {
-            await nextTick()
-            highlightHeading(newIndex)
+        if (newHeadings.length <= 0 || newIndex < 0 || newIndex >= newHeadings.length) {
+            resetHeadingHighlight()
+            return
         }
+
+        await nextTick()
+        highlightHeading(newIndex)
     },
     { flush: "post" }, // 确保在 DOM 更新后执行
 )

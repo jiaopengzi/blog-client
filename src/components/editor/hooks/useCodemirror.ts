@@ -54,14 +54,18 @@ export function useCodemirror(mdContainerRef: Ref<HTMLElement | null>, codemirro
     })
 
     const handleScroll = debounce(200, (scrollHeight: number, clientHeight: number, scrollTop: number, hideDoc: string, showFirstLineNumber: number) => {
+        let currentHeadingIndex = -1
+
         // 高亮当前标题
         for (let i = 0; i < editorState.tocMarkdown.length; i++) {
             const item = editorState.tocMarkdown[i]!
             if (showFirstLineNumber <= item.markdownLineNumber) {
-                editorStateManager.setHeadingShowCurrentIndex(item.index)
+                currentHeadingIndex = item.index
                 break
             }
         }
+
+        editorStateManager.setHeadingShowCurrentIndex(currentHeadingIndex)
 
         // 如果不是同步滚动就直接返回
         if (!editorState.isSyncScroll || editorState.mouseStatus !== "cmEditor") return

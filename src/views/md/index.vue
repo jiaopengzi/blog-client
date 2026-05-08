@@ -49,13 +49,15 @@
 </template>
 
 <script lang="ts" setup>
+import { useHead } from "@unhead/vue"
 import { storeToRefs } from "pinia"
 import { debounce } from "throttle-debounce"
-import { onBeforeUnmount, onMounted, reactive, watch } from "vue"
+import { computed, onBeforeUnmount, onMounted, reactive, watch } from "vue"
 import { useRouter } from "vue-router"
 
 import { IconKeys } from "@/components/common/icons"
 import JEditor, { defaultCommandKeys, EditorStateManager } from "@/components/editor"
+import { getFirstLevelOneMarkdownHeadingText } from "@/components/editor/utils"
 import { RouteNames } from "@/router"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 import { loadPublicMdDraft, savePublicMdDraft } from "@/stores/md-draft"
@@ -83,10 +85,19 @@ const stateManager = new EditorStateManager({
 })
 
 const editorState = stateManager.getState()
+const headTitle = computed(() => {
+    const firstLevelOneHeading = getFirstLevelOneMarkdownHeadingText(editorState.editorContent)
+
+    return firstLevelOneHeading || "Markdown 编辑器"
+})
 
 const saveStatus = reactive<SaveStatus>({
     text: "本地草稿未修改",
     type: "idle",
+})
+
+useHead({
+    title: headTitle,
 })
 
 /**

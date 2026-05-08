@@ -15,7 +15,7 @@ import { CommandsKey } from "./command"
 import type { CmCommand } from "./components/codemirror"
 import type { ViewCommand } from "./components/preview"
 import type { EditorMode, EditorState, EditorStateOptions, MouseStatus, ScrollStatus } from "./types"
-import { createDefaultEditorState, getMarkdownHeadingLines, htmlHandleUtf8BOM, renderMarkdownDocument } from "./utils"
+import { createDefaultEditorState, getMarkdownHeadingLines, getSafeHeadingCurrentIndex, htmlHandleUtf8BOM, renderMarkdownDocument } from "./utils"
 
 /**
  * @description: 编辑器状态管理
@@ -42,6 +42,7 @@ export class EditorStateManager {
         this.state.tocMarkdown = getMarkdownHeadingLines(this.state.editorContent) // 通过正则获取 markdown 文件的目录
         this.state.tocHtml = renderedDocument.tocHtml // 获取 html 目录
         this.state.imgUrls = renderedDocument.imgUrls // 获取图片链接
+        this.state.headingShowCurrentIndex = getSafeHeadingCurrentIndex(this.state.headingShowCurrentIndex, this.state.tocHtml.length)
     }
 
     // 设置滚动条隐藏的编辑器view 字符串
