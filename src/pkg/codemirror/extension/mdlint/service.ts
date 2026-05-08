@@ -8,8 +8,9 @@
 
 import type { Diagnostic } from "@codemirror/lint"
 
+import { loadEagerRules } from "./ruleRegistry"
 import type { DocLike, MarkdownLinterOptions, RuleDefinition } from "./types"
-import { buildDocFromText, loadEagerRules } from "./utils"
+import { buildDocFromText } from "./utils"
 
 const RULES: RuleDefinition<unknown>[] = loadEagerRules()
 const MAX_AUTO_FIX_PASSES = 10

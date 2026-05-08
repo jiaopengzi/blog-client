@@ -11,9 +11,10 @@ import type { Extension } from "@codemirror/state"
 import type { Text } from "@codemirror/state"
 import { type EditorView, keymap, ViewPlugin } from "@codemirror/view"
 
+import { loadEagerRules } from "./ruleRegistry"
 import { autoFixMarkdownText } from "./service"
 import type { MarkdownLinterOptions, MarkdownRulesConfig, RuleDefinition } from "./types"
-import { loadEagerRules } from "./utils"
+import { acquireMarkdownLintWorker, releaseMarkdownLintWorker, requestMarkdownLintByWorker } from "./workerManager"
 
 // 递归扫描当前目录及子目录下以 rule 开头的规则文件并按文件名排序加载, 使用 utils.loadEagerRules() 在主线程同步获取规则模块列表
 const RULES: RuleDefinition<unknown>[] = loadEagerRules()
@@ -25,41 +26,13 @@ const RULES: RuleDefinition<unknown>[] = loadEagerRules()
  * @returns linter 回调函数, 可传入 linter() 创建 CodeMirror 扩展
  */
 function makeLinterCallback(options: MarkdownLinterOptions = {}, worker?: Worker) {
-    let counter = 0
-
     // 在 worker 模式下, 为每次请求生成唯一 id 并通过 postMessage 发送文本到 worker, 然后等待带有相同 id 的响应
     if (worker) {
         return (view: EditorView) => {
             const doc = view.state.doc as Text
             const text = doc.toString()
-            const id = ++counter
 
-            // 创建 Promise 等待 worker 返回 diagnostics, 并在收到匹配 id 的消息后移除监听器
-            return new Promise<Diagnostic[]>((resolve) => {
-                const onMessage = (ev: MessageEvent) => {
-                    // 边界检查
-                    if (!ev.data) return
-                    if (ev.data.id !== id) return
-
-                    // 收到匹配的响应后, 清理监听并返回 diagnostics
-                    worker.removeEventListener("message", onMessage)
-                    resolve(ev.data.diagnostics || [])
-                }
-
-                worker.addEventListener("message", onMessage)
-
-                // 发送文本到 worker, worker 会处理并返回 diagnostics
-                // 仅发送可序列化的字段, 避免将 Vue 响应式对象或函数传入 worker 导致 DataCloneError
-                try {
-                    const safeOptions = { useWorker: options?.useWorker, rules: options?.rules }
-                    // oxlint-disable-next-line unicorn/require-post-message-target-origin
-                    worker.postMessage({ id, text, options: safeOptions })
-                } catch {
-                    // 最后兜底：若仍然失败, 发送最小负载以保证不阻塞编辑器
-                    // oxlint-disable-next-line unicorn/require-post-message-target-origin
-                    worker.postMessage({ id, text, options: { useWorker: false } })
-                }
-            })
+            return requestMarkdownLintByWorker(text, options)
         }
     }
 
@@ -96,17 +69,13 @@ function makeLinterCallback(options: MarkdownLinterOptions = {}, worker?: Worker
  */
 export function createMarkdownLinter(options: MarkdownLinterOptions = {}): Extension {
     if (options.useWorker) {
-        const worker = new Worker(new URL("./worker.ts", import.meta.url), { type: "module" })
+        const worker = acquireMarkdownLintWorker()
         const linterExt = linter(makeLinterCallback(options, worker) as unknown as LintSource)
 
         const plugin = ViewPlugin.fromClass(
             class {
                 destroy() {
-                    try {
-                        worker.terminate()
-                    } catch {
-                        /* ignore */
-                    }
+                    releaseMarkdownLintWorker()
                 }
             },
         )

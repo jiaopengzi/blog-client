@@ -6,19 +6,8 @@
  * Description : 工具函数
  */
 
-import type { DocLike, RuleDefinition } from "./types"
+import type { DocLike } from "./types"
 import type { InnerContentContext, PairContext, SingleLineContext, SurroundingContext } from "./types"
-
-// 在主线程同步加载模块并同时保留延迟加载器的占位映射
-// 规则文件已统一放入本目录下的 "rule" 子目录, 文件名不再包含前缀, 例如 "001.ts", "002.ts"
-const eagerRuleModules = import.meta.glob("./rule/*.ts", { eager: true }) as Record<string, unknown>
-
-// 从已加载的模块映射派生出 lazy loader 映射, loader 会返回已加载的模块
-// 这样保持导入路径一致, 并避免重复写 glob 模式
-const lazyLoaders = Object.fromEntries(Object.keys(eagerRuleModules).map((p) => [p, async () => eagerRuleModules[p]])) as Record<string, () => Promise<unknown>>
-
-// eagerModules 供同步加载使用, 直接引用已加载的模块映射
-const eagerModules = eagerRuleModules
 const CUSTOM_TAG_REGEX = /<\/?(?:pay-(?:video|membership|read|download|key)|video-player|power-bi|wechat-captcha|login-view)(?:\s+[^>]*)?>/g
 const FENCE_REGEX = /^```/
 
@@ -45,46 +34,6 @@ export function buildDocFromText(text: string): DocLike {
             return { from, to, text: lineText }
         },
     }
-}
-
-/**
- * 在主线程同步加载规则模块, 并按文件名排序返回 RuleModule 数组
- * @returns RuleModule[] 已加载并筛选后的规则模块数组
- */
-export function loadEagerRules(): RuleDefinition<unknown>[] {
-    return (
-        Object.keys(eagerModules)
-            // oxlint-disable-next-line unicorn/no-array-sort
-            .sort()
-            .map((p) => {
-                const m = eagerModules[p]
-                if (!m || typeof m !== "object") return undefined
-                const candidate = (m as { default?: unknown }).default ?? m
-                if (candidate && typeof (candidate as { run?: unknown }).run === "function") return candidate as RuleDefinition<unknown>
-                return undefined
-            })
-            .filter((x): x is RuleDefinition<unknown> => Boolean(x))
-    )
-}
-
-/**
- * 获取延迟加载器映射, 每个 loader 返回对应的 RuleModule
- * @returns Record<string, () => Promise<RuleModule | undefined>>
- */
-export function getLazyRuleLoaders() {
-    const map: Record<string, () => Promise<RuleDefinition<unknown> | undefined>> = {}
-    // oxlint-disable-next-line unicorn/no-array-sort
-    for (const p of Object.keys(lazyLoaders).sort()) {
-        const loader = lazyLoaders[p]
-        map[p] = async () => {
-            if (typeof loader !== "function") return undefined
-            const m = await loader()
-            const candidate = (m as { default?: unknown }).default ?? m
-            if (candidate && typeof (candidate as { run?: unknown }).run === "function") return candidate as RuleDefinition<unknown>
-            return undefined
-        }
-    }
-    return map
 }
 
 /**
@@ -280,8 +229,6 @@ export function validateNoNestedCustomTags(ctx: InnerContentContext): boolean {
 
 export default {
     buildDocFromText,
-    loadEagerRules,
-    getLazyRuleLoaders,
     collectFencedCodeLineNumbers,
     isInsideInlineCode,
     validateNoSurroundingContent,

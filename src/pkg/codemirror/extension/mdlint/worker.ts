@@ -8,8 +8,9 @@
 
 import type { Diagnostic } from "@codemirror/lint"
 
+import { getLazyRuleLoaders } from "./lazyRuleRegistry"
 import type { RuleDefinition } from "./types"
-import { buildDocFromText, getLazyRuleLoaders } from "./utils"
+import { buildDocFromText } from "./utils"
 
 // 延迟加载器集合, 以及模块缓存用于避免重复加载
 const loaders = getLazyRuleLoaders()
