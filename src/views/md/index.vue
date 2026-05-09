@@ -56,6 +56,7 @@ import { computed, onBeforeUnmount, onMounted, reactive, watch } from "vue"
 import { useRouter } from "vue-router"
 
 import { IconKeys } from "@/components/common/icons"
+import FooterStatistics from "@/components/layout/footer-statistics"
 import JEditor, { defaultCommandKeys, EditorStateManager } from "@/components/editor"
 import { getFirstLevelOneMarkdownHeadingText } from "@/components/editor/utils"
 import { RouteNames } from "@/router"
@@ -81,8 +82,11 @@ const { activeThemePreset, selectThemePreset, theme, themePresetOptions } = useT
 const optionsStore = useOptionsStore()
 
 const stateManager = new EditorStateManager({
-    tocShow: true,
+    tocShow: false,
 })
+
+// lastSyncedDevice 用于跟踪上一次同步布局的设备类型, 避免重复设置编辑器显示状态。
+let lastSyncedDevice: DeviceType | null = null
 
 const editorState = stateManager.getState()
 const headTitle = computed(() => {
@@ -122,6 +126,28 @@ function goHome(): void {
 }
 
 /**
+ * syncEditorLayoutByDevice 根据设备类型同步工具栏与预览布局。
+ * 当设备类型切换时, 手机端默认仅展示编辑区, 平板与桌面端恢复编辑区和预览区同时展示。
+ * @param currentDevice - 当前设备类型。
+ * @returns 无返回值。
+ */
+function syncEditorLayoutByDevice(currentDevice: DeviceType): void {
+    if (currentDevice === DeviceType.PC) {
+        stateManager.setCommandKeys(defaultCommandKeys.publicMdPc)
+    } else if (currentDevice === DeviceType.PAD) {
+        stateManager.setCommandKeys(defaultCommandKeys.publicMdPad)
+    } else {
+        stateManager.setCommandKeys(defaultCommandKeys.publicMdPhone)
+    }
+
+    if (lastSyncedDevice !== currentDevice) {
+        stateManager.setEditorShow(true)
+        stateManager.setPreviewShow(currentDevice !== DeviceType.PHONE)
+        lastSyncedDevice = currentDevice
+    }
+}
+
+/**
  * applyDraftToEditor 将本地草稿回填到编辑器状态中。
  * @returns 无返回值。
  */
@@ -154,6 +180,11 @@ const persistDraft = debounce(400, (content: string): void => {
     }
 })
 
+/**
+ * applyDraftToEditor 执行页面初始化阶段的纯状态准备工作。
+ * 该步骤需要先于 editorContent 相关 watch 注册, 避免草稿回填被误判为一次新的用户编辑。
+ * @returns 无返回值。
+ */
 applyDraftToEditor()
 
 onMounted(() => {
@@ -163,17 +194,7 @@ onMounted(() => {
 watch(
     () => device.value,
     (currentDevice) => {
-        if (currentDevice === DeviceType.PC) {
-            stateManager.setCommandKeys(defaultCommandKeys.publicMdPc)
-            return
-        }
-
-        if (currentDevice === DeviceType.PAD) {
-            stateManager.setCommandKeys(defaultCommandKeys.publicMdPad)
-            return
-        }
-
-        stateManager.setCommandKeys(defaultCommandKeys.publicMdPhone)
+        syncEditorLayoutByDevice(currentDevice)
     },
     { immediate: true },
 )

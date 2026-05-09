@@ -7,11 +7,13 @@
  */
 
 import { useMagicKeys } from "@vueuse/core"
+import { storeToRefs } from "pinia"
 import { computed, onMounted, type Ref, watch } from "vue"
 import { type EmojiExt } from "vue3-emoji-picker"
 
 import type { IconKeys } from "@/components/common/icons"
 import { useWebFullscreen } from "@/components/hooks/useWebFullscreen"
+import { DeviceType, useDeviceStore } from "@/stores/device"
 import { MessageUtil } from "@/utils/message"
 import { setCSSVariable } from "@/utils/style"
 
@@ -33,6 +35,8 @@ export function useToolbar(
 ) {
     // 状态管理
     const editorState = stateManager.getState()
+    const deviceStore = useDeviceStore()
+    const { device } = storeToRefs(deviceStore)
 
     /**
      * shouldIgnoreFullscreenEscape 判断当前 Escape 是否应忽略网页全屏退出。
@@ -70,6 +74,21 @@ export function useToolbar(
     })
 
     /**
+     * syncPhoneExclusiveView 在手机端切换编辑区与预览区的互斥显示状态。
+     * 手机端只允许同时展示一个主面板, 避免编辑区和预览区并排挤压。
+     * @param targetView - 目标展示区域, editor 表示编辑区, preview 表示预览区。
+     * @returns 无返回值。
+     */
+    const syncPhoneExclusiveView = (targetView: "editor" | "preview"): void => {
+        if (device.value !== DeviceType.PHONE) {
+            return
+        }
+
+        stateManager.setEditorShow(targetView === "editor")
+        stateManager.setPreviewShow(targetView === "preview")
+    }
+
+    /**
      * @description: 处理工具栏按钮点击事件
      * @param name 工具栏按钮对应的常量
      */
@@ -84,6 +103,11 @@ export function useToolbar(
         }
 
         if (name === CommandsKey.Preview) {
+            if (device.value === DeviceType.PHONE) {
+                syncPhoneExclusiveView("preview")
+                return
+            }
+
             stateManager.toggleEditorShow()
             if (!editorState.editorShow) {
                 stateManager.setPreviewShow(true)
@@ -92,6 +116,11 @@ export function useToolbar(
         }
 
         if (name === CommandsKey.Edit) {
+            if (device.value === DeviceType.PHONE) {
+                syncPhoneExclusiveView("editor")
+                return
+            }
+
             stateManager.togglePreviewShow()
             if (!editorState.previewShow) {
                 stateManager.setEditorShow(true)

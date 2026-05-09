@@ -86,8 +86,8 @@ const postPad = [
 
 // 手机端文章编辑器工具栏按钮
 const postPhone = [
-    CommandsKey.Undo,
-    CommandsKey.Redo,
+    // CommandsKey.Undo,
+    // CommandsKey.Redo,
     CommandsKey.Clear,
     CommandsKey.Heading,
     CommandsKey.Bold,
