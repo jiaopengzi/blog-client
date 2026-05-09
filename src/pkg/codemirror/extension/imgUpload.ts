@@ -22,7 +22,7 @@ import type { ImageUploadHandler } from "../options"
  * @returns 无返回值。
  */
 function insertImageMarkdown(imageUrl: string, view: EditorView): void {
-    const imageMarkdown = `![description](${imageUrl})\n`
+    const imageMarkdown = `![](${imageUrl})\n`
     view.dispatch({
         changes: { from: view.state.selection.main.from, insert: imageMarkdown },
     })

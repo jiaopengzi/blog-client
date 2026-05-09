@@ -269,27 +269,32 @@ export function useToolbar(
         stateManager.setIsShowEmojiPicker(false)
     }
 
-    // 插入表格行列
+    /**
+     * insertTableRowCol 按指定行列插入空白表格。
+     * 表头与内容单元格统一使用固定宽度的空白占位, 并让各列在源码中保持对齐。
+     */
     const insertTableRowCol = (rowCol: TableRowCol) => {
-        // content: "|column1|column2|column3|\n|:---:|:---:|:---:|\n|content1|content2|content3|",
         const { row, col } = rowCol
         let content = ""
+        const cellSeparator = "|"
+        const alignCell = ":-----:"
+        const emptyCell = "       "
 
         // 表头
         for (let i = 0; i < col; i++) {
-            content += "|column" + (i + 1) + (i === col - 1 ? "|\n" : "")
+            content += cellSeparator + emptyCell + (i === col - 1 ? `${cellSeparator}\n` : "")
         }
 
         // 对齐方式
-        content += "|"
+        content += cellSeparator
         for (let i = 0; i < col; i++) {
-            content += ":---:" + (i === col - 1 ? "|\n" : "|")
+            content += alignCell + (i === col - 1 ? `${cellSeparator}\n` : cellSeparator)
         }
 
         // 内容
         for (let i = 0; i < row; i++) {
             for (let j = 0; j < col; j++) {
-                content += "|content" + (j + 1) + (j === col - 1 ? "|\n" : "")
+                content += cellSeparator + emptyCell + (j === col - 1 ? `${cellSeparator}\n` : "")
             }
         }
 

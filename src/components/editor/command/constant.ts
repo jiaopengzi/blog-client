@@ -243,8 +243,7 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         // 代码块
         [CommandsKey.CodeBlock]: {
             tip: "代码块",
-            prefix: "\n```language\n",
-            content: "",
+            prefix: "\n```\n",
             suffix: "\n```\n",
             hotKey: "Ctrl+Shift+C",
             icon: IconKeys.CodeBlock,
@@ -261,13 +260,13 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         [CommandsKey.Link]: {
             tip: "链接",
             prefix: "[",
-            suffix: "](url)",
+            suffix: "]()",
             icon: IconKeys.Link,
         },
         // 图片
         [CommandsKey.Image]: {
             tip: "图片",
-            prefix: "![alt](",
+            prefix: "![](",
             suffix: ")",
             hotKey: "Ctrl+Shift+P",
             icon: IconKeys.Image,
@@ -296,7 +295,6 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         [CommandsKey.MathBlock]: {
             tip: "块级数学公式",
             prefix: "\n$$\n",
-            content: "\n",
             suffix: "\n$$\n",
             hotKey: "Ctrl+Shift+M",
             icon: IconKeys.MathBlock,
@@ -445,9 +443,8 @@ export function createMarkdownEditorCommands(): MarkdownEditorCommands {
         // 详情
         [CommandsKey.Details]: {
             tip: "详情",
-            prefix: "<details><summary>Details</summary>\n<p>\n",
-            content: "\n\n\n",
-            suffix: "</p>\n</details>",
+            prefix: "\n<details><summary>Details</summary>\n<p>\n",
+            suffix: "\n</p>\n</details>\n",
             hotKey: "Ctrl+Shift+D",
             icon: IconKeys.Details,
         },

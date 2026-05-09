@@ -8,7 +8,7 @@
 
 <template>
     <div ref="toolbarRef" id="toolbar">
-        <button v-for="btn in toolbarBtns" type="button" :key="btn.name" class="toolbar-btn" @click="emitToolbarBtnClicked(btn.name)">
+        <button v-for="btn in toolbarBtns" type="button" :key="btn.name" class="toolbar-btn" @mousedown.prevent @click="emitToolbarBtnClicked(btn.name)">
             <!-- 付费 -->
             <BarPay v-if="btn.name === CommandsKey.PayContent" :icon="btn.icon" @pay-select="handlePaySelect" />
 
