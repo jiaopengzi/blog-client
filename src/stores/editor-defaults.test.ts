@@ -9,12 +9,19 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
 
 import {
+    DEFAULT_VIM_MAPPINGS,
+    buildVimMappingText,
     buildPowerBiContent,
     buildWechatCaptchaPrefix,
+    clearVimDefaults,
     clearPowerBiDefaults,
     clearWechatCaptchaDefaults,
+    getDefaultVimDefaults,
+    loadVimDefaults,
     loadPowerBiDefaults,
     loadWechatCaptchaDefaults,
+    parseVimMappingText,
+    saveVimDefaults,
     savePowerBiDefaults,
     saveWechatCaptchaDefaults,
 } from "./editor-defaults"
@@ -47,6 +54,35 @@ describe("saveWechatCaptchaDefaults + loadWechatCaptchaDefaults", () => {
         saveWechatCaptchaDefaults(defaults)
         const loaded = loadWechatCaptchaDefaults()
         expect(loaded).toEqual(defaults)
+    })
+})
+
+describe("saveVimDefaults + loadVimDefaults", () => {
+    it("保存后可以正确读取 Vim 默认值(round-trip)", () => {
+        const defaults = {
+            enabled: true,
+            mappings: [
+                { lhs: "yy", rhs: '"+yy', context: "normal" as const },
+                { lhs: "p", rhs: '"+p', context: "normal" as const },
+                { lhs: "jj", rhs: "<Esc>", context: "insert" as const },
+            ],
+        }
+
+        saveVimDefaults(defaults)
+        const loaded = loadVimDefaults()
+
+        expect(loaded).toEqual(defaults)
+    })
+
+    it("localStorage 中无对应键时 loadVimDefaults 返回 null", () => {
+        const result = loadVimDefaults()
+        expect(result).toBeNull()
+    })
+
+    it("保存空映射后会保留为空映射, 不会被自动填充", () => {
+        saveVimDefaults({ enabled: true, mappings: [] })
+
+        expect(loadVimDefaults()).toEqual({ enabled: true, mappings: [] })
     })
 })
 
@@ -93,6 +129,68 @@ describe("clearPowerBiDefaults", () => {
         clearPowerBiDefaults()
         const result = buildPowerBiContent(loadPowerBiDefaults())
         expect(result).toBe('<power-bi src="" maskcolor=""></power-bi>')
+    })
+})
+
+describe("Vim 映射文本工具", () => {
+    it("buildVimMappingText 会将映射数组序列化为多行文本", () => {
+        const result = buildVimMappingText(DEFAULT_VIM_MAPPINGS)
+
+        expect(result).toBe("")
+    })
+
+    it("buildVimMappingText 会输出括号调用式文本, 并按需带上 context", () => {
+        const result = buildVimMappingText([
+            { lhs: "yy", rhs: '"+yy', context: "normal" },
+            { lhs: "jj", rhs: "<Esc>", context: "insert" },
+        ])
+
+        expect(result).toBe('("yy", "\\"+yy", "normal")\n("jj", "<Esc>", "insert")')
+    })
+
+    it("parseVimMappingText 支持新的括号调用式格式", () => {
+        const result = parseVimMappingText('("yy", "\\"+yy", "normal")\n("jj", "<Esc>", "insert")')
+
+        expect(result).toEqual([
+            { lhs: "yy", rhs: '"+yy', context: "normal" },
+            { lhs: "jj", rhs: "<Esc>", context: "insert" },
+        ])
+    })
+
+    it("parseVimMappingText 继续兼容箭头格式和空格格式", () => {
+        const result = parseVimMappingText('yy => "+yy\np <Esc>')
+
+        expect(result).toEqual([
+            { lhs: "yy", rhs: '"+yy', context: "normal" },
+            { lhs: "p", rhs: "<Esc>", context: "insert" },
+        ])
+    })
+
+    it("parseVimMappingText 在空内容时返回空映射", () => {
+        const result = parseVimMappingText("   \n\n")
+
+        expect(result).toEqual([])
+    })
+
+    it("parseVimMappingText 在格式错误时抛出带行号的异常", () => {
+        expect(() => parseVimMappingText("invalid-line")).toThrow("第 1 行格式无效")
+    })
+
+    it("parseVimMappingText 在 context 非法时抛出异常", () => {
+        expect(() => parseVimMappingText('("jj", "<Esc>", "command")')).toThrow("第 1 行格式无效")
+    })
+})
+
+describe("clearVimDefaults", () => {
+    it("调用后 loadVimDefaults 返回 null", () => {
+        saveVimDefaults({ enabled: true, mappings: [{ lhs: "yy", rhs: '"+yy' }] })
+        clearVimDefaults()
+
+        expect(loadVimDefaults()).toBeNull()
+    })
+
+    it("getDefaultVimDefaults 使用空用户映射, 保持原生 Vim 行为", () => {
+        expect(getDefaultVimDefaults().mappings).toEqual(DEFAULT_VIM_MAPPINGS)
     })
 })
 

@@ -36,7 +36,7 @@ import { customKeymap } from "./extension/hotkey"
 import { createImageUploadExtensions } from "./extension/imgUpload"
 import { createAutoFixExtension, createMarkdownLinter } from "./extension/mdlint"
 import { getTheme, Theme, themeCompartment, ThemeMode } from "./extension/theme"
-import { vim, vimModeCompartment } from "./extension/vim"
+import { createVimExtension, vimModeCompartment } from "./extension/vim"
 import { defaultOptions, type DefaultSetupOptions } from "./options"
 
 const sharedMarkdownLanguage = markdown()
@@ -123,8 +123,7 @@ export const createDefaultSetup = (opts: DefaultSetupOptions = defaultOptions())
 
     const extension: Extension[] = [
         ...sharedBaseExtensions, // 基础 extension
-        // 参考 https://github.com/replit/codemirror-vim/issues/227
-        vimModeCompartment.of(opts.vimMode ? vim({ status: true }) : []), // vim 模式
+        vimModeCompartment.of(opts.vimMode ? createVimExtension() : []), // vim 模式
         completionCompartment.of(unifiedCompletion(opts.mention, { enableMention: enableMentionCompletion, enableEmoji: true })), // 补全
         ...createPlaceholderExtensions(opts.placeholderText), // 占位符文本
         sharedMarkdownLanguage, // markdown 语法

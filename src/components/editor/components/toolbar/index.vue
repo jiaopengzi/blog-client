@@ -24,6 +24,15 @@
             <!-- 提示 -->
             <BarAlert v-else-if="btn.name === CommandsKey.Alert" :icon="btn.icon" @alert-select="handleAlertSelect" />
 
+            <!-- vim -->
+            <BarVim
+                v-else-if="btn.name === CommandsKey.Vim"
+                :icon="btn.icon"
+                :vim-mode="vimMode"
+                @vim-mode-change="handleVimModeChange"
+                @vim-settings="handleVimSettings"
+            />
+
             <!-- 工具 -->
             <BarTool v-else-if="btn.name === CommandsKey.Tool" :icon="btn.icon" @tool-select="handleToolSelect" @tool-settings="handleToolSettings" />
 
@@ -49,12 +58,14 @@ import BarHeading from "./components/heading"
 import BarPay, { type PayTagItem } from "./components/pay"
 import BarTable, { type TableRowCol } from "./components/table"
 import BarTool from "./components/tool"
+import BarVim from "./components/vim"
 
 defineOptions({ name: "EditorToolbar" })
 
 // 定义 props
 const { toolbarBtns } = defineProps<{
     toolbarBtns: Array<{ name: CommandsKey; display: string; icon: IconKeys }> // 预览内容
+    vimMode?: boolean // Vim 当前启用状态
 }>()
 
 // 子组件 传参
@@ -67,6 +78,8 @@ const emit = defineEmits<{
     (e: "alert-select", val: Alerts): void
     (e: "tool-select", name: CommandsKey): void
     (e: "tool-settings", name: CommandsKey): void
+    (e: "vim-mode-change", enabled: boolean): void
+    (e: "vim-settings", name: CommandsKey): void
     (e: "toolbar-height", height: string): void
 }>()
 
@@ -79,6 +92,7 @@ const toolbarMenuCommands = new Set<CommandsKey>([
     CommandsKey.Emoji,
     CommandsKey.Table,
     CommandsKey.Alert,
+    CommandsKey.Vim,
     CommandsKey.Tool,
 ])
 
@@ -121,6 +135,14 @@ const handleToolSelect = (name: CommandsKey) => {
 
 const handleToolSettings = (name: CommandsKey) => {
     emit("tool-settings", name)
+}
+
+const handleVimModeChange = (enabled: boolean) => {
+    emit("vim-mode-change", enabled)
+}
+
+const handleVimSettings = () => {
+    emit("vim-settings", CommandsKey.Vim)
 }
 
 /**

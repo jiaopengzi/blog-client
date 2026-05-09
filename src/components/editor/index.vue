@@ -12,6 +12,7 @@
         <div class="md-toolbar">
             <Toolbar
                 :toolbar-btns="toolbarBtns"
+                :vim-mode="state.vimMode"
                 @toolbar-btn-clicked="toolbarBtnClicked"
                 @heading-select="toolbarBtnClicked"
                 @pay-select="insertPay"
@@ -20,6 +21,8 @@
                 @alert-select="insertAlert"
                 @tool-select="toolbarBtnClicked"
                 @tool-settings="openSettingsDialog"
+                @vim-mode-change="setVimMode"
+                @vim-settings="openSettingsDialog"
                 @toolbar-height="updateMdContainerStyle"
             />
         </div>
@@ -51,6 +54,7 @@
                     :doc="state.editorContent"
                     :height="cmHeight"
                     :vim-mode="state.vimMode"
+                    :vim-mappings="state.vimMappings"
                     :mentions="state.mentions"
                     :is-user-scroll-cm-editor="state.isUserScrollCmEditor"
                     :heading-show-current-index="state.headingShowCurrentIndex"
@@ -109,7 +113,12 @@
             </div>
         </div>
 
-        <SettingsDialog v-model="settingsDialogVisible" :command="settingsDialogCommand" @close="settingsDialogCommand = null" />
+        <SettingsDialog
+            v-model="settingsDialogVisible"
+            :command="settingsDialogCommand"
+            @close="settingsDialogCommand = null"
+            @vim-save="handleVimSettingsSave"
+        />
     </div>
 </template>
 
@@ -125,6 +134,7 @@ import { PayStrategy, type PostVideoTocTree } from "@/api/post/common"
 import type { MarkdownRulesConfig } from "@/pkg/codemirror/extension/mdlint/types"
 import { getTheme, Theme, ThemeMode } from "@/pkg/codemirror/extension/theme"
 import type { ImageUploadHandler } from "@/pkg/codemirror/options"
+import { loadVimDefaults, type VimDefaults } from "@/stores/editor-defaults"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 
 import { CommandsKey } from "./command"
@@ -370,6 +380,22 @@ const openSettingsDialog = (name: CommandsKey) => {
     settingsDialogVisible.value = true
 }
 
+/**
+ * handleVimSettingsSave 在 Vim 设置保存后同步当前编辑器状态.
+ * @param data - 最新 Vim 配置.
+ * @returns 无返回值.
+ */
+const handleVimSettingsSave = (data: VimDefaults): void => {
+    stateManager.setVimMode(data.enabled)
+    stateManager.setVimMappings(data.mappings)
+}
+
+const persistedVimDefaults = loadVimDefaults()
+if (persistedVimDefaults) {
+    stateManager.setVimMode(persistedVimDefaults.enabled)
+    stateManager.setVimMappings(persistedVimDefaults.mappings)
+}
+
 // ref
 const mdLayoutRef = useTemplateRef<HTMLElement | null>("mdLayoutRef") // 编辑器布局
 const mdContainerRef = useTemplateRef<HTMLElement | null>("mdContainerRef") // 编辑器容器
@@ -377,7 +403,7 @@ const codemirrorRef = useTemplateRef<CodemirrorRef | null>("codemirrorRef") // �
 const htmlPreviewRef = useTemplateRef<HtmlPreviewRef | null>("htmlPreviewRef") // 预览
 
 // 工具栏点击事件
-const { toolbarBtns, toolbarBtnClicked, updateMdContainerStyle, insertPay, emojiPickerSelected, insertTableRowCol, insertAlert } = useToolbar(
+const { toolbarBtns, toolbarBtnClicked, updateMdContainerStyle, insertPay, emojiPickerSelected, insertTableRowCol, insertAlert, setVimMode } = useToolbar(
     mdLayoutRef,
     mdContainerRef,
     stateManager,

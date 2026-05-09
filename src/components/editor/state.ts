@@ -10,6 +10,7 @@ import type { Completion } from "@codemirror/autocomplete"
 import { type Reactive, reactive } from "vue"
 
 import { request } from "@/api/request"
+import type { VimKeyMapping } from "@/stores/editor-defaults"
 
 import { CommandsKey } from "./command"
 import type { CmCommand } from "./components/codemirror"
@@ -192,9 +193,19 @@ export class EditorStateManager {
         this.state.viewCommand = command
     }
 
+    // 设置 Vim 模式状态
+    setVimMode(vimMode: boolean): void {
+        this.state.vimMode = vimMode
+    }
+
     // 切换 vim 模式
     toggleVimMode(): void {
-        this.state.vimMode = !this.state.vimMode
+        this.setVimMode(!this.state.vimMode)
+    }
+
+    // 设置 Vim 快捷键映射
+    setVimMappings(vimMappings: VimKeyMapping[]): void {
+        this.state.vimMappings = vimMappings
     }
 
     // 设置鼠标状态

@@ -24,7 +24,7 @@ import { EditorView } from "@codemirror/view"
 
 import { completionCompartment, unifiedCompletion } from "@/pkg/codemirror/extension/completion"
 import { getTheme, Theme, themeCompartment, ThemeMode } from "@/pkg/codemirror/extension/theme"
-import { vim, vimModeCompartment } from "@/pkg/codemirror/extension/vim"
+import { applyVimMappings, createVimExtension, vimModeCompartment } from "@/pkg/codemirror/extension/vim"
 import { type DefaultSetupOptions } from "@/pkg/codemirror/options"
 import { createDefaultSetup } from "@/pkg/codemirror/setup"
 
@@ -37,6 +37,7 @@ const {
     doc, // 编辑器内容
     cmCommand = undefined, // 编辑器命令
     vimMode = false, // 是否开启 vim 模式
+    vimMappings = [], // Vim 快捷键映射
     initDocIsEmpty = true, // 初始文档是否为空,默认为空
     height = "100%", // 编辑器高度
     width = "100%", // 编辑器宽度
@@ -154,6 +155,8 @@ const updateDocInfo: Extension = EditorView.updateListener.of((viewUpdate: ViewU
 // 初始化 CodeMirror
 const initCodeMirror = (opts: DefaultSetupOptions) => {
     if (codemirrorRef.value) {
+        applyVimMappings(vimMappings)
+
         // 初始化编辑器
         const state = EditorState.create({
             doc: doc || "",
@@ -317,8 +320,21 @@ watch(
 
         // 重新加载 vim 模式
         cmView.dispatch({
-            effects: vimModeCompartment.reconfigure(newVal ? vim({ status: true }) : []),
+            effects: vimModeCompartment.reconfigure(newVal ? createVimExtension() : []),
         })
+    },
+)
+
+/**
+ * 监听 vimMappings 变化, 重新应用用户映射和默认剪贴板桥接.
+ */
+watch(
+    () => vimMappings,
+    (newMappings) => {
+        applyVimMappings(newMappings ?? [])
+    },
+    {
+        deep: true,
     },
 )
 

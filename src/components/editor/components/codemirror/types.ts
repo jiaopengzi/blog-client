@@ -10,6 +10,7 @@ import type { Completion } from "@codemirror/autocomplete"
 import { type Extension } from "@codemirror/state"
 
 import type { CreateSetupType, ImageUploadHandler, MarkdownRulesConfig } from "@/pkg/codemirror"
+import type { VimKeyMapping } from "@/stores/editor-defaults"
 
 import type { CommandsKey, MarkdownEditorCommandItem } from "../../command"
 
@@ -38,6 +39,7 @@ export interface CodeEditorProps {
 
     cmCommand?: CmCommand // 命令
     vimMode?: boolean // 是否开启 vim 模式
+    vimMappings?: VimKeyMapping[] // Vim 快捷键映射
     initDocIsEmpty?: boolean // 初始内容是否为空, 默认为 true 即默认为空
     width?: string // 宽度
     height?: string // 高度

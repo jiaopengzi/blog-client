@@ -63,6 +63,7 @@ export function createDefaultEditorState(options: EditorStateOptions = {}): Edit
         mouseStatus: void 0, // 鼠标状态 cmEditor 编辑器 preview 预览
         cmCommand: { commandName: "" as CommandsKey, time: new Date() }, // 命令
         vimMode: false, // 是否开启 vim 模式
+        vimMappings: [], // Vim 用户快捷键映射
         mentions: [], // @ 提及补全
         commandKeys: defaultCommandKeys.postPc, // 默认使用 postPc 模式的快捷键
         mode: "post", // 默认模式为文章模式

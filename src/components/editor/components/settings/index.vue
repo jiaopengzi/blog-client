@@ -9,6 +9,7 @@
 <template>
     <el-dialog v-model="dialogVisible" :title="dialogTitle" width="400px" :close-on-click-modal="false" @close="handleClose">
         <PowerbiSettings v-if="command === CommandsKey.PowerBi" :initial-values="powerBiInitialValues" @save="handlePowerBiSave" @cancel="handleClose" />
+        <VimSettings v-else-if="command === CommandsKey.Vim" :initial-values="vimInitialValues" @save="handleVimSave" @cancel="handleClose" />
         <WechatCaptchaSettings
             v-else-if="command === CommandsKey.WechatCaptcha"
             :initial-values="wechatCaptchaInitialValues"
@@ -22,18 +23,23 @@
 import { computed } from "vue"
 
 import {
+    getDefaultVimDefaults,
     clearPowerBiDefaults,
     clearWechatCaptchaDefaults,
     loadPowerBiDefaults,
+    loadVimDefaults,
     loadWechatCaptchaDefaults,
     savePowerBiDefaults,
+    saveVimDefaults,
     saveWechatCaptchaDefaults,
     type PowerBiDefaults,
+    type VimDefaults,
     type WechatCaptchaDefaults,
 } from "@/stores/editor-defaults"
 
 import { CommandsKey } from "../../command"
 import PowerbiSettings from "./powerbi-settings"
+import VimSettings from "./vim-settings"
 import WechatCaptchaSettings from "./wechat-captcha-settings"
 
 defineOptions({ name: "SettingsDialog" })
@@ -47,11 +53,13 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (event: "close"): void
+    (event: "vim-save", data: VimDefaults): void
 }>()
 
 // 弹窗标题映射，扩展时在此添加新条目
 const dialogTitleMap: Partial<Record<CommandsKey, string>> = {
     [CommandsKey.PowerBi]: "PowerBi 默认设置",
+    [CommandsKey.Vim]: "Vim 映射设置",
     [CommandsKey.WechatCaptcha]: "WechatCaptcha 默认设置",
 }
 
@@ -66,6 +74,14 @@ const handleClose = () => {
 // 弹窗打开时从 localStorage 读取已保存的默认值传给子组件
 const powerBiInitialValues = computed(() => (dialogVisible.value && props.command === CommandsKey.PowerBi ? loadPowerBiDefaults() : null))
 
+const vimInitialValues = computed(() => {
+    if (!dialogVisible.value || props.command !== CommandsKey.Vim) {
+        return null
+    }
+
+    return loadVimDefaults() ?? getDefaultVimDefaults(false)
+})
+
 const wechatCaptchaInitialValues = computed(() => (dialogVisible.value && props.command === CommandsKey.WechatCaptcha ? loadWechatCaptchaDefaults() : null))
 
 // 保存 PowerBi 设置，data 为 null 时清除 localStorage
@@ -75,6 +91,17 @@ const handlePowerBiSave = (data: PowerBiDefaults | null) => {
     } else {
         clearPowerBiDefaults()
     }
+    handleClose()
+}
+
+/**
+ * handleVimSave 保存 Vim 设置, 并同步通知父组件刷新当前编辑器状态.
+ * @param data - 最新 Vim 配置.
+ * @returns 无返回值.
+ */
+const handleVimSave = (data: VimDefaults) => {
+    saveVimDefaults(data)
+    emit("vim-save", data)
     handleClose()
 }
 

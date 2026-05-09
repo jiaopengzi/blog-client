@@ -8,6 +8,8 @@
 
 import type { Completion } from "@codemirror/autocomplete"
 
+import type { VimKeyMapping } from "@/stores/editor-defaults"
+
 import { CommandsKey } from "./command"
 import type { CmCommand, CodemirrorRef } from "./components/codemirror"
 import type { ViewCommand } from "./components/preview"
@@ -95,6 +97,7 @@ export interface EditorState {
     isShowEmojiPicker: boolean // 是否显示 emoji picker
     isShortcutKey: boolean // 是否开启快捷键
     vimMode: boolean // 是否开启 vim 模式
+    vimMappings: VimKeyMapping[] // Vim 用户快捷键映射
     mentions: Completion[] // @ 提及补全
     commandKeys: CommandsKey[] // 工具栏按钮
     mode: EditorMode // 编辑器模式

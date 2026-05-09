@@ -17,7 +17,7 @@ import { DeviceType, useDeviceStore } from "@/stores/device"
 import { MessageUtil } from "@/utils/message"
 import { setCSSVariable } from "@/utils/style"
 
-import { buildPowerBiContent, buildWechatCaptchaPrefix, loadPowerBiDefaults, loadWechatCaptchaDefaults } from "@/stores/editor-defaults"
+import { buildPowerBiContent, buildWechatCaptchaPrefix, loadPowerBiDefaults, loadWechatCaptchaDefaults, saveVimDefaults } from "@/stores/editor-defaults"
 
 import { CommandsKey, markdownEditorCommands } from "../command"
 import { Alerts, type PayTagItem, type TableRowCol } from "../components/toolbar"
@@ -74,6 +74,16 @@ export function useToolbar(
     })
 
     /**
+     * setVimMode 更新 Vim 启用状态, 并将当前映射与开关状态一起持久化到 localStorage.
+     * @param enabled - 是否启用 Vim 模式.
+     * @returns 无返回值.
+     */
+    const setVimMode = (enabled: boolean): void => {
+        stateManager.setVimMode(enabled)
+        saveVimDefaults({ enabled, mappings: editorState.vimMappings })
+    }
+
+    /**
      * syncPhoneExclusiveView 在手机端切换编辑区与预览区的互斥显示状态。
      * 手机端只允许同时展示一个主面板, 避免编辑区和预览区并排挤压。
      * @param targetView - 目标展示区域, editor 表示编辑区, preview 表示预览区。
@@ -98,7 +108,7 @@ export function useToolbar(
         }
 
         if (name === CommandsKey.Vim) {
-            stateManager.toggleVimMode()
+            setVimMode(!editorState.vimMode)
             return
         }
 
@@ -336,5 +346,6 @@ export function useToolbar(
         emojiPickerSelected,
         insertTableRowCol,
         insertAlert,
+        setVimMode,
     }
 }
