@@ -9,6 +9,8 @@
 import DOMPurify from "dompurify"
 import { describe, expect, it, vi } from "vitest"
 
+import { ImageCaptionFormat, setImageCaptionFormat } from "@/pkg/marked/extension/renderer"
+
 import { anchorGenerator, createRegexCache, generateAllHeadingAnchor, renderMarkdownDocument, scaleDisplayKatexByFontSize } from "./utils"
 
 describe("createRegexCache", () => {
@@ -375,5 +377,30 @@ describe("renderMarkdownDocument", () => {
         expect(firstRender.tocHtml).toEqual(secondRender.tocHtml)
         expect(firstRender.imgUrls).toEqual(["https://example.com/cache-test.png"])
         expect(sanitizeSpy).toHaveBeenCalledTimes(1)
+    })
+
+    it("图注格式变化时应命中不同的渲染缓存", () => {
+        const sanitizeSpy = vi.spyOn(DOMPurify, "sanitize")
+        sanitizeSpy.mockClear()
+        const markdown = ["# 图注缓存", "", "![图片1](https://example.com/demo-image.png)"].join("\n")
+
+        document.body.classList.add("md-page-route")
+
+        setImageCaptionFormat(ImageCaptionFormat.Alt)
+        const altRender = renderMarkdownDocument(markdown, false)
+
+        setImageCaptionFormat(ImageCaptionFormat.Filename)
+        const filenameRender = renderMarkdownDocument(markdown, false)
+
+        setImageCaptionFormat(ImageCaptionFormat.None)
+        const noneRender = renderMarkdownDocument(markdown, false)
+
+        expect(altRender.html).toContain("图片1")
+        expect(filenameRender.html).toContain('<figcaption class="jpz-image-caption">demo-image</figcaption>')
+        expect(noneRender.html).not.toContain("jpz-image-caption")
+        expect(sanitizeSpy).toHaveBeenCalledTimes(3)
+
+        document.body.classList.remove("md-page-route")
+        setImageCaptionFormat(ImageCaptionFormat.Alt)
     })
 })

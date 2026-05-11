@@ -16,6 +16,7 @@
             }
         "
         id="preview"
+        :class="previewRootClassName"
         @click="handleDelegateClick"
         @mouseenter="onMouseEnter"
         @mouseleave="onMouseLeave"
@@ -105,6 +106,7 @@
             }
         "
         id="preview-copy"
+        :class="previewRootClassName"
         data-preview="wechat"
         v-stable-html="wechatHtml"
         :style="isShowPreviewWechat ? {} : { position: 'absolute', left: '-99999px', top: '0', width: '100%', pointerEvents: 'none', overflow: 'hidden' }"
@@ -156,6 +158,7 @@ defineOptions({ name: "HtmlPreview" })
 const {
     html, // html 内容
     imgUrls, // 图片地址 list
+    previewRootClassName = "", // 预览根节点附加类名
     isEnableCopyCache = false, // 是否启用复制缓存预生成
     isShowElImageViewer, // 是否显示图片预览
     width, // 宽度

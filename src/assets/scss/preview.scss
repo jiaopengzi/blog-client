@@ -182,7 +182,10 @@
     }
 
     // 嵌套列表不需要额外外间距
-    ol ol, ol ul, ul ol, ul ul {
+    ol ol,
+    ol ul,
+    ul ol,
+    ul ul {
         margin: 0;
     }
 
@@ -289,10 +292,45 @@
         cursor: pointer;
     }
 
+    // 图注 figure
+    .jpz-image-figure {
+        margin: 1em 0;
+        text-align: center;
+
+        .jpz-image-wrapper {
+            display: block;
+
+            img {
+                display: block;
+                max-width: 100%;
+                width: auto;
+                margin: 0 auto;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+        }
+
+        .jpz-image-caption {
+            display: block;
+            margin-top: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--jpz-text-color-secondary);
+            text-align: center;
+        }
+
+        &--no-caption {
+            .jpz-image-wrapper img {
+                margin: 4px auto;
+            }
+        }
+    }
+
     // 段落 p
     p {
         margin: 0.75em 0;
         line-height: 1.8em;
+        text-indent: 2em;
         // 自动换行
         overflow-wrap: break-word;
         color: var(--jpz-text-color-primary);

@@ -11,6 +11,7 @@ import DOMPurify, { type Config } from "dompurify"
 
 // import html2canvas from "html2canvas"
 import { CustomElementAttributes, Names } from "@/customElements"
+import { getActiveImageCaptionFormat } from "@/pkg/marked/extension/renderer"
 import createMarked from "@/pkg/marked/new-marked"
 import { copyHtml } from "@/utils/clipboard"
 import { escapeWhitespaceInHtmlContent } from "@/utils/escape"
@@ -260,13 +261,22 @@ function cloneMarkdownRenderResult(result: MarkdownRenderResult): MarkdownRender
 }
 
 /**
+ * getMarkdownRenderVariantKey 获取当前 Markdown 渲染环境的变体键。
+ * 当前用于区分会影响最终 HTML 输出的图注格式, 避免不同模式错误复用同一份缓存。
+ * @returns 当前渲染环境对应的变体键。
+ */
+function getMarkdownRenderVariantKey(): string {
+    return `image-caption:${getActiveImageCaptionFormat()}`
+}
+
+/**
  * getMarkdownRenderCacheKey 为 Markdown 渲染结果生成缓存 key.
  * @param markdownSrc Markdown 原文.
  * @param isRemoveFirstH1 是否移除首个 H1.
  * @returns 当前输入对应的缓存 key.
  */
 function getMarkdownRenderCacheKey(markdownSrc: string, isRemoveFirstH1: boolean): string {
-    return `${Number(isRemoveFirstH1)}:${markdownSrc}`
+    return `${Number(isRemoveFirstH1)}:${getMarkdownRenderVariantKey()}:${markdownSrc}`
 }
 
 /**

@@ -19,6 +19,12 @@
                     <div class="md-page-controls">
                         <ThemePresetSelector :model-value="activeThemePreset" :presets="themePresetOptions" @update:model-value="selectThemePreset" />
 
+                        <button type="button" class="md-page-customize-btn" aria-label="自定义页面样式" title="自定义页面样式" @click="showCustomizer = true">
+                            <span class="md-page-customize-btn__icon">
+                                <j-icon :name="IconKeys.Setting" custom-class="md-page-customize-btn__icon-svg" />
+                            </span>
+                        </button>
+
                         <button type="button" class="md-page-home-btn" aria-label="返回首页" title="返回首页" @click="goHome">
                             <span class="md-page-home-btn__icon">
                                 <j-icon :name="IconKeys.Home" custom-class="md-page-home-btn__icon-svg" />
@@ -36,6 +42,7 @@
             <div class="md-page-editor-wrap">
                 <JEditor
                     :state-manager="stateManager"
+                    preview-root-class-name="md-page-preview"
                     :is-enable-copy-cache="false"
                     :placeholder-text="placeholderText"
                     :theme="theme"
@@ -45,6 +52,8 @@
         </div>
     </section>
 
+    <MdCustomizer v-model:visible="showCustomizer" @settings-changed="onMdCustomSettingsChanged" />
+
     <FooterStatistics v-if="optionsStore.isShowFooterStatistics" />
 </template>
 
@@ -52,19 +61,23 @@
 import { useHead } from "@unhead/vue"
 import { storeToRefs } from "pinia"
 import { debounce } from "throttle-debounce"
-import { computed, onBeforeUnmount, onMounted, reactive, watch } from "vue"
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue"
 import { useRouter } from "vue-router"
 
 import { IconKeys } from "@/components/common/icons"
 import FooterStatistics from "@/components/layout/footer-statistics"
 import JEditor, { defaultCommandKeys, EditorStateManager } from "@/components/editor"
 import { getFirstLevelOneMarkdownHeadingText } from "@/components/editor/utils"
+import { ImageCaptionFormat, setImageCaptionFormat } from "@/pkg/marked/extension/renderer"
+import { type HljsThemeName, setHljsTheme } from "@/pkg/highlight.js/theme-switcher"
 import { RouteNames } from "@/router"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 import { loadPublicMdDraft, savePublicMdDraft } from "@/stores/md-draft"
+import { loadMdCustomState } from "@/stores/md-custom"
 import { useTheme } from "@/theme/useTheme"
 import ThemePresetSelector from "@/theme/preset-selector"
 import { useOptionsStore } from "@/stores/options"
+import MdCustomizer from "./component/MdCustomizer.vue"
 
 defineOptions({ name: "PublicMarkdownPage" })
 
@@ -74,6 +87,8 @@ type SaveStatus = {
 }
 
 const placeholderText = "开始输入 Markdown..."
+
+const showCustomizer = ref(false)
 
 const router = useRouter()
 const deviceStore = useDeviceStore()
@@ -187,8 +202,33 @@ const persistDraft = debounce(400, (content: string): void => {
  */
 applyDraftToEditor()
 
+/**
+ * applyMdCustomSettings 加载并应用用户自定义的 MD 页面设置。
+ * @returns 无返回值。
+ */
+function applyMdCustomSettings(): void {
+    const custom = loadMdCustomState()
+
+    setImageCaptionFormat(custom.imageCaptionFormat as ImageCaptionFormat)
+
+    void setHljsTheme(custom.codeBlockTheme as HljsThemeName).then(() => {
+        if (editorState.editorContent) {
+            stateManager.updateState(editorState.editorContent)
+        }
+    })
+}
+
+/**
+ * onMdCustomSettingsChanged 当用户自定义设置变更时重新渲染预览。
+ * @returns 无返回值。
+ */
+function onMdCustomSettingsChanged(): void {
+    applyMdCustomSettings()
+}
+
 onMounted(() => {
     toggleFullscreenRouteClass(true)
+    applyMdCustomSettings()
 })
 
 watch(
@@ -352,6 +392,47 @@ onBeforeUnmount(() => {
         background: color-mix(in srgb, var(--jpz-bg-color) 72%, var(--jpz-color-primary) 28%);
         box-shadow: 0 12px 24px color-mix(in srgb, var(--jpz-box-shadow) 18%, transparent);
     }
+}
+
+.md-page-customize-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 1px solid var(--jpz-border-color);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--jpz-bg-color) 88%, var(--jpz-color-primary) 12%);
+    color: var(--jpz-text-color-primary);
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-1px);
+        border-color: var(--jpz-color-primary);
+        background: color-mix(in srgb, var(--jpz-bg-color) 72%, var(--jpz-color-primary) 28%);
+        box-shadow: 0 12px 24px color-mix(in srgb, var(--jpz-box-shadow) 18%, transparent);
+    }
+}
+
+.md-page-customize-btn__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.md-page-customize-btn__icon-svg {
+    width: 16px;
+    height: 16px;
+    fill: var(--jpz-color-primary);
 }
 
 .md-page-home-btn__icon {

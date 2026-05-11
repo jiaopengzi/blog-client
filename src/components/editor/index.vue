@@ -89,6 +89,7 @@
                     ref="htmlPreviewRef"
                     :html="state.html"
                     :img-urls="state.imgUrls"
+                    :preview-root-class-name="previewRootClassName"
                     :is-enable-copy-cache="isEnableCopyCache"
                     :is-show-el-image-viewer="state.isShowElImageViewer"
                     :is-show-preview-wechat="state.isShowPreviewWechat"
@@ -167,6 +168,7 @@ defineOptions({ name: "JEditor" })
 const {
     stateManager,
     postId = "",
+    previewRootClassName = "",
     isEnableCopyCache = false,
     isAdminVideo = false,
     isPaid = false,
@@ -184,6 +186,7 @@ const {
 } = defineProps<{
     stateManager: EditorStateManager
     postId?: string // 文章ID
+    previewRootClassName?: string // 预览根节点附加类名
     isEnableCopyCache?: boolean // 是否启用复制缓存预生成
     isAdminVideo?: boolean // 是否使用管理员视频接口
     isPaid?: boolean // 是否付费阅读

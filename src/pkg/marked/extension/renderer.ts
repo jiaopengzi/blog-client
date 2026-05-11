@@ -13,6 +13,76 @@ import { escapeWhitespaceInHtmlContent } from "@/utils/escape"
 
 import { taskListIcon, TaskListStatus } from "./todo-list"
 
+export enum ImageCaptionFormat {
+    Alt = "alt",
+    Filename = "filename",
+    None = "none",
+}
+
+let currentImageCaptionFormat: ImageCaptionFormat = ImageCaptionFormat.Alt
+
+/**
+ * @description: 获取当前渲染阶段实际生效的图注格式.
+ * 非 /md 页面保持主站默认行为, 即优先使用图片 alt 作为图注.
+ * @return 当前渲染应使用的图注格式.
+ */
+export function getActiveImageCaptionFormat(): ImageCaptionFormat {
+    if (typeof document === "undefined") {
+        return ImageCaptionFormat.Alt
+    }
+
+    return document.body.classList.contains("md-page-route") ? currentImageCaptionFormat : ImageCaptionFormat.Alt
+}
+
+/**
+ * @description: 设置 /md 页面使用的图注格式.
+ * @param format 图注格式.
+ * @return 无返回值.
+ */
+export function setImageCaptionFormat(format: ImageCaptionFormat): void {
+    currentImageCaptionFormat = format
+}
+
+/**
+ * @description: 获取当前保存的 /md 页面图注格式.
+ * @return 当前保存的图注格式.
+ */
+export function getImageCaptionFormat(): ImageCaptionFormat {
+    return currentImageCaptionFormat
+}
+
+/**
+ * @description: 去掉文件名中的最后一个扩展名, 仅保留主文件名作为图注.
+ * @param filename 原始文件名.
+ * @return 去除扩展名后的文件名.
+ */
+function stripFilenameExtension(filename: string): string {
+    const lastDotIndex = filename.lastIndexOf(".")
+    if (lastDotIndex <= 0) {
+        return filename
+    }
+
+    return filename.slice(0, lastDotIndex)
+}
+
+/**
+ * @description: 从图片地址中提取文件名, 供文件名图注模式使用.
+ * @param url 图片地址.
+ * @return 提取后的文件名.
+ */
+function extractFilenameFromUrl(url: string): string {
+    try {
+        const u = new URL(url)
+        const pathname = u.pathname
+        const filename = pathname.substring(pathname.lastIndexOf("/") + 1)
+        return stripFilenameExtension(decodeURIComponent(filename))
+    } catch {
+        const idx = url.lastIndexOf("/")
+        const filename = idx >= 0 ? url.substring(idx + 1).split("?")[0]! : url.split("?")[0]!
+        return stripFilenameExtension(filename)
+    }
+}
+
 export const renderer = {
     parser: new Parser(),
 
@@ -89,6 +159,28 @@ export const renderer = {
         const tableHtml = `<table>\n<thead>\n${header}</thead>\n${body}</table>\n`
         // 在 table 外套一个 div 添加类名 以便于样式控制
         return `<div class="jpz-marked-table-container">${tableHtml}</div>\n`
+    },
+
+    image(token: Tokens.Image) {
+        const alt = token.text || ""
+        const href = token.href || ""
+        const title = token.title ? ` title="${escape(token.title, true)}"` : ""
+        const activeImageCaptionFormat = getActiveImageCaptionFormat()
+
+        let caption = ""
+        if (activeImageCaptionFormat === ImageCaptionFormat.Alt && alt) {
+            caption = alt
+        } else if (activeImageCaptionFormat === ImageCaptionFormat.Filename && href) {
+            caption = extractFilenameFromUrl(href)
+        }
+
+        const imgTag = `<img src="${escape(href, true)}" alt="${escape(alt, true)}"${title} />`
+
+        if (caption) {
+            return `<figure class="jpz-image-figure"><div class="jpz-image-wrapper">${imgTag}</div><figcaption class="jpz-image-caption">${escape(caption, true)}</figcaption></figure>\n`
+        }
+
+        return `<figure class="jpz-image-figure jpz-image-figure--no-caption"><div class="jpz-image-wrapper">${imgTag}</div></figure>\n`
     },
 }
 

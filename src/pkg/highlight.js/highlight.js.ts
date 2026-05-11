@@ -7,8 +7,8 @@
  */
 
 import hljs from "highlight.js" // 完整版，已内置全部 ~190 个官方语言，无需手动 registerLanguage
-
 import "highlight.js/styles/tokyo-night-light.min.css"
+
 import dax from "highlightjs-dax"
 import m from "highlightjs-m"
 import "highlightjs-dax/theme.css"

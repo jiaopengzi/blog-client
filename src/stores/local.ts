@@ -33,4 +33,12 @@ export enum LocalStorageKey {
     PublicMdDraft = "public_md_draft", // 公用 Markdown 页面草稿
     ThumbnailAutoInsertEnable = "thumbnail_auto_insert_enable", // 缩略图自动插入是否启用
     ThumbnailAutoInsertIndex = "thumbnail_auto_insert_index", // 缩略图自动插入位置
+    MdImageCaptionFormat = "md_image_caption_format", // MD 页面图注格式
+    MdCodeBlockTheme = "md_code_block_theme", // MD 页面代码块主题
+    MdCustomCss = "md_custom_css", // MD 页面自定义 CSS
+    MdShowLineNumbers = "md_show_line_numbers", // MD 页面代码块行号
+    MdFontFamily = "md_font_family", // MD 页面字体
+    MdFontSize = "md_font_size", // MD 页面字号
+    MdThemeColor = "md_theme_color", // MD 页面主题色
+    MdParagraphIndent = "md_paragraph_indent", // MD 页面段落首行缩进
 }

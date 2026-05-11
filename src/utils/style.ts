@@ -209,6 +209,63 @@ function rewriteThemePreludeSegment(preludeSegment: string): string {
 }
 
 /**
+ * @description: 将单个选择器限制到指定作用域, 并兼容 #preview, html, body, :root 等根选择器.
+ * @param selector 单个选择器文本.
+ * @param scopeSelector 作用域根选择器.
+ * @return 限定后的单个选择器文本.
+ */
+function scopeSingleSelector(selector: string, scopeSelector: string): string {
+    const trimmedSelector = selector.trim()
+
+    if (!trimmedSelector || trimmedSelector.includes(scopeSelector)) {
+        return trimmedSelector
+    }
+
+    const previewRootPattern = /(#preview-copy|#preview)\b/g
+    if (previewRootPattern.test(trimmedSelector)) {
+        return trimmedSelector.replace(previewRootPattern, scopeSelector)
+    }
+
+    if (trimmedSelector === ":root") {
+        return scopeSelector
+    }
+
+    if (trimmedSelector.startsWith(":root")) {
+        return trimmedSelector.replace(/^:root\b/, scopeSelector)
+    }
+
+    if (/^html\b/.test(trimmedSelector) || /^body\b/.test(trimmedSelector)) {
+        return `${trimmedSelector} ${scopeSelector}`
+    }
+
+    return `${scopeSelector} ${trimmedSelector}`
+}
+
+/**
+ * @description: 为规则头部追加作用域根选择器, 保留原有缩进与尾部空白.
+ * @param preludeSegment 规则头部文本.
+ * @param scopeSelector 作用域根选择器.
+ * @return 增加作用域后的规则头部文本.
+ */
+function scopePreludeSegment(preludeSegment: string, scopeSelector: string): string {
+    const trimmedPrelude = preludeSegment.trim()
+
+    if (!trimmedPrelude || trimmedPrelude.startsWith("@")) {
+        return preludeSegment
+    }
+
+    const leadingWhitespaceLength = preludeSegment.length - preludeSegment.trimStart().length
+    const trailingWhitespaceLength = preludeSegment.length - preludeSegment.trimEnd().length
+    const leadingWhitespace = preludeSegment.slice(0, leadingWhitespaceLength)
+    const trailingWhitespace = trailingWhitespaceLength > 0 ? preludeSegment.slice(preludeSegment.length - trailingWhitespaceLength) : ""
+    const scopedSelectors = splitSelectorList(trimmedPrelude)
+        .map((selector) => scopeSingleSelector(selector, scopeSelector))
+        .join(", ")
+
+    return `${leadingWhitespace}${scopedSelectors}${trailingWhitespace}`
+}
+
+/**
  * @description: 将管理员自定义主题中的默认根选择器限制为 light 和 dark 默认预设.
  * @param cssContent 自定义 CSS 文本.
  * @return 改写后的 CSS 文本.
@@ -234,6 +291,52 @@ export function scopeCustomThemeCss(cssContent: string): string {
         const blockContent = cssContent.slice(blockStart + 1, blockEnd)
         result += `${rewriteThemePreludeSegment(preludeSegment)}{${scopeCustomThemeCss(blockContent)}}`
 
+        cursor = blockEnd + 1
+    }
+
+    return result
+}
+
+/**
+ * @description: 将普通 CSS 规则递归限制到指定作用域, 并保留 @media, @supports 等 at-rule 结构.
+ * @param cssContent 原始 CSS 文本.
+ * @param scopeSelector 作用域根选择器.
+ * @return 限定作用域后的 CSS 文本.
+ */
+export function scopeCssToSelector(cssContent: string, scopeSelector: string): string {
+    let result = ""
+    let cursor = 0
+
+    while (cursor < cssContent.length) {
+        const nextBlockStartOffset = findFirstOutsideString(cssContent.slice(cursor), "{")
+        if (nextBlockStartOffset === -1) {
+            result += cssContent.slice(cursor)
+            break
+        }
+
+        const blockStart = cursor + nextBlockStartOffset
+        const blockEnd = findMatchingBlockEnd(cssContent, blockStart + 1)
+        if (blockEnd === -1) {
+            return cssContent
+        }
+
+        const preludeSegment = cssContent.slice(cursor, blockStart)
+        const trimmedPrelude = preludeSegment.trim()
+        const blockContent = cssContent.slice(blockStart + 1, blockEnd)
+
+        if (/^@(-[a-z]+-)?keyframes\b/i.test(trimmedPrelude) || /^@font-face\b/i.test(trimmedPrelude)) {
+            result += `${preludeSegment}{${blockContent}}`
+            cursor = blockEnd + 1
+            continue
+        }
+
+        if (trimmedPrelude.startsWith("@")) {
+            result += `${preludeSegment}{${scopeCssToSelector(blockContent, scopeSelector)}}`
+            cursor = blockEnd + 1
+            continue
+        }
+
+        result += `${scopePreludeSegment(preludeSegment, scopeSelector)}{${scopeCssToSelector(blockContent, scopeSelector)}}`
         cursor = blockEnd + 1
     }
 

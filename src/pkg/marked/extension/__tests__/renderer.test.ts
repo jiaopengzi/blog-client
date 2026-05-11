@@ -8,9 +8,9 @@
 
 import type { Tokens } from "marked"
 
-import { describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it } from "vitest"
 
-import { renderer } from "../renderer"
+import { ImageCaptionFormat, renderer, setImageCaptionFormat } from "../renderer"
 
 describe("renderer.code - 代码块渲染", () => {
     it("c# 语言代码块应正确渲染, 不泄漏到代码块外", () => {
@@ -43,5 +43,48 @@ describe("renderer.code - 代码块渲染", () => {
         expect(result).toContain("C++")
         expect(result).toContain("language-c++")
         expect(result).toContain('data-lang=" c++"')
+    })
+})
+
+describe("renderer.image - 图注格式", () => {
+    afterEach(() => {
+        document.body.className = ""
+        setImageCaptionFormat(ImageCaptionFormat.Alt)
+    })
+
+    it("非 /md 页面默认使用 alt 作为图注", () => {
+        const result = renderer.image({ href: "/demo.png", text: "示例图片", title: "" } as Tokens.Image)
+
+        expect(result).toContain("jpz-image-caption")
+        expect(result).toContain("示例图片")
+    })
+
+    it("/md 页面支持 alt 图注", () => {
+        document.body.classList.add("md-page-route")
+        setImageCaptionFormat(ImageCaptionFormat.Alt)
+
+        const result = renderer.image({ href: "/demo.png", text: "示例图片", title: "" } as Tokens.Image)
+
+        expect(result).toContain("jpz-image-caption")
+        expect(result).toContain("示例图片")
+    })
+
+    it("/md 页面支持文件名图注", () => {
+        document.body.classList.add("md-page-route")
+        setImageCaptionFormat(ImageCaptionFormat.Filename)
+
+        const result = renderer.image({ href: "https://example.com/path/demo-image.png?x=1", text: "", title: "" } as Tokens.Image)
+
+        expect(result).toContain('<figcaption class="jpz-image-caption">demo-image</figcaption>')
+    })
+
+    it("/md 页面支持不显示图注", () => {
+        document.body.classList.add("md-page-route")
+        setImageCaptionFormat(ImageCaptionFormat.None)
+
+        const result = renderer.image({ href: "/demo.png", text: "示例图片", title: "" } as Tokens.Image)
+
+        expect(result).toContain("jpz-image-figure--no-caption")
+        expect(result).not.toContain("jpz-image-caption")
     })
 })

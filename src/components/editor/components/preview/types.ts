@@ -39,6 +39,7 @@ export type ScrollMethod = "scrollIntoView" | "scrollTo" // 滚动方法
 export interface PreviewProps {
     html: string // html 内容
     imgUrls: string[] // 图片地址 list
+    previewRootClassName?: string // 预览根节点附加类名
     isEnableCopyCache?: boolean // 是否启用复制缓存预生成
     isShowElImageViewer: boolean // 是否显示图片预览
     width?: string // 宽度
