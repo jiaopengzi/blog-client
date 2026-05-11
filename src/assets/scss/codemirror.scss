@@ -11,6 +11,15 @@
         // width: 100%;
         height: var(--jpz-codemirror-height, 100%);
     }
+
+    .cm-editor.cm-focused {
+        outline: none;
+    }
+
+    .cm-scroller:focus-visible {
+        outline: none;
+    }
+
     .cm-content {
         font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
         font-size: 16px;
