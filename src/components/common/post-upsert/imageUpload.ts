@@ -51,15 +51,6 @@ export function sanitizePostImageTitle(postTitle: string): string {
 }
 
 /**
- * buildPostImageAlt 生成文章图片的 Markdown alt 文本.
- * @param imageIndex 当前图片序号.
- * @returns 用于插入 Markdown 的 alt 文本.
- */
-export function buildPostImageAlt(imageIndex: number): string {
-    return String(imageIndex)
-}
-
-/**
  * getNextPostImageIndex 基于编辑器 state 中的 imgUrls 计算下一张图片序号.
  * @param imageUrls 当前编辑器中已识别到的图片地址列表.
  * @returns 下一张图片序号, 从 1 开始.
@@ -121,7 +112,8 @@ export function preparePostImageUploadFile(file: File, source: "paste" | "drop",
 
 /**
  * createPostImageUploadHandler 创建文章编辑器专用的图片上传处理器.
- * 截图上传时会基于当前标题生成文件名, 拖拽上传时保留原始文件名, 两者都使用稳定序号写入 Markdown alt.
+ * 截图上传时会基于当前标题生成文件名, 拖拽上传时保留原始文件名.
+ * Markdown 图片方括号内容统一由编辑器扩展写为空, 这里只处理上传前文件命名.
  * 上传链路本身完全复用现有 editor 上传实现, 这里只补齐截图场景的文件命名参数.
  * @param getPostTitle 获取当前文章标题的函数.
  * @param getImageIndex 获取当前文章下一张图片序号的函数.
@@ -143,9 +135,6 @@ export function createPostImageUploadHandler(getPostTitle: () => string, getImag
             return undefined
         }
 
-        return {
-            imageUrl,
-            markdownAlt: buildPostImageAlt(imageIndex),
-        }
+        return imageUrl
     }
 }

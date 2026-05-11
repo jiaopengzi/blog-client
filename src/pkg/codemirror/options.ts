@@ -19,7 +19,6 @@ export type ImageUploadContext = {
 
 export type ImageUploadResult = {
     imageUrl?: string // 上传成功后的图片地址
-    markdownAlt?: string // 自定义 Markdown alt 文本
     cancelled?: boolean // 是否由业务主动取消本次上传
 }
 

@@ -1,7 +1,14 @@
+/**
+ * FilePath    : blog-client\src\components\common\post-upsert\imageUpload.test.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
+ * Description : 文章编辑 页图片上传命名辅助单元测试
+ */
+
 import { describe, expect, it } from "vitest"
 
 import {
-    buildPostImageAlt,
     buildPostImageFileName,
     getNextPostImageIndex,
     preparePostImageUploadFile,
@@ -22,12 +29,6 @@ describe("sanitizePostImageTitle", () => {
 describe("buildPostImageFileName", () => {
     it("应生成标题加序号和扩展名的文件名", () => {
         expect(buildPostImageFileName("文章标题", 3, "png")).toBe("文章标题-3.png")
-    })
-})
-
-describe("buildPostImageAlt", () => {
-    it("应直接使用图片序号作为 alt 文本", () => {
-        expect(buildPostImageAlt(12)).toBe("12")
     })
 })
 

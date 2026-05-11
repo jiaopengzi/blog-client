@@ -277,7 +277,7 @@ import { type PostInfoAboutTime, type PostUpsertProps, queryKey, type UpdatePost
 import { useAdd } from "./useAdd"
 import { useEdit } from "./useEdit"
 import { useFormValidation } from "./useFormValidation"
-import { buildPostImageAlt, createPostImageUploadHandler, getNextPostImageIndex } from "./imageUpload"
+import { createPostImageUploadHandler, getNextPostImageIndex } from "./imageUpload"
 import { usePostVideoToc } from "./usePostVideoToc"
 import { useSnapshot } from "./useSnapshot"
 import { useSwitchItem } from "./useSwitchItem"
@@ -666,15 +666,13 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
 /**
  * insertMedia 将媒体选择器中的内容插入编辑器.
- * 图片会沿用当前文章的稳定序号 alt, 以保持与拖拽和截图上传行为一致.
+ * 图片会统一插入为空方括号的 Markdown 语法, 以保持与拖拽和截图上传行为一致.
  * @param data 媒体选择器返回的数据列表.
  * @returns void.
  */
 const insertMedia = (data: TableData[]) => {
     // 不满足条件直接返回
     if (!editorPostRef.value || data.length === 0) return
-
-    let nextImageIndex = getNextPostImageIndex(editorState.imgUrls)
 
     // 遍历数据插入到编辑器
     for (const item of data) {
@@ -697,8 +695,7 @@ const insertMedia = (data: TableData[]) => {
 
         // 图片
         if (item.file_type.startsWith("image") && item.img?.url) {
-            content = `![${buildPostImageAlt(nextImageIndex)}](${item.img?.url})\n`
-            nextImageIndex += 1
+            content = `![](${item.img?.url})\n`
         }
 
         // TODO: 其他类型
