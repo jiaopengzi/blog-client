@@ -13,7 +13,17 @@ import type { EditorView } from "@codemirror/view"
 import type { MarkdownRulesConfig } from "./extension/mdlint/types"
 import { getTheme, Theme, ThemeMode } from "./extension/theme"
 
-export type ImageUploadHandler = ((file: File) => Promise<string | undefined>) | null
+export type ImageUploadContext = {
+    source: "paste" | "drop" // 当前上传来源
+}
+
+export type ImageUploadResult = {
+    imageUrl?: string // 上传成功后的图片地址
+    markdownAlt?: string // 自定义 Markdown alt 文本
+    cancelled?: boolean // 是否由业务主动取消本次上传
+}
+
+export type ImageUploadHandler = ((file: File, context: ImageUploadContext) => Promise<ImageUploadResult | string | undefined>) | null
 
 // createDefaultSetup 定义options 类型
 export type DefaultSetupOptions = {

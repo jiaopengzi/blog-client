@@ -13,37 +13,78 @@ import { MessageUtil } from "@/utils/message"
 
 import { uploadEditor } from "./uploadEditor"
 
-import type { ImageUploadHandler } from "../options"
+import type { ImageUploadHandler, ImageUploadResult } from "../options"
+
+const defaultImageUploadHandler: Exclude<ImageUploadHandler, null> = async (file) => {
+    return await uploadEditor(file)
+}
 
 /**
  * insertImageMarkdown 将图片地址插入到编辑器当前位置。
  * @param imageUrl - 已处理完成的图片地址。
+ * @param markdownAlt - Markdown 图片 alt 文本。
  * @param view - 当前 CodeMirror 实例。
  * @returns 无返回值。
  */
-function insertImageMarkdown(imageUrl: string, view: EditorView): void {
-    const imageMarkdown = `![](${imageUrl})\n`
+function insertImageMarkdown(imageUrl: string, markdownAlt: string, view: EditorView): void {
+    const imageMarkdown = `![${markdownAlt}](${imageUrl})\n`
     view.dispatch({
         changes: { from: view.state.selection.main.from, insert: imageMarkdown },
     })
 }
 
 /**
+ * normalizeImageUploadResult 统一兼容字符串返回值与对象返回值.
+ * @param result 上传处理器的返回结果.
+ * @param fallbackAlt 未显式返回 alt 时使用的默认 alt.
+ * @returns 标准化后的图片地址与 alt 文本.
+ */
+function normalizeImageUploadResult(
+    result: ImageUploadResult | string | undefined,
+    fallbackAlt: string,
+): {
+    imageUrl?: string
+    markdownAlt: string
+    cancelled: boolean
+} {
+    if (typeof result === "string") {
+        return {
+            imageUrl: result,
+            markdownAlt: fallbackAlt,
+            cancelled: false,
+        }
+    }
+
+    return {
+        imageUrl: result?.imageUrl,
+        markdownAlt: result?.markdownAlt || fallbackAlt,
+        cancelled: result?.cancelled === true,
+    }
+}
+
+/**
  * uploadImage 调用当前场景的图片处理器, 并将结果写回编辑器。
  * @param file - 用户粘贴或拖拽的图片文件。
  * @param view - 当前 CodeMirror 实例。
+ * @param source - 当前上传来源。
  * @param imageUploadHandler - 当前场景使用的图片处理器。
  * @returns 无返回值。
  */
-async function uploadImage(file: File, view: EditorView, imageUploadHandler: Exclude<ImageUploadHandler, null>): Promise<void> {
+async function uploadImage(file: File, view: EditorView, source: "paste" | "drop", imageUploadHandler: Exclude<ImageUploadHandler, null>): Promise<void> {
     try {
-        const imageUrl = await imageUploadHandler(file)
+        const uploadResult = await imageUploadHandler(file, { source })
+        const { imageUrl, markdownAlt, cancelled } = normalizeImageUploadResult(uploadResult, "")
+
+        if (cancelled) {
+            return
+        }
+
         if (!imageUrl) {
             MessageUtil.error("上传失败，请重试")
             return
         }
 
-        insertImageMarkdown(imageUrl, view)
+        insertImageMarkdown(imageUrl, markdownAlt, view)
         MessageUtil.success("图片上传成功", 2000)
     } catch (error) {
         console.error("图片处理失败", error)
@@ -89,7 +130,7 @@ export function createImageUploadExtensions(imageUploadHandler?: ImageUploadHand
             }
 
             console.log("图片上传开始", new Date().toISOString())
-            void uploadImage(file, view, imageUploadHandler ?? uploadEditor)
+            void uploadImage(file, view, "paste", imageUploadHandler ?? defaultImageUploadHandler)
 
             return true
         },
@@ -117,7 +158,7 @@ export function createImageUploadExtensions(imageUploadHandler?: ImageUploadHand
             }
 
             console.log("图片上传开始", new Date().toISOString())
-            void uploadImage(file, view, imageUploadHandler ?? uploadEditor)
+            void uploadImage(file, view, "drop", imageUploadHandler ?? defaultImageUploadHandler)
 
             return true
         },

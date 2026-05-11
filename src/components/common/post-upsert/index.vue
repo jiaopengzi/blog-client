@@ -63,6 +63,7 @@
                         placeholder-text="请开始创作..."
                         :mdlint-rules="editorMarkdownRules"
                         :theme="theme"
+                        :image-upload-handler="postImageUploadHandler"
                         @update-editor-status="updateEditorStatus"
                     />
 
@@ -260,7 +261,7 @@ import JEditor from "@/components/editor/index.vue"
 import { useEditor } from "@/components/hooks/useEditor"
 import { usePostView } from "@/components/hooks/usePostView"
 import { useTheme } from "@/theme/useTheme"
-import { type MarkdownRulesConfig } from "@/pkg/codemirror"
+import { type ImageUploadHandler, type MarkdownRulesConfig } from "@/pkg/codemirror"
 import { autoFixMarkdownText } from "@/pkg/codemirror/extension/mdlint/service"
 import { RouteNames } from "@/router"
 import { LocalStorageKey } from "@/stores/local"
@@ -276,6 +277,7 @@ import { type PostInfoAboutTime, type PostUpsertProps, queryKey, type UpdatePost
 import { useAdd } from "./useAdd"
 import { useEdit } from "./useEdit"
 import { useFormValidation } from "./useFormValidation"
+import { buildPostImageAlt, createPostImageUploadHandler, getNextPostImageIndex } from "./imageUpload"
 import { usePostVideoToc } from "./usePostVideoToc"
 import { useSnapshot } from "./useSnapshot"
 import { useSwitchItem } from "./useSwitchItem"
@@ -350,6 +352,10 @@ const editorMarkdownRules: MarkdownRulesConfig = {
     rule002: false,
     rule003: false,
 }
+const postImageUploadHandler: ImageUploadHandler = createPostImageUploadHandler(
+    () => postInfoForm.post_title,
+    () => getNextPostImageIndex(editorState.imgUrls),
+)
 
 const { theme } = useTheme()
 
@@ -658,10 +664,17 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     }
 }
 
-// 插入媒体文件到编辑器
+/**
+ * insertMedia 将媒体选择器中的内容插入编辑器.
+ * 图片会沿用当前文章的稳定序号 alt, 以保持与拖拽和截图上传行为一致.
+ * @param data 媒体选择器返回的数据列表.
+ * @returns void.
+ */
 const insertMedia = (data: TableData[]) => {
     // 不满足条件直接返回
     if (!editorPostRef.value || data.length === 0) return
+
+    let nextImageIndex = getNextPostImageIndex(editorState.imgUrls)
 
     // 遍历数据插入到编辑器
     for (const item of data) {
@@ -684,7 +697,8 @@ const insertMedia = (data: TableData[]) => {
 
         // 图片
         if (item.file_type.startsWith("image") && item.img?.url) {
-            content = `![alt](${item.img?.url})\n`
+            content = `![${buildPostImageAlt(nextImageIndex)}](${item.img?.url})\n`
+            nextImageIndex += 1
         }
 
         // TODO: 其他类型
