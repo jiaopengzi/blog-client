@@ -9,46 +9,16 @@
 <template>
     <section class="md-page-shell">
         <div class="md-page-panel">
-            <header class="md-page-header">
-                <div class="md-page-title-block">
-                    <p class="md-page-eyebrow">公共编辑空间</p>
-                    <h1 class="md-page-title">Markdown 编辑器</h1>
-                </div>
+            <MdPageHeader
+                :active-theme-preset="activeThemePreset"
+                :theme-preset-options="themePresetOptions"
+                :save-status="saveStatus"
+                @select-theme-preset="selectThemePreset"
+                @open-customizer="showCustomizer = true"
+                @go-home="goHome"
+            />
 
-                <div class="md-page-actions">
-                    <div class="md-page-controls">
-                        <ThemePresetSelector :model-value="activeThemePreset" :presets="themePresetOptions" @update:model-value="selectThemePreset" />
-
-                        <button type="button" class="md-page-customize-btn" aria-label="自定义页面样式" title="自定义页面样式" @click="showCustomizer = true">
-                            <span class="md-page-customize-btn__icon">
-                                <j-icon :name="IconKeys.Setting" custom-class="md-page-customize-btn__icon-svg" />
-                            </span>
-                        </button>
-
-                        <button type="button" class="md-page-home-btn" aria-label="返回首页" title="返回首页" @click="goHome">
-                            <span class="md-page-home-btn__icon">
-                                <j-icon :name="IconKeys.Home" custom-class="md-page-home-btn__icon-svg" />
-                            </span>
-                        </button>
-                    </div>
-
-                    <div class="md-page-save-status" :data-status="saveStatus.type">
-                        <span class="md-page-save-dot"></span>
-                        <span>{{ saveStatus.text }}</span>
-                    </div>
-                </div>
-            </header>
-
-            <div class="md-page-editor-wrap">
-                <JEditor
-                    :state-manager="stateManager"
-                    preview-root-class-name="md-page-preview"
-                    :is-enable-copy-cache="false"
-                    :placeholder-text="placeholderText"
-                    :theme="theme"
-                    :image-upload-handler="null"
-                />
-            </div>
+            <MdPageEditor :state-manager="stateManager" :placeholder-text="placeholderText" :theme="theme" />
         </div>
     </section>
 
@@ -64,9 +34,8 @@ import { debounce } from "throttle-debounce"
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue"
 import { useRouter } from "vue-router"
 
-import { IconKeys } from "@/components/common/icons"
 import FooterStatistics from "@/components/layout/footer-statistics"
-import JEditor, { defaultCommandKeys, EditorStateManager } from "@/components/editor"
+import { defaultCommandKeys, EditorStateManager } from "@/components/editor"
 import { getFirstLevelOneMarkdownHeadingText } from "@/components/editor/utils"
 import { ImageCaptionFormat, setImageCaptionFormat } from "@/pkg/marked/extension/renderer"
 import { type HljsThemeName, setHljsTheme } from "@/pkg/highlight.js/theme-switcher"
@@ -75,9 +44,10 @@ import { DeviceType, useDeviceStore } from "@/stores/device"
 import { loadPublicMdDraft, savePublicMdDraft } from "@/stores/md-draft"
 import { loadMdCustomState } from "@/stores/md-custom"
 import { useTheme } from "@/theme/useTheme"
-import ThemePresetSelector from "@/theme/preset-selector"
 import { useOptionsStore } from "@/stores/options"
-import MdCustomizer from "./component/MdCustomizer.vue"
+import MdCustomizer from "./component/md-customizer"
+import MdPageEditor from "./component/page-editor"
+import MdPageHeader from "./component/page-header"
 
 defineOptions({ name: "PublicMarkdownPage" })
 
@@ -296,227 +266,9 @@ onBeforeUnmount(() => {
     background: color-mix(in srgb, var(--jpz-bg-color-page) 96%, var(--jpz-bg-color) 4%);
 }
 
-.md-page-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 16px 20px 0;
-}
-
-.md-page-title-block {
-    max-width: 760px;
-}
-
-.md-page-eyebrow {
-    margin: 0 0 7px;
-    color: var(--jpz-color-primary);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-}
-
-.md-page-title {
-    margin: 0;
-    color: var(--jpz-text-color-primary);
-    font-size: clamp(28px, 3.3vw, 38px);
-    line-height: 1.08;
-    font-family: Georgia, "Times New Roman", serif;
-}
-
-.md-page-actions {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 10px;
-    min-width: 132px;
-    padding-top: 2px;
-}
-
-.md-page-controls {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.md-page-save-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    border: 1px solid color-mix(in srgb, var(--jpz-border-color) 88%, transparent);
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--jpz-bg-color) 92%, transparent);
-    color: var(--jpz-text-color-regular);
-    font-size: 12px;
-}
-
-.md-page-save-status[data-status="saved"] {
-    color: var(--jpz-color-success);
-}
-
-.md-page-save-status[data-status="error"] {
-    color: var(--jpz-color-danger);
-}
-
-.md-page-save-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: currentColor;
-    box-shadow: 0 0 0 5px color-mix(in srgb, currentColor 14%, transparent);
-}
-
-.md-page-home-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 38px;
-    height: 38px;
-    padding: 0;
-    border: 1px solid var(--jpz-border-color);
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--jpz-bg-color) 88%, var(--jpz-color-primary) 12%);
-    color: var(--jpz-text-color-primary);
-    cursor: pointer;
-    transition:
-        transform 0.2s ease,
-        border-color 0.2s ease,
-        background-color 0.2s ease,
-        box-shadow 0.2s ease;
-
-    &:hover {
-        transform: translateY(-1px);
-        border-color: var(--jpz-color-primary);
-        background: color-mix(in srgb, var(--jpz-bg-color) 72%, var(--jpz-color-primary) 28%);
-        box-shadow: 0 12px 24px color-mix(in srgb, var(--jpz-box-shadow) 18%, transparent);
-    }
-}
-
-.md-page-customize-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 38px;
-    height: 38px;
-    padding: 0;
-    border: 1px solid var(--jpz-border-color);
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--jpz-bg-color) 88%, var(--jpz-color-primary) 12%);
-    color: var(--jpz-text-color-primary);
-    cursor: pointer;
-    transition:
-        transform 0.2s ease,
-        border-color 0.2s ease,
-        background-color 0.2s ease,
-        box-shadow 0.2s ease;
-
-    &:hover {
-        transform: translateY(-1px);
-        border-color: var(--jpz-color-primary);
-        background: color-mix(in srgb, var(--jpz-bg-color) 72%, var(--jpz-color-primary) 28%);
-        box-shadow: 0 12px 24px color-mix(in srgb, var(--jpz-box-shadow) 18%, transparent);
-    }
-}
-
-.md-page-customize-btn__icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-}
-
-.md-page-customize-btn__icon-svg {
-    width: 16px;
-    height: 16px;
-    fill: var(--jpz-color-primary);
-}
-
-.md-page-home-btn__icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-}
-
-.md-page-home-btn__icon-svg {
-    width: 16px;
-    height: 16px;
-    fill: var(--jpz-color-primary);
-}
-
-.md-page-editor-wrap {
-    position: relative;
-    min-height: 0;
-    overflow: hidden;
-}
-
-.md-page-editor-wrap :deep(.md-layout) {
-    display: grid;
-    grid-template-rows: auto minmax(0, 1fr);
-    height: 100%;
-    min-height: 0;
-    background: transparent;
-}
-
-.md-page-editor-wrap :deep(.md-toolbar) {
-    flex: 0 0 auto;
-    margin-bottom: 10px;
-}
-
-.md-page-editor-wrap :deep(.md-container),
-.md-page-editor-wrap :deep(.md-container-comment) {
-    min-height: 0;
-    height: 100% !important;
-}
-
-.md-page-editor-wrap :deep(.md-toc),
-.md-page-editor-wrap :deep(.md-editor),
-.md-page-editor-wrap :deep(.md-preview) {
-    height: 100% !important;
-}
-
-.md-page-editor-wrap :deep(.md-editor) {
-    --md-editor-height: 100%;
-}
-
-.md-page-editor-wrap :deep(#jpz-codemirror),
-.md-page-editor-wrap :deep(#preview),
-.md-page-editor-wrap :deep(#preview-copy),
-.md-page-editor-wrap :deep(.cm-editor),
-.md-page-editor-wrap :deep(.cm-scroller) {
-    height: 100% !important;
-}
-
 @include respond-to("phone") {
     .md-page-panel {
         gap: 12px;
-    }
-
-    .md-page-header {
-        flex-direction: column;
-        gap: 12px;
-        padding: 14px 14px 0;
-    }
-
-    .md-page-actions {
-        align-items: stretch;
-        min-width: 100%;
-        padding-top: 0;
-    }
-
-    .md-page-controls {
-        justify-content: space-between;
-    }
-
-    .md-page-home-btn {
-        width: 36px;
-        height: 36px;
     }
 }
 </style>
