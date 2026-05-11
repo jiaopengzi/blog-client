@@ -282,15 +282,15 @@
         font-size: 0.75em;
     }
 
-    // 图片 img
-    img {
-        display: block;
-        max-width: 100%; // 确保图片不超过父元素宽度
-        width: auto; // 根据图片的实际尺寸进行缩放
-        margin: 1em auto;
-        border-radius: 4px;
-        cursor: pointer;
-    }
+    // // 图片 img
+    // img {
+    //     display: block;
+    //     max-width: 100%; // 确保图片不超过父元素宽度
+    //     width: auto; // 根据图片的实际尺寸进行缩放
+    //     margin: 1em auto;
+    //     border-radius: 4px;
+    //     cursor: pointer;
+    // }
 
     // 图注 figure
     .jpz-image-figure {
@@ -312,10 +312,10 @@
 
         .jpz-image-caption {
             display: block;
-            margin-top: 8px;
+            margin-top: 4px;
             font-size: 14px;
             line-height: 1.5;
-            color: var(--jpz-text-color-secondary);
+            color: var(--jpz-text-color-placeholder);
             text-align: center;
         }
 
