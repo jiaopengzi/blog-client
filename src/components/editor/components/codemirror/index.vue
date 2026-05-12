@@ -195,9 +195,9 @@ const insertContent = (content: string): void => {
 }
 
 /**
- * 用新的完整内容替换编辑器文档, 供保存前自动修复结果回写使用.
+ * @description: 用新的完整内容替换编辑器文档, 供保存前自动修复结果回写使用.
  * @param content 修复后的完整 Markdown 内容.
- * @returns void.
+ * @return 无返回值.
  */
 const replaceContent = (content: string): void => {
     if (!cmView || cmView.state.doc.toString() === content) {

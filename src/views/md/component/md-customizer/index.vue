@@ -304,6 +304,8 @@ function onEditorDocChange(doc: string): void {
         return
     }
 
+    editorDoc.value = doc
+
     const nextCustomCss = extractMdCustomUserCss(doc)
     if (nextCustomCss === localState.customCss) {
         return
