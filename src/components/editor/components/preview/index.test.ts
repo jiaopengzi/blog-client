@@ -33,10 +33,15 @@ vi.mock("throttle-debounce", () => ({
     debounce: debounceMock,
 }))
 
-vi.mock("@vueuse/core", () => ({
-    useResizeObserver: useResizeObserverMock,
-    useIntersectionObserver: useIntersectionObserverMock,
-}))
+vi.mock("@vueuse/core", async (importOriginal) => {
+    const actual = await importOriginal<typeof import("@vueuse/core")>()
+
+    return {
+        ...actual,
+        useResizeObserver: useResizeObserverMock,
+        useIntersectionObserver: useIntersectionObserverMock,
+    }
+})
 
 vi.mock("@/customElementsMount", () => ({
     mountPayContentOnCustomElements: mountPayContentOnCustomElementsMock,
