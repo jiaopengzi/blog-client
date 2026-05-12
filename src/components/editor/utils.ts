@@ -1383,7 +1383,13 @@ export async function prepareCopyWithCustomStyle(element: HTMLElement): Promise<
  */
 export async function writePreparedHtmlToClipboard(html: string): Promise<void> {
     try {
-        await copyHtml(html)
+        const copyResult = await copyHtml(html)
+
+        if (copyResult.method === "execCommand") {
+            MessageUtil.warning("内容已复制到剪贴板，当前为兼容复制模式，富文本样式可能受浏览器限制。建议使用 HTTPS, localhost 或 127.0.0.1。", 8000)
+            return
+        }
+
         MessageUtil.success("内容已复制到剪贴板")
     } catch (err) {
         console.error("无法复制内容", err)
