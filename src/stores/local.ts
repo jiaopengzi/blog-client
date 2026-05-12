@@ -34,7 +34,7 @@ export enum LocalStorageKey {
     ThumbnailAutoInsertEnable = "thumbnail_auto_insert_enable", // 缩略图自动插入是否启用
     ThumbnailAutoInsertIndex = "thumbnail_auto_insert_index", // 缩略图自动插入位置
     MdImageCaptionFormat = "md_image_caption_format", // MD 页面图注格式
-    MdCodeBlockTheme = "md_code_block_theme", // MD 页面代码块主题
+    SiteCodeBlockTheme = "site_code_block_theme", // 主站代码块主题
     MdCustomCss = "md_custom_css", // MD 页面自定义 CSS
     MdShowLineNumbers = "md_show_line_numbers", // MD 页面代码块行号
     MdFontFamily = "md_font_family", // MD 页面字体

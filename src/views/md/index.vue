@@ -38,7 +38,6 @@ import FooterStatistics from "@/components/layout/footer-statistics"
 import { defaultCommandKeys, EditorStateManager } from "@/components/editor"
 import { getFirstLevelOneMarkdownHeadingText } from "@/components/editor/utils"
 import { ImageCaptionFormat, setImageCaptionFormat } from "@/pkg/marked/extension/renderer"
-import { type HljsThemeName, setHljsTheme } from "@/pkg/highlight.js/theme-switcher"
 import { RouteNames } from "@/router"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 import { loadPublicMdDraft, savePublicMdDraft } from "@/stores/md-draft"
@@ -181,11 +180,9 @@ function applyMdCustomSettings(): void {
 
     setImageCaptionFormat(custom.imageCaptionFormat as ImageCaptionFormat)
 
-    void setHljsTheme(custom.codeBlockTheme as HljsThemeName).then(() => {
-        if (editorState.editorContent) {
-            stateManager.updateState(editorState.editorContent)
-        }
-    })
+    if (editorState.editorContent) {
+        stateManager.updateState(editorState.editorContent)
+    }
 }
 
 /**

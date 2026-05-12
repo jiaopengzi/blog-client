@@ -13,13 +13,11 @@
         </div>
 
         <MdCustomizerVisualSection
-            :available-themes="availableThemes"
             :custom-theme-color="customThemeColor"
             :line-number-switch-items="lineNumberSwitchItems"
             :local-state="localState"
             :theme-color-mode="themeColorMode"
             :theme-color-preset-options="themeColorPresetOptions"
-            @setting-changed="emitSettingChanged"
             @theme-color-mode-changed="emitThemeColorModeChanged"
             @custom-theme-color-changed="emitCustomThemeColorChanged"
             @line-number-switch-updated="emitLineNumberSwitchUpdated"
@@ -50,7 +48,6 @@ import MdCustomizerVisualSection from "./visual-section"
 defineOptions({ name: "MdCustomizerConfigPanel" })
 
 defineProps<{
-    availableThemes: string[]
     customThemeColor: string
     fontFamilyOptions: MdCustomizerOption[]
     fontSizeOptions: MdCustomizerOption[]

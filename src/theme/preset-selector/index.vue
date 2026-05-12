@@ -55,14 +55,29 @@
                     <span v-if="preset.id === modelValue" class="theme-option__status">当前</span>
                 </button>
             </div>
+
+            <div class="theme-panel__section">
+                <div class="theme-panel__section-header">代码块主题</div>
+                <el-select
+                    :model-value="resolvedSiteCodeBlockTheme"
+                    class="theme-panel__theme-select"
+                    filterable
+                    placeholder="选择代码块主题"
+                    :teleported="false"
+                    @change="handleCodeBlockThemeChange"
+                >
+                    <el-option v-for="themeName in resolvedCodeBlockThemeOptions" :key="themeName" :label="themeName" :value="themeName" />
+                </el-select>
+            </div>
         </div>
     </el-dialog>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue"
+import { computed, ref, unref } from "vue"
 
 import { IconKeys } from "@/components/common/icons"
+import { useTheme } from "@/theme/useTheme"
 import type { ThemePreset, ThemePresetId } from "@/theme/presets"
 import { DeviceType, useDeviceStore } from "@/stores/device"
 
@@ -78,15 +93,27 @@ const emit = defineEmits<{
 }>()
 
 const deviceStore = useDeviceStore()
+const { activeSiteCodeBlockTheme, codeBlockThemeOptions, selectSiteCodeBlockTheme } = useTheme()
 const dialogVisible = ref(false)
 
 const activePreset = computed(() => presets.find((preset) => preset.id === modelValue))
+const resolvedSiteCodeBlockTheme = computed(() => unref(activeSiteCodeBlockTheme))
+const resolvedCodeBlockThemeOptions = computed(() => unref(codeBlockThemeOptions))
 
 const isPhone = computed(() => deviceStore.device === DeviceType.PHONE)
 
 const handleSelect = (presetId: ThemePresetId) => {
     dialogVisible.value = false
     emit("update:modelValue", presetId)
+}
+
+/**
+ * @description: 处理主站代码块主题切换.
+ * @param themeName 当前选中的主题名称.
+ * @return 无返回值.
+ */
+function handleCodeBlockThemeChange(themeName: string): void {
+    selectSiteCodeBlockTheme(themeName)
 }
 </script>
 
@@ -171,6 +198,25 @@ const handleSelect = (presetId: ThemePresetId) => {
     gap: 8px;
     padding-top: 10px;
     padding-bottom: 12px;
+}
+
+.theme-panel__section {
+    display: grid;
+    gap: 10px;
+    padding-top: 14px;
+    border-top: 1px solid var(--jpz-border-color);
+}
+
+.theme-panel__section-header {
+    color: var(--jpz-text-color-secondary);
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.theme-panel__theme-select {
+    width: 100%;
 }
 
 .theme-option {
@@ -270,6 +316,10 @@ const handleSelect = (presetId: ThemePresetId) => {
     .theme-panel__list {
         padding-top: 2px;
         padding-bottom: 2px;
+    }
+
+    .theme-panel__section {
+        padding-top: 12px;
     }
 
     .theme-panel__header {

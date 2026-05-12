@@ -19,7 +19,6 @@
 
                 <div class="md-customizer-body">
                     <MdCustomizerConfigPanel
-                        :available-themes="availableThemes"
                         :custom-theme-color="customThemeColor"
                         :font-family-options="fontFamilyOptions"
                         :font-size-options="fontSizeOptions"
@@ -53,7 +52,6 @@ import { computed, onMounted, reactive, ref, watch } from "vue"
 
 import type { SwitchItem } from "@/components/common/switch-group"
 import { ImageCaptionFormat, setImageCaptionFormat } from "@/pkg/marked/extension/renderer"
-import { type HljsThemeName, setHljsTheme } from "@/pkg/highlight.js/theme-switcher"
 import { clearMdCustomState, getDefaultMdCustomState, type MdCustomState, loadMdCustomState, saveMdCustomState } from "@/stores/md-custom"
 import { cssExample } from "@/utils/cssExample"
 import { removeCommentsSafe } from "@/utils/cssValidator"
@@ -61,7 +59,6 @@ import { scopeCssToSelector, scopeCustomThemeCss } from "@/utils/style"
 
 import { buildMdCustomizerEditorDoc, buildMdPresetCss, extractMdCustomUserCss, MD_PREVIEW_SCOPE_SELECTOR } from "../customize-style"
 import {
-    availableThemes,
     createLineNumberSwitchItems,
     createParagraphIndentSwitchItems,
     CUSTOM_THEME_COLOR_FALLBACK,
@@ -205,12 +202,11 @@ function persistState(): void {
 }
 
 /**
- * @description: 应用非 CSS 配置, 包括图注格式和代码块主题.
+ * @description: 应用非 CSS 配置, 当前仅包含图注格式.
  * @return 无返回值.
  */
 async function applyNonCssSettings(): Promise<void> {
     setImageCaptionFormat(localState.imageCaptionFormat as ImageCaptionFormat)
-    await setHljsTheme(localState.codeBlockTheme as HljsThemeName)
 }
 
 /**

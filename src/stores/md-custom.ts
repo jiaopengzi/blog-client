@@ -8,12 +8,10 @@
 
 import { LocalStorageKey } from "./local"
 
-import { AVAILABLE_HLJS_THEMES, getDefaultHljsTheme, type HljsThemeName } from "@/pkg/highlight.js/theme-switcher"
 import { ImageCaptionFormat } from "@/pkg/marked/extension/renderer"
 
 export interface MdCustomState {
     imageCaptionFormat: ImageCaptionFormat
-    codeBlockTheme: HljsThemeName
     customCss: string
     showLineNumbers: boolean
     fontFamily: string
@@ -29,7 +27,6 @@ export interface MdCustomState {
 export function getDefaultMdCustomState(): MdCustomState {
     return {
         imageCaptionFormat: ImageCaptionFormat.Alt,
-        codeBlockTheme: getDefaultHljsTheme(),
         customCss: "",
         showLineNumbers: true,
         fontFamily: "",
@@ -51,24 +48,12 @@ function isImageCaptionFormat(value: string | null): value is ImageCaptionFormat
 }
 
 /**
- * @description: 判断代码块主题是否存在于当前 highlight.js 主题列表.
- * @param value 待校验的值.
- * @return 是否为合法主题名.
- */
-function isHljsThemeName(value: string | null): value is HljsThemeName {
-    return typeof value === "string" && AVAILABLE_HLJS_THEMES.includes(value)
-}
-
-/**
  * @description: 从 localStorage 读取 /md 页面自定义配置.
  * @return 读取并校验后的配置.
  */
 export function loadMdCustomState(): MdCustomState {
     const storedFormat = localStorage.getItem(LocalStorageKey.MdImageCaptionFormat)
     const imageCaptionFormat = isImageCaptionFormat(storedFormat) ? storedFormat : DEFAULT_STATE.imageCaptionFormat
-
-    const storedTheme = localStorage.getItem(LocalStorageKey.MdCodeBlockTheme)
-    const codeBlockTheme = isHljsThemeName(storedTheme) ? storedTheme : DEFAULT_STATE.codeBlockTheme
 
     const customCss = localStorage.getItem(LocalStorageKey.MdCustomCss) ?? DEFAULT_STATE.customCss
 
@@ -84,7 +69,6 @@ export function loadMdCustomState(): MdCustomState {
 
     return {
         imageCaptionFormat,
-        codeBlockTheme,
         customCss,
         showLineNumbers,
         fontFamily,
@@ -102,9 +86,6 @@ export function loadMdCustomState(): MdCustomState {
 export function saveMdCustomState(state: Partial<MdCustomState>): void {
     if (state.imageCaptionFormat !== undefined) {
         localStorage.setItem(LocalStorageKey.MdImageCaptionFormat, state.imageCaptionFormat)
-    }
-    if (state.codeBlockTheme !== undefined) {
-        localStorage.setItem(LocalStorageKey.MdCodeBlockTheme, state.codeBlockTheme)
     }
     if (state.customCss !== undefined) {
         localStorage.setItem(LocalStorageKey.MdCustomCss, state.customCss)
@@ -132,7 +113,6 @@ export function saveMdCustomState(state: Partial<MdCustomState>): void {
  */
 export function clearMdCustomState(): void {
     localStorage.removeItem(LocalStorageKey.MdImageCaptionFormat)
-    localStorage.removeItem(LocalStorageKey.MdCodeBlockTheme)
     localStorage.removeItem(LocalStorageKey.MdCustomCss)
     localStorage.removeItem(LocalStorageKey.MdShowLineNumbers)
     localStorage.removeItem(LocalStorageKey.MdFontFamily)

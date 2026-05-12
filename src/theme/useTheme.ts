@@ -16,6 +16,7 @@
 
 import { computed, ref } from "vue"
 
+import { AVAILABLE_HLJS_THEMES, getDefaultHljsTheme, setSiteHljsTheme, type HljsThemeName } from "@/pkg/highlight.js/theme-switcher"
 import { getThemeByPreset, ThemeMode } from "@/pkg/codemirror/extension/theme"
 import { LocalStorageKey } from "@/stores/local"
 import { defaultThemePresetId, getThemePreset, isValidThemePresetId, themePresetList, type ThemePresetId } from "@/theme/presets"
@@ -39,10 +40,29 @@ function readStoredThemePreset(): ThemePresetId {
     return storedValue
 }
 
+/**
+ * @description: 读取主站缓存的代码块主题, 无效值回退到默认主题.
+ * @return 当前可用的代码块主题名称.
+ */
+function readStoredSiteCodeBlockTheme(): HljsThemeName {
+    if (typeof localStorage === "undefined") {
+        return getDefaultHljsTheme()
+    }
+
+    const storedValue = localStorage.getItem(LocalStorageKey.SiteCodeBlockTheme)
+    if (!storedValue || !AVAILABLE_HLJS_THEMES.includes(storedValue)) {
+        return getDefaultHljsTheme()
+    }
+
+    return storedValue
+}
+
 const activeThemePresetState = ref<ThemePresetId>(readStoredThemePreset())
+const activeSiteCodeBlockThemeState = ref<HljsThemeName>(readStoredSiteCodeBlockTheme())
 
 if (typeof document !== "undefined") {
     applyThemePresetToDocument(getThemePreset(activeThemePresetState.value))
+    void setSiteHljsTheme(activeSiteCodeBlockThemeState.value)
 }
 
 /**
@@ -58,6 +78,19 @@ function persistThemePreset(presetId: ThemePresetId) {
 }
 
 /**
+ * @description: 持久化主站代码块主题并立即同步到当前文档.
+ * @param themeName 需要保存并应用的代码块主题.
+ * @return 无返回值.
+ */
+function persistSiteCodeBlockTheme(themeName: HljsThemeName): void {
+    activeSiteCodeBlockThemeState.value = themeName
+    if (typeof localStorage !== "undefined") {
+        localStorage.setItem(LocalStorageKey.SiteCodeBlockTheme, themeName)
+    }
+    void setSiteHljsTheme(themeName)
+}
+
+/**
  * 主题域统一入口, 负责前台主题状态、预设选择与编辑器主题联动.
  * @returns 主题状态、可选预设以及主题切换方法.
  */
@@ -70,6 +103,13 @@ export function useTheme() {
     })
 
     const themePresetOptions = computed(() => themePresetList)
+    const codeBlockThemeOptions = computed(() => [...AVAILABLE_HLJS_THEMES])
+    const activeSiteCodeBlockTheme = computed<HljsThemeName>({
+        get: () => activeSiteCodeBlockThemeState.value,
+        set: (themeName) => {
+            persistSiteCodeBlockTheme(themeName)
+        },
+    })
 
     const activeTheme = computed(() => getThemePreset(activeThemePreset.value))
 
@@ -79,6 +119,15 @@ export function useTheme() {
         activeThemePreset.value = presetId
     }
 
+    /**
+     * @description: 选择并应用主站代码块主题.
+     * @param themeName 目标主题名称.
+     * @return 无返回值.
+     */
+    const selectSiteCodeBlockTheme = (themeName: HljsThemeName): void => {
+        activeSiteCodeBlockTheme.value = themeName
+    }
+
     const theme = computed(() => {
         const mode = isDark.value ? ThemeMode.Dark : ThemeMode.Light
         return getThemeByPreset(activeThemePreset.value, mode)
@@ -86,8 +135,11 @@ export function useTheme() {
 
     return {
         activeTheme,
+        activeSiteCodeBlockTheme,
         activeThemePreset,
+        codeBlockThemeOptions,
         isDark,
+        selectSiteCodeBlockTheme,
         selectThemePreset,
         theme,
         themePresetOptions,

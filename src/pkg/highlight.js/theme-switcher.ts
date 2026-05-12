@@ -8,7 +8,8 @@
 
 import { scopeCssToSelector } from "@/utils/style"
 
-const HLJS_THEME_STYLE_ID = "hljs-dynamic-theme"
+const MD_HLJS_THEME_STYLE_ID = "hljs-dynamic-theme"
+const SITE_HLJS_THEME_STYLE_ID = "hljs-site-theme"
 const MD_PREVIEW_SCOPE_SELECTOR = ".md-page-preview"
 
 const themeCssModules = import.meta.glob("/node_modules/highlight.js/styles/*.min.css", { query: "?inline", eager: false })
@@ -22,9 +23,33 @@ export type HljsThemeName = string
 const DEFAULT_THEME: HljsThemeName = "tokyo-night-light"
 
 let currentTheme: HljsThemeName | null = null
+let currentSiteTheme: HljsThemeName | null = null
 
 function getThemeModulePath(themeName: HljsThemeName): string {
     return `/node_modules/highlight.js/styles/${themeName}.min.css`
+}
+
+/**
+ * @description: 读取指定 highlight.js 主题的原始 CSS 文本.
+ * @param themeName 主题名称.
+ * @return 主题 CSS 文本, 找不到时返回 null.
+ */
+async function loadThemeCss(themeName: HljsThemeName): Promise<string | null> {
+    const modulePath = getThemeModulePath(themeName)
+    const loader = themeCssModules[modulePath]
+
+    if (!loader) {
+        console.error(`Highlight.js theme not found: ${themeName}`)
+        return null
+    }
+
+    try {
+        const cssModule = (await loader()) as { default: string }
+        return cssModule.default
+    } catch (err) {
+        console.error(`Failed to load highlight.js theme: ${themeName}`, err)
+        return null
+    }
 }
 
 export function getDefaultHljsTheme(): HljsThemeName {
@@ -33,6 +58,14 @@ export function getDefaultHljsTheme(): HljsThemeName {
 
 export function getCurrentHljsTheme(): HljsThemeName | null {
     return currentTheme
+}
+
+/**
+ * @description: 返回当前主站生效的 highlight.js 主题.
+ * @return 当前主站主题名称.
+ */
+export function getCurrentSiteHljsTheme(): HljsThemeName | null {
+    return currentSiteTheme
 }
 
 /**
@@ -49,28 +82,53 @@ export async function setHljsTheme(themeName: HljsThemeName): Promise<void> {
         return
     }
 
-    const existingStyle = document.getElementById(HLJS_THEME_STYLE_ID)
+    const existingStyle = document.getElementById(MD_HLJS_THEME_STYLE_ID)
     if (existingStyle) {
         existingStyle.remove()
     }
 
-    const modulePath = getThemeModulePath(themeName)
-    const loader = themeCssModules[modulePath]
-
-    if (!loader) {
-        console.error(`Highlight.js theme not found: ${themeName}`)
+    const cssContent = await loadThemeCss(themeName)
+    if (!cssContent) {
         return
     }
 
-    try {
-        const cssModule = (await loader()) as { default: string }
-        const css = scopeMdHighlightThemeCss(cssModule.default)
-        const style = document.createElement("style")
-        style.id = HLJS_THEME_STYLE_ID
-        style.textContent = css
-        document.head.appendChild(style)
-        currentTheme = themeName
-    } catch (err) {
-        console.error(`Failed to load highlight.js theme: ${themeName}`, err)
+    const css = scopeMdHighlightThemeCss(cssContent)
+    const style = document.createElement("style")
+    style.id = MD_HLJS_THEME_STYLE_ID
+    style.textContent = css
+    document.head.appendChild(style)
+    currentTheme = themeName
+}
+
+/**
+ * @description: 为主站设置全局 highlight.js 主题.
+ * 默认主题直接回退到静态引入的样式, 非默认主题通过动态 style 覆盖.
+ * @param themeName 主题名称.
+ * @return 无返回值.
+ */
+export async function setSiteHljsTheme(themeName: HljsThemeName): Promise<void> {
+    if (currentSiteTheme === themeName) {
+        return
     }
+
+    const existingStyle = document.getElementById(SITE_HLJS_THEME_STYLE_ID)
+    if (existingStyle) {
+        existingStyle.remove()
+    }
+
+    if (themeName === DEFAULT_THEME) {
+        currentSiteTheme = themeName
+        return
+    }
+
+    const cssContent = await loadThemeCss(themeName)
+    if (!cssContent) {
+        return
+    }
+
+    const style = document.createElement("style")
+    style.id = SITE_HLJS_THEME_STYLE_ID
+    style.textContent = cssContent
+    document.head.appendChild(style)
+    currentSiteTheme = themeName
 }

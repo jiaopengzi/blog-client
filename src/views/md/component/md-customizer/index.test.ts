@@ -24,7 +24,6 @@ const { saveMdCustomStateMock, clearMdCustomStateMock, setImageCaptionFormatMock
 vi.mock("@/stores/md-custom", () => {
     const defaultState = {
         imageCaptionFormat: "alt",
-        codeBlockTheme: "default-theme",
         customCss: "",
         showLineNumbers: true,
         fontFamily: "",
@@ -54,7 +53,6 @@ vi.mock("@/pkg/marked/extension/renderer", () => {
 
 vi.mock("@/pkg/highlight.js/theme-switcher", () => {
     return {
-        AVAILABLE_HLJS_THEMES: ["default-theme"],
         setHljsTheme: setHljsThemeMock,
     }
 })

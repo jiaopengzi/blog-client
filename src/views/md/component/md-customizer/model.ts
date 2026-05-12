@@ -7,7 +7,6 @@
  */
 
 import type { SwitchItem } from "@/components/common/switch-group"
-import { AVAILABLE_HLJS_THEMES } from "@/pkg/highlight.js/theme-switcher"
 
 export type MdCustomizerOption = {
     label: string
@@ -60,7 +59,6 @@ export const themeColorPresetOptions: readonly ThemeColorPresetOption[] = [
     { key: "custom", label: "自定义", value: null, previewColor: null },
 ]
 
-export const availableThemes = [...AVAILABLE_HLJS_THEMES]
 export const editorHeight = "calc(100% - 36px)"
 
 /**

@@ -3,7 +3,7 @@
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : /md 自定义配置面板中的视觉配置区, 包含主题色、代码块主题和行号开关.
+ * Description : /md 自定义配置面板中的视觉配置区, 包含主题色和行号开关.
 -->
 
 <template>
@@ -37,13 +37,6 @@
         </div>
 
         <div class="md-customizer-group">
-            <label class="md-customizer-label">代码块主题</label>
-            <el-select v-model="localState.codeBlockTheme" placeholder="选择主题" filterable popper-class="md-customizer-popper" @change="emitSettingChanged">
-                <el-option v-for="t in availableThemes" :key="t" :label="t" :value="t" />
-            </el-select>
-        </div>
-
-        <div class="md-customizer-group">
             <div class="md-customizer-switch-wrap">
                 <SwitchGroup :switch-items="lineNumberSwitchItems" @update-status="emitLineNumberSwitchUpdated" />
             </div>
@@ -60,7 +53,6 @@ import { getThemePresetDisplayColor, getThemePresetDotStyle, type ThemeColorMode
 defineOptions({ name: "MdCustomizerVisualSection" })
 
 const props = defineProps<{
-    availableThemes: string[]
     customThemeColor: string
     lineNumberSwitchItems: SwitchItem[]
     localState: MdCustomState
@@ -69,7 +61,6 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-    (event: "setting-changed"): void
     (event: "theme-color-mode-changed", mode: ThemeColorMode): void
     (event: "custom-theme-color-changed", value: string | null): void
     (event: "line-number-switch-updated", items: SwitchItem[]): void
@@ -91,14 +82,6 @@ function getPresetDisplayColor(key: ThemeColorMode): string {
  */
 function getPresetDotStyle(key: ThemeColorMode): Record<string, string> {
     return getThemePresetDotStyle(key, props.customThemeColor)
-}
-
-/**
- * @description: 通知容器层重新应用当前视觉配置.
- * @return 无返回值.
- */
-function emitSettingChanged(): void {
-    emit("setting-changed")
 }
 
 /**
