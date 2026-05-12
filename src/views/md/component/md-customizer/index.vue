@@ -55,10 +55,11 @@ import type { SwitchItem } from "@/components/common/switch-group"
 import { ImageCaptionFormat, setImageCaptionFormat } from "@/pkg/marked/extension/renderer"
 import { type HljsThemeName, setHljsTheme } from "@/pkg/highlight.js/theme-switcher"
 import { clearMdCustomState, getDefaultMdCustomState, type MdCustomState, loadMdCustomState, saveMdCustomState } from "@/stores/md-custom"
+import { cssExample } from "@/utils/cssExample"
 import { removeCommentsSafe } from "@/utils/cssValidator"
 import { scopeCssToSelector, scopeCustomThemeCss } from "@/utils/style"
 
-import { buildMdCustomizerEditorDoc, buildMdPresetCss, extractMdCustomUserCss, getMdCustomCssExample, MD_PREVIEW_SCOPE_SELECTOR } from "../customize-style"
+import { buildMdCustomizerEditorDoc, buildMdPresetCss, extractMdCustomUserCss, MD_PREVIEW_SCOPE_SELECTOR } from "../customize-style"
 import {
     availableThemes,
     createLineNumberSwitchItems,
@@ -319,7 +320,7 @@ function onEditorDocChange(doc: string): void {
  * @return 无返回值.
  */
 function insertCssExample(): void {
-    const nextCustomCss = localState.customCss.trim() ? `${localState.customCss.trim()}\n\n${getMdCustomCssExample()}` : getMdCustomCssExample()
+    const nextCustomCss = localState.customCss.trim() ? `${localState.customCss.trim()}\n\n${cssExample()}` : cssExample()
 
     localState.customCss = nextCustomCss
     applyCustomCss()

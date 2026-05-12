@@ -10,9 +10,10 @@ import type { MdCustomState } from "@/stores/md-custom"
 
 export const MD_PREVIEW_SCOPE_SELECTOR = ".md-page-preview"
 
-const AUTO_GENERATED_BLOCK_START = "/* === MD_AUTO_GENERATED_PRESET_START === */"
-const AUTO_GENERATED_BLOCK_END = "/* === MD_AUTO_GENERATED_PRESET_END === */"
-const USER_CUSTOM_BLOCK_MARKER = "/* === MD_USER_CUSTOM_CSS === */"
+const AUTO_GENERATED_BLOCK_START = "/******************** 左侧面板自动生成区起始行 ********************/\n"
+const AUTO_GENERATED_BLOCK_DEFAULT = "/******************** 当前状态未设置保持默认值 ********************/\n"
+const AUTO_GENERATED_BLOCK_END = "/******************** 左侧面板自动生成区结束行 ********************/\n"
+const USER_CUSTOM_BLOCK_MARKER = "/******************** 用户自定义区 ********************/\n"
 
 /**
  * @description: 将声明列表格式化为一个完整的 CSS 规则块.
@@ -74,18 +75,17 @@ export function buildMdPresetCss(state: MdCustomState): string {
  * @return 展示给编辑器的完整 CSS 文本.
  */
 export function buildMdCustomizerEditorDoc(state: MdCustomState): string {
-    const presetCss = buildMdPresetCss(state) || "/* 当前未生成预设样式, 左侧控件保持默认值. */"
+    const presetCss = buildMdPresetCss(state) || AUTO_GENERATED_BLOCK_DEFAULT
     const trimmedCustomCss = state.customCss.trim()
 
     return [
-        "/* 左侧控件自动生成区, 每次调整配置时都会覆盖本区块. */",
+        "/* 左侧面板自动生成区, 每次调整配置时都会覆盖本区块。 */\n",
         AUTO_GENERATED_BLOCK_START,
         presetCss,
         AUTO_GENERATED_BLOCK_END,
         "",
-        "/* 手动自定义区, 仅作用于 /md 预览区域. */",
-        '/* 可以直接写 #preview, #preview-copy, html[data-theme="light"] #preview 等选择器. */',
         USER_CUSTOM_BLOCK_MARKER,
+        "/* 可以点击右上角【插入示例】后，据需求进行修改。*/\n",
         trimmedCustomCss,
     ]
         .join("\n")
@@ -109,27 +109,4 @@ export function extractMdCustomUserCss(editorDoc: string): string {
         .slice(markerIndex + USER_CUSTOM_BLOCK_MARKER.length)
         .replace(/^\r?\n/, "")
         .trim()
-}
-
-/**
- * @description: 返回 /md 页面可直接插入到手动区的样式示例.
- * @return 示例 CSS 文本.
- */
-export function getMdCustomCssExample(): string {
-    return [
-        "#preview {",
-        "    padding-inline: 28px;",
-        "}",
-        "",
-        "#preview h1,",
-        "#preview h2,",
-        "#preview h3 {",
-        "    letter-spacing: 0.04em;",
-        "}",
-        "",
-        "#preview blockquote {",
-        "    border-left: 4px solid var(--jpz-color-primary);",
-        "    background: color-mix(in srgb, var(--jpz-color-primary) 10%, transparent);",
-        "}",
-    ].join("\n")
 }

@@ -11,7 +11,7 @@
         <div class="md-customizer-editor-header">
             <div>
                 <span class="md-customizer-editor-label">自定义 CSS</span>
-                <p class="md-customizer-editor-tip">左侧配置会同步到自动生成区, 你可以继续在下方手动补充.</p>
+                <p class="md-customizer-editor-tip">左侧配置会同步到自动编辑器中, 你可以继续在编辑器中手动调整.</p>
             </div>
             <el-button size="small" text @click="emitInsertCssExample">插入示例</el-button>
         </div>
