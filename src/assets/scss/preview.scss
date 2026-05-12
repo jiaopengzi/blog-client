@@ -447,6 +447,11 @@
         border: 1px solid transparent;
         border-radius: 0.5rem;
         margin: 1em 0;
+
+        p {
+            // 首行不缩进
+            text-indent: 0;
+        }
     }
 
     // 警告标题

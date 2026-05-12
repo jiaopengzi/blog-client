@@ -540,6 +540,11 @@ html[data-theme="dark"] {
   margin: 1em 0;
 }
 
+#preview .markdown-alert p {
+  /*首行不缩进*/
+  text-indent: 0;
+}
+
 /**
  * 提示块标题行.
  * 通常会包含一个图标和标题文字.
