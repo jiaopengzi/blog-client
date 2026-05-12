@@ -925,6 +925,34 @@ const WechatCssAllWhiteList: readonly string[] = []
 // 代码块容器白名单
 const WechatCssPreCodeWhiteList: readonly string[] = ["font-family", "font-size", "line-height", "color", "background-color", "padding", "margin"]
 
+/**
+ * CSS 简写属性到长写属性的展开映射。
+ * 复制链路中 getComputedStyle 对简写属性的返回值不稳定(常为空), 需将简写展开为长写,
+ * 循环结束后统一从 computedStyle 读取长写值下发, 避免简写之间的级联覆盖问题。
+ * 新增简写类型只需在此添加条目, 无需修改其他函数。
+ */
+const CSS_SHORTHAND_EXPANSION: Readonly<Record<string, readonly string[]>> = {
+    border: [
+        "border-top-width", "border-top-style", "border-top-color",
+        "border-right-width", "border-right-style", "border-right-color",
+        "border-bottom-width", "border-bottom-style", "border-bottom-color",
+        "border-left-width", "border-left-style", "border-left-color",
+    ],
+    "border-top": ["border-top-width", "border-top-style", "border-top-color"],
+    "border-right": ["border-right-width", "border-right-style", "border-right-color"],
+    "border-bottom": ["border-bottom-width", "border-bottom-style", "border-bottom-color"],
+    "border-left": ["border-left-width", "border-left-style", "border-left-color"],
+}
+
+/**
+ * isHeadingElement 判断元素是否为 h1-h6 标题元素。
+ * @param el 待判断的 DOM 元素。
+ * @returns 若为标题元素则返回 true, 否则 false。
+ */
+function isHeadingElement(el: HTMLElement | SVGElement): boolean {
+    return el instanceof HTMLElement && /^H[1-6]$/.test(el.tagName)
+}
+
 // // 行内代码白名单
 // const WechatCsInlineCodeWhiteList: readonly string[] = ["font-family", "font-size", "line-height", "color", "background-color", "padding", "margin"]
 
@@ -981,11 +1009,78 @@ function filterInvalidComputedStyles(el: HTMLElement | SVGElement, properties?: 
 }
 
 /**
- * @description: 递归将原始元素的计算样式应用为克隆元素的内联样式
- * @param originalEl 原始元素(用于读取 computedStyle)
- * @param clonedEl   克隆元素(用于写入 inline style)
- * @param cssStyleSheets 已排序的样式表列表和索引
- * @param computedStyle 过滤后的计算样式对象
+ * normalizeBorderWidth 将浏览器缩放导致的分数像素宽度归一化为整数。
+ * 只处理 px 单位, 其余单位原样返回。取整后若为 0 则保留原值, 避免丢失有意的细边框。
+ * @param width CSS 边框宽度字符串, 如 "1.81818px"。
+ * @returns 归一化后的宽度字符串, 如 "2px"。
+ */
+export function normalizeBorderWidth(width: string): string {
+    if (!width.endsWith("px")) return width
+    const num = parseFloat(width)
+    if (!Number.isFinite(num)) return width
+    const rounded = Math.round(num)
+    if (rounded <= 0) return width
+    return `${rounded}px`
+}
+
+/**
+ * applyBorderLonghandsFromComputedStyle 从 computedStyle 中提取可见的 border 长写值写入克隆节点。
+ * 仅处理 inlineStyleRecord 中存在 border 简写属性的对应边, 避免无边框元素写入多余的 0px none。
+ * 对 px 宽度值调用 normalizeBorderWidth 消除浏览器缩放产生的分数像素。
+ * @param clonedEl 克隆的目标节点, 用于写入内联样式。
+ * @param inlineStyleRecord 匹配 CSS 规则的属性字典, 用于检测存在哪些 border 简写。
+ * @param computedStyle 原始节点的计算样式, 作为长写值的唯一数据源。
+ */
+function applyBorderLonghandsFromComputedStyle(
+    clonedEl: HTMLElement | SVGElement,
+    inlineStyleRecord: Record<string, string>,
+    computedStyle: FilteredStyles,
+): void {
+    const sideByShorthand: Record<string, "top" | "right" | "bottom" | "left"> = {
+        "border-top": "top",
+        "border-right": "right",
+        "border-bottom": "bottom",
+        "border-left": "left",
+    }
+    const sides = new Set<"top" | "right" | "bottom" | "left">()
+
+    for (const property of Object.keys(inlineStyleRecord)) {
+        if (property === "border") {
+            sides.add("top").add("right").add("bottom").add("left")
+        } else if (sideByShorthand[property]) {
+            sides.add(sideByShorthand[property])
+        }
+    }
+
+    for (const side of sides) {
+        const width = computedStyle[`border-${side}-width`] ?? ""
+        const style = computedStyle[`border-${side}-style`] ?? ""
+        const color = computedStyle[`border-${side}-color`] ?? ""
+
+        const normalizedWidth = normalizeBorderWidth(width)
+        const widthNum = parseFloat(normalizedWidth)
+        if (!normalizedWidth || !Number.isFinite(widthNum) || widthNum <= 0) continue
+        if (!style || style === "none" || style === "hidden") continue
+
+        clonedEl.style.setProperty(`border-${side}-width`, normalizedWidth)
+        clonedEl.style.setProperty(`border-${side}-style`, style)
+        if (color) {
+            clonedEl.style.setProperty(`border-${side}-color`, color)
+        }
+    }
+}
+
+/**
+ * applyInlineStylesToElement 将原始元素的计算样式应用为克隆元素的内联样式(两阶段)。
+ * Phase 1: 写入非简写属性, 跳过 CSS_SHORTHAND_EXPANSION 中的简写及 heading 的 border longhand,
+ *   避免 reset 与特定规则之间的迭代顺序导致级联覆盖错误。
+ * Phase 2: 由 applyBorderLonghandsFromComputedStyle 以 computedStyle 为数据源统一下发 border 长写值。
+ *   对 heading 额外强制展开 border, 解决 var() 导致 CSSOM 简写为空的问题。
+ * @param originalEl 原始元素(用于读取 computedStyle 和判断 heading)。
+ * @param clonedEl 克隆元素(用于写入 inline style)。
+ * @param matchedRules 克隆元素匹配到的 CSS 规则列表。
+ * @param computedStyle 过滤后的计算样式对象。
+ * @param applyContext 内联样式应用过程中的缓存上下文。
  */
 function applyInlineStylesToElement(
     originalEl: HTMLElement | SVGElement,
@@ -994,43 +1089,40 @@ function applyInlineStylesToElement(
     computedStyle: FilteredStyles,
     applyContext: InlineStyleApplyContext,
 ) {
-    // 如果没有计算样式则直接返回
     if (!computedStyle || Object.keys(computedStyle).length === 0) return
 
-    // 跳过 katex 公式元素
     const isKatex = hasClassName(originalEl, "katex")
     if (isKatex) return
 
-    // 对代码块容器特殊处理, 只保颜色和字体相关样式
     const isPreCode = hasClassName(originalEl, "pre-code-container")
+    const isHeading = isHeadingElement(originalEl)
 
-    // // 行内代码即不在代码块容器内的 code 标签
-    // const isCode = isCodeTag(originalEl)
-
-    // 收集已经引用内联样式的 record, 后续和计算样式对比使用
     const inlineStyleRecord = getInlineStyleRecord(clonedEl, matchedRules, isPreCode, applyContext)
 
-    // 应用内联样式, 覆盖样式表中的样式
     Object.keys(inlineStyleRecord).forEach((property) => {
-        // 收集的内联样式值
         const cssStyleValue = inlineStyleRecord[property]
 
-        // 计算样式表中的样式值
+        if (CSS_SHORTHAND_EXPANSION[property]) {
+            return
+        }
+
+        if (isHeading && property.startsWith("border-")) {
+            return
+        }
+
+        if (/^border-(top|right|bottom|left)-width$/.test(property)) {
+            clonedEl.style.setProperty(property, cssStyleValue)
+            return
+        }
+
         const computedStyleValue = computedStyle[property]
 
         if (!cssStyleValue || !computedStyleValue) return
 
-        // 自适应的样式值不使用计算样式覆盖
         const notUseComputedStyleValues = [
-            "auto", // 自动
-            "100%", // 百分比
-            "100vw", // 视口宽度
-            "100vh", // 视口高度
-            "normal", // 正常
-            "none", // 无
+            "auto", "100%", "100vw", "100vh", "normal", "none",
         ]
 
-        // 判断是否一致, 不一致则使用计算样式表中的样式值覆盖
         if (cssStyleValue !== computedStyleValue && !notUseComputedStyleValues.includes(cssStyleValue)) {
             clonedEl.style.setProperty(property, computedStyleValue)
         } else {
@@ -1038,7 +1130,12 @@ function applyInlineStylesToElement(
         }
     })
 
-    // 单独添加微信白名单中的属性
+    applyBorderLonghandsFromComputedStyle(clonedEl, inlineStyleRecord, computedStyle)
+
+    if (isHeading) {
+        applyBorderLonghandsFromComputedStyle(clonedEl, { border: "" }, computedStyle)
+    }
+
     if (WechatCssAllWhiteList.length > 0) {
         WechatCssAllWhiteList.forEach((property) => {
             const cssStyleValue = computedStyle[property]
@@ -1080,7 +1177,15 @@ function getInlineStyleRecord(
                 if (!property) continue
 
                 const cssStyleValue = rule.style.getPropertyValue(property)
-                if (!cssStyleValue) continue
+
+                // 含 var() 的简写属性(如 border-bottom: 2px solid var(--xxx))在 CSSOM 中 getPropertyValue 返回空,
+                // 但仍需保留其键名, 以便 applyBorderLonghandsFromComputedStyle 从 computedStyle 展开长写值。
+                if (!cssStyleValue) {
+                    if (CSS_SHORTHAND_EXPANSION[property]) {
+                        inlineStyleRecord[property] = ""
+                    }
+                    continue
+                }
 
                 if (isWechatCssBlackListProperty(property, cssStyleValue)) {
                     continue
@@ -1152,6 +1257,12 @@ function getRelevantComputedStyleProperties(element: HTMLElement | SVGElement, m
             }
 
             propertySet.add(property)
+
+            // 将简写属性展开为对应长写, 确保 filterInvalidComputedStyles 通过 getComputedStyle 读到长写值。
+            const longhands = CSS_SHORTHAND_EXPANSION[property]
+            if (longhands) {
+                longhands.forEach((longhand) => propertySet.add(longhand))
+            }
         }
     })
 
@@ -1207,8 +1318,9 @@ async function processInlineStyleQueue(
 
         const { originalEl, clonedEl } = currentPair
 
-        // 按节点签名复用匹配规则、相关属性和展开后的样式字典, 把复制成本尽量收敛到真实 DOM 读写上.
-        const matchedRules = getMatchedCssStyleRules(clonedEl, cssStyleRules, applyContext)
+        // 在原始节点上做 CSS 选择器匹配, 而非克隆节点。
+        // 克隆节点在离屏容器中丢失了 #preview 等祖先上下文, 导致后代选择器(如 #preview h1)匹配失败。
+        const matchedRules = getMatchedCssStyleRules(originalEl, cssStyleRules, applyContext)
         const relevantProperties = getRelevantComputedStyleProperties(originalEl, matchedRules, applyContext)
         const computedStyle = filterInvalidComputedStyles(originalEl, relevantProperties)
 

@@ -11,7 +11,7 @@ import { describe, expect, it, vi } from "vitest"
 
 import { ImageCaptionFormat, setImageCaptionFormat } from "@/pkg/marked/extension/renderer"
 
-import { anchorGenerator, createRegexCache, generateAllHeadingAnchor, renderMarkdownDocument, scaleDisplayKatexByFontSize } from "./utils"
+import { anchorGenerator, createRegexCache, generateAllHeadingAnchor, normalizeBorderWidth, renderMarkdownDocument, scaleDisplayKatexByFontSize } from "./utils"
 
 describe("createRegexCache", () => {
     it("缓存中的正则匹配", () => {
@@ -402,5 +402,39 @@ describe("renderMarkdownDocument", () => {
 
         document.body.classList.remove("md-page-route")
         setImageCaptionFormat(ImageCaptionFormat.Alt)
+    })
+})
+
+describe("normalizeBorderWidth", () => {
+    it("将接近整数的 px 值取整（0 以下不取整，避免丢失有意的小数边框）", () => {
+        expect(normalizeBorderWidth("1.81818px")).toBe("2px")
+        expect(normalizeBorderWidth("0.909091px")).toBe("1px")
+        expect(normalizeBorderWidth("1.5px")).toBe("2px")
+        expect(normalizeBorderWidth("2.3px")).toBe("2px")
+        expect(normalizeBorderWidth("3.7px")).toBe("4px")
+    })
+
+    it("取整到 0 的边界值保持原样", () => {
+        expect(normalizeBorderWidth("0.4px")).toBe("0.4px")
+        expect(normalizeBorderWidth("0.2px")).toBe("0.2px")
+    })
+
+    it("整数 px 值保持不变", () => {
+        expect(normalizeBorderWidth("0px")).toBe("0px")
+        expect(normalizeBorderWidth("1px")).toBe("1px")
+        expect(normalizeBorderWidth("2px")).toBe("2px")
+        expect(normalizeBorderWidth("10px")).toBe("10px")
+    })
+
+    it("非 px 单位原样返回", () => {
+        expect(normalizeBorderWidth("0.5em")).toBe("0.5em")
+        expect(normalizeBorderWidth("1rem")).toBe("1rem")
+        expect(normalizeBorderWidth("thin")).toBe("thin")
+        expect(normalizeBorderWidth("medium")).toBe("medium")
+        expect(normalizeBorderWidth("")).toBe("")
+    })
+
+    it("零值保持原样", () => {
+        expect(normalizeBorderWidth("0px")).toBe("0px")
     })
 })
