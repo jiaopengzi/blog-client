@@ -12,12 +12,13 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import MdCustomizer from "."
 
-const { saveMdCustomStateMock, clearMdCustomStateMock, setImageCaptionFormatMock, setHljsThemeMock } = vi.hoisted(() => {
+const { saveMdCustomStateMock, clearMdCustomStateMock, setImageCaptionFormatMock, setHljsThemeMock, cssExampleMock } = vi.hoisted(() => {
     return {
         saveMdCustomStateMock: vi.fn(),
         clearMdCustomStateMock: vi.fn(),
         setImageCaptionFormatMock: vi.fn(),
         setHljsThemeMock: vi.fn().mockResolvedValue(void 0),
+        cssExampleMock: vi.fn((previewSelector?: string) => (previewSelector ? `example-css:${previewSelector}` : "example-css")),
     }
 })
 
@@ -67,7 +68,7 @@ vi.mock("../customize-style", () => {
 })
 
 vi.mock("@/utils/cssExample", () => ({
-    cssExample: () => "example-css",
+    cssExample: cssExampleMock,
 }))
 
 vi.mock("@/utils/cssValidator", () => ({
@@ -102,6 +103,7 @@ const MdCustomizerEditorPanelStub = defineComponent({
         <div>
             <div class="editor-doc">{{ doc }}</div>
             <button class="editor-change" @click="$emit('update-editor-doc', 'doc:manual-css')">change</button>
+            <button class="insert-example" @click="$emit('insert-css-example')">insert</button>
         </div>
     `,
 })
@@ -112,6 +114,7 @@ describe("MdCustomizer", () => {
         clearMdCustomStateMock.mockReset()
         setImageCaptionFormatMock.mockReset()
         setHljsThemeMock.mockClear()
+        cssExampleMock.mockClear()
         document.head.innerHTML = ""
     })
 
@@ -145,5 +148,31 @@ describe("MdCustomizer", () => {
         await nextTick()
 
         expect(wrapper.find(".editor-doc").text()).toBe("doc:default")
+    })
+
+    it("插入示例时应使用 /md 预览根选择器", async () => {
+        const wrapper = mount(MdCustomizer, {
+            props: {
+                visible: true,
+            },
+            global: {
+                stubs: {
+                    Teleport: true,
+                    MdCustomizerConfigPanel: MdCustomizerConfigPanelStub,
+                    MdCustomizerEditorPanel: MdCustomizerEditorPanelStub,
+                },
+            },
+        })
+
+        await nextTick()
+        await Promise.resolve()
+        await nextTick()
+
+        await wrapper.find(".insert-example").trigger("click")
+        await nextTick()
+
+        expect(cssExampleMock).toHaveBeenCalledWith(".md-page-preview")
+        expect(wrapper.find(".editor-doc").text()).toBe("doc:example-css:.md-page-preview")
+        expect(saveMdCustomStateMock).toHaveBeenLastCalledWith({ customCss: "example-css:.md-page-preview" })
     })
 })

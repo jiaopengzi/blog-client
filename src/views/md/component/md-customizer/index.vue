@@ -318,7 +318,8 @@ function onEditorDocChange(doc: string): void {
  * @return 无返回值.
  */
 function insertCssExample(): void {
-    const nextCustomCss = localState.customCss.trim() ? `${localState.customCss.trim()}\n\n${cssExample()}` : cssExample()
+    const cssExampleContent = cssExample(MD_PREVIEW_SCOPE_SELECTOR)
+    const nextCustomCss = localState.customCss.trim() ? `${localState.customCss.trim()}\n\n${cssExampleContent}` : cssExampleContent
 
     localState.customCss = nextCustomCss
     applyCustomCss()

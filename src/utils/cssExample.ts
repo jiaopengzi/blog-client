@@ -6,13 +6,17 @@
  * Description : 自定义样式 CSS 示例
  */
 
+const DEFAULT_CSS_EXAMPLE_PREVIEW_SELECTOR = "#preview"
+
 /**
  * 返回自定义样式 CSS 示例字符串.
  * 该示例用于给用户提供可直接复制和调整的预览样式模板.
- *
+ * @param previewSelector 预览根节点选择器, 默认使用主站预览容器.
  * @returns 自定义样式 CSS 示例内容.
  */
-export const cssExample = (): string => {
+export const cssExample = (previewSelector: string = DEFAULT_CSS_EXAMPLE_PREVIEW_SELECTOR): string => {
+    const normalizedPreviewSelector = previewSelector.trim() || DEFAULT_CSS_EXAMPLE_PREVIEW_SELECTOR
+
     return `
 /******************** 网站主题样式开始 ******************/
 
@@ -687,5 +691,5 @@ html[data-theme="dark"] {
 }
 /******************** 文章模块主题结束 ******************/
 
-`
+`.replaceAll(DEFAULT_CSS_EXAMPLE_PREVIEW_SELECTOR, normalizedPreviewSelector)
 }

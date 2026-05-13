@@ -12,6 +12,8 @@ import { findFirstOutsideString, findMatchingBlockEnd, removeCommentsSafe } from
 
 const defaultLightThemeSelector = 'html[data-theme="light"]'
 const defaultDarkThemeSelector = 'html[data-theme="dark"]'
+const mdPreviewScopeSelectorAlias = ".md-page-preview"
+const mdPreviewScopeSelectorVariants = ["#preview.md-page-preview", '#preview-copy.md-page-preview[data-preview="wechat"]']
 
 /**
  * @description: 设置主题
@@ -209,36 +211,85 @@ function rewriteThemePreludeSegment(preludeSegment: string): string {
 }
 
 /**
+ * @description: 解析作用域根选择器的真实变体列表.
+ * /md 页面会把 .md-page-preview 展开为 web 和 wechat 两个局部根节点, 以便在不污染主站的前提下提升优先级.
+ * @param scopeSelector 传入的逻辑作用域选择器.
+ * @return 可实际写入 CSS 的作用域选择器列表.
+ */
+function resolveScopeSelectorVariants(scopeSelector: string): string[] {
+    if (scopeSelector === mdPreviewScopeSelectorAlias) {
+        return mdPreviewScopeSelectorVariants
+    }
+
+    return [scopeSelector]
+}
+
+/**
+ * @description: 判断当前选择器是否已经包含最终作用域根, 避免重复展开.
+ * @param selector 单个选择器文本.
+ * @param scopeSelector 逻辑作用域选择器.
+ * @return 是否已包含最终作用域根.
+ */
+function hasResolvedScopeSelector(selector: string, scopeSelector: string): boolean {
+    return resolveScopeSelectorVariants(scopeSelector).some((variant) => selector.includes(variant))
+}
+
+/**
+ * @description: 将逻辑作用域选择器替换为真实作用域根列表.
+ * @param selector 单个选择器文本.
+ * @param scopeSelector 逻辑作用域选择器.
+ * @return 展开后的选择器数组.
+ */
+function expandScopeSelectorAlias(selector: string, scopeSelector: string): string[] {
+    const scopeSelectorVariants = resolveScopeSelectorVariants(scopeSelector)
+
+    if (!selector.includes(scopeSelector) || scopeSelectorVariants.length === 1) {
+        return [selector]
+    }
+
+    return scopeSelectorVariants.map((variant) => selector.replaceAll(scopeSelector, variant))
+}
+
+/**
  * @description: 将单个选择器限制到指定作用域, 并兼容 #preview, html, body, :root 等根选择器.
  * @param selector 单个选择器文本.
  * @param scopeSelector 作用域根选择器.
- * @return 限定后的单个选择器文本.
+ * @return 限定后的单个选择器文本数组.
  */
-function scopeSingleSelector(selector: string, scopeSelector: string): string {
+function scopeSingleSelector(selector: string, scopeSelector: string): string[] {
     const trimmedSelector = selector.trim()
+    const scopeSelectorVariants = resolveScopeSelectorVariants(scopeSelector)
 
-    if (!trimmedSelector || trimmedSelector.includes(scopeSelector)) {
-        return trimmedSelector
+    if (!trimmedSelector) {
+        return []
+    }
+
+    if (hasResolvedScopeSelector(trimmedSelector, scopeSelector)) {
+        return [trimmedSelector]
     }
 
     const previewRootPattern = /(#preview-copy|#preview)\b/g
     if (previewRootPattern.test(trimmedSelector)) {
-        return trimmedSelector.replace(previewRootPattern, scopeSelector)
+        return expandScopeSelectorAlias(trimmedSelector.replace(previewRootPattern, scopeSelector), scopeSelector)
+    }
+
+    if (trimmedSelector.includes(scopeSelector)) {
+        return expandScopeSelectorAlias(trimmedSelector, scopeSelector)
     }
 
     if (trimmedSelector === ":root") {
-        return scopeSelector
+        return scopeSelectorVariants
     }
 
     if (trimmedSelector.startsWith(":root")) {
-        return trimmedSelector.replace(/^:root\b/, scopeSelector)
+        return scopeSelectorVariants.map((variant) => trimmedSelector.replace(/^:root\b/, variant))
     }
 
     if (/^html\b/.test(trimmedSelector) || /^body\b/.test(trimmedSelector)) {
-        return `${trimmedSelector} ${scopeSelector}`
+        return scopeSelectorVariants.map((variant) => `${trimmedSelector} ${variant}`)
     }
 
-    return `${scopeSelector} ${trimmedSelector}`
+    return scopeSelectorVariants.map((variant) => `${variant} ${trimmedSelector}`)
 }
 
 /**
@@ -259,7 +310,7 @@ function scopePreludeSegment(preludeSegment: string, scopeSelector: string): str
     const leadingWhitespace = preludeSegment.slice(0, leadingWhitespaceLength)
     const trailingWhitespace = trailingWhitespaceLength > 0 ? preludeSegment.slice(preludeSegment.length - trailingWhitespaceLength) : ""
     const scopedSelectors = splitSelectorList(trimmedPrelude)
-        .map((selector) => scopeSingleSelector(selector, scopeSelector))
+        .flatMap((selector) => scopeSingleSelector(selector, scopeSelector))
         .join(", ")
 
     return `${leadingWhitespace}${scopedSelectors}${trailingWhitespace}`
