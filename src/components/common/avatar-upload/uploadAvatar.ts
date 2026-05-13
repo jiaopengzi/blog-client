@@ -6,6 +6,7 @@
  * @Description  : 上传头像
  */
 
+import { checkQuotaBlocked } from "@/api/permissionRole/quota"
 import { HashAlgorithm } from "@/utils/hash"
 import { uploadFileCommon } from "@/utils/uploadFileCommon"
 
@@ -18,5 +19,8 @@ export const uploadAvatar = async (
     chunkSizeServer = 1024 * 1024 * 10,
     hashAlgorithmServer: HashAlgorithm = HashAlgorithm.SHA256,
 ): Promise<string | undefined> => {
+    if (await checkQuotaBlocked("AddAvatar", "头像")) {
+        return undefined
+    }
     return await uploadFileCommon(file, isEncrypt, isNoFree, chunkSizeServer, hashAlgorithmServer, RequestStrategyAvatar)
 }

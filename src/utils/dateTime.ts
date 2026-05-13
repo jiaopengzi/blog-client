@@ -79,6 +79,28 @@ export function formatDurationTime(duration: number): string {
 }
 
 /**
+ * @description: 格式化持续时间为友好显示（最多展示两个最大单位）
+ * @param seconds 秒数
+ * @return 友好显示字符串，0 返回空
+ */
+export function displayDurationTime(seconds: number): string {
+    if (seconds <= 0) return ""
+
+    const days = Math.floor(seconds / 86400)
+    const hours = Math.floor((seconds % 86400) / 3600)
+    const minutes = Math.floor((seconds % 3600) / 60)
+    const secs = Math.floor(seconds % 60)
+
+    const parts: string[] = []
+    if (days > 0) parts.push(`${days} 天`)
+    if (hours > 0) parts.push(`${hours} 小时`)
+    if (minutes > 0) parts.push(`${minutes} 分钟`)
+    if (secs > 0 && parts.length < 2) parts.push(`${secs} 秒`)
+
+    return parts.slice(0, 2).join(" ")
+}
+
+/**
  * @description: 将时间字符串转换为秒数
  * @param time 时间字符串 格式为 hh:mm:ss.sss
  * @return  {number} 秒数(三位小数,即毫秒)

@@ -9,6 +9,8 @@
 import type { Extension } from "@codemirror/state"
 import { EditorView } from "@codemirror/view"
 
+import { checkQuotaBlocked } from "@/api/permissionRole/quota"
+import { useUserStore } from "@/stores/user"
 import { MessageUtil } from "@/utils/message"
 
 import { uploadEditor } from "./uploadEditor"
@@ -16,7 +18,19 @@ import { uploadEditor } from "./uploadEditor"
 import type { ImageUploadHandler, ImageUploadResult } from "../options"
 
 const defaultImageUploadHandler: Exclude<ImageUploadHandler, null> = async (file) => {
-    return await uploadEditor(file)
+    const userStore = useUserStore()
+    if (!userStore.accessToken) {
+        MessageUtil.warning("请先登录后再上传图片", 5000)
+        return { cancelled: true }
+    }
+    if (await checkQuotaBlocked("AddMediaByPost", "图片")) {
+        return { cancelled: true }
+    }
+    try {
+        return await uploadEditor(file)
+    } catch {
+        return { cancelled: true }
+    }
 }
 
 /**

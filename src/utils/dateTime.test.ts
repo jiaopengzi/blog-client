@@ -5,7 +5,7 @@
 
 import { describe, expect, it } from "vitest"
 
-import { formatLocalISO } from "@/utils/dateTime"
+import { displayDurationTime, formatDurationTime, formatLocalISO } from "@/utils/dateTime"
 
 describe("formatLocalISO", () => {
     it("格式化日期包含年月日时分秒和时区偏移", () => {
@@ -52,5 +52,70 @@ describe("formatLocalISO", () => {
         const parsed = new Date(str)
         // 时间戳一致(忽略毫秒)
         expect(Math.abs(parsed.getTime() - original.getTime())).toBeLessThan(1000)
+    })
+})
+
+describe("displayDurationTime", () => {
+    it("0 或负数返回空字符串", () => {
+        expect(displayDurationTime(0)).toBe("")
+        expect(displayDurationTime(-1)).toBe("")
+    })
+
+    it("仅秒", () => {
+        expect(displayDurationTime(1)).toBe("1 秒")
+        expect(displayDurationTime(30)).toBe("30 秒")
+        expect(displayDurationTime(59)).toBe("59 秒")
+    })
+
+    it("分钟 + 秒", () => {
+        expect(displayDurationTime(60)).toBe("1 分钟")
+        expect(displayDurationTime(90)).toBe("1 分钟 30 秒")
+        expect(displayDurationTime(3599)).toBe("59 分钟 59 秒")
+    })
+
+    it("小时 + 分钟（秒被截断）", () => {
+        expect(displayDurationTime(3600)).toBe("1 小时")
+        expect(displayDurationTime(3661)).toBe("1 小时 1 分钟")
+        expect(displayDurationTime(7200)).toBe("2 小时")
+    })
+
+    it("中间单位为零时跳过", () => {
+        expect(displayDurationTime(3610)).toBe("1 小时 10 秒")
+        expect(displayDurationTime(3601)).toBe("1 小时 1 秒")
+        expect(displayDurationTime(86410)).toBe("1 天 10 秒")
+    })
+
+    it("天 + 小时", () => {
+        expect(displayDurationTime(86400)).toBe("1 天")
+        expect(displayDurationTime(90000)).toBe("1 天 1 小时")
+        expect(displayDurationTime(172800)).toBe("2 天")
+    })
+
+    it("最多展示两个单位", () => {
+        expect(displayDurationTime(90061)).toBe("1 天 1 小时")
+    })
+})
+
+describe("formatDurationTime", () => {
+    it("小于 1 分钟显示 mm:ss", () => {
+        expect(formatDurationTime(0)).toBe("00:00")
+        expect(formatDurationTime(30)).toBe("00:30")
+        expect(formatDurationTime(59)).toBe("00:59")
+    })
+
+    it("分钟级显示 mm:ss", () => {
+        expect(formatDurationTime(60)).toBe("01:00")
+        expect(formatDurationTime(3599)).toBe("59:59")
+    })
+
+    it("小时级显示 hh:mm:ss", () => {
+        expect(formatDurationTime(3600)).toBe("01:00:00")
+        expect(formatDurationTime(3661)).toBe("01:01:01")
+    })
+
+    it("天级显示 d天 hh:mm:ss", () => {
+        expect(formatDurationTime(86400)).toBe("1天 00:00:00")
+        expect(formatDurationTime(90000)).toBe("1天 01:00:00")
+        expect(formatDurationTime(90061)).toBe("1天 01:01:01")
     })
 })
