@@ -149,7 +149,7 @@ import { adminMenuItemMap } from "@/views/admin/component/aside"
 import type { PermissionRow, Role } from "@/views/admin/component/main/permission-role"
 
 import { LimitCount, LimitPeriod, type PermissionRole } from "./types"
-import { getSafeProperty } from "./utils"
+import { buildUpdateRolesRequest, getSafeProperty, hasUpdateRolesChanges } from "./utils"
 
 defineOptions({ name: RouteNames.PermissionRole })
 
@@ -436,17 +436,12 @@ function selectAll(roleName: string) {
 
 // 更新权限  防抖更新权限 100毫秒内多次点击只执行一次
 const updatePermission = debounce(100, async () => {
-    // 用 permissionsData 拼接 UpdateRolesRequest 请求参数
-    const updateRolesRequest: UpdateRolesRequest = {
-        roles: rolesList.value.map((role: Role) => {
-            const updateRoleRequest: UpdateRoleRequest = {
-                role_name: role.role_name,
-                permission_names: permissionsData.value
-                    .filter((row: PermissionRow) => row[role.role_name])
-                    .map((row: PermissionRow) => row.permissionName as PermissionNames),
-            }
-            return updateRoleRequest
-        }),
+    const updateRolesRequest: UpdateRolesRequest = buildUpdateRolesRequest(rolesList.value, permissionsData.value)
+    const currentRoles = permissionRoleStore.getSystemRoles.roles ?? []
+
+    if (!hasUpdateRolesChanges(updateRolesRequest, currentRoles)) {
+        MessageUtil.warning("当前权限未修改，无需更新")
+        return
     }
 
     // 更新角色权限api
