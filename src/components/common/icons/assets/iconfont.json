@@ -230,6 +230,13 @@
       "unicode_decimal": 60030
     },
     {
+      "icon_id": "7594139",
+      "name": "fullscreen-exit",
+      "font_class": "fullscreen-exit",
+      "unicode": "ea7f",
+      "unicode_decimal": 60031
+    },
+    {
       "icon_id": "39249508",
       "name": "picture-in-picture",
       "font_class": "picture-in-picture",

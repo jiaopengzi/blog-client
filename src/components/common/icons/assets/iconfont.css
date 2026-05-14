@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4152487 */
-  src: url('iconfont.woff2?t=1774170997806') format('woff2'),
-       url('iconfont.woff?t=1774170997806') format('woff'),
-       url('iconfont.ttf?t=1774170997806') format('truetype');
+  src: url('iconfont.woff2?t=1778721121717') format('woff2'),
+       url('iconfont.woff?t=1778721121717') format('woff'),
+       url('iconfont.ttf?t=1778721121717') format('truetype');
 }
 
 .iconfont {
@@ -139,6 +139,10 @@
 
 .icon-web-fullscreen:before {
   content: "\ea7e";
+}
+
+.icon-fullscreen-exit:before {
+  content: "\ea7f";
 }
 
 .icon-picture-in-picture:before {
