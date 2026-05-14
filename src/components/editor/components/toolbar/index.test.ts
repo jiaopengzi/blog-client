@@ -15,11 +15,45 @@ import { IconKeys } from "@/components/common/icons"
 import { CommandsKey } from "../../command"
 import Toolbar from "."
 
-vi.mock("@vueuse/core", () => ({
-    useResizeObserver: () => ({
-        stop: vi.fn(),
-    }),
+vi.mock("@/customElements", () => ({
+    Names: {
+        PayDownload: "pay-download",
+        PayRead: "pay-read",
+        PayKey: "pay-key",
+        PayMembership: "pay-membership",
+        PayVideo: "pay-video",
+        WechatCaptcha: "wechat-captcha",
+        LoginView: "login-view",
+        VideoPlayer: "video-player",
+        PowerBi: "power-bi",
+    },
+    CustomElementAttributes: [
+        "id",
+        "class",
+        "name",
+        "codeurl",
+        "key",
+        "reply",
+        "video-type",
+        "poster",
+        "src",
+        "maskcolor",
+        "title",
+        "description",
+        "has-material",
+    ],
 }))
+
+vi.mock("@vueuse/core", async (importOriginal) => {
+    const actual = await importOriginal<typeof import("@vueuse/core")>()
+
+    return {
+        ...actual,
+        useResizeObserver: () => ({
+            stop: vi.fn(),
+        }),
+    }
+})
 
 const BarStub = defineComponent({
     name: "BarStub",

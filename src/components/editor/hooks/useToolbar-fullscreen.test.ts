@@ -17,8 +17,11 @@ import { CommandsKey } from "../command"
 import { EditorStateManager } from "../state"
 import { useToolbar } from "./useToolbar"
 
-vi.mock("@vueuse/core", () => {
+vi.mock("@vueuse/core", async (importOriginal) => {
+    const actual = await importOriginal<typeof import("@vueuse/core")>()
+
     return {
+        ...actual,
         useMagicKeys: () =>
             new Proxy(
                 {},
