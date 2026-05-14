@@ -107,17 +107,6 @@ const commonServerOptions = (runtimeEnv: ReturnType<typeof resolveRuntimeEnv>): 
                     return `/api/v1${requestPath}`
                 },
             },
-
-            "/admin/raw-github": {
-                target: "https://raw.githubusercontent.com",
-                changeOrigin: true,
-                rewrite: (requestPath: string) => requestPath.replace(/^\/admin\/raw-github/, ""),
-            },
-            "/admin/raw-gitee": {
-                target: "https://gitee.com",
-                changeOrigin: true,
-                rewrite: (requestPath: string) => requestPath.replace(/^\/admin\/raw-gitee/, ""),
-            },
         },
     }
 }

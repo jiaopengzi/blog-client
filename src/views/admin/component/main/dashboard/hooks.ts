@@ -11,11 +11,16 @@ import { ref } from "vue"
 import { TimeDimension, TrendCategory } from "@/api/dashboard/common"
 import { getStatsAPI, type StatsRes } from "@/api/dashboard/stats"
 import { getTrendAPI, type TrendDimensionRequest, type TrendDimensionRes } from "@/api/dashboard/trend"
-import { getVersionAPI, getVersionsAPI, Project, Source, type VersionRes } from "@/api/dashboard/version"
+import { getRemoteVersionOverviewAPI, getVersionAPI, type RemoteVersionItem, type RemoteVersionOverviewRes, type VersionRes } from "@/api/dashboard/version"
 import { ResponseCode } from "@/api/response"
-import { extractLatestChangelogVersionDate, type VersionInfo } from "@/utils/version"
 import { getVersionInfo } from "@/version"
 
+import { buildDashboardVersionUpdateState } from "./version-update"
+
+/**
+ * useDashboard 管理台面板组合式函数.
+ * 统一封装版本、统计和趋势相关状态, 避免组件层直接拼装接口和转换逻辑.
+ */
 export function useDashboard() {
     const versionClient = getVersionInfo()
 
@@ -52,52 +57,57 @@ export function useDashboard() {
         rows: [],
     })
 
+    const hasUpdateServer = ref<boolean>(false)
+    const hasUpdateClient = ref<boolean>(false)
+    const updateVersionServer = ref<RemoteVersionItem | null>(null)
+    const updateVersionClient = ref<RemoteVersionItem | null>(null)
+    const remoteVersionOverview = ref<RemoteVersionOverviewRes | null>(null)
+    const remoteVersionLoading = ref<boolean>(false)
+    const remoteVersionError = ref<string>("")
+
+    const applyRemoteVersionUpdateState = (overview: RemoteVersionOverviewRes | null = remoteVersionOverview.value) => {
+        const versionUpdateState = buildDashboardVersionUpdateState(overview, versionServer.value.version, versionClient.version)
+        hasUpdateServer.value = versionUpdateState.hasUpdateServer
+        hasUpdateClient.value = versionUpdateState.hasUpdateClient
+        updateVersionServer.value = versionUpdateState.updateVersionServer
+        updateVersionClient.value = versionUpdateState.updateVersionClient
+    }
+
     // 获取版本信息
     const getVersion = async () => {
         const res = await getVersionAPI()
         if (res.data.code === ResponseCode.DashboardGetVersionSuccess) {
             versionServer.value = res.data.data
+            applyRemoteVersionUpdateState()
         }
     }
 
-    // 根据不同来源获取 changelog 内容, 判断是否有更新
-    const hasUpdateServer = ref<boolean>(false)
-    const hasUpdateClient = ref<boolean>(false)
-    const updateVersionServer = ref<VersionInfo | null>(null)
-    const updateVersionClient = ref<VersionInfo | null>(null)
-
-    // 获取 changelog 内容
+    /**
+     * fetchChangelog 获取远端最新版本概览.
+     * 实际远端访问已下沉到后端, 前端只消费后端聚合结果并计算是否存在更新.
+     */
     const fetchChangelog = async () => {
-        const serverPromises = [getVersionsAPI(Project.Server, Source.GitHub), getVersionsAPI(Project.Server, Source.Gitee)]
-        const clientPromises = [getVersionsAPI(Project.Client, Source.GitHub), getVersionsAPI(Project.Client, Source.Gitee)]
+        remoteVersionLoading.value = true
+        remoteVersionError.value = ""
+
         try {
-            // 使用 Promise.race 等待第一个完成的 Promise
+            const res = await getRemoteVersionOverviewAPI()
+            if (res.data.code !== ResponseCode.DashboardGetRemoteVersionSuccess) {
+                remoteVersionOverview.value = null
+                applyRemoteVersionUpdateState(null)
+                remoteVersionError.value = "远端版本信息暂不可用"
+                return
+            }
 
-            // 服务器端
-            await Promise.race(serverPromises).then((res) => {
-                // 拿到innerText
-                res.text().then((text) => {
-                    updateVersionServer.value = extractLatestChangelogVersionDate(text)
-                    if (updateVersionServer.value) {
-                        // 比较版本号，判断是否有更新
-                        hasUpdateServer.value = updateVersionServer.value.version !== versionServer.value.version
-                    }
-                })
-            })
-
-            // 客户端
-            await Promise.race(clientPromises).then((res) => {
-                // 拿到innerText
-                res.text().then((text) => {
-                    updateVersionClient.value = extractLatestChangelogVersionDate(text)
-                    if (updateVersionClient.value) {
-                        // 比较版本号，判断是否有更新
-                        hasUpdateClient.value = updateVersionClient.value.version !== versionClient.version
-                    }
-                })
-            })
+            remoteVersionOverview.value = res.data.data
+            applyRemoteVersionUpdateState(res.data.data)
         } catch (error) {
+            remoteVersionOverview.value = null
+            applyRemoteVersionUpdateState(null)
+            remoteVersionError.value = "远端版本信息暂不可用"
             console.error("Failed to fetch changelog:", error)
+        } finally {
+            remoteVersionLoading.value = false
         }
     }
 
@@ -151,6 +161,8 @@ export function useDashboard() {
         hasUpdateClient,
         updateVersionServer,
         updateVersionClient,
+        remoteVersionLoading,
+        remoteVersionError,
         fetchChangelog,
         getStats,
         getTrend,

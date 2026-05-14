@@ -8,6 +8,13 @@
 <template>
     <div class="version-container">
         <h4>版本信息</h4>
+        <div class="version-status" v-if="remoteVersionLoading">
+            <span class="loading-spinner"></span>
+            <span>远端版本检查中...</span>
+        </div>
+        <div class="version-status version-status-error" v-else-if="remoteVersionError !== ''">
+            <span>{{ remoteVersionError }}</span>
+        </div>
         <div class="version-client">
             <span class="version">客户端版本：{{ versionClient.version }}</span>
             <!-- <span class="commit">提交哈希：{{ versionClient.commit.slice(0, 7) }} |</span> -->
@@ -32,11 +39,22 @@ import { useDashboard } from "../hooks"
 
 defineOptions({ name: "DashboardVersion" })
 
-const { versionClient, versionServer, getVersion, hasUpdateServer, hasUpdateClient, updateVersionServer, updateVersionClient, fetchChangelog } = useDashboard()
+const {
+    versionClient,
+    versionServer,
+    getVersion,
+    hasUpdateServer,
+    hasUpdateClient,
+    updateVersionServer,
+    updateVersionClient,
+    remoteVersionLoading,
+    remoteVersionError,
+    fetchChangelog,
+} = useDashboard()
 
-onBeforeMount(async () => {
-    await getVersion()
-    await fetchChangelog()
+onBeforeMount(() => {
+    void getVersion()
+    void fetchChangelog()
 })
 </script>
 <style scoped lang="scss">
@@ -54,6 +72,19 @@ onBeforeMount(async () => {
         border-left: 4px solid var(--jpz-text-color-primary);
         letter-spacing: 0.5px;
         text-transform: uppercase;
+    }
+
+    .version-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+        font-size: 12px;
+        color: var(--jpz-text-color-secondary);
+    }
+
+    .version-status-error {
+        color: var(--jpz-warning-color, #c27803);
     }
 
     .version-client,
@@ -76,6 +107,25 @@ onBeforeMount(async () => {
         font-weight: 600;
         color: var(--jpz-text-color-primary);
         margin-left: 4px;
+    }
+
+    .loading-spinner {
+        width: 12px;
+        height: 12px;
+        border: 2px solid color-mix(in srgb, var(--jpz-text-color-secondary) 20%, transparent);
+        border-top-color: var(--jpz-text-color-primary);
+        border-radius: 50%;
+        animation: dashboard-version-spin 0.8s linear infinite;
+    }
+}
+
+@keyframes dashboard-version-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
     }
 }
 </style>
