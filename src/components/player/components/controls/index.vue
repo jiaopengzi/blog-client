@@ -60,7 +60,7 @@
 
                 <!-- 全屏 -->
                 <button type="button" class="controls-btn fullscreen" @click="handleButtonClick(toggleFullscreen)">
-                    <j-icon :name="IconKeys.Fullscreen" custom-class="iconfont" />
+                    <j-icon :name="fullscreenIconName" custom-class="iconfont" />
                 </button>
 
                 <!-- 设置 播放速度 清晰度 字幕 -->
@@ -217,6 +217,14 @@ const formattedTimeDisplay = computed(() => {
     const currentFormatted = formatDurationTime(localPlayerState.playProgress.currentTime)
     const durationFormatted = formatDurationTime(localPlayerState.playProgress.duration)
     return `${currentFormatted}/${durationFormatted}`
+})
+
+/**
+ * fullscreenIconName 根据播放器原生全屏状态返回控制栏图标。
+ * 这里只处理播放器全屏按钮, 不影响网页全屏按钮的既有显示逻辑。
+ */
+const fullscreenIconName = computed(() => {
+    return localPlayerState.isFullScreen ? IconKeys.FullscreenExit : IconKeys.Fullscreen
 })
 
 // 处理选择字幕语言
