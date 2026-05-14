@@ -61,20 +61,143 @@ jobs:
 
       # 3. 下载工具到 /home/runner/，使 ROOT_DIR=/home/runner 与 volume 路径一致
       - name: Download blog-tool
-        run: curl -fsSL -o /home/runner/blog-tool-dev.sh
-          https://raw.githubusercontent.com/jiaopengzi/blog-tool/main/dist/blog-tool-dev.sh
+        run: |
+          curl -fsSL -o /home/runner/blog-tool-dev.sh \
+            https://raw.githubusercontent.com/jiaopengzi/blog-tool/main/dist/blog-tool-dev.sh
 
       # 4. 安装必要依赖
       - name: Install common software
         run: sudo bash /home/runner/blog-tool-dev.sh install_common_software
 
-      # 5a. PR：只构建，不推送
+      # 5. 腾讯云仓库预检：在真正编译前先检查网络和登录连通性
+      #    目标：如果当前 GitHub Actions runner 到腾讯云仓库网络抖动，则直接失败退出
+      #    这样可以避免后续耗时编译、Docker Hub 推送、Releases 发布后，最终卡死在腾讯云推送
+      #    额外要求：预检失败时，把结论直接写到 Job Summary 第一屏，并提示直接点击 Re-run jobs
+      - name: Preflight Tencent registry network
+        if: github.event_name != 'pull_request'
+        env:
+          REGISTRY_USER_NAME_TENCENT: ${{ secrets.REGISTRY_USER_NAME_TENCENT }}
+          REGISTRY_PASSWORD_TENCENT: ${{ secrets.REGISTRY_PASSWORD_TENCENT }}
+        run: |
+          set -euo pipefail
+
+          REGISTRY_HOST="ccr.ccs.tencentyun.com"
+          LOGIN_LOG="$(mktemp)"
+
+          # 统一写入 Summary，确保失败原因出现在第一屏
+          write_summary() {
+            local category="$1"
+            local reason="$2"
+            local action="$3"
+
+            {
+              echo "## 腾讯云预检失败"
+              echo
+              echo "- 失败类型: ${category}"
+              echo "- 目标仓库: ${REGISTRY_HOST}"
+              echo "- 原因: ${reason}"
+              echo "- 建议: ${action}"
+            } > "$GITHUB_STEP_SUMMARY"
+          }
+
+          # 统一失败出口，既打 GitHub Actions error 注解，也写 Summary
+          fail_preflight() {
+            local title="$1"
+            local category="$2"
+            local reason="$3"
+            local action="$4"
+
+            write_summary "$category" "$reason" "$action"
+            echo "::error title=${title}::${reason}. ${action}"
+            rm -f "$LOGIN_LOG"
+            exit 1
+          }
+
+          echo "::notice title=腾讯云预检::开始检查 ${REGISTRY_HOST} 的网络与登录连通性"
+
+          {
+            echo "### 腾讯云预检"
+            echo "- 目标仓库: ${REGISTRY_HOST}"
+            echo "- 当前时间: $(date +"%Y-%m-%d %H:%M:%S")"
+            echo "- 状态: 检查中"
+          } > "$GITHUB_STEP_SUMMARY"
+
+          # 5.1 先检查 secrets 是否存在，避免把配置问题误判成网络问题
+          if [[ -z "${REGISTRY_USER_NAME_TENCENT:-}" || -z "${REGISTRY_PASSWORD_TENCENT:-}" ]]; then
+            fail_preflight \
+              "腾讯云配置缺失" \
+              "配置缺失" \
+              "未配置 REGISTRY_USER_NAME_TENCENT 或 REGISTRY_PASSWORD_TENCENT secrets" \
+              "请先检查 GitHub 仓库 secrets 配置"
+          fi
+
+          # 5.2 检查 DNS 解析，连主机名都解析不了时直接终止
+          if ! getent hosts "$REGISTRY_HOST" >/dev/null; then
+            fail_preflight \
+              "腾讯云网络异常" \
+              "网络异常" \
+              "DNS 解析失败，当前 GitHub Actions runner 无法解析 ${REGISTRY_HOST}" \
+              "请直接点击 Re-run jobs"
+          fi
+
+          # 5.3 检查 /v2/ 端点可达性
+          #     Docker Registry 未认证时返回 401 是正常的；200 也可以接受
+          #     只要不是 200/401，就认为当前网络状态不适合进入正式发布流程
+          for i in 1 2 3; do
+            status="$(curl -sS -o /dev/null -w '%{http_code}' --connect-timeout 5 --max-time 10 "https://${REGISTRY_HOST}/v2/" || true)"
+
+            if [[ "$status" != "200" && "$status" != "401" ]]; then
+              fail_preflight \
+                "腾讯云网络抖动" \
+                "网络抖动" \
+                "第 ${i} 次访问 https://${REGISTRY_HOST}/v2/ 失败，HTTP 状态码: ${status:-none}" \
+                "请直接点击 Re-run jobs"
+            fi
+          done
+
+          # 5.4 再执行一次真实 docker login
+          #     这一步最接近后续实际推送行为，可以把“网络问题”和“账号权限问题”区分开
+          if ! printf '%s' "$REGISTRY_PASSWORD_TENCENT" | timeout 25 sudo docker login "$REGISTRY_HOST" -u "$REGISTRY_USER_NAME_TENCENT" --password-stdin >"$LOGIN_LOG" 2>&1; then
+            cat "$LOGIN_LOG"
+
+            if grep -qiE "deadline exceeded|Client.Timeout|request canceled|TLS handshake timeout|i/o timeout|no route to host|connection refused|temporary failure|EOF" "$LOGIN_LOG"; then
+              fail_preflight \
+                "腾讯云网络抖动" \
+                "网络抖动" \
+                "docker login 到 ${REGISTRY_HOST} 超时或连接失败" \
+                "请直接点击 Re-run jobs"
+            else
+              fail_preflight \
+                "腾讯云登录失败" \
+                "登录失败" \
+                "网络可达，但 docker login 失败，请检查腾讯云仓库账号、密码或权限配置" \
+                "请检查腾讯云仓库账号、密码或权限配置"
+            fi
+          fi
+
+          # 5.5 预检成功，覆盖 Summary 为成功结果，避免保留“检查中”
+          sudo docker logout "$REGISTRY_HOST" >/dev/null 2>&1 || true
+          rm -f "$LOGIN_LOG"
+
+          {
+            echo "## 腾讯云预检通过"
+            echo
+            echo "- 目标仓库: ${REGISTRY_HOST}"
+            echo "- 结果: 网络与登录预检通过"
+            echo "- 结论: 继续进入编译与推送流程"
+          } > "$GITHUB_STEP_SUMMARY"
+
+          echo "::notice title=腾讯云预检通过::网络稳定，开始进入后续编译与推送流程"
+
+      # 6a. PR：只构建，不推送
       - name: Build client image (PR check)
         if: github.event_name == 'pull_request'
-        run: sudo GITHUB_ACTIONS=true GITHUB_WORKSPACE="$GITHUB_WORKSPACE" bash
-          /home/runner/blog-tool-dev.sh docker_build_client Dockerfile
+        run: |
+          sudo GITHUB_ACTIONS=true GITHUB_WORKSPACE="$GITHUB_WORKSPACE" \
+            bash /home/runner/blog-tool-dev.sh docker_build_client Dockerfile
 
-      # 5b. tag / 手动：构建并推送到 Docker Hub
+      # 6b. tag / 手动：构建并推送到 Docker Hub 与腾讯云
+      #     由于前面已经做过腾讯云预检，这里只有在网络正常时才会进入
       - name: Build and push client image
         if: github.event_name != 'pull_request'
         env:
@@ -90,7 +213,7 @@ jobs:
             REGISTRY_USER_NAME_TENCENT="$REGISTRY_USER_NAME_TENCENT" REGISTRY_PASSWORD_TENCENT="$REGISTRY_PASSWORD_TENCENT" \
             bash /home/runner/blog-tool-dev.sh docker_build_push_client Dockerfile
 
-      # 6. 移除环境变量文件，避免泄露风险
+      # 7. 移除环境变量文件，避免泄露风险
       - name: Remove environment variable files
         run: rm -rf /home/runner/volume/blog_tool_env
         if: always()
