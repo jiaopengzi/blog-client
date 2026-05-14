@@ -40,7 +40,7 @@
                             </div>
                         </div>
                         <div class="edit-avatar-btn">
-                            <AvatarUpload :avatar_user_id="editUserForm.editUserID" @avatar-upload-url="updateAvatarToDB" />
+                            <AvatarUpload :user-name="editUserForm.userName" @avatar-upload-url="updateAvatarToDB" />
                         </div>
                     </div>
                 </el-form-item>

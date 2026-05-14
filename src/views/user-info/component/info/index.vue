@@ -51,7 +51,7 @@
                 <AvatarInitials :name="userData.user.user_display_name" :avatar="avatar" />
             </div>
             <div class="edit-avatar-btn">
-                <AvatarUpload @avatar-upload-url="updateAvatarToDB" />
+                <AvatarUpload :user-name="userData.user.user_name" @avatar-upload-url="updateAvatarToDB" />
             </div>
         </div>
 

@@ -61,9 +61,14 @@ import { ref, useTemplateRef } from "vue"
 
 import { MessageUtil } from "@/utils/message"
 
+import { prepareAvatarUploadFile } from "./avatarFileName"
 import { uploadAvatar } from "./uploadAvatar"
 
 defineOptions({ name: "AvatarUpload" })
+
+const { userName = "" } = defineProps<{
+    userName?: string // 当前头像所属用户名
+}>()
 
 const emit = defineEmits<{
     (event: "avatar-upload-url", value: string): void // 头像上传地址
@@ -76,12 +81,16 @@ const cropperVisible = ref(false)
 const fileInput = useTemplateRef<HTMLInputElement | null>("fileInput")
 const cropperSelectionRef = useTemplateRef<CropperSelection | null>("cropperSelectionRef")
 
-// 切换 cropperVisible 状态
+/**
+ * toggleCropperVisible 切换头像裁剪弹窗显示状态.
+ */
 const toggleCropperVisible = () => {
     cropperVisible.value = !cropperVisible.value
 }
 
-// 打开文件选择器
+/**
+ * openFileDialog 打开系统文件选择器.
+ */
 const openFileDialog = () => {
     fileInput.value?.click()
 }
@@ -107,7 +116,10 @@ function onFileChange(e: Event) {
     imgURL.value = url
 }
 
-// 上传图片
+/**
+ * uploadImage 导出裁剪结果并按用户名规则重命名后上传头像.
+ * @returns 上传流程完成后的 Promise.
+ */
 async function uploadImage() {
     if (!cropperSelectionRef.value) {
         MessageUtil.error("无法获取裁剪器")
@@ -120,7 +132,7 @@ async function uploadImage() {
             return
         }
 
-        const file = new File([blob], "avatar.png", { type: blob.type })
+        const file = prepareAvatarUploadFile(new File([blob], "avatar.png", { type: blob.type }), userName)
         const imageUrl = await uploadAvatar(file)
 
         // 上传成功后触发事件
