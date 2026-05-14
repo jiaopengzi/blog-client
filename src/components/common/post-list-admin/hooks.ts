@@ -6,7 +6,7 @@
  * Description : 后台文章列表 hooks
  */
 
-import { computed, onBeforeMount, ref, watch } from "vue"
+import { computed, ref, watch } from "vue"
 
 import { PostStatusDisplay, PostType } from "@/api/post/common"
 import { getPostCountByAuthorAPI, type PostCountByAuthor } from "@/api/post/getPostCountByAuthor"
@@ -28,7 +28,7 @@ function normalizeCountList<T>(data: T[] | null | undefined): T[] {
 }
 
 // 获取文章统计数据
-export function useHeader(userID: string = "", postType: PostType) {
+export function useHeader(userID: string = "", postType: PostType, enabled: boolean = true) {
     const postCountAuthor = ref<PostCountByAuthor[]>([])
     const allPosts = ref<PostCountGroupItem>({} as PostCountGroupItem)
     const myPosts = ref<PostCountGroupItem>({} as PostCountGroupItem)
@@ -218,15 +218,27 @@ export function useHeader(userID: string = "", postType: PostType) {
         )
     })
 
-    onBeforeMount(async () => {
-        if (postType === PostType.Post) {
+    watch(
+        () => enabled,
+        async (newEnabled) => {
+            if (postType !== PostType.Post || !newEnabled) {
+                postCountAuthor.value = []
+                postCountStatus.value = []
+                postCountMonth.value = []
+                postCountPinned.value = {} as PostCountByIsPinned
+                postCountRecommended.value = {} as PostCountByIsRecommended
+                statusPosts.value = []
+                return
+            }
+
             await getPostCountAuthor()
             await getPostCountStatus()
             await getPostCountMonth()
             await getPostCountByIsPinned()
             await getPostCountByIsRecommended()
-        }
-    })
+        },
+        { immediate: true },
+    )
 
     return {
         postCountAuthor,

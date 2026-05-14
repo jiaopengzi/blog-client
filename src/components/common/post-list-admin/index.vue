@@ -13,7 +13,7 @@
             :table-column="cols"
             :add-item-dialog-visible="addItemDialogVisible"
             :edit-item-dialog-visible="editItemDialogVisible"
-            :is-show-delete-all="true"
+            :is-show-delete-all="showAdvancedPostAdminTools"
             :is-show-search="true"
             :search-str="search"
             :is-show-edit="true"
@@ -38,7 +38,7 @@
                 <el-button ref="addBtnRef" type="primary" @click="write"> {{ writeText }} </el-button>
             </template>
 
-            <template #category v-if="postType === PostType.Post">
+            <template #category v-if="showAdvancedPostAdminTools">
                 <!-- v-for 循环 postCountGroup生成 按钮 -->
                 <div ref="categoryRef" class="category-group">
                     <el-button
@@ -52,7 +52,7 @@
                 </div>
             </template>
 
-            <template #custom-filter v-if="postType === PostType.Post">
+            <template #custom-filter v-if="showAdvancedPostAdminTools">
                 <div ref="customFilterRef" class="custom-filter">
                     <!-- 按照作者 分类 标签 -->
                     <FilterTagClear v-if="tags.size" class="custom-filter-item" :tags="authorCategoryTag" @clear="clearAuthorCategoryTag" />
@@ -105,7 +105,7 @@
                 </div>
             </template>
 
-            <template #operation v-if="postType === PostType.Post">
+            <template #operation v-if="showAdvancedPostAdminTools">
                 <!-- 批量操作 -->
                 <div class="operation">
                     <el-select class="operation-item" v-model="postOperationSelect" placeholder="批量更改" clearable style="width: 140px">
@@ -157,6 +157,7 @@ import { MessageUtil } from "@/utils/message"
 import { useAPI } from "./api"
 import { generateCols } from "./cols"
 import { useHeader } from "./hooks"
+import { getPostAdminRoleName, shouldShowAdvancedPostAdminTools } from "./permissions"
 import { groupList, type GroupType, type PostCountGroupItem, type PostListAdminProps, queryKey } from "./types"
 
 defineOptions({ name: "PostListAdmin" })
@@ -192,9 +193,11 @@ watch(postCustomFieldsSelect, (newVal, oldVal) => {
 
 const userStore = useUserStore()
 const router = useRouter()
+const currentRoleName = computed(() => getPostAdminRoleName(userStore.getUserData))
+const showAdvancedPostAdminTools = computed(() => shouldShowAdvancedPostAdminTools(postType, currentRoleName.value))
 
 // 获取头部数据
-const { postCountGroup, postCountMonth, allGroup, activeGroup, getPostCountStatus } = useHeader(userStore.getUserID, postType)
+const { postCountGroup, postCountMonth, allGroup, activeGroup, getPostCountStatus } = useHeader(userStore.getUserID, postType, showAdvancedPostAdminTools.value)
 
 // 表格图片配置
 const tableImg: TableImg = {
@@ -251,12 +254,14 @@ const {
     queryParams,
     deleteAPI: deletePostAPI,
     deleteResCode: ResponseCode.PostDeleteSuccess,
-    options: { stringKeys, numberKeys, noRequestKeys, tableImg, refreshPromiseFns: [getPostCountStatus] },
+    options: { stringKeys, numberKeys, noRequestKeys, tableImg, refreshPromiseFns: showAdvancedPostAdminTools.value ? [getPostCountStatus] : [] },
 })
 
 const handleDeleteRows = async (rows: TableData[]) => {
     await deleteRows(rows)
-    await getPostCountStatus()
+    if (showAdvancedPostAdminTools.value) {
+        await getPostCountStatus()
+    }
 }
 
 // 更新查询参数
@@ -443,7 +448,9 @@ const handlePostStatusOperation = async () => {
 
                         MessageUtil.success(msg, 3000)
                         await updatePaginate()
-                        await getPostCountStatus()
+                        if (showAdvancedPostAdminTools.value) {
+                            await getPostCountStatus()
+                        }
 
                         loadingBatchOperation.value = false
                     } else {
