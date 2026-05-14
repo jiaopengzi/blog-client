@@ -7,7 +7,9 @@
 -->
 <template>
     <section>
-        <el-container ref="elContainerRef" direction="vertical">
+        <NoPermission v-if="showEditNoPermission" :head-title="editNoPermissionHeadTitle" :path-display="editNoPermissionPathDisplay" />
+
+        <el-container v-else ref="elContainerRef" direction="vertical">
             <div class="btns-header">
                 <div class="btns-header-left">
                     <el-button type="primary" class="new-post-write btns-header-item" @click="newPostWrite">
@@ -272,6 +274,7 @@ import { formatTime } from "@/utils/dateTime"
 import { generateShortcuts } from "@/utils/dateTime"
 import { extractSeoDescriptionFromMarkdown } from "@/utils/markdownSeo"
 import { MessageUtil } from "@/utils/message"
+import NoPermission from "@/views/admin/component/main/no-permission"
 
 import { type PostInfoAboutTime, type PostUpsertProps, queryKey, type UpdatePostForm, type UpsertPostForm } from "./types"
 import { useAdd } from "./useAdd"
@@ -281,7 +284,7 @@ import { createPostImageUploadHandler, getNextPostImageIndex } from "./imageUplo
 import { usePostVideoToc } from "./usePostVideoToc"
 import { useSnapshot } from "./useSnapshot"
 import { useSwitchItem } from "./useSwitchItem"
-import { createEmptyUpsertPostForm } from "./utils"
+import { createEmptyUpsertPostForm, getPostEditNoPermissionResourceLabel } from "./utils"
 
 defineOptions({ name: "PostUpsert" })
 
@@ -300,6 +303,9 @@ useHead({
 const postInfoForm = reactive<UpsertPostForm>(createEmptyUpsertPostForm(postType))
 const isShowCategory = computed(() => postType === PostType.Post)
 const isShowTag = computed(() => postType === PostType.Post)
+const showEditNoPermission = ref(false)
+const editNoPermissionPathDisplay = computed(() => getPostEditNoPermissionResourceLabel(postType, postInfoForm.id))
+const editNoPermissionHeadTitle = computed(() => `后台管理 - ${editNoPermissionPathDisplay.value}无权限`)
 
 const postInfoAboutTime = reactive<PostInfoAboutTime>({})
 
@@ -538,7 +544,20 @@ const {
     getValueFromQuery,
     getDataOnBeforeMount,
     submitForm: editSubmitForm,
-} = useEdit(postInfoForm, rolePaidList, commentStatus, queryKey, stateManager, dataOfUpdate, postInfoAboutTime, postShowMethod, unfoldDefaultStatus, isPaid)
+} = useEdit(
+    postInfoForm,
+    rolePaidList,
+    commentStatus,
+    queryKey,
+    stateManager,
+    dataOfUpdate,
+    postInfoAboutTime,
+    postShowMethod,
+    unfoldDefaultStatus,
+    isPaid,
+    router,
+    postType,
+)
 
 const { submitForm: addSubmitForm } = useAdd(postInfoForm, queryKey, postInfoAboutTime, router, routeName, unfoldDefaultStatus, isPaid)
 
@@ -736,7 +755,7 @@ onBeforeMount(async () => {
     await getCategoryList()
     await getValueFromQuery()
     if (postInfoForm.id) {
-        await getDataOnBeforeMount()
+        showEditNoPermission.value = await getDataOnBeforeMount()
     }
     await updateSnapshot()
 })

@@ -376,6 +376,7 @@ export enum ResponseCode {
     // 权限相关
     GetPermissionSuccess = 8300, //获取权限列表成功
     HasPermission = 8305, //判断是否有权限成功
+    NoPermission = 8306, // 无权限
     GetPermissionQuotaSuccess = 8308, //获取权限配额成功
     GetRoleSuccess = 8400, //获取角色列表成功
     UpdateRoleSuccess = 8403, //更新角色成功
@@ -407,6 +408,7 @@ export enum ResponseCode {
     VideoHasNoPay = 8617, // 视频未购买
 
     // 系统相关
+    ValidatorRequestError = 9003, // 校验请求参数失败
     ClientIPTooManyRequests = 9006, //客户端IP请求次数过多
     ClientIDTooManyRequests = 9007, //客户端ID请求次数过多
     SetupSuccess = 9011, // 项目初始化成功
