@@ -61,14 +61,41 @@ export function useToolbar(
         shouldIgnoreEscape: shouldIgnoreFullscreenEscape,
     })
 
+    /**
+     * syncFullscreenState 将网页全屏状态同步回编辑器状态。
+     * 这样无论是点击工具栏按钮, 还是按 Escape 退出全屏, 工具栏显示都能和真实状态保持一致。
+     * @param isFullscreen - 当前网页全屏状态。
+     * @returns 无返回值。
+     */
+    const syncFullscreenState = (isFullscreen: boolean): void => {
+        stateManager.setIsFullScreen(isFullscreen)
+    }
+
+    watch(isWebFullscreen, syncFullscreenState, { immediate: true })
+
+    /**
+     * getToolbarCommandMeta 根据当前编辑器状态返回工具栏命令显示配置。
+     * 全屏按钮始终保留原有的点击命令, 仅在已进入全屏时切换提示文案与图标。
+     * @param key - 当前工具栏按钮命令。
+     * @returns 当前按钮应展示的命令配置。
+     */
+    const getToolbarCommandMeta = (key: CommandsKey) => {
+        if (key === CommandsKey.Fullscreen && editorState.isFullScreen) {
+            return markdownEditorCommands[CommandsKey.ExitFullscreen]
+        }
+
+        return markdownEditorCommands[key]
+    }
+
     // 工具栏按钮
     const toolbarBtns = computed(() => {
         return editorState.commandKeys.map((key) => {
-            const hotKey = markdownEditorCommands[key].hotKey ? ` <${markdownEditorCommands[key].hotKey}>` : ""
+            const commandMeta = getToolbarCommandMeta(key as CommandsKey)
+            const hotKey = commandMeta.hotKey ? ` <${commandMeta.hotKey}>` : ""
             return {
                 name: key as CommandsKey,
-                display: (markdownEditorCommands[key].tip + hotKey) as string,
-                icon: markdownEditorCommands[key].icon as IconKeys,
+                display: (commandMeta.tip + hotKey) as string,
+                icon: commandMeta.icon as IconKeys,
             }
         })
     })
@@ -151,7 +178,6 @@ export function useToolbar(
 
         if (name === CommandsKey.Fullscreen) {
             toggle()
-            stateManager.setIsFullScreen(isWebFullscreen.value)
             return
         }
 
