@@ -9,30 +9,10 @@
 import type { ImageUploadHandler } from "@/pkg/codemirror"
 import { uploadEditor } from "@/pkg/codemirror/extension/uploadEditor"
 import { MessageUtil } from "@/utils/message"
+import { renameFilePreservingMetadata, sanitizeFileNameSegment } from "@/utils/uploadFileName"
 
 const DEFAULT_POST_IMAGE_TITLE = "未命名文章"
 const DEFAULT_IMAGE_EXTENSION = "png"
-
-/**
- * createPostImageUploadRegexCache 创建文章图片上传场景使用的正则缓存.
- * 这里沿用编辑器 createRegexCache 的组织方式, 将命名清洗相关正则集中收口, 避免散落的顶层常量.
- * @returns 正则缓存对象.
- */
-function createPostImageUploadRegexCache(): {
-    invalidFileNameRegex: RegExp
-    whitespaceRegex: RegExp
-    multipleDashRegex: RegExp
-    edgeDashRegex: RegExp
-} {
-    return {
-        invalidFileNameRegex: /[\\/:*?"<>|]/g,
-        whitespaceRegex: /\s+/g,
-        multipleDashRegex: /-{2,}/g,
-        edgeDashRegex: /^-|-$/g,
-    }
-}
-
-const regexCache = createPostImageUploadRegexCache()
 
 /**
  * sanitizePostImageTitle 清理文章标题中的非法文件名字符.
@@ -40,14 +20,7 @@ const regexCache = createPostImageUploadRegexCache()
  * @returns 可安全用于文件名的标题片段.
  */
 export function sanitizePostImageTitle(postTitle: string): string {
-    const normalizedTitle = postTitle
-        .trim()
-        .replace(regexCache.invalidFileNameRegex, "-")
-        .replace(regexCache.whitespaceRegex, "-")
-        .replace(regexCache.multipleDashRegex, "-")
-        .replace(regexCache.edgeDashRegex, "")
-
-    return normalizedTitle || DEFAULT_POST_IMAGE_TITLE
+    return sanitizeFileNameSegment(postTitle, DEFAULT_POST_IMAGE_TITLE)
 }
 
 /**
@@ -68,19 +41,6 @@ export function getNextPostImageIndex(imageUrls: readonly string[]): number {
  */
 export function buildPostImageFileName(postTitle: string, imageIndex: number, extension: string): string {
     return `${sanitizePostImageTitle(postTitle)}-${imageIndex}.${extension}`
-}
-
-/**
- * renameUploadFile 仅修改上传文件名称, 其余文件元信息保持不变.
- * @param file 原始上传文件.
- * @param fileName 目标文件名.
- * @returns 仅完成名称替换的新文件对象.
- */
-function renameUploadFile(file: File, fileName: string): File {
-    return new File([file], fileName, {
-        type: file.type || "image/png",
-        lastModified: file.lastModified,
-    })
 }
 
 /**
@@ -107,7 +67,7 @@ export function preparePostImageUploadFile(file: File, source: "paste" | "drop",
         return file
     }
 
-    return renameUploadFile(file, buildPostImageFileName(postTitle, imageIndex, DEFAULT_IMAGE_EXTENSION))
+    return renameFilePreservingMetadata(file, buildPostImageFileName(postTitle, imageIndex, DEFAULT_IMAGE_EXTENSION))
 }
 
 /**
