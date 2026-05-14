@@ -92,10 +92,15 @@ const toolbarMenuCommands = new Set<CommandsKey>([
     CommandsKey.Emoji,
     CommandsKey.Table,
     CommandsKey.Alert,
-    CommandsKey.Vim,
     CommandsKey.Tool,
 ])
 
+/**
+ * emitToolbarBtnClicked 将非菜单型按钮点击事件继续抛给父组件。
+ * Vim 按钮需要同时支持悬浮弹出菜单和点击切换, 因此不能再被菜单集合拦截。
+ * @param name - 当前点击的工具栏命令。
+ * @returns 无返回值。
+ */
 const emitToolbarBtnClicked = (name: CommandsKey) => {
     if (toolbarMenuCommands.has(name)) {
         return

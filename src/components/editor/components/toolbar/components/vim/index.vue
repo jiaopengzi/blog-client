@@ -10,7 +10,7 @@
     <el-popover
         placement="bottom"
         :width="170"
-        trigger="click"
+        trigger="hover"
         popper-class="popper-class"
         popper-style="background-color: transparent; border: none; box-shadow: none;"
         :show-arrow="false"
