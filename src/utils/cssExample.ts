@@ -8,16 +8,7 @@
 
 const DEFAULT_CSS_EXAMPLE_PREVIEW_SELECTOR = "#preview"
 
-/**
- * 返回自定义样式 CSS 示例字符串.
- * 该示例用于给用户提供可直接复制和调整的预览样式模板.
- * @param previewSelector 预览根节点选择器, 默认使用主站预览容器.
- * @returns 自定义样式 CSS 示例内容.
- */
-export const cssExample = (previewSelector: string = DEFAULT_CSS_EXAMPLE_PREVIEW_SELECTOR): string => {
-    const normalizedPreviewSelector = previewSelector.trim() || DEFAULT_CSS_EXAMPLE_PREVIEW_SELECTOR
-
-    return `
+const THEME_CSS_EXAMPLE = `
 /******************** 网站主题样式开始 ******************/
 
 /**
@@ -40,14 +31,13 @@ html[data-theme="dark"] {
  * 浅色和暗色主题共用的基础变量.
  * 如果你只想统一调整背景, 文字, 边框, 表格等通用外观, 主要修改这一段即可.
  */
-
 html[data-theme="light"],
 html[data-theme="dark"] {
   /* 背景色 */
   --jpz-bg-color: var(--el-bg-color);
   --jpz-bg-color-page: var(--el-bg-color-page);
   --jpz-bg-color-footer: var(--el-bg-color);
-  
+
   /* 边框颜色 */
   --jpz-border-color: var(--el-border-color);
   --jpz-border-color-hover: var(--el-border-color-hover);
@@ -55,7 +45,7 @@ html[data-theme="dark"] {
   /* 阴影 */
   --jpz-box-shadow-lighter: var(--el-box-shadow-lighter);
   --jpz-box-shadow-light: var(--el-box-shadow-light);
-  
+
   /* 主文章 hover 阴影 */
   --jpz-post-item-main-hover-shadow: 0 0 5px #ccc, 0 0 10px #ccc;
 
@@ -97,7 +87,7 @@ html[data-theme="dark"] {
   --footnote-sup-color: #0969da;
 
   /* 参考 github markdown 主题 */
-  
+
   /* note: 主色 rgb(68, 147, 248) => #4493f8 */
   --markdown-alert-note-bg-color: #edf4fe; /* 背景 */
   --markdown-alert-note-border-color: #d0e4fd; /* 边框 */
@@ -134,32 +124,44 @@ html[data-theme="dark"] {
   --markdown-alert-caution-svg-fill-color: #f85149;
 }
 /******************** 网站主题样式结束 ******************/
+`
 
+const ARTICLE_CSS_EXAMPLE = `
 /******************** 文章模块主题开始 ******************/
 /**
- * 文章容器
+ * 文章容器.
+ * 这里放的是整篇文章的基础排版变量和默认字号, 列表缩进也统一从这里出发.
  */
 #preview {
-  font-family: "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+  --preview-font-family-text: "roboto", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --preview-font-family-title: "roboto", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --preview-paragraph-indent: 2em;
+  --preview-list-indent-step: 2em;
+  --preview-list-marker-column-width: 0.5em;
+  --preview-list-text-offset: 1.28em;
+  --preview-task-list-icon-width: 1em;
+
+  font-family: var(--preview-font-family-text);
   overflow-x: hidden;
-  padding: 0 20px;
+  padding: 0 24px;
   box-sizing: border-box;
   font-size: 16px;
-  line-height: 1.5;
+  line-height: 1.75;
   color: var(--jpz-color-primary);
   height: var(--jpz-codemirror-height, 100%);
 }
 
 /**
  * 第一个子元素不额外增加顶部留白.
- * 这样文章一开始如果就是标题或段落, 顶部不会显得空一大块.
+ * 这样文章一开头如果就是标题或段落, 顶部不会显得空一大块.
  */
 #preview > :first-child {
   margin-top: 0;
 }
 
 /**
- * 各级标题
+ * 各级标题的公共样式.
+ * 这里统一标题字体, 颜色和字重, 每一级再单独设置字号和间距.
  */
 #preview h1,
 #preview h2,
@@ -167,55 +169,61 @@ html[data-theme="dark"] {
 #preview h4,
 #preview h5,
 #preview h6 {
-  font-family: "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
-  color: red;
+  font-family: var(--preview-font-family-title);
+  color: var(--jpz-color-primary);
   font-weight: 700;
-  padding-bottom: 2px;
 }
 
 /**
- * 一级标题单独增强显示效果.
- * 这里额外设置了居中, 下边框和更大的字号, 让文章主标题更醒目.
+ * 一级标题.
+ * 使用居中 + 下边框的处理, 让文章主标题更醒目.
  */
 #preview h1 {
   font-size: 2em;
   display: table;
   border-bottom: 2px solid var(--jpz-color-primary);
   text-align: center;
-  margin: 20px auto;
+  margin: 1.5em auto 1em;
 }
 
 /**
- * 二级到六级标题共用外边距.
- * 这样可以把标题之间的上下留白统一管理, 后面每一级只需要关心自己的字号.
+ * 二级标题.
+ * 标题下方保留细分割线, 方便区分章节.
  */
-#preview h2,
-#preview h3,
-#preview h4,
-#preview h5,
-#preview h6 {
-  margin: 0.5em 1em 0.5em 0;
-}
-
 #preview h2 {
-  font-size: 1.8em;
+  font-size: 1.6em;
+  margin: 2em 0 0.75em 0;
+  padding-bottom: 0.4em;
+  border-bottom: 1px solid var(--jpz-border-color);
 }
 
+/**
+ * 三级标题.
+ */
 #preview h3 {
-  font-size: 1.5em;
+  font-size: 1.35em;
+  margin: 1.75em 0 0.6em 0;
 }
 
+/**
+ * 四级标题.
+ */
 #preview h4 {
-  font-size: 1.2em;
+  font-size: 1.15em;
+  margin: 1.5em 0 0.5em 0;
 }
 
+/**
+ * 五级和六级标题.
+ */
 #preview h5,
 #preview h6 {
   font-size: 1em;
+  margin: 1.25em 0 0.5em 0;
 }
 
 /**
- * 加粗
+ * 加粗.
  */
 #preview strong {
   color: var(--jpz-text-color-primary);
@@ -223,7 +231,7 @@ html[data-theme="dark"] {
 }
 
 /**
- * 斜体
+ * 斜体.
  */
 #preview em {
   color: var(--jpz-text-color-primary);
@@ -231,7 +239,7 @@ html[data-theme="dark"] {
 }
 
 /**
- * 删除线
+ * 删除线.
  */
 #preview del {
   text-decoration: line-through;
@@ -249,112 +257,175 @@ html[data-theme="dark"] {
 }
 
 /**
- * 有序列表
+ * 有序列表.
+ * 这里不再使用浏览器原生数字 marker, 统一改成自绘, 方便和 task list 图标对齐.
  */
 #preview ol {
-  list-style: decimal;
-  padding-left: 2em;
+  list-style: none;
+  padding-left: var(--preview-paragraph-indent);
   margin: 0.75em 0;
+  counter-reset: preview-ordered-list;
 }
 
 /**
- * 有序列表子项
- */
-#preview ol li {
-  color: var(--jpz-text-color-primary);
-}
-
-/**
- * 无序列表
+ * 无序列表.
+ * 顶层列表和段落共用同一组缩进基线, 这样列表正文能和普通段落首行对齐.
  */
 #preview ul {
-  padding-left: 2em;
+  list-style: none;
+  padding-left: var(--preview-paragraph-indent);
   position: relative;
-  word-break: break-all;
-  color: var(--jpz-text-color-primary);
+  overflow-wrap: break-word;
   margin: 0.75em 0;
+  color: var(--jpz-text-color-primary);
 }
 
 /**
- * 统一所有列表项的行高.
- * 包括有序列表, 无序列表以及更深层级的子列表, 避免每一级都重复写同样的间距.
+ * 普通列表项使用固定 marker 列.
+ * 这样数字, 圆点和 task list 图标都能落在同一条视觉基线上.
  */
-#preview ol li,
-#preview ul > li,
-#preview ul > li > ul > li,
-#preview ul > li > ul > li > ul > li {
+#preview ol > li:not(.task-list-item),
+#preview ul > li:not(.task-list-item) {
+  position: relative;
+  padding-left: var(--preview-list-text-offset);
   line-height: 2em;
+  color: var(--jpz-text-color-primary);
 }
 
 /**
- * 无序列表子项
+ * 有序列表项递增计数器.
  */
-#preview ul > li {
-  list-style-type: disc;
+#preview ol > li:not(.task-list-item) {
+  counter-increment: preview-ordered-list;
 }
 
 /**
- * 二级无序列表
+ * 有序列表 marker.
+ * 使用固定宽度列来承载数字, 可以避免浏览器默认数字右对齐产生的漂移.
  */
-#preview ul > li > ul > li {
-  list-style-type: square;
+#preview ol > li:not(.task-list-item)::before {
+  content: counter(preview-ordered-list) ".";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--preview-list-marker-column-width);
+  text-align: right;
+  line-height: inherit;
+  color: var(--jpz-text-color-primary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 /**
- * 三级无序列表
+ * 一级无序列表 marker.
  */
-#preview ul > li > ul > li > ul > li {
-  list-style-type: circle;
+#preview ul > li:not(.task-list-item)::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--preview-list-marker-column-width) - 0.4em);
+  top: 1em;
+  width: 0.4em;
+  height: 0.4em;
+  border-radius: 50%;
+  background-color: currentColor;
+  transform: translateY(-50%);
 }
 
 /**
- * 嵌套列表不再额外增加外边距.
- * 这样多层列表会更紧凑, 不会越嵌套越松散.
+ * 第二层无序列表 marker.
+ * 无论父级是有序还是无序, 这一层都统一用空心圆.
+ */
+#preview :is(ol, ul) > li > ul > li:not(.task-list-item)::before {
+  width: 0.4em;
+  height: 0.4em;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  background-color: transparent;
+}
+
+/**
+ * 第三层无序列表 marker.
+ * 这一层统一改成实心方块, 覆盖混合嵌套列表场景.
+ */
+#preview :is(ol, ul) > li > :is(ol, ul) > li > ul > li:not(.task-list-item)::before {
+  left: calc(var(--preview-list-marker-column-width) - 0.34em);
+  width: 0.34em;
+  height: 0.34em;
+  border: 0;
+  border-radius: 0;
+  background-color: currentColor;
+}
+
+/**
+ * 嵌套列表继续使用常规层级缩进.
  */
 #preview ol ol,
 #preview ol ul,
 #preview ul ol,
 #preview ul ul {
+  padding-left: var(--preview-list-indent-step);
   margin: 0;
 }
 
 /**
- * 任务列表
+ * 列表项中的段落取消首行缩进.
+ * 这样松散列表里的 p 不会再把 marker 挤歪.
+ */
+#preview ol li > p,
+#preview ul li > p {
+  margin: 0;
+  text-indent: 0;
+}
+
+/**
+ * 同一个列表项里如果有多个段落, 后续段落保留自然段间距.
+ */
+#preview ol li > p + p,
+#preview ul li > p + p {
+  margin-top: 0.75em;
+}
+
+/**
+ * task list.
+ * 这里和普通列表共用同一组正文偏移, 只是 marker 换成 svg 图标.
  */
 #preview .task-list-item {
   list-style-type: none;
-  display: flex;
-  align-items: center;
+  position: relative;
+  display: block;
+  padding-left: var(--preview-list-text-offset);
+  line-height: 2em;
   word-break: break-all;
-  margin-left: -1.5em;
 }
 
 /**
- * 任务列表前面的勾选图标.
- * 这里固定图标大小和右侧间距, 避免图标和文本贴得太近.
+ * task list 前面的勾选图标.
+ * 图标绝对定位到 marker 列里, 这样和普通列表的数字或圆点能视觉对齐.
  */
 #preview .task-list-item .task-list-icon {
-  height: 1em;
-  width: 1em;
+  position: absolute;
+  left: 0;
+  top: 1em;
+  height: var(--preview-task-list-icon-width);
+  width: var(--preview-task-list-icon-width);
   flex-shrink: 0;
-  vertical-align: middle;
-  margin-right: 0.5em;
-  display: inline-block;
+  transform: translateY(-50%);
+  display: block;
 }
 
 /**
- * 引用
+ * 引用块.
  */
 #preview blockquote {
   border-left: 4px solid var(--jpz-blockquote-border-color);
   background-color: var(--jpz-blockquote-bg-color);
-  padding: 0.5em 1em;
-  margin: 0.5em 0;
+  padding: 0.75em 1em;
+  margin: 1em 0;
   border-radius: 4px;
 }
 
 /**
- * 链接
+ * 链接.
  */
 #preview a {
   font-family: "JBMonoWOFF2", "roboto", "Microsoft YaHei", Helvetica, Arial, sans-serif;
@@ -367,39 +438,32 @@ html[data-theme="dark"] {
 }
 
 /**
- * 分割线
+ * 分割线.
  */
 #preview hr {
   border: none;
   border-bottom: 1px solid var(--horizontal-divider-color);
-  margin: 1em 0;
+  margin: 1.5em 0;
 }
 
 /**
- * 上标和下标共用字号.
- * 这样脚注序号, 化学式, 数学公式里的小字会统一缩小显示.
+ * 上标.
  */
-#preview sup,
-#preview sub {
+#preview sup {
+  vertical-align: super;
   font-size: 0.75em;
 }
 
 /**
- * 上标
- */
-#preview sup {
-  vertical-align: super;
-}
-
-/**
- * 下标
+ * 下标.
  */
 #preview sub {
   vertical-align: sub;
+  font-size: 0.75em;
 }
 
 /**
- * 图片
+ * 图片.
  */
 #preview img {
   display: block;
@@ -455,15 +519,16 @@ html[data-theme="dark"] {
  * 段落.
  */
 #preview p {
-  margin: 0.5em 0;
+  margin: 0.75em 0;
   line-height: 1.8em;
   text-indent: 2em;
-  word-break: break-all;
+  overflow-wrap: break-word;
   color: var(--jpz-text-color-primary);
 }
 
 /**
- * 表格
+ * 表格容器.
+ * 宽表格在小屏上允许横向滚动, 避免把正文撑坏.
  */
 #preview .jpz-marked-table-container {
   width: 100%;
@@ -492,19 +557,19 @@ html[data-theme="dark"] {
 #preview .jpz-marked-table-container td {
   border: 1px solid var(--jpz-table-border-color);
   padding: 0.5em 0.5em;
-  line-height: 1em;
+  line-height: 1.6em;
 }
 
 #preview .jpz-marked-table-container table tr:nth-child(2n) {
   background-color: var(--jpz-table-n2-bg-color);
 }
 
-#preview .jpz-marked-table-container table tr:nth-child(2n+1) {
+#preview .jpz-marked-table-container table tr:nth-child(2n + 1) {
   background-color: var(--jpz-table-n2-1-bg-color);
 }
 
 /**
- * 公式
+ * 行内公式和块级公式里的 KaTeX.
  */
 #preview .katex {
   color: var(--jpz-text-color-primary);
@@ -512,7 +577,7 @@ html[data-theme="dark"] {
 }
 
 /**
- * 脚注
+ * 脚注标题.
  */
 #preview .sr-only {
   color: var(--jpz-text-color-primary);
@@ -534,7 +599,7 @@ html[data-theme="dark"] {
 }
 
 /**
- * Markdown 警告提示块的通用容器.
+ * Markdown 提示块通用样式.
  * note, tip, warning 这些提示框都会先使用这组基础样式.
  */
 #preview .markdown-alert {
@@ -545,7 +610,6 @@ html[data-theme="dark"] {
 }
 
 #preview .markdown-alert p {
-  /*首行不缩进*/
   text-indent: 0;
 }
 
@@ -568,8 +632,8 @@ html[data-theme="dark"] {
  * note 提示块.
  */
 #preview .markdown-alert-note {
+  border: none;
   background-color: var(--markdown-alert-note-bg-color);
-  border: 1px solid var(--markdown-alert-note-border-color);
 }
 
 #preview .markdown-alert-note .markdown-alert-title {
@@ -588,8 +652,8 @@ html[data-theme="dark"] {
  * tip 提示块.
  */
 #preview .markdown-alert-tip {
-  background-color: var(--markdown-alert-tip-bg-color);
   border: 1px solid var(--markdown-alert-tip-border-color);
+  background-color: var(--markdown-alert-tip-bg-color);
 }
 
 #preview .markdown-alert-tip .markdown-alert-title {
@@ -608,8 +672,8 @@ html[data-theme="dark"] {
  * important 提示块.
  */
 #preview .markdown-alert-important {
-  background-color: var(--markdown-alert-important-bg-color);
   border: 1px solid var(--markdown-alert-important-border-color);
+  background-color: var(--markdown-alert-important-bg-color);
 }
 
 #preview .markdown-alert-important .markdown-alert-title {
@@ -628,8 +692,8 @@ html[data-theme="dark"] {
  * warning 提示块.
  */
 #preview .markdown-alert-warning {
-  background-color: var(--markdown-alert-warning-bg-color);
   border: 1px solid var(--markdown-alert-warning-border-color);
+  background-color: var(--markdown-alert-warning-bg-color);
 }
 
 #preview .markdown-alert-warning .markdown-alert-title {
@@ -649,8 +713,8 @@ html[data-theme="dark"] {
  */
 #preview .markdown-alert-caution {
   color: var(--markdown-alert-caution-color);
-  background-color: var(--markdown-alert-caution-bg-color);
   border: 1px solid var(--markdown-alert-caution-border-color);
+  background-color: var(--markdown-alert-caution-bg-color);
 }
 
 #preview .markdown-alert-caution .markdown-alert-title {
@@ -666,15 +730,14 @@ html[data-theme="dark"] {
 }
 
 /**
- * details 折叠块容器.
- * 点击 summary 后, 这里会展开或收起详细内容.
+ * details 折叠块.
  */
 #preview details {
   margin: 1em 0;
 }
 
 /**
- * 明细项的摘要
+ * details 的摘要标题.
  */
 #preview summary {
   cursor: pointer;
@@ -684,12 +747,23 @@ html[data-theme="dark"] {
 
 /**
  * 块级公式里的 KaTeX 容器.
- * 让大公式也按块显示, 避免布局异常.
  */
 #preview .katex-display > .katex {
   display: inline-block;
 }
 /******************** 文章模块主题结束 ******************/
+`
 
-`.replaceAll(DEFAULT_CSS_EXAMPLE_PREVIEW_SELECTOR, normalizedPreviewSelector)
+/**
+ * 返回自定义样式 CSS 示例字符串.
+ * 该示例用于给用户提供可直接复制和调整的预览样式模板.
+ * @param previewSelector 预览根节点选择器, 默认使用主站预览容器.
+ * @returns 自定义样式 CSS 示例内容.
+ */
+export const cssExample = (previewSelector: string = DEFAULT_CSS_EXAMPLE_PREVIEW_SELECTOR): string => {
+    const normalizedPreviewSelector = previewSelector.trim() || DEFAULT_CSS_EXAMPLE_PREVIEW_SELECTOR
+
+    return `${THEME_CSS_EXAMPLE}
+
+${ARTICLE_CSS_EXAMPLE}`.replaceAll(DEFAULT_CSS_EXAMPLE_PREVIEW_SELECTOR, normalizedPreviewSelector)
 }
