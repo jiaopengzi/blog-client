@@ -3,7 +3,7 @@
  * @Author       : jiaopengzi
  * @Blog         : https://jiaopengzi.com
  * @Copyright    : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
- * @Description  : 无权限页面
+ * @Description  : 无权限页面共享导出
  */
 
-export { default } from "./index.vue"
+export { default } from "./NoPermissionView.vue"
