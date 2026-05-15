@@ -28,6 +28,7 @@ describe("buildMdPresetCss", () => {
 
         const css = buildMdPresetCss(state)
 
+        expect(css).toContain("--preview-paragraph-indent: 0 !important;")
         expect(css).toContain("text-indent: 0 !important;")
     })
 
@@ -61,6 +62,7 @@ describe("buildMdCustomizerEditorDoc", () => {
         const doc = buildMdCustomizerEditorDoc(state)
 
         expect(doc).toContain("font-size: 20px !important;")
+        expect(doc).toContain("--preview-paragraph-indent: 0 !important;")
         expect(doc).toContain("text-indent: 0 !important;")
     })
 })

@@ -51,6 +51,7 @@ export function buildMdPresetCss(state: MdCustomState): string {
         rootDeclarations.push(`--horizontal-divider-color: ${state.themeColor} !important;`)
     }
     if (state.paragraphIndent === "0") {
+        rootDeclarations.push("--preview-paragraph-indent: 0 !important;")
         paragraphDeclarations.push("text-indent: 0 !important;")
     }
     if (!state.showLineNumbers) {
