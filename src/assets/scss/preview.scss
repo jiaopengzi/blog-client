@@ -19,6 +19,11 @@
 #preview-copy {
     --preview-font-family-text: #{pc.$font-family-text};
     --preview-font-family-title: #{pc.$font-family-title};
+    --preview-paragraph-indent: 2em;
+    --preview-list-indent-step: 2em;
+    --preview-list-marker-column-width: 0.5em;
+    --preview-list-text-offset: 1.28em;
+    --preview-task-list-icon-width: 1em;
 
     font-family: var(--preview-font-family-text);
     overflow-x: hidden;
@@ -139,45 +144,100 @@
 
     // 有序列表
     ol {
-        list-style: decimal;
-        padding-left: 2em;
+        list-style: none;
+        padding-left: var(--preview-paragraph-indent);
         margin: 0.75em 0;
-
-        li {
-            // 行高
-            line-height: 2em;
-            color: var(--jpz-text-color-primary);
-        }
+        counter-reset: preview-ordered-list;
     }
 
     // 无序列表样式
     ul {
-        padding-left: 2em;
+        list-style: none;
+        padding-left: var(--preview-paragraph-indent);
         position: relative;
         overflow-wrap: break-word;
         margin: 0.75em 0;
 
         color: var(--jpz-text-color-primary);
+    }
 
-        > li {
-            // 一级实心圆
-            list-style-type: disc;
-            // 行高
-            line-height: 2em;
+    // 普通列表项使用固定 marker 列, 让 marker 与 task list 图标共享同一条视觉基线
+    ol > li:not(.task-list-item),
+    ul > li:not(.task-list-item) {
+        position: relative;
+        padding-left: var(--preview-list-text-offset);
+        line-height: 2em;
+        color: var(--jpz-text-color-primary);
+    }
 
-            > ul > li {
-                // 二级方块
-                list-style-type: square;
-                // 行高
-                line-height: 2em;
+    // 有序列表使用 counter 绘制 marker, 避免浏览器原生 marker 的右对齐造成视觉偏移
+    ol > li:not(.task-list-item) {
+        counter-increment: preview-ordered-list;
 
-                > ul > li {
-                    // 三级空心圆
-                    list-style-type: circle;
-                    // 行高
-                    line-height: 2em;
-                }
-            }
+        &::before {
+            content: counter(preview-ordered-list) ".";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: var(--preview-list-marker-column-width);
+            text-align: right;
+            line-height: inherit;
+            color: var(--jpz-text-color-primary);
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+    }
+
+    // 一级无序列表使用实心圆 marker
+    ul > li:not(.task-list-item)::before {
+        content: "";
+        position: absolute;
+        left: calc(var(--preview-list-marker-column-width) - 0.4em);
+        top: 1em;
+        width: 0.4em;
+        height: 0.4em;
+        border-radius: 50%;
+        background-color: currentColor;
+        transform: translateY(-50%);
+    }
+
+    // 第二层无序列表统一使用空心圆, 无论其父级是有序还是无序列表
+    :is(ol, ul) > li > ul > li:not(.task-list-item)::before {
+        width: 0.4em;
+        height: 0.4em;
+        border: 1px solid currentColor;
+        border-radius: 50%;
+        background-color: transparent;
+    }
+
+    // 第三层无序列表统一使用实心方块, 覆盖混合嵌套列表场景
+    :is(ol, ul) > li > :is(ol, ul) > li > ul > li:not(.task-list-item)::before {
+        left: calc(var(--preview-list-marker-column-width) - 0.34em);
+        width: 0.34em;
+        height: 0.34em;
+        border: 0;
+        border-radius: 0;
+        background-color: currentColor;
+    }
+
+    // 顶层列表的 marker 对齐正文首行缩进基线, 嵌套列表继续使用常规层级缩进
+    ol ol,
+    ol ul,
+    ul ol,
+    ul ul {
+        padding-left: var(--preview-list-indent-step);
+    }
+
+    // 列表整体保留缩进, 但列表项内部段落不再做首行缩进, 避免松散列表错位
+    ol,
+    ul {
+        li > p {
+            margin: 0;
+            text-indent: 0;
+        }
+
+        li > p + p {
+            margin-top: 0.75em;
         }
     }
 
@@ -192,18 +252,21 @@
     // task list 样式
     .task-list-item {
         list-style-type: none;
-        display: flex;
-        align-items: center;
+        position: relative;
+        display: block;
+        padding-left: var(--preview-list-text-offset);
+        line-height: 2em;
         word-break: break-all;
-        margin-left: -1.5em;
 
         .task-list-icon {
-            height: 1em;
-            width: 1em;
+            position: absolute;
+            left: 0;
+            top: 1em;
+            height: var(--preview-task-list-icon-width);
+            width: var(--preview-task-list-icon-width);
             flex-shrink: 0;
-            vertical-align: middle;
-            margin-right: 0.5em;
-            display: inline-block;
+            transform: translateY(-50%);
+            display: block;
         }
 
         //文本部分

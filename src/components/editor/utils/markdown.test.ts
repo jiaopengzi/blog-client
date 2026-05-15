@@ -122,6 +122,28 @@ describe("renderMarkdownDocument", () => {
         expect(sanitizeSpy).toHaveBeenCalledTimes(1)
     })
 
+    it("松散列表会保留列表项内段落结构, 由预览样式负责消除额外缩进", () => {
+        const markdown = [
+            "1. 这是一段测试的内容01",
+            "",
+            "3. 这是一段测试的内容02",
+            "",
+            "1. First item",
+            "2. Second item",
+            "3. Third item",
+            "    - Indented item",
+            "    - Indented item",
+            "4. Fourth item",
+        ].join("\n")
+
+        const result = renderMarkdownDocument(markdown, false)
+
+        expect(result.html).toContain("<li><p>这是一段测试的内容01</p>")
+        expect(result.html).toContain("<li><p>这是一段测试的内容02</p>")
+        expect(result.html).toContain("<li><p>Third item</p>")
+        expect(result.html).toContain("<ul>\n<li>Indented item</li>")
+    })
+
     it("图注格式变化时应命中不同的渲染缓存", () => {
         const sanitizeSpy = vi.spyOn(DOMPurify, "sanitize")
         sanitizeSpy.mockClear()

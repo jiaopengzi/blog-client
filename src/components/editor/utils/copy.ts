@@ -17,6 +17,15 @@ import { htmlTagReplace } from "@/utils/tagReplace"
 import { applyInlineStylesInBatches, getCssStyleRules, getSortedStyleSheets } from "./css-inline"
 import type { KatexCaptureContext, KatexImageCacheEntry } from "../types"
 
+const WECHAT_LIST_PADDING_LEFT_CLASS = "list-paddingleft-1"
+const WECHAT_UNORDERED_LIST_STYLE_TYPES = ["disc", "circle", "square"] as const
+const TASK_LIST_COPY_ICON_GAP = 0.5
+
+const DEFAULT_COPY_LIST_STYLE = {
+    textOffset: 1.28,
+    taskListIconWidth: 1,
+} as const
+
 // katex 锚点上下内边距配置(单位: px, 根据实际情况调整, 主要是为了避免部分字形被 snapdom 裁掉)
 export const KATEX_CAPTURE_PADDING = {
     inline: {
@@ -394,6 +403,9 @@ export async function prepareCopyWithCustomStyle(element: HTMLElement): Promise<
         // 这里保留逐属性写入, 因为批量 setAttribute("style") 会明显放大最终 HTML 体积.
         await applyInlineStylesInBatches(element, clonedElement, cssStyleRules, waitForNextRenderFrame)
 
+        // 将列表 marker 与 task list 图标实体化到真实 DOM, 避免微信编辑器无法解析伪元素与 counter.
+        materializeListMarkersForCopy(clonedElement)
+
         // 提取 HTML
         html = clonedElement.innerHTML
     } finally {
@@ -442,4 +454,310 @@ export function normalizePreparedCopyHtml(html: string): string {
 
     // 将 a 标签替换为 span 标签 防止微信编辑器自动添加链接, 保证样式不变同时不影响内容
     return htmlTagReplace(normalizedHtml, "a", "span")
+}
+
+/**
+ * @description: 将列表 marker 与 task list 图标转换为真实 DOM, 便于复制到微信后继续保留版式.
+ * @param container 已完成样式内联的复制容器.
+ * @return void.
+ */
+export function materializeListMarkersForCopy(container: HTMLElement): void {
+    const styleConfig = getCopyListStyleConfig(container)
+    const lists = Array.from(container.querySelectorAll("ol, ul")).filter(
+        (list): list is HTMLOListElement | HTMLUListElement => list instanceof HTMLOListElement || list instanceof HTMLUListElement,
+    )
+
+    lists.forEach((list) => {
+        const directListItems = Array.from(list.children).filter((item): item is HTMLLIElement => item instanceof HTMLLIElement)
+
+        if (directListItems.some((listItem) => listItem.classList.contains("task-list-item"))) {
+            normalizeTaskListForCopy(list, styleConfig)
+            return
+        }
+
+        normalizeRegularListForCopy(list)
+    })
+}
+
+/**
+ * @description: 读取复制列表布局所需的 CSS 变量, 缺失时回退到默认值.
+ * @param container 当前复制容器.
+ * @return 列表复制样式配置.
+ */
+export function getCopyListStyleConfig(container: HTMLElement): {
+    textOffset: number
+    taskListIconWidth: number
+} {
+    const computedStyle = getComputedStyle(container)
+
+    return {
+        textOffset: parseCopyListStyleNumber(computedStyle.getPropertyValue("--preview-list-text-offset"), DEFAULT_COPY_LIST_STYLE.textOffset),
+        taskListIconWidth: parseCopyListStyleNumber(
+            computedStyle.getPropertyValue("--preview-task-list-icon-width"),
+            DEFAULT_COPY_LIST_STYLE.taskListIconWidth,
+        ),
+    }
+}
+
+/**
+ * @description: 将 CSS 变量中的数字解析为 em 单位值, 失败时返回回退值.
+ * @param rawValue 原始 CSS 变量字符串.
+ * @param fallback 解析失败时的回退值.
+ * @return 解析后的数字.
+ */
+export function parseCopyListStyleNumber(rawValue: string, fallback: number): number {
+    const parsedValue = Number.parseFloat(rawValue)
+    return Number.isFinite(parsedValue) ? parsedValue : fallback
+}
+
+/**
+ * @description: 将普通有序/无序列表恢复为微信可识别的原生列表结构.
+ * @param list 当前列表元素.
+ * @return void.
+ */
+export function normalizeRegularListForCopy(list: HTMLOListElement | HTMLUListElement): void {
+    const listStyleType = list instanceof HTMLOListElement ? "decimal" : getWechatUnorderedListStyleType(getListNestingDepth(list))
+    const directListItems = Array.from(list.children).filter((item): item is HTMLLIElement => item instanceof HTMLLIElement)
+
+    list.classList.add(WECHAT_LIST_PADDING_LEFT_CLASS)
+    list.style.removeProperty("list-style")
+    list.style.listStyleType = listStyleType
+    list.style.listStylePosition = "outside"
+    list.style.position = "static"
+    list.style.paddingLeft = ""
+    list.style.overflowWrap = "normal"
+    list.style.removeProperty("counter-reset")
+
+    directListItems.forEach((listItem) => {
+        listItem.style.position = "static"
+        listItem.style.paddingLeft = "0"
+        listItem.style.listStyleType = "inherit"
+        listItem.style.display = "list-item"
+        listItem.style.marginLeft = "0"
+        removeInlineListMarkers(listItem)
+        normalizeRegularListItemContentForCopy(listItem)
+        hoistNestedListsAfterListItemForWechat(list, listItem)
+    })
+}
+
+/**
+ * @description: 将 task list 归一化为微信可接受的“内联 svg + 正文”结构.
+ * @param list 当前 task list 所在的列表元素.
+ * @param styleConfig 列表复制样式配置.
+ * @return void.
+ */
+export function normalizeTaskListForCopy(list: HTMLOListElement | HTMLUListElement, styleConfig: { textOffset: number; taskListIconWidth: number }): void {
+    const directListItems = Array.from(list.children).filter((item): item is HTMLLIElement => item instanceof HTMLLIElement)
+
+    list.style.removeProperty("list-style")
+    list.style.listStyleType = "none"
+    list.style.position = "static"
+
+    directListItems.forEach((listItem) => {
+        const iconElement = listItem.querySelector(":scope > .task-list-icon")
+        if (!(iconElement instanceof SVGElement)) {
+            return
+        }
+
+        removeInlineListMarkers(listItem)
+
+        listItem.style.listStyleType = "none"
+        listItem.style.display = "flex"
+        listItem.style.alignItems = "center"
+        listItem.style.position = "static"
+        listItem.style.paddingLeft = "0"
+        listItem.style.marginLeft = `-${styleConfig.taskListIconWidth + TASK_LIST_COPY_ICON_GAP}em`
+        listItem.style.wordBreak = "break-all"
+
+        iconElement.style.position = "static"
+        iconElement.style.display = "inline-block"
+        iconElement.style.width = `${styleConfig.taskListIconWidth}em`
+        iconElement.style.height = `${styleConfig.taskListIconWidth}em`
+        iconElement.style.transform = "none"
+        iconElement.style.verticalAlign = "middle"
+        iconElement.style.marginRight = `${TASK_LIST_COPY_ICON_GAP}em`
+    })
+}
+
+/**
+ * @description: 移除列表项中先前可能插入的复制 marker, 保证列表归一化逻辑幂等.
+ * @param listItem 当前列表项.
+ * @return void.
+ */
+export function removeInlineListMarkers(listItem: HTMLLIElement): void {
+    const inlineMarkers = listItem.querySelectorAll(":scope > .jpz-copy-list-marker, :scope > p > .jpz-copy-list-marker")
+    inlineMarkers.forEach((markerElement) => markerElement.remove())
+}
+
+/**
+ * @description: 将普通列表项的正文内容包装为更接近微信编辑器原生粘贴结构的 section/span 组合.
+ * 这样可以把正文块和后续嵌套列表明确拆开, 避免微信把第 3 层列表误判为与第 2 层同级.
+ * @param listItem 当前列表项.
+ * @return void.
+ */
+export function normalizeRegularListItemContentForCopy(listItem: HTMLLIElement): void {
+    const directChildren = Array.from(listItem.childNodes)
+    let contentGroup: ChildNode[] = []
+
+    const flushContentGroup = (referenceNode?: ChildNode | null) => {
+        if (contentGroup.length === 0) {
+            return
+        }
+
+        const sectionElement = createWechatListContentSection()
+        const leafSpan = createWechatListLeafSpan()
+        sectionElement.appendChild(leafSpan)
+
+        contentGroup.forEach((childNode) => {
+            if (childNode instanceof HTMLParagraphElement) {
+                while (childNode.firstChild) {
+                    leafSpan.appendChild(childNode.firstChild)
+                }
+                childNode.remove()
+                return
+            }
+
+            leafSpan.appendChild(childNode)
+        })
+
+        listItem.insertBefore(sectionElement, referenceNode ?? null)
+        contentGroup = []
+    }
+
+    directChildren.forEach((childNode) => {
+        if (childNode instanceof HTMLOListElement || childNode instanceof HTMLUListElement) {
+            flushContentGroup(childNode)
+            return
+        }
+
+        if (childNode.nodeType === Node.TEXT_NODE && !childNode.textContent?.trim()) {
+            childNode.remove()
+            return
+        }
+
+        if (childNode instanceof HTMLElement && childNode.tagName === "SECTION") {
+            flushContentGroup(childNode)
+            normalizeWechatListSectionLeaf(childNode)
+            return
+        }
+
+        contentGroup.push(childNode)
+    })
+
+    flushContentGroup()
+}
+
+/**
+ * @description: 创建微信列表正文使用的 section 容器.
+ * @return section 节点.
+ */
+export function createWechatListContentSection(): HTMLElement {
+    const sectionElement = document.createElement("section")
+    sectionElement.style.margin = "0"
+    sectionElement.style.padding = "0"
+    return sectionElement
+}
+
+/**
+ * @description: 创建微信列表正文使用的 leaf span 节点.
+ * @return span 节点.
+ */
+export function createWechatListLeafSpan(): HTMLSpanElement {
+    const spanElement = document.createElement("span")
+    spanElement.setAttribute("leaf", "")
+    return spanElement
+}
+
+/**
+ * @description: 规范已有 section 节点内部的正文结构, 确保微信粘贴时正文内容稳定落在 leaf span 中.
+ * @param sectionElement 当前列表项中的 section 节点.
+ * @return void.
+ */
+export function normalizeWechatListSectionLeaf(sectionElement: HTMLElement): void {
+    if (sectionElement.querySelector(":scope > span[leaf]")) {
+        return
+    }
+
+    const leafSpan = createWechatListLeafSpan()
+    while (sectionElement.firstChild) {
+        leafSpan.appendChild(sectionElement.firstChild)
+    }
+    sectionElement.appendChild(leafSpan)
+}
+
+/**
+ * @description: 将普通列表项中的直接子列表提升为父列表中的紧邻兄弟节点, 贴近微信编辑器原生列表结构.
+ * 这样更深层的嵌套列表会继续挂在上一层列表内部, 避免微信粘贴时把第 3 层列表挪到第 2 层正文前面.
+ * @param parentList 当前列表项所属的父列表.
+ * @param listItem 当前列表项.
+ * @return void.
+ */
+export function hoistNestedListsAfterListItemForWechat(parentList: HTMLOListElement | HTMLUListElement, listItem: HTMLLIElement): void {
+    const nestedLists = Array.from(listItem.children).filter(
+        (child): child is HTMLOListElement | HTMLUListElement => child instanceof HTMLOListElement || child instanceof HTMLUListElement,
+    )
+
+    if (nestedLists.length === 0) {
+        return
+    }
+
+    let insertionReference = listItem.nextSibling
+
+    nestedLists.forEach((nestedList) => {
+        parentList.insertBefore(nestedList, insertionReference)
+        insertionReference = nestedList.nextSibling
+    })
+}
+
+/**
+ * @description: 获取列表项中第一个真正参与正文排版的节点, 忽略嵌套列表与空白文本.
+ * @param listItem 当前列表项.
+ * @return 第一个正文节点, 若不存在则返回 null.
+ */
+export function getFirstContentNodeInListItem(listItem: HTMLLIElement): ChildNode | null {
+    for (const childNode of Array.from(listItem.childNodes)) {
+        if (childNode.nodeType === Node.TEXT_NODE && childNode.textContent?.trim()) {
+            return childNode
+        }
+
+        if (childNode instanceof HTMLElement && childNode.tagName !== "OL" && childNode.tagName !== "UL") {
+            return childNode
+        }
+    }
+
+    return null
+}
+
+/**
+ * @description: 根据无序列表嵌套深度返回复制到微信时应使用的原生 list-style-type.
+ * @param depth 当前无序列表的嵌套深度.
+ * @return list-style-type 字符串.
+ */
+export function getWechatUnorderedListStyleType(depth: number): (typeof WECHAT_UNORDERED_LIST_STYLE_TYPES)[number] {
+    if (depth <= 1) {
+        return WECHAT_UNORDERED_LIST_STYLE_TYPES[0]
+    }
+
+    if (depth === 2) {
+        return WECHAT_UNORDERED_LIST_STYLE_TYPES[1]
+    }
+
+    return WECHAT_UNORDERED_LIST_STYLE_TYPES[2]
+}
+
+/**
+ * @description: 计算当前列表在嵌套链路中的深度, 顶层列表深度为 1.
+ * @param list 当前列表元素.
+ * @return 嵌套深度.
+ */
+export function getListNestingDepth(list: HTMLOListElement | HTMLUListElement): number {
+    let depth = 0
+    let currentList: Element | null = list
+
+    while (currentList instanceof HTMLOListElement || currentList instanceof HTMLUListElement) {
+        depth += 1
+        currentList = currentList.parentElement?.closest("ol, ul") ?? null
+    }
+
+    return depth
 }
