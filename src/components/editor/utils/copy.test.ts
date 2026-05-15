@@ -71,6 +71,7 @@ describe("materializeListMarkersForCopy", () => {
     it("会将普通列表恢复为微信原生列表, 并保留 task list 的 svg 图标", () => {
         const container = document.createElement("div")
 
+        container.style.setProperty("--preview-paragraph-indent", "2em")
         container.style.setProperty("--preview-list-text-offset", "1.28em")
         container.style.setProperty("--preview-task-list-icon-width", "1em")
         container.innerHTML = `
@@ -112,6 +113,31 @@ describe("materializeListMarkersForCopy", () => {
         expect(taskListItem.style.marginLeft).toBe("-1.5em")
         expect(taskListIcon.style.display).toBe("inline-block")
         expect(taskListIcon.style.marginRight).toBe("0.5em")
+
+        document.body.removeChild(container)
+    })
+
+    it("在关闭首行缩进时不应把 task list 图标裁出复制容器", () => {
+        const container = document.createElement("div")
+
+        container.style.setProperty("--preview-paragraph-indent", "0")
+        container.style.setProperty("--preview-list-text-offset", "1.28em")
+        container.style.setProperty("--preview-task-list-icon-width", "1em")
+        container.innerHTML = `
+            <ul style="padding-left: 0px;">
+                <li class="task-list-item task-list-item-unchecked"><svg class="task-list-icon"></svg>todo item</li>
+            </ul>
+        `
+        document.body.appendChild(container)
+
+        materializeListMarkersForCopy(container)
+
+        const taskListItem = container.querySelector(".task-list-item") as HTMLLIElement
+        const taskListIcon = container.querySelector(".task-list-item > .task-list-icon") as SVGElement
+
+        expect(taskListItem.style.marginLeft).toBe("0em")
+        expect(taskListItem.style.display).toBe("flex")
+        expect(taskListIcon.style.display).toBe("inline-block")
 
         document.body.removeChild(container)
     })

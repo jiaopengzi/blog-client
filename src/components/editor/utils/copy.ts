@@ -22,6 +22,7 @@ const WECHAT_UNORDERED_LIST_STYLE_TYPES = ["disc", "circle", "square"] as const
 const TASK_LIST_COPY_ICON_GAP = 0.5
 
 const DEFAULT_COPY_LIST_STYLE = {
+    paragraphIndent: 2,
     textOffset: 1.28,
     taskListIconWidth: 1,
 } as const
@@ -485,12 +486,14 @@ export function materializeListMarkersForCopy(container: HTMLElement): void {
  * @return 列表复制样式配置.
  */
 export function getCopyListStyleConfig(container: HTMLElement): {
+    paragraphIndent: number
     textOffset: number
     taskListIconWidth: number
 } {
     const computedStyle = getComputedStyle(container)
 
     return {
+        paragraphIndent: parseCopyListStyleNumber(computedStyle.getPropertyValue("--preview-paragraph-indent"), DEFAULT_COPY_LIST_STYLE.paragraphIndent),
         textOffset: parseCopyListStyleNumber(computedStyle.getPropertyValue("--preview-list-text-offset"), DEFAULT_COPY_LIST_STYLE.textOffset),
         taskListIconWidth: parseCopyListStyleNumber(
             computedStyle.getPropertyValue("--preview-task-list-icon-width"),
@@ -546,7 +549,10 @@ export function normalizeRegularListForCopy(list: HTMLOListElement | HTMLUListEl
  * @param styleConfig 列表复制样式配置.
  * @return void.
  */
-export function normalizeTaskListForCopy(list: HTMLOListElement | HTMLUListElement, styleConfig: { textOffset: number; taskListIconWidth: number }): void {
+export function normalizeTaskListForCopy(
+    list: HTMLOListElement | HTMLUListElement,
+    styleConfig: { paragraphIndent: number; textOffset: number; taskListIconWidth: number },
+): void {
     const directListItems = Array.from(list.children).filter((item): item is HTMLLIElement => item instanceof HTMLLIElement)
 
     list.style.removeProperty("list-style")
@@ -566,7 +572,7 @@ export function normalizeTaskListForCopy(list: HTMLOListElement | HTMLUListEleme
         listItem.style.alignItems = "center"
         listItem.style.position = "static"
         listItem.style.paddingLeft = "0"
-        listItem.style.marginLeft = `-${styleConfig.taskListIconWidth + TASK_LIST_COPY_ICON_GAP}em`
+        listItem.style.marginLeft = `${getTaskListCopyMarginLeft(styleConfig)}em`
         listItem.style.wordBreak = "break-all"
 
         iconElement.style.position = "static"
@@ -577,6 +583,19 @@ export function normalizeTaskListForCopy(list: HTMLOListElement | HTMLUListEleme
         iconElement.style.verticalAlign = "middle"
         iconElement.style.marginRight = `${TASK_LIST_COPY_ICON_GAP}em`
     })
+}
+
+/**
+ * @description: 计算复制到微信时 task list 的左侧补偿量.
+ * 关闭首行缩进后, 顶层列表 padding-left 会变成 0.
+ * 如果这里仍然固定左移一个图标宽度, svg 会被离屏复制容器裁掉, 导致粘贴到微信后 marker 消失.
+ * @param styleConfig 列表复制样式配置.
+ * @return 需要写入 margin-left 的 em 数值.
+ */
+export function getTaskListCopyMarginLeft(styleConfig: { paragraphIndent: number; textOffset: number; taskListIconWidth: number }): number {
+    const taskListVisualWidth = styleConfig.taskListIconWidth + TASK_LIST_COPY_ICON_GAP
+
+    return -Math.min(styleConfig.paragraphIndent, taskListVisualWidth)
 }
 
 /**
