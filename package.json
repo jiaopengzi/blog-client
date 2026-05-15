@@ -96,7 +96,7 @@
     "@types/katex": "0.16.8",
     "@types/node": "24.12.4",
     "@types/throttle-debounce": "5.0.2",
-    "@vitejs/plugin-vue": "6.0.6",
+    "@vitejs/plugin-vue": "6.0.7",
     "@vitejs/plugin-vue-jsx": "5.1.5",
     "@vue/test-utils": "2.4.10",
     "@vue/tsconfig": "0.9.1",
@@ -116,12 +116,12 @@
     "unplugin-auto-import": "21.0.0",
     "unplugin-vue-components": "32.0.0",
     "url-regex": "5.0.0",
-    "vite": "8.0.12",
+    "vite": "8.0.13",
     "vite-plugin-compression": "0.5.1",
     "vite-plugin-inspect": "11.3.3",
     "vite-plugin-style-import": "2.0.0",
     "vitest": "4.1.6",
     "vue-tsc": "3.2.9"
   },
-  "packageManager": "pnpm@11.1.1"
+  "packageManager": "pnpm@11.1.2"
 }
