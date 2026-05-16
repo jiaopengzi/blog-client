@@ -425,6 +425,13 @@ const ARTICLE_CSS_EXAMPLE = `
 }
 
 /**
+ * 引用块内的段落不做首行缩进.
+ */
+#preview blockquote p {
+  text-indent: 0;
+}
+
+/**
  * 链接.
  */
 #preview a {

@@ -18,6 +18,8 @@ describe("cssExample", () => {
         expect(css).toContain("counter-reset: preview-ordered-list;")
         expect(css).toContain("padding-left: var(--preview-list-indent-step);")
         expect(css).toContain("#preview ol li > p,")
+        expect(css).toContain("#preview blockquote p {")
+        expect(css).toContain("text-indent: 0;")
         expect(css).toContain("#preview .task-list-item .task-list-icon {")
         expect(css).not.toContain("list-style: decimal;")
         expect(css).not.toContain("margin-left: -1.5em;")

@@ -312,6 +312,10 @@
         padding: 0.75em 1em;
         margin: 1em 0;
         border-radius: 4px;
+
+        p {
+            text-indent: 0;
+        }
     }
 
     // 链接 继承上述 a 样式
