@@ -30,9 +30,9 @@
                     <el-button
                         v-for="amount in quickAmounts"
                         :key="amount"
-                        :class="{ active: form.total_amount === String(amount) }"
+                        :class="{ active: form.total_amount === amount }"
                         size="small"
-                        @click="form.total_amount = String(amount)"
+                        @click="form.total_amount = amount"
                         >{{ `￥${amount}` }}</el-button
                     >
                 </div>
@@ -87,6 +87,13 @@ import PayQrCode from "@/components/common/pay-qr-code"
 import { MessageUtil } from "@/utils/message"
 import { yuanToFen } from "@/utils/amount"
 
+interface RechargeFormState {
+    pay_type: PayType
+    total_amount: number | null
+    remark: string
+    return_url: string
+}
+
 // 定义事件
 const emit = defineEmits<{
     (event: "recharge-status", status: boolean): void
@@ -102,9 +109,9 @@ const quickAmounts = [20, 50, 100, 200, 1000]
 const formRef = ref<FormInstance>()
 
 // 表单数据
-const form = reactive<BillingCenterRechargeRequest>({
+const form = reactive<RechargeFormState>({
     pay_type: PayType.Alipay,
-    total_amount: "0",
+    total_amount: null,
     remark: "",
     return_url: window.location.href,
 })
@@ -121,6 +128,10 @@ const rules = reactive<FormRules>({
         { required: true, message: "请输入充值金额", trigger: "blur" },
         {
             validator: (_rule, value, callback) => {
+                if (value === null || value === undefined) {
+                    callback(new Error("请输入充值金额"))
+                    return
+                }
                 const num = Number(value)
                 if (isNaN(num) || num <= 0) {
                     callback(new Error("金额必须大于 0"))
@@ -140,25 +151,31 @@ const querying = ref(false)
 
 /**
  * handleSubmit 提交充值表单。
- * 金额单位为元, 提交时转换为分。
+ * 金额单位为元, 提交时转换为分字符串。
  */
 const handleSubmit = debounce(300, async () => {
     const valid = await formRef.value?.validate().catch(() => false)
     if (!valid) return
 
+    const amountInYuan = form.total_amount
+    if (amountInYuan === null) return
+
     submitting.value = true
     try {
         // 将元转换为分
-        const amountInCents = yuanToFen(form.total_amount, true) as string
-        const res = await billingCenterRechargeAPI({
-            ...form,
+        const amountInCents = yuanToFen(amountInYuan, true) as string
+        const requestData: BillingCenterRechargeRequest = {
+            pay_type: form.pay_type,
             total_amount: amountInCents,
-        })
+            remark: form.remark,
+            return_url: form.return_url,
+        }
+        const res = await billingCenterRechargeAPI(requestData)
         if (res.data.code === ResponseCode.BillingCenterRechargeOrderSuccess) {
             const data = res.data.data as BillingCenterRechargeRes
             payUrl.value = data.pay_url
             rechargeOrderId.value = data.order_id
-            payAmountYuan.value = Number(form.total_amount).toFixed(2)
+            payAmountYuan.value = amountInYuan.toFixed(2)
             MessageUtil.success("充值订单创建成功, 请扫码支付")
         } else {
             MessageUtil.error(handleResErr(res))

@@ -56,6 +56,11 @@ import { handleResErr, ResponseCode } from "@/api/response"
 import { MessageUtil } from "@/utils/message"
 import { fenToYuan, yuanToFen } from "@/utils/amount"
 
+interface NotifyFormState {
+    notify_threshold: number | null
+    notify_enabled: boolean
+}
+
 // 定义 props
 const props = defineProps<{
     accountInfo: BillingCenterAccountRes
@@ -70,8 +75,8 @@ const emit = defineEmits<{
 const formRef = ref<FormInstance>()
 
 // 表单数据
-const form = reactive({
-    notify_threshold: "",
+const form = reactive<NotifyFormState>({
+    notify_threshold: null,
     notify_enabled: false,
 })
 
@@ -81,7 +86,7 @@ const rules = reactive<FormRules>({
         {
             validator: (_rule, value, callback) => {
                 if (form.notify_enabled) {
-                    if (!value && value !== "0") {
+                    if (value === null || value === undefined) {
                         callback(new Error("请输入通知阈值"))
                     } else {
                         const num = Number(value)
@@ -104,16 +109,19 @@ const submitting = ref(false)
 
 /**
  * handleSubmit 提交通知阈值设置。
- * 金额单位为元, 提交时转换为分。
+ * 金额单位为元, 提交时转换为分字符串。
  */
 const handleSubmit = debounce(300, async () => {
     const valid = await formRef.value?.validate().catch(() => false)
     if (!valid) return
 
+    const thresholdInYuan = form.notify_threshold
+    if (thresholdInYuan === null) return
+
     submitting.value = true
     try {
         // 将元转换为分
-        const thresholdInCents = yuanToFen(form.notify_threshold, true) as string
+        const thresholdInCents = yuanToFen(thresholdInYuan, true) as string
         const requestData: BillingCenterNotifyThresholdRequest = {
             notify_threshold: thresholdInCents,
             notify_enabled: form.notify_enabled,
@@ -135,7 +143,7 @@ onMounted(() => {
     if (props.accountInfo) {
         form.notify_enabled = props.accountInfo.notify_enabled
         // 将分转换为元显示
-        form.notify_threshold = fenToYuan(props.accountInfo.notify_threshold).toString()
+        form.notify_threshold = Number(fenToYuan(props.accountInfo.notify_threshold))
     }
 })
 </script>
