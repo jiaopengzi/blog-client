@@ -7,7 +7,10 @@
 -->
 <template>
     <div class="chart-container" ref="chartContainer">
-        <h1>{{ title }}</h1>
+        <h1>
+            {{ title }}
+            <span class="title-total">总计: {{ unitNumber(totalValue, 1) }}</span>
+        </h1>
 
         <div class="chart" v-if="hasData">
             <!-- Y轴刻度 -->
@@ -82,6 +85,12 @@ const defaultColors = ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7", "#
 
 // 柱状图数据
 const localData = ref<BarItem[]>([...data])
+
+// 计算所有柱子的总和
+const totalValue = computed(() => {
+    return localData.value.reduce((sum, item) => sum + item.value, 0)
+})
+
 const hasData = computed(() => {
     // 如果每个数据的 value 都为 0, 则认为无数据
     return localData.value.some((item) => item.value > 0)
