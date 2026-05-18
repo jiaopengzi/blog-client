@@ -63,8 +63,13 @@ axiosInstance.interceptors.response.use(
     },
 
     async (error) => {
-        // 从响应中提取错误信息并交给 handler 处理
-        const { response } = error
+        // 切换页面或请求被中断时, axios 可能不会携带 response.
+        // 此时直接透传原始错误, 避免拦截器自身再抛出解构异常.
+        const response = axios.isAxiosError(error) ? error.response : void 0
+        if (!response) {
+            return Promise.reject(error)
+        }
+
         const { status } = response
 
         // 处理 isSetupAPI 状态(只执行一次)

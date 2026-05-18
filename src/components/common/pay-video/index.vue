@@ -29,7 +29,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { onMounted, ref, watch } from "vue"
+import { ref, watch } from "vue"
 
 import { type PostVideoTocTree } from "@/api/post/common"
 import VideoPlayer from "@/components/player"
@@ -50,21 +50,12 @@ const localTreeList = ref<PostVideoTocTree[]>(toc || [])
 const localIsPaid = ref<boolean>(isPaid)
 
 // hooks
-const { isShowEpisode, isShowToc, hasVideo, manager, state, switchVideoProgress, currentVideoOrder, currentTreeId, fetchData } = usePayVideo(
-    localTreeList,
-    localPostId,
-    localIsAdminVideo,
-)
+const { isShowEpisode, isShowToc, hasVideo, manager, state, switchVideoProgress, currentVideoOrder, currentTreeId, fetchData, setCurrentVideoProgress } =
+    usePayVideo(localTreeList, localPostId, localIsAdminVideo)
+
+const hasInitializedVideoData = ref(false)
 
 // 监听 props 变化
-watch(
-    () => postId,
-    (newVal) => {
-        localPostId.value = newVal
-    },
-    { immediate: true },
-)
-
 watch(
     () => isAdminVideo,
     (newVal) => {
@@ -74,12 +65,28 @@ watch(
 )
 
 watch(
-    () => toc,
-    async (newVal) => {
-        localTreeList.value = newVal || []
+    [() => postId, () => toc],
+    async ([newPostId, newToc], [oldPostId, oldToc]) => {
+        localPostId.value = newPostId
+        localTreeList.value = newToc || []
 
-        // 获取数据
-        await fetchData()
+        const isFirstSync = !hasInitializedVideoData.value
+        hasInitializedVideoData.value = true
+        const isTocChanged = newToc !== oldToc
+
+        // 首次挂载和目录树变化时统一走完整初始化, 避免 onMounted 与 toc watch 重复取数.
+        if (isFirstSync || isTocChanged) {
+            await fetchData()
+            return
+        }
+
+        // 仅文章 ID 变化且目录树未变化时, 只同步当前文章的观看进度, 避免重复请求 is-free.
+        if (newPostId && newPostId !== oldPostId && localTreeList.value.length > 0) {
+            await setCurrentVideoProgress(newPostId)
+        }
+    },
+    {
+        immediate: true,
     },
 )
 
@@ -96,11 +103,6 @@ const handleSelect = (val: Data) => {
     switchVideoProgress(val.file_id_hash)
     manager.setIsShowToc(false)
 }
-
-onMounted(async () => {
-    // 获取数据
-    await fetchData()
-})
 </script>
 <style scoped lang="scss">
 .pay-video-container {

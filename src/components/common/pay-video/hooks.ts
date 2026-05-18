@@ -6,6 +6,7 @@
  * Description : hooks
  */
 
+import axios from "axios"
 import { computed, type Ref, ref, watch } from "vue"
 
 import { type PostVideoTocTree } from "@/api/post/common"
@@ -20,6 +21,15 @@ import { useUserStore } from "@/stores/user"
 
 import type { VideoTocMapByFileIdHash, VideoTocMapByOrder } from "../video-toc-tree-base"
 import { useVideoTocTree } from "../video-toc-tree-base"
+
+/**
+ * @description: 判断当前错误是否为未拿到 HTTP response 的瞬时请求失败, 例如文章切换时的中断请求.
+ * @param error 请求异常对象.
+ * @return {boolean} 是否为可直接降级忽略的请求失败.
+ */
+const isTransientRequestError = (error: unknown): boolean => {
+    return axios.isAxiosError(error) && !error.response
+}
 
 /**
  * @description: 付费视频播放 hooks, 根据预览场景决定是否使用管理员视频接口。
@@ -81,13 +91,8 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
     // 监听 postId 变化
     watch(
         () => postId.value,
-        async (newVal, oldVal) => {
+        (newVal) => {
             manager.setPostID(newVal)
-
-            // 当文章 ID 在组件挂载后补齐时, 重新获取一次默认视频或历史进度, 保证首屏能及时渲染视频信息。
-            if (newVal && newVal !== oldVal && localVideoOrders.value.length > 0) {
-                await setCurrentVideoProgress(newVal)
-            }
         },
         { immediate: true },
     )
@@ -107,12 +112,21 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
             file_id_hash_list: localFileIdHashList.value,
         }
 
-        // 请求接口
-        const res = await getVideosIsFreeAPI(reqData)
+        try {
+            // 请求接口
+            const res = await getVideosIsFreeAPI(reqData)
 
-        if (res.data.code === ResponseCode.GetVideosIsFreeSuccess) {
-            const isFreeData = res.data.data
-            updateTreeIsFree(isFreeData)
+            if (res.data.code === ResponseCode.GetVideosIsFreeSuccess) {
+                const isFreeData = res.data.data
+                updateTreeIsFree(isFreeData)
+            }
+        } catch (error) {
+            // 文章切换时该请求可能被浏览器中断, 此时按非关键数据降级处理, 不阻断播放器初始化.
+            if (isTransientRequestError(error)) {
+                return
+            }
+
+            console.warn("更新视频免费状态失败", error)
         }
     }
 
@@ -301,7 +315,15 @@ export function usePayVideo(localTreeList: Ref<PostVideoTocTree[]>, postId: Ref<
 
         // 设置视频和进度
         if (postId.value) {
-            await setCurrentVideoProgress(postId.value)
+            try {
+                await setCurrentVideoProgress(postId.value)
+            } catch (error) {
+                // 初始化观看进度失败时退回默认视频, 保证播放器仍可正常显示.
+                if (!isTransientRequestError(error)) {
+                    console.warn("获取视频播放进度失败", error)
+                }
+                await setDefaultVideoAndProgress()
+            }
             return
         }
 
