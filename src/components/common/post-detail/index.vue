@@ -257,8 +257,17 @@ watch(
     },
 )
 
-// 处理文章id
+/**
+ * @description: 处理上一篇, 下一篇文章切换, 与列表点击进入详情保持一致, 在切换入口处直接回到页面顶部.
+ * @param postId 目标文章 ID.
+ * @return Promise<void>.
+ */
 const handlePostId = async (postId: string) => {
+    window.scrollTo({
+        top: 0,
+        behavior: "auto",
+    })
+
     await statusStore.setAnchorHash("") // 清空锚点
     await statusStore.setPostId(postId) // 设置文章id
 }
