@@ -385,11 +385,13 @@ export async function copyWithCustomStyle(element: HTMLElement): Promise<void> {
  * @return 处理后的 HTML 字符串.
  */
 export async function prepareCopyWithCustomStyle(element: HTMLElement): Promise<string> {
-    // 克隆元素(深拷贝), 保证不修改原元素
+    // 为复制目标和样式读取源各保留一份稳定快照, 避免编辑中的实时 DOM 在分批处理期间继续变化.
     const clonedElement = element.cloneNode(true) as HTMLElement
+    const styleSourceElement = element.cloneNode(true) as HTMLElement
 
-    // 创建临时容器, 仅用于确保 clonedElement 在 DOM 中以正确应用样式, 但不显示
+    // clonedElement 用于生成最终复制 HTML, styleSourceElement 仅用于在离屏环境中读取稳定的计算样式.
     const container = createDetachedCopyContainer(clonedElement)
+    const styleSourceContainer = createDetachedCopyContainer(styleSourceElement)
 
     let html = ""
 
@@ -402,7 +404,7 @@ export async function prepareCopyWithCustomStyle(element: HTMLElement): Promise<
         const cssStyleRules = getCssStyleRules(cssStyleSheets)
 
         // 这里保留逐属性写入, 因为批量 setAttribute("style") 会明显放大最终 HTML 体积.
-        await applyInlineStylesInBatches(element, clonedElement, cssStyleRules, waitForNextRenderFrame)
+        await applyInlineStylesInBatches(styleSourceElement, clonedElement, cssStyleRules, waitForNextRenderFrame)
 
         // 将列表 marker 与 task list 图标实体化到真实 DOM, 避免微信编辑器无法解析伪元素与 counter.
         materializeListMarkersForCopy(clonedElement)
@@ -412,6 +414,7 @@ export async function prepareCopyWithCustomStyle(element: HTMLElement): Promise<
     } finally {
         // 移除临时容器
         document.body.removeChild(container)
+        document.body.removeChild(styleSourceContainer)
     }
 
     const normalizedHtml = normalizePreparedCopyHtml(html)

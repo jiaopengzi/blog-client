@@ -6,9 +6,13 @@
  * Description : 复制管线与 KaTeX 模块测试
  */
 
-import { describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 
-import { materializeListMarkersForCopy, scaleDisplayKatexByFontSize } from "./copy"
+import { materializeListMarkersForCopy, prepareCopyWithCustomStyle, scaleDisplayKatexByFontSize } from "./copy"
+
+afterEach(() => {
+    vi.unstubAllGlobals()
+})
 
 describe("scaleDisplayKatexByFontSize", () => {
     it("在容器宽度不足时缩放行间公式", () => {
@@ -140,6 +144,84 @@ describe("materializeListMarkersForCopy", () => {
         expect(taskListIcon.style.display).toBe("inline-block")
 
         document.body.removeChild(container)
+    })
+
+    it("编辑期间原始预览 DOM 继续变化时, 预生成复制缓存不应输出子节点数量不匹配警告", async () => {
+        const element = document.createElement("div")
+        const imageBlockCount = 25
+
+        element.id = "preview"
+        element.innerHTML = Array.from({ length: imageBlockCount }, (_, index) => {
+            if (index === imageBlockCount - 1) {
+                return '<section class="jpz-image-wrapper"><img src="https://example.com/demo.png" alt="demo"></section>'
+            }
+
+            return `<section class="copy-block"><span>block-${index}</span></section>`
+        }).join("")
+        document.body.appendChild(element)
+
+        const consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined)
+        let rafCallCount = 0
+
+        vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => {
+            rafCallCount += 1
+            if (rafCallCount === 1) {
+                const wrapper = element.querySelector(".jpz-image-wrapper") as HTMLElement | null
+                if (wrapper) {
+                    wrapper.innerHTML = ""
+                }
+            }
+
+            callback(0)
+            return rafCallCount
+        })
+
+        const preparedHtml = await prepareCopyWithCustomStyle(element)
+
+        expect(preparedHtml).toContain('class="jpz-image-wrapper"')
+        expect(preparedHtml).toContain('src="https://example.com/demo.png"')
+        expect(consoleWarnSpy).not.toHaveBeenCalledWith("Original and cloned element child count mismatch", expect.anything(), expect.anything())
+
+        document.body.removeChild(element)
+    })
+
+    it("编辑期间原始预览 DOM 新增图片节点时, 预生成复制缓存不应输出子节点数量不匹配警告", async () => {
+        const element = document.createElement("div")
+        const imageBlockCount = 25
+
+        element.id = "preview"
+        element.innerHTML = Array.from({ length: imageBlockCount }, (_, index) => {
+            if (index === imageBlockCount - 1) {
+                return '<section class="jpz-image-wrapper"></section>'
+            }
+
+            return `<section class="copy-block"><span>block-${index}</span></section>`
+        }).join("")
+        document.body.appendChild(element)
+
+        const consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined)
+        let rafCallCount = 0
+
+        vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => {
+            rafCallCount += 1
+            if (rafCallCount === 1) {
+                const wrapper = element.querySelector(".jpz-image-wrapper") as HTMLElement | null
+                if (wrapper) {
+                    wrapper.innerHTML = '<img src="https://example.com/added.png" alt="added">'
+                }
+            }
+
+            callback(0)
+            return rafCallCount
+        })
+
+        const preparedHtml = await prepareCopyWithCustomStyle(element)
+
+        expect(preparedHtml).toContain('class="jpz-image-wrapper"')
+        expect(preparedHtml).not.toContain('src="https://example.com/added.png"')
+        expect(consoleWarnSpy).not.toHaveBeenCalledWith("Original and cloned element child count mismatch", expect.anything(), expect.anything())
+
+        document.body.removeChild(element)
     })
 
     it("会将三层普通列表归一化为微信兼容的兄弟级嵌套结构", () => {

@@ -55,6 +55,7 @@
         "tokyonight",
         "tzdata",
         "unref",
+        "unstub",
         "URLAPI",
         "Vite",
         "webfactory",
