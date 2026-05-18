@@ -42,6 +42,28 @@ export const updateAttributeNames = (tarAttributeNames: Array<string>, srcAttrib
 }
 
 /**
+ * @description: 根据当前自定义元素枚举构建允许的标签名正则.
+ * @return 自定义元素标签名正则.
+ */
+export const getCustomElementHeadingTagNameRegex = (): RegExp => {
+    const tagNames = Object.values(Names)
+    if (tagNames.length === 0) return /^$/
+    return new RegExp(`^(${tagNames.join("|")})$`)
+}
+
+/**
+ * @description: 根据当前自定义元素属性列表构建允许的属性名正则.
+ * @return 自定义元素属性名正则.
+ */
+export const getCustomElementHeadingAttributeNameRegex = (): RegExp => {
+    const attributeNames: string[] = []
+
+    updateAttributeNames(attributeNames, [CustomElementAttributes])
+
+    return new RegExp(`${attributeNames.join("|")}`)
+}
+
+/**
  * @description: 使用闭包创建正则表达式缓存
  * @return {Object} 正则表达式缓存
  */
@@ -56,24 +78,6 @@ export const createRegexCache = (): RegexCache => {
     const nonAlphaNumericRegex = /[^a-zA-Z0-9\u4e00-\u9fa5]/g // 匹配非中文、字母、数字的字符
     const multipleDashRegex = /-{2,}/g // 匹配多个连续的 -
     const leadingTrailingDashRegex = /^-|-$/g // 匹配首尾的 -
-
-    const getCustomElementHeadingTagNameRegex = () => {
-        // 根据 Names 动态生成正则表达式
-        const tagNames = Object.values(Names) // 获取所有标签名
-        if (tagNames.length === 0) return /^$/ // 如果没有标签名则返回一个匹配不到任何内容的正则表达式
-        return new RegExp(`^(${tagNames.join("|")})$`) // 动态生成正则表达式  DOMPurify 允许的 自定义元素的标签名
-
-        // return new RegExp(`^video-|^pay-`) // 动态生成正则表达式  DOMPurify 允许的 自定义元素的标签名
-    }
-
-    const getCustomElementHeadingAttributeNameRegex = () => {
-        // /id|class/ // DOMPurify 允许的 自定义元素的属性名
-        const attributeNames: string[] = [] // 属性名数组
-
-        updateAttributeNames(attributeNames, [CustomElementAttributes])
-
-        return new RegExp(`${attributeNames.join("|")}`)
-    }
 
     const utf8BomRegex = /^\uFEFF/ // 匹配 utf-8 bom 头
     const windowsNewLineRegex = /\r\n/g // 匹配 windows 换行符

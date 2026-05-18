@@ -100,6 +100,14 @@ async function uploadImage(file: File, view: EditorView, source: "paste" | "drop
 }
 
 /**
+ * @description: 提示当前页面不支持粘贴或拖拽上传图片.
+ * @return void.
+ */
+function warnImageUploadDisabled(): void {
+    MessageUtil.warning("当前页面不支持直接粘贴或拖拽上传图片, 请手动填写图片链接")
+}
+
+/**
  * createImageUploadExtensions 根据传入的处理器创建图片粘贴与拖拽扩展。
  * 未传入时默认沿用后台编辑器的上传 API, 以保证现有行为不变; 传入 null 时仅提示当前页面不支持直接上传。
  * @param imageUploadHandler - 当前场景的图片处理器。
@@ -109,14 +117,6 @@ export function createImageUploadExtensions(imageUploadHandler?: ImageUploadHand
     handlePasteImage: Extension
     handleDropImage: Extension
 } {
-    /**
-     * warnImageUploadDisabled 提示当前页面不支持粘贴或拖拽上传图片。
-     * @returns 无返回值。
-     */
-    const warnImageUploadDisabled = (): void => {
-        MessageUtil.warning("当前页面不支持直接粘贴或拖拽上传图片, 请手动填写图片链接")
-    }
-
     const handlePasteImage: Extension = EditorView.domEventHandlers({
         paste: (event, view) => {
             if (!event.clipboardData || !event.clipboardData.items) return

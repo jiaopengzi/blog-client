@@ -30,6 +30,66 @@ const calcMaxId = (list: Tree[]): number => {
     return maxId
 }
 
+/**
+ * @description: 递归统计目录树中的视频总数.
+ * @param list 目录树列表.
+ * @return 视频总数.
+ */
+const calcVideoTotal = (list: Tree[]) => {
+    let total = 0
+
+    const countVideos = (nodes: Tree[]) => {
+        for (const node of nodes) {
+            if (node.is_chapter && node.children && node.children.length > 0) {
+                countVideos(node.children)
+            } else if (!node.is_chapter) {
+                total++
+            }
+        }
+    }
+
+    countVideos(list)
+
+    return total
+}
+
+/**
+ * @description: 将目录树转换为多种索引 map, 并收集排序后的视频序号与文件ID列表.
+ * @param list 目录树列表.
+ * @return 多种索引结果.
+ */
+const covertToMap = (
+    list: Tree[],
+): { mapByFileIdHash: VideoTocMapByOrder; mapByOrder: VideoTocMapByOrder; videoOrders: number[]; fileIdHashList: string[] } => {
+    const mapByFileIdHash: VideoTocMapByFileIdHash = {}
+    const mapByOrder: VideoTocMapByOrder = {}
+    const videoOrders: number[] = []
+    const fileIdHashLList: string[] = []
+
+    const traverse = (nodes: Tree[]) => {
+        for (const node of nodes) {
+            if (!node.is_chapter && node.file_id_hash && node.video_order !== undefined && node.video_order !== null) {
+                mapByFileIdHash[node.file_id_hash] = node
+                mapByOrder[node.video_order] = node
+                videoOrders.push(node.video_order)
+                fileIdHashLList.push(node.file_id_hash)
+            }
+
+            if (node.children && node.children.length > 0) {
+                traverse(node.children)
+            }
+        }
+    }
+
+    traverse(list)
+
+    // oxlint-disable-next-line unicorn/no-array-sort
+    const uniqueOrders = Array.from(new Set(videoOrders)).sort((a, b) => a - b)
+    const uniqueFileIdHashList = Array.from(new Set(fileIdHashLList))
+
+    return { mapByFileIdHash, mapByOrder, videoOrders: uniqueOrders, fileIdHashList: uniqueFileIdHashList }
+}
+
 export function useVideoTocTree(localTreeList: Ref<Tree[]>) {
     const customNodeClass = "custom-tree-node" // 自定义节点类名
     const mediaDialogVisible = ref(false) // 视频文件选择弹窗
@@ -110,75 +170,10 @@ export function useVideoTocTree(localTreeList: Ref<Tree[]>) {
 
         orderNode(localTreeList.value)
     }
-
-    // 计算视频总数
-    const calcVideoTotal = (list: Tree[]) => {
-        // 初始值
-        let total = 0
-
-        // 定义递归函数
-        const countVideos = (nodes: Tree[]) => {
-            for (const node of nodes) {
-                if (node.is_chapter && node.children && node.children.length > 0) {
-                    countVideos(node.children)
-                } else if (!node.is_chapter) {
-                    total++
-                }
-            }
-        }
-
-        // 开始递归
-        countVideos(list)
-
-        // 返回总数
-        return total
-    }
-
     // 视频总数
     const videoTotal = computed(() => {
         return calcVideoTotal(localTreeList.value)
     })
-
-    // 将 localTreeList 转成 map (键为 videoOrder), 同时返回所有视频的 videoOrder 列表(已去重且升序)
-    const covertToMap = (
-        list: Tree[],
-    ): { mapByFileIdHash: VideoTocMapByOrder; mapByOrder: VideoTocMapByOrder; videoOrders: number[]; fileIdHashList: string[] } => {
-        // 初始化结果
-        const mapByFileIdHash: VideoTocMapByFileIdHash = {}
-        const mapByOrder: VideoTocMapByOrder = {}
-        const videoOrders: number[] = []
-        const fileIdHashLList: string[] = []
-
-        // 递归遍历节点
-        const traverse = (nodes: Tree[]) => {
-            for (const node of nodes) {
-                // 只处理视频节点
-                if (!node.is_chapter && node.file_id_hash && node.video_order !== undefined && node.video_order !== null) {
-                    mapByFileIdHash[node.file_id_hash] = node
-                    mapByOrder[node.video_order] = node
-                    videoOrders.push(node.video_order)
-                    fileIdHashLList.push(node.file_id_hash)
-                }
-
-                // 递归子节点
-                if (node.children && node.children.length > 0) {
-                    traverse(node.children)
-                }
-            }
-        }
-
-        // 开始递归
-        traverse(list)
-
-        // 去重并排序，方便后续按顺序处理
-        // oxlint-disable-next-line unicorn/no-array-sort
-        const uniqueOrders = Array.from(new Set(videoOrders)).sort((a, b) => a - b)
-
-        // 去重 fileIdHash 列表
-        const uniqueFileIdHashList = Array.from(new Set(fileIdHashLList))
-
-        return { mapByFileIdHash, mapByOrder, videoOrders: uniqueOrders, fileIdHashList: uniqueFileIdHashList }
-    }
 
     return {
         customNodeClass,

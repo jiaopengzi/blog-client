@@ -26,6 +26,20 @@ import { MessageUtil } from "@/utils/message"
 import { useData } from "./useData"
 
 /**
+ * @description: 点击图片行后复制媒体链接.
+ * @param row 表格行数据.
+ * @return void.
+ */
+const clickRowByPicture = async (row: TableData): Promise<void> => {
+    if ("url_belong" in row && "path" in row && row.url_belong && row.path) {
+        const url = row.url_belong + row.path
+        await copyText(url).then(() => {
+            MessageUtil.success("复制成功", 3000)
+        })
+    }
+}
+
+/**
  * @description: 媒体 hooks
  * @param isUpdateRouter 是否更新路由, 默认为 true 更新路由
  */
@@ -134,17 +148,6 @@ export function useMedia() {
         }
 
         toggleEditDialog()
-    }
-
-    // 点击图片复制链接
-    const clickRowByPicture = async (row: TableData) => {
-        if ("url_belong" in row && "path" in row && row.url_belong && row.path) {
-            const url = row.url_belong + row.path
-            // 复制链接到剪贴板
-            await copyText(url).then(() => {
-                MessageUtil.success("复制成功", 3000)
-            })
-        }
     }
 
     // 处理是否有上传

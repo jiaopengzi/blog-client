@@ -12,6 +12,16 @@ import { type Reactive, type Ref, watch } from "vue"
 import { PlayerStateManager } from "../state"
 import { type PlayerState } from "../types"
 
+/**
+ * @description: 在浏览器原生全屏开启时退出全屏.
+ * @return void.
+ */
+const handleExitFullscreen = async (): Promise<void> => {
+    if (screenfull.isEnabled && screenfull.isFullscreen) {
+        await screenfull.exit()
+    }
+}
+
 // 全屏 hook
 export function useFullscreen(
     videoContainerRef: Ref<HTMLElement | null>,
@@ -62,14 +72,6 @@ export function useFullscreen(
             }
         }
     }
-
-    // 处理退出全屏
-    const handleExitFullscreen = async () => {
-        if (screenfull.isEnabled && screenfull.isFullscreen) {
-            await screenfull.exit()
-        }
-    }
-
     // 处理屏幕方向变化
     const handleOrientationChange = (e: MediaQueryListEvent) => {
         if (e.matches) {

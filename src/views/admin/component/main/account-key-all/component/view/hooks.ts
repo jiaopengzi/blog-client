@@ -31,47 +31,61 @@ interface FormValidationOptions {
     }
 }
 
+/**
+ * @description: 校验标题, 禁止首尾空格.
+ * @param rule 表单规则, 当前校验中未使用.
+ * @param value 当前输入值.
+ * @param callback 校验完成回调.
+ * @return void.
+ */
+function checkTitleValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
+    void rule
+
+    if (value.match(RegexPatterns.IsTrim)) {
+        callback(new Error("首尾不能包含空格"))
+        return
+    }
+
+    callback()
+}
+
+/**
+ * @description: 校验新增账号密钥明细, 禁止首尾空格与空行, 并限制最大行数.
+ * @param rule 表单规则, 当前校验中未使用.
+ * @param value 当前输入值.
+ * @param callback 校验完成回调.
+ * @return void.
+ */
+function checkItemStrInsertValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
+    void rule
+
+    if (value.match(RegexPatterns.IsTrim)) {
+        callback(new Error("首尾不能包含空格"))
+        return
+    }
+
+    const lines = value.split("\n")
+    if (lines.length > 1000) {
+        callback(new Error("账号密钥明细不能超过1000行，当前行数：" + lines.length))
+        return
+    }
+
+    for (const line of lines) {
+        if (line.trim() === "") {
+            callback(new Error("账号密钥明细不能有空行"))
+            return
+        }
+    }
+
+    callback()
+}
+
 // 表单验证
 export function useFormValidation(options: FormValidationOptions): {
     addRules: FormRules<ViewForm>
     editRules: FormRules<ViewForm>
 } {
     const { form } = options
-
-    // 校验标题
-    function checkTitleValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
-        // 首尾不能包含空格
-        if (value.match(RegexPatterns.IsTrim)) {
-            callback(new Error("首尾不能包含空格"))
-            return
-        }
-
-        callback()
-    }
-
-    // 检查账号密钥明细
-    function checkItemStrInsertValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
-        // 首尾不能包含空格
-        if (value.match(RegexPatterns.IsTrim)) {
-            callback(new Error("首尾不能包含空格"))
-            return
-        }
-
-        // 按照换行符\n分割,不能有空行且行数不能超过1000行
-        const lines = value.split("\n")
-        if (lines.length > 1000) {
-            callback(new Error("账号密钥明细不能超过1000行，当前行数：" + lines.length))
-            return
-        }
-        for (const line of lines) {
-            if (line.trim() === "") {
-                callback(new Error("账号密钥明细不能有空行"))
-                return
-            }
-        }
-
-        callback()
-    }
 
     // 检查账号密钥明细
     function checkItemStrEditValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {

@@ -37,6 +37,42 @@ const formatRelatedId = (row: TableData) => {
 }
 
 /**
+ * @description: 格式化金额, 将分转换为元.
+ * @param amount 金额, 单位分.
+ * @return 金额字符串.
+ */
+const formatAmount = (amount: number): string => {
+    return fenToYuan(amount).toString()
+}
+
+/**
+ * @description: 生成表格列金额格式化函数.
+ * @param prop 列属性名.
+ * @return 列格式化函数.
+ */
+const formatAmountColumn = (prop: string) => {
+    return (row: TableData) => {
+        if (prop in row) {
+            return fenToYuan(Number(row[prop as keyof TableData])).toString()
+        }
+        return "-"
+    }
+}
+
+/**
+ * @description: 格式化交易类型显示文本.
+ * @param row 表格行数据.
+ * @return 交易类型文本.
+ */
+const formatTransactionType = (row: TableData) => {
+    if ("type" in row && row.type && typeof row.type === "object") {
+        const value = (row.type as { value: number; label: string }).value as TransactionType
+        return TransactionTypeDisplay[value] || "-"
+    }
+    return "-"
+}
+
+/**
  * useBillingCenter 计费中心业务 hook。
  * 提供账号信息获取, 金额格式化, 交易类型格式化等功能。
  * @returns 账号信息及格式化工具函数。
@@ -89,43 +125,6 @@ export function useBillingCenter() {
             accountLoading.value = false
         }
     }
-
-    /**
-     * formatAmount 格式化金额(分转元)。
-     * @param amount - 金额(分)。
-     * @returns 格式化后的金额字符串。
-     */
-    const formatAmount = (amount: number): string => {
-        return fenToYuan(amount).toString()
-    }
-
-    /**
-     * formatAmountColumn 创建表格列金额格式化函数(分转元)。
-     * @param prop - 列属性名。
-     * @returns 格式化函数。
-     */
-    const formatAmountColumn = (prop: string) => {
-        return (row: TableData) => {
-            if (prop in row) {
-                return fenToYuan(Number(row[prop as keyof TableData])).toString()
-            }
-            return "-"
-        }
-    }
-
-    /**
-     * formatTransactionType 格式化交易流水类型, 根据 value 使用 TransactionTypeDisplay 显示。
-     * @param row - 表格行数据。
-     * @returns 带符号的交易类型显示文本。
-     */
-    const formatTransactionType = (row: TableData) => {
-        if ("type" in row && row.type && typeof row.type === "object") {
-            const value = (row.type as { value: number; label: string }).value as TransactionType
-            return TransactionTypeDisplay[value] || "-"
-        }
-        return "-"
-    }
-
     return {
         accountInfo,
         isRegistered,

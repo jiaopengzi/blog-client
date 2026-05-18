@@ -85,6 +85,95 @@ function checkPriceValidator(rule: unknown, value: number, callback: (error?: st
     callback()
 }
 
+/**
+ * @description: 校验 SEO 描述字段.
+ * @param rule 表单规则, 当前校验中未使用.
+ * @param value 当前输入值.
+ * @param callback 校验完成回调.
+ * @return void.
+ */
+function checkSeoDescriptionValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
+    void rule
+
+    if (!value) {
+        callback()
+        return
+    }
+
+    if (value.match(RegexPatterns.IsTrim)) {
+        callback(new Error("首尾不能包含空格"))
+        return
+    }
+
+    if (value.length > 1000) {
+        callback(new Error("SEO 描述长度不能超过 1000"))
+        return
+    }
+
+    callback()
+}
+
+/**
+ * @description: 校验 SEO 关键词字段.
+ * @param rule 表单规则, 当前校验中未使用.
+ * @param value 当前输入值.
+ * @param callback 校验完成回调.
+ * @return void.
+ */
+function checkSeoKeywordsValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
+    void rule
+
+    if (!value) {
+        callback()
+        return
+    }
+
+    if (value.match(RegexPatterns.IsTrim)) {
+        callback(new Error("首尾不能包含空格"))
+        return
+    }
+
+    if (value.length > 255) {
+        callback(new Error("SEO 关键词长度不能超过 255"))
+        return
+    }
+
+    if (!RegexPatterns.SeoKeyWords.test(value)) {
+        callback(new Error("SEO 关键词必须由英文半角逗号分隔,关键字首尾不能有空格"))
+        return
+    }
+
+    callback()
+}
+
+/**
+ * @description: 校验缩略图 URL 字段.
+ * @param rule 表单规则, 当前校验中未使用.
+ * @param value 当前输入值.
+ * @param callback 校验完成回调.
+ * @return void.
+ */
+function checkThumbnailValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
+    void rule
+
+    if (!value) {
+        callback()
+        return
+    }
+
+    if (value.match(RegexPatterns.IsTrim)) {
+        callback(new Error("首尾不能包含空格"))
+        return
+    }
+
+    if (!RegexPatterns.ImgURL.test(value)) {
+        callback(new Error("缩略图必须为合法的 URL"))
+        return
+    }
+
+    callback()
+}
+
 // 表单验证
 export function useFormValidation(options: FormValidationOptions): {
     rules: FormRules<UpsertPostForm>
@@ -181,83 +270,6 @@ export function useFormValidation(options: FormValidationOptions): {
 
         callback()
     }
-
-    // 检查 SEO 描述是否可用
-    function checkSeoDescriptionValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
-        // 若为空，则直接返回
-        if (!value) {
-            callback()
-            return
-        }
-
-        // 首尾不能包含空格
-        if (value.match(RegexPatterns.IsTrim)) {
-            callback(new Error("首尾不能包含空格"))
-            return
-        }
-
-        // 长度不能超过 1000
-        if (value.length > 1000) {
-            callback(new Error("SEO 描述长度不能超过 1000"))
-            return
-        }
-
-        callback()
-    }
-
-    // 检查 SEO 关键词是否可用
-    function checkSeoKeywordsValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
-        // 若为空，则直接返回
-        if (!value) {
-            callback()
-            return
-        }
-
-        // 首尾不能包含空格
-        if (value.match(RegexPatterns.IsTrim)) {
-            callback(new Error("首尾不能包含空格"))
-            return
-        }
-
-        // 长度不能超过 255
-        if (value.length > 255) {
-            callback(new Error("SEO 关键词长度不能超过 255"))
-            return
-        }
-
-        // 判断是否为英文半角逗号分隔
-        // 正则表达式：匹配由英文半角逗号分隔的项（项内允许任何字符，但逗号前后不允许有空格）
-        if (!RegexPatterns.SeoKeyWords.test(value)) {
-            callback(new Error("SEO 关键词必须由英文半角逗号分隔,关键字首尾不能有空格"))
-            return
-        }
-
-        callback()
-    }
-
-    //  检查 thumbnail 是否可用
-    function checkThumbnailValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
-        // 若可以为空，则直接返回
-        if (!value) {
-            callback()
-            return
-        }
-
-        // 首尾不能包含空格
-        if (value.match(RegexPatterns.IsTrim)) {
-            callback(new Error("首尾不能包含空格"))
-            return
-        }
-
-        // 检查是否为合法的 URL
-        if (!RegexPatterns.ImgURL.test(value)) {
-            callback(new Error("缩略图必须为合法的 URL"))
-            return
-        }
-
-        callback()
-    }
-
     // 检查别名是否可用
     function checkPostSlugValidator(rule: unknown, value: string, callback: (error?: string | Error | undefined) => void): void {
         // 如果 id 不为空，则直接返回

@@ -73,81 +73,76 @@ export const persistTrendSelection = (category: TrendCategory, time: DimensionIt
 }
 
 /**
+ * @description: 返回全部趋势维度选项.
+ * @return 维度选项列表.
+ */
+export const getAllDimension = (): DimensionItem[] => {
+    const allItems: DimensionItem[] = []
+
+    allItems.push({
+        name: DimensionItemName.Today,
+        label: DimensionItemNameDisplay[DimensionItemName.Today],
+        dimension: TimeDimension.Hour,
+        is_current: true,
+    })
+
+    allItems.push({
+        name: DimensionItemName.Yesterday,
+        label: DimensionItemNameDisplay[DimensionItemName.Yesterday],
+        dimension: TimeDimension.Hour,
+        is_current: false,
+    })
+
+    allItems.push({
+        name: DimensionItemName.ThisWeek,
+        label: DimensionItemNameDisplay[DimensionItemName.ThisWeek],
+        dimension: TimeDimension.Week,
+        is_current: true,
+    })
+
+    allItems.push({
+        name: DimensionItemName.LastWeek,
+        label: DimensionItemNameDisplay[DimensionItemName.LastWeek],
+        dimension: TimeDimension.Week,
+        is_current: false,
+    })
+
+    allItems.push({
+        name: DimensionItemName.ThisMonth,
+        label: DimensionItemNameDisplay[DimensionItemName.ThisMonth],
+        dimension: TimeDimension.Day,
+        is_current: true,
+    })
+
+    allItems.push({
+        name: DimensionItemName.LastMonth,
+        label: DimensionItemNameDisplay[DimensionItemName.LastMonth],
+        dimension: TimeDimension.Day,
+        is_current: false,
+    })
+
+    allItems.push({
+        name: DimensionItemName.ThisYear,
+        label: DimensionItemNameDisplay[DimensionItemName.ThisYear],
+        dimension: TimeDimension.Month,
+        is_current: true,
+    })
+
+    allItems.push({
+        name: DimensionItemName.LastYear,
+        label: DimensionItemNameDisplay[DimensionItemName.LastYear],
+        dimension: TimeDimension.Month,
+        is_current: false,
+    })
+
+    return allItems
+}
+
+/**
  * 提供趋势图所需的维度选项与本地持久化辅助方法.
  * @returns 返回趋势图维度映射与维度选项方法.
  */
 export function useTrend() {
-    // 获取所有维度选项
-    const getAllDimension = () => {
-        const allItems: DimensionItem[] = []
-
-        // 今日
-        allItems.push({
-            name: DimensionItemName.Today,
-            label: DimensionItemNameDisplay[DimensionItemName.Today],
-            dimension: TimeDimension.Hour,
-            is_current: true,
-        })
-
-        // 昨日
-        allItems.push({
-            name: DimensionItemName.Yesterday,
-            label: DimensionItemNameDisplay[DimensionItemName.Yesterday],
-            dimension: TimeDimension.Hour,
-            is_current: false,
-        })
-
-        // 本周
-        allItems.push({
-            name: DimensionItemName.ThisWeek,
-            label: DimensionItemNameDisplay[DimensionItemName.ThisWeek],
-            dimension: TimeDimension.Week,
-            is_current: true,
-        })
-
-        // 上周
-        allItems.push({
-            name: DimensionItemName.LastWeek,
-            label: DimensionItemNameDisplay[DimensionItemName.LastWeek],
-            dimension: TimeDimension.Week,
-            is_current: false,
-        })
-
-        // 本月
-        allItems.push({
-            name: DimensionItemName.ThisMonth,
-            label: DimensionItemNameDisplay[DimensionItemName.ThisMonth],
-            dimension: TimeDimension.Day,
-            is_current: true,
-        })
-
-        // 上月
-        allItems.push({
-            name: DimensionItemName.LastMonth,
-            label: DimensionItemNameDisplay[DimensionItemName.LastMonth],
-            dimension: TimeDimension.Day,
-            is_current: false,
-        })
-
-        // 今年
-        allItems.push({
-            name: DimensionItemName.ThisYear,
-            label: DimensionItemNameDisplay[DimensionItemName.ThisYear],
-            dimension: TimeDimension.Month,
-            is_current: true,
-        })
-
-        // 去年
-        allItems.push({
-            name: DimensionItemName.LastYear,
-            label: DimensionItemNameDisplay[DimensionItemName.LastYear],
-            dimension: TimeDimension.Month,
-            is_current: false,
-        })
-
-        return allItems
-    }
-
     // 所有维度选项映射
     const allDimensionMap = getAllDimension().reduce((map, item) => {
         map.set(item.name, item)

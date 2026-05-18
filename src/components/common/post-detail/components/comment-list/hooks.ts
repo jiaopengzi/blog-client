@@ -14,37 +14,37 @@ import { viewByPostIDAPI, type ViewCommentRequest } from "@/api/comment/viewByPo
 import { getEmptyPagination, type Pagination, ResponseCode } from "@/api/response"
 import { usePaginationNoRouter } from "@/components/hooks/usePagination"
 
+/**
+ * @description: 将评论列表转换为 @ 提及候选项, 并按用户名去重.
+ * @param comments 评论数据列表.
+ * @return 提及候选项列表.
+ */
+const updateMentions = (comments: CommentRes[]): Completion[] => {
+    const mentions: Completion[] = []
+    const map = new Map<string, string>()
+
+    comments.forEach((comment) => {
+        if (comment.user_info) {
+            const { user_name, user_display_name } = comment.user_info
+            if (!map.has(user_name)) {
+                map.set(user_name, user_display_name)
+                mentions.push({
+                    label: `@${user_display_name}`,
+                    apply: `[@${user_display_name}](${window.location.origin}/${user_name}) `,
+                })
+            }
+        }
+    })
+
+    return mentions
+}
+
 export function useCommentList(req: Reactive<ViewCommentRequest>) {
     const isShowLoading = ref<boolean>(false) // 是否显示加载动画
 
     const pagination = reactive<Pagination<CommentRes>>(getEmptyPagination<CommentRes>()) // 分页数据
 
     const mentions = ref<Completion[]>([]) // @提及数据
-
-    // 处理 @ 提及
-    const updateMentions = (comments: CommentRes[]): Completion[] => {
-        // 处理 @ 提及示例
-        // [
-        //      { label: "@jiaopengzi", apply: "[@jiaopengzi](user_name)" },
-        // ]
-        const mentions: Completion[] = []
-        const map = new Map<string, string>() // 用于去重
-        comments.forEach((comment) => {
-            if (comment.user_info) {
-                const { user_name, user_display_name } = comment.user_info
-                if (!map.has(user_name)) {
-                    map.set(user_name, user_display_name)
-                    mentions.push({
-                        label: `@${user_display_name}`,
-                        apply: `[@${user_display_name}](${window.location.origin}/${user_name}) `,
-                    })
-                }
-            }
-        })
-
-        return mentions
-    }
-
     async function getPaginate(): Promise<Pagination<CommentRes>> {
         isShowLoading.value = true // 显示加载动画
         // 获取标签列表
