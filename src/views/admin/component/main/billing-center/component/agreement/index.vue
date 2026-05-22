@@ -10,9 +10,26 @@
     <section class="agreement-page">
         <section class="agreement-card">
             <div class="agreement-card-body">
-                <div class="agreement-content" v-stable-html="agreement.content"></div>
+                <div v-if="isLoading" class="agreement-loading" aria-live="polite" aria-busy="true">
+                    <el-skeleton animated>
+                        <template #template>
+                            <div class="agreement-loading-header">
+                                <el-skeleton-item variant="h1" class="agreement-loading-title" />
+                            </div>
+                            <div class="agreement-loading-meta">
+                                <el-skeleton-item variant="text" class="agreement-loading-meta-item" />
+                                <el-skeleton-item variant="text" class="agreement-loading-meta-item" />
+                                <el-skeleton-item variant="text" class="agreement-loading-meta-item" />
+                            </div>
+                            <div class="agreement-loading-body">
+                                <el-skeleton-item v-for="index in 8" :key="index" variant="text" class="agreement-loading-line" />
+                            </div>
+                        </template>
+                    </el-skeleton>
+                </div>
+                <div v-else class="agreement-content" v-stable-html="agreement.content"></div>
             </div>
-            <footer class="card-footer">
+            <footer v-if="!isLoading" class="card-footer">
                 <div class="meta-item">
                     <span class="label">生效时间</span>
                     <span class="value">{{ agreement.issued_at }}</span>
@@ -50,19 +67,37 @@ const agreement = ref<BillingCenterAgreementRes>({
     modified_at: "",
 })
 
-// 获取许可证信息
-onBeforeMount(async () => {
-    const res = await billingCenterGetAgreementAPI()
-    if (res.data.code === ResponseCode.BillingCenterGetAgreementSuccess) {
-        const agreementData = res.data.data
-        agreement.value.issued_at = formatTime(agreementData.issued_at, undefined, "YYYY-MM-DD")
-        agreement.value.modified_at = formatTime(agreementData.modified_at, undefined, "YYYY-MM-DD")
-        agreement.value.version = agreementData.version ? `v${agreementData.version}` : ""
-        agreement.value.content = createMarked().parse(agreementData.content).toString()
-    } else {
+const isLoading = ref(true)
+
+/**
+ * fetchAgreement 获取远端协议内容, 并同步更新页面展示数据。
+ * @returns Promise<void>.
+ */
+const fetchAgreement = async (): Promise<void> => {
+    isLoading.value = true
+
+    try {
+        const res = await billingCenterGetAgreementAPI()
+        if (res.data.code === ResponseCode.BillingCenterGetAgreementSuccess) {
+            const agreementData = res.data.data
+            agreement.value.issued_at = formatTime(agreementData.issued_at, undefined, "YYYY-MM-DD")
+            agreement.value.modified_at = formatTime(agreementData.modified_at, undefined, "YYYY-MM-DD")
+            agreement.value.version = agreementData.version ? `v${agreementData.version}` : ""
+            agreement.value.content = createMarked().parse(agreementData.content).toString()
+            return
+        }
+
         handleResErr(res.data)
         MessageUtil.error(handleResErr(res), 10000)
+    } catch {
+        MessageUtil.error("协议加载失败, 请稍后重试", 10000)
+    } finally {
+        isLoading.value = false
     }
+}
+
+onBeforeMount(async () => {
+    await fetchAgreement()
 })
 </script>
 
@@ -90,6 +125,54 @@ onBeforeMount(async () => {
     margin-top: 0;
     background-color: transparent;
     padding: 0;
+}
+
+.agreement-loading {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.agreement-loading-header {
+    display: flex;
+    justify-content: center;
+    padding-top: 8px;
+}
+
+.agreement-loading-title {
+    width: min(360px, 60%);
+    height: 40px;
+}
+
+.agreement-loading-meta {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    padding: 16px 0 8px;
+}
+
+.agreement-loading-meta-item {
+    width: 100%;
+    height: 18px;
+}
+
+.agreement-loading-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.agreement-loading-line {
+    width: 100%;
+    height: 16px;
+}
+
+.agreement-loading-line:nth-child(3n) {
+    width: 82%;
+}
+
+.agreement-loading-line:nth-child(4n) {
+    width: 90%;
 }
 
 .card-footer {
@@ -250,5 +333,23 @@ onBeforeMount(async () => {
 .agreement-content b {
     font-weight: 700;
     color: var(--jpz-text-color-primary);
+}
+
+@media (max-width: 768px) {
+    .agreement-card {
+        margin: 0 auto;
+        padding: 32px 20px;
+    }
+
+    .agreement-loading-meta,
+    .card-footer {
+        grid-template-columns: 1fr;
+        display: grid;
+        justify-content: initial;
+    }
+
+    .meta-item {
+        justify-content: space-between;
+    }
 }
 </style>
