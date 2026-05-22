@@ -1,2 +1,6 @@
 allowBuilds:
   "@parcel/watcher": true
+minimumReleaseAgeExclude:
+  - '@uiw/codemirror-themes@4.25.10'
+  - katex@0.17.0
+  - sass@1.100.0
