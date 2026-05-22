@@ -168,4 +168,14 @@ describe("renderMarkdownDocument", () => {
         document.body.classList.remove("md-page-route")
         setImageCaptionFormat(ImageCaptionFormat.Alt)
     })
+
+    it("mhchem 公式中的中文说明不应触发 unicodeTextInMathMode 警告", () => {
+        const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined)
+        const markdown = ["## 生物公式光合作用", "", "$$\\ce{{CO}_{2} + 2{H}_{2}{O} ->T[光、叶绿体][酶] ({CH}_{2}O) + {H}_{2}{O} + {O}_{2}}$$"].join("\n")
+
+        const result = renderMarkdownDocument(markdown, false)
+
+        expect(result.html).toContain("katex")
+        expect(warnSpy.mock.calls.some(([message]) => String(message).includes("unicodeTextInMathMode"))).toBe(false)
+    })
 })

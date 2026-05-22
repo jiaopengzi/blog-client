@@ -8,6 +8,23 @@
 
 import type { KatexOptions } from "katex" // 公式
 
+type KatexStrictErrorCode = "unknownSymbol" | "unicodeTextInMathMode" | "mathVsTextUnits" | "commentAtEnd" | "htmlExtension" | "newLineInDisplayMode"
+
+type KatexStrictHandler = (errorCode: KatexStrictErrorCode, errorMsg: string, token: unknown) => boolean | "error" | "warn" | "ignore" | undefined
+
+/**
+ * handleKatexStrict 按错误码细分 KaTeX 严格模式行为.
+ * @param errorCode KaTeX 严格模式错误码.
+ * @returns 当前错误码对应的处理策略.
+ */
+const handleKatexStrict: KatexStrictHandler = (errorCode, _errorMsg, _token) => {
+    if (errorCode === "unicodeTextInMathMode") {
+        return "ignore"
+    }
+
+    return "warn"
+}
+
 const optionKatex: KatexOptions = {
     /**
      * If `true`, math will be rendered in display mode
@@ -111,7 +128,7 @@ const optionKatex: KatexOptions = {
      *
      * @default "warn"
      */
-    strict: "warn",
+    strict: handleKatexStrict,
     /**
      * If `false` (do not trust input), prevent any commands that could enable adverse behavior, rendering them instead in errorColor.
      *
