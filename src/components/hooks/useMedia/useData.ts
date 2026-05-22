@@ -19,6 +19,20 @@ import { LocalStorageKey } from "@/stores/local"
 import { formatterVideoIsEncrypt, formatterVideoIsFree, formatterVideoIsHLS, formatterVideoQuality } from "./formatter"
 import { queryKey } from "./types"
 
+/**
+ * @description: 读取媒体列表默认展示模式.
+ * @return true 表示默认使用列表模式, false 表示默认使用宫格模式.
+ */
+export function getInitialShowListOrGridStatus(): boolean {
+    const storageValue = localStorage.getItem(LocalStorageKey.IsShowListOrGridAtMedia)
+
+    if (storageValue === null) {
+        return true
+    }
+
+    return storageValue === "true"
+}
+
 export function useData() {
     // 列配置
     const cols: TableColumn[] = reactive([
@@ -122,7 +136,7 @@ export function useData() {
     const noRequestKeys: QueryParamsRecord<queryKey> = { [queryKey.FileType]: AllFileType }
 
     // 显示列表或网格状态
-    const showListOrGridStatus = ref(localStorage.getItem(LocalStorageKey.IsShowListOrGridAtMedia) === "true")
+    const showListOrGridStatus = ref(getInitialShowListOrGridStatus())
 
     // 编辑数据
     const editMediaData: EditMediaProps = reactive({
