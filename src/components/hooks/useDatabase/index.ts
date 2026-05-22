@@ -124,6 +124,10 @@ export function useDatabase<K extends SetupRequest>(
                 if (res.data.code === submitResCode) {
                     clearInterval(timer)
                     await showRestart()
+                } else if (res.data.code === ResponseCode.DBsNoUpdated) {
+                    isShowTimer.value = false
+                    clearInterval(timer)
+                    MessageUtil.warning(handleResErr(res), 10000)
                 } else {
                     isShowTimer.value = false
                     clearInterval(timer)

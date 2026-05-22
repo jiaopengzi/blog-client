@@ -87,6 +87,8 @@ const submitForm = async () => {
     if (res.data.code === ResponseCode.SocialLoginUpdateSuccess) {
         MessageUtil.success("更新成功，等待重启服务")
         await showRestart()
+    } else if (res.data.code === ResponseCode.SocialLoginNoUpdate) {
+        MessageUtil.warning(handleResErr(res), 10000)
     } else {
         MessageUtil.error(handleResErr(res), 10000)
     }
