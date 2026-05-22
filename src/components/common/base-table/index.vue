@@ -46,6 +46,7 @@
                 :data="pagination.records"
                 stripe
                 @selection-change="handleSelectionChange"
+                @sort-change="handleSortChange"
                 :row-style="rowStyle"
                 style="width: 100%; min-width: 800px"
                 :height="height"
@@ -232,7 +233,7 @@
 <script lang="ts" setup>
 import type { ElTable } from "element-plus"
 import { storeToRefs } from "pinia"
-import { reactive, type Ref, ref, useTemplateRef, watch } from "vue"
+import { nextTick, reactive, type Ref, ref, useTemplateRef, watch } from "vue"
 
 import type { PostCategory } from "@/api/postCategory/view"
 import type { PostTag } from "@/api/postTag/view"
@@ -330,6 +331,7 @@ const emit = defineEmits<{
     (event: "click-author", author: User): void // 点击作者
     (event: "post-click", postID: string): void // 点击文章
     (event: "view-post", postID: string): void // 查看文章
+    (event: "update-visible-rows", rows: TableData[]): void // 更新当前可见顺序
 }>()
 
 const { paginationLayout } = useDevice()
@@ -411,6 +413,41 @@ const getRowImg = (row: TableData): TableImg | undefined => {
     return undefined
 }
 
+/**
+ * @description: 获取当前界面实际展示的行顺序.
+ * @return 当前实际展示的行列表.
+ */
+const getVisibleRows = (): TableData[] => {
+    if (!showListOrGridStatus) {
+        return pagination.records
+    }
+
+    const tableInstance = tableRef.value as
+        | (InstanceType<typeof ElTable> & {
+              store?: { states?: { data?: TableData[] | { value?: TableData[] } } }
+          })
+        | null
+    const tableStoreData = tableInstance?.store?.states?.data
+
+    if (Array.isArray(tableStoreData)) {
+        return tableStoreData
+    }
+
+    if (Array.isArray(tableStoreData?.value)) {
+        return tableStoreData.value
+    }
+
+    return pagination.records
+}
+
+/**
+ * @description: 向父层同步当前可见顺序, 供弹窗内上一条和下一条使用.
+ * @return void.
+ */
+const syncVisibleRows = () => {
+    emit("update-visible-rows", getVisibleRows())
+}
+
 // 单击事件
 const handleSingleClick = (event: MouseEvent) => {
     // 判断点击目标是否为 img
@@ -463,6 +500,15 @@ const clickInGridHandler = (row: TableData): SingleDblClickBinding => {
     }
 }
 
+/**
+ * @description: 处理表格排序变化, 并同步最新显示顺序.
+ * @return Promise<void>.
+ */
+const handleSortChange = async (): Promise<void> => {
+    await nextTick()
+    syncVisibleRows()
+}
+
 // 关闭图片预览
 const closeElImageViewer = () => {
     isShowElImageViewer.value = false
@@ -476,6 +522,24 @@ watch(
         addItemDialogVisibleStatus.value = addItemDialogVisible!
         editItemDialogVisibleStatus.value = editItemDialogVisible!
     },
+)
+
+watch(
+    () => pagination.records,
+    async () => {
+        await nextTick()
+        syncVisibleRows()
+    },
+    { immediate: true, deep: true },
+)
+
+watch(
+    () => showListOrGridStatus,
+    async () => {
+        await nextTick()
+        syncVisibleRows()
+    },
+    { immediate: true },
 )
 
 // 关闭对话框

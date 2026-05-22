@@ -6,7 +6,7 @@
  * @Description  : 媒体 hooks
  */
 
-import { onBeforeMount, watch } from "vue"
+import { computed, onBeforeMount, ref, watch } from "vue"
 
 import { ResponseCode } from "@/api/response"
 import { deleteFileAPI, type DeleteFileRequest } from "@/api/upload/deleteFile"
@@ -120,34 +120,145 @@ export function useMedia() {
         },
     )
 
-    // 编辑行
-    const editRow = (index: number, row: TableData) => {
-        // 断言 row 中有 file_name_display ts 不会报错
-        if ("file_name_display" in row) {
-            editMediaData.file_id = row.id.toString()
-            editMediaData.file_type = row.file_type
-            editMediaData.file_url = row.url_belong + row.path
-            editMediaData.file_name = row.file_name
-            editMediaData.file_name_display = row.file_name_display
-            editMediaData.description = row.description
-            editMediaData.file_id_hash = row.file_id_hash
-            editMediaData.is_free = row.is_free
-            editMediaData.subtitles_language_list = row.subtitles_language_list || []
-            editMediaData.img = row.img
-            editMediaData.editDialogVisible = true
-            editMediaData.is_generate_hls = row.is_generate_hls
+    const visibleMediaRows = ref<TableData[]>([])
 
-            // 如果是视频则设置宽高
-            if (isVideo(row.file_type)) {
-                editWidth.value = "90%"
-                editTop.value = "3vh"
-            } else {
-                editWidth.value = ""
-                editTop.value = ""
-            }
+    watch(
+        () => pagination.records,
+        (records) => {
+            visibleMediaRows.value = records
+        },
+        { immediate: true, deep: true },
+    )
+
+    /**
+     * @description: 将当前媒体行同步到编辑态数据中.
+     * @param row 当前需要展示的媒体行数据.
+     * @return void.
+     */
+    const applyEditMediaRow = (row: TableData) => {
+        // 断言 row 中有 file_name_display, 避免 TS 对媒体字段报错.
+        if (!("file_name_display" in row)) {
+            return
         }
 
+        editMediaData.file_id = row.id.toString()
+        editMediaData.file_type = row.file_type
+        editMediaData.file_url = row.url_belong + row.path
+        editMediaData.file_name = row.file_name
+        editMediaData.file_name_display = row.file_name_display
+        editMediaData.description = row.description
+        editMediaData.file_id_hash = row.file_id_hash
+        editMediaData.is_free = row.is_free
+        editMediaData.subtitles_language_list = row.subtitles_language_list || []
+        editMediaData.img = row.img
+        editMediaData.editDialogVisible = true
+        editMediaData.is_generate_hls = row.is_generate_hls
+
+        // 如果是视频则设置宽高.
+        if (isVideo(row.file_type)) {
+            editWidth.value = "90%"
+            editTop.value = "3vh"
+        } else {
+            editWidth.value = ""
+            editTop.value = ""
+        }
+    }
+
+    /**
+     * @description: 计算当前编辑媒体在当前分页数据中的索引.
+     * @return 当前编辑媒体索引, 未命中时返回 -1.
+     */
+    const currentEditMediaIndex = computed(() => {
+        return visibleMediaRows.value.findIndex((item) => item.id.toString() === editMediaData.file_id)
+    })
+
+    /**
+     * @description: 当前编辑媒体是否仍在当前列表可见范围内.
+     * @return true 表示仍在当前列表中, false 表示已不在当前列表中.
+     */
+    const isCurrentEditMediaVisible = computed(() => {
+        if (!editMediaData.file_id) {
+            return true
+        }
+
+        return currentEditMediaIndex.value > -1
+    })
+
+    /**
+     * @description: 是否可以切换到上一条媒体.
+     * @return true 表示可切换, false 表示不可切换.
+     */
+    const canSwitchPrevMedia = computed(() => currentEditMediaIndex.value > 0)
+
+    /**
+     * @description: 是否可以切换到下一条媒体.
+     * @return true 表示可切换, false 表示不可切换.
+     */
+    const canSwitchNextMedia = computed(() => {
+        return currentEditMediaIndex.value > -1 && currentEditMediaIndex.value < visibleMediaRows.value.length - 1
+    })
+
+    /**
+     * @description: 返回当前媒体导航不可用时的提示文案.
+     * @return 媒体导航提示文案, 无需提示时返回空字符串.
+     */
+    const mediaSwitchTip = computed(() => {
+        if (isCurrentEditMediaVisible.value) {
+            return ""
+        }
+
+        return "当前编辑项已不在当前列表中, 请调整排序, 筛选或重新打开该媒体后再继续切换."
+    })
+
+    /**
+     * @description: 用当前列表的实际显示顺序覆盖媒体导航顺序.
+     * @param rows 当前界面显示顺序.
+     * @return void.
+     */
+    const updateVisibleMediaRows = (rows: TableData[]) => {
+        visibleMediaRows.value = rows
+    }
+
+    /**
+     * @description: 编辑指定媒体行, 并打开编辑弹窗.
+     * @param index 当前行索引, 保留用于兼容 BaseTable 的事件签名.
+     * @param row 当前行数据.
+     * @return void.
+     */
+    const editRow = (index: number, row: TableData) => {
+        void index
+        applyEditMediaRow(row)
         toggleEditDialog()
+    }
+
+    /**
+     * @description: 切换到上一条媒体, 保持当前编辑弹窗开启.
+     * @return void.
+     */
+    const handlePrevMedia = () => {
+        if (!canSwitchPrevMedia.value) {
+            return
+        }
+
+        const prevRow = visibleMediaRows.value[currentEditMediaIndex.value - 1]
+        if (prevRow) {
+            applyEditMediaRow(prevRow)
+        }
+    }
+
+    /**
+     * @description: 切换到下一条媒体, 保持当前编辑弹窗开启.
+     * @return void.
+     */
+    const handleNextMedia = () => {
+        if (!canSwitchNextMedia.value) {
+            return
+        }
+
+        const nextRow = visibleMediaRows.value[currentEditMediaIndex.value + 1]
+        if (nextRow) {
+            applyEditMediaRow(nextRow)
+        }
     }
 
     // 处理是否有上传
@@ -247,6 +358,12 @@ export function useMedia() {
         hasUpload, // 是否有上传
         editMediaData, // 编辑数据
         editRow, // 编辑行
+        isCurrentEditMediaVisible, // 当前编辑媒体是否仍在当前列表中
+        mediaSwitchTip, // 媒体切换提示
+        canSwitchPrevMedia, // 是否可切换上一条媒体
+        canSwitchNextMedia, // 是否可切换下一条媒体
+        handlePrevMedia, // 切换上一条媒体
+        handleNextMedia, // 切换下一条媒体
         clickRowByPicture, // 点击图片复制链接
         fileCountGroupByFileType, // 文件统计
         activeFileType, // 当前文件类型
@@ -267,6 +384,7 @@ export function useMedia() {
         deleteRows, // 删除行
         updateRouterPush, // 更新查询参数和路由
         updatePaginate, // 更新分页
+        updateVisibleMediaRows, // 更新当前可见媒体顺序
         handleHasUpload, // 处理是否有上传
         handleFileCountByFileType, // 根据文件类型统计文件数量
         updateSubtitles, // 更新字幕

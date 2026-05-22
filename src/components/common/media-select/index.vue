@@ -30,6 +30,11 @@
             :file-count-group-by-file-type="fileCountGroupByFileType"
             :active-file-type="activeFileType"
             :handle-file-count-by-file-type="handleFileCountByFileTypeAc"
+            :media-switch-tip="mediaSwitchTip"
+            :can-switch-prev-media="canSwitchPrevMedia"
+            :can-switch-next-media="canSwitchNextMedia"
+            :handle-prev-media="handlePrevMedia"
+            :handle-next-media="handleNextMedia"
             :loading-delete="loadingDelete"
             @update-current-page="updateCurrentPageAc"
             @update-page-size="updatePageSizeAc"
@@ -47,6 +52,7 @@
             @update-subtitles="updateSubtitlesAc"
             @delete-subtitles="deleteSubtitlesAc"
             @update-selection="updateSelection"
+            @update-visible-rows="updateVisibleMediaRows"
         >
         </MediaBase>
 
@@ -103,6 +109,9 @@ const {
     editMediaData, // 编辑媒体数据
     fileCountGroupByFileType,
     activeFileType,
+    mediaSwitchTip,
+    canSwitchPrevMedia,
+    canSwitchNextMedia,
     queryParams, // 查询参数
     updateSearch, // 更新搜索关键字
     updatePaginate, // 更新分页
@@ -117,9 +126,12 @@ const {
     toggleAddDialog, // 切换添加对话框
     editStatus, // 编辑媒体状态
     handleHasUpload, // 处理是否有上传
+    handlePrevMedia, // 切换上一条媒体
+    handleNextMedia, // 切换下一条媒体
     handleFileCountByFileType, // 根据文件类型统计文件数量
     updateSubtitles, // 更新字幕
     deleteSubtitles, // 删除字幕
+    updateVisibleMediaRows, // 更新当前可见媒体顺序
     loadingDelete,
 } = useMedia()
 
