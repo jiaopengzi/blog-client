@@ -564,8 +564,8 @@ const {
     isApplyingLocalDraft,
     clearPostUpsertLocalDraftAfterRemoteSaved,
     resolvePostUpsertLocalDraftOnMount,
-    startPostUpsertLocalDraftAutoSave,
-    stopPostUpsertLocalDraftAutoSave,
+    startPostUpsertLocalDraftRealtimeSave,
+    stopPostUpsertLocalDraftRealtimeSave,
 } = usePostUpsertLocalDraft({
     postType,
     postInfoForm,
@@ -772,7 +772,7 @@ const newPostWrite = async () => {
 }
 
 onUnmounted(() => {
-    stopPostUpsertLocalDraftAutoSave()
+    stopPostUpsertLocalDraftRealtimeSave()
     stopResizeObserver()
 })
 
@@ -787,7 +787,7 @@ onBeforeMount(async () => {
     await updateSnapshot()
     if (!showEditNoPermission.value) {
         await resolvePostUpsertLocalDraftOnMount()
-        startPostUpsertLocalDraftAutoSave()
+        startPostUpsertLocalDraftRealtimeSave()
     }
 })
 </script>

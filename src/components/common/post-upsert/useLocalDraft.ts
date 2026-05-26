@@ -7,12 +7,13 @@
  */
 
 import { ElMessageBox, type FormInstance } from "element-plus"
-import { nextTick, reactive, ref, type Reactive, type Ref } from "vue"
+import { debounce } from "throttle-debounce"
+import { nextTick, reactive, ref, watch, type Reactive, type Ref, type WatchStopHandle } from "vue"
 
 import { CommentStatusCode, PostType } from "@/api/post/common"
 import type { SwitchItem } from "@/components/common/switch-group"
-import { EditorStateManager } from "@/components/editor"
-import JEditor from "@/components/editor/index.vue"
+import type { EditorStateManager } from "@/components/editor"
+import type JEditor from "@/components/editor/index.vue"
 
 import {
     clearPostUpsertLocalDraft,
@@ -25,6 +26,8 @@ import {
 import type { UpsertPostForm } from "./types"
 
 type LocalDraftStatusType = "idle" | "saved" | "error" | "conflict"
+
+const POST_UPSERT_LOCAL_DRAFT_SAVE_DEBOUNCE_MS = 400
 
 export interface LocalDraftStatus {
     text: string
@@ -56,7 +59,7 @@ export function usePostUpsertLocalDraft(options: UsePostUpsertLocalDraftOptions)
     })
     const isApplyingLocalDraft = ref(false)
     let localDraftLastSavedSignature = getPostUpsertDraftSignature(options.postInfoForm)
-    let localDraftAutoSaveTimer: number | undefined
+    let stopLocalDraftRealtimeSave: WatchStopHandle | undefined
 
     /**
      * resetLocalDraftStatus 隐藏本地草稿提示, 表示当前远端与本地编辑内容一致.
@@ -125,6 +128,7 @@ export function usePostUpsertLocalDraft(options: UsePostUpsertLocalDraftOptions)
      */
     const clearPostUpsertLocalDraftAfterRemoteSaved = (postId = options.postInfoForm.id || ""): void => {
         try {
+            persistPostUpsertLocalDraftDebounced.cancel({ upcomingOnly: true })
             clearPostUpsertLocalDraft(options.postType, postId)
             if (postId !== options.postInfoForm.id) {
                 clearPostUpsertLocalDraft(options.postType, options.postInfoForm.id)
@@ -189,6 +193,8 @@ export function usePostUpsertLocalDraft(options: UsePostUpsertLocalDraftOptions)
         const draftPostId = options.postInfoForm.id || ""
         const currentSignature = getPostUpsertDraftSignature(options.postInfoForm)
 
+        options.updateStatus()
+
         if (!options.isUpdate.value) {
             const draft = loadPostUpsertLocalDraft(options.postType, draftPostId)
             if (draft && !draft.remoteSaved) {
@@ -222,26 +228,45 @@ export function usePostUpsertLocalDraft(options: UsePostUpsertLocalDraftOptions)
         }
     }
 
-    /**
-     * startPostUpsertLocalDraftAutoSave 启动文章编辑器本地草稿定时保存.
-     * @returns void.
-     */
-    const startPostUpsertLocalDraftAutoSave = (): void => {
-        stopPostUpsertLocalDraftAutoSave()
-        localDraftAutoSaveTimer = window.setInterval(persistPostUpsertLocalDraftIfChanged, 1000)
-    }
+    const persistPostUpsertLocalDraftDebounced = debounce(POST_UPSERT_LOCAL_DRAFT_SAVE_DEBOUNCE_MS, persistPostUpsertLocalDraftIfChanged)
 
     /**
-     * stopPostUpsertLocalDraftAutoSave 停止文章编辑器本地草稿定时保存.
+     * schedulePostUpsertLocalDraftSave 在表单内容变化后防抖保存本地草稿.
      * @returns void.
      */
-    const stopPostUpsertLocalDraftAutoSave = (): void => {
-        if (localDraftAutoSaveTimer === undefined) {
+    const schedulePostUpsertLocalDraftSave = (): void => {
+        if (isApplyingLocalDraft.value) {
             return
         }
 
-        window.clearInterval(localDraftAutoSaveTimer)
-        localDraftAutoSaveTimer = undefined
+        options.updateStatus()
+        if (options.isUpdate.value) {
+            localDraftStatus.text = "正在自动保存到本地草稿..."
+            localDraftStatus.type = "idle"
+        }
+
+        persistPostUpsertLocalDraftDebounced()
+    }
+
+    /**
+     * startPostUpsertLocalDraftRealtimeSave 启动文章编辑器本地草稿实时保存监听.
+     * @returns void.
+     */
+    const startPostUpsertLocalDraftRealtimeSave = (): void => {
+        stopPostUpsertLocalDraftRealtimeSave()
+        stopLocalDraftRealtimeSave = watch(() => getPostUpsertDraftSignature(options.postInfoForm), schedulePostUpsertLocalDraftSave, { flush: "post" })
+    }
+
+    /**
+     * stopPostUpsertLocalDraftRealtimeSave 停止文章编辑器本地草稿实时保存监听.
+     * @returns void.
+     */
+    const stopPostUpsertLocalDraftRealtimeSave = (): void => {
+        persistPostUpsertLocalDraftDebounced.cancel({ upcomingOnly: true })
+        if (stopLocalDraftRealtimeSave) {
+            stopLocalDraftRealtimeSave()
+            stopLocalDraftRealtimeSave = undefined
+        }
     }
 
     return {
@@ -249,8 +274,8 @@ export function usePostUpsertLocalDraft(options: UsePostUpsertLocalDraftOptions)
         isApplyingLocalDraft,
         clearPostUpsertLocalDraftAfterRemoteSaved,
         resolvePostUpsertLocalDraftOnMount,
-        startPostUpsertLocalDraftAutoSave,
-        stopPostUpsertLocalDraftAutoSave,
+        startPostUpsertLocalDraftRealtimeSave,
+        stopPostUpsertLocalDraftRealtimeSave,
     }
 }
 
