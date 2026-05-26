@@ -31,6 +31,7 @@ export enum LocalStorageKey {
     EditorDefaultsVim = "editor_defaults_vim", // 编辑器 Vim 模式与快捷键配置
     EditorDefaultsWechatCaptcha = "editor_defaults_wechat_captcha", // 编辑器 WechatCaptcha 插入默认值
     PublicMdDraft = "public_md_draft", // 公用 Markdown 页面草稿
+    PostUpsertDrafts = "post_upsert_drafts", // 文章编辑器本地草稿集合
     ThumbnailAutoInsertEnable = "thumbnail_auto_insert_enable", // 缩略图自动插入是否启用
     ThumbnailAutoInsertIndex = "thumbnail_auto_insert_index", // 缩略图自动插入位置
     MdImageCaptionFormat = "md_image_caption_format", // MD 页面图注格式

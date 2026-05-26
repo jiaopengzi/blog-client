@@ -22,6 +22,9 @@
                     </el-button>
                 </div>
                 <div class="btns-header-right">
+                    <span v-if="localDraftStatus.text" class="local-draft-status" :class="`local-draft-status-${localDraftStatus.type}`">{{
+                        localDraftStatus.text
+                    }}</span>
                     <el-button type="primary" class="save-post btns-header-item" @click="submitForm(formRef as FormInstance)">
                         <j-icon :name="IconKeys.Save" custom-class="btns-header-item-icon" />
                         <span>保存</span>
@@ -241,14 +244,14 @@
 <script lang="ts" setup>
 import { useHead } from "@unhead/vue"
 import { useResizeObserver } from "@vueuse/core"
-import { ElMessage } from "element-plus"
+import { ElMessage, ElMessageBox } from "element-plus"
 import type { FormInstance } from "element-plus"
 import { storeToRefs } from "pinia"
-import { computed, onBeforeMount, onUnmounted, reactive, ref, toRefs, useTemplateRef, watch } from "vue"
+import { computed, nextTick, onBeforeMount, onUnmounted, reactive, ref, toRefs, useTemplateRef, watch } from "vue"
 import { useRouter } from "vue-router"
 
 import { Target } from "@/api/common"
-import { getPayStrategyOptions, getPostStatusOptions, type InsertPostRequest, PostStatusCode, PostType } from "@/api/post/common"
+import { CommentStatusCode, getPayStrategyOptions, getPostStatusOptions, type InsertPostRequest, PostStatusCode, PostType } from "@/api/post/common"
 import { type PostCategory, viewListPostCategoryAPI } from "@/api/postCategory/view"
 import { ResponseCode } from "@/api/response"
 import AddTag from "@/components/common/add-tag/index.vue"
@@ -281,6 +284,14 @@ import { useAdd } from "./useAdd"
 import { useEdit } from "./useEdit"
 import { useFormValidation } from "./useFormValidation"
 import { createPostImageUploadHandler, getNextPostImageIndex } from "./imageUpload"
+import {
+    clearPostUpsertLocalDraft,
+    getPostUpsertDraftSignature,
+    loadPostUpsertLocalDraft,
+    resolvePostUpsertLocalDraftConflict,
+    savePostUpsertLocalDraft,
+    type PostUpsertLocalDraft,
+} from "./localDraft"
 import { usePostVideoToc } from "./usePostVideoToc"
 import { useSnapshot } from "./useSnapshot"
 import { useSwitchItem } from "./useSwitchItem"
@@ -318,6 +329,13 @@ useEditor(stateManager)
 
 const editorState = stateManager.getState()
 const mediaDialogVisible = ref(false)
+const localDraftStatus = reactive({
+    text: "",
+    type: "idle" as "idle" | "saved" | "error" | "conflict",
+})
+let localDraftLastSavedSignature = getPostUpsertDraftSignature(postInfoForm)
+let localDraftAutoSaveTimer: number | undefined
+let isApplyingLocalDraft = false
 
 const thumbnailAutoInsert = ref(localStorage.getItem(LocalStorageKey.ThumbnailAutoInsertEnable) === "true")
 const thumbnailImgIndex = ref(Number(localStorage.getItem(LocalStorageKey.ThumbnailAutoInsertIndex)) || 1)
@@ -532,6 +550,7 @@ const { rules } = useFormValidation({
 watch(
     () => postInfoForm.category_ids,
     () => {
+        if (isApplyingLocalDraft) return
         if (!isShowCategory.value) return
         formRef.value?.validateField("category_ids")
     },
@@ -563,6 +582,199 @@ const { submitForm: addSubmitForm } = useAdd(postInfoForm, queryKey, postInfoAbo
 
 // 数据快照
 const { isUpdate, updatedFields, updateSnapshot, updateStatus } = useSnapshot(postInfoForm)
+
+/**
+ * resetLocalDraftStatus 隐藏本地草稿提示, 表示当前远端与本地编辑内容一致.
+ * @returns void.
+ */
+const resetLocalDraftStatus = (): void => {
+    localDraftStatus.text = ""
+    localDraftStatus.type = "idle"
+}
+
+/**
+ * formatLocalDraftUpdatedAt 格式化本地草稿更新时间.
+ * @param updatedAt - 本地草稿更新时间 ISO 字符串.
+ * @returns 可直接展示的中文时间.
+ */
+const formatLocalDraftUpdatedAt = (updatedAt: string): string => new Date(updatedAt).toLocaleString("zh-CN", { hour12: false })
+
+/**
+ * setLocalDraftSavedStatus 根据草稿更新时间刷新页面上的本地保存状态.
+ * @param draft - 已保存或已恢复的本地草稿.
+ * @returns void.
+ */
+const setLocalDraftSavedStatus = (draft: PostUpsertLocalDraft): void => {
+    localDraftStatus.text = `本地已保存 ${formatLocalDraftUpdatedAt(draft.updatedAt)}`
+    localDraftStatus.type = "saved"
+}
+
+/**
+ * syncSwitchItemsFromPostForm 将恢复后的表单布尔字段同步回 SwitchGroup 状态.
+ * @returns void.
+ */
+const syncSwitchItemsFromPostForm = (): void => {
+    commentStatus[0]!.status = postInfoForm.comment_status === CommentStatusCode.Open
+    postShowMethod.forEach((item) => {
+        item.status = Boolean((postInfoForm as unknown as Record<string, number>)[item.name])
+    })
+    rolePaidList.forEach((item) => {
+        item.status = postInfoForm.pay_roles.includes(item.name)
+    })
+}
+
+/**
+ * applyPostUpsertLocalDraft 将用户选择的本地草稿回填到表单与编辑器.
+ * @param draft - 需要恢复的本地草稿.
+ * @returns void.
+ */
+const applyPostUpsertLocalDraft = async (draft: PostUpsertLocalDraft): Promise<void> => {
+    isApplyingLocalDraft = true
+    try {
+        Object.assign(postInfoForm, draft.form)
+        stateManager.setInitDocIsEmpty(!draft.form.post_content)
+        editorPostRef.value?.replaceContent(draft.form.post_content)
+        if (!editorPostRef.value) {
+            stateManager.updateState(draft.form.post_content)
+        }
+        await nextTick()
+        editorPostRef.value?.replaceContent(draft.form.post_content)
+        syncSwitchItemsFromPostForm()
+        updateStatus()
+        formRef.value?.clearValidate()
+        localDraftLastSavedSignature = draft.formSignature
+        setLocalDraftSavedStatus(draft)
+    } finally {
+        await nextTick()
+        isApplyingLocalDraft = false
+    }
+}
+
+/**
+ * clearPostUpsertLocalDraftAfterRemoteSaved 清理已成功保存到远端的本地草稿.
+ * @param postId - 需要清理的草稿 ID, 新增文章保存前为空字符串.
+ * @returns void.
+ */
+const clearPostUpsertLocalDraftAfterRemoteSaved = (postId = postInfoForm.id || ""): void => {
+    try {
+        clearPostUpsertLocalDraft(postType, postId)
+        if (postId !== postInfoForm.id) {
+            clearPostUpsertLocalDraft(postType, postInfoForm.id)
+        }
+        localDraftLastSavedSignature = getPostUpsertDraftSignature(postInfoForm)
+        resetLocalDraftStatus()
+    } catch (error) {
+        console.error("清理文章本地草稿失败", error)
+        localDraftStatus.text = "本地草稿清理失败"
+        localDraftStatus.type = "error"
+    }
+}
+
+/**
+ * resolvePostUpsertLocalDraftOnMount 在页面初始化后处理本地草稿冲突.
+ * @returns void.
+ */
+const resolvePostUpsertLocalDraftOnMount = async (): Promise<void> => {
+    const draftPostId = postInfoForm.id || ""
+    const isCreateMode = !draftPostId
+    const draft = loadPostUpsertLocalDraft(postType, draftPostId)
+    const currentSignature = getPostUpsertDraftSignature(postInfoForm)
+    localDraftLastSavedSignature = currentSignature
+
+    const resolution = resolvePostUpsertLocalDraftConflict(draft, postInfoForm)
+    if (!draft || resolution === "none") {
+        if (draft) {
+            clearPostUpsertLocalDraft(postType, draftPostId)
+        }
+        resetLocalDraftStatus()
+        return
+    }
+
+    localDraftStatus.text = "发现本地草稿冲突"
+    localDraftStatus.type = "conflict"
+
+    try {
+        await ElMessageBox.confirm(
+            isCreateMode
+                ? `检测到上次未成功保存的本地草稿, 最近保存于 ${formatLocalDraftUpdatedAt(draft.updatedAt)}, 是否恢复?`
+                : `本地草稿与远端内容不一致, 本地最近保存于 ${formatLocalDraftUpdatedAt(draft.updatedAt)}, 是否使用本地草稿?`,
+            "本地草稿冲突",
+            {
+                confirmButtonText: "恢复本地草稿",
+                cancelButtonText: isCreateMode ? "放弃草稿" : "使用远端内容",
+                type: "warning",
+            },
+        )
+        await applyPostUpsertLocalDraft(draft)
+    } catch {
+        clearPostUpsertLocalDraft(postType, draftPostId)
+        localDraftLastSavedSignature = currentSignature
+        resetLocalDraftStatus()
+    }
+}
+
+/**
+ * persistPostUpsertLocalDraftIfChanged 按当前快照状态保存本地草稿.
+ * @returns void.
+ */
+const persistPostUpsertLocalDraftIfChanged = (): void => {
+    const draftPostId = postInfoForm.id || ""
+    const currentSignature = getPostUpsertDraftSignature(postInfoForm)
+
+    if (!isUpdate.value) {
+        const draft = loadPostUpsertLocalDraft(postType, draftPostId)
+        if (draft && !draft.remoteSaved) {
+            clearPostUpsertLocalDraft(postType, draftPostId)
+        }
+        localDraftLastSavedSignature = currentSignature
+        resetLocalDraftStatus()
+        return
+    }
+
+    if (currentSignature === localDraftLastSavedSignature) {
+        return
+    }
+
+    try {
+        const result = savePostUpsertLocalDraft({
+            postType,
+            postId: draftPostId,
+            form: postInfoForm,
+            remoteSaved: false,
+            lastSavedSignature: localDraftLastSavedSignature,
+        })
+        localDraftLastSavedSignature = result.signature
+        if (result.saved) {
+            setLocalDraftSavedStatus(result.draft)
+        }
+    } catch (error) {
+        console.error("保存文章本地草稿失败", error)
+        localDraftStatus.text = "本地保存失败, 请检查浏览器存储空间"
+        localDraftStatus.type = "error"
+    }
+}
+
+/**
+ * startPostUpsertLocalDraftAutoSave 启动文章编辑器本地草稿定时保存.
+ * @returns void.
+ */
+const startPostUpsertLocalDraftAutoSave = (): void => {
+    stopPostUpsertLocalDraftAutoSave()
+    localDraftAutoSaveTimer = window.setInterval(persistPostUpsertLocalDraftIfChanged, 1000)
+}
+
+/**
+ * stopPostUpsertLocalDraftAutoSave 停止文章编辑器本地草稿定时保存.
+ * @returns void.
+ */
+const stopPostUpsertLocalDraftAutoSave = (): void => {
+    if (localDraftAutoSaveTimer === undefined) {
+        return
+    }
+
+    window.clearInterval(localDraftAutoSaveTimer)
+    localDraftAutoSaveTimer = undefined
+}
 
 /**
  * 同步编辑器内容到表单, 并在用户继续编辑时清空上一次 lint 阻断提示.
@@ -650,13 +862,14 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     }
 
     // 判断走新增还是更新
+    const draftPostIdBeforeSubmit = postInfoForm.id || ""
     if (!postInfoForm.id) {
-        await addSubmitForm(formEl).then((isFinish) => {
-            // 如果新增成功，将快照更新
-            if (isFinish) {
-                updateSnapshot()
-            }
-        })
+        const isFinish = await addSubmitForm(formEl)
+        // 如果新增成功，将快照更新
+        if (isFinish) {
+            await updateSnapshot()
+            clearPostUpsertLocalDraftAfterRemoteSaved(draftPostIdBeforeSubmit)
+        }
     } else {
         // 判断是否有更新
         if (!isUpdate.value) {
@@ -674,12 +887,12 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         dataOfUpdate.update_fields = Object.keys(updatedFields) as (keyof InsertPostRequest)[]
         dataOfUpdate.id = postInfoForm.id
 
-        await editSubmitForm(formEl).then((isFinish) => {
-            // 如果更新成功，将快照更新
-            if (isFinish) {
-                updateSnapshot()
-            }
-        })
+        const isFinish = await editSubmitForm(formEl)
+        // 如果更新成功，将快照更新
+        if (isFinish) {
+            await updateSnapshot()
+            clearPostUpsertLocalDraftAfterRemoteSaved(draftPostIdBeforeSubmit)
+        }
     }
 }
 
@@ -746,6 +959,7 @@ const newPostWrite = async () => {
 }
 
 onUnmounted(() => {
+    stopPostUpsertLocalDraftAutoSave()
     stopResizeObserver()
 })
 
@@ -758,6 +972,10 @@ onBeforeMount(async () => {
         showEditNoPermission.value = await getDataOnBeforeMount()
     }
     await updateSnapshot()
+    if (!showEditNoPermission.value) {
+        await resolvePostUpsertLocalDraftOnMount()
+        startPostUpsertLocalDraftAutoSave()
+    }
 })
 </script>
 
@@ -781,6 +999,29 @@ onBeforeMount(async () => {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.btns-header-right {
+    gap: 8px;
+}
+
+.local-draft-status {
+    max-width: 240px;
+    overflow: hidden;
+    color: var(--jpz-text-color-secondary);
+    font-size: 13px;
+    line-height: 20px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.local-draft-status-saved {
+    color: var(--jpz-color-success);
+}
+
+.local-draft-status-error,
+.local-draft-status-conflict {
+    color: var(--jpz-color-danger);
 }
 
 .btns-footer {
