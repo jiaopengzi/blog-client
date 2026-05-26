@@ -9,6 +9,7 @@
 import { type PgSqlDateTime } from "@/api/common"
 import { PostType, type SimplePostVideoTocTree } from "@/api/post/common"
 import { LocalStorageKey } from "@/stores/local"
+import { loadLocalStorageRecord, removeLocalStorageJson, saveLocalStorageJson } from "@/utils/localStorageJson"
 
 import type { UpsertPostForm } from "./types"
 
@@ -143,7 +144,7 @@ export function savePostUpsertLocalDraft(options: SavePostUpsertLocalDraftOption
 
     const collection = loadPostUpsertLocalDraftCollection()
     collection[getPostUpsertLocalDraftKey(options.postType, options.postId)] = draft
-    localStorage.setItem(LocalStorageKey.PostUpsertDrafts, JSON.stringify(collection))
+    saveLocalStorageJson(LocalStorageKey.PostUpsertDrafts, collection)
 
     return {
         draft,
@@ -163,11 +164,11 @@ export function clearPostUpsertLocalDraft(postType: PostType, postId: string): v
     delete collection[getPostUpsertLocalDraftKey(postType, postId)]
 
     if (Object.keys(collection).length === 0) {
-        localStorage.removeItem(LocalStorageKey.PostUpsertDrafts)
+        removeLocalStorageJson(LocalStorageKey.PostUpsertDrafts)
         return
     }
 
-    localStorage.setItem(LocalStorageKey.PostUpsertDrafts, JSON.stringify(collection))
+    saveLocalStorageJson(LocalStorageKey.PostUpsertDrafts, collection)
 }
 
 /**
@@ -218,26 +219,7 @@ function createPostUpsertLocalDraft(postType: PostType, postId: string, form: Up
  * @returns 只包含有效草稿的集合.
  */
 function loadPostUpsertLocalDraftCollection(): PostUpsertLocalDraftCollection {
-    const raw = localStorage.getItem(LocalStorageKey.PostUpsertDrafts)
-    if (!raw) {
-        return {}
-    }
-
-    try {
-        const parsed = JSON.parse(raw) as Record<string, unknown>
-        if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-            return {}
-        }
-
-        return Object.entries(parsed).reduce<PostUpsertLocalDraftCollection>((collection, [key, value]) => {
-            if (isPostUpsertLocalDraft(value)) {
-                collection[key] = value
-            }
-            return collection
-        }, {})
-    } catch {
-        return {}
-    }
+    return loadLocalStorageRecord(LocalStorageKey.PostUpsertDrafts, isPostUpsertLocalDraft)
 }
 
 /**

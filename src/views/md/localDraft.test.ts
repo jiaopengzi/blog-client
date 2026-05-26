@@ -1,14 +1,14 @@
 /**
- * FilePath    : blog-client\src\stores\md-draft.test.ts
+ * FilePath    : blog-client\src\views\md\localDraft.test.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 公用 Markdown 草稿工具单元测试
+ * Description : 公用 Markdown 页面本地草稿工具单元测试
  */
 
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
 
-import { clearPublicMdDraft, loadPublicMdDraft, savePublicMdDraft } from "./md-draft"
+import { clearPublicMdDraft, loadPublicMdDraft, savePublicMdDraft } from "./localDraft"
 
 beforeEach(() => {
     localStorage.clear()
