@@ -1,6 +1,6 @@
 # blog-client Dockerfile
 # 使用官方 Node.js 镜像作为构建环境
-FROM node:24.15.0 AS builder
+FROM node:24.16.0 AS builder
 
 # 配置 pnpm 可执行目录, 确保后续 RUN 层可以直接调用 pnpm
 ENV PNPM_HOME="/pnpm"
