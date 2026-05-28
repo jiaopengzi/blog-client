@@ -6,15 +6,32 @@
  * Description : post-upsert 工具函数测试
  */
 
-import { describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 
 import { PostType } from "@/api/post/common"
 import { ResponseCode } from "@/api/response"
 import { RouteNames } from "@/router"
 
-import { getPostEditNoPermissionResourceLabel, resolvePostEditLoadError } from "./utils"
+import { createEmptyUpsertPostForm, getPostEditNoPermissionResourceLabel, resolvePostEditLoadError } from "./utils"
+
+afterEach(() => {
+    vi.useRealTimers()
+})
 
 describe("post-upsert utils", () => {
+    it("空表单应默认填充当前展示时间", () => {
+        const now = new Date("2026-05-28T08:00:00.000Z")
+        vi.useFakeTimers()
+        vi.setSystemTime(now)
+
+        const form = createEmptyUpsertPostForm(PostType.Post)
+
+        expect(form.post_push_time).toEqual({
+            Time: now,
+            Valid: true,
+        })
+    })
+
     it("8306 应切换到无权限视图", () => {
         const result = resolvePostEditLoadError(ResponseCode.NoPermission, "无权限", PostType.Post)
 

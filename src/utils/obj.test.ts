@@ -136,6 +136,21 @@ describe("getUpdatedFields", () => {
             post_expired_time: { Time: newFixedDate, Valid: false },
         })
     })
+
+    it("Date 时间戳变化时应识别为字段更新", () => {
+        const updatedFields = getUpdatedFields(
+            sourceObj,
+            {
+                ...sourceObj,
+                post_push_time: { Time: newFixedDate, Valid: true },
+            },
+            "id",
+        )
+
+        expect(updatedFields).toEqual({
+            post_push_time: { Time: newFixedDate, Valid: true },
+        })
+    })
 })
 
 describe("deepClone", () => {
@@ -166,6 +181,11 @@ describe("deepEqual", () => {
             post_title: "different title",
         }
         expect(deepEqual(sourceObj, obj2)).toBe(false)
+    })
+
+    it("不同 Date 时间戳不相等", () => {
+        expect(deepEqual(fixedDate, newFixedDate)).toBe(false)
+        expect(deepEqual(fixedDate, new Date(fixedDate))).toBe(true)
     })
 
     it("处理 null and undefined", () => {

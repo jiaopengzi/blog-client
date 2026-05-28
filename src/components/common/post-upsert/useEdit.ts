@@ -23,7 +23,7 @@ import { MessageUtil } from "@/utils/message"
 
 import { handleSubmit } from "./formHandler"
 import type { PostInfoAboutTime, UpsertPostForm } from "./types"
-import { handlePostUpsertError, resolvePostEditLoadError } from "./utils"
+import { createDefaultPostPushTime, handlePostUpsertError, resolvePostEditLoadError } from "./utils"
 
 // 更新 SwitchItem 列表中的状态
 const updateSwitchItem = (list: SwitchItem[], name: string, status: boolean) => {
@@ -95,8 +95,10 @@ export function useEdit(
             postInfoForm.video_toc = data.video_toc?.toc || []
             postInfoForm.video_file_id_hash_list = []
 
-            if (data.post_push_time) {
+            if (data.post_push_time?.Valid && data.post_push_time.Time) {
                 postInfoForm.post_push_time = data.post_push_time
+            } else {
+                postInfoForm.post_push_time = createDefaultPostPushTime()
             }
             if (data.post_expired_time) {
                 postInfoForm.post_expired_time = data.post_expired_time

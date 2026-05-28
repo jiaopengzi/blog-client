@@ -85,7 +85,7 @@ const router = useRouter()
 // 文章元数据
 const postMeta = computed(() => {
     const data: PostMetaProps = {
-        created_at: postData.created_at,
+        created_at: getPostDisplayTime(),
         formatStr: "YYYY-MM-DD",
         view_count: postData.view_count,
         author_avatar: postData.author_info.user_avatar,
@@ -103,6 +103,20 @@ const postMeta = computed(() => {
     }
     return data
 })
+
+/**
+ * 获取文章前台展示时间, 优先使用用户可调整的发布时间。
+ *
+ * @returns 文章展示时间字符串, 无有效发布时间时返回创建时间。
+ */
+const getPostDisplayTime = (): string => {
+    const postPushTime = postData.post_push_time
+    if (postPushTime?.Valid && postPushTime.Time) {
+        return String(postPushTime.Time)
+    }
+
+    return postData.created_at
+}
 
 // 事件
 const emit = defineEmits<{
@@ -171,8 +185,8 @@ const clickAuthorUserName = (val: string) => {
 
 // 右上角提示符内容
 const topRightTip = computed(() => {
-    // 判断 postData 中创建时间是否在 7 天内,显示 NEW
-    const createTime = new Date(postData.created_at).getTime()
+    // 判断 postData 中展示时间是否在 7 天内, 显示 NEW.
+    const createTime = new Date(getPostDisplayTime()).getTime()
     const nowTime = new Date().getTime()
     const diffTime = nowTime - createTime
     const diffDay = diffTime / (1000 * 60 * 60 * 24)

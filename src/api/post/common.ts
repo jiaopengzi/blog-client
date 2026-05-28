@@ -202,6 +202,7 @@ export interface UpdatePostRequest {
 export interface PostResCommon extends DataWithImg {
     id: string // 标签id
     created_at: string // 创建时间
+    post_push_time?: PgSqlDateTime // 展示发布时间
     comment_count: string // 评论数量
     view_count: string // 查看数量
     like_count: string // 喜欢数量

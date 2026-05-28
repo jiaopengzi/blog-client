@@ -70,6 +70,11 @@ export function deepEqual<T>(obj1: T, obj2: T): boolean {
         return true
     }
 
+    // Date 需要按时间戳比较, 否则不同时间会因没有可枚举 key 被误判相等.
+    if (obj1 instanceof Date || obj2 instanceof Date) {
+        return obj1 instanceof Date && obj2 instanceof Date && obj1.getTime() === obj2.getTime()
+    }
+
     // 如果两个对象不是对象或者为null，直接返回false
     if (typeof obj1 !== "object" || obj1 === null || typeof obj2 !== "object" || obj2 === null) {
         return false

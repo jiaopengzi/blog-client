@@ -7,6 +7,7 @@
  */
 
 import { CommentStatusCode, PayStrategy, PostStatusCode, PostType, PostTypeDisplay } from "@/api/post/common"
+import { type PgSqlDateTime } from "@/api/common"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { RouteNames, type RouteNames as RouteName } from "@/router"
 import { MessageUtil } from "@/utils/message"
@@ -16,6 +17,17 @@ export interface PostEditLoadErrorResolution {
     showNoPermission: boolean
     redirectRouteName?: RouteName
     message?: string
+}
+
+/**
+ * 创建默认展示时间.
+ * @returns 有效的当前时间对象.
+ */
+export function createDefaultPostPushTime(): PgSqlDateTime {
+    return {
+        Time: new Date(),
+        Valid: true,
+    }
 }
 
 // 创建 empty InsertPostRequest
@@ -38,10 +50,7 @@ export function createEmptyUpsertPostForm(postType: PostType): UpsertPostForm {
         tag_names: [],
         pay_roles: [],
         pay_strategy: PayStrategy.Buy,
-        post_push_time: {
-            Time: null,
-            Valid: false,
-        },
+        post_push_time: createDefaultPostPushTime(),
         post_expired_time: {
             Time: null,
             Valid: false,

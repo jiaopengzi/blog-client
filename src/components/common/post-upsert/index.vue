@@ -194,14 +194,19 @@
                     <el-input v-model="postInfoForm.post_password" />
                 </el-form-item>
 
-                <el-form-item v-if="postInfoForm.post_status === PostStatusCode.Future" label="发布时间" prop="post_push_time">
-                    <el-date-picker
-                        v-model="postInfoForm.post_push_time.Time"
-                        type="datetime"
-                        placeholder="留空则为立刻发布"
-                        :shortcuts="generateShortcuts('发布')"
-                        :default-time="defaultTime"
-                    />
+                <el-form-item label="展示时间" prop="post_push_time">
+                    <div class="post-push-time-field">
+                        <el-date-picker
+                            v-model="postInfoForm.post_push_time.Time"
+                            class="post-time-picker"
+                            type="datetime"
+                            placeholder="默认当前时间"
+                            :shortcuts="generateShortcuts('发布')"
+                            :default-time="defaultTime"
+                            @change="markPostPushTimeTouched"
+                        />
+                        <div v-if="isShowFuturePostPushTimeTip" class="post-push-time-tip">非定时文章的展示时间晚于当前时间, 会影响前台排序和 NEW 标识.</div>
+                    </div>
                 </el-form-item>
 
                 <el-form-item
@@ -305,6 +310,8 @@ useHead({
 
 // 初始化表单数据
 const postInfoForm = reactive<UpsertPostForm>(createEmptyUpsertPostForm(postType))
+const defaultPostPushTimeMs = ref(postInfoForm.post_push_time.Time?.getTime() ?? null)
+const isPostPushTimeTouched = ref(false)
 const isShowCategory = computed(() => postType === PostType.Post)
 const isShowTag = computed(() => postType === PostType.Post)
 const showEditNoPermission = ref(false)
@@ -312,6 +319,57 @@ const editNoPermissionPathDisplay = computed(() => getPostEditNoPermissionResour
 const editNoPermissionHeadTitle = computed(() => `后台管理 - ${editNoPermissionPathDisplay.value}无权限`)
 
 const postInfoAboutTime = reactive<PostInfoAboutTime>({})
+
+/**
+ * 判断非定时文章是否选择了未来展示时间.
+ * @returns true 表示需要展示轻量提醒.
+ */
+const isShowFuturePostPushTimeTip = computed(() => {
+    if (postInfoForm.post_status === PostStatusCode.Future || !postInfoForm.post_push_time.Time) {
+        return false
+    }
+
+    const postPushTime = new Date(postInfoForm.post_push_time.Time)
+    return !Number.isNaN(postPushTime.getTime()) && postPushTime > new Date()
+})
+
+/**
+ * 记录展示时间已经由用户手动调整.
+ * @returns void.
+ */
+const markPostPushTimeTouched = () => {
+    isPostPushTimeTouched.value = true
+}
+
+/**
+ * 判断新建文章是否仍在使用初始化时的默认展示时间.
+ * @returns true 表示保存时可刷新为提交时刻.
+ */
+const isUsingInitialDefaultPostPushTime = () => {
+    if (postInfoForm.id || isPostPushTimeTouched.value || !postInfoForm.post_push_time.Time || defaultPostPushTimeMs.value === null) {
+        return false
+    }
+
+    return new Date(postInfoForm.post_push_time.Time).getTime() === defaultPostPushTimeMs.value
+}
+
+/**
+ * 同步新建文章默认展示时间到提交时刻.
+ * @returns true 表示本次提交使用了自动默认值.
+ */
+const syncDefaultPostPushTimeBeforeCreate = () => {
+    if (!isUsingInitialDefaultPostPushTime()) {
+        return false
+    }
+
+    const postPushTime = new Date()
+    postInfoForm.post_push_time = {
+        Time: postPushTime,
+        Valid: true,
+    }
+    defaultPostPushTimeMs.value = postPushTime.getTime()
+    return true
+}
 
 const formRef = useTemplateRef<FormInstance>("formRef")
 const editorContainerRef = useTemplateRef<HTMLDivElement | null>("editorContainerRef")
@@ -484,14 +542,6 @@ watch(
         // 如果文章状态不为密码，则清空文章密码
         if (newVal !== PostStatusCode.Password) {
             postInfoForm.post_password = ""
-        }
-
-        // 如果文章状态不为定时发布，则清空文章发布时间
-        if (newVal !== PostStatusCode.Future) {
-            postInfoForm.post_push_time = {
-                Time: null,
-                Valid: false,
-            }
         }
 
         // 如果文章状态不为过期，则清空文章过期时间
@@ -677,9 +727,16 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     // 判断走新增还是更新
     const draftPostIdBeforeSubmit = postInfoForm.id || ""
     if (!postInfoForm.id) {
+        const isAutoPostPushTime = syncDefaultPostPushTimeBeforeCreate()
         const isFinish = await addSubmitForm(formEl)
         // 如果新增成功，将快照更新
         if (isFinish) {
+            if (isAutoPostPushTime && postInfoAboutTime.created_at) {
+                postInfoForm.post_push_time = {
+                    Time: new Date(postInfoAboutTime.created_at),
+                    Valid: true,
+                }
+            }
             await updateSnapshot()
             clearPostUpsertLocalDraftAfterRemoteSaved(draftPostIdBeforeSubmit)
         }
@@ -695,6 +752,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
             delete dataOfUpdate[key as keyof UpsertPostForm]
         })
         Object.assign(dataOfUpdate, updatedFields)
+        dataOfUpdate.post_push_time = postInfoForm.post_push_time
 
         // 需要更新的字段
         dataOfUpdate.update_fields = Object.keys(updatedFields) as (keyof InsertPostRequest)[]
@@ -917,6 +975,23 @@ h4 {
 
 .input-number {
     width: 100%;
+}
+
+.post-push-time-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.post-time-picker {
+    width: 220px;
+}
+
+.post-push-time-tip {
+    max-width: 520px;
+    color: var(--jpz-color-warning);
+    font-size: 12px;
+    line-height: 18px;
 }
 
 .video-toc-tree {

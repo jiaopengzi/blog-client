@@ -369,23 +369,16 @@ export function useFormValidation(options: FormValidationOptions): {
 
     // 检查发布时间是否可用
     function checkPostPushTimeValidator(rule: unknown, value: PgSqlDateTime, callback: (error?: string | Error | undefined) => void): void {
-        // 如果文章状态不是定时发布，则直接返回
-        if (form.post_status?.value !== PostStatusCode.Future) {
-            callback()
-            return
-        }
-
-        // PostStatusCode.Future 时，发布时间不能为空
-        if (!value.Time) {
-            callback(new Error("发布时间不能为空"))
+        if (!value?.Time) {
+            callback(new Error("展示时间不能为空"))
             return
         }
 
         const now = new Date()
         const postPushTime = value.Time
 
-        // 不能小于当前时间
-        if (now >= postPushTime) {
+        // 定时发布时, 发布时间不能小于当前时间.
+        if (form.post_status?.value === PostStatusCode.Future && now >= postPushTime) {
             callback(new Error("发布时间不能小于当前时间"))
             return
         }
@@ -508,8 +501,8 @@ export function useFormValidation(options: FormValidationOptions): {
         ],
 
         post_push_time: [
-            { required: false, message: "文章发布时间", trigger: "blur" },
-            { validator: checkPostPushTimeValidator, trigger: "blur" },
+            { required: true, message: "展示时间不能为空", trigger: "change" },
+            { validator: checkPostPushTimeValidator, trigger: "change" },
         ],
 
         post_expired_time: [

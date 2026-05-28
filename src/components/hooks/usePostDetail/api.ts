@@ -31,6 +31,20 @@ import { MessageUtil } from "@/utils/message"
 import { updateHead } from "@/utils/updateHead"
 
 /**
+ * 获取文章详情展示时间, 优先使用用户可调整的发布时间。
+ * @param postData 文章详情响应数据。
+ * @returns 文章展示时间字符串, 无有效发布时间时返回创建时间。
+ */
+function getPostDisplayTime(postData: PostResByID): string {
+    const postPushTime = postData.post_push_time
+    if (postPushTime?.Valid && postPushTime.Time) {
+        return String(postPushTime.Time)
+    }
+
+    return postData.created_at
+}
+
+/**
  * useGetData 管理文章详情页所需的数据拉取与状态同步。
  * 包括文章详情, 交互状态, SEO 信息以及文章详情编辑权限的同步。
  * @param manager - 编辑器状态管理器实例。
@@ -111,8 +125,9 @@ export function useGetData(manager: EditorStateManager, hash: Ref<string>) {
         await syncPostDetailEditEnable()
 
         // 文章元数据
+        const displayTime = getPostDisplayTime(postData)
         postMeta.value.post_id = postData.id
-        postMeta.value.created_at = postData.created_at
+        postMeta.value.created_at = displayTime
         postMeta.value.comment_count = postData.comment_count
         postMeta.value.is_comment_status_open = postData.comment_status === CommentStatusCode.Open
         postMeta.value.view_count = postData.view_count
@@ -157,10 +172,8 @@ export function useGetData(manager: EditorStateManager, hash: Ref<string>) {
         copyright.value.author.name = postData.author_info.user_display_name
         copyright.value.author.avatar = postData.author_info.user_avatar
 
-        // 如果更新时间和创建时间不一致，则更新时间显示为更新时间
-        if (postData.created_at !== postData.updated_at) {
-            updatedAt.value.time = postData.updated_at
-        }
+        // 详情页底部固定展示更新时间, 新建文章的更新时间可能与展示时间相同.
+        updatedAt.value.time = postData.updated_at
 
         // 更新分类和标签
         categoryTag.value.categories = postData.categories && postData.categories.length > 0 ? postData.categories : []
