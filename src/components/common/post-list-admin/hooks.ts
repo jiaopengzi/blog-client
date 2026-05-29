@@ -12,7 +12,7 @@ import { PostStatusDisplay, PostType } from "@/api/post/common"
 import { getPostCountByAuthorAPI, type PostCountByAuthor } from "@/api/post/getPostCountByAuthor"
 import { getPostCountByIsPinnedAPI, type PostCountByIsPinned } from "@/api/post/getPostCountByIsPinned"
 import { getPostCountByIsRecommendedAPI, type PostCountByIsRecommended } from "@/api/post/getPostCountByIsRecommended"
-import { type PostCountByMonth } from "@/api/post/getPostCountByMonth"
+import { sortPostCountByMonthDesc, type PostCountByMonth } from "@/api/post/getPostCountByMonth"
 import { getPostCountByMonthAdminAPI } from "@/api/post/getPostCountByMonthAdmin"
 import { getPostCountByStatusAPI, type PostCountByStatus } from "@/api/post/getPostCountByStatus"
 import { handleResErr, ResponseCode } from "@/api/response"
@@ -69,7 +69,7 @@ export function useHeader(userID: string = "", postType: PostType, enabled: bool
     const getPostCountMonth = async () => {
         const res = await getPostCountByMonthAdminAPI()
         if (res.data.code === ResponseCode.PostCountByMonthSuccess) {
-            postCountMonth.value = normalizeCountList(res.data.data)
+            postCountMonth.value = sortPostCountByMonthDesc(normalizeCountList(res.data.data))
         } else {
             postCountMonth.value = []
             MessageUtil.warning(handleResErr(res.data), 3000)

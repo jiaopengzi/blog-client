@@ -9,7 +9,7 @@
 import { reactive } from "vue"
 
 import type { PostResCommon, PostResPagination } from "@/api/post/common"
-import { getPostCountByMonthAPI } from "@/api/post/getPostCountByMonth"
+import { getPostCountByMonthAPI, sortPostCountByMonthDesc } from "@/api/post/getPostCountByMonth"
 import { viewPostAPI } from "@/api/post/view"
 import { type ViewPostRequest } from "@/api/post/view"
 import { viewHotPostAPI } from "@/api/post/viewHotPost"
@@ -92,8 +92,8 @@ export function useGetData(options?: QueryParamsOptions<ViewPostRequest>) {
                 return
             }
 
-            // 遍历 res.data.data 并更新 monthArchiveProps
-            res.data.data.forEach((item) => {
+            // 遍历倒序月度统计并更新 monthArchiveProps
+            sortPostCountByMonthDesc(res.data.data).forEach((item) => {
                 // 创建新的对象并添加 year_month 字段
                 const newItem = {
                     ...item,
@@ -101,14 +101,6 @@ export function useGetData(options?: QueryParamsOptions<ViewPostRequest>) {
                 }
                 // 将 newItem 添加到 monthArchiveProps
                 monthArchiveProps.push(newItem)
-            })
-
-            // 按照 year 和 month 进行降序排序
-            monthArchiveProps.sort((a, b) => {
-                if (a.year !== b.year) {
-                    return b.year - a.year // 年份降序
-                }
-                return b.month - a.month // 月份降序
             })
 
             // 设置状态
