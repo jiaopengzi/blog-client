@@ -47,43 +47,50 @@
                     @commit-anchor-hash-index="handleAnchorHashIndex"
                 />
             </el-main>
-            <el-aside ref="asideRef" class="el-aside" v-show="isShowHomeAside && hasDataHomeAside">
-                <!-- 导航栏 -->
-                <Toc
-                    v-if="isShowPostDetail && isShowToc && hasDataToc"
-                    class="el-aside-item"
-                    :headings="state.tocHtml"
-                    :heading-show-current-index="state.headingShowCurrentIndex"
-                    @heading-clicked="tocHeadingClicked"
-                />
+            <el-aside
+                class="el-aside"
+                :class="{ 'is-aside-sticky': isAsideStickyEnabled }"
+                :style="{ '--home-aside-sticky-top': asideStickyTop }"
+                v-show="isShowHomeAside && hasDataHomeAside"
+            >
+                <div ref="asideContentRef" class="el-aside-content">
+                    <!-- 导航栏 -->
+                    <Toc
+                        v-if="isShowPostDetail && isShowToc && hasDataToc"
+                        class="el-aside-item"
+                        :headings="state.tocHtml"
+                        :heading-show-current-index="state.headingShowCurrentIndex"
+                        @heading-clicked="tocHeadingClicked"
+                    />
 
-                <!-- 推荐阅读 -->
-                <RecommendedRead
-                    v-if="isShowRecommendedRead && hasDataRecommendedRead"
-                    class="el-aside-item"
-                    :post-data="recommendedPost"
-                    @post-id="handlePostId"
-                />
+                    <!-- 推荐阅读 -->
+                    <RecommendedRead
+                        v-if="isShowRecommendedRead && hasDataRecommendedRead"
+                        class="el-aside-item"
+                        :post-data="recommendedPost"
+                        @post-id="handlePostId"
+                    />
 
-                <!-- 热门文章 -->
-                <HotPost v-if="isShowHotPost && hasDataHotPost" class="el-aside-item" :post-data="hotPost" @post-id="handlePostId" />
+                    <!-- 热门文章 -->
+                    <HotPost v-if="isShowHotPost && hasDataHotPost" class="el-aside-item" :post-data="hotPost" @post-id="handlePostId" />
 
-                <!-- 文章标签 -->
-                <PostTag v-if="isShowPostTag && hasDataPostTag" :items="postTags" class="el-aside-item" @click="clickTag" />
+                    <!-- 文章标签 -->
+                    <PostTag v-if="isShowPostTag && hasDataPostTag" :items="postTags" class="el-aside-item" @click="clickTag" />
 
-                <!-- 月度归档 -->
-                <MonthArchive
-                    v-if="isShowMonthArchive && hasDataMonthArchive"
-                    class="el-aside-item"
-                    :post-list="monthArchiveProps"
-                    @post-by-month="clickMonthArchive"
-                />
+                    <!-- 月度归档 -->
+                    <MonthArchive
+                        v-if="isShowMonthArchive && hasDataMonthArchive"
+                        class="el-aside-item"
+                        :post-list="monthArchiveProps"
+                        @post-by-month="clickMonthArchive"
+                    />
+                </div>
             </el-aside>
         </el-container>
     </div>
 </template>
 <script setup lang="ts">
-// import type { ElAside } from "element-plus"
+import { useEventListener, useResizeObserver } from "@vueuse/core"
 import { storeToRefs } from "pinia"
 import { nextTick, onBeforeMount, type Reactive, reactive, ref, useTemplateRef, watch } from "vue"
 import { useRoute } from "vue-router"
@@ -114,7 +121,36 @@ const route = useRoute()
 
 const { searchData } = defineProps<MainContentProps>()
 
-// const asideRef = useTemplateRef<InstanceType<typeof ElAside>>("asideRef")
+const asideContentRef = useTemplateRef<HTMLElement | null>("asideContentRef")
+const asideStickyTop = ref("0px")
+const isAsideStickyEnabled = ref(false)
+
+/**
+ * @description 根据侧栏真实高度更新 sticky 吸附点, 短侧栏吸顶, 长侧栏贴底且避免侧栏内部滚动条.
+ * @returns 无返回值.
+ */
+const updateAsideStickyTop = () => {
+    const asideContent = asideContentRef.value
+    if (!asideContent) {
+        asideStickyTop.value = "0px"
+        isAsideStickyEnabled.value = false
+        return
+    }
+
+    const viewportHeight = window.innerHeight
+    const asideHeight = asideContent.getBoundingClientRect().height
+    if (asideHeight <= viewportHeight) {
+        asideStickyTop.value = "0px"
+        isAsideStickyEnabled.value = true
+        return
+    }
+
+    asideStickyTop.value = `${viewportHeight - asideHeight}px`
+    isAsideStickyEnabled.value = true
+}
+
+useResizeObserver(asideContentRef, updateAsideStickyTop)
+useEventListener(window, "resize", updateAsideStickyTop)
 
 const deviceStore = useDeviceStore()
 const optionsStore = useOptionsStore()
@@ -293,10 +329,17 @@ onBeforeMount(async () => {
     }
 
     .el-aside {
-        position: sticky; // 使侧边栏固定在页面顶部, 粘性定位
-        top: 0;
         width: pc.$width-aside;
         background-color: var(--jpz-bg-color-page);
+    }
+
+    .el-aside.is-aside-sticky {
+        position: sticky; // 短侧栏吸顶, 长侧栏按内容高度贴底
+        top: var(--home-aside-sticky-top, 0px);
+    }
+
+    .el-aside-content {
+        display: flow-root;
     }
 
     .el-aside-item {
