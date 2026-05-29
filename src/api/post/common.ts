@@ -293,6 +293,17 @@ export interface PostResByID extends PostResCommon {
     video_toc: PostVideoTocRes // 文章视频目录
 }
 
+// getPostDisplayTime 获取文章对用户展示的发布时间。
+// 优先使用 post_push_time.Time, 无有效发布时间时回退到 created_at, 保证列表, 搜索和详情页展示语义一致。
+export function getPostDisplayTime(postData: Pick<PostResCommon, "created_at" | "post_push_time">): string {
+    const postPushTime = postData.post_push_time
+    if (postPushTime?.Valid && postPushTime.Time) {
+        return String(postPushTime.Time)
+    }
+
+    return postData.created_at
+}
+
 // 文章自定义字段
 export enum PostCustomFieldKey {
     Price = "price",

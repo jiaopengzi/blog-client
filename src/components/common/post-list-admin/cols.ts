@@ -5,7 +5,7 @@
 
 import { reactive } from "vue"
 
-import { PostStatusCode, PostStatusDisplay, PostType } from "@/api/post/common"
+import { getPostDisplayTime, PostStatusCode, PostStatusDisplay, PostType } from "@/api/post/common"
 import type { TableColumn, TableData } from "@/components/common/base-table"
 import { formatTime } from "@/utils/dateTime"
 
@@ -121,14 +121,21 @@ const statusColumns: TableColumn[] = [
     },
 ]
 
-// 创建时间列
-const createAtColumns: TableColumn[] = [
+// 发布时间列
+const displayTimeColumns: TableColumn[] = [
     {
         prop: "created_at",
-        label: "创建时间",
+        label: "发布时间",
         sortable: true,
         minWidth: 120,
         align: "center",
+        formatter: (row: TableData) => {
+            if ("created_at" in row) {
+                return formatTime(getPostDisplayTime(row), "Asia/Shanghai", "YYYY-MM-DD HH:mm:ss")
+            }
+
+            return "-"
+        },
     },
 ]
 
@@ -158,7 +165,7 @@ export function generateCols(postType: PostType) {
     columns.push(...statsColumns)
 
     // 添加作者和状态列
-    columns.push(...authorColumns, ...statusColumns, ...createAtColumns)
+    columns.push(...authorColumns, ...statusColumns, ...displayTimeColumns)
 
     return reactive(columns)
 }

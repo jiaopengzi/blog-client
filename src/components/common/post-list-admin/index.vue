@@ -35,7 +35,9 @@
             @view-post="onViewPost"
         >
             <template #btns>
-                <el-button ref="addBtnRef" type="primary" @click="write"> {{ writeText }} </el-button>
+                <el-button ref="addBtnRef" type="primary" @click="write">
+                    {{ writeText }}
+                </el-button>
             </template>
 
             <template #category v-if="showAdvancedPostAdminTools">
@@ -225,7 +227,9 @@ const stringKeys: StringKeys<ViewPostByAdminRequest>[] = [
 const numberKeys: NumberKeys<ViewPostByAdminRequest>[] = ["post_status", "year", "month", "is_pinned", "is_recommended", "current_page", "page_size"]
 
 // 不需要请求的参数
-const noRequestKeys: QueryParamsRecord<queryKey> = { [queryKey.Group]: allGroup }
+const noRequestKeys: QueryParamsRecord<queryKey> = {
+    [queryKey.Group]: allGroup,
+}
 
 // 点击分类、标签、作者
 const clickCategory = ref<string>("")
@@ -254,7 +258,13 @@ const {
     queryParams,
     deleteAPI: deletePostAPI,
     deleteResCode: ResponseCode.PostDeleteSuccess,
-    options: { stringKeys, numberKeys, noRequestKeys, tableImg, refreshPromiseFns: showAdvancedPostAdminTools.value ? [getPostCountStatus] : [] },
+    options: {
+        stringKeys,
+        numberKeys,
+        noRequestKeys,
+        tableImg,
+        refreshPromiseFns: showAdvancedPostAdminTools.value ? [getPostCountStatus] : [],
+    },
 })
 
 const handleDeleteRows = async (rows: TableData[]) => {
@@ -382,6 +392,7 @@ watch(postCountMonthSelect, async (newVal) => {
         const [year, month] = newVal.split("-")
         queryParams.year = Number(year)
         queryParams.month = Number(month)
+        await updateRouterPushResetPage()
     } else {
         delete queryParams.year
         delete queryParams.month

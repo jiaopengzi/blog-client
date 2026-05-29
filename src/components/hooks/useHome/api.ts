@@ -108,7 +108,7 @@ export function useGetData(options?: QueryParamsOptions<ViewPostRequest>) {
                 if (a.year !== b.year) {
                     return b.year - a.year // 年份降序
                 }
-                return a.month - b.month // 月份降序
+                return b.month - a.month // 月份降序
             })
 
             // 设置状态

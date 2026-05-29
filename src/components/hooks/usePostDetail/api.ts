@@ -10,7 +10,7 @@ import { storeToRefs } from "pinia"
 import { type Ref, ref, watch } from "vue"
 import { useRouter } from "vue-router"
 
-import { CommentStatusCode, type PostResByID } from "@/api/post/common"
+import { CommentStatusCode, getPostDisplayTime, type PostResByID } from "@/api/post/common"
 import { type InteractionRequest, postInteractionAPI } from "@/api/post/interaction"
 import { type PostLikeRequest, setPostLikeAPI } from "@/api/post/like"
 import { prevNextPostAPI, type PrevNextRequest, type PrevNextResponse } from "@/api/post/prevNext"
@@ -29,20 +29,6 @@ import { PostDetailEditCacheScope, usePermissionRoleStore } from "@/stores/permi
 import { useUserStore } from "@/stores/user"
 import { MessageUtil } from "@/utils/message"
 import { updateHead } from "@/utils/updateHead"
-
-/**
- * 获取文章详情展示时间, 优先使用用户可调整的发布时间。
- * @param postData 文章详情响应数据。
- * @returns 文章展示时间字符串, 无有效发布时间时返回创建时间。
- */
-function getPostDisplayTime(postData: PostResByID): string {
-    const postPushTime = postData.post_push_time
-    if (postPushTime?.Valid && postPushTime.Time) {
-        return String(postPushTime.Time)
-    }
-
-    return postData.created_at
-}
 
 /**
  * useGetData 管理文章详情页所需的数据拉取与状态同步。
@@ -165,7 +151,7 @@ export function useGetData(manager: EditorStateManager, hash: Ref<string>) {
         head.value.author = postData.author_info.user_display_name
         head.value.image = postData.thumbnail
         head.value.siteName = postData.post_title
-        head.value.releaseDate = postData.updated_at // url 已经在路由中间件 head 组件 中自动设置
+        head.value.releaseDate = displayTime // url 已经在路由中间件 head 组件 中自动设置
 
         // 版权信息
         copyright.value.title = postData.post_title

@@ -16,7 +16,9 @@
         <!-- 文章摘要内容 -->
         <div class="content">
             <!-- 标题 -->
-            <h2 class="title" @click="postId(postData.id)">{{ postData.post_title }}</h2>
+            <h2 class="title" @click="postId(postData.id)">
+                {{ postData.post_title }}
+            </h2>
 
             <!-- 作者 日志 访问量 -->
             <PostMeta :meta="postMeta" :is-hide-time-icon="true" :is-set-time-margin="true" />
@@ -27,7 +29,7 @@
 <script setup lang="ts">
 import { computed } from "vue"
 
-import type { PostResCommon } from "@/api/post/common"
+import { getPostDisplayTime, type PostResCommon } from "@/api/post/common"
 import PostMeta, { type PostMetaProps } from "@/components/common/post-meta"
 import PostThumbnail from "@/components/common/post-thumbnail"
 
@@ -42,7 +44,7 @@ const fallbackInitial = computed(() => postData.post_title?.trim().slice(0, 1).t
 // 文章元数据
 const postMeta = computed(() => {
     const data: PostMetaProps = {
-        created_at: postData.created_at,
+        created_at: getPostDisplayTime(postData),
         formatStr: "YYYY-MM-DD",
         view_count: postData.view_count,
     }

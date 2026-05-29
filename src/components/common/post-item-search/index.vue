@@ -19,7 +19,9 @@
             <h3 class="title" v-stable-html="displayText"></h3>
 
             <!-- 描述 -->
-            <p class="description" v-if="postData.seo_description">{{ postData.seo_description }}</p>
+            <p class="description" v-if="postData.seo_description">
+                {{ postData.seo_description }}
+            </p>
 
             <!-- 底部：分类 + 元信息 -->
             <div class="footer">
@@ -32,7 +34,7 @@
                 <div class="meta-row">
                     <span class="meta-item">
                         <j-icon name="time" custom-class="meta-icon" />
-                        <span>{{ formatTime(postData.created_at, "Asia/Shanghai", "YYYY-MM-DD") }}</span>
+                        <span>{{ formatTime(getPostDisplayTime(postData), "Asia/Shanghai", "YYYY-MM-DD") }}</span>
                     </span>
                     <span class="meta-item" v-if="postData.view_count && postData.view_count !== '0'">
                         <j-icon name="view" custom-class="meta-icon" />
@@ -51,7 +53,7 @@
 <script lang="ts" setup>
 import { computed } from "vue"
 
-import { type PostResPagination } from "@/api/post/common"
+import { getPostDisplayTime, type PostResPagination } from "@/api/post/common"
 import PostThumbnail from "@/components/common/post-thumbnail"
 import { formatTime } from "@/utils/dateTime"
 import { unit } from "@/utils/unit"
