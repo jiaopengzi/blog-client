@@ -13,6 +13,9 @@ import { RouteNames, type RouteNames as RouteName } from "@/router"
 import { MessageUtil } from "@/utils/message"
 import { type UpsertPostForm } from "./types"
 
+// 定时文章展示时间提醒容差，如果展示时间明显晚于当前时间（超过容差），则认为用户可能不清楚展示时间设置在未来，需要展示提醒。
+const FuturePostPushTimeTipToleranceMs = 1000
+
 export interface PostEditLoadErrorResolution {
     showNoPermission: boolean
     redirectRouteName?: RouteName
@@ -28,6 +31,29 @@ export function createDefaultPostPushTime(): PgSqlDateTime {
         Time: new Date(),
         Valid: true,
     }
+}
+
+/**
+ * 判断非定时文章是否需要展示未来展示时间提醒.
+ * @param postStatus 当前文章状态.
+ * @param postPushTime 当前展示时间.
+ * @param now 当前时间, 测试时可传入固定值.
+ * @returns true 表示展示时间明显晚于当前时间, 需要展示提醒.
+ */
+export function shouldShowFuturePostPushTimeTip(postStatus: PostStatusCode, postPushTime: Date | string | null | undefined, now: Date = new Date()): boolean {
+    if (postStatus === PostStatusCode.Future || !postPushTime) {
+        return false
+    }
+
+    const postPushTimeDate = new Date(postPushTime)
+    const postPushTimeMs = postPushTimeDate.getTime()
+    const nowMs = now.getTime()
+
+    if (Number.isNaN(postPushTimeMs) || Number.isNaN(nowMs)) {
+        return false
+    }
+
+    return postPushTimeMs - nowMs > FuturePostPushTimeTipToleranceMs
 }
 
 // 创建 empty InsertPostRequest

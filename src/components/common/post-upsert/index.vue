@@ -293,7 +293,7 @@ import { usePostUpsertLocalDraft } from "./useLocalDraft"
 import { usePostVideoToc } from "./usePostVideoToc"
 import { useSnapshot } from "./useSnapshot"
 import { useSwitchItem } from "./useSwitchItem"
-import { createEmptyUpsertPostForm, getPostEditNoPermissionResourceLabel } from "./utils"
+import { createEmptyUpsertPostForm, getPostEditNoPermissionResourceLabel, shouldShowFuturePostPushTimeTip } from "./utils"
 
 defineOptions({ name: "PostUpsert" })
 
@@ -325,12 +325,7 @@ const postInfoAboutTime = reactive<PostInfoAboutTime>({})
  * @returns true 表示需要展示轻量提醒.
  */
 const isShowFuturePostPushTimeTip = computed(() => {
-    if (postInfoForm.post_status === PostStatusCode.Future || !postInfoForm.post_push_time.Time) {
-        return false
-    }
-
-    const postPushTime = new Date(postInfoForm.post_push_time.Time)
-    return !Number.isNaN(postPushTime.getTime()) && postPushTime > new Date()
+    return shouldShowFuturePostPushTimeTip(postInfoForm.post_status, postInfoForm.post_push_time.Time)
 })
 
 /**

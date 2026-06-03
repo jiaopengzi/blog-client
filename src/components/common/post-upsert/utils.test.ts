@@ -8,11 +8,11 @@
 
 import { afterEach, describe, expect, it, vi } from "vitest"
 
-import { PostType } from "@/api/post/common"
+import { PostStatusCode, PostType } from "@/api/post/common"
 import { ResponseCode } from "@/api/response"
 import { RouteNames } from "@/router"
 
-import { createEmptyUpsertPostForm, getPostEditNoPermissionResourceLabel, resolvePostEditLoadError } from "./utils"
+import { createEmptyUpsertPostForm, getPostEditNoPermissionResourceLabel, resolvePostEditLoadError, shouldShowFuturePostPushTimeTip } from "./utils"
 
 afterEach(() => {
     vi.useRealTimers()
@@ -30,6 +30,27 @@ describe("post-upsert utils", () => {
             Time: now,
             Valid: true,
         })
+    })
+
+    it("非定时文章展示时间只晚于当前时间少量毫秒时不应提示", () => {
+        const now = new Date("2026-06-03T02:20:20.305Z")
+        const serverCreatedAt = new Date("2026-06-03T02:20:20.379Z")
+
+        expect(shouldShowFuturePostPushTimeTip(PostStatusCode.Draft, serverCreatedAt, now)).toBe(false)
+    })
+
+    it("非定时文章展示时间明显晚于当前时间时应提示", () => {
+        const now = new Date("2026-06-03T02:20:20.305Z")
+        const futurePostPushTime = new Date("2026-06-03T02:20:22.000Z")
+
+        expect(shouldShowFuturePostPushTimeTip(PostStatusCode.Draft, futurePostPushTime, now)).toBe(true)
+    })
+
+    it("定时文章展示时间晚于当前时间时不应显示非定时提醒", () => {
+        const now = new Date("2026-06-03T02:20:20.305Z")
+        const futurePostPushTime = new Date("2026-06-03T02:20:22.000Z")
+
+        expect(shouldShowFuturePostPushTimeTip(PostStatusCode.Future, futurePostPushTime, now)).toBe(false)
     })
 
     it("8306 应切换到无权限视图", () => {
