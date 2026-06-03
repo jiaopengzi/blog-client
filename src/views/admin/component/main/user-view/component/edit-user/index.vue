@@ -92,8 +92,7 @@
 
                 <el-form-item label="性别" prop="sex">
                     <el-radio-group v-model="editUserForm.sex" class="sex-group">
-                        <el-radio value="男">男</el-radio>
-                        <el-radio value="女">女</el-radio>
+                        <el-radio v-for="item in UserSexOptions" :key="item" :value="item">{{ item }}</el-radio>
                     </el-radio-group>
                 </el-form-item>
 
@@ -142,7 +141,7 @@ import { type Role } from "@/api/permissionRole/role"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { setAvatarAPI, type SetAvatarRequest } from "@/api/upload/setAvatar"
 import { editUserInfoByAdminAPI, type EditUserInfoByAdminRequest } from "@/api/user/editUserInfoByAdmin"
-import { type UserInfo, type UserQQ, type UserWechat } from "@/api/user/getUserInfo"
+import { type UserInfo, type UserQQ, type UserWechat, UserSexOptions } from "@/api/user/getUserInfo"
 import { getUserInfoByUserIDAPI, type GetUserInfoByUserIDRequest } from "@/api/user/getUserInfoByUserID"
 import { logoutByAdminAPI, type LogoutByAdminRequest } from "@/api/user/logoutByAdmin"
 import AvatarInitials from "@/components/common/avatar-initials"

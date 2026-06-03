@@ -84,9 +84,7 @@
 
                 <el-form-item label="性别" prop="sex">
                     <el-radio-group v-model="editForm.sex">
-                        <el-radio value="未知">未知</el-radio>
-                        <el-radio value="男">男</el-radio>
-                        <el-radio value="女">女</el-radio>
+                        <el-radio v-for="item in UserSexOptions" :key="item" :value="item">{{ item }}</el-radio>
                     </el-radio-group>
                 </el-form-item>
 
@@ -102,7 +100,7 @@
 </template>
 <script setup lang="ts">
 import { SocialLoginDisplay, SocialLoginType } from "@/api/common"
-import { SubscribeStatus } from "@/api/user/getUserInfo"
+import { SubscribeStatus, UserSexOptions } from "@/api/user/getUserInfo"
 import AvatarInitials from "@/components/common/avatar-initials"
 import AvatarUpload from "@/components/common/avatar-upload"
 import { useDevice } from "@/components/hooks/useDevice"

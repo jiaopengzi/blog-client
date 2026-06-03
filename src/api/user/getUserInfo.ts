@@ -41,6 +41,11 @@ export const getSubscribeStatusOptions = () => {
         }))
 }
 
+// 用户性别选项, 用于前台资料页和后台编辑用户页保持同源展示.
+export const UserSexOptions = ["未知", "男", "女"] as const
+
+export type UserSex = (typeof UserSexOptions)[number]
+
 // 用户信息
 export interface User {
     id: string
