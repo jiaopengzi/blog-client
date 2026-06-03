@@ -1,6 +1,6 @@
 # AGENTS.md
 
-> 说明：本文件将提供给自动化/Agent 编码助手使用。内容以“可执行命令 + 可验证约定”为主；命令/配置均来自仓库现有文件(package.json / vitest.config.ts / oxlint.config.ts / .prettierrc.js / tsconfig\*.json 等)。
+> 说明：本文件将提供给自动化/Agent 编码助手使用。内容以“可执行命令 + 可验证约定”为主；命令/配置均来自仓库现有文件(package.json / vitest.config.ts / oxlint.config.ts / .oxfmtrc.json / tsconfig\*.json 等)。
 
 ## 0. 初始化信息
 
@@ -9,7 +9,7 @@
 - 构建：Vite(`vite.config.ts`)
 - 类型检查：`vue-tsc`(`pnpm run type-check`)
 - Lint：`oxlint`(`pnpm run lint`)
-- 格式化：Prettier(`pnpm run format`，仅写入 `src/`)
+- 格式化：oxfmt(`pnpm run fmt`，仅写入 `src/`)
 - 测试：Vitest(`pnpm run test` / `pnpm run testOnline`)，环境 `jsdom`，全局 setup：`vitest.setup.ts`
 - 规则文件：未发现 `.cursor/`、`.cursorrules`、`.github/copilot-instructions.md`、`.editorconfig`、`CONTRIBUTING*`
 
@@ -62,22 +62,26 @@ Store 初始化: 首次路由跳转时 → `initStores()` (`src/stores/init.ts`)
 ## 3. 认证流程
 
 ### 登录
+
 1. 调用 `api/user/login.ts` POST 登录凭证
 2. 成功后 `userStore.setAccessToken(access_token)` 存储 token
 3. token 通过 `tabSyncManager` 广播到同域其他标签页
 4. 中间件 `auth.ts` 检测 `requiresAuth` 路由, 未登录跳转登录页
 
 ### Token 刷新
+
 1. Axios 请求拦截器 (`api/request/axios.ts`) 自动附加 `Authorization: Bearer <token>`
 2. 响应拦截器检测到需刷新 → 调用 `api/user/accessTokenRefresh.ts` (使用独立 axios 实例, 无拦截器)
 3. 刷新成功 → `userStore.setAccessToken(newToken)` → 重放挂起的请求队列
 4. `refreshTokenManager` 管理请求订阅者 (防止并发刷新)
 
 ### 多标签页同步
+
 - `api/request/tabSyncManager.ts` 实现跨标签页 token 同步
 - 使用 BroadcastChannel + localStorage 事件
 
 ### 登出
+
 1. 调用 `api/user/logout.ts`
 2. `tokenClearByLogout` 清除 token → 广播清除事件 → 路由跳转
 
@@ -118,8 +122,8 @@ pnpm type-check
 pnpm lint
 pnpm lint:fix
 
-# prettier --write src/
-pnpm format
+# oxfmt --write src/
+pnpm fmt
 
 # 单次运行(CI 风格)
 pnpm test
@@ -128,7 +132,7 @@ pnpm test
 pnpm testOnline
 ```
 
-补充：`.prettierignore` 会忽略 `dist/`、`node_modules/`、`coverage/`、`assets/` 等。
+补充：`.oxfmtrc.json` 的 `ignorePatterns` 会忽略 `dist/`、`node_modules/`、`coverage/`、`assets/` 等。
 
 ## 6. 运行单个测试(重点)
 
@@ -158,6 +162,7 @@ pnpm run test -- -t "格式化日期包含年月日时分秒和时区偏移"
 - `vitest.setup.ts`：集中放置全局 `vi.mock(...)`(如 `vue3-emoji-picker`、`@/router/router.ts` 等)；新增测试时尽量复用/补充到该文件
 
 ### 测试文件常见位置
+
 - `src/**/__tests__/**` (如 `src/components/common/date-range-shortcuts/__tests__/`)
 - `src/**/*.test.ts` (如 `src/utils/dateTime.test.ts`)
 - `src/pkg/codemirror/extension/mdlint/rule/__test__/**`
@@ -165,7 +170,7 @@ pnpm run test -- -t "格式化日期包含年月日时分秒和时区偏移"
 
 ## 8. 代码风格与约定(以现有配置为准)
 
-### 4.1 Prettier(`.prettierrc.js`)
+### 4.1 oxfmt(`.oxfmtrc.json`)
 
 - `semi: false`(不写分号)
 - `tabWidth: 4`、`useTabs: false`(4 空格缩进)
