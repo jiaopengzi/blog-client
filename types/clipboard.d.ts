@@ -14,7 +14,7 @@ declare module "clipboard" {
      * Base class which takes one or more elements, adds event listeners to them,
      * and instantiates a new `ClipboardAction` on each click.
      */
-    declare class ClipboardJS {
+    class ClipboardJS {
         constructor(selector: string | Element | NodeListOf<Element>, options?: ClipboardJS.Options)
 
         /**
@@ -48,7 +48,7 @@ declare module "clipboard" {
         static cut(target: string | Element): string
     }
 
-    declare namespace ClipboardJS {
+    namespace ClipboardJS {
         interface Options {
             /**
              * Overwrites default command ('cut' or 'copy').

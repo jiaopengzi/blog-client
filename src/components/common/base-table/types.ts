@@ -177,7 +177,7 @@ export interface BaseTableGridProps {
 export interface TableVisibleStoreReadable {
     store?: {
         states?: {
-            data?: TableData[] | { value?: TableData[] }
+            data?: unknown[] | { value?: unknown[] }
         }
     }
 }

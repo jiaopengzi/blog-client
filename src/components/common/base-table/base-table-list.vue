@@ -91,7 +91,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { ElTable } from "element-plus"
+import type { TableInstance } from "element-plus"
 import { useTemplateRef } from "vue"
 
 import type { PostCategory } from "@/api/postCategory/view"
@@ -118,7 +118,7 @@ const emit = defineEmits<{
     (event: "view-post", postID: string): void
 }>()
 
-const tableRef = useTemplateRef<InstanceType<typeof ElTable>>("tableRef")
+const tableRef = useTemplateRef<TableInstance>("tableRef")
 
 /**
  * @description: 向父层同步表格选中行.

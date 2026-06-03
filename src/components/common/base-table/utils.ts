@@ -120,11 +120,11 @@ export function getElTableVisibleRows(records: TableData[], tableInstance: Table
     const tableStoreData = tableInstance?.store?.states?.data
 
     if (Array.isArray(tableStoreData)) {
-        return tableStoreData
+        return tableStoreData as TableData[]
     }
 
     if (Array.isArray(tableStoreData?.value)) {
-        return tableStoreData.value
+        return tableStoreData.value as TableData[]
     }
 
     return records
