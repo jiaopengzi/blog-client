@@ -45,7 +45,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, nextTick, onMounted, reactive, ref, useTemplateRef, watch } from "vue"
+import { useResizeObserver } from "@vueuse/core"
+import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, useTemplateRef, watch } from "vue"
 
 import { unitNumber } from "@/utils/unit"
 
@@ -100,9 +101,10 @@ const hasData = computed(() => {
 const chartContainer = useTemplateRef<HTMLDivElement>("chartContainer")
 const bars = useTemplateRef<HTMLDivElement>("bars")
 const barRefs = reactive<{ [key: number]: HTMLDivElement | undefined }>({})
+let resizeFrameId: number | null = null
 
 /**
- * 根据数字的位数, 向上取整到最近的 整十 / 整百 / 整千 ...
+ * 根据数字的位数, 向上取整到最近的整十, 整百, 整千.
  */
 function roundUpByDigitCount(num: number): number {
     const numStr = Math.abs(num).toString() // 支持负数, 取绝对值计算位数
@@ -146,7 +148,9 @@ const yTicks = computed(() => {
     return ticks
 })
 
-// 动画效果
+/**
+ * 为柱状图播放入场动画.
+ */
 const animateBars = () => {
     if (!bars.value || !barRefs) return
 
@@ -173,12 +177,16 @@ const animateBars = () => {
     })
 }
 
-// 处理柱子点击事件
+/**
+ * 处理柱子点击事件.
+ */
 const handleBarClick = (item: BarItem) => {
     emit("bar-click", item)
 }
 
-// 设置图表容器的宽高 CSS 变量
+/**
+ * 设置图表容器使用的宽高 CSS 变量.
+ */
 const setChartContainerCssVars = (width: number, height: number) => {
     if (chartContainer.value) {
         // 在 chartContainer 上设置高度和宽度的 css 变量
@@ -187,7 +195,9 @@ const setChartContainerCssVars = (width: number, height: number) => {
     }
 }
 
-// 计算并设置 CSS 变量
+/**
+ * 根据容器当前可用宽度, 重新计算图表布局变量.
+ */
 const calcCssVars = () => {
     if (!chartContainer.value || !bars.value) {
         // 容器未就绪时设置默认值
@@ -222,12 +232,39 @@ const calcCssVars = () => {
     bars.value.style.setProperty("--bar-width", `${barWidth}px`)
 }
 
-// 绘制图表
-const draw = async () => {
+/**
+ * 同步图表布局, 仅重算尺寸相关样式.
+ */
+const syncChartLayout = async () => {
     await nextTick()
     calcCssVars()
+}
+
+/**
+ * 绘制图表, 包含布局计算与柱子动画.
+ */
+const draw = async () => {
+    await syncChartLayout()
     animateBars()
 }
+
+/**
+ * 合并连续的容器尺寸变化, 避免重复重算布局.
+ */
+const scheduleLayoutSync = () => {
+    if (resizeFrameId !== null) {
+        window.cancelAnimationFrame(resizeFrameId)
+    }
+
+    resizeFrameId = window.requestAnimationFrame(() => {
+        resizeFrameId = null
+        void syncChartLayout()
+    })
+}
+
+const { stop: stopChartResizeObserver } = useResizeObserver(chartContainer, () => {
+    scheduleLayoutSync()
+})
 
 // 监听 data 变化
 watch(
@@ -241,6 +278,15 @@ watch(
 
 onMounted(async () => {
     await draw()
+})
+
+onBeforeUnmount(() => {
+    stopChartResizeObserver()
+
+    if (resizeFrameId !== null) {
+        window.cancelAnimationFrame(resizeFrameId)
+        resizeFrameId = null
+    }
 })
 </script>
 
