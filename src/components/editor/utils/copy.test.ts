@@ -295,4 +295,51 @@ describe("materializeListMarkersForCopy", () => {
 
         document.body.removeChild(container)
     })
+
+    it("blockquote 同时命中 border reset 和 border-left 时, 复制结果仍保留左边框宽度与样式", async () => {
+        const style = document.createElement("style")
+        style.textContent = `
+            #preview blockquote,
+            #preview blockquote p,
+            #preview blockquote strong {
+                margin: 0;
+                padding: 0;
+                border: 0;
+                font: inherit;
+                vertical-align: baseline;
+            }
+
+            #preview blockquote {
+                margin: 16px 0;
+                padding: 12px 16px;
+                border-left: 4px solid rgb(255, 102, 102);
+                background-color: rgb(242, 243, 245);
+                border-radius: 4px;
+            }
+
+            #preview blockquote p {
+                margin: 12px 0;
+                text-indent: 0;
+            }
+        `
+        document.head.appendChild(style)
+
+        const element = document.createElement("div")
+        element.id = "preview"
+        element.innerHTML = "<blockquote><p>引用内容</p></blockquote>"
+        document.body.appendChild(element)
+
+        const preparedHtml = await prepareCopyWithCustomStyle(element)
+        const container = document.createElement("div")
+        container.innerHTML = preparedHtml
+        const blockquote = container.querySelector("blockquote") as HTMLQuoteElement
+        const blockquoteStyle = blockquote.getAttribute("style") ?? ""
+
+        expect(blockquoteStyle).toContain("border-left-width: 4px")
+        expect(blockquoteStyle).toContain("border-left-style: solid")
+        expect(blockquoteStyle).toContain("border-left-color: rgb(255, 102, 102)")
+
+        document.body.removeChild(element)
+        document.head.removeChild(style)
+    })
 })

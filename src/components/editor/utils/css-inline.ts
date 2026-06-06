@@ -141,29 +141,49 @@ export function applyBorderLonghandsFromComputedStyle(
     computedStyle: FilteredStyles,
 ): void {
     const sides = new Set<"top" | "right" | "bottom" | "left">()
+    const borderSideLonghandRegex = /^border-(top|right|bottom|left)-(width|style|color)$/
 
     for (const property of Object.keys(inlineStyleRecord)) {
         if (property === "border") {
             sides.add("top").add("right").add("bottom").add("left")
         } else if (BORDER_SIDE_SHORTHAND[property]) {
             sides.add(BORDER_SIDE_SHORTHAND[property])
+        } else {
+            const match = property.match(borderSideLonghandRegex)
+            if (match && match[1]) {
+                sides.add(match[1] as "top" | "right" | "bottom" | "left")
+            }
         }
     }
 
     for (const side of sides) {
-        const width = computedStyle[`border-${side}-width`] ?? ""
-        const style = computedStyle[`border-${side}-style`] ?? ""
-        const color = computedStyle[`border-${side}-color`] ?? ""
+        const sideWidthProperty = `border-${side}-width`
+        const sideStyleProperty = `border-${side}-style`
+        const sideColorProperty = `border-${side}-color`
+        const sideShorthandProperty = `border-${side}`
+        let width = computedStyle[sideWidthProperty] ?? ""
+        let style = computedStyle[sideStyleProperty] ?? ""
+        let color = computedStyle[sideColorProperty] ?? ""
 
-        const normalizedWidth = normalizeValue(`border-${side}-width`, width)
+        const shorthandValue = inlineStyleRecord[sideShorthandProperty] || inlineStyleRecord.border
+        if (shorthandValue) {
+            const parser = document.createElement("div")
+            parser.style.setProperty(sideShorthandProperty, shorthandValue)
+
+            width = parser.style.getPropertyValue(sideWidthProperty) || width
+            style = parser.style.getPropertyValue(sideStyleProperty) || style
+            color = parser.style.getPropertyValue(sideColorProperty) || color
+        }
+
+        const normalizedWidth = normalizeValue(sideWidthProperty, width)
         const widthNum = parseFloat(normalizedWidth)
         if (!normalizedWidth || !Number.isFinite(widthNum) || widthNum <= 0) continue
         if (!style || style === "none" || style === "hidden") continue
 
-        clonedEl.style.setProperty(`border-${side}-width`, normalizedWidth)
-        clonedEl.style.setProperty(`border-${side}-style`, style)
+        clonedEl.style.setProperty(sideWidthProperty, normalizedWidth)
+        clonedEl.style.setProperty(sideStyleProperty, style)
         if (color) {
-            clonedEl.style.setProperty(`border-${side}-color`, color)
+            clonedEl.style.setProperty(sideColorProperty, color)
         }
     }
 }
@@ -196,11 +216,22 @@ export function applyInlineStylesToElement(
     const isHeading = isHeadingElement(originalEl)
 
     const inlineStyleRecord = getInlineStyleRecord(clonedEl, matchedRules, isPreCode, applyContext)
+    const hasBorderSideDefinition = Object.keys(inlineStyleRecord).some((property) => {
+        if (property === "border" || BORDER_SIDE_SHORTHAND[property]) {
+            return true
+        }
+
+        return /^border-(top|right|bottom|left)-(width|style|color)$/.test(property)
+    })
 
     Object.keys(inlineStyleRecord).forEach((property) => {
         const cssStyleValue = inlineStyleRecord[property]
 
         if (isShorthand(property)) {
+            return
+        }
+
+        if (hasBorderSideDefinition && /^border-(width|style|color)$/.test(property)) {
             return
         }
 

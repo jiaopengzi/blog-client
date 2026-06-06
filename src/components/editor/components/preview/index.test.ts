@@ -6,15 +6,18 @@ import { CommandsKey } from "@/components/editor/command"
 import { stableHtmlDirective } from "@/utils/stableHtmlDirective"
 
 const {
+    copiedTargets,
     debounceMock,
     useResizeObserverMock,
     useIntersectionObserverMock,
     mountPayContentOnCustomElementsMock,
+    preparedCopyTargets,
     prepareCopyWithCustomStyleMock,
     writePreparedHtmlToClipboardMock,
     scaleDisplayKatexByFontSizeMock,
     copyWithCustomStyleMock,
 } = vi.hoisted(() => ({
+    copiedTargets: [] as HTMLElement[],
     debounceMock: vi.fn((_: number, callback: () => void) => callback),
     useResizeObserverMock: vi.fn(() => ({
         stop: vi.fn(),
@@ -23,10 +26,25 @@ const {
         stop: vi.fn(),
     })),
     mountPayContentOnCustomElementsMock: vi.fn(),
-    prepareCopyWithCustomStyleMock: vi.fn(async () => "prepared-html"),
+    preparedCopyTargets: [] as HTMLElement[],
+    prepareCopyWithCustomStyleMock: vi.fn(async (...args: unknown[]) => {
+        const [element] = args as [HTMLElement | undefined]
+        if (element) {
+            preparedCopyTargets.push(element)
+        }
+
+        return "prepared-html"
+    }),
     writePreparedHtmlToClipboardMock: vi.fn(async () => undefined),
     scaleDisplayKatexByFontSizeMock: vi.fn(),
-    copyWithCustomStyleMock: vi.fn(async () => undefined),
+    copyWithCustomStyleMock: vi.fn(async (...args: unknown[]) => {
+        const [element] = args as [HTMLElement | undefined]
+        if (element) {
+            copiedTargets.push(element)
+        }
+
+        return undefined
+    }),
 }))
 
 vi.mock("throttle-debounce", () => ({
@@ -79,6 +97,8 @@ describe("HtmlPreview", () => {
         useIntersectionObserverMock.mockClear()
         mountPayContentOnCustomElementsMock.mockClear()
         prepareCopyWithCustomStyleMock.mockClear()
+        copiedTargets.length = 0
+        preparedCopyTargets.length = 0
         writePreparedHtmlToClipboardMock.mockClear()
         scaleDisplayKatexByFontSizeMock.mockClear()
         copyWithCustomStyleMock.mockClear()
@@ -116,7 +136,33 @@ describe("HtmlPreview", () => {
         expect(prepareCopyWithCustomStyleMock).toHaveBeenCalledTimes(1)
     })
 
-    it("未命中缓存时仍允许手动复制", async () => {
+    it("web 预览启用复制缓存时优先使用 wechat staging 节点", async () => {
+        mount(HtmlPreview, {
+            props: {
+                html: "<p>preview content</p>",
+                imgUrls: [],
+                isShowElImageViewer: false,
+                isEnableCopyCache: true,
+                isShowPreviewWechat: false,
+                viewCommand: {
+                    commandName: "" as CommandsKey,
+                    time: new Date(),
+                },
+            },
+            global: {
+                directives: {
+                    "stable-html": stableHtmlDirective,
+                },
+            },
+        })
+
+        await waitForAsyncRender()
+
+        expect(prepareCopyWithCustomStyleMock).toHaveBeenCalledTimes(1)
+        expect(preparedCopyTargets[0]?.id).toBe("preview-copy")
+    })
+
+    it("未挂载 wechat staging 节点时, 仍回退到当前 web 预览执行手动复制", async () => {
         const wrapper = mount(HtmlPreview, {
             props: {
                 html: "<p>preview content</p>",
@@ -146,6 +192,7 @@ describe("HtmlPreview", () => {
 
         await waitForAsyncRender()
         expect(copyWithCustomStyleMock).toHaveBeenCalledTimes(1)
+        expect(copiedTargets[0]?.id).toBe("preview")
         expect(writePreparedHtmlToClipboardMock).not.toHaveBeenCalled()
     })
 
