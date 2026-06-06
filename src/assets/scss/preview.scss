@@ -519,6 +519,19 @@
             // 首行不缩进
             text-indent: 0;
         }
+
+        p,
+        li,
+        strong,
+        em,
+        del,
+        a {
+            color: inherit;
+        }
+
+        a {
+            text-decoration-color: currentColor;
+        }
     }
 
     // 警告标题
@@ -536,6 +549,7 @@
 
     // note
     .markdown-alert-note {
+        color: var(--markdown-alert-note-color);
         border: 1px solid var(--markdown-alert-note-border-color);
         background-color: var(--markdown-alert-note-bg-color);
         border: none;
@@ -547,13 +561,11 @@
                 fill: var(--markdown-alert-note-svg-fill-color);
             }
         }
-        p {
-            color: var(--markdown-alert-note-color);
-        }
     }
 
     // tip
     .markdown-alert-tip {
+        color: var(--markdown-alert-tip-color);
         border: 1px solid var(--markdown-alert-tip-border-color);
         background-color: var(--markdown-alert-tip-bg-color);
 
@@ -564,13 +576,11 @@
                 fill: var(--markdown-alert-tip-svg-fill-color);
             }
         }
-        p {
-            color: var(--markdown-alert-tip-color);
-        }
     }
 
     // important
     .markdown-alert-important {
+        color: var(--markdown-alert-important-color);
         border: 1px solid var(--markdown-alert-important-border-color);
         background-color: var(--markdown-alert-important-bg-color);
 
@@ -581,13 +591,11 @@
                 fill: var(--markdown-alert-important-svg-fill-color);
             }
         }
-        p {
-            color: var(--markdown-alert-important-color);
-        }
     }
 
     // warning
     .markdown-alert-warning {
+        color: var(--markdown-alert-warning-color);
         border: 1px solid var(--markdown-alert-warning-border-color);
         background-color: var(--markdown-alert-warning-bg-color);
 
@@ -597,9 +605,6 @@
             svg {
                 fill: var(--markdown-alert-warning-svg-fill-color);
             }
-        }
-        p {
-            color: var(--markdown-alert-warning-color);
         }
     }
 
@@ -615,9 +620,6 @@
             svg {
                 fill: var(--markdown-alert-caution-svg-fill-color);
             }
-        }
-        p {
-            color: var(--markdown-alert-caution-color);
         }
     }
 

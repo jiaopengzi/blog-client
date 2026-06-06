@@ -38,6 +38,16 @@ describe("cssExample", () => {
         expect(result).toContain("#preview h1 {")
     })
 
+    it("应让 markdown alert 内联元素继承提示块颜色", () => {
+        const result = cssExample()
+
+        expect(result).toContain("#preview .markdown-alert strong,")
+        expect(result).toContain("#preview .markdown-alert a {")
+        expect(result).toContain("text-decoration-color: currentColor;")
+        expect(result).toContain("#preview .markdown-alert-tip {")
+        expect(result).toContain("color: var(--markdown-alert-tip-color);")
+    })
+
     it("支持传入局部预览根选择器", () => {
         const result = cssExample(".md-page-preview")
 

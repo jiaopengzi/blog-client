@@ -620,6 +620,19 @@ const ARTICLE_CSS_EXAMPLE = `
   text-indent: 0;
 }
 
+#preview .markdown-alert p,
+#preview .markdown-alert li,
+#preview .markdown-alert strong,
+#preview .markdown-alert em,
+#preview .markdown-alert del,
+#preview .markdown-alert a {
+  color: inherit;
+}
+
+#preview .markdown-alert a {
+  text-decoration-color: currentColor;
+}
+
 /**
  * 提示块标题行.
  * 通常会包含一个图标和标题文字.
@@ -639,6 +652,7 @@ const ARTICLE_CSS_EXAMPLE = `
  * note 提示块.
  */
 #preview .markdown-alert-note {
+  color: var(--markdown-alert-note-color);
   border: none;
   background-color: var(--markdown-alert-note-bg-color);
 }
@@ -651,14 +665,11 @@ const ARTICLE_CSS_EXAMPLE = `
   fill: var(--markdown-alert-note-svg-fill-color);
 }
 
-#preview .markdown-alert-note p {
-  color: var(--markdown-alert-note-color);
-}
-
 /**
  * tip 提示块.
  */
 #preview .markdown-alert-tip {
+  color: var(--markdown-alert-tip-color);
   border: 1px solid var(--markdown-alert-tip-border-color);
   background-color: var(--markdown-alert-tip-bg-color);
 }
@@ -671,14 +682,11 @@ const ARTICLE_CSS_EXAMPLE = `
   fill: var(--markdown-alert-tip-svg-fill-color);
 }
 
-#preview .markdown-alert-tip p {
-  color: var(--markdown-alert-tip-color);
-}
-
 /**
  * important 提示块.
  */
 #preview .markdown-alert-important {
+  color: var(--markdown-alert-important-color);
   border: 1px solid var(--markdown-alert-important-border-color);
   background-color: var(--markdown-alert-important-bg-color);
 }
@@ -691,14 +699,11 @@ const ARTICLE_CSS_EXAMPLE = `
   fill: var(--markdown-alert-important-svg-fill-color);
 }
 
-#preview .markdown-alert-important p {
-  color: var(--markdown-alert-important-color);
-}
-
 /**
  * warning 提示块.
  */
 #preview .markdown-alert-warning {
+  color: var(--markdown-alert-warning-color);
   border: 1px solid var(--markdown-alert-warning-border-color);
   background-color: var(--markdown-alert-warning-bg-color);
 }
@@ -709,10 +714,6 @@ const ARTICLE_CSS_EXAMPLE = `
 
 #preview .markdown-alert-warning .markdown-alert-title svg {
   fill: var(--markdown-alert-warning-svg-fill-color);
-}
-
-#preview .markdown-alert-warning p {
-  color: var(--markdown-alert-warning-color);
 }
 
 /**
@@ -730,10 +731,6 @@ const ARTICLE_CSS_EXAMPLE = `
 
 #preview .markdown-alert-caution .markdown-alert-title svg {
   fill: var(--markdown-alert-caution-svg-fill-color);
-}
-
-#preview .markdown-alert-caution p {
-  color: var(--markdown-alert-caution-color);
 }
 
 /**
