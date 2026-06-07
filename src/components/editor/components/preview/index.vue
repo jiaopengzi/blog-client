@@ -474,14 +474,39 @@ const handleDelegateClick = async (event: MouseEvent) => {
 // 复制代码
 const handlePreCopy = async (preElement: HTMLPreElement) => {
     if (!preElement) return
-    const textContent = preElement.textContent
+    const textContent = normalizePreCodeCopyText(preElement)
     if (textContent) {
         // 复制文本到剪贴板
-        await copyText(textContent.trim())
+        await copyText(textContent)
         MessageUtil.success("已复制到剪贴板！")
     } else {
         MessageUtil.error("复制失败，内容为空！")
     }
+}
+
+/**
+ * @description: 将预览代码块 DOM 还原为可复制的源码文本, 避免空行占位符污染源码.
+ * @param preElement 代码块 pre 元素.
+ * @return 还原后的源码文本.
+ */
+const normalizePreCodeCopyText = (preElement: HTMLPreElement): string => {
+    const codeLines = Array.from(preElement.children).filter((element): element is HTMLElement => {
+        return element instanceof HTMLElement && element.tagName.toLowerCase() === "code"
+    })
+
+    if (codeLines.length === 0) {
+        return (preElement.textContent ?? "").replace(/\u00a0/g, "")
+    }
+
+    return codeLines
+        .map((codeLine) => {
+            if (codeLine.dataset.emptyLine === "true") {
+                return ""
+            }
+
+            return (codeLine.textContent ?? "").replace(/\u00a0/g, " ")
+        })
+        .join("\n")
 }
 
 // 锁定/解锁页面滚动时使用的样式备份

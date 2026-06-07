@@ -7,7 +7,11 @@ import { stableHtmlDirective } from "@/utils/stableHtmlDirective"
 
 const {
     copiedTargets,
+    copyTextMock,
     debounceMock,
+    messageErrorMock,
+    messageInfoWaitNextMock,
+    messageSuccessMock,
     useResizeObserverMock,
     useIntersectionObserverMock,
     mountPayContentOnCustomElementsMock,
@@ -18,7 +22,11 @@ const {
     copyWithCustomStyleMock,
 } = vi.hoisted(() => ({
     copiedTargets: [] as HTMLElement[],
+    copyTextMock: vi.fn(async () => undefined),
     debounceMock: vi.fn((_: number, callback: () => void) => callback),
+    messageErrorMock: vi.fn(),
+    messageInfoWaitNextMock: vi.fn(),
+    messageSuccessMock: vi.fn(),
     useResizeObserverMock: vi.fn(() => ({
         stop: vi.fn(),
     })),
@@ -61,6 +69,18 @@ vi.mock("@vueuse/core", async (importOriginal) => {
     }
 })
 
+vi.mock("@/utils/clipboard", () => ({
+    copyText: copyTextMock,
+}))
+
+vi.mock("@/utils/message", () => ({
+    MessageUtil: {
+        error: messageErrorMock,
+        infoWaitNext: messageInfoWaitNextMock,
+        success: messageSuccessMock,
+    },
+}))
+
 vi.mock("@/customElementsMount", () => ({
     mountPayContentOnCustomElements: mountPayContentOnCustomElementsMock,
 }))
@@ -98,6 +118,10 @@ describe("HtmlPreview", () => {
         mountPayContentOnCustomElementsMock.mockClear()
         prepareCopyWithCustomStyleMock.mockClear()
         copiedTargets.length = 0
+        copyTextMock.mockClear()
+        messageErrorMock.mockClear()
+        messageInfoWaitNextMock.mockClear()
+        messageSuccessMock.mockClear()
         preparedCopyTargets.length = 0
         writePreparedHtmlToClipboardMock.mockClear()
         scaleDisplayKatexByFontSizeMock.mockClear()
@@ -298,5 +322,37 @@ describe("HtmlPreview", () => {
 
         expect(previewElement.style.getPropertyValue("--jpz-codemirror-width")).toBe("75%")
         expect(previewElement.style.getPropertyValue("--jpz-codemirror-height")).toBe("480px")
+    })
+
+    it("点击代码块复制按钮时会还原空行占位符并保留源码换行", async () => {
+        const wrapper = mount(HtmlPreview, {
+            props: {
+                html: [
+                    '<section class="pre-code-container">',
+                    '<button type="button" class="copy-button">BASH</button>',
+                    '<pre class="pre-code pre-code_nowrap language-bash" data-lang="bash">',
+                    '<code data-empty-line="true">&nbsp;</code>',
+                    "<code>first&nbsp;line</code>",
+                    '<code data-empty-line="true">&nbsp;</code>',
+                    "<code>third&nbsp;line</code>",
+                    "</pre>",
+                    "</section>",
+                ].join(""),
+                imgUrls: [],
+                isShowElImageViewer: false,
+            },
+            global: {
+                directives: {
+                    "stable-html": stableHtmlDirective,
+                },
+            },
+        })
+
+        await waitForAsyncRender()
+
+        await wrapper.get(".copy-button").trigger("click")
+
+        expect(copyTextMock).toHaveBeenCalledWith("\nfirst line\n\nthird line")
+        expect(messageSuccessMock).toHaveBeenCalledWith("已复制到剪贴板！")
     })
 })

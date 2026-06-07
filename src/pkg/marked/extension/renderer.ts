@@ -227,8 +227,13 @@ function constructWeChatPreCode(htmlStr: string): string {
         // 转义代码行中的内容部分的空白字符, 保证在主站和微信中显示一致
         item = escapeWhitespaceInHtmlContent(item)
 
-        const codeLineContent = item === "" ? "&nbsp;" : item
-        wechatPreCode = wechatPreCode + `<code>${codeLineContent}</code>\n`
+        if (item === "") {
+            wechatPreCode = wechatPreCode + '<code data-empty-line="true">&nbsp;</code>\n'
+            lineNumber += 1
+            return
+        }
+
+        wechatPreCode = wechatPreCode + `<code>${item}</code>\n`
         lineNumber += 1
     })
 

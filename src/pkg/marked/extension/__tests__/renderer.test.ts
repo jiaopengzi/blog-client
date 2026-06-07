@@ -48,8 +48,8 @@ describe("renderer.code - 代码块渲染", () => {
     it("会保留代码块中的首行空行和中间空行", () => {
         const result = renderer.code({ text: "\nfirst line\n\nthird line", lang: "bash", escaped: false } as Tokens.Code)
 
-        expect(result.match(/<code>/g)).toHaveLength(4)
-        expect(result).toContain("<code>&nbsp;</code>")
+        expect(result.match(/<code\b/g)).toHaveLength(4)
+        expect(result).toContain('<code data-empty-line="true">&nbsp;</code>')
         expect(result).toContain("<code>first&nbsp;line</code>")
         expect(result).toContain("<code>third&nbsp;line</code>")
     })
