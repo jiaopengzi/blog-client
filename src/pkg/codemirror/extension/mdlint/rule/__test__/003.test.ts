@@ -30,4 +30,11 @@ describe("rule003 - 标题级别跳跃检测", () => {
         expect(d.to).toBe(6) // '###' 长度 3
         expect(d.source).toBe(id)
     })
+
+    it("fenced code block 内的井号文本不应参与标题级别校验", () => {
+        const doc = makeDoc(["# A", "```bash", "### B", "```", "## C"])
+        const diags = run(doc as unknown as DocLike)
+
+        expect(diags).toHaveLength(0)
+    })
 })

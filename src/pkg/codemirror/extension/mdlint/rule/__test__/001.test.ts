@@ -66,4 +66,11 @@ describe("rule001 - 检测行尾多余空格", () => {
             source: id,
         })
     })
+
+    it("fenced code block 内的行尾空格不应触发 lint", () => {
+        const doc = makeDoc(["```bash", "echo hello  ", "```"])
+        const diags = run(doc as unknown as DocLike)
+
+        expect(diags).toHaveLength(0)
+    })
 })

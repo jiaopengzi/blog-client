@@ -199,37 +199,41 @@ function constructWeChatPreCode(htmlStr: string): string {
     const regexEnd = /<\/code><\/pre>/ // 正则匹配 pre 结束标签
     let lineNumber = 0 // 行号计数器
 
-    lines.forEach((item) => {
-        if (item) {
-            const matchStart = item.match(regexStart)
-            const matchEnd = item.match(regexEnd)
-            if (matchStart) {
-                item = item.replace(matchStart[0], "") // 删除 pre 开始标签
-                const matchLang = matchStart[0].match(regexLang) // 匹配 pre 代码块语言
-                if (matchLang) {
-                    wechatPreCodeLang = matchLang[0] // 保存 pre 代码块语言
-                }
-            }
+    lines.forEach((item, index) => {
+        const matchStart = item.match(regexStart)
+        const matchEnd = item.match(regexEnd)
+        const isTrailingSplitEmptyLine = item === "" && !matchStart && !matchEnd && index === lines.length - 1
 
-            if (matchEnd) {
-                item = item.replace(matchEnd[0], "") // 删除 pre 结束标签
-
-                if (item === "") {
-                    return // 保证最后一行不是多余的空行
-                }
-            }
-
-            // 转义代码行中的内容部分的空白字符, 保证在主站和微信中显示一致
-            item = escapeWhitespaceInHtmlContent(item)
-
-            item = `<code>${item}</code>\n` // 拼接 code 标签
-            wechatPreCode = wechatPreCode + item
-            lineNumber += 1
+        if (isTrailingSplitEmptyLine) {
+            return
         }
+
+        if (matchStart) {
+            item = item.replace(matchStart[0], "") // 删除 pre 开始标签
+            const matchLang = matchStart[0].match(regexLang) // 匹配 pre 代码块语言
+            if (matchLang) {
+                wechatPreCodeLang = matchLang[0] // 保存 pre 代码块语言
+            }
+        }
+
+        if (matchEnd) {
+            item = item.replace(matchEnd[0], "") // 删除 pre 结束标签
+
+            if (item === "") {
+                return // 保证最后一行不是多余的空行
+            }
+        }
+
+        // 转义代码行中的内容部分的空白字符, 保证在主站和微信中显示一致
+        item = escapeWhitespaceInHtmlContent(item)
+
+        const codeLineContent = item === "" ? "&nbsp;" : item
+        wechatPreCode = wechatPreCode + `<code>${codeLineContent}</code>\n`
+        lineNumber += 1
     })
 
     // 计算行号宽度，最小宽度 2em
-    const lineNumberWidth = lineNumber.toString().length * 1 || 2
+    const lineNumberWidth = Math.max(lineNumber.toString().length, 2)
 
     // 微信代码块行号类名 code-snippet code-snippet_nowrap; 不要添加 code-snippet__js, 会操作样式丢失
     const tagStart = `<section class="pre-code-container" style="--line-number-width: ${lineNumberWidth}em;">`

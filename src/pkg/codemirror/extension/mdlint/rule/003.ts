@@ -9,6 +9,7 @@
 import type { Diagnostic } from "@codemirror/lint"
 
 import type { DocLike } from "../types"
+import { collectFencedCodeLineNumbers } from "../utils"
 
 export const id = "rule003"
 export const defaultOptions = {}
@@ -21,10 +22,15 @@ export const defaultOptions = {}
 export function run(doc: DocLike): Diagnostic[] {
     const diagnostics: Diagnostic[] = []
     const lineCount = doc.lines
+    const fencedLineNumbers = collectFencedCodeLineNumbers(doc)
     let prevHeadingLevel = 0
 
     // 遍历每一行, 匹配 Markdown 标题语法并比较级别
     for (let i = 1; i <= lineCount; i++) {
+        if (fencedLineNumbers.has(i)) {
+            continue
+        }
+
         const line = doc.line(i)
         const text = line.text
         const from = line.from

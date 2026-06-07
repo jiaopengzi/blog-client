@@ -8,7 +8,7 @@
 
 import { describe, expect, it } from "vitest"
 
-import { autoFixMarkdownText } from "./service"
+import { autoFixMarkdownText, lintMarkdownText } from "./service"
 
 const markdownRules = {
     rule002: false,
@@ -134,6 +134,29 @@ describe("mdlint service", () => {
 
         expect(result.changed).toBe(true)
         expect(result.fixedText).toBe("第一行\n第二行\n第三行")
+    })
+
+    it("不会格式化 fenced code block 中的空行, 标题和行尾空白", () => {
+        const source = ["```bash", "", "# 1. 下载部署工具  ", "curl -fsSL -o blog-tool.sh https://example.com/tool.sh", "", "```"].join("\n")
+        const result = autoFixMarkdownText(source, { rules: markdownRules })
+
+        expect(result.changed).toBe(false)
+        expect(result.fixedText).toBe(source)
+    })
+
+    it("不会对 fenced code block 内的内容执行 lint 校验", () => {
+        const source = [
+            "# 标题",
+            "",
+            "```bash",
+            "# 1. 下载部署工具  ",
+            "curl -fsSL -o blog-tool.sh https://gitee.com/jiaopengzi/blog-tool/raw/main/dist/blog-tool.sh",
+            "### 伪标题",
+            "```",
+        ].join("\n")
+        const result = lintMarkdownText(source)
+
+        expect(result).toHaveLength(0)
     })
 
     it("已符合规范的文档不会产生变更", () => {

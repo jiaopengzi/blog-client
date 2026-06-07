@@ -9,6 +9,7 @@
 import type { Diagnostic } from "@codemirror/lint"
 
 import type { DocLike } from "../types"
+import { collectFencedCodeLineNumbers } from "../utils"
 
 export const id = "rule002"
 export const defaultOptions = { maxLineLength: 120 }
@@ -23,9 +24,14 @@ export function run(doc: DocLike, opts: { maxLineLength?: number } = {}): Diagno
     const diagnostics: Diagnostic[] = []
     const maxLineLength = opts.maxLineLength ?? defaultOptions.maxLineLength
     const lineCount = doc.lines
+    const fencedLineNumbers = collectFencedCodeLineNumbers(doc)
 
     // 遍历每一行, 若长度超过 maxLineLength, 则记录 Diagnostic
     for (let i = 1; i <= lineCount; i++) {
+        if (fencedLineNumbers.has(i)) {
+            continue
+        }
+
         const line = doc.line(i)
         const text = line.text
         const from = line.from

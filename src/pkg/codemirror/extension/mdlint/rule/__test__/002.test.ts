@@ -39,6 +39,13 @@ describe("rule002 - 检测行长度限制", () => {
         const diags = run(doc as unknown as DocLike, { maxLineLength: 3 })
         expect(diags).toHaveLength(2)
     })
+
+    it("fenced code block 内的超长命令不应触发 lint", () => {
+        const doc = makeDoc(["```bash", "curl -fsSL -o blog-tool.sh https://gitee.com/jiaopengzi/blog-tool/raw/main/dist/blog-tool.sh", "```"])
+        const diags = run(doc as unknown as DocLike, { maxLineLength: 20 })
+
+        expect(diags).toHaveLength(0)
+    })
 })
 
 export default {}

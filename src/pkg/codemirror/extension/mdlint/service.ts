@@ -10,7 +10,7 @@ import type { Diagnostic } from "@codemirror/lint"
 
 import { loadEagerRules } from "./ruleRegistry"
 import type { DocLike, MarkdownLinterOptions, RuleDefinition } from "./types"
-import { buildDocFromText } from "./utils"
+import { buildDocFromText, collectFencedCodeLineNumbers } from "./utils"
 
 const RULES: RuleDefinition<unknown>[] = loadEagerRules()
 const MAX_AUTO_FIX_PASSES = 10
@@ -98,11 +98,31 @@ function normalizeLineEndings(text: string): string {
  * @returns 本轮修复后的文本.
  */
 function applyAutoFixPass(text: string): string {
-    let nextText = text.replace(/[ \t]+$/gm, "")
+    let nextText = trimTrailingWhitespaceOutsideFencedCode(text)
     nextText = collapseEmptySingleLineTags(nextText)
     nextText = ensureBlankLinesAroundHeadings(nextText)
     nextText = ensureBlankLinesAroundTagLines(nextText)
     return nextText
+}
+
+/**
+ * 仅在 fenced code block 之外移除行尾空白, 保留代码示例原始内容.
+ * @param text Markdown 文本.
+ * @returns 移除非代码块行尾空白后的文本.
+ */
+function trimTrailingWhitespaceOutsideFencedCode(text: string): string {
+    const lines = text.split("\n")
+    const fencedLineNumbers = collectFencedCodeLineNumbers(buildDocFromText(text))
+
+    return lines
+        .map((line, index) => {
+            if (fencedLineNumbers.has(index + 1)) {
+                return line
+            }
+
+            return line.replace(/[ \t]+$/g, "")
+        })
+        .join("\n")
 }
 
 /**
@@ -111,10 +131,12 @@ function applyAutoFixPass(text: string): string {
  * @returns 修复后的文本.
  */
 function collapseEmptySingleLineTags(text: string): string {
-    return text
-        .replace(/<(pay-membership|pay-key)(\s+[^>]*)?>\s*\n\s*<\/\1>/g, "<$1$2></$1>")
-        .replace(/<video-player(\s+[^>]*)?>\s*\n\s*<\/video-player>/g, "<video-player$1></video-player>")
-        .replace(/<power-bi(\s+[^>]*)?>\s*\n\s*<\/power-bi>/g, "<power-bi$1></power-bi>")
+    return transformOutsideFencedCodeBlocks(text, (segmentText) => {
+        return segmentText
+            .replace(/<(pay-membership|pay-key)(\s+[^>]*)?>\s*\n\s*<\/\1>/g, "<$1$2></$1>")
+            .replace(/<video-player(\s+[^>]*)?>\s*\n\s*<\/video-player>/g, "<video-player$1></video-player>")
+            .replace(/<power-bi(\s+[^>]*)?>\s*\n\s*<\/power-bi>/g, "<power-bi$1></power-bi>")
+    })
 }
 
 /**
@@ -159,12 +181,13 @@ function ensureBlankLinesAroundTagLines(text: string): string {
  * @returns 修复后的文本.
  */
 function ensureBlankLinesAroundMatchedLines(text: string, matcher: (line: string) => boolean): string {
+    const fencedLineNumbers = collectFencedCodeLineNumbers(buildDocFromText(text))
     const lines = text.split("\n")
     const result: string[] = []
 
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i] ?? ""
-        const matched = matcher(line)
+        const matched = !fencedLineNumbers.has(i + 1) && matcher(line)
         const previousLine = result[result.length - 1] ?? ""
         const nextLine = lines[i + 1] ?? undefined
 
@@ -178,6 +201,44 @@ function ensureBlankLinesAroundMatchedLines(text: string, matcher: (line: string
             result.push("")
         }
     }
+
+    return result.join("\n")
+}
+
+/**
+ * 仅对 fenced code block 之外的文本分段执行变换, 保留代码围栏与内部内容原样.
+ * @param text Markdown 文本.
+ * @param transformer 非代码块文本变换函数.
+ * @returns 保留 fenced code block 原文后的变换结果.
+ */
+function transformOutsideFencedCodeBlocks(text: string, transformer: (text: string) => string): string {
+    const lines = text.split("\n")
+    const fencedLineNumbers = collectFencedCodeLineNumbers(buildDocFromText(text))
+    const result: string[] = []
+    let buffer: string[] = []
+
+    const flushBuffer = () => {
+        if (buffer.length === 0) {
+            return
+        }
+
+        result.push(...transformer(buffer.join("\n")).split("\n"))
+        buffer = []
+    }
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i] ?? ""
+
+        if (fencedLineNumbers.has(i + 1)) {
+            flushBuffer()
+            result.push(line)
+            continue
+        }
+
+        buffer.push(line)
+    }
+
+    flushBuffer()
 
     return result.join("\n")
 }

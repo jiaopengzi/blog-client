@@ -9,6 +9,7 @@
 import type { Diagnostic } from "@codemirror/lint"
 
 import type { DocLike } from "../types"
+import { collectFencedCodeLineNumbers } from "../utils"
 
 export const id = "rule001"
 export const defaultOptions = {}
@@ -21,9 +22,14 @@ export const defaultOptions = {}
 export function run(doc: DocLike): Diagnostic[] {
     const diagnostics: Diagnostic[] = []
     const lineCount = doc.lines
+    const fencedLineNumbers = collectFencedCodeLineNumbers(doc)
 
     // 遍历所有行并匹配行尾空白字符
     for (let i = 1; i <= lineCount; i++) {
+        if (fencedLineNumbers.has(i)) {
+            continue
+        }
+
         const line = doc.line(i)
         const text = line.text
         const to = line.to
