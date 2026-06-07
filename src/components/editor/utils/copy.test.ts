@@ -296,6 +296,101 @@ describe("materializeListMarkersForCopy", () => {
         document.body.removeChild(container)
     })
 
+    it("列表项包含富文本节点时, 不应把 strong 等行内样式节点包进 leaf span 中", async () => {
+        const style = document.createElement("style")
+        style.textContent = `
+            #preview {
+                color: rgb(48, 49, 51);
+                font-size: 16px;
+                line-height: 2;
+            }
+
+            #preview ol {
+                list-style: none;
+                padding-left: 2em;
+                margin: 12px 0;
+                counter-reset: preview-ordered-list;
+            }
+
+            #preview ol > li {
+                position: relative;
+                padding-left: 1.28em;
+                line-height: 2em;
+                color: rgb(48, 49, 51);
+            }
+
+            #preview strong {
+                color: rgb(30, 40, 88);
+                font-weight: 700;
+            }
+
+            #preview em {
+                color: rgb(30, 40, 88);
+                font-style: italic;
+            }
+
+            #preview del {
+                text-decoration: line-through;
+            }
+
+            #preview mark {
+                background-color: rgb(255, 245, 204);
+                color: rgb(48, 49, 51);
+            }
+        `
+        document.head.appendChild(style)
+
+        const element = document.createElement("div")
+        element.id = "preview"
+        element.innerHTML = `
+            <ol>
+                <li>
+                    <p><strong>粗体</strong><em>斜体</em><del>删除</del><mark>高亮</mark>普通文本</p>
+                </li>
+            </ol>
+        `
+        document.body.appendChild(element)
+
+        const preparedHtml = await prepareCopyWithCustomStyle(element)
+        const container = document.createElement("div")
+        container.innerHTML = preparedHtml
+
+        const section = container.querySelector("ol > li > section") as HTMLElement
+        expect(section.querySelector(":scope > span[leaf]")).toBeNull()
+        expect(section.querySelector(":scope > strong")?.textContent).toBe("粗体")
+        expect(section.querySelector(":scope > em")?.textContent).toBe("斜体")
+        expect(section.querySelector(":scope > del")?.textContent).toBe("删除")
+        expect(section.querySelector(":scope > mark")?.textContent).toBe("高亮")
+        expect(section.textContent).toContain("普通文本")
+
+        document.body.removeChild(element)
+        document.head.removeChild(style)
+    })
+
+    it("列表项中的现有 section 富文本结构, 不应再被 leaf span 二次包装", () => {
+        const container = document.createElement("div")
+
+        container.innerHTML = `
+            <ol>
+                <li>
+                    <section><strong>粗体</strong><em>斜体</em><mark>高亮</mark>普通文本</section>
+                </li>
+            </ol>
+        `
+        document.body.appendChild(container)
+
+        materializeListMarkersForCopy(container)
+
+        const section = container.querySelector("ol > li > section") as HTMLElement
+        expect(section.querySelector(":scope > span[leaf]")).toBeNull()
+        expect(section.querySelector(":scope > strong")?.textContent).toBe("粗体")
+        expect(section.querySelector(":scope > em")?.textContent).toBe("斜体")
+        expect(section.querySelector(":scope > mark")?.textContent).toBe("高亮")
+        expect(section.textContent).toContain("普通文本")
+
+        document.body.removeChild(container)
+    })
+
     it("blockquote 同时命中 border reset 和 border-left 时, 复制结果仍保留左边框宽度与样式", async () => {
         const style = document.createElement("style")
         style.textContent = `

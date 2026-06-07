@@ -627,19 +627,23 @@ export function normalizeRegularListItemContentForCopy(listItem: HTMLLIElement):
         }
 
         const sectionElement = createWechatListContentSection()
-        const leafSpan = createWechatListLeafSpan()
-        sectionElement.appendChild(leafSpan)
+        const richInlineContent = hasRichInlineContentForWechat(contentGroup)
+        const textContainer = richInlineContent ? sectionElement : createWechatListLeafSpan()
+
+        if (!richInlineContent) {
+            sectionElement.appendChild(textContainer)
+        }
 
         contentGroup.forEach((childNode) => {
             if (childNode instanceof HTMLParagraphElement) {
                 while (childNode.firstChild) {
-                    leafSpan.appendChild(childNode.firstChild)
+                    textContainer.appendChild(childNode.firstChild)
                 }
                 childNode.remove()
                 return
             }
 
-            leafSpan.appendChild(childNode)
+            textContainer.appendChild(childNode)
         })
 
         listItem.insertBefore(sectionElement, referenceNode ?? null)
@@ -700,11 +704,45 @@ export function normalizeWechatListSectionLeaf(sectionElement: HTMLElement): voi
         return
     }
 
+    if (hasRichInlineContentForWechat(Array.from(sectionElement.childNodes))) {
+        return
+    }
+
     const leafSpan = createWechatListLeafSpan()
     while (sectionElement.firstChild) {
         leafSpan.appendChild(sectionElement.firstChild)
     }
     sectionElement.appendChild(leafSpan)
+}
+
+/**
+ * @description: 判断列表正文是否包含需要直接保留结构的富文本节点.
+ * 微信编辑器在 `span[leaf]` 中会把 strong、em、mark 等行内富文本拍平成纯文本.
+ * 这里命中富文本时直接保留为 section 的子节点, 让列表中的加粗、斜体、高亮、删除线等样式继续生效.
+ * @param childNodes 当前待写入 section 的正文节点集合.
+ * @return 若包含富文本节点则返回 true.
+ */
+export function hasRichInlineContentForWechat(childNodes: ChildNode[]): boolean {
+    return childNodes.some((childNode) => {
+        if (!(childNode instanceof HTMLElement)) {
+            return false
+        }
+
+        if (isRichInlineElementForWechat(childNode)) {
+            return true
+        }
+
+        return !!childNode.querySelector("strong, b, em, i, del, s, u, mark, code, sub, sup, a, img, svg, kbd, var, samp, span[style], span[class]")
+    })
+}
+
+/**
+ * @description: 判断单个元素是否属于需要直接保留的列表富文本节点.
+ * @param element 当前正文元素.
+ * @return 若元素本身会承载微信可识别的行内样式, 则返回 true.
+ */
+export function isRichInlineElementForWechat(element: HTMLElement): boolean {
+    return element.matches("strong, b, em, i, del, s, u, mark, code, sub, sup, a, img, svg, kbd, var, samp, span[style], span[class]")
 }
 
 /**
