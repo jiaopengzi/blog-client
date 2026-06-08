@@ -23,7 +23,7 @@
         <el-button type="primary" class="show-all-tag" @click="changeIsShowAllTag">选择标签</el-button>
     </div>
 
-    <PostTag v-if="isShowAllTag" :is-admin="true" :items="postTags" class="el-aside-item" @click="handleTagClick" />
+    <PostTag v-if="isShowAllTag" :is-admin="true" :items="sortedPostTags" class="el-aside-item" @click="handleTagClick" />
 </template>
 
 <script lang="ts" setup>
@@ -33,6 +33,8 @@ import { computed, nextTick, onBeforeMount, ref, useTemplateRef } from "vue"
 import { type PostTag as PostTagType } from "@/api/postTag/view"
 import PostTag, { usePostTagData } from "@/components/layout/aside/post-tag"
 import MessageUtil from "@/utils/message"
+
+import { sortPostTagsByAdminCount } from "./utils"
 
 defineOptions({ name: "AddTag" })
 
@@ -171,6 +173,8 @@ const changeIsShowAllTag = () => {
 
 // 获取文章标签数据
 const { items: postTags, getTagTopN } = usePostTagData(true)
+const sortedPostTags = computed(() => sortPostTagsByAdminCount(postTags))
+
 onBeforeMount(async () => {
     await getTagTopN()
 })
