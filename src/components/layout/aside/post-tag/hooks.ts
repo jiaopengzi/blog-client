@@ -13,7 +13,7 @@ import { viewPostTagTopNAPI } from "@/api/postTag/viewPostTagTopN"
 import { viewPostTagTopNAdminAPI } from "@/api/postTag/viewPostTagTopNAdmin"
 import { ResponseCode } from "@/api/response"
 import { useStatusStore } from "@/stores/status"
-import { sortPostTagsByCount } from "@/utils/postTagSort"
+import { sortPostTagsByCount } from "@/utils/tagSort"
 
 /**
  * 按当前页面口径对标签列表排序.

@@ -7,7 +7,7 @@
  */
 
 import { type PostTag } from "@/api/postTag/view"
-import { sortPostTagsByCount } from "@/utils/postTagSort"
+import { sortPostTagsByCount } from "@/utils/tagSort"
 
 /**
  * 按管理员口径对标签列表排序.

@@ -49,6 +49,7 @@ export interface TableColumn {
     onHeadingClick?: (row: TableData) => void // 标题点击回调, isHeading 时生效
     copyPlaceholder?: string // 可复制文本的占位符, 默认 "-"; 显示内容等于占位符时隐藏复制按钮
     formatter?: (row: TableData) => void // 格式化函数
+    itemSorter?: (items: Array<PostCategory | PostTag>) => Array<PostCategory | PostTag> // 分类或标签项排序器
 }
 
 // 表格数据类型

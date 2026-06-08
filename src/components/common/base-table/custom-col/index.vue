@@ -63,7 +63,7 @@
             <div v-if="col.isTags || col.isCategories" class="tag-wrap">
                 <!-- 注意 key 需要使用 id + 文章数量 -->
                 <TagItem
-                    v-for="item in scope.row[col.prop]"
+                    v-for="item in getSortedTagItems(scope.row)"
                     :tag-data="item"
                     :is-admin="true"
                     :key="item.id + item.post_count_admin"
@@ -129,6 +129,27 @@ const emit = defineEmits<{
 
 const handleTagClick = (item: PostCategory | PostTag) => {
     emit("click-item", item)
+}
+
+/**
+ * 获取当前单元格要渲染的分类或标签列表.
+ * @param row - 当前行数据.
+ * @returns 按列配置排序后的分类或标签列表.
+ */
+const getSortedTagItems = (row: TableData): Array<PostCategory | PostTag> => {
+    const rawItems = Reflect.get(row, String(col.prop))
+
+    if (!Array.isArray(rawItems)) {
+        return []
+    }
+
+    const taxonomyItems = rawItems as Array<PostCategory | PostTag>
+
+    if (!col.itemSorter) {
+        return taxonomyItems
+    }
+
+    return col.itemSorter(taxonomyItems)
 }
 
 // 处理作者点击事件

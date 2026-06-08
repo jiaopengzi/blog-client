@@ -1,14 +1,18 @@
 /**
- * FilePath    : blog-client\src\utils\postTagSort.ts
+ * FilePath    : blog-client\src\utils\tagSort.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
  * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
- * Description : 文章标签排序工具
+ * Description : 标签与分类排序工具
  */
 
+import { type PostCategory } from "@/api/postCategory/view"
 import { type PostTag } from "@/api/postTag/view"
 
-export type PostTagCountKey = "post_count" | "post_count_admin"
+export type PostTaxonomy = PostCategory | PostTag
+
+export type PostTaxonomyCountKey = "post_count" | "post_count_admin"
+export type PostTagCountKey = PostTaxonomyCountKey
 
 const englishTagNameCollator = new Intl.Collator(["en"], {
     numeric: true,
@@ -30,7 +34,7 @@ const fallbackTagNameCollator = new Intl.Collator(["en", "zh-Hans-CN", "zh-CN"],
  * @param value - 接口返回的数量字段.
  * @returns 可用于排序比较的数字值, 非法输入回退为 0.
  */
-function toSafeCount(value: string): number {
+function toSafeCount(value: string | number): number {
     const count = Number(value)
     return Number.isFinite(count) ? count : 0
 }
@@ -59,12 +63,12 @@ function getTagNameSortGroup(name: string): number {
 }
 
 /**
- * 比较两个标签名称, 保证英文排在中文前面, 中文按拼音排序.
- * @param leftName - 左侧标签名称.
- * @param rightName - 右侧标签名称.
+ * 比较两个分类或标签名称, 保证英文排在中文前面, 中文按拼音排序.
+ * @param leftName - 左侧名称.
+ * @param rightName - 右侧名称.
  * @returns 名称排序结果, 升序时负数表示左侧应排在前面.
  */
-export function comparePostTagName(leftName: string, rightName: string): number {
+export function comparePostTaxonomyName(leftName: string, rightName: string): number {
     const leftGroup = getTagNameSortGroup(leftName)
     const rightGroup = getTagNameSortGroup(rightName)
 
@@ -84,33 +88,53 @@ export function comparePostTagName(leftName: string, rightName: string): number 
 }
 
 /**
+ * 比较两个标签名称, 保证与通用 taxonomy 排序规则一致.
+ * @param leftName - 左侧标签名称.
+ * @param rightName - 右侧标签名称.
+ * @returns 名称排序结果, 升序时负数表示左侧应排在前面.
+ */
+export function comparePostTagName(leftName: string, rightName: string): number {
+    return comparePostTaxonomyName(leftName, rightName)
+}
+
+/**
+ * 按指定数量字段对分类或标签列表排序.
+ * @param items - 待排序的分类或标签列表.
+ * @param countKey - 排序使用的数量字段.
+ * @returns 新的排序结果, 不修改原始数组.
+ */
+export function sortPostTaxonomiesByCount<T extends PostTaxonomy>(items: T[], countKey: PostTaxonomyCountKey): T[] {
+    const sortedItems: T[] = []
+
+    for (const item of items) {
+        const currentCount = toSafeCount(item[countKey])
+        const insertIndex = sortedItems.findIndex((currentItem) => {
+            const itemCount = toSafeCount(currentItem[countKey])
+
+            if (itemCount !== currentCount) {
+                return itemCount < currentCount
+            }
+
+            return comparePostTaxonomyName(currentItem.name, item.name) > 0
+        })
+
+        if (insertIndex === -1) {
+            sortedItems.push(item)
+            continue
+        }
+
+        sortedItems.splice(insertIndex, 0, item)
+    }
+
+    return sortedItems
+}
+
+/**
  * 按指定数量字段对标签列表排序.
  * @param tags - 待排序的标签列表.
  * @param countKey - 排序使用的数量字段.
  * @returns 新的排序结果, 不修改原始数组.
  */
 export function sortPostTagsByCount(tags: PostTag[], countKey: PostTagCountKey): PostTag[] {
-    const sortedTags: PostTag[] = []
-
-    for (const tag of tags) {
-        const currentCount = toSafeCount(tag[countKey])
-        const insertIndex = sortedTags.findIndex((item) => {
-            const itemCount = toSafeCount(item[countKey])
-
-            if (itemCount !== currentCount) {
-                return itemCount < currentCount
-            }
-
-            return comparePostTagName(item.name, tag.name) > 0
-        })
-
-        if (insertIndex === -1) {
-            sortedTags.push(tag)
-            continue
-        }
-
-        sortedTags.splice(insertIndex, 0, tag)
-    }
-
-    return sortedTags
+    return sortPostTaxonomiesByCount(tags, countKey)
 }

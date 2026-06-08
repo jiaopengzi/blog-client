@@ -1,13 +1,28 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\post-list-admin\cols.ts
+ * Author      : jiaopengzi
+ * Blog        : https://jiaopengzi.com
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
  * Description : 生成文章列表的列配置
  */
 
 import { reactive } from "vue"
 
 import { getPostDisplayTime, PostStatusCode, PostStatusDisplay, PostType } from "@/api/post/common"
+import type { PostCategory } from "@/api/postCategory/view"
+import type { PostTag } from "@/api/postTag/view"
 import type { TableColumn, TableData } from "@/components/common/base-table"
 import { formatTime } from "@/utils/dateTime"
+import { sortPostTaxonomiesByCount } from "@/utils/tagSort"
+
+/**
+ * 按管理员口径排序后台文章列表中的分类或标签.
+ * @param items - 待排序的分类或标签列表.
+ * @returns 新的排序结果, 不修改原始数组.
+ */
+function sortAdminTaxonomyItems(items: Array<PostCategory | PostTag>) {
+    return sortPostTaxonomiesByCount(items, "post_count_admin")
+}
 
 // 基础列配置
 const baseColumns: TableColumn[] = [
@@ -45,6 +60,7 @@ const categoryColumns: TableColumn[] = [
         minWidth: 180,
         align: "center",
         isCategories: true,
+        itemSorter: sortAdminTaxonomyItems,
     },
     {
         prop: "tags",
@@ -53,6 +69,7 @@ const categoryColumns: TableColumn[] = [
         minWidth: 180,
         align: "center",
         isTags: true,
+        itemSorter: sortAdminTaxonomyItems,
     },
 ]
 
