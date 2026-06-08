@@ -86,11 +86,6 @@ export interface APPOptionForm {
     sitemap: string // 站点地图
     footer_statistics_code: string // 页脚添加同步统计代码
 
-    // 二维码相关
-    wechat_official_account_qrcode: string // 微信公众号二维码
-    wechat_qrcode: string // 微信二维码
-    qq_qrcode: string // 微信二维码
-
     footer_left_title: string // 底部左侧标题
     footer_left_content: string // 底部左侧内容
 

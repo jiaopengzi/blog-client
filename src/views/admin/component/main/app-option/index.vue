@@ -104,24 +104,6 @@ const rules = reactive<FormRules<APPOptionForm>>({
             trigger: "blur",
         },
     ],
-    wechat_official_account_qrcode: [
-        {
-            validator: imageURLRequiredValidatorFunc,
-            trigger: "blur",
-        },
-    ],
-    wechat_qrcode: [
-        {
-            validator: imageURLRequiredValidatorFunc,
-            trigger: "blur",
-        },
-    ],
-    qq_qrcode: [
-        {
-            validator: imageURLRequiredValidatorFunc,
-            trigger: "blur",
-        },
-    ],
 
     beian_mps_icon: [
         {
@@ -233,12 +215,6 @@ const formItems: Array<FormItems> = [
         customClass: "textarea-script",
         placeholder: "支持 HTML/JS 代码",
     },
-
-    // 二维码相关
-    { label: "二维码", isCategoryTitle: true },
-    { label: "微信公众号", prop: "wechat_official_account_qrcode", isImageInput: true },
-    { label: "微信", prop: "wechat_qrcode", isImageInput: true },
-    { label: "QQ", prop: "qq_qrcode", isImageInput: true },
 
     { label: "底部标题和内容", isCategoryTitle: true },
     { label: "左侧标题", prop: "footer_left_title" },

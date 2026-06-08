@@ -92,11 +92,6 @@ export interface GetAPPOptionResponse {
     sitemap: APPOptionItem // 站点地图
     footer_statistics_code: APPOptionItem // 页脚添加同步统计代码
 
-    // 二维码相关
-    wechat_official_account_qrcode: APPOptionItem // 微信公众号二维码
-    wechat_qrcode: APPOptionItem // 微信二维码
-    qq_qrcode: APPOptionItem // 微信二维码
-
     footer_left_title: APPOptionItem // 底部左侧标题
     footer_left_content: APPOptionItem // 底部左侧内容
 
