@@ -40,6 +40,14 @@
                                 :name="getRowImg(scope.row)?.iconKeyName"
                                 :style="iconStyle(getRowImg(scope.row)?.svgFontSize)"
                             />
+                            <!-- 无缩略图且有首字符时, 复用 PostThumbnail 占位图标, 与前台文章列表保持一致 -->
+                            <PostThumbnail
+                                v-else-if="getRowImg(scope.row)?.initial"
+                                class="thumbnail-initial"
+                                theme="main"
+                                :initial="getRowImg(scope.row)?.initial ?? ''"
+                                :style="{ width: `${getRowImg(scope.row)?.width ?? 96}px`, height: `${getRowImg(scope.row)?.height ?? 96}px` }"
+                            />
                         </div>
                     </template>
                 </el-table-column>
@@ -97,6 +105,7 @@ import { useTemplateRef } from "vue"
 import type { PostCategory } from "@/api/postCategory/view"
 import type { PostTag } from "@/api/postTag/view"
 import type { User } from "@/api/user/getUsers"
+import PostThumbnail from "@/components/common/post-thumbnail"
 import { iconStyle, imgStyle } from "@/utils/style"
 
 import CustomCol from "./custom-col"
@@ -178,3 +187,12 @@ defineExpose<BaseTableListExpose>({
     getVisibleRows,
 })
 </script>
+
+<style lang="scss" scoped>
+// 首字符占位图标: 圆角裁切并禁止收缩, 视觉上与缩略图保持统一
+.thumbnail-initial {
+    border-radius: 4px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+</style>

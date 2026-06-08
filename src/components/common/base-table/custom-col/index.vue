@@ -55,8 +55,8 @@
                 @view-post="handleViewPost"
             />
 
-            <!-- 可点击标签 -->
-            <el-scrollbar v-if="col.isTags || col.isCategories" :style="{ maxHeight: tagsItemMaxHeight }">
+            <!-- 可点击标签: 多分类多标签时自动换行平铺, 不再使用滚动条 -->
+            <div v-if="col.isTags || col.isCategories" class="tag-wrap">
                 <!-- 注意 key 需要使用 id + 文章数量 -->
                 <TagItem
                     v-for="item in scope.row[col.prop]"
@@ -65,7 +65,7 @@
                     :key="item.id + item.post_count_admin"
                     @click="handleTagClick(item)"
                 />
-            </el-scrollbar>
+            </div>
 
             <!-- 可滚动的格式化文本 -->
             <div v-if="col.isScrollFormatter && col.formatter && !col.isCopyText" class="scroll-formatter-box" :style="{ maxHeight: tagsItemMaxHeight }">
@@ -173,18 +173,36 @@ const handleViewWithID = (row: TableData) => {
     background-color: transparent;
     line-height: 1.5;
     width: 100%;
-    max-height: 100px;
-    min-height: 50px;
-    overflow-y: auto;
+    height: auto;
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-    // 防止按钮拉伸到整行
-    display: inline-block;
-    // 自动换行
+    // 标题为关键信息, 全量显示不截断; 使用块级容器配合自动换行
+    display: block;
+    // 自动换行, 优先在词边界换行, 避免生硬拆字
     white-space: normal;
-    // 长文本换行
-    word-break: break-all;
+    word-break: break-word;
+    color: var(--jpz-text-color-primary);
+    transition: color 0.2s ease;
+
+    // hover 时标题变为主色, 保持背景透明避免默认按钮高亮
+    &:hover,
+    &:focus {
+        background-color: transparent;
+        color: var(--jpz-color-primary);
+    }
+
+    // el-button 内部文本被包裹在 display:inline-flex 的 span 中, 直接在按钮上加 text-decoration 不会生效;
+    // 需穿透到内部 span 并将其改为 inline 才能让下划线渲染, 更显著地提示 hover 可点击效果.
+    :deep(span) {
+        display: inline;
+    }
+
+    &:hover :deep(span),
+    &:focus :deep(span) {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
 }
 
 .heading-clickable {
@@ -194,6 +212,16 @@ const handleViewWithID = (row: TableData) => {
     &:hover {
         text-decoration: underline;
     }
+}
+
+// 分类/标签容器: flex 换行平铺, 居中对齐, 支持多分类多标签自适应换行
+.tag-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .scroll-formatter-text {

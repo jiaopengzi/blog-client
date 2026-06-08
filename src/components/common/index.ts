@@ -28,6 +28,7 @@ export interface TableImg {
     imgFit?: ImgFit // 图片填充方式 cover | contain | fill | none | scale-down
     iconKeyName?: IconKeys // 图标键名
     svgFontSize?: number // 图标字体大小
+    initial?: string // 无缩略图时展示的首字符占位内容, 与前台文章列表保持一致
 }
 
 // 具有 img 属性的数据类型

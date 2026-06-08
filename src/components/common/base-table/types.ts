@@ -76,6 +76,7 @@ export interface FormatTableData {
     created_at?: string // 创建时间
     updated_at?: string // 更新时间
     file_type?: string // 文件类型
+    post_title?: string // 文章标题, 无缩略图时用于生成首字符占位图标
     img?: TableImg // 图片
     price?: string // 价格
 }

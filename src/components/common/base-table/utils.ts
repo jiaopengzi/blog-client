@@ -55,6 +55,16 @@ export function formatTableData<T extends FormatTableData>(
         }
     }
 
+    // 如果 thumbnail 为空且存在文章标题, 使用标题首字符作为占位图标, 与前台文章列表 (post-item-main) 保持一致
+    if (!thumbnail && !formatTableData.img && typeof tableData.post_title === "string" && tableData.post_title.trim()) {
+        formatTableData.img = {
+            url: "",
+            width: width,
+            height: height,
+            initial: tableData.post_title.trim().slice(0, 1).toUpperCase(),
+        }
+    }
+
     return formatTableData
 }
 
