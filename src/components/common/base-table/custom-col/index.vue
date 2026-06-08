@@ -15,7 +15,11 @@
             </h4>
 
             <!-- 标题包含标题ID -->
-            <el-button v-if="col.isHeadingWithId" @click="handleViewWithID(scope.row)" class="title-with-id" type="">{{ scope.row[col.prop] }}</el-button>
+            <div v-if="col.isHeadingWithId" class="title-with-id-wrap">
+                <el-button @click="handleViewWithID(scope.row)" class="title-with-id" type="">{{ scope.row[col.prop] }}</el-button>
+                <!-- 复制标题按钮, 复用通用复制按钮组件 -->
+                <CopyButton :text="String(scope.row[col.prop] ?? '')" />
+            </div>
 
             <!-- 作者 -->
             <UserItem
@@ -84,6 +88,7 @@ import type { PostTag } from "@/api/postTag/view"
 import type { User } from "@/api/user/getUsers"
 import CommentMarkdownPreview from "@/components/common/comment-markdown-preview"
 import CommentPostItem from "@/components/common/comment-post-item"
+import CopyButton from "@/components/common/copy-button"
 import CopyText from "@/components/common/copy-text"
 import TagItem from "@/components/common/tag-item"
 import UserItem from "@/components/common/user-item"
@@ -163,6 +168,17 @@ const handleViewWithID = (row: TableData) => {
 .markdown-preview {
     overflow: auto;
     padding: 4px;
+}
+
+// 标题列容器: 标题文本与复制按钮纵向排列, 复制按钮位于标题正下方
+.title-with-id-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .title-with-id {

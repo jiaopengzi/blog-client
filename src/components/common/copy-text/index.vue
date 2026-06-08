@@ -10,17 +10,13 @@
     <span @dblclick="handleCopyText">
         {{ showText }}
     </span>
-    <el-button v-if="!isPlaceholder" class="copy-text-btn" @click="handleCopyText" type="">
-        <el-icon class="copy-text-icon">
-            <CopyDocument />
-        </el-icon>
-    </el-button>
+    <CopyButton v-if="!isPlaceholder" class="copy-text-btn" :text="text" />
 </template>
 
 <script lang="ts" setup>
 import { computed } from "vue"
-import { CopyDocument } from "@element-plus/icons-vue"
 
+import CopyButton from "@/components/common/copy-button"
 import { copyText } from "@/utils/clipboard"
 import { MessageUtil } from "@/utils/message"
 
@@ -59,19 +55,8 @@ const handleCopyText = () => {
 }
 </script>
 <style scoped lang="scss">
+// 仅保留与文本的间距, 按钮外观由 CopyButton 组件统一提供
 .copy-text-btn {
     margin-left: 8px;
-    padding: 0;
-    border: none;
-    background: transparent;
-    color: var(--el-text-color-secondary);
-    &:hover {
-        color: var(--el-text-color-primary);
-    }
-
-    .copy-text-icon {
-        margin: 0;
-        padding: 0;
-    }
 }
 </style>
