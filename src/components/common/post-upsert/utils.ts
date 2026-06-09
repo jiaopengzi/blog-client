@@ -97,6 +97,24 @@ export function createEmptyUpsertPostForm(postType: PostType): UpsertPostForm {
 }
 
 /**
+ * syncCreatePostDefaultAuthor 在新增文章页建立初始快照前补齐默认作者.
+ * @param postInfoForm 当前文章编辑表单.
+ * @param postType 当前编辑对象类型.
+ * @param userId 当前管理员 ID.
+ * @returns true 表示本次已写入默认作者.
+ */
+export function syncCreatePostDefaultAuthor(postInfoForm: UpsertPostForm, postType: PostType, userId: string | number): boolean {
+    const normalizedUserId = String(userId ?? "")
+
+    if (postType !== PostType.Post || postInfoForm.id || postInfoForm.post_author || !normalizedUserId) {
+        return false
+    }
+
+    postInfoForm.post_author = normalizedUserId
+    return true
+}
+
+/**
  * 统一处理文章新增和编辑时的错误提示.
  * @param res 接口响应对象.
  */

@@ -12,7 +12,14 @@ import { PostStatusCode, PostType } from "@/api/post/common"
 import { ResponseCode } from "@/api/response"
 import { RouteNames } from "@/router"
 
-import { createEmptyUpsertPostForm, getPostEditNoPermissionResourceLabel, resolvePostEditLoadError, shouldShowFuturePostPushTimeTip } from "./utils"
+import { getPostUpsertDraftSignature } from "./localDraft"
+import {
+    createEmptyUpsertPostForm,
+    getPostEditNoPermissionResourceLabel,
+    resolvePostEditLoadError,
+    shouldShowFuturePostPushTimeTip,
+    syncCreatePostDefaultAuthor,
+} from "./utils"
 
 afterEach(() => {
     vi.useRealTimers()
@@ -30,6 +37,18 @@ describe("post-upsert utils", () => {
             Time: now,
             Valid: true,
         })
+    })
+
+    it("新增文章页补齐默认作者后, 清空编辑器内容应回到初始签名", () => {
+        const form = createEmptyUpsertPostForm(PostType.Post)
+
+        expect(syncCreatePostDefaultAuthor(form, PostType.Post, "7")).toBe(true)
+
+        const initialSignature = getPostUpsertDraftSignature(form)
+        form.post_content = "# draft"
+        form.post_content = ""
+
+        expect(getPostUpsertDraftSignature(form)).toBe(initialSignature)
     })
 
     it("非定时文章展示时间只晚于当前时间少量毫秒时不应提示", () => {

@@ -293,7 +293,7 @@ import { usePostUpsertLocalDraft } from "./useLocalDraft"
 import { usePostVideoToc } from "./usePostVideoToc"
 import { useSnapshot } from "./useSnapshot"
 import { useSwitchItem } from "./useSwitchItem"
-import { createEmptyUpsertPostForm, getPostEditNoPermissionResourceLabel, shouldShowFuturePostPushTimeTip } from "./utils"
+import { createEmptyUpsertPostForm, getPostEditNoPermissionResourceLabel, shouldShowFuturePostPushTimeTip, syncCreatePostDefaultAuthor } from "./utils"
 
 defineOptions({ name: "PostUpsert" })
 
@@ -643,10 +643,7 @@ const updateEditorStatus = () => {
     postInfoForm.post_content = editorState.editorContent
     postContentError.value = ""
     formRef.value?.clearValidate("post_content")
-    // 判断文章作者是否为空,如果为空则赋值当前用户id
-    if (!postInfoForm.post_author) {
-        postInfoForm.post_author = userStore.data.user.id.toString()
-    }
+    syncCreatePostDefaultAuthor(postInfoForm, postType, userStore.data.user.id)
 }
 
 /**
@@ -837,6 +834,7 @@ onBeforeMount(async () => {
     if (postInfoForm.id) {
         showEditNoPermission.value = await getDataOnBeforeMount()
     }
+    syncCreatePostDefaultAuthor(postInfoForm, postType, userStore.data.user.id)
     await updateSnapshot()
     if (!showEditNoPermission.value) {
         await resolvePostUpsertLocalDraftOnMount()
