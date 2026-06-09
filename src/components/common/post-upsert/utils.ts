@@ -1,8 +1,8 @@
-/*
+/**
  * FilePath    : blog-client\src\components\common\post-upsert\utils.ts
  * Author      : jiaopengzi
  * Blog        : https://jiaopengzi.com
- * Copyright   : Copyright (c) 2025 by jiaopengzi, All Rights Reserved.
+ * Copyright   : Copyright (c) 2026 by jiaopengzi, All Rights Reserved.
  * Description : 工具
  */
 
@@ -10,6 +10,7 @@ import { CommentStatusCode, PayStrategy, PostStatusCode, PostType, PostTypeDispl
 import { type PgSqlDateTime } from "@/api/common"
 import { handleResErr, ResponseCode } from "@/api/response"
 import { RouteNames, type RouteNames as RouteName } from "@/router"
+import type { ThumbnailSelectOption } from "@/components/common/thumbnail-select-dialog"
 import { MessageUtil } from "@/utils/message"
 import { type UpsertPostForm } from "./types"
 
@@ -31,6 +32,34 @@ export function createDefaultPostPushTime(): PgSqlDateTime {
         Time: new Date(),
         Valid: true,
     }
+}
+
+/**
+ * 基于文章内已提取的图片 URL 生成缩略图候选项.
+ * @param imgUrls 编辑器当前提取出的图片 URL 列表.
+ * @returns 已过滤空值并补齐序号的候选项列表.
+ */
+export function createPostThumbnailOptions(imgUrls: string[]): ThumbnailSelectOption[] {
+    return imgUrls
+        .filter((url) => typeof url === "string" && url.trim().length > 0)
+        .map((url, index) => ({
+            index: index + 1,
+            url,
+        }))
+}
+
+/**
+ * 按默认插入序号解析文章内图片 URL.
+ * @param imgUrls 编辑器当前提取出的图片 URL 列表.
+ * @param index 默认插入的图片序号, 从 1 开始.
+ * @returns 命中的图片 URL, 未命中时返回 undefined.
+ */
+export function getPostThumbnailUrlByIndex(imgUrls: string[], index: number): string | undefined {
+    if (!Number.isInteger(index) || index < 1) {
+        return undefined
+    }
+
+    return createPostThumbnailOptions(imgUrls)[index - 1]?.url
 }
 
 /**

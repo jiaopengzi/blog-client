@@ -14,8 +14,10 @@ import { RouteNames } from "@/router"
 
 import { getPostUpsertDraftSignature } from "./localDraft"
 import {
+    createPostThumbnailOptions,
     createEmptyUpsertPostForm,
     getPostEditNoPermissionResourceLabel,
+    getPostThumbnailUrlByIndex,
     resolvePostEditLoadError,
     shouldShowFuturePostPushTimeTip,
     syncCreatePostDefaultAuthor,
@@ -26,6 +28,21 @@ afterEach(() => {
 })
 
 describe("post-upsert utils", () => {
+    it("应过滤空图片并生成从 1 开始的缩略图候选项", () => {
+        expect(createPostThumbnailOptions(["https://img/1.png", "", "   ", "https://img/2.png"])).toEqual([
+            { index: 1, url: "https://img/1.png" },
+            { index: 2, url: "https://img/2.png" },
+        ])
+    })
+
+    it("应按默认插入序号解析文章图片 URL", () => {
+        expect(getPostThumbnailUrlByIndex(["https://img/1.png", "https://img/2.png"], 2)).toBe("https://img/2.png")
+    })
+
+    it("默认插入序号越界时应返回 undefined", () => {
+        expect(getPostThumbnailUrlByIndex(["https://img/1.png"], 3)).toBeUndefined()
+    })
+
     it("空表单应默认填充当前展示时间", () => {
         const now = new Date("2026-05-28T08:00:00.000Z")
         vi.useFakeTimers()

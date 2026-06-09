@@ -101,12 +101,15 @@
 
                 <el-form-item label="设置文章缩略图。" prop="thumbnail">
                     <div class="thumbnail-row">
-                        <ImageInput v-model="postInfoForm.thumbnail" clearable />
-                        <div class="thumbnail-quick-insert">
-                            <el-input-number v-model="thumbnailImgIndex" :min="1" />
-                            <el-button type="primary" :disabled="!editorState.imgUrls.length" @click="insertThumbnailFromEditor">快速插入</el-button>
-                            <el-checkbox v-model="thumbnailAutoInsert">保存时自动插入</el-checkbox>
+                        <div class="thumbnail-input">
+                            <ImageInput v-model="postInfoForm.thumbnail" clearable />
                         </div>
+                        <PostUpsertThumbnailTools
+                            v-model:auto-insert="thumbnailAutoInsert"
+                            v-model:insert-index="thumbnailImgIndex"
+                            :has-editor-thumbnail-options="hasEditorThumbnailOptions"
+                            @pick-from-article="openThumbnailPicker"
+                        />
                     </div>
                 </el-form-item>
 
@@ -245,6 +248,12 @@
 
     <!-- 媒体文件选择弹窗 -->
     <SelectMedia v-if="mediaDialogVisible" v-model="mediaDialogVisible" @insert-data="insertMedia" />
+    <ThumbnailSelectDialog
+        v-model:visible="thumbnailPickerVisible"
+        :options="editorThumbnailOptions"
+        :current-url="postInfoForm.thumbnail"
+        @select="handleThumbnailPicked"
+    />
 </template>
 <script lang="ts" setup>
 import { useHead } from "@unhead/vue"
@@ -285,6 +294,7 @@ import { MessageUtil } from "@/utils/message"
 import NoPermission from "@/views/admin/component/main/no-permission"
 
 import { type PostInfoAboutTime, type PostUpsertProps, queryKey, type UpdatePostForm, type UpsertPostForm } from "./types"
+import PostUpsertThumbnailTools from "./thumbnail-tools.vue"
 import { useAdd } from "./useAdd"
 import { useEdit } from "./useEdit"
 import { useFormValidation } from "./useFormValidation"
@@ -293,7 +303,15 @@ import { usePostUpsertLocalDraft } from "./useLocalDraft"
 import { usePostVideoToc } from "./usePostVideoToc"
 import { useSnapshot } from "./useSnapshot"
 import { useSwitchItem } from "./useSwitchItem"
-import { createEmptyUpsertPostForm, getPostEditNoPermissionResourceLabel, shouldShowFuturePostPushTimeTip, syncCreatePostDefaultAuthor } from "./utils"
+import ThumbnailSelectDialog from "@/components/common/thumbnail-select-dialog"
+import {
+    createEmptyUpsertPostForm,
+    createPostThumbnailOptions,
+    getPostEditNoPermissionResourceLabel,
+    getPostThumbnailUrlByIndex,
+    shouldShowFuturePostPushTimeTip,
+    syncCreatePostDefaultAuthor,
+} from "./utils"
 
 defineOptions({ name: "PostUpsert" })
 
@@ -375,6 +393,9 @@ useEditor(stateManager)
 
 const editorState = stateManager.getState()
 const mediaDialogVisible = ref(false)
+const thumbnailPickerVisible = ref(false)
+const editorThumbnailOptions = computed(() => createPostThumbnailOptions(editorState.imgUrls))
+const hasEditorThumbnailOptions = computed(() => editorThumbnailOptions.value.length > 0)
 
 const thumbnailAutoInsert = ref(localStorage.getItem(LocalStorageKey.ThumbnailAutoInsertEnable) === "true")
 const thumbnailImgIndex = ref(Number(localStorage.getItem(LocalStorageKey.ThumbnailAutoInsertIndex)) || 1)
@@ -387,15 +408,41 @@ watch(thumbnailImgIndex, (val) => {
     localStorage.setItem(LocalStorageKey.ThumbnailAutoInsertIndex, String(val))
 })
 
-const insertThumbnailFromEditor = () => {
-    const urls = editorState.imgUrls
-    if (!urls || urls.length === 0) return
-    const n = thumbnailImgIndex.value
-    if (n > urls.length) {
-        ElMessage.warning(`当前文章只有 ${urls.length} 张图片，无法插入第 ${n} 张`)
+/**
+ * 打开文章内图片选择弹窗.
+ * @returns void.
+ */
+const openThumbnailPicker = () => {
+    if (!hasEditorThumbnailOptions.value) {
         return
     }
-    postInfoForm.thumbnail = urls[n - 1]
+
+    thumbnailPickerVisible.value = true
+}
+
+/**
+ * 根据用户点选结果更新缩略图.
+ * @param selectedUrl 用户在弹窗中选中的图片 URL.
+ * @returns void.
+ */
+const handleThumbnailPicked = (selectedUrl: string) => {
+    insertThumbnailFromEditor(selectedUrl)
+}
+
+/**
+ * 将文章内图片设置为当前缩略图.
+ * @param selectedUrl 手动选择的图片 URL, 不传时按默认插入序号取图.
+ * @returns void.
+ */
+const insertThumbnailFromEditor = (selectedUrl?: string) => {
+    const thumbnailUrl = selectedUrl || getPostThumbnailUrlByIndex(editorState.imgUrls, thumbnailImgIndex.value)
+
+    if (!thumbnailUrl) {
+        ElMessage.warning(`当前文章只有 ${editorThumbnailOptions.value.length} 张图片，无法插入第 ${thumbnailImgIndex.value} 张`)
+        return
+    }
+
+    postInfoForm.thumbnail = thumbnailUrl
 }
 
 const router = useRouter()
@@ -994,15 +1041,13 @@ h4 {
 .thumbnail-row {
     display: flex;
     align-items: flex-start;
-    gap: 8px;
+    flex-wrap: nowrap;
+    gap: 12px;
     width: 100%;
 }
 
-.thumbnail-quick-insert {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
-    margin-left: 16px;
+.thumbnail-input {
+    flex: 1 1 0;
+    min-width: 0;
 }
 </style>
