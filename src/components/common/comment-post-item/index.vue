@@ -154,7 +154,7 @@ const handleViewPostClick = () => {
 }
 
 .post-title {
-    color: var(--el-color-primary);
+    color: var(--jpz-text-color-primary);
     font-weight: 700;
     padding: 0;
     border: none;
@@ -165,10 +165,23 @@ const handleViewPostClick = () => {
     min-height: 0;
     margin-bottom: 4px;
     justify-content: center;
+    transition: color 0.2s ease;
+
+    &:hover,
+    &:focus {
+        background-color: transparent;
+        color: var(--jpz-color-primary);
+    }
 
     :deep(.el-button__text) {
         display: block;
         width: 100%;
+    }
+
+    &:hover .post-title-text,
+    &:focus .post-title-text {
+        text-decoration: underline;
+        text-underline-offset: 3px;
     }
 }
 
@@ -183,11 +196,9 @@ const handleViewPostClick = () => {
 .post-title-text {
     display: block;
     width: 100%;
-    max-height: 72px;
-    overflow-y: auto;
     line-height: 24px;
     white-space: normal;
-    word-break: break-all;
+    word-break: break-word;
     text-align: center;
     padding: 0 4px;
 }

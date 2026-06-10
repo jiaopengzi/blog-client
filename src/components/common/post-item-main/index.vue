@@ -384,13 +384,26 @@ const topRightTip = computed(() => {
     }
 
     .title {
-        // 标题最多 2 行: 使用 max-height + overflow:hidden 简单截断,
-        // 与浮动的 .pinned (置顶/私密) 标识共存, 标识只占第一行, 后续行左对齐.
+        // pc 端改为与 phone 端一致的多行截断方案;
+        // 标识使用 inline-block 后, 第二行会回到左边顶格显示.
         font-size: 16px;
         font-weight: 700;
         line-height: 1.5em;
-        max-height: calc(1.5em * 2);
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        line-clamp: 2;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        text-overflow: ellipsis;
         word-break: break-word;
+    }
+
+    .pinned {
+        // inline-block 只占当前行内容宽度, 不会让后续换行继续避让标识宽度.
+        float: none;
+        display: inline-block;
+        vertical-align: middle;
+        margin-top: 0;
     }
 
     .summary {
@@ -426,12 +439,24 @@ const topRightTip = computed(() => {
     }
 
     .title {
-        // 标题最多 2 行: 使用 max-height + overflow:hidden 简单截断,
-        // 与浮动的 .pinned (置顶/私密) 标识共存, 标识只占第一行, 后续行左对齐.
+        // pad 端同步使用多行截断, 保证换行后的第二行顶格显示.
         font-weight: 700;
         line-height: 1.5em;
-        max-height: calc(1.5em * 2);
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        line-clamp: 2;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        text-overflow: ellipsis;
         word-break: break-word;
+    }
+
+    .pinned {
+        // inline-block 只占当前行内容宽度, 不会让后续换行继续避让标识宽度.
+        float: none;
+        display: inline-block;
+        vertical-align: middle;
+        margin-top: 0;
     }
 
     .has-top-right-tip {

@@ -16,7 +16,7 @@
             :is-show-search="true"
             :search-str="search"
             :is-show-edit="true"
-            :row-style="{ height: '96px' }"
+            :row-style="{ minHeight: '96px' }"
             tags-item-max-height="96px"
             height="calc(100vh - 270px)"
             :is-show-cursor-pointer="true"
