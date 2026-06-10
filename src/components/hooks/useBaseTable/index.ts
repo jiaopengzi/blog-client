@@ -23,6 +23,7 @@ import { parseRouteQuery } from "@/utils/queryParam"
 // 可选参数类型定义
 export interface Options<T> extends QueryParamsOptions<T> {
     tableImg?: TableImg // 表格图片配置
+    syncRoute?: boolean // 是否将查询参数同步到路由, 默认同步
 }
 
 // 基础表格钩子选项
@@ -43,6 +44,7 @@ export interface BaseTableOptions<T extends FormatTableData, K extends Paginatio
 export function useBaseTable<T extends FormatTableData, K extends PaginationRequest, Q>(ctx: BaseTableOptions<T, K, Q>) {
     let isInit = false // 是否初始化
     const { routeName, viewAPI, viewResCode, queryParams, deleteAPI, deleteResCode, options } = ctx
+    const syncRoute = options?.syncRoute !== false
 
     const route = useRoute()
     const router = useRouter()
@@ -59,23 +61,38 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
      * @description: 更新和路由
      */
     const updateRouterPush = async () => {
-        await routerPushByParams(router, routeName, queryParams, options?.hash)
-    }
+        if (!syncRoute) {
+            return
+        }
 
-    /**
-     * @description: 重置页码后更新路由（用于搜索、分类筛选等非分页操作，避免携带旧页码）
-     */
-    const updateRouterPushResetPage = async () => {
-        delete queryParams.current_page
-        delete queryParams.page_size
         await routerPushByParams(router, routeName, queryParams, options?.hash)
     }
 
     // 是否请求
-    const { updateCurrentPage, updatePageSize, updatePaginate } = usePagination(pagination, getPaginate, queryParams, updateRouterPush)
+    const { updateCurrentPage, updatePageSize, updatePaginate } = usePagination(pagination, getPaginate, queryParams, updateRouterPush, !syncRoute)
+
+    /**
+     * @description: 重置页码后更新路由或本地分页数据.
+     * 用于搜索, 分类筛选等非分页操作, 避免携带旧页码.
+     */
+    const updateRouterPushResetPage = async () => {
+        delete queryParams.current_page
+        delete queryParams.page_size
+
+        if (!syncRoute) {
+            await updatePaginate()
+            return
+        }
+
+        await routerPushByParams(router, routeName, queryParams, options?.hash)
+    }
 
     // 更新查询参数
     const updateQueryParams = async () => {
+        if (!syncRoute) {
+            return
+        }
+
         const { hasQuery, result } = await parseRouteQuery(route.query, options as QueryParamsOptions<K>)
 
         // 清空 queryParams
@@ -197,6 +214,7 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
     watch(
         () => route.fullPath,
         async () => {
+            if (!syncRoute) return
             if (!isInit) return
             await updateQueryParams()
             await updatePaginate()

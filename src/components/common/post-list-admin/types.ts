@@ -43,4 +43,8 @@ export interface PostCountGroupItem {
 // 后台文章列表组件的属性类型
 export interface PostListAdminProps extends PostUpsertProps {
     writeRouteName: RouteNames // 写入的路由
+    isSelectMode?: boolean // 是否作为内容选择器使用, 会显示选择列但不显示批量删除按钮
+    isSyncRoute?: boolean // 是否同步查询参数到路由, 弹窗内建议关闭
+    tableHeight?: string | number // 表格高度
+    disableHead?: boolean // 是否禁用页面标题更新
 }

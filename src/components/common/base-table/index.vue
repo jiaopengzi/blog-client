@@ -35,6 +35,7 @@
             :row-style="props.rowStyle"
             :show-list-or-grid-status="props.showListOrGridStatus"
             :is-show-delete-all="props.isShowDeleteAll"
+            :is-show-selection="props.isShowSelection"
             :is-show-edit="props.isShowEdit"
             :height="props.height"
             :avatar-width="props.avatarWidth"
@@ -132,6 +133,7 @@ const props = withDefaults(defineProps<BaseTableProps>(), {
     isShowListOrGrid: false,
     showListOrGridStatus: true,
     isShowDeleteAll: false,
+    isShowSelection: false,
     isShowEdit: false,
     isShowSearch: false,
     searchStr: "",

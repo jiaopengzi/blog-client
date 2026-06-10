@@ -39,3 +39,13 @@ export function canUseAdvancedPostAdminTools(roleName?: string): boolean {
 export function shouldShowAdvancedPostAdminTools(postType: PostType, roleName?: string): boolean {
     return postType === PostType.Post && canUseAdvancedPostAdminTools(roleName)
 }
+
+/**
+ * shouldShowPostAdminMutationTools 判断当前页面是否应展示后台文章或页面修改控件.
+ * @param postType - 当前文章类型.
+ * @param roleName - 当前登录用户角色名.
+ * @returns true 表示允许展示删除, 批量变更等修改控件.
+ */
+export function shouldShowPostAdminMutationTools(postType: PostType, roleName?: string): boolean {
+    return (postType === PostType.Post || postType === PostType.Page) && canUseAdvancedPostAdminTools(roleName)
+}

@@ -11,7 +11,7 @@ import { describe, expect, it } from "vitest"
 import { PostType } from "@/api/post/common"
 import { emptyUserInfo } from "@/api/user/getUserInfo"
 
-import { canUseAdvancedPostAdminTools, getPostAdminRoleName, shouldShowAdvancedPostAdminTools } from "./permissions"
+import { canUseAdvancedPostAdminTools, getPostAdminRoleName, shouldShowAdvancedPostAdminTools, shouldShowPostAdminMutationTools } from "./permissions"
 
 /**
  * buildUserInfoWithRole 构造带指定角色的用户信息。
@@ -43,5 +43,13 @@ describe("post-list-admin permissions", () => {
         expect(shouldShowAdvancedPostAdminTools(PostType.Post, "Editor")).toBe(true)
         expect(shouldShowAdvancedPostAdminTools(PostType.Post, "Author")).toBe(false)
         expect(shouldShowAdvancedPostAdminTools(PostType.Page, "Administrator")).toBe(false)
+    })
+
+    it("文章页和页面页在具备全量后台角色时展示修改控件", () => {
+        expect(shouldShowPostAdminMutationTools(PostType.Post, "Administrator")).toBe(true)
+        expect(shouldShowPostAdminMutationTools(PostType.Page, "Administrator")).toBe(true)
+        expect(shouldShowPostAdminMutationTools(PostType.Page, "Editor")).toBe(true)
+        expect(shouldShowPostAdminMutationTools(PostType.Page, "Author")).toBe(false)
+        expect(shouldShowPostAdminMutationTools(PostType.Video, "Administrator")).toBe(false)
     })
 })

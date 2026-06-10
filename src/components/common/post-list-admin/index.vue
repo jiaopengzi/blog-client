@@ -13,13 +13,14 @@
             :table-column="cols"
             :add-item-dialog-visible="addItemDialogVisible"
             :edit-item-dialog-visible="editItemDialogVisible"
-            :is-show-delete-all="showAdvancedPostAdminTools"
+            :is-show-delete-all="showPostAdminMutationTools"
+            :is-show-selection="isSelectMode"
             :is-show-search="true"
             :search-str="search"
             :is-show-edit="true"
             :row-style="{ minHeight: '96px' }"
             tags-item-max-height="96px"
-            height="calc(100vh - 270px)"
+            :height="tableHeight"
             :loading-delete="loadingDelete"
             :is-show-cursor-pointer="true"
             @update-current-page="updateCurrentPage"
@@ -35,7 +36,7 @@
             @view-post="onViewPost"
         >
             <template #btns>
-                <el-button ref="addBtnRef" type="primary" @click="write">
+                <el-button v-if="!isSelectMode" ref="addBtnRef" type="primary" @click="write">
                     {{ writeText }}
                 </el-button>
             </template>
@@ -107,7 +108,7 @@
                 </div>
             </template>
 
-            <template #operation v-if="showAdvancedPostAdminTools">
+            <template #operation v-if="showPostAdminMutationTools">
                 <!-- 批量操作 -->
                 <div class="operation">
                     <el-select class="operation-item" v-model="postOperationSelect" placeholder="批量更改" clearable style="width: 140px">
@@ -159,16 +160,31 @@ import { MessageUtil } from "@/utils/message"
 import { useAPI } from "./api"
 import { generateCols } from "./cols"
 import { useHeader } from "./hooks"
-import { getPostAdminRoleName, shouldShowAdvancedPostAdminTools } from "./permissions"
+import { getPostAdminRoleName, shouldShowAdvancedPostAdminTools, shouldShowPostAdminMutationTools } from "./permissions"
 import { groupList, type GroupType, type PostCountGroupItem, type PostListAdminProps, queryKey } from "./types"
 
 defineOptions({ name: "PostListAdmin" })
 
-const { postType, headTitle, routeName, writeRouteName } = defineProps<PostListAdminProps>()
+const {
+    postType,
+    headTitle,
+    routeName,
+    writeRouteName,
+    isSelectMode = false,
+    isSyncRoute = true,
+    tableHeight = "calc(100vh - 270px)",
+    disableHead = false,
+} = defineProps<PostListAdminProps>()
 
-useHead({
-    title: headTitle,
-})
+const emit = defineEmits<{
+    (event: "update-selection", rows: PostResPaginationByAdmin[]): void
+}>()
+
+if (!disableHead) {
+    useHead({
+        title: headTitle,
+    })
+}
 
 const cols: TableColumn[] = generateCols(postType)
 
@@ -197,6 +213,7 @@ const userStore = useUserStore()
 const router = useRouter()
 const currentRoleName = computed(() => getPostAdminRoleName(userStore.getUserData))
 const showAdvancedPostAdminTools = computed(() => shouldShowAdvancedPostAdminTools(postType, currentRoleName.value))
+const showPostAdminMutationTools = computed(() => !isSelectMode && shouldShowPostAdminMutationTools(postType, currentRoleName.value))
 
 // 获取头部数据
 const { postCountGroup, postCountMonth, allGroup, activeGroup, getPostCountStatus } = useHeader(userStore.getUserID, postType, showAdvancedPostAdminTools.value)
@@ -248,7 +265,6 @@ const {
     updateSearch, // 更新搜索关键字
     deleteRows, // 删除行
     updatePaginate, // 更新分页
-    updateRouterPush, // 更新查询参数和路由
     updateRouterPushResetPage, // 重置页码后更新路由
     loadingDelete, // 删除加载状态
 } = useBaseTable<PostResPaginationByAdmin, ViewPostByAdminRequest, DeletePostRequest>({
@@ -263,13 +279,14 @@ const {
         numberKeys,
         noRequestKeys,
         tableImg,
-        refreshPromiseFns: showAdvancedPostAdminTools.value ? [getPostCountStatus] : [],
+        refreshPromiseFns: showPostAdminMutationTools.value ? [getPostCountStatus] : [],
+        syncRoute: isSyncRoute,
     },
 })
 
 const handleDeleteRows = async (rows: TableData[]) => {
     await deleteRows(rows)
-    if (showAdvancedPostAdminTools.value) {
+    if (showPostAdminMutationTools.value) {
         await getPostCountStatus()
     }
 }
@@ -459,7 +476,7 @@ const handlePostStatusOperation = async () => {
 
                         MessageUtil.success(msg, 3000)
                         await updatePaginate()
-                        if (showAdvancedPostAdminTools.value) {
+                        if (showPostAdminMutationTools.value) {
                             await getPostCountStatus()
                         }
 
@@ -484,6 +501,8 @@ const handlePostStatusOperation = async () => {
 
 // 处理选择行
 const handleSelection = async (rows: TableData[]) => {
+    emit("update-selection", rows as PostResPaginationByAdmin[])
+
     // 先清空
     postStatusOperationList.value = []
 

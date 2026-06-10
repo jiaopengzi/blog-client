@@ -19,7 +19,7 @@
             style="width: 100%; min-width: 800px"
             :height="height"
         >
-            <el-table-column v-if="isShowDeleteAll" type="selection" width="50" align="center" />
+            <el-table-column v-if="isShowSelection || isShowDeleteAll" type="selection" width="50" align="center" />
 
             <template v-for="(col, index) in tableColumn" :key="`${String(col.prop)}-${index}`">
                 <el-table-column v-if="col.isImg" :width="col.width" :min-width="col.minWidth" :align="col.align">

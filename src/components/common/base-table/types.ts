@@ -92,6 +92,7 @@ export interface BaseTableProps {
     isShowListOrGrid?: boolean // 是否显示列表或宫格切换
     showListOrGridStatus?: boolean // 列表或宫格状态, true: 列表, false: 宫格
     isShowDeleteAll?: boolean // 是否显示批量删除按钮
+    isShowSelection?: boolean // 是否显示选择列, 不会自动显示批量删除按钮
     isShowEdit?: boolean // 是否显示编辑按钮
     isShowSearch?: boolean // 是否显示搜索框
     searchStr?: string // 搜索关键字
@@ -149,6 +150,7 @@ export interface BaseTableListProps {
     rowStyle?: Record<string, string>
     showListOrGridStatus: boolean
     isShowDeleteAll: boolean
+    isShowSelection: boolean
     isShowEdit: boolean
     height?: string | number
     avatarWidth: number

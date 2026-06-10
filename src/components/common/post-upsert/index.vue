@@ -20,6 +20,10 @@
                         <j-icon :name="IconKeys.Media" custom-class="btns-header-item-icon" />
                         <span>添加媒体</span>
                     </el-button>
+                    <el-button type="primary" class="insert-post-content btns-header-item" @click="postContentDialogVisible = true">
+                        <j-icon :name="IconKeys.Article" custom-class="btns-header-item-icon" />
+                        <span>{{ insertPostContentButtonText }}</span>
+                    </el-button>
                 </div>
                 <div class="btns-header-right">
                     <span v-if="localDraftStatus.text" class="local-draft-status" :class="`local-draft-status-${localDraftStatus.type}`">{{
@@ -248,6 +252,12 @@
 
     <!-- 媒体文件选择弹窗 -->
     <SelectMedia v-if="mediaDialogVisible" v-model="mediaDialogVisible" @insert-data="insertMedia" />
+    <PostContentSelectDialog
+        v-if="postContentDialogVisible"
+        v-model="postContentDialogVisible"
+        :initial-post-type="postType"
+        @insert-data="insertPostContent"
+    />
     <ThumbnailSelectDialog
         v-model:visible="thumbnailPickerVisible"
         :options="editorThumbnailOptions"
@@ -265,7 +275,7 @@ import { computed, onBeforeMount, onUnmounted, reactive, ref, toRefs, useTemplat
 import { useRouter } from "vue-router"
 
 import { Target } from "@/api/common"
-import { getPayStrategyOptions, getPostStatusOptions, type InsertPostRequest, PostStatusCode, PostType } from "@/api/post/common"
+import { getPayStrategyOptions, getPostStatusOptions, type InsertPostRequest, type PostResPaginationByAdmin, PostStatusCode, PostType } from "@/api/post/common"
 import { type PostCategory, viewListPostCategoryAPI } from "@/api/postCategory/view"
 import { ResponseCode } from "@/api/response"
 import AddTag from "@/components/common/add-tag/index.vue"
@@ -273,6 +283,8 @@ import type { TableData } from "@/components/common/base-table"
 import { IconKeys } from "@/components/common/icons"
 import ImageInput from "@/components/common/image-input"
 import SelectMedia from "@/components/common/media-select/index.vue"
+import PostContentSelectDialog from "@/components/common/post-content-select-dialog"
+import ThumbnailSelectDialog from "@/components/common/thumbnail-select-dialog"
 import SwitchGroup from "@/components/common/switch-group"
 import VideoTocTreeEdit from "@/components/common/video-toc-tree-edit"
 import { EditorStateManager } from "@/components/editor"
@@ -299,11 +311,11 @@ import { useAdd } from "./useAdd"
 import { useEdit } from "./useEdit"
 import { useFormValidation } from "./useFormValidation"
 import { createPostImageUploadHandler, getNextPostImageIndex } from "./imageUpload"
+import { createPostLinkInsertText } from "./insertPostContent"
 import { usePostUpsertLocalDraft } from "./useLocalDraft"
 import { usePostVideoToc } from "./usePostVideoToc"
 import { useSnapshot } from "./useSnapshot"
 import { useSwitchItem } from "./useSwitchItem"
-import ThumbnailSelectDialog from "@/components/common/thumbnail-select-dialog"
 import {
     createEmptyUpsertPostForm,
     createPostThumbnailOptions,
@@ -393,9 +405,11 @@ useEditor(stateManager)
 
 const editorState = stateManager.getState()
 const mediaDialogVisible = ref(false)
+const postContentDialogVisible = ref(false)
 const thumbnailPickerVisible = ref(false)
 const editorThumbnailOptions = computed(() => createPostThumbnailOptions(editorState.imgUrls))
 const hasEditorThumbnailOptions = computed(() => editorThumbnailOptions.value.length > 0)
+const insertPostContentButtonText = computed(() => (postType === PostType.Page ? "页面引用" : "文章引用"))
 
 const thumbnailAutoInsert = ref(localStorage.getItem(LocalStorageKey.ThumbnailAutoInsertEnable) === "true")
 const thumbnailImgIndex = ref(Number(localStorage.getItem(LocalStorageKey.ThumbnailAutoInsertIndex)) || 1)
@@ -847,6 +861,24 @@ const insertMedia = (data: TableData[]) => {
 
     // 关闭弹窗
     mediaDialogVisible.value = false
+}
+
+/**
+ * insertPostContent 将选择的文章或页面链接插入编辑器当前光标位置.
+ * @param rows 后台文章或页面列表选中的行.
+ * @returns void.
+ */
+const insertPostContent = (rows: PostResPaginationByAdmin[]) => {
+    if (!editorPostRef.value || rows.length === 0) return
+
+    const content = createPostLinkInsertText(rows)
+    if (!content) {
+        MessageUtil.warning("选中的文章或页面无法生成链接")
+        return
+    }
+
+    editorPostRef.value.codemirror?.insertContent(content)
+    postContentDialogVisible.value = false
 }
 
 // 前台查看文章/页面
