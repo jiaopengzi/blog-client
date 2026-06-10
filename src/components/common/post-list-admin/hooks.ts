@@ -27,7 +27,13 @@ function normalizeCountList<T>(data: T[] | null | undefined): T[] {
     return Array.isArray(data) ? data : []
 }
 
-// 获取文章统计数据
+/**
+ * useHeader 获取后台文章或页面列表头部统计数据。
+ * @param userID - 当前登录用户 ID, 用于生成“我的”分组。
+ * @param postType - 当前列表对应的文章类型。
+ * @param enabled - 是否启用头部统计请求。
+ * @returns 头部分组, 月份统计和刷新方法集合。
+ */
 export function useHeader(userID: string = "", postType: PostType, enabled: boolean = true) {
     const postCountAuthor = ref<PostCountByAuthor[]>([])
     const allPosts = ref<PostCountGroupItem>({} as PostCountGroupItem)
@@ -45,7 +51,7 @@ export function useHeader(userID: string = "", postType: PostType, enabled: bool
 
     // 获取 postCountAuthor
     const getPostCountAuthor = async () => {
-        const res = await getPostCountByAuthorAPI()
+        const res = await getPostCountByAuthorAPI(postType)
         if (res.data.code === ResponseCode.PostCountByAuthorSuccess) {
             postCountAuthor.value = normalizeCountList(res.data.data)
         } else {
@@ -56,7 +62,7 @@ export function useHeader(userID: string = "", postType: PostType, enabled: bool
 
     // 获取 postCountStatus
     const getPostCountStatus = async () => {
-        const res = await getPostCountByStatusAPI()
+        const res = await getPostCountByStatusAPI(postType)
         if (res.data.code === ResponseCode.PostCountByStatusSuccess) {
             postCountStatus.value = normalizeCountList(res.data.data)
         } else {
@@ -67,7 +73,7 @@ export function useHeader(userID: string = "", postType: PostType, enabled: bool
 
     // 获取 postCountMonth
     const getPostCountMonth = async () => {
-        const res = await getPostCountByMonthAdminAPI()
+        const res = await getPostCountByMonthAdminAPI(postType)
         if (res.data.code === ResponseCode.PostCountByMonthSuccess) {
             postCountMonth.value = sortPostCountByMonthDesc(normalizeCountList(res.data.data))
         } else {
@@ -78,7 +84,7 @@ export function useHeader(userID: string = "", postType: PostType, enabled: bool
 
     // 获取 postCountPinned
     const getPostCountByIsPinned = async () => {
-        const res = await getPostCountByIsPinnedAPI()
+        const res = await getPostCountByIsPinnedAPI(postType)
         postCountPinned.value = {} as PostCountByIsPinned
 
         if (res.data.code === ResponseCode.PostCountByIsPinnedSuccess) {
@@ -95,7 +101,7 @@ export function useHeader(userID: string = "", postType: PostType, enabled: bool
 
     // 获取 postCountRecommended
     const getPostCountByIsRecommended = async () => {
-        const res = await getPostCountByIsRecommendedAPI()
+        const res = await getPostCountByIsRecommendedAPI(postType)
         postCountRecommended.value = {} as PostCountByIsRecommended
 
         if (res.data.code === ResponseCode.PostCountByIsRecommendedSuccess) {
@@ -221,7 +227,7 @@ export function useHeader(userID: string = "", postType: PostType, enabled: bool
     watch(
         () => enabled,
         async (newEnabled) => {
-            if (postType !== PostType.Post || !newEnabled) {
+            if (!newEnabled) {
                 postCountAuthor.value = []
                 postCountStatus.value = []
                 postCountMonth.value = []

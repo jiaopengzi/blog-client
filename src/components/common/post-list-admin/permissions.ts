@@ -37,7 +37,7 @@ export function canUseAdvancedPostAdminTools(roleName?: string): boolean {
  * @returns true 表示当前页面允许展示后台文章页的高级控件。
  */
 export function shouldShowAdvancedPostAdminTools(postType: PostType, roleName?: string): boolean {
-    return postType === PostType.Post && canUseAdvancedPostAdminTools(roleName)
+    return (postType === PostType.Post || postType === PostType.Page) && canUseAdvancedPostAdminTools(roleName)
 }
 
 /**

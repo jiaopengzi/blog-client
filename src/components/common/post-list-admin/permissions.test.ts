@@ -38,11 +38,13 @@ describe("post-list-admin permissions", () => {
         expect(canUseAdvancedPostAdminTools()).toBe(false)
     })
 
-    it("仅文章页且具备全量后台视图角色时展示高级控件", () => {
+    it("文章页和页面页在具备全量后台视图角色时展示高级控件", () => {
         expect(shouldShowAdvancedPostAdminTools(PostType.Post, "Administrator")).toBe(true)
         expect(shouldShowAdvancedPostAdminTools(PostType.Post, "Editor")).toBe(true)
         expect(shouldShowAdvancedPostAdminTools(PostType.Post, "Author")).toBe(false)
-        expect(shouldShowAdvancedPostAdminTools(PostType.Page, "Administrator")).toBe(false)
+        expect(shouldShowAdvancedPostAdminTools(PostType.Page, "Administrator")).toBe(true)
+        expect(shouldShowAdvancedPostAdminTools(PostType.Page, "Editor")).toBe(true)
+        expect(shouldShowAdvancedPostAdminTools(PostType.Page, "Author")).toBe(false)
     })
 
     it("文章页和页面页在具备全量后台角色时展示修改控件", () => {
