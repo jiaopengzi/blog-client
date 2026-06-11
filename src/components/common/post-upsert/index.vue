@@ -6,7 +6,7 @@
  * Description : 文章新增和编辑组件
 -->
 <template>
-    <section>
+    <section class="post-upsert-page">
         <NoPermission v-if="showEditNoPermission" :head-title="editNoPermissionHeadTitle" :path-display="editNoPermissionPathDisplay" />
 
         <el-container v-else ref="elContainerRef" direction="vertical">
@@ -43,191 +43,271 @@
                 :status-icon="true"
                 :scroll-into-view-options="{ behavior: 'smooth', block: 'center' }"
             >
-                <el-form-item label="标题" prop="post_title">
-                    <el-input class="post-title" v-model="postInfoForm.post_title" placeholder="添加标题" />
-                </el-form-item>
+                <div class="post-form-shell">
+                    <div class="post-form-primary">
+                        <el-form-item label="标题" prop="post_title" class="post-form-primary__title">
+                            <el-input class="post-title" v-model="postInfoForm.post_title" placeholder="添加标题" />
+                        </el-form-item>
 
-                <!-- TODO 占位让校验生效, EditorPost 放到 el-form-item 宽度会无限增长原因待查 -->
-                <el-form-item prop="post_content"> </el-form-item>
-                <!-- 编辑器 -->
-                <div ref="editorContainerRef" class="editor md-layout-fs">
-                    <JEditor
-                        ref="editorPostRef"
-                        :state-manager="stateManager"
-                        :external-toolbar-buttons="editorExternalToolbarButtons"
-                        :is-enable-copy-cache="true"
-                        :post-id="postInfoForm.id"
-                        :is-admin-video="true"
-                        :is-paid="isPaid"
-                        :pay-strategy="postInfoForm.pay_strategy"
-                        :price="(postInfoForm.price * 100).toString()"
-                        :video-toc="postInfoForm.video_toc"
-                        placeholder-text="请开始创作..."
-                        :mdlint-rules="editorMarkdownRules"
-                        :theme="theme"
-                        :image-upload-handler="postImageUploadHandler"
-                        @external-toolbar-btn-clicked="handleEditorExternalToolbarButtonClick"
-                        @update-editor-status="updateEditorStatus"
-                    />
+                        <!-- TODO 占位让校验生效, EditorPost 放到 el-form-item 宽度会无限增长原因待查 -->
+                        <el-form-item prop="post_content"> </el-form-item>
 
-                    <!-- 创建时间和更新时间 -->
-                    <div v-if="postInfoAboutTime.created_at" class="about-time">
-                        <span>创建时间：{{ formatTime(postInfoAboutTime.created_at || "") }}</span>
-                        <span>更新时间：{{ formatTime(postInfoAboutTime.updated_at || "") }}</span>
-                    </div>
-                </div>
+                        <!-- 编辑器 -->
+                        <div ref="editorContainerRef" class="editor md-layout-fs post-form-primary__editor">
+                            <JEditor
+                                ref="editorPostRef"
+                                :state-manager="stateManager"
+                                :external-toolbar-buttons="editorExternalToolbarButtons"
+                                :is-enable-copy-cache="true"
+                                :post-id="postInfoForm.id"
+                                :is-admin-video="true"
+                                :is-paid="isPaid"
+                                :pay-strategy="postInfoForm.pay_strategy"
+                                :price="(postInfoForm.price * 100).toString()"
+                                :video-toc="postInfoForm.video_toc"
+                                placeholder-text="请开始创作..."
+                                :mdlint-rules="editorMarkdownRules"
+                                :theme="theme"
+                                :image-upload-handler="postImageUploadHandler"
+                                @external-toolbar-btn-clicked="handleEditorExternalToolbarButtonClick"
+                                @update-editor-status="updateEditorStatus"
+                            />
 
-                <el-form-item label="分类管理" prop="category_ids" v-if="isShowCategory">
-                    <div class="category">
-                        <el-checkbox-group v-model="postInfoForm.category_ids">
-                            <el-checkbox class="category-item" v-for="item in allCategories" :key="item.id" :value="item.id" size="large">
-                                {{ item.name }}
-                            </el-checkbox>
-                        </el-checkbox-group>
-                    </div>
-                </el-form-item>
-
-                <el-form-item label="标签管理" prop="tags" v-if="isShowTag">
-                    <div class="add-tag">
-                        <AddTag ref="addTagRef" :tag-list-in="postInfoForm.tag_names || []" @update-tag-list="updateTagListIn" />
-                    </div>
-                </el-form-item>
-
-                <el-form-item label="评论管理" prop="comment_status">
-                    <SwitchGroup :switch-items="commentStatus" @update-status="updateCommentStatus" />
-                </el-form-item>
-
-                <el-form-item label="设置文章缩略图。" prop="thumbnail">
-                    <div class="thumbnail-row">
-                        <div class="thumbnail-input">
-                            <ImageInput v-model="postInfoForm.thumbnail" clearable />
-                        </div>
-                        <PostUpsertThumbnailTools
-                            v-model:auto-insert="thumbnailAutoInsert"
-                            v-model:insert-index="thumbnailImgIndex"
-                            :has-editor-thumbnail-options="hasEditorThumbnailOptions"
-                            @pick-from-article="openThumbnailPicker"
-                        />
-                    </div>
-                </el-form-item>
-
-                <div class="more-setting-switch">
-                    <SwitchGroup :switch-items="moreSetting" @update-status="updateDefaultStatus" />
-                </div>
-
-                <el-form-item v-show="moreSettingIsShow" label="别名，留空则使用默认ID值。" prop="slug">
-                    <el-input v-model="postInfoForm.slug" />
-                </el-form-item>
-
-                <el-form-item label="视频合集" prop="video_toc" v-show="moreSettingIsShow">
-                    <div class="video-toc-tree">
-                        <el-button v-if="isShowAddTocBtn" type="primary" @click="addDefaultToc">添加合集</el-button>
-                        <VideoTocTreeEdit :tree-list="postInfoForm.video_toc" @tree-update="handleUpdate" />
-                    </div>
-                </el-form-item>
-
-                <el-form-item v-show="moreSettingIsShow" label="SEO 自定义文章标题，留空则为文章标题。" prop="seo_title">
-                    <el-input v-model="postInfoForm.seo_title" />
-                </el-form-item>
-
-                <el-form-item
-                    ref="seoDescriptionRef"
-                    v-show="moreSettingIsShow"
-                    :label="`SEO文章描述，留空则自动截取内容前 ${post_list_summary_truncate} 字。`"
-                    prop="seo_description"
-                >
-                    <div class="seo-description-extract">
-                        <el-button size="small" class="seo-description-extract-btn" @click="seoDescriptionExtract">提取内容前</el-button>
-                        <el-input-number size="small" v-model="seoDescriptionExtractWords" class="seo-description-extract-input" :min="1" :max="500" :step="1">
-                            <template #suffix>字</template>
-                        </el-input-number>
-                    </div>
-                    <el-input v-model="postInfoForm.seo_description" :rows="5" type="textarea" />
-                </el-form-item>
-
-                <el-form-item
-                    v-show="moreSettingIsShow"
-                    label="SEO文章关键词，多个关键词用英文半角逗号隔开，留空则自动将文章标签做为关键词。"
-                    prop="seo_keywords"
-                >
-                    <el-input v-model="postInfoForm.seo_keywords" />
-                </el-form-item>
-
-                <el-form-item label="付费管理" prop="pay_roles" v-show="moreSettingIsShow">
-                    <SwitchGroup :switch-items="rolePaidList" @update-status="updateRolePaidList" />
-                </el-form-item>
-
-                <el-form-item label="销售价格，留空或者为 0 则为免费。" prop="price" v-show="moreSettingIsShow">
-                    <el-input-number class="input-number" v-model="postInfoForm.price" :min="0" :precision="2" :step="0.01" placeholder="请输入价格(元)">
-                        <template #suffix>
-                            <span>元</span>
-                        </template>
-                    </el-input-number>
-                </el-form-item>
-
-                <el-form-item label="支付策略" prop="pay_strategy" v-show="moreSettingIsShow">
-                    <el-radio-group v-model="postInfoForm.pay_strategy">
-                        <el-radio v-for="item in payStrategyOptions" :key="item.value" :value="item.value">{{ item.label }}</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-
-                <el-form-item label="文章状态" prop="post_status">
-                    <div class="post-status">
-                        <el-radio-group v-model="postInfoForm.post_status">
-                            <el-radio v-for="item in radioOptions()" :key="item.value" :value="item.value">{{ item.label }}</el-radio>
-                        </el-radio-group>
-                        <div
-                            class="post-show-method"
-                            v-show="
-                                (postInfoForm.post_status === PostStatusCode.Future ||
-                                    postInfoForm.post_status === PostStatusCode.Password ||
-                                    postInfoForm.post_status === PostStatusCode.Publish ||
-                                    postInfoForm.post_status === PostStatusCode.Expired) &&
-                                postType === PostType.Post
-                            "
-                        >
-                            <SwitchGroup :switch-items="postShowMethod" @update-status="updatePostShowMethod" />
+                            <!-- 创建时间和更新时间 -->
+                            <div v-if="postInfoAboutTime.created_at" class="about-time">
+                                <span>创建时间：{{ formatTime(postInfoAboutTime.created_at || "") }}</span>
+                                <span>更新时间：{{ formatTime(postInfoAboutTime.updated_at || "") }}</span>
+                            </div>
                         </div>
                     </div>
-                </el-form-item>
 
-                <el-form-item v-if="postInfoForm.post_status === PostStatusCode.Password" label="文章密码" prop="post_password" with="200">
-                    <el-input v-model="postInfoForm.post_password" />
-                </el-form-item>
+                    <div class="post-form-panels">
+                        <section v-if="isShowCategory || isShowTag" class="form-panel">
+                            <div class="form-panel__header">
+                                <h3 class="form-panel__title">基础信息</h3>
+                            </div>
+                            <div class="form-panel__grid">
+                                <el-form-item v-if="isShowCategory" label="分类管理" prop="category_ids" class="form-panel__field form-panel__field--full">
+                                    <div class="category">
+                                        <el-checkbox-group v-model="postInfoForm.category_ids">
+                                            <el-checkbox class="category-item" v-for="item in allCategories" :key="item.id" :value="item.id" size="large">
+                                                {{ item.name }}
+                                            </el-checkbox>
+                                        </el-checkbox-group>
+                                    </div>
+                                </el-form-item>
 
-                <el-form-item label="展示时间" prop="post_push_time">
-                    <div class="post-push-time-field">
-                        <el-date-picker
-                            v-model="postInfoForm.post_push_time.Time"
-                            class="post-time-picker"
-                            type="datetime"
-                            placeholder="默认当前时间"
-                            :shortcuts="generateShortcuts('发布')"
-                            :default-time="defaultTime"
-                            @change="markPostPushTimeTouched"
-                        />
-                        <div v-if="isShowFuturePostPushTimeTip" class="post-push-time-tip">非定时文章的展示时间晚于当前时间, 会影响前台排序和 NEW 标识.</div>
+                                <el-form-item v-if="isShowTag" label="标签管理" prop="tags" class="form-panel__field form-panel__field--full">
+                                    <div class="add-tag">
+                                        <AddTag ref="addTagRef" :tag-list-in="postInfoForm.tag_names || []" @update-tag-list="updateTagListIn" />
+                                    </div>
+                                </el-form-item>
+
+                                <el-form-item label="设置文章缩略图。" prop="thumbnail" class="form-panel__field form-panel__field--full">
+                                    <div class="thumbnail-row">
+                                        <div class="thumbnail-input">
+                                            <ImageInput v-model="postInfoForm.thumbnail" clearable />
+                                        </div>
+                                        <PostUpsertThumbnailTools
+                                            v-model:auto-insert="thumbnailAutoInsert"
+                                            v-model:insert-index="thumbnailImgIndex"
+                                            :has-editor-thumbnail-options="hasEditorThumbnailOptions"
+                                            @pick-from-article="openThumbnailPicker"
+                                        />
+                                    </div>
+                                </el-form-item>
+                            </div>
+                        </section>
+
+                        <div class="more-setting-switch">
+                            <SwitchGroup :switch-items="moreSetting" @update-status="updateDefaultStatus" />
+                        </div>
+
+                        <section v-show="moreSettingIsShow" class="form-panel">
+                            <div class="form-panel__header">
+                                <h3 class="form-panel__title">更多设置</h3>
+                            </div>
+                            <div class="form-panel__grid">
+                                <el-form-item
+                                    v-show="moreSettingIsShow"
+                                    label="评论管理"
+                                    prop="comment_status"
+                                    class="form-panel__field form-panel__field--switch form-panel__field--full"
+                                >
+                                    <SwitchGroup :switch-items="commentStatus" @update-status="updateCommentStatus" />
+                                </el-form-item>
+
+                                <el-form-item
+                                    v-show="moreSettingIsShow"
+                                    label="别名，留空则使用默认ID值。"
+                                    prop="slug"
+                                    class="form-panel__field form-panel__field--full"
+                                >
+                                    <el-input v-model="postInfoForm.slug" />
+                                </el-form-item>
+
+                                <el-form-item label="视频合集" prop="video_toc" v-show="moreSettingIsShow" class="form-panel__field form-panel__field--full">
+                                    <div class="video-toc-tree">
+                                        <el-button v-if="isShowAddTocBtn" type="primary" @click="addDefaultToc">添加合集</el-button>
+                                        <VideoTocTreeEdit :tree-list="postInfoForm.video_toc" @tree-update="handleUpdate" />
+                                    </div>
+                                </el-form-item>
+
+                                <el-form-item
+                                    v-show="moreSettingIsShow"
+                                    label="SEO 自定义文章标题，留空则为文章标题。"
+                                    prop="seo_title"
+                                    class="form-panel__field form-panel__field--full"
+                                >
+                                    <el-input v-model="postInfoForm.seo_title" />
+                                </el-form-item>
+
+                                <el-form-item
+                                    v-show="moreSettingIsShow"
+                                    label="SEO文章关键词，多个关键词用英文半角逗号隔开，留空则自动将文章标签做为关键词。"
+                                    prop="seo_keywords"
+                                    class="form-panel__field form-panel__field--full"
+                                >
+                                    <el-input v-model="postInfoForm.seo_keywords" />
+                                </el-form-item>
+
+                                <el-form-item
+                                    ref="seoDescriptionRef"
+                                    v-show="moreSettingIsShow"
+                                    :label="`SEO文章描述，留空则自动截取内容前 ${post_list_summary_truncate} 字。`"
+                                    prop="seo_description"
+                                    class="form-panel__field form-panel__field--full"
+                                >
+                                    <div class="seo-description-extract">
+                                        <el-button size="small" class="seo-description-extract-btn" @click="seoDescriptionExtract">提取内容前</el-button>
+                                        <el-input-number
+                                            size="small"
+                                            v-model="seoDescriptionExtractWords"
+                                            class="seo-description-extract-input"
+                                            :min="1"
+                                            :max="500"
+                                            :step="1"
+                                        >
+                                            <template #suffix>字</template>
+                                        </el-input-number>
+                                    </div>
+                                    <el-input v-model="postInfoForm.seo_description" :rows="5" type="textarea" />
+                                </el-form-item>
+                            </div>
+                        </section>
+
+                        <section v-show="moreSettingIsShow" class="form-panel">
+                            <div class="form-panel__header">
+                                <h3 class="form-panel__title">付费与定价</h3>
+                            </div>
+                            <div class="form-panel__grid">
+                                <el-form-item label="付费管理" prop="pay_roles" v-show="moreSettingIsShow" class="form-panel__field form-panel__field--full">
+                                    <SwitchGroup :switch-items="rolePaidList" @update-status="updateRolePaidList" />
+                                </el-form-item>
+
+                                <el-form-item
+                                    label="销售价格，留空或者为 0 则为免费。"
+                                    prop="price"
+                                    v-show="moreSettingIsShow"
+                                    class="form-panel__field form-panel__field--full"
+                                >
+                                    <el-input-number
+                                        class="input-number"
+                                        v-model="postInfoForm.price"
+                                        :min="0"
+                                        :precision="2"
+                                        :step="0.01"
+                                        placeholder="请输入价格(元)"
+                                    >
+                                        <template #suffix>
+                                            <span>元</span>
+                                        </template>
+                                    </el-input-number>
+                                </el-form-item>
+
+                                <el-form-item label="支付策略" prop="pay_strategy" v-show="moreSettingIsShow" class="form-panel__field form-panel__field--full">
+                                    <el-radio-group v-model="postInfoForm.pay_strategy">
+                                        <el-radio v-for="item in payStrategyOptions" :key="item.value" :value="item.value">{{ item.label }}</el-radio>
+                                    </el-radio-group>
+                                </el-form-item>
+                            </div>
+                        </section>
+
+                        <section class="form-panel">
+                            <div class="form-panel__header">
+                                <h3 class="form-panel__title">发布设置</h3>
+                            </div>
+                            <div class="form-panel__grid">
+                                <el-form-item label="文章状态" prop="post_status" class="form-panel__field form-panel__field--full">
+                                    <div class="post-status">
+                                        <el-radio-group v-model="postInfoForm.post_status">
+                                            <el-radio v-for="item in radioOptions()" :key="item.value" :value="item.value">{{ item.label }}</el-radio>
+                                        </el-radio-group>
+                                        <div
+                                            class="post-show-method"
+                                            v-show="
+                                                (postInfoForm.post_status === PostStatusCode.Future ||
+                                                    postInfoForm.post_status === PostStatusCode.Password ||
+                                                    postInfoForm.post_status === PostStatusCode.Publish ||
+                                                    postInfoForm.post_status === PostStatusCode.Expired) &&
+                                                postType === PostType.Post
+                                            "
+                                        >
+                                            <SwitchGroup :switch-items="postShowMethod" @update-status="updatePostShowMethod" />
+                                        </div>
+                                    </div>
+                                </el-form-item>
+
+                                <el-form-item
+                                    v-if="postInfoForm.post_status === PostStatusCode.Password"
+                                    label="文章密码"
+                                    prop="post_password"
+                                    with="200"
+                                    class="form-panel__field form-panel__field--full"
+                                >
+                                    <el-input v-model="postInfoForm.post_password" />
+                                </el-form-item>
+
+                                <el-form-item label="展示时间" prop="post_push_time" class="form-panel__field form-panel__field--full">
+                                    <div class="post-push-time-field">
+                                        <el-date-picker
+                                            v-model="postInfoForm.post_push_time.Time"
+                                            class="post-time-picker"
+                                            type="datetime"
+                                            placeholder="默认当前时间"
+                                            :shortcuts="generateShortcuts('发布')"
+                                            :default-time="defaultTime"
+                                            @change="markPostPushTimeTouched"
+                                        />
+                                        <div v-if="isShowFuturePostPushTimeTip" class="post-push-time-tip">
+                                            非定时文章的展示时间晚于当前时间, 会影响前台排序和 NEW 标识.
+                                        </div>
+                                    </div>
+                                </el-form-item>
+
+                                <el-form-item
+                                    v-show="
+                                        postInfoForm.post_status === PostStatusCode.Future ||
+                                        postInfoForm.post_status === PostStatusCode.Password ||
+                                        postInfoForm.post_status === PostStatusCode.Publish ||
+                                        postInfoForm.post_status === PostStatusCode.Expired
+                                    "
+                                    label="过期时间"
+                                    prop="post_expired_time"
+                                    class="form-panel__field form-panel__field--full"
+                                >
+                                    <el-date-picker
+                                        v-model="postInfoForm.post_expired_time.Time"
+                                        type="datetime"
+                                        placeholder="留空则为永不过期"
+                                        :shortcuts="generateShortcuts('过期')"
+                                        :default-time="defaultTime"
+                                    />
+                                </el-form-item>
+                            </div>
+                        </section>
                     </div>
-                </el-form-item>
-
-                <el-form-item
-                    v-show="
-                        postInfoForm.post_status === PostStatusCode.Future ||
-                        postInfoForm.post_status === PostStatusCode.Password ||
-                        postInfoForm.post_status === PostStatusCode.Publish ||
-                        postInfoForm.post_status === PostStatusCode.Expired
-                    "
-                    label="过期时间"
-                    prop="post_expired_time"
-                >
-                    <el-date-picker
-                        v-model="postInfoForm.post_expired_time.Time"
-                        type="datetime"
-                        placeholder="留空则为永不过期"
-                        :shortcuts="generateShortcuts('过期')"
-                        :default-time="defaultTime"
-                    />
-                </el-form-item>
+                </div>
             </el-form>
 
             <div class="btns-footer">
@@ -956,6 +1036,10 @@ onBeforeMount(async () => {
 </script>
 
 <style scoped lang="scss">
+.post-upsert-page {
+    padding-bottom: 24px;
+}
+
 .post-title {
     font-size: 24px;
     font-weight: 700;
@@ -979,6 +1063,10 @@ onBeforeMount(async () => {
 
 .btns-header-right {
     gap: 8px;
+}
+
+.btns-header {
+    margin-bottom: 0;
 }
 
 .local-draft-status {
@@ -1043,7 +1131,7 @@ onBeforeMount(async () => {
 .more-setting-switch {
     display: flex;
     align-items: center;
-    margin: 16px 0;
+    // margin: 16px 0;
     font-size: 14px;
     color: var(--jpz-text-color-primary);
 }
@@ -1065,17 +1153,89 @@ h4 {
 }
 
 .category-item {
-    margin: 8px 16px;
+    margin: 8px 14px 8px 0;
     min-width: 120px;
 }
 
 .post-info {
-    // margin: 10px 20px;
     padding: 10px 20px;
     width: calc(100% - 40px);
     height: 100%;
     overflow: auto;
     position: relative;
+}
+
+.post-form-shell {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.post-form-primary,
+.form-panel {
+    border: none;
+    border-radius: 4px;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--jpz-bg-color) 97%, white) 0%, var(--jpz-bg-color) 100%);
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.04);
+}
+
+.post-form-primary {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+}
+
+.post-form-primary__title {
+    margin-bottom: 0;
+}
+
+.post-form-primary__editor {
+    margin-bottom: 0;
+}
+
+.post-form-panels {
+    display: grid;
+    gap: 24px;
+}
+
+.form-panel {
+    padding: 24px;
+}
+
+.form-panel__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin-bottom: 24px;
+}
+
+.form-panel__title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--jpz-text-color-primary);
+}
+
+.form-panel__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 18px;
+}
+
+.form-panel__field {
+    min-width: 0;
+}
+
+.form-panel__field--full {
+    grid-column: 1 / -1;
+}
+
+.switch-field-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
 }
 
 .input-number {
@@ -1106,13 +1266,80 @@ h4 {
 .thumbnail-row {
     display: flex;
     align-items: flex-start;
-    flex-wrap: nowrap;
-    gap: 12px;
+    flex-wrap: wrap;
+    gap: 18px;
     width: 100%;
 }
 
 .thumbnail-input {
     flex: 1 1 0;
     min-width: 0;
+}
+
+.post-status {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.post-show-method {
+    padding: 14px 16px;
+    border-radius: 4px;
+    border: none;
+    background: color-mix(in srgb, var(--jpz-color-primary) 4%, transparent);
+}
+
+:deep(.form-panel__grid > .el-form-item) {
+    margin-bottom: 24px;
+}
+
+:deep(.post-form-primary > .el-form-item:last-of-type),
+:deep(.form-panel__grid > .el-form-item:last-child) {
+    margin-bottom: 0;
+}
+
+:deep(.form-panel__field--switch .el-form-item__content) {
+    width: auto;
+}
+
+:deep(.form-panel__field--switch.el-form-item) {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+:deep(.form-panel__field--switch.el-form-item .el-form-item__label) {
+    padding-bottom: 0;
+    margin-bottom: 0;
+    width: auto;
+}
+
+:deep(.form-panel__field--switch.el-form-item .el-form-item__content) {
+    min-height: auto;
+}
+
+:deep(.form-panel__field .el-form-item__label) {
+    font-weight: 400;
+    color: var(--jpz-text-color-primary);
+}
+
+@media (max-width: 1024px) {
+    .form-panel__header,
+    .switch-field-row,
+    .about-time,
+    .thumbnail-row,
+    .btns-header,
+    .btns-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .switch-field-row {
+        align-items: center;
+    }
+
+    :deep(.form-panel__field--switch.el-form-item) {
+        display: block;
+    }
 }
 </style>
