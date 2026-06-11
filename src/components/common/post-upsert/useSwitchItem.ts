@@ -9,7 +9,7 @@
 import { type Reactive, reactive, ref } from "vue"
 
 import { CommentStatusCode, PostType } from "@/api/post/common"
-import type { SwitchItem, SwitchItemLabel } from "@/components/common/switch-group"
+import type { SwitchItem, SwitchItemColor, SwitchItemLabel } from "@/components/common/switch-group"
 import { usePayRolesSwitchItem } from "@/components/hooks/usePayRolesSwitchItem"
 import { LocalStorageKey } from "@/stores/local"
 
@@ -25,6 +25,10 @@ export function useSwitchItem(postInfoForm: Reactive<UpsertPostForm>) {
         active: "开启",
         inactive: "关闭",
     }
+    const postUpsertSwitchColor: SwitchItemColor = {
+        active: "var(--jpz-color-primary)",
+        inactive: "color-mix(in srgb, var(--jpz-text-color-secondary) 55%, #cbd5e1)",
+    }
 
     // 常规设置是否展示
     const moreSettingIsShow = ref(localStorage.getItem(LocalStorageKey.IsShowSeoAtPostWrite) === "true")
@@ -38,6 +42,7 @@ export function useSwitchItem(postInfoForm: Reactive<UpsertPostForm>) {
                 active: "展开",
                 inactive: "折叠",
             },
+            color: postUpsertSwitchColor,
         },
     ])
 
@@ -67,6 +72,7 @@ export function useSwitchItem(postInfoForm: Reactive<UpsertPostForm>) {
             name: "commentStatus",
             status: postInfoForm.comment_status === CommentStatusCode.Open,
             label: commonSwitchItemLabel,
+            color: postUpsertSwitchColor,
         },
     ])
 
@@ -84,6 +90,7 @@ export function useSwitchItem(postInfoForm: Reactive<UpsertPostForm>) {
             namePosition: "left",
             status: false,
             label: commonSwitchItemLabel,
+            color: postUpsertSwitchColor,
             minWidth: 180,
         },
         {
@@ -92,6 +99,7 @@ export function useSwitchItem(postInfoForm: Reactive<UpsertPostForm>) {
             namePosition: "left",
             status: false,
             label: commonSwitchItemLabel,
+            color: postUpsertSwitchColor,
             minWidth: 180,
         },
     ])
@@ -107,6 +115,7 @@ export function useSwitchItem(postInfoForm: Reactive<UpsertPostForm>) {
     const { rolePaidList, initRolePaidManagement, updateRolePaidList } = usePayRolesSwitchItem(
         postInfoForm,
         postInfoForm.post_type === PostType.Page, // 如果是页面类型，则默认开启
+        postUpsertSwitchColor,
     )
 
     return {

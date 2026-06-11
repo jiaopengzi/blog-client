@@ -9,7 +9,7 @@
 import { reactive } from "vue"
 
 import type { UpsertPostForm } from "@/components/common/post-upsert/types"
-import type { SwitchItem, SwitchItemLabel } from "@/components/common/switch-group"
+import type { SwitchItem, SwitchItemColor, SwitchItemLabel } from "@/components/common/switch-group"
 import { usePermissionRoleStore } from "@/stores/permissionRole"
 // import type { ViewForm as AccountKeyForm } from "@/views/admin/component/main/account-key-all/component/view/types"
 
@@ -28,9 +28,10 @@ const rolePaidLabel = (): SwitchItemLabel => {
  * 付费角色开关项
  * @param form - 包含 pay_roles 属性的表单对象
  * @param defaultActive - 角色的默认激活状态，默认为 false（付费）
+ * @param switchColor - 当前角色开关使用的统一配色。
  * @returns 角色付费管理列表及相关方法
  */
-export function usePayRolesSwitchItem<T extends PayRolesForm>(form: T, defaultActive: boolean = false) {
+export function usePayRolesSwitchItem<T extends PayRolesForm>(form: T, defaultActive: boolean = false, switchColor?: SwitchItemColor) {
     // 角色付费管理
     const rolePaidList: SwitchItem[] = reactive([])
 
@@ -42,6 +43,7 @@ export function usePayRolesSwitchItem<T extends PayRolesForm>(form: T, defaultAc
             namePosition: "left",
             status: defaultActive,
             label: rolePaidLabel(),
+            color: switchColor,
             minWidth: 150,
         }
     }
