@@ -8,7 +8,7 @@
 
 <template>
     <div ref="toolbarRef" id="toolbar">
-        <button v-for="btn in toolbarBtns" type="button" :key="btn.name" class="toolbar-btn" @mousedown.prevent @click="emitToolbarBtnClicked(btn.name)">
+        <button v-for="btn in toolbarBtns" type="button" :key="btn.name" class="toolbar-btn" @mousedown.prevent @click="emitToolbarBtnClicked(btn)">
             <!-- 付费 -->
             <BarPay v-if="btn.name === CommandsKey.PayContent" :icon="btn.icon" @pay-select="handlePaySelect" />
 
@@ -49,8 +49,6 @@ import { useResizeObserver } from "@vueuse/core"
 import { onMounted, onUnmounted, ref, useTemplateRef } from "vue"
 import { type EmojiExt } from "vue3-emoji-picker"
 
-import type { IconKeys } from "@/components/common/icons"
-
 import { CommandsKey } from "../../command"
 import BarAlert, { Alerts } from "./components/alert"
 import BarEmoji from "./components/emoji"
@@ -58,13 +56,14 @@ import BarHeading from "./components/heading"
 import BarPay, { type PayTagItem } from "./components/pay"
 import BarTable, { type TableRowCol } from "./components/table"
 import BarTool from "./components/tool"
+import type { EditorToolbarButton } from "./types"
 import BarVim from "./components/vim"
 
 defineOptions({ name: "EditorToolbar" })
 
 // 定义 props
 const { toolbarBtns } = defineProps<{
-    toolbarBtns: Array<{ name: CommandsKey; display: string; icon: IconKeys }> // 预览内容
+    toolbarBtns: EditorToolbarButton[] // 工具栏按钮列表
     vimMode?: boolean // Vim 当前启用状态
 }>()
 
@@ -80,6 +79,7 @@ const emit = defineEmits<{
     (e: "tool-settings", name: CommandsKey): void
     (e: "vim-mode-change", enabled: boolean): void
     (e: "vim-settings", name: CommandsKey): void
+    (e: "external-toolbar-btn-clicked", name: string): void
     (e: "toolbar-height", height: string): void
 }>()
 
@@ -101,7 +101,13 @@ const toolbarMenuCommands = new Set<CommandsKey>([
  * @param name - 当前点击的工具栏命令。
  * @returns 无返回值。
  */
-const emitToolbarBtnClicked = (name: CommandsKey) => {
+const emitToolbarBtnClicked = (button: EditorToolbarButton) => {
+    if (button.isExternal) {
+        emit("external-toolbar-btn-clicked", button.name)
+        return
+    }
+
+    const name = button.name as CommandsKey
     if (toolbarMenuCommands.has(name)) {
         return
     }

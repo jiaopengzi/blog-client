@@ -20,7 +20,7 @@ import { setCSSVariable } from "@/utils/style"
 import { buildPowerBiContent, buildWechatCaptchaPrefix, loadPowerBiDefaults, loadWechatCaptchaDefaults, saveVimDefaults } from "@/stores/editor-defaults"
 
 import { CommandsKey, markdownEditorCommands } from "../command"
-import { Alerts, type PayTagItem, type TableRowCol } from "../components/toolbar"
+import { Alerts, type EditorToolbarButton, type PayTagItem, type TableRowCol } from "../components/toolbar"
 import { EditorStateManager } from "../state"
 
 export function useToolbar(
@@ -88,7 +88,7 @@ export function useToolbar(
     }
 
     // 工具栏按钮
-    const toolbarBtns = computed(() => {
+    const toolbarBtns = computed<EditorToolbarButton[]>(() => {
         return editorState.commandKeys.map((key) => {
             const commandMeta = getToolbarCommandMeta(key as CommandsKey)
             const hotKey = commandMeta.hotKey ? ` <${commandMeta.hotKey}>` : ""
@@ -96,6 +96,7 @@ export function useToolbar(
                 name: key as CommandsKey,
                 display: (commandMeta.tip + hotKey) as string,
                 icon: commandMeta.icon as IconKeys,
+                isExternal: false,
             }
         })
     })

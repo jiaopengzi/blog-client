@@ -16,14 +16,6 @@
                         <j-icon :name="IconKeys.Edit" custom-class="btns-header-item-icon" />
                         <span>{{ postType === PostType.Page ? "新页面" : "新文章" }}</span>
                     </el-button>
-                    <el-button type="primary" class="add-media btns-header-item" @click="mediaDialogVisible = true">
-                        <j-icon :name="IconKeys.Media" custom-class="btns-header-item-icon" />
-                        <span>添加媒体</span>
-                    </el-button>
-                    <el-button type="primary" class="insert-post-content btns-header-item" @click="postContentDialogVisible = true">
-                        <j-icon :name="IconKeys.Article" custom-class="btns-header-item-icon" />
-                        <span>{{ insertPostContentButtonText }}</span>
-                    </el-button>
                 </div>
                 <div class="btns-header-right">
                     <span v-if="localDraftStatus.text" class="local-draft-status" :class="`local-draft-status-${localDraftStatus.type}`">{{
@@ -62,6 +54,7 @@
                     <JEditor
                         ref="editorPostRef"
                         :state-manager="stateManager"
+                        :external-toolbar-buttons="editorExternalToolbarButtons"
                         :is-enable-copy-cache="true"
                         :post-id="postInfoForm.id"
                         :is-admin-video="true"
@@ -73,6 +66,7 @@
                         :mdlint-rules="editorMarkdownRules"
                         :theme="theme"
                         :image-upload-handler="postImageUploadHandler"
+                        @external-toolbar-btn-clicked="handleEditorExternalToolbarButtonClick"
                         @update-editor-status="updateEditorStatus"
                     />
 
@@ -287,7 +281,7 @@ import PostContentSelectDialog from "@/components/common/post-content-select-dia
 import ThumbnailSelectDialog from "@/components/common/thumbnail-select-dialog"
 import SwitchGroup from "@/components/common/switch-group"
 import VideoTocTreeEdit from "@/components/common/video-toc-tree-edit"
-import { EditorStateManager } from "@/components/editor"
+import { CommandsKey, type EditorExternalToolbarButton, EditorStateManager } from "@/components/editor"
 import JEditor from "@/components/editor/index.vue"
 import { useEditor } from "@/components/hooks/useEditor"
 import { usePostView } from "@/components/hooks/usePostView"
@@ -403,6 +397,11 @@ const editorPostRef = useTemplateRef<InstanceType<typeof JEditor>>("editorPostRe
 const stateManager = new EditorStateManager()
 useEditor(stateManager)
 
+const postEditorToolbarActionNames = {
+    AddMedia: "post-upsert-add-media",
+    InsertPostContent: "post-upsert-insert-post-content",
+} as const
+
 const editorState = stateManager.getState()
 const mediaDialogVisible = ref(false)
 const postContentDialogVisible = ref(false)
@@ -410,6 +409,22 @@ const thumbnailPickerVisible = ref(false)
 const editorThumbnailOptions = computed(() => createPostThumbnailOptions(editorState.imgUrls))
 const hasEditorThumbnailOptions = computed(() => editorThumbnailOptions.value.length > 0)
 const insertPostContentButtonText = computed(() => (postType === PostType.Page ? "页面引用" : "文章引用"))
+const editorExternalToolbarButtons = computed<EditorExternalToolbarButton[]>(() => {
+    return [
+        {
+            name: postEditorToolbarActionNames.AddMedia,
+            display: "添加媒体",
+            icon: IconKeys.Media,
+            insertAfter: CommandsKey.Fullscreen,
+        },
+        {
+            name: postEditorToolbarActionNames.InsertPostContent,
+            display: insertPostContentButtonText.value,
+            icon: IconKeys.Article,
+            insertAfter: CommandsKey.Fullscreen,
+        },
+    ]
+})
 
 const thumbnailAutoInsert = ref(localStorage.getItem(LocalStorageKey.ThumbnailAutoInsertEnable) === "true")
 const thumbnailImgIndex = ref(Number(localStorage.getItem(LocalStorageKey.ThumbnailAutoInsertIndex)) || 1)
@@ -817,6 +832,24 @@ const submitForm = async (formEl: FormInstance | undefined) => {
             await updateSnapshot()
             clearPostUpsertLocalDraftAfterRemoteSaved(draftPostIdBeforeSubmit)
         }
+    }
+}
+
+/**
+ * handleEditorExternalToolbarButtonClick 处理编辑器工具栏内的业务按钮动作。
+ * 文章编辑页仅在此处注册附加能力, 以避免影响编辑器在其他场景的复用。
+ * @param name - 当前点击的外部工具栏按钮标识。
+ * @returns 无返回值。
+ */
+const handleEditorExternalToolbarButtonClick = (name: string): void => {
+    if (name === postEditorToolbarActionNames.AddMedia) {
+        mediaDialogVisible.value = true
+        return
+    }
+
+    if (name === postEditorToolbarActionNames.InsertPostContent) {
+        postContentDialogVisible.value = true
+        return
     }
 }
 

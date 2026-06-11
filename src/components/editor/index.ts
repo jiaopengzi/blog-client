@@ -7,6 +7,7 @@
  */
 
 export * from "./command"
+export * from "./components/toolbar"
 export { default } from "./index.vue"
 export * from "./state"
 export * from "./types"

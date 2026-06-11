@@ -11,9 +11,10 @@
         <!-- 工具栏 -->
         <div class="md-toolbar">
             <Toolbar
-                :toolbar-btns="toolbarBtns"
+                :toolbar-btns="mergedToolbarBtns"
                 :vim-mode="state.vimMode"
                 @toolbar-btn-clicked="toolbarBtnClicked"
+                @external-toolbar-btn-clicked="handleExternalToolbarBtnClicked"
                 @heading-select="toolbarBtnClicked"
                 @pay-select="insertPay"
                 @emoji-picker-selected="emojiPickerSelected"
@@ -147,6 +148,7 @@ import EditorResizeHandle from "./components/resize-handle"
 import SettingsDialog from "./components/settings"
 import EditorToc from "./components/toc"
 import Toolbar from "./components/toolbar"
+import { mergeEditorToolbarButtons, type EditorExternalToolbarButton, type EditorToolbarButton } from "./components/toolbar"
 import { useCodemirror, usePreview, useToolbar } from "./hooks"
 import {
     buildEditorGridTemplate,
@@ -183,6 +185,7 @@ const {
     },
     theme = getTheme(Theme.MD, ThemeMode.Light),
     imageUploadHandler = void 0,
+    externalToolbarButtons = [],
 } = defineProps<{
     stateManager: EditorStateManager
     postId?: string // 文章ID
@@ -198,10 +201,12 @@ const {
     mdlintRules?: MarkdownRulesConfig // Markdown 规则配置
     theme?: Extension // 主题
     imageUploadHandler?: ImageUploadHandler // 图片上传处理器
+    externalToolbarButtons?: EditorExternalToolbarButton[] // 业务侧附加工具栏按钮
 }>()
 
 const emit = defineEmits<{
     (event: "updateEditorStatus", val: boolean): void
+    (event: "external-toolbar-btn-clicked", name: string): void
 }>()
 
 const state = stateManager.getState()
@@ -226,6 +231,9 @@ const localPrice = computed(() => price)
 const settingsDialogVisible = ref(false)
 const settingsDialogCommand = ref<CommandsKey | null>(null)
 const isPaneResizeEnabled = computed(() => device.value !== DeviceType.PHONE)
+const mergedToolbarBtns = computed<EditorToolbarButton[]>(() => {
+    return mergeEditorToolbarButtons(toolbarBtns.value, externalToolbarButtons)
+})
 const visiblePanes = computed<EditorPaneName[]>(() => {
     const panes: EditorPaneName[] = []
 
@@ -381,6 +389,15 @@ const pauseTocRefreshDuringEditing = (): void => {
 const openSettingsDialog = (name: CommandsKey) => {
     settingsDialogCommand.value = name
     settingsDialogVisible.value = true
+}
+
+/**
+ * handleExternalToolbarBtnClicked 将业务侧附加按钮点击事件继续抛给父组件。
+ * @param name - 当前点击的外部按钮标识。
+ * @returns 无返回值。
+ */
+const handleExternalToolbarBtnClicked = (name: string): void => {
+    emit("external-toolbar-btn-clicked", name)
 }
 
 /**

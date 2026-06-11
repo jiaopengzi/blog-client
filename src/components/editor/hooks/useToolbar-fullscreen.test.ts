@@ -14,6 +14,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { IconKeys } from "@/components/common/icons"
 
 import { CommandsKey } from "../command"
+import type { EditorToolbarButton } from "../components/toolbar"
 import { EditorStateManager } from "../state"
 import { useToolbar } from "./useToolbar"
 
@@ -32,14 +33,8 @@ vi.mock("@vueuse/core", async (importOriginal) => {
     }
 })
 
-interface ToolbarButtonSnapshot {
-    name: CommandsKey
-    display: string
-    icon: IconKeys
-}
-
 interface ToolbarHostExpose {
-    getToolbarBtns: () => ToolbarButtonSnapshot[]
+    getToolbarBtns: () => EditorToolbarButton[]
     toolbarBtnClicked: (name: CommandsKey) => Promise<void>
     state: ReturnType<EditorStateManager["getState"]>
 }
@@ -57,7 +52,7 @@ function createToolbarHost(stateManager: EditorStateManager) {
             const toolbar = useToolbar(mdLayoutRef, mdContainerRef, stateManager)
 
             expose({
-                getToolbarBtns: (): ToolbarButtonSnapshot[] => toolbar.toolbarBtns.value,
+                getToolbarBtns: (): EditorToolbarButton[] => toolbar.toolbarBtns.value,
                 toolbarBtnClicked: toolbar.toolbarBtnClicked,
                 state: stateManager.getState(),
             })

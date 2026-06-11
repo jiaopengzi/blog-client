@@ -98,4 +98,44 @@ describe("EditorToolbar", () => {
 
         expect(wrapper.emitted("toolbar-btn-clicked")).toEqual([[CommandsKey.Vim]])
     })
+
+    it("点击外部工具栏按钮时会抛出 external-toolbar-btn-clicked 事件", async () => {
+        const wrapper = mount(Toolbar, {
+            props: {
+                toolbarBtns: [
+                    {
+                        name: "post-upsert-add-media",
+                        display: "添加媒体",
+                        icon: IconKeys.Media,
+                        isExternal: true,
+                    },
+                ],
+                vimMode: false,
+            },
+            global: {
+                stubs: {
+                    BarPay: BarStub,
+                    BarHeading: BarStub,
+                    BarEmoji: BarStub,
+                    BarTable: BarStub,
+                    BarAlert: BarStub,
+                    BarTool: BarStub,
+                    BarVim: BarStub,
+                    ElTooltip: defineComponent({
+                        name: "ElTooltip",
+                        template: "<div><slot /></div>",
+                    }),
+                    JIcon: defineComponent({
+                        name: "JIcon",
+                        template: '<span class="j-icon-stub"></span>',
+                    }),
+                },
+            },
+        })
+
+        await wrapper.get("button.toolbar-btn").trigger("click")
+
+        expect(wrapper.emitted("external-toolbar-btn-clicked")).toEqual([["post-upsert-add-media"]])
+        expect(wrapper.emitted("toolbar-btn-clicked")).toBeUndefined()
+    })
 })
