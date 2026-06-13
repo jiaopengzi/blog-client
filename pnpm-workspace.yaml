@@ -166,3 +166,7 @@ minimumReleaseAgeExclude:
   - rolldown@1.0.3
   - unhead@3.1.1
   - vue@3.5.35
+  - '@vue/language-core@3.3.5'
+  - dompurify@3.4.10
+  - eslint@10.5.0
+  - vue-tsc@3.3.5
