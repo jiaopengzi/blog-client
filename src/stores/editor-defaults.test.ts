@@ -9,6 +9,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
 
 import {
+    DEFAULT_VIM_IME_PORT,
     DEFAULT_VIM_MAPPINGS,
     buildVimMappingText,
     buildPowerBiContent,
@@ -66,6 +67,7 @@ describe("saveVimDefaults + loadVimDefaults", () => {
                 { lhs: "p", rhs: '"+p', context: "normal" as const },
                 { lhs: "jj", rhs: "<Esc>", context: "insert" as const },
             ],
+            imePort: 18765,
         }
 
         saveVimDefaults(defaults)
@@ -80,9 +82,25 @@ describe("saveVimDefaults + loadVimDefaults", () => {
     })
 
     it("保存空映射后会保留为空映射, 不会被自动填充", () => {
-        saveVimDefaults({ enabled: true, mappings: [] })
+        saveVimDefaults({ enabled: true, mappings: [], imePort: DEFAULT_VIM_IME_PORT })
 
-        expect(loadVimDefaults()).toEqual({ enabled: true, mappings: [] })
+        expect(loadVimDefaults()).toEqual({ enabled: true, mappings: [], imePort: DEFAULT_VIM_IME_PORT })
+    })
+
+    it("旧配置缺少 imePort 时会回退到默认端口", () => {
+        localStorage.setItem(
+            "editor_defaults_vim",
+            JSON.stringify({
+                enabled: true,
+                mappings: [{ lhs: "yy", rhs: '"+yy', context: "normal" }],
+            }),
+        )
+
+        expect(loadVimDefaults()).toEqual({
+            enabled: true,
+            mappings: [{ lhs: "yy", rhs: '"+yy', context: "normal" }],
+            imePort: DEFAULT_VIM_IME_PORT,
+        })
     })
 })
 
@@ -183,7 +201,7 @@ describe("Vim 映射文本工具", () => {
 
 describe("clearVimDefaults", () => {
     it("调用后 loadVimDefaults 返回 null", () => {
-        saveVimDefaults({ enabled: true, mappings: [{ lhs: "yy", rhs: '"+yy' }] })
+        saveVimDefaults({ enabled: true, mappings: [{ lhs: "yy", rhs: '"+yy' }], imePort: DEFAULT_VIM_IME_PORT })
         clearVimDefaults()
 
         expect(loadVimDefaults()).toBeNull()

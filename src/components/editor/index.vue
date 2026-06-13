@@ -56,6 +56,7 @@
                     :height="cmHeight"
                     :vim-mode="state.vimMode"
                     :vim-mappings="state.vimMappings"
+                    :vim-ime-port="state.vimImePort"
                     :mentions="state.mentions"
                     :is-user-scroll-cm-editor="state.isUserScrollCmEditor"
                     :heading-show-current-index="state.headingShowCurrentIndex"
@@ -408,12 +409,14 @@ const handleExternalToolbarBtnClicked = (name: string): void => {
 const handleVimSettingsSave = (data: VimDefaults): void => {
     stateManager.setVimMode(data.enabled)
     stateManager.setVimMappings(data.mappings)
+    stateManager.setVimImePort(data.imePort)
 }
 
 const persistedVimDefaults = loadVimDefaults()
 if (persistedVimDefaults) {
     stateManager.setVimMode(persistedVimDefaults.enabled)
     stateManager.setVimMappings(persistedVimDefaults.mappings)
+    stateManager.setVimImePort(persistedVimDefaults.imePort)
 }
 
 // ref

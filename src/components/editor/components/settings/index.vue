@@ -59,7 +59,7 @@ const emit = defineEmits<{
 // 弹窗标题映射，扩展时在此添加新条目
 const dialogTitleMap: Partial<Record<CommandsKey, string>> = {
     [CommandsKey.PowerBi]: "PowerBi 默认设置",
-    [CommandsKey.Vim]: "Vim 映射设置",
+    [CommandsKey.Vim]: "Vim 映射与输入法设置",
     [CommandsKey.WechatCaptcha]: "WechatCaptcha 默认设置",
 }
 

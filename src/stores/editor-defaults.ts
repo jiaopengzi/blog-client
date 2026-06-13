@@ -26,6 +26,7 @@ export interface VimKeyMapping {
 export interface VimDefaults {
     enabled: boolean
     mappings: VimKeyMapping[]
+    imePort: number
 }
 
 // WechatCaptcha 插入默认值
@@ -39,6 +40,9 @@ const POWER_BI_FALLBACK_CONTENT = '<power-bi src="" maskcolor=""></power-bi>'
 
 // Vim 默认用户映射为空, 表示保持原生 Vim 行为.
 export const DEFAULT_VIM_MAPPINGS: ReadonlyArray<VimKeyMapping> = Object.freeze([])
+
+// Vim 输入法切换服务默认端口.
+export const DEFAULT_VIM_IME_PORT = 8765
 
 // WechatCaptcha 静态回退前缀
 const WECHAT_CAPTCHA_FALLBACK_PREFIX =
@@ -71,6 +75,22 @@ function normalizeVimMappingContext(context: string | undefined): VimKeyMappingC
     }
 
     return undefined
+}
+
+/**
+ * normalizeVimImePort 标准化 Vim 输入法服务端口.
+ * 非法值会回退到默认端口, 以兼容旧配置和手工篡改的 localStorage 数据.
+ * @param port - 原始端口值.
+ * @returns 合法端口号.
+ */
+function normalizeVimImePort(port: unknown): number {
+    const resolvedPort = typeof port === "number" ? port : Number(port)
+
+    if (!Number.isInteger(resolvedPort) || resolvedPort < 1 || resolvedPort > 65535) {
+        return DEFAULT_VIM_IME_PORT
+    }
+
+    return resolvedPort
 }
 
 /**
@@ -148,6 +168,7 @@ export function getDefaultVimDefaults(enabled: boolean = false): VimDefaults {
     return {
         enabled,
         mappings: cloneVimMappings(DEFAULT_VIM_MAPPINGS),
+        imePort: DEFAULT_VIM_IME_PORT,
     }
 }
 
@@ -245,6 +266,7 @@ export function saveVimDefaults(defaults: VimDefaults): void {
     const sanitizedDefaults: VimDefaults = {
         enabled: defaults.enabled,
         mappings: normalizeVimMappings(defaults.mappings),
+        imePort: normalizeVimImePort(defaults.imePort),
     }
 
     localStorage.setItem(LocalStorageKey.EditorDefaultsVim, JSON.stringify(sanitizedDefaults))
@@ -293,6 +315,7 @@ export function loadVimDefaults(): VimDefaults | null {
         return {
             enabled: Boolean(parsed.enabled),
             mappings: normalizeVimMappings(Array.isArray(parsed.mappings) ? parsed.mappings : []),
+            imePort: normalizeVimImePort(parsed.imePort),
         }
     } catch {
         return null

@@ -9,6 +9,7 @@
 import { CommandsKey } from "../command"
 import { defaultCommandKeys } from "../command"
 import type { EditorState, EditorStateOptions } from "../types"
+import { DEFAULT_VIM_IME_PORT } from "@/stores/editor-defaults"
 
 /**
  * @description : 创建默认的编辑器状态
@@ -35,6 +36,7 @@ export function createDefaultEditorState(options: EditorStateOptions = {}): Edit
         cmCommand: { commandName: "" as CommandsKey, time: new Date() }, // 命令
         vimMode: false, // 是否开启 vim 模式
         vimMappings: [], // Vim 用户快捷键映射
+        vimImePort: DEFAULT_VIM_IME_PORT, // Vim 输入法切换服务端口
         mentions: [], // @ 提及补全
         commandKeys: defaultCommandKeys.postPc, // 默认使用 postPc 模式的快捷键
         mode: "post", // 默认模式为文章模式

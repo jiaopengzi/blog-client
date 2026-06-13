@@ -102,13 +102,13 @@ export function useToolbar(
     })
 
     /**
-     * setVimMode 更新 Vim 启用状态, 并将当前映射与开关状态一起持久化到 localStorage.
+     * setVimMode 更新 Vim 启用状态, 并将当前映射, 输入法端口与开关状态一起持久化到 localStorage.
      * @param enabled - 是否启用 Vim 模式.
      * @returns 无返回值.
      */
     const setVimMode = (enabled: boolean): void => {
         stateManager.setVimMode(enabled)
-        saveVimDefaults({ enabled, mappings: editorState.vimMappings })
+        saveVimDefaults({ enabled, mappings: editorState.vimMappings, imePort: editorState.vimImePort })
     }
 
     /**

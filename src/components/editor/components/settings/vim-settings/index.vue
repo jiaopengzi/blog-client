@@ -8,6 +8,10 @@
 
 <template>
     <el-form ref="formRef" :model="form" :rules="rules" label-position="top">
+        <el-form-item label="输入法服务端口" prop="imePort">
+            <el-input-number v-model="form.imePort" :min="1" :max="65535" :step="1" controls-position="right" style="width: 100%" />
+            <div class="mapping-tip">默认端口为 8765, 对应本地 blog-vim-ime 服务的监听端口.</div>
+        </el-form-item>
         <el-form-item label="快捷键映射" prop="mappingText">
             <el-input v-model="form.mappingText" type="textarea" :rows="7" :placeholder="mappingPlaceholderText" />
             <div class="mapping-tip">留空则保持原生 Vim 行为. 如需快速填入系统剪贴板映射, 可点击下方“推荐配置”.</div>
@@ -24,7 +28,7 @@
 import type { FormInstance, FormRules } from "element-plus"
 import { nextTick, reactive, useTemplateRef, watch } from "vue"
 
-import { buildVimMappingText, getDefaultVimDefaults, parseVimMappingText, type VimDefaults } from "@/stores/editor-defaults"
+import { buildVimMappingText, DEFAULT_VIM_IME_PORT, getDefaultVimDefaults, parseVimMappingText, type VimDefaults } from "@/stores/editor-defaults"
 
 defineOptions({ name: "VimSettings" })
 
@@ -39,7 +43,7 @@ const emit = defineEmits<{
 
 const formRef = useTemplateRef<FormInstance>("formRef")
 
-const form = reactive({ mappingText: "" })
+const form = reactive({ mappingText: "", imePort: DEFAULT_VIM_IME_PORT })
 const recommendedMappingText = buildVimMappingText([
     { lhs: "yy", rhs: '"+yy', context: "normal" },
     { lhs: "p", rhs: '"+p', context: "normal" },
@@ -54,7 +58,28 @@ const getInitialMappingText = (): string => {
     return buildVimMappingText(props.initialValues?.mappings ?? getDefaultVimDefaults().mappings)
 }
 
+/**
+ * getInitialImePort 返回当前表单应展示的输入法服务端口.
+ * @returns 本地输入法服务端口.
+ */
+const getInitialImePort = (): number => {
+    return props.initialValues?.imePort ?? getDefaultVimDefaults().imePort
+}
+
 const rules = reactive<FormRules>({
+    imePort: [
+        {
+            validator: (_rule, value: number, callback) => {
+                if (Number.isInteger(value) && value >= 1 && value <= 65535) {
+                    callback()
+                    return
+                }
+
+                callback(new Error("请输入 1-65535 之间的端口号"))
+            },
+            trigger: "change",
+        },
+    ],
     mappingText: [
         {
             validator: (_rule, value: string, callback) => {
@@ -73,6 +98,7 @@ const rules = reactive<FormRules>({
 watch(
     () => props.initialValues,
     () => {
+        form.imePort = getInitialImePort()
         form.mappingText = getInitialMappingText()
         nextTick(() => formRef.value?.clearValidate())
     },
@@ -107,6 +133,7 @@ const handleSave = async (): Promise<void> => {
         emit("save", {
             enabled: props.initialValues?.enabled ?? false,
             mappings: parseVimMappingText(form.mappingText),
+            imePort: form.imePort,
         })
     })
 }

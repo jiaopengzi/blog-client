@@ -208,6 +208,15 @@ export class EditorStateManager {
         this.state.vimMappings = vimMappings
     }
 
+    /**
+     * setVimImePort 设置 Vim 输入法切换服务端口.
+     * @param vimImePort - 本地输入法服务监听端口.
+     * @returns 无返回值.
+     */
+    setVimImePort(vimImePort: number): void {
+        this.state.vimImePort = vimImePort
+    }
+
     // 设置鼠标状态
     setMouseStatus(status: MouseStatus): void {
         this.state.mouseStatus = status

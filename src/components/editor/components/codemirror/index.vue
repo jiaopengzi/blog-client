@@ -27,6 +27,7 @@ import { getTheme, Theme, themeCompartment, ThemeMode } from "@/pkg/codemirror/e
 import { applyVimMappings, createVimExtension, vimModeCompartment } from "@/pkg/codemirror/extension/vim"
 import { type DefaultSetupOptions } from "@/pkg/codemirror/options"
 import { createDefaultSetup } from "@/pkg/codemirror/setup"
+import { notifyVimModeChange, resolveVimModeName, type VimModeChangeEvent, type VimModeName } from "../../utils/vim-ime"
 
 import { clearEditorView } from "../../command/constant"
 import type { CodeEditorProps } from "./types"
@@ -38,6 +39,7 @@ const {
     cmCommand = undefined, // 编辑器命令
     vimMode = false, // 是否开启 vim 模式
     vimMappings = [], // Vim 快捷键映射
+    vimImePort = 8765, // Vim 输入法切换服务端口
     initDocIsEmpty = true, // 初始文档是否为空,默认为空
     height = "100%", // 编辑器高度
     width = "100%", // 编辑器宽度
@@ -129,6 +131,16 @@ watch(
 
 // 编辑器实例
 let cmView: EditorView
+let currentVimMode: VimModeName = "normal"
+
+type VimCompatibleCm = {
+    on: (eventName: "vim-mode-change", listener: (modeObj: VimModeChangeEvent) => void) => void
+    off: (eventName: "vim-mode-change", listener: (modeObj: VimModeChangeEvent) => void) => void
+}
+
+type VimCompatibleEditorView = EditorView & {
+    cm?: VimCompatibleCm
+}
 
 const options: ComputedRef<DefaultSetupOptions> = computed(() => {
     return {
@@ -152,6 +164,79 @@ const updateDocInfo: Extension = EditorView.updateListener.of((viewUpdate: ViewU
     }
 })
 
+/**
+ * getVimCompatibleCm 获取 codemirror-vim 挂在到 EditorView 上的兼容实例.
+ * @returns 兼容的 Vim 编辑器实例, 不存在时返回 null.
+ */
+const getVimCompatibleCm = (): VimCompatibleCm | null => {
+    return (cmView as VimCompatibleEditorView | undefined)?.cm ?? null
+}
+
+/**
+ * handleVimModeChange 处理 Vim 模式切换事件, 并同步通知本地输入法服务.
+ * @param modeObj - codemirror-vim 发出的模式对象.
+ * @returns 无返回值.
+ */
+const handleVimModeChange = (modeObj: VimModeChangeEvent): void => {
+    const nextMode = resolveVimModeName(modeObj)
+    const previousMode = currentVimMode
+    currentVimMode = nextMode
+
+    if (previousMode === nextMode) {
+        return
+    }
+
+    void notifyVimModeChange({
+        modeBefore: previousMode,
+        modeAfter: nextMode,
+        port: vimImePort,
+    })
+}
+
+/**
+ * detachVimModeChangeListener 移除当前编辑器上的 Vim 模式切换监听.
+ * @returns 无返回值.
+ */
+const detachVimModeChangeListener = (): void => {
+    getVimCompatibleCm()?.off("vim-mode-change", handleVimModeChange)
+}
+
+/**
+ * attachVimModeChangeListener 为当前编辑器挂载 Vim 模式切换监听.
+ * 重复调用时会先移除旧监听, 避免同一实例重复上报.
+ * @returns 无返回值.
+ */
+const attachVimModeChangeListener = (): void => {
+    const vimCm = getVimCompatibleCm()
+
+    if (!vimCm) {
+        return
+    }
+
+    currentVimMode = "normal"
+    vimCm.off("vim-mode-change", handleVimModeChange)
+    vimCm.on("vim-mode-change", handleVimModeChange)
+}
+
+/**
+ * syncVimImeBackToNormal 在 Vim 模式被关闭或编辑器销毁前, 尝试把输入法恢复到 normal 对应的英文态.
+ * @returns 无返回值.
+ */
+const syncVimImeBackToNormal = (): void => {
+    if (currentVimMode === "normal") {
+        return
+    }
+
+    const previousMode = currentVimMode
+    currentVimMode = "normal"
+
+    void notifyVimModeChange({
+        modeBefore: previousMode,
+        modeAfter: "normal",
+        port: vimImePort,
+    })
+}
+
 // 初始化 CodeMirror
 const initCodeMirror = (opts: DefaultSetupOptions) => {
     if (codemirrorRef.value) {
@@ -170,6 +255,10 @@ const initCodeMirror = (opts: DefaultSetupOptions) => {
         })
 
         cmView.scrollDOM.addEventListener("scroll", handleScroll) // 监听滚动事件
+
+        if (vimMode) {
+            attachVimModeChangeListener()
+        }
     }
 }
 
@@ -315,12 +404,27 @@ watch(
 watch(
     () => vimMode,
     (newVal) => {
+        if (!cmView) {
+            return
+        }
+
         // 更新 vim 模式
         options.value.vimMode = newVal
+
+        if (!newVal) {
+            syncVimImeBackToNormal()
+            detachVimModeChangeListener()
+        }
 
         // 重新加载 vim 模式
         cmView.dispatch({
             effects: vimModeCompartment.reconfigure(newVal ? createVimExtension() : []),
+        })
+
+        nextTick(() => {
+            if (newVal) {
+                attachVimModeChangeListener()
+            }
         })
     },
 )
@@ -389,6 +493,8 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+    detachVimModeChangeListener()
+    syncVimImeBackToNormal()
     cmView.scrollDOM.removeEventListener("scroll", handleScroll) // 移除监听滚动事件
     cmView.destroy() // 销毁编辑器实例
 })
