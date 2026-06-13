@@ -16,8 +16,8 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN PNPM_VERSION="$(node -p 'JSON.parse(require("node:fs").readFileSync("./package.json", "utf8")).packageManager.match(/^pnpm@(.*)$/)[1]')" \
     && npm install -g "pnpm@${PNPM_VERSION}"
 
-# 安装依赖项
-RUN pnpm install --frozen-lockfile
+# 安装依赖项, 在 Docker 冷缓存环境中信任已提交的 lockfile, 避免 pnpm 的二次供应链复验错误拦截 exclusion.
+RUN pnpm install --frozen-lockfile --config.trust-lockfile=true
 
 # 将源代码复制到容器中
 COPY . .
