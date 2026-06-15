@@ -7,6 +7,7 @@
  */
 
 export enum LocalStorageKey {
+    ArticleEditorVisibility = "article_editor_visibility", // 文章编辑器目录/编辑区/预览区显示状态
     DashboardTrendSelection = "dashboard_trend_selection", // 仪表盘趋势图筛选项
     IsCollapse = "is_collapse", // 侧边栏是否折叠
     IsShowDashboardStats = "is_show_dashboard_stats", // 仪表盘统计信息是否显示敏感数值

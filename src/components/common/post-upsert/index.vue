@@ -362,6 +362,7 @@ import ThumbnailSelectDialog from "@/components/common/thumbnail-select-dialog"
 import SwitchGroup from "@/components/common/switch-group"
 import VideoTocTreeEdit from "@/components/common/video-toc-tree-edit"
 import { CommandsKey, type EditorExternalToolbarButton, EditorStateManager } from "@/components/editor"
+import { loadArticleEditorVisibilityState, saveArticleEditorVisibilityState } from "@/components/editor/article-layout"
 import JEditor from "@/components/editor/index.vue"
 import { useEditor } from "@/components/hooks/useEditor"
 import { usePostView } from "@/components/hooks/usePostView"
@@ -474,7 +475,8 @@ const formRef = useTemplateRef<FormInstance>("formRef")
 const editorContainerRef = useTemplateRef<HTMLDivElement | null>("editorContainerRef")
 const editorPostRef = useTemplateRef<InstanceType<typeof JEditor>>("editorPostRef")
 
-const stateManager = new EditorStateManager()
+const storedArticleEditorVisibility = loadArticleEditorVisibilityState()
+const stateManager = new EditorStateManager(storedArticleEditorVisibility ?? undefined)
 useEditor(stateManager)
 
 const postEditorToolbarActionNames = {
@@ -516,6 +518,26 @@ watch(thumbnailAutoInsert, (val) => {
 watch(thumbnailImgIndex, (val) => {
     localStorage.setItem(LocalStorageKey.ThumbnailAutoInsertIndex, String(val))
 })
+
+/**
+ * persistArticleEditorVisibility 保存文章编辑器当前栏位显示状态。
+ * @returns void.
+ */
+const persistArticleEditorVisibility = (): void => {
+    saveArticleEditorVisibilityState({
+        tocShow: editorState.tocShow,
+        editorShow: editorState.editorShow,
+        previewShow: editorState.previewShow,
+    })
+}
+
+watch(
+    () => [editorState.tocShow, editorState.editorShow, editorState.previewShow] as const,
+    () => {
+        persistArticleEditorVisibility()
+    },
+    { immediate: true },
+)
 
 /**
  * 打开文章内图片选择弹窗.

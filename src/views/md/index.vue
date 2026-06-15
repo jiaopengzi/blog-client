@@ -35,6 +35,7 @@ import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue"
 import { useRouter } from "vue-router"
 
 import FooterStatistics from "@/components/layout/footer-statistics"
+import { loadArticleEditorVisibilityState, saveArticleEditorVisibilityState } from "@/components/editor/article-layout"
 import { defaultCommandKeys, EditorStateManager } from "@/components/editor"
 import { getFirstLevelOneMarkdownHeadingText } from "@/components/editor/utils"
 import { ImageCaptionFormat, setImageCaptionFormat } from "@/pkg/marked/extension/renderer"
@@ -65,10 +66,10 @@ const deviceStore = useDeviceStore()
 const { device } = storeToRefs(deviceStore)
 const { activeThemePreset, selectThemePreset, theme, themePresetOptions } = useTheme()
 const optionsStore = useOptionsStore()
+const storedArticleEditorVisibility = loadArticleEditorVisibilityState()
+const hasStoredArticleEditorVisibility = storedArticleEditorVisibility !== null
 
-const stateManager = new EditorStateManager({
-    tocShow: false,
-})
+const stateManager = new EditorStateManager(storedArticleEditorVisibility ?? { tocShow: false })
 
 // lastSyncedDevice 用于跟踪上一次同步布局的设备类型, 避免重复设置编辑器显示状态。
 let lastSyncedDevice: DeviceType | null = null
@@ -112,7 +113,8 @@ function goHome(): void {
 
 /**
  * syncEditorLayoutByDevice 根据设备类型同步工具栏与预览布局。
- * 当设备类型切换时, 手机端默认仅展示编辑区, 平板与桌面端恢复编辑区和预览区同时展示。
+ * 当设备类型切换时, 会同步工具栏按钮集合。
+ * 首次进入且不存在本地缓存时, 手机端默认仅展示编辑区, 平板与桌面端默认同时展示编辑区和预览区。
  * @param currentDevice - 当前设备类型。
  * @returns 无返回值。
  */
@@ -123,6 +125,15 @@ function syncEditorLayoutByDevice(currentDevice: DeviceType): void {
         stateManager.setCommandKeys(defaultCommandKeys.publicMdPad)
     } else {
         stateManager.setCommandKeys(defaultCommandKeys.publicMdPhone)
+    }
+
+    if (lastSyncedDevice === null) {
+        if (!hasStoredArticleEditorVisibility) {
+            stateManager.setEditorShow(true)
+            stateManager.setPreviewShow(currentDevice !== DeviceType.PHONE)
+        }
+        lastSyncedDevice = currentDevice
+        return
     }
 
     if (lastSyncedDevice !== currentDevice) {
@@ -194,6 +205,18 @@ function onMdCustomSettingsChanged(): void {
     applyMdCustomSettings()
 }
 
+/**
+ * persistArticleEditorVisibility 保存文章编辑器当前栏位显示状态。
+ * @returns 无返回值。
+ */
+function persistArticleEditorVisibility(): void {
+    saveArticleEditorVisibilityState({
+        tocShow: editorState.tocShow,
+        editorShow: editorState.editorShow,
+        previewShow: editorState.previewShow,
+    })
+}
+
 onMounted(() => {
     toggleFullscreenRouteClass(true)
     applyMdCustomSettings()
@@ -214,6 +237,14 @@ watch(
         saveStatus.type = "idle"
         persistDraft(content)
     },
+)
+
+watch(
+    () => [editorState.tocShow, editorState.editorShow, editorState.previewShow] as const,
+    () => {
+        persistArticleEditorVisibility()
+    },
+    { immediate: true },
 )
 
 onBeforeUnmount(() => {
