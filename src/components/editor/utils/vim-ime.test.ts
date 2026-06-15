@@ -6,7 +6,7 @@
 
 import { afterEach, describe, expect, it, vi } from "vitest"
 
-import { buildVimImeEndpoint, notifyVimModeChange, resolveVimModeName } from "./vim-ime"
+import { buildVimImeEndpoint, notifyVimModeChange, resolveVimModeName, syncVimModeWithIme } from "./vim-ime"
 
 afterEach(() => {
     vi.restoreAllMocks()
@@ -41,8 +41,27 @@ describe("notifyVimModeChange", () => {
         expect(fetchMock).not.toHaveBeenCalled()
     })
 
+    it("强制同步当前模式时, 即使模式未变化也会发起请求", async () => {
+        const fetchMock = vi.fn(async () => new Response(null, { status: 200 }))
+        vi.stubGlobal("fetch", fetchMock)
+
+        await syncVimModeWithIme("normal", 9765)
+
+        expect(fetchMock).toHaveBeenCalledTimes(1)
+        expect(fetchMock).toHaveBeenCalledWith(
+            "http://127.0.0.1:9765/ime",
+            expect.objectContaining({
+                method: "POST",
+                body: JSON.stringify({
+                    "mode-before": "normal",
+                    "mode-after": "normal",
+                }),
+            }),
+        )
+    })
+
     it("模式变化时会以 JSON 请求调用本地服务", async () => {
-        const fetchMock = vi.fn(async () => new Response(null, { status: 204 }))
+        const fetchMock = vi.fn(async () => new Response(null, { status: 200 }))
         vi.stubGlobal("fetch", fetchMock)
 
         await notifyVimModeChange({ modeBefore: "normal", modeAfter: "insert", port: 18765 })
@@ -80,12 +99,23 @@ describe("notifyVimModeChange", () => {
         const fetchMock = vi
             .fn()
             .mockRejectedValueOnce(new TypeError("Failed to fetch"))
-            .mockResolvedValueOnce(new Response(null, { status: 204 }))
+            .mockResolvedValueOnce(new Response(null, { status: 200 }))
         vi.stubGlobal("fetch", fetchMock)
 
         await notifyVimModeChange({ modeBefore: "normal", modeAfter: "insert", port: 38765 })
         await notifyVimModeChange({ modeBefore: "normal", modeAfter: "insert", port: 38766 })
 
         expect(fetchMock).toHaveBeenCalledTimes(2)
+    })
+
+    it("服务返回任意 2xx 时都视为成功, 不依赖 204 特例", async () => {
+        const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined)
+        const fetchMock = vi.fn(async () => new Response(null, { status: 202 }))
+        vi.stubGlobal("fetch", fetchMock)
+
+        await notifyVimModeChange({ modeBefore: "visual", modeAfter: "cmd", port: 48765 })
+
+        expect(fetchMock).toHaveBeenCalledTimes(1)
+        expect(warnSpy).not.toHaveBeenCalled()
     })
 })

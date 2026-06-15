@@ -27,7 +27,7 @@ import { getTheme, Theme, themeCompartment, ThemeMode } from "@/pkg/codemirror/e
 import { applyVimMappings, createVimExtension, vimModeCompartment } from "@/pkg/codemirror/extension/vim"
 import { type DefaultSetupOptions } from "@/pkg/codemirror/options"
 import { createDefaultSetup } from "@/pkg/codemirror/setup"
-import { notifyVimModeChange, resolveVimModeName, type VimModeChangeEvent, type VimModeName } from "../../utils/vim-ime"
+import { notifyVimModeChange, resolveVimModeName, syncVimModeWithIme, type VimModeChangeEvent, type VimModeName } from "../../utils/vim-ime"
 
 import { clearEditorView } from "../../command/constant"
 import type { CodeEditorProps } from "./types"
@@ -136,6 +136,12 @@ let currentVimMode: VimModeName = "normal"
 type VimCompatibleCm = {
     on: (eventName: "vim-mode-change", listener: (modeObj: VimModeChangeEvent) => void) => void
     off: (eventName: "vim-mode-change", listener: (modeObj: VimModeChangeEvent) => void) => void
+    state?: {
+        vim?: {
+            insertMode?: boolean
+            visualMode?: boolean
+        }
+    }
 }
 
 type VimCompatibleEditorView = EditorView & {
@@ -170,6 +176,24 @@ const updateDocInfo: Extension = EditorView.updateListener.of((viewUpdate: ViewU
  */
 const getVimCompatibleCm = (): VimCompatibleCm | null => {
     return (cmView as VimCompatibleEditorView | undefined)?.cm ?? null
+}
+
+/**
+ * resolveCurrentVimModeFromEditor 尝试从 codemirror-vim 当前状态推导实际 Vim 模式.
+ * 监听器首次挂载时, 三方库通常不会补发一次 mode-change 事件, 因此这里需要主动读取当前状态用于输入法校准.
+ * @param vimCm - 当前 Vim 兼容实例.
+ * @returns 当前推导出的 Vim 模式.
+ */
+const resolveCurrentVimModeFromEditor = (vimCm: VimCompatibleCm): VimModeName => {
+    if (vimCm.state?.vim?.visualMode) {
+        return "visual"
+    }
+
+    if (vimCm.state?.vim?.insertMode) {
+        return "insert"
+    }
+
+    return "normal"
 }
 
 /**
@@ -213,28 +237,22 @@ const attachVimModeChangeListener = (): void => {
         return
     }
 
-    currentVimMode = "normal"
+    currentVimMode = resolveCurrentVimModeFromEditor(vimCm)
     vimCm.off("vim-mode-change", handleVimModeChange)
     vimCm.on("vim-mode-change", handleVimModeChange)
+
+    void syncVimModeWithIme(currentVimMode, vimImePort)
 }
 
 /**
  * syncVimImeBackToNormal 在 Vim 模式被关闭或编辑器销毁前, 尝试把输入法恢复到 normal 对应的英文态.
+ * 当前 IME 服务仅依赖 mode-after 决定最终状态, 因此这里即使本地记录已是 normal, 也要再强制校准一次英文态.
  * @returns 无返回值.
  */
 const syncVimImeBackToNormal = (): void => {
-    if (currentVimMode === "normal") {
-        return
-    }
-
-    const previousMode = currentVimMode
     currentVimMode = "normal"
 
-    void notifyVimModeChange({
-        modeBefore: previousMode,
-        modeAfter: "normal",
-        port: vimImePort,
-    })
+    void syncVimModeWithIme("normal", vimImePort)
 }
 
 // 初始化 CodeMirror

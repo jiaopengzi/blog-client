@@ -15,6 +15,7 @@ export interface NotifyVimModeChangeOptions {
     modeBefore: VimModeName
     modeAfter: VimModeName
     port: number
+    force?: boolean
 }
 
 const VIM_IME_API_HOST = "127.0.0.1"
@@ -77,16 +78,17 @@ function shouldIgnoreVimImeRequest(endpoint: string): boolean {
 
 /**
  * notifyVimModeChange 将 Vim 模式切换异步通知给本地输入法服务.
- * 本地服务已支持 CORS, 这里直接发送 JSON 请求; 若端口上不存在服务, 则在首次失败后缓存为不可用并忽略后续请求.
- * @param options - 模式切换与端口配置.
+ * 本地服务已支持 CORS, 这里直接发送 JSON 请求; 当前服务仅根据 mode-after 决定最终输入法状态, mode-before 仅保留给日志或兼容用途.
+ * 若端口上不存在服务, 则在首次失败后缓存为不可用并忽略后续请求.
+ * @param options - 模式切换与端口配置; force 为 true 时, 即使前后模式相同也会强制通知一次.
  * @returns Promise, 请求完成后结束.
  */
 export async function notifyVimModeChange(options: NotifyVimModeChangeOptions): Promise<void> {
-    const { modeBefore, modeAfter, port } = options
+    const { modeBefore, modeAfter, port, force = false } = options
 
     // console.log(`Vim IME hook: ${modeBefore} -> ${modeAfter}`)
 
-    if (modeBefore === modeAfter) {
+    if (!force && modeBefore === modeAfter) {
         return
     }
 
@@ -113,7 +115,7 @@ export async function notifyVimModeChange(options: NotifyVimModeChangeOptions): 
             signal: controller.signal,
         })
 
-        if (!response.ok && response.status !== 204) {
+        if (!response.ok) {
             console.warn(`Vim IME hook request failed with status ${response.status}.`)
         }
     } catch (error) {
@@ -121,4 +123,20 @@ export async function notifyVimModeChange(options: NotifyVimModeChangeOptions): 
     } finally {
         globalThis.clearTimeout(timeoutId)
     }
+}
+
+/**
+ * syncVimModeWithIme 按当前 Vim 模式主动校准一次本地输入法状态.
+ * 进入 Vim 控制流时, 即使模式没有发生变化, 也需要强制通知一次, 纠正外部输入法与编辑器状态不一致的问题.
+ * @param mode - 当前 Vim 模式.
+ * @param port - 输入法服务端口.
+ * @returns Promise, 请求完成后结束.
+ */
+export async function syncVimModeWithIme(mode: VimModeName, port: number): Promise<void> {
+    await notifyVimModeChange({
+        modeBefore: mode,
+        modeAfter: mode,
+        port,
+        force: true,
+    })
 }
