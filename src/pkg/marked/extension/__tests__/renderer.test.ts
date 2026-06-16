@@ -53,6 +53,14 @@ describe("renderer.code - 代码块渲染", () => {
         expect(result).toContain("<code>first&nbsp;line</code>")
         expect(result).toContain("<code>third&nbsp;line</code>")
     })
+
+    it("会保留代码块末尾空行", () => {
+        const result = renderer.code({ text: "first line\n", lang: "bash", escaped: false } as Tokens.Code)
+
+        expect(result.match(/<code\b/g)).toHaveLength(2)
+        expect(result).toContain("<code>first&nbsp;line</code>")
+        expect(result).toContain('<code data-empty-line="true">&nbsp;</code>')
+    })
 })
 
 describe("renderer.image - 图注格式", () => {

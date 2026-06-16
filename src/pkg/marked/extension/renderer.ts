@@ -106,17 +106,22 @@ export const renderer = {
         return `<li>${itemContent}</li>\n`
     },
 
-    // code 函数重写
+    /**
+     * @description: 渲染 fenced code block, 保留源码中的首行, 中间空行和末尾空行.
+     * @param token marked 提供的代码块 token, 包含源码文本, 语言标识和转义状态.
+     * @return 自定义的代码块 HTML 字符串.
+     */
     code({ text, lang, escaped }: Tokens.Code) {
         const langString = (lang || "").match(/^\S*/)?.[0]
+        const sourceHasTrailingEmptyLine = text.endsWith("\n")
         const code = text.replace(/\n$/, "") + "\n"
         if (!langString) {
             const result = "<pre><code>" + (escaped ? code : escape(code, true)) + "</code></pre>\n" // marked 源码默认代码块
 
-            return constructWeChatPreCode(replaceAllHljsStringSpanTag(result)) // 自定义代码块
+            return constructWeChatPreCode(replaceAllHljsStringSpanTag(result), sourceHasTrailingEmptyLine) // 自定义代码块
         }
         const result = '<pre><code class="language-' + escape(langString, true) + '">' + (escaped ? code : escape(code, true)) + "</code></pre>\n" // marked 源码默认代码块
-        return constructWeChatPreCode(replaceAllHljsStringSpanTag(result)) // 自定义代码块
+        return constructWeChatPreCode(replaceAllHljsStringSpanTag(result), sourceHasTrailingEmptyLine) // 自定义代码块
     },
 
     // 将源码中 table 相关函数 copy 过来并添加类名
@@ -185,11 +190,12 @@ export const renderer = {
 }
 
 /**
- * @description: 将 marked 默认代码块转换为微信代码块
- * @param lines: string[] 按照换行符分割的字符串数组
- * @return string 符合微信代码块的字符串
+ * @description: 将 marked 默认代码块转换为微信代码块.
+ * @param htmlStr marked 默认代码块 HTML 字符串.
+ * @param sourceHasTrailingEmptyLine 原始 fenced code block 是否以空行结尾.
+ * @return 符合微信代码块的字符串.
  */
-function constructWeChatPreCode(htmlStr: string): string {
+function constructWeChatPreCode(htmlStr: string, sourceHasTrailingEmptyLine = false): string {
     const lines = htmlStr.split("\n") || []
     let wechatPreCode = "" // 微信 pre 代码块内容
     let wechatPreCodeLang = "" // 微信 pre 代码块语言
@@ -220,6 +226,10 @@ function constructWeChatPreCode(htmlStr: string): string {
             item = item.replace(matchEnd[0], "") // 删除 pre 结束标签
 
             if (item === "") {
+                if (sourceHasTrailingEmptyLine) {
+                    wechatPreCode = wechatPreCode + '<code data-empty-line="true">&nbsp;</code>\n'
+                    lineNumber += 1
+                }
                 return // 保证最后一行不是多余的空行
             }
         }
