@@ -55,6 +55,7 @@ export function useMedia() {
         numberKeys,
         noRequestKeys,
         showListOrGridStatus,
+        gridCellSize,
         editMediaData,
         editWidth,
         editTop,
@@ -66,6 +67,12 @@ export function useMedia() {
     const updateShowListOrGridStatus = (status: boolean) => {
         showListOrGridStatus.value = status
         localStorage.setItem(LocalStorageKey.IsShowListOrGridAtMedia, status.toString())
+    }
+
+    // 更新宫格模式单元格最小宽度, 并持久化到本地
+    const updateGridCellSize = (size: number) => {
+        gridCellSize.value = size
+        localStorage.setItem(LocalStorageKey.MediaGridCellSize, size.toString())
     }
 
     // baseTable hooks
@@ -352,6 +359,8 @@ export function useMedia() {
         cols, // 列配置
         showListOrGridStatus, // 显示列表或网格状态
         updateShowListOrGridStatus, // 更新显示列表或网格状态
+        gridCellSize, // 宫格模式单元格最小宽度
+        updateGridCellSize, // 更新宫格模式单元格最小宽度
         updateData, // 更新数据
         queryParams, // 查询参数
         runSearch, // 执行搜索

@@ -13,6 +13,8 @@
             :is-show-delete-all="true"
             :is-show-list-or-grid="true"
             :show-list-or-grid-status="showListOrGridStatus"
+            :is-show-grid-size-range="true"
+            :grid-cell-size="gridCellSize"
             :add-item-dialog-visible="addItemDialogVisible"
             :edit-item-dialog-visible="editItemDialogVisible"
             :is-show-edit="true"
@@ -42,6 +44,7 @@
             @add-item-update-dialog-visible="addItemUpdateDialogVisible"
             @edit-item-update-dialog-visible="editItemUpdateDialogVisible"
             @update-show-list-or-grid-status="updateShowListOrGridStatus"
+            @update-grid-cell-size="updateGridCellSize"
             @toggle-add-dialog="toggleAddDialog"
             @edit-media-status="editStatus"
             @has-upload="handleHasUpload"
@@ -69,6 +72,7 @@ useHead({
 const {
     cols, // 列配置
     showListOrGridStatus, // 是否显示列表或网格
+    gridCellSize, // 宫格模式单元格最小宽度
     editWidth, // 编辑宽度
     editTop, // 编辑顶部距离
     addItemDialogVisible, // 添加对话框是否可见
@@ -91,6 +95,7 @@ const {
     addItemUpdateDialogVisible, // 更新添加对话框状态
     editItemUpdateDialogVisible, // 更新编辑对话框状态
     updateShowListOrGridStatus, // 更新列表或网格状态
+    updateGridCellSize, // 更新宫格单元格尺寸
     runSearch, // 执行搜索
 
     toggleAddDialog, // 切换添加对话框

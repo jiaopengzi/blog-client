@@ -9,13 +9,28 @@
 <template>
     <!-- 参考:https://github.com/element-plus/element-plus/blob/dev/packages/components/image/src/image.vue -->
     <el-image-viewer v-if="isShowElImageViewer" @close="closeElImageViewer" :url-list="imgUrls" />
-    <div class="container">
+    <div class="container" :style="gridCellStyle">
         <div class="btns">
             <slot name="btns"></slot>
             <el-button v-if="props.isShowDeleteAll" type="danger" @click="handleBatchDelete" :loading="props.loadingDelete"> 删除 </el-button>
 
             <span v-if="props.isShowListOrGrid" class="is-show-list-or-grid">
                 <SwitchGroup :switch-items="switchItemList" @update-status="updateStatus" />
+            </span>
+
+            <!-- 宫格模式下显示单元格尺寸调节滑块, 用户可按需调整每个单元格的大小 -->
+            <span v-if="props.isShowGridSizeRange && !props.showListOrGridStatus" class="grid-size-range">
+                <span class="grid-size-range__label">宫格大小</span>
+                <el-slider
+                    class="grid-size-range__slider"
+                    :model-value="props.gridCellSize"
+                    :min="gridCellSizeMin"
+                    :max="gridCellSizeMax"
+                    :step="gridCellSizeStep"
+                    :show-tooltip="true"
+                    :format-tooltip="formatGridSizeTooltip"
+                    @input="handleGridCellSizeChange"
+                />
             </span>
         </div>
 
@@ -118,6 +133,8 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue"
+
 import SwitchGroup from "@/components/common/switch-group"
 
 import BaseTableGrid from "./base-table-grid.vue"
@@ -132,6 +149,8 @@ const props = withDefaults(defineProps<BaseTableProps>(), {
     editItemDialogVisible: false,
     isShowListOrGrid: false,
     showListOrGridStatus: true,
+    isShowGridSizeRange: false,
+    gridCellSize: 260,
     isShowDeleteAll: false,
     isShowSelection: false,
     isShowEdit: false,
@@ -147,6 +166,35 @@ const props = withDefaults(defineProps<BaseTableProps>(), {
 })
 
 const emit = defineEmits<BaseTableEmits>()
+
+// 宫格单元格最小宽度的可调范围 (px)
+const gridCellSizeMin = 140
+const gridCellSizeMax = 420
+const gridCellSizeStep = 10
+
+/**
+ * @description: 将宫格单元格宽度注入为 CSS 变量, 供 .grid 网格列宽使用.
+ * @return 包含 --grid-cell-min 变量的内联样式对象.
+ */
+const gridCellStyle = computed(() => ({
+    "--grid-cell-min": `${props.gridCellSize}px`,
+}))
+
+/**
+ * @description: 滑块拖动时向父层同步最新的宫格单元格宽度.
+ * @param value 最新单元格宽度, 可能为数组 (区间滑块), 此处仅取单值.
+ * @return void.
+ */
+const handleGridCellSizeChange = (value: number | number[]) => {
+    emit("update-grid-cell-size", Array.isArray(value) ? value[0] : value)
+}
+
+/**
+ * @description: 格式化滑块提示文案, 显示当前单元格宽度.
+ * @param value 当前单元格宽度.
+ * @return 带单位的提示文案.
+ */
+const formatGridSizeTooltip = (value: number) => `${value}px`
 
 const {
     paginationLayout,
@@ -191,8 +239,27 @@ const {
     margin-left: 10px;
 }
 
+// 宫格大小调节: 标签 + 滑块, 与切换按钮同排, 紧凑布局
+.grid-size-range {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 16px;
+
+    &__label {
+        font-size: 13px;
+        color: var(--el-text-color-secondary);
+        white-space: nowrap;
+    }
+
+    &__slider {
+        width: 160px;
+    }
+}
+
 .btns {
     display: flex;
+    align-items: center;
     margin: 10px 0;
 }
 
@@ -204,29 +271,67 @@ const {
     overflow-x: auto;
 }
 
+// 宫格容器: 自适应列宽, 单元格最小宽度由 --grid-cell-min 控制 (默认 260px), 用户可通过滑块调整
 :deep(.grid) {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(var(--grid-cell-min, 260px), 1fr));
+    gap: 16px;
+    padding: 4px;
 }
 
-:deep(.grid-item) {
+// 宫格卡片: 正方形圆角卡片, 悬停浮起, 缩略图填满整张卡片
+// 使用 li.grid-item 提升优先级, 覆盖 .thumbnail 的 height: 100%, 让 aspect-ratio 生效
+:deep(li.grid-item) {
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--el-fill-color-light);
+    border: 1px solid var(--el-border-color-lighter);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    transition:
+        box-shadow 0.25s ease,
+        transform 0.25s ease,
+        border-color 0.25s ease;
+
+    &:hover {
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+        border-color: var(--el-color-primary-light-5);
+        transform: translateY(-2px);
+    }
+
     .grid-item-selection-status {
         position: absolute;
-        top: 0;
-        right: 0;
-        z-index: 1;
+        top: 6px;
+        right: 6px;
+        z-index: 2;
     }
     .grid-item-edit {
         position: absolute;
-        bottom: 0;
-        left: 0;
+        bottom: 6px;
+        left: 6px;
+        z-index: 2;
         display: none;
     }
+}
+
+// 宫格图片: 绝对定位填满卡片, 用 !important 覆盖列表视图遗留的固定像素内联尺寸
+:deep(.grid-item img.thumbnail-img) {
+    position: absolute;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+    border-radius: 0;
+}
+
+// 宫格占位图标 (如 zip, 视频): 居中放大, 与放大后的卡片视觉协调
+:deep(.grid-item .thumbnail-img:not(img)) {
+    font-size: 72px !important;
 }
 
 .filter-operation {

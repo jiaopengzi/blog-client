@@ -91,6 +91,8 @@ export interface BaseTableProps {
     editItemDialogVisible?: boolean // 编辑对话框是否显示
     isShowListOrGrid?: boolean // 是否显示列表或宫格切换
     showListOrGridStatus?: boolean // 列表或宫格状态, true: 列表, false: 宫格
+    isShowGridSizeRange?: boolean // 是否在宫格模式下显示单元格尺寸调节滑块
+    gridCellSize?: number // 宫格模式单元格最小宽度 (px)
     isShowDeleteAll?: boolean // 是否显示批量删除按钮
     isShowSelection?: boolean // 是否显示选择列, 不会自动显示批量删除按钮
     isShowEdit?: boolean // 是否显示编辑按钮
@@ -127,6 +129,7 @@ export type BaseTableEmits = {
     (event: "add-item-update-dialog-visible", value: boolean): void
     (event: "edit-item-update-dialog-visible", value: boolean): void
     (event: "update-show-list-or-grid-status", value: boolean): void
+    (event: "update-grid-cell-size", value: number): void
     (event: "click-category", tagItemData: PostCategory | PostTag): void
     (event: "click-tag", tagItemData: PostCategory | PostTag): void
     (event: "click-author", author: User): void

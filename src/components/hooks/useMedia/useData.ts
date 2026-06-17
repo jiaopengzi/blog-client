@@ -33,6 +33,32 @@ export function getInitialShowListOrGridStatus(): boolean {
     return storageValue === "true"
 }
 
+// 宫格单元格默认最小宽度 (px) 与允许范围, 需与 BaseTable 滑块保持一致
+export const MEDIA_GRID_CELL_SIZE_DEFAULT = 260
+const MEDIA_GRID_CELL_SIZE_MIN = 140
+const MEDIA_GRID_CELL_SIZE_MAX = 420
+
+/**
+ * @description: 读取宫格模式单元格最小宽度, 未存储或非法时返回默认值.
+ * @return 单元格最小宽度 (px).
+ */
+export function getInitialGridCellSize(): number {
+    const storageValue = localStorage.getItem(LocalStorageKey.MediaGridCellSize)
+
+    if (storageValue === null) {
+        return MEDIA_GRID_CELL_SIZE_DEFAULT
+    }
+
+    const parsed = Number(storageValue)
+
+    // 非数字或越界时回退到默认值, 避免脏数据破坏布局
+    if (!Number.isFinite(parsed) || parsed < MEDIA_GRID_CELL_SIZE_MIN || parsed > MEDIA_GRID_CELL_SIZE_MAX) {
+        return MEDIA_GRID_CELL_SIZE_DEFAULT
+    }
+
+    return parsed
+}
+
 export function useData() {
     // 列配置
     const cols: TableColumn[] = reactive([
@@ -138,6 +164,9 @@ export function useData() {
     // 显示列表或网格状态
     const showListOrGridStatus = ref(getInitialShowListOrGridStatus())
 
+    // 宫格模式单元格最小宽度 (px)
+    const gridCellSize = ref(getInitialGridCellSize())
+
     // 编辑数据
     const editMediaData: EditMediaProps = reactive({
         file_id: "", // 文件ID
@@ -173,6 +202,7 @@ export function useData() {
         numberKeys,
         noRequestKeys,
         showListOrGridStatus,
+        gridCellSize,
         editMediaData,
         editWidth,
         editTop,
