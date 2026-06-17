@@ -215,6 +215,60 @@ describe("applyVimMappings", () => {
         expect(view.state.doc.toString()).toBe("beta\nalpha\n")
     })
 
+    it("显式 visual J 行移动映射启用后, 选中行可以向下移动而不报 ex 命令错误", async () => {
+        applyVimMappings([{ lhs: "J", rhs: ":m '>+1<CR>gv=gv", context: "visual" }])
+
+        const view = createTestVimView("alpha\nbeta\ngamma")
+
+        view.cm.setCursor({ line: 1, ch: 0 })
+        Vim.handleKey(view.cm, "V", "user")
+        Vim.handleKey(view.cm, "J", "user")
+        await flushClipboardActions()
+
+        expect(view.state.doc.toString()).toBe("alpha\ngamma\nbeta")
+    })
+
+    it("显式 visual J 行移动映射启用后, 连续按两次 J 会持续向下移动", async () => {
+        applyVimMappings([{ lhs: "J", rhs: ":m '>+1<CR>gv=gv", context: "visual" }])
+
+        const view = createTestVimView("alpha\nbeta\ngamma\ndelta")
+
+        view.cm.setCursor({ line: 1, ch: 0 })
+        Vim.handleKey(view.cm, "V", "user")
+        Vim.handleKey(view.cm, "J", "user")
+        Vim.handleKey(view.cm, "J", "user")
+        await flushClipboardActions()
+
+        expect(view.state.doc.toString()).toBe("alpha\ngamma\ndelta\nbeta")
+    })
+
+    it("显式 visual K 行移动映射启用后, 选中行可以向上移动而不报 ex 命令错误", async () => {
+        applyVimMappings([{ lhs: "K", rhs: ":m '<-2<CR>gv=gv", context: "visual" }])
+
+        const view = createTestVimView("alpha\nbeta\ngamma")
+
+        view.cm.setCursor({ line: 1, ch: 0 })
+        Vim.handleKey(view.cm, "V", "user")
+        Vim.handleKey(view.cm, "K", "user")
+        await flushClipboardActions()
+
+        expect(view.state.doc.toString()).toBe("beta\nalpha\ngamma")
+    })
+
+    it("显式 visual K 行移动映射启用后, 连续按两次 K 会持续向上移动", async () => {
+        applyVimMappings([{ lhs: "K", rhs: ":m '<-2<CR>gv=gv", context: "visual" }])
+
+        const view = createTestVimView("alpha\nbeta\ngamma\ndelta")
+
+        view.cm.setCursor({ line: 2, ch: 0 })
+        Vim.handleKey(view.cm, "V", "user")
+        Vim.handleKey(view.cm, "K", "user")
+        Vim.handleKey(view.cm, "K", "user")
+        await flushClipboardActions()
+
+        expect(view.state.doc.toString()).toBe("gamma\nalpha\nbeta\ndelta")
+    })
+
     it("jj => <Esc> 会注册在 insert 上下文并生效", async () => {
         applyVimMappings([{ lhs: "jj", rhs: "<Esc>" }])
 

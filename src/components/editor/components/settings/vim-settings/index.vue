@@ -44,9 +44,16 @@ const emit = defineEmits<{
 const formRef = useTemplateRef<FormInstance>("formRef")
 
 const form = reactive({ mappingText: "", imePort: DEFAULT_VIM_IME_PORT })
+
+/**
+ * recommendedMappingText 表示设置面板内置的推荐 Vim 映射文本.
+ * 当前推荐配置会同时启用系统剪贴板桥接, 以及 visual 模式下的选区上下移动.
+ */
 const recommendedMappingText = buildVimMappingText([
     { lhs: "yy", rhs: '"+yy', context: "normal" },
     { lhs: "p", rhs: '"+p', context: "normal" },
+    { lhs: "J", rhs: ":m '>+1<CR>gv=gv", context: "visual" },
+    { lhs: "K", rhs: ":m '<-2<CR>gv=gv", context: "visual" },
 ])
 const mappingPlaceholderText = ['每行一个映射, 使用 ("lhs", "rhs", "normal") 格式.', "例如:", '("jj", "<Esc>", "insert")'].join("\n")
 
@@ -107,7 +114,7 @@ watch(
 
 /**
  * handleApplyRecommendedMappings 将表单填充为推荐映射文本.
- * 推荐配置会显式接通 `yy` 与 `p` 的系统剪贴板映射, 便于用户快速启用.
+ * 推荐配置会显式接通 `yy` / `p` 的系统剪贴板映射, 并补上 visual 模式下的 J / K 选区移动映射.
  * @returns 无返回值.
  */
 const handleApplyRecommendedMappings = (): void => {

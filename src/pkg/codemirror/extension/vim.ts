@@ -11,7 +11,15 @@ import { Vim, vim } from "@replit/codemirror-vim"
 
 import type { VimKeyMapping } from "@/stores/editor-defaults"
 import { copyText } from "@/utils/clipboard"
-import type { VimClipboardBridgeDefinition, VimClipboardMappingKind, VimMappingContext, VimRegister, VimRegisterController } from "./types"
+import type {
+    VimClipboardBridgeDefinition,
+    VimClipboardMappingKind,
+    VimCm,
+    VimCursorPosition,
+    VimMappingContext,
+    VimRegister,
+    VimRegisterController,
+} from "./types"
 
 export { Vim, vim } from "@replit/codemirror-vim"
 export const vimModeCompartment = new Compartment()
@@ -30,6 +38,14 @@ type MirroredClipboardState = {
     blockwise: boolean
 }
 
+type VimVisualLineMoveBridgeAction = "moveSelectedLinesDown" | "moveSelectedLinesUp"
+
+type VimVisualLineMoveBridgeDefinition = {
+    lhs: string
+    context: "visual"
+    action: VimVisualLineMoveBridgeAction
+}
+
 const mirroredClipboardState: MirroredClipboardState = {
     text: null,
     linewise: false,
@@ -39,6 +55,7 @@ const mirroredClipboardState: MirroredClipboardState = {
 let lastSystemClipboardReadText: string | null = null
 let shouldMirrorDefaultRegisterToClipboard = false
 let activeClipboardPasteBridges: VimClipboardBridgeDefinition[] = []
+let activeVisualLineMoveBridges: VimVisualLineMoveBridgeDefinition[] = []
 
 /**
  * normalizeClipboardWriteText 规范化写入系统剪贴板的文本.
@@ -77,6 +94,50 @@ function normalizeClipboardMappings(mappings: ReadonlyArray<VimKeyMapping>): Nor
  */
 function isClipboardBridgeMapping(mapping: Readonly<NormalizedClipboardMapping>): boolean {
     return Boolean(getVimClipboardMappingKind(mapping))
+}
+
+/**
+ * getVimVisualLineMoveMappingKind 识别需要翻译为项目侧 action 的 visual 行移动映射.
+ * `@replit/codemirror-vim` 的 ex `move` 不是 Vim 文本移动命令, 这里仅桥接用户显式配置的 `:m ...<CR>gv=gv` 常见写法.
+ * @param mapping - 已标准化的 Vim 映射项.
+ * @returns 行移动桥接类型, 非目标映射则返回 null.
+ */
+function getVimVisualLineMoveMappingKind(mapping: Readonly<NormalizedClipboardMapping>): VimVisualLineMoveBridgeAction | null {
+    if (mapping.context !== "visual") {
+        return null
+    }
+
+    const normalizedRhs = mapping.rhs.replace(/\s+/g, "")
+
+    if (normalizedRhs === ":m'>+1<CR>gv=gv" || normalizedRhs === ":move'>+1<CR>gv=gv") {
+        return "moveSelectedLinesDown"
+    }
+
+    if (normalizedRhs === ":m'<-2<CR>gv=gv" || normalizedRhs === ":move'<-2<CR>gv=gv") {
+        return "moveSelectedLinesUp"
+    }
+
+    return null
+}
+
+/**
+ * getDefaultVimVisualLineMoveBridges 根据用户映射推导需要启用的 visual 行移动桥接.
+ * 当前只桥接显式配置的选区上下移动映射, 其余 ex 映射继续保留三方库默认行为.
+ * @param mappings - 用户自定义 Vim 映射数组.
+ * @returns 需要启用的 visual 行移动桥接定义数组.
+ */
+function getDefaultVimVisualLineMoveBridges(mappings: ReadonlyArray<VimKeyMapping>): VimVisualLineMoveBridgeDefinition[] {
+    const normalizedMappings = normalizeClipboardMappings(mappings)
+
+    return normalizedMappings.flatMap((mapping) => {
+        const action = getVimVisualLineMoveMappingKind(mapping)
+
+        if (!action) {
+            return []
+        }
+
+        return [{ lhs: mapping.lhs, context: "visual" as const, action }]
+    })
 }
 
 /**
@@ -189,6 +250,148 @@ function getVimRegisterController(): VimRegisterController {
     }
 
     return getGlobalState().registerController
+}
+
+/**
+ * getVisualSelectionLineRange 获取当前 visual 选区覆盖的行范围.
+ * @param cm - Vim 适配后的编辑器实例.
+ * @returns 当前 visual 选区的锚点, 头部与起止行; 无 visual 选区时返回 null.
+ */
+function getVisualSelectionLineRange(cm: VimCm): { anchor: VimCursorPosition; head: VimCursorPosition; startLine: number; endLine: number } | null {
+    const selection = cm.state.vim?.sel
+
+    if (!selection?.anchor || !selection.head) {
+        return null
+    }
+
+    return {
+        anchor: selection.anchor,
+        head: selection.head,
+        startLine: Math.min(selection.anchor.line, selection.head.line),
+        endLine: Math.max(selection.anchor.line, selection.head.line),
+    }
+}
+
+/**
+ * getLastMovableContentLine 返回当前文档允许参与上下移动的最后一行.
+ * 若文档以换行结尾, codemirror 会保留末尾空行占位; 行移动不应把内容块交换到这个占位行上.
+ * @param cm - Vim 适配后的编辑器实例.
+ * @returns 可移动的最后内容行索引, 空文档时返回 -1.
+ */
+function getLastMovableContentLine(cm: VimCm): number {
+    const lastLine = cm.lastLine()
+
+    if (lastLine === 0 && cm.getLine(0) === "") {
+        return -1
+    }
+
+    return cm.getLine(lastLine) === "" ? lastLine - 1 : lastLine
+}
+
+/**
+ * getLineRangeEnd 获取一组整行文本的结束位置.
+ * 若范围后面仍有下一行, 结束点取下一行开头; 否则取当前最后一行末尾.
+ * @param cm - Vim 适配后的编辑器实例.
+ * @param endLineInclusive - 范围内最后一行.
+ * @returns 用于 `getRange` / `replaceRange` 的结束位置.
+ */
+function getLineRangeEnd(cm: VimCm, endLineInclusive: number): VimCursorPosition {
+    if (endLineInclusive < cm.lastLine()) {
+        return { line: endLineInclusive + 1, ch: 0 }
+    }
+
+    return { line: endLineInclusive, ch: cm.getLine(endLineInclusive).length }
+}
+
+/**
+ * shiftCursorPosition 将光标位置按行偏移, 保持列号不变.
+ * @param cursor - 原始光标位置.
+ * @param lineOffset - 需要偏移的行数.
+ * @returns 偏移后的光标位置.
+ */
+function shiftCursorPosition(cursor: VimCursorPosition, lineOffset: number): VimCursorPosition {
+    return {
+        line: cursor.line + lineOffset,
+        ch: cursor.ch,
+    }
+}
+
+/**
+ * syncVimVisualSelectionState 同步项目侧行移动后新的 visual 选区到 codemirror-vim 内部状态.
+ * 仅调用 `cm.setSelection` 不会更新 `vim.sel`, 连续触发自定义 visual action 时会继续读取旧范围.
+ * @param cm - Vim 适配后的编辑器实例.
+ * @param anchor - 新的选区锚点.
+ * @param head - 新的选区头部.
+ * @returns 无返回值.
+ */
+function syncVimVisualSelectionState(cm: VimCm, anchor: VimCursorPosition, head: VimCursorPosition): void {
+    if (!cm.state.vim) {
+        return
+    }
+
+    cm.state.vim.sel = { anchor, head }
+}
+
+/**
+ * moveSelectedLines 按给定方向移动当前 visual 选区所在整行, 并保留选区与重新缩进语义.
+ * 该实现只处理当前显式桥接的 visual 行移动映射, 不改动三方库其它 ex 行为.
+ * @param cm - Vim 适配后的编辑器实例.
+ * @param lineOffset - 行移动方向, `1` 表示下移一行, `-1` 表示上移一行.
+ * @returns 无返回值.
+ */
+function moveSelectedLines(cm: VimCm, lineOffset: 1 | -1): void {
+    const selectionRange = getVisualSelectionLineRange(cm)
+
+    if (!selectionRange) {
+        return
+    }
+
+    const { anchor, head, startLine, endLine } = selectionRange
+    const selectedLineCount = endLine - startLine + 1
+    const lastMovableContentLine = getLastMovableContentLine(cm)
+
+    if (lineOffset > 0) {
+        if (endLine >= lastMovableContentLine) {
+            return
+        }
+
+        const rangeStart = { line: startLine, ch: 0 }
+        const rangeEnd = getLineRangeEnd(cm, endLine + 1)
+        const segment = cm.getRange(rangeStart, rangeEnd)
+        const hasTrailingNewline = segment.endsWith("\n")
+        const segmentLines = (hasTrailingNewline ? segment.slice(0, -1) : segment).split("\n")
+        const replacementLines = [segmentLines[selectedLineCount], ...segmentLines.slice(0, selectedLineCount)]
+        const replacement = `${replacementLines.join("\n")}${hasTrailingNewline ? "\n" : ""}`
+        const nextAnchor = shiftCursorPosition(anchor, 1)
+        const nextHead = shiftCursorPosition(head, 1)
+
+        cm.replaceRange(replacement, rangeStart, rangeEnd)
+        cm.setSelection(nextAnchor, nextHead)
+        cm.execCommand("indentAuto")
+        cm.setSelection(nextAnchor, nextHead)
+        syncVimVisualSelectionState(cm, nextAnchor, nextHead)
+        return
+    }
+
+    if (startLine <= 0) {
+        return
+    }
+
+    const rangeStart = { line: startLine - 1, ch: 0 }
+    const rangeEnd = getLineRangeEnd(cm, endLine)
+    const segment = cm.getRange(rangeStart, rangeEnd)
+    const hasTrailingNewline = segment.endsWith("\n")
+    const segmentLines = (hasTrailingNewline ? segment.slice(0, -1) : segment).split("\n")
+    const replacementLines = [...segmentLines.slice(1, selectedLineCount + 1), segmentLines[0]]
+    const replacement = `${replacementLines.join("\n")}${hasTrailingNewline ? "\n" : ""}`
+    const nextAnchor = shiftCursorPosition(anchor, -1)
+    const nextHead = shiftCursorPosition(head, -1)
+
+    cm.replaceRange(replacement, rangeStart, rangeEnd)
+    cm.setSelection(nextAnchor, nextHead)
+    cm.execCommand("indentAuto")
+    cm.setSelection(nextAnchor, nextHead)
+    syncVimVisualSelectionState(cm, nextAnchor, nextHead)
 }
 
 /**
@@ -434,6 +637,14 @@ function ensureVimClipboardActionsRegistered(): void {
         replayClipboardPasteThroughDefault(cm, "P")
     })
 
+    Vim.defineAction("moveSelectedLinesDown", (cm: VimCm) => {
+        moveSelectedLines(cm, 1)
+    })
+
+    Vim.defineAction("moveSelectedLinesUp", (cm: VimCm) => {
+        moveSelectedLines(cm, -1)
+    })
+
     registerController.pushText = (registerName, operator, text, linewise, blockwise) => {
         originalPushText(registerName, operator, text, linewise, blockwise)
 
@@ -481,6 +692,7 @@ export function applyVimMappings(mappings: ReadonlyArray<VimKeyMapping>): void {
 
     shouldMirrorDefaultRegisterToClipboard = normalizedMappings.some((mapping) => isClipboardBridgeMapping(mapping))
     activeClipboardPasteBridges = getDefaultVimClipboardBridges(mappings)
+    activeVisualLineMoveBridges = getDefaultVimVisualLineMoveBridges(mappings)
     Vim.mapclear("normal")
     Vim.mapclear("insert")
     Vim.mapclear("visual")
@@ -495,9 +707,10 @@ export function applyVimMappings(mappings: ReadonlyArray<VimKeyMapping>): void {
             continue
         }
 
-        const specialMappingKind = getVimClipboardMappingKind(mapping)
+        const specialMappingKind = getVimClipboardMappingKind({ rhs })
+        const visualMoveMappingKind = getVimVisualLineMoveMappingKind({ lhs, rhs, context: mapping.context ?? "normal" })
 
-        if (specialMappingKind) {
+        if (specialMappingKind || visualMoveMappingKind) {
             continue
         }
 
@@ -507,5 +720,9 @@ export function applyVimMappings(mappings: ReadonlyArray<VimKeyMapping>): void {
     // bridge 统一在普通映射之后注册, 便于把显式 clipboard 语义收口到项目侧 action.
     for (const bridge of activeClipboardPasteBridges) {
         Vim.mapCommand(bridge.lhs, "action", bridge.action, bridge.actionArgs, { context: bridge.context })
+    }
+
+    for (const bridge of activeVisualLineMoveBridges) {
+        Vim.mapCommand(bridge.lhs, "action", bridge.action, {}, { context: bridge.context })
     }
 }

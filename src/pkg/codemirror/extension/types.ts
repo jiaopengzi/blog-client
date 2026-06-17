@@ -103,6 +103,7 @@ export type VimCm = {
     state: {
         vim?: {
             visualMode?: boolean
+            visualLine?: boolean
             visualBlock?: boolean
             sel?: {
                 anchor: VimCursorPosition
@@ -113,7 +114,10 @@ export type VimCm = {
     getCursor: () => VimCursorPosition
     getLine: (line: number) => string
     lastLine: () => number
-    replaceRange: (text: string, from: VimCursorPosition) => void
+    getRange: (from: VimCursorPosition, to: VimCursorPosition) => string
+    replaceRange: (text: string, from: VimCursorPosition, to?: VimCursorPosition, source?: string) => void
+    setSelection: (anchor: VimCursorPosition, head: VimCursorPosition, options?: unknown) => void
     setCursor: (line: number, ch: number) => void
+    execCommand: (name: string) => void
     getSelection: () => string
 }
