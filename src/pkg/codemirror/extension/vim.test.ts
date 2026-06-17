@@ -19,12 +19,11 @@ type TestEditorView = EditorView & {
 let clipboardText = ""
 let writeTextMock: ReturnType<typeof vi.fn>
 let readTextMock: ReturnType<typeof vi.fn>
-let readClipboardItemsMock: ReturnType<typeof vi.fn>
 let mountedEditor: EditorView | null = null
 
 /**
  * flushClipboardActions 等待 Vim 自定义剪贴板 action 里的异步链完成.
- * `navigator.clipboard.read()` 还会经过 `ClipboardItem.getType()` 与 `Blob.text()` 两层 Promise, 因此这里额外多等待几轮微任务.
+ * 当前 bridge 主要走 copyText 的 Promise 链, 这里额外多等待几轮微任务, 避免测试在异步写剪贴板前断言.
  * @returns 无返回值.
  */
 async function flushClipboardActions(): Promise<void> {
@@ -63,14 +62,12 @@ beforeEach(() => {
         clipboardText = text
     })
     readTextMock = vi.fn(async () => clipboardText)
-    readClipboardItemsMock = vi.fn(async () => [])
 
     Object.defineProperty(navigator, "clipboard", {
         configurable: true,
         value: {
             writeText: writeTextMock,
             readText: readTextMock,
-            read: readClipboardItemsMock,
         },
     })
 
@@ -93,13 +90,13 @@ describe("getDefaultVimClipboardBridges", () => {
         expect(getDefaultVimClipboardBridges([])).toEqual([])
     })
 
-    it("显式 yy 和 p 系统剪贴板映射会额外推导出 visual y 桥接", () => {
+    it("显式 p 系统剪贴板映射会额外推导出 visual p 桥接", () => {
         expect(
             getDefaultVimClipboardBridges([
                 { lhs: "yy", rhs: '"+yy' },
                 { lhs: "p", rhs: '"+p' },
             ]).map((item) => `${item.context}:${item.lhs}:${item.action}`),
-        ).toEqual(["normal:yy:clipboardYankLine", "normal:p:clipboardPasteAfter", "visual:y:clipboardYankSelection"])
+        ).toEqual(["normal:p:clipboardPasteAfter", "visual:p:clipboardPasteAfter"])
     })
 })
 
@@ -155,7 +152,7 @@ describe("applyVimMappings", () => {
         expect(view.state.doc.toString()).toBe("aalplpha\n")
     })
 
-    it('显式 yy => "+yy 时会写入系统剪贴板, 且不额外附带结尾换行', async () => {
+    it("显式 yy / p 系统剪贴板桥接启用后, yy 会写入系统剪贴板且 normal p 会读取外部系统剪贴板", async () => {
         applyVimMappings([
             { lhs: "yy", rhs: '"+yy' },
             { lhs: "p", rhs: '"+p' },
@@ -170,93 +167,52 @@ describe("applyVimMappings", () => {
         expect(writeTextMock).toHaveBeenCalledWith("alpha")
         expect(clipboardText).toBe("alpha")
 
-        view.cm.setCursor({ line: 1, ch: 0 })
-        Vim.handleKey(view.cm, "p", "user")
-        await flushClipboardActions()
-
-        expect(readTextMock).toHaveBeenCalled()
-        expect(view.state.doc.toString()).toBe("alpha\nbeta\nalpha\n")
-    })
-
-    it('显式 p => "+p 时会优先读取新的系统剪贴板内容, 不会退回原生 yank 结果', async () => {
-        clipboardText = "SYSTEM"
-        applyVimMappings([
-            { lhs: "yy", rhs: '"+yy' },
-            { lhs: "p", rhs: '"+p' },
-        ])
-
-        const view = createTestVimView("alpha\nbeta\n")
-
-        Vim.handleKey(view.cm, "y", "user")
-        Vim.handleKey(view.cm, "y", "user")
-        await flushClipboardActions()
-
         clipboardText = "CLIP"
-
-        view.cm.setCursor({ line: 1, ch: 0 })
+        view.cm.setCursor({ line: 1, ch: 3 })
         Vim.handleKey(view.cm, "p", "user")
         await flushClipboardActions()
 
-        expect(readTextMock).toHaveBeenCalled()
-        expect(view.state.doc.toString()).toBe("alpha\nbCLIPeta\n")
+        expect(readTextMock).toHaveBeenCalledTimes(1)
+        expect(view.state.doc.toString()).toBe("alpha\nbetaCLIP\n")
     })
 
-    it('当 readText 被拒绝但 clipboard.read 可用时, 显式 p => "+p 仍会读取系统剪贴板', async () => {
-        readTextMock = vi.fn(async () => {
-            throw new Error("NotAllowedError")
-        })
-        readClipboardItemsMock = vi.fn(async () => [
-            {
-                types: ["text/plain"],
-                getType: vi.fn(async () => new Blob(["CLIP_FROM_READ"], { type: "text/plain" })),
-            },
-        ])
-
-        Object.defineProperty(navigator, "clipboard", {
-            configurable: true,
-            value: {
-                writeText: writeTextMock,
-                readText: readTextMock,
-                read: readClipboardItemsMock,
-            },
-        })
-
-        applyVimMappings([
-            { lhs: "yy", rhs: '"+yy' },
-            { lhs: "p", rhs: '"+p' },
-        ])
-
-        const view = createTestVimView("alpha\nbeta\n")
-
-        Vim.handleKey(view.cm, "y", "user")
-        Vim.handleKey(view.cm, "y", "user")
-        await flushClipboardActions()
-
-        view.cm.setCursor({ line: 1, ch: 0 })
-        Vim.handleKey(view.cm, "p", "user")
-        await flushClipboardActions()
-
-        expect(readTextMock).toHaveBeenCalled()
-        expect(readClipboardItemsMock).toHaveBeenCalled()
-        expect(view.state.doc.toString()).toBe("alpha\nbCLIP_FROM_READeta\n")
-    })
-
-    it("显式 yy 和 p 系统剪贴板映射启用后, visual y 也会进入系统剪贴板", async () => {
+    it("显式 yy 和 p 系统剪贴板映射启用后, visual p 也会读取外部系统剪贴板", async () => {
         applyVimMappings([
             { lhs: "yy", rhs: '"+yy' },
             { lhs: "p", rhs: '"+p' },
         ])
 
         const view = createTestVimView("alpha\n")
+        clipboardText = "CLIP"
 
         Vim.handleKey(view.cm, "v", "user")
         Vim.handleKey(view.cm, "l", "user")
         Vim.handleKey(view.cm, "l", "user")
-        Vim.handleKey(view.cm, "y", "user")
+        Vim.handleKey(view.cm, "p", "user")
         await flushClipboardActions()
 
-        expect(writeTextMock).toHaveBeenCalledWith("alp")
-        expect(clipboardText).toBe("alp")
+        expect(readTextMock).toHaveBeenCalledTimes(1)
+        expect(view.state.doc.toString()).toBe("CLIPha\n")
+    })
+
+    it("显式 yy / p 系统剪贴板桥接启用后, dd 删除结果会镜像到系统剪贴板并被 p 继续粘贴", async () => {
+        applyVimMappings([
+            { lhs: "yy", rhs: '"+yy' },
+            { lhs: "p", rhs: '"+p' },
+        ])
+
+        const view = createTestVimView("alpha\nbeta\n")
+
+        Vim.handleKey(view.cm, "d", "user")
+        Vim.handleKey(view.cm, "d", "user")
+        await flushClipboardActions()
+
+        Vim.handleKey(view.cm, "p", "user")
+        await flushClipboardActions()
+
+        expect(writeTextMock).toHaveBeenCalledWith("alpha")
+        expect(readTextMock).toHaveBeenCalledTimes(1)
+        expect(view.state.doc.toString()).toBe("beta\nalpha\n")
     })
 
     it("jj => <Esc> 会注册在 insert 上下文并生效", async () => {
@@ -326,50 +282,5 @@ describe("applyVimMappings", () => {
         vimModule.Vim.mapclear("normal")
         vimModule.Vim.mapclear("visual")
         vimModule.Vim.mapclear("operatorPending")
-    })
-
-    it("当真实系统剪贴板读取不可用时, 会回退到本地镜像并输出一次告警", async () => {
-        const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined)
-
-        readTextMock = vi.fn(async () => {
-            throw new Error("NotAllowedError")
-        })
-        readClipboardItemsMock = vi.fn(async () => {
-            throw new Error("clipboard.read unavailable")
-        })
-
-        Object.defineProperty(navigator, "clipboard", {
-            configurable: true,
-            value: {
-                writeText: writeTextMock,
-                readText: readTextMock,
-                read: readClipboardItemsMock,
-            },
-        })
-
-        Object.defineProperty(document, "execCommand", {
-            configurable: true,
-            value: vi.fn((command: string) => command === "copy"),
-        })
-
-        applyVimMappings([
-            { lhs: "yy", rhs: '"+yy' },
-            { lhs: "p", rhs: '"+p' },
-        ])
-
-        const view = createTestVimView("alpha\nbeta\n")
-
-        Vim.handleKey(view.cm, "y", "user")
-        Vim.handleKey(view.cm, "y", "user")
-        await flushClipboardActions()
-
-        view.cm.setCursor({ line: 1, ch: 0 })
-        Vim.handleKey(view.cm, "p", "user")
-        await flushClipboardActions()
-
-        expect(warnSpy).toHaveBeenCalledWith(
-            "Vim clipboard read fallback: browser denied system clipboard access, using the latest local clipboard mirror instead.",
-        )
-        expect(view.state.doc.toString()).toBe("alpha\nbeta\nalpha\n")
     })
 })

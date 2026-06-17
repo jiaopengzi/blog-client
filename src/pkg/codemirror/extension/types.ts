@@ -9,19 +9,19 @@
 import type { VimKeyMappingContext } from "@/stores/editor-defaults"
 
 /**
- * VimClipboardState 表示项目侧维护的系统剪贴板镜像状态.
- * text 保存最近一次成功读写的文本, linewise 标记该文本是否保留 Vim 行级语义.
+ * VimClipboardBridgeAction 定义项目侧会注册到 Vim 的剪贴板 bridge action 名称.
+ * 这些 action 只负责回放原生 `"+p` / `"+P`, 以保留三方库自己的 paste 语义.
  */
-export type VimClipboardState = {
-    text: string
-    linewise: boolean
-}
+export type VimClipboardBridgeAction = "clipboardPasteAfter" | "clipboardPasteBefore"
 
 /**
- * VimClipboardBridgeAction 定义项目侧最小剪贴板 bridge action 名称.
- * 这些 action 会替代普通 `Vim.map` 无法稳定覆盖的 `"+` 相关行为.
+ * VimClipboardBridgeActionArgs 描述 bridge action 透传给 Vim 的运行参数.
+ * 当前保留为可选扩展点, 便于后续 bridge 补充额外上下文.
  */
-export type VimClipboardBridgeAction = "clipboardYankLine" | "clipboardPasteAfter" | "clipboardPasteBefore" | "clipboardYankSelection"
+export type VimClipboardBridgeActionArgs = VimActionArgs & {
+    after?: boolean
+    isEdit?: boolean
+}
 
 /**
  * VimClipboardMappingKind 表示用户映射在项目内被识别出的特殊剪贴板语义.
@@ -37,13 +37,25 @@ export type VimMappingContext = VimKeyMappingContext
 
 /**
  * VimClipboardBridgeDefinition 描述一条需要注册到 Vim 的剪贴板桥接配置.
- * lhs 和 context 决定触发位置, action 指向项目侧实现, conflictLhs 用于保留冲突位置信息.
+ * lhs 和 context 决定触发位置, action 指向项目侧 bridge 实现.
  */
 export type VimClipboardBridgeDefinition = {
     lhs: string
     context: "normal" | "visual"
     action: VimClipboardBridgeAction
+    actionArgs?: VimClipboardBridgeActionArgs
     conflictLhs?: string
+}
+
+/**
+ * VimRegister 表示 codemirror-vim 的单个寄存器实例.
+ * 当前项目只依赖文本与 linewise/blockwise 元数据读写.
+ */
+export type VimRegister = {
+    linewise: boolean
+    blockwise: boolean
+    setText: (text?: string, linewise?: boolean, blockwise?: boolean) => void
+    toString: () => string
 }
 
 /**
@@ -76,10 +88,11 @@ export type VimSelectionRange = {
 
 /**
  * VimRegisterController 表示 codemirror-vim 暴露给运行时的寄存器控制器.
- * 当前项目只依赖 pushText, 用于复用三方库既有寄存器写入逻辑.
+ * 当前项目依赖 pushText 与 getRegister, 用于复用三方库既有寄存器逻辑并补齐系统剪贴板镜像.
  */
 export type VimRegisterController = {
     pushText: (registerName: string | undefined, operator: string, text: string, linewise?: boolean, blockwise?: boolean) => void
+    getRegister: (registerName?: string) => VimRegister
 }
 
 /**
