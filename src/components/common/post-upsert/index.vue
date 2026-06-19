@@ -821,7 +821,7 @@ const updateEditorStatus = () => {
     postInfoForm.post_content = editorState.editorContent
     postContentError.value = ""
     formRef.value?.clearValidate("post_content")
-    syncCreatePostDefaultAuthor(postInfoForm, postType, userStore.data.user.id)
+    syncCreatePostDefaultAuthor(postInfoForm, userStore.data.user.id)
 }
 
 /**
@@ -1048,7 +1048,7 @@ onBeforeMount(async () => {
     if (postInfoForm.id) {
         showEditNoPermission.value = await getDataOnBeforeMount()
     }
-    syncCreatePostDefaultAuthor(postInfoForm, postType, userStore.data.user.id)
+    syncCreatePostDefaultAuthor(postInfoForm, userStore.data.user.id)
     await updateSnapshot()
     if (!showEditNoPermission.value) {
         await resolvePostUpsertLocalDraftOnMount()

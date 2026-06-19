@@ -59,7 +59,7 @@ describe("post-upsert utils", () => {
     it("新增文章页补齐默认作者后, 清空编辑器内容应回到初始签名", () => {
         const form = createEmptyUpsertPostForm(PostType.Post)
 
-        expect(syncCreatePostDefaultAuthor(form, PostType.Post, "7")).toBe(true)
+        expect(syncCreatePostDefaultAuthor(form, "7")).toBe(true)
 
         const initialSignature = getPostUpsertDraftSignature(form)
         form.post_content = "# draft"

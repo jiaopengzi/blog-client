@@ -132,10 +132,10 @@ export function createEmptyUpsertPostForm(postType: PostType): UpsertPostForm {
  * @param userId 当前管理员 ID.
  * @returns true 表示本次已写入默认作者.
  */
-export function syncCreatePostDefaultAuthor(postInfoForm: UpsertPostForm, postType: PostType, userId: string | number): boolean {
+export function syncCreatePostDefaultAuthor(postInfoForm: UpsertPostForm, userId: string | number): boolean {
     const normalizedUserId = String(userId ?? "")
 
-    if (postType !== PostType.Post || postInfoForm.id || postInfoForm.post_author || !normalizedUserId) {
+    if (postInfoForm.id || postInfoForm.post_author || !normalizedUserId) {
         return false
     }
 
