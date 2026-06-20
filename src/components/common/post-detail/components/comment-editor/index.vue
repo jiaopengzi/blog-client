@@ -200,7 +200,7 @@ const updateComment = async (isAdminReply: boolean = false) => {
 
     // 判断内容是否有变化
     if (content !== contentNew) {
-        req.content = content
+        req.content = contentNew
     }
 
     // 管理员回复时，直接设置为已审核

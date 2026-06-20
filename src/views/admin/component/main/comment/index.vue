@@ -481,11 +481,16 @@ const parseParamsNotLoaded = () => {
 
     if (post_id) {
         activeGroup.value = post_id.toString()
+        return
     }
 
     if (status) {
         activeGroup.value = status.toString()
+        return
     }
+
+    // 无 post_id 和 status 时重置为"全部"
+    activeGroup.value = allGroup
 }
 
 // 监控 queryParams
