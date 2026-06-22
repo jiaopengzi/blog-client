@@ -19,6 +19,13 @@
         <!-- blog-server 版本过低 -->
         <NoUseView v-else-if="isVersionTooLow" type="too-low" />
 
+        <!-- 证书失效: 引导用户重置证书 -->
+        <div v-else-if="isCertInvalid" class="billing-register">
+            <div class="billing-register-wrapper">
+                <ResetCertForm @reset-cert-status="handleResetCertStatus" />
+            </div>
+        </div>
+
         <!-- 未注册: 直接显示注册表单 -->
         <div v-else-if="!isRegistered" class="billing-register">
             <div class="billing-register-wrapper">
@@ -41,6 +48,7 @@ import { RouteNames } from "@/router"
 import { adminMenuItemMap } from "@/views/admin/component/aside"
 
 import RegisterForm from "./component/register"
+import ResetCertForm from "./component/reset-cert"
 import TransactionView from "./component/transaction-view"
 import NoUseView from "./component/no-use"
 import { useBillingCenter } from "./hooks"
@@ -51,13 +59,23 @@ useHead({
     title: adminMenuItemMap[RouteNames.BillingCenter].text,
 })
 
-const { accountInfo, isRegistered, isForbidden, isVersionTooLow, accountLoading, getAccountInfo } = useBillingCenter()
+const { accountInfo, isRegistered, isForbidden, isVersionTooLow, isCertInvalid, accountLoading, getAccountInfo } = useBillingCenter()
 
 /**
  * handleRegisterStatus 注册成功回调。
  * @param status - 注册是否成功。
  */
 const handleRegisterStatus = async (status: boolean) => {
+    if (status) {
+        await getAccountInfo()
+    }
+}
+
+/**
+ * handleResetCertStatus 重置证书成功回调。
+ * @param status - 重置是否成功。
+ */
+const handleResetCertStatus = async (status: boolean) => {
     if (status) {
         await getAccountInfo()
     }

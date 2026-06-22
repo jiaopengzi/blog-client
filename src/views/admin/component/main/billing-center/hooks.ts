@@ -90,6 +90,9 @@ export function useBillingCenter() {
     // 版本是否过低
     const isVersionTooLow = ref(false)
 
+    // 证书是否失效(需要重置)
+    const isCertInvalid = ref(false)
+
     // 加载状态
     const accountLoading = ref(false)
 
@@ -105,21 +108,30 @@ export function useBillingCenter() {
                 isRegistered.value = true
                 isForbidden.value = false
                 isVersionTooLow.value = false
+                isCertInvalid.value = false
             } else if (res.data.code === ResponseCode.BillingCenterAccountNotExists) {
                 isRegistered.value = false
                 accountInfo.value = null
                 isForbidden.value = false
                 isVersionTooLow.value = false
+                isCertInvalid.value = false
             } else if (res.data.code === ResponseCode.BillingCenterAccountForbidden) {
                 isRegistered.value = false
                 accountInfo.value = null
                 isForbidden.value = true
                 isVersionTooLow.value = false
+                isCertInvalid.value = false
             } else if (res.data.code === ResponseCode.BillingCenterBlogServerVersionTooLow) {
                 isRegistered.value = false
                 accountInfo.value = null
                 isForbidden.value = false
                 isVersionTooLow.value = true
+                isCertInvalid.value = false
+            } else if (res.data.code === ResponseCode.BillingCenterGetAccountFailed) {
+                accountInfo.value = null
+                isForbidden.value = false
+                isVersionTooLow.value = false
+                isCertInvalid.value = true
             }
         } finally {
             accountLoading.value = false
@@ -130,6 +142,7 @@ export function useBillingCenter() {
         isRegistered,
         isForbidden,
         isVersionTooLow,
+        isCertInvalid,
         accountLoading,
         getAccountInfo,
         formatAmount,
