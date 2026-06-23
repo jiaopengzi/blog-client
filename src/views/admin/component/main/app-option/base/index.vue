@@ -49,7 +49,15 @@
 
             <!-- 否则就是普通表单项 -->
             <el-form-item v-else :label="item.label" :prop="item.prop">
-                <el-checkbox v-if="item.isCheckbox" v-model="formDataResult[item.prop as keyof APPOptionForm]" />
+                <template v-if="item.isCheckbox">
+                    <el-checkbox v-model="formDataResult[item.prop as keyof APPOptionForm]" />
+                    <span v-if="item.isSitemapLink" class="sitemap-link">
+                        <span class="sitemap-link__label">访问链接：</span>
+                        <el-link :href="sitemapUrl" target="_blank" type="primary" :underline="false">
+                            {{ sitemapUrl }}
+                        </el-link>
+                    </span>
+                </template>
 
                 <ImageInput
                     v-else-if="item.isImageInput"
@@ -133,6 +141,9 @@ const setSlideVerifyManageRef = createRefSetter(slideVerifyManageRef)
 // 编辑器组件引用
 const editorRefs = ref<CodemirrorRef | null>(null)
 const setEditorRef = createRefSetter(editorRefs)
+
+// 站点地图访问链接（基于当前页面协议、域名、端口拼接）
+const sitemapUrl = computed(() => `${window.location.origin}/sitemap.xml`)
 
 // 结果数据
 const formDataResult = reactive<APPOptionForm>(formData)
@@ -276,5 +287,17 @@ defineExpose({
     border-radius: 2px;
     width: 100%;
     height: 100%;
+}
+
+.sitemap-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 16px;
+
+    &__label {
+        color: var(--jpz-text-color-secondary);
+        font-size: 14px;
+    }
 }
 </style>

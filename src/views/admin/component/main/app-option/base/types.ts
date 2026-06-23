@@ -25,6 +25,7 @@ export interface FormItems {
     isCategoryTitle?: boolean
     isCarouselManage?: boolean
     isSlideVerifyManage?: boolean
+    isSitemapLink?: boolean
     textareaRows?: number
     customClass?: string
     editor?: {
