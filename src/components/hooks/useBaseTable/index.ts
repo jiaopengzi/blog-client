@@ -16,6 +16,7 @@ import type { TableImg } from "@/components/common"
 import { type FormatTableData, formatTableData, type TableData } from "@/components/common/base-table"
 import { usePagination } from "@/components/hooks/usePagination"
 import { routerPushByParams } from "@/router"
+import { LocalStorageKey } from "@/stores/local"
 import { pollingGetStreamIDsStatus } from "@/utils/getStreamIDsStatus"
 import { MessageUtil } from "@/utils/message"
 import { parseRouteQuery } from "@/utils/queryParam"
@@ -24,6 +25,8 @@ import { parseRouteQuery } from "@/utils/queryParam"
 export interface Options<T> extends QueryParamsOptions<T> {
     tableImg?: TableImg // 表格图片配置
     syncRoute?: boolean // 是否将查询参数同步到路由, 默认同步
+    /** 是否将 page_size 持久化到 localStorage, 按 routeName 独立存储 */
+    enablePaginationStorage?: boolean
 }
 
 // 基础表格钩子选项
@@ -101,6 +104,60 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
         if (hasQuery) {
             Object.assign(queryParams, result)
         }
+
+        // 如果启用分页持久化且 URL 未携带 page_size, 从 localStorage 恢复用户偏好.
+        // 仅当恢复值非默认值 (10) 时才同步到 URL, 避免无谓污染.
+        if (options?.enablePaginationStorage && !queryParams.page_size) {
+            const restored = applyStoredPageSize()
+            if (restored && queryParams.page_size !== 10) {
+                await updateRouterPush()
+            }
+        }
+    }
+
+    /**
+     * @description: 从 localStorage 读取该路由的 page_size 并写入 queryParams.
+     * @return 是否成功恢复了 page_size.
+     */
+    const applyStoredPageSize = (): boolean => {
+        try {
+            const raw = localStorage.getItem(LocalStorageKey.AdminTablePagination)
+            if (!raw) return false
+            const store: Record<string, { page_size?: number }> = JSON.parse(raw)
+            const entry = store[routeName]
+            if (entry?.page_size && entry.page_size > 0) {
+                queryParams.page_size = entry.page_size as number
+                return true
+            }
+        } catch {
+            // JSON 解析失败时静默忽略, 使用默认分页
+        }
+        return false
+    }
+
+    /**
+     * @description: 将当前 page_size 持久化到 localStorage, 按 routeName 分组存储.
+     */
+    const persistPageSize = (): void => {
+        if (!options?.enablePaginationStorage) return
+        const ps = queryParams.page_size
+        if (ps === undefined || ps === null || Number(ps) <= 0) return
+        try {
+            const raw = localStorage.getItem(LocalStorageKey.AdminTablePagination)
+            const store: Record<string, { page_size?: number }> = raw ? JSON.parse(raw) : {}
+            store[routeName] = { page_size: Number(ps) }
+            localStorage.setItem(LocalStorageKey.AdminTablePagination, JSON.stringify(store))
+        } catch {
+            // 写入失败静默忽略
+        }
+    }
+
+    // 监听 page_size 变更并持久化
+    if (options?.enablePaginationStorage) {
+        watch(
+            () => queryParams.page_size,
+            () => persistPageSize(),
+        )
     }
 
     // 切换是否添加对话框

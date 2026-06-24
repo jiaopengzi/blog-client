@@ -216,7 +216,7 @@ const {
     queryParams,
     deleteAPI: deleteMembershipAPI,
     deleteResCode: ResponseCode.MembershipDeleteSuccess,
-    options: { stringKeys, numberKeys, noRequestKeys, refreshPromiseFns: [getMembershipCountStatus] },
+    options: { stringKeys, numberKeys, noRequestKeys, enablePaginationStorage: true, refreshPromiseFns: [getMembershipCountStatus] },
 })
 
 // 执行搜索

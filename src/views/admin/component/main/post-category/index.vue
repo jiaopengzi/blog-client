@@ -186,7 +186,7 @@ const {
     queryParams,
     deleteAPI: deletePostCategoryAPI,
     deleteResCode: ResponseCode.PostCategoryDeleteSuccess,
-    options: { stringKeys, numberKeys },
+    options: { stringKeys, numberKeys, enablePaginationStorage: true },
 })
 
 // 执行搜索

@@ -183,7 +183,7 @@ const {
     queryParams,
     deleteAPI: deleteAccountKeyAPI,
     deleteResCode: ResponseCode.AccountKeyDeleteSuccess,
-    options: { stringKeys, numberKeys },
+    options: { stringKeys, numberKeys, enablePaginationStorage: true },
 })
 
 // 执行搜索

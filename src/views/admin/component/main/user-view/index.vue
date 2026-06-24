@@ -344,7 +344,7 @@ const {
     queryParams,
     deleteAPI: deleteUserAPI,
     deleteResCode: ResponseCode.UserDeleteSuccess,
-    options: { stringKeys, numberKeys, noRequestKeys },
+    options: { stringKeys, numberKeys, noRequestKeys, enablePaginationStorage: true },
 })
 
 // 用户删除确认提示信息

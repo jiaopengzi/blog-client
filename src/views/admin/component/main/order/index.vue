@@ -250,7 +250,7 @@ const {
     viewAPI: getOrderPaginateAdminAPI,
     viewResCode: ResponseCode.OrderGetPaginateSuccess,
     queryParams,
-    options: { stringKeys, numberKeys, noRequestKeys },
+    options: { stringKeys, numberKeys, noRequestKeys, enablePaginationStorage: true },
 })
 
 const editData = ref<OrderGetByIDRes>({} as OrderGetByIDRes)

@@ -249,7 +249,7 @@ const {
     queryParams,
     deleteAPI: deleteCommentAdminAPI,
     deleteResCode: ResponseCode.CommentDeleteSuccess,
-    options: { stringKeys, numberKeys, noRequestKeys, tableImg },
+    options: { stringKeys, numberKeys, noRequestKeys, tableImg, enablePaginationStorage: true },
 })
 
 const handleDeleteRows = async (rows: TableData[]) => {

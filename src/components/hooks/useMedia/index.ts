@@ -101,7 +101,7 @@ export function useMedia() {
         deleteAPI: deleteFileAPI,
         deleteResCode: ResponseCode.FileDeleteSuccess,
         queryParams,
-        options: { stringKeys, numberKeys, noRequestKeys, tableImg },
+        options: { stringKeys, numberKeys, noRequestKeys, tableImg, enablePaginationStorage: true },
     })
 
     // 更新数据

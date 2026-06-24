@@ -298,7 +298,7 @@ const {
     viewAPI: wrappedTransactionFlowListAPI,
     viewResCode: ResponseCode.BillingCenterTransactionFlowListSuccess,
     queryParams,
-    options: { stringKeys, numberKeys, noRequestKeys },
+    options: { stringKeys, numberKeys, noRequestKeys, enablePaginationStorage: true },
 })
 
 // 处理交易类型筛选

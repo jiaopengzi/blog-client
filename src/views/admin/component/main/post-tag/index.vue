@@ -179,7 +179,7 @@ const {
     queryParams,
     deleteAPI: deletePostTagAPI,
     deleteResCode: ResponseCode.PostTagDeleteSuccess,
-    options: { stringKeys, numberKeys },
+    options: { stringKeys, numberKeys, enablePaginationStorage: true },
 })
 
 // 执行搜索

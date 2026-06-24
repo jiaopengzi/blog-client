@@ -319,7 +319,7 @@ const {
     viewAPI: viewMembershipUserAPI,
     viewResCode: ResponseCode.MembershipUserViewSuccess,
     queryParams,
-    options: { stringKeys, numberKeys, booleanKeys, noRequestKeys, refreshPromiseFns: [getMembershipUserExpireCount] },
+    options: { stringKeys, numberKeys, booleanKeys, noRequestKeys, enablePaginationStorage: true, refreshPromiseFns: [getMembershipUserExpireCount] },
 })
 
 const runSearch = async () => {

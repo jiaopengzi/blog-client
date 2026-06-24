@@ -222,7 +222,7 @@ const {
     queryParams,
     deleteAPI: deleteCouponAPI,
     deleteResCode: ResponseCode.CouponDeleteSuccess,
-    options: { stringKeys, numberKeys, noRequestKeys, refreshPromiseFns: [getCouponCountStatus] },
+    options: { stringKeys, numberKeys, noRequestKeys, enablePaginationStorage: true, refreshPromiseFns: [getCouponCountStatus] },
 })
 
 // 执行搜索

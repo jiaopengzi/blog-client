@@ -281,6 +281,7 @@ const {
         tableImg,
         refreshPromiseFns: showPostAdminMutationTools.value ? [getPostCountStatus] : [],
         syncRoute: isSyncRoute,
+        enablePaginationStorage: true,
     },
 })
 

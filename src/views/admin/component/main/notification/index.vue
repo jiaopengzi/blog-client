@@ -259,7 +259,7 @@ const {
     queryParams,
     deleteAPI: deleteNotificationAPI,
     deleteResCode: ResponseCode.NotificationDeleteSuccess,
-    options: { stringKeys, numberKeys, noRequestKeys, refreshPromiseFns: [getNotificationCountStatus] },
+    options: { stringKeys, numberKeys, noRequestKeys, enablePaginationStorage: true, refreshPromiseFns: [getNotificationCountStatus] },
 })
 
 // 执行搜索

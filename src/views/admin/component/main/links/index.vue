@@ -185,7 +185,7 @@ const {
     queryParams,
     deleteAPI: deleteLinkAPI,
     deleteResCode: ResponseCode.LinkDeleteSuccess,
-    options: { stringKeys, numberKeys },
+    options: { stringKeys, numberKeys, enablePaginationStorage: true },
 })
 
 // 执行搜索
