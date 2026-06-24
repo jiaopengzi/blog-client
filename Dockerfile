@@ -28,7 +28,7 @@ RUN pnpm lint && \
     pnpm build
 
 # 使用一个较小的基础镜像以减小构建产物的体积
-FROM nginx:1.31.1-alpine
+FROM nginx:1.31.2-alpine
 
 # 安装 tzdata 包 设置时区
 RUN apk add --no-cache tzdata && \
