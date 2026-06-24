@@ -201,8 +201,8 @@ const formItems: Array<FormItems> = [
     // seo 相关
     { label: "SEO", isCategoryTitle: true },
     { label: "SEO 标题", prop: "seo_title" },
-    { label: "SEO 关键词", prop: "seo_keywords" },
-    { label: "SEO 描述", prop: "seo_description" },
+    { label: "SEO 关键词", prop: "seo_keywords", type: "textarea", placeholder: "seo 关键词" },
+    { label: "SEO 描述", prop: "seo_description", type: "textarea", placeholder: "seo 描述" },
     { label: "首页主标题", prop: "custom_home_title" },
     { label: "首页副标题", prop: "custom_home_subtitle" },
     { label: "标题分隔符", prop: "separator" },
