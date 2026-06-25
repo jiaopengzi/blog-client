@@ -96,20 +96,26 @@ export function useBaseTable<T extends FormatTableData, K extends PaginationRequ
             return
         }
 
-        const { hasQuery, result } = await parseRouteQuery(route.query, options as QueryParamsOptions<K>)
+        // 仅当当前路由名称与表格路由名称一致时, 才从 URL 读取查询参数.
+        // 在非目标页面 (如弹窗中嵌入的表格) 跳过 URL 解析, 避免当前页面参数 (如 page_size)
+        // 泄漏到表格的 queryParams 中, 覆盖其 localStorage 偏好.
+        const isSameRoute = route.name === routeName
+        if (isSameRoute) {
+            const { hasQuery, result } = await parseRouteQuery(route.query, options as QueryParamsOptions<K>)
 
-        // 清空 queryParams
-        Object.keys(queryParams).forEach((key) => delete queryParams[key as keyof typeof queryParams])
+            // 清空 queryParams
+            Object.keys(queryParams).forEach((key) => delete queryParams[key as keyof typeof queryParams])
 
-        if (hasQuery) {
-            Object.assign(queryParams, result)
+            if (hasQuery) {
+                Object.assign(queryParams, result)
+            }
         }
 
         // 如果启用分页持久化且 URL 未携带 page_size, 从 localStorage 恢复用户偏好.
-        // 仅当恢复值非默认值 (10) 时才同步到 URL, 避免无谓污染.
+        // 仅当恢复值非默认值 (10) 且当前路由与表格路由一致时才同步到 URL.
         if (options?.enablePaginationStorage && !queryParams.page_size) {
             const restored = applyStoredPageSize()
-            if (restored && queryParams.page_size !== 10) {
+            if (restored && queryParams.page_size !== 10 && isSameRoute) {
                 await updateRouterPush()
             }
         }
