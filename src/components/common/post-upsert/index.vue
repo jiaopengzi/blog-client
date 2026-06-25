@@ -82,7 +82,8 @@
                     </div>
 
                     <div class="post-form-panels">
-                        <section v-if="isShowCategory || isShowTag" class="form-panel">
+                        <!-- 基础信息面板：页面无分类/标签但有缩略图，始终显示 -->
+                        <section class="form-panel">
                             <div class="form-panel__header">
                                 <h3 class="form-panel__title">基础信息</h3>
                             </div>
