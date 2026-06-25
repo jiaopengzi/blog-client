@@ -65,17 +65,20 @@ export async function handleAccessTokenRefresh(response: AxiosResponse, axiosIns
         })
     }
 
-    const syncedToken = await tabSyncManager.requestTokenFromOtherTabs(200)
-    if (syncedToken) {
-        await tabSyncManager.setTokenSilently(syncedToken)
-        notifyRefreshed(syncedToken, true)
-        markRetriedRequest(originalRequest)
-        return axiosInstance(originalRequest)
-    }
-
-    // 开始刷新流程 **单例**, 防止重复刷新
+    // 提前设置刷新标志位, 消灭 getIsRefreshing 检查与 setIsRefreshing 之间的异步竞态窗口,
+    // 避免多个请求同时检测到 token 过期后并发触发刷新 API, 导致后端 JWI 不匹配误判为"其他设备登录".
     setIsRefreshing(true)
     try {
+        // 优先尝试从其他标签页同步 token, 避免不必要的后端刷新调用
+        const syncedToken = await tabSyncManager.requestTokenFromOtherTabs(200)
+        if (syncedToken) {
+            await tabSyncManager.setTokenSilently(syncedToken)
+            notifyRefreshed(syncedToken, true)
+            markRetriedRequest(originalRequest)
+            return axiosInstance(originalRequest)
+        }
+
+        // 其他标签页无可用 token, 调用后端刷新 API
         const isRefresh = await userStore.accessTokenRefresh(false)
         if (isRefresh) {
             // 刷新成功, 通知等待的请求使用新的 token
