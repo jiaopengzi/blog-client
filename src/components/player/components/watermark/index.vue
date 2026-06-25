@@ -53,10 +53,12 @@ const textWatermarkContent = computed(() => textWatermark?.content || "")
 const logoWatermarkLogoSrc = computed(() => logoWatermark?.imgUrl || "")
 
 // 获取文字水印的 z-index
-const textWatermarkZindex = computed(() => textWatermark?.style?.zIndex || "1998")
+// 水印位于 .video-container 内部, position: absolute; 其 z-index 仅在视频容器的层叠上下文中生效,
+// 无需与全局固定定位元素 (如 el-overlay: 2000) 竞争, 默认值设为低值即可
+const textWatermarkZindex = computed(() => textWatermark?.style?.zIndex || "2")
 
 // 获取 logo 水印的 z-index
-const logoWatermarkZindex = computed(() => logoWatermark?.style?.zIndex || "1999")
+const logoWatermarkZindex = computed(() => logoWatermark?.style?.zIndex || "3")
 
 /**
  * @description: 设置水印的样式

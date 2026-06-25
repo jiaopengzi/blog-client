@@ -8,7 +8,7 @@
 
 <template>
     <head-tag :head-data="head" />
-    <section ref="webFullscreenRef">
+    <section ref="webFullscreenRef" id="webFullscreenContainer">
         <!--
             自定义 loading 蒙层, 替换 element-plus v-loading 的 SVG spinner.
             原因: el-loading 的 SVG stroke 动画在部分移动端浏览器内核 (如华为自带浏览器) 中由主线程驱动,
@@ -102,6 +102,16 @@
         @comment-insert="handleInsert"
     />
     <PosterShare class="poster-share" v-if="isShowPosterShare" :data="dataPosterShare" @poster-complete="handPosterComplete" />
+
+    <!-- 沉浸阅读模式下的回到顶部按钮 -->
+    <!--
+        沉浸阅读时 .web__fullscreen 覆盖整个视口, window 不再滚动,
+        base-layout 中的 el-backtop 无法触发, 因此在此处单独放置一个 el-backtop,
+        以 .web__fullscreen 容器作为滚动目标
+    -->
+    <el-backtop v-if="isWebFullscreen" :bottom="100" target="#webFullscreenContainer" class="immersive-backtop-container">
+        <div class="immersive-backtop">UP</div>
+    </el-backtop>
 </template>
 
 <script lang="ts" setup>
@@ -184,7 +194,7 @@ const isAdmin = computed(() => {
 const postDetailRef = useTemplateRef("webFullscreenRef")
 const commentEditorRef = useTemplateRef<CommentEditorRef>("commentEditorRef")
 
-const { toggle } = useWebFullscreen(postDetailRef)
+const { isWebFullscreen, toggle } = useWebFullscreen(postDetailRef)
 
 // 请求参数
 const postIdReq = reactive<ViewPostByIDRequest>({} as ViewPostByIDRequest)
@@ -431,12 +441,14 @@ onBeforeMount(async () => {
 }
 
 // 固定定位占位
+// 注意: z-index 设为 90，远低于 header(999)、el-overlay(2000) 等层级,
+// 避免交互按钮遮挡搜索弹窗等全屏覆盖层
 .affix-interaction {
     position: fixed;
     width: 40px;
     top: 300px;
     left: var(--affix-left);
-    z-index: 999;
+    z-index: 90;
 }
 
 .post-detail {
@@ -458,6 +470,20 @@ onBeforeMount(async () => {
 .interaction-bottom {
     margin-top: 20px;
     margin-bottom: 20px;
+}
+
+// 沉浸阅读模式下的回到顶部按钮
+// 需要 z-index 高于 .web__fullscreen(1000), 确保在沉浸阅读覆盖层之上可见
+.immersive-backtop-container {
+    z-index: 1001;
+
+    .immersive-backtop {
+        height: 100%;
+        width: 100%;
+        text-align: center;
+        line-height: 40px;
+        color: var(--jpz-color-primary);
+    }
 }
 
 @include respond-to("pc") {
