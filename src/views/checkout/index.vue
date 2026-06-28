@@ -58,13 +58,18 @@
         <!-- 支付方式 -->
         <div class="pay-type" v-if="isNeedPay && isPayTypeEnable">
             <h4 class="title">选择支付方式</h4>
-            <el-radio-group v-model="payTypeResult">
-                <el-radio v-for="item in payTypeOptions" :key="item.value" :value="item.value">
-                    <span class="pay-type-name">
-                        {{ PayTypeDisplay[item.value] }}
-                    </span>
-                </el-radio>
-            </el-radio-group>
+            <div class="pay-type-options">
+                <div
+                    v-for="item in payTypeOptions"
+                    :key="item.value"
+                    class="pay-type-card"
+                    :class="{ 'pay-type-card--active': payTypeResult === item.value }"
+                    @click="payTypeResult = item.value"
+                >
+                    <j-icon :name="payIconKey(item.value)" custom-class="pay-type-icon" />
+                    <span class="pay-type-name">{{ PayTypeDisplay[item.value] }}</span>
+                </div>
+            </div>
         </div>
         <div class="pay-type" v-if="!isPayTypeEnable">
             <p class="no-pay-type">未配置任何支付方式，无法订单结算，请联系管理员。</p>
@@ -78,7 +83,7 @@
 
     <!-- 二维码 -->
     <el-dialog v-model="isPayQRCodeShow" width="370px" @close="handleClose">
-        <PayQRCode v-if="isPayQRCodeShow" :qr-code-url="qrCodeUrl" :pay-type="payTypeResult" :amount="String(fenToYuan(finalAmount))" />
+        <PayQRCode v-if="isPayQRCodeShow" :qr-code-url="qrCodeUrl" :pay-type="payTypeResult ?? undefined" :amount="String(fenToYuan(finalAmount))" />
     </el-dialog>
 
     <FooterStatistics v-if="optionsStore.isShowFooterStatistics" />
@@ -91,6 +96,7 @@ import { computed, onBeforeMount, ref, watch } from "vue"
 import { useRouter } from "vue-router"
 
 import { PayType, PayTypeDisplay } from "@/api/pay/common"
+import { IconKeys } from "@/components/common/icons"
 import FooterStatistics from "@/components/layout/footer-statistics"
 import { RouteNames } from "@/router"
 import { useOptionsStore } from "@/stores/options"
@@ -168,6 +174,18 @@ const btnSubmitText = computed(() => {
         return "完成订单"
     }
 })
+
+// 支付方式图标映射
+const payIconKey = (val: PayType): IconKeys => {
+    switch (val) {
+        case PayType.WechatPay:
+            return IconKeys.PayWechat
+        case PayType.Alipay:
+            return IconKeys.PayAlipay
+        default:
+            return IconKeys.PayWechat
+    }
+}
 
 // 是否需要支付
 const isNeedPay = computed(() => {
@@ -275,18 +293,66 @@ h4 {
 .pay-type {
     margin: 40px 0 20px 0;
 
-    .pay-type-name {
-        font-size: 14px;
-        font-weight: 500;
-        margin-top: 4px;
-        color: var(--jpz-text-color-primary);
-    }
-
     .no-pay-type {
         font-size: 18px;
         color: red;
         text-align: center;
         font-weight: 700;
+    }
+}
+
+.pay-type-options {
+    display: flex;
+    gap: 12px;
+}
+
+.pay-type-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    padding: 10px 6px;
+    border: 1px solid var(--jpz-border-color, #e4e7ed);
+    border-radius: 8px;
+    cursor: pointer;
+    transition:
+        border-color 0.2s,
+        background-color 0.2s,
+        box-shadow 0.2s,
+        color 0.2s;
+    background-color: var(--jpz-bg-color, #fff);
+
+    &:hover {
+        border-color: #188838;
+        background-color: rgba(24, 136, 56, 0.04);
+    }
+
+    .pay-type-icon {
+        font-size: 28px;
+        margin-bottom: 6px;
+        color: var(--jpz-text-color-secondary);
+    }
+
+    .pay-type-name {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--jpz-text-color-secondary);
+    }
+
+    &--active {
+        border-color: #188838;
+        border-width: 2px;
+        background-color: rgba(24, 136, 56, 0.12);
+
+        .pay-type-icon,
+        .pay-type-name {
+            color: #188838;
+        }
+
+        .pay-type-name {
+            font-weight: 700;
+        }
     }
 }
 

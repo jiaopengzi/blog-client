@@ -27,7 +27,7 @@ export function useOrderCheckout() {
     const hasAvailableCoupons: Ref<boolean> = ref(false) // 是否有可用的优惠券
     const couponCodes = ref<string[]>([]) // 优惠码
     const payTypeOptions = getPayTypeOptionsWithEnable(optionsStore.getPayTypeEnable) // 支付方式选项
-    const payTypeResult = ref<PayType>(PayType.WechatPay) // 默认支付方式
+    const payTypeResult = ref<PayType | null>(null) // 支付方式，默认不选择，由用户主动选择
     const totalAmount = ref(0) // 订单总金额
     const discountAmount = ref(0) // 优惠金额
     const isShowDiscount = ref(false) // 是否显示优惠金额
@@ -137,6 +137,12 @@ export function useOrderCheckout() {
 
     // 执行支付
     const runCheckout = async () => {
+        // 如果需要支付但未选择支付方式，则提示用户
+        if (finalAmount.value > 0 && !payTypeResult.value) {
+            MessageUtil.warning("请选择支付方式")
+            return
+        }
+
         // 如果优惠券填写了但是没有应用，则提示用户
         if (couponCodes.value.length > 0 && !checkoutData.value.coupon) {
             MessageUtil.warning("请先应用优惠码")
@@ -155,7 +161,7 @@ export function useOrderCheckout() {
         // 构建支付请求数据
         const req: PayOrderRequest = {
             is_re_pay: false, // 首次支付
-            pay_type: payTypeResult.value, // 选择的支付方式
+            pay_type: payTypeResult.value as PayType, // 选择的支付方式（已验证非空）
             order_id: checkoutData.value.order.id, // 订单ID
             description: checkoutData.value.order.description, // 支付描述
             return_url: checkoutData.value.order.return_url, // 支付完成后的回调地址
