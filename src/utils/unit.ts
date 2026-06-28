@@ -80,6 +80,8 @@ export function unitNumber(src: string | number, toFixed: number = 2): string {
     } else if (abs >= 1e4) {
         return `${sign}${(abs / 1e4).toFixed(toFixed)}万`
     } else {
-        return `${sign}${abs.toString()}`
+        // 对小于 1 万的数值也应用 toFixed 舍入, 避免浮点累加导致的精度误差
+        // 例如 12.700000000000001 → toFixed(1) → "12.7" → parseFloat → 12.7 → "12.7"
+        return `${sign}${parseFloat(abs.toFixed(toFixed)).toString()}`
     }
 }

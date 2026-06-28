@@ -16,16 +16,19 @@
                 <span
                     :class="isShowCursorPointer ? 'user-title-item user-display-name-pointer' : 'user-title-item user-display-name'"
                     v-if="isShowUserDisplayName"
+                    :title="user.user_display_name"
                     @click="handleUserClick"
                     >{{ user.user_display_name }}</span
                 >
                 <span class="user-title-item user-is-post-author" v-if="commentIsPostAuthorCode === CommentIsPostAuthorCode.IsPostAuthor">作者</span>
             </div>
             <div class="user-info-item user-title" v-if="isShowUserEmail" @click="handleUserClick">
-                <span :class="isShowCursorPointer ? 'user-title-item user-email-pointer' : 'user-title-item user-email'">{{ user.user_email }}</span>
+                <span :class="isShowCursorPointer ? 'user-title-item user-email-pointer' : 'user-title-item user-email'" :title="user.user_email">{{
+                    user.user_email
+                }}</span>
             </div>
             <div class="user-info-item user-title" v-if="isShowUserName" @click="handleUserClick">
-                <span :class="isShowCursorPointer ? 'user-title-item user-name-pointer' : 'user-title-item user-name'" v-if="isShowUserName">{{
+                <span :class="isShowCursorPointer ? 'user-title-item user-name-pointer' : 'user-title-item user-name'" :title="user.user_name">{{
                     user.user_name
                 }}</span>
             </div>
@@ -67,9 +70,9 @@ const handleUserClick = () => {
 </script>
 <style lang="scss" scoped>
 .user-container {
-    // 网格布局
+    // 网格布局: 头像自适应, 用户信息占剩余空间
     display: grid;
-    grid-template-columns: auto auto 1fr;
+    grid-template-columns: auto 1fr;
     grid-template-rows: auto;
 }
 
@@ -95,22 +98,30 @@ const handleUserClick = () => {
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
+    min-width: 0; // 允许 grid 1fr 列收缩时内容不撑开
 
     .user-title {
         // 行高
         line-height: 1.1em;
+        // 约束最大宽度, 防止长文本溢出父容器
+        max-width: 100%;
 
         .user-title-item {
             color: var(--jpz-color-primary);
         }
 
-        // 通用样式
+        // 通用样式: 邮箱和用户名为单行截断 + 悬停查看完整内容
         .user-email,
         .user-name,
         .user-email-pointer,
         .user-name-pointer {
             margin-right: 5px;
             font-size: 12px;
+            // 单行截断: 超出宽度显示省略号, 悬停原生 title 查看全文
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         // 鼠标悬停手型样式
