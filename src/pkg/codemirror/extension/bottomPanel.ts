@@ -9,8 +9,8 @@
 import { type Extension, Text, type TextIterator } from "@codemirror/state"
 import { EditorView, type Panel, showPanel } from "@codemirror/view"
 
-// 字数统计
-function countWords(doc: Text): string {
+// 字数统计 (CodeMirror Text 内部版本)
+function countWordsFromDoc(doc: Text): number {
     let count: number = 0
     const iter: TextIterator = doc.iter() // 获取文档迭代器
     while (!iter.next().done) {
@@ -32,7 +32,18 @@ function countWords(doc: Text): string {
             }
         }
     }
-    return `words: ${count} `
+    return count
+}
+
+/**
+ * countWords 统计字符串中的字数, 与编辑器底部面板统计逻辑一致.
+ * 中文字符逐个计数, 英文按单词计数.
+ *
+ * @param text - 待统计的文本内容.
+ * @returns 字数 (整数).
+ */
+export function countWords(text: string): number {
+    return countWordsFromDoc(Text.of([text]))
 }
 
 // 获取光标位置信息
@@ -52,8 +63,8 @@ function getCursorInfo(view: EditorView): string {
 function updateBottomPanelContent(view: EditorView): string {
     const contentArray: string[] = [] // 内容数组
 
-    const wordCount = countWords(view.state.doc) // 字数统计
-    contentArray.push(wordCount) // 添加字数统计到内容数组
+    const wordCount = countWordsFromDoc(view.state.doc) // 字数统计
+    contentArray.push(`words: ${wordCount} `) // 添加字数统计到内容数组
 
     const rowCol = getCursorInfo(view) // 光标位置信息
     if (rowCol) {

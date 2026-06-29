@@ -165,6 +165,7 @@ export interface InsertPostRequest {
     pay_strategy?: PayStrategy // 付费策略
     video_toc?: PostVideoTocTree[] // 文章视频目录
     video_file_id_hash_list?: string[] // 文章封面视频文件ID哈希
+    words_count?: number // 文章字数, 由前端编辑器统计传入
 }
 
 export type UpdateFields = keyof InsertPostRequest
@@ -195,6 +196,7 @@ export interface UpdatePostRequest {
     pay_strategy?: PayStrategy // 付费策略
     video_toc?: PostVideoTocTree[] // 文章视频目录
     video_file_id_hash_list?: string[] // 文章封面视频文件ID哈希
+    words_count?: number // 文章字数, 由前端编辑器统计传入
     update_fields: UpdateFields[] // 显示指出需要更新的字段便于后端处理零值
 }
 

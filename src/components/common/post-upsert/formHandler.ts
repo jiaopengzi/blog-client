@@ -10,6 +10,7 @@ import type { FormInstance } from "element-plus" // 需要全部安装 npm i ele
 import { type Reactive } from "vue"
 
 import { type InsertPostRequest, PostType, type UpdatePostRequest } from "@/api/post/common"
+import { countWords } from "@/pkg/codemirror/extension/bottomPanel"
 
 import type { UpsertPostForm } from "./types"
 
@@ -113,6 +114,16 @@ export async function handleSubmit<T extends InsertPostRequest | UpdatePostReque
             return
         }
     })
+
+    // 根据文章内容计算字数, 与编辑器底部面板统计逻辑一致
+    req.words_count = countWords(postInfoForm.post_content || "")
+
+    // 对于更新请求, 当内容字段变更时同步标记字数字段也需要更新
+    if ("update_fields" in req && Array.isArray(req.update_fields) && (req.update_fields as string[]).includes("post_content")) {
+        if (!(req.update_fields as string[]).includes("words_count")) {
+            ;(req.update_fields as string[]).push("words_count")
+        }
+    }
 
     // 如果包含 id 字段，且不为空，则为更新请求
     if ("id" in req && req.id) {
