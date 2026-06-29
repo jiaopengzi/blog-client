@@ -162,7 +162,7 @@ const authorColumns: TableColumn[] = [
         prop: "author_info",
         label: "作者",
         sortable: true,
-        width: 120,
+        width: 160,
         align: "center",
         isUser: true,
     },

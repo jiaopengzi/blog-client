@@ -110,11 +110,13 @@ const handleUserClick = () => {
             color: var(--jpz-color-primary);
         }
 
-        // 通用样式: 邮箱和用户名为单行截断 + 悬停查看完整内容
+        // 通用样式: 昵称/邮箱/用户名为单行截断 + 悬停原生 title 查看完整内容
         .user-email,
         .user-name,
+        .user-display-name,
         .user-email-pointer,
-        .user-name-pointer {
+        .user-name-pointer,
+        .user-display-name-pointer {
             margin-right: 5px;
             font-size: 12px;
             // 单行截断: 超出宽度显示省略号, 悬停原生 title 查看全文
