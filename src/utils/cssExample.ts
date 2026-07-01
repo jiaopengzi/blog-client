@@ -621,12 +621,28 @@ const ARTICLE_CSS_EXAMPLE = `
 }
 
 #preview .markdown-alert p,
-#preview .markdown-alert li,
+#preview .markdown-alert ol,
+#preview .markdown-alert ul,
+#preview .markdown-alert code,
 #preview .markdown-alert strong,
 #preview .markdown-alert em,
 #preview .markdown-alert del,
 #preview .markdown-alert a {
   color: inherit;
+}
+
+#preview .markdown-alert ol > li:not(.task-list-item),
+#preview .markdown-alert ul > li:not(.task-list-item) {
+  color: inherit;
+}
+
+#preview .markdown-alert ol > li:not(.task-list-item)::before {
+  color: inherit;
+}
+
+#preview .markdown-alert ul > li:not(.task-list-item)::before {
+  color: inherit;
+  background-color: currentColor;
 }
 
 #preview .markdown-alert a {

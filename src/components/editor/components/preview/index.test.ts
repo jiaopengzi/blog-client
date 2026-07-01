@@ -3,6 +3,7 @@ import { nextTick } from "vue"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { CommandsKey } from "@/components/editor/command"
+import createMarked from "@/pkg/marked/new-marked"
 import { stableHtmlDirective } from "@/utils/stableHtmlDirective"
 
 const {
@@ -354,5 +355,60 @@ describe("HtmlPreview", () => {
 
         expect(copyTextMock).toHaveBeenCalledWith("\nfirst line\n\nthird line")
         expect(messageSuccessMock).toHaveBeenCalledWith("已复制到剪贴板！")
+    })
+
+    it("tip 提示块中的列表项与行内 code 应继承提示块颜色, 且有序列表 marker 不应退化为色块", async () => {
+        const html = createMarked()
+            .parse(
+                [
+                    "> [!TIP]",
+                    "> 系列说明：本文是『自建博客系统教程』系列第 5 篇，配套教程共 13 篇，详见文末导航。",
+                    ">",
+                    "> 这一篇带您把**博客系统**真正跑起来。",
+                    ">",
+                    ">  三个项目澄清：",
+                    ">",
+                    '>  - **blog-server**（后端，闭源镜像）+ **blog-client**（前端，MIT 开源）= 您最终用的"博客"',
+                    ">  - **blog-tool**（部署工具，MIT 开源）= 帮您把上面两个东西装到服务器上的脚本",
+                    ">",
+                    '>  1. **blog-server**（后端，闭源镜像）+ **blog-client**（前端，MIT 开源）= 您最终用的"博客"',
+                    ">  2. **blog-tool**（部署工具，MIT 开源）= 帮您把上面两个东西装到服务器上的脚本",
+                    ">",
+                    ">  普通博主只需要用 `blog-tool` 即可，**不必关心前后端怎么实现**。",
+                ].join("\n"),
+            )
+            .toString()
+
+        const wrapper = mount(HtmlPreview, {
+            props: {
+                html,
+                imgUrls: [],
+                isShowElImageViewer: false,
+            },
+            attachTo: document.body,
+            global: {
+                directives: {
+                    "stable-html": stableHtmlDirective,
+                },
+            },
+        })
+
+        await waitForAsyncRender()
+
+        const alertElement = wrapper.get(".markdown-alert-tip").element as HTMLElement
+        const unorderedListItemElement = wrapper.get(".markdown-alert-tip ul > li").element as HTMLElement
+        const orderedListItemElement = wrapper.get(".markdown-alert-tip ol > li").element as HTMLElement
+        const codeElement = wrapper.get(".markdown-alert-tip code").element as HTMLElement
+
+        const alertColor = getComputedStyle(alertElement).color
+        const orderedMarkerStyle = getComputedStyle(orderedListItemElement, "::before")
+
+        expect(getComputedStyle(unorderedListItemElement).color).toBe(alertColor)
+        expect(getComputedStyle(orderedListItemElement).color).toBe(alertColor)
+        expect(getComputedStyle(codeElement).color).toBe(alertColor)
+        expect(orderedMarkerStyle.color).toBe(alertColor)
+        expect(orderedMarkerStyle.backgroundColor).not.toBe(alertColor)
+
+        wrapper.unmount()
     })
 })

@@ -11,7 +11,15 @@ import { describe, expect, it, vi } from "vitest"
 
 import { ImageCaptionFormat, setImageCaptionFormat } from "@/pkg/marked/extension/renderer"
 
-import { anchorGenerator, createRegexCache, generateAllHeadingAnchor, renderMarkdownDocument } from "./markdown"
+import {
+    anchorGenerator,
+    collectQuoteBlockInfos,
+    createRegexCache,
+    generateAllHeadingAnchor,
+    isAlertContinuationBlockquote,
+    mergeAlertContinuationBlockquotes,
+    renderMarkdownDocument,
+} from "./markdown"
 
 describe("createRegexCache", () => {
     it("缓存中的正则匹配", () => {
@@ -108,6 +116,54 @@ describe("generateAllHeadingAnchorAndHref", () => {
     })
 })
 
+describe("mergeAlertContinuationBlockquotes", () => {
+    it("仅将紧跟 alert 的普通列表引用块视为续写", () => {
+        const mergedHtml = mergeAlertContinuationBlockquotes(
+            ['<div class="markdown-alert markdown-alert-tip"><p>提示块正文</p></div>', "<blockquote><ol><li>第一项</li><li>第二项</li></ol></blockquote>"].join(
+                "",
+            ),
+            ["> [!TIP]", "> 提示块正文", "", "> 1. 第一项", "> 2. 第二项"].join("\n"),
+        )
+
+        expect(mergedHtml).toContain('<div class="markdown-alert markdown-alert-tip"><p>提示块正文</p><ol><li>第一项</li><li>第二项</li></ol></div>')
+        expect(mergedHtml).not.toContain("<blockquote>")
+    })
+
+    it("遇到非 alert 或复杂 blockquote 时不应误合并", () => {
+        const template = document.createElement("template")
+        template.innerHTML = '<div class="markdown-alert markdown-alert-tip"><p>提示块正文</p></div><blockquote><h2>独立引用标题</h2></blockquote>'
+
+        expect(isAlertContinuationBlockquote(template.content.firstElementChild, template.content.lastElementChild)).toBe(false)
+        expect(mergeAlertContinuationBlockquotes(template.innerHTML, ["> [!TIP]", "> 提示块正文", "", "> ## 独立引用标题"].join("\n"))).toContain(
+            "<blockquote><h2>独立引用标题</h2></blockquote>",
+        )
+    })
+
+    it("空两行后的新引用块不应继续并入前一个 alert", () => {
+        const html = [
+            '<div class="markdown-alert markdown-alert-tip"><p>提示块正文</p></div>',
+            "<blockquote><ol><li>第一项</li><li>第二项</li></ol></blockquote>",
+        ].join("")
+        const markdown = ["> [!TIP]", "> 提示块正文", "", "", "> 1. 第一项", "> 2. 第二项"].join("\n")
+
+        expect(mergeAlertContinuationBlockquotes(html, markdown)).toContain("<blockquote><ol><li>第一项</li><li>第二项</li></ol></blockquote>")
+    })
+})
+
+describe("collectQuoteBlockInfos", () => {
+    it("应根据空白行数量区分 alert 续写块与新引用块", () => {
+        const quoteBlockInfos = collectQuoteBlockInfos(
+            ["> [!TIP]", "> 提示块正文", "", "> 1. 续写列表项", "> 2. 续写列表项", "", "", "> 1. 新引用块列表项", "> 2. 新引用块列表项"].join("\n"),
+        )
+
+        expect(quoteBlockInfos).toEqual([
+            { kind: "alert", shouldMergeWithPreviousAlert: false },
+            { kind: "blockquote", shouldMergeWithPreviousAlert: true },
+            { kind: "blockquote", shouldMergeWithPreviousAlert: false },
+        ])
+    })
+})
+
 describe("renderMarkdownDocument", () => {
     it("相同 Markdown 输入应复用渲染缓存", () => {
         const sanitizeSpy = vi.spyOn(DOMPurify, "sanitize")
@@ -177,5 +233,62 @@ describe("renderMarkdownDocument", () => {
 
         expect(result.html).toContain("katex")
         expect(warnSpy.mock.calls.some(([message]) => String(message).includes("unicodeTextInMathMode"))).toBe(false)
+    })
+
+    it("应将空一行后的普通 blockquote 续块并入同一个提示块", () => {
+        const markdown = [
+            "> [!TIP]",
+            "> 系列说明：本文是『自建博客系统教程』系列第 5 篇，配套教程共 13 篇，详见文末导航。",
+            ">",
+            "> 这一篇带您把**博客系统**真正跑起来。",
+            ">",
+            ">  三个项目澄清：",
+            ">",
+            '>  - **blog-server**（后端，闭源镜像）+ **blog-client**（前端，MIT 开源）= 您最终用的"博客"',
+            ">  - **blog-tool**（部署工具，MIT 开源）= 帮您把上面两个东西装到服务器上的脚本",
+            ">",
+            '>  1. **blog-server**（后端，闭源镜像）+ **blog-client**（前端，MIT 开源）= 您最终用的"博客"',
+            ">  2. **blog-tool**（部署工具，MIT 开源）= 帮您把上面两个东西装到服务器上的脚本",
+            ">",
+            ">  普通博主只需要用 `blog-tool` 即可，**不必关心前后端怎么实现**。",
+            "",
+            '>  1. **blog-server**（后端，闭源镜像）+ **blog-client**（前端，MIT 开源）= 您最终用的"博客"',
+            ">  2. **blog-tool**（部署工具，MIT 开源）= 帮您把上面两个东西装到服务器上的脚本",
+        ].join("\n")
+
+        const result = renderMarkdownDocument(markdown, false)
+
+        expect(result.html.match(/class="markdown-alert markdown-alert-tip"/g)).toHaveLength(1)
+        expect(result.html).not.toContain("<blockquote>")
+        expect(result.html.match(/<ol>/g)).toHaveLength(2)
+    })
+
+    it("应将空两行后的引用块保留为新的 blockquote", () => {
+        const markdown = [
+            "> [!TIP]",
+            "> 系列说明：本文是『自建博客系统教程』系列第 5 篇，配套教程共 13 篇，详见文末导航。",
+            ">",
+            "> 这一篇带您把**博客系统**真正跑起来。",
+            ">",
+            ">  三个项目澄清：",
+            ">",
+            '>  - **blog-server**（后端，闭源镜像）+ **blog-client**（前端，MIT 开源）= 您最终用的"博客"',
+            ">  - **blog-tool**（部署工具，MIT 开源）= 帮您把上面两个东西装到服务器上的脚本",
+            ">",
+            '>  1. **blog-server**（后端，闭源镜像）+ **blog-client**（前端，MIT 开源）= 您最终用的"博客"',
+            ">  2. **blog-tool**（部署工具，MIT 开源）= 帮您把上面两个东西装到服务器上的脚本",
+            ">",
+            ">  普通博主只需要用 `blog-tool` 即可，**不必关心前后端怎么实现**。",
+            "",
+            "",
+            '>  1. **blog-server**（后端，闭源镜像）+ **blog-client**（前端，MIT 开源）= 您最终用的"博客"',
+            ">  2. **blog-tool**（部署工具，MIT 开源）= 帮您把上面两个东西装到服务器上的脚本",
+        ].join("\n")
+
+        const result = renderMarkdownDocument(markdown, false)
+
+        expect(result.html.match(/class="markdown-alert markdown-alert-tip"/g)).toHaveLength(1)
+        expect(result.html).toContain("<blockquote>")
+        expect(result.html).toContain("<blockquote>\n<ol>")
     })
 })

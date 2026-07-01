@@ -41,7 +41,15 @@ describe("cssExample", () => {
     it("应让 markdown alert 内联元素继承提示块颜色", () => {
         const result = cssExample()
 
+        expect(result).toContain("#preview .markdown-alert ol,")
+        expect(result).toContain("#preview .markdown-alert ul,")
+        expect(result).toContain("#preview .markdown-alert code,")
         expect(result).toContain("#preview .markdown-alert strong,")
+        expect(result).toContain("#preview .markdown-alert ul > li:not(.task-list-item) {")
+        expect(result).toContain("#preview .markdown-alert ol > li:not(.task-list-item)::before {")
+        expect(result).toContain("#preview .markdown-alert ul > li:not(.task-list-item)::before {")
+        expect(result).toContain("#preview .markdown-alert ol > li:not(.task-list-item)::before {\n  color: inherit;\n}")
+        expect(result).toContain("#preview .markdown-alert ul > li:not(.task-list-item)::before {\n  color: inherit;\n  background-color: currentColor;\n}")
         expect(result).toContain("#preview .markdown-alert a {")
         expect(result).toContain("text-decoration-color: currentColor;")
         expect(result).toContain("#preview .markdown-alert-tip {")

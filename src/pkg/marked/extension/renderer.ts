@@ -276,9 +276,9 @@ function constructWeChatPreCode(htmlStr: string, sourceHasTrailingEmptyLine = fa
 }
 
 /**
- * @description: 处理指定 hljs class 的 span 标签多行情况，将跨行 span 拆分为每行独立 span
+ * @description: 处理指定 class 属性的 span 标签多行情况，将跨行 span 拆分为每行独立 span.
  * @param spanTagStr   原始跨行 span 字符串
- * @param className    hljs class 名称，例如 "hljs-string" / "hljs-comment"
+ * @param className    span 的 class 属性值，例如 "hljs-string" / "hljs-meta prompt_"
  * @return 处理后每行各自带有完整 span 的字符串
  */
 function handleMultiLineSpanTag(spanTagStr: string, className: string): string {
@@ -287,47 +287,56 @@ function handleMultiLineSpanTag(spanTagStr: string, className: string): string {
     let targetStr = ""
     const spanStart = `<span class="${className}">` // span 开始标签
     let spanEnd = "</span>\n" // span 结束标签，默认带换行
-    // 转义 className 中的特殊正则字符，防止注入
-    const escapedClass = className.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-    const regexStart = new RegExp(`<span class="${escapedClass}">`)
+    const regexStart = /<span class="[^"]+">/
     const regexEnd = /<\/span>/
 
     lines.forEach((item) => {
-        if (item) {
-            const matchStart = item.match(regexStart)
-            const matchEnd = item.match(regexEnd)
-            if (matchStart) {
-                item = item.replace(matchStart[0], "") // 删除 span 开始标签
-            }
-
-            if (matchEnd) {
-                item = item.replace(matchEnd[0], "") // 删除 span 结束标签
-                spanEnd = "</span>" // 注意：末尾行无换行符
-            }
-            item = spanStart + item + spanEnd // 拼接 span 标签
-
-            targetStr += item
+        if (!item) {
+            return
         }
+
+        const matchStart = item.match(regexStart)
+        const matchEnd = item.match(regexEnd)
+        if (matchStart) {
+            item = item.replace(matchStart[0], "") // 删除 span 开始标签
+        }
+
+        if (matchEnd) {
+            item = item.replace(matchEnd[0], "") // 删除 span 结束标签
+            spanEnd = "</span>" // 注意：末尾行无换行符
+        }
+
+        // 仅包含开始标签的那一行本质上还是源码空行, 继续保留空字符串给后续空行占位逻辑处理。
+        if (item === "") {
+            targetStr += "\n"
+            return
+        }
+
+        item = spanStart + item + spanEnd // 拼接 span 标签
+
+        targetStr += item
     })
     return targetStr
 }
 
 /**
- * @description: 处理所有可能跨行的 hljs span 标签，将其按行拆分使每行各自带有完整 span
+ * @description: 处理所有可能跨行的 hljs span 标签，将其按行拆分使每行各自带有完整 span.
  * @param html  marked 渲染后的 html 字符串
  * @return      处理后的 html 字符串
  */
 function replaceAllHljsStringSpanTag(html: string): string {
-    // 列举所有可能产生多行内容的 hljs class
-    const multiLineClasses = ["hljs-string", "hljs-comment", "hljs-quote", "hljs-template-tag", "hljs-regexp"]
     let result = html
-    for (const cls of multiLineClasses) {
-        const escapedCls = cls.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-        const regex = new RegExp(`<span class="${escapedCls}">[\\s\\S]*?<\\/span>`, "g")
-        result = result.replace(regex, (match) => {
-            return handleMultiLineSpanTag(match, cls) // 处理多行 span 标签
-        })
-    }
+
+    // shell 等语言会生成带多个 class 的跨行 span, 这里统一按 class 属性抓取并拆行。
+    const multiLineSpanRegex = /<span class="([^"]*hljs[^"]*)">[\s\S]*?<\/span>/g
+    result = result.replace(multiLineSpanRegex, (match, className: string) => {
+        if (!match.includes("\n")) {
+            return match
+        }
+
+        return handleMultiLineSpanTag(match, className)
+    })
+
     return result
 }
 

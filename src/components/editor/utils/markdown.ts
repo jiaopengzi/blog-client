@@ -23,6 +23,13 @@ export type MarkdownRenderResult = {
     imgUrls: string[]
 }
 
+type QuoteBlockKind = "alert" | "blockquote"
+
+type QuoteBlockInfo = {
+    kind: QuoteBlockKind
+    shouldMergeWithPreviousAlert: boolean
+}
+
 /**
  * @description: 更新属性名数组
  * @param tarAttributeNames 目标元素的属性名数组
@@ -413,7 +420,7 @@ export function renderMarkdownDocument(markdownSrc: string, isRemoveFirstH1: boo
         purifiedHtml = htmlRemoveFirstH1(purifiedHtml)
     }
 
-    const html = generateAllHeadingAnchor(purifiedHtml)
+    const html = generateAllHeadingAnchor(mergeAlertContinuationBlockquotes(purifiedHtml, markdownSrc))
     const result: MarkdownRenderResult = {
         html,
         tocHtml: matchAllHeadingToList(html),
@@ -422,6 +429,138 @@ export function renderMarkdownDocument(markdownSrc: string, isRemoveFirstH1: boo
 
     setCachedValue(markdownRenderCache, cacheKey, result, MARKDOWN_RENDER_CACHE_LIMIT)
     return cloneMarkdownRenderResult(result)
+}
+
+/**
+ * @description: 从 Markdown 原文中提取顶层引用块顺序, 并标记哪些普通引用块可并入前一个 alert.
+ * 只有当前一个顶层块是 alert, 且两个引用块之间的空白行少于 2 行时, 才视为同一提示块续写.
+ * @param markdownSrc Markdown 原文.
+ * @return 顶层引用块信息列表.
+ */
+export function collectQuoteBlockInfos(markdownSrc: string): QuoteBlockInfo[] {
+    const lines = markdownSrc.split("\n")
+    const quoteBlocks: QuoteBlockInfo[] = []
+    const quoteLineRegex = /^\s{0,3}>/
+    let blankLineCount = 0
+    let previousTopLevelBlockKind: QuoteBlockKind | "other" | null = null
+    let lineIndex = 0
+
+    while (lineIndex < lines.length) {
+        const line = lines[lineIndex] ?? ""
+
+        if (line.trim() === "") {
+            blankLineCount += 1
+            lineIndex += 1
+            continue
+        }
+
+        if (quoteLineRegex.test(line)) {
+            const quoteLines: string[] = []
+
+            while (lineIndex < lines.length) {
+                const currentLine = lines[lineIndex] ?? ""
+                if (!quoteLineRegex.test(currentLine)) {
+                    break
+                }
+
+                quoteLines.push(currentLine)
+                lineIndex += 1
+            }
+
+            const firstQuoteContentLine =
+                quoteLines.map((quoteLine) => quoteLine.replace(/^\s{0,3}>\s?/, "").trim()).find((quoteLine) => quoteLine.length > 0) ?? ""
+            const kind: QuoteBlockKind = /^\[![^\]]+\]/.test(firstQuoteContentLine) ? "alert" : "blockquote"
+
+            quoteBlocks.push({
+                kind,
+                shouldMergeWithPreviousAlert: previousTopLevelBlockKind === "alert" && kind === "blockquote" && blankLineCount < 2,
+            })
+
+            previousTopLevelBlockKind = kind
+            blankLineCount = 0
+            continue
+        }
+
+        previousTopLevelBlockKind = "other"
+        blankLineCount = 0
+        lineIndex += 1
+    }
+
+    return quoteBlocks
+}
+
+/**
+ * @description: 判断普通 blockquote 是否可视为前一个 alert 的续写块.
+ * 仅合并由段落或列表组成的顶层 blockquote, 避免误吞真正独立的引用内容.
+ * @param alertElement 前一个提示块元素.
+ * @param blockquoteElement 当前普通引用块元素.
+ * @return 若应并入前一个提示块则返回 true.
+ */
+export function isAlertContinuationBlockquote(alertElement: Element | null, blockquoteElement: Element | null): boolean {
+    if (!alertElement || !blockquoteElement) {
+        return false
+    }
+
+    if (!alertElement.classList.contains("markdown-alert") || blockquoteElement.tagName !== "BLOCKQUOTE") {
+        return false
+    }
+
+    const childElements = Array.from(blockquoteElement.children)
+    if (childElements.length === 0) {
+        return false
+    }
+
+    const allowedTags = new Set(["P", "UL", "OL"])
+    return childElements.every((childElement) => allowedTags.has(childElement.tagName))
+}
+
+/**
+ * @description: 合并 alert 后紧跟的普通 blockquote 续块, 使其继续保留在同一个提示容器中.
+ * 某些 Markdown 写法会把后续 `>` 列表拆成新的 blockquote, 这里在最终 HTML 层最小化修正结构.
+ * @param htmlSrc 原始 HTML 字符串.
+ * @return 合并续块后的 HTML 字符串.
+ */
+export function mergeAlertContinuationBlockquotes(htmlSrc: string, markdownSrc: string): string {
+    if (!htmlSrc.includes("markdown-alert") || !htmlSrc.includes("<blockquote")) {
+        return htmlSrc
+    }
+
+    const quoteBlockInfos = collectQuoteBlockInfos(markdownSrc)
+    if (quoteBlockInfos.length === 0) {
+        return htmlSrc
+    }
+
+    const template = document.createElement("template")
+    template.innerHTML = htmlSrc
+
+    let currentElement = template.content.firstElementChild
+    let quoteBlockIndex = 0
+
+    while (currentElement) {
+        const nextElement = currentElement.nextElementSibling
+        const currentQuoteBlockInfo = currentElement.matches(".markdown-alert, blockquote") ? quoteBlockInfos[quoteBlockIndex] : null
+        const nextQuoteBlockInfo = nextElement?.matches(".markdown-alert, blockquote") ? quoteBlockInfos[quoteBlockIndex + 1] : null
+
+        if (nextElement && nextQuoteBlockInfo?.shouldMergeWithPreviousAlert && isAlertContinuationBlockquote(currentElement, nextElement)) {
+            let nextChildNode = nextElement.firstChild
+
+            while (nextChildNode) {
+                currentElement.append(nextChildNode)
+                nextChildNode = nextElement.firstChild
+            }
+            nextElement.remove()
+            quoteBlockIndex += 1
+            continue
+        }
+
+        if (currentQuoteBlockInfo) {
+            quoteBlockIndex += 1
+        }
+
+        currentElement = nextElement
+    }
+
+    return template.innerHTML
 }
 
 /**

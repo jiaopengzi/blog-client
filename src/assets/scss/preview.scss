@@ -521,12 +521,28 @@
         }
 
         p,
-        li,
+        ol,
+        ul,
+        code,
         strong,
         em,
         del,
         a {
             color: inherit;
+        }
+
+        ol > li:not(.task-list-item),
+        ul > li:not(.task-list-item) {
+            color: inherit;
+        }
+
+        ol > li:not(.task-list-item)::before {
+            color: inherit;
+        }
+
+        ul > li:not(.task-list-item)::before {
+            color: inherit;
+            background-color: currentColor;
         }
 
         a {
