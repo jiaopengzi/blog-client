@@ -45,4 +45,5 @@ export enum LocalStorageKey {
     MdThemeColor = "md_theme_color", // MD 页面主题色
     MdParagraphIndent = "md_paragraph_indent", // MD 页面段落首行缩进
     AdminTablePagination = "admin_table_pagination", // 后台表格分页器每页条数 (按 routeName 分组)
+    AdminTableColumnWidth = "admin_table_column_width", // 后台表格列宽 (按 routeName + 列 prop 分组)
 }

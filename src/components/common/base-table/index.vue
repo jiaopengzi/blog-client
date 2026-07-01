@@ -47,6 +47,7 @@
             ref="listRef"
             :pagination="props.pagination"
             :table-column="props.tableColumn"
+            :route-name="props.routeName"
             :row-style="props.rowStyle"
             :show-list-or-grid-status="props.showListOrGridStatus"
             :is-show-delete-all="props.isShowDeleteAll"

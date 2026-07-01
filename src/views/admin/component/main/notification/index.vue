@@ -11,6 +11,7 @@
         <BaseTable
             :pagination="pagination"
             :table-column="cols"
+            :route-name="RouteNames.Notification"
             :add-item-dialog-visible="addItemDialogVisible"
             :edit-item-dialog-visible="editItemDialogVisible"
             :is-show-delete-all="true"

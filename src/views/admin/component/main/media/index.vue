@@ -10,6 +10,7 @@
     <section>
         <MediaBase
             :table-column="cols"
+            :route-name="RouteNames.Media"
             :is-show-delete-all="true"
             :is-show-list-or-grid="true"
             :show-list-or-grid-status="showListOrGridStatus"

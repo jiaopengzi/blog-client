@@ -22,6 +22,7 @@
             <BaseTable
                 :pagination="pagination"
                 :table-column="cols"
+                :route-name="RouteNames.BillingCenter"
                 :is-show-search="false"
                 height="calc(100vh - 460px)"
                 :loading-delete="loadingDelete"

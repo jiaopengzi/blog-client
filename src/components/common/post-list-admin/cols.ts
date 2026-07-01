@@ -79,7 +79,7 @@ const statsColumns: TableColumn[] = [
         prop: "price",
         label: "价格(元)",
         sortable: true,
-        width: 100,
+        width: 120,
         align: "center",
     },
     {

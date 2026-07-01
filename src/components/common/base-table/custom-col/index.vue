@@ -7,7 +7,7 @@
 -->
 
 <template>
-    <el-table-column :width="col.width" :min-width="col.minWidth" :align="col.align" :label="col.label">
+    <el-table-column :prop="String(col.prop)" :width="width ?? col.width" :min-width="col.minWidth" :align="col.align" :label="col.label">
         <template #default="scope">
             <!-- 标题 -->
             <h4 v-if="col.isHeading" :class="{ 'heading-clickable': !!col.onHeadingClick }" @click="col.onHeadingClick && col.onHeadingClick(scope.row)">
@@ -99,6 +99,7 @@ defineOptions({ name: "CustomCol" })
 
 const {
     col,
+    width, // 有效列宽 (px), 由父层根据本地持久化结果计算; 缺省时回退到 col.width
     tagsItemMaxHeight = "100px", // 标签项目最大高度
     markdownPreviewMaxHeight = "200px", // markdown 预览最大高度
 
@@ -109,6 +110,7 @@ const {
     isShowCursorPointer = false,
 } = defineProps<{
     col: TableColumn
+    width?: number | string // 有效列宽 (px), 缺省时使用 col.width
     tagsItemMaxHeight?: string // 标签项目最大高度
 
     avatarWidth?: number // 用户头像宽度

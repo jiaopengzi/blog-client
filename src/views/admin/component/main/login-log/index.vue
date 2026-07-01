@@ -11,6 +11,7 @@
         <BaseTable
             :pagination="pagination"
             :table-column="cols"
+            :route-name="RouteNames.LoginLog"
             :is-show-delete-all="true"
             :is-show-search="true"
             :search-str="search"

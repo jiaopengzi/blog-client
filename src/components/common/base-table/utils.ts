@@ -9,9 +9,13 @@
 import { ImgFit } from "@/components/common"
 import { IconKeys } from "@/components/common/icons"
 import type { SwitchItem, SwitchItemColor, SwitchItemLabel } from "@/components/common/switch-group"
+import { LocalStorageKey } from "@/stores/local"
 import { formatTime } from "@/utils/dateTime"
 
 import { type BaseTableListExpose, type FormatTableData, type TableData, type TableVisibleStoreReadable } from "./types"
+
+// 列宽存储结构: { [routeName]: { [列 prop]: 宽度(px) } }
+type ColumnWidthStore = Record<string, Record<string, number>>
 
 /**
  * @description: 格式化表格的图片和时间
@@ -153,4 +157,77 @@ export function getListVisibleRows(showListOrGridStatus: boolean, records: Table
     }
 
     return listRef?.getVisibleRows() ?? records
+}
+
+/**
+ * @description: 从 localStorage 读取整份表格列宽存储.
+ * @return 列宽存储对象, 解析失败时返回空对象.
+ */
+function readColumnWidthStore(): ColumnWidthStore {
+    try {
+        const raw = localStorage.getItem(LocalStorageKey.AdminTableColumnWidth)
+        if (!raw) {
+            return {}
+        }
+        const parsed = JSON.parse(raw) as ColumnWidthStore
+        return parsed && typeof parsed === "object" ? parsed : {}
+    } catch {
+        // JSON 解析失败时静默忽略, 使用空存储
+        return {}
+    }
+}
+
+/**
+ * @description: 读取指定路由下的列宽映射 (列 prop -> 宽度).
+ * @param routeName 表格所属路由名, 用于分组隔离不同页面.
+ * @return 该路由的列宽映射, 无数据时返回空对象.
+ */
+export function readStoredColumnWidths(routeName: string): Record<string, number> {
+    if (!routeName) {
+        return {}
+    }
+    return readColumnWidthStore()[routeName] ?? {}
+}
+
+/**
+ * @description: 持久化单列宽度, 按 routeName + 列 prop 分组写入 localStorage.
+ * @param routeName 表格所属路由名.
+ * @param prop 列标识 (对应 TableColumn.prop).
+ * @param width 拖拽后的列宽 (px).
+ * @return void.
+ */
+export function persistColumnWidth(routeName: string, prop: string, width: number): void {
+    if (!routeName || !prop || !Number.isFinite(width) || width <= 0) {
+        return
+    }
+    try {
+        const store = readColumnWidthStore()
+        const group = store[routeName] ?? {}
+        group[prop] = Math.round(width)
+        store[routeName] = group
+        localStorage.setItem(LocalStorageKey.AdminTableColumnWidth, JSON.stringify(store))
+    } catch {
+        // 写入失败静默忽略, 不影响交互
+    }
+}
+
+/**
+ * @description: 清除指定路由下的全部列宽持久化, 用于恢复默认列宽.
+ * @param routeName 表格所属路由名.
+ * @return void.
+ */
+export function clearStoredColumnWidths(routeName: string): void {
+    if (!routeName) {
+        return
+    }
+    try {
+        const store = readColumnWidthStore()
+        if (!(routeName in store)) {
+            return
+        }
+        delete store[routeName]
+        localStorage.setItem(LocalStorageKey.AdminTableColumnWidth, JSON.stringify(store))
+    } catch {
+        // 写入失败静默忽略, 不影响交互
+    }
 }

@@ -86,6 +86,7 @@ export interface FormatTableData {
 export interface BaseTableProps {
     pagination: Pagination<TableData> // 分页配置
     tableColumn: TableColumn[] // 表格列配置
+    routeName?: string // 表格所属路由名, 用于列宽持久化分组 (与分页持久化一致); 缺省时列宽不持久化
     rowStyle?: Record<string, string> // 表格行样式
     addItemDialogVisible?: boolean // 添加对话框是否显示
     editItemDialogVisible?: boolean // 编辑对话框是否显示
@@ -150,6 +151,7 @@ export interface BaseTableListExpose {
 export interface BaseTableListProps {
     pagination: Pagination<TableData>
     tableColumn: TableColumn[]
+    routeName?: string // 表格所属路由名, 用于列宽持久化分组; 缺省时列宽不持久化
     rowStyle?: Record<string, string>
     showListOrGridStatus: boolean
     isShowDeleteAll: boolean

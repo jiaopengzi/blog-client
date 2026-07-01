@@ -11,6 +11,7 @@
         <BaseTable
             :pagination="pagination"
             :table-column="cols"
+            :route-name="RouteNames.Order"
             :edit-item-dialog-visible="editItemDialogVisible"
             :is-show-search="true"
             :search-str="search"

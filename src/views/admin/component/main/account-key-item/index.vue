@@ -10,6 +10,7 @@
         <BaseTable
             :pagination="pagination"
             :table-column="cols"
+            :route-name="RouteNames.AccountKeyItem"
             :add-item-dialog-visible="addItemDialogVisible"
             :edit-item-dialog-visible="editItemDialogVisible"
             :is-show-delete-all="true"

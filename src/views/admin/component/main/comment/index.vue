@@ -11,6 +11,7 @@
         <BaseTable
             :pagination="pagination"
             :table-column="cols"
+            :route-name="RouteNames.Comment"
             :edit-item-dialog-visible="editItemDialogVisible"
             :is-show-delete-all="true"
             :is-show-search="true"
