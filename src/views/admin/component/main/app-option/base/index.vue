@@ -53,7 +53,7 @@
                     <el-checkbox v-model="formDataResult[item.prop as keyof APPOptionForm]" />
                     <span v-if="item.isSitemapLink" class="sitemap-link">
                         <span class="sitemap-link__label">访问链接：</span>
-                        <el-link :href="sitemapUrl" target="_blank" type="primary" :underline="false">
+                        <el-link :href="sitemapUrl" target="_blank" type="primary" underline="never">
                             {{ sitemapUrl }}
                         </el-link>
                     </span>
