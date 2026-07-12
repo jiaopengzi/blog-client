@@ -58,6 +58,12 @@ export const enableFooterStatisticsScript = async (scriptStr: string | undefined
         return
     }
 
+    // admin 后台不加载统计脚本, 直接禁用并清理, 避免后台产生统计上报.
+    if (isAdminRoute(window.location.pathname)) {
+        disableFooterStatisticsScript(scriptStr)
+        return
+    }
+
     setGoogleAnalyticsDisableState(scriptStr, false)
 
     if (loadedFooterStatisticsCode === scriptStr) {
@@ -71,8 +77,17 @@ export const enableFooterStatisticsScript = async (scriptStr: string | undefined
         },
     })
 
-    loadedFooterStatisticsCode = ok ? scriptStr : ""
-    console.info("加载统计脚本:", ok ? "成功" : "失败")
+    if (ok) {
+        // 全部统计资源加载成功后才缓存, 避免重复注入.
+        loadedFooterStatisticsCode = scriptStr
+        console.info("加载统计脚本: 成功")
+        return
+    }
+
+    // 部分外链统计资源加载失败(常见于网络异常或 DNS 污染): 内联脚本已照常注入,
+    // 此处降级处理 -- 不缓存以便下次进入时自动重试, 仅以 warn 提示, 不影响页面功能.
+    loadedFooterStatisticsCode = ""
+    console.warn("统计脚本部分资源加载失败, 已降级处理（不影响页面功能），稍后将自动重试。")
 }
 
 /**
