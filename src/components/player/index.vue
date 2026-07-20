@@ -38,10 +38,28 @@
                 x5-video-player-fullscreen="true"
             >
                 <!-- <track v-if="isShowSubtitles" src="http://10.10.2.222:5426/api/v1/uploads/cn.vtt" kind="subtitles" srclang="cn" label="中文" default /> -->
-                <track v-if="isShowSubtitles" default :src="subtitlesSrc" kind="subtitles" :srclang="srclang" :label="subtitlesLabel" />
+                <track
+                    v-if="isShowSubtitles"
+                    default
+                    :src="subtitlesSrc"
+                    kind="subtitles"
+                    :srclang="srclang"
+                    :label="subtitlesLabel"
+                    @load="handleSubtitlesLoad"
+                />
 
                 您的浏览器不支持 video 标签。请使用最新版本的 Chrome 浏览器观看视频。
             </video>
+
+            <div v-if="!localPlayerState.isPictureInPicture && activeSubtitleCues.length > 0" class="custom-subtitles" aria-hidden="true">
+                <span
+                    v-for="cue in activeSubtitleCues"
+                    :key="`${cue.startTime}-${cue.endTime}-${cue.text}`"
+                    v-stable-html="getSubtitleCueHtml(cue)"
+                    class="custom-subtitle-cue"
+                    :style="getSubtitleCueStyle(cue)"
+                ></span>
+            </div>
 
             <!-- 视频控制器 -->
             <div
@@ -81,19 +99,18 @@
 
 <script setup lang="ts">
 import { useResizeObserver } from "@vueuse/core"
-import { computed, nextTick, onBeforeUnmount, onMounted, reactive, useTemplateRef, watch } from "vue"
+import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, shallowRef, useTemplateRef, watch } from "vue"
 
 import { IconKeys } from "@/components/common/icons"
 import JIcon from "@/components/common/icons"
 import Controls from "@/components/player/components/controls"
 import VideoWatermark from "@/components/player/components/watermark"
-import { setCustomStyle } from "@/utils/style"
 
 import { useFullscreen } from "./hooks/fullScreen"
 import { useHls } from "./hooks/hls"
 import { useMouse } from "./hooks/mouse"
 import { useProgress } from "./hooks/progress"
-import { useSubtitles } from "./hooks/subtitles"
+import { applyDefaultSubtitleCueSettings, getSubtitleCueStyle, useSubtitles } from "./hooks/subtitles"
 import { PlayerStateManager } from "./state"
 import { MediaTypes, type PlayerState, PlayStatus } from "./types"
 import { getVideoQualityLabel } from "./utils"
@@ -210,11 +227,71 @@ const videoContainerWH = computed(() => {
     return {
         "--video-container-width": size.width + "px",
         "--video-container-height": size.height + "px",
+        "--video-subtitle-font-size": subtitleFontSize.value,
     }
 })
 
 // 使用字幕 hook
 const { isShowSubtitles, subtitlesSrc, srclang, subtitlesLabel } = useSubtitles(localPlayerState)
+const activeSubtitleCues = shallowRef<VTTCue[]>([])
+const subtitleFontSize = ref("16px")
+let subtitleTextTrack: TextTrack | null = null
+
+/**
+ * 同步当前正在显示的 WebVTT cue, 为自定义字幕覆盖层提供内容.
+ * @returns 无返回值.
+ */
+const syncActiveSubtitleCues = (): void => {
+    if (!subtitleTextTrack?.activeCues) {
+        activeSubtitleCues.value = []
+        return
+    }
+
+    activeSubtitleCues.value = Array.from(subtitleTextTrack.activeCues).filter((cue): cue is VTTCue => "text" in cue)
+}
+
+/**
+ * 解除当前字幕轨道事件监听, 避免切换字幕语言后残留旧轨道回调.
+ * @returns 无返回值.
+ */
+const detachSubtitleTrack = (): void => {
+    subtitleTextTrack?.removeEventListener("cuechange", syncActiveSubtitleCues)
+    subtitleTextTrack = null
+    activeSubtitleCues.value = []
+}
+
+watch(
+    () => localPlayerState.subtitles.selectedSubtitlesLanguage,
+    () => detachSubtitleTrack(),
+)
+
+/**
+ * 在字幕轨道加载完成后应用默认 cue 布局, 字幕文件已有的自定义布局保持不变.
+ * @param event 字幕 track 元素触发的加载事件.
+ * @returns 无返回值.
+ */
+const handleSubtitlesLoad = (event: Event): void => {
+    const trackElement = event.currentTarget
+    if (!(trackElement instanceof HTMLTrackElement)) return
+
+    detachSubtitleTrack()
+    subtitleTextTrack = trackElement.track
+    applyDefaultSubtitleCueSettings(trackElement.track)
+    trackElement.track.mode = localPlayerState.isPictureInPicture ? "showing" : "hidden"
+    trackElement.track.addEventListener("cuechange", syncActiveSubtitleCues)
+    syncActiveSubtitleCues()
+}
+
+/**
+ * 将浏览器解析后的 WebVTT cue 内容转换为安全的 HTML 字符串, 保留粗体和斜体等内联标记.
+ * @param cue 当前需要渲染的 WebVTT cue.
+ * @returns 由浏览器 WebVTT 解析器生成的 HTML 字符串.
+ */
+const getSubtitleCueHtml = (cue: VTTCue): string => {
+    const container = document.createElement("span")
+    container.append(cue.getCueAsHTML())
+    return container.innerHTML
+}
 
 // 更新字幕字体大小
 const updateCueFontSize = () => {
@@ -230,12 +307,7 @@ const updateCueFontSize = () => {
             fontSize = "60px"
         }
 
-        const videoCue = `
-video::cue {
-    font-size: ${fontSize};
-}
-`
-        setCustomStyle("video-cue-style", videoCue)
+        subtitleFontSize.value = fontSize
     }
 }
 
@@ -255,6 +327,11 @@ const { controlsHidden, handleMousemove, handleMouseenter, handleMouseleave } = 
 watch(
     () => localPlayerState.isPictureInPicture,
     (isPictureInPicture) => {
+        if (subtitleTextTrack) {
+            subtitleTextTrack.mode = isPictureInPicture ? "showing" : "hidden"
+            syncActiveSubtitleCues()
+        }
+
         if (videoRef.value && isPictureInPicture) {
             videoRef.value.requestPictureInPicture()
         }
@@ -415,6 +492,8 @@ onBeforeUnmount(() => {
     if (mediaQueryList) {
         mediaQueryList.removeEventListener("change", handleOrientationChange)
     }
+
+    detachSubtitleTrack()
 
     // 销毁 state 管理器
     localManager.destroy()

@@ -39,11 +39,12 @@ video::-webkit-media-controls-enclosure {
     display: none !important;
 }
 
-// 字幕样式
+// 画中画模式使用的原生字幕样式
 video::cue {
-    color: #00000099;
-    background: #00000033;
+    color: #fff;
+    background: #000000c7;
     font-family: "SmileySans", "Microsoft YaHei", Arial, sans-serif;
+    text-shadow: 0 1px 2px #000;
 }
 
 .video-container {
@@ -71,6 +72,30 @@ video::cue {
         object-fit: contain;
         // width: 100%;
         // height: 100%;
+    }
+
+    .custom-subtitles {
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        overflow: hidden;
+        pointer-events: none;
+        font-family: "SmileySans", "Microsoft YaHei", Arial, sans-serif;
+        font-size: var(--video-subtitle-font-size);
+    }
+
+    .custom-subtitle-cue {
+        position: absolute;
+        display: block;
+        width: max-content;
+        padding: 0.15em 0.5em;
+        border-radius: 0.25em;
+        box-sizing: border-box;
+        color: #fff;
+        background: #000000c7;
+        text-shadow: 0 1px 2px #000;
+        white-space: pre-line;
+        overflow-wrap: break-word;
     }
 
     .controls-container {

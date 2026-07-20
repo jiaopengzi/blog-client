@@ -38,6 +38,8 @@ vi.mock("./hooks/mouse", () => ({
 }))
 
 vi.mock("./hooks/subtitles", () => ({
+    applyDefaultSubtitleCueSettings: vi.fn(),
+    getSubtitleCueStyle: vi.fn(),
     useSubtitles: () => ({
         isShowSubtitles: false,
         subtitlesSrc: "",

@@ -11,6 +11,7 @@ import { createApp, h } from "vue"
 import { useVideoWatermark } from "@/components/hooks/useVideoWatermark"
 import { MediaTypes, type PlayerState, PlayerStateManager } from "@/components/player"
 import VideoPlayer from "@/components/player"
+import { stableHtmlDirective } from "@/utils/stableHtmlDirective"
 
 import { Attributes, Names } from "../customElements"
 import { getComponentContainersFromCustomElements } from "./getComponentContainers"
@@ -84,6 +85,7 @@ export const mountVideoPlayerOnCustomElements = (container: HTMLElement, tagName
             },
         })
 
+        app.directive("stable-html", stableHtmlDirective)
         app.mount(elTarget)
     })
 }
