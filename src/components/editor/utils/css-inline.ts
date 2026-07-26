@@ -334,11 +334,102 @@ export function getInlineStyleRecord(
 }
 
 /**
+ * @description: 计算选择器列表中与当前元素匹配的最高特异性.
+ * 复制管线按 "特异性升序 + 文档顺序稳定" 合并规则, 与浏览器级联保持一致;
+ * 若仅按文档顺序合并, 生产构建下 CSS 分 chunk 懒加载会打乱规则顺序,
+ * 低特异性 reset (如 h1 { margin: 0 }) 可能排在 #preview h1 之后, 错误覆盖 margin: auto 导致微信粘贴后标题不居中.
+ * @param element 当前节点.
+ * @param selectorText 规则的完整选择器文本 (可能为逗号分隔列表).
+ * @return 特异性数值 (a*1e6 + b*1e3 + c), 无法解析时返回 0.
+ */
+export function getMatchedSelectorSpecificity(element: HTMLElement | SVGElement, selectorText: string): number {
+    let highest = 0
+
+    // 逗号分隔的选择器列表按浏览器行为取 "与元素匹配的分支" 中的最高特异性
+    for (const selector of splitSelectorList(selectorText)) {
+        try {
+            if (!element.matches(selector)) continue
+        } catch {
+            continue
+        }
+
+        const specificity = computeSelectorSpecificity(selector)
+        if (specificity > highest) {
+            highest = specificity
+        }
+    }
+
+    return highest
+}
+
+/**
+ * @description: 按顶层逗号拆分选择器列表, 忽略括号与引号内部的逗号 (如 :is(a, b), [attr="x,y"]).
+ * @param selectorText 完整选择器文本.
+ * @return 拆分后的单个选择器数组.
+ */
+export function splitSelectorList(selectorText: string): string[] {
+    const selectors: string[] = []
+    let depth = 0
+    let quote: string | null = null
+    let current = ""
+
+    for (const char of selectorText) {
+        if (quote) {
+            if (char === quote) quote = null
+            current += char
+            continue
+        }
+
+        if (char === '"' || char === "'") {
+            quote = char
+            current += char
+        } else if (char === "(" || char === "[") {
+            depth++
+            current += char
+        } else if (char === ")" || char === "]") {
+            depth--
+            current += char
+        } else if (char === "," && depth === 0) {
+            selectors.push(current.trim())
+            current = ""
+        } else {
+            current += char
+        }
+    }
+
+    if (current.trim()) {
+        selectors.push(current.trim())
+    }
+
+    return selectors
+}
+
+/**
+ * @description: 计算单个选择器的特异性近似值 (id=a, class/attr/伪类=b, 标签/伪元素=c).
+ * 不展开 :is()/:not() 内部选择器 (取整体按一个伪类近似), 对本项目样式表足够准确.
+ * @param selector 单个选择器.
+ * @return 特异性数值 (a*1e6 + b*1e3 + c).
+ */
+export function computeSelectorSpecificity(selector: string): number {
+    // 去掉括号内容, 避免 :is(...) 内部的 id/class 干扰主序列统计
+    const flattened = selector.replace(/\([^()]*\)/g, "()").replace(/\[[^\]]*\]/g, "[]")
+
+    const idCount = (flattened.match(/#[\w-]+/g) || []).length
+    const classCount = (flattened.match(/\.[\w-]+|\[\]|(?<!:):(?!:)[\w-]+(\(\))?/g) || []).length
+    const typeCount = (flattened.match(/(^|[\s>+~])[a-zA-Z][\w-]*|::[\w-]+/g) || []).length
+
+    return idCount * 1e6 + classCount * 1e3 + typeCount
+}
+
+/**
  * @description: 获取当前节点匹配到的样式规则, 并按节点签名缓存结果.
+ * 匹配结果按 "特异性升序" 稳定排序 (同特异性保持文档顺序),
+ * 使后续 getInlineStyleRecord 的 last-writer-wins 合并结果与浏览器级联一致,
+ * 不受生产构建 CSS 分 chunk 后样式表顺序变化的影响.
  * @param element 当前节点.
  * @param cssStyleRules 可用的样式规则列表.
  * @param applyContext 内联样式应用过程中的缓存上下文.
- * @return 当前节点命中的样式规则数组.
+ * @return 当前节点命中的样式规则数组 (特异性升序).
  */
 export function getMatchedCssStyleRules(
     element: HTMLElement | SVGElement,
@@ -360,8 +451,15 @@ export function getMatchedCssStyleRules(
         }
     })
 
-    applyContext.matchedRuleCache.set(cacheKey, matchedRules)
-    return matchedRules
+    // 特异性升序稳定排序: map 保留原始文档顺序作为次序, 保证同特异性时后书写的规则仍然后应用
+    const sortedRules = matchedRules
+        .map((rule, documentOrder) => ({ rule, documentOrder, specificity: getMatchedSelectorSpecificity(element, rule.selectorText) }))
+        // oxlint-disable-next-line unicorn/no-array-sort
+        .sort((a, b) => a.specificity - b.specificity || a.documentOrder - b.documentOrder)
+        .map(({ rule }) => rule)
+
+    applyContext.matchedRuleCache.set(cacheKey, sortedRules)
+    return sortedRules
 }
 
 /**

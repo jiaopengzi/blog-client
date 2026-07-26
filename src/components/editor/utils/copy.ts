@@ -191,6 +191,10 @@ export function applyKatexCaptureContextStyle(katex: HTMLElement, wrapper: HTMLD
  * @return 截图生成的图片元素.
  */
 export async function createKatexImageFromCapture(captureContext: KatexCaptureContext): Promise<HTMLImageElement> {
+    /**
+     * NOTE: @zumer/snapdom 版本锁定在 2.9.0 (见 package.json), 请勿随意升级.
+     * 待 issue https://github.com/zumerlab/snapdom/issues/474 修复后再升级.
+     */
     const snap = await snapdom(captureContext.wrapper, {
         embedFonts: true,
     })

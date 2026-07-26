@@ -211,6 +211,11 @@ export default defineConfig(({ mode }) => {
             host: runtimeEnv.domain,
             // 如果提供了证书则启用 https
             https: runtimeEnv.httpsOptions,
+            watch: {
+                // 排除调试素材目录: 截图工具写入 .bug 下的文件时会短暂锁定文件,
+                // chokidar watch 遇到 EBUSY 会抛未捕获异常导致 dev server 崩溃.
+                ignored: ["**/.bug/**"],
+            },
         },
 
         // 预览服务器配置

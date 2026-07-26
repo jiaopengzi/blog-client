@@ -8,7 +8,14 @@
 
 import { afterEach, describe, expect, it, vi } from "vitest"
 
-import { materializeListMarkersForCopy, prepareCopyWithCustomStyle, scaleDisplayKatexByFontSize } from "./copy"
+import { createKatexImageFromCapture, materializeListMarkersForCopy, prepareCopyWithCustomStyle, scaleDisplayKatexByFontSize } from "./copy"
+
+// mock snapdom: 仅记录调用参数, 返回可断言的假截图结果
+vi.mock("@zumer/snapdom", () => ({
+    snapdom: vi.fn(async () => ({
+        toPng: vi.fn(async () => document.createElement("img")),
+    })),
+}))
 
 afterEach(() => {
     vi.unstubAllGlobals()
@@ -436,5 +443,17 @@ describe("materializeListMarkersForCopy", () => {
 
         document.body.removeChild(element)
         document.head.removeChild(style)
+    })
+})
+
+describe("createKatexImageFromCapture", () => {
+    it("截图仅传 embedFonts, 不开启 reconcile (snapdom 锁定 2.9.0, 见 260726-01)", async () => {
+        const { snapdom } = await import("@zumer/snapdom")
+        const wrapper = document.createElement("div")
+
+        await createKatexImageFromCapture({ wrapper, width: 100, height: 40 })
+
+        // snapdom 2.18~2.22 对 KaTeX 捕获存在回归 (裁切/分式塔陷), 锁定 2.9.0 默认配置
+        expect(snapdom).toHaveBeenCalledWith(wrapper, { embedFonts: true })
     })
 })

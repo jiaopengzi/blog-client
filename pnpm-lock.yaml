@@ -66,8 +66,8 @@ importers:
         specifier: 14.3.0
         version: 14.3.0(vue@3.5.40(typescript@6.0.3))
       '@zumer/snapdom':
-        specifier: 2.16.0
-        version: 2.16.0
+        specifier: 2.9.0
+        version: 2.9.0
       cropperjs:
         specifier: 2.1.1
         version: 2.1.1
@@ -2284,8 +2284,8 @@ packages:
     peerDependencies:
       vue: ^3.5.0
 
-  '@zumer/snapdom@2.16.0':
-    resolution: {integrity: sha512-ZfN3o6kcxb+jDhYe/JHFZf3g4UfDv3MGyTiK/sWvFU+vYlxa2KZVLZH7DxhKkobwGp66KMhRnXTqIKmaSgM50Q==}
+  '@zumer/snapdom@2.9.0':
+    resolution: {integrity: sha512-ksDM5gXQmu1isBof/YumD2HeIHf4ImTMfba9xE4JyDbARhcZCWHFdjW8oZV3hSKdWpQILEspNq5MrAfwEfzpIw==}
 
   abbrev@2.0.0:
     resolution: {integrity: sha512-6/mh1E2u2YgEsCHdY0Yx5oW+61gZU+1vXaoiHHrpKeuRNNgFvS+/jrwHiQhB5apAf5oB7UB7E19ol2R2LKH8hQ==}
@@ -6510,7 +6510,7 @@ snapshots:
     dependencies:
       vue: 3.5.40(typescript@6.0.3)
 
-  '@zumer/snapdom@2.16.0': {}
+  '@zumer/snapdom@2.9.0': {}
 
   abbrev@2.0.0: {}
 
