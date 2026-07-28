@@ -9,7 +9,7 @@
 import fs from "fs"
 import { glob } from "glob"
 import { parse } from "node-html-parser"
-import urlRegex from "url-regex"
+import urlRegex from "url-regex-safe"
 import { gzipSync } from "zlib"
 
 // 获取外部链接的正则表达式
