@@ -77,7 +77,8 @@
             </div>
 
             <!-- 格式化(isCopyText 时由 CopyText 组件负责显示, 此处不重复渲染) -->
-            <span v-if="col.formatter && !col.isCopyText && !col.isScrollFormatter">{{ col.formatter(scope.row) }}</span>
+            <!-- 使用 formatter-text 类保留 formatter 返回值中的换行符, 便于状态列等场景将标签与时间分行展示 -->
+            <span class="formatter-text" v-if="col.formatter && !col.isCopyText && !col.isScrollFormatter">{{ col.formatter(scope.row) }}</span>
         </template>
     </el-table-column>
 </template>
@@ -271,6 +272,12 @@ const handleViewWithID = (row: TableData) => {
     width: 100%;
     box-sizing: border-box;
     padding-right: 8px;
+}
+
+// formatter 通用文本: 保留返回值中的换行符 (pre-line), 使状态列的标签与时间可分行展示;
+// 仅当 formatter 返回值包含换行符时才产生分行, 对无换行的 formatter 无视觉影响.
+.formatter-text {
+    white-space: pre-line;
 }
 
 .scroll-formatter-box {

@@ -57,7 +57,7 @@ const categoryColumns: TableColumn[] = [
         prop: "categories",
         label: "分类",
         sortable: true,
-        minWidth: 180,
+        minWidth: 160,
         align: "center",
         isCategories: true,
         itemSorter: sortAdminTaxonomyItems,
@@ -66,7 +66,7 @@ const categoryColumns: TableColumn[] = [
         prop: "tags",
         label: "标签",
         sortable: true,
-        minWidth: 180,
+        minWidth: 160,
         align: "center",
         isTags: true,
         itemSorter: sortAdminTaxonomyItems,
@@ -124,12 +124,13 @@ const statusColumns: TableColumn[] = [
             if ("post_status" in row && "post_push_time" in row && "post_expired_time" in row) {
                 const display = PostStatusDisplay[row.post_status as PostStatusCode]
                 // 判断是否为定时或者过期
+                // 定时或过期状态下, 在标签与时间之间插入换行符, 让 "定时"/"过期" 与括号时间分行展示 (由 formatter-text 的 pre-line 渲染换行)
                 if (row.post_status === PostStatusCode.Future && row.post_push_time?.Time) {
-                    return `${display}(${formatTime(row.post_push_time.Time)})`
+                    return `${display}\n${formatTime(row.post_push_time.Time)}`
                 }
 
                 if (row.post_status === PostStatusCode.Expired && row.post_expired_time?.Time) {
-                    return `${display}(${formatTime(row.post_expired_time.Time)})`
+                    return `${display}\n${formatTime(row.post_expired_time.Time)}`
                 }
 
                 return display
