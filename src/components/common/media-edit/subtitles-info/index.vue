@@ -31,7 +31,9 @@
         </el-form-item>
 
         <el-form-item>
-            <el-button type="primary" @click="insertDemo">插入示例</el-button>
+            <el-button class="action-btn" type="primary" plain @click="insertDemo">插入示例</el-button>
+            <el-button class="action-btn" type="primary" plain @click="triggerSelectFile">选择文件</el-button>
+            <input ref="subtitlesFileInputRef" class="subtitles-file-input" type="file" accept=".vtt,.webvtt,text/vtt" @change="handleSelectFile" />
         </el-form-item>
 
         <el-form-item label="字幕内容" prop="subtitles">
@@ -40,8 +42,8 @@
 
         <div class="btn-submit">
             <el-form-item>
-                <el-button type="primary" :loading="loading" @click="saveSubtitles(subtitlesFormRef as FormInstance)">保存</el-button>
-                <el-button type="danger" :loading="loading" @click="delSubtitles">删除</el-button>
+                <el-button class="action-btn" type="primary" :loading="loading" @click="saveSubtitles(subtitlesFormRef as FormInstance)">保存</el-button>
+                <el-button class="action-btn" type="danger" :loading="loading" @click="delSubtitles">删除</el-button>
             </el-form-item>
         </div>
     </el-form>
@@ -87,6 +89,9 @@ const formSize = ref("default")
 // ref
 const subtitlesFormRef = useTemplateRef<FormInstance>("subtitlesFormRef")
 
+// 本地字幕文件选择框 ref
+const subtitlesFileInputRef = useTemplateRef<HTMLInputElement>("subtitlesFileInputRef")
+
 const loading = ref(false)
 
 // 语言keys
@@ -126,6 +131,51 @@ ${subtitlesDemo.value}
 // 插入示例
 const insertDemo = () => {
     subtitlesForm.subtitles = subtitlesDemo.value.trim()
+}
+
+// 触发本地字幕文件选择
+const triggerSelectFile = () => {
+    subtitlesFileInputRef.value?.click()
+}
+
+/**
+ * @description: 处理本地字幕文件选择, 仅接受 WebVTT 格式, 读取后写入字幕内容.
+ * @param event input change 事件.
+ * @return void.
+ */
+const handleSelectFile = (event: Event) => {
+    const input = event.target as HTMLInputElement
+    const file = input.files?.[0]
+    // 无论成功与否都清空 input, 保证再次选择同一文件仍能触发 change
+    input.value = ""
+
+    if (!file) return
+
+    // 校验扩展名, 仅允许 .vtt 或 .webvtt
+    const isVttExtension = /\.(vtt|webvtt)$/i.test(file.name)
+    if (!isVttExtension) {
+        MessageUtil.warning("仅支持 WebVTT 格式 (.vtt / .webvtt) 的字幕文件")
+        return
+    }
+
+    const reader = new FileReader()
+    reader.addEventListener("load", () => {
+        const content = typeof reader.result === "string" ? reader.result : ""
+
+        // 校验文件内容是否为合法 WebVTT
+        const [isValid, errMsg] = isWebvtt(content)
+        if (!isValid) {
+            MessageUtil.error(errMsg || "字幕文件内容不是合法的 WebVTT 格式")
+            return
+        }
+
+        subtitlesForm.subtitles = content
+        MessageUtil.success("字幕文件已导入", 3000)
+    })
+    reader.addEventListener("error", () => {
+        MessageUtil.error("读取字幕文件失败")
+    })
+    reader.readAsText(file)
 }
 
 // 检查别名是否可用
@@ -251,5 +301,14 @@ watch(
 .btn-submit {
     display: flex;
     justify-content: center;
+}
+
+// 统一媒体编辑区动作按钮尺寸, 保证不同文字长度的按钮宽度一致
+.action-btn {
+    min-width: 96px;
+}
+
+.subtitles-file-input {
+    display: none;
 }
 </style>

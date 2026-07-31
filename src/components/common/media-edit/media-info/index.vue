@@ -47,7 +47,7 @@
         </el-form-item>
 
         <div class="btn-submit">
-            <el-button type="primary" :loading="loadingEditMedia" @click="submitForm(mediaInfoRef as FormInstance)">更新</el-button>
+            <el-button class="action-btn" type="primary" :loading="loadingEditMedia" @click="submitForm(mediaInfoRef as FormInstance)">更新</el-button>
         </div>
     </el-form>
 </template>
@@ -139,5 +139,10 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 .btn-submit {
     display: flex;
     justify-content: center;
+}
+
+// 统一媒体编辑区动作按钮尺寸, 与字幕面板按钮保持一致
+.action-btn {
+    min-width: 96px;
 }
 </style>

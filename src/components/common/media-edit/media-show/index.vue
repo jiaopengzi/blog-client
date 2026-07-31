@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from "vue"
+import { computed, ref, watch } from "vue"
 
 import { useVideoWatermark } from "@/components/hooks/useVideoWatermark"
 import VideoPlayer from "@/components/player"
@@ -47,8 +47,8 @@ useVideoWatermark(playerStateManager) // 使用视频水印 hooks
 
 let playerState: PlayerState = playerStateManager.getState()
 
-// 是否是视频文件
-const isVideoFile = ref(isVideo(data.file_type))
+// 是否是视频文件, 需随 data.file_type 响应式更新, 否则切换媒体时无法从视频切回图片显示
+const isVideoFile = computed(() => isVideo(data.file_type))
 
 // 视频宽度
 const videoWidth = ref(480)
