@@ -177,7 +177,7 @@ export default defineConfig(({ mode }) => {
                 ext: ".gz", // 生成的压缩文件后缀
                 deleteOriginFile: false, // 是否删除原文件
                 filter: (file) => {
-                    return /\.(js|mjs|json|css|html|svg)$/.test(file)
+                    return /\.(js|mjs|json|css|html|svg|woff2?|ttf|otf)$/.test(file)
                 },
             }),
             // ------------------------------ gzip压缩 结束
