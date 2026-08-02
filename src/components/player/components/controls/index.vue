@@ -27,20 +27,14 @@
 
             <!-- 第二行右侧 -->
             <div class="right-controls">
-                <div class="volume-wrapper">
+                <div class="volume-wrapper" @mouseenter="onVolumeEnter" @mouseleave="hideVolumeBar">
                     <!-- 静音按钮 -->
-                    <button type="button" class="controls-btn volume-mute" @click="handleButtonClick(toggleMute)" @mouseenter="showVolumeBar">
+                    <button type="button" class="controls-btn volume-mute" @click="handleButtonClick(toggleMute)">
                         <j-icon :name="IconNameMute" custom-class="iconfont" />
                     </button>
 
                     <!-- 音量控制 -->
-                    <VolumeBar
-                        class="volume-bar"
-                        :class="{ visible: isVolumeBarVisible }"
-                        :volume="localVolume"
-                        @update-volume="seekVolume"
-                        @mouseleave="hideVolumeBar"
-                    />
+                    <VolumeBar class="volume-bar" :class="{ visible: isVolumeBarVisible }" :volume="localVolume" @update-volume="seekVolume" />
                 </div>
 
                 <!-- 目录显示切换 -->
@@ -64,8 +58,8 @@
                 </button>
 
                 <!-- 设置 播放速度 清晰度 字幕 -->
-                <div class="setting-wrapper">
-                    <button type="button" class="controls-btn" @click="toggleSetting" @mouseenter="showSetting">
+                <div ref="settingWrapperRef" class="setting-wrapper" @mouseenter="onSettingEnter" @mouseleave="hideSetting">
+                    <button type="button" class="controls-btn" @click="onSettingToggle">
                         <j-icon :name="IconKeys.Setting" custom-class="iconfont" />
                     </button>
 
@@ -80,7 +74,6 @@
                         @get-is-loop="handelIsLoop"
                         @get-play-level="handelPlayLevel"
                         @get-playback-rate="handelPlaybackRate"
-                        @mouseleave="hideSetting"
                     />
                 </div>
             </div>
@@ -89,7 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import { useMagicKeys } from "@vueuse/core"
+import { useMagicKeys, onClickOutside } from "@vueuse/core"
 import { computed, onMounted, onUnmounted, reactive, ref, watch } from "vue"
 
 import { IconKeys } from "@/components/common/icons"
@@ -209,8 +202,34 @@ const seekVolume = (volume: number) => {
     localVolume.value = volume
 }
 
-const { isVisible: isVolumeBarVisible, show: showVolumeBar, hide: hideVolumeBar, destroy: volumeDestroy } = useDelayedToggle(150, 6000)
-const { isVisible: isShowVideoSetting, show: showSetting, hide: hideSetting, toggle: toggleSetting, destroy: settingDestroy } = useDelayedToggle(150, 12000)
+// 音量条: 悬停显示, 移出后短延时隐藏(不做定时自动关闭, 避免交互中突然消失)
+const { isVisible: isVolumeBarVisible, show: showVolumeBar, hide: hideVolumeBar, destroy: volumeDestroy } = useDelayedToggle(150)
+// 设置菜单: 点击/悬停显示, 移出或点击外部关闭(不做定时自动关闭, 避免查看时突然消失)
+const settingWrapperRef = ref<HTMLElement | null>(null)
+const { isVisible: isShowVideoSetting, show: showSetting, hide: hideSetting, toggle: toggleSetting, destroy: settingDestroy } = useDelayedToggle(150)
+
+// 点击设置菜单外部时关闭, 覆盖触控端(无 mouseleave)的关闭场景
+onClickOutside(settingWrapperRef, () => {
+    if (isShowVideoSetting.value) hideSetting()
+})
+
+// 互斥显示: 悬停音量条时立即隐藏设置面板, 避免两个悬浮面板重叠
+const onVolumeEnter = () => {
+    hideSetting()
+    showVolumeBar()
+}
+
+// 互斥显示: 悬停设置面板时立即隐藏音量条
+const onSettingEnter = () => {
+    hideVolumeBar()
+    showSetting()
+}
+
+// 点击设置按钮切换时同样隐藏音量条, 保证同一时刻只显示一个面板
+const onSettingToggle = () => {
+    hideVolumeBar()
+    toggleSetting()
+}
 
 // 视频时间显示
 const formattedTimeDisplay = computed(() => {
@@ -364,11 +383,12 @@ onUnmounted(() => {
                     left: 50%;
                     transform: translateX(-50%);
                     margin-bottom: 8px;
-                    display: none;
+                    // 用 visibility 代替 display, 保持毛玻璃层合成, 避免悬停时先透明后模糊
+                    visibility: hidden;
                     z-index: 10;
 
                     &.visible {
-                        display: block;
+                        visibility: visible;
                     }
                 }
             }
@@ -390,11 +410,12 @@ onUnmounted(() => {
                     bottom: 40px;
                     right: 0%;
                     margin-bottom: 8px;
-                    display: none;
+                    // 用 visibility 代替 display, 保持毛玻璃层合成, 避免悬停时先透明后模糊
+                    visibility: hidden;
                     z-index: 10;
 
                     &.visible {
-                        display: block;
+                        visibility: visible;
                     }
                 }
             }

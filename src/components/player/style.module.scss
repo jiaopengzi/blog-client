@@ -108,14 +108,16 @@ video::cue {
         flex-direction: column;
         justify-content: center;
         background: linear-gradient(180deg, #0000, #0000004d);
-        transition: opacity 0.8s;
+        // 显示瞬间完成: 祖先 opacity<1 期间会使子面板 backdrop-filter 失效(先透明后毛玻璃), 故出现不做淡入
+        transition: opacity 0s;
         opacity: 1;
         z-index: 4;
     }
 
-    // 控制器隐藏
+    // 控制器隐藏: 仅隐藏时保留淡出动画
     .controls-container.hidden {
         opacity: 0;
+        transition: opacity 0.8s;
     }
 
     .controls {

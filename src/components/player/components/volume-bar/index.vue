@@ -13,6 +13,7 @@
             class="volume-bar-inner"
             @mousedown="onVolumeBarClick"
             @mousemove="onVolumeBarMousemove"
+            @mouseleave="onVolumeBarLeave"
             @touchstart.passive="onVolumeBarClick"
         >
             <!-- 当前音量(从底部向上填充) -->
@@ -32,7 +33,7 @@
 
 <script lang="ts" setup>
 import { useResizeObserver } from "@vueuse/core"
-import { onBeforeUnmount, ref, useTemplateRef } from "vue"
+import { onBeforeUnmount, ref, useTemplateRef, watch } from "vue"
 
 defineOptions({ name: "VideoVolumeBar" })
 
@@ -140,6 +141,19 @@ const onVolumeBarMousemove = (event: MouseEvent) => {
     }
 }
 
+// 离开轨道时把 tip 复位为真实音量, 避免悬停预览值残留
+const onVolumeBarLeave = () => {
+    if (!isDragging) localVolume.value = volume
+}
+
+// 外部音量变化时同步 tip, 保证再次查看显示的是真实音量
+watch(
+    () => volume,
+    (v) => {
+        if (!isDragging) localVolume.value = v
+    },
+)
+
 // 更新 滑块 top 表示音量位置（0%=顶部，100%=底部），CSS 用 translateY(-50%) 居中圆心
 const updateSliderAndVolume = (offsetY: number, totalHeight: number, isDragging = false) => {
     if (sliderRef.value && currentVolumeRef.value) {
@@ -227,12 +241,13 @@ $slider-size: 16px;
 .bar-container {
     position: relative;
     width: 50px;
-    height: 156px;
+    height: 168px;
     display: flex;
     align-items: center;
     justify-content: center;
-    // 半透明背景色
-    background-color: #00000022;
+    // 半透明深色底 + 毛玻璃模糊, 与设置面板一致(更通透)
+    background-color: #00000066;
+    backdrop-filter: blur(16px);
     border-radius: 4px;
     user-select: none; // 禁止选中
 
@@ -242,6 +257,7 @@ $slider-size: 16px;
         top: 8px;
         transform: translateX(-50%);
         background-color: #000000b3;
+        border: 1px solid #ffffff33;
         color: white;
         border-radius: 3px;
         font-size: 12px;

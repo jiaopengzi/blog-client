@@ -103,15 +103,18 @@ const onKeydown = (e: KeyboardEvent, idx: number) => {
 .radio-group {
     padding: 8px;
     margin-bottom: 12px;
-    border-bottom: 1px solid #aaaaaa;
+    border-bottom: 1px solid #ffffff33;
     // border-bottom: 1px solid var(--jpz-border-color);
     // background-color: var(--jpz-bg-color);
 
     #radio-group-title {
-        font-size: 13px;
-        margin-bottom: 8px;
-        color: #777777;
+        font-size: 14px;
+        // 显式归零 margin, 避免全局 #preview h3 注入上边距导致标题上方多余留白
+        margin: 0 0 8px;
+        // 标题使用纯白 + 更大字号, 与浅灰内容形成层级对比, 更显著
+        color: #ffffff;
         font-weight: 700;
+        letter-spacing: 0.5px;
     }
 
     .btn-group {
@@ -136,8 +139,8 @@ const onKeydown = (e: KeyboardEvent, idx: number) => {
             box-shadow 0.12s ease;
 
         border: none;
-        background: #999999;
-        color: #eeeeee;
+        background: #ffffff26;
+        color: #ffffff;
 
         &.selected {
             background: var(--jpz-color-primary);

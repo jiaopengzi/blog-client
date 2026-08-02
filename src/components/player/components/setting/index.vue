@@ -124,17 +124,34 @@ const handleIsLoopChange = (value: boolean) => {
     height: 160px;
     overflow: auto;
 
-    // 半透明背景色
-    background-color: #00000022;
+    // 半透明深色底 + 毛玻璃模糊, 保证悬浮面板可读(进一步降低暗度, 更通透)
+    background-color: #00000066;
+    backdrop-filter: blur(16px);
     // background-color: var(--jpz-bg-color);
     // border: 1px solid var(--jpz-border-color);
     border-radius: 4px;
+    box-shadow: 0 8px 24px #00000066;
 
-    // 滚动条样式宽度
+    // 滚动条样式: 常驻可见的轨道与滑块, 提示用户可向下滚动
     &::-webkit-scrollbar {
-        width: 4px;
+        width: 8px;
     }
 
+    &::-webkit-scrollbar-track {
+        background-color: #ffffff1a;
+        border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #ffffff80;
+        border-radius: 4px;
+
+        &:hover {
+            background-color: #ffffffb3;
+        }
+    }
+
+    // 手机端限制高度, 避免面板超出视频容器
     @include respond-to("phone") {
         height: 100px;
     }
