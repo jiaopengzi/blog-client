@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url"
 import type { UserConfig as ViteUserConfig } from "vite"
 import { configDefaults, defineConfig, mergeConfig } from "vitest/config"
 
-import viteConfig from "./vite.config"
+import viteConfig from "./vite.config.ts"
 
 /**
  * @description: 解析 vite.config 的导出结果, 兼容对象式与函数式配置, 以便 Vitest 安全合并。
