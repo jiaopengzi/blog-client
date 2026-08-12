@@ -5,6 +5,16 @@
 该格式基于 [Keep a Changelog](https://keepachangelog.com),
 本项目遵循 [语义化版本控制](https://semver.org/spec/v2.0.0.html)。
 
+## [v1.0.1] - 2026-08-12
+
+### 🐞 Fix
+
+- 补全引用的拓展名
+
+### 📦 Build
+
+- 升级依赖 node 24.19.0
+
 ## [v1.0.0] - 2026-08-02
 
 ### Initial release
