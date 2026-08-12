@@ -1,0 +1,30 @@
+style: github
+template: CHANGELOG.tpl.md
+info:
+  title: CHANGELOG
+  repository_url: https://github.com/jiaopengzi/blog-client
+options:
+  commits:
+    # filters:
+    #   Type:
+    #     - feat
+    #     - fix
+    #     - perf
+    #     - refactor
+  commit_groups:
+    # title_maps:
+    #   feat: Features
+    #   fix: Bug Fixes
+    #   perf: Performance Improvements
+    #   refactor: Code Refactoring
+  header:
+    # 变更: 将 header.pattern 从原来的 ^(\\w*)(?:\\(([\\w\\$\\.\\-\\*\\s]*)\\))?\\:\\s(.*)$ 改为 ^(.*?)(?:\\(([^)]*)\\))?\\:\\s(.*)$
+    # 现在可匹配包含 Unicode/emoji 的 commit Type/Scope/Subject。
+    pattern: "^(.*?)(?:\\(([^)]*)\\))?\\:\\s(.*)$"
+    pattern_maps:
+      - Type
+      - Scope
+      - Subject
+  notes:
+    keywords:
+      - BREAKING CHANGE
