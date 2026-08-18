@@ -18,6 +18,9 @@ interface MarkdownToken {
     rows?: MarkdownToken[][]
 }
 
+// marked-alert 默认变体标记, 仅在 lexer 阶段出现(walkTokens 在 parse 阶段才会剥离), SEO 提取需手动去除标题标记
+const alertMarkerPattern = /^\[!(?:note|tip|important|warning|caution)\]\s*/i
+
 const skippedHtmlSelectors = ["pre", "code", "script", "style", "template", "noscript", "button", "svg", ".pre-code-container", ".copy-button"]
 const htmlBlockSelectors = [
     "address",
@@ -109,7 +112,16 @@ function collectBlockSegments(tokens: MarkdownToken[]): string[] {
                 break
             }
             case "blockquote": {
-                segments.push(...collectBlockSegments(token.tokens || createFallbackTextTokens(token.text)))
+                const innerSegments = collectBlockSegments(token.tokens || createFallbackTextTokens(token.text))
+                if (innerSegments.length > 0) {
+                    // 去除 GitHub alert(markdown-alert)标题标记, 只保留正文
+                    innerSegments[0] = innerSegments[0]!.replace(alertMarkerPattern, "")
+                }
+                for (const segment of innerSegments) {
+                    if (segment) {
+                        segments.push(segment)
+                    }
+                }
                 break
             }
             case "html": {

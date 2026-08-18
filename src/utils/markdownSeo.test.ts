@@ -100,4 +100,28 @@ describe("extractSeoDescriptionFromMarkdown - 提取 SEO 纯文本描述", () =>
         expect(result).not.toContain("#ffffff")
         expect(result).not.toContain("m-13")
     })
+
+    it("提取 markdown-alert 内容时忽略 alert 标题标记, 只保留正文", () => {
+        const markdown = ["> [!NOTE]", "> 测试内容"].join("\n")
+
+        const result = extractSeoDescriptionFromMarkdown(markdown, 200)
+
+        expect(result).toBe("测试内容")
+    })
+
+    it("markdown-alert 标题与正文同处一行时也仅保留正文", () => {
+        const markdown = ["> [!WARNING] 请注意风险", "> 后续说明"].join("\n")
+
+        const result = extractSeoDescriptionFromMarkdown(markdown, 200)
+
+        expect(result).toBe("请注意风险 后续说明")
+    })
+
+    it("普通引用块不以 alert 标记开头时保持原文", () => {
+        const markdown = ["> 普通引用内容", "> 第二行"].join("\n")
+
+        const result = extractSeoDescriptionFromMarkdown(markdown, 200)
+
+        expect(result).toBe("普通引用内容 第二行")
+    })
 })
