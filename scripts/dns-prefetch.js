@@ -16,17 +16,74 @@ import { gzipSync } from "zlib"
 const urlPattern = /(https?:\/\/[^/]*)/i
 const urls = new Set()
 
+/**
+ * 判断 hostname 是否属于本地或保留地址, 这些地址不应进入 dns-prefetch.
+ * @param {string} hostname 主机名.
+ * @returns {boolean} 返回 true 表示应被过滤.
+ */
+function isIgnoredHostname(hostname) {
+    const normalizedHostname = hostname.trim().toLowerCase()
+
+    if (!normalizedHostname) {
+        return true
+    }
+
+    return ["localhost", "127.0.0.1", "0.0.0.0", "::1"].includes(normalizedHostname)
+}
+
+/**
+ * 将匹配到的原始 URL 标准化为可用于 dns-prefetch 的 origin.
+ * @param {string} rawUrl 原始匹配到的 URL 文本.
+ * @returns {string | null} 返回可用 origin, 无效时返回 null.
+ */
+function normalizePrefetchOrigin(rawUrl) {
+    const matchedOrigin = rawUrl.match(urlPattern)?.[1]
+    if (!matchedOrigin) {
+        return null
+    }
+
+    try {
+        const parsedUrl = new URL(matchedOrigin)
+        const { hostname, origin, protocol } = parsedUrl
+
+        if (!["http:", "https:"].includes(protocol)) {
+            return null
+        }
+
+        if (isIgnoredHostname(hostname)) {
+            return null
+        }
+
+        // host 仅允许 ASCII 域名/IP/端口, 避免把示例文本和中文标点误当成域名.
+        if (!/^[a-z0-9.-]+$/i.test(hostname)) {
+            return null
+        }
+
+        if (!hostname.includes(".")) {
+            return null
+        }
+
+        return origin
+    } catch {
+        return null
+    }
+}
+
 // 遍历dist目录中的所有HTML、js、css文件
+/**
+ * 扫描 dist 产物中的 URL, 收集可用于 dns-prefetch 的外部 origin.
+ * @returns {Promise<void>} 扫描完成后无返回值.
+ */
 async function searchDomain() {
     const files = await glob("dist/**/*.{html,css,js}")
     for (const file of files) {
         const source = fs.readFileSync(file, "utf-8")
         const matches = source.match(urlRegex({ strict: true }))
         if (matches) {
-            matches.forEach((url) => {
-                const match = url.match(urlPattern)
-                if (match && match[1]) {
-                    urls.add(match[1])
+            matches.forEach((rawUrl) => {
+                const origin = normalizePrefetchOrigin(rawUrl)
+                if (origin) {
+                    urls.add(origin)
                 }
             })
         }
@@ -56,6 +113,10 @@ function detectIndent(headElement) {
 }
 
 // 在每个 HTML 文件的 <head> 开头插入 dns-prefetch 链接
+/**
+ * 将收集到的 origin 写入 HTML 的 head 中, 并同步生成 gzip 文件.
+ * @returns {Promise<void>} 写入完成后无返回值.
+ */
 async function insertLinks() {
     const files = await glob("dist/**/*.html")
 
